@@ -1,11 +1,10 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { ACCOUNT_TYPES, type AccountType } from 'oldschooljs/constants';
 import { Hiscores } from 'oldschooljs/hiscores';
 
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { statsEmbed } from '../../lib/util/statsEmbed';
-import type { OSBMahojiCommand } from '../lib/util';
 
 const accountTypeOptions = ACCOUNT_TYPES.map(val => {
 	let name: string = val;

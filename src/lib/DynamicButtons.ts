@@ -1,21 +1,21 @@
-import type {
-	BaseMessageOptions,
-	ButtonInteraction,
-	DMChannel,
-	Message,
-	MessageComponentInteraction,
-	NewsChannel,
-	TextChannel,
-	ThreadChannel
+import { awaitMessageComponentInteraction, makeComponents } from '@oldschoolgg/toolkit/discord-util';
+import {
+	type BaseMessageOptions,
+	ButtonBuilder,
+	type ButtonInteraction,
+	ButtonStyle,
+	type DMChannel,
+	type Message,
+	type MessageComponentInteraction,
+	type NewsChannel,
+	type TextChannel,
+	type ThreadChannel
 } from 'discord.js';
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time, isFunction, noOp } from 'e';
 import murmurhash from 'murmurhash';
 
 import { BLACKLISTED_USERS } from './blacklists';
-import { awaitMessageComponentInteraction, makeComponents } from './util';
 import { silentButtonAck } from './util/handleMahojiConfirmation';
-import { minionIsBusy } from './util/minionIsBusy';
 
 type DynamicButtonFn = (opts: { message: Message; interaction: MessageComponentInteraction }) => unknown;
 
@@ -108,7 +108,7 @@ export class DynamicButtons {
 		if (collectedInteraction) {
 			for (const button of this.buttons) {
 				if (collectedInteraction.customId === button.id) {
-					if (minionIsBusy(collectedInteraction.user.id) && button.cantBeBusy) {
+					if (ActivityManager.minionIsBusy(collectedInteraction.user.id) && button.cantBeBusy) {
 						await collectedInteraction.reply({
 							content: "Your action couldn't be performed, because your minion is busy.",
 							ephemeral: true

@@ -1,8 +1,7 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
-import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { roll } from '@/lib/util/rng';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 function calcPoints() {
@@ -38,7 +37,7 @@ export const soulWarsTask: MinionTask = {
 			}
 		});
 
-		await incrementMinigameScore(user.id, 'soul_wars', quantity);
+		await user.incrementMinigameScore('soul_wars', quantity);
 
 		const str = `${user}, ${user.minionName} finished doing ${quantity}x games of Soul Wars, you received ${points} Zeal Tokens, you now have ${user.user.zeal_tokens}.\n`;
 

@@ -1,9 +1,8 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import type { User } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, type User } from 'discord.js';
 
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { PoHObjects } from '../../lib/poh';
-import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import {
 	getPOH,
 	makePOHImage,
@@ -15,7 +14,6 @@ import {
 	pohWallkits
 } from '../lib/abstracted_commands/pohCommand';
 import { ownedItemOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export const pohCommand: OSBMahojiCommand = {
 	name: 'poh',
@@ -131,7 +129,7 @@ export const pohCommand: OSBMahojiCommand = {
 		if (options.wallkit) {
 			return pohWallkitCommand(user, options.wallkit.name);
 		}
-		if (minionIsBusy(user.id)) return 'You cannot interact with your PoH, because your minion is busy.';
+		if (user.minionIsBusy) return 'You cannot interact with your PoH, because your minion is busy.';
 		if (options.build) {
 			return pohBuildCommand(interaction, user, options.build.name);
 		}

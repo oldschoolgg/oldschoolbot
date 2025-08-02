@@ -1,14 +1,14 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
+import { Items } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
-import { gearValidationChecks } from '../../lib/constants';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { allPetIDs } from '../../lib/data/CollectionsExport';
 import type { GearSetupType } from '../../lib/gear/types';
-import { GearSetupTypes, GearStat } from '../../lib/gear/types';
+import { GearSetupTypes } from '../../lib/gear/types';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
-import { itemNameFromID } from '../../lib/util';
 import {
 	gearEquipCommand,
 	gearStatsCommand,
@@ -17,8 +17,9 @@ import {
 	gearViewCommand
 } from '../lib/abstracted_commands/gearCommands';
 import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
+
+const gearValidationChecks = new Set();
 
 export const gearCommand: OSBMahojiCommand = {
 	name: 'gear',
@@ -114,7 +115,7 @@ export const gearCommand: OSBMahojiCommand = {
 						const bank = getMahojiBank(await mahojiUsersSettingsFetch(user.id, { bank: true }));
 						return allPetIDs
 							.filter(i => bank.has(i))
-							.map(i => itemNameFromID(i)!)
+							.map(i => Items.itemNameFromId(i)!)
 							.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i, value: i }));
 					}

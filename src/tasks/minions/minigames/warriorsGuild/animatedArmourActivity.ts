@@ -1,8 +1,8 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
-import { Emoji } from '../../../../lib/constants';
-import type { AnimatedArmourActivityTaskOptions } from '../../../../lib/types/minions';
-import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
+import type { AnimatedArmourActivityTaskOptions } from '@/lib/types/minions';
+import { handleTripFinish } from '@/lib/util/handleTripFinish';
 import { Armours } from '../../../../mahoji/lib/abstracted_commands/warriorsGuildCommand';
 
 export const animatedArmorTask: MinionTask = {

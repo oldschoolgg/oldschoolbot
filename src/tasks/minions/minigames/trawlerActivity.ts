@@ -1,23 +1,18 @@
 import { calcPercentOfNum } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
-import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { anglerBoostPercent } from '../../../mahoji/mahojiSettings';
 
 export const trawlerTask: MinionTask = {
 	type: 'FishingTrawler',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { channelID, quantity, userID } = data;
-		const user = await mUserFetch(userID);
-		await incrementMinigameScore(userID, 'fishing_trawler', quantity);
-
-		const fishingLevel = user.skillLevel(SkillsEnum.Fishing);
+	isNew: true,
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { channelID, quantity } = data;
+		await user.incrementMinigameScore('fishing_trawler', quantity);
 
 		const loot = new Bank();
 
@@ -25,7 +20,7 @@ export const trawlerTask: MinionTask = {
 		const [hasEliteArdy] = await userhasDiaryTier(user, ArdougneDiary.elite);
 		for (let i = 0; i < quantity; i++) {
 			const { loot: _loot, xp } = fishingTrawlerLoot(
-				fishingLevel,
+				user.skillsAsLevels.fishing,
 				hasEliteArdy,
 				loot.clone().add(user.allItemsOwned)
 			);
@@ -33,7 +28,7 @@ export const trawlerTask: MinionTask = {
 			loot.add(_loot);
 		}
 
-		const xpBonusPercent = anglerBoostPercent(user);
+		const xpBonusPercent = Fishing.util.calcAnglerBoostPercent(user.gearBank);
 		if (xpBonusPercent > 0) {
 			const bonusXP = Math.ceil(calcPercentOfNum(xpBonusPercent, totalXP));
 			totalXP += bonusXP;
@@ -42,7 +37,7 @@ export const trawlerTask: MinionTask = {
 		let str = `${user}, ${
 			user.minionName
 		} finished completing the Fishing Trawler ${quantity}x times. ${await user.addXP({
-			skillName: SkillsEnum.Fishing,
+			skillName: 'fishing',
 			amount: totalXP,
 			duration: data.duration
 		})}`;

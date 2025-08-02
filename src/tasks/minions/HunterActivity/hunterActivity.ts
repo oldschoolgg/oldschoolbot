@@ -1,22 +1,21 @@
+import { Events } from '@oldschoolgg/toolkit/constants';
 import type { Prisma } from '@prisma/client';
 import { Time, randInt } from 'e';
-import { Bank } from 'oldschooljs';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { Bank, ECreature, EquipmentSlot, itemID } from 'oldschooljs';
 
-import { Events, MAX_LEVEL, PeakTier } from '../../../lib/constants';
+import { PeakTier } from '@/lib/util/peaks';
+import { roll } from '@/lib/util/rng';
+import { MAX_LEVEL } from '../../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../../lib/lootTrack';
 import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { roll, skillingPetDropRate } from '../../../lib/util';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import itemID from '../../../lib/util/itemID';
+import { skillingPetDropRate } from '../../../lib/util';
 import { logError } from '../../../lib/util/logError.js';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
-import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
 
 const riskDeathNumbers = [
 	{
@@ -35,10 +34,9 @@ const riskDeathNumbers = [
 
 export const hunterTask: MinionTask = {
 	type: 'Hunter',
-	async run(data: HunterActivityTaskOptions) {
-		const { creatureID, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } =
-			data;
-		const user = await mUserFetch(userID);
+	isNew: true,
+	async run(data: HunterActivityTaskOptions, { user, handleTripFinish }) {
+		const { creatureID, quantity, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } = data;
 		const userBank = user.bank;
 		const currentLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentHerbLevel = user.skillLevel(SkillsEnum.Herblore);
@@ -79,7 +77,7 @@ export const hunterTask: MinionTask = {
 		}
 
 		if (creature.wildy) {
-			let riskPkChance = creature.id === BLACK_CHIN_ID ? 100 : 200;
+			let riskPkChance = creature.id === ECreature.BLACK_CHINCHOMPA ? 100 : 200;
 			riskPkChance +=
 				riskDeathNumbers.find(_peaktier => _peaktier.peakTier === wildyPeak?.peakTier)?.extraChance ?? 0;
 			let riskDeathChance = 20;
@@ -137,7 +135,7 @@ export const hunterTask: MinionTask = {
 		let magicSecStr = '';
 		let herbXP = 0;
 		let xpStr = '';
-		if (creature.id === HERBIBOAR_ID) {
+		if (creature.id === ECreature.HERBIBOAR) {
 			creatureTable = generateHerbiTable(
 				user.skillLevel('herblore'),
 				user.hasEquippedOrInBank('Magic secateurs')

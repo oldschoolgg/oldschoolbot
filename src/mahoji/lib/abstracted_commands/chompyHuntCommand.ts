@@ -1,14 +1,13 @@
-import { Time, percentChance, reduceNumByPercent } from 'e';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { Time, percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { chompyHats } from '../../../lib/constants';
+import { avasDevices, chompyHats } from '../../../lib/data/CollectionsExport';
 import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
-import { getMinigameScore } from '../../../lib/settings/minigames';
+
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import getOSItem from '../../../lib/util/getOSItem';
 
 const diaryBoosts = [
 	[WesternProv.elite, 100],
@@ -18,13 +17,8 @@ const diaryBoosts = [
 
 const baseChompyPerHour = 100;
 
-const avas = [
-	[getOSItem("Ava's accumulator"), 72],
-	[getOSItem("Ava's assembler"), 80]
-] as const;
-
 export async function chompyHuntClaimCommand(user: MUser) {
-	const chompyScore = await getMinigameScore(user.id, 'big_chompy_bird_hunting');
+	const chompyScore = await user.fetchMinigameScore('big_chompy_bird_hunting');
 	const userBank = user.bank;
 	const { cl } = user;
 
@@ -44,7 +38,7 @@ export async function chompyHuntCommand(user: MUser, channelID: string) {
 	}
 
 	const rangeGear = user.gear.range;
-	if (!rangeGear.hasEquipped('Ogre bow')) {
+	if (!rangeGear.hasEquipped('Ogre bow') || !rangeGear.hasEquipped('Ogre arrow')) {
 		return 'You need an Ogre bow equipped in your range outfit, and Ogre arrows to hunt Chompy birds!';
 	}
 
@@ -68,21 +62,18 @@ export async function chompyHuntCommand(user: MUser, channelID: string) {
 		}
 	}
 
-	let arrowsNeeded = quantity;
-	for (const [ava, percent] of avas) {
-		if (rangeGear.hasEquipped(ava.name)) {
-			arrowsNeeded = Math.floor(reduceNumByPercent(arrowsNeeded, percent));
-			boosts.push(`${percent}% less arrows for ${ava.name}`);
-			break;
-		}
+	const avasDevice = avasDevices.find(avas => rangeGear.hasEquipped(avas.item.id));
+	if (avasDevice) {
+		boosts.push(`${avasDevice.reduction}% less arrows for ${avasDevice.item.name}`);
 	}
 
-	const cost = new Bank().add('Ogre arrow', arrowsNeeded);
-	if (!user.owns(cost)) {
-		return `You don't have enough Ogre arrow's to kill ${quantity}x Chompy birds, you need ${arrowsNeeded}.`;
+	const cost = new Bank().add('Ogre arrow', quantity);
+	const realCost = new Bank();
+	try {
+		realCost.add((await user.specialRemoveItems(cost)).realCost);
+	} catch (err: any) {
+		return `You cannot hunt chompy birds. ${err.message}`;
 	}
-
-	await transactItems({ userID: user.id, itemsToRemove: cost });
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
@@ -93,9 +84,9 @@ export async function chompyHuntCommand(user: MUser, channelID: string) {
 		minigameID: 'big_chompy_bird_hunting'
 	});
 
-	let str = `${user.minionName} is now hunting Big Chompy's! The trip will take ${formatDuration(
+	let str = `${user.minionName} is now hunting chompy birds! The trip will take ${formatDuration(
 		tripLength
-	)}. Removed ${cost} from your bank.`;
+	)}. Removing items: ${realCost}.`;
 
 	if (boosts.length > 0) {
 		str += `\n**Boosts:** ${boosts.join(', ')}.`;

@@ -1,7 +1,6 @@
 import { Time } from 'e';
-import { toKMB } from 'oldschooljs/dist/util';
+import { toKMB } from 'oldschooljs';
 
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { getBoatType } from '../../../mahoji/lib/abstracted_commands/pestControlCommand';
@@ -17,7 +16,7 @@ export const pestControlTask: MinionTask = {
 
 		const points = pointsPerGame * quantity;
 
-		await incrementMinigameScore(userID, 'pest_control', quantity);
+		await user.incrementMinigameScore('pest_control', quantity);
 		const newUserStats = await userStatsUpdate(
 			user.id,
 			{

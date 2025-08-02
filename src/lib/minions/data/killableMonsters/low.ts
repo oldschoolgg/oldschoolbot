@@ -1,10 +1,7 @@
 import { Time } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Bank, Monsters, SkillsEnum, itemID, resolveItems } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import { GearStat } from '../../../gear/types';
-import itemID from '../../../util/itemID';
+import { GearStat } from 'oldschooljs/gear';
 import type { KillableMonster } from '../../types';
 import { QuestID } from '../quests';
 

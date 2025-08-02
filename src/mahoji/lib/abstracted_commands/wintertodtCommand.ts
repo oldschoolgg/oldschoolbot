@@ -1,8 +1,7 @@
-import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
-import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-
 import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
+import { Bank, SkillsEnum } from 'oldschooljs';
+
 import { Eatables } from '../../../lib/data/eatables';
 import { warmGear } from '../../../lib/data/filterables';
 import { trackLoot } from '../../../lib/lootTrack';

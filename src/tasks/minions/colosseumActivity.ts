@@ -1,12 +1,9 @@
 import { randArrItem } from 'e';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { ColosseumWaveBank, colosseumWaves } from '../../lib/colosseum';
 import { refundChargeBank } from '../../lib/degradeableItems';
 import { trackLoot } from '../../lib/lootTrack';
-import { incrementMinigameScore } from '../../lib/settings/minigames';
 import { ChargeBank } from '../../lib/structures/Bank';
 import type { ColoTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -81,7 +78,7 @@ export const colosseumTask: MinionTask = {
 			return handleTripFinish(user, channelID, str, undefined, data, null);
 		}
 
-		await incrementMinigameScore(user.id, 'colosseum');
+		await user.incrementMinigameScore('colosseum');
 
 		const loot = new Bank().add(possibleLoot);
 

@@ -1,8 +1,7 @@
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Time, randFloat, randInt, roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
-import { incrementMinigameScore } from '../../lib/settings/settings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { skillingPetDropRate } from '../../lib/util';
@@ -67,7 +66,7 @@ export const vmTask: MinionTask = {
 			warningMessage += `You are getting close to the maximum amount of points that you can carry (${maxPoints.toLocaleString()}). You should expend some on the Volcanic Mine shop.`;
 		}
 
-		await incrementMinigameScore(userID, 'volcanic_mine', quantity);
+		await user.incrementMinigameScore('volcanic_mine', quantity);
 
 		const fragmentRolls = randInt(38, 40) * quantity;
 		const loot = new Bank().add(fragmentTable.roll(fragmentRolls));

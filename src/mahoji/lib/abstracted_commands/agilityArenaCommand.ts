@@ -1,14 +1,13 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Time } from 'e';
+import { mahojiChatHead } from '../../../lib/canvas/chatHeadImage';
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { mahojiChatHead } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 

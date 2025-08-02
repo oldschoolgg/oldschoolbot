@@ -1,13 +1,12 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
+import { formatSkillRequirements } from '@/lib/util/smallUtils';
+import { pohImageGenerator } from '../../../lib/canvas/pohImage';
 import { BitField } from '../../../lib/constants';
 import { GroupedPohObjects, PoHObjects, getPOHObject, itemsNotRefundable } from '../../../lib/poh';
-import { pohImageGenerator } from '../../../lib/pohImage';
-
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { formatSkillRequirements, itemNameFromID } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -194,7 +193,7 @@ export async function pohMountItemCommand(user: MUser, name: string) {
 		...(await makePOHImage(user)),
 		content: `You mounted a ${item.name} in your house, using 2x Magic stone and 1x ${
 			item.name
-		} (given back when another item is mounted).${currItem ? ` Refunded 1x ${itemNameFromID(currItem)}.` : ''}`
+		} (given back when another item is mounted).${currItem ? ` Refunded 1x ${Items.itemNameFromId(currItem)}.` : ''}`
 	};
 }
 
@@ -219,7 +218,7 @@ export async function pohDestroyCommand(user: MUser, name: string) {
 		await user.addItemsToBank({ items: { [inPlace!]: 1 }, collectionLog: false });
 		return {
 			...(await makePOHImage(user)),
-			content: `You removed a ${obj.name} from your house, and were refunded 1x ${itemNameFromID(inPlace!)}.`
+			content: `You removed a ${obj.name} from your house, and were refunded 1x ${Items.itemNameFromId(inPlace!)}.`
 		};
 	}
 	if (inPlace !== obj.id) {

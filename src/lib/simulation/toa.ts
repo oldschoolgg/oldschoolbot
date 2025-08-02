@@ -1,7 +1,9 @@
-import { exponentialPercentScale, mentionCommand } from '@oldschoolgg/toolkit/util';
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
-import type { Minigame } from '@prisma/client';
-import { XpGainSource } from '@prisma/client';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { type CommandResponse, channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
+import { type Minigame, XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
 import {
 	Time,
@@ -20,36 +22,30 @@ import {
 	sumArr,
 	uniqueArr
 } from 'e';
-import { Bank, LootTable } from 'oldschooljs';
+import { Bank, LootTable, itemID, randomVariation, resolveItems } from 'oldschooljs';
+import type { GearStats } from 'oldschooljs/gear';
 
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
-import { Emoji } from '../constants';
 import { getSimilarItems } from '../data/similarItems';
 import { degradeItem } from '../degradeableItems';
-import type { GearStats, UserFullGearSetup } from '../gear/types';
+import type { UserFullGearSetup } from '../gear/types';
 import { trackLoot } from '../lootTrack';
 import { setupParty } from '../party';
-import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
 import { Gear, constructGearSetup } from '../structures/Gear';
 import type { MakePartyOptions, Skills } from '../types';
 import type { TOAOptions } from '../types/minions';
-import {
-	assert,
-	channelIsSendable,
-	formatDuration,
-	formatList,
-	formatSkillRequirements,
-	itemNameFromID,
-	randomVariation
-} from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import getOSItem from '../util/getOSItem';
-import itemID from '../util/itemID';
-import { bankToStrShortNames, getToaKCs } from '../util/smallUtils';
+import { assert } from '../util/logError';
+import {
+	bankToStrShortNames,
+	formatList,
+	formatSkillRequirements,
+	getToaKCs,
+	itemNameFromID
+} from '../util/smallUtils';
 import { updateBankSetting } from '../util/updateBankSetting';
 import { TeamLoot } from './TeamLoot';
 
@@ -965,7 +961,7 @@ async function calcTOAInput({
 	blowpipeCost: Bank;
 }> {
 	const cost = new Bank();
-	const kc = kcOverride ?? (await getMinigameScore(user.id, 'tombs_of_amascut'));
+	const kc = kcOverride ?? (await user.fetchMinigameScore('tombs_of_amascut'));
 	if (minimumSuppliesNeeded.has('Super combat potion(4)')) {
 		cost.add('Super combat potion(4)', quantity);
 	} else {
@@ -1086,7 +1082,7 @@ async function checkTOATeam(users: MUser[], raidLevel: number, quantity: number)
 		if (user.minionIsBusy) return `${user.usernameOrMention}'s minion is busy.`;
 		const checkResult = await checkTOAUser(
 			user,
-			await getMinigameScore(user.id, 'tombs_of_amascut'),
+			await user.fetchMinigameScore('tombs_of_amascut'),
 			raidLevel,
 			users.length,
 			Time.Hour,
@@ -1104,7 +1100,7 @@ export async function toaStartCommand(
 	user: MUser,
 	solo: boolean,
 	channelID: string,
-	raidLevel: RaidLevel,
+	_raidLevel: number,
 	teamSize: number | undefined,
 	quantityInput: number | undefined
 ): CommandResponse {
@@ -1112,9 +1108,15 @@ export async function toaStartCommand(
 		return `${user.usernameOrMention} minion is busy`;
 	}
 
+	if (!mileStoneBaseDeathChances.some(i => i.level === _raidLevel)) {
+		return 'Invalid raid level.';
+	}
+
+	const raidLevel = _raidLevel as RaidLevel;
+
 	const initialCheck = await checkTOAUser(
 		user,
-		await getMinigameScore(user.id, 'tombs_of_amascut'),
+		await user.fetchMinigameScore('tombs_of_amascut'),
 		raidLevel,
 		solo ? 1 : (teamSize ?? 5),
 		Time.Hour,
@@ -1542,7 +1544,7 @@ function createTOATeam({
 }
 
 async function toaCheckCommand(user: MUser) {
-	const result = await checkTOAUser(user, await getMinigameScore(user.id, 'tombs_of_amascut'), 200, 5, Time.Hour, 1);
+	const result = await checkTOAUser(user, await user.fetchMinigameScore('tombs_of_amascut'), 200, 5, Time.Hour, 1);
 	if (result[0]) {
 		return `🔴 You aren't able to join a Tombs of Amascut raid, address these issues first: ${result[1]}`;
 	}
@@ -1606,9 +1608,9 @@ export async function toaHelpCommand(user: MUser, channelID: string) {
 		totalUniques += user.cl.amount(item);
 	}
 
-	const str = `**Tombs of Amascut** 
+	const str = `**Tombs of Amascut**
 
-**Attempts:** ${stats.toa_attempts} 
+**Attempts:** ${stats.toa_attempts}
 **Entry Mode:** ${entryKC} KC
 **Normal Mode:** ${normalKC} KC
 **Expert Mode:** ${expertKC} KC
@@ -1642,18 +1644,4 @@ ${calculateBoostString(user)}
 `;
 
 	return channelID === '1069176960523190292' ? { content: str, ephemeral: true } : str;
-}
-
-export function normalizeTOAUsers(data: TOAOptions) {
-	const _detailedUsers = data.detailedUsers;
-	const detailedUsers = (
-		(Array.isArray(_detailedUsers[0]) ? _detailedUsers : [_detailedUsers]) as [string, number, number[]][][]
-	).map(userArr =>
-		userArr.map(user => ({
-			id: user[0],
-			points: user[1],
-			deaths: user[2]
-		}))
-	);
-	return detailedUsers;
 }

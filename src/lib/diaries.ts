@@ -1,19 +1,17 @@
-import { objectEntries } from 'e';
-import { Monsters } from 'oldschooljs';
-
 import type { Minigame } from '@prisma/client';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { objectEntries } from 'e';
+import { Monsters, resolveItems } from 'oldschooljs';
+
 import { MAX_QP } from './minions/data/quests';
 import type { DiaryTier, DiaryTierName } from './minions/types';
 import { DiaryID } from './minions/types';
 import { Minigames } from './settings/minigames';
 import Skillcapes from './skilling/skillcapes';
-import { courses } from './skilling/skills/agility';
+import Agility from './skilling/skills/agility';
 import { MUserStats } from './structures/MUserStats';
 import type { Skills } from './types';
-import { formatList } from './util';
 import getOSItem from './util/getOSItem';
-import { formatSkillRequirements, hasSkillReqs, itemNameFromID } from './util/smallUtils';
+import { formatList, formatSkillRequirements, hasSkillReqs, itemNameFromID } from './util/smallUtils';
 
 interface Diary {
 	name: string;
@@ -89,7 +87,7 @@ export function userhasDiaryTierSync(
 	if (tier.lapsReqs) {
 		const entries = Object.entries(tier.lapsReqs);
 		for (const [name, score] of entries) {
-			const course = courses.find(c => c.name === name)!;
+			const course = Agility.Courses.find(c => c.name === name)!;
 
 			if (!lapScores[course.id] || lapScores[course.id] < score) {
 				canDo = false;

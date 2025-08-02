@@ -2,14 +2,14 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { randInt } from 'e';
 
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import {
 	type CanvasContext,
 	canvasToBuffer,
 	createCanvas,
 	loadAndCacheLocalImage,
 	measureTextWidth
-} from '../../lib/util/canvasUtil';
-import type { OSBMahojiCommand } from '../lib/util';
+} from '../../lib/canvas/canvasUtil';
 
 const bg = loadAndCacheLocalImage('./src/lib/resources/images/tob-bg.png');
 

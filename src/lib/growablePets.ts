@@ -1,7 +1,6 @@
 import { Time, randFloat } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, resolveItems } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { ActivityTaskOptions } from './types/minions';
 import getOSItem from './util/getOSItem';
 

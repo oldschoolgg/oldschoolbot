@@ -1,5 +1,5 @@
+import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { UserError } from '@oldschoolgg/toolkit/structures';
-import { makeComponents } from '@oldschoolgg/toolkit/util';
 import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector } from 'discord.js';
@@ -36,6 +36,7 @@ const buttons = [
 ] as const;
 
 export async function setupParty(channel: TextChannel, leaderUser: MUser, options: MakePartyOptions): Promise<MUser[]> {
+	if (process.env.TEST) return [leaderUser];
 	const usersWhoConfirmed: string[] = [options.leader.id];
 	let deleted = false;
 	let massStarted = false;

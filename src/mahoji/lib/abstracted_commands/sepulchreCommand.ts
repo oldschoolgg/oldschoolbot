@@ -1,9 +1,9 @@
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, reduceNumByPercent, sumArr } from 'e';
 import type { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
-import { getMinigameScore } from '../../../lib/settings/minigames';
+
 import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables';
 import Arrows from '../../../lib/skilling/skills/fletching/fletchables/arrows';
 import Bolts from '../../../lib/skilling/skills/fletching/fletchables/bolts';
@@ -41,7 +41,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 
 	// Boosts
 	const percentReduced = Math.min(
-		Math.floor((await getMinigameScore(user.id, 'sepulchre')) / (Time.Hour / lapLength)),
+		Math.floor((await user.fetchMinigameScore('sepulchre')) / (Time.Hour / lapLength)),
 		10
 	);
 	lapLength = reduceNumByPercent(lapLength, percentReduced);

@@ -1,13 +1,10 @@
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Time } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, EMonster, Monsters, NIGHTMARES_HP, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
-import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
-import { NEX_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../../../constants';
-import { GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
-import itemID from '../../../util/itemID';
 import type { KillableMonster } from '../../types';
-import { NIGHTMARES_HP } from './../../../constants';
 import bosses from './bosses';
 import { camdozaalMonsters } from './camdozaalMonsters';
 import { chaeldarMonsters } from './chaeldarMonsters';
@@ -380,7 +377,7 @@ export const effectiveMonsters = [
 	{
 		name: 'Zalcano',
 		aliases: ['zalcano'],
-		id: ZALCANO_ID,
+		id: EMonster.ZALCANO,
 		emoji: '<:Smolcano:604670895113633802>'
 	},
 	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127, emoji: '<:Tzrekjad:324127379188613121>' },
@@ -389,12 +386,12 @@ export const effectiveMonsters = [
 	{
 		name: "Phosani's Nightmare",
 		aliases: ['phosani', 'phosanis nightmare'],
-		id: PHOSANI_NIGHTMARE_ID
+		id: EMonster.PHOSANI_NIGHTMARE
 	},
 	{
 		name: 'Nex',
 		aliases: ['nex'],
-		id: NEX_ID
+		id: EMonster.NEX
 	}
 ];
 
@@ -404,3 +401,46 @@ export const wikiMonsters = killableMonsters
 	.filter(m => m.equippedItemBoosts || m.itemInBankBoosts || m.itemCost || m.requiredQuests)
 	.filter(m => ['Revenant', 'Reanim'].every(b => !m.name.includes(b)))
 	.sort((a, b) => a.name.localeCompare(b.name));
+
+const otherMonsters = [
+	{
+		id: -1,
+		name: 'Tempoross',
+		aliases: ['temp', 'tempoross'],
+		link: '/skills/fishing/tempoross/'
+	},
+	...["Phosani's Nightmare", 'Mass Nightmare', 'Solo Nightmare'].map(s => ({
+		id: -1,
+		name: s,
+		aliases: [s.toLowerCase()],
+		link: `/bosses/the-nightmare/${stringMatches(s.split(' ')[0], "Phosani's") ? '#phosanis-nightmare' : ''}`
+	})),
+	{
+		name: 'Nex',
+		aliases: ['nex'],
+		id: EMonster.NEX,
+		link: '/bosses/nex/'
+	},
+	{
+		name: 'Zalcano',
+		aliases: ['zalcano'],
+		id: EMonster.ZALCANO,
+		emoji: '<:Smolcano:604670895113633802>',
+		link: '/miscellaneous/zalcano/'
+	},
+	{
+		name: 'Wintertodt',
+		aliases: ['wt', 'wintertodt', 'todt'],
+		id: -1,
+		emoji: '<:Phoenix:324127378223792129>',
+		link: '/activities/wintertodt/'
+	},
+	{
+		name: 'Colosseum',
+		aliases: ['colo', 'colosseum'],
+		id: -1,
+		link: '/bosses/colosseum/'
+	}
+];
+
+export const autocompleteMonsters = [...killableMonsters, ...otherMonsters];

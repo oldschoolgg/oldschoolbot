@@ -1,6 +1,7 @@
 import type { Bank } from 'oldschooljs';
 
-import type { BankFlag } from '../bankImage';
+import { type BankFlag, bankImageTask } from '../canvas/bankImage';
+import type { IconPackID } from '../canvas/iconPacks';
 import type { Flags } from '../minions/types';
 
 interface MakeBankImageOptions {
@@ -14,6 +15,7 @@ interface MakeBankImageOptions {
 	previousCL?: Bank;
 	showNewCL?: boolean;
 	mahojiFlags?: BankFlag[];
+	iconPackId?: IconPackID;
 }
 
 export async function makeBankImage({
@@ -25,24 +27,26 @@ export async function makeBankImage({
 	spoiler,
 	showNewCL = false,
 	flags = {},
-	mahojiFlags = []
+	mahojiFlags = [],
+	iconPackId
 }: MakeBankImageOptions) {
 	const realFlags: Flags = { ...flags, background: background ?? 1, nocache: 1 };
 	if (showNewCL || previousCL !== undefined) realFlags.showNewCL = 1;
 
-	const { image, isTransparent } = await bankImageGenerator.generateBankImage({
+	const { image } = await bankImageTask.generateBankImage({
 		bank,
 		title,
 		showValue: true,
 		flags: realFlags,
 		user,
 		collectionLog: previousCL,
-		mahojiFlags
+		mahojiFlags,
+		iconPackId
 	});
 
 	return {
 		file: {
-			name: `${spoiler ? 'SPOILER_' : ''}${isTransparent ? 'bank.png' : 'bank.jpg'}`,
+			name: `${spoiler ? 'SPOILER_' : ''}bank.png`,
 			attachment: image!
 		}
 	};

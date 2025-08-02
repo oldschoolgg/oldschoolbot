@@ -1,8 +1,10 @@
-import { Time, deepClone, percentChance } from 'e';
-import type { MonsterKillOptions } from 'oldschooljs';
-import { Bank, EMonster, MonsterSlayerMaster, Monsters } from 'oldschooljs';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { calcPerHour } from '@oldschoolgg/toolkit/util';
+import { Time, deepClone, percentChance, roll } from 'e';
+import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 
-import { type BitField, Emoji } from '../../lib/constants';
+import { logError } from '@/lib/util/logError';
+import type { BitField } from '../../lib/constants';
 import { userhasDiaryTierSync } from '../../lib/diaries';
 import { trackLoot } from '../../lib/lootTrack';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -16,12 +18,12 @@ import { type KCBank, safelyMakeKCBank } from '../../lib/structures/KCBank';
 import { MUserStats } from '../../lib/structures/MUserStats';
 import { UpdateBank } from '../../lib/structures/UpdateBank';
 import type { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { calcPerHour, calculateSimpleMonsterDeathChance, roll } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
 import { increaseWildEvasionXp } from '../../lib/util/calcWildyPkChance';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { calculateSimpleMonsterDeathChance } from '../../lib/util/smallUtils';
 
 function handleSlayerTaskCompletion({
 	slayerContext,
@@ -516,7 +518,12 @@ export const monsterTask: MinionTask = {
 
 		const resultOrError = await updateBank.transact(user, { isInWilderness: data.isInWilderness });
 		if (typeof resultOrError === 'string') {
-			return resultOrError;
+			logError(new Error(`${user.logName} monster activity updateBank transact error: ${resultOrError}`), {
+				user_id: user.id,
+				monster_id: monster.id.toString(),
+				quantity: quantity.toString()
+			});
+			return;
 		}
 		const { itemTransactionResult, rawResults } = resultOrError;
 		messages.push(...rawResults.filter(r => typeof r === 'string'));

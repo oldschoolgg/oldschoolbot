@@ -1,16 +1,12 @@
-import type { MahojiUserOption } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { Events } from '@oldschoolgg/toolkit/constants';
+import type { CommandRunOptions, MahojiUserOption, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import { Events } from '../../lib/constants';
-
-import { toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { tradePlayerItems } from '../../lib/util/tradePlayerItems';
-import type { OSBMahojiCommand } from '../lib/util';
 import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings';
 
 export const payCommand: OSBMahojiCommand = {
@@ -60,7 +56,7 @@ export const payCommand: OSBMahojiCommand = {
 				interaction,
 				`Are you sure you want to pay ${options.user.user.username}#${options.user.user.discriminator} (ID: ${
 					recipient.id
-				}) ${toKMB(amount)}?`
+				}) ${amount.toLocaleString()}?`
 			);
 		}
 

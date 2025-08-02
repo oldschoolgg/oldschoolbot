@@ -1,10 +1,17 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import {
+	type CommandRunOptions,
+	type OSBMahojiCommand,
+	channelIsSendable,
+	makeComponents
+} from '@oldschoolgg/toolkit/discord-util';
 import type { Giveaway } from '@prisma/client';
 import { Duration } from '@sapphire/time-utilities';
-import type { BaseMessageOptions } from 'discord.js';
 import {
 	ActionRowBuilder,
+	ApplicationCommandOptionType,
 	AttachmentBuilder,
+	type BaseMessageOptions,
 	ButtonBuilder,
 	ButtonStyle,
 	ChannelType,
@@ -12,16 +19,15 @@ import {
 	messageLink,
 	time
 } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, randInt } from 'e';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
 import { chunk } from 'e';
 import { giveawayCache } from '../../lib/cache.js';
-import { Emoji, patronFeatures } from '../../lib/constants';
+import { patronFeatures } from '../../lib/constants';
 import { marketPriceOfBank } from '../../lib/marketPrices';
 import { channelIsSendable, isModOrAdmin, makeComponents, makePaginatedMessage, toKMB } from '../../lib/util';
+import { isModOrAdmin } from '../../lib/util.js';
 import { generateGiveawayContent } from '../../lib/util/giveaway';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
@@ -29,7 +35,6 @@ import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 import { addToGPTaxBalance } from '../mahojiSettings';
 
 function makeGiveawayButtons(giveawayID: number): BaseMessageOptions['components'] {

@@ -1,11 +1,10 @@
-import { Table } from '@oldschoolgg/toolkit/util';
+import { Table, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { removeFromArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
 import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
-import { stringMatches } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { logError } from '../../../lib/util/logError';
 

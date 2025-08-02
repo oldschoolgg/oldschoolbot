@@ -1,23 +1,28 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import type { CommandResponse } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { PerkTier, formatDuration } from '@oldschoolgg/toolkit/util';
 import type { UserStats, activity_type_enum } from '@prisma/client';
 import { Time, sumArr } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import type { ItemBank, SkillsScore } from 'oldschooljs/dist/meta/types';
-import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
-import { toKMB } from 'oldschooljs/dist/util';
+import {
+	Bank,
+	type ItemBank,
+	Monsters,
+	SkillsEnum,
+	type SkillsScore,
+	TOBRooms,
+	resolveItems,
+	toKMB
+} from 'oldschooljs';
 
-import { PerkTier } from '@oldschoolgg/toolkit/util';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { SQL_sumOfAllCLItems } from '@/lib/util/smallUtils.js';
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
-import { Emoji } from '../../../lib/constants';
 import { calcCLDetails, isCLItem } from '../../../lib/data/Collections';
 import { skillEmoji } from '../../../lib/data/emojis';
 import { getBankBgById } from '../../../lib/minions/data/bankBackgrounds';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { RandomEvents } from '../../../lib/randomEvents';
-import { getMinigameScore } from '../../../lib/settings/minigames';
 
 import Agility from '../../../lib/skilling/skills/agility';
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
@@ -25,7 +30,7 @@ import { ForestryEvents } from '../../../lib/skilling/skills/woodcutting/forestr
 import { getSlayerTaskStats } from '../../../lib/slayer/slayerUtil';
 import { sorts } from '../../../lib/sorts';
 import type { InfernoOptions } from '../../../lib/types/minions';
-import { SQL_sumOfAllCLItems, formatDuration, getUsername, stringMatches } from '../../../lib/util';
+import { getUsername } from '../../../lib/util';
 import { createChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -966,7 +971,7 @@ GROUP BY "bankBackground";`);
 		perkTierNeeded: null,
 		run: async (user, stats) => {
 			const entries = Object.entries(stats.laps_scores as ItemBank).map(arr => [Number.parseInt(arr[0]), arr[1]]);
-			const sepulchreCount = await getMinigameScore(user.id, 'sepulchre');
+			const sepulchreCount = await user.fetchMinigameScore('sepulchre');
 			if (sepulchreCount === 0 && entries.length === 0) {
 				return "You haven't done any laps yet! Sad.";
 			}

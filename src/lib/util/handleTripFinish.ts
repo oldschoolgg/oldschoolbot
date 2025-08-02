@@ -1,11 +1,10 @@
-import { channelIsSendable, makeComponents } from '@oldschoolgg/toolkit/util';
+import { channelIsSendable, makeComponents } from '@oldschoolgg/toolkit/discord-util';
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
-import { Bank } from 'oldschooljs';
+import { Time } from 'e';
+import { Bank, EItem } from 'oldschooljs';
 
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { Time, sumArr } from 'e';
-import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import {
@@ -16,15 +15,14 @@ import { updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/ma
 import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
-import { BitField, COINS_ID, Emoji, MAX_CLUES_DROPPED, PerkTier } from '../constants';
-import { allPetsCL } from '../data/CollectionsExport';
-import pets from '../data/pets';
+import { BitField, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
+import { calculateBirdhouseDetails } from '../skilling/skills/hunter/birdhouses';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import type { ActivityTaskData } from '../types/minions';
-import { formatList, hasSkillReqs } from '../util';
+import { displayCluesAndPets } from './displayCluesAndPets';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
@@ -35,7 +33,8 @@ import {
 	makeOpenSeedPackButton,
 	makeRepeatTripButton,
 	makeTearsOfGuthixButton
-} from './globalInteractions';
+} from './interactions';
+import { hasSkillReqs } from './smallUtils';
 import { sendToChannelID } from './webhook';
 
 const collectors = new Map<string, MessageCollector>();
@@ -70,7 +69,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 		name: 'Track GP Analytics',
 		fn: async ({ data, loot }) => {
 			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
-				const GP = loot.amount(COINS_ID);
+				const GP = loot.amount(EItem.COINS);
 				if (typeof GP === 'number') {
 					await updateClientGPTrackSetting('gp_pvm', GP);
 				}
@@ -112,31 +111,6 @@ const tripFinishEffects: TripFinishEffect[] = [
 		}
 	}
 ];
-
-export async function displayCluesAndPets(userID: string, loot: Bank | null | undefined) {
-	const user = await mUserFetch(userID);
-	let ret = '';
-	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
-	if (clueReceived.length > 0) {
-		const clueStack = sumArr(ClueTiers.map(t => user.bank.amount(t.scrollID)));
-		ret += `\n${Emoji.Casket} **You got a ${formatList(clueReceived.map(clue => clue.name))} clue scroll** in your loot.`;
-
-		if (clueStack >= MAX_CLUES_DROPPED) {
-			ret += `\n**You have reached the maximum clue stack of ${MAX_CLUES_DROPPED}!** (${formatList(ClueTiers.filter(tier => user.bank.amount(tier.scrollID) > 0).map(tier => `${user.bank.amount(tier.scrollID)} ${tier.name}`))}). If you receive more clues, lower tier clues will be replaced with higher tier clues.`;
-		} else {
-			ret += ` You are now stacking ${clueStack} total clues.`;
-		}
-	}
-	if (allPetsCL.some(p => loot?.has(p))) {
-		ret += petMessage(loot);
-	}
-	return ret;
-}
-
-export function petMessage(loot: Bank | null | undefined) {
-	const emoji = pets.find(p => loot?.has(p.name))?.emoji;
-	return `\n${emoji ? `${emoji} ` : ''}**You have a funny feeling like you're being followed...**`;
-}
 
 export async function handleTripFinish(
 	user: MUser,
@@ -189,7 +163,7 @@ export async function handleTripFinish(
 		message.content += `\n**Messages:** ${messages.join(', ')}`;
 	}
 
-	message.content += await displayCluesAndPets(user.id, loot);
+	message.content += await displayCluesAndPets(user, loot);
 
 	const existingCollector = collectors.get(user.id);
 
@@ -235,7 +209,7 @@ export async function handleTripFinish(
 			}
 		}
 
-		const birdHousedetails = await calculateBirdhouseDetails(user);
+		const birdHousedetails = calculateBirdhouseDetails(user);
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());
 

@@ -1,18 +1,17 @@
-import { PerkTier, stringMatches } from '@oldschoolgg/toolkit/util';
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { notEmpty, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets';
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { BitField, MAX_CLUES_DROPPED } from '../../../lib/constants';
+import { BitField, MAX_CLUES_DROPPED, PerkTier } from '../../../lib/constants';
 import type { UnifiedOpenable } from '../../../lib/openables';
 import { allOpenables, getOpenableLoot } from '../../../lib/openables';
-import { makeComponents } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { displayCluesAndPets } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting } from '../../mahojiSettings';
 
@@ -166,7 +165,7 @@ ${messages.join(', ')}`.trim(),
 			'Due to opening so many things at once, you will have to download the attached text file to read the response.';
 	}
 
-	response.content += await displayCluesAndPets(user.id, loot);
+	response.content += await displayCluesAndPets(user, loot);
 
 	return response;
 }

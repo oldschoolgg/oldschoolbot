@@ -1,62 +1,17 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
+import { type CommandRunOptions, formatDuration } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
-
-import type { PvMMethod } from '../../lib/constants';
-import { NEX_ID, PVM_METHODS, ZALCANO_ID } from '../../lib/constants';
-import killableMonsters, { wikiMonsters } from '../../lib/minions/data/killableMonsters';
-
 import { Time, reduceNumByPercent } from 'e';
+
+import { PVM_METHODS, type PvMMethod } from '@/lib/constants';
+import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { Eatables } from '../../lib/data/eatables';
-import { calculateMonsterFood } from '../../lib/minions/functions';
+import { autocompleteMonsters, wikiMonsters } from '../../lib/minions/data/killableMonsters';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
-import { formatDuration, returnStringOrFile, stringMatches } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import findMonster from '../../lib/util/findMonster';
 import { minionKillCommand } from '../lib/abstracted_commands/minionKill/minionKill';
-import type { OSBMahojiCommand } from '../lib/util';
-
-const otherMonsters = [
-	{
-		id: -1,
-		name: 'Tempoross',
-		aliases: ['temp', 'tempoross'],
-		link: '/skills/fishing/tempoross/'
-	},
-	...["Phosani's Nightmare", 'Mass Nightmare', 'Solo Nightmare'].map(s => ({
-		id: -1,
-		name: s,
-		aliases: [s.toLowerCase()],
-		link: `/bosses/the-nightmare/${stringMatches(s.split(' ')[0], "Phosani's") ? '#phosanis-nightmare' : ''}`
-	})),
-	{
-		name: 'Nex',
-		aliases: ['nex'],
-		id: NEX_ID,
-		link: '/bosses/nex/'
-	},
-	{
-		name: 'Zalcano',
-		aliases: ['zalcano'],
-		id: ZALCANO_ID,
-		emoji: '<:Smolcano:604670895113633802>',
-		link: '/miscellaneous/zalcano/'
-	},
-	{
-		name: 'Wintertodt',
-		aliases: ['wt', 'wintertodt', 'todt'],
-		id: -1,
-		emoji: '<:Phoenix:324127378223792129>',
-		link: '/activities/wintertodt/'
-	},
-	{
-		name: 'Colosseum',
-		aliases: ['colo', 'colosseum'],
-		id: -1,
-		link: '/bosses/colosseum/'
-	}
-];
-
-export const autocompleteMonsters = [...killableMonsters, ...otherMonsters];
 
 const wikiPrefix = 'https://wiki.oldschool.gg/osb';
 
@@ -177,9 +132,9 @@ export const minionKCommand: OSBMahojiCommand = {
 	}
 };
 
-export async function monsterInfo(user: MUser, name: string): Promise<string | InteractionReplyOptions> {
-	const otherMon = otherMonsters.find(m => m.name === name || m.aliases.includes(name));
-	if (otherMon) {
+async function monsterInfo(user: MUser, name: string): Promise<string | InteractionReplyOptions> {
+	const otherMon = autocompleteMonsters.find(m => m.name === name || m.aliases.includes(name));
+	if (otherMon && 'link' in otherMon) {
 		return `View information, item costs, boosts and requirements for ${otherMon.name} on the [wiki](<${wikiPrefix}${otherMon.link}>).\n`;
 	}
 
