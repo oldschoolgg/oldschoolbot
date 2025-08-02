@@ -1,13 +1,13 @@
-import { stringMatches, type CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { xp_gains_skill_enum } from '@prisma/client';
 import type { User } from 'discord.js';
 import { ApplicationCommandOptionType, MessageFlags } from 'discord.js';
 import { Time, noOp, randArrItem, randInt, uniqueArr } from 'e';
 import { Bank, Items, MAX_INT_JAVA } from 'oldschooljs';
-import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
+import { convertLVLtoXP, itemID } from 'oldschooljs';
 
-import { getItem, resolveItems } from 'oldschooljs/dist/util/util';
+import { getItem, resolveItems } from 'oldschooljs';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
@@ -21,6 +21,9 @@ import { MAX_QP, quests } from '../../lib/minions/data/quests';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
 
+import { testBotKvStore } from '@/testing/TestBotStore';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
@@ -40,11 +43,8 @@ import { gearViewCommand } from '../lib/abstracted_commands/gearCommands';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { BingoManager } from '../lib/bingo/BingoManager';
-import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo';
-import { testBotKvStore } from '@/testing/TestBotStore';
-import { mentionCommand } from 'packages/toolkit/dist/util/discord';
 
 export function getMaxUserValues() {
 	const updates: Omit<Prisma.UserUpdateArgs['data'], 'id'> = {};

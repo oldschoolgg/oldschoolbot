@@ -23,6 +23,7 @@ import {
 import { Time, randInt } from 'e';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
+import { isModOrAdmin } from '@/lib/util.js';
 import { chunk } from 'e';
 import { giveawayCache } from '../../lib/cache.js';
 import { patronFeatures } from '../../lib/constants';
@@ -30,12 +31,11 @@ import { marketPriceOfBank } from '../../lib/marketPrices';
 import { generateGiveawayContent } from '../../lib/util/giveaway';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { logError } from '../../lib/util/logError';
+import { logError, logErrorForInteraction } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { addToGPTaxBalance } from '../mahojiSettings';
-import { isModOrAdmin } from '@/lib/util.js';
 
 function makeGiveawayButtons(giveawayID: number): BaseMessageOptions['components'] {
 	return [
@@ -277,7 +277,18 @@ export const giveawayCommand: OSBMahojiCommand = {
 				embeds: [new EmbedBuilder().setDescription(chunkLines.join('\n'))]
 			}));
 
-			makePaginatedMessage(channel, pages, user.id);
+			makePaginatedMessage(
+				channel,
+				pages,
+				(err, itx) => {
+					if (itx) {
+						logErrorForInteraction(err, itx);
+					} else {
+						logError(err);
+					}
+				},
+				user.id
+			);
 
 			return {
 				content: `Found ${giveaways.length} active giveaways in this server.`
