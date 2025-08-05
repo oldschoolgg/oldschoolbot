@@ -162,7 +162,7 @@ export default async function prepareMonsters(): Promise<void> {
 	const allMonsters: { [key: string]: Monster } = await (async () => {
 		try {
 			const response = await fetch(
-				'https://raw.githubusercontent.com/DayV-git/osrsreboxed-db/7e742efb13b5d6f66792222142f7684490e83b49/docs/monsters-complete.json'
+				'https://raw.githubusercontent.com/DayV-git/osrsreboxed-db/979d38c4f0c1f9fe255fef040dbace2cb2715a6e/docs/monsters-complete.json'
 			);
 			if (!response.ok) {
 				throw new Error(`Failed to fetch data: ${response.statusText}`);
