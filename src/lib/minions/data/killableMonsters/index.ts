@@ -229,7 +229,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.Sarachnis.id,
 		name: Monsters.Sarachnis.name,
 		aliases: Monsters.Sarachnis.aliases,
-		timeToFinish: Time.Minute * 2.35,
+		timeToFinish: Time.Minute * 1.52,
 		table: Monsters.Sarachnis,
 		emoji: '<:Sraracha:608231007803670529>',
 		wildy: false,
@@ -255,6 +255,7 @@ const killableMonsters: KillableMonster[] = [
 			},
 			// Transformation ring
 			{
+				[itemID('Aranea boots')]: 10,
 				[itemID('Ring of stone')]: 10
 			}
 		],
@@ -321,7 +322,7 @@ export const NightmareMonster: KillableMonster = {
 	id: 9415,
 	name: 'The Nightmare',
 	aliases: ['nightmare', 'the nightmare'],
-	timeToFinish: Time.Minute * 25,
+	timeToFinish: Time.Minute * 20,
 	table: Monsters.GeneralGraardor,
 	emoji: '<:Little_nightmare:758149284952014928>',
 	wildy: false,
@@ -341,7 +342,7 @@ export const NightmareMonster: KillableMonster = {
 	]),
 	qpRequired: 10,
 	groupKillable: true,
-	respawnTime: Time.Minute * 1.5,
+	respawnTime: Time.Minute * 0.5,
 	levelRequirements: {
 		prayer: 43
 	},
@@ -357,12 +358,12 @@ export const NightmareMonster: KillableMonster = {
 		'Harmonised orb',
 		'Volatile orb'
 	]),
-	healAmountNeeded: 55 * 20,
+	healAmountNeeded: 40 * 20,
 	attackStyleToUse: GearStat.AttackCrush,
 	attackStylesUsed: [GearStat.AttackSlash],
 	minimumGearRequirements: {
 		melee: {
-			[GearStat.DefenceSlash]: 150,
+			[GearStat.DefenceSlash]: 100,
 			[GearStat.AttackCrush]: 80
 		}
 	},
