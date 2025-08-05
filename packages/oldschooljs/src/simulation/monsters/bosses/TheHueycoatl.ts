@@ -5,7 +5,7 @@ const TheHueycoatlTable = new LootTable()
 	.every('Big bones')
 	.tertiary(50, 'Clue scroll (hard)')
 	.tertiary(150, 'Tooth half of key (moon key)')
-	.tertiary(400 * 3.5, 'Huberte')
+	.tertiary(400 * 3, 'Huberte')
 
 	.oneIn(
 		18,
