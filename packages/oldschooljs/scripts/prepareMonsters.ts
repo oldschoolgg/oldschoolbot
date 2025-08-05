@@ -232,11 +232,6 @@ export default async function prepareMonsters(): Promise<void> {
 		}
 	}
 
-	monsterMap[12_192] = { ...monsterMap[12_191] };
-	monsterMap[12_215] = { ...monsterMap[12_214] };
-	monsterMap[12_205] = { ...monsterMap[12_204] };
-	monsterMap[12_224] = { ...monsterMap[12_223] };
-
 	for (const mon of Object.values(Monsters).filter(
 		mon => !Object.keys(monsterMap).find(i => i === mon.id.toString()) && mon.table //mon.table check ignores pickpocket npcs
 	)) {
