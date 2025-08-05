@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
 import Smithing from '../../lib/skilling/skills/smithing';
 import smithables from '../../lib/skilling/skills/smithing/smithables';
@@ -12,7 +13,6 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { pluraliseItemName } from '../../lib/util/smallUtils';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export const smithCommand: OSBMahojiCommand = {
 	name: 'smith',

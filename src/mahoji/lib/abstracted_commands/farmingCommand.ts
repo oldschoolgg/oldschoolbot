@@ -7,7 +7,7 @@ import { Bank } from 'oldschooljs';
 import { superCompostables } from '../../../lib/data/filterables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { calcNumOfPatches } from '../../../lib/skilling/functions/calcsFarming';
-import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
+import { getFarmingInfo, getFarmingInfoFromUser } from '../../../lib/skilling/functions/getFarmingInfo';
 import Farming from '../../../lib/skilling/skills/farming';
 import type { Plant } from '../../../lib/skilling/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -49,7 +49,7 @@ export async function harvestCommand({
 			', '
 		)}. *Don't include numbers, this command harvests all crops available of the specified patch type.*`;
 	}
-	const { patchesDetailed, patches } = await getFarmingInfo(user.id);
+	const { patchesDetailed, patches } = await getFarmingInfoFromUser(user.user);
 	const patch = patchesDetailed.find(i => i.patchName === seedType)!;
 	if (patch.ready === null) return 'You have nothing planted in those patches.';
 
@@ -101,7 +101,7 @@ export async function harvestCommand({
 
 	returnMessageStr = `${user.minionName} is now harvesting ${patch.lastQuantity}x ${storeHarvestablePlant}.
 It'll take around ${formatDuration(duration)} to finish.
-	
+
 ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 
 	await addSubTaskToActivityTask<FarmingActivityTaskOptions>({

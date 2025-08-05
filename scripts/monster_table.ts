@@ -2,12 +2,14 @@ import { TSVWriter } from '@oldschoolgg/toolkit/structures';
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { Time } from 'e';
-import { Bank, Items, convertBankToPerHourStats } from 'oldschooljs';
+import { Bank, Items, convertBankToPerHourStats, resolveItems, toKMB } from 'oldschooljs';
+import { omit } from 'remeda';
+
+applyStaticDefine();
 
 import '../src/lib/safeglobals';
-
-import { omit } from 'remeda';
-import type { BitField } from '../src/lib/constants';
+import { applyStaticDefine } from '../meta';
+import { type BitField, PVM_METHODS } from '../src/lib/constants';
 import { degradeableItems } from '../src/lib/degradeableItems';
 import { SlayerActivityConstants } from '../src/lib/minions/data/combatConstants';
 import killableMonsters from '../src/lib/minions/data/killableMonsters';
@@ -20,8 +22,6 @@ import { Gear } from '../src/lib/structures/Gear';
 import { GearBank } from '../src/lib/structures/GearBank';
 import { KCBank } from '../src/lib/structures/KCBank';
 import { MUserStats } from '../src/lib/structures/MUserStats';
-import { resolveItems, toKMB } from '../src/lib/util';
-import { PVM_METHODS } from '../src/mahoji/commands/k';
 import {
 	type MinionKillReturn,
 	newMinionKillCommand
@@ -34,6 +34,7 @@ const skills = ['attack', 'strength', 'defence', 'magic', 'ranged', 'hitpoints',
 function round(int: number) {
 	return Math.round(int / 1000) * 1000;
 }
+
 const slayerUnlocks: SlayerTaskUnlocksEnum[] = [];
 const bank = new Bank();
 for (const item of Items.values()) bank.add(item.id, 1000000);
@@ -74,7 +75,8 @@ for (const monster of killableMonsters) {
 		},
 		bank,
 		skillsAsLevels,
-		skillsAsXP
+		skillsAsXP,
+		minionName: 'Minion'
 	});
 
 	const pkEvasionExperience = 100000000;

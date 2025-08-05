@@ -3,18 +3,17 @@ import { type CommandResponse, formatDuration, randomVariation } from '@oldschoo
 import { Time, calcPercentOfNum, percentChance, randInt, roll, sumArr } from 'e';
 import { Bank, type ItemBank, Items, Monsters, itemID } from 'oldschooljs';
 
+import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage';
 import type { ProjectileType } from '../../../lib/constants';
 import { BitField, projectiles } from '../../../lib/constants';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
 import type { BlowpipeData } from '../../../lib/minions/types';
-import { getMinigameScore } from '../../../lib/settings/minigames';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { PercentCounter } from '../../../lib/structures/PercentCounter';
 import type { Skills } from '../../../lib/types';
 import type { InfernoOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
@@ -290,7 +289,7 @@ async function infernoRun({
 	duration.add(user.user.bitfield.includes(BitField.HasArcaneScroll), -4, 'Arc. Prayer scroll');
 
 	// Slayer
-	const score = await getMinigameScore(user.id, 'inferno');
+	const score = await user.fetchMinigameScore('inferno');
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
 	const isOnTask =
 		usersTask.currentTask !== null &&
@@ -381,7 +380,7 @@ async function infernoRun({
 
 export async function infernoStatsCommand(user: MUser): CommandResponse {
 	const [zukKC, { inferno_attempts: attempts }] = await Promise.all([
-		getMinigameScore(user.id, 'inferno'),
+		user.fetchMinigameScore('inferno'),
 		user.fetchStats({ inferno_attempts: true })
 	]);
 
@@ -419,7 +418,7 @@ export async function infernoStatsCommand(user: MUser): CommandResponse {
 export async function infernoStartCommand(user: MUser, channelID: string): CommandResponse {
 	const usersRangeStats = user.gear.range.stats;
 	const [zukKC, { inferno_attempts: attempts }] = await Promise.all([
-		getMinigameScore(user.id, 'inferno'),
+		await user.fetchMinigameScore('inferno'),
 		user.fetchStats({ inferno_attempts: true })
 	]);
 

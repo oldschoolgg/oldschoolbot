@@ -1,4 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
 import {
 	Bank,
@@ -7,6 +7,7 @@ import {
 	EItem,
 	EMonster,
 	type Item,
+	type ItemBank,
 	ItemGroups,
 	type Monster,
 	Monsters,
@@ -28,7 +29,6 @@ import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc';
 import { allFarmingItems } from '../skilling/skills/farming';
 import { SkillsEnum } from '../skilling/types';
 import { MUserStats } from '../structures/MUserStats';
-import type { ItemBank } from '../types';
 import { shuffleRandom } from '../util/smallUtils';
 import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport';
 import {
@@ -1393,13 +1393,13 @@ export async function getCollection(options: {
 	search: string;
 	flags: { [key: string]: string | number | undefined };
 	logType?: 'collection' | 'sacrifice' | 'bank' | 'temp';
+	minigameScoresOverride?: Awaited<ReturnType<MUser['fetchMinigameScores']>> | null;
 }): Promise<false | IToReturnCollection> {
 	let { user, search, flags, logType } = options;
 
 	const allItems = Boolean(flags.all);
 	if (logType === undefined) logType = 'collection';
 
-	const minigameScores = await user.fetchMinigameScores();
 	const userStats = await MUserStats.fromID(user.id);
 	const userCheckBank = getBank(user, logType, userStats);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
@@ -1436,6 +1436,8 @@ export async function getCollection(options: {
 			counts: false
 		};
 	}
+
+	const minigameScores = options.minigameScoresOverride ?? (await user.fetchMinigameScores());
 
 	for (const [category, entries] of Object.entries(allCollectionLogs)) {
 		if (stringMatches(category, search) || entries.alias?.some(a => stringMatches(a, search))) {

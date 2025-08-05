@@ -3,10 +3,10 @@ import { bold } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import Buyables from '../../lib/data/buyables/buyables';
 import { quests } from '../../lib/minions/data/quests';
-import { Minigames, getMinigameScore } from '../../lib/settings/minigames';
-
+import { Minigames } from '../../lib/settings/minigames';
 import { MUserStats } from '../../lib/structures/MUserStats';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -14,7 +14,6 @@ import { formatSkillRequirements, itemNameFromID } from '../../lib/util/smallUti
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
 import { buyKitten } from '../lib/abstracted_commands/buyKitten';
-import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, userStatsUpdate } from '../mahojiSettings';
 
 const allBuyablesAutocomplete = [...Buyables, { name: 'Kitten' }, { name: 'Fossil Island Notes' }];
@@ -102,9 +101,9 @@ export const buyCommand: OSBMahojiCommand = {
 
 		if (buyable.minigameScoreReq) {
 			const [key, req] = buyable.minigameScoreReq;
-			let kc = await getMinigameScore(user.id, key);
+			let kc = await user.fetchMinigameScore(key);
 			if (key === 'tob') {
-				kc += await getMinigameScore(user.id, 'tob_hard');
+				kc += await user.fetchMinigameScore('tob_hard');
 			}
 			if (kc < req) {
 				return `You need ${req} KC in ${

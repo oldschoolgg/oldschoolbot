@@ -2,6 +2,8 @@ import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
+import { roll } from '@/lib/util/rng';
+import chatHeadImage from '../../lib/canvas/chatHeadImage';
 import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
 import { BitField } from '../../lib/constants';
 import type { PatchTypes } from '../../lib/minions/farming';
@@ -10,8 +12,7 @@ import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { roll, skillingPetDropRate } from '../../lib/util';
-import chatHeadImage from '../../lib/util/chatHeadImage';
+import { skillingPetDropRate } from '../../lib/util';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { assert } from '../../lib/util/logError';

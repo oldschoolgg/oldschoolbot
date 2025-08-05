@@ -1,9 +1,9 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import type { Monster } from 'oldschooljs';
 
 import { effectiveMonsters } from '../minions/data/killableMonsters';
-import { Minigames, getMinigameScore } from '../settings/minigames';
+import { Minigames } from '../settings/minigames';
 import creatures from '../skilling/skills/hunter/creatures';
-import type { Monster } from '../util';
 
 export async function getKCByName(user: MUser, kcName: string): Promise<[string, number] | [null, 0]> {
 	const mon = effectiveMonsters.find(
@@ -17,7 +17,7 @@ export async function getKCByName(user: MUser, kcName: string): Promise<[string,
 		game => stringMatches(game.name, kcName) || game.aliases.some(alias => stringMatches(alias, kcName))
 	);
 	if (minigame && minigame.name !== 'Tithe farm') {
-		return [minigame.name, await getMinigameScore(user.id, minigame.column)];
+		return [minigame.name, await user.fetchMinigameScore(minigame.column)];
 	}
 
 	const creature = creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));

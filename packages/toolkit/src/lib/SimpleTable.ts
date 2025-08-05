@@ -1,4 +1,4 @@
-import { randInt } from 'e';
+import { randInt } from '../util/chanceTemporary';
 
 export interface SimpleTableItem<T> {
 	item: T;

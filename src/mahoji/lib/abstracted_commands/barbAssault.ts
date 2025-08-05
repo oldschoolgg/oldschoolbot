@@ -1,20 +1,14 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
-import {
-	type CommandResponse,
-	formatDuration,
-	formatOrdinal,
-	makeComponents,
-	randomVariation,
-	stringMatches
-} from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/discord-util';
+import { formatDuration, formatOrdinal, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { Time, calcWhatPercent, clamp, reduceNumByPercent, roll, round } from 'e';
 import { Bank, itemID } from 'oldschooljs';
 
+import { countUsersWithItemInCl } from '@/lib/rawSql';
+import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets';
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { degradeItem } from '../../../lib/degradeableItems';
-import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
-import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
 import { maxOtherStats } from '../../../lib/structures/Gear';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
@@ -22,7 +16,6 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { displayCluesAndPets } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { userStatsUpdate } from '../../mahojiSettings';
 
@@ -208,8 +201,9 @@ export async function barbAssaultGambleCommand(
 		}
 	);
 	const loot = new Bank().add(table.roll(quantity));
+	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 	let str = `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`;
-	str += await displayCluesAndPets(user.id, loot);
+	str += await displayCluesAndPets(user, loot);
 	if (loot.has('Pet Penance Queen')) {
 		const amount = await countUsersWithItemInCl(itemID('Pet penance queen'), false);
 
@@ -222,8 +216,6 @@ export async function barbAssaultGambleCommand(
 			)} High gamble! They are the ${formatOrdinal(amount + 1)} to it.`
 		);
 	}
-	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
-
 	const perkTier = user.perkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
@@ -263,7 +255,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 	waveTime = reduceNumByPercent(waveTime, totalLevelPercent);
 
 	// Up to 10%, at 200 kc, speed boost for team average kc
-	const kc = await getMinigameScore(user.id, 'barb_assault');
+	const kc = await user.fetchMinigameScore('barb_assault');
 	const kcPercent = clamp(calcWhatPercent(kc, 200), 1, 100);
 	const kcPercentBoost = kcPercent / 10;
 	boosts.push(`${kcPercentBoost.toFixed(2)}% for average KC`);

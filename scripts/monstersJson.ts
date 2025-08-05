@@ -1,12 +1,11 @@
 import { readFileSync, writeFileSync } from 'node:fs';
+import { md5sum } from '@oldschoolgg/toolkit/node';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { md5sum } from '@oldschoolgg/toolkit/util';
 import { DateTime } from 'luxon';
+import { Bank, Items } from 'oldschooljs';
 
 import { BOT_TYPE } from '@/lib/constants';
 import killableMonsters from '@/lib/minions/data/killableMonsters';
-import { itemNameFromID } from '@/lib/util';
-import { getNamedBank } from './scriptUtil';
 
 export function createMonstersJson() {
 	const stopwatch = new Stopwatch();
@@ -25,10 +24,11 @@ export function createMonstersJson() {
 			is_wildy_multi: monster.wildyMulti ?? false,
 			pk_base_death_chance: monster.pkBaseDeathChance,
 			items_required:
-				monster.itemsRequired?.map(i => (typeof i === 'number' ? itemNameFromID(i) : i.map(itemNameFromID))) ??
-				[],
+				monster.itemsRequired?.map(i =>
+					typeof i === 'number' ? Items.itemNameFromId(i) : i.map(id => Items.itemNameFromId(id))
+				) ?? [],
 			qp_required: monster.qpRequired ?? 0,
-			item_in_bank_boosts: monster.itemInBankBoosts?.map(group => getNamedBank(group)) ?? [],
+			item_in_bank_boosts: monster.itemInBankBoosts?.map(group => new Bank(group).toNamedBank()) ?? [],
 
 			can_barrage: monster.canBarrage ?? false,
 			can_chin: monster.canChinning ?? false,

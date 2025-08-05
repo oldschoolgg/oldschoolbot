@@ -17,7 +17,7 @@ import LeapingFish from '../skilling/skills/cooking/leapingFish';
 import Crafting from '../skilling/skills/crafting';
 import Farming from '../skilling/skills/farming';
 import Firemaking from '../skilling/skills/firemaking';
-import Fishing from '../skilling/skills/fishing';
+import { Fishing } from '../skilling/skills/fishing/fishing';
 import { zeroTimeFletchables } from '../skilling/skills/fletching/fletchables';
 import Herblore from '../skilling/skills/herblore/herblore';
 import Hunter from '../skilling/skills/hunter/hunter';
@@ -81,10 +81,9 @@ import type {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { getActivityOfUser } from './minionIsBusy';
 
 export function minionStatus(user: MUser) {
-	const currentTask = getActivityOfUser(user.id);
+	const currentTask = ActivityManager.getActivityOfUser(user.id);
 	const name = user.minionName;
 	if (!currentTask) {
 		return `${name} is currently doing nothing.`;

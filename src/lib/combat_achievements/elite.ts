@@ -1,5 +1,6 @@
 import { Time } from 'e';
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
+
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
 import type {
@@ -9,7 +10,7 @@ import type {
 	NightmareActivityTaskOptions,
 	TOAOptions
 } from '../types/minions';
-import { crossbows } from '../util/minionUtils';
+import { crossbows } from '../util/archery';
 import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils';
 import type { CombatAchievement } from './combatAchievements';
 

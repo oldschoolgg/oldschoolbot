@@ -1,5 +1,7 @@
-import { type CommandResponse, makeComponents, roughMergeMahojiResponse } from '@oldschoolgg/toolkit/util';
+import { roughMergeMahojiResponse } from '@oldschoolgg/toolkit/discord-util';
+import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/discord-util';
 
+import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage';
 import { defaultFarmingContract } from '../../../lib/minions/farming';
 import type {
 	ContractOption,
@@ -9,9 +11,7 @@ import type {
 import { getPlantToGrow } from '../../../lib/skilling/functions/calcFarmingContracts';
 import { getFarmingInfoFromUser } from '../../../lib/skilling/functions/getFarmingInfo';
 import { plants } from '../../../lib/skilling/skills/farming';
-import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { findPlant } from '../../../lib/util/farmingHelpers';
-import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { makeEasierFarmingContractButton } from '../../../lib/util/smallUtils';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { farmingPlantCommand, harvestCommand } from './farmingCommand';
@@ -114,7 +114,7 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 		};
 	}
 
-	if (minionIsBusy(user.id)) {
+	if (user.minionIsBusy) {
 		return janeImage(
 			"You are busy at the moment! I can't give you a new farming contract like that. Please, come back when you have some free time for us to talk."
 		);

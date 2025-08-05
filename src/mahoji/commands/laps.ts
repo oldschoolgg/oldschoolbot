@@ -3,15 +3,14 @@ import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { quests } from '../../lib/minions/data/quests';
 import { courses } from '../../lib/skilling/skills/agility';
-import { SkillsEnum } from '../../lib/skilling/types';
 import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { timePerAlchAgility } from '../lib/abstracted_commands/alchCommand';
-import type { OSBMahojiCommand } from '../lib/util';
 
 const unlimitedFireRuneProviders = [
 	'Staff of fire',
@@ -27,7 +26,7 @@ const unlimitedFireRuneProviders = [
 ];
 
 function alching(user: MUser, tripLength: number) {
-	if (user.skillLevel(SkillsEnum.Magic) < 55) return null;
+	if (user.skillsAsLevels.magic < 55) return null;
 	const { bank } = user;
 	const favAlchables = user.favAlchs(tripLength, true);
 
@@ -123,7 +122,7 @@ export const lapsCommand: OSBMahojiCommand = {
 			return 'Thats not a valid course.';
 		}
 
-		if (user.skillLevel(SkillsEnum.Agility) < course.level) {
+		if (user.skillsAsLevels.agility < course.level) {
 			return `${user.minionName} needs ${course.level} agility to train at ${course.name}.`;
 		}
 

@@ -3,12 +3,12 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { FiremakingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export const lightCommand: OSBMahojiCommand = {
 	name: 'light',

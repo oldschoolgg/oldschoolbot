@@ -1,25 +1,17 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { UserError } from '@oldschoolgg/toolkit/structures';
-import { channelIsSendable, formatDuration, makeComponents, mentionCommand } from '@oldschoolgg/toolkit/util';
 import { command_name_enum } from '@prisma/client';
-import {
-	type BaseMessageOptions,
-	ButtonBuilder,
-	ButtonStyle,
-	EmbedBuilder,
-	type Message,
-	type TextChannel,
-	bold
-} from 'discord.js';
+import { type BaseMessageOptions, EmbedBuilder, type Message, type TextChannel, bold } from 'discord.js';
 import { Time, isFunction, roll } from 'e';
 import { LRUCache } from 'lru-cache';
-import { Items, toKMB } from 'oldschooljs';
+import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { untrustedGuildSettingsCache } from './cache.js';
-import { BitField, Channel, globalConfig } from './constants';
+import { Channel, globalConfig } from './constants';
 import pets from './data/pets';
-import type { ItemBank } from './types';
 import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
@@ -277,31 +269,6 @@ const mentionCommands: MentionCommand[] = [
 					})
 					.join('\n'),
 				components
-			});
-		}
-	},
-	{
-		name: command_name_enum.sendtoabutton,
-		aliases: ['sendtoabutton'],
-		description: 'Shows your stats.',
-		run: async ({ msg, user }: MentionCommandOptions) => {
-			if ([BitField.isModerator].every(bit => !user.bitfield.includes(bit))) {
-				return;
-			}
-			return msg.reply({
-				content: `Click this button to find out if you're ready to do Tombs of Amascut! You can also use the ${mentionCommand(
-					globalClient,
-					'raid',
-					'toa',
-					'help'
-				)} command.`,
-				components: makeComponents([
-					new ButtonBuilder()
-						.setStyle(ButtonStyle.Primary)
-						.setCustomId('TOA_CHECK')
-						.setLabel('Check TOA Requirements')
-						.setEmoji('1069174271894638652')
-				])
 			});
 		}
 	},

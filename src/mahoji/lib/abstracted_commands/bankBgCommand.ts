@@ -1,14 +1,15 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, resolveItems, toKMB } from 'oldschooljs';
 
-import { formatSkillRequirements } from '@/lib/util';
+import { bankImageTask } from '@/lib/canvas/bankImage';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { BitField } from '../../../lib/constants';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function bankBgCommand(interaction: ChatInputCommandInteraction, user: MUser, name: string) {
-	const bankImages = bankImageGenerator.backgroundImages;
+	const bankImages = bankImageTask.backgroundImages;
 	const selectedImage = bankImages.find(img => stringMatches(img.name, name));
 
 	if (!selectedImage) {

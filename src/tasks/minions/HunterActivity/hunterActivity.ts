@@ -3,6 +3,8 @@ import type { Prisma } from '@prisma/client';
 import { Time, randInt } from 'e';
 import { Bank, ECreature, EquipmentSlot, itemID } from 'oldschooljs';
 
+import { PeakTier } from '@/lib/util/peaks';
+import { roll } from '@/lib/util/rng';
 import { MAX_LEVEL } from '../../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -10,9 +12,7 @@ import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/fun
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { roll, skillingPetDropRate } from '../../../lib/util';
-import { PeakTier } from '../../../lib/util/calcWildyPkChance';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { skillingPetDropRate } from '../../../lib/util';
 import { logError } from '../../../lib/util/logError.js';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
@@ -34,10 +34,9 @@ const riskDeathNumbers = [
 
 export const hunterTask: MinionTask = {
 	type: 'Hunter',
-	async run(data: HunterActivityTaskOptions) {
-		const { creatureID, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } =
-			data;
-		const user = await mUserFetch(userID);
+	isNew: true,
+	async run(data: HunterActivityTaskOptions, { user, handleTripFinish }) {
+		const { creatureID, quantity, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } = data;
 		const userBank = user.bank;
 		const currentLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentHerbLevel = user.skillLevel(SkillsEnum.Herblore);

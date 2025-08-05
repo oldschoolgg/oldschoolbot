@@ -1,9 +1,8 @@
 import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 
-import { formatSkillRequirements } from '@/lib/util';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { BitField } from '../../../lib/constants';
-import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { GauntletOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -56,10 +55,9 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 		)}.`;
 	}
 
-	const [corruptedKC, normalKC] = await Promise.all([
-		getMinigameScore(user.id, 'corrupted_gauntlet'),
-		getMinigameScore(user.id, 'gauntlet')
-	]);
+	const minigameScores = await user.fetchMinigames();
+	const corruptedKC = minigameScores.corrupted_gauntlet;
+	const normalKC = minigameScores.gauntlet;
 
 	if (type === 'corrupted' && normalKC < 50) {
 		return "You can't attempt the Corrupted Gauntlet, you have less than 50 normal Gauntlets completed - you would not stand a chance in the Corrupted Gauntlet!";

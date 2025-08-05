@@ -1,11 +1,11 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
 import { formatSkillRequirements } from '@/lib/util/smallUtils';
+import { pohImageGenerator } from '../../../lib/canvas/pohImage';
 import { BitField } from '../../../lib/constants';
 import { GroupedPohObjects, PoHObjects, getPOHObject, itemsNotRefundable } from '../../../lib/poh';
-import { pohImageGenerator } from '../../../lib/pohImage';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';

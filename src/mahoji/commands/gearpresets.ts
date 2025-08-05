@@ -1,20 +1,17 @@
-import { type CommandOption, type CommandRunOptions, cleanString, stringMatches } from '@oldschoolgg/toolkit/util';
-import type { GearPreset } from '@prisma/client';
+import type { CommandOption, CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { cleanString, stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { EquipmentSlot } from 'oldschooljs';
+import { EquipmentSlot, Items } from 'oldschooljs';
 
 import { ParsedCustomEmojiWithGroups, globalConfig } from '../../lib/constants';
-import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { isValidGearSetup } from '../../lib/gear/functions/isValidGearSetup';
 import type { GearSetup, GearSetupType } from '../../lib/gear/types';
 import { GearSetupTypes } from '../../lib/gear/types';
-import { Gear, defaultGear, globalPresets } from '../../lib/structures/Gear';
+import { Gear, globalPresets } from '../../lib/structures/Gear';
 import { emojiServers } from '../../lib/util/cachedUserIDs';
-import { getItem } from '../../lib/util/getOSItem';
 import { isValidNickname } from '../../lib/util/smallUtils';
 import { gearEquipCommand } from '../lib/abstracted_commands/gearCommands';
 import { allEquippableItems, gearPresetOption, gearSetupOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 
 function maxPresets(user: MUser) {
 	return user.perkTier() * 2 + 4;
@@ -30,7 +27,7 @@ function parseInputGear(inputGear: InputGear) {
 			remove.push(key as EquipmentSlot);
 			continue;
 		}
-		const item = getItem(val);
+		const item = Items.getItem(val);
 		if (item && item.equipment?.slot === key) {
 			gear[key as EquipmentSlot] = item.id;
 		}
@@ -38,34 +35,6 @@ function parseInputGear(inputGear: InputGear) {
 	return { gear, remove };
 }
 
-function gearPresetToGear(preset: GearPreset): GearSetup {
-	function gearItem(val: null | number) {
-		if (val === null) return null;
-		return {
-			item: val,
-			quantity: 1
-		};
-	}
-	const newGear = { ...defaultGear };
-	newGear.head = gearItem(preset.head);
-	newGear.neck = gearItem(preset.neck);
-	newGear.body = gearItem(preset.body);
-	newGear.legs = gearItem(preset.legs);
-	newGear.cape = gearItem(preset.cape);
-	newGear['2h'] = gearItem(preset.two_handed);
-	newGear.hands = gearItem(preset.hands);
-	newGear.feet = gearItem(preset.feet);
-	newGear.shield = gearItem(preset.shield);
-	newGear.weapon = gearItem(preset.weapon);
-	newGear.ring = gearItem(preset.ring);
-	newGear.ammo = preset.ammo
-		? {
-				item: preset.ammo,
-				quantity: 1
-			}
-		: null;
-	return newGear;
-}
 export async function createOrEditGearSetup(
 	user: MUser,
 	setupToCopy: GearSetupType | undefined,
@@ -106,7 +75,7 @@ export async function createOrEditGearSetup(
 	if (setupToCopy) {
 		gearSetup = user.gear[setupToCopy];
 	} else if (isUpdating) {
-		gearSetup = gearPresetToGear(userPresets.find(pre => pre.name === name)!);
+		gearSetup = Gear.fromGearPreset(userPresets.find(pre => pre.name === name)!);
 	}
 
 	// This is required to enable removal of items while editing
@@ -156,16 +125,12 @@ export async function createOrEditGearSetup(
 			}
 		},
 		update: {
-			...gearData,
-			times_equipped: {
-				increment: 1
-			}
+			...gearData
 		},
 		create: {
 			...gearData,
 			name,
-			user_id: user.id,
-			times_equipped: 1
+			user_id: user.id
 		}
 	});
 
@@ -400,7 +365,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 					where: { user_id: userID.toString(), name: options.view.preset }
 				})) || globalPresets.find(i => stringMatches(i.name, options.view?.preset ?? ''));
 			if (!preset) return "You don't have a preset with that name.";
-			const image = await generateGearImage(user, new Gear(preset), null, null);
+			const image = await user.generateGearImage({ gearSetup: new Gear(preset) });
 			return { files: [{ attachment: image, name: 'preset.jpg' }] };
 		}
 

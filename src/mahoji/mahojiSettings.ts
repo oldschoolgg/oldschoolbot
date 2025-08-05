@@ -1,27 +1,19 @@
-import { evalMathExpression } from '@oldschoolgg/toolkit/util';
+import { evalMathExpression } from '@oldschoolgg/toolkit/math';
 import type { Prisma, User, UserStats } from '@prisma/client';
 import { bold } from 'discord.js';
-import { isObject, objectEntries, round } from 'e';
-import { Bank, ItemGroups, itemID } from 'oldschooljs';
+import { Time, isObject, objectEntries } from 'e';
+import { Bank, type ItemBank, ItemGroups, Items } from 'oldschooljs';
 
+import { formatItemReqs, formatList, hasSkillReqs, itemNameFromID, readableStatName } from '@/lib/util/smallUtils.js';
 import type { SelectedUserStats } from '../lib/MUser';
 import { globalConfig } from '../lib/constants';
 import { userhasDiaryTier } from '../lib/diaries';
 import { quests } from '../lib/minions/data/quests';
-import type { KillableMonster } from '../lib/minions/types';
+import type { Consumable, KillableMonster } from '../lib/minions/types';
 import type { Rune } from '../lib/skilling/skills/runecraft';
 import { hasGracefulEquipped } from '../lib/structures/Gear';
 import type { GearBank } from '../lib/structures/GearBank';
-import type { ItemBank } from '../lib/types';
-import {
-	type JsonKeys,
-	formatItemCosts,
-	formatItemReqs,
-	formatList,
-	hasSkillReqs,
-	itemNameFromID,
-	readableStatName
-} from '../lib/util';
+import type { JsonKeys } from '../lib/util';
 import { getItemCostFromConsumables } from './lib/abstracted_commands/minionKill/handleConsumables';
 
 export function mahojiParseNumber({
@@ -190,29 +182,6 @@ export function userHasGracefulEquipped(user: MUser) {
 	return false;
 }
 
-const anglerBoosts = [
-	[itemID('Angler hat'), 0.4],
-	[itemID('Angler top'), 0.8],
-	[itemID('Angler waders'), 0.6],
-	[itemID('Angler boots'), 0.2]
-];
-
-export function anglerBoostPercent(user: MUser) {
-	const skillingSetup = user.gear.skilling;
-	let amountEquipped = 0;
-	let boostPercent = 0;
-	for (const [id, percent] of anglerBoosts) {
-		if (skillingSetup.hasEquipped([id])) {
-			boostPercent += percent;
-			amountEquipped++;
-		}
-	}
-	if (amountEquipped === 4) {
-		boostPercent += 0.5;
-	}
-	return round(boostPercent, 1);
-}
-
 export function rogueOutfitPercentBonus(user: MUser): number {
 	const skillingSetup = user.gear.skilling;
 	let amountEquipped = 0;
@@ -222,6 +191,47 @@ export function rogueOutfitPercentBonus(user: MUser): number {
 		}
 	}
 	return amountEquipped * 20;
+}
+
+function formatItemCosts(consumable: Consumable, timeToFinish: number) {
+	const str = [];
+
+	const consumables = [consumable];
+
+	if (consumable.alternativeConsumables) {
+		for (const c of consumable.alternativeConsumables) {
+			consumables.push(c);
+		}
+	}
+
+	for (const c of consumables) {
+		const itemEntries = c.itemCost.items();
+		const multiple = itemEntries.length > 1;
+		const subStr = [];
+
+		let multiply = 1;
+		if (c.qtyPerKill) {
+			multiply = c.qtyPerKill;
+		} else if (c.qtyPerMinute) {
+			multiply = c.qtyPerMinute * (timeToFinish / Time.Minute);
+		}
+
+		for (const [item, quantity] of itemEntries) {
+			subStr.push(`${Number((quantity * multiply).toFixed(3))}x ${item.name}`);
+		}
+
+		if (multiple) {
+			str.push(formatList(subStr));
+		} else {
+			str.push(subStr.join(''));
+		}
+	}
+
+	if (consumables.length > 1) {
+		return str.join(' OR ');
+	}
+
+	return str.join('');
 }
 
 export async function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
@@ -272,7 +282,7 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 			} else if (!user.hasEquippedOrInBank(item)) {
 				return [
 					false,
-					`You need ${itemsRequiredStr} to kill ${monster.name}. You're missing ${itemNameFromID(item)}.`
+					`You need ${itemsRequiredStr} to kill ${monster.name}. You're missing ${Items.itemNameFromId(item)}.`
 				];
 			}
 		}

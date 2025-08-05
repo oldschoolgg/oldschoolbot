@@ -1,18 +1,17 @@
 import {
 	type CommandRunOptions,
 	type MahojiUserOption,
-	bulkUpdateCommands,
-	calcPerHour,
-	cleanString,
-	dateFm,
-	formatDuration,
-	stringMatches
-} from '@oldschoolgg/toolkit/util';
+	type OSBMahojiCommand,
+	allAbstractCommands,
+	bulkUpdateCommands
+} from '@oldschoolgg/toolkit/discord-util';
+import { calcPerHour, cleanString, dateFm, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { type ClientStorage, economy_transaction_type } from '@prisma/client';
 import { ApplicationCommandOptionType, AttachmentBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Time, calcWhatPercent, noOp, notEmpty, randArrItem, sleep, uniqueArr } from 'e';
 import { Bank, type ItemBank, convertBankToPerHourStats, toKMB } from 'oldschooljs';
 
+import { countUsersWithItemInCl } from '@/lib/rawSql';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
 import {
@@ -28,8 +27,6 @@ import {
 import { economyLog } from '../../lib/economyLogs';
 import type { GearSetup } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
-import { countUsersWithItemInCl } from '../../lib/settings/prisma';
-import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { sorts } from '../../lib/sorts';
 import { memoryAnalysis } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
@@ -42,8 +39,6 @@ import { sendToChannelID } from '../../lib/util/webhook';
 import { Cooldowns } from '../lib/Cooldowns';
 import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
-import { allAbstractCommands } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const gifs = [
@@ -687,10 +682,9 @@ export const adminCommand: OSBMahojiCommand = {
 		 */
 		if (options.cancel_task) {
 			const { user } = options.cancel_task.user;
-			await cancelTask(user.id);
+			await ActivityManager.cancelActivity(user.id);
 			globalClient.busyCounterCache.delete(user.id);
 			Cooldowns.delete(user.id);
-			minionActivityCacheDelete(user.id);
 			return 'Done.';
 		}
 

@@ -17,12 +17,27 @@ export const runeHeraldicShields = [
 	EItem.RUNE_SHIELD_H5
 ];
 
-const karilsItems = [EItem.KARILS_COIF, EItem.KARILS_LEATHERTOP, EItem.KARILS_LEATHERSKIRT, EItem.KARILS_CROSSBOW];
-const dharokItems = [EItem.DHAROKS_HELM, EItem.DHAROKS_PLATEBODY, EItem.DHAROKS_PLATELEGS, EItem.DHAROKS_GREATAXE];
-const guthansItems = [EItem.GUTHANS_HELM, EItem.GUTHANS_PLATEBODY, EItem.GUTHANS_CHAINSKIRT, EItem.GUTHANS_WARSPEAR];
-const toragsItems = [EItem.TORAGS_HELM, EItem.TORAGS_PLATEBODY, EItem.TORAGS_PLATELEGS, EItem.TORAGS_HAMMERS];
-const veracsItems = [EItem.VERACS_HELM, EItem.VERACS_BRASSARD, EItem.VERACS_PLATESKIRT, EItem.VERACS_FLAIL];
-const ahrimsItems = [EItem.AHRIMS_HOOD, EItem.AHRIMS_ROBETOP, EItem.AHRIMS_ROBESKIRT, EItem.AHRIMS_STAFF];
+export const karilsItems = [
+	EItem.KARILS_COIF,
+	EItem.KARILS_LEATHERTOP,
+	EItem.KARILS_LEATHERSKIRT,
+	EItem.KARILS_CROSSBOW
+];
+export const dharokItems = [
+	EItem.DHAROKS_HELM,
+	EItem.DHAROKS_PLATEBODY,
+	EItem.DHAROKS_PLATELEGS,
+	EItem.DHAROKS_GREATAXE
+];
+export const guthansItems = [
+	EItem.GUTHANS_HELM,
+	EItem.GUTHANS_PLATEBODY,
+	EItem.GUTHANS_CHAINSKIRT,
+	EItem.GUTHANS_WARSPEAR
+];
+export const toragsItems = [EItem.TORAGS_HELM, EItem.TORAGS_PLATEBODY, EItem.TORAGS_PLATELEGS, EItem.TORAGS_HAMMERS];
+export const veracsItems = [EItem.VERACS_HELM, EItem.VERACS_BRASSARD, EItem.VERACS_PLATESKIRT, EItem.VERACS_FLAIL];
+export const ahrimsItems = [EItem.AHRIMS_HOOD, EItem.AHRIMS_ROBETOP, EItem.AHRIMS_ROBESKIRT, EItem.AHRIMS_STAFF];
 
 export const barrowsItemArr = [karilsItems, ahrimsItems, guthansItems, toragsItems, veracsItems, dharokItems];
 
@@ -165,6 +180,17 @@ export const demonBaneWeapons = [
 	EItem.SCORCHING_BOW,
 	EItem.PURGING_STAFF
 ];
+
+export const nails = [
+	EItem.BRONZE_NAILS,
+	EItem.IRON_NAILS,
+	EItem.STEEL_NAILS,
+	EItem.MITHRIL_NAILS,
+	EItem.ADAMANTITE_NAILS,
+	EItem.RUNE_NAILS
+];
+
+export const virtusOutfit = [EItem.VIRTUS_MASK, EItem.VIRTUS_ROBE_TOP, EItem.VIRTUS_ROBE_BOTTOM];
 
 export * from './item-groups/boss-cl';
 export * from './item-groups/outfits';

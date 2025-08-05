@@ -46,3 +46,10 @@ export const zombieOutfit = [
 export const mimeOutfit = [EItem.MIME_MASK, EItem.MIME_TOP, EItem.MIME_LEGS, EItem.MIME_GLOVES, EItem.MIME_BOOTS];
 
 export const anglerOutfit = [EItem.ANGLER_HAT, EItem.ANGLER_TOP, EItem.ANGLER_WADERS, EItem.ANGLER_BOOTS];
+
+export const prospectorOutfit = [
+	EItem.PROSPECTOR_HELMET,
+	EItem.PROSPECTOR_JACKET,
+	EItem.PROSPECTOR_LEGS,
+	EItem.PROSPECTOR_BOOTS
+];

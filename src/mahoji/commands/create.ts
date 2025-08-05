@@ -2,13 +2,13 @@ import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import Createables from '../../lib/data/createables';
 import type { SkillsEnum } from '../../lib/skilling/types';
 import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsBankUpdate } from '../mahojiSettings';
 
 export const createCommand: OSBMahojiCommand = {

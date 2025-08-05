@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank, SkillsEnum, itemID } from 'oldschooljs';
 
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Runecraft from '../../lib/skilling/skills/runecraft';
@@ -15,7 +16,6 @@ import { formatSkillRequirements } from '../../lib/util/smallUtils';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { ouraniaAltarStartCommand } from '../lib/abstracted_commands/ouraniaAltarCommand';
 import { tiaraRunecraftCommand } from '../lib/abstracted_commands/tiaraRunecraftCommand';
-import type { OSBMahojiCommand } from '../lib/util';
 import { calcMaxRCQuantity, userHasGracefulEquipped } from '../mahojiSettings';
 
 const runeTypes = [

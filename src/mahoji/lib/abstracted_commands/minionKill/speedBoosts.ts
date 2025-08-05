@@ -2,8 +2,9 @@ import { calcWhatPercent, sumArr } from 'e';
 import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters, SkillsEnum } from 'oldschooljs';
 import type { OffenceGearStat } from 'oldschooljs/gear';
 
+import type { PvMMethod } from '@/lib/constants';
+import { degradeableItems, degradeablePvmBoostItems } from '@/lib/degradeableItems';
 import type { PrimaryGearSetupType } from '@/lib/gear/types';
-import { degradeableItems, degradeablePvmBoostItems } from '../../../../lib/degradeableItems';
 import {
 	SlayerActivityConstants,
 	boostCannon,
@@ -14,16 +15,15 @@ import {
 	cannonSingleConsumables,
 	iceBarrageConsumables,
 	iceBurstConsumables
-} from '../../../../lib/minions/data/combatConstants';
-import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
-import type { AttackStyles } from '../../../../lib/minions/functions';
-import type { Consumable } from '../../../../lib/minions/types';
-import { calcPOHBoosts } from '../../../../lib/poh';
-import { ChargeBank } from '../../../../lib/structures/Bank';
-import { maxOffenceStats } from '../../../../lib/structures/Gear';
-import type { MonsterActivityTaskOptions } from '../../../../lib/types/minions';
-import getOSItem from '../../../../lib/util/getOSItem';
-import type { PvMMethod } from '../../../commands/k';
+} from '@/lib/minions/data/combatConstants';
+import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs';
+import type { AttackStyles } from '@/lib/minions/functions';
+import type { Consumable } from '@/lib/minions/types';
+import { calcPOHBoosts } from '@/lib/poh';
+import { ChargeBank } from '@/lib/structures/Bank';
+import { maxOffenceStats } from '@/lib/structures/Gear';
+import type { MonsterActivityTaskOptions } from '@/lib/types/minions';
+import getOSItem from '@/lib/util/getOSItem';
 import { resolveAvailableItemBoosts } from '../../../mahojiSettings';
 import { determineIfUsingCannon } from './determineIfUsingCannon';
 import { calculateVirtusBoost, dragonHunterWeapons } from './minionKillData';

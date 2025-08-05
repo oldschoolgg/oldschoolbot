@@ -1,12 +1,13 @@
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import {
 	type CommandResponse,
 	type CommandRunOptions,
+	type OSBMahojiCommand,
+	allAbstractCommands,
 	channelIsSendable,
-	formatDuration,
-	hasBanMemberPerms,
-	miniID,
-	stringMatches
-} from '@oldschoolgg/toolkit/util';
+	hasBanMemberPerms
+} from '@oldschoolgg/toolkit/discord-util';
+import { miniID, stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { activity_type_enum } from '@prisma/client';
 import {
 	ApplicationCommandOptionType,
@@ -22,8 +23,9 @@ import {
 import { Time, clamp, removeFromArr, uniqueArr } from 'e';
 import { Bank, type ItemBank } from 'oldschooljs';
 
+import { ItemIconPacks } from '@/lib/canvas/iconPacks';
 import { DynamicButtons } from '../../lib/DynamicButtons';
-import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier, globalConfig } from '../../lib/constants';
+import { BitField, ParsedCustomEmojiWithGroups, PerkTier, globalConfig } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import { birdhouseSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrapping';
@@ -38,8 +40,6 @@ import { parseBank } from '../../lib/util/parseStringBank';
 import { isValidNickname, itemNameFromID } from '../../lib/util/smallUtils';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
 import { itemOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
-import { allAbstractCommands } from '../lib/util';
 import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
 
 interface UserConfigToggle {
@@ -1133,7 +1133,7 @@ LIMIT 20;
 							name: 'name',
 							description: 'The icon pack you want to use.',
 							required: true,
-							choices: ['Default', ...ItemIconPacks.map(i => i.name)].map(i => ({
+							choices: ['Default', ...Object.values(ItemIconPacks).map(i => i.name)].map(i => ({
 								name: i,
 								value: i
 							}))
@@ -1215,7 +1215,7 @@ LIMIT 20;
 						return 'Your icon pack is already set to default.';
 					}
 
-					const pack = ItemIconPacks.find(i => i.name === icon_pack.name);
+					const pack = Object.values(ItemIconPacks).find(i => i.name === icon_pack.name);
 					if (!pack) return 'Invalid icon pack.';
 
 					if (!user.user.store_bitfield.includes(pack.storeBitfield)) {

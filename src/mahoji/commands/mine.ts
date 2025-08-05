@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { itemID } from 'oldschooljs';
 
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { userhasDiaryTier } from '../../lib/diaries.js';
 import { QuestID } from '../../lib/minions/data/quests';
 import { DiaryID } from '../../lib/minions/types.js';
@@ -15,10 +16,8 @@ import type { GearBank } from '../../lib/structures/GearBank';
 import type { MiningActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { minionName } from '../../lib/util/minionUtils';
 import { formatSkillRequirements, itemNameFromID } from '../../lib/util/smallUtils.js';
 import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export function determineMiningTrip({
 	gearBank,
@@ -201,13 +200,13 @@ export const mineCommand: OSBMahojiCommand = {
 		if (motherlodeMine) {
 			return motherlodeMineCommand({ user, channelID, quantity });
 		}
-
 		const ore = Mining.Ores.find(
 			ore =>
 				stringMatches(ore.id, options.name) ||
 				stringMatches(ore.name, options.name) ||
 				ore.aliases?.some(a => stringMatches(a, options.name))
 		);
+
 		if (!ore) {
 			return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}, or ${
 				Mining.MotherlodeMine.name
@@ -215,7 +214,7 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		if (user.skillsAsLevels.mining < ore.level) {
-			return `${minionName(user)} needs ${ore.level} Mining to mine ${ore.name}.`;
+			return `${user.minionName} needs ${ore.level} Mining to mine ${ore.name}.`;
 		}
 
 		// Check for daeyalt shard requirements.
@@ -259,7 +258,7 @@ export const mineCommand: OSBMahojiCommand = {
 			type: 'Mining'
 		});
 
-		let response = `${minionName(user)} is now mining ${ore.name} until your minion ${
+		let response = `${user.minionName} is now mining ${ore.name} until your minion ${
 			quantity ? `mined ${quantity}x or gets tired` : 'is satisfied'
 		}, it'll take ${
 			quantity

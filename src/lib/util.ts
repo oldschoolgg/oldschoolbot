@@ -1,50 +1,24 @@
+import { cleanUsername } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import {
-	calcPerHour,
-	cleanUsername,
-	formatDuration,
-	isWeekend,
-	makeComponents,
-	stringMatches
-} from '@oldschoolgg/toolkit/util';
 import type { Prisma, User } from '@prisma/client';
 import { type Guild, userMention } from 'discord.js';
 import { noOp, objectEntries } from 'e';
-import { calcCombatLevel } from 'oldschooljs';
+import { calcCombatLevel, convertXPtoLVL } from 'oldschooljs';
 
 import type { MUserClass } from './MUser';
 import { usernameWithBadgesCache } from './cache';
 import { BitField, MAX_LEVEL, MAX_XP, globalConfig } from './constants';
-import { SkillsEnum } from './skilling/types';
+import type { SkillNameType, SkillsEnum } from './skilling/types';
 import type { GearBank } from './structures/GearBank';
 import type { Skills } from './types';
 import type { GroupMonsterActivityTaskOptions } from './types/minions';
 import { makeBadgeString } from './util/makeBadgeString';
 import { sendToChannelID } from './util/webhook.js';
 
-export * from 'oldschooljs';
-export * from './util/rng';
-
-export { stringMatches, calcPerHour, formatDuration, makeComponents, isWeekend };
-
 // @ts-ignore ignore
 BigInt.prototype.toJSON = function () {
 	return this.toString();
 };
-
-export function convertXPtoLVL(xp: number, cap = 99) {
-	let points = 0;
-
-	for (let lvl = 1; lvl <= cap; lvl++) {
-		points += Math.floor(lvl + 300 * Math.pow(2, lvl / 7));
-
-		if (Math.floor(points / 4) >= xp + 1) {
-			return lvl;
-		}
-	}
-
-	return cap;
-}
 
 export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
 	return 'users' in data;
@@ -63,20 +37,16 @@ export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 			if (calcCombatLevel(skills as any, MAX_LEVEL) < level!) return false;
 		} else {
 			const xpHas = skills[skillName];
-			const levelHas = convertXPtoLVL(xpHas ?? 1);
+			const levelHas = convertXPtoLVL(xpHas ?? 1, MAX_LEVEL);
 			if (levelHas < level!) return false;
 		}
 	}
 	return true;
 }
 
-export function isValidSkill(skill: string): skill is SkillsEnum {
-	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
-}
-
 export function skillingPetDropRate(
 	user: MUserClass | GearBank | number,
-	skill: SkillsEnum,
+	skill: SkillsEnum | SkillNameType,
 	baseDropRate: number
 ): { petDropRate: number } {
 	const xp = typeof user === 'number' ? user : user.skillsAsXP[skill];
@@ -87,7 +57,7 @@ export function skillingPetDropRate(
 	return { petDropRate: dropRate };
 }
 
-export function createUsernameWithBadges(user: Pick<User, 'username' | 'badges' | 'minion_ironman'>): string {
+function createUsernameWithBadges(user: Pick<User, 'username' | 'badges' | 'minion_ironman'>): string {
 	if (!user.username) return 'Unknown';
 	const badges = makeBadgeString(user.badges, user.minion_ironman);
 	return `${badges ? `${badges} ` : ''}${user.username}`;
@@ -167,8 +137,6 @@ export function logWrapFn<T extends (...args: any[]) => Promise<unknown>>(
 export function isModOrAdmin(user: MUser) {
 	return globalConfig.adminUserIDs.includes(user.id) || user.bitfield.includes(BitField.isModerator);
 }
-
-export * from './util/smallUtils';
 
 export type JsonKeys<T> = {
 	[K in keyof T]: T[K] extends Prisma.JsonValue ? K : never;

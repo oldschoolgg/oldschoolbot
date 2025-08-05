@@ -1,4 +1,4 @@
-import { channelIsSendable } from '@oldschoolgg/toolkit/util';
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { type Channel, type Message, TextChannel } from 'discord.js';
 import { chunk, sleep } from 'e';
 

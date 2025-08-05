@@ -29,8 +29,10 @@ export interface IToReturnCollection {
 	counts: boolean;
 }
 
+export type CollectionStatus = 'not_started' | 'started' | 'completed';
+
 export interface ILeftListStatus {
-	[key: string]: 'not_started' | 'started' | 'completed';
+	[key: string]: CollectionStatus;
 }
 
 export interface IKCActivity {
@@ -97,20 +99,13 @@ export const alchemicalHydraCL = resolveItems([
 	'Alchemical hydra heads'
 ]);
 
-const karilsItems = resolveItems(["Karil's coif", "Karil's leathertop", "Karil's leatherskirt", "Karil's crossbow"]);
-const ahrimsItems = resolveItems(["Ahrim's hood", "Ahrim's robetop", "Ahrim's robeskirt", "Ahrim's staff"]);
-const dharokItems = resolveItems(["Dharok's helm", "Dharok's platebody", "Dharok's platelegs", "Dharok's greataxe"]);
-const guthansItems = resolveItems(["Guthan's helm", "Guthan's platebody", "Guthan's chainskirt", "Guthan's warspear"]);
-const toragsItems = resolveItems(["Torag's helm", "Torag's platebody", "Torag's platelegs", "Torag's hammers"]);
-const veracsItems = resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]);
-export const barrowsItemArr = [karilsItems, ahrimsItems, guthansItems, toragsItems, veracsItems, dharokItems];
 export const barrowsChestCL = resolveItems([
-	...karilsItems,
-	...ahrimsItems,
-	...dharokItems,
-	...guthansItems,
-	...toragsItems,
-	...veracsItems,
+	...ItemGroups.karilsItems,
+	...ItemGroups.ahrimsItems,
+	...ItemGroups.dharokItems,
+	...ItemGroups.guthansItems,
+	...ItemGroups.toragsItems,
+	...ItemGroups.veracsItems,
 	'Bolt rack'
 ]);
 export const bryophytaCL = resolveItems(["Bryophyta's essence"]);
@@ -1544,42 +1539,19 @@ export const monkeyBackpacksCL = resolveItems([
 	'Skeleton monkey',
 	'Zombie monkey'
 ]);
-export const motherlodeMineCL = resolveItems([
-	'Coal bag',
-	'Gem bag',
-	'Prospector helmet',
-	'Prospector jacket',
-	'Prospector legs',
-	'Prospector boots'
-]);
+export const motherlodeMineCL = resolveItems(['Coal bag', 'Gem bag', ...ItemGroups.prospectorOutfit]);
 export const myNotesCL = resolveItems([
 	11_341, 11_342, 11_343, 11_344, 11_345, 11_346, 11_347, 11_348, 11_349, 11_350, 11_351, 11_352, 11_353, 11_354,
 	11_355, 11_356, 11_357, 11_358, 11_359, 11_360, 11_361, 11_362, 11_363, 11_364, 11_365, 11_366
 ]);
 export const randomEventsCL = resolveItems([
-	'Camo top',
-	'Camo bottoms',
-	'Camo helmet',
-	'Lederhosen top',
-	'Lederhosen shorts',
-	'Lederhosen hat',
-	'Zombie shirt',
-	'Zombie trousers',
-	'Zombie mask',
-	'Zombie gloves',
-	'Zombie boots',
-	'Mime mask',
-	'Mime top',
-	'Mime legs',
-	'Mime gloves',
-	'Mime boots',
+	...ItemGroups.camoOutfit,
+	...ItemGroups.lederhosenOutfit,
+	...ItemGroups.zombieOutfit,
+	...ItemGroups.mimeOutfit,
 	'Frog token',
 	'Stale baguette',
-	"Beekeeper's hat",
-	"Beekeeper's top",
-	"Beekeeper's legs",
-	"Beekeeper's gloves",
-	"Beekeeper's boots"
+	...ItemGroups.beekeeperOutfit
 ]);
 export const revenantsCL = resolveItems([
 	"Viggora's chainmace (u)",
@@ -2265,3 +2237,9 @@ export const chompyHats = [
 	[getItemOrThrow('Chompy bird hat (expert ogre dragon archer)'), 3000],
 	[getItemOrThrow('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
+
+export const avasDevices: { item: Item; reduction: number }[] = [
+	{ item: getOSItem("Ava's attractor"), reduction: 60 },
+	{ item: getOSItem("Ava's accumulator"), reduction: 72 },
+	{ item: getOSItem("Ava's assembler"), reduction: 80 }
+];

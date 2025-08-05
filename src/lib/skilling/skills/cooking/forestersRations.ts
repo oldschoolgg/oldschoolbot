@@ -1,7 +1,13 @@
 import { Bank } from 'oldschooljs';
 
-import type { ForesterRation } from '../../types';
 import { Cookables } from './cooking';
+
+export interface ForesterRation {
+	name: string;
+	inputLeaf: Bank;
+	inputFood: Bank;
+	rationsAmount: number;
+}
 
 const leafNames = ['Leaves', 'Oak leaves', 'Willow leaves', 'Maple leaves', 'Yew leaves', 'Magic leaves'];
 const rationLeafTable = leafNames.map((leafName, index) => ({

@@ -1,4 +1,5 @@
-import { exponentialPercentScale, formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { userMention } from 'discord.js';
 import {
 	Time,
@@ -12,12 +13,12 @@ import {
 	roll,
 	sumArr
 } from 'e';
-import { Bank, EMonster, itemID, resolveItems } from 'oldschooljs';
+import { Bank, EMonster, itemID, randomVariation, resolveItems } from 'oldschooljs';
 
 import { BitField } from '../constants';
 import type { Skills } from '../types';
+import { arrows, bolts, bows, crossbows } from '../util/archery';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
-import { arrows, bolts, bows, crossbows } from '../util/minionUtils';
 import { formatList, formatSkillRequirements, itemNameFromID } from '../util/smallUtils';
 import { TeamLoot } from './TeamLoot';
 import { NexNonUniqueTable, NexUniqueTable } from './misc';

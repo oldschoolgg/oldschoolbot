@@ -1,10 +1,10 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { notEmpty, objectKeys, randFloat, randInt } from 'e';
 import { Bank, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
-import type { PvMMethod } from '../../mahoji/commands/k';
 import { CombatAchievements } from '../combat_achievements/combatAchievements';
+import type { PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import type { KillableMonster } from '../minions/types';
 import { getNewUser } from '../settings/settings';

@@ -1,20 +1,18 @@
-import type { StoreBitfield } from '@oldschoolgg/toolkit/util';
 import type { GearSetupType, XpGainSource } from '@prisma/client';
-import type { Bank, Item, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
-import type { GearStat, OffenceGearStat } from 'oldschooljs/gear';
+import type { ArrayItemsResolved, Bank, Item, ItemBank, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
+import type { OffenceGearStat } from 'oldschooljs/gear';
 
+import type { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
 import type { ClueTier } from '../clues/clueTiers';
-import type { BitField, PerkTier } from '../constants';
 import type { POHBoosts } from '../poh';
 import type { MinigameName } from '../settings/minigames';
-import type { LevelRequirements, SkillsEnum } from '../skilling/types';
+import type { LevelRequirements, SkillNameType, SkillsEnum } from '../skilling/types';
 import type { XPBank } from '../structures/Bank';
+import type { GearRequirements } from '../structures/Gear';
 import type { GearBank } from '../structures/GearBank';
 import type { MUserStats } from '../structures/MUserStats';
 import type { UpdateBank } from '../structures/UpdateBank';
-import type { ItemBank, Skills } from '../types';
-import type { ArrayItemsResolved, calculateSimpleMonsterDeathChance } from '../util';
-import type { CanvasImage } from '../util/canvasUtil';
+import type { Skills } from '../types';
 import type { QuestID } from './data/quests';
 import type { AttackStyles } from './functions';
 
@@ -25,35 +23,6 @@ export type KillableMonsterEffect = (opts: {
 	loot: Bank;
 	updateBank: UpdateBank;
 }) => void | { xpBank?: XPBank; loot?: Bank; messages: string[] };
-
-export type BankBackground = {
-	image: CanvasImage | null;
-	id: number;
-	name: string;
-	available: boolean;
-	collectionLogItemsNeeded?: Bank;
-	perkTierNeeded?: PerkTier;
-	gpCost?: number;
-	itemCost?: Bank;
-	repeatImage?: CanvasImage | null;
-	bitfield?: BitField;
-	sacValueRequired?: number;
-	skillsNeeded?: Skills;
-	transparent?: true;
-	alternateImages?: { id: number }[];
-	storeBitField?: StoreBitfield;
-} & (
-	| {
-			hasPurple: true;
-			purpleImage: CanvasImage | null;
-	  }
-	| {
-			hasPurple?: null;
-	  }
-);
-
-export type GearRequirement = Partial<{ [key in GearStat]: number }>;
-export type GearRequirements = Partial<{ [key in GearSetupType]: GearRequirement }>;
 
 export interface KillableMonster {
 	id: number;
@@ -158,7 +127,7 @@ export interface Consumable {
 }
 
 export interface AddXpParams {
-	skillName: SkillsEnum;
+	skillName: SkillsEnum | SkillNameType;
 	amount: number;
 	duration?: number;
 	multiplier?: boolean;

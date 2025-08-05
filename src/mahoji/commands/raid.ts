@@ -1,13 +1,11 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import type { RaidLevel } from '../../lib/simulation/toa';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { coxBoostsCommand, coxCommand, coxStatsCommand } from '../lib/abstracted_commands/coxCommand';
 import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '../lib/abstracted_commands/tobCommand';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export const raidCommand: OSBMahojiCommand = {
 	name: 'raid',
@@ -199,7 +197,7 @@ export const raidCommand: OSBMahojiCommand = {
 			check?: { hard_mode?: boolean };
 		};
 		toa?: {
-			start?: { raid_level: RaidLevel; max_team_size?: number; solo?: boolean; quantity?: number };
+			start?: { raid_level: number; max_team_size?: number; solo?: boolean; quantity?: number };
 			help?: {};
 		};
 	}>) => {
@@ -212,7 +210,7 @@ export const raidCommand: OSBMahojiCommand = {
 		if (tob?.check) return tobCheckCommand(user, Boolean(tob.check.hard_mode));
 		if (options.toa?.help) return toaHelpCommand(user, channelID);
 
-		if (minionIsBusy(user.id)) return "Your minion is busy, you can't do this.";
+		if (user.minionIsBusy) return "Your minion is busy, you can't do this.";
 
 		if (cox?.start) {
 			return coxCommand(

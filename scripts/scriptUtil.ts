@@ -23,12 +23,12 @@ export async function execAsync(command: string | string[], options?: ExecOption
 	}
 }
 
-export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>) {
+export async function runTimedLoggedFn(name: string, fn: () => unknown) {
 	const stopwatch = new Stopwatch();
-	stopwatch.start();
+	console.log(`Starting ${name}...`);
 	await fn();
 	stopwatch.stop();
-	console.log(`Finished ${name} in ${stopwatch.toString()}`);
+	console.log(`${name} completed in ${stopwatch.toString()}`);
 }
 
 export function getItemNamesFromBank(bank: Bank | ItemBank): string[] {
@@ -39,15 +39,4 @@ export function getItemNamesFromBank(bank: Bank | ItemBank): string[] {
 			.sort((a, b) => a.localeCompare(b));
 	}
 	return getItemNamesFromBank(new Bank(bank));
-}
-
-export function getNamedBank(bank: Bank | ItemBank): Record<string, number> {
-	if (bank instanceof Bank) {
-		const namedBank: Record<string, number> = {};
-		for (const [item, quantity] of bank.items().sort((a, b) => a[0].name.localeCompare(b[0].name))) {
-			namedBank[item.name] = quantity;
-		}
-		return namedBank;
-	}
-	return getNamedBank(new Bank(bank));
 }

@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Time, round } from 'e';
 import { Bank } from 'oldschooljs';
 
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import type { Skills } from '../../lib/types';
 import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
@@ -10,7 +11,6 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { hasSkillReqs } from '../../lib/util/smallUtils';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import type { OSBMahojiCommand } from '../lib/util';
 
 const ds2Requirements: Skills = {
 	magic: 75,

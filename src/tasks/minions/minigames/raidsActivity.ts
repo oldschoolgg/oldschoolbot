@@ -3,12 +3,11 @@ import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { roll, shuffleArr } from 'e';
 import { Bank, ChambersOfXeric, SkillsEnum, randomVariation, resolveItems } from 'oldschooljs';
 
-import { drawChestLootImage } from '../../../lib/bankImage';
+import { drawChestLootImage } from '@/lib/canvas/chestImage';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { coxCMUniques, coxUniques, createTeam } from '../../../lib/data/cox';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import type { RaidsOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -87,8 +86,8 @@ export const raidsTask: MinionTask = {
 			quantity: _quantity
 		} = data;
 		const quantity = _quantity ?? 1;
-		const fetchedUsers = await Promise.all(users.map(async u => mUserFetch(u)));
-		let allUsers = isFakeMass ? Array(maxSizeInput).fill(fetchedUsers[0]) : fetchedUsers;
+		const fetchedUsers: MUser[] = await Promise.all(users.map(async u => mUserFetch(u)));
+		let allUsers: MUser[] = isFakeMass ? Array(maxSizeInput).fill(fetchedUsers[0]) : fetchedUsers;
 		const previousCLs = allUsers.map(i => i.cl.clone());
 
 		let totalPoints = 0;
@@ -210,7 +209,7 @@ export const raidsTask: MinionTask = {
 			}
 		}
 
-		await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, minigameID, quantity)));
+		await Promise.all(allUsers.map(u => u.incrementMinigameScore(minigameID, quantity)));
 
 		for (const [userID, userData] of raidResults) {
 			const { personalPoints, deaths, deathChance, loot, mUser: user } = userData;
@@ -248,7 +247,7 @@ export const raidsTask: MinionTask = {
 				globalClient.emit(
 					Events.ServerNotification,
 					`${emote} ${user.badgedUsername} just received **${itemsToAnnounce}** on their ${formatOrdinal(
-						await getMinigameScore(user.id, minigameID)
+						await user.fetchMinigameScore(minigameID)
 					)} raid.`
 				);
 			}

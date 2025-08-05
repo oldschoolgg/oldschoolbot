@@ -1,5 +1,5 @@
+import { type CommandResponse, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import { type CommandResponse, channelIsSendable } from '@oldschoolgg/toolkit/util';
 import {
 	ActionRowBuilder,
 	type BaseMessageOptions,

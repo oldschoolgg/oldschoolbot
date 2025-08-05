@@ -1,5 +1,5 @@
 import { isFunction, notEmpty } from 'e';
-import { Bank, Implings, Monsters } from 'oldschooljs';
+import { Bank, Implings, Monsters, getItem, resolveItems } from 'oldschooljs';
 
 import { flowerTable } from '../mahoji/lib/abstracted_commands/hotColdCommand';
 import { tipTable } from '../tasks/minions/minigames/gnomeRestaurantActivity';
@@ -26,7 +26,7 @@ import { nonUniqueTable } from './simulation/toa';
 import { Cookables } from './skilling/skills/cooking/cooking';
 import { Craftables } from './skilling/skills/crafting/craftables';
 import { allFarmingItems } from './skilling/skills/farming';
-import Fishing from './skilling/skills/fishing';
+import { Fishing } from './skilling/skills/fishing/fishing';
 import { Fletchables } from './skilling/skills/fletching/fletchables';
 import Herblore from './skilling/skills/herblore/herblore';
 import Hunter from './skilling/skills/hunter/hunter';
@@ -37,7 +37,6 @@ import Runecraft from './skilling/skills/runecraft';
 import Smithing from './skilling/skills/smithing';
 import { stealables } from './skilling/skills/thieving/stealables';
 import Woodcutting from './skilling/skills/woodcutting/woodcutting';
-import { getItem, resolveItems } from './util';
 
 export const ALL_OBTAINABLE_ITEMS = new Set<number>();
 const totalBankToAdd = new Bank();

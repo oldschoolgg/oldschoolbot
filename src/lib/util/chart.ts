@@ -36,9 +36,6 @@ function randomHexColor(value: number): string {
 }
 
 async function renderChart(url: string) {
-	if (process.env.TEST) {
-		console.log('\nRENDERING CHART\n');
-	}
 	const response = await fetch(url, {
 		method: 'GET',
 		headers: { 'Content-Type': 'application/json' }

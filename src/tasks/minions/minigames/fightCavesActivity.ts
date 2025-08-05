@@ -3,12 +3,12 @@ import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
 import { Bank, Monsters, itemID } from 'oldschooljs';
 
+import chatHeadImage from '../../../lib/canvas/chatHeadImage';
 import { userhasDiaryTier } from '../../../lib/diaries';
 import { DiaryID } from '../../../lib/minions/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import type { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
-import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { percentChance } from '../../../lib/util/rng';
 import { fightCavesCost } from '../../../mahoji/lib/abstracted_commands/fightCavesCommand';

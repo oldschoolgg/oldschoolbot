@@ -1,7 +1,6 @@
 import { Bank } from 'oldschooljs';
 
 import { modifyBusyCounter } from '../busyCounterCache';
-
 import { logError } from './logError';
 import { userQueueFn } from './userQueues';
 

@@ -1,8 +1,9 @@
-import { calcPerHour } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import { Time, deepClone, percentChance, roll } from 'e';
 import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 
+import { logError } from '@/lib/util/logError';
 import type { BitField } from '../../lib/constants';
 import { userhasDiaryTierSync } from '../../lib/diaries';
 import { trackLoot } from '../../lib/lootTrack';
@@ -517,7 +518,12 @@ export const monsterTask: MinionTask = {
 
 		const resultOrError = await updateBank.transact(user, { isInWilderness: data.isInWilderness });
 		if (typeof resultOrError === 'string') {
-			return resultOrError;
+			logError(new Error(`${user.logName} monster activity updateBank transact error: ${resultOrError}`), {
+				user_id: user.id,
+				monster_id: monster.id.toString(),
+				quantity: quantity.toString()
+			});
+			return;
 		}
 		const { itemTransactionResult, rawResults } = resultOrError;
 		messages.push(...rawResults.filter(r => typeof r === 'string'));

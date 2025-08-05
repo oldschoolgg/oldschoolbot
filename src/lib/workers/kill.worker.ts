@@ -1,6 +1,6 @@
 import '../data/itemAliases';
 
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Bank, Misc, Monsters, calcDropRatesFromBank, resolveItems } from 'oldschooljs';
 
 import type { KillWorkerArgs, KillWorkerReturn } from '.';

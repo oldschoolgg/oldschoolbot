@@ -1,12 +1,11 @@
 import { readFileSync, writeFileSync } from 'node:fs';
+import { md5sum } from '@oldschoolgg/toolkit/node';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { md5sum } from '@oldschoolgg/toolkit/util';
 import { DateTime } from 'luxon';
 import { Bank } from 'oldschooljs';
 
 import { BOT_TYPE } from '@/lib/constants';
 import Createables from '@/lib/data/createables';
-import { getNamedBank } from './scriptUtil';
 
 export async function renderCreatablesFile() {
 	const stopwatch = new Stopwatch();
@@ -19,8 +18,8 @@ export async function renderCreatablesFile() {
 		}
 		creatables.push({
 			name: c.name,
-			items_created: getNamedBank(c.outputItems),
-			items_required: getNamedBank(c.inputItems),
+			items_created: new Bank(c.outputItems).toNamedBank(),
+			items_required: new Bank(c.inputItems).toNamedBank(),
 			required_stats: c.requiredSkills ?? {},
 			qp_required: c.QPRequired ?? 0,
 			required_slayer_unlocks: c.requiredSlayerUnlocks ?? []

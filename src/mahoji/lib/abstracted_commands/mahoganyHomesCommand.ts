@@ -2,7 +2,6 @@ import { type CommandResponse, formatDuration, stringMatches } from '@oldschoolg
 import { Time, calcPercentOfNum, calcWhatPercent, randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { getMinigameScore } from '../../../lib/settings/minigames';
 import { Plank } from '../../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
@@ -147,7 +146,7 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
 
 	const conLevel = user.skillLevel(SkillsEnum.Construction);
-	const kc = await getMinigameScore(user.id, 'mahogany_homes');
+	const kc = await user.fetchMinigameScore('mahogany_homes');
 
 	let tierData = contractTiers.find(contractTier => conLevel >= contractTier.level)!;
 
