@@ -1,22 +1,29 @@
-import { Bank, EquipmentSlot } from 'oldschooljs';
+import { Bank, EItem, EquipmentSlot, Monsters } from 'oldschooljs';
 
 import { isValidGearSetup } from '../gear/functions/isValidGearSetup';
 import type { GearSetup } from '../gear/types';
 import { skillsMeetRequirements } from '../util';
 import { parseStringBank } from './parseStringBank';
 
-export function gearEquipMultiImpl(
+const KCRequirements = [
+	{ item: EItem.MAGUS_RING, monster: Monsters.DukeSucellus },
+	{ item: EItem.BELLATOR_RING, monster: Monsters.TheWhisperer },
+	{ item: EItem.ULTOR_RING, monster: Monsters.Vardorvis },
+	{ item: EItem.VENATOR_RING, monster: Monsters.TheLeviathan }
+];
+
+export async function gearEquipMultiImpl(
 	user: MUser,
 	setup: string,
 	items: string
-): {
+): Promise<{
 	success: boolean;
 	failMsg?: string;
 	equipBank?: Bank;
 	unequipBank?: Bank;
-	skillFailBank?: Bank;
+	failedToEquipBank?: Bank;
 	equippedGear?: GearSetup;
-} {
+}> {
 	if (!isValidGearSetup(setup)) return { success: false, failMsg: 'Invalid gear setup' };
 	const oneItemPerSlot: { [key in EquipmentSlot]?: boolean } = {};
 	const userSkills = user.skillsAsXP;
@@ -32,6 +39,12 @@ export function gearEquipMultiImpl(
 				failedToEquipBank.add(i.id, qty);
 				continue;
 			}
+		}
+		//check KC requirements
+		const KCReq = KCRequirements.find(req => req.item === i.id);
+		if (KCReq && (await user.getKC(KCReq.monster.id)) === 0) {
+			failedToEquipBank.add(i.id, qty);
+			continue;
 		}
 		// Make sure it's valid equipment
 		if (i.equipable_by_player && i.equipment && !oneItemPerSlot[i.equipment.slot]) {
@@ -80,6 +93,6 @@ export function gearEquipMultiImpl(
 		equipBank,
 		unequipBank,
 		equippedGear,
-		skillFailBank: failedToEquipBank
+		failedToEquipBank
 	};
 }
