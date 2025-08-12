@@ -11,11 +11,20 @@ import {
 	loadImage
 } from 'skia-canvas';
 
+import { EItem } from 'oldschooljs';
 import { BOT_TYPE } from '../constants';
 import { CanvasModule } from './CanvasModule';
 import type { CanvasSpritesheet, SpriteData } from './CanvasSpritesheet';
 import { type CanvasImage, type IBgSprite, drawImageWithOutline, getClippedRegion } from './canvasUtil';
 import { type IconPackID, ItemIconPacks } from './iconPacks';
+
+// use correct IDs when generating DT2 rings
+export const manualSpriteIDs = [
+	[EItem.ULTOR_RING, 28_307],
+	[EItem.MAGUS_RING, 28_313],
+	[EItem.VENATOR_RING, 28_310],
+	[EItem.BELLATOR_RING, 28_316]
+];
 
 const Fonts = {
 	Compact: '16px OSRSFontCompact',
@@ -328,14 +337,17 @@ export class OSRSCanvas {
 			return ItemIconPacks[iconPackId].icons.get(itemID) as Image;
 		}
 
+		//Manual changes
+		const spriteID = manualSpriteIDs.find(([item, _]) => item === itemID)?.[1] ?? itemID;
+
 		// Spritesheet icons
-		const itemSpriteData = OSRSCanvas.getItemSpriteData(itemID);
+		const itemSpriteData = OSRSCanvas.getItemSpriteData(spriteID);
 		if (itemSpriteData) {
-			const { x, y, width, height } = itemSpriteData.getData(itemID) as SpriteData;
+			const { x, y, width, height } = itemSpriteData.getData(spriteID) as SpriteData;
 			return getClippedRegion(itemSpriteData.getImage(), x, y, width, height);
 		}
 
-		return OSRSCanvas.loadLocalIcon(itemID);
+		return OSRSCanvas.loadLocalIcon(spriteID);
 	}
 
 	// If the image isnt in the spritesheet, use a local image instead
