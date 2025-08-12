@@ -1,3 +1,4 @@
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import {
 	type Activity,
 	type Bingo,
@@ -26,21 +27,18 @@ import {
 	command_name_enum
 } from '@prisma/client';
 import { Time, deepClone, randArrItem, randInt, shuffleArr, sumArr } from 'e';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
 import { beforeAll, expect, test, vi } from 'vitest';
 
-import { processPendingActivities } from '../../src/lib/Task';
 import { BitField } from '../../src/lib/constants';
 import type { GearSetupType, UserFullGearSetup } from '../../src/lib/gear/types';
 import { trackLoot } from '../../src/lib/lootTrack';
 import type { MinigameName } from '../../src/lib/settings/minigames';
-import { incrementMinigameScore } from '../../src/lib/settings/minigames';
 import type { SkillsEnum } from '../../src/lib/skilling/types';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { assignNewSlayerTask } from '../../src/lib/slayer/slayerUtil';
 import type { Skills } from '../../src/lib/types';
-import { isGroupActivity, resolveItems } from '../../src/lib/util';
+import { isGroupActivity } from '../../src/lib/util';
 import { gearEquipMultiImpl } from '../../src/lib/util/equipMulti';
 import { findPlant } from '../../src/lib/util/farmingHelpers';
 import getOSItem from '../../src/lib/util/getOSItem';
@@ -56,7 +54,6 @@ import {
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand
 } from '../../src/mahoji/lib/abstracted_commands/stashUnitsCommand';
-import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../src/mahoji/mahojiSettings';
 import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity';
 import type { TestUser } from './util';
@@ -824,7 +821,7 @@ const allTableCommands: TestCommand[] = [
 				'gauntlet'
 			];
 			const quantity = randInt(10, 20);
-			await incrementMinigameScore(user.id, randArrItem(minigames), quantity);
+			await user.incrementMinigameScore(randArrItem(minigames), quantity);
 		}
 	},
 	{
@@ -1104,7 +1101,7 @@ async function runTestCommand(user: TestUser, command: TestCommand) {
 	} else {
 		const [cmd, args] = command.cmd;
 		await user.runCommand(cmd, args);
-		if (command.activity) await processPendingActivities();
+		if (command.activity) await ActivityManager.processPendingActivities();
 	}
 }
 async function runAllTestCommandsOnUser(user: TestUser) {

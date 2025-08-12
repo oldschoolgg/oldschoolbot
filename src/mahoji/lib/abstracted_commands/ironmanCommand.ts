@@ -1,21 +1,19 @@
-import { mentionCommand } from '@oldschoolgg/toolkit/util';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import type { Prisma } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
-
-import { assert } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { minionIsBusy } from '../../../lib/util/minionIsBusy';
+import { assert } from '../../../lib/util/logError';
 
 export async function ironmanCommand(
 	user: MUser,
 	interaction: ChatInputCommandInteraction | null,
 	permanent?: boolean
 ) {
-	if (minionIsBusy(user.id)) return 'Your minion is busy.';
+	if (user.minionIsBusy) return 'Your minion is busy.';
 	if (user.isIronman) {
 		const isPerm = user.bitfield.includes(BitField.PermanentIronman);
 		if (isPerm) return "You're a **permanent** ironman and you cannot de-iron.";

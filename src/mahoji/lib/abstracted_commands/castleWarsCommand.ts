@@ -1,7 +1,6 @@
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { getMinigameEntity } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -27,7 +26,7 @@ export async function castleWarsStartCommand(user: MUser, channelID: string) {
 }
 export async function castleWarsStatsCommand(user: MUser) {
 	const { bank } = user;
-	const kc = await getMinigameEntity(user.id);
+	const kc = await user.fetchMinigameScore('castle_wars');
 	return `You have **${bank.amount('Castle wars ticket')}** Castle wars tickets.
-You have played ${kc.castle_wars} Castle Wars games.`;
+You have played ${kc} Castle Wars games.`;
 }

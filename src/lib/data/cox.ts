@@ -1,3 +1,4 @@
+import { randomVariation } from '@oldschoolgg/toolkit/util';
 import {
 	Time,
 	calcPercentOfNum,
@@ -8,19 +9,16 @@ import {
 	reduceNumByPercent,
 	shuffleArr
 } from 'e';
-import { Bank, type Item } from 'oldschooljs';
-
-import type { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
+import { Bank, type ChambersOfXericOptions, type Item, itemID, resolveItems } from 'oldschooljs';
+import type { GearStats } from 'oldschooljs/gear';
 
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
-import type { GearStats } from '../gear/types';
-import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
 import { Gear, constructGearSetup } from '../structures/Gear';
 import type { Skills } from '../types';
-import { formatList, itemID, itemNameFromID, randomVariation, resolveItems } from '../util';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
+import { formatList, itemNameFromID } from '../util/smallUtils';
 import { getSimilarItems } from './similarItems';
 
 const bareMinStats: Skills = {
@@ -109,7 +107,7 @@ export async function createTeam(
 			deathChance -= calcPercentOfNum(total, 10);
 		}
 
-		const kc = await getMinigameScore(u.id, cm ? 'raids_challenge_mode' : 'raids');
+		const kc = await u.fetchMinigameScore(cm ? 'raids_challenge_mode' : 'raids');
 		const kcChange = kcPointsEffect(kc);
 		if (kcChange < 0) points = reduceNumByPercent(points, Math.abs(kcChange));
 		else points = increaseNumByPercent(points, kcChange);
@@ -309,7 +307,7 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 			) {
 				return `${user.usernameOrMention} doesn't own a Twisted bow, Bow of faerdhinen (c) or Dragon hunter crossbow, which is required for Challenge Mode.`;
 			}
-			const kc = await getMinigameScore(user.id, 'raids');
+			const kc = await user.fetchMinigameScore('raids');
 			if (kc < 200) {
 				return `${user.usernameOrMention} doesn't have the 200 KC required for Challenge Mode.`;
 			}
@@ -715,7 +713,7 @@ export async function calcCoxInput(u: MUser, quantity: number, solo: boolean) {
 	const supplies = new Bank();
 	const ammo = new Bank();
 	for (let i = 0; i < quantity; i++) {
-		const kc = await getMinigameScore(u.id, 'raids');
+		const kc = await u.fetchMinigameScore('raids');
 		supplies.add('Stamina potion(4)', solo ? 2 : 1);
 
 		let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30)));

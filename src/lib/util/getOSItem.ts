@@ -1,4 +1,4 @@
-import { getItem, getItemOrThrow } from 'oldschooljs/dist/util/util';
+import { getItem, getItemOrThrow } from 'oldschooljs';
 
 export { getItem, getItemOrThrow as getOSItem };
 

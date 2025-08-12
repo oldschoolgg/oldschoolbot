@@ -1,7 +1,7 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { noOp, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';

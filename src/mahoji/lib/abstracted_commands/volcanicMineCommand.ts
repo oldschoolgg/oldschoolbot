@@ -1,12 +1,11 @@
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { getMinigameScore } from '../../../lib/settings/minigames';
+import { formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { formatSkillRequirements, hasSkillReqs, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
@@ -232,7 +231,7 @@ export async function volcanicMineShopCommand(
 
 export async function volcanicMineStatsCommand(user: MUser) {
 	const currentUserPoints = user.user.volcanic_mine_points;
-	const kc = await getMinigameScore(user.id, 'volcanic_mine');
+	const kc = await user.fetchMinigameScore('volcanic_mine');
 
 	return `You have ${currentUserPoints.toLocaleString()} Volcanic Mine points.
 You have completed ${kc} games of Volcanic Mine.`;

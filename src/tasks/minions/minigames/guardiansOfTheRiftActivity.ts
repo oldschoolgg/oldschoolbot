@@ -1,13 +1,11 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
+import { Events } from '@oldschoolgg/toolkit/constants';
+import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
 import { randArrItem, randInt } from 'e';
-import { Bank, SkillsEnum } from 'oldschooljs';
+import { Bank, SkillsEnum, itemID } from 'oldschooljs';
 
-import { Events } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
-import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/minigames';
 import { bloodEssence } from '../../../lib/skilling/functions/calcsRunecrafting';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
-import { itemID, stringMatches } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -41,8 +39,8 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		const { channelID, userID, quantity, duration, minedFragments, barrierAndGuardian, rolls, combinationRunes } =
 			data;
 		const user = await mUserFetch(userID);
-		const previousScore = (await getMinigameEntity(user.id)).guardians_of_the_rift;
-		const { newScore } = await incrementMinigameScore(userID, 'guardians_of_the_rift', quantity);
+		const previousScore = await user.fetchMinigameScore('guardians_of_the_rift');
+		const { newScore } = await user.incrementMinigameScore('guardians_of_the_rift', quantity);
 		const kcForPet = randInt(previousScore, newScore);
 
 		const miningXP = quantity * 5 * minedFragments;

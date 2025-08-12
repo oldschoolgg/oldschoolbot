@@ -1,8 +1,8 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '../../lib/util/canvasUtil';
-import type { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '../../lib/canvas/canvasUtil';
 
 const bg = loadAndCacheLocalImage('./src/lib/resources/images/pm-bg.png');
 

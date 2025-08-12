@@ -85,12 +85,20 @@ async function main() {
 
 	// EMonster
 	let monsterEnumStr = 'export enum EMonster {';
-	for (const monster of Monsters.values()) {
-		let key = monster.name;
-		key = key.replaceAll(' ', '_');
+	const monstersToEnum: [string, number][] = [
+		...Monsters.map(_m => [_m.name, _m.id]),
+		['PHOSANI_NIGHTMARE', 9416],
+		['NIGHTMARE', 9415],
+		['MIMIC', 23_184],
+		['ZALCANO', 9049],
+		['NEX', 11_278]
+	] as [string, number][];
+	for (const [name, id] of monstersToEnum.sort((a, b) => a[0].localeCompare(b[0]))) {
+		let key = name.replaceAll(' ', '_');
 		key = key.replace(/[^a-zA-Z0-9_]/g, '').toUpperCase();
-		monsterEnumStr += `\n\t${key} = ${monster.id},`;
+		monsterEnumStr += `\n\t${key} = ${id},`;
 	}
+
 	monsterEnumStr = monsterEnumStr.slice(0, -1); //remove last comma
 	monsterEnumStr += '\n}';
 	monsterEnumStr += '\n';

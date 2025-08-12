@@ -1,15 +1,15 @@
-import type { GearBank } from '../../../../lib/structures/GearBank';
-import { itemNameFromID, resolveItems } from '../../../../lib/util';
-import getOSItem from '../../../../lib/util/getOSItem';
+import { EItem, ItemGroups, Items } from 'oldschooljs';
+
+import type { GearBank } from '@/lib/structures/GearBank';
 
 export const dragonHunterWeapons = [
 	{
-		item: getOSItem('Dragon hunter lance'),
+		item: Items.getOrThrow('Dragon hunter lance'),
 		attackStyle: 'melee',
 		boost: 15
 	},
 	{
-		item: getOSItem('Dragon hunter crossbow'),
+		item: Items.getOrThrow('Dragon hunter crossbow'),
 		attackStyle: 'range',
 		boost: 15
 	}
@@ -25,13 +25,13 @@ export function calculateVirtusBoost({
 		(isOnTask && gearBank.gear.mage.hasEquipped('Black mask (i)')) ||
 		gearBank.gear.wildy.hasEquipped('Black mask (i)');
 
-	for (const item of resolveItems(['Virtus mask', 'Virtus robe top', 'Virtus robe bottom'])) {
+	for (const item of ItemGroups.virtusOutfit) {
 		if (isInWilderness) {
 			if (gearBank.gear.wildy.hasEquipped(item)) {
-				virtusPiecesEquipped += hasBlackMask && itemNameFromID(item) === 'Virtus mask' ? 0 : 1;
+				virtusPiecesEquipped += hasBlackMask && item === EItem.VIRTUS_MASK ? 0 : 1;
 			}
 		} else if (gearBank.gear.mage.hasEquipped(item)) {
-			virtusPiecesEquipped += hasBlackMask && itemNameFromID(item) === 'Virtus mask' ? 0 : 1;
+			virtusPiecesEquipped += hasBlackMask && item === EItem.VIRTUS_MASK ? 0 : 1;
 		}
 	}
 

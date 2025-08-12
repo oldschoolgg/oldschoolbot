@@ -1,5 +1,5 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { chunk } from 'e';
 import { Bank } from 'oldschooljs';
@@ -9,7 +9,6 @@ import { roboChimpUserFetch } from '../../lib/roboChimp';
 import { getUsername } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import type { OSBMahojiCommand } from '../lib/util';
 import { doMenu } from './leaderboard';
 
 const leaguesTrophiesBuyables = [

@@ -1,16 +1,15 @@
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, reduceNumByPercent } from 'e';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { plunderBoosts, plunderRooms } from '../../../lib/minions/data/plunder';
-import { getMinigameScore } from '../../../lib/settings/minigames';
+
 import type { PlunderActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 export async function pyramidPlunderCommand(user: MUser, channelID: string) {
-	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
+	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	const skills = user.skillsAsLevels;
 	const thievingLevel = skills.thieving;
 	const minLevel = plunderRooms[0].thievingLevel;
@@ -31,7 +30,7 @@ export async function pyramidPlunderCommand(user: MUser, channelID: string) {
 
 	// Every 1h becomes 1% faster to a cap of 10%
 	const percentFaster = Math.min(
-		Math.floor((await getMinigameScore(user.id, 'pyramid_plunder')) / (Time.Hour / plunderTime)),
+		Math.floor((await user.fetchMinigameScore('pyramid_plunder')) / (Time.Hour / plunderTime)),
 		10
 	);
 

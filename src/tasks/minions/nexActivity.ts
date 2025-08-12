@@ -1,8 +1,7 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { userMention } from 'discord.js';
+import { Bank, EMonster, type ItemBank } from 'oldschooljs';
 
-import { Bank, type ItemBank } from 'oldschooljs/dist/meta/types';
-import { NEX_ID } from '../../lib/constants';
 import { trackLoot } from '../../lib/lootTrack';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import type { NexContext } from '../../lib/simulation/nex';
@@ -42,11 +41,11 @@ export const nexTask: MinionTask = {
 		for (const [uID, uLoot] of loot.entries()) {
 			await transactItems({ userID: uID, collectionLog: true, itemsToAdd: uLoot });
 			const user = allMUsers.find(i => i.id === uID)!;
-			await user.incrementKC(NEX_ID, kc.find(u => u.id === uID)!.quantity);
+			await user.incrementKC(EMonster.NEX, kc.find(u => u.id === uID)!.quantity);
 
 			await announceLoot({
 				user,
-				monsterID: NEX_ID,
+				monsterID: EMonster.NEX,
 				loot: uLoot,
 				notifyDrops: purpleNexItems,
 				team: {

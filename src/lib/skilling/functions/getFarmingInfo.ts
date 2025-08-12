@@ -1,13 +1,13 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import { formatDuration, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { User } from '@prisma/client';
 import { Time } from 'e';
 
 import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 import { defaultPatches } from '../../minions/farming';
 import type { IPatchData, IPatchDataDetailed } from '../../minions/farming/types';
-import { assert, formatDuration } from '../../util';
 import type { FarmingPatchName } from '../../util/farmingHelpers';
 import { farmingKeys, farmingPatchNames, findPlant } from '../../util/farmingHelpers';
+import { assert } from '../../util/logError';
 
 export function getFarmingInfoFromUser(user: User) {
 	const patches: Record<FarmingPatchName, IPatchData> = {} as Record<FarmingPatchName, IPatchData>;

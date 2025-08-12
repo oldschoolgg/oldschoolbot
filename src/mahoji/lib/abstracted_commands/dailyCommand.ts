@@ -1,14 +1,15 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { type CommandResponse, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import { Time, roll, shuffleArr, uniqueArr } from 'e';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs';
 
 import { DynamicButtons } from '../../../lib/DynamicButtons';
-import { Emoji, globalConfig } from '../../../lib/constants';
+import { globalConfig } from '../../../lib/constants';
 import pets from '../../../lib/data/pets';
 import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
 import dailyRoll from '../../../lib/simulation/dailyTable';
-import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
@@ -17,7 +18,7 @@ export async function isUsersDailyReady(
 	user: MUser
 ): Promise<{ isReady: true } | { isReady: false; durationUntilReady: number }> {
 	const stats = await user.fetchStats({ last_daily_timestamp: true });
-	const currentDate = new Date().getTime();
+	const currentDate = Date.now();
 	const lastVoteDate = Number(stats.last_daily_timestamp);
 	const difference = currentDate - lastVoteDate;
 
@@ -135,7 +136,7 @@ export async function dailyCommand(
 	await userStatsUpdate(
 		user.id,
 		{
-			last_daily_timestamp: new Date().getTime()
+			last_daily_timestamp: Date.now()
 		},
 		{}
 	);

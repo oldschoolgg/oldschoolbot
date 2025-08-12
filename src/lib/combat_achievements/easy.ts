@@ -1,6 +1,5 @@
-import { Monsters, resolveItems } from 'oldschooljs';
+import { ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { demonBaneWeapons } from '../constants';
 import { warmGear } from '../data/filterables';
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
@@ -194,7 +193,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
-				isCertainMonsterTrip(Monsters.GreaterDemon.id)(data) && user.hasEquipped(demonBaneWeapons)
+				isCertainMonsterTrip(Monsters.GreaterDemon.id)(data) && user.hasEquipped(ItemGroups.demonBaneWeapons)
 		}
 	},
 	{

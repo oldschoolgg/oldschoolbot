@@ -1,25 +1,19 @@
 import type { GearPreset } from '@prisma/client';
 import { notEmpty, objectKeys, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, EquipmentSlot, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 import type { EGear } from 'oldschooljs/EGear';
-import { EquipmentSlot, type Item } from 'oldschooljs/dist/meta/types';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import {
+	type DefenceGearStat,
+	GearStat,
+	type GearStats,
+	type OffenceGearStat,
+	type OtherGearStat
+} from 'oldschooljs/gear';
 
 import { getSimilarItems, inverseSimilarItems } from '../data/similarItems';
-import type {
-	DefenceGearStat,
-	GearSetup,
-	GearSetupType,
-	GearSlotItem,
-	GearStats,
-	OffenceGearStat,
-	OtherGearStat
-} from '../gear/types';
-import { GearStat } from '../gear/types';
-import type { GearRequirement } from '../minions/types';
-import { assert } from '../util';
+import type { GearSetup, GearSetupType, GearSlotItem } from '../gear/types';
 import getOSItem from '../util/getOSItem';
-import itemID from '../util/itemID';
+import { assert } from '../util/logError';
 
 export type PartialGearSetup = Partial<{
 	[key in EquipmentSlot]: string;
@@ -72,7 +66,9 @@ export const defaultGear: GearSetup = {
 };
 Object.freeze(defaultGear);
 
-export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
+export type GlobalPreset = GearPreset & { defaultSetup: GearSetupType; aliases?: string[] };
+
+export const globalPresets: GlobalPreset[] = [
 	{
 		name: 'graceful',
 		user_id: '123',
@@ -159,6 +155,7 @@ export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 	},
 	{
 		name: 'fishing',
+		aliases: ['angler'],
 		user_id: '123',
 		head: itemID('Angler hat'),
 		neck: null,
@@ -382,6 +379,43 @@ export class Gear {
 		this.stats = this.getStats();
 	}
 
+	static fromGearPreset(preset: GearPreset): Gear {
+		function gearItem(val: null | number) {
+			if (val === null) return null;
+			return {
+				item: val,
+				quantity: 1
+			};
+		}
+		const newGear: GearSetup = { ...defaultGear };
+		newGear.head = gearItem(preset.head);
+		newGear.neck = gearItem(preset.neck);
+		newGear.body = gearItem(preset.body);
+		newGear.legs = gearItem(preset.legs);
+		newGear.cape = gearItem(preset.cape);
+		newGear['2h'] = gearItem(preset.two_handed);
+		newGear.hands = gearItem(preset.hands);
+		newGear.feet = gearItem(preset.feet);
+		newGear.shield = gearItem(preset.shield);
+		newGear.weapon = gearItem(preset.weapon);
+		newGear.ring = gearItem(preset.ring);
+		newGear.ammo = preset.ammo
+			? {
+					item: preset.ammo,
+					quantity: 1
+				}
+			: null;
+		return new Gear(newGear);
+	}
+
+	static fromList(items: (EGear | string)[]): Gear {
+		const gear = new Gear();
+		for (const item of items) {
+			gear.equip(item, 1);
+		}
+		return gear;
+	}
+
 	raw(): GearSetup {
 		return {
 			ammo: this.ammo,
@@ -492,9 +526,9 @@ export class Gear {
 		if (allItems.length === 0) {
 			return 'No items';
 		}
-		const items = [];
+		const items: string[] = [];
 		for (const item of allItems) {
-			items.push(getOSItem(item).name);
+			items.push(Items.itemNameFromId(item) ?? `Unknown Item? (${item})`);
 		}
 		return items.join(', ');
 	}
@@ -587,3 +621,6 @@ export function constructGearSetup(setup: PartialGearSetup): Gear {
 		weapon: setup.weapon ? { item: itemID(setup.weapon), quantity: 1 } : null
 	});
 }
+
+export type GearRequirement = Partial<{ [key in GearStat]: number }>;
+export type GearRequirements = Partial<{ [key in GearSetupType]: GearRequirement }>;

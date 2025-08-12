@@ -1,6 +1,7 @@
 import '../globalSetup';
 import '../../src/lib/globals';
 import '../../src/lib/util/transactItemsFromBank';
+import '../../src/lib/ActivityManager';
 import './mocks';
 
 import { beforeEach, vi } from 'vitest';
@@ -20,23 +21,10 @@ vi.mock('../../src/lib/util/webhook', async () => {
 	const actual: any = await vi.importActual('../../src/lib/util/webhook');
 	return {
 		...actual,
-		sendToChannelID: vi.fn()
-	};
-});
-
-vi.mock('../../src/lib/gear/functions/generateGearImage', async () => {
-	const actual: any = await vi.importActual('../../src/lib/gear/functions/generateGearImage');
-	return {
-		...actual,
-		generateGearImage: vi.fn().mockReturnValue(Promise.resolve(Buffer.from('')))
-	};
-});
-
-vi.mock('../../src/lib/util/chart', async () => {
-	const actual: any = await vi.importActual('../../src/lib/gear/functions/generateGearImage');
-	return {
-		...actual,
-		createChart: vi.fn().mockReturnValue(Promise.resolve(Buffer.from('')))
+		sendToChannelID: vi.fn(() => {
+			// console.log('sendToChannelID called with args:', args);
+			return Promise.resolve();
+		})
 	};
 });
 

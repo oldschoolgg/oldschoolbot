@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+
 import { logError } from './util/logError';
 
 const u = Prisma.UserScalarFieldEnum;
@@ -60,3 +61,19 @@ export const SQL = {
 	GROUP_BY_U_ID: 'GROUP BY u.id',
 	WHERE_IRON: (ironOnly: boolean) => (ironOnly ? '"minion.ironman" = true' : '')
 } as const;
+
+/**
+ * ⚠️ Uses queryRawUnsafe
+ */
+export async function countUsersWithItemInCl(itemID: number, ironmenOnly: boolean) {
+	const query = `SELECT COUNT(id)::int
+				   FROM users
+				   WHERE ("collectionLogBank"->>'${itemID}') IS NOT NULL
+				   AND ("collectionLogBank"->>'${itemID}')::int >= 1
+				   ${ironmenOnly ? 'AND "minion.ironman" = true' : ''};`;
+	const result = Number.parseInt(((await prisma.$queryRawUnsafe(query)) as any)[0].count);
+	if (Number.isNaN(result)) {
+		throw new Error(`countUsersWithItemInCl produced invalid number '${result}' for ${itemID}`);
+	}
+	return result;
+}

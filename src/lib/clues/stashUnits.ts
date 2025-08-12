@@ -1,4 +1,5 @@
 import { Bank, ItemGroups, deepResolveItems, resolveItems } from 'oldschooljs';
+
 import type { ClueTier } from './clueTiers';
 
 export interface IStashUnit {
@@ -16,7 +17,7 @@ export interface StashUnitTier {
 
 export const beginnerStashes: StashUnitTier = {
 	tier: 'Beginner',
-	cost: new Bank().add('Plank', 2).add('Bronze nails', 10),
+	cost: new Bank().add('Plank', 2),
 	constructionLevel: 12,
 	xp: 150,
 	units: [
@@ -28,7 +29,7 @@ export const beginnerStashes: StashUnitTier = {
 
 export const easyStashes: StashUnitTier = {
 	tier: 'Easy',
-	cost: new Bank().add('Plank', 2).add('Bronze nails', 10),
+	cost: new Bank().add('Plank', 2),
 	constructionLevel: 27,
 	xp: 150,
 	units: [
@@ -174,7 +175,7 @@ export const easyStashes: StashUnitTier = {
 
 export const mediumStashes: StashUnitTier = {
 	tier: 'Medium',
-	cost: new Bank().add('Oak plank', 2).add('Bronze nails', 10),
+	cost: new Bank().add('Oak plank', 2),
 	constructionLevel: 42,
 	xp: 250,
 	units: [
@@ -308,7 +309,7 @@ export const mediumStashes: StashUnitTier = {
 export const hardStashes: StashUnitTier = {
 	tier: 'Hard',
 
-	cost: new Bank().add('Teak plank', 2).add('Bronze nails', 10),
+	cost: new Bank().add('Teak plank', 2),
 	constructionLevel: 55,
 	xp: 400,
 	units: [
@@ -388,7 +389,7 @@ export const hardStashes: StashUnitTier = {
 
 export const eliteStashes: StashUnitTier = {
 	tier: 'Elite',
-	cost: new Bank().add('Mahogany plank', 2).add('Bronze nails', 10),
+	cost: new Bank().add('Mahogany plank', 2),
 	constructionLevel: 77,
 	xp: 600,
 	units: [
@@ -483,7 +484,7 @@ export const eliteStashes: StashUnitTier = {
 
 export const masterStashes: StashUnitTier = {
 	tier: 'Master',
-	cost: new Bank().add('Mahogany plank', 2).add('Bronze nails', 10).add('Gold leaf'),
+	cost: new Bank().add('Mahogany plank', 2).add('Gold leaf'),
 	constructionLevel: 88,
 	xp: 1500,
 	units: [

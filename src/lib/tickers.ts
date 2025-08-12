@@ -1,27 +1,25 @@
+import { awaitMessageComponentInteraction, cleanUsername } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
-import { Time, noOp, randInt, removeFromArr, shuffleArr } from 'e';
+import { Time, noOp, removeFromArr } from 'e';
 
-import { cleanUsername } from '@oldschoolgg/toolkit';
-import { TimerManager } from '@sapphire/timer-manager';
-import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { mahojiUserSettingsUpdate } from './MUser';
-import { processPendingActivities } from './Task';
-import { BitField, Channel, PeakTier, globalConfig } from './constants';
+import { BitField, Channel, globalConfig } from './constants';
 import { GrandExchange } from './grandExchange';
 import { collectMetrics } from './metrics';
 import { populateRoboChimpCache } from './perkTier';
 import { fetchUsersWithoutUsernames } from './rawSql';
 import { runCommand } from './settings/settings';
 import { informationalButtons } from './sharedComponents';
-import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
+import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
-import { awaitMessageComponentInteraction, getSupportGuild, makeComponents, stringMatches } from './util';
+import { getSupportGuild } from './util';
 import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers';
 import { handleGiveawayCompletion } from './util/giveaway';
 import { logError } from './util/logError';
 import { makeBadgeString } from './util/makeBadgeString';
-import { minionIsBusy } from './util/minionIsBusy';
 
 let lastMessageID: string | null = null;
 let lastMessageGEID: string | null = null;
@@ -62,12 +60,6 @@ const geEmbed = new EmbedBuilder()
 		name: 'Keep Ads Short',
 		value: 'Keep your ad less than 10 lines long, as short as possible.'
 	});
-
-export interface Peak {
-	startTime: number;
-	finishTime: number;
-	peakTier: PeakTier;
-}
 
 /**
  * Tickers should idempotent, and be able to run at any time.
@@ -120,88 +112,7 @@ export const tickers: {
 		timer: null,
 		interval: globalConfig.isProduction ? Time.Second * 5 : 500,
 		cb: async () => {
-			await processPendingActivities();
-		}
-	},
-	{
-		name: 'daily_reminders',
-		interval: Time.Minute * 3,
-		startupWait: Time.Minute,
-		timer: null,
-		cb: async () => {
-			const result = await prisma.$queryRawUnsafe<{ id: string; last_daily_timestamp: bigint }[]>(
-				`
-SELECT users.id, user_stats.last_daily_timestamp
-FROM users
-JOIN user_stats ON users.id::bigint = user_stats.user_id
-WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_timestamp" != -1 AND to_timestamp(user_stats."last_daily_timestamp" / 1000) < now() - INTERVAL '12 hours';
-`
-			);
-			const dailyDMButton = new ButtonBuilder()
-				.setCustomId('CLAIM_DAILY')
-				.setLabel('Claim Daily')
-				.setEmoji('493286312854683654')
-				.setStyle(ButtonStyle.Secondary);
-			const components = [dailyDMButton];
-			const str = 'Your daily is ready!';
-
-			for (const row of result.values()) {
-				if (!globalConfig.isProduction) continue;
-				if (Number(row.last_daily_timestamp) === -1) continue;
-
-				await userStatsUpdate(
-					row.id,
-					{
-						last_daily_timestamp: -1
-					},
-					{}
-				);
-				const user = await globalClient.fetchUser(row.id);
-				await user.send({ content: str, components: makeComponents(components) }).catch(noOp);
-			}
-		}
-	},
-	{
-		name: 'wilderness_peak_times',
-		timer: null,
-		interval: Time.Hour * 24,
-		cb: async () => {
-			let hoursUsed = 0;
-			let peakInterval: Peak[] = [];
-			const peakTiers: PeakTier[] = [PeakTier.High, PeakTier.Medium, PeakTier.Low];
-
-			// Divide the current day into interverals
-			for (let i = 0; i <= 10; i++) {
-				const randomedTime = randInt(1, 2);
-				const [peakTier] = shuffleArr(peakTiers);
-				const peak: Peak = {
-					startTime: randomedTime,
-					finishTime: randomedTime,
-					peakTier
-				};
-				peakInterval.push(peak);
-				hoursUsed += randomedTime;
-			}
-
-			const lastPeak: Peak = {
-				startTime: 24 - hoursUsed,
-				finishTime: 24 - hoursUsed,
-				peakTier: PeakTier.Low
-			};
-
-			peakInterval.push(lastPeak);
-
-			peakInterval = shuffleArr(peakInterval);
-
-			let currentTime = new Date().getTime();
-
-			for (const peak of peakInterval) {
-				peak.startTime = currentTime;
-				currentTime += peak.finishTime * Time.Hour;
-				peak.finishTime = currentTime;
-			}
-
-			globalClient._peakIntervalCache = peakInterval;
+			await ActivityManager.processPendingActivities();
 		}
 	},
 	{
@@ -224,15 +135,11 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 							BitField.isModerator
 						]
 					}
-				},
-				select: {
-					id: true,
-					bitfield: true
 				}
 			});
-			for (const { id, bitfield } of users) {
-				if (bitfield.includes(BitField.DisabledFarmingReminders)) continue;
-				const { patches } = await getFarmingInfo(id);
+			for (const user of users) {
+				if (user.bitfield.includes(BitField.DisabledFarmingReminders)) continue;
+				const { patches } = await getFarmingInfoFromUser(user);
 				for (const patchType of farmingPatchNames) {
 					const patch = patches[patchType];
 					if (!patch) continue;
@@ -251,13 +158,13 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 					if (!planted) continue;
 					if (difference < planted.growthTime * Time.Minute) continue;
 					if (patch.wasReminded) continue;
-					await mahojiUserSettingsUpdate(id, {
+					await mahojiUserSettingsUpdate(user.id, {
 						[getFarmingKeyFromName(patchType)]: { ...patch, wasReminded: true }
 					});
 
 					// Build buttons (only show Harvest/replant if not busy):
 					const farmingReminderButtons = new ActionRowBuilder<ButtonBuilder>();
-					if (!minionIsBusy(id)) {
+					if (!ActivityManager.minionIsBusy(user.id)) {
 						farmingReminderButtons.addComponents(
 							new ButtonBuilder()
 								.setLabel('Harvest & Replant')
@@ -272,9 +179,9 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 							.setStyle(ButtonStyle.Secondary)
 							.setCustomId('DISABLE')
 					);
-					const user = await globalClient.users.cache.get(id);
-					if (!user) continue;
-					const message = await user
+					const djsUser = await globalClient.users.cache.get(user.id);
+					if (!djsUser) continue;
+					const message = await djsUser
 						.send({
 							content: `The ${planted.name} planted in your ${patchType} patches are ready to be harvested!`,
 							components: [farmingReminderButtons]
@@ -293,17 +200,17 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 						// Check disable first so minion doesn't have to be free to disable reminders.
 						if (selection.customId === 'DISABLE') {
 							await mahojiUserSettingsUpdate(user.id, {
-								bitfield: removeFromArr(bitfield, BitField.DisabledFarmingReminders)
+								bitfield: removeFromArr(user.bitfield, BitField.DisabledFarmingReminders)
 							});
-							await user.send('Farming patch reminders have been disabled.');
+							await djsUser.send('Farming patch reminders have been disabled.');
 							return;
 						}
-						if (minionIsBusy(user.id)) {
+						if (ActivityManager.minionIsBusy(user.id)) {
 							selection.reply({ content: 'Your minion is busy.' });
 							return;
 						}
 						if (selection.customId === 'HARVEST') {
-							message.author = user;
+							message.author = djsUser;
 							runCommand({
 								commandName: 'farming',
 								args: { harvest: { patch_name: patchType } },
@@ -393,11 +300,10 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 		name: 'username_filling',
 		startupWait: Time.Minute * 10,
 		timer: null,
-		interval: Time.Minute * 7.33,
+		interval: Time.Minute * 33.33,
 		cb: async () => {
 			const users = await fetchUsersWithoutUsernames();
 			if (process.env.TEST) return;
-			debugLog(`username_filling: Found ${users.length} users without usernames.`);
 			for (const { id } of users) {
 				const djsUser = await globalClient.users.fetch(id).catch(() => null);
 				if (!djsUser) {

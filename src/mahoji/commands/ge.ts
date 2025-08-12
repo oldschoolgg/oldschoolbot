@@ -1,26 +1,29 @@
-import type { CommandOption } from '@oldschoolgg/toolkit/util';
-import { evalMathExpression } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import {
+	type CommandOption,
+	type CommandRunOptions,
+	type OSBMahojiCommand,
+	makeComponents,
+	returnStringOrFile
+} from '@oldschoolgg/toolkit/discord-util';
+import { evalMathExpression } from '@oldschoolgg/toolkit/math';
 import type { GEListing, GETransaction } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { sumArr, uniqueArr } from 'e';
-import { getItem } from 'oldschooljs/dist/util/util';
+import { Bank, type ItemBank, getItem, toKMB } from 'oldschooljs';
 
+import { GeImageGenerator } from '@/lib/canvas/geImage';
 import { PerkTier } from '../../lib/constants';
 import { GrandExchange, createGECancelButton } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
-
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
-import { formatDuration, itemNameFromID, makeComponents, returnStringOrFile, toKMB } from '../../lib/util';
 import { createChart } from '../../lib/util/chart';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
+import { itemNameFromID } from '../../lib/util/smallUtils';
 import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { itemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export type GEListingWithTransactions = GEListing & {
@@ -365,8 +368,10 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 				take: 5
 			});
 
-			const image = await geImageGenerator.createInterface({
-				user,
+			const slots = await GrandExchange.calculateSlotsOfUser(user);
+			const image = await GeImageGenerator.createInterface({
+				maxSlots: slots.maxPossible,
+				slotsUsed: slots.slots,
 				page: options.my_listings.page ?? 1,
 				activeListings
 			});

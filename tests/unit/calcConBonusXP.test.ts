@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 
+import { calcConBonusXP } from '@/lib/skilling/skills/construction/calcConBonusXP';
 import { constructGearSetup } from '../../src/lib/structures/Gear';
-import { calcConBonusXP } from '../../src/lib/util/calcConBonusXP';
 
 describe('calcConBonusXP.test', () => {
 	test('calcConBonusXP', () => {

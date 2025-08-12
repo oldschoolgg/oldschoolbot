@@ -1,10 +1,9 @@
-import type { Channel, Message } from 'discord.js';
-import { TextChannel } from 'discord.js';
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import { type Channel, type Message, TextChannel } from 'discord.js';
 import { chunk, sleep } from 'e';
 
 import type LastManStandingUsage from '../../structures/LastManStandingUsage';
 import { LMS_FINAL, LMS_PREP, LMS_ROUND } from '../../structures/LastManStandingUsage';
-import { channelIsSendable } from '../../util';
 
 const playing = new Set<string>();
 

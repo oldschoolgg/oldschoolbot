@@ -285,6 +285,17 @@ export default class Bank {
 			.join(', ');
 	}
 
+	public toStringFull(): string {
+		const items = this.items();
+		if (items.length === 0) {
+			return 'No items';
+		}
+		return items
+			.sort((a, b) => a[0].name.localeCompare(b[0].name))
+			.map(([item, qty]) => `${qty.toLocaleString()}x ${item?.name ?? 'Unknown item'}`)
+			.join(', ');
+	}
+
 	public get length(): number {
 		return this.map.size;
 	}
@@ -332,5 +343,13 @@ export default class Bank {
 
 	get itemIDs(): number[] {
 		return Array.from(this.map.keys());
+	}
+
+	toNamedBank(): Record<string, number> {
+		const namedBank: Record<string, number> = {};
+		for (const [item, quantity] of this.items().sort((a, b) => a[0].name.localeCompare(b[0].name))) {
+			namedBank[item.name] = quantity;
+		}
+		return namedBank;
 	}
 }
