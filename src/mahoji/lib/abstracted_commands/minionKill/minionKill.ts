@@ -70,7 +70,7 @@ export async function minionKillCommand(
 
 	const stats: { pk_evasion_exp: number } = await user.fetchStats({ pk_evasion_exp: true });
 
-	const result = newMinionKillCommand({
+	const result = await newMinionKillCommand({
 		gearBank: user.gearBank,
 		attackStyles: user.getAttackStyles(),
 		currentSlayerTask: slayerInfo,
@@ -86,7 +86,8 @@ export async function minionKillCommand(
 		slayerUnlocks: user.user.slayer_unlocks,
 		favoriteFood: user.user.favorite_food,
 		bitfield: user.bitfield,
-		currentPeak: generateDailyPeakIntervals().currentPeak
+		currentPeak: generateDailyPeakIntervals().currentPeak,
+		user
 	});
 
 	if (typeof result === 'string') {
