@@ -260,7 +260,7 @@ export const CrystalImpling = new SimpleOpenable({
 	table: new LootTable()
 		.add('Amulet of power', [5, 7])
 		.add('Crystal acorn')
-		.add("Crystal shard", [30, 40])
+		.add('Crystal shard', [30, 40])
 		.add('Dragonstone amulet')
 		.add('Dragonstone', 2)
 		.add('Ruby bolt tips', [50, 125])
