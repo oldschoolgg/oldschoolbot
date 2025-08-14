@@ -41,7 +41,7 @@ type Requirement = {
 	| { name: string; has: ManualHasFunction }
 	| { skillRequirements: Partial<Skills> }
 	| { clRequirement: Bank | number[] }
-	| { kcRequirement: Record<number, number> }
+	| { kcRequirement: Record<string, number | number[]> }
 	| { qpRequirement: number }
 	| { lapsRequirement: Record<number, number> }
 	| { sacrificedItemsRequirement: Bank }
@@ -80,13 +80,23 @@ export class Requirements {
 		}
 
 		if ('kcRequirement' in req) {
-			requirementParts.push(
-				`Kill Count Requirement: ${formatList(
-					Object.entries(req.kcRequirement).map(
-						([k, v]) => `${v}x ${effectiveMonsters.find(i => i.id === Number(k))?.name} KC`
-					)
-				)}`
-			);
+			const requirementStrings = Object.entries(req.kcRequirement).map(([key, value]) => {
+				if (typeof value === 'number') {
+					const monster = effectiveMonsters.find(i => i.id === Number(key));
+					return `${value}x ${monster?.name ?? 'Unknown'} KC`;
+				}
+
+				// checks combined KC if multiple IDs
+				else if (Array.isArray(value)) {
+					const groupName = key;
+					const requiredKC = value[0];
+					return `${requiredKC}x ${groupName} KC`;
+				}
+
+				return '';
+			});
+
+			requirementParts.push(`Kill Count Requirement: ${formatList(requirementStrings)}`);
 		}
 
 		if ('qpRequirement' in req) {
@@ -206,17 +216,38 @@ export class Requirements {
 
 		if ('kcRequirement' in requirement) {
 			const kcs = stats.monsterScores;
-			const missingMonsterNames = [];
-			for (const [id, amount] of Object.entries(requirement.kcRequirement)) {
-				if (!kcs[id] || kcs[id] < amount) {
-					missingMonsterNames.push(
-						`${amount}x ${effectiveMonsters.find(m => m.id === Number.parseInt(id))?.name ?? id}`
-					);
+			const missingRequirements: string[] = [];
+
+			for (const [key, value] of Object.entries(requirement.kcRequirement)) {
+				// Case 1: Handle the original, SINGLE monster KC check
+				if (typeof value === 'number') {
+					const monsterID = Number(key);
+					const requiredKC = value;
+					const userKC = kcs[monsterID] ?? 0; // Safely get user's KC, or 0
+
+					if (userKC < requiredKC) {
+						const monster = effectiveMonsters.find(m => m.id === monsterID);
+						missingRequirements.push(`${requiredKC}x ${monster?.name ?? `ID ${monsterID}`}`);
+					}
+				}
+
+				// Case 2: Handle our new, COMBINED KC check
+				else if (Array.isArray(value)) {
+					const groupName = key;
+					const [requiredKC, ...monsterIDs] = value;
+
+					// sum the KC for all monsters in the group
+					const totalKC = monsterIDs.reduce((sum, id) => sum + (kcs[id] ?? 0), 0);
+
+					if (totalKC < requiredKC) {
+						missingRequirements.push(`${requiredKC}x ${groupName}`);
+					}
 				}
 			}
-			if (missingMonsterNames.length > 0) {
+
+			if (missingRequirements.length > 0) {
 				results.push({
-					reason: `You need the following KC's: ${formatList(missingMonsterNames)}.`
+					reason: `You need the following KC's: ${formatList(missingRequirements)}.`
 				});
 			}
 		}

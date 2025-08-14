@@ -437,5 +437,47 @@ export const easyCombatAchievements: CombatAchievement[] = [
 				[Monsters.Scurrius.id]: 1
 			}
 		})
+	},
+	{
+		id: 36,
+		name: 'Elemental Company',
+		type: 'restriction',
+		monster: 'Royal Titans',
+		desc: 'Kill the Royal Titans without attacking any elementals.',
+		rng: {
+			chancePerKill: 5,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
+		}
+	},
+	{
+		id: 37,
+		name: 'Let them fight',
+		type: 'restriction',
+		monster: 'Royal Titans',
+		desc: 'Kill the Royal Titans while having the Royal Titans kill a total of 10 elementals.',
+		rng: {
+			chancePerKill: 5,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
+		}
+	},
+	{
+		id: 38,
+		name: 'One by one',
+		type: 'restriction',
+		monster: 'Royal Titans',
+		desc: 'Kill one Titan at a time, without attacking the other.',
+		rng: {
+			chancePerKill: 5,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
+		}
 	}
 ];

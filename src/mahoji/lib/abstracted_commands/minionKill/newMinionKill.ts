@@ -56,9 +56,10 @@ export interface MinionKillOptions {
 	bitfield: readonly BitField[];
 	pkEvasionExperience: number;
 	currentPeak: Peak;
+	user: MUser;
 }
 
-export function newMinionKillCommand(args: MinionKillOptions) {
+export async function newMinionKillCommand(args: MinionKillOptions): Promise<string | MinionKillReturn> {
 	let {
 		combatOptions,
 		attackStyles,
@@ -70,6 +71,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		maxTripLength,
 		slayerUnlocks
 	} = args;
+
 	const osjsMon = Monsters.get(monster.id)!;
 	let { primaryStyle, relevantGearStat } = getAttackStylesContext(attackStyles);
 	const isOnTask =
@@ -157,8 +159,20 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		: null;
 
 	const ephemeralPostTripEffects: PostBoostEffect[] = [];
+
+	let kcForBonus = args.monsterKC; // Default to the single monster's KC
+	const royalTitansGroupIDs = [Monsters.Branda.id, Monsters.Eldric.id, Monsters.RoyalTitans.id];
+
+	if (royalTitansGroupIDs.includes(monster.id)) {
+		const brandaKC = await args.user.getKC(Monsters.Branda.id);
+		const eldricKC = await args.user.getKC(Monsters.Eldric.id);
+		const sacrificeKC = await args.user.getKC(Monsters.RoyalTitans.id);
+		kcForBonus = brandaKC + eldricKC + sacrificeKC;
+	}
+
 	const speedDurationResult = speedCalculations({
 		...args,
+		monsterKC: kcForBonus,
 		attackStyles,
 		isOnTask,
 		osjsMon,

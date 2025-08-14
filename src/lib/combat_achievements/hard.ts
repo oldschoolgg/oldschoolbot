@@ -826,5 +826,61 @@ export const hardCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 70,
 			hasChance: isCertainMonsterTrip(Monsters.Amoxliatl.id)
 		}
+	},
+	{
+		id: 271,
+		name: 'I need room',
+		type: 'restriction',
+		monster: 'Royal Titans',
+		desc: 'Kill the Royal Titans while extinguishing all fires and melting all icicles before they dissipate naturally.',
+		rng: {
+			chancePerKill: 10,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
+		}
+	},
+	{
+		id: 272,
+		name: 'Perfect Royal Titans',
+		type: 'perfection',
+		monster: 'Royal Titans',
+		desc: 'Kill the Royal Titans without getting hit by any avoidable damage. This includes: Melee attacks, Explosions from the ice or fire elemental, Icicle or fire spawn damage, and Ice or fire pulse attacks.',
+		rng: {
+			chancePerKill: 15,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
+		}
+	},
+	{
+		id: 273,
+		name: 'Titan Killer',
+		type: 'stamina',
+		monster: 'Royal Titans',
+		desc: 'Titan Killer	Kill the Royal Titans 15 times without anyone leaving the instance. If a player joins the fight, the current streak will be reset to 0. If a player leaves the fight, the task will be failed and a new instance will need to be created.',
+		rng: {
+			chancePerKill: 15,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
+		}
+	},
+	{
+		id: 274,
+		name: 'Royal Titan Speed-Runner',
+		type: 'speed',
+		monster: 'Royal Titans',
+		desc: 'Kill the Royal Titans in less than 1:30 minutes.',
+		rng: {
+			chancePerKill: 15,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
+		}
 	}
 ];
