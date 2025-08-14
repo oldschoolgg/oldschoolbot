@@ -56,7 +56,7 @@ const ElvenCrystalChestTable = new LootTable()
 		itemTupleToTable([
 			['Uncut dragonstone', 1],
 			['Coins', [30_000, 50_000]],
-			['Crystal shard', [8, 13]]
+			["Crystal shard", [13, 19]]
 		]),
 		1,
 		20
@@ -64,7 +64,7 @@ const ElvenCrystalChestTable = new LootTable()
 	.add(
 		itemTupleToTable([
 			['Uncut dragonstone', 1],
-			['Crystal shard', [20, 30]]
+			["Crystal shard", [25, 35]]
 		]),
 		1,
 		17
@@ -117,7 +117,7 @@ const ElvenCrystalChestTable = new LootTable()
 	.add(
 		itemTupleToTable([
 			['Uncut dragonstone', 1],
-			['Crystal acorn', [1, 2]]
+			["Crystal acorn", [4, 6]]
 		]),
 		1,
 		7
