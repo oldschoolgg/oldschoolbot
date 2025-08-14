@@ -860,7 +860,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		name: 'Titan Killer',
 		type: 'stamina',
 		monster: 'Royal Titans',
-		desc: 'Titan Killer	Kill the Royal Titans 15 times without anyone leaving the instance. If a player joins the fight, the current streak will be reset to 0. If a player leaves the fight, the task will be failed and a new instance will need to be created.',
+		desc: 'Kill the Royal Titans 15 times without anyone leaving the instance. If a player joins the fight, the current streak will be reset to 0. If a player leaves the fight, the task will be failed and a new instance will need to be created.',
 		rng: {
 			chancePerKill: 15,
 			hasChance: data =>
