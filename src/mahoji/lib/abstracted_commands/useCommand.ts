@@ -76,7 +76,7 @@ const usableUnlocks: UsableUnlock[] = [
 	{
 		item: getOSItem('Deadeye prayer scroll'),
 		bitfield: BitField.HasDeadeyeScroll,
-		resultMessage: 'You used your Deadeye prayer scroll, and unlocked the Deadeyen~ prayer.'
+		resultMessage: 'You used your Deadeye prayer scroll, and unlocked the Deadeye prayer.'
 	},
 	{
 		item: getOSItem('Mystic vigour prayer scroll'),
