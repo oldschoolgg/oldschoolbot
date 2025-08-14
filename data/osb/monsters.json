@@ -4594,7 +4594,7 @@
 		},
 		{
 			"id": 14148,
-			"name": "Royal Titans (sacrifice)",
+			"name": "Royal Titans (Sacrifice)",
 			"base_kill_time_ms": 150000,
 			"respawn_time_ms": 500,
 			"is_wildy": false,
