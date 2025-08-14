@@ -232,7 +232,7 @@ export interface Item {
 	/**
 	 * The OSRS Wiki name for the item.
 	 */
-	wiki_name?: string;
+	wiki_name?: string | null; // null for interface items
 	equipment?: ItemEquipment;
 	weapon?: ItemWeapon;
 	/**
