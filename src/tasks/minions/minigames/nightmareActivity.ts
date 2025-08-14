@@ -56,7 +56,6 @@ export const nightmareTask: MinionTask = {
 		});
 
 		const { newKC } = await user.incrementKC(monsterID, kc);
-
 		const ownsOrUsedTablet =
 			user.bank.has('Slepey tablet') ||
 			(user.bitfield.includes(BitField.HasSlepeyTablet) && user.cl.has('Slepey Tablet'));
@@ -64,8 +63,11 @@ export const nightmareTask: MinionTask = {
 			if (ownsOrUsedTablet) {
 				userLoot.remove('Slepey tablet', userLoot.amount('Slepey tablet'));
 			}
-			if (!ownsOrUsedTablet && kc > 0 && newKC >= 100 && !userLoot.has('Slepey tablet')) {
-				userLoot.add('Slepey tablet');
+			if (!ownsOrUsedTablet && !userLoot.has('Slepey tablet')) {
+				// const { newKC } = await user.incrementKC(monsterID, kc);
+				if (newKC >= 25) {
+					userLoot.add('Slepey tablet');
+				}
 			}
 		}
 
@@ -113,10 +115,11 @@ export const nightmareTask: MinionTask = {
 			});
 
 			const kc = await user.getKC(monsterID);
+			const kcPerHour = (quantity / (duration / (1000 * 60 * 60))).toFixed(2);
 			handleTripFinish(
 				user,
 				channelID,
-				`${user}, ${user.minionName} finished killing ${quantity} ${monsterName}, you died ${deaths} times. Your ${monsterName} KC is now ${kc}. ${xpRes}`,
+				`${user}, ${user.minionName} finished killing ${quantity} ${monsterName} (${kcPerHour}/hr), you died ${deaths} times. Your ${monsterName} KC is now ${kc}. ${xpRes}`,
 				image.file.attachment,
 				data,
 				itemsAdded
