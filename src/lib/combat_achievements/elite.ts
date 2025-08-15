@@ -1697,7 +1697,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 	{
 		id: 1147,
 		name: 'Duke Sucellus Speed-Trialist',
-		desc: 'Kill Duke Sucellus in less than 1:45 minutes without a slayer task.',
+		desc: 'Kill Duke Sucellus in less than 1:00 minutes without a slayer task.',
 		type: 'speed',
 		monster: 'Duke Sucellus',
 		rng: {

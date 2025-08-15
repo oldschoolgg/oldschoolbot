@@ -40,7 +40,8 @@ const CLS_THAT_GET_ROLE = [
 	'slayer',
 	'other',
 	'custom',
-	'overall'
+	'overall',
+	'creatables'
 ];
 
 for (const cl of CLS_THAT_GET_ROLE) {

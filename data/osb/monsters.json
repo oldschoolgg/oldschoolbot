@@ -1,6 +1,6 @@
 {
-	"hash": "81de72ea9364b2872f3ff1f40878be7b",
-	"date": "2025-07-17T22:48:01.946Z",
+	"hash": "8e997cc218297b80ddc332acfb91c3b2",
+	"date": "2025-08-05T00:16:17.315Z",
 	"data": [
 		{
 			"id": 2,
@@ -4553,7 +4553,7 @@
 		{
 			"id": 8713,
 			"name": "Sarachnis",
-			"base_kill_time_ms": 141000,
+			"base_kill_time_ms": 91200,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,
@@ -4578,6 +4578,7 @@
 					"Masori chaps (f)": 3
 				},
 				{
+					"Aranea boots": 10,
 					"Ring of stone": 10
 				}
 			],
@@ -5217,7 +5218,7 @@
 		{
 			"id": 14009,
 			"name": "The Hueycoatl",
-			"base_kill_time_ms": 480000,
+			"base_kill_time_ms": 360000,
 			"respawn_time_ms": 2000,
 			"is_wildy": false,
 			"is_slayer_only": false,

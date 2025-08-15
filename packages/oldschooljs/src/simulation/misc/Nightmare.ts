@@ -126,7 +126,7 @@ const nonMvpTertiary = new LootTable()
 
 const phosaniTertiary = new LootTable()
 	.tertiary(35, 'Clue scroll (elite)')
-	.tertiary(100, 'Slepey tablet')
+	.tertiary(25, 'Slepey tablet')
 	.tertiary(200, 'Parasitic egg')
 	.tertiary(1400, 'Little nightmare')
 	.tertiary(4000, 'Jar of dreams');

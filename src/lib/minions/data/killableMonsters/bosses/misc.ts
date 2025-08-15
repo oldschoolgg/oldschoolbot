@@ -768,7 +768,7 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.TheHueycoatl.id,
 		name: Monsters.TheHueycoatl.name,
 		aliases: Monsters.TheHueycoatl.aliases,
-		timeToFinish: Time.Minute * 8,
+		timeToFinish: Time.Minute * 6,
 		respawnTime: 2000,
 		table: Monsters.TheHueycoatl,
 		difficultyRating: 8,
@@ -784,7 +784,7 @@ const killableBosses: KillableMonster[] = [
 					{ boostPercent: 10, itemID: itemID('Dragon hunter lance') },
 					{ boostPercent: 9, itemID: itemID("Inquisitor's mace") },
 					{ boostPercent: 9, itemID: itemID('Soulreaper axe') },
-					{ boostPercent: 9, itemID: itemID('Abyssal bludgeon') }
+					{ boostPercent: 8, itemID: itemID('Abyssal bludgeon') }
 				],
 				gearSetup: 'melee',
 				required: false
@@ -819,7 +819,7 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				items: resolveItems(["Inquisitor's hauberk", 'Torva platebody', 'Bandos chestplate']).map(id => ({
-					boostPercent: 2,
+					boostPercent: 3,
 					itemID: id
 				})),
 				gearSetup: 'melee',
@@ -827,7 +827,7 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				items: resolveItems(["Inquisitor's plateskirt", 'Torva platelegs', 'Bandos tassets']).map(id => ({
-					boostPercent: 2,
+					boostPercent: 3,
 					itemID: id
 				})),
 				gearSetup: 'melee',
@@ -851,7 +851,7 @@ const killableBosses: KillableMonster[] = [
 				items: [
 					{
 						itemID: itemID('Scythe of vitur'),
-						boostPercent: 10
+						boostPercent: 25
 					}
 				]
 			}
@@ -889,6 +889,7 @@ const killableBosses: KillableMonster[] = [
 				defence_stab: 0
 			}
 		},
+		combatXpMultiplier: 1.4, // average multiplier weighted by HP on each phase
 		itemCost: [
 			{
 				itemCost: new Bank().add('Super restore(4)'),

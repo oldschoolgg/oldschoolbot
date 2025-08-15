@@ -39,7 +39,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		id: Monsters.DukeSucellus.id,
 		name: Monsters.DukeSucellus.name,
 		aliases: Monsters.DukeSucellus.aliases,
-		timeToFinish: Time.Minute * 5.1,
+		timeToFinish: Time.Minute * 3.1,
 		table: Monsters.DukeSucellus,
 		notifyDrops: resolveItems(['Virtus robe top', 'Baron', 'Virtus robe bottom', 'Virtus mask']),
 		qpRequired: 100,
@@ -71,13 +71,13 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			{
 				items: [
 					{ boostPercent: 5, itemID: itemID('Bellator ring') },
-					{ boostPercent: 5, itemID: itemID('Ultor ring') }
+					{ boostPercent: 3, itemID: itemID('Ultor ring') }
 				],
 				gearSetup: 'melee'
 			}
 		],
 
-		respawnTime: Time.Minute * 1.5,
+		respawnTime: Time.Minute * 0.5,
 		levelRequirements: {
 			prayer: 43,
 			hitpoints: 70
@@ -88,7 +88,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			['Torva platelegs', 'Bandos tassets']
 		]),
 		defaultAttackStyles: [SkillsEnum.Attack],
-		combatXpMultiplier: 1.135,
+		combatXpMultiplier: 1.525,
 		healAmountNeeded: 45 * 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
@@ -143,7 +143,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			{
 				items: [
 					{ boostPercent: 5, itemID: itemID('Bellator ring') },
-					{ boostPercent: 5, itemID: itemID('Ultor ring') }
+					{ boostPercent: 3, itemID: itemID('Ultor ring') }
 				],
 				gearSetup: 'melee'
 			}
@@ -160,7 +160,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			['Torva platelegs', 'Bandos tassets']
 		]),
 		defaultAttackStyles: [SkillsEnum.Attack],
-		combatXpMultiplier: 1.135,
+		combatXpMultiplier: 1.525,
 		healAmountNeeded: 45 * 20 * 2.5,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
