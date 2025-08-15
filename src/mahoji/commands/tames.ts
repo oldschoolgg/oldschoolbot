@@ -1,3 +1,18 @@
+// Helper for itemCost validation and removal for killCommand
+function hasRequiredItemCost(
+	userBank: Bank,
+	monster: TameKillableMonster,
+	quantity: number
+): { ok: boolean; error?: string; totalCost?: Bank } {
+	if (!monster.itemCost) return { ok: true };
+	const itemCost = Array.isArray(monster.itemCost) ? monster.itemCost[0] : monster.itemCost;
+	const qtyMultiplier = itemCost.qtyPerKill ?? 1;
+	const totalCost = itemCost.itemCost.clone().multiply(quantity * qtyMultiplier);
+	if (!userBank.has(totalCost)) {
+		return { ok: false, error: `You need ${totalCost} to kill ${quantity} ${monster.name}.`, totalCost };
+	}
+	return { ok: true, totalCost };
+}
 import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { bold, time } from '@discordjs/builders';
@@ -1029,6 +1044,23 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 		return "Your tame can't kill this monster fast enough.";
 	}
 
+	// --- Item cost check (NEW) ---
+	const costResult = hasRequiredItemCost(user.bank, monster, quantity);
+	if (!costResult.ok) {
+		return costResult.error;
+	}
+	// Remove item cost if required
+	if (costResult.totalCost && costResult.totalCost.length > 0) {
+		await user.removeItemsFromBank(costResult.totalCost);
+		await prisma.tame.update({
+			where: { id: tame.id },
+			data: {
+				total_cost: new Bank(tame.total_cost as ItemBank).add(costResult.totalCost).toJSON()
+			}
+		});
+		updateBankSetting('economyStats_PVMCost', costResult.totalCost);
+	}
+
 	const foodRes = await removeRawFood({
 		totalHealingNeeded: (monster.healAmountNeeded ?? 1) * quantity,
 		healPerAction: monster.healAmountNeeded ?? 1,
@@ -1088,6 +1120,10 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	let reply = `${tameName(tame)} is now killing ${quantity}x ${monster.name}${
 		deathChance > 0 ? `, and has a ${deathChance.toFixed(2)}% chance of dying` : ''
 	}. The trip will take ${formatDuration(fakeDuration)}.\n\nRemoved ${foodRes.str}`;
+
+	if (costResult.totalCost && costResult.totalCost.length > 0) {
+		reply += `\n\nRemoved required items: ${costResult.totalCost}.`;
+	}
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
