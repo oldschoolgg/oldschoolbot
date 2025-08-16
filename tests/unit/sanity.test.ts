@@ -27,6 +27,7 @@ describe('Sanity', () => {
 		expect(itemIsTradeable(itemID('Gilded staff of collection'))).toEqual(false);
 		expect(itemIsTradeable(itemID('Ric'))).toEqual(false);
 		expect(itemIsTradeable(itemID("Pharaoh's sceptre"))).toEqual(true);
+		expect(itemIsTradeable(itemID('Ultor Ring'))).toEqual(true);
 	});
 	test('casket names', () => {
 		expect(itemID('Reward casket (beginner)')).toEqual(23_245);
