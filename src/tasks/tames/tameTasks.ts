@@ -347,10 +347,10 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 							`You received the loot from ${bonusClues}x ${lowerTier.name} caskets from your Abyssal jibwings.`
 						);
 					}
-				} else if (tame.hasEquipped('3rd age jibwings') && openingLoot.has('Coins')) {
+				} else if (tame.hasEquipped('Third age jibwings') && openingLoot.has('Coins')) {
 					const thirdAgeJwLoot = new Bank().add('Coins', openingLoot.amount('Coins'));
 					loot.add(thirdAgeJwLoot);
-					messages.push(`You received ${thirdAgeJwLoot} from your 3rd age jibwings.`);
+					messages.push(`You received ${thirdAgeJwLoot} from your Third age jibwings.`);
 					await tame.addToStatsBank('third_age_jibwings_loot', thirdAgeJwLoot);
 				}
 
