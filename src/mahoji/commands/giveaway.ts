@@ -3,7 +3,8 @@ import {
 	type CommandRunOptions,
 	type OSBMahojiCommand,
 	channelIsSendable,
-	makeComponents
+	makeComponents,
+	makePaginatedMessage
 } from '@oldschoolgg/toolkit/discord-util';
 import type { Giveaway } from '@prisma/client';
 import { Duration } from '@sapphire/time-utilities';
@@ -22,14 +23,15 @@ import {
 import { Time, randInt } from 'e';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
+import { isModOrAdmin } from '@/lib/util.js';
+import { chunk } from 'e';
 import { giveawayCache } from '../../lib/cache.js';
 import { patronFeatures } from '../../lib/constants';
 import { marketPriceOfBank } from '../../lib/marketPrices';
-import { isModOrAdmin } from '../../lib/util.js';
 import { generateGiveawayContent } from '../../lib/util/giveaway';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { logError } from '../../lib/util/logError';
+import { logError, logErrorForInteraction } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
@@ -261,26 +263,35 @@ export const giveawayCommand: OSBMahojiCommand = {
 				return Emoji.RedX;
 			}
 
+			const lines = giveaways.map(
+				(g: Giveaway) =>
+					`${
+						user.perkTier() >= patronFeatures.ShowEnteredInGiveawayList.tier ? `${getEmoji(g)} ` : ''
+					}[${toKMB(marketPriceOfBank(new Bank(g.loot as ItemBank)))} giveaway ending ${time(
+						g.finish_date,
+						'R'
+					)}](${messageLink(g.channel_id, g.message_id)})`
+			);
+
+			const pages = chunk(lines, 10).map(chunkLines => ({
+				embeds: [new EmbedBuilder().setDescription(chunkLines.join('\n'))]
+			}));
+
+			makePaginatedMessage(
+				channel,
+				pages,
+				(err, itx) => {
+					if (itx) {
+						logErrorForInteraction(err, itx);
+					} else {
+						logError(err);
+					}
+				},
+				user.id
+			);
+
 			return {
-				embeds: [
-					new EmbedBuilder().setDescription(
-						giveaways
-							.map(
-								g =>
-									`${
-										user.perkTier() >= patronFeatures.ShowEnteredInGiveawayList.tier
-											? `${getEmoji(g)} `
-											: ''
-									}[${toKMB(marketPriceOfBank(new Bank(g.loot as ItemBank)))} giveaway ending ${time(
-										g.finish_date,
-										'R'
-									)}](${messageLink(g.channel_id, g.message_id)})`
-							)
-							.slice(0, 30)
-							.join('\n')
-					)
-				],
-				ephemeral: true
+				content: `Found ${giveaways.length} active giveaways in this server.`
 			};
 		}
 	}
