@@ -157,6 +157,7 @@ export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	type: 'ClueCompletion';
 	ci: number;
 	q: number;
+	iQty?: number;
 	implingID?: number;
 	implingClues?: number;
 }
