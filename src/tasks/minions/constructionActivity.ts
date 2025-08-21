@@ -1,9 +1,8 @@
 import { calcPercentOfNum } from 'e';
 
-import Constructables from '../../lib/skilling/skills/construction/constructables';
+import { Construction } from '@/lib/skilling/skills/construction';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { calcConBonusXP } from '../../lib/util/calcConBonusXP';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const constructionTask: MinionTask = {
@@ -11,10 +10,10 @@ export const constructionTask: MinionTask = {
 	async run(data: ConstructionActivityTaskOptions) {
 		const { objectID, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
-		const object = Constructables.find(object => object.id === objectID)!;
+		const object = Construction.constructables.find(object => object.id === objectID)!;
 		const xpReceived = quantity * object.xp;
 		let bonusXP = 0;
-		const outfitMultiplier = calcConBonusXP(user.gear.skilling);
+		const outfitMultiplier = Construction.util.calcConBonusXP(user.gear.skilling);
 		if (outfitMultiplier > 0) {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xpReceived);
 		}

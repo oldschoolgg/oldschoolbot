@@ -1,10 +1,8 @@
 import { Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, randomVariation } from 'oldschooljs';
 
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { randomVariation } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const pizazzPointsPerHour = 100;
@@ -13,12 +11,12 @@ export const mageTrainingTask: MinionTask = {
 	type: 'MageTrainingArena',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
 		const { channelID, quantity, duration, userID } = data;
+		const user = await mUserFetch(userID);
 
-		await incrementMinigameScore(userID, 'magic_training_arena', quantity);
+		await user.incrementMinigameScore('magic_training_arena', quantity);
 
 		const loot = new Bank();
 
-		const user = await mUserFetch(userID);
 		const baseXP = (25_000 / (Time.Minute * 60)) * duration;
 		const xp = randomVariation(baseXP, 5);
 		const xpRes = await user.addXP({

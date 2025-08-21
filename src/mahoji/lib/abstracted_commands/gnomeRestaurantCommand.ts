@@ -1,11 +1,10 @@
+import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
 import { Time, calcWhatPercent, randInt, reduceNumByPercent } from 'e';
-import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Bank, SkillsEnum } from 'oldschooljs';
 
 import { getPOHObject } from '../../../lib/poh';
-import { getMinigameScore } from '../../../lib/settings/minigames';
+
 import type { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -24,7 +23,7 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 
 	const boosts = [];
 
-	const score = await getMinigameScore(user.id, 'gnome_restaurant');
+	const score = await user.fetchMinigameScore('gnome_restaurant');
 	const scoreBoost = Math.min(100, calcWhatPercent(score, 100)) / 5;
 	if (scoreBoost > 1) {
 		deliveryLength = reduceNumByPercent(deliveryLength, scoreBoost);

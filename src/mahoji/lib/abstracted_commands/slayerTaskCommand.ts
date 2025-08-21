@@ -1,12 +1,11 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { awaitMessageComponentInteraction, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
 import { Time, notEmpty, randInt, removeFromArr } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import killableMonsters from '../../../lib/minions/data/killableMonsters';
-
 import { InteractionID } from '../../../lib/InteractionID';
+import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { runCommand } from '../../../lib/settings/settings';
 import { slayerMasters } from '../../../lib/slayer/slayerMasters';
 import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
@@ -18,11 +17,9 @@ import {
 	userCanUseMaster
 } from '../../../lib/slayer/slayerUtil';
 import type { AssignableSlayerTask } from '../../../lib/slayer/types';
-import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { interactionReply } from '../../../lib/util/interactionReply';
 import { logError } from '../../../lib/util/logError';
-import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { userStatsUpdate } from '../../mahojiSettings';
 
 const returnSuccessButtons = [
@@ -406,7 +403,7 @@ export async function slayerSkipTaskCommand({
 	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 	const myBlockList = user.user.slayer_blocked_ids;
 	const maxBlocks = await calcMaxBlockedTasks(user);
-	if (minionIsBusy(user.id)) {
+	if (user.minionIsBusy) {
 		interactionReply(interaction, 'You cannot change your task while your minion is busy.');
 		return;
 	}

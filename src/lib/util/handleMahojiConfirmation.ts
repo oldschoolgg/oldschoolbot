@@ -1,6 +1,15 @@
-import { channelIsSendable } from '@oldschoolgg/toolkit/util';
-import type { ButtonInteraction, Channel, ChatInputCommandInteraction, ComponentType } from 'discord.js';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionResponseType, Routes } from 'discord.js';
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	type ButtonInteraction,
+	ButtonStyle,
+	type Channel,
+	type ChatInputCommandInteraction,
+	type ComponentType,
+	InteractionResponseType,
+	Routes
+} from 'discord.js';
 import { Time, noOp } from 'e';
 
 import { SILENT_ERROR } from '../constants';
@@ -20,6 +29,7 @@ export async function handleMahojiConfirmation(
 	str: string,
 	_users?: string[]
 ) {
+	if (process.env.TEST) return;
 	let channel: Channel | null = globalClient.channels.cache.get(interaction.channelId) ?? null;
 	if (!channel) {
 		channel = await globalClient.channels.fetch(interaction.channelId).catch(() => null);

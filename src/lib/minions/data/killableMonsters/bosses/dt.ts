@@ -1,12 +1,10 @@
 import { Time, roll } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
-import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
-import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '../../../../data/CollectionsExport';
-import { GearStat } from '../../../../gear/types';
-import { SkillsEnum } from '../../../../skilling/types';
-import { getOSItem } from '../../../../util/getOSItem';
-import itemID from '../../../../util/itemID';
+import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '@/lib/data/CollectionsExport';
+import { SkillsEnum } from '@/lib/skilling/types';
+import { getOSItem } from '@/lib/util/getOSItem';
 import type { KillableMonster, KillableMonsterEffect } from '../../../types';
 import { QuestID } from '../../quests';
 
@@ -41,7 +39,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		id: Monsters.DukeSucellus.id,
 		name: Monsters.DukeSucellus.name,
 		aliases: Monsters.DukeSucellus.aliases,
-		timeToFinish: Time.Minute * 5.1,
+		timeToFinish: Time.Minute * 3.1,
 		table: Monsters.DukeSucellus,
 		notifyDrops: resolveItems(['Virtus robe top', 'Baron', 'Virtus robe bottom', 'Virtus mask']),
 		qpRequired: 100,
@@ -73,13 +71,13 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			{
 				items: [
 					{ boostPercent: 5, itemID: itemID('Bellator ring') },
-					{ boostPercent: 5, itemID: itemID('Ultor ring') }
+					{ boostPercent: 3, itemID: itemID('Ultor ring') }
 				],
 				gearSetup: 'melee'
 			}
 		],
 
-		respawnTime: Time.Minute * 1.5,
+		respawnTime: Time.Minute * 0.5,
 		levelRequirements: {
 			prayer: 43,
 			hitpoints: 70
@@ -90,7 +88,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			['Torva platelegs', 'Bandos tassets']
 		]),
 		defaultAttackStyles: [SkillsEnum.Attack],
-		combatXpMultiplier: 1.135,
+		combatXpMultiplier: 1.525,
 		healAmountNeeded: 45 * 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
@@ -145,7 +143,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			{
 				items: [
 					{ boostPercent: 5, itemID: itemID('Bellator ring') },
-					{ boostPercent: 5, itemID: itemID('Ultor ring') }
+					{ boostPercent: 3, itemID: itemID('Ultor ring') }
 				],
 				gearSetup: 'melee'
 			}
@@ -162,7 +160,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			['Torva platelegs', 'Bandos tassets']
 		]),
 		defaultAttackStyles: [SkillsEnum.Attack],
-		combatXpMultiplier: 1.135,
+		combatXpMultiplier: 1.525,
 		healAmountNeeded: 45 * 20 * 2.5,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],

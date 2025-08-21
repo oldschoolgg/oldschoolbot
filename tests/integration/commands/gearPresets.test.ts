@@ -1,8 +1,7 @@
 import { randInt } from 'e';
-import { EItem } from 'oldschooljs';
+import { EItem, itemID } from 'oldschooljs';
 import { describe, expect, test, vi } from 'vitest';
 
-import itemID from '../../../src/lib/util/itemID';
 import { gearPresetsCommand } from '../../../src/mahoji/commands/gearpresets';
 import { createTestUser } from '../util';
 

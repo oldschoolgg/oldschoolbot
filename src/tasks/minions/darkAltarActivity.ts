@@ -1,7 +1,7 @@
 import { increaseNumByPercent, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '../../lib/constants';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { darkAltarRunes } from '../../lib/minions/functions/darkAltarCommand';
 import { bloodEssence, raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
 import { SkillsEnum } from '../../lib/skilling/types';

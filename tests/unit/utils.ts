@@ -29,7 +29,8 @@ export function makeGearBank({ bank }: { bank?: Bank } = {}) {
 		bank: bank ?? new Bank(),
 		skillsAsLevels: makeSkillsAsLevels(),
 		chargeBank: new ChargeBank(),
-		skillsAsXP: makeSkillsAsLevels(13034431)
+		skillsAsXP: makeSkillsAsLevels(13034431),
+		minionName: 'Minion'
 	});
 }
 

@@ -1,4 +1,12 @@
-import { isFunction } from 'e';
+import { isFunction } from './typeChecking';
+
+const untrustworthyEscapeHTML = (str: string) =>
+	str
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&#39;');
 
 export class Tab {
 	private title = '';
@@ -63,6 +71,12 @@ export class Table {
 		const separatorLine = `| ${this.headers.map(() => '---').join(' | ')} |`;
 		const rows = this.rows.map(row => `| ${row.join(' | ')} |`).join('\n');
 		return `${headerLine}\n${separatorLine}\n${rows}\n`;
+	}
+
+	toHTML(): string {
+		const thead = `<thead><tr>${this.headers.map(h => `<th>${untrustworthyEscapeHTML(h)}</th>`).join('')}</tr></thead>`;
+		const tbody = `<tbody>${this.rows.map(row => `<tr>${row.map(cell => `<td>${untrustworthyEscapeHTML(cell)}</td>`).join('')}</tr>`).join('')}</tbody>`;
+		return `<table>${thead}${tbody}</table>`;
 	}
 }
 

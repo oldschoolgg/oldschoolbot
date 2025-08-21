@@ -1,4 +1,4 @@
-import type { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 
 export const inviteCommand: OSBMahojiCommand = {
 	name: 'invite',

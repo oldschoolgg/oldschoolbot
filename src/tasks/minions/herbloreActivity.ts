@@ -5,9 +5,9 @@ import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { HerbloreActivityTaskOptions } from '../../lib/types/minions';
-import { percentChance } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { percentChance } from '../../lib/util/rng';
 
 export const herbloreTask: MinionTask = {
 	type: 'Herblore',

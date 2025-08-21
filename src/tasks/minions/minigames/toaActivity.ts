@@ -1,20 +1,17 @@
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { bold } from 'discord.js';
 import { Time, isObject, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank, ItemGroups, resolveItems } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import { drawChestLootImage } from '../../../lib/bankImage';
-import { Emoji, Events, toaPurpleItems } from '../../../lib/constants';
-import { toaCL } from '../../../lib/data/CollectionsExport';
+import { drawChestLootImage } from '@/lib/canvas/chestImage';
+import { normalizeTOAUsers } from '@/lib/util/smallUtils';
 import { trackLoot } from '../../../lib/lootTrack';
-import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import {
+	type RaidLevel,
 	calcTOALoot,
 	calculateXPFromRaid,
-	normalizeTOAUsers,
 	toaOrnamentKits,
 	toaPetTransmogItems
 } from '../../../lib/simulation/toa';
@@ -79,7 +76,7 @@ export const toaTask: MinionTask = {
 			);
 		}
 
-		const totalLoot = new TeamLoot(toaCL);
+		const totalLoot = new TeamLoot(ItemGroups.toaCL);
 
 		const raidResults: Map<string, RaidResultUser> = new Map();
 		for (const user of allUsers) {
@@ -87,7 +84,7 @@ export const toaTask: MinionTask = {
 				mUser: user,
 				points: 0,
 				deaths: 0,
-				kc: await getMinigameScore(user.id, 'tombs_of_amascut')
+				kc: await user.fetchMinigameScore('tombs_of_amascut')
 			});
 		}
 
@@ -108,7 +105,7 @@ export const toaTask: MinionTask = {
 						deaths: i.deaths
 					};
 				}),
-				raidLevel
+				raidLevel: raidLevel as RaidLevel
 			});
 			for (const { id, points, deaths } of detailedUsers[x]) {
 				const currentUser = raidResults.get(id)!;
@@ -124,7 +121,7 @@ export const toaTask: MinionTask = {
 		}
 		messages = uniqueArr(messages);
 		const minigameIncrementResult = await Promise.all(
-			allUsers.map(u => incrementMinigameScore(u.id, 'tombs_of_amascut', quantity))
+			allUsers.map(u => u.incrementMinigameScore('tombs_of_amascut', quantity))
 		);
 
 		let resultMessage = isSolo
@@ -178,9 +175,13 @@ export const toaTask: MinionTask = {
 
 			const items = itemsAdded.items();
 
-			const isPurple = items.some(([item]) => toaPurpleItems.includes(item.id));
-			if (items.some(([item]) => toaPurpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))) {
-				const itemsToAnnounce = itemsAdded.filter(item => toaPurpleItems.includes(item.id));
+			const isPurple = items.some(([item]) => ItemGroups.toaPurpleItems.includes(item.id));
+			if (
+				items.some(
+					([item]) => ItemGroups.toaPurpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id)
+				)
+			) {
+				const itemsToAnnounce = itemsAdded.filter(item => ItemGroups.toaPurpleItems.includes(item.id));
 				globalClient.emit(
 					Events.ServerNotification,
 					`${Emoji.Purple} ${

@@ -1,7 +1,6 @@
 import { Time } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, EMonster, Monsters } from 'oldschooljs';
 
-import { PHOSANI_NIGHTMARE_ID } from '../constants';
 import { Requirements } from '../structures/Requirements';
 import type {
 	ActivityTaskData,
@@ -406,7 +405,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 	{
 		id: 3030,
 		name: "Phosani's Speedrunner",
-		desc: "Defeat Phosani's Nightmare within 7:30 minutes.",
+		desc: "Defeat Phosani's Nightmare within 6 minutes.",
 		type: 'speed',
 		monster: "Phosani's Nightmare",
 		rng: {
@@ -433,7 +432,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: "Phosani's Nightmare",
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[PHOSANI_NIGHTMARE_ID]: 5
+				[EMonster.PHOSANI_NIGHTMARE]: 5
 			}
 		})
 	},
@@ -445,7 +444,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: "Phosani's Nightmare",
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[PHOSANI_NIGHTMARE_ID]: 25
+				[EMonster.PHOSANI_NIGHTMARE]: 25
 			}
 		})
 	},
@@ -1278,11 +1277,11 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 	{
 		id: 3108,
 		name: 'Duke Sucellus Speed-Runner',
-		desc: 'Kill Duke Sucellus in less than 1:25 minutes without a slayer task.',
+		desc: 'Kill Duke Sucellus in less than 40 seconds without a slayer task.',
 		type: 'speed',
 		monster: 'Duke Sucellus',
 		rng: {
-			chancePerKill: 150,
+			chancePerKill: 100,
 			hasChance: isCertainMonsterTrip(Monsters.DukeSucellus.id)
 		}
 	},

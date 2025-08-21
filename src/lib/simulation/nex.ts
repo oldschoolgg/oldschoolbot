@@ -1,3 +1,5 @@
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { userMention } from 'discord.js';
 import {
 	Time,
@@ -11,18 +13,13 @@ import {
 	roll,
 	sumArr
 } from 'e';
-import { Bank } from 'oldschooljs';
-import { randomVariation } from 'oldschooljs/dist/util/util';
+import { Bank, EMonster, itemID, randomVariation, resolveItems } from 'oldschooljs';
 
-import { exponentialPercentScale, formatDuration } from '@oldschoolgg/toolkit/util';
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import { BitField, NEX_ID } from '../constants';
+import { BitField } from '../constants';
 import type { Skills } from '../types';
-import { formatList } from '../util';
+import { arrows, bolts, bows, crossbows } from '../util/archery';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
-import itemID from '../util/itemID';
-import { arrows, bolts, bows, crossbows } from '../util/minionUtils';
-import { formatSkillRequirements, itemNameFromID } from '../util/smallUtils';
+import { formatList, formatSkillRequirements, itemNameFromID } from '../util/smallUtils';
 import { TeamLoot } from './TeamLoot';
 import { NexNonUniqueTable, NexUniqueTable } from './misc';
 
@@ -202,7 +199,7 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 	for (const member of team) {
 		let { offence, defence, rangeGear } = nexGearStats(member);
 		let deathChance = 100;
-		const nexKC = await member.getKC(NEX_ID);
+		const nexKC = await member.getKC(EMonster.NEX);
 		const kcLearningCap = 500;
 		const kcPercent = clamp(calcWhatPercent(nexKC, kcLearningCap), 0, 100);
 		const messages: string[] = [];

@@ -1,11 +1,11 @@
+import { Events } from '@oldschoolgg/toolkit/constants';
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import type { Giveaway } from '@prisma/client';
 import { type MessageEditOptions, time, userMention } from 'discord.js';
 import { Time, debounce, noOp } from 'e';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { Events } from '../constants';
 import { sql } from '../postgres.js';
-import { channelIsSendable } from '../util';
 import { logError } from './logError';
 import { sendToChannelID } from './webhook';
 
@@ -120,7 +120,7 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 		);
 
 		const str = `<@${giveaway.user_id}> **Giveaway finished:** ${giveaway.users_entered.length} users joined, the winner is... **${winner.mention}**
-			
+
 They received these items: ${loot}`;
 
 		await sendToChannelID(giveaway.channel_id, {

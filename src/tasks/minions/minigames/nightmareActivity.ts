@@ -1,13 +1,12 @@
 import { percentChance } from 'e';
-import { Bank, Misc } from 'oldschooljs';
+import { Bank, EMonster, Misc, randomVariation } from 'oldschooljs';
 
-import { BitField, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../../../lib/constants';
+import { BitField } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
 import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import type { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -19,7 +18,7 @@ export const nightmareTask: MinionTask = {
 	async run(data: NightmareActivityTaskOptions) {
 		const { channelID, quantity, duration, isPhosani = false, userID, method } = data;
 
-		const monsterID = isPhosani ? PHOSANI_NIGHTMARE_ID : NightmareMonster.id;
+		const monsterID = isPhosani ? EMonster.PHOSANI_NIGHTMARE : NightmareMonster.id;
 		const monsterName = isPhosani ? "Phosani's Nightmare" : 'Nightmare';
 		const user = await mUserFetch(userID);
 		const team = method === 'solo' ? [user.id] : [user.id, '1', '2', '3'];
@@ -49,7 +48,7 @@ export const nightmareTask: MinionTask = {
 		}
 
 		const xpRes = await addMonsterXP(user, {
-			monsterID: NIGHTMARE_ID,
+			monsterID: EMonster.NIGHTMARE,
 			quantity: Math.ceil(quantity / team.length),
 			duration,
 			isOnTask: false,
@@ -57,7 +56,6 @@ export const nightmareTask: MinionTask = {
 		});
 
 		const { newKC } = await user.incrementKC(monsterID, kc);
-
 		const ownsOrUsedTablet =
 			user.bank.has('Slepey tablet') ||
 			(user.bitfield.includes(BitField.HasSlepeyTablet) && user.cl.has('Slepey Tablet'));
@@ -65,8 +63,11 @@ export const nightmareTask: MinionTask = {
 			if (ownsOrUsedTablet) {
 				userLoot.remove('Slepey tablet', userLoot.amount('Slepey tablet'));
 			}
-			if (!ownsOrUsedTablet && kc > 0 && newKC >= 100 && !userLoot.has('Slepey tablet')) {
-				userLoot.add('Slepey tablet');
+			if (!ownsOrUsedTablet && !userLoot.has('Slepey tablet')) {
+				// const { newKC } = await user.incrementKC(monsterID, kc);
+				if (newKC >= 25) {
+					userLoot.add('Slepey tablet');
+				}
 			}
 		}
 
@@ -114,10 +115,11 @@ export const nightmareTask: MinionTask = {
 			});
 
 			const kc = await user.getKC(monsterID);
+			const kcPerHour = (quantity / (duration / (1000 * 60 * 60))).toFixed(2);
 			handleTripFinish(
 				user,
 				channelID,
-				`${user}, ${user.minionName} finished killing ${quantity} ${monsterName}, you died ${deaths} times. Your ${monsterName} KC is now ${kc}. ${xpRes}`,
+				`${user}, ${user.minionName} finished killing ${quantity} ${monsterName} (${kcPerHour}/hr), you died ${deaths} times. Your ${monsterName} KC is now ${kc}. ${xpRes}`,
 				image.file.attachment,
 				data,
 				itemsAdded

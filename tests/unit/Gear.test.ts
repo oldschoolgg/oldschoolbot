@@ -1,10 +1,9 @@
 import type { GearPreset } from '@prisma/client';
-import { Bank, itemID } from 'oldschooljs';
+import { Bank, Items, itemID } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 import { describe, expect, it, test } from 'vitest';
 
-import { GearStat } from '../../src/lib/gear/types';
 import { Gear, constructGearSetup } from '../../src/lib/structures/Gear';
-import { itemNameFromID } from '../../src/lib/util';
 import getOSItem from '../../src/lib/util/getOSItem';
 
 describe('Gear', () => {
@@ -33,7 +32,10 @@ describe('Gear', () => {
 
 	test('allItems', () => {
 		const gear = new Gear({ cape: 'Max cape' });
-		const allItems = gear.allItems(true).map(itemNameFromID).sort();
+		const allItems = gear
+			.allItems(true)
+			.map(id => Items.itemNameFromId(id))
+			.sort();
 		expect(allItems).toEqual(
 			[
 				'Max cape',

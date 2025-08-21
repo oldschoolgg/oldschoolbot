@@ -43,3 +43,5 @@ wiki.xml
 
 *.tsbuildinfo
 */coverage
+
+test-bot-store-*.json

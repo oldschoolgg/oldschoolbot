@@ -2,8 +2,8 @@ import { notEmpty } from 'e';
 import { Bank, type Item } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
-import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
+import { assert } from '../../../lib/util/logError';
 import { flowerTable } from './hotColdCommand';
 
 interface Usable {

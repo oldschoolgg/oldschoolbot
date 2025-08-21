@@ -17,12 +17,27 @@ export const runeHeraldicShields = [
 	EItem.RUNE_SHIELD_H5
 ];
 
-const karilsItems = [EItem.KARILS_COIF, EItem.KARILS_LEATHERTOP, EItem.KARILS_LEATHERSKIRT, EItem.KARILS_CROSSBOW];
-const dharokItems = [EItem.DHAROKS_HELM, EItem.DHAROKS_PLATEBODY, EItem.DHAROKS_PLATELEGS, EItem.DHAROKS_GREATAXE];
-const guthansItems = [EItem.GUTHANS_HELM, EItem.GUTHANS_PLATEBODY, EItem.GUTHANS_CHAINSKIRT, EItem.GUTHANS_WARSPEAR];
-const toragsItems = [EItem.TORAGS_HELM, EItem.TORAGS_PLATEBODY, EItem.TORAGS_PLATELEGS, EItem.TORAGS_HAMMERS];
-const veracsItems = [EItem.VERACS_HELM, EItem.VERACS_BRASSARD, EItem.VERACS_PLATESKIRT, EItem.VERACS_FLAIL];
-const ahrimsItems = [EItem.AHRIMS_HOOD, EItem.AHRIMS_ROBETOP, EItem.AHRIMS_ROBESKIRT, EItem.AHRIMS_STAFF];
+export const karilsItems = [
+	EItem.KARILS_COIF,
+	EItem.KARILS_LEATHERTOP,
+	EItem.KARILS_LEATHERSKIRT,
+	EItem.KARILS_CROSSBOW
+];
+export const dharokItems = [
+	EItem.DHAROKS_HELM,
+	EItem.DHAROKS_PLATEBODY,
+	EItem.DHAROKS_PLATELEGS,
+	EItem.DHAROKS_GREATAXE
+];
+export const guthansItems = [
+	EItem.GUTHANS_HELM,
+	EItem.GUTHANS_PLATEBODY,
+	EItem.GUTHANS_CHAINSKIRT,
+	EItem.GUTHANS_WARSPEAR
+];
+export const toragsItems = [EItem.TORAGS_HELM, EItem.TORAGS_PLATEBODY, EItem.TORAGS_PLATELEGS, EItem.TORAGS_HAMMERS];
+export const veracsItems = [EItem.VERACS_HELM, EItem.VERACS_BRASSARD, EItem.VERACS_PLATESKIRT, EItem.VERACS_FLAIL];
+export const ahrimsItems = [EItem.AHRIMS_HOOD, EItem.AHRIMS_ROBETOP, EItem.AHRIMS_ROBESKIRT, EItem.AHRIMS_STAFF];
 
 export const barrowsItemArr = [karilsItems, ahrimsItems, guthansItems, toragsItems, veracsItems, dharokItems];
 
@@ -144,24 +159,38 @@ export const teamCapes = [
 	EItem.TEAM50_CAPE
 ];
 
-export const beekeeperOutfit = [
-	EItem.BEEKEEPERS_HAT,
-	EItem.BEEKEEPERS_TOP,
-	EItem.BEEKEEPERS_LEGS,
-	EItem.BEEKEEPERS_GLOVES,
-	EItem.BEEKEEPERS_BOOTS
+export const championScrolls = [
+	EItem.EARTH_WARRIOR_CHAMPION_SCROLL,
+	EItem.GHOUL_CHAMPION_SCROLL,
+	EItem.GIANT_CHAMPION_SCROLL,
+	EItem.GOBLIN_CHAMPION_SCROLL,
+	EItem.HOBGOBLIN_CHAMPION_SCROLL,
+	EItem.IMP_CHAMPION_SCROLL,
+	EItem.JOGRE_CHAMPION_SCROLL,
+	EItem.LESSER_DEMON_CHAMPION_SCROLL,
+	EItem.SKELETON_CHAMPION_SCROLL,
+	EItem.ZOMBIE_CHAMPION_SCROLL
 ];
 
-export const camoOutfit = [EItem.CAMO_HELMET, EItem.CAMO_TOP, EItem.CAMO_BOTTOMS];
-
-export const lederhosenOutfit = [EItem.LEDERHOSEN_HAT, EItem.LEDERHOSEN_TOP, EItem.LEDERHOSEN_SHORTS];
-
-export const zombieOutfit = [
-	EItem.ZOMBIE_MASK,
-	EItem.ZOMBIE_SHIRT,
-	EItem.ZOMBIE_TROUSERS,
-	EItem.ZOMBIE_GLOVES,
-	EItem.ZOMBIE_BOOTS
+export const demonBaneWeapons = [
+	EItem.SILVERLIGHT,
+	EItem.DARKLIGHT,
+	EItem.ARCLIGHT,
+	EItem.EMBERLIGHT,
+	EItem.SCORCHING_BOW,
+	EItem.PURGING_STAFF
 ];
 
-export const mimeOutfit = [EItem.MIME_MASK, EItem.MIME_TOP, EItem.MIME_LEGS, EItem.MIME_GLOVES, EItem.MIME_BOOTS];
+export const nails = [
+	EItem.BRONZE_NAILS,
+	EItem.IRON_NAILS,
+	EItem.STEEL_NAILS,
+	EItem.MITHRIL_NAILS,
+	EItem.ADAMANTITE_NAILS,
+	EItem.RUNE_NAILS
+];
+
+export const virtusOutfit = [EItem.VIRTUS_MASK, EItem.VIRTUS_ROBE_TOP, EItem.VIRTUS_ROBE_BOTTOM];
+
+export * from './item-groups/boss-cl';
+export * from './item-groups/outfits';

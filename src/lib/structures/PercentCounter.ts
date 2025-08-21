@@ -1,4 +1,4 @@
-import { formatDuration } from '../util';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 
 export class PercentCounter {
 	public value: number;

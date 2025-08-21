@@ -1,9 +1,9 @@
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Time, clamp } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, Items, toKMB } from 'oldschooljs';
 
 import { Planks } from '../../../lib/minions/data/planks';
 import type { SawmillActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -52,7 +52,7 @@ export async function sawmillCommand(
 	}
 
 	if (quantity === 0) {
-		return `You don't have any ${itemNameFromID(plank.inputItem)}.`;
+		return `You don't have any ${Items.itemNameFromId(plank.inputItem)}.`;
 	}
 
 	const { GP } = user;
@@ -86,7 +86,7 @@ export async function sawmillCommand(
 		channelID: channelID.toString()
 	});
 
-	let response = `${user.minionName} is now creating ${quantity} ${itemNameFromID(plank.outputItem)}${
+	let response = `${user.minionName} is now creating ${quantity} ${Items.itemNameFromId(plank.outputItem)}${
 		quantity > 1 ? 's' : ''
 	}. The Sawmill has charged you ${toKMB(cost)} GP. They'll come back in around ${formatDuration(duration)}.`;
 

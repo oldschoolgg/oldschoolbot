@@ -1,11 +1,11 @@
-import { Time, calcWhatPercent, percentChance, reduceNumByPercent } from 'e';
-
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { ZALCANO_ID } from '../../../lib/constants';
+import { Time, calcWhatPercent, percentChance, reduceNumByPercent } from 'e';
+import { EMonster } from 'oldschooljs';
+
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { soteSkillRequirements } from '../../../lib/skilling/functions/questRequirements';
 import type { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
-import { hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
@@ -31,7 +31,7 @@ export async function zalcanoCommand(user: MUser, channelID: string, quantity?: 
 		return 'To fight Zalcano, you need 150 QP.';
 	}
 
-	const kc = await user.getKC(ZALCANO_ID);
+	const kc = await user.getKC(EMonster.ZALCANO);
 	const kcLearned = Math.min(100, calcWhatPercent(kc, 100));
 
 	const boosts = [];

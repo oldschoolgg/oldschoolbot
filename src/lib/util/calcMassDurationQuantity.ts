@@ -1,4 +1,4 @@
-import { reducedTimeForGroup } from '../minions/functions';
+import reducedTimeForGroup from '../minions/functions/reducedTimeForGroup';
 import type { KillableMonster } from '../minions/types';
 import { calcMaxTripLength } from './calcMaxTripLength';
 

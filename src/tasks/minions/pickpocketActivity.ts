@@ -1,8 +1,8 @@
 import { percentChance, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { Events } from '../../lib/constants';
 import type { Stealable } from '../../lib/skilling/skills/thieving/stealables';
 import { stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';

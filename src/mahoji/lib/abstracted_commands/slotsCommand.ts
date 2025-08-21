@@ -1,12 +1,15 @@
+import { type CommandResponse, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
-import type { BaseMessageOptions, ChatInputCommandInteraction } from 'discord.js';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import {
+	ActionRowBuilder,
+	type BaseMessageOptions,
+	ButtonBuilder,
+	ButtonStyle,
+	type ChatInputCommandInteraction
+} from 'discord.js';
 import { chunk, noOp, randInt, shuffleArr, sleep } from 'e';
-import { Bank } from 'oldschooljs';
-import { toKMB } from 'oldschooljs/dist/util';
+import { Bank, toKMB } from 'oldschooljs';
 
-import { channelIsSendable } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../../lib/util/interactionReply';
 import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '../../mahojiSettings';

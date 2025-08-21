@@ -1,12 +1,14 @@
+import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import { Prisma } from '@prisma/client';
 import { noOp, notEmpty, uniqueArr } from 'e';
+import { convertXPtoLVL } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { partition } from 'remeda';
 import z from 'zod';
 
-import { BadgesEnum, Roles, globalConfig } from '../lib/constants';
+import { BadgesEnum, MAX_LEVEL, Roles, globalConfig } from '../lib/constants';
 import { getCollectionItems } from '../lib/data/Collections';
 import { Minigames } from '../lib/settings/minigames';
 import { ClueTiers } from './clues/clueTiers';
@@ -14,7 +16,7 @@ import { loggedRawPrismaQuery } from './rawSql';
 import { TeamLoot } from './simulation/TeamLoot';
 import { SkillsArray } from './skilling/types';
 import type { ItemBank } from './types';
-import { convertXPtoLVL, getUsernameSync, returnStringOrFile } from './util';
+import { getUsernameSync } from './util';
 import { fetchMultipleCLLeaderboards } from './util/clLeaderboard';
 import { logError } from './util/logError';
 
@@ -38,7 +40,8 @@ const CLS_THAT_GET_ROLE = [
 	'slayer',
 	'other',
 	'custom',
-	'overall'
+	'overall',
+	'creatables'
 ];
 
 for (const cl of CLS_THAT_GET_ROLE) {
@@ -80,7 +83,7 @@ async function topSkillers() {
 		.map((u: any) => {
 			let totalLevel = 0;
 			for (const skill of SkillsArray) {
-				totalLevel += convertXPtoLVL(Number(u[`skills.${skill}` as keyof any]) as any);
+				totalLevel += convertXPtoLVL(Number(u[`skills.${skill}` as keyof any]) as any, MAX_LEVEL);
 			}
 			return {
 				id: u.id,

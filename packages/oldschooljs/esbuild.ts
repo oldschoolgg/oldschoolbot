@@ -14,7 +14,8 @@ const baseOptions: esbuild.BuildOptions = {
 		'./src/EItem.ts',
 		'./src/EMonster.ts',
 		'./src/structures/Wiki.ts',
-		'./src/structures/Hiscores.ts'
+		'./src/structures/Hiscores.ts',
+		'./src/gear/index.ts'
 	],
 	bundle: true,
 	sourcemap: true,

@@ -1,28 +1,25 @@
-import { mentionCommand } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import type { Prisma } from '@prisma/client';
-import { xp_gains_skill_enum } from '@prisma/client';
-import type { User } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, noOp } from 'e';
-import { Bank, Items, calcDropRatesFromBankWithoutUniques } from 'oldschooljs';
-import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
+import { type CommandRunOptions, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { type Prisma, xp_gains_skill_enum } from '@prisma/client';
+import { ApplicationCommandOptionType, MessageFlags, type User } from 'discord.js';
+import { Time, noOp, randArrItem, randInt } from 'e';
+import { Bank, Items, MAX_INT_JAVA, convertLVLtoXP, getItem, itemID, resolveItems } from 'oldschooljs';
 
-import { getItem, resolveItems } from 'oldschooljs/dist/util/util';
+import { testBotKvStore } from '@/testing/TestBotStore';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
-import { MAX_INT_JAVA, globalConfig } from '../../lib/constants';
+import { globalConfig } from '../../lib/constants';
+import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
-import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import potions from '../../lib/minions/data/potions';
 import { MAX_QP, quests } from '../../lib/minions/data/quests';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
-
-import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
@@ -31,7 +28,6 @@ import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { allSlayerMonsters } from '../../lib/slayer/tasks';
 import { Gear } from '../../lib/structures/Gear';
-import { stringMatches } from '../../lib/util';
 import type { FarmingPatchName } from '../../lib/util/farmingHelpers';
 import { farmingPatchNames, getFarmingKeyFromName, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
 import getOSItem from '../../lib/util/getOSItem';
@@ -42,16 +38,15 @@ import { gearViewCommand } from '../lib/abstracted_commands/gearCommands';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { BingoManager } from '../lib/bingo/BingoManager';
-import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo';
 
-export async function giveMaxStats(user: MUser) {
-	const updates: Prisma.UserUpdateArgs['data'] = {};
+export function getMaxUserValues() {
+	const updates: Omit<Prisma.UserUpdateArgs['data'], 'id'> = {};
 	for (const skill of Object.values(xp_gains_skill_enum)) {
 		updates[`skills_${skill}`] = convertLVLtoXP(99);
 	}
-	await user.update({
+	return {
 		QP: MAX_QP,
 		slayer_points: 50_000,
 		nmz_points: 50_000,
@@ -60,7 +55,11 @@ export async function giveMaxStats(user: MUser) {
 		zeal_tokens: 500_000,
 		lms_points: 500_000,
 		...updates
-	});
+	};
+}
+
+export async function giveMaxStats(user: MUser) {
+	return user.update(getMaxUserValues());
 }
 
 const coloMelee = new Gear();
@@ -502,24 +501,9 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'check',
-					description: 'Check something',
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'monster_droprates',
-							description: 'Simulation to check droprates on a monster.',
-							required: false,
-							autocomplete: async value => {
-								return killableMonsters
-									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-									.map(i => ({
-										name: i.name,
-										value: i.name
-									}));
-							}
-						}
-					]
+					name: 'get_code',
+					description: 'Get your secret code for the test dashboard',
+					options: []
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
@@ -605,7 +589,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 				forcegrow?: { patch_name: FarmingPatchName };
 				wipe?: { thing: (typeof thingsToWipe)[number] };
 				set?: { qp?: number; all_ca_tasks?: boolean };
-				check?: { monster_droprates?: string };
+				get_code?: {};
 				bingo_tools?: { start_bingo: string };
 				setslayertask?: { master: string; monster: string; quantity: number };
 				events?: {};
@@ -647,29 +631,66 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					}
 				}
 
-				if (options.check) {
-					if (options.check.monster_droprates) {
-						const monster = killableMonsters.find(m =>
-							stringMatches(m.name, options.check?.monster_droprates)
-						);
-						if (!monster) return 'Invalid monster';
-						const qty = 1_000_000;
-						const loot = monster.table.kill(qty, {});
-						const droprates = calcDropRatesFromBankWithoutUniques(loot, qty);
-						return {
-							files: [
-								{
-									attachment: Buffer.from(`Total Kills: ${qty}
-Total Value of Loot: ${loot.value()}
-GP/hr(roughly): ${toKMB(loot.value() / (monster.timeToFinish * qty))}
+				if (options.get_code) {
+					const existingCode = testBotKvStore.get(`user.${user.id}.code`);
 
-Droprates:
-${droprates.join('\n')}`),
-									name: 'monsterinfo.txt'
-								}
-							]
-						};
+					let finalCode = existingCode;
+					if (!existingCode) {
+						const words = [
+							'monkey',
+							'chicken',
+							'bandos',
+							'nex',
+							'cow',
+							'dragon',
+							'bronze',
+							'goblin',
+							'zamorak',
+							'saradomin',
+							'armadyl',
+							'kraken',
+							'swan',
+							'wildy',
+							'slayer',
+							'agility',
+							'cooking',
+							'fishing',
+							'mining',
+							'smithing',
+							'runecraft',
+							'crafting',
+							'prayer',
+							'fletching',
+							'farming',
+							'herblore',
+							'hunter',
+							'magic',
+							'attack',
+							'strength',
+							'defence',
+							'ranged',
+							'hitpoints',
+							'ahrim',
+							'guthans',
+							'torags',
+							'veracs',
+							'inferno',
+							'jad',
+							'crystal',
+							'torva',
+							'dharoks'
+						];
+						const newCode = `${randArrItem(words)}${randInt(0, 9)}`;
+						testBotKvStore.set(`user.${user.id}.code`, newCode);
+						finalCode = newCode;
 					}
+
+					return {
+						content: `Your secret code for the dashboard is: \`${finalCode}\` - do not share with anyone.
+
+Warning: Visiting a test dashboard may let developers see your IP address. Attempting to abuse a test dashboard may result in a ban.`,
+						flags: [MessageFlags.Ephemeral]
+					};
 				}
 
 				if (options.set) {

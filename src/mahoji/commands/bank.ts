@@ -1,21 +1,22 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { PaginatedMessage, makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
+import { type CommandRunOptions, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, EmbedBuilder, codeBlock } from 'discord.js';
 import { chunk } from 'e';
 import type { Bank } from 'oldschooljs';
 
-import { PaginatedMessage } from '../../lib/PaginatedMessage';
-import type { BankFlag } from '../../lib/bankImage';
-import { bankFlags } from '../../lib/bankImage';
-import { Emoji, PerkTier } from '../../lib/constants';
+import { logError, logErrorForInteraction } from '@/lib/util/logError';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import type { BankFlag } from '../../lib/canvas/bankImage';
+import { bankFlags } from '../../lib/canvas/bankImage';
+import { PerkTier } from '../../lib/constants';
 import type { Flags } from '../../lib/minions/types';
 import type { BankSortMethod } from '../../lib/sorts';
 import { BankSortMethods } from '../../lib/sorts';
-import { channelIsSendable, makePaginatedMessage } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption, itemOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 
 const bankFormats = ['json', 'text_paged', 'text_full'] as const;
 const bankItemsPerPage = 10;
@@ -182,7 +183,18 @@ export const bankCommand: OSBMahojiCommand = {
 			const channel = globalClient.channels.cache.get(channelID.toString());
 			if (!channelIsSendable(channel)) return 'Failed to send paginated bank message, sorry.';
 
-			makePaginatedMessage(channel, pages, user.id);
+			makePaginatedMessage(
+				channel,
+				pages,
+				(err, itx) => {
+					if (itx) {
+						logErrorForInteraction(err, itx);
+					} else {
+						logError(err);
+					}
+				},
+				user.id
+			);
 			return { content: 'Here is your selected bank:', ephemeral: true };
 		}
 		if (options.format === 'json') {
@@ -223,6 +235,13 @@ export const bankCommand: OSBMahojiCommand = {
 		}
 
 		const m = new PaginatedMessage({
+			onError: (err, itx) => {
+				if (itx) {
+					logErrorForInteraction(err, itx);
+				} else {
+					logError(err);
+				}
+			},
 			pages: {
 				numPages: bankSize,
 				generate: async ({ currentPage }) => {

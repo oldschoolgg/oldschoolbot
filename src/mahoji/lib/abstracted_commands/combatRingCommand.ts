@@ -1,7 +1,7 @@
+import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 
 import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
 export async function combatRingCommand(user: MUser, channelID: string) {
