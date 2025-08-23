@@ -1,6 +1,6 @@
 {
-	"hash": "78f93a3afe306283114800473a0ab657",
-	"date": "2025-08-14T03:54:33.535Z",
+	"hash": "5043618fcfdfd44ce32379e2af127658",
+	"date": "2025-08-22T23:27:20.486Z",
 	"data": [
 		{
 			"id": 2,
@@ -1703,8 +1703,8 @@
 		{
 			"id": 12191,
 			"name": "Duke Sucellus",
-			"base_kill_time_ms": 306000,
-			"respawn_time_ms": 90000,
+			"base_kill_time_ms": 186000,
+			"respawn_time_ms": 30000,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,
@@ -4636,7 +4636,7 @@
 		{
 			"id": 8713,
 			"name": "Sarachnis",
-			"base_kill_time_ms": 91200,
+			"base_kill_time_ms": 97800,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,

@@ -2,6 +2,7 @@ import { Time, roll } from 'e';
 import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
 
 import { GearStat } from 'oldschooljs/gear';
+import { BitField } from '../../../../../../src/lib/constants';
 import { corporealBeastCL, muspahCL } from '../../../../data/CollectionsExport';
 import { SkillsEnum } from '../../../../skilling/types';
 import { Gear } from '../../../../structures/Gear';
@@ -1174,8 +1175,8 @@ const killableBosses: KillableMonster[] = [
 				defence_stab: 0
 			}
 		},
-		specialLoot: ({ loot, ownedItems }) => {
-			if (loot.has('Mystic vigour prayer scroll') && ownedItems.has('Mystic vigour prayer scroll')) {
+		specialLoot: ({ loot, user }) => {
+			if (user && loot.has('Mystic vigour prayer scroll') && user.bitfield.includes(BitField.HasMysticVigourScroll)) {
 				loot.set('Mystic vigour prayer scroll', 0);
 			}
 		}
@@ -1307,8 +1308,8 @@ const killableBosses: KillableMonster[] = [
 				defence_stab: 0
 			}
 		},
-		specialLoot: ({ loot, ownedItems }) => {
-			if (loot.has('Deadeye prayer scroll') && ownedItems.has('Deadeye prayer scroll')) {
+		specialLoot: ({ loot, user }) => {
+			if (user && loot.has('Deadeye prayer scroll') && user.bitfield.includes(BitField.HasDeadeyeScroll)) {
 				loot.set('Deadeye vigour prayer scroll', 0);
 			}
 		}
