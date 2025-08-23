@@ -59,7 +59,7 @@ export interface MinionKillOptions {
 	user: MUser;
 }
 
-export async function newMinionKillCommand(args: MinionKillOptions): Promise<string | MinionKillReturn> {
+export function newMinionKillCommand(args: MinionKillOptions): string | MinionKillReturn {
 	let {
 		combatOptions,
 		attackStyles,
@@ -160,19 +160,9 @@ export async function newMinionKillCommand(args: MinionKillOptions): Promise<str
 
 	const ephemeralPostTripEffects: PostBoostEffect[] = [];
 
-	let kcForBonus = args.monsterKC; // Default to the single monster's KC
-	const royalTitansGroupIDs = [Monsters.Branda.id, Monsters.Eldric.id, Monsters.RoyalTitans.id];
-
-	if (royalTitansGroupIDs.includes(monster.id)) {
-		const brandaKC = await args.user.getKC(Monsters.Branda.id);
-		const eldricKC = await args.user.getKC(Monsters.Eldric.id);
-		const sacrificeKC = await args.user.getKC(Monsters.RoyalTitans.id);
-		kcForBonus = brandaKC + eldricKC + sacrificeKC;
-	}
-
 	const speedDurationResult = speedCalculations({
 		...args,
-		monsterKC: kcForBonus,
+		monsterKC: args.monsterKC,
 		attackStyles,
 		isOnTask,
 		osjsMon,

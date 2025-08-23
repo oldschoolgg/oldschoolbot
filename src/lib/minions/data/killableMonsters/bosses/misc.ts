@@ -1162,8 +1162,8 @@ const killableBosses: KillableMonster[] = [
 				...new Gear({
 					neck: 'Amulet of fury',
 					cape: 'Fire cape',
-					body: 'Bandos chestplate',
-					legs: 'Bandos tassets',
+					body: 'Fighter torso',
+					legs: 'Obsidian platelegs',
 					feet: 'Dragon boots',
 					ring: 'Berserker ring (i)'
 				}).stats,
@@ -1299,8 +1299,8 @@ const killableBosses: KillableMonster[] = [
 				...new Gear({
 					neck: 'Amulet of fury',
 					cape: 'Fire cape',
-					body: 'Bandos chestplate',
-					legs: 'Bandos tassets',
+					body: 'Fighter torso',
+					legs: 'Obsidian platelegs',
 					feet: 'Dragon boots',
 					ring: 'Berserker ring (i)'
 				}).stats,
@@ -1432,8 +1432,8 @@ const killableBosses: KillableMonster[] = [
 				...new Gear({
 					neck: 'Amulet of fury',
 					cape: 'Fire cape',
-					body: 'Bandos chestplate',
-					legs: 'Bandos tassets',
+					body: 'Fighter torso',
+					legs: 'Obsidian platelegs',
 					feet: 'Dragon boots',
 					ring: 'Berserker ring (i)'
 				}).stats,
