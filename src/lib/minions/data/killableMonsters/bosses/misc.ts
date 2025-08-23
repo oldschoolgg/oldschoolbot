@@ -1176,7 +1176,11 @@ const killableBosses: KillableMonster[] = [
 			}
 		},
 		specialLoot: ({ loot, user }) => {
-			if (user && loot.has('Mystic vigour prayer scroll') && user.bitfield.includes(BitField.HasMysticVigourScroll)) {
+			if (
+				user &&
+				loot.has('Mystic vigour prayer scroll') &&
+				user.bitfield.includes(BitField.HasMysticVigourScroll)
+			) {
 				loot.set('Mystic vigour prayer scroll', 0);
 			}
 		}
