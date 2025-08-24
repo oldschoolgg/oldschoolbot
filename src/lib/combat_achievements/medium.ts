@@ -571,5 +571,43 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 				[Monsters.Amoxliatl.id]: 1
 			}
 		})
+	},
+	{
+		id: 148,
+		name: 'It takes too long',
+		type: 'mechanical',
+		monster: 'Royal Titans',
+		desc: 'Kill both Royal Titans while they are charging up their area attack. Both titans must die during the same charging phase.',
+		rng: {
+			chancePerKill: 10,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
+		}
+	},
+	{
+		id: 149,
+		name: 'Royal Titan Adept',
+		type: 'kill_count',
+		monster: 'Royal Titans',
+		desc: 'Kill the Royal Titans 25 times.',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				'Royal Titans': [25, Monsters.Branda.id, Monsters.Eldric.id, Monsters.RoyalTitans.id]
+			}
+		})
+	},
+	{
+		id: 150,
+		name: 'Royal Titan Champion',
+		type: 'kill_count',
+		monster: 'Royal Titans',
+		desc: 'Kill the Royal Titans 10 times.',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				'Royal Titans': [10, Monsters.Branda.id, Monsters.Eldric.id, Monsters.RoyalTitans.id]
+			}
+		})
 	}
 ];

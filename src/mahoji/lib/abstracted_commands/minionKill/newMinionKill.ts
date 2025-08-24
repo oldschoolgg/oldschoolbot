@@ -56,9 +56,10 @@ export interface MinionKillOptions {
 	bitfield: readonly BitField[];
 	pkEvasionExperience: number;
 	currentPeak: Peak;
+	user: MUser;
 }
 
-export function newMinionKillCommand(args: MinionKillOptions) {
+export function newMinionKillCommand(args: MinionKillOptions): string | MinionKillReturn {
 	let {
 		combatOptions,
 		attackStyles,
@@ -70,6 +71,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		maxTripLength,
 		slayerUnlocks
 	} = args;
+
 	const osjsMon = Monsters.get(monster.id)!;
 	let { primaryStyle, relevantGearStat } = getAttackStylesContext(attackStyles);
 	const isOnTask =
@@ -157,8 +159,10 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		: null;
 
 	const ephemeralPostTripEffects: PostBoostEffect[] = [];
+
 	const speedDurationResult = speedCalculations({
 		...args,
+		monsterKC: args.monsterKC,
 		attackStyles,
 		isOnTask,
 		osjsMon,
