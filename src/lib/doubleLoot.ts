@@ -1,8 +1,8 @@
 import type { TextChannel } from 'discord.js';
 import { Time } from 'e';
 
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Channel } from './constants';
-import { formatDuration } from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 
 export let DOUBLE_LOOT_FINISH_TIME_CACHE = 0;

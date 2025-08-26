@@ -1,8 +1,10 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { randArrItem, roll } from 'e';
-import { Bank, Items, LootTable, TreeHerbSeedTable } from 'oldschooljs';
+import { Bank, ItemGroups, Items, LootTable, TreeHerbSeedTable, itemID, resolveItems } from 'oldschooljs';
 
+import { OSB_VIRTUS_IDS } from './bso/bsoConstants';
+import { clAdjustedDroprate } from './bso/bsoUtil';
 import { divinationEnergies } from './bso/divination';
-import { Emoji, OSB_VIRTUS_IDS } from './constants';
 import {
 	allPetIDs,
 	allPetsCL,
@@ -10,8 +12,7 @@ import {
 	cmbClothes,
 	customBossesDropsThatCantBeDroppedInMBs,
 	theatreOfBloodHardUniques,
-	theatreOfBloodNormalUniques,
-	toaCL
+	theatreOfBloodNormalUniques
 } from './data/CollectionsExport';
 import { PartyhatTable, baseHolidayItems } from './data/holidayItems';
 import { allTrophyItems } from './data/itemAliases';
@@ -28,10 +29,7 @@ import {
 } from './simulation/customImplings';
 import { RuneTable } from './simulation/seedTable';
 import { ExoticSeedsTable } from './simulation/sharedTables';
-import { clAdjustedDroprate } from './util';
 import getOSItem from './util/getOSItem';
-import itemID from './util/itemID';
-import resolveItems from './util/resolveItems';
 import { LampTable } from './xpLamps';
 
 const MR_E_DROPRATE_FROM_UMB_AND_TMB = 5000;
@@ -63,14 +61,16 @@ for (const pet of allPetsCL) {
 	PMBTable.add(pet);
 }
 
-export const IronmanPMBTable = new LootTable()
-	.add(PMBTable, 1, PMBTable.length)
-	.add('Smokey')
-	.add('Craig')
+const IronmanDCPetsTable = new LootTable()
 	.add('Hoppy')
+	.add('Craig')
+	.add('Smokey')
 	.add('Flappy')
 	.add('Cob')
-	.add('Gregoyle');
+	.add('Gregoyle')
+	.add('Kuro');
+
+export const IronmanPMBTable = new LootTable().oneIn(10, IronmanDCPetsTable).add(PMBTable);
 
 const DwarvenCrateTable = new LootTable()
 	.add('Dwarven ore')
@@ -459,7 +459,7 @@ const cantBeDropped = resolveItems([
 	...cmbClothes,
 	...theatreOfBloodHardUniques,
 	...theatreOfBloodNormalUniques,
-	...toaCL,
+	...ItemGroups.toaCL,
 	'Heavy ballista',
 	'Unstrung heavy ballista',
 	'Monkey tail',

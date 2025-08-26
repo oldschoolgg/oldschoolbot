@@ -1,10 +1,9 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import type { GearPreset } from '@prisma/client';
-import type { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
+import { type EquipmentSlot, type Item, itemID } from 'oldschooljs';
 
 import type { GearSetup } from '.';
 import { Gear } from '../structures/Gear';
-import { itemID } from '../util';
 import getOSItem from '../util/getOSItem';
 
 export function itemInSlot(setup: GearSetup, slot: EquipmentSlot): [null, null] | [Item, number] {

@@ -1,18 +1,16 @@
-import { percentChance, randArrItem } from 'e';
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
+import { percentChance, randArrItem, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '../../../lib/constants';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { trackLoot } from '../../../lib/lootTrack';
 import KingGoldemar, {
 	KingGoldemarLootTable
 } from '../../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
 import { addMonsterXP } from '../../../lib/minions/functions';
-
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { calcDwwhChance } from '../../../lib/structures/Boss';
 import type { NewBossOptions } from '../../../lib/types/minions';
-import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 

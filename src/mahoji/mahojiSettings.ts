@@ -1,32 +1,22 @@
-import { evalMathExpression } from '@oldschoolgg/toolkit/util';
-import type { Prisma, User, UserStats } from '@prisma/client';
-import { isObject, notEmpty, objectEntries, round } from 'e';
-import { Bank, resolveItems } from 'oldschooljs';
+import { evalMathExpression } from '@oldschoolgg/toolkit/math';
+import type { GearSetupType, Prisma, User, UserStats } from '@prisma/client';
+import { bold } from 'discord.js';
+import { Time, isObject, notEmpty, objectEntries } from 'e';
+import { Bank, type ItemBank, ItemGroups, Items } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
+import type { JsonKeys } from '@/lib/util';
+import { formatItemReqs, formatList, hasSkillReqs, itemNameFromID, readableStatName } from '@/lib/util/smallUtils.js';
 import type { SelectedUserStats } from '../lib/MUser';
 import { globalConfig } from '../lib/constants';
 import { getSimilarItems } from '../lib/data/similarItems';
-import { type GearSetupType, GearStat } from '../lib/gear';
-import type { KillableMonster } from '../lib/minions/types';
-
-import { bold } from 'discord.js';
 import { userhasDiaryTier } from '../lib/diaries';
 import { BSOMonsters } from '../lib/minions/data/killableMonsters/custom/customMonsters';
 import { quests } from '../lib/minions/data/quests';
+import type { Consumable, KillableMonster } from '../lib/minions/types';
 import type { Rune } from '../lib/skilling/skills/runecraft';
 import { addStatsOfItemsTogether, hasGracefulEquipped } from '../lib/structures/Gear';
 import type { GearBank } from '../lib/structures/GearBank';
-import type { ItemBank } from '../lib/types';
-import {
-	type JsonKeys,
-	anglerBoosts,
-	formatItemCosts,
-	formatItemReqs,
-	formatList,
-	hasSkillReqs,
-	itemNameFromID,
-	readableStatName
-} from '../lib/util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../lib/util/clientSettings';
 import { getItemCostFromConsumables } from './lib/abstracted_commands/minionKill/handleConsumables';
 
@@ -200,22 +190,6 @@ export async function updateGPTrackSetting(
 	});
 }
 
-const masterFarmerOutfit = resolveItems([
-	'Master farmer hat',
-	'Master farmer jacket',
-	'Master farmer pants',
-	'Master farmer gloves',
-	'Master farmer boots'
-]);
-
-export function userHasMasterFarmerOutfit(user: MUser) {
-	const allItems = user.allItemsOwned;
-	for (const item of masterFarmerOutfit) {
-		if (!allItems.has(item)) return false;
-	}
-	return true;
-}
-
 export function userHasGracefulEquipped(user: MUser) {
 	const rawGear = user.gear;
 	for (const i of Object.values(rawGear)) {
@@ -224,31 +198,55 @@ export function userHasGracefulEquipped(user: MUser) {
 	return false;
 }
 
-export function anglerBoostPercent(user: MUser) {
-	let amountEquipped = 0;
-	let boostPercent = 0;
-	for (const [id, percent] of anglerBoosts) {
-		if (user.hasEquippedOrInBank(id)) {
-			boostPercent += percent;
-			amountEquipped++;
-		}
-	}
-	if (amountEquipped === 4) {
-		boostPercent += 0.5;
-	}
-	return round(boostPercent, 1);
-}
-
-const rogueOutfit = resolveItems(['Rogue mask', 'Rogue top', 'Rogue trousers', 'Rogue gloves', 'Rogue boots']);
-
 export function rogueOutfitPercentBonus(user: MUser): number {
 	let amountEquipped = 0;
-	for (const id of rogueOutfit) {
-		if (user.hasEquippedOrInBank(id)) {
+	for (const id of ItemGroups.rogueOutfit) {
+		if (user.hasEquippedOrInBank([id])) {
 			amountEquipped++;
 		}
 	}
 	return amountEquipped * 20;
+}
+
+function formatItemCosts(consumable: Consumable, timeToFinish: number) {
+	const str = [];
+
+	const consumables = [consumable];
+
+	if (consumable.alternativeConsumables) {
+		for (const c of consumable.alternativeConsumables) {
+			consumables.push(c);
+		}
+	}
+
+	for (const c of consumables) {
+		const itemEntries = c.itemCost.items();
+		const multiple = itemEntries.length > 1;
+		const subStr = [];
+
+		let multiply = 1;
+		if (c.qtyPerKill) {
+			multiply = c.qtyPerKill;
+		} else if (c.qtyPerMinute) {
+			multiply = c.qtyPerMinute * (timeToFinish / Time.Minute);
+		}
+
+		for (const [item, quantity] of itemEntries) {
+			subStr.push(`${Number((quantity * multiply).toFixed(3))}x ${item.name}`);
+		}
+
+		if (multiple) {
+			str.push(formatList(subStr));
+		} else {
+			str.push(subStr.join(''));
+		}
+	}
+
+	if (consumables.length > 1) {
+		return str.join(' OR ');
+	}
+
+	return str.join('');
 }
 
 export async function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
@@ -299,7 +297,7 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 			} else if (!getSimilarItems(item).some(id => user.hasEquippedOrInBank(id))) {
 				return [
 					false,
-					`You need ${itemsRequiredStr} to kill ${monster.name}. You're missing ${itemNameFromID(item)}.`
+					`You need ${itemsRequiredStr} to kill ${monster.name}. You're missing ${Items.itemNameFromId(item)}.`
 				];
 			}
 		}

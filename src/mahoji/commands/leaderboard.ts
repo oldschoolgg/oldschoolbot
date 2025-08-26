@@ -1,12 +1,26 @@
-import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit';
-import type { ChatInputCommandInteraction, MessageEditOptions } from 'discord.js';
-import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
-import { calcWhatPercent, chunk, isFunction } from 'e';
-
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import {
+	type CommandRunOptions,
+	type OSBMahojiCommand,
+	channelIsSendable,
+	makePaginatedMessage
+} from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import type { UserStats } from '@prisma/client';
+import {
+	ApplicationCommandOptionType,
+	type ChatInputCommandInteraction,
+	EmbedBuilder,
+	type MessageEditOptions
+} from 'discord.js';
+import { calcWhatPercent, chunk, isFunction, uniqueArr } from 'e';
+import { convertXPtoLVL } from 'oldschooljs';
+
+import { getUsername, getUsernameSync } from '@/lib/util';
+import { logError, logErrorForInteraction } from '@/lib/util/logError';
 import type { ClueTier } from '../../lib/clues/clueTiers';
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { masteryKey } from '../../lib/constants';
+import { MAX_LEVEL, masteryKey } from '../../lib/constants';
 import { allClNames, getCollectionItems } from '../../lib/data/Collections';
 import { allLeagueTasks } from '../../lib/leagues/leagues';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -17,20 +31,10 @@ import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../lib/skilling/types';
-import {
-	channelIsSendable,
-	convertXPtoLVL,
-	formatDuration,
-	getUsername,
-	getUsernameSync,
-	makePaginatedMessage,
-	stringMatches
-} from '../../lib/util';
 import { fetchCLLeaderboard, fetchTameCLLeaderboard } from '../../lib/util/clLeaderboard';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { userEventsToMap } from '../../lib/util/userEvents';
 import { sendToChannelID } from '../../lib/util/webhook';
-import type { OSBMahojiCommand } from '../lib/util';
 
 const LB_PAGE_SIZE = 10;
 
@@ -41,6 +45,10 @@ function lbMsg(str: string, ironmanOnly?: boolean) {
 		}`,
 		ephemeral: true
 	};
+}
+
+async function bulkGetUsernames(userIDs: string[]) {
+	await Promise.all(uniqueArr(userIDs).map(id => getUsername(id)));
 }
 
 export function getPos(page: number, record: number) {
@@ -70,11 +78,18 @@ export async function doMenu(
 
 			return { embeds: [new EmbedBuilder().setTitle(title).setDescription(p)] };
 		}),
+		(err, itx) => {
+			if (itx) {
+				logErrorForInteraction(err, itx);
+			} else {
+				logError(err);
+			}
+		},
 		user.id
 	);
 }
 
-function doMenuWrapper({
+async function doMenuWrapper({
 	user,
 	channelID,
 	users,
@@ -90,6 +105,7 @@ function doMenuWrapper({
 	channelID: string;
 	formatter?: (val: number) => string;
 }) {
+	await bulkGetUsernames(users.map(u => u.id).slice(0, 100));
 	const chunked = chunk(users, LB_PAGE_SIZE);
 	const pages: (() => Promise<MessageEditOptions>)[] = [];
 	for (let c = 0; c < chunked.length; c++) {
@@ -119,6 +135,13 @@ function doMenuWrapper({
 
 			return { embeds: [new EmbedBuilder().setTitle(title).setDescription(p)] };
 		}),
+		(err, itx) => {
+			if (itx) {
+				logErrorForInteraction(err, itx);
+			} else {
+				logError(err);
+			}
+		},
 		user.id
 	);
 
@@ -241,14 +264,14 @@ async function sacrificeLb(
 	if (type === 'value') {
 		const list = (
 			await prisma.$queryRawUnsafe<{ id: string; full_name: string; amount: number }[]>(
-				`SELECT 
+				`SELECT
 	u.id,
     ${SQL.SELECT_FULL_NAME},
 	"sacrificedValue"
-FROM 
+FROM
     users u
 ${SQL.LEFT_JOIN_BADGES}
-WHERE 
+WHERE
     "sacrificedValue" > 10000
 ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 ${SQL.GROUP_BY_U_ID}
@@ -276,28 +299,28 @@ LIMIT 400;`
 
 	const mostUniques: { full_name: string; sacbanklength: number }[] = await prisma.$queryRawUnsafe(
 		`
-SELECT 
-    ${SQL.SELECT_FULL_NAME}, 
+SELECT
+    ${SQL.SELECT_FULL_NAME},
     u.sacbanklength
 FROM (
-    SELECT 
-        (SELECT COUNT(*)::int FROM JSONB_OBJECT_KEYS(sacrificed_bank)) AS sacbanklength, 
+    SELECT
+        (SELECT COUNT(*)::int FROM JSONB_OBJECT_KEYS(sacrificed_bank)) AS sacbanklength,
         u.id AS user_id,
         u.username,
         u.badges
-    FROM 
-        user_stats 
-    INNER JOIN 
+    FROM
+        user_stats
+    INNER JOIN
         users u ON u.id::bigint = user_stats.user_id
 	WHERE
 		sacrificed_bank::text != '{}'
 		${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 ) u
-LEFT JOIN 
+LEFT JOIN
     badges b ON b.id = ANY(u.badges)
-GROUP BY 
+GROUP BY
     u.username, u.sacbanklength
-ORDER BY 
+ORDER BY
     u.sacbanklength DESC
 LIMIT 10;
 `
@@ -588,7 +611,7 @@ async function skillsLb(
 		overallUsers = res.map(user => {
 			let totalLevel = 0;
 			for (const skill of skillsVals) {
-				totalLevel += convertXPtoLVL(Number(user[`skills.${skill.id}`]) as any, 120);
+				totalLevel += convertXPtoLVL(Number(user[`skills.${skill.id}`]) as any, MAX_LEVEL);
 			}
 			return {
 				id: user.id,
@@ -667,6 +690,8 @@ async function skillsLb(
 		});
 	}
 
+	await bulkGetUsernames(overallUsers.map(u => u.id).slice(0, 100));
+
 	if (inputSkill === 'overall') {
 		doMenu(
 			interaction,
@@ -698,7 +723,7 @@ async function skillsLb(
 
 					return `${getPos(i, j)}**${getUsernameSync(obj.id)}:** ${skillXP.toLocaleString()} XP (${convertXPtoLVL(
 						skillXP,
-						120
+						MAX_LEVEL
 					)})`;
 				})
 				.join('\n')
@@ -729,6 +754,8 @@ ORDER BY ("collectionLogBank"->>'${id}')::int DESC
 LIMIT 50;`
 		)
 	).map(res => ({ ...res, score: Number(res.score) }));
+
+	await bulkGetUsernames(users.map(u => u.id).slice(0, 100));
 
 	doMenu(
 		interaction,

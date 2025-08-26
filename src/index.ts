@@ -2,16 +2,16 @@ import './lib/safeglobals';
 import './lib/globals';
 import './lib/MUser';
 import './lib/util/transactItemsFromBank';
-import './lib/geImage';
+import './lib/ActivityManager';
 
-import { MahojiClient } from '@oldschoolgg/toolkit/util';
+import { Events } from '@oldschoolgg/toolkit/constants';
+import { MahojiClient, convertMahojiCommandToAbstractCommand } from '@oldschoolgg/toolkit/discord-util';
 import { init } from '@sentry/node';
-import type { TextChannel } from 'discord.js';
-import { GatewayIntentBits, Options, Partials } from 'discord.js';
+import { GatewayIntentBits, Options, Partials, type TextChannel } from 'discord.js';
 import { isObject } from 'e';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
-import { Channel, Events, gitHash, globalConfig } from './lib/constants';
+import { Channel, gitHash, globalConfig } from './lib/constants';
 import { economyLog } from './lib/economyLogs';
 import { onMessage } from './lib/events';
 import { modalInteractionHook } from './lib/modals';
@@ -26,7 +26,6 @@ import { onStartup } from './mahoji/lib/events';
 import { exitCleanup } from './mahoji/lib/exitHandler';
 import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
-import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 
 if (globalConfig.sentryDSN) {
 	init({
@@ -126,8 +125,7 @@ export const mahojiClient = new MahojiClient({
 				inhibited,
 				continueDeltaMillis: null
 			})
-	},
-	djsClient: client
+	}
 });
 
 declare global {
@@ -239,6 +237,10 @@ async function main() {
 		client.login(globalConfig.botToken)
 	]);
 	console.log(`Logged in as ${globalClient.user.username}`);
+
+	if (process.env.NODE_ENV !== 'production' && Boolean(process.env.TEST_BOT_SERVER)) {
+		import('@/testing/testServer.js').then(_mod => _mod.startTestBotServer());
+	}
 }
 
 process.on('uncaughtException', err => {

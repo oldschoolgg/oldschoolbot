@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+
 import type { ItemBank } from './types';
 import { logError } from './util/logError';
 
@@ -34,6 +35,7 @@ ORDER BY u.uniques DESC LIMIT 300;`)
 };
 
 export const RawSQL = {
+	fetchUsersWithoutUsernames,
 	updateAllUsersCLArrays: () => `UPDATE users
 SET ${u.cl_array} = (
     SELECT (ARRAY(SELECT jsonb_object_keys("${u.collectionLogBank}")::int))
@@ -58,6 +60,31 @@ export async function loggedRawPrismaQuery<T>(query: string): Promise<T | null> 
 	return null;
 }
 
+export async function fetchUsersWithoutUsernames() {
+	const res = await loggedRawPrismaQuery<{ id: string }[]>(`
+SELECT id
+FROM (
+    SELECT id,
+           username,
+           username_with_badges,
+           ("skills.agility"  + "skills.cooking"  + "skills.fishing" +
+            "skills.mining"   + "skills.smithing" + "skills.woodcutting" +
+            "skills.firemaking" + "skills.runecraft" + "skills.crafting" +
+            "skills.prayer"   + "skills.fletching" + "skills.thieving" +
+            "skills.farming"  + "skills.herblore" + "skills.hunter" +
+            "skills.construction" + "skills.magic" + "skills.ranged" +
+            "skills.attack"   + "skills.strength" + "skills.defence" +
+            "skills.slayer") AS total_xp
+    FROM users
+    WHERE username IS NULL
+) AS t
+WHERE total_xp > 100000000
+ORDER BY total_xp DESC
+LIMIT 60;
+`);
+	return res!;
+}
+
 export const SQL = {
 	SELECT_FULL_NAME:
 		"TRIM(COALESCE(string_agg(b.text, ' '), '') || ' ' || COALESCE(username, 'Unknown')) AS full_name",
@@ -65,3 +92,19 @@ export const SQL = {
 	GROUP_BY_U_ID: 'GROUP BY u.id',
 	WHERE_IRON: (ironOnly: boolean) => (ironOnly ? '"minion.ironman" = true' : '')
 } as const;
+
+/**
+ * ⚠️ Uses queryRawUnsafe
+ */
+export async function countUsersWithItemInCl(itemID: number, ironmenOnly: boolean) {
+	const query = `SELECT COUNT(id)::int
+				   FROM users
+				   WHERE ("collectionLogBank"->>'${itemID}') IS NOT NULL
+				   AND ("collectionLogBank"->>'${itemID}')::int >= 1
+				   ${ironmenOnly ? 'AND "minion.ironman" = true' : ''};`;
+	const result = Number.parseInt(((await prisma.$queryRawUnsafe(query)) as any)[0].count);
+	if (Number.isNaN(result)) {
+		throw new Error(`countUsersWithItemInCl produced invalid number '${result}' for ${itemID}`);
+	}
+	return result;
+}

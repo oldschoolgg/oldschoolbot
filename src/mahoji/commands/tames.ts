@@ -1,8 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { bold, time } from '@discordjs/builders';
-import { exponentialPercentScale, mentionCommand } from '@oldschoolgg/toolkit';
-import type { CommandResponse, CommandRunOptions } from '@oldschoolgg/toolkit';
+import { type CommandResponse, formatDuration, isWeekend, stringMatches } from '@oldschoolgg/toolkit';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { type Tame, tame_growth } from '@prisma/client';
 import { toTitleCase } from '@sapphire/utilities';
 import { ApplicationCommandOptionType, type ChatInputCommandInteraction, type User } from 'discord.js';
@@ -16,9 +17,21 @@ import {
 	randInt,
 	reduceNumByPercent
 } from 'e';
-import { Bank } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item, type ItemBank, itemID, resolveItems } from 'oldschooljs';
+import { type Canvas, loadImage } from 'skia-canvas';
 
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas';
+import { bankImageTask } from '@/lib/canvas/bankImage';
+import {
+	type CanvasContext,
+	type CanvasImage,
+	canvasToBuffer,
+	createCanvas,
+	fillTextXTimesInCtx,
+	getClippedRegion
+} from '@/lib/canvas/canvasUtil';
+import { itemNameFromID } from '@/lib/util';
+import { formatSkillRequirements } from '@/lib/util/smallUtils';
 import { type ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { PerkTier, badges } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
@@ -27,8 +40,8 @@ import { trackLoot } from '../../lib/lootTrack';
 import { Planks } from '../../lib/minions/data/planks';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
 import { getUsersPerkTier } from '../../lib/perkTiers';
-
 import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
+import Bars from '../../lib/skilling/skills/smithing/smeltables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
 	type SeaMonkeySpell,
@@ -44,30 +57,12 @@ import {
 	tameKillableMonsters,
 	tameSpecies
 } from '../../lib/tames';
-import {
-	assert,
-	formatDuration,
-	formatSkillRequirements,
-	isWeekend,
-	itemID,
-	itemNameFromID,
-	stringMatches
-} from '../../lib/util';
 import { patronMaxTripBonus } from '../../lib/util/calcMaxTripLength';
-import {
-	type CanvasContext,
-	type CanvasImage,
-	canvasToBuffer,
-	createCanvas,
-	fillTextXTimesInCtx,
-	getClippedRegionImage,
-	loadImage
-} from '../../lib/util/canvasUtil';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
+import { assert } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseStringBank } from '../../lib/util/parseStringBank';
-import resolveItems from '../../lib/util/resolveItems';
 import {
 	calculateMaximumTameFeedingLevelGain,
 	getMainTameLevel,
@@ -82,7 +77,6 @@ import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { arbitraryTameActivities } from '../../tasks/tames/tameTasks';
 import { getItemCostFromConsumables } from '../lib/abstracted_commands/minionKill/handleConsumables';
 import { collectables } from '../lib/collectables';
-import type { OSBMahojiCommand } from '../lib/util';
 
 const tameImageSize = 96;
 
@@ -272,18 +266,18 @@ const tameImageReplacementEasterEggs = [
 
 let sprites: {
 	base: {
-		image: CanvasImage;
-		slot: CanvasImage;
-		selectedSlot: CanvasImage;
-		shinyIcon: CanvasImage;
+		image: Canvas | CanvasImage;
+		slot: Canvas;
+		selectedSlot: Canvas;
+		shinyIcon: Canvas;
 	};
 	tames: {
 		id: number;
 		name: string;
-		image: CanvasImage;
-		sprites: { type: number; growthStage: Record<tame_growth, CanvasImage> }[];
+		image: Canvas | CanvasImage;
+		sprites: { type: number; growthStage: Record<tame_growth, Canvas | CanvasImage> }[];
 	}[];
-	gearIconBg: CanvasImage;
+	gearIconBg: Canvas | CanvasImage;
 };
 async function initSprites() {
 	const tameSpriteBase = await loadImage(await readFile('./src/lib/resources/images/tames/tame_sprite.png'));
@@ -291,9 +285,9 @@ async function initSprites() {
 		gearIconBg: await loadImage(await readFile('./src/lib/resources/images/gear_icon_bg.png')),
 		base: {
 			image: tameSpriteBase,
-			slot: await getClippedRegionImage(tameSpriteBase, 0, 0, 256, 128),
-			selectedSlot: await getClippedRegionImage(tameSpriteBase, 0, 128, 256, 128),
-			shinyIcon: await getClippedRegionImage(tameSpriteBase, 256, 0, 24, 24)
+			slot: getClippedRegion(tameSpriteBase, 0, 0, 256, 128),
+			selectedSlot: getClippedRegion(tameSpriteBase, 0, 128, 256, 128),
+			shinyIcon: getClippedRegion(tameSpriteBase, 256, 0, 24, 24)
 		},
 		tames: await Promise.all(
 			tameSpecies.map(async value => {
@@ -311,21 +305,21 @@ async function initSprites() {
 							return {
 								type: v,
 								growthStage: {
-									[tame_growth.baby]: await getClippedRegionImage(
+									[tame_growth.baby]: getClippedRegion(
 										tameImage,
 										(v - 1) * tameImageSize,
 										0,
 										tameImageSize,
 										tameImageSize
 									),
-									[tame_growth.juvenile]: await getClippedRegionImage(
+									[tame_growth.juvenile]: getClippedRegion(
 										tameImage,
 										(v - 1) * tameImageSize,
 										tameImageSize,
 										tameImageSize,
 										tameImageSize
 									),
-									[tame_growth.adult]: await getClippedRegionImage(
+									[tame_growth.adult]: getClippedRegion(
 										tameImage,
 										(v - 1) * tameImageSize,
 										tameImageSize * 2,
@@ -384,13 +378,11 @@ export async function tameImage(user: MUser): CommandResponse {
 
 	const { tame, activity } = await getUsersTame(user);
 
-	// Init the background images if they are not already
-
 	const {
 		sprite,
 		uniqueSprite,
 		background: userBgImage
-	} = bankImageGenerator.getBgAndSprite(user.user.bankBackground ?? 1);
+	} = bankImageTask.getBgAndSprite({ bankBackgroundId: user.user.bankBackground ?? 1 });
 	const hexColor = user.user.bank_bg_hex;
 
 	const tamesPerLine = 3;
@@ -429,7 +421,7 @@ export async function tameImage(user: MUser): CommandResponse {
 		);
 	}
 
-	if (!userBgImage.transparent) bankImageGenerator.drawBorder(ctx, sprite, false);
+	if (!userBgImage.transparent) OSRSCanvas.drawBorder(ctx, sprite, false);
 
 	ctx.translate(16, 16);
 	let i = 0;
@@ -515,7 +507,7 @@ export async function tameImage(user: MUser): CommandResponse {
 		let feedQty = 0;
 		for (const { item } of tameFeedableItems.filter(f => f.tameSpeciesCanBeFedThis.includes(species.id))) {
 			if (tameHasBeenFed(t, item.id)) {
-				const itemImage = await bankImageGenerator.getItemImage(item.id);
+				const itemImage = await OSRSCanvas.getItemImage({ itemID: item.id });
 				if (itemImage) {
 					const ratio = 19 / itemImage.height;
 					const yLine = Math.floor(feedQty / 3);
@@ -543,7 +535,7 @@ export async function tameImage(user: MUser): CommandResponse {
 			const thisY = tameY + tameImageSize;
 			const iconSize = Math.floor(calcPercentOfNum(75, sprites.gearIconBg.width));
 			ctx.drawImage(sprites.gearIconBg, thisX, thisY, iconSize, iconSize);
-			const icon = await bankImageGenerator.getItemImage(equippedInThisSlot);
+			const icon = await OSRSCanvas.getItemImage({ itemID: equippedInThisSlot });
 			const iconWidth = Math.floor(calcPercentOfNum(65, icon.width));
 			const iconHeight = Math.floor(calcPercentOfNum(65, icon.height));
 			ctx.drawImage(
@@ -1376,6 +1368,35 @@ async function superGlassCommand(user: MUser, channelID: string) {
 	});
 }
 
+async function superheatItemCommand(user: MUser, channelID: string, itemName: string) {
+	const item = Bars.find(i => getOSItem(i.id).name === itemName);
+
+	const { tame, activity } = await getUsersTame(user);
+	if (!tame) return `You don't have a tame selected.`;
+	if (activity) return `${tame} is already on a trip.`;
+	const hasKlik = tameHasBeenFed(tame, itemID('Klik'));
+
+	if (!item) {
+		return "That's not a valid item to superheat.";
+	}
+
+	if (!hasKlik && (itemName === 'Dwarven bar' || itemName === 'Sun-metal bar')) {
+		return `You need to feed your tame a Klik to super heat ${itemName}.`;
+	}
+
+	return monkeyMagicHandler(user, channelID, {
+		spell: seaMonkeySpells.find(i => i.id === 5)!,
+		itemID: item.id,
+		costPerItem: new Bank().add(item.inputOres),
+		lootPerItem: new Bank().add(item.id),
+		timePerSpell: Time.Second * 3,
+		runes: {
+			per: 1,
+			cost: new Bank().add('Nature rune', 1).add('Fire rune', 4)
+		}
+	});
+}
+
 async function plankMakeCommand(user: MUser, channelID: string, plankName: string) {
 	const item = Planks.find(p => p.name === plankName);
 	if (!item) {
@@ -1751,6 +1772,7 @@ export type TamesCommandOptions = CommandRunOptions<{
 		spin_flax?: string;
 		plank_make?: string;
 		superglass_make?: string;
+		superheat_item?: string;
 	};
 	activity?: {
 		name: string;
@@ -1971,6 +1993,13 @@ export const tamesCommand: OSBMahojiCommand = {
 					description: 'Create glass.',
 					required: false,
 					choices: [{ name: 'Molten glass', value: 'molten glass' }]
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'superheat_item',
+					description: 'Superheat ore into bars',
+					required: false,
+					choices: Bars.map(t => ({ name: t.name, value: t.name }))
 				}
 			]
 		},
@@ -2053,6 +2082,7 @@ export const tamesCommand: OSBMahojiCommand = {
 		if (options.cast?.spin_flax) return spinFlaxCommand(user, channelID);
 		if (options.cast?.tan) return tanLeatherCommand(user, channelID, options.cast.tan);
 		if (options.cast?.superglass_make) return superGlassCommand(user, channelID);
+		if (options.cast?.superheat_item) return superheatItemCommand(user, channelID, options.cast.superheat_item);
 		if (options.clue?.clue) {
 			return tameClueCommand(user, channelID, options.clue.clue);
 		}

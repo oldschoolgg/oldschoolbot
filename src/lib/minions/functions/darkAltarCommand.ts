@@ -1,15 +1,16 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { SkillsEnum } from 'oldschooljs';
 
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
 import { KourendKebosDiary, userhasDiaryTier } from '../../diaries';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../invention/inventions';
 import type { DarkAltarOptions } from '../../types/minions';
-import { hasSkillReqs } from '../../util';
 import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import getOSItem from '../../util/getOSItem';
+import { hasSkillReqs } from '../../util/smallUtils';
 
 export const darkAltarRunes = {
 	soul: {
@@ -34,7 +35,7 @@ const mediumDiaryBoost = 20;
 
 export async function darkAltarCommand({ user, channelID, name }: { user: MUser; channelID: string; name: string }) {
 	const stats = user.skillsAsLevels;
-	if (!['blood', 'soul'].includes(name.split(' ')[0])) return 'Invalid rune.';
+	if (!['blood', 'soul'].includes(name.toLowerCase().split(' ')[0])) return 'Invalid rune.';
 	const [hasReqs, neededReqs] = hasSkillReqs(user, {
 		mining: 38,
 		crafting: 38

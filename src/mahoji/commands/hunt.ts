@@ -1,11 +1,13 @@
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
-import { Bank, type ItemBank } from 'oldschooljs';
-
 import { reduceNumByPercent } from 'e';
-import { itemID } from 'oldschooljs/dist/util';
-import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from '../../lib/constants';
+import { Bank, ECreature, type ItemBank, itemID } from 'oldschooljs';
+
+import type { Skills } from '@/lib/types';
+import { type Peak, generateDailyPeakIntervals } from '@/lib/util/peaks';
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import type { UserFullGearSetup } from '../../lib/gear';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
@@ -15,14 +17,10 @@ import { soteSkillRequirements } from '../../lib/skilling/functions/questRequire
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { type Creature, HunterTechniqueEnum } from '../../lib/skilling/types';
-import type { Peak } from '../../lib/tickers';
-import type { Skills } from '../../lib/types';
 import type { HunterActivityTaskOptions } from '../../lib/types/minions';
-import { hasSkillReqs } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import type { OSBMahojiCommand } from '../lib/util';
 import { userHasGracefulEquipped } from '../mahojiSettings';
 
 export function calculateHunterInput({
@@ -160,7 +158,7 @@ export function calculateHunterInput({
 	}
 
 	let timePerCatch = (catchTime * Time.Second) / traps;
-	if (creature.id === HERBIBOAR_ID || creature.id === RAZOR_KEBBIT_ID) {
+	if (creature.id === ECreature.HERBIBOAR || creature.id === ECreature.RAZOR_KEBBIT) {
 		if (shouldUseStaminaPotions) catchTime *= 0.8;
 	}
 
@@ -220,9 +218,9 @@ export function calculateHunterInput({
 
 	// If creatures Herbiboar or Razor-backed kebbit or Crystal Impling use Stamina potion(4)
 	if (shouldUseStaminaPotions) {
-		if (creature.id === HERBIBOAR_ID || creature.id === RAZOR_KEBBIT_ID || crystalImpling) {
+		if (creature.id === ECreature.HERBIBOAR || creature.id === ECreature.RAZOR_KEBBIT || crystalImpling) {
 			const staminaPotionQuantity =
-				creature.id === HERBIBOAR_ID || crystalImpling
+				creature.id === ECreature.HERBIBOAR || crystalImpling
 					? Math.round(duration / (9 * Time.Minute))
 					: Math.round(duration / (18 * Time.Minute));
 
@@ -255,7 +253,7 @@ export function calculateHunterInput({
 
 	if (creature.wildy) {
 		const date = new Date().getTime();
-		const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
+		const cachedPeakInterval: Peak[] = generateDailyPeakIntervals().peaks;
 		for (const peak of cachedPeakInterval) {
 			if (peak.startTime < date && peak.finishTime > date) {
 				wildyPeak = peak;

@@ -1,10 +1,9 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, type Message, type User } from 'discord.js';
-import { Time, isFunction, randArrItem, shuffleArr } from 'e';
+import { Time, isFunction, randArrItem, roll, shuffleArr } from 'e';
 import fetch from 'node-fetch';
 import { Bank, Items, LootTable, Monsters } from 'oldschooljs';
 
-import { itemNameFromID, roll, stringMatches } from '../lib/util';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { MysteryBoxes } from './bsoOpenables';
 import { globalConfig } from './constants';
@@ -152,7 +151,7 @@ const monsterDropChallenge: Challenge = async (msg: Message): Promise<User | nul
 
 	const embed = new EmbedBuilder()
 		.setTitle('Reply with the answer for a reward!')
-		.setDescription(`Name a monster that drops these 3 items: ${items.map(itemNameFromID).join(', ')}`)
+		.setDescription(`Name a monster that drops these 3 items: ${items.map(Items.itemNameFromId).join(', ')}`)
 		.setThumbnail(
 			'https://cdn.discordapp.com/attachments/357422607982919680/1100378550189707314/534px-Mystery_box_detail.png'
 		);
@@ -192,7 +191,7 @@ const collectionLogChallenge: Challenge = async (msg: Message): Promise<User | n
 			max: 1,
 			time: Time.Second * 30,
 			errors: ['time'],
-			filter: _msg => cl.items.some(c => stringMatches(_msg.content, itemNameFromID(c)))
+			filter: _msg => cl.items.some(c => stringMatches(_msg.content, Items.itemNameFromId(c)))
 		});
 
 		const winner = collected.first()?.author;

@@ -1,13 +1,11 @@
 import { Time, roll } from 'e';
-import { Bank, Monsters, SimpleMonster } from 'oldschooljs';
+import { Bank, Monsters, SimpleMonster, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
-import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
 import { corporealBeastCL, muspahCL } from '../../../../data/CollectionsExport';
-import { GearStat } from '../../../../gear/types';
 import { CorporealBeastTable } from '../../../../simulation/Corp';
 import { SkillsEnum } from '../../../../skilling/types';
 import { Gear } from '../../../../structures/Gear';
-import itemID from '../../../../util/itemID';
 import type { KillableMonster } from '../../../types';
 import { QuestID } from '../../quests';
 
@@ -101,7 +99,7 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Pegasian boots')]: 4
 			},
 			{
-				[itemID("Iban's staff")]: 1,
+				[itemID('Warped sceptre (uncharged)')]: 1,
 				[itemID('Trident of the seas')]: 2,
 				[itemID('Trident of the swamp')]: 3,
 				[itemID('Sanguinesti staff')]: 4,

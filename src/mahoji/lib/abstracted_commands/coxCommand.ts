@@ -1,7 +1,9 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { calcWhatPercent, sumArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, randomVariation } from 'oldschooljs';
 
-import { Emoji } from '../../../lib/constants';
 import {
 	calcCoxDuration,
 	calcCoxInput,
@@ -20,10 +22,8 @@ import {
 } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { setupParty } from '../../../lib/party';
-import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { MakePartyOptions } from '../../../lib/types';
 import type { RaidsOptions } from '../../../lib/types/minions';
-import { channelIsSendable, formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -99,7 +99,7 @@ export async function coxCommand(
 	const minigameID = isChallengeMode ? 'raids_challenge_mode' : 'raids';
 
 	if (isChallengeMode) {
-		const normalKC = await getMinigameScore(user.id, 'raids');
+		const normalKC = await user.fetchMinigameScore('raids');
 		if (normalKC < 200) {
 			return 'You need at least 200 completions of the Chambers of Xeric before you can attempt Challenge Mode.';
 		}

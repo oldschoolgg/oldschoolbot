@@ -1,11 +1,9 @@
 import { Time } from 'e';
-import { LootTable, Monsters } from 'oldschooljs';
-import { GemTable } from 'oldschooljs/dist/simulation/subtables/RareDropTable';
+import { GemTable, LootTable, Monsters, resolveItems } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
 import { LowSeedPackTable } from '../../../../data/seedPackTables';
-import { GearStat } from '../../../../gear';
 import { BattlestaffTable, StoneSpiritTable, runeAlchablesTable } from '../../../../simulation/sharedTables';
-import resolveItems from '../../../../util/resolveItems';
 import { SuperiorTormentedDemon } from './TormentedDemon';
 import { VladimirDrakan } from './VladimirDrakan';
 import { Yeti } from './Yeti';

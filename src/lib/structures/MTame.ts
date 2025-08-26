@@ -1,13 +1,9 @@
 import { type Tame, tame_growth } from '@prisma/client';
 import { Time, roll, round } from 'e';
-import { Bank, Items } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import { getSimilarItems } from '../data/similarItems';
-
 import { type Species, TameSpeciesID, tameFeedableItems, tameSpecies } from '../tames';
-import type { ItemBank } from '../types';
-import getOSItem from '../util/getOSItem';
 
 export class MTame {
 	tame: Tame;
@@ -42,8 +38,8 @@ export class MTame {
 		this.species = tameSpecies.find(i => i.id === tame.species_id)!;
 		this.growthStage = tame.growth_stage;
 		this.fedItems = new Bank(this.tame.fed_items as ItemBank);
-		this.equippedArmor = tame.equipped_armor === null ? null : getOSItem(tame.equipped_armor);
-		this.equippedPrimary = tame.equipped_primary === null ? null : getOSItem(tame.equipped_primary);
+		this.equippedArmor = tame.equipped_armor === null ? null : Items.getOrThrow(tame.equipped_armor);
+		this.equippedPrimary = tame.equipped_primary === null ? null : Items.getOrThrow(tame.equipped_primary);
 		this.growthLevel = 3 - [tame_growth.baby, tame_growth.juvenile, tame_growth.adult].indexOf(tame.growth_stage);
 		this.totalLoot = new Bank(this.tame.max_total_loot as ItemBank);
 		this.speciesVariant = tame.species_variant;

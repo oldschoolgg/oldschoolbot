@@ -1,10 +1,10 @@
 import { Time, increaseNumByPercent, percentChance, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank, addItemToBank, randomVariation, toKMB } from 'oldschooljs';
 
-import { addItemToBank, randomVariation, toKMB } from 'oldschooljs/dist/util';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
+import { skillingPetDropRate } from '@/lib/util';
+import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
 import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
-import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
@@ -12,7 +12,6 @@ import Agility from '../../lib/skilling/skills/agility';
 import { calcUserGorajanShardChance } from '../../lib/skilling/skills/dung/dungDbFunctions';
 import { type Course, SkillsEnum } from '../../lib/skilling/types';
 import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { logError } from '../../lib/util/logError';

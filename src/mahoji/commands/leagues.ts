@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, formatDuration } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, calcWhatPercent } from 'e';
 
@@ -11,10 +11,8 @@ import {
 	leaguesClaimCommand
 } from '../../lib/leagues/leagues';
 import { getUsersPerkTier } from '../../lib/perkTiers';
-import { formatDuration } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { Cooldowns } from '../lib/Cooldowns';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export const bsoLeaguesCommand: OSBMahojiCommand = {
 	name: 'leagues',

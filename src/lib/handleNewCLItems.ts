@@ -1,15 +1,13 @@
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit/util';
-import type { Prisma } from '@prisma/client';
-import { UserEventType } from '@prisma/client';
+import { type Prisma, UserEventType } from '@prisma/client';
 import { roll, sumArr } from 'e';
 import type { Bank } from 'oldschooljs';
 
-import { Events } from './constants';
 import { allCLItems, allCollectionLogsFlat, calcCLDetails } from './data/Collections';
 import { calculateMastery } from './mastery';
-import { calculateOwnCLRanking, roboChimpSyncData } from './roboChimp';
-
 import { RawSQL } from './rawSql';
+import { calculateOwnCLRanking, roboChimpSyncData } from './roboChimp';
 import { MUserStats } from './structures/MUserStats';
 import { fetchCLLeaderboard } from './util/clLeaderboard';
 import { insertUserEvent } from './util/userEvents';

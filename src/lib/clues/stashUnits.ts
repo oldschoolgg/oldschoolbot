@@ -1,19 +1,5 @@
-import { Bank } from 'oldschooljs';
+import { Bank, ItemGroups, deepResolveItems, resolveItems } from 'oldschooljs';
 
-import { allTeamCapes } from 'oldschooljs/dist/data/itemConstants';
-import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
-import {
-	barrowsItemArr,
-	boaters,
-	bobShirts,
-	croziers,
-	godBooks,
-	headbands,
-	mitres,
-	runeHeraldicHelms,
-	runeHeraldicShields,
-	stoles
-} from '../data/CollectionsExport';
 import type { ClueTier } from './clueTiers';
 
 export interface IStashUnit {
@@ -31,7 +17,7 @@ export interface StashUnitTier {
 
 export const beginnerStashes: StashUnitTier = {
 	tier: 'Beginner',
-	cost: new Bank().add('Plank', 2).add('Bronze nails', 10),
+	cost: new Bank().add('Plank', 2),
 	constructionLevel: 12,
 	xp: 150,
 	units: [
@@ -43,7 +29,7 @@ export const beginnerStashes: StashUnitTier = {
 
 export const easyStashes: StashUnitTier = {
 	tier: 'Easy',
-	cost: new Bank().add('Plank', 2).add('Bronze nails', 10),
+	cost: new Bank().add('Plank', 2),
 	constructionLevel: 27,
 	xp: 150,
 	units: [
@@ -189,7 +175,7 @@ export const easyStashes: StashUnitTier = {
 
 export const mediumStashes: StashUnitTier = {
 	tier: 'Medium',
-	cost: new Bank().add('Oak plank', 2).add('Bronze nails', 10),
+	cost: new Bank().add('Oak plank', 2),
 	constructionLevel: 42,
 	xp: 250,
 	units: [
@@ -206,7 +192,7 @@ export const mediumStashes: StashUnitTier = {
 		{
 			id: 35,
 			desc: 'Castle Wars bank',
-			items: deepResolveItems(['Ruby amulet', 'Mithril scimitar', allTeamCapes.map(i => i.id)])
+			items: deepResolveItems(['Ruby amulet', 'Mithril scimitar', ...ItemGroups.teamCapes])
 		},
 		{
 			id: 36,
@@ -275,7 +261,7 @@ export const mediumStashes: StashUnitTier = {
 		{
 			id: 47,
 			desc: 'Barbarian Outpost obstacle course (centre)',
-			items: deepResolveItems(['Steel platebody', 'Maple shortbow', allTeamCapes.map(i => i.id)])
+			items: deepResolveItems(['Steel platebody', 'Maple shortbow', ...ItemGroups.teamCapes])
 		},
 		{
 			id: 48,
@@ -323,7 +309,7 @@ export const mediumStashes: StashUnitTier = {
 export const hardStashes: StashUnitTier = {
 	tier: 'Hard',
 
-	cost: new Bank().add('Teak plank', 2).add('Bronze nails', 10),
+	cost: new Bank().add('Teak plank', 2),
 	constructionLevel: 55,
 	xp: 400,
 	units: [
@@ -351,12 +337,12 @@ export const hardStashes: StashUnitTier = {
 		{
 			id: 61,
 			desc: 'North-east corner of the Kharazi Jungle',
-			items: deepResolveItems([resolveItems(runeHeraldicShields), resolveItems(stoles)])
+			items: deepResolveItems([ItemGroups.runeHeraldicShields, ItemGroups.stoles])
 		},
 		{
 			id: 62,
 			desc: 'In the middle of Jiggig',
-			items: deepResolveItems(['Rune spear', 'Rune platelegs', resolveItems(runeHeraldicHelms)])
+			items: deepResolveItems(['Rune spear', 'Rune platelegs', ItemGroups.runeHeraldicHelms])
 		},
 		{
 			id: 63,
@@ -391,19 +377,19 @@ export const hardStashes: StashUnitTier = {
 		{
 			id: 69,
 			desc: 'Volcano in the north-eastern Wilderness',
-			items: deepResolveItems([resolveItems(headbands), resolveItems(croziers)])
+			items: deepResolveItems([ItemGroups.headbands, ItemGroups.croziers])
 		},
 		{
 			id: 70,
 			desc: 'Agility Pyramid',
-			items: deepResolveItems(['Mystic robe top', resolveItems(runeHeraldicShields)])
+			items: deepResolveItems(['Mystic robe top', ItemGroups.runeHeraldicShields])
 		}
 	]
 };
 
 export const eliteStashes: StashUnitTier = {
 	tier: 'Elite',
-	cost: new Bank().add('Mahogany plank', 2).add('Bronze nails', 10),
+	cost: new Bank().add('Mahogany plank', 2),
 	constructionLevel: 77,
 	xp: 600,
 	units: [
@@ -427,12 +413,12 @@ export const eliteStashes: StashUnitTier = {
 		{
 			id: 76,
 			desc: 'Entrance of the cavern under the whirlpool',
-			items: deepResolveItems(['Granite shield', 'Splitbark body', resolveItems(runeHeraldicHelms)])
+			items: deepResolveItems(['Granite shield', 'Splitbark body', ItemGroups.runeHeraldicHelms])
 		},
 		{
 			id: 77,
 			desc: 'Shayzien War Tent',
-			items: deepResolveItems(['Mystic robe bottom', 'Rune kiteshield', resolveItems(bobShirts)])
+			items: deepResolveItems(['Mystic robe bottom', 'Rune kiteshield', ItemGroups.bobShirts])
 		},
 		{
 			id: 78,
@@ -452,12 +438,12 @@ export const eliteStashes: StashUnitTier = {
 		{
 			id: 81,
 			desc: 'Entrance of the cave of Damis',
-			items: deepResolveItems(['Rune crossbow', 'Climbing boots', resolveItems(mitres)])
+			items: deepResolveItems(['Rune crossbow', 'Climbing boots', resolveItems(ItemGroups.mitres)])
 		},
 		{
 			id: 82,
 			desc: 'South-east corner of the Monastery',
-			items: deepResolveItems([resolveItems(godBooks)])
+			items: deepResolveItems([resolveItems(ItemGroups.godBooks)])
 		},
 		{
 			id: 83,
@@ -498,7 +484,7 @@ export const eliteStashes: StashUnitTier = {
 
 export const masterStashes: StashUnitTier = {
 	tier: 'Master',
-	cost: new Bank().add('Mahogany plank', 2).add('Bronze nails', 10).add('Gold leaf'),
+	cost: new Bank().add('Mahogany plank', 2).add('Gold leaf'),
 	constructionLevel: 88,
 	xp: 1500,
 	units: [
@@ -517,16 +503,16 @@ export const masterStashes: StashUnitTier = {
 			id: 89,
 			desc: 'Barrows chest',
 			items: deepResolveItems([
-				barrowsItemArr.map(i => i[0]),
-				barrowsItemArr.map(i => i[1]),
-				barrowsItemArr.map(i => i[2]),
-				barrowsItemArr.map(i => i[3])
+				ItemGroups.barrowsItemArr.map(i => i[0]),
+				ItemGroups.barrowsItemArr.map(i => i[1]),
+				ItemGroups.barrowsItemArr.map(i => i[2]),
+				ItemGroups.barrowsItemArr.map(i => i[3])
 			])
 		},
 		{
 			id: 90,
 			desc: 'On top of the Northern wall of Castle Drakan',
-			items: deepResolveItems([boaters, 'Splitbark body', 'Dragon sq shield'])
+			items: deepResolveItems([ItemGroups.boaters, 'Splitbark body', 'Dragon sq shield'])
 		},
 		{ id: 91, desc: 'Soul Altar', items: resolveItems(['Dragon pickaxe', 'Helm of neitiznot', 'Rune boots']) },
 		{

@@ -1,7 +1,7 @@
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { type User, activity_type_enum } from '@prisma/client';
 import { calcWhatPercent, sumArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import { getPOH } from '../../mahoji/lib/abstracted_commands/pohCommand';
 import { getParsedStashUnits } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
@@ -18,13 +18,9 @@ import {
 } from '../../mahoji/lib/abstracted_commands/statCommand';
 import { BitField } from '../constants';
 import { calcCLDetails } from '../data/Collections';
-import { getMinigameEntity } from '../settings/minigames';
-
 import smithables from '../skilling/skills/smithing/smithables';
 import { getSlayerTaskStats } from '../slayer/slayerUtil';
 import { getAllUserTames } from '../tames';
-import type { ItemBank } from '../types';
-import { getItem } from '../util/getOSItem';
 import { easyTasks } from './easyTasks';
 import { eliteTasks } from './eliteTasks';
 import { hardTasks } from './hardTasks';
@@ -100,7 +96,7 @@ AND completed = true
 GROUP BY data->>'mixableID';`);
 	const items = new Bank();
 	for (const res of result) {
-		const item = getItem(res.id);
+		const item = Items.getItem(res.id);
 		if (!item) continue;
 		items.add(item.id, res.qty);
 	}
@@ -147,7 +143,7 @@ export async function leaguesCheckUser(userID: string) {
 		getAllUserTames(userID),
 		getSlayerTaskStats(userID),
 		getActivityCounts(mahojiUser.user),
-		getMinigameEntity(userID),
+		mahojiUser.fetchMinigames(),
 		prisma.slayerTask.count({ where: { user_id: userID } }),
 		personalAlchingStats(mahojiUser),
 		personalHerbloreStatsWithoutZahur(mahojiUser.user),

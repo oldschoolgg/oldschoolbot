@@ -1,15 +1,15 @@
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
-
 import { Time } from 'e';
+
+import type { PvMMethod } from '@/lib/constants';
+import { generateDailyPeakIntervals } from '@/lib/util/peaks';
 import { handleDTD } from '../../../../lib/bso/handleDTD';
 import { colosseumCommand } from '../../../../lib/colosseum';
-import type { PvMMethod } from '../../../../lib/constants';
-import { getCurrentPeak } from '../../../../lib/getCurrentPeak';
 import { trackLoot } from '../../../../lib/lootTrack';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
 import { getUsersCurrentSlayerInfo } from '../../../../lib/slayer/slayerUtil';
 import type { MonsterActivityTaskOptions } from '../../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../../lib/util';
 import addSubTaskToActivityTask from '../../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../../lib/util/calcMaxTripLength';
 import findMonster from '../../../../lib/util/findMonster';
@@ -114,8 +114,8 @@ export async function minionKillCommand(
 		slayerUnlocks: user.user.slayer_unlocks,
 		favoriteFood: user.user.favorite_food,
 		bitfield: user.bitfield,
-		currentPeak: getCurrentPeak(),
-		disabledInventions: user.user.disabled_inventions
+		disabledInventions: user.user.disabled_inventions,
+		currentPeak: generateDailyPeakIntervals().currentPeak
 	});
 
 	if (typeof result === 'string') {
@@ -123,7 +123,7 @@ export async function minionKillCommand(
 	}
 
 	if (!user.allItemsOwned.has(result.updateBank.itemCostBank)) {
-		return `You don't have the items needed to kill this monster. You need: ${result.updateBank.itemCostBank}`;
+		return `You don't have the items needed to kill this monster. You're missing: ${result.updateBank.itemCostBank.clone().remove(user.allItemsOwned)}`;
 	}
 
 	const updateResult = await result.updateBank.transact(user, { isInWilderness: result.isInWilderness });
@@ -158,7 +158,7 @@ export async function minionKillCommand(
 		});
 	}
 
-	const { bob, usingCannon, cannonMulti, chinning, hasWildySupplies } = result.currentTaskOptions;
+	const { bob, usingCannon, cannonMulti, chinning, died, pkEncounters, hasWildySupplies } = result.currentTaskOptions;
 	await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
 		mi: monster.id,
 		userID: user.id,
@@ -171,6 +171,8 @@ export async function minionKillCommand(
 		cannonMulti: !cannonMulti ? undefined : cannonMulti,
 		chinning: !chinning ? undefined : chinning,
 		bob: !bob ? undefined : bob,
+		died,
+		pkEncounters,
 		hasWildySupplies,
 		isInWilderness: result.isInWilderness === true ? true : undefined,
 		attackStyles: result.attackStyles,

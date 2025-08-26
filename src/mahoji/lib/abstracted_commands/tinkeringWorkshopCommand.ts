@@ -1,11 +1,11 @@
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
+import { type ItemBank, randomVariation } from 'oldschooljs';
 
 import { type MaterialType, materialTypes } from '../../../lib/invention';
 import { MaterialBank } from '../../../lib/invention/MaterialBank';
 import { transactMaterialsFromUser } from '../../../lib/invention/inventions';
-import type { ItemBank } from '../../../lib/types';
 import type { TinkeringWorkshopOptions } from '../../../lib/types/minions';
-import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { userStatsUpdate } from '../../mahojiSettings';

@@ -1,15 +1,16 @@
 import { UserError } from '@oldschoolgg/toolkit/structures';
-import type {
-	ButtonInteraction,
-	ChatInputCommandInteraction,
-	Interaction,
-	InteractionReplyOptions,
-	InteractionResponse,
-	Message,
-	RepliableInteraction,
-	StringSelectMenuInteraction
+import {
+	type ButtonInteraction,
+	type ChatInputCommandInteraction,
+	DiscordAPIError,
+	type Interaction,
+	type InteractionReplyOptions,
+	type InteractionResponse,
+	type Message,
+	MessageFlags,
+	type RepliableInteraction,
+	type StringSelectMenuInteraction
 } from 'discord.js';
-import { DiscordAPIError } from 'discord.js';
 
 import { SILENT_ERROR } from '../constants';
 import { logErrorForInteraction } from './logError';
@@ -23,6 +24,7 @@ export async function interactionReply(interaction: RepliableInteraction, respon
 		i = interaction.followUp(response);
 	} else if (interaction.deferred) {
 		method = 'editReply';
+		// @ts-expect-error
 		i = interaction.editReply(response);
 	} else {
 		method = 'reply';
@@ -50,7 +52,9 @@ export async function deferInteraction(
 	if (!interaction.deferred && !wasDeferred.has(interaction.id)) {
 		wasDeferred.add(interaction.id);
 		try {
-			await interaction.deferReply({ ephemeral });
+			const options: { flags?: number } = {};
+			if (ephemeral) options.flags = MessageFlags.Ephemeral;
+			await interaction.deferReply(options);
 		} catch (err) {
 			logErrorForInteraction(err, interaction);
 		}

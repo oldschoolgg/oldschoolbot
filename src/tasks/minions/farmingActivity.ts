@@ -1,23 +1,24 @@
 import { Time, randInt } from 'e';
-import { Bank, Monsters, increaseBankQuantitesByPercent } from 'oldschooljs';
+import { Bank, Items, Monsters, increaseBankQuantitesByPercent, itemID } from 'oldschooljs';
 
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
+import { roll } from '@/lib/util/rng';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
+import chatHeadImage from '../../lib/canvas/chatHeadImage';
 import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
 import { BitField } from '../../lib/constants';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import type { PatchTypes } from '../../lib/minions/farming';
 import type { FarmingContract } from '../../lib/minions/farming/types';
-
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import { getFarmingInfoFromUser } from '../../lib/skilling/functions/getFarmingInfo';
 import Farming, { plants } from '../../lib/skilling/skills/farming';
 import { type Plant, SkillsEnum } from '../../lib/skilling/types';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { assert, clAdjustedDroprate, itemNameFromID, roll, skillingPetDropRate } from '../../lib/util';
-import chatHeadImage from '../../lib/util/chatHeadImage';
+import { skillingPetDropRate } from '../../lib/util';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
+import { assert } from '../../lib/util/logError';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
@@ -271,9 +272,9 @@ export const farmingTask: MinionTask = {
 			checkHealthXp = alivePlants * plantToHarvest.checkXp;
 
 			const shouldCleanHerb =
-				plantToHarvest.herbXp !== undefined &&
+				plantToHarvest.cleanHerbCrop !== undefined &&
 				user.bitfield.includes(BitField.CleanHerbsFarming) &&
-				user.skillLevel(SkillsEnum.Herblore) >= plantToHarvest.herbLvl!;
+				user.skillLevel(SkillsEnum.Herblore) >= (plantToHarvest.herbLvl ?? 0);
 
 			if (plantToHarvest.givesCrops) {
 				let cropToHarvest = plantToHarvest.outputCrop;
@@ -601,7 +602,7 @@ export const farmingTask: MinionTask = {
 			for (const mut of mutations) {
 				if (alivePlants && plantToHarvest.name === mut.plantName && roll(mut.chance)) {
 					loot.add(mut.output);
-					infoStr.push(`One of your crops mutated into a ${itemNameFromID(mut.output)}.`);
+					infoStr.push(`One of your crops mutated into a ${Items.itemNameFromId(mut.output)}.`);
 				}
 			}
 

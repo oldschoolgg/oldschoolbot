@@ -1,19 +1,16 @@
-import { type CommandRunOptions, gaussianRandom } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, formatDuration, gaussianRandom } from '@oldschoolgg/toolkit';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { tame_growth } from '@prisma/client';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { randArrItem, reduceNumByPercent } from 'e';
+import { ApplicationCommandOptionType, type ChatInputCommandInteraction } from 'discord.js';
+import { randArrItem, reduceNumByPercent, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Events, globalConfig } from '../../lib/constants';
-
+import { globalConfig } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '../../lib/tames';
-import { formatDuration, roll } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import type { OSBMahojiCommand } from '../lib/util';
 
 function makeTameNickname(species: Species) {
 	switch (species.id) {

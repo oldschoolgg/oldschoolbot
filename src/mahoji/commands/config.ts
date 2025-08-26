@@ -1,36 +1,48 @@
-import { channelIsSendable, hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit/util';
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import {
+	type CommandResponse,
+	type CommandRunOptions,
+	type OSBMahojiCommand,
+	allAbstractCommands,
+	channelIsSendable,
+	hasBanMemberPerms
+} from '@oldschoolgg/toolkit/discord-util';
+import { miniID, stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { activity_type_enum } from '@prisma/client';
-import type { ChatInputCommandInteraction, Guild, HexColorString, User } from 'discord.js';
-import { EmbedBuilder, bold, inlineCode, resolveColor } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import {
+	ApplicationCommandOptionType,
+	type ChatInputCommandInteraction,
+	EmbedBuilder,
+	type Guild,
+	type HexColorString,
+	type User,
+	bold,
+	inlineCode,
+	resolveColor
+} from 'discord.js';
 import { Time, clamp, removeFromArr, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank } from 'oldschooljs';
 
+import { gearImages } from '@/lib/canvas/gearImageData';
+import { ItemIconPacks } from '@/lib/canvas/iconPacks';
+import { DynamicButtons } from '../../lib/DynamicButtons';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
-import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier } from '../../lib/constants';
+import { BitField, ParsedCustomEmojiWithGroups, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
-import { gearImages } from '../../lib/gear/functions/generateGearImage';
 import { Inventions } from '../../lib/invention/inventions';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
-
-import { DynamicButtons } from '../../lib/DynamicButtons';
 import { birdhouseSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
 import { BankSortMethods } from '../../lib/sorts';
-import { formatDuration, isValidNickname, itemNameFromID, stringMatches } from '../../lib/util';
 import { emojiServers } from '../../lib/util/cachedUserIDs';
 import { getItem } from '../../lib/util/getOSItem';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { isValidNickname, itemNameFromID } from '../../lib/util/smallUtils';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
 import { itemOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
-import { allAbstractCommands } from '../lib/util';
 import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
 
 interface UserConfigToggle {
@@ -153,7 +165,7 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.DisabledTameClueOpening
 	},
 	{
-		name: 'Disable Igne Tame Opening Imping Jars',
+		name: 'Disable Igne Tame Opening Impling Jars',
 		bit: BitField.DisabledTameImplingOpening
 	},
 	{
@@ -173,8 +185,16 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.UseSuperRestoresForDwarvenBlessing
 	},
 	{
+		name: 'Disable Tears of Guthix Trip Button',
+		bit: BitField.DisableTearsOfGuthixButton
+	},
+	{
 		name: 'Show Detailed Info',
 		bit: BitField.ShowDetailedInfo
+	},
+	{
+		name: 'Disable Minion Daily Button',
+		bit: BitField.DisableDailyButton
 	}
 ];
 
@@ -1163,7 +1183,7 @@ LIMIT 20;
 							name: 'name',
 							description: 'The icon pack you want to use.',
 							required: true,
-							choices: ['Default', ...ItemIconPacks.map(i => i.name)].map(i => ({
+							choices: ['Default', ...Object.values(ItemIconPacks).map(i => i.name)].map(i => ({
 								name: i,
 								value: i
 							}))
@@ -1246,7 +1266,7 @@ LIMIT 20;
 						return 'Your icon pack is already set to default.';
 					}
 
-					const pack = ItemIconPacks.find(i => i.name === icon_pack.name);
+					const pack = Object.values(ItemIconPacks).find(i => i.name === icon_pack.name);
 					if (!pack) return 'Invalid icon pack.';
 
 					if (!user.user.store_bitfield.includes(pack.storeBitfield)) {

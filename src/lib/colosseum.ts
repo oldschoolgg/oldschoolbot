@@ -1,5 +1,7 @@
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { GeneralBank, type GeneralBankType, UserError } from '@oldschoolgg/toolkit/structures';
-import { exponentialPercentScale, formatDuration, mentionCommand } from '@oldschoolgg/toolkit/util';
 import {
 	Time,
 	calcPercentOfNum,
@@ -13,9 +15,9 @@ import {
 	reduceNumByPercent,
 	sumArr
 } from 'e';
-import { Bank, LootTable } from 'oldschooljs';
-import type { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { Bank, type EquipmentSlot, type ItemBank, LootTable, resolveItems } from 'oldschooljs';
 
+import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils';
 import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
 import { gorajanGearBoost } from './bso/gorajanGearBoost';
 import { getSimilarItems } from './data/similarItems';
@@ -24,12 +26,10 @@ import type { GearSetupType } from './gear/types';
 import { trackLoot } from './lootTrack';
 import { QuestID } from './minions/data/quests';
 import { ChargeBank } from './structures/Bank';
-import type { ItemBank, Skills } from './types';
+import type { Skills } from './types';
 import type { ColoTaskOptions } from './types/minions';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from './util/calcMaxTripLength';
-import resolveItems from './util/resolveItems';
-import { formatSkillRequirements, itemNameFromID } from './util/smallUtils';
 import { updateBankSetting } from './util/updateBankSetting';
 
 function combinedChance(percentages: number[]): number {

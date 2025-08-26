@@ -1,9 +1,7 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
-import { itemID } from 'oldschooljs/dist/util';
+import { Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
-import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
-import { GearStat } from '../../../gear/types';
 import type { KillableMonster } from '../../types';
 
 export const nieveMonsters: KillableMonster[] = [

@@ -1,16 +1,16 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { StashUnit, User } from '@prisma/client';
 import { partition } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, ItemGroups, Items } from 'oldschooljs';
 
 import type { IStashUnit, StashUnitTier } from '../../../lib/clues/stashUnits';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../../lib/clues/stashUnits';
-
-import { assert } from '../../../lib/util';
+import { assert } from '../../../lib/util/logError';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { itemNameFromID } from '../../../lib/util/smallUtils';
 import { getMahojiBank } from '../../mahojiSettings';
+
+const NAILS_PER_STASH_UNIT = 10;
 
 export async function getParsedStashUnits(userID: string): Promise<ParsedUnit[]> {
 	const currentStashUnits = await prisma.stashUnit.findMany({
@@ -56,15 +56,14 @@ export async function stashUnitViewCommand(
 		const unit = parsedUnits.find(i => stringMatches(i.unit.id.toString(), stashID));
 		if (!unit || !unit.builtUnit) return "You don't have this unit built.";
 		return `${unit.unit.desc} - ${unit.tier.tier} STASH Unit
-Contains: ${unit.builtUnit.items_contained.map(itemNameFromID).join(', ')}`;
+Contains: ${unit.builtUnit.items_contained.map(i => Items.itemNameFromId(i)).join(', ')}`;
 	}
 
 	if (notBuilt) {
 		let str = "Stash units you haven't built/filled:\n";
 		for (const { unit, tier } of parsedUnits.filter(i => !i.isFull || !i.builtUnit)) {
 			str += `${unit.desc} (${tier.tier} tier): ${unit.items
-				.map(item => [item].flat()[0])
-				.map(itemNameFromID)
+				.map(item => Items.itemNameFromId([item].flat()[0]))
 				.join(', ')}\n`;
 		}
 		if (str.length < 1000) {
@@ -100,9 +99,20 @@ export async function stashUnitBuildAllCommand(user: MUser) {
 	for (const parsedUnit of notBuilt) {
 		if (parsedUnit.tier.constructionLevel > stats.construction) continue;
 		if (!checkBank.has(parsedUnit.tier.cost)) continue;
-		checkBank.remove(parsedUnit.tier.cost);
-		costBank.add(parsedUnit.tier.cost);
-		toBuild.push(parsedUnit);
+		let hasNails = false;
+
+		for (const nail of ItemGroups.nails) {
+			if (checkBank.amount(nail) >= NAILS_PER_STASH_UNIT) {
+				hasNails = true;
+				checkBank.remove(nail, NAILS_PER_STASH_UNIT);
+				checkBank.remove(parsedUnit.tier.cost);
+				costBank.add(nail, NAILS_PER_STASH_UNIT);
+				costBank.add(parsedUnit.tier.cost);
+				toBuild.push(parsedUnit);
+				break;
+			}
+		}
+		if (!hasNails) break;
 	}
 
 	if (toBuild.length === 0) {

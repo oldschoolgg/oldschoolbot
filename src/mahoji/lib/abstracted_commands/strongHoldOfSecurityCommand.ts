@@ -1,8 +1,7 @@
 import { Time } from 'e';
+import { Bank, randomVariation, resolveItems } from 'oldschooljs';
 
-import { Bank } from 'oldschooljs';
 import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { randomVariation, resolveItems } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
 export async function strongHoldOfSecurityCommand(user: MUser, channelID: string) {

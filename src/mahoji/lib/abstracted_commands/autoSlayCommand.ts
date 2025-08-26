@@ -1,14 +1,14 @@
-import { isGuildChannel } from '@oldschoolgg/toolkit/util';
-import type { CommandOptions } from '@oldschoolgg/toolkit/util';
+import { type CommandOptions, isGuildChannel } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
-import type { PvMMethod } from '../../../lib/constants';
+import type { PvMMethod } from '@/lib/constants';
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { runCommand } from '../../../lib/settings/settings';
 import { AutoslayOptionsEnum, autoslayModes } from '../../../lib/slayer/constants';
 import { SlayerMasterEnum, getCommonTaskName, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { hasSkillReqs, stringMatches } from '../../../lib/util';
 import { interactionReply } from '../../../lib/util/interactionReply';
 import { slayerNewTaskCommand } from './slayerTaskCommand';
 
@@ -330,7 +330,7 @@ const WildyAutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		monsterID: Monsters.Jelly.id,
 		efficientName: Monsters.Jelly.name,
 		efficientMonster: Monsters.Jelly.id,
-		efficientMethod: ['barrage', 'cannon']
+		efficientMethod: 'barrage'
 	},
 	{
 		monsterID: Monsters.LesserDemon.id,

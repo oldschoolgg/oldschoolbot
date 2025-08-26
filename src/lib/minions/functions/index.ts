@@ -1,12 +1,13 @@
+import { randomVariation } from '@oldschoolgg/toolkit/util';
 import type { User } from '@prisma/client';
-import { type Monster, Monsters } from 'oldschooljs';
+import { type Monster, Monsters, NIGHTMARES_HP } from 'oldschooljs';
+import { GearStat, type OffenceGearStat } from 'oldschooljs/gear';
 
-import { NIGHTMARES_HP, type PvMMethod } from '../../constants';
-import { GearStat, type OffenceGearStat, type PrimaryGearSetupType } from '../../gear';
-import { NexMonster } from '../../nex';
+import type { PvMMethod } from '@/lib/constants';
+import type { PrimaryGearSetupType } from '@/lib/gear/types';
+import { NexMonster } from '@/lib/nex';
 import { SkillsEnum } from '../../skilling/types';
 import { XPBank } from '../../structures/XPBank';
-import { randomVariation } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
 import { Ignecarus } from '../data/killableMonsters/custom/bosses/Ignecarus';
@@ -16,9 +17,6 @@ import { NAXXUS_HP, Naxxus } from '../data/killableMonsters/custom/bosses/Naxxus
 import { VasaMagus } from '../data/killableMonsters/custom/bosses/VasaMagus';
 import { BSOMonsters } from '../data/killableMonsters/custom/customMonsters';
 import type { AddMonsterXpParams, KillableMonster } from '../types';
-
-export { default as calculateMonsterFood } from './calculateMonsterFood';
-export { default as reducedTimeForGroup } from './reducedTimeForGroup';
 
 export const attackStylesArr = [
 	SkillsEnum.Attack,
@@ -166,11 +164,13 @@ export function addMonsterXPRaw(params: {
 	const xpPerSkill = totalXP / attackStyles.length;
 
 	const xpBank = new XPBank();
+	const debugId = `d[${params.duration}] mid[${params.monsterID}] qty[${params.quantity}] ${params.isOnTask ? 'task' : 'notask'}`;
 
 	for (const style of attackStyles) {
 		xpBank.add(style, Math.floor(xpPerSkill), {
 			duration: params.duration,
-			minimal: params.minimal ?? true
+			minimal: params.minimal ?? true,
+			debugId
 		});
 	}
 
@@ -193,20 +193,24 @@ export function addMonsterXPRaw(params: {
 		}
 		xpBank.add('slayer', newSlayerXP + superiorSlayXp, {
 			duration: params.duration,
-			minimal: params.minimal ?? true
+			minimal: params.minimal ?? true,
+			debugId
 		});
 	}
 
 	xpBank.add('hitpoints', Math.floor(hp * normalQty * 1.33 * xpMultiplier + superiorXp / 3), {
 		duration: params.duration,
-		minimal: params.minimal ?? true
+		minimal: params.minimal ?? true,
+		debugId
 	});
 
 	// Add cannon xp last so it's easy to distinguish
 	if (params.usingCannon || params.cannonMulti) {
-		xpBank.add('ranged', Math.floor(hp * 2 * cannonQty), {
+		const cannonXp = Math.floor(hp * 2 * cannonQty);
+		xpBank.add('ranged', cannonXp, {
 			duration: params.duration,
-			minimal: params.minimal ?? true
+			minimal: params.minimal ?? true,
+			debugId
 		});
 	}
 

@@ -1,15 +1,28 @@
 const esbuild = require('esbuild');
 
-const entryPoints = ['src/util.ts', 'src/structures.ts'];
+const entryPoints = [
+	'src/util.ts',
+	'src/structures.ts',
+	'src/constants.ts',
+	'src/testBotWebsocket.ts',
+	'src/util/datetime.ts',
+	'src/string-util.ts',
+	'src/util/discord/index.ts',
+	'src/util/math/index.ts',
+	'src/util/node.ts',
+	'src/util/runescape.ts',
+	'src/rng/index.ts'
+];
 
 const baseConfig = {
-	keepNames: true,
-	minify: true,
+	minify: false,
 	treeShaking: true,
 	bundle: true,
+	keepNames: true,
+	metafile: true,
+	legalComments: 'none',
 	entryPoints,
 	platform: 'node',
-	sourcemap: false,
 	external: ['discord.js'],
 	loader: {
 		'.json': 'copy'

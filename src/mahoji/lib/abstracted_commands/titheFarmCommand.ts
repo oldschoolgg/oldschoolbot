@@ -1,14 +1,13 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji } from '../../../lib/constants';
 import TitheFarmBuyables from '../../../lib/data/buyables/titheFarmBuyables';
 import type { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { userHasGracefulEquipped, userStatsUpdate } from '../../mahojiSettings';
 
 async function determineDuration(user: MUser): Promise<[number, string[]]> {
@@ -37,7 +36,7 @@ async function determineDuration(user: MUser): Promise<[number, string[]]> {
 }
 
 export async function titheFarmCommand(user: MUser, channelID: string) {
-	if (minionIsBusy(user.id)) {
+	if (user.minionIsBusy) {
 		return 'Your minion must not be busy to use this command.';
 	}
 	const skills = user.skillsAsLevels;

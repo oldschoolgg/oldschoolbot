@@ -1,13 +1,15 @@
 import { LRUCache } from 'lru-cache';
+import { itemID } from 'oldschooljs';
+import { type Canvas, loadImage } from 'skia-canvas';
 
+import { OSRSCanvas } from '../canvas/OSRSCanvas';
+import { type CanvasImage, canvasToBuffer, createCanvas } from '../canvas/canvasUtil';
 import { getPaintedItemImage, paintColorsMap } from '../paintColors';
-import { type CanvasImage, canvasToBuffer, createCanvas, loadImage } from './canvasUtil';
-import itemID from './itemID';
 
 export const customItemEffect = new Map([
 	[
 		itemID('Eggy'),
-		(img: CanvasImage, userID: string | undefined) => {
+		(img: CanvasImage | Canvas, userID: string | undefined) => {
 			const userIDEffective = userID ?? '11111';
 			const canvas = createCanvas(img.width, img.height);
 			const ctx = canvas.getContext('2d');
@@ -38,7 +40,7 @@ export async function applyCustomItemEffects(user: MUser | null, item: number) {
 
 	const effect = customItemEffect.get(item);
 	if (!effect) return null;
-	const resultingImage = await bankImageGenerator.getItemImage(item);
+	const resultingImage = await OSRSCanvas.getItemImage({ itemID: item });
 	const effectedImageCanvas = await effect(resultingImage, user.id);
 	const effectedImage = await canvasToBuffer(effectedImageCanvas);
 	const image = await loadImage(effectedImage);

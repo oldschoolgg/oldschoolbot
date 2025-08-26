@@ -1,23 +1,14 @@
-import { Monsters } from 'oldschooljs';
-
 import { Time } from 'e';
-import {
-	MIMIC_MONSTER_ID,
-	NIGHTMARE_ID,
-	PHOSANI_NIGHTMARE_ID,
-	ZALCANO_ID,
-	clawWeapon,
-	demonBaneWeapons
-} from '../constants';
+import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
+
+import { clawWeapon } from '../constants';
 import { NexMonster } from '../nex';
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
 import type { GauntletOptions, NightmareActivityTaskOptions, TOAOptions } from '../types/minions';
 import type { MonsterActivityTaskOptions } from '../types/minions';
-import { anyoneDiedInTOARaid } from '../util';
-import { resolveItems } from '../util';
-import { crossbows } from '../util/minionUtils';
-import { isCertainMonsterTrip } from './caUtils';
+import { crossbows } from '../util/archery';
+import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils';
 import type { CombatAchievement } from './combatAchievements';
 
 export const eliteCombatAchievements: CombatAchievement[] = [
@@ -537,7 +528,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
-				isCertainMonsterTrip(Monsters.DemonicGorilla.id)(data) && user.hasEquipped(demonBaneWeapons)
+				isCertainMonsterTrip(Monsters.DemonicGorilla.id)(data) && user.hasEquipped(ItemGroups.demonBaneWeapons)
 		}
 	},
 	// {
@@ -850,7 +841,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: "Phosani's Nightmare",
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[PHOSANI_NIGHTMARE_ID]: 1
+				[EMonster.PHOSANI_NIGHTMARE]: 1
 			}
 		})
 	},
@@ -886,7 +877,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
-				isCertainMonsterTrip(Monsters.Skotizo.id)(data) && !user.hasEquipped(demonBaneWeapons, false)
+				isCertainMonsterTrip(Monsters.Skotizo.id)(data) && !user.hasEquipped(ItemGroups.demonBaneWeapons, false)
 		}
 	},
 	{
@@ -897,7 +888,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'The Mimic',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[MIMIC_MONSTER_ID]: 1
+				[EMonster.MIMIC]: 1
 			}
 		})
 	},
@@ -909,7 +900,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'The Nightmare',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[NIGHTMARE_ID]: 25
+				[EMonster.NIGHTMARE]: 25
 			}
 		})
 	},
@@ -1437,7 +1428,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Zalcano',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[ZALCANO_ID]: 25
+				[EMonster.ZALCANO]: 25
 			}
 		})
 	},
@@ -1534,7 +1525,8 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 12,
 			hasChance: (data, _user, index) =>
-				data.type === 'Colosseum' && (!data.diedAt || (Array.isArray(data.diedAt) && data.diedAt[index]! > 4))
+				data.type === 'Colosseum' &&
+				(!data.diedAt || (Array.isArray(data.diedAt) && (!data.diedAt[index] || data.diedAt[index] > 4)))
 		}
 	},
 	{

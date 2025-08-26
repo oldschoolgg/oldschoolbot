@@ -1,10 +1,8 @@
 import { randArrItem, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank } from 'oldschooljs';
 
 import { inventorOutfit } from '../../../lib/data/CollectionsExport';
 import { MaterialBank } from '../../../lib/invention/MaterialBank';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClueTable } from '../../../lib/simulation/sharedTables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { TinkeringWorkshopOptions } from '../../../lib/types/minions';
@@ -32,10 +30,10 @@ export const twTask: MinionTask = {
 	type: 'TinkeringWorkshop',
 	async run(data: TinkeringWorkshopOptions) {
 		const { channelID, quantity, duration, userID } = data;
-
-		await incrementMinigameScore(userID, 'tinkering_workshop', quantity);
-
 		const user = await mUserFetch(userID);
+
+		await user.incrementMinigameScore('tinkering_workshop', quantity);
+
 		const loot = tinkerLoot(user, quantity);
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });

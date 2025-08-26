@@ -2,7 +2,6 @@ import { Time, randArrItem, roll, uniqueArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { monkeyHeadImage, monkeyTierOfUser } from '../../../lib/monkeyRumble';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MonkeyRumbleOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -23,7 +22,7 @@ export const mrTask: MinionTask = {
 		const { channelID, quantity, userID, monkeys, duration } = data;
 		const user = await mUserFetch(userID);
 
-		await incrementMinigameScore(userID, 'monkey_rumble', quantity);
+		await user.incrementMinigameScore('monkey_rumble', quantity);
 
 		const newMonkeysFought: string[] = uniqueArr([...user.user.monkeys_fought, ...monkeys.map(m => m.nameKey)]);
 		await user.update({

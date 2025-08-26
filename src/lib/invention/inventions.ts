@@ -1,20 +1,15 @@
 import { userMention } from '@discordjs/builders';
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { type CommandResponse, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import { Time, clamp, reduceNumByPercent } from 'e';
-import { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item, type ItemBank, resolveItems, toKMB } from 'oldschooljs';
 
 import type { IMaterialBank, MaterialType } from '.';
 import { type ClueTier, ClueTiers } from '../clues/clueTiers';
 import type { GearBank } from '../structures/GearBank';
-import type { ItemBank } from '../types';
-import { formatDuration, stringMatches, toKMB } from '../util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../util/clientSettings';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
-import { minionIsBusy } from '../util/minionIsBusy';
-import resolveItems from '../util/resolveItems';
 import { MaterialBank } from './MaterialBank';
 
 const InventionFlags = ['equipped', 'bank'] as const;
@@ -581,7 +576,7 @@ export async function transactMaterialsFromUser({
 }
 
 export async function inventCommand(user: MUser, inventionName: string): CommandResponse {
-	if (minionIsBusy(user.id)) return 'Your minion is busy.';
+	if (user.minionIsBusy) return 'Your minion is busy.';
 	const invention = Inventions.find(i => stringMatches(i.name, inventionName));
 	if (!invention) return "That's not a valid invention.";
 	if (!user.user.unlocked_blueprints.includes(invention.id)) {

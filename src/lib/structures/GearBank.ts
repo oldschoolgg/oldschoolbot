@@ -1,10 +1,10 @@
-import type { Bank } from 'oldschooljs';
+import { type Bank, itemID, resolveItems } from 'oldschooljs';
 
+import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
 import { getSimilarItems } from '../data/similarItems';
 import type { UserFullGearSetup } from '../gear/types';
 import type { MaterialBank } from '../invention/MaterialBank';
 import type { Skills, SkillsRequired } from '../types';
-import { hasSkillReqsRaw, itemID, resolveItems } from '../util';
 import type { ChargeBank } from './Bank';
 
 export class GearBank {
@@ -15,6 +15,7 @@ export class GearBank {
 	chargeBank: ChargeBank;
 	materials: MaterialBank;
 	pet: number | null;
+	minionName: string;
 
 	constructor({
 		gear,
@@ -23,7 +24,8 @@ export class GearBank {
 		chargeBank,
 		materials,
 		pet,
-		skillsAsXP
+		skillsAsXP,
+		minionName
 	}: {
 		gear: UserFullGearSetup;
 		bank: Bank;
@@ -32,6 +34,7 @@ export class GearBank {
 		materials: MaterialBank;
 		pet: number | null;
 		skillsAsXP: SkillsRequired;
+		minionName: string;
 	}) {
 		this.gear = gear;
 		this.bank = bank;
@@ -40,6 +43,7 @@ export class GearBank {
 		this.materials = materials;
 		this.pet = pet;
 		this.skillsAsXP = skillsAsXP;
+		this.minionName = minionName;
 	}
 
 	usingPet(pet: string) {

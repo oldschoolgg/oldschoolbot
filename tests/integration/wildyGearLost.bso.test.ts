@@ -26,6 +26,7 @@ test('calculateGearLostOnDeathWilderness', async () => {
 		gear_wildy: gear.raw() as any
 	});
 
+	// @ts-ignore
 	await monsterTask.run({
 		type: 'MonsterKilling',
 		mi: Monsters.Venenatis.id,

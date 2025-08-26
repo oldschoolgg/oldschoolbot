@@ -3,7 +3,7 @@ import { diff } from 'deep-object-diff';
 import deepMerge from 'deepmerge';
 import { deepClone, increaseNumByPercent, notEmpty, objectEntries, reduceNumByPercent } from 'e';
 import fetch from 'node-fetch';
-import bsoItemsJson from '../../../data/bso_items.json';
+import bsoItemsJson from '../../../data/bso/bso_items.json';
 
 import { EquipmentSlot, type Item } from '../src/meta/types';
 import Items, { CLUE_SCROLLS, CLUE_SCROLL_NAMES, USELESS_ITEMS } from '../src/structures/Items';
@@ -75,26 +75,6 @@ export function moidLink(items: number[]) {
 	if (items.length === 0) return 'No items.';
 	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
 }
-
-const formatDateForTimezones = (date: Date): { cali: string; sydney: string } => {
-	const options: Intl.DateTimeFormatOptions = {
-		year: 'numeric',
-		month: '2-digit',
-		day: '2-digit',
-		hour: '2-digit',
-		minute: '2-digit',
-		second: '2-digit',
-		timeZoneName: 'short'
-	};
-
-	const caliDate = new Intl.DateTimeFormat('en-US', { ...options, timeZone: 'America/Los_Angeles' }).format(date);
-	const sydneyDate = new Intl.DateTimeFormat('en-AU', { ...options, timeZone: 'Australia/Sydney' }).format(date);
-
-	return {
-		cali: caliDate,
-		sydney: sydneyDate
-	};
-};
 
 const manualItems: Item[] = [
 	{

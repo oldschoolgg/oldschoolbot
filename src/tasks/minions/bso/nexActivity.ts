@@ -1,8 +1,8 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import { calcWhatPercent, noOp, percentChance, randArrItem } from 'e';
+import { calcWhatPercent, noOp, percentChance, randArrItem, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji } from '../../../lib/constants';
 import { nexCL, nexUniqueDrops } from '../../../lib/data/CollectionsExport';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -11,7 +11,6 @@ import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { NEX_UNIQUE_DROPRATE, NexMonster } from '../../../lib/nex';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import type { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { roll } from '../../../lib/util';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';

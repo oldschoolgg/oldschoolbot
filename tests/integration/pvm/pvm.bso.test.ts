@@ -1,15 +1,12 @@
-import { Bank, EMonster } from 'oldschooljs';
+import { Time } from 'e';
+import { Bank, EMonster, type ItemBank, SkillsEnum, itemID, resolveItems } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
-import { Time } from 'e';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { gorajanArcherOutfit, gorajanWarriorOutfit } from '../../../src/lib/data/CollectionsExport';
 import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants';
 import { VasaMagus } from '../../../src/lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { BSOMonsters } from '../../../src/lib/minions/data/killableMonsters/custom/customMonsters';
 import { Gear } from '../../../src/lib/structures/Gear';
-import { itemID, resolveItems } from '../../../src/lib/util';
 import { gearCommand } from '../../../src/mahoji/commands/gear';
 import { vasaBISGear } from '../../../src/mahoji/lib/abstracted_commands/vasaCommand';
 import { mockClient } from '../util';
@@ -215,6 +212,7 @@ describe('BSO PVM', async () => {
 				.add('Dragon hunter lance')
 				.add('Anti-dragon shield')
 				.add('Elder rune', 5000)
+				.add('Cooked karambwan', 5000)
 				.add('Saradomin brew(4)', 1000)
 				.add('Super restore(4)', 1000)
 				.add('Saradomin godsword')

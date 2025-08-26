@@ -1,7 +1,8 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
+import { Bank, type ItemBank } from 'oldschooljs';
 
+import { itemNameFromID } from '@/lib/util';
 import {
 	BathhouseOres,
 	BathwaterMixtures,
@@ -15,7 +16,6 @@ import { joinGuthixianCache } from '../../lib/bso/guthixianCache';
 import { type TuraelsTrialsMethod, TuraelsTrialsMethods, turaelsTrialsStartCommand } from '../../lib/bso/turaelsTrials';
 import { fishingLocations } from '../../lib/fishingContest';
 import type { MaterialType } from '../../lib/invention';
-import { Bank, type ItemBank, itemNameFromID } from '../../lib/util';
 import { bonanzaCommand } from '../lib/abstracted_commands/bonanzaCommand';
 import {
 	fishingContestStartCommand,
@@ -32,7 +32,6 @@ import {
 import { stealingCreationCommand } from '../lib/abstracted_commands/stealingCreation';
 import { tinkeringWorkshopCommand } from '../lib/abstracted_commands/tinkeringWorkshopCommand';
 import { ownedMaterialOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const bsoMinigamesCommand: OSBMahojiCommand = {
@@ -251,7 +250,7 @@ export const bsoMinigamesCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.String,
 							description: 'The godly item to sacrifice.',
 							required: true,
-							autocomplete: async (value, { id }) => {
+							autocomplete: async (value: string, { id }) => {
 								const raw = await mahojiUsersSettingsFetch(id, { bank: true });
 								const bank = new Bank(raw.bank as ItemBank);
 

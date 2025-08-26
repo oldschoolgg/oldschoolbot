@@ -1,5 +1,4 @@
-import type { LootTable, Monster } from 'oldschooljs';
-import type { MonsterData } from 'oldschooljs/dist/meta/monsterData';
+import type { LootTable, Monster, MonsterData } from 'oldschooljs';
 
 import setCustomMonster, { makeKillTable } from '../../../../util/setCustomMonster';
 import type { KillableMonster } from '../../../types';
@@ -17,7 +16,7 @@ export interface CustomMonster extends Readonly<Omit<Readonly<KillableMonster>, 
 	isCustom: true;
 }
 
-export const customKillableMonsters: KillableMonster[] = [];
+export const customKillableMonsters: (KillableMonster & { rawTable: LootTable })[] = [];
 
 export const BSOMonsters = {
 	...customDemiBosses,
@@ -39,5 +38,5 @@ for (const monster of Object.values(BSOMonsters)) {
 	setCustomMonster(monster.id, monster.name, monster.table, monsterData, {
 		aliases: monster.aliases
 	});
-	customKillableMonsters.push({ ...monster, table: makeKillTable(monster.table) });
+	customKillableMonsters.push({ ...monster, table: makeKillTable(monster.table), rawTable: monster.table });
 }

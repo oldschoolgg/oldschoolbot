@@ -1,12 +1,12 @@
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { type ChatInputCommandInteraction, EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Time } from 'e';
-import { Bank } from 'oldschooljs';
-import { toKMB } from 'oldschooljs/dist/util';
+import { Bank, toKMB } from 'oldschooljs';
 
 import KingGoldemar from '../../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
 import { BossInstance, gpCostPerKill } from '../../../lib/structures/Boss';
 import { Gear } from '../../../lib/structures/Gear';
-import { channelIsSendable, formatDuration } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
 
 export async function kgCommand(

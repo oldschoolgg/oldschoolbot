@@ -1,8 +1,8 @@
+import { formatDuration } from '@oldschoolgg/toolkit';
+import { reduceNumByPercent } from 'e';
 import { EMonster } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
-import { formatDuration } from '@oldschoolgg/toolkit';
-import { reduceNumByPercent } from 'e';
 import { gorajanWarriorOutfit } from '../../../src/lib/data/CollectionsExport';
 import { mockClient } from '../util';
 

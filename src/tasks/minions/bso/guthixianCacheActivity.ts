@@ -1,13 +1,11 @@
-import { roll } from 'e';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { percentChance, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';
-import { Emoji } from '../../../lib/constants';
 import { divinersOutfit } from '../../../lib/data/CollectionsExport';
-import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { percentChance } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const guthixianCacheTask: MinionTask = {
@@ -70,7 +68,7 @@ export const guthixianCacheTask: MinionTask = {
 			str += `\n${loot.has('Doopy') ? `${Emoji.Purple} ` : ''}You received: ${loot}.`;
 		}
 
-		await incrementMinigameScore(user.id, 'guthixian_cache');
+		await user.incrementMinigameScore('guthixian_cache');
 		await user.addToGodFavour(['Guthix'], data.duration);
 
 		return handleTripFinish(user, channelID, str, undefined, data, loot);

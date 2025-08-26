@@ -5,7 +5,7 @@ import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank, Monsters } from 'oldschooljs';
 
 import type { KillWorkerArgs, KillWorkerReturn } from '.';
-import { YETI_ID } from '../constants';
+import { ORI_DISABLED_MONSTERS, YETI_ID } from '../bso/bsoConstants';
 import { customKillableMonsters } from '../minions/data/killableMonsters/custom/customMonsters.js';
 import killableMonsters from '../minions/data/killableMonsters/index';
 import { simulatedKillables } from '../simulation/simulatedKillables';
@@ -20,6 +20,7 @@ export default async ({
 	onTask,
 	slayerMaster,
 	limit,
+	ori,
 	lootTableTertiaryChanges
 }: KillWorkerArgs): KillWorkerReturn => {
 	const simulatedKillable = simulatedKillables.find(i => stringMatches(i.name, bossName));
@@ -46,8 +47,17 @@ export default async ({
 			};
 		}
 
+		if (ori && ORI_DISABLED_MONSTERS.some(m => stringMatches(m, osjsMonster.name))) {
+			return { error: "Ori doesn't work here." };
+		}
+
+		let qtyToKill = quantity;
+		if (ori) {
+			qtyToKill = Math.ceil(quantity * 1.25);
+		}
+
 		const result = {
-			bank: osjsMonster.kill(quantity, {
+			bank: osjsMonster.kill(qtyToKill, {
 				inCatacombs: catacombs,
 				onSlayerTask: onTask,
 				slayerMaster: slayerMaster,
@@ -59,7 +69,12 @@ export default async ({
 
 		const killableMonster = [...killableMonsters, ...customKillableMonsters].find(mon => mon.id === osjsMonster.id);
 		if (killableMonster?.specialLoot) {
-			killableMonster.specialLoot({ ownedItems: result.bank, loot: result.bank, quantity, cl: new Bank() });
+			killableMonster.specialLoot({
+				ownedItems: result.bank,
+				loot: result.bank,
+				quantity: qtyToKill,
+				cl: new Bank()
+			});
 		}
 		return { bank: result.bank.toJSON() };
 	}

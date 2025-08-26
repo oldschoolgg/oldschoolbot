@@ -1,12 +1,11 @@
 import { type CommandRunOptions, ProductID, products } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
-import { notEmpty } from 'e';
+import { Time, notEmpty } from 'e';
 
-import { Time } from 'e';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { BOT_TYPE } from '../../lib/constants';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { roboChimpSyncData } from '../../lib/roboChimp';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export const redeemCommand: OSBMahojiCommand = {
 	name: 'redeem',

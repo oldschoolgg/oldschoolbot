@@ -1,9 +1,10 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
+import type { GearBank } from '@/lib/structures/GearBank.js';
 import { userhasDiaryTier } from '../../lib/diaries.js';
-import type { UserFullGearSetup } from '../../lib/gear';
 import { QuestID } from '../../lib/minions/data/quests';
 import { DiaryID } from '../../lib/minions/types.js';
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
@@ -11,46 +12,37 @@ import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Mining from '../../lib/skilling/skills/mining';
 import type { MiningActivityTaskOptions } from '../../lib/types/minions';
-import {
-	formatDuration,
-	formatSkillRequirements,
-	itemID,
-	itemNameFromID,
-	randomVariation,
-	stringMatches
-} from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { minionName } from '../../lib/util/minionUtils';
+import { formatSkillRequirements, itemNameFromID } from '../../lib/util/smallUtils.js';
 import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export function calculateMiningInput({
 	nameInput,
 	quantityInput,
 	isPowermining,
-	gear,
+	gearBank,
 	hasSOTFQuest,
 	qp,
 	miningLevel,
 	craftingLevel,
 	strengthLevel,
 	maxTripLength,
-	user,
 	hasKaramjaMedium,
-	randomVariationEnabled = true
+	randomVariationEnabled = true,
+	hasDT2Quest
 }: {
 	nameInput: string;
 	quantityInput: number | undefined;
 	isPowermining: boolean;
 	miningLevel: number;
-	gear: UserFullGearSetup;
+	gearBank: GearBank;
 	hasSOTFQuest: boolean;
+	hasDT2Quest: boolean;
 	qp: number;
 	craftingLevel: number;
 	strengthLevel: number;
 	maxTripLength: number;
-	user: MUser;
 	hasKaramjaMedium: boolean;
 	randomVariationEnabled?: boolean;
 }) {
@@ -67,35 +59,29 @@ export function calculateMiningInput({
 		}.`;
 	}
 
-	if (user.skillsAsLevels.mining < ore.level) {
-		return `${minionName(user)} needs ${ore.level} Mining to mine ${ore.name}.`;
+	if (miningLevel < ore.level) {
+		return `You need ${ore.level} Mining to mine ${ore.name}.`;
 	}
 
 	// Check for daeyalt shard requirements.
-	const hasDaeyaltReqs = user.hasSkillReqs(sinsOfTheFatherSkillRequirements);
 	if (ore.name === 'Daeyalt essence rock') {
-		if (!hasDaeyaltReqs) {
+		if (!hasSOTFQuest) {
 			return `To mine ${ore.name}, you need ${formatSkillRequirements(sinsOfTheFatherSkillRequirements)}.`;
 		}
-		if (user.QP < 125) {
+		if (qp < 125) {
 			return `To mine ${ore.name}, you need at least 125 Quest Points.`;
 		}
 	}
 
-	if (ore.name === 'Tainted essence chunk') {
-		if (!user.user.finished_quest_ids.includes(QuestID.DesertTreasureII)) {
-			return 'You need to have completed the Desert Treasure II quest to access the scar essence mine.';
-		}
+	if (ore.name === 'Tainted essence chunk' && !hasDT2Quest) {
+		return 'You need to have completed the Desert Treasure II quest to access the scar essence mine.';
 	}
 
 	if (miningLevel < ore.level) {
 		return `You need ${ore.level} Mining to mine ${ore.name}.`;
 	}
-
-	const gearValues = Object.values(gear);
-
 	if (ore.requiredPickaxes) {
-		if (!ore.requiredPickaxes.some(pickaxe => gearValues.some(g => g.hasEquipped(pickaxe)))) {
+		if (!ore.requiredPickaxes.some(pickaxe => gearBank.hasEquipped(pickaxe))) {
 			return `You need to be using one of these pickaxes to be able to mine ${ore.name}: ${ore.requiredPickaxes
 				.map(itemNameFromID)
 				.join(', ')}.`;
@@ -120,7 +106,7 @@ export function calculateMiningInput({
 		effectiveMiningLevel += 7;
 	}
 	// Checks if user own Celestial ring or Celestial signet
-	if (gearValues.some(g => g.hasEquipped(['Celestial ring (uncharged)']))) {
+	if (gearBank.hasEquipped(['Celestial ring (uncharged)'])) {
 		messages.push('+4 invisible Mining lvls for Celestial ring');
 		effectiveMiningLevel += 4;
 	}
@@ -132,7 +118,7 @@ export function calculateMiningInput({
 
 	// For each pickaxe, if they have it, give them its' bonus and break.
 	for (const pickaxe of pickaxes) {
-		if (!gearValues.some(g => g.hasEquipped([pickaxe.id])) || effectiveMiningLevel < pickaxe.miningLvl) continue;
+		if (!gearBank.hasEquipped([pickaxe.id]) || effectiveMiningLevel < pickaxe.miningLvl) continue;
 		currentPickaxe = pickaxe;
 		messages.pop();
 		messages.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(pickaxe.id)}`);
@@ -142,7 +128,7 @@ export function calculateMiningInput({
 	let glovesRate = 0;
 	if (miningLevel >= 60) {
 		for (const glove of miningGloves) {
-			if (!user.hasEquipped(glove.id) || !glove.Percentages[ore.name]) continue;
+			if (!gearBank.hasEquipped(glove.id) || !glove.Percentages[ore.name]) continue;
 			glovesRate = glove.Percentages[ore.name];
 			if (glovesRate) {
 				messages.push(`Lowered rock depletion rate by **${glovesRate}%** for ${itemNameFromID(glove.id)}`);
@@ -153,7 +139,7 @@ export function calculateMiningInput({
 
 	let armourEffect = 0;
 	for (const armour of varrockArmours) {
-		if (!user.hasEquippedOrInBank(armour.id) || !armour.Percentages[ore.name]) continue;
+		if (!gearBank.hasEquippedOrInBank(armour.id) || !armour.Percentages[ore.name]) continue;
 		armourEffect = armour.Percentages[ore.name];
 		if (armourEffect) {
 			messages.push(`**${armourEffect}%** chance to mine an extra ore using ${itemNameFromID(armour.id)}`);
@@ -168,14 +154,14 @@ export function calculateMiningInput({
 	}
 
 	let miningCapeEffect = 0;
-	if (user.hasEquippedOrInBank([itemID('Mining cape')]) && miningCapeOreEffect[ore.name]) {
+	if (gearBank.hasEquippedOrInBank('Mining cape') && miningCapeOreEffect[ore.name]) {
 		miningCapeEffect = miningCapeOreEffect[ore.name];
 		if (miningCapeEffect) {
 			messages.push(`**${miningCapeEffect}%** chance to mine an extra ore using Mining cape`);
 		}
 	}
 
-	if (ore.bankingTime === 0) {
+	if (ore.bankingTime === 0 && ore.name !== 'Daeyalt essence rock') {
 		isPowermining = false;
 	}
 
@@ -187,7 +173,7 @@ export function calculateMiningInput({
 	let [timeToMine, newQuantity] = determineMiningTime({
 		quantity: quantityInput,
 		maxTripLength,
-		hasGlory: gearValues.some(g => g.hasEquipped('Amulet of glory')),
+		hasGlory: gearBank.hasEquipped('Amulet of glory'),
 		ore,
 		ticksBetweenRolls: currentPickaxe.ticksBetweenRolls,
 		glovesRate,
@@ -199,7 +185,7 @@ export function calculateMiningInput({
 		hasKaramjaMedium
 	});
 
-	if (gearValues.some(g => g.hasEquipped('Offhand volcanic pickaxe')) && strengthLevel >= 100 && miningLevel >= 105) {
+	if (gearBank.hasEquipped('Offhand volcanic pickaxe') && strengthLevel >= 100 && miningLevel >= 105) {
 		newQuantity = Math.round(increaseNumByPercent(newQuantity, 150));
 		// Same as 60% speed reduction, just keeps full trips
 		messages.push('150% increased quantity for Offhand volcanic pickaxe');
@@ -212,7 +198,7 @@ export function calculateMiningInput({
 	const fakeDurationMax =
 		quantityInput && randomVariationEnabled ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
-	if (ore.name === 'Gem rock' && gearValues.some(g => g.hasEquipped('Amulet of glory'))) {
+	if (ore.name === 'Gem rock' && gearBank.hasEquipped('Amulet of glory')) {
 		messages.push('3x success rate for having an Amulet of glory equipped');
 	}
 
@@ -284,15 +270,15 @@ export const mineCommand: OSBMahojiCommand = {
 			nameInput: options.name,
 			quantityInput: quantity,
 			isPowermining: powermine ?? false,
-			gear: user.gear,
+			gearBank: user.gearBank,
 			hasSOTFQuest: user.hasSkillReqs(sinsOfTheFatherSkillRequirements),
 			qp: user.QP,
 			miningLevel: user.skillLevel('mining'),
 			craftingLevel: user.skillLevel('crafting'),
 			strengthLevel: user.skillLevel('strength'),
 			maxTripLength: calcMaxTripLength(user, 'Mining'),
-			user,
-			hasKaramjaMedium: (await userhasDiaryTier(user, [DiaryID.Karamja, 'medium']))[0]
+			hasKaramjaMedium: (await userhasDiaryTier(user, [DiaryID.Karamja, 'medium']))[0],
+			hasDT2Quest: user.user.finished_quest_ids.includes(QuestID.DesertTreasureII)
 		});
 
 		if (typeof result === 'string') {
@@ -313,7 +299,7 @@ export const mineCommand: OSBMahojiCommand = {
 			type: 'Mining'
 		});
 
-		let response = `${minionName(user)} is now mining ${ore.name} until your minion ${
+		let response = `${user.minionName} is now mining ${ore.name} until your minion ${
 			quantity ? `mined ${newQuantity}x or gets tired` : 'is satisfied'
 		}, it'll take ${
 			quantity

@@ -1,8 +1,8 @@
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
-import { Bank, type Item } from 'oldschooljs';
+import { Bank, type Item, resolveItems } from 'oldschooljs';
 
 import type { ShadesOfMortonOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID, resolveItems } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
@@ -261,7 +261,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 			const bonusTime = i * Time.Minute;
 			if (bonusTime) {
 				totalTime += bonusTime;
-				messages.push(`${formatDuration(bonusTime)} bonus max trip length for ${itemNameFromID(coffin)}`);
+				messages.push(`${formatDuration(bonusTime)} bonus max trip length for ${coffin}.`);
 				break;
 			}
 		}

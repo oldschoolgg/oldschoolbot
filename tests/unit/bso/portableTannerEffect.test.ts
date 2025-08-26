@@ -1,7 +1,7 @@
-import { itemID } from 'oldschooljs/dist/util';
+import { Time } from 'e';
+import { itemID } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
-import { Time } from 'e';
 import { portableTannerEffect } from '../../../src/lib/bso/inventionEffects';
 import { MaterialBank } from '../../../src/lib/invention/MaterialBank';
 import { UpdateBank } from '../../../src/lib/structures/UpdateBank';

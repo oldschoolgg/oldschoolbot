@@ -1,14 +1,13 @@
 import { Time, calcWhatPercent, sumArr } from 'e';
-import { Bank, type Item, type Monster, Monsters } from 'oldschooljs';
-
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
+import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters, SkillsEnum } from 'oldschooljs';
+import type { OffenceGearStat } from 'oldschooljs/gear';
 import { omit } from 'remeda';
+
+import type { PvMMethod } from '@/lib/constants';
+import type { PrimaryGearSetupType } from '@/lib/gear';
 import { dwarvenBlessing } from '../../../../lib/bso/dwarvenBlessing';
 import { gearstatToSetup, gorajanBoosts } from '../../../../lib/bso/gorajanGearBoost';
-import type { PvMMethod } from '../../../../lib/constants';
 import { degradeableItems, degradeablePvmBoostItems } from '../../../../lib/degradeableItems';
-import type { OffenceGearStat, PrimaryGearSetupType } from '../../../../lib/gear/types';
 import { InventionID } from '../../../../lib/invention/inventions';
 import {
 	SlayerActivityConstants,
@@ -30,7 +29,6 @@ import { calcPOHBoosts } from '../../../../lib/poh';
 import { ChargeBank } from '../../../../lib/structures/Bank';
 import { maxOffenceStats } from '../../../../lib/structures/Gear';
 import type { MonsterActivityTaskOptions } from '../../../../lib/types/minions';
-import { itemNameFromID } from '../../../../lib/util';
 import getOSItem from '../../../../lib/util/getOSItem';
 import { resolveAvailableItemBoosts } from '../../../mahojiSettings';
 import { determineIfUsingCannon } from './determineIfUsingCannon';
@@ -214,12 +212,12 @@ const salveBoost: Boost = {
 
 const dragonHunterBoost: Boost = {
 	description: 'A boost for dragon-hunter gear when killing dragons',
-	run: ({ monster, isInWilderness, osjsMon, primaryStyle: style, gearBank }) => {
+	run: ({ monster, osjsMon, primaryStyle: style, gearBank }) => {
 		const isDragon = osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon);
 		if (!isDragon || monster.name.toLowerCase() === 'vorkath') return null;
 
 		for (const wep of dragonHunterWeapons) {
-			const hasWep = gearBank.wildyGearCheck(wep.item.id, isInWilderness);
+			const hasWep = gearBank.hasEquippedOrInBank(wep.item.id);
 			if (hasWep && style === wep.attackStyle) {
 				return {
 					percentageReduction: wep.boost,
@@ -348,11 +346,12 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 	cannonBoost,
 	{
 		description: 'Barrage/Bursting',
-		run: ({ monster, attackStyles, combatMethods }) => {
+		run: ({ monster, attackStyles, combatMethods, isInWilderness }) => {
 			const isBarraging = combatMethods.includes('barrage');
 			const isBursting = combatMethods.includes('burst');
+			const canBarrageMonster = monster.canBarrage || (monster.id === Monsters.Jelly.id && isInWilderness);
 
-			if (!isBarraging && !isBursting) return null;
+			if (!canBarrageMonster || (!isBarraging && !isBursting)) return null;
 
 			let newAttackStyles = [...attackStyles];
 			if (!newAttackStyles.includes(SkillsEnum.Magic)) {
@@ -374,7 +373,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				};
 			}
 
-			if (isBursting && attackStyles.includes(SkillsEnum.Magic) && monster.canBarrage) {
+			if (isBursting && attackStyles.includes(SkillsEnum.Magic)) {
 				return {
 					percentageReduction: boostIceBurst,
 					consumables: [iceBurstConsumables],
@@ -462,7 +461,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				if (equippedInThisSet) {
 					results.push({
 						percentageReduction: equippedInThisSet.boostPercent,
-						message: `${equippedInThisSet.boostPercent}% for ${itemNameFromID(equippedInThisSet.itemID)}`
+						message: `${equippedInThisSet.boostPercent}% for ${Items.itemNameFromId(equippedInThisSet.itemID)}`
 					});
 					continue;
 				}
@@ -472,7 +471,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 						deg.items.some(g => gearBank.gear[boostSet.gearSetup].hasEquipped(g.itemID))
 				);
 				if (!equippedInThisSet && boostSet.required && !insteadHasDegradeableItem) {
-					return `You need to have one of these items equipped in your ${boostSet.gearSetup} setup: ${boostSet.items.map(i => itemNameFromID(i.itemID)).join(', ')}.`;
+					return `You need to have one of these items equipped in your ${boostSet.gearSetup} setup: ${boostSet.items.map(i => Items.itemNameFromId(i.itemID)).join(', ')}.`;
 				}
 			}
 			return results;
@@ -536,7 +535,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				if (allGorajan || (expectedSetup === setup && gearBank.gear[setup].hasEquipped(outfit, true))) {
 					results.push({
 						percentageReduction: 10,
-						message: `10% for ${itemNameFromID(outfit[0])!.split(' ').slice(0, 2).join(' ')} gear`
+						message: `10% for ${Items.itemNameFromId(outfit[0])!.split(' ').slice(0, 2).join(' ')} gear`
 					});
 					break;
 				}

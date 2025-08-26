@@ -1,5 +1,6 @@
-import { Emoji } from '../../lib/constants';
-import type { OSBMahojiCommand } from '../lib/util';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 
 export const patreonCommand: OSBMahojiCommand = {
 	name: 'patreon',

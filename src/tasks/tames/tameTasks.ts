@@ -1,3 +1,4 @@
+import { calcPerHour, formatDuration } from '@oldschoolgg/toolkit/util';
 import type { TameActivity } from '@prisma/client';
 import {
 	type APIInteractionGuildMember,
@@ -11,7 +12,7 @@ import {
 	userMention
 } from 'discord.js';
 import { Time, increaseNumByPercent, isFunction, percentChance, randArrItem, randInt, roll } from 'e';
-import { Bank, type ItemBank } from 'oldschooljs';
+import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { isEmpty } from 'remeda';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
@@ -19,7 +20,6 @@ import { BitField } from '../../lib/constants';
 import { handlePassiveImplings } from '../../lib/implings';
 import { trackLoot } from '../../lib/lootTrack';
 import { allOpenables } from '../../lib/openables';
-
 import { runCommand } from '../../lib/settings/settings';
 import { getTemporossLoot } from '../../lib/simulation/tempoross';
 import { WintertodtCrate } from '../../lib/simulation/wintertodt';
@@ -33,9 +33,9 @@ import {
 	tameKillableMonsters
 } from '../../lib/tames';
 import type { ActivityTaskData } from '../../lib/types/minions';
-import { assert, calcPerHour, formatDuration, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleCrateSpawns } from '../../lib/util/handleCrateSpawns';
+import { assert } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { tameLastFinishedActivity } from '../../lib/util/tameUtil';
 import { sendToChannelID } from '../../lib/util/webhook';
@@ -363,7 +363,7 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 				messages.push('2x loot from Elder knowledge (1/15 chance)');
 			}
 
-			let str = `${user}, ${tame} finished completing ${activityData.quantity}x ${itemNameFromID(
+			let str = `${user}, ${tame} finished completing ${activityData.quantity}x ${Items.itemNameFromId(
 				clueTier.scrollID
 			)}. (${Math.floor(calcPerHour(activityData.quantity, activity.duration)).toFixed(1)} clues/hr)`;
 
@@ -488,6 +488,12 @@ export async function repeatTameTrip({
 				case 4: {
 					args = {
 						superglass_make: 'molten glass'
+					};
+					break;
+				}
+				case 5: {
+					args = {
+						superheat_item: getOSItem(data.itemID).name
 					};
 					break;
 				}

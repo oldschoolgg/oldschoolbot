@@ -1,8 +1,7 @@
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 
-import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { TemporossActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
@@ -23,7 +22,7 @@ export async function temporossCommand(user: MUser, channelID: string, quantity:
 	if (fBoost > 1) messages.push(`${fBoost.toFixed(2)}% boost for Fishing level`);
 	durationPerRoss = reduceNumByPercent(durationPerRoss, fBoost);
 
-	const kc = await getMinigameScore(user.id, 'tempoross');
+	const kc = await user.fetchMinigameScore('tempoross');
 	const kcLearned = Math.min(100, calcWhatPercent(kc, 100));
 
 	if (kcLearned > 0) {

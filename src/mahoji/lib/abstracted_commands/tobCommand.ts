@@ -1,10 +1,11 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { calcWhatPercent } from 'e';
-import { Bank } from 'oldschooljs';
-import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
-import { randomVariation } from 'oldschooljs/dist/util';
+import { Bank, TOBRooms, itemID, randomVariation } from 'oldschooljs';
 
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Emoji } from '../../../lib/constants';
+import { skillsMeetRequirements } from '@/lib/util';
+import { formatSkillRequirements } from '@/lib/util/smallUtils';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import {
@@ -27,15 +28,12 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
 import getUserFoodFromBank from '../../../lib/minions/functions/getUserFoodFromBank';
 import { setupParty } from '../../../lib/party';
-import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { MakePartyOptions } from '../../../lib/types';
 import type { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import { channelIsSendable, formatSkillRequirements, skillsMeetRequirements } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
 import getOSItem from '../../../lib/util/getOSItem';
-import itemID from '../../../lib/util/itemID';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahojiSettings';
 
@@ -52,7 +50,7 @@ const SCYTHE_CHARGES_PER_RAID = 200;
 
 async function calcTOBInput(u: MUser) {
 	const items = new Bank();
-	const kc = await getMinigameScore(u.id, 'tob');
+	const kc = await u.fetchMinigameScore('tob');
 	items.add('Super combat potion(4)', 1);
 	items.add('Ranging potion(4)', 1);
 
@@ -230,7 +228,7 @@ async function checkTOBUser(
 	}
 
 	if (isHardMode) {
-		const kc = await getMinigameScore(user.id, 'tob');
+		const kc = await user.fetchMinigameScore('tob');
 
 		if (kc < 250) {
 			return [true, `${user.usernameOrMention} needs at least 250 Theatre of Blood KC before doing Hard mode.`];
@@ -339,7 +337,7 @@ export async function tobStartCommand(
 	}
 
 	if (isHardMode) {
-		const normalKC = await getMinigameScore(user.id, 'tob');
+		const normalKC = await user.fetchMinigameScore('tob');
 		if (normalKC < 250) {
 			return 'You need at least 250 completions of the Theatre of Blood before you can attempt Hard Mode.';
 		}

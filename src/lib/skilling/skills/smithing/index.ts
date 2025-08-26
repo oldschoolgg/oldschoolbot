@@ -1,6 +1,6 @@
-import { itemID } from 'oldschooljs/dist/util';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { itemID } from 'oldschooljs';
 
-import { Emoji } from '../../../constants';
 import { SkillsEnum } from '../../types';
 import BlastableBars from './blastables';
 import Bars from './smeltables';

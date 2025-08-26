@@ -1,8 +1,7 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
+import { EMonster, Monsters, resolveItems } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import { NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID, spearWeapon } from '../constants';
+import { spearWeapon } from '../constants';
 import { NexMonster } from '../nex';
 import { Requirements } from '../structures/Requirements';
 import type {
@@ -13,8 +12,7 @@ import type {
 	TOAOptions,
 	TheatreOfBloodTaskOptions
 } from '../types/minions';
-import { anyoneDiedInTOARaid } from '../util';
-import { isCertainMonsterTrip } from './caUtils';
+import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils';
 import type { CombatAchievement } from './combatAchievements';
 
 export const masterCombatAchievements: CombatAchievement[] = [
@@ -729,7 +727,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: "Phosani's Nightmare",
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[PHOSANI_NIGHTMARE_ID]: 5
+				[EMonster.PHOSANI_NIGHTMARE]: 5
 			}
 		})
 	},
@@ -809,7 +807,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'The Nightmare',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[NIGHTMARE_ID]: 50
+				[EMonster.NIGHTMARE]: 50
 			}
 		})
 	},

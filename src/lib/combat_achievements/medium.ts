@@ -1,6 +1,5 @@
-import { Monsters } from 'oldschooljs';
+import { ItemGroups, Monsters } from 'oldschooljs';
 
-import { demonBaneWeapons } from '../constants';
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
 import { isCertainMonsterTrip } from './caUtils';
@@ -409,7 +408,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
-				isCertainMonsterTrip(Monsters.Skotizo.id)(data) && user.hasEquipped(demonBaneWeapons)
+				isCertainMonsterTrip(Monsters.Skotizo.id)(data) && user.hasEquipped(ItemGroups.demonBaneWeapons)
 		}
 	},
 	{
@@ -556,7 +555,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'Amoxliatl',
 		rng: {
-			chancePerKill: 10,
+			chancePerKill: 1,
 			hasChance: (data, user) =>
 				isCertainMonsterTrip(Monsters.Amoxliatl.id)(data) && user.hasEquipped('Glacial temotli')
 		}

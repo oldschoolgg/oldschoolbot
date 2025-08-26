@@ -1,13 +1,13 @@
 import { Time, increaseNumByPercent, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { itemID, toKMB } from 'oldschooljs/dist/util';
+import { Bank, SkillsEnum, itemID, toKMB } from 'oldschooljs';
 
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
+import type { GearBank } from '@/lib/structures/GearBank';
+import { skillingPetDropRate } from '@/lib/util';
+import { GLOBAL_BSO_XP_MULTIPLIER, MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
 import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
-import { GLOBAL_BSO_XP_MULTIPLIER, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { upgradedDragonstoneOutfit } from '../../lib/data/CollectionsExport';
 import { globalDroprates } from '../../lib/data/globalDroprates';
-import type { UserFullGearSetup } from '../../lib/gear';
 import { InventionID } from '../../lib/invention/inventions';
 import { type StoneSpirit, stoneSpirits } from '../../lib/minions/data/stoneSpirits';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
@@ -15,35 +15,28 @@ import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
 import type { Ore } from '../../lib/skilling/types';
 import type { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import resolveItems from '../../lib/util/resolveItems';
 import { mahojiUsersSettingsFetch, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 
 export function calculateMiningResult({
 	ore,
-	allGear,
 	duration,
-	miningLevel,
 	disabledInventions,
 	quantity,
 	isPowermining,
-	equippedPet,
+	gearBank,
 	isUsingObsidianPickaxe,
 	hasMiningMasterCape,
 	portentResult,
 	spiritOre,
 	amountOfSpiritsToUse,
-	collectionLog,
-	miningXP
+	collectionLog
 }: {
 	ore: Ore;
-	allGear: UserFullGearSetup;
 	duration: number;
-	miningLevel: number;
 	disabledInventions: InventionID[];
 	isPowermining: boolean;
-	equippedPet: number | null;
+	gearBank: GearBank;
 	isUsingObsidianPickaxe: boolean;
 	quantity: number;
 	hasMiningMasterCape: boolean;
@@ -51,7 +44,6 @@ export function calculateMiningResult({
 	amountOfSpiritsToUse: number;
 	spiritOre: StoneSpirit | undefined;
 	collectionLog: Bank;
-	miningXP: number;
 }) {
 	const messages: string[] = [];
 	const barsFromKlikBank = new Bank();
@@ -74,7 +66,7 @@ export function calculateMiningResult({
 
 	// Prospector outfit
 	if (
-		allGear.skilling.hasEquipped(
+		gearBank.gear.skilling.hasEquipped(
 			Object.keys(Mining.prospectorItems).map(i => Number.parseInt(i)),
 			true
 		)
@@ -86,18 +78,18 @@ export function calculateMiningResult({
 
 	// Add clue scrolls
 	if (ore.clueScrollChance) {
-		addSkillingClueToLoot(miningLevel, SkillsEnum.Mining, quantity, ore.clueScrollChance, loot);
+		addSkillingClueToLoot(gearBank.skillsAsLevels.mining, SkillsEnum.Mining, quantity, ore.clueScrollChance, loot);
 	}
 
 	// Roll for pet
 	if (ore.petChance) {
-		const { petDropRate } = skillingPetDropRate(miningXP, SkillsEnum.Mining, ore.petChance);
+		const { petDropRate } = skillingPetDropRate(gearBank, SkillsEnum.Mining, ore.petChance);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Rock golem');
 		}
 	}
 
-	if (numberOfMinutes > 10 && ore.minerals && miningLevel >= 60) {
+	if (numberOfMinutes > 10 && ore.minerals && gearBank.skillsAsLevels.mining >= 60) {
 		let numberOfMinerals = 0;
 		for (let i = 0; i < quantity; i++) {
 			if (roll(ore.minerals)) numberOfMinerals++;
@@ -131,17 +123,21 @@ export function calculateMiningResult({
 		}
 	}
 
-	const isDestroyed = isUsingObsidianPickaxe && !resolveItems(['Obsidian shards']).includes(ore.id);
+	const isDestroyed = isUsingObsidianPickaxe && ore.id !== itemID('Obsidian shards');
 	if (isDestroyed) messages.push('Your volcanic pickaxe destroyed the ores.');
-	const hasAdze = Object.values(allGear).some(g => g.hasEquipped(['Superior inferno adze']));
+	const hasAdze = gearBank.hasEquipped(['Superior inferno adze']);
 	const adzeIsDisabled = disabledInventions.includes(InventionID.SuperiorInfernoAdze);
 	if (!isPowermining && !isDestroyed) {
-		let daeyaltQty = 0;
-
 		// Gem rocks roll off the GemRockTable
-		if (ore.name === 'Gem rock') {
+		if (ore.name === 'Daeyalt essence rock') {
+			let daeyaltQty = 0;
+			for (let i = 0; i < quantity; i++) {
+				daeyaltQty += randInt(2, 3);
+			}
+			loot.add(ore.id, daeyaltQty);
+		} else if (ore.name === 'Gem rock') {
 			let effectiveQty = quantity;
-			if (Object.values(allGear).some(g => g.hasEquipped(upgradedDragonstoneOutfit, true))) {
+			if (gearBank.hasEquipped(upgradedDragonstoneOutfit, true)) {
 				effectiveQty = Math.ceil(increaseNumByPercent(quantity, 10));
 				messages.push(
 					`You received 10% extra gems from your Dragonstone armour. (${effectiveQty - quantity} extra)`
@@ -161,7 +157,7 @@ export function calculateMiningResult({
 				[97, 6]
 			];
 			for (const [lvl, multiplier] of tiers.reverse()) {
-				if (miningLevel >= lvl) {
+				if (gearBank.skillsAsLevels.mining >= lvl) {
 					loot.add(ore.id, quantity * multiplier);
 					break;
 				}
@@ -176,18 +172,13 @@ export function calculateMiningResult({
 			for (let i = 0; i < quantity; i++) {
 				loot.add(Mining.GraniteRockTable.roll());
 			}
-		} else if (ore.name === 'Daeyalt essence rock') {
-			for (let i = 0; i < quantity; i++) {
-				daeyaltQty += randInt(2, 3);
-			}
-			loot.add(ore.id, daeyaltQty);
 		} else if (ore.name === 'Tainted essence chunk') {
 			loot.add(ore.id, 5 * taintedQty);
 		} else {
 			loot.add(ore.id, quantity);
 		}
 
-		const hasKlik = equippedPet === itemID('Klik');
+		const hasKlik = gearBank.usingPet('Klik');
 
 		if (hasKlik && !hasAdze) {
 			const smeltedOre = Smithing.Bars.find(o => o.inputOres.has(ore.id) && o.inputOres.length === 1);
@@ -295,15 +286,12 @@ export const miningTask: MinionTask = {
 			quantity,
 			hasMiningMasterCape,
 			ore,
-			allGear: user.gear,
-			miningLevel: user.skillLevel(SkillsEnum.Mining),
 			disabledInventions: sd.disabled_inventions,
-			equippedPet: user.user.minion_equippedPet,
+			gearBank: user.gearBank,
 			amountOfSpiritsToUse,
 			spiritOre,
 			portentResult,
-			collectionLog: user.cl,
-			miningXP: user.skillsAsXP.mining
+			collectionLog: user.cl
 		});
 
 		await transactItems({

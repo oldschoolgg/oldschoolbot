@@ -1,9 +1,7 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
-import { itemID } from 'oldschooljs/dist/util';
+import { Monsters, deepResolveItems, itemID } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
-import { deepResolveItems } from 'oldschooljs/dist/util/util';
-import { GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
 import type { KillableMonster } from '../../types';
 
@@ -218,7 +216,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.CrawlingHand.id,

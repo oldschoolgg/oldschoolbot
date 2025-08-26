@@ -1,11 +1,10 @@
 import { Time } from 'e';
-import { Bank, LootTable, Monsters, RareDropTable, itemID, itemTupleToTable } from 'oldschooljs';
+import { Bank, LootTable, Monsters, RareDropTable, itemID, itemTupleToTable, resolveItems } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
 import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../../../../data/seedPackTables';
-import { GearStat } from '../../../../gear';
 import { lowRuneHighAdamantTable, runeWeaponTable } from '../../../../simulation/sharedTables';
 import { SkillsEnum } from '../../../../skilling/types';
-import resolveItems from '../../../../util/resolveItems';
 import { GrimyHerbTable } from './Treebeard';
 import type { CustomMonster } from './customMonsters';
 

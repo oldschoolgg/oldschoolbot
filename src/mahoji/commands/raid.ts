@@ -1,14 +1,14 @@
-import { randArrItem, reduceNumByPercent, roll, sumArr } from 'e';
-import { Bank } from 'oldschooljs';
-
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, formatDuration } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { DOANonUniqueTable } from '../../lib/bso/doa/doaLootTable';
-import { doaStartCommand } from '../../lib/bso/doa/doaStartCommand';
-import { globalConfig } from '../../lib/constants';
-import { doaMetamorphPets } from '../../lib/data/CollectionsExport';
-import { globalDroprates } from '../../lib/data/globalDroprates';
-import { degradeableItems } from '../../lib/degradeableItems';
+import { randArrItem, reduceNumByPercent, roll, sumArr } from 'e';
+import { Bank, averageBank, resolveItems } from 'oldschooljs';
+
+import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable';
+import { doaStartCommand } from '@/lib/bso/doa/doaStartCommand';
+import { globalConfig } from '@/lib/constants';
+import { doaMetamorphPets } from '@/lib/data/CollectionsExport';
+import { globalDroprates } from '@/lib/data/globalDroprates';
+import { degradeableItems } from '@/lib/degradeableItems';
 import {
 	DOARooms,
 	calcDOAInput,
@@ -16,16 +16,13 @@ import {
 	createDOATeam,
 	doaHelpCommand,
 	pickUniqueToGiveUser
-} from '../../lib/depthsOfAtlantis';
-import { type RaidLevel, mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
-import { averageBank, formatDuration } from '../../lib/util';
+} from '@/lib/depthsOfAtlantis';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { minionIsBusy } from '../../lib/util/minionIsBusy';
-import resolveItems from '../../lib/util/resolveItems';
 import { coxCommand, coxStatsCommand } from '../lib/abstracted_commands/coxCommand';
 import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '../lib/abstracted_commands/tobCommand';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export const raidCommand: OSBMahojiCommand = {
 	name: 'raid',
@@ -288,7 +285,7 @@ export const raidCommand: OSBMahojiCommand = {
 			check?: { hard_mode?: boolean };
 		};
 		toa?: {
-			start?: { raid_level: RaidLevel; max_team_size?: number; solo?: boolean; quantity?: number };
+			start?: { raid_level: number; max_team_size?: number; solo?: boolean; quantity?: number };
 			help?: {};
 		};
 		doa?: {
@@ -456,7 +453,7 @@ Slowest finish: ${formatDuration(slowest.time)}
 			};
 		}
 
-		if (minionIsBusy(user.id)) return "Your minion is busy, you can't do this.";
+		if (user.minionIsBusy) return "Your minion is busy, you can't do this.";
 
 		if (cox?.start) {
 			return coxCommand(

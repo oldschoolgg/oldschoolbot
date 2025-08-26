@@ -1,6 +1,5 @@
-import { Bank } from 'oldschooljs';
+import { Bank, resolveItems } from 'oldschooljs';
 
-import resolveItems from '../../util/resolveItems';
 import { itemNameFromID } from '../../util/smallUtils';
 import type { Createable } from '../createables';
 

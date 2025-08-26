@@ -1,11 +1,14 @@
 import { bold } from '@discordjs/builders';
 import { type CommandRunOptions, calcPerHour, formatDuration } from '@oldschoolgg/toolkit';
-import type { InteractionReplyOptions } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
+import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
 import { Time, increaseNumByPercent, sumArr } from 'e';
-import { Bank, convertBankToPerHourStats } from 'oldschooljs';
+import { Bank, convertBankToPerHourStats, itemID, toKMB } from 'oldschooljs';
 import { unique } from 'remeda';
 
+import type { GearBank } from '@/lib/structures/GearBank';
+import { itemNameFromID } from '@/lib/util';
+import { PeakTier } from '@/lib/util/peaks';
 import {
 	BathhouseOres,
 	BathwaterMixtures,
@@ -13,10 +16,10 @@ import {
 	calculateBathouseResult,
 	durationPerBaxBath
 } from '../../lib/baxtorianBathhouses';
+import { GLOBAL_BSO_XP_MULTIPLIER } from '../../lib/bso/bsoConstants';
 import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '../../lib/bso/divination';
 import { TuraelsTrialsMethods, calculateTuraelsTrialsInput } from '../../lib/bso/turaelsTrials';
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { GLOBAL_BSO_XP_MULTIPLIER, PeakTier } from '../../lib/constants';
 import { inventionBoosts } from '../../lib/invention/inventions';
 import { stoneSpirits } from '../../lib/minions/data/stoneSpirits';
 import Agility from '../../lib/skilling/skills/agility';
@@ -36,18 +39,14 @@ import Smithing from '../../lib/skilling/skills/smithing';
 import { HunterTechniqueEnum } from '../../lib/skilling/types';
 import { Gear } from '../../lib/structures/Gear';
 import type { BathhouseTaskOptions } from '../../lib/types/minions';
-import { toKMB } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import itemID from '../../lib/util/itemID';
-import { itemNameFromID, returnStringOrFile } from '../../lib/util/smallUtils';
 import { calculateHunterResult } from '../../tasks/minions/HunterActivity/hunterActivity';
 import { calculateAgilityResult } from '../../tasks/minions/agilityActivity';
 import { calculateDungeoneeringResult } from '../../tasks/minions/bso/dungeoneeringActivity';
 import { memoryHarvestResult, totalTimePerRound } from '../../tasks/minions/bso/memoryHarvestActivity';
 import { calculateTuraelsTrialsResult } from '../../tasks/minions/bso/turaelsTrialsActivity';
 import { calculateMiningResult } from '../../tasks/minions/miningActivity';
-import type { OSBMahojiCommand } from '../lib/util';
 import { calculateHunterInput } from './hunt';
 import { calculateMiningInput } from './mine';
 import { determineTameClueResult } from './tames';
@@ -196,7 +195,7 @@ export const ratesCommand: OSBMahojiCommand = {
 				);
 			}
 			return {
-				...(returnStringOrFile(tableArr.join('\n'), true) as InteractionReplyOptions)
+				...(returnStringOrFile(tableArr.join('\n')) as InteractionReplyOptions)
 			};
 		}
 		if (options.misc?.zygomite_seeds) {
@@ -268,7 +267,7 @@ ${zygomiteFarmingSource
 
 			return {
 				content: 'Assumes abyssal jibwings (e) and divine ring',
-				...(returnStringOrFile(results, true) as InteractionReplyOptions)
+				...(returnStringOrFile(results) as InteractionReplyOptions)
 			};
 		}
 
@@ -400,7 +399,7 @@ ${zygomiteFarmingSource
 				}
 			}
 			return {
-				...(returnStringOrFile(results, true) as InteractionReplyOptions),
+				...(returnStringOrFile(results) as InteractionReplyOptions),
 				content: 'Assumes: Hunter master cape, level 120 Hunter, full Graceful, Sandy pet equipped.'
 			};
 		}
@@ -456,7 +455,7 @@ ${zygomiteFarmingSource
 			}
 
 			return {
-				...(returnStringOrFile(results, true) as InteractionReplyOptions),
+				...(returnStringOrFile(results) as InteractionReplyOptions),
 				content: 'Assumes: Slayer master cape (8% boost to slayer xp)'
 			};
 		}
@@ -506,23 +505,26 @@ ${zygomiteFarmingSource
 									}
 
 									const fullSetup = {
-										skilling: fakeGear,
-										misc: secondaryGearSetup
-									} as any;
+										gear: {
+											skilling: fakeGear,
+											misc: secondaryGearSetup
+										},
+										bank: new Bank()
+									} as any as GearBank;
 
 									const result = calculateMiningInput({
 										nameInput: ore.name,
 										quantityInput: undefined,
 										isPowermining: isPowerminingInput,
-										gear: fullSetup,
+										gearBank: fullSetup,
 										hasSOTFQuest: true,
 										qp: 500,
 										miningLevel,
 										craftingLevel: 120,
 										strengthLevel: 120,
 										maxTripLength: duration,
-										user,
-										hasKaramjaMedium: true
+										hasKaramjaMedium: true,
+										hasDT2Quest: true
 									});
 									if (typeof result === 'string') continue;
 									const spiritOre = stoneSpirits.find(t => t.ore.id === ore.id);
@@ -540,17 +542,14 @@ ${zygomiteFarmingSource
 											quantity: result.newQuantity,
 											hasMiningMasterCape: true,
 											ore,
-											allGear: fullSetup,
-											miningLevel,
 											disabledInventions: [],
-											equippedPet: null,
 											amountOfSpiritsToUse,
 											spiritOre,
 											portentResult: !shouldUsePortent
 												? { didCharge: false }
 												: ({ didCharge: true, portent: { charges_remaining: 1000 } } as any),
 											collectionLog: new Bank(),
-											miningXP: 500_000_000
+											gearBank: fullSetup
 										});
 
 									results += [
@@ -574,7 +573,7 @@ ${zygomiteFarmingSource
 				}
 			}
 			return {
-				...(returnStringOrFile(results, true) as InteractionReplyOptions),
+				...(returnStringOrFile(results) as InteractionReplyOptions),
 				content:
 					'Assumes: Mining master cape, full Prospector, Glory, Varrock armour 4, 120 mining, Volcanic pickaxe.'
 			};
@@ -720,7 +719,7 @@ ${zygomiteFarmingSource
 					}
 				}
 			}
-			return returnStringOrFile(results, true);
+			return returnStringOrFile(results);
 		}
 
 		if (options.xphr?.dungeoneering) {
@@ -760,7 +759,7 @@ ${zygomiteFarmingSource
 				}
 			}
 			return {
-				...(returnStringOrFile(results, true) as InteractionReplyOptions),
+				...(returnStringOrFile(results) as InteractionReplyOptions),
 				content: 'Assumes: 120 Dungeoneering, Ring of luck, master cape (For gora shard chance)'
 			};
 		}

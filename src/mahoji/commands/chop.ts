@@ -1,18 +1,14 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
+import { Items, itemID, resolveItems } from 'oldschooljs';
 
-import { IVY_MAX_TRIP_LENGTH_BOOST, TWITCHERS_GLOVES, type TwitcherGloves } from '../../lib/constants';
+import { IVY_MAX_TRIP_LENGTH_BOOST } from '../../lib/bso/bsoConstants';
 import { InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
-import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
+import Woodcutting, { type TwitcherGloves } from '../../lib/skilling/skills/woodcutting/woodcutting';
 import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import itemID from '../../lib/util/itemID';
-import { minionName } from '../../lib/util/minionUtils';
-import resolveItems from '../../lib/util/resolveItems';
-import type { OSBMahojiCommand } from '../lib/util';
 
 const axes = [
 	{
@@ -119,7 +115,7 @@ export const chopCommand: OSBMahojiCommand = {
 			name: 'twitchers_gloves',
 			description: "Change the settings of your Twitcher's gloves. (default egg, optional)",
 			required: false,
-			choices: TWITCHERS_GLOVES.map(i => ({ name: `${i} nest`, value: i }))
+			choices: Woodcutting.twitchersGloves.map(i => ({ name: `${i} nest`, value: i }))
 		}
 	],
 	run: async ({
@@ -148,7 +144,7 @@ export const chopCommand: OSBMahojiCommand = {
 		const skills = user.skillsAsLevels;
 
 		if (skills.woodcutting < log.level) {
-			return `${minionName(user)} needs ${log.level} Woodcutting to chop ${log.name}.`;
+			return `${user.minionName} needs ${log.level} Woodcutting to chop ${log.name}.`;
 		}
 
 		const { QP } = user;
@@ -234,7 +230,7 @@ export const chopCommand: OSBMahojiCommand = {
 				if (!user.hasEquippedOrInBank([axe.id]) || skills.woodcutting < axe.wcLvl) continue;
 				axeMultiplier = axe.multiplier;
 				boosts.pop();
-				boosts.push(`**${axeMultiplier}x** success multiplier for ${itemNameFromID(axe.id)}`);
+				boosts.push(`**${axeMultiplier}x** success multiplier for ${Items.itemNameFromId(axe.id)}`);
 				break;
 			}
 		}
@@ -301,7 +297,7 @@ export const chopCommand: OSBMahojiCommand = {
 			type: 'Woodcutting'
 		});
 
-		let response = `${minionName(user)} is now chopping ${log.name} until your minion ${
+		let response = `${user.minionName} is now chopping ${log.name} until your minion ${
 			quantity ? `chopped ${newQuantity}x or gets tired` : 'is satisfied'
 		}, it'll take ${
 			quantity

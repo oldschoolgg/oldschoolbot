@@ -1,63 +1,50 @@
-import {
-	type CommandResponse,
-	type CommandRunOptions,
-	type MahojiUserOption,
-	PerkTier,
-	asyncGzip
-} from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import type {
+	CommandResponse,
+	CommandRunOptions,
+	MahojiUserOption,
+	OSBMahojiCommand
+} from '@oldschoolgg/toolkit/discord-util';
+import { asyncGzip } from '@oldschoolgg/toolkit/node';
+import { PerkTier, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { Activity, User } from '@prisma/client';
 import { ApplicationCommandOptionType, ChannelType, EmbedBuilder, userMention } from 'discord.js';
-import { Time } from 'e';
-import { Bank } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
-import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
+import { Time, randArrItem, randInt, roll, shuffleArr } from 'e';
+import {
+	Bank,
+	type Item,
+	type ItemBank,
+	ItemGroups,
+	Items,
+	ToBUniqueTable,
+	convertLVLtoXP,
+	itemID,
+	resolveItems
+} from 'oldschooljs';
+
+import { getUsername, isGroupActivity } from '@/lib/util';
+import { parseStaticTimeInterval, staticTimeIntervals } from '@/lib/util/smallUtils';
 import { giveBoxResetTime, mahojiUserSettingsUpdate, spawnLampResetTime } from '../../lib/MUser';
 import { MysteryBoxes, spookyTable } from '../../lib/bsoOpenables';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
-import { BitField, Channel, Emoji, globalConfig } from '../../lib/constants';
+import { BitField, Channel, globalConfig } from '../../lib/constants';
 import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
-import {
-	anglerOutfit,
-	evilChickenOutfit,
-	gnomeRestaurantCL,
-	guardiansOfTheRiftCL,
-	shadesOfMorttonCL,
-	toaCL
-} from '../../lib/data/CollectionsExport';
+import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { keyCrates } from '../../lib/keyCrates.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { type UnifiedOpenable, allOpenables } from '../../lib/openables';
-import { getUsersPerkTier } from '../../lib/perkTiers';
 import type { MinigameName } from '../../lib/settings/minigames';
 import { Minigames } from '../../lib/settings/minigames';
-import { convertStoredActivityToFlatActivity } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
-import {
-	formatDuration,
-	generateXPLevelQuestion,
-	getUsername,
-	isGroupActivity,
-	isInSupportServer,
-	isNexActivity,
-	isRaidsActivity,
-	isTOBOrTOAActivity,
-	itemID,
-	itemNameFromID,
-	parseStaticTimeInterval,
-	roll,
-	staticTimeIntervals,
-	stringMatches
-} from '../../lib/util';
+import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '../../lib/types/minions';
 import { findGroupOfUser } from '../../lib/util/findGroupOfUser';
-import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { repairBrokenItemsFromUser } from '../../lib/util/repairBrokenItems';
-import resolveItems from '../../lib/util/resolveItems';
 import { LampTable } from '../../lib/xpLamps';
 import { Cooldowns } from '../lib/Cooldowns';
 import {
@@ -70,8 +57,19 @@ import {
 import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
 import { buttonUserPicker } from '../lib/buttonUserPicker';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
+
+function isRaidsActivity(data: any): data is RaidsOptions {
+	return 'challengeMode' in data;
+}
+
+function isTOBOrTOAActivity(data: any): data is TheatreOfBloodTaskOptions {
+	return 'wipedRoom' in data;
+}
+
+function isNexActivity(data: any): data is NexTaskOptions {
+	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
+}
 
 const skillsVals = Object.values(Skills);
 
@@ -190,7 +188,7 @@ async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean)
 		title = `Highest All clue scroll completions in the past ${interval}`;
 	}
 
-	const query = `SELECT a.user_id::text, SUM((a."data"->>'q')::int) AS qty, MAX(a.finish_date) AS lastDate 
+	const query = `SELECT a.user_id::text, SUM((a."data"->>'q')::int) AS qty, MAX(a.finish_date) AS lastDate
 	  FROM activity a
 	  JOIN users u ON a.user_id::text = u.id
 	  WHERE a.type = 'ClueCompletion'
@@ -365,8 +363,36 @@ export function spawnLampIsReady(user: MUser, channelID: string): [true] | [fals
 	}
 	return [true];
 }
-async function spawnLampCommand(user: MUser, channelID: string): CommandResponse {
-	if (!isInSupportServer(channelID)) {
+
+export function generateXPLevelQuestion() {
+	const level = randInt(1, 120);
+	const xp = randInt(convertLVLtoXP(level), convertLVLtoXP(level + 1) - 1);
+
+	const chanceOfSwitching = randInt(1, 4);
+
+	const answers: string[] = [level.toString()];
+	const arr = shuffleArr(['plus', 'minus'] as const);
+
+	while (answers.length < 4) {
+		const modifier = randArrItem([1, 1, 2, 2, 3, 4, 5, 5, 6, 7, 7, 8, 9, 10, 10]);
+		const action = roll(chanceOfSwitching) ? arr[0] : arr[1];
+		let potentialAnswer = action === 'plus' ? level + modifier : level - modifier;
+		if (potentialAnswer < 1) potentialAnswer = level + modifier;
+		else if (potentialAnswer > 120) potentialAnswer = level - modifier;
+
+		if (answers.includes(potentialAnswer.toString())) continue;
+		answers.push(potentialAnswer.toString());
+	}
+
+	return {
+		question: `What level would you be at with **${xp.toLocaleString()}** XP?`,
+		answers,
+		explainAnswer: `${xp.toLocaleString()} is level ${level}!`
+	};
+}
+
+async function spawnLampCommand(user: MUser, channelID: string, guildId: string | null): CommandResponse {
+	if (guildId !== globalConfig.supportServerID) {
 		return 'You can only use this command in the support server.';
 	}
 	const isAdmin = globalConfig.adminUserIDs.includes(user.id);
@@ -445,7 +471,7 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 	{
 		name: 'Fishing Trawler',
 		key: 'fishing_trawler',
-		items: anglerOutfit
+		items: ItemGroups.anglerOutfit
 	},
 	{
 		name: 'Gnome Restaurant',
@@ -470,7 +496,7 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 	{
 		name: 'Tombs of Amascut',
 		key: 'tombs_of_amascut',
-		items: toaCL
+		items: ItemGroups.toaCL
 	},
 	{
 		name: 'Shades of Morton',
@@ -647,7 +673,7 @@ LIMIT 10;`);
 	},
 	{
 		name: 'Evil Chicken Outfit',
-		items: evilChickenOutfit,
+		items: ItemGroups.evilChickenOutfit,
 		run: async ({ item, ironmanOnly }) => {
 			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`
             SELECT *
@@ -770,7 +796,7 @@ for (const openable of allOpenables) {
 }
 
 async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnly: boolean) {
-	const item = getItem(itemName);
+	const item = Items.get(itemName);
 	if (!item) return 'Invalid item.';
 	const entity = dryStreakEntities.find(
 		e =>
@@ -781,7 +807,7 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 	if (entity) {
 		if (!entity.items.includes(item.id)) {
 			return `That's not a valid item dropped for this thing, valid items are: ${entity.items
-				.map(itemNameFromID)
+				.map(id => Items.itemNameFromId(id))
 				.join(', ')}.`;
 		}
 
@@ -833,7 +859,7 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 }
 
 async function mostDrops(user: MUser, itemName: string, filter: string) {
-	const item = getItem(itemName);
+	const item = Items.getItem(itemName);
 	const ironmanPart =
 		filter === 'Irons Only'
 			? 'AND "minion.ironman" = true'
@@ -885,7 +911,7 @@ async function checkMassesCommand(guildID: string | undefined) {
 			}
 		})
 	)
-		.map(convertStoredActivityToFlatActivity)
+		.map(_act => ActivityManager.convertStoredActivityToFlatActivity(_act))
 		.filter(m => (isRaidsActivity(m) || isGroupActivity(m) || isTOBOrTOAActivity(m)) && m.users.length > 1);
 
 	if (masses.length === 0) {
@@ -927,7 +953,7 @@ function calcTime(perkTier: PerkTier | 0) {
 
 export const PATRON_DOUBLE_LOOT_COOLDOWN = Time.Day * 31;
 async function patronTriggerDoubleLoot(user: MUser) {
-	const perkTier = getUsersPerkTier(user);
+	const perkTier = user.perkTier();
 	if (perkTier < PerkTier.Five) {
 		return 'Only T4, T5 or T6 patrons can use this command.';
 	}
@@ -1392,7 +1418,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return minionStats(mahojiUser.user);
 			}
 			if (patron.give_box) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
+				if (mahojiUser.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
 				return giveBox(mahojiUser, patron.give_box.user);
 			}
 			if (patron.activity_export) {
@@ -1406,7 +1432,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return result;
 			}
 			if (patron.spawnlamp) {
-				return spawnLampCommand(mahojiUser, channelID);
+				return spawnLampCommand(mahojiUser, channelID, interaction.guildId);
 			}
 			if (patron.spawnbox) return spawnBoxCommand(mahojiUser, channelID);
 			if (patron.stats) {

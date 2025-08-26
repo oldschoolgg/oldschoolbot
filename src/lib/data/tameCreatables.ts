@@ -1,8 +1,7 @@
-import { Bank } from 'oldschooljs';
+import { Bank, resolveItems } from 'oldschooljs';
 
 import { MaterialBank } from '../invention/MaterialBank';
 import getOSItem from '../util/getOSItem';
-import resolveItems from '../util/resolveItems';
 import type { Createable } from './createables';
 
 const eagleTameCreatables: Createable[] = [

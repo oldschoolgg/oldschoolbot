@@ -1,4 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { notEmpty, randArrItem, roll } from 'e';
 import {
 	Bank,
@@ -8,11 +8,13 @@ import {
 	EliteCasket,
 	EliteMimicTable,
 	HardCasket,
+	ItemGroups,
 	MasterCasket,
 	MasterMimicTable,
 	MediumCasket,
 	Monsters,
 	Nightmare,
+	itemID,
 	resolveItems
 } from 'oldschooljs';
 
@@ -27,7 +29,6 @@ import {
 	cluesHardCL,
 	cluesMasterCL,
 	cluesMediumCL,
-	evilChickenOutfit,
 	kalphiteKingCL,
 	moktangCL,
 	naxxusCL,
@@ -56,7 +57,6 @@ import { getTemporossLoot } from './simulation/tempoross';
 import { TheatreOfBlood } from './simulation/tob';
 import { WintertodtCrate } from './simulation/wintertodt';
 import getOSItem from './util/getOSItem';
-import itemID from './util/itemID';
 
 interface KillArgs {
 	accumulatedLoot: Bank;
@@ -274,12 +274,12 @@ export const finishables: Finishable[] = [
 	},
 	{
 		name: 'Evil Chicken Outfit',
-		cl: evilChickenOutfit,
+		cl: ItemGroups.evilChickenOutfit,
 		aliases: ['evil chicken outfit'],
 		kill: () => {
 			const loot = new Bank();
 			if (roll(300)) {
-				loot.add(randArrItem(evilChickenOutfit));
+				loot.add(randArrItem(ItemGroups.evilChickenOutfit));
 			} else {
 				loot.add(birdsNestID);
 				loot.add(treeSeedsNest.roll());

@@ -1,23 +1,21 @@
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { calcPercentOfNum, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '../../../lib/constants.js';
+import { roll } from '@/lib/util/rng';
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
-import Fishing from '../../../lib/skilling/skills/fishing';
+import { Fishing } from '../../../lib/skilling/skills/fishing/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
-import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { roll, skillingPetDropRate } from '../../../lib/util';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { anglerBoostPercent } from '../../../mahoji/mahojiSettings';
+import { skillingPetDropRate } from '../../../lib/util';
 
 export const aerialFishingTask: MinionTask = {
 	type: 'AerialFishing',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { quantity, userID, channelID } = data;
-		const user = await mUserFetch(userID);
-		const currentHuntLevel = user.skillLevel(SkillsEnum.Hunter);
-		const currentFishLevel = user.skillLevel(SkillsEnum.Fishing);
+	isNew: true,
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { quantity, channelID } = data;
+		const currentHuntLevel = user.skillsAsLevels.hunter;
+		const currentFishLevel = user.skillsAsLevels.fishing;
 
 		// Current fishable creatures
 		const bluegill = aerialFishingCreatures.find(_fish => _fish.name === 'Bluegill')!;
@@ -82,9 +80,9 @@ export const aerialFishingTask: MinionTask = {
 
 		// If they have the entire angler outfit, give an extra 2.5% xp bonus
 		if (
-			user.hasEquippedOrInBank(
-				Object.keys(Fishing.anglerItems).map(i => Number.parseInt(i)),
-				'every'
+			user.gear.skilling.hasEquipped(
+				Fishing.anglerItems.map(i => i[0]),
+				true
 			)
 		) {
 			const amountToAdd = Math.floor(fishXpReceived * (2.5 / 100));
@@ -92,8 +90,8 @@ export const aerialFishingTask: MinionTask = {
 			bonusXP += amountToAdd;
 		} else {
 			// For each angler item, check if they have it, give its' XP boost if so.
-			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasEquippedOrInBank(Number.parseInt(itemID))) {
+			for (const [itemID, bonus] of Fishing.anglerItems) {
+				if (user.hasEquipped(itemID)) {
 					const amountToAdd = Math.floor(fishXpReceived * (bonus / 100));
 					fishXpReceived += amountToAdd;
 					bonusXP += amountToAdd;
@@ -102,13 +100,13 @@ export const aerialFishingTask: MinionTask = {
 		}
 
 		const fishXP = await user.addXP({
-			skillName: SkillsEnum.Fishing,
+			skillName: 'fishing',
 			amount: fishXpReceived,
 			duration: data.duration,
 			source: 'AerialFishing'
 		});
 		const huntXP = await user.addXP({
-			skillName: SkillsEnum.Hunter,
+			skillName: 'hunter',
 			amount: huntXpReceived,
 			duration: data.duration,
 			source: 'AerialFishing'
@@ -118,7 +116,7 @@ export const aerialFishingTask: MinionTask = {
 		await user.incrementCreatureScore(mottledEel.id, mottledEelCaught);
 		await user.incrementCreatureScore(greaterSiren.id, greaterSirenCaught);
 
-		const xpBonusPercent = anglerBoostPercent(user);
+		const xpBonusPercent = Fishing.util.calcAnglerBoostPercent(user.gearBank);
 		if (xpBonusPercent > 0) {
 			bonusXP += Math.ceil(calcPercentOfNum(xpBonusPercent, fishXpReceived));
 		}
@@ -131,11 +129,11 @@ export const aerialFishingTask: MinionTask = {
 
 		// Add clue scrolls
 		const clueScrollChance = 636_833;
-		addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, clueScrollChance, loot);
+		addSkillingClueToLoot(user, 'fishing', quantity, clueScrollChance, loot);
 
 		// Heron Pet roll
 		const totalFishCaught = greaterSirenCaught + mottledEelCaught + commonTenchCaught + bluegillCaught;
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Fishing, 636_833);
+		const { petDropRate } = skillingPetDropRate(user, 'fishing', 636_833);
 		if (roll(petDropRate / totalFishCaught)) {
 			loot.add('Heron');
 			globalClient.emit(

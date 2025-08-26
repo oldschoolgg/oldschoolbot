@@ -1,4 +1,5 @@
-import { formatOrdinal, mentionCommand } from '@oldschoolgg/toolkit';
+import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { bold } from 'discord.js';
 import {
 	Time,
@@ -10,17 +11,15 @@ import {
 	randInt,
 	reduceNumByPercent
 } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, type ItemBank, itemID, resolveItems } from 'oldschooljs';
 
 import { calcSetupPercent } from './data/cox';
 import { getSimilarItems } from './data/similarItems';
 import type { UserFullGearSetup } from './gear';
-import { getMinigameScore } from './settings/minigames';
 import { Gear } from './structures/Gear';
-import type { ItemBank, Skills } from './types';
+import type { Skills } from './types';
 import type { DOAStoredRaid } from './types/minions';
-import { formatDuration, formatSkillRequirements, itemID, itemNameFromID } from './util';
-import resolveItems from './util/resolveItems';
+import { formatSkillRequirements, itemNameFromID } from './util/smallUtils';
 
 const { floor } = Math;
 
@@ -445,7 +444,7 @@ export async function calcDOAInput({
 }) {
 	const cost = new Bank();
 	const kc =
-		kcOverride ?? (await getMinigameScore(user.id, challengeMode ? 'depths_of_atlantis' : 'depths_of_atlantis_cm'));
+		kcOverride ?? (await user.fetchMinigameScore(challengeMode ? 'depths_of_atlantis' : 'depths_of_atlantis_cm'));
 	cost.add('Super combat potion(4)', quantity);
 	cost.add('Ranging potion(4)', quantity);
 	cost.add('Sanfew serum(4)', quantity);
@@ -546,7 +545,7 @@ export async function checkDOAUser({
 		return `${user.usernameOrMention} doesn't own the required supplies: ${cost.remove(user.bankWithGP)}`;
 	}
 
-	const kc = await getMinigameScore(user.id, challengeMode ? 'depths_of_atlantis_cm' : 'depths_of_atlantis');
+	const kc = await user.fetchMinigameScore(challengeMode ? 'depths_of_atlantis_cm' : 'depths_of_atlantis');
 
 	const userStats = await user.fetchStats({ doa_attempts: true, doa_room_attempts_bank: true });
 

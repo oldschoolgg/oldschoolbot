@@ -1,14 +1,13 @@
+import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { randomVariation } from 'oldschooljs/dist/util';
+import { Items } from 'oldschooljs';
 
 import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
 import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
 import Mining from '../../../lib/skilling/skills/mining';
 import type { MotherlodeMiningActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { minionName } from '../../../lib/util/minionUtils';
 
 export async function motherlodeMineCommand({
 	user,
@@ -21,7 +20,7 @@ export async function motherlodeMineCommand({
 }) {
 	let miningLevel = user.skillsAsLevels.mining;
 	if (miningLevel < 30) {
-		return `${minionName(user)} needs 30 Mining to mine at the Motherlode Mine.`;
+		return `${user.minionName} needs 30 Mining to mine at the Motherlode Mine.`;
 	}
 
 	const motherlode = Mining.MotherlodeMine;
@@ -34,14 +33,16 @@ export async function motherlodeMineCommand({
 	}
 	// Default bronze pickaxe, last in the array
 	let currentPickaxe = pickaxes[pickaxes.length - 1];
-	boosts.push(`**${currentPickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(currentPickaxe.id)}`);
+	boosts.push(
+		`**${currentPickaxe.ticksBetweenRolls}** ticks between rolls for ${Items.itemNameFromId(currentPickaxe.id)}`
+	);
 
 	// For each pickaxe, if they have it, give them its' bonus and break.
 	for (const pickaxe of pickaxes) {
 		if (!user.hasEquippedOrInBank([pickaxe.id]) || user.skillsAsLevels.mining < pickaxe.miningLvl) continue;
 		currentPickaxe = pickaxe;
 		boosts.pop();
-		boosts.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(pickaxe.id)}`);
+		boosts.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${Items.itemNameFromId(pickaxe.id)}`);
 		break;
 	}
 
@@ -90,7 +91,7 @@ export async function motherlodeMineCommand({
 		fakeDurationMin: Math.floor(fakeDurationMin),
 		type: 'MotherlodeMining'
 	});
-	let response = `${minionName(user)} is now mining at the Motherlode Mine until your minion ${
+	let response = `${user.minionName} is now mining at the Motherlode Mine until your minion ${
 		quantity ? `mined ${quantity}x pay-dirt or gets tired` : 'is satisfied'
 	}, it'll take ${
 		quantity

@@ -1,9 +1,7 @@
 import type { Minigame } from '@prisma/client';
-import { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item, ItemGroups, getItemOrThrow, resolveItems } from 'oldschooljs';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
-import { removeDiscontinuedItems } from '../bso/bsoUtil';
+import { removeDiscontinuedItems } from '../customItems/customItems';
 import { growablePets } from '../growablePets';
 import { stoneSpirits } from '../minions/data/stoneSpirits';
 import type { MinigameScore } from '../settings/minigames';
@@ -34,8 +32,10 @@ export interface IToReturnCollection {
 	counts: boolean;
 }
 
+export type CollectionStatus = 'not_started' | 'started' | 'completed';
+
 export interface ILeftListStatus {
-	[key: string]: 'not_started' | 'started' | 'completed';
+	[key: string]: CollectionStatus;
 }
 
 export interface IKCActivity {
@@ -101,87 +101,6 @@ export const dwarvenOutfit = resolveItems([
 	'Dwarven boots',
 	'Dwarven gloves'
 ]);
-export const boaters = resolveItems([
-	'Red boater',
-	'Green boater',
-	'Orange boater',
-	'Black boater',
-	'Blue boater',
-	'Pink boater',
-	'Purple boater',
-	'White boater'
-]);
-
-export const godBooks = resolveItems([
-	'Holy book',
-	'Unholy book',
-	'Book of balance',
-	'Book of war',
-	'Book of law',
-	'Book of darkness'
-]);
-
-export const mitres = resolveItems([
-	'Saradomin mitre',
-	'Guthix mitre',
-	'Zamorak mitre',
-	'Armadyl mitre',
-	'Bandos mitre',
-	'Ancient mitre'
-]);
-
-export const bobShirts = resolveItems([
-	"Bob's black shirt",
-	"Bob's blue shirt",
-	"Bob's green shirt",
-	"Bob's purple shirt",
-	"Bob's red shirt"
-]);
-
-export const croziers = resolveItems([
-	'Saradomin crozier',
-	'Guthix crozier',
-	'Zamorak crozier',
-	'Armadyl crozier',
-	'Bandos crozier',
-	'Ancient crozier'
-]);
-
-export const headbands = resolveItems([
-	'Red headband',
-	'Black headband',
-	'Brown headband',
-	'White headband',
-	'Blue headband',
-	'Gold headband',
-	'Pink headband',
-	'Green headband'
-]);
-
-export const stoles = resolveItems([
-	'Saradomin stole',
-	'Guthix stole',
-	'Zamorak stole',
-	'Armadyl stole',
-	'Bandos stole',
-	'Ancient stole'
-]);
-
-export const runeHeraldicShields = resolveItems([
-	'Rune shield (h1)',
-	'Rune shield (h2)',
-	'Rune shield (h3)',
-	'Rune shield (h4)',
-	'Rune shield (h5)'
-]);
-
-export const runeHeraldicHelms = resolveItems([
-	'Rune helm (h1)',
-	'Rune helm (h2)',
-	'Rune helm (h3)',
-	'Rune helm (h4)',
-	'Rune helm (h5)'
-]);
 
 export const abyssalSireCL = resolveItems([
 	'Abyssal orphan',
@@ -208,20 +127,13 @@ export const alchemicalHydraCL = resolveItems([
 	'Alchemical hydra heads'
 ]);
 
-const karilsItems = resolveItems(["Karil's coif", "Karil's leathertop", "Karil's leatherskirt", "Karil's crossbow"]);
-const ahrimsItems = resolveItems(["Ahrim's hood", "Ahrim's robetop", "Ahrim's robeskirt", "Ahrim's staff"]);
-const dharokItems = resolveItems(["Dharok's helm", "Dharok's platebody", "Dharok's platelegs", "Dharok's greataxe"]);
-const guthansItems = resolveItems(["Guthan's helm", "Guthan's platebody", "Guthan's chainskirt", "Guthan's warspear"]);
-const toragsItems = resolveItems(["Torag's helm", "Torag's platebody", "Torag's platelegs", "Torag's hammers"]);
-const veracsItems = resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]);
-export const barrowsItemArr = [karilsItems, ahrimsItems, guthansItems, toragsItems, veracsItems, dharokItems];
 export const barrowsChestCL = resolveItems([
-	...karilsItems,
-	...ahrimsItems,
-	...dharokItems,
-	...guthansItems,
-	...toragsItems,
-	...veracsItems,
+	...ItemGroups.karilsItems,
+	...ItemGroups.ahrimsItems,
+	...ItemGroups.dharokItems,
+	...ItemGroups.guthansItems,
+	...ItemGroups.toragsItems,
+	...ItemGroups.veracsItems,
 	'Bolt rack'
 ]);
 export const bryophytaCL = resolveItems(["Bryophyta's essence"]);
@@ -245,14 +157,13 @@ export const cerberusCL = resolveItems([
 export const chaosElementalCL = resolveItems(['Pet chaos elemental', 'Dragon pickaxe', 'Dragon 2h sword']);
 export const chaosFanaticCL = resolveItems(['Pet chaos elemental', 'Odium shard 1', 'Malediction shard 1']);
 
-export const godWarsDungeonGodswordShards = resolveItems(['Godsword shard 1', 'Godsword shard 2', 'Godsword shard 3']);
 export const generalGraardorCL = resolveItems([
 	'Pet general graardor',
 	'Bandos chestplate',
 	'Bandos tassets',
 	'Bandos boots',
 	'Bandos hilt',
-	...godWarsDungeonGodswordShards
+	...ItemGroups.godWarsDungeonGodswordShards
 ]);
 export const kreeArraCL = resolveItems([
 	"Pet kree'arra",
@@ -260,7 +171,7 @@ export const kreeArraCL = resolveItems([
 	'Armadyl chestplate',
 	'Armadyl chainskirt',
 	'Armadyl hilt',
-	...godWarsDungeonGodswordShards
+	...ItemGroups.godWarsDungeonGodswordShards
 ]);
 export const krilTsutsarothCL = resolveItems([
 	"Pet k'ril tsutsaroth",
@@ -268,7 +179,7 @@ export const krilTsutsarothCL = resolveItems([
 	'Zamorakian spear',
 	'Steam battlestaff',
 	'Zamorak hilt',
-	...godWarsDungeonGodswordShards
+	...ItemGroups.godWarsDungeonGodswordShards
 ]);
 export const commanderZilyanaCL = resolveItems([
 	'Pet zilyana',
@@ -276,7 +187,7 @@ export const commanderZilyanaCL = resolveItems([
 	'Saradomin hilt',
 	'Saradomin sword',
 	"Saradomin's light",
-	...godWarsDungeonGodswordShards
+	...ItemGroups.godWarsDungeonGodswordShards
 ]);
 
 export const corporealBeastCL = resolveItems([
@@ -340,7 +251,7 @@ export const godWarsDungeonCL = resolveItems([
 	'Bandos tassets',
 	'Bandos boots',
 	'Bandos hilt',
-	...godWarsDungeonGodswordShards,
+	...ItemGroups.godWarsDungeonGodswordShards,
 	'Frozen key piece (bandos)',
 	'Frozen key piece (saradomin)',
 	'Frozen key piece (zamorak)',
@@ -543,35 +454,6 @@ export const theatreOfBLoodCL = resolveItems([
 	...theatreOfBloodCapes,
 	...theatreOfBloodHardUniques,
 	...tobMetamorphPets
-]);
-
-export const toaCL = resolveItems([
-	"Tumeken's guardian",
-	"Tumeken's shadow (uncharged)",
-	"Elidinis' ward",
-	'Masori mask',
-	'Masori body',
-	'Masori chaps',
-	'Lightbearer',
-	"Osmumten's fang",
-	'Thread of elidinis',
-	'Breach of the scarab',
-	'Eye of the corruptor',
-	'Jewel of the sun',
-	'Menaphite ornament kit',
-	'Cursed phalanx',
-	'Masori crafting kit',
-	'Cache of runes',
-	"Icthlarin's shroud (tier 1)",
-	"Icthlarin's shroud (tier 2)",
-	"Icthlarin's shroud (tier 3)",
-	"Icthlarin's shroud (tier 4)",
-	"Icthlarin's shroud (tier 5)",
-	'Remnant of akkha',
-	'Remnant of ba-ba',
-	'Remnant of kephri',
-	'Remnant of zebak',
-	'Ancient remnant'
 ]);
 
 export const cluesBeginnerCL = resolveItems([
@@ -789,7 +671,7 @@ export const cluesMediumCL = resolveItems([
 	'Bandos cloak',
 	'Bandos stole',
 	'Bandos crozier',
-	...boaters,
+	...ItemGroups.boaters,
 	'Red headband',
 	'Black headband',
 	'Brown headband',
@@ -1579,14 +1461,7 @@ export const doaCL = resolveItems([
 	'Oceanic shroud (tier 5)'
 ]);
 
-export const roguesDenOutfit = resolveItems([
-	'Rogue mask',
-	'Rogue top',
-	'Rogue trousers',
-	'Rogue boots',
-	'Rogue gloves'
-]);
-export const roguesDenCL = resolveItems([...roguesDenOutfit]);
+export const roguesDenCL = resolveItems([...ItemGroups.rogueOutfit]);
 
 export const shadesOfMorttonCL = resolveItems([
 	'Amulet of the damned (full)',
@@ -1607,13 +1482,7 @@ export const shadesOfMorttonCL = resolveItems([
 ]);
 export const soulWarsCL = resolveItems(["Lil' creator", 'Red soul cape', 'Ectoplasmator']);
 
-export const templeTrekkingOutfit = resolveItems([
-	'Lumberjack hat',
-	'Lumberjack top',
-	'Lumberjack legs',
-	'Lumberjack boots'
-]);
-export const templeTrekkingCL = resolveItems([...templeTrekkingOutfit]);
+export const templeTrekkingCL = ItemGroups.templeTrekkingOutfit;
 
 export const titheFarmCL = resolveItems([
 	"Farmer's strawhat",
@@ -1692,14 +1561,13 @@ export const volcanicMineCL = resolveItems([
 	'Volcanic mine teleport',
 	'Dragon pickaxe (broken)'
 ]);
-export const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 export const aerialFishingCL = resolveItems([
 	'Golden tench',
 	'Pearl fishing rod',
 	'Pearl fly fishing rod',
 	'Pearl barbarian rod',
 	'Fish sack',
-	...anglerOutfit
+	...ItemGroups.anglerOutfit
 ]);
 export const allPetsCL = resolveItems([
 	'Abyssal orphan',
@@ -1777,19 +1645,7 @@ export const camdozaalCL = resolveItems([
 	'Imcando hammer'
 ]);
 
-export const championScrolls = resolveItems([
-	'Earth warrior champion scroll',
-	'Ghoul champion scroll',
-	'Giant champion scroll',
-	'Goblin champion scroll',
-	'Hobgoblin champion scroll',
-	'Imp champion scroll',
-	'Jogre champion scroll',
-	'Lesser demon champion scroll',
-	'Skeleton champion scroll',
-	'Zombie champion scroll'
-]);
-export const championsChallengeCL = resolveItems([...championScrolls, "Champion's cape"]);
+export const championsChallengeCL = resolveItems([...ItemGroups.championScrolls, "Champion's cape"]);
 export const chaosDruisCL = resolveItems(['Elder chaos top', 'Elder chaos robe', 'Elder chaos hood']);
 export const chompyBirdsCL = resolveItems([
 	'Chompy chick',
@@ -1895,42 +1751,19 @@ export const monkeyBackpacksCL = resolveItems([
 	'Skeleton monkey',
 	'Zombie monkey'
 ]);
-export const motherlodeMineCL = resolveItems([
-	'Coal bag',
-	'Gem bag',
-	'Prospector helmet',
-	'Prospector jacket',
-	'Prospector legs',
-	'Prospector boots'
-]);
+export const motherlodeMineCL = resolveItems(['Coal bag', 'Gem bag', ...ItemGroups.prospectorOutfit]);
 export const myNotesCL = resolveItems([
 	11_341, 11_342, 11_343, 11_344, 11_345, 11_346, 11_347, 11_348, 11_349, 11_350, 11_351, 11_352, 11_353, 11_354,
 	11_355, 11_356, 11_357, 11_358, 11_359, 11_360, 11_361, 11_362, 11_363, 11_364, 11_365, 11_366
 ]);
 export const randomEventsCL = resolveItems([
-	'Camo top',
-	'Camo bottoms',
-	'Camo helmet',
-	'Lederhosen top',
-	'Lederhosen shorts',
-	'Lederhosen hat',
-	'Zombie shirt',
-	'Zombie trousers',
-	'Zombie mask',
-	'Zombie gloves',
-	'Zombie boots',
-	'Mime mask',
-	'Mime top',
-	'Mime legs',
-	'Mime gloves',
-	'Mime boots',
+	...ItemGroups.camoOutfit,
+	...ItemGroups.lederhosenOutfit,
+	...ItemGroups.zombieOutfit,
+	...ItemGroups.mimeOutfit,
 	'Frog token',
 	'Stale baguette',
-	"Beekeeper's hat",
-	"Beekeeper's top",
-	"Beekeeper's legs",
-	"Beekeeper's gloves",
-	"Beekeeper's boots"
+	...ItemGroups.beekeeperOutfit
 ]);
 export const revenantsCL = resolveItems([
 	"Viggora's chainmace (u)",
@@ -2099,12 +1932,6 @@ export const tzHaarCL = resolveItems([
 	'Obsidian platelegs'
 ]);
 
-export const evilChickenOutfit = resolveItems([
-	'Evil chicken head',
-	'Evil chicken wings',
-	'Evil chicken legs',
-	'Evil chicken feet'
-]);
 export const miscellaneousCL = resolveItems([
 	'Herbi',
 	'Chompy chick',
@@ -2128,7 +1955,7 @@ export const miscellaneousCL = resolveItems([
 	'Dragon spear',
 	'Amulet of eternal glory',
 	'Shaman mask',
-	...evilChickenOutfit,
+	...ItemGroups.evilChickenOutfit,
 	'Mining gloves',
 	'Superior mining gloves',
 	'Expert mining gloves',
@@ -3390,3 +3217,30 @@ export const allChristmasEventItems = resolveItems([
 	'Snowflake amulet',
 	'Snowdream staff'
 ]);
+
+export const chompyHats = [
+	[getItemOrThrow('Chompy bird hat (ogre bowman)'), 30],
+	[getItemOrThrow('Chompy bird hat (bowman)'), 40],
+	[getItemOrThrow('Chompy bird hat (ogre yeoman)'), 50],
+	[getItemOrThrow('Chompy bird hat (yeoman)'), 70],
+	[getItemOrThrow('Chompy bird hat (ogre marksman)'), 95],
+	[getItemOrThrow('Chompy bird hat (marksman)'), 125],
+	[getItemOrThrow('Chompy bird hat (ogre woodsman)'), 170],
+	[getItemOrThrow('Chompy bird hat (woodsman)'), 225],
+	[getItemOrThrow('Chompy bird hat (ogre forester)'), 300],
+	[getItemOrThrow('Chompy bird hat (forester)'), 400],
+	[getItemOrThrow('Chompy bird hat (ogre bowmaster)'), 550],
+	[getItemOrThrow('Chompy bird hat (bowmaster)'), 700],
+	[getItemOrThrow('Chompy bird hat (ogre expert)'), 1000],
+	[getItemOrThrow('Chompy bird hat (expert)'), 1300],
+	[getItemOrThrow('Chompy bird hat (ogre dragon archer)'), 1700],
+	[getItemOrThrow('Chompy bird hat (dragon archer)'), 2250],
+	[getItemOrThrow('Chompy bird hat (expert ogre dragon archer)'), 3000],
+	[getItemOrThrow('Chompy bird hat (expert dragon archer)'), 4000]
+] as const;
+
+export const avasDevices: { item: Item; reduction: number }[] = [
+	{ item: getOSItem("Ava's attractor"), reduction: 60 },
+	{ item: getOSItem("Ava's accumulator"), reduction: 72 },
+	{ item: getOSItem("Ava's assembler"), reduction: 80 }
+];

@@ -1,17 +1,18 @@
-import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
+import { Time, reduceNumByPercent, round } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Time, reduceNumByPercent, round } from 'e';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import type { Skills } from '../../lib/types';
 import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, hasSkillReqs } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import { hasSkillReqs } from '../../lib/util/smallUtils';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import type { OSBMahojiCommand } from '../lib/util';
 
 const ds2Requirements: Skills = {
 	magic: 75,

@@ -1,16 +1,13 @@
 import { Time, roll } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, Items, Monsters, resolveItems } from 'oldschooljs';
 
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
-import { itemNameFromID } from '../util';
-import getOSItem, { getItem } from '../util/getOSItem';
-import resolveItems from '../util/resolveItems';
 
 export const gods = [
 	{
 		name: 'Zamorak',
 		pets: resolveItems(['Zamorak egg', 'Baby zamorak hawk', 'Juvenile zamorak hawk', 'Zamorak hawk']),
-		warpriestSet: getOSItem('Warpriest of Zamorak set'),
+		warpriestSet: Items.getOrThrow('Warpriest of Zamorak set'),
 		godItems: resolveItems([
 			'Zamorak platebody',
 			'Zamorak platelegs',
@@ -97,7 +94,7 @@ export const gods = [
 	{
 		name: 'Saradomin',
 		pets: resolveItems(['Saradomin egg', 'Baby saradomin owl', 'Juvenile saradomin owl', 'Saradomin owl']),
-		warpriestSet: getOSItem('Warpriest of Saradomin set'),
+		warpriestSet: Items.getOrThrow('Warpriest of Saradomin set'),
 		godItems: resolveItems([
 			'Saradomin platebody',
 			'Saradomin platelegs',
@@ -130,7 +127,7 @@ export const gods = [
 	},
 	{
 		name: 'Bandos',
-		warpriestSet: getOSItem('Warpriest of Bandos set'),
+		warpriestSet: Items.getOrThrow('Warpriest of Bandos set'),
 		godItems: resolveItems([
 			'Bandos platebody',
 			'Bandos platelegs',
@@ -171,7 +168,7 @@ export const gods = [
 	},
 	{
 		name: 'Armadyl',
-		warpriestSet: getOSItem('Warpriest of Armadyl set'),
+		warpriestSet: Items.getOrThrow('Warpriest of Armadyl set'),
 		godItems: resolveItems([
 			'Armadyl platebody',
 			'Armadyl platelegs',
@@ -235,7 +232,7 @@ export async function divineDominionCheck(user: MUser) {
 	return favourStr;
 }
 export async function divineDominionSacrificeCommand(user: MUser, itemStr: string, quantity = 1) {
-	const item = getItem(itemStr);
+	const item = Items.getItem(itemStr);
 	if (!item) {
 		return "That item doesn't exist.";
 	}
@@ -265,7 +262,7 @@ ${await divineDominionCheck(user)}`;
 		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
 			if (roll(10_000)) {
-				response += `\n\n${god.name} has awarded you a ${itemNameFromID(god.pets[0])} for your sacrifice.`;
+				response += `\n\n${god.name} has awarded you a ${Items.itemNameFromId(god.pets[0])} for your sacrifice.`;
 				loot.add(god.pets[0]);
 			}
 		}

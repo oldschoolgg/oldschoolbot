@@ -1,8 +1,8 @@
-import { itemID } from 'oldschooljs/dist/util';
+import { itemID } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
+import { isSuperUntradeable } from '../../../src/lib/bso/bsoUtil';
 import { masterCapesCL } from '../../../src/lib/data/CollectionsExport';
-import { isSuperUntradeable } from '../../../src/lib/util';
 import getOSItem from '../../../src/lib/util/getOSItem';
 import itemIsTradeable from '../../../src/lib/util/itemIsTradeable';
 

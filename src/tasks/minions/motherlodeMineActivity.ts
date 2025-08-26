@@ -1,13 +1,14 @@
 import { Time, roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
+import { skillingPetDropRate } from '@/lib/util';
+import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { MotherlodeMiningActivityTaskOptions } from '../../lib/types/minions';
-import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const motherlodeMiningTask: MinionTask = {

@@ -1,12 +1,10 @@
-import { Bank } from 'oldschooljs';
-import { expect, test } from 'vitest';
-
 import type { Prisma } from '@prisma/client';
 import { deepClone } from 'e';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { Bank, EquipmentSlot, resolveItems } from 'oldschooljs';
+import { expect, test } from 'vitest';
+
 import { TOBMaxMeleeGear } from '../../src/lib/data/tob';
 import { repairBrokenItemsFromUser } from '../../src/lib/util/repairBrokenItems';
-import resolveItems from '../../src/lib/util/resolveItems';
 import { createTestUser, mockClient } from './util';
 
 test('Repair Bank', async () => {

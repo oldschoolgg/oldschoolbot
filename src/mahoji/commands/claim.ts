@@ -1,14 +1,15 @@
-import { type CommandRunOptions, dateFm, stringMatches } from '@oldschoolgg/toolkit';
+import { CollectionLog } from '@oldschoolgg/collectionlog';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { type CommandRunOptions, dateFm, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
-import { BSO_MAX_TOTAL_LEVEL, BitField, Channel } from '../../lib/constants';
+import { BSO_MAX_TOTAL_LEVEL } from '../../lib/bso/bsoConstants';
+import { BitField, Channel } from '../../lib/constants';
+import { calcCLDetails } from '../../lib/data/Collections';
 import { getReclaimableItemsOfUser } from '../../lib/reclaimableItems';
 import { roboChimpUserFetch } from '../../lib/roboChimp';
-
-import getOSItem from '../../lib/util/getOSItem';
 import { sendToChannelID } from '../../lib/util/webhook';
-import type { OSBMahojiCommand } from '../lib/util';
 
 const claimables = [
 	{
@@ -34,7 +35,33 @@ const claimables = [
 			});
 			return 'You claimed free T1 patron perks in BSO for being maxed in both bots. You can claim this on OSB too for free patron perks on OSB.';
 		}
-	}
+	},
+	...CollectionLog.ranks.map(rank => ({
+		name: `${rank.rank} Collection Log Rank`,
+		hasRequirement: async (user: MUser): Promise<true | string> => {
+			const { owned } = calcCLDetails(user);
+			if (owned.length >= rank.itemsLogged) {
+				return true;
+			}
+			return `You need to have logged at least ${rank.itemsLogged} items in your collection log to claim the ${rank.rank} rank. You currently have ${owned.length}.`;
+		},
+		action: async (user: MUser) => {
+			const items = new Bank();
+
+			if (user.allItemsOwned.amount(rank.book) < 3) {
+				items.add(rank.book);
+			}
+
+			if (user.allItemsOwned.amount(rank.staff) < 3) {
+				items.add(rank.staff);
+			}
+			if (items.length === 0) {
+				return `You already have the ${rank.rank} rank items.`;
+			}
+			await user.addItemsToBank({ items, collectionLog: true });
+			return `Congratulations! You claimed the ${rank.rank} Collection Log Rank and received: ${items}`;
+		}
+	}))
 ];
 
 export const claimCommand: OSBMahojiCommand = {
@@ -73,11 +100,11 @@ export const claimCommand: OSBMahojiCommand = {
 			if (!reclaimableData.totalCanClaim.has(rawData.item_id)) {
 				return 'You already claimed this item. If you lose it, you can reclaim it.';
 			}
-			const item = getOSItem(rawData.item_id);
+			const item = Items.getOrThrow(rawData.item_id);
 			const loot = new Bank().add(item.id);
 			await user.addItemsToBank({ items: loot, collectionLog: false });
 			return `You claimed ${loot}.
-			
+
 ${rawData.name}: ${rawData.description}.
 ${dateFm(new Date(rawData.date))}`;
 		}

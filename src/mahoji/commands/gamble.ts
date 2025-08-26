@@ -1,12 +1,10 @@
-import type { MahojiUserOption } from '@oldschoolgg/toolkit/util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions, MahojiUserOption, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { isSuperUntradeable } from '../../lib/bso/bsoUtil';
 import { BitField } from '../../lib/constants';
-
-import { isSuperUntradeable } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
 import { diceCommand } from '../lib/abstracted_commands/diceCommand';
@@ -14,7 +12,6 @@ import { duelCommand } from '../lib/abstracted_commands/duelCommand';
 import { hotColdCommand } from '../lib/abstracted_commands/hotColdCommand';
 import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
 import { slotsCommand } from '../lib/abstracted_commands/slotsCommand';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export const gambleCommand: OSBMahojiCommand = {
 	name: 'gamble',

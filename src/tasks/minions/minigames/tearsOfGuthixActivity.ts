@@ -3,7 +3,6 @@ import { increaseNumByPercent, randInt } from 'e';
 import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';
 import { BitField } from '../../../lib/constants';
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import type { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -14,7 +13,7 @@ export const togTask: MinionTask = {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
-		await incrementMinigameScore(userID, 'tears_of_guthix', 1);
+		await user.incrementMinigameScore('tears_of_guthix', 1);
 		await userStatsUpdate(
 			user.id,
 			{

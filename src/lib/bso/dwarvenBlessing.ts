@@ -1,9 +1,8 @@
 import { Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import { BitField } from '../constants';
 import type { GearBank } from '../structures/GearBank';
-import getOSItem from '../util/getOSItem';
 
 export function calculateDwarvenBlessingPotsNeeded(duration: number) {
 	const fiveMinIncrements = Math.ceil(duration / (Time.Minute * 5));
@@ -20,7 +19,7 @@ export function dwarvenBlessing({
 	itemCost: Bank;
 	percentageReduction: number;
 } {
-	const dwarvenBlessingItem = getOSItem(
+	const dwarvenBlessingItem = Items.getOrThrow(
 		bitfield.includes(BitField.UseSuperRestoresForDwarvenBlessing) ? 'Super restore(4)' : 'Prayer potion(4)'
 	);
 	const hasBlessing = gearBank.hasEquipped('Dwarven blessing');

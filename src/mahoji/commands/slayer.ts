@@ -1,6 +1,5 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import type { User } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
@@ -19,7 +18,6 @@ import {
 	slayerStatusCommand,
 	slayerUnblockCommand
 } from '../lib/abstracted_commands/slayerTaskCommand';
-import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const slayerCommand: OSBMahojiCommand = {

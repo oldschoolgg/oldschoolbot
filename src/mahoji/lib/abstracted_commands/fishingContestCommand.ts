@@ -1,3 +1,5 @@
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -9,9 +11,7 @@ import {
 	getValidLocationsForFishType
 } from '../../../lib/fishingContest';
 import { trackLoot } from '../../../lib/lootTrack';
-import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { FishingContestOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
@@ -117,7 +117,7 @@ export async function fishingContestStatsCommand(user: MUser) {
 	const [userDetails, topCatches, minigameScore] = await Promise.all([
 		getUsersFishingContestDetails(user),
 		getTopDailyFishingCatch(),
-		getMinigameScore(user.id, 'fishing_contest')
+		user.fetchMinigameScore('fishing_contest')
 	]);
 	const currentFishType = getCurrentFishType();
 	const validLocs = getValidLocationsForFishType(currentFishType);

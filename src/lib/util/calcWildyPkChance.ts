@@ -1,28 +1,12 @@
+import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { Time, calcPercentOfNum, calcWhatPercent, reduceNumByPercent } from 'e';
-import { randomVariation } from 'oldschooljs/dist/util';
 
 import { userStatsUpdate } from '../../mahoji/mahojiSettings';
-import { PeakTier } from '../constants';
 import type { KillableMonster } from '../minions/types';
 import { maxDefenceStats } from '../structures/Gear';
 import type { GearBank } from '../structures/GearBank';
-import type { Peak } from '../tickers';
-import { percentChance } from '../util';
-
-const peakFactor = [
-	{
-		peakTier: PeakTier.High,
-		factor: 2.5
-	},
-	{
-		peakTier: PeakTier.Medium,
-		factor: 1
-	},
-	{
-		peakTier: PeakTier.Low,
-		factor: 0.2
-	}
-];
+import { type Peak, peakFactor } from './peaks';
+import { percentChance } from './rng';
 
 export async function increaseWildEvasionXp(user: MUser, duration: number) {
 	const oldPkXp: { pk_evasion_exp: number } = await user.fetchStats({ pk_evasion_exp: true });
@@ -49,10 +33,10 @@ export function calcWildyPKChance(
 	const evasionReduction = randomVariation(calcPercentOfNum(scaledExp, maxReductionPercent), 10);
 
 	const tripMinutes = Math.round(duration / Time.Minute);
-	let pkCount = 0;
+	let pkEncounters = 0;
 	for (let i = 0; i < tripMinutes; i++) {
 		if (percentChance(pkChance)) {
-			pkCount++;
+			pkEncounters++;
 		}
 	}
 
@@ -102,8 +86,8 @@ export function calcWildyPKChance(
 	deathChance = reduceNumByPercent(deathChance, evasionReduction);
 
 	deathChance = Math.min(Math.max(0, deathChance), 100);
-	if (pkCount > 0) {
-		for (let i = 0; i < pkCount; i++) {
+	if (pkEncounters > 0) {
+		for (let i = 0; i < pkEncounters; i++) {
 			if (percentChance(deathChance)) {
 				died = true;
 				break;
@@ -123,5 +107,5 @@ export function calcWildyPKChance(
 		wildyMultiMultiplier === 1 ? ' no' : ''
 	} multi)`;
 
-	return { pkCount, died, chanceString, currentPeak };
+	return { pkEncounters, died, chanceString, currentPeak };
 }

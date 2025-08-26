@@ -1,6 +1,5 @@
 import { Time, reduceNumByPercent } from 'e';
-import { Bank } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item } from 'oldschooljs';
 
 import type { GearSetupType } from '../gear';
 import getOSItem from './getOSItem';

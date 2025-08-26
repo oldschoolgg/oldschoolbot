@@ -1,18 +1,17 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { itemNameFromID } from '@/lib/util';
 import { type Eatable, Eatables } from '../../lib/data/eatables';
 import { kibbles } from '../../lib/data/kibble';
 import { getRealHealAmount } from '../../lib/minions/functions/getUserFoodFromBank';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { KibbleOptions } from '../../lib/types/minions';
-import { formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export const kibbleCommand: OSBMahojiCommand = {
 	name: 'kibble',

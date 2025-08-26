@@ -1,21 +1,39 @@
-import { type CommandRunOptions, formatDuration, isWeekend, stringMatches } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, formatDuration, isWeekend, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, clamp, increaseNumByPercent, randInt } from 'e';
-import { Bank } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import { Time, clamp, increaseNumByPercent, notEmpty, randInt } from 'e';
+import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { type ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { clueHunterOutfit } from '../../lib/data/CollectionsExport';
 import { getPOHObject } from '../../lib/poh';
 import type { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { calcClueScores } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { checkElderClueRequirements } from '../../lib/util/elderClueRequirements';
 import getOSItem from '../../lib/util/getOSItem';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
-import type { OSBMahojiCommand } from '../lib/util';
+
 import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
+
+export async function calcClueScores(user: MUser) {
+	const { actualCluesBank } = await user.calcActualClues();
+	const stats = await user.fetchStats({ openable_scores: true });
+	const openableBank = new Bank(stats.openable_scores as ItemBank);
+	return openableBank
+		.items()
+		.map(entry => {
+			const tier = ClueTiers.find(i => i.id === entry[0].id);
+			if (!tier) return;
+			return {
+				tier,
+				casket: getOSItem(tier.id),
+				clueScroll: getOSItem(tier.scrollID),
+				opened: openableBank.amount(tier.id),
+				actualOpened: actualCluesBank.amount(tier.scrollID)
+			};
+		})
+		.filter(notEmpty);
+}
 
 function reducedClueTime(clueTier: ClueTier, score: number) {
 	// Every 3 hours become 1% better to a cap of 10%

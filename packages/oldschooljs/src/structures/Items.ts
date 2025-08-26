@@ -1,6 +1,6 @@
 import deepMerge from 'deepmerge';
 
-import _items from '../data/items/item_data.json';
+import _items from '../data/items/item_data.json' with { type: 'json' };
 import type { Item, ItemID } from '../meta/types';
 import { cleanString } from '../util/cleanString';
 import { Collection } from './Collection';
@@ -73,6 +73,30 @@ class Items extends Collection<ItemID, Item> {
 		}
 
 		return undefined;
+	}
+
+	public itemNameFromId(itemID: number): string | undefined {
+		return super.get(itemID)?.name;
+	}
+
+	public getItem(itemName: string | number | undefined): Item | null {
+		if (!itemName) return null;
+		let identifier: string | number | undefined = '';
+		if (typeof itemName === 'number') {
+			identifier = itemName;
+		} else {
+			const parsed = Number(itemName);
+			identifier = Number.isNaN(parsed) ? itemName : parsed;
+		}
+		if (typeof identifier === 'string') {
+			identifier = identifier.replace(/’/g, "'");
+		}
+		return this.get(identifier) ?? null;
+	}
+	public getOrThrow(itemName: string | number | undefined): Item {
+		const item = this.getItem(itemName);
+		if (!item) throw new Error(`Item ${itemName} not found.`);
+		return item;
 	}
 }
 

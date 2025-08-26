@@ -1,8 +1,7 @@
 import { sumArr } from 'e';
-import { Bank, Monsters, Openables } from 'oldschooljs';
+import { Bank, EMonster, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
-import { ZALCANO_ID } from '../constants';
 import {
 	abyssalDragonCL,
 	all3rdAgeItems,
@@ -41,9 +40,7 @@ import Darts from '../skilling/skills/fletching/fletchables/darts';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import { ashes } from '../skilling/skills/prayer';
 import { TameSpeciesID, tameFeedableItems } from '../tames';
-import type { ItemBank } from '../types';
 import { calcTotalLevel } from '../util';
-import resolveItems from '../util/resolveItems';
 import { type Task, leaguesHasCatches, leaguesHasKC } from './leaguesUtils';
 import { calculateTiarasMade } from './stats';
 
@@ -782,7 +779,7 @@ export const eliteTasks: Task[] = [
 		id: 3103,
 		name: 'Defeat Zalcano 1000 times',
 		has: async args => {
-			return leaguesHasKC(args, { id: ZALCANO_ID }, 1000);
+			return leaguesHasKC(args, { id: EMonster.ZALCANO }, 1000);
 		}
 	},
 	{

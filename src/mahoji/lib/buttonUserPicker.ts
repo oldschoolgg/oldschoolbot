@@ -1,8 +1,8 @@
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ComponentType } from 'discord.js';
 import { Time, noOp, shuffleArr } from 'e';
 import murmurhash from 'murmurhash';
 
-import { channelIsSendable } from '../../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export async function buttonUserPicker({

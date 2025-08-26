@@ -1,12 +1,10 @@
 import { clamp, objectValues } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, type Item, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
 
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { isValidSkill } from '@/lib/util/smallUtils';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ItemBank, Skills } from '../../../lib/types';
-import { assert, isValidSkill, itemID } from '../../../lib/util';
-import { getItem } from '../../../lib/util/getOSItem';
-import resolveItems from '../../../lib/util/resolveItems';
+import type { Skills } from '../../../lib/types';
+import { assert } from '../../../lib/util/logError';
 import { userStatsUpdate } from '../../mahojiSettings';
 
 interface IXPLamp {
@@ -312,7 +310,7 @@ export const Lampables: IXPObject[] = [
 ];
 
 export async function lampCommand(user: MUser, itemToUse: string, skill: string, _quantity: number | undefined) {
-	const item = getItem(itemToUse);
+	const item = Items.getItem(itemToUse);
 	if (!item) return "That's not a valid item.";
 
 	const xpObject = Lampables.find(x => x.items.includes(item.id));

@@ -1,11 +1,19 @@
 import { Time } from 'e';
-import { LootTable, MonsterAttribute, Monsters, RareDropTable, itemID, resolveNameBank } from 'oldschooljs';
+import {
+	LootTable,
+	MonsterAttribute,
+	Monsters,
+	RareDropTable,
+	deepResolveItems,
+	itemID,
+	resolveItems,
+	resolveNameBank
+} from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
 import { BitField } from '../../../../constants';
 import { HighSeedPackTable } from '../../../../data/seedPackTables';
-import { GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
-import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import { AbyssalDragonLootTable } from './AbyssalDragon';
 import { NihilizLootTable } from './Nihiliz';
 import { KrakenTable } from './SeaKraken';

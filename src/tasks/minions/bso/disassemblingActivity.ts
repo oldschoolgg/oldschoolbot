@@ -1,9 +1,8 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { userMention } from 'discord.js';
 import { Time, roll } from 'e';
-import { Bank } from 'oldschooljs';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank } from 'oldschooljs';
 
-import { Emoji } from '../../../lib/constants';
 import { MaterialBank } from '../../../lib/invention/MaterialBank';
 import { inventionBoosts, transactMaterialsFromUser } from '../../../lib/invention/inventions';
 import { SkillsEnum } from '../../../lib/skilling/types';

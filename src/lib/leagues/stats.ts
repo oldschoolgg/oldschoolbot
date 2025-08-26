@@ -1,13 +1,11 @@
 import type { UserStats, XpGainSource } from '@prisma/client';
 import type { User as RoboChimpUser } from '@prisma/robochimp';
 import { sumArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import { gloriesInventorySize, wealthInventorySize } from '../constants';
-
+import { gloriesInventorySize } from '../../mahoji/lib/abstracted_commands/chargeGloriesCommand';
+import { wealthInventorySize } from '../../mahoji/lib/abstracted_commands/chargeWealthCommand';
 import Darts from '../skilling/skills/fletching/fletchables/darts';
-import type { ItemBank } from '../types';
-import { getItem } from '../util/getOSItem';
 
 export function totalLampedXP(userStats: UserStats) {
 	return sumArr(Object.values(userStats.lamped_xp as ItemBank));
@@ -43,7 +41,7 @@ GROUP BY data->>'fletchableName';`);
 
 	const bank = new Bank();
 	for (const res of result) {
-		const item = getItem(res.name);
+		const item = Items.getItem(res.name);
 		if (item) {
 			bank.add(item.id, Number(res.total));
 		}

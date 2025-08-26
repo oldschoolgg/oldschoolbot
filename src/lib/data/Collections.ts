@@ -1,12 +1,25 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
-import { Bank, ChambersOfXeric, Clues, type Item, type Monster, Monsters } from 'oldschooljs';
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import {
+	Bank,
+	ChambersOfXeric,
+	Clues,
+	EItem,
+	EMonster,
+	type Item,
+	type ItemBank,
+	ItemGroups,
+	type Monster,
+	Monsters,
+	itemID,
+	resolveItems
+} from 'oldschooljs';
+
+import { OSB_VIRTUS_IDS } from '../bso/bsoConstants';
 import { divinationEnergies, portents } from '../bso/divination';
 import type { ClueTier } from '../clues/clueTiers';
 import { ClueTiers } from '../clues/clueTiers';
 import type { CollectionLogType } from '../collectionLogTask';
-import { OSB_VIRTUS_IDS, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
 import { discontinuedDyes, dyedItems } from '../dyedItems';
 import { growablePetsCL } from '../growablePets';
 import { implingsCL } from '../implings';
@@ -47,9 +60,7 @@ import smithables from '../skilling/skills/smithing/smithables';
 import { SkillsEnum } from '../skilling/types';
 import { MUserStats } from '../structures/MUserStats';
 import { getAllIgneTameKCs, tameKillableMonsters } from '../tames';
-import type { ItemBank } from '../types';
 import getOSItem from '../util/getOSItem';
-import itemID from '../util/itemID.js';
 import { shuffleRandom } from '../util/smallUtils';
 import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport';
 import {
@@ -122,7 +133,6 @@ import {
 	giantMoleCL,
 	giantsFoundryCL,
 	gnomeRestaurantCL,
-	godWarsDungeonGodswordShards,
 	gracefulCL,
 	grotesqueGuardiansCL,
 	guardiansOfTheRiftCL,
@@ -188,7 +198,6 @@ import {
 	thermonuclearSmokeDevilCL,
 	tinkeringWorshopCL,
 	titheFarmCL,
-	toaCL,
 	tormentedDemonCL,
 	treeBeardCL,
 	troubleBrewingCL,
@@ -337,7 +346,7 @@ export const allCollectionLogs: ICollection = {
 					];
 				})(),
 				items: [
-					...godWarsDungeonGodswordShards,
+					...ItemGroups.godWarsDungeonGodswordShards,
 					...commanderZilyanaCL,
 					...generalGraardorCL,
 					...kreeArraCL,
@@ -560,7 +569,7 @@ export const allCollectionLogs: ICollection = {
 				items: theNightmareCL,
 				fmtProg: ({ stats }) => [
 					`${stats.kcBank[NightmareMonster.id] ?? 0} KC`,
-					`${stats.kcBank[PHOSANI_NIGHTMARE_ID] ?? 0} Phosani KC`
+					`${stats.kcBank[EMonster.PHOSANI_NIGHTMARE] ?? 0} Phosani KC`
 				]
 			},
 			Obor: {
@@ -656,7 +665,7 @@ export const allCollectionLogs: ICollection = {
 				items: wintertodtCL,
 				fmtProg: mgProg('wintertodt')
 			},
-			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[ZALCANO_ID] ?? 0} KC` },
+			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[EMonster.ZALCANO] ?? 0} KC` },
 			Zulrah: {
 				alias: Monsters.Zulrah.aliases,
 				allItems: Monsters.Zulrah.allItems,
@@ -776,7 +785,7 @@ export const allCollectionLogs: ICollection = {
 					Normal: async (_, __, stats) => stats.getToaKCs().normalKC,
 					Expert: async (_, __, stats) => stats.getToaKCs().expertKC
 				},
-				items: toaCL,
+				items: ItemGroups.toaCL,
 				isActivity: true,
 				fmtProg: ({ minigames }) => {
 					return [`${minigames.tombs_of_amascut} KC`];
@@ -2028,7 +2037,7 @@ function getLeftList(userBank: Bank, checkCategory: string, allItems = false, re
 				} else {
 					items = [...new Set(attributes.items)];
 				}
-				if (removeCoins && items.includes(995)) items.splice(items.indexOf(995), 1);
+				if (removeCoins && items.includes(EItem.COINS)) items.splice(items.indexOf(EItem.COINS), 1);
 				const [totalCl, userAmount] = getUserClData(userBank, items);
 				leftList[activityName] =
 					userAmount === 0 ? 'not_started' : userAmount === totalCl ? 'completed' : 'started';
@@ -2129,7 +2138,7 @@ export function getCollectionItems(
 			_items = uniqueArr(Monsters.get(_monster?.id)!.allItems);
 		}
 	}
-	if (removeCoins && _items.includes(995)) _items = removeFromArr(_items, 995);
+	if (removeCoins && _items.includes(EItem.COINS)) _items = removeFromArr(_items, EItem.COINS);
 	return returnValue(_clName, _items);
 }
 
@@ -2151,6 +2160,7 @@ export async function getCollection(options: {
 	search: string;
 	flags: { [key: string]: string | number | undefined };
 	logType?: CollectionLogType;
+	minigameScoresOverride?: Awaited<ReturnType<MUser['fetchMinigameScores']>> | null;
 }): Promise<false | IToReturnCollection> {
 	let { user, search, flags, logType } = options;
 
@@ -2160,7 +2170,6 @@ export async function getCollection(options: {
 		logType = 'tame';
 	}
 
-	const minigameScores = await user.fetchMinigameScores();
 	const userStats = await MUserStats.fromID(user.id);
 	const userCheckBank = getBank(user, logType, userStats);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
@@ -2199,6 +2208,8 @@ export async function getCollection(options: {
 	}
 
 	const igneTameKCs = logType === 'tame' ? await getAllIgneTameKCs(user.id) : null;
+	const minigameScores = options.minigameScoresOverride ?? (await user.fetchMinigameScores());
+
 	for (const [category, entries] of Object.entries(allCollectionLogs)) {
 		if (stringMatches(category, search) || entries.alias?.some(a => stringMatches(a, search))) {
 			return {

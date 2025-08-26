@@ -1,4 +1,5 @@
 import type { BaseMessageOptions } from 'discord.js';
+
 import type { SkillsEnum } from '../skilling/types';
 
 export interface ItemBank {
@@ -27,22 +28,3 @@ export type Skills = Partial<{
 
 export type SkillRequirements = Skills & { combat?: number };
 export type SkillsRequired = Required<Skills>;
-
-export type CategoryFlag =
-	| 'minion'
-	| 'settings'
-	| 'patron'
-	| 'skilling'
-	| 'pvm'
-	| 'minigame'
-	| 'utility'
-	| 'fun'
-	| 'simulation';
-
-export interface IDiscordSettings {
-	Roles: Record<string, string>;
-	Channels: Record<string, string>;
-	Emojis: Record<string, string>;
-	SupportServer: string;
-	BotID: string;
-}

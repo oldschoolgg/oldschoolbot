@@ -1,11 +1,8 @@
 import type { Portent } from '@prisma/client';
-import { Bank, LootTable } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item, Items, LootTable, itemID } from 'oldschooljs';
 
 import { BitField } from '../constants';
-import { hasUnlockedAtlantis } from '../util';
-import getOSItem from '../util/getOSItem';
-import itemID from '../util/itemID';
+import { hasUnlockedAtlantis } from './bsoUtil';
 
 export function calcEnergyPerMemory(energy: DivinationEnergy) {
 	return (120 - energy.level) / 150;
@@ -20,7 +17,7 @@ export const divinationEnergies = [
 		convertBoon: null,
 		convertWithEnergy: 3.7,
 		convertWithEnergyAndBoon: null,
-		item: getOSItem('Pale energy'),
+		item: Items.getOrThrow('Pale energy'),
 		boon: null,
 		boonBitfield: null,
 		boonEnergyCost: null
@@ -33,8 +30,8 @@ export const divinationEnergies = [
 		convertBoon: 8.8,
 		convertWithEnergy: 10,
 		convertWithEnergyAndBoon: 11,
-		item: getOSItem('Flickering energy'),
-		boon: getOSItem('Boon of flickering energy'),
+		item: Items.getOrThrow('Flickering energy'),
+		boon: Items.getOrThrow('Boon of flickering energy'),
 		boonBitfield: BitField.HasFlickeringBoon,
 		boonEnergyCost: 100
 	},
@@ -46,8 +43,8 @@ export const divinationEnergies = [
 		convertBoon: 11,
 		convertWithEnergy: 12.4,
 		convertWithEnergyAndBoon: 13.6,
-		item: getOSItem('Bright energy'),
-		boon: getOSItem('Boon of bright energy'),
+		item: Items.getOrThrow('Bright energy'),
+		boon: Items.getOrThrow('Boon of bright energy'),
 		boonBitfield: BitField.HasBrightBoon,
 		boonEnergyCost: 300
 	},
@@ -59,8 +56,8 @@ export const divinationEnergies = [
 		convertBoon: 15.4,
 		convertWithEnergy: 17.4,
 		convertWithEnergyAndBoon: 19.1,
-		item: getOSItem('Glowing energy'),
-		boon: getOSItem('Boon of glowing energy'),
+		item: Items.getOrThrow('Glowing energy'),
+		boon: Items.getOrThrow('Boon of glowing energy'),
 		boonBitfield: BitField.HasGlowingBoon,
 		boonEnergyCost: 500
 	},
@@ -72,8 +69,8 @@ export const divinationEnergies = [
 		convertBoon: 26.4,
 		convertWithEnergy: 30,
 		convertWithEnergyAndBoon: 33,
-		item: getOSItem('Sparkling energy'),
-		boon: getOSItem('Boon of sparkling energy'),
+		item: Items.getOrThrow('Sparkling energy'),
+		boon: Items.getOrThrow('Boon of sparkling energy'),
 		boonBitfield: BitField.HasSparklingBoon,
 		boonEnergyCost: 600
 	},
@@ -85,8 +82,8 @@ export const divinationEnergies = [
 		convertBoon: 41.8,
 		convertWithEnergy: 47.4,
 		convertWithEnergyAndBoon: 52.1,
-		item: getOSItem('Gleaming energy'),
-		boon: getOSItem('Boon of gleaming energy'),
+		item: Items.getOrThrow('Gleaming energy'),
+		boon: Items.getOrThrow('Boon of gleaming energy'),
 		boonBitfield: BitField.HasGleamingBoon,
 		boonEnergyCost: 800,
 		clueTable: new LootTable().add('Clue scroll (beginner)', 1, 7).add('Clue scroll (easy)', 1, 6)
@@ -99,8 +96,8 @@ export const divinationEnergies = [
 		convertBoon: 55,
 		convertWithEnergy: 62.5,
 		convertWithEnergyAndBoon: 68.7,
-		item: getOSItem('Vibrant energy'),
-		boon: getOSItem('Boon of vibrant energy'),
+		item: Items.getOrThrow('Vibrant energy'),
+		boon: Items.getOrThrow('Boon of vibrant energy'),
 		boonBitfield: BitField.HasVibrantBoon,
 		boonEnergyCost: 1000,
 		clueTable: new LootTable().add('Clue scroll (beginner)', 1, 7).add('Clue scroll (easy)', 1, 6)
@@ -113,8 +110,8 @@ export const divinationEnergies = [
 		convertBoon: 70.4,
 		convertWithEnergy: 80,
 		convertWithEnergyAndBoon: 88,
-		item: getOSItem('Lustrous energy'),
-		boon: getOSItem('Boon of lustrous energy'),
+		item: Items.getOrThrow('Lustrous energy'),
+		boon: Items.getOrThrow('Boon of lustrous energy'),
 		boonBitfield: BitField.HasLustrousBoon,
 		boonEnergyCost: 1250,
 		clueTable: new LootTable()
@@ -130,8 +127,8 @@ export const divinationEnergies = [
 		convertBoon: 73.7,
 		convertWithEnergy: 83.6,
 		convertWithEnergyAndBoon: 92,
-		item: getOSItem('Elder energy'),
-		boon: getOSItem('Boon of elder energy'),
+		item: Items.getOrThrow('Elder energy'),
+		boon: Items.getOrThrow('Boon of elder energy'),
 		boonBitfield: BitField.HasElderBoon,
 		boonEnergyCost: 1375,
 		clueTable: new LootTable()
@@ -147,8 +144,8 @@ export const divinationEnergies = [
 		convertBoon: 77,
 		convertWithEnergy: 87.4,
 		convertWithEnergyAndBoon: 96.1,
-		item: getOSItem('Brilliant energy'),
-		boon: getOSItem('Boon of brilliant energy'),
+		item: Items.getOrThrow('Brilliant energy'),
+		boon: Items.getOrThrow('Boon of brilliant energy'),
 		boonBitfield: BitField.HasBrilliantBoon,
 		boonEnergyCost: 1500,
 		clueTable: new LootTable()
@@ -165,8 +162,8 @@ export const divinationEnergies = [
 		convertBoon: 83.6,
 		convertWithEnergy: 95,
 		convertWithEnergyAndBoon: 104.5,
-		item: getOSItem('Radiant energy'),
-		boon: getOSItem('Boon of radiant energy'),
+		item: Items.getOrThrow('Radiant energy'),
+		boon: Items.getOrThrow('Boon of radiant energy'),
 		boonBitfield: BitField.HasRadiantBoon,
 		boonEnergyCost: 1750,
 		clueTable: new LootTable()
@@ -183,8 +180,8 @@ export const divinationEnergies = [
 		convertBoon: 92.4,
 		convertWithEnergy: 105,
 		convertWithEnergyAndBoon: 115.5,
-		item: getOSItem('Luminous energy'),
-		boon: getOSItem('Boon of luminous energy'),
+		item: Items.getOrThrow('Luminous energy'),
+		boon: Items.getOrThrow('Boon of luminous energy'),
 		boonBitfield: BitField.HasLuminousBoon,
 		boonEnergyCost: 2000,
 		clueTable: new LootTable()
@@ -201,8 +198,8 @@ export const divinationEnergies = [
 		convertBoon: 99,
 		convertWithEnergy: 112.4,
 		convertWithEnergyAndBoon: 123.6,
-		item: getOSItem('Incandescent energy'),
-		boon: getOSItem('Boon of incandescent energy'),
+		item: Items.getOrThrow('Incandescent energy'),
+		boon: Items.getOrThrow('Boon of incandescent energy'),
 		boonBitfield: BitField.HasIncandescentBoon,
 		boonEnergyCost: 2250,
 		clueTable: new LootTable()
@@ -218,8 +215,8 @@ export const divinationEnergies = [
 		convertBoon: 118.8,
 		convertWithEnergy: 134.6,
 		convertWithEnergyAndBoon: 187.9,
-		item: getOSItem('Ancient energy'),
-		boon: getOSItem('Boon of ancient energy'),
+		item: Items.getOrThrow('Ancient energy'),
+		boon: Items.getOrThrow('Boon of ancient energy'),
 		boonBitfield: BitField.HasAncientBoon,
 		boonEnergyCost: 2250,
 		clueTable: new LootTable()
@@ -286,7 +283,7 @@ interface SourcePortent {
 export const portents: SourcePortent[] = [
 	{
 		id: PortentID.CachePortent,
-		item: getOSItem('Cache portent'),
+		item: Items.getOrThrow('Cache portent'),
 		description:
 			'Gives you a tradeable Guthixian cache boost item instead of instantly activating it, 1 charge per boost/item.',
 		divinationLevelToCreate: 80,
@@ -297,7 +294,7 @@ export const portents: SourcePortent[] = [
 	},
 	{
 		id: PortentID.GracefulPortent,
-		item: getOSItem('Graceful portent'),
+		item: Items.getOrThrow('Graceful portent'),
 		description: 'Converts marks of grace into extra agility XP, one charge is used per minute.',
 		divinationLevelToCreate: 80,
 		cost: new Bank().add('Luminous energy', 500).add('Super energy(4)', 30),
@@ -307,7 +304,7 @@ export const portents: SourcePortent[] = [
 	},
 	{
 		id: PortentID.RoguesPortent,
-		item: getOSItem('Rogues portent'),
+		item: Items.getOrThrow('Rogues portent'),
 		description: "Give's 3x loot from pickpocketing, does not stack with thieves armband.",
 		divinationLevelToCreate: 110,
 		cost: new Bank().add('Ancient energy', 200).add('Elder rune', 500),
@@ -317,7 +314,7 @@ export const portents: SourcePortent[] = [
 	},
 	{
 		id: PortentID.DungeonPortent,
-		item: getOSItem('Dungeon portent'),
+		item: Items.getOrThrow('Dungeon portent'),
 		description: 'Converts dungeoneering tokens into extra dungeoneering xp.',
 		divinationLevelToCreate: 95,
 		cost: new Bank().add('Ancient energy', 512),
@@ -327,7 +324,7 @@ export const portents: SourcePortent[] = [
 	},
 	{
 		id: PortentID.LuckyPortent,
-		item: getOSItem('Lucky portent'),
+		item: Items.getOrThrow('Lucky portent'),
 		description: 'Grants double loot from IC rewards and double xp from tears of guthix.',
 		divinationLevelToCreate: 105,
 		cost: new Bank().add('Incandescent energy', 256),
@@ -337,7 +334,7 @@ export const portents: SourcePortent[] = [
 	},
 	{
 		id: PortentID.RebirthPortent,
-		item: getOSItem('Rebirth portent'),
+		item: Items.getOrThrow('Rebirth portent'),
 		description: 'Gives you a chance to receive divine eggs from skilling, 1 charge per egg.',
 		divinationLevelToCreate: 90,
 		cost: new Bank().add('Ancient energy', 512),
@@ -347,7 +344,7 @@ export const portents: SourcePortent[] = [
 	},
 	{
 		id: PortentID.MiningPortent,
-		item: getOSItem('Spiritual mining portent'),
+		item: Items.getOrThrow('Spiritual mining portent'),
 		description: 'Consumes stone spirits to grant extra mining XP, instead of extra ore.',
 		divinationLevelToCreate: 90,
 		cost: new Bank().add('Incandescent energy', 1200),
@@ -357,7 +354,7 @@ export const portents: SourcePortent[] = [
 	},
 	{
 		id: PortentID.PacifistPortent,
-		item: getOSItem('Pacifist hunting portent'),
+		item: Items.getOrThrow('Pacifist hunting portent'),
 		description: 'Enables you to train Hunter as a pacifist, releasing your catch for bonus XP.',
 		divinationLevelToCreate: 120,
 		cost: new Bank().add('Incandescent energy', 1000).add('Rocktail', 30),

@@ -1,13 +1,10 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { type CommandResponse, formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Time, randInt, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
-import { randomVariation } from 'oldschooljs/dist/util';
 
-import { Emoji } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
-import { getMinigameEntity } from '../../../lib/settings/minigames';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -133,9 +130,9 @@ export async function odsStartCommand(klasaUser: MUser, channelID: string) {
 }
 
 export async function odsStatsCommand(user: MUser) {
-	const minigames = await getMinigameEntity(user.id);
+	const score = await user.fetchMinigameScore('ourania_delivery_service');
 	return `**Ourania Delivery Service** (ODS)
 
-**Deliveries done:** ${minigames.ourania_delivery_service.toLocaleString()}
+**Deliveries done:** ${score.toLocaleString()}
 **Ourania Tokens:** ${user.user.ourania_tokens.toLocaleString()}`;
 }

@@ -1,9 +1,7 @@
 import { Time } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Bank, Monsters, SkillsEnum, itemID } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
-import { GearStat } from '../../../gear/types';
-import itemID from '../../../util/itemID';
 import type { KillableMonster } from '../../types';
 
 export const creatureCreationCreatures: KillableMonster[] = [];

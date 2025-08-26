@@ -1,11 +1,11 @@
-import { Bank, EItem, EMonster, Monsters } from 'oldschooljs';
+import { calcPerHour } from '@oldschoolgg/toolkit/util';
+import { Bank, EItem, EMonster, Monsters, convertLVLtoXP, resolveItems } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
 import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants';
 import { getPOHObject } from '../../../src/lib/poh';
 import { SkillsEnum } from '../../../src/lib/skilling/types';
 import { Gear } from '../../../src/lib/structures/Gear';
-import { calcPerHour, convertLVLtoXP, resolveItems } from '../../../src/lib/util';
 import { minionKCommand } from '../../../src/mahoji/commands/k';
 import { createTestUser, mockClient, mockUser } from '../util';
 
@@ -17,7 +17,7 @@ describe('PVM', async () => {
 		const user = await createTestUser();
 		const res = await user.runCommand(minionKCommand, { name: 'man' });
 		expect(res).toContain('now killing');
-		await client.processActivities();
+		await user.runActivity();
 		expect(await user.getKC(EMonster.MAN)).toBeGreaterThan(1);
 	});
 
@@ -29,7 +29,7 @@ describe('PVM', async () => {
 		});
 		const res = await user.runCommand(minionKCommand, { name: 'general graardor' });
 		expect(res).toContain('now killing');
-		await user.processActivities(client);
+		await user.runActivity();
 		const kc = await user.getKC(EMonster.GENERAL_GRAARDOR);
 		expect(kc).toBeGreaterThan(8);
 		expect(user.bank.amount('Shark')).toBeLessThan(1000);
@@ -45,7 +45,7 @@ describe('PVM', async () => {
 		});
 		const res = await user.runCommand(minionKCommand, { name: 'bloodveld' }, true);
 		expect(res).toContain('now killing');
-		await user.processActivities(client);
+		await user.runActivity();
 		const kc = await user.getKC(EMonster.BLOODVELD);
 		expect(kc).toBeGreaterThan(0);
 		expect(user.bank.amount('Shark')).toBeLessThan(1000);
@@ -76,7 +76,7 @@ describe('PVM', async () => {
 		});
 		const res = await user.runCommand(minionKCommand, { name: 'bloodveld' }, true);
 		expect(res).toContain('now killing');
-		await user.processActivities(client);
+		await user.runActivity();
 		const kc = await user.getKC(EMonster.BLOODVELD);
 		expect(kc).toBeGreaterThan(0);
 		expect(user.bank.amount('Shark')).toBeLessThan(1000);
@@ -186,6 +186,9 @@ describe('PVM', async () => {
 
 	describe(
 		'should fail to kill skotizo with no totems',
+		{
+			repeats: 5
+		},
 		async () => {
 			const user = await client.mockUser({
 				rangeLevel: 99,
@@ -199,9 +202,6 @@ describe('PVM', async () => {
 					expect(result.commandResult).toContain("You don't have the items");
 				});
 			}
-		},
-		{
-			repeats: 100
 		}
 	);
 

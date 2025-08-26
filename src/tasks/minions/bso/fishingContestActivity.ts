@@ -4,8 +4,6 @@ import { Bank } from 'oldschooljs';
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { catchFishAtLocation, fishingLocations } from '../../../lib/fishingContest';
 import { trackLoot } from '../../../lib/lootTrack';
-
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClueTable } from '../../../lib/simulation/sharedTables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { FishingContestOptions } from '../../../lib/types/minions';
@@ -26,7 +24,7 @@ export const fishingContestTask: MinionTask = {
 		const { channelID, quantity, userID, location, duration } = data;
 		const user = await mUserFetch(userID);
 
-		const { newScore } = await incrementMinigameScore(userID, 'fishing_contest', 1);
+		const { newScore } = await user.incrementMinigameScore('fishing_contest', 1);
 		const fishLocation = fishingLocations.find(i => i.id === location)!;
 
 		const caughtFish = [];

@@ -1,11 +1,9 @@
 import { Time } from 'e';
-import { Bank, LootTable, Monsters } from 'oldschooljs';
+import { Bank, LootTable, Monsters, itemID, resolveItems } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
 import { MysteryBoxes } from '../../../../../bsoOpenables';
-import { GearStat } from '../../../../../gear';
 import { UncutGemTable } from '../../../../../simulation/sharedTables';
-import itemID from '../../../../../util/itemID';
-import resolveItems from '../../../../../util/resolveItems';
 import type { CustomMonster } from '../customMonsters';
 
 export const AkumuLootTable = new LootTable()

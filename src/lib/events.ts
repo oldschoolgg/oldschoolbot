@@ -1,24 +1,22 @@
-import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/util';
-import type { BaseMessageOptions, Message } from 'discord.js';
-import { ButtonBuilder, ButtonStyle, EmbedBuilder, bold, time } from 'discord.js';
-import { Time, isFunction } from 'e';
-import { Items } from 'oldschooljs';
-import { Cooldowns } from '../mahoji/lib/Cooldowns';
-
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { UserError } from '@oldschoolgg/toolkit/structures';
 import { command_name_enum } from '@prisma/client';
+import { type BaseMessageOptions, EmbedBuilder, type Message, bold, time } from 'discord.js';
+import { Time, isFunction } from 'e';
+import { type ItemBank, Items, toKMB } from 'oldschooljs';
+
+import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
+import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
 import { boxSpawnHandler } from './boxSpawns';
 import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from './bso/guthixianCache';
 import { allIronmanMbTables, allMbTables } from './bsoOpenables';
-import { BitField, Emoji, globalConfig } from './constants';
+import { globalConfig } from './constants';
 import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
-
-import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
-import type { ItemBank } from './types';
-import { formatDuration, makeComponents, toKMB } from './util';
 import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
@@ -152,7 +150,7 @@ const mentionCommands: MentionCommand[] = [
 					if (isCustom) icons.push(Emoji.BSO);
 					if (((sacrificedBank as ItemBank)[item.id] ?? 0) > 0) icons.push(Emoji.Incinerator);
 
-					const price = toKMB(Math.floor(item.price));
+					const price = toKMB(Math.floor(item.price ?? 0));
 					const searchMbTable = user.isIronman ? allIronmanMbTables : allMbTables;
 					let str = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${
 						searchMbTable.includes(item.id) ? Emoji.MysteryBox : ''
@@ -232,31 +230,6 @@ const mentionCommands: MentionCommand[] = [
 			msg.reply({
 				content,
 				components
-			});
-		}
-	},
-	{
-		name: command_name_enum.sendtoabutton,
-		aliases: ['sendtoabutton'],
-		description: 'Shows your stats.',
-		run: async ({ msg, user }: MentionCommandOptions) => {
-			if ([BitField.isModerator].every(bit => !user.bitfield.includes(bit))) {
-				return;
-			}
-			return msg.reply({
-				content: `Click this button to find out if you're ready to do Tombs of Amascut! You can also use the ${mentionCommand(
-					globalClient,
-					'raid',
-					'toa',
-					'help'
-				)} command.`,
-				components: makeComponents([
-					new ButtonBuilder()
-						.setStyle(ButtonStyle.Primary)
-						.setCustomId('TOA_CHECK')
-						.setLabel('Check TOA Requirements')
-						.setEmoji('1069174271894638652')
-				])
 			});
 		}
 	},

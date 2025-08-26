@@ -1,25 +1,24 @@
 import { userMention } from '@discordjs/builders';
+import { Table, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { User } from '@prisma/client';
 import { Time, randArrItem, reduceNumByPercent, roll, uniqueArr } from 'e';
-import { Bank, LootTable } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, type Item, LootTable, resolveItems } from 'oldschooljs';
 
-import { Table } from '@oldschoolgg/toolkit';
+import { GLOBAL_BSO_XP_MULTIPLIER } from './bso/bsoConstants';
 import { MysteryBoxes } from './bsoOpenables';
-import { Emoji, GLOBAL_BSO_XP_MULTIPLIER } from './constants';
-import { incrementMinigameScore } from './settings/minigames';
 import Grimy from './skilling/skills/herblore/mixables/grimy';
 import { SkillsEnum } from './skilling/types';
 import { TameSpeciesID, getAllUserTames } from './tames';
 import type { Skills } from './types';
 import type { BathhouseTaskOptions } from './types/minions';
-import { formatDuration, formatSkillRequirements, skillsMeetRequirements, stringMatches } from './util';
+import { skillsMeetRequirements } from './util';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from './util/calcMaxTripLength';
 import getOSItem from './util/getOSItem';
 import { handleTripFinish } from './util/handleTripFinish';
 import { makeBankImage } from './util/makeBankImage';
-import resolveItems from './util/resolveItems';
+import { formatSkillRequirements } from './util/smallUtils';
 import { updateBankSetting } from './util/updateBankSetting';
 
 export const bathhouseTierNames = ['Warm', 'Hot', 'Fiery'] as const;
@@ -460,7 +459,7 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 	const user = await mUserFetch(userID);
 	const { cl } = user;
 	const { loot, herbXP, firemakingXP, tier, speciesServed, gaveExtraTips } = calculateBathouseResult(data);
-	await incrementMinigameScore(userID, 'bax_baths', quantity);
+	await user.incrementMinigameScore('bax_baths', quantity);
 
 	const uniques = resolveItems(['Inferno adze', 'Flame gloves', 'Ring of fire']);
 	let uniqueChance = Math.floor(50 * tier.uniqueMultiplier);

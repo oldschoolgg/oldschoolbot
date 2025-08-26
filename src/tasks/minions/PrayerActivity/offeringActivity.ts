@@ -1,15 +1,15 @@
 import { percentChance, randInt } from 'e';
+import { ItemGroups } from 'oldschooljs';
 
-import { zealOutfit } from '../../../lib/shadesKeys';
+import { roll } from '@/lib/util/rng';
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { OfferingActivityTaskOptions } from '../../../lib/types/minions';
-import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export function zealOutfitBoost(user: MUser) {
 	let zealOutfitAmount = 0;
-	for (const piece of zealOutfit) {
+	for (const piece of ItemGroups.zealOutfit) {
 		if (user.hasEquippedOrInBank(piece)) {
 			zealOutfitAmount++;
 		}

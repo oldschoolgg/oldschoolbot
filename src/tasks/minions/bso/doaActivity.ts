@@ -1,22 +1,18 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Time, randArrItem, reduceNumByPercent, roll, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Bank, type ItemBank, SkillsEnum, resolveItems } from 'oldschooljs';
 
-import { drawChestLootImage } from '../../../lib/bankImage';
+import { drawChestLootImage } from '@/lib/canvas/chestImage';
 import { DOANonUniqueTable } from '../../../lib/bso/doa/doaLootTable';
-import { Emoji, Events } from '../../../lib/constants';
 import { doaCL, doaMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { globalDroprates } from '../../../lib/data/globalDroprates';
 import { DOARooms, chanceOfDOAUnique, pickUniqueToGiveUser } from '../../../lib/depthsOfAtlantis';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import type { DOAOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
@@ -165,7 +161,7 @@ export const doaTask: MinionTask = {
 		const succesfulKCs = raids.filter(i => !i.wipedRoom).length;
 		const minigameIncrementResult = await Promise.all(
 			allUsers.map(u =>
-				incrementMinigameScore(u.id, cm ? 'depths_of_atlantis_cm' : 'depths_of_atlantis', succesfulKCs)
+				u.incrementMinigameScore(cm ? 'depths_of_atlantis_cm' : 'depths_of_atlantis', succesfulKCs)
 			)
 		);
 

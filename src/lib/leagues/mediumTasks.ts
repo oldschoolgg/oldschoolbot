@@ -1,8 +1,8 @@
 import { sumArr } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, type ItemBank, ItemGroups, Monsters, calcCombatLevel, resolveItems } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
-import { BitField } from '../constants';
+import { BitField, MAX_LEVEL } from '../constants';
 import {
 	barrowsChestCL,
 	chambersOfXericCL,
@@ -10,7 +10,6 @@ import {
 	cyclopsCL,
 	inventorOutfit,
 	theatreOfBLoodCL,
-	toaCL,
 	treeBeardCL
 } from '../data/CollectionsExport';
 import {
@@ -31,13 +30,10 @@ import {
 import { implings } from '../implings';
 import { SuperiorTormentedDemon } from '../minions/data/killableMonsters/custom/TormentedDemon';
 import { QueenBlackDragon } from '../minions/data/killableMonsters/custom/demiBosses';
-
 import Darts from '../skilling/skills/fletching/fletchables/darts';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import { ashes } from '../skilling/skills/prayer';
-import type { ItemBank } from '../types';
-import { calcCombatLevel, calcTotalLevel } from '../util';
-import resolveItems from '../util/resolveItems';
+import { calcTotalLevel } from '../util';
 import { LampTable } from '../xpLamps';
 import { type Task, leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster } from './leaguesUtils';
 import { calculateChargedItems, calculateTiarasMade, calculateTotalMahoganyHomesPoints } from './stats';
@@ -201,7 +197,7 @@ export const mediumTasks: Task[] = [
 		id: 1023,
 		name: 'Reach combat level 90',
 		has: async ({ skillsXP }) => {
-			return calcCombatLevel(skillsXP) >= 90;
+			return calcCombatLevel(skillsXP, MAX_LEVEL) >= 90;
 		}
 	},
 	{
@@ -1100,7 +1096,7 @@ export const mediumTasks: Task[] = [
 		name: 'Have 3 unique items destroyed by the Chincannon',
 		has: async ({ userStats }) => {
 			const bank = new Bank(userStats.chincannon_destroyed_loot_bank as ItemBank);
-			const uniques = [...chambersOfXericCL, ...theatreOfBLoodCL, ...toaCL];
+			const uniques = [...chambersOfXericCL, ...theatreOfBLoodCL, ...ItemGroups.toaCL];
 			const destroyedUniques = bank.items().filter(i => uniques.includes(i[0].id));
 			return destroyedUniques.length >= 5;
 		}

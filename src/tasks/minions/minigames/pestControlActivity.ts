@@ -1,8 +1,7 @@
 import { Time } from 'e';
-import { toKMB } from 'oldschooljs/dist/util';
+import { toKMB } from 'oldschooljs';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { getBoatType } from '../../../mahoji/lib/abstracted_commands/pestControlCommand';
@@ -21,7 +20,8 @@ export const pestControlTask: MinionTask = {
 		if (flappyRes.shouldGiveBoost) {
 			points *= 2;
 		}
-		await incrementMinigameScore(userID, 'pest_control', quantity);
+		await user.incrementMinigameScore('pest_control', quantity);
+
 		const newUserStats = await userStatsUpdate(
 			user.id,
 			{

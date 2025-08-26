@@ -15,7 +15,6 @@ import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { logError } from '../../lib/util/logError';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
-import type { OSBMahojiCommand } from '../lib/util';
 import { rogueOutfitPercentBonus, userStatsBankUpdate } from '../mahojiSettings';
 
 export const stealCommand: OSBMahojiCommand = {

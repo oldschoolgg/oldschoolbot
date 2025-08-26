@@ -1,12 +1,10 @@
-import type { CommandOptions } from '@oldschoolgg/toolkit/util';
-
-import { modifyBusyCounter } from '../../lib/busyCounterCache';
-import { busyImmuneCommands, shouldTrackCommand } from '../../lib/constants';
-
+import type { AbstractCommand, CommandOptions } from '@oldschoolgg/toolkit/discord-util';
 import { TimerManager } from '@sapphire/timer-manager';
-import { makeCommandUsage } from '../../lib/util/commandUsage';
-import { logError } from '../../lib/util/logError';
-import type { AbstractCommand } from './inhibitors';
+
+import { busyImmuneCommands } from '@/lib/constants';
+import { logError } from '@/lib/util/logError';
+import { modifyBusyCounter } from '../../lib/busyCounterCache';
+import { makeCommandUsage, shouldTrackCommand } from '../../lib/util/commandUsage';
 
 export async function postCommand({
 	abstractCommand,

@@ -1,14 +1,14 @@
 import { miniID } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { randArrItem, roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { drawChestLootImage } from '../../../lib/bankImage';
-import { CHINCANNON_MESSAGES, Emoji } from '../../../lib/constants';
+import { drawChestLootImage } from '@/lib/canvas/chestImage';
+import { CHINCANNON_MESSAGES } from '../../../lib/bso/bsoConstants';
 import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { TOBRooms, TOBUniques } from '../../../lib/data/tob';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -208,7 +208,7 @@ export const tobTask: MinionTask = {
 		}
 		const successfulRaidCount = quantity - wipeCount;
 		if (successfulRaidCount > 0) {
-			await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, minigameID, successfulRaidCount)));
+			await Promise.all(allUsers.map(u => u.incrementMinigameScore(minigameID, successfulRaidCount)));
 		}
 		if (wipeCount > 0) {
 			// Update economy stats:

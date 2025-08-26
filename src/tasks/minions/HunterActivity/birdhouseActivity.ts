@@ -1,14 +1,11 @@
 import type { Prisma } from '@prisma/client';
 import { randFloat, roll } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, itemID } from 'oldschooljs';
 
+import { birdhouseLimit } from '@/lib/bso/bsoUtil';
 import birdhouses from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import type { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
-import { SkillsEnum } from '../../../lib/skilling/types';
 import type { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
-import { birdhouseLimit } from '../../../lib/util';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import itemID from '../../../lib/util/itemID';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
 const clues = [
@@ -20,10 +17,10 @@ const clues = [
 
 export const birdHouseTask: MinionTask = {
 	type: 'Birdhouse',
-	async run(data: BirdhouseActivityTaskOptions) {
-		const { birdhouseName, birdhouseData, userID, channelID, duration, placing, gotCraft, currentDate } = data;
+	isNew: true,
+	async run(data: BirdhouseActivityTaskOptions, { user, handleTripFinish }) {
+		const { birdhouseName, birdhouseData, channelID, duration, placing, gotCraft, currentDate } = data;
 
-		const user = await mUserFetch(userID);
 		let hunterXP = 0;
 		let craftingXP = 0;
 		const strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
@@ -44,7 +41,7 @@ export const birdHouseTask: MinionTask = {
 			if (placing && gotCraft) {
 				craftingXP = birdhouse.craftXP * birdHouses;
 				str += await user.addXP({
-					skillName: SkillsEnum.Crafting,
+					skillName: 'crafting',
 					amount: craftingXP,
 					duration: data.duration,
 					source: 'Birdhouses'
@@ -109,7 +106,7 @@ export const birdHouseTask: MinionTask = {
 			});
 
 			const xpRes = await user.addXP({
-				skillName: SkillsEnum.Hunter,
+				skillName: 'hunter',
 				amount: hunterXP,
 				duration: data.duration,
 				source: 'Birdhouses'
@@ -120,7 +117,7 @@ export const birdHouseTask: MinionTask = {
 			if (placing && gotCraft) {
 				craftingXP = birdhouse.craftXP * birdHouses;
 				const xpRes = await user.addXP({
-					skillName: SkillsEnum.Crafting,
+					skillName: 'crafting',
 					amount: craftingXP,
 					duration: data.duration,
 					source: 'Birdhouses'

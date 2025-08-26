@@ -1,8 +1,8 @@
-import { cleanString, evalMathExpression, stringMatches } from '@oldschoolgg/toolkit/util';
+import { evalMathExpression } from '@oldschoolgg/toolkit/math';
+import { cleanString, stringMatches } from '@oldschoolgg/toolkit/util';
 import { notEmpty } from 'e';
 import { Bank, type Item, Items, itemNameMap } from 'oldschooljs';
 
-import { ONE_TRILLION } from '../constants';
 import { isDeletedItemName } from '../customItems/util';
 import { filterableTypes } from '../data/filterables';
 
@@ -16,7 +16,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	const split = str.split(' ');
 
 	// If we're passed 2 numbers in a row, e.g. '1 1 coal', remove that number and recurse back.
-	if (!Number.isNaN(Number(split[1])) && split.length > 2) {
+	if (!Number.isNaN(Number(split[1])) && split[1].toLowerCase() !== 'infinity' && split.length > 2) {
 		split.splice(1, 1);
 		return parseQuantityAndItem(split.join(' '));
 	}
@@ -51,7 +51,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	}
 	if (osItems.length === 0) return [];
 
-	const quantity = floor(min(ONE_TRILLION, max(0, parsedQty ?? 0)));
+	const quantity = floor(min(1_000_000_000_000, max(0, parsedQty ?? 0)));
 
 	return [osItems, quantity];
 }

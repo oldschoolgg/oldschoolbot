@@ -1,13 +1,12 @@
 import { percentChance } from 'e';
-import { Bank, Misc } from 'oldschooljs';
+import { Bank, EMonster, Misc, randomVariation } from 'oldschooljs';
 
-import { BitField, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../../../lib/constants';
+import { BitField } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
 import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import type { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -19,7 +18,7 @@ export const nightmareTask: MinionTask = {
 	async run(data: NightmareActivityTaskOptions) {
 		const { channelID, quantity, duration, isPhosani = false, userID, method } = data;
 
-		const monsterID = isPhosani ? PHOSANI_NIGHTMARE_ID : NightmareMonster.id;
+		const monsterID = isPhosani ? EMonster.PHOSANI_NIGHTMARE : NightmareMonster.id;
 		const monsterName = isPhosani ? "Phosani's Nightmare" : 'Nightmare';
 		const user = await mUserFetch(userID);
 		const team = method === 'solo' ? [user.id] : [user.id, '1', '2', '3'];
@@ -49,7 +48,7 @@ export const nightmareTask: MinionTask = {
 		}
 
 		const xpRes = await addMonsterXP(user, {
-			monsterID: NIGHTMARE_ID,
+			monsterID: EMonster.NIGHTMARE,
 			quantity: Math.ceil(quantity / team.length),
 			duration,
 			isOnTask: false,

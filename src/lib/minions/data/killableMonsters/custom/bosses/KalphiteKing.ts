@@ -1,9 +1,9 @@
 import { Time } from 'e';
 import { Monsters, resolveItems } from 'oldschooljs';
 import { LootTable } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
 import { kalphiteKingCL } from '../../../../../data/CollectionsExport';
-import { GearStat } from '../../../../../gear';
 import { SeedTable } from '../../../../../simulation/seedTable';
 import { decideLoot } from '../../../../../util/LootDecider.js';
 import setCustomMonster, { makeKillTable } from '../../../../../util/setCustomMonster';

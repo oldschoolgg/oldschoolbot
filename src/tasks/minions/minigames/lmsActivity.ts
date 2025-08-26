@@ -1,10 +1,8 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { calcPerHour, formatOrdinal, gaussianRandom } from '@oldschoolgg/toolkit/util';
 import { clamp, percentChance, sumArr } from 'e';
 
-import { Emoji } from '../../../lib/constants';
-
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -100,7 +98,7 @@ export const lmsTask: MinionTask = {
 	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
 		const { channelID, quantity, userID, duration } = data;
 		const user = await mUserFetch(userID);
-		await incrementMinigameScore(userID, 'lms', quantity);
+		await user.incrementMinigameScore('lms', quantity);
 		const lmsStats = await getUsersLMSStats(user);
 
 		const result = calculateResultOfLMSGames(quantity, lmsStats);

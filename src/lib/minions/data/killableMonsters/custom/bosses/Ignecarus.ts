@@ -1,8 +1,7 @@
-import { Monsters } from 'oldschooljs';
+import { Monsters, resolveItems } from 'oldschooljs';
 import { LootTable } from 'oldschooljs';
 
 import { runeAlchablesTable } from '../../../../../simulation/sharedTables';
-import resolveItems from '../../../../../util/resolveItems';
 import setCustomMonster from '../../../../../util/setCustomMonster';
 
 const barTable = new LootTable()

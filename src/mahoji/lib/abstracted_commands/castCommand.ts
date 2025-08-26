@@ -1,9 +1,9 @@
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Time, reduceNumByPercent } from 'e';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { SkillsEnum } from 'oldschooljs';
 
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import type { CastingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';

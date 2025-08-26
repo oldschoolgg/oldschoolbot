@@ -1,16 +1,17 @@
-import { type CommandResponse, deepMerge, md5sum, miniID, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { miniID, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
-import { ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from 'discord.js';
-import { clamp, objectEntries, roll } from 'e';
-import { type ArrayItemsResolved, Bank, type ItemBank, Items, getItemOrThrow } from 'oldschooljs';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { clamp, objectEntries } from 'e';
+import { type ArrayItemsResolved, type Bank, type ItemBank, Items, getItemOrThrow } from 'oldschooljs';
 import { MersenneTwister19937, shuffle } from 'random-js';
 import z from 'zod';
 
 import { skillEmoji } from '../data/emojis';
-import type { UserFullGearSetup } from '../gear/types';
+import { SkillsEnum } from '../skilling/types';
 import type { SkillRequirements, Skills } from '../types';
+import type { TOAOptions } from '../types/minions';
 
-export function itemNameFromID(itemID: number | string) {
+export function itemNameFromID(itemID: number) {
 	return Items.get(itemID)?.name;
 }
 
@@ -21,26 +22,6 @@ export function formatItemReqs(items: ArrayItemsResolved) {
 			str.push(item.map(itemNameFromID).join(' OR '));
 		} else {
 			str.push(itemNameFromID(item));
-		}
-	}
-	return str.join(', ');
-}
-
-export function formatItemBoosts(items: ItemBank[]) {
-	const str = [];
-	for (const itemSet of items) {
-		const itemEntries = Object.entries(itemSet);
-		const multiple = itemEntries.length > 1;
-		const bonusStr = [];
-
-		for (const [itemID, boostAmount] of itemEntries) {
-			bonusStr.push(`${boostAmount}% for ${itemNameFromID(Number.parseInt(itemID))}`);
-		}
-
-		if (multiple) {
-			str.push(`(${bonusStr.join(' OR ')})`);
-		} else {
-			str.push(bonusStr.join(''));
 		}
 	}
 	return str.join(', ');
@@ -61,13 +42,6 @@ export function pluraliseItemName(name: string): string {
 export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
 	const engine = MersenneTwister19937.seed(input);
 	return shuffle(engine, [...arr]);
-}
-
-export function calcBabyYagaHouseDroprate(xpBeingReceived: number, cl: Bank) {
-	let rate = 1 / (((xpBeingReceived / 30) * 30) / 50_000_000);
-	const amountInCl = cl.amount('Baby yaga house');
-	if (amountInCl > 1) rate *= amountInCl;
-	return Math.floor(rate);
 }
 
 const shortItemNames = new Map([
@@ -153,51 +127,6 @@ export function calculateSimpleMonsterDeathChance({
 	return clamp(deathChance, lowestDeathChance, highestDeathChance);
 }
 
-export function perHourChance(
-	durationMilliseconds: number,
-	oneInXPerHourChance: number,
-	successFunction: () => unknown
-) {
-	const minutesPassed = Math.floor(durationMilliseconds / 60_000);
-	const perMinuteChance = oneInXPerHourChance * 60;
-
-	for (let i = 0; i < minutesPassed; i++) {
-		if (roll(perMinuteChance)) {
-			successFunction();
-		}
-	}
-}
-
-const TOO_LONG_STR = 'The result was too long (over 2000 characters), please read the attached file.';
-
-export function returnStringOrFile(
-	string: string | InteractionReplyOptions,
-	forceFile = false
-): Awaited<CommandResponse> {
-	if (typeof string === 'string') {
-		const hash = md5sum(string).slice(0, 5);
-		if (string.length > 2000 || forceFile) {
-			return {
-				content: TOO_LONG_STR,
-				files: [{ attachment: Buffer.from(string), name: `result-${hash}.txt` }]
-			};
-		}
-		return string;
-	}
-	if (string.content && (string.content.length > 2000 || forceFile)) {
-		const hash = md5sum(string.content).slice(0, 5);
-		return deepMerge(
-			string,
-			{
-				content: TOO_LONG_STR,
-				files: [{ attachment: Buffer.from(string.content), name: `result-${hash}.txt` }]
-			},
-			{ clone: false }
-		);
-	}
-	return string;
-}
-
 export const staticTimeIntervals = ['day', 'week', 'month'] as const;
 type StaticTimeInterval = (typeof staticTimeIntervals)[number];
 export function parseStaticTimeInterval(input: string): input is StaticTimeInterval {
@@ -225,25 +154,6 @@ export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null
 	return [true, null];
 }
 
-export function fullGearToBank(gear: UserFullGearSetup) {
-	const bank = new Bank();
-	for (const setup of Object.values(gear)) {
-		for (const equipped of Object.values(setup)) {
-			if (equipped?.item) {
-				bank.add(equipped.item, equipped.quantity);
-			}
-		}
-	}
-	return bank;
-}
-
-export function objHasAnyPropInCommon(obj: object, other: object): boolean {
-	for (const key of Object.keys(obj)) {
-		if (key in other) return true;
-	}
-	return false;
-}
-
 export const zodEnum = <T>(arr: T[] | readonly T[]): [T, ...T[]] => arr as [T, ...T[]];
 
 export function numberEnum<T extends number>(values: readonly T[]) {
@@ -269,4 +179,29 @@ export function isValidNickname(str?: string) {
 			['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
 			stripEmojis(str).length === str.length
 	);
+}
+
+export function formatList(_itemList: (string | undefined | null)[], end?: string) {
+	const itemList = _itemList.filter(i => i !== undefined && i !== null) as string[];
+	if (itemList.length < 2) return itemList.join(', ');
+	const lastItem = itemList.pop();
+	return `${itemList.join(', ')} ${end ? end : 'and'} ${lastItem}`;
+}
+
+export function normalizeTOAUsers(data: TOAOptions) {
+	const _detailedUsers = data.detailedUsers;
+	const detailedUsers = (
+		(Array.isArray(_detailedUsers[0]) ? _detailedUsers : [_detailedUsers]) as [string, number, number[]][][]
+	).map(userArr =>
+		userArr.map(user => ({
+			id: user[0],
+			points: user[1],
+			deaths: user[2]
+		}))
+	);
+	return detailedUsers;
+}
+
+export function isValidSkill(skill: string): skill is SkillsEnum {
+	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
 }
