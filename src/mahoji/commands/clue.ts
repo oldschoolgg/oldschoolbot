@@ -451,6 +451,7 @@ export const clueCommand: OSBMahojiCommand = {
 			userID: user.id,
 			channelID: channelID.toString(),
 			q: quantity,
+			iQty: options.quantity,
 			duration,
 			type: 'ClueCompletion'
 		});

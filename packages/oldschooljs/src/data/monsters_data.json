@@ -14362,7 +14362,7 @@
 	"12191": {
 		"members": true,
 		"combatLevel": 758,
-		"hitpoints": 440,
+		"hitpoints": 485,
 		"maxHit": 56,
 		"attackType": ["melee", "magic"],
 		"attackSpeed": 5,
@@ -14402,7 +14402,7 @@
 	"12192": {
 		"members": true,
 		"combatLevel": 758,
-		"hitpoints": 440,
+		"hitpoints": 485,
 		"maxHit": 56,
 		"attackType": ["melee", "magic"],
 		"attackSpeed": 5,
