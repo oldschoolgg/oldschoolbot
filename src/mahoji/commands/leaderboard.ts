@@ -787,10 +787,11 @@ async function itemContractLb(
 async function itemContractDonationGivenLb(
 	interaction: ChatInputCommandInteraction,
 	user: MUser,
-	channelID: string, 
+	channelID: string,
 	total: boolean
 ) {
 	const stats = await prisma.userStats.findMany({
+		where: { NOT: { ic_donations_given_bank: {} } },
 		select: {
 			user_id: true,
 			ic_donations_given_bank: true
@@ -815,12 +816,7 @@ async function itemContractDonationGivenLb(
 		interaction,
 		user,
 		channelID,
-		chunk(
-			donations
-				.sort((a, b) => b.total_donations - a.total_donations)
-				.slice(0, 10),
-			10
-		).map(subList =>
+		chunk(donations.sort((a, b) => b.total_donations - a.total_donations).slice(0, 10), 10).map(subList =>
 			subList
 				.map(
 					({ id, total_donations }) =>
@@ -1528,8 +1524,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		opens?: { openable: string; ironmen_only?: boolean };
 		cl?: { cl: string; ironmen_only?: boolean; tames?: boolean };
 		item_contract_streak?: { ironmen_only?: boolean };
-		total_ic_donation_given?: {}
-		unique_ic_donation_given?: {}
+		total_ic_donation_given?: {};
+		unique_ic_donation_given?: {};
 		leagues?: { type: 'points' | 'tasks' | 'hardest_tasks' };
 		clues?: { clue: ClueTier['name']; ironmen_only?: boolean };
 		movers?: { type: GainersType };
@@ -1592,8 +1588,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		if (cl) return clLb(interaction, user, channelID, cl.cl, Boolean(cl.ironmen_only), Boolean(cl.tames));
 		if (item_contract_streak)
 			return itemContractLb(interaction, user, channelID, item_contract_streak.ironmen_only);
-		if (total_ic_donation_given) return itemContractDonationGivenLb(interaction, user, channelID, true)
-		if (unique_ic_donation_given) return itemContractDonationGivenLb(interaction, user, channelID, false)
+		if (total_ic_donation_given) return itemContractDonationGivenLb(interaction, user, channelID, true);
+		if (unique_ic_donation_given) return itemContractDonationGivenLb(interaction, user, channelID, false);
 		if (leagues) return leaguesLeaderboard(interaction, user, channelID, leagues.type);
 		if (clues) return cluesLb(interaction, user, channelID, clues.clue, Boolean(clues.ironmen_only));
 		if (movers) return gainersLB(interaction, user, channelID, movers.type);
