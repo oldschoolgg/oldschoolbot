@@ -626,14 +626,13 @@ export async function removeRawFood({
 			inputQuantity: quantity,
 			slayerKillsRemaining: null
 		});
-		if (costs) {
-			if (costs.itemCost) {
-				itemCost.add(costs.itemCost);
-			}
-			if (costs.finalQuantity) {
-				quantity = costs.finalQuantity;
-			}
+		if (costs?.itemCost) {
+			itemCost.add(costs.itemCost);
 		}
+		if (costs?.finalQuantity) {
+			quantity = costs.finalQuantity;
+		}
+		
 	}
 	if (!user.owns(itemCost)) {
 		return { success: false, str: `You don't have the required items, you need: ${itemCost}.` };
@@ -1045,14 +1044,12 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 		timeToFinish: speed,
 		maxTripLength
 	});
-	if (foodRes) {
-		if (foodRes.success) {
-			quantity = foodRes.finalQuantity;
-		} else {
-			return foodRes.str;
-		}
+	if (!foodRes.success) {
+		return foodRes.str;
+	} else {
+		quantity = foodRes.finalQuantity;
 	}
-
+	
 	const fakeDuration = Math.floor(quantity * speed);
 
 	await trackLoot({
