@@ -1,13 +1,8 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { type CommandResponse, channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import {
-	type CommandResponse,
-	channelIsSendable,
-	exponentialPercentScale,
-	formatDuration,
-	mentionCommand,
-	randomVariation
-} from '@oldschoolgg/toolkit/util';
 import { type Minigame, XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
 import {
@@ -27,7 +22,7 @@ import {
 	sumArr,
 	uniqueArr
 } from 'e';
-import { Bank, LootTable, itemID, resolveItems } from 'oldschooljs';
+import { Bank, LootTable, itemID, randomVariation, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
@@ -1105,13 +1100,19 @@ export async function toaStartCommand(
 	user: MUser,
 	solo: boolean,
 	channelID: string,
-	raidLevel: RaidLevel,
+	_raidLevel: number,
 	teamSize: number | undefined,
 	quantityInput: number | undefined
 ): CommandResponse {
 	if (user.minionIsBusy) {
 		return `${user.usernameOrMention} minion is busy`;
 	}
+
+	if (!mileStoneBaseDeathChances.some(i => i.level === _raidLevel)) {
+		return 'Invalid raid level.';
+	}
+
+	const raidLevel = _raidLevel as RaidLevel;
 
 	const initialCheck = await checkTOAUser(
 		user,

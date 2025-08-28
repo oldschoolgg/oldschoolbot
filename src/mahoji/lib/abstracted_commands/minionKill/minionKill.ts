@@ -2,6 +2,7 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
 
 import { colosseumCommand } from '@/lib/colosseum';
+import type { PvMMethod } from '@/lib/constants';
 import { trackLoot } from '@/lib/lootTrack';
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil';
@@ -11,7 +12,6 @@ import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
 import findMonster from '@/lib/util/findMonster';
 import { generateDailyPeakIntervals } from '@/lib/util/peaks';
 import { updateBankSetting } from '@/lib/util/updateBankSetting';
-import type { PvMMethod } from '../../../commands/k';
 import { hasMonsterRequirements } from '../../../mahojiSettings';
 import { nexCommand } from '../nexCommand';
 import { nightmareCommand } from '../nightmareCommand';

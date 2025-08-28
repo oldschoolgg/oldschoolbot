@@ -1,4 +1,5 @@
-import { type CommandResponse, stringMatches } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { StashUnit, User } from '@prisma/client';
 import { partition } from 'e';
 import { Bank, ItemGroups, Items } from 'oldschooljs';

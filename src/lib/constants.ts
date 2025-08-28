@@ -2,14 +2,13 @@ import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { type CommandOptions, PerkTier, StoreBitfield, dateFm } from '@oldschoolgg/toolkit/util';
+import type { AbstractCommand, CommandOptions } from '@oldschoolgg/toolkit/discord-util';
+import { PerkTier, dateFm } from '@oldschoolgg/toolkit/util';
 import * as dotenv from 'dotenv';
 import { resolveItems } from 'oldschooljs';
 import { z } from 'zod';
 
-import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
-import type { CanvasImage } from './util/canvasUtil';
 
 export { PerkTier };
 
@@ -431,15 +430,6 @@ META_CONSTANTS.RENDERED_STR = `**Date/Time:** ${dateFm(META_CONSTANTS.STARTUP_DA
 
 export const masteryKey = BOT_TYPE === 'OSB' ? 'osb_mastery' : 'bso_mastery';
 
-export const ItemIconPacks = [
-	{
-		name: 'Halloween',
-		storeBitfield: StoreBitfield.HalloweenItemIconPack,
-		id: 'halloween',
-		icons: new Map<number, CanvasImage>()
-	}
-];
-
 export const patronFeatures = {
 	ShowEnteredInGiveawayList: {
 		tier: PerkTier.Four
@@ -455,3 +445,6 @@ if (!process.env.TEST && isMainThread) {
 }
 
 export const MAX_CLUES_DROPPED = 100;
+
+export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
+export type PvMMethod = (typeof PVM_METHODS)[number];

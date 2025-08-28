@@ -7,6 +7,7 @@ import { MersenneTwister19937, shuffle } from 'random-js';
 import z from 'zod';
 
 import { skillEmoji } from '../data/emojis';
+import { SkillsEnum } from '../skilling/types';
 import type { SkillRequirements, Skills } from '../types';
 import type { TOAOptions } from '../types/minions';
 
@@ -199,4 +200,8 @@ export function normalizeTOAUsers(data: TOAOptions) {
 		}))
 	);
 	return detailedUsers;
+}
+
+export function isValidSkill(skill: string): skill is SkillsEnum {
+	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
 }

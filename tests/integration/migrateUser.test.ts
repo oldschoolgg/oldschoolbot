@@ -1,3 +1,4 @@
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import {
 	type Activity,
 	type Bingo,
@@ -53,7 +54,6 @@ import {
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand
 } from '../../src/mahoji/lib/abstracted_commands/stashUnitsCommand';
-import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../src/mahoji/mahojiSettings';
 import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity';
 import type { TestUser } from './util';

@@ -1,6 +1,7 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { Planks } from '../../lib/minions/data/planks';
 import Potions from '../../lib/minions/data/potions';
 import { quests } from '../../lib/minions/data/quests';
@@ -35,7 +36,6 @@ import { underwaterAgilityThievingCommand } from '../lib/abstracted_commands/und
 import { warriorsGuildCommand } from '../lib/abstracted_commands/warriorsGuildCommand';
 import { collectables } from '../lib/collectables';
 import { ownedItemOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export const activitiesCommand: OSBMahojiCommand = {
 	name: 'activities',

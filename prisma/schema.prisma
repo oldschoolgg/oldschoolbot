@@ -430,6 +430,8 @@ model User {
 
   cl_array Int[] @default([])
 
+  gear_template Int? @db.SmallInt
+
   @@index([id, last_command_date])
   @@map("users")
 }

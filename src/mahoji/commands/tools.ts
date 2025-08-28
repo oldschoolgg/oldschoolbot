@@ -1,10 +1,6 @@
-import {
-	type CommandResponse,
-	type CommandRunOptions,
-	asyncGzip,
-	formatDuration,
-	stringMatches
-} from '@oldschoolgg/toolkit/util';
+import type { CommandResponse, CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { asyncGzip } from '@oldschoolgg/toolkit/node';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { Activity, User } from '@prisma/client';
 import { ApplicationCommandOptionType, ChannelType, EmbedBuilder } from 'discord.js';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, ToBUniqueTable, resolveItems } from 'oldschooljs';
@@ -35,7 +31,6 @@ import {
 	stashUnitViewCommand
 } from '../lib/abstracted_commands/stashUnitsCommand';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
 
 function isRaidsActivity(data: any): data is RaidsOptions {

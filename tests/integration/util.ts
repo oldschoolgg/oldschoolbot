@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/util';
 import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import type { User as DJSUser } from 'discord.js';
 import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
@@ -8,16 +8,15 @@ import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
 
 import { MUserClass } from '../../src/lib/MUser';
-import { globalConfig } from '../../src/lib/constants';
+import { type PvMMethod, globalConfig } from '../../src/lib/constants';
 import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { Gear } from '../../src/lib/structures/Gear';
 import type { ItemBank, SkillsRequired } from '../../src/lib/types';
 import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
-import { type PvMMethod, minionKCommand } from '../../src/mahoji/commands/k';
+import { minionKCommand } from '../../src/mahoji/commands/k';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
-import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 
 export const TEST_CHANNEL_ID = '1111111111111111';
 
@@ -235,7 +234,11 @@ export class TestUser extends MUserClass {
 	}
 
 	async runCommand(command: OSBMahojiCommand, options: object = {}, syncAfter = false) {
-		const result = await command.run({ ...commandRunOptions(this.id), options });
+		const result = await command.run({
+			...commandRunOptions(this.id),
+			user: { createdAt: new Date(), id: this.id } as DJSUser,
+			options
+		});
 		if (syncAfter) {
 			await this.sync();
 		}

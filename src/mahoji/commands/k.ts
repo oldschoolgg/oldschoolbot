@@ -3,17 +3,15 @@ import { type CommandRunOptions, formatDuration } from '@oldschoolgg/toolkit/uti
 import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
 import { Time, reduceNumByPercent } from 'e';
 
+import { PVM_METHODS, type PvMMethod } from '@/lib/constants';
+import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { Eatables } from '../../lib/data/eatables';
 import { autocompleteMonsters, wikiMonsters } from '../../lib/minions/data/killableMonsters';
-import { calculateMonsterFood } from '../../lib/minions/functions';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import findMonster from '../../lib/util/findMonster';
 import { minionKillCommand } from '../lib/abstracted_commands/minionKill/minionKill';
-import type { OSBMahojiCommand } from '../lib/util';
-
-export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
-export type PvMMethod = (typeof PVM_METHODS)[number];
 
 const wikiPrefix = 'https://wiki.oldschool.gg/osb';
 

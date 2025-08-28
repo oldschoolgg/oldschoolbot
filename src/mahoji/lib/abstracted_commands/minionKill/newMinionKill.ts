@@ -5,7 +5,7 @@ import { EItem, Items, Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import z from 'zod';
 
-import type { BitField } from '@/lib/constants';
+import type { BitField, PvMMethod } from '@/lib/constants';
 import { getSimilarItems } from '@/lib/data/similarItems';
 import { checkRangeGearWeapon } from '@/lib/gear/functions/checkRangeGearWeapon';
 import type { CombatOptionsEnum } from '@/lib/minions/data/combatConstants';
@@ -23,7 +23,6 @@ import type { GearBank } from '@/lib/structures/GearBank';
 import { UpdateBank } from '@/lib/structures/UpdateBank';
 import type { Peak } from '@/lib/util/peaks';
 import { zodEnum } from '@/lib/util/smallUtils.js';
-import type { PvMMethod } from '../../../commands/k';
 import { killsRemainingOnTask } from './calcTaskMonstersRemaining';
 import { type PostBoostEffect, postBoostEffects } from './postBoostEffects';
 import { CombatMethodOptionsSchema, speedCalculations } from './timeAndSpeed';

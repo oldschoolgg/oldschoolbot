@@ -1,5 +1,7 @@
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { GeneralBank, type GeneralBankType, UserError } from '@oldschoolgg/toolkit/structures';
-import { exponentialPercentScale, formatDuration, mentionCommand } from '@oldschoolgg/toolkit/util';
 import {
 	Time,
 	calcPercentOfNum,

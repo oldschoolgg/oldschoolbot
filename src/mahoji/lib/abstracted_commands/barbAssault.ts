@@ -1,12 +1,6 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
-import {
-	type CommandResponse,
-	formatDuration,
-	formatOrdinal,
-	makeComponents,
-	randomVariation,
-	stringMatches
-} from '@oldschoolgg/toolkit/util';
+import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/discord-util';
+import { formatDuration, formatOrdinal, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { Time, calcWhatPercent, clamp, reduceNumByPercent, roll, round } from 'e';
 import { Bank, itemID } from 'oldschooljs';

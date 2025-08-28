@@ -3,9 +3,9 @@ import { ButtonBuilder, type ButtonInteraction, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 import { Items } from 'oldschooljs';
 
-import type { PvMMethod } from '../../mahoji/commands/k';
 import { ClueTiers } from '../clues/clueTiers';
 import { findTripBuyable } from '../data/buyables/tripBuyables';
+import type { PvMMethod } from '../constants';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { autocompleteMonsters } from '../minions/data/killableMonsters';
 import { runCommand } from '../settings/settings';
@@ -96,7 +96,7 @@ const tripHandlers = {
 		commandName: 'clue',
 		args: (data: ClueActivityTaskOptions) => ({
 			tier: data.ci,
-			quantity: data.q,
+			quantity: data.iQty,
 			implings: data.implingID ? Items.itemNameFromId(data.implingID!) : undefined
 		})
 	},

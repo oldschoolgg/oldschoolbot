@@ -1,9 +1,8 @@
-import type { CommandOptions } from '@oldschoolgg/toolkit/discord-util';
+import type { AbstractCommand, CommandOptions } from '@oldschoolgg/toolkit/discord-util';
 import type { InteractionReplyOptions, TextChannel, User } from 'discord.js';
 
 import { modifyBusyCounter, userIsBusy } from '../../lib/busyCounterCache';
 import { busyImmuneCommands } from '../../lib/constants';
-import type { AbstractCommand } from './inhibitors';
 import { runInhibitors } from './inhibitors';
 
 interface PreCommandOptions {

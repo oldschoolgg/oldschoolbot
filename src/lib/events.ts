@@ -1,12 +1,13 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { UserError } from '@oldschoolgg/toolkit/structures';
-import { channelIsSendable, formatDuration, mentionCommand } from '@oldschoolgg/toolkit/util';
 import { command_name_enum } from '@prisma/client';
 import { type BaseMessageOptions, EmbedBuilder, type Message, type TextChannel, bold } from 'discord.js';
 import { Time, isFunction, roll } from 'e';
 import { LRUCache } from 'lru-cache';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
+import { dateFm, getNextUTCReset } from '@oldschoolgg/toolkit/util';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { untrustedGuildSettingsCache } from './cache.js';
 import { Channel, globalConfig } from './constants';
@@ -113,23 +114,28 @@ Type \`/tools user mypets\` to see your pets.`);
 const mentionText = `<@${globalConfig.clientID}>`;
 const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
 
+export const tears_of_guthix_cd = Time.Day * 7;
+
 const cooldownTimers: {
 	name: string;
 	timeStamp: (user: MUser, stats: { last_daily_timestamp: bigint; last_tears_of_guthix_timestamp: bigint }) => number;
 	cd: number | ((user: MUser) => number);
 	command: [string] | [string, string] | [string, string, string];
+	utcReset: boolean;
 }[] = [
 	{
 		name: 'Tears of Guthix',
 		timeStamp: (_, stats) => Number(stats.last_tears_of_guthix_timestamp),
-		cd: Time.Day * 7,
-		command: ['minigames', 'tears_of_guthix', 'start']
+		cd: tears_of_guthix_cd,
+		command: ['minigames', 'tears_of_guthix', 'start'],
+		utcReset: true
 	},
 	{
 		name: 'Daily',
 		timeStamp: (_, stats) => Number(stats.last_daily_timestamp),
 		cd: Time.Hour * 12,
-		command: ['minion', 'daily']
+		command: ['minion', 'daily'],
+		utcReset: false
 	}
 ];
 
@@ -251,10 +257,11 @@ const mentionCommands: MentionCommand[] = [
 				content: cooldownTimers
 					.map(cd => {
 						const lastDone = cd.timeStamp(user, stats);
-						const difference = Date.now() - lastDone;
 						const cooldown = isFunction(cd.cd) ? cd.cd(user) : cd.cd;
-						if (difference < cooldown) {
-							const durationRemaining = formatDuration(Date.now() - (lastDone + cooldown));
+						const nextReset = cd.utcReset ? getNextUTCReset(lastDone, cooldown) : lastDone + cooldown;
+
+						if (Date.now() < nextReset) {
+							const durationRemaining = dateFm(new Date(nextReset));
 							return `${cd.name}: ${durationRemaining}`;
 						}
 						return bold(

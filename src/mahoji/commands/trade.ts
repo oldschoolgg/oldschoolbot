@@ -1,5 +1,11 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
-import { type CommandRunOptions, type MahojiUserOption, discrimName, mentionCommand } from '@oldschoolgg/toolkit/util';
+import {
+	type CommandRunOptions,
+	type MahojiUserOption,
+	type OSBMahojiCommand,
+	discrimName,
+	mentionCommand
+} from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
@@ -10,7 +16,6 @@ import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { tradePlayerItems } from '../../lib/util/tradePlayerItems';
 import { filterOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings';
 
 const MAX_CHARACTER_LENGTH = 950;
@@ -175,7 +180,7 @@ Both parties must click confirm to make the trade.`,
 		const content = `${discrimName(senderAPIUser)} sold ${formatBankForDisplay(itemsSent)} to ${discrimName(
 			recipientAPIUser
 		)} in return for ${formatBankForDisplay(itemsReceived)}.
-  
+
   You can now buy/sell items in the Grand Exchange: ${mentionCommand(globalClient, 'ge')}`;
 
 		return files.length > 0 ? { content, files } : content;

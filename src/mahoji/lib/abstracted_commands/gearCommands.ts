@@ -3,11 +3,11 @@ import type { GearPreset } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { objectValues } from 'e';
 import { Bank, Items } from 'oldschooljs';
-
 import { GearStat } from 'oldschooljs/gear';
+
+import { generateGearImage } from '../../../lib/canvas/generateGearImage';
 import { PATRON_ONLY_GEAR_SETUP } from '../../../lib/constants';
 import { getSimilarItems } from '../../../lib/data/similarItems';
-import { generateAllGearImage, generateGearImage } from '../../../lib/gear/functions/generateGearImage';
 import { isValidGearSetup } from '../../../lib/gear/functions/isValidGearSetup';
 import type { GearSetup, GearSetupType } from '../../../lib/gear/types';
 import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestGearFromBank';
@@ -122,8 +122,7 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 			}
 		});
 	}
-	const updatedGear = user.gear[gearSetup];
-	const image = await generateGearImage(user, updatedGear, gearSetup, user.user.minion_equippedPet);
+	const image = await user.generateGearImage({ setupType: gearSetup });
 
 	return {
 		content: `You equipped the ${preset.name} preset in your ${gearSetup} setup.`,
@@ -147,7 +146,7 @@ async function gearEquipMultiCommand(user: MUser, setup: string, items: string) 
 	if (!resultSuccess) return failMsg!;
 
 	const dbKey = `gear_${setup}` as const;
-	const { newUser } = await user.update({
+	await user.update({
 		[dbKey]: equippedGear
 	});
 	await transactItems({
@@ -157,7 +156,7 @@ async function gearEquipMultiCommand(user: MUser, setup: string, items: string) 
 		itemsToAdd: unequipBank
 	});
 
-	const image = await generateGearImage(user, newUser[dbKey] as GearSetup, setup, user.user.minion_equippedPet);
+	const image = await user.generateGearImage({ setupType: setup });
 	let content = `You equipped ${equipBank} on your ${setup} setup, and unequipped ${unequipBank}.`;
 	if (skillFailBank!.length > 0) {
 		content += `\nThese items failed to be equipped as you don't have the requirements: ${skillFailBank}.`;
@@ -256,7 +255,7 @@ export async function gearUnequipCommand(
 		[`gear_${gearSetup}`]: newGear
 	});
 
-	const image = await generateGearImage(user, new Gear(newGear), gearSetup, user.user.minion_equippedPet);
+	const image = await user.generateGearImage({ setupType: gearSetup });
 
 	return {
 		content: `You unequipped ${item.name} from your ${toTitleCase(gearSetup)} setup.`,
@@ -295,7 +294,7 @@ async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipment
 		[`gear_${gearSetup}`]: gearToEquip
 	});
 
-	const image = await generateGearImage(user, user.gear[gearSetup], gearSetup, user.user.minion_equippedPet);
+	const image = await user.generateGearImage({ setupType: gearSetup });
 	return {
 		content: `You auto-equipped your best ${equipmentType} in your ${gearSetup} preset.`,
 		files: [{ name: 'gear.png', attachment: image }]
@@ -310,7 +309,7 @@ export async function gearStatsCommand(user: MUser, input: string): CommandRespo
 			gear[item.equipment.slot] = { item: item.id, quantity: 1 };
 		}
 	}
-	const image = await generateGearImage(user, new Gear(gear), null, null);
+	const image = await user.generateGearImage({ gearSetup: new Gear(gear) });
 	return { files: [{ name: 'image.png', attachment: image }] };
 }
 
@@ -325,7 +324,7 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 					),
 					name: 'gear.txt'
 				}
-			: { attachment: await generateAllGearImage(user), name: 'osbot.png' };
+			: { attachment: await user.generateGearImage({ setupType: 'all' }), name: 'osbot.png' };
 		return {
 			content: 'Here are all your gear setups',
 			files: [file]
@@ -386,7 +385,7 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 	if (text) {
 		return gear.toString();
 	}
-	const image = await generateGearImage(user, gear, input, user.user.minion_equippedPet);
+	const image = await generateGearImage({ gearSetup: gear, gearType: input, petID: user.user.minion_equippedPet });
 	return { files: [{ attachment: image, name: 'gear.png' }] };
 }
 

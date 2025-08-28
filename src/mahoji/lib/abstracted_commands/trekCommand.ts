@@ -3,11 +3,12 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { objectEntries, randInt, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
+import type { GearRequirement } from '@/lib/structures/Gear';
 import { GearStat } from 'oldschooljs/gear';
 import TrekShopItems, { TrekExperience } from '../../../lib/data/buyables/trekBuyables';
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { difficulties, rewardTokens, trekBankBoosts } from '../../../lib/minions/data/templeTrekking';
-import type { AddXpParams, GearRequirement } from '../../../lib/minions/types';
+import type { AddXpParams } from '../../../lib/minions/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

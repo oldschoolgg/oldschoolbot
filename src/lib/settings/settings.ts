@@ -1,4 +1,9 @@
-import { type CommandOptions, type CommandResponse, channelIsSendable } from '@oldschoolgg/toolkit/util';
+import {
+	type CommandOptions,
+	type CommandResponse,
+	channelIsSendable,
+	convertMahojiCommandToAbstractCommand
+} from '@oldschoolgg/toolkit/discord-util';
 import type { NewUser } from '@prisma/client';
 import type {
 	APIInteractionGuildMember,
@@ -11,7 +16,6 @@ import { isEmpty } from 'remeda';
 
 import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
-import { convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
 import { deferInteraction, handleInteractionError, interactionReply } from '../util/interactionReply';
 import { logError } from '../util/logError';
 

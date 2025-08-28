@@ -1,5 +1,5 @@
+import { cleanUsername } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { cleanUsername } from '@oldschoolgg/toolkit/util';
 import type { Prisma, User } from '@prisma/client';
 import { type Guild, userMention } from 'discord.js';
 import { noOp, objectEntries } from 'e';
@@ -8,7 +8,7 @@ import { calcCombatLevel, convertXPtoLVL } from 'oldschooljs';
 import type { MUserClass } from './MUser';
 import { usernameWithBadgesCache } from './cache';
 import { BitField, MAX_LEVEL, MAX_XP, globalConfig } from './constants';
-import { type SkillNameType, SkillsEnum } from './skilling/types';
+import type { SkillNameType, SkillsEnum } from './skilling/types';
 import type { GearBank } from './structures/GearBank';
 import type { Skills } from './types';
 import type { GroupMonsterActivityTaskOptions } from './types/minions';
@@ -44,10 +44,6 @@ export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 	return true;
 }
 
-export function isValidSkill(skill: string): skill is SkillsEnum {
-	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
-}
-
 export function skillingPetDropRate(
 	user: MUserClass | GearBank | number,
 	skill: SkillsEnum | SkillNameType,
@@ -61,7 +57,7 @@ export function skillingPetDropRate(
 	return { petDropRate: dropRate };
 }
 
-export function createUsernameWithBadges(user: Pick<User, 'username' | 'badges' | 'minion_ironman'>): string {
+function createUsernameWithBadges(user: Pick<User, 'username' | 'badges' | 'minion_ironman'>): string {
 	if (!user.username) return 'Unknown';
 	const badges = makeBadgeString(user.badges, user.minion_ironman);
 	return `${badges ? `${badges} ` : ''}${user.username}`;

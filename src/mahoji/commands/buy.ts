@@ -4,6 +4,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import { tripBuyables } from '@/lib/data/buyables/tripBuyables';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import Buyables from '../../lib/data/buyables/buyables';
 import { quests } from '../../lib/minions/data/quests';
 import { Minigames } from '../../lib/settings/minigames';

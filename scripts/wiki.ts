@@ -3,7 +3,10 @@ import { Markdown, Tab, Tabs, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 import { omit } from 'remeda';
 
+applyStaticDefine();
+
 import '../src/lib/safeglobals';
+import { applyStaticDefine } from '../meta';
 import { ClueTiers } from '../src/lib/clues/clueTiers';
 import { CombatAchievements } from '../src/lib/combat_achievements/combatAchievements';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear, itemBoosts } from '../src/lib/data/cox';

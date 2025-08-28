@@ -2,7 +2,9 @@ import { increaseNumByPercent } from 'e';
 import { Bank, EItem, ItemGroups, convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
+import { MAX_LEVEL } from '@/lib/constants';
 import { fishCommand } from '../../../src/mahoji/commands/fish';
+import { XP_MULTIPLIER } from '../../testConstants.js';
 import { createTestUser, mockClient } from '../util';
 
 describe('Fish Command', async () => {
@@ -71,7 +73,7 @@ describe('Fish Command', async () => {
 	it('should fish barrel boost', async () => {
 		const user = await client.mockUser({ maxed: true });
 		await user.equip('skilling', [EItem.FISH_SACK_BARREL]);
-		expect(user.skillsAsLevels.fishing).toBe(99);
+		expect(user.skillsAsLevels.fishing).toBe(MAX_LEVEL);
 		const res = await user.runCommand(fishCommand, { name: 'shrimps' });
 		expect(res).toContain('is now fishing 643x Shrimps');
 	});
@@ -107,7 +109,7 @@ describe('Fish Command', async () => {
 		await user.runActivity();
 		expect(user.bank.amount('Fishing bait')).toEqual(50);
 		expect(user.bank.amount('Raw sardine')).toEqual(50);
-		expect(user.skillsAsXP.fishing).toEqual(100_000 + 50 * 20);
+		expect(user.skillsAsXP.fishing).toEqual(100_000 + 50 * 20 * XP_MULTIPLIER);
 	});
 
 	it('should not let you fish without fishing bait', async () => {
@@ -126,7 +128,7 @@ describe('Fish Command', async () => {
 		expect(res).toContain('is now fishing 50x Lobster');
 		await user.runActivity();
 		expect(user.bank.amount('Raw lobster')).toEqual(50);
-		const xpToReceive = 50 * 90;
+		const xpToReceive = 50 * 90 * XP_MULTIPLIER;
 		const xpWithAnglerBoost = increaseNumByPercent(xpToReceive, 2.5);
 		expect(user.skillsAsXP.fishing).toEqual(Math.ceil(startingXP + xpWithAnglerBoost));
 	});

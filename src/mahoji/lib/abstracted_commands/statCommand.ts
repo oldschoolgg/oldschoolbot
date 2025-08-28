@@ -1,5 +1,7 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { type CommandResponse, PerkTier, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import type { CommandResponse } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { PerkTier, formatDuration } from '@oldschoolgg/toolkit/util';
 import type { UserStats, activity_type_enum } from '@prisma/client';
 import { Time, sumArr } from 'e';
 import {

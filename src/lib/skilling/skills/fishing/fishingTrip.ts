@@ -8,7 +8,7 @@ import { UpdateBank } from '@/lib/structures/UpdateBank';
 import { skillingPetDropRate } from '@/lib/util';
 import type { RNGProvider } from '@/lib/util/rng';
 import type { Fish } from '../../types';
-import { Fishing } from './fishing';
+import { calcAnglerBoostPercent, calcMinnowQuantityRange, calcRadasBlessingBoost } from './fishingUtil';
 
 export function calcFishingTripResult({
 	fish,
@@ -21,7 +21,7 @@ export function calcFishingTripResult({
 	const updateBank = new UpdateBank();
 	const boosts: string[] = [];
 
-	const { blessingEquipped, blessingChance } = Fishing.util.calcRadasBlessingBoost(gearBank);
+	const { blessingEquipped, blessingChance } = calcRadasBlessingBoost(gearBank);
 
 	if (blessingEquipped) {
 		boosts.push(`Rada's Blessing: ${blessingChance}% chance of extra fish`);
@@ -64,7 +64,7 @@ export function calcFishingTripResult({
 		xpReceived = quantity * fish.xp;
 	}
 
-	const anglerBoost = Fishing.util.calcAnglerBoostPercent(gearBank);
+	const anglerBoost = calcAnglerBoostPercent(gearBank);
 	if (anglerBoost > 0) {
 		const anglerXP = Math.ceil(calcPercentOfNum(anglerBoost, xpReceived));
 		boosts.push(`${anglerBoost.toFixed(2)}% (${anglerXP.toLocaleString()} XP) from Angler outfit`);
@@ -84,7 +84,7 @@ export function calcFishingTripResult({
 
 	const fishPerQuantity = match(fish.id)
 		.with(EItem.RAW_KARAMBWANJI, () => () => baseKarambwanji)
-		.with(EItem.MINNOW, () => () => rng.randInt(...Fishing.util.calcMinnowQuantityRange(gearBank)))
+		.with(EItem.MINNOW, () => () => rng.randInt(...calcMinnowQuantityRange(gearBank)))
 		.otherwise(() => () => 1);
 
 	let qtyFromBlessing = 0;

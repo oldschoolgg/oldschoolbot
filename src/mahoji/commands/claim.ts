@@ -3,12 +3,12 @@ import { type CommandRunOptions, dateFm, stringMatches } from '@oldschoolgg/tool
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { BSO_MAX_TOTAL_LEVEL, BitField, Channel } from '../../lib/constants';
 import { calcCLDetails } from '../../lib/data/Collections';
 import { getReclaimableItemsOfUser } from '../../lib/reclaimableItems';
 import { roboChimpUserFetch } from '../../lib/roboChimp';
 import { sendToChannelID } from '../../lib/util/webhook';
-import type { OSBMahojiCommand } from '../lib/util';
 
 const claimables = [
 	{

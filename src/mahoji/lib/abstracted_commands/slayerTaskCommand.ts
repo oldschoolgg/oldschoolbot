@@ -1,4 +1,5 @@
-import { awaitMessageComponentInteraction, channelIsSendable, stringMatches } from '@oldschoolgg/toolkit/util';
+import { awaitMessageComponentInteraction, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
 import { Time, notEmpty, randInt, removeFromArr } from 'e';
 import { Monsters } from 'oldschooljs';

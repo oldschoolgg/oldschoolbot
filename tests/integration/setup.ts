@@ -28,22 +28,6 @@ vi.mock('../../src/lib/util/webhook', async () => {
 	};
 });
 
-vi.mock('../../src/lib/gear/functions/generateGearImage', async () => {
-	const actual: any = await vi.importActual('../../src/lib/gear/functions/generateGearImage');
-	return {
-		...actual,
-		generateGearImage: vi.fn().mockReturnValue(Promise.resolve(Buffer.from('')))
-	};
-});
-
-vi.mock('../../src/lib/util/chart', async () => {
-	const actual: any = await vi.importActual('../../src/lib/gear/functions/generateGearImage');
-	return {
-		...actual,
-		createChart: vi.fn().mockReturnValue(Promise.resolve(Buffer.from('')))
-	};
-});
-
 // @ts-ignore mock
 globalClient.fetchUser = async (id: string | bigint) => ({
 	id: typeof id === 'string' ? id : String(id),

@@ -4,13 +4,13 @@ import { Time } from 'e';
 import { Bank, itemID, resolveItems } from 'oldschooljs';
 
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import type { OSBMahojiCommand } from '../lib/util';
 import { userHasGracefulEquipped } from '../mahojiSettings';
 
 export const smeltingCommand: OSBMahojiCommand = {

@@ -1,5 +1,5 @@
+import { type OSBMahojiCommand, generateCommandInputs } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { generateCommandInputs } from '@oldschoolgg/toolkit/util';
 import { Time, sumArr } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import PromiseQueue from 'p-queue';
@@ -8,7 +8,6 @@ import { expect, test, vi } from 'vitest';
 
 import { getMaxUserValues } from '@/mahoji/commands/testpotato';
 import { allUsableItems } from '@/mahoji/lib/abstracted_commands/useCommand';
-import type { OSBMahojiCommand } from '@/mahoji/lib/util';
 import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
 import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirmation';
 import { allCommands } from '../../src/mahoji/commands/allCommands';

@@ -1,5 +1,5 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
-import type { CommandRunOptions, MahojiUserOption } from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions, MahojiUserOption, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
@@ -7,7 +7,6 @@ import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { tradePlayerItems } from '../../lib/util/tradePlayerItems';
-import type { OSBMahojiCommand } from '../lib/util';
 import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings';
 
 export const payCommand: OSBMahojiCommand = {

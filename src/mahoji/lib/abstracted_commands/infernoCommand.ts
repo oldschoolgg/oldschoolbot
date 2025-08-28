@@ -3,6 +3,7 @@ import { type CommandResponse, formatDuration, randomVariation } from '@oldschoo
 import { Time, calcPercentOfNum, percentChance, randInt, roll, sumArr } from 'e';
 import { Bank, type ItemBank, Items, Monsters, itemID } from 'oldschooljs';
 
+import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage';
 import type { ProjectileType } from '../../../lib/constants';
 import { BitField, projectiles } from '../../../lib/constants';
 import { getSimilarItems } from '../../../lib/data/similarItems';
@@ -13,7 +14,6 @@ import { PercentCounter } from '../../../lib/structures/PercentCounter';
 import type { Skills } from '../../../lib/types';
 import type { InfernoOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
