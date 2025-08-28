@@ -581,7 +581,7 @@ export async function removeRawFood({
 	tame: Tame;
 	timeToFinish: number;
 	maxTripLength: number;
-}): Promise<{ success: false; str: string } | { success: true; str: string; removed: Bank }> {
+}): Promise<{ success: false; str: string } | { success: true; finalQuantity: number; str: string; removed: Bank }> {
 	totalHealingNeeded = increaseNumByPercent(totalHealingNeeded, 25);
 	healPerAction = increaseNumByPercent(healPerAction, 25);
 
@@ -626,8 +626,13 @@ export async function removeRawFood({
 			inputQuantity: quantity,
 			slayerKillsRemaining: null
 		});
-		if (costs?.itemCost) {
-			itemCost.add(costs?.itemCost);
+		if (costs) {
+			if (costs.itemCost) {
+				itemCost.add(costs.itemCost);
+			}
+			if (costs.finalQuantity) {
+				quantity = costs.finalQuantity;
+			}
 		}
 	}
 	if (!user.owns(itemCost)) {
@@ -647,6 +652,7 @@ export async function removeRawFood({
 
 	return {
 		success: true,
+		finalQuantity: quantity,
 		str: `${itemCost} from ${user.rawUsername}${foodBoosts.length > 0 ? `(${foodBoosts.join(', ')})` : ''}`,
 		removed: itemCost
 	};
@@ -1024,7 +1030,7 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	}
 
 	// Calculate monster quantity:
-	const quantity = Math.floor(maxTripLength / speed);
+	let quantity = Math.floor(maxTripLength / speed);
 	if (quantity < 1) {
 		return "Your tame can't kill this monster fast enough.";
 	}
@@ -1039,8 +1045,12 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 		timeToFinish: speed,
 		maxTripLength
 	});
-	if (!foodRes.success) {
-		return foodRes.str;
+	if (foodRes) {
+		if (foodRes.success) {
+			quantity = foodRes.finalQuantity;
+		} else {
+			return foodRes.str;
+		}
 	}
 
 	const fakeDuration = Math.floor(quantity * speed);
