@@ -1,7 +1,8 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { dateFm, formatDuration, getNextUTCReset } from '@oldschoolgg/toolkit/util';
 import { Time, notEmpty, objectEntries } from 'e';
 
+import { tears_of_guthix_cd } from '@/lib/events';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
@@ -55,12 +56,11 @@ export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 	const currentStats = await user.fetchStats({ last_tears_of_guthix_timestamp: true });
 
 	const lastPlayedDate = Number(currentStats.last_tears_of_guthix_timestamp);
-	const difference = currentDate - lastPlayedDate;
+	const nextReset = getNextUTCReset(lastPlayedDate, tears_of_guthix_cd);
 
 	// If they have already claimed a ToG in the past 7days
-	if (difference < Time.Day * 7) {
-		const duration = formatDuration(Date.now() - (lastPlayedDate + Time.Day * 7));
-		return `**${Emoji.Snake} Juna says...** You can drink from the Tears of Guthix in ${duration}.`;
+	if (currentDate < nextReset) {
+		return `**${Emoji.Snake} Juna says...** You can drink from the Tears of Guthix in ${dateFm(new Date(nextReset))}`;
 	}
 
 	// 43 QP for the quest
