@@ -88,8 +88,8 @@ export function getInterval(intervalHours: number) {
 	};
 }
 
-export function getNextUTCReset(lastPlayedUnix: number, cd: number) {
-	const coolDownEnd = new Date(lastPlayedUnix + cd);
+export function getNextUTCReset(last_timeStamp: number, cd: number) {
+	const coolDownEnd = new Date(last_timeStamp + cd);
 
 	const nextUTCReset = new Date(
 		Date.UTC(coolDownEnd.getUTCFullYear(), coolDownEnd.getUTCMonth(), coolDownEnd.getUTCDate(), 0, 0, 0, 0)
