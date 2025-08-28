@@ -632,7 +632,6 @@ export async function removeRawFood({
 		if (costs?.finalQuantity) {
 			quantity = costs.finalQuantity;
 		}
-		
 	}
 	if (!user.owns(itemCost)) {
 		return { success: false, str: `You don't have the required items, you need: ${itemCost}.` };
@@ -1049,7 +1048,7 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	} else {
 		quantity = foodRes.finalQuantity;
 	}
-	
+
 	const fakeDuration = Math.floor(quantity * speed);
 
 	await trackLoot({
