@@ -7,6 +7,7 @@ import { Time, isFunction, roll } from 'e';
 import { LRUCache } from 'lru-cache';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
+import { dateFm, getNextUTCReset } from '@oldschoolgg/toolkit/util';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { untrustedGuildSettingsCache } from './cache.js';
 import { Channel, globalConfig } from './constants';
@@ -14,7 +15,6 @@ import pets from './data/pets';
 import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
-import { dateFm, getNextUTCReset } from '@oldschoolgg/toolkit/util';
 
 const rareRolesSrc: [string, number, string][] = [
 	['670211706907000842', 250, 'Bronze'],
@@ -114,7 +114,7 @@ Type \`/tools user mypets\` to see your pets.`);
 const mentionText = `<@${globalConfig.clientID}>`;
 const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
 
-export const tears_of_guthix_cd = Time.Day * 7
+export const tears_of_guthix_cd = Time.Day * 7;
 
 const cooldownTimers: {
 	name: string;
