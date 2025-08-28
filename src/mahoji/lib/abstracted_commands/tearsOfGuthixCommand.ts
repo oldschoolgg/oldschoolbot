@@ -51,15 +51,12 @@ function getTearsOfGuthixMissingSkillMessage(user: MUser): string | null {
 
 export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
-	const currentDate = Date.now();
-
 	const currentStats = await user.fetchStats({ last_tears_of_guthix_timestamp: true });
-
 	const lastPlayedDate = Number(currentStats.last_tears_of_guthix_timestamp);
 	const nextReset = getNextUTCReset(lastPlayedDate, tears_of_guthix_cd);
 
 	// If they have already claimed a ToG in the past 7days
-	if (currentDate < nextReset) {
+	if (Date.now() < nextReset) {
 		return `**${Emoji.Snake} Juna says...** You can drink from the Tears of Guthix in ${dateFm(new Date(nextReset))}`;
 	}
 
