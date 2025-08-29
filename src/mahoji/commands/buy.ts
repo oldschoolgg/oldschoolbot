@@ -16,7 +16,6 @@ import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
 import { buyKitten } from '../lib/abstracted_commands/buyKitten';
 import { buyingTripCommand } from '../lib/abstracted_commands/buyingTripCommand';
-import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, userStatsUpdate } from '../mahojiSettings';
 
 const allBuyablesAutocomplete = [
