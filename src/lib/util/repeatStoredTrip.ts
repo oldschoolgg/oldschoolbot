@@ -4,8 +4,8 @@ import { Time } from 'e';
 import { Items } from 'oldschooljs';
 
 import { ClueTiers } from '../clues/clueTiers';
-import { findTripBuyable } from '../data/buyables/tripBuyables';
 import type { PvMMethod } from '../constants';
+import { findTripBuyable } from '../data/buyables/tripBuyables';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { autocompleteMonsters } from '../minions/data/killableMonsters';
 import { runCommand } from '../settings/settings';
