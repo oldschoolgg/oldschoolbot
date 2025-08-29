@@ -277,7 +277,7 @@ const tripHandlers = {
 	[activity_type_enum.DarkAltar]: {
 		commandName: 'runecraft',
 		args: (data: DarkAltarOptions) => ({
-			rune: `${darkAltarRunes[data.rune].item.name} (zeah)`,
+			rune: `${data.rune} rune (zeah)`,
 			extracts: data.useExtracts
 		})
 	},
