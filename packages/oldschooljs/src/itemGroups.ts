@@ -181,6 +181,15 @@ export const demonBaneWeapons = [
 	EItem.PURGING_STAFF
 ];
 
+export const nails = [
+	EItem.BRONZE_NAILS,
+	EItem.IRON_NAILS,
+	EItem.STEEL_NAILS,
+	EItem.MITHRIL_NAILS,
+	EItem.ADAMANTITE_NAILS,
+	EItem.RUNE_NAILS
+];
+
 export const virtusOutfit = [EItem.VIRTUS_MASK, EItem.VIRTUS_ROBE_TOP, EItem.VIRTUS_ROBE_BOTTOM];
 
 export * from './item-groups/boss-cl';

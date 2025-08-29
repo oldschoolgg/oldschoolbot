@@ -1,4 +1,5 @@
-import { awaitMessageComponentInteraction, channelIsSendable, stringMatches } from '@oldschoolgg/toolkit';
+import { awaitMessageComponentInteraction, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
 import { Time, notEmpty, removeFromArr } from 'e';
 import { Monsters } from 'oldschooljs';
@@ -18,7 +19,6 @@ import type { AssignableSlayerTask } from '../../../lib/slayer/types';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { interactionReply } from '../../../lib/util/interactionReply';
 import { logError } from '../../../lib/util/logError';
-import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { userStatsUpdate } from '../../mahojiSettings';
 
 const returnSuccessButtons = [
@@ -387,7 +387,7 @@ export async function slayerSkipTaskCommand({
 	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 	const myBlockList = user.user.slayer_blocked_ids;
 	const maxBlocks = await calcMaxBlockedTasks(user);
-	if (minionIsBusy(user.id)) {
+	if (user.minionIsBusy) {
 		interactionReply(interaction, 'You cannot change your task while your minion is busy.');
 		return;
 	}

@@ -3,11 +3,11 @@ import { AttachmentBuilder, bold } from 'discord.js';
 import { Time, notEmpty, objectEntries, randArrItem, randInt } from 'e';
 import { Bank, type Item, resolveItems } from 'oldschooljs';
 
+import { gearImages } from '@/lib/canvas/gearImageData';
 import { divinationEnergies } from '../../../lib/bso/divination';
 import { BitField } from '../../../lib/constants';
 import { addToDoubleLootTimer } from '../../../lib/doubleLoot';
 import { allDyes, dyedItems } from '../../../lib/dyedItems';
-import { gearImages } from '../../../lib/gear/functions/generateGearImage';
 import { mysteriousStepData } from '../../../lib/mysteryTrail';
 import { makeScriptImage } from '../../../lib/scriptImages';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';

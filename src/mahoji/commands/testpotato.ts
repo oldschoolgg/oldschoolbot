@@ -1,4 +1,6 @@
-import { type CommandRunOptions, mentionCommand, stringMatches } from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { type Prisma, tame_growth, xp_gains_skill_enum } from '@prisma/client';
 import { ApplicationCommandOptionType, MessageFlags, type User } from 'discord.js';
 import { Time, noOp, randArrItem, randInt, uniqueArr } from 'e';
@@ -35,17 +37,16 @@ import { gearViewCommand } from '../lib/abstracted_commands/gearCommands';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { BingoManager } from '../lib/bingo/BingoManager';
-import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo';
 import { tameEquippables } from './tames';
 
-export async function giveMaxStats(user: MUser) {
-	const updates: Prisma.UserUpdateArgs['data'] = {};
+export function getMaxUserValues() {
+	const updates: Omit<Prisma.UserUpdateArgs['data'], 'id'> = {};
 	for (const skill of Object.values(xp_gains_skill_enum)) {
 		updates[`skills_${skill}`] = MAX_XP - 50_000_000;
 	}
-	await user.update({
+	return {
 		QP: MAX_QP,
 		slayer_points: 50_000,
 		nmz_points: 50_000,
@@ -54,7 +55,11 @@ export async function giveMaxStats(user: MUser) {
 		zeal_tokens: 500_000,
 		lms_points: 500_000,
 		...updates
-	});
+	};
+}
+
+export async function giveMaxStats(user: MUser) {
+	return user.update(getMaxUserValues());
 }
 
 const coloMelee = new Gear();

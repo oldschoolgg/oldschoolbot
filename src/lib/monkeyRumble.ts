@@ -2,9 +2,10 @@ import fs from 'node:fs/promises';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { randArrItem, randInt, roll } from 'e';
 import type { Item } from 'oldschooljs';
+import { loadImage } from 'skia-canvas';
 
-import { type CanvasImage, canvasToBuffer, createCanvas, loadImage, printWrappedText } from './util/canvasUtil';
-import { textBoxFile } from './util/chatHeadImage';
+import { type CanvasImage, canvasToBuffer, createCanvas, printWrappedText } from './canvas/canvasUtil';
+import { textBoxFile } from './canvas/chatHeadImage';
 import getOSItem from './util/getOSItem';
 
 interface MonkeyTier {

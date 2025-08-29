@@ -1,19 +1,19 @@
+import { cleanUsername } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { cleanUsername, stripEmojis } from '@oldschoolgg/toolkit/util';
 import type { Prisma, User } from '@prisma/client';
-import { type Guild, bold, escapeMarkdown, userMention } from 'discord.js';
+import { type Guild, bold, userMention } from 'discord.js';
 import { calcWhatPercent, noOp, objectEntries, sumArr } from 'e';
-import { type Bank, type Monster, Monsters, calcCombatLevel, convertXPtoLVL, resolveItems } from 'oldschooljs';
+import { type Bank, type Monster, Monsters, calcCombatLevel, convertXPtoLVL } from 'oldschooljs';
 
 import type { MUserClass } from './MUser';
 import { usernameWithBadgesCache } from './cache';
-import { BitField, MAX_LEVEL, MAX_XP, type ProjectileType, globalConfig } from './constants';
-import { SkillsEnum } from './skilling/types';
-import type { Gear } from './structures/Gear';
+import { BitField, MAX_LEVEL, MAX_XP, globalConfig } from './constants';
+import type { SkillNameType, SkillsEnum } from './skilling/types';
 import type { GearBank } from './structures/GearBank';
 import type { Skills } from './types';
 import type { GroupMonsterActivityTaskOptions } from './types/minions';
 import { makeBadgeString } from './util/makeBadgeString';
+import { itemNameFromID } from './util/smallUtils';
 import { sendToChannelID } from './util/webhook.js';
 
 // @ts-ignore ignore
@@ -47,24 +47,6 @@ export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 		}
 	}
 	return true;
-}
-
-export function birdhouseLimit(user: MUser) {
-	let base = 4;
-	if (user.bitfield.includes(BitField.HasScrollOfTheHunt)) base += 4;
-	if (user.hasEquippedOrInBank('Hunter master cape')) base += 4;
-	return base;
-}
-
-export function determineProjectileTypeFromGear(gear: Gear): ProjectileType | null {
-	if (resolveItems(['Twisted bow', 'Hellfire bow', 'Zaryte bow']).some(i => gear.hasEquipped(i))) {
-		return 'arrow';
-	} else if (
-		resolveItems(['Chaotic crossbow', 'Armadyl crossbow', 'Dragon crossbow']).some(i => gear.hasEquipped(i))
-	) {
-		return 'bolt';
-	}
-	return null;
 }
 
 export function getMonster(str: string): Monster {
@@ -106,21 +88,13 @@ export function ISODateString(date?: Date) {
 	return (date ?? new Date()).toISOString().slice(0, 10);
 }
 
-export function removeMarkdownEmojis(str: string) {
-	return escapeMarkdown(stripEmojis(str));
-}
-
 export function moidLink(items: number[]) {
 	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
 }
 
-export function isValidSkill(skill: string): skill is SkillsEnum {
-	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
-}
-
 export function skillingPetDropRate(
 	user: MUserClass | GearBank | number,
-	skill: SkillsEnum,
+	skill: SkillsEnum | SkillNameType,
 	baseDropRate: number
 ): { petDropRate: number } {
 	const xp = typeof user === 'number' ? user : user.skillsAsXP[skill];
@@ -131,7 +105,7 @@ export function skillingPetDropRate(
 	return { petDropRate: dropRate };
 }
 
-export function createUsernameWithBadges(user: Pick<User, 'username' | 'badges' | 'minion_ironman'>): string {
+function createUsernameWithBadges(user: Pick<User, 'username' | 'badges' | 'minion_ironman'>): string {
 	if (!user.username) return 'Unknown';
 	const badges = makeBadgeString(user.badges, user.minion_ironman);
 	return `${badges ? `${badges} ` : ''}${user.username}`;
@@ -212,8 +186,6 @@ export function isModOrAdmin(user: MUser) {
 	return globalConfig.adminUserIDs.includes(user.id) || user.bitfield.includes(BitField.isModerator);
 }
 
-export * from './util/smallUtils';
-
 export type JsonKeys<T> = {
 	[K in keyof T]: T[K] extends Prisma.JsonValue ? K : never;
 }[keyof T];
@@ -229,3 +201,5 @@ export async function adminPingLog(message: string) {
 		allowedMentions: { users: globalConfig.adminUserIDs }
 	}).catch(noOp);
 }
+
+export { itemNameFromID };

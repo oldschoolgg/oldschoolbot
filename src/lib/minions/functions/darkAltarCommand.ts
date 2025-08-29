@@ -1,4 +1,5 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
 import { SkillsEnum } from 'oldschooljs';
 
@@ -34,7 +35,7 @@ const mediumDiaryBoost = 20;
 
 export async function darkAltarCommand({ user, channelID, name }: { user: MUser; channelID: string; name: string }) {
 	const stats = user.skillsAsLevels;
-	if (!['blood', 'soul'].includes(name.split(' ')[0])) return 'Invalid rune.';
+	if (!['blood', 'soul'].includes(name.toLowerCase().split(' ')[0])) return 'Invalid rune.';
 	const [hasReqs, neededReqs] = hasSkillReqs(user, {
 		mining: 38,
 		crafting: 38

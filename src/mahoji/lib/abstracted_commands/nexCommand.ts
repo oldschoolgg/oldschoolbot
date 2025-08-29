@@ -1,12 +1,13 @@
+import { formatDuration, isWeekend } from '@oldschoolgg/toolkit';
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { channelIsSendable, formatDuration, isWeekend } from '@oldschoolgg/toolkit';
-import type { ChatInputCommandInteraction } from 'discord.js';
+import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood';
 import { Time, increaseNumByPercent, reduceNumByPercent, round } from 'e';
 import { calcBossFood } from '../../../lib/bso/calcBossFood';
 import { gorajanArcherOutfit, pernixOutfit } from '../../../lib/data/CollectionsExport';
 import { trackLoot } from '../../../lib/lootTrack';
-import { calculateMonsterFood } from '../../../lib/minions/functions';
 import type { KillableMonster } from '../../../lib/minions/types';
 import { NexMonster } from '../../../lib/nex';
 import { setupParty } from '../../../lib/party';

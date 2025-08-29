@@ -1,13 +1,12 @@
-import {
-	type CommandResponse,
-	type CommandRunOptions,
-	type MahojiUserOption,
-	PerkTier,
-	asyncGzip,
-	formatDuration,
-	stringMatches
-} from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+import type {
+	CommandResponse,
+	CommandRunOptions,
+	MahojiUserOption,
+	OSBMahojiCommand
+} from '@oldschoolgg/toolkit/discord-util';
+import { asyncGzip } from '@oldschoolgg/toolkit/node';
+import { PerkTier, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { Activity, User } from '@prisma/client';
 import { ApplicationCommandOptionType, ChannelType, EmbedBuilder, userMention } from 'discord.js';
 import { Time, randArrItem, randInt, roll, shuffleArr } from 'e';
@@ -37,14 +36,11 @@ import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { keyCrates } from '../../lib/keyCrates.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { type UnifiedOpenable, allOpenables } from '../../lib/openables';
-import { getUsersPerkTier } from '../../lib/perkTiers';
 import type { MinigameName } from '../../lib/settings/minigames';
 import { Minigames } from '../../lib/settings/minigames';
-import { convertStoredActivityToFlatActivity } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
 import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '../../lib/types/minions';
 import { findGroupOfUser } from '../../lib/util/findGroupOfUser';
-import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -61,7 +57,6 @@ import {
 import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
 import { buttonUserPicker } from '../lib/buttonUserPicker';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
 
 function isRaidsActivity(data: any): data is RaidsOptions {
@@ -193,7 +188,7 @@ async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean)
 		title = `Highest All clue scroll completions in the past ${interval}`;
 	}
 
-	const query = `SELECT a.user_id::text, SUM((a."data"->>'q')::int) AS qty, MAX(a.finish_date) AS lastDate 
+	const query = `SELECT a.user_id::text, SUM((a."data"->>'q')::int) AS qty, MAX(a.finish_date) AS lastDate
 	  FROM activity a
 	  JOIN users u ON a.user_id::text = u.id
 	  WHERE a.type = 'ClueCompletion'
@@ -801,7 +796,7 @@ for (const openable of allOpenables) {
 }
 
 async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnly: boolean) {
-	const item = getItem(itemName);
+	const item = Items.get(itemName);
 	if (!item) return 'Invalid item.';
 	const entity = dryStreakEntities.find(
 		e =>
@@ -864,7 +859,7 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 }
 
 async function mostDrops(user: MUser, itemName: string, filter: string) {
-	const item = getItem(itemName);
+	const item = Items.getItem(itemName);
 	const ironmanPart =
 		filter === 'Irons Only'
 			? 'AND "minion.ironman" = true'
@@ -916,7 +911,7 @@ async function checkMassesCommand(guildID: string | undefined) {
 			}
 		})
 	)
-		.map(convertStoredActivityToFlatActivity)
+		.map(_act => ActivityManager.convertStoredActivityToFlatActivity(_act))
 		.filter(m => (isRaidsActivity(m) || isGroupActivity(m) || isTOBOrTOAActivity(m)) && m.users.length > 1);
 
 	if (masses.length === 0) {
@@ -958,7 +953,7 @@ function calcTime(perkTier: PerkTier | 0) {
 
 export const PATRON_DOUBLE_LOOT_COOLDOWN = Time.Day * 31;
 async function patronTriggerDoubleLoot(user: MUser) {
-	const perkTier = getUsersPerkTier(user);
+	const perkTier = user.perkTier();
 	if (perkTier < PerkTier.Five) {
 		return 'Only T4, T5 or T6 patrons can use this command.';
 	}
@@ -1423,7 +1418,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return minionStats(mahojiUser.user);
 			}
 			if (patron.give_box) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
+				if (mahojiUser.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
 				return giveBox(mahojiUser, patron.give_box.user);
 			}
 			if (patron.activity_export) {

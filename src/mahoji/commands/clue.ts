@@ -12,7 +12,7 @@ import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { checkElderClueRequirements } from '../../lib/util/elderClueRequirements';
 import getOSItem from '../../lib/util/getOSItem';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
-import type { OSBMahojiCommand } from '../lib/util';
+
 import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export async function calcClueScores(user: MUser) {

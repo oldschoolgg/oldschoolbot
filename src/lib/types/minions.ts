@@ -1,7 +1,6 @@
 import type { CropUpgradeType } from '@prisma/client';
 import type { ItemBank } from 'oldschooljs';
 
-import type { TeamMember } from 'discord.js';
 import type { BathhouseTierName } from '../baxtorianBathhouses';
 import type { TuraelsTrialsMethod } from '../bso/turaelsTrials';
 import type { NMZStrategy } from '../constants';
@@ -12,11 +11,10 @@ import type { IPatchData } from '../minions/farming/types';
 import type { AttackStyles } from '../minions/functions';
 import type { Monkey } from '../monkeyRumble';
 import type { MinigameName } from '../settings/minigames';
-import type { RaidLevel } from '../simulation/toa';
 import type { UnderwaterAgilityThievingTrainingSkill } from '../skilling/skills/agility';
 import type { TwitcherGloves } from '../skilling/skills/woodcutting/woodcutting';
 import type { BossUser } from '../structures/Boss';
-import type { Peak } from '../tickers';
+import type { Peak } from '../util/peaks';
 import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
 export interface ActivityTaskOptions {
@@ -491,7 +489,7 @@ export interface RaidsActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 	partyLeaderID: string;
 	users: string[];
-	team: TeamMember[];
+	team: unknown[];
 	challengeMode: boolean;
 }
 
@@ -571,7 +569,7 @@ export interface TOAOptions extends ActivityTaskOptionsWithUsers {
 	type: 'TombsOfAmascut';
 	leader: string;
 	detailedUsers: TOAUser[] | [UserID, Points, RoomIDsDiedAt][][];
-	raidLevel: RaidLevel;
+	raidLevel: number;
 	fakeDuration: number;
 	wipedRoom: null | number | (number | null)[];
 	quantity: number;

@@ -11,7 +11,6 @@ import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '../../li
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import type { OSBMahojiCommand } from '../lib/util';
 
 function makeTameNickname(species: Species) {
 	switch (species.id) {

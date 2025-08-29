@@ -2,6 +2,8 @@ import type { GearSetupType } from '@prisma/client';
 import { Time, calcPercentOfNum, objectKeys, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { calcWildyPKChance } from '@/lib/util/calcWildyPkChance';
+import { type Peak, PeakTier } from '@/lib/util/peaks';
 import { dwarvenBlessing } from '../../../../lib/bso/dwarvenBlessing';
 import { BitField } from '../../../../lib/constants';
 import { Eatables } from '../../../../lib/data/eatables';
@@ -9,8 +11,6 @@ import { convertAttackStyleToGearSetup } from '../../../../lib/gear/functions/co
 import { calculateMonsterFoodRaw } from '../../../../lib/minions/functions/calculateMonsterFood';
 import reducedTimeFromKC from '../../../../lib/minions/functions/reducedTimeFromKC';
 import { removeFoodFromUserRaw } from '../../../../lib/minions/functions/removeFoodFromUser';
-import type { Peak } from '../../../../lib/tickers';
-import { PeakTier, calcWildyPKChance } from '../../../../lib/util/calcWildyPkChance';
 import type { BoostArgs, BoostResult } from './speedBoosts';
 
 const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)));

@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -21,7 +20,7 @@ export const wintertodtTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const hasMasterCape = user.hasEquippedOrInBank('Firemaking master cape');
 
-		const { newScore } = await incrementMinigameScore(user.id, 'wintertodt', quantity);
+		const { newScore } = await user.incrementMinigameScore('wintertodt', quantity);
 		const loot = new Bank();
 
 		let totalPoints = 0;

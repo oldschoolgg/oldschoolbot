@@ -1,7 +1,4 @@
-import { ApplicationCommandOptionType, time } from 'discord.js';
-import { notEmpty, randArrItem, randInt, shuffleArr } from 'e';
-import type { CommandOption } from '../lib/MahojiClient/mahojiTypes';
-import { randomSnowflake } from './discord';
+import { time } from 'discord.js';
 
 const emojiRegex = require('emoji-regex');
 
@@ -35,34 +32,6 @@ export function formatOrdinal(number: number): string {
 	return `${number}${suffix}`;
 }
 
-export function splitMessage(text: string, { maxLength = 2000, char = '\n', prepend = '', append = '' } = {}) {
-	if (text.length <= maxLength) return [text];
-	let splitText: string[] = [text];
-	if (Array.isArray(char)) {
-		while (char.length > 0 && splitText.some(elem => elem.length > maxLength)) {
-			const currentChar = char.shift();
-			if (currentChar instanceof RegExp) {
-				splitText = splitText.flatMap(chunk => chunk.match(currentChar)).filter(notEmpty);
-			} else {
-				splitText = splitText.flatMap(chunk => chunk.split(currentChar));
-			}
-		}
-	} else {
-		splitText = text.split(char);
-	}
-	if (splitText.some(elem => elem.length > maxLength)) throw new RangeError('SPLIT_MAX_LEN');
-	const messages = [];
-	let msg = '';
-	for (const chunk of splitText) {
-		if ((msg + char + chunk + append).length > maxLength) {
-			messages.push(msg + append);
-			msg = prepend;
-		}
-		msg += (msg !== prepend ? char : '') + chunk;
-	}
-	return messages.concat(msg).filter(m => m);
-}
-
 export enum PerkTier {
 	/**
 	 * Boosters
@@ -94,20 +63,6 @@ export enum PerkTier {
 	Seven = 7
 }
 
-export function exponentialPercentScale(percent: number, decay = 0.021) {
-	return 100 * Math.pow(Math.E, -decay * (100 - percent));
-}
-
-export function normal(mu = 0, sigma = 1, nsamples = 6) {
-	let run_total = 0;
-
-	for (let i = 0; i < nsamples; i++) {
-		run_total += Math.random();
-	}
-
-	return (sigma * (run_total - nsamples / 2)) / (nsamples / 2) + mu;
-}
-
 export const alphabeticalSort = (a: string, b: string) => a.localeCompare(b);
 
 export function dateFm(date: Date) {
@@ -133,88 +88,16 @@ export function getInterval(intervalHours: number) {
 	};
 }
 
-type CommandInput = Record<string, any>;
-export async function generateCommandInputs(options: readonly CommandOption[]): Promise<CommandInput[]> {
-	const results: CommandInput[] = [];
-	const allPossibleOptions: Record<string, any[]> = {};
-
-	for (const option of options) {
-		switch (option.type) {
-			case ApplicationCommandOptionType.SubcommandGroup:
-			case ApplicationCommandOptionType.Subcommand:
-				if (option.options) {
-					const subOptionsResults = await generateCommandInputs(option.options);
-					results.push(...subOptionsResults.map(input => ({ [option.name]: input })));
-				}
-				break;
-			case ApplicationCommandOptionType.String:
-				if ('autocomplete' in option && option.autocomplete) {
-					const autoCompleteResults = await option.autocomplete(
-						'',
-						{ id: randomSnowflake() } as any,
-						{} as any
-					);
-					allPossibleOptions[option.name] = shuffleArr(autoCompleteResults.map(c => c.value)).slice(0, 3);
-				} else if (option.choices) {
-					allPossibleOptions[option.name] = option.choices.map(c => c.value).slice(0, 3);
-				} else if (['guild_id', 'message_id'].includes(option.name)) {
-					allPossibleOptions[option.name] = ['157797566833098752'];
-				} else {
-					allPossibleOptions[option.name] = ['plain string'];
-				}
-				break;
-			case ApplicationCommandOptionType.Integer:
-			case ApplicationCommandOptionType.Number:
-				if (option.choices) {
-					allPossibleOptions[option.name] = option.choices.map(c => c.value);
-				} else {
-					let value = randInt(1, 10);
-					if (option.min_value && option.max_value) {
-						value = randInt(option.min_value, option.max_value);
-					}
-					allPossibleOptions[option.name] = [option.min_value, value];
-				}
-				break;
-			case ApplicationCommandOptionType.Boolean: {
-				allPossibleOptions[option.name] = [true, false];
-				break;
-			}
-			case ApplicationCommandOptionType.User: {
-				allPossibleOptions[option.name] = [
-					{
-						user: {
-							id: '425134194436341760',
-							username: 'username',
-							bot: false
-						},
-						member: undefined
-					}
-				];
-				break;
-			}
-			case ApplicationCommandOptionType.Channel:
-			case ApplicationCommandOptionType.Role:
-			case ApplicationCommandOptionType.Mentionable:
-				// results.push({ ...currentPath, [option.name]: `Any ${option.type}` });
-				break;
-		}
-	}
-
-	const sorted = Object.values(allPossibleOptions).sort((a, b) => b.length - a.length);
-	const longestOptions = sorted[0]?.length;
-	for (let i = 0; i < longestOptions; i++) {
-		const obj: Record<string, any> = {};
-		for (const [key, val] of Object.entries(allPossibleOptions)) {
-			obj[key] = val[i] ?? randArrItem(val);
-		}
-		results.push(obj);
-	}
-	return results;
-}
-
 export function objHasAnyPropInCommon(obj: object, other: object): boolean {
 	for (const key of Object.keys(obj)) {
 		if (key in other) return true;
 	}
 	return false;
 }
+
+export function sleep(ms: number) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export function noOp() {}

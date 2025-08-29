@@ -1,9 +1,8 @@
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import { increaseNumByPercent } from 'e';
 
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { getTemporossLoot } from '../../../lib/simulation/tempoross';
-import Fishing from '../../../lib/skilling/skills/fishing';
+import { Fishing } from '../../../lib/skilling/skills/fishing/fishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { TemporossActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -15,7 +14,7 @@ export const temporossTask: MinionTask = {
 		const { userID, channelID, quantity, rewardBoost, duration } = data;
 		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
-		const { newScore } = await incrementMinigameScore(userID, 'tempoross', quantity);
+		const { newScore } = await user.incrementMinigameScore('tempoross', quantity);
 
 		let rewardTokens = quantity * 6;
 		if (rewardBoost > 0) {
@@ -28,9 +27,9 @@ export const temporossTask: MinionTask = {
 
 		// If they have the entire angler outfit, give an extra 0.5% xp bonus
 		if (
-			user.hasEquippedOrInBank(
-				Object.keys(Fishing.anglerItems).map(i => Number.parseInt(i)),
-				'every'
+			user.gear.skilling.hasEquipped(
+				Fishing.anglerItems.map(i => i[1]),
+				true
 			)
 		) {
 			const amountToAdd = Math.floor(fXPtoGive * (2.5 / 100));
@@ -38,8 +37,8 @@ export const temporossTask: MinionTask = {
 			fBonusXP += amountToAdd;
 		} else {
 			// For each angler item, check if they have it, give its' XP boost if so.
-			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasEquippedOrInBank(Number.parseInt(itemID))) {
+			for (const [itemID, bonus] of Fishing.anglerItems) {
+				if (user.hasEquipped(itemID)) {
 					const amountToAdd = Math.floor(fXPtoGive * (bonus / 100));
 					fXPtoGive += amountToAdd;
 					fBonusXP += amountToAdd;

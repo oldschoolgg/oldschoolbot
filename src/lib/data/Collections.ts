@@ -2160,6 +2160,7 @@ export async function getCollection(options: {
 	search: string;
 	flags: { [key: string]: string | number | undefined };
 	logType?: CollectionLogType;
+	minigameScoresOverride?: Awaited<ReturnType<MUser['fetchMinigameScores']>> | null;
 }): Promise<false | IToReturnCollection> {
 	let { user, search, flags, logType } = options;
 
@@ -2169,7 +2170,6 @@ export async function getCollection(options: {
 		logType = 'tame';
 	}
 
-	const minigameScores = await user.fetchMinigameScores();
 	const userStats = await MUserStats.fromID(user.id);
 	const userCheckBank = getBank(user, logType, userStats);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
@@ -2208,6 +2208,8 @@ export async function getCollection(options: {
 	}
 
 	const igneTameKCs = logType === 'tame' ? await getAllIgneTameKCs(user.id) : null;
+	const minigameScores = options.minigameScoresOverride ?? (await user.fetchMinigameScores());
+
 	for (const [category, entries] of Object.entries(allCollectionLogs)) {
 		if (stringMatches(category, search) || entries.alias?.some(a => stringMatches(a, search))) {
 			return {

@@ -2,7 +2,6 @@ import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
 import { roll } from '@/lib/util/rng';
 import { userHasFlappy } from '../../../lib/invention/inventions';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -44,7 +43,7 @@ export const soulWarsTask: MinionTask = {
 			}
 		});
 
-		await incrementMinigameScore(user.id, 'soul_wars', quantity);
+		await user.incrementMinigameScore('soul_wars', quantity);
 
 		let str = `${user}, ${user.minionName} finished doing ${quantity}x games of Soul Wars, you received ${points} Zeal Tokens, you now have ${user.user.zeal_tokens}.\n\n`;
 		if (flappyRes.shouldGiveBoost) str += `\n${flappyRes.userMsg}`;

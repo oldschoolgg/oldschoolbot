@@ -12,10 +12,9 @@ import {
 	userMention
 } from 'discord.js';
 import { Time, increaseNumByPercent, isFunction, percentChance, randArrItem, randInt, roll } from 'e';
-import { Bank, type ItemBank } from 'oldschooljs';
+import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { isEmpty } from 'remeda';
 
-import { itemNameFromID } from '@/lib/util';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { BitField } from '../../lib/constants';
 import { handlePassiveImplings } from '../../lib/implings';
@@ -364,7 +363,7 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 				messages.push('2x loot from Elder knowledge (1/15 chance)');
 			}
 
-			let str = `${user}, ${tame} finished completing ${activityData.quantity}x ${itemNameFromID(
+			let str = `${user}, ${tame} finished completing ${activityData.quantity}x ${Items.itemNameFromId(
 				clueTier.scrollID
 			)}. (${Math.floor(calcPerHour(activityData.quantity, activity.duration)).toFixed(1)} clues/hr)`;
 

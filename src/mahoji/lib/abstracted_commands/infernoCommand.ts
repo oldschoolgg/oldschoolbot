@@ -3,13 +3,13 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Time, calcPercentOfNum, increaseNumByPercent, percentChance, randInt, roll, sumArr } from 'e';
 import { Bank, type ItemBank, Items, Monsters, itemID, randomVariation, resolveItems } from 'oldschooljs';
 
-import { determineProjectileTypeFromGear } from '@/lib/util';
+import { determineProjectileTypeFromGear } from '@/lib/bso/gear/util';
+import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage';
 import { BitField, projectiles } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
 import type { BlowpipeData } from '../../../lib/minions/types';
-import { getMinigameEntity, getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import type { Gear } from '../../../lib/structures/Gear';
@@ -17,7 +17,6 @@ import { PercentCounter } from '../../../lib/structures/PercentCounter';
 import type { Skills } from '../../../lib/types';
 import type { InfernoOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
@@ -166,7 +165,7 @@ async function infernoRun({
 	isEmergedZuk: boolean;
 }) {
 	const userBank = user.bank;
-	const zukKC = await getMinigameScore(user.id, 'inferno');
+	const zukKC = await user.fetchMinigameScore('inferno');
 	const duration = new PercentCounter(baseDuration(attempts, isEmergedZuk), 'time');
 	const zukDeathChance = new PercentCounter(baseZukDeathChance(attempts), 'percent');
 	const preZukDeathChance = new PercentCounter(basePreZukDeathChance(attempts), 'percent');
@@ -393,7 +392,7 @@ async function infernoRun({
 		emergedZukDeathChance.add(hasTzkalCape, -10, 'TzKal cape');
 		duration.add(allItems.includes(itemID('Ignis ring(i)')), -5, 'Ignis ring(i)');
 		emergedZukDeathChance.add(user.skillLevel(SkillsEnum.Defence) === 120, -10, '120 Defence');
-		const emergedKC = await getMinigameScore(user.id, 'emerged_inferno');
+		const emergedKC = await user.fetchMinigameScore('emerged_inferno');
 		if (emergedKC > 0) {
 			const effectiveKC = Math.min(emergedKC, 3);
 			emergedZukDeathChance.add(true, 0 - effectiveKC * 7.5, `${effectiveKC} Emerged KC`);
@@ -454,7 +453,7 @@ async function infernoRun({
 	duration.add(user.user.bitfield.includes(BitField.HasArcaneScroll), -4, 'Arc. Prayer scroll');
 
 	// Slayer
-	const score = await getMinigameScore(user.id, 'inferno');
+	const score = await user.fetchMinigameScore('inferno');
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
 	const isOnTask =
 		usersTask.currentTask !== null &&
@@ -564,7 +563,7 @@ async function infernoRun({
 
 export async function infernoStatsCommand(user: MUser): CommandResponse {
 	const [minigames, { inferno_attempts: attempts }] = await Promise.all([
-		getMinigameEntity(user.id),
+		user.fetchMinigames(),
 		user.fetchStats({ inferno_attempts: true })
 	]);
 
@@ -612,7 +611,7 @@ export async function infernoStatsCommand(user: MUser): CommandResponse {
 export async function infernoStartCommand(user: MUser, channelID: string, emerged: boolean): CommandResponse {
 	const usersRangeStats = user.gear.range.stats;
 	const [zukKC, { inferno_attempts: attempts }] = await Promise.all([
-		getMinigameScore(user.id, 'inferno'),
+		await user.fetchMinigameScore('inferno'),
 		user.fetchStats({ inferno_attempts: true })
 	]);
 

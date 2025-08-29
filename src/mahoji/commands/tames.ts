@@ -1,15 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { bold, time } from '@discordjs/builders';
-import {
-	type CommandResponse,
-	type CommandRunOptions,
-	exponentialPercentScale,
-	formatDuration,
-	isWeekend,
-	mentionCommand,
-	stringMatches
-} from '@oldschoolgg/toolkit';
+import { type CommandResponse, formatDuration, isWeekend, stringMatches } from '@oldschoolgg/toolkit';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { type Tame, tame_growth } from '@prisma/client';
 import { toTitleCase } from '@sapphire/utilities';
 import { ApplicationCommandOptionType, type ChatInputCommandInteraction, type User } from 'discord.js';
@@ -24,9 +18,20 @@ import {
 	reduceNumByPercent
 } from 'e';
 import { Bank, type Item, type ItemBank, itemID, resolveItems } from 'oldschooljs';
-import type { Canvas } from 'skia-canvas';
+import { type Canvas, loadImage } from 'skia-canvas';
 
-import { formatSkillRequirements, itemNameFromID } from '@/lib/util';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas';
+import { bankImageTask } from '@/lib/canvas/bankImage';
+import {
+	type CanvasContext,
+	type CanvasImage,
+	canvasToBuffer,
+	createCanvas,
+	fillTextXTimesInCtx,
+	getClippedRegion
+} from '@/lib/canvas/canvasUtil';
+import { itemNameFromID } from '@/lib/util';
+import { formatSkillRequirements } from '@/lib/util/smallUtils';
 import { type ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { PerkTier, badges } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
@@ -53,15 +58,6 @@ import {
 	tameSpecies
 } from '../../lib/tames';
 import { patronMaxTripBonus } from '../../lib/util/calcMaxTripLength';
-import {
-	type CanvasContext,
-	type CanvasImage,
-	canvasToBuffer,
-	createCanvas,
-	fillTextXTimesInCtx,
-	getClippedRegion,
-	loadImage
-} from '../../lib/util/canvasUtil';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { assert } from '../../lib/util/logError';
@@ -81,7 +77,6 @@ import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { arbitraryTameActivities } from '../../tasks/tames/tameTasks';
 import { getItemCostFromConsumables } from '../lib/abstracted_commands/minionKill/handleConsumables';
 import { collectables } from '../lib/collectables';
-import type { OSBMahojiCommand } from '../lib/util';
 
 const tameImageSize = 96;
 
@@ -383,13 +378,11 @@ export async function tameImage(user: MUser): CommandResponse {
 
 	const { tame, activity } = await getUsersTame(user);
 
-	// Init the background images if they are not already
-
 	const {
 		sprite,
 		uniqueSprite,
 		background: userBgImage
-	} = bankImageGenerator.getBgAndSprite(user.user.bankBackground ?? 1);
+	} = bankImageTask.getBgAndSprite({ bankBackgroundId: user.user.bankBackground ?? 1 });
 	const hexColor = user.user.bank_bg_hex;
 
 	const tamesPerLine = 3;
@@ -428,7 +421,7 @@ export async function tameImage(user: MUser): CommandResponse {
 		);
 	}
 
-	if (!userBgImage.transparent) bankImageGenerator.drawBorder(ctx, sprite, false);
+	if (!userBgImage.transparent) OSRSCanvas.drawBorder(ctx, sprite, false);
 
 	ctx.translate(16, 16);
 	let i = 0;
@@ -514,7 +507,7 @@ export async function tameImage(user: MUser): CommandResponse {
 		let feedQty = 0;
 		for (const { item } of tameFeedableItems.filter(f => f.tameSpeciesCanBeFedThis.includes(species.id))) {
 			if (tameHasBeenFed(t, item.id)) {
-				const itemImage = await bankImageGenerator.getItemImage(item.id);
+				const itemImage = await OSRSCanvas.getItemImage({ itemID: item.id });
 				if (itemImage) {
 					const ratio = 19 / itemImage.height;
 					const yLine = Math.floor(feedQty / 3);
@@ -542,7 +535,7 @@ export async function tameImage(user: MUser): CommandResponse {
 			const thisY = tameY + tameImageSize;
 			const iconSize = Math.floor(calcPercentOfNum(75, sprites.gearIconBg.width));
 			ctx.drawImage(sprites.gearIconBg, thisX, thisY, iconSize, iconSize);
-			const icon = await bankImageGenerator.getItemImage(equippedInThisSlot);
+			const icon = await OSRSCanvas.getItemImage({ itemID: equippedInThisSlot });
 			const iconWidth = Math.floor(calcPercentOfNum(65, icon.width));
 			const iconHeight = Math.floor(calcPercentOfNum(65, icon.height));
 			ctx.drawImage(

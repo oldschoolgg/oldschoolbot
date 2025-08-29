@@ -5,14 +5,12 @@ import { Bank } from 'oldschooljs';
 
 import { hasSkillReqs } from '@/lib/util/smallUtils';
 import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
-import { getMinigameScore } from '../../../lib/settings/settings';
 import type { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { userStatsUpdate } from '../../mahojiSettings';
 
 const itemBoosts = [
@@ -180,7 +178,7 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 }
 
 export async function pestControlStartCommand(user: MUser, channelID: string) {
-	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
+	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	if (user.combatLevel < 40) {
 		return 'You need a combat level of at least 40 to do Pest Control.';
 	}
@@ -278,7 +276,7 @@ ${xpRes}`;
 
 export async function pestControlStatsCommand(user: MUser) {
 	const [kc, stats] = await Promise.all([
-		getMinigameScore(user.id, 'pest_control'),
+		user.fetchMinigameScore('pest_control'),
 		user.fetchStats({ pest_control_points: true })
 	]);
 	return `You have ${stats.pest_control_points} Void knight commendation points.

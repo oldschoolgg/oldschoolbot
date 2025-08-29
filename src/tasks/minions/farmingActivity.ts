@@ -1,9 +1,10 @@
 import { Time, randInt } from 'e';
-import { Bank, Monsters, increaseBankQuantitesByPercent, itemID } from 'oldschooljs';
+import { Bank, Items, Monsters, increaseBankQuantitesByPercent, itemID } from 'oldschooljs';
 
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
 import { roll } from '@/lib/util/rng';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
+import chatHeadImage from '../../lib/canvas/chatHeadImage';
 import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
 import { BitField } from '../../lib/constants';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
@@ -14,8 +15,7 @@ import { getFarmingInfoFromUser } from '../../lib/skilling/functions/getFarmingI
 import Farming, { plants } from '../../lib/skilling/skills/farming';
 import { type Plant, SkillsEnum } from '../../lib/skilling/types';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { itemNameFromID, skillingPetDropRate } from '../../lib/util';
-import chatHeadImage from '../../lib/util/chatHeadImage';
+import { skillingPetDropRate } from '../../lib/util';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { assert } from '../../lib/util/logError';
@@ -602,7 +602,7 @@ export const farmingTask: MinionTask = {
 			for (const mut of mutations) {
 				if (alivePlants && plantToHarvest.name === mut.plantName && roll(mut.chance)) {
 					loot.add(mut.output);
-					infoStr.push(`One of your crops mutated into a ${itemNameFromID(mut.output)}.`);
+					infoStr.push(`One of your crops mutated into a ${Items.itemNameFromId(mut.output)}.`);
 				}
 			}
 

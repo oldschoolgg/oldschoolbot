@@ -1,5 +1,6 @@
-import { type CommandRunOptions, formatDuration, formatOrdinal, makeComponents } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
 import { randArrItem, roll } from 'e';
 import { Bank, type ItemBank, Items, LootTable, itemID, resolveItems } from 'oldschooljs';
@@ -19,7 +20,6 @@ import { allThirdAgeItems, runeAlchablesTable } from '../../lib/simulation/share
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { LampTable } from '../../lib/xpLamps';
-import type { OSBMahojiCommand } from '../lib/util';
 import { updateClientGPTrackSetting, userStatsBankUpdate } from '../mahojiSettings';
 
 const contractTable = new LootTable()

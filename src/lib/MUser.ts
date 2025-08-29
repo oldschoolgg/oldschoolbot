@@ -1,9 +1,11 @@
-import { PerkTier, cleanUsername, mentionCommand, seedShuffle } from '@oldschoolgg/toolkit';
+import { PerkTier } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { seedShuffle } from '@oldschoolgg/toolkit/rng';
 import { UserError } from '@oldschoolgg/toolkit/structures';
 import type { GearSetupType, Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { escapeMarkdown, userMention } from 'discord.js';
-import { Time, calcWhatPercent, objectValues, percentChance, randArrItem, sumArr, uniqueArr } from 'e';
+import { Time, calcWhatPercent, notEmpty, objectValues, percentChance, randArrItem, sumArr, uniqueArr } from 'e';
 import {
 	Bank,
 	EquipmentSlot,
@@ -21,17 +23,19 @@ import { timePerAlch, timePerAlchAgility } from '../mahoji/lib/abstracted_comman
 import { getParsedStashUnits } from '../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
+import { calculateCompCapeProgress } from './bso/calculateCompCapeProgress';
 import type { GodFavourBank, GodName } from './bso/divineDominion';
 import { userIsBusy } from './busyCounterCache';
 import { partialUserCache } from './cache';
+import { generateAllGearImage, generateGearImage } from './canvas/generateGearImage';
+import type { IconPackID } from './canvas/iconPacks';
 import { ClueTiers } from './clues/clueTiers';
 import { type CATier, CombatAchievements } from './combat_achievements/combatAchievements';
 import { BitField, MAX_LEVEL, projectiles } from './constants';
 import { bossCLItems } from './data/Collections';
-import { allPetIDs } from './data/CollectionsExport';
+import { allPetIDs, avasDevices } from './data/CollectionsExport';
 import { degradeableItems } from './degradeableItems';
 import { type GearSetup, type UserFullGearSetup, defaultGear } from './gear';
-import { gearImages } from './gear/functions/generateGearImage';
 import { handleNewCLItems } from './handleNewCLItems';
 import type { IMaterialBank } from './invention';
 import { MaterialBank } from './invention/MaterialBank';
@@ -39,15 +43,15 @@ import { marketPriceOfBank } from './marketPrices';
 import backgroundImages from './minions/data/bankBackgrounds';
 import type { CombatOptionsEnum } from './minions/data/combatConstants';
 import { defaultFarmingContract } from './minions/farming';
-import type { FarmingContract } from './minions/farming/types';
+import type { DetailedFarmingContract, FarmingContract } from './minions/farming/types';
 import type { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import type { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
 import { mysteriousStepData, mysteriousTrailTracks } from './mysteryTrail';
 import { getUsersPerkTier } from './perkTiers';
 import { roboChimpUserFetch } from './roboChimp';
-import type { MinigameScore } from './settings/minigames';
-import { Minigames, getMinigameEntity } from './settings/minigames';
+import type { MinigameName, MinigameScore } from './settings/minigames';
+import { Minigames } from './settings/minigames';
 import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
 import { SkillsEnum } from './skilling/types';
@@ -61,10 +65,8 @@ import type { SkillRequirements } from './types';
 import { determineRunes } from './util/determineRunes';
 import { findGroupOfUser } from './util/findGroupOfUser';
 import { getKCByName } from './util/getKCByName';
-import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
 import { makeBadgeString } from './util/makeBadgeString';
-import { minionIsBusy } from './util/minionIsBusy';
 import { repairBrokenItemsFromUser } from './util/repairBrokenItems';
 import { hasSkillReqsRaw, itemNameFromID } from './util/smallUtils';
 import type { TransactItemsArgs } from './util/transactItemsFromBank';
@@ -119,6 +121,7 @@ export class MUserClass {
 	paintedItems!: Map<number, number>;
 	badgesString!: string;
 	bitfield!: readonly BitField[];
+	iconPackId!: IconPackID | null;
 
 	constructor(user: User) {
 		this.user = user;
@@ -158,10 +161,7 @@ export class MUserClass {
 		this.badgesString = makeBadgeString(this.user.badges, this.isIronman);
 
 		this.bitfield = this.user.bitfield as readonly BitField[];
-	}
-
-	get gearTemplate() {
-		return gearImages.find(i => i.id === this.user.gear_template)!;
+		this.iconPackId = (this.user.icon_pack_id as IconPackID) ?? null;
 	}
 
 	public get gearBank() {
@@ -172,7 +172,8 @@ export class MUserClass {
 			chargeBank: this.ownedChargeBank(),
 			materials: this.ownedMaterials(),
 			pet: this.user.minion_equippedPet,
-			skillsAsXP: this.skillsAsXP
+			skillsAsXP: this.skillsAsXP,
+			minionName: this.minionName
 		});
 	}
 
@@ -201,13 +202,14 @@ export class MUserClass {
 		return { ...this.skillsAsLevels, combat: this.combatLevel };
 	}
 
-	favAlchs(duration: number, agility?: boolean) {
+	favAlchs(duration: number, agility?: boolean): Item[] {
 		const { bank } = this;
 		return this.user.favorite_alchables
 			.filter(id => bank.has(id))
-			.map(getOSItem)
-			.filter(i => i.highalch !== undefined && i.highalch > 0 && i.tradeable)
-			.sort((a, b) => alchPrice(bank, b, duration, agility) - alchPrice(bank, a, duration, agility));
+			.map(id => Items.getItem(id))
+			.filter(notEmpty)
+			.filter(i => i !== null && i.highalch !== undefined && i.highalch > 0 && i.tradeable)
+			.sort((a, b) => alchPrice(bank, b!, duration, agility) - alchPrice(bank, a!, duration, agility));
 	}
 
 	async setAttackStyle(newStyles: AttackStyles[]) {
@@ -447,7 +449,8 @@ export class MUserClass {
 	}
 
 	async fetchMinigameScores() {
-		const userMinigames = await getMinigameEntity(this.id);
+		const userMinigames = await this.fetchMinigames();
+
 		const scores: MinigameScore[] = [];
 		for (const minigame of Minigames) {
 			const score = userMinigames[minigame.column];
@@ -457,7 +460,30 @@ export class MUserClass {
 	}
 
 	async fetchMinigames() {
-		return getMinigameEntity(this.id);
+		const userMinigames = await prisma.minigame.upsert({
+			where: { user_id: this.id },
+			update: {},
+			create: { user_id: this.id }
+		});
+		return userMinigames;
+	}
+
+	async fetchMinigameScore(minigame: MinigameName) {
+		const userMinigames = await this.fetchMinigames();
+		return userMinigames[minigame];
+	}
+
+	async incrementMinigameScore(minigame: MinigameName, amountToAdd = 1) {
+		const result = await prisma.minigame.upsert({
+			where: { user_id: this.id },
+			update: { [minigame]: { increment: amountToAdd } },
+			create: { user_id: this.id, [minigame]: amountToAdd }
+		});
+
+		return {
+			newScore: result[minigame],
+			entity: result
+		};
 	}
 
 	getSkills(levels: boolean) {
@@ -498,7 +524,7 @@ export class MUserClass {
 	}
 
 	get minionIsBusy() {
-		return minionIsBusy(this.id);
+		return ActivityManager.minionIsBusy(this.id);
 	}
 
 	async incrementCreatureScore(creatureID: number, amountToAdd = 1) {
@@ -576,7 +602,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		const gearKey = options?.isInWilderness ? 'wildy' : 'range';
 		const realCost = bankToRemove.clone();
 		const rangeGear = this.gear[gearKey];
-		const hasAvas = rangeGear.hasEquipped("Ava's assembler");
+		const avasDevice = avasDevices.find(avas => rangeGear.hasEquipped(avas.item.id));
 		const updates: Prisma.UserUpdateArgs['data'] = {};
 
 		for (const [item, quantity] of bankToRemove.items()) {
@@ -611,10 +637,10 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			const ammo = newRangeGear.ammo?.quantity;
 
 			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(equippedAmmo));
-			if (hasAvas && projectileCategory?.savedByAvas) {
+			if (avasDevice && projectileCategory?.savedByAvas) {
 				const ammoCopy = ammoRemove[1];
 				for (let i = 0; i < ammoCopy; i++) {
-					if (percentChance(80)) {
+					if (percentChance(avasDevice.reduction)) {
 						ammoRemove[1]--;
 						realCost.remove(ammoRemove[0].id, 1);
 					}
@@ -633,10 +659,10 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		}
 
 		if (dart) {
-			if (hasAvas) {
+			if (avasDevice) {
 				const copyDarts = dart?.[1];
 				for (let i = 0; i < copyDarts; i++) {
-					if (percentChance(80)) {
+					if (percentChance(avasDevice.reduction)) {
 						realCost.remove(dart[0].id, 1);
 						dart![1]--;
 					}
@@ -734,7 +760,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 
 	get equippedPet(): Item | null {
 		if (this.user.minion_equippedPet === null) return null;
-		return getOSItem(this.user.minion_equippedPet);
+		return Items.getOrThrow(this.user.minion_equippedPet);
 	}
 
 	materialsOwned() {
@@ -770,7 +796,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		return (Date.now() - createdAt.getTime()) / Time.Day;
 	}
 
-	farmingContract() {
+	farmingContract(): DetailedFarmingContract {
 		const currentFarmingContract = this.user.minion_farmingContract as FarmingContract | null;
 		const plant = !currentFarmingContract
 			? undefined
@@ -865,6 +891,24 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			previousStepData: mysteriousStepData[(currentStepID - 1) as keyof typeof mysteriousStepData],
 			minionMessage: randArrItem(mysteriousStepData[currentStepID].messages).replace('{minion}', this.minionName)
 		};
+	}
+
+	generateGearImage({ setupType, gearSetup }: { setupType?: GearSetupType | 'all'; gearSetup?: Gear }) {
+		if (setupType === 'all') {
+			return generateAllGearImage({
+				equippedPet: this.user.minion_equippedPet,
+				bankBgHexColor: this.user.bank_bg_hex,
+				iconPackId: this.iconPackId,
+				farmingContract: this.farmingContract(),
+				gear: this.gear
+			});
+		}
+		return generateGearImage({
+			gearSetup: setupType ? this.gear[setupType] : gearSetup!,
+			gearType: setupType,
+			petID: this.user.minion_equippedPet,
+			farmingContract: this.farmingContract()
+		});
 	}
 
 	caPoints(): number {
@@ -1023,7 +1067,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			for (const slot of Object.values(EquipmentSlot)) {
 				const item = gearSetup[slot];
 				if (!item) continue;
-				const osItem = getItem(item.item);
+				const osItem = Items.getItem(item.item);
 				if (!osItem) {
 					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Invalid item');
 					itemsUnequippedAndRefunded.add(refundBank);
@@ -1134,6 +1178,10 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			bank,
 			value: marketPriceOfBank(bank)
 		};
+	}
+
+	calculateCompCapeProgress() {
+		return calculateCompCapeProgress(this);
 	}
 }
 declare global {

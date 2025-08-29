@@ -9,7 +9,6 @@ import { determineWoodcuttingTime } from '../../lib/skilling/functions/determine
 import Woodcutting, { type TwitcherGloves } from '../../lib/skilling/skills/woodcutting/woodcutting';
 import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import type { OSBMahojiCommand } from '../lib/util';
 
 const axes = [
 	{

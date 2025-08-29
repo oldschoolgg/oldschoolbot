@@ -1,13 +1,8 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { type CommandResponse, channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import {
-	type CommandResponse,
-	channelIsSendable,
-	exponentialPercentScale,
-	formatDuration,
-	mentionCommand,
-	randomVariation
-} from '@oldschoolgg/toolkit/util';
 import { type Minigame, XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
 import {
@@ -27,7 +22,7 @@ import {
 	sumArr,
 	uniqueArr
 } from 'e';
-import { Bank, LootTable, itemID, resolveItems } from 'oldschooljs';
+import { Bank, LootTable, itemID, randomVariation, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
@@ -37,7 +32,6 @@ import type { UserFullGearSetup } from '../gear/types';
 import { InventionID, canAffordInventionBoost, inventionBoosts, inventionItemBoost } from '../invention/inventions';
 import { trackLoot } from '../lootTrack';
 import { setupParty } from '../party';
-import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
 import { Gear, constructGearSetup } from '../structures/Gear';
 import type { MakePartyOptions, Skills } from '../types';
@@ -990,7 +984,7 @@ async function calcTOAInput({
 	blowpipeCost: Bank;
 }> {
 	const cost = new Bank();
-	const kc = kcOverride ?? (await getMinigameScore(user.id, 'tombs_of_amascut'));
+	const kc = kcOverride ?? (await user.fetchMinigameScore('tombs_of_amascut'));
 	if (minimumSuppliesNeeded.has('Super combat potion(4)')) {
 		cost.add('Super combat potion(4)', quantity);
 	} else {
@@ -1111,7 +1105,7 @@ async function checkTOATeam(users: MUser[], raidLevel: number, quantity: number)
 		if (user.minionIsBusy) return `${user.usernameOrMention}'s minion is busy.`;
 		const checkResult = await checkTOAUser(
 			user,
-			await getMinigameScore(user.id, 'tombs_of_amascut'),
+			await user.fetchMinigameScore('tombs_of_amascut'),
 			raidLevel,
 			users.length,
 			Time.Hour,
@@ -1129,7 +1123,7 @@ export async function toaStartCommand(
 	user: MUser,
 	solo: boolean,
 	channelID: string,
-	raidLevel: RaidLevel,
+	_raidLevel: number,
 	teamSize: number | undefined,
 	quantityInput: number | undefined
 ): CommandResponse {
@@ -1137,9 +1131,15 @@ export async function toaStartCommand(
 		return `${user.usernameOrMention} minion is busy`;
 	}
 
+	if (!mileStoneBaseDeathChances.some(i => i.level === _raidLevel)) {
+		return 'Invalid raid level.';
+	}
+
+	const raidLevel = _raidLevel as RaidLevel;
+
 	const initialCheck = await checkTOAUser(
 		user,
-		await getMinigameScore(user.id, 'tombs_of_amascut'),
+		await user.fetchMinigameScore('tombs_of_amascut'),
 		raidLevel,
 		solo ? 1 : (teamSize ?? 5),
 		Time.Hour,
@@ -1612,7 +1612,7 @@ function createTOATeam({
 }
 
 async function toaCheckCommand(user: MUser) {
-	const result = await checkTOAUser(user, await getMinigameScore(user.id, 'tombs_of_amascut'), 200, 5, Time.Hour, 1);
+	const result = await checkTOAUser(user, await user.fetchMinigameScore('tombs_of_amascut'), 200, 5, Time.Hour, 1);
 	if (result[0]) {
 		return `🔴 You aren't able to join a Tombs of Amascut raid, address these issues first: ${result[1]}`;
 	}
@@ -1676,9 +1676,9 @@ export async function toaHelpCommand(user: MUser, channelID: string) {
 		totalUniques += user.cl.amount(item);
 	}
 
-	const str = `**Tombs of Amascut** 
+	const str = `**Tombs of Amascut**
 
-**Attempts:** ${stats.toa_attempts} 
+**Attempts:** ${stats.toa_attempts}
 **Entry Mode:** ${entryKC} KC
 **Normal Mode:** ${normalKC} KC
 **Expert Mode:** ${expertKC} KC
@@ -1712,18 +1712,4 @@ ${calculateBoostString(user)}
 `;
 
 	return channelID === '1069176960523190292' ? { content: str, ephemeral: true } : str;
-}
-
-export function normalizeTOAUsers(data: TOAOptions) {
-	const _detailedUsers = data.detailedUsers;
-	const detailedUsers = (
-		(Array.isArray(_detailedUsers[0]) ? _detailedUsers : [_detailedUsers]) as [string, number, number[]][][]
-	).map(userArr =>
-		userArr.map(user => ({
-			id: user[0],
-			points: user[1],
-			deaths: user[2]
-		}))
-	);
-	return detailedUsers;
 }

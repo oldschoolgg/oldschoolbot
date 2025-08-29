@@ -1,5 +1,9 @@
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { type MahojiUserOption, awaitMessageComponentInteraction, channelIsSendable } from '@oldschoolgg/toolkit/util';
+import {
+	type MahojiUserOption,
+	awaitMessageComponentInteraction,
+	channelIsSendable
+} from '@oldschoolgg/toolkit/discord-util';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
 import { Time, noOp, sleep } from 'e';
 import { Bank, Util } from 'oldschooljs';

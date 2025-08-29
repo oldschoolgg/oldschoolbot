@@ -1,12 +1,13 @@
 import { type Activity, type Prisma, activity_type_enum } from '@prisma/client';
 import { ButtonBuilder, type ButtonInteraction, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
+import { Items } from 'oldschooljs';
 
-import { type PvMMethod, autocompleteMonsters } from '../../mahoji/commands/k';
 import { divinationEnergies, memoryHarvestTypes } from '../bso/divination';
+import type { PvMMethod } from '../constants';
 import { kibbles } from '../data/kibble';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
-import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
+import { autocompleteMonsters } from '../minions/data/killableMonsters';
 import { runCommand } from '../settings/settings';
 import { courses } from '../skilling/skills/agility';
 import Hunter from '../skilling/skills/hunter/hunter';
@@ -79,7 +80,6 @@ import type {
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
 import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
 import { interactionReply } from './interactionReply';
-import { itemNameFromID } from './smallUtils';
 
 export const taskCanBeRepeated = (activity: Activity) => {
 	return !(
@@ -204,7 +204,7 @@ export const tripHandlers = {
 	[activity_type_enum.Alching]: {
 		commandName: 'activities',
 		args: (data: AlchingActivityTaskOptions) => ({
-			alch: { quantity: data.quantity, item: itemNameFromID(data.itemID) }
+			alch: { quantity: data.quantity, item: Items.itemNameFromId(data.itemID) }
 		})
 	},
 	[activity_type_enum.AnimatedArmour]: {
@@ -242,7 +242,7 @@ export const tripHandlers = {
 	[activity_type_enum.Smelting]: {
 		commandName: 'smelt',
 		args: (data: SmeltingActivityTaskOptions) => ({
-			name: itemNameFromID(data.barID),
+			name: Items.itemNameFromId(data.barID),
 			quantity: data.quantity,
 			blast_furnace: data.blastf
 		})
@@ -250,13 +250,13 @@ export const tripHandlers = {
 	[activity_type_enum.Burying]: {
 		commandName: 'activities',
 		args: (data: BuryingActivityTaskOptions) => ({
-			bury: { quantity: data.quantity, name: itemNameFromID(data.boneID) }
+			bury: { quantity: data.quantity, name: Items.itemNameFromId(data.boneID) }
 		})
 	},
 	[activity_type_enum.Scattering]: {
 		commandName: 'activities',
 		args: (data: ScatteringActivityTaskOptions) => ({
-			scatter: { quantity: data.quantity, name: itemNameFromID(data.ashID) }
+			scatter: { quantity: data.quantity, name: Items.itemNameFromId(data.ashID) }
 		})
 	},
 	[activity_type_enum.Casting]: {
@@ -278,7 +278,11 @@ export const tripHandlers = {
 	[activity_type_enum.Collecting]: {
 		commandName: 'activities',
 		args: (data: CollectingOptions) => ({
-			collect: { item: itemNameFromID(data.collectableID), no_stams: data.noStaminas, quantity: data.quantity }
+			collect: {
+				item: Items.itemNameFromId(data.collectableID),
+				no_stams: data.noStaminas,
+				quantity: data.quantity
+			}
 		})
 	},
 	[activity_type_enum.Construction]: {
@@ -288,14 +292,14 @@ export const tripHandlers = {
 	[activity_type_enum.Cooking]: {
 		commandName: 'cook',
 		args: (data: CookingActivityTaskOptions) => ({
-			name: itemNameFromID(data.cookableID),
+			name: Items.itemNameFromId(data.cookableID),
 			quantity: data.quantity
 		})
 	},
 	[activity_type_enum.Crafting]: {
 		commandName: 'craft',
 		args: (data: CraftingActivityTaskOptions) => ({
-			name: itemNameFromID(data.craftableID),
+			name: Items.itemNameFromId(data.craftableID),
 			quantity: data.quantity
 		})
 	},
@@ -307,7 +311,7 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.DarkAltar]: {
 		commandName: 'runecraft',
-		args: (data: DarkAltarOptions) => ({ rune: `${darkAltarRunes[data.rune].item.name} (zeah)` })
+		args: (data: DarkAltarOptions) => ({ rune: `${data.rune} rune (zeah)` })
 	},
 	[activity_type_enum.OuraniaAltar]: {
 		commandName: 'runecraft',
@@ -321,7 +325,7 @@ export const tripHandlers = {
 	[activity_type_enum.Runecraft]: {
 		commandName: 'runecraft',
 		args: (data: RunecraftActivityTaskOptions) => ({
-			rune: itemNameFromID(data.runeID),
+			rune: Items.itemNameFromId(data.runeID),
 			quantity: data.essenceQuantity,
 			daeyalt_essence: data.daeyaltEssence,
 			usestams: data.useStaminas,
@@ -331,14 +335,14 @@ export const tripHandlers = {
 	[activity_type_enum.TiaraRunecraft]: {
 		commandName: 'runecraft',
 		args: (data: TiaraRunecraftActivityTaskOptions) => ({
-			rune: itemNameFromID(data.tiaraID),
+			rune: Items.itemNameFromId(data.tiaraID),
 			quantity: data.tiaraQuantity
 		})
 	},
 	[activity_type_enum.Enchanting]: {
 		commandName: 'activities',
 		args: (data: EnchantingActivityTaskOptions) => ({
-			enchant: { quantity: data.quantity, name: itemNameFromID(data.itemID) }
+			enchant: { quantity: data.quantity, name: Items.itemNameFromId(data.itemID) }
 		})
 	},
 	[activity_type_enum.Farming]: {
@@ -357,7 +361,7 @@ export const tripHandlers = {
 	[activity_type_enum.Firemaking]: {
 		commandName: 'light',
 		args: (data: FiremakingActivityTaskOptions) => ({
-			name: itemNameFromID(data.burnableID),
+			name: Items.itemNameFromId(data.burnableID),
 			quantity: data.quantity
 		})
 	},
@@ -398,7 +402,7 @@ export const tripHandlers = {
 	[activity_type_enum.Herblore]: {
 		commandName: 'mix',
 		args: (data: HerbloreActivityTaskOptions) => ({
-			name: itemNameFromID(data.mixableID),
+			name: Items.itemNameFromId(data.mixableID),
 			quantity: data.quantity,
 			zahur: data.zahur
 		})
@@ -406,7 +410,7 @@ export const tripHandlers = {
 	[activity_type_enum.CutLeapingFish]: {
 		commandName: 'cook',
 		args: (data: CutLeapingFishActivityTaskOptions) => ({
-			name: itemNameFromID(data.fishID),
+			name: Items.itemNameFromId(data.fishID),
 			quantity: data.quantity
 		})
 	},
@@ -520,7 +524,10 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.Offering]: {
 		commandName: 'offer',
-		args: (data: OfferingActivityTaskOptions) => ({ quantity: data.quantity, name: itemNameFromID(data.boneID) })
+		args: (data: OfferingActivityTaskOptions) => ({
+			quantity: data.quantity,
+			name: Items.itemNameFromId(data.boneID)
+		})
 	},
 	[activity_type_enum.PestControl]: {
 		commandName: 'minigames',
@@ -569,13 +576,13 @@ export const tripHandlers = {
 	[activity_type_enum.Sawmill]: {
 		commandName: 'activities',
 		args: (data: SawmillActivityTaskOptions) => ({
-			plank_make: { action: 'sawmill', quantity: data.plankQuantity, type: itemNameFromID(data.plankID) }
+			plank_make: { action: 'sawmill', quantity: data.plankQuantity, type: Items.itemNameFromId(data.plankID) }
 		})
 	},
 	[activity_type_enum.Butler]: {
 		commandName: 'activities',
 		args: (data: ButlerActivityTaskOptions) => ({
-			plank_make: { action: 'butler', quantity: data.plankQuantity, type: itemNameFromID(data.plankID) }
+			plank_make: { action: 'butler', quantity: data.plankQuantity, type: Items.itemNameFromId(data.plankID) }
 		})
 	},
 	[activity_type_enum.Sepulchre]: {
@@ -588,7 +595,7 @@ export const tripHandlers = {
 	[activity_type_enum.Smithing]: {
 		commandName: 'smith',
 		args: (data: SmithingActivityTaskOptions) => ({
-			name: itemNameFromID(data.smithedBarID),
+			name: Items.itemNameFromId(data.smithedBarID),
 			quantity: data.quantity
 		})
 	},
@@ -633,7 +640,7 @@ export const tripHandlers = {
 	[activity_type_enum.Woodcutting]: {
 		commandName: 'chop',
 		args: (data: WoodcuttingActivityTaskOptions) => ({
-			name: data.logID === 323_424 ? 'Ivy' : itemNameFromID(data.logID),
+			name: data.logID === 323_424 ? 'Ivy' : Items.itemNameFromId(data.logID),
 			quantity: data.iQty,
 			powerchop: data.powerchopping,
 			forestry_events: data.forestry,
@@ -724,7 +731,7 @@ export const tripHandlers = {
 		commandName: 'invention',
 		args: (data: DisassembleTaskOptions) => ({
 			disassemble: {
-				name: itemNameFromID(data.i),
+				name: Items.itemNameFromId(data.i),
 				quantity: data.qty
 			}
 		})
@@ -796,7 +803,7 @@ export const tripHandlers = {
 		commandName: 'minigames',
 		args: (data: ShadesOfMortonOptions) => ({
 			shades_of_morton: {
-				start: { shade: data.shadeID, logs: itemNameFromID(data.logID) }
+				start: { shade: data.shadeID, logs: Items.itemNameFromId(data.logID) }
 			}
 		})
 	},

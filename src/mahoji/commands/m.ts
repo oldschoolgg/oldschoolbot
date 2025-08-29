@@ -1,7 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-
 import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusCommand';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export const mCommand: OSBMahojiCommand = {
 	name: 'm',

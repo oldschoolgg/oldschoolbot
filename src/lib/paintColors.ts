@@ -1,8 +1,9 @@
 import { type Item, LootTable } from 'oldschooljs';
 import type { Canvas } from 'skia-canvas';
 
+import { OSRSCanvas } from './canvas/OSRSCanvas';
+import { type CanvasImage, createCanvas } from './canvas/canvasUtil';
 import { paintColors } from './customItems/paintCans';
-import { type CanvasImage, createCanvas } from './util/canvasUtil';
 
 export interface PaintColor {
 	name: string;
@@ -62,7 +63,7 @@ export const applyPaintToItemIcon = async (
 };
 
 export async function getPaintedItemImage(paintColor: PaintColor, itemID: number) {
-	const resultingImage = await bankImageGenerator.getItemImage(itemID);
+	const resultingImage = await OSRSCanvas.getItemImage({ itemID });
 	return applyPaintToItemIcon(resultingImage, paintColor.rgb);
 }
 

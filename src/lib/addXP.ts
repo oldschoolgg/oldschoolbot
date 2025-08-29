@@ -21,7 +21,7 @@ import { GLOBAL_BSO_XP_MULTIPLIER } from './bso/bsoConstants';
 import { sql } from './postgres';
 import Skillcapes from './skilling/skillcapes';
 import Skills from './skilling/skills';
-import { SkillsEnum } from './skilling/types';
+import { type SkillNameType, SkillsEnum } from './skilling/types';
 import getOSItem from './util/getOSItem';
 import { itemNameFromID } from './util/smallUtils';
 import { insertUserEvent } from './util/userEvents';
@@ -67,7 +67,7 @@ interface StaticXPBoost {
 	boostPercent: number;
 	skill: SkillsEnum;
 }
-const staticXPBoosts = new Map<SkillsEnum, StaticXPBoost[]>().set(SkillsEnum.Firemaking, [
+const staticXPBoosts = new Map<SkillsEnum | SkillNameType, StaticXPBoost[]>().set(SkillsEnum.Firemaking, [
 	{
 		item: getOSItem('Flame gloves'),
 		boostPercent: 2.5,
@@ -156,7 +156,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	let gorajanBoost = false;
 	const gorajanMeleeBoost =
 		multiplier &&
-		[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].includes(params.skillName) &&
+		[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].includes(params.skillName as SkillsEnum) &&
 		gorajanMeleeEquipped;
 	const gorajanRangeBoost = multiplier && params.skillName === SkillsEnum.Ranged && gorajanRangeEquipped;
 	const gorajanMageBoost = multiplier && params.skillName === SkillsEnum.Magic && gorajanMageEquipped;

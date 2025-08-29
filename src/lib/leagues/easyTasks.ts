@@ -21,7 +21,7 @@ import {
 	userhasDiaryTier
 } from '../diaries';
 import { Cookables } from '../skilling/skills/cooking/cooking';
-import Fishing from '../skilling/skills/fishing';
+import { Fishing } from '../skilling/skills/fishing/fishing';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import Runecraft from '../skilling/skills/runecraft';
 import { calcTotalLevel } from '../util';

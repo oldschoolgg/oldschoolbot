@@ -2,7 +2,7 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { randArrItem, roll, shuffleArr } from 'e';
 import { Bank, ChambersOfXeric, SkillsEnum, randomVariation, resolveItems } from 'oldschooljs';
 
-import { drawChestLootImage } from '../../../lib/bankImage';
+import { drawChestLootImage } from '@/lib/canvas/chestImage';
 import { CHINCANNON_MESSAGES } from '../../../lib/bso/bsoConstants';
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
@@ -10,7 +10,6 @@ import { createTeam } from '../../../lib/data/cox';
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import type { RaidsOptions } from '../../../lib/types/minions';
 import { handleSpecialCoxLoot } from '../../../lib/util/handleSpecialCoxLoot';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -165,7 +164,7 @@ export const raidsTask: MinionTask = {
 		let resultMessage = `<@${leader}> Your ${challengeMode ? 'Challenge Mode Raid' : 'Raid'}${
 			quantity > 1 ? 's have' : ' has'
 		} finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
-		await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, minigameID, quantity)));
+		await Promise.all(allUsers.map(u => u.incrementMinigameScore(minigameID, quantity)));
 
 		for (const [userID, userData] of raidResults) {
 			const { personalPoints, deaths, deathChance, loot, mUser: user, naturalDouble, flappyMsg } = userData;

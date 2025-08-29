@@ -2,17 +2,12 @@ import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { type CommandOptions, PerkTier, StoreBitfield, dateFm } from '@oldschoolgg/toolkit/util';
-import type { Prisma } from '@prisma/client';
-import type { APIInteractionDataResolvedChannel, APIRole } from 'discord.js';
+import { PerkTier, dateFm } from '@oldschoolgg/toolkit/util';
 import * as dotenv from 'dotenv';
 import { convertLVLtoXP, resolveItems } from 'oldschooljs';
 import { z } from 'zod';
 
-import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
-import type { ActivityTaskData } from './types/minions';
-import type { CanvasImage } from './util/canvasUtil';
 
 export { PerkTier };
 
@@ -500,6 +495,11 @@ export const projectiles = {
 		savedByAvas: true,
 		weapons: resolveItems(['Twisted bow'])
 	},
+	ogreArrow: {
+		items: resolveItems(['Ogre Arrow']),
+		savedByAvas: true,
+		weapons: resolveItems(['Ogre bow'])
+	},
 	bolt: {
 		items: resolveItems([
 			'Silver bolts',
@@ -529,59 +529,6 @@ export type ProjectileType = keyof typeof projectiles;
 export const spearWeapon = resolveItems(['Crystal halberd', 'Zamorakian hasta', 'Zamorakian spear']);
 export const clawWeapon = resolveItems(['Dragon claws']); // TODO: Add Burning claws once OSJS updated
 
-const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
-export function shouldTrackCommand(command: AbstractCommand, args: CommandOptions) {
-	if (!Array.isArray(args)) return true;
-	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
-		if (command.name === name && typeof args[0] === 'string' && subs.includes(args[0])) {
-			return false;
-		}
-	}
-	return true;
-}
-
-function compressMahojiArgs(options: CommandOptions) {
-	const newOptions: Record<string, string | number | boolean | null | undefined> = {};
-	for (const [key, val] of Object.entries(options) as [
-		keyof CommandOptions,
-		CommandOptions[keyof CommandOptions]
-	][]) {
-		if (
-			typeof val === 'string' ||
-			typeof val === 'number' ||
-			typeof val === 'boolean' ||
-			typeof val === 'undefined'
-		) {
-			newOptions[key] = val;
-			continue;
-		}
-
-		if ('user' in val && 'member' in val) {
-			newOptions[key] = (val.user as { id: string }).id;
-			continue;
-		}
-
-		if ('id' in val) {
-			newOptions[key] = (val as APIRole | APIInteractionDataResolvedChannel).id;
-			continue;
-		}
-
-		newOptions[key] = null;
-	}
-	return newOptions;
-}
-
-export function getCommandArgs(
-	commandName: string,
-	args: CommandOptions
-): Prisma.InputJsonObject | Prisma.InputJsonArray | undefined {
-	if (Array.isArray(args) && args.length === 0) return undefined;
-	if (!Array.isArray(args) && Object.keys(args).length === 0) return undefined;
-	if (commandName === 'bank') return undefined;
-	if (commandName === 'rp' && Array.isArray(args) && ['c', 'eval'].includes(args[0] as string)) return undefined;
-	return (Array.isArray(args) ? args : compressMahojiArgs(args)) as Prisma.InputJsonObject | Prisma.InputJsonArray;
-}
-
 export const DISABLED_COMMANDS = new Set<string>();
 
 export const NMZ_STRATEGY = ['experience', 'points'] as const;
@@ -590,8 +537,6 @@ export type NMZStrategy = (typeof NMZ_STRATEGY)[number];
 export const busyImmuneCommands = ['admin', 'rp'];
 
 export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;
-
-export const minionActivityCache: Map<string, ActivityTaskData> = new Map();
 
 export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id>\d{17,20})/;
 
@@ -651,15 +596,6 @@ META_CONSTANTS.RENDERED_STR = `**Date/Time:** ${dateFm(META_CONSTANTS.STARTUP_DA
 
 export const masteryKey = BOT_TYPE === 'OSB' ? 'osb_mastery' : 'bso_mastery';
 
-export const ItemIconPacks = [
-	{
-		name: 'Halloween',
-		storeBitfield: StoreBitfield.HalloweenItemIconPack,
-		id: 'halloween',
-		icons: new Map<number, CanvasImage>()
-	}
-];
-
 export const patronFeatures = {
 	ShowEnteredInGiveawayList: {
 		tier: PerkTier.Four
@@ -671,3 +607,6 @@ if (!process.env.TEST && isMainThread) {
 		`Starting... Git[${gitHash}] ClientID[${globalConfig.clientID}] Production[${globalConfig.isProduction}]`
 	);
 }
+
+export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
+export type PvMMethod = (typeof PVM_METHODS)[number];

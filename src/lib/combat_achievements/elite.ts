@@ -7,7 +7,7 @@ import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
 import type { GauntletOptions, NightmareActivityTaskOptions, TOAOptions } from '../types/minions';
 import type { MonsterActivityTaskOptions } from '../types/minions';
-import { crossbows } from '../util/minionUtils';
+import { crossbows } from '../util/archery';
 import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils';
 import type { CombatAchievement } from './combatAchievements';
 

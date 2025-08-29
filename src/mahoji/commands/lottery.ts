@@ -18,7 +18,7 @@ import { assert } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
+
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 async function addToLotteryBank(userID: string, bankToAdd: Bank) {

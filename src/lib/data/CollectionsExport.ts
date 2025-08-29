@@ -32,8 +32,10 @@ export interface IToReturnCollection {
 	counts: boolean;
 }
 
+export type CollectionStatus = 'not_started' | 'started' | 'completed';
+
 export interface ILeftListStatus {
-	[key: string]: 'not_started' | 'started' | 'completed';
+	[key: string]: CollectionStatus;
 }
 
 export interface IKCActivity {
@@ -3236,3 +3238,9 @@ export const chompyHats = [
 	[getItemOrThrow('Chompy bird hat (expert ogre dragon archer)'), 3000],
 	[getItemOrThrow('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
+
+export const avasDevices: { item: Item; reduction: number }[] = [
+	{ item: getOSItem("Ava's attractor"), reduction: 60 },
+	{ item: getOSItem("Ava's accumulator"), reduction: 72 },
+	{ item: getOSItem("Ava's assembler"), reduction: 80 }
+];

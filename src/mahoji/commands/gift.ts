@@ -1,18 +1,22 @@
-import { containsBlacklistedWord, mentionCommand, miniID, truncateString } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions, MahojiUserOption } from '@oldschoolgg/toolkit';
+import {
+	type CommandRunOptions,
+	type MahojiUserOption,
+	type OSBMahojiCommand,
+	mentionCommand
+} from '@oldschoolgg/toolkit/discord-util';
+import { containsBlacklistedWord, miniID, truncateString } from '@oldschoolgg/toolkit/string-util';
 import { GiftBoxStatus } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
+import { isValidNickname } from '@/lib/util/smallUtils';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { isSuperUntradeable } from '../../lib/bso/bsoUtil';
 import { BOT_TYPE } from '../../lib/constants';
-import { isValidNickname } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export const giftCommand: OSBMahojiCommand = {
 	name: 'gift',

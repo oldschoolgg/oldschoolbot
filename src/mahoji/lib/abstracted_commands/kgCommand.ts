@@ -1,4 +1,5 @@
-import { channelIsSendable, formatDuration } from '@oldschoolgg/toolkit/util';
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { type ChatInputCommandInteraction, EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Time } from 'e';
 import { Bank, toKMB } from 'oldschooljs';

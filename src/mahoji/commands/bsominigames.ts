@@ -1,4 +1,4 @@
-import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
@@ -32,7 +32,6 @@ import {
 import { stealingCreationCommand } from '../lib/abstracted_commands/stealingCreation';
 import { tinkeringWorkshopCommand } from '../lib/abstracted_commands/tinkeringWorkshopCommand';
 import { ownedMaterialOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const bsoMinigamesCommand: OSBMahojiCommand = {
@@ -251,7 +250,7 @@ export const bsoMinigamesCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.String,
 							description: 'The godly item to sacrifice.',
 							required: true,
-							autocomplete: async (value, { id }) => {
+							autocomplete: async (value: string, { id }) => {
 								const raw = await mahojiUsersSettingsFetch(id, { bank: true });
 								const bank = new Bank(raw.bank as ItemBank);
 

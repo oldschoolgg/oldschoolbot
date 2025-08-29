@@ -1,7 +1,6 @@
 import { Bank } from 'oldschooljs';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -9,10 +8,10 @@ export const fogTask: MinionTask = {
 	type: 'FistOfGuthix',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
 		const { channelID, quantity, duration, userID } = data;
-
-		const { newScore } = await incrementMinigameScore(userID, 'fist_of_guthix', quantity);
-
 		const user = await mUserFetch(userID);
+
+		const { newScore } = await user.incrementMinigameScore('fist_of_guthix', quantity);
+
 		const loot = new Bank().add('Fist of guthix token', quantity * 15);
 
 		const flappyRes = await userHasFlappy({ user, duration });

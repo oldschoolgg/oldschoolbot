@@ -3,15 +3,15 @@ import {
 	type CommandResponse,
 	type CommandRunOptions,
 	type MahojiUserOption,
+	type OSBMahojiCommand,
 	channelIsSendable,
-	dateFm,
-	formatOrdinal,
 	isValidDiscordSnowflake,
-	md5sum,
-	mentionCommand,
-	stringMatches,
-	truncateString
-} from '@oldschoolgg/toolkit/util';
+	mentionCommand
+} from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches, truncateString } from '@oldschoolgg/toolkit/string-util';
+
+import { md5sum } from '@oldschoolgg/toolkit/node';
+import { dateFm, formatOrdinal } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import {
 	ApplicationCommandOptionType,
@@ -35,7 +35,6 @@ import { BingoManager, BingoTrophies } from '../lib/bingo/BingoManager';
 import type { StoredBingoTile } from '../lib/bingo/bingoUtil';
 import { generateTileName, getAllTileItems, isGlobalTile } from '../lib/bingo/bingoUtil';
 import { globalBingoTiles } from '../lib/bingo/globalTiles';
-import type { OSBMahojiCommand } from '../lib/util';
 import { doMenu, getPos } from './leaderboard';
 
 const bingoAutocomplete = async (value: string, user: User) => {

@@ -1,5 +1,5 @@
 import { perTimeUnitChance } from '@oldschoolgg/toolkit';
-import { Time, objectEntries, percentChance, randInt, roll } from 'e';
+import { Time, objectEntries, percentChance, randInt } from 'e';
 import { Bank, EItem, itemID } from 'oldschooljs';
 
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
@@ -17,6 +17,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { rollForMoonKeyHalf } from '../../lib/util/minionUtils';
+import { roll } from '../../lib/util/rng';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
 async function handleForestry({ user, duration, loot }: { user: MUser; duration: number; loot: Bank }) {

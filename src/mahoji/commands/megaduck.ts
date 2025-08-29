@@ -1,15 +1,16 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '@oldschoolgg/toolkit/constants';
+import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '@/lib/canvas/canvasUtil';
+import { globalConfig } from '@/lib/constants';
 import { type MegaDuckLocation, defaultMegaDuckLocation } from '../../lib/minions/types';
 import { getUsernameSync } from '../../lib/util';
-import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '../../lib/util/canvasUtil';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { mahojiGuildSettingsUpdate } from '../guildSettings';
-import { type OSBMahojiCommand, resetCooldown } from '../lib/util';
+import { Cooldowns } from '../lib/Cooldowns';
 
 const apeAtoll = [1059, 1226];
 const portSarim = [1418, 422];
@@ -119,7 +120,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 	description: 'Mega duck!.',
 	attributes: {
 		requiresMinion: true,
-		cooldown: 30 * Time.Second
+		cooldown: 20 * Time.Second
 	},
 	options: [
 		{
@@ -144,7 +145,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{ move?: MegaduckDirection; reset?: boolean }>) => {
 		const user = await mUserFetch(userID);
 		const withoutCooldown = (message: string) => {
-			resetCooldown(user, 'megaduck');
+			Cooldowns.delete(user.id, 'megaduck');
 			return message;
 		};
 
@@ -171,7 +172,10 @@ export const megaDuckCommand: OSBMahojiCommand = {
 		const direction = options.move;
 
 		const member = guild.members.cache.get(userID.toString());
-		if (options.reset && member && member.permissions.has('Administrator')) {
+		if (
+			(globalConfig.adminUserIDs.includes(userID.toString()) && guild.id.toString() === '342983479501389826') ||
+			(options.reset && member && member.permissions.has('Administrator'))
+		) {
 			await handleMahojiConfirmation(
 				interaction,
 				'Are you sure you want to reset your megaduck back to Falador Park? This will reset all data, and where its been, and who has contributed steps.'
@@ -186,6 +190,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 
 		const { image } = await makeImage(location);
 		if (!direction) {
+			Cooldowns.delete(user.id, 'megaduck');
 			return {
 				content: `${user} Mega duck is at ${location.x}x ${location.y}y. You've moved it ${
 					location.usersParticipated[user.id] ?? 0
@@ -202,7 +207,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 		let newLocation = applyDirection(location, direction);
 		const newLocationResult = await makeImage(newLocation);
 		if (newLocationResult.currentColor[3] !== 0) {
-			return "You can't move here.";
+			return withoutCooldown("You can't move here.");
 		}
 
 		if (newLocation.usersParticipated[user.id]) {

@@ -1,13 +1,14 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { PaginatedMessage, makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandRunOptions, channelIsSendable } from '@oldschoolgg/toolkit/util';
+import { type CommandRunOptions, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, EmbedBuilder, codeBlock } from 'discord.js';
 import { chunk } from 'e';
 import type { Bank } from 'oldschooljs';
 
 import { logError, logErrorForInteraction } from '@/lib/util/logError';
-import type { BankFlag } from '../../lib/bankImage';
-import { bankFlags } from '../../lib/bankImage';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import type { BankFlag } from '../../lib/canvas/bankImage';
+import { bankFlags } from '../../lib/canvas/bankImage';
 import { PerkTier } from '../../lib/constants';
 import type { Flags } from '../../lib/minions/types';
 import type { BankSortMethod } from '../../lib/sorts';
@@ -16,7 +17,6 @@ import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption, itemOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 
 const bankFormats = ['json', 'text_paged', 'text_full'] as const;
 const bankItemsPerPage = 10;

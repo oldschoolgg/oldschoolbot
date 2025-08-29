@@ -1,7 +1,7 @@
 import { CollectionLog } from '@oldschoolgg/collectionlog';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 
-import { MAX_XP } from '../constants';
+import { BitField, MAX_XP } from '../constants';
 import { doaCL } from '../data/CollectionsExport';
 
 export function hasUnlockedAtlantis(user: MUser) {
@@ -69,4 +69,18 @@ export function herbertDroprate(herbloreXP: number, itemLevel: number) {
 		petChance = Math.ceil(petChance / 2);
 	}
 	return petChance;
+}
+
+export function birdhouseLimit(user: MUser) {
+	let base = 4;
+	if (user.bitfield.includes(BitField.HasScrollOfTheHunt)) base += 4;
+	if (user.hasEquippedOrInBank('Hunter master cape')) base += 4;
+	return base;
+}
+
+export function calcBabyYagaHouseDroprate(xpBeingReceived: number, cl: Bank) {
+	let rate = 1 / (((xpBeingReceived / 30) * 30) / 50_000_000);
+	const amountInCl = cl.amount('Baby yaga house');
+	if (amountInCl > 1) rate *= amountInCl;
+	return Math.floor(rate);
 }

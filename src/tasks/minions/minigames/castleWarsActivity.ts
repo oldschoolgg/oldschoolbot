@@ -2,7 +2,6 @@ import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { Bank } from 'oldschooljs';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -13,9 +12,10 @@ export const castleWarsTask: MinionTask = {
 	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
 		const { channelID, quantity, userID, duration } = data;
 
-		await incrementMinigameScore(userID, 'castle_wars', quantity);
-
 		const user = await mUserFetch(userID);
+
+		await user.incrementMinigameScore('castle_wars', quantity);
+
 		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
 			loot.add('Castle wars ticket', ticketTable.rollOrThrow());

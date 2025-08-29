@@ -1,11 +1,11 @@
-import { type CommandResponse, formatDuration, makeComponents, stringMatches } from '@oldschoolgg/toolkit';
+import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/discord-util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { Time, calcWhatPercent, clamp, reduceNumByPercent, roll, round } from 'e';
 import { Bank, randomVariation } from 'oldschooljs';
 
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { degradeItem } from '../../../lib/degradeableItems';
-import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
 import { maxOtherStats } from '../../../lib/structures/Gear';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
@@ -241,7 +241,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 	waveTime = reduceNumByPercent(waveTime, totalLevelPercent);
 
 	// Up to 10%, at 200 kc, speed boost for team average kc
-	const kc = await getMinigameScore(user.id, 'barb_assault');
+	const kc = await user.fetchMinigameScore('barb_assault');
 	const kcPercent = clamp(calcWhatPercent(kc, 200), 1, 100);
 	const kcPercentBoost = kcPercent / 10;
 	boosts.push(`${kcPercentBoost.toFixed(2)}% for average KC`);

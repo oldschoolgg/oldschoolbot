@@ -1,5 +1,11 @@
-import path from 'node:path';
+import { existsSync } from 'node:fs';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
+
+const STATIC_DEFINE = {
+	__BOT_TYPE__: existsSync(path.resolve(dirname(fileURLToPath(import.meta.url)), './src/lib/bso')) ? '"BSO"' : '"OSB"'
+};
 
 const external = [
 	'skia-canvas',
@@ -15,10 +21,10 @@ const external = [
 build({
 	entryPoints: ['src/index.ts'],
 	sourcemap: 'inline',
-	minify: true,
+	minify: false,
 	legalComments: 'none',
 	outdir: './dist',
-	logLevel: 'error',
+	// logLevel: 'error',
 	bundle: true,
 	platform: 'node',
 	loader: {
@@ -27,7 +33,8 @@ build({
 	external,
 	alias: {
 		'@': path.resolve(import.meta.dirname, './src')
-	}
+	},
+	define: STATIC_DEFINE
 });
 
 // Workers
@@ -50,5 +57,6 @@ build({
 	external,
 	alias: {
 		'@': path.resolve(import.meta.dirname, './src')
-	}
+	},
+	define: STATIC_DEFINE
 });

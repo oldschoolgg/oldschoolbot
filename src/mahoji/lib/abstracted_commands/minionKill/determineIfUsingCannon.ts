@@ -1,13 +1,13 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
+import type { PvMMethod } from '@/lib/constants';
 import { InventionID, canAffordInventionBoostRaw } from '../../../../lib/invention/inventions';
 import { cannonBanks } from '../../../../lib/minions/data/combatConstants';
 import { wildyKillableMonsters } from '../../../../lib/minions/data/killableMonsters/bosses/wildy';
 import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
 import type { KillableMonster } from '../../../../lib/minions/types';
 import type { GearBank } from '../../../../lib/structures/GearBank';
-import type { PvMMethod } from '../../../commands/k';
 
 const monstersCantBeCannoned = [...wildyKillableMonsters, ...revenantMonsters].map(m => m.id);
 

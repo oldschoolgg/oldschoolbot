@@ -2,7 +2,6 @@ import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
 
 import { KandarinDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { userHasFlappy } from '../../../lib/invention/inventions';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
@@ -37,7 +36,7 @@ export const barbAssaultTask: MinionTask = {
 			totalPoints *= 2;
 		}
 
-		await incrementMinigameScore(user.id, 'barb_assault', quantity);
+		await user.incrementMinigameScore('barb_assault', quantity);
 		await userStatsUpdate(
 			user.id,
 			{

@@ -1,7 +1,6 @@
 import { randInt } from 'e';
 import { Bank, ItemGroups } from 'oldschooljs';
 
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -26,11 +25,11 @@ export const roguesDenTask: MinionTask = {
 
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, quantity, userID } = data;
+		const user = await mUserFetch(userID);
 
-		incrementMinigameScore(userID, 'rogues_den', quantity);
+		await user.incrementMinigameScore('rogues_den', quantity);
 
 		const loot = new Bank();
-		const user = await mUserFetch(userID);
 		const userBankCopy = user.allItemsOwned.clone();
 
 		let str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x laps of the Rogues' Den Maze.`;

@@ -1,11 +1,11 @@
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import {
 	type CommandRunOptions,
+	type OSBMahojiCommand,
 	channelIsSendable,
-	formatDuration,
-	stringMatches,
-	toTitleCase
-} from '@oldschoolgg/toolkit';
-import { makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
+	makePaginatedMessage
+} from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import type { UserStats } from '@prisma/client';
 import {
 	ApplicationCommandOptionType,
@@ -36,7 +36,6 @@ import { fetchCLLeaderboard, fetchTameCLLeaderboard } from '../../lib/util/clLea
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { userEventsToMap } from '../../lib/util/userEvents';
 import { sendToChannelID } from '../../lib/util/webhook';
-import type { OSBMahojiCommand } from '../lib/util';
 
 const LB_PAGE_SIZE = 10;
 
@@ -280,14 +279,14 @@ async function sacrificeLb(
 	if (type === 'value') {
 		const list = (
 			await prisma.$queryRawUnsafe<{ id: string; full_name: string; amount: number }[]>(
-				`SELECT 
+				`SELECT
 	u.id,
     ${SQL.SELECT_FULL_NAME},
 	"sacrificedValue"
-FROM 
+FROM
     users u
 ${SQL.LEFT_JOIN_BADGES}
-WHERE 
+WHERE
     "sacrificedValue" > 10000
 ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 ${SQL.GROUP_BY_U_ID}
@@ -315,28 +314,28 @@ LIMIT 400;`
 
 	const mostUniques: { full_name: string; sacbanklength: number }[] = await prisma.$queryRawUnsafe(
 		`
-SELECT 
-    ${SQL.SELECT_FULL_NAME}, 
+SELECT
+    ${SQL.SELECT_FULL_NAME},
     u.sacbanklength
 FROM (
-    SELECT 
-        (SELECT COUNT(*)::int FROM JSONB_OBJECT_KEYS(sacrificed_bank)) AS sacbanklength, 
+    SELECT
+        (SELECT COUNT(*)::int FROM JSONB_OBJECT_KEYS(sacrificed_bank)) AS sacbanklength,
         u.id AS user_id,
         u.username,
         u.badges
-    FROM 
-        user_stats 
-    INNER JOIN 
+    FROM
+        user_stats
+    INNER JOIN
         users u ON u.id::bigint = user_stats.user_id
 	WHERE
 		sacrificed_bank::text != '{}'
 		${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 ) u
-LEFT JOIN 
+LEFT JOIN
     badges b ON b.id = ANY(u.badges)
-GROUP BY 
+GROUP BY
     u.username, u.sacbanklength
-ORDER BY 
+ORDER BY
     u.sacbanklength DESC
 LIMIT 10;
 `
@@ -854,6 +853,52 @@ async function itemContractLb(
 		'Item Contract Streak Leaderboard'
 	);
 	return lbMsg('Item Contract Streak');
+}
+
+async function itemContractDonationGivenLb(
+	interaction: ChatInputCommandInteraction,
+	user: MUser,
+	channelID: string,
+	total: boolean
+) {
+	const stats = await prisma.userStats.findMany({
+		where: { NOT: { ic_donations_given_bank: {} } },
+		select: {
+			user_id: true,
+			ic_donations_given_bank: true
+		}
+	});
+
+	const donations = stats
+		.map(s => {
+			const donation_bank = s.ic_donations_given_bank as Record<string, number>;
+			const total_donations = total
+				? Object.values(donation_bank).reduce((acc, qty) => acc + qty, 0)
+				: Object.keys(donation_bank).length;
+
+			return {
+				id: s.user_id,
+				total_donations
+			};
+		})
+		.filter(d => d.total_donations > 0);
+
+	doMenu(
+		interaction,
+		user,
+		channelID,
+		chunk(donations.sort((a, b) => b.total_donations - a.total_donations).slice(0, 10), 10).map(subList =>
+			subList
+				.map(
+					({ id, total_donations }) =>
+						`**${getUsernameSync(id)}:** ${total_donations.toLocaleString()} donations`
+				)
+				.join('\n')
+		),
+		`${total === true ? 'Total' : 'Unique'} IC Donations Leaderboard`
+	);
+
+	return lbMsg(`${total === true ? 'Total' : 'Unique'} IC Donations Leaderboard`);
 }
 
 const globalLbTypes = ['xp', 'cl', 'mastery'] as const;
@@ -1437,7 +1482,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 				}
 			]
 		},
-                {
+    {
                         type: ApplicationCommandOptionType.Subcommand,
                         name: 'item_contract_streak',
                         description: 'The item contract streak leaderboard.',
@@ -1449,9 +1494,25 @@ export const leaderboardCommand: OSBMahojiCommand = {
                         description: 'Check the leaderboard for most tames hatched.',
                         options: [ironmanOnlyOption]
                 },
-                {
-                        type: ApplicationCommandOptionType.Subcommand,
-                        name: 'leagues',
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'item_contract_streak',
+			description: 'The item contract streak leaderboard.',
+			options: [ironmanOnlyOption]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'total_ic_donation_given',
+			description: 'Total item contract donations given leaderboard.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'unique_ic_donation_given',
+			description: 'Unique item contract donations given leaderboard.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'leagues',
 			description: 'Check the Leagues leaderboards.',
 			options: [
 				{
@@ -1539,22 +1600,24 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		userID,
 		interaction
 	}: CommandRunOptions<{
-               kc?: { monster: string; ironmen_only?: boolean; tame?: boolean };
+    kc?: { monster: string; ironmen_only?: boolean; tame?: boolean };
 		farming_contracts?: { ironmen_only?: boolean };
 		inferno?: {};
 		challenges?: {};
 		sacrifice?: { type: 'value' | 'unique'; ironmen_only?: boolean };
-                minigames?: { minigame: string; ironmen_only?: boolean };
-                hunter_catches?: { creature: string };
-                agility_laps?: { course: string };
-                gp?: { ironmen_only?: boolean };
-                skills?: { skill: string; ironmen_only?: boolean; xp?: boolean };
-                opens?: { openable: string; ironmen_only?: boolean };
-                cl?: { cl: string; ironmen_only?: boolean; tames?: boolean };
-                item_contract_streak?: { ironmen_only?: boolean };
-                tames_hatched?: { ironmen_only?: boolean };
-                leagues?: { type: 'points' | 'tasks' | 'hardest_tasks' };
-                clues?: { clue: ClueTier['name']; ironmen_only?: boolean };
+		minigames?: { minigame: string; ironmen_only?: boolean };
+		hunter_catches?: { creature: string };
+		agility_laps?: { course: string };
+		gp?: { ironmen_only?: boolean };
+		skills?: { skill: string; ironmen_only?: boolean; xp?: boolean };
+		opens?: { openable: string; ironmen_only?: boolean };
+		cl?: { cl: string; ironmen_only?: boolean; tames?: boolean };
+		item_contract_streak?: { ironmen_only?: boolean };
+		total_ic_donation_given?: {};
+		unique_ic_donation_given?: {};
+    tames_hatched?: { ironmen_only?: boolean };
+		leagues?: { type: 'points' | 'tasks' | 'hardest_tasks' };
+		clues?: { clue: ClueTier['name']; ironmen_only?: boolean };
 		movers?: { type: GainersType };
 		global?: {
 			type: GlobalLbType;
@@ -1578,9 +1641,13 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			gp,
 			skills,
 			cl,
-                       item_contract_streak,
+
+
                        tames_hatched,
-                       leagues,
+			item_contract_streak,
+			total_ic_donation_given,
+			unique_ic_donation_given,
+			leagues,
 			clues,
 			movers,
 			global,
@@ -1611,11 +1678,14 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			);
 		}
 		if (opens) return openLb(interaction, user, channelID, opens.openable, Boolean(opens.ironmen_only));
-                if (cl) return clLb(interaction, user, channelID, cl.cl, Boolean(cl.ironmen_only), Boolean(cl.tames));
-                if (item_contract_streak)
-                        return itemContractLb(interaction, user, channelID, item_contract_streak.ironmen_only);
-                if (tames_hatched) return tamesHatchedLb(interaction, user, channelID, Boolean(tames_hatched.ironmen_only));
-                if (leagues) return leaguesLeaderboard(interaction, user, channelID, leagues.type);
+		if (cl) return clLb(interaction, user, channelID, cl.cl, Boolean(cl.ironmen_only), Boolean(cl.tames));
+		if (item_contract_streak)
+			return itemContractLb(interaction, user, channelID, item_contract_streak.ironmen_only);
+		if (total_ic_donation_given) return itemContractDonationGivenLb(interaction, user, channelID, true);
+		if (unique_ic_donation_given) return itemContractDonationGivenLb(interaction, user, channelID, false);
+    if (tames_hatched) return tamesHatchedLb(interaction, user, channelID, Boolean(tames_hatched.ironmen_only));
+		if (leagues) return leaguesLeaderboard(interaction, user, channelID, leagues.type);
+
 		if (clues) return cluesLb(interaction, user, channelID, clues.clue, Boolean(clues.ironmen_only));
 		if (movers) return gainersLB(interaction, user, channelID, movers.type);
 		if (global) return globalLb(interaction, user, channelID, global.type);

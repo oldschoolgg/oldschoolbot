@@ -1,23 +1,14 @@
-import {
-	type CommandRunOptions,
-	type MahojiUserOption,
-	formatOrdinal,
-	roboChimpCLRankQuery
-} from '@oldschoolgg/toolkit/util';
+import type { CommandRunOptions, MahojiUserOption, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { notEmpty, randArrItem } from 'e';
 import { convertLVLtoXP } from 'oldschooljs';
 
-import { isValidNickname } from '@/lib/util';
+import { bankImageTask } from '@/lib/canvas/bankImage';
+import { getPeakTimesString } from '@/lib/util/peaks';
+import { isValidNickname } from '@/lib/util/smallUtils';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import {
-	BitField,
-	BitFieldData,
-	FormattedCustomEmoji,
-	MAX_LEVEL,
-	PerkTier,
-	minionActivityCache
-} from '../../lib/constants';
+import { BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
 import { calculateMastery } from '../../lib/mastery';
@@ -37,7 +28,6 @@ import { getKCByName } from '../../lib/util/getKCByName';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
-import { checkPeakTimes } from '../../lib/util/minionUtils';
 import {
 	achievementDiaryCommand,
 	claimAchievementDiaryCommand
@@ -52,7 +42,6 @@ import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
 import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
 import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusCommand';
 import { ownedItemOption, skillOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
 
 const patMessages = [
@@ -84,7 +73,7 @@ export async function getUserInfo(user: MUser) {
 		.map(i => i.name)
 		.join(', ')}`;
 
-	const task = minionActivityCache.get(user.id);
+	const task = ActivityManager.getActivityOfUser(user.id);
 	const taskText = task ? `${task.type}` : 'None';
 
 	const result = {
@@ -194,8 +183,8 @@ export const minionCommand: OSBMahojiCommand = {
 					autocomplete: async (value, user) => {
 						const mUser = await mUserFetch(user.id);
 						const isMod = mUser.bitfield.includes(BitField.isModerator);
-						const bankImages = bankImageGenerator.backgroundImages;
 						const allAccounts = await findGroupOfUser(mUser.id);
+						const bankImages = bankImageTask.backgroundImages;
 						const owned = bankImages
 							.filter(
 								bg =>
@@ -572,7 +561,7 @@ export const minionCommand: OSBMahojiCommand = {
 		}
 		if (options.feed_hammy) return feedHammyCommand(interaction, user, options.feed_hammy.item);
 
-		if (options.peak) return checkPeakTimes();
+		if (options.peak) return getPeakTimesString();
 
 		if (options.mastery) {
 			const { masteryFactors, totalMastery } = await calculateMastery(user, await MUserStats.fromID(user.id));

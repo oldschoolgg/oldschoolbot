@@ -2,6 +2,7 @@ import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoo
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, reduceNumByPercent } from 'e';
 
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
@@ -11,7 +12,6 @@ import type { CraftingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import type { OSBMahojiCommand } from '../lib/util';
 
 export const craftCommand: OSBMahojiCommand = {
 	name: 'craft',

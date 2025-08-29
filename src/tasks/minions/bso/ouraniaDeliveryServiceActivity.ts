@@ -3,7 +3,6 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ExoticSeedsTable } from '../../../lib/simulation/sharedTables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
@@ -53,10 +52,10 @@ export const odsTask: MinionTask = {
 	type: 'OuraniaDeliveryService',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
 		const { channelID, quantity, duration, userID } = data;
-
-		incrementMinigameScore(userID, 'ourania_delivery_service', quantity);
-
 		const user = await mUserFetch(userID);
+
+		await user.incrementMinigameScore('ourania_delivery_service', quantity);
+
 		const level = user.skillLevel(SkillsEnum.Magic);
 		let tokens = Math.floor((quantity / 2) * 3.235 * (level / 25 + 1));
 

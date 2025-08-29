@@ -3,12 +3,12 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { objectEntries, randInt, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
+import type { GearRequirement } from '@/lib/structures/Gear';
 import { GearStat } from 'oldschooljs/gear';
 import TrekShopItems, { TrekExperience } from '../../../lib/data/buyables/trekBuyables';
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { difficulties, rewardTokens, trekBankBoosts } from '../../../lib/minions/data/templeTrekking';
-import type { AddXpParams, GearRequirement } from '../../../lib/minions/types';
-import { getMinigameScore } from '../../../lib/settings/minigames';
+import type { AddXpParams } from '../../../lib/minions/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -74,7 +74,7 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 	const boosts = [];
 
 	// Every 25 trips becomes 1% faster to a cap of 10%
-	const percentFaster = Math.min(Math.floor((await getMinigameScore(user.id, 'temple_trekking')) / 25), 10);
+	const percentFaster = Math.min(Math.floor((await user.fetchMinigameScore('temple_trekking')) / 25), 10);
 
 	boosts.push(`${percentFaster.toFixed(1)}% from completed treks`);
 

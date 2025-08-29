@@ -1,10 +1,12 @@
 import { readFileSync, writeFileSync } from 'node:fs';
+import { md5sum } from '@oldschoolgg/toolkit/node';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { md5sum } from '@oldschoolgg/toolkit/util';
 import { isFunction } from 'e';
 import { DateTime } from 'luxon';
 import { Bank } from 'oldschooljs';
 
+import { applyStaticDefine } from '../meta.js';
+applyStaticDefine();
 import { BOT_TYPE } from '@/lib/constants';
 import Createables from '@/lib/data/createables';
 

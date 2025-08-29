@@ -1,24 +1,21 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { makeComponents, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
+import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { type BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import { roll, stripNonAlphanumeric } from 'e';
 
+import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses';
+import { makeAutoContractButton, makeAutoSlayButton, makeBirdHouseTripButton } from '@/lib/util/interactions';
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { BitField, PerkTier } from '../../../lib/constants';
 import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { minionBuyButton } from '../../../lib/sharedComponents';
-import {
-	makeAutoContractButton,
-	makeAutoSlayButton,
-	makeBirdHouseTripButton
-} from '../../../lib/util/globalInteractions';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
 import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../../lib/util/tameUtil';
 import { getItemContractDetails } from '../../commands/ic';
 import { spawnLampIsReady } from '../../commands/tools';
-import { calculateBirdhouseDetails } from './birdhousesCommand';
 import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
 
