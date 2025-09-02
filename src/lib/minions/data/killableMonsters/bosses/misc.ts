@@ -1437,8 +1437,9 @@ const killableBosses: KillableMonster[] = [
 					feet: 'Dragon boots',
 					ring: 'Berserker ring (i)'
 				}).stats,
-				defence_magic: 0,
-				prayer: 0,
+				attack_ranged: -100,
+				defence_magic: -10,
+				prayer: -100,
 				defence_crush: 0,
 				defence_ranged: 0,
 				defence_slash: 0,
