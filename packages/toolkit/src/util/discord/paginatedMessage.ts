@@ -6,6 +6,7 @@ import {
 	ButtonStyle,
 	type ChatInputCommandInteraction,
 	ComponentType,
+	type Message,
 	type MessageEditOptions,
 	MessageFlags,
 	type TextChannel
