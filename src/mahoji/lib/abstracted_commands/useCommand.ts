@@ -72,6 +72,16 @@ const usableUnlocks: UsableUnlock[] = [
 		item: getOSItem('Strangled tablet'),
 		bitfield: BitField.UsedStrangledTablet,
 		resultMessage: 'You used your Strangled tablet.'
+	},
+	{
+		item: getOSItem('Deadeye prayer scroll'),
+		bitfield: BitField.HasDeadeyeScroll,
+		resultMessage: 'You used your Deadeye prayer scroll, and unlocked the Deadeye prayer.'
+	},
+	{
+		item: getOSItem('Mystic vigour prayer scroll'),
+		bitfield: BitField.HasMysticVigourScroll,
+		resultMessage: 'You used your Mystic vigour prayer scroll, and unlocked the Mystic vigour prayer.'
 	}
 ];
 for (const usableUnlock of usableUnlocks) {
