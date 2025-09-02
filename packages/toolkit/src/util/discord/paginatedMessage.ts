@@ -104,7 +104,7 @@ abstract class BasePaginatedMessage {
 			let msg = 'Sorry, something went wrong.';
 			if (typeof err === 'string') msg = err;
 			else if (err instanceof UserError) msg = err.message;
-			return { content: msg };
+			return { content: msg, components: [] };
 		}
 	}
 
