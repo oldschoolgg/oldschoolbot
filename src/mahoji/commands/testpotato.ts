@@ -1,17 +1,17 @@
-import { type CommandRunOptions, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { type Prisma, xp_gains_skill_enum } from '@prisma/client';
-import { ApplicationCommandOptionType, MessageFlags, type User } from 'discord.js';
-import { Time, noOp, randArrItem, randInt } from 'e';
-import { Bank, Items, MAX_INT_JAVA, convertLVLtoXP, getItem, itemID, resolveItems } from 'oldschooljs';
+import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
+import type { Prisma } from '@prisma/client';
+import { xp_gains_skill_enum } from '@prisma/client';
+import type { User } from 'discord.js';
+import { ApplicationCommandOptionType, MessageFlags } from 'discord.js';
+import { Time, noOp, randArrItem, randInt, uniqueArr } from 'e';
+import { Bank, Items, MAX_INT_JAVA } from 'oldschooljs';
+import { convertLVLtoXP, itemID } from 'oldschooljs';
 
-import { testBotKvStore } from '@/testing/TestBotStore';
+import { getItem, resolveItems } from 'oldschooljs';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
-import { globalConfig } from '../../lib/constants';
-import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox';
+import { BitFieldData, globalConfig } from '../../lib/constants';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
@@ -20,6 +20,11 @@ import potions from '../../lib/minions/data/potions';
 import { MAX_QP, quests } from '../../lib/minions/data/quests';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
+
+import { testBotKvStore } from '@/testing/TestBotStore';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
@@ -388,40 +393,34 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'patron',
-					description: 'Set your patron perk level.',
+					name: 'bitfield',
+					description: 'Manage your bitfields',
 					options: [
 						{
 							type: ApplicationCommandOptionType.String,
-							name: 'tier',
-							description: 'The patron tier to give yourself.',
-							required: true,
-							choices: [
-								{
-									name: 'Non-patron',
-									value: '0'
-								},
-								{
-									name: 'Tier 1',
-									value: '1'
-								},
-								{
-									name: 'Tier 2',
-									value: '2'
-								},
-								{
-									name: 'Tier 3',
-									value: '3'
-								},
-								{
-									name: 'Tier 4',
-									value: '4'
-								},
-								{
-									name: 'Tier 5',
-									value: '5'
-								}
-							]
+							name: 'add',
+							description: 'The bitfield to add',
+							required: false,
+							autocomplete: async value => {
+								return Object.entries(BitFieldData)
+									.filter(bf =>
+										!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i[1].name, value: i[0] }));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'remove',
+							description: 'The bitfield to remove',
+							required: false,
+							autocomplete: async value => {
+								return Object.entries(BitFieldData)
+									.filter(bf =>
+										!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i[1].name, value: i[0] }));
+							}
 						}
 					]
 				},
@@ -578,7 +577,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 				userID
 			}: CommandRunOptions<{
 				max?: {};
-				patron?: { tier: string };
+				bitfield?: { add?: string; remove?: string };
 				gear?: { thing: string };
 				reset?: { thing: string };
 				setminigamekc?: { minigame: string; kc: number };
@@ -609,6 +608,46 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 						}
 					});
 					return events.map(userEventToStr).join('\n');
+				}
+				if (options.bitfield) {
+					const bitInput = options.bitfield.add ?? options.bitfield.remove;
+					const bitEntry = Object.entries(BitFieldData).find(i => i[0] === bitInput);
+					const action: 'add' | 'remove' = options.bitfield.add ? 'add' : 'remove';
+					if (!bitEntry) {
+						return Object.entries(BitFieldData)
+							.map(entry => `**${entry[0]}:** ${entry[1]?.name}`)
+							.join('\n');
+					}
+					const bit = Number.parseInt(bitEntry[0]);
+
+					if (
+						!bit ||
+						!(BitFieldData as any)[bit] ||
+						[7, 8].includes(bit) ||
+						(action !== 'add' && action !== 'remove')
+					) {
+						return 'Invalid bitfield.';
+					}
+
+					let newBits = [...user.bitfield];
+
+					if (action === 'add') {
+						if (newBits.includes(bit)) {
+							return "Already has this bit, so can't add.";
+						}
+						newBits.push(bit);
+					} else {
+						if (!newBits.includes(bit)) {
+							return "Doesn't have this bit, so can't remove.";
+						}
+						newBits = newBits.filter(i => i !== bit);
+					}
+
+					await user.update({
+						bitfield: uniqueArr(newBits)
+					});
+
+					return `${action === 'add' ? 'Added' : 'Removed'} '${(BitFieldData as any)[bit].name}' bit.`;
 				}
 				if (options.bingo_tools) {
 					if (options.bingo_tools.start_bingo) {
