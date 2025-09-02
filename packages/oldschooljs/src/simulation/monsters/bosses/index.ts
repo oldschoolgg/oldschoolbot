@@ -18,6 +18,7 @@ import Kreearra from './Kreearra';
 import KrilTsutsaroth from './KrilTsutsaroth';
 import Obor from './Obor';
 import PhantomMuspah from './PhantomMuspah';
+import { Branda, Eldric, RoyalTitans } from './RoyalTitans';
 import Sarachnis from './Sarachnis';
 import Scurrius from './Scurrius';
 import Skotizo from './Skotizo';
@@ -62,6 +63,9 @@ export const allBosses = {
 	Scurrius,
 	TheHueycoatl,
 	Amoxliatl,
+	Branda,
+	Eldric,
+	RoyalTitans,
 	...allWildyBosses,
 	...allSlayerBosses
 };

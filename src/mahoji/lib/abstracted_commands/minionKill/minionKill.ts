@@ -12,6 +12,7 @@ import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
 import findMonster from '@/lib/util/findMonster';
 import { generateDailyPeakIntervals } from '@/lib/util/peaks';
 import { updateBankSetting } from '@/lib/util/updateBankSetting';
+import { Monsters } from 'oldschooljs';
 import { hasMonsterRequirements } from '../../../mahojiSettings';
 import { nexCommand } from '../nexCommand';
 import { nightmareCommand } from '../nightmareCommand';
@@ -70,13 +71,24 @@ export async function minionKillCommand(
 
 	const stats: { pk_evasion_exp: number } = await user.fetchStats({ pk_evasion_exp: true });
 
+	const royalTitansGroupIDs = [Monsters.Branda.id, Monsters.Eldric.id, Monsters.RoyalTitans.id];
+
+	let kcForBonus = await user.getKC(monster.id);
+
+	if (royalTitansGroupIDs.includes(monster.id)) {
+		const brandaKC = await user.getKC(Monsters.Branda.id);
+		const eldricKC = await user.getKC(Monsters.Eldric.id);
+		const sacrificeKC = await user.getKC(Monsters.RoyalTitans.id);
+		kcForBonus = brandaKC + eldricKC + sacrificeKC;
+	}
+
 	const result = newMinionKillCommand({
 		gearBank: user.gearBank,
 		attackStyles: user.getAttackStyles(),
 		currentSlayerTask: slayerInfo,
 		monster,
 		isTryingToUseWildy: wilderness ?? false,
-		monsterKC: await user.getKC(monster.id),
+		monsterKC: kcForBonus,
 		inputPVMMethod: method,
 		maxTripLength: calcMaxTripLength(user, 'MonsterKilling'),
 		pkEvasionExperience: stats.pk_evasion_exp,
@@ -86,7 +98,8 @@ export async function minionKillCommand(
 		slayerUnlocks: user.user.slayer_unlocks,
 		favoriteFood: user.user.favorite_food,
 		bitfield: user.bitfield,
-		currentPeak: generateDailyPeakIntervals().currentPeak
+		currentPeak: generateDailyPeakIntervals().currentPeak,
+		user
 	});
 
 	if (typeof result === 'string') {
