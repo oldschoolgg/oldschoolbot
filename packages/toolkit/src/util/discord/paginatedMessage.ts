@@ -108,7 +108,7 @@ abstract class BasePaginatedMessage {
 		}
 	}
 
-	protected async handleCollector(message: any, targetUsers?: string[]) {
+	protected async handleCollector(message: Message, targetUsers?: string[]) {
 		const collector = message.createMessageComponentCollector({
 			time: Time.Minute * 10,
 			componentType: ComponentType.Button
