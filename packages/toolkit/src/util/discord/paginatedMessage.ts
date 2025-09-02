@@ -25,35 +25,48 @@ const InteractionID = {
 	}
 } as const;
 
-const controlButtons = [
+const controlButtons: {
+	customId: string;
+	emoji: string;
+	run: (opts: { paginatedMessage: BasePaginatedMessage }) => unknown;
+  }[] = [
 	{
-		customId: InteractionID.PaginatedMessage.FirstPage,
-		emoji: '⏪',
-		run: ({ paginatedMessage }: { paginatedMessage: BasePaginatedMessage }) => (paginatedMessage.index = 0)
+	  customId: InteractionID.PaginatedMessage.FirstPage,
+	  emoji: '⏪',
+	  run: ({ paginatedMessage }) => {
+		paginatedMessage.index = 0;
+	  }
 	},
 	{
-		customId: InteractionID.PaginatedMessage.PreviousPage,
-		emoji: '◀️',
-		run: ({ paginatedMessage }: { paginatedMessage: BasePaginatedMessage }) => {
-			if (paginatedMessage.index === 0) paginatedMessage.index = paginatedMessage.totalPages - 1;
-			else --paginatedMessage.index;
+	  customId: InteractionID.PaginatedMessage.PreviousPage,
+	  emoji: '◀️',
+	  run: ({ paginatedMessage }) => {
+		if (paginatedMessage.index === 0) {
+		  paginatedMessage.index = paginatedMessage.totalPages - 1;
+		} else {
+		  --paginatedMessage.index;
 		}
+	  }
 	},
 	{
-		customId: InteractionID.PaginatedMessage.NextPage,
-		emoji: '▶️',
-		run: ({ paginatedMessage }: { paginatedMessage: BasePaginatedMessage }) => {
-			if (paginatedMessage.index === paginatedMessage.totalPages - 1) paginatedMessage.index = 0;
-			else ++paginatedMessage.index;
+	  customId: InteractionID.PaginatedMessage.NextPage,
+	  emoji: '▶️',
+	  run: ({ paginatedMessage }) => {
+		if (paginatedMessage.index === paginatedMessage.totalPages - 1) {
+		  paginatedMessage.index = 0;
+		} else {
+		  ++paginatedMessage.index;
 		}
+	  }
 	},
 	{
-		customId: InteractionID.PaginatedMessage.LastPage,
-		emoji: '⏩',
-		run: ({ paginatedMessage }: { paginatedMessage: BasePaginatedMessage }) =>
-			(paginatedMessage.index = paginatedMessage.totalPages - 1)
+	  customId: InteractionID.PaginatedMessage.LastPage,
+	  emoji: '⏩',
+	  run: ({ paginatedMessage }) => {
+		paginatedMessage.index = paginatedMessage.totalPages - 1;
+	  }
 	}
-] as const;
+  ];
 
 export type PaginatedMessagePage = MessageEditOptions | (() => Promise<MessageEditOptions>);
 export type PaginatedPages =
@@ -64,7 +77,7 @@ abstract class BasePaginatedMessage {
 	public index = 0;
 	public pages!: PaginatedPages;
 	public totalPages: number;
-	public onError: (err: Error, interaction?: ButtonInteraction) => void;
+	public onError: (error: Error, interaction?: ButtonInteraction) => void;
 
 	constructor(
 		pages: PaginatedPages,
@@ -83,20 +96,18 @@ abstract class BasePaginatedMessage {
 				? await this.pages.generate({ currentPage: this.index })
 				: this.pages[this.index];
 
-			const page = isFunction(rawPage) ? await rawPage() : rawPage;
-
 			return {
-				...page,
+				...(isFunction(rawPage) ? await rawPage() : rawPage),
 				components:
 					this.totalPages === 1
 						? []
 						: [
 								new ActionRowBuilder<ButtonBuilder>().addComponents(
-									controlButtons.map(btn =>
+									controlButtons.map(i =>
 										new ButtonBuilder()
 											.setStyle(ButtonStyle.Secondary)
-											.setCustomId(btn.customId)
-											.setEmoji(btn.emoji)
+											.setCustomId(i.customId)
+											.setEmoji(i.emoji)
 									)
 								)
 							]
@@ -138,7 +149,9 @@ abstract class BasePaginatedMessage {
 			}
 		});
 
-		collector.on('end', () => message.edit({ components: [] }));
+		collector.on('end', () => {
+			message.edit({ components: [] });
+		});
 	}
 
 	abstract run(targetUsers?: string[]): Promise<void>;
