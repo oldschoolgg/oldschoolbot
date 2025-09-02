@@ -1438,7 +1438,8 @@ const killableBosses: KillableMonster[] = [
 					ring: 'Berserker ring (i)'
 				}).stats,
 				attack_ranged: -100,
-				defence_magic: -10,
+				attack_magic: -100,
+				defence_magic: -100,
 				prayer: -100,
 				defence_crush: 0,
 				defence_ranged: 0,
