@@ -4,8 +4,10 @@ import {
 	ButtonBuilder,
 	type ButtonInteraction,
 	ButtonStyle,
-	type ComponentType,
+	type ChatInputCommandInteraction,
+	ComponentType,
 	type MessageEditOptions,
+	MessageFlags,
 	type TextChannel
 } from 'discord.js';
 
@@ -22,124 +24,106 @@ const InteractionID = {
 	}
 } as const;
 
-const controlButtons: {
-	customId: string;
-	emoji: string;
-	run: (opts: { paginatedMessage: PaginatedMessage }) => unknown;
-}[] = [
+const controlButtons = [
 	{
 		customId: InteractionID.PaginatedMessage.FirstPage,
 		emoji: '⏪',
-		run: ({ paginatedMessage }) => (paginatedMessage.index = 0)
+		run: ({ paginatedMessage }: { paginatedMessage: BasePaginatedMessage }) => (paginatedMessage.index = 0)
 	},
 	{
 		customId: InteractionID.PaginatedMessage.PreviousPage,
 		emoji: '◀️',
-		run: ({ paginatedMessage }) => {
-			if (paginatedMessage.index === 0) {
-				paginatedMessage.index = paginatedMessage.totalPages - 1;
-			} else {
-				--paginatedMessage.index;
-			}
+		run: ({ paginatedMessage }: { paginatedMessage: BasePaginatedMessage }) => {
+			if (paginatedMessage.index === 0) paginatedMessage.index = paginatedMessage.totalPages - 1;
+			else --paginatedMessage.index;
 		}
 	},
 	{
 		customId: InteractionID.PaginatedMessage.NextPage,
 		emoji: '▶️',
-		run: ({ paginatedMessage }) => {
-			if (paginatedMessage.index === paginatedMessage.totalPages - 1) {
-				paginatedMessage.index = 0;
-			} else {
-				++paginatedMessage.index;
-			}
+		run: ({ paginatedMessage }: { paginatedMessage: BasePaginatedMessage }) => {
+			if (paginatedMessage.index === paginatedMessage.totalPages - 1) paginatedMessage.index = 0;
+			else ++paginatedMessage.index;
 		}
 	},
 	{
 		customId: InteractionID.PaginatedMessage.LastPage,
 		emoji: '⏩',
-		run: ({ paginatedMessage }) => (paginatedMessage.index = paginatedMessage.totalPages - 1)
+		run: ({ paginatedMessage }: { paginatedMessage: BasePaginatedMessage }) =>
+			(paginatedMessage.index = paginatedMessage.totalPages - 1)
 	}
-];
+] as const;
 
-type PaginatedPages =
+export type PaginatedMessagePage = MessageEditOptions | (() => Promise<MessageEditOptions>);
+export type PaginatedPages =
 	| { numPages: number; generate: (opts: { currentPage: number }) => Promise<MessageEditOptions> }
 	| PaginatedMessagePage[];
 
-export class PaginatedMessage {
+abstract class BasePaginatedMessage {
 	public index = 0;
 	public pages!: PaginatedPages;
-	public channel: TextChannel;
 	public totalPages: number;
-	public onError: (error: Error, interaction?: ButtonInteraction) => void;
+	public onError: (err: Error, interaction?: ButtonInteraction) => void;
 
-	constructor({
-		channel,
-		pages,
-		startingPage,
-		onError
-	}: {
-		channel: TextChannel;
-		pages: PaginatedPages;
-		startingPage?: number;
-		onError: (error: Error, interaction?: ButtonInteraction) => void;
-	}) {
+	constructor(
+		pages: PaginatedPages,
+		startingPage: number | undefined,
+		onError: (err: Error, itx?: ButtonInteraction) => void
+	) {
 		this.pages = pages;
-		this.channel = channel;
 		this.index = startingPage ?? 0;
 		this.totalPages = Array.isArray(pages) ? pages.length : pages.numPages;
 		this.onError = onError;
 	}
 
-	async render(): Promise<MessageEditOptions | string> {
-		const numberOfPages = Array.isArray(this.pages) ? this.pages.length : this.pages.numPages;
+	async render(): Promise<MessageEditOptions> {
 		try {
 			const rawPage = !Array.isArray(this.pages)
 				? await this.pages.generate({ currentPage: this.index })
 				: this.pages[this.index];
 
+			const page = isFunction(rawPage) ? await rawPage() : rawPage;
+
 			return {
-				...(isFunction(rawPage) ? await rawPage() : rawPage),
+				...page,
 				components:
-					numberOfPages === 1
+					this.totalPages === 1
 						? []
 						: [
 								new ActionRowBuilder<ButtonBuilder>().addComponents(
-									controlButtons.map(i =>
+									controlButtons.map(btn =>
 										new ButtonBuilder()
 											.setStyle(ButtonStyle.Secondary)
-											.setCustomId(i.customId)
-											.setEmoji(i.emoji)
+											.setCustomId(btn.customId)
+											.setEmoji(btn.emoji)
 									)
 								)
 							]
 			};
 		} catch (err) {
-			if (typeof err === 'string') return err;
-			if (err instanceof UserError) return err.message;
-			this.onError(err as Error);
-			return 'Sorry, something went wrong.';
+			let msg = 'Sorry, something went wrong.';
+			if (typeof err === 'string') msg = err;
+			else if (err instanceof UserError) msg = err.message;
+			return { content: msg };
 		}
 	}
 
-	async run(targetUsers?: string[]) {
-		const message = await this.channel.send((await this.render()) as BaseMessageOptions);
-		if (this.totalPages === 1) return;
-		const collector = await message.createMessageComponentCollector<ComponentType.Button>({
-			time: Time.Minute * 10
+	protected async handleCollector(message: any, targetUsers?: string[]) {
+		const collector = message.createMessageComponentCollector({
+			time: Time.Minute * 10,
+			componentType: ComponentType.Button
 		});
 
-		collector.on('collect', async interaction => {
+		collector.on('collect', async (interaction: ButtonInteraction) => {
 			if (targetUsers && !targetUsers.includes(interaction.user.id)) {
-				interaction.reply({ content: "This isn't your message!", ephemeral: true });
+				await interaction.reply({ content: "This isn't your message!", ephemeral: true });
 				return;
 			}
+
 			for (const action of controlButtons) {
 				if (interaction.customId === action.customId) {
 					const previousIndex = this.index;
-
-					action.run({
-						paginatedMessage: this
-					});
+					action.run({ paginatedMessage: this });
 
 					if (previousIndex !== this.index) {
 						try {
@@ -153,13 +137,67 @@ export class PaginatedMessage {
 			}
 		});
 
-		collector.on('end', () => {
-			message.edit({ components: [] });
-		});
+		collector.on('end', () => message.edit({ components: [] }));
+	}
+
+	abstract run(targetUsers?: string[]): Promise<void>;
+}
+
+export class PaginatedMessage extends BasePaginatedMessage {
+	public channel: TextChannel;
+
+	constructor({
+		channel,
+		pages,
+		startingPage,
+		onError
+	}: {
+		channel: TextChannel;
+		pages: PaginatedPages;
+		startingPage?: number;
+		onError: (err: Error, itx?: ButtonInteraction) => void;
+	}) {
+		super(pages, startingPage, onError);
+		this.channel = channel;
+	}
+
+	async run(targetUsers?: string[]) {
+		const message = await this.channel.send((await this.render()) as BaseMessageOptions);
+		if (this.totalPages === 1) return;
+		await this.handleCollector(message, targetUsers);
 	}
 }
 
-export type PaginatedMessagePage = MessageEditOptions | (() => Promise<MessageEditOptions>);
+export class EphemeralPaginatedMessage extends BasePaginatedMessage {
+	public interaction: ChatInputCommandInteraction;
+
+	constructor({
+		interaction,
+		pages,
+		startingPage,
+		onError
+	}: {
+		interaction: ChatInputCommandInteraction;
+		pages: PaginatedPages;
+		startingPage?: number;
+		onError: (err: Error, itx?: ButtonInteraction) => void;
+	}) {
+		super(pages, startingPage, onError);
+		this.interaction = interaction;
+	}
+
+	async run(targetUsers?: string[]) {
+		const baseOptions = await this.render();
+		await this.interaction.reply({
+			...baseOptions,
+			content: baseOptions.content ?? undefined,
+			flags: MessageFlags.Ephemeral
+		});
+		if (this.totalPages === 1) return;
+		const msg = await this.interaction.fetchReply();
+		await this.handleCollector(msg, targetUsers);
+	}
+}
 
 export async function makePaginatedMessage(
 	channel: TextChannel,
@@ -168,5 +206,15 @@ export async function makePaginatedMessage(
 	target?: string
 ) {
 	const m = new PaginatedMessage({ pages, channel, onError });
+	return m.run(target ? [target] : undefined);
+}
+
+export async function makeEphemeralPaginatedMessage(
+	interaction: ChatInputCommandInteraction,
+	pages: PaginatedMessagePage[],
+	onError: (err: Error, itx?: ButtonInteraction) => unknown,
+	target?: string
+) {
+	const m = new EphemeralPaginatedMessage({ pages, interaction, onError });
 	return m.run(target ? [target] : undefined);
 }
