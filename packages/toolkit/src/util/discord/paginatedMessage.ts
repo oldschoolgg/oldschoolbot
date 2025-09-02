@@ -29,44 +29,44 @@ const controlButtons: {
 	customId: string;
 	emoji: string;
 	run: (opts: { paginatedMessage: BasePaginatedMessage }) => unknown;
-  }[] = [
+}[] = [
 	{
-	  customId: InteractionID.PaginatedMessage.FirstPage,
-	  emoji: '⏪',
-	  run: ({ paginatedMessage }) => {
-		paginatedMessage.index = 0;
-	  }
-	},
-	{
-	  customId: InteractionID.PaginatedMessage.PreviousPage,
-	  emoji: '◀️',
-	  run: ({ paginatedMessage }) => {
-		if (paginatedMessage.index === 0) {
-		  paginatedMessage.index = paginatedMessage.totalPages - 1;
-		} else {
-		  --paginatedMessage.index;
+		customId: InteractionID.PaginatedMessage.FirstPage,
+		emoji: '⏪',
+		run: ({ paginatedMessage }) => {
+			paginatedMessage.index = 0;
 		}
-	  }
 	},
 	{
-	  customId: InteractionID.PaginatedMessage.NextPage,
-	  emoji: '▶️',
-	  run: ({ paginatedMessage }) => {
-		if (paginatedMessage.index === paginatedMessage.totalPages - 1) {
-		  paginatedMessage.index = 0;
-		} else {
-		  ++paginatedMessage.index;
+		customId: InteractionID.PaginatedMessage.PreviousPage,
+		emoji: '◀️',
+		run: ({ paginatedMessage }) => {
+			if (paginatedMessage.index === 0) {
+				paginatedMessage.index = paginatedMessage.totalPages - 1;
+			} else {
+				--paginatedMessage.index;
+			}
 		}
-	  }
 	},
 	{
-	  customId: InteractionID.PaginatedMessage.LastPage,
-	  emoji: '⏩',
-	  run: ({ paginatedMessage }) => {
-		paginatedMessage.index = paginatedMessage.totalPages - 1;
-	  }
+		customId: InteractionID.PaginatedMessage.NextPage,
+		emoji: '▶️',
+		run: ({ paginatedMessage }) => {
+			if (paginatedMessage.index === paginatedMessage.totalPages - 1) {
+				paginatedMessage.index = 0;
+			} else {
+				++paginatedMessage.index;
+			}
+		}
+	},
+	{
+		customId: InteractionID.PaginatedMessage.LastPage,
+		emoji: '⏩',
+		run: ({ paginatedMessage }) => {
+			paginatedMessage.index = paginatedMessage.totalPages - 1;
+		}
 	}
-  ];
+];
 
 export type PaginatedMessagePage = MessageEditOptions | (() => Promise<MessageEditOptions>);
 export type PaginatedPages =
