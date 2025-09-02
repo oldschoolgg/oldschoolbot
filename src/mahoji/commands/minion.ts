@@ -147,7 +147,15 @@ export const minionCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'stats',
-			description: 'Check the stats of your minion.'
+			description: 'Check the stats of your minion.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'other',
+					description: 'Show only the "Other" stats?',
+					required: false
+				}
+			]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -418,7 +426,7 @@ export const minionCommand: OSBMahojiCommand = {
 		interaction,
 		channelID
 	}: CommandRunOptions<{
-		stats?: { stat?: string };
+		stats?: { stat?: string; other?: boolean };
 		achievementdiary?: { diary?: string; claim?: boolean };
 		bankbg?: { name?: string };
 		cracker?: { user: MahojiUserOption };
@@ -447,7 +455,13 @@ export const minionCommand: OSBMahojiCommand = {
 		if (options.status) return minionStatusCommand(user);
 
 		if (options.stats) {
-			return { embeds: [await minionStatsEmbed(user)] };
+			return {
+				embeds: [
+					await minionStatsEmbed(user, {
+						otherOnly: options.stats.other ?? false
+					})
+				]
+			};
 		}
 
 		if (options.achievementdiary) {
