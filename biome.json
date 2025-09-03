@@ -14,7 +14,8 @@
 			"icon_cache",
 			".astro",
 			".yarn",
-			".pnpm-store"
+			".pnpm-store",
+			"generated"
 		],
 		"include": [
 			"**/*.ts",

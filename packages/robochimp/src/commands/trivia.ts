@@ -1,0 +1,141 @@
+import type { CommandRunOptions, ICommand } from '@oldschoolgg/toolkit/discord-util';
+import { ApplicationCommandOptionType } from 'discord.js';
+
+import type { TriviaQuestion } from '../../prisma/generated/robochimp/index.js';
+import { Bits, fetchUser } from '../util.js';
+
+function triviaQuestionToStr(q: TriviaQuestion) {
+	return `**ID:** ${q.id}
+**Question:** ${q.question}
+**Answers:** ${q.answers.join(' | ')}`;
+}
+
+async function triviaSearch(query: string) {
+	const questions = await roboChimpClient.triviaQuestion.findMany({
+		where: {
+			OR: [
+				{
+					question: {
+						search: query.replace(/[\s\n\t]/g, '_')
+					}
+				},
+				{
+					question: {
+						contains: query.replace(/[\s\n\t]/g, '_')
+					}
+				}
+			]
+		},
+		take: 10
+	});
+	return questions;
+}
+
+export const triviaCommand: ICommand = {
+	name: 'trivia',
+	description: 'Manage trivia commands.',
+	options: [
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'add',
+			description: 'Add a trivia question',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'question',
+					description: 'The trivia question.',
+					required: true
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'answers',
+					description: 'The answers, separated by comma.',
+					required: true
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'remove',
+			description: 'Remove a trivia question',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'id',
+					description: 'The id of the question you want to remove.',
+					required: true
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'search',
+			description: 'Search trivia questions.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'query',
+					description: 'Your search query.',
+					required: true,
+					autocomplete: async (value: string) => {
+						const results = await triviaSearch(value);
+						return results.map(i => ({ name: i.question.slice(0, 32), value: i.id.toString() }));
+					}
+				}
+			]
+		}
+	],
+	run: async ({
+		options,
+		userID
+	}: CommandRunOptions<{
+		add?: { question: string; answers: string };
+		remove?: { id: number };
+		search?: { query: string };
+	}>) => {
+		const dbUser = await fetchUser(userID);
+		if (!dbUser.bits.includes(Bits.Trusted)) return 'Ook.';
+		if (options.add) {
+			const { question, answers } = options.add;
+			if (!question.endsWith('?')) return "That question doesn't end with a question mark.";
+			const answersArr = answers.split(',').map(i => i.trim().toLowerCase());
+			if (answersArr.length === 0) return 'No answers given.';
+			const triviaQuestion = await roboChimpClient.triviaQuestion.create({
+				data: {
+					question,
+					answers: answersArr
+				}
+			});
+			return `Created new trivia question: \n${triviaQuestionToStr(triviaQuestion)}`;
+		}
+		if (options.remove) {
+			const question = await roboChimpClient.triviaQuestion.findFirst({
+				where: {
+					id: options.remove.id
+				}
+			});
+			if (!question) return "Couldn't find any question with that ID.";
+			await roboChimpClient.triviaQuestion.delete({
+				where: {
+					id: options.remove.id
+				}
+			});
+			return `Deleted this question: \n${triviaQuestionToStr(question)}`;
+		}
+		if (options.search) {
+			const asNumber = Number(options.search.query);
+			if (!Number.isNaN(asNumber)) {
+				const singular = await roboChimpClient.triviaQuestion.findFirst({
+					where: {
+						id: asNumber
+					}
+				});
+				if (!singular) return 'No result.';
+				return triviaQuestionToStr(singular);
+			}
+			return `**Search**
+${(await triviaSearch(options.search.query)).map(q => `${q.id}. ${q.question}`).join('\n')}`;
+		}
+		return 'HUH?';
+	}
+};
