@@ -73,13 +73,11 @@ export async function minionKillCommand(
 
 	const royalTitansGroupIDs = [Monsters.Branda.id, Monsters.Eldric.id, Monsters.RoyalTitans.id];
 
-	let kcForBonus = await user.getKC(monster.id);
+	const kcs = await user.getAllKCs();
+	let kcForBonus = kcs[monster.id];
 
 	if (royalTitansGroupIDs.includes(monster.id)) {
-		const brandaKC = await user.getKC(Monsters.Branda.id);
-		const eldricKC = await user.getKC(Monsters.Eldric.id);
-		const sacrificeKC = await user.getKC(Monsters.RoyalTitans.id);
-		kcForBonus = brandaKC + eldricKC + sacrificeKC;
+		kcForBonus = kcs.BRANDA + kcs.ELDRIC + kcs.ROYAL_TITANS;
 	}
 
 	const result = newMinionKillCommand({
