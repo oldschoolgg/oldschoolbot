@@ -56,7 +56,6 @@ export interface MinionKillOptions {
 	bitfield: readonly BitField[];
 	pkEvasionExperience: number;
 	currentPeak: Peak;
-	user: MUser;
 }
 
 export function newMinionKillCommand(args: MinionKillOptions): string | MinionKillReturn {
