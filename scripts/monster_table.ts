@@ -60,10 +60,6 @@ for (const skill of SkillsArray) {
 }
 
 async function main() {
-	const fakeUser = {
-		getKC: async () => 10000
-	};
-
 	for (const monster of killableMonsters) {
 		const monsterKC = 10000;
 		const gearBank = new GearBank({
@@ -117,7 +113,6 @@ async function main() {
 					const bitfield: BitField[] = [];
 					const kcBank = new KCBank();
 					const commandResult = await newMinionKillCommand({
-						user: fakeUser as any,
 						gearBank,
 						attackStyles,
 						currentSlayerTask: currentSlayerTask as any,
