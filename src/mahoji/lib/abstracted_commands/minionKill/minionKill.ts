@@ -1,6 +1,7 @@
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
 import { Time } from 'e';
+import { Monsters } from 'oldschooljs';
 
 import type { PvMMethod } from '@/lib/constants';
 import { generateDailyPeakIntervals } from '@/lib/util/peaks';
@@ -29,7 +30,6 @@ import { vasaCommand } from '../vasaCommand';
 import { wintertodtCommand } from '../wintertodtCommand';
 import { zalcanoCommand } from '../zalcanoCommand';
 import { newMinionKillCommand } from './newMinionKill';
-import { Monsters } from 'oldschooljs';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 

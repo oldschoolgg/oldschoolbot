@@ -6,9 +6,9 @@ import { type BaseMessageOptions, EmbedBuilder, type Message, bold, time } from 
 import { Time, isFunction } from 'e';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
+import { dateFm, getNextUTCReset } from '@oldschoolgg/toolkit/util';
 import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
-import { dateFm, getNextUTCReset } from '@oldschoolgg/toolkit/util';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
 import { boxSpawnHandler } from './boxSpawns';
@@ -33,63 +33,63 @@ const cooldownTimers: {
 	command: [string] | [string, string] | [string, string, string];
 	utcReset: boolean;
 }[] = [
-		{
-			name: 'Tears of Guthix',
-			timeStamp: (_, stats) => Number(stats.last_tears_of_guthix_timestamp),
-			cd: tears_of_guthix_cd,
-			command: ['minigames', 'tears_of_guthix', 'start'],
-			utcReset: true
-		},
-		{
-			name: 'Daily',
-			timeStamp: (_, stats) => Number(stats.last_daily_timestamp),
-			cd: Time.Hour * 12,
-			command: ['minion', 'daily'],
-			utcReset: false
-		},
-		{
-			name: 'Spawn Lamp',
-			timeStamp: (user: MUser) => Number(user.user.lastSpawnLamp),
-			cd: (user: MUser) => spawnLampResetTime(user),
-			command: ['tools', 'patron', 'spawnlamp'],
-			utcReset: false
-		},
-		{
-			name: 'Spawn Box',
-			timeStamp: (user: MUser) => Cooldowns.cooldownMap.get(user.id)?.get('SPAWN_BOX') ?? 0,
-			cd: Time.Minute * 45,
-			command: ['tools', 'patron', 'spawnbox'],
-			utcReset: false
-		},
-		{
-			name: 'Give Box',
-			timeStamp: (user: MUser) => Number(user.user.lastGivenBoxx),
-			cd: giveBoxResetTime,
-			command: ['tools', 'patron', 'give_box'],
-			utcReset: false
-		},
-		{
-			name: 'Item Contract',
-			timeStamp: (user: MUser) => Number(user.user.last_item_contract_date),
-			cd: itemContractResetTime,
-			command: ['ic', 'info'],
-			utcReset: false
-		},
-		{
-			name: 'Monthly Double Loot',
-			timeStamp: (user: MUser) => Number(user.user.last_patron_double_time_trigger),
-			cd: PATRON_DOUBLE_LOOT_COOLDOWN,
-			command: ['tools', 'patron', 'doubleloot'],
-			utcReset: false
-		},
-		{
-			name: 'Balthazars Big Bonanza',
-			timeStamp: (user: MUser) => Number(user.user.last_bonanza_date),
-			cd: Time.Day * 7,
-			command: ['bsominigames', 'balthazars_big_bonanza', 'start'],
-			utcReset: false
-		}
-	];
+	{
+		name: 'Tears of Guthix',
+		timeStamp: (_, stats) => Number(stats.last_tears_of_guthix_timestamp),
+		cd: tears_of_guthix_cd,
+		command: ['minigames', 'tears_of_guthix', 'start'],
+		utcReset: true
+	},
+	{
+		name: 'Daily',
+		timeStamp: (_, stats) => Number(stats.last_daily_timestamp),
+		cd: Time.Hour * 12,
+		command: ['minion', 'daily'],
+		utcReset: false
+	},
+	{
+		name: 'Spawn Lamp',
+		timeStamp: (user: MUser) => Number(user.user.lastSpawnLamp),
+		cd: (user: MUser) => spawnLampResetTime(user),
+		command: ['tools', 'patron', 'spawnlamp'],
+		utcReset: false
+	},
+	{
+		name: 'Spawn Box',
+		timeStamp: (user: MUser) => Cooldowns.cooldownMap.get(user.id)?.get('SPAWN_BOX') ?? 0,
+		cd: Time.Minute * 45,
+		command: ['tools', 'patron', 'spawnbox'],
+		utcReset: false
+	},
+	{
+		name: 'Give Box',
+		timeStamp: (user: MUser) => Number(user.user.lastGivenBoxx),
+		cd: giveBoxResetTime,
+		command: ['tools', 'patron', 'give_box'],
+		utcReset: false
+	},
+	{
+		name: 'Item Contract',
+		timeStamp: (user: MUser) => Number(user.user.last_item_contract_date),
+		cd: itemContractResetTime,
+		command: ['ic', 'info'],
+		utcReset: false
+	},
+	{
+		name: 'Monthly Double Loot',
+		timeStamp: (user: MUser) => Number(user.user.last_patron_double_time_trigger),
+		cd: PATRON_DOUBLE_LOOT_COOLDOWN,
+		command: ['tools', 'patron', 'doubleloot'],
+		utcReset: false
+	},
+	{
+		name: 'Balthazars Big Bonanza',
+		timeStamp: (user: MUser) => Number(user.user.last_bonanza_date),
+		cd: Time.Day * 7,
+		command: ['bsominigames', 'balthazars_big_bonanza', 'start'],
+		utcReset: false
+	}
+];
 
 interface MentionCommandOptions {
 	msg: Message;
@@ -163,8 +163,9 @@ const mentionCommands: MentionCommand[] = [
 
 					const price = toKMB(Math.floor(item.price ?? 0));
 					const searchMbTable = user.isIronman ? allIronmanMbTables : allMbTables;
-					let str = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${searchMbTable.includes(item.id) ? Emoji.MysteryBox : ''
-						} ${icons.join(' ')}`;
+					let str = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${
+						searchMbTable.includes(item.id) ? Emoji.MysteryBox : ''
+					} ${icons.join(' ')}`;
 					if (gettedItem.id === item.id) {
 						str = bold(str);
 					}
@@ -209,7 +210,6 @@ const mentionCommands: MentionCommand[] = [
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
 			const stats = await user.fetchStats({ last_daily_timestamp: true, last_tears_of_guthix_timestamp: true });
 
-
 			let content = cooldownTimers
 				.map(cd => {
 					const lastDone = cd.timeStamp(user, stats);
@@ -221,12 +221,7 @@ const mentionCommands: MentionCommand[] = [
 						return `${cd.name}: ${durationRemaining}`;
 					}
 					return bold(
-						`${cd.name}: Ready ${mentionCommand(
-							globalClient,
-							cd.command[0],
-							cd.command[1],
-							cd.command[2]
-						)}`
+						`${cd.name}: Ready ${mentionCommand(globalClient, cd.command[0], cd.command[1], cd.command[2])}`
 					);
 				})
 				.join('\n');
@@ -245,7 +240,6 @@ const mentionCommands: MentionCommand[] = [
 				const date = new Date(DOUBLE_LOOT_FINISH_TIME_CACHE);
 				content += `\n\n2️⃣🇽 **Double Loot is Active until ${time(date)} (${time(date, 'R')})**`;
 			}
-
 
 			return msg.reply({
 				content,
