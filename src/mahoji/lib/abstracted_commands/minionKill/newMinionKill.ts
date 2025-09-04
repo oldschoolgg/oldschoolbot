@@ -63,7 +63,6 @@ export interface MinionKillOptions {
 	pkEvasionExperience: number;
 	currentPeak: Peak;
 	disabledInventions: InventionID[];
-	user: MUser;
 }
 
 export function newMinionKillCommand(args: MinionKillOptions): string | MinionKillReturn {

@@ -8,6 +8,7 @@ import { escapeMarkdown, userMention } from 'discord.js';
 import { Time, calcWhatPercent, notEmpty, objectValues, percentChance, randArrItem, sumArr, uniqueArr } from 'e';
 import {
 	Bank,
+	EMonster,
 	EquipmentSlot,
 	type Item,
 	type ItemBank,
@@ -296,6 +297,24 @@ export class MUserClass {
 	async getKC(monsterID: number) {
 		const stats = await this.fetchStats({ monster_scores: true });
 		return (stats.monster_scores as ItemBank)[monsterID] ?? 0;
+	}
+
+	async getAllKCs() {
+		const stats = await this.fetchStats({ monster_scores: true });
+		const rawKCs = stats.monster_scores as ItemBank;
+		return new Proxy(rawKCs, {
+			get(target, monsterNameOrId: string) {
+				let monsterID: number;
+				if (Number.isInteger(Number(monsterNameOrId))) {
+					monsterID = Number(monsterNameOrId);
+				} else {
+					monsterID = EMonster[monsterNameOrId as keyof typeof EMonster];
+				}
+				const kc = target[monsterID] ?? 0;
+				if (kc) return kc;
+				return 0;
+			}
+		}) as Record<keyof typeof EMonster | number, number>;
 	}
 
 	async fetchMonsterScores() {
