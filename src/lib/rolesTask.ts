@@ -29,7 +29,19 @@ type RoleResult = z.infer<typeof RoleResultSchema>;
 
 const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');
 
-const CLS_THAT_GET_ROLE = ['skilling', 'clues', 'minigames', 'other', 'overall'];
+const CLS_THAT_GET_ROLE = [
+	'pets',
+	'skilling',
+	'clues',
+	'bosses',
+	'minigames',
+	'raids',
+	'slayer',
+	'other',
+	'custom',
+	'overall',
+	'creatables'
+];
 
 for (const cl of CLS_THAT_GET_ROLE) {
 	const items = getCollectionItems(cl);

@@ -2,6 +2,7 @@ import { Time, roll } from 'e';
 import { Bank, Monsters, SimpleMonster, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
+import { BitField } from '../../../../../../src/lib/constants';
 import { corporealBeastCL, muspahCL } from '../../../../data/CollectionsExport';
 import { CorporealBeastTable } from '../../../../simulation/Corp';
 import { SkillsEnum } from '../../../../skilling/types';
@@ -712,18 +713,20 @@ const killableBosses: KillableMonster[] = [
 				required: true
 			},
 			{
-				items: resolveItems(["Inquisitor's hauberk", 'Torva platebody', 'Bandos chestplate']).map(id => ({
-					boostPercent: 2,
-					itemID: id
-				})),
+				items: [
+					{ boostPercent: 10, itemID: itemID("Inquisitor's hauberk") },
+					{ boostPercent: 5, itemID: itemID('Torva platebody') },
+					{ boostPercent: 5, itemID: itemID('Bandos chestplate') }
+				],
 				gearSetup: 'melee',
 				required: true
 			},
 			{
-				items: resolveItems(["Inquisitor's plateskirt", 'Torva platelegs', 'Bandos tassets']).map(id => ({
-					boostPercent: 2,
-					itemID: id
-				})),
+				items: [
+					{ boostPercent: 10, itemID: itemID("Inquisitor's plateskirt") },
+					{ boostPercent: 5, itemID: itemID('Torva platelegs') },
+					{ boostPercent: 5, itemID: itemID('Bandos tassets') }
+				],
 				gearSetup: 'melee',
 				required: true
 			},
@@ -841,7 +844,7 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.TheHueycoatl.id,
 		name: Monsters.TheHueycoatl.name,
 		aliases: Monsters.TheHueycoatl.aliases,
-		timeToFinish: Time.Minute * 8,
+		timeToFinish: Time.Minute * 6,
 		respawnTime: 2000,
 		table: Monsters.TheHueycoatl,
 		difficultyRating: 8,
@@ -857,7 +860,7 @@ const killableBosses: KillableMonster[] = [
 					{ boostPercent: 10, itemID: itemID('Dragon hunter lance') },
 					{ boostPercent: 9, itemID: itemID("Inquisitor's mace") },
 					{ boostPercent: 9, itemID: itemID('Soulreaper axe') },
-					{ boostPercent: 9, itemID: itemID('Abyssal bludgeon') }
+					{ boostPercent: 8, itemID: itemID('Abyssal bludgeon') }
 				],
 				gearSetup: 'melee',
 				required: false
@@ -891,18 +894,20 @@ const killableBosses: KillableMonster[] = [
 				required: false
 			},
 			{
-				items: resolveItems(["Inquisitor's hauberk", 'Torva platebody', 'Bandos chestplate']).map(id => ({
-					boostPercent: 2,
-					itemID: id
-				})),
+				items: [
+					{ boostPercent: 10, itemID: itemID("Inquisitor's hauberk") },
+					{ boostPercent: 5, itemID: itemID('Torva platebody') },
+					{ boostPercent: 5, itemID: itemID('Bandos chestplate') }
+				],
 				gearSetup: 'melee',
 				required: false
 			},
 			{
-				items: resolveItems(["Inquisitor's plateskirt", 'Torva platelegs', 'Bandos tassets']).map(id => ({
-					boostPercent: 2,
-					itemID: id
-				})),
+				items: [
+					{ boostPercent: 10, itemID: itemID("Inquisitor's plateskirt") },
+					{ boostPercent: 5, itemID: itemID('Torva platelegs') },
+					{ boostPercent: 5, itemID: itemID('Bandos tassets') }
+				],
 				gearSetup: 'melee',
 				required: false
 			},
@@ -924,7 +929,7 @@ const killableBosses: KillableMonster[] = [
 				items: [
 					{
 						itemID: itemID('Scythe of vitur'),
-						boostPercent: 10
+						boostPercent: 25
 					}
 				]
 			}
@@ -962,6 +967,7 @@ const killableBosses: KillableMonster[] = [
 				defence_stab: 0
 			}
 		},
+		combatXpMultiplier: 1.4, // average multiplier weighted by HP on each phase
 		itemCost: [
 			{
 				itemCost: new Bank().add('Super restore(4)'),
@@ -1022,22 +1028,20 @@ const killableBosses: KillableMonster[] = [
 				required: false
 			},
 			{
-				items: resolveItems(["Inquisitor's hauberk", 'Torva platebody', 'Bandos chestplate']).map(
-					(id, index) => ({
-						boostPercent: index === 0 ? 10 : 5,
-						itemID: id
-					})
-				),
+				items: [
+					{ boostPercent: 10, itemID: itemID("Inquisitor's hauberk") },
+					{ boostPercent: 5, itemID: itemID('Torva platebody') },
+					{ boostPercent: 5, itemID: itemID('Bandos chestplate') }
+				],
 				gearSetup: 'melee',
 				required: false
 			},
 			{
-				items: resolveItems(["Inquisitor's plateskirt", 'Torva platelegs', 'Bandos tassets']).map(
-					(id, index) => ({
-						boostPercent: index === 0 ? 10 : 5,
-						itemID: id
-					})
-				),
+				items: [
+					{ boostPercent: 10, itemID: itemID("Inquisitor's plateskirt") },
+					{ boostPercent: 5, itemID: itemID('Torva platelegs') },
+					{ boostPercent: 5, itemID: itemID('Bandos tassets') }
+				],
 				gearSetup: 'melee',
 				required: false
 			},
@@ -1116,6 +1120,406 @@ const killableBosses: KillableMonster[] = [
 				boostPercent: 7
 			}
 		]
+	},
+	{
+		id: Monsters.Branda.id,
+		name: Monsters.Branda.name,
+		aliases: Monsters.Branda.aliases,
+		timeToFinish: Time.Minute * 2.5,
+		respawnTime: 500,
+		table: Monsters.Branda,
+		deathProps: {
+			hardness: 0.2,
+			steepness: 0.99
+		},
+		equippedItemBoosts: [
+			{
+				items: [{ boostPercent: 5, itemID: itemID('Avernic defender') }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Amulet of rancour') },
+					{ boostPercent: 2, itemID: itemID('Amulet of torture') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Infernal cape') },
+					{ boostPercent: 2, itemID: itemID('Fire cape') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Ferocious gloves') },
+					{ boostPercent: 2, itemID: itemID('Barrows gloves') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Torva platebody') },
+					{ boostPercent: 2, itemID: itemID('Bandos chestplate') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Torva platelegs') },
+					{ boostPercent: 2, itemID: itemID('Bandos tassets') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [{ boostPercent: 8, itemID: itemID('Toxic blowpipe') }],
+				gearSetup: 'range'
+			},
+			{
+				items: [{ boostPercent: 3, itemID: itemID('Masori body (f)') }],
+				gearSetup: 'range'
+			},
+			{
+				items: [{ boostPercent: 3, itemID: itemID('Masori chaps (f)') }],
+				gearSetup: 'range'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID("Blessed dizana's quiver") },
+					{ boostPercent: 2, itemID: itemID("Ava's assembler") }
+				],
+				gearSetup: 'range'
+			}
+		],
+		itemInBankBoosts: [
+			{
+				[itemID('Giantsoul amulet')]: 13
+			},
+			{
+				[itemID('Dragon claws')]: 6,
+				[itemID('Burning claws')]: 3
+			}
+		],
+		degradeableItemUsage: [
+			{
+				required: false,
+				gearSetup: 'melee',
+				items: [
+					{
+						itemID: itemID('Scythe of vitur'),
+						boostPercent: 20
+					}
+				]
+			}
+		],
+		levelRequirements: {
+			prayer: 43,
+			attack: 65,
+			strength: 65,
+			defence: 65,
+			hitpoints: 65,
+			ranged: 65
+		},
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackMagic],
+		defaultAttackStyles: [SkillsEnum.Attack],
+		healAmountNeeded: 10 * 10,
+		minimumGearRequirements: {
+			melee: {
+				...new Gear({
+					neck: 'Amulet of fury',
+					cape: 'Fire cape',
+					body: 'Fighter torso',
+					legs: 'Obsidian platelegs',
+					feet: 'Dragon boots',
+					ring: 'Berserker ring (i)'
+				}).stats,
+				defence_magic: 0,
+				prayer: 0,
+				defence_crush: 0,
+				defence_ranged: 0,
+				defence_slash: 0,
+				defence_stab: 0
+			}
+		},
+		specialLoot: ({ loot, user }) => {
+			if (
+				user &&
+				loot.has('Mystic vigour prayer scroll') &&
+				user.bitfield.includes(BitField.HasMysticVigourScroll)
+			) {
+				loot.set('Mystic vigour prayer scroll', 0);
+			}
+		}
+	},
+	{
+		id: Monsters.Eldric.id,
+		name: Monsters.Eldric.name,
+		aliases: Monsters.Eldric.aliases,
+		timeToFinish: Time.Minute * 2.5,
+		respawnTime: 500,
+		table: Monsters.Eldric,
+		deathProps: {
+			hardness: 0.2,
+			steepness: 0.99
+		},
+		equippedItemBoosts: [
+			{
+				items: [{ boostPercent: 5, itemID: itemID('Avernic defender') }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Amulet of rancour') },
+					{ boostPercent: 2, itemID: itemID('Amulet of torture') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Infernal cape') },
+					{ boostPercent: 2, itemID: itemID('Fire cape') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Ferocious gloves') },
+					{ boostPercent: 2, itemID: itemID('Barrows gloves') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Torva platebody') },
+					{ boostPercent: 2, itemID: itemID('Bandos chestplate') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Torva platelegs') },
+					{ boostPercent: 2, itemID: itemID('Bandos tassets') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [{ boostPercent: 8, itemID: itemID('Toxic blowpipe') }],
+				gearSetup: 'range'
+			},
+			{
+				items: [{ boostPercent: 3, itemID: itemID('Masori body (f)') }],
+				gearSetup: 'range'
+			},
+			{
+				items: [{ boostPercent: 3, itemID: itemID('Masori chaps (f)') }],
+				gearSetup: 'range'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID("Blessed dizana's quiver") },
+					{ boostPercent: 2, itemID: itemID("Ava's assembler") }
+				],
+				gearSetup: 'range'
+			}
+		],
+		itemInBankBoosts: [
+			{
+				[itemID('Giantsoul amulet')]: 13
+			},
+			{
+				[itemID('Dragon claws')]: 6,
+				[itemID('Burning claws')]: 3
+			}
+		],
+		degradeableItemUsage: [
+			{
+				required: false,
+				gearSetup: 'melee',
+				items: [
+					{
+						itemID: itemID('Scythe of vitur'),
+						boostPercent: 20
+					}
+				]
+			}
+		],
+		levelRequirements: {
+			prayer: 43,
+			attack: 65,
+			strength: 65,
+			defence: 65,
+			hitpoints: 65,
+			ranged: 65
+		},
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackMagic],
+		defaultAttackStyles: [SkillsEnum.Attack],
+		healAmountNeeded: 10 * 10,
+		minimumGearRequirements: {
+			melee: {
+				...new Gear({
+					neck: 'Amulet of fury',
+					cape: 'Fire cape',
+					body: 'Fighter torso',
+					legs: 'Obsidian platelegs',
+					feet: 'Dragon boots',
+					ring: 'Berserker ring (i)'
+				}).stats,
+				defence_magic: 0,
+				prayer: 0,
+				defence_crush: 0,
+				defence_ranged: 0,
+				defence_slash: 0,
+				defence_stab: 0
+			}
+		},
+		specialLoot: ({ loot, user }) => {
+			if (user && loot.has('Deadeye prayer scroll') && user.bitfield.includes(BitField.HasDeadeyeScroll)) {
+				loot.set('Deadeye vigour prayer scroll', 0);
+			}
+		}
+	},
+	{
+		id: Monsters.RoyalTitans.id,
+		name: Monsters.RoyalTitans.name,
+		aliases: Monsters.RoyalTitans.aliases,
+		timeToFinish: Time.Minute * 2.5,
+		respawnTime: 500,
+		table: Monsters.RoyalTitans,
+		deathProps: {
+			hardness: 0.2,
+			steepness: 0.99
+		},
+		equippedItemBoosts: [
+			{
+				items: [{ boostPercent: 5, itemID: itemID('Avernic defender') }],
+				gearSetup: 'melee'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Amulet of rancour') },
+					{ boostPercent: 2, itemID: itemID('Amulet of torture') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Infernal cape') },
+					{ boostPercent: 2, itemID: itemID('Fire cape') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Ferocious gloves') },
+					{ boostPercent: 2, itemID: itemID('Barrows gloves') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Torva platebody') },
+					{ boostPercent: 2, itemID: itemID('Bandos chestplate') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Torva platelegs') },
+					{ boostPercent: 2, itemID: itemID('Bandos tassets') }
+				],
+				gearSetup: 'melee',
+				required: false
+			},
+			{
+				items: [{ boostPercent: 8, itemID: itemID('Toxic blowpipe') }],
+				gearSetup: 'range'
+			},
+			{
+				items: [{ boostPercent: 3, itemID: itemID('Masori body (f)') }],
+				gearSetup: 'range'
+			},
+			{
+				items: [{ boostPercent: 3, itemID: itemID('Masori chaps (f)') }],
+				gearSetup: 'range'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID("Blessed dizana's quiver") },
+					{ boostPercent: 2, itemID: itemID("Ava's assembler") }
+				],
+				gearSetup: 'range'
+			}
+		],
+		itemInBankBoosts: [
+			{
+				[itemID('Giantsoul amulet')]: 13
+			},
+			{
+				[itemID('Dragon claws')]: 6,
+				[itemID('Burning claws')]: 3
+			}
+		],
+		degradeableItemUsage: [
+			{
+				required: false,
+				gearSetup: 'melee',
+				items: [
+					{
+						itemID: itemID('Scythe of vitur'),
+						boostPercent: 20
+					}
+				]
+			}
+		],
+		levelRequirements: {
+			prayer: 43,
+			attack: 65,
+			strength: 65,
+			defence: 65,
+			hitpoints: 65,
+			ranged: 65
+		},
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackMagic],
+		defaultAttackStyles: [SkillsEnum.Attack],
+		healAmountNeeded: 10 * 10,
+		minimumGearRequirements: {
+			melee: {
+				...new Gear({
+					neck: 'Amulet of fury',
+					cape: 'Fire cape',
+					body: 'Fighter torso',
+					legs: 'Obsidian platelegs',
+					feet: 'Dragon boots',
+					ring: 'Berserker ring (i)'
+				}).stats,
+				attack_ranged: -100,
+				attack_magic: -100,
+				defence_magic: -100,
+				prayer: -100,
+				defence_crush: 0,
+				defence_ranged: 0,
+				defence_slash: 0,
+				defence_stab: 0
+			}
+		}
 	}
 ];
 

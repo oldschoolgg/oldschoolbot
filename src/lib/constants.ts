@@ -149,6 +149,8 @@ export enum BitField {
 	ShowDetailedInfo = 42,
 	DisableTearsOfGuthixButton = 43,
 	DisableDailyButton = 44,
+	HasDeadeyeScroll = 45,
+	HasMysticVigourScroll = 46,
 
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
@@ -411,6 +413,8 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
+	[BitField.HasDeadeyeScroll]: { name: 'Deadeye Scroll Used', protected: false, userConfigurable: false },
+	[BitField.HasMysticVigourScroll]: { name: 'Mystic Vigour Scroll Used', protected: false, userConfigurable: false },
 
 	[BitField.HasMoondashCharm]: {
 		name: 'Used Moondash Charm',

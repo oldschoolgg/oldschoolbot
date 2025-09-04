@@ -711,7 +711,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 	{
 		id: 2061,
 		name: "Phosani's Speedchaser",
-		desc: "Defeat Phosani's Nightmare within 9 minutes.",
+		desc: "Defeat Phosani's Nightmare within 7 minutes and 30 seconds.",
 		type: 'speed',
 		monster: "Phosani's Nightmare",
 		rng: {
@@ -1750,11 +1750,11 @@ export const masterCombatAchievements: CombatAchievement[] = [
 	{
 		id: 2153,
 		name: 'Duke Sucellus Speed-Chaser',
-		desc: 'Kill Duke Sucellus in less than 1:35 minutes without a slayer task.',
+		desc: 'Kill Duke Sucellus in less than 50 seconds without a slayer task.',
 		type: 'speed',
 		monster: 'Duke Sucellus',
 		rng: {
-			chancePerKill: 40,
+			chancePerKill: 30,
 			hasChance: isCertainMonsterTrip(Monsters.DukeSucellus.id)
 		}
 	},

@@ -104,9 +104,17 @@ export const taskCanBeRepeated = (activity: Activity) => {
 };
 
 export const tripHandlers = {
-	[activity_type_enum.HalloweenMiniMinigame]: {
+		[activity_type_enum.HalloweenMiniMinigame]: {
 		commandName: 'm',
 		args: () => ({})
+		},
+	[activity_type_enum.ClueCompletion]: {
+		commandName: 'clue',
+		args: (data: ClueActivityTaskOptions) => ({
+			tier: data.ci,
+			quantity: data.iQty,
+			implings: data.implingID ? Items.itemNameFromId(data.implingID!) : undefined
+		})
 	},
 	[activity_type_enum.TrickOrTreat]: {
 		commandName: 'm',

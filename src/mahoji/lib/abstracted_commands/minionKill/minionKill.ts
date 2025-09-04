@@ -29,6 +29,7 @@ import { vasaCommand } from '../vasaCommand';
 import { wintertodtCommand } from '../wintertodtCommand';
 import { zalcanoCommand } from '../zalcanoCommand';
 import { newMinionKillCommand } from './newMinionKill';
+import { Monsters } from 'oldschooljs';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 
@@ -98,13 +99,24 @@ export async function minionKillCommand(
 
 	const stats: { pk_evasion_exp: number } = await user.fetchStats({ pk_evasion_exp: true });
 
+	const royalTitansGroupIDs = [Monsters.Branda.id, Monsters.Eldric.id, Monsters.RoyalTitans.id];
+
+	let kcForBonus = await user.getKC(monster.id);
+
+	if (royalTitansGroupIDs.includes(monster.id)) {
+		const brandaKC = await user.getKC(Monsters.Branda.id);
+		const eldricKC = await user.getKC(Monsters.Eldric.id);
+		const sacrificeKC = await user.getKC(Monsters.RoyalTitans.id);
+		kcForBonus = brandaKC + eldricKC + sacrificeKC;
+	}
+
 	const result = newMinionKillCommand({
 		gearBank: user.gearBank,
 		attackStyles: user.getAttackStyles(),
 		currentSlayerTask: slayerInfo,
 		monster,
 		isTryingToUseWildy: wilderness ?? false,
-		monsterKC: await user.getKC(monster.id),
+		monsterKC: kcForBonus,
 		inputPVMMethod: method,
 		maxTripLength: calcMaxTripLength(user, 'MonsterKilling'),
 		pkEvasionExperience: stats.pk_evasion_exp,
@@ -115,7 +127,7 @@ export async function minionKillCommand(
 		favoriteFood: user.user.favorite_food,
 		bitfield: user.bitfield,
 		disabledInventions: user.user.disabled_inventions,
-		currentPeak: generateDailyPeakIntervals().currentPeak
+		currentPeak: generateDailyPeakIntervals().currentPeak,
 	});
 
 	if (typeof result === 'string') {

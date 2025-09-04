@@ -26,6 +26,7 @@ import { onStartup } from './mahoji/lib/events';
 import { exitCleanup } from './mahoji/lib/exitHandler';
 import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
+import 'oldschooljs';
 
 if (globalConfig.sentryDSN) {
 	init({
