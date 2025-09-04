@@ -107,7 +107,7 @@ importers:
         version: 1.9.4
       '@hono/node-ws':
         specifier: ^1.2.0
-        version: 1.2.0(@hono/node-server@1.14.4(hono@4.8.3))(bufferutil@4.0.9)(hono@4.8.3)
+        version: 1.2.0(@hono/node-server@1.14.4(hono@4.9.6))(bufferutil@4.0.9)(hono@4.9.6)
       '@types/luxon':
         specifier: ^3.6.2
         version: 3.6.2
@@ -232,13 +232,13 @@ importers:
     dependencies:
       '@hono/node-server':
         specifier: ^1.14.4
-        version: 1.14.4(hono@4.8.3)
+        version: 1.14.4(hono@4.9.6)
       '@oldschoolgg/toolkit':
         specifier: workspace:*
         version: link:../toolkit
       hono:
-        specifier: ^4.8.3
-        version: 4.8.3
+        specifier: ^4.9.6
+        version: 4.9.6
 
   packages/test-dashboard:
     dependencies:
@@ -3020,8 +3020,8 @@ packages:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
 
-  hono@4.8.3:
-    resolution: {integrity: sha512-jYZ6ZtfWjzBdh8H/0CIFfCBHaFL75k+KMzaM177hrWWm2TWL39YMYaJgB74uK/niRc866NMlH9B8uCvIo284WQ==}
+  hono@4.9.6:
+    resolution: {integrity: sha512-doVjXhSFvYZ7y0dNokjwwSahcrAfdz+/BCLvAMa/vHLzjj8+CFyV5xteThGUsKdkaasgN+gF2mUxao+SGLpUeA==}
     engines: {node: '>=16.9.0'}
 
   hosted-git-info@4.1.0:
@@ -5816,14 +5816,14 @@ snapshots:
     dependencies:
       '@expressive-code/core': 0.35.6
 
-  '@hono/node-server@1.14.4(hono@4.8.3)':
+  '@hono/node-server@1.14.4(hono@4.9.6)':
     dependencies:
-      hono: 4.8.3
+      hono: 4.9.6
 
-  '@hono/node-ws@1.2.0(@hono/node-server@1.14.4(hono@4.8.3))(bufferutil@4.0.9)(hono@4.8.3)':
+  '@hono/node-ws@1.2.0(@hono/node-server@1.14.4(hono@4.9.6))(bufferutil@4.0.9)(hono@4.9.6)':
     dependencies:
-      '@hono/node-server': 1.14.4(hono@4.8.3)
-      hono: 4.8.3
+      '@hono/node-server': 1.14.4(hono@4.9.6)
+      hono: 4.9.6
       ws: 8.18.3(bufferutil@4.0.9)
     transitivePeerDependencies:
       - bufferutil
@@ -8279,7 +8279,7 @@ snapshots:
 
   he@1.2.0: {}
 
-  hono@4.8.3: {}
+  hono@4.9.6: {}
 
   hosted-git-info@4.1.0:
     dependencies:
