@@ -46,14 +46,14 @@ export const paintCommand: OSBMahojiCommand = {
 
 		if (!options.paint) {
 			const canvases = await Promise.all(paintColors.map(color => getPaintedItemImage(color, item.id)));
-			if (!canvases || canvases.length === 0 || !canvases[0]) {
+
+			const tiles = paintColors
+				.map((color, i) => ({ name: color.paintCanItem.name, img: canvases[i] }))
+				.filter(t => t.img);
+
+			if (!tiles || tiles.length === 0) {
 				return 'No paint previews available for this item.';
 			}
-
-			const tiles = paintColors.map((color, i) => ({
-				name: color.paintCanItem.name,
-				img: canvases[i]!
-			}));
 
 			const buffer = await renderPaintGrid(tiles, {
 				gap: 14,
