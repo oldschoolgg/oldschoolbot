@@ -2335,7 +2335,7 @@ exports[`OSB Buyables 1`] = `
       "9813": 1,
       "9814": 1,
     },
-    "qpRequired": 319,
+    "qpRequired": 321,
   },
   {
     "aliases": [
@@ -2348,7 +2348,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "13068": 1,
     },
-    "qpRequired": 319,
+    "qpRequired": 321,
   },
   {
     "aliases": [
@@ -2374,7 +2374,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": {
       "13069": 1,
     },
-    "qpRequired": 319,
+    "qpRequired": 321,
   },
   {
     "customReq": [Function],
