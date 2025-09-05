@@ -183,7 +183,12 @@ export const mazchnaMonsters: KillableMonster[] = [
 		itemCost: { itemCost: new Bank().add('Giant key', 1), qtyPerKill: 1 },
 		healAmountNeeded: 20 * 5,
 		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged]
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
+		itemInBankBoosts: [
+			{
+				[itemID('Giantsoul amulet')]: 20
+			}
+		]
 	},
 	{
 		id: Monsters.Hobgoblin.id,

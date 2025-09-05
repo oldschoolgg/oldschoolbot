@@ -150,7 +150,10 @@ export enum BitField {
 	DisableOpenableNames = 41,
 	ShowDetailedInfo = 42,
 	DisableTearsOfGuthixButton = 43,
-	DisableDailyButton = 44
+	DisableDailyButton = 44,
+
+	HasDeadeyeScroll = 45,
+	HasMysticVigourScroll = 46
 }
 
 interface BitFieldData {
@@ -263,7 +266,10 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		name: 'Disable Minion Daily Button',
 		protected: false,
 		userConfigurable: true
-	}
+	},
+
+	[BitField.HasDeadeyeScroll]: { name: 'Deadeye Scroll Used', protected: false, userConfigurable: false },
+	[BitField.HasMysticVigourScroll]: { name: 'Mystic Vigour Scroll Used', protected: false, userConfigurable: false }
 } as const;
 
 export const BadgesEnum = {

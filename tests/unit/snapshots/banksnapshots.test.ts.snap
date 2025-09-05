@@ -6264,6 +6264,59 @@ exports[`OSB Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": {
+      "1391": 1,
+      "30628": 1,
+      "30631": 1,
+    },
+    "name": "Twinflame staff",
+    "outputItems": {
+      "30634": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "30637": 1,
+      "532": 500,
+    },
+    "name": "Giantsoul amulet",
+    "outputItems": {
+      "30638": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "30640": 1,
+    },
+    "name": "Burnt page",
+    "outputItems": {
+      "20718": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "30640": 1,
+    },
+    "name": "Soaked page",
+    "outputItems": {
+      "25578": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "30640": 1,
+    },
+    "name": "Soiled page",
+    "outputItems": {
+      "30068": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
       "12922": 1,
     },
     "name": "Revert tanzanite fang",
@@ -6905,6 +6958,17 @@ exports[`OSB Creatables 1`] = `
     "noCl": true,
     "outputItems": {
       "28924": 4000,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": {
+      "30637": 1,
+    },
+    "name": "Revert Giantsoul amulet (uncharged)",
+    "noCl": true,
+    "outputItems": {
+      "532": 30,
     },
   },
   {

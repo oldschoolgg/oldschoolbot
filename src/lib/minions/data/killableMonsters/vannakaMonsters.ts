@@ -962,7 +962,12 @@ export const vannakaMonsters: KillableMonster[] = [
 		itemCost: { itemCost: new Bank().add('Mossy key', 1), qtyPerKill: 1 },
 		healAmountNeeded: 20 * 8,
 		attackStyleToUse: GearStat.AttackRanged,
-		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic],
+		itemInBankBoosts: [
+			{
+				[itemID('Giantsoul amulet')]: 20
+			}
+		]
 	},
 	{
 		id: Monsters.MountainTroll.id,
