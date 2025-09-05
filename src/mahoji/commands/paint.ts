@@ -51,7 +51,7 @@ export const paintCommand: OSBMahojiCommand = {
 				.map((color, i) => ({ name: color.paintCanItem.name, img: canvases[i] }))
 				.filter(t => t.img);
 
-			if (!tiles || tiles.length === 0) {
+			if (tiles.length === 0) {
 				return 'No paint previews available for this item.';
 			}
 
