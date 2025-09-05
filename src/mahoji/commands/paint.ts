@@ -2,7 +2,7 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { canvasToBuffer } from '@/lib/canvas/canvasUtil';
+import { canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil';
 import { paintColors } from '../../lib/customItems/paintCans';
 import { getPaintedItemImage } from '../../lib/paintColors';
 import { itemEffectImageCache } from '../../lib/util/customItemEffects';
@@ -17,8 +17,8 @@ export const paintCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.String,
 			name: 'paint',
-			description: 'The paint you want to use.',
-			required: true,
+			description: 'The paint you want to use. Leave blank to preview all paints.',
+			required: false,
 			autocomplete: async (value, user) => {
 				const { bank } = await mUserFetch(user.id);
 				return paintColors
@@ -34,14 +34,43 @@ export const paintCommand: OSBMahojiCommand = {
 			required: true
 		}
 	],
-	run: async ({ userID, options, interaction }: CommandRunOptions<{ paint: string; item: string }>) => {
-		const paint = paintColors.find(i => i.itemId.toString() === options.paint);
-		if (!paint) {
-			return "That's not a valid paint.";
-		}
+	run: async ({ userID, options, interaction }: CommandRunOptions<{ paint?: string; item: string }>) => {
 		const item = getItem(options.item);
 		if (!item) {
 			return "That's not a valid item.";
+		}
+
+		if (!options.paint) {
+			const canvases = await Promise.all(paintColors.map(color => getPaintedItemImage(color, item.id)));
+			const iconWidth = canvases[0].width;
+			const iconHeight = canvases[0].height;
+			const margin = 5;
+			const textHeight = 16;
+			const cols = 4;
+			const rows = Math.ceil(canvases.length / cols);
+			const canvas = createCanvas(cols * (iconWidth + margin * 2), rows * (iconHeight + textHeight + margin * 2));
+			const ctx = canvas.getContext('2d');
+			ctx.font = '12px Sans';
+			ctx.textAlign = 'center';
+			ctx.fillStyle = '#fff';
+			canvases.forEach((img, index) => {
+				const col = index % cols;
+				const row = Math.floor(index / cols);
+				const x = col * (iconWidth + margin * 2) + margin;
+				const y = row * (iconHeight + textHeight + margin * 2) + margin;
+				ctx.drawImage(img, x, y, iconWidth, iconHeight);
+				ctx.fillText(paintColors[index]!.name, x + iconWidth / 2, y + iconHeight + 12);
+			});
+			const buffer = await canvasToBuffer(canvas);
+			return {
+				content: `Paint previews for ${item.name}:`,
+				files: [{ attachment: buffer, name: 'paint-previews.png' }]
+			};
+		}
+
+		const paint = paintColors.find(i => i.itemId.toString() === options.paint);
+		if (!paint) {
+			return "That's not a valid paint.";
 		}
 
 		const user = await mUserFetch(userID);
