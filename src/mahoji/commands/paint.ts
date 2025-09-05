@@ -2,7 +2,8 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil';
+import { canvasToBuffer } from '@/lib/canvas/canvasUtil';
+import { renderPaintGrid } from '@/lib/canvas/renderPaintGrid';
 import { paintColors } from '../../lib/customItems/paintCans';
 import { getPaintedItemImage } from '../../lib/paintColors';
 import { itemEffectImageCache } from '../../lib/util/customItemEffects';
@@ -15,6 +16,10 @@ export const paintCommand: OSBMahojiCommand = {
 	description: 'Paint an item.',
 	options: [
 		{
+			...ownedItemOption(),
+			required: true
+		},
+		{
 			type: ApplicationCommandOptionType.String,
 			name: 'paint',
 			description: 'The paint you want to use. Leave blank to preview all paints.',
@@ -26,12 +31,11 @@ export const paintCommand: OSBMahojiCommand = {
 						if (!value) return true;
 						return i.paintCanItem.name.toLowerCase().includes(value.toLowerCase());
 					})
-					.map(i => ({ name: `${i.paintCanItem.name} (${bank.amount(i.itemId)}x Owned)`, value: i.itemId }));
+					.map(i => ({
+						name: `${i.paintCanItem.name} (${bank.amount(i.itemId)}x Owned)`,
+						value: i.itemId.toString()
+					}));
 			}
-		},
-		{
-			...ownedItemOption(),
-			required: true
 		}
 	],
 	run: async ({ userID, options, interaction }: CommandRunOptions<{ paint?: string; item: string }>) => {
@@ -42,26 +46,24 @@ export const paintCommand: OSBMahojiCommand = {
 
 		if (!options.paint) {
 			const canvases = await Promise.all(paintColors.map(color => getPaintedItemImage(color, item.id)));
-			const iconWidth = canvases[0].width;
-			const iconHeight = canvases[0].height;
-			const margin = 5;
-			const textHeight = 16;
-			const cols = 4;
-			const rows = Math.ceil(canvases.length / cols);
-			const canvas = createCanvas(cols * (iconWidth + margin * 2), rows * (iconHeight + textHeight + margin * 2));
-			const ctx = canvas.getContext('2d');
-			ctx.font = '12px Sans';
-			ctx.textAlign = 'center';
-			ctx.fillStyle = '#fff';
-			canvases.forEach((img, index) => {
-				const col = index % cols;
-				const row = Math.floor(index / cols);
-				const x = col * (iconWidth + margin * 2) + margin;
-				const y = row * (iconHeight + textHeight + margin * 2) + margin;
-				ctx.drawImage(img, x, y, iconWidth, iconHeight);
-				ctx.fillText(paintColors[index]!.name, x + iconWidth / 2, y + iconHeight + 12);
+			if (!canvases || canvases.length === 0 || !canvases[0]) {
+				return 'No paint previews available for this item.';
+			}
+
+			const tiles = paintColors.map((color, i) => ({
+				name: color.paintCanItem.name,
+				img: canvases[i]!
+			}));
+
+			const buffer = await renderPaintGrid(tiles, {
+				gap: 14,
+				padding: 20,
+				extraTextWidth: 60,
+				maxCols: 6,
+				baseFontSize: 14,
+				minFontSize: 10
 			});
-			const buffer = await canvasToBuffer(canvas);
+
 			return {
 				content: `Paint previews for ${item.name}:`,
 				files: [{ attachment: buffer, name: 'paint-previews.png' }]
@@ -74,22 +76,22 @@ export const paintCommand: OSBMahojiCommand = {
 		}
 
 		const user = await mUserFetch(userID);
-		const image = await canvasToBuffer(await getPaintedItemImage(paint, item.id));
+		const imageBuffer = await canvasToBuffer(await getPaintedItemImage(paint, item.id));
 
-		if (!user.bank.has(paint.itemId)) {
+		const cost = new Bank().add(paint.itemId);
+		if (!user.owns(cost)) {
 			return {
 				content: "You don't own that paint can, but here's what it would look like if you did.",
-				files: [image]
+				files: [{ attachment: imageBuffer, name: 'paint-preview.png' }]
 			};
 		}
 
 		await handleMahojiConfirmation(interaction, {
-			files: [image],
+			files: [{ attachment: imageBuffer, name: 'paint-preview.png' }],
 			content:
 				'Are you sure you want to paint this item? This will consume the paint can, and it will apply to all items of this type in your bank. The paint does not transfer if the items are traded, and stays with your account only.'
 		});
 
-		const cost = new Bank().add(paint.itemId);
 		if (!user.owns(cost)) {
 			return `You don't own ${cost}.`;
 		}
@@ -100,6 +102,10 @@ export const paintCommand: OSBMahojiCommand = {
 				.concat([[item.id, paint.itemId]])
 		});
 		itemEffectImageCache.delete(`${user.id}-${item.id}`);
-		return `You painted your ${item.name} with ${paint.paintCanItem.name}!`;
+
+		return {
+			content: `You painted your ${item.name} with ${paint.paintCanItem.name}!`,
+			files: [{ attachment: imageBuffer, name: 'painted-item.png' }]
+		};
 	}
 };
