@@ -39,6 +39,9 @@ export interface Buyable {
 	collectionLogReqs?: number[];
 	customReq?: (user: MUser, userStats: MUserStats) => Promise<[true] | [false, string]>;
 	maxQuantity?: number;
+	quantityPerHour?: number;
+	shopQuantity?: number;
+	changePer?: number;
 }
 
 const randomEventBuyables: Buyable[] = [

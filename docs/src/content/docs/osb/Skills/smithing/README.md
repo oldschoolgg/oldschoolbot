@@ -48,7 +48,7 @@ The Smiths' uniform can be purchased with reputation from the [Giant's Foundry](
 | Runite     | [[smithing:85]]    | 50.0   | Runite ore + 8 Coal     |
 
 \* Has a 50% chance to fail in a regular furnace. Ring of forging does **not** work.  
-\*\* [Goldsmith gauntlets](https://wiki.oldschool.gg/miscellaneous/buyables) increase gold bar XP to 56.2.
+\*\* [Goldsmith gauntlets](https://wiki.oldschool.gg/Buyables/buyables) increase gold bar XP to 56.2.
 
 ## Blast Furnace
 
