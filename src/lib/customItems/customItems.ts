@@ -114,6 +114,7 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
+		buy_limit: 75,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -127,6 +128,7 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
+		buy_limit: 50,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -140,6 +142,7 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
+		buy_limit: 50,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -153,6 +156,7 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
+		buy_limit: 5,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -166,6 +170,7 @@ setCustomItem(
 	{
 		tradeable: true,
 		tradeable_on_ge: true,
+		buy_limit: 2,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
