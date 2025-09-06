@@ -143,7 +143,17 @@ const usableUnlocks: UsableUnlock[] = [
 			item: e.boon!,
 			bitfield: e.boonBitfield!,
 			resultMessage: `You used your ${e.boon!.name}, and now receive bonus XP!`
-		}))
+		})),
+	{
+		item: getOSItem('Deadeye prayer scroll'),
+		bitfield: BitField.HasDeadeyeScroll,
+		resultMessage: 'You used your Deadeye prayer scroll, and unlocked the Deadeye prayer.'
+	},
+	{
+		item: getOSItem('Mystic vigour prayer scroll'),
+		bitfield: BitField.HasMysticVigourScroll,
+		resultMessage: 'You used your Mystic vigour prayer scroll, and unlocked the Mystic vigour prayer.'
+	}
 ];
 for (const usableUnlock of usableUnlocks) {
 	usables.push({

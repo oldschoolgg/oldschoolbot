@@ -224,6 +224,7 @@ const source: [string, (string | number)[]][] = [
 			'Deathly collector (i)'
 		]
 	],
+	["Blessed dizana's quiver", ["Dizana's max cape"]],
 	['Mythical cape', ['Mythical max cape']],
 	[
 		'Imbued guthix cape',

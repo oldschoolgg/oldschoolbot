@@ -1,5 +1,4 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { UserError } from '@oldschoolgg/toolkit/structures';
 import { command_name_enum } from '@prisma/client';
@@ -7,6 +6,7 @@ import { type BaseMessageOptions, EmbedBuilder, type Message, bold, time } from 
 import { Time, isFunction } from 'e';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
+import { dateFm, getNextUTCReset } from '@oldschoolgg/toolkit/util';
 import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
@@ -24,59 +24,70 @@ import { minionStatsEmbed } from './util/minionStatsEmbed';
 const mentionText = `<@${globalConfig.clientID}>`;
 const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
 
+export const tears_of_guthix_cd = Time.Day * 7;
+
 const cooldownTimers: {
 	name: string;
 	timeStamp: (user: MUser, stats: { last_daily_timestamp: bigint; last_tears_of_guthix_timestamp: bigint }) => number;
 	cd: number | ((user: MUser) => number);
 	command: [string] | [string, string] | [string, string, string];
+	utcReset: boolean;
 }[] = [
 	{
 		name: 'Tears of Guthix',
 		timeStamp: (_, stats) => Number(stats.last_tears_of_guthix_timestamp),
-		cd: Time.Day * 7,
-		command: ['minigames', 'tears_of_guthix', 'start']
+		cd: tears_of_guthix_cd,
+		command: ['minigames', 'tears_of_guthix', 'start'],
+		utcReset: true
 	},
 	{
 		name: 'Daily',
 		timeStamp: (_, stats) => Number(stats.last_daily_timestamp),
 		cd: Time.Hour * 12,
-		command: ['minion', 'daily']
+		command: ['minion', 'daily'],
+		utcReset: false
 	},
 	{
 		name: 'Spawn Lamp',
 		timeStamp: (user: MUser) => Number(user.user.lastSpawnLamp),
 		cd: (user: MUser) => spawnLampResetTime(user),
-		command: ['tools', 'patron', 'spawnlamp']
+		command: ['tools', 'patron', 'spawnlamp'],
+		utcReset: false
 	},
 	{
 		name: 'Spawn Box',
 		timeStamp: (user: MUser) => Cooldowns.cooldownMap.get(user.id)?.get('SPAWN_BOX') ?? 0,
 		cd: Time.Minute * 45,
-		command: ['tools', 'patron', 'spawnbox']
+		command: ['tools', 'patron', 'spawnbox'],
+		utcReset: false
 	},
 	{
 		name: 'Give Box',
 		timeStamp: (user: MUser) => Number(user.user.lastGivenBoxx),
 		cd: giveBoxResetTime,
-		command: ['tools', 'patron', 'give_box']
+		command: ['tools', 'patron', 'give_box'],
+		utcReset: false
 	},
 	{
 		name: 'Item Contract',
 		timeStamp: (user: MUser) => Number(user.user.last_item_contract_date),
 		cd: itemContractResetTime,
-		command: ['ic', 'info']
+		command: ['ic', 'info'],
+		utcReset: false
 	},
 	{
 		name: 'Monthly Double Loot',
 		timeStamp: (user: MUser) => Number(user.user.last_patron_double_time_trigger),
 		cd: PATRON_DOUBLE_LOOT_COOLDOWN,
-		command: ['tools', 'patron', 'doubleloot']
+		command: ['tools', 'patron', 'doubleloot'],
+		utcReset: false
 	},
 	{
 		name: 'Balthazars Big Bonanza',
 		timeStamp: (user: MUser) => Number(user.user.last_bonanza_date),
 		cd: Time.Day * 7,
-		command: ['bsominigames', 'balthazars_big_bonanza', 'start']
+		command: ['bsominigames', 'balthazars_big_bonanza', 'start'],
+		utcReset: false
 	}
 ];
 
@@ -198,13 +209,15 @@ const mentionCommands: MentionCommand[] = [
 		description: 'Shows your cooldowns.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
 			const stats = await user.fetchStats({ last_daily_timestamp: true, last_tears_of_guthix_timestamp: true });
+
 			let content = cooldownTimers
 				.map(cd => {
 					const lastDone = cd.timeStamp(user, stats);
-					const difference = Date.now() - lastDone;
 					const cooldown = isFunction(cd.cd) ? cd.cd(user) : cd.cd;
-					if (difference < cooldown) {
-						const durationRemaining = formatDuration(Date.now() - (lastDone + cooldown));
+					const nextReset = cd.utcReset ? getNextUTCReset(lastDone, cooldown) : lastDone + cooldown;
+
+					if (Date.now() < nextReset) {
+						const durationRemaining = dateFm(new Date(nextReset));
 						return `${cd.name}: ${durationRemaining}`;
 					}
 					return bold(
@@ -227,7 +240,8 @@ const mentionCommands: MentionCommand[] = [
 				const date = new Date(DOUBLE_LOOT_FINISH_TIME_CACHE);
 				content += `\n\n2️⃣🇽 **Double Loot is Active until ${time(date)} (${time(date, 'R')})**`;
 			}
-			msg.reply({
+
+			return msg.reply({
 				content,
 				components
 			});

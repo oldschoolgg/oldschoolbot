@@ -1,6 +1,7 @@
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
 import { Time } from 'e';
+import { Monsters } from 'oldschooljs';
 
 import type { PvMMethod } from '@/lib/constants';
 import { generateDailyPeakIntervals } from '@/lib/util/peaks';
@@ -98,13 +99,22 @@ export async function minionKillCommand(
 
 	const stats: { pk_evasion_exp: number } = await user.fetchStats({ pk_evasion_exp: true });
 
+	const royalTitansGroupIDs = [Monsters.Branda.id, Monsters.Eldric.id, Monsters.RoyalTitans.id];
+
+	const kcs = await user.getAllKCs();
+	let kcForBonus = kcs[monster.id];
+
+	if (royalTitansGroupIDs.includes(monster.id)) {
+		kcForBonus = kcs.BRANDA + kcs.ELDRIC + kcs.ROYAL_TITANS;
+	}
+
 	const result = newMinionKillCommand({
 		gearBank: user.gearBank,
 		attackStyles: user.getAttackStyles(),
 		currentSlayerTask: slayerInfo,
 		monster,
 		isTryingToUseWildy: wilderness ?? false,
-		monsterKC: await user.getKC(monster.id),
+		monsterKC: kcForBonus,
 		inputPVMMethod: method,
 		maxTripLength: calcMaxTripLength(user, 'MonsterKilling'),
 		pkEvasionExperience: stats.pk_evasion_exp,

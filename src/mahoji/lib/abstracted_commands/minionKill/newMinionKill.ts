@@ -65,7 +65,7 @@ export interface MinionKillOptions {
 	disabledInventions: InventionID[];
 }
 
-export function newMinionKillCommand(args: MinionKillOptions) {
+export function newMinionKillCommand(args: MinionKillOptions): string | MinionKillReturn {
 	let {
 		combatOptions,
 		attackStyles,
@@ -77,6 +77,7 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 		maxTripLength,
 		slayerUnlocks
 	} = args;
+
 	const osjsMon = Monsters.get(monster.id)!;
 	let { primaryStyle, relevantGearStat } = getAttackStylesContext(attackStyles);
 	const isOnTask =
@@ -172,8 +173,10 @@ export function newMinionKillCommand(args: MinionKillOptions) {
 
 	const inventionsBeingUsed: InventionID[] = [];
 	const ephemeralPostTripEffects: PostBoostEffect[] = [];
+
 	const speedDurationResult = speedCalculations({
 		...args,
+		monsterKC: args.monsterKC,
 		attackStyles,
 		isOnTask,
 		osjsMon,
