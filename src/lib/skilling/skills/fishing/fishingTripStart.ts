@@ -91,7 +91,7 @@ export function calcFishingTripStart({
 	let flakesBeingUsed: number | undefined;
 	if (wantsToUseFlakes) {
 		if (!gearBank.bank.has('Spirit flakes')) {
-			return 'You need to have at least one spirit flake!';
+			return 'You need to have at least one Spirit flake!';
 		}
 
 		flakesBeingUsed = Math.min(gearBank.bank.amount('Spirit flakes'), quantity);
