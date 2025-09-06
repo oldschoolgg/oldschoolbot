@@ -333,7 +333,7 @@ const tripHandlers = {
 	[activity_type_enum.Fishing]: {
 		commandName: 'fish',
 		args: (data: FishingActivityTaskOptions) => ({
-			name: data.fishID,
+			name: Items.itemNameFromId(data.fishID),
 			quantity: data.iQty,
 			flakes: data.flakesQuantity !== undefined
 		})
