@@ -1497,12 +1497,6 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'item_contract_streak',
-			description: 'The item contract streak leaderboard.',
-			options: [ironmanOnlyOption]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'total_ic_donation_given',
 			description: 'Total item contract donations given leaderboard.'
 		},
