@@ -1,4 +1,4 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { calcPerHour, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { userMention } from 'discord.js';
 import { randInt } from 'e';
@@ -98,7 +98,7 @@ export const moktangTask: MinionTask = {
 
 		const str = `${userMention(data.userID)}, ${
 			user.minionName
-		} finished killing ${qty}x Moktang. ${bonusPercent}% bonus loot because of your Mining level. Received ${loot}.
+		} finished killing ${qty}x Moktang (${calcPerHour(data.qty, data.duration).toFixed(1)}/hr). ${bonusPercent}% bonus loot because of your Mining level.
 
 ${xpStr}`;
 

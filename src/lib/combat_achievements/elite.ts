@@ -1700,7 +1700,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 	{
 		id: 1147,
 		name: 'Duke Sucellus Speed-Trialist',
-		desc: 'Kill Duke Sucellus in less than 1:45 minutes without a slayer task.',
+		desc: 'Kill Duke Sucellus in less than 1:00 minutes without a slayer task.',
 		type: 'speed',
 		monster: 'Duke Sucellus',
 		rng: {
@@ -1774,6 +1774,20 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 150,
 			hasChance: isCertainMonsterTrip(Monsters.Amoxliatl.id)
+		}
+	},
+	{
+		id: 1154,
+		name: 'No time to pray',
+		type: 'restriction',
+		monster: 'Royal Titans',
+		desc: 'Kill the Royal Titans without losing any prayer points.',
+		rng: {
+			chancePerKill: 20,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
 		}
 	}
 ];
