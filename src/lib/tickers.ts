@@ -11,6 +11,7 @@ import { GrandExchange } from './grandExchange';
 import { collectMetrics } from './metrics';
 import { populateRoboChimpCache } from './perkTier';
 import { fetchUsersWithoutUsernames } from './rawSql';
+import { roboChimpSyncData } from './roboChimp';
 import { runCommand } from './settings/settings';
 import { informationalButtons } from './sharedComponents';
 import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
@@ -23,6 +24,25 @@ import { makeBadgeString } from './util/makeBadgeString';
 
 let lastMessageID: string | null = null;
 let lastMessageGEID: string | null = null;
+
+const sleep = (ms: number) => new Promise(res => setTimeout(res, ms));
+async function withRetry<T>(fn: () => Promise<T>, attempts = 3, base = 250): Promise<T> {
+	let err: unknown;
+	for (let i = 0; i < attempts; i++) {
+		try {
+			return await fn();
+		} catch (e) {
+			err = e;
+			if (i < attempts - 1) await sleep(base * 2 ** i);
+		}
+	}
+	throw err!;
+}
+
+let robochimpSyncRunning = false;
+const ROBOCHIMP_BATCH_SIZE = 100;
+const ROBOCHIMP_CONCURRENCY = 10;
+
 const supportEmbed = new EmbedBuilder()
 	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
 	.addFields({
@@ -293,6 +313,89 @@ export const tickers: {
 		interval: Time.Minute * 5,
 		cb: async () => {
 			await populateRoboChimpCache();
+		}
+	},
+	{
+		// Daily full sync to keep robochimp mastery/CL/levels up to date for leaderboards and /claim checks.
+		name: 'robochimp_daily_sync',
+		startupWait: Time.Minute * 6,
+		timer: null,
+		interval: Time.Day,
+		cb: async () => {
+			if (!globalConfig.isProduction) return;
+
+			if (robochimpSyncRunning) {
+				debugLog?.('robochimp_daily_sync: already running, skipping.');
+				return;
+			}
+			robochimpSyncRunning = true;
+
+			const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+			let cursor: { last_command_date: Date; id: string } | undefined = undefined;
+
+			let processed = 0;
+			let ok = 0;
+			let failed = 0;
+			let batches = 0;
+
+			try {
+				for (;;) {
+					const users: { id: string; last_command_date: Date | null }[] = await prisma.user.findMany({
+						take: ROBOCHIMP_BATCH_SIZE,
+						...(cursor ? { cursor, skip: 1 as const } : {}),
+						orderBy: [{ last_command_date: 'asc' }, { id: 'asc' }],
+						where: { last_command_date: { gte: sevenDaysAgo } },
+						select: { id: true, last_command_date: true }
+					});
+
+					if (users.length === 0) break;
+					batches++;
+					debugLog?.(
+						`robochimp_daily_sync: batch #${batches} size=${users.length} first=${users[0].id} last=${users.at(-1)!.id}`
+					);
+
+					for (let i = 0; i < users.length; i += ROBOCHIMP_CONCURRENCY) {
+						const slice = users.slice(i, i + ROBOCHIMP_CONCURRENCY);
+						await Promise.allSettled(
+							slice.map(({ id }) =>
+								(async () => {
+									try {
+										const user = await withRetry(() => mUserFetch(id));
+										if (!user) return;
+										await withRetry(() => roboChimpSyncData(user));
+										ok++;
+									} catch (e) {
+										failed++;
+										logError(e);
+									} finally {
+										processed++;
+									}
+								})()
+							)
+						);
+						await Promise.resolve(); // tiny yield
+					}
+
+					// Advance composite cursor
+					const last = users.at(-1)!;
+					cursor = { last_command_date: last.last_command_date!, id: last.id };
+
+					if (users.length < ROBOCHIMP_BATCH_SIZE) break;
+					await sleep(200);
+				}
+
+				debugLog?.(
+					`robochimp_daily_sync: done batches=${batches} processed=${processed} ok=${ok} failed=${failed}`
+				);
+			} catch (err) {
+				const meta: Record<string, string | number> = {
+					error: err instanceof Error ? err.message || err.toString() : String(err),
+					...(err instanceof Error && err.stack ? { stack: err.stack } : {})
+				};
+				logError('robochimp_daily_sync: fatal error', meta);
+			} finally {
+				robochimpSyncRunning = false;
+			}
 		}
 	},
 	{
