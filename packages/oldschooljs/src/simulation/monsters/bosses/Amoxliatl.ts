@@ -29,7 +29,7 @@ const TearTable = new LootTable().add('Frozen tear', [2, 4]).add('Frozen tear', 
 
 const AmoxliatlTable = new LootTable()
 	.tertiary(3000, 'Moxi')
-	.tertiary(500, 'Tooth half of key (moon key)')
+	.tertiary(125, 'Tooth half of key (moon key)')
 	.tertiary(200, 'Clue scroll (elite)')
 	.tertiary(100, 'Glacial temotli')
 	.tertiary(25, 'Pendant of ates (inert)')

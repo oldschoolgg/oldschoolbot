@@ -1,6 +1,6 @@
 {
-	"hash": "81de72ea9364b2872f3ff1f40878be7b",
-	"date": "2025-07-17T22:48:01.946Z",
+	"hash": "5043618fcfdfd44ce32379e2af127658",
+	"date": "2025-08-22T23:27:20.486Z",
 	"data": [
 		{
 			"id": 2,
@@ -794,7 +794,11 @@
 			"is_wildy_multi": false,
 			"items_required": [],
 			"qp_required": 0,
-			"item_in_bank_boosts": [],
+			"item_in_bank_boosts": [
+				{
+					"Giantsoul amulet": 20
+				}
+			],
 			"can_barrage": false,
 			"can_chin": false,
 			"can_cannon": false,
@@ -1699,8 +1703,8 @@
 		{
 			"id": 12191,
 			"name": "Duke Sucellus",
-			"base_kill_time_ms": 306000,
-			"respawn_time_ms": 90000,
+			"base_kill_time_ms": 186000,
+			"respawn_time_ms": 30000,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,
@@ -3677,7 +3681,11 @@
 			"is_wildy_multi": false,
 			"items_required": [],
 			"qp_required": 0,
-			"item_in_bank_boosts": [],
+			"item_in_bank_boosts": [
+				{
+					"Giantsoul amulet": 20
+				}
+			],
 			"can_barrage": false,
 			"can_chin": false,
 			"can_cannon": false,
@@ -4535,6 +4543,81 @@
 			"cannon_multi": false
 		},
 		{
+			"id": 12596,
+			"name": "Royal Titans (Branda)",
+			"base_kill_time_ms": 150000,
+			"respawn_time_ms": 500,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 0,
+			"item_in_bank_boosts": [
+				{
+					"Giantsoul amulet": 13
+				},
+				{
+					"Burning claws": 3,
+					"Dragon claws": 6
+				}
+			],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
+		},
+		{
+			"id": 14147,
+			"name": "Royal Titans (Eldric)",
+			"base_kill_time_ms": 150000,
+			"respawn_time_ms": 500,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 0,
+			"item_in_bank_boosts": [
+				{
+					"Giantsoul amulet": 13
+				},
+				{
+					"Burning claws": 3,
+					"Dragon claws": 6
+				}
+			],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
+		},
+		{
+			"id": 14148,
+			"name": "Royal Titans (sacrifice)",
+			"base_kill_time_ms": 150000,
+			"respawn_time_ms": 500,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 0,
+			"item_in_bank_boosts": [
+				{
+					"Giantsoul amulet": 13
+				},
+				{
+					"Burning claws": 3,
+					"Dragon claws": 6
+				}
+			],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
+		},
+		{
 			"id": 8031,
 			"name": "Rune Dragon",
 			"base_kill_time_ms": 100000,
@@ -4553,7 +4636,7 @@
 		{
 			"id": 8713,
 			"name": "Sarachnis",
-			"base_kill_time_ms": 141000,
+			"base_kill_time_ms": 97800,
 			"is_wildy": false,
 			"is_slayer_only": false,
 			"can_be_pked": false,
@@ -4578,6 +4661,7 @@
 					"Masori chaps (f)": 3
 				},
 				{
+					"Aranea boots": 10,
 					"Ring of stone": 10
 				}
 			],
@@ -5217,7 +5301,7 @@
 		{
 			"id": 14009,
 			"name": "The Hueycoatl",
-			"base_kill_time_ms": 480000,
+			"base_kill_time_ms": 360000,
 			"respawn_time_ms": 2000,
 			"is_wildy": false,
 			"is_slayer_only": false,

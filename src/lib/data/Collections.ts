@@ -474,6 +474,29 @@ export const allCollectionLogs: ICollection = {
 				items: muspahCL,
 				fmtProg: kcProg(Monsters.PhantomMuspah)
 			},
+			'Royal Titans': {
+				alias: ['branda', 'eldric', 'royal', 'titans', 'royal titans'],
+				kcActivity: {
+					Default: [Monsters.Branda.name, Monsters.Eldric.name, Monsters.RoyalTitans.name],
+					Branda: Monsters.Branda.name,
+					Eldric: Monsters.Eldric.name,
+					Sac: Monsters.RoyalTitans.name
+				},
+				items: resolveItems([
+					'Bran',
+					'Deadeye prayer scroll',
+					'Mystic vigour prayer scroll',
+					'Giantsoul amulet (uncharged)',
+					'Ice element staff crown',
+					'Fire element staff crown',
+					'Desiccated page'
+				]),
+				fmtProg: ({ stats }) => [
+					`${stats.kcBank[Monsters.Branda.id] ?? 0} Branda KC`,
+					`${stats.kcBank[Monsters.Eldric.id] ?? 0} Eldric KC`,
+					`${stats.kcBank[Monsters.RoyalTitans.id] ?? 0} Sacrifice KC`
+				]
+			},
 			Sarachnis: {
 				alias: Monsters.Sarachnis.aliases,
 				allItems: Monsters.Sarachnis.allItems,

@@ -19,7 +19,7 @@ const baseRequirements = {
 	herblore: 70,
 	construction: 70,
 	hunter: 70,
-	prayer: 77
+	prayer: 70
 };
 
 const standardRequirements = {
@@ -96,17 +96,23 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 		boosts.push(`${scoreBoost}% boost for ${type === 'corrupted' ? 'Corrupted ' : ''}Hunllef KC`);
 	}
 
-	if (user.bitfield.includes(BitField.HasArcaneScroll)) {
+	if (prayLevel >= 77 && user.bitfield.includes(BitField.HasArcaneScroll)) {
 		boosts.push('5% for Augury');
 		baseLength = reduceNumByPercent(baseLength, 5);
+	} else if (user.bitfield.includes(BitField.HasMysticVigourScroll)) {
+		boosts.push('3% for Mystic Vigour');
+		baseLength = reduceNumByPercent(baseLength, 3);
 	} else if (prayLevel >= 45) {
 		boosts.push('2% for Mystic Might');
 		baseLength = reduceNumByPercent(baseLength, 2);
 	}
 
-	if (user.bitfield.includes(BitField.HasDexScroll)) {
+	if (prayLevel >= 74 && user.bitfield.includes(BitField.HasDexScroll)) {
 		boosts.push('5% for Rigour');
 		baseLength = reduceNumByPercent(baseLength, 5);
+	} else if (user.bitfield.includes(BitField.HasDeadeyeScroll)) {
+		boosts.push('3% for Deadeye');
+		baseLength = reduceNumByPercent(baseLength, 3);
 	} else if (prayLevel >= 44) {
 		boosts.push('2% for Eagle Eye');
 		baseLength = reduceNumByPercent(baseLength, 2);

@@ -94,7 +94,7 @@ const tripHandlers = {
 		commandName: 'clue',
 		args: (data: ClueActivityTaskOptions) => ({
 			tier: data.ci,
-			quantity: data.q,
+			quantity: data.iQty,
 			implings: data.implingID ? Items.itemNameFromId(data.implingID!) : undefined
 		})
 	},
