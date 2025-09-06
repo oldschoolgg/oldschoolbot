@@ -46,7 +46,7 @@ Please click the buttons below for important links.`,
 							label: 'BSO Wiki',
 							emoji: { id: '863823820435619890' },
 							style: ButtonStyle.Link,
-							url: 'https://bso-wiki.oldschool.gg/'
+							url: 'https://wiki.oldschool.gg/bso/changelog/'
 						}
 					]
 				}
