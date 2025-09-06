@@ -182,13 +182,18 @@ async function kcLb(
                  LIMIT 2000;`
 			);
 
+	const prefixParts: string[] = [];
+	if (tame) prefixParts.push('Tame');
+	if (ironmanOnly) prefixParts.push('Ironman');
+	const prefix = prefixParts.length ? `${prefixParts.join(' ')} ` : '';
+
 	return doMenuWrapper({
 		ironmanOnly,
 		user,
 		interaction,
 		channelID,
 		users: list,
-		title: `KC Leaderboard for ${monster.name}`
+		title: `${prefix}KC Leaderboard for ${monster.name}`
 	});
 }
 
