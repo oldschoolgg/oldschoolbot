@@ -9,6 +9,7 @@ import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { autocompleteMonsters } from '../minions/data/killableMonsters';
 import { runCommand } from '../settings/settings';
 import { courses } from '../skilling/skills/agility';
+import { Fishing } from '../skilling/skills/fishing/fishing';
 import Hunter from '../skilling/skills/hunter/hunter';
 import type {
 	ActivityTaskOptionsWithQuantity,
@@ -332,11 +333,14 @@ const tripHandlers = {
 	},
 	[activity_type_enum.Fishing]: {
 		commandName: 'fish',
-		args: (data: FishingActivityTaskOptions) => ({
-			name: Items.itemNameFromId(data.fishID),
-			quantity: data.iQty,
-			flakes: data.flakesQuantity !== undefined
-		})
+		args: (data: FishingActivityTaskOptions) => {
+			const fish = Fishing.Fishes.find(f => f.id === (data.fishID as number));
+			return {
+				name: fish ? fish.name : Items.itemNameFromId(data.fishID),
+				quantity: data.iQty,
+				flakes: data.flakesQuantity !== undefined
+			};
+		}
 	},
 	[activity_type_enum.FishingTrawler]: {
 		commandName: 'minigames',
