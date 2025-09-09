@@ -1,6 +1,6 @@
 {
-	"hash": "a4f21eff2cf87d39c13854f6315b7d42",
-	"date": "2025-07-01T06:46:53.270Z",
+	"hash": "6c1efb7194bc55d8169196ee7cedf4d2",
+	"date": "2025-09-04T18:48:03.477Z",
 	"data": [
 		{
 			"name": "activities",
@@ -317,7 +317,9 @@
 				"movers",
 				"opens",
 				"sacrifice",
-				"skills"
+				"skills",
+				"total_ic_donation_given",
+				"unique_ic_donation_given"
 			]
 		},
 		{
