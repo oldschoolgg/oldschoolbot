@@ -1,6 +1,6 @@
 import preact from '@astrojs/preact';
 import starlight from '@astrojs/starlight';
-import tailwindcss from '@tailwindcss/vite';
+import tailwind from '@astrojs/tailwind';
 import { defineConfig } from 'astro/config';
 
 import { remarkItems } from './src/plugins/items';
@@ -14,7 +14,7 @@ export default defineConfig({
 				'@data': '../../../data'
 			}
 		},
-		plugins: [tailwindcss()]
+		plugins: []
 	},
 	devToolbar: {
 		enabled: false
@@ -37,10 +37,10 @@ export default defineConfig({
 			},
 			title: 'Oldschool.gg Wiki',
 			favicon: 'favicon.ico',
-			social: {
-				github: 'https://github.com/oldschoolgg/oldschoolbot',
-				discord: 'https://discord.gg/ob'
-			},
+			social: [
+				{ icon: 'discord', label: 'Discord', href: 'https://discord.gg/ob' },
+				{ icon: 'github', label: 'GitHub', href: 'https://github.com/oldschoolgg/oldschoolbot' }
+			],
 			customCss: ['./src/styles/main.css', './src/fonts/font-face.css'],
 			pagination: false,
 			head: [

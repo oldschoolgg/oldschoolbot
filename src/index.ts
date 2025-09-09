@@ -31,7 +31,6 @@ import 'oldschooljs';
 if (globalConfig.sentryDSN) {
 	init({
 		dsn: globalConfig.sentryDSN,
-		enableTracing: false,
 		defaultIntegrations: false,
 		integrations: [],
 		release: gitHash
