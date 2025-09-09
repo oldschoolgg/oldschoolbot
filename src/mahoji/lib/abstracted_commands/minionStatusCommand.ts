@@ -212,7 +212,7 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 				.setLabel('OSB/BSO Leagues')
 				.setEmoji('660333438016028723')
 				.setStyle(ButtonStyle.Link)
-				.setURL('https://bso-wiki.oldschool.gg/leagues')
+				.setURL('https://wiki.oldschool.gg/bso/leagues/')
 		);
 	}
 
