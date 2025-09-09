@@ -29,7 +29,7 @@ XP, speed, and harvest quantity can be boosted by the following:
   - Boots: +0.2% XP
   - Full set: +2.5% XP **(works from bank)**
 
-- **[Magic secateurs](../../miscellaneous/buyables.md#quest-items)** – 10% harvest quantity boost **(works from bank)**
+- **[Magic secateurs](../../Buyables/buyables.md#quest-items)** – 10% harvest quantity boost **(works from bank)**
 - **Farming cape** – 5% harvest quantity boost **(works from bank)**
 - **Full graceful outfit** – 10% trip speed **(must be equipped and charged)**
 - **[Ring of endurance](../agility/hallowed-sepulchre.md#ring-of-endurance)** – 10% trip speed **(must be equipped in any setup and charged)**
