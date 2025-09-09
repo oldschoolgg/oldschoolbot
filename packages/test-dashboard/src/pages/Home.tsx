@@ -38,37 +38,38 @@ function Bank({
 				}}
 			/>
 			<div className="flex flex-row flex-wrap gap-3 bg-[#3d3426] p-4 py-8 font-osrs-compact text_black_outline_sm items-center justify-center">
-				{Object.entries(privateUserData?.raw_user_data.bank)
-					.map(([itemId, quantity]) => {
-						const item = itemData[itemId];
-						if (!item) return { item: { id: itemId, name: 'BROKEN' }, quantity: quantity };
-						return {
-							item,
-							quantity
-						};
-					})
-					.filter(({ item }) => {
-						if (bankSearchString && !item.name.toLowerCase().includes(bankSearchString.toLowerCase()))
-							return false;
-						return true;
-					})
-					.sort((a, b) => {
-						return a.item.name.localeCompare(b.item.name);
-					})
-					.map(({ item, quantity }) => {
-						return (
-							<div key={item.id} className="relative w-10 h-10 flex items-center justify-center">
-								<img
-									className="pixelated"
-									src={`https://cdn.oldschool.gg/icons/items/${item.id}.png`}
-									alt={item.name}
-									title={item.name}
-								/>
-								{/* <span className="font-semibold">{item.name}</span> */}
-								<span className="absolute -bottom-2 right-1/2 translate-x-1/2">x{quantity}</span>
-							</div>
-						);
-					})}
+				{privateUserData &&
+					Object.entries(privateUserData.raw_user_data.bank)
+						.map(([itemId, quantity]) => {
+							const item = itemData[itemId];
+							if (!item) return { item: { id: itemId, name: 'BROKEN' }, quantity: quantity };
+							return {
+								item,
+								quantity
+							};
+						})
+						.filter(({ item }) => {
+							if (bankSearchString && !item.name.toLowerCase().includes(bankSearchString.toLowerCase()))
+								return false;
+							return true;
+						})
+						.sort((a, b) => {
+							return a.item.name.localeCompare(b.item.name);
+						})
+						.map(({ item, quantity }) => {
+							return (
+								<div key={item.id} className="relative w-10 h-10 flex items-center justify-center">
+									<img
+										className="pixelated"
+										src={`https://cdn.oldschool.gg/icons/items/${item.id}.png`}
+										alt={item.name}
+										title={item.name}
+									/>
+									{/* <span className="font-semibold">{item.name}</span> */}
+									<span className="absolute -bottom-2 right-1/2 translate-x-1/2">x{quantity}</span>
+								</div>
+							);
+						})}
 			</div>
 		</>
 	);
