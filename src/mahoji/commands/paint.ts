@@ -1,13 +1,12 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import { canvasToBuffer } from '@/lib/canvas/canvasUtil';
 import { renderPaintGrid } from '@/lib/canvas/renderPaintGrid';
 import { paintColors } from '../../lib/customItems/paintCans';
 import { getPaintedItemImage } from '../../lib/paintColors';
 import { itemEffectImageCache } from '../../lib/util/customItemEffects';
-import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { ownedItemOption } from '../lib/mahojiCommandOptions';
 
@@ -39,30 +38,13 @@ export const paintCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ userID, options, interaction }: CommandRunOptions<{ paint?: string; item: string }>) => {
-		const item = getItem(options.item);
+		const item = Items.get(options.item);
 		if (!item) {
 			return "That's not a valid item.";
 		}
 
 		if (!options.paint) {
-			const canvases = await Promise.all(paintColors.map(color => getPaintedItemImage(color, item.id)));
-
-			const tiles = paintColors
-				.map((color, i) => ({ name: color.paintCanItem.name, img: canvases[i] }))
-				.filter(t => t.img);
-
-			if (tiles.length === 0) {
-				return 'No paint previews available for this item.';
-			}
-
-			const buffer = await renderPaintGrid(tiles, {
-				gap: 14,
-				padding: 20,
-				extraTextWidth: 60,
-				maxCols: 6,
-				baseFontSize: 14,
-				minFontSize: 10
-			});
+			const buffer = await renderPaintGrid({ item });
 
 			return {
 				content: `Paint previews for ${item.name}:`,
