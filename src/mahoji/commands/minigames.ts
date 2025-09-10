@@ -184,7 +184,16 @@ export const minigamesCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'start',
-					description: 'Start a trip.'
+					description: 'Start a trip.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'The amount of games to do.',
+							required: false,
+							min_value: 1
+						}
+					]
 				}
 			]
 		},
@@ -1072,7 +1081,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			gamble?: { tier: string; quantity: number };
 			stats?: {};
 		};
-		castle_wars?: { stats?: {}; start?: {} };
+		castle_wars?: { stats?: {}; start?: { quantity?: number } };
 		lms?: {
 			stats?: {};
 			start?: {};
@@ -1186,7 +1195,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			return castleWarsStatsCommand(user);
 		}
 		if (options.castle_wars?.start) {
-			return castleWarsStartCommand(user, channelID);
+			return castleWarsStartCommand(user, channelID, options.castle_wars.start.quantity);
 		}
 
 		/**
