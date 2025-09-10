@@ -432,7 +432,7 @@ model User {
 
   gear_template Int? @db.SmallInt
 
-  @@index([id, last_command_date])
+  @@index([last_command_date, id])
   @@map("users")
 }
 
