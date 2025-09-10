@@ -19,3 +19,4 @@ export const giveawayCache = new LRUCache<number, Giveaway>({
 });
 
 export const usernameWithBadgesCache = new Map<string, string>();
+export const lastRoboChimpSyncCache = new Map<string, number>();

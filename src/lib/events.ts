@@ -20,6 +20,9 @@ import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot'
 import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
+import { lastRoboChimpSyncCache } from './cache.js';
+import { roboChimpSyncData } from './roboChimp.js';
+import type { ActivityTaskData } from './types/minions.js';
 
 const mentionText = `<@${globalConfig.clientID}>`;
 const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
@@ -301,5 +304,18 @@ export async function onMessage(msg: Message) {
 			content: result.content,
 			components
 		});
+	}
+}
+
+export async function onMinionActivityFinish(activity: ActivityTaskData) {
+	try {
+		const lastSyncTime = lastRoboChimpSyncCache.get(activity.userID) ?? 0;
+		// Max once per 30 minutes
+		if (Date.now() - lastSyncTime > Time.Minute * 30) {
+			lastRoboChimpSyncCache.set(activity.userID, Date.now());
+			await roboChimpSyncData(await mUserFetch(activity.userID));
+		}
+	} catch (err) {
+		logError(err, { activity: JSON.stringify(activity) });
 	}
 }
