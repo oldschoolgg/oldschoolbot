@@ -82,7 +82,6 @@
 		"prettier": "^3.5.3",
 		"prisma": "^6.10.1",
 		"sharp": "^0.34.3",
-		"spritesmith": "^3.5.1",
 		"tsx": "^4.20.3",
 		"typescript": "^5.8.3",
 		"vitest": "^3.2.4",
