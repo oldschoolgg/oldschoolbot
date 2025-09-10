@@ -1,6 +1,5 @@
 import preact from '@astrojs/preact';
 import starlight from '@astrojs/starlight';
-import tailwind from '@astrojs/tailwind';
 import { defineConfig } from 'astro/config';
 
 import { remarkItems } from './src/plugins/items';
