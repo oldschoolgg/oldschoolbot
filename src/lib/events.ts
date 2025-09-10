@@ -14,15 +14,15 @@ import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './M
 import { boxSpawnHandler } from './boxSpawns';
 import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from './bso/guthixianCache';
 import { allIronmanMbTables, allMbTables } from './bsoOpenables';
+import { lastRoboChimpSyncCache } from './cache.js';
 import { globalConfig } from './constants';
 import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
+import { roboChimpSyncData } from './roboChimp.js';
+import type { ActivityTaskData } from './types/minions.js';
 import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
-import { lastRoboChimpSyncCache } from './cache.js';
-import { roboChimpSyncData } from './roboChimp.js';
-import type { ActivityTaskData } from './types/minions.js';
 
 const mentionText = `<@${globalConfig.clientID}>`;
 const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
