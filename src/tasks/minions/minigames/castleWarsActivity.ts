@@ -21,8 +21,8 @@ export const castleWarsTask: MinionTask = {
 		await user.incrementMinigameScore('castle_wars', quantity);
 
 		const loot = new Bank();
-		const tickets = ticketTable.rollOrThrow();
 		for (let i = 0; i < quantity; i++) {
+			const tickets = ticketTable.rollOrThrow();
 			loot.add('Castle wars ticket', tickets).add('Castle wars supply crate', tickets);
 		}
 		await transactItems({
