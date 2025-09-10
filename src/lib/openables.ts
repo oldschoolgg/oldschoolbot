@@ -421,7 +421,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 			return { bank: openLoot };
 		},
 		allItems: CastleWarsSupplyCrate.table.allItems
-	},
+	}
 ];
 
 for (const impling of Implings) {
