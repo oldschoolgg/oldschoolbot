@@ -76,19 +76,6 @@ export function calcFishingTripStart({
 
 	let quantity: number = quantityInput ?? Math.floor(maxTripLength / scaledTimePerFish);
 
-	const cost = new Bank();
-
-	let flakesBeingUsed: number | undefined;
-	if (wantsToUseFlakes) {
-		if (!gearBank.bank.has('Spirit flakes')) {
-			return 'You need to have at least one spirit flake!';
-		}
-
-		flakesBeingUsed = Math.min(gearBank.bank.amount('Spirit flakes'), quantity);
-		boosts.push(`More fish from using ${flakesBeingUsed}x Spirit flakes`);
-		cost.add('Spirit flakes', flakesBeingUsed);
-	}
-
 	if (fish.bait) {
 		const baseCost = new Bank().add(fish.bait);
 
@@ -99,8 +86,10 @@ export function calcFishingTripStart({
 		if (maxCanDo < quantity) {
 			quantity = maxCanDo;
 		}
+	}
 
-		cost.add(fish.bait, quantity);
+	if (quantity === 0) {
+		return `You can't fish any ${fish.name}. Try a higher quantity or ensure you have the required supplies.`;
 	}
 
 	if (isUsingMechaRod) {
@@ -115,6 +104,28 @@ export function calcFishingTripStart({
 		)}, try a lower quantity. The highest amount of ${fish.name} you can fish is ${Math.floor(
 			maxTripLength / scaledTimePerFish
 		)}.`;
+	}
+
+	let flakesBeingUsed: number | undefined;
+	if (wantsToUseFlakes) {
+		if (!gearBank.bank.has('Spirit flakes')) {
+			return 'You need to have at least one Spirit flake!';
+		}
+
+		flakesBeingUsed = Math.min(gearBank.bank.amount('Spirit flakes'), quantity);
+		if (flakesBeingUsed > 0) {
+			boosts.push(`More fish from using ${flakesBeingUsed}x Spirit flakes`);
+		}
+	}
+
+	const cost = new Bank();
+
+	if (fish.bait) {
+		cost.add(fish.bait, quantity);
+	}
+
+	if (flakesBeingUsed) {
+		cost.add('Spirit flakes', flakesBeingUsed);
 	}
 
 	return { cost, duration, quantity, flakesBeingUsed, boosts, fish };

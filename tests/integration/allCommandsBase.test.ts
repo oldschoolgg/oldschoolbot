@@ -60,7 +60,8 @@ test(
 			'simulate',
 			'leagues',
 			'kill',
-			'ic'
+			'ic',
+			'rates'
 		];
 		const commandsToTest = allCommands.filter(c => !ignoredCommands.includes(c.name));
 

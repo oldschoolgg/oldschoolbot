@@ -1202,7 +1202,8 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Giantsoul amulet')]: 13
 			},
 			{
-				[itemID('Dragon claws')]: 6,
+				[itemID('Zaryte crossbow')]: 6,
+				[itemID('Dragon claws')]: 5,
 				[itemID('Burning claws')]: 3
 			}
 		],
@@ -1240,12 +1241,17 @@ const killableBosses: KillableMonster[] = [
 					feet: 'Dragon boots',
 					ring: 'Berserker ring (i)'
 				}).stats,
-				defence_magic: 0,
-				prayer: 0,
+				attack_ranged: -100,
+				attack_magic: -100,
+				defence_magic: -100,
+				prayer: -100,
 				defence_crush: 0,
 				defence_ranged: 0,
 				defence_slash: 0,
 				defence_stab: 0
+			},
+			mage: {
+				[GearStat.AttackMagic]: 70
 			}
 		},
 		specialLoot: ({ loot, user }) => {
@@ -1339,7 +1345,8 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Giantsoul amulet')]: 13
 			},
 			{
-				[itemID('Dragon claws')]: 6,
+				[itemID('Zaryte crossbow')]: 6,
+				[itemID('Dragon claws')]: 5,
 				[itemID('Burning claws')]: 3
 			}
 		],
@@ -1377,12 +1384,17 @@ const killableBosses: KillableMonster[] = [
 					feet: 'Dragon boots',
 					ring: 'Berserker ring (i)'
 				}).stats,
-				defence_magic: 0,
-				prayer: 0,
+				attack_ranged: -100,
+				attack_magic: -100,
+				defence_magic: -100,
+				prayer: -100,
 				defence_crush: 0,
 				defence_ranged: 0,
 				defence_slash: 0,
 				defence_stab: 0
+			},
+			mage: {
+				[GearStat.AttackMagic]: 70
 			}
 		},
 		specialLoot: ({ loot, user }) => {
@@ -1472,7 +1484,8 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Giantsoul amulet')]: 13
 			},
 			{
-				[itemID('Dragon claws')]: 6,
+				[itemID('Zaryte crossbow')]: 6,
+				[itemID('Dragon claws')]: 5,
 				[itemID('Burning claws')]: 3
 			}
 		],
@@ -1518,6 +1531,9 @@ const killableBosses: KillableMonster[] = [
 				defence_ranged: 0,
 				defence_slash: 0,
 				defence_stab: 0
+			},
+			mage: {
+				[GearStat.AttackMagic]: 70
 			}
 		}
 	}
