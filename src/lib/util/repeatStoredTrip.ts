@@ -312,7 +312,10 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.DarkAltar]: {
 		commandName: 'runecraft',
-		args: (data: DarkAltarOptions) => ({ rune: `${data.rune} rune (zeah)` })
+		args: (data: DarkAltarOptions) => ({
+			rune: `${data.rune} rune (zeah)`,
+			extracts: data.useExtracts
+		})
 	},
 	[activity_type_enum.OuraniaAltar]: {
 		commandName: 'runecraft',

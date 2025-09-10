@@ -2401,7 +2401,7 @@ exports[`BSO Buyables 1`] = `
       "9813": 1,
       "9814": 1,
     },
-    "qpRequired": 5026,
+    "qpRequired": 5028,
   },
   {
     "aliases": [
@@ -2414,7 +2414,7 @@ exports[`BSO Buyables 1`] = `
     "outputItems": {
       "13068": 1,
     },
-    "qpRequired": 5026,
+    "qpRequired": 5028,
   },
   {
     "gpCost": 1000000000,
@@ -2449,7 +2449,7 @@ exports[`BSO Buyables 1`] = `
     "outputItems": {
       "13069": 1,
     },
-    "qpRequired": 5026,
+    "qpRequired": 5028,
   },
   {
     "customReq": [Function],

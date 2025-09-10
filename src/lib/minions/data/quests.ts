@@ -26,11 +26,12 @@ export enum QuestID {
 	PerilousMoons = 6,
 	AtFirstLight = 7,
 	TwilightsPromise = 8,
-	TheHeartofDarkness = 9,
+	TheHeartOfDarkness = 9,
 	DeathOnTheIsle = 10,
 	MeatAndGreet = 11,
 	EthicallyAcquiredAntiquities = 12,
-	WhileGuthixSleeps = 13
+	WhileGuthixSleeps = 13,
+	TheCurseOfArrav = 14
 }
 
 export const quests: Quest[] = [
@@ -214,7 +215,7 @@ export const quests: Quest[] = [
 		}
 	},
 	{
-		id: QuestID.TheHeartofDarkness,
+		id: QuestID.TheHeartOfDarkness,
 		qp: 2,
 		name: 'The Heart of Darkness',
 		skillsRewards: {
@@ -322,6 +323,33 @@ export const quests: Quest[] = [
 			let duration = Time.Minute * 90;
 			if (user.combatLevel < 105) {
 				duration += Time.Minute * 20;
+			}
+			return duration;
+		}
+	},
+	{
+		id: QuestID.TheCurseOfArrav,
+		qp: 2,
+		name: 'The Curse of Arrav',
+		prerequisitesQuests: [QuestID.DefenderOfVarrock],
+		qpReq: 180,
+		skillReqs: {
+			mining: 64,
+			ranged: 62,
+			thieving: 62,
+			agility: 61,
+			strength: 58,
+			slayer: 37
+		},
+		skillsRewards: {
+			mining: 40000,
+			thieving: 40000,
+			agility: 40000
+		},
+		calcTime: (user: MUser) => {
+			let duration = Time.Minute * 20;
+			if (user.combatLevel < 105) {
+				duration += Time.Minute * 5;
 			}
 			return duration;
 		}

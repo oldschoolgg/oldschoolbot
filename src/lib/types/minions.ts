@@ -129,6 +129,7 @@ export interface DarkAltarOptions extends ActivityTaskOptions {
 	quantity: number;
 	hasElite: boolean;
 	rune: 'blood' | 'soul';
+	useExtracts?: boolean;
 }
 
 export interface OuraniaAltarOptions extends ActivityTaskOptions {
