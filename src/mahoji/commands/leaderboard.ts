@@ -18,6 +18,7 @@ import { convertXPtoLVL } from 'oldschooljs';
 
 import { getUsername, getUsernameSync } from '@/lib/util';
 import { logError, logErrorForInteraction } from '@/lib/util/logError';
+import { Prisma } from '@prisma/client';
 import type { ClueTier } from '../../lib/clues/clueTiers';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { MAX_LEVEL, masteryKey } from '../../lib/constants';
@@ -153,19 +154,38 @@ async function kcLb(
 	user: MUser,
 	channelID: string,
 	name: string,
-	ironmanOnly: boolean
+	ironmanOnly: boolean,
+	tame: boolean
 ) {
 	const monster = effectiveMonsters.find(mon => [mon.name, ...mon.aliases].some(alias => stringMatches(alias, name)));
 	if (!monster) return "That's not a valid monster!";
-	const list = await prisma.$queryRawUnsafe<{ id: string; score: number }[]>(
-		`SELECT user_id::text AS id, CAST("monster_scores"->>'${monster.id}' AS INTEGER) as score
-		 FROM user_stats
-		${ironmanOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
-		 WHERE CAST("monster_scores"->>'${monster.id}' AS INTEGER) > 5
-		 ${ironmanOnly ? ' AND "users"."minion.ironman" = true ' : ''}
-		 ORDER BY score DESC
-		 LIMIT 2000;`
-	);
+	const list = tame
+		? await prisma.$queryRawUnsafe<{ id: string; score: number }[]>(
+				`SELECT ta.user_id::text AS id, SUM((ta.data->>'quantity')::int) AS score
+                  FROM tame_activity ta
+                  ${ironmanOnly ? 'INNER JOIN users u ON u.id = ta.user_id' : ''}
+                 WHERE ta.completed = true
+                   AND (ta.data->>'monsterID')::int = ${monster.id}
+                   AND ta.type = 'pvm'
+                   ${ironmanOnly ? 'AND u."minion.ironman" = true' : ''}
+                 GROUP BY ta.user_id
+                 ORDER BY score DESC
+                 LIMIT 2000;`
+			)
+		: await prisma.$queryRawUnsafe<{ id: string; score: number }[]>(
+				`SELECT user_id::text AS id, CAST("monster_scores"->>'${monster.id}' AS INTEGER) as score
+                 FROM user_stats
+                ${ironmanOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
+                 WHERE CAST("monster_scores"->>'${monster.id}' AS INTEGER) > 5
+                 ${ironmanOnly ? ' AND "users"."minion.ironman" = true ' : ''}
+                 ORDER BY score DESC
+                 LIMIT 2000;`
+			);
+
+	const prefixParts: string[] = [];
+	if (tame) prefixParts.push('Tame');
+	if (ironmanOnly) prefixParts.push('Ironman');
+	const prefix = prefixParts.length ? `${prefixParts.join(' ')} ` : '';
 
 	return doMenuWrapper({
 		ironmanOnly,
@@ -173,7 +193,7 @@ async function kcLb(
 		interaction,
 		channelID,
 		users: list,
-		title: `KC Leaderboard for ${monster.name}`
+		title: `${prefix}KC Leaderboard for ${monster.name}`
 	});
 }
 
@@ -563,6 +583,36 @@ async function gpLb(interaction: ChatInputCommandInteraction, user: MUser, chann
 		users,
 		title: 'GP Leaderboard',
 		formatter: val => `${val.toLocaleString()} GP`
+	});
+}
+
+async function tamesHatchedLb(
+	interaction: ChatInputCommandInteraction,
+	user: MUser,
+	channelID: string,
+	ironmanOnly: boolean
+) {
+	const query = Prisma.sql`
+               SELECT id, CAST(nursery->>'eggsHatched' AS INTEGER) as count
+               FROM users
+               WHERE nursery IS NOT NULL
+                 AND CAST(nursery->>'eggsHatched' AS INTEGER) > 0
+                 ${ironmanOnly ? Prisma.sql`AND "minion.ironman" = true` : Prisma.empty}
+               ORDER BY count DESC
+               LIMIT 50;
+       `;
+	const users = (await prisma.$queryRaw<{ id: string; count: number }[]>(query)).map(res => ({
+		...res,
+		score: res.count
+	}));
+
+	return doMenuWrapper({
+		ironmanOnly,
+		user,
+		interaction,
+		channelID,
+		users,
+		title: 'Tames Hatched Leaderboard'
 	});
 }
 
@@ -1250,7 +1300,13 @@ export const leaderboardCommand: OSBMahojiCommand = {
 							.map(i => ({ name: i.name, value: i.name }));
 					}
 				},
-				ironmanOnlyOption
+				ironmanOnlyOption,
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'tame',
+					description: 'Show tame kill counts',
+					required: false
+				}
 			]
 		},
 		{
@@ -1440,6 +1496,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
+			name: 'tames_hatched',
+			description: 'Check the leaderboard for most tames hatched.',
+			options: [ironmanOnlyOption]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
 			name: 'total_ic_donation_given',
 			description: 'Total item contract donations given leaderboard.'
 		},
@@ -1538,7 +1600,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		userID,
 		interaction
 	}: CommandRunOptions<{
-		kc?: { monster: string; ironmen_only?: boolean };
+		kc?: { monster: string; ironmen_only?: boolean; tame?: boolean };
 		farming_contracts?: { ironmen_only?: boolean };
 		inferno?: {};
 		challenges?: {};
@@ -1553,6 +1615,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		item_contract_streak?: { ironmen_only?: boolean };
 		total_ic_donation_given?: {};
 		unique_ic_donation_given?: {};
+		tames_hatched?: { ironmen_only?: boolean };
 		leagues?: { type: 'points' | 'tasks' | 'hardest_tasks' };
 		clues?: { clue: ClueTier['name']; ironmen_only?: boolean };
 		movers?: { type: GainersType };
@@ -1578,6 +1641,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			gp,
 			skills,
 			cl,
+
+			tames_hatched,
 			item_contract_streak,
 			total_ic_donation_given,
 			unique_ic_donation_given,
@@ -1589,7 +1654,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			combat_achievements,
 			mastery
 		} = options;
-		if (kc) return kcLb(interaction, user, channelID, kc.monster, Boolean(kc.ironmen_only));
+		if (kc) return kcLb(interaction, user, channelID, kc.monster, Boolean(kc.ironmen_only), Boolean(kc.tame));
 		if (farming_contracts) {
 			return farmingContractLb(interaction, user, channelID, Boolean(farming_contracts.ironmen_only));
 		}
@@ -1617,7 +1682,9 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			return itemContractLb(interaction, user, channelID, item_contract_streak.ironmen_only);
 		if (total_ic_donation_given) return itemContractDonationGivenLb(interaction, user, channelID, true);
 		if (unique_ic_donation_given) return itemContractDonationGivenLb(interaction, user, channelID, false);
+		if (tames_hatched) return tamesHatchedLb(interaction, user, channelID, Boolean(tames_hatched.ironmen_only));
 		if (leagues) return leaguesLeaderboard(interaction, user, channelID, leagues.type);
+
 		if (clues) return cluesLb(interaction, user, channelID, clues.clue, Boolean(clues.ironmen_only));
 		if (movers) return gainersLB(interaction, user, channelID, movers.type);
 		if (global) return globalLb(interaction, user, channelID, global.type);

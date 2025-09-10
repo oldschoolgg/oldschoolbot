@@ -1,11 +1,32 @@
 import { describe, test } from 'vitest';
 
-import { kcGains } from '../../src/mahoji/commands/tools';
+import { leaderboardCommand } from '../../src/mahoji/commands/leaderboard';
+import { createTestUser } from './util';
 
 describe('Leaderboard', async () => {
-	test('kcGains Leaderboard', async () => {
-		for (const bool of [true, false]) {
-			await kcGains('week', 'zulrah', bool);
-		}
+	test('KC Leaderboard', async () => {
+		const user = await createTestUser();
+		await user.runCommand(leaderboardCommand, {
+			kc: {
+				monster: 'man'
+			}
+		});
+	});
+
+	test('KC Leaderboard Tame', async () => {
+		const user = await createTestUser();
+		await user.runCommand(leaderboardCommand, {
+			kc: {
+				monster: 'Zulrah',
+				tame: true
+			}
+		});
+	});
+
+	test('Tames Hatched Leaderboard', async () => {
+		const user = await createTestUser();
+		await user.runCommand(leaderboardCommand, {
+			tames_hatched: {}
+		});
 	});
 });
