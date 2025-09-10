@@ -1,15 +1,8 @@
 data/bso.commands.json
 data/bso/commands.json
-data/bso/creatables.json
 data/bso/monsters.json
-docs/astro.config.mjs
-docs/package.json
-docs/src/plugins/items.ts
-docs/tailwind.config.mjs
 licenses/skyra.txt
-package.json
 packages/oldschooljs/metadata.txt
-pnpm-lock.yaml
 prisma/schema.prisma
 scripts/bsoData.ts
 scripts/clue_table.ts
@@ -55,6 +48,7 @@ src/lib/canvas/bankImage.ts
 src/lib/canvas/CanvasSpritesheet.ts
 src/lib/canvas/canvasUtil.ts
 src/lib/canvas/chatHeadImage.ts
+src/lib/canvas/renderPaintGrid.ts
 src/lib/clues/clueTiers.ts
 src/lib/clues/clueUtils.ts
 src/lib/collectionLogTask.ts
@@ -769,6 +763,7 @@ tests/integration/commands/dice.test.ts
 tests/integration/commands/fish.test.ts
 tests/integration/commands/ironman.test.ts
 tests/integration/commands/open.test.ts
+tests/integration/leaderboard.test.ts
 tests/integration/memoryHarvesting.bso.test.ts
 tests/integration/mocks.ts
 tests/integration/MUser.test.ts
