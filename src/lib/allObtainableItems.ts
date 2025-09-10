@@ -73,8 +73,14 @@ for (const fish of Fishing.Fishes) {
 for (const clue of ClueTiers) {
 	ALL_OBTAINABLE_ITEMS.add(clue.id);
 	ALL_OBTAINABLE_ITEMS.add(clue.scrollID);
-	if (clue.milestoneReward) ALL_OBTAINABLE_ITEMS.add(clue.milestoneReward.itemReward);
-	for (const i of clue.allItems) ALL_OBTAINABLE_ITEMS.add(i);
+	if (clue.milestoneRewards) {
+		for (const reward of clue.milestoneRewards) {
+			ALL_OBTAINABLE_ITEMS.add(reward.itemReward);
+		}
+	}
+	for (const i of clue.allItems) {
+		ALL_OBTAINABLE_ITEMS.add(i);
+	}
 }
 for (const a of stealables) {
 	for (const item of a.table.allItems) ALL_OBTAINABLE_ITEMS.add(item);
