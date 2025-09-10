@@ -1,0 +1,17 @@
+{
+	"name": "@oldschoolgg/spritesheet",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"node": "./dist/index.js"
+		}
+	},
+	"scripts": {
+		"build": "tsc -p src"
+	},
+	"dependencies": {
+		"fast-glob": "^3.3.3",
+		"pureimage": "^0.4.18",
+		"sharp": "^0.34.3"
+	}
+}

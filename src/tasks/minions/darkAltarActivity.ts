@@ -11,7 +11,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export const darkAltarTask: MinionTask = {
 	type: 'DarkAltar',
 	async run(data: DarkAltarOptions) {
-		const { quantity, userID, channelID, duration, hasElite, rune } = data;
+		const { quantity, userID, channelID, duration, hasElite, rune, useExtracts } = data;
 		const user = await mUserFetch(userID);
 
 		const runeData = darkAltarRunes[rune];
@@ -53,6 +53,12 @@ export const darkAltarTask: MinionTask = {
 			runeQuantity += bonusBlood;
 		}
 
+		let extractBonus = 0;
+		if (useExtracts) {
+			extractBonus = 60 * quantity;
+			runeQuantity += extractBonus;
+		}
+
 		const loot = new Bank().add(runeData.item.id, runeQuantity);
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, runeData.petChance);
 		for (let i = 0; i < quantity; i++) {
@@ -69,6 +75,10 @@ export const darkAltarTask: MinionTask = {
 
 		if (bonusBlood > 0) {
 			str += ` **Blood essence Quantity:** ${bonusBlood.toLocaleString()}`;
+		}
+
+		if (useExtracts) {
+			str += ` **Extract bonus:** ${extractBonus.toLocaleString()}`;
 		}
 
 		await transactItems({

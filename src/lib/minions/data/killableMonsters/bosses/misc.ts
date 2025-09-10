@@ -992,7 +992,7 @@ const killableBosses: KillableMonster[] = [
 		timeToFinish: Time.Minute * 3,
 		respawnTime: 500,
 		table: Monsters.Amoxliatl,
-		requiredQuests: [QuestID.TheHeartofDarkness],
+		requiredQuests: [QuestID.TheHeartOfDarkness],
 		qpRequired: 100,
 		deathProps: {
 			hardness: 0.2,

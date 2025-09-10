@@ -117,7 +117,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}
 
 		if (rune.includes('(zeah)')) {
-			return darkAltarCommand({ user, channelID, name: rune });
+			return darkAltarCommand({ user, channelID, name: rune, extracts });
 		}
 
 		const runeObj = Runecraft.Runes.find(
