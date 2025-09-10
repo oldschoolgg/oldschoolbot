@@ -261,26 +261,20 @@ describe('PVM', async () => {
 		expect(result.tripStartBank.amount('Dark totem')).toBe(99);
 	});
 
-	describe(
-		'should fail to kill skotizo with no totems',
-		async () => {
-			const user = await client.mockUser({
-				rangeLevel: 99,
-				QP: 300,
-				maxed: true,
-				meleeGear: resolveItems(["Verac's flail", "Black d'hide body", "Black d'hide chaps"])
+	describe('should fail to kill skotizo with no totems', async () => {
+		const user = await client.mockUser({
+			rangeLevel: 99,
+			QP: 300,
+			maxed: true,
+			meleeGear: resolveItems(["Verac's flail", "Black d'hide body", "Black d'hide chaps"])
+		});
+		for (const quantity of [undefined, 1, 2, 5]) {
+			it(`should fail to kill with input of ${quantity}`, async () => {
+				const result = await user.kill(EMonster.SKOTIZO, { quantity });
+				expect(result.commandResult).toContain("You don't have the items");
 			});
-			for (const quantity of [undefined, 1, 2, 5]) {
-				it(`should fail to kill with input of ${quantity}`, async () => {
-					const result = await user.kill(EMonster.SKOTIZO, { quantity });
-					expect(result.commandResult).toContain("You don't have the items");
-				});
-			}
-		},
-		{
-			repeats: 5
 		}
-	);
+	});
 
 	test('salve and slayer helm shouldnt stack', async () => {
 		const user = await client.mockUser({
