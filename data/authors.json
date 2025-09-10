@@ -1,4 +1,5 @@
 {
+	"osb/Skills/mining.mdx": ["Magnaboy", "TastyPumPum"],
 	"osb/Miscellaneous/champions-challenge.md": ["DayV", "TastyPumPum"],
 	"getting-started/wiki.md": ["Magnaboy", "DayV", "dark", "Jonesey"],
 	"osb/Bosses/colosseum.md": ["DayV", "Magnaboy"],
@@ -63,7 +64,6 @@
 	"bso/Monsters/DemiBosses/akumu.md": ["TastyPumPum"],
 	"bso/Monsters/DemiBosses/venatrix.md": ["TastyPumPum"],
 	"bso/Monsters/Bosses/vasa-magus.md": ["DayV", "Magnaboy"],
-	"osb/Skills/mining.mdx": ["Magnaboy", "TastyPumPum"],
 	"bso/Monsters/Bosses/ignecarus.md": ["TastyPumPum", "Magnaboy"],
 	"bso/Monsters/Raids/chambers-of-xeric.md": ["Chris Jeng", "Magnaboy", "wontonstrips"],
 	"bso/Monsters/Raids/tombs-of-amascut-toa.md": ["Chris Jeng", "wontonstrips", "Magnaboy"],
