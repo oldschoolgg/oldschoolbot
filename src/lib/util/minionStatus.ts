@@ -565,9 +565,9 @@ export function minionStatus(user: MUser) {
 
 		case 'DarkAltar': {
 			const data = currentTask as DarkAltarOptions;
-			return `${name} is currently runecrafting ${toTitleCase(
-				data.rune
-			)} runes at the Dark Altar. ${formattedDuration}`;
+			return `${name} is currently runecrafting ${toTitleCase(data.rune)} runes at the Dark Altar${
+				data.useExtracts ? ' with extracts' : ''
+			}. ${formattedDuration}`;
 		}
 		case 'OuraniaAltar': {
 			return `${name} is currently runecrafting at the Ourania Altar. ${formattedDuration}`;
