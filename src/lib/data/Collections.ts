@@ -798,6 +798,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Castle Wars': {
 				alias: ['cw', 'castle wars'],
+				allItems: resolveItems(['Castle wars ticket', 'Castle wars supply crate']),
 				items: castleWarsCL,
 				isActivity: true,
 				fmtProg: mgProg('castle_wars')

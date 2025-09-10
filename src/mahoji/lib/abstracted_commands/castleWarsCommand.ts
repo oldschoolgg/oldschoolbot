@@ -5,10 +5,14 @@ import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/type
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
-export async function castleWarsStartCommand(user: MUser, channelID: string) {
+export async function castleWarsStartCommand(user: MUser, channelID: string, quantity?: number) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
-	const gameLength = Time.Minute * 18;
-	const quantity = Math.floor(calcMaxTripLength(user, 'CastleWars') / gameLength);
+	const gameLength = Time.Minute * 20;
+	const userMaxGames = Math.floor(calcMaxTripLength(user, 'CastleWars') / gameLength);
+	if (!quantity || quantity > userMaxGames) {
+		quantity = userMaxGames;
+	}
+
 	const duration = quantity * gameLength;
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
@@ -28,5 +32,6 @@ export async function castleWarsStatsCommand(user: MUser) {
 	const { bank } = user;
 	const kc = await user.fetchMinigameScore('castle_wars');
 	return `You have **${bank.amount('Castle wars ticket')}** Castle wars tickets.
+You have **${bank.amount('Castle wars supply crate')}** Castle wars supply crates.
 You have played ${kc} Castle Wars games.`;
 }

@@ -231,7 +231,7 @@ const tripHandlers = {
 	},
 	[activity_type_enum.CastleWars]: {
 		commandName: 'minigames',
-		args: () => ({ castle_wars: { start: {} } })
+		args: (data: ActivityTaskOptionsWithQuantity) => ({ castle_wars: { start: { quantity: data.quantity } } })
 	},
 	[activity_type_enum.ChampionsChallenge]: {
 		commandName: 'activities',

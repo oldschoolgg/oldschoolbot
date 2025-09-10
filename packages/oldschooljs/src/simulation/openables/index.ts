@@ -2,6 +2,7 @@ import { Collection } from '../../structures/Collection';
 import type Openable from '../../structures/Openable';
 import BrimstoneChest from './BrimstoneChest';
 import Casket from './Casket';
+import CastleWarsSupplyCrate from './CastleWarsSupplyCrate';
 import CrystalChest from './CrystalChest';
 import ElvenCrystalChest from './ElvenCrystalChest';
 import GiantEggSacFull from './GiantEggSacFull';
@@ -74,7 +75,8 @@ export {
 	AdeptSack,
 	ExpertSack,
 	MasterSack,
-	ZombiePiratesLocker
+	ZombiePiratesLocker,
+	CastleWarsSupplyCrate
 };
 
 const openablesObject = {
