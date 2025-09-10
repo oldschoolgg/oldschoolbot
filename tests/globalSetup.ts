@@ -17,7 +17,10 @@ vi.mock('@oldschoolgg/toolkit/discord-util', async () => {
 				...mockInteraction({ userId: message.author.id })
 			});
 		}),
-		mentionCommand: vi.fn().mockReturnValue('true')
+		mentionCommand: vi.fn().mockReturnValue('true'),
+		makePaginatedMessage: vi.fn(() => {
+			return Promise.resolve();
+		})
 	};
 });
 
