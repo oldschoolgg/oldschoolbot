@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, EMonster, Monsters } from 'oldschooljs';
 
 import { Requirements } from '../structures/Requirements';

@@ -1,6 +1,6 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { type CommandRunOptions, formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
 import { Bank, SkillsEnum, itemID } from 'oldschooljs';
 
 import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';

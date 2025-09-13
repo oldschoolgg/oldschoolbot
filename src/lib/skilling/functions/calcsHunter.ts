@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { LootTable } from 'oldschooljs';
 
 import { percentChance } from '../../util/rng';

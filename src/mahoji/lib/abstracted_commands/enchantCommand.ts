@@ -1,5 +1,5 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
 import { Items } from 'oldschooljs';
 
 import { Enchantables } from '../../../lib/skilling/skills/magic/enchantables';

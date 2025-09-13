@@ -1,5 +1,5 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { activity_type_enum } from '@prisma/client';
-import { Time } from 'e';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 
 import type { ActivityTaskData } from './types/minions';

@@ -1,6 +1,6 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { type Activity, type Prisma, activity_type_enum } from '@prisma/client';
 import { ButtonBuilder, type ButtonInteraction, ButtonStyle } from 'discord.js';
-import { Time } from 'e';
 import { Items } from 'oldschooljs';
 
 import { ClueTiers } from '../clues/clueTiers';

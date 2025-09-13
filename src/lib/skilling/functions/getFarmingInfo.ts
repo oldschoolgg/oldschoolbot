@@ -1,6 +1,6 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { User } from '@prisma/client';
-import { Time } from 'e';
 
 import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 import { defaultPatches } from '../../minions/farming';
