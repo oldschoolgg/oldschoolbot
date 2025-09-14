@@ -2,7 +2,14 @@ import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, increaseNumByPercent } from 'e';
 import { Bank, EItem } from 'oldschooljs';
 
-import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables';
+import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables';
+import Arrows from '@/lib/skilling/skills/fletching/fletchables/arrows';
+import Bolts from '@/lib/skilling/skills/fletching/fletchables/bolts';
+import Darts from '@/lib/skilling/skills/fletching/fletchables/darts';
+import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins';
+import { AmethystBroadBolts, BroadArrows, BroadBolts } from '@/lib/skilling/skills/fletching/fletchables/slayer';
+import TippedBolts from '@/lib/skilling/skills/fletching/fletchables/tippedBolts';
+import TippedDragonBolts from '@/lib/skilling/skills/fletching/fletchables/tippedDragonBolts';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { Fletchable } from '../../../lib/skilling/types';
@@ -46,7 +53,17 @@ export async function ouraniaAltarStartCommand({
 	let fletchingQuantity = 0;
 	let sets = '';
 	let itemsNeeded: Bank | undefined;
-	const timeToFletchSingleItem = Time.Hour / 25_000;
+	let timeToFletchSingleItem = 0;
+	// Ourania fletch speeds (scaled):
+	// - Slow group 2.16s/action (arrows 25k/hr, javelins ≈8.33k/hr, tipped ≈16.67k/hr)
+	// - Fast group 1.2s/action (darts/bolts ≈30k/hr)
+	const fletchableTypes = [
+		{ types: [Darts, Bolts, BroadBolts], time: Time.Second * 1.2 },
+		{
+			types: [Arrows, BroadArrows, Javelins, TippedBolts, TippedDragonBolts, AmethystBroadBolts],
+			time: Time.Second * 2.16
+		}
+	];
 
 	let inventorySize = 28;
 	// For each pouch the user has, increase their inventory size.
@@ -71,6 +88,14 @@ export async function ouraniaAltarStartCommand({
 				return `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
 			}
 		}
+		for (const { types, time } of fletchableTypes) {
+			if (types.some(type => (Array.isArray(type) ? type.includes(fletchable!) : type === fletchable))) {
+				timeToFletchSingleItem = time;
+				break;
+			}
+		}
+		if (timeToFletchSingleItem === 0) return 'Error selecting fletchable.';
+
 		inventorySize -= 3;
 	}
 
