@@ -1,6 +1,6 @@
 {
-	"hash": "5043618fcfdfd44ce32379e2af127658",
-	"date": "2025-08-22T23:27:20.486Z",
+	"hash": "5c30cde39a793c978853119e8724e527",
+	"date": "2025-09-09T02:01:00.840Z",
 	"data": [
 		{
 			"id": 2,
@@ -4559,7 +4559,8 @@
 				},
 				{
 					"Burning claws": 3,
-					"Dragon claws": 6
+					"Dragon claws": 5,
+					"Zaryte crossbow": 6
 				}
 			],
 			"can_barrage": false,
@@ -4584,7 +4585,8 @@
 				},
 				{
 					"Burning claws": 3,
-					"Dragon claws": 6
+					"Dragon claws": 5,
+					"Zaryte crossbow": 6
 				}
 			],
 			"can_barrage": false,
@@ -4609,7 +4611,8 @@
 				},
 				{
 					"Burning claws": 3,
-					"Dragon claws": 6
+					"Dragon claws": 5,
+					"Zaryte crossbow": 6
 				}
 			],
 			"can_barrage": false,

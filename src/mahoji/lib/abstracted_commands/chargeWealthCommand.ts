@@ -1,5 +1,5 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { WildernessDiary, userhasDiaryTier } from '../../../lib/diaries';

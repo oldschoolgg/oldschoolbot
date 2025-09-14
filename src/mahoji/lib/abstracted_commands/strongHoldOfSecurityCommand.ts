@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, randomVariation, resolveItems } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';

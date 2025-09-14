@@ -1,5 +1,5 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { type CommandResponse, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { mahojiChatHead } from '../../../lib/canvas/chatHeadImage';
