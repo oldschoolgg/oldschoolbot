@@ -112,6 +112,10 @@ export interface OuraniaAltarOptions extends ActivityTaskOptions {
 	quantity: number;
 	stamina: boolean;
 	daeyalt: boolean;
+	fletch?: {
+		id: number;
+		qty: number;
+	};
 }
 
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {

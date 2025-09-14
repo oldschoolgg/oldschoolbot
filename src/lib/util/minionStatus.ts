@@ -66,6 +66,7 @@ import type {
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
+	OuraniaAltarOptions,
 	PickpocketActivityTaskOptions,
 	PlunderActivityTaskOptions,
 	RaidsOptions,
@@ -572,7 +573,10 @@ export function minionStatus(user: MUser) {
 			}. ${formattedDuration}`;
 		}
 		case 'OuraniaAltar': {
-			return `${name} is currently runecrafting at the Ourania Altar. ${formattedDuration}`;
+			const data = currentTask as OuraniaAltarOptions;
+			const fletchable = data.fletch ? zeroTimeFletchables.find(i => i.id === data.fletch!.id) : null;
+			const fletchingPart = fletchable ? `They are also fletching ${data.fletch!.qty}x ${fletchable.name}. ` : '';
+			return `${name} is currently runecrafting at the Ourania Altar. ${fletchingPart}${formattedDuration}`;
 		}
 
 		case 'Trekking': {

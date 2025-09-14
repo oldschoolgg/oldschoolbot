@@ -2,8 +2,19 @@ import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, increaseNumByPercent } from 'e';
 import { Bank, EItem } from 'oldschooljs';
 
+import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables';
+import Arrows from '@/lib/skilling/skills/fletching/fletchables/arrows';
+import Bolts from '@/lib/skilling/skills/fletching/fletchables/bolts';
+import Darts from '@/lib/skilling/skills/fletching/fletchables/darts';
+import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins';
+import { AmethystBroadBolts, BroadArrows, BroadBolts } from '@/lib/skilling/skills/fletching/fletchables/slayer';
+import TippedBolts from '@/lib/skilling/skills/fletching/fletchables/tippedBolts';
+import TippedDragonBolts from '@/lib/skilling/skills/fletching/fletchables/tippedDragonBolts';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import type { Fletchable } from '../../../lib/skilling/types';
+import type { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
+import { hasSlayerUnlock } from '../../../lib/slayer/slayerUtil';
 import type { OuraniaAltarOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -17,13 +28,15 @@ export async function ouraniaAltarStartCommand({
 	channelID,
 	quantity,
 	usestams,
-	daeyalt_essence
+	daeyalt_essence,
+	fletch
 }: {
 	user: MUser;
 	channelID: string;
 	quantity?: number;
 	usestams?: boolean;
 	daeyalt_essence?: boolean;
+	fletch?: number;
 }) {
 	let timePerTrip = Time.Minute * 1.05;
 	const stamina: boolean = usestams !== undefined ? usestams : true;
@@ -36,12 +49,52 @@ export async function ouraniaAltarStartCommand({
 	const mageLvl = user.skillLevel(SkillsEnum.Magic);
 	const spellbookSwap = mageLvl > 95;
 
+	let fletchable: Fletchable | undefined;
+	let fletchingQuantity = 0;
+	let sets = '';
+	let itemsNeeded: Bank | undefined;
+	let timeToFletchSingleItem = 0;
+
+	const fletchableTypes = [
+		{ types: [Darts, Bolts, BroadBolts], time: Time.Second * 0.08 },
+		{
+			types: [Arrows, BroadArrows, Javelins, TippedBolts, TippedDragonBolts, AmethystBroadBolts],
+			time: Time.Second * 0.144
+		}
+	];
+
 	let inventorySize = 28;
 	// For each pouch the user has, increase their inventory size.
 	for (const pouch of Runecraft.pouches) {
 		if (user.skillLevel(SkillsEnum.Runecraft) < pouch.level) continue;
 		if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
 		if (bank.has(pouch.id) && pouch.id === EItem.COLOSSAL_POUCH) break;
+	}
+
+	if (fletch) {
+		fletchable = zeroTimeFletchables.find(item => item.id === Number(fletch));
+		if (!fletchable) return 'That is not a valid item to fletch during Ourania Altar.';
+		if (user.skillLevel('fletching') < fletchable.level) {
+			return `${user.minionName} needs ${fletchable.level} Fletching to fletch ${fletchable.name}.`;
+		}
+		if (fletchable.requiredSlayerUnlocks) {
+			const { success, errors } = hasSlayerUnlock(
+				user.user.slayer_unlocks as SlayerTaskUnlocksEnum[],
+				fletchable.requiredSlayerUnlocks
+			);
+			if (!success) {
+				return `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
+			}
+		}
+		for (const { types, time } of fletchableTypes) {
+			if (types.some(type => (Array.isArray(type) ? type.includes(fletchable!) : type === fletchable))) {
+				timeToFletchSingleItem = time;
+				break;
+			}
+		}
+		if (timeToFletchSingleItem === 0) return 'Error selecting fletchable.';
+
+		inventorySize -= 3;
 	}
 
 	if (inventorySize > 28) boosts.push(`+${inventorySize - 28} inv spaces from pouches`);
@@ -94,6 +147,19 @@ export async function ouraniaAltarStartCommand({
 	const totalCost = new Bank();
 	const itemCost = new Bank();
 
+	if (fletchable) {
+		fletchingQuantity = Math.floor(duration / timeToFletchSingleItem);
+		if (fletchable.outputMultiple) sets = ' sets of';
+		const max = user.bank.fits(fletchable.inputItems);
+		if (max < fletchingQuantity && max !== 0) fletchingQuantity = max;
+		itemsNeeded = fletchable.inputItems.clone().multiply(fletchingQuantity);
+		if (!user.bankWithGP.has(itemsNeeded)) {
+			return `You don't have enough items. For ${fletchingQuantity}x ${fletchable.name}, you're missing **${itemsNeeded
+				.clone()
+				.remove(user.bank)}**.`;
+		}
+	}
+
 	if (stamina || spellbookSwap) {
 		if (spellbookSwap) {
 			boosts.push('20% faster for using Spellbook Swap and Vile Vigour instead of Staminas');
@@ -117,8 +183,10 @@ export async function ouraniaAltarStartCommand({
 		totalCost.add('Pure essence', quantity);
 	}
 	if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
-
 	await user.removeItemsFromBank(totalCost);
+	if (itemsNeeded) {
+		await user.removeItemsFromBank(itemsNeeded);
+	}
 	updateBankSetting('runecraft_cost', totalCost);
 
 	await addSubTaskToActivityTask<OuraniaAltarOptions>({
@@ -128,7 +196,8 @@ export async function ouraniaAltarStartCommand({
 		type: 'OuraniaAltar',
 		channelID: channelID.toString(),
 		stamina,
-		daeyalt
+		daeyalt,
+		fletch: fletchable ? { id: fletchable.id, qty: fletchingQuantity } : undefined
 	});
 
 	let response = `${user.minionName} is now crafting ${quantity}x`;
@@ -141,9 +210,15 @@ export async function ouraniaAltarStartCommand({
 
 	response += `Essence at the Ourania Altar, it'll take around ${formatDuration(
 		duration
-	)} to finish, this will take ${numberOfInventories}x trips to the altar.\nYour minion has consumed: ${itemCost}.\n\n**Boosts:** ${boosts.join(
-		', '
-	)}`;
+	)} to finish, this will take ${numberOfInventories}x trips to the altar.`;
+	if (itemCost.length > 0) {
+		response += `\nYour minion has consumed: ${itemCost}.`;
+	}
+	if (fletchable && itemsNeeded) {
+		response += `\nYou are also now Fletching ${fletchingQuantity}${sets} ${fletchable.name}. Removed ${itemsNeeded} from your bank.`;
+	}
+
+	response += `\n\n**Boosts:** ${boosts.join(', ')}`;
 
 	return response;
 }

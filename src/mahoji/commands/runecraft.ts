@@ -6,6 +6,7 @@ import { Bank, SkillsEnum, itemID } from 'oldschooljs';
 import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
+import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -83,6 +84,18 @@ export const runecraftCommand: OSBMahojiCommand = {
 			name: 'extracts',
 			description: 'Set this to true to use extracts (default false)',
 			required: false
+		},
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'fletch',
+			description: 'The item you wish to fletch during the trip (Ourania Altar only)',
+			required: false,
+			autocomplete: async (value: string) => {
+				const search = value?.toLowerCase() ?? '';
+				return zeroTimeFletchables
+					.filter(i => i.name.toLowerCase().includes(search))
+					.map(i => ({ name: i.name, value: i.id.toString() }));
+			}
 		}
 	],
 	run: async ({
@@ -95,9 +108,10 @@ export const runecraftCommand: OSBMahojiCommand = {
 		usestams?: boolean;
 		daeyalt_essence?: boolean;
 		extracts?: boolean;
+		fletch?: string;
 	}>) => {
 		const user = await mUserFetch(userID.toString());
-		let { rune, quantity, usestams, daeyalt_essence, extracts } = options;
+		let { rune, quantity, usestams, daeyalt_essence, extracts, fletch } = options;
 
 		rune = rune.toLowerCase().replace('rune', '').trim();
 
@@ -112,7 +126,15 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}
 
 		if (rune.includes('ourania')) {
-			return ouraniaAltarStartCommand({ user, channelID, quantity, usestams, daeyalt_essence });
+			const fletchID = fletch ? Number(fletch) : undefined;
+			return ouraniaAltarStartCommand({
+				user,
+				channelID,
+				quantity,
+				usestams,
+				daeyalt_essence,
+				fletch: fletchID
+			});
 		}
 
 		if (rune.includes('(zeah)')) {

@@ -303,7 +303,8 @@ const tripHandlers = {
 			rune: 'ourania altar',
 			usestams: data.stamina,
 			daeyalt_essence: data.daeyalt,
-			quantity: data.quantity
+			quantity: data.quantity,
+			fletch: data.fletch?.id
 		})
 	},
 	[activity_type_enum.Runecraft]: {
