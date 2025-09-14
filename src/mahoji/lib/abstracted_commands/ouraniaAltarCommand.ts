@@ -54,14 +54,12 @@ export async function ouraniaAltarStartCommand({
 	let sets = '';
 	let itemsNeeded: Bank | undefined;
 	let timeToFletchSingleItem = 0;
-	// Ourania fletch speeds (scaled):
-	// - Slow group 2.16s/action (arrows 25k/hr, javelins ≈8.33k/hr, tipped ≈16.67k/hr)
-	// - Fast group 1.2s/action (darts/bolts ≈30k/hr)
+
 	const fletchableTypes = [
-		{ types: [Darts, Bolts, BroadBolts], time: Time.Second * 1.2 },
+		{ types: [Darts, Bolts, BroadBolts], time: Time.Second * 0.08 },
 		{
 			types: [Arrows, BroadArrows, Javelins, TippedBolts, TippedDragonBolts, AmethystBroadBolts],
-			time: Time.Second * 2.16
+			time: Time.Second * 0.144
 		}
 	];
 
