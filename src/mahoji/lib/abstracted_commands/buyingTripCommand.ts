@@ -3,11 +3,11 @@ import { Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
 import type { TripBuyable } from '@/lib/data/buyables/tripBuyables';
+import { calculateShopBuyCost } from '@/lib/util/calculateShopBuyCost';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import type { BuyActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import calculateShopBuyCost from '../../../lib/util/calculateShopBuyCost';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
@@ -41,7 +41,7 @@ export async function buyingTripCommand(
 		)}, try a lower quantity. The highest amount you can buy is ${Math.floor(maxTripLength / timePerItem)}.`;
 	}
 
-	const { total: totalCost, average } = calculateShopBuyCost({
+	const { totalCost, averageCost } = calculateShopBuyCost({
 		gpCost,
 		quantity,
 		shopQuantity: buyable.shopQuantity,
@@ -55,9 +55,7 @@ export async function buyingTripCommand(
 
 	await handleMahojiConfirmation(
 		interaction,
-		`Buying ${quantity}x ${itemDisplayName} will cost ${totalCost.toLocaleString()} GP (avg ${Math.floor(
-			average
-		).toLocaleString()} ea) and take ${formatDuration(duration)}. Please confirm.`
+		`Buying ${quantity}x ${itemDisplayName} will cost ${totalCost.toLocaleString()} GP (avg ${averageCost.toLocaleString()} ea) and take ${formatDuration(duration)}. Please confirm.`
 	);
 
 	await transactItems({ userID: user.id, itemsToRemove: cost });
