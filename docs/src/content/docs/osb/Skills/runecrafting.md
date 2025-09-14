@@ -8,6 +8,10 @@ Runecrafting can also be trained at the [Guardians of the Rift](/osb/activities/
 When equipped in the skilling setup, the **Raiments of the eye** outfit grants up to **60%** extra runes during the minigame and while regular runecrafting.
 An **Abyssal lantern** can be purchased with Abyssal pearls to further boost barrier repairs and mined fragments based on your Firemaking level.
 
+While crafting at the Ourania Altar you can use the `fletch:` option to fletch
+zero-time items at no additional time cost. This uses three inventory spaces and
+allows up to **25,000** fletched items per hour.
+
 ## Boosts
 
 There are several boosts available which apply to all runes except blood and soul runes. You can view the boosts for blood and soul runes on the [Dark Altar page](https://wiki.oldschool.gg/skills/runecrafting/dark-altar). The true blood altar uses the same boosts as regular runecrafting.

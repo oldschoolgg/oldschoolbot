@@ -297,15 +297,16 @@ const tripHandlers = {
 			extracts: data.useExtracts
 		})
 	},
-	[activity_type_enum.OuraniaAltar]: {
-		commandName: 'runecraft',
-		args: (data: OuraniaAltarOptions) => ({
-			rune: 'ourania altar',
-			usestams: data.stamina,
-			daeyalt_essence: data.daeyalt,
-			quantity: data.quantity
-		})
-	},
+       [activity_type_enum.OuraniaAltar]: {
+               commandName: 'runecraft',
+               args: (data: OuraniaAltarOptions) => ({
+                       rune: 'ourania altar',
+                       usestams: data.stamina,
+                       daeyalt_essence: data.daeyalt,
+                       quantity: data.quantity,
+                       fletch: data.fletch?.id
+               })
+       },
 	[activity_type_enum.Runecraft]: {
 		commandName: 'runecraft',
 		args: (data: RunecraftActivityTaskOptions) => ({
