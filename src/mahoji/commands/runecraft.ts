@@ -6,6 +6,7 @@ import { Bank, SkillsEnum, itemID } from 'oldschooljs';
 import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
+import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -14,7 +15,6 @@ import { determineRunes } from '../../lib/util/determineRunes';
 import { getOSItem } from '../../lib/util/getOSItem';
 import { formatSkillRequirements } from '../../lib/util/smallUtils';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables';
 import { ouraniaAltarStartCommand } from '../lib/abstracted_commands/ouraniaAltarCommand';
 import { tiaraRunecraftCommand } from '../lib/abstracted_commands/tiaraRunecraftCommand';
 import { calcMaxRCQuantity, userHasGracefulEquipped } from '../mahojiSettings';
@@ -79,39 +79,39 @@ export const runecraftCommand: OSBMahojiCommand = {
 			description: 'Set this to true to use daeyalt essence (default false)',
 			required: false
 		},
-               {
-                       type: ApplicationCommandOptionType.Boolean,
-                       name: 'extracts',
-                       description: 'Set this to true to use extracts (default false)',
-                       required: false
-               },
-               {
-                       type: ApplicationCommandOptionType.Integer,
-                       name: 'fletch',
-                       description: 'The item you wish to fletch during the trip (Ourania Altar only)',
-                       required: false,
-                       autocomplete: async (value: number) => {
-                               const search = value?.toString() ?? '';
-                               return zeroTimeFletchables
-                                       .filter(i => i.name.toLowerCase().includes(search.toLowerCase()))
-                                       .map(i => ({ name: i.name, value: i.id }));
-                       }
-               }
-        ],
-        run: async ({
-                userID,
-                options,
-                channelID
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'extracts',
+			description: 'Set this to true to use extracts (default false)',
+			required: false
+		},
+		{
+			type: ApplicationCommandOptionType.Integer,
+			name: 'fletch',
+			description: 'The item you wish to fletch during the trip (Ourania Altar only)',
+			required: false,
+			autocomplete: async (value: number) => {
+				const search = value?.toString() ?? '';
+				return zeroTimeFletchables
+					.filter(i => i.name.toLowerCase().includes(search.toLowerCase()))
+					.map(i => ({ name: i.name, value: i.id }));
+			}
+		}
+	],
+	run: async ({
+		userID,
+		options,
+		channelID
 	}: CommandRunOptions<{
 		rune: string;
 		quantity?: number;
-               usestams?: boolean;
-               daeyalt_essence?: boolean;
-               extracts?: boolean;
-               fletch?: number;
-        }>) => {
-               const user = await mUserFetch(userID.toString());
-               let { rune, quantity, usestams, daeyalt_essence, extracts, fletch } = options;
+		usestams?: boolean;
+		daeyalt_essence?: boolean;
+		extracts?: boolean;
+		fletch?: number;
+	}>) => {
+		const user = await mUserFetch(userID.toString());
+		let { rune, quantity, usestams, daeyalt_essence, extracts, fletch } = options;
 
 		rune = rune.toLowerCase().replace('rune', '').trim();
 
@@ -125,9 +125,9 @@ export const runecraftCommand: OSBMahojiCommand = {
 			return tiaraRunecraftCommand({ user, channelID, name: rune, quantity });
 		}
 
-               if (rune.includes('ourania')) {
-                       return ouraniaAltarStartCommand({ user, channelID, quantity, usestams, daeyalt_essence, fletch });
-               }
+		if (rune.includes('ourania')) {
+			return ouraniaAltarStartCommand({ user, channelID, quantity, usestams, daeyalt_essence, fletch });
+		}
 
 		if (rune.includes('(zeah)')) {
 			return darkAltarCommand({ user, channelID, name: rune, extracts });

@@ -2,13 +2,13 @@ import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, increaseNumByPercent } from 'e';
 import { Bank, EItem } from 'oldschooljs';
 
-import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables';
+import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { Fletchable } from '../../../lib/skilling/types';
-import type { OuraniaAltarOptions } from '../../../lib/types/minions';
 import type { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../../lib/slayer/slayerUtil';
+import type { OuraniaAltarOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -17,19 +17,19 @@ import { userHasGracefulEquipped } from '../../mahojiSettings';
 const gracefulPenalty = 20;
 
 export async function ouraniaAltarStartCommand({
-        user,
-        channelID,
-        quantity,
-        usestams,
-       daeyalt_essence,
-       fletch
+	user,
+	channelID,
+	quantity,
+	usestams,
+	daeyalt_essence,
+	fletch
 }: {
-        user: MUser;
-        channelID: string;
-        quantity?: number;
-        usestams?: boolean;
-       daeyalt_essence?: boolean;
-       fletch?: number;
+	user: MUser;
+	channelID: string;
+	quantity?: number;
+	usestams?: boolean;
+	daeyalt_essence?: boolean;
+	fletch?: number;
 }) {
 	let timePerTrip = Time.Minute * 1.05;
 	const stamina: boolean = usestams !== undefined ? usestams : true;
@@ -38,43 +38,43 @@ export async function ouraniaAltarStartCommand({
 	const { bank } = user;
 	const numEssenceOwned = bank.amount('Pure essence');
 	const daeyaltEssenceOwned = bank.amount('Daeyalt essence');
-       const boosts = [];
-       const mageLvl = user.skillLevel(SkillsEnum.Magic);
-       const spellbookSwap = mageLvl > 95;
+	const boosts = [];
+	const mageLvl = user.skillLevel(SkillsEnum.Magic);
+	const spellbookSwap = mageLvl > 95;
 
-       let fletchable: Fletchable | undefined;
-       let fletchingQuantity = 0;
-       let sets = '';
-       let itemsNeeded: Bank | undefined;
-       const timeToFletchSingleItem = Time.Hour / 25_000;
+	let fletchable: Fletchable | undefined;
+	let fletchingQuantity = 0;
+	let sets = '';
+	let itemsNeeded: Bank | undefined;
+	const timeToFletchSingleItem = Time.Hour / 25_000;
 
-       let inventorySize = 28;
-       // For each pouch the user has, increase their inventory size.
-       for (const pouch of Runecraft.pouches) {
-               if (user.skillLevel(SkillsEnum.Runecraft) < pouch.level) continue;
-               if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
-               if (bank.has(pouch.id) && pouch.id === EItem.COLOSSAL_POUCH) break;
-       }
+	let inventorySize = 28;
+	// For each pouch the user has, increase their inventory size.
+	for (const pouch of Runecraft.pouches) {
+		if (user.skillLevel(SkillsEnum.Runecraft) < pouch.level) continue;
+		if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
+		if (bank.has(pouch.id) && pouch.id === EItem.COLOSSAL_POUCH) break;
+	}
 
-       if (fletch) {
-               fletchable = zeroTimeFletchables.find(item => item.id === Number(fletch));
-               if (!fletchable) return 'That is not a valid item to fletch during Ourania Altar.';
-               if (user.skillLevel('fletching') < fletchable.level) {
-                       return `${user.minionName} needs ${fletchable.level} Fletching to fletch ${fletchable.name}.`;
-               }
-               if (fletchable.requiredSlayerUnlocks) {
-                       const { success, errors } = hasSlayerUnlock(
-                               user.user.slayer_unlocks as SlayerTaskUnlocksEnum[],
-                               fletchable.requiredSlayerUnlocks
-                       );
-                       if (!success) {
-                               return `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
-                       }
-               }
-               inventorySize -= 3;
-       }
+	if (fletch) {
+		fletchable = zeroTimeFletchables.find(item => item.id === Number(fletch));
+		if (!fletchable) return 'That is not a valid item to fletch during Ourania Altar.';
+		if (user.skillLevel('fletching') < fletchable.level) {
+			return `${user.minionName} needs ${fletchable.level} Fletching to fletch ${fletchable.name}.`;
+		}
+		if (fletchable.requiredSlayerUnlocks) {
+			const { success, errors } = hasSlayerUnlock(
+				user.user.slayer_unlocks as SlayerTaskUnlocksEnum[],
+				fletchable.requiredSlayerUnlocks
+			);
+			if (!success) {
+				return `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
+			}
+		}
+		inventorySize -= 3;
+	}
 
-       if (inventorySize > 28) boosts.push(`+${inventorySize - 28} inv spaces from pouches`);
+	if (inventorySize > 28) boosts.push(`+${inventorySize - 28} inv spaces from pouches`);
 
 	if (!userHasGracefulEquipped(user) || !spellbookSwap) {
 		boosts.push(`${gracefulPenalty}% slower for no Graceful`);
@@ -112,30 +112,30 @@ export async function ouraniaAltarStartCommand({
 		}
 	}
 
-       const numberOfInventories = Math.max(Math.ceil(quantity / inventorySize), 1);
-       const duration = numberOfInventories * timePerTrip;
+	const numberOfInventories = Math.max(Math.ceil(quantity / inventorySize), 1);
+	const duration = numberOfInventories * timePerTrip;
 
-       if (duration > maxTripLength) {
+	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
 			maxTripLength
 		)}, try a lower quantity. The highest amount of essence you can craft is ${Math.floor(maxCanDo)}.`;
 	}
 
-       const totalCost = new Bank();
-       const itemCost = new Bank();
+	const totalCost = new Bank();
+	const itemCost = new Bank();
 
-       if (fletchable) {
-               fletchingQuantity = Math.floor(duration / timeToFletchSingleItem);
-               if (fletchable.outputMultiple) sets = ' sets of';
-               const max = user.bank.fits(fletchable.inputItems);
-               if (max < fletchingQuantity && max !== 0) fletchingQuantity = max;
-               itemsNeeded = fletchable.inputItems.clone().multiply(fletchingQuantity);
-               if (!user.bankWithGP.has(itemsNeeded)) {
-                       return `You don't have enough items. For ${fletchingQuantity}x ${fletchable.name}, you're missing **${itemsNeeded
-                               .clone()
-                               .remove(user.bank)}**.`;
-               }
-       }
+	if (fletchable) {
+		fletchingQuantity = Math.floor(duration / timeToFletchSingleItem);
+		if (fletchable.outputMultiple) sets = ' sets of';
+		const max = user.bank.fits(fletchable.inputItems);
+		if (max < fletchingQuantity && max !== 0) fletchingQuantity = max;
+		itemsNeeded = fletchable.inputItems.clone().multiply(fletchingQuantity);
+		if (!user.bankWithGP.has(itemsNeeded)) {
+			return `You don't have enough items. For ${fletchingQuantity}x ${fletchable.name}, you're missing **${itemsNeeded
+				.clone()
+				.remove(user.bank)}**.`;
+		}
+	}
 
 	if (stamina || spellbookSwap) {
 		if (spellbookSwap) {
@@ -153,29 +153,29 @@ export async function ouraniaAltarStartCommand({
 		}
 	}
 
-       if (daeyalt_essence) {
-               totalCost.add('Daeyalt essence', quantity);
-               if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
-       } else {
-               totalCost.add('Pure essence', quantity);
-       }
-       if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
-       await user.removeItemsFromBank(totalCost);
-       if (itemsNeeded) {
-               await user.removeItemsFromBank(itemsNeeded);
-       }
-       updateBankSetting('runecraft_cost', totalCost);
+	if (daeyalt_essence) {
+		totalCost.add('Daeyalt essence', quantity);
+		if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
+	} else {
+		totalCost.add('Pure essence', quantity);
+	}
+	if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
+	await user.removeItemsFromBank(totalCost);
+	if (itemsNeeded) {
+		await user.removeItemsFromBank(itemsNeeded);
+	}
+	updateBankSetting('runecraft_cost', totalCost);
 
-       await addSubTaskToActivityTask<OuraniaAltarOptions>({
-               quantity,
-               userID: user.id,
-               duration,
-               type: 'OuraniaAltar',
-               channelID: channelID.toString(),
-               stamina,
-               daeyalt,
-               fletch: fletchable ? { id: fletchable.id, qty: fletchingQuantity } : undefined
-       });
+	await addSubTaskToActivityTask<OuraniaAltarOptions>({
+		quantity,
+		userID: user.id,
+		duration,
+		type: 'OuraniaAltar',
+		channelID: channelID.toString(),
+		stamina,
+		daeyalt,
+		fletch: fletchable ? { id: fletchable.id, qty: fletchingQuantity } : undefined
+	});
 
 	let response = `${user.minionName} is now crafting ${quantity}x`;
 
@@ -185,15 +185,15 @@ export async function ouraniaAltarStartCommand({
 		response += ' Pure ';
 	}
 
-       response += `Essence at the Ourania Altar, it'll take around ${formatDuration(
-               duration
-       )} to finish, this will take ${numberOfInventories}x trips to the altar.\nYour minion has consumed: ${itemCost}.`;
+	response += `Essence at the Ourania Altar, it'll take around ${formatDuration(
+		duration
+	)} to finish, this will take ${numberOfInventories}x trips to the altar.\nYour minion has consumed: ${itemCost}.`;
 
-       if (fletchable && itemsNeeded) {
-               response += `\nYou are also now Fletching ${fletchingQuantity}${sets} ${fletchable.name}. Removed ${itemsNeeded} from your bank.`;
-       }
+	if (fletchable && itemsNeeded) {
+		response += `\nYou are also now Fletching ${fletchingQuantity}${sets} ${fletchable.name}. Removed ${itemsNeeded} from your bank.`;
+	}
 
-       response += `\n\n**Boosts:** ${boosts.join(', ')}`;
+	response += `\n\n**Boosts:** ${boosts.join(', ')}`;
 
 	return response;
 }

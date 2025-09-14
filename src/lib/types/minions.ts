@@ -108,14 +108,14 @@ export interface DarkAltarOptions extends ActivityTaskOptions {
 }
 
 export interface OuraniaAltarOptions extends ActivityTaskOptions {
-        type: 'OuraniaAltar';
-        quantity: number;
-        stamina: boolean;
-       daeyalt: boolean;
-       fletch?: {
-               id: number;
-               qty: number;
-       };
+	type: 'OuraniaAltar';
+	quantity: number;
+	stamina: boolean;
+	daeyalt: boolean;
+	fletch?: {
+		id: number;
+		qty: number;
+	};
 }
 
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {

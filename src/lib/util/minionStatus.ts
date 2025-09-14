@@ -66,14 +66,14 @@ import type {
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
+	OuraniaAltarOptions,
 	PickpocketActivityTaskOptions,
 	PlunderActivityTaskOptions,
-        RaidsOptions,
-        RunecraftActivityTaskOptions,
-       OuraniaAltarOptions,
-        SawmillActivityTaskOptions,
-        ScatteringActivityTaskOptions,
-        SepulchreActivityTaskOptions,
+	RaidsOptions,
+	RunecraftActivityTaskOptions,
+	SawmillActivityTaskOptions,
+	ScatteringActivityTaskOptions,
+	SepulchreActivityTaskOptions,
 	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
@@ -572,14 +572,12 @@ export function minionStatus(user: MUser) {
 				data.useExtracts ? ' with extracts' : ''
 			}. ${formattedDuration}`;
 		}
-               case 'OuraniaAltar': {
-                       const data = currentTask as OuraniaAltarOptions;
-                       const fletchable = data.fletch ? zeroTimeFletchables.find(i => i.id === data.fletch!.id) : null;
-                       const fletchingPart = fletchable
-                               ? `They are also fletching ${data.fletch!.qty}x ${fletchable.name}. `
-                               : '';
-                       return `${name} is currently runecrafting at the Ourania Altar. ${fletchingPart}${formattedDuration}`;
-               }
+		case 'OuraniaAltar': {
+			const data = currentTask as OuraniaAltarOptions;
+			const fletchable = data.fletch ? zeroTimeFletchables.find(i => i.id === data.fletch!.id) : null;
+			const fletchingPart = fletchable ? `They are also fletching ${data.fletch!.qty}x ${fletchable.name}. ` : '';
+			return `${name} is currently runecrafting at the Ourania Altar. ${fletchingPart}${formattedDuration}`;
+		}
 
 		case 'Trekking': {
 			return `${name} is currently Temple Trekking. ${formattedDuration}`;
