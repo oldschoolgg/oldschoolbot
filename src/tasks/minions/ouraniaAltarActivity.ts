@@ -6,6 +6,7 @@ import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { trackLoot } from '../../lib/lootTrack';
 import { raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
 import Runecraft, { ouraniaAltarTables } from '../../lib/skilling/skills/runecraft';
+import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { OuraniaAltarOptions } from '../../lib/types/minions';
 import { skillingPetDropRate } from '../../lib/util';
@@ -15,10 +16,15 @@ import { updateBankSetting } from '../../lib/util/updateBankSetting';
 const ouraniaAltarTask: MinionTask = {
 	type: 'OuraniaAltar',
 	async run(data: OuraniaAltarOptions) {
-		const { quantity, userID, channelID, duration, daeyalt } = data;
+               const { quantity, userID, channelID, duration, daeyalt, fletch } = data;
 		const user = await mUserFetch(userID);
 		const lvl = user.skillLevel(SkillsEnum.Runecraft);
-		const loot = new Bank();
+               const loot = new Bank();
+               let fletchXpReceived = 0;
+               let fletchXpRes = '';
+               let fletchQuantity = 0;
+               const fletchingLoot = new Bank();
+               let fletchable: (typeof zeroTimeFletchables)[number] | undefined = undefined;
 		const [hasArdyMedium] = await userhasDiaryTier(user, ArdougneDiary.medium);
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, 1_487_213);
 		const selectedLootTable = ouraniaAltarTables[Math.min(Math.floor(lvl / 10), 10)];
@@ -58,18 +64,36 @@ const ouraniaAltarTask: MinionTask = {
 			loot.add(rune, dBonus + rBonus);
 		}
 
-		const xpRes = `\n${await user.addXP({
-			skillName: SkillsEnum.Runecraft,
-			amount: totalXp,
-			duration,
-			source: 'OuraniaAltar'
-		})}`;
+               if (fletch) {
+                       fletchable = zeroTimeFletchables.find(item => item.id === fletch.id);
+                       if (!fletchable) {
+                               throw new Error(`Fletchable id ${fletch.id} not found.`);
+                       }
+                       fletchQuantity = fletch.qty;
+                       const quantityToGive = fletchable.outputMultiple
+                               ? fletchQuantity * fletchable.outputMultiple
+                               : fletchQuantity;
+                       fletchXpReceived = fletchQuantity * fletchable.xp;
+                       fletchXpRes = await user.addXP({
+                               skillName: SkillsEnum.Fletching,
+                               amount: fletchXpReceived,
+                               duration
+                       });
+                       fletchingLoot.add(fletchable.id, quantityToGive);
+               }
 
-		const str = `${user}, ${user.minionName} finished runecrafting at the Ourania altar, you received ${loot}.${
-			diaryQuantity > 0 ? `\n${diaryQuantity} bonus runes for completing the medium Ardougne diary.` : ''
-		}${
-			raimentQuantity > 0 ? `\n${raimentQuantity} bonus runes from the Raiments of the eye outfit.` : ''
-		} ${xpRes}`;
+               const xpRes = `\n${await user.addXP({
+                       skillName: SkillsEnum.Runecraft,
+                       amount: totalXp,
+                       duration,
+                       source: 'OuraniaAltar'
+               })}`;
+
+               let str = `${user}, ${user.minionName} finished runecrafting at the Ourania altar, you received ${loot}.${
+                       diaryQuantity > 0 ? `\n${diaryQuantity} bonus runes for completing the medium Ardougne diary.` : ''
+               }${
+                       raimentQuantity > 0 ? `\n${raimentQuantity} bonus runes from the Raiments of the eye outfit.` : ''
+               } ${xpRes}`;
 
 		if (loot.amount('Rift guardian') > 0) {
 			globalClient.emit(
@@ -82,11 +106,24 @@ const ouraniaAltarTask: MinionTask = {
 			);
 		}
 
-		await transactItems({
-			userID: user.id,
-			collectionLog: true,
-			itemsToAdd: loot
-		});
+               await transactItems({
+                       userID: user.id,
+                       collectionLog: true,
+                       itemsToAdd: loot
+               });
+
+               if (fletchable && fletch) {
+                       await transactItems({
+                               userID: user.id,
+                               collectionLog: true,
+                               itemsToAdd: fletchingLoot
+                       });
+                       if (fletchable.outputMultiple) {
+                               str += `\nYou also fletched ${fletchQuantity} sets of ${fletchable.name}s and received ${fletchXpRes}.`;
+                       } else {
+                               str += `\nYou also fletched ${fletchQuantity} ${fletchable.name} and received ${fletchXpRes}.`;
+                       }
+               }
 
 		updateBankSetting('ourania_loot', loot);
 		await trackLoot({

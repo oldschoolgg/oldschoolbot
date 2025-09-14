@@ -108,10 +108,14 @@ export interface DarkAltarOptions extends ActivityTaskOptions {
 }
 
 export interface OuraniaAltarOptions extends ActivityTaskOptions {
-	type: 'OuraniaAltar';
-	quantity: number;
-	stamina: boolean;
-	daeyalt: boolean;
+        type: 'OuraniaAltar';
+        quantity: number;
+        stamina: boolean;
+       daeyalt: boolean;
+       fletch?: {
+               id: number;
+               qty: number;
+       };
 }
 
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
@@ -532,6 +536,13 @@ export interface TokkulShopOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface BuyActivityTaskOptions extends ActivityTaskOptions {
+	type: 'Buy';
+	itemID: number;
+	quantity: number;
+	totalCost: number;
+}
+
 export interface UnderwaterAgilityThievingTaskOptions extends ActivityTaskOptions {
 	type: 'UnderwaterAgilityThieving';
 	trainingSkill: UnderwaterAgilityThievingTrainingSkill;
@@ -637,6 +648,7 @@ export type ActivityTaskData =
 	| SpecificQuestOptions
 	| ActivityTaskOptionsWithNoChanges
 	| TokkulShopOptions
+	| BuyActivityTaskOptions
 	| BirdhouseActivityTaskOptions
 	| FightCavesActivityTaskOptions
 	| ActivityTaskOptionsWithQuantity
