@@ -86,15 +86,15 @@ export const runecraftCommand: OSBMahojiCommand = {
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: ApplicationCommandOptionType.String,
 			name: 'fletch',
 			description: 'The item you wish to fletch during the trip (Ourania Altar only)',
 			required: false,
-			autocomplete: async (value: number) => {
-				const search = value?.toString() ?? '';
+			autocomplete: async (value: string) => {
+				const search = value?.toLowerCase() ?? '';
 				return zeroTimeFletchables
-					.filter(i => i.name.toLowerCase().includes(search.toLowerCase()))
-					.map(i => ({ name: i.name, value: i.id }));
+					.filter(i => i.name.toLowerCase().includes(search))
+					.map(i => ({ name: i.name, value: i.id.toString() }));
 			}
 		}
 	],
@@ -108,7 +108,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		usestams?: boolean;
 		daeyalt_essence?: boolean;
 		extracts?: boolean;
-		fletch?: number;
+		fletch?: string;
 	}>) => {
 		const user = await mUserFetch(userID.toString());
 		let { rune, quantity, usestams, daeyalt_essence, extracts, fletch } = options;
@@ -126,7 +126,15 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}
 
 		if (rune.includes('ourania')) {
-			return ouraniaAltarStartCommand({ user, channelID, quantity, usestams, daeyalt_essence, fletch });
+			const fletchID = fletch ? Number(fletch) : undefined;
+			return ouraniaAltarStartCommand({
+				user,
+				channelID,
+				quantity,
+				usestams,
+				daeyalt_essence,
+				fletch: fletchID
+			});
 		}
 
 		if (rune.includes('(zeah)')) {

@@ -210,8 +210,10 @@ export async function ouraniaAltarStartCommand({
 
 	response += `Essence at the Ourania Altar, it'll take around ${formatDuration(
 		duration
-	)} to finish, this will take ${numberOfInventories}x trips to the altar.\nYour minion has consumed: ${itemCost}.`;
-
+	)} to finish, this will take ${numberOfInventories}x trips to the altar.`;
+	if (itemCost.length > 0) {
+		response += `\nYour minion has consumed: ${itemCost}.`;
+	}
 	if (fletchable && itemsNeeded) {
 		response += `\nYou are also now Fletching ${fletchingQuantity}${sets} ${fletchable.name}. Removed ${itemsNeeded} from your bank.`;
 	}

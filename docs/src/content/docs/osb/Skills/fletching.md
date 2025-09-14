@@ -37,4 +37,4 @@ Ourania Altar. Use the `fletch:` option when starting a trip:
 - `[[/runecraft rune\:ourania altar fletch\:Rune dart]]`
 
 Doing so consumes three inventory spaces for supplies and lets your minion
-fletch up to **25,000** items per hour without extending the trip.
+fletch up to **45,000** darts/bolts per hour or **25,000** other items per hour without extending the trip.

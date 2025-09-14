@@ -10,7 +10,7 @@ An **Abyssal lantern** can be purchased with Abyssal pearls to further boost bar
 
 While crafting at the Ourania Altar you can use the `fletch:` option to fletch
 zero-time items at no additional time cost. This uses three inventory spaces and
-allows up to **25,000** fletched items per hour.
+allows up to **45,000** darts/bolts per hour or **25,000** other items per hour.
 
 ## Boosts
 
