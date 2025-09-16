@@ -210,8 +210,8 @@ import {
 	vladDrakanCL,
 	volcanicMineCL,
 	vorkathCL,
-	yetiCL,
 	wintertodtCL,
+	yetiCL,
 	zalcanoCL,
 	zulrahCL
 } from './CollectionsExport';
