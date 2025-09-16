@@ -1,5 +1,6 @@
 import { roughMergeMahojiResponse } from '@oldschoolgg/toolkit/discord-util';
 import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/discord-util';
+import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 
 import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage';
 import { defaultFarmingContract } from '../../../lib/minions/farming';
@@ -27,6 +28,10 @@ const contractToFarmingLevel = {
 	medium: 65,
 	hard: 85
 };
+
+function formatNewContractContent(plantName: string, difficulty: FarmingContractDifficultyLevel) {
+	return `Your new farming contract is: ${plantName} (${toTitleCase(difficulty)} contract)`;
+}
 
 export async function farmingContractCommand(userID: string, input?: ContractOption): CommandResponse {
 	const user = await mUserFetch(userID);
@@ -66,7 +71,8 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 			if (currentContract.difficultyLevel === 'easy') {
 				return janeImage('Pardon me, but you already have the easiest contract level available!');
 			}
-			const newContractLevel: ContractOption = currentContract.difficultyLevel === 'hard' ? 'medium' : 'easy';
+			const newContractLevel: FarmingContractDifficultyLevel =
+				currentContract.difficultyLevel === 'hard' ? 'medium' : 'easy';
 			const plantInformation = getPlantToGrow(user, {
 				contractLevel: newContractLevel,
 				ignorePlant: currentContract.plantToGrow!
@@ -86,6 +92,7 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 			});
 
 			return {
+				content: formatNewContractContent(plantToGrow, newContractLevel),
 				files: (
 					await janeImage(
 						`I suppose you were too chicken for the challenge. Please could you grow a ${plantToGrow} instead for us? I'll reward you once you have checked its health.`
@@ -140,6 +147,7 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 	});
 
 	return {
+		content: formatNewContractContent(plantToGrow, input as FarmingContractDifficultyLevel),
 		files: (
 			await janeImage(
 				`Please could you grow a ${plantToGrow} for us? I'll reward you once you have checked its health.`
