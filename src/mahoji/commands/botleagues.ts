@@ -185,6 +185,6 @@ ${leaguesTrophiesBuyables
 			return null;
 		}
 
-		return 'https://bso-wiki.oldschool.gg/leagues';
+		return 'https://wiki.oldschool.gg/bso/leagues/';
 	}
 };

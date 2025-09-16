@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Monsters } from 'oldschooljs';
 import { LootTable } from 'oldschooljs';
 import { QuestID } from '../../../minions/data/quests';

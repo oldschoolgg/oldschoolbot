@@ -1,5 +1,5 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
 import { Bank, type Item, resolveItems } from 'oldschooljs';
 
 import type { ShadesOfMortonOptions } from '../../../lib/types/minions';

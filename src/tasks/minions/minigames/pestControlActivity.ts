@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { toKMB } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';

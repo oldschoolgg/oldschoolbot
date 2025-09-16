@@ -79,7 +79,6 @@ ${author?.avatar ? `<img class="contributor_avatar" src="${author.avatar}" />` :
 				} else {
 					let imageURL = null;
 					let [itemName, flag] = content.split('?');
-					console.log({ itemName, flag });
 					const bsoItem = bsoItems.find(
 						([id, name]) =>
 							name.toLowerCase() === itemName.toLowerCase() || id.toLowerCase() === itemName.toLowerCase()

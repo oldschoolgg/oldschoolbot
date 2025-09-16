@@ -26,6 +26,7 @@ const GENERAL_CHANNEL_ID =
 			: '1154056119019393035';
 const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
 const TEST_SERVER_LOG_CHANNEL = '1042760447830536212';
+export const DELETED_USER_ID = '111111111111111111';
 
 interface ChannelConfig {
 	ServerGeneral: string;
@@ -150,7 +151,10 @@ export enum BitField {
 	DisableOpenableNames = 41,
 	ShowDetailedInfo = 42,
 	DisableTearsOfGuthixButton = 43,
-	DisableDailyButton = 44
+	DisableDailyButton = 44,
+
+	HasDeadeyeScroll = 45,
+	HasMysticVigourScroll = 46
 }
 
 interface BitFieldData {
@@ -263,7 +267,10 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		name: 'Disable Minion Daily Button',
 		protected: false,
 		userConfigurable: true
-	}
+	},
+
+	[BitField.HasDeadeyeScroll]: { name: 'Deadeye Scroll Used', protected: false, userConfigurable: false },
+	[BitField.HasMysticVigourScroll]: { name: 'Mystic Vigour Scroll Used', protected: false, userConfigurable: false }
 } as const;
 
 export const BadgesEnum = {

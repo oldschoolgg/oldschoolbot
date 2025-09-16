@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
 import { SkillsEnum } from '../skilling/types';
@@ -1771,6 +1771,20 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 150,
 			hasChance: isCertainMonsterTrip(Monsters.Amoxliatl.id)
+		}
+	},
+	{
+		id: 1154,
+		name: 'No time to pray',
+		type: 'restriction',
+		monster: 'Royal Titans',
+		desc: 'Kill the Royal Titans without losing any prayer points.',
+		rng: {
+			chancePerKill: 20,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
 		}
 	}
 ];

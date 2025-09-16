@@ -1,6 +1,6 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { LMSBuyables } from '../../../lib/data/CollectionsExport';

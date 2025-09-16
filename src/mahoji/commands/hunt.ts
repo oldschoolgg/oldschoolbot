@@ -1,6 +1,6 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
 import { Bank, ECreature, itemID } from 'oldschooljs';
 
 import { type Peak, generateDailyPeakIntervals } from '@/lib/util/peaks';

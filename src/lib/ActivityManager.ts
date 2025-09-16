@@ -3,6 +3,7 @@ import type { Activity, Prisma, activity_type_enum } from '@prisma/client';
 import { allTasks } from './Task';
 import { modifyBusyCounter } from './busyCounterCache';
 import { globalConfig } from './constants';
+import { onMinionActivityFinish } from './events.js';
 import { sql } from './postgres';
 import type { ActivityTaskData } from './types/minions';
 import { isGroupActivity } from './util';
@@ -76,6 +77,7 @@ class SActivityManager {
 		} finally {
 			modifyBusyCounter(activity.userID, -1);
 			this.minionActivityCacheDelete(activity.userID);
+			await onMinionActivityFinish(activity);
 		}
 	}
 

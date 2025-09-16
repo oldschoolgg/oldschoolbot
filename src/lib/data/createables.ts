@@ -1432,6 +1432,16 @@ const Reverteables: Createable[] = [
 		outputItems: new Bank().add('Sunfire splinters', 4000),
 		noCl: true
 	},
+	{
+		name: 'Revert Giantsoul amulet (uncharged)',
+		inputItems: {
+			[itemID('Giantsoul amulet (uncharged)')]: 1
+		},
+		outputItems: {
+			[itemID('Big bones')]: 30
+		},
+		noCl: true
+	},
 	...revertMetamorphPets
 ];
 
@@ -2617,6 +2627,54 @@ const Createables: Createable[] = [
 		}),
 		outputItems: new Bank({
 			'Scarred extract': 1
+		})
+	},
+	{
+		name: 'Twinflame staff',
+		inputItems: new Bank({
+			Battlestaff: 1,
+			'Ice element staff crown': 1,
+			'Fire element staff crown': 1
+		}),
+		outputItems: new Bank({
+			'Twinflame staff': 1
+		})
+	},
+	{
+		name: 'Giantsoul amulet',
+		inputItems: new Bank({
+			'Giantsoul amulet (uncharged)': 1,
+			'Big bones': 500
+		}),
+		outputItems: new Bank({
+			'Giantsoul amulet': 1
+		})
+	},
+	{
+		name: 'Burnt page',
+		inputItems: new Bank({
+			'Desiccated page': 1
+		}),
+		outputItems: new Bank({
+			'Burnt page': 1
+		})
+	},
+	{
+		name: 'Soaked page',
+		inputItems: new Bank({
+			'Desiccated page': 1
+		}),
+		outputItems: new Bank({
+			'Soaked page': 1
+		})
+	},
+	{
+		name: 'Soiled page',
+		inputItems: new Bank({
+			'Desiccated page': 1
+		}),
+		outputItems: new Bank({
+			'Soiled page': 1
 		})
 	},
 	...Reverteables,

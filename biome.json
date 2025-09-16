@@ -56,7 +56,8 @@
 				"noParameterAssign": "off",
 				"useExponentiationOperator": "off",
 				"noUselessElse": "off",
-				"useLiteralEnumMembers": "warn"
+				"useLiteralEnumMembers": "warn",
+				"noInferrableTypes": "off"
 			},
 			"correctness": {
 				"useExhaustiveDependencies": "warn",
@@ -66,7 +67,8 @@
 			"complexity": {
 				"noExtraBooleanCast": "warn",
 				"noBannedTypes": "warn",
-				"noForEach": "warn"
+				"noForEach": "warn",
+				"noStaticOnlyClass": "off"
 			},
 			"performance": {
 				"noAccumulatingSpread": "warn"

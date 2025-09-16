@@ -16,7 +16,7 @@ const startsWithNumber = (str: string): boolean => /^[0-9]/.test(str);
 
 async function main() {
 	const spritesheetJSON = await fetch(
-		'https://raw.githubusercontent.com/oldschoolgg/oldschoolbot/refs/heads/master/src/lib/resources/images/spritesheet.json'
+		'https://raw.githubusercontent.com/oldschoolgg/oldschoolbot/refs/heads/master/src/lib/resources/spritesheets/items-spritesheet.json'
 	).then(res => res.json());
 	const osbItems = new Set(Object.keys(spritesheetJSON).map(stringID => Number(stringID)));
 

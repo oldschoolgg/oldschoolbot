@@ -81,7 +81,7 @@ describe('Fish Command', async () => {
 	it('should handle using flakes without flakes in bank', async () => {
 		const user = await createTestUser();
 		const res = await user.runCommand(fishCommand, { name: 'shrimps', flakes: true });
-		expect(res).toEqual('You need to have at least one spirit flake!');
+		expect(res).toEqual('You need to have at least one Spirit flake!');
 	});
 
 	it('should fish with flakes', async () => {

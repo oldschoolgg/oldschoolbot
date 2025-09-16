@@ -69,7 +69,9 @@ describe('Price Abusing', () => {
 			i.gpCost !== undefined &&
 			i.itemCost === undefined &&
 			!isFunction(i.outputItems) &&
-			(!i.outputItems || i.outputItems.length === 1)
+			(!i.outputItems || i.outputItems.length === 1) &&
+			!i.shopQuantity &&
+			!i.quantityPerHour
 	);
 
 	test('Buyables', () => {

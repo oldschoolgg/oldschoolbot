@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, Monsters, SkillsEnum, itemID, resolveItems } from 'oldschooljs';
 
 import { GearStat } from 'oldschooljs/gear';
