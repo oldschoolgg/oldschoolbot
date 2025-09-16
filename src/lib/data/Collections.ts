@@ -210,6 +210,7 @@ import {
 	vladDrakanCL,
 	volcanicMineCL,
 	vorkathCL,
+	yetiCL,
 	wintertodtCL,
 	zalcanoCL,
 	zulrahCL
@@ -748,6 +749,12 @@ export const allCollectionLogs: ICollection = {
 				allItems: BSOMonsters.Treebeard.table.allItems,
 				items: treeBeardCL,
 				fmtProg: kcProg(BSOMonsters.Treebeard.id)
+			},
+			Yeti: {
+				alias: BSOMonsters.Yeti.aliases,
+				allItems: BSOMonsters.Yeti.table.allItems,
+				items: yetiCL,
+				fmtProg: kcProg(BSOMonsters.Yeti.id)
 			},
 			'Sea Kraken': {
 				alias: BSOMonsters.SeaKraken.aliases,
