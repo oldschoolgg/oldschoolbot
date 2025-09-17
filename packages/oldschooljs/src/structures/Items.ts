@@ -33,6 +33,9 @@ export const USELESS_ITEMS = [
 	// Quest blood vial
 	22_405,
 
+	// Castle wars capes
+	4041, 4042,
+
 	// Pharaoh's sceptres
 	9045, 9046, 9047, 9048, 9049, 9050, 9051, 13_074, 13_075, 13_076, 13_077, 13_078, 16_176, 21_445, 21_446, 26_948,
 	26_950, 26_945,
