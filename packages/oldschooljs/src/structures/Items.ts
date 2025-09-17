@@ -30,6 +30,9 @@ export const CLUE_SCROLL_NAMES: string[] = [
 export const USELESS_ITEMS = [
 	617, 8890, 6964, 2513, 19_492, 11_071, 11_068, 21_284, 24_735, 21_913, 4703, 4561, 2425, 4692, 3741,
 
+	// Castle wars capes
+	4041, 4042,
+
 	// Quest blood vial
 	22_405,
 

@@ -15,6 +15,7 @@ import type { UpdateBank } from '../structures/UpdateBank';
 import type { Skills } from '../types';
 import type { QuestID } from './data/quests';
 import type { AttackStyles } from './functions';
+import type { BitField } from '../constants';
 
 export type KillableMonsterEffect = (opts: {
 	gearBank: GearBank;
@@ -89,7 +90,7 @@ export interface KillableMonster {
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;
-	specialLoot?: (data: { loot: Bank; ownedItems: Bank; quantity: number; cl: Bank; user?: MUser }) => void;
+	specialLoot?: (data: { loot: Bank; ownedItems: Bank; quantity: number; cl: Bank; bitfield?: readonly BitField[]; user?: MUser }) => void;
 	effect?: KillableMonsterEffect;
 	degradeableItemUsage?: {
 		required: boolean;

@@ -1181,13 +1181,15 @@ const killableBosses: KillableMonster[] = [
 				[GearStat.AttackMagic]: 70
 			}
 		},
-		specialLoot: ({ loot, user }) => {
-			if (
-				user &&
-				loot.has('Mystic vigour prayer scroll') &&
-				user.bitfield.includes(BitField.HasMysticVigourScroll)
-			) {
-				loot.set('Mystic vigour prayer scroll', 0);
+		specialLoot: ({ loot, ownedItems, quantity, bitfield }) => {
+			const hasScroll = ownedItems.has('Mystic vigour prayer scroll');
+			const hasBitfield = bitfield?.includes(BitField.HasMysticVigourScroll);
+			if (hasScroll || hasBitfield) return;
+			for (let i = 0; i < quantity; i++) {
+				if (roll(75)) {
+					loot.add('Mystic vigour prayer scroll');
+					break;
+				}
 			}
 		}
 	},
@@ -1199,7 +1201,7 @@ const killableBosses: KillableMonster[] = [
 		respawnTime: 500,
 		table: Monsters.Eldric,
 		deathProps: {
-			hardness: 0.2,
+			hardness: 0.02,
 			steepness: 0.99
 		},
 		equippedItemBoosts: [
@@ -1324,9 +1326,15 @@ const killableBosses: KillableMonster[] = [
 				[GearStat.AttackMagic]: 70
 			}
 		},
-		specialLoot: ({ loot, user }) => {
-			if (user && loot.has('Deadeye prayer scroll') && user.bitfield.includes(BitField.HasDeadeyeScroll)) {
-				loot.set('Deadeye vigour prayer scroll', 0);
+		specialLoot: ({ loot, ownedItems, quantity, bitfield }) => {
+			const hasScroll = ownedItems.has('Deadeye prayer scroll');
+			const hasBitfield = bitfield?.includes(BitField.HasDeadeyeScroll);
+			if (hasScroll || hasBitfield) return;
+			for (let i = 0; i < quantity; i++) {
+				if (roll(75)) {
+					loot.add('Deadeye prayer scroll');
+					break;
+				}
 			}
 		}
 	},
@@ -1338,7 +1346,7 @@ const killableBosses: KillableMonster[] = [
 		respawnTime: 500,
 		table: Monsters.RoyalTitans,
 		deathProps: {
-			hardness: 0.2,
+			hardness: 0.02,
 			steepness: 0.99
 		},
 		equippedItemBoosts: [
