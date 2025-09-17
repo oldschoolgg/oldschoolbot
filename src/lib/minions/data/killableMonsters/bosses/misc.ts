@@ -1201,7 +1201,7 @@ const killableBosses: KillableMonster[] = [
 		respawnTime: 500,
 		table: Monsters.Eldric,
 		deathProps: {
-			hardness: 0.10,
+			hardness: 0.1,
 			steepness: 0.99
 		},
 		equippedItemBoosts: [
@@ -1346,7 +1346,7 @@ const killableBosses: KillableMonster[] = [
 		respawnTime: 500,
 		table: Monsters.RoyalTitans,
 		deathProps: {
-			hardness: 0.10,
+			hardness: 0.1,
 			steepness: 0.99
 		},
 		equippedItemBoosts: [
