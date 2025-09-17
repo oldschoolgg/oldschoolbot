@@ -19,8 +19,6 @@ import { preCommand } from '../../mahoji/lib/preCommand';
 import { deferInteraction, handleInteractionError, interactionReply } from '../util/interactionReply';
 import { logError } from '../util/logError';
 
-export * from './minigames';
-
 export async function getNewUser(id: string): Promise<NewUser> {
 	const value = await prisma.newUser.findUnique({ where: { id } });
 	if (!value) {

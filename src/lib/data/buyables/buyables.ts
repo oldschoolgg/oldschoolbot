@@ -1,8 +1,8 @@
 import { Bank, ItemGroups, Items } from 'oldschooljs';
 
+import type { MinigameName } from '@/lib/settings/minigames.js';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { QuestID } from '../../minions/data/quests';
-import type { MinigameName } from '../../settings/settings';
 import { soteSkillRequirements } from '../../skilling/functions/questRequirements';
 import type { MUserStats } from '../../structures/MUserStats';
 import type { Skills } from '../../types';
