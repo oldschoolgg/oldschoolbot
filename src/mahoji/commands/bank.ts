@@ -6,7 +6,7 @@ import { chunk } from 'e';
 import type { Bank } from 'oldschooljs';
 
 import { logError, logErrorForInteraction } from '@/lib/util/logError';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+
 import type { BankFlag } from '../../lib/canvas/bankImage';
 import { bankFlags } from '../../lib/canvas/bankImage';
 import { PerkTier } from '../../lib/constants';

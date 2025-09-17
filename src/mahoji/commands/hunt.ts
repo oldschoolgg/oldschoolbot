@@ -1,11 +1,11 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
 import { Bank, ECreature, itemID } from 'oldschooljs';
 
 import { type Peak, generateDailyPeakIntervals } from '@/lib/util/peaks';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../lib/lootTrack';
 import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';

@@ -229,13 +229,7 @@ async function handleGEButton(user: MUser, id: string, interaction: ButtonIntera
 
 export async function interactionHook(interaction: Interaction) {
 	if (!interaction.isButton()) return;
-	const ignoredInteractionIDs = [
-		'CONFIRM',
-		'CANCEL',
-		'PARTY_JOIN',
-		...Object.values(InteractionID.PaginatedMessage),
-		...Object.values(InteractionID.Slayer)
-	];
+	const ignoredInteractionIDs = ['CONFIRM', 'CANCEL', 'PARTY_JOIN', ...Object.values(InteractionID.PaginatedMessage)];
 	if (ignoredInteractionIDs.includes(interaction.customId)) return;
 	if (['DYN_', 'LP_'].some(s => interaction.customId.startsWith(s))) return;
 
@@ -411,6 +405,60 @@ export async function interactionHook(interaction: Interaction) {
 				bypassInhibitors: true,
 				...options
 			});
+		}
+		case InteractionID.Slayer.AutoSlaySaved: {
+			await runCommand({
+				commandName: 'slayer',
+				args: { autoslay: {} },
+				bypassInhibitors: true,
+				...options
+			});
+			return;
+		}
+		case InteractionID.Slayer.AutoSlayDefault: {
+			await runCommand({
+				commandName: 'slayer',
+				args: { autoslay: { mode: 'default' } },
+				bypassInhibitors: true,
+				...options
+			});
+			return;
+		}
+		case InteractionID.Slayer.AutoSlayEHP: {
+			await runCommand({
+				commandName: 'slayer',
+				args: { autoslay: { mode: 'ehp' } },
+				bypassInhibitors: true,
+				...options
+			});
+			return;
+		}
+		case InteractionID.Slayer.AutoSlayBoss: {
+			await runCommand({
+				commandName: 'slayer',
+				args: { autoslay: { mode: 'boss' } },
+				bypassInhibitors: true,
+				...options
+			});
+			return;
+		}
+		case InteractionID.Slayer.SkipTask: {
+			await runCommand({
+				commandName: 'slayer',
+				args: { manage: { command: 'skip', new: true } },
+				bypassInhibitors: true,
+				...options
+			});
+			return;
+		}
+		case InteractionID.Slayer.BlockTask: {
+			await runCommand({
+				commandName: 'slayer',
+				args: { manage: { command: 'block', new: true } },
+				bypassInhibitors: true,
+				...options
+			});
+			return;
 		}
 		case 'AUTO_FARM': {
 			return runCommand({

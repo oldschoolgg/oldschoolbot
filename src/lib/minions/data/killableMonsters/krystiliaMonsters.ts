@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Monsters, deepResolveItems, resolveItems } from 'oldschooljs';
 
 import type { KillableMonster } from '../../types';

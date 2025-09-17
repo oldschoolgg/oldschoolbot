@@ -3,7 +3,6 @@ import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
 import { notEmpty } from 'e';
 import { Bank } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { finishables } from '../../lib/finishables';
 import { sorts } from '../../lib/sorts';
 import { deferInteraction } from '../../lib/util/interactionReply';

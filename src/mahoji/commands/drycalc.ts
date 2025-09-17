@@ -2,8 +2,6 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { round } from 'e';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-
 export const dryCalcCommand: OSBMahojiCommand = {
 	name: 'drycalc',
 	description: 'Calculate your drystreak chance.',

@@ -1,7 +1,6 @@
 import { type CommandRunOptions, truncateString } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { allOpenables, allOpenablesIDs } from '../../lib/openables';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import {

@@ -1,13 +1,12 @@
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Time, increaseNumByPercent, percentChance, randInt, roll } from 'e';
-import { Bank, type ItemBank, addItemToBank } from 'oldschooljs';
+import { Bank, type ItemBank, Items, addItemToBank } from 'oldschooljs';
 
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { skillingPetDropRate } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { logError } from '../../lib/util/logError';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahoji/mahojiSettings';
@@ -130,7 +129,7 @@ export const agilityTask: MinionTask = {
 		}
 
 		if (alch) {
-			const alchedItem = getOSItem(alch.itemID);
+			const alchedItem = Items.getOrThrow(alch.itemID);
 			const alchGP = alchedItem.highalch! * alch.quantity;
 			loot.add('Coins', alchGP);
 			xpRes += ` ${await user.addXP({

@@ -1,5 +1,5 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
 import { Bank, resolveItems } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity, AnimatedArmourActivityTaskOptions } from '../../../lib/types/minions';

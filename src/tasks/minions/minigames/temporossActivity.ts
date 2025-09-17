@@ -4,7 +4,6 @@ import { increaseNumByPercent, randInt } from 'e';
 
 import { getTemporossLoot } from '../../../lib/simulation/tempoross';
 import { Fishing } from '../../../lib/skilling/skills/fishing/fishing';
-import { SkillsEnum } from '../../../lib/skilling/types';
 import type { TemporossActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -14,7 +13,7 @@ export const temporossTask: MinionTask = {
 	async run(data: TemporossActivityTaskOptions) {
 		const { userID, channelID, quantity, rewardBoost, duration } = data;
 		const user = await mUserFetch(userID);
-		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
+		const currentLevel = user.skillsAsLevels.fishing;
 		const previousScore = await user.fetchMinigameScore('tempoross');
 		const { newScore } = await user.incrementMinigameScore('tempoross', quantity);
 		const kcForPet = randInt(previousScore, newScore);
@@ -61,7 +60,7 @@ export const temporossTask: MinionTask = {
 		}
 
 		const xpStr = await user.addXP({
-			skillName: SkillsEnum.Fishing,
+			skillName: 'fishing',
 			amount: fXPtoGive,
 			duration,
 			source: 'Tempoross'

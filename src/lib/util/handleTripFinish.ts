@@ -1,8 +1,8 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { channelIsSendable, makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
-import { Time } from 'e';
 import { Bank, EItem } from 'oldschooljs';
 
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';

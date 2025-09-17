@@ -2,7 +2,6 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { randInt } from 'e';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import {
 	type CanvasContext,
 	canvasToBuffer,

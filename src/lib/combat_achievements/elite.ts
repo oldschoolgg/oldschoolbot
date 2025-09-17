@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
 import { SkillsEnum } from '../skilling/types';

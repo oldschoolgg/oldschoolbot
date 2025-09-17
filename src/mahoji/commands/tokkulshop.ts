@@ -1,10 +1,9 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { activity_type_enum } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import TokkulShopItems from '../../lib/data/buyables/tokkulBuyables';
 import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
 import type { TokkulShopOptions } from '../../lib/types/minions';

@@ -1,12 +1,5 @@
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import {
-	type CommandResponse,
-	type CommandRunOptions,
-	type OSBMahojiCommand,
-	allAbstractCommands,
-	channelIsSendable,
-	hasBanMemberPerms
-} from '@oldschoolgg/toolkit/discord-util';
+import { allAbstractCommands, channelIsSendable, hasBanMemberPerms } from '@oldschoolgg/toolkit/discord-util';
 import { miniID, stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { activity_type_enum } from '@prisma/client';
 import {
@@ -21,7 +14,7 @@ import {
 	resolveColor
 } from 'discord.js';
 import { Time, clamp, removeFromArr, uniqueArr } from 'e';
-import { Bank, type ItemBank } from 'oldschooljs';
+import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import { ItemIconPacks } from '@/lib/canvas/iconPacks';
 import { DynamicButtons } from '../../lib/DynamicButtons';
@@ -33,7 +26,6 @@ import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
 import { BankSortMethods } from '../../lib/sorts';
 import { emojiServers } from '../../lib/util/cachedUserIDs';
-import { getItem } from '../../lib/util/getOSItem';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -202,7 +194,7 @@ async function favFoodConfig(
 		return 'Cleared all favorite food.';
 	}
 	const currentFavorites = user.user.favorite_food;
-	const item = getItem(itemToAdd ?? itemToRemove);
+	const item = Items.getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite food is: ${
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
 	}.`;
@@ -233,7 +225,7 @@ async function favItemConfig(
 		return 'Cleared all favorite items.';
 	}
 	const currentFavorites = user.user.favoriteItems;
-	const item = getItem(itemToAdd ?? itemToRemove);
+	const item = Items.getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite items are: ${
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ').slice(0, 1500)
 	}.`;
@@ -283,8 +275,8 @@ async function favAlchConfig(
 			.join(', ')} to your favorites.`;
 	}
 
-	const removeItem = itemToRemove ? getItem(itemToRemove) : null;
-	const addItem = itemToAdd ? getItem(itemToAdd) : null;
+	const removeItem = itemToRemove ? Items.getItem(itemToRemove) : null;
+	const addItem = itemToAdd ? Items.getItem(itemToAdd) : null;
 	const item = removeItem || addItem;
 
 	if (!item) {
@@ -326,7 +318,7 @@ async function favBhSeedsConfig(
 
 	const currentFavorites = user.user.favorite_bh_seeds;
 	if (itemToAdd || itemToRemove) {
-		const item = getItem(itemToAdd ?? itemToRemove);
+		const item = Items.getItem(itemToAdd ?? itemToRemove);
 		if (!item) return "That item doesn't exist.";
 		if (!birdhouseSeeds.some(seed => seed.item.id === item.id)) return "That item can't be used in birdhouses.";
 		if (itemToAdd) {

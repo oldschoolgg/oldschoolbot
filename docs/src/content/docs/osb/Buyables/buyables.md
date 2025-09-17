@@ -6,7 +6,9 @@ There are various useful items you can buy from the bot, not all are purchased w
 
 Every item on this page can be purchase with the following command:
 
-[[/buy name:name]]
+[/buy name:name]
+
+For items bought via timed trips, see [Trip Buyables](./trip-buyables).
 
 Prices are inflated in comparison to Oldschool RuneScape to act as more of a GP sink on the bot. If your minion is an Ironman, you will get the same prices as on Oldschool RuneScape for _most_ items, which can be viewed [here](../getting-started/ironman-mode.md#ironman-prices).
 

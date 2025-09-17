@@ -3,7 +3,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Items } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { allPetIDs } from '../../lib/data/CollectionsExport';
 import type { GearSetupType } from '../../lib/gear/types';
 import { GearSetupTypes } from '../../lib/gear/types';

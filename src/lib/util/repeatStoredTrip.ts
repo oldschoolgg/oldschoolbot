@@ -1,10 +1,11 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { type Activity, type Prisma, activity_type_enum } from '@prisma/client';
 import { ButtonBuilder, type ButtonInteraction, ButtonStyle } from 'discord.js';
-import { Time } from 'e';
 import { Items } from 'oldschooljs';
 
 import { ClueTiers } from '../clues/clueTiers';
 import type { PvMMethod } from '../constants';
+import { findTripBuyable } from '../data/buyables/tripBuyables';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { autocompleteMonsters } from '../minions/data/killableMonsters';
 import { runCommand } from '../settings/settings';
@@ -18,6 +19,7 @@ import type {
 	AnimatedArmourActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	ButlerActivityTaskOptions,
+	BuyActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CollectingOptions,
@@ -126,6 +128,19 @@ const tripHandlers = {
 	[activity_type_enum.TokkulShop]: {
 		commandName: 'm',
 		args: () => ({})
+	},
+	[activity_type_enum.Buy]: {
+		commandName: 'buy',
+		args: (data: BuyActivityTaskOptions) => {
+			const tripBuyable = findTripBuyable(data.itemID, data.quantity);
+			return {
+				name: tripBuyable?.displayName ?? Items.itemNameFromId(data.itemID),
+				quantity:
+					tripBuyable?.quantity && tripBuyable.quantity > 0
+						? data.quantity / tripBuyable.quantity
+						: data.quantity
+			};
+		}
 	},
 	[activity_type_enum.ShootingStars]: {
 		commandName: 'm',

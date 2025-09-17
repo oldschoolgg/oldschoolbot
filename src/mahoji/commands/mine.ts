@@ -3,7 +3,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { itemID } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { userhasDiaryTier } from '../../lib/diaries.js';
 import { QuestID } from '../../lib/minions/data/quests';
 import { DiaryID } from '../../lib/minions/types.js';

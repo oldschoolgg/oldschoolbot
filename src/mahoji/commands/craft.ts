@@ -1,8 +1,7 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
 import { SkillsEnum } from '../../lib/skilling/types';

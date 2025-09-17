@@ -1,5 +1,5 @@
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, EItem, Items, itemID } from 'oldschooljs';
 
 import type { GearBank } from '@/lib/structures/GearBank';

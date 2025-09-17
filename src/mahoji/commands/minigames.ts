@@ -1,7 +1,6 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { LMSBuyables } from '../../lib/data/CollectionsExport';
 import TrekShopItems from '../../lib/data/buyables/trekBuyables';
 import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables';

@@ -1,9 +1,8 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { HerbloreActivityTaskOptions } from '../../lib/types/minions';

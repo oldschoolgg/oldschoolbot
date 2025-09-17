@@ -9,7 +9,7 @@ import { calcPerHour, cleanString, dateFm, formatDuration, stringMatches } from 
 import { type ClientStorage, economy_transaction_type } from '@prisma/client';
 import { ApplicationCommandOptionType, AttachmentBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Time, calcWhatPercent, noOp, notEmpty, randArrItem, sleep, uniqueArr } from 'e';
-import { Bank, type ItemBank, convertBankToPerHourStats, toKMB } from 'oldschooljs';
+import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
 import { countUsersWithItemInCl } from '@/lib/rawSql';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
@@ -431,25 +431,6 @@ export const adminCommand: OSBMahojiCommand = {
 			name: 'sync_blacklist',
 			description: 'Sync blacklist'
 		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'loot_track',
-			description: 'Loot track',
-			options: [
-				{
-					type: ApplicationCommandOptionType.String,
-					name: 'name',
-					description: 'The name',
-					autocomplete: async (value: string) => {
-						const tracks = await prisma.lootTrack.findMany({ select: { id: true } });
-						return tracks
-							.filter(i => (!value ? true : i.id.includes(value)))
-							.map(i => ({ name: i.id, value: i.id }));
-					},
-					required: true
-				}
-			]
-		},
 		//
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -653,7 +634,6 @@ export const adminCommand: OSBMahojiCommand = {
 		sync_commands?: {};
 		item_stats?: { item: string };
 		sync_blacklist?: {};
-		loot_track?: { name: string };
 		cancel_task?: { user: MahojiUserOption };
 		badges?: { user: MahojiUserOption; add?: string; remove?: string };
 		bypass_age?: { user: MahojiUserOption };
@@ -669,11 +649,9 @@ export const adminCommand: OSBMahojiCommand = {
 		const adminUser = await mUserFetch(userID);
 		const isAdmin = globalConfig.adminUserIDs.includes(userID);
 		const isMod = isAdmin || adminUser.bitfield.includes(BitField.isModerator);
-		if (!guildID || !isMod || (globalConfig.isProduction && guildID.toString() !== globalConfig.supportServerID))
+		if (!guildID || !isMod || (globalConfig.isProduction && guildID.toString() !== globalConfig.supportServerID)) {
 			return randArrItem(gifs);
-
-		if (!guildID || !isMod || (globalConfig.isProduction && guildID.toString() !== '342983479501389826'))
-			return randArrItem(gifs);
+		}
 
 		/**
 		 *
@@ -990,29 +968,6 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			} in their collection log.`;
 		}
 
-		if (options.loot_track) {
-			const loot = await prisma.lootTrack.findFirst({
-				where: {
-					id: options.loot_track.name
-				}
-			});
-			if (!loot) return 'Invalid';
-
-			const durationMillis = loot.total_duration * Time.Minute;
-
-			const arr = [
-				['Cost', new Bank(loot.cost as ItemBank)],
-				['Loot', new Bank(loot.loot as ItemBank)]
-			] as const;
-
-			let content = `${loot.id} ${formatDuration(loot.total_duration * Time.Minute)} KC${loot.total_kc}`;
-			const files = [];
-			for (const [name, bank] of arr) {
-				content += `\n${convertBankToPerHourStats(bank, durationMillis).join(', ')}`;
-				files.push((await makeBankImage({ bank, title: name })).file);
-			}
-			return { content, files };
-		}
 		if (options.ltc) {
 			let str = '';
 			const results = await prisma.lootTrack.findMany();

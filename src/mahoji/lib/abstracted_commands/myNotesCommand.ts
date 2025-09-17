@@ -1,5 +1,5 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
 
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';

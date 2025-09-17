@@ -1,9 +1,8 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { type CommandRunOptions, formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
 import { Bank, SkillsEnum, itemID } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Runecraft from '../../lib/skilling/skills/runecraft';

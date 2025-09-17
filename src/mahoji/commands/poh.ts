@@ -1,7 +1,6 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { PoHObjects } from '../../lib/poh';
 import {
 	getPOH,

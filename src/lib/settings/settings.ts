@@ -5,12 +5,13 @@ import {
 	convertMahojiCommandToAbstractCommand
 } from '@oldschoolgg/toolkit/discord-util';
 import type { NewUser } from '@prisma/client';
-import type {
-	APIInteractionGuildMember,
-	ButtonInteraction,
-	ChatInputCommandInteraction,
-	GuildMember,
-	User
+import {
+	type APIInteractionGuildMember,
+	type ButtonInteraction,
+	type ChatInputCommandInteraction,
+	type GuildMember,
+	MessageFlags,
+	type User
 } from 'discord.js';
 import { isEmpty } from 'remeda';
 
@@ -18,8 +19,6 @@ import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
 import { deferInteraction, handleInteractionError, interactionReply } from '../util/interactionReply';
 import { logError } from '../util/logError';
-
-export * from './minigames';
 
 export async function getNewUser(id: string): Promise<NewUser> {
 	const value = await prisma.newUser.findUnique({ where: { id } });
@@ -99,8 +98,9 @@ export async function runCommand({
 	const mahojiCommand = Array.from(globalClient.mahojiClient.commands.values()).find(c => c.name === commandName);
 	if (!mahojiCommand || !channelIsSendable(channel)) {
 		await interactionReply(interaction, {
-			content: 'There was an error repeating your trip, I cannot find the channel you used the command in.',
-			ephemeral: true
+			content:
+				"There was an error running this command, I cannot find the channel you used the command in, or I don't have permission to send messages in it.",
+			flags: MessageFlags.Ephemeral
 		});
 		return null;
 	}

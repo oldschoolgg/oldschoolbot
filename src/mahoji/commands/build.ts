@@ -3,7 +3,6 @@ import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Time, round } from 'e';
 import { Bank } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import type { Skills } from '../../lib/types';
 import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';

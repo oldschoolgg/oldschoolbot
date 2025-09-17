@@ -4,7 +4,6 @@ import { calcPerHour, formatOrdinal, gaussianRandom } from '@oldschoolgg/toolkit
 import { clamp, percentChance, sumArr } from 'e';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 interface LMSGameSimulated {
 	position: number;
@@ -95,9 +94,9 @@ export function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnT
 
 export const lmsTask: MinionTask = {
 	type: 'LastManStanding',
-	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
-		const { channelID, quantity, userID, duration } = data;
-		const user = await mUserFetch(userID);
+	isNew: true,
+	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
+		const { channelID, quantity, duration } = data;
 		await user.incrementMinigameScore('lms', quantity);
 		const lmsStats = await getUsersLMSStats(user);
 

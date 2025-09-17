@@ -1,9 +1,8 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
-
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType } from 'discord.js';
+
 import Fletching from '../../lib/skilling/skills/fletching';
 import { Fletchables } from '../../lib/skilling/skills/fletching/fletchables';
 import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';

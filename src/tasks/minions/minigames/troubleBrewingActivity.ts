@@ -1,13 +1,12 @@
 import { Bank } from 'oldschooljs';
 
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export const brewingTask: MinionTask = {
 	type: 'TroubleBrewing',
-	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
-		const { channelID, quantity, userID } = data;
-		const user = await mUserFetch(userID);
+	isNew: true,
+	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
+		const { channelID, quantity } = data;
 		await user.incrementMinigameScore('trouble_brewing', quantity);
 		const loot = new Bank().add('Pieces of eight', quantity * 100);
 

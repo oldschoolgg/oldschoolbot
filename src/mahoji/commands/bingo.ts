@@ -3,14 +3,12 @@ import {
 	type CommandResponse,
 	type CommandRunOptions,
 	type MahojiUserOption,
-	type OSBMahojiCommand,
 	channelIsSendable,
 	isValidDiscordSnowflake,
 	mentionCommand
 } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches, truncateString } from '@oldschoolgg/toolkit/string-util';
-
 import { md5sum } from '@oldschoolgg/toolkit/node';
+import { stringMatches, truncateString } from '@oldschoolgg/toolkit/string-util';
 import { dateFm, formatOrdinal } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import {

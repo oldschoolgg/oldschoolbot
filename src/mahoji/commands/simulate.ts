@@ -3,7 +3,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { randInt, roll } from 'e';
 import { Bank, ChambersOfXeric, averageBank, toKMB } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ColosseumWaveBank, startColosseumRun } from '../../lib/colosseum';
 import pets from '../../lib/data/pets';
 import { deferInteraction } from '../../lib/util/interactionReply';

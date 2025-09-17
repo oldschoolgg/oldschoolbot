@@ -1,9 +1,8 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
 import Smithing from '../../lib/skilling/skills/smithing';
 import smithables from '../../lib/skilling/skills/smithing/smithables';

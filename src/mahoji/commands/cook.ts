@@ -1,11 +1,10 @@
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
 import { Bank, itemID } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import Cooking, { Cookables } from '../../lib/skilling/skills/cooking/cooking';
 import ForestryRations from '../../lib/skilling/skills/cooking/forestersRations';
