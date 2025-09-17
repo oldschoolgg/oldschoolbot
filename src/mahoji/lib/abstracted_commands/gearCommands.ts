@@ -138,11 +138,11 @@ async function gearEquipMultiCommand(user: MUser, setup: string, items: string) 
 	const {
 		success: resultSuccess,
 		failMsg,
-		skillFailBank,
+		failedToEquipBank,
 		equippedGear,
 		equipBank,
 		unequipBank
-	} = gearEquipMultiImpl(user, setup, items);
+	} = await gearEquipMultiImpl(user, setup, items);
 	if (!resultSuccess) return failMsg!;
 
 	const dbKey = `gear_${setup}` as const;
@@ -158,8 +158,8 @@ async function gearEquipMultiCommand(user: MUser, setup: string, items: string) 
 
 	const image = await user.generateGearImage({ setupType: setup });
 	let content = `You equipped ${equipBank} on your ${setup} setup, and unequipped ${unequipBank}.`;
-	if (skillFailBank!.length > 0) {
-		content += `\nThese items failed to be equipped as you don't have the requirements: ${skillFailBank}.`;
+	if (failedToEquipBank!.length > 0) {
+		content += `\nThese items failed to be equipped as you don't have the requirements: ${failedToEquipBank}.`;
 	}
 
 	if (setup === 'wildy') {
