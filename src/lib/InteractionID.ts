@@ -6,6 +6,7 @@ export const InteractionID = {
 		LastPage: 'PM_LAST_PAGE'
 	},
 	Slayer: {
+		AutoSlay: 'AUTO_SLAY',
 		AutoSlaySaved: 'SLAYER_AUTO_SLAY_SAVED',
 		AutoSlayDefault: 'SLAYER_AUTO_SLAY_DEFAULT',
 		AutoSlayEHP: 'SLAYER_AUTO_SLAY_EHP',
