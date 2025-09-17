@@ -61,7 +61,6 @@ const EldricTable = new LootTable({ limit: 56 })
 	.add('Soul rune', [50, 75], 2)
 	.add('Blood rune', [50, 75], 2)
 	.add('Rune arrow', [50, 150], 2)
-	
 
 	.add('Coal', [140, 160], 2)
 	.add('Gold ore', [30, 50], 2)
