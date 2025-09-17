@@ -4,7 +4,7 @@ import { expect, test } from 'vitest';
 
 import { tradeCommand } from '../../src/mahoji/commands/trade';
 import type { TestUser } from './util';
-import { createTestUser, mockClient } from './util';
+import { createTestUser, mockClient, mockInteraction } from './util';
 
 test('Trade consistency', async () => {
 	await mockClient();
@@ -45,7 +45,8 @@ test('Trade consistency', async () => {
 					user: {
 						user: other
 					}
-				}
+				},
+				interaction: mockInteraction({ userId: user.id })
 			};
 
 			switch (method) {
