@@ -1253,9 +1253,8 @@ export const magicTrainingArenaCL = resolveItems([
 	'Infinity bottoms',
 	'Infinity boots',
 	'Infinity gloves',
-	"Mage's book"
-	// We cant unlock this spell
-	// 'Bones to peaches'
+	"Mage's book",
+	'Bones to peaches'
 ]);
 export const mahoganyHomesCL = resolveItems([
 	'Builders supply crate',
