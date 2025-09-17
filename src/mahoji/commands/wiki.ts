@@ -2,8 +2,6 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import fetch from 'node-fetch';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-
 export const wikiCommand: OSBMahojiCommand = {
 	name: 'wiki',
 	description: 'Search the official OSRS wiki.',

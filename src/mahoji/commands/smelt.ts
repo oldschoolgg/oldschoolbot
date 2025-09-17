@@ -4,7 +4,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, itemID, resolveItems } from 'oldschooljs';
 
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';

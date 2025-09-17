@@ -2,7 +2,6 @@ import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import Createables from '../../lib/data/createables';
 import type { SkillsEnum } from '../../lib/skilling/types';
 import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';

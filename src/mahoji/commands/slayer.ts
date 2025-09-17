@@ -2,7 +2,6 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
 import { SlayerRewardsShop } from '../../lib/slayer/slayerUnlocks';
 import { deferInteraction } from '../../lib/util/interactionReply';

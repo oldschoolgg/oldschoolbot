@@ -7,7 +7,6 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { winterTodtPointsTable } from '../../../lib/simulation/simulatedKillables';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
-import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -47,7 +46,7 @@ export const wintertodtTask: MinionTask = {
 					user.minionName
 				}, just received a Phoenix! Their Wintertodt KC is ${
 					newScore
-				}, and their Firemaking level is ${user.skillLevel(SkillsEnum.Firemaking)}.`
+				}, and their Firemaking level is ${user.skillsAsLevels.firemaking}.`
 			);
 		}
 
@@ -57,9 +56,9 @@ export const wintertodtTask: MinionTask = {
 		 * Adding/cutting a root gives 10pts, therefore number of roots from this trip is totalPoints/10
 		 */
 		const numberOfRoots = Math.floor((totalPoints - 50 * quantity) / 10);
-		const fmLvl = user.skillLevel(SkillsEnum.Firemaking);
-		const wcLvl = user.skillLevel(SkillsEnum.Woodcutting);
-		const conLevel = user.skillLevel(SkillsEnum.Construction);
+		const fmLvl = user.skillsAsLevels.firemaking;
+		const wcLvl = user.skillsAsLevels.woodcutting;
+		const conLevel = user.skillsAsLevels.construction;
 
 		let fmXpToGive = Math.floor(fmLvl * 100 * quantity + numberOfRoots * (fmLvl * 3));
 		let fmBonusXP = 0;
@@ -70,7 +69,7 @@ export const wintertodtTask: MinionTask = {
 			numberOfBraziers += randInt(1, 7);
 		}
 		const conXP = numberOfBraziers * constructionXPPerBrazier;
-		let xpStr = await user.addXP({ skillName: SkillsEnum.Construction, amount: conXP, duration: data.duration });
+		let xpStr = await user.addXP({ skillName: 'construction', amount: conXP, duration: data.duration });
 
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
 		if (
@@ -94,13 +93,13 @@ export const wintertodtTask: MinionTask = {
 		}
 
 		xpStr += `, ${await user.addXP({
-			skillName: SkillsEnum.Woodcutting,
+			skillName: 'woodcutting',
 			amount: wcXpToGive,
 			duration: data.duration,
 			source: 'Wintertodt'
 		})}`;
 		xpStr += `, ${await user.addXP({
-			skillName: SkillsEnum.Firemaking,
+			skillName: 'firemaking',
 			amount: fmXpToGive,
 			duration: data.duration,
 			source: 'Wintertodt'

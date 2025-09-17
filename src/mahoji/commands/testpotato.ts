@@ -22,7 +22,7 @@ import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
 
 import { testBotKvStore } from '@/testing/TestBotStore';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';

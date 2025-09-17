@@ -2,7 +2,6 @@ import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import { type CommandRunOptions, ellipsize } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';

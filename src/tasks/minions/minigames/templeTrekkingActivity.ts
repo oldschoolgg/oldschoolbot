@@ -1,6 +1,6 @@
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { objectValues, randInt } from 'e';
-import { Bank, ItemGroups } from 'oldschooljs';
+import { Bank, ItemGroups, Items } from 'oldschooljs';
 
 import {
 	EasyEncounterLoot,
@@ -9,7 +9,6 @@ import {
 	rewardTokens
 } from '../../../lib/minions/data/templeTrekking';
 import type { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
-import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { percentChance } from '../../../lib/util/rng';
@@ -46,10 +45,10 @@ export const templeTrekkingTask: MinionTask = {
 		const loot = new Bank();
 
 		const rewardToken = stringMatches(difficulty, 'hard')
-			? getOSItem(rewardTokens.hard)
+			? Items.getOrThrow(rewardTokens.hard)
 			: stringMatches(difficulty, 'medium')
-				? getOSItem(rewardTokens.medium)
-				: getOSItem(rewardTokens.easy);
+				? Items.getOrThrow(rewardTokens.medium)
+				: Items.getOrThrow(rewardTokens.easy);
 
 		let totalEncounters = 0;
 		for (let trip = 0; trip < quantity; trip++) {

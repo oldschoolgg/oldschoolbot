@@ -6,15 +6,14 @@ import { Bank } from 'oldschooljs';
 import type { MinigameName } from '@/lib/settings/minigames';
 import { gauntlet } from '../../../lib/simulation/gauntlet';
 import type { GauntletOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export const gauntletTask: MinionTask = {
 	type: 'Gauntlet',
-	async run(data: GauntletOptions) {
-		const { channelID, quantity, userID, corrupted } = data;
-		const user = await mUserFetch(userID);
+	isNew: true,
+	async run(data: GauntletOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, corrupted } = data;
 		const key: MinigameName = corrupted ? 'corrupted_gauntlet' : 'gauntlet';
 
 		const kc = await user.fetchMinigameScore(key);

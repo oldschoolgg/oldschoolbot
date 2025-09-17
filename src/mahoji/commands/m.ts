@@ -1,6 +1,5 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/discord-util';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusCommand';
 
 export const mCommand: OSBMahojiCommand = {

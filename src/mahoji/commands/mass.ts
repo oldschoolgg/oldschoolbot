@@ -3,7 +3,6 @@ import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type TextChannel } from 'discord.js';
 import { Time, objectKeys } from 'e';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';

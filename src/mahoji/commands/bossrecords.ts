@@ -1,9 +1,4 @@
-import {
-	type CommandRunOptions,
-	type OSBMahojiCommand,
-	channelIsSendable,
-	makePaginatedMessage
-} from '@oldschoolgg/toolkit/discord-util';
+import { channelIsSendable, makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType, EmbedBuilder, type MessageEditOptions } from 'discord.js';
 import { chunk } from 'e';

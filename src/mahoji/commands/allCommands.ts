@@ -1,4 +1,3 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { globalConfig } from '../../lib/constants';
 import { activitiesCommand } from './activities';
 import { adminCommand } from './admin';
