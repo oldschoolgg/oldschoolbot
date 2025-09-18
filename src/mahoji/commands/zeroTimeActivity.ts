@@ -27,18 +27,38 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 			description: 'The item to use for the chosen zero time activity (if applicable).',
 			required: false,
 			autocomplete: async (value: string) => {
-				const search = value.trim().toLowerCase();
-				return zeroTimeFletchables
+				const trimmedValue = value.trim();
+				const search = trimmedValue.toLowerCase();
+				const curatedOptions = zeroTimeFletchables
 					.filter(fletchable =>
 						search.length === 0
 							? true
 							: fletchable.name.toLowerCase().includes(search) || fletchable.id.toString() === search
 					)
-					.slice(0, 25)
 					.map(fletchable => ({
 						name: fletchable.name,
 						value: fletchable.id.toString()
 					}));
+
+				const results: { name: string; value: string }[] = [];
+				if (trimmedValue.length > 0) {
+					const duplicateValue = curatedOptions.some(option => option.value === trimmedValue);
+					if (!duplicateValue) {
+						results.push({
+							name: `Use "${trimmedValue}"`,
+							value: trimmedValue
+						});
+					}
+				}
+
+				for (const option of curatedOptions) {
+					if (results.length >= 25) {
+						break;
+					}
+					results.push(option);
+				}
+
+				return results;
 			}
 		},
 		{
