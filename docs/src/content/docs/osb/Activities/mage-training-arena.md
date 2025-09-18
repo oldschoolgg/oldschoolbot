@@ -23,7 +23,7 @@ To start a trip, use [[/minigames mage_training_arena start]]. To check your poi
 | [[Teacher wand]]     | 143               |
 | [[Master wand]]      | 575               |
 | [[Mage's book]]      | 1,260             |
-| [[Rune pouch]]       | 600               |
+| [[Rune pouch]]       | 400               |
 | [[Bones to peaches]] | 600               |
 
 
