@@ -54,7 +54,6 @@ import type {
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
-	SepulchreActivityTaskOptions,
 	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
@@ -576,10 +575,7 @@ const tripHandlers = {
 	},
 	[activity_type_enum.Sepulchre]: {
 		commandName: 'minigames',
-		args: (data: SepulchreActivityTaskOptions) => {
-			const fletch = data.fletch?.id;
-			return { sepulchre: { start: { fletching: fletch } } };
-		}
+		args: () => ({ sepulchre: { start: {} } })
 	},
 	[activity_type_enum.Smithing]: {
 		commandName: 'smith',

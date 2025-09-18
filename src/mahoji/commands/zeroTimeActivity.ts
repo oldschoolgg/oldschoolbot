@@ -1,0 +1,130 @@
+import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Items } from 'oldschooljs';
+
+import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables';
+import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
+import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
+import type { ZeroTimeActivityType } from '../../lib/util/zeroTimeActivity';
+import { getZeroTimeActivitySettings } from '../../lib/util/zeroTimeActivity';
+
+const zeroTimeTypes: ZeroTimeActivityType[] = ['alch', 'fletch'];
+
+export const zeroTimeActivityCommand: OSBMahojiCommand = {
+	name: 'zero_time_activity',
+	description: 'Configure your preferred zero time activity.',
+	options: [
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'type',
+			description: 'The zero time activity to use.',
+			required: false,
+			choices: zeroTimeTypes.map(type => ({ name: type, value: type }))
+		},
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'item',
+			description: 'The item to use for the chosen zero time activity (if applicable).',
+			required: false
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'clear',
+			description: 'Clear your zero time activity preference.',
+			required: false
+		}
+	],
+	run: async ({ options, userID }: CommandRunOptions<{ type?: string; item?: string; clear?: boolean }>) => {
+		const user = await mUserFetch(userID);
+		const currentSettings = getZeroTimeActivitySettings(user);
+
+		if (options.clear) {
+			await user.update({ zero_time_activity_type: null, zero_time_activity_item: null });
+			return 'Cleared your zero time activity preference.';
+		}
+
+		if (!options.type && !options.item) {
+			if (!currentSettings) {
+				return 'You currently have no zero time activity configured.';
+			}
+			const activityName = currentSettings.type === 'alch' ? 'Alching' : 'Fletching';
+			const itemName = currentSettings.itemID
+				? (Items.get(currentSettings.itemID)?.name ?? 'unknown item')
+				: 'automatic selection';
+			return `Your zero time activity is set to **${activityName}** using **${itemName}**.`;
+		}
+
+		if (!options.type) {
+			return 'You must provide a type when setting a zero time activity.';
+		}
+
+		const typeInput = options.type.toLowerCase();
+		if (!zeroTimeTypes.includes(typeInput as ZeroTimeActivityType)) {
+			return `Invalid zero time activity type. Valid options: ${zeroTimeTypes.join(', ')}.`;
+		}
+
+		const type = typeInput as ZeroTimeActivityType;
+		let itemID: number | null = null;
+		let itemName = '';
+
+		if (type === 'alch') {
+			if (options.item) {
+				const osItem = Items.getItem(options.item);
+				if (!osItem) {
+					return 'That is not a valid item to alch.';
+				}
+				if (!osItem.highalch || !osItem.tradeable) {
+					return 'This item cannot be alched.';
+				}
+				if (user.skillLevel('magic') < 55) {
+					return 'You need level 55 Magic to cast High Alchemy.';
+				}
+				itemID = osItem.id;
+				itemName = osItem.name;
+			} else {
+				itemName = 'automatic selection';
+			}
+		} else {
+			let fletchable = options.item
+				? zeroTimeFletchables.find(
+						item => stringMatches(item.name, options.item ?? '') || item.id === Number(options.item)
+					)
+				: null;
+
+			if (!fletchable && currentSettings?.type === 'fletch' && currentSettings.itemID) {
+				fletchable = zeroTimeFletchables.find(item => item.id === currentSettings.itemID) ?? null;
+			}
+
+			if (!fletchable) {
+				return 'You must specify a valid zero time fletching item.';
+			}
+
+			if (user.skillLevel('fletching') < fletchable.level) {
+				return `${user.minionName} needs ${fletchable.level} Fletching to fletch ${fletchable.name}.`;
+			}
+
+			if (fletchable.requiredSlayerUnlocks) {
+				const { success } = hasSlayerUnlock(
+					user.user.slayer_unlocks as SlayerTaskUnlocksEnum[],
+					fletchable.requiredSlayerUnlocks
+				);
+				if (!success) {
+					return `You don't have the required Slayer unlocks to fletch ${fletchable.name}.`;
+				}
+			}
+
+			itemID = fletchable.id;
+			itemName = fletchable.name;
+		}
+
+		await user.update({
+			zero_time_activity_type: type,
+			zero_time_activity_item: itemID
+		});
+
+		const activityName = type === 'alch' ? 'Alching' : 'Fletching';
+		const itemDisplay = itemID ? itemName : 'automatic selection';
+
+		return `Your zero time activity has been set to **${activityName}** using **${itemDisplay}**.`;
+	}
+};

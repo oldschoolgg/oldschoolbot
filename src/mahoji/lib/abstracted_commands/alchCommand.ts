@@ -1,26 +1,14 @@
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, clamp } from 'e';
-import { Bank, type Item, Items, SkillsEnum, resolveItems, toKMB } from 'oldschooljs';
+import { Bank, type Item, Items, SkillsEnum, toKMB } from 'oldschooljs';
 
+import { unlimitedFireRuneProviders } from '@/lib/util/unlimitedFireRuneProviders';
 import type { AlchingActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-
-const unlimitedFireRuneProviders = resolveItems([
-	'Staff of fire',
-	'Fire battlestaff',
-	'Mystic fire staff',
-	'Lava battlestaff',
-	'Mystic lava staff',
-	'Steam battlestaff',
-	'Mystic steam staff',
-	'Smoke battlestaff',
-	'Mystic smoke staff',
-	'Tome of fire'
-]);
 
 // 5 tick action
 export const timePerAlch = Time.Second * 3;

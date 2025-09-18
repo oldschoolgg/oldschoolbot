@@ -1,71 +1,14 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
-import { Bank } from 'oldschooljs';
 
+import { type ZeroTimeActivityResult, attemptZeroTimeActivity } from '@/lib/util/zeroTimeActivity';
 import { quests } from '../../lib/minions/data/quests';
 import { courses } from '../../lib/skilling/skills/agility';
 import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { timePerAlchAgility } from '../lib/abstracted_commands/alchCommand';
-
-const unlimitedFireRuneProviders = [
-	'Staff of fire',
-	'Fire battlestaff',
-	'Mystic fire staff',
-	'Lava battlestaff',
-	'Mystic lava staff',
-	'Steam battlestaff',
-	'Mystic steam staff',
-	'Smoke battlestaff',
-	'Mystic smoke staff',
-	'Tome of fire'
-];
-
-function alching(user: MUser, tripLength: number) {
-	if (user.skillsAsLevels.magic < 55) return null;
-	const { bank } = user;
-	const favAlchables = user.favAlchs(tripLength, true);
-
-	if (favAlchables.length === 0) {
-		return null;
-	}
-
-	const [itemToAlch] = favAlchables;
-
-	const alchItemQty = bank.amount(itemToAlch.id);
-	const nats = bank.amount('Nature rune');
-	const fireRunes = bank.amount('Fire rune');
-
-	const hasInfiniteFireRunes = user.hasEquipped(unlimitedFireRuneProviders);
-
-	let maxCasts = Math.floor(tripLength / timePerAlchAgility);
-	maxCasts = Math.min(alchItemQty, maxCasts);
-	maxCasts = Math.min(nats, maxCasts);
-	if (!hasInfiniteFireRunes) {
-		maxCasts = Math.min(fireRunes / 5, maxCasts);
-	}
-	maxCasts = Math.floor(maxCasts);
-
-	const bankToRemove = new Bank().add('Nature rune', maxCasts).add(itemToAlch.id, maxCasts);
-	if (!hasInfiniteFireRunes) {
-		bankToRemove.add('Fire rune', maxCasts * 5);
-	}
-
-	if (maxCasts === 0 || bankToRemove.length === 0) return null;
-
-	const alchGP = itemToAlch.highalch! * maxCasts;
-	const bankToAdd = new Bank().add('Coins', alchGP);
-
-	return {
-		maxCasts,
-		bankToRemove,
-		itemToAlch,
-		bankToAdd
-	};
-}
 
 export const lapsCommand: OSBMahojiCommand = {
 	name: 'laps',
@@ -96,19 +39,9 @@ export const lapsCommand: OSBMahojiCommand = {
 			description: 'The quantity of laps you want to do (optional).',
 			required: false,
 			min_value: 1
-		},
-		{
-			type: ApplicationCommandOptionType.Boolean,
-			name: 'alch',
-			description: 'Do you want to alch while doing agility? (optional).',
-			required: false
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; alch?: boolean }>) => {
+	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const user = await mUserFetch(userID);
 
 		const course = courses.find(
@@ -161,15 +94,30 @@ export const lapsCommand: OSBMahojiCommand = {
 			course.name
 		} laps, it'll take around ${formatDuration(duration)} to finish.`;
 
-		const alchResult = course.name === 'Ape Atoll Agility Course' || !options.alch ? null : alching(user, duration);
-		if (alchResult !== null) {
-			if (!user.owns(alchResult.bankToRemove)) {
-				return `You don't own ${alchResult.bankToRemove}.`;
-			}
+		type AlchResult = Extract<ZeroTimeActivityResult, { type: 'alch' }>;
+		let alchResult: AlchResult | null = null;
+		let zeroTimeMessage: string | undefined;
 
-			await user.removeItemsFromBank(alchResult.bankToRemove);
-			response += `\n\nYour minion is alching ${alchResult.maxCasts}x ${alchResult.itemToAlch.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
-			updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
+		if (course.name !== 'Ape Atoll Agility Course') {
+			const zeroTime = attemptZeroTimeActivity({
+				type: 'alch',
+				user,
+				duration,
+				variant: 'agility'
+			});
+
+			if (zeroTime.result?.type === 'alch') {
+				alchResult = zeroTime.result;
+				await user.removeItemsFromBank(alchResult.bankToRemove);
+				response += `\n\nYour minion is alching ${alchResult.quantity}x ${alchResult.item.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
+				updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
+			} else if (zeroTime.message) {
+				zeroTimeMessage = zeroTime.message;
+			}
+		}
+
+		if (!alchResult && zeroTimeMessage) {
+			response += `\n\n${zeroTimeMessage}`;
 		}
 
 		await addSubTaskToActivityTask<AgilityActivityTaskOptions>({
@@ -179,13 +127,7 @@ export const lapsCommand: OSBMahojiCommand = {
 			quantity,
 			duration,
 			type: 'Agility',
-			alch:
-				alchResult === null
-					? undefined
-					: {
-							itemID: alchResult.itemToAlch.id,
-							quantity: alchResult.maxCasts
-						}
+			alch: alchResult ? { itemID: alchResult.item.id, quantity: alchResult.quantity } : undefined
 		});
 
 		return response;
