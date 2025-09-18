@@ -9,7 +9,7 @@ To start a trip, use [[/minigames mage_training_arena start]]. To check your poi
 ## Rewards
 
 - Rewards can be bought using [[/minigames mage_training_arena buy]].
-- Earning 6,259 Pizazz points to buy one of every item from the rewards shop takes approximately 63 hours.
+- Earning 6,659 Pizazz points (including the Rune pouch) to buy one of every item from the rewards shop takes approximately 67.5 hours.
 
 | **Item**             | **Pizazz Points** |
 | -------------------- | ----------------- |
