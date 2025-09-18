@@ -18,10 +18,10 @@ import { ghostCreatables } from './ghostweaveCreatables';
 import { slayerMaskCreatables } from './slayerMasks';
 
 const dyeCreatables: Createable[] = [];
-for (const { baseItem, dyedVersions } of dyedItems) {
+for (const { name, baseItem, dyedVersions } of dyedItems) {
 	for (const dyedVersion of dyedVersions) {
 		dyeCreatables.push({
-			name: dyedVersion.item.name,
+			name: name ?? dyedVersion.item.name,
 			inputItems: new Bank().add(baseItem.id).add(dyedVersion.dye.id).toJSON(),
 			outputItems: new Bank().add(dyedVersion.item.id).toJSON()
 		});
@@ -1384,7 +1384,7 @@ export const BsoCreateables: Createable[] = [
 		outputItems: new Bank().add('Tidal collector (i)')
 	},
 	{
-		name: 'Deathly collector (i)',
+		name: 'Deathly collector (i) (using Deathly collector)',
 		inputItems: new Bank()
 			.add('Masori components', 4)
 			.add("Blessed dizana's quiver", 5)
