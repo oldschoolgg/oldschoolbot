@@ -211,14 +211,13 @@ export const raidsTask: MinionTask = {
 
 		await Promise.all(allUsers.map(u => u.incrementMinigameScore(minigameID, quantity)));
 
-		for (const [userID, userData] of raidResults) {
+		for (const [_userID, userData] of raidResults) {
 			const { personalPoints, deaths, deathChance, loot, mUser: user } = userData;
 			if (!user) continue;
 
 			const [xpResult, { itemsAdded }] = await Promise.all([
 				handleCoxXP(user, quantity, challengeMode),
-				transactItems({
-					userID,
+				user.transactItems({
 					itemsToAdd: loot,
 					collectionLog: true
 				}),

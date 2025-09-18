@@ -104,8 +104,7 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 		updateClientGPTrackSetting('gp_daily', coinsToGive);
 	}
 
-	const { itemsAdded, previousCL } = await transactItems({
-		userID: user.id,
+	const { itemsAdded, previousCL } = await user.transactItems({
 		collectionLog: true,
 		itemsToAdd: loot
 	});

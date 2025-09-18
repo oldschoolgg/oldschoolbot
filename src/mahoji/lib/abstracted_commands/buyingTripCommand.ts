@@ -58,7 +58,7 @@ export async function buyingTripCommand(
 		`Buying ${quantity}x ${itemDisplayName} will cost ${totalCost.toLocaleString()} GP (avg ${averageCost.toLocaleString()} ea) and take ${formatDuration(duration)}. Please confirm.`
 	);
 
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 	await updateBankSetting('buy_cost_bank', cost);
 
 	await addSubTaskToActivityTask<BuyActivityTaskOptions>({

@@ -105,8 +105,8 @@ export const wintertodtTask: MinionTask = {
 			source: 'Wintertodt'
 		})}`;
 
-		const { itemsAdded, previousCL } = await transactItems({
-			userID: user.id,
+		const { itemsAdded, previousCL } = await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: loot
 		});

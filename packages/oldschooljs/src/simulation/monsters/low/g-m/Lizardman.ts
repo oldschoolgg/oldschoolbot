@@ -1,6 +1,6 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import CommonSeedDropTable from '../../../subtables/CommonSeedDropTable';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import CommonSeedDropTable from '@/simulation/subtables/CommonSeedDropTable.js';
 
 const LizardmanTable = new LootTable({ limit: 78 })
 	.every('Bones')

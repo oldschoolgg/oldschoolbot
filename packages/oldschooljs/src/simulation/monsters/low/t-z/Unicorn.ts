@@ -1,5 +1,5 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
 
 export const UnicornTable = new LootTable().every('Bones').every('Unicorn horn').tertiary(35, 'Ensouled unicorn head');
 

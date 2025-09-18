@@ -1,11 +1,11 @@
 import { randInt, roll, uniqueArr } from 'e';
 
-import type { MonsterKillOptions } from '../../../meta/types';
-import Bank from '../../../structures/Bank';
-import LootTable from '../../../structures/LootTable';
-import Monster from '../../../structures/Monster';
-import { itemID } from '../../../util';
-import { VirtusTable } from '../../subtables/VirtusTable';
+import type { MonsterKillOptions } from '@/structures/Monster.js';
+import {Bank} from '@/structures/Bank.js';
+import LootTable from '@/structures/LootTable.js';
+import {Monster } from '@/structures/Monster.js';
+import { itemID } from '@/util/index.js';
+import { VirtusTable } from '@/simulation/subtables/VirtusTable.js';
 
 const TradeableUniqueTable = new LootTable({ limit: 8 })
 	.add(VirtusTable, 1, 1)

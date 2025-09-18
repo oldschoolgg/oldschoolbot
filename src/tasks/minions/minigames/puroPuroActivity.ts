@@ -154,8 +154,8 @@ export const puroPuroTask: MinionTask = {
 
 		if (missed.length > 0) str += `\nYou missed out on ${missed} due to your hunter level being too low.`;
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
+
 			itemsToAdd: bank,
 			collectionLog: true,
 			itemsToRemove: itemCost

@@ -347,8 +347,7 @@ export const woodcuttingTask: MinionTask = {
 		}`;
 
 		// Update cl, give loot, and remove items used
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot,
 			itemsToRemove

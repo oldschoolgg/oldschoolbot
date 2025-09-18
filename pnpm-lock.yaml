@@ -78,14 +78,17 @@ importers:
         specifier: workspace:*
         version: link:packages/oldschooljs
       p-queue:
-        specifier: ^6.6.2
-        version: 6.6.2
+        specifier: 8.1.1
+        version: 8.1.1
       piscina:
         specifier: ^5.1.3
         version: 5.1.3
       postgres:
         specifier: ^3.4.7
         version: 3.4.7
+      pureimage:
+        specifier: ^0.4.18
+        version: 0.4.18
       random-js:
         specifier: ^2.1.0
         version: 2.1.0
@@ -135,6 +138,9 @@ importers:
       esbuild:
         specifier: 0.25.9
         version: 0.25.9
+      esbuild-plugin-file-path-extensions:
+        specifier: ^2.1.4
+        version: 2.1.4
       nodemon:
         specifier: ^3.1.10
         version: 3.1.10
@@ -291,9 +297,6 @@ importers:
 
   packages/toolkit:
     dependencies:
-      '@types/micromatch':
-        specifier: ^4.0.9
-        version: 4.0.9
       decimal.js:
         specifier: ^10.4.3
         version: 10.4.3
@@ -304,8 +307,8 @@ importers:
         specifier: 4.3.1
         version: 4.3.1
       emoji-regex:
-        specifier: ^10.2.1
-        version: 10.4.0
+        specifier: 10.5.0
+        version: 10.5.0
       fast-deep-equal:
         specifier: ^3.1.3
         version: 3.1.3
@@ -328,6 +331,9 @@ importers:
       '@types/math-expression-evaluator':
         specifier: ^1.2.2
         version: 1.3.3
+      '@types/micromatch':
+        specifier: ^4.0.9
+        version: 4.0.9
       discord.js:
         specifier: ^14.20.0
         version: 14.20.0(bufferutil@4.0.9)
@@ -2542,8 +2548,8 @@ packages:
   emmet@2.4.11:
     resolution: {integrity: sha512-23QPJB3moh/U9sT4rQzGgeyyGIrcM+GH5uVYg2C6wZIxAIJq7Ng3QLT79tl8FUwDXhyq9SusfknOrofAKqvgyQ==}
 
-  emoji-regex@10.4.0:
-    resolution: {integrity: sha512-EC+0oUMY1Rqm4O6LLrgjtYDvcVYTy7chDnM4Q7030tP4Kwj3u/pR6gP9ygnp2CJMK5Gq+9Q2oqmrFJAz01DXjw==}
+  emoji-regex@10.5.0:
+    resolution: {integrity: sha512-lb49vf1Xzfx080OKA0o6l8DQQpV+6Vg95zyCJX9VB/BqKYlhG7N4wgROUUHRA+ZPUefLnteQOad7z1kT2bV7bg==}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -2594,6 +2600,10 @@ packages:
   esast-util-from-js@2.0.1:
     resolution: {integrity: sha512-8Ja+rNJ0Lt56Pcf3TAmpBZjmx8ZcK5Ts4cAzIOjsjevg9oSXJnl6SUQ2EevU8tv3h6ZLWmoKL5H4fgWvdvfETw==}
 
+  esbuild-plugin-file-path-extensions@2.1.4:
+    resolution: {integrity: sha512-lNjylaAsJMprYg28zjUyBivP3y0ms9b7RJZ5tdhDUFLa3sCbqZw4wDnbFUSmnyZYWhCYDPxxp7KkXM2TXGw3PQ==}
+    engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
+
   esbuild@0.25.9:
     resolution: {integrity: sha512-CRbODhYyQx3qp7ZEwzxOk4JBqmD/seJrzPa/cGjY1VtIn5E09Oi9/dB4JwctnfZ8Q8iT7rioVv5k/FNT/uf54g==}
     engines: {node: '>=18'}
@@ -2630,9 +2640,6 @@ packages:
 
   estree-walker@3.0.3:
     resolution: {integrity: sha512-7RUKfXgSMMkzt6ZuXmqapOurLGPPfgj6l9uRZ7lRGolvk0y2yocc35LdcxKC5PQZdn2DMqioAQ2NoWcrTKmm6g==}
-
-  eventemitter3@4.0.7:
-    resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
 
   eventemitter3@5.0.1:
     resolution: {integrity: sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==}
@@ -3654,10 +3661,6 @@ packages:
     resolution: {integrity: sha512-GthxucX/6aftfLdeU5Ho7o7zmQcC8uVtqdcelVq12X++ndxwBZG8Xb5rFEKT7nEcWDD2P1x+TNuJ70jtj1Mbpw==}
     hasBin: true
 
-  p-finally@1.0.0:
-    resolution: {integrity: sha512-LICb2p9CB7FS+0eR1oqWnHhp0FljGLZCWBE9aix0Uye9W8LTQPwMTYVGWQWIw9RdQiDg4+epXQODwIYJtSJaow==}
-    engines: {node: '>=4'}
-
   p-limit@3.1.0:
     resolution: {integrity: sha512-TYOanM3wGwNGsZN2cVTYPArw454xnXj5qmWF1bEoAc4+cU/ol7GVh7odevjp1FNHduHc3KZMcFduxU5Xc6uJRQ==}
     engines: {node: '>=10'}
@@ -3670,17 +3673,13 @@ packages:
     resolution: {integrity: sha512-LaNjtRWUBY++zB5nE/NwcaoMylSPk+S+ZHNB1TzdbMJMny6dynpAGt7X/tl/QYq3TIeE6nxHppbo2LGymrG5Pw==}
     engines: {node: '>=10'}
 
-  p-queue@6.6.2:
-    resolution: {integrity: sha512-RwFpb72c/BhQLEXIZ5K2e+AhgNVmIejGlTgiB9MzZ0e93GRvqZ7uSi0dvRF7/XIXDeNkra2fNHBxTyPDGySpjQ==}
-    engines: {node: '>=8'}
-
   p-queue@8.1.0:
     resolution: {integrity: sha512-mxLDbbGIBEXTJL0zEx8JIylaj3xQ7Z/7eEVjcF9fJX4DBiH9oqe+oahYnlKKxm0Ci9TlWTyhSHgygxMxjIB2jw==}
     engines: {node: '>=18'}
 
-  p-timeout@3.2.0:
-    resolution: {integrity: sha512-rhIwUycgwwKcP9yTOOFK/AKsAopjjCakVqLHePO3CC6Mir1Z99xT+R63jZxAT5lFZLa2inS5h+ZS2GvR99/FBg==}
-    engines: {node: '>=8'}
+  p-queue@8.1.1:
+    resolution: {integrity: sha512-aNZ+VfjobsWryoiPnEApGGmf5WmNsCo9xu8dfaYamG5qaLP7ClhLN6NgsFe6SwJ2UbLEBK5dv9x8Mn5+RVhMWQ==}
+    engines: {node: '>=18'}
 
   p-timeout@6.1.4:
     resolution: {integrity: sha512-MyIV3ZA/PmyBN/ud8vV9XzwTrNtR4jFrObymZYnZqMmW0zA8Z17vnT0rBgFE/TlohB+YCHqXMgZzb3Csp49vqg==}
@@ -7363,7 +7362,7 @@ snapshots:
       '@emmetio/abbreviation': 2.3.3
       '@emmetio/css-abbreviation': 2.1.8
 
-  emoji-regex@10.4.0: {}
+  emoji-regex@10.5.0: {}
 
   emoji-regex@8.0.0: {}
 
@@ -7417,6 +7416,8 @@ snapshots:
       acorn: 8.15.0
       esast-util-from-estree: 2.0.0
       vfile-message: 4.0.3
+
+  esbuild-plugin-file-path-extensions@2.1.4: {}
 
   esbuild@0.25.9:
     optionalDependencies:
@@ -7485,8 +7486,6 @@ snapshots:
   estree-walker@3.0.3:
     dependencies:
       '@types/estree': 1.0.8
-
-  eventemitter3@4.0.7: {}
 
   eventemitter3@5.0.1: {}
 
@@ -8904,8 +8903,6 @@ snapshots:
 
   opentype.js@0.4.11: {}
 
-  p-finally@1.0.0: {}
-
   p-limit@3.1.0:
     dependencies:
       yocto-queue: 0.1.0
@@ -8918,19 +8915,15 @@ snapshots:
     dependencies:
       p-limit: 3.1.0
 
-  p-queue@6.6.2:
-    dependencies:
-      eventemitter3: 4.0.7
-      p-timeout: 3.2.0
-
   p-queue@8.1.0:
     dependencies:
       eventemitter3: 5.0.1
       p-timeout: 6.1.4
 
-  p-timeout@3.2.0:
+  p-queue@8.1.1:
     dependencies:
-      p-finally: 1.0.0
+      eventemitter3: 5.0.1
+      p-timeout: 6.1.4
 
   p-timeout@6.1.4: {}
 
@@ -9632,7 +9625,7 @@ snapshots:
 
   string-width@7.2.0:
     dependencies:
-      emoji-regex: 10.4.0
+      emoji-regex: 10.5.0
       get-east-asian-width: 1.3.0
       strip-ansi: 7.1.0
 

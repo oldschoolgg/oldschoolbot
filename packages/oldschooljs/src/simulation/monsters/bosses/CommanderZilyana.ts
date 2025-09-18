@@ -1,7 +1,7 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { itemTupleToTable } from '../../../util';
-import GWRareDropTable, { GWGemTable, ShardTable } from '../../subtables/GWRareDropTable';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import { itemTupleToTable } from '@/util/index.js';
+import GWRareDropTable, { GWGemTable, ShardTable } from '@/simulation/subtables/GWRareDropTable.js';
 
 const MinionUniqueTable = new LootTable().add('Coins', [1400, 1500], 124).add('Saradomin sword', 1, 3);
 

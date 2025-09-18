@@ -21,12 +21,7 @@ export interface TransactItemsArgs {
 	otherUpdates?: Prisma.UserUpdateArgs['data'];
 }
 
-declare global {
-	var transactItems: typeof transactItemsFromBank;
-}
-
-global.transactItems = transactItemsFromBank;
-async function transactItemsFromBank({
+export async function transactItemsFromBank({
 	userID,
 	collectionLog = false,
 	filterLoot = true,

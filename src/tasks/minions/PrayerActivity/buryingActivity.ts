@@ -45,8 +45,7 @@ export const buryingTask: MinionTask = {
 			user.hasEquipped(['Iron dagger', 'Bronze arrow', 'Iron med helm'], true) &&
 			!user.hasEquippedOrInBank(['Clue hunter garb'])
 		) {
-			await transactItems({
-				userID,
+			await user.transactItems({
 				itemsToAdd: new Bank({ 'Clue hunter garb': 1, 'Clue hunter trousers': 1 }),
 				collectionLog: true
 			});

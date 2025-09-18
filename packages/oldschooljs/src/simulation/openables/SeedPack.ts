@@ -1,9 +1,9 @@
 import { randInt, roll } from 'e';
 
-import type { OpenableOpenOptions } from '../../meta/types';
-import Bank from '../../structures/Bank';
-import LootTable from '../../structures/LootTable';
-import SimpleOpenable from '../../structures/SimpleOpenable';
+import type { OpenableOpenOptions } from '@/meta/types.js';
+import {Bank} from '@/structures/Bank.js';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleOpenable} from '@/structures/SimpleOpenable.js';
 
 const LowSeedPackTable = new LootTable()
 	.add('Potato seed', [8, 12], 2)

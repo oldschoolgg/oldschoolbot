@@ -97,7 +97,7 @@ export const hunterTask: MinionTask = {
 				died = true;
 				const cost = new Bank().add('Saradomin brew(4)', 10).add('Super restore(4)', 5);
 				if (userBank.has(cost)) {
-					await transactItems({ userID: user.id, itemsToRemove: cost });
+					await user.transactItems({ itemsToRemove: cost });
 				}
 				const newGear = { ...user.gear.wildy.raw() };
 				newGear[EquipmentSlot.Body] = null;
@@ -115,7 +115,7 @@ export const hunterTask: MinionTask = {
 					const lostBrew = randInt(1, 10);
 					const lostRestore = randInt(1, 5);
 					const cost = new Bank().add('Saradomin brew(4)', lostBrew).add('Super restore(4)', lostRestore);
-					await transactItems({ userID: user.id, itemsToRemove: cost });
+					await user.transactItems({ itemsToRemove: cost });
 
 					pkStr = `Your minion got attacked during the activity, escaped and lost some catch quantity, and ${cost}.`;
 					pkedQuantity = 0.1 * successfulQuantity;
@@ -163,8 +163,8 @@ export const hunterTask: MinionTask = {
 		}
 
 		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: loot
 		});

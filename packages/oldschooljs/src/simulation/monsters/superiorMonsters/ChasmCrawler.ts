@@ -1,6 +1,6 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { CaveCrawlerTable } from '../low/a-f/CaveCrawler';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import { CaveCrawlerTable } from '../low/a-f/CaveCrawler.js';
 
 const ChasmCrawlerTable = new LootTable()
 	.every(CaveCrawlerTable, 3)

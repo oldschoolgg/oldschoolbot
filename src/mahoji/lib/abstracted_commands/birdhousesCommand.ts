@@ -108,7 +108,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 	if (!user.owns(removeBank)) return `You don't own: ${removeBank}.`;
 
 	await updateBankSetting('farming_cost_bank', removeBank);
-	await transactItems({ userID: user.id, itemsToRemove: removeBank });
+	await user.transactItems({ itemsToRemove: removeBank });
 
 	// If user does not have something already placed, just place the new birdhouses.
 	if (!existingBirdhouse.raw.birdhousePlaced) {

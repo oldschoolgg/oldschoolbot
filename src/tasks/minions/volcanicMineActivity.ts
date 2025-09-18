@@ -90,8 +90,8 @@ export const vmTask: MinionTask = {
 			);
 		}
 
-		const { itemsAdded } = await transactItems({
-			userID: user.id,
+		const { itemsAdded } = await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: loot
 		});

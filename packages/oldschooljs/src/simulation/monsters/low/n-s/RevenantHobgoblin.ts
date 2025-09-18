@@ -1,6 +1,6 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { makeRevTable } from '../../../../util';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import { makeRevTable } from '@/util/revs.js';
 
 export const RevenantHobgoblinTable = new LootTable()
 	.tertiary(5000, 'Hobgoblin champion scroll')

@@ -1,4 +1,4 @@
-import { notEmpty } from './util/typeChecking';
+import { notEmpty } from './util/typeChecking.js';
 
 export function cleanString(str: string) {
 	return str.replace(/[^0-9a-zA-Z+]/gi, '').toUpperCase();

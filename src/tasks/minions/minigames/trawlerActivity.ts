@@ -48,8 +48,8 @@ export const trawlerTask: MinionTask = {
 
 		if (hasEliteArdy) str += '\n\n50% Extra fish for Ardougne Elite diary';
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: loot
 		});

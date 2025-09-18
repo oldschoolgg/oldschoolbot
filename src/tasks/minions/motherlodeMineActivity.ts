@@ -113,8 +113,8 @@ export const motherlodeMiningTask: MinionTask = {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: loot
 		});

@@ -132,7 +132,7 @@ export const smithCommand: OSBMahojiCommand = {
 			} you can smith is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`;
 		}
 
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 		updateBankSetting('smithing_cost', cost);
 
 		await addSubTaskToActivityTask<SmithingActivityTaskOptions>({

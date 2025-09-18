@@ -1,5 +1,5 @@
-import Bank from '../../structures/Bank';
-import LootTable from '../../structures/LootTable';
+import {Bank} from '@/structures/Bank.js';
+import LootTable from '@/structures/LootTable.js';
 
 const replaceItems = ['Fish barrel', 'Tackle box', 'Big harpoonfish', 'Tiny tempor'];
 

@@ -39,7 +39,7 @@ export const shadesOfMortonTask: MinionTask = {
 
 		const messages: string[] = [];
 
-		const { itemsAdded } = await transactItems({ userID: user.id, collectionLog: true, itemsToAdd: loot });
+		const { itemsAdded } = await user.transactItems({ collectionLog: true, itemsToAdd: loot });
 
 		let firemakingXP = quantity * log.fmXP;
 		if ((await userhasDiaryTier(user, MorytaniaDiary.elite))[0]) {

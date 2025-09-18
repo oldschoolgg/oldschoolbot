@@ -1,5 +1,5 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
 
 const SkeletonHellhoundTable = new LootTable().every('Bones').oneIn(5000, 'Skeleton champion scroll');
 

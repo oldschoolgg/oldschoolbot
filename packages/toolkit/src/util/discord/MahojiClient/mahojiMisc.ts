@@ -1,4 +1,4 @@
-import type { ICommand, MahojiClient } from './Mahoji';
+import type { ICommand, MahojiClient } from './Mahoji.js';
 
 export type CategoryFlag =
 	| 'minion'

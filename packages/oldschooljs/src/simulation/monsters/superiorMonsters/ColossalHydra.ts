@@ -1,6 +1,6 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { HydraPreTable } from '../low/g-m/Hydra';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import { HydraPreTable } from '../low/g-m/Hydra.js';
 
 const ColossalHydraTable = new LootTable()
 	.every('Hydra bones')

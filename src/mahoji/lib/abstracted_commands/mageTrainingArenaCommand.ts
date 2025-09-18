@@ -128,7 +128,7 @@ export async function mageTrainingArenaStartCommand(user: MUser, channelID: stri
 		return `You don't have enough items for this trip, you need: ${cost}.`;
 	}
 
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 
 	await updateBankSetting('mta_cost', cost);
 

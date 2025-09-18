@@ -18,8 +18,8 @@ export const castleWarsTask: MinionTask = {
 		for (let i = 0; i < quantity; i++) {
 			loot.add('Castle wars ticket', ticketTable.rollOrThrow());
 		}
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: loot
 		});

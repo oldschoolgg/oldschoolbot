@@ -1,6 +1,6 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { KuraskPreTable } from '../low/g-m/Kurask';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import { KuraskPreTable } from '../low/g-m/Kurask.js';
 
 const KingKuraskTable = new LootTable()
 	.every('Bones')

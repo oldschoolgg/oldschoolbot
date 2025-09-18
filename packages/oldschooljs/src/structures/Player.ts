@@ -1,5 +1,5 @@
-import type { AccountType } from '../constants';
-import type { BossRecords, CluesScore, MinigamesScore, Player as PlayerType, SkillsScore } from '../meta/types';
+import type { MinigamesScore, BossRecords, AccountType, Player as PlayerType, } from "@/meta/smalltypes.js";
+import type { SkillsScore, CluesScore } from "@/meta/types.js";
 
 class Player {
 	public username: string;

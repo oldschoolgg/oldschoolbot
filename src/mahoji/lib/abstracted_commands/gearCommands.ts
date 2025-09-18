@@ -149,8 +149,7 @@ async function gearEquipMultiCommand(user: MUser, setup: string, items: string) 
 	await user.update({
 		[dbKey]: equippedGear
 	});
-	await transactItems({
-		userID: user.id,
+	await user.transactItems({
 		filterLoot: false,
 		itemsToRemove: equipBank,
 		itemsToAdd: unequipBank

@@ -1,9 +1,9 @@
 import { roll } from 'e';
 
-import Bank from '../../structures/Bank';
-import LootTable from '../../structures/LootTable';
-import itemID from '../../util/itemID';
-import { randomVariation } from '../../util/util';
+import {Bank} from '@/structures/Bank.js';
+import LootTable from '@/structures/LootTable.js';
+import itemID from '@/util/itemID.js';
+import { randomVariation } from '@/util/util.js';
 
 const trawlerFish = [
 	{

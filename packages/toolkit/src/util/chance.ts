@@ -1,4 +1,4 @@
-import { randFloat, roll } from './chanceTemporary';
+import { randFloat, roll } from './chanceTemporary.js';
 
 export function convertPercentChance(percent: number) {
 	return (1 / (percent / 100)).toFixed(1);

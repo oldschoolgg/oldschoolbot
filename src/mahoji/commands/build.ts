@@ -129,7 +129,7 @@ export const buildCommand: OSBMahojiCommand = {
 		cost.add('Coins', gpNeeded);
 		if (!user.owns(cost)) return `You don't own: ${cost}.`;
 
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 
 		updateBankSetting('construction_cost_bank', cost);
 

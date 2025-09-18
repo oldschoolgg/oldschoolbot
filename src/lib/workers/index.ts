@@ -42,7 +42,7 @@ export type FinishWorkerReturn = Promise<
 
 const maxThreads = 1;
 
-let dirName = __dirname.replace(path.join('src', 'lib'), path.join('dist', 'lib'));
+let dirName = import.meta.dirname.replace(path.join('src', 'lib'), path.join('dist', 'lib'));
 if (dirName.endsWith('dist')) {
 	dirName = resolve(dirName, 'lib', 'workers');
 }

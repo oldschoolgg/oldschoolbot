@@ -58,8 +58,7 @@ export async function lmsCommand(
 		const loot = new Bank().add(itemToBuy.item.id, quantity * (itemToBuy.quantity ?? 1));
 		await handleMahojiConfirmation(interaction, `Are you sure you want to spend ${cost} points on buying ${loot}?`);
 		if (!cost) {
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});
@@ -74,8 +73,7 @@ export async function lmsCommand(
 		if (itemToBuy.onlyCL) {
 			await user.addItemsToCollectionLog(loot);
 		} else {
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});

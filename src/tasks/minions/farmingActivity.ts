@@ -127,8 +127,7 @@ export const farmingTask: MinionTask = {
 			if (loot.length > 0) str += `\n\nYou received: ${loot}.`;
 
 			updateBankSetting('farming_loot_bank', loot);
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});
@@ -342,7 +341,7 @@ export const farmingTask: MinionTask = {
 					farmingLevel: currentFarmingLevel
 				});
 				const fakeMonsterTaskOptions: MonsterActivityTaskOptions = {
-					mi: Monsters.Hespori.id,
+					mi: Monsters.Hespori,
 					q: patchType.lastQuantity,
 					type: 'MonsterKilling',
 					userID: user.id,
@@ -437,8 +436,7 @@ export const farmingTask: MinionTask = {
 			}
 
 			await updateBankSetting('farming_loot_bank', loot);
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});

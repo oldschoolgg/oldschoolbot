@@ -153,8 +153,7 @@ export const toaTask: MinionTask = {
 				}
 			}
 
-			const { itemsAdded } = await transactItems({
-				userID,
+			const { itemsAdded } = await user.transactItems({
 				itemsToAdd: totalLoot.get(userID),
 				collectionLog: true
 			});

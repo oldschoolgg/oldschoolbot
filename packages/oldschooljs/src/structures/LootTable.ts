@@ -1,7 +1,7 @@
 import { randArrItem } from 'e';
-import itemID from '../util/itemID';
-import Bank from './Bank';
-import Items from './Items';
+import itemID from '../util/itemID.js';
+import Items from './Items.js';
+import { Bank } from './Bank.js';
 
 export function reduceNumByPercent(value: number, percent: number): number {
 	if (percent <= 0) return value;

@@ -1,6 +1,6 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { CrawlingHandPreTable } from '../low/a-f/CrawlingHand';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import { CrawlingHandPreTable } from '../low/a-f/CrawlingHand.js';
 
 const CrushingHandTable = new LootTable()
 	.every('Bones')

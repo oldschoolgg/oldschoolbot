@@ -1,9 +1,9 @@
 import { roll } from 'e';
 
-import type { MonsterKillOptions } from '../../../meta/types';
-import Bank from '../../../structures/Bank';
-import LootTable from '../../../structures/LootTable';
-import Monster from '../../../structures/Monster';
+import type { MonsterKillOptions } from '@/structures/Monster.js';
+import {Bank} from '@/structures/Bank.js';
+import LootTable from '@/structures/LootTable.js';
+import {Monster } from '@/structures/Monster.js';
 
 const BarrowsTable = new LootTable();
 

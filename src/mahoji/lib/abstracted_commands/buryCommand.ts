@@ -49,7 +49,7 @@ export async function buryCommand(user: MUser, channelID: string, boneName: stri
 		)}.`;
 	}
 
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 
 	await addSubTaskToActivityTask<BuryingActivityTaskOptions>({
 		boneID: bone.inputId,

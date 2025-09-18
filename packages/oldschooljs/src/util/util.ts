@@ -1,9 +1,8 @@
-import { randFloat, randInt, roll } from 'e';
+import { randFloat } from 'e';
 
-import type { CustomKillLogic, Item, MonsterKillOptions } from '../meta/types';
-import type Bank from '../structures/Bank';
-import Items from '../structures/Items';
-import LootTable from '../structures/LootTable';
+import Items from '@/structures/Items.js';
+import LootTable from '@/structures/LootTable.js';
+import type { Item } from '@/meta/item.js';
 
 /**
  * Determines whether a string is a valid RuneScape username.
@@ -97,41 +96,6 @@ export const revsUniqueTable = new LootTable()
 	.add("Thammaron's sceptre (u)", 1, 1)
 	.add("Viggora's chainmace (u)", 1, 1);
 
-export function makeRevTable(table: RevTable): CustomKillLogic {
-	return (options: MonsterKillOptions, currentLoot: Bank) => {
-		const index = options.onSlayerTask ? 1 : 0;
-		if (roll(table.uniqueTable[index])) {
-			currentLoot.add(revsUniqueTable.roll());
-			return;
-		}
-
-		if (roll(table.seeds[index])) {
-			currentLoot.add('Yew seed', randInt(2, 7));
-			return;
-		}
-
-		if (roll(table.seeds[index])) {
-			currentLoot.add('Magic seed', randInt(2, 7));
-			return;
-		}
-
-		for (const [key, itemName] of [
-			['ancientEmblem', 'Ancient emblem'],
-			['ancientTotem', 'Ancient totem'],
-			['ancientCrystal', 'Ancient crystal'],
-			['ancientStatuette', 'Ancient statuette'],
-			['topThree', 'Ancient medallion'],
-			['topThree', 'Ancient effigy'],
-			['topThree', 'Ancient relic']
-		] as const) {
-			if (roll(table[key][index])) {
-				currentLoot.add(itemName);
-				return;
-			}
-		}
-	};
-}
-
 /**
  * Adds random variation to a number. For example, if you pass 10%, it can at most lower the value by 10%,
  * or increase it by 10%, and everything in between.
@@ -216,7 +180,7 @@ export function itemTupleToTable(items: [string, number | [number, number]][]): 
 	return table;
 }
 
-export * from './smallUtils';
+export * from './smallUtils.js';
 
 export function calcCombatLevel(
 	skills: Record<'strength' | 'defence' | 'hitpoints' | 'ranged' | 'attack' | 'prayer' | 'magic', number>,

@@ -1,6 +1,6 @@
-import LootTable from '../../structures/LootTable';
-import { itemID, itemTupleToTable } from '../../util';
-import { BlessingTable, FirelighterTable, GildedTable, PrayerPageTable, TeleportScrollTable } from './General';
+import LootTable from '@/structures/LootTable.js';
+import { itemID, itemTupleToTable } from '@/util/index.js';
+import { BlessingTable, FirelighterTable, GildedTable, PrayerPageTable, TeleportScrollTable } from './General.js';
 
 export const Hard3rdageTable = new LootTable()
 	.add('3rd age range coif')

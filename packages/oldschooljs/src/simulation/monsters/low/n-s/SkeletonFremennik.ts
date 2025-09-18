@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables/RareDropTable';
-import { UncommonSeedDropTable } from '../../../subtables/index';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import { UncommonSeedDropTable } from '@/simulation/subtables/index.js';
 
 export const SkeletonFremennikTable = new LootTable()
 	.every('Bones')

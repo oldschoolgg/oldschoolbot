@@ -1,5 +1,5 @@
-import type { OpenableOpenOptions, OpenableOptions } from '../meta/types';
-import type Bank from './Bank';
+import type { OpenableOpenOptions, OpenableOptions } from '../meta/types.js';
+import type {Bank} from './Bank.js';
 
 /**
  * An entity from OSRS which can be opened (e.g. implings)

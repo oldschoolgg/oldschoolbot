@@ -1,22 +1,21 @@
-import './structures/Items';
-import { ECreature } from './ECreature';
-import { EItem } from './EItem';
-import { EMonster } from './EMonster';
-import * as constants from './constants';
-import { MonsterSlayerMaster } from './meta/monsterData';
-import type { MonsterKillOptions } from './meta/types';
-import * as Misc from './simulation/misc';
-import Monsters from './simulation/monsters/index';
-import Openables from './simulation/openables/index';
-import Bank from './structures/Bank';
-import { Hiscores } from './structures/Hiscores';
-import Items from './structures/Items';
-import LootTable from './structures/LootTable';
-import Player from './structures/Player';
-import SimpleMonster from './structures/SimpleMonster';
-import SimpleOpenable from './structures/SimpleOpenable';
-import * as Util from './util';
-export * from './simulation/clues';
+import './structures/Items.js';
+import { ECreature } from './ECreature.js';
+import { EItem } from './EItem.js';
+import { EMonster } from './EMonster.js';
+import * as constants from './constants.js';
+import { MonsterSlayerMaster } from './meta/monsterData.js';
+import * as Misc from './simulation/misc/index.js';
+import {Monsters} from './simulation/monsters/index.js';
+import Openables from './simulation/openables/index.js';
+import {Bank, type ItemBank} from './structures/Bank.js';
+import { Hiscores } from './structures/Hiscores.js';
+import Items from './structures/Items.js';
+import LootTable from './structures/LootTable.js';
+import Player from './structures/Player.js';
+import {SimpleOpenable} from './structures/SimpleOpenable.js';
+import * as Util from './util/index.js';
+import type { SimpleMonster, Monster } from './structures/Monster.js';
+export * from './simulation/clues/index.js';
 
 export {
 	Bank,
@@ -24,33 +23,33 @@ export {
 	Items,
 	LootTable,
 	Misc,
-	type MonsterKillOptions,
 	Monsters,
 	MonsterSlayerMaster,
 	Openables,
 	Player,
 	Hiscores,
 	Util,
+	Monster,
 	SimpleMonster,
 	EItem,
 	EMonster,
 	SimpleOpenable,
-	ECreature
+	ECreature,
+	ItemBank
 };
 
-export * from './simulation/monsters';
-export * from './constants';
-export * from './util';
-export * from './structures/Items';
-export * from './meta/types';
-export type { default as Monster } from './structures/Monster';
-export * from './simulation/clues';
-export * from './simulation/openables';
-export * from './simulation/misc';
-export * from './simulation/openables/Implings';
-export * from './meta/monsterData';
-export * from './simulation/subtables/index';
-export * as ItemGroups from './itemGroups';
+// export * from './simulation/monsters/index.js';
+export * from './constants.js';
+export * from './util/index.js';
+export * from './structures/Items.js';
+export * from './meta/types.js';
+export * from './simulation/clues/index.js';
+export * from './simulation/openables/index.js';
+export * from './simulation/misc/index.js';
+export * from './simulation/openables/Implings.js';
+export * from './meta/monsterData.js';
+export * from './simulation/subtables/index.js';
+export * as ItemGroups from './itemGroups.js';
 
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;

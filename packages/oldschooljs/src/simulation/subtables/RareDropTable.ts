@@ -1,4 +1,4 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '@/structures/LootTable.js';
 
 const MegaRareTable = new LootTable({ limit: 128 })
 	.add('Rune spear', 1, 8)

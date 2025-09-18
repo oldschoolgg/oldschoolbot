@@ -1,10 +1,10 @@
 import { percentChance, randInt, roll } from 'e';
 
-import type { OpenableOpenOptions } from '../../meta/types';
-import Bank from '../../structures/Bank';
-import LootTable from '../../structures/LootTable';
-import SimpleOpenable from '../../structures/SimpleOpenable';
-import { LarransBigChestFish, LarransSmallChestFish, chanceOfFish } from './BonusOpenables';
+import type { OpenableOpenOptions } from '@/meta/types.js';
+import {Bank} from '@/structures/Bank.js';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleOpenable} from '@/structures/SimpleOpenable.js';
+import { LarransBigChestFish, LarransSmallChestFish, chanceOfFish } from './BonusOpenables.js';
 
 // TODO: check wiki for more accurate results in future
 const LarransSmallChestTable = new LootTable()

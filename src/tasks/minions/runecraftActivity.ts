@@ -94,8 +94,8 @@ export const runecraftTask: MinionTask = {
 			str += ` **\nExtract bonus:** ${extractBonus!.toLocaleString()}`;
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: loot
 		});

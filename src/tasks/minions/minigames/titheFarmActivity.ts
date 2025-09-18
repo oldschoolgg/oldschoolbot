@@ -108,8 +108,7 @@ export const titheFarmTask: MinionTask = {
 				} run!`
 			);
 
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});

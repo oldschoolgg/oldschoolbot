@@ -143,8 +143,8 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		runesLoot.add('Blood rune', bonusBloods);
 		totalLoot.add(runesLoot);
 
-		const { previousCL } = await transactItems({
-			userID: user.id,
+		const { previousCL } = await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: totalLoot
 		});

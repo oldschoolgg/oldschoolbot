@@ -1,12 +1,12 @@
-import LootTable from '../../structures/LootTable';
-import CommonSeedDropTable from './CommonSeedDropTable';
-import HerbDropTable from './HerbDropTable';
-import RareSeedTable from './RareSeedTable';
-import TreeHerbSeedTable from './TreeHerbSeedTable';
-import WyvernHerbTable from './WyvernHerbTable';
+import LootTable from '@/structures/LootTable.js';
+import CommonSeedDropTable from './CommonSeedDropTable.js';
+import HerbDropTable from './HerbDropTable.js';
+import RareSeedTable from './RareSeedTable.js';
+import TreeHerbSeedTable from './TreeHerbSeedTable.js';
+import WyvernHerbTable from './WyvernHerbTable.js';
 
 export { HerbDropTable, CommonSeedDropTable, RareSeedTable, WyvernHerbTable, TreeHerbSeedTable };
-export * from './RareDropTable';
+export * from './RareDropTable.js';
 
 export const UncommonSeedDropTable = new LootTable()
 	.add('Limpwurt seed', 1, 137)

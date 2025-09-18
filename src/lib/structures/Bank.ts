@@ -49,3 +49,4 @@ export class FloatBank extends GeneralBank<number> {
 		return this;
 	}
 }
+

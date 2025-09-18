@@ -1,6 +1,6 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { SmokeDevilPreTable } from '../low/n-s/SmokeDevil';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import { SmokeDevilPreTable } from '../low/n-s/SmokeDevil.js';
 
 const NuclearSmokeDevilTable = new LootTable()
 	.every('Ashes')

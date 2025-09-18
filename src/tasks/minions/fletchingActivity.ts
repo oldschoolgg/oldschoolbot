@@ -38,8 +38,8 @@ export const fletchingTask: MinionTask = {
 		const quantityToGive = fletchableItem.outputMultiple ? quantity * fletchableItem.outputMultiple : quantity;
 
 		const loot = new Bank({ [fletchableItem.id]: quantityToGive });
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: loot
 		});

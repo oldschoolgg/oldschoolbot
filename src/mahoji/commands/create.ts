@@ -177,8 +177,7 @@ export const createCommand: OSBMahojiCommand = {
 			addToCl = true;
 		}
 
-		await transactItems({
-			userID: userID.toString(),
+		await user.transactItems({
 			collectionLog: addToCl,
 			itemsToAdd: outItems,
 			itemsToRemove: inItems

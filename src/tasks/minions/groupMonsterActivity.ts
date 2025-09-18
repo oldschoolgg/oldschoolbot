@@ -42,8 +42,7 @@ export const groupoMonsterTask: MinionTask = {
 				taskQuantity: null
 			});
 			totalLoot.add(loot);
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});

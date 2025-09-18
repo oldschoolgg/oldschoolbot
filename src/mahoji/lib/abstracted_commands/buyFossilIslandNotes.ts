@@ -35,7 +35,7 @@ export async function buyFossilIslandNotes(user: MUser, interaction: ChatInputCo
 		loot.add(outPage);
 	}
 
-	await transactItems({ userID: user.id, itemsToRemove: cost, itemsToAdd: loot, collectionLog: true });
+	await user.transactItems({ itemsToRemove: cost, itemsToAdd: loot, collectionLog: true });
 
 	return `You purchased ${loot}.`;
 }

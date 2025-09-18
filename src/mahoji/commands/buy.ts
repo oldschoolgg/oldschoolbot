@@ -166,8 +166,8 @@ export const buyCommand: OSBMahojiCommand = {
 			`${user}, please confirm that you want to buy **${outItems}** for: ${totalCost}.`
 		);
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
+
 			itemsToAdd: outItems,
 			collectionLog: true,
 			itemsToRemove: totalCost

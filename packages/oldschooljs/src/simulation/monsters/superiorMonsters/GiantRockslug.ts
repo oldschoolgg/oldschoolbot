@@ -1,6 +1,6 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { RockslugTable } from '../low/n-s/Rockslug';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import { RockslugTable } from '../low/n-s/Rockslug.js';
 
 const GiantRockslugTable = new LootTable()
 	.every(RockslugTable, 3)

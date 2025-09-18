@@ -1,8 +1,8 @@
 import { Time, calcWhatPercent, increaseNumByPercent } from 'e';
-import type { ItemBank } from '../meta/types';
-import Bank from '../structures/Bank';
-import Items from '../structures/Items';
-import itemID from './itemID';
+
+import {Bank, type ItemBank} from '@/structures/Bank.js';
+import Items from '@/structures/Items.js';
+import itemID from './itemID.js';
 
 /**
  * Transforms a string-based bank to an ID-based bank

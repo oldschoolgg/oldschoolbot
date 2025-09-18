@@ -24,8 +24,8 @@ export async function strongHoldOfSecurityCommand(user: MUser, channelID: string
 			}
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: bootsBank
 		});

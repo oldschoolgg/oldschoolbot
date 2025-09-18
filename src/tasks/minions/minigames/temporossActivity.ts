@@ -66,8 +66,8 @@ export const temporossTask: MinionTask = {
 			source: 'Tempoross'
 		});
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: loot
 		});

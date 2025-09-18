@@ -60,7 +60,7 @@ import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
 import { makeBadgeString } from './util/makeBadgeString';
 import { hasSkillReqsRaw, itemNameFromID } from './util/smallUtils';
-import type { TransactItemsArgs } from './util/transactItemsFromBank';
+import { transactItemsFromBank, type TransactItemsArgs } from './util/transactItemsFromBank';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {
@@ -389,12 +389,11 @@ GROUP BY data->>'ci';`);
 		dontAddToTempCL?: boolean;
 		neverUpdateHistory?: boolean;
 	}) {
-		const res = await transactItems({
+		const res = await this.transactItems({
 			collectionLog,
 			itemsToAdd: new Bank(items),
 			filterLoot,
 			dontAddToTempCL,
-			userID: this.id,
 			neverUpdateHistory
 		});
 		this.user = res.newUser;
@@ -403,8 +402,7 @@ GROUP BY data->>'ci';`);
 	}
 
 	async removeItemsFromBank(bankToRemove: Bank) {
-		const res = await transactItems({
-			userID: this.id,
+		const res = await this.transactItems({
 			itemsToRemove: bankToRemove
 		});
 		this.user = res.newUser;
@@ -413,7 +411,7 @@ GROUP BY data->>'ci';`);
 	}
 
 	async transactItems(options: Omit<TransactItemsArgs, 'userID'>) {
-		const res = await transactItems({ userID: this.user.id, ...options });
+		const res = await transactItemsFromBank({ userID: this.user.id, ...options });
 		this.user = res.newUser;
 		this.updateProperties();
 		return res;
@@ -701,7 +699,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			if (!this.bankWithGP.has(bankRemove)) {
 				throw new UserError(`You don't own: ${bankRemove.clone().remove(this.bankWithGP)}.`);
 			}
-			await transactItems({ userID: this.id, itemsToRemove: bankRemove });
+			await this.transactItems({itemsToRemove: bankRemove });
 		}
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
 		this.user = newUser;

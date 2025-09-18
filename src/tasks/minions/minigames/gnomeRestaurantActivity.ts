@@ -77,8 +77,8 @@ export const gnomeResTask: MinionTask = {
 			loot.add(tipTable.roll());
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: loot
 		});

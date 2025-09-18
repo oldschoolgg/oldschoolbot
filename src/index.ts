@@ -1,7 +1,6 @@
 import './lib/safeglobals';
 import './lib/globals';
 import './lib/MUser';
-import './lib/util/transactItemsFromBank';
 import './lib/ActivityManager';
 
 import { Events } from '@oldschoolgg/toolkit/constants';
@@ -26,8 +25,9 @@ import { onStartup } from './mahoji/lib/events';
 import { exitCleanup } from './mahoji/lib/exitHandler';
 import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
-import 'oldschooljs';
+import { Items, Monsters } from 'oldschooljs';
 
+console.log(`${process.uptime()}s uptime`);
 if (globalConfig.sentryDSN) {
 	init({
 		dsn: globalConfig.sentryDSN,
@@ -238,9 +238,9 @@ async function main() {
 	]);
 	console.log(`Logged in as ${globalClient.user.username}`);
 
-	if (process.env.NODE_ENV !== 'production' && Boolean(process.env.TEST_BOT_SERVER)) {
-		import('@/testing/testServer.js').then(_mod => _mod.startTestBotServer());
-	}
+	// if (process.env.NODE_ENV !== 'production' && Boolean(process.env.TEST_BOT_SERVER)) {
+	// 	import('@/testing/testServer.js').then(_mod => _mod.startTestBotServer());
+	// }
 }
 
 process.on('uncaughtException', err => {

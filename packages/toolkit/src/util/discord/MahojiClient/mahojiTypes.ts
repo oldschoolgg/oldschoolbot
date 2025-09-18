@@ -12,7 +12,7 @@ import type {
 	Role,
 	User
 } from 'discord.js';
-import type { MahojiClient } from './Mahoji';
+import type { MahojiClient } from './Mahoji.js';
 
 export type CommandOption = {
 	name: string;

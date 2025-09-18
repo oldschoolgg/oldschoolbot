@@ -49,7 +49,7 @@ export async function scatterCommand(user: MUser, channelID: string, ashName: st
 		)}.`;
 	}
 
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 
 	await addSubTaskToActivityTask<ScatteringActivityTaskOptions>({
 		ashID: ash.inputId,

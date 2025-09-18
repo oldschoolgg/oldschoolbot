@@ -73,7 +73,7 @@ export async function sawmillCommand(
 	}
 
 	const costBank = new Bank().add('Coins', plank?.gpCost * quantity).add(plank?.inputItem, quantity);
-	await transactItems({ userID: user.id, itemsToRemove: costBank });
+	await user.transactItems({ itemsToRemove: costBank });
 
 	await updateBankSetting('construction_cost_bank', new Bank().add('Coins', plank?.gpCost * quantity));
 

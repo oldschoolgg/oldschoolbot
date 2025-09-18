@@ -32,7 +32,7 @@ export async function buyKitten(user: MUser) {
 
 	const loot = new Bank().add(kitten.id);
 
-	await transactItems({ userID: user.id, itemsToRemove: cost, itemsToAdd: loot, collectionLog: true });
+	await user.transactItems({ itemsToRemove: cost, itemsToAdd: loot, collectionLog: true });
 
 	return {
 		...(await mahojiChatHead({

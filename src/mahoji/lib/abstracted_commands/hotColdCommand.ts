@@ -50,8 +50,7 @@ ${explanation}`
 
 	await user.sync();
 	if (user.GP < amount) return "You can't afford to gamble that much.";
-	await transactItems({
-		userID: user.id,
+	await user.transactItems({
 		itemsToAdd: flowerLoot,
 		collectionLog: true
 	});

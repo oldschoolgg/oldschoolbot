@@ -132,7 +132,7 @@ export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?
 		}
 	});
 	const loot = new Bank().add(item.id, quantity);
-	await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
+	await user.transactItems({ itemsToAdd: loot, collectionLog: true });
 
 	return `Successfully purchased ${loot} for ${cost * quantity} Carpenter Points.`;
 }

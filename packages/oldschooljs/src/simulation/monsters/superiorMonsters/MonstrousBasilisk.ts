@@ -1,6 +1,6 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { BasiliskPreTable } from '../low/a-f/Basilisk';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import { BasiliskPreTable } from '../low/a-f/Basilisk.js';
 
 const MonstrousBasiliskTable = new LootTable()
 	.every('Bones')

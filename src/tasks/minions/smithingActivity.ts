@@ -26,8 +26,8 @@ export const smithingTask: MinionTask = {
 
 		const str = `${user}, ${user.minionName} finished smithing, you received ${loot}. ${xpRes}`;
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: loot
 		});

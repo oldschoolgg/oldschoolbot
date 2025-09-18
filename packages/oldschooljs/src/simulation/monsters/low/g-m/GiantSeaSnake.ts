@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { UncommonSeedDropTable } from '../../../subtables/index';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import HerbDropTable from '@/simulation/subtables/HerbDropTable.js';
+import { UncommonSeedDropTable } from '@/simulation/subtables/index.js';
 
 const GiantSeaSnakeTable = new LootTable()
 	.every('Big bones')

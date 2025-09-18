@@ -160,8 +160,8 @@ export const agilityTask: MinionTask = {
 			);
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: loot
 		});

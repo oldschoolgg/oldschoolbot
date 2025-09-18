@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-import type { WikiPage } from '../meta/types';
+import type { WikiPage } from '../meta/types.js';
 
 class WikiSingleton {
 	private URL = 'https://oldschool.runescape.wiki/api.php';

@@ -25,8 +25,8 @@ export const animatedArmorTask: MinionTask = {
 			messages.push(`${Emoji.CombatAchievements} 100% extra Tokens received for easy CA tier`);
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: loot
 		});

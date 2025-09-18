@@ -446,8 +446,7 @@ export async function nightmareZoneShopCommand(
 		`Are you sure you want to spend **${cost.toLocaleString()}** Nightmare Zone points to buy **${loot}**?`
 	);
 
-	await transactItems({
-		userID: user.id,
+	await user.transactItems({
 		collectionLog: true,
 		itemsToAdd: loot
 	});
@@ -489,8 +488,7 @@ export async function nightmareZoneImbueCommand(user: MUser, input = '') {
 	});
 	const cost = new Bank().add(item.input.id);
 	const loot = new Bank().add(item.output.id);
-	await transactItems({
-		userID: user.id,
+	await user.transactItems({
 		itemsToAdd: loot,
 		itemsToRemove: cost,
 		collectionLog: true

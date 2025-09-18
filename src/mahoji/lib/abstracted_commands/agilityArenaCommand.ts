@@ -176,7 +176,7 @@ export async function agilityArenaXPCommand(user: MUser, qty: number): CommandRe
 	const xpToGive = (hasKaramjaMed ? 379.5 : 345) * qty;
 
 	const str = `Redeemed ${qty}x Agility arena tickets for ${xpToGive.toLocaleString()} Agility XP. (${(xpToGive / qty).toFixed(2)} ea)`;
-	await transactItems({ userID: user.id, itemsToRemove: new Bank().add('Agility arena ticket', qty) });
+	await user.transactItems({ itemsToRemove: new Bank().add('Agility arena ticket', qty) });
 	await user.addXP({
 		skillName: SkillsEnum.Agility,
 		amount: xpToGive,

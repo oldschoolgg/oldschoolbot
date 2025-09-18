@@ -1,8 +1,8 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { itemTupleToTable } from '../../../util';
-import { UncommonSeedDropTable } from '../../subtables';
-import HerbDropTable from '../../subtables/HerbDropTable';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import { itemTupleToTable } from '@/util/index.js';
+import HerbDropTable from '@/simulation/subtables/HerbDropTable.js';
+import { UncommonSeedDropTable } from '@/simulation/subtables/index.js';
 
 const ChaosTable = new LootTable().add('Chaos rune', 100, 1).add('Chaos rune', 200, 1);
 

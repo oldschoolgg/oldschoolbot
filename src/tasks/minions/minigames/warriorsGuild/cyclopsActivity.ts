@@ -69,8 +69,8 @@ export const cyclopsTask: MinionTask = {
 			loot.add(CyclopsTable.roll());
 		}
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: loot
 		});

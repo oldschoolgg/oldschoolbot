@@ -41,7 +41,7 @@ export const herbloreTask: MinionTask = {
 		const xpRes = await user.addXP({ skillName: 'herblore', amount: xpReceived, duration });
 		const loot = new Bank().add(mixableItem.item.id, outputQuantity);
 
-		await transactItems({ userID: user.id, collectionLog: true, itemsToAdd: loot });
+		await user.transactItems({ collectionLog: true, itemsToAdd: loot });
 
 		handleTripFinish(
 			user,

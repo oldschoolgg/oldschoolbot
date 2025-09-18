@@ -39,8 +39,8 @@ export const nexTask: MinionTask = {
 		const kc = teamResult.map(u => ({ id: u.id, quantity: quantity - u.deaths.length }));
 
 		for (const [uID, uLoot] of loot.entries()) {
-			await transactItems({ userID: uID, collectionLog: true, itemsToAdd: uLoot });
 			const user = allMUsers.find(i => i.id === uID)!;
+			await user.transactItems({ collectionLog: true, itemsToAdd: uLoot });
 			await user.incrementKC(EMonster.NEX, kc.find(u => u.id === uID)!.quantity);
 
 			await announceLoot({

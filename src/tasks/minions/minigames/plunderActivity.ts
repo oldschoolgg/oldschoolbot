@@ -31,8 +31,8 @@ export const plunderTask: MinionTask = {
 			}
 		}
 
-		const { itemsAdded, previousCL } = await transactItems({
-			userID: user.id,
+		const { itemsAdded, previousCL } = await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: loot
 		});

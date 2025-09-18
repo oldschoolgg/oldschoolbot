@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
-import RareSeedTable from '../../../subtables/RareSeedTable';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import HerbDropTable from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
 
 const TurothHerbTable = new LootTable().add(HerbDropTable, 1, 15).add(HerbDropTable, 2, 10).add(HerbDropTable, 3, 6);
 

@@ -1,6 +1,6 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { BansheePreTable } from '../low/a-f/Banshee';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import { BansheePreTable } from '../low/a-f/Banshee.js';
 
 const ScreamingBansheeTable = new LootTable()
 	.every(BansheePreTable, 3)

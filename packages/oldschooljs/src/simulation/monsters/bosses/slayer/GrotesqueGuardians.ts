@@ -1,6 +1,6 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { itemTupleToTable } from '../../../../util';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import { itemTupleToTable } from '@/util/index.js';
 
 const NormalUniqueTable = new LootTable()
 	/* Unique */

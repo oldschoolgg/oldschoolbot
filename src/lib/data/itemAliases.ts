@@ -361,14 +361,14 @@ for (const item of allTrophyItems) {
  * Item modifications
  */
 
-export interface CustomItemData {
-	cantBeSacrificed?: true;
-}
-declare module 'oldschooljs' {
-	interface Item {
-		customItemData?: CustomItemData;
-	}
-}
+// export interface CustomItemData {
+// 	cantBeSacrificed?: true;
+// }
+// declare module 'oldschooljs' {
+// 	interface Item {
+// 		customItemData?: CustomItemData;
+// 	}
+// }
 
 for (const id of ItemGroups.teamCapes) {
 	Items.modifyItem(id, {

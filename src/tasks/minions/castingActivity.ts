@@ -44,8 +44,7 @@ export const castingTask: MinionTask = {
 
 		const loot = spell.output?.clone().multiply(quantity);
 		if (loot) {
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});

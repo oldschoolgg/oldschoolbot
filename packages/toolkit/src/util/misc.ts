@@ -1,6 +1,5 @@
 import { time } from 'discord.js';
-
-const emojiRegex = require('emoji-regex');
+import emojiRegex from 'emoji-regex';
 
 const rawEmojiRegex = emojiRegex();
 

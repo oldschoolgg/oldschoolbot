@@ -1,6 +1,6 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import FixedAllotmentSeedTable from '../../../subtables/FixedAllotmentSeedTable';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import FixedAllotmentSeedTable from '@/simulation/subtables/FixedAllotmentSeedTable.js';
 
 const GuardTable = new LootTable({ limit: 128 })
 	.every('Bones')

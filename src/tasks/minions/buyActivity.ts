@@ -25,8 +25,8 @@ export const buyTask: MinionTask = {
 			tripBuyable.quantity && tripBuyable.quantity > 0 ? quantity / tripBuyable.quantity : quantity;
 
 		const loot = new Bank().add(itemID, quantity);
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
+
 			itemsToAdd: loot,
 			collectionLog: false
 		});

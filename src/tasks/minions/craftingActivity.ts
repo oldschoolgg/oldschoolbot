@@ -39,8 +39,8 @@ export const craftingTask: MinionTask = {
 
 		const str = `${user}, ${user.minionName} finished crafting ${quantity}${sets} ${item.name}, and received ${loot}. ${xpRes}`;
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: loot
 		});

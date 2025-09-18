@@ -267,7 +267,7 @@ export async function farmingPlantCommand({
 	}
 
 	if (!user.owns(cost)) return `You don't own ${cost}.`;
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 
 	updateBankSetting('farming_cost_bank', cost);
 	// If user does not have something already planted, just plant the new seeds.
@@ -347,7 +347,7 @@ export async function compostBinCommand(
 		`${user}, please confirm that you want to compost ${cost} into ${loot}.`
 	);
 
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 	await user.addItemsToBank({ items: loot });
 
 	return `You composted ${cost} into ${loot}.`;

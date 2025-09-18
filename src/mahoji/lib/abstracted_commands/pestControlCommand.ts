@@ -160,7 +160,7 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 		if (!hasDiary) {
 			return "You can't buy this because you haven't completed the Western Provinces hard diary.";
 		}
-		await transactItems({ userID: user.id, itemsToRemove: new Bank().add(buyable.inputItem.id) });
+		await user.transactItems({ itemsToRemove: new Bank().add(buyable.inputItem.id) });
 	}
 	await userStatsUpdate(
 		user.id,
@@ -172,7 +172,7 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 		{}
 	);
 	const loot = new Bank().add(item.id);
-	await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
+	await user.transactItems({ itemsToAdd: loot, collectionLog: true });
 
 	return `Successfully purchased ${loot} for ${cost} Void knight commendation points.`;
 }

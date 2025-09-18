@@ -20,8 +20,8 @@ export const clueTask: MinionTask = {
 		// Add the number of clues found in implings to CL. Must be on completion to avoid gaming.
 		if (implingClues) await user.addItemsToCollectionLog(new Bank().add(clueTier.scrollID, implingClues));
 		const loot = new Bank().add(clueTier.id, quantity);
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: loot
 		});

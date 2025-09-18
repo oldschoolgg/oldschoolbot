@@ -78,7 +78,7 @@ export const lightCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 
 		await addSubTaskToActivityTask<FiremakingActivityTaskOptions>({
 			burnableID: log.inputLogs,

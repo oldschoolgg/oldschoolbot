@@ -56,7 +56,7 @@ ${degradeableItems
 			itemsToRemove: new Bank().add(item.unchargedItem?.id).add(cost)
 		});
 	} else {
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 	}
 	const currentCharges = user.user[item.settingsKey];
 	const newCharges = currentCharges + amountOfCharges;

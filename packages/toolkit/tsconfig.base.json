@@ -1,8 +1,7 @@
 {
-	"extends": "@oldschoolgg/ts-config",
+	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
 		"allowJs": false,
-		"checkJs": false,
 		"skipLibCheck": true,
 		"types": ["node"],
 		"esModuleInterop": true,

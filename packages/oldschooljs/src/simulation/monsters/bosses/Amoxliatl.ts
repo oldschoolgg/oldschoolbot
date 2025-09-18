@@ -1,6 +1,6 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { GemTable } from '../../subtables';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 
 const SupplyTable = new LootTable()
 	.add('Rune mace', 1, 2)

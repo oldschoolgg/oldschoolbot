@@ -104,8 +104,8 @@ export const pickpocketTask: MinionTask = {
 			updateClientGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
 		}
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: loot
 		});

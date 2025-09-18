@@ -10,8 +10,7 @@ import { logError } from './logError';
 import { sendToChannelID } from './webhook';
 
 async function refundGiveaway(creator: MUser, loot: Bank) {
-	await transactItems({
-		userID: creator.id,
+	await creator.transactItems({
 		itemsToAdd: loot
 	});
 	const user = await globalClient.fetchUser(creator.id);
@@ -102,7 +101,7 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 			return;
 		}
 
-		await transactItems({ userID: winner.id, itemsToAdd: loot });
+		await winner.transactItems({ itemsToAdd: loot });
 		await prisma.economyTransaction.create({
 			data: {
 				guild_id: undefined,

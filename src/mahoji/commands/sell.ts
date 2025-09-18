@@ -262,8 +262,8 @@ export const sellCommand: OSBMahojiCommand = {
 			return "You don't have the items you're trying to sell.";
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
+
 			itemsToAdd: new Bank().add('Coins', totalPrice),
 			itemsToRemove: bankToSell
 		});

@@ -1,9 +1,9 @@
 import deepMerge from 'deepmerge';
 
 import _items from '../data/items/item_data.json' with { type: 'json' };
-import type { Item, ItemID } from '../meta/types';
-import { cleanString } from '../util/cleanString';
-import { Collection } from './Collection';
+import { cleanString } from '../util/cleanString.js';
+import { Collection } from './Collection.js';
+import type { Item } from '@/meta/item.js';
 
 const items = _items as Record<string, Item>;
 export const itemNameMap: Map<string, number> = new Map();
@@ -48,7 +48,7 @@ export const USELESS_ITEMS = [
 	23_814, 23_815, 23_816, 23_817
 ];
 
-class Items extends Collection<ItemID, Item> {
+class Items extends Collection<number, Item> {
 	public get(item: ItemResolvable): Item | undefined {
 		const id = this.resolveID(item);
 		if (typeof id === 'undefined') return undefined;
@@ -63,7 +63,7 @@ class Items extends Collection<ItemID, Item> {
 		this.set(item.id, deepMerge(item, data));
 	}
 
-	private resolveID(input: ItemResolvable): ItemID | undefined {
+	private resolveID(input: ItemResolvable): number | undefined {
 		if (typeof input === 'number') {
 			return input;
 		}

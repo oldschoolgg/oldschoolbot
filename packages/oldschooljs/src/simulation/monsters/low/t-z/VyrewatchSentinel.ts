@@ -1,8 +1,8 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import RareDropTable from '../../../subtables/RareDropTable';
-import { UncommonSeedDropTable } from '../../../subtables/index';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import HerbDropTable from '@/simulation/subtables/HerbDropTable.js';
+import RareDropTable from '@/simulation/subtables/RareDropTable.js';
+import { UncommonSeedDropTable } from '@/simulation/subtables/index.js';
 
 export const VyrewatchSentinelTable = new LootTable()
 	.every('Vampyre dust')

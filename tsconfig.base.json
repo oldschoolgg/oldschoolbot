@@ -6,8 +6,8 @@
 		"declarationMap": true,
 		"incremental": true,
 		"lib": ["ESNext"],
-		"module": "node16",
-		"moduleResolution": "node16",
+		"module": "esnext",
+		"moduleResolution": "bundler",
 		"newLine": "lf",
 		"noFallthroughCasesInSwitch": true,
 		"noUnusedLocals": true,
@@ -17,7 +17,7 @@
 		"resolveJsonModule": true,
 		"sourceMap": true,
 		"strict": true,
-		"target": "ES2022",
+		"target": "esnext",
 		"useDefineForClassFields": true,
 		"skipLibCheck": true,
 		"types": ["node", "node-fetch"],
@@ -28,5 +28,5 @@
 			"@/*": ["src/*"]
 		}
 	},
-	"exclude": ["**/node_modules", "node_modules"]
+	"exclude": ["**/node_modules", "node_modules", "**/packages/**"]
 }

@@ -1,9 +1,9 @@
 import { randArrItem } from 'e';
 
-import type { BankItem, IntKeyBank, Item, ItemBank } from '../meta/types';
-import itemID from '../util/itemID';
-import { toKMB } from '../util/smallUtils';
-import Items from './Items';
+import itemID from '../util/itemID.js';
+import { toKMB } from '../util/smallUtils.js';
+import Items from './Items.js';
+import type { Item } from '@/meta/item.js';
 
 const frozenErrorStr = 'Tried to mutate a frozen Bank.';
 
@@ -27,7 +27,7 @@ function sanitizeItemBank(mutSource: ItemBank) {
 	}
 }
 
-export default class Bank {
+export class Bank {
 	private map: Map<number, number>;
 	public frozen = false;
 
@@ -352,4 +352,19 @@ export default class Bank {
 		}
 		return namedBank;
 	}
+}
+
+export interface IntKeyBank {
+	[key: number]: number;
+}
+export interface ItemBank {
+	[key: string]: number;
+}
+
+export interface LootBank {
+	[key: string]: Bank;
+}
+export interface BankItem {
+	id: number;
+	qty: number;
 }

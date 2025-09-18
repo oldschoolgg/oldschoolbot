@@ -283,8 +283,7 @@ export async function giantsFoundryShopCommand(
 		}**?`
 	);
 
-	await transactItems({
-		userID: user.id,
+	await user.transactItems({
 		collectionLog: true,
 		itemsToAdd: new Bank(shopItem.output).multiply(quantity)
 	});

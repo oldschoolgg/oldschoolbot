@@ -1,6 +1,6 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import TreeHerbSeedTable from '../../../subtables/TreeHerbSeedTable';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import TreeHerbSeedTable from '@/simulation/subtables/TreeHerbSeedTable.js';
 
 const TormentedDemonHerbTable = new LootTable()
 	.add('Grimy kwuarm', 1, 10)

@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import RareDropTable, { GemTable } from '../../../subtables/RareDropTable';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import HerbDropTable from '@/simulation/subtables/HerbDropTable.js';
+import RareDropTable, { GemTable } from '@/simulation/subtables/RareDropTable.js';
 
 const AllotmentSeedTable = new LootTable()
 	.add('Potato seed', 3, 15)

@@ -182,7 +182,7 @@ export const tksCommand: OSBMahojiCommand = {
 		);
 
 		// Remove the cost, and update bank settings
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 		await updateBankSetting('tks_cost', cost);
 
 		// Tokkul shop activity

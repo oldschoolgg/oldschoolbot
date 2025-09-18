@@ -1,6 +1,6 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import RareDropTable, { GemTable } from '../../../subtables/RareDropTable';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import RareDropTable, { GemTable } from '@/simulation/subtables/RareDropTable.js';
 
 const ancientPageTable = new LootTable()
 	.add(11_341, 1, 1)

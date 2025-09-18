@@ -1,5 +1,5 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
 
 const MasterFarmerTable = new LootTable()
 	.add('Potato seed', [1, 4], 1 / 5.6)

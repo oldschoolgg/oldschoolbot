@@ -1,5 +1,5 @@
-import LootTable from '../../structures/LootTable';
-import SimpleOpenable from '../../structures/SimpleOpenable';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleOpenable} from '@/structures/SimpleOpenable.js';
 
 //const rareLootTable = new LootTable()
 //.add("Blighted manta ray", 25, 1)

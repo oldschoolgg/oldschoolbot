@@ -1,6 +1,6 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
+import LootTable from '@/structures/LootTable.js';
+import {SimpleMonster} from '@/structures/Monster.js';
+import HerbDropTable from '@/simulation/subtables/HerbDropTable.js';
 
 export const CaveBugTable = new LootTable({ limit: 128 })
 	/* Runes and ammunition */

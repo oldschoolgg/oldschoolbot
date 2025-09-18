@@ -1,4 +1,5 @@
-const esbuild = require('esbuild');
+import { build } from "esbuild";
+import type { BuildOptions } from "esbuild";
 
 const entryPoints = [
 	'src/util.ts',
@@ -14,23 +15,20 @@ const entryPoints = [
 	'src/rng/index.ts'
 ];
 
-const baseConfig = {
-	minify: false,
-	treeShaking: true,
-	bundle: true,
+const baseConfig: BuildOptions = {
+	bundle: false,
 	keepNames: true,
 	metafile: true,
 	legalComments: 'none',
 	entryPoints,
 	platform: 'node',
-	external: ['discord.js'],
 	loader: {
 		'.json': 'copy'
-	}
+	},
+	target: 'node20'
 };
 
-esbuild
-	.build({
+build({
 		...baseConfig,
 		outdir: 'dist/esm',
 		format: 'esm',
@@ -39,12 +37,11 @@ esbuild
 	})
 	.catch(() => process.exit(1));
 
-esbuild
-	.build({
+build({
 		...baseConfig,
 		outdir: 'dist/cjs',
-		format: 'cjs',
 		outExtension: { '.js': '.cjs' },
+		format: 'cjs',
 		target: 'esnext'
 	})
 	.catch(() => process.exit(1));

@@ -141,8 +141,7 @@ ${leaguesTrophiesBuyables
 			});
 
 			const loot = new Bank().add(item.item.id, quantity);
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				itemsToAdd: loot,
 				collectionLog: true
 			});

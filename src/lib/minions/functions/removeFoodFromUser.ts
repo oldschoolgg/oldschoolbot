@@ -106,7 +106,7 @@ export default async function removeFoodFromUser({
 			).join(', ')}.`
 		);
 	} else {
-		await transactItems({ userID: user.id, itemsToRemove: result.foodToRemove });
+		await user.transactItems({ itemsToRemove: result.foodToRemove });
 		await updateBankSetting('economyStats_PVMCost', result.foodToRemove);
 		return {
 			foodRemoved: result.foodToRemove,

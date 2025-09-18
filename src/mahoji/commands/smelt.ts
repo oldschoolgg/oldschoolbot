@@ -150,7 +150,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			cost.add('Coins', coinsToRemove);
 		}
 
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 		updateBankSetting('smithing_cost', cost);
 
 		await addSubTaskToActivityTask<SmeltingActivityTaskOptions>({

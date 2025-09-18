@@ -219,8 +219,7 @@ export async function soulWarsImbueCommand(user: MUser, input = '') {
 	});
 	const cost = new Bank().add(item.input.id);
 	const loot = new Bank().add(item.output.id);
-	await transactItems({
-		userID: user.id,
+	await user.transactItems({
 		itemsToAdd: loot,
 		itemsToRemove: cost,
 		collectionLog: true

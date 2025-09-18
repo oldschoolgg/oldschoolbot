@@ -48,8 +48,8 @@ export const smeltingTask: MinionTask = {
 			[bar.id]: quantity
 		});
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
+
 			collectionLog: true,
 			itemsToAdd: loot
 		});
