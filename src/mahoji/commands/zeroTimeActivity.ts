@@ -25,7 +25,21 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.String,
 			name: 'item',
 			description: 'The item to use for the chosen zero time activity (if applicable).',
-			required: false
+			required: false,
+			autocomplete: async (value: string) => {
+				const search = value.trim().toLowerCase();
+				return zeroTimeFletchables
+					.filter(fletchable =>
+						search.length === 0
+							? true
+							: fletchable.name.toLowerCase().includes(search) || fletchable.id.toString() === search
+					)
+					.slice(0, 25)
+					.map(fletchable => ({
+						name: fletchable.name,
+						value: fletchable.id.toString()
+					}));
+			}
 		},
 		{
 			type: ApplicationCommandOptionType.Boolean,
@@ -39,7 +53,10 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 		const currentSettings = getZeroTimeActivitySettings(user);
 
 		if (options.clear) {
-			await user.update({ zero_time_activity_type: null, zero_time_activity_item: null });
+			await user.update({
+				zero_time_activity_type: null,
+				zero_time_activity_item: null
+			});
 			return 'Cleared your zero time activity preference.';
 		}
 
@@ -69,7 +86,7 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 
 		if (type === 'alch') {
 			if (options.item) {
-				const osItem = Items.getItem(options.item);
+				const osItem = Items.get(options.item);
 				if (!osItem) {
 					return 'That is not a valid item to alch.';
 				}
@@ -118,10 +135,9 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 		}
 
 		await user.update({
-			zero_time_activity_type: type,
-			zero_time_activity_item: itemID
+			zero_time_activity_type: null,
+			zero_time_activity_item: null
 		});
-
 		const activityName = type === 'alch' ? 'Alching' : 'Fletching';
 		const itemDisplay = itemID ? itemName : 'automatic selection';
 
