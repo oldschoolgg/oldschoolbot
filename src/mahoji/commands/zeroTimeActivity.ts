@@ -155,8 +155,8 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 		}
 
 		await user.update({
-			zero_time_activity_type: null,
-			zero_time_activity_item: null
+			zero_time_activity_type: type,
+			zero_time_activity_item: itemID
 		});
 		const activityName = type === 'alch' ? 'Alching' : 'Fletching';
 		const itemDisplay = itemID ? itemName : 'automatic selection';
