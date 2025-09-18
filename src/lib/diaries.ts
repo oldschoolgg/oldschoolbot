@@ -870,7 +870,12 @@ export const LumbridgeDraynorDiary: Diary = {
 			runecraft: 59,
 			woodcutting: 57
 		},
-		collectionLogReqs: resolveItems(['Cosmic rune', 'Barrows gloves', 'Amulet of power'])
+		collectionLogReqs: resolveItems(['Cosmic rune', 'Barrows gloves', 'Amulet of power']),
+		customReq: (user, summary) => {
+			if (summary) return [false, 'Bones to Peaches spell unlocked.'];
+			const has = user.cl.has(6926);
+			return has ? [true] : [false, 'you need **Bones to Peaches (spell)** in your collection log'];
+		}
 	},
 	elite: {
 		name: 'Elite',
