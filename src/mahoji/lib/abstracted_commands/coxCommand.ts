@@ -20,12 +20,12 @@ import { getSimilarItems } from '../../../lib/data/similarItems.js';
 import { degradeItem } from '../../../lib/degradeableItems.js';
 import { trackLoot } from '../../../lib/lootTrack.js';
 import { setupParty } from '../../../lib/party.js';
-import type { MakePartyOptions } from '../../../lib/types.js';
 import type { RaidsOptions } from '../../../lib/types/minions.js';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
 import { mahojiParseNumber } from '../../mahojiSettings.js';
+import type { MakePartyOptions } from '@/lib/types/index.js';
 
 export async function coxBoostsCommand(user: MUser) {
 	const boostStr = [];

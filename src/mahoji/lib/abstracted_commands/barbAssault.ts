@@ -5,7 +5,7 @@ import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { Time, calcWhatPercent, clamp, reduceNumByPercent, roll, round } from 'e';
 import { Bank, itemID } from 'oldschooljs';
 
-import { countUsersWithItemInCl } from '@/lib/rawSql';
+import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import { buildClueButtons } from '../../../lib/clues/clueUtils.js';
 import { degradeItem } from '../../../lib/degradeableItems.js';

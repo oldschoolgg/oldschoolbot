@@ -1,4 +1,4 @@
-import type { MinigameScore, SkillsScore, CluesScore } from "./types.js";
+import type { MinigameScore } from "./Player.js";
 
 export const mappedBossNames = [
 	['abyssalSire', 'Abyssal Sire'],
@@ -94,18 +94,6 @@ export const MINIGAMES = [
 	'colosseumGlory'
 ] as const;
 
-
-
 export type BossRecords = Record<(typeof mappedBossNames)[number]['0'], MinigameScore>;
 
 export type MinigamesScore = Record<(typeof MINIGAMES)[number], MinigameScore>;
-
-export interface Player {
-	bossRecords: BossRecords;
-	username: string;
-	type: AccountType;
-	skills: SkillsScore;
-	minigames: MinigamesScore;
-	clues: CluesScore;
-	leaguePoints?: { rank: number; points: number };
-}

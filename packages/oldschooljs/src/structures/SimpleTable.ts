@@ -1,6 +1,9 @@
-import { randInt } from 'e';
+import { randInt } from '@/util/smallUtils.js';
 
-import type { SimpleTableItem } from '../meta/types.js';
+export interface SimpleTableItem<T> {
+	item: T;
+	weight: number;
+}
 
 export default class SimpleTable<T> {
 	public length: number;

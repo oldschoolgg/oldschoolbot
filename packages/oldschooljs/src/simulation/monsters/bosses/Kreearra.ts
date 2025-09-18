@@ -1,6 +1,6 @@
 import LootTable from '@/structures/LootTable.js';
 import {SimpleMonster} from '@/structures/Monster.js';
-import { itemTupleToTable } from '@/util/index.js';
+import { itemTupleToTable } from '@/structures/LootTable.js';
 import GWRareDropTable, { GWGemTable, ShardTable } from '@/simulation/subtables/GWRareDropTable.js';
 
 const KreearraArmorTable = new LootTable().add('Armadyl helmet').add('Armadyl chestplate').add('Armadyl chainskirt');

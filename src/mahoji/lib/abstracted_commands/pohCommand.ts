@@ -2,10 +2,10 @@ import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
-import { formatSkillRequirements } from '@/lib/util/smallUtils';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { pohImageGenerator } from '../../../lib/canvas/pohImage.js';
 import { BitField } from '../../../lib/constants.js';
-import { GroupedPohObjects, PoHObjects, getPOHObject, itemsNotRefundable } from '../../../lib/poh.js';
+import { GroupedPohObjects, PoHObjects, getPOHObject, itemsNotRefundable } from '../../../lib/poh/index.js';
 import { SkillsEnum } from '../../../lib/skilling/types.js';
 import getOSItem from '../../../lib/util/getOSItem.js';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';

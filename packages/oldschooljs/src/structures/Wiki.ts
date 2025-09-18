@@ -1,7 +1,18 @@
 import fetch from 'node-fetch';
 
-import type { WikiPage } from '../meta/types.js';
 
+export interface WikiPage {
+	image?: string;
+	lastRevisionID: number;
+	url: string;
+	pageID: number;
+	title: string;
+	extract?: string;
+	categories: {
+		title: string;
+		ns: number;
+	}[];
+}
 class WikiSingleton {
 	private URL = 'https://oldschool.runescape.wiki/api.php';
 	private searchOptions: { [index: string]: string } = {

@@ -1,8 +1,7 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/discord-util';
 import { generateHexColorForCashStack } from '@oldschoolgg/toolkit/runescape';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { calcWhatPercent, objectEntries } from 'e';
-import { type Bank, Items, Util } from 'oldschooljs';
+import { type Bank, Items, toKMB } from 'oldschooljs';
 
 import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections.js';
 import type { CollectionStatus, IToReturnCollection } from '../lib/data/CollectionsExport.js';
@@ -380,7 +379,7 @@ class CollectionLogTask {
 		ctx.restore();
 
 		ctx.save();
-		const value = Util.toKMB(totalPrice);
+		const value = toKMB(totalPrice);
 		canvas.drawText({
 			text: value,
 			x: canvas.width - 15 - canvas.measureTextWidth(value),

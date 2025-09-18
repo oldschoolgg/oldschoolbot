@@ -2,7 +2,7 @@ import { Bank, GrandHallowedCoffin } from 'oldschooljs';
 
 import { trackLoot } from '../../../lib/lootTrack.js';
 import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre.js';
-import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables.js';
+import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables/index.js';
 import { SkillsEnum } from '../../../lib/skilling/types.js';
 import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions.js';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';

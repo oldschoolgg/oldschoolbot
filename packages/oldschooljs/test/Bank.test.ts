@@ -1,6 +1,6 @@
 import { describe, expect, it, test } from 'vitest';
 
-import { Bank, EItem, type ItemBank, Items, addItemToBank, getItemOrThrow, itemID, resolveNameBank } from '../';
+import { Bank, EItem, type ItemBank, Items, addItemToBank, itemID, resolveNameBank } from "../src/index.js";
 
 describe('Bank', () => {
 	test('convert string bank to number bank', () => {
@@ -149,7 +149,7 @@ describe('Bank', () => {
 			})
 		);
 		expect(runePlatebody.price).toBeGreaterThan(25_000);
-		expect(bank2.value()).toEqual(runePlatebody.price * 10);
+		expect(bank2.value()).toEqual(runePlatebody.price! * 10);
 		const bank3 = new Bank(
 			resolveNameBank({
 				'Rune platebody': 10,
@@ -161,7 +161,7 @@ describe('Bank', () => {
 		);
 		expect(runePlatebody.price).toBeGreaterThan(25_000);
 		expect(bank3.value()).toEqual(
-			runePlatebody.price * 10 + Items.get('Rune platelegs')!.price * 10 + Items.get('Rune boots')!.price * 10
+			runePlatebody.price! * 10 + Items.get('Rune platelegs')!.price! * 10 + Items.get('Rune boots')!.price! * 10
 		);
 	});
 
@@ -326,11 +326,11 @@ describe('Bank', () => {
 		expect(bank.amount('Coal')).toEqual(1);
 		expect(bank.amount(itemID('Coal'))).toEqual(1);
 		expect(bank.amount(EItem.COAL)).toEqual(1);
-		expect(bank.amount(getItemOrThrow('Coal'))).toEqual(1);
+		expect(bank.amount(Items.getOrThrow('Coal'))).toEqual(1);
 	});
 
 	it('sets and clears items', () => {
-		const methods = ['Coal', itemID('Coal'), EItem.COAL, getItemOrThrow('Coal')];
+		const methods = ['Coal', itemID('Coal'), EItem.COAL, Items.getOrThrow('Coal')];
 		for (const setMethod of methods) {
 			for (const amountMethod of methods) {
 				const bank = new Bank().set(setMethod, 5).add('Trout', 100000);

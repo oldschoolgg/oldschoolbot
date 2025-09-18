@@ -1,8 +1,6 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
 import {
-	type CommandRunOptions,
 	type MahojiUserOption,
-	type OSBMahojiCommand,
 	discrimName,
 	mentionCommand
 } from '@oldschoolgg/toolkit/discord-util';

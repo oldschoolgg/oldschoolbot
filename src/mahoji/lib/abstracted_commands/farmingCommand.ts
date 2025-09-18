@@ -8,7 +8,7 @@ import { superCompostables } from '../../../lib/data/filterables.js';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries.js';
 import { calcNumOfPatches } from '../../../lib/skilling/functions/calcsFarming.js';
 import { getFarmingInfo, getFarmingInfoFromUser } from '../../../lib/skilling/functions/getFarmingInfo.js';
-import Farming from '../../../lib/skilling/skills/farming.js';
+import Farming from '../../../lib/skilling/skills/farming/index.js';
 import type { Plant } from '../../../lib/skilling/types.js';
 import { SkillsEnum } from '../../../lib/skilling/types.js';
 import type { FarmingActivityTaskOptions } from '../../../lib/types/minions.js';

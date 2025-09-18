@@ -24,6 +24,7 @@ async function getGiveawayMessage(giveaway: Giveaway) {
 		const message = await channel.messages.fetch(giveaway.message_id).catch(noOp);
 		if (message) return message;
 	}
+	return null;
 }
 
 export function generateGiveawayContent(host: string, finishDate: Date, usersEntered: string[]) {

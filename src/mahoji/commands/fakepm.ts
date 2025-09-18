@@ -1,4 +1,3 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '../../lib/canvas/canvasUtil.js';

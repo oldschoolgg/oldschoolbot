@@ -1,7 +1,7 @@
 import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatList } from '@/lib/util/smallUtils';
+import { formatList } from '@/lib/util/smallUtils.js';
 import { chompyHats } from '../../../lib/data/CollectionsExport.js';
 import { WesternProv, userhasDiaryTier } from '../../../lib/diaries.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';

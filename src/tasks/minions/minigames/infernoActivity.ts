@@ -3,7 +3,7 @@ import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { calcPercentOfNum, calcWhatPercent } from 'e';
 import { Bank, type ItemBank, Monsters, itemID } from 'oldschooljs';
 
-import { countUsersWithItemInCl } from '@/lib/rawSql';
+import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import chatHeadImage from '../../../lib/canvas/chatHeadImage.js';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries.js';
 import { DiaryID } from '../../../lib/minions/types.js';

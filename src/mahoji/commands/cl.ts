@@ -1,4 +1,4 @@
-import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import type { CollectionLogType } from '../../lib/collectionLogTask.js';

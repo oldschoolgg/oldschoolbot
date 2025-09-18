@@ -1,4 +1,4 @@
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { User } from 'discord.js';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { randInt } from 'e';

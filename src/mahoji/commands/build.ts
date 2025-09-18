@@ -1,15 +1,15 @@
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Time, round } from 'e';
 import { Bank } from 'oldschooljs';
 
 import Constructables from '../../lib/skilling/skills/construction/constructables.js';
-import type { Skills } from '../../lib/types.js';
 import type { ConstructionActivityTaskOptions } from '../../lib/types/minions.js';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength.js';
 import { hasSkillReqs } from '../../lib/util/smallUtils.js';
 import { updateBankSetting } from '../../lib/util/updateBankSetting.js';
+import type { Skills } from '@/lib/types/index.js';
 
 const ds2Requirements: Skills = {
 	magic: 75,

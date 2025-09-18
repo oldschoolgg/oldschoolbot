@@ -1,5 +1,5 @@
-import LootTable from '@/structures/LootTable.js';
-import { itemID, itemTupleToTable } from '@/util/index.js';
+import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
+import { itemID } from '@/util/index.js';
 import { BlessingTable, FirelighterTable, GildedTable, PrayerPageTable, TeleportScrollTable } from './General.js';
 
 export const Hard3rdageTable = new LootTable()

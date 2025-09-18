@@ -4,7 +4,7 @@ import type { ItemBank } from 'oldschooljs';
 import type { NMZStrategy } from '../constants.js';
 import type { SlayerActivityConstants } from '../minions/data/combatConstants.js';
 import type { IPatchData } from '../minions/farming/types.js';
-import type { AttackStyles } from '../minions/functions.js';
+import type { AttackStyles } from '../minions/functions/index.js';
 import type { MinigameName } from '../settings/minigames.js';
 import type { UnderwaterAgilityThievingTrainingSkill } from '../skilling/skills/agility.js';
 import type { TwitcherGloves } from '../skilling/skills/woodcutting/woodcutting.js';

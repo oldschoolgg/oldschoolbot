@@ -1,6 +1,5 @@
-import { relative, resolve as resolveDir } from 'node:path';
+import path, { relative, resolve as resolveDir } from 'node:path';
 import { defineConfig, type Options } from 'tsdown';
-
 
 const tsconfigPath = relative(__dirname, resolveDir(process.cwd(), 'src', 'tsconfig.json'));
 
@@ -10,9 +9,25 @@ const baseOptions: Options = {
 	minify: false,
 	skipNodeModulesBundle: true,
 	sourcemap: true,
-	target: 'es2022',
+	target: 'node20',
 	tsconfig: tsconfigPath,
-	treeshake: true
+	treeshake: true,
+	platform: 'node',
+	hash: false,
+	outputOptions: {
+		advancedChunks: {
+			groups: [
+				{
+					test: (id: string) => id.endsWith('.json'),
+					name: (id, t) => {
+						const x = path.basename(id);
+						console.log({x, info: t.getModuleInfo(id)});
+						return x;
+					},
+				}
+			]
+		}
+	}
 };
 
 export function createTsupConfig(options: EnhancedTsupOptions = {}) {
@@ -22,7 +37,7 @@ export function createTsupConfig(options: EnhancedTsupOptions = {}) {
 			entry: options.entryPoints ?? baseOptions.entry,
 			outDir: 'dist/cjs',
 			format: 'cjs',
-			outExtensions: () => ({ js: '.cjs' }),
+			outExtensions: () => ({ js: '.cjs', json: '.json' }),
 			...options.cjsOptions
 		}),
 		defineConfig({
@@ -30,7 +45,7 @@ export function createTsupConfig(options: EnhancedTsupOptions = {}) {
 			entry: options.entryPoints ?? baseOptions.entry,
 			outDir: 'dist/esm',
 			format: 'esm',
-			outExtensions: () => ({ js: '.mjs' }),
+			outExtensions: () => ({ js: '.mjs', json: '.json' }),
 			...options.esmOptions
 		}),
 	];

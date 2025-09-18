@@ -4,7 +4,7 @@ import type { Bank } from 'oldschooljs';
 
 import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre.js';
 
-import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables.js';
+import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables/index.js';
 import Arrows from '../../../lib/skilling/skills/fletching/fletchables/arrows.js';
 import Bolts from '../../../lib/skilling/skills/fletching/fletchables/bolts.js';
 import Darts from '../../../lib/skilling/skills/fletching/fletchables/darts.js';

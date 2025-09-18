@@ -1,4 +1,4 @@
-import { type Bank, Items } from '../';
+import { type Bank, Items } from "../src/index.js";
 
 export function withinThreshold(source: number, target: number, epsilon = 5): boolean {
 	if (source === target) return true;

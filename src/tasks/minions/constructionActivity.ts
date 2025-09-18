@@ -1,9 +1,9 @@
 import { calcPercentOfNum } from 'e';
 
-import { Construction } from '@/lib/skilling/skills/construction';
 import { SkillsEnum } from '../../lib/skilling/types.js';
 import type { ConstructionActivityTaskOptions } from '../../lib/types/minions.js';
 import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
+import { Construction } from '@/lib/skilling/skills/construction/index.js';
 
 export const constructionTask: MinionTask = {
 	type: 'Construction',

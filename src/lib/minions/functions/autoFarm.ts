@@ -2,10 +2,10 @@ import { AutoFarmFilterEnum } from '@prisma/client';
 import { SkillsEnum } from 'oldschooljs';
 
 import { farmingPlantCommand } from '../../../mahoji/lib/abstracted_commands/farmingCommand.js';
-import { plants } from '../../skilling/skills/farming.js';
 import type { IPatchDataDetailed } from '../farming/types.js';
 import type { Plant } from './../../skilling/types.js';
 import { allFarm, replant } from './autoFarmFilters.js';
+import { plants } from '@/lib/skilling/skills/farming/index.js';
 
 export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[], channelID: string) {
 	if (user.minionIsBusy) {

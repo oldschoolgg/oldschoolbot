@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 
 import { avasDevices, chompyHats } from '../../../lib/data/CollectionsExport.js';
 import { WesternProv, userhasDiaryTier } from '../../../lib/diaries.js';
-
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';

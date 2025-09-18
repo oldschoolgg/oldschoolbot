@@ -15,7 +15,7 @@ import type { GearStats } from 'oldschooljs/gear';
 import { checkUserCanUseDegradeableItem } from '../degradeableItems.js';
 import { SkillsEnum } from '../skilling/types.js';
 import { Gear, constructGearSetup } from '../structures/Gear.js';
-import type { Skills } from '../types.js';
+import type { Skills } from '@/lib/types/index.js';
 import getOSItem from '../util/getOSItem.js';
 import { logError } from '../util/logError.js';
 import { formatList, itemNameFromID } from '../util/smallUtils.js';

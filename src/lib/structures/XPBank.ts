@@ -3,7 +3,7 @@ import { sumArr } from 'e';
 import { skillEmoji } from '../data/emojis.js';
 import type { AddXpParams } from '../minions/types.js';
 import type { SkillNameType, SkillsEnum } from '../skilling/types.js';
-import type { Skills } from '../types.js';
+import type { Skills } from '../types/index.js';
 
 export class XPBank {
 	public xpList: AddXpParams[] = [];

@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+
 
 import { allUsableItems, useCommand } from '../lib/abstracted_commands/useCommand.js';
 import { ownedItemOption } from '../lib/mahojiCommandOptions.js';

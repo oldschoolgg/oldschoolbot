@@ -1,4 +1,4 @@
-import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 

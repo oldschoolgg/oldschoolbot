@@ -1,9 +1,9 @@
 import { Bank, itemID } from 'oldschooljs';
 
-import { CyclopsTable } from '@/lib/simulation/cyclops';
-import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions';
-import { handleTripFinish } from '@/lib/util/handleTripFinish';
-import { makeBankImage } from '@/lib/util/makeBankImage';
+import { CyclopsTable } from '@/lib/simulation/cyclops.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { roll } from '@/lib/util/rng.js';
 
 const cyclopsID = 2097;

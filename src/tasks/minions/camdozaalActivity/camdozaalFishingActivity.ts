@@ -3,11 +3,11 @@ import { calcPercentOfNum } from 'e';
 import { LootTable } from 'oldschooljs';
 
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
-import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
-import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish';
-import { makeBankImage } from '@/lib/util/makeBankImage';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { roll } from '@/lib/util/rng.js';
 
 const guppy = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw guppy')!;

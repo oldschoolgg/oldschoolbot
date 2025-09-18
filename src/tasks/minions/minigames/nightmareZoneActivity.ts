@@ -1,4 +1,4 @@
-import { resolveAttackStyles } from '../../../lib/minions/functions.js';
+import { resolveAttackStyles } from '../../../lib/minions/functions/index.js';
 import { SkillsEnum } from '../../../lib/skilling/types.js';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
 import type { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions.js';

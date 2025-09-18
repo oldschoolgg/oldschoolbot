@@ -1,4 +1,4 @@
-import { randArrItem } from 'e';
+import { randArrItem } from '@/util/smallUtils.js';
 
 import itemID from '../util/itemID.js';
 import { toKMB } from '../util/smallUtils.js';

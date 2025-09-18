@@ -1,8 +1,6 @@
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import {
 	type CommandOption,
-	type CommandRunOptions,
-	type OSBMahojiCommand,
 	makeComponents,
 	returnStringOrFile
 } from '@oldschoolgg/toolkit/discord-util';
@@ -10,14 +8,13 @@ import { evalMathExpression } from '@oldschoolgg/toolkit/math';
 import type { GEListing, GETransaction } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { sumArr, uniqueArr } from 'e';
-import { Bank, type ItemBank, getItem, toKMB } from 'oldschooljs';
+import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { PerkTier } from '../../lib/constants.js';
 import { GrandExchange, createGECancelButton } from '../../lib/grandExchange.js';
 import { marketPricemap } from '../../lib/marketPrices.js';
 import { createChart } from '../../lib/util/chart.js';
-import getOSItem from '../../lib/util/getOSItem.js';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation.js';
 import { deferInteraction } from '../../lib/util/interactionReply.js';
 import itemIsTradeable from '../../lib/util/itemIsTradeable.js';
@@ -42,7 +39,7 @@ function geListingToString(
 	listing: GEListingWithTransactions,
 	buyLimit?: Awaited<ReturnType<(typeof GrandExchange)['checkBuyLimitForListing']>>
 ) {
-	const item = getOSItem(listing.item_id);
+	const item = Items.getOrThrow(listing.item_id);
 	const allTransactions = [...listing.buyTransactions, ...listing.sellTransactions];
 	const verb = listing.type === 'Buy' ? 'Buying' : 'Selling';
 	const pastVerb = listing.type === 'Buy' ? 'bought' : 'sold';
@@ -400,7 +397,7 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 
 		if (options.view) {
 			if (options.view.item) {
-				const item = getItem(options.view.item);
+				const item = Items.getItem(options.view.item);
 				if (!item) return 'Invalid item.';
 				if (!itemIsTradeable(item.id)) return 'That item is not tradeable on the Grand Exchange.';
 				const priceData = marketPricemap.get(item.id);

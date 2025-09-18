@@ -1,6 +1,6 @@
 import type { Bank } from 'oldschooljs';
 
-import type { Skills } from '../types.js';
+import type { Skills } from '@/lib/types/index.js';
 import type { ClueTier } from './clueTiers.js';
 import { allStashUnitTiers } from './stashUnits.js';
 

@@ -1,7 +1,7 @@
 import { calcPercentOfNum } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries.js';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler.js';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions.js';

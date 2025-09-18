@@ -16,7 +16,7 @@ import {
 
 import type { ClueTier } from '../clues/clueTiers.js';
 import { ClueTiers } from '../clues/clueTiers.js';
-import killableMonsters, { NightmareMonster } from '../minions/data/killableMonsters.js';
+import killableMonsters, { NightmareMonster } from '../minions/data/killableMonsters/index.js';
 import { sepulchreFloors } from '../minions/data/sepulchre.js';
 import {
 	EasyEncounterLoot,
@@ -26,7 +26,7 @@ import {
 } from '../minions/data/templeTrekking.js';
 import type { MinigameName } from '../settings/minigames.js';
 import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc.js';
-import { allFarmingItems } from '../skilling/skills/farming.js';
+import { allFarmingItems } from '../skilling/skills/farming/index.js';
 import { SkillsEnum } from '../skilling/types.js';
 import { MUserStats } from '../structures/MUserStats.js';
 import { shuffleRandom } from '../util/smallUtils.js';

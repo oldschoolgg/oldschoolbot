@@ -2,8 +2,8 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { noOp, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
-import killableMonsters from '../../lib/minions/data/killableMonsters.js';
-import { addMonsterXP } from '../../lib/minions/functions.js';
+import killableMonsters from '../../lib/minions/data/killableMonsters/index.js';
+import { addMonsterXP } from '../../lib/minions/functions/index.js';
 import announceLoot from '../../lib/minions/functions/announceLoot.js';
 import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster.js';
 import type { GroupMonsterActivityTaskOptions } from '../../lib/types/minions.js';

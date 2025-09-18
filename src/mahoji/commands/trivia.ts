@@ -1,4 +1,4 @@
-import type { CommandRunOptions, MahojiUserOption, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, type TextChannel, userMention } from 'discord.js';
 import { shuffleArr, uniqueArr } from 'e';
 

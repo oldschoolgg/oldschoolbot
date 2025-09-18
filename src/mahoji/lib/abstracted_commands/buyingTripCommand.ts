@@ -2,8 +2,8 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
-import type { TripBuyable } from '@/lib/data/buyables/tripBuyables';
-import { calculateShopBuyCost } from '@/lib/util/calculateShopBuyCost';
+import type { TripBuyable } from '@/lib/data/buyables/tripBuyables.js';
+import { calculateShopBuyCost } from '@/lib/util/calculateShopBuyCost.js';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import type { BuyActivityTaskOptions } from '../../../lib/types/minions.js';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';

@@ -1,6 +1,5 @@
 import {
 	type CommandOptions,
-	type CommandResponse,
 	channelIsSendable,
 	convertMahojiCommandToAbstractCommand
 } from '@oldschoolgg/toolkit/discord-util';

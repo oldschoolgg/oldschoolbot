@@ -1,9 +1,9 @@
 import { Time, reduceNumByPercent } from 'e';
 import { EItem, itemID } from 'oldschooljs';
 
-import { getSimilarItems } from '@/lib/data/similarItems';
-import type { Consumable } from '@/lib/minions/types';
-import { FloatBank } from '@/lib/structures/Bank';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import type { Consumable } from '@/lib/minions/types.js';
+import { FloatBank } from '@/lib/structures/Bank.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 
 // TODO: should use a FloatBank instead of a Bank

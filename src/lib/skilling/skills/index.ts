@@ -3,21 +3,21 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { Skill } from '../types.js';
 import { SkillsEnum } from '../types.js';
 import Agility from './agility.js';
-import { Construction } from './construction.js';
+import { Construction } from './construction/index.js';
 import Cooking from './cooking/cooking.js';
-import Crafting from './crafting.js';
-import Farming from './farming.js';
+import Crafting from './crafting/index.js';
+import Farming from './farming/index.js';
 import Firemaking from './firemaking.js';
 import { Fishing } from './fishing/fishing.js';
-import Fletching from './fletching.js';
+import Fletching from './fletching/index.js';
 import Herblore from './herblore/herblore.js';
 import Hunter from './hunter/hunter.js';
-import Magic from './magic.js';
+import Magic from './magic/index.js';
 import Mining from './mining.js';
 import Prayer from './prayer.js';
 import Runecraft from './runecraft.js';
-import Smithing from './smithing.js';
-import Thieving from './thieving.js';
+import Smithing from './smithing/index.js';
+import Thieving from './thieving/index.js';
 import Woodcutting from './woodcutting/woodcutting.js';
 
 export const Skills: Record<string, Skill> = {

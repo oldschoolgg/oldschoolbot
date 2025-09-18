@@ -1,14 +1,13 @@
 import { objHasAnyPropInCommon } from '@oldschoolgg/toolkit/util';
 import type { GearSetupType, Prisma, UserStats } from '@prisma/client';
 import { objectEntries } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, type ItemBank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 
 import { userStatsUpdate } from '../../mahoji/mahojiSettings.js';
 import type { MUserClass } from '../MUser.js';
 import { degradeChargeBank } from '../degradeableItems.js';
 import type { GearSetup } from '../gear/types.js';
-import type { ItemBank } from '../types.js';
 import type { JsonKeys } from '../util.js';
 import { ChargeBank, XPBank } from './Bank.js';
 import { KCBank } from './KCBank.js';

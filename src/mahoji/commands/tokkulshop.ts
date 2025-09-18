@@ -1,5 +1,5 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { activity_type_enum } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Monsters } from 'oldschooljs';

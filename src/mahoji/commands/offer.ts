@@ -1,5 +1,5 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
-import { type CommandRunOptions, formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Time, randArrItem, randInt, roll } from 'e';
 import { Bank, ItemGroups, resolveItems } from 'oldschooljs';

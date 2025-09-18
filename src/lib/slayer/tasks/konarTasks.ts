@@ -1,6 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
-import killableMonsters from '../../minions/data/killableMonsters.js';
+import killableMonsters from '../../minions/data/killableMonsters/index.js';
 import { QuestID } from '../../minions/data/quests.js';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks.js';
 import type { AssignableSlayerTask } from '../types.js';

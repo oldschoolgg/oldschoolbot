@@ -1,6 +1,4 @@
 import {
-	type CommandResponse,
-	type CommandRunOptions,
 	formatDuration,
 	isWeekend,
 	stringMatches
@@ -14,7 +12,7 @@ import type { ClueTier } from '../../lib/clues/clueTiers.js';
 import { ClueTiers } from '../../lib/clues/clueTiers.js';
 import { BitField, MAX_CLUES_DROPPED } from '../../lib/constants.js';
 import { allOpenables, getOpenableLoot } from '../../lib/openables.js';
-import { getPOHObject } from '../../lib/poh.js';
+import { getPOHObject } from '../../lib/poh/index.js';
 import { SkillsEnum } from '../../lib/skilling/types.js';
 import type { ClueActivityTaskOptions } from '../../lib/types/minions.js';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask.js';

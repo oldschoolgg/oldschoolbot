@@ -1,6 +1,6 @@
 import LootTable from '@/structures/LootTable.js';
 import {SimpleOpenable} from '@/structures/SimpleOpenable.js';
-import { itemTupleToTable } from '@/util/index.js';
+import { itemTupleToTable } from '@/structures/LootTable.js';
 
 /* Dragonstone armour roll */
 const DragonStoneArmorTable = new LootTable()

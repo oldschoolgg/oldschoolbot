@@ -13,9 +13,9 @@ import type { WSContext } from 'hono/ws';
 import { Bank, Items } from 'oldschooljs';
 import type { WebSocket } from 'ws';
 
-import '@/lib/safeglobals';
+import '@/lib/safeglobals.js';
 import { BOT_TYPE, META_CONSTANTS, globalConfig } from '@/lib/constants.js';
-import killableMonsters from '@/lib/minions/data/killableMonsters';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { testBotKvStore } from './TestBotStore.js';
 import { minionStatusRaw } from './minionStatusRaw.js';
 

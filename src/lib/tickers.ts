@@ -14,7 +14,7 @@ import { fetchUsersWithoutUsernames } from './rawSql.js';
 import { runCommand } from './settings/settings.js';
 import { informationalButtons } from './sharedComponents.js';
 import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo.js';
-import Farming from './skilling/skills/farming.js';
+import Farming from '@/lib/skilling/skills/farming/index.js';
 import { getSupportGuild } from './util.js';
 import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers.js';
 import { handleGiveawayCompletion } from './util/giveaway.js';

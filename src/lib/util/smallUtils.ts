@@ -2,14 +2,14 @@ import { miniID, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { clamp, objectEntries } from 'e';
-import { type ArrayItemsResolved, type Bank, type ItemBank, Items, getItemOrThrow } from 'oldschooljs';
+import { type ArrayItemsResolved, type Bank, type ItemBank, Items } from 'oldschooljs';
 import { MersenneTwister19937, shuffle } from 'random-js';
 import z from 'zod';
 
 import { skillEmoji } from '../data/emojis.js';
 import { SkillsEnum } from '../skilling/types.js';
-import type { SkillRequirements, Skills } from '../types.js';
 import type { TOAOptions } from '../types/minions.js';
+import type { SkillRequirements, Skills } from '../types/index.js';
 
 export function itemNameFromID(itemID: number) {
 	return Items.get(itemID)?.name;
@@ -45,11 +45,11 @@ export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
 }
 
 const shortItemNames = new Map([
-	[getItemOrThrow('Saradomin brew(4)'), 'Brew'],
-	[getItemOrThrow('Super restore(4)'), 'Restore'],
-	[getItemOrThrow('Super combat potion(4)'), 'Super combat'],
-	[getItemOrThrow('Sanfew serum(4)'), 'Sanfew'],
-	[getItemOrThrow('Ranging potion(4)'), 'Range pot']
+	[Items.getOrThrow('Saradomin brew(4)'), 'Brew'],
+	[Items.getOrThrow('Super restore(4)'), 'Restore'],
+	[Items.getOrThrow('Super combat potion(4)'), 'Super combat'],
+	[Items.getOrThrow('Sanfew serum(4)'), 'Sanfew'],
+	[Items.getOrThrow('Ranging potion(4)'), 'Range pot']
 ]);
 
 export function bankToStrShortNames(bank: Bank) {

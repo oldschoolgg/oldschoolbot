@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { diff } from 'deep-object-diff';
 import deepMerge from 'deepmerge';
-import { deepClone, increaseNumByPercent, notEmpty, objectEntries, reduceNumByPercent } from 'e';
+import { deepClone, increaseNumByPercent, notEmpty, objectEntries, reduceNumByPercent } from '@/util/smallUtils.js';
 import fetch from 'node-fetch';
 import bsoItemsJson from '@data/bso/bso_items.json';
 

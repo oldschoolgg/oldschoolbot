@@ -104,7 +104,7 @@ export function createGECancelButton(listing: GEListing) {
 }
 
 class GrandExchangeSingleton {
-	public queue = new PQueue({ concurrency: 1 });
+	public queue: PQueue = new PQueue({ concurrency: 1 });
 	public locked = false;
 	public isTicking = false;
 	public ready = false;

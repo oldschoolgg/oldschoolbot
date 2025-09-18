@@ -1,9 +1,8 @@
 import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import { Prisma } from '@prisma/client';
 import { noOp, notEmpty, uniqueArr } from 'e';
-import { convertXPtoLVL } from 'oldschooljs';
+import { convertXPtoLVL, type ItemBank } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { partition } from 'remeda';
 import z from 'zod';
@@ -15,7 +14,6 @@ import { ClueTiers } from './clues/clueTiers.js';
 import { loggedRawPrismaQuery } from './rawSql.js';
 import { TeamLoot } from './simulation/TeamLoot.js';
 import { SkillsArray } from './skilling/types.js';
-import type { ItemBank } from './types.js';
 import { getUsernameSync } from './util.js';
 import { fetchMultipleCLLeaderboards } from './util/clLeaderboard.js';
 import { logError } from './util/logError.js';

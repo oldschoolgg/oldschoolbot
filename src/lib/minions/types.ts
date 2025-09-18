@@ -4,7 +4,6 @@ import type { OffenceGearStat } from 'oldschooljs/gear';
 
 import type { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
 import type { ClueTier } from '../clues/clueTiers.js';
-import type { POHBoosts } from '../poh.js';
 import type { MinigameName } from '../settings/minigames.js';
 import type { LevelRequirements, SkillNameType, SkillsEnum } from '../skilling/types.js';
 import type { XPBank } from '../structures/Bank.js';
@@ -12,9 +11,10 @@ import type { GearRequirements } from '../structures/Gear.js';
 import type { GearBank } from '../structures/GearBank.js';
 import type { MUserStats } from '../structures/MUserStats.js';
 import type { UpdateBank } from '../structures/UpdateBank.js';
-import type { Skills } from '../types.js';
 import type { QuestID } from './data/quests.js';
-import type { AttackStyles } from './functions.js';
+import type { POHBoosts } from '../poh/index.js';
+import type { Skills } from '../types/index.js';
+import type { AttackStyles } from './functions/index.js';
 
 export type KillableMonsterEffect = (opts: {
 	gearBank: GearBank;

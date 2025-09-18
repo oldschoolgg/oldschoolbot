@@ -10,10 +10,10 @@ import { usernameWithBadgesCache } from './cache.js';
 import { BitField, MAX_LEVEL, MAX_XP, globalConfig } from './constants.js';
 import type { SkillNameType, SkillsEnum } from './skilling/types.js';
 import type { GearBank } from './structures/GearBank.js';
-import type { Skills } from './types.js';
 import type { GroupMonsterActivityTaskOptions } from './types/minions.js';
 import { makeBadgeString } from './util/makeBadgeString.js';
 import { sendToChannelID } from './util/webhook.js';
+import type { Skills } from './types/index.js';
 
 // @ts-ignore ignore
 BigInt.prototype.toJSON = function () {

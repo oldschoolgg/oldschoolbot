@@ -1,5 +1,5 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type CommandRunOptions, formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, SkillsEnum, itemID } from 'oldschooljs';
 

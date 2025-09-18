@@ -1,4 +1,4 @@
-import { Time, randFloat, roll, shuffleArr, sumArr } from 'e';
+import { Time, randFloat, roll, shuffleArr, sumArr } from '@/util/smallUtils.js';
 
 import {Bank, type ItemBank, type LootBank} from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';

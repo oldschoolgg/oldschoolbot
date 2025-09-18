@@ -2,9 +2,9 @@ import { Time, roll } from 'e';
 import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '@/lib/data/CollectionsExport';
-import { SkillsEnum } from '@/lib/skilling/types';
-import { getOSItem } from '@/lib/util/getOSItem';
+import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '@/lib/data/CollectionsExport.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { getOSItem } from '@/lib/util/getOSItem.js';
 import type { KillableMonster, KillableMonsterEffect } from '../../../types.js';
 import { QuestID } from '../../quests.js';
 

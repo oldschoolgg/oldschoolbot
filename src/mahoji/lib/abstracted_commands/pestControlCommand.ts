@@ -3,7 +3,7 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { hasSkillReqs } from '@/lib/util/smallUtils';
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { WesternProv, userhasDiaryTier } from '../../../lib/diaries.js';
 import type { SkillsEnum } from '../../../lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';

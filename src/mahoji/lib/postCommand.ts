@@ -1,7 +1,7 @@
 import type { AbstractCommand, CommandOptions } from '@oldschoolgg/toolkit/discord-util';
 import { TimerManager } from '@sapphire/timer-manager';
 
-import { logError } from '@/lib/util/logError';
+import { logError } from '@/lib/util/logError.js';
 import { modifyBusyCounter } from '../../lib/busyCounterCache.js';
 import { busyImmuneCommands, shouldTrackCommand } from '../../lib/constants.js';
 import { makeCommandUsage } from '../../lib/util/commandUsage.js';

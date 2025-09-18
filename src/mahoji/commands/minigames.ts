@@ -1,9 +1,8 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { LMSBuyables } from '../../lib/data/CollectionsExport.js';
 import TrekShopItems from '../../lib/data/buyables/trekBuyables.js';
-import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables.js';
+import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables/index.js';
 import {
 	agilityArenaBuyCommand,
 	agilityArenaBuyables,

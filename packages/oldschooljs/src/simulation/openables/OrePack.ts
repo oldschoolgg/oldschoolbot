@@ -1,4 +1,4 @@
-import { randInt } from 'e';
+import { randInt } from '@/util/smallUtils.js';
 
 import LootTable from '@/structures/LootTable.js';
 import {SimpleOpenable} from '@/structures/SimpleOpenable.js';

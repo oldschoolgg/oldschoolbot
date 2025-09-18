@@ -1,4 +1,3 @@
-import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { chunk } from 'e';

@@ -1,13 +1,10 @@
-import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
-import type { Prisma } from '@prisma/client';
-import { xp_gains_skill_enum } from '@prisma/client';
-import type { User } from 'discord.js';
-import { ApplicationCommandOptionType, MessageFlags } from 'discord.js';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { xp_gains_skill_enum, type Prisma } from '@prisma/client';
+import { ApplicationCommandOptionType, MessageFlags, type User } from 'discord.js';
 import { Time, noOp, randArrItem, randInt, uniqueArr } from 'e';
-import { Bank, Items, MAX_INT_JAVA } from 'oldschooljs';
-import { convertLVLtoXP, itemID } from 'oldschooljs';
+import { Bank, convertLVLtoXP, itemID, Items, MAX_INT_JAVA } from 'oldschooljs';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 
-import { getItem, resolveItems } from 'oldschooljs';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser.js';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits.js';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements.js';
@@ -15,23 +12,19 @@ import { BitFieldData, globalConfig } from '../../lib/constants.js';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables.js';
 import { Eatables } from '../../lib/data/eatables.js';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob.js';
-import { effectiveMonsters } from '../../lib/minions/data/killableMonsters.js';
+import { effectiveMonsters } from '../../lib/minions/data/killableMonsters/index.js';
 import potions from '../../lib/minions/data/potions.js';
 import { MAX_QP, quests } from '../../lib/minions/data/quests.js';
 import { allOpenables } from '../../lib/openables.js';
 import { Minigames } from '../../lib/settings/minigames.js';
-
-import { testBotKvStore } from '@/testing/TestBotStore';
-
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { testBotKvStore } from '@/testing/TestBotStore.js';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox.js';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo.js';
-import Skills from '../../lib/skilling/skills.js';
-import Farming from '../../lib/skilling/skills/farming.js';
+import Skills from '../../lib/skilling/skills/index.js';
+import Farming from '../../lib/skilling/skills/farming/index.js';
 import { slayerMasterChoices } from '../../lib/slayer/constants.js';
 import { slayerMasters } from '../../lib/slayer/slayerMasters.js';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil.js';
-import { allSlayerMonsters } from '../../lib/slayer/tasks.js';
 import { Gear } from '../../lib/structures/Gear.js';
 import type { FarmingPatchName } from '../../lib/util/farmingHelpers.js';
 import { farmingPatchNames, getFarmingKeyFromName, userGrowingProgressStr } from '../../lib/util/farmingHelpers.js';
@@ -45,6 +38,7 @@ import { allUsableItems } from '../lib/abstracted_commands/useCommand.js';
 import { BingoManager } from '../lib/bingo/BingoManager.js';
 import { userStatsUpdate } from '../mahojiSettings.js';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo.js';
+import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';
 
 export function getMaxUserValues() {
 	const updates: Omit<Prisma.UserUpdateArgs['data'], 'id'> = {};
@@ -68,7 +62,7 @@ export async function giveMaxStats(user: MUser) {
 }
 
 const coloMelee = new Gear();
-for (const gear of resolveItems([
+for (const gear of Items.resolveItems([
 	'Torva full helm',
 	'Infernal cape',
 	'Amulet of blood fury',
@@ -82,7 +76,7 @@ for (const gear of resolveItems([
 }
 
 const coloRange = new Gear();
-for (const gear of resolveItems([
+for (const gear of Items.resolveItems([
 	"Dizana's quiver",
 	'Masori mask (f)',
 	'Necklace of anguish',
@@ -895,7 +889,7 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 
 					for (const type of ['melee', 'range', 'mage'] as const) {
 						const currentGear = gear[type];
-						if (currentGear.ammo && getItem(currentGear.ammo.item)?.stackable) {
+						if (currentGear.ammo && Items.getItem(currentGear.ammo.item)?.stackable) {
 							currentGear.ammo.quantity = 10000;
 						}
 					}

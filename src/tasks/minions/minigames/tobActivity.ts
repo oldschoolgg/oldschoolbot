@@ -3,11 +3,11 @@ import { convertPercentChance, formatOrdinal, miniID } from '@oldschoolgg/toolki
 import { roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { drawChestLootImage } from '@/lib/canvas/chestImage';
+import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { tobMetamorphPets } from '../../../lib/data/CollectionsExport.js';
 import { TOBRooms, TOBUniques, TOBUniquesToAnnounce } from '../../../lib/data/tob.js';
 import { trackLoot } from '../../../lib/lootTrack.js';
-import { resolveAttackStyles } from '../../../lib/minions/functions.js';
+import { resolveAttackStyles } from '../../../lib/minions/functions/index.js';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot.js';
 import { TheatreOfBlood } from '../../../lib/simulation/tob.js';
 import { SkillsEnum } from '../../../lib/skilling/types.js';

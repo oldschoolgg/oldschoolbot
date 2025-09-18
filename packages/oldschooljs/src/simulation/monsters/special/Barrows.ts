@@ -1,5 +1,4 @@
-import { roll } from 'e';
-
+import { roll } from  '@/util/smallUtils.js';
 import type { MonsterKillOptions } from '@/structures/Monster.js';
 import {Bank} from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';

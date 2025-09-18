@@ -1,6 +1,6 @@
-import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Hiscores, type SkillsEnum, convertLVLtoXP, convertXPtoLVL } from 'oldschooljs';
+import { type SkillsEnum, convertLVLtoXP, convertXPtoLVL } from 'oldschooljs';
+import { Hiscores } from 'oldschooljs/hiscores';
 
 import { MAX_LEVEL, MAX_XP } from '../../lib/constants.js';
 import { skillOption } from '../lib/mahojiCommandOptions.js';

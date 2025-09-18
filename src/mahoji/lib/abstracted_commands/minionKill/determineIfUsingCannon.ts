@@ -1,10 +1,10 @@
 import { Monsters } from 'oldschooljs';
 
 import type { PvMMethod } from '@/lib/constants.js';
-import { cannonBanks } from '@/lib/minions/data/combatConstants';
-import { wildyKillableMonsters } from '@/lib/minions/data/killableMonsters/bosses/wildy';
-import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs';
-import type { KillableMonster } from '@/lib/minions/types';
+import { cannonBanks } from '@/lib/minions/data/combatConstants.js';
+import { wildyKillableMonsters } from '@/lib/minions/data/killableMonsters/bosses/wildy.js';
+import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 
 const monstersCantBeCannoned = [...wildyKillableMonsters, ...revenantMonsters].map(m => m.id);

@@ -7,7 +7,7 @@ import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesO
 import { collectables } from '../../mahoji/lib/collectables.js';
 import { ClueTiers } from '../clues/clueTiers.js';
 import { findTripBuyable } from '../data/buyables/tripBuyables.js';
-import killableMonsters from '../minions/data/killableMonsters.js';
+import killableMonsters from '../minions/data/killableMonsters/index.js';
 import { Planks } from '../minions/data/planks.js';
 import { quests } from '../minions/data/quests.js';
 import Agility from '../skilling/skills/agility.js';
@@ -15,11 +15,10 @@ import Constructables from '../skilling/skills/construction/constructables.js';
 import Cooking from '../skilling/skills/cooking/cooking.js';
 import ForestryRations from '../skilling/skills/cooking/forestersRations.js';
 import LeapingFish from '../skilling/skills/cooking/leapingFish.js';
-import Crafting from '../skilling/skills/crafting.js';
-import Farming from '../skilling/skills/farming.js';
+import Farming from '../skilling/skills/farming/index.js';
 import Firemaking from '../skilling/skills/firemaking.js';
 import { Fishing } from '../skilling/skills/fishing/fishing.js';
-import { zeroTimeFletchables } from '../skilling/skills/fletching/fletchables.js';
+import { zeroTimeFletchables } from '../skilling/skills/fletching/fletchables/index.js';
 import Herblore from '../skilling/skills/herblore/herblore.js';
 import Hunter from '../skilling/skills/hunter/hunter.js';
 import { Castables } from '../skilling/skills/magic/castables.js';
@@ -27,7 +26,7 @@ import { Enchantables } from '../skilling/skills/magic/enchantables.js';
 import Mining from '../skilling/skills/mining.js';
 import Prayer from '../skilling/skills/prayer.js';
 import Runecraft from '../skilling/skills/runecraft.js';
-import Smithing from '../skilling/skills/smithing.js';
+import Smithing from '../skilling/skills/smithing/index.js';
 import { stealables } from '../skilling/skills/thieving/stealables.js';
 import Woodcutting from '../skilling/skills/woodcutting/woodcutting.js';
 import type {
@@ -83,6 +82,7 @@ import type {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions.js';
+import Crafting from '../skilling/skills/crafting/index.js';
 
 export function minionStatus(user: MUser) {
 	const currentTask = ActivityManager.getActivityOfUser(user.id);

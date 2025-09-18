@@ -1,9 +1,8 @@
-import { Bank, EItem, deepResolveItems, itemID } from 'oldschooljs';
+import { Bank, EItem, deepResolveItems, itemID, type ItemBank } from 'oldschooljs';
 
 import { BitField } from '../constants.js';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking.js';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks.js';
-import type { ItemBank, Skills } from '../types.js';
 import getOSItem from '../util/getOSItem.js';
 import { formatList, itemNameFromID } from '../util/smallUtils.js';
 import { chambersOfXericMetamorphPets, tobMetamorphPets } from './CollectionsExport.js';
@@ -25,6 +24,7 @@ import { shadesOfMortonCreatables } from './creatables/shadesOfMorton.js';
 import { slayerCreatables } from './creatables/slayer.js';
 import { toaCreatables } from './creatables/toa.js';
 import { tobCreatables } from './creatables/tob.js';
+import type { Skills } from '../types/index.js';
 
 export interface Createable {
 	name: string;

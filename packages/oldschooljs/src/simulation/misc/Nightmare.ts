@@ -1,4 +1,4 @@
-import { calcPercentOfNum, calcWhatPercent, percentChance, randInt, roll } from 'e';
+import { calcPercentOfNum, calcWhatPercent, percentChance, randInt, roll } from '@/util/smallUtils.js';
 
 import {Bank, type LootBank} from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';

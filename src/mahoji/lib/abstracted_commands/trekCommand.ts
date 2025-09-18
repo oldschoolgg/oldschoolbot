@@ -3,7 +3,7 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { objectEntries, randInt, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import type { GearRequirement } from '@/lib/structures/Gear';
+import type { GearRequirement } from '@/lib/structures/Gear.js';
 import { GearStat } from 'oldschooljs/gear';
 import TrekShopItems, { TrekExperience } from '../../../lib/data/buyables/trekBuyables.js';
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries.js';

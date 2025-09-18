@@ -1,7 +1,5 @@
 import {
-	type CommandRunOptions,
 	type MahojiUserOption,
-	type OSBMahojiCommand,
 	allAbstractCommands,
 	bulkUpdateCommands
 } from '@oldschoolgg/toolkit/discord-util';
@@ -11,7 +9,7 @@ import { ApplicationCommandOptionType, AttachmentBuilder, type InteractionReplyO
 import { Time, calcWhatPercent, noOp, notEmpty, randArrItem, sleep, uniqueArr } from 'e';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
-import { countUsersWithItemInCl } from '@/lib/rawSql';
+import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser.js';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists.js';
 import {

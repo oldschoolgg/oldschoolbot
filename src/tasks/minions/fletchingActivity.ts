@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import Fletching from '../../lib/skilling/skills/fletching.js';
+import Fletching from '../../lib/skilling/skills/fletching/index.js';
 import { SkillsEnum } from '../../lib/skilling/types.js';
 import type { FletchingActivityTaskOptions } from '../../lib/types/minions.js';
 import { handleTripFinish } from '../../lib/util/handleTripFinish.js';

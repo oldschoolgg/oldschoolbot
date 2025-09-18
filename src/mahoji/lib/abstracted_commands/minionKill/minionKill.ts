@@ -3,15 +3,15 @@ import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'disco
 
 import { colosseumCommand } from '@/lib/colosseum.js';
 import type { PvMMethod } from '@/lib/constants.js';
-import { trackLoot } from '@/lib/lootTrack';
-import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs';
-import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil';
-import type { MonsterActivityTaskOptions } from '@/lib/types/minions';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
-import findMonster from '@/lib/util/findMonster';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
+import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import findMonster from '@/lib/util/findMonster.js';
 import { generateDailyPeakIntervals } from '@/lib/util/peaks.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { Monsters } from 'oldschooljs';
 import { hasMonsterRequirements } from '../../../mahojiSettings.js';
 import { nexCommand } from '../nexCommand.js';

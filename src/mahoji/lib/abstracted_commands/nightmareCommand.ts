@@ -3,11 +3,11 @@ import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, reduceNumByPercent } from 'e';
 import { Bank, EMonster, ZAM_HASTA_CRUSH, resolveItems } from 'oldschooljs';
 
-import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood';
+import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
 import { BitField } from '../../../lib/constants.js';
 import { degradeItem } from '../../../lib/degradeableItems.js';
 import { trackLoot } from '../../../lib/lootTrack.js';
-import { NightmareMonster } from '../../../lib/minions/data/killableMonsters.js';
+import { NightmareMonster } from '../../../lib/minions/data/killableMonsters/index.js';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser.js';
 import type { KillableMonster } from '../../../lib/minions/types.js';
 import { Gear } from '../../../lib/structures/Gear.js';

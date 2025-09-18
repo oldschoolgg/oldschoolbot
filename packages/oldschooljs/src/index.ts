@@ -8,41 +8,37 @@ import * as Misc from './simulation/misc/index.js';
 import {Monsters} from './simulation/monsters/index.js';
 import Openables from './simulation/openables/index.js';
 import {Bank, type ItemBank, type LootBank} from './structures/Bank.js';
-import { Hiscores } from './structures/Hiscores.js';
 import Items from './structures/Items.js';
-import LootTable from './structures/LootTable.js';
-import Player from './structures/Player.js';
 import {SimpleOpenable} from './structures/SimpleOpenable.js';
-import * as Util from './util/index.js';
+import LootTable from './structures/LootTable.js';
+import type { OpenableOpenOptions } from './structures/Openable.js';
 
 export {
 	Bank,
 	constants,
 	Items,
-	LootTable,
 	Misc,
 	Monsters,
 	MonsterSlayerMaster,
 	Openables,
-	Player,
-	Hiscores,
-	Util,
 	EItem,
 	EMonster,
 	SimpleOpenable,
+	LootTable,
 	ECreature,
 };
 
 export type {
 	ItemBank,
-	LootBank
+	LootBank,
+	OpenableOpenOptions
 }
 
+export * from './structures/LootTable.js';
 export * from './constants.js';
 export * from './util/index.js';
 export * from './structures/Items.js';
 export * from './meta/item.js';
-export * from './meta/types.js';
 export * from './simulation/clues/index.js';
 export * from './simulation/openables/index.js';
 export * from './simulation/misc/index.js';

@@ -1,5 +1,5 @@
 import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+
 import type { Prisma } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { clamp, reduceNumByPercent } from 'e';

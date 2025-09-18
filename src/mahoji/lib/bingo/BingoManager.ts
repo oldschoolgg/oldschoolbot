@@ -2,11 +2,10 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { Bingo, Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
 import { Time, chunk, noOp } from 'e';
-import { Bank, addBanks, toKMB } from 'oldschooljs';
+import { Bank, addBanks, toKMB, type ItemBank } from 'oldschooljs';
 import { groupBy } from 'remeda';
 import * as ss from 'simple-statistics';
 
-import type { ItemBank } from '../../../lib/types.js';
 import getOSItem from '../../../lib/util/getOSItem.js';
 import { sendToChannelID } from '../../../lib/util/webhook.js';
 import type { StoredBingoTile, UniversalBingoTile } from './bingoUtil.js';

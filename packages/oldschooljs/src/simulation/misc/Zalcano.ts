@@ -1,4 +1,4 @@
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum } from '@/util/smallUtils.js';
 
 import {Bank, type LootBank} from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';

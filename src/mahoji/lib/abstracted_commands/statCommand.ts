@@ -8,11 +8,11 @@ import {
 	type ItemBank,
 	Monsters,
 	SkillsEnum,
-	type SkillsScore,
 	TOBRooms,
 	resolveItems,
 	toKMB
 } from 'oldschooljs';
+import type { SkillsScore } from 'oldschooljs/hiscores';
 
 import { SQL_sumOfAllCLItems } from '@/lib/util/smallUtils.js';
 import { ClueTiers } from '../../../lib/clues/clueTiers.js';
@@ -20,9 +20,8 @@ import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils.js';
 import { calcCLDetails, isCLItem } from '../../../lib/data/Collections.js';
 import { skillEmoji } from '../../../lib/data/emojis.js';
 import { getBankBgById } from '../../../lib/minions/data/bankBackgrounds.js';
-import killableMonsters from '../../../lib/minions/data/killableMonsters.js';
+import killableMonsters from '../../../lib/minions/data/killableMonsters/index.js';
 import { RandomEvents } from '../../../lib/randomEvents.js';
-
 import Agility from '../../../lib/skilling/skills/agility.js';
 import { Castables } from '../../../lib/skilling/skills/magic/castables.js';
 import { ForestryEvents } from '../../../lib/skilling/skills/woodcutting/forestry.js';

@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import {
-	CanvasRenderingContext2D as CanvasContext,
+	type CanvasRenderingContext2D as CanvasContext,
 	FontLibrary,
 	Image,
 	Canvas as RawCanvas,
@@ -23,7 +23,7 @@ export type Canvas = ReturnType<typeof createCanvas>;
 export const CanvasImage = Image;
 export type CanvasImage = Image;
 
-export { CanvasContext };
+export type { CanvasContext };
 
 export function fillTextXTimesInCtx(ctx: CanvasContext, text: string, x: number, y: number) {
 	const textPath = ctx.outlineText(text);

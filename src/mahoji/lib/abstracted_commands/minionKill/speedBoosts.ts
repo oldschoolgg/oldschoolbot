@@ -3,8 +3,8 @@ import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters, Skill
 import type { OffenceGearStat } from 'oldschooljs/gear';
 
 import type { PvMMethod } from '@/lib/constants.js';
-import { degradeableItems, degradeablePvmBoostItems } from '@/lib/degradeableItems';
-import type { PrimaryGearSetupType } from '@/lib/gear/types';
+import { degradeableItems, degradeablePvmBoostItems } from '@/lib/degradeableItems.js';
+import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
 import {
 	SlayerActivityConstants,
 	boostCannon,
@@ -15,15 +15,15 @@ import {
 	cannonSingleConsumables,
 	iceBarrageConsumables,
 	iceBurstConsumables
-} from '@/lib/minions/data/combatConstants';
-import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs';
-import type { AttackStyles } from '@/lib/minions/functions';
-import type { Consumable } from '@/lib/minions/types';
-import { calcPOHBoosts } from '@/lib/poh';
-import { ChargeBank } from '@/lib/structures/Bank';
-import { maxOffenceStats } from '@/lib/structures/Gear';
-import type { MonsterActivityTaskOptions } from '@/lib/types/minions';
-import getOSItem from '@/lib/util/getOSItem';
+} from '@/lib/minions/data/combatConstants.js';
+import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import type { Consumable } from '@/lib/minions/types.js';
+import { calcPOHBoosts } from '@/lib/poh/index.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
+import { maxOffenceStats } from '@/lib/structures/Gear.js';
+import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import getOSItem from '@/lib/util/getOSItem.js';
 import { resolveAvailableItemBoosts } from '../../../mahojiSettings.js';
 import { determineIfUsingCannon } from './determineIfUsingCannon.js';
 import { calculateVirtusBoost, dragonHunterWeapons } from './minionKillData.js';

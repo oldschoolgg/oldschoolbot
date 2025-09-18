@@ -1,5 +1,5 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, ECreature, itemID } from 'oldschooljs';
 
@@ -9,7 +9,6 @@ import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped.js';
 import { trackLoot } from '../../lib/lootTrack.js';
 import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements.js';
-import creatures from '../../lib/skilling/skills/hunter/creatures.js';
 import Hunter from '../../lib/skilling/skills/hunter/hunter.js';
 import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types.js';
 import type { HunterActivityTaskOptions } from '../../lib/types/minions.js';
@@ -33,7 +32,7 @@ export const huntCommand: OSBMahojiCommand = {
 			description: 'The creature you want to hunt.',
 			required: true,
 			autocomplete: async (value: string) => {
-				return creatures
+				return Hunter.Creatures
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
 						name: i.name,

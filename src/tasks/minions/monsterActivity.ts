@@ -3,12 +3,12 @@ import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import { Time, deepClone, percentChance, roll } from 'e';
 import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 
-import { logError } from '@/lib/util/logError';
+import { logError } from '@/lib/util/logError.js';
 import type { BitField } from '../../lib/constants.js';
 import { userhasDiaryTierSync } from '../../lib/diaries.js';
 import { trackLoot } from '../../lib/lootTrack.js';
-import killableMonsters from '../../lib/minions/data/killableMonsters.js';
-import { type AttackStyles, addMonsterXPRaw } from '../../lib/minions/functions.js';
+import killableMonsters from '../../lib/minions/data/killableMonsters/index.js';
+import { type AttackStyles, addMonsterXPRaw } from '../../lib/minions/functions/index.js';
 import announceLoot from '../../lib/minions/functions/announceLoot.js';
 import { DiaryID, type KillableMonster } from '../../lib/minions/types.js';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks.js';

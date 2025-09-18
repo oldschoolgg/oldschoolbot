@@ -1,4 +1,4 @@
-import type { CommandRunOptions, MahojiUserOption, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { notEmpty, randArrItem } from 'e';
@@ -11,16 +11,16 @@ import { BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } fro
 import { degradeableItems } from '../../lib/degradeableItems.js';
 import { diaries } from '../../lib/diaries.js';
 import { calculateMastery } from '../../lib/mastery.js';
-import { effectiveMonsters } from '../../lib/minions/data/killableMonsters.js';
-import type { AttackStyles } from '../../lib/minions/functions.js';
+import { effectiveMonsters } from '../../lib/minions/data/killableMonsters/index.js';
+import type { AttackStyles } from '../../lib/minions/functions/index.js';
 import { blowpipeCommand, blowpipeDarts } from '../../lib/minions/functions/blowpipeCommand.js';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand.js';
 import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand.js';
 import { roboChimpCache } from '../../lib/perkTier.js';
 import { roboChimpUserFetch } from '../../lib/roboChimp.js';
 import { Minigames } from '../../lib/settings/minigames.js';
-import Skills from '../../lib/skilling/skills.js';
-import creatures from '../../lib/skilling/skills/hunter/creatures.js';
+import Skills from '../../lib/skilling/skills/index.js';
+import creatures from '../../lib/skilling/skills/hunter/creatures/index.js';
 import { MUserStats } from '../../lib/structures/MUserStats.js';
 import { getKCByName } from '../../lib/util/getKCByName.js';
 import getOSItem, { getItem } from '../../lib/util/getOSItem.js';

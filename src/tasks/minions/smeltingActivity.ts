@@ -1,7 +1,7 @@
 import { percentChance } from 'e';
 import { Bank, itemID } from 'oldschooljs';
 
-import Smithing from '../../lib/skilling/skills/smithing.js';
+import Smithing from '../../lib/skilling/skills/smithing/index.js';
 import { SkillsEnum } from '../../lib/skilling/types.js';
 import type { SmeltingActivityTaskOptions } from '../../lib/types/minions.js';
 import { handleTripFinish } from '../../lib/util/handleTripFinish.js';

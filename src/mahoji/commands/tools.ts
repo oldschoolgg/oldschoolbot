@@ -1,4 +1,3 @@
-import type { CommandResponse, CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { asyncGzip } from '@oldschoolgg/toolkit/node';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { Activity, User } from '@prisma/client';
@@ -12,11 +11,11 @@ import { BitField, PerkTier } from '../../lib/constants.js';
 import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections.js';
 import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '../../lib/data/CollectionsExport.js';
 import pets from '../../lib/data/pets.js';
-import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters.js';
+import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters/index.js';
 import { type UnifiedOpenable, allOpenables } from '../../lib/openables.js';
 import type { MinigameName } from '../../lib/settings/minigames.js';
 import { Minigames } from '../../lib/settings/minigames.js';
-import Skills from '../../lib/skilling/skills.js';
+import Skills from '../../lib/skilling/skills/index.js';
 import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '../../lib/types/minions.js';
 import { getUsername, isGroupActivity } from '../../lib/util.js';
 import { getItem } from '../../lib/util/getOSItem.js';

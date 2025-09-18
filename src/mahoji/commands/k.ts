@@ -1,13 +1,13 @@
 import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandRunOptions, formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
 import { Time, reduceNumByPercent } from 'e';
 
 import { PVM_METHODS, type PvMMethod } from '@/lib/constants.js';
-import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood';
+import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
 
 import { Eatables } from '../../lib/data/eatables.js';
-import { autocompleteMonsters, wikiMonsters } from '../../lib/minions/data/killableMonsters.js';
+import { autocompleteMonsters, wikiMonsters } from '../../lib/minions/data/killableMonsters/index.js';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC.js';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength.js';
 import findMonster from '../../lib/util/findMonster.js';

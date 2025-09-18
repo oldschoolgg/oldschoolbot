@@ -1,8 +1,7 @@
-import { roll } from 'e';
-
 import type { MonsterKillOptions } from '@/structures/Monster.js';
 import {Bank} from '@/structures/Bank.js';
 import {Monster } from '@/structures/Monster.js';
+import { roll } from '@/util/smallUtils.js';
 
 export class TzTokJadClass extends Monster {
 	public kill(quantity = 1, options: MonsterKillOptions = {}): Bank {

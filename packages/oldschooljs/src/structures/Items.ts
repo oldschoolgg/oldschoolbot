@@ -1,6 +1,7 @@
 import deepMerge from 'deepmerge';
 
 import _items from '../data/items/item_data.json' with { type: 'json' };
+console.log('Items file is loading...');
 import { cleanString } from '../util/cleanString.js';
 import { Collection } from './Collection.js';
 import type { Item } from '@/meta/item.js';
@@ -17,6 +18,10 @@ export const CLUE_SCROLLS = [
 	// Clue scrolls
 	2677, 2801, 2722, 12_073, 19_835, 23_182
 ];
+
+type ResolvableItem = number | string;
+export type ArrayItemsResolvable = (ResolvableItem | ResolvableItem[])[];
+export type ArrayItemsResolved = (number | number[])[];
 
 export const CLUE_SCROLL_NAMES: string[] = [
 	'Clue scroll (beginner)',
@@ -93,10 +98,51 @@ class Items extends Collection<number, Item> {
 		}
 		return this.get(identifier) ?? null;
 	}
+
 	public getOrThrow(itemName: string | number | undefined): Item {
 		const item = this.getItem(itemName);
 		if (!item) throw new Error(`Item ${itemName} not found.`);
 		return item;
+	}
+
+	public resolveItems(_itemArray: string | number | (string | number)[]): number[] {
+		const itemArray = Array.isArray(_itemArray) ? _itemArray : [_itemArray];
+		const newArray: number[] = [];
+
+		for (const item of itemArray) {
+			if (typeof item === 'number') {
+				newArray.push(item);
+			} else {
+				const osItem = this.get(item);
+				if (!osItem) {
+					throw new Error(`No item found for: ${item}.`);
+				}
+				newArray.push(osItem.id);
+			}
+		}
+
+		return newArray;
+	}
+
+	public deepResolveItems(itemArray: ArrayItemsResolvable): ArrayItemsResolved {
+		const newArray: ArrayItemsResolved = [];
+
+		for (const item of itemArray) {
+			if (typeof item === 'number') {
+				newArray.push(item);
+			} else if (Array.isArray(item)) {
+				const test = this.resolveItems(item);
+				newArray.push(test);
+			} else {
+				const osItem = this.get(item);
+				if (!osItem) {
+					throw new Error(`No item found for: ${item}.`);
+				}
+				newArray.push(osItem.id);
+			}
+		}
+
+		return newArray;
 	}
 }
 
@@ -114,3 +160,43 @@ for (const [id, item] of Object.entries(items)) {
 }
 
 export default itemsExport;
+
+export function resolveItems(_itemArray: string | number | (string | number)[]): number[] {
+	const itemArray = Array.isArray(_itemArray) ? _itemArray : [_itemArray];
+		const newArray: number[] = [];
+
+		for (const item of itemArray) {
+			if (typeof item === 'number') {
+				newArray.push(item);
+			} else {
+				const osItem = itemsExport.get(item);
+				if (!osItem) {
+					throw new Error(`No item found for: ${item}.`);
+				}
+				newArray.push(osItem.id);
+			}
+		}
+
+		return newArray;
+}
+
+	export function deepResolveItems(itemArray: ArrayItemsResolvable): ArrayItemsResolved {
+		const newArray: ArrayItemsResolved = [];
+
+		for (const item of itemArray) {
+			if (typeof item === 'number') {
+				newArray.push(item);
+			} else if (Array.isArray(item)) {
+				const test = itemsExport.resolveItems(item);
+				newArray.push(test);
+			} else {
+				const osItem = itemsExport.get(item);
+				if (!osItem) {
+					throw new Error(`No item found for: ${item}.`);
+				}
+				newArray.push(osItem.id);
+			}
+		}
+
+		return newArray;
+	}

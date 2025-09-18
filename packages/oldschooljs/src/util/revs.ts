@@ -1,7 +1,8 @@
-import type { Bank } from "@/structures/Bank.js";
 import { roll, randInt } from "e";
-import { type RevTable, revsUniqueTable } from "./util.js";
+
 import type { MonsterKillOptions } from "@/structures/Monster.js";
+import type { Bank } from "@/structures/Bank.js";
+import LootTable from "@/structures/LootTable.js";
 
 type CustomKillLogic = (options: MonsterKillOptions, currentLoot: Bank) => void;
 
@@ -39,3 +40,21 @@ export function makeRevTable(table: RevTable): CustomKillLogic {
 		}
 	};
 }
+
+export interface RevTable {
+	uniqueTable: RevTableItem;
+	ancientEmblem: RevTableItem;
+	ancientTotem: RevTableItem;
+	ancientCrystal: RevTableItem;
+	ancientStatuette: RevTableItem;
+	topThree: RevTableItem;
+	seeds: RevTableItem;
+}
+
+type RevTableItem = [number, number];
+
+export const revsUniqueTable = new LootTable()
+	.add('Amulet of avarice', 1, 2)
+	.add("Craw's bow (u)", 1, 1)
+	.add("Thammaron's sceptre (u)", 1, 1)
+	.add("Viggora's chainmace (u)", 1, 1);

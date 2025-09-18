@@ -1,9 +1,9 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries.js';
-import { Craftables } from '../../lib/skilling/skills/crafting/craftables.js';
+import { Craftables } from '../../lib/skilling/skills/crafting/craftables/index.js';
 import { SkillsEnum } from '../../lib/skilling/types.js';
 import type { CraftingActivityTaskOptions } from '../../lib/types/minions.js';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask.js';

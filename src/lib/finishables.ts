@@ -38,7 +38,7 @@ import {
 	wintertodtCL
 } from './data/CollectionsExport.js';
 import pets from './data/pets.js';
-import killableMonsters from './minions/data/killableMonsters.js';
+import killableMonsters from './minions/data/killableMonsters/index.js';
 import { openShadeChest } from './shadesKeys.js';
 import { birdsNestID, treeSeedsNest } from './simulation/birdsNest.js';
 import { gauntlet } from './simulation/gauntlet.js';

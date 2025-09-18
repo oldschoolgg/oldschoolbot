@@ -1,10 +1,10 @@
 import { clamp, objectValues } from 'e';
 import { Bank, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 
-import { isValidSkill } from '@/lib/util/smallUtils';
+import { isValidSkill } from '@/lib/util/smallUtils.js';
 import { SkillsEnum } from '../../../lib/skilling/types.js';
-import type { Skills } from '../../../lib/types.js';
 import { assert } from '../../../lib/util/logError.js';
+import type { Skills } from '@/lib/types/index.js';
 
 interface IXPLamp {
 	itemID: number;

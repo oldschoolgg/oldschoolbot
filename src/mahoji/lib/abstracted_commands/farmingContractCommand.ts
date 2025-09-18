@@ -3,7 +3,7 @@ import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 
 import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage.js';
-import { defaultFarmingContract } from '../../../lib/minions/farming.js';
+import { defaultFarmingContract } from '../../../lib/minions/farming/index.js';
 import type {
 	ContractOption,
 	FarmingContract,
@@ -11,7 +11,7 @@ import type {
 } from '../../../lib/minions/farming/types.js';
 import { getPlantToGrow } from '../../../lib/skilling/functions/calcFarmingContracts.js';
 import { getFarmingInfoFromUser } from '../../../lib/skilling/functions/getFarmingInfo.js';
-import { plants } from '../../../lib/skilling/skills/farming.js';
+import { plants } from '../../../lib/skilling/skills/farming/index.js';
 import { findPlant } from '../../../lib/util/farmingHelpers.js';
 import { makeEasierFarmingContractButton } from '../../../lib/util/smallUtils.js';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings.js';

@@ -1,4 +1,4 @@
-import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
 import { notEmpty } from 'e';
 import { Bank } from 'oldschooljs';
@@ -7,7 +7,7 @@ import { finishables } from '../../lib/finishables.js';
 import { sorts } from '../../lib/sorts.js';
 import { deferInteraction } from '../../lib/util/interactionReply.js';
 import { makeBankImage } from '../../lib/util/makeBankImage.js';
-import { Workers } from '../../lib/workers.js';
+import { Workers } from '@/lib/workers/index.js';
 
 export const finishCommand: OSBMahojiCommand = {
 	name: 'finish',

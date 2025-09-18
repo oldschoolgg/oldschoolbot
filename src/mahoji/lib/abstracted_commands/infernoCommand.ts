@@ -11,11 +11,11 @@ import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand.js
 import type { BlowpipeData } from '../../../lib/minions/types.js';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil.js';
 import { PercentCounter } from '../../../lib/structures/PercentCounter.js';
-import type { Skills } from '../../../lib/types.js';
 import type { InfernoOptions } from '../../../lib/types/minions.js';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
 import getOSItem from '../../../lib/util/getOSItem.js';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import type { Skills } from '@/lib/types/index.js';
 
 const minimumRangeItems = [
 	'Amulet of fury',

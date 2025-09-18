@@ -2,7 +2,7 @@ import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
 import { Time, calcWhatPercent, randInt, reduceNumByPercent } from 'e';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
-import { getPOHObject } from '../../../lib/poh.js';
+import { getPOHObject } from '../../../lib/poh/index.js';
 
 import type { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions.js';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';

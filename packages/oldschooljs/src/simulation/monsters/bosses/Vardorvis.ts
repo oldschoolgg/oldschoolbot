@@ -1,4 +1,4 @@
-import { randInt, roll, uniqueArr } from 'e';
+import { randInt, roll, uniqueArr } from '@/util/smallUtils.js';
 
 import type { MonsterKillOptions } from '@/structures/Monster.js';
 import {Bank} from '@/structures/Bank.js';

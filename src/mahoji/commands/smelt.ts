@@ -1,11 +1,11 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, itemID, resolveItems } from 'oldschooljs';
 
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
-import Smithing from '../../lib/skilling/skills/smithing.js';
+import Smithing from '../../lib/skilling/skills/smithing/index.js';
 import { SkillsEnum } from '../../lib/skilling/types.js';
 import type { SmeltingActivityTaskOptions } from '../../lib/types/minions.js';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask.js';

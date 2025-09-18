@@ -1,9 +1,9 @@
-import { type CommandRunOptions, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type TextChannel } from 'discord.js';
 import { Time, objectKeys } from 'e';
 
-import killableMonsters from '../../lib/minions/data/killableMonsters.js';
+import killableMonsters from '../../lib/minions/data/killableMonsters/index.js';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood.js';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster.js';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser.js';

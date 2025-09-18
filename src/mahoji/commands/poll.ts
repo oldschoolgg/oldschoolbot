@@ -1,4 +1,4 @@
-import { type CommandRunOptions, type OSBMahojiCommand, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { deferInteraction } from '../../lib/util/interactionReply.js';

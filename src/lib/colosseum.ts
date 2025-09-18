@@ -17,17 +17,17 @@ import {
 } from 'e';
 import { Bank, type EquipmentSlot, type ItemBank, LootTable, resolveItems } from 'oldschooljs';
 
-import { formatList, formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils';
+import { formatList, formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
 import { userStatsBankUpdate } from '../mahoji/mahojiSettings.js';
 import { degradeChargeBank } from './degradeableItems.js';
 import type { GearSetupType } from './gear/types.js';
 import { trackLoot } from './lootTrack.js';
 import { QuestID } from './minions/data/quests.js';
 import { ChargeBank } from './structures/Bank.js';
-import type { Skills } from './types.js';
 import type { ColoTaskOptions } from './types/minions.js';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask.js';
 import { updateBankSetting } from './util/updateBankSetting.js';
+import type { Skills } from './types/index.js';
 
 function combinedChance(percentages: number[]): number {
 	const failureProbabilities = percentages.map(p => (100 - p) / 100);

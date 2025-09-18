@@ -9,7 +9,7 @@ export class ChargeBank extends GeneralBank<DegradeableItem['settingsKey']> {
 		super({ initialBank, allowedKeys: degradeableItems.map(i => i.settingsKey) });
 	}
 
-	toString() {
+	override toString() {
 		return this.entries()
 			.map(
 				([key, qty]) =>

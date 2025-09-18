@@ -1,10 +1,9 @@
-import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { bold } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import { tripBuyables } from '@/lib/data/buyables/tripBuyables';
-
+import { tripBuyables } from '@/lib/data/buyables/tripBuyables.js';
 import Buyables from '../../lib/data/buyables/buyables.js';
 import { quests } from '../../lib/minions/data/quests.js';
 import { Minigames } from '../../lib/settings/minigames.js';

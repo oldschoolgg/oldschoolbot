@@ -1,8 +1,4 @@
-import { randFloat } from 'e';
-
-import Items from '@/structures/Items.js';
-import LootTable from '@/structures/LootTable.js';
-import type { Item } from '@/meta/item.js';
+import { randFloat } from '@/util/smallUtils.js';
 
 /**
  * Determines whether a string is a valid RuneScape username.
@@ -78,24 +74,6 @@ export function getSlayersEnchantmentChanceFromHP(hitpoints: number): number {
 	return Math.round(320 - (chanceHitpoints * 8) / 10);
 }
 
-export interface RevTable {
-	uniqueTable: RevTableItem;
-	ancientEmblem: RevTableItem;
-	ancientTotem: RevTableItem;
-	ancientCrystal: RevTableItem;
-	ancientStatuette: RevTableItem;
-	topThree: RevTableItem;
-	seeds: RevTableItem;
-}
-
-type RevTableItem = [number, number];
-
-export const revsUniqueTable = new LootTable()
-	.add('Amulet of avarice', 1, 2)
-	.add("Craw's bow (u)", 1, 1)
-	.add("Thammaron's sceptre (u)", 1, 1)
-	.add("Viggora's chainmace (u)", 1, 1);
-
 /**
  * Adds random variation to a number. For example, if you pass 10%, it can at most lower the value by 10%,
  * or increase it by 10%, and everything in between.
@@ -107,80 +85,6 @@ export function randomVariation(value: number, percentage: number) {
 	const upperLimit = value * (1 + percentage / 100);
 	return randFloat(lowerLimit, upperLimit);
 }
-
-export function getItem(itemName: string | number | undefined): Item | null {
-	if (!itemName) return null;
-	let identifier: string | number | undefined = '';
-	if (typeof itemName === 'number') {
-		identifier = itemName;
-	} else {
-		const parsed = Number(itemName);
-		identifier = Number.isNaN(parsed) ? itemName : parsed;
-	}
-	if (typeof identifier === 'string') {
-		identifier = identifier.replace(/’/g, "'");
-	}
-	return Items.get(identifier) ?? null;
-}
-
-export function getItemOrThrow(itemName: string | number | undefined): Item {
-	const item = getItem(itemName);
-	if (!item) throw new Error(`Item ${itemName} not found.`);
-	return item;
-}
-
-export function resolveItems(_itemArray: string | number | (string | number)[]): number[] {
-	const itemArray = Array.isArray(_itemArray) ? _itemArray : [_itemArray];
-	const newArray: number[] = [];
-
-	for (const item of itemArray) {
-		if (typeof item === 'number') {
-			newArray.push(item);
-		} else {
-			const osItem = Items.get(item);
-			if (!osItem) {
-				throw new Error(`No item found for: ${item}.`);
-			}
-			newArray.push(osItem.id);
-		}
-	}
-
-	return newArray;
-}
-
-type ResolvableItem = number | string;
-export type ArrayItemsResolvable = (ResolvableItem | ResolvableItem[])[];
-export type ArrayItemsResolved = (number | number[])[];
-export function deepResolveItems(itemArray: ArrayItemsResolvable): ArrayItemsResolved {
-	const newArray: ArrayItemsResolved = [];
-
-	for (const item of itemArray) {
-		if (typeof item === 'number') {
-			newArray.push(item);
-		} else if (Array.isArray(item)) {
-			const test = resolveItems(item);
-			newArray.push(test);
-		} else {
-			const osItem = Items.get(item);
-			if (!osItem) {
-				throw new Error(`No item found for: ${item}.`);
-			}
-			newArray.push(osItem.id);
-		}
-	}
-
-	return newArray;
-}
-
-export function itemTupleToTable(items: [string, number | [number, number]][]): LootTable {
-	const table = new LootTable();
-	for (const [item, quantity] of items) {
-		table.every(item, quantity ?? 1);
-	}
-	return table;
-}
-
-export * from './smallUtils.js';
 
 export function calcCombatLevel(
 	skills: Record<'strength' | 'defence' | 'hitpoints' | 'ranged' | 'attack' | 'prayer' | 'magic', number>,
@@ -200,3 +104,5 @@ export function calcCombatLevel(
 	const mage = 0.325 * (Math.floor(magic / 2) + magic);
 	return Math.floor(base + Math.max(melee, range, mage));
 }
+
+export * from './smallUtils.js';

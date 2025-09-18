@@ -5,7 +5,7 @@ import { Monsters } from 'oldschooljs';
 
 import type { PvMMethod } from '@/lib/constants.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import killableMonsters from '../../../lib/minions/data/killableMonsters.js';
+import killableMonsters from '../../../lib/minions/data/killableMonsters/index.js';
 import { runCommand } from '../../../lib/settings/settings.js';
 import { AutoslayOptionsEnum, autoslayModes } from '../../../lib/slayer/constants.js';
 import { SlayerMasterEnum, getCommonTaskName, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil.js';

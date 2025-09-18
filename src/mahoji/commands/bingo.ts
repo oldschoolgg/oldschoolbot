@@ -1,7 +1,5 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import {
-	type CommandResponse,
-	type CommandRunOptions,
 	type MahojiUserOption,
 	channelIsSendable,
 	isValidDiscordSnowflake,

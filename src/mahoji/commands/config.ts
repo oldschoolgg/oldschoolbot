@@ -16,7 +16,7 @@ import {
 import { Time, clamp, removeFromArr, uniqueArr } from 'e';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import { ItemIconPacks } from '@/lib/canvas/iconPacks';
+import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { DynamicButtons } from '../../lib/DynamicButtons.js';
 import { BitField, ParsedCustomEmojiWithGroups, PerkTier, globalConfig } from '../../lib/constants.js';
 import { Eatables } from '../../lib/data/eatables.js';

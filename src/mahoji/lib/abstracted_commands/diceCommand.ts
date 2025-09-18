@@ -1,5 +1,5 @@
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { Bank, Util } from 'oldschooljs';
+import { Bank, toKMB } from 'oldschooljs';
 
 import { deferInteraction } from '../../../lib/util/interactionReply.js';
 import { cryptoRand } from '../../../lib/util/rng.js';
@@ -62,5 +62,5 @@ export async function diceCommand(user: MUser, interaction: ChatInputCommandInte
 
 	return `${user.badgedUsername} rolled **${roll}** on the percentile dice, and you ${
 		won ? 'won' : 'lost'
-	} ${Util.toKMB(amountToAdd)} GP.`;
+	} ${toKMB(amountToAdd)} GP.`;
 }

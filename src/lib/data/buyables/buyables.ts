@@ -5,7 +5,7 @@ import { CombatCannonItemBank } from '../../minions/data/combatConstants.js';
 import { QuestID } from '../../minions/data/quests.js';
 import { soteSkillRequirements } from '../../skilling/functions/questRequirements.js';
 import type { MUserStats } from '../../structures/MUserStats.js';
-import type { Skills } from '../../types.js';
+import type { Skills } from '@/lib/types/index.js';
 import { chompyHats } from '../CollectionsExport.js';
 import { aerialFishBuyables } from './aerialFishBuyables.js';
 import { canifisClothes } from './canifisClothes.js';

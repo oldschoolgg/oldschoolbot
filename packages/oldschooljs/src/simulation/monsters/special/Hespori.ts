@@ -1,9 +1,8 @@
-import { roll } from 'e';
-
 import {Bank} from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import {SimpleMonster} from '@/structures/Monster.js';
 import type { MonsterKillOptions } from '@/structures/Monster.js';
+import { roll } from '@/util/smallUtils.js';
 
 const HesporiTable = new LootTable()
 	.add('Attas seed', [1, 2], 1)

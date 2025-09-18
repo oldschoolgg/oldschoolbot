@@ -7,7 +7,7 @@ import { ClueTiers } from '../clues/clueTiers.js';
 import type { PvMMethod } from '../constants.js';
 import { findTripBuyable } from '../data/buyables/tripBuyables.js';
 import { SlayerActivityConstants } from '../minions/data/combatConstants.js';
-import { autocompleteMonsters } from '../minions/data/killableMonsters.js';
+import { autocompleteMonsters } from '../minions/data/killableMonsters/index.js';
 import { runCommand } from '../settings/settings.js';
 import { courses } from '../skilling/skills/agility.js';
 import { Fishing } from '../skilling/skills/fishing/fishing.js';

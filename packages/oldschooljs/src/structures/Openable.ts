@@ -1,6 +1,20 @@
-import type { OpenableOpenOptions, OpenableOptions } from '../meta/types.js';
 import type {Bank} from './Bank.js';
 
+type ChestSize = 'big' | 'small';
+type SeedTier = '1' | '2' | '3' | '4' | '5';
+
+export interface OpenableOpenOptions {
+	fishLvl?: number;
+	seedTier?: SeedTier;
+	chestSize?: ChestSize;
+}
+
+export interface OpenableOptions {
+	id: number;
+	name: string;
+	aliases: string[];
+	allItems?: number[];
+}
 /**
  * An entity from OSRS which can be opened (e.g. implings)
  */

@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 
 import { TOTAL_GIANT_WEAPONS } from '../../../lib/giantsFoundry.js';
 import { trackLoot } from '../../../lib/lootTrack.js';
-import Smithing from '../../../lib/skilling/skills/smithing.js';
+import Smithing from '../../../lib/skilling/skills/smithing/index.js';
 import { SkillsEnum } from '../../../lib/skilling/types.js';
 import type { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions.js';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';

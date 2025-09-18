@@ -1,7 +1,6 @@
-import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { ACCOUNT_TYPES, type AccountType } from 'oldschooljs/constants';
-import { Hiscores } from 'oldschooljs/hiscores';
+import { ACCOUNT_TYPES, Hiscores, type AccountType } from 'oldschooljs/hiscores';
 
 import { statsEmbed } from '../../lib/util/statsEmbed.js';
 

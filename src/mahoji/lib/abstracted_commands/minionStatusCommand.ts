@@ -4,13 +4,13 @@ import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { type BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import { roll, stripNonAlphanumeric } from 'e';
 
-import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses';
+import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
 	makeBirdHouseTripButton,
 	makeClaimDailyButton
-} from '@/lib/util/interactions';
+} from '@/lib/util/interactions.js';
 import { ClueTiers } from '../../../lib/clues/clueTiers.js';
 import { BitField } from '../../../lib/constants.js';
 import { roboChimpUserFetch } from '../../../lib/roboChimp.js';

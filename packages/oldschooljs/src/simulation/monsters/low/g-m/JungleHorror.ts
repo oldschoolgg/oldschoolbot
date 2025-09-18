@@ -1,6 +1,6 @@
 import LootTable from '@/structures/LootTable.js';
 import {SimpleMonster} from '@/structures/Monster.js';
-import { itemTupleToTable } from '@/util/index.js';
+import { itemTupleToTable } from '@/structures/LootTable.js';
 import HerbDropTable from '@/simulation/subtables/HerbDropTable.js';
 import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import VariableAllotmentSeedTable from '@/simulation/subtables/VariableAllotmentSeedTable.js';

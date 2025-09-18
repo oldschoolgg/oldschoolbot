@@ -1,7 +1,6 @@
-import type { OpenableOptions } from '../meta/types.js';
 import { Bank } from './Bank.js';
 import type LootTable from './LootTable.js';
-import Openable from './Openable.js';
+import Openable, { type OpenableOptions } from './Openable.js';
 
 interface SimpleOpenableOptions extends OpenableOptions {
 	table: LootTable;

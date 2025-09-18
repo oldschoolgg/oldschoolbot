@@ -6,7 +6,7 @@ import type { User } from '@prisma/client';
 import type { BaseMessageOptions, ButtonBuilder } from 'discord.js';
 
 import type { IPatchData, IPatchDataDetailed } from '../minions/farming/types.js';
-import Farming from '../skilling/skills/farming.js';
+import Farming from '../skilling/skills/farming/index.js';
 import { formatList, makeAutoFarmButton } from './smallUtils.js';
 
 export const farmingPatchNames = [

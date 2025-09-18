@@ -1,4 +1,4 @@
-import { percentChance, roll, sumArr } from 'e';
+import { percentChance, roll, sumArr } from '@/util/smallUtils.js';
 
 import {Bank, type LootBank} from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';

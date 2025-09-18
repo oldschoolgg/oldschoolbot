@@ -1,4 +1,4 @@
-import { type CommandRunOptions, type OSBMahojiCommand, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { calcWhatPercent, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';

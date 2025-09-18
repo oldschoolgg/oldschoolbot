@@ -6,19 +6,19 @@ import { mergeDeep } from 'remeda';
 import z from 'zod';
 
 import type { BitField, PvMMethod } from '@/lib/constants.js';
-import { getSimilarItems } from '@/lib/data/similarItems';
-import { checkRangeGearWeapon } from '@/lib/gear/functions/checkRangeGearWeapon';
-import type { CombatOptionsEnum } from '@/lib/minions/data/combatConstants';
-import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { checkRangeGearWeapon } from '@/lib/gear/functions/checkRangeGearWeapon.js';
+import type { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
+import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
 import {
 	type AttackStyles,
 	attackStylesArr,
 	getAttackStylesContext,
 	resolveAttackStyles
-} from '@/lib/minions/functions';
-import type { KillableMonster } from '@/lib/minions/types';
-import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks';
-import { type CurrentSlayerInfo, determineCombatBoosts, wildySlayerOnlyMonsters } from '@/lib/slayer/slayerUtil';
+} from '@/lib/minions/functions/index.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { type CurrentSlayerInfo, determineCombatBoosts, wildySlayerOnlyMonsters } from '@/lib/slayer/slayerUtil.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { Peak } from '@/lib/util/peaks.js';

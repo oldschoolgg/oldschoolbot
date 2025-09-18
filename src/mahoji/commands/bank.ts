@@ -1,11 +1,11 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { PaginatedMessage, makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandRunOptions, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, EmbedBuilder, codeBlock } from 'discord.js';
 import { chunk } from 'e';
 import type { Bank } from 'oldschooljs';
 
-import { logError, logErrorForInteraction } from '@/lib/util/logError';
+import { logError, logErrorForInteraction } from '@/lib/util/logError.js';
 
 import type { BankFlag } from '../../lib/canvas/bankImage.js';
 import { bankFlags } from '../../lib/canvas/bankImage.js';

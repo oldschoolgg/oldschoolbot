@@ -1,7 +1,5 @@
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import {
-	type CommandRunOptions,
-	type OSBMahojiCommand,
 	channelIsSendable,
 	makePaginatedMessage
 } from '@oldschoolgg/toolkit/discord-util';
@@ -16,16 +14,16 @@ import { calcWhatPercent, chunk, isFunction, uniqueArr } from 'e';
 import { convertXPtoLVL } from 'oldschooljs';
 
 import { getUsername, getUsernameSync } from '@/lib/util.js';
-import { logError, logErrorForInteraction } from '@/lib/util/logError';
+import { logError, logErrorForInteraction } from '@/lib/util/logError.js';
 import type { ClueTier } from '../../lib/clues/clueTiers.js';
 import { ClueTiers } from '../../lib/clues/clueTiers.js';
 import { MAX_LEVEL, masteryKey } from '../../lib/constants.js';
 import { allClNames, getCollectionItems } from '../../lib/data/Collections.js';
-import { effectiveMonsters } from '../../lib/minions/data/killableMonsters.js';
+import { effectiveMonsters } from '../../lib/minions/data/killableMonsters/index.js';
 import { allOpenables } from '../../lib/openables.js';
 import { SQL } from '../../lib/rawSql.js';
 import { Minigames } from '../../lib/settings/minigames.js';
-import Skills from '../../lib/skilling/skills.js';
+import Skills from '../../lib/skilling/skills/index.js';
 import Agility from '../../lib/skilling/skills/agility.js';
 import Hunter from '../../lib/skilling/skills/hunter/hunter.js';
 import { SkillsEnum } from '../../lib/skilling/types.js';

@@ -5,10 +5,10 @@ import { type APIApplicationCommandOptionChoice, ApplicationCommandOptionType } 
 import { uniqueArr } from 'e';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
-import { Gear, type GlobalPreset, globalPresets } from '@/lib/structures/Gear';
+import { Gear, type GlobalPreset, globalPresets } from '@/lib/structures/Gear.js';
 import { baseFilters, filterableTypes } from '../../lib/data/filterables.js';
 import { GearSetupTypes } from '../../lib/gear/types.js';
-import killableMonsters from '../../lib/minions/data/killableMonsters.js';
+import killableMonsters from '../../lib/minions/data/killableMonsters/index.js';
 import { SkillsEnum } from '../../lib/skilling/types.js';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings.js';
 

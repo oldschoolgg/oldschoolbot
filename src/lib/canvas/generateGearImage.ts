@@ -1,7 +1,7 @@
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { EquipmentSlot } from 'oldschooljs';
 
-import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import type { GearSetup, GearSetupType } from '../gear/types.js';
 import { GearSetupTypes } from '../gear/types.js';
 import { type Gear, maxDefenceStats, maxOffenceStats } from '../structures/Gear.js';

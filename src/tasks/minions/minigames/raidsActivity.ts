@@ -3,11 +3,11 @@ import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { roll, shuffleArr } from 'e';
 import { Bank, ChambersOfXeric, SkillsEnum, randomVariation, resolveItems } from 'oldschooljs';
 
-import { drawChestLootImage } from '@/lib/canvas/chestImage';
+import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport.js';
 import { coxCMUniques, coxUniques, createTeam } from '../../../lib/data/cox.js';
 import { trackLoot } from '../../../lib/lootTrack.js';
-import { resolveAttackStyles } from '../../../lib/minions/functions.js';
+import { resolveAttackStyles } from '../../../lib/minions/functions/index.js';
 import type { RaidsOptions } from '../../../lib/types/minions.js';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';

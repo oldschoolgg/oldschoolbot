@@ -2,8 +2,8 @@ import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { uniqueArr } from 'e';
 import { SkillsEnum } from 'oldschooljs';
 
-import type { AttackStyles } from '..js';
 import { formatList } from '../../util/smallUtils.js';
+import type { AttackStyles } from './index.js';
 
 const validStyles: AttackStyles[] = [
 	SkillsEnum.Attack,

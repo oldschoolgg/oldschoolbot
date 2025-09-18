@@ -1,6 +1,6 @@
 import LootTable from '@/structures/LootTable.js';
 import {SimpleMonster} from '@/structures/Monster.js';
-import { itemTupleToTable } from '@/util/index.js';
+import { itemTupleToTable } from '@/structures/LootTable.js';
 import GWRareDropTable, { GWGemTable, ShardTable } from '@/simulation/subtables/GWRareDropTable.js';
 
 const MinionUniqueTable = new LootTable().add('Coins', [1300, 1400], 124).add('Zamorakian spear', 1, 3);

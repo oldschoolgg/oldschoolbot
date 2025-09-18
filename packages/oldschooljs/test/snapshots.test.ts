@@ -1,6 +1,6 @@
 import { writeFileSync } from 'node:fs';
 import { test } from 'vitest';
-import { type Bank, Clues, Monsters } from '../';
+import { type Bank, Clues, Monsters } from "../src/index.js";
 
 export function calcDropRatesFromBankWithoutUniques(bank: Bank, iterations: number) {
 	const results: string[] = [];

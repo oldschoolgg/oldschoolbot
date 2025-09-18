@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { Craftables } from '../../lib/skilling/skills/crafting/craftables.js';
+import { Craftables } from '../../lib/skilling/skills/crafting/craftables/index.js';
 import { SkillsEnum } from '../../lib/skilling/types.js';
 import type { CraftingActivityTaskOptions } from '../../lib/types/minions.js';
 import { handleTripFinish } from '../../lib/util/handleTripFinish.js';

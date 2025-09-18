@@ -1,10 +1,10 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import Fletching from '../../lib/skilling/skills/fletching.js';
-import { Fletchables } from '../../lib/skilling/skills/fletching/fletchables.js';
+import Fletching from '../../lib/skilling/skills/fletching/index.js';
+import { Fletchables } from '../../lib/skilling/skills/fletching/fletchables/index.js';
 import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks.js';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil.js';
 import type { FletchingActivityTaskOptions } from '../../lib/types/minions.js';

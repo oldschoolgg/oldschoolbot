@@ -1,4 +1,4 @@
-import { type CommandRunOptions, ProductID, products } from '@oldschoolgg/toolkit/util';
+import { ProductID, products } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { notEmpty } from 'e';
 

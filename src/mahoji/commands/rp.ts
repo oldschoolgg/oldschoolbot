@@ -1,7 +1,5 @@
 import {
-	type CommandRunOptions,
 	type MahojiUserOption,
-	type OSBMahojiCommand,
 	isValidDiscordSnowflake
 } from '@oldschoolgg/toolkit/discord-util';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
@@ -12,7 +10,7 @@ import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Duration } from '@sapphire/time-utilities';
 import { ApplicationCommandOptionType, SnowflakeUtil, codeBlock } from 'discord.js';
 import { Time, randArrItem, sumArr } from 'e';
-import { Bank, type Item } from 'oldschooljs';
+import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { BitField, Channel, globalConfig } from '../../lib/constants.js';
 import { allCollectionLogsFlat } from '../../lib/data/Collections.js';
@@ -25,7 +23,6 @@ import { sql } from '../../lib/postgres.js';
 import { premiumPatronTime } from '../../lib/premiumPatronTime.js';
 import { runRolesTask } from '../../lib/rolesTask.js';
 import { TeamLoot } from '../../lib/simulation/TeamLoot.js';
-import type { ItemBank } from '../../lib/types.js';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation.js';
 import { deferInteraction } from '../../lib/util/interactionReply.js';
 import itemIsTradeable from '../../lib/util/itemIsTradeable.js';
@@ -40,6 +37,7 @@ import { gearSetupOption } from '../lib/mahojiCommandOptions.js';
 import { gifs } from './admin.js';
 import { getUserInfo } from './minion.js';
 import { sellPriceOfItem } from './sell.js';
+
 const itemFilters = [
 	{
 		name: 'Tradeable',

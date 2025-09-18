@@ -1,5 +1,5 @@
 import { isFunction, notEmpty } from 'e';
-import { Bank, Implings, Monsters, getItem, resolveItems } from 'oldschooljs';
+import { Bank, Implings, Items, Monsters, resolveItems } from 'oldschooljs';
 
 import { flowerTable } from '../mahoji/lib/abstracted_commands/hotColdCommand.js';
 import { tipTable } from '../tasks/minions/minigames/gnomeRestaurantActivity.js';
@@ -11,7 +11,7 @@ import { armorAndItemPacks } from './data/creatables/armorPacks.js';
 import Createables from './data/createables.js';
 import { ChewedBonesLootTable } from './data/offerData.js';
 import { growablePets } from './growablePets.js';
-import killableMonsters from './minions/data/killableMonsters.js';
+import killableMonsters from './minions/data/killableMonsters/index.js';
 import { Planks } from './minions/data/planks.js';
 import { plunderRooms } from './minions/data/plunder.js';
 import Potions from './minions/data/potions.js';
@@ -24,17 +24,17 @@ import { RawJunkTable, trawlerFish } from './simulation/fishingTrawler.js';
 import { rewardsGuardianTable } from './simulation/rewardsGuardian.js';
 import { nonUniqueTable } from './simulation/toa.js';
 import { Cookables } from './skilling/skills/cooking/cooking.js';
-import { Craftables } from './skilling/skills/crafting/craftables.js';
-import { allFarmingItems } from './skilling/skills/farming.js';
+import { Craftables } from './skilling/skills/crafting/craftables/index.js';
+import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
 import { Fishing } from './skilling/skills/fishing/fishing.js';
-import { Fletchables } from './skilling/skills/fletching/fletchables.js';
+import { Fletchables } from './skilling/skills/fletching/fletchables/index.js';
 import Herblore from './skilling/skills/herblore/herblore.js';
 import Hunter from './skilling/skills/hunter/hunter.js';
 import { Castables } from './skilling/skills/magic/castables.js';
 import { Enchantables } from './skilling/skills/magic/enchantables.js';
 import Mining from './skilling/skills/mining.js';
 import Runecraft from './skilling/skills/runecraft.js';
-import Smithing from './skilling/skills/smithing.js';
+import Smithing from './skilling/skills/smithing/index.js';
 import { stealables } from './skilling/skills/thieving/stealables.js';
 import Woodcutting from './skilling/skills/woodcutting/woodcutting.js';
 
@@ -48,7 +48,7 @@ for (const item of Smithing.SmithableItems) ALL_OBTAINABLE_ITEMS.add(item.id);
 for (const item of Smithing.BlastableBars) ALL_OBTAINABLE_ITEMS.add(item.id);
 for (const item of Buyables) {
 	totalBankToAdd.add(isFunction(item.outputItems) ? undefined : item.outputItems);
-	const buyable = getItem(item.name);
+	const buyable = Items.getOrThrow(item.name);
 	if (buyable) totalBankToAdd.add(buyable);
 }
 for (const item of allFarmingItems) ALL_OBTAINABLE_ITEMS.add(item);

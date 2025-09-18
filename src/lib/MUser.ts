@@ -36,9 +36,7 @@ import { handleNewCLItems } from './handleNewCLItems.js';
 import { marketPriceOfBank } from './marketPrices.js';
 import backgroundImages from './minions/data/bankBackgrounds.js';
 import type { CombatOptionsEnum } from './minions/data/combatConstants.js';
-import { defaultFarmingContract } from './minions/farming.js';
 import type { DetailedFarmingContract, FarmingContract } from './minions/farming/types.js';
-import type { AttackStyles } from './minions/functions.js';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand.js';
 import type { AddXpParams, BlowpipeData, ClueBank } from './minions/types.js';
 import { getUsersPerkTier } from './perkTiers.js';
@@ -46,14 +44,13 @@ import { roboChimpUserFetch } from './roboChimp.js';
 import type { MinigameName, MinigameScore } from './settings/minigames.js';
 import { Minigames } from './settings/minigames.js';
 import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo.js';
-import Farming from './skilling/skills/farming.js';
+import Farming from '@/lib/skilling/skills/farming/index.js';
 import { SkillsEnum } from './skilling/types.js';
 import type { BankSortMethod } from './sorts.js';
 import { ChargeBank } from './structures/Bank.js';
 import { Gear, defaultGear } from './structures/Gear.js';
 import { GearBank } from './structures/GearBank.js';
 import type { XPBank } from './structures/XPBank.js';
-import type { SkillRequirements, Skills } from './types.js';
 import { determineRunes } from './util/determineRunes.js';
 import { getKCByName } from './util/getKCByName.js';
 import getOSItem, { getItem } from './util/getOSItem.js';
@@ -61,6 +58,9 @@ import { logError } from './util/logError.js';
 import { makeBadgeString } from './util/makeBadgeString.js';
 import { hasSkillReqsRaw, itemNameFromID } from './util/smallUtils.js';
 import { transactItemsFromBank, type TransactItemsArgs } from './util/transactItemsFromBank.js';
+import { defaultFarmingContract } from './minions/farming/index.js';
+import type { AttackStyles } from './minions/functions/index.js';
+import type { Skills, SkillRequirements } from './types/index.js';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {

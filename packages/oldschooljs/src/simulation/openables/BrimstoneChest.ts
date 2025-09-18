@@ -1,10 +1,10 @@
-import { percentChance, randInt, roll } from 'e';
+import { percentChance, randInt, roll } from '@/util/smallUtils.js';
 
-import type { OpenableOpenOptions } from '@/meta/types.js';
 import {Bank} from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import {SimpleOpenable} from '@/structures/SimpleOpenable.js';
 import { BrimstoneChestFish, chanceOfFish } from './BonusOpenables.js';
+import type { OpenableOpenOptions } from '@/structures/Openable.js';
 
 const BrimstoneChestTable = new LootTable()
 	.add('Uncut diamond', [25, 35], 5)

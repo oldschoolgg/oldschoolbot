@@ -1,9 +1,9 @@
-import { getBrimKeyChanceFromCBLevel, getSlayersEnchantmentChanceFromHP, getLarranKeyChanceFromCBLevel, getAncientShardChanceFromHP, getTotemChanceFromHP } from '@/util/util.js';
+import { getBrimKeyChanceFromCBLevel, getSlayersEnchantmentChanceFromHP, getLarranKeyChanceFromCBLevel, getAncientShardChanceFromHP, getTotemChanceFromHP, roll } from '@/util/util.js';
 import rawMonsterData from '../data/monsters_data.json' with { type: 'json' };
 import { type MonsterData, MonsterSlayerMaster } from '../meta/monsterData.js';
 import  {Bank} from './Bank.js';
 import type LootTable from './LootTable.js';
-import { roll, type LootTableRollOptions } from './LootTable.js';
+import { type LootTableRollOptions } from './LootTable.js';
 
 export interface MonsterOptions {
 	id: number;

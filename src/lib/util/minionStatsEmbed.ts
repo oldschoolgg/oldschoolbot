@@ -1,18 +1,19 @@
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { EmbedBuilder } from 'discord.js';
 import { shuffleArr, sumArr } from 'e';
-import { Bank, type SkillsScore, convertXPtoLVL, toKMB } from 'oldschooljs';
+import { Bank, type ItemBank, convertXPtoLVL, toKMB } from 'oldschooljs';
+import type { SkillsScore } from 'oldschooljs/hiscores';
 
 import { ClueTiers } from '../clues/clueTiers.js';
 import { getClueScoresFromOpenables } from '../clues/clueUtils.js';
 import { MAX_LEVEL, badges } from '../constants.js';
 import { calcCLDetails } from '../data/Collections.js';
 import { skillEmoji } from '../data/emojis.js';
-import { effectiveMonsters } from '../minions/data/killableMonsters.js';
+import { effectiveMonsters } from '../minions/data/killableMonsters/index.js';
 import { courses } from '../skilling/skills/agility.js';
-import creatures from '../skilling/skills/hunter/creatures.js';
-import type { ItemBank, Skills } from '../types.js';
 import { logError } from './logError.js';
+import type { Skills } from '../types/index.js';
+import Hunter from '../skilling/skills/hunter/hunter.js';
 
 export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	const { QP } = user;
@@ -159,7 +160,7 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	const hunterScores = Object.entries(userStats.creature_scores as ItemBank).sort((a, b) => a[1] - b[1]);
 	if (hunterScores.length > 0) {
 		const [id, score] = hunterScores[0];
-		const res = creatures.find(c => c.id === Number.parseInt(id))!;
+		const res = Hunter.Creatures.find(c => c.id === Number.parseInt(id))!;
 		if (res) {
 			otherStats.push([`${res.name}'s Caught`, score]);
 		}

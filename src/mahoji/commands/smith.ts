@@ -1,11 +1,11 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries.js';
-import Smithing from '../../lib/skilling/skills/smithing.js';
-import smithables from '../../lib/skilling/skills/smithing/smithables.js';
+import Smithing from '../../lib/skilling/skills/smithing/index.js';
+import smithables from '../../lib/skilling/skills/smithing/smithables/index.js';
 import { SkillsEnum } from '../../lib/skilling/types.js';
 import type { SmithingActivityTaskOptions } from '../../lib/types/minions.js';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask.js';

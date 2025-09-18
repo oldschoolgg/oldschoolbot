@@ -25,7 +25,6 @@ import { onStartup } from './mahoji/lib/events.js';
 import { exitCleanup } from './mahoji/lib/exitHandler.js';
 import { postCommand } from './mahoji/lib/postCommand.js';
 import { preCommand } from './mahoji/lib/preCommand.js';
-import { Items, Monsters } from 'oldschooljs';
 
 console.log(`${process.uptime()}s uptime`);
 if (globalConfig.sentryDSN) {

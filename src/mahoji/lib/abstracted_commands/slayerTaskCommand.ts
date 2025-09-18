@@ -5,7 +5,7 @@ import { Time, notEmpty, randInt, removeFromArr } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { InteractionID } from '../../../lib/InteractionID.js';
-import killableMonsters from '../../../lib/minions/data/killableMonsters.js';
+import killableMonsters from '../../../lib/minions/data/killableMonsters/index.js';
 import { runCommand } from '../../../lib/settings/settings.js';
 import { slayerMasters } from '../../../lib/slayer/slayerMasters.js';
 import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks.js';

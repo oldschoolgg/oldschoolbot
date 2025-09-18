@@ -1,4 +1,4 @@
-import { type CommandRunOptions, formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { itemID } from 'oldschooljs';

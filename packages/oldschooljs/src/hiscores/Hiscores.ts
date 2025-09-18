@@ -7,10 +7,9 @@ import {
 	SKILLS,
 } from '../constants.js';
 import { convertXPtoLVL, isValidUsername } from '../util/util.js';
-import OSError from './OldSchoolJSError.js';
-import Player from './Player.js';
-import { type AccountType, ACCOUNT_TYPES, mappedBossNames, MINIGAMES } from '@/meta/smalltypes.js';
-import type { SkillsScore } from '@/meta/types.js';
+import OSError from '../structures/OldSchoolJSError.js';
+import {Player, type SkillsScore} from './Player.js';
+import { ACCOUNT_TYPES, mappedBossNames, MINIGAMES, type AccountType } from './constants.js';
 
 function resolvePlayerFromHiscores(csvData: string, accountType: AccountType): Player {
 	const data: string[][] = csvData

@@ -1,6 +1,6 @@
 import { calcWhatPercent, reduceNumByPercent } from 'e';
-
 import { GearStat } from 'oldschooljs/gear';
+
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat.js';
 import type { GearSetupType } from '../../gear/types.js';
 import { maxDefenceStats, maxOffenceStats } from '../../structures/Gear.js';
