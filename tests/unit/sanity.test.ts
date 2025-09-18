@@ -1,5 +1,5 @@
 import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
-import { Bank, EMonster, EquipmentSlot, Items, getItem, getItemOrThrow, itemID } from 'oldschooljs';
+import { Bank, EMonster, EquipmentSlot, Items, itemID } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import Buyables from '../../src/lib/data/buyables/buyables.js';
@@ -83,11 +83,11 @@ describe('Sanity', () => {
 	});
 
 	test('rings', () => {
-		expect(getItem('Ultor ring')!.id).toEqual(25485);
+		expect(Items.getOrThrow('Ultor ring')!.id).toEqual(25485);
 		expect(itemID('Ultor ring')).toEqual(25485);
 		expect(Items.itemNameFromId(25485)).toEqual('Ultor ring');
-		expect(getItemOrThrow('Ultor ring')!.equipment?.slot).toEqual('ring');
-		expect(getItemOrThrow('Ultor ring')!.equipment?.melee_strength).toEqual(12);
+		expect(Items.getOrThrow('Ultor ring')!.equipment?.slot).toEqual('ring');
+		expect(Items.getOrThrow('Ultor ring')!.equipment?.melee_strength).toEqual(12);
 	});
 
 	test('EMonster', () => {

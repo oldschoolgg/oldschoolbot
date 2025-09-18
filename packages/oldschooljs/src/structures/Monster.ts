@@ -1,6 +1,3 @@
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
-
 import { type MonsterData, MonsterSlayerMaster } from '@/meta/monsterData.js';
 import {
 	getAncientShardChanceFromHP,
@@ -14,9 +11,8 @@ import { Bank } from './Bank.js';
 import type LootTable from './LootTable.js';
 import type { LootTableRollOptions } from './LootTable.js';
 
-const monsterData = JSON.parse(
-	readFileSync(path.join(import.meta.dirname, '../../dist/assets/monsters_data.json'), 'utf-8')
-) as { [key: string]: MonsterData };
+import _monsterData from '../assets/monsters_data.json' with { type: 'json' };
+const monsterData = _monsterData as { [key: string]: MonsterData };
 
 export interface MonsterOptions {
 	id: number;

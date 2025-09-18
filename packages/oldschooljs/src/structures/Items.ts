@@ -1,18 +1,14 @@
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
 import deepMerge from 'deepmerge';
 
 console.log('Items file is loading...');
 
-const _items = JSON.parse(
-	readFileSync(path.join(import.meta.dirname, '../../dist/assets/item_data.json'), 'utf-8')
-) as Record<string, Item>;
+import _items from '../assets/item_data.json' with { type: 'json' };
+const items = _items as any as Record<string, Item>;
 
 import type { Item } from '@/meta/item.js';
 import { cleanString } from '../util/cleanString.js';
 import { Collection } from './Collection.js';
 
-const items = _items as Record<string, Item>;
 export const itemNameMap: Map<string, number> = new Map();
 
 type ItemResolvable = number | string;
@@ -159,12 +155,13 @@ for (const [id, item] of Object.entries(items)) {
 
 	if (USELESS_ITEMS.includes(numID)) continue;
 	itemsExport.set(numID, item);
+
 	const cleanName = cleanString(item.name);
 	if (!itemNameMap.has(cleanName)) {
 		itemNameMap.set(cleanName, numID);
 	}
 }
-
+console.log(`Loaded ${itemsExport.size} items.`);
 export default itemsExport;
 
 export function resolveItems(_itemArray: string | number | (string | number)[]): number[] {

@@ -3,8 +3,8 @@ import { reduceNumByPercent } from 'e';
 import { Bank, convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { skillingPetDropRate } from '@/lib/util';
-import { pluraliseItemName } from '@/lib/util/smallUtils';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { pluraliseItemName } from '@/lib/util/smallUtils.js';
 import { baseModifyBusyCounter } from '../../src/lib/busyCounterCache.js';
 import getUserFoodFromBank from '../../src/lib/minions/functions/getUserFoodFromBank.js';
 import { SkillsEnum } from '../../src/lib/skilling/types.js';

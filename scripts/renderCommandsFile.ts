@@ -6,8 +6,8 @@ import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { DateTime } from 'luxon';
 
-import { BOT_TYPE } from '../src/lib/constants';
-import { allCommands } from '../src/mahoji/commands/allCommands';
+import { BOT_TYPE } from '../src/lib/constants.js';
+import { allCommands } from '../src/mahoji/commands/allCommands.js';
 
 function renderCommands() {
 	return allCommands

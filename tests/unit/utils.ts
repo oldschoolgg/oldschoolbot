@@ -1,11 +1,11 @@
 import { Bank } from 'oldschooljs';
 
+import type { SkillsRequired } from '@/lib/types/index.js';
 import { GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types.js';
 import { SkillsArray } from '../../src/lib/skilling/types.js';
 import { ChargeBank } from '../../src/lib/structures/Bank.js';
 import { Gear } from '../../src/lib/structures/Gear.js';
 import { GearBank } from '../../src/lib/structures/GearBank.js';
-import type { SkillsRequired } from '../../src/lib/types.js';
 
 function makeSkillsAsLevels(lvl = 99) {
 	const obj: any = {};

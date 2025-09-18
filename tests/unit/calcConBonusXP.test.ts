@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { calcConBonusXP } from '@/lib/skilling/skills/construction/calcConBonusXP';
+import { calcConBonusXP } from '@/lib/skilling/skills/construction/calcConBonusXP.js';
 import { constructGearSetup } from '../../src/lib/structures/Gear.js';
 
 describe('calcConBonusXP.test', () => {

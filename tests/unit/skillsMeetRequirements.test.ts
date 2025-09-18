@@ -2,7 +2,7 @@ import { objectEntries } from 'e';
 import { convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import type { Skills } from '../../src/lib/skilling/skills.js';
+import type Skills from '@/lib/skilling/skills/index.js';
 import { skillsMeetRequirements } from '../../src/lib/util.js';
 
 function convert(bank: Record<keyof typeof Skills, number>) {

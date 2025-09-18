@@ -3,7 +3,7 @@ import { randArrItem } from 'e';
 import { vi } from 'vitest';
 
 import '../src/lib/safeglobals.js';
-import { InteractionID } from '@/lib/InteractionID';
+import { InteractionID } from '@/lib/InteractionID.js';
 import { TEST_CHANNEL_ID, mockChannel, mockInteraction } from './integration/util.js';
 
 vi.mock('@oldschoolgg/toolkit/discord-util', async () => {

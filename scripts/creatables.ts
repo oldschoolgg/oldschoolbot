@@ -4,8 +4,8 @@ import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { DateTime } from 'luxon';
 import { Bank } from 'oldschooljs';
 
-import { BOT_TYPE } from '@/lib/constants';
-import Createables from '@/lib/data/createables';
+import { BOT_TYPE } from '@/lib/constants.js';
+import Createables from '@/lib/data/createables.js';
 
 export async function renderCreatablesFile() {
 	const stopwatch = new Stopwatch();

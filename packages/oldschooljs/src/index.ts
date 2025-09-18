@@ -2,6 +2,7 @@ import { ECreature } from './ECreature.js';
 import { EGear } from './EGear.js';
 import { EItem } from './EItem.js';
 import { EMonster } from './EMonster.js';
+import { SkillsEnum } from './constants.js';
 import * as ItemGroups from './itemGroups.js';
 import { MonsterSlayerMaster } from './meta/monsterData.js';
 import * as Misc from './simulation/misc/index.js';
@@ -13,7 +14,7 @@ import LootTable from './structures/LootTable.js';
 import type { Monster, MonsterKillOptions, SimpleMonster } from './structures/Monster.js';
 import type { OpenableOpenOptions } from './structures/Openable.js';
 import { SimpleOpenable } from './structures/SimpleOpenable.js';
-import { addBanks, addItemToBank, averageBank, calcDropRatesFromBank } from './util/bank.js';
+import { addBanks, addItemToBank, averageBank, calcDropRatesFromBank, convertBankToPerHourStats } from './util/bank.js';
 import itemID from './util/itemID.js';
 import { fromKMB, randomVariation, toKMB } from './util/smallUtils.js';
 import { calcCombatLevel, convertLVLtoXP, convertXPtoLVL } from './util/util.js';
@@ -45,7 +46,9 @@ export {
 	deepResolveItems,
 	calcCombatLevel,
 	itemNameMap,
-	calcDropRatesFromBank
+	calcDropRatesFromBank,
+	SkillsEnum,
+	convertBankToPerHourStats
 };
 
 export type { ItemBank, LootBank, OpenableOpenOptions, MonsterKillOptions, Monster, ArrayItemsResolved, SimpleMonster };

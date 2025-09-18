@@ -1,8 +1,8 @@
 import { isFunction } from 'e';
+import { Items } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
 import Buyables from '../../src/lib/data/buyables/buyables.js';
-import getOSItem from '../../src/lib/util/getOSItem.js';
 import { sacrificePriceOfItem } from '../../src/mahoji/commands/sacrifice.js';
 import { sellPriceOfItem, sellStorePriceOfItem } from '../../src/mahoji/commands/sell.js';
 
@@ -77,7 +77,7 @@ describe('Price Abusing', () => {
 	test('Buyables', () => {
 		for (const b of gpBuyables) {
 			if (isFunction(b.outputItems)) continue;
-			const item = b.outputItems ? b.outputItems.items()[0][0] : getOSItem(b.name);
+			const item = b.outputItems ? b.outputItems.items()[0][0] : Items.getOrThrow(b.name);
 			const priceSoldFor = sellPriceOfItem(item, 0);
 			const priceBoughtFor = b.gpCost;
 			if (priceSoldFor.price > priceBoughtFor!) {

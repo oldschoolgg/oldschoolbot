@@ -2,35 +2,12 @@ import { existsSync } from 'node:fs';
 import path, { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
-import { esbuildPluginFilePathExtensions } from 'esbuild-plugin-file-path-extensions';
 
 const STATIC_DEFINE = {
 	__BOT_TYPE__: existsSync(path.resolve(dirname(fileURLToPath(import.meta.url)), './src/lib/bso')) ? '"BSO"' : '"OSB"'
 };
 
 import type { BuildOptions } from 'esbuild';
-
-import type { Plugin } from 'esbuild';
-
-function wrappedFilePathExtensionsPlugin(opts = {}): Plugin {
-	const inner = esbuildPluginFilePathExtensions(opts);
-
-	return {
-		name: 'wrapped-file-path-extensions',
-		setup(build) {
-			build.onResolve({ filter: /.*/ }, args => {
-				if (args.path.includes('@prisma/')) {
-					return {
-						path: args.path,
-						external: true
-					};
-				}
-			});
-
-			return inner.setup(build);
-		}
-	};
-}
 
 const external = [
 	'@prisma/client',
@@ -40,14 +17,18 @@ const external = [
 	'bufferutil',
 	'discord.js',
 	'@prisma/robochimp',
-	'oldschooljs'
+	'oldschooljs',
+	'dotenv',
+	'micromatch',
+	'node-fetch',
+	'node-cron',
+	'piscina'
 ];
 
 const baseBuildOptions: BuildOptions = {
 	bundle: true,
 	format: 'esm',
 	outExtension: { '.js': '.js' },
-	plugins: [wrappedFilePathExtensionsPlugin({ esm: true, esmExtension: 'js' })],
 	legalComments: 'none',
 	platform: 'node',
 	treeShaking: false,

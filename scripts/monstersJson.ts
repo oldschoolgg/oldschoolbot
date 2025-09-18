@@ -4,8 +4,8 @@ import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { DateTime } from 'luxon';
 import { Bank, Items } from 'oldschooljs';
 
-import { BOT_TYPE } from '@/lib/constants';
-import killableMonsters from '@/lib/minions/data/killableMonsters';
+import { BOT_TYPE } from '@/lib/constants.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/low.js';
 
 export function createMonstersJson() {
 	const stopwatch = new Stopwatch();
