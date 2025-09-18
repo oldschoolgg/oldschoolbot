@@ -1,7 +1,7 @@
 import itemID from '../util/itemID.js';
-import Items from './Items.js';
+import { randArrItem, randFloat, randInt, reduceNumByPercent, roll } from '../util/smallUtils.js';
 import { Bank } from './Bank.js';
-import { reduceNumByPercent, randArrItem, randFloat, randInt, roll } from '../util/smallUtils.js';
+import Items from './Items.js';
 
 export function itemTupleToTable(items: [string, number | [number, number]][]): LootTable {
 	const table = new LootTable();

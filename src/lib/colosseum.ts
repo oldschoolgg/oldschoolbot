@@ -24,10 +24,10 @@ import type { GearSetupType } from './gear/types.js';
 import { trackLoot } from './lootTrack.js';
 import { QuestID } from './minions/data/quests.js';
 import { ChargeBank } from './structures/Bank.js';
+import type { Skills } from './types/index.js';
 import type { ColoTaskOptions } from './types/minions.js';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask.js';
 import { updateBankSetting } from './util/updateBankSetting.js';
-import type { Skills } from './types/index.js';
 
 function combinedChance(percentages: number[]): number {
 	const failureProbabilities = percentages.map(p => (100 - p) / 100);

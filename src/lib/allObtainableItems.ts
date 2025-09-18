@@ -1,6 +1,7 @@
 import { isFunction, notEmpty } from 'e';
 import { Bank, Implings, Items, Monsters, resolveItems } from 'oldschooljs';
 
+import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
 import { flowerTable } from '../mahoji/lib/abstracted_commands/hotColdCommand.js';
 import { tipTable } from '../tasks/minions/minigames/gnomeRestaurantActivity.js';
 import { ClueTiers } from './clues/clueTiers.js';
@@ -25,7 +26,6 @@ import { rewardsGuardianTable } from './simulation/rewardsGuardian.js';
 import { nonUniqueTable } from './simulation/toa.js';
 import { Cookables } from './skilling/skills/cooking/cooking.js';
 import { Craftables } from './skilling/skills/crafting/craftables/index.js';
-import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
 import { Fishing } from './skilling/skills/fishing/fishing.js';
 import { Fletchables } from './skilling/skills/fletching/fletchables/index.js';
 import Herblore from './skilling/skills/herblore/herblore.js';

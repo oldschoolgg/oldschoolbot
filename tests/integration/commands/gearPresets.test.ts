@@ -2,8 +2,8 @@ import { randInt } from 'e';
 import { EItem, itemID } from 'oldschooljs';
 import { describe, expect, test, vi } from 'vitest';
 
-import { gearPresetsCommand } from '../../../src/mahoji/commands/gearpresets';
-import { createTestUser } from '../util';
+import { gearPresetsCommand } from '../../../src/mahoji/commands/gearpresets.js';
+import { createTestUser } from '../util.js';
 
 vi.mock('../../../src/lib/util', async () => {
 	const actual: any = await vi.importActual('../../../src/lib/util');

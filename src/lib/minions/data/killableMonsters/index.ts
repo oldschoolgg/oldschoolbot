@@ -5,6 +5,7 @@ import { GearStat } from 'oldschooljs/gear';
 
 import { SkillsEnum } from '../../../skilling/types.js';
 import type { KillableMonster } from '../../types.js';
+import bosses from './bosses/index.js';
 import { camdozaalMonsters } from './camdozaalMonsters.js';
 import { chaeldarMonsters } from './chaeldarMonsters.js';
 import { creatureCreationCreatures } from './creatureCreation.js';
@@ -17,7 +18,6 @@ import { reanimatedMonsters } from './reanimated.js';
 import { revenantMonsters } from './revs.js';
 import { turaelMonsters } from './turaelMonsters.js';
 import { vannakaMonsters } from './vannakaMonsters.js';
-import bosses from './bosses/index.js';
 
 const killableMonsters: KillableMonster[] = [
 	...bosses,

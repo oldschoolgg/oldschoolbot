@@ -1,7 +1,7 @@
-import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
 import HerbDropTable from '@/simulation/subtables/HerbDropTable.js';
 import RareDropTable, { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const FireGiantTable = new LootTable()
 	.every('Big bones')

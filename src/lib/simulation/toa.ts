@@ -33,6 +33,7 @@ import { trackLoot } from '../lootTrack.js';
 import { setupParty } from '../party.js';
 import { SkillsEnum } from '../skilling/types.js';
 import { Gear, constructGearSetup } from '../structures/Gear.js';
+import type { MakePartyOptions, Skills } from '../types/index.js';
 import type { TOAOptions } from '../types/minions.js';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '../util/calcMaxTripLength.js';
@@ -47,7 +48,6 @@ import {
 } from '../util/smallUtils.js';
 import { updateBankSetting } from '../util/updateBankSetting.js';
 import { TeamLoot } from './TeamLoot.js';
-import type { Skills, MakePartyOptions } from '../types/index.js';
 
 const teamSizeScale: Record<number, number> = {
 	1: 1.0,

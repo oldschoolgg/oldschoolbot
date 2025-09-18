@@ -27,7 +27,6 @@ export const sawmillTask: MinionTask = {
 		}
 
 		await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

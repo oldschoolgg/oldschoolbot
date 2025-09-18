@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleOpenable} from '@/structures/SimpleOpenable.js';
+import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
 const SackLogTable = new LootTable()
 	.add('Maple logs', 4)

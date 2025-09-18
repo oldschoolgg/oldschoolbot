@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 import { TwistedBansheePreTable } from '../low/t-z/TwistedBanshee.js';
 
 const ScreamingTwistedBansheeTable = new LootTable()

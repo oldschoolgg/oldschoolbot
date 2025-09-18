@@ -46,7 +46,6 @@ export const myNotesTask: MinionTask = {
 		const loot = new Bank(skeletonTable.roll(quantity));
 
 		const { previousCL, itemsAdded } = await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

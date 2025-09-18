@@ -1,7 +1,7 @@
-import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
 import RareDropTable from '@/simulation/subtables/RareDropTable.js';
 import UsefulHerbTable from '@/simulation/subtables/UsefulHerbTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const RuneDragonTable = new LootTable()
 	.every('Dragon bones')

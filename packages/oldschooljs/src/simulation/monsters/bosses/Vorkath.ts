@@ -1,7 +1,7 @@
-import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
 import RareDropTable from '@/simulation/subtables/RareDropTable.js';
 import TreeHerbSeedTable from '@/simulation/subtables/TreeHerbSeedTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const VorkathBoltTipTable = new LootTable()
 	.add('Diamond bolt tips', [25, 30], 10)

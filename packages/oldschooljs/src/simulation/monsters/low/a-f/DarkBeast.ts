@@ -1,8 +1,8 @@
-import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
 import HerbDropTable from '@/simulation/subtables/HerbDropTable.js';
 import RareDropTable, { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const DBHerbTable = new LootTable().add(HerbDropTable, 1, 4).add(HerbDropTable, 2, 1);
 

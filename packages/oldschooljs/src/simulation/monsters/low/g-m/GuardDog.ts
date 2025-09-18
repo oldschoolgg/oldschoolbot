@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 export const GuardDogTable = new LootTable().every('Bones').tertiary(25, 'Ensouled dog head', 1);
 

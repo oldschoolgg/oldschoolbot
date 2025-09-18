@@ -4,6 +4,7 @@ import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { calcWhatPercent, sumArr } from 'e';
 import { Bank, randomVariation } from 'oldschooljs';
 
+import type { MakePartyOptions } from '@/lib/types/index.js';
 import {
 	calcCoxDuration,
 	calcCoxInput,
@@ -25,7 +26,6 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
 import { mahojiParseNumber } from '../../mahojiSettings.js';
-import type { MakePartyOptions } from '@/lib/types/index.js';
 
 export async function coxBoostsCommand(user: MUser) {
 	const boostStr = [];

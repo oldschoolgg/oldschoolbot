@@ -2,9 +2,9 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import killableMonsters from '../../src/lib/minions/data/killableMonsters';
-import { getItemCostFromConsumables } from '../../src/mahoji/lib/abstracted_commands/minionKill/handleConsumables';
-import { makeGearBank } from './utils';
+import killableMonsters from '../../src/lib/minions/data/killableMonsters.js';
+import { getItemCostFromConsumables } from '../../src/mahoji/lib/abstracted_commands/minionKill/handleConsumables.js';
+import { makeGearBank } from './utils.js';
 
 describe('getItemCostFromConsumables', () => {
 	test('getItemCostFromConsumables', () => {

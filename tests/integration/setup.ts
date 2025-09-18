@@ -1,8 +1,8 @@
-import '../globalSetup';
-import '../../src/lib/globals';
-import '../../src/lib/util/transactItemsFromBank';
-import '../../src/lib/ActivityManager';
-import './mocks';
+import '../globalSetup.js';
+import '../../src/lib/globals.js';
+import '../../src/lib/util/transactItemsFromBank.js';
+import '../../src/lib/ActivityManager.js';
+import './mocks.js';
 
 import { beforeEach, vi } from 'vitest';
 

@@ -8,8 +8,8 @@ import z from 'zod';
 
 import { skillEmoji } from '../data/emojis.js';
 import { SkillsEnum } from '../skilling/types.js';
-import type { TOAOptions } from '../types/minions.js';
 import type { SkillRequirements, Skills } from '../types/index.js';
+import type { TOAOptions } from '../types/minions.js';
 
 export function itemNameFromID(itemID: number) {
 	return Items.get(itemID)?.name;

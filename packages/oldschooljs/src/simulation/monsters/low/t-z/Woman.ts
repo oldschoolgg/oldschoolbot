@@ -1,6 +1,6 @@
-import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
 import ManWomanTable from '@/simulation/subtables/ManWomanTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 export default new SimpleMonster({
 	id: 1119,

@@ -2,12 +2,12 @@ import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { Bank, EMonster, EquipmentSlot, Items, getItem, getItemOrThrow, itemID } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import Buyables from '../../src/lib/data/buyables/buyables';
-import { marketPriceOfBank } from '../../src/lib/marketPrices';
-import { allOpenables } from '../../src/lib/openables';
-import getOSItem from '../../src/lib/util/getOSItem';
-import itemIsTradeable from '../../src/lib/util/itemIsTradeable';
-import { BingoTrophies } from '../../src/mahoji/lib/bingo/BingoManager';
+import Buyables from '../../src/lib/data/buyables/buyables.js';
+import { marketPriceOfBank } from '../../src/lib/marketPrices.js';
+import { allOpenables } from '../../src/lib/openables.js';
+import getOSItem from '../../src/lib/util/getOSItem.js';
+import itemIsTradeable from '../../src/lib/util/itemIsTradeable.js';
+import { BingoTrophies } from '../../src/mahoji/lib/bingo/BingoManager.js';
 
 describe('Sanity', () => {
 	test('misc', () => {

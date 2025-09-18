@@ -32,12 +32,12 @@ export const huntCommand: OSBMahojiCommand = {
 			description: 'The creature you want to hunt.',
 			required: true,
 			autocomplete: async (value: string) => {
-				return Hunter.Creatures
-					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-					.map(i => ({
-						name: i.name,
-						value: i.name
-					}));
+				return Hunter.Creatures.filter(i =>
+					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+				).map(i => ({
+					name: i.name,
+					value: i.name
+				}));
 			}
 		},
 		{

@@ -3,11 +3,11 @@ import { Time, objectEntries, randArrItem, randInt } from 'e';
 import { Bank, type ItemBank, convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { ClueTiers } from '../../src/lib/clues/clueTiers';
-import { SkillsEnum } from '../../src/lib/skilling/types';
-import { assert } from '../../src/lib/util/logError';
-import { mahojiUsersSettingsFetch } from '../../src/mahoji/mahojiSettings';
-import { createTestUser } from './util';
+import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
+import { SkillsEnum } from '../../src/lib/skilling/types.js';
+import { assert } from '../../src/lib/util/logError.js';
+import { mahojiUsersSettingsFetch } from '../../src/mahoji/mahojiSettings.js';
+import { createTestUser } from './util.js';
 
 async function stressTest(userID: string) {
 	const user = await mUserFetch(userID);
@@ -47,7 +47,7 @@ async function stressTest(userID: string) {
 	await assertBankMatches();
 
 	await assertGP(currentGP);
-	await user.transactItems({  itemsToRemove: gpBank, filterLoot: false });
+	await user.transactItems({ itemsToRemove: gpBank, filterLoot: false });
 	await assertGP(0);
 	await user.transactItems({ itemsToAdd: gpBank, filterLoot: false });
 	await assertBankMatches();
@@ -55,7 +55,7 @@ async function stressTest(userID: string) {
 
 	// Adding and removing at same time
 	const everything = currentBank.clone().add(gpBank);
-	await user.transactItems({  itemsToRemove: everything, itemsToAdd: everything, filterLoot: false });
+	await user.transactItems({ itemsToRemove: everything, itemsToAdd: everything, filterLoot: false });
 	await assertBankMatches();
 
 	// Collection Log

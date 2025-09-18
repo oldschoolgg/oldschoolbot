@@ -13,9 +13,9 @@ import type { ClueBank, DiaryID, DiaryTierName } from '../minions/types.js';
 import type { RobochimpUser } from '../roboChimp.js';
 import { type MinigameName, minigameColumnToNameMap } from '../settings/minigames.js';
 import Agility from '../skilling/skills/agility.js';
+import type { Skills } from '../types/index.js';
 import { formatList, itemNameFromID } from '../util/smallUtils.js';
 import { MUserStats } from './MUserStats.js';
-import type { Skills } from '../types/index.js';
 
 export interface RequirementFailure {
 	reason: string;

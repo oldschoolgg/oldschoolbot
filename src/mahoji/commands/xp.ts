@@ -1,4 +1,3 @@
-
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Hiscores, type SkillsScore } from 'oldschooljs/hiscores';
 

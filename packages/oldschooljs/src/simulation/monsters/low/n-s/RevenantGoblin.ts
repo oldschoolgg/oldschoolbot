@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 import { makeRevTable } from '@/util/revs.js';
 
 export const RevenantGoblinTable = new LootTable()

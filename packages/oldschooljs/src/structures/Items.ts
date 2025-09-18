@@ -1,14 +1,16 @@
-import deepMerge from 'deepmerge';
 import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import deepMerge from 'deepmerge';
 
 console.log('Items file is loading...');
 
-const _items = JSON.parse(readFileSync(path.join(import.meta.dirname, '../assets/item_data.json'), 'utf-8')) as Record<string, Item>;
+const _items = JSON.parse(
+	readFileSync(path.join(import.meta.dirname, '../../dist/assets/item_data.json'), 'utf-8')
+) as Record<string, Item>;
 
+import type { Item } from '@/meta/item.js';
 import { cleanString } from '../util/cleanString.js';
 import { Collection } from './Collection.js';
-import type { Item } from '@/meta/item.js';
-import path from 'node:path';
 
 const items = _items as Record<string, Item>;
 export const itemNameMap: Map<string, number> = new Map();
@@ -167,40 +169,40 @@ export default itemsExport;
 
 export function resolveItems(_itemArray: string | number | (string | number)[]): number[] {
 	const itemArray = Array.isArray(_itemArray) ? _itemArray : [_itemArray];
-		const newArray: number[] = [];
+	const newArray: number[] = [];
 
-		for (const item of itemArray) {
-			if (typeof item === 'number') {
-				newArray.push(item);
-			} else {
-				const osItem = itemsExport.get(item);
-				if (!osItem) {
-					throw new Error(`No item found for: ${item}.`);
-				}
-				newArray.push(osItem.id);
+	for (const item of itemArray) {
+		if (typeof item === 'number') {
+			newArray.push(item);
+		} else {
+			const osItem = itemsExport.get(item);
+			if (!osItem) {
+				throw new Error(`No item found for: ${item}.`);
 			}
+			newArray.push(osItem.id);
 		}
+	}
 
-		return newArray;
+	return newArray;
 }
 
-	export function deepResolveItems(itemArray: ArrayItemsResolvable): ArrayItemsResolved {
-		const newArray: ArrayItemsResolved = [];
+export function deepResolveItems(itemArray: ArrayItemsResolvable): ArrayItemsResolved {
+	const newArray: ArrayItemsResolved = [];
 
-		for (const item of itemArray) {
-			if (typeof item === 'number') {
-				newArray.push(item);
-			} else if (Array.isArray(item)) {
-				const test = itemsExport.resolveItems(item);
-				newArray.push(test);
-			} else {
-				const osItem = itemsExport.get(item);
-				if (!osItem) {
-					throw new Error(`No item found for: ${item}.`);
-				}
-				newArray.push(osItem.id);
+	for (const item of itemArray) {
+		if (typeof item === 'number') {
+			newArray.push(item);
+		} else if (Array.isArray(item)) {
+			const test = itemsExport.resolveItems(item);
+			newArray.push(test);
+		} else {
+			const osItem = itemsExport.get(item);
+			if (!osItem) {
+				throw new Error(`No item found for: ${item}.`);
 			}
+			newArray.push(osItem.id);
 		}
-
-		return newArray;
 	}
+
+	return newArray;
+}

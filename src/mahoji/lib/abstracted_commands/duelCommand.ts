@@ -156,9 +156,7 @@ export async function duelCommand(
 		);
 
 		duelMessage.edit(
-			`Congratulations ${winner.badgedUsername}! You won ${toKMB(winningAmount)}, and paid ${toKMB(
-				tax
-			)} tax.`
+			`Congratulations ${winner.badgedUsername}! You won ${toKMB(winningAmount)}, and paid ${toKMB(tax)} tax.`
 		);
 
 		return `Duel finished, ${winner} won.`;

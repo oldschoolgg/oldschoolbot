@@ -10,40 +10,10 @@
 			"require": "./dist/cjs/index.cjs",
 			"import": "./dist/esm/index.mjs"
 		},
-		"./EGear": {
-			"types": "./dist/esm/EGear.d.mts",
-			"require": "./dist/cjs/EGear.cjs",
-			"import": "./dist/esm/EGear.mjs"
-		},
-		"./EItem": {
-			"types": "./dist/esm/EItem.d.mts",
-			"require": "./dist/cjs/EItem.cjs",
-			"import": "./dist/esm/EItem.mjs"
-		},
-		"./EMonster": {
-			"types": "./dist/esm/EMonster.d.mts",
-			"require": "./dist/cjs/EMonster.cjs",
-			"import": "./dist/esm/EMonster.mjs"
-		},
-		"./wiki": {
-			"types": "./dist/esm/structures/Wiki.d.mts",
-			"require": "./dist/cjs/structures/Wiki.cjs",
-			"import": "./dist/esm/structures/Wiki.mjs"
-		},
-		"./hiscores": {
-			"types": "./dist/esm/hiscores/index.d.mts",
-			"require": "./dist/cjs/hiscores/index.cjs",
-			"import": "./dist/esm/hiscores/index.mjs"
-		},
-		"./constants": {
-			"types": "./dist/esm/constants.d.mts",
-			"require": "./dist/cjs/constants.cjs",
-			"import": "./dist/esm/constants.mjs"
-		},
-		"./gear": {
-			"types": "./dist/esm/gear/index.d.mts",
-			"require": "./dist/cjs/gear/index.cjs",
-			"import": "./dist/esm/gear/index.mjs"
+		"./*": {
+			"types": "./dist/esm/index.d.mts",
+			"require": "./dist/cjs/index.cjs",
+			"import": "./dist/esm/index.mjs"
 		}
 	},
 	"license": "MIT",

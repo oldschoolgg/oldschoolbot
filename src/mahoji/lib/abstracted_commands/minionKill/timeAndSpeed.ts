@@ -9,10 +9,10 @@ import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC.js';
 import type { Consumable } from '@/lib/minions/types.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import type { SkillsRequired } from '@/lib/types/index.js';
 import { numberEnum } from '@/lib/util/smallUtils.js';
 import { getItemCostFromConsumables } from './handleConsumables.js';
 import { type BoostArgs, type BoostResult, type CombatMethodOptions, mainBoostEffects } from './speedBoosts.js';
-import type { SkillsRequired } from '@/lib/types/index.js';
 
 export const CombatMethodOptionsSchema = z.object({
 	bob: z

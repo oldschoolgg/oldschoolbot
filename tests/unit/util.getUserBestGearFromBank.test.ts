@@ -3,9 +3,9 @@ import { GearStat } from 'oldschooljs/gear';
 import { describe, expect, test } from 'vitest';
 
 import type { GearSetup } from '@/lib/gear/types';
-import getUserBestGearFromBank from '../../src/lib/minions/functions/getUserBestGearFromBank';
-import { Gear } from '../../src/lib/structures/Gear';
-import type { Skills } from '../../src/lib/types';
+import getUserBestGearFromBank from '../../src/lib/minions/functions/getUserBestGearFromBank.js';
+import { Gear } from '../../src/lib/structures/Gear.js';
+import type { Skills } from '../../src/lib/types.js';
 
 const userBank = new Bank({
 	'Bandos chestplate': 4,

@@ -1,8 +1,5 @@
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import {
-	channelIsSendable,
-	makePaginatedMessage
-} from '@oldschoolgg/toolkit/discord-util';
+import { channelIsSendable, makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import {
 	ApplicationCommandOptionType,
@@ -23,9 +20,9 @@ import { effectiveMonsters } from '../../lib/minions/data/killableMonsters/index
 import { allOpenables } from '../../lib/openables.js';
 import { SQL } from '../../lib/rawSql.js';
 import { Minigames } from '../../lib/settings/minigames.js';
-import Skills from '../../lib/skilling/skills/index.js';
 import Agility from '../../lib/skilling/skills/agility.js';
 import Hunter from '../../lib/skilling/skills/hunter/hunter.js';
+import Skills from '../../lib/skilling/skills/index.js';
 import { SkillsEnum } from '../../lib/skilling/types.js';
 import { fetchCLLeaderboard } from '../../lib/util/clLeaderboard.js';
 import { deferInteraction } from '../../lib/util/interactionReply.js';

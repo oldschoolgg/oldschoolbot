@@ -45,7 +45,6 @@ export const camdozaalSmithingTask: MinionTask = {
 
 		// Give the user the items from the trip
 		const { previousCL, itemsAdded } = await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

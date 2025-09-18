@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 import { MutatedBloodveldPreTable } from '../low/g-m/MutatedBloodveld.js';
 
 const InsatiableMutatedBloodveldTable = new LootTable()

@@ -29,8 +29,8 @@ import { Vardorvis } from './Vardorvis.js';
 import Vorkath from './Vorkath.js';
 import Zulrah from './Zulrah.js';
 import { allSlayerBosses } from './slayer/index.js';
-import { allWildyBosses } from './wildy/index.js';
 import CorporealBeast from './wildy/CorporealBeast.js';
+import { allWildyBosses } from './wildy/index.js';
 
 export const allBosses = {
 	Araxxor,

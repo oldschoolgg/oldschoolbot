@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleOpenable} from '@/structures/SimpleOpenable.js';
+import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
 const BoneTable = new LootTable({ limit: 10_000 })
 	.add('Zogre bones', 1, 4996)

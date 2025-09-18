@@ -11,9 +11,9 @@ import { calcCLDetails } from '../data/Collections.js';
 import { skillEmoji } from '../data/emojis.js';
 import { effectiveMonsters } from '../minions/data/killableMonsters/index.js';
 import { courses } from '../skilling/skills/agility.js';
-import { logError } from './logError.js';
-import type { Skills } from '../types/index.js';
 import Hunter from '../skilling/skills/hunter/hunter.js';
+import type { Skills } from '../types/index.js';
+import { logError } from './logError.js';
 
 export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	const { QP } = user;

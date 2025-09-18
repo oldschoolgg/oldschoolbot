@@ -91,7 +91,6 @@ export const vmTask: MinionTask = {
 		}
 
 		const { itemsAdded } = await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

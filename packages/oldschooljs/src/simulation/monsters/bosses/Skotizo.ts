@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const AncientShardTable = new LootTable({ limit: 100 })
 	.add('Ancient shard', 1, 75)

@@ -2,13 +2,13 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { type Item, itemID } from 'oldschooljs';
 
+import type { Skills } from '@/lib/types/index.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import type { PuroPuroActivityTaskOptions } from '../../../lib/types/minions.js';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
 import getOSItem from '../../../lib/util/getOSItem.js';
 import { userHasGracefulEquipped } from '../../mahojiSettings.js';
-import type { Skills } from '@/lib/types/index.js';
 
 interface PuroImpling {
 	name: string;

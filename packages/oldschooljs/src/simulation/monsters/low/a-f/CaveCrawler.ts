@@ -1,8 +1,8 @@
-import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
 import HerbDropTable from '@/simulation/subtables/HerbDropTable.js';
 import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import VariableAllotmentSeedTable from '@/simulation/subtables/VariableAllotmentSeedTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 export const CaveCrawlerTable = new LootTable({ limit: 128 })
 	/* Armour */

@@ -78,7 +78,6 @@ export const cutLeapingFishTask: MinionTask = {
 		const str = `${user}, ${user.minionName} finished cutting ${quantity}x ${barbarianFish.item.name}. ${xpRes}\n\n You received: ${loot}.`;
 
 		await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

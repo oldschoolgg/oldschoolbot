@@ -71,7 +71,6 @@ export const underwaterAgilityThievingTask: MinionTask = {
 		let str = `${user}, ${user.minionName} finished doing Underwater Agility and Thieving. ${xpRes}`;
 
 		await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

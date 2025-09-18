@@ -70,7 +70,6 @@ export const cyclopsTask: MinionTask = {
 		}
 
 		const { previousCL, itemsAdded } = await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

@@ -1,8 +1,4 @@
-import {
-	type MahojiUserOption,
-	allAbstractCommands,
-	bulkUpdateCommands
-} from '@oldschoolgg/toolkit/discord-util';
+import { type MahojiUserOption, allAbstractCommands, bulkUpdateCommands } from '@oldschoolgg/toolkit/discord-util';
 import { calcPerHour, cleanString, dateFm, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { type ClientStorage, economy_transaction_type } from '@prisma/client';
 import { ApplicationCommandOptionType, AttachmentBuilder, type InteractionReplyOptions } from 'discord.js';

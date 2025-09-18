@@ -9,9 +9,9 @@ import { Minigames } from './settings/minigames.js';
 import Skillcapes from './skilling/skillcapes.js';
 import Agility from './skilling/skills/agility.js';
 import { MUserStats } from './structures/MUserStats.js';
+import type { Skills } from './types/index.js';
 import getOSItem from './util/getOSItem.js';
 import { formatList, formatSkillRequirements, hasSkillReqs, itemNameFromID } from './util/smallUtils.js';
-import type { Skills } from './types/index.js';
 
 interface Diary {
 	name: string;

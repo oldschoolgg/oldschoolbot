@@ -10,7 +10,6 @@ export const mageArenaTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const loot = new Bank().add('Saradomin cape').add('Zamorak cape').add('Guthix cape');
 		await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

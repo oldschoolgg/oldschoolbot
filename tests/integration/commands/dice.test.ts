@@ -2,8 +2,8 @@ import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
-import { gambleCommand } from '../../../src/mahoji/commands/gamble';
-import { createTestUser, mockClient, mockMathRandom } from '../util';
+import { gambleCommand } from '../../../src/mahoji/commands/gamble.js';
+import { createTestUser, mockClient, mockMathRandom } from '../util.js';
 
 vi.mock('../../../src/lib/util', async () => {
 	const actual: any = await vi.importActual('../../../src/lib/util');

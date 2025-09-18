@@ -1,8 +1,8 @@
-import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
 import RareDropTable from '@/simulation/subtables/RareDropTable.js';
 import TalismanTable from '@/simulation/subtables/TalismanTable.js';
 import TreeHerbSeedTable from '@/simulation/subtables/TreeHerbSeedTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const HerbSubTable = new LootTable()
 	.add('Grimy kwuarm', 25, 10)

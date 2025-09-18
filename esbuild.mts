@@ -13,27 +13,35 @@ import type { BuildOptions } from 'esbuild';
 import type { Plugin } from 'esbuild';
 
 function wrappedFilePathExtensionsPlugin(opts = {}): Plugin {
-  const inner = esbuildPluginFilePathExtensions(opts);
+	const inner = esbuildPluginFilePathExtensions(opts);
 
-  return {
-    name: 'wrapped-file-path-extensions',
-    setup(build) {
-      build.onResolve({ filter: /.*/ }, (args) => {
+	return {
+		name: 'wrapped-file-path-extensions',
+		setup(build) {
+			build.onResolve({ filter: /.*/ }, args => {
+				if (args.path.includes('@prisma/')) {
+					return {
+						path: args.path,
+						external: true
+					};
+				}
+			});
 
-        if (args.path.includes('@prisma/')) {
-           return {
-            path: args.path,
-            external: true
-          };
-        }
-      });
-
-      return inner.setup(build);
-    }
-  };
+			return inner.setup(build);
+		}
+	};
 }
 
-const external = ['@prisma/client','@sentry/node','skia-canvas','sonic-boom','bufferutil','discord.js', '@prisma/robochimp', 'oldschooljs'];
+const external = [
+	'@prisma/client',
+	'@sentry/node',
+	'skia-canvas',
+	'sonic-boom',
+	'bufferutil',
+	'discord.js',
+	'@prisma/robochimp',
+	'oldschooljs'
+];
 
 const baseBuildOptions: BuildOptions = {
 	bundle: true,
@@ -49,13 +57,19 @@ const baseBuildOptions: BuildOptions = {
 	target: 'node20',
 	external,
 	define: STATIC_DEFINE,
-	sourcemap: 'inline',
+	sourcemap: 'inline'
 };
 
 build({
 	...baseBuildOptions,
-	entryPoints: ['src/index.ts', 'src/lib/safeglobals.ts', 'src/lib/globals.ts', 'src/lib/MUser.ts', 'src/lib/ActivityManager.ts'],
-	outdir: './dist',
+	entryPoints: [
+		'src/index.ts',
+		'src/lib/safeglobals.ts',
+		'src/lib/globals.ts',
+		'src/lib/MUser.ts',
+		'src/lib/ActivityManager.ts'
+	],
+	outdir: './dist'
 	// logLevel: 'error',
 	// alias: {
 	// 	'@': path.resolve(import.meta.dirname, './src')
@@ -70,7 +84,7 @@ build({
 		'src/lib/workers/finish.worker.ts',
 		'src/lib/workers/casket.worker.ts'
 	],
-	outdir: './dist/lib/workers',
+	outdir: './dist/lib/workers'
 	// alias: {
 	// 	'@': path.resolve(import.meta.dirname, './src')
 	// },

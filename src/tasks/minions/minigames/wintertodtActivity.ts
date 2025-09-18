@@ -106,7 +106,6 @@ export const wintertodtTask: MinionTask = {
 		})}`;
 
 		const { itemsAdded, previousCL } = await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

@@ -83,7 +83,6 @@ const ouraniaAltarTask: MinionTask = {
 		}
 
 		await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

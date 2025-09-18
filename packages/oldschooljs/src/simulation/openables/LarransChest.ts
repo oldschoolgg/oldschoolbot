@@ -1,10 +1,10 @@
 import { percentChance, randInt, roll } from '@/util/smallUtils.js';
 
-import {Bank} from '@/structures/Bank.js';
+import { Bank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
-import {SimpleOpenable} from '@/structures/SimpleOpenable.js';
-import { LarransBigChestFish, LarransSmallChestFish, chanceOfFish } from './BonusOpenables.js';
 import type { OpenableOpenOptions } from '@/structures/Openable.js';
+import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
+import { LarransBigChestFish, LarransSmallChestFish, chanceOfFish } from './BonusOpenables.js';
 
 // TODO: check wiki for more accurate results in future
 const LarransSmallChestTable = new LootTable()

@@ -19,7 +19,6 @@ export const castleWarsTask: MinionTask = {
 			loot.add('Castle wars ticket', ticketTable.rollOrThrow());
 		}
 		await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

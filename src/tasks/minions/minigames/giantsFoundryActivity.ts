@@ -79,7 +79,6 @@ export const giantsFoundryTask: MinionTask = {
 		}\nThe most prestigious weapon created by your minion was a **${highestQualitySword}** with a score of **${highestQuality}**.`;
 
 		const { itemsAdded } = await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

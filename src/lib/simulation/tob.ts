@@ -1,6 +1,6 @@
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import { percentChance, roll, sumArr } from 'e';
-import { Bank, JSONClone, type LootBank, LootTable } from 'oldschooljs';
+import { deepClone, percentChance, roll, sumArr } from 'e';
+import { Bank, type LootBank, LootTable } from 'oldschooljs';
 
 import { TOBRooms } from '../data/tob.js';
 import { assert } from '../util/logError.js';
@@ -133,7 +133,7 @@ class TheatreOfBloodClass {
 	}
 
 	public complete(_options: TheatreOfBloodOptions) {
-		const options = JSONClone(_options);
+		const options = deepClone(_options);
 		assert(options.team.length >= 1 || options.team.length <= 5, 'TOB team must have 1-5 members');
 
 		const maxPointsPerPerson = 22;

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { fromKMB, getBrimKeyChanceFromCBLevel, toKMB } from "../src/index.js";
+import { fromKMB, getBrimKeyChanceFromCBLevel, toKMB } from '../src/index.js';
 
 describe('Utils', () => {
 	test('toKMB checks', async () => {

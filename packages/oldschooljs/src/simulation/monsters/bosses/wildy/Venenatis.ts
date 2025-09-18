@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const VenenatisUniqueTable = new LootTable()
 	.oneIn(196, 'Fangs of venenatis')

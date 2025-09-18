@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 import { JellyPreTable } from '../low/g-m/Jelly.js';
 
 const VitreousJellyTable = new LootTable()

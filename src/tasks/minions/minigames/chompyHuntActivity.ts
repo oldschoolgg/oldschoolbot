@@ -29,7 +29,6 @@ export const chompHuntTask: MinionTask = {
 		}
 
 		await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

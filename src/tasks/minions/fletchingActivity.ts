@@ -39,7 +39,6 @@ export const fletchingTask: MinionTask = {
 
 		const loot = new Bank({ [fletchableItem.id]: quantityToGive });
 		await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

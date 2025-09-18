@@ -1,15 +1,10 @@
 import fetch from 'node-fetch';
 
-import {
-	BASE_API_URL,
-	CLUES,
-	Errors,
-	SKILLS,
-} from '../constants.js';
-import { convertXPtoLVL, isValidUsername } from '../util/util.js';
+import { BASE_API_URL, CLUES, Errors, SKILLS } from '../constants.js';
 import OSError from '../structures/OldSchoolJSError.js';
-import {Player, type SkillsScore} from './Player.js';
-import { ACCOUNT_TYPES, mappedBossNames, MINIGAMES, type AccountType } from './constants.js';
+import { convertXPtoLVL, isValidUsername } from '../util/util.js';
+import { Player, type SkillsScore } from './Player.js';
+import { ACCOUNT_TYPES, type AccountType, MINIGAMES, mappedBossNames } from './constants.js';
 
 function resolvePlayerFromHiscores(csvData: string, accountType: AccountType): Player {
 	const data: string[][] = csvData

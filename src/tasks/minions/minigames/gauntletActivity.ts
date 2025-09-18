@@ -43,7 +43,6 @@ export const gauntletTask: MinionTask = {
 		await user.incrementMinigameScore(key, quantity - deaths);
 
 		const { previousCL } = await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

@@ -1,6 +1,6 @@
 import { percentChance, roll, sumArr } from '@/util/smallUtils.js';
 
-import {Bank, type LootBank} from '@/structures/Bank.js';
+import { Bank, type LootBank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import SimpleTable from '@/structures/SimpleTable.js';
 import { JSONClone } from '@/util/index.js';

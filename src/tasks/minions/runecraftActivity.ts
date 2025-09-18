@@ -95,7 +95,6 @@ export const runecraftTask: MinionTask = {
 		}
 
 		await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

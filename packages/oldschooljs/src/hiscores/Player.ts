@@ -1,4 +1,4 @@
-import type { MinigamesScore, BossRecords, AccountType } from "./constants.js";
+import type { AccountType, BossRecords, MinigamesScore } from './constants.js';
 
 export interface SkillScore {
 	rank: number;

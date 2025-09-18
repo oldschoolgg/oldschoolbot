@@ -53,7 +53,6 @@ export const cookingTask: MinionTask = {
 		str += `\nYou received: ${loot}.`;
 
 		await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

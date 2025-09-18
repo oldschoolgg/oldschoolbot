@@ -4,6 +4,7 @@ import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { calcWhatPercent } from 'e';
 import { Bank, TOBRooms, itemID, randomVariation } from 'oldschooljs';
 
+import type { MakePartyOptions } from '@/lib/types/index.js';
 import { skillsMeetRequirements } from '@/lib/util.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { getSimilarItems } from '../../../lib/data/similarItems.js';
@@ -28,7 +29,6 @@ import { determineRunes } from '../../../lib/util/determineRunes.js';
 import getOSItem from '../../../lib/util/getOSItem.js';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahojiSettings.js';
-import type { MakePartyOptions } from '@/lib/types/index.js';
 
 const minStats = {
 	attack: 90,

@@ -1,8 +1,8 @@
-import { roll, randInt } from "e";
+import { randInt, roll } from 'e';
 
-import type { MonsterKillOptions } from "@/structures/Monster.js";
-import type { Bank } from "@/structures/Bank.js";
-import LootTable from "@/structures/LootTable.js";
+import type { Bank } from '@/structures/Bank.js';
+import LootTable from '@/structures/LootTable.js';
+import type { MonsterKillOptions } from '@/structures/Monster.js';
 
 type CustomKillLogic = (options: MonsterKillOptions, currentLoot: Bank) => void;
 

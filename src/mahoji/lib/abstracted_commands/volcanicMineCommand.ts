@@ -211,7 +211,6 @@ export async function volcanicMineShopCommand(
 		await user.addItemsToCollectionLog(new Bank().add(shopItem.output).multiply(quantity));
 	} else {
 		await user.transactItems({
-
 			collectionLog: shopItem.addToCl === true,
 			itemsToAdd: new Bank().add(shopItem.output).multiply(quantity)
 		});

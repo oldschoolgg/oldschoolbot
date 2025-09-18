@@ -3,8 +3,8 @@ import { type Bank, resolveItems } from 'oldschooljs';
 import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
 import { getSimilarItems } from '../data/similarItems.js';
 import type { UserFullGearSetup } from '../gear/types.js';
+import type { Skills, SkillsRequired } from '../types/index.js';
 import type { ChargeBank } from './Bank.js';
-import type { SkillsRequired, Skills } from '../types/index.js';
 
 export class GearBank {
 	gear: UserFullGearSetup;

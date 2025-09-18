@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Bank, LootTable } from "../src/index.js";
+import { Bank, LootTable } from '../src/index.js';
 
 describe('LootTable', async () => {
 	it('should clone', () => {

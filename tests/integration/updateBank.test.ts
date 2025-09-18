@@ -1,9 +1,8 @@
-import { Bank, EMonster } from 'oldschooljs';
+import { Bank, EMonster, type ItemBank } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
-import { UpdateBank } from '../../src/lib/structures/UpdateBank';
-import type { ItemBank } from '../../src/lib/types';
-import { createTestUser } from './util';
+import { UpdateBank } from '../../src/lib/structures/UpdateBank.js';
+import { createTestUser } from './util.js';
 
 describe(
 	'UpdateBank',

@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleOpenable} from '@/structures/SimpleOpenable.js';
+import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
 const PreRoll = new LootTable()
 	.oneIn(15, 'Lamp')

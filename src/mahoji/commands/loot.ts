@@ -1,4 +1,3 @@
-
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { PerkTier } from '../../lib/constants.js';

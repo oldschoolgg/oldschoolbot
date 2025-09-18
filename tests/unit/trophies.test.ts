@@ -1,8 +1,8 @@
 import { expect, test } from 'vitest';
 
-import { allTrophyItems } from '../../src/lib/data/itemAliases';
-import getOSItem from '../../src/lib/util/getOSItem';
-import itemIsTradeable from '../../src/lib/util/itemIsTradeable';
+import { allTrophyItems } from '../../src/lib/data/itemAliases.js';
+import getOSItem from '../../src/lib/util/getOSItem.js';
+import itemIsTradeable from '../../src/lib/util/itemIsTradeable.js';
 
 test('trophies', async () => {
 	expect(getOSItem('BSO dragon trophy')).toMatchObject({ id: 24_372 });

@@ -3,6 +3,7 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, calcWhatPercent, reduceNumByPercent, round, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
+import type { Skills } from '@/lib/types/index.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import type { NMZStrategy } from '../../../lib/constants.js';
 import { trackLoot } from '../../../lib/lootTrack.js';
@@ -15,7 +16,6 @@ import getOSItem from '../../../lib/util/getOSItem.js';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
 import type { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions.js';
-import type { Skills } from '@/lib/types/index.js';
 
 const itemBoosts = [
 	// Special weapons

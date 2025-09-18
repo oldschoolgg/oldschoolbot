@@ -5,6 +5,7 @@ import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 import { Time, noOp, removeFromArr } from 'e';
 
+import Farming from '@/lib/skilling/skills/farming/index.js';
 import { mahojiUserSettingsUpdate } from './MUser.js';
 import { BitField, Channel, globalConfig } from './constants.js';
 import { GrandExchange } from './grandExchange.js';
@@ -14,7 +15,6 @@ import { fetchUsersWithoutUsernames } from './rawSql.js';
 import { runCommand } from './settings/settings.js';
 import { informationalButtons } from './sharedComponents.js';
 import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo.js';
-import Farming from '@/lib/skilling/skills/farming/index.js';
 import { getSupportGuild } from './util.js';
 import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers.js';
 import { handleGiveawayCompletion } from './util/giveaway.js';

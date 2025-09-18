@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleOpenable} from '@/structures/SimpleOpenable.js';
+import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
 const LowTierLootTable = new LootTable()
 	.add("Monk's robe top")

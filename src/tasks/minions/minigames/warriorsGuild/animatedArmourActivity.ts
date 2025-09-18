@@ -26,7 +26,6 @@ export const animatedArmorTask: MinionTask = {
 		}
 
 		await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

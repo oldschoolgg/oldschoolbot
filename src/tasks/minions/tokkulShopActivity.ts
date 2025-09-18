@@ -11,7 +11,6 @@ export const tokkulShopTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const loot = new Bank().add(itemID, quantity);
 		await user.transactItems({
-
 			itemsToAdd: loot,
 			collectionLog: false
 		});

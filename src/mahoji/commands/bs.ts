@@ -1,4 +1,3 @@
-
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { bankCommand } from './bank.js';

@@ -49,7 +49,6 @@ export const smeltingTask: MinionTask = {
 		});
 
 		await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

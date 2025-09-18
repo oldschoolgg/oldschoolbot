@@ -1,6 +1,6 @@
-import {createTsupConfig} from "../../scripts/tsupconfig.ts";
+import { createTsupConfig } from '../../scripts/tsupconfig.ts';
 
-const entryPoints = [
+const entry = [
 	'src/util.ts',
 	'src/structures.ts',
 	'src/constants.ts',
@@ -14,5 +14,5 @@ const entryPoints = [
 	'src/rng/index.ts'
 ];
 export default createTsupConfig({
-   entryPoints
+	entry
 });

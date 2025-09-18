@@ -1,6 +1,6 @@
-import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
 import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const WildySlayerCaveTable = new LootTable()
 	.add('Blighted entangle sack', [1, 10], 6850)

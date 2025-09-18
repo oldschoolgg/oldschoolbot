@@ -1,12 +1,11 @@
-
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
+import { Workers } from '@/lib/workers/index.js';
 import { ClueTiers } from '../../lib/clues/clueTiers.js';
 import { PerkTier } from '../../lib/constants.js';
 import { deferInteraction } from '../../lib/util/interactionReply.js';
 import { makeBankImage } from '../../lib/util/makeBankImage.js';
-import { Workers } from '@/lib/workers/index.js';
 
 function determineLimit(user: MUser) {
 	const perkTier = user.perkTier();

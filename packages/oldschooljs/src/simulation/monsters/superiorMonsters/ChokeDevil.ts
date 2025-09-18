@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 import { DustDevilPreTable } from '../low/a-f/DustDevil.js';
 
 const ChokeDevilTable = new LootTable()

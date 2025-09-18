@@ -6,7 +6,8 @@
 		"incremental": false,
 		"paths": {
 			"@/*": ["./*"]
-		}
+		},
+		"noEmit": false
 	},
 	"include": ["."]
 }

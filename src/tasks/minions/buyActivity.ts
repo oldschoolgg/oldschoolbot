@@ -26,7 +26,6 @@ export const buyTask: MinionTask = {
 
 		const loot = new Bank().add(itemID, quantity);
 		await user.transactItems({
-
 			itemsToAdd: loot,
 			collectionLog: false
 		});

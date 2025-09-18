@@ -7,9 +7,9 @@ import { Time, debounce, noOp } from 'e';
 
 import { BLACKLISTED_USERS } from './blacklists.js';
 import { SILENT_ERROR } from './constants.js';
+import type { MakePartyOptions } from './types/index.js';
 import { getUsername } from './util.js';
 import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs.js';
-import type { MakePartyOptions } from './types/index.js';
 
 const partyLockCache = new Set<string>();
 TimerManager.setInterval(() => {

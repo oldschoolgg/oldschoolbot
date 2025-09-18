@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 import { DeviantSpectrePreTable } from '../low/a-f/DeviantSpectre.js';
 
 const RepugnantSpectreTable = new LootTable()

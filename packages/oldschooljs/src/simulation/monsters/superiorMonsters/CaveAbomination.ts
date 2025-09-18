@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 import { CaveHorrorPreTable } from '../low/a-f/CaveHorror.js';
 
 const CaveAbominationTable = new LootTable()

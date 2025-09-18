@@ -15,6 +15,7 @@ import Constructables from '../skilling/skills/construction/constructables.js';
 import Cooking from '../skilling/skills/cooking/cooking.js';
 import ForestryRations from '../skilling/skills/cooking/forestersRations.js';
 import LeapingFish from '../skilling/skills/cooking/leapingFish.js';
+import Crafting from '../skilling/skills/crafting/index.js';
 import Farming from '../skilling/skills/farming/index.js';
 import Firemaking from '../skilling/skills/firemaking.js';
 import { Fishing } from '../skilling/skills/fishing/fishing.js';
@@ -82,7 +83,6 @@ import type {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions.js';
-import Crafting from '../skilling/skills/crafting/index.js';
 
 export function minionStatus(user: MUser) {
 	const currentTask = ActivityManager.getActivityOfUser(user.id);

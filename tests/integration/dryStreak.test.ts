@@ -1,7 +1,7 @@
 import { describe, test } from 'vitest';
 
-import getOSItem from '../../src/lib/util/getOSItem';
-import { dryStreakEntities } from '../../src/mahoji/commands/tools';
+import getOSItem from '../../src/lib/util/getOSItem.js';
+import { dryStreakEntities } from '../../src/mahoji/commands/tools.js';
 
 describe('Drystreak', async () => {
 	test('Data points', async () => {

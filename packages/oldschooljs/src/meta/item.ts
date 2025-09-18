@@ -62,7 +62,6 @@ export interface ItemEquipment {
 	requirements: Partial<ItemRequirements> | null;
 }
 
-
 /**
  * A representation of an Old School RuneScape (OSRS) item.
  */
@@ -135,7 +134,6 @@ export interface Item {
 	 */
 	price?: number;
 }
-
 
 export interface ItemWeaponStance {
 	combat_style: string;

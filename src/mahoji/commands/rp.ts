@@ -1,7 +1,4 @@
-import {
-	type MahojiUserOption,
-	isValidDiscordSnowflake
-} from '@oldschoolgg/toolkit/discord-util';
+import { type MahojiUserOption, isValidDiscordSnowflake } from '@oldschoolgg/toolkit/discord-util';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { dateFm } from '@oldschoolgg/toolkit/util';

@@ -1,4 +1,4 @@
-import { itemTupleToTable, LootTable } from 'oldschooljs';
+import { LootTable, itemTupleToTable } from 'oldschooljs';
 
 export const CrystalChestTable = new LootTable()
 	.add(

@@ -263,7 +263,6 @@ export const sellCommand: OSBMahojiCommand = {
 		}
 
 		await user.transactItems({
-
 			itemsToAdd: new Bank().add('Coins', totalPrice),
 			itemsToRemove: bankToSell
 		});

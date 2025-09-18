@@ -12,7 +12,6 @@ export const strongholdTask: MinionTask = {
 		const loot = new Bank().add('Coins', 10_000).add('Fancy boots').add('Fighting boots').add('Fancier boots');
 
 		await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

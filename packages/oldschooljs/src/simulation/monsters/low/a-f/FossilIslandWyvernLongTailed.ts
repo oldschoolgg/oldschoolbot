@@ -1,7 +1,7 @@
-import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
 import TreeHerbSeedTable from '@/simulation/subtables/TreeHerbSeedTable.js';
 import WyvernHerbTable from '@/simulation/subtables/WyvernHerbTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const LongTailedWyvernTable = new LootTable()
 	.every('Wyvern bones')

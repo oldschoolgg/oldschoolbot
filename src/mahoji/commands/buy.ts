@@ -166,7 +166,6 @@ export const buyCommand: OSBMahojiCommand = {
 		);
 
 		await user.transactItems({
-
 			itemsToAdd: outItems,
 			collectionLog: true,
 			itemsToRemove: totalCost

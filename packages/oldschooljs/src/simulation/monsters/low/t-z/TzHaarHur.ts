@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const TzHaarHurTable = new LootTable({ limit: 195 })
 	.add('Tokkul', [3, 7], 182)

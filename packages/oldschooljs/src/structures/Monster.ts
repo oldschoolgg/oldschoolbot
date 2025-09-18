@@ -1,13 +1,22 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
-import { getBrimKeyChanceFromCBLevel, getSlayersEnchantmentChanceFromHP, getLarranKeyChanceFromCBLevel, getAncientShardChanceFromHP, getTotemChanceFromHP, roll } from '@/util/util.js';
-import  {Bank} from './Bank.js';
+import { type MonsterData, MonsterSlayerMaster } from '@/meta/monsterData.js';
+import {
+	getAncientShardChanceFromHP,
+	getBrimKeyChanceFromCBLevel,
+	getLarranKeyChanceFromCBLevel,
+	getSlayersEnchantmentChanceFromHP,
+	getTotemChanceFromHP,
+	roll
+} from '@/util/util.js';
+import { Bank } from './Bank.js';
 import type LootTable from './LootTable.js';
 import type { LootTableRollOptions } from './LootTable.js';
-import { MonsterSlayerMaster, type MonsterData } from '@/meta/monsterData.js';
 
-const monsterData = JSON.parse(readFileSync(path.join(import.meta.dirname,'../assets/monsters_data.json'), 'utf-8')) as { [key: string]: MonsterData };
+const monsterData = JSON.parse(
+	readFileSync(path.join(import.meta.dirname, '../../dist/assets/monsters_data.json'), 'utf-8')
+) as { [key: string]: MonsterData };
 
 export interface MonsterOptions {
 	id: number;
@@ -17,7 +26,6 @@ export interface MonsterOptions {
 	aliases?: string[];
 	allItems?: number[];
 }
-
 
 export interface MonsterKillOptions {
 	/**
@@ -66,7 +74,6 @@ export abstract class Monster {
 	}
 }
 
-
 type CustomKillLogic = (options: MonsterKillOptions, currentLoot: Bank) => void;
 
 interface SimpleMonsterOptions extends MonsterOptions {
@@ -77,7 +84,7 @@ interface SimpleMonsterOptions extends MonsterOptions {
 	customKillLogic?: CustomKillLogic;
 }
 
-export  class SimpleMonster extends Monster {
+export class SimpleMonster extends Monster {
 	public table?: LootTable;
 	public onTaskTable?: LootTable;
 	public wildyCaveTable?: LootTable;

@@ -12,10 +12,10 @@ import {
 import { Bank, type ChambersOfXericOptions, type Item, itemID, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
+import type { Skills } from '@/lib/types/index.js';
 import { checkUserCanUseDegradeableItem } from '../degradeableItems.js';
 import { SkillsEnum } from '../skilling/types.js';
 import { Gear, constructGearSetup } from '../structures/Gear.js';
-import type { Skills } from '@/lib/types/index.js';
 import getOSItem from '../util/getOSItem.js';
 import { logError } from '../util/logError.js';
 import { formatList, itemNameFromID } from '../util/smallUtils.js';

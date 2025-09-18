@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const YanilleWatchmanTable = new LootTable().every('Coins', 60).every('Bread').tertiary(134_625, 'Rocky');
 

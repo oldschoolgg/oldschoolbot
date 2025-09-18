@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 import { AraxyteTable } from '../low/a-f/Araxyte.js';
 import AbhorrentSpectre from './AbhorrentSpectre.js';
 import BasiliskSentinel from './BasiliskSentinel.js';

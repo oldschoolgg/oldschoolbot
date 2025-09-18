@@ -1,14 +1,17 @@
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches } from '@oldschoolgg/toolkit/util';
-import { xp_gains_skill_enum, type Prisma } from '@prisma/client';
+import { type Prisma, xp_gains_skill_enum } from '@prisma/client';
 import { ApplicationCommandOptionType, MessageFlags, type User } from 'discord.js';
 import { Time, noOp, randArrItem, randInt, uniqueArr } from 'e';
-import { Bank, convertLVLtoXP, itemID, Items, MAX_INT_JAVA } from 'oldschooljs';
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { Bank, Items, MAX_INT_JAVA, convertLVLtoXP, itemID } from 'oldschooljs';
 
+import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';
+import { testBotKvStore } from '@/testing/TestBotStore.js';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser.js';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits.js';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements.js';
 import { BitFieldData, globalConfig } from '../../lib/constants.js';
+import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox.js';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables.js';
 import { Eatables } from '../../lib/data/eatables.js';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob.js';
@@ -17,11 +20,9 @@ import potions from '../../lib/minions/data/potions.js';
 import { MAX_QP, quests } from '../../lib/minions/data/quests.js';
 import { allOpenables } from '../../lib/openables.js';
 import { Minigames } from '../../lib/settings/minigames.js';
-import { testBotKvStore } from '@/testing/TestBotStore.js';
-import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../lib/data/cox.js';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo.js';
-import Skills from '../../lib/skilling/skills/index.js';
 import Farming from '../../lib/skilling/skills/farming/index.js';
+import Skills from '../../lib/skilling/skills/index.js';
 import { slayerMasterChoices } from '../../lib/slayer/constants.js';
 import { slayerMasters } from '../../lib/slayer/slayerMasters.js';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil.js';
@@ -38,7 +39,6 @@ import { allUsableItems } from '../lib/abstracted_commands/useCommand.js';
 import { BingoManager } from '../lib/bingo/BingoManager.js';
 import { userStatsUpdate } from '../mahojiSettings.js';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo.js';
-import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';
 
 export function getMaxUserValues() {
 	const updates: Omit<Prisma.UserUpdateArgs['data'], 'id'> = {};

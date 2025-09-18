@@ -1,4 +1,3 @@
-
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa.js';

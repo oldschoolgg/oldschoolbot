@@ -4,12 +4,16 @@ import type { Bank } from 'oldschooljs';
 
 import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre.js';
 
-import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables/index.js';
 import Arrows from '../../../lib/skilling/skills/fletching/fletchables/arrows.js';
 import Bolts from '../../../lib/skilling/skills/fletching/fletchables/bolts.js';
 import Darts from '../../../lib/skilling/skills/fletching/fletchables/darts.js';
+import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables/index.js';
 import Javelins from '../../../lib/skilling/skills/fletching/fletchables/javelins.js';
-import { AmethystBroadBolts, BroadArrows, BroadBolts } from '../../../lib/skilling/skills/fletching/fletchables/slayer.js';
+import {
+	AmethystBroadBolts,
+	BroadArrows,
+	BroadBolts
+} from '../../../lib/skilling/skills/fletching/fletchables/slayer.js';
 import TippedBolts from '../../../lib/skilling/skills/fletching/fletchables/tippedBolts.js';
 import TippedDragonBolts from '../../../lib/skilling/skills/fletching/fletchables/tippedDragonBolts.js';
 import type { Fletchable } from '../../../lib/skilling/types.js';

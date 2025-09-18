@@ -7,7 +7,12 @@ import { userhasDiaryTier } from '../../lib/diaries.js';
 import { QuestID } from '../../lib/minions/data/quests.js';
 import { DiaryID } from '../../lib/minions/types.js';
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime.js';
-import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../../lib/skilling/functions/miningBoosts.js';
+import {
+	miningCapeOreEffect,
+	miningGloves,
+	pickaxes,
+	varrockArmours
+} from '../../lib/skilling/functions/miningBoosts.js';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements.js';
 import Mining from '../../lib/skilling/skills/mining.js';
 import type { Ore } from '../../lib/skilling/types.js';

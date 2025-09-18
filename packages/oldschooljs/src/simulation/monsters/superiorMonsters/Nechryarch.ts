@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 import { NechryaelPreTable } from '../low/n-s/Nechryael.js';
 
 const NechryarchTable = new LootTable()

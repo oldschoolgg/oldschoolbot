@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 import { BasiliskKnightPreTable } from '../low/a-f/BasiliskKnight.js';
 
 const BasiliskSentinelTable = new LootTable()

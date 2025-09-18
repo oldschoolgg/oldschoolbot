@@ -1,9 +1,9 @@
 import { itemID, resolveItems } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { getSimilarItems } from '../../src/lib/data/similarItems';
-import { Gear } from '../../src/lib/structures/Gear';
-import { itemNameFromID } from '../../src/lib/util/smallUtils';
+import { getSimilarItems } from '../../src/lib/data/similarItems.js';
+import { Gear } from '../../src/lib/structures/Gear.js';
+import { itemNameFromID } from '../../src/lib/util/smallUtils.js';
 
 describe('Gear', () => {
 	const testGear = new Gear({

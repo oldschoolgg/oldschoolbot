@@ -11,7 +11,10 @@ import { BitField, PerkTier } from '../../lib/constants.js';
 import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections.js';
 import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '../../lib/data/CollectionsExport.js';
 import pets from '../../lib/data/pets.js';
-import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters/index.js';
+import killableMonsters, {
+	effectiveMonsters,
+	NightmareMonster
+} from '../../lib/minions/data/killableMonsters/index.js';
 import { type UnifiedOpenable, allOpenables } from '../../lib/openables.js';
 import type { MinigameName } from '../../lib/settings/minigames.js';
 import { Minigames } from '../../lib/settings/minigames.js';

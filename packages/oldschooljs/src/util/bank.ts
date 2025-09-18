@@ -1,6 +1,6 @@
 import { Time, calcWhatPercent, increaseNumByPercent } from '@/util/smallUtils.js';
 
-import {Bank, type ItemBank} from '@/structures/Bank.js';
+import { Bank, type ItemBank } from '@/structures/Bank.js';
 import Items from '@/structures/Items.js';
 import itemID from './itemID.js';
 

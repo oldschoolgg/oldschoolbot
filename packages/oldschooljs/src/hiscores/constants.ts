@@ -1,4 +1,4 @@
-import type { MinigameScore } from "./Player.js";
+import type { MinigameScore } from './Player.js';
 
 export const mappedBossNames = [
 	['abyssalSire', 'Abyssal Sire'],

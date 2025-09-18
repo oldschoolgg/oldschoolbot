@@ -38,7 +38,6 @@ export const combatRingTask: MinionTask = {
 		});
 
 		await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

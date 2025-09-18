@@ -1,8 +1,8 @@
-import { roll } from  '@/util/smallUtils.js';
-import type { MonsterKillOptions } from '@/structures/Monster.js';
-import {Bank} from '@/structures/Bank.js';
+import { Bank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
-import {Monster } from '@/structures/Monster.js';
+import type { MonsterKillOptions } from '@/structures/Monster.js';
+import { Monster } from '@/structures/Monster.js';
+import { roll } from '@/util/smallUtils.js';
 
 const BarrowsTable = new LootTable();
 

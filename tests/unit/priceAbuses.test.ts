@@ -1,10 +1,10 @@
 import { isFunction } from 'e';
 import { describe, test } from 'vitest';
 
-import Buyables from '../../src/lib/data/buyables/buyables';
-import getOSItem from '../../src/lib/util/getOSItem';
-import { sacrificePriceOfItem } from '../../src/mahoji/commands/sacrifice';
-import { sellPriceOfItem, sellStorePriceOfItem } from '../../src/mahoji/commands/sell';
+import Buyables from '../../src/lib/data/buyables/buyables.js';
+import getOSItem from '../../src/lib/util/getOSItem.js';
+import { sacrificePriceOfItem } from '../../src/mahoji/commands/sacrifice.js';
+import { sellPriceOfItem, sellStorePriceOfItem } from '../../src/mahoji/commands/sell.js';
 
 describe('Price Abusing', () => {
 	const gpPackageBuyables = Buyables.filter(

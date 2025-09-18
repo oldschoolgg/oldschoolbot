@@ -1,5 +1,5 @@
-import type { ChatInputCommandInteraction, User, BaseInteraction, InteractionReplyOptions } from "discord.js";
-import type { AbstractCommandAttributes, CommandOptions, ICommand, MahojiClient } from "./util/discord/index.js";
+import type { BaseInteraction, ChatInputCommandInteraction, InteractionReplyOptions, User } from 'discord.js';
+import type { AbstractCommandAttributes, CommandOptions, ICommand, MahojiClient } from './util/discord/index.js';
 
 declare global {
 	interface CommandRunOptions<T extends CommandOptions = {}> {

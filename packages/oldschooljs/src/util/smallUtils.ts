@@ -143,7 +143,7 @@ export function partition<T>(arr: T[], filter: (item: T) => boolean): [T[], T[]]
 }
 
 export function removeFromArr<T>(arr: T[] | readonly T[], item: T) {
-	return arr.filter((i) => i !== item);
+	return arr.filter(i => i !== item);
 }
 
 /**

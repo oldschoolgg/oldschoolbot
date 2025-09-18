@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const SpindelUniqueTable = new LootTable()
 	.oneIn(358, 'Dragon 2h sword')

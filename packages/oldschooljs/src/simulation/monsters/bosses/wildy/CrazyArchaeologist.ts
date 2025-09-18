@@ -1,7 +1,7 @@
-import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
-import { itemTupleToTable } from '@/structures/LootTable.js';
 import RareDropTable, { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { itemTupleToTable } from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const CrazyArchaeologistUniqueTable = new LootTable().add('Odium shard 2').add('Malediction shard 2');
 

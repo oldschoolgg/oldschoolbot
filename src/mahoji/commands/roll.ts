@@ -1,4 +1,3 @@
-
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { cryptoRand } from '../../lib/util/rng.js';

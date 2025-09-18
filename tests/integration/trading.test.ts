@@ -2,9 +2,9 @@ import { randArrItem, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
-import { tradeCommand } from '../../src/mahoji/commands/trade';
-import type { TestUser } from './util';
-import { createTestUser, mockClient } from './util';
+import { tradeCommand } from '../../src/mahoji/commands/trade.js';
+import type { TestUser } from './util.js';
+import { createTestUser, mockClient } from './util.js';
 
 test('Trade consistency', async () => {
 	await mockClient();

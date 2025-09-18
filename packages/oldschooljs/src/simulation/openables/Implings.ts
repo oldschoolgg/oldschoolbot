@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleOpenable} from '@/structures/SimpleOpenable.js';
+import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 import { EasyClueTable } from '../clues/Easy.js';
 import { EliteClueTable } from '../clues/Elite.js';
 import { HardClueTable } from '../clues/Hard.js';

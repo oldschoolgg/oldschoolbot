@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const ScorpiaUniqueTable = new LootTable().add('Odium shard 3').add('Malediction shard 3');
 

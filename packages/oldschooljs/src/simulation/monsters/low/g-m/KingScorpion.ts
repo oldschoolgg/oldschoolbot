@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 export const KingScorpionTable = new LootTable()
 	.tertiary(25, 'Ensouled scorpion head')

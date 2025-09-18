@@ -83,7 +83,6 @@ export const zalcanoTask: MinionTask = {
 		}
 
 		const { previousCL, itemsAdded } = await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: updateBank.itemLootBank
 		});

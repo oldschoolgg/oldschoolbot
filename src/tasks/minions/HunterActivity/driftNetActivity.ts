@@ -72,7 +72,6 @@ export const driftNetTask: MinionTask = {
 		let str = `${user}, ${user.minionName} finished drift net fishing and caught ${quantity}x ${fishShoal.name}. ${xpRes}\n${user.minionName} asks if you'd like them to do another of the same trip.`;
 
 		await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

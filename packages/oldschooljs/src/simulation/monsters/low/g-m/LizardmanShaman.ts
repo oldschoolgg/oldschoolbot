@@ -1,8 +1,8 @@
-import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
 import { NotedHerbTable } from '@/simulation/subtables/NotedHerbTable.js';
 import RareDropTable from '@/simulation/subtables/RareDropTable.js';
 import TreeHerbSeedTable from '@/simulation/subtables/TreeHerbSeedTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const LizardmanShamanTable = new LootTable({ limit: 500 })
 	.every('Big bones')

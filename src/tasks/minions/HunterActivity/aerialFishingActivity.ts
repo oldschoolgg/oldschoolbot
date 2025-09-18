@@ -143,7 +143,6 @@ export const aerialFishingTask: MinionTask = {
 		}
 
 		await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

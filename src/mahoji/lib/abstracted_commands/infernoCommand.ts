@@ -3,6 +3,7 @@ import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
 import { Time, calcPercentOfNum, percentChance, randInt, roll, sumArr } from 'e';
 import { Bank, type ItemBank, Items, Monsters, itemID } from 'oldschooljs';
 
+import type { Skills } from '@/lib/types/index.js';
 import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage.js';
 import type { ProjectileType } from '../../../lib/constants.js';
 import { BitField, projectiles } from '../../../lib/constants.js';
@@ -15,7 +16,6 @@ import type { InfernoOptions } from '../../../lib/types/minions.js';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
 import getOSItem from '../../../lib/util/getOSItem.js';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
-import type { Skills } from '@/lib/types/index.js';
 
 const minimumRangeItems = [
 	'Amulet of fury',

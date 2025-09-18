@@ -1,4 +1,3 @@
-
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 
 import { PoHObjects } from '../../lib/poh/index.js';

@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 import { DarkBeastPreTable } from '../low/a-f/DarkBeast.js';
 
 const NightBeastTable = new LootTable()

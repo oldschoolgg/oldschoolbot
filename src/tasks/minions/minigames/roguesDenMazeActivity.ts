@@ -48,7 +48,6 @@ export const roguesDenTask: MinionTask = {
 		}
 
 		const { previousCL, itemsAdded } = await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

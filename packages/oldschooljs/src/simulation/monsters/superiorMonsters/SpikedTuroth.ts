@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 import { TurothPreTable } from '../low/t-z/Turoth.js';
 
 const SpikedTurothTable = new LootTable()

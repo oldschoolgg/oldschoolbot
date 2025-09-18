@@ -20,7 +20,6 @@ export const enchantingTask: MinionTask = {
 
 		const loot = enchantable.output.clone().multiply(quantity);
 		await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

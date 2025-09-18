@@ -1,8 +1,8 @@
-import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
 import CommonSeedDropTable from '@/simulation/subtables/CommonSeedDropTable.js';
 import HerbDropTable from '@/simulation/subtables/HerbDropTable.js';
 import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 export const JogreTable = new LootTable({ limit: 129 })
 	.tertiary(5000, 'Jogre champion scroll')

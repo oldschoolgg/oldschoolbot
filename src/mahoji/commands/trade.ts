@@ -1,9 +1,5 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
-import {
-	type MahojiUserOption,
-	discrimName,
-	mentionCommand
-} from '@oldschoolgg/toolkit/discord-util';
+import { type MahojiUserOption, discrimName, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 

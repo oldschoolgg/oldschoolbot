@@ -2,9 +2,9 @@ import { Time, randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { payCommand } from '../../src/mahoji/commands/pay';
-import type { TestUser } from './util';
-import { createTestUser, mockClient } from './util';
+import { payCommand } from '../../src/mahoji/commands/pay.js';
+import type { TestUser } from './util.js';
+import { createTestUser, mockClient } from './util.js';
 
 describe('Payment conflicts', async () => {
 	const payerCount = 20;

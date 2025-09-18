@@ -1,6 +1,6 @@
 import LootTable from '@/structures/LootTable.js';
-import {SimpleOpenable} from '@/structures/SimpleOpenable.js';
 import { itemTupleToTable } from '@/structures/LootTable.js';
+import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
 const FoodTable = new LootTable()
 	.add('Egg potato', 4, 12)

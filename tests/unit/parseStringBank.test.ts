@@ -2,8 +2,8 @@ import { randInt } from 'e';
 import { Bank, Items, itemID } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import getOSItem from '../../src/lib/util/getOSItem';
-import { parseBank, parseQuantityAndItem, parseStringBank } from '../../src/lib/util/parseStringBank';
+import getOSItem from '../../src/lib/util/getOSItem.js';
+import { parseBank, parseQuantityAndItem, parseStringBank } from '../../src/lib/util/parseStringBank.js';
 
 const psb = parseStringBank;
 const get = getOSItem;

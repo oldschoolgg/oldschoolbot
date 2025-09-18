@@ -1,4 +1,4 @@
-import type {Bank} from './Bank.js';
+import type { Bank } from './Bank.js';
 
 type ChestSize = 'big' | 'small';
 type SeedTier = '1' | '2' | '3' | '4' | '5';

@@ -1,6 +1,6 @@
+import type { Bank } from '@/structures/Bank.js';
 import type { MonsterKillOptions } from '@/structures/Monster.js';
-import type {Bank} from '@/structures/Bank.js';
-import {Monster } from '@/structures/Monster.js';
+import { Monster } from '@/structures/Monster.js';
 import { DukeSucellus } from './DukeSucellus.js';
 
 class AwakenedDukeSucellusSingleton extends Monster {

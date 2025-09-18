@@ -23,6 +23,7 @@ import {
 
 import { ClueTiers } from './clues/clueTiers.js';
 import { cluesRaresCL } from './data/CollectionsExport.js';
+import { defaultFarmingContract } from './minions/farming/index.js';
 import type { FarmingContract } from './minions/farming/types.js';
 import { shadeChestOpenables } from './shadesKeys.js';
 import { nestTable } from './simulation/birdsNest.js';
@@ -36,7 +37,6 @@ import {
 import { openSeedPack } from './skilling/functions/calcFarmingContracts.js';
 import getOSItem from './util/getOSItem.js';
 import { roll } from './util/rng.js';
-import { defaultFarmingContract } from './minions/farming/index.js';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)

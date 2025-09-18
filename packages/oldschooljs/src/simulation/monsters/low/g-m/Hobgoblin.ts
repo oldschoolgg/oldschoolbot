@@ -1,7 +1,7 @@
-import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
 import CommonSeedDropTable from '@/simulation/subtables/CommonSeedDropTable.js';
 import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const HerbTable = new LootTable()
 	.add('Grimy guam leaf', 1, 10)

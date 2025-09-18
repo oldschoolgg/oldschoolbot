@@ -24,7 +24,6 @@ export const collectingTask: MinionTask = {
 		const totalQuantity = quantity * colQuantity;
 		const loot = new Bank().add(collectable.item.id, totalQuantity);
 		await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

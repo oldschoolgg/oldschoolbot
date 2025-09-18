@@ -72,7 +72,6 @@ export const sepulchreTask: MinionTask = {
 		}
 
 		const { previousCL, itemsAdded } = await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

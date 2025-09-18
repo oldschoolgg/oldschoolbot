@@ -21,7 +21,6 @@ export const clueTask: MinionTask = {
 		if (implingClues) await user.addItemsToCollectionLog(new Bank().add(clueTier.scrollID, implingClues));
 		const loot = new Bank().add(clueTier.id, quantity);
 		await user.transactItems({
-
 			collectionLog: true,
 			itemsToAdd: loot
 		});

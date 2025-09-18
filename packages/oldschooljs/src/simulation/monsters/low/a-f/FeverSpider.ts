@@ -1,6 +1,6 @@
 import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
-import {SimpleMonster} from '@/structures/Monster.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const FeverSpiderTable = new LootTable({ limit: 36 })
 	.add("Red d'hide chaps", 1, 3)
