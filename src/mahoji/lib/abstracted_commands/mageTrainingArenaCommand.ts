@@ -17,6 +17,8 @@ const RuneTable = new LootTable()
 	.every('Nature rune', [18, 22])
 	.every('Fire rune', [35, 45]);
 
+const bonesToPeachesItem = getOSItem('Bones to peaches');
+
 export const mageTrainingArenaBuyables = [
 	{
 		item: getOSItem('Infinity gloves'),
@@ -66,7 +68,7 @@ export const mageTrainingArenaBuyables = [
 		cost: 400
 	},
 	{
-		item: getOSItem('Bones to peaches'),
+		item: bonesToPeachesItem,
 		cost: 600
 	}
 ];
@@ -80,11 +82,18 @@ export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 	}
 
 	const { item, cost, upgradesFrom } = buyable;
+
+	const isBonesToPeaches = item.id === bonesToPeachesItem.id;
+
 	const newUser = await getNewUser(user.id);
 	const balance = newUser.pizazz_points;
 
 	if (upgradesFrom && !user.owns(upgradesFrom.id)) {
 		return `To buy a ${item.name}, you need to upgrade to it with a ${upgradesFrom.name}, which you do not own.`;
+	}
+
+	if (isBonesToPeaches && user.cl.amount(item.id) > 0) {
+		return 'You have already unlocked the Bones to peaches spell.';
 	}
 
 	if (balance < cost) {
@@ -105,6 +114,11 @@ export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 			}
 		}
 	});
+
+	if (isBonesToPeaches) {
+		await user.addItemsToCollectionLog(new Bank().add(item.id));
+		return `Successfully unlocked the ${item.name} spell for ${cost} Pizazz Points.`;
+	}
 
 	await user.addItemsToBank({ items: { [item.id]: 1 }, collectionLog: true });
 

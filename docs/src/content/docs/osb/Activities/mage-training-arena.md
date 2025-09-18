@@ -2,7 +2,7 @@
 title: "Mage Training Arena"
 ---
 
-Your minion can train [[magic]] in the Mage Training Arena and buy all the regular rewards, such as Infinity gear, wands, [[Bones to peaches]], and the [[Mage's book]]. The Mage Training Arena is combined into one room and one set of points. A single room costs 45 [[fire rune]], 20 [[nature rune]], 18 [[cosmic rune]], and 14 [[law rune]]. Each room takes 14 minutes to complete and awards 23 Pizazz points. Training in the Mage Training Arena grants around [[magic:25k XP]] per hour.
+Your minion can train [[magic]] in the Mage Training Arena and buy all the regular rewards, such as Infinity gear, wands, [[Bones to peaches]], [[Rune pouch]] and the [[Mage's book]]. The Mage Training Arena is combined into one room and one set of points. A single room costs 45 [[fire rune]], 20 [[nature rune]], 18 [[cosmic rune]], and 14 [[law rune]]. Each room takes 14 minutes to complete and awards 23 Pizazz points. Training in the Mage Training Arena grants around [[magic:25k XP]] per hour.
 
 To start a trip, use [[/minigames mage_training_arena start]]. To check your points, use [[/minigames mage_training_arena points]].
 
@@ -13,14 +13,17 @@ To start a trip, use [[/minigames mage_training_arena start]]. To check your poi
 
 | **Item**             | **Pizazz Points** |
 | -------------------- | ----------------- |
-| [[Infinity gloves]]  | 420               |
 | [[Infinity hat]]     | 810               |
 | [[Infinity top]]     | 960               |
 | [[Infinity bottoms]] | 1,110             |
+| [[Infinity gloves]]  | 420               |
 | [[Infinity boots]]   | 280               |
 | [[Beginner wand]]    | 30                |
 | [[Apprentice wand]]  | 71                |
 | [[Teacher wand]]     | 143               |
 | [[Master wand]]      | 575               |
-| [[Bones to peaches]] | 600               |
 | [[Mage's book]]      | 1,260             |
+| [[Rune pouch]]       | 600               |
+| [[Bones to peaches]] | 600               |
+
+
