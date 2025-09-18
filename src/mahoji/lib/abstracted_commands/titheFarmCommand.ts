@@ -4,11 +4,11 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import TitheFarmBuyables from '../../../lib/data/buyables/titheFarmBuyables';
-import type { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { userHasGracefulEquipped, userStatsUpdate } from '../../mahojiSettings';
+import TitheFarmBuyables from '../../../lib/data/buyables/titheFarmBuyables.js';
+import type { TitheFarmActivityTaskOptions } from '../../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
+import { userHasGracefulEquipped, userStatsUpdate } from '../../mahojiSettings.js';
 
 async function determineDuration(user: MUser): Promise<[number, string[]]> {
 	let baseTime = Time.Second * 1500;

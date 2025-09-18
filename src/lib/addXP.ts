@@ -5,14 +5,14 @@ import { bold } from 'discord.js';
 import { Time, noOp } from 'e';
 import { convertXPtoLVL, toKMB } from 'oldschooljs';
 
-import { LEVEL_99_XP, MAX_LEVEL, MAX_TOTAL_LEVEL, MAX_XP, globalConfig } from './constants';
-import { skillEmoji } from './data/emojis';
-import type { AddXpParams } from './minions/types';
-import { sql } from './postgres';
-import Skills from './skilling/skills';
-import { mahojiClientSettingsFetch } from './util/clientSettings';
-import { insertUserEvent } from './util/userEvents';
-import { sendToChannelID } from './util/webhook';
+import { LEVEL_99_XP, MAX_LEVEL, MAX_TOTAL_LEVEL, MAX_XP, globalConfig } from './constants.js';
+import { skillEmoji } from './data/emojis.js';
+import type { AddXpParams } from './minions/types.js';
+import { sql } from './postgres.js';
+import Skills from './skilling/skills.js';
+import { mahojiClientSettingsFetch } from './util/clientSettings.js';
+import { insertUserEvent } from './util/userEvents.js';
+import { sendToChannelID } from './util/webhook.js';
 
 const skillsVals = Object.values(Skills);
 const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${LEVEL_99_XP}`).join(' AND ');

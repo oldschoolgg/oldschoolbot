@@ -6,32 +6,32 @@ import { ApplicationCommandOptionType, ChannelType, EmbedBuilder } from 'discord
 import { Bank, type Item, type ItemBank, ItemGroups, Items, ToBUniqueTable, resolveItems } from 'oldschooljs';
 
 import { parseStaticTimeInterval, staticTimeIntervals } from '@/lib/util/smallUtils.js';
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
-import { BitField, PerkTier } from '../../lib/constants';
-import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
-import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '../../lib/data/CollectionsExport';
-import pets from '../../lib/data/pets';
-import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
-import { type UnifiedOpenable, allOpenables } from '../../lib/openables';
-import type { MinigameName } from '../../lib/settings/minigames';
-import { Minigames } from '../../lib/settings/minigames';
-import Skills from '../../lib/skilling/skills';
-import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '../../lib/types/minions';
-import { getUsername, isGroupActivity } from '../../lib/util';
-import { getItem } from '../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { makeBankImage } from '../../lib/util/makeBankImage';
+import { ClueTiers } from '../../lib/clues/clueTiers.js';
+import { allStashUnitsFlat } from '../../lib/clues/stashUnits.js';
+import { BitField, PerkTier } from '../../lib/constants.js';
+import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections.js';
+import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '../../lib/data/CollectionsExport.js';
+import pets from '../../lib/data/pets.js';
+import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters.js';
+import { type UnifiedOpenable, allOpenables } from '../../lib/openables.js';
+import type { MinigameName } from '../../lib/settings/minigames.js';
+import { Minigames } from '../../lib/settings/minigames.js';
+import Skills from '../../lib/skilling/skills.js';
+import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '../../lib/types/minions.js';
+import { getUsername, isGroupActivity } from '../../lib/util.js';
+import { getItem } from '../../lib/util/getOSItem.js';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation.js';
+import { deferInteraction } from '../../lib/util/interactionReply.js';
+import { makeBankImage } from '../../lib/util/makeBankImage.js';
 import {
 	getParsedStashUnits,
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand,
 	stashUnitUnfillCommand,
 	stashUnitViewCommand
-} from '../lib/abstracted_commands/stashUnitsCommand';
-import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
-import { patronMsg } from '../mahojiSettings';
+} from '../lib/abstracted_commands/stashUnitsCommand.js';
+import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions.js';
+import { patronMsg } from '../mahojiSettings.js';
 
 function isRaidsActivity(data: any): data is RaidsOptions {
 	return 'challengeMode' in data;

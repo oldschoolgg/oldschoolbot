@@ -2,11 +2,11 @@ import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { calcPerHour, formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { increaseNumByPercent, randInt } from 'e';
 
-import { getTemporossLoot } from '../../../lib/simulation/tempoross';
-import { Fishing } from '../../../lib/skilling/skills/fishing/fishing';
-import type { TemporossActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { getTemporossLoot } from '../../../lib/simulation/tempoross.js';
+import { Fishing } from '../../../lib/skilling/skills/fishing/fishing.js';
+import type { TemporossActivityTaskOptions } from '../../../lib/types/minions.js';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
+import { makeBankImage } from '../../../lib/util/makeBankImage.js';
 
 export const temporossTask: MinionTask = {
 	type: 'Tempoross',

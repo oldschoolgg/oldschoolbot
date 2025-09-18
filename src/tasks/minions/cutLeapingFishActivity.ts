@@ -1,10 +1,10 @@
 import { clamp, percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
-import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { CutLeapingFishActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish.js';
+import { SkillsEnum } from '../../lib/skilling/types.js';
+import type { CutLeapingFishActivityTaskOptions } from '../../lib/types/minions.js';
+import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
 
 export const cutLeapingFishTask: MinionTask = {
 	type: 'CutLeapingFish',

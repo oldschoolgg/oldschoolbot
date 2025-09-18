@@ -4,7 +4,7 @@ import { captureException } from '@sentry/node';
 import type { Interaction } from 'discord.js';
 import { isObject } from 'e';
 
-import { globalConfig } from '../constants';
+import { globalConfig } from '../constants.js';
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
 	if (!condition) {

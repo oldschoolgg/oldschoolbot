@@ -1,7 +1,7 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 
-import { allUsableItems, useCommand } from '../lib/abstracted_commands/useCommand';
-import { ownedItemOption } from '../lib/mahojiCommandOptions';
+import { allUsableItems, useCommand } from '../lib/abstracted_commands/useCommand.js';
+import { ownedItemOption } from '../lib/mahojiCommandOptions.js';
 
 export const mahojiUseCommand: OSBMahojiCommand = {
 	name: 'use',

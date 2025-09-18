@@ -3,20 +3,20 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Items } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { allPetIDs } from '../../lib/data/CollectionsExport';
-import type { GearSetupType } from '../../lib/gear/types';
-import { GearSetupTypes } from '../../lib/gear/types';
-import { equipPet } from '../../lib/minions/functions/equipPet';
-import { unequipPet } from '../../lib/minions/functions/unequipPet';
+import { allPetIDs } from '../../lib/data/CollectionsExport.js';
+import type { GearSetupType } from '../../lib/gear/types.js';
+import { GearSetupTypes } from '../../lib/gear/types.js';
+import { equipPet } from '../../lib/minions/functions/equipPet.js';
+import { unequipPet } from '../../lib/minions/functions/unequipPet.js';
 import {
 	gearEquipCommand,
 	gearStatsCommand,
 	gearSwapCommand,
 	gearUnequipCommand,
 	gearViewCommand
-} from '../lib/abstracted_commands/gearCommands';
-import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '../lib/mahojiCommandOptions';
-import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
+} from '../lib/abstracted_commands/gearCommands.js';
+import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '../lib/mahojiCommandOptions.js';
+import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings.js';
 
 const gearValidationChecks = new Set();
 

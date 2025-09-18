@@ -1,4 +1,3 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import {
 	type Activity,
 	type Bingo,

@@ -1,7 +1,7 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 
-import { PoHObjects } from '../../lib/poh';
+import { PoHObjects } from '../../lib/poh.js';
 import {
 	getPOH,
 	makePOHImage,
@@ -11,8 +11,8 @@ import {
 	pohMountItemCommand,
 	pohWallkitCommand,
 	pohWallkits
-} from '../lib/abstracted_commands/pohCommand';
-import { ownedItemOption } from '../lib/mahojiCommandOptions';
+} from '../lib/abstracted_commands/pohCommand.js';
+import { ownedItemOption } from '../lib/mahojiCommandOptions.js';
 
 export const pohCommand: OSBMahojiCommand = {
 	name: 'poh',

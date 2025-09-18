@@ -5,16 +5,16 @@ import { Time, isObject, objectEntries } from 'e';
 import { Bank, type ItemBank, ItemGroups, Items } from 'oldschooljs';
 
 import { formatItemReqs, formatList, hasSkillReqs, itemNameFromID, readableStatName } from '@/lib/util/smallUtils.js';
-import type { SelectedUserStats } from '../lib/MUser';
-import { globalConfig } from '../lib/constants';
-import { userhasDiaryTier } from '../lib/diaries';
-import { quests } from '../lib/minions/data/quests';
-import type { Consumable, KillableMonster } from '../lib/minions/types';
-import type { Rune } from '../lib/skilling/skills/runecraft';
-import { hasGracefulEquipped } from '../lib/structures/Gear';
-import type { GearBank } from '../lib/structures/GearBank';
-import type { JsonKeys } from '../lib/util';
-import { getItemCostFromConsumables } from './lib/abstracted_commands/minionKill/handleConsumables';
+import type { SelectedUserStats } from '../lib/MUser.js';
+import { globalConfig } from '../lib/constants.js';
+import { userhasDiaryTier } from '../lib/diaries.js';
+import { quests } from '../lib/minions/data/quests.js';
+import type { Consumable, KillableMonster } from '../lib/minions/types.js';
+import type { Rune } from '../lib/skilling/skills/runecraft.js';
+import { hasGracefulEquipped } from '../lib/structures/Gear.js';
+import type { GearBank } from '../lib/structures/GearBank.js';
+import type { JsonKeys } from '../lib/util.js';
+import { getItemCostFromConsumables } from './lib/abstracted_commands/minionKill/handleConsumables.js';
 
 export function mahojiParseNumber({
 	input,

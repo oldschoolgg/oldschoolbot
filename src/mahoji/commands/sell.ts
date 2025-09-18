@@ -5,13 +5,13 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { clamp, reduceNumByPercent } from 'e';
 import { Bank, type Item, MAX_INT_JAVA, itemID, toKMB } from 'oldschooljs';
 
-import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries';
-import { NestBoxesTable } from '../../lib/simulation/misc';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { filterOption } from '../lib/mahojiCommandOptions';
-import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../mahojiSettings';
+import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries.js';
+import { NestBoxesTable } from '../../lib/simulation/misc.js';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation.js';
+import { parseBank } from '../../lib/util/parseStringBank.js';
+import { updateBankSetting } from '../../lib/util/updateBankSetting.js';
+import { filterOption } from '../lib/mahojiCommandOptions.js';
+import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../mahojiSettings.js';
 
 /**
  * - Hardcoded prices

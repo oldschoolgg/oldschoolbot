@@ -15,13 +15,13 @@ import {
 } from 'e';
 import { Bank, EMonster, itemID, randomVariation, resolveItems } from 'oldschooljs';
 
-import { BitField } from '../constants';
-import type { Skills } from '../types';
-import { arrows, bolts, bows, crossbows } from '../util/archery';
-import { calcMaxTripLength } from '../util/calcMaxTripLength';
-import { formatList, formatSkillRequirements, itemNameFromID } from '../util/smallUtils';
-import { TeamLoot } from './TeamLoot';
-import { NexNonUniqueTable, NexUniqueTable } from './misc';
+import { BitField } from '../constants.js';
+import type { Skills } from '../types.js';
+import { arrows, bolts, bows, crossbows } from '../util/archery.js';
+import { calcMaxTripLength } from '../util/calcMaxTripLength.js';
+import { formatList, formatSkillRequirements, itemNameFromID } from '../util/smallUtils.js';
+import { TeamLoot } from './TeamLoot.js';
+import { NexNonUniqueTable, NexUniqueTable } from './misc.js';
 
 const minStats: Skills = {
 	defence: 90,

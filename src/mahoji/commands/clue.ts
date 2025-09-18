@@ -10,20 +10,20 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, notEmpty, randInt } from 'e';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import type { ClueTier } from '../../lib/clues/clueTiers';
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import { BitField, MAX_CLUES_DROPPED } from '../../lib/constants';
-import { allOpenables, getOpenableLoot } from '../../lib/openables';
-import { getPOHObject } from '../../lib/poh';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { ClueActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { getItem } from '../../lib/util/getOSItem';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { getParsedStashUnits } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
-import { getPOH } from '../lib/abstracted_commands/pohCommand';
-import { addToOpenablesScores, getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import type { ClueTier } from '../../lib/clues/clueTiers.js';
+import { ClueTiers } from '../../lib/clues/clueTiers.js';
+import { BitField, MAX_CLUES_DROPPED } from '../../lib/constants.js';
+import { allOpenables, getOpenableLoot } from '../../lib/openables.js';
+import { getPOHObject } from '../../lib/poh.js';
+import { SkillsEnum } from '../../lib/skilling/types.js';
+import type { ClueActivityTaskOptions } from '../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength.js';
+import { getItem } from '../../lib/util/getOSItem.js';
+import { makeBankImage } from '../../lib/util/makeBankImage.js';
+import { getParsedStashUnits } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand.js';
+import { getPOH } from '../lib/abstracted_commands/pohCommand.js';
+import { addToOpenablesScores, getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings.js';
 
 export const clueTierBoosts: Record<
 	ClueTier['name'],

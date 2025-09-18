@@ -53,7 +53,7 @@ const ResourceTable = new LootTable()
 	.add('Soul rune', [400, 600], 2);
 
 class VardorvisSingleton extends Monster {
-	public allItems: number[] = uniqueArr([
+	public override allItems: number[] = uniqueArr([
 		...ClueTable.allItems,
 		...SupplyTable.allItems,
 		...ResourceTable.allItems,

@@ -1,8 +1,8 @@
 import { getBrimKeyChanceFromCBLevel, getSlayersEnchantmentChanceFromHP, getLarranKeyChanceFromCBLevel, getAncientShardChanceFromHP, getTotemChanceFromHP } from '@/util/util.js';
 import rawMonsterData from '../data/monsters_data.json' with { type: 'json' };
-import { MonsterData, MonsterSlayerMaster } from '../meta/monsterData.js';
+import { type MonsterData, MonsterSlayerMaster } from '../meta/monsterData.js';
 import  {Bank} from './Bank.js';
-import  LootTable from './LootTable.js';
+import type LootTable from './LootTable.js';
 import { roll, type LootTableRollOptions } from './LootTable.js';
 
 export interface MonsterOptions {
@@ -43,15 +43,13 @@ export interface MonsterKillOptions {
 
 const monsterData = rawMonsterData as { [key: string]: MonsterData };
 
-export class Monster {
+export abstract class Monster {
 	public id: number;
 	public name: string;
 	public aliases: string[];
 	public data: MonsterData;
 	public allItems: number[];
-	public kill(_quantity: number, _options: MonsterKillOptions): Bank {
-		throw new Error('Not implemented');
-	}
+	public abstract kill(_quantity: number, _options: MonsterKillOptions): Bank;
 
 	constructor(options: MonsterOptions) {
 		this.id = options.id;

@@ -2,12 +2,12 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { User } from '@prisma/client';
 
-import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
-import { defaultPatches } from '../../minions/farming';
-import type { IPatchData, IPatchDataDetailed } from '../../minions/farming/types';
-import type { FarmingPatchName } from '../../util/farmingHelpers';
-import { farmingKeys, farmingPatchNames, findPlant } from '../../util/farmingHelpers';
-import { assert } from '../../util/logError';
+import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings.js';
+import { defaultPatches } from '../../minions/farming.js';
+import type { IPatchData, IPatchDataDetailed } from '../../minions/farming/types.js';
+import type { FarmingPatchName } from '../../util/farmingHelpers.js';
+import { farmingKeys, farmingPatchNames, findPlant } from '../../util/farmingHelpers.js';
+import { assert } from '../../util/logError.js';
 
 export function getFarmingInfoFromUser(user: User) {
 	const patches: Record<FarmingPatchName, IPatchData> = {} as Record<FarmingPatchName, IPatchData>;

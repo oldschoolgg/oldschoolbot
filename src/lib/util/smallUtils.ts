@@ -6,10 +6,10 @@ import { type ArrayItemsResolved, type Bank, type ItemBank, Items, getItemOrThro
 import { MersenneTwister19937, shuffle } from 'random-js';
 import z from 'zod';
 
-import { skillEmoji } from '../data/emojis';
-import { SkillsEnum } from '../skilling/types';
-import type { SkillRequirements, Skills } from '../types';
-import type { TOAOptions } from '../types/minions';
+import { skillEmoji } from '../data/emojis.js';
+import { SkillsEnum } from '../skilling/types.js';
+import type { SkillRequirements, Skills } from '../types.js';
+import type { TOAOptions } from '../types/minions.js';
 
 export function itemNameFromID(itemID: number) {
 	return Items.get(itemID)?.name;

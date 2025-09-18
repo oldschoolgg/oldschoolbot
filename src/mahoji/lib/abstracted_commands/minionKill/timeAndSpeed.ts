@@ -8,11 +8,11 @@ import { type AttackStyles, getAttackStylesContext } from '@/lib/minions/functio
 import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC';
 import type { Consumable } from '@/lib/minions/types';
 import { ChargeBank } from '@/lib/structures/Bank';
-import { UpdateBank } from '@/lib/structures/UpdateBank';
+import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { SkillsRequired } from '@/lib/types';
 import { numberEnum } from '@/lib/util/smallUtils.js';
-import { getItemCostFromConsumables } from './handleConsumables';
-import { type BoostArgs, type BoostResult, type CombatMethodOptions, mainBoostEffects } from './speedBoosts';
+import { getItemCostFromConsumables } from './handleConsumables.js';
+import { type BoostArgs, type BoostResult, type CombatMethodOptions, mainBoostEffects } from './speedBoosts.js';
 
 export const CombatMethodOptionsSchema = z.object({
 	bob: z

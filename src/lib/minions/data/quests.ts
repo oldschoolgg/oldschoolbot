@@ -1,7 +1,7 @@
 import { Time, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import type { Skills } from '../../types';
+import type { Skills } from '../../types.js';
 
 interface Quest {
 	id: QuestID;

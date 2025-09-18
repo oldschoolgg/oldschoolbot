@@ -10,7 +10,6 @@ export * from './util/typeChecking.js';
 // External
 export { default as deepMerge } from 'deepmerge';
 import { detailedDiff } from 'deep-object-diff';
-export type { CommandResponse, CommandRunOptions, OSBMahojiCommand };
 export { detailedDiff as deepObjectDiff };
 export { default as deepEqual } from 'fast-deep-equal';
 export * from './string-util.js';

@@ -2,9 +2,9 @@ import type { CommandRunOptions, MahojiUserOption, OSBMahojiCommand } from '@old
 import { ApplicationCommandOptionType, type TextChannel, userMention } from 'discord.js';
 import { shuffleArr, uniqueArr } from 'e';
 
-import { DynamicButtons } from '../../lib/DynamicButtons';
-import { getRandomTriviaQuestions } from '../../lib/roboChimp';
-import { deferInteraction } from '../../lib/util/interactionReply';
+import { DynamicButtons } from '../../lib/DynamicButtons.js';
+import { getRandomTriviaQuestions } from '../../lib/roboChimp.js';
+import { deferInteraction } from '../../lib/util/interactionReply.js';
 
 export const triviaCommand: OSBMahojiCommand = {
 	name: 'trivia',

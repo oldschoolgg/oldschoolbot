@@ -1,4 +1,3 @@
-import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/util';
 import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import type { User as DJSUser } from 'discord.js';
 import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';

@@ -38,7 +38,7 @@ const BrimstoneChestTable = new LootTable()
 	.oneIn(1000, 'Mystic boots (dusk)');
 
 export class BrimstoneChestOpenable extends SimpleOpenable {
-	public open(quantity = 1, options: OpenableOpenOptions = { fishLvl: 99 }) {
+	public override open(quantity = 1, options: OpenableOpenOptions = { fishLvl: 99 }) {
 		const loot = new Bank();
 		const fishLvl = options.fishLvl ?? 99;
 

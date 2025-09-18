@@ -4,14 +4,14 @@ import { roll, shuffleArr } from 'e';
 import { Bank, ChambersOfXeric, SkillsEnum, randomVariation, resolveItems } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage';
-import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
-import { coxCMUniques, coxUniques, createTeam } from '../../../lib/data/cox';
-import { trackLoot } from '../../../lib/lootTrack';
-import { resolveAttackStyles } from '../../../lib/minions/functions';
-import type { RaidsOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport.js';
+import { coxCMUniques, coxUniques, createTeam } from '../../../lib/data/cox.js';
+import { trackLoot } from '../../../lib/lootTrack.js';
+import { resolveAttackStyles } from '../../../lib/minions/functions.js';
+import type { RaidsOptions } from '../../../lib/types/minions.js';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import { userStatsUpdate } from '../../../mahoji/mahojiSettings.js';
 
 interface RaidResultUser {
 	personalPoints: number;

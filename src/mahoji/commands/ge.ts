@@ -12,19 +12,19 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { sumArr, uniqueArr } from 'e';
 import { Bank, type ItemBank, getItem, toKMB } from 'oldschooljs';
 
-import { GeImageGenerator } from '@/lib/canvas/geImage';
-import { PerkTier } from '../../lib/constants';
-import { GrandExchange, createGECancelButton } from '../../lib/grandExchange';
-import { marketPricemap } from '../../lib/marketPrices';
-import { createChart } from '../../lib/util/chart';
-import getOSItem from '../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { itemNameFromID } from '../../lib/util/smallUtils';
-import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
-import { itemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { GeImageGenerator } from '@/lib/canvas/geImage.js';
+import { PerkTier } from '../../lib/constants.js';
+import { GrandExchange, createGECancelButton } from '../../lib/grandExchange.js';
+import { marketPricemap } from '../../lib/marketPrices.js';
+import { createChart } from '../../lib/util/chart.js';
+import getOSItem from '../../lib/util/getOSItem.js';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation.js';
+import { deferInteraction } from '../../lib/util/interactionReply.js';
+import itemIsTradeable from '../../lib/util/itemIsTradeable.js';
+import { itemNameFromID } from '../../lib/util/smallUtils.js';
+import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand.js';
+import { itemOption, tradeableItemArr } from '../lib/mahojiCommandOptions.js';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings.js';
 
 export type GEListingWithTransactions = GEListing & {
 	buyTransactions: GETransaction[];

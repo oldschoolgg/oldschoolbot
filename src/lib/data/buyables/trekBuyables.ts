@@ -1,4 +1,4 @@
-import { SkillsEnum } from '../../skilling/types';
+import { SkillsEnum } from '../../skilling/types.js';
 
 interface TrekShopItem {
 	name: string;

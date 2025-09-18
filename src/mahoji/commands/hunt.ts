@@ -3,20 +3,20 @@ import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoo
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, ECreature, itemID } from 'oldschooljs';
 
-import { type Peak, generateDailyPeakIntervals } from '@/lib/util/peaks';
+import { type Peak, generateDailyPeakIntervals } from '@/lib/util/peaks.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 
-import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
-import { trackLoot } from '../../lib/lootTrack';
-import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
-import creatures from '../../lib/skilling/skills/hunter/creatures';
-import Hunter from '../../lib/skilling/skills/hunter/hunter';
-import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types';
-import type { HunterActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped } from '../mahojiSettings';
+import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped.js';
+import { trackLoot } from '../../lib/lootTrack.js';
+import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements.js';
+import creatures from '../../lib/skilling/skills/hunter/creatures.js';
+import Hunter from '../../lib/skilling/skills/hunter/hunter.js';
+import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types.js';
+import type { HunterActivityTaskOptions } from '../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '../../lib/util/updateBankSetting.js';
+import { userHasGracefulEquipped } from '../mahojiSettings.js';
 
 export const huntCommand: OSBMahojiCommand = {
 	name: 'hunt',

@@ -6,12 +6,12 @@ import { Bank, addBanks, toKMB } from 'oldschooljs';
 import { groupBy } from 'remeda';
 import * as ss from 'simple-statistics';
 
-import type { ItemBank } from '../../../lib/types';
-import getOSItem from '../../../lib/util/getOSItem';
-import { sendToChannelID } from '../../../lib/util/webhook';
-import type { StoredBingoTile, UniversalBingoTile } from './bingoUtil';
-import { generateTileName, isGlobalTile, rowsForSquare } from './bingoUtil';
-import { globalBingoTiles } from './globalTiles';
+import type { ItemBank } from '../../../lib/types.js';
+import getOSItem from '../../../lib/util/getOSItem.js';
+import { sendToChannelID } from '../../../lib/util/webhook.js';
+import type { StoredBingoTile, UniversalBingoTile } from './bingoUtil.js';
+import { generateTileName, isGlobalTile, rowsForSquare } from './bingoUtil.js';
+import { globalBingoTiles } from './globalTiles.js';
 
 export const BingoTrophies = [
 	{

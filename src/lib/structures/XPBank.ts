@@ -1,9 +1,9 @@
 import { sumArr } from 'e';
 
-import { skillEmoji } from '../data/emojis';
-import type { AddXpParams } from '../minions/types';
-import type { SkillNameType, SkillsEnum } from '../skilling/types';
-import type { Skills } from '../types';
+import { skillEmoji } from '../data/emojis.js';
+import type { AddXpParams } from '../minions/types.js';
+import type { SkillNameType, SkillsEnum } from '../skilling/types.js';
+import type { Skills } from '../types.js';
 
 export class XPBank {
 	public xpList: AddXpParams[] = [];

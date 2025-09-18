@@ -3,8 +3,8 @@ import type { ChatInputCommandInteraction, User } from 'discord.js';
 import { shuffleArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { addToOpenablesScores } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
+import { addToOpenablesScores } from '../../mahojiSettings.js';
 
 const HatTable = new LootTable()
 	.add('Red partyhat', 1, 32)

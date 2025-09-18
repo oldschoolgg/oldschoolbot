@@ -49,7 +49,7 @@ export const USELESS_ITEMS = [
 ];
 
 class Items extends Collection<number, Item> {
-	public get(item: ItemResolvable): Item | undefined {
+	public override get(item: ItemResolvable): Item | undefined {
 		const id = this.resolveID(item);
 		if (typeof id === 'undefined') return undefined;
 		return super.get(id);

@@ -1,8 +1,8 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { LootTable, itemID } from 'oldschooljs';
 
-import type { Log } from '../../types';
-import { SkillsEnum } from '../../types';
+import type { Log } from '../../types.js';
+import { SkillsEnum } from '../../types.js';
 
 const sulliuscepTable = new LootTable()
 	.add('Numulite', [4, 8], 34)

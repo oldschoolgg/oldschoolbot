@@ -3,33 +3,33 @@ import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolk
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Items, SkillsEnum } from 'oldschooljs';
 
-import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
-import { collectables } from '../../mahoji/lib/collectables';
-import { ClueTiers } from '../clues/clueTiers';
-import { findTripBuyable } from '../data/buyables/tripBuyables';
-import killableMonsters from '../minions/data/killableMonsters';
-import { Planks } from '../minions/data/planks';
-import { quests } from '../minions/data/quests';
-import Agility from '../skilling/skills/agility';
-import Constructables from '../skilling/skills/construction/constructables';
-import Cooking from '../skilling/skills/cooking/cooking';
-import ForestryRations from '../skilling/skills/cooking/forestersRations';
-import LeapingFish from '../skilling/skills/cooking/leapingFish';
-import Crafting from '../skilling/skills/crafting';
-import Farming from '../skilling/skills/farming';
-import Firemaking from '../skilling/skills/firemaking';
-import { Fishing } from '../skilling/skills/fishing/fishing';
-import { zeroTimeFletchables } from '../skilling/skills/fletching/fletchables';
-import Herblore from '../skilling/skills/herblore/herblore';
-import Hunter from '../skilling/skills/hunter/hunter';
-import { Castables } from '../skilling/skills/magic/castables';
-import { Enchantables } from '../skilling/skills/magic/enchantables';
-import Mining from '../skilling/skills/mining';
-import Prayer from '../skilling/skills/prayer';
-import Runecraft from '../skilling/skills/runecraft';
-import Smithing from '../skilling/skills/smithing';
-import { stealables } from '../skilling/skills/thieving/stealables';
-import Woodcutting from '../skilling/skills/woodcutting/woodcutting';
+import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
+import { collectables } from '../../mahoji/lib/collectables.js';
+import { ClueTiers } from '../clues/clueTiers.js';
+import { findTripBuyable } from '../data/buyables/tripBuyables.js';
+import killableMonsters from '../minions/data/killableMonsters.js';
+import { Planks } from '../minions/data/planks.js';
+import { quests } from '../minions/data/quests.js';
+import Agility from '../skilling/skills/agility.js';
+import Constructables from '../skilling/skills/construction/constructables.js';
+import Cooking from '../skilling/skills/cooking/cooking.js';
+import ForestryRations from '../skilling/skills/cooking/forestersRations.js';
+import LeapingFish from '../skilling/skills/cooking/leapingFish.js';
+import Crafting from '../skilling/skills/crafting.js';
+import Farming from '../skilling/skills/farming.js';
+import Firemaking from '../skilling/skills/firemaking.js';
+import { Fishing } from '../skilling/skills/fishing/fishing.js';
+import { zeroTimeFletchables } from '../skilling/skills/fletching/fletchables.js';
+import Herblore from '../skilling/skills/herblore/herblore.js';
+import Hunter from '../skilling/skills/hunter/hunter.js';
+import { Castables } from '../skilling/skills/magic/castables.js';
+import { Enchantables } from '../skilling/skills/magic/enchantables.js';
+import Mining from '../skilling/skills/mining.js';
+import Prayer from '../skilling/skills/prayer.js';
+import Runecraft from '../skilling/skills/runecraft.js';
+import Smithing from '../skilling/skills/smithing.js';
+import { stealables } from '../skilling/skills/thieving/stealables.js';
+import Woodcutting from '../skilling/skills/woodcutting/woodcutting.js';
 import type {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
@@ -82,7 +82,7 @@ import type {
 	TiaraRunecraftActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
-} from '../types/minions';
+} from '../types/minions.js';
 
 export function minionStatus(user: MUser) {
 	const currentTask = ActivityManager.getActivityOfUser(user.id);

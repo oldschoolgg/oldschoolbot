@@ -1,8 +1,8 @@
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { Bank } from 'oldschooljs';
 
-import Skillcapes from '../../skilling/skillcapes';
-import type { Buyable } from './buyables';
+import Skillcapes from '../../skilling/skillcapes.js';
+import type { Buyable } from './buyables.js';
 
 export const skillCapeBuyables: Buyable[] = [];
 

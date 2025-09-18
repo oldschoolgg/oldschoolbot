@@ -3,13 +3,13 @@ import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import Fletching from '../../lib/skilling/skills/fletching';
-import { Fletchables } from '../../lib/skilling/skills/fletching/fletchables';
-import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
-import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
-import type { FletchingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import Fletching from '../../lib/skilling/skills/fletching.js';
+import { Fletchables } from '../../lib/skilling/skills/fletching/fletchables.js';
+import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks.js';
+import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil.js';
+import type { FletchingActivityTaskOptions } from '../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength.js';
 
 export const fletchCommand: OSBMahojiCommand = {
 	name: 'fletch',

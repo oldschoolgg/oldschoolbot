@@ -1,6 +1,6 @@
 import { Bank, itemID } from 'oldschooljs';
 
-import type { Craftable } from '../../../types';
+import type { Craftable } from '../../../types.js';
 
 const Birdhouse: Craftable[] = [
 	{

@@ -3,11 +3,11 @@ import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
 import { notEmpty } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { finishables } from '../../lib/finishables';
-import { sorts } from '../../lib/sorts';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { Workers } from '../../lib/workers';
+import { finishables } from '../../lib/finishables.js';
+import { sorts } from '../../lib/sorts.js';
+import { deferInteraction } from '../../lib/util/interactionReply.js';
+import { makeBankImage } from '../../lib/util/makeBankImage.js';
+import { Workers } from '../../lib/workers.js';
 
 export const finishCommand: OSBMahojiCommand = {
 	name: 'finish',

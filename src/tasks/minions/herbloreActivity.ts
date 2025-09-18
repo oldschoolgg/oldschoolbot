@@ -1,11 +1,11 @@
 import { randInt } from 'e';
 import { Bank, EItem } from 'oldschooljs';
 
-import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries';
-import Herblore from '../../lib/skilling/skills/herblore/herblore';
-import type { HerbloreActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { percentChance } from '../../lib/util/rng';
+import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries.js';
+import Herblore from '../../lib/skilling/skills/herblore/herblore.js';
+import type { HerbloreActivityTaskOptions } from '../../lib/types/minions.js';
+import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
+import { percentChance } from '../../lib/util/rng.js';
 
 export const herbloreTask: MinionTask = {
 	type: 'Herblore',

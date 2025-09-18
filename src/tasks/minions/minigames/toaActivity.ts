@@ -6,20 +6,20 @@ import { Bank, type ItemBank, ItemGroups, resolveItems } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage';
 import { normalizeTOAUsers } from '@/lib/util/smallUtils';
-import { trackLoot } from '../../../lib/lootTrack';
-import { TeamLoot } from '../../../lib/simulation/TeamLoot';
+import { trackLoot } from '../../../lib/lootTrack.js';
+import { TeamLoot } from '../../../lib/simulation/TeamLoot.js';
 import {
 	type RaidLevel,
 	calcTOALoot,
 	calculateXPFromRaid,
 	toaOrnamentKits,
 	toaPetTransmogItems
-} from '../../../lib/simulation/toa';
-import type { TOAOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { assert } from '../../../lib/util/logError';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+} from '../../../lib/simulation/toa.js';
+import type { TOAOptions } from '../../../lib/types/minions.js';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
+import { assert } from '../../../lib/util/logError.js';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import { userStatsUpdate } from '../../../mahoji/mahojiSettings.js';
 
 const purpleButNotAnnounced = resolveItems([
 	"Elidinis' ward",

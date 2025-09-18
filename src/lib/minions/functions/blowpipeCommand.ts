@@ -1,8 +1,8 @@
 import type { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
-import getOSItem, { getItem } from '../../util/getOSItem';
-import type { BlowpipeData } from '../types';
+import getOSItem, { getItem } from '../../util/getOSItem.js';
+import type { BlowpipeData } from '../types.js';
 
 const defaultBlowpipe: BlowpipeData = {
 	scales: 0,

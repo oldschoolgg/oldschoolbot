@@ -1,12 +1,12 @@
 import { calcWhatPercent, reduceNumByPercent } from 'e';
 
 import { GearStat } from 'oldschooljs/gear';
-import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
-import type { GearSetupType } from '../../gear/types';
-import { maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
-import type { GearBank } from '../../structures/GearBank';
-import { readableStatName } from '../../util/smallUtils';
-import type { KillableMonster } from '../types';
+import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat.js';
+import type { GearSetupType } from '../../gear/types.js';
+import { maxDefenceStats, maxOffenceStats } from '../../structures/Gear.js';
+import type { GearBank } from '../../structures/GearBank.js';
+import { readableStatName } from '../../util/smallUtils.js';
+import type { KillableMonster } from '../types.js';
 
 const { floor, max } = Math;
 

@@ -4,11 +4,11 @@ import { Time, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { SkillsEnum } from '../../../lib/skilling/types.js';
+import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
 
 const skillReqs = {
 	[SkillsEnum.Prayer]: 70,

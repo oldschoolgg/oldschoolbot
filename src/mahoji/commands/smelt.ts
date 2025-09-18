@@ -5,13 +5,13 @@ import { Bank, itemID, resolveItems } from 'oldschooljs';
 
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
-import Smithing from '../../lib/skilling/skills/smithing';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped } from '../mahojiSettings';
+import Smithing from '../../lib/skilling/skills/smithing.js';
+import { SkillsEnum } from '../../lib/skilling/types.js';
+import type { SmeltingActivityTaskOptions } from '../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '../../lib/util/updateBankSetting.js';
+import { userHasGracefulEquipped } from '../mahojiSettings.js';
 
 export const smeltingCommand: OSBMahojiCommand = {
 	name: 'smelt',

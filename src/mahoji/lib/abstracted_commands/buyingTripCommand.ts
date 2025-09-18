@@ -5,11 +5,11 @@ import { Bank, Items } from 'oldschooljs';
 import type { TripBuyable } from '@/lib/data/buyables/tripBuyables';
 import { calculateShopBuyCost } from '@/lib/util/calculateShopBuyCost';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import type { BuyActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import type { BuyActivityTaskOptions } from '../../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
 
 export async function buyingTripCommand(
 	user: MUser,

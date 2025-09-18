@@ -3,7 +3,7 @@ import { cleanString, formatDuration } from '@oldschoolgg/toolkit/util';
 import type { LootTrack, loot_track_type } from '@prisma/client';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { makeBankImage } from './util/makeBankImage';
+import { makeBankImage } from './util/makeBankImage.js';
 
 type TrackLootOptions =
 	| {

@@ -4,9 +4,9 @@ import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { calcWhatPercent } from 'e';
 import { Bank, TOBRooms, itemID, randomVariation } from 'oldschooljs';
 
-import { skillsMeetRequirements } from '@/lib/util';
+import { skillsMeetRequirements } from '@/lib/util.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { getSimilarItems } from '../../../lib/data/similarItems';
+import { getSimilarItems } from '../../../lib/data/similarItems.js';
 import {
 	TENTACLE_CHARGES_PER_RAID,
 	baseTOBUniques,
@@ -15,20 +15,20 @@ import {
 	calculateTOBUserGearPercents,
 	createTOBRaid,
 	minimumTOBSuppliesNeeded
-} from '../../../lib/data/tob';
-import { checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems';
-import { trackLoot } from '../../../lib/lootTrack';
-import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
-import getUserFoodFromBank from '../../../lib/minions/functions/getUserFoodFromBank';
-import { setupParty } from '../../../lib/party';
-import type { MakePartyOptions } from '../../../lib/types';
-import type { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { determineRunes } from '../../../lib/util/determineRunes';
-import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { mahojiParseNumber, userStatsBankUpdate } from '../../mahojiSettings';
+} from '../../../lib/data/tob.js';
+import { checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems.js';
+import { trackLoot } from '../../../lib/lootTrack.js';
+import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand.js';
+import getUserFoodFromBank from '../../../lib/minions/functions/getUserFoodFromBank.js';
+import { setupParty } from '../../../lib/party.js';
+import type { MakePartyOptions } from '../../../lib/types.js';
+import type { TheatreOfBloodTaskOptions } from '../../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
+import { determineRunes } from '../../../lib/util/determineRunes.js';
+import getOSItem from '../../../lib/util/getOSItem.js';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import { mahojiParseNumber, userStatsBankUpdate } from '../../mahojiSettings.js';
 
 const minStats = {
 	attack: 90,

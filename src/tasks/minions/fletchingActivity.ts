@@ -1,9 +1,9 @@
 import { Bank } from 'oldschooljs';
 
-import Fletching from '../../lib/skilling/skills/fletching';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { FletchingActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import Fletching from '../../lib/skilling/skills/fletching.js';
+import { SkillsEnum } from '../../lib/skilling/types.js';
+import type { FletchingActivityTaskOptions } from '../../lib/types/minions.js';
+import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
 
 export const fletchingTask: MinionTask = {
 	type: 'Fletching',

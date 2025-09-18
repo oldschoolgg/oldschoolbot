@@ -3,10 +3,10 @@ import { Time, calcPercentOfNum, calcWhatPercent, randFloat, randInt, reduceNumB
 import { Bank, type Item, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
-import { blowpipeDarts } from '../minions/functions/blowpipeCommand';
-import { Gear, constructGearSetup } from '../structures/Gear';
-import getOSItem from '../util/getOSItem';
-import { logError } from '../util/logError';
+import { blowpipeDarts } from '../minions/functions/blowpipeCommand.js';
+import { Gear, constructGearSetup } from '../structures/Gear.js';
+import getOSItem from '../util/getOSItem.js';
+import { logError } from '../util/logError.js';
 
 interface TOBRoom {
 	name: string;

@@ -1,7 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, itemID } from 'oldschooljs';
 
-import type { BlastableBar } from '../../types';
+import type { BlastableBar } from '../../types.js';
 
 const BlastableBars: BlastableBar[] = [
 	{

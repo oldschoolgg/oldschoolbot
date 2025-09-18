@@ -1,9 +1,9 @@
 import { Bank } from 'oldschooljs';
 
-import Smithing from '../../lib/skilling/skills/smithing';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { SmithingActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import Smithing from '../../lib/skilling/skills/smithing.js';
+import { SkillsEnum } from '../../lib/skilling/types.js';
+import type { SmithingActivityTaskOptions } from '../../lib/types/minions.js';
+import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
 
 export const smithingTask: MinionTask = {
 	type: 'Smithing',

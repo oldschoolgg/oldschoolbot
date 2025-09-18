@@ -1,7 +1,7 @@
 import { Time, percentChance } from 'e';
 
-import type { GearBank } from '../../structures/GearBank';
-import type { Ore } from './../types';
+import type { GearBank } from '../../structures/GearBank.js';
+import type { Ore } from './../types.js';
 
 interface MiningTimeOptions {
 	quantity: number | undefined;

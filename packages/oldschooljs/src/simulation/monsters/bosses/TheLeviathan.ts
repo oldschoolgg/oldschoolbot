@@ -53,7 +53,7 @@ const ResourceTable = new LootTable()
 	.add('Earth rune', [180, 270], 1);
 
 class TheLeviathanSingleton extends Monster {
-	public allItems: number[] = uniqueArr([
+	public override allItems: number[] = uniqueArr([
 		...ClueTable.allItems,
 		...SupplyTable.allItems,
 		...ResourceTable.allItems,

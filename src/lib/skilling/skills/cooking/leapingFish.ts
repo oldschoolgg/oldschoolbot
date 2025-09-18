@@ -1,6 +1,6 @@
 import { Items } from 'oldschooljs';
 
-import type { CutLeapingFish } from '../../types';
+import type { CutLeapingFish } from '../../types.js';
 
 const LeapingFish: CutLeapingFish[] = [
 	{

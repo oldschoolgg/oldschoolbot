@@ -1,18 +1,18 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { SkillsEnum } from '../skilling/types';
-import { Requirements } from '../structures/Requirements';
+import { SkillsEnum } from '../skilling/types.js';
+import { Requirements } from '../structures/Requirements.js';
 import type {
 	ActivityTaskData,
 	GauntletOptions,
 	MonsterActivityTaskOptions,
 	NightmareActivityTaskOptions,
 	TOAOptions
-} from '../types/minions';
-import { crossbows } from '../util/archery';
-import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils';
-import type { CombatAchievement } from './combatAchievements';
+} from '../types/minions.js';
+import { crossbows } from '../util/archery.js';
+import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils.js';
+import type { CombatAchievement } from './combatAchievements.js';
 
 export const eliteCombatAchievements: CombatAchievement[] = [
 	{

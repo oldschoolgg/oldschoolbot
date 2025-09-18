@@ -1,19 +1,19 @@
-import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/discord-util';
+import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { notEmpty, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets';
-import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { BitField, MAX_CLUES_DROPPED, PerkTier } from '../../../lib/constants';
-import type { UnifiedOpenable } from '../../../lib/openables';
-import { allOpenables, getOpenableLoot } from '../../../lib/openables';
-import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting } from '../../mahojiSettings';
+import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
+import { ClueTiers } from '../../../lib/clues/clueTiers.js';
+import { buildClueButtons } from '../../../lib/clues/clueUtils.js';
+import { BitField, MAX_CLUES_DROPPED, PerkTier } from '../../../lib/constants.js';
+import type { UnifiedOpenable } from '../../../lib/openables.js';
+import { allOpenables, getOpenableLoot } from '../../../lib/openables.js';
+import getOSItem, { getItem } from '../../../lib/util/getOSItem.js';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
+import { makeBankImage } from '../../../lib/util/makeBankImage.js';
+import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting } from '../../mahojiSettings.js';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 

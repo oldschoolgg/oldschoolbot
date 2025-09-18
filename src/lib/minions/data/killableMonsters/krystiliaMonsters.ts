@@ -1,7 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Monsters, deepResolveItems, resolveItems } from 'oldschooljs';
 
-import type { KillableMonster } from '../../types';
+import type { KillableMonster } from '../../types.js';
 
 export const krystiliaMonsters: KillableMonster[] = [
 	{

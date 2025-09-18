@@ -4,7 +4,7 @@ import { CyclopsTable } from '@/lib/simulation/cyclops';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions';
 import { handleTripFinish } from '@/lib/util/handleTripFinish';
 import { makeBankImage } from '@/lib/util/makeBankImage';
-import { roll } from '@/lib/util/rng';
+import { roll } from '@/lib/util/rng.js';
 
 const cyclopsID = 2097;
 

@@ -15,17 +15,17 @@ import {
 	itemBoosts,
 	maxSpeedReductionFromItems,
 	minimumCoxSuppliesNeeded
-} from '../../../lib/data/cox';
-import { getSimilarItems } from '../../../lib/data/similarItems';
-import { degradeItem } from '../../../lib/degradeableItems';
-import { trackLoot } from '../../../lib/lootTrack';
-import { setupParty } from '../../../lib/party';
-import type { MakePartyOptions } from '../../../lib/types';
-import type { RaidsOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { mahojiParseNumber } from '../../mahojiSettings';
+} from '../../../lib/data/cox.js';
+import { getSimilarItems } from '../../../lib/data/similarItems.js';
+import { degradeItem } from '../../../lib/degradeableItems.js';
+import { trackLoot } from '../../../lib/lootTrack.js';
+import { setupParty } from '../../../lib/party.js';
+import type { MakePartyOptions } from '../../../lib/types.js';
+import type { RaidsOptions } from '../../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import { mahojiParseNumber } from '../../mahojiSettings.js';
 
 export async function coxBoostsCommand(user: MUser) {
 	const boostStr = [];

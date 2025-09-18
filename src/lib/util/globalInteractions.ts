@@ -7,18 +7,18 @@ import type { ButtonInteraction, Interaction } from 'discord.js';
 import { Time, removeFromArr, uniqueArr } from 'e';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { cancelGEListingCommand } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
-import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
-import { InteractionID } from '../InteractionID';
+import { cancelGEListingCommand } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
+import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand.js';
+import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand.js';
+import { InteractionID } from '../InteractionID.js';
 import { giveawayCache } from '../cache.js';
-import type { ClueTier } from '../clues/clueTiers';
-import { BitField, PerkTier } from '../constants';
-import { runCommand } from '../settings/settings';
-import { updateGiveawayMessage } from './giveaway';
-import { interactionReply } from './interactionReply';
-import { isValidGlobalInteraction } from './interactions';
-import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
+import type { ClueTier } from '../clues/clueTiers.js';
+import { BitField, PerkTier } from '../constants.js';
+import { runCommand } from '../settings/settings.js';
+import { updateGiveawayMessage } from './giveaway.js';
+import { interactionReply } from './interactionReply.js';
+import { isValidGlobalInteraction } from './interactions.js';
+import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip.js';
 
 const buttonRatelimiter = new RateLimitManager(Time.Second * 2, 1);
 

@@ -2,7 +2,7 @@ import { calcWhatPercent, sumArr } from 'e';
 import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters, SkillsEnum } from 'oldschooljs';
 import type { OffenceGearStat } from 'oldschooljs/gear';
 
-import type { PvMMethod } from '@/lib/constants';
+import type { PvMMethod } from '@/lib/constants.js';
 import { degradeableItems, degradeablePvmBoostItems } from '@/lib/degradeableItems';
 import type { PrimaryGearSetupType } from '@/lib/gear/types';
 import {
@@ -24,12 +24,12 @@ import { ChargeBank } from '@/lib/structures/Bank';
 import { maxOffenceStats } from '@/lib/structures/Gear';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions';
 import getOSItem from '@/lib/util/getOSItem';
-import { resolveAvailableItemBoosts } from '../../../mahojiSettings';
-import { determineIfUsingCannon } from './determineIfUsingCannon';
-import { calculateVirtusBoost, dragonHunterWeapons } from './minionKillData';
-import type { MinionKillOptions } from './newMinionKill';
-import type { PostBoostEffect } from './postBoostEffects';
-import { staticEquippedItemBoosts } from './staticEquippedItemBoosts';
+import { resolveAvailableItemBoosts } from '../../../mahojiSettings.js';
+import { determineIfUsingCannon } from './determineIfUsingCannon.js';
+import { calculateVirtusBoost, dragonHunterWeapons } from './minionKillData.js';
+import type { MinionKillOptions } from './newMinionKill.js';
+import type { PostBoostEffect } from './postBoostEffects.js';
+import { staticEquippedItemBoosts } from './staticEquippedItemBoosts.js';
 
 const revSpecialWeapons = {
 	melee: getOSItem("Viggora's chainmace"),

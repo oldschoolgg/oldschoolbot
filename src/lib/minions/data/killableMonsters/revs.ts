@@ -1,7 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, Monsters } from 'oldschooljs';
 
-import type { KillableMonster } from '../../types';
+import type { KillableMonster } from '../../types.js';
 
 export const revenantMonsters: KillableMonster[] = [
 	{

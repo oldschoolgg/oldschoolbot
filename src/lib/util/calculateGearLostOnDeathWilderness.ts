@@ -1,8 +1,8 @@
 import { deepClone, objectEntries } from 'e';
 import { Bank, type EquipmentSlot, type Item, itemID, resolveItems } from 'oldschooljs';
 
-import type { GearSetup } from '../gear/types';
-import getOSItem from './getOSItem';
+import type { GearSetup } from '../gear/types.js';
+import getOSItem from './getOSItem.js';
 
 interface IGearSwap {
 	[key: number]: number[];

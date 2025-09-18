@@ -1,12 +1,12 @@
 import { percentChance } from 'e';
 import { Bank, type Item, type Monster, itemID } from 'oldschooljs';
 
-import type { GearSetupType, PrimaryGearSetupType } from './gear/types';
-import type { KillableMonster } from './minions/types';
-import type { ChargeBank } from './structures/Bank';
-import getOSItem from './util/getOSItem';
-import { assert } from './util/logError';
-import { updateBankSetting } from './util/updateBankSetting';
+import type { GearSetupType, PrimaryGearSetupType } from './gear/types.js';
+import type { KillableMonster } from './minions/types.js';
+import type { ChargeBank } from './structures/Bank.js';
+import getOSItem from './util/getOSItem.js';
+import { assert } from './util/logError.js';
+import { updateBankSetting } from './util/updateBankSetting.js';
 
 export interface DegradeableItem {
 	item: Item;

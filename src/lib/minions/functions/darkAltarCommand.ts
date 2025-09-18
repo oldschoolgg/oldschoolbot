@@ -2,14 +2,14 @@ import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
-import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
-import { KourendKebosDiary, userhasDiaryTier } from '../../diaries';
-import type { DarkAltarOptions } from '../../types/minions';
-import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../util/calcMaxTripLength';
-import getOSItem from '../../util/getOSItem';
-import { hasSkillReqs } from '../../util/smallUtils';
-import { updateBankSetting } from '../../util/updateBankSetting';
+import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings.js';
+import { KourendKebosDiary, userhasDiaryTier } from '../../diaries.js';
+import type { DarkAltarOptions } from '../../types/minions.js';
+import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '../../util/calcMaxTripLength.js';
+import getOSItem from '../../util/getOSItem.js';
+import { hasSkillReqs } from '../../util/smallUtils.js';
+import { updateBankSetting } from '../../util/updateBankSetting.js';
 
 export const darkAltarRunes = {
 	soul: {

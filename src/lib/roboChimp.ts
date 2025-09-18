@@ -4,11 +4,11 @@ import { calcWhatPercent, round, sumArr } from 'e';
 import deepEqual from 'fast-deep-equal';
 import type { Bank } from 'oldschooljs';
 
-import { BOT_TYPE, globalConfig, masteryKey } from './constants';
-import { getTotalCl } from './data/Collections';
-import { calculateMastery } from './mastery';
-import { cacheRoboChimpUser } from './perkTier';
-import { MUserStats } from './structures/MUserStats';
+import { BOT_TYPE, globalConfig, masteryKey } from './constants.js';
+import { getTotalCl } from './data/Collections.js';
+import { calculateMastery } from './mastery.js';
+import { cacheRoboChimpUser } from './perkTier.js';
+import { MUserStats } from './structures/MUserStats.js';
 
 export type RobochimpUser = User;
 

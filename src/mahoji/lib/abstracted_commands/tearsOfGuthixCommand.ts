@@ -4,9 +4,9 @@ import { Time, notEmpty, objectEntries } from 'e';
 
 import { tears_of_guthix_cd } from '@/lib/events';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { SkillsEnum } from '../../../lib/skilling/types.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
 
 export const tearsOfGuthixSkillReqs = {
 	[SkillsEnum.Firemaking]: 49,

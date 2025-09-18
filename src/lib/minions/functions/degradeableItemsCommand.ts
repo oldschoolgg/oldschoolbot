@@ -1,11 +1,11 @@
-import { type CommandResponse, stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { mahojiParseNumber } from '../../../mahoji/mahojiSettings';
-import { degradeableItems } from '../../degradeableItems';
-import { handleMahojiConfirmation } from '../../util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../util/updateBankSetting';
+import { mahojiParseNumber } from '../../../mahoji/mahojiSettings.js';
+import { degradeableItems } from '../../degradeableItems.js';
+import { handleMahojiConfirmation } from '../../util/handleMahojiConfirmation.js';
+import { updateBankSetting } from '../../util/updateBankSetting.js';
 
 export async function degradeableItemsCommand(
 	interaction: ChatInputCommandInteraction,

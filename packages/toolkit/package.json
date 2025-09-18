@@ -6,71 +6,69 @@
 	"description": "Oldschoolgg Toolkit",
 	"exports": {
 		".": {
-			"types": "./dist/util.d.ts",
+			"types": "./dist/esm/util.d.mts",
 			"require": "./dist/cjs/util.cjs",
 			"import": "./dist/esm/util.mjs"
 		},
 		"./util": {
-			"types": "./dist/util.d.ts",
+			"types": "./dist/esm/util.d.mts",
 			"require": "./dist/cjs/util.cjs",
 			"import": "./dist/esm/util.mjs"
 		},
 		"./structures": {
-			"types": "./dist/structures.d.ts",
+			"types": "./dist/esm/structures.d.mts",
 			"require": "./dist/cjs/structures.cjs",
 			"import": "./dist/esm/structures.mjs"
 		},
 		"./constants": {
-			"types": "./dist/constants.d.ts",
+			"types": "./dist/esm/constants.d.mts",
 			"require": "./dist/cjs/constants.cjs",
 			"import": "./dist/esm/constants.mjs"
 		},
 		"./test-bot-websocket": {
-			"types": "./dist/testBotWebsocket.d.ts",
+			"types": "./dist/esm/testBotWebsocket.d.mts",
 			"require": "./dist/cjs/testBotWebsocket.cjs",
 			"import": "./dist/esm/testBotWebsocket.mjs"
 		},
 		"./datetime": {
-			"types": "./dist/util/datetime.d.ts",
+			"types": "./dist/esm/util/datetime.d.mts",
 			"require": "./dist/cjs/util/datetime.cjs",
 			"import": "./dist/esm/util/datetime.mjs"
 		},
 		"./discord-util": {
-			"types": "./dist/util/discord/index.d.ts",
+			"types": "./dist/esm/util/discord/index.d.mts",
 			"require": "./dist/cjs/util/discord/index.cjs",
 			"import": "./dist/esm/util/discord/index.mjs"
 		},
 		"./math": {
-			"types": "./dist/util/math/index.d.ts",
+			"types": "./dist/esm/util/math/index.d.mts",
 			"require": "./dist/cjs/util/math/index.cjs",
 			"import": "./dist/esm/util/math/index.mjs"
 		},
 		"./string-util": {
-			"types": "./dist/string-util.d.ts",
+			"types": "./dist/esm/string-util.d.mts",
 			"require": "./dist/cjs/string-util.cjs",
 			"import": "./dist/esm/string-util.mjs"
 		},
 		"./node": {
-			"types": "./dist/util/node.d.ts",
+			"types": "./dist/esm/util/node.d.mts",
 			"require": "./dist/cjs/util/node.cjs",
 			"import": "./dist/esm/util/node.mjs"
 		},
 		"./runescape": {
-			"types": "./dist/util/runescape.d.ts",
+			"types": "./dist/esm/util/runescape.d.mts",
 			"require": "./dist/cjs/util/runescape.cjs",
 			"import": "./dist/esm/util/runescape.mjs"
 		},
 		"./rng": {
-			"types": "./dist/rng/index.d.ts",
+			"types": "./dist/esm/rng/index.d.mts",
 			"require": "./dist/cjs/rng/index.cjs",
 			"import": "./dist/esm/rng/index.mjs"
 		}
 	},
 	"scripts": {
 		"test": "concurrently \"tsc -p src\" \"pnpm vitest run\" \"tsc -p tests\"",
-		"build:esbuild": "tsx esbuild.mts",
-		"build:types": "tsc -p src",
-		"build": "concurrently \"pnpm build:types\" \"pnpm build:esbuild\""
+		"build": "tsdown"
 	},
 	"dependencies": {
 		"decimal.js": "^10.4.3",
@@ -87,7 +85,6 @@
 		"discord.js": "^14.20.0"
 	},
 	"devDependencies": {
-		"@oldschoolgg/ts-config": "^0.0.1",
 		"@types/math-expression-evaluator": "^1.2.2",
 		"discord.js": "^14.20.0",
 		"@types/micromatch": "^4.0.9"

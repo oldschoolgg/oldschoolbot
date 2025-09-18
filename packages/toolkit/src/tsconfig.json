@@ -1,13 +1,9 @@
 {
-	"extends": "../tsconfig.base.json",
+	"extends": "../../../tsconfig.newbase.json",
 	"compilerOptions": {
+		"rootDir": "./",
 		"outDir": "../dist",
-		"rootDir": ".",
-		"tsBuildInfoFile": "../dist/.tsbuildinfo",
-		"composite": true,
-		"declaration": true,
-		"incremental": true,
-		"emitDeclarationOnly": true
+		"incremental": false
 	},
-	"include": [".", "./**/*.json"]
+	"include": [".", "global.d.ts"]
 }

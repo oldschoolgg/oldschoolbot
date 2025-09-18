@@ -4,14 +4,14 @@ import { Time, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { hasSkillReqs } from '@/lib/util/smallUtils';
-import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
-import type { SkillsEnum } from '../../../lib/skilling/types';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { userStatsUpdate } from '../../mahojiSettings';
+import { WesternProv, userhasDiaryTier } from '../../../lib/diaries.js';
+import type { SkillsEnum } from '../../../lib/skilling/types.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
+import getOSItem from '../../../lib/util/getOSItem.js';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
+import { userStatsUpdate } from '../../mahojiSettings.js';
 
 const itemBoosts = [
 	[['Abyssal whip', 'Abyssal tentacle'].map(getOSItem), 12],

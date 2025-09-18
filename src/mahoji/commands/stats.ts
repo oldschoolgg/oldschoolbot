@@ -3,7 +3,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { ACCOUNT_TYPES, type AccountType } from 'oldschooljs/constants';
 import { Hiscores } from 'oldschooljs/hiscores';
 
-import { statsEmbed } from '../../lib/util/statsEmbed';
+import { statsEmbed } from '../../lib/util/statsEmbed.js';
 
 const accountTypeOptions = ACCOUNT_TYPES.map(val => {
 	let name: string = val;

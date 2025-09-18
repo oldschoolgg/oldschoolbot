@@ -8,17 +8,17 @@ import PQueue from 'p-queue';
 import { partition } from 'remeda';
 import z from 'zod';
 
-import { BadgesEnum, MAX_LEVEL, Roles, globalConfig } from '../lib/constants';
-import { getCollectionItems } from '../lib/data/Collections';
-import { Minigames } from '../lib/settings/minigames';
-import { ClueTiers } from './clues/clueTiers';
-import { loggedRawPrismaQuery } from './rawSql';
-import { TeamLoot } from './simulation/TeamLoot';
-import { SkillsArray } from './skilling/types';
-import type { ItemBank } from './types';
-import { getUsernameSync } from './util';
-import { fetchMultipleCLLeaderboards } from './util/clLeaderboard';
-import { logError } from './util/logError';
+import { BadgesEnum, MAX_LEVEL, Roles, globalConfig } from '../lib/constants.js';
+import { getCollectionItems } from '../lib/data/Collections.js';
+import { Minigames } from '../lib/settings/minigames.js';
+import { ClueTiers } from './clues/clueTiers.js';
+import { loggedRawPrismaQuery } from './rawSql.js';
+import { TeamLoot } from './simulation/TeamLoot.js';
+import { SkillsArray } from './skilling/types.js';
+import type { ItemBank } from './types.js';
+import { getUsernameSync } from './util.js';
+import { fetchMultipleCLLeaderboards } from './util/clLeaderboard.js';
+import { logError } from './util/logError.js';
 
 const RoleResultSchema = z.object({
 	roleID: z.string().min(17).max(19),

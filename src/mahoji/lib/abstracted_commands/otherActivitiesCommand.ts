@@ -1,8 +1,8 @@
 import { activity_type_enum } from '@prisma/client';
 
-import { championsChallengeCommand } from './championsChallenge';
-import { combatRingCommand } from './combatRingCommand';
-import { strongHoldOfSecurityCommand } from './strongHoldOfSecurityCommand';
+import { championsChallengeCommand } from './championsChallenge.js';
+import { combatRingCommand } from './combatRingCommand.js';
+import { strongHoldOfSecurityCommand } from './strongHoldOfSecurityCommand.js';
 
 export const otherActivities = [
 	{

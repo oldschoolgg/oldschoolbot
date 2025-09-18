@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import type { ItemBank } from './types';
+import type { ItemBank } from './types.js';
 
 export function makeTransactFromTableBankQueries({
 	bankToAdd,

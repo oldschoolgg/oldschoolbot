@@ -2,9 +2,9 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { fossilIslandNotesCL } from '../../../lib/data/CollectionsExport';
-import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { fossilIslandNotesCL } from '../../../lib/data/CollectionsExport.js';
+import getOSItem from '../../../lib/util/getOSItem.js';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
 
 export async function buyFossilIslandNotes(user: MUser, interaction: ChatInputCommandInteraction, quantity: number) {
 	const cost = new Bank().add('Numulite', 300).multiply(quantity);

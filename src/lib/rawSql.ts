@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 
-import { logError } from './util/logError';
+import { logError } from './util/logError.js';
 
 const u = Prisma.UserScalarFieldEnum;
 

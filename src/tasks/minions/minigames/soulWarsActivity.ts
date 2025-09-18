@@ -1,8 +1,8 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
-import { roll } from '@/lib/util/rng';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { roll } from '@/lib/util/rng.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
 
 function calcPoints() {
 	let base = 42.5;

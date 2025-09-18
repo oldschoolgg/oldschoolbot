@@ -2,23 +2,23 @@ import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { roll } from '@/lib/util/rng';
-import chatHeadImage from '../../lib/canvas/chatHeadImage';
-import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
-import { BitField } from '../../lib/constants';
-import type { PatchTypes } from '../../lib/minions/farming';
-import type { FarmingContract } from '../../lib/minions/farming/types';
-import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
-import Farming from '../../lib/skilling/skills/farming';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { assert } from '../../lib/util/logError';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { sendToChannelID } from '../../lib/util/webhook';
-import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { roll } from '@/lib/util/rng.js';
+import chatHeadImage from '../../lib/canvas/chatHeadImage.js';
+import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements.js';
+import { BitField } from '../../lib/constants.js';
+import type { PatchTypes } from '../../lib/minions/farming.js';
+import type { FarmingContract } from '../../lib/minions/farming/types.js';
+import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming.js';
+import Farming from '../../lib/skilling/skills/farming.js';
+import { SkillsEnum } from '../../lib/skilling/types.js';
+import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions.js';
+import { skillingPetDropRate } from '../../lib/util.js';
+import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers.js';
+import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
+import { assert } from '../../lib/util/logError.js';
+import { updateBankSetting } from '../../lib/util/updateBankSetting.js';
+import { sendToChannelID } from '../../lib/util/webhook.js';
+import { userStatsBankUpdate } from '../../mahoji/mahojiSettings.js';
 
 export const farmingTask: MinionTask = {
 	type: 'Farming',
@@ -341,7 +341,7 @@ export const farmingTask: MinionTask = {
 					farmingLevel: currentFarmingLevel
 				});
 				const fakeMonsterTaskOptions: MonsterActivityTaskOptions = {
-					mi: Monsters.Hespori,
+					mi: Monsters.Hespori.id,
 					q: patchType.lastQuantity,
 					type: 'MonsterKilling',
 					userID: user.id,

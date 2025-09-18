@@ -2,11 +2,11 @@ import type { Minigame } from '@prisma/client';
 import { objectEntries } from 'e';
 import { type Bank, type Item, ItemGroups, getItemOrThrow, resolveItems } from 'oldschooljs';
 
-import { growablePets } from '../growablePets';
-import { implings } from '../implings';
-import type { MinigameScore } from '../settings/minigames';
-import type { MUserStats } from '../structures/MUserStats';
-import getOSItem from '../util/getOSItem';
+import { growablePets } from '../growablePets.js';
+import { implings } from '../implings.js';
+import type { MinigameScore } from '../settings/minigames.js';
+import type { MUserStats } from '../structures/MUserStats.js';
+import getOSItem from '../util/getOSItem.js';
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -14,7 +14,7 @@ import {
 	gracefulHoods,
 	gracefulLegs,
 	gracefulTops
-} from './gracefulVariants';
+} from './gracefulVariants.js';
 
 export interface IToReturnCollection {
 	category: string;

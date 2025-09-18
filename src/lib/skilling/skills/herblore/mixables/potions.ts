@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
-import getOSItem from '../../../../util/getOSItem';
-import type { Mixable } from '../../../types';
+import getOSItem from '../../../../util/getOSItem.js';
+import type { Mixable } from '../../../types.js';
 
 const Potions: Mixable[] = [
 	{

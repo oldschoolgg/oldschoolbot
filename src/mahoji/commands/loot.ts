@@ -1,9 +1,9 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { PerkTier } from '../../lib/constants';
-import { getAllTrackedLootForUser, getDetailsOfSingleTrackedLoot } from '../../lib/lootTrack';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
+import { PerkTier } from '../../lib/constants.js';
+import { getAllTrackedLootForUser, getDetailsOfSingleTrackedLoot } from '../../lib/lootTrack.js';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation.js';
 
 export const lootCommand: OSBMahojiCommand = {
 	name: 'loot',

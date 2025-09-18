@@ -14,8 +14,8 @@ import {
 import { Time, isFunction, noOp } from 'e';
 import murmurhash from 'murmurhash';
 
-import { BLACKLISTED_USERS } from './blacklists';
-import { silentButtonAck } from './util/handleMahojiConfirmation';
+import { BLACKLISTED_USERS } from './blacklists.js';
+import { silentButtonAck } from './util/handleMahojiConfirmation.js';
 
 type DynamicButtonFn = (opts: { message: Message; interaction: MessageComponentInteraction }) => unknown;
 

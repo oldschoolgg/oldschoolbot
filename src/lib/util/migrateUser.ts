@@ -1,7 +1,7 @@
 import { UserError } from '@oldschoolgg/toolkit/structures';
 
-import { cancelUsersListings } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
-import { logError } from './logError';
+import { cancelUsersListings } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
+import { logError } from './logError.js';
 
 export async function migrateUser(_source: string | MUser, _dest: string | MUser): Promise<string | true> {
 	const sourceUser = typeof _source === 'string' ? await mUserFetch(_source) : _source;

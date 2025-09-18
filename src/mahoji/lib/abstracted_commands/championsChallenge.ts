@@ -2,8 +2,8 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, ItemGroups } from 'oldschooljs';
 
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
 
 export async function championsChallengeCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) {

@@ -1,14 +1,14 @@
 import { roll } from 'e';
 import { Bank, EItem } from 'oldschooljs';
 
-import { skillingPetDropRate } from '@/lib/util';
+import { skillingPetDropRate } from '@/lib/util.js';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { bloodEssence, raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
-import Runecraft from '../../lib/skilling/skills/runecraft';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings';
+import { bloodEssence, raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting.js';
+import Runecraft from '../../lib/skilling/skills/runecraft.js';
+import { SkillsEnum } from '../../lib/skilling/types.js';
+import type { RunecraftActivityTaskOptions } from '../../lib/types/minions.js';
+import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
+import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings.js';
 
 export const runecraftTask: MinionTask = {
 	type: 'Runecraft',

@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import type { AnimatedArmourActivityTaskOptions } from '@/lib/types/minions';
 import { handleTripFinish } from '@/lib/util/handleTripFinish';
-import { Armours } from '../../../../mahoji/lib/abstracted_commands/warriorsGuildCommand';
+import { Armours } from '../../../../mahoji/lib/abstracted_commands/warriorsGuildCommand.js';
 
 export const animatedArmorTask: MinionTask = {
 	type: 'AnimatedArmour',

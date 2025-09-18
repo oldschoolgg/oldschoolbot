@@ -2,12 +2,12 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { noOp, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
-import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { addMonsterXP } from '../../lib/minions/functions';
-import announceLoot from '../../lib/minions/functions/announceLoot';
-import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
-import type { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import killableMonsters from '../../lib/minions/data/killableMonsters.js';
+import { addMonsterXP } from '../../lib/minions/functions.js';
+import announceLoot from '../../lib/minions/functions/announceLoot.js';
+import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster.js';
+import type { GroupMonsterActivityTaskOptions } from '../../lib/types/minions.js';
+import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
 
 export const groupoMonsterTask: MinionTask = {
 	type: 'GroupMonsterKilling',

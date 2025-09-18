@@ -21,22 +21,22 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
-import { ClueTiers } from './clues/clueTiers';
-import { cluesRaresCL } from './data/CollectionsExport';
-import { defaultFarmingContract } from './minions/farming';
-import type { FarmingContract } from './minions/farming/types';
-import { shadeChestOpenables } from './shadesKeys';
-import { nestTable } from './simulation/birdsNest';
+import { ClueTiers } from './clues/clueTiers.js';
+import { cluesRaresCL } from './data/CollectionsExport.js';
+import { defaultFarmingContract } from './minions/farming.js';
+import type { FarmingContract } from './minions/farming/types.js';
+import { shadeChestOpenables } from './shadesKeys.js';
+import { nestTable } from './simulation/birdsNest.js';
 import {
 	BagFullOfGemsTable,
 	BuildersSupplyCrateTable,
 	CasketTable,
 	CrystalChestTable,
 	SpoilsOfWarTable
-} from './simulation/misc';
-import { openSeedPack } from './skilling/functions/calcFarmingContracts';
-import getOSItem from './util/getOSItem';
-import { roll } from './util/rng';
+} from './simulation/misc.js';
+import { openSeedPack } from './skilling/functions/calcFarmingContracts.js';
+import getOSItem from './util/getOSItem.js';
+import { roll } from './util/rng.js';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)

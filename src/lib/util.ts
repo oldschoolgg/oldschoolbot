@@ -5,14 +5,14 @@ import { type Guild, userMention } from 'discord.js';
 import { noOp, objectEntries } from 'e';
 import { calcCombatLevel, convertXPtoLVL } from 'oldschooljs';
 
-import type { MUserClass } from './MUser';
-import { usernameWithBadgesCache } from './cache';
-import { BitField, MAX_LEVEL, MAX_XP, globalConfig } from './constants';
-import type { SkillNameType, SkillsEnum } from './skilling/types';
-import type { GearBank } from './structures/GearBank';
-import type { Skills } from './types';
-import type { GroupMonsterActivityTaskOptions } from './types/minions';
-import { makeBadgeString } from './util/makeBadgeString';
+import type { MUserClass } from './MUser.js';
+import { usernameWithBadgesCache } from './cache.js';
+import { BitField, MAX_LEVEL, MAX_XP, globalConfig } from './constants.js';
+import type { SkillNameType, SkillsEnum } from './skilling/types.js';
+import type { GearBank } from './structures/GearBank.js';
+import type { Skills } from './types.js';
+import type { GroupMonsterActivityTaskOptions } from './types/minions.js';
+import { makeBadgeString } from './util/makeBadgeString.js';
 import { sendToChannelID } from './util/webhook.js';
 
 // @ts-ignore ignore

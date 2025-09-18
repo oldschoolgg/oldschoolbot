@@ -12,14 +12,14 @@ import {
 import { Bank, type ChambersOfXericOptions, type Item, itemID, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
-import { checkUserCanUseDegradeableItem } from '../degradeableItems';
-import { SkillsEnum } from '../skilling/types';
-import { Gear, constructGearSetup } from '../structures/Gear';
-import type { Skills } from '../types';
-import getOSItem from '../util/getOSItem';
-import { logError } from '../util/logError';
-import { formatList, itemNameFromID } from '../util/smallUtils';
-import { getSimilarItems } from './similarItems';
+import { checkUserCanUseDegradeableItem } from '../degradeableItems.js';
+import { SkillsEnum } from '../skilling/types.js';
+import { Gear, constructGearSetup } from '../structures/Gear.js';
+import type { Skills } from '../types.js';
+import getOSItem from '../util/getOSItem.js';
+import { logError } from '../util/logError.js';
+import { formatList, itemNameFromID } from '../util/smallUtils.js';
+import { getSimilarItems } from './similarItems.js';
 
 const bareMinStats: Skills = {
 	attack: 80,

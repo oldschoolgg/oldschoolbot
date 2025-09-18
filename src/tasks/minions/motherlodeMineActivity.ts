@@ -2,12 +2,12 @@ import { roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
-import Mining from '../../lib/skilling/skills/mining';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { MotherlodeMiningActivityTaskOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries.js';
+import Mining from '../../lib/skilling/skills/mining.js';
+import { SkillsEnum } from '../../lib/skilling/types.js';
+import type { MotherlodeMiningActivityTaskOptions } from '../../lib/types/minions.js';
+import { skillingPetDropRate } from '../../lib/util.js';
+import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
 
 export const motherlodeMiningTask: MinionTask = {
 	type: 'MotherlodeMining',

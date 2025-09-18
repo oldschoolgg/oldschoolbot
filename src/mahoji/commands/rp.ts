@@ -14,32 +14,32 @@ import { ApplicationCommandOptionType, SnowflakeUtil, codeBlock } from 'discord.
 import { Time, randArrItem, sumArr } from 'e';
 import { Bank, type Item } from 'oldschooljs';
 
-import { BitField, Channel, globalConfig } from '../../lib/constants';
-import { allCollectionLogsFlat } from '../../lib/data/Collections';
-import type { GearSetupType } from '../../lib/gear/types';
-import { GrandExchange } from '../../lib/grandExchange';
-import { marketPricemap } from '../../lib/marketPrices';
-import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
-import { unequipPet } from '../../lib/minions/functions/unequipPet';
-import { sql } from '../../lib/postgres';
-import { premiumPatronTime } from '../../lib/premiumPatronTime';
-import { runRolesTask } from '../../lib/rolesTask';
-import { TeamLoot } from '../../lib/simulation/TeamLoot';
-import type { ItemBank } from '../../lib/types';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { logError } from '../../lib/util/logError';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { migrateUser } from '../../lib/util/migrateUser';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { insertUserEvent } from '../../lib/util/userEvents';
-import { sendToChannelID } from '../../lib/util/webhook';
-import { cancelUsersListings } from '../lib/abstracted_commands/cancelGEListingCommand';
-import { gearSetupOption } from '../lib/mahojiCommandOptions';
-import { gifs } from './admin';
-import { getUserInfo } from './minion';
-import { sellPriceOfItem } from './sell';
+import { BitField, Channel, globalConfig } from '../../lib/constants.js';
+import { allCollectionLogsFlat } from '../../lib/data/Collections.js';
+import type { GearSetupType } from '../../lib/gear/types.js';
+import { GrandExchange } from '../../lib/grandExchange.js';
+import { marketPricemap } from '../../lib/marketPrices.js';
+import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand.js';
+import { unequipPet } from '../../lib/minions/functions/unequipPet.js';
+import { sql } from '../../lib/postgres.js';
+import { premiumPatronTime } from '../../lib/premiumPatronTime.js';
+import { runRolesTask } from '../../lib/rolesTask.js';
+import { TeamLoot } from '../../lib/simulation/TeamLoot.js';
+import type { ItemBank } from '../../lib/types.js';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation.js';
+import { deferInteraction } from '../../lib/util/interactionReply.js';
+import itemIsTradeable from '../../lib/util/itemIsTradeable.js';
+import { logError } from '../../lib/util/logError.js';
+import { makeBankImage } from '../../lib/util/makeBankImage.js';
+import { migrateUser } from '../../lib/util/migrateUser.js';
+import { parseBank } from '../../lib/util/parseStringBank.js';
+import { insertUserEvent } from '../../lib/util/userEvents.js';
+import { sendToChannelID } from '../../lib/util/webhook.js';
+import { cancelUsersListings } from '../lib/abstracted_commands/cancelGEListingCommand.js';
+import { gearSetupOption } from '../lib/mahojiCommandOptions.js';
+import { gifs } from './admin.js';
+import { getUserInfo } from './minion.js';
+import { sellPriceOfItem } from './sell.js';
 const itemFilters = [
 	{
 		name: 'Tradeable',

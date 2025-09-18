@@ -3,8 +3,8 @@ import { EItem } from 'oldschooljs';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
 import { logError } from '@/lib/util/logError';
-import { SeedableRNG } from '@/lib/util/rng';
-import type { FishingActivityTaskOptions } from '../../lib/types/minions';
+import { SeedableRNG } from '@/lib/util/rng.js';
+import type { FishingActivityTaskOptions } from '../../lib/types/minions.js';
 
 export const fishingTask: MinionTask = {
 	type: 'Fishing',

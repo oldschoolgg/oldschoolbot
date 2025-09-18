@@ -1,22 +1,22 @@
 import { roughMergeMahojiResponse } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/discord-util';
+import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 
-import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage';
-import { defaultFarmingContract } from '../../../lib/minions/farming';
+import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage.js';
+import { defaultFarmingContract } from '../../../lib/minions/farming.js';
 import type {
 	ContractOption,
 	FarmingContract,
 	FarmingContractDifficultyLevel
-} from '../../../lib/minions/farming/types';
-import { getPlantToGrow } from '../../../lib/skilling/functions/calcFarmingContracts';
-import { getFarmingInfoFromUser } from '../../../lib/skilling/functions/getFarmingInfo';
-import { plants } from '../../../lib/skilling/skills/farming';
-import { findPlant } from '../../../lib/util/farmingHelpers';
-import { makeEasierFarmingContractButton } from '../../../lib/util/smallUtils';
-import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
-import { farmingPlantCommand, harvestCommand } from './farmingCommand';
-import { abstractedOpenCommand } from './openCommand';
+} from '../../../lib/minions/farming/types.js';
+import { getPlantToGrow } from '../../../lib/skilling/functions/calcFarmingContracts.js';
+import { getFarmingInfoFromUser } from '../../../lib/skilling/functions/getFarmingInfo.js';
+import { plants } from '../../../lib/skilling/skills/farming.js';
+import { findPlant } from '../../../lib/util/farmingHelpers.js';
+import { makeEasierFarmingContractButton } from '../../../lib/util/smallUtils.js';
+import { mahojiUsersSettingsFetch } from '../../mahojiSettings.js';
+import { farmingPlantCommand, harvestCommand } from './farmingCommand.js';
+import { abstractedOpenCommand } from './openCommand.js';
 
 async function janeImage(content: string) {
 	const image = await newChatHeadImage({ content, head: 'jane' });

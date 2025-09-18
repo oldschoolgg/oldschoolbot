@@ -1,8 +1,8 @@
 import { Bank } from 'oldschooljs';
 
-import { allPetIDs } from '../../data/CollectionsExport';
-import { getItem } from '../../util/getOSItem';
-import { unequipPet } from './unequipPet';
+import { allPetIDs } from '../../data/CollectionsExport.js';
+import { getItem } from '../../util/getOSItem.js';
+import { unequipPet } from './unequipPet.js';
 
 export async function equipPet(user: MUser, itemName: string) {
 	const petItem = getItem(itemName);

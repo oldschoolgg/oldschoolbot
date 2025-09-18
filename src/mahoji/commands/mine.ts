@@ -4,19 +4,19 @@ import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { itemID } from 'oldschooljs';
 
 import { userhasDiaryTier } from '../../lib/diaries.js';
-import { QuestID } from '../../lib/minions/data/quests';
+import { QuestID } from '../../lib/minions/data/quests.js';
 import { DiaryID } from '../../lib/minions/types.js';
-import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
-import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../../lib/skilling/functions/miningBoosts';
-import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
-import Mining from '../../lib/skilling/skills/mining';
-import type { Ore } from '../../lib/skilling/types';
-import type { GearBank } from '../../lib/structures/GearBank';
-import type { MiningActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime.js';
+import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../../lib/skilling/functions/miningBoosts.js';
+import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements.js';
+import Mining from '../../lib/skilling/skills/mining.js';
+import type { Ore } from '../../lib/skilling/types.js';
+import type { GearBank } from '../../lib/structures/GearBank.js';
+import type { MiningActivityTaskOptions } from '../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength.js';
 import { formatSkillRequirements, itemNameFromID } from '../../lib/util/smallUtils.js';
-import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand';
+import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand.js';
 
 export function determineMiningTrip({
 	gearBank,

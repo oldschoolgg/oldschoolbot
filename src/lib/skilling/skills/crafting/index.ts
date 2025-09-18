@@ -1,7 +1,7 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 
-import { SkillsEnum } from '../../types';
-import { Craftables } from './craftables/index';
+import { SkillsEnum } from '../../types.js';
+import { Craftables } from './craftables/index.js';
 
 const Crafting = {
 	aliases: ['craft', 'crafting'],

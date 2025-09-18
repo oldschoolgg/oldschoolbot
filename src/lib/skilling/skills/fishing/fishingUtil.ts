@@ -1,7 +1,7 @@
 import { round } from 'e';
 import { itemID } from 'oldschooljs';
 
-import type { GearBank } from '@/lib/structures/GearBank';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 
 const anglerItems = [
 	[itemID('Angler hat'), 0.4],

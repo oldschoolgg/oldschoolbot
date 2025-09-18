@@ -63,7 +63,7 @@ const LarransBigChestTable = new LootTable()
 const LarransChestTable = new LootTable().add(LarransSmallChestTable).add(LarransBigChestTable);
 
 export class LarransChestOpenable extends SimpleOpenable {
-	public open(quantity = 1, options: OpenableOpenOptions = { fishLvl: 99, chestSize: 'big' }) {
+	public override open(quantity = 1, options: OpenableOpenOptions = { fishLvl: 99, chestSize: 'big' }) {
 		const loot = new Bank();
 		const tier = options.chestSize ?? 'big';
 		const fishLvl = options.fishLvl ?? 99;

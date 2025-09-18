@@ -2,12 +2,12 @@ import { increaseNumByPercent, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '@oldschoolgg/toolkit/constants';
-import { darkAltarRunes } from '../../lib/minions/functions/darkAltarCommand';
-import { bloodEssence, raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { DarkAltarOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { darkAltarRunes } from '../../lib/minions/functions/darkAltarCommand.js';
+import { bloodEssence, raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting.js';
+import { SkillsEnum } from '../../lib/skilling/types.js';
+import type { DarkAltarOptions } from '../../lib/types/minions.js';
+import { skillingPetDropRate } from '../../lib/util.js';
+import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
 
 export const darkAltarTask: MinionTask = {
 	type: 'DarkAltar',

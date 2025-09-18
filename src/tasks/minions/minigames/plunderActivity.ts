@@ -1,11 +1,11 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
-import { lootRoom, plunderRooms } from '../../../lib/minions/data/plunder';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import type { PlunderActivityTaskOptions } from './../../../lib/types/minions';
+import { lootRoom, plunderRooms } from '../../../lib/minions/data/plunder.js';
+import { SkillsEnum } from '../../../lib/skilling/types.js';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
+import { makeBankImage } from '../../../lib/util/makeBankImage.js';
+import type { PlunderActivityTaskOptions } from './../../../lib/types/minions.js';
 
 export const plunderTask: MinionTask = {
 	type: 'Plunder',

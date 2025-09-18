@@ -1,7 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { TimerManager } from '@sapphire/timer-manager';
 
-import { globalConfig } from './constants';
+import { globalConfig } from './constants.js';
 
 export const BLACKLISTED_USERS = new Set<string>();
 export const BLACKLISTED_GUILDS = new Set<string>();

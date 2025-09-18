@@ -2,9 +2,9 @@ import type { AbstractCommand, CommandOptions } from '@oldschoolgg/toolkit/disco
 import { TimerManager } from '@sapphire/timer-manager';
 
 import { logError } from '@/lib/util/logError';
-import { modifyBusyCounter } from '../../lib/busyCounterCache';
-import { busyImmuneCommands, shouldTrackCommand } from '../../lib/constants';
-import { makeCommandUsage } from '../../lib/util/commandUsage';
+import { modifyBusyCounter } from '../../lib/busyCounterCache.js';
+import { busyImmuneCommands, shouldTrackCommand } from '../../lib/constants.js';
+import { makeCommandUsage } from '../../lib/util/commandUsage.js';
 
 export async function postCommand({
 	abstractCommand,

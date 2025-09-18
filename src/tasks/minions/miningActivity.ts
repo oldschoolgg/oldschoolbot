@@ -2,16 +2,16 @@ import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Time, increaseNumByPercent, randInt, roll, sumArr } from 'e';
 import { toKMB } from 'oldschooljs';
 
-import { QuestID } from '../../lib/minions/data/quests';
-import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
-import Mining, { prospectorItemsArr } from '../../lib/skilling/skills/mining';
-import { type Ore, SkillsEnum } from '../../lib/skilling/types';
-import type { GearBank } from '../../lib/structures/GearBank';
-import { UpdateBank } from '../../lib/structures/UpdateBank';
-import type { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { rollForMoonKeyHalf } from '../../lib/util/minionUtils';
+import { QuestID } from '../../lib/minions/data/quests.js';
+import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot.js';
+import Mining, { prospectorItemsArr } from '../../lib/skilling/skills/mining.js';
+import { type Ore, SkillsEnum } from '../../lib/skilling/types.js';
+import type { GearBank } from '../../lib/structures/GearBank.js';
+import { UpdateBank } from '../../lib/structures/UpdateBank.js';
+import type { MiningActivityTaskOptions } from '../../lib/types/minions.js';
+import { skillingPetDropRate } from '../../lib/util.js';
+import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
+import { rollForMoonKeyHalf } from '../../lib/util/minionUtils.js';
 
 export function determineMiningResult({
 	ore,

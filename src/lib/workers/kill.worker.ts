@@ -1,12 +1,12 @@
-import '../data/itemAliases';
+import '../data/itemAliases.js';
 
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Bank, Misc, Monsters, calcDropRatesFromBank, resolveItems } from 'oldschooljs';
 
-import type { KillWorkerArgs, KillWorkerReturn } from '.';
-import killableMonsters from '../minions/data/killableMonsters';
-import { handleNexKills } from '../simulation/nex';
-import { simulatedKillables } from '../simulation/simulatedKillables';
+import type { KillWorkerArgs, KillWorkerReturn } from '..js';
+import killableMonsters from '../minions/data/killableMonsters.js';
+import { handleNexKills } from '../simulation/nex.js';
+import { simulatedKillables } from '../simulation/simulatedKillables.js';
 
 if (global.prisma) {
 	throw new Error('Prisma is loaded in the kill worker!');

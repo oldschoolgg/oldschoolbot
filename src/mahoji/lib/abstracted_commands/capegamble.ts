@@ -4,12 +4,12 @@ import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { petMessage } from '@/lib/util/displayCluesAndPets';
-import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage';
-import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { roll } from '../../../lib/util/rng';
-import { userStatsUpdate } from '../../mahojiSettings';
+import { petMessage } from '@/lib/util/displayCluesAndPets.js';
+import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage.js';
+import getOSItem from '../../../lib/util/getOSItem.js';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
+import { roll } from '../../../lib/util/rng.js';
+import { userStatsUpdate } from '../../mahojiSettings.js';
 
 export async function capeGambleStatsCommand(user: MUser) {
 	const stats = await user.fetchStats({

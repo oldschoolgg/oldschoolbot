@@ -7,17 +7,17 @@ import { LRUCache } from 'lru-cache';
 import { Bank, type Item, type ItemBank, toKMB } from 'oldschooljs';
 import PQueue from 'p-queue';
 
-import { BLACKLISTED_USERS } from './blacklists';
-import { BitField, PerkTier, globalConfig } from './constants';
-import { marketPricemap } from './marketPrices';
-import type { RobochimpUser } from './roboChimp';
-import { roboChimpUserFetch } from './roboChimp';
-import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
-import getOSItem, { getItem } from './util/getOSItem';
-import { assert, logError } from './util/logError';
-import { generateGrandExchangeID, itemNameFromID } from './util/smallUtils';
-import { sendToChannelID } from './util/webhook';
+import { BLACKLISTED_USERS } from './blacklists.js';
+import { BitField, PerkTier, globalConfig } from './constants.js';
+import { marketPricemap } from './marketPrices.js';
+import type { RobochimpUser } from './roboChimp.js';
+import { roboChimpUserFetch } from './roboChimp.js';
+import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank.js';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings.js';
+import getOSItem, { getItem } from './util/getOSItem.js';
+import { assert, logError } from './util/logError.js';
+import { generateGrandExchangeID, itemNameFromID } from './util/smallUtils.js';
+import { sendToChannelID } from './util/webhook.js';
 
 interface CreateListingArgs {
 	user: MUser;

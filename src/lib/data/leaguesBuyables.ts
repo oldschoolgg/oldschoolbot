@@ -1,5 +1,5 @@
 import type { Item } from 'oldschooljs';
-import getOSItem from '../util/getOSItem';
+import getOSItem from '../util/getOSItem.js';
 
 interface RawLeagueBuyable {
 	item: Item;

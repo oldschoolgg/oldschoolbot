@@ -1,8 +1,8 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { itemID } from 'oldschooljs';
 
-import type { Cookable } from '../../types';
-import { SkillsEnum } from '../../types';
+import type { Cookable } from '../../types.js';
+import { SkillsEnum } from '../../types.js';
 
 export const Cookables: Cookable[] = [
 	{

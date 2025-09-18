@@ -1,10 +1,10 @@
 import { percentChance } from 'e';
 import { Bank, itemID } from 'oldschooljs';
 
-import Smithing from '../../lib/skilling/skills/smithing';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import Smithing from '../../lib/skilling/skills/smithing.js';
+import { SkillsEnum } from '../../lib/skilling/types.js';
+import type { SmeltingActivityTaskOptions } from '../../lib/types/minions.js';
+import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
 
 export const smeltingTask: MinionTask = {
 	type: 'Smelting',

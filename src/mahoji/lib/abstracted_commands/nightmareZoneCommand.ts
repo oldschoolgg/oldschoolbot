@@ -4,18 +4,18 @@ import { Time, calcWhatPercent, reduceNumByPercent, round, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import type { NMZStrategy } from '../../../lib/constants';
-import { trackLoot } from '../../../lib/lootTrack';
-import { MAX_QP } from '../../../lib/minions/data/quests';
-import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { Skills } from '../../../lib/types';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import type { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
+import type { NMZStrategy } from '../../../lib/constants.js';
+import { trackLoot } from '../../../lib/lootTrack.js';
+import { MAX_QP } from '../../../lib/minions/data/quests.js';
+import { resolveAttackStyles } from '../../../lib/minions/functions.js';
+import { SkillsEnum } from '../../../lib/skilling/types.js';
+import type { Skills } from '../../../lib/types.js';
+import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
+import getOSItem from '../../../lib/util/getOSItem.js';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import type { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions.js';
 
 const itemBoosts = [
 	// Special weapons

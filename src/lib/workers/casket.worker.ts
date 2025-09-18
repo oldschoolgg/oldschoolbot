@@ -1,10 +1,10 @@
-import '../data/itemAliases';
+import '../data/itemAliases.js';
 
 import { roll } from 'e';
 import { EliteMimicTable, type ItemBank, MasterMimicTable } from 'oldschooljs';
 
-import type { CasketWorkerArgs } from '.';
-import { ClueTiers } from '../clues/clueTiers';
+import type { CasketWorkerArgs } from '..js';
+import { ClueTiers } from '../clues/clueTiers.js';
 
 if (global.prisma) {
 	throw new Error('Prisma is loaded in the casket worker!');

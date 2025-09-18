@@ -1,9 +1,9 @@
 import { Monsters } from 'oldschooljs';
 
-import { QuestID } from '../../minions/data/quests';
-import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
-import type { AssignableSlayerTask } from '../types';
-import { bossTasks } from './bossTasks';
+import { QuestID } from '../../minions/data/quests.js';
+import { SlayerTaskUnlocksEnum } from '../slayerUnlocks.js';
+import type { AssignableSlayerTask } from '../types.js';
+import { bossTasks } from './bossTasks.js';
 
 export const chaeldarTasks: AssignableSlayerTask[] = [
 	{

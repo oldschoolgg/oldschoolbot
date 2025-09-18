@@ -5,18 +5,18 @@ import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import { tripBuyables } from '@/lib/data/buyables/tripBuyables';
 
-import Buyables from '../../lib/data/buyables/buyables';
-import { quests } from '../../lib/minions/data/quests';
-import { Minigames } from '../../lib/settings/minigames';
-import { MUserStats } from '../../lib/structures/MUserStats';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { formatSkillRequirements, itemNameFromID } from '../../lib/util/smallUtils';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
-import { buyKitten } from '../lib/abstracted_commands/buyKitten';
-import { buyingTripCommand } from '../lib/abstracted_commands/buyingTripCommand';
-import { mahojiParseNumber, userStatsUpdate } from '../mahojiSettings';
+import Buyables from '../../lib/data/buyables/buyables.js';
+import { quests } from '../../lib/minions/data/quests.js';
+import { Minigames } from '../../lib/settings/minigames.js';
+import { MUserStats } from '../../lib/structures/MUserStats.js';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation.js';
+import { deferInteraction } from '../../lib/util/interactionReply.js';
+import { formatSkillRequirements, itemNameFromID } from '../../lib/util/smallUtils.js';
+import { updateBankSetting } from '../../lib/util/updateBankSetting.js';
+import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes.js';
+import { buyKitten } from '../lib/abstracted_commands/buyKitten.js';
+import { buyingTripCommand } from '../lib/abstracted_commands/buyingTripCommand.js';
+import { mahojiParseNumber, userStatsUpdate } from '../mahojiSettings.js';
 
 const allBuyablesAutocomplete = [
 	...Buyables.map(b => ({ name: b.name })),

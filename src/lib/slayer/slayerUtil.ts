@@ -2,20 +2,20 @@ import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { notEmpty, objectKeys, randFloat, randInt } from 'e';
 import { Bank, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
-import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
-import { CombatAchievements } from '../combat_achievements/combatAchievements';
-import type { PvMMethod } from '../constants';
-import { CombatOptionsEnum } from '../minions/data/combatConstants';
-import type { KillableMonster } from '../minions/types';
-import { getNewUser } from '../settings/settings';
-import { SkillsEnum } from '../skilling/types';
-import { logError } from '../util/logError';
-import { roll } from '../util/rng';
-import { autoslayModes } from './constants';
-import { slayerMasters } from './slayerMasters';
-import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks';
-import { bossTasks, wildernessBossTasks } from './tasks/bossTasks';
-import type { AssignableSlayerTask, SlayerMaster } from './types';
+import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries.js';
+import { CombatAchievements } from '../combat_achievements/combatAchievements.js';
+import type { PvMMethod } from '../constants.js';
+import { CombatOptionsEnum } from '../minions/data/combatConstants.js';
+import type { KillableMonster } from '../minions/types.js';
+import { getNewUser } from '../settings/settings.js';
+import { SkillsEnum } from '../skilling/types.js';
+import { logError } from '../util/logError.js';
+import { roll } from '../util/rng.js';
+import { autoslayModes } from './constants.js';
+import { slayerMasters } from './slayerMasters.js';
+import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks.js';
+import { bossTasks, wildernessBossTasks } from './tasks/bossTasks.js';
+import type { AssignableSlayerTask, SlayerMaster } from './types.js';
 
 export const wildySlayerOnlyMonsters = [
 	Monsters.DustDevil,

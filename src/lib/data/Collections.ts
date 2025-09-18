@@ -14,23 +14,23 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
-import type { ClueTier } from '../clues/clueTiers';
-import { ClueTiers } from '../clues/clueTiers';
-import killableMonsters, { NightmareMonster } from '../minions/data/killableMonsters';
-import { sepulchreFloors } from '../minions/data/sepulchre';
+import type { ClueTier } from '../clues/clueTiers.js';
+import { ClueTiers } from '../clues/clueTiers.js';
+import killableMonsters, { NightmareMonster } from '../minions/data/killableMonsters.js';
+import { sepulchreFloors } from '../minions/data/sepulchre.js';
 import {
 	EasyEncounterLoot,
 	HardEncounterLoot,
 	MediumEncounterLoot,
 	rewardTokens
-} from '../minions/data/templeTrekking';
-import type { MinigameName } from '../settings/minigames';
-import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc';
-import { allFarmingItems } from '../skilling/skills/farming';
-import { SkillsEnum } from '../skilling/types';
-import { MUserStats } from '../structures/MUserStats';
-import { shuffleRandom } from '../util/smallUtils';
-import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport';
+} from '../minions/data/templeTrekking.js';
+import type { MinigameName } from '../settings/minigames.js';
+import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc.js';
+import { allFarmingItems } from '../skilling/skills/farming.js';
+import { SkillsEnum } from '../skilling/types.js';
+import { MUserStats } from '../structures/MUserStats.js';
+import { shuffleRandom } from '../util/smallUtils.js';
+import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport.js';
 import {
 	NexCL,
 	abyssalSireCL,
@@ -140,9 +140,9 @@ import {
 	wintertodtCL,
 	zalcanoCL,
 	zulrahCL
-} from './CollectionsExport';
-import Createables from './createables';
-import { leagueBuyables } from './leaguesBuyables';
+} from './CollectionsExport.js';
+import Createables from './createables.js';
+import { leagueBuyables } from './leaguesBuyables.js';
 
 function kcProg(mon: Monster): FormatProgressFunction {
 	return ({ stats }) => `${stats.kcBank[mon.id] ?? 0} KC`;

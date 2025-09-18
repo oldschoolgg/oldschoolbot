@@ -1,6 +1,6 @@
 import { itemID } from 'oldschooljs';
 
-import type { GearBank } from '../structures/GearBank';
+import type { GearBank } from '../structures/GearBank.js';
 
 interface Eatable {
 	name: string;

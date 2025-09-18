@@ -3,16 +3,16 @@ import { EmbedBuilder } from 'discord.js';
 import { shuffleArr, sumArr } from 'e';
 import { Bank, type SkillsScore, convertXPtoLVL, toKMB } from 'oldschooljs';
 
-import { ClueTiers } from '../clues/clueTiers';
-import { getClueScoresFromOpenables } from '../clues/clueUtils';
-import { MAX_LEVEL, badges } from '../constants';
-import { calcCLDetails } from '../data/Collections';
-import { skillEmoji } from '../data/emojis';
-import { effectiveMonsters } from '../minions/data/killableMonsters';
-import { courses } from '../skilling/skills/agility';
-import creatures from '../skilling/skills/hunter/creatures';
-import type { ItemBank, Skills } from '../types';
-import { logError } from './logError';
+import { ClueTiers } from '../clues/clueTiers.js';
+import { getClueScoresFromOpenables } from '../clues/clueUtils.js';
+import { MAX_LEVEL, badges } from '../constants.js';
+import { calcCLDetails } from '../data/Collections.js';
+import { skillEmoji } from '../data/emojis.js';
+import { effectiveMonsters } from '../minions/data/killableMonsters.js';
+import { courses } from '../skilling/skills/agility.js';
+import creatures from '../skilling/skills/hunter/creatures.js';
+import type { ItemBank, Skills } from '../types.js';
+import { logError } from './logError.js';
 
 export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	const { QP } = user;

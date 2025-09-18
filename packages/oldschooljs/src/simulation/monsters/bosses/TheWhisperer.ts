@@ -54,7 +54,7 @@ const ResourceTable = new LootTable()
 	.add('Chaos rune', [140, 210], 1);
 
 class TheWhispererSingleton extends Monster {
-	public allItems: number[] = uniqueArr([
+	public override allItems: number[] = uniqueArr([
 		...ClueTable.allItems,
 		...SupplyTable.allItems,
 		...ResourceTable.allItems,

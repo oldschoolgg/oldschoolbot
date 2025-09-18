@@ -1,10 +1,10 @@
-import '../data/itemAliases';
+import '../data/itemAliases.js';
 
 import { removeFromArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import type { FinishWorkerArgs, FinishWorkerReturn } from '.';
-import getOSItem from '../util/getOSItem';
+import type { FinishWorkerArgs, FinishWorkerReturn } from '..js';
+import getOSItem from '../util/getOSItem.js';
 
 if (global.prisma) {
 	throw new Error('Prisma is loaded in the finish worker!');

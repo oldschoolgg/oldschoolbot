@@ -4,12 +4,12 @@ import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { calcWhatPercent, objectEntries } from 'e';
 import { type Bank, Items, Util } from 'oldschooljs';
 
-import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
-import type { CollectionStatus, IToReturnCollection } from '../lib/data/CollectionsExport';
-import { OSRSCanvas } from './canvas/OSRSCanvas';
-import { bankImageTask } from './canvas/bankImage';
-import type { IBgSprite } from './canvas/canvasUtil';
-import type { MUserStats } from './structures/MUserStats';
+import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections.js';
+import type { CollectionStatus, IToReturnCollection } from '../lib/data/CollectionsExport.js';
+import { OSRSCanvas } from './canvas/OSRSCanvas.js';
+import { bankImageTask } from './canvas/bankImage.js';
+import type { IBgSprite } from './canvas/canvasUtil.js';
+import type { MUserStats } from './structures/MUserStats.js';
 
 export const collectionLogTypes = [
 	{ name: 'collection', description: 'Normal Collection Log' },

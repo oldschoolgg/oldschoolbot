@@ -2,8 +2,8 @@ import { type CommandRunOptions, ProductID, products } from '@oldschoolgg/toolki
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { notEmpty } from 'e';
 
-import { BOT_TYPE } from '../../lib/constants';
-import { roboChimpSyncData } from '../../lib/roboChimp';
+import { BOT_TYPE } from '../../lib/constants.js';
+import { roboChimpSyncData } from '../../lib/roboChimp.js';
 
 export const redeemCommand: OSBMahojiCommand = {
 	name: 'redeem',

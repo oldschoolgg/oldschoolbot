@@ -2,8 +2,8 @@ import { Prisma } from '@prisma/client';
 import { ChannelType } from 'discord.js';
 import { objectEntries } from 'e';
 
-import { globalConfig } from '../constants';
-import { runTimedLoggedFn } from '../util';
+import { globalConfig } from '../constants.js';
+import { runTimedLoggedFn } from '../util.js';
 
 export const CACHED_ACTIVE_USER_IDS = new Set();
 CACHED_ACTIVE_USER_IDS.add(globalConfig.clientID);

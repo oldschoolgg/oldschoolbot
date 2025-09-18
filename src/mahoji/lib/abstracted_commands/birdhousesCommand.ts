@@ -3,11 +3,11 @@ import { time } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses';
-import birdhouses, { birdhouseSeeds } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
-import type { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../../mahojiSettings';
+import birdhouses, { birdhouseSeeds } from '../../../lib/skilling/skills/hunter/birdHouseTrapping.js';
+import type { BirdhouseActivityTaskOptions } from '../../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../../mahojiSettings.js';
 
 export async function birdhouseCheckCommand(user: MUser) {
 	const details = calculateBirdhouseDetails(user);

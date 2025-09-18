@@ -1,12 +1,12 @@
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
-import { roll } from '@/lib/util/rng';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
-import { skillingPetDropRate } from '../../../lib/util';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { roll } from '@/lib/util/rng.js';
+import { SkillsEnum } from '../../../lib/skilling/types.js';
+import type { TitheFarmActivityTaskOptions } from '../../../lib/types/minions.js';
+import { skillingPetDropRate } from '../../../lib/util.js';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
+import { userStatsUpdate } from '../../../mahoji/mahojiSettings.js';
 
 export const titheFarmTask: MinionTask = {
 	type: 'TitheFarm',

@@ -1,9 +1,9 @@
 import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { mahojiChatHead } from '../../../lib/canvas/chatHeadImage';
-import { kittens } from '../../../lib/growablePets';
-import getOSItem from '../../../lib/util/getOSItem';
+import { mahojiChatHead } from '../../../lib/canvas/chatHeadImage.js';
+import { kittens } from '../../../lib/growablePets.js';
+import getOSItem from '../../../lib/util/getOSItem.js';
 
 export async function buyKitten(user: MUser) {
 	const cost = new Bank().add('Coins', 1000);

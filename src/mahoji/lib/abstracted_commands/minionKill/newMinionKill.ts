@@ -5,7 +5,7 @@ import { EItem, Items, Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import z from 'zod';
 
-import type { BitField, PvMMethod } from '@/lib/constants';
+import type { BitField, PvMMethod } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems';
 import { checkRangeGearWeapon } from '@/lib/gear/functions/checkRangeGearWeapon';
 import type { CombatOptionsEnum } from '@/lib/minions/data/combatConstants';
@@ -19,13 +19,13 @@ import {
 import type { KillableMonster } from '@/lib/minions/types';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks';
 import { type CurrentSlayerInfo, determineCombatBoosts, wildySlayerOnlyMonsters } from '@/lib/slayer/slayerUtil';
-import type { GearBank } from '@/lib/structures/GearBank';
-import { UpdateBank } from '@/lib/structures/UpdateBank';
-import type { Peak } from '@/lib/util/peaks';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import type { Peak } from '@/lib/util/peaks.js';
 import { zodEnum } from '@/lib/util/smallUtils.js';
-import { killsRemainingOnTask } from './calcTaskMonstersRemaining';
-import { type PostBoostEffect, postBoostEffects } from './postBoostEffects';
-import { CombatMethodOptionsSchema, speedCalculations } from './timeAndSpeed';
+import { killsRemainingOnTask } from './calcTaskMonstersRemaining.js';
+import { type PostBoostEffect, postBoostEffects } from './postBoostEffects.js';
+import { CombatMethodOptionsSchema, speedCalculations } from './timeAndSpeed.js';
 
 const newMinionKillReturnSchema = z.object({
 	duration: z.number().int().positive(),

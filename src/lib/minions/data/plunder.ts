@@ -1,10 +1,10 @@
 import { randInt } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { roll } from '@/lib/util/rng';
-import { SkillsEnum } from '../../skilling/types';
-import { skillingPetDropRate } from '../../util';
-import type { MUserClass } from './../../MUser';
+import { roll } from '@/lib/util/rng.js';
+import { SkillsEnum } from '../../skilling/types.js';
+import { skillingPetDropRate } from '../../util.js';
+import type { MUserClass } from './../../MUser.js';
 
 const Room1Table = new LootTable().add('Ivory Comb', 1, 3).add('Pottery scarab').add('Pottery statuette');
 

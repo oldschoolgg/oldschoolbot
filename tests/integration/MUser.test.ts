@@ -35,8 +35,8 @@ async function stressTest(userID: string) {
 
 	await assertBankMatches();
 
-	await user.transactItems({ userID, itemsToRemove: currentBank, filterLoot: false });
-	await user.transactItems({ userID, itemsToAdd: currentBank, filterLoot: false });
+	await user.transactItems({ itemsToRemove: currentBank, filterLoot: false });
+	await user.transactItems({ itemsToAdd: currentBank, filterLoot: false });
 	await assertBankMatches();
 	await user.removeItemsFromBank(currentBank);
 	await assertGP(currentGP);
@@ -47,22 +47,21 @@ async function stressTest(userID: string) {
 	await assertBankMatches();
 
 	await assertGP(currentGP);
-	await user.transactItems({ userID, itemsToRemove: gpBank, filterLoot: false });
+	await user.transactItems({  itemsToRemove: gpBank, filterLoot: false });
 	await assertGP(0);
-	await user.transactItems({ userID, itemsToAdd: gpBank, filterLoot: false });
+	await user.transactItems({ itemsToAdd: gpBank, filterLoot: false });
 	await assertBankMatches();
 	await assertGP(currentGP);
 
 	// Adding and removing at same time
 	const everything = currentBank.clone().add(gpBank);
-	await user.transactItems({ userID, itemsToRemove: everything, itemsToAdd: everything, filterLoot: false });
+	await user.transactItems({  itemsToRemove: everything, itemsToAdd: everything, filterLoot: false });
 	await assertBankMatches();
 
 	// Collection Log
 	const clBankChange = new Bank().add('Coins').add('Twisted bow').freeze();
 	assert(currentCL.equals(await fetchCL()), `CL should not have changed ${currentCL.difference(await fetchCL())}`);
 	const { previousCL, newCL } = await user.transactItems({
-		userID,
 		itemsToAdd: clBankChange,
 		collectionLog: true,
 		filterLoot: false

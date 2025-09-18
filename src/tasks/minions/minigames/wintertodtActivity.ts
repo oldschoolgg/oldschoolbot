@@ -3,14 +3,14 @@ import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { trackLoot } from '../../../lib/lootTrack';
-import { winterTodtPointsTable } from '../../../lib/simulation/simulatedKillables';
-import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
-import Firemaking from '../../../lib/skilling/skills/firemaking';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { trackLoot } from '../../../lib/lootTrack.js';
+import { winterTodtPointsTable } from '../../../lib/simulation/simulatedKillables.js';
+import { WintertodtCrate } from '../../../lib/simulation/wintertodt.js';
+import Firemaking from '../../../lib/skilling/skills/firemaking.js';
+import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions.js';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
+import { makeBankImage } from '../../../lib/util/makeBankImage.js';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
 
 export const wintertodtTask: MinionTask = {
 	type: 'Wintertodt',

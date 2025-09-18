@@ -17,22 +17,22 @@ import { Time, clamp, removeFromArr, uniqueArr } from 'e';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import { ItemIconPacks } from '@/lib/canvas/iconPacks';
-import { DynamicButtons } from '../../lib/DynamicButtons';
-import { BitField, ParsedCustomEmojiWithGroups, PerkTier, globalConfig } from '../../lib/constants';
-import { Eatables } from '../../lib/data/eatables';
-import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
-import { birdhouseSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrapping';
-import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
-import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
-import { BankSortMethods } from '../../lib/sorts';
-import { emojiServers } from '../../lib/util/cachedUserIDs';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { isValidNickname, itemNameFromID } from '../../lib/util/smallUtils';
-import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
-import { itemOption } from '../lib/mahojiCommandOptions';
-import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
+import { DynamicButtons } from '../../lib/DynamicButtons.js';
+import { BitField, ParsedCustomEmojiWithGroups, PerkTier, globalConfig } from '../../lib/constants.js';
+import { Eatables } from '../../lib/data/eatables.js';
+import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants.js';
+import { birdhouseSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrapping.js';
+import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants.js';
+import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil.js';
+import { BankSortMethods } from '../../lib/sorts.js';
+import { emojiServers } from '../../lib/util/cachedUserIDs.js';
+import { deferInteraction } from '../../lib/util/interactionReply.js';
+import { makeBankImage } from '../../lib/util/makeBankImage.js';
+import { parseBank } from '../../lib/util/parseStringBank.js';
+import { isValidNickname, itemNameFromID } from '../../lib/util/smallUtils.js';
+import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings.js';
+import { itemOption } from '../lib/mahojiCommandOptions.js';
+import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings.js';
 
 interface UserConfigToggle {
 	name: string;

@@ -12,9 +12,9 @@ import {
 } from 'discord.js';
 import { Time, noOp } from 'e';
 
-import { SILENT_ERROR } from '../constants';
-import { deferInteraction, interactionReply } from './interactionReply';
-import { logErrorForInteraction } from './logError';
+import { SILENT_ERROR } from '../constants.js';
+import { deferInteraction, interactionReply } from './interactionReply.js';
+import { logErrorForInteraction } from './logError.js';
 
 export async function silentButtonAck(interaction: ButtonInteraction) {
 	return globalClient.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {

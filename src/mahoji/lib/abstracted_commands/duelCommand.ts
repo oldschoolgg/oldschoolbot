@@ -8,9 +8,9 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInte
 import { Time, noOp, sleep } from 'e';
 import { Bank, Util } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '../../../lib/blacklists';
-import { deferInteraction } from '../../../lib/util/interactionReply';
-import { mahojiParseNumber, updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
+import { BLACKLISTED_USERS } from '../../../lib/blacklists.js';
+import { deferInteraction } from '../../../lib/util/interactionReply.js';
+import { mahojiParseNumber, updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings.js';
 
 async function checkBal(user: MUser, amount: number) {
 	return user.GP >= amount;

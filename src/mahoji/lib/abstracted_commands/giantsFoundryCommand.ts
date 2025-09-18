@@ -3,17 +3,17 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, calcWhatPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { TOTAL_GIANT_WEAPONS } from '../../../lib/giantsFoundry';
-import { trackLoot } from '../../../lib/lootTrack';
-import Smithing from '../../../lib/skilling/skills/smithing';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsBankUpdate, userStatsUpdate } from '../../mahojiSettings';
-import type { GiantsFoundryBank } from './../../../lib/giantsFoundry';
+import { TOTAL_GIANT_WEAPONS } from '../../../lib/giantsFoundry.js';
+import { trackLoot } from '../../../lib/lootTrack.js';
+import Smithing from '../../../lib/skilling/skills/smithing.js';
+import { SkillsEnum } from '../../../lib/skilling/types.js';
+import type { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import { userStatsBankUpdate, userStatsUpdate } from '../../mahojiSettings.js';
+import type { GiantsFoundryBank } from './../../../lib/giantsFoundry.js';
 
 export const giantsFoundryAlloys = [
 	{

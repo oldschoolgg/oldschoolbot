@@ -18,7 +18,7 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
-import { allCollectionLogsFlat } from './data/Collections';
+import { allCollectionLogsFlat } from './data/Collections.js';
 import {
 	NexCL,
 	chambersOfXericCL,
@@ -36,17 +36,17 @@ import {
 	theatreOfBLoodCL,
 	theatreOfBLoodNormalCL,
 	wintertodtCL
-} from './data/CollectionsExport';
-import pets from './data/pets';
-import killableMonsters from './minions/data/killableMonsters';
-import { openShadeChest } from './shadesKeys';
-import { birdsNestID, treeSeedsNest } from './simulation/birdsNest';
-import { gauntlet } from './simulation/gauntlet';
-import { handleNexKills } from './simulation/nex';
-import { getTemporossLoot } from './simulation/tempoross';
-import { TheatreOfBlood } from './simulation/tob';
-import { WintertodtCrate } from './simulation/wintertodt';
-import getOSItem from './util/getOSItem';
+} from './data/CollectionsExport.js';
+import pets from './data/pets.js';
+import killableMonsters from './minions/data/killableMonsters.js';
+import { openShadeChest } from './shadesKeys.js';
+import { birdsNestID, treeSeedsNest } from './simulation/birdsNest.js';
+import { gauntlet } from './simulation/gauntlet.js';
+import { handleNexKills } from './simulation/nex.js';
+import { getTemporossLoot } from './simulation/tempoross.js';
+import { TheatreOfBlood } from './simulation/tob.js';
+import { WintertodtCrate } from './simulation/wintertodt.js';
+import getOSItem from './util/getOSItem.js';
 
 interface KillArgs {
 	accumulatedLoot: Bank;

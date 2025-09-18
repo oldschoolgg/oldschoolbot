@@ -6,8 +6,8 @@ import { Time, debounce, noOp } from 'e';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { sql } from '../postgres.js';
-import { logError } from './logError';
-import { sendToChannelID } from './webhook';
+import { logError } from './logError.js';
+import { sendToChannelID } from './webhook.js';
 
 async function refundGiveaway(creator: MUser, loot: Bank) {
 	await creator.transactItems({

@@ -1,4 +1,4 @@
-import type { ICommand, MahojiClient } from './Mahoji.js';
+import type { MahojiClient } from './Mahoji.js';
 
 export type CategoryFlag =
 	| 'minion'
@@ -35,10 +35,4 @@ export function convertMahojiCommandToAbstractCommand(command: OSBMahojiCommand)
 
 export function allAbstractCommands(mahojiClient: MahojiClient): AbstractCommand[] {
 	return Array.from(mahojiClient.commands.values()).map(convertMahojiCommandToAbstractCommand);
-}
-
-declare global {
-	interface OSBMahojiCommand extends ICommand {
-		attributes?: Omit<AbstractCommandAttributes, 'description'>;
-	}
 }

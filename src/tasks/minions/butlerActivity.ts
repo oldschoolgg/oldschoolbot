@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
-import type { ButlerActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import type { ButlerActivityTaskOptions } from '../../lib/types/minions.js';
+import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
 
 export const butlerTask: MinionTask = {
 	type: 'Butler',

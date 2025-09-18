@@ -1,23 +1,23 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
-import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/discord-util';
+import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration, formatOrdinal, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { Time, calcWhatPercent, clamp, reduceNumByPercent, roll, round } from 'e';
 import { Bank, itemID } from 'oldschooljs';
 
 import { countUsersWithItemInCl } from '@/lib/rawSql';
-import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets';
-import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { degradeItem } from '../../../lib/degradeableItems';
-import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
-import { maxOtherStats } from '../../../lib/structures/Gear';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { userStatsUpdate } from '../../mahojiSettings';
+import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
+import { buildClueButtons } from '../../../lib/clues/clueUtils.js';
+import { degradeItem } from '../../../lib/degradeableItems.js';
+import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble.js';
+import { maxOtherStats } from '../../../lib/structures/Gear.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
+import getOSItem from '../../../lib/util/getOSItem.js';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
+import { makeBankImage } from '../../../lib/util/makeBankImage.js';
+import { userStatsUpdate } from '../../mahojiSettings.js';
 
 export const BarbBuyables = [
 	{

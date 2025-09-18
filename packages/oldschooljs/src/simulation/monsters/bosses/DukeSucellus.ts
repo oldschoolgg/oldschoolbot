@@ -55,7 +55,7 @@ const ResourceTable = new LootTable()
 	.add('Soul rune', [666, 1000], 2);
 
 class DukeSucellusSingleton extends Monster {
-	public allItems: number[] = uniqueArr([
+	public override allItems: number[] = uniqueArr([
 		...ClueTable.allItems,
 		...SupplyTable.allItems,
 		...ResourceTable.allItems,

@@ -1,15 +1,15 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type CommandResponse, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
-import { mahojiChatHead } from '../../../lib/canvas/chatHeadImage';
-import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import getOSItem from '../../../lib/util/getOSItem';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+import { mahojiChatHead } from '../../../lib/canvas/chatHeadImage.js';
+import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries.js';
+import { SkillsEnum } from '../../../lib/skilling/types.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
+import getOSItem from '../../../lib/util/getOSItem.js';
+import { userHasGracefulEquipped } from '../../mahojiSettings.js';
 
 const plainGraceful = new Bank({
 	'Graceful hood': 1,

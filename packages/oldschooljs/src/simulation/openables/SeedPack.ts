@@ -78,7 +78,7 @@ const HighSeedPackTable = new LootTable()
 const SeedPackTable = new LootTable().add(LowSeedPackTable).add(MediumSeedPackTable).add(HighSeedPackTable);
 
 export class SeedPackOpenable extends SimpleOpenable {
-	public open(quantity = 1, options: OpenableOpenOptions = { seedTier: '5' }) {
+	public override open(quantity = 1, options: OpenableOpenOptions = { seedTier: '5' }) {
 		const tempTable = new LootTable();
 		const loot = new Bank();
 		const tier = options.seedTier ?? '5';

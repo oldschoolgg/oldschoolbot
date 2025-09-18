@@ -2,13 +2,13 @@ import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { calcPercentOfNum } from 'e';
 import { LootTable } from 'oldschooljs';
 
-import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot';
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions';
-import { skillingPetDropRate } from '@/lib/util';
+import { skillingPetDropRate } from '@/lib/util.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish';
 import { makeBankImage } from '@/lib/util/makeBankImage';
-import { roll } from '@/lib/util/rng';
+import { roll } from '@/lib/util/rng.js';
 
 const guppy = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw guppy')!;
 const cavefish = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw cavefish')!;

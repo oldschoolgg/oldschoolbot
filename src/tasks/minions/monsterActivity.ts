@@ -4,26 +4,26 @@ import { Time, deepClone, percentChance, roll } from 'e';
 import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 
 import { logError } from '@/lib/util/logError';
-import type { BitField } from '../../lib/constants';
-import { userhasDiaryTierSync } from '../../lib/diaries';
-import { trackLoot } from '../../lib/lootTrack';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { type AttackStyles, addMonsterXPRaw } from '../../lib/minions/functions';
-import announceLoot from '../../lib/minions/functions/announceLoot';
-import { DiaryID, type KillableMonster } from '../../lib/minions/types';
-import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
-import { type CurrentSlayerInfo, calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
-import type { GearBank } from '../../lib/structures/GearBank';
-import { type KCBank, safelyMakeKCBank } from '../../lib/structures/KCBank';
-import { MUserStats } from '../../lib/structures/MUserStats';
-import { UpdateBank } from '../../lib/structures/UpdateBank';
-import type { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
-import { increaseWildEvasionXp } from '../../lib/util/calcWildyPkChance';
-import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { calculateSimpleMonsterDeathChance } from '../../lib/util/smallUtils';
+import type { BitField } from '../../lib/constants.js';
+import { userhasDiaryTierSync } from '../../lib/diaries.js';
+import { trackLoot } from '../../lib/lootTrack.js';
+import killableMonsters from '../../lib/minions/data/killableMonsters.js';
+import { type AttackStyles, addMonsterXPRaw } from '../../lib/minions/functions.js';
+import announceLoot from '../../lib/minions/functions/announceLoot.js';
+import { DiaryID, type KillableMonster } from '../../lib/minions/types.js';
+import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks.js';
+import { type CurrentSlayerInfo, calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil.js';
+import type { GearBank } from '../../lib/structures/GearBank.js';
+import { type KCBank, safelyMakeKCBank } from '../../lib/structures/KCBank.js';
+import { MUserStats } from '../../lib/structures/MUserStats.js';
+import { UpdateBank } from '../../lib/structures/UpdateBank.js';
+import type { MonsterActivityTaskOptions } from '../../lib/types/minions.js';
+import { ashSanctifierEffect } from '../../lib/util/ashSanctifier.js';
+import { increaseWildEvasionXp } from '../../lib/util/calcWildyPkChance.js';
+import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness.js';
+import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
+import { makeBankImage } from '../../lib/util/makeBankImage.js';
+import { calculateSimpleMonsterDeathChance } from '../../lib/util/smallUtils.js';
 
 function handleSlayerTaskCompletion({
 	slayerContext,

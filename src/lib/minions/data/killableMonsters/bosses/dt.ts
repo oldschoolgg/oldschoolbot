@@ -5,8 +5,8 @@ import { GearStat } from 'oldschooljs/gear';
 import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '@/lib/data/CollectionsExport';
 import { SkillsEnum } from '@/lib/skilling/types';
 import { getOSItem } from '@/lib/util/getOSItem';
-import type { KillableMonster, KillableMonsterEffect } from '../../../types';
-import { QuestID } from '../../quests';
+import type { KillableMonster, KillableMonsterEffect } from '../../../types.js';
+import { QuestID } from '../../quests.js';
 
 const awakenedDeathProps = {
 	hardness: 0.9,

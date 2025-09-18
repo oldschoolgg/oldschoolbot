@@ -1,6 +1,6 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { type CommandResponse, channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { type Minigame, XpGainSource } from '@prisma/client';
@@ -25,29 +25,29 @@ import {
 import { Bank, LootTable, itemID, randomVariation, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
-import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
-import { getSimilarItems } from '../data/similarItems';
-import { degradeItem } from '../degradeableItems';
-import type { UserFullGearSetup } from '../gear/types';
-import { trackLoot } from '../lootTrack';
-import { setupParty } from '../party';
-import { SkillsEnum } from '../skilling/types';
-import { Gear, constructGearSetup } from '../structures/Gear';
-import type { MakePartyOptions, Skills } from '../types';
-import type { TOAOptions } from '../types/minions';
-import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../util/calcMaxTripLength';
-import getOSItem from '../util/getOSItem';
-import { assert } from '../util/logError';
+import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings.js';
+import { getSimilarItems } from '../data/similarItems.js';
+import { degradeItem } from '../degradeableItems.js';
+import type { UserFullGearSetup } from '../gear/types.js';
+import { trackLoot } from '../lootTrack.js';
+import { setupParty } from '../party.js';
+import { SkillsEnum } from '../skilling/types.js';
+import { Gear, constructGearSetup } from '../structures/Gear.js';
+import type { MakePartyOptions, Skills } from '../types.js';
+import type { TOAOptions } from '../types/minions.js';
+import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '../util/calcMaxTripLength.js';
+import getOSItem from '../util/getOSItem.js';
+import { assert } from '../util/logError.js';
 import {
 	bankToStrShortNames,
 	formatList,
 	formatSkillRequirements,
 	getToaKCs,
 	itemNameFromID
-} from '../util/smallUtils';
-import { updateBankSetting } from '../util/updateBankSetting';
-import { TeamLoot } from './TeamLoot';
+} from '../util/smallUtils.js';
+import { updateBankSetting } from '../util/updateBankSetting.js';
+import { TeamLoot } from './TeamLoot.js';
 
 const teamSizeScale: Record<number, number> = {
 	1: 1.0,

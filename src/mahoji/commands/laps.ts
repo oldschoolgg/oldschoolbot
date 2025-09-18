@@ -3,13 +3,13 @@ import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoo
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { quests } from '../../lib/minions/data/quests';
-import { courses } from '../../lib/skilling/skills/agility';
-import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { timePerAlchAgility } from '../lib/abstracted_commands/alchCommand';
+import { quests } from '../../lib/minions/data/quests.js';
+import { courses } from '../../lib/skilling/skills/agility.js';
+import type { AgilityActivityTaskOptions } from '../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '../../lib/util/updateBankSetting.js';
+import { timePerAlchAgility } from '../lib/abstracted_commands/alchCommand.js';
 
 const unlimitedFireRuneProviders = [
 	'Staff of fire',

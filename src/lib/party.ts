@@ -5,11 +5,11 @@ import type { TextChannel } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector } from 'discord.js';
 import { Time, debounce, noOp } from 'e';
 
-import { BLACKLISTED_USERS } from './blacklists';
-import { SILENT_ERROR } from './constants';
-import type { MakePartyOptions } from './types';
-import { getUsername } from './util';
-import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
+import { BLACKLISTED_USERS } from './blacklists.js';
+import { SILENT_ERROR } from './constants.js';
+import type { MakePartyOptions } from './types.js';
+import { getUsername } from './util.js';
+import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs.js';
 
 const partyLockCache = new Set<string>();
 TimerManager.setInterval(() => {

@@ -1,10 +1,10 @@
 import { notEmpty } from 'e';
 import { Bank, type Item } from 'oldschooljs';
 
-import { BitField } from '../../../lib/constants';
-import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import { assert } from '../../../lib/util/logError';
-import { flowerTable } from './hotColdCommand';
+import { BitField } from '../../../lib/constants.js';
+import getOSItem, { getItem } from '../../../lib/util/getOSItem.js';
+import { assert } from '../../../lib/util/logError.js';
+import { flowerTable } from './hotColdCommand.js';
 
 interface Usable {
 	items: Item[];

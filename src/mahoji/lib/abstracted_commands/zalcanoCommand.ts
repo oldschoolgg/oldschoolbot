@@ -3,12 +3,12 @@ import { Time, calcWhatPercent, percentChance, reduceNumByPercent } from 'e';
 import { EMonster } from 'oldschooljs';
 
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import { soteSkillRequirements } from '../../../lib/skilling/functions/questRequirements';
-import type { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser.js';
+import { soteSkillRequirements } from '../../../lib/skilling/functions/questRequirements.js';
+import type { ZalcanoActivityTaskOptions } from '../../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
+import { userHasGracefulEquipped } from '../../mahojiSettings.js';
 
 function calcPerformance(kcLearned: number, skillPercentage: number) {
 	let basePerformance = 50;

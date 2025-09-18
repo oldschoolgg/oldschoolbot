@@ -5,8 +5,8 @@ import { chunk } from 'e';
 import { type BossRecords, Hiscores, bossNameMap } from 'oldschooljs';
 
 import { logError, logErrorForInteraction } from '@/lib/util/logError';
-import pets from '../../lib/data/pets';
-import { deferInteraction } from '../../lib/util/interactionReply';
+import pets from '../../lib/data/pets.js';
+import { deferInteraction } from '../../lib/util/interactionReply.js';
 
 // Emojis for bosses with no pets
 const miscEmojis = {

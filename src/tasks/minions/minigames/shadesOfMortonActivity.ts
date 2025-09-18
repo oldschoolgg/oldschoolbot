@@ -1,11 +1,11 @@
 import { increaseNumByPercent } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ShadesOfMortonOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { shades, shadesLogs } from '../../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
+import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries.js';
+import { SkillsEnum } from '../../../lib/skilling/types.js';
+import type { ShadesOfMortonOptions } from '../../../lib/types/minions.js';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
+import { shades, shadesLogs } from '../../../mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
 
 export const shadesOfMortonTask: MinionTask = {
 	type: 'ShadesOfMorton',

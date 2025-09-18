@@ -1,12 +1,12 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { sumArr } from 'e';
 import type { Bank } from 'oldschooljs';
-import { ClueTiers } from '../clues/clueTiers';
+import { ClueTiers } from '../clues/clueTiers.js';
 
-import { MAX_CLUES_DROPPED } from '../constants';
-import { allPetsCL } from '../data/CollectionsExport';
-import pets from '../data/pets';
-import { formatList } from './smallUtils';
+import { MAX_CLUES_DROPPED } from '../constants.js';
+import { allPetsCL } from '../data/CollectionsExport.js';
+import pets from '../data/pets.js';
+import { formatList } from './smallUtils.js';
 
 export function petMessage(loot: Bank | null | undefined) {
 	const emoji = pets.find(p => loot?.has(p.name))?.emoji;

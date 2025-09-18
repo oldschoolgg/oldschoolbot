@@ -1,6 +1,6 @@
 import { type Item, Items } from 'oldschooljs';
 
-import type { PvMMethod } from '@/lib/constants';
+import type { PvMMethod } from '@/lib/constants.js';
 import type { PrimaryGearSetupType } from '@/lib/gear/types';
 
 interface StaticEquippedItemBoost {

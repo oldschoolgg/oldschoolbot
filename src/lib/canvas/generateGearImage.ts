@@ -2,12 +2,12 @@ import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { EquipmentSlot } from 'oldschooljs';
 
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas';
-import type { GearSetup, GearSetupType } from '../gear/types';
-import { GearSetupTypes } from '../gear/types';
-import { type Gear, maxDefenceStats, maxOffenceStats } from '../structures/Gear';
-import { bankImageTask } from './bankImage';
-import { type BaseCanvasArgs, calcAspectRatioFit } from './canvasUtil';
-import { gearImages, transmogItems } from './gearImageData';
+import type { GearSetup, GearSetupType } from '../gear/types.js';
+import { GearSetupTypes } from '../gear/types.js';
+import { type Gear, maxDefenceStats, maxOffenceStats } from '../structures/Gear.js';
+import { bankImageTask } from './bankImage.js';
+import { type BaseCanvasArgs, calcAspectRatioFit } from './canvasUtil.js';
+import { gearImages, transmogItems } from './gearImageData.js';
 
 /**
  * The default gear in a gear setup, when nothing is equipped.

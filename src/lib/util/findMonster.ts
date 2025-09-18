@@ -1,7 +1,7 @@
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 
-import killableMonsters from '../minions/data/killableMonsters';
-import type { KillableMonster } from '../minions/types';
+import killableMonsters from '../minions/data/killableMonsters.js';
+import type { KillableMonster } from '../minions/types.js';
 
 export default function findMonster(str = ''): KillableMonster | undefined {
 	const mon = killableMonsters.find(

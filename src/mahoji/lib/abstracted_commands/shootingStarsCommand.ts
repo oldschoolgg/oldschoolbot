@@ -5,15 +5,15 @@ import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time, percentChance, randInt, roll } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
-import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
-import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
-import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
-import type { Ore } from '../../../lib/skilling/types';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ActivityTaskData, ShootingStarsOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength, patronMaxTripBonus } from '../../../lib/util/calcMaxTripLength';
-import type { MUserClass } from './../../../lib/MUser';
+import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot.js';
+import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime.js';
+import { pickaxes } from '../../../lib/skilling/functions/miningBoosts.js';
+import type { Ore } from '../../../lib/skilling/types.js';
+import { SkillsEnum } from '../../../lib/skilling/types.js';
+import type { ActivityTaskData, ShootingStarsOptions } from '../../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength, patronMaxTripBonus } from '../../../lib/util/calcMaxTripLength.js';
+import type { MUserClass } from './../../../lib/MUser.js';
 
 interface Star extends Ore {
 	size: number;

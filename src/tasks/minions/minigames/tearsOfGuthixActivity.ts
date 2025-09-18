@@ -1,10 +1,10 @@
 import { increaseNumByPercent, randInt } from 'e';
 
-import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../../lib/diaries';
-import type { SkillsEnum } from '../../../lib/skilling/types';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../../lib/diaries.js';
+import type { SkillsEnum } from '../../../lib/skilling/types.js';
+import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions.js';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
+import { userStatsUpdate } from '../../../mahoji/mahojiSettings.js';
 
 export const togTask: MinionTask = {
 	type: 'TearsOfGuthix',

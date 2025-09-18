@@ -4,17 +4,17 @@ import { roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage';
-import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
-import { TOBRooms, TOBUniques, TOBUniquesToAnnounce } from '../../../lib/data/tob';
-import { trackLoot } from '../../../lib/lootTrack';
-import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { TeamLoot } from '../../../lib/simulation/TeamLoot';
-import { TheatreOfBlood } from '../../../lib/simulation/tob';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { tobMetamorphPets } from '../../../lib/data/CollectionsExport.js';
+import { TOBRooms, TOBUniques, TOBUniquesToAnnounce } from '../../../lib/data/tob.js';
+import { trackLoot } from '../../../lib/lootTrack.js';
+import { resolveAttackStyles } from '../../../lib/minions/functions.js';
+import { TeamLoot } from '../../../lib/simulation/TeamLoot.js';
+import { TheatreOfBlood } from '../../../lib/simulation/tob.js';
+import { SkillsEnum } from '../../../lib/skilling/types.js';
+import type { TheatreOfBloodTaskOptions } from '../../../lib/types/minions.js';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings.js';
 
 async function handleTobXP(user: MUser, isHm: boolean) {
 	let hitpointsXP = 13_000;

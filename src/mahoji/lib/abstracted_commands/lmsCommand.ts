@@ -3,13 +3,13 @@ import { formatDuration, randomVariation, stringMatches } from '@oldschoolgg/too
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { LMSBuyables } from '../../../lib/data/CollectionsExport';
-import { lmsSimCommand } from '../../../lib/minions/functions/lmsSimCommand';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { getUsersLMSStats } from '../../../tasks/minions/minigames/lmsActivity';
+import { LMSBuyables } from '../../../lib/data/CollectionsExport.js';
+import { lmsSimCommand } from '../../../lib/minions/functions/lmsSimCommand.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
+import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
+import { getUsersLMSStats } from '../../../tasks/minions/minigames/lmsActivity.js';
 
 export async function lmsCommand(
 	options: {

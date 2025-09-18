@@ -8,15 +8,15 @@ import { LRUCache } from 'lru-cache';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { dateFm, getNextUTCReset } from '@oldschoolgg/toolkit/util';
-import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
+import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand.js';
 import { lastRoboChimpSyncCache, untrustedGuildSettingsCache } from './cache.js';
-import { Channel, globalConfig } from './constants';
-import pets from './data/pets';
+import { Channel, globalConfig } from './constants.js';
+import pets from './data/pets.js';
 import { roboChimpSyncData } from './roboChimp.js';
 import type { ActivityTaskData } from './types/minions.js';
-import { logError } from './util/logError';
-import { makeBankImage } from './util/makeBankImage';
-import { minionStatsEmbed } from './util/minionStatsEmbed';
+import { logError } from './util/logError.js';
+import { makeBankImage } from './util/makeBankImage.js';
+import { minionStatsEmbed } from './util/minionStatsEmbed.js';
 
 const rareRolesSrc: [string, number, string][] = [
 	['670211706907000842', 250, 'Bronze'],

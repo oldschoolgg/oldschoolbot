@@ -1,7 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Monsters } from 'oldschooljs';
 import { LootTable } from 'oldschooljs';
-import { QuestID } from '../../../minions/data/quests';
+import { QuestID } from '../../../minions/data/quests.js';
 
 const {
 	BeardedBandit,

@@ -2,12 +2,12 @@ import { activity_type_enum } from '@prisma/client';
 import { objectEntries, partition } from 'e';
 import { Bank, EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { RandomEvents } from './randomEvents';
-import type { MinigameName } from './settings/minigames';
-import { Minigames } from './settings/minigames';
-import type { RequirementFailure } from './structures/Requirements';
-import { Requirements } from './structures/Requirements';
-import { formatList, itemNameFromID } from './util/smallUtils';
+import { RandomEvents } from './randomEvents.js';
+import type { MinigameName } from './settings/minigames.js';
+import { Minigames } from './settings/minigames.js';
+import type { RequirementFailure } from './structures/Requirements.js';
+import { Requirements } from './structures/Requirements.js';
+import { formatList, itemNameFromID } from './util/smallUtils.js';
 
 export const musicCapeRequirements = new Requirements()
 	.add({
