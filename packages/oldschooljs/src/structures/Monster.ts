@@ -1,9 +1,13 @@
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+
 import { getBrimKeyChanceFromCBLevel, getSlayersEnchantmentChanceFromHP, getLarranKeyChanceFromCBLevel, getAncientShardChanceFromHP, getTotemChanceFromHP, roll } from '@/util/util.js';
-import rawMonsterData from '../data/monsters_data.json' with { type: 'json' };
-import { type MonsterData, MonsterSlayerMaster } from '../meta/monsterData.js';
 import  {Bank} from './Bank.js';
 import type LootTable from './LootTable.js';
-import { type LootTableRollOptions } from './LootTable.js';
+import type { LootTableRollOptions } from './LootTable.js';
+import { MonsterSlayerMaster, type MonsterData } from '@/meta/monsterData.js';
+
+const monsterData = JSON.parse(readFileSync(path.join(import.meta.dirname,'../assets/monsters_data.json'), 'utf-8')) as { [key: string]: MonsterData };
 
 export interface MonsterOptions {
 	id: number;
@@ -40,8 +44,6 @@ export interface MonsterKillOptions {
 	isAwakened?: boolean;
 	lootTableOptions?: LootTableRollOptions;
 }
-
-const monsterData = rawMonsterData as { [key: string]: MonsterData };
 
 export abstract class Monster {
 	public id: number;

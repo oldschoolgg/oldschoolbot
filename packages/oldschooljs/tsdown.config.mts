@@ -1,6 +1,6 @@
 import {createTsupConfig} from "../../scripts/tsupconfig.ts";
 
-const entryPoints = [
+const entry = [
 	'./src/index.ts',
 	'./src/constants.ts',
 	'./src/EGear.ts',
@@ -12,5 +12,9 @@ const entryPoints = [
 ];
 
 export default createTsupConfig({
-   entryPoints
+   entry,
+	copy: [
+	'src/assets',
+	{ from: 'src/assets', to: 'dist/assets' },
+	],
 });

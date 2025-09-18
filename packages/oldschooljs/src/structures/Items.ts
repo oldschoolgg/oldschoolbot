@@ -1,10 +1,14 @@
 import deepMerge from 'deepmerge';
+import { readFileSync } from 'node:fs';
 
-import _items from '../data/items/item_data.json' with { type: 'json' };
 console.log('Items file is loading...');
+
+const _items = JSON.parse(readFileSync(path.join(import.meta.dirname, '../assets/item_data.json'), 'utf-8')) as Record<string, Item>;
+
 import { cleanString } from '../util/cleanString.js';
 import { Collection } from './Collection.js';
 import type { Item } from '@/meta/item.js';
+import path from 'node:path';
 
 const items = _items as Record<string, Item>;
 export const itemNameMap: Map<string, number> = new Map();
