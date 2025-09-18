@@ -3,6 +3,7 @@ import { type Item, resolveItems } from 'oldschooljs';
 import getOSItem from './util/getOSItem';
 
 interface DyedItem {
+	name?: string;
 	baseItem: Item;
 	dyedVersions: { item: Item; dye: Item }[];
 }
@@ -625,6 +626,16 @@ export const dyedItems: DyedItem[] = [
 		dyedVersions: [
 			{
 				item: getOSItem('Deathly collector'),
+				dye: getOSItem('Spooky dye')
+			}
+		]
+	},
+	{
+		name: 'Deathly collector (i) (using Tidal collector (i))',
+		baseItem: getOSItem('Tidal collector (i)'),
+		dyedVersions: [
+			{
+				item: getOSItem('Deathly collector (i)'),
 				dye: getOSItem('Spooky dye')
 			}
 		]
