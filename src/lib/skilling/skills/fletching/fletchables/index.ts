@@ -30,28 +30,28 @@ export const Fletchables: Fletchable[] = [
 ];
 
 const zeroTimeFletchableCandidates: Fletchable[] = [
-        BroadArrows,
-        BroadBolts,
-        ...Darts,
-        ...Arrows,
-        ...Bolts,
-        AmethystBroadBolts,
-        ...TippedBolts,
-        ...TippedDragonBolts,
-        ...Javelins
+	BroadArrows,
+	BroadBolts,
+	...Darts,
+	...Arrows,
+	...Bolts,
+	AmethystBroadBolts,
+	...TippedBolts,
+	...TippedDragonBolts,
+	...Javelins
 ];
 
 export const zeroTimeFletchables: Fletchable[] = zeroTimeFletchableCandidates.filter(fletchable => {
-        const outputItem = Items.getOrThrow(fletchable.id);
-        if (!outputItem.stackable) {
-                return false;
-        }
+	const outputItem = Items.getOrThrow(fletchable.id);
+	if (!outputItem.stackable) {
+		return false;
+	}
 
-        for (const [item] of fletchable.inputItems.items()) {
-                if (!item.stackable) {
-                        return false;
-                }
-        }
+	for (const [item] of fletchable.inputItems.items()) {
+		if (!item.stackable) {
+			return false;
+		}
+	}
 
-        return true;
+	return true;
 });
