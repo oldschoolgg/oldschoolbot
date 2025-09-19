@@ -1,4 +1,4 @@
-import { createTsupConfig } from '../../scripts/tsupconfig.ts';
+import { createTsdownConfig } from '../../scripts/createTsdownConfig.ts';
 
 const entry = [
 	'src/util.ts',
@@ -13,6 +13,6 @@ const entry = [
 	'src/util/runescape.ts',
 	'src/rng/index.ts'
 ];
-export default createTsupConfig({
+export default createTsdownConfig({
 	entry
 });

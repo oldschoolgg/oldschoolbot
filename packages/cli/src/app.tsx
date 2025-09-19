@@ -13,6 +13,8 @@ type Stage = {
 	commands: CommandGroup[];
 };
 
+type Timings = Record<string, number>;
+
 const ALL_PACKAGE_NAMES: string[] = readdirSync('packages').filter(
 	name => !['test-dashboard', 'server', 'robochimp', 'cli'].includes(name)
 );
@@ -53,7 +55,6 @@ const stages: Stage[] = [
 				],
 				desc: 'Formatting code...'
 			},
-
 			[
 				...ALL_PACKAGE_NAMES.map(pkg => ({
 					cmd: `pnpm --filter ${pkg} test`,
@@ -89,11 +90,16 @@ function runSingleCommand(cmd: string): Promise<void> {
 	});
 }
 
-function run(c: Command) {
+function run(c: Command, timings: Timings) {
+	const start = performance.now();
 	if (Array.isArray(c.cmd)) {
-		return Promise.all(c.cmd.map(cmd => runSingleCommand(cmd))).then(() => null);
+		return Promise.all(c.cmd.map(cmd => runSingleCommand(cmd))).then(() => {
+			timings[c.desc] = performance.now() - start;
+		});
 	}
-	return runSingleCommand(c.cmd);
+	return runSingleCommand(c.cmd).then(() => {
+		timings[c.desc] = performance.now() - start;
+	});
 }
 
 export const Root: React.FC = () => {
@@ -101,8 +107,11 @@ export const Root: React.FC = () => {
 	const [cmdIndex, setCmdIndex] = useState(0);
 	const [status, setStatus] = useState<'running' | 'done' | 'error'>('running');
 	const [error, setError] = useState<string | null>(null);
+	const [timings, setTimings] = useState<Timings>({});
+	const [_tick, setTick] = useState(0);
 
 	useEffect(() => {
+		const interval = setInterval(() => setTick(t => t + 1), 500);
 		(async () => {
 			try {
 				for (let i = 0; i < stages.length; i++) {
@@ -111,16 +120,19 @@ export const Root: React.FC = () => {
 						setCmdIndex(j);
 						const cmdGroup = stages[i]!.commands[j]!;
 						if (Array.isArray(cmdGroup)) {
-							await Promise.all(cmdGroup.map(c => run(c)));
+							await Promise.all(cmdGroup.map(c => run(c, timings)));
 						} else {
-							await run(cmdGroup);
+							await run(cmdGroup, timings);
 						}
+						setTimings({ ...timings });
 					}
 				}
 				setStatus('done');
 			} catch (err) {
 				setError(String(err));
 				setStatus('error');
+			} finally {
+				clearInterval(interval);
 			}
 		})();
 	}, []);
@@ -137,23 +149,32 @@ export const Root: React.FC = () => {
 						</Text>
 						{s.commands.map((c, j) => {
 							const active = i === stageIndex && j === cmdIndex && status === 'running';
-							const finished = i < stageIndex || (i === stageIndex && j < cmdIndex);
+							const finished = i < stageIndex || (i === stageIndex && j < cmdIndex) || status === 'done';
 
 							const cmds = Array.isArray(c) ? c : [c];
 
 							return (
 								<Box key={j} flexDirection="column" marginLeft={2}>
-									{cmds.map(inner => (
-										<Box key={inner.cmd.toString()}>
-											{active && !finished && (
-												<Text color="yellow">
-													<Spinner type="dots" /> {inner.desc}
-												</Text>
-											)}
-											{finished && <Text color="green">✔ {inner.desc}</Text>}
-											{!active && !finished && <Text> {inner.desc}</Text>}
-										</Box>
-									))}
+									{cmds.map(inner => {
+										const elapsed = timings[inner.desc];
+										const secs = elapsed ? (elapsed / 1000).toFixed(1) : null;
+
+										return (
+											<Box key={inner.cmd.toString()}>
+												{active && !finished && (
+													<Text color="yellow">
+														<Spinner type="dots" /> {inner.desc}
+													</Text>
+												)}
+												{finished && (
+													<Text color="green">
+														✔ Finished {inner.desc} in {secs}s
+													</Text>
+												)}
+												{!active && !finished && <Text> {inner.desc}</Text>}
+											</Box>
+										);
+									})}
 								</Box>
 							);
 						})}

@@ -1,7 +1,7 @@
-import { createTsupConfig } from '../../scripts/tsupconfig.ts';
+import { createTsdownConfig } from '../../scripts/createTsdownConfig.ts';
 
 const entry = ['./src/index.ts'];
 
-export default createTsupConfig({
+export default createTsdownConfig({
 	entry
 });

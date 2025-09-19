@@ -18,7 +18,7 @@ const baseOptions: Options = {
 	logLevel: 'error'
 };
 
-export function createTsupConfig(options: Options = {}) {
+export function createTsdownConfig(options: Options = {}) {
 	return [
 		defineConfig({
 			...baseOptions,
