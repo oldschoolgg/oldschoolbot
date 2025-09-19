@@ -1,8 +1,8 @@
 import { Bank } from 'oldschooljs';
 
-import type { TokkulShopOptions } from '../../lib/types/minions.js';
-import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
-import { updateBankSetting } from '../../lib/util/updateBankSetting.js';
+import type { TokkulShopOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const tokkulShopTask: MinionTask = {
 	type: 'TokkulShop',

@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { deferInteraction } from '../../lib/util/interactionReply.js';
-import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { dataPoints, statsCommand } from '@/mahoji/lib/abstracted_commands/statCommand.js';
 
 export const dataCommand: OSBMahojiCommand = {
 	name: 'data',

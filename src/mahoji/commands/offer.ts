@@ -4,16 +4,16 @@ import { formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolk
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Bank, ItemGroups, resolveItems } from 'oldschooljs';
 
-import { Offerables } from '../../lib/data/offerData.js';
-import { birdsNestID, treeSeedsNest } from '../../lib/simulation/birdsNest.js';
-import Prayer from '../../lib/skilling/skills/prayer.js';
-import { SkillsEnum } from '../../lib/skilling/types.js';
-import type { OfferingActivityTaskOptions } from '../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength.js';
-import getOSItem from '../../lib/util/getOSItem.js';
-import { deferInteraction } from '../../lib/util/interactionReply.js';
-import { makeBankImage } from '../../lib/util/makeBankImage.js';
+import { Offerables } from '@/lib/data/offerData.js';
+import { birdsNestID, treeSeedsNest } from '@/lib/simulation/birdsNest.js';
+import Prayer from '@/lib/skilling/skills/prayer.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { OfferingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { userStatsBankUpdate, userStatsUpdate } from '../mahojiSettings.js';
 
 const specialBones = [

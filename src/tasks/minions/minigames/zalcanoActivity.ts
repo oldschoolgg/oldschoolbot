@@ -2,13 +2,13 @@ import { randInt } from '@/lib/util/rng.js';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { Bank, EMonster, Misc } from 'oldschooljs';
 
-import { KourendKebosDiary, userhasDiaryTier } from '../../../lib/diaries.js';
-import { SkillsEnum } from '../../../lib/skilling/types.js';
-import { UpdateBank } from '../../../lib/structures/UpdateBank.js';
-import type { ZalcanoActivityTaskOptions } from '../../../lib/types/minions.js';
-import { ashSanctifierEffect } from '../../../lib/util/ashSanctifier.js';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
-import { makeBankImage } from '../../../lib/util/makeBankImage.js';
+import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import type { ZalcanoActivityTaskOptions } from '@/lib/types/minions.js';
+import { ashSanctifierEffect } from '@/lib/util/ashSanctifier.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const zalcanoTask: MinionTask = {
 	type: 'Zalcano',

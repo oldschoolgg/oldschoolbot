@@ -1,8 +1,8 @@
 import { percentChance, randArrItem } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import type { ActivityTaskOptionsWithNoChanges } from '../../lib/types/minions.js';
-import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
+import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const mageArenaTwoTask: MinionTask = {
 	type: 'MageArena2',

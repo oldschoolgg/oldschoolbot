@@ -1,13 +1,13 @@
 import type { ItemBank } from 'oldschooljs';
 
-import { startBlacklistSyncing } from '../../lib/blacklists.js';
-import { usernameWithBadgesCache } from '../../lib/cache.js';
-import { Channel, META_CONSTANTS, badges, globalConfig } from '../../lib/constants.js';
-import { initCrons } from '../../lib/crons.js';
-import { initTickers } from '../../lib/tickers.js';
-import { logWrapFn } from '../../lib/util.js';
-import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings.js';
-import { sendToChannelID } from '../../lib/util/webhook.js';
+import { startBlacklistSyncing } from '@/lib/blacklists.js';
+import { usernameWithBadgesCache } from '@/lib/cache.js';
+import { Channel, META_CONSTANTS, badges, globalConfig } from '@/lib/constants.js';
+import { initCrons } from '@/lib/crons.js';
+import { initTickers } from '@/lib/tickers.js';
+import { logWrapFn } from '@/lib/util.js';
+import { mahojiClientSettingsFetch } from '@/lib/util/clientSettings.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
 import { CUSTOM_PRICE_CACHE } from '../commands/sell.js';
 
 export async function syncCustomPrices() {

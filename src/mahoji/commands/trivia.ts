@@ -2,9 +2,9 @@ import { shuffleArr, uniqueArr } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, type TextChannel, userMention } from 'discord.js';
 
-import { DynamicButtons } from '../../lib/DynamicButtons.js';
-import { getRandomTriviaQuestions } from '../../lib/roboChimp.js';
-import { deferInteraction } from '../../lib/util/interactionReply.js';
+import { DynamicButtons } from '@/lib/DynamicButtons.js';
+import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
 
 export const triviaCommand: OSBMahojiCommand = {
 	name: 'trivia',

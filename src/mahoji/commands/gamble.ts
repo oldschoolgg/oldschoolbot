@@ -3,15 +3,15 @@ import type { MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '../../lib/constants.js';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation.js';
-import itemIsTradeable from '../../lib/util/itemIsTradeable.js';
-import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble.js';
-import { diceCommand } from '../lib/abstracted_commands/diceCommand.js';
-import { duelCommand } from '../lib/abstracted_commands/duelCommand.js';
-import { hotColdCommand } from '../lib/abstracted_commands/hotColdCommand.js';
-import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand.js';
-import { slotsCommand } from '../lib/abstracted_commands/slotsCommand.js';
+import { BitField } from '@/lib/constants.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
+import { capeGambleCommand, capeGambleStatsCommand } from '@/mahoji/lib/abstracted_commands/capegamble.js';
+import { diceCommand } from '@/mahoji/lib/abstracted_commands/diceCommand.js';
+import { duelCommand } from '@/mahoji/lib/abstracted_commands/duelCommand.js';
+import { hotColdCommand } from '@/mahoji/lib/abstracted_commands/hotColdCommand.js';
+import { luckyPickCommand } from '@/mahoji/lib/abstracted_commands/luckyPickCommand.js';
+import { slotsCommand } from '@/mahoji/lib/abstracted_commands/slotsCommand.js';
 
 export const gambleCommand: OSBMahojiCommand = {
 	name: 'gamble',

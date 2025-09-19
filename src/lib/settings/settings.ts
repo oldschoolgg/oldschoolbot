@@ -14,10 +14,10 @@ import {
 } from 'discord.js';
 import { isEmpty } from 'remeda';
 
-import { postCommand } from '../../mahoji/lib/postCommand.js';
-import { preCommand } from '../../mahoji/lib/preCommand.js';
-import { deferInteraction, handleInteractionError, interactionReply } from '../util/interactionReply.js';
-import { logError } from '../util/logError.js';
+import { deferInteraction, handleInteractionError, interactionReply } from '@/lib/util/interactionReply.js';
+import { logError } from '@/lib/util/logError.js';
+import { postCommand } from '@/mahoji/lib/postCommand.js';
+import { preCommand } from '@/mahoji/lib/preCommand.js';
 
 export async function getNewUser(id: string): Promise<NewUser> {
 	const value = await prisma.newUser.findUnique({ where: { id } });

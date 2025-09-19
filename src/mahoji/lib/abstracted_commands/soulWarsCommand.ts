@@ -3,10 +3,10 @@ import { formatDuration, randomVariation, stringMatches } from '@oldschoolgg/too
 import type { User } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
-import getOSItem from '../../../lib/util/getOSItem.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import getOSItem from '@/lib/util/getOSItem.js';
 
 export const soulWarsBuyables = [
 	{

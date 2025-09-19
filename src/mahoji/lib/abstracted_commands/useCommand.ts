@@ -1,9 +1,9 @@
 import { notEmpty } from '@oldschoolgg/toolkit/util';
 import { Bank, type Item } from 'oldschooljs';
 
-import { BitField } from '../../../lib/constants.js';
-import getOSItem, { getItem } from '../../../lib/util/getOSItem.js';
-import { assert } from '../../../lib/util/logError.js';
+import { BitField } from '@/lib/constants.js';
+import getOSItem, { getItem } from '@/lib/util/getOSItem.js';
+import { assert } from '@/lib/util/logError.js';
 import { flowerTable } from './hotColdCommand.js';
 
 interface Usable {

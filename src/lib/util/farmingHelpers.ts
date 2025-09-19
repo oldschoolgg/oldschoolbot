@@ -3,11 +3,19 @@ import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { dateFm } from '@oldschoolgg/toolkit/util';
 import type { User } from '@prisma/client';
-import type { BaseMessageOptions, ButtonBuilder } from 'discord.js';
+import { type BaseMessageOptions, ButtonBuilder, ButtonStyle } from 'discord.js';
 
-import type { IPatchData, IPatchDataDetailed } from '../minions/farming/types.js';
+import type { IPatchData, IPatchDataDetailed } from '@/lib/minions/farming/types.js';
 import Farming from '../skilling/skills/farming/index.js';
-import { formatList, makeAutoFarmButton } from './smallUtils.js';
+import { formatList } from './smallUtils.js';
+
+function makeAutoFarmButton() {
+	return new ButtonBuilder()
+		.setCustomId('AUTO_FARM')
+		.setLabel('Auto Farm')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('630911040355565599');
+}
 
 export const farmingPatchNames = [
 	'herb',

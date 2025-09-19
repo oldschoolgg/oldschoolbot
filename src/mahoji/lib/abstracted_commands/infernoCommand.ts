@@ -3,19 +3,19 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, type ItemBank, Items, Monsters, itemID } from 'oldschooljs';
 
+import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
+import type { ProjectileType } from '@/lib/constants.js';
+import { BitField, projectiles } from '@/lib/constants.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
+import type { BlowpipeData } from '@/lib/minions/types.js';
+import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import { PercentCounter } from '@/lib/structures/PercentCounter.js';
 import type { Skills } from '@/lib/types/index.js';
-import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage.js';
-import type { ProjectileType } from '../../../lib/constants.js';
-import { BitField, projectiles } from '../../../lib/constants.js';
-import { getSimilarItems } from '../../../lib/data/similarItems.js';
-import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand.js';
-import type { BlowpipeData } from '../../../lib/minions/types.js';
-import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil.js';
-import { PercentCounter } from '../../../lib/structures/PercentCounter.js';
-import type { InfernoOptions } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import getOSItem from '../../../lib/util/getOSItem.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import type { InfernoOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const minimumRangeItems = [
 	'Amulet of fury',

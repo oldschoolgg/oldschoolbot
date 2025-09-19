@@ -1,6 +1,6 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 
-import { SkillsEnum } from '../../types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 import { calcConBonusXP } from './calcConBonusXP.js';
 import Constructables from './constructables.js';
 

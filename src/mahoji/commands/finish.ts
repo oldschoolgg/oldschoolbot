@@ -3,11 +3,11 @@ import { notEmpty } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
+import { finishables } from '@/lib/finishables.js';
+import { sorts } from '@/lib/sorts.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { Workers } from '@/lib/workers/index.js';
-import { finishables } from '../../lib/finishables.js';
-import { sorts } from '../../lib/sorts.js';
-import { deferInteraction } from '../../lib/util/interactionReply.js';
-import { makeBankImage } from '../../lib/util/makeBankImage.js';
 
 export const finishCommand: OSBMahojiCommand = {
 	name: 'finish',

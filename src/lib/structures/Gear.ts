@@ -10,10 +10,10 @@ import {
 	type OtherGearStat
 } from 'oldschooljs/gear';
 
+import getOSItem from '@/lib/util/getOSItem.js';
+import { assert } from '@/lib/util/logError.js';
 import { getSimilarItems, inverseSimilarItems } from '../data/similarItems.js';
 import type { GearSetup, GearSetupType, GearSlotItem } from '../gear/types.js';
-import getOSItem from '../util/getOSItem.js';
-import { assert } from '../util/logError.js';
 
 export type PartialGearSetup = Partial<{
 	[key in EquipmentSlot]: string;

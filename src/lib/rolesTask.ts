@@ -7,9 +7,9 @@ import PQueue from 'p-queue';
 import { partition } from 'remeda';
 import z from 'zod';
 
-import { BadgesEnum, MAX_LEVEL, Roles, globalConfig } from '../lib/constants.js';
-import { getCollectionItems } from '../lib/data/Collections.js';
-import { Minigames } from '../lib/settings/minigames.js';
+import { BadgesEnum, MAX_LEVEL, Roles, globalConfig } from '@/lib/constants.js';
+import { getCollectionItems } from '@/lib/data/Collections.js';
+import { Minigames } from '@/lib/settings/minigames.js';
 import { ClueTiers } from './clues/clueTiers.js';
 import { loggedRawPrismaQuery } from './rawSql.js';
 import { TeamLoot } from './simulation/TeamLoot.js';

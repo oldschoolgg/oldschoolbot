@@ -4,11 +4,11 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, type Item, Items, SkillsEnum, resolveItems, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
-import type { AlchingActivityTaskOptions } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const unlimitedFireRuneProviders = resolveItems([
 	'Staff of fire',

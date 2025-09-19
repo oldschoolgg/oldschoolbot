@@ -5,13 +5,13 @@ import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { Bank, EItem } from 'oldschooljs';
 
-import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand.js';
-import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand.js';
+import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
+import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
 import {
 	tearsOfGuthixIronmanReqs,
 	tearsOfGuthixSkillReqs
-} from '../../mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
-import { updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings.js';
+} from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
+import { updateClientGPTrackSetting, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 import { ClueTiers } from '../clues/clueTiers.js';
 import { buildClueButtons } from '../clues/clueUtils.js';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements.js';

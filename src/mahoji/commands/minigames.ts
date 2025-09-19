@@ -1,14 +1,14 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { LMSBuyables } from '../../lib/data/CollectionsExport.js';
-import TrekShopItems from '../../lib/data/buyables/trekBuyables.js';
-import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables/index.js';
+import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
+import TrekShopItems from '@/lib/data/buyables/trekBuyables.js';
+import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import {
 	agilityArenaBuyCommand,
 	agilityArenaBuyables,
 	agilityArenaCommand,
 	agilityArenaXPCommand
-} from '../lib/abstracted_commands/agilityArenaCommand.js';
+} from '@/mahoji/lib/abstracted_commands/agilityArenaCommand.js';
 import {
 	BarbBuyables,
 	GambleTiers,
@@ -17,49 +17,53 @@ import {
 	barbAssaultLevelCommand,
 	barbAssaultStartCommand,
 	barbAssaultStatsCommand
-} from '../lib/abstracted_commands/barbAssault.js';
-import { castleWarsStartCommand, castleWarsStatsCommand } from '../lib/abstracted_commands/castleWarsCommand.js';
-import { fishingTrawlerCommand } from '../lib/abstracted_commands/fishingTrawler.js';
-import { gauntletCommand } from '../lib/abstracted_commands/gauntletCommand.js';
+} from '@/mahoji/lib/abstracted_commands/barbAssault.js';
+import { castleWarsStartCommand, castleWarsStatsCommand } from '@/mahoji/lib/abstracted_commands/castleWarsCommand.js';
+import { fishingTrawlerCommand } from '@/mahoji/lib/abstracted_commands/fishingTrawler.js';
+import { gauntletCommand } from '@/mahoji/lib/abstracted_commands/gauntletCommand.js';
 import {
 	giantsFoundryShopCommand,
 	giantsFoundryStartCommand,
 	giantsFoundryStatsCommand
-} from '../lib/abstracted_commands/giantsFoundryCommand.js';
-import { gnomeRestaurantCommand } from '../lib/abstracted_commands/gnomeRestaurantCommand.js';
-import { guardiansOfTheRiftStartCommand } from '../lib/abstracted_commands/guardiansOfTheRiftCommand.js';
-import { lmsCommand } from '../lib/abstracted_commands/lmsCommand.js';
-import { mageArena2Command } from '../lib/abstracted_commands/mageArena2Command.js';
-import { mageArenaCommand } from '../lib/abstracted_commands/mageArenaCommand.js';
+} from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
+import { gnomeRestaurantCommand } from '@/mahoji/lib/abstracted_commands/gnomeRestaurantCommand.js';
+import { guardiansOfTheRiftStartCommand } from '@/mahoji/lib/abstracted_commands/guardiansOfTheRiftCommand.js';
+import { lmsCommand } from '@/mahoji/lib/abstracted_commands/lmsCommand.js';
+import { mageArena2Command } from '@/mahoji/lib/abstracted_commands/mageArena2Command.js';
+import { mageArenaCommand } from '@/mahoji/lib/abstracted_commands/mageArenaCommand.js';
 import {
 	mageTrainingArenaBuyCommand,
 	mageTrainingArenaBuyables,
 	mageTrainingArenaPointsCommand,
 	mageTrainingArenaStartCommand
-} from '../lib/abstracted_commands/mageTrainingArenaCommand.js';
+} from '@/mahoji/lib/abstracted_commands/mageTrainingArenaCommand.js';
 import {
 	contractTiers,
 	mahoganyHomesBuildCommand,
 	mahoganyHomesBuyCommand,
 	mahoganyHomesBuyables,
 	mahoganyHomesPointsCommand
-} from '../lib/abstracted_commands/mahoganyHomesCommand.js';
+} from '@/mahoji/lib/abstracted_commands/mahoganyHomesCommand.js';
 import {
 	nightmareZoneShopCommand,
 	nightmareZoneStartCommand,
 	nightmareZoneStatsCommand
-} from '../lib/abstracted_commands/nightmareZoneCommand.js';
+} from '@/mahoji/lib/abstracted_commands/nightmareZoneCommand.js';
 import {
 	pestControlBuyCommand,
 	pestControlBuyables,
 	pestControlStartCommand,
 	pestControlStatsCommand,
 	pestControlXPCommand
-} from '../lib/abstracted_commands/pestControlCommand.js';
-import { pyramidPlunderCommand } from '../lib/abstracted_commands/pyramidPlunderCommand.js';
-import { roguesDenCommand } from '../lib/abstracted_commands/roguesDenCommand.js';
-import { sepulchreCommand } from '../lib/abstracted_commands/sepulchreCommand.js';
-import { shades, shadesLogs, shadesOfMortonStartCommand } from '../lib/abstracted_commands/shadesOfMortonCommand.js';
+} from '@/mahoji/lib/abstracted_commands/pestControlCommand.js';
+import { pyramidPlunderCommand } from '@/mahoji/lib/abstracted_commands/pyramidPlunderCommand.js';
+import { roguesDenCommand } from '@/mahoji/lib/abstracted_commands/roguesDenCommand.js';
+import { sepulchreCommand } from '@/mahoji/lib/abstracted_commands/sepulchreCommand.js';
+import {
+	shades,
+	shadesLogs,
+	shadesOfMortonStartCommand
+} from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
 import {
 	soulWarsBuyCommand,
 	soulWarsBuyables,
@@ -67,16 +71,16 @@ import {
 	soulWarsImbueables,
 	soulWarsStartCommand,
 	soulWarsTokensCommand
-} from '../lib/abstracted_commands/soulWarsCommand.js';
-import { tearsOfGuthixCommand } from '../lib/abstracted_commands/tearsOfGuthixCommand.js';
-import { trekCommand, trekShop } from '../lib/abstracted_commands/trekCommand.js';
-import { troubleBrewingStartCommand } from '../lib/abstracted_commands/troubleBrewingCommand.js';
+} from '@/mahoji/lib/abstracted_commands/soulWarsCommand.js';
+import { tearsOfGuthixCommand } from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
+import { trekCommand, trekShop } from '@/mahoji/lib/abstracted_commands/trekCommand.js';
+import { troubleBrewingStartCommand } from '@/mahoji/lib/abstracted_commands/troubleBrewingCommand.js';
 import {
 	VolcanicMineShop,
 	volcanicMineCommand,
 	volcanicMineShopCommand,
 	volcanicMineStatsCommand
-} from '../lib/abstracted_commands/volcanicMineCommand.js';
+} from '@/mahoji/lib/abstracted_commands/volcanicMineCommand.js';
 import type { NMZStrategy } from './../../lib/constants.js';
 import { NMZ_STRATEGY } from './../../lib/constants.js';
 import { giantsFoundryAlloys, giantsFoundryBuyables } from './../lib/abstracted_commands/giantsFoundryCommand.js';

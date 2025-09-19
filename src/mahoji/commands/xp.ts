@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Hiscores, type SkillsScore } from 'oldschooljs/hiscores';
 
-import { statsEmbed } from '../../lib/util/statsEmbed.js';
+import { statsEmbed } from '@/lib/util/statsEmbed.js';
 
 export const xpCommand: OSBMahojiCommand = {
 	name: 'xp',

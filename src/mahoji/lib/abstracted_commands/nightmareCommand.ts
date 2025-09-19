@@ -3,20 +3,20 @@ import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Bank, EMonster, ZAM_HASTA_CRUSH, resolveItems } from 'oldschooljs';
 
+import { BitField } from '@/lib/constants.js';
+import { degradeItem } from '@/lib/degradeableItems.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
-import { BitField } from '../../../lib/constants.js';
-import { degradeItem } from '../../../lib/degradeableItems.js';
-import { trackLoot } from '../../../lib/lootTrack.js';
-import { NightmareMonster } from '../../../lib/minions/data/killableMonsters/index.js';
-import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser.js';
-import type { KillableMonster } from '../../../lib/minions/types.js';
-import { Gear } from '../../../lib/structures/Gear.js';
-import type { NightmareActivityTaskOptions } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import calcDurQty from '../../../lib/util/calcMassDurationQuantity.js';
-import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats.js';
-import getOSItem from '../../../lib/util/getOSItem.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { Gear } from '@/lib/structures/Gear.js';
+import type { NightmareActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
+import { getNightmareGearStats } from '@/lib/util/getNightmareGearStats.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { hasMonsterRequirements } from '../../mahojiSettings.js';
 
 async function soloMessage(user: MUser, duration: number, quantity: number, isPhosani: boolean) {

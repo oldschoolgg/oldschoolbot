@@ -2,11 +2,11 @@ import { Time, percentChance } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
-import { avasDevices, chompyHats } from '../../../lib/data/CollectionsExport.js';
-import { WesternProv, userhasDiaryTier } from '../../../lib/diaries.js';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
+import { avasDevices, chompyHats } from '@/lib/data/CollectionsExport.js';
+import { WesternProv, userhasDiaryTier } from '@/lib/diaries.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 const diaryBoosts = [
 	[WesternProv.elite, 100],

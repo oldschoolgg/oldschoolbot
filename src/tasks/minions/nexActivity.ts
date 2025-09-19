@@ -2,15 +2,15 @@ import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { userMention } from 'discord.js';
 import { Bank, EMonster, type ItemBank } from 'oldschooljs';
 
-import { trackLoot } from '../../lib/lootTrack.js';
-import announceLoot from '../../lib/minions/functions/announceLoot.js';
-import type { NexContext } from '../../lib/simulation/nex.js';
-import { handleNexKills, purpleNexItems } from '../../lib/simulation/nex.js';
-import type { NexTaskOptions } from '../../lib/types/minions.js';
-import { getKCByName } from '../../lib/util/getKCByName.js';
-import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
-import { makeBankImage } from '../../lib/util/makeBankImage.js';
-import { updateBankSetting } from '../../lib/util/updateBankSetting.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import announceLoot from '@/lib/minions/functions/announceLoot.js';
+import type { NexContext } from '@/lib/simulation/nex.js';
+import { handleNexKills, purpleNexItems } from '@/lib/simulation/nex.js';
+import type { NexTaskOptions } from '@/lib/types/minions.js';
+import { getKCByName } from '@/lib/util/getKCByName.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const nexTask: MinionTask = {
 	type: 'Nex',

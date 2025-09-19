@@ -1,9 +1,9 @@
 import { UserError } from '@oldschoolgg/toolkit/structures';
 import { Bank } from 'oldschooljs';
 
-import { GrandExchange } from '../../../lib/grandExchange.js';
-import { makeTransactFromTableBankQueries } from '../../../lib/tableBank.js';
-import { logError } from '../../../lib/util/logError.js';
+import { GrandExchange } from '@/lib/grandExchange.js';
+import { makeTransactFromTableBankQueries } from '@/lib/tableBank.js';
+import { logError } from '@/lib/util/logError.js';
 
 export async function cancelUsersListings(user: MUser) {
 	const activeListings = await prisma.gEListing.findMany({

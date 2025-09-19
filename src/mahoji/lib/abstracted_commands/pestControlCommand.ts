@@ -3,14 +3,14 @@ import { formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
+import { WesternProv, userhasDiaryTier } from '@/lib/diaries.js';
+import type { SkillsEnum } from '@/lib/skilling/types.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import { WesternProv, userhasDiaryTier } from '../../../lib/diaries.js';
-import type { SkillsEnum } from '../../../lib/skilling/types.js';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
-import getOSItem from '../../../lib/util/getOSItem.js';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
 import { userStatsUpdate } from '../../mahojiSettings.js';
 
 const itemBoosts = [

@@ -1,8 +1,8 @@
 import { Time, roll } from '@oldschoolgg/toolkit';
 import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
-
 import { GearStat } from 'oldschooljs/gear';
-import { BitField } from '../../../../../../src/lib/constants.js';
+
+import { BitField } from '@/lib/constants.js';
 import { corporealBeastCL, muspahCL } from '../../../../data/CollectionsExport.js';
 import { SkillsEnum } from '../../../../skilling/types.js';
 import { Gear } from '../../../../structures/Gear.js';

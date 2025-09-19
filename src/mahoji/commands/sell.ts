@@ -5,12 +5,12 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type Item, MAX_INT_JAVA, itemID, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
-import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries.js';
-import { NestBoxesTable } from '../../lib/simulation/misc.js';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation.js';
-import { parseBank } from '../../lib/util/parseStringBank.js';
-import { updateBankSetting } from '../../lib/util/updateBankSetting.js';
-import { filterOption } from '../lib/mahojiCommandOptions.js';
+import { WildernessDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { NestBoxesTable } from '@/lib/simulation/misc.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../mahojiSettings.js';
 
 /**

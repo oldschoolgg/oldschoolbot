@@ -2,13 +2,13 @@ import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 import { clone } from 'remeda';
 
-import type { GiantsFoundryBank } from '../../../lib/giantsFoundry.js';
-import { encodeGiantWeapons, generateRandomGiantWeapon, giantWeaponName } from '../../../lib/giantsFoundry.js';
-import { trackLoot } from '../../../lib/lootTrack.js';
-import { SkillsEnum } from '../../../lib/skilling/types.js';
-import type { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions.js';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import type { GiantsFoundryBank } from '@/lib/giantsFoundry.js';
+import { encodeGiantWeapons, generateRandomGiantWeapon, giantWeaponName } from '@/lib/giantsFoundry.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { GiantsFoundryActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings.js';
 
 export const giantsFoundryTask: MinionTask = {

@@ -3,7 +3,7 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { ChatInputCommandInteraction, User } from 'discord.js';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { addToOpenablesScores } from '../../mahojiSettings.js';
 
 const HatTable = new LootTable()

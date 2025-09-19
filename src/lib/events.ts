@@ -7,8 +7,8 @@ import { type BaseMessageOptions, EmbedBuilder, type Message, type TextChannel, 
 import { LRUCache } from 'lru-cache';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
+import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
 import { dateFm, getNextUTCReset } from '@oldschoolgg/toolkit/util';
-import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand.js';
 import { lastRoboChimpSyncCache, untrustedGuildSettingsCache } from './cache.js';
 import { Channel, globalConfig } from './constants.js';
 import pets from './data/pets.js';

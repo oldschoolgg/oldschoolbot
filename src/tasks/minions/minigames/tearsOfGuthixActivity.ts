@@ -1,9 +1,9 @@
 import { increaseNumByPercent, randInt } from '@oldschoolgg/toolkit';
 
-import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../../lib/diaries.js';
-import type { SkillsEnum } from '../../../lib/skilling/types.js';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions.js';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
+import { LumbridgeDraynorDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import type { SkillsEnum } from '@/lib/skilling/types.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings.js';
 
 export const togTask: MinionTask = {

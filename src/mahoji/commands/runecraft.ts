@@ -3,18 +3,18 @@ import { formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, SkillsEnum, itemID } from 'oldschooljs';
 
-import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand.js';
-import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements.js';
-import Runecraft from '../../lib/skilling/skills/runecraft.js';
-import type { RunecraftActivityTaskOptions } from '../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength.js';
-import { determineRunes } from '../../lib/util/determineRunes.js';
-import { getOSItem } from '../../lib/util/getOSItem.js';
-import { formatSkillRequirements } from '../../lib/util/smallUtils.js';
-import { updateBankSetting } from '../../lib/util/updateBankSetting.js';
-import { ouraniaAltarStartCommand } from '../lib/abstracted_commands/ouraniaAltarCommand.js';
-import { tiaraRunecraftCommand } from '../lib/abstracted_commands/tiaraRunecraftCommand.js';
+import { darkAltarCommand } from '@/lib/minions/functions/darkAltarCommand.js';
+import { sinsOfTheFatherSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import type { RunecraftActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { determineRunes } from '@/lib/util/determineRunes.js';
+import { getOSItem } from '@/lib/util/getOSItem.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { ouraniaAltarStartCommand } from '@/mahoji/lib/abstracted_commands/ouraniaAltarCommand.js';
+import { tiaraRunecraftCommand } from '@/mahoji/lib/abstracted_commands/tiaraRunecraftCommand.js';
 import { calcMaxRCQuantity, userHasGracefulEquipped } from '../mahojiSettings.js';
 
 const runeTypes = [

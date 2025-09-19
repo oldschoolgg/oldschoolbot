@@ -2,13 +2,13 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Items } from 'oldschooljs';
 
-import { Enchantables } from '../../../lib/skilling/skills/magic/enchantables.js';
-import { SkillsEnum } from '../../../lib/skilling/types.js';
-import type { EnchantingActivityTaskOptions } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
-import { determineRunes } from '../../../lib/util/determineRunes.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { EnchantingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { determineRunes } from '@/lib/util/determineRunes.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function enchantCommand(user: MUser, channelID: string, name: string, quantity?: number) {
 	const enchantable = Enchantables.find(

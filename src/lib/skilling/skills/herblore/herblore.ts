@@ -1,5 +1,5 @@
+import { SkillsEnum } from '@/lib/skilling/types.js';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { SkillsEnum } from '../../types.js';
 import mixables from './mixables/index.js';
 
 const Herblore = {

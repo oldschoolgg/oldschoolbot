@@ -1,13 +1,13 @@
 import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import { ellipsize } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
+import { Items } from 'oldschooljs';
 
-import { ClueTiers } from '../../lib/clues/clueTiers.js';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation.js';
-import { parseBank } from '../../lib/util/parseStringBank.js';
-import { itemNameFromID } from '../../lib/util/smallUtils.js';
-import { updateBankSetting } from '../../lib/util/updateBankSetting.js';
-import { filterOption } from '../lib/mahojiCommandOptions.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 
 export const dropCommand: OSBMahojiCommand = {
 	name: 'drop',
@@ -78,7 +78,7 @@ export const dropCommand: OSBMahojiCommand = {
 			await handleMahojiConfirmation(
 				interaction,
 				`${user}, some of the items you are dropping are on your **favorites** or look valuable, are you *really* sure you want to drop them?\n**${doubleCheckItems
-					.map(itemNameFromID)
+					.map(Items.itemNameFromId)
 					.join(', ')}**\n\nDropping: ${ellipsize(bank.toString(), 1000)}`
 			);
 		}

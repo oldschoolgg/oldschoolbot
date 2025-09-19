@@ -7,11 +7,11 @@ import {
 	HardEncounterLoot,
 	MediumEncounterLoot,
 	rewardTokens
-} from '../../../lib/minions/data/templeTrekking.js';
-import type { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions.js';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
-import { makeBankImage } from '../../../lib/util/makeBankImage.js';
-import { percentChance } from '../../../lib/util/rng.js';
+} from '@/lib/minions/data/templeTrekking.js';
+import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { percentChance } from '@/lib/util/rng.js';
 
 function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 	let lowestCountPiece = 0;

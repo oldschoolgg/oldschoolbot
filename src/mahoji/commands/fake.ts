@@ -7,7 +7,7 @@ import {
 	createCanvas,
 	loadAndCacheLocalImage,
 	measureTextWidth
-} from '../../lib/canvas/canvasUtil.js';
+} from '@/lib/canvas/canvasUtil.js';
 
 const bg = loadAndCacheLocalImage('./src/lib/resources/images/tob-bg.png');
 

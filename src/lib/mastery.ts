@@ -1,7 +1,7 @@
 import { calcWhatPercent, round, sumArr } from '@oldschoolgg/toolkit';
 import { clamp } from 'remeda';
 
-import { calculateAchievementDiaryProgress } from '../mahoji/lib/abstracted_commands/achievementDiaryCommand.js';
+import { calculateAchievementDiaryProgress } from '@/mahoji/lib/abstracted_commands/achievementDiaryCommand.js';
 import { allCombatAchievementTasks } from './combat_achievements/combatAchievements.js';
 import { MAX_XP } from './constants.js';
 import { getTotalCl } from './data/Collections.js';

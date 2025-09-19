@@ -3,11 +3,11 @@ import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, type Item, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
+import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
+import { Gear, constructGearSetup } from '@/lib/structures/Gear.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { logError } from '@/lib/util/logError.js';
 import { randFloat, randInt } from '@/lib/util/rng.js';
-import { blowpipeDarts } from '../minions/functions/blowpipeCommand.js';
-import { Gear, constructGearSetup } from '../structures/Gear.js';
-import getOSItem from '../util/getOSItem.js';
-import { logError } from '../util/logError.js';
 
 interface TOBRoom {
 	name: string;

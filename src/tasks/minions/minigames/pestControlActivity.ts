@@ -1,9 +1,9 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { toKMB } from 'oldschooljs';
 
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
-import { getBoatType } from '../../../mahoji/lib/abstracted_commands/pestControlCommand.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { getBoatType } from '@/mahoji/lib/abstracted_commands/pestControlCommand.js';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings.js';
 
 export const pestControlTask: MinionTask = {

@@ -1,12 +1,12 @@
 import { Time, calcWhatPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
 
+import { BitField } from '@/lib/constants.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { GauntletOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { BitField } from '../../../lib/constants.js';
-import { SkillsEnum } from '../../../lib/skilling/types.js';
-import type { GauntletOptions } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
 
 const baseRequirements = {
 	cooking: 70,

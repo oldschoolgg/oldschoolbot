@@ -1,22 +1,26 @@
 import { roughMergeMahojiResponse } from '@oldschoolgg/toolkit/discord-util';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 
-import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage.js';
-import { defaultFarmingContract } from '../../../lib/minions/farming/index.js';
-import type {
-	ContractOption,
-	FarmingContract,
-	FarmingContractDifficultyLevel
-} from '../../../lib/minions/farming/types.js';
-import { getPlantToGrow } from '../../../lib/skilling/functions/calcFarmingContracts.js';
-import { getFarmingInfoFromUser } from '../../../lib/skilling/functions/getFarmingInfo.js';
-import { plants } from '../../../lib/skilling/skills/farming/index.js';
-import { findPlant } from '../../../lib/util/farmingHelpers.js';
-import { makeEasierFarmingContractButton } from '../../../lib/util/smallUtils.js';
+import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
+import { defaultFarmingContract } from '@/lib/minions/farming/index.js';
+import type { ContractOption, FarmingContract, FarmingContractDifficultyLevel } from '@/lib/minions/farming/types.js';
+import { getPlantToGrow } from '@/lib/skilling/functions/calcFarmingContracts.js';
+import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
+import { plants } from '@/lib/skilling/skills/farming/index.js';
+import { findPlant } from '@/lib/util/farmingHelpers.js';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings.js';
 import { farmingPlantCommand, harvestCommand } from './farmingCommand.js';
 import { abstractedOpenCommand } from './openCommand.js';
+
+function makeEasierFarmingContractButton() {
+	return new ButtonBuilder()
+		.setCustomId('FARMING_CONTRACT_EASIER')
+		.setLabel('Ask for easier Contract')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('977410792754413668');
+}
 
 async function janeImage(content: string) {
 	const image = await newChatHeadImage({ content, head: 'jane' });

@@ -4,18 +4,18 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
+import TrekShopItems, { TrekExperience } from '@/lib/data/buyables/trekBuyables.js';
+import { MorytaniaDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { difficulties, rewardTokens, trekBankBoosts } from '@/lib/minions/data/templeTrekking.js';
+import type { AddXpParams } from '@/lib/minions/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { GearRequirement } from '@/lib/structures/Gear.js';
-import TrekShopItems, { TrekExperience } from '../../../lib/data/buyables/trekBuyables.js';
-import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries.js';
-import { difficulties, rewardTokens, trekBankBoosts } from '../../../lib/minions/data/templeTrekking.js';
-import type { AddXpParams } from '../../../lib/minions/types.js';
-import { SkillsEnum } from '../../../lib/skilling/types.js';
-import type { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
-import { percentChance } from '../../../lib/util/rng.js';
-import { readableStatName } from '../../../lib/util/smallUtils.js';
+import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { percentChance } from '@/lib/util/rng.js';
+import { readableStatName } from '@/lib/util/smallUtils.js';
 import { userHasGracefulEquipped } from '../../mahojiSettings.js';
 
 export async function trekCommand(user: MUser, channelID: string, difficulty: string, quantity: number | undefined) {

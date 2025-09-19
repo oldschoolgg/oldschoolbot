@@ -1,10 +1,10 @@
 import { Time, calcPercentOfNum, calcWhatPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { randomVariation } from '@oldschoolgg/toolkit/util';
 
-import { userStatsUpdate } from '../../mahoji/mahojiSettings.js';
-import type { KillableMonster } from '../minions/types.js';
-import { maxDefenceStats } from '../structures/Gear.js';
-import type { GearBank } from '../structures/GearBank.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { maxDefenceStats } from '@/lib/structures/Gear.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 import { type Peak, peakFactor } from './peaks.js';
 import { percentChance } from './rng.js';
 

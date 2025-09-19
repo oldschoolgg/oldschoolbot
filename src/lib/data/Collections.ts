@@ -14,22 +14,22 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
-import type { ClueTier } from '../clues/clueTiers.js';
-import { ClueTiers } from '../clues/clueTiers.js';
-import killableMonsters, { NightmareMonster } from '../minions/data/killableMonsters/index.js';
-import { sepulchreFloors } from '../minions/data/sepulchre.js';
+import killableMonsters, { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
+import { sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
 import {
 	EasyEncounterLoot,
 	HardEncounterLoot,
 	MediumEncounterLoot,
 	rewardTokens
-} from '../minions/data/templeTrekking.js';
+} from '@/lib/minions/data/templeTrekking.js';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
+import { SeedableRNG } from '@/lib/util/rng.js';
+import type { ClueTier } from '../clues/clueTiers.js';
+import { ClueTiers } from '../clues/clueTiers.js';
 import type { MinigameName } from '../settings/minigames.js';
 import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc.js';
 import { allFarmingItems } from '../skilling/skills/farming/index.js';
 import { SkillsEnum } from '../skilling/types.js';
-import { MUserStats } from '../structures/MUserStats.js';
-import { shuffleRandom } from '../util/smallUtils.js';
 import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport.js';
 import {
 	NexCL,
@@ -1279,10 +1279,8 @@ export function calcCLDetails(user: MUser | Bank) {
 	const clItems = (user instanceof Bank ? user : user.cl).filter(i => allCLItemsFiltered.includes(i.id));
 	const debugBank = new Bank(clItems);
 	const owned = clItems.filter(i => allCLItemsFiltered.includes(i.id));
-	const notOwned = shuffleRandom(
-		Number(user instanceof Bank ? '1' : user.id),
-		allCLItemsFiltered.filter(i => !clItems.has(i))
-	).slice(0, 10);
+	const seededRng = new SeedableRNG(Number(user instanceof Bank ? '1' : user.id));
+	const notOwned: number[] = seededRng.shuffle(allCLItemsFiltered.filter(i => !clItems.has(i))).slice(0, 10);
 	return {
 		percent: calcWhatPercent(owned.length, allCLItemsFiltered.length),
 		notOwned,

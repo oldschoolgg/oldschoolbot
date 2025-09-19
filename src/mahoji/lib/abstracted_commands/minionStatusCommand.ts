@@ -4,6 +4,10 @@ import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { type BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { BitField } from '@/lib/constants.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { minionBuyButton } from '@/lib/sharedComponents.js';
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
 import {
 	makeAutoContractButton,
@@ -11,12 +15,8 @@ import {
 	makeBirdHouseTripButton,
 	makeClaimDailyButton
 } from '@/lib/util/interactions.js';
-import { ClueTiers } from '../../../lib/clues/clueTiers.js';
-import { BitField } from '../../../lib/constants.js';
-import { roboChimpUserFetch } from '../../../lib/roboChimp.js';
-import { minionBuyButton } from '../../../lib/sharedComponents.js';
-import { minionStatus } from '../../../lib/util/minionStatus.js';
-import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip.js';
+import { minionStatus } from '@/lib/util/minionStatus.js';
+import { makeRepeatTripButtons } from '@/lib/util/repeatStoredTrip.js';
 import { isUsersDailyReady } from './dailyCommand.js';
 import { canRunAutoContract } from './farmingContractCommand.js';
 

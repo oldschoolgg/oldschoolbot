@@ -3,11 +3,11 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank, Items, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
-import { Planks } from '../../../lib/minions/data/planks.js';
-import type { SawmillActivityTaskOptions } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import { Planks } from '@/lib/minions/data/planks.js';
+import type { SawmillActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userHasGracefulEquipped } from '../../mahojiSettings.js';
 
 export async function sawmillCommand(

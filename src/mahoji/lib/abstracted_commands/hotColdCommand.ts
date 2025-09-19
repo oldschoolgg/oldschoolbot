@@ -2,8 +2,8 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { EmbedBuilder } from 'discord.js';
 import { LootTable, resolveItems, toKMB } from 'oldschooljs';
 
-import { mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings.js';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
+import { mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { mahojiParseNumber, userStatsUpdate } from '../../mahojiSettings.js';
 
 export const flowerTable = new LootTable()

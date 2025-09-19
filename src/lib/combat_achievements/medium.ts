@@ -1,7 +1,7 @@
 import { ItemGroups, Monsters } from 'oldschooljs';
 
+import { Requirements } from '@/lib/structures/Requirements.js';
 import { SkillsEnum } from '../skilling/types.js';
-import { Requirements } from '../structures/Requirements.js';
 import { isCertainMonsterTrip } from './caUtils.js';
 import type { CombatAchievement } from './combatAchievements.js';
 

@@ -4,11 +4,11 @@ import type { Minigame } from '@prisma/client';
 import { strikethrough } from 'discord.js';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { diaries, userhasDiaryTier, userhasDiaryTierSync } from '../../../lib/diaries.js';
-import type { DiaryTier } from '../../../lib/minions/types.js';
-import { Minigames } from '../../../lib/settings/minigames.js';
-import { MUserStats } from '../../../lib/structures/MUserStats.js';
-import { formatSkillRequirements, itemNameFromID } from '../../../lib/util/smallUtils.js';
+import { diaries, userhasDiaryTier, userhasDiaryTierSync } from '@/lib/diaries.js';
+import type { DiaryTier } from '@/lib/minions/types.js';
+import { Minigames } from '@/lib/settings/minigames.js';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
+import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
 
 const lampRewards = {
 	Easy: 'Antique lamp 1',

@@ -3,10 +3,10 @@ import type { MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '../../lib/blacklists.js';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation.js';
-import { deferInteraction } from '../../lib/util/interactionReply.js';
-import { tradePlayerItems } from '../../lib/util/tradePlayerItems.js';
+import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
 import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings.js';
 
 export const payCommand: OSBMahojiCommand = {

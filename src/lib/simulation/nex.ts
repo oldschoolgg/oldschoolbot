@@ -16,10 +16,10 @@ import { Bank, EMonster, itemID, randomVariation, resolveItems } from 'oldschool
 import { clamp } from 'remeda';
 
 import type { Skills } from '@/lib/types/index.js';
+import { arrows, bolts, bows, crossbows } from '@/lib/util/archery.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { formatList, formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
 import { BitField } from '../constants.js';
-import { arrows, bolts, bows, crossbows } from '../util/archery.js';
-import { calcMaxTripLength } from '../util/calcMaxTripLength.js';
-import { formatList, formatSkillRequirements, itemNameFromID } from '../util/smallUtils.js';
 import { TeamLoot } from './TeamLoot.js';
 import { NexNonUniqueTable, NexUniqueTable } from './misc.js';
 

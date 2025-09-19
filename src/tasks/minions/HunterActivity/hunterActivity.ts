@@ -3,18 +3,18 @@ import { Events } from '@oldschoolgg/toolkit/constants';
 import type { Prisma } from '@prisma/client';
 import { Bank, ECreature, EquipmentSlot, itemID } from 'oldschooljs';
 
+import { MAX_LEVEL } from '@/lib/constants.js';
+import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { calcLootXPHunting, generateHerbiTable } from '@/lib/skilling/functions/calcsHunter.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { logError } from '@/lib/util/logError.js';
 import { PeakTier } from '@/lib/util/peaks.js';
 import { roll } from '@/lib/util/rng.js';
-import { MAX_LEVEL } from '../../../lib/constants.js';
-import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped.js';
-import { trackLoot } from '../../../lib/lootTrack.js';
-import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter.js';
-import Hunter from '../../../lib/skilling/skills/hunter/hunter.js';
-import { SkillsEnum } from '../../../lib/skilling/types.js';
-import type { HunterActivityTaskOptions } from '../../../lib/types/minions.js';
-import { skillingPetDropRate } from '../../../lib/util.js';
-import { logError } from '../../../lib/util/logError.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings.js';
 
 const riskDeathNumbers = [

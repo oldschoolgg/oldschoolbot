@@ -1,15 +1,15 @@
 import { randArrItem } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
 
-import { ColosseumWaveBank, colosseumWaves } from '../../lib/colosseum.js';
-import { refundChargeBank } from '../../lib/degradeableItems.js';
-import { trackLoot } from '../../lib/lootTrack.js';
-import { ChargeBank } from '../../lib/structures/Bank.js';
-import type { ColoTaskOptions } from '../../lib/types/minions.js';
-import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
-import { makeBankImage } from '../../lib/util/makeBankImage.js';
-import { updateBankSetting } from '../../lib/util/updateBankSetting.js';
-import { userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings.js';
+import { ColosseumWaveBank, colosseumWaves } from '@/lib/colosseum.js';
+import { refundChargeBank } from '@/lib/degradeableItems.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
+import type { ColoTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const sunfireItems = resolveItems(['Sunfire fanatic helm', 'Sunfire fanatic cuirass', 'Sunfire fanatic chausses']);
 

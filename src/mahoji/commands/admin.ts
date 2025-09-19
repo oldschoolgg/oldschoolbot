@@ -5,9 +5,8 @@ import { type ClientStorage, economy_transaction_type } from '@prisma/client';
 import { ApplicationCommandOptionType, AttachmentBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
-import { countUsersWithItemInCl } from '@/lib/rawSql.js';
-import { mahojiUserSettingsUpdate } from '../../lib/MUser.js';
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists.js';
+import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '@/lib/blacklists.js';
 import {
 	BadgesEnum,
 	BitField,
@@ -17,22 +16,23 @@ import {
 	META_CONSTANTS,
 	badges,
 	globalConfig
-} from '../../lib/constants.js';
-import { economyLog } from '../../lib/economyLogs.js';
-import type { GearSetup } from '../../lib/gear/types.js';
-import { GrandExchange } from '../../lib/grandExchange.js';
-import { sorts } from '../../lib/sorts.js';
-import { memoryAnalysis } from '../../lib/util/cachedUserIDs.js';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings.js';
-import getOSItem, { getItem } from '../../lib/util/getOSItem.js';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation.js';
-import { deferInteraction, interactionReply } from '../../lib/util/interactionReply.js';
-import { makeBankImage } from '../../lib/util/makeBankImage.js';
-import { parseBank } from '../../lib/util/parseStringBank.js';
-import { sendToChannelID } from '../../lib/util/webhook.js';
-import { Cooldowns } from '../lib/Cooldowns.js';
-import { syncCustomPrices } from '../lib/events.js';
-import { itemOption } from '../lib/mahojiCommandOptions.js';
+} from '@/lib/constants.js';
+import { economyLog } from '@/lib/economyLogs.js';
+import type { GearSetup } from '@/lib/gear/types.js';
+import { GrandExchange } from '@/lib/grandExchange.js';
+import { countUsersWithItemInCl } from '@/lib/rawSql.js';
+import { sorts } from '@/lib/sorts.js';
+import { memoryAnalysis } from '@/lib/util/cachedUserIDs.js';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
+import getOSItem, { getItem } from '@/lib/util/getOSItem.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { deferInteraction, interactionReply } from '@/lib/util/interactionReply.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
+import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
+import { syncCustomPrices } from '@/mahoji/lib/events.js';
+import { itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings.js';
 
 export const gifs = [

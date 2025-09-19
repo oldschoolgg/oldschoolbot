@@ -1,14 +1,14 @@
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Bank, LootTable } from 'oldschooljs';
 
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import Mining from '@/lib/skilling/skills/mining.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { roll } from '@/lib/util/rng.js';
-import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot.js';
-import Mining from '../../../lib/skilling/skills/mining.js';
-import { SkillsEnum } from '../../../lib/skilling/types.js';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions.js';
-import { skillingPetDropRate } from '../../../lib/util.js';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
-import { makeBankImage } from '../../../lib/util/makeBankImage.js';
 
 export const camdozaalMiningTask: MinionTask = {
 	type: 'CamdozaalMining',

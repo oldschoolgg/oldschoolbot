@@ -2,11 +2,11 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
-import Runecraft from '../../../lib/skilling/skills/runecraft.js';
-import type { TiaraRunecraftActivityTaskOptions } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import type { TiaraRunecraftActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userHasGracefulEquipped } from '../../mahojiSettings.js';
 
 export async function tiaraRunecraftCommand({

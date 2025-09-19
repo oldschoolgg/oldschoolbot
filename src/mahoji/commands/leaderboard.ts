@@ -10,24 +10,24 @@ import {
 } from 'discord.js';
 import { convertXPtoLVL } from 'oldschooljs';
 
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { MAX_LEVEL, masteryKey } from '@/lib/constants.js';
+import { allClNames, getCollectionItems } from '@/lib/data/Collections.js';
+import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import { allOpenables } from '@/lib/openables.js';
+import { SQL } from '@/lib/rawSql.js';
+import { Minigames } from '@/lib/settings/minigames.js';
+import Agility from '@/lib/skilling/skills/agility.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
+import Skills from '@/lib/skilling/skills/index.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 import { getUsername, getUsernameSync } from '@/lib/util.js';
+import { fetchCLLeaderboard } from '@/lib/util/clLeaderboard.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { logError, logErrorForInteraction } from '@/lib/util/logError.js';
-import type { ClueTier } from '../../lib/clues/clueTiers.js';
-import { ClueTiers } from '../../lib/clues/clueTiers.js';
-import { MAX_LEVEL, masteryKey } from '../../lib/constants.js';
-import { allClNames, getCollectionItems } from '../../lib/data/Collections.js';
-import { effectiveMonsters } from '../../lib/minions/data/killableMonsters/index.js';
-import { allOpenables } from '../../lib/openables.js';
-import { SQL } from '../../lib/rawSql.js';
-import { Minigames } from '../../lib/settings/minigames.js';
-import Agility from '../../lib/skilling/skills/agility.js';
-import Hunter from '../../lib/skilling/skills/hunter/hunter.js';
-import Skills from '../../lib/skilling/skills/index.js';
-import { SkillsEnum } from '../../lib/skilling/types.js';
-import { fetchCLLeaderboard } from '../../lib/util/clLeaderboard.js';
-import { deferInteraction } from '../../lib/util/interactionReply.js';
-import { userEventsToMap } from '../../lib/util/userEvents.js';
-import { sendToChannelID } from '../../lib/util/webhook.js';
+import { userEventsToMap } from '@/lib/util/userEvents.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
 const LB_PAGE_SIZE = 10;
 
 function lbMsg(str: string, ironmanOnly?: boolean) {

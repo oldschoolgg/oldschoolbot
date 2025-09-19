@@ -2,13 +2,13 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
-import { mahojiChatHead } from '../../../lib/canvas/chatHeadImage.js';
-import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries.js';
-import { SkillsEnum } from '../../../lib/skilling/types.js';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
-import getOSItem from '../../../lib/util/getOSItem.js';
+import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
+import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import getOSItem from '@/lib/util/getOSItem.js';
 import { userHasGracefulEquipped } from '../../mahojiSettings.js';
 
 const plainGraceful = new Bank({

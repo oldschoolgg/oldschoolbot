@@ -3,18 +3,18 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
+import type { NMZStrategy } from '@/lib/constants.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { MAX_QP } from '@/lib/minions/data/quests.js';
+import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { Skills } from '@/lib/types/index.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import type { NMZStrategy } from '../../../lib/constants.js';
-import { trackLoot } from '../../../lib/lootTrack.js';
-import { MAX_QP } from '../../../lib/minions/data/quests.js';
-import { resolveAttackStyles } from '../../../lib/minions/functions/index.js';
-import { SkillsEnum } from '../../../lib/skilling/types.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
-import getOSItem from '../../../lib/util/getOSItem.js';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import type { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions.js';
 
 const itemBoosts = [

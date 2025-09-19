@@ -2,13 +2,13 @@ import { Time, calcWhatPercent, reduceNumByPercent } from '@oldschoolgg/toolkit'
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
-import { Eatables } from '../../../lib/data/eatables.js';
-import { warmGear } from '../../../lib/data/filterables.js';
-import { trackLoot } from '../../../lib/lootTrack.js';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import { Eatables } from '@/lib/data/eatables.js';
+import { warmGear } from '@/lib/data/filterables.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function wintertodtCommand(user: MUser, channelID: string, quantity?: number) {
 	const fmLevel = user.skillLevel(SkillsEnum.Firemaking);

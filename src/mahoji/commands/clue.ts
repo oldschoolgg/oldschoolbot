@@ -4,19 +4,19 @@ import type { PlayerOwnedHouse } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import type { ClueTier } from '../../lib/clues/clueTiers.js';
-import { ClueTiers } from '../../lib/clues/clueTiers.js';
-import { BitField, MAX_CLUES_DROPPED } from '../../lib/constants.js';
-import { allOpenables, getOpenableLoot } from '../../lib/openables.js';
-import { getPOHObject } from '../../lib/poh/index.js';
-import { SkillsEnum } from '../../lib/skilling/types.js';
-import type { ClueActivityTaskOptions } from '../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength.js';
-import { getItem } from '../../lib/util/getOSItem.js';
-import { makeBankImage } from '../../lib/util/makeBankImage.js';
-import { getParsedStashUnits } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand.js';
-import { getPOH } from '../lib/abstracted_commands/pohCommand.js';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { BitField, MAX_CLUES_DROPPED } from '@/lib/constants.js';
+import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
+import { getPOHObject } from '@/lib/poh/index.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { getItem } from '@/lib/util/getOSItem.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
+import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 import { addToOpenablesScores, getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings.js';
 
 export const clueTierBoosts: Record<

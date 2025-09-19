@@ -25,28 +25,28 @@ import { Bank, LootTable, itemID, randomVariation, resolveItems } from 'oldschoo
 import type { GearStats } from 'oldschooljs/gear';
 import { clamp } from 'remeda';
 
-import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings.js';
-import { getSimilarItems } from '../data/similarItems.js';
-import { degradeItem } from '../degradeableItems.js';
-import type { UserFullGearSetup } from '../gear/types.js';
-import { trackLoot } from '../lootTrack.js';
-import { setupParty } from '../party.js';
-import { SkillsEnum } from '../skilling/types.js';
-import { Gear, constructGearSetup } from '../structures/Gear.js';
-import type { MakePartyOptions, Skills } from '../types/index.js';
-import type { TOAOptions } from '../types/minions.js';
-import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../util/calcMaxTripLength.js';
-import getOSItem from '../util/getOSItem.js';
-import { assert } from '../util/logError.js';
+import { Gear, constructGearSetup } from '@/lib/structures/Gear.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { assert } from '@/lib/util/logError.js';
 import {
 	bankToStrShortNames,
 	formatList,
 	formatSkillRequirements,
 	getToaKCs,
 	itemNameFromID
-} from '../util/smallUtils.js';
-import { updateBankSetting } from '../util/updateBankSetting.js';
+} from '@/lib/util/smallUtils.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { mahojiParseNumber, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
+import { getSimilarItems } from '../data/similarItems.js';
+import { degradeItem } from '../degradeableItems.js';
+import type { UserFullGearSetup } from '../gear/types.js';
+import { trackLoot } from '../lootTrack.js';
+import { setupParty } from '../party.js';
+import { SkillsEnum } from '../skilling/types.js';
+import type { MakePartyOptions, Skills } from '../types/index.js';
+import type { TOAOptions } from '../types/minions.js';
 import { TeamLoot } from './TeamLoot.js';
 
 const teamSizeScale: Record<number, number> = {

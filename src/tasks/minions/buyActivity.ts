@@ -1,10 +1,10 @@
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import { Bank, Items, toKMB } from 'oldschooljs';
 
-import { findTripBuyable } from '../../lib/data/buyables/tripBuyables.js';
-import type { BuyActivityTaskOptions } from '../../lib/types/minions.js';
-import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
-import { updateBankSetting } from '../../lib/util/updateBankSetting.js';
+import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
+import type { BuyActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const buyTask: MinionTask = {
 	type: 'Buy',

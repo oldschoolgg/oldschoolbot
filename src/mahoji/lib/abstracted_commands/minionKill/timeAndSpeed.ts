@@ -10,14 +10,13 @@ import type { Consumable } from '@/lib/minions/types.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { SkillsRequired } from '@/lib/types/index.js';
-import { numberEnum } from '@/lib/util/smallUtils.js';
 import { getItemCostFromConsumables } from './handleConsumables.js';
 import { type BoostArgs, type BoostResult, type CombatMethodOptions, mainBoostEffects } from './speedBoosts.js';
 
 export const CombatMethodOptionsSchema = z.object({
 	bob: z
-		.number()
-		.superRefine(numberEnum([SlayerActivityConstants.IceBarrage, SlayerActivityConstants.IceBurst]))
+		.nativeEnum(SlayerActivityConstants)
+		.refine(val => val === SlayerActivityConstants.IceBarrage || val === SlayerActivityConstants.IceBurst)
 		.optional(),
 	usingCannon: z.boolean().optional(),
 	cannonMulti: z.boolean().optional(),

@@ -2,11 +2,11 @@ import { objectEntries } from '@oldschoolgg/toolkit';
 import type { Minigame } from '@prisma/client';
 import { type Bank, type Item, ItemGroups, Items, resolveItems } from 'oldschooljs';
 
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
+import getOSItem from '@/lib/util/getOSItem.js';
 import { growablePets } from '../growablePets.js';
 import { implings } from '../implings.js';
 import type { MinigameScore } from '../settings/minigames.js';
-import type { MUserStats } from '../structures/MUserStats.js';
-import getOSItem from '../util/getOSItem.js';
 import {
 	gracefulCapes,
 	gracefulFeet,

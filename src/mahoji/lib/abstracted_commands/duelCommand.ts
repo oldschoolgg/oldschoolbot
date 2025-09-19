@@ -8,8 +8,8 @@ import {
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
 import { Bank, toKMB } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '../../../lib/blacklists.js';
-import { deferInteraction } from '../../../lib/util/interactionReply.js';
+import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { mahojiParseNumber, updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings.js';
 
 async function checkBal(user: MUser, amount: number) {

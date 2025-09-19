@@ -2,9 +2,9 @@ import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { EquipmentSlot } from 'oldschooljs';
 
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
+import { type Gear, maxDefenceStats, maxOffenceStats } from '@/lib/structures/Gear.js';
 import type { GearSetup, GearSetupType } from '../gear/types.js';
 import { GearSetupTypes } from '../gear/types.js';
-import { type Gear, maxDefenceStats, maxOffenceStats } from '../structures/Gear.js';
 import { bankImageTask } from './bankImage.js';
 import { type BaseCanvasArgs, calcAspectRatioFit } from './canvasUtil.js';
 import { gearImages, transmogItems } from './gearImageData.js';

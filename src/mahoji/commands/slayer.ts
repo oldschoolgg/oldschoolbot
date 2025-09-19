@@ -1,22 +1,22 @@
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
-import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants.js';
-import { SlayerRewardsShop } from '../../lib/slayer/slayerUnlocks.js';
-import { deferInteraction } from '../../lib/util/interactionReply.js';
-import { autoSlayCommand } from '../lib/abstracted_commands/autoSlayCommand.js';
+import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
+import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
 import {
 	slayerShopBuyCommand,
 	slayerShopListMyUnlocks,
 	slayerShopListRewards
-} from '../lib/abstracted_commands/slayerShopCommand.js';
+} from '@/mahoji/lib/abstracted_commands/slayerShopCommand.js';
 import {
 	slayerListBlocksCommand,
 	slayerNewTaskCommand,
 	slayerSkipTaskCommand,
 	slayerStatusCommand,
 	slayerUnblockCommand
-} from '../lib/abstracted_commands/slayerTaskCommand.js';
+} from '@/mahoji/lib/abstracted_commands/slayerTaskCommand.js';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings.js';
 
 export const slayerCommand: OSBMahojiCommand = {

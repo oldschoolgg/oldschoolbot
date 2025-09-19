@@ -4,7 +4,7 @@ import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { calcPerHour, formatOrdinal, gaussianRandom } from '@oldschoolgg/toolkit/util';
 import { clamp } from 'remeda';
 
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 interface LMSGameSimulated {
 	position: number;

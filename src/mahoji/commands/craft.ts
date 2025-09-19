@@ -2,13 +2,13 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries.js';
-import { Craftables } from '../../lib/skilling/skills/crafting/craftables/index.js';
-import { SkillsEnum } from '../../lib/skilling/types.js';
-import type { CraftingActivityTaskOptions } from '../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '../../lib/util/updateBankSetting.js';
+import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const craftCommand: OSBMahojiCommand = {
 	name: 'craft',

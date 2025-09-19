@@ -2,10 +2,10 @@ import { Time, randFloat, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
-import { SkillsEnum } from '../../../lib/skilling/types.js';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export async function driftNetCommand(
 	channelID: string,

@@ -1,9 +1,9 @@
 import { bold } from 'discord.js';
 
-import { quests } from '../../lib/minions/data/quests.js';
-import { SkillsEnum } from '../../lib/skilling/types.js';
-import type { SpecificQuestOptions } from '../../lib/types/minions.js';
-import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
+import { quests } from '@/lib/minions/data/quests.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SpecificQuestOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const specificQuestTask: MinionTask = {
 	type: 'SpecificQuest',

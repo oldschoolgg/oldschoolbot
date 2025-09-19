@@ -1,6 +1,6 @@
 import { Bank, itemID } from 'oldschooljs';
 
-import type { Plant } from '../../types.js';
+import type { Plant } from '@/lib/skilling/types.js';
 
 const specialPlants: Plant[] = [
 	{

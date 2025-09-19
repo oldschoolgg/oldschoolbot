@@ -7,9 +7,9 @@ import { RateLimitManager } from '@sapphire/ratelimits';
 import type { ButtonInteraction, Interaction } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { cancelGEListingCommand } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
-import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand.js';
-import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand.js';
+import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
+import { autoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
+import { shootingStarsCommand, starCache } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
 import { InteractionID } from '../InteractionID.js';
 import { giveawayCache } from '../cache.js';
 import type { ClueTier } from '../clues/clueTiers.js';

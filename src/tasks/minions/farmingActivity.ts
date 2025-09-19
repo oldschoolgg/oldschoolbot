@@ -2,23 +2,23 @@ import { randInt } from '@/lib/util/rng.js';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Bank, Monsters } from 'oldschooljs';
 
+import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
+import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
+import { BitField } from '@/lib/constants.js';
+import type { PatchTypes } from '@/lib/minions/farming/index.js';
+import type { FarmingContract } from '@/lib/minions/farming/types.js';
+import { calcVariableYield } from '@/lib/skilling/functions/calcsFarming.js';
+import Farming from '@/lib/skilling/skills/farming/index.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { getFarmingKeyFromName } from '@/lib/util/farmingHelpers.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { assert } from '@/lib/util/logError.js';
 import { roll } from '@/lib/util/rng.js';
-import chatHeadImage from '../../lib/canvas/chatHeadImage.js';
-import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements.js';
-import { BitField } from '../../lib/constants.js';
-import type { PatchTypes } from '../../lib/minions/farming/index.js';
-import type { FarmingContract } from '../../lib/minions/farming/types.js';
-import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming.js';
-import Farming from '../../lib/skilling/skills/farming/index.js';
-import { SkillsEnum } from '../../lib/skilling/types.js';
-import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions.js';
-import { skillingPetDropRate } from '../../lib/util.js';
-import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers.js';
-import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
-import { assert } from '../../lib/util/logError.js';
-import { updateBankSetting } from '../../lib/util/updateBankSetting.js';
-import { sendToChannelID } from '../../lib/util/webhook.js';
-import { userStatsBankUpdate } from '../../mahoji/mahojiSettings.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
+import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const farmingTask: MinionTask = {
 	type: 'Farming',

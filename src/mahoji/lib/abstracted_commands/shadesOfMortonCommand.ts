@@ -2,10 +2,10 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Bank, type Item, resolveItems } from 'oldschooljs';
 
-import type { ShadesOfMortonOptions } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
-import getOSItem, { getItem } from '../../../lib/util/getOSItem.js';
+import type { ShadesOfMortonOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import getOSItem, { getItem } from '@/lib/util/getOSItem.js';
 import { userStatsBankUpdate } from '../../mahojiSettings.js';
 
 type Remains = 'Loar' | 'Phrin' | 'Riyl' | 'Fiyr' | 'Asyn' | 'Urium';

@@ -3,12 +3,12 @@ import type { activity_type_enum } from '@prisma/client';
 import type { Item } from 'oldschooljs';
 import { clone } from 'remeda';
 
-import type { Requirements } from '../structures/Requirements.js';
+import type { Requirements } from '@/lib/structures/Requirements.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import type { TripFinishEffect } from '@/lib/util/handleTripFinish.js';
+import { assert } from '@/lib/util/logError.js';
+import { formatList } from '@/lib/util/smallUtils.js';
 import type { ActivityTaskData, TOAOptions } from '../types/minions.js';
-import getOSItem from '../util/getOSItem.js';
-import type { TripFinishEffect } from '../util/handleTripFinish.js';
-import { assert } from '../util/logError.js';
-import { formatList } from '../util/smallUtils.js';
 import { easyCombatAchievements } from './easy.js';
 import { eliteCombatAchievements } from './elite.js';
 import { grandmasterCombatAchievements } from './grandmaster.js';

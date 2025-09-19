@@ -2,12 +2,12 @@ import { Time, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { SkillsEnum } from 'oldschooljs';
 
-import { Castables } from '../../../lib/skilling/skills/magic/castables.js';
-import type { CastingActivityTaskOptions } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
-import { determineRunes } from '../../../lib/util/determineRunes.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import { Castables } from '@/lib/skilling/skills/magic/castables.js';
+import type { CastingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { determineRunes } from '@/lib/util/determineRunes.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userHasGracefulEquipped } from '../../mahojiSettings.js';
 
 export async function castCommand(channelID: string, user: MUser, name: string, quantity: number | undefined) {

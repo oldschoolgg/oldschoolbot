@@ -4,22 +4,22 @@ import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
-import { InteractionID } from '../../../lib/InteractionID.js';
-import killableMonsters from '../../../lib/minions/data/killableMonsters/index.js';
-import { runCommand } from '../../../lib/settings/settings.js';
-import { slayerMasters } from '../../../lib/slayer/slayerMasters.js';
-import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks.js';
+import { InteractionID } from '@/lib/InteractionID.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { runCommand } from '@/lib/settings/settings.js';
+import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
+import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 import {
 	assignNewSlayerTask,
 	calcMaxBlockedTasks,
 	getCommonTaskName,
 	getUsersCurrentSlayerInfo,
 	userCanUseMaster
-} from '../../../lib/slayer/slayerUtil.js';
-import type { AssignableSlayerTask } from '../../../lib/slayer/types.js';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
-import { interactionReply } from '../../../lib/util/interactionReply.js';
-import { logError } from '../../../lib/util/logError.js';
+} from '@/lib/slayer/slayerUtil.js';
+import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { interactionReply } from '@/lib/util/interactionReply.js';
+import { logError } from '@/lib/util/logError.js';
 import { userStatsUpdate } from '../../mahojiSettings.js';
 
 const returnSuccessButtons = [

@@ -2,14 +2,14 @@ import { Time, increaseNumByPercent, percentChance, randInt, roll } from '@oldsc
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Bank, type ItemBank, Items, addItemToBank } from 'oldschooljs';
 
-import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries.js';
-import Agility from '../../lib/skilling/skills/agility.js';
-import { SkillsEnum } from '../../lib/skilling/types.js';
-import type { AgilityActivityTaskOptions } from '../../lib/types/minions.js';
-import { skillingPetDropRate } from '../../lib/util.js';
-import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
-import { logError } from '../../lib/util/logError.js';
-import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahoji/mahojiSettings.js';
+import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import Agility from '@/lib/skilling/skills/agility.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { logError } from '@/lib/util/logError.js';
+import { updateClientGPTrackSetting, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 function chanceOfFailingAgilityPyramid(user: MUser) {
 	const lvl = user.skillLevel(SkillsEnum.Agility);

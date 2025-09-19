@@ -1,11 +1,11 @@
 import { Bank, EItem, type ItemBank, deepResolveItems, itemID } from 'oldschooljs';
 
+import { blisterwoodRequirements, ivandisRequirements } from '@/lib/minions/data/templeTrekking.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { formatList, itemNameFromID } from '@/lib/util/smallUtils.js';
 import { BitField } from '../constants.js';
-import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking.js';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks.js';
 import type { Skills } from '../types/index.js';
-import getOSItem from '../util/getOSItem.js';
-import { formatList, itemNameFromID } from '../util/smallUtils.js';
 import { chambersOfXericMetamorphPets, tobMetamorphPets } from './CollectionsExport.js';
 import { amrodCreatables } from './creatables/amrod.js';
 import { armorAndItemPacks } from './creatables/armorPacks.js';

@@ -3,12 +3,12 @@ import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank, EItem } from 'oldschooljs';
 
-import { trackLoot } from '../../../lib/lootTrack.js';
-import { bloodEssence } from '../../../lib/skilling/functions/calcsRunecrafting.js';
-import Runecraft from '../../../lib/skilling/skills/runecraft.js';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
-import { makeBankImage } from '../../../lib/util/makeBankImage.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { bloodEssence } from '@/lib/skilling/functions/calcsRunecrafting.js';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { calcMaxRCQuantity, userStatsUpdate } from '../../../mahoji/mahojiSettings.js';
 import { rewardsGuardianTable } from './../../../lib/simulation/rewardsGuardian.js';
 import type { GuardiansOfTheRiftActivityTaskOptions } from './../../../lib/types/minions.js';

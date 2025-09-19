@@ -2,9 +2,9 @@ import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { EItem } from 'oldschooljs';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
 import { logError } from '@/lib/util/logError.js';
 import { SeedableRNG } from '@/lib/util/rng.js';
-import type { FishingActivityTaskOptions } from '../../lib/types/minions.js';
 
 export const fishingTask: MinionTask = {
 	type: 'Fishing',

@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '../../lib/canvas/canvasUtil.js';
+import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '@/lib/canvas/canvasUtil.js';
 
 const bg = loadAndCacheLocalImage('./src/lib/resources/images/pm-bg.png');
 

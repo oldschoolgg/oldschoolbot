@@ -2,15 +2,15 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, Items, itemID } from 'oldschooljs';
 
-import { trackLoot } from '../../../lib/lootTrack.js';
-import { pickaxes, varrockArmours } from '../../../lib/skilling/functions/miningBoosts.js';
-import Runecraft from '../../../lib/skilling/skills/runecraft.js';
-import { SkillsEnum } from '../../../lib/skilling/types.js';
-import type { GuardiansOfTheRiftActivityTaskOptions } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
-import { determineRunes } from '../../../lib/util/determineRunes.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { pickaxes, varrockArmours } from '@/lib/skilling/functions/miningBoosts.js';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { GuardiansOfTheRiftActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { determineRunes } from '@/lib/util/determineRunes.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userHasGracefulEquipped } from '../../mahojiSettings.js';
 
 export async function guardiansOfTheRiftStartCommand(

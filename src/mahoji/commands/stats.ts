@@ -2,7 +2,7 @@ import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { ACCOUNT_TYPES, type AccountType, Hiscores } from 'oldschooljs/hiscores';
 
-import { statsEmbed } from '../../lib/util/statsEmbed.js';
+import { statsEmbed } from '@/lib/util/statsEmbed.js';
 
 const accountTypeOptions = ACCOUNT_TYPES.map(val => {
 	let name: string = val;

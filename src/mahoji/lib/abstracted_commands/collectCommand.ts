@@ -2,12 +2,12 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
-import { WildernessDiary, userhasDiaryTier } from '../../../lib/diaries.js';
-import type { SkillsEnum } from '../../../lib/skilling/types.js';
-import type { CollectingOptions } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import { WildernessDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import type { SkillsEnum } from '@/lib/skilling/types.js';
+import type { CollectingOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { collectables } from '../collectables.js';
 import { getPOH } from './pohCommand.js';
 

@@ -4,9 +4,9 @@ import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType, EmbedBuilder, type MessageEditOptions } from 'discord.js';
 import { type BossRecords, Hiscores, bossNameMap } from 'oldschooljs/hiscores';
 
+import pets from '@/lib/data/pets.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { logError, logErrorForInteraction } from '@/lib/util/logError.js';
-import pets from '../../lib/data/pets.js';
-import { deferInteraction } from '../../lib/util/interactionReply.js';
 
 // Emojis for bosses with no pets
 const miscEmojis = {

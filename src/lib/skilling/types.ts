@@ -1,9 +1,9 @@
 import type { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { Bank, Item, ItemBank, LootTable } from 'oldschooljs';
 
-import type { QuestID } from '../minions/data/quests.js';
+import type { QuestID } from '@/lib/minions/data/quests.js';
+import type { FarmingPatchName } from '@/lib/util/farmingHelpers.js';
 import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks.js';
-import type { FarmingPatchName } from '../util/farmingHelpers.js';
 
 export enum SkillsEnum {
 	Agility = 'agility',

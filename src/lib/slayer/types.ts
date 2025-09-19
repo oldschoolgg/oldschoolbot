@@ -1,6 +1,6 @@
 import type { Item, Monster, MonsterSlayerMaster } from 'oldschooljs';
 
-import type { QuestID } from '../minions/data/quests.js';
+import type { QuestID } from '@/lib/minions/data/quests.js';
 import type { LevelRequirements } from '../skilling/types.js';
 
 export interface AssignableSlayerTask {

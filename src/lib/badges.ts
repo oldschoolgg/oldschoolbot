@@ -1,4 +1,4 @@
-import { BadgesEnum, badges } from '../lib/constants.js';
+import { BadgesEnum, badges } from '@/lib/constants.js';
 
 export async function cacheBadges() {
 	const newCache = new Map();

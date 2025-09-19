@@ -2,10 +2,10 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
-import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser.js';
-import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
+import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function mageArena2Command(user: MUser, channelID: string) {
 	if (user.skillLevel(SkillsEnum.Magic) < 75) {

@@ -18,7 +18,7 @@ import {
 import { pick } from 'remeda';
 
 import Farming from '@/lib/skilling/skills/farming/index.js';
-import { timePerAlch, timePerAlchAgility } from '../mahoji/lib/abstracted_commands/alchCommand.js';
+import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings.js';
 import { addXP } from './addXP.js';
 import { userIsBusy } from './busyCounterCache.js';
@@ -59,7 +59,7 @@ import { getKCByName } from './util/getKCByName.js';
 import getOSItem, { getItem } from './util/getOSItem.js';
 import { logError } from './util/logError.js';
 import { makeBadgeString } from './util/makeBadgeString.js';
-import { hasSkillReqsRaw, itemNameFromID } from './util/smallUtils.js';
+import { hasSkillReqsRaw } from './util/smallUtils.js';
 import { type TransactItemsArgs, transactItemsFromBank } from './util/transactItemsFromBank.js';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
@@ -678,7 +678,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			}
 			if (rawBlowpipeData.dartQuantity < dart[1]) {
 				throw new UserError(
-					`You don't have enough ${itemNameFromID(
+					`You don't have enough ${Items.itemNameFromId(
 						rawBlowpipeData.dartID
 					)}s in your Toxic blowpipe, you need ${dart[1]}, but you have only ${rawBlowpipeData.dartQuantity}.`
 				);

@@ -1,7 +1,7 @@
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { Monster } from 'oldschooljs';
 
-import { effectiveMonsters } from '../minions/data/killableMonsters/index.js';
+import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { Minigames } from '../settings/minigames.js';
 import Hunter from '../skilling/skills/hunter/hunter.js';
 

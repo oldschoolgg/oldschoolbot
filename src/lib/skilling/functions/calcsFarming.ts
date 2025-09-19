@@ -1,5 +1,5 @@
+import { QuestID } from '@/lib/minions/data/quests.js';
 import { randInt } from '@/lib/util/rng.js';
-import { QuestID } from '../../minions/data/quests.js';
 import type { Plant } from '../types.js';
 import { SkillsEnum } from '../types.js';
 

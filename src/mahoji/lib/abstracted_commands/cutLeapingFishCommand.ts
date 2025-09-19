@@ -1,11 +1,11 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank } from 'oldschooljs';
 
+import LeapingFish from '@/lib/skilling/skills/cooking/leapingFish.js';
+import type { CutLeapingFishActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import LeapingFish from '../../../lib/skilling/skills/cooking/leapingFish.js';
-import type { CutLeapingFishActivityTaskOptions } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
 
 export async function cutLeapingFishCommand({
 	user,

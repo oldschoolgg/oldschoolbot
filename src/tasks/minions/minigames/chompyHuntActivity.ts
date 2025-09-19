@@ -1,11 +1,11 @@
 import { roll } from '@/lib/util/rng.js';
 import { Bank } from 'oldschooljs';
 
+import { chompyHats } from '@/lib/data/CollectionsExport.js';
+import { WesternProv, userhasDiaryTier } from '@/lib/diaries.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { formatList } from '@/lib/util/smallUtils.js';
-import { chompyHats } from '../../../lib/data/CollectionsExport.js';
-import { WesternProv, userhasDiaryTier } from '../../../lib/diaries.js';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
 
 export const chompHuntTask: MinionTask = {
 	type: 'BigChompyBirdHunting',

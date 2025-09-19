@@ -3,10 +3,10 @@ import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
-import { leagueBuyables } from '../../lib/data/leaguesBuyables.js';
-import { roboChimpUserFetch } from '../../lib/roboChimp.js';
-import { getUsername } from '../../lib/util.js';
-import { deferInteraction } from '../../lib/util/interactionReply.js';
+import { leagueBuyables } from '@/lib/data/leaguesBuyables.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { getUsername } from '@/lib/util.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { doMenu } from './leaderboard.js';
 
 const leaguesTrophiesBuyables = [

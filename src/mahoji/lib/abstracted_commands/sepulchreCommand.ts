@@ -2,26 +2,22 @@ import { Time, reduceNumByPercent, sumArr } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import type { Bank } from 'oldschooljs';
 
-import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre.js';
+import { sepulchreBoosts, sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
 
-import Arrows from '../../../lib/skilling/skills/fletching/fletchables/arrows.js';
-import Bolts from '../../../lib/skilling/skills/fletching/fletchables/bolts.js';
-import Darts from '../../../lib/skilling/skills/fletching/fletchables/darts.js';
-import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables/index.js';
-import Javelins from '../../../lib/skilling/skills/fletching/fletchables/javelins.js';
-import {
-	AmethystBroadBolts,
-	BroadArrows,
-	BroadBolts
-} from '../../../lib/skilling/skills/fletching/fletchables/slayer.js';
-import TippedBolts from '../../../lib/skilling/skills/fletching/fletchables/tippedBolts.js';
-import TippedDragonBolts from '../../../lib/skilling/skills/fletching/fletchables/tippedDragonBolts.js';
-import type { Fletchable } from '../../../lib/skilling/types.js';
-import type { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks.js';
-import { hasSlayerUnlock } from '../../../lib/slayer/slayerUtil.js';
-import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
+import Arrows from '@/lib/skilling/skills/fletching/fletchables/arrows.js';
+import Bolts from '@/lib/skilling/skills/fletching/fletchables/bolts.js';
+import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
+import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
+import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
+import { AmethystBroadBolts, BroadArrows, BroadBolts } from '@/lib/skilling/skills/fletching/fletchables/slayer.js';
+import TippedBolts from '@/lib/skilling/skills/fletching/fletchables/tippedBolts.js';
+import TippedDragonBolts from '@/lib/skilling/skills/fletching/fletchables/tippedDragonBolts.js';
+import type { Fletchable } from '@/lib/skilling/types.js';
+import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
+import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { userHasGracefulEquipped } from '../../mahojiSettings.js';
 
 export async function sepulchreCommand(user: MUser, channelID: string, fletching?: number) {

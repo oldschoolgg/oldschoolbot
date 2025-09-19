@@ -3,15 +3,15 @@ import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { Bank, Monsters, itemID } from 'oldschooljs';
 
-import chatHeadImage from '../../../lib/canvas/chatHeadImage.js';
-import { userhasDiaryTier } from '../../../lib/diaries.js';
-import { DiaryID } from '../../../lib/minions/types.js';
-import { SkillsEnum } from '../../../lib/skilling/types.js';
-import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil.js';
-import type { FightCavesActivityTaskOptions } from '../../../lib/types/minions.js';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
-import { percentChance } from '../../../lib/util/rng.js';
-import { fightCavesCost } from '../../../mahoji/lib/abstracted_commands/fightCavesCommand.js';
+import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
+import { userhasDiaryTier } from '@/lib/diaries.js';
+import { DiaryID } from '@/lib/minions/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import type { FightCavesActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { percentChance } from '@/lib/util/rng.js';
+import { fightCavesCost } from '@/mahoji/lib/abstracted_commands/fightCavesCommand.js';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings.js';
 
 const TokkulID = itemID('Tokkul');

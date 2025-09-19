@@ -2,8 +2,8 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { type SkillsEnum, convertLVLtoXP, convertXPtoLVL } from 'oldschooljs';
 import { Hiscores } from 'oldschooljs/hiscores';
 
-import { MAX_LEVEL, MAX_XP } from '../../lib/constants.js';
-import { skillOption } from '../lib/mahojiCommandOptions.js';
+import { MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
+import { skillOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 
 const xpLeft = (xp: number) => {
 	const level = convertXPtoLVL(xp, MAX_LEVEL);

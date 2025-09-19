@@ -2,13 +2,13 @@ import { Time, increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/too
 import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, Items, SkillsEnum } from 'oldschooljs';
 
-import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime.js';
-import { pickaxes } from '../../../lib/skilling/functions/miningBoosts.js';
-import { Fishing } from '../../../lib/skilling/skills/fishing/fishing.js';
-import Mining from '../../../lib/skilling/skills/mining.js';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
+import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
+import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import Mining from '@/lib/skilling/skills/mining.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 async function miningCommand(user: MUser, channelID: string, quantity: number | undefined) {
 	let miningLevel = user.skillLevel(SkillsEnum.Mining);

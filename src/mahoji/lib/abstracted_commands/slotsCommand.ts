@@ -10,8 +10,8 @@ import {
 } from 'discord.js';
 import { Bank, toKMB } from 'oldschooljs';
 
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
-import { deferInteraction } from '../../../lib/util/interactionReply.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '../../mahojiSettings.js';
 
 interface Button {

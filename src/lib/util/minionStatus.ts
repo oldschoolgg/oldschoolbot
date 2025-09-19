@@ -3,13 +3,13 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { Items, SkillsEnum } from 'oldschooljs';
 
-import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
-import { collectables } from '../../mahoji/lib/collectables.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { Planks } from '@/lib/minions/data/planks.js';
+import { quests } from '@/lib/minions/data/quests.js';
+import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
+import { collectables } from '@/mahoji/lib/collectables.js';
 import { ClueTiers } from '../clues/clueTiers.js';
 import { findTripBuyable } from '../data/buyables/tripBuyables.js';
-import killableMonsters from '../minions/data/killableMonsters/index.js';
-import { Planks } from '../minions/data/planks.js';
-import { quests } from '../minions/data/quests.js';
 import Agility from '../skilling/skills/agility.js';
 import Constructables from '../skilling/skills/construction/constructables.js';
 import Cooking from '../skilling/skills/cooking/cooking.js';

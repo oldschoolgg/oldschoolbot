@@ -4,7 +4,7 @@ import type { GEListing, GETransaction } from '@prisma/client';
 import { Items } from 'oldschooljs';
 import type { Canvas } from 'skia-canvas';
 
-import type { GEListingWithTransactions } from '../../mahoji/commands/ge.js';
+import type { GEListingWithTransactions } from '@/mahoji/commands/ge.js';
 import { CanvasSpritesheet } from './CanvasSpritesheet.js';
 import { OSRSCanvas } from './OSRSCanvas.js';
 

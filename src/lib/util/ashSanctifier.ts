@@ -1,7 +1,7 @@
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import type { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import { BOT_TYPE, BitField } from '../constants.js';
 import { ashes } from '../skilling/skills/prayer.js';
-import type { GearBank } from '../structures/GearBank.js';
-import type { UpdateBank } from '../structures/UpdateBank.js';
 
 export function ashSanctifierEffect({
 	hasKourendElite,

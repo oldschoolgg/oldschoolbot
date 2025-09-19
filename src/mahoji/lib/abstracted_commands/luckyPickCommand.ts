@@ -11,10 +11,10 @@ import {
 } from 'discord.js';
 import { Bank, toKMB } from 'oldschooljs';
 
-import { SILENT_ERROR } from '../../../lib/constants.js';
-import { handleMahojiConfirmation, silentButtonAck } from '../../../lib/util/handleMahojiConfirmation.js';
-import { deferInteraction } from '../../../lib/util/interactionReply.js';
-import { logError } from '../../../lib/util/logError.js';
+import { SILENT_ERROR } from '@/lib/constants.js';
+import { handleMahojiConfirmation, silentButtonAck } from '@/lib/util/handleMahojiConfirmation.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { logError } from '@/lib/util/logError.js';
 import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '../../mahojiSettings.js';
 
 export async function luckyPickCommand(user: MUser, luckypickamount: string, interaction: ChatInputCommandInteraction) {

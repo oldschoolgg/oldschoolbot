@@ -6,12 +6,12 @@ import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'disc
 import { PVM_METHODS, type PvMMethod } from '@/lib/constants.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
 
-import { Eatables } from '../../lib/data/eatables.js';
-import { autocompleteMonsters, wikiMonsters } from '../../lib/minions/data/killableMonsters/index.js';
-import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC.js';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength.js';
-import findMonster from '../../lib/util/findMonster.js';
-import { minionKillCommand } from '../lib/abstracted_commands/minionKill/minionKill.js';
+import { Eatables } from '@/lib/data/eatables.js';
+import { autocompleteMonsters, wikiMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import findMonster from '@/lib/util/findMonster.js';
+import { minionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/minionKill.js';
 
 const wikiPrefix = 'https://wiki.oldschool.gg/osb';
 

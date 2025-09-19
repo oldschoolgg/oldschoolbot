@@ -3,13 +3,13 @@ import { truncateString } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type Item, type ItemBank, resolveItems, toKMB } from 'oldschooljs';
 
-import { cats } from '../../lib/growablePets.js';
-import minionIcons from '../../lib/minions/data/minionIcons.js';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation.js';
-import { deferInteraction } from '../../lib/util/interactionReply.js';
-import { parseBank } from '../../lib/util/parseStringBank.js';
-import { updateBankSetting } from '../../lib/util/updateBankSetting.js';
-import { filterOption } from '../lib/mahojiCommandOptions.js';
+import { cats } from '@/lib/growablePets.js';
+import minionIcons from '@/lib/minions/data/minionIcons.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { userStatsBankUpdate } from '../mahojiSettings.js';
 import { sellPriceOfItem } from './sell.js';
 

@@ -3,15 +3,15 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries.js';
-import Smithing from '../../lib/skilling/skills/smithing/index.js';
-import smithables from '../../lib/skilling/skills/smithing/smithables/index.js';
-import { SkillsEnum } from '../../lib/skilling/types.js';
-import type { SmithingActivityTaskOptions } from '../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength.js';
-import { pluraliseItemName } from '../../lib/util/smallUtils.js';
-import { updateBankSetting } from '../../lib/util/updateBankSetting.js';
+import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import Smithing from '@/lib/skilling/skills/smithing/index.js';
+import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SmithingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { pluraliseItemName } from '@/lib/util/smallUtils.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const smithCommand: OSBMahojiCommand = {
 	name: 'smith',

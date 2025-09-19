@@ -1,11 +1,11 @@
 import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
+import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { fishingTrawlerLoot } from '@/lib/simulation/fishingTrawler.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
-import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries.js';
-import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler.js';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions.js';
-import { makeBankImage } from '../../../lib/util/makeBankImage.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const trawlerTask: MinionTask = {
 	type: 'FishingTrawler',

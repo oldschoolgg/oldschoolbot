@@ -17,22 +17,22 @@ import {
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
+import { DynamicButtons } from '@/lib/DynamicButtons.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
-import { DynamicButtons } from '../../lib/DynamicButtons.js';
-import { BitField, ParsedCustomEmojiWithGroups, PerkTier, globalConfig } from '../../lib/constants.js';
-import { Eatables } from '../../lib/data/eatables.js';
-import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants.js';
-import { birdhouseSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrapping.js';
-import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants.js';
-import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil.js';
-import { BankSortMethods } from '../../lib/sorts.js';
-import { emojiServers } from '../../lib/util/cachedUserIDs.js';
-import { deferInteraction } from '../../lib/util/interactionReply.js';
-import { makeBankImage } from '../../lib/util/makeBankImage.js';
-import { parseBank } from '../../lib/util/parseStringBank.js';
-import { isValidNickname, itemNameFromID } from '../../lib/util/smallUtils.js';
+import { BitField, ParsedCustomEmojiWithGroups, PerkTier, globalConfig } from '@/lib/constants.js';
+import { Eatables } from '@/lib/data/eatables.js';
+import { CombatOptionsArray, CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
+import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
+import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
+import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerUtil.js';
+import { BankSortMethods } from '@/lib/sorts.js';
+import { emojiServers } from '@/lib/util/cachedUserIDs.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
+import { isValidNickname, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings.js';
-import { itemOption } from '../lib/mahojiCommandOptions.js';
 import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings.js';
 
 interface UserConfigToggle {

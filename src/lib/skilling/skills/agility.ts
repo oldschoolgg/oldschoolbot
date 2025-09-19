@@ -1,6 +1,6 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 
-import { QuestID } from '../../minions/data/quests.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
 import type { Course } from '../types.js';
 import { SkillsEnum } from '../types.js';
 

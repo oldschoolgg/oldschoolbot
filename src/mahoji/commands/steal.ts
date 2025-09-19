@@ -3,17 +3,17 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { User } from 'discord.js';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 
-import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries.js';
-import { quests } from '../../lib/minions/data/quests.js';
-import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser.js';
-import type { Stealable } from '../../lib/skilling/skills/thieving/stealables.js';
-import { stealables } from '../../lib/skilling/skills/thieving/stealables.js';
-import { SkillsEnum } from '../../lib/skilling/types.js';
-import type { PickpocketActivityTaskOptions } from '../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength.js';
-import { logError } from '../../lib/util/logError.js';
-import { updateBankSetting } from '../../lib/util/updateBankSetting.js';
+import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { quests } from '@/lib/minions/data/quests.js';
+import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
+import type { Stealable } from '@/lib/skilling/skills/thieving/stealables.js';
+import { stealables } from '@/lib/skilling/skills/thieving/stealables.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { logError } from '@/lib/util/logError.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity.js';
 import { rogueOutfitPercentBonus } from '../mahojiSettings.js';
 

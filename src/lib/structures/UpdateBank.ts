@@ -4,7 +4,7 @@ import type { GearSetupType, Prisma, UserStats } from '@prisma/client';
 import { Bank, type ItemBank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 
-import { userStatsUpdate } from '../../mahoji/mahojiSettings.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 import type { MUserClass } from '../MUser.js';
 import { degradeChargeBank } from '../degradeableItems.js';
 import type { GearSetup } from '../gear/types.js';

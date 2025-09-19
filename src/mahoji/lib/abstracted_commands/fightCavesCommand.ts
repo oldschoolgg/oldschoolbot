@@ -2,11 +2,11 @@ import { Time, calcWhatPercent, percentChance, randInt, reduceNumByPercent } fro
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Bank, Monsters, itemID } from 'oldschooljs';
 
-import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage.js';
-import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil.js';
-import type { FightCavesActivityTaskOptions } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
+import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import type { FightCavesActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const fightCavesCost = new Bank({
 	'Prayer potion(4)': 10,

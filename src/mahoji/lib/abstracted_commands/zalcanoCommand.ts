@@ -2,12 +2,12 @@ import { Time, calcWhatPercent, percentChance, reduceNumByPercent } from '@oldsc
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { EMonster } from 'oldschooljs';
 
+import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
+import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
+import type { ZalcanoActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser.js';
-import { soteSkillRequirements } from '../../../lib/skilling/functions/questRequirements.js';
-import type { ZalcanoActivityTaskOptions } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
 import { userHasGracefulEquipped } from '../../mahojiSettings.js';
 
 function calcPerformance(kcLearned: number, skillPercentage: number) {

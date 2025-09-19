@@ -5,11 +5,11 @@ import type { GearPreset } from '@prisma/client';
 import { type APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
+import { baseFilters, filterableTypes } from '@/lib/data/filterables.js';
+import { GearSetupTypes } from '@/lib/gear/types.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 import { Gear, type GlobalPreset, globalPresets } from '@/lib/structures/Gear.js';
-import { baseFilters, filterableTypes } from '../../lib/data/filterables.js';
-import { GearSetupTypes } from '../../lib/gear/types.js';
-import killableMonsters from '../../lib/minions/data/killableMonsters/index.js';
-import { SkillsEnum } from '../../lib/skilling/types.js';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings.js';
 
 export const filterOption: CommandOption = {

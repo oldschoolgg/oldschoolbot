@@ -2,12 +2,12 @@ import { Time, calcWhatPercent, randInt, reduceNumByPercent } from '@oldschoolgg
 import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
-import { getPOHObject } from '../../../lib/poh/index.js';
+import { getPOHObject } from '@/lib/poh/index.js';
 
-import type { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import type { GnomeRestaurantActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userHasGracefulEquipped } from '../../mahojiSettings.js';
 import { getPOH } from './pohCommand.js';
 

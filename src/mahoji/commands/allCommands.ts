@@ -1,4 +1,4 @@
-import { globalConfig } from '../../lib/constants.js';
+import { globalConfig } from '@/lib/constants.js';
 import { activitiesCommand } from './activities.js';
 import { adminCommand } from './admin.js';
 import { askCommand } from './ask.js';

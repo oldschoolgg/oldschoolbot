@@ -1,9 +1,9 @@
 import { Bank } from 'oldschooljs';
 
-import ForestryRations from '../../lib/skilling/skills/cooking/forestersRations.js';
-import { SkillsEnum } from '../../lib/skilling/types.js';
-import type { CreateForestersRationsActivityTaskOptions } from '../../lib/types/minions.js';
-import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
+import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { CreateForestersRationsActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const CreateForestersRationsTask: MinionTask = {
 	type: 'CreateForestersRations',

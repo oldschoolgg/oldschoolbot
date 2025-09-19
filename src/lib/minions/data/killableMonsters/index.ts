@@ -3,8 +3,8 @@ import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Bank, EMonster, Monsters, NIGHTMARES_HP, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
+import type { KillableMonster } from '@/lib/minions/types.js';
 import { SkillsEnum } from '../../../skilling/types.js';
-import type { KillableMonster } from '../../types.js';
 import bosses from './bosses/index.js';
 import { camdozaalMonsters } from './camdozaalMonsters.js';
 import { chaeldarMonsters } from './chaeldarMonsters.js';

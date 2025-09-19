@@ -2,11 +2,11 @@ import { Time, randFloat, randInt, roll } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { SkillsEnum } from '../../lib/skilling/types.js';
-import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions.js';
-import { skillingPetDropRate } from '../../lib/util.js';
-import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
-import { VolcanicMineGameTime } from '../../mahoji/lib/abstracted_commands/volcanicMineCommand.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { VolcanicMineGameTime } from '@/mahoji/lib/abstracted_commands/volcanicMineCommand.js';
 
 const fossilTable = new LootTable()
 	.add('Unidentified small fossil', 1, 10)

@@ -1,7 +1,7 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { itemID } from 'oldschooljs';
 
-import { SkillsEnum } from '../../types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 import BlastableBars from './blastables.js';
 import Bars from './smeltables.js';
 import SmithableItems from './smithables/index.js';

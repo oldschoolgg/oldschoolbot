@@ -1,8 +1,8 @@
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { Bank } from 'oldschooljs';
 
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 const ticketTable = new SimpleTable<number>().add(1, 4).add(2, 4).add(3, 1);
 

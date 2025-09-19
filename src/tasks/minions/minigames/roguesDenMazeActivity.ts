@@ -1,9 +1,9 @@
 import { randInt } from '@/lib/util/rng.js';
 import { Bank, ItemGroups } from 'oldschooljs';
 
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions.js';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
-import { makeBankImage } from '../../../lib/util/makeBankImage.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 function getLowestCountOutfitPiece(bank: Bank): number {
 	let lowestCountPiece = 0;

@@ -6,7 +6,7 @@ import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
-import { Fishing } from '../../lib/skilling/skills/fishing/fishing.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 
 export const fishCommand: OSBMahojiCommand = {
 	name: 'fish',

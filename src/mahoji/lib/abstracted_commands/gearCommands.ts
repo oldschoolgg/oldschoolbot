@@ -4,19 +4,19 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { generateGearImage } from '../../../lib/canvas/generateGearImage.js';
-import { PATRON_ONLY_GEAR_SETUP } from '../../../lib/constants.js';
-import { getSimilarItems } from '../../../lib/data/similarItems.js';
-import { isValidGearSetup } from '../../../lib/gear/functions/isValidGearSetup.js';
-import type { GearSetup, GearSetupType } from '../../../lib/gear/types.js';
-import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestGearFromBank.js';
-import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand.js';
-import { Gear, defaultGear, globalPresets } from '../../../lib/structures/Gear.js';
-import calculateGearLostOnDeathWilderness from '../../../lib/util/calculateGearLostOnDeathWilderness.js';
-import { gearEquipMultiImpl } from '../../../lib/util/equipMulti.js';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
-import { assert } from '../../../lib/util/logError.js';
-import { formatSkillRequirements } from '../../../lib/util/smallUtils.js';
+import { generateGearImage } from '@/lib/canvas/generateGearImage.js';
+import { PATRON_ONLY_GEAR_SETUP } from '@/lib/constants.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
+import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
+import getUserBestGearFromBank from '@/lib/minions/functions/getUserBestGearFromBank.js';
+import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
+import { Gear, defaultGear, globalPresets } from '@/lib/structures/Gear.js';
+import calculateGearLostOnDeathWilderness from '@/lib/util/calculateGearLostOnDeathWilderness.js';
+import { gearEquipMultiImpl } from '@/lib/util/equipMulti.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { assert } from '@/lib/util/logError.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
 	if (user.minionIsBusy) {

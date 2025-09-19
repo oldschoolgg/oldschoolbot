@@ -2,10 +2,10 @@ import { percentChance } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { clamp } from 'remeda';
 
-import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish.js';
-import { SkillsEnum } from '../../lib/skilling/types.js';
-import type { CutLeapingFishActivityTaskOptions } from '../../lib/types/minions.js';
-import { handleTripFinish } from '../../lib/util/handleTripFinish.js';
+import LeapingFish from '@/lib/skilling/skills/cooking/leapingFish.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { CutLeapingFishActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const cutLeapingFishTask: MinionTask = {
 	type: 'CutLeapingFish',

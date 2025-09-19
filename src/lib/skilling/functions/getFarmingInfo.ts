@@ -2,9 +2,9 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { User } from '@prisma/client';
 
+import { defaultPatches } from '@/lib/minions/farming/index.js';
+import type { IPatchData, IPatchDataDetailed } from '@/lib/minions/farming/types.js';
 import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings.js';
-import { defaultPatches } from '../../minions/farming/index.js';
-import type { IPatchData, IPatchDataDetailed } from '../../minions/farming/types.js';
 import type { FarmingPatchName } from '../../util/farmingHelpers.js';
 import { farmingKeys, farmingPatchNames, findPlant } from '../../util/farmingHelpers.js';
 import { assert } from '../../util/logError.js';

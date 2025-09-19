@@ -1,10 +1,10 @@
-import { Time, calcPercentOfNum, noOp, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
+import { Time, calcPercentOfNum, miniID, noOp, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { getInterval } from '@oldschoolgg/toolkit/util';
 import { type GEListing, GEListingType, type GETransaction } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
 import { LRUCache } from 'lru-cache';
-import { Bank, type Item, type ItemBank, toKMB } from 'oldschooljs';
+import { Bank, type Item, type ItemBank, Items, toKMB } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { clamp } from 'remeda';
 
@@ -17,8 +17,9 @@ import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank.js
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings.js';
 import getOSItem, { getItem } from './util/getOSItem.js';
 import { assert, logError } from './util/logError.js';
-import { generateGrandExchangeID, itemNameFromID } from './util/smallUtils.js';
 import { sendToChannelID } from './util/webhook.js';
+
+export const generateGrandExchangeID = () => miniID(6).toLowerCase();
 
 interface CreateListingArgs {
 	user: MUser;
@@ -97,7 +98,10 @@ export function createGECancelButton(listing: GEListing) {
 	const button = new ButtonBuilder()
 		.setCustomId(`ge_cancel_${listing.userfacing_id}`)
 		.setLabel(
-			`Cancel ${listing.type} ${toKMB(listing.total_quantity)} ${itemNameFromID(listing.item_id)}`.slice(0, 79)
+			`Cancel ${listing.type} ${toKMB(listing.total_quantity)} ${Items.itemNameFromId(listing.item_id)}`.slice(
+				0,
+				79
+			)
 		)
 		.setStyle(ButtonStyle.Secondary);
 
@@ -650,7 +654,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			neverUpdateHistory: true
 		});
 
-		const itemName = itemNameFromID(buyerListing.item_id)!;
+		const itemName = Items.itemNameFromId(buyerListing.item_id)!;
 
 		const disableDMsButton = new ButtonBuilder()
 			.setCustomId('ge_cancel_dms')

@@ -2,9 +2,9 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { CropUpgradeType } from '@prisma/client';
 import { itemID } from 'oldschooljs';
 
+import type { Plant } from '@/lib/skilling/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 import getOSItem from '../../../util/getOSItem.js';
-import type { Plant } from '../../types.js';
-import { SkillsEnum } from '../../types.js';
 import allotmentPlants from './allotments.js';
 import fruitTrees from './fruitTrees.js';
 import herbPlants from './herbPlants.js';

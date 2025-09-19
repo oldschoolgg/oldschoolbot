@@ -1,7 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { EMonster, Monsters, resolveItems } from 'oldschooljs';
 
-import { Requirements } from '../structures/Requirements.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
 	ActivityTaskData,
 	GauntletOptions,

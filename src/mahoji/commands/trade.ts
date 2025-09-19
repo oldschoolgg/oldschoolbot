@@ -3,13 +3,13 @@ import { type MahojiUserOption, discrimName, mentionCommand } from '@oldschoolgg
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '../../lib/blacklists.js';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation.js';
-import { deferInteraction } from '../../lib/util/interactionReply.js';
-import itemIsTradeable from '../../lib/util/itemIsTradeable.js';
-import { parseBank } from '../../lib/util/parseStringBank.js';
-import { tradePlayerItems } from '../../lib/util/tradePlayerItems.js';
-import { filterOption } from '../lib/mahojiCommandOptions.js';
+import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
+import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
+import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings.js';
 
 const MAX_CHARACTER_LENGTH = 950;

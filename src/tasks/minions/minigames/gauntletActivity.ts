@@ -4,10 +4,10 @@ import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
 import type { MinigameName } from '@/lib/settings/minigames.js';
-import { gauntlet } from '../../../lib/simulation/gauntlet.js';
-import type { GauntletOptions } from '../../../lib/types/minions.js';
-import { makeBankImage } from '../../../lib/util/makeBankImage.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import { gauntlet } from '@/lib/simulation/gauntlet.js';
+import type { GauntletOptions } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const gauntletTask: MinionTask = {
 	type: 'Gauntlet',

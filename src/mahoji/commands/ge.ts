@@ -7,16 +7,15 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
-import { PerkTier } from '../../lib/constants.js';
-import { GrandExchange, createGECancelButton } from '../../lib/grandExchange.js';
-import { marketPricemap } from '../../lib/marketPrices.js';
-import { createChart } from '../../lib/util/chart.js';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation.js';
-import { deferInteraction } from '../../lib/util/interactionReply.js';
-import itemIsTradeable from '../../lib/util/itemIsTradeable.js';
-import { itemNameFromID } from '../../lib/util/smallUtils.js';
-import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand.js';
-import { itemOption, tradeableItemArr } from '../lib/mahojiCommandOptions.js';
+import { PerkTier } from '@/lib/constants.js';
+import { GrandExchange, createGECancelButton } from '@/lib/grandExchange.js';
+import { marketPricemap } from '@/lib/marketPrices.js';
+import { createChart } from '@/lib/util/chart.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
+import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
+import { itemOption, tradeableItemArr } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings.js';
 
 export type GEListingWithTransactions = GEListing & {
@@ -111,7 +110,7 @@ export const geCommand: OSBMahojiCommand = {
 								})
 							).map(i => i.item_id);
 							return uniqueArr(tradesOfUser).map(itemID => ({
-								name: itemNameFromID(itemID)!,
+								name: Items.itemNameFromId(itemID)!,
 								value: itemID.toString()
 							}));
 						}
@@ -178,7 +177,7 @@ export const geCommand: OSBMahojiCommand = {
 						return listings
 							.filter(i => !i.cancelled_at && !i.fulfilled_at && i.quantity_remaining > 0)
 							.map(l => ({
-								name: `${l.type} ${l.total_quantity}x ${itemNameFromID(l.item_id)!}`,
+								name: `${l.type} ${l.total_quantity}x ${Items.itemNameFromId(l.item_id)!}`,
 								value: l.userfacing_id
 							}));
 					}
@@ -205,10 +204,12 @@ export const geCommand: OSBMahojiCommand = {
 						const listings = Array.from(marketPricemap.values());
 						return listings
 							.filter(i =>
-								!input ? true : itemNameFromID(i.itemID)?.toLowerCase().includes(input.toLowerCase())
+								!input
+									? true
+									: Items.itemNameFromId(i.itemID)?.toLowerCase().includes(input.toLowerCase())
 							)
 							.map(l => ({
-								name: `${itemNameFromID(l.itemID)!}`,
+								name: `${Items.itemNameFromId(l.itemID)!}`,
 								value: l.itemID
 							}));
 					}
@@ -261,7 +262,7 @@ export const geCommand: OSBMahojiCommand = {
 			if (!data) {
 				return "We don't have price data for that item.";
 			}
-			return `The current market price of ${itemNameFromID(data.itemID)!} is ${toKMB(
+			return `The current market price of ${Items.itemNameFromId(data.itemID)!} is ${toKMB(
 				data.guidePrice
 			)} (${data.guidePrice.toLocaleString()}) GP.
 
@@ -485,7 +486,7 @@ ORDER BY
 			return {
 				content: `Successfully created a listing to buy ${toKMB(
 					createdListing.total_quantity
-				)} ${itemNameFromID(createdListing.item_id)} for ${toKMB(
+				)} ${Items.itemNameFromId(createdListing.item_id)} for ${toKMB(
 					Number(createdListing.asking_price_per_item)
 				)} GP each.`,
 				components: makeComponents([createGECancelButton(createdListing)])
@@ -507,7 +508,7 @@ ORDER BY
 			return {
 				content: `Successfully created a listing to sell ${toKMB(
 					createdListing.total_quantity
-				)} ${itemNameFromID(createdListing.item_id)} for ${toKMB(
+				)} ${Items.itemNameFromId(createdListing.item_id)} for ${toKMB(
 					Number(createdListing.asking_price_per_item)
 				)} GP each.`,
 				components: makeComponents([createGECancelButton(createdListing)])

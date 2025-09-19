@@ -151,7 +151,7 @@ importers:
         specifier: ^4.20.5
         version: 4.20.5
       typescript:
-        specifier: ^5.9.2
+        specifier: ^5.8.3
         version: 5.9.2
       vitest:
         specifier: ^3.2.4
@@ -206,7 +206,7 @@ importers:
         specifier: ^14.1.2
         version: 14.1.2
       typescript:
-        specifier: ^5.9.2
+        specifier: ^5.8.3
         version: 5.9.2
 
   packages/cli:

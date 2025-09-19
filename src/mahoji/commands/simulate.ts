@@ -3,11 +3,11 @@ import { PerkTier, formatDuration } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, ChambersOfXeric, averageBank, toKMB } from 'oldschooljs';
 
-import { ColosseumWaveBank, startColosseumRun } from '../../lib/colosseum.js';
-import pets from '../../lib/data/pets.js';
-import { deferInteraction } from '../../lib/util/interactionReply.js';
-import { assert } from '../../lib/util/logError.js';
-import { makeBankImage } from '../../lib/util/makeBankImage.js';
+import { ColosseumWaveBank, startColosseumRun } from '@/lib/colosseum.js';
+import pets from '@/lib/data/pets.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { assert } from '@/lib/util/logError.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 function determineCoxLimit(user: MUser) {
 	const perkTier = user.perkTier();

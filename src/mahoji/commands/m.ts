@@ -1,4 +1,4 @@
-import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusCommand.js';
+import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
 
 export const mCommand: OSBMahojiCommand = {
 	name: 'm',

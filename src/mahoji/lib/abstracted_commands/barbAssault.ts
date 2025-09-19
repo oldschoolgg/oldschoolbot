@@ -6,18 +6,18 @@ import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { Bank, itemID } from 'oldschooljs';
 import { clamp } from 'remeda';
 
+import { buildClueButtons } from '@/lib/clues/clueUtils.js';
+import { degradeItem } from '@/lib/degradeableItems.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
+import { HighGambleTable, LowGambleTable, MediumGambleTable } from '@/lib/simulation/baGamble.js';
+import { maxOtherStats } from '@/lib/structures/Gear.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
-import { buildClueButtons } from '../../../lib/clues/clueUtils.js';
-import { degradeItem } from '../../../lib/degradeableItems.js';
-import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble.js';
-import { maxOtherStats } from '../../../lib/structures/Gear.js';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
-import getOSItem from '../../../lib/util/getOSItem.js';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';
-import { makeBankImage } from '../../../lib/util/makeBankImage.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { userStatsUpdate } from '../../mahojiSettings.js';
 
 export const BarbBuyables = [

@@ -3,11 +3,11 @@ import { EItem } from 'oldschooljs';
 import { match } from 'ts-pattern';
 
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import type { Fish } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 import type { RNGProvider } from '@/lib/util/rng.js';
-import type { Fish } from '../../types.js';
 import { calcAnglerBoostPercent, calcMinnowQuantityRange, calcRadasBlessingBoost } from './fishingUtil.js';
 
 export function calcFishingTripResult({

@@ -2,13 +2,13 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { getNewUser } from '../../../lib/settings/settings.js';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength.js';
-import { determineRunes } from '../../../lib/util/determineRunes.js';
-import getOSItem from '../../../lib/util/getOSItem.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting.js';
+import { getNewUser } from '@/lib/settings/settings.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { determineRunes } from '@/lib/util/determineRunes.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { pizazzPointsPerHour } from '../../../tasks/minions/minigames/mageTrainingArenaActivity.js';
 
 const RuneTable = new LootTable()

@@ -9,6 +9,10 @@ import { MahojiClient, convertMahojiCommandToAbstractCommand } from '@oldschoolg
 import { init } from '@sentry/node';
 import { GatewayIntentBits, Options, Partials, type TextChannel } from 'discord.js';
 
+import { onStartup } from '@/mahoji/lib/events.js';
+import { exitCleanup } from '@/mahoji/lib/exitHandler.js';
+import { postCommand } from '@/mahoji/lib/postCommand.js';
+import { preCommand } from '@/mahoji/lib/preCommand.js';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists.js';
 import { Channel, gitHash, globalConfig } from './lib/constants.js';
 import { economyLog } from './lib/economyLogs.js';
@@ -21,10 +25,6 @@ import { interactionHook } from './lib/util/globalInteractions.js';
 import { handleInteractionError, interactionReply } from './lib/util/interactionReply.js';
 import { logError } from './lib/util/logError.js';
 import { allCommands } from './mahoji/commands/allCommands.js';
-import { onStartup } from './mahoji/lib/events.js';
-import { exitCleanup } from './mahoji/lib/exitHandler.js';
-import { postCommand } from './mahoji/lib/postCommand.js';
-import { preCommand } from './mahoji/lib/preCommand.js';
 
 if (globalConfig.sentryDSN) {
 	init({

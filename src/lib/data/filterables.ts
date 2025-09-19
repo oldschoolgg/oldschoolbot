@@ -1,8 +1,8 @@
 import { uniqueArr } from '@oldschoolgg/toolkit';
 import { resolveItems } from 'oldschooljs';
 
-import { Lampables } from '../../mahoji/lib/abstracted_commands/lampCommand.js';
-import Potions from '../minions/data/potions.js';
+import Potions from '@/lib/minions/data/potions.js';
+import { Lampables } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
 import { allOpenables } from '../openables.js';
 import { gracefulItems } from '../skilling/skills/agility.js';
 import { Craftables } from '../skilling/skills/crafting/craftables/index.js';

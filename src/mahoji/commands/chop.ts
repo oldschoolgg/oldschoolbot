@@ -3,10 +3,10 @@ import { formatDuration, randomVariation, stringMatches } from '@oldschoolgg/too
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Items, itemID, resolveItems } from 'oldschooljs';
 
-import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime.js';
-import Woodcutting, { type TwitcherGloves } from '../../lib/skilling/skills/woodcutting/woodcutting.js';
-import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions.js';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask.js';
+import { determineWoodcuttingTime } from '@/lib/skilling/functions/determineWoodcuttingTime.js';
+import Woodcutting, { type TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
+import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 
 const axes = [
 	{

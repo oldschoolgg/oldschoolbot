@@ -3,8 +3,8 @@ import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { Bank, type LootBank, LootTable } from 'oldschooljs';
 import { clone } from 'remeda';
 
+import { assert } from '@/lib/util/logError.js';
 import { TOBRooms } from '../data/tob.js';
-import { assert } from '../util/logError.js';
 
 interface TeamMember {
 	id: string;

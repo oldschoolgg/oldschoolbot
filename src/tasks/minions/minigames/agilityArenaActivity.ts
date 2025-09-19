@@ -3,11 +3,11 @@ import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Bank, randomVariation, toKMB } from 'oldschooljs';
 
+import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util.js';
-import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries.js';
-import { SkillsEnum } from '../../../lib/skilling/types.js';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions.js';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const agilityArenaTask: MinionTask = {
 	type: 'AgilityArena',

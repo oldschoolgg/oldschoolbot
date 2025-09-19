@@ -2,7 +2,7 @@ import { isFunction, notEmpty } from '@oldschoolgg/toolkit';
 import { Bank, Implings, Items, Monsters, resolveItems } from 'oldschooljs';
 
 import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
-import { flowerTable } from '../mahoji/lib/abstracted_commands/hotColdCommand.js';
+import { flowerTable } from '@/mahoji/lib/abstracted_commands/hotColdCommand.js';
 import { tipTable } from '../tasks/minions/minigames/gnomeRestaurantActivity.js';
 import { ClueTiers } from './clues/clueTiers.js';
 import { allCLItems } from './data/Collections.js';
