@@ -7,11 +7,11 @@ import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { DateTime } from 'luxon';
 
+import { allCommands } from '@/mahoji/commands/allCommands.js';
 import { BOT_TYPE } from '../src/lib/constants.js';
 import { tearDownScript } from './scriptUtil.js';
 
 async function renderCommands() {
-	const allCommands = await import('../src/mahoji/commands/allCommands.js').then(i => i.allCommands);
 	return allCommands
 		.map(c => convertMahojiCommandToAbstractCommand(c))
 		.filter(c => {
