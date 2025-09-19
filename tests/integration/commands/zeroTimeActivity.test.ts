@@ -64,14 +64,14 @@ describe('Zero Time Activity Command', () => {
 		expect(summary).toBe(`Your zero time activity is set to **Alching** using **${automaticSelectionText}**.`);
 	});
 
-        test('reuses configured fletching item on subsequent calls', async () => {
-                const fletchable = zeroTimeFletchables.find(item => item.name === 'Steel dart');
-                expect(fletchable).toBeDefined();
-                if (!fletchable) return;
+	test('reuses configured fletching item on subsequent calls', async () => {
+		const fletchable = zeroTimeFletchables.find(item => item.name === 'Steel dart');
+		expect(fletchable).toBeDefined();
+		if (!fletchable) return;
 
-                const user = await createTestUser(new Bank().add('Steel dart tip', 500).add('Feather', 500), {
-                        skills_fletching: convertLVLtoXP(75)
-                });
+		const user = await createTestUser(new Bank().add('Steel dart tip', 500).add('Feather', 500), {
+			skills_fletching: convertLVLtoXP(75)
+		});
 
 		const firstResponse = await user.runCommand(zeroTimeActivityCommand, {
 			type: 'fletch',
@@ -100,40 +100,40 @@ describe('Zero Time Activity Command', () => {
 		});
 
 		expect(activity.result?.type).toBe('fletch');
-                expect(activity.result && activity.result.type === 'fletch' ? activity.result.quantity : null).toBeGreaterThan(
-                        0
-                );
-        });
+		expect(activity.result && activity.result.type === 'fletch' ? activity.result.quantity : null).toBeGreaterThan(
+			0
+		);
+	});
 
-        test('updates configured fletching item using stored type', async () => {
-                const firstFletchable = zeroTimeFletchables.find(item => item.name === 'Steel dart');
-                const secondFletchable = zeroTimeFletchables.find(item => item.name === 'Mithril dart');
-                expect(firstFletchable).toBeDefined();
-                expect(secondFletchable).toBeDefined();
-                if (!firstFletchable || !secondFletchable) return;
+	test('updates configured fletching item using stored type', async () => {
+		const firstFletchable = zeroTimeFletchables.find(item => item.name === 'Steel dart');
+		const secondFletchable = zeroTimeFletchables.find(item => item.name === 'Mithril dart');
+		expect(firstFletchable).toBeDefined();
+		expect(secondFletchable).toBeDefined();
+		if (!firstFletchable || !secondFletchable) return;
 
-                const user = await createTestUser(
-                        new Bank().add('Steel dart tip', 500).add('Mithril dart tip', 500).add('Feather', 1000),
-                        {
-                                skills_fletching: convertLVLtoXP(75)
-                        }
-                );
+		const user = await createTestUser(
+			new Bank().add('Steel dart tip', 500).add('Mithril dart tip', 500).add('Feather', 1000),
+			{
+				skills_fletching: convertLVLtoXP(75)
+			}
+		);
 
-                await user.runCommand(zeroTimeActivityCommand, {
-                        type: 'fletch',
-                        item: firstFletchable.name
-                });
-                await user.sync();
-                expect(user.user.zero_time_activity_type).toBe('fletch');
-                expect(user.user.zero_time_activity_item).toBe(firstFletchable.id);
+		await user.runCommand(zeroTimeActivityCommand, {
+			type: 'fletch',
+			item: firstFletchable.name
+		});
+		await user.sync();
+		expect(user.user.zero_time_activity_type).toBe('fletch');
+		expect(user.user.zero_time_activity_item).toBe(firstFletchable.id);
 
-                const updateResponse = await user.runCommand(zeroTimeActivityCommand, {
-                        item: secondFletchable.name
-                });
+		const updateResponse = await user.runCommand(zeroTimeActivityCommand, {
+			item: secondFletchable.name
+		});
 
-                expect(updateResponse).toContain(secondFletchable.name);
-                await user.sync();
-                expect(user.user.zero_time_activity_type).toBe('fletch');
-                expect(user.user.zero_time_activity_item).toBe(secondFletchable.id);
-        });
+		expect(updateResponse).toContain(secondFletchable.name);
+		await user.sync();
+		expect(user.user.zero_time_activity_type).toBe('fletch');
+		expect(user.user.zero_time_activity_item).toBe(secondFletchable.id);
+	});
 });
