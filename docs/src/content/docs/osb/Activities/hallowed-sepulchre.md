@@ -30,13 +30,14 @@ Most of the boosts come from items purchased from the shop.
 
 **Note:** The [[Hallowed ring]] from the shop does **not** provide a boost or benefit.
 
-## Fletching While Running
+## Zero-time Alching and Fletching
 
-You can fletch specific "zero-time" items during each lap by specifying the `fletching:` option when starting a run:
+See the [Zero-time Activities guide](/osb/miscellaneous/zero-time-activities) for full configuration steps. When you're ready to start [[/minigames sepulchre start]], set things up beforehand so each floor automatically triggers the background action you prefer.
 
-- [[/minigames sepulchre start fletching\:Rune dart]]
+- Zero-time alching inside the Sepulchre performs roughly 1,000 casts per hour.
+- Zero-time fletching uses each item's standard zero-time rate (around 18,000 sets/hour for darts and bolts, ~10,000 for arrows, javelins, tipped bolts, and similar ammunition).
 
-This works with darts, arrows, bolts, broad arrows, broad bolts, amethyst broad bolts, tipped bolts, tipped dragon bolts, and javelins. The necessary materials are removed from your bank and do not extend the trip duration.
+All casts or fletched items happen between obstacles without delaying your run. Leave the alch item unset if you want the bot to choose from your favourite alchs on every trip.
 
 ## Hallowed Sepulchre Shop
 

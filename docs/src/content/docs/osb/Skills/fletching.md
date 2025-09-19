@@ -15,16 +15,9 @@ You can train Fletching with the [[/fletch]] command. To see all the items you c
 1. [[/fletch name\:Rune dart]] until 95
 1. [[/fletch name\:Dragon dart]] until 99
 
-### Fletching at the Hallowed Sepulchre
+### Zero-time Fletching
 
-You can fletch certain "zero-time" items while completing laps of the Hallowed
-Sepulchre. Start a run with the `fletching:` option and specify the item ID you
-wish to fletch:
+Configure zero-time fletching with [[/zero_time_activity]], then run Agility laps or the Hallowed Sepulchre to craft ammunition in the background. The [Zero-time Activities guide](/osb/miscellaneous/zero-time-activities) lists every supported item, setup step, and hourly rate.
 
-- `[[/minigames sepulchre start fletching\:Rune dart]]`
-
-The following items can be fletched this way without increasing trip duration:
-Broad arrows, Broad bolts, Amethyst broad bolts, all types of darts, arrows,
-bolts, tipped bolts and javelins. The required items are removed from your bank
-at the start of the trip and your minion will fletch as many as possible while
-running the Sepulchre.
+- Example setup: [[/zero_time_activity type\:fletch item\:"Rune dart"]]
+- Zero-time alching is configured the same way with `type:alch`, and leaving the item blank lets the bot choose from your favourite alchs at the start of each trip.
