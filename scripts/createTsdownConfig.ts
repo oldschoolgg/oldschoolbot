@@ -1,7 +1,7 @@
 import { relative, resolve as resolveDir } from 'node:path';
 import { type Options, defineConfig } from 'tsdown';
 
-const tsconfigPath = relative(__dirname, resolveDir(process.cwd(), 'src', 'tsconfig.json'));
+const tsconfigPath = relative(import.meta.dirname, resolveDir(process.cwd(), 'src', 'tsconfig.json'));
 
 const baseOptions: Options = {
 	clean: true,

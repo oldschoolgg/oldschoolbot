@@ -26,7 +26,6 @@ import { exitCleanup } from './mahoji/lib/exitHandler.js';
 import { postCommand } from './mahoji/lib/postCommand.js';
 import { preCommand } from './mahoji/lib/preCommand.js';
 
-console.log(`${process.uptime()}s uptime`);
 if (globalConfig.sentryDSN) {
 	init({
 		dsn: globalConfig.sentryDSN,

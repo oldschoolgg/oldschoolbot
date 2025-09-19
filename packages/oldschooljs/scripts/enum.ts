@@ -50,7 +50,6 @@ async function main() {
 		['Venator ring', 25487]
 	] as [string, number][];
 	const forcedChangedIDs = new Set(forcedChanges.map(([, id]) => id));
-	console.log(Object.values(SkillsEnum));
 
 	let eGearStr = 'export enum EGear {';
 	let eItemStr = 'export enum EItem {';

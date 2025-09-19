@@ -319,12 +319,10 @@ export class Bank {
 
 	public equals(otherBank: Bank): boolean {
 		if (this.length !== otherBank.length) {
-			console.log('Banks are not the same length');
 			return false;
 		}
 		for (const [item, quantity] of this.items()) {
 			if (otherBank.amount(item.id) !== quantity) {
-				console.log(`${item.name} is not the same quantity in both banks`);
 				return false;
 			}
 		}
