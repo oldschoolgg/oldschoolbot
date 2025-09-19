@@ -8,31 +8,31 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateClientGPTrackSetting } from '../../mahoji/mahojiSettings';
 
 export const alchingTask: MinionTask = {
-        type: 'Alching',
-        async run(data: AlchingActivityTaskOptions) {
-                const { itemID, quantity, channelID, alchValue, userID, duration } = data;
-                const user = await mUserFetch(userID);
-                const loot = new Bank({ Coins: alchValue });
+	type: 'Alching',
+	async run(data: AlchingActivityTaskOptions) {
+		const { itemID, quantity, channelID, alchValue, userID, duration } = data;
+		const user = await mUserFetch(userID);
+		const loot = new Bank({ Coins: alchValue });
 
-                const item = getOSItem(itemID);
+		const item = getOSItem(itemID);
 
-                // If bryophyta's staff is equipped when starting the alch activity
-                // calculate how many runes have been saved
-                const { savedRunes, savedBank } = calculateBryophytaRuneSavings({ user, quantity });
-                if (savedBank) {
-                        loot.add(savedBank);
-                }
-                await user.addItemsToBank({ items: loot });
-                updateClientGPTrackSetting('gp_alch', alchValue);
+		// If bryophyta's staff is equipped when starting the alch activity
+		// calculate how many runes have been saved
+		const { savedRunes, savedBank } = calculateBryophytaRuneSavings({ user, quantity });
+		if (savedBank) {
+			loot.add(savedBank);
+		}
+		await user.addItemsToBank({ items: loot });
+		updateClientGPTrackSetting('gp_alch', alchValue);
 
-                const xpReceived = quantity * 65;
-                const xpRes = await user.addXP({
+		const xpReceived = quantity * 65;
+		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Magic,
 			amount: xpReceived,
 			duration
-                });
+		});
 
-                const saved = savedRunes > 0 ? `Your Bryophyta's staff saved you ${savedRunes} Nature runes.` : '';
+		const saved = savedRunes > 0 ? `Your Bryophyta's staff saved you ${savedRunes} Nature runes.` : '';
 		const responses = [
 			`${user}, ${user.minionName} has finished alching ${quantity}x ${item.name}! ${loot} has been added to your bank. ${xpRes}. ${saved}`
 		].join('\n');
