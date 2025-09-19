@@ -2,10 +2,16 @@ import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, reduceNumByPercent, sumArr } from 'e';
 
 import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
+import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables';
 import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { type ZeroTimeActivityResult, attemptZeroTimeActivity } from '../../../lib/util/zeroTimeActivity';
+import {
+        type ZeroTimeActivityResult,
+        attemptZeroTimeActivity,
+        getZeroTimeActivitySettings,
+        getZeroTimeFletchTime
+} from '../../../lib/util/zeroTimeActivity';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 export async function sepulchreCommand(user: MUser, channelID: string) {
@@ -49,7 +55,22 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 	let fletchResult: FletchResult | null = null;
 	let zeroTimeMessage: string | undefined;
 
-	const zeroTime = attemptZeroTimeActivity({ type: 'fletch', user, duration: tripLength });
+        const zeroTimeSettings = getZeroTimeActivitySettings(user);
+        const fletchable = zeroTimeFletchables.find(item => item.id === zeroTimeSettings?.itemID);
+        let itemsPerHour: number | undefined;
+        if (zeroTimeSettings?.type === 'fletch' && fletchable) {
+                const timePerItem = getZeroTimeFletchTime(fletchable);
+                if (timePerItem) {
+                        itemsPerHour = Time.Hour / timePerItem;
+                }
+        }
+
+        const zeroTime = attemptZeroTimeActivity({
+                type: 'fletch',
+                user,
+                duration: tripLength,
+                itemsPerHour
+        });
 	if (zeroTime.result?.type === 'fletch') {
 		fletchResult = zeroTime.result;
 		await user.removeItemsFromBank(fletchResult.itemsToRemove);

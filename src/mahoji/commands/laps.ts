@@ -3,6 +3,7 @@ import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoo
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 
 import { type ZeroTimeActivityResult, attemptZeroTimeActivity } from '@/lib/util/zeroTimeActivity';
+import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand';
 import { quests } from '../../lib/minions/data/quests';
 import { courses } from '../../lib/skilling/skills/agility';
 import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
@@ -90,21 +91,23 @@ export const lapsCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		let response = `${user.minionName} is now doing ${quantity}x ${
-			course.name
-		} laps, it'll take around ${formatDuration(duration)} to finish.`;
+                let response = `${user.minionName} is now doing ${quantity}x ${
+                        course.name
+                } laps, it'll take around ${formatDuration(duration)} to finish.`;
 
-		type AlchResult = Extract<ZeroTimeActivityResult, { type: 'alch' }>;
+                type AlchResult = Extract<ZeroTimeActivityResult, { type: 'alch' }>;
 		let alchResult: AlchResult | null = null;
 		let zeroTimeMessage: string | undefined;
 
-		if (course.name !== 'Ape Atoll Agility Course') {
-			const zeroTime = attemptZeroTimeActivity({
-				type: 'alch',
-				user,
-				duration,
-				variant: 'agility'
-			});
+                if (course.name !== 'Ape Atoll Agility Course') {
+                        const itemsPerHour = Time.Hour / timePerAlchAgility;
+                        const zeroTime = attemptZeroTimeActivity({
+                                type: 'alch',
+                                user,
+                                duration,
+                                variant: 'agility',
+                                itemsPerHour
+                        });
 
 			if (zeroTime.result?.type === 'alch') {
 				alchResult = zeroTime.result;
