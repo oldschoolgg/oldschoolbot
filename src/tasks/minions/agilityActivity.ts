@@ -154,36 +154,36 @@ export const agilityTask: MinionTask = {
 			xpRes += ` ${fletchXpRes}`;
 		}
 
-                let savedRunesFromAlching = 0;
-                if (alch) {
-                        const alchedItem = Items.getOrThrow(alch.itemID);
-                        const alchGP = alchedItem.highalch! * alch.quantity;
-                        loot.add('Coins', alchGP);
-                        const { savedRunes, savedBank } = calculateBryophytaRuneSavings({
-                                user,
-                                quantity: alch.quantity
-                        });
-                        savedRunesFromAlching = savedRunes;
-                        if (savedBank) {
-                                loot.add(savedBank);
-                        }
-                        xpRes += ` ${await user.addXP({
-                                skillName: SkillsEnum.Magic,
-                                amount: alch.quantity * 65,
-                                duration
-                        })}`;
-                        updateClientGPTrackSetting('gp_alch', alchGP);
-                }
+		let savedRunesFromAlching = 0;
+		if (alch) {
+			const alchedItem = Items.getOrThrow(alch.itemID);
+			const alchGP = alchedItem.highalch! * alch.quantity;
+			loot.add('Coins', alchGP);
+			const { savedRunes, savedBank } = calculateBryophytaRuneSavings({
+				user,
+				quantity: alch.quantity
+			});
+			savedRunesFromAlching = savedRunes;
+			if (savedBank) {
+				loot.add(savedBank);
+			}
+			xpRes += ` ${await user.addXP({
+				skillName: SkillsEnum.Magic,
+				amount: alch.quantity * 65,
+				duration
+			})}`;
+			updateClientGPTrackSetting('gp_alch', alchGP);
+		}
 
-                let str = `${user}, ${user.minionName} finished ${quantity} ${
-                        course.name
-                } laps and fell on ${lapsFailed} of them.\nYou received: ${loot}${
-                        diaryBonus ? ' (25% bonus Marks for Ardougne Elite diary)' : ''
-                }.\n${xpRes}${monkeyStr}`;
+		let str = `${user}, ${user.minionName} finished ${quantity} ${
+			course.name
+		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}${
+			diaryBonus ? ' (25% bonus Marks for Ardougne Elite diary)' : ''
+		}.\n${xpRes}${monkeyStr}`;
 
-                if (savedRunesFromAlching > 0) {
-                        str += `\nYour Bryophyta's staff saved you ${savedRunesFromAlching} Nature runes.`;
-                }
+		if (savedRunesFromAlching > 0) {
+			str += `\nYour Bryophyta's staff saved you ${savedRunesFromAlching} Nature runes.`;
+		}
 
 		if (fletchable && fletch && fletchQuantity > 0) {
 			const setsText = fletchable.outputMultiple ? ' sets of' : '';
