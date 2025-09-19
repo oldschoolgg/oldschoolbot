@@ -9,6 +9,7 @@ import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { roll } from '../../../lib/util/rng';
+import { calculateBryophytaRuneSavings } from '../../../lib/util/bryophytaRuneSavings';
 import { updateClientGPTrackSetting } from '../../../mahoji/mahojiSettings';
 
 export const sepulchreTask: MinionTask = {
@@ -53,24 +54,34 @@ export const sepulchreTask: MinionTask = {
 
 		let fletchable: (typeof zeroTimeFletchables)[number] | undefined = undefined;
 
-		if (alch && alch.quantity > 0) {
-			alchQuantity = alch.quantity;
-			alchItem = Items.get(alch.itemID) ?? null;
+                let savedRunesFromAlching = 0;
+                if (alch && alch.quantity > 0) {
+                        alchQuantity = alch.quantity;
+                        alchItem = Items.get(alch.itemID) ?? null;
 
-			if (!alchItem || !alchItem.highalch) {
-				throw new Error(`Alch item id ${alch.itemID} not valid for Sepulchre alching.`);
+                        if (!alchItem || !alchItem.highalch) {
+                                throw new Error(`Alch item id ${alch.itemID} not valid for Sepulchre alching.`);
 			}
 
 			const alchGP = alchItem.highalch * alchQuantity;
-			if (alchGP > 0) {
-				loot.add('Coins', alchGP);
-				updateClientGPTrackSetting('gp_alch', alchGP);
-			}
+                        if (alchGP > 0) {
+                                loot.add('Coins', alchGP);
+                                updateClientGPTrackSetting('gp_alch', alchGP);
+                        }
 
-			alchXpRes = await user.addXP({
-				skillName: SkillsEnum.Magic,
-				amount: alchQuantity * 65,
-				duration
+                        const { savedRunes, savedBank } = calculateBryophytaRuneSavings({
+                                user,
+                                quantity: alchQuantity
+                        });
+                        savedRunesFromAlching = savedRunes;
+                        if (savedBank) {
+                                loot.add(savedBank);
+                        }
+
+                        alchXpRes = await user.addXP({
+                                skillName: SkillsEnum.Magic,
+                                amount: alchQuantity * 65,
+                                duration
 			});
 		}
 
@@ -160,9 +171,14 @@ export const sepulchreTask: MinionTask = {
 			}
 		}
 
-		if (alchItem && alchQuantity > 0) {
-			str += `\nYou also alched ${alchQuantity}x ${alchItem.name}.`;
-		}
+                if (alchItem && alchQuantity > 0) {
+                        str += `\nYou also alched ${alchQuantity}x ${alchItem.name}.`;
+                        if (savedRunesFromAlching > 0) {
+                                str += ` Your Bryophyta's staff saved you ${savedRunesFromAlching} Nature runes.`;
+                        }
+                } else if (savedRunesFromAlching > 0) {
+                        str += `\nYour Bryophyta's staff saved you ${savedRunesFromAlching} Nature runes.`;
+                }
 
 		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
 	}

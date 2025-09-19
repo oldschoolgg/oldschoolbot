@@ -169,14 +169,13 @@ const tripHandlers = {
 		commandName: 'activities',
 		args: () => ({ aerial_fishing: {} })
 	},
-	[activity_type_enum.Agility]: {
-		commandName: 'laps',
-		args: (data: AgilityActivityTaskOptions) => ({
-			name: courses.find(c => c.id === data.courseID)?.name ?? data.courseID.toString(),
-			quantity: data.quantity,
-			alch: Boolean(data.alch)
-		})
-	},
+        [activity_type_enum.Agility]: {
+                commandName: 'laps',
+                args: (data: AgilityActivityTaskOptions) => ({
+                        name: courses.find(c => c.id === data.courseID)?.name ?? data.courseID.toString(),
+                        quantity: data.quantity
+                })
+        },
 	[activity_type_enum.AgilityArena]: {
 		commandName: 'minigames',
 		args: (data: ActivityTaskOptionsWithQuantity) => ({ agility_arena: { start: { quantity: data.quantity } } })
