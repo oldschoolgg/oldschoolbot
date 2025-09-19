@@ -2,7 +2,11 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 
-import { type ZeroTimeActivityResult, attemptZeroTimeActivity } from '@/lib/util/zeroTimeActivity';
+import {
+	type ZeroTimeActivityResult,
+	attemptZeroTimeActivity,
+	getZeroTimeActivitySettings
+} from '@/lib/util/zeroTimeActivity';
 import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand';
 import { quests } from '../../lib/minions/data/quests';
 import { courses } from '../../lib/skilling/skills/agility';
@@ -10,6 +14,9 @@ import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
+
+const AGILITY_FLETCH_ITEMS_PER_HOUR = 15_000;
+const AGILITY_ALCHES_PER_HOUR = Time.Hour / timePerAlchAgility;
 
 export const lapsCommand: OSBMahojiCommand = {
 	name: 'laps',
@@ -91,23 +98,44 @@ export const lapsCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-                let response = `${user.minionName} is now doing ${quantity}x ${
-                        course.name
-                } laps, it'll take around ${formatDuration(duration)} to finish.`;
+		let response = `${user.minionName} is now doing ${quantity}x ${
+			course.name
+		} laps, it'll take around ${formatDuration(duration)} to finish.`;
 
-                type AlchResult = Extract<ZeroTimeActivityResult, { type: 'alch' }>;
+		type FletchResult = Extract<ZeroTimeActivityResult, { type: 'fletch' }>;
+		type AlchResult = Extract<ZeroTimeActivityResult, { type: 'alch' }>;
+		let fletchResult: FletchResult | null = null;
 		let alchResult: AlchResult | null = null;
-		let zeroTimeMessage: string | undefined;
+		const zeroTimeMessages: string[] = [];
 
-                if (course.name !== 'Ape Atoll Agility Course') {
-                        const itemsPerHour = Time.Hour / timePerAlchAgility;
-                        const zeroTime = attemptZeroTimeActivity({
-                                type: 'alch',
-                                user,
-                                duration,
-                                variant: 'agility',
-                                itemsPerHour
-                        });
+		const zeroTimeSettings = getZeroTimeActivitySettings(user);
+
+		if (zeroTimeSettings?.type === 'fletch') {
+			const zeroTime = attemptZeroTimeActivity({
+				type: 'fletch',
+				user,
+				duration,
+				itemsPerHour: AGILITY_FLETCH_ITEMS_PER_HOUR
+			});
+
+			if (zeroTime.result?.type === 'fletch') {
+				fletchResult = zeroTime.result;
+				await user.removeItemsFromBank(fletchResult.itemsToRemove);
+				const setsText = fletchResult.fletchable.outputMultiple ? ' sets of' : '';
+				response += `\n\nYour minion is fletching ${fletchResult.quantity}${setsText} ${fletchResult.fletchable.name} while training. Removed ${fletchResult.itemsToRemove} from your bank.`;
+			} else if (zeroTime.message) {
+				zeroTimeMessages.push(zeroTime.message);
+			}
+		}
+
+		if (course.name !== 'Ape Atoll Agility Course' && zeroTimeSettings?.type === 'alch') {
+			const zeroTime = attemptZeroTimeActivity({
+				type: 'alch',
+				user,
+				duration,
+				variant: 'agility',
+				itemsPerHour: AGILITY_ALCHES_PER_HOUR
+			});
 
 			if (zeroTime.result?.type === 'alch') {
 				alchResult = zeroTime.result;
@@ -115,12 +143,12 @@ export const lapsCommand: OSBMahojiCommand = {
 				response += `\n\nYour minion is alching ${alchResult.quantity}x ${alchResult.item.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
 				updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
 			} else if (zeroTime.message) {
-				zeroTimeMessage = zeroTime.message;
+				zeroTimeMessages.push(zeroTime.message);
 			}
 		}
 
-		if (!alchResult && zeroTimeMessage) {
-			response += `\n\n${zeroTimeMessage}`;
+		if (!fletchResult && !alchResult && zeroTimeMessages.length > 0) {
+			response += `\n\n${zeroTimeMessages.join('\n')}`;
 		}
 
 		await addSubTaskToActivityTask<AgilityActivityTaskOptions>({
@@ -130,7 +158,8 @@ export const lapsCommand: OSBMahojiCommand = {
 			quantity,
 			duration,
 			type: 'Agility',
-			alch: alchResult ? { itemID: alchResult.item.id, quantity: alchResult.quantity } : undefined
+			alch: alchResult ? { itemID: alchResult.item.id, quantity: alchResult.quantity } : undefined,
+			fletch: fletchResult ? { id: fletchResult.fletchable.id, qty: fletchResult.quantity } : undefined
 		});
 
 		return response;
