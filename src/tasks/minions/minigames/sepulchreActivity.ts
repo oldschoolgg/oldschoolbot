@@ -62,7 +62,7 @@ export const sepulchreTask: MinionTask = {
 
 			if (alch && alch.quantity > 0) {
 				alchQuantity = alch.quantity;
-				alchItem = Items.get(alch.itemID);
+                                alchItem = Items.get(alch.itemID) ?? null;
 
 				if (!alchItem || !alchItem.highalch) {
 					throw new Error(`Alch item id ${alch.itemID} not valid for Sepulchre alching.`);
