@@ -132,8 +132,26 @@ export function minionStatus(user: MUser) {
 			const data = currentTask as AgilityActivityTaskOptions;
 
 			const course = Agility.Courses.find(course => course.id === data.courseID);
+			const zeroTimeParts: string[] = [];
 
-			return `${name} is currently running ${data.quantity}x ${course?.name} laps. ${formattedDuration} Your ${
+			if (data.fletch) {
+				const fletchable = zeroTimeFletchables.find(item => item.id === data.fletch!.id);
+				if (fletchable) {
+					const setsText = fletchable.outputMultiple ? ' sets of' : '';
+					zeroTimeParts.push(`They are also fletching ${data.fletch!.qty}${setsText} ${fletchable.name}.`);
+				}
+			}
+
+			if (data.alch) {
+				const alchItem = Items.get(data.alch.itemID);
+				if (alchItem) {
+					zeroTimeParts.push(`They are also alching ${data.alch.quantity}x ${alchItem.name}.`);
+				}
+			}
+
+			const zeroTimeSuffix = zeroTimeParts.length > 0 ? ` ${zeroTimeParts.join(' ')}` : '';
+
+			return `${name} is currently running ${data.quantity}x ${course?.name} laps.${zeroTimeSuffix} ${formattedDuration} Your ${
 				Emoji.Agility
 			} Agility level is ${user.skillLevel(SkillsEnum.Agility)}`;
 		}
@@ -397,10 +415,22 @@ export function minionStatus(user: MUser) {
 			const data = currentTask as SepulchreActivityTaskOptions;
 
 			const fletchable = data.fletch ? zeroTimeFletchables.find(i => i.id === data.fletch!.id) : null;
+			const parts: string[] = [];
 
-			const fletchingPart = fletchable ? `They are also fletching ${data.fletch!.qty}x ${fletchable.name}. ` : '';
+			if (fletchable) {
+				parts.push(`They are also fletching ${data.fletch!.qty}x ${fletchable.name}.`);
+			}
 
-			return `${name} is currently doing ${data.quantity}x laps of the Hallowed Sepulchre. ${fletchingPart}${formattedDuration}`;
+			if (data.alch) {
+				const alchItem = Items.get(data.alch.itemID);
+				if (alchItem) {
+					parts.push(`They are also alching ${data.alch.quantity}x ${alchItem.name}.`);
+				}
+			}
+
+			const zeroTimeInfo = parts.length > 0 ? ` ${parts.join(' ')}` : '';
+
+			return `${name} is currently doing ${data.quantity}x laps of the Hallowed Sepulchre.${zeroTimeInfo} ${formattedDuration}`;
 		}
 
 		case 'Plunder': {

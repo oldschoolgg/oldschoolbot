@@ -1,26 +1,23 @@
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time, reduceNumByPercent, sumArr } from 'e';
-import type { Bank } from 'oldschooljs';
 
 import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
-
 import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables';
-import Arrows from '../../../lib/skilling/skills/fletching/fletchables/arrows';
-import Bolts from '../../../lib/skilling/skills/fletching/fletchables/bolts';
-import Darts from '../../../lib/skilling/skills/fletching/fletchables/darts';
-import Javelins from '../../../lib/skilling/skills/fletching/fletchables/javelins';
-import { AmethystBroadBolts, BroadArrows, BroadBolts } from '../../../lib/skilling/skills/fletching/fletchables/slayer';
-import TippedBolts from '../../../lib/skilling/skills/fletching/fletchables/tippedBolts';
-import TippedDragonBolts from '../../../lib/skilling/skills/fletching/fletchables/tippedDragonBolts';
-import type { Fletchable } from '../../../lib/skilling/types';
-import type { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
-import { hasSlayerUnlock } from '../../../lib/slayer/slayerUtil';
 import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import {
+	type ZeroTimeActivityResult,
+	attemptZeroTimeActivity,
+	getZeroTimeActivitySettings,
+	getZeroTimeFletchTime
+} from '../../../lib/util/zeroTimeActivity';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
-export async function sepulchreCommand(user: MUser, channelID: string, fletching?: number) {
+const SEPULCHRE_ALCHES_PER_HOUR = 1000;
+
+export async function sepulchreCommand(user: MUser, channelID: string) {
 	const skills = user.skillsAsLevels;
 	const agilityLevel = skills.agility;
 	const thievingLevel = skills.thieving;
@@ -57,61 +54,52 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 	const maxLaps = Math.floor(calcMaxTripLength(user, 'Sepulchre') / lapLength);
 	const tripLength = maxLaps * lapLength;
 
-	let fletchable: Fletchable | undefined;
+	type FletchResult = Extract<ZeroTimeActivityResult, { type: 'fletch' }>;
+	type AlchResult = Extract<ZeroTimeActivityResult, { type: 'alch' }>;
+	let fletchResult: FletchResult | null = null;
+	let alchResult: AlchResult | null = null;
+	const zeroTimeMessages: string[] = [];
 
-	let fletchingQuantity = 0;
-	let sets = '';
-	let itemsNeeded: Bank | undefined;
-	let timeToFletchSingleItem = 0;
+	const zeroTimeSettings = getZeroTimeActivitySettings(user);
 
-	if (fletching) {
-		fletchable = zeroTimeFletchables.find(item => item.id === Number(fletching));
-		if (!fletchable) return 'That is not a valid item to fletch during Sepulchre.';
-
-		if (user.skillLevel('fletching') < fletchable.level) {
-			return `${user.minionName} needs ${fletchable.level} Fletching to fletch ${fletchable.name}.`;
-		}
-
-		if (fletchable.requiredSlayerUnlocks) {
-			const { success, errors } = hasSlayerUnlock(
-				user.user.slayer_unlocks as SlayerTaskUnlocksEnum[],
-				fletchable.requiredSlayerUnlocks
-			);
-			if (!success) {
-				return `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
+	if (zeroTimeSettings?.type === 'fletch') {
+		const configuredFletchable = zeroTimeFletchables.find(item => item.id === zeroTimeSettings.itemID);
+		let itemsPerHour: number | undefined;
+		if (configuredFletchable) {
+			const timePerItem = getZeroTimeFletchTime(configuredFletchable);
+			if (timePerItem) {
+				const outputMultiple = configuredFletchable.outputMultiple ?? 1;
+				itemsPerHour = (Time.Hour / timePerItem) * outputMultiple;
 			}
 		}
 
-		// Determine fletching speed
-		const fletchableTypes = [
-			{ types: [Darts, Bolts, BroadBolts], time: Time.Second * 0.2 },
-			{
-				types: [Arrows, BroadArrows, Javelins, TippedBolts, TippedDragonBolts, AmethystBroadBolts],
-				time: Time.Second * 0.36
-			}
-		];
-		for (const { types, time } of fletchableTypes) {
-			if (types.some(type => (Array.isArray(type) ? type.includes(fletchable!) : type === fletchable))) {
-				timeToFletchSingleItem = time;
-				break;
-			}
+		const zeroTime = attemptZeroTimeActivity({
+			type: 'fletch',
+			user,
+			duration: tripLength,
+			...(itemsPerHour ? { itemsPerHour } : {})
+		});
+		if (zeroTime.result?.type === 'fletch') {
+			fletchResult = zeroTime.result;
+			await user.removeItemsFromBank(fletchResult.itemsToRemove);
+		} else if (zeroTime.message) {
+			zeroTimeMessages.push(zeroTime.message);
 		}
-		if (timeToFletchSingleItem === 0) return 'Error selecting fletchable.';
-
-		fletchingQuantity = Math.floor(tripLength / timeToFletchSingleItem);
-		if (fletchable.outputMultiple) sets = ' sets of';
-
-		const max = user.bank.fits(fletchable.inputItems);
-		if (max < fletchingQuantity && max !== 0) fletchingQuantity = max;
-
-		itemsNeeded = fletchable.inputItems.clone().multiply(fletchingQuantity);
-		if (!user.bankWithGP.has(itemsNeeded)) {
-			return `You don't have enough items. For ${fletchingQuantity}x ${fletchable.name}, you're missing **${itemsNeeded
-				.clone()
-				.remove(user.bank)}**.`;
+	} else if (zeroTimeSettings?.type === 'alch') {
+		const zeroTime = attemptZeroTimeActivity({
+			type: 'alch',
+			user,
+			duration: tripLength,
+			itemsPerHour: SEPULCHRE_ALCHES_PER_HOUR,
+			variant: 'default'
+		});
+		if (zeroTime.result?.type === 'alch') {
+			alchResult = zeroTime.result;
+			await user.removeItemsFromBank(alchResult.bankToRemove);
+			updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
+		} else if (zeroTime.message) {
+			zeroTimeMessages.push(zeroTime.message);
 		}
-
-		await user.removeItemsFromBank(itemsNeeded);
 	}
 
 	await addSubTaskToActivityTask<SepulchreActivityTaskOptions>({
@@ -122,7 +110,8 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		type: 'Sepulchre',
 		channelID: channelID.toString(),
 		minigameID: 'sepulchre',
-		fletch: fletchable ? { id: fletchable.id, qty: fletchingQuantity } : undefined
+		fletch: fletchResult ? { id: fletchResult.fletchable.id, qty: fletchResult.quantity } : undefined,
+		alch: alchResult ? { itemID: alchResult.item.id, quantity: alchResult.quantity } : undefined
 	});
 
 	let str = `${user.minionName} is now doing ${maxLaps} laps of the Sepulchre, in each lap they are doing floors ${
@@ -131,8 +120,15 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		tripLength
 	)}, with each lap taking ${formatDuration(lapLength)}.`;
 
-	if (fletchable && itemsNeeded) {
-		str += `\nYou are also now Fletching ${fletchingQuantity}${sets} ${fletchable.name}. Removed ${itemsNeeded} from your bank.`;
+	if (fletchResult) {
+		const setsText = fletchResult.fletchable.outputMultiple ? ' sets of' : '';
+		str += `\nYou are also now Fletching ${fletchResult.quantity}${setsText} ${fletchResult.fletchable.name}. Removed ${fletchResult.itemsToRemove} from your bank.`;
+	}
+	if (alchResult) {
+		str += `\nYou are also now alching ${alchResult.quantity}x ${alchResult.item.name} while clearing the Sepulchre. Removed ${alchResult.bankToRemove} from your bank.`;
+	}
+	if (!fletchResult && !alchResult && zeroTimeMessages.length > 0) {
+		str += `\n${zeroTimeMessages.join('\n')}`;
 	}
 
 	if (boosts.length > 0) {

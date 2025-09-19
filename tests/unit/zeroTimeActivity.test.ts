@@ -1,0 +1,216 @@
+import { Time } from 'e';
+import { Bank, Items, convertLVLtoXP } from 'oldschooljs';
+import { describe, expect, test } from 'vitest';
+
+import { zeroTimeFletchables } from '../../src/lib/skilling/skills/fletching/fletchables';
+import { attemptZeroTimeActivity, getZeroTimeFletchTime } from '../../src/lib/util/zeroTimeActivity';
+import { timePerAlch } from '../../src/mahoji/lib/abstracted_commands/alchCommand';
+import { mockMUser } from './userutil';
+
+describe('attemptZeroTimeActivity', () => {
+	test('alching success', () => {
+		const item = Items.getOrThrow('Yew longbow');
+		const duration = timePerAlch * 50;
+		const user = mockMUser({
+			bank: new Bank().add('Nature rune', 200).add('Fire rune', 500).add(item.id, 200),
+			skills_magic: convertLVLtoXP(70),
+			zero_time_activity_type: 'alch',
+			zero_time_activity_item: item.id
+		});
+
+		const response = attemptZeroTimeActivity({
+			type: 'alch',
+			user,
+			duration,
+			variant: 'default'
+		});
+
+		expect(response.message).toBeUndefined();
+		expect(response.result?.type).toBe('alch');
+		if (!response.result || response.result.type !== 'alch') return;
+
+		expect(response.result.quantity).toBe(50);
+		const expectedRemove = new Bank().add('Nature rune', 50).add('Fire rune', 250).add(item.id, 50);
+		expect(response.result.bankToRemove.equals(expectedRemove)).toBe(true);
+		expect(response.result.bankToAdd.equals(new Bank().add('Coins', (item.highalch ?? 0) * 50))).toBe(true);
+		expect(response.result.timePerAction).toBe(timePerAlch);
+	});
+
+	test('alching override respects items per hour', () => {
+		const item = Items.getOrThrow('Yew longbow');
+		const duration = Time.Hour;
+		const ratePerHour = 1000;
+		const user = mockMUser({
+			bank: new Bank()
+				.add('Nature rune', ratePerHour * 2)
+				.add('Fire rune', ratePerHour * 10)
+				.add(item.id, ratePerHour * 2),
+			skills_magic: convertLVLtoXP(70),
+			zero_time_activity_type: 'alch',
+			zero_time_activity_item: item.id
+		});
+
+		const response = attemptZeroTimeActivity({
+			type: 'alch',
+			user,
+			duration,
+			variant: 'default',
+			itemsPerHour: ratePerHour
+		});
+
+		expect(response.result?.type).toBe('alch');
+		if (!response.result || response.result.type !== 'alch') return;
+
+		expect(response.result.quantity).toBe(ratePerHour);
+		expect(response.result.timePerAction).toBe(duration / ratePerHour);
+	});
+
+	test('alching failure when missing runes', () => {
+		const item = Items.getOrThrow('Yew longbow');
+		const user = mockMUser({
+			bank: new Bank().add(item.id, 10),
+			skills_magic: convertLVLtoXP(70),
+			zero_time_activity_type: 'alch',
+			zero_time_activity_item: item.id
+		});
+
+		const response = attemptZeroTimeActivity({
+			type: 'alch',
+			user,
+			duration: timePerAlch * 10,
+			variant: 'default'
+		});
+
+		expect(response.result).toBeNull();
+		expect(response.message).toBe("You're missing resources to alch Yew longbow.");
+	});
+
+	test('fletching success', () => {
+		const fletchable = zeroTimeFletchables.find(item => item.name === 'Steel dart');
+		expect(fletchable).toBeDefined();
+		if (!fletchable) return;
+
+		const duration = Time.Second * 40;
+		const user = mockMUser({
+			bank: new Bank().add('Steel dart tip', 200).add('Feather', 200),
+			skills_fletching: convertLVLtoXP(70),
+			zero_time_activity_type: 'fletch',
+			zero_time_activity_item: fletchable.id
+		});
+
+		const response = attemptZeroTimeActivity({
+			type: 'fletch',
+			user,
+			duration
+		});
+
+		expect(response.message).toBeUndefined();
+		expect(response.result?.type).toBe('fletch');
+		if (!response.result || response.result.type !== 'fletch') return;
+
+		expect(response.result.quantity).toBe(200);
+		const expectedRemove = fletchable.inputItems.clone().multiply(200);
+		expect(response.result.itemsToRemove.equals(expectedRemove)).toBe(true);
+		expect(response.result.timePerAction).toBeCloseTo(Time.Second * 0.2, 5);
+	});
+
+	test('fletching override matches default throughput for multi-output items', () => {
+		const fletchable = zeroTimeFletchables.find(item => item.name === 'Steel dart');
+		expect(fletchable).toBeDefined();
+		if (!fletchable) return;
+
+		const originalOutputMultiple = fletchable.outputMultiple;
+		fletchable.outputMultiple = 4;
+
+		try {
+			const timePerItem = getZeroTimeFletchTime(fletchable);
+			expect(timePerItem).not.toBeNull();
+			if (!timePerItem) return;
+
+			const duration = Time.Hour;
+			const outputMultiple = fletchable.outputMultiple ?? 1;
+			const defaultSets = Math.floor(duration / timePerItem);
+			const itemsPerHour = (Time.Hour / timePerItem) * outputMultiple;
+
+			const baseUser = mockMUser({
+				bank: new Bank().add('Steel dart tip', defaultSets * 2).add('Feather', defaultSets * 2),
+				skills_fletching: convertLVLtoXP(70),
+				zero_time_activity_type: 'fletch',
+				zero_time_activity_item: fletchable.id
+			});
+
+			const baseResponse = attemptZeroTimeActivity({
+				type: 'fletch',
+				user: baseUser,
+				duration
+			});
+
+			expect(baseResponse.result?.type).toBe('fletch');
+			if (!baseResponse.result || baseResponse.result.type !== 'fletch') return;
+
+			expect(baseResponse.result.quantity).toBe(defaultSets);
+			expect(baseResponse.result.itemsToRemove.amount('Steel dart tip')).toBe(defaultSets);
+			expect(baseResponse.result.itemsToRemove.amount('Feather')).toBe(defaultSets);
+			expect(baseResponse.result.timePerAction).toBeCloseTo(timePerItem, 5);
+
+			const overrideUser = mockMUser({
+				bank: new Bank().add('Steel dart tip', defaultSets * 2).add('Feather', defaultSets * 2),
+				skills_fletching: convertLVLtoXP(70),
+				zero_time_activity_type: 'fletch',
+				zero_time_activity_item: fletchable.id
+			});
+
+			const overrideResponse = attemptZeroTimeActivity({
+				type: 'fletch',
+				user: overrideUser,
+				duration,
+				itemsPerHour
+			});
+
+			expect(overrideResponse.result?.type).toBe('fletch');
+			if (!overrideResponse.result || overrideResponse.result.type !== 'fletch') return;
+
+			expect(overrideResponse.result.quantity).toBe(baseResponse.result.quantity);
+			expect(overrideResponse.result.quantity).toBe(defaultSets);
+			expect(overrideResponse.result.itemsToRemove.amount('Steel dart tip')).toBe(defaultSets);
+			expect(overrideResponse.result.itemsToRemove.amount('Feather')).toBe(defaultSets);
+			expect(overrideResponse.result.timePerAction).toBeCloseTo(duration / defaultSets, 5);
+		} finally {
+			fletchable.outputMultiple = originalOutputMultiple;
+		}
+	});
+
+	test('zero time fletchables require stackable inputs and outputs', () => {
+		expect(zeroTimeFletchables.some(item => item.name === 'Wolfbone arrowtips')).toBe(false);
+
+		for (const fletchable of zeroTimeFletchables) {
+			const outputItem = Items.getOrThrow(fletchable.id);
+			expect(outputItem.stackable).toBe(true);
+			for (const [item] of fletchable.inputItems.items()) {
+				expect(item.stackable).toBe(true);
+			}
+		}
+	});
+
+	test('fletching failure without slayer unlock', () => {
+		const fletchable = zeroTimeFletchables.find(item => item.name === 'Broad arrows');
+		expect(fletchable).toBeDefined();
+		if (!fletchable) return;
+
+		const user = mockMUser({
+			bank: new Bank().add('Broad arrowheads', 10).add('Headless arrow', 10),
+			skills_fletching: convertLVLtoXP(70),
+			zero_time_activity_type: 'fletch',
+			zero_time_activity_item: fletchable.id
+		});
+
+		const response = attemptZeroTimeActivity({
+			type: 'fletch',
+			user,
+			duration: Time.Second * 10
+		});
+
+		expect(response.result).toBeNull();
+		expect(response.message).toBe("You don't have the required Slayer unlocks to fletch Broad arrows.");
+	});
+});

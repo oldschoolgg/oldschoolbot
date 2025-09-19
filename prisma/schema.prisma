@@ -277,6 +277,11 @@ enum bank_sort_method_enum {
   quantity
 }
 
+enum zero_time_activity_type_enum {
+  alch
+  fletch
+}
+
 model User {
   id                          String    @id @db.VarChar(19)
   last_command_date           DateTime? @db.Timestamp(6)
@@ -315,23 +320,25 @@ model User {
   historicalData HistoricalData[]
 
   // Configs/Settings
-  minion_defaultCompostToUse CropUpgradeType    @default(compost) @map("minion.defaultCompostToUse")
-  auto_farm_filter           AutoFarmFilterEnum @default(AllFarm)
-  favoriteItems              Int[]              @default([])
-  favorite_alchables         Int[]              @default([])
-  favorite_food              Int[]              @default([])
-  favorite_bh_seeds          Int[]              @default([])
-  minion_defaultPay          Boolean            @default(false) @map("minion.defaultPay")
-  minion_icon                String?            @map("minion.icon")
-  minion_name                String?            @map("minion.name")
+  minion_defaultCompostToUse CropUpgradeType               @default(compost) @map("minion.defaultCompostToUse")
+  auto_farm_filter           AutoFarmFilterEnum            @default(AllFarm)
+  favoriteItems              Int[]                         @default([])
+  favorite_alchables         Int[]                         @default([])
+  favorite_food              Int[]                         @default([])
+  favorite_bh_seeds          Int[]                         @default([])
+  zero_time_activity_type    zero_time_activity_type_enum?
+  zero_time_activity_item    Int?
+  minion_defaultPay          Boolean                       @default(false) @map("minion.defaultPay")
+  minion_icon                String?                       @map("minion.icon")
+  minion_name                String?                       @map("minion.name")
   bank_bg_hex                String?
-  bankBackground             Int                @default(1)
-  attack_style               String[]           @default([])
-  combat_options             Int[]              @default([])
-  slayer_remember_master     String?            @map("slayer.remember_master")
-  slayer_autoslay_options    Int[]              @default([]) @map("slayer.autoslay_options")
-  bank_sort_method           String?            @db.VarChar(16)
-  bank_sort_weightings       Json               @default("{}") @db.Json
+  bankBackground             Int                           @default(1)
+  attack_style               String[]                      @default([])
+  combat_options             Int[]                         @default([])
+  slayer_remember_master     String?                       @map("slayer.remember_master")
+  slayer_autoslay_options    Int[]                         @default([]) @map("slayer.autoslay_options")
+  bank_sort_method           String?                       @db.VarChar(16)
+  bank_sort_weightings       Json                          @default("{}") @db.Json
   gambling_lockout_expiry    DateTime?
   icon_pack_id               String?
 

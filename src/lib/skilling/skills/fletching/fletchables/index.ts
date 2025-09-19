@@ -1,3 +1,5 @@
+import { Items } from 'oldschooljs';
+
 import type { Fletchable } from '../../../types';
 import Arrows from './arrows';
 import Bolts from './bolts';
@@ -27,7 +29,7 @@ export const Fletchables: Fletchable[] = [
 	...Slayer
 ];
 
-export const zeroTimeFletchables: Fletchable[] = [
+const zeroTimeFletchableCandidates: Fletchable[] = [
 	BroadArrows,
 	BroadBolts,
 	...Darts,
@@ -38,3 +40,18 @@ export const zeroTimeFletchables: Fletchable[] = [
 	...TippedDragonBolts,
 	...Javelins
 ];
+
+export const zeroTimeFletchables: Fletchable[] = zeroTimeFletchableCandidates.filter(fletchable => {
+	const outputItem = Items.getOrThrow(fletchable.id);
+	if (!outputItem.stackable) {
+		return false;
+	}
+
+	for (const [item] of fletchable.inputItems.items()) {
+		if (!item.stackable) {
+			return false;
+		}
+	}
+
+	return true;
+});

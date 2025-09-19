@@ -1,6 +1,8 @@
 import type { Prisma, User } from '@prisma/client';
 import { Bank, convertLVLtoXP } from 'oldschooljs';
 
+import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks';
+import type { ZeroTimeActivityType } from '@/lib/util/zeroTimeActivity';
 import { MUserClass } from '../../src/lib/MUser';
 import type { BitField } from '../../src/lib/constants';
 import type { GearSetup } from '../../src/lib/gear/types';
@@ -29,10 +31,15 @@ export interface MockUserArgs {
 	skills_defence?: number;
 	skills_hitpoints?: number;
 	skills_prayer?: number;
+	skills_fletching?: number;
 	skills_fishing?: number;
 	GP?: number;
 	bitfield?: BitField[];
 	id?: string;
+	zero_time_activity_type?: ZeroTimeActivityType | null;
+	zero_time_activity_item?: number | null;
+	favorite_alchables?: number[];
+	slayer_unlocks?: SlayerTaskUnlocksEnum[];
 }
 
 const mockUser = (overrides?: MockUserArgs): User => {
@@ -60,7 +67,7 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		skills_runecraft: 0,
 		skills_crafting: 0,
 		skills_prayer: overrides?.skills_prayer ?? 0,
-		skills_fletching: 0,
+		skills_fletching: overrides?.skills_fletching ?? 0,
 		skills_thieving: 0,
 		skills_farming: 0,
 		skills_herblore: 0,
@@ -80,7 +87,11 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		sacrificedValue: 0,
 		id: overrides?.id ?? '',
 		monsterScores: {},
-		badges: []
+		badges: [],
+		zero_time_activity_type: overrides?.zero_time_activity_type ?? null,
+		zero_time_activity_item: overrides?.zero_time_activity_item ?? null,
+		favorite_alchables: overrides?.favorite_alchables ?? [],
+		slayer_unlocks: overrides?.slayer_unlocks ?? []
 	} as unknown as User;
 
 	return r;
