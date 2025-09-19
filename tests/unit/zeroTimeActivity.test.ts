@@ -114,87 +114,83 @@ describe('attemptZeroTimeActivity', () => {
 		expect(response.result.timePerAction).toBeCloseTo(Time.Second * 0.2, 5);
 	});
 
-        test('fletching override matches default throughput for multi-output items', () => {
-                const fletchable = zeroTimeFletchables.find(item => item.name === 'Steel dart');
-                expect(fletchable).toBeDefined();
-                if (!fletchable) return;
+	test('fletching override matches default throughput for multi-output items', () => {
+		const fletchable = zeroTimeFletchables.find(item => item.name === 'Steel dart');
+		expect(fletchable).toBeDefined();
+		if (!fletchable) return;
 
-                const originalOutputMultiple = fletchable.outputMultiple;
-                fletchable.outputMultiple = 4;
+		const originalOutputMultiple = fletchable.outputMultiple;
+		fletchable.outputMultiple = 4;
 
-                try {
-                        const timePerItem = getZeroTimeFletchTime(fletchable);
-                        expect(timePerItem).not.toBeNull();
-                        if (!timePerItem) return;
+		try {
+			const timePerItem = getZeroTimeFletchTime(fletchable);
+			expect(timePerItem).not.toBeNull();
+			if (!timePerItem) return;
 
-                        const duration = Time.Hour;
-                        const outputMultiple = fletchable.outputMultiple ?? 1;
-                        const defaultSets = Math.floor(duration / timePerItem);
-                        const itemsPerHour = (Time.Hour / timePerItem) * outputMultiple;
+			const duration = Time.Hour;
+			const outputMultiple = fletchable.outputMultiple ?? 1;
+			const defaultSets = Math.floor(duration / timePerItem);
+			const itemsPerHour = (Time.Hour / timePerItem) * outputMultiple;
 
-                        const baseUser = mockMUser({
-                                bank: new Bank()
-                                        .add('Steel dart tip', defaultSets * 2)
-                                        .add('Feather', defaultSets * 2),
-                                skills_fletching: convertLVLtoXP(70),
-                                zero_time_activity_type: 'fletch',
-                                zero_time_activity_item: fletchable.id
-                        });
+			const baseUser = mockMUser({
+				bank: new Bank().add('Steel dart tip', defaultSets * 2).add('Feather', defaultSets * 2),
+				skills_fletching: convertLVLtoXP(70),
+				zero_time_activity_type: 'fletch',
+				zero_time_activity_item: fletchable.id
+			});
 
-                        const baseResponse = attemptZeroTimeActivity({
-                                type: 'fletch',
-                                user: baseUser,
-                                duration
-                        });
+			const baseResponse = attemptZeroTimeActivity({
+				type: 'fletch',
+				user: baseUser,
+				duration
+			});
 
-                        expect(baseResponse.result?.type).toBe('fletch');
-                        if (!baseResponse.result || baseResponse.result.type !== 'fletch') return;
+			expect(baseResponse.result?.type).toBe('fletch');
+			if (!baseResponse.result || baseResponse.result.type !== 'fletch') return;
 
-                        expect(baseResponse.result.quantity).toBe(defaultSets);
-                        expect(baseResponse.result.itemsToRemove.amount('Steel dart tip')).toBe(defaultSets);
-                        expect(baseResponse.result.itemsToRemove.amount('Feather')).toBe(defaultSets);
-                        expect(baseResponse.result.timePerAction).toBeCloseTo(timePerItem, 5);
+			expect(baseResponse.result.quantity).toBe(defaultSets);
+			expect(baseResponse.result.itemsToRemove.amount('Steel dart tip')).toBe(defaultSets);
+			expect(baseResponse.result.itemsToRemove.amount('Feather')).toBe(defaultSets);
+			expect(baseResponse.result.timePerAction).toBeCloseTo(timePerItem, 5);
 
-                        const overrideUser = mockMUser({
-                                bank: new Bank()
-                                        .add('Steel dart tip', defaultSets * 2)
-                                        .add('Feather', defaultSets * 2),
-                                skills_fletching: convertLVLtoXP(70),
-                                zero_time_activity_type: 'fletch',
-                                zero_time_activity_item: fletchable.id
-                        });
+			const overrideUser = mockMUser({
+				bank: new Bank().add('Steel dart tip', defaultSets * 2).add('Feather', defaultSets * 2),
+				skills_fletching: convertLVLtoXP(70),
+				zero_time_activity_type: 'fletch',
+				zero_time_activity_item: fletchable.id
+			});
 
-                        const overrideResponse = attemptZeroTimeActivity({
-                                type: 'fletch',
-                                user: overrideUser,
-                                duration,
-                                itemsPerHour
-                        });
+			const overrideResponse = attemptZeroTimeActivity({
+				type: 'fletch',
+				user: overrideUser,
+				duration,
+				itemsPerHour
+			});
 
-                        expect(overrideResponse.result?.type).toBe('fletch');
-                        if (!overrideResponse.result || overrideResponse.result.type !== 'fletch') return;
+			expect(overrideResponse.result?.type).toBe('fletch');
+			if (!overrideResponse.result || overrideResponse.result.type !== 'fletch') return;
 
-                        expect(overrideResponse.result.quantity).toBe(baseResponse.result.quantity);
-                        expect(overrideResponse.result.quantity).toBe(defaultSets);
-                        expect(overrideResponse.result.itemsToRemove.amount('Steel dart tip')).toBe(defaultSets);
-                        expect(overrideResponse.result.itemsToRemove.amount('Feather')).toBe(defaultSets);
-                        expect(overrideResponse.result.timePerAction).toBeCloseTo(duration / defaultSets, 5);
-                } finally {
-                        fletchable.outputMultiple = originalOutputMultiple;
-                }
-        });
+			expect(overrideResponse.result.quantity).toBe(baseResponse.result.quantity);
+			expect(overrideResponse.result.quantity).toBe(defaultSets);
+			expect(overrideResponse.result.itemsToRemove.amount('Steel dart tip')).toBe(defaultSets);
+			expect(overrideResponse.result.itemsToRemove.amount('Feather')).toBe(defaultSets);
+			expect(overrideResponse.result.timePerAction).toBeCloseTo(duration / defaultSets, 5);
+		} finally {
+			fletchable.outputMultiple = originalOutputMultiple;
+		}
+	});
 
-        test('zero time fletchables require stackable inputs and outputs', () => {
-                expect(zeroTimeFletchables.some(item => item.name === 'Wolfbone arrowtips')).toBe(false);
+	test('zero time fletchables require stackable inputs and outputs', () => {
+		expect(zeroTimeFletchables.some(item => item.name === 'Wolfbone arrowtips')).toBe(false);
 
-                for (const fletchable of zeroTimeFletchables) {
-                        const outputItem = Items.getOrThrow(fletchable.id);
-                        expect(outputItem.stackable).toBe(true);
-                        for (const [item] of fletchable.inputItems.items()) {
-                                expect(item.stackable).toBe(true);
-                        }
-                }
-        });
+		for (const fletchable of zeroTimeFletchables) {
+			const outputItem = Items.getOrThrow(fletchable.id);
+			expect(outputItem.stackable).toBe(true);
+			for (const [item] of fletchable.inputItems.items()) {
+				expect(item.stackable).toBe(true);
+			}
+		}
+	});
 
 	test('fletching failure without slayer unlock', () => {
 		const fletchable = zeroTimeFletchables.find(item => item.name === 'Broad arrows');

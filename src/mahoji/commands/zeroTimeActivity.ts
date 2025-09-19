@@ -11,9 +11,7 @@ import { getZeroTimeActivitySettings } from '../../lib/util/zeroTimeActivity';
 const zeroTimeTypes: ZeroTimeActivityType[] = ['alch', 'fletch'];
 
 function getAutomaticSelectionText(type: ZeroTimeActivityType) {
-        return type === 'alch'
-                ? 'automatic selection from your favourite alchs each trip'
-                : 'automatic selection';
+	return type === 'alch' ? 'automatic selection from your favourite alchs each trip' : 'automatic selection';
 }
 
 export const zeroTimeActivityCommand: OSBMahojiCommand = {
@@ -90,12 +88,12 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 			if (!currentSettings) {
 				return 'You currently have no zero time activity configured.';
 			}
-                        const activityName = currentSettings.type === 'alch' ? 'Alching' : 'Fletching';
-                        const itemName = currentSettings.itemID
-                                ? Items.get(currentSettings.itemID)?.name ?? 'unknown item'
-                                : null;
-                        const itemDisplay = itemName ?? getAutomaticSelectionText(currentSettings.type);
-                        return `Your zero time activity is set to **${activityName}** using **${itemDisplay}**.`;
+			const activityName = currentSettings.type === 'alch' ? 'Alching' : 'Fletching';
+			const itemName = currentSettings.itemID
+				? (Items.get(currentSettings.itemID)?.name ?? 'unknown item')
+				: null;
+			const itemDisplay = itemName ?? getAutomaticSelectionText(currentSettings.type);
+			return `Your zero time activity is set to **${activityName}** using **${itemDisplay}**.`;
 		}
 
 		if (!options.type) {
@@ -109,7 +107,7 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 
 		const type = typeInput as ZeroTimeActivityType;
 		let itemID: number | null = null;
-                let itemName: string | null = null;
+		let itemName: string | null = null;
 
 		if (type === 'alch') {
 			if (options.item) {
@@ -125,8 +123,8 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 				}
 				itemID = osItem.id;
 				itemName = osItem.name;
-                        }
-                } else {
+			}
+		} else {
 			let fletchable = options.item
 				? zeroTimeFletchables.find(
 						item => stringMatches(item.name, options.item ?? '') || item.id === Number(options.item)
@@ -156,17 +154,17 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 			}
 
 			itemID = fletchable.id;
-                        itemName = fletchable.name;
-                }
+			itemName = fletchable.name;
+		}
 
-                await user.update({
-                        zero_time_activity_type: type,
-                        zero_time_activity_item: itemID
-                });
-                const activityName = type === 'alch' ? 'Alching' : 'Fletching';
-                const resolvedItemName = itemID ? itemName ?? Items.get(itemID)?.name ?? 'unknown item' : null;
-                const itemDisplay = resolvedItemName ?? getAutomaticSelectionText(type);
+		await user.update({
+			zero_time_activity_type: type,
+			zero_time_activity_item: itemID
+		});
+		const activityName = type === 'alch' ? 'Alching' : 'Fletching';
+		const resolvedItemName = itemID ? (itemName ?? Items.get(itemID)?.name ?? 'unknown item') : null;
+		const itemDisplay = resolvedItemName ?? getAutomaticSelectionText(type);
 
-                return `Your zero time activity has been set to **${activityName}** using **${itemDisplay}**.`;
-        }
+		return `Your zero time activity has been set to **${activityName}** using **${itemDisplay}**.`;
+	}
 };

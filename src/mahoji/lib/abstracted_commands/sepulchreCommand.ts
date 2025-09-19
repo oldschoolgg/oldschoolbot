@@ -64,13 +64,13 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 
 	if (zeroTimeSettings?.type === 'fletch') {
 		const configuredFletchable = zeroTimeFletchables.find(item => item.id === zeroTimeSettings.itemID);
-                let itemsPerHour: number | undefined;
-                if (configuredFletchable) {
-                        const timePerItem = getZeroTimeFletchTime(configuredFletchable);
-                        if (timePerItem) {
-                                const outputMultiple = configuredFletchable.outputMultiple ?? 1;
-                                itemsPerHour = (Time.Hour / timePerItem) * outputMultiple;
-                        }
+		let itemsPerHour: number | undefined;
+		if (configuredFletchable) {
+			const timePerItem = getZeroTimeFletchTime(configuredFletchable);
+			if (timePerItem) {
+				const outputMultiple = configuredFletchable.outputMultiple ?? 1;
+				itemsPerHour = (Time.Hour / timePerItem) * outputMultiple;
+			}
 		}
 
 		const zeroTime = attemptZeroTimeActivity({

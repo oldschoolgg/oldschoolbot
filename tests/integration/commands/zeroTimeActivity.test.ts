@@ -9,12 +9,12 @@ import { timePerAlch } from '../../../src/mahoji/lib/abstracted_commands/alchCom
 import { createTestUser } from '../util';
 
 describe('Zero Time Activity Command', () => {
-        const automaticSelectionText = 'automatic selection from your favourite alchs each trip';
-        test('persists alching configuration and uses it', async () => {
-                const item = Items.getOrThrow('Yew longbow');
-                const user = await createTestUser(new Bank().add('Nature rune', 200).add('Fire rune', 500).add(item.id, 200), {
-                        skills_magic: convertLVLtoXP(75)
-                });
+	const automaticSelectionText = 'automatic selection from your favourite alchs each trip';
+	test('persists alching configuration and uses it', async () => {
+		const item = Items.getOrThrow('Yew longbow');
+		const user = await createTestUser(new Bank().add('Nature rune', 200).add('Fire rune', 500).add(item.id, 200), {
+			skills_magic: convertLVLtoXP(75)
+		});
 
 		const response = await user.runCommand(zeroTimeActivityCommand, {
 			type: 'alch',
@@ -40,36 +40,34 @@ describe('Zero Time Activity Command', () => {
 			variant: 'default'
 		});
 
-                expect(activity.result?.type).toBe('alch');
-                expect(activity.result && activity.result.type === 'alch' ? activity.result.quantity : null).toBe(5);
-        });
+		expect(activity.result?.type).toBe('alch');
+		expect(activity.result && activity.result.type === 'alch' ? activity.result.quantity : null).toBe(5);
+	});
 
-        test('allows automatic alch selection', async () => {
-                const user = await createTestUser(new Bank().add('Nature rune', 200).add('Fire rune', 500), {
-                        skills_magic: convertLVLtoXP(75)
-                });
+	test('allows automatic alch selection', async () => {
+		const user = await createTestUser(new Bank().add('Nature rune', 200).add('Fire rune', 500), {
+			skills_magic: convertLVLtoXP(75)
+		});
 
-                const response = await user.runCommand(zeroTimeActivityCommand, {
-                        type: 'alch'
-                });
+		const response = await user.runCommand(zeroTimeActivityCommand, {
+			type: 'alch'
+		});
 
-                expect(response).toBe(
-                        `Your zero time activity has been set to **Alching** using **${automaticSelectionText}**.`
-                );
-                await user.sync();
-                expect(user.user.zero_time_activity_type).toBe('alch');
-                expect(user.user.zero_time_activity_item).toBeNull();
+		expect(response).toBe(
+			`Your zero time activity has been set to **Alching** using **${automaticSelectionText}**.`
+		);
+		await user.sync();
+		expect(user.user.zero_time_activity_type).toBe('alch');
+		expect(user.user.zero_time_activity_item).toBeNull();
 
-                const summary = await user.runCommand(zeroTimeActivityCommand, {});
-                expect(summary).toBe(
-                        `Your zero time activity is set to **Alching** using **${automaticSelectionText}**.`
-                );
-        });
+		const summary = await user.runCommand(zeroTimeActivityCommand, {});
+		expect(summary).toBe(`Your zero time activity is set to **Alching** using **${automaticSelectionText}**.`);
+	});
 
-        test('reuses configured fletching item on subsequent calls', async () => {
-                const fletchable = zeroTimeFletchables.find(item => item.name === 'Steel dart');
-                expect(fletchable).toBeDefined();
-                if (!fletchable) return;
+	test('reuses configured fletching item on subsequent calls', async () => {
+		const fletchable = zeroTimeFletchables.find(item => item.name === 'Steel dart');
+		expect(fletchable).toBeDefined();
+		if (!fletchable) return;
 
 		const user = await createTestUser(new Bank().add('Steel dart tip', 500).add('Feather', 500), {
 			skills_fletching: convertLVLtoXP(75)
