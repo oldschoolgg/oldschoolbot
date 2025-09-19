@@ -1,5 +1,5 @@
-import CommonSeedDropTable from '@/simulation/subtables/CommonSeedDropTable.js';
-import HerbDropTable from '@/simulation/subtables/HerbDropTable.js';
+import { CommonSeedDropTable }   from '@/simulation/subtables/CommonSeedDropTable.js';
+import { HerbDropTable }  from '@/simulation/subtables/HerbDropTable.js';
 import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
@@ -21,7 +21,7 @@ export const EarthWarriorTable = new LootTable({ limit: 128 })
 	.add('Blood rune', 2, 1)
 
 	.add(HerbDropTable, 1, 14)
-	.add(CommonSeedDropTable, 1, 18)
+	.add(CommonSeedDropTable  , 1, 18)
 	.add(GemTable, 1, 2)
 	.add('Coins', 12, 18);
 

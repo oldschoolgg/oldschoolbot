@@ -1,7 +1,5 @@
 import deepMerge from 'deepmerge';
 
-console.log('Items file is loading...');
-
 import _items from '../assets/item_data.json' with { type: 'json' };
 const items = _items as any as Record<string, Item>;
 
@@ -161,7 +159,7 @@ for (const [id, item] of Object.entries(items)) {
 		itemNameMap.set(cleanName, numID);
 	}
 }
-console.log(`Loaded ${itemsExport.size} items.`);
+
 export default itemsExport;
 
 export function resolveItems(_itemArray: string | number | (string | number)[]): number[] {

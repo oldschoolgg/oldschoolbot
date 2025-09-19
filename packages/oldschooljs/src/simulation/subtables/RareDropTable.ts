@@ -43,5 +43,3 @@ export const RareDropTable = new LootTable()
 	/* Subtables */
 	.add(GemTable, 1, 20)
 	.add(MegaRareTable, 1, 15);
-
-export default RareDropTable;

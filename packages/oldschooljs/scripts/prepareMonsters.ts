@@ -1,11 +1,15 @@
 import { writeFileSync } from 'node:fs';
 import fetch from 'node-fetch';
-
-import { Monsters } from '../src';
-import type { MonsterAttackType, MonsterAttribute, MonsterData, MonsterSlayerMaster } from '../src/meta/monsterData';
-
 import { omitBy } from 'remeda';
 import * as wtf from 'wtf_wikipedia';
+
+import {
+	type MonsterData,
+	type MonsterAttackType,
+	type MonsterAttribute,
+	type MonsterSlayerMaster,
+	Monsters
+} from '@/index.js';
 
 const monsterMap: { [key: string]: MonsterData } = {};
 
@@ -269,7 +273,7 @@ export default async function prepareMonsters(): Promise<void> {
 		.replace(/\]"/g, ']')
 		.replace(/\\"/g, '"');
 
-	writeFileSync('./src/data/monsters_data.json', `${lintedJSON}\n`);
+	writeFileSync('./src/assets/monsters_data.json', `${lintedJSON}\n`);
 
 	console.log('Prepared Monsters. Check any new monsters quickly to see that the data looks okay.');
 }

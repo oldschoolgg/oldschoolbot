@@ -1,7 +1,6 @@
 import { writeFileSync } from 'node:fs';
 
-import { SkillsArray } from '@src/lib/skilling/types';
-import { type Item, Items, Monsters } from '../src';
+import { type Item, Items, Monsters } from '@/index.js';
 
 export function safeItemName(itemName: string) {
 	let key = itemName;

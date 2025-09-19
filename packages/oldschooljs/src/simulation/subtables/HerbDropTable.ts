@@ -12,5 +12,3 @@ export const HerbDropTable = new LootTable()
 	.add('Grimy cadantine', 1, 4)
 	.add('Grimy lantadyme', 1, 3)
 	.add('Grimy dwarf weed', 1, 3);
-
-export default HerbDropTable;

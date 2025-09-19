@@ -1,6 +1,5 @@
 import path, { resolve } from 'node:path';
 import type { ItemBank, MonsterSlayerMaster } from 'oldschooljs';
-
 import { Piscina } from 'piscina';
 
 export interface CasketWorkerArgs {
@@ -67,5 +66,8 @@ const casketWorker = new Piscina({
 export const Workers = {
 	casketOpen: (args: CasketWorkerArgs): Promise<[ItemBank, string]> => casketWorker.run(args),
 	kill: (args: KillWorkerArgs): KillWorkerReturn => killWorker.run(args),
-	finish: (args: FinishWorkerArgs): FinishWorkerReturn => finishWorker.run(args)
+	finish: (args: FinishWorkerArgs): FinishWorkerReturn => finishWorker.run(args),
+	destroyAll: async () => {
+		return Promise.all([finishWorker.destroy(), killWorker.destroy(), casketWorker.destroy()]);
+	}
 };

@@ -14,7 +14,8 @@ const baseOptions: Options = {
 	platform: 'node',
 	hash: false,
 	unbundle: true,
-	report: false
+	report: false,
+	logLevel: 'error'
 };
 
 export function createTsupConfig(options: Options = {}) {

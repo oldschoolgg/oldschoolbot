@@ -1,11 +1,11 @@
 import LootTable from '@/structures/LootTable.js';
-import CommonSeedDropTable from './CommonSeedDropTable.js';
-import HerbDropTable from './HerbDropTable.js';
+import { HerbDropTable }  from './HerbDropTable.js';
 import RareSeedTable from './RareSeedTable.js';
 import TreeHerbSeedTable from './TreeHerbSeedTable.js';
 import WyvernHerbTable from './WyvernHerbTable.js';
+import { CommonSeedDropTable } from './CommonSeedDropTable.js';
 
-export { HerbDropTable, CommonSeedDropTable, RareSeedTable, WyvernHerbTable, TreeHerbSeedTable };
+export { HerbDropTable,  CommonSeedDropTable , RareSeedTable, WyvernHerbTable, TreeHerbSeedTable };
 export * from './RareDropTable.js';
 
 export const UncommonSeedDropTable = new LootTable()

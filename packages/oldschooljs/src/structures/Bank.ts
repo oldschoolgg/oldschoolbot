@@ -37,6 +37,14 @@ export class Bank {
 		return new Bank(mutSource);
 	}
 
+	static fromNameBank(nameBank: Record<string, number>): Bank {
+		const bank = new Bank();
+		for (const [name, qty] of Object.entries(nameBank)) {
+			bank.add(name, qty)
+		}
+		return bank;
+	}
+
 	constructor(initialBank?: IntKeyBank | ItemBank | Bank) {
 		this.map = this.makeFromInitialBank(initialBank);
 	}
@@ -310,9 +318,15 @@ export class Bank {
 	}
 
 	public equals(otherBank: Bank): boolean {
-		if (this.length !== otherBank.length) return false;
+		if (this.length !== otherBank.length) {
+			console.log('Banks are not the same length');
+			 return false;
+		}
 		for (const [item, quantity] of this.items()) {
-			if (otherBank.amount(item.id) !== quantity) return false;
+			if (otherBank.amount(item.id) !== quantity) {
+				console.log(`${item.name} is not the same quantity in both banks`);
+				return false;
+			}
 		}
 		return true;
 	}

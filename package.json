@@ -10,6 +10,7 @@
 		"dev:stage2": "pnpm concurrently --raw \"pnpm tsx --tsconfig scripts/tsconfig.json scripts/scripts.ts\" \"pnpm build\"",
 		"dev:stage3": "pnpm lint && pnpm --stream -r test",
 		"dev": "pnpm dev:stage1 && pnpm dev:stage2 && pnpm dev:stage3",
+		"dev2": "node packages/cli/dist/cli.js",
 		"watch:tsc": "tsc -w -p src",
 		"start": "pnpm watch",
 		"lint": "tsx scripts/lint.ts",
@@ -32,7 +33,7 @@
 		"test:ci:unit": "pnpm concurrent \"pnpm test:unit\" \"pnpm test:lint\" \"tsc -p tests/integration\" \"tsc -p tests/unit\"",
 		"============MISC": "============",
 		"concurrent": "concurrently --raw --kill-others-on-fail",
-		"build:packages": "pnpm --stream -r --filter \"!.\" --filter \"!./docs\" --filter \"!test-dashboard\" build",
+		"build:packages": "pnpm -r --filter \"!.\" --filter \"!./docs\" --filter \"!test-dashboard\" build",
 		"============monorepo": "============",
 		"monorepo:build": "pnpm concurrent \"pnpm build:packages\" \"pnpm gen\" && tsx esbuild.mts",
 		"monorepo:test": "pnpm --stream -r test"
@@ -69,6 +70,7 @@
 		"sonic-boom": "^4.2.0",
 		"ts-pattern": "^5.7.1",
 		"tsdown": "^0.15.2",
+		"why-is-node-running": "^3.2.2",
 		"zod": "^3.25.67"
 	},
 	"devDependencies": {
@@ -81,7 +83,6 @@
 		"@vitest/coverage-v8": "^3.2.4",
 		"concurrently": "^9.2.0",
 		"esbuild": "0.25.9",
-		"esbuild-plugin-file-path-extensions": "^2.1.4",
 		"nodemon": "^3.1.10",
 		"prettier": "^3.5.3",
 		"prisma": "^6.10.1",

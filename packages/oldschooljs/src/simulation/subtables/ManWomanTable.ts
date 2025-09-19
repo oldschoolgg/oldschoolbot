@@ -1,5 +1,5 @@
 import LootTable from '@/structures/LootTable.js';
-import HerbDropTable from './HerbDropTable.js';
+import { HerbDropTable }  from './HerbDropTable.js';
 
 export default new LootTable({ limit: 128 })
 	.every('Bones')

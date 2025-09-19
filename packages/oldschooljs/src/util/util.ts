@@ -1,13 +1,3 @@
-import { randFloat } from '@/util/smallUtils.js';
-
-/**
- * Determines whether a string is a valid RuneScape username.
- * @param username The username to check.
- */
-export function isValidUsername(username: string): boolean {
-	return Boolean(username.match('^[A-Za-z0-9]{1}[A-Za-z0-9 -_\u00A0]{0,11}$'));
-}
-
 export function convertLVLtoXP(lvl: number): number {
 	let points = 0;
 
@@ -72,18 +62,6 @@ export function getTotemChanceFromHP(hitpoints: number): number {
 export function getSlayersEnchantmentChanceFromHP(hitpoints: number): number {
 	const chanceHitpoints = Math.min(hitpoints, 300);
 	return Math.round(320 - (chanceHitpoints * 8) / 10);
-}
-
-/**
- * Adds random variation to a number. For example, if you pass 10%, it can at most lower the value by 10%,
- * or increase it by 10%, and everything in between.
- * @param value The value to add variation too.
- * @param percentage The max percentage to fluctuate the value by, in both negative/positive.
- */
-export function randomVariation(value: number, percentage: number) {
-	const lowerLimit = value * (1 - percentage / 100);
-	const upperLimit = value * (1 + percentage / 100);
-	return randFloat(lowerLimit, upperLimit);
 }
 
 export function calcCombatLevel(

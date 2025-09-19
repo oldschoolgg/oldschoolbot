@@ -1,3 +1,4 @@
+import './base.js';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { type AbstractCommand, convertMahojiCommandToAbstractCommand } from '@oldschoolgg/toolkit/discord-util';
 import { md5sum } from '@oldschoolgg/toolkit/node';
@@ -7,9 +8,10 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { DateTime } from 'luxon';
 
 import { BOT_TYPE } from '../src/lib/constants.js';
-import { allCommands } from '../src/mahoji/commands/allCommands.js';
+import { tearDownScript } from './scriptUtil.js';
 
-function renderCommands() {
+async function renderCommands() {
+	const allCommands = await import('../src/mahoji/commands/allCommands.js').then(i => i.allCommands);
 	return allCommands
 		.map(c => convertMahojiCommandToAbstractCommand(c))
 		.filter(c => {
@@ -72,3 +74,6 @@ export function renderCommandsFile() {
 	);
 	stopwatch.check('Finished commands file.');
 }
+
+renderCommandsFile();
+tearDownScript();

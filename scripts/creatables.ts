@@ -1,3 +1,4 @@
+import './base.js';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { md5sum } from '@oldschoolgg/toolkit/node';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
@@ -6,8 +7,9 @@ import { Bank } from 'oldschooljs';
 
 import { BOT_TYPE } from '@/lib/constants.js';
 import Createables from '@/lib/data/createables.js';
+import { tearDownScript } from './scriptUtil.js';
 
-export async function renderCreatablesFile() {
+function renderCreatablesFile() {
 	const stopwatch = new Stopwatch();
 	const creatables = [];
 
@@ -49,3 +51,6 @@ export async function renderCreatablesFile() {
 	);
 	stopwatch.check('Finished creatables file.');
 }
+
+renderCreatablesFile();
+tearDownScript();

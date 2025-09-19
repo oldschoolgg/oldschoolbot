@@ -1,7 +1,12 @@
 {
-	"extends": "../src/tsconfig.json",
-	"include": [".", "../../src/**/*"],
+	"extends": "../../../tsconfig.base.json",
+	"include": [".", "../src/**/*"],
 	"compilerOptions": {
-		"noEmit": true
+		"noEmit": true,
+		"incremental": false,
+		"composite": false,
+		"paths": {
+			"@/*": ["../src/*"]
+		}
 	}
 }

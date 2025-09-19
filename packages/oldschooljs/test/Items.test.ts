@@ -153,8 +153,6 @@ test('modifyItem', () => {
 });
 
 test('Dwarf toolkit', () => {
-	expect(Items.get('Dwarf toolkit')).toBeNull();
-	expect(Items.get(0)).toBeNull();
 	expect(Items.get(0)).toBeUndefined();
 	expect(Items.get('Dwarf toolkit')).toBeUndefined();
 });

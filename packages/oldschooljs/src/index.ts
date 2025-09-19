@@ -11,7 +11,7 @@ import Openables from './simulation/openables/index.js';
 import { Bank, type ItemBank, type LootBank } from './structures/Bank.js';
 import Items, { resolveItems, deepResolveItems, type ArrayItemsResolved, itemNameMap } from './structures/Items.js';
 import LootTable from './structures/LootTable.js';
-import type { Monster, MonsterKillOptions, SimpleMonster } from './structures/Monster.js';
+import { type Monster, type MonsterKillOptions, SimpleMonster } from './structures/Monster.js';
 import type { OpenableOpenOptions } from './structures/Openable.js';
 import { SimpleOpenable } from './structures/SimpleOpenable.js';
 import { addBanks, addItemToBank, averageBank, calcDropRatesFromBank, convertBankToPerHourStats } from './util/bank.js';
@@ -48,10 +48,11 @@ export {
 	itemNameMap,
 	calcDropRatesFromBank,
 	SkillsEnum,
-	convertBankToPerHourStats
+	convertBankToPerHourStats,
+	SimpleMonster
 };
 
-export type { ItemBank, LootBank, OpenableOpenOptions, MonsterKillOptions, Monster, ArrayItemsResolved, SimpleMonster };
+export type { ItemBank, LootBank, OpenableOpenOptions, MonsterKillOptions, Monster, ArrayItemsResolved };
 
 export * from './structures/LootTable.js';
 export * from './meta/item.js';

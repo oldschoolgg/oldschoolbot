@@ -14,7 +14,7 @@ export async function exitCleanup() {
 		sonicBoom.destroy();
 
 		await Promise.all([globalClient.destroy(), sql.end()]);
-		crons.forEach(cron => cron.stop());
+		for (const cron of crons) cron.stop();
 
 		console.log('\nCleaned up and exited.');
 	} catch (err) {

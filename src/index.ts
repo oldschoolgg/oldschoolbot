@@ -226,6 +226,7 @@ client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
 client.once('ready', () => onStartup());
 
 async function main() {
+	console.log('Starting up Old School Bot...');
 	await Promise.all([
 		preStartup(),
 		import('exit-hook').then(({ asyncExitHook }) =>
