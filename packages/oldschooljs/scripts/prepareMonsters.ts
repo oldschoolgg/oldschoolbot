@@ -3,13 +3,8 @@ import fetch from 'node-fetch';
 import { omitBy } from 'remeda';
 import * as wtf from 'wtf_wikipedia';
 
-import {
-	type MonsterData,
-	type MonsterAttackType,
-	type MonsterAttribute,
-	type MonsterSlayerMaster,
-	Monsters
-} from '@/index.js';
+import { Monsters } from '@/simulation/monsters/index.js';
+import type { MonsterData, MonsterAttackType, MonsterAttribute, MonsterSlayerMaster } from '@/meta/monsterData.js';
 
 const monsterMap: { [key: string]: MonsterData } = {};
 
@@ -138,7 +133,7 @@ const transformData = (data: any): MonsterData => {
 		isSlayerMonster: !!slaylvl,
 		slayerLevelRequired: slaylvl,
 		slayerXP: slayxp,
-		assignableSlayerMasters: assignedby?.split(',').map(master => master.trim().toLowerCase())
+		assignableSlayerMasters: assignedby?.split(',').map((master: string) => master.trim().toLowerCase())
 	};
 };
 

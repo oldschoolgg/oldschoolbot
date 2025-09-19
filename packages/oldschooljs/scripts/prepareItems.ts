@@ -5,7 +5,8 @@ import fetch from 'node-fetch';
 import { clone } from 'remeda';
 
 import bsoItemsJson from '../../../data/bso/bso_items.json' with { type: 'json' };
-import { itemID, type Item, EquipmentSlot, Items } from '@/index.js';
+import Items from '@/structures/Items.js';
+import { EquipmentSlot, type Item } from '@/meta/item.js';
 import { CLUE_SCROLLS, CLUE_SCROLL_NAMES, USELESS_ITEMS } from '@/structures/Items.js';
 import { reduceNumByPercent, increaseNumByPercent } from '@/util/smallUtils.js';
 import { itemChanges } from './manualItemChanges.js';
@@ -14,14 +15,14 @@ const ITEM_UPDATE_CONFIG = {
 	SHOULD_UPDATE_PRICES: false
 };
 
-const previousItems = JSON.parse(readFileSync('./src/data/items/item_data.json', 'utf-8'));
+const previousItems = JSON.parse(readFileSync('./src/assets/item_data.json', 'utf-8'));
 
 const equipmentModifications = new Map();
 const equipmentModSrc = [
-	['Pink stained full helm', 'Bronze full helm'].map(itemID),
-	['Pink stained platebody', 'Bronze platebody'].map(itemID),
-	['Pink stained platelegs', 'Bronze platelegs'].map(itemID),
-	['Bulging sack', 'Red cape'].map(itemID)
+	Items.resolveItems(['Pink stained full helm', 'Bronze full helm']),
+	Items.resolveItems(['Pink stained platebody', 'Bronze platebody']),
+	Items.resolveItems(['Pink stained platelegs', 'Bronze platelegs']),
+	Items.resolveItems(['Bulging sack', 'Red cape'])
 ] as const;
 for (const [toChange, toCopy] of equipmentModSrc) {
 	equipmentModifications.set(toChange, toCopy);
