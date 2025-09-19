@@ -53,32 +53,32 @@ export const sepulchreTask: MinionTask = {
 
 		let fletchable: (typeof zeroTimeFletchables)[number] | undefined = undefined;
 
+		if (alch && alch.quantity > 0) {
+			alchQuantity = alch.quantity;
+			alchItem = Items.get(alch.itemID) ?? null;
+
+			if (!alchItem || !alchItem.highalch) {
+				throw new Error(`Alch item id ${alch.itemID} not valid for Sepulchre alching.`);
+			}
+
+			const alchGP = alchItem.highalch * alchQuantity;
+			if (alchGP > 0) {
+				loot.add('Coins', alchGP);
+				updateClientGPTrackSetting('gp_alch', alchGP);
+			}
+
+			alchXpRes = await user.addXP({
+				skillName: SkillsEnum.Magic,
+				amount: alchQuantity * 65,
+				duration
+			});
+		}
+
 		if (fletch) {
 			fletchable = zeroTimeFletchables.find(item => item.id === fletch.id);
 
 			if (!fletchable) {
 				throw new Error(`Fletchable id ${fletch.id} not found.`);
-			}
-
-			if (alch && alch.quantity > 0) {
-				alchQuantity = alch.quantity;
-				alchItem = Items.get(alch.itemID) ?? null;
-
-				if (!alchItem || !alchItem.highalch) {
-					throw new Error(`Alch item id ${alch.itemID} not valid for Sepulchre alching.`);
-				}
-
-				const alchGP = alchItem.highalch * alchQuantity;
-				if (alchGP > 0) {
-					loot.add('Coins', alchGP);
-					updateClientGPTrackSetting('gp_alch', alchGP);
-				}
-
-				alchXpRes = await user.addXP({
-					skillName: SkillsEnum.Magic,
-					amount: alchQuantity * 65,
-					duration
-				});
 			}
 
 			fletchQuantity = fletch.qty;
