@@ -48,9 +48,9 @@ async function renderCommands() {
 		.sort((a, b) => a.name.localeCompare(b.name));
 }
 
-export function renderCommandsFile() {
+export async function renderCommandsFile() {
 	const stopwatch = new Stopwatch();
-	const commands = renderCommands();
+	const commands = await renderCommands();
 	const filePath = `data/${BOT_TYPE.toLowerCase()}/commands.json`;
 
 	const hash = md5sum(JSON.stringify(commands));
