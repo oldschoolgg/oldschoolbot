@@ -96,16 +96,23 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 			return `Your zero time activity is set to **${activityName}** using **${itemDisplay}**.`;
 		}
 
-		if (!options.type) {
-			return 'You must provide a type when setting a zero time activity.';
-		}
+                let type: ZeroTimeActivityType | null = null;
+                if (options.type) {
+                        const typeInput = options.type.toLowerCase();
+                        if (!zeroTimeTypes.includes(typeInput as ZeroTimeActivityType)) {
+                                return `Invalid zero time activity type. Valid options: ${zeroTimeTypes.join(', ')}.`;
+                        }
+                        type = typeInput as ZeroTimeActivityType;
+                } else if (options.item) {
+                        if (!currentSettings?.type) {
+                                return 'You must provide a type when setting a zero time activity.';
+                        }
+                        type = currentSettings.type;
+                }
 
-		const typeInput = options.type.toLowerCase();
-		if (!zeroTimeTypes.includes(typeInput as ZeroTimeActivityType)) {
-			return `Invalid zero time activity type. Valid options: ${zeroTimeTypes.join(', ')}.`;
-		}
-
-		const type = typeInput as ZeroTimeActivityType;
+                if (!type) {
+                        return 'You must provide a type when setting a zero time activity.';
+                }
 		let itemID: number | null = null;
 		let itemName: string | null = null;
 
