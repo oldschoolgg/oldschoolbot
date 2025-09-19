@@ -45,9 +45,19 @@ export interface ZeroTimeActivityResponse {
 	message?: string;
 }
 
+interface BaseAttemptZeroTimeActivityOptions {
+	user: MUser;
+	duration: number;
+	quantityOverride?: number;
+	itemsPerHour?: number;
+}
+
 type AttemptZeroTimeActivityOptions =
-	| { type: 'alch'; user: MUser; duration: number; variant?: 'agility' | 'default' }
-	| { type: 'fletch'; user: MUser; duration: number };
+	| (BaseAttemptZeroTimeActivityOptions & {
+			type: 'alch';
+			variant?: 'agility' | 'default';
+	  })
+	| (BaseAttemptZeroTimeActivityOptions & { type: 'fletch' });
 
 export function getZeroTimeActivitySettings(user: MUser): ZeroTimeActivitySettings | null {
 	const type = user.user.zero_time_activity_type;
@@ -78,7 +88,7 @@ function resolveZeroTimeFletchable(settings: ZeroTimeActivitySettings | null): F
 	return zeroTimeFletchables.find(item => item.id === settings.itemID) ?? null;
 }
 
-function timeToFletchSingleItem(fletchable: Fletchable): number | null {
+export function getZeroTimeFletchTime(fletchable: Fletchable): number | null {
 	const mapping: { types: (Fletchable | Fletchable[])[]; time: number }[] = [
 		{ types: [Darts, Bolts, BroadBolts], time: Time.Second * 0.2 },
 		{
@@ -95,11 +105,12 @@ function timeToFletchSingleItem(fletchable: Fletchable): number | null {
 }
 
 function calculateAlching(
-	user: MUser,
-	duration: number,
-	settings: ZeroTimeActivitySettings | null,
-	variant: 'agility' | 'default'
+	options: Extract<AttemptZeroTimeActivityOptions, { type: 'alch' }>,
+	settings: ZeroTimeActivitySettings | null
 ): ZeroTimeActivityResponse {
+	const { user, duration, itemsPerHour, quantityOverride } = options;
+	const variant = options.variant ?? 'default';
+
 	if (user.skillLevel('magic') < 55) {
 		return { result: null, message: 'You need level 55 Magic to perform zero time alching.' };
 	}
@@ -136,8 +147,28 @@ function calculateAlching(
 	const fireRunes = bank.amount('Fire rune');
 	const hasInfiniteFire = user.hasEquipped(unlimitedFireRuneProviders);
 
-	let maxCasts = Math.floor(duration / durationPerCast);
-	maxCasts = Math.min(maxCasts, alchItemQty, natureRunes);
+	const overrideUsed = quantityOverride !== undefined || itemsPerHour !== undefined;
+
+	let desiredQuantity: number;
+	if (quantityOverride !== undefined) {
+		desiredQuantity = Math.floor(quantityOverride);
+	} else if (itemsPerHour !== undefined) {
+		desiredQuantity = Math.floor((itemsPerHour * duration) / Time.Hour);
+	} else {
+		desiredQuantity = Math.floor(duration / durationPerCast);
+	}
+
+	if (desiredQuantity <= 0) {
+		if (!overrideUsed) {
+			return {
+				result: null,
+				message: `You're missing resources to alch ${itemToAlch.name}.`
+			};
+		}
+		return { result: null };
+	}
+
+	let maxCasts = Math.min(desiredQuantity, alchItemQty, natureRunes);
 	if (!hasInfiniteFire) {
 		maxCasts = Math.min(maxCasts, Math.floor(fireRunes / 5));
 	}
@@ -164,6 +195,7 @@ function calculateAlching(
 
 	const alchGP = (itemToAlch.highalch ?? 0) * maxCasts;
 	const bankToAdd = new Bank().add('Coins', alchGP);
+	const timePerAction = overrideUsed ? duration / maxCasts : durationPerCast;
 
 	return {
 		result: {
@@ -172,16 +204,16 @@ function calculateAlching(
 			quantity: maxCasts,
 			bankToRemove,
 			bankToAdd,
-			timePerAction: durationPerCast
+			timePerAction
 		}
 	};
 }
 
 function calculateFletching(
-	user: MUser,
-	duration: number,
+	options: Extract<AttemptZeroTimeActivityOptions, { type: 'fletch' }>,
 	settings: ZeroTimeActivitySettings | null
 ): ZeroTimeActivityResponse {
+	const { user, duration, itemsPerHour, quantityOverride } = options;
 	const fletchable = resolveZeroTimeFletchable(settings);
 	if (!fletchable) {
 		if (settings?.type === 'fletch') {
@@ -214,7 +246,7 @@ function calculateFletching(
 		}
 	}
 
-	const timePerItem = timeToFletchSingleItem(fletchable);
+	const timePerItem = getZeroTimeFletchTime(fletchable);
 	if (!timePerItem) {
 		return {
 			result: null,
@@ -222,8 +254,19 @@ function calculateFletching(
 		};
 	}
 
-	let quantity = Math.floor(duration / timePerItem);
-	if (quantity <= 0) {
+	const overrideUsed = quantityOverride !== undefined || itemsPerHour !== undefined;
+	const outputMultiple = fletchable.outputMultiple ?? 1;
+
+	let desiredQuantity: number;
+	if (quantityOverride !== undefined) {
+		desiredQuantity = Math.floor(quantityOverride);
+	} else if (itemsPerHour !== undefined) {
+		desiredQuantity = Math.floor((itemsPerHour * duration) / Time.Hour / outputMultiple);
+	} else {
+		desiredQuantity = Math.floor(duration / timePerItem);
+	}
+
+	if (desiredQuantity <= 0) {
 		return { result: null };
 	}
 
@@ -234,8 +277,13 @@ function calculateFletching(
 			message: `You don't have the supplies required to fletch ${fletchable.name}.`
 		};
 	}
-	if (maxSets < quantity) {
-		quantity = maxSets;
+	const quantity = Math.min(desiredQuantity, maxSets);
+
+	if (quantity <= 0) {
+		return {
+			result: null,
+			message: `You don't have the supplies required to fletch ${fletchable.name}.`
+		};
 	}
 
 	const itemsNeeded = fletchable.inputItems.clone().multiply(quantity);
@@ -252,7 +300,7 @@ function calculateFletching(
 			fletchable,
 			quantity,
 			itemsToRemove: itemsNeeded,
-			timePerAction: timePerItem
+			timePerAction: overrideUsed ? duration / quantity : timePerItem
 		}
 	};
 }
@@ -264,8 +312,8 @@ export function attemptZeroTimeActivity(options: AttemptZeroTimeActivityOptions)
 	}
 
 	if (options.type === 'alch') {
-		return calculateAlching(options.user, options.duration, settings, options.variant ?? 'default');
+		return calculateAlching(options, settings);
 	}
 
-	return calculateFletching(options.user, options.duration, settings);
+	return calculateFletching(options, settings);
 }

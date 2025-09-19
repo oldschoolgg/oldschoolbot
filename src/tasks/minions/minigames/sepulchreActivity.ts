@@ -1,4 +1,5 @@
-import { Bank, GrandHallowedCoffin } from 'oldschooljs';
+import { Bank, GrandHallowedCoffin, Items } from 'oldschooljs';
+import type { Item } from 'oldschooljs';
 
 import { trackLoot } from '../../../lib/lootTrack';
 import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
@@ -8,11 +9,12 @@ import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { roll } from '../../../lib/util/rng';
+import { updateClientGPTrackSetting } from '../../../mahoji/mahojiSettings';
 
 export const sepulchreTask: MinionTask = {
 	type: 'Sepulchre',
 	async run(data: SepulchreActivityTaskOptions) {
-		const { channelID, quantity, floors, userID, duration, fletch } = data;
+		const { channelID, quantity, floors, userID, duration, fletch, alch } = data;
 		const user = await mUserFetch(userID);
 		await user.incrementMinigameScore('sepulchre', quantity);
 
@@ -45,6 +47,9 @@ export const sepulchreTask: MinionTask = {
 		let fletchXpRes = '';
 		let fletchQuantity = 0;
 		const fletchingLoot = new Bank();
+		let alchQuantity = 0;
+		let alchItem: Item | null = null;
+		let alchXpRes = '';
 
 		let fletchable: (typeof zeroTimeFletchables)[number] | undefined = undefined;
 
@@ -53,6 +58,27 @@ export const sepulchreTask: MinionTask = {
 
 			if (!fletchable) {
 				throw new Error(`Fletchable id ${fletch.id} not found.`);
+			}
+
+			if (alch && alch.quantity > 0) {
+				alchQuantity = alch.quantity;
+				alchItem = Items.get(alch.itemID);
+
+				if (!alchItem || !alchItem.highalch) {
+					throw new Error(`Alch item id ${alch.itemID} not valid for Sepulchre alching.`);
+				}
+
+				const alchGP = alchItem.highalch * alchQuantity;
+				if (alchGP > 0) {
+					loot.add('Coins', alchGP);
+					updateClientGPTrackSetting('gp_alch', alchGP);
+				}
+
+				alchXpRes = await user.addXP({
+					skillName: SkillsEnum.Magic,
+					amount: alchQuantity * 65,
+					duration
+				});
 			}
 
 			fletchQuantity = fletch.qty;
@@ -107,7 +133,9 @@ export const sepulchreTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${
 			floors[0]
-		}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpRes}\n${thievingXpRes}`;
+		}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpRes}\n${thievingXpRes}${
+			alchXpRes ? `\n${alchXpRes}` : ''
+		}`;
 
 		const image = await makeBankImage({
 			bank: itemsAdded,
@@ -130,6 +158,10 @@ export const sepulchreTask: MinionTask = {
 			} else {
 				str += `\nYou also fletched ${fletchQuantity} ${fletchable.name} and received ${fletchXpRes}.`;
 			}
+		}
+
+		if (alchItem && alchQuantity > 0) {
+			str += `\nYou also alched ${alchQuantity}x ${alchItem.name}.`;
 		}
 
 		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);

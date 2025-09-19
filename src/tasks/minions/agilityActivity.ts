@@ -4,6 +4,7 @@ import { Bank, type ItemBank, Items, addItemToBank } from 'oldschooljs';
 
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import Agility from '../../lib/skilling/skills/agility';
+import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { skillingPetDropRate } from '../../lib/util';
@@ -23,7 +24,7 @@ function chanceOfFailingAgilityPyramid(user: MUser) {
 export const agilityTask: MinionTask = {
 	type: 'Agility',
 	async run(data: AgilityActivityTaskOptions) {
-		const { courseID, quantity, userID, channelID, duration, alch } = data;
+		const { courseID, quantity, userID, channelID, duration, alch, fletch } = data;
 		const loot = new Bank();
 		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
@@ -128,6 +129,30 @@ export const agilityTask: MinionTask = {
 			}
 		}
 
+		let fletchable: (typeof zeroTimeFletchables)[number] | undefined;
+		let fletchQuantity = 0;
+		let fletchXpRes = '';
+
+		if (fletch && fletch.qty > 0) {
+			fletchable = zeroTimeFletchables.find(item => item.id === fletch.id);
+			if (!fletchable) {
+				throw new Error(`Fletchable id ${fletch.id} not found for agility laps.`);
+			}
+
+			fletchQuantity = fletch.qty;
+			const quantityToGive = fletchable.outputMultiple
+				? fletchQuantity * fletchable.outputMultiple
+				: fletchQuantity;
+			loot.add(fletchable.id, quantityToGive);
+
+			fletchXpRes = await user.addXP({
+				skillName: SkillsEnum.Fletching,
+				amount: fletchQuantity * fletchable.xp,
+				duration
+			});
+			xpRes += ` ${fletchXpRes}`;
+		}
+
 		if (alch) {
 			const alchedItem = Items.getOrThrow(alch.itemID);
 			const alchGP = alchedItem.highalch! * alch.quantity;
@@ -140,11 +165,16 @@ export const agilityTask: MinionTask = {
 			updateClientGPTrackSetting('gp_alch', alchGP);
 		}
 
-		const str = `${user}, ${user.minionName} finished ${quantity} ${
+		let str = `${user}, ${user.minionName} finished ${quantity} ${
 			course.name
 		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}${
 			diaryBonus ? ' (25% bonus Marks for Ardougne Elite diary)' : ''
 		}.\n${xpRes}${monkeyStr}`;
+
+		if (fletchable && fletch && fletchQuantity > 0) {
+			const setsText = fletchable.outputMultiple ? ' sets of' : '';
+			str += `\nYou also fletched ${fletchQuantity}${setsText} ${fletchable.name}.`;
+		}
 
 		// Roll for pet
 		const { petDropRate } = skillingPetDropRate(

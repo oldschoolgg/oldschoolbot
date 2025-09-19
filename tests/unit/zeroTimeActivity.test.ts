@@ -36,6 +36,35 @@ describe('attemptZeroTimeActivity', () => {
 		expect(response.result.timePerAction).toBe(timePerAlch);
 	});
 
+	test('alching override respects items per hour', () => {
+		const item = Items.getOrThrow('Yew longbow');
+		const duration = Time.Hour;
+		const ratePerHour = 1000;
+		const user = mockMUser({
+			bank: new Bank()
+				.add('Nature rune', ratePerHour * 2)
+				.add('Fire rune', ratePerHour * 10)
+				.add(item.id, ratePerHour * 2),
+			skills_magic: convertLVLtoXP(70),
+			zero_time_activity_type: 'alch',
+			zero_time_activity_item: item.id
+		});
+
+		const response = attemptZeroTimeActivity({
+			type: 'alch',
+			user,
+			duration,
+			variant: 'default',
+			itemsPerHour: ratePerHour
+		});
+
+		expect(response.result?.type).toBe('alch');
+		if (!response.result || response.result.type !== 'alch') return;
+
+		expect(response.result.quantity).toBe(ratePerHour);
+		expect(response.result.timePerAction).toBe(duration / ratePerHour);
+	});
+
 	test('alching failure when missing runes', () => {
 		const item = Items.getOrThrow('Yew longbow');
 		const user = mockMUser({
@@ -83,6 +112,37 @@ describe('attemptZeroTimeActivity', () => {
 		const expectedRemove = fletchable.inputItems.clone().multiply(200);
 		expect(response.result.itemsToRemove.equals(expectedRemove)).toBe(true);
 		expect(response.result.timePerAction).toBeCloseTo(Time.Second * 0.2, 5);
+	});
+
+	test('fletching override uses item rate', () => {
+		const fletchable = zeroTimeFletchables.find(item => item.name === 'Wolfbone arrowtips');
+		expect(fletchable).toBeDefined();
+		if (!fletchable) return;
+
+		const duration = Time.Hour;
+		const itemsPerHour = 12_000;
+		const outputMultiple = fletchable.outputMultiple ?? 1;
+		const expectedSets = Math.floor((itemsPerHour * duration) / Time.Hour / outputMultiple);
+		const user = mockMUser({
+			bank: new Bank().add('Wolf bones', expectedSets * 2),
+			skills_fletching: convertLVLtoXP(70),
+			zero_time_activity_type: 'fletch',
+			zero_time_activity_item: fletchable.id
+		});
+
+		const response = attemptZeroTimeActivity({
+			type: 'fletch',
+			user,
+			duration,
+			itemsPerHour
+		});
+
+		expect(response.result?.type).toBe('fletch');
+		if (!response.result || response.result.type !== 'fletch') return;
+
+		expect(response.result.quantity).toBe(expectedSets);
+		expect(response.result.itemsToRemove.amount('Wolf bones')).toBe(expectedSets);
+		expect(response.result.timePerAction).toBeCloseTo(duration / expectedSets, 5);
 	});
 
 	test('fletching failure without slayer unlock', () => {
