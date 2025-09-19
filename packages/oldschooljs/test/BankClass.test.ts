@@ -109,7 +109,7 @@ describe('Bank Class', () => {
 	});
 
 	test('toString', () => {
-		const bank = (Bank.fromNameBank({ Coal: 20, Egg: 5000, Emerald: 1, Ruby: 20_000 }));
+		const bank = Bank.fromNameBank({ Coal: 20, Egg: 5000, Emerald: 1, Ruby: 20_000 });
 		bank.add('Twisted bow', 0);
 		expect(bank.toString()).toEqual('20x Coal, 5k Egg, 1x Emerald, 20k Ruby');
 		expect(bank.length).toEqual(4);
@@ -121,7 +121,7 @@ describe('Bank Class', () => {
 	});
 
 	test('.items()', () => {
-		const bank = (Bank.fromNameBank({ Coal: 20, Egg: 5000, Emerald: 1, Ruby: 20_000 }));
+		const bank = Bank.fromNameBank({ Coal: 20, Egg: 5000, Emerald: 1, Ruby: 20_000 });
 		const actual = bank.items();
 		const expected = [
 			[Items.get('Coal'), 20],
@@ -145,7 +145,7 @@ describe('Bank Class', () => {
 	});
 
 	test('.forEach()', () => {
-		const bank = (Bank.fromNameBank({ Coal: 20, Egg: 5000, Emerald: 1, Ruby: 20_000 }));
+		const bank = Bank.fromNameBank({ Coal: 20, Egg: 5000, Emerald: 1, Ruby: 20_000 });
 		const mockCallback = vi.fn();
 		bank.forEach(mockCallback);
 		expect(mockCallback).toHaveBeenCalledTimes(bank.length);
@@ -199,22 +199,22 @@ describe('Bank Class', () => {
 		const b1 = new Bank(bank.clone().multiply(2));
 		expect(b1.fits(bank)).toEqual(2);
 
-		const b2 = (Bank.fromNameBank({ Coal: 1 }));
+		const b2 = Bank.fromNameBank({ Coal: 1 });
 		expect(bank.fits(b2)).toEqual(20);
 
-		const b3 = (Bank.fromNameBank({ Coal: 1, Emerald: 5 }));
+		const b3 = Bank.fromNameBank({ Coal: 1, Emerald: 5 });
 		expect(bank.fits(b3)).toEqual(0);
 
-		const b4 = (Bank.fromNameBank({ Coal: 1, Ruby: 10_000 }));
+		const b4 = Bank.fromNameBank({ Coal: 1, Ruby: 10_000 });
 		expect(bank.fits(b4)).toEqual(2);
 
-		const b5 = (Bank.fromNameBank({ Coal: 1, 'Twisted bow': 5 }));
+		const b5 = Bank.fromNameBank({ Coal: 1, 'Twisted bow': 5 });
 		expect(bank.fits(b5)).toEqual(0);
 
-		const b6 = (Bank.fromNameBank({ Coal: 10, Ruby: 10_000 }));
+		const b6 = Bank.fromNameBank({ Coal: 10, Ruby: 10_000 });
 		expect(bank.fits(b6)).toEqual(2);
 
-		const b7 = (Bank.fromNameBank({ Coal: 11, Ruby: 10_000 }));
+		const b7 = Bank.fromNameBank({ Coal: 11, Ruby: 10_000 });
 		expect(bank.fits(b7)).toEqual(1);
 		expect(b7.fits(bank)).toEqual(0);
 
@@ -236,12 +236,12 @@ describe('Bank Class', () => {
 		const idVersion = Bank.fromNameBank(baseBank);
 		const bank = new Bank(baseBank);
 		expect(bank.amount('Coal')).toEqual(20);
-		expect(new Bank(idVersion).toString()).toEqual((bank).toString());
+		expect(new Bank(idVersion).toString()).toEqual(bank.toString());
 		expect(bank.has(idVersion)).toBeTruthy();
 
 		const otherBank = new Bank(idVersion);
 		expect(otherBank.amount('Coal')).toEqual(20);
-		expect(new Bank(otherBank).equals((bank))).toBeTruthy();
+		expect(new Bank(otherBank).equals(bank)).toBeTruthy();
 		expect(otherBank.has(idVersion)).toBeTruthy();
 
 		const base = {
@@ -261,7 +261,7 @@ describe('Bank Class', () => {
 		const b2 = Bank.fromNameBank(base);
 		expect(b1.length).toEqual(b2.length);
 		expect(b1.toString()).toEqual(b2.toString());
-		expect(b1.equals((b2))).toBeTruthy();
+		expect(b1.equals(b2)).toBeTruthy();
 	});
 
 	test('has item obj', () => {

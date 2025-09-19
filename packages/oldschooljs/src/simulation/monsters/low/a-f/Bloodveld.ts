@@ -1,4 +1,4 @@
-import { HerbDropTable }  from '@/simulation/subtables/HerbDropTable.js';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
 import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { itemTupleToTable } from '@/structures/LootTable.js';

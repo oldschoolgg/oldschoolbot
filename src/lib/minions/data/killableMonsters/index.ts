@@ -11,7 +11,7 @@ import { chaeldarMonsters } from './chaeldarMonsters.js';
 import { creatureCreationCreatures } from './creatureCreation.js';
 import { konarMonsters } from './konarMonsters.js';
 import { krystiliaMonsters } from './krystiliaMonsters.js';
-import low from './low.js';
+import { lowKillableMonsters } from './low.js';
 import { mazchnaMonsters } from './mazchnaMonsters.js';
 import { nieveMonsters } from './nieveMonsters.js';
 import { reanimatedMonsters } from './reanimated.js';
@@ -29,7 +29,7 @@ const killableMonsters: KillableMonster[] = [
 	...nieveMonsters,
 	...turaelMonsters,
 	...vannakaMonsters,
-	...low,
+	...lowKillableMonsters,
 	...revenantMonsters,
 	...creatureCreationCreatures,
 	...reanimatedMonsters,

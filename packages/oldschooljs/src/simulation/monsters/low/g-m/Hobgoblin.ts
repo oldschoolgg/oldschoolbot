@@ -1,4 +1,4 @@
-import { CommonSeedDropTable }   from '@/simulation/subtables/CommonSeedDropTable.js';
+import { CommonSeedDropTable } from '@/simulation/subtables/CommonSeedDropTable.js';
 import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
@@ -36,7 +36,7 @@ export const HobgoblinTable = new LootTable()
 	.add('Iron javelin', 5, 1)
 
 	.add(HerbTable, 1, 7)
-	.add(CommonSeedDropTable  , 1, 12)
+	.add(CommonSeedDropTable, 1, 12)
 	.add('Coins', 15, 34)
 	.add('Coins', 5, 12)
 	.add('Coins', 28, 4)

@@ -20,30 +20,24 @@ describe('Bank', () => {
 
 	test('bank has all items', () => {
 		expect.assertions(2);
-		const bankToHave = (
-			Bank.fromNameBank({
-				'Fire rune': 1000,
-				'Air rune': 1,
-				'Chaos rune': 101_010
-			})
-		);
+		const bankToHave = Bank.fromNameBank({
+			'Fire rune': 1000,
+			'Air rune': 1,
+			'Chaos rune': 101_010
+		});
 
-		const bankThatShouldntHave = (
-			Bank.fromNameBank({
-				'Fire rune': 1000,
-				'Air rune': 1,
-				'Chaos rune': 1
-			})
-		);
+		const bankThatShouldntHave = Bank.fromNameBank({
+			'Fire rune': 1000,
+			'Air rune': 1,
+			'Chaos rune': 1
+		});
 
-		const bankThatShouldHave = (
-			Bank.fromNameBank({
-				'Fire rune': 104_200,
-				'Air rune': 43_432,
-				'Chaos rune': 121_010,
-				'Death rune': 121_010
-			})
-		);
+		const bankThatShouldHave = Bank.fromNameBank({
+			'Fire rune': 104_200,
+			'Air rune': 43_432,
+			'Chaos rune': 121_010,
+			'Death rune': 121_010
+		});
 
 		expect(bankThatShouldHave.has(bankToHave)).toBeTruthy();
 		expect(bankThatShouldntHave.has(bankToHave)).toBeFalsy();
@@ -51,25 +45,19 @@ describe('Bank', () => {
 
 	test('remove bank from bank', () => {
 		expect.assertions(1);
-		const sourceBank = (
-			Bank.fromNameBank({
-				'Fire rune': 100,
-				'Air rune': 50
-			})
-		);
+		const sourceBank = Bank.fromNameBank({
+			'Fire rune': 100,
+			'Air rune': 50
+		});
 
-		const bankToRemove = (
-			Bank.fromNameBank({
-				'Fire rune': 50,
-				'Air rune': 50
-			})
-		);
+		const bankToRemove = Bank.fromNameBank({
+			'Fire rune': 50,
+			'Air rune': 50
+		});
 
-		const expectedBank = (
-			Bank.fromNameBank({
-				'Fire rune': 50
-			})
-		);
+		const expectedBank = Bank.fromNameBank({
+			'Fire rune': 50
+		});
 
 		sourceBank.remove(bankToRemove);
 		expect(sourceBank.equals(expectedBank)).toBeTruthy();
@@ -136,29 +124,23 @@ describe('Bank', () => {
 	});
 
 	test('value', () => {
-		const bank = (
-			Bank.fromNameBank({
-				Toolkit: 2
-			})
-		);
+		const bank = Bank.fromNameBank({
+			Toolkit: 2
+		});
 		expect(bank.value()).toEqual(0);
 		const runePlatebody = Items.get('Rune platebody')!;
-		const bank2 = (
-			Bank.fromNameBank({
-				'Rune platebody': 10
-			})
-		);
+		const bank2 = Bank.fromNameBank({
+			'Rune platebody': 10
+		});
 		expect(runePlatebody.price).toBeGreaterThan(25_000);
 		expect(bank2.value()).toEqual(runePlatebody.price! * 10);
-		const bank3 = (
-			Bank.fromNameBank({
-				'Rune platebody': 10,
-				'Rune platelegs': 10,
-				'Rune boots': 10,
-				Toolkit: 1,
-				'Abyssal book': 10_000
-			})
-		);
+		const bank3 = Bank.fromNameBank({
+			'Rune platebody': 10,
+			'Rune platelegs': 10,
+			'Rune boots': 10,
+			Toolkit: 1,
+			'Abyssal book': 10_000
+		});
 		expect(runePlatebody.price).toBeGreaterThan(25_000);
 		expect(bank3.value()).toEqual(
 			runePlatebody.price! * 10 + Items.get('Rune platelegs')!.price! * 10 + Items.get('Rune boots')!.price! * 10

@@ -1,5 +1,5 @@
-import { CommonSeedDropTable }   from '@/simulation/subtables/CommonSeedDropTable.js';
-import { HerbDropTable }  from '@/simulation/subtables/HerbDropTable.js';
+import { CommonSeedDropTable } from '@/simulation/subtables/CommonSeedDropTable.js';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
 import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
@@ -26,7 +26,7 @@ const MountainTrollTable = new LootTable({ limit: 128 })
 	.add(HerbDropTable, 1, 15)
 
 	/* Seeds */
-	.add(CommonSeedDropTable  , 1, 19)
+	.add(CommonSeedDropTable, 1, 19)
 
 	/* Other */
 	.add('Coins', 35, 29)

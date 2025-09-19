@@ -1,8 +1,8 @@
 import fetch from 'node-fetch';
 
-import { BASE_API_URL, CLUES, Errors, SKILLS } from './constants.js';
 import { convertXPtoLVL } from '../util/util.js';
 import { Player, type SkillsScore } from './Player.js';
+import { BASE_API_URL, CLUES, Errors, SKILLS } from './constants.js';
 import { ACCOUNT_TYPES, type AccountType, MINIGAMES, mappedBossNames } from './constants.js';
 
 function resolvePlayerFromHiscores(csvData: string, accountType: AccountType): Player {

@@ -1,5 +1,5 @@
-import { HerbDropTable }  from '@/simulation/subtables/HerbDropTable.js';
-import { RareDropTable, GemTable  } from '@/simulation/subtables/RareDropTable.js';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 

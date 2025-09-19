@@ -1,5 +1,5 @@
-import { CommonSeedDropTable }   from '@/simulation/subtables/CommonSeedDropTable.js';
-import { HerbDropTable }  from '@/simulation/subtables/HerbDropTable.js';
+import { CommonSeedDropTable } from '@/simulation/subtables/CommonSeedDropTable.js';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
 import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
@@ -20,7 +20,7 @@ export const JogreTable = new LootTable({ limit: 129 })
 	.add('Steel javelin', 5, 2)
 
 	.add(HerbDropTable, 1, 6)
-	.add(CommonSeedDropTable  , 1, 15)
+	.add(CommonSeedDropTable, 1, 15)
 	.add(GemTable, 1, 1)
 
 	// Others

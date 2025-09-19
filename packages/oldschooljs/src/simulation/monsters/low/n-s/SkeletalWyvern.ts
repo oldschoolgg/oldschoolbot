@@ -1,4 +1,4 @@
-import { HerbDropTable }  from '@/simulation/subtables/HerbDropTable.js';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
 import { RareDropTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';

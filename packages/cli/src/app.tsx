@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process';
+import { readdirSync } from 'node:fs';
 import { Box, Text } from 'ink';
 import Spinner from 'ink-spinner';
 import type React from 'react';
@@ -12,16 +13,20 @@ type Stage = {
 	commands: CommandGroup[];
 };
 
+const ALL_PACKAGE_NAMES: string[] = readdirSync('packages').filter(
+	name => !['test-dashboard', 'server', 'robochimp', 'cli'].includes(name)
+);
+
 const stages: Stage[] = [
-	// {
-	// 	name: 'Stage 1',
-	// 	commands: [
-	// 		{ cmd: 'pnpm install', desc: 'Installing dependencies...' },
-	// 		{ cmd: 'prisma db push', desc: 'Pushing Prisma schema...' },
-	// 		{ cmd: 'pnpm generate:robochimp', desc: 'Generating RoboChimp...' },
-	// 		{ cmd: 'pnpm build:packages', desc: 'Building packages...' }
-	// 	]
-	// },
+	{
+		name: 'Stage 1',
+		commands: [
+			{ cmd: 'pnpm install', desc: 'Installing dependencies...' },
+			{ cmd: 'prisma db push', desc: 'Pushing Prisma schema...' },
+			{ cmd: 'pnpm generate:robochimp', desc: 'Generating RoboChimp...' },
+			{ cmd: 'pnpm build:packages', desc: 'Building packages...' }
+		]
+	},
 	{
 		name: 'Stage 2',
 		commands: [
@@ -33,7 +38,8 @@ const stages: Stage[] = [
 				cmd: `pnpm tsx --tsconfig scripts/tsconfig.json scripts/${script[1]}`,
 				desc: script[0]
 			})),
-			{ cmd: 'pnpm build', desc: 'Building project...' }
+			ALL_PACKAGE_NAMES.map(pkg => ({ cmd: `pnpm --filter ${pkg} build`, desc: `Building ${pkg}...` })),
+			{ cmd: 'tsx esbuild.mts', desc: 'Building bot...' }
 		]
 	},
 	{
@@ -45,22 +51,28 @@ const stages: Stage[] = [
 					'prettier --use-tabs --write "**/*.{yaml,yml,css,html}"',
 					'prisma format --schema ./prisma/robochimp.prisma && prisma format --schema ./prisma/schema.prisma'
 				],
-				desc: 'Linting code...'
+				desc: 'Formatting code...'
 			},
-			{ cmd: 'pnpm --stream -r test', desc: 'Running tests...' }
+
+			[
+				...ALL_PACKAGE_NAMES.map(pkg => ({
+					cmd: `pnpm --filter ${pkg} test`,
+					desc: `Running tests in ${pkg}...`
+				})),
+				{ cmd: 'pnpm test', desc: 'Running bot tests...' }
+			]
 		]
 	}
 ];
 
 function runSingleCommand(cmd: string): Promise<void> {
 	return new Promise((resolve, reject) => {
-		const p = spawn(cmd, { shell: true, stdio: ['inherit', 'pipe', 'pipe'] });
+		const p = spawn(cmd, { shell: true, stdio: ['ignore', 'pipe', 'pipe'] });
 
 		let stderr = '';
 		let stdout = '';
 
 		p.stdout.on('data', d => {
-			console.log(d.toString());
 			stdout += d.toString();
 		});
 		p.stderr.on('data', d => {
@@ -115,36 +127,39 @@ export const Root: React.FC = () => {
 
 	return (
 		<Box flexDirection="column">
-			<Text>Dev script</Text>
-			{stages.map((s, i) => (
-				<Box key={s.name} flexDirection="column" marginLeft={2}>
-					<Text>
-						{i === stageIndex ? '▶' : ' '} {s.name}
-					</Text>
-					{s.commands.map((c, j) => {
-						const active = i === stageIndex && j === cmdIndex && status === 'running';
-						const finished = i < stageIndex || (i === stageIndex && j < cmdIndex);
+			<Text>Old School Bot</Text>
+			{stages.map((s, i) => {
+				const isCurrentStage = i === stageIndex;
+				return (
+					<Box key={s.name} flexDirection="column" marginLeft={2} display={!isCurrentStage ? 'none' : 'flex'}>
+						<Text>
+							{isCurrentStage ? '▶' : ' '} {s.name}
+						</Text>
+						{s.commands.map((c, j) => {
+							const active = i === stageIndex && j === cmdIndex && status === 'running';
+							const finished = i < stageIndex || (i === stageIndex && j < cmdIndex);
 
-						const cmds = Array.isArray(c) ? c : [c];
+							const cmds = Array.isArray(c) ? c : [c];
 
-						return (
-							<Box key={j} flexDirection="column" marginLeft={2}>
-								{cmds.map(inner => (
-									<Box key={inner.cmd.toString()}>
-										{active && !finished && (
-											<Text color="yellow">
-												<Spinner type="dots" /> {inner.desc}
-											</Text>
-										)}
-										{finished && <Text color="green">✔ {inner.desc}</Text>}
-										{!active && !finished && <Text> {inner.desc}</Text>}
-									</Box>
-								))}
-							</Box>
-						);
-					})}
-				</Box>
-			))}
+							return (
+								<Box key={j} flexDirection="column" marginLeft={2}>
+									{cmds.map(inner => (
+										<Box key={inner.cmd.toString()}>
+											{active && !finished && (
+												<Text color="yellow">
+													<Spinner type="dots" /> {inner.desc}
+												</Text>
+											)}
+											{finished && <Text color="green">✔ {inner.desc}</Text>}
+											{!active && !finished && <Text> {inner.desc}</Text>}
+										</Box>
+									))}
+								</Box>
+							);
+						})}
+					</Box>
+				);
+			})}
 			{status === 'done' && <Text color="green">✅ All done</Text>}
 			{status === 'error' && (
 				<Box flexDirection="column">

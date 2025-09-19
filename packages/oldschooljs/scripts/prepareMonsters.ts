@@ -3,8 +3,8 @@ import fetch from 'node-fetch';
 import { omitBy } from 'remeda';
 import * as wtf from 'wtf_wikipedia';
 
+import type { MonsterAttackType, MonsterAttribute, MonsterData, MonsterSlayerMaster } from '@/meta/monsterData.js';
 import { Monsters } from '@/simulation/monsters/index.js';
-import type { MonsterData, MonsterAttackType, MonsterAttribute, MonsterSlayerMaster } from '@/meta/monsterData.js';
 
 const monsterMap: { [key: string]: MonsterData } = {};
 

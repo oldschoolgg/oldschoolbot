@@ -1,5 +1,5 @@
-import { CommonSeedDropTable }   from '@/simulation/subtables/CommonSeedDropTable.js';
-import { HerbDropTable }  from '@/simulation/subtables/HerbDropTable.js';
+import { CommonSeedDropTable } from '@/simulation/subtables/CommonSeedDropTable.js';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
 import { GemTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
@@ -49,7 +49,7 @@ const AnkouTable = new LootTable({ limit: 100 })
 	.add(HerbDropTable, 1, 3)
 
 	/* Seeds */
-	.add(CommonSeedDropTable  , 1, 1)
+	.add(CommonSeedDropTable, 1, 1)
 
 	/* Materials */
 	.add('Pure essence', 15, 5)

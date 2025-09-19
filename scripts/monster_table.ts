@@ -8,7 +8,7 @@ import { omit } from 'remeda';
 applyStaticDefine();
 
 import '../src/lib/safeglobals.js';
-import killableMonsters from '@/lib/minions/data/killableMonsters/low.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import { applyStaticDefine } from '../meta.js';
 import { type BitField, PVM_METHODS } from '../src/lib/constants.js';

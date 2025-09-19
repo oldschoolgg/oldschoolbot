@@ -6,11 +6,7 @@
 	"scripts": {
 		"============DEVELOPMENT": "============",
 		"watch": "nodemon --delay 1ms -e ts -w src --exec \"tsx esbuild.mts && node --enable-source-maps dist\"",
-		"dev:stage1": "pnpm concurrently --raw \"pnpm install\" \"prisma db push\" \"pnpm generate:robochimp\" \"pnpm build:packages\"",
-		"dev:stage2": "pnpm concurrently --raw \"pnpm tsx --tsconfig scripts/tsconfig.json scripts/scripts.ts\" \"pnpm build\"",
-		"dev:stage3": "pnpm lint && pnpm --stream -r test",
-		"dev": "pnpm dev:stage1 && pnpm dev:stage2 && pnpm dev:stage3",
-		"dev2": "node packages/cli/dist/cli.js",
+		"dev": "pnpm --filter cli build && node packages/cli/dist/cli.js",
 		"watch:tsc": "tsc -w -p src",
 		"start": "pnpm watch",
 		"lint": "tsx scripts/lint.ts",

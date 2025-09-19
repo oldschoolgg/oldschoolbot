@@ -5,7 +5,7 @@ import { GearStat } from 'oldschooljs/gear';
 import type { KillableMonster } from '../../types.js';
 import { QuestID } from '../quests.js';
 
-const killableMonsters: KillableMonster[] = [
+export const lowKillableMonsters: KillableMonster[] = [
 	{
 		id: Monsters.Imp.id,
 		name: Monsters.Imp.name,
@@ -294,5 +294,3 @@ const killableMonsters: KillableMonster[] = [
 		canCannon: true
 	}
 ];
-
-export default killableMonsters;

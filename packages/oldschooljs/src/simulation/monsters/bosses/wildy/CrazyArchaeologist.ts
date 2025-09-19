@@ -1,4 +1,4 @@
-import { RareDropTable, GemTable  } from '@/simulation/subtables/RareDropTable.js';
+import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js';
 import LootTable from '@/structures/LootTable.js';
 import { itemTupleToTable } from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';

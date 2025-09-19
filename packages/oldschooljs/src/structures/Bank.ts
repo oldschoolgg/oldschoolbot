@@ -40,7 +40,7 @@ export class Bank {
 	static fromNameBank(nameBank: Record<string, number>): Bank {
 		const bank = new Bank();
 		for (const [name, qty] of Object.entries(nameBank)) {
-			bank.add(name, qty)
+			bank.add(name, qty);
 		}
 		return bank;
 	}
@@ -320,7 +320,7 @@ export class Bank {
 	public equals(otherBank: Bank): boolean {
 		if (this.length !== otherBank.length) {
 			console.log('Banks are not the same length');
-			 return false;
+			return false;
 		}
 		for (const [item, quantity] of this.items()) {
 			if (otherBank.amount(item.id) !== quantity) {
