@@ -1,6 +1,6 @@
+import { roll, shuffleArr } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
-import { roll, shuffleArr } from 'e';
 import { Bank, ChambersOfXeric, SkillsEnum, randomVariation, resolveItems } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';

@@ -1,6 +1,6 @@
+import { Time, calcPercentOfNum, percentChance, randInt, roll, sumArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
-import { Time, calcPercentOfNum, percentChance, randInt, roll, sumArr } from 'e';
 import { Bank, type ItemBank, Items, Monsters, itemID } from 'oldschooljs';
 
 import type { Skills } from '@/lib/types/index.js';

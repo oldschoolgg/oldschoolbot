@@ -1,4 +1,4 @@
-import { randInt } from 'e';
+import { randInt } from '@/lib/util/rng.js';
 import { Bank, EItem } from 'oldschooljs';
 
 import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries.js';

@@ -1,4 +1,4 @@
-import { percentChance } from 'e';
+import { percentChance } from '@/lib/util/rng.js';
 import { Bank, itemID } from 'oldschooljs';
 
 import Smithing from '../../lib/skilling/skills/smithing/index.js';

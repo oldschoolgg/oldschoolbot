@@ -1,6 +1,6 @@
+import { removeFromArr } from '@oldschoolgg/toolkit';
 import { Table, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { removeFromArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants.js';

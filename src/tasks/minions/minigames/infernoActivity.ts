@@ -1,6 +1,6 @@
+import { calcPercentOfNum, calcWhatPercent } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit/util';
-import { calcPercentOfNum, calcWhatPercent } from 'e';
 import { Bank, type ItemBank, Monsters, itemID } from 'oldschooljs';
 
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';

@@ -1,9 +1,10 @@
+import { objectEntries } from '@oldschoolgg/toolkit';
 import { miniID, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
-import { clamp, objectEntries } from 'e';
 import { type ArrayItemsResolved, type Bank, type ItemBank, Items } from 'oldschooljs';
 import { MersenneTwister19937, shuffle } from 'random-js';
+import { clamp } from 'remeda';
 import z from 'zod';
 
 import { skillEmoji } from '../data/emojis.js';
@@ -124,7 +125,7 @@ export function calculateSimpleMonsterDeathChance({
 	const maxScalingKC = 5 + (75 * hardness) / steepness;
 	const reductionFactor = Math.min(1, currentKC / maxScalingKC);
 	const deathChance = baseDeathChance - reductionFactor * (baseDeathChance - lowestDeathChance);
-	return clamp(deathChance, lowestDeathChance, highestDeathChance);
+	return clamp(deathChance, { min: lowestDeathChance, max: highestDeathChance });
 }
 
 export const staticTimeIntervals = ['day', 'week', 'month'] as const;

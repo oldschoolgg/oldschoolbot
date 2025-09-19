@@ -2,6 +2,7 @@ import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { Bank, EMonster, EquipmentSlot, Items, itemID } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
+import { clamp } from 'remeda';
 import Buyables from '../../src/lib/data/buyables/buyables.js';
 import { marketPriceOfBank } from '../../src/lib/marketPrices.js';
 import { allOpenables } from '../../src/lib/openables.js';
@@ -93,5 +94,10 @@ describe('Sanity', () => {
 	test('EMonster', () => {
 		expect(EMonster.NIGHTMARE).toEqual(9415);
 		expect(EMonster.ZALCANO).toEqual(9049);
+	});
+
+	test('clamp', () => {
+		expect(clamp(100, { min: 0, max: 50 })).toEqual(50);
+		expect(clamp(100, { min: 200, max: 250 })).toEqual(200);
 	});
 });

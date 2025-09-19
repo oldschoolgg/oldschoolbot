@@ -1,6 +1,6 @@
 import '../data/itemAliases.js';
 
-import { removeFromArr } from 'e';
+import { removeFromArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import getOSItem from '../util/getOSItem.js';

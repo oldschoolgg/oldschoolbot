@@ -1,5 +1,5 @@
+import { notEmpty, randFloat, randInt } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { notEmpty, objectKeys, randFloat, randInt } from 'e';
 import { Bank, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries.js';
@@ -231,7 +231,7 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 
 	let maxQuantity = assignedTask?.amount[1];
 	if (bossTask && _user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss)) {
-		for (const tier of objectKeys(CombatAchievements)) {
+		for (const tier of Object.keys(CombatAchievements) as (keyof typeof CombatAchievements)[]) {
 			if (_user.hasCompletedCATier(tier)) {
 				maxQuantity += 5;
 			}

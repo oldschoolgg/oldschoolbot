@@ -1,15 +1,7 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import { type Minigame, XpGainSource } from '@prisma/client';
-import { bold } from 'discord.js';
 import {
 	Time,
 	calcPercentOfNum,
 	calcWhatPercent,
-	clamp,
 	increaseNumByPercent,
 	objectEntries,
 	percentChance,
@@ -21,9 +13,17 @@ import {
 	scaleNumber,
 	sumArr,
 	uniqueArr
-} from 'e';
+} from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
+import { type Minigame, XpGainSource } from '@prisma/client';
+import { bold } from 'discord.js';
 import { Bank, LootTable, itemID, randomVariation, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
+import { clamp } from 'remeda';
 
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings.js';
 import { getSimilarItems } from '../data/similarItems.js';
@@ -771,7 +771,7 @@ function calcDeathChance(totalAttempts: number, raidLevel: RaidLevel, tobAndCoxK
 
 	const tobCoxKCDivided = Math.floor(tobAndCoxKC / 250);
 	if (tobAndCoxKC > 0) {
-		totalAttempts += clamp(tobCoxKCDivided, 0, 2);
+		totalAttempts += clamp(tobCoxKCDivided, { min: 0, max: 2 });
 	}
 
 	const match = map.find(i => totalAttempts <= i.attemptsMax)! ?? map[map.length - 1];
@@ -790,9 +790,9 @@ function calcDeathChance(totalAttempts: number, raidLevel: RaidLevel, tobAndCoxK
 		deathChance = reduceNumByPercent(deathChance, scaleNumber(totalAttempts, 100, 250, 0, 50));
 	}
 	if (minChance) {
-		deathChance = clamp(deathChance, minChance, 99);
+		deathChance = clamp(deathChance, { min: minChance, max: 99 });
 	}
-	deathChance = clamp(deathChance, 5, 99);
+	deathChance = clamp(deathChance, { min: 5, max: 99 });
 
 	deathChance = Math.round(randomVariation(deathChance, 0.5));
 
@@ -814,8 +814,8 @@ function calculateTotalEffectiveness({
 }) {
 	const percents = [];
 
-	percents.push(clamp(calcWhatPercent(totalKC, 20), 0, 100));
-	percents.push(clamp(calcWhatPercent(totalAttempts, 20), 0, 100));
+	percents.push(clamp(calcWhatPercent(totalKC, 20), { min: 0, max: 100 }));
+	percents.push(clamp(calcWhatPercent(totalAttempts, 20), { min: 0, max: 100 }));
 	const skillsThatMatter = [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic, SkillsEnum.Ranged];
 	const totalSkills = objectEntries(skillsAsLevels)
 		.filter(i => skillsThatMatter.includes(i[0]))
@@ -870,7 +870,7 @@ function calculatePointsAndDeaths(
 	points += calcPercentOfNum(harshEffectivenessScale, tenPercent);
 
 	points = Math.floor(points);
-	points = clamp(points, 1, 64_000);
+	points = clamp(points, { min: 1, max: 64_000 });
 
 	return {
 		points,
@@ -1182,8 +1182,8 @@ export async function toaStartCommand(
 		quantity: 1
 	})[0].duration;
 	const maxTripLength = Math.max(...users.map(i => calcMaxTripLength(i, 'TombsOfAmascut')));
-	const maxQuantity = clamp(Math.floor(maxTripLength / baseDuration), 1, 5);
-	const quantity = clamp(quantityInput ?? maxQuantity, 1, maxQuantity);
+	const maxQuantity = clamp(Math.floor(maxTripLength / baseDuration), { min: 1, max: 5 });
+	const quantity = clamp(quantityInput ?? maxQuantity, { min: 1, max: maxQuantity });
 
 	const toaSimResults = createTOATeam({
 		team: toaSimUsers,
@@ -1417,7 +1417,7 @@ function createTOATeam({
 		userPercentChange += gearPercentBoost;
 
 		// Reduce time for KC
-		const kcPercent = clamp(calcWhatPercent(u.totalAttempts, maxScaling), 1, 100);
+		const kcPercent = clamp(calcWhatPercent(u.totalAttempts, maxScaling), { min: 1, max: 100 });
 		const kcPercentBoost = calcPerc(kcPercent, speedReductionForKC);
 		userPercentChange += kcPercentBoost;
 

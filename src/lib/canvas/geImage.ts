@@ -1,6 +1,6 @@
+import { calcPercentOfNum, calcWhatPercent } from '@oldschoolgg/toolkit';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import type { GEListing, GETransaction } from '@prisma/client';
-import { calcPercentOfNum, calcWhatPercent } from 'e';
 import { Items } from 'oldschooljs';
 import type { Canvas } from 'skia-canvas';
 

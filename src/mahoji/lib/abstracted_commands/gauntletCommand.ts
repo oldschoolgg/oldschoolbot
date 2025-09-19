@@ -1,5 +1,5 @@
+import { Time, calcWhatPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
-import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { BitField } from '../../../lib/constants.js';

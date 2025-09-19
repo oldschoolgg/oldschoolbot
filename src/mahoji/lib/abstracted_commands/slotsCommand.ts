@@ -1,3 +1,4 @@
+import { chunk, noOp, randInt, shuffleArr, sleep } from '@oldschoolgg/toolkit';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import {
@@ -7,7 +8,6 @@ import {
 	ButtonStyle,
 	type ChatInputCommandInteraction
 } from 'discord.js';
-import { chunk, noOp, randInt, shuffleArr, sleep } from 'e';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';

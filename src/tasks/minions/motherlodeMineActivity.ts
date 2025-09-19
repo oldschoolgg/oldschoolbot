@@ -1,4 +1,4 @@
-import { roll } from 'e';
+import { roll } from '@/lib/util/rng.js';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';

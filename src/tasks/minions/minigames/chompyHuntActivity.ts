@@ -1,4 +1,4 @@
-import { roll } from 'e';
+import { roll } from '@/lib/util/rng.js';
 import { Bank } from 'oldschooljs';
 
 import { formatList } from '@/lib/util/smallUtils.js';

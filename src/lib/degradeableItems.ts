@@ -1,4 +1,4 @@
-import { percentChance } from 'e';
+import { percentChance } from '@/lib/util/rng.js';
 import { Bank, type Item, type Monster, itemID } from 'oldschooljs';
 
 import type { GearSetupType, PrimaryGearSetupType } from './gear/types.js';

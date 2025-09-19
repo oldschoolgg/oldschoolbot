@@ -1,6 +1,6 @@
+import { Time, objectEntries } from '@oldschoolgg/toolkit';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { Time, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';

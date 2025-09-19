@@ -1,6 +1,6 @@
+import { Time, randInt } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import type { Prisma } from '@prisma/client';
-import { Time, randInt } from 'e';
 import { Bank, ECreature, EquipmentSlot, itemID } from 'oldschooljs';
 
 import { PeakTier } from '@/lib/util/peaks.js';

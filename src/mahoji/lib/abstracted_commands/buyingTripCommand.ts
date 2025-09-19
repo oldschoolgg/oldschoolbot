@@ -1,5 +1,5 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
 import type { TripBuyable } from '@/lib/data/buyables/tripBuyables.js';

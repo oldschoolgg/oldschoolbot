@@ -1,6 +1,7 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Time, clamp } from 'e';
 import { Bank, Items, toKMB } from 'oldschooljs';
+import { clamp } from 'remeda';
 
 import { Planks } from '../../../lib/minions/data/planks.js';
 import type { SawmillActivityTaskOptions } from '../../../lib/types/minions.js';
@@ -44,7 +45,7 @@ export async function sawmillCommand(
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerPlank);
 	}
-	quantity = clamp(quantity, 1, 100_000);
+	quantity = clamp(quantity, { min: 1, max: 100_000 });
 
 	const inputItemOwned = user.bank.amount(plank.inputItem);
 	if (inputItemOwned < quantity) {

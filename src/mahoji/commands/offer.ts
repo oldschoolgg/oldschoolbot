@@ -1,7 +1,7 @@
+import { Time, randArrItem, randInt, roll } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
-import { Time, randArrItem, randInt, roll } from 'e';
 import { Bank, ItemGroups, resolveItems } from 'oldschooljs';
 
 import { Offerables } from '../../lib/data/offerData.js';

@@ -1,8 +1,8 @@
+import { noOp, objectEntries } from '@oldschoolgg/toolkit';
 import { cleanUsername } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import type { Prisma, User } from '@prisma/client';
 import { type Guild, userMention } from 'discord.js';
-import { noOp, objectEntries } from 'e';
 import { calcCombatLevel, convertXPtoLVL } from 'oldschooljs';
 
 import type { MUserClass } from './MUser.js';

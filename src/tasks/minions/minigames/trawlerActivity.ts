@@ -1,4 +1,4 @@
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';

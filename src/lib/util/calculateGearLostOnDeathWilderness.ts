@@ -1,5 +1,6 @@
-import { deepClone, objectEntries } from 'e';
+import { objectEntries } from '@oldschoolgg/toolkit';
 import { Bank, type EquipmentSlot, type Item, itemID, resolveItems } from 'oldschooljs';
+import { clone } from 'remeda';
 
 import type { GearSetup } from '../gear/types.js';
 import getOSItem from './getOSItem.js';
@@ -177,7 +178,7 @@ export default function calculateGearLostOnDeathWilderness(
 	>{}
 ) {
 	// 1 - Duplicate user gear
-	const userGear = { ...deepClone(options.gear) };
+	const userGear = { ...clone(options.gear) };
 	const removableItems: { slot: EquipmentSlot; sorter: number; originalItem: Item }[] = [];
 
 	// 2 - Swap user gear to the correct gear for death calculations

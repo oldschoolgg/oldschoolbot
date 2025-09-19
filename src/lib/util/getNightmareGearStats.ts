@@ -1,4 +1,4 @@
-import { calcWhatPercent } from 'e';
+import { calcWhatPercent } from '@oldschoolgg/toolkit';
 import { EMonster, NIGHTMARES_HP, ZAM_HASTA_CRUSH } from 'oldschooljs';
 
 import { NightmareMonster } from '../minions/data/killableMonsters/index.js';

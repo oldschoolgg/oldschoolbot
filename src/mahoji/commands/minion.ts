@@ -1,7 +1,7 @@
+import { notEmpty, randArrItem } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
-import { notEmpty, randArrItem } from 'e';
 import { convertLVLtoXP } from 'oldschooljs';
 
 import { bankImageTask } from '@/lib/canvas/bankImage.js';

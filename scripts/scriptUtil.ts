@@ -1,12 +1,13 @@
 import { type ExecOptions, exec as execNonPromise } from 'node:child_process';
 import { promisify } from 'node:util';
+import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { TimerManager } from '@sapphire/timer-manager';
+import { Bank, type ItemBank } from 'oldschooljs';
+
 import { crons } from '@/lib/crons.js';
 import { sql } from '@/lib/postgres.js';
 import { sonicBoom } from '@/lib/util/logger.js';
 import { Workers } from '@/lib/workers/index.js';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { TimerManager } from '@sapphire/timer-manager';
-import { Bank, type ItemBank } from 'oldschooljs';
 
 const rawExecAsync = promisify(execNonPromise);
 

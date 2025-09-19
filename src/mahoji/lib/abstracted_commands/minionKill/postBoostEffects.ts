@@ -1,5 +1,5 @@
+import { Time, calcPercentOfNum, uniqueArr } from '@oldschoolgg/toolkit';
 import type { GearSetupType } from '@prisma/client';
-import { Time, calcPercentOfNum, objectKeys, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
@@ -50,7 +50,10 @@ export const postBoostEffects: PostBoostEffect[] = [
 				totalHealingNeeded: healAmountNeeded * quantity,
 				attackStylesUsed: isInWilderness
 					? ['wildy']
-					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
+					: uniqueArr([
+							...(Object.keys(monster.minimumGearRequirements ?? {}) as GearSetupType[]),
+							gearToCheck
+						]),
 				learningPercentage: percentReduced,
 				isWilderness: isInWilderness,
 				minimumHealAmount: monster.minimumHealAmount

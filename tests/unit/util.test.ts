@@ -1,5 +1,5 @@
+import { reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { stripEmojis, truncateString } from '@oldschoolgg/toolkit/util';
-import { reduceNumByPercent } from 'e';
 import { Bank, convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 

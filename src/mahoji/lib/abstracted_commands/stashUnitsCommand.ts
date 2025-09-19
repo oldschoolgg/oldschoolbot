@@ -1,6 +1,6 @@
+import { partition } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { StashUnit, User } from '@prisma/client';
-import { partition } from 'e';
 import { Bank, ItemGroups, Items } from 'oldschooljs';
 
 import type { IStashUnit, StashUnitTier } from '../../../lib/clues/stashUnits.js';

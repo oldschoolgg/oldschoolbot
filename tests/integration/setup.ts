@@ -6,8 +6,8 @@ import './mocks.js';
 
 import { beforeEach, vi } from 'vitest';
 
+import { noOp } from '@oldschoolgg/toolkit/util';
 import { PrismaClient } from '@prisma/client';
-import { noOp } from 'e';
 
 if (!roboChimpClient) {
 	throw new Error('Robochimp client not found.');

@@ -1,3 +1,4 @@
+import { Time, chunk, noOp, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import {
 	type MahojiUserOption,
@@ -16,7 +17,6 @@ import {
 	bold,
 	userMention
 } from 'discord.js';
-import { Time, chunk, noOp, notEmpty, uniqueArr } from 'e';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists.js';

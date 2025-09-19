@@ -1,9 +1,9 @@
+import { Time, debounce, noOp } from '@oldschoolgg/toolkit';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { UserError } from '@oldschoolgg/toolkit/structures';
 import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector } from 'discord.js';
-import { Time, debounce, noOp } from 'e';
 
 import { BLACKLISTED_USERS } from './blacklists.js';
 import { SILENT_ERROR } from './constants.js';

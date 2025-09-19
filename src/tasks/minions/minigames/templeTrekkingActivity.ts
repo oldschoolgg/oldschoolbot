@@ -1,5 +1,5 @@
+import { randInt } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { objectValues, randInt } from 'e';
 import { Bank, ItemGroups, Items } from 'oldschooljs';
 
 import {
@@ -20,7 +20,7 @@ function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 	for (const piece of ItemGroups.templeTrekkingOutfit) {
 		let amount = bank.amount(piece);
 
-		for (const setup of objectValues(user.gear)) {
+		for (const setup of Object.values(user.gear)) {
 			const thisItemEquipped = Object.values(setup).find(setup => setup?.item === piece);
 			if (thisItemEquipped) amount += thisItemEquipped.quantity;
 		}

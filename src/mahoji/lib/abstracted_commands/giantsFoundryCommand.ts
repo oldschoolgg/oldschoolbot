@@ -1,6 +1,6 @@
+import { Time, calcWhatPercent } from '@oldschoolgg/toolkit';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { Time, calcWhatPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { TOTAL_GIANT_WEAPONS } from '../../../lib/giantsFoundry.js';

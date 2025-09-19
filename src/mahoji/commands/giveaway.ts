@@ -1,3 +1,4 @@
+import { Time, chunk, randInt } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { channelIsSendable, makeComponents, makeEphemeralPaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
 import type { Giveaway } from '@prisma/client';
@@ -15,7 +16,6 @@ import {
 	messageLink,
 	time
 } from 'discord.js';
-import { Time, chunk, randInt } from 'e';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
 import { isModOrAdmin } from '@/lib/util.js';

@@ -1,6 +1,6 @@
+import { Time, objectEntries, percentChance, randInt } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { perTimeUnitChance } from '@oldschoolgg/toolkit/util';
-import { Time, objectEntries, percentChance, randInt } from 'e';
 import { Bank, EItem } from 'oldschooljs';
 
 import { MediumSeedPackTable } from '../../lib/data/seedPackTables.js';

@@ -1,4 +1,4 @@
-import { notEmpty } from 'e';
+import { notEmpty } from '@oldschoolgg/toolkit/util';
 import { Bank, type Item } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants.js';

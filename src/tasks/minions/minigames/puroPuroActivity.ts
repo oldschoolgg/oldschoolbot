@@ -1,4 +1,4 @@
-import { Time, randInt, reduceNumByPercent, roll } from 'e';
+import { Time, randInt, reduceNumByPercent, roll } from '@oldschoolgg/toolkit';
 import { Bank, SkillsEnum, itemID } from 'oldschooljs';
 
 import {

@@ -1,5 +1,5 @@
+import { randArrItem } from '@oldschoolgg/toolkit';
 import { Collection, type Message } from 'discord.js';
-import { randArrItem } from 'e';
 import { vi } from 'vitest';
 
 import '../src/lib/safeglobals.js';

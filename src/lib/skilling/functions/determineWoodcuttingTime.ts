@@ -1,4 +1,4 @@
-import { Time, percentChance } from 'e';
+import { Time, percentChance } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs/EItem';
 
 import { calcMaxTripLength } from '../../util/calcMaxTripLength.js';

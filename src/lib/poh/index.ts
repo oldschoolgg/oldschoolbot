@@ -1,5 +1,5 @@
+import { objectEntries } from '@oldschoolgg/toolkit';
 import type { PlayerOwnedHouse } from '@prisma/client';
-import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
 import type { LevelRequirements } from '../skilling/types.js';

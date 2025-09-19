@@ -1,3 +1,4 @@
+import { Time, randArrItem, randInt, shuffleArr, sumArr } from '@oldschoolgg/toolkit';
 import {
 	type Activity,
 	type Bingo,
@@ -25,8 +26,8 @@ import {
 	type activity_type_enum,
 	command_name_enum
 } from '@prisma/client';
-import { Time, deepClone, randArrItem, randInt, shuffleArr, sumArr } from 'e';
 import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
+import { clone } from 'remeda';
 import { beforeAll, expect, test, vi } from 'vitest';
 
 import { BitField } from '../../src/lib/constants.js';
@@ -120,8 +121,8 @@ class UserData {
 
 		this.bank = new Bank(this.mUser.bank);
 		this.clbank = new Bank(this.mUser.cl);
-		this.gear = { ...deepClone(this.mUser.gear) };
-		this.skillsAsLevels = deepClone(this.mUser.skillsAsLevels);
+		this.gear = { ...clone(this.mUser.gear) };
+		this.skillsAsLevels = clone(this.mUser.skillsAsLevels);
 
 		const robochimpUser = await roboChimpClient.user.findFirst({
 			where: { id: BigInt(this.id) },

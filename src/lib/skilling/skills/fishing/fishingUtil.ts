@@ -1,4 +1,4 @@
-import { round } from 'e';
+import { round } from '@oldschoolgg/toolkit';
 import { itemID } from 'oldschooljs';
 
 import type { GearBank } from '@/lib/structures/GearBank.js';

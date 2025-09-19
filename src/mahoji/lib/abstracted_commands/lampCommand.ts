@@ -1,5 +1,5 @@
-import { clamp, objectValues } from 'e';
 import { Bank, type Item, Items, itemID, resolveItems } from 'oldschooljs';
+import { clamp } from 'remeda';
 
 import type { Skills } from '@/lib/types/index.js';
 import { isValidSkill } from '@/lib/util/smallUtils.js';
@@ -142,7 +142,7 @@ export const Lampables: IXPObject[] = [
 		items: resolveItems(['Dark relic']),
 		function: data => {
 			const skills: Skills = {};
-			for (const skill of objectValues(SkillsEnum)) {
+			for (const skill of Object.values(SkillsEnum)) {
 				skills[skill] =
 					data.user.skillLevel(skill) *
 					([
@@ -175,7 +175,7 @@ export const Lampables: IXPObject[] = [
 		items: resolveItems(['Genie lamp']),
 		function: data => {
 			const skills: Skills = {};
-			for (const skill of objectValues(SkillsEnum)) {
+			for (const skill of Object.values(SkillsEnum)) {
 				skills[skill] = data.user.skillLevel(skill) * 10 * data.quantity;
 			}
 			return [skills, undefined];
@@ -185,7 +185,7 @@ export const Lampables: IXPObject[] = [
 		items: resolveItems(['Book of knowledge']),
 		function: data => {
 			const skills: Skills = {};
-			for (const skill of objectValues(SkillsEnum)) {
+			for (const skill of Object.values(SkillsEnum)) {
 				skills[skill] = data.user.skillLevel(skill) * 15 * data.quantity;
 			}
 			return [skills, undefined];
@@ -197,7 +197,7 @@ export const Lampables: IXPObject[] = [
 			const lamp = XPLamps.find(l => l.itemID === data.item.id)!;
 			const skills: Skills = {};
 			const requirements: Skills = {};
-			for (const skill of objectValues(SkillsEnum)) {
+			for (const skill of Object.values(SkillsEnum)) {
 				if (lamp.allowedSkills && !lamp.allowedSkills.includes(skill)) continue;
 				skills[skill] = lamp.amount * data.quantity;
 				requirements[skill] = lamp.minimumLevel;
@@ -209,7 +209,7 @@ export const Lampables: IXPObject[] = [
 		items: resolveItems(['Book of arcane knowledge']),
 		function: data => {
 			const skills: Skills = {};
-			for (const skill of objectValues(SkillsEnum)) {
+			for (const skill of Object.values(SkillsEnum)) {
 				if (skill !== SkillsEnum.Magic && skill !== SkillsEnum.Runecraft) {
 					continue;
 				}
@@ -223,7 +223,7 @@ export const Lampables: IXPObject[] = [
 		items: resolveItems(['Training manual']),
 		function: data => {
 			const skills: Skills = {};
-			for (const skill of objectValues(SkillsEnum)) {
+			for (const skill of Object.values(SkillsEnum)) {
 				if (
 					![SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Hitpoints].includes(skill)
 				) {
@@ -240,7 +240,7 @@ export const Lampables: IXPObject[] = [
 		items: resolveItems(["Duradel's Notes"]),
 		function: data => {
 			const skills: Skills = {};
-			for (const skill of objectValues(SkillsEnum)) {
+			for (const skill of Object.values(SkillsEnum)) {
 				if (![SkillsEnum.Slayer].includes(skill)) {
 					continue;
 				}
@@ -254,7 +254,7 @@ export const Lampables: IXPObject[] = [
 		function: data => {
 			const skills: Skills = {};
 
-			for (const skill of objectValues(SkillsEnum)) {
+			for (const skill of Object.values(SkillsEnum)) {
 				if (
 					![
 						SkillsEnum.Attack,
@@ -285,7 +285,7 @@ export async function lampCommand(user: MUser, itemToUse: string, skill: string,
 
 	if (!isValidSkill(skill)) return "That's not a valid skill.";
 
-	const qty = !_quantity ? 1 : clamp(_quantity, 1, 1000);
+	const qty = !_quantity ? 1 : clamp(_quantity, { min: 1, max: 1000 });
 	const toRemoveFromBank = new Bank().add(item.id, qty);
 	if (!user.owns(toRemoveFromBank)) {
 		return `You don't have **${toRemoveFromBank}** in your bank.`;

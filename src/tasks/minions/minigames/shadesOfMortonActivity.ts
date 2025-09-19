@@ -1,4 +1,4 @@
-import { increaseNumByPercent } from 'e';
+import { increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries.js';

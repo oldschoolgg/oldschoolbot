@@ -1,5 +1,5 @@
+import { Time, randFloat, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, randFloat, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { SkillsEnum } from '../../../lib/skilling/types.js';

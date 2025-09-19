@@ -1,5 +1,6 @@
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
+import { Monsters } from 'oldschooljs';
 
 import { colosseumCommand } from '@/lib/colosseum.js';
 import type { PvMMethod } from '@/lib/constants.js';
@@ -12,7 +13,6 @@ import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import findMonster from '@/lib/util/findMonster.js';
 import { generateDailyPeakIntervals } from '@/lib/util/peaks.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { Monsters } from 'oldschooljs';
 import { hasMonsterRequirements } from '../../../mahojiSettings.js';
 import { nexCommand } from '../nexCommand.js';
 import { nightmareCommand } from '../nightmareCommand.js';

@@ -1,5 +1,5 @@
+import { Time, increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings.js';

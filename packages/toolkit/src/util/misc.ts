@@ -110,3 +110,78 @@ export function sleep(ms: number) {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 export function noOp() {}
+
+/**
+ * Shows what percentage a value is of a total value, for example calculating what percentage of 20 is 5? (25%)
+ * @param partialValue The partial value of the total number, that you want to know what its percentage of the total is.
+ * @param totalValue The total value, that the partial value is a part of.
+ */
+export function calcWhatPercent(partialValue: number, totalValue: number): number {
+	return (100 * partialValue) / totalValue;
+}
+
+/**
+ * Calculates what a X% of a total number is, for example calculating what is 20% of 100
+ * @param percent The percentage (%) you want to calculate.
+ * @param valueToCalc The total number that you want to get the percentage of.
+ */
+export function calcPercentOfNum(percent: number, valueToCalc: number): number {
+	return (percent * valueToCalc) / 100;
+}
+
+/**
+ * Reduces a number by a percentage of itself.
+ * @param value, The number to be reduced.
+ * @param percent The percent you want the value to be reduced by.
+ */
+export function reduceNumByPercent(value: number, percent: number): number {
+	if (percent <= 0) return value;
+	return value - value * (percent / 100);
+}
+
+/**
+ * Increases a number by a percentage of itself.
+ * @param value, The number to be increased.
+ * @param percent The percent you want the value to be increased by.
+ */
+export function increaseNumByPercent(value: number, percent: number): number {
+	if (percent <= 0) return value;
+	return value + value * (percent / 100);
+}
+
+export function objectEntries<T extends Record<PropertyKey, unknown>>(obj: T) {
+	return Object.entries(obj) as [keyof T, T[keyof T]][];
+}
+
+/**
+ * Rounds a number to a given precision.
+ *
+ * @param value The number to be rounded.
+ * @param precision The precision of the rounding.
+ */
+export function round(value: number, precision = 1): number {
+	const multiplier = Math.pow(10, precision || 0);
+	return Math.round(value * multiplier) / multiplier;
+}
+
+export const debounce = <F extends (...args: any[]) => any>(fn: F, waitFor: number) => {
+	let timeout: ReturnType<typeof setTimeout> | null = null;
+
+	const debounced = (...args: Parameters<F>) => {
+		if (timeout !== null) {
+			clearTimeout(timeout);
+			timeout = null;
+		}
+		timeout = setTimeout(() => fn(...args), waitFor);
+	};
+
+	return debounced as (...args: Parameters<F>) => ReturnType<F>;
+};
+
+export function scaleNumber(num: number, inMin: number, inMax: number, outMin: number, outMax: number): number {
+	return ((num - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+}
+
+export function stripNonAlphanumeric(str: string) {
+	return str.replace(/[^a-zA-Z0-9]/g, '');
+}

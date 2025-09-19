@@ -1,8 +1,8 @@
+import { Time, roll, shuffleArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
-import { Time, roll, shuffleArr, uniqueArr } from 'e';
 import type { ItemBank } from 'oldschooljs';
 
 import { DynamicButtons } from '../../../lib/DynamicButtons.js';

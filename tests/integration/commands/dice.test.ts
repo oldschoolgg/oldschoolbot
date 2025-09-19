@@ -1,4 +1,4 @@
-import { randInt } from 'e';
+import { randInt } from '@/lib/util/rng.js';
 import { Bank } from 'oldschooljs';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 

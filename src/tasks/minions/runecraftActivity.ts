@@ -1,4 +1,4 @@
-import { roll } from 'e';
+import { roll } from '@/lib/util/rng.js';
 import { Bank, EItem } from 'oldschooljs';
 
 import { skillingPetDropRate } from '@/lib/util.js';

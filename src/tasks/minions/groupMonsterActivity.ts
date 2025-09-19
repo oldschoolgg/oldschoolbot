@@ -1,5 +1,5 @@
+import { noOp, randArrItem } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { noOp, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
 import killableMonsters from '../../lib/minions/data/killableMonsters/index.js';

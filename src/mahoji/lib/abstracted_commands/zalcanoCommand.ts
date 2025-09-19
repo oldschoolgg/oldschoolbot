@@ -1,5 +1,5 @@
+import { Time, calcWhatPercent, percentChance, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, calcWhatPercent, percentChance, reduceNumByPercent } from 'e';
 import { EMonster } from 'oldschooljs';
 
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';

@@ -1,5 +1,5 @@
+import { Time, randFloat, randInt, roll } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { Time, randFloat, randInt, roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { SkillsEnum } from '../../lib/skilling/types.js';

@@ -1,5 +1,5 @@
+import { Time, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, reduceNumByPercent } from 'e';
 
 import { plunderBoosts, plunderRooms } from '../../../lib/minions/data/plunder.js';
 

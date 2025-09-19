@@ -1,4 +1,4 @@
-import { isFunction, notEmpty } from 'e';
+import { isFunction, notEmpty } from '@oldschoolgg/toolkit';
 import { Bank, Implings, Items, Monsters, resolveItems } from 'oldschooljs';
 
 import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';

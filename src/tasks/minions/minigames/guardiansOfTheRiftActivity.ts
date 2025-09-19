@@ -1,6 +1,6 @@
+import { randArrItem, randInt } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
-import { randArrItem, randInt } from 'e';
 import { Bank, EItem } from 'oldschooljs';
 
 import { trackLoot } from '../../../lib/lootTrack.js';

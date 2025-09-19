@@ -1,5 +1,5 @@
+import { Time, calcPercentOfNum, calcWhatPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { randomVariation } from '@oldschoolgg/toolkit/util';
-import { Time, calcPercentOfNum, calcWhatPercent, reduceNumByPercent } from 'e';
 
 import { userStatsUpdate } from '../../mahoji/mahojiSettings.js';
 import type { KillableMonster } from '../minions/types.js';

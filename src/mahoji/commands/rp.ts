@@ -1,3 +1,4 @@
+import { Time, randArrItem, sumArr } from '@oldschoolgg/toolkit';
 import { type MahojiUserOption, isValidDiscordSnowflake } from '@oldschoolgg/toolkit/discord-util';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
@@ -6,7 +7,6 @@ import { UserEventType, xp_gains_skill_enum } from '@prisma/client';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Duration } from '@sapphire/time-utilities';
 import { ApplicationCommandOptionType, SnowflakeUtil, codeBlock } from 'discord.js';
-import { Time, randArrItem, sumArr } from 'e';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { BitField, Channel, globalConfig } from '../../lib/constants.js';

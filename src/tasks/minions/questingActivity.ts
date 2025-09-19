@@ -1,5 +1,5 @@
+import { randInt } from '@/lib/util/rng.js';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { randInt } from 'e';
 
 import { MAX_QP } from '../../lib/minions/data/quests.js';
 import { SkillsEnum } from '../../lib/skilling/types.js';

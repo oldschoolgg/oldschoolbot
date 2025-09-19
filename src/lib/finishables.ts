@@ -1,5 +1,5 @@
+import { notEmpty, randArrItem, roll } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { notEmpty, randArrItem, roll } from 'e';
 import {
 	Bank,
 	BeginnerCasket,

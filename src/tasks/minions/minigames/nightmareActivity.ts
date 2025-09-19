@@ -1,4 +1,4 @@
-import { percentChance } from 'e';
+import { percentChance } from '@/lib/util/rng.js';
 import { Bank, EMonster, Misc, randomVariation } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants.js';

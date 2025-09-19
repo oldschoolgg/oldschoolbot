@@ -1,7 +1,7 @@
+import { chunk } from '@oldschoolgg/toolkit';
 import { channelIsSendable, makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType, EmbedBuilder, type MessageEditOptions } from 'discord.js';
-import { chunk } from 'e';
 import { type BossRecords, Hiscores, bossNameMap } from 'oldschooljs/hiscores';
 
 import { logError, logErrorForInteraction } from '@/lib/util/logError.js';

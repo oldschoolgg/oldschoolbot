@@ -1,5 +1,5 @@
 import { writeFileSync } from 'node:fs';
-import { objectEntries } from 'e';
+import { objectEntries } from '@oldschoolgg/toolkit';
 import { describe, expect, test } from 'vitest';
 
 import { allSlayerTasks } from '@/lib/slayer/tasks/index.js';

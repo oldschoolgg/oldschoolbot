@@ -1,5 +1,5 @@
+import { Time, sumArr } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, sumArr } from 'e';
 
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { MAX_GLOBAL_QP, MAX_QP, quests } from '../../../lib/minions/data/quests.js';

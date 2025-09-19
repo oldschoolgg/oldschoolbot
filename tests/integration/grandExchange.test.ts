@@ -1,4 +1,4 @@
-import { Time, calcPercentOfNum, randArrItem, randInt, shuffleArr } from 'e';
+import { Time, calcPercentOfNum, randArrItem, randInt, shuffleArr } from '@oldschoolgg/toolkit';
 import { Bank, resolveItems } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { assert, describe, expect, test } from 'vitest';

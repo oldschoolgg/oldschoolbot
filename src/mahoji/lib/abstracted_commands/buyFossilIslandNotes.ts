@@ -1,5 +1,5 @@
+import { randArrItem } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { fossilIslandNotesCL } from '../../../lib/data/CollectionsExport.js';

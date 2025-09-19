@@ -1,6 +1,7 @@
+import { notEmpty, roll, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import type { activity_type_enum } from '@prisma/client';
-import { deepClone, notEmpty, roll, sumArr, uniqueArr } from 'e';
 import type { Item } from 'oldschooljs';
+import { clone } from 'remeda';
 
 import type { Requirements } from '../structures/Requirements.js';
 import type { ActivityTaskData, TOAOptions } from '../types/minions.js';
@@ -162,7 +163,7 @@ assert(sumArr(Object.values(CombatAchievements).map(i => i.length)) === allCATas
 const indexesWithRng = entries.flatMap(i => i[1].tasks.filter(t => 'rng' in t));
 
 export const combatAchievementTripEffect = async ({ data, messages, user }: Parameters<TripFinishEffect['fn']>[0]) => {
-	const dataCopy = deepClone(data);
+	const dataCopy = clone(data);
 
 	let quantity = 1;
 	if ('q' in dataCopy) {

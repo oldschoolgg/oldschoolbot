@@ -1,4 +1,4 @@
-import { noOp, uniqueArr } from 'e';
+import { noOp, uniqueArr } from '@oldschoolgg/toolkit';
 
 import { syncCustomPrices } from '../mahoji/lib/events.js';
 import { cacheBadges } from './badges.js';

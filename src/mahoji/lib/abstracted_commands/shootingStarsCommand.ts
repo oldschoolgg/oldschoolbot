@@ -1,8 +1,8 @@
+import { Time, percentChance, randInt, roll } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import type { activity_type_enum } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
-import { Time, percentChance, randInt, roll } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot.js';

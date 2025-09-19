@@ -1,6 +1,6 @@
+import { chunk } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { chunk } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
 import { leagueBuyables } from '../../lib/data/leaguesBuyables.js';

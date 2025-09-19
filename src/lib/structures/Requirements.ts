@@ -1,5 +1,5 @@
+import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
 import type { Minigame, PlayerOwnedHouse, activity_type_enum } from '@prisma/client';
-import { calcWhatPercent, objectEntries } from 'e';
 import type { Bank } from 'oldschooljs';
 
 import type { ParsedUnit } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand.js';

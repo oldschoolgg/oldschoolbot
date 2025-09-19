@@ -1,4 +1,4 @@
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 
 import { Construction } from '@/lib/skilling/skills/construction/index.js';
 import { SkillsEnum } from '../../lib/skilling/types.js';

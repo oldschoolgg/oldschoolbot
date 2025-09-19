@@ -1,8 +1,8 @@
+import { Time, noOp, randArrItem, randInt, uniqueArr } from '@oldschoolgg/toolkit';
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { type Prisma, xp_gains_skill_enum } from '@prisma/client';
 import { ApplicationCommandOptionType, MessageFlags, type User } from 'discord.js';
-import { Time, noOp, randArrItem, randInt, uniqueArr } from 'e';
 import { Bank, Items, MAX_INT_JAVA, convertLVLtoXP, itemID } from 'oldschooljs';
 
 import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';

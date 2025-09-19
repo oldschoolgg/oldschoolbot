@@ -1,6 +1,6 @@
+import { randInt } from '@/lib/util/rng.js';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
-import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '../../../lib/lootTrack.js';

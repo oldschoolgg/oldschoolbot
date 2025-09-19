@@ -1,6 +1,6 @@
+import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Items, SkillsEnum } from 'oldschooljs';
 
 import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';

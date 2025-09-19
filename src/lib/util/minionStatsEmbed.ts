@@ -1,6 +1,6 @@
+import { shuffleArr, sumArr } from '@oldschoolgg/toolkit';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { EmbedBuilder } from 'discord.js';
-import { shuffleArr, sumArr } from 'e';
 import { Bank, type ItemBank, convertXPtoLVL, toKMB } from 'oldschooljs';
 import type { SkillsScore } from 'oldschooljs/hiscores';
 

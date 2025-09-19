@@ -1,6 +1,6 @@
 import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { notEmpty } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
-import { notEmpty } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Workers } from '@/lib/workers/index.js';

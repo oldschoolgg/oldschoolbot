@@ -1,9 +1,9 @@
+import { calcWhatPercent, percentChance, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { UserError } from '@oldschoolgg/toolkit/structures';
 import type { GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { escapeMarkdown, userMention } from 'discord.js';
-import { calcWhatPercent, objectValues, percentChance, sumArr, uniqueArr } from 'e';
 import {
 	Bank,
 	EMonster,
@@ -444,7 +444,7 @@ GROUP BY data->>'ci';`);
 			bank.add(this.user.minion_equippedPet);
 		}
 
-		for (const setup of objectValues(this.gear)) {
+		for (const setup of Object.values(this.gear)) {
 			bank.add(setup.toBank());
 		}
 

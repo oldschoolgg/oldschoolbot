@@ -1,5 +1,5 @@
+import { randInt } from '@/lib/util/rng.js';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { roll } from '@/lib/util/rng.js';

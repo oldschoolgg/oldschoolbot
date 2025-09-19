@@ -1,4 +1,4 @@
-import { randInt } from 'e';
+import { randInt } from '@/lib/util/rng.js';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { roll } from '@/lib/util/rng.js';

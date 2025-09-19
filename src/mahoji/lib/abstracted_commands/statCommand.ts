@@ -1,8 +1,8 @@
+import { Time, sumArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { PerkTier, formatDuration } from '@oldschoolgg/toolkit/util';
 import type { UserStats, activity_type_enum } from '@prisma/client';
-import { Time, sumArr } from 'e';
 import { Bank, type ItemBank, Monsters, SkillsEnum, TOBRooms, resolveItems, toKMB } from 'oldschooljs';
 import type { SkillsScore } from 'oldschooljs/hiscores';
 

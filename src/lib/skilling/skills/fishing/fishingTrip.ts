@@ -1,4 +1,4 @@
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs';
 import { match } from 'ts-pattern';
 

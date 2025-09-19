@@ -1,7 +1,7 @@
+import { randInt } from '@/lib/util/rng.js';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { User } from 'discord.js';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
-import { randInt } from 'e';
 
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries.js';
 import { quests } from '../../lib/minions/data/quests.js';

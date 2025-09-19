@@ -1,3 +1,4 @@
+import { calcWhatPercent, chunk, isFunction, uniqueArr } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { channelIsSendable, makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/string-util';
@@ -7,7 +8,6 @@ import {
 	EmbedBuilder,
 	type MessageEditOptions
 } from 'discord.js';
-import { calcWhatPercent, chunk, isFunction, uniqueArr } from 'e';
 import { convertXPtoLVL } from 'oldschooljs';
 
 import { getUsername, getUsernameSync } from '@/lib/util.js';

@@ -1,4 +1,4 @@
-import { percentChance } from 'e';
+import { percentChance } from '@/lib/util/rng.js';
 import { Bank } from 'oldschooljs';
 
 import Prayer from '../../../lib/skilling/skills/prayer.js';

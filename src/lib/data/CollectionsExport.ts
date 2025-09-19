@@ -1,5 +1,5 @@
+import { objectEntries } from '@oldschoolgg/toolkit';
 import type { Minigame } from '@prisma/client';
-import { objectEntries } from 'e';
 import { type Bank, type Item, ItemGroups, Items, resolveItems } from 'oldschooljs';
 
 import { growablePets } from '../growablePets.js';

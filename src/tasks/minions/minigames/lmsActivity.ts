@@ -1,7 +1,8 @@
+import { percentChance, sumArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { calcPerHour, formatOrdinal, gaussianRandom } from '@oldschoolgg/toolkit/util';
-import { clamp, percentChance, sumArr } from 'e';
+import { clamp } from 'remeda';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';
 
@@ -59,7 +60,7 @@ export function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnT
 	const gameResults: LMSGameSimulated[] = [];
 
 	// 0 at 0kc, 1 at 120kc
-	const experienceFactor = clamp(lmsStats.totalGames / 120, 0, 1);
+	const experienceFactor = clamp(lmsStats.totalGames / 120, { min: 0, max: 1 });
 
 	let chanceToWinFight = 12.5;
 	chanceToWinFight += experienceFactor * 75;

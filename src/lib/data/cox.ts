@@ -1,4 +1,3 @@
-import { randomVariation } from '@oldschoolgg/toolkit/util';
 import {
 	Time,
 	calcPercentOfNum,
@@ -8,7 +7,8 @@ import {
 	randInt,
 	reduceNumByPercent,
 	shuffleArr
-} from 'e';
+} from '@oldschoolgg/toolkit';
+import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, type ChambersOfXericOptions, type Item, itemID, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 

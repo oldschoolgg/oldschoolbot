@@ -1,6 +1,6 @@
+import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
 import { generateHexColorForCashStack } from '@oldschoolgg/toolkit/runescape';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
-import { calcWhatPercent, objectEntries } from 'e';
 import { type Bank, Items, toKMB } from 'oldschooljs';
 
 import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections.js';

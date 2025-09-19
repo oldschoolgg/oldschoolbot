@@ -5,7 +5,7 @@ import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import '../src/lib/safeglobals.js';
 import sharp from 'sharp';
 
-import { isFunction, uniqueArr } from 'e';
+import { isFunction, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
 import { ALL_OBTAINABLE_ITEMS } from '../src/lib/allObtainableItems.js';
 import { BOT_TYPE } from '../src/lib/constants.js';

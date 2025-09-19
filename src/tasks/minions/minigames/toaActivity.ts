@@ -1,7 +1,7 @@
+import { Time, isObject, uniqueArr } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { bold } from 'discord.js';
-import { Time, isObject, uniqueArr } from 'e';
 import { Bank, type ItemBank, ItemGroups, resolveItems } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';

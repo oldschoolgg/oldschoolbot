@@ -1,6 +1,6 @@
+import { shuffleArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { ChatInputCommandInteraction, User } from 'discord.js';
-import { shuffleArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation.js';

@@ -1,6 +1,6 @@
+import { Time, calcWhatPercent, reduceNumByPercent, roll } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, calcWhatPercent, reduceNumByPercent, roll } from 'e';
 import { Bank, randomVariation, toKMB } from 'oldschooljs';
 
 import { skillingPetDropRate } from '@/lib/util.js';

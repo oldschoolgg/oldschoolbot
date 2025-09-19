@@ -1,4 +1,4 @@
-import { objectEntries } from 'e';
+import { objectEntries } from '@oldschoolgg/toolkit';
 import { convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 

@@ -1,4 +1,4 @@
-import { increaseNumByPercent } from 'e';
+import { increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { ItemGroups, convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 

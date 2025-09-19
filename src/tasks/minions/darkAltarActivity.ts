@@ -1,4 +1,4 @@
-import { increaseNumByPercent, roll } from 'e';
+import { increaseNumByPercent, roll } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '@oldschoolgg/toolkit/constants';

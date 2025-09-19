@@ -1,5 +1,5 @@
+import { uniqueArr } from '@oldschoolgg/toolkit';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
-import { uniqueArr } from 'e';
 import { SkillsEnum } from 'oldschooljs';
 
 import { formatList } from '../../util/smallUtils.js';

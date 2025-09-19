@@ -1,5 +1,5 @@
+import { Time, increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, increaseNumByPercent } from 'e';
 import { Bank, EItem } from 'oldschooljs';
 
 import Runecraft from '../../../lib/skilling/skills/runecraft.js';

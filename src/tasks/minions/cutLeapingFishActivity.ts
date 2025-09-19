@@ -1,5 +1,6 @@
-import { clamp, percentChance } from 'e';
+import { percentChance } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
+import { clamp } from 'remeda';
 
 import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish.js';
 import { SkillsEnum } from '../../lib/skilling/types.js';
@@ -22,7 +23,7 @@ export const cutLeapingFishTask: MinionTask = {
 		let fishOffcutsCreated = 0;
 
 		if (barbarianFish.item.name === 'Leaping sturgeon') {
-			caviarChance = clamp(1.25 * currentLevel, 0, 100);
+			caviarChance = clamp(1.25 * currentLevel, { min: 0, max: 100 });
 			fishOffcutsChance = (5 / 6) * 100;
 			for (let i = 0; i < quantity; i++) {
 				if (percentChance(caviarChance)) {
@@ -34,7 +35,7 @@ export const cutLeapingFishTask: MinionTask = {
 			}
 		}
 		if (barbarianFish.item.name === 'Leaping salmon') {
-			roeChance = clamp(1.25 * currentLevel, 0, 100);
+			roeChance = clamp(1.25 * currentLevel, { min: 0, max: 100 });
 			fishOffcutsChance = (3 / 4) * 100;
 			for (let i = 0; i < quantity; i++) {
 				if (percentChance(roeChance)) {
@@ -47,7 +48,7 @@ export const cutLeapingFishTask: MinionTask = {
 		}
 
 		if (barbarianFish.item.name === 'Leaping trout') {
-			roeChance = clamp(0.67 * currentLevel, 0, 100);
+			roeChance = clamp(0.67 * currentLevel, { min: 0, max: 100 });
 			fishOffcutsChance = (1 / 2) * 100;
 			for (let i = 0; i < quantity; i++) {
 				if (percentChance(roeChance)) {

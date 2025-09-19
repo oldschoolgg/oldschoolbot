@@ -1,5 +1,5 @@
+import { randInt } from '@/lib/util/rng.js';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { randInt } from 'e';
 
 import {
 	type CanvasContext,

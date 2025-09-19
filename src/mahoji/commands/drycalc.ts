@@ -1,5 +1,5 @@
+import { round } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { round } from 'e';
 
 export const dryCalcCommand: OSBMahojiCommand = {
 	name: 'drycalc',

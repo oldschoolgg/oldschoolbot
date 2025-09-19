@@ -1,7 +1,8 @@
+import { Time, percentChance, roll } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
-import { Time, deepClone, percentChance, roll } from 'e';
 import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
+import { clone } from 'remeda';
 
 import { logError } from '@/lib/util/logError.js';
 import type { BitField } from '../../lib/constants.js';
@@ -224,7 +225,7 @@ export function doMonsterTrip(data: newOptions) {
 			// 1 in 20 to get smited without antiPKSupplies and 1 in 300 if the user has super restores
 			const hasPrayerLevel = gearBank.skillsAsLevels.prayer >= 25;
 			const protectItem = roll(hasWildySupplies ? 300 : 20) ? false : hasPrayerLevel;
-			const userGear = { ...deepClone(gearBank.gear.wildy.raw()) };
+			const userGear = { ...clone(gearBank.gear.wildy.raw()) };
 
 			const calc = calculateGearLostOnDeathWilderness({
 				gear: userGear,

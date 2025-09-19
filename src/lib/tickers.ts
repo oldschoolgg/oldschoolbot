@@ -1,9 +1,9 @@
+import { Time, noOp, removeFromArr } from '@oldschoolgg/toolkit';
 import { awaitMessageComponentInteraction, cleanUsername } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
-import { Time, noOp, removeFromArr } from 'e';
 
 import Farming from '@/lib/skilling/skills/farming/index.js';
 import { mahojiUserSettingsUpdate } from './MUser.js';

@@ -1,7 +1,6 @@
 import { PerkTier, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { GearPreset } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { objectValues } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
@@ -55,7 +54,7 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 	}
 
 	const userBankWithEquippedItems = user.bank.clone();
-	for (const e of objectValues(user.gear[gearSetup].raw())) {
+	for (const e of Object.values(user.gear[gearSetup].raw())) {
 		if (e) userBankWithEquippedItems.add(e.item, Math.max(e.quantity, 1));
 	}
 

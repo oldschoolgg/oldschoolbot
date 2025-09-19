@@ -1,4 +1,4 @@
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
+import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 
 import { roll } from '@/lib/util/rng.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions.js';

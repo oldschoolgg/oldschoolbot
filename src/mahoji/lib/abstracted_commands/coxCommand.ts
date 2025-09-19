@@ -1,7 +1,7 @@
+import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { calcWhatPercent, sumArr } from 'e';
 import { Bank, randomVariation } from 'oldschooljs';
 
 import type { MakePartyOptions } from '@/lib/types/index.js';

@@ -1,9 +1,10 @@
+import { Time, calcWhatPercent, reduceNumByPercent, roll, round } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration, formatOrdinal, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { Time, calcWhatPercent, clamp, reduceNumByPercent, roll, round } from 'e';
 import { Bank, itemID } from 'oldschooljs';
+import { clamp } from 'remeda';
 
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
@@ -256,7 +257,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 
 	// Up to 10%, at 200 kc, speed boost for team average kc
 	const kc = await user.fetchMinigameScore('barb_assault');
-	const kcPercent = clamp(calcWhatPercent(kc, 200), 1, 100);
+	const kcPercent = clamp(calcWhatPercent(kc, 200), { min: 1, max: 100 });
 	const kcPercentBoost = kcPercent / 10;
 	boosts.push(`${kcPercentBoost.toFixed(2)}% for average KC`);
 	waveTime = reduceNumByPercent(waveTime, kcPercentBoost);

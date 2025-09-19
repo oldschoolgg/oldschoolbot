@@ -1,6 +1,6 @@
+import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { itemID } from 'oldschooljs';
 
 import { userhasDiaryTier } from '../../lib/diaries.js';

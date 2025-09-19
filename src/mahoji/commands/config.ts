@@ -1,3 +1,4 @@
+import { Time, removeFromArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { allAbstractCommands, channelIsSendable, hasBanMemberPerms } from '@oldschoolgg/toolkit/discord-util';
 import { miniID, stringMatches } from '@oldschoolgg/toolkit/string-util';
@@ -13,8 +14,8 @@ import {
 	inlineCode,
 	resolveColor
 } from 'discord.js';
-import { Time, clamp, removeFromArr, uniqueArr } from 'e';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
+import { clamp } from 'remeda';
 
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { DynamicButtons } from '../../lib/DynamicButtons.js';
@@ -630,7 +631,7 @@ async function handleRSN(user: MUser, newRSN: string) {
 }
 
 function pinnedTripLimit(perkTier: number) {
-	return clamp(perkTier + 1, 1, 4);
+	return clamp(perkTier + 1, { min: 1, max: 4 });
 }
 export async function pinTripCommand(
 	user: MUser,

@@ -1,5 +1,5 @@
+import { Time, calcWhatPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
 import { Eatables } from '../../../lib/data/eatables.js';

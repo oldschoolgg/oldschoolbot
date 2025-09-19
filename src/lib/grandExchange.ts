@@ -1,11 +1,12 @@
+import { Time, calcPercentOfNum, noOp, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { getInterval } from '@oldschoolgg/toolkit/util';
 import { type GEListing, GEListingType, type GETransaction } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
-import { Time, calcPercentOfNum, clamp, noOp, sumArr, uniqueArr } from 'e';
 import { LRUCache } from 'lru-cache';
 import { Bank, type Item, type ItemBank, toKMB } from 'oldschooljs';
 import PQueue from 'p-queue';
+import { clamp } from 'remeda';
 
 import { BLACKLISTED_USERS } from './blacklists.js';
 import { BitField, PerkTier, globalConfig } from './constants.js';
@@ -217,7 +218,7 @@ class GrandExchangeSingleton {
 		const rate = this.config.tax.rate();
 		let amount = calcPercentOfNum(rate, pricePerItem);
 		amount = Math.floor(amount);
-		amount = clamp(amount, 0, this.config.tax.cap());
+		amount = clamp(amount, { min: 0, max: this.config.tax.cap() });
 		validateNumber(amount);
 
 		const newPrice = pricePerItem - amount;

@@ -1,4 +1,4 @@
-import { percentChance, randInt } from 'e';
+import { percentChance, randInt } from '@oldschoolgg/toolkit';
 import { ItemGroups } from 'oldschooljs';
 
 import { roll } from '@/lib/util/rng.js';

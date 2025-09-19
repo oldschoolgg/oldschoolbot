@@ -1,9 +1,9 @@
+import { Time, isFunction, roll } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { UserError } from '@oldschoolgg/toolkit/structures';
 import { command_name_enum } from '@prisma/client';
 import { type BaseMessageOptions, EmbedBuilder, type Message, type TextChannel, bold } from 'discord.js';
-import { Time, isFunction, roll } from 'e';
 import { LRUCache } from 'lru-cache';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 

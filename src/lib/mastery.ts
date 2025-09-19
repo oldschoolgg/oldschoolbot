@@ -1,4 +1,5 @@
-import { calcWhatPercent, clamp, round, sumArr } from 'e';
+import { calcWhatPercent, round, sumArr } from '@oldschoolgg/toolkit';
+import { clamp } from 'remeda';
 
 import { calculateAchievementDiaryProgress } from '../mahoji/lib/abstracted_commands/achievementDiaryCommand.js';
 import { allCombatAchievementTasks } from './combat_achievements/combatAchievements.js';
@@ -23,19 +24,19 @@ export async function calculateMastery(user: MUser, stats: MUserStats) {
 	const masteryFactors = [
 		{
 			name: 'CL',
-			percentage: clamp(clCompletionPercentage, 0, 100)
+			percentage: clamp(clCompletionPercentage, { min: 0, max: 100 })
 		},
 		{
 			name: 'XP',
-			percentage: clamp(totalXPPercent, 0, 100)
+			percentage: clamp(totalXPPercent, { min: 0, max: 100 })
 		},
 		{
 			name: 'Combat Achievements',
-			percentage: clamp(combatAchievementPercent, 0, 100)
+			percentage: clamp(combatAchievementPercent, { min: 0, max: 100 })
 		},
 		{
 			name: 'Quests',
-			percentage: clamp(calcWhatPercent(user.QP, MAX_QP), 0, 100)
+			percentage: clamp(calcWhatPercent(user.QP, MAX_QP), { min: 0, max: 100 })
 		},
 		{
 			name: 'Achievement Diaries',

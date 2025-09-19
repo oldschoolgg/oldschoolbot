@@ -1,7 +1,7 @@
+import { Time, isObject, objectEntries } from '@oldschoolgg/toolkit';
 import { evalMathExpression } from '@oldschoolgg/toolkit/math';
 import type { Prisma, User, UserStats } from '@prisma/client';
 import { bold } from 'discord.js';
-import { Time, isObject, objectEntries } from 'e';
 import { Bank, type ItemBank, ItemGroups, Items } from 'oldschooljs';
 
 import { formatItemReqs, formatList, hasSkillReqs, itemNameFromID, readableStatName } from '@/lib/util/smallUtils.js';

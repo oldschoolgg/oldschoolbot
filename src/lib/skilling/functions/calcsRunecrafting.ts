@@ -1,4 +1,4 @@
-import { percentChance } from 'e';
+import { percentChance } from '@/lib/util/rng.js';
 
 import { checkDegradeableItemCharges, degradeItem } from '../../degradeableItems.js';
 import getOSItem from '../../util/getOSItem.js';

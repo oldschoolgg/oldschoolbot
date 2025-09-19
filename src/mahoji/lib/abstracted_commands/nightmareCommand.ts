@@ -1,6 +1,6 @@
+import { Time, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, reduceNumByPercent } from 'e';
 import { Bank, EMonster, ZAM_HASTA_CRUSH, resolveItems } from 'oldschooljs';
 
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';

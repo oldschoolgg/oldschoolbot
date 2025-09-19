@@ -1,4 +1,4 @@
-import { percentChance } from 'e';
+import { percentChance } from '@/lib/util/rng.js';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { SkillsEnum } from '../../lib/skilling/types.js';

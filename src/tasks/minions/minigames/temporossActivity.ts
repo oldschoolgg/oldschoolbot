@@ -1,6 +1,6 @@
+import { increaseNumByPercent, randInt } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { calcPerHour, formatOrdinal } from '@oldschoolgg/toolkit/util';
-import { increaseNumByPercent, randInt } from 'e';
 
 import { getTemporossLoot } from '../../../lib/simulation/tempoross.js';
 import { Fishing } from '../../../lib/skilling/skills/fishing/fishing.js';

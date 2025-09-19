@@ -1,5 +1,5 @@
+import { Time, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Time, reduceNumByPercent } from 'e';
 import { SkillsEnum } from 'oldschooljs';
 
 import { Castables } from '../../../lib/skilling/skills/magic/castables.js';

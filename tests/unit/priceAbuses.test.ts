@@ -1,4 +1,4 @@
-import { isFunction } from 'e';
+import { isFunction } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 import { describe, test } from 'vitest';
 

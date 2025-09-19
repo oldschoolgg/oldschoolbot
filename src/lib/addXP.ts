@@ -1,8 +1,8 @@
+import { Time, noOp } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { type User, UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
-import { Time, noOp } from 'e';
 import { convertXPtoLVL, toKMB } from 'oldschooljs';
 
 import { LEVEL_99_XP, MAX_LEVEL, MAX_TOTAL_LEVEL, MAX_XP, globalConfig } from './constants.js';

@@ -1,9 +1,9 @@
+import { sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { type CommandOption, makeComponents, returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import { evalMathExpression } from '@oldschoolgg/toolkit/math';
 import type { GEListing, GETransaction } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { sumArr, uniqueArr } from 'e';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';

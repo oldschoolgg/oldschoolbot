@@ -1,5 +1,5 @@
+import { notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
 import type { GearPreset } from '@prisma/client';
-import { notEmpty, objectKeys, uniqueArr } from 'e';
 import { Bank, EquipmentSlot, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 import type { EGear } from 'oldschooljs/EGear';
 import {
@@ -500,7 +500,7 @@ export class Gear {
 		const sum = { ...baseStats };
 		for (const id of this.allItems(false)) {
 			const item = getOSItem(id);
-			for (const keyToAdd of objectKeys(sum)) {
+			for (const keyToAdd of Object.keys(sum) as (keyof GearStats)[]) {
 				sum[keyToAdd] += item.equipment ? item.equipment[keyToAdd] : 0;
 			}
 		}
@@ -508,7 +508,7 @@ export class Gear {
 	}
 
 	meetsStatRequirements(gearRequirements: GearRequirement): [false, keyof GearStats, number] | [true, null, null] {
-		const keys = objectKeys(this.stats as Record<keyof GearStats, number>);
+		const keys = Object.keys(this.stats) as (keyof GearStats)[];
 		for (const key of keys) {
 			const required = gearRequirements?.[key];
 			if (!required) continue;
@@ -596,7 +596,7 @@ export class Gear {
 
 	toBank() {
 		const bank = new Bank();
-		for (const slot of objectKeys(defaultGear)) {
+		for (const slot of Object.keys(defaultGear) as (keyof typeof defaultGear)[]) {
 			const equipped = this[slot];
 			if (!equipped || !equipped.item || !equipped.quantity) continue;
 			bank.add(equipped.item, equipped.quantity);

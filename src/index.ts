@@ -3,11 +3,11 @@ import './lib/globals.js';
 import './lib/MUser.js';
 import './lib/ActivityManager.js';
 
+import { isObject } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { MahojiClient, convertMahojiCommandToAbstractCommand } from '@oldschoolgg/toolkit/discord-util';
 import { init } from '@sentry/node';
 import { GatewayIntentBits, Options, Partials, type TextChannel } from 'discord.js';
-import { isObject } from 'e';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists.js';
 import { Channel, gitHash, globalConfig } from './lib/constants.js';
