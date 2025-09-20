@@ -1,6 +1,6 @@
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
-import { SpriteSheetGenerator } from '@oldschoolgg/spritesheet';
+import { type GenerateResult, SpriteSheetGenerator } from '@oldschoolgg/spritesheet';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import '../src/lib/safeglobals.js';
 import sharp from 'sharp';
@@ -15,7 +15,6 @@ import Createables from '../src/lib/data/createables.js';
 
 import bsoItemsJson from '../data/bso/bso_items.json' with { type: 'json' };
 import bsoMonstersJson from '../data/bso/monsters.json' with { type: 'json' };
-import type { GenerateResult } from '../packages/spritesheet/dist/types.js';
 
 const SPRITESHEETS_DIR = './src/lib/resources/spritesheets';
 const stopwatch = new Stopwatch();

@@ -35,6 +35,7 @@
 		"monorepo:test": "pnpm --stream -r test"
 	},
 	"dependencies": {
+		"@oldschoolgg/spritesheet": "workspace:*",
 		"@oldschoolgg/collectionlog": "workspace:*",
 		"@oldschoolgg/toolkit": "workspace:*",
 		"@prisma/client": "^6.10.1",

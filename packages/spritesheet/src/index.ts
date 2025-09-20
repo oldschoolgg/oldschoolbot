@@ -34,3 +34,5 @@ export class SpriteSheetGenerator {
 		};
 	}
 }
+
+export type { GenerateResult };

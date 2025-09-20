@@ -20,6 +20,9 @@ importers:
       '@oldschoolgg/collectionlog':
         specifier: workspace:*
         version: link:packages/collectionlog
+      '@oldschoolgg/spritesheet':
+        specifier: workspace:*
+        version: link:packages/spritesheet
       '@oldschoolgg/toolkit':
         specifier: workspace:*
         version: link:packages/toolkit

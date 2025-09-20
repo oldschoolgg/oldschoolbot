@@ -3,8 +3,9 @@
 	"type": "module",
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"node": "./dist/index.js"
+			"types": "./dist/esm/index.d.mts",
+			"require": "./dist/cjs/index.cjs",
+			"import": "./dist/esm/index.mjs"
 		}
 	},
 	"scripts": {
