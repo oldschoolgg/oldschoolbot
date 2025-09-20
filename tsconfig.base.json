@@ -7,9 +7,9 @@
 		"esModuleInterop": true,
 		"importHelpers": false,
 		"incremental": true,
-		"lib": ["es2022"],
+		"lib": ["es2024", "ESNext.Array", "ESNext.Collection", "ESNext.Iterator", "ESNext.Promise"],
 		"module": "nodenext",
-		"moduleResolution": "nodenext",
+		"moduleResolution": "node16",
 		"newLine": "lf",
 		"noEmitHelpers": false,
 		"noFallthroughCasesInSwitch": true,
@@ -21,7 +21,7 @@
 		"resolveJsonModule": true,
 		"sourceMap": true,
 		"strict": true,
-		"target": "esnext",
+		"target": "es2024",
 		"useDefineForClassFields": true,
 		"noEmit": true,
 		"verbatimModuleSyntax": true,
@@ -31,6 +31,6 @@
 		"noImplicitOverride": true,
 		"skipDefaultLibCheck": true,
 		"skipLibCheck": true,
-		"types": []
+		"types": ["node"]
 	}
 }

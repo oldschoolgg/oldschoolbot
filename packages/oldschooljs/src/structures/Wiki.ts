@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 export interface WikiPage {
 	image?: string;
 	lastRevisionID: number;

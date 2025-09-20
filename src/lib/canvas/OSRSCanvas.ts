@@ -1,7 +1,6 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit/runescape';
-import fetch from 'node-fetch';
 import {
 	type Canvas,
 	type CanvasRenderingContext2D as CanvasContext,
@@ -349,7 +348,7 @@ export class OSRSCanvas {
 			return image;
 		}
 		const imageBuffer = await fetch(`https://chisel.weirdgloop.org/static/img/osrs-sprite/${itemID}.png`).then(
-			result => result.buffer()
+			result => result.arrayBuffer().then(Buffer.from)
 		);
 
 		await writeFile(path.join(OSRSCanvas.ITEM_ICON_CACHE_DIR, `${itemID}.png`), imageBuffer);

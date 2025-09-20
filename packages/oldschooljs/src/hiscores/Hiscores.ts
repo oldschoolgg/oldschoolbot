@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 import { convertXPtoLVL } from '../util/util.js';
 import { Player, type SkillsScore } from './Player.js';
 import { BASE_API_URL, CLUES, Errors, SKILLS } from './constants.js';

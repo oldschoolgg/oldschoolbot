@@ -1,7 +1,6 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { diff } from 'deep-object-diff';
 import deepMerge from 'deepmerge';
-import fetch from 'node-fetch';
 import { clone } from 'remeda';
 
 import { EquipmentSlot, type Item } from '@/meta/item.js';

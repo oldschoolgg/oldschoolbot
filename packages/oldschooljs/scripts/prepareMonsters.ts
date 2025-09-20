@@ -1,5 +1,4 @@
 import { writeFileSync } from 'node:fs';
-import fetch from 'node-fetch';
 import { omitBy } from 'remeda';
 import * as wtf from 'wtf_wikipedia';
 

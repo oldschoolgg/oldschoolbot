@@ -18,7 +18,6 @@ const external = [
 	'oldschooljs',
 	'dotenv',
 	'micromatch',
-	'node-fetch',
 	'node-cron',
 	'piscina'
 ];

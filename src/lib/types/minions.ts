@@ -144,7 +144,7 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	usingCannon?: boolean;
 	cannonMulti?: boolean;
 	chinning?: boolean;
-	bob?: SlayerActivityConstants.IceBarrage | SlayerActivityConstants.IceBurst;
+	bob?: SlayerActivityConstants;
 	died?: boolean;
 	pkEncounters?: number;
 	hasWildySupplies?: boolean;
