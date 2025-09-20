@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
 RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \
     apt-get install -y nodejs && \
     corepack enable && \
-    corepack prepare pnpm@9.14.2 --activate
+    corepack prepare pnpm@10.17.0 --activate
 
 ENTRYPOINT ["dumb-init", "--"]
 
