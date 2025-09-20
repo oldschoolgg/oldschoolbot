@@ -14,10 +14,7 @@ import { getItemCostFromConsumables } from './handleConsumables.js';
 import { type BoostArgs, type BoostResult, type CombatMethodOptions, mainBoostEffects } from './speedBoosts.js';
 
 export const CombatMethodOptionsSchema = z.object({
-	bob: z
-		.nativeEnum(SlayerActivityConstants)
-		.refine(val => val === SlayerActivityConstants.IceBarrage || val === SlayerActivityConstants.IceBurst)
-		.optional(),
+	bob: z.nativeEnum(SlayerActivityConstants).optional(),
 	usingCannon: z.boolean().optional(),
 	cannonMulti: z.boolean().optional(),
 	chinning: z.boolean().optional(),
