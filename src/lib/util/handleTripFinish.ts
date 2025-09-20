@@ -36,6 +36,8 @@ import {
 } from './interactions';
 import { hasSkillReqs } from './smallUtils';
 import { sendToChannelID } from './webhook';
+import { getNextUTCReset } from 'packages/toolkit/dist/util';
+import { TEARS_OF_GUTHIX_CD } from '../events';
 
 const collectors = new Map<string, MessageCollector>();
 
@@ -189,8 +191,9 @@ export async function handleTripFinish(
 
 		// Tears of Guthix start button if ready
 		if (!user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) {
-			const last = Number(last_tears_of_guthix_timestamp);
-			const ready = last <= 0 || Date.now() - last >= Time.Day * 7;
+			const lastPlayedDate = Number(last_tears_of_guthix_timestamp);
+			const nextReset = getNextUTCReset(lastPlayedDate, TEARS_OF_GUTHIX_CD);
+			const ready = nextReset < Date.now();
 			const meetsSkillReqs = hasSkillReqs(user, tearsOfGuthixSkillReqs)[0];
 			const meetsIronmanReqs = user.user.minion_ironman ? hasSkillReqs(user, tearsOfGuthixIronmanReqs)[0] : true;
 
