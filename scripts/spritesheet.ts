@@ -3,10 +3,10 @@ import * as path from 'node:path';
 import { type GenerateResult, SpriteSheetGenerator } from '@oldschoolgg/spritesheet';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import '../src/lib/safeglobals.js';
-import sharp from 'sharp';
-
 import { isFunction, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
+import sharp from 'sharp';
+
 import { ALL_OBTAINABLE_ITEMS } from '../src/lib/allObtainableItems.js';
 import { BOT_TYPE } from '../src/lib/constants.js';
 import { allCLItems } from '../src/lib/data/Collections.js';
