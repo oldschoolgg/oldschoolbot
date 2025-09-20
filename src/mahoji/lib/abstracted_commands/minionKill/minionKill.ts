@@ -77,7 +77,7 @@ export async function minionKillCommand(
 	let kcForBonus = kcs[monster.id];
 
 	if (royalTitansGroupIDs.includes(monster.id)) {
-		kcForBonus = kcs.BRANDA + kcs.ELDRIC + kcs.ROYAL_TITANS;
+		kcForBonus = kcs.ROYAL_TITANS_BRANDA + kcs.ROYAL_TITANS_ELDRIC + kcs.ROYAL_TITANS_SACRIFICE;
 	}
 
 	const result = newMinionKillCommand({
