@@ -1,9 +1,9 @@
 import { ItemGroups, Monsters } from 'oldschooljs';
 
-import { SkillsEnum } from '../skilling/types';
-import { Requirements } from '../structures/Requirements';
-import { isCertainMonsterTrip } from './caUtils';
-import type { CombatAchievement } from './combatAchievements';
+import { Requirements } from '@/lib/structures/Requirements.js';
+import { SkillsEnum } from '../skilling/types.js';
+import { isCertainMonsterTrip } from './caUtils.js';
+import type { CombatAchievement } from './combatAchievements.js';
 
 export const mediumCombatAchievements: CombatAchievement[] = [
 	{

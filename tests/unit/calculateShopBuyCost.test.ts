@@ -1,5 +1,6 @@
-import { calculateShopBuyCost } from '@/lib/util/calculateShopBuyCost';
 import { describe, expect, test } from 'vitest';
+
+import { calculateShopBuyCost } from '@/lib/util/calculateShopBuyCost.js';
 
 describe('calculateShopBuyCost', () => {
 	test('fixed price cost', () => {

@@ -36,5 +36,6 @@ export class Collection<K, V> extends Map<K, V> {
 				return value;
 			}
 		}
+		return undefined;
 	}
 }

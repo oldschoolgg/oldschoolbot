@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import { describe, expect, test } from 'vitest';
 
-import backgroundImages from '../../src/lib/minions/data/bankBackgrounds';
+import backgroundImages from '../../src/lib/minions/data/bankBackgrounds.js';
 
 describe('Bank Backgrounds', () => {
 	test('Image should exist', async () => {

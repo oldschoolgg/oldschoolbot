@@ -1,10 +1,10 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { itemID } from 'oldschooljs';
 
-import { SkillsEnum } from '../../types';
-import BlastableBars from './blastables';
-import Bars from './smeltables';
-import SmithableItems from './smithables';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import BlastableBars from './blastables.js';
+import Bars from './smeltables.js';
+import SmithableItems from './smithables/index.js';
 
 const smithsUniformItems: { [key: number]: number } = {
 	[itemID('Smiths tunic')]: 20,

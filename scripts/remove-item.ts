@@ -1,8 +1,7 @@
-import '../lib/safeglobals';
 import { writeFileSync } from 'node:fs';
 import { EquipmentSlot } from 'oldschooljs';
 
-import { GearSetupTypes } from '../src/lib/gear/types';
+import { GearSetupTypes } from '../src/lib/gear/types.js';
 
 /* PSQL Function that needs to be created */
 const extraFunctions = `

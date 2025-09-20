@@ -1,4 +1,4 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '@/structures/LootTable.js';
 
 export const NotedHerbTable = new LootTable()
 	.add('Grimy kwuarm', 1, 5)

@@ -1,4 +1,4 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '@/structures/LootTable.js';
 import {
 	BlessingTable,
 	FirelighterTable,
@@ -6,7 +6,7 @@ import {
 	GiveHalfKeyTable,
 	PrayerPageTable,
 	TeleportScrollTable
-} from './General';
+} from './General.js';
 
 export const MasterGodSwordOrnTable = new LootTable()
 	.add('Armadyl godsword ornament kit')

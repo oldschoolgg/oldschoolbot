@@ -1,7 +1,7 @@
-import { Castables } from '../../lib/skilling/skills/magic/castables';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { CastingActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { Castables } from '@/lib/skilling/skills/magic/castables.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { CastingActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const castingTask: MinionTask = {
 	type: 'Casting',
@@ -44,8 +44,7 @@ export const castingTask: MinionTask = {
 
 		const loot = spell.output?.clone().multiply(quantity);
 		if (loot) {
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});

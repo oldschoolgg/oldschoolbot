@@ -1,6 +1,6 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { AberrantSpectrePreTable } from '../low/a-f/AberrantSpectre';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import { AberrantSpectrePreTable } from '../low/a-f/AberrantSpectre.js';
 
 const AbhorrentSpectreTable = new LootTable()
 	.every(AberrantSpectrePreTable, 3)

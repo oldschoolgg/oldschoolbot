@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, test } from 'vitest';
-import { EquipmentSlot, Items, Openables, getItem } from '../';
+import { EquipmentSlot, Items, Openables } from '../src/index.js';
 
 const expectedIDTuple = [
 	['Coins', 995],
@@ -139,7 +139,7 @@ describe('Items', () => {
 });
 
 test('modifyItem', () => {
-	const item = getItem('Coal');
+	const item = Items.get('Coal');
 	if (!item) {
 		throw new Error('Item not found');
 	}
@@ -147,14 +147,12 @@ test('modifyItem', () => {
 		price: 100
 	});
 
-	for (const it of [getItem('Coal')!, Items.get('Coal')!]) {
+	for (const it of [Items.get('Coal')!, Items.get('Coal')!]) {
 		expect(it.price).toEqual(100);
 	}
 });
 
 test('Dwarf toolkit', () => {
-	expect(getItem('Dwarf toolkit')).toBeNull();
-	expect(getItem(0)).toBeNull();
 	expect(Items.get(0)).toBeUndefined();
 	expect(Items.get('Dwarf toolkit')).toBeUndefined();
 });

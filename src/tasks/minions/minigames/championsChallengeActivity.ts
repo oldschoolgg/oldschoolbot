@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const championsChallengeTask: MinionTask = {
 	type: 'ChampionsChallenge',
@@ -12,8 +12,7 @@ export const championsChallengeTask: MinionTask = {
 
 		const loot = new Bank({ "Champion's cape": 1 });
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

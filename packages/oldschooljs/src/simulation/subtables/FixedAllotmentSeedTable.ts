@@ -1,4 +1,4 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '@/structures/LootTable.js';
 
 const FixedAllotmentSeedTable = new LootTable()
 	.add('Potato seed', 4, 96)

@@ -2,8 +2,8 @@ import type { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { tradePlayerItems } from '../../src/lib/util/tradePlayerItems';
-import { mockedId } from './util';
+import { tradePlayerItems } from '../../src/lib/util/tradePlayerItems.js';
+import { mockedId } from './util.js';
 
 describe('Transactionalized Trade Test', async () => {
 	async function createUserWithBank(_bank: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {

@@ -1,10 +1,10 @@
-import { objectEntries } from 'e';
+import { objectEntries } from '@oldschoolgg/toolkit';
 import { EItem, Items } from 'oldschooljs';
 
-import { formatList } from '@/lib/util/smallUtils';
-import { projectiles } from '../../constants';
-import { getSimilarItems } from '../../data/similarItems';
-import type { Gear } from '../../structures/Gear';
+import { formatList } from '@/lib/util/smallUtils.js';
+import { projectiles } from '../../constants.js';
+import { getSimilarItems } from '../../data/similarItems.js';
+import type { Gear } from '../../structures/Gear.js';
 
 export function checkRangeGearWeapon(gear: Gear) {
 	const weapon = gear.equippedWeapon();

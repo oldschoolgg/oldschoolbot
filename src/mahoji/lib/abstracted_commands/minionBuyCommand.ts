@@ -1,7 +1,6 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import { ComponentType } from 'discord.js';
 
-import { mahojiInformationalButtons } from '../../../lib/sharedComponents';
+import { mahojiInformationalButtons } from '@/lib/sharedComponents.js';
 
 export async function minionBuyCommand(user: MUser, ironman: boolean): CommandResponse {
 	if (user.user.minion_hasBought) return 'You already have a minion!';

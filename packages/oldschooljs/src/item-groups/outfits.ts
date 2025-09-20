@@ -1,4 +1,4 @@
-import { EItem } from '../EItem';
+import { EItem } from '../EItem.js';
 
 export const zealOutfit = [EItem.ZEALOTS_BOOTS, EItem.ZEALOTS_HELM, EItem.ZEALOTS_ROBE_BOTTOM, EItem.ZEALOTS_ROBE_TOP];
 

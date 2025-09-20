@@ -1,12 +1,12 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { miniID } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
-import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { DELETED_USER_ID } from '@/lib/constants.js';
-import { ironmanCommand } from '../../../src/mahoji/lib/abstracted_commands/ironmanCommand';
-import { mockedId } from '../util';
+import { DELETED_USER_ID } from '../../../src/lib/constants.js';
+import { ironmanCommand } from '../../../src/mahoji/lib/abstracted_commands/ironmanCommand.js';
+import { mockedId } from '../util.js';
 
 describe('Ironman Command', () => {
 	async function createUserWithEverything(userId: string, userData: Partial<Prisma.UserCreateInput> = {}) {

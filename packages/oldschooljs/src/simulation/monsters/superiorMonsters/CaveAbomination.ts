@@ -1,6 +1,6 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { CaveHorrorPreTable } from '../low/a-f/CaveHorror';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import { CaveHorrorPreTable } from '../low/a-f/CaveHorror.js';
 
 const CaveAbominationTable = new LootTable()
 	.every('Big bones')

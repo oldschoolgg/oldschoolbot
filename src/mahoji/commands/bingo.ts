@@ -1,7 +1,6 @@
+import { Time, chunk, noOp, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import {
-	type CommandResponse,
-	type CommandRunOptions,
 	type MahojiUserOption,
 	channelIsSendable,
 	isValidDiscordSnowflake,
@@ -18,22 +17,20 @@ import {
 	bold,
 	userMention
 } from 'discord.js';
-import { Time, chunk, noOp, notEmpty, uniqueArr } from 'e';
-import { Bank, type ItemBank, toKMB } from 'oldschooljs';
+import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import { clImageGenerator } from '../../lib/collectionLogTask';
-import { BOT_TYPE, globalConfig } from '../../lib/constants';
-import { getUsername, getUsernameSync } from '../../lib/util';
-import { getItem } from '../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { isValidNickname } from '../../lib/util/smallUtils';
-import { BingoManager, BingoTrophies } from '../lib/bingo/BingoManager';
-import type { StoredBingoTile } from '../lib/bingo/bingoUtil';
-import { generateTileName, getAllTileItems, isGlobalTile } from '../lib/bingo/bingoUtil';
-import { globalBingoTiles } from '../lib/bingo/globalTiles';
-import { doMenu, getPos } from './leaderboard';
+import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { clImageGenerator } from '@/lib/collectionLogTask.js';
+import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
+import { getUsername, getUsernameSync } from '@/lib/util.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
+import { isValidNickname } from '@/lib/util/smallUtils.js';
+import { BingoManager, BingoTrophies } from '@/mahoji/lib/bingo/BingoManager.js';
+import type { StoredBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
+import { generateTileName, getAllTileItems, isGlobalTile } from '@/mahoji/lib/bingo/bingoUtil.js';
+import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';
+import { doMenu, getPos } from './leaderboard.js';
 
 const bingoAutocomplete = async (value: string, user: User) => {
 	const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
@@ -241,7 +238,7 @@ function parseTileAddInput(input: string): StoredBingoTile | null {
 	const items = [];
 
 	for (const name of arr) {
-		const item = getItem(name);
+		const item = Items.getItem(name);
 		if (item) {
 			items.push(item);
 		}

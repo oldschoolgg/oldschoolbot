@@ -1,22 +1,21 @@
-import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/util';
+import { randInt, shuffleArr, uniqueArr } from '@oldschoolgg/toolkit';
 import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import type { User as DJSUser } from 'discord.js';
-import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
-import { Bank, type EMonster, Items, Monsters, convertLVLtoXP } from 'oldschooljs';
+import { Bank, type EMonster, type ItemBank, Items, Monsters, type SkillsEnum, convertLVLtoXP } from 'oldschooljs';
 import { integer, nodeCrypto } from 'random-js';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
 
-import { MUserClass } from '../../src/lib/MUser';
-import { type PvMMethod, globalConfig } from '../../src/lib/constants';
-import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types';
-import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
-import { Gear } from '../../src/lib/structures/Gear';
-import type { ItemBank, SkillsRequired } from '../../src/lib/types';
-import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
-import { minionKCommand } from '../../src/mahoji/commands/k';
-import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
-import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
+import { MUserClass } from '../../src/lib/MUser.js';
+import { type PvMMethod, globalConfig } from '../../src/lib/constants.js';
+import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types.js';
+import { slayerMasters } from '../../src/lib/slayer/slayerMasters.js';
+import { Gear } from '../../src/lib/structures/Gear.js';
+import type { SkillsRequired } from '../../src/lib/types/index.js';
+import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions.js';
+import { minionKCommand } from '../../src/mahoji/commands/k.js';
+import { giveMaxStats } from '../../src/mahoji/commands/testpotato.js';
+import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand.js';
 
 export const TEST_CHANNEL_ID = '1111111111111111';
 
@@ -242,7 +241,7 @@ export class TestUser extends MUserClass {
 		const newXP = clone(this.skillsAsXP);
 		const xpGained: SkillsRequired = {} as SkillsRequired;
 		for (const skill of SkillsArray) xpGained[skill] = 0;
-		for (const skill of objectKeys(newXP)) {
+		for (const skill of Object.keys(newXP) as SkillsEnum[]) {
 			xpGained[skill as SkillNameType] = newXP[skill] - currentXP[skill];
 		}
 

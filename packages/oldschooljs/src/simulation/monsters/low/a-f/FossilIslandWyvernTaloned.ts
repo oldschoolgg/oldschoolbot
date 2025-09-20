@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import TreeHerbSeedTable from '../../../subtables/TreeHerbSeedTable';
-import WyvernHerbTable from '../../../subtables/WyvernHerbTable';
+import TreeHerbSeedTable from '@/simulation/subtables/TreeHerbSeedTable.js';
+import WyvernHerbTable from '@/simulation/subtables/WyvernHerbTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const TalonedWyvernTable = new LootTable()
 	.every('Wyvern bones')

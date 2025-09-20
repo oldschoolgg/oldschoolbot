@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import RareDropTable from '../../../subtables/RareDropTable';
-import UsefulHerbTable from '../../../subtables/UsefulHerbTable';
+import { RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import UsefulHerbTable from '@/simulation/subtables/UsefulHerbTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const AdamantDragonTable = new LootTable()
 	.every('Dragon bones')

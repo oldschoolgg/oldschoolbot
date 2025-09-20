@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import type { Buyable } from './buyables';
+import type { Buyable } from './buyables.js';
 
 export const troubleBrewingBuyables: Buyable[] = [
 	{

@@ -1,7 +1,7 @@
 import { describe, test } from 'vitest';
 
-import { dataPoints } from '../../src/mahoji/lib/abstracted_commands/statCommand';
-import { createTestUser, mockClient } from './util';
+import { dataPoints } from '../../src/mahoji/lib/abstracted_commands/statCommand.js';
+import { createTestUser, mockClient } from './util.js';
 
 describe('Datapoints', async () => {
 	await mockClient();

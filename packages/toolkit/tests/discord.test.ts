@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 
-import { randomSnowflake } from '../src/util/discord';
+import { randomSnowflake } from '../src/util/discord/index.js';
 
 test('generateSnowflake generates a valid snowflake', () => {
 	const snowflake = randomSnowflake();

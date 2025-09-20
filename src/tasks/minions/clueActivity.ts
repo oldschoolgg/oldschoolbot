@@ -1,8 +1,8 @@
 import { Bank } from 'oldschooljs';
 
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import type { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const clueTask: MinionTask = {
 	type: 'ClueCompletion',
@@ -20,8 +20,7 @@ export const clueTask: MinionTask = {
 		// Add the number of clues found in implings to CL. Must be on completion to avoid gaming.
 		if (implingClues) await user.addItemsToCollectionLog(new Bank().add(clueTier.scrollID, implingClues));
 		const loot = new Bank().add(clueTier.id, quantity);
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

@@ -1,15 +1,15 @@
 import type { CropUpgradeType } from '@prisma/client';
 import type { ItemBank } from 'oldschooljs';
 
-import type { NMZStrategy } from '../constants';
-import type { SlayerActivityConstants } from '../minions/data/combatConstants';
-import type { IPatchData } from '../minions/farming/types';
-import type { AttackStyles } from '../minions/functions';
-import type { MinigameName } from '../settings/minigames';
-import type { UnderwaterAgilityThievingTrainingSkill } from '../skilling/skills/agility';
-import type { TwitcherGloves } from '../skilling/skills/woodcutting/woodcutting';
-import type { Peak } from '../util/peaks';
-import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
+import type { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
+import type { IPatchData } from '@/lib/minions/farming/types.js';
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import type { Peak } from '@/lib/util/peaks.js';
+import type { NMZStrategy } from '../constants.js';
+import type { MinigameName } from '../settings/minigames.js';
+import type { UnderwaterAgilityThievingTrainingSkill } from '../skilling/skills/agility.js';
+import type { TwitcherGloves } from '../skilling/skills/woodcutting/woodcutting.js';
+import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap.js';
 
 export interface ActivityTaskOptions {
 	userID: string;
@@ -144,7 +144,7 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	usingCannon?: boolean;
 	cannonMulti?: boolean;
 	chinning?: boolean;
-	bob?: SlayerActivityConstants.IceBarrage | SlayerActivityConstants.IceBurst;
+	bob?: SlayerActivityConstants;
 	died?: boolean;
 	pkEncounters?: number;
 	hasWildySupplies?: boolean;

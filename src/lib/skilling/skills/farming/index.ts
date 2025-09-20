@@ -1,16 +1,15 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { CropUpgradeType } from '@prisma/client';
-import { itemID } from 'oldschooljs';
+import { Items, itemID } from 'oldschooljs';
 
-import getOSItem from '../../../util/getOSItem';
-import type { Plant } from '../../types';
-import { SkillsEnum } from '../../types';
-import allotmentPlants from './allotments';
-import fruitTrees from './fruitTrees';
-import herbPlants from './herbPlants';
-import hopsPlants from './hops';
-import specialPlants from './specialPlants';
-import trees from './trees';
+import type { Plant } from '@/lib/skilling/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import allotmentPlants from './allotments.js';
+import fruitTrees from './fruitTrees.js';
+import herbPlants from './herbPlants.js';
+import hopsPlants from './hops.js';
+import specialPlants from './specialPlants.js';
+import trees from './trees.js';
 
 export const plants: Plant[] = [
 	...herbPlants,
@@ -40,15 +39,15 @@ export const allFarmingItems: number[] = [];
 export const CompostTiers = [
 	{
 		name: CropUpgradeType.compost,
-		item: getOSItem('Compost')
+		item: Items.getOrThrow('Compost')
 	},
 	{
 		name: CropUpgradeType.supercompost,
-		item: getOSItem('Supercompost')
+		item: Items.getOrThrow('Supercompost')
 	},
 	{
 		name: CropUpgradeType.ultracompost,
-		item: getOSItem('Ultracompost')
+		item: Items.getOrThrow('Ultracompost')
 	}
 ] as const;
 

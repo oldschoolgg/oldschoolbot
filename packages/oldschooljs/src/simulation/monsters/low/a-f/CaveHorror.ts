@@ -1,9 +1,9 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
-import RareSeedTable from '../../../subtables/RareSeedTable';
-import VariableAllotmentSeedTable from '../../../subtables/VariableAllotmentSeedTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import RareSeedTable from '@/simulation/subtables/RareSeedTable.js';
+import VariableAllotmentSeedTable from '@/simulation/subtables/VariableAllotmentSeedTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 export const CaveHorrorPreTable = new LootTable()
 	/* Weapons and armor*/

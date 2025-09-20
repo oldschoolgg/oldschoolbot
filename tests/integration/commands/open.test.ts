@@ -1,9 +1,9 @@
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { openCommand } from '../../../src/mahoji/commands/open';
-import { randomMock } from '../setup';
-import { createTestUser, mockClient } from '../util';
+import { openCommand } from '../../../src/mahoji/commands/open.js';
+import { randomMock } from '../setup.js';
+import { createTestUser, mockClient } from '../util.js';
 
 describe('Open Command', async () => {
 	await mockClient();

@@ -2,13 +2,13 @@ import { calcPerHour, formatDuration } from '@oldschoolgg/toolkit/util';
 import { ChannelType, type ChatInputCommandInteraction, type TextChannel, userMention } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { trackLoot } from '../../../lib/lootTrack';
-import { setupParty } from '../../../lib/party';
-import { calculateNexDetails, checkNexUser } from '../../../lib/simulation/nex';
-import type { NexTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { deferInteraction } from '../../../lib/util/interactionReply';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { setupParty } from '@/lib/party.js';
+import { calculateNexDetails, checkNexUser } from '@/lib/simulation/nex.js';
+import type { NexTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function nexCommand(
 	interaction: ChatInputCommandInteraction,

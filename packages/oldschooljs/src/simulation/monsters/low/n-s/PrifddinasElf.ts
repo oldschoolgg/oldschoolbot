@@ -1,6 +1,6 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import Elf from '../a-f/Elf';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import Elf from '../a-f/Elf.js';
 
 const PrifddinasElfTable = new LootTable()
 	.oneIn(35, 'Crystal shard')

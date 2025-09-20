@@ -1,8 +1,8 @@
 import { Bank } from 'oldschooljs';
 import { beforeEach, describe, expect, test } from 'vitest';
 
-import { agilityArenaBuyCommand } from '../../../src/mahoji/lib/abstracted_commands/agilityArenaCommand';
-import { createTestUser, mockClient } from '../util';
+import { agilityArenaBuyCommand } from '../../../src/mahoji/lib/abstracted_commands/agilityArenaCommand.js';
+import { createTestUser, mockClient } from '../util.js';
 
 describe('Agility Arena Command', async () => {
 	const client = await mockClient();

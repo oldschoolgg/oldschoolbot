@@ -1,7 +1,7 @@
-import type { MonsterKillOptions } from '../../../meta/types';
-import type Bank from '../../../structures/Bank';
-import Monster from '../../../structures/Monster';
-import { DukeSucellus } from './DukeSucellus';
+import type { Bank } from '@/structures/Bank.js';
+import type { MonsterKillOptions } from '@/structures/Monster.js';
+import { Monster } from '@/structures/Monster.js';
+import { DukeSucellus } from './DukeSucellus.js';
 
 class AwakenedDukeSucellusSingleton extends Monster {
 	public kill(quantity = 1, options: MonsterKillOptions = {}): Bank {

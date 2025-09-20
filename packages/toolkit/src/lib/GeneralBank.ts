@@ -1,4 +1,4 @@
-import Decimal from 'decimal.js';
+import { Decimal } from 'decimal.js';
 
 function assert(condition: boolean, desc?: string) {
 	if (!condition) {

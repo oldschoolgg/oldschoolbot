@@ -1,16 +1,16 @@
-import { percentChance, randInt, roll } from 'e';
+import { percentChance, randInt, roll } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import type { Stealable } from '@/lib/skilling/skills/thieving/stealables.js';
+import { stealables } from '@/lib/skilling/skills/thieving/stealables.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { rogueOutfitPercentBonus, updateClientGPTrackSetting } from '@/mahoji/mahojiSettings.js';
 import { Events } from '@oldschoolgg/toolkit/constants';
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import type { Stealable } from '../../lib/skilling/skills/thieving/stealables';
-import { stealables } from '../../lib/skilling/skills/thieving/stealables';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { rogueOutfitPercentBonus, updateClientGPTrackSetting } from '../../mahoji/mahojiSettings';
 
 export function calcLootXPPickpocketing(
 	currentLevel: number,
@@ -104,8 +104,7 @@ export const pickpocketTask: MinionTask = {
 			updateClientGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
 		}
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

@@ -1,4 +1,4 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '@/structures/LootTable.js';
 
 export const Mimic3rdAgeTable = new LootTable()
 	.add('3rd age range coif')

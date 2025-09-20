@@ -1,4 +1,4 @@
-import { formatDuration } from '../util/datetime';
+import { formatDuration } from '../util/datetime.js';
 
 // MIT Copyright (c) 2020 The Sapphire Community and its contributors, gc
 export class Stopwatch {

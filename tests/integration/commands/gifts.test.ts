@@ -1,8 +1,8 @@
 import { Bank } from 'oldschooljs';
 import { beforeEach, describe, test } from 'vitest';
 
-import { giftCommand } from '../../../src/mahoji/commands/gift';
-import { createTestUser, mockClient } from '../util';
+import { giftCommand } from '../../../src/mahoji/commands/gift.js';
+import { createTestUser, mockClient } from '../util.js';
 
 describe('Gift Command', async () => {
 	const client = await mockClient();

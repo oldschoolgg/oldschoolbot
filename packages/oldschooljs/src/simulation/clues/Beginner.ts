@@ -1,4 +1,4 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '@/structures/LootTable.js';
 
 export const RareTable = new LootTable()
 	.add('Black 2h sword')

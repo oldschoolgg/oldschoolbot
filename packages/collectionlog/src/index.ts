@@ -1,4 +1,4 @@
-import { collectionLogRanks } from './ranks';
+import { collectionLogRanks } from './ranks.js';
 
 export const CollectionLog = {
 	ranks: collectionLogRanks

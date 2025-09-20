@@ -1,14 +1,14 @@
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { roll } from '@/lib/util/rng';
-import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
-import Mining from '../../../lib/skilling/skills/mining';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { skillingPetDropRate } from '../../../lib/util';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import Mining from '@/lib/skilling/skills/mining.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { roll } from '@/lib/util/rng.js';
 
 export const camdozaalMiningTask: MinionTask = {
 	type: 'CamdozaalMining',
@@ -110,8 +110,7 @@ export const camdozaalMiningTask: MinionTask = {
 		}
 
 		// Give the user the items from the trip
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

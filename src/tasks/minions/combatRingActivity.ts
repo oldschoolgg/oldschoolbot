@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
-import type { ActivityTaskOptionsWithNoChanges } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const combatRingTask: MinionTask = {
 	type: 'CombatRing',
@@ -37,8 +37,7 @@ export const combatRingTask: MinionTask = {
 			'Shayzien body (5)': 1
 		});
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

@@ -1,3 +1,4 @@
+import './base.js';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { type AbstractCommand, convertMahojiCommandToAbstractCommand } from '@oldschoolgg/toolkit/discord-util';
 import { md5sum } from '@oldschoolgg/toolkit/node';
@@ -6,10 +7,11 @@ import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { DateTime } from 'luxon';
 
-import { BOT_TYPE } from '../src/lib/constants';
-import { allCommands } from '../src/mahoji/commands/allCommands';
+import { allCommands } from '@/mahoji/commands/allCommands.js';
+import { BOT_TYPE } from '../src/lib/constants.js';
+import { tearDownScript } from './scriptUtil.js';
 
-function renderCommands() {
+async function renderCommands() {
 	return allCommands
 		.map(c => convertMahojiCommandToAbstractCommand(c))
 		.filter(c => {
@@ -46,9 +48,9 @@ function renderCommands() {
 		.sort((a, b) => a.name.localeCompare(b.name));
 }
 
-export function renderCommandsFile() {
+export async function renderCommandsFile() {
 	const stopwatch = new Stopwatch();
-	const commands = renderCommands();
+	const commands = await renderCommands();
 	const filePath = `data/${BOT_TYPE.toLowerCase()}/commands.json`;
 
 	const hash = md5sum(JSON.stringify(commands));
@@ -72,3 +74,6 @@ export function renderCommandsFile() {
 	);
 	stopwatch.check('Finished commands file.');
 }
+
+renderCommandsFile();
+tearDownScript();

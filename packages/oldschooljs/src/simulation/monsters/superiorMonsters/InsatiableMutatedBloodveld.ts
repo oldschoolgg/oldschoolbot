@@ -1,6 +1,6 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { MutatedBloodveldPreTable } from '../low/g-m/MutatedBloodveld';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import { MutatedBloodveldPreTable } from '../low/g-m/MutatedBloodveld.js';
 
 const InsatiableMutatedBloodveldTable = new LootTable()
 	.every('Vile ashes')

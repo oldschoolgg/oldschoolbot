@@ -1,4 +1,4 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '@/structures/LootTable.js';
 
 const UsefulHerbTable = new LootTable()
 	.add('Grimy avantoe', 1, 5)

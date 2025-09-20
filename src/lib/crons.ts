@@ -1,8 +1,8 @@
 import { schedule } from 'node-cron';
 
-import { analyticsTick } from './analytics';
-import { cacheGEPrices } from './marketPrices';
-import { cacheCleanup } from './util/cachedUserIDs';
+import { analyticsTick } from './analytics.js';
+import { cacheGEPrices } from './marketPrices.js';
+import { cacheCleanup } from './util/cachedUserIDs.js';
 
 export const crons = new Set<ReturnType<typeof schedule>>();
 

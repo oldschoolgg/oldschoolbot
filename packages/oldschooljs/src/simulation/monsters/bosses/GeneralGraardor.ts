@@ -1,6 +1,6 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import GWRareDropTable, { GWGemTable, ShardTable } from '../../subtables/GWRareDropTable';
+import GWRareDropTable, { GWGemTable, ShardTable } from '@/simulation/subtables/GWRareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const GeneralGraardorArmorTable = new LootTable().add('Bandos chestplate').add('Bandos tassets').add('Bandos boots');
 

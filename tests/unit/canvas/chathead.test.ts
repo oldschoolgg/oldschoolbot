@@ -2,7 +2,7 @@ import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { describe, test } from 'vitest';
 
-import { mahojiChatHead } from '@/lib/canvas/chatHeadImage';
+import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
 import { baseSnapshotPath } from '../../testConstants.js';
 
 describe('Chathead Images', async () => {

@@ -7,9 +7,9 @@ import {
 	generalGraardorCL,
 	kreeArraCL,
 	krilTsutsarothCL
-} from '../../../../data/CollectionsExport';
-import { SkillsEnum } from '../../../../skilling/types';
-import type { KillableMonster } from '../../../types';
+} from '../../../../data/CollectionsExport.js';
+import { SkillsEnum } from '../../../../skilling/types.js';
+import type { KillableMonster } from '../../../types.js';
 
 const killableBosses: KillableMonster[] = [
 	{

@@ -1,10 +1,10 @@
-import { percentChance, randInt, roll } from 'e';
+import { percentChance, randInt, roll } from '@/util/smallUtils.js';
 
-import type { OpenableOpenOptions } from '../../meta/types';
-import Bank from '../../structures/Bank';
-import LootTable from '../../structures/LootTable';
-import SimpleOpenable from '../../structures/SimpleOpenable';
-import { BrimstoneChestFish, chanceOfFish } from './BonusOpenables';
+import { Bank } from '@/structures/Bank.js';
+import LootTable from '@/structures/LootTable.js';
+import type { OpenableOpenOptions } from '@/structures/Openable.js';
+import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
+import { BrimstoneChestFish, chanceOfFish } from './BonusOpenables.js';
 
 const BrimstoneChestTable = new LootTable()
 	.add('Uncut diamond', [25, 35], 5)
@@ -38,7 +38,7 @@ const BrimstoneChestTable = new LootTable()
 	.oneIn(1000, 'Mystic boots (dusk)');
 
 export class BrimstoneChestOpenable extends SimpleOpenable {
-	public open(quantity = 1, options: OpenableOpenOptions = { fishLvl: 99 }) {
+	public override open(quantity = 1, options: OpenableOpenOptions = { fishLvl: 99 }) {
 		const loot = new Bank();
 		const fishLvl = options.fishLvl ?? 99;
 

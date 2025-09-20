@@ -1,8 +1,8 @@
 import type { Bank } from 'oldschooljs';
 
-import { type BankFlag, bankImageTask } from '../canvas/bankImage';
-import type { IconPackID } from '../canvas/iconPacks';
-import type { Flags } from '../minions/types';
+import type { Flags } from '@/lib/minions/types.js';
+import { type BankFlag, bankImageTask } from '../canvas/bankImage.js';
+import type { IconPackID } from '../canvas/iconPacks.js';
 
 interface MakeBankImageOptions {
 	bank: Bank;

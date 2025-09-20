@@ -19,11 +19,11 @@ import {
 	cluesHardCL,
 	cluesMasterCL,
 	cluesMediumCL
-} from '../data/CollectionsExport';
-import type { ClueReqs } from './clueReqs';
-import { beginnerReqs } from './clueReqs';
-import type { StashUnitTier } from './stashUnits';
-import { beginnerStashes, easyStashes, eliteStashes, hardStashes, masterStashes, mediumStashes } from './stashUnits';
+} from '../data/CollectionsExport.js';
+import type { ClueReqs } from './clueReqs.js';
+import { beginnerReqs } from './clueReqs.js';
+import type { StashUnitTier } from './stashUnits.js';
+import { beginnerStashes, easyStashes, eliteStashes, hardStashes, masterStashes, mediumStashes } from './stashUnits.js';
 
 const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
 

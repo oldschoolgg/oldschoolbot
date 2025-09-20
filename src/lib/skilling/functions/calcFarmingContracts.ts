@@ -1,9 +1,9 @@
+import { randArrItem, randInt, roll } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { randArrItem, randInt, roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../../data/seedPackTables';
-import type { PlantTier } from '../../minions/farming/types';
+import type { PlantTier } from '@/lib/minions/farming/types.js';
+import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../../data/seedPackTables.js';
 
 export function openSeedPack(seedTier: number): Bank {
 	const loot = new Bank();

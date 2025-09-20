@@ -4,7 +4,7 @@ import { GEListingType } from '@prisma/client';
 import { EItem } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
-import { GeImageGenerator } from '@/lib/canvas/geImage';
+import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { baseSnapshotPath } from '../../testConstants.js';
 
 describe('GE Images', async () => {

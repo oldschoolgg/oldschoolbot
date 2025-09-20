@@ -1,5 +1,5 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 export const MagicAxeTable = new LootTable().every('Iron battleaxe').tertiary(256, 'Clue scroll (medium)');
 

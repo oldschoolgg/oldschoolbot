@@ -1,15 +1,15 @@
-import { percentChance } from 'e';
+import { percentChance } from '@/lib/util/rng.js';
 import { Bank, EMonster, Misc, randomVariation } from 'oldschooljs';
 
-import { BitField } from '../../../lib/constants';
-import { trackLoot } from '../../../lib/lootTrack';
-import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
-import { addMonsterXP } from '../../../lib/minions/functions';
-import announceLoot from '../../../lib/minions/functions/announceLoot';
-import type { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { BitField } from '@/lib/constants.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
+import announceLoot from '@/lib/minions/functions/announceLoot.js';
+import { addMonsterXP } from '@/lib/minions/functions/index.js';
+import type { NightmareActivityTaskOptions } from '@/lib/types/minions.js';
+import { getNightmareGearStats } from '@/lib/util/getNightmareGearStats.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 const RawNightmare = Misc.Nightmare;
 

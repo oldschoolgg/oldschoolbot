@@ -1,17 +1,16 @@
+import { Time, debounce, noOp } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import type { Giveaway } from '@prisma/client';
 import { type MessageEditOptions, time, userMention } from 'discord.js';
-import { Time, debounce, noOp } from 'e';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { sql } from '../postgres.js';
-import { logError } from './logError';
-import { sendToChannelID } from './webhook';
+import { logError } from './logError.js';
+import { sendToChannelID } from './webhook.js';
 
 async function refundGiveaway(creator: MUser, loot: Bank) {
-	await transactItems({
-		userID: creator.id,
+	await creator.transactItems({
 		itemsToAdd: loot
 	});
 	const user = await globalClient.fetchUser(creator.id);
@@ -25,6 +24,7 @@ async function getGiveawayMessage(giveaway: Giveaway) {
 		const message = await channel.messages.fetch(giveaway.message_id).catch(noOp);
 		if (message) return message;
 	}
+	return null;
 }
 
 export function generateGiveawayContent(host: string, finishDate: Date, usersEntered: string[]) {
@@ -102,7 +102,7 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 			return;
 		}
 
-		await transactItems({ userID: winner.id, itemsToAdd: loot });
+		await winner.transactItems({ itemsToAdd: loot });
 		await prisma.economyTransaction.create({
 			data: {
 				guild_id: undefined,

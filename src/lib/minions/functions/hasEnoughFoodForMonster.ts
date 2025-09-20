@@ -1,6 +1,6 @@
-import type { KillableMonster } from '../types';
-import calculateMonsterFood from './calculateMonsterFood';
-import getUserFoodFromBank from './getUserFoodFromBank';
+import type { KillableMonster } from '../types.js';
+import calculateMonsterFood from './calculateMonsterFood.js';
+import getUserFoodFromBank from './getUserFoodFromBank.js';
 
 export default function hasEnoughFoodForMonster(
 	monster: Readonly<KillableMonster>,

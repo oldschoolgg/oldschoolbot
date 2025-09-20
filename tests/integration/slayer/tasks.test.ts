@@ -2,7 +2,7 @@ import { EMonster, Monsters } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { slayerCommand } from '@/mahoji/commands/slayer.js';
-import { createTestUser, mockClient, mockMathRandom } from '../util';
+import { createTestUser, mockClient, mockMathRandom } from '../util.js';
 
 describe('Slayer Tasks', async () => {
 	await mockClient();

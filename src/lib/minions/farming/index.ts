@@ -1,4 +1,4 @@
-import * as PatchTypes from './types';
+import * as PatchTypes from './types.js';
 
 export { PatchTypes };
 

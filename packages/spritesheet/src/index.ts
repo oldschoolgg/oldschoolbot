@@ -1,6 +1,6 @@
-import { PureImageCanvasProvider } from './canvas/pureimage';
-import { LayoutFactory } from './layout';
-import { ImageLoader } from './loader';
+import { PureImageCanvasProvider } from './canvas/pureimage.js';
+import { LayoutFactory } from './layout.js';
+import { ImageLoader } from './loader.js';
 import type { GenerateOptions, GenerateResult } from './types.js';
 
 export class SpriteSheetGenerator {
@@ -34,3 +34,5 @@ export class SpriteSheetGenerator {
 		};
 	}
 }
+
+export type { GenerateResult };

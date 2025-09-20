@@ -1,6 +1,6 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { CockatricePreTable } from '../low/a-f/Cockatrice';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import { CockatricePreTable } from '../low/a-f/Cockatrice.js';
 
 const CockathriceTable = new LootTable()
 	.every('Bones')

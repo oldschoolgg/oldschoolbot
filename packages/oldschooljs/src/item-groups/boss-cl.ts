@@ -1,4 +1,4 @@
-import { EItem } from '../EItem';
+import { EItem } from '../EItem.js';
 
 export const toaCL = [
 	EItem.TUMEKENS_GUARDIAN,

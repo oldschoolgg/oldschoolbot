@@ -1,6 +1,6 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import RareDropTable, { GemTable } from '../../subtables/RareDropTable';
+import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const GiantMoleTable = new LootTable()
 	.every('Big bones')

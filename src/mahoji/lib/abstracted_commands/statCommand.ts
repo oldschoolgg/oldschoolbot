@@ -1,41 +1,30 @@
+import { Time, sumArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import type { CommandResponse } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { PerkTier, formatDuration } from '@oldschoolgg/toolkit/util';
 import type { UserStats, activity_type_enum } from '@prisma/client';
-import { Time, sumArr } from 'e';
-import {
-	Bank,
-	type ItemBank,
-	Monsters,
-	SkillsEnum,
-	type SkillsScore,
-	TOBRooms,
-	resolveItems,
-	toKMB
-} from 'oldschooljs';
+import { Bank, type ItemBank, Items, Monsters, SkillsEnum, TOBRooms, toKMB } from 'oldschooljs';
+import type { SkillsScore } from 'oldschooljs/hiscores';
 
-import { SQL_sumOfAllCLItems } from '@/lib/util/smallUtils.js';
-import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
-import { calcCLDetails, isCLItem } from '../../../lib/data/Collections';
-import { skillEmoji } from '../../../lib/data/emojis';
-import { getBankBgById } from '../../../lib/minions/data/bankBackgrounds';
-import killableMonsters from '../../../lib/minions/data/killableMonsters';
-import { RandomEvents } from '../../../lib/randomEvents';
-
-import Agility from '../../../lib/skilling/skills/agility';
-import { Castables } from '../../../lib/skilling/skills/magic/castables';
-import { ForestryEvents } from '../../../lib/skilling/skills/woodcutting/forestry';
-import { getSlayerTaskStats } from '../../../lib/slayer/slayerUtil';
-import { sorts } from '../../../lib/sorts';
-import type { InfernoOptions } from '../../../lib/types/minions';
-import { getUsername } from '../../../lib/util';
-import { createChart } from '../../../lib/util/chart';
-import { getItem } from '../../../lib/util/getOSItem';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { Cooldowns } from '../Cooldowns';
-import { collectables } from '../collectables';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { getClueScoresFromOpenables } from '@/lib/clues/clueUtils.js';
+import { calcCLDetails, isCLItem } from '@/lib/data/Collections.js';
+import { skillEmoji } from '@/lib/data/emojis.js';
+import { getBankBgById } from '@/lib/minions/data/bankBackgrounds.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { RandomEvents } from '@/lib/randomEvents.js';
+import { RawSQL } from '@/lib/rawSql.js';
+import Agility from '@/lib/skilling/skills/agility.js';
+import { Castables } from '@/lib/skilling/skills/magic/castables.js';
+import { ForestryEvents } from '@/lib/skilling/skills/woodcutting/forestry.js';
+import { getSlayerTaskStats } from '@/lib/slayer/slayerUtil.js';
+import { sorts } from '@/lib/sorts.js';
+import type { InfernoOptions } from '@/lib/types/minions.js';
+import { getUsername } from '@/lib/util.js';
+import { createChart } from '@/lib/util/chart.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { Cooldowns } from '../Cooldowns.js';
+import { collectables } from '../collectables.js';
 
 interface DataPiece {
 	name: string;
@@ -134,7 +123,7 @@ AND completed = true
 GROUP BY data->>'objectID';`);
 	const items = new Bank();
 	for (const res of result) {
-		const item = getItem(res.id);
+		const item = Items.get(res.id);
 		if (!item) continue;
 		items.add(item.id, res.qty);
 	}
@@ -152,7 +141,7 @@ AND completed = true
 GROUP BY data->>'burnableID';`);
 	const items = new Bank();
 	for (const res of result) {
-		const item = getItem(res.id);
+		const item = Items.get(res.id);
 		if (!item) continue;
 		items.add(item.id, res.qty);
 	}
@@ -170,7 +159,7 @@ AND completed = true
 GROUP BY data->>'logID';`);
 	const items = new Bank();
 	for (const res of result) {
-		const item = getItem(res.id);
+		const item = Items.get(res.id);
 		if (!item) continue;
 		items.add(item.id, res.qty);
 	}
@@ -188,7 +177,7 @@ AND completed = true
 GROUP BY data->>'oreID';`);
 	const items = new Bank();
 	for (const res of result) {
-		const item = getItem(res.id);
+		const item = Items.get(res.id);
 		if (!item) continue;
 		items.add(item.id, res.qty);
 	}
@@ -206,7 +195,7 @@ AND completed = true
 GROUP BY data->>'mixableID';`);
 	const items = new Bank();
 	for (const res of result) {
-		const item = getItem(res.id);
+		const item = Items.get(res.id);
 		if (!item) continue;
 		items.add(item.id, res.qty);
 	}
@@ -233,7 +222,7 @@ GROUP BY ((data->>'alch')::json)->>'itemID';`);
 
 	const items = new Bank();
 	for (const res of [...result, ...(includeAgilityAlching ? agilityAlchRes : [])]) {
-		const item = getItem(res.id);
+		const item = Items.get(res.id);
 		if (!item) continue;
 		items.add(item.id, res.qty);
 	}
@@ -250,7 +239,7 @@ AND completed = true
 GROUP BY data->>'smithedBarID';`);
 	const items = new Bank();
 	for (const res of result) {
-		const item = getItem(res.id);
+		const item = Items.get(res.id);
 		if (!item) continue;
 		items.add(item.id, res.qty);
 	}
@@ -267,7 +256,7 @@ AND completed = true
 GROUP BY data->>'barID';`);
 	const items = new Bank();
 	for (const res of result) {
-		const item = getItem(res.id);
+		const item = Items.get(res.id);
 		if (!item) continue;
 		items.add(item.id, res.qty);
 	}
@@ -1203,7 +1192,7 @@ ${bank
 		name: 'Raids/CoX Luckiest and Unluckiest',
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
-			const items = resolveItems([
+			const items = Items.resolveItems([
 				'Dexterous prayer scroll',
 				'Arcane prayer scroll',
 				'Twisted buckler',
@@ -1217,7 +1206,7 @@ ${bank
 				'Kodai insignia',
 				'Twisted bow'
 			]);
-			const totalCoxItemsText = SQL_sumOfAllCLItems(items);
+			const totalCoxItemsText = RawSQL.sumOfAllCLItems(items);
 			const [luckiestSQL, unluckiestSQL] = ['ASC', 'DESC'].map(
 				order => `SELECT "users"."id", "user_stats".total_cox_points AS points, "minigames"."raids" + "minigames"."raids_challenge_mode" AS raids_total_kc, ${totalCoxItemsText} AS total_cox_items, "user_stats".total_cox_points / ${totalCoxItemsText} AS points_per_item
 FROM user_stats

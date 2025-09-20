@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { mockMUser } from './userutil';
+import { mockMUser } from './userutil.js';
 
 describe('hasItemsEquippedOrInBank', () => {
 	test("Doesn't have", () => {

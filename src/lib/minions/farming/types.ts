@@ -1,7 +1,7 @@
 import type { CropUpgradeType } from '@prisma/client';
 
-import type { Plant } from '../../skilling/types';
-import type { FarmingPatchName } from '../../util/farmingHelpers';
+import type { Plant } from '../../skilling/types.js';
+import type { FarmingPatchName } from '../../util/farmingHelpers.js';
 
 export interface IPatchData {
 	lastPlanted: string | null;

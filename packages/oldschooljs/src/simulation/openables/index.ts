@@ -1,13 +1,13 @@
-import { Collection } from '../../structures/Collection';
-import type Openable from '../../structures/Openable';
-import BrimstoneChest from './BrimstoneChest';
-import Casket from './Casket';
-import CrystalChest from './CrystalChest';
-import ElvenCrystalChest from './ElvenCrystalChest';
-import GiantEggSacFull from './GiantEggSacFull';
-import GrubbyChest from './GrubbyChest';
-import { BronzeHAMChest, IronHAMChest, SilverHAMChest, SteelHAMChest } from './HAMStoreRoomChests';
-import { AdeptSack, BasicSack, ExpertSack, MasterSack } from './HuntersLootSack';
+import { Collection } from '@/structures/Collection.js';
+import type Openable from '@/structures/Openable.js';
+import BrimstoneChest from './BrimstoneChest.js';
+import Casket from './Casket.js';
+import CrystalChest from './CrystalChest.js';
+import ElvenCrystalChest from './ElvenCrystalChest.js';
+import GiantEggSacFull from './GiantEggSacFull.js';
+import GrubbyChest from './GrubbyChest.js';
+import { BronzeHAMChest, IronHAMChest, SilverHAMChest, SteelHAMChest } from './HAMStoreRoomChests.js';
+import { AdeptSack, BasicSack, ExpertSack, MasterSack } from './HuntersLootSack.js';
 import {
 	BabyImpling,
 	CrystalImpling,
@@ -21,19 +21,19 @@ import {
 	NatureImpling,
 	NinjaImpling,
 	YoungImpling
-} from './Implings';
-import IntricatePouch from './IntricatePouch';
-import LarransChest from './LarransChest';
-import MuddyChest from './MuddyChest';
-import MysteryBox from './MysteryBox';
-import NestBoxEmpty from './NestBoxEmpty';
-import NestBoxRing from './NestBoxRing';
-import NestBoxSeeds from './NestBoxSeeds';
-import OgreCoffin from './OgreCoffin';
-import { GiantsFoundryOrePack, VolcanicMineOrePack } from './OrePack';
-import SeedPack from './SeedPack';
-import SinisterChest from './SinisterChest';
-import ZombiePiratesLocker from './ZombiePiratesLocker';
+} from './Implings.js';
+import IntricatePouch from './IntricatePouch.js';
+import LarransChest from './LarransChest.js';
+import MuddyChest from './MuddyChest.js';
+import MysteryBox from './MysteryBox.js';
+import NestBoxEmpty from './NestBoxEmpty.js';
+import NestBoxRing from './NestBoxRing.js';
+import NestBoxSeeds from './NestBoxSeeds.js';
+import OgreCoffin from './OgreCoffin.js';
+import { GiantsFoundryOrePack, VolcanicMineOrePack } from './OrePack.js';
+import SeedPack from './SeedPack.js';
+import SinisterChest from './SinisterChest.js';
+import ZombiePiratesLocker from './ZombiePiratesLocker.js';
 
 export {
 	MysteryBox,
@@ -124,4 +124,4 @@ const Openables = Object.assign(new Collection(allMonsters), openablesObject);
 
 export default Openables;
 
-export * from './HallowedSack';
+export * from './HallowedSack.js';

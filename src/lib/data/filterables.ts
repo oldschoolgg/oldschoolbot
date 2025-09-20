@@ -1,16 +1,16 @@
-import { uniqueArr } from 'e';
+import { uniqueArr } from '@oldschoolgg/toolkit';
 import { resolveItems } from 'oldschooljs';
 
-import { Lampables } from '../../mahoji/lib/abstracted_commands/lampCommand';
-import Potions from '../minions/data/potions';
-import { allOpenables } from '../openables';
-import { gracefulItems } from '../skilling/skills/agility';
-import { Craftables } from '../skilling/skills/crafting/craftables';
-import { Fletchables } from '../skilling/skills/fletching/fletchables';
-import Grimy from '../skilling/skills/herblore/mixables/grimy';
-import PotionsMixable from '../skilling/skills/herblore/mixables/potions';
-import unfinishedPotions from '../skilling/skills/herblore/mixables/unfinishedPotions';
-import { allCollectionLogs } from './Collections';
+import Potions from '@/lib/minions/data/potions.js';
+import { Lampables } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
+import { allOpenables } from '../openables.js';
+import { gracefulItems } from '../skilling/skills/agility.js';
+import { Craftables } from '../skilling/skills/crafting/craftables/index.js';
+import { Fletchables } from '../skilling/skills/fletching/fletchables/index.js';
+import Grimy from '../skilling/skills/herblore/mixables/grimy.js';
+import PotionsMixable from '../skilling/skills/herblore/mixables/potions.js';
+import unfinishedPotions from '../skilling/skills/herblore/mixables/unfinishedPotions.js';
+import { allCollectionLogs } from './Collections.js';
 import {
 	allClueItems,
 	cluesBeginnerCL,
@@ -25,8 +25,8 @@ import {
 	cluesSharedCL,
 	temporossCL,
 	wintertodtCL
-} from './CollectionsExport';
-import { Eatables } from './eatables';
+} from './CollectionsExport.js';
+import { Eatables } from './eatables.js';
 
 export const superCompostables = [
 	'Pineapple',

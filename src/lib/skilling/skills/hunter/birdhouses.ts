@@ -1,5 +1,5 @@
-import birdhouses, { type Birdhouse } from './birdHouseTrapping';
-import defaultBirdhouseTrap, { type BirdhouseData } from './defaultBirdHouseTrap';
+import birdhouses, { type Birdhouse } from './birdHouseTrapping.js';
+import defaultBirdhouseTrap, { type BirdhouseData } from './defaultBirdHouseTrap.js';
 
 interface BirdhouseDetails {
 	raw: BirdhouseData;

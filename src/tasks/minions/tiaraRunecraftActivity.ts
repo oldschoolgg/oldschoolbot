@@ -1,9 +1,9 @@
 import { Bank } from 'oldschooljs';
 
-import Runecraft from '../../lib/skilling/skills/runecraft';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { TiaraRunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { TiaraRunecraftActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const tiaraRunecraftTask: MinionTask = {
 	type: 'TiaraRunecraft',
@@ -27,8 +27,7 @@ export const tiaraRunecraftTask: MinionTask = {
 
 		str += `\n\nYou received: ${loot}.`;
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

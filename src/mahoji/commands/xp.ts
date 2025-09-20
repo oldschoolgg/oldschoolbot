@@ -1,8 +1,7 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Hiscores, type SkillsScore } from 'oldschooljs';
+import { Hiscores, type SkillsScore } from 'oldschooljs/hiscores';
 
-import { statsEmbed } from '../../lib/util/statsEmbed';
+import { statsEmbed } from '@/lib/util/statsEmbed.js';
 
 export const xpCommand: OSBMahojiCommand = {
 	name: 'xp',

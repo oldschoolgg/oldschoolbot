@@ -1,6 +1,6 @@
 import { EItem, ItemGroups, Items } from 'oldschooljs';
 
-import type { GearBank } from '@/lib/structures/GearBank';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 
 export const dragonHunterWeapons = [
 	{

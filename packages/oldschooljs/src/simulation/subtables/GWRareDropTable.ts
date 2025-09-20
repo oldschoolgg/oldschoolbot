@@ -1,4 +1,4 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '@/structures/LootTable.js';
 
 const GWMegaRareTable = new LootTable()
 	.add('Coins', [19_500, 20_000], 113)

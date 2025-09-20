@@ -1,8 +1,7 @@
-import { roll } from 'e';
-import { Bank, type Item, ItemGroups, LootTable, resolveItems } from 'oldschooljs';
+import { roll } from '@/lib/util/rng.js';
+import { Bank, type Item, ItemGroups, Items, LootTable, resolveItems } from 'oldschooljs';
 
-import type { UnifiedOpenable } from './openables';
-import getOSItem from './util/getOSItem';
+import type { UnifiedOpenable } from './openables.js';
 
 const BronzeChest = new LootTable({ limit: 99 })
 	.every('Swamp paste', [10, 20])
@@ -277,7 +276,7 @@ export const shadeChestOpenables: UnifiedOpenable[] = [];
 
 for (const chest of chests) {
 	for (const key of chest.items) {
-		const keyItem = getOSItem(key);
+		const keyItem = Items.getOrThrow(key);
 		shadeChestOpenables.push({
 			name: keyItem.name,
 			id: keyItem.id,

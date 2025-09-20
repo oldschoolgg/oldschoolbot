@@ -1,7 +1,7 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
 import type { ArrayItemsResolved, Bank } from 'oldschooljs';
 
-import { effectiveMonsters } from '../data/killableMonsters';
+import { effectiveMonsters } from '../data/killableMonsters/index.js';
 
 export default async function announceLoot({
 	user,

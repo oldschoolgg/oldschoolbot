@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import type { Createable } from '../createables';
+import type { Createable } from '../createables.js';
 
 const toolCreatables: Createable[] = [
 	{

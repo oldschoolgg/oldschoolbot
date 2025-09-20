@@ -1,6 +1,6 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { AbyssalDemonPreTable } from '../low/a-f/AbyssalDemon';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import { AbyssalDemonPreTable } from '../low/a-f/AbyssalDemon.js';
 
 const GreaterAbyssalDemonTable = new LootTable()
 	.every('Abyssal ashes')

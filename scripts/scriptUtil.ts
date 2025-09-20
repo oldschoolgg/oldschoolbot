@@ -1,7 +1,13 @@
 import { type ExecOptions, exec as execNonPromise } from 'node:child_process';
 import { promisify } from 'node:util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { TimerManager } from '@sapphire/timer-manager';
 import { Bank, type ItemBank } from 'oldschooljs';
+
+import { crons } from '@/lib/crons.js';
+import { sql } from '@/lib/postgres.js';
+import { sonicBoom } from '@/lib/util/logger.js';
+import { Workers } from '@/lib/workers/index.js';
 
 const rawExecAsync = promisify(execNonPromise);
 
@@ -39,4 +45,13 @@ export function getItemNamesFromBank(bank: Bank | ItemBank): string[] {
 			.sort((a, b) => a.localeCompare(b));
 	}
 	return getItemNamesFromBank(new Bank(bank));
+}
+
+export async function tearDownScript() {
+	await Workers.destroyAll();
+	await sql.end();
+	TimerManager.destroy();
+	sonicBoom.destroy();
+	for (const cron of crons) cron.stop();
+	process.exit(0);
 }

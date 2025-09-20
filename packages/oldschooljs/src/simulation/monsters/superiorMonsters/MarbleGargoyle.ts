@@ -1,6 +1,6 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { GargoylePreTable } from '../low/g-m/Gargoyle';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import { GargoylePreTable } from '../low/g-m/Gargoyle.js';
 
 const MarbleGargoyleTable = new LootTable()
 	.every(GargoylePreTable, 3)

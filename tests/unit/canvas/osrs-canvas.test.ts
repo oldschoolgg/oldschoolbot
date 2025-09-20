@@ -3,8 +3,8 @@ import path from 'node:path';
 import { EItem } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
-import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas';
-import { bankImageTask } from '@/lib/canvas/bankImage';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
+import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import { baseSnapshotPath } from '../../testConstants.js';
 
 describe('OSRSCanvas', async () => {

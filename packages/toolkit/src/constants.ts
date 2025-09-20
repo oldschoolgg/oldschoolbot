@@ -1,4 +1,4 @@
-import { Emoji } from './util/emoji';
+import { Emoji } from './util/emoji.js';
 
 export { Emoji };
 

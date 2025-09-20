@@ -1,4 +1,4 @@
-import Items from '../structures/Items';
+import Items from '../structures/Items.js';
 
 export default function itemID(name: string): number {
 	const item = Items.get(name);

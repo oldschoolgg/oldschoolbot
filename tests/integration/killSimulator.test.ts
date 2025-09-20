@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 
-import { killCommand } from '../../src/mahoji/commands/kill';
-import { createTestUser } from './util';
+import { killCommand } from '../../src/mahoji/commands/kill.js';
+import { createTestUser } from './util.js';
 
 test('killSimulator.test', async () => {
 	const user = await createTestUser();

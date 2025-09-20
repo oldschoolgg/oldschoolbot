@@ -1,19 +1,18 @@
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { Time } from '@oldschoolgg/toolkit/datetime';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, itemID } from 'oldschooljs';
 
-import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
-import Cooking, { Cookables } from '../../lib/skilling/skills/cooking/cooking';
-import ForestryRations from '../../lib/skilling/skills/cooking/forestersRations';
-import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish';
-import type { CookingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { cutLeapingFishCommand } from '../lib/abstracted_commands/cutLeapingFishCommand';
-import { forestersRationCommand } from '../lib/abstracted_commands/forestersRationCommand';
+import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import Cooking, { Cookables } from '@/lib/skilling/skills/cooking/cooking.js';
+import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
+import LeapingFish from '@/lib/skilling/skills/cooking/leapingFish.js';
+import type { CookingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { cutLeapingFishCommand } from '@/mahoji/lib/abstracted_commands/cutLeapingFishCommand.js';
+import { forestersRationCommand } from '@/mahoji/lib/abstracted_commands/forestersRationCommand.js';
 
 export const cookCommand: OSBMahojiCommand = {
 	name: 'cook',

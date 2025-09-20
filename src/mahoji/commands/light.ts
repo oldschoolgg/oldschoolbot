@@ -1,13 +1,13 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import Firemaking from '../../lib/skilling/skills/firemaking';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { FiremakingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import Firemaking from '@/lib/skilling/skills/firemaking.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { FiremakingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export const lightCommand: OSBMahojiCommand = {
 	name: 'light',
@@ -78,7 +78,7 @@ export const lightCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 
 		await addSubTaskToActivityTask<FiremakingActivityTaskOptions>({
 			burnableID: log.inputLogs,

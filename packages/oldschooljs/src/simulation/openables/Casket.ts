@@ -1,5 +1,5 @@
-import LootTable from '../../structures/LootTable';
-import SimpleOpenable from '../../structures/SimpleOpenable';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
 const CasketTable = new LootTable()
 	.add('Coins', 160, 24)

@@ -1,6 +1,6 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import RareDropTable from '../../../subtables/RareDropTable';
+import { RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const ChaosElementalMinorTable = new LootTable()
 	.add('Blighted anglerfish', 2, 1)

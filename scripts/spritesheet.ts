@@ -1,21 +1,20 @@
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
-import { SpriteSheetGenerator } from '@oldschoolgg/spritesheet';
+import { type GenerateResult, SpriteSheetGenerator } from '@oldschoolgg/spritesheet';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import '../src/lib/safeglobals';
+import '../src/lib/safeglobals.js';
+import { isFunction, uniqueArr } from '@oldschoolgg/toolkit';
+import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
 import sharp from 'sharp';
 
-import { isFunction, uniqueArr } from 'e';
-import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
-import { ALL_OBTAINABLE_ITEMS } from '../src/lib/allObtainableItems';
-import { BOT_TYPE } from '../src/lib/constants';
-import { allCLItems } from '../src/lib/data/Collections';
-import Buyables from '../src/lib/data/buyables/buyables';
-import Createables from '../src/lib/data/createables';
+import { ALL_OBTAINABLE_ITEMS } from '../src/lib/allObtainableItems.js';
+import { BOT_TYPE } from '../src/lib/constants.js';
+import { allCLItems } from '../src/lib/data/Collections.js';
+import Buyables from '../src/lib/data/buyables/buyables.js';
+import Createables from '../src/lib/data/createables.js';
 
-import type { GenerateResult } from 'packages/spritesheet/dist/types.js';
-import bsoItemsJson from '../data/bso/bso_items.json';
-import bsoMonstersJson from '../data/bso/monsters.json';
+import bsoItemsJson from '../data/bso/bso_items.json' with { type: 'json' };
+import bsoMonstersJson from '../data/bso/monsters.json' with { type: 'json' };
 
 const SPRITESHEETS_DIR = './src/lib/resources/spritesheets';
 const stopwatch = new Stopwatch();

@@ -12,9 +12,9 @@ import {
 	type TextChannel
 } from 'discord.js';
 
-import { UserError } from '../../structures';
-import { Time } from '../datetime';
-import { isFunction } from '../typeChecking';
+import { UserError } from '../../structures.js';
+import { Time } from '../datetime.js';
+import { isFunction } from '../typeChecking.js';
 
 const InteractionID = {
 	PaginatedMessage: {

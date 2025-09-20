@@ -1,7 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import HerbDropTable from '../../../subtables/HerbDropTable';
-import RareDropTable, { GemTable } from '../../../subtables/RareDropTable';
+import { HerbDropTable } from '@/simulation/subtables/HerbDropTable.js';
+import { GemTable, RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const ZamorakRobesTable = new LootTable()
 	.add('Zamorak monk top', 1, 4)

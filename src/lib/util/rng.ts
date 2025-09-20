@@ -10,6 +10,10 @@ export function randFloat(min: number, max: number) {
 	return real(min, max)(randEngine);
 }
 
+export function randInt(min: number, max: number) {
+	return integer(min, max)(randEngine);
+}
+
 export function percentChance(percent: number) {
 	return bool(percent / 100)(randEngine);
 }

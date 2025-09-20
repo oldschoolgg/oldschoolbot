@@ -2,9 +2,9 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { SkillsEnum } from '../../../../skilling/types';
-import type { KillableMonster } from '../../../types';
-import { DiaryID } from '../../../types';
+import { SkillsEnum } from '../../../../skilling/types.js';
+import type { KillableMonster } from '../../../types.js';
+import { DiaryID } from '../../../types.js';
 
 export const wildyKillableMonsters: KillableMonster[] = [
 	{

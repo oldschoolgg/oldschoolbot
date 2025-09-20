@@ -1,16 +1,16 @@
-import { type CommandRunOptions, type MahojiUserOption, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { type MahojiUserOption, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { containsBlacklistedWord, miniID, truncateString } from '@oldschoolgg/toolkit/string-util';
 import { GiftBoxStatus } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import { BOT_TYPE } from '../../lib/constants';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { isValidNickname } from '../../lib/util/smallUtils';
+import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { BOT_TYPE } from '@/lib/constants.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
+import { isValidNickname } from '@/lib/util/smallUtils.js';
 
 export const giftCommand: OSBMahojiCommand = {
 	name: 'gift',

@@ -1,4 +1,4 @@
-import type { Item } from '../src/meta/types';
+import type { Item } from '@/index.js';
 
 type DeepPartial<T> = T extends object
 	? {
