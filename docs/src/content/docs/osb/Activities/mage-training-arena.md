@@ -10,7 +10,7 @@ To start a trip, use [[/minigames mage_training_arena start]]. To check your poi
 
 - Rewards can be bought using [[/minigames mage_training_arena buy]].
 - Buying every reward in the shop (including the [[Rune pouch]]) costs 6,514 Pizazz points and takes roughly 31 hours at the averaged 210 Pizazz points per hour.
-- Completing the collection log items (everything above except the [[Rune pouch]]) requires 6,114 Pizazz points and about 29 hours.
+- Completing the collection log items (everything below except the [[Rune pouch]]) requires 6,114 Pizazz points and about 29 hours.
 
 ### Wiki-estimated rune usage & time
 
