@@ -12,10 +12,10 @@ import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { pizazzPointsPerHour } from '../../../tasks/minions/minigames/mageTrainingArenaActivity';
 
 const RuneTable = new LootTable()
-	.every('Law rune', [11, 14])
-	.every('Cosmic rune', [18, 22])
-	.every('Nature rune', [18, 22])
-	.every('Fire rune', [35, 45]);
+	.every('Law rune', [36, 40])
+	.every('Cosmic rune', [89, 97])
+	.every('Nature rune', [85, 93])
+	.every('Fire rune', [170, 190]);
 
 const bonesToPeachesItem = getOSItem('Bones to peaches');
 
@@ -128,13 +128,14 @@ export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 export async function mageTrainingArenaPointsCommand(user: MUser) {
 	const parsedUser = await getNewUser(user.id);
 
-	return `You have **${parsedUser.pizazz_points.toLocaleString()}** Pizazz points.
-**Pizazz Points Per Hour:** ${pizazzPointsPerHour}
-${mageTrainingArenaBuyables
-	.map(i => `${i.item.name} - ${i.cost} pts - ${formatDuration((i.cost / pizazzPointsPerHour) * (Time.Minute * 60))}`)
-	.join('\n')}
+	const rewardsList = mageTrainingArenaBuyables
+		.map(buyable => {
+			const duration = Math.round((buyable.cost / pizazzPointsPerHour) * (Time.Minute * 60));
+			return `${buyable.item.name} - ${buyable.cost} pts - ${formatDuration(duration)}`;
+		})
+		.join('\n');
 
-Hint: Magic Training Arena is combined into 1 room, and 1 set of points - rewards take approximately the same amount of time to get. To get started use **/minigames mage_training_arena start**. You can buy rewards using **/minigames mage_training_arena buy**.`;
+	return `You have **${parsedUser.pizazz_points.toLocaleString()}** Pizazz points.\n**Pizazz Points Per Hour:** ${pizazzPointsPerHour}\n${rewardsList}\n\nNote: Apprentice, Teacher, and Master wands are sequential upgrades that require turning in the previous wand.\n\nHint: Magic Training Arena is combined into 1 room, and 1 set of points - rewards take approximately the same amount of time to get. To get started use **/minigames mage_training_arena start**. You can buy rewards using **/minigames mage_training_arena buy**.`;
 }
 
 export async function mageTrainingArenaStartCommand(user: MUser, channelID: string): CommandResponse {

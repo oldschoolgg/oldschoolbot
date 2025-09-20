@@ -6,7 +6,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
-export const pizazzPointsPerHour = 100;
+export const pizazzPointsPerHour = 210.315;
 
 export const mageTrainingTask: MinionTask = {
 	type: 'MageTrainingArena',
