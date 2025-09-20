@@ -61,7 +61,7 @@
 		"random-js": "^2.1.0",
 		"remeda": "^2.23.0",
 		"simple-statistics": "^7.8.3",
-		"skia-canvas": "^1.0.2",
+		"skia-canvas": "^3.0.7",
 		"sonic-boom": "^4.2.0",
 		"ts-pattern": "^5.7.1",
 		"tsdown": "^0.15.2",

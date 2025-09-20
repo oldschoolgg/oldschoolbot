@@ -22,7 +22,7 @@ export default defineConfig({
 		},
 		coverage: {
 			provider: 'v8',
-			include: ['src/lib/util/parseStringBank.ts', 'src/lib/structures/Gear.ts'],
+			include: ['src/lib/util/parseStringBank.ts', 'src/lib/structures/Gear.ts', 'src/lib/canvas/**/*.ts'],
 			reporter: ['text']
 		}
 	},
