@@ -1,4 +1,4 @@
-import { notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
+import { deepEqual, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
 import type { GearPreset } from '@prisma/client';
 import { Bank, EquipmentSlot, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 import type { EGear } from 'oldschooljs/EGear';
@@ -601,6 +601,12 @@ export class Gear {
 			bank.add(equipped.item, equipped.quantity);
 		}
 		return bank;
+	}
+
+	equals(other: Gear): boolean {
+		const thisRaw = this.raw();
+		const otherRaw = other.raw();
+		return deepEqual(thisRaw, otherRaw);
 	}
 }
 

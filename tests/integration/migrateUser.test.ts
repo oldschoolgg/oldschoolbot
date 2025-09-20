@@ -30,8 +30,9 @@ import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
 import { clone } from 'remeda';
 import { beforeAll, expect, test, vi } from 'vitest';
 
+import { Gear, defaultGear } from '@/lib/structures/Gear.js';
 import { BitField } from '../../src/lib/constants.js';
-import type { GearSetupType, UserFullGearSetup } from '../../src/lib/gear/types.js';
+import { type GearSetupType, GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types.js';
 import { trackLoot } from '../../src/lib/lootTrack.js';
 import type { MinigameName } from '../../src/lib/settings/minigames.js';
 import type { SkillsEnum } from '../../src/lib/skilling/types.js';
@@ -120,7 +121,11 @@ class UserData {
 
 		this.bank = new Bank(this.mUser.bank);
 		this.clbank = new Bank(this.mUser.cl);
-		this.gear = { ...clone(this.mUser.gear) };
+
+		this.gear = {} as UserFullGearSetup;
+		for (const setupType of GearSetupTypes) {
+			this.gear[setupType] = new Gear(this.mUser.gear[setupType].raw() ?? { ...defaultGear }).clone();
+		}
 		this.skillsAsLevels = clone(this.mUser.skillsAsLevels);
 
 		const robochimpUser = await roboChimpClient.user.findFirst({
@@ -278,11 +283,9 @@ class UserData {
 		if (!this.clbank!.equals(target.clbank!)) {
 			errors.push(`CL's don't match. Difference: ${this.clbank!.remove(target.clbank!)}`);
 		}
-		for (const gearSlot of Object.keys(this.gear!)) {
-			if (
-				this.gear![gearSlot as GearSetupType].toString() !== target.gear![gearSlot as GearSetupType].toString()
-			) {
-				errors.push(`${gearSlot} gear doesn't match`);
+		for (const gearSetup of Object.keys(this.gear!) as GearSetupType[]) {
+			if (!this.gear![gearSetup].equals(target.gear![gearSetup])) {
+				errors.push(`${gearSetup} gear doesn't match`);
 			}
 		}
 

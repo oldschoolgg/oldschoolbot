@@ -37,6 +37,9 @@ describe('Grand Exchange', async () => {
 
 	test(
 		'Fuzz',
+		{
+			timeout: Time.Minute * 10
+		},
 		async () => {
 			// biome-ignore lint/suspicious/noSelfCompare: <explanation>
 			assert(randInt(1, 100_000) !== randInt(1, 100_000));
@@ -142,9 +145,6 @@ Based on G.E data, we should have received ${data.totalTax} tax`;
 
 			await GrandExchange.queue.onEmpty();
 			assert(GrandExchange.queue.size === 0, 'Queue should be empty');
-		},
-		{
-			timeout: Time.Minute * 10
 		}
 	);
 
