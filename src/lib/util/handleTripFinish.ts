@@ -5,6 +5,7 @@ import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { Bank, EItem } from 'oldschooljs';
 
+import { getNextUTCReset } from 'packages/toolkit/dist/util';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import {
@@ -16,6 +17,7 @@ import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
 import { BitField, PerkTier } from '../constants';
+import { TEARS_OF_GUTHIX_CD } from '../events';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
@@ -36,8 +38,6 @@ import {
 } from './interactions';
 import { hasSkillReqs } from './smallUtils';
 import { sendToChannelID } from './webhook';
-import { getNextUTCReset } from 'packages/toolkit/dist/util';
-import { TEARS_OF_GUTHIX_CD } from '../events';
 
 const collectors = new Map<string, MessageCollector>();
 
