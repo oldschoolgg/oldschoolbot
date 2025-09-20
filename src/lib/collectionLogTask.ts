@@ -2,7 +2,7 @@ import type { CommandResponse } from '@oldschoolgg/toolkit/discord-util';
 import { generateHexColorForCashStack } from '@oldschoolgg/toolkit/runescape';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { calcWhatPercent, objectEntries } from 'e';
-import { type Bank, Items, Util } from 'oldschooljs';
+import { type Bank, Items, Util, itemID } from 'oldschooljs';
 
 import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
 import type { CollectionStatus, IToReturnCollection } from '../lib/data/CollectionsExport';
@@ -24,6 +24,9 @@ export const CollectionLogFlags = [
 ];
 
 class CollectionLogTask {
+	private static readonly COLLECTION_LOG_ITEM_ICON_OVERRIDES = new Map<number, number>([
+		[itemID('Bones to peaches'), itemID('Peach')]
+	]);
 	COLORS = {
 		ORANGEY: '#FF981F',
 		WHITE: '#FFFFFF',
@@ -270,8 +273,10 @@ class CollectionLogTask {
 
 			totalPrice += (Items.getOrThrow(item).price ?? 0) * qtyText;
 
+			const displayItemID = CollectionLogTask.COLLECTION_LOG_ITEM_ICON_OVERRIDES.get(item) ?? item;
+
 			await canvas.drawItemIDSprite({
-				itemID: item,
+				itemID: displayItemID,
 				x: Math.floor(i * (itemSize + itemSpacer)) + 1,
 				y: Math.floor(y * (itemSize + itemSpacer)) + 1,
 				quantity: qtyText > 0 ? qtyText : undefined

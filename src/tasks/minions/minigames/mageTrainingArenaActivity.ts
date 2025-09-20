@@ -1,11 +1,12 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, randomVariation } from 'oldschooljs';
 
+import { getNewUser } from '@/lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
-export const pizazzPointsPerHour = 100;
+export const pizazzPointsPerHour = 210.315;
 
 export const mageTrainingTask: MinionTask = {
 	type: 'MageTrainingArena',
@@ -25,6 +26,7 @@ export const mageTrainingTask: MinionTask = {
 			duration
 		});
 		const pizazzPoints = Math.floor((pizazzPointsPerHour / (Time.Minute * 60)) * duration);
+		await getNewUser(userID);
 		await prisma.newUser.update({
 			where: { id: userID },
 			data: {
