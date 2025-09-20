@@ -6,10 +6,10 @@ const tsconfigPath = relative(import.meta.dirname, resolveDir(process.cwd(), 'sr
 const baseOptions: Options = {
 	clean: true,
 	dts: true,
-	minify: false,
+	minify: true,
 	skipNodeModulesBundle: true,
-	sourcemap: true,
-	target: 'node20',
+	sourcemap: 'inline',
+	target: 'node24',
 	tsconfig: tsconfigPath,
 	platform: 'node',
 	hash: false,

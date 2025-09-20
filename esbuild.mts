@@ -15,11 +15,11 @@ const external = [
 	'bufferutil',
 	'discord.js',
 	'@prisma/robochimp',
-	'oldschooljs',
 	'dotenv',
 	'micromatch',
 	'node-cron',
-	'piscina'
+	'piscina',
+	'node:*'
 ];
 
 const baseBuildOptions: BuildOptions = {
@@ -28,25 +28,21 @@ const baseBuildOptions: BuildOptions = {
 	outExtension: { '.js': '.js' },
 	legalComments: 'none',
 	platform: 'node',
-	treeShaking: false,
+	treeShaking: true,
 	loader: {
 		'.node': 'file'
 	},
-	target: 'node20',
+	target: 'node24.8.0',
 	external,
 	define: STATIC_DEFINE,
-	sourcemap: 'inline'
+	sourcemap: 'inline',
+	minify: true,
+	metafile: true
 };
 
 build({
 	...baseBuildOptions,
-	entryPoints: [
-		'src/index.ts',
-		'src/lib/safeglobals.ts',
-		'src/lib/globals.ts',
-		'src/lib/MUser.ts',
-		'src/lib/ActivityManager.ts'
-	],
+	entryPoints: ['src/index.ts'],
 	outdir: './dist'
 });
 
