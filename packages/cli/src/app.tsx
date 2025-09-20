@@ -16,7 +16,7 @@ type Stage = {
 type Timings = Record<string, number>;
 
 const ALL_PACKAGE_NAMES: string[] = readdirSync('packages').filter(
-	name => !['test-dashboard', 'server', 'robochimp', 'cli'].includes(name)
+	name => !['test-dashboard', 'robochimp', 'cli'].includes(name)
 );
 
 const stages: Stage[] = [
