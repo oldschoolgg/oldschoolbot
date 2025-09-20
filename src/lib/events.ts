@@ -116,7 +116,7 @@ Type \`/tools user mypets\` to see your pets.`);
 const mentionText = `<@${globalConfig.clientID}>`;
 const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
 
-export const tears_of_guthix_cd = Time.Day * 7;
+export const TEARS_OF_GUTHIX_CD = Time.Day * 7;
 
 const cooldownTimers: {
 	name: string;
@@ -128,7 +128,7 @@ const cooldownTimers: {
 	{
 		name: 'Tears of Guthix',
 		timeStamp: (_, stats) => Number(stats.last_tears_of_guthix_timestamp),
-		cd: tears_of_guthix_cd,
+		cd: TEARS_OF_GUTHIX_CD,
 		command: ['minigames', 'tears_of_guthix', 'start'],
 		utcReset: true
 	},

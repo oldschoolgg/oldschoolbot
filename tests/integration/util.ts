@@ -32,16 +32,32 @@ export function mockDjsUser({ userId }: { userId: string }) {
 	} as any as DJSUser;
 }
 
+class MockInteraction {
+	id = '111155555';
+	__response__: any = {};
+	channelId = TEST_CHANNEL_ID;
+	async deferReply() {
+		return Promise.resolve();
+	}
+	async editReply(res: any) {
+		this.__response__ = res;
+	}
+	async followUp(res: any) {
+		this.__response__ = res;
+	}
+	async reply(res: any) {
+		this.__response__ = res;
+	}
+	user = {
+		id: '123456789'
+	};
+	constructor(userId: string) {
+		this.user.id = userId;
+	}
+}
+
 export function mockInteraction({ userId }: { userId: string }) {
-	return {
-		channelId: TEST_CHANNEL_ID,
-		deferReply: () => Promise.resolve(),
-		editReply: () => Promise.resolve(),
-		followUp: () => Promise.resolve(),
-		user: {
-			id: userId
-		}
-	} as any;
+	return new MockInteraction(userId) as any;
 }
 
 export function mockChannel({ userId }: { userId: string }) {
@@ -233,15 +249,16 @@ export class TestUser extends MUserClass {
 	}
 
 	async runCommand(command: OSBMahojiCommand, options: object = {}, syncAfter = false) {
+		const cmdOpts = commandRunOptions(this.id);
 		const result = await command.run({
-			...commandRunOptions(this.id),
+			...cmdOpts,
 			user: { createdAt: new Date(), id: this.id } as DJSUser,
 			options
 		});
 		if (syncAfter) {
 			await this.sync();
 		}
-		return result;
+		return result ?? (cmdOpts.interaction as any).__response__;
 	}
 
 	async bankAmountMatch(itemName: string, amount: number) {
