@@ -61,7 +61,7 @@ export const mageTrainingArenaBuyables = [
 	},
 	{
 		item: getOSItem("Mage's book"),
-		cost: 1260
+		cost: 1115
 	},
 	{
 		item: getOSItem('Rune pouch'),
