@@ -3,7 +3,7 @@ import { type MahojiUserOption, allAbstractCommands, bulkUpdateCommands } from '
 import { calcPerHour, cleanString, dateFm, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { type ClientStorage, economy_transaction_type } from '@prisma/client';
 import { ApplicationCommandOptionType, AttachmentBuilder, type InteractionReplyOptions } from 'discord.js';
-import { Bank, type ItemBank, toKMB } from 'oldschooljs';
+import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '@/lib/blacklists.js';
@@ -24,7 +24,6 @@ import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { sorts } from '@/lib/sorts.js';
 import { memoryAnalysis } from '@/lib/util/cachedUserIDs.js';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
-import getOSItem, { getItem } from '@/lib/util/getOSItem.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { deferInteraction, interactionReply } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -126,7 +125,7 @@ AND ("gear.melee" IS NOT NULL OR
 				for (const gear of Object.values(user)
 					.flatMap(i => (i === null ? [] : Object.values(i)))
 					.filter(notEmpty)) {
-					const item = getItem(gear.item);
+					const item = Items.getItem(gear.item);
 					if (item) {
 						bank.add(gear.item, gear.quantity);
 					}
@@ -323,7 +322,7 @@ LIMIT
 					.map(
 						(row, index) =>
 							`${index + 1}. ${
-								getOSItem(Number(row.item_id)).name
+								Items.getOrThrow(Number(row.item_id)).name
 							} - ${row.total_gp_spent.toLocaleString()} GP`
 					)
 					.join('\n')
@@ -355,7 +354,7 @@ from bot_item_sell;`);
 								.map(
 									(row, index) =>
 										`${index + 1}. ${
-											getOSItem(Number(row.item_id)).name
+											Items.getOrThrow(Number(row.item_id)).name
 										} - ${row.gp.toLocaleString()} GP (${calcWhatPercent(
 											row.gp,
 											totalGPGivenOut[0].total_gp_given_out
@@ -756,7 +755,7 @@ export const adminCommand: OSBMahojiCommand = {
 			return 'Invalid.';
 		}
 		if (options.set_price) {
-			const item = getItem(options.set_price.item);
+			const item = Items.getItem(options.set_price.item);
 			if (!item) return 'Invalid item.';
 			const { price } = options.set_price;
 			if (!price || price < 1 || price > 1_000_000_000) return 'Invalid price.';
@@ -950,7 +949,7 @@ ${guildCommands.length} Guild commands`;
 		}
 
 		if (options.item_stats) {
-			const item = getItem(options.item_stats.item);
+			const item = Items.getItem(options.item_stats.item);
 			if (!item) return 'Invalid item.';
 			const isIron = false;
 			const ownedResult: any = await prisma.$queryRawUnsafe(`SELECT SUM((bank->>'${item.id}')::int) as qty
@@ -968,7 +967,7 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 
 			if (options.ltc.item) {
 				str += `${['id', 'total_of_item', 'item_per_kc', 'per_hour'].join('\t')}\n`;
-				const item = getOSItem(options.ltc.item);
+				const item = Items.getOrThrow(options.ltc.item);
 
 				for (const res of results) {
 					const loot = new Bank(res.loot as ItemBank);

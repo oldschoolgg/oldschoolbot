@@ -1,13 +1,12 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Bank, LootTable } from 'oldschooljs';
+import { Bank, Items, LootTable } from 'oldschooljs';
 
 import { getNewUser } from '@/lib/settings/settings.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { pizazzPointsPerHour } from '../../../tasks/minions/minigames/mageTrainingArenaActivity.js';
 
@@ -19,46 +18,46 @@ const RuneTable = new LootTable()
 
 export const mageTrainingArenaBuyables = [
 	{
-		item: getOSItem('Infinity gloves'),
+		item: Items.getOrThrow('Infinity gloves'),
 		cost: 420
 	},
 	{
-		item: getOSItem('Infinity hat'),
+		item: Items.getOrThrow('Infinity hat'),
 		cost: 810
 	},
 	{
-		item: getOSItem('Infinity top'),
+		item: Items.getOrThrow('Infinity top'),
 		cost: 960
 	},
 	{
-		item: getOSItem('Infinity bottoms'),
+		item: Items.getOrThrow('Infinity bottoms'),
 		cost: 1110
 	},
 	{
-		item: getOSItem('Infinity boots'),
+		item: Items.getOrThrow('Infinity boots'),
 		cost: 280
 	},
 	{
-		item: getOSItem('Beginner wand'),
+		item: Items.getOrThrow('Beginner wand'),
 		cost: 30
 	},
 	{
-		item: getOSItem('Apprentice wand'),
+		item: Items.getOrThrow('Apprentice wand'),
 		cost: 71,
-		upgradesFrom: getOSItem('Beginner wand')
+		upgradesFrom: Items.getOrThrow('Beginner wand')
 	},
 	{
-		item: getOSItem('Teacher wand'),
+		item: Items.getOrThrow('Teacher wand'),
 		cost: 143,
-		upgradesFrom: getOSItem('Apprentice wand')
+		upgradesFrom: Items.getOrThrow('Apprentice wand')
 	},
 	{
-		item: getOSItem('Master wand'),
+		item: Items.getOrThrow('Master wand'),
 		cost: 575,
-		upgradesFrom: getOSItem('Teacher wand')
+		upgradesFrom: Items.getOrThrow('Teacher wand')
 	},
 	{
-		item: getOSItem("Mage's book"),
+		item: Items.getOrThrow("Mage's book"),
 		cost: 1260
 	}
 ];

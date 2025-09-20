@@ -1,6 +1,5 @@
-import { Bank, type Item, itemID } from 'oldschooljs';
+import { Bank, type Item, Items, itemID } from 'oldschooljs';
 
-import getOSItem from '../../util/getOSItem.js';
 import type { Createable } from '../createables.js';
 
 export const armorAndItemPacks: Createable[] = [
@@ -2466,15 +2465,15 @@ export const armorAndItemPacks: Createable[] = [
 const armorSetsSrc: { unpacked: Bank; packed: Item }[] = [
 	{
 		unpacked: new Bank().add("Dagon'hai hat").add("Dagon'hai robe top").add("Dagon'hai robe bottom"),
-		packed: getOSItem("Dagon'hai robes set")
+		packed: Items.getOrThrow("Dagon'hai robes set")
 	},
 	{
 		unpacked: new Bank().add('Masori mask (f)').add('Masori body (f)').add('Masori chaps (f)'),
-		packed: getOSItem('Masori armour set (f)')
+		packed: Items.getOrThrow('Masori armour set (f)')
 	},
 	{
 		unpacked: new Bank().add('Sunfire fanatic helm').add('Sunfire fanatic cuirass').add('Sunfire fanatic chausses'),
-		packed: getOSItem('Sunfire fanatic armour set')
+		packed: Items.getOrThrow('Sunfire fanatic armour set')
 	}
 ];
 

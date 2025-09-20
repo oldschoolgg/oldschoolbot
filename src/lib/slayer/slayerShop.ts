@@ -1,29 +1,29 @@
-import getOSItem from '@/lib/util/getOSItem.js';
+import { Items } from 'oldschooljs';
 import type { SlayerShopItem } from './types.js';
 
 export const slayerShopBuy: readonly SlayerShopItem[] = [
 	{
-		item: getOSItem('Slayer ring (8)'),
+		item: Items.getOrThrow('Slayer ring (8)'),
 		itemAmount: 1,
 		points: 75
 	},
 	{
-		item: getOSItem('Broad bolts'),
+		item: Items.getOrThrow('Broad bolts'),
 		itemAmount: 250,
 		points: 35
 	},
 	{
-		item: getOSItem('Broad arrows'),
+		item: Items.getOrThrow('Broad arrows'),
 		itemAmount: 250,
 		points: 35
 	},
 	{
-		item: getOSItem('Herb sack'),
+		item: Items.getOrThrow('Herb sack'),
 		itemAmount: 1,
 		points: 750
 	},
 	{
-		item: getOSItem('Rune pouch'),
+		item: Items.getOrThrow('Rune pouch'),
 		itemAmount: 1,
 		points: 750
 	}

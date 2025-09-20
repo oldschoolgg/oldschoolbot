@@ -2,7 +2,7 @@ import { notEmpty, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
@@ -10,7 +10,6 @@ import { BitField, MAX_CLUES_DROPPED, PerkTier } from '@/lib/constants.js';
 import type { UnifiedOpenable } from '@/lib/openables.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
-import getOSItem, { getItem } from '@/lib/util/getOSItem.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting } from '../../mahojiSettings.js';
@@ -18,7 +17,7 @@ import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting } from '../
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
 export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2))
-	.map(getOSItem)
+	.map(id => Items.getOrThrow(id))
 	.sort((a, b) => {
 		if (b.name.includes('Clue')) return 1;
 		if (a.name.includes('Clue')) return -1;
@@ -50,7 +49,7 @@ export async function abstractedOpenUntilCommand(
 	if (!openableItem) return "That's not a valid item.";
 	const openable = allOpenables.find(i => i.openedItem === openableItem.openedItem);
 	if (!openable) return "That's not a valid item.";
-	const openUntil = getItem(openUntilItem);
+	const openUntil = Items.get(openUntilItem);
 	if (!openUntil) {
 		return `That's not a valid item to open until, you can only do it with items that you can get from ${openable.openedItem.name}.`;
 	}

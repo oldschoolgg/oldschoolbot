@@ -20,7 +20,7 @@ import { allOpenables } from '@/lib/openables.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { getFarmingInfo } from '@/lib/skilling/functions/getFarmingInfo.js';
 import Farming from '@/lib/skilling/skills/farming/index.js';
-import Skills from '@/lib/skilling/skills/index.js';
+import { Skills } from '@/lib/skilling/skills/index.js';
 import { slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
@@ -28,7 +28,6 @@ import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { FarmingPatchName } from '@/lib/util/farmingHelpers.js';
 import { farmingPatchNames, getFarmingKeyFromName, userGrowingProgressStr } from '@/lib/util/farmingHelpers.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { logError } from '@/lib/util/logError.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
 import { userEventToStr } from '@/lib/util/userEvents.js';
@@ -72,7 +71,7 @@ for (const gear of Items.resolveItems([
 	'Ultor ring',
 	'Scythe of vitur'
 ])) {
-	coloMelee.equip(getOSItem(gear));
+	coloMelee.equip(Items.getOrThrow(gear));
 }
 
 const coloRange = new Gear();
@@ -87,7 +86,7 @@ for (const gear of Items.resolveItems([
 	'Dragon arrow',
 	'Twisted bow'
 ])) {
-	coloRange.equip(getOSItem(gear));
+	coloRange.equip(Items.getOrThrow(gear));
 }
 
 const gearPresets = [
@@ -930,7 +929,7 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 					}
 					if (item) {
 						try {
-							bankToGive.add(getOSItem(item).id);
+							bankToGive.add(Items.getOrThrow(item).id);
 						} catch (err) {
 							return err as string;
 						}

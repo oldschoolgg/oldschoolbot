@@ -75,5 +75,3 @@ export const Skills: Record<string, Skill> = {
 		name: 'Slayer'
 	}
 };
-
-export default Skills;

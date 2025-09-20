@@ -1,7 +1,6 @@
-import { Bank, EItem, type ItemBank, deepResolveItems, itemID } from 'oldschooljs';
+import { Bank, EItem, type ItemBank, Items, deepResolveItems, itemID } from 'oldschooljs';
 
 import { blisterwoodRequirements, ivandisRequirements } from '@/lib/minions/data/templeTrekking.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { formatList, itemNameFromID } from '@/lib/util/smallUtils.js';
 import { BitField } from '../constants.js';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks.js';
@@ -54,8 +53,8 @@ const bloodBarkPairs = [
 const bloodBarkCreatables: Createable[] = [];
 
 for (const [bbPart, sbPart, bloodRunes, lvlReq] of bloodBarkPairs) {
-	const bbItem = getOSItem(bbPart);
-	const sbItem = getOSItem(sbPart);
+	const bbItem = Items.getOrThrow(bbPart);
+	const sbItem = Items.getOrThrow(sbPart);
 
 	bloodBarkCreatables.push({
 		name: bbItem.name,
@@ -85,8 +84,8 @@ const swampBarkPairs = [
 const swampBarkCreatables: Createable[] = [];
 
 for (const [bbPart, sbPart, natRunes, lvlReq] of swampBarkPairs) {
-	const bbItem = getOSItem(bbPart);
-	const sbItem = getOSItem(sbPart);
+	const bbItem = Items.getOrThrow(bbPart);
+	const sbItem = Items.getOrThrow(sbPart);
 
 	swampBarkCreatables.push({
 		name: bbItem.name,

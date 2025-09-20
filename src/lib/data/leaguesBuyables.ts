@@ -1,5 +1,4 @@
-import getOSItem from '@/lib/util/getOSItem.js';
-import type { Item } from 'oldschooljs';
+import { type Item, Items } from 'oldschooljs';
 
 interface RawLeagueBuyable {
 	item: Item;
@@ -9,121 +8,121 @@ interface RawLeagueBuyable {
 // 1 = 500
 const twistedBuyables: RawLeagueBuyable[] = [
 	{
-		item: getOSItem('Twisted cane'),
+		item: Items.getOrThrow('Twisted cane'),
 		price: 2
 	},
 	{
-		item: getOSItem('Twisted banner'),
+		item: Items.getOrThrow('Twisted banner'),
 		price: 1.5
 	},
 	{
-		item: getOSItem('Twisted teleport scroll'),
+		item: Items.getOrThrow('Twisted teleport scroll'),
 		price: 1.5
 	},
 	{
-		item: getOSItem('Twisted blueprints'),
+		item: Items.getOrThrow('Twisted blueprints'),
 		price: 8
 	},
 	{
-		item: getOSItem('Twisted horns'),
+		item: Items.getOrThrow('Twisted horns'),
 		price: 12
 	},
 	{
-		item: getOSItem('Twisted relic hunter (t1) armour set'),
+		item: Items.getOrThrow('Twisted relic hunter (t1) armour set'),
 		price: 2
 	},
 	{
-		item: getOSItem('Twisted relic hunter (t2) armour set'),
+		item: Items.getOrThrow('Twisted relic hunter (t2) armour set'),
 		price: 5
 	},
 	{
-		item: getOSItem('Twisted relic hunter (t3) armour set'),
+		item: Items.getOrThrow('Twisted relic hunter (t3) armour set'),
 		price: 20
 	}
 ];
 
 const trailblazerBuyables: RawLeagueBuyable[] = [
 	{
-		item: getOSItem('Trailblazer cane'),
+		item: Items.getOrThrow('Trailblazer cane'),
 		price: 2
 	},
 	{
-		item: getOSItem('Trailblazer banner'),
+		item: Items.getOrThrow('Trailblazer banner'),
 		price: 1
 	},
 	{
-		item: getOSItem('Trailblazer teleport scroll'),
+		item: Items.getOrThrow('Trailblazer teleport scroll'),
 		price: 2
 	},
 	{
-		item: getOSItem('Trailblazer tool ornament kit'),
+		item: Items.getOrThrow('Trailblazer tool ornament kit'),
 		price: 3
 	},
 	{
-		item: getOSItem('Trailblazer globe'),
+		item: Items.getOrThrow('Trailblazer globe'),
 		price: 8
 	},
 	{
-		item: getOSItem('Trailblazer rug'),
+		item: Items.getOrThrow('Trailblazer rug'),
 		price: 10
 	},
 	{
-		item: getOSItem('Trailblazer graceful ornament kit'),
+		item: Items.getOrThrow('Trailblazer graceful ornament kit'),
 		price: 2
 	},
 	{
-		item: getOSItem('Trailblazer relic hunter (t1) armour set'),
+		item: Items.getOrThrow('Trailblazer relic hunter (t1) armour set'),
 		price: 2
 	},
 	{
-		item: getOSItem('Trailblazer relic hunter (t2) armour set'),
+		item: Items.getOrThrow('Trailblazer relic hunter (t2) armour set'),
 		price: 6
 	},
 	{
-		item: getOSItem('Trailblazer relic hunter (t3) armour set'),
+		item: Items.getOrThrow('Trailblazer relic hunter (t3) armour set'),
 		price: 30
 	}
 ];
 
 const shatteredRelicsBuyables: RawLeagueBuyable[] = [
 	{
-		item: getOSItem('Shattered cane'),
+		item: Items.getOrThrow('Shattered cane'),
 		price: 2
 	},
 	{
-		item: getOSItem('Shattered banner'),
+		item: Items.getOrThrow('Shattered banner'),
 		price: 1
 	},
 	{
-		item: getOSItem('Shattered teleport scroll'),
+		item: Items.getOrThrow('Shattered teleport scroll'),
 		price: 2
 	},
 	{
-		item: getOSItem('Shattered relics variety ornament kit'),
+		item: Items.getOrThrow('Shattered relics variety ornament kit'),
 		price: 3
 	},
 	{
-		item: getOSItem('Shattered relics void ornament kit'),
+		item: Items.getOrThrow('Shattered relics void ornament kit'),
 		price: 2
 	},
 	{
-		item: getOSItem('Shattered relics mystic ornament kit'),
+		item: Items.getOrThrow('Shattered relics mystic ornament kit'),
 		price: 1
 	},
 	{
-		item: getOSItem('Shattered cannon ornament kit'),
+		item: Items.getOrThrow('Shattered cannon ornament kit'),
 		price: 2
 	},
 	{
-		item: getOSItem('Shattered relic hunter (t1) armour set'),
+		item: Items.getOrThrow('Shattered relic hunter (t1) armour set'),
 		price: 2
 	},
 	{
-		item: getOSItem('Shattered relic hunter (t2) armour set'),
+		item: Items.getOrThrow('Shattered relic hunter (t2) armour set'),
 		price: 6
 	},
 	{
-		item: getOSItem('Shattered relic hunter (t3) armour set'),
+		item: Items.getOrThrow('Shattered relic hunter (t3) armour set'),
 		price: 30
 	}
 ];

@@ -10,7 +10,6 @@ import {
 	type OtherGearStat
 } from 'oldschooljs/gear';
 
-import getOSItem from '@/lib/util/getOSItem.js';
 import { assert } from '@/lib/util/logError.js';
 import { getSimilarItems, inverseSimilarItems } from '../data/similarItems.js';
 import type { GearSetup, GearSetupType, GearSlotItem } from '../gear/types.js';
@@ -493,13 +492,13 @@ export class Gear {
 		const normalWeapon = this.weapon;
 		const twoHandedWeapon = this['2h'];
 		if (!normalWeapon && !twoHandedWeapon) return null;
-		return getOSItem(normalWeapon === null ? twoHandedWeapon!.item : normalWeapon.item);
+		return Items.getOrThrow(normalWeapon === null ? twoHandedWeapon!.item : normalWeapon.item);
 	}
 
 	getStats() {
 		const sum = { ...baseStats };
 		for (const id of this.allItems(false)) {
-			const item = getOSItem(id);
+			const item = Items.getOrThrow(id);
 			for (const keyToAdd of Object.keys(sum) as (keyof GearStats)[]) {
 				sum[keyToAdd] += item.equipment ? item.equipment[keyToAdd] : 0;
 			}
@@ -540,7 +539,7 @@ export class Gear {
 	equip(_itemToEquip: EGear | Item | string, quantity = 1): { refundBank: Bank | null } {
 		const itemToEquip: Item =
 			typeof _itemToEquip === 'string' || typeof _itemToEquip === 'number'
-				? getOSItem(_itemToEquip)
+				? Items.getOrThrow(_itemToEquip)
 				: _itemToEquip;
 		assert(quantity >= 1, 'Cannot equip less than 1 item.');
 		if (!itemToEquip.equipment) throw new Error(`${itemToEquip.name} is not equippable.`);

@@ -194,7 +194,7 @@ export class MUserClass {
 			.filter(id => bank.has(id))
 			.map(id => Items.getItem(id))
 			.filter(i => i !== null && i?.highalch !== undefined && i.highalch > 0 && i.tradeable)
-			.sort((a, b) => alchPrice(bank, b!, duration, agility) - alchPrice(bank, a!, duration, agility));
+			.sort((a, b) => alchPrice(bank, b!, duration, agility) - alchPrice(bank, a!, duration, agility)) as Item[];
 	}
 
 	async setAttackStyle(newStyles: AttackStyles[]) {

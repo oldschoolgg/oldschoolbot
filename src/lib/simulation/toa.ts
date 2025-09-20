@@ -28,7 +28,6 @@ import { clamp } from 'remeda';
 import { Gear, constructGearSetup } from '@/lib/structures/Gear.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { assert } from '@/lib/util/logError.js';
 import {
 	bankToStrShortNames,
@@ -475,19 +474,19 @@ export function calculateXPFromRaid({
 
 const untradeables = [
 	{
-		item: getOSItem('Thread of elidinis'),
+		item: Items.getOrThrow('Thread of elidinis'),
 		dropRate: 10
 	},
 	{
-		item: getOSItem('Eye of the corruptor'),
+		item: Items.getOrThrow('Eye of the corruptor'),
 		dropRate: 60
 	},
 	{
-		item: getOSItem('Jewel of the sun'),
+		item: Items.getOrThrow('Jewel of the sun'),
 		dropRate: 60
 	},
 	{
-		item: getOSItem('Breach of the scarab'),
+		item: Items.getOrThrow('Breach of the scarab'),
 		dropRate: 60
 	}
 ];
@@ -579,7 +578,7 @@ function nonUniqueLoot({ points }: { points: number }) {
 
 	for (let i = 0; i < 3; i++) {
 		const [item, divisor] = randArrItem(nonUniqueTable);
-		loot.add(getOSItem(item).id, divisor === null ? 1 : Math.ceil(points / divisor));
+		loot.add(Items.getOrThrow(item).id, divisor === null ? 1 : Math.ceil(points / divisor));
 	}
 
 	return loot;
@@ -594,9 +593,9 @@ interface TOALootUser {
 }
 
 export const toaOrnamentKits = [
-	[getOSItem('Cursed phalanx'), 500],
-	[getOSItem('Menaphite ornament kit'), 425],
-	[getOSItem('Masori crafting kit'), 350]
+	[Items.getOrThrow('Cursed phalanx'), 500],
+	[Items.getOrThrow('Menaphite ornament kit'), 425],
+	[Items.getOrThrow('Masori crafting kit'), 350]
 ] as const;
 
 export const toaPetTransmogItems = resolveItems([
@@ -1219,21 +1218,21 @@ export async function toaStartCommand(
 			const { realCost } = await u.specialRemoveItems(cost.clone().add(blowpipeCost));
 			if (u.gear.melee.hasEquipped('Serpentine helm')) {
 				await degradeItem({
-					item: getOSItem('Serpentine helm'),
+					item: Items.getOrThrow('Serpentine helm'),
 					chargesToDegrade: calcSerpHelmCharges(quantity, fakeDuration),
 					user: u
 				});
 			}
 			if (u.gear.melee.hasEquipped('Amulet of blood fury')) {
 				await degradeItem({
-					item: getOSItem('Amulet of blood fury'),
+					item: Items.getOrThrow('Amulet of blood fury'),
 					chargesToDegrade: BLOOD_FURY_CHARGES_PER_RAID * quantity,
 					user: u
 				});
 			}
 			if (u.gear.mage.hasEquipped("Tumeken's shadow")) {
 				await degradeItem({
-					item: getOSItem("Tumeken's shadow"),
+					item: Items.getOrThrow("Tumeken's shadow"),
 					chargesToDegrade: TUMEKEN_SHADOW_PER_RAID * quantity,
 					user: u
 				});
@@ -1561,7 +1560,7 @@ function calculateBoostString(user: MUser) {
 	let str = '**Boosts**\n';
 	const hasMiscBoosts = miscBoosts.map(([name, , gearSetup]) => ({
 		has: gearSetup !== null ? user.gear[gearSetup].hasEquipped(name) : user.hasEquippedOrInBank(name),
-		item: getOSItem(name)
+		item: Items.getOrThrow(name)
 	}));
 	const hasEveryMisc = hasMiscBoosts.every(i => i.has);
 	const hasNoMisc = hasMiscBoosts.every(i => !i.has);
@@ -1573,7 +1572,7 @@ function calculateBoostString(user: MUser) {
 
 	const hasSpecWepBoosts = primarySpecWeaponBoosts.map(([name], index) => ({
 		has: user.hasEquippedOrInBank(name),
-		item: getOSItem(name),
+		item: Items.getOrThrow(name),
 		index
 	}));
 
@@ -1588,7 +1587,7 @@ function calculateBoostString(user: MUser) {
 			'or'
 		)})`;
 	} else if (!hasBestSpec) {
-		str += ` (Missing ${getOSItem(primarySpecWeaponBoosts[0][0]).name})`;
+		str += ` (Missing ${Items.getOrThrow(primarySpecWeaponBoosts[0][0]).name})`;
 	}
 	return str;
 }

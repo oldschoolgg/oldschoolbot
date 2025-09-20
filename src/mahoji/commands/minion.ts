@@ -2,7 +2,7 @@ import { notEmpty, randArrItem } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
-import { convertLVLtoXP } from 'oldschooljs';
+import { Items, convertLVLtoXP } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
@@ -19,10 +19,9 @@ import { roboChimpCache } from '@/lib/perkTier.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
-import Skills from '@/lib/skilling/skills/index.js';
+import { Skills } from '@/lib/skilling/skills/index.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
-import getOSItem, { getItem } from '@/lib/util/getOSItem.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { getPeakTimesString } from '@/lib/util/peaks.js';
@@ -210,7 +209,7 @@ export const minionCommand: OSBMahojiCommand = {
 					autocomplete: async (value, user) => {
 						const mappedLampables = Lampables.map(i => i.items)
 							.flat(2)
-							.map(getItem)
+							.map(id => Items.get(id))
 							.filter(notEmpty)
 							.map(i => ({ id: i.id, name: i.name }));
 
@@ -382,7 +381,7 @@ export const minionCommand: OSBMahojiCommand = {
 					name: 'add',
 					description: 'Add darts or scales to your blowpipe',
 					required: false,
-					choices: [...blowpipeDarts, getOSItem("Zulrah's scales")].map(i => ({
+					choices: [...blowpipeDarts, Items.getOrThrow("Zulrah's scales")].map(i => ({
 						name: i.name,
 						value: i.name
 					}))

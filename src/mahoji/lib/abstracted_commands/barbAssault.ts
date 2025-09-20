@@ -3,7 +3,7 @@ import { Events } from '@oldschoolgg/toolkit/constants';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration, formatOrdinal, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { Bank, itemID } from 'oldschooljs';
+import { Bank, Items, itemID } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
@@ -15,42 +15,41 @@ import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minio
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { userStatsUpdate } from '../../mahojiSettings.js';
 
 export const BarbBuyables = [
 	{
-		item: getOSItem('Fighter hat'),
+		item: Items.getOrThrow('Fighter hat'),
 		cost: 275 * 4
 	},
 	{
-		item: getOSItem('Ranger hat'),
+		item: Items.getOrThrow('Ranger hat'),
 		cost: 275 * 4
 	},
 	{
-		item: getOSItem('Healer hat'),
+		item: Items.getOrThrow('Healer hat'),
 		cost: 275 * 4
 	},
 	{
-		item: getOSItem('Runner hat'),
+		item: Items.getOrThrow('Runner hat'),
 		cost: 275 * 4
 	},
 	{
-		item: getOSItem('Fighter torso'),
+		item: Items.getOrThrow('Fighter torso'),
 		cost: 375 * 4
 	},
 	{
-		item: getOSItem('Penance skirt'),
+		item: Items.getOrThrow('Penance skirt'),
 		cost: 375 * 4
 	},
 	{
-		item: getOSItem('Runner boots'),
+		item: Items.getOrThrow('Runner boots'),
 		cost: 100 * 4
 	},
 	{
-		item: getOSItem('Penance gloves'),
+		item: Items.getOrThrow('Penance gloves'),
 		cost: 150 * 4
 	}
 ];
@@ -270,7 +269,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 	let venBowMsg = '';
 	if (user.gear.range.hasEquipped('Venator Bow') && user.user.venator_bow_charges >= totalVenChargesUsed) {
 		await degradeItem({
-			item: getOSItem('Venator Bow'),
+			item: Items.getOrThrow('Venator Bow'),
 			chargesToDegrade: totalVenChargesUsed,
 			user
 		});

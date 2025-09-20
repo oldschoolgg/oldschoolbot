@@ -1,11 +1,10 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Bank, type Item, resolveItems } from 'oldschooljs';
+import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 
 import type { ShadesOfMortonOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import getOSItem, { getItem } from '@/lib/util/getOSItem.js';
 import { userStatsBankUpdate } from '../../mahojiSettings.js';
 
 type Remains = 'Loar' | 'Phrin' | 'Riyl' | 'Fiyr' | 'Asyn' | 'Urium';
@@ -42,7 +41,7 @@ export const shades: Shade[] = [
 			fraction: 0.79,
 			items: resolveItems(['Bronze key red', 'Bronze key brown', 'Bronze key crimson'])
 		},
-		item: getOSItem('Loar remains')
+		item: Items.getOrThrow('Loar remains')
 	},
 	{
 		shadeName: 'Phrin',
@@ -55,7 +54,7 @@ export const shades: Shade[] = [
 			fraction: 0.665,
 			items: resolveItems(['Steel key red', 'Steel key brown', 'Steel key crimson'])
 		},
-		item: getOSItem('Phrin remains')
+		item: Items.getOrThrow('Phrin remains')
 	},
 	{
 		shadeName: 'Riyl',
@@ -68,7 +67,7 @@ export const shades: Shade[] = [
 			fraction: 0.665,
 			items: resolveItems(['Black key red', 'Black key brown', 'Black key crimson'])
 		},
-		item: getOSItem('Riyl remains')
+		item: Items.getOrThrow('Riyl remains')
 	},
 	{
 		shadeName: 'Asyn',
@@ -81,7 +80,7 @@ export const shades: Shade[] = [
 			fraction: 0.508,
 			items: resolveItems(['Silver key red', 'Silver key brown'])
 		},
-		item: getOSItem('Asyn remains')
+		item: Items.getOrThrow('Asyn remains')
 	},
 	{
 		shadeName: 'Fiyr',
@@ -94,7 +93,7 @@ export const shades: Shade[] = [
 			fraction: 0.156,
 			items: resolveItems(['Gold key red'])
 		},
-		item: getOSItem('Fiyr remains')
+		item: Items.getOrThrow('Fiyr remains')
 	},
 	{
 		shadeName: 'Urium',
@@ -109,14 +108,14 @@ export const shades: Shade[] = [
 				'Gold key purple'
 			])
 		},
-		item: getOSItem('Urium remains')
+		item: Items.getOrThrow('Urium remains')
 	}
 ];
 
 export const shadesLogs: ShadesLog[] = [
 	{
-		oiledLog: getOSItem('Pyre logs'),
-		normalLog: getOSItem('Logs'),
+		oiledLog: Items.getOrThrow('Pyre logs'),
+		normalLog: Items.getOrThrow('Logs'),
 		fmLevel: 5,
 		fmXP: 50,
 		sacOilDoses: 2,
@@ -127,8 +126,8 @@ export const shadesLogs: ShadesLog[] = [
 		}
 	},
 	{
-		oiledLog: getOSItem('Oak pyre logs'),
-		normalLog: getOSItem('Oak logs'),
+		oiledLog: Items.getOrThrow('Oak pyre logs'),
+		normalLog: Items.getOrThrow('Oak logs'),
 		fmLevel: 20,
 		fmXP: 70,
 		sacOilDoses: 2,
@@ -139,8 +138,8 @@ export const shadesLogs: ShadesLog[] = [
 		}
 	},
 	{
-		oiledLog: getOSItem('Willow pyre logs'),
-		normalLog: getOSItem('Willow logs'),
+		oiledLog: Items.getOrThrow('Willow pyre logs'),
+		normalLog: Items.getOrThrow('Willow logs'),
 		fmLevel: 35,
 		fmXP: 100,
 		sacOilDoses: 3,
@@ -152,8 +151,8 @@ export const shadesLogs: ShadesLog[] = [
 		}
 	},
 	{
-		oiledLog: getOSItem('Teak pyre logs'),
-		normalLog: getOSItem('Teak logs'),
+		oiledLog: Items.getOrThrow('Teak pyre logs'),
+		normalLog: Items.getOrThrow('Teak logs'),
 		fmLevel: 40,
 		fmXP: 120,
 		sacOilDoses: 3,
@@ -165,8 +164,8 @@ export const shadesLogs: ShadesLog[] = [
 		}
 	},
 	{
-		oiledLog: getOSItem('Arctic pyre logs'),
-		normalLog: getOSItem('Arctic pine logs'),
+		oiledLog: Items.getOrThrow('Arctic pyre logs'),
+		normalLog: Items.getOrThrow('Arctic pine logs'),
 		fmLevel: 47,
 		fmXP: 158,
 		sacOilDoses: 2,
@@ -178,8 +177,8 @@ export const shadesLogs: ShadesLog[] = [
 		}
 	},
 	{
-		oiledLog: getOSItem('Maple pyre logs'),
-		normalLog: getOSItem('Maple logs'),
+		oiledLog: Items.getOrThrow('Maple pyre logs'),
+		normalLog: Items.getOrThrow('Maple logs'),
 		fmLevel: 50,
 		fmXP: 175,
 		sacOilDoses: 3,
@@ -191,8 +190,8 @@ export const shadesLogs: ShadesLog[] = [
 		}
 	},
 	{
-		oiledLog: getOSItem('Mahogany pyre logs'),
-		normalLog: getOSItem('Mahogany logs'),
+		oiledLog: Items.getOrThrow('Mahogany pyre logs'),
+		normalLog: Items.getOrThrow('Mahogany logs'),
 		fmLevel: 55,
 		fmXP: 210,
 		sacOilDoses: 4,
@@ -204,8 +203,8 @@ export const shadesLogs: ShadesLog[] = [
 		}
 	},
 	{
-		oiledLog: getOSItem('Yew pyre logs'),
-		normalLog: getOSItem('Yew logs'),
+		oiledLog: Items.getOrThrow('Yew pyre logs'),
+		normalLog: Items.getOrThrow('Yew logs'),
 		fmLevel: 65,
 		fmXP: 255,
 		sacOilDoses: 4,
@@ -218,8 +217,8 @@ export const shadesLogs: ShadesLog[] = [
 		}
 	},
 	{
-		oiledLog: getOSItem('Magic pyre logs'),
-		normalLog: getOSItem('Magic logs'),
+		oiledLog: Items.getOrThrow('Magic pyre logs'),
+		normalLog: Items.getOrThrow('Magic logs'),
 		fmLevel: 80,
 		fmXP: 404.5,
 		sacOilDoses: 4,
@@ -233,8 +232,8 @@ export const shadesLogs: ShadesLog[] = [
 		}
 	},
 	{
-		oiledLog: getOSItem('Redwood pyre logs'),
-		normalLog: getOSItem('Redwood logs'),
+		oiledLog: Items.getOrThrow('Redwood pyre logs'),
+		normalLog: Items.getOrThrow('Redwood logs'),
 		fmLevel: 95,
 		fmXP: 500,
 		sacOilDoses: 4,
@@ -267,7 +266,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 		}
 	}
 
-	const logItem = getItem(logStr);
+	const logItem = Items.get(logStr);
 	if (!logItem) return 'Invalid logs item';
 
 	const userBank = user.bank;

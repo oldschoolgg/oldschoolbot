@@ -1,7 +1,7 @@
 import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit/string-util';
 import { ItemGroups, Items, itemNameMap, resolveItems } from 'oldschooljs';
 
-export function setItemAlias(id: number, name: string | string[], rename = true) {
+function setItemAlias(id: number, name: string | string[], rename = true) {
 	const existingItem = Items.get(id);
 	if (!existingItem) {
 		throw new Error(`Tried to add item alias for a non-existant item: ${name} ${id}`);

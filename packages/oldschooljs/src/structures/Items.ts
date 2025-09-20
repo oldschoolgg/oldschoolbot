@@ -124,6 +124,10 @@ class Items extends Collection<number, Item> {
 		return newArray;
 	}
 
+	public resolveFullItems(_itemArray: string | number | (string | number)[]): Item[] {
+		return this.resolveItems(_itemArray).map(id => this.getOrThrow(id));
+	}
+
 	public deepResolveItems(itemArray: ArrayItemsResolvable): ArrayItemsResolved {
 		const newArray: ArrayItemsResolved = [];
 

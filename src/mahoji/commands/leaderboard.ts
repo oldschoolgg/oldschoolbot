@@ -20,7 +20,7 @@ import { SQL } from '@/lib/rawSql.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import Agility from '@/lib/skilling/skills/agility.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
-import Skills from '@/lib/skilling/skills/index.js';
+import { Skills } from '@/lib/skilling/skills/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { getUsername, getUsernameSync } from '@/lib/util.js';
 import { fetchCLLeaderboard } from '@/lib/util/clLeaderboard.js';

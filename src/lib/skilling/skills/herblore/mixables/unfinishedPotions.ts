@@ -1,11 +1,10 @@
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
-import getOSItem from '../../../../util/getOSItem.js';
 import type { Mixable } from '../../../types.js';
 
 const unfinishedPotions: Mixable[] = [
 	{
-		item: getOSItem('Guam potion (unf)'),
+		item: Items.getOrThrow('Guam potion (unf)'),
 		aliases: ['guam potion (unf)', 'guam (unf)', 'guam potion'],
 		level: 3,
 		xp: 0,
@@ -15,7 +14,7 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		item: getOSItem('Marrentill potion (unf)'),
+		item: Items.getOrThrow('Marrentill potion (unf)'),
 		aliases: ['marrentill potion (unf)', 'marrentill potion', 'marrentill (unf)'],
 		level: 5,
 		xp: 0,
@@ -25,7 +24,7 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		item: getOSItem('Tarromin potion (unf)'),
+		item: Items.getOrThrow('Tarromin potion (unf)'),
 		aliases: ['tarromin potion (unf)', 'tarromin potion', 'tarromin (unf)'],
 		level: 12,
 		xp: 0,
@@ -35,7 +34,7 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		item: getOSItem('Harralander potion (unf)'),
+		item: Items.getOrThrow('Harralander potion (unf)'),
 		aliases: ['harralander potion (unf)', 'harralander potion', 'harralander (unf)'],
 		level: 22,
 		xp: 0,
@@ -45,7 +44,7 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		item: getOSItem('Ranarr potion (unf)'),
+		item: Items.getOrThrow('Ranarr potion (unf)'),
 		aliases: ['ranarr potion (unf)', 'ranarr potion', 'ranarr (unf)'],
 		level: 30,
 		xp: 0,
@@ -55,7 +54,7 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		item: getOSItem('Toadflax potion (unf)'),
+		item: Items.getOrThrow('Toadflax potion (unf)'),
 		aliases: ['toadflax potion (unf)', 'toadflax potion', 'toadflax (unf)'],
 		level: 34,
 		xp: 0,
@@ -65,7 +64,7 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		item: getOSItem('Irit potion (unf)'),
+		item: Items.getOrThrow('Irit potion (unf)'),
 		aliases: ['irit potion (unf)', 'irit potion', 'irit (unf)'],
 		level: 45,
 		xp: 0,
@@ -75,7 +74,7 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		item: getOSItem('Avantoe potion (unf)'),
+		item: Items.getOrThrow('Avantoe potion (unf)'),
 		aliases: ['avantoe potion (unf)', 'avantoe potion', 'avantoe (unf)'],
 		level: 50,
 		xp: 0,
@@ -85,7 +84,7 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		item: getOSItem('Kwuarm potion (unf)'),
+		item: Items.getOrThrow('Kwuarm potion (unf)'),
 		aliases: ['kwuarm potion (unf)', 'kwuarm potion', 'kwuarm (unf)'],
 		level: 55,
 		xp: 0,
@@ -95,7 +94,7 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		item: getOSItem('Snapdragon potion (unf)'),
+		item: Items.getOrThrow('Snapdragon potion (unf)'),
 		aliases: ['snapdragon potion (unf)', 'snapdragon potion', 'snapdragon (unf)'],
 		level: 63,
 		xp: 0,
@@ -105,7 +104,7 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		item: getOSItem('Cadantine potion (unf)'),
+		item: Items.getOrThrow('Cadantine potion (unf)'),
 		aliases: ['cadantine potion (unf)', 'cadantine potion', 'cadantine (unf)'],
 		level: 66,
 		xp: 0,
@@ -115,7 +114,7 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		item: getOSItem('Lantadyme potion (unf)'),
+		item: Items.getOrThrow('Lantadyme potion (unf)'),
 		aliases: ['lantadyme potion (unf)', 'lantadyme potion', 'lantadyme (unf)'],
 		level: 69,
 		xp: 0,
@@ -125,7 +124,7 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		item: getOSItem('Dwarf weed potion (unf)'),
+		item: Items.getOrThrow('Dwarf weed potion (unf)'),
 		aliases: ['dwarf weed potion', 'dwarf weed (unf)', 'dwarf weed potion (unf)'],
 		level: 72,
 		xp: 0,
@@ -135,7 +134,7 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		item: getOSItem('Torstol potion (unf)'),
+		item: Items.getOrThrow('Torstol potion (unf)'),
 		aliases: ['torstol potion', 'torstol (unf)', 'torstol potion (unf)'],
 		level: 78,
 		xp: 0,
@@ -145,7 +144,7 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		item: getOSItem('Cadantine blood potion (unf)'),
+		item: Items.getOrThrow('Cadantine blood potion (unf)'),
 		aliases: ['cadantine blood potion (unf)', 'cadantine blood potion', 'cadantine blood'],
 		level: 80,
 		xp: 0,
@@ -158,7 +157,7 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		item: getOSItem('Huasca potion (unf)'),
+		item: Items.getOrThrow('Huasca potion (unf)'),
 		aliases: ['huasca potion (unf)'],
 		level: 58,
 		xp: 132,

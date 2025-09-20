@@ -1,12 +1,15 @@
-import { percentChance } from '@/lib/util/rng.js';
+import { Items } from 'oldschooljs';
 
+import { percentChance } from '@/lib/util/rng.js';
 import { checkDegradeableItemCharges, degradeItem } from '../../degradeableItems.js';
-import getOSItem from '../../util/getOSItem.js';
 import Runecraft from '../skills/runecraft.js';
 
 export async function bloodEssence(user: MUser, quantity: number): Promise<number> {
 	let bonusQuantity = 0;
-	const bloodEssenceCharges = await checkDegradeableItemCharges({ item: getOSItem('Blood essence (active)'), user });
+	const bloodEssenceCharges = await checkDegradeableItemCharges({
+		item: Items.getOrThrow('Blood essence (active)'),
+		user
+	});
 	if (bloodEssenceCharges > 0) {
 		for (let i = 0; i < quantity; i++) {
 			if (bonusQuantity === bloodEssenceCharges - 1) {
@@ -17,7 +20,7 @@ export async function bloodEssence(user: MUser, quantity: number): Promise<numbe
 		}
 		if (bonusQuantity > 0) {
 			await degradeItem({
-				item: getOSItem('Blood essence (active)'),
+				item: Items.getOrThrow('Blood essence (active)'),
 				chargesToDegrade: bonusQuantity,
 				user
 			});

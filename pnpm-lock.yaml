@@ -247,18 +247,6 @@ importers:
         specifier: ^10.3.2
         version: 10.3.2(encoding@0.1.13)
 
-  packages/server:
-    dependencies:
-      '@hono/node-server':
-        specifier: ^1.14.4
-        version: 1.14.4(hono@4.9.7)
-      '@oldschoolgg/toolkit':
-        specifier: workspace:*
-        version: link:../toolkit
-      hono:
-        specifier: ^4.9.7
-        version: 4.9.7
-
   packages/spritesheet:
     dependencies:
       fast-glob:

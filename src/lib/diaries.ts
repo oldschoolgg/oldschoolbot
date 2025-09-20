@@ -1,6 +1,6 @@
 import { objectEntries } from '@oldschoolgg/toolkit';
 import type { Minigame } from '@prisma/client';
-import { Monsters, resolveItems } from 'oldschooljs';
+import { Items, Monsters, resolveItems } from 'oldschooljs';
 
 import { MAX_QP } from './minions/data/quests.js';
 import type { DiaryTier, DiaryTierName } from './minions/types.js';
@@ -10,7 +10,6 @@ import Skillcapes from './skilling/skillcapes.js';
 import Agility from './skilling/skills/agility.js';
 import { MUserStats } from './structures/MUserStats.js';
 import type { Skills } from './types/index.js';
-import getOSItem from './util/getOSItem.js';
 import { formatList, formatSkillRequirements, hasSkillReqs, itemNameFromID } from './util/smallUtils.js';
 
 interface Diary {
@@ -142,7 +141,7 @@ export const WesternProv: Diary = {
 	alias: ['western', 'wp', 'west', 'west prov'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem('Western banner 1')],
+		items: [Items.getOrThrow('Western banner 1')],
 		skillReqs: {
 			fletching: 20,
 			hunter: 9,
@@ -160,7 +159,7 @@ export const WesternProv: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem('Western banner 2')],
+		items: [Items.getOrThrow('Western banner 2')],
 		skillReqs: {
 			agility: 37,
 			cooking: 42,
@@ -181,7 +180,7 @@ export const WesternProv: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem('Western banner 3')],
+		items: [Items.getOrThrow('Western banner 3')],
 		skillReqs: {
 			agility: 56,
 			construction: 65,
@@ -211,7 +210,7 @@ export const WesternProv: Diary = {
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem('Western banner 4')],
+		items: [Items.getOrThrow('Western banner 4')],
 		skillReqs: {
 			agility: 85,
 			attack: 42,
@@ -241,7 +240,7 @@ export const ArdougneDiary: Diary = {
 	alias: ['ardy', 'ardougn'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem('Ardougne cloak 1')],
+		items: [Items.getOrThrow('Ardougne cloak 1')],
 		skillReqs: {
 			thieving: 5
 		},
@@ -252,7 +251,7 @@ export const ArdougneDiary: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem('Ardougne cloak 2')],
+		items: [Items.getOrThrow('Ardougne cloak 2')],
 		skillReqs: {
 			agility: 39,
 			attack: 50,
@@ -272,7 +271,7 @@ export const ArdougneDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem('Ardougne cloak 3')],
+		items: [Items.getOrThrow('Ardougne cloak 3')],
 		skillReqs: {
 			agility: 56,
 			construction: 50,
@@ -304,7 +303,7 @@ export const ArdougneDiary: Diary = {
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem('Ardougne cloak 4')],
+		items: [Items.getOrThrow('Ardougne cloak 4')],
 		skillReqs: {
 			agility: 90,
 			cooking: 91,
@@ -332,7 +331,7 @@ const DesertDiary: Diary = {
 	id: DiaryID.Desert,
 	easy: {
 		name: 'Easy',
-		items: [getOSItem('Desert amulet 1')],
+		items: [Items.getOrThrow('Desert amulet 1')],
 		skillReqs: {
 			hunter: 5,
 			thieving: 21
@@ -345,7 +344,7 @@ const DesertDiary: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem('Desert amulet 2')],
+		items: [Items.getOrThrow('Desert amulet 2')],
 		skillReqs: {
 			ranged: 37,
 			crafting: 50,
@@ -366,7 +365,7 @@ const DesertDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem('Desert amulet 3')],
+		items: [Items.getOrThrow('Desert amulet 3')],
 		skillReqs: {
 			fletching: 10,
 			ranged: 40,
@@ -393,7 +392,7 @@ const DesertDiary: Diary = {
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem('Desert amulet 4')],
+		items: [Items.getOrThrow('Desert amulet 4')],
 		skillReqs: {
 			agility: 15,
 			herblore: 10,
@@ -417,7 +416,7 @@ export const FaladorDiary: Diary = {
 	alias: ['fally', 'fal'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem('Falador shield 1')],
+		items: [Items.getOrThrow('Falador shield 1')],
 		skillReqs: {
 			agility: 5,
 			construction: 16,
@@ -427,7 +426,7 @@ export const FaladorDiary: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem('Falador shield 2')],
+		items: [Items.getOrThrow('Falador shield 2')],
 		skillReqs: {
 			agility: 42,
 			cooking: 20,
@@ -449,7 +448,7 @@ export const FaladorDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem('Falador shield 3')],
+		items: [Items.getOrThrow('Falador shield 3')],
 		skillReqs: {
 			agility: 59,
 			attack: 65,
@@ -480,7 +479,7 @@ export const FaladorDiary: Diary = {
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem('Falador shield 4')],
+		items: [Items.getOrThrow('Falador shield 4')],
 		skillReqs: {
 			agility: 80,
 			farming: 91,
@@ -512,7 +511,7 @@ const FremennikDiary: Diary = {
 	alias: ['fremmy', 'fremenik', 'fremmenik', 'frem'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem('Fremennik sea boots 1')],
+		items: [Items.getOrThrow('Fremennik sea boots 1')],
 		skillReqs: {
 			crafting: 23,
 			firemaking: 15,
@@ -526,7 +525,7 @@ const FremennikDiary: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem('Fremennik sea boots 2')],
+		items: [Items.getOrThrow('Fremennik sea boots 2')],
 		skillReqs: {
 			agility: 35,
 			construction: 37,
@@ -541,7 +540,7 @@ const FremennikDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem('Fremennik sea boots 3')],
+		items: [Items.getOrThrow('Fremennik sea boots 3')],
 		skillReqs: {
 			agility: 32,
 			construction: 20,
@@ -562,7 +561,7 @@ const FremennikDiary: Diary = {
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem('Fremennik sea boots 4')],
+		items: [Items.getOrThrow('Fremennik sea boots 4')],
 		skillReqs: {
 			agility: 80,
 			crafting: 80,
@@ -593,7 +592,7 @@ export const KandarinDiary: Diary = {
 	alias: ['kand'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem('Kandarin headgear 1')],
+		items: [Items.getOrThrow('Kandarin headgear 1')],
 		skillReqs: {
 			agility: 20,
 			farming: 13,
@@ -603,7 +602,7 @@ export const KandarinDiary: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem('Kandarin headgear 2')],
+		items: [Items.getOrThrow('Kandarin headgear 2')],
 		skillReqs: {
 			agility: 36,
 			cooking: 43,
@@ -627,7 +626,7 @@ export const KandarinDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem('Kandarin headgear 3')],
+		items: [Items.getOrThrow('Kandarin headgear 3')],
 		skillReqs: {
 			agility: 60,
 			construction: 50,
@@ -653,7 +652,7 @@ export const KandarinDiary: Diary = {
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem('Kandarin headgear 4')],
+		items: [Items.getOrThrow('Kandarin headgear 4')],
 		skillReqs: {
 			agility: 60,
 			cooking: 80,
@@ -683,7 +682,7 @@ export const KaramjaDiary: Diary = {
 	alias: ['ramja', 'ram', 'karam', 'kar'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem('Karamja gloves 1')],
+		items: [Items.getOrThrow('Karamja gloves 1')],
 		skillReqs: {
 			agility: 15,
 			mining: 40
@@ -695,7 +694,7 @@ export const KaramjaDiary: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem('Karamja gloves 2')],
+		items: [Items.getOrThrow('Karamja gloves 2')],
 		skillReqs: {
 			agility: 12,
 			cooking: 16,
@@ -709,7 +708,7 @@ export const KaramjaDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem('Karamja gloves 3')],
+		items: [Items.getOrThrow('Karamja gloves 3')],
 		skillReqs: {
 			agility: 53,
 			cooking: 53,
@@ -730,7 +729,7 @@ export const KaramjaDiary: Diary = {
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem('Karamja gloves 4')],
+		items: [Items.getOrThrow('Karamja gloves 4')],
 		skillReqs: {
 			farming: 72,
 			herblore: 87,
@@ -746,7 +745,7 @@ export const KourendKebosDiary: Diary = {
 	alias: ['kebos', 'kouren', 'kourend', 'kk', 'kek'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem("Rada's blessing 1")],
+		items: [Items.getOrThrow("Rada's blessing 1")],
 		skillReqs: {
 			construction: 25,
 			fishing: 20,
@@ -758,7 +757,7 @@ export const KourendKebosDiary: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem("Rada's blessing 2")],
+		items: [Items.getOrThrow("Rada's blessing 2")],
 		skillReqs: {
 			agility: 49,
 			crafting: 30,
@@ -776,7 +775,7 @@ export const KourendKebosDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem("Rada's blessing 3"), getOSItem('Ash sanctifier')],
+		items: [Items.getOrThrow("Rada's blessing 3"), Items.getOrThrow('Ash sanctifier')],
 		skillReqs: {
 			farming: 74,
 			magic: 66,
@@ -794,7 +793,7 @@ export const KourendKebosDiary: Diary = {
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem("Rada's blessing 4")],
+		items: [Items.getOrThrow("Rada's blessing 4")],
 		skillReqs: {
 			cooking: 84,
 			crafting: 38,
@@ -822,7 +821,7 @@ export const LumbridgeDraynorDiary: Diary = {
 	alias: ['lumb', 'draynor', 'lumbridge', 'led'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem("Explorer's ring 1")],
+		items: [Items.getOrThrow("Explorer's ring 1")],
 		skillReqs: {
 			agility: 10,
 			firemaking: 15,
@@ -839,7 +838,7 @@ export const LumbridgeDraynorDiary: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem("Explorer's ring 2")],
+		items: [Items.getOrThrow("Explorer's ring 2")],
 		skillReqs: {
 			agility: 20,
 			crafting: 38,
@@ -859,7 +858,7 @@ export const LumbridgeDraynorDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem("Explorer's ring 3")],
+		items: [Items.getOrThrow("Explorer's ring 3")],
 		skillReqs: {
 			agility: 46,
 			crafting: 70,
@@ -874,7 +873,7 @@ export const LumbridgeDraynorDiary: Diary = {
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem("Explorer's ring 4")],
+		items: [Items.getOrThrow("Explorer's ring 4")],
 		skillReqs: {
 			agility: 70,
 			ranged: 70,
@@ -895,7 +894,7 @@ export const MorytaniaDiary: Diary = {
 	alias: ['mory', 'swamp'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem('Morytania legs 1')],
+		items: [Items.getOrThrow('Morytania legs 1')],
 		skillReqs: {
 			cooking: 12,
 			crafting: 15,
@@ -910,7 +909,7 @@ export const MorytaniaDiary: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem('Morytania legs 2')],
+		items: [Items.getOrThrow('Morytania legs 2')],
 		skillReqs: {
 			agility: 42,
 			cooking: 40,
@@ -928,7 +927,7 @@ export const MorytaniaDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem('Morytania legs 3')],
+		items: [Items.getOrThrow('Morytania legs 3')],
 		skillReqs: {
 			agility: 71,
 			construction: 50,
@@ -950,7 +949,7 @@ export const MorytaniaDiary: Diary = {
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem('Morytania legs 4')],
+		items: [Items.getOrThrow('Morytania legs 4')],
 		skillReqs: {
 			attack: 70,
 			crafting: 84,
@@ -975,7 +974,7 @@ const VarrockDiary: Diary = {
 	alias: ['var'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem('Varrock armour 1')],
+		items: [Items.getOrThrow('Varrock armour 1')],
 		skillReqs: {
 			agility: 13,
 			crafting: 8,
@@ -988,7 +987,7 @@ const VarrockDiary: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem('Varrock armour 2')],
+		items: [Items.getOrThrow('Varrock armour 2')],
 		skillReqs: {
 			agility: 30,
 			crafting: 36,
@@ -1006,7 +1005,7 @@ const VarrockDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem('Varrock armour 3')],
+		items: [Items.getOrThrow('Varrock armour 3')],
 		skillReqs: {
 			agility: 51,
 			construction: 50,
@@ -1024,7 +1023,7 @@ const VarrockDiary: Diary = {
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem('Varrock armour 4')],
+		items: [Items.getOrThrow('Varrock armour 4')],
 		skillReqs: {
 			cooking: 95,
 			fletching: 81,
@@ -1043,7 +1042,7 @@ export const WildernessDiary: Diary = {
 	alias: ['wild', 'wildy'],
 	easy: {
 		name: 'Easy',
-		items: [getOSItem('Wilderness sword 1')],
+		items: [Items.getOrThrow('Wilderness sword 1')],
 		skillReqs: {
 			agility: 15,
 			magic: 21,
@@ -1057,7 +1056,7 @@ export const WildernessDiary: Diary = {
 	},
 	medium: {
 		name: 'Medium',
-		items: [getOSItem('Wilderness sword 2')],
+		items: [Items.getOrThrow('Wilderness sword 2')],
 		skillReqs: {
 			agility: 60,
 			strength: 60,
@@ -1076,7 +1075,7 @@ export const WildernessDiary: Diary = {
 	},
 	hard: {
 		name: 'Hard',
-		items: [getOSItem('Wilderness sword 3')],
+		items: [Items.getOrThrow('Wilderness sword 3')],
 		skillReqs: {
 			agility: 64,
 			fishing: 53,
@@ -1096,7 +1095,7 @@ export const WildernessDiary: Diary = {
 	},
 	elite: {
 		name: 'Elite',
-		items: [getOSItem('Wilderness sword 4')],
+		items: [Items.getOrThrow('Wilderness sword 4')],
 		skillReqs: {
 			agility: 60,
 			cooking: 90,

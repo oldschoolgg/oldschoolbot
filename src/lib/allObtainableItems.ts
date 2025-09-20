@@ -159,7 +159,7 @@ for (const i of totalBankToAdd.items()) ALL_OBTAINABLE_ITEMS.add(i[0].id);
 // 	'not_in_list_but_owned.txt',
 // 	ids
 // 		.filter(i => !ALL_OBTAINABLE_ITEMS.has(i))
-// 		.map(getOSItem)
+// 		.map(Items.getOrThrow)
 // 		.filter(i => i.tradeable)
 // 		.map(i => i.name)
 // 		.join('\n')
@@ -169,7 +169,7 @@ for (const i of totalBankToAdd.items()) ALL_OBTAINABLE_ITEMS.add(i[0].id);
 // 	'in_list_but_not_owned.txt',
 // 	Array.from(ALL_OBTAINABLE_ITEMS.values())
 // 		.filter(i => !ids.includes(i))
-// 		.map(getOSItem)
+// 		.map(Items.getOrThrow)
 // 		.filter(i => i.tradeable)
 // 		.map(i => i.name)
 // 		.join('\n')

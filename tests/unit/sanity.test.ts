@@ -6,7 +6,6 @@ import { clamp } from 'remeda';
 import Buyables from '../../src/lib/data/buyables/buyables.js';
 import { marketPriceOfBank } from '../../src/lib/marketPrices.js';
 import { allOpenables } from '../../src/lib/openables.js';
-import getOSItem from '../../src/lib/util/getOSItem.js';
 import itemIsTradeable from '../../src/lib/util/itemIsTradeable.js';
 import { BingoTrophies } from '../../src/mahoji/lib/bingo/BingoManager.js';
 
@@ -40,7 +39,7 @@ describe('Sanity', () => {
 	test('openables', () => {
 		const ids = new Set();
 		for (const openable of allOpenables) {
-			if (getOSItem(openable.id) !== openable.openedItem) {
+			if (Items.getOrThrow(openable.id) !== openable.openedItem) {
 				throw new Error(`${openable.name} doesnt match`);
 			}
 			if (ids.has(openable.id)) {
@@ -57,7 +56,7 @@ describe('Sanity', () => {
 		expect(exponentialPercentScale(100)).toEqual(100);
 	});
 	test('pharaohs sceptre', () => {
-		const scep = getOSItem("Pharaoh's sceptre");
+		const scep = Items.getOrThrow("Pharaoh's sceptre");
 		expect(scep.id).toEqual(9044);
 		expect(scep.equipable).toEqual(true);
 		expect(scep.equipment?.slot).toEqual(EquipmentSlot.Weapon);
@@ -65,7 +64,7 @@ describe('Sanity', () => {
 	test('buyables without output', () => {
 		for (const buyable of Buyables) {
 			if (buyable.outputItems) continue;
-			getOSItem(buyable.name);
+			Items.getOrThrow(buyable.name);
 		}
 	});
 	test('trophies', () => {

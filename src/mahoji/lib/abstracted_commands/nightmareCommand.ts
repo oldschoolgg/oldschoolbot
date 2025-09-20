@@ -1,7 +1,7 @@
 import { Time, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Bank, EMonster, ZAM_HASTA_CRUSH, resolveItems } from 'oldschooljs';
+import { Bank, EMonster, Items, ZAM_HASTA_CRUSH, resolveItems } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
 import { degradeItem } from '@/lib/degradeableItems.js';
@@ -15,7 +15,6 @@ import type { NightmareActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
 import { getNightmareGearStats } from '@/lib/util/getNightmareGearStats.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { hasMonsterRequirements } from '../../mahojiSettings.js';
 
@@ -283,13 +282,13 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 	if (isPhosani) {
 		if (user.gear.mage.hasEquipped("Tumeken's shadow")) {
 			await degradeItem({
-				item: getOSItem("Tumeken's shadow"),
+				item: Items.getOrThrow("Tumeken's shadow"),
 				chargesToDegrade: shadowChargesPerKc * quantity,
 				user
 			});
 		} else if (user.gear.mage.hasEquipped('Sanguinesti staff')) {
 			await degradeItem({
-				item: getOSItem('Sanguinesti staff'),
+				item: Items.getOrThrow('Sanguinesti staff'),
 				chargesToDegrade: sangChargesPerKc * quantity,
 				user
 			});

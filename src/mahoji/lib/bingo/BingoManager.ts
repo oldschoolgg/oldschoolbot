@@ -2,11 +2,10 @@ import { Time, chunk, noOp } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { Bingo, Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
-import { Bank, type ItemBank, addBanks, toKMB } from 'oldschooljs';
+import { Bank, type ItemBank, Items, addBanks, toKMB } from 'oldschooljs';
 import { groupBy } from 'remeda';
 import * as ss from 'simple-statistics';
 
-import getOSItem from '@/lib/util/getOSItem.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 import type { StoredBingoTile, UniversalBingoTile } from './bingoUtil.js';
 import { generateTileName, isGlobalTile, rowsForSquare } from './bingoUtil.js';
@@ -14,43 +13,43 @@ import { globalBingoTiles } from './globalTiles.js';
 
 export const BingoTrophies = [
 	{
-		item: getOSItem('Comp. dragon trophy'),
+		item: Items.getOrThrow('Comp. dragon trophy'),
 		percentile: 5,
 		guaranteedAt: 25,
 		emoji: Emoji.DragonTrophy
 	},
 	{
-		item: getOSItem('Comp. rune trophy'),
+		item: Items.getOrThrow('Comp. rune trophy'),
 		percentile: 10,
 		guaranteedAt: 21,
 		emoji: Emoji.RuneTrophy
 	},
 	{
-		item: getOSItem('Comp. adamant trophy'),
+		item: Items.getOrThrow('Comp. adamant trophy'),
 		percentile: 20,
 		guaranteedAt: 16,
 		emoji: Emoji.AdamantTrophy
 	},
 	{
-		item: getOSItem('Comp. mithril trophy'),
+		item: Items.getOrThrow('Comp. mithril trophy'),
 		percentile: 40,
 		guaranteedAt: 12,
 		emoji: Emoji.MithrilTrophy
 	},
 	{
-		item: getOSItem('Comp. steel trophy'),
+		item: Items.getOrThrow('Comp. steel trophy'),
 		percentile: 50,
 		guaranteedAt: 8,
 		emoji: Emoji.SteelTrophy
 	},
 	{
-		item: getOSItem('Comp. iron trophy'),
+		item: Items.getOrThrow('Comp. iron trophy'),
 		percentile: 75,
 		guaranteedAt: 5,
 		emoji: Emoji.IronTrophy
 	},
 	{
-		item: getOSItem('Comp. bronze trophy'),
+		item: Items.getOrThrow('Comp. bronze trophy'),
 		percentile: 90,
 		guaranteedAt: 1,
 		emoji: Emoji.BronzeTrophy

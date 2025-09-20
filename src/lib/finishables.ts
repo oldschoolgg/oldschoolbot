@@ -9,6 +9,7 @@ import {
 	EliteMimicTable,
 	HardCasket,
 	ItemGroups,
+	Items,
 	MasterCasket,
 	MasterMimicTable,
 	MediumCasket,
@@ -46,7 +47,6 @@ import { handleNexKills } from './simulation/nex.js';
 import { getTemporossLoot } from './simulation/tempoross.js';
 import { TheatreOfBlood } from './simulation/tob.js';
 import { WintertodtCrate } from './simulation/wintertodt.js';
-import getOSItem from './util/getOSItem.js';
 
 interface KillArgs {
 	accumulatedLoot: Bank;
@@ -262,8 +262,8 @@ export const finishables: Finishable[] = [
 		aliases: ['shades of morton'],
 		kill: ({ accumulatedLoot, totalRuns }) => {
 			for (const tier of ['Bronze', 'Steel', 'Black', 'Silver', 'Gold'] as const) {
-				const key = getOSItem(`${tier} key red`);
-				const lock = getOSItem(`${tier} locks`);
+				const key = Items.getOrThrow(`${tier} key red`);
+				const lock = Items.getOrThrow(`${tier} locks`);
 				if (accumulatedLoot.has(lock.id) && tier !== 'Gold') continue;
 				return openShadeChest({ item: key, allItemsOwned: accumulatedLoot, qty: totalRuns }).bank;
 			}

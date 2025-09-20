@@ -2,7 +2,7 @@ import { Time, notEmpty, randInt } from '@oldschoolgg/toolkit';
 import { formatDuration, isWeekend, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank, type ItemBank } from 'oldschooljs';
+import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -13,7 +13,6 @@ import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { getItem } from '@/lib/util/getOSItem.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
@@ -266,7 +265,7 @@ export const clueCommand: OSBMahojiCommand = {
 					.map(i => i.implings)
 					.filter(notEmpty)
 					.flat()
-					.map(getItem)
+					.map(id => Items.get(id))
 					.filter(notEmpty);
 				const bank = getMahojiBank(await mahojiUsersSettingsFetch(user.id, { bank: true }));
 				const hasClueImps = allClueImps.filter(imp => bank.has(imp.id));
@@ -292,7 +291,7 @@ export const clueCommand: OSBMahojiCommand = {
 		const maxTripLength = calcMaxTripLength(user, 'ClueCompletion');
 
 		const clueImpling = options.implings
-			? getItem(/^[0-9]+$/.test(options.implings) ? Number(options.implings) : options.implings)
+			? Items.get(/^[0-9]+$/.test(options.implings) ? Number(options.implings) : options.implings)
 			: null;
 
 		if (options.implings) {

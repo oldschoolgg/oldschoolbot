@@ -1,26 +1,25 @@
 import { Time, increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { Bank, SkillsEnum } from 'oldschooljs';
+import { Bank, Items, SkillsEnum } from 'oldschooljs';
 
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings.js';
 import { KourendKebosDiary, userhasDiaryTier } from '../../diaries.js';
 import type { DarkAltarOptions } from '../../types/minions.js';
 import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength.js';
-import getOSItem from '../../util/getOSItem.js';
 import { hasSkillReqs } from '../../util/smallUtils.js';
 import { updateBankSetting } from '../../util/updateBankSetting.js';
 
 export const darkAltarRunes = {
 	soul: {
-		item: getOSItem('Soul rune'),
+		item: Items.getOrThrow('Soul rune'),
 		baseTime: Time.Second * 2.2,
 		xp: 19.6,
 		level: 90,
 		petChance: 782_999
 	},
 	blood: {
-		item: getOSItem('Blood rune'),
+		item: Items.getOrThrow('Blood rune'),
 		baseTime: Time.Second * 2.2,
 		xp: 17.2,
 		level: 77,

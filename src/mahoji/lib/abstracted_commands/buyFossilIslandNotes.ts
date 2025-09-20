@@ -1,9 +1,8 @@
 import { randArrItem } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import { fossilIslandNotesCL } from '@/lib/data/CollectionsExport.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 
 export async function buyFossilIslandNotes(user: MUser, interaction: ChatInputCommandInteraction, quantity: number) {
@@ -29,8 +28,8 @@ export async function buyFossilIslandNotes(user: MUser, interaction: ChatInputCo
 		const filteredPages = fossilIslandNotesCL.filter(page => !tempClWithNewUniques.has(page));
 		const outPage =
 			filteredPages.length === 0
-				? getOSItem(randArrItem(fossilIslandNotesCL))
-				: getOSItem(randArrItem(filteredPages));
+				? Items.getOrThrow(randArrItem(fossilIslandNotesCL))
+				: Items.getOrThrow(randArrItem(filteredPages));
 		tempClWithNewUniques.add(outPage);
 		loot.add(outPage);
 	}

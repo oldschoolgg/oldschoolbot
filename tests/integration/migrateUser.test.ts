@@ -26,7 +26,7 @@ import {
 	type activity_type_enum,
 	command_name_enum
 } from '@prisma/client';
-import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
+import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
 import { clone } from 'remeda';
 import { beforeAll, expect, test, vi } from 'vitest';
 
@@ -41,7 +41,6 @@ import type { Skills } from '../../src/lib/types/index.js';
 import { isGroupActivity } from '../../src/lib/util.js';
 import { gearEquipMultiImpl } from '../../src/lib/util/equipMulti.js';
 import { findPlant } from '../../src/lib/util/farmingHelpers.js';
-import getOSItem from '../../src/lib/util/getOSItem.js';
 import { migrateUser } from '../../src/lib/util/migrateUser.js';
 import { tradePlayerItems } from '../../src/lib/util/tradePlayerItems.js';
 import { updateBankSetting } from '../../src/lib/util/updateBankSetting.js';
@@ -920,7 +919,7 @@ const allTableCommands: TestCommand[] = [
 			const randomSellItems = ['Shield left half', 'Feather', 'Cannonball', 'Elysian sigil', 'Fire rune'];
 			const itemPrice = randInt(500, 50_000_000);
 			const bankToSell = new Bank();
-			const item = getOSItem(randArrItem(randomSellItems));
+			const item = Items.getOrThrow(randArrItem(randomSellItems));
 			const qty = randInt(1, 10);
 			const totalPrice = itemPrice * qty;
 

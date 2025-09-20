@@ -15,7 +15,6 @@ import type { RobochimpUser } from './roboChimp.js';
 import { roboChimpUserFetch } from './roboChimp.js';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank.js';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings.js';
-import getOSItem, { getItem } from './util/getOSItem.js';
 import { assert, logError } from './util/logError.js';
 import { sendToChannelID } from './util/webhook.js';
 
@@ -51,7 +50,7 @@ function sanityCheckListing(listing: GEListing) {
 	if (listing.quantity_remaining !== 0 && listing.fulfilled_at) {
 		throw new Error(`Listing ${listing.id} has quantity remaining but is fulfilled.`);
 	}
-	const item = getItem(listing.item_id);
+	const item = Items.getItem(listing.item_id);
 	if (!item) {
 		throw new Error(`Listing ${listing.id} has invalid item ID ${listing.item_id}.`);
 	}
@@ -270,7 +269,7 @@ class GrandExchangeSingleton {
 			}
 		});
 
-		const item = getOSItem(geListing.item_id);
+		const item = Items.getOrThrow(geListing.item_id);
 		const buyLimit = this.getItemBuyLimit(item);
 		const totalSold = sumArr(allActiveListingsInTimePeriod.map(listing => listing.quantity_bought));
 		const remainingItemsCanBuy = Math.max(0, buyLimit - totalSold);
@@ -300,7 +299,7 @@ class GrandExchangeSingleton {
 			return { error: 'The Grand Exchange is temporarily closed! Sorry, please try again later.' };
 		}
 		if (user.isIronman) return { error: "You're an ironman." };
-		const item = getItem(itemName);
+		const item = Items.getItem(itemName);
 		if (!item || !item.tradeable_on_ge || ['Coins'].includes(item.name)) {
 			return { error: 'Invalid item.' };
 		}

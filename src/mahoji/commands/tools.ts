@@ -14,10 +14,9 @@ import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/min
 import { type UnifiedOpenable, allOpenables } from '@/lib/openables.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import { Minigames } from '@/lib/settings/minigames.js';
-import Skills from '@/lib/skilling/skills/index.js';
+import { Skills } from '@/lib/skilling/skills/index.js';
 import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
 import { getUsername, isGroupActivity } from '@/lib/util.js';
-import { getItem } from '@/lib/util/getOSItem.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -560,7 +559,7 @@ for (const openable of allOpenables) {
 }
 
 async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnly: boolean) {
-	const item = getItem(itemName);
+	const item = Items.get(itemName);
 	if (!item) return 'Invalid item.';
 	const entity = dryStreakEntities.find(
 		e =>
@@ -623,7 +622,7 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 }
 
 async function mostDrops(user: MUser, itemName: string, filter: string) {
-	const item = getItem(itemName);
+	const item = Items.get(itemName);
 	const ironmanPart =
 		filter === 'Irons Only'
 			? 'AND "minion.ironman" = true'

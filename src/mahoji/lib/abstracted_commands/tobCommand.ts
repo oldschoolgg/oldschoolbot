@@ -2,7 +2,7 @@ import { calcWhatPercent } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { Bank, TOBRooms, itemID, randomVariation } from 'oldschooljs';
+import { Bank, Items, TOBRooms, itemID, randomVariation } from 'oldschooljs';
 
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import {
@@ -25,7 +25,6 @@ import { skillsMeetRequirements } from '@/lib/util.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahojiSettings.js';
@@ -148,7 +147,7 @@ async function checkTOBUser(
 
 	if (meleeGear.hasEquipped('Abyssal tentacle')) {
 		const tentacleResult = checkUserCanUseDegradeableItem({
-			item: getOSItem('Abyssal tentacle'),
+			item: Items.getOrThrow('Abyssal tentacle'),
 			chargesToDegrade: TENTACLE_CHARGES_PER_RAID * quantity,
 			user
 		});
@@ -159,7 +158,7 @@ async function checkTOBUser(
 
 	if (meleeGear.hasEquipped('Scythe of Vitur')) {
 		const scytheResult = checkUserCanUseDegradeableItem({
-			item: getOSItem('Scythe of Vitur'),
+			item: Items.getOrThrow('Scythe of Vitur'),
 			chargesToDegrade: SCYTHE_CHARGES_PER_RAID * quantity,
 			user
 		});
@@ -184,7 +183,7 @@ async function checkTOBUser(
 	if (blowpipeData.scales < scalesNeeded) {
 		return [true, `${user.usernameOrMention}, you need at least ${scalesNeeded} scales in your blowpipe.`];
 	}
-	const dartIndex = blowpipeDarts.indexOf(getOSItem(blowpipeData.dartID));
+	const dartIndex = blowpipeDarts.indexOf(Items.getOrThrow(blowpipeData.dartID));
 	if (dartIndex < 5) {
 		return [true, `${user.usernameOrMention}'s darts are too weak`];
 	}
@@ -430,7 +429,7 @@ export async function tobStartCommand(
 			totalCost.add(effectiveCost);
 			if (u.gear.melee.hasEquipped('Abyssal tentacle')) {
 				await degradeItem({
-					item: getOSItem('Abyssal tentacle'),
+					item: Items.getOrThrow('Abyssal tentacle'),
 					user: u,
 					chargesToDegrade: TENTACLE_CHARGES_PER_RAID * qty
 				});
@@ -440,7 +439,7 @@ export async function tobStartCommand(
 					usedCharges += randomVariation(0.8 * SCYTHE_CHARGES_PER_RAID, 20);
 				}
 				await degradeItem({
-					item: getOSItem('Scythe of Vitur'),
+					item: Items.getOrThrow('Scythe of Vitur'),
 					user: u,
 					chargesToDegrade: usedCharges
 				});

@@ -2,7 +2,7 @@ import { Time, randArrItem, randInt, roll } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
-import { Bank, ItemGroups, resolveItems } from 'oldschooljs';
+import { Bank, ItemGroups, Items, resolveItems } from 'oldschooljs';
 
 import { Offerables } from '@/lib/data/offerData.js';
 import { birdsNestID, treeSeedsNest } from '@/lib/simulation/birdsNest.js';
@@ -11,23 +11,22 @@ import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { OfferingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { userStatsBankUpdate, userStatsUpdate } from '../mahojiSettings.js';
 
 const specialBones = [
 	{
-		item: getOSItem('Long bone'),
+		item: Items.getOrThrow('Long bone'),
 		xp: 4500
 	},
 	{
-		item: getOSItem('Curved bone'),
+		item: Items.getOrThrow('Curved bone'),
 		xp: 6750
 	}
 ];
 
-const eggs = ['Red bird egg', 'Green bird egg', 'Blue bird egg'].map(getOSItem);
+const eggs = Items.resolveFullItems(['Red bird egg', 'Green bird egg', 'Blue bird egg']);
 
 const offerables = new Set(
 	[...Offerables, ...specialBones.map(i => i.item), ...eggs, ...Prayer.Bones]

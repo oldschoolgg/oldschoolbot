@@ -9,7 +9,7 @@ import { LEVEL_99_XP, MAX_LEVEL, MAX_TOTAL_LEVEL, MAX_XP, globalConfig } from '.
 import { skillEmoji } from './data/emojis.js';
 import type { AddXpParams } from './minions/types.js';
 import { sql } from './postgres.js';
-import Skills from './skilling/skills/index.js';
+import { Skills } from './skilling/skills/index.js';
 import { mahojiClientSettingsFetch } from './util/clientSettings.js';
 import { insertUserEvent } from './util/userEvents.js';
 import { sendToChannelID } from './util/webhook.js';
