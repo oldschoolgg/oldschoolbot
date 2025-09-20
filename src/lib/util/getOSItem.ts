@@ -4,8 +4,8 @@ export function getItem(itemName: string | number | undefined): Item | null {
 	return Items.getItem(itemName) ?? null;
 }
 
-export function getOSItem(itemName: string | number | undefined): Item {
-	return Items.getOrThrow(itemName);
-}
+// export function getOSItem(itemName: string | number | undefined): Item {
+// 	return Items.getOrThrow(itemName);
+// }
 
-export default getOSItem;
+// export default getOSItem;

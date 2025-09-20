@@ -56,7 +56,6 @@ import type { XPBank } from './structures/XPBank.js';
 import type { SkillRequirements, Skills } from './types/index.js';
 import { determineRunes } from './util/determineRunes.js';
 import { getKCByName } from './util/getKCByName.js';
-import getOSItem, { getItem } from './util/getOSItem.js';
 import { logError } from './util/logError.js';
 import { makeBadgeString } from './util/makeBadgeString.js';
 import { hasSkillReqsRaw } from './util/smallUtils.js';
@@ -193,9 +192,9 @@ export class MUserClass {
 		const { bank } = this;
 		return this.user.favorite_alchables
 			.filter(id => bank.has(id))
-			.map(getOSItem)
-			.filter(i => i.highalch !== undefined && i.highalch > 0 && i.tradeable)
-			.sort((a, b) => alchPrice(bank, b, duration, agility) - alchPrice(bank, a, duration, agility));
+			.map(id => Items.getItem(id))
+			.filter(i => i !== null && i?.highalch !== undefined && i.highalch > 0 && i.tradeable)
+			.sort((a, b) => alchPrice(bank, b!, duration, agility) - alchPrice(bank, a!, duration, agility));
 	}
 
 	async setAttackStyle(newStyles: AttackStyles[]) {
@@ -333,7 +332,7 @@ AND completed = true
 GROUP BY data->>'ci';`);
 		const casketsCompleted = new Bank();
 		for (const res of result) {
-			const item = getItem(res.id);
+			const item = Items.get(res.id);
 			if (!item) continue;
 			casketsCompleted.add(item.id, res.qty);
 		}
@@ -905,7 +904,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		}
 		gear[slot] = null;
 
-		const actualItem = getItem(equippedInSlot.item);
+		const actualItem = Items.get(equippedInSlot.item);
 		const refundBank = new Bank();
 		if (actualItem) {
 			refundBank.add(actualItem.id, equippedInSlot.quantity);
@@ -952,7 +951,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			for (const slot of Object.values(EquipmentSlot)) {
 				const item = gearSetup[slot];
 				if (!item) continue;
-				const osItem = getItem(item.item);
+				const osItem = Items.get(item.item);
 				if (!osItem) {
 					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Invalid item');
 					itemsUnequippedAndRefunded.add(refundBank);

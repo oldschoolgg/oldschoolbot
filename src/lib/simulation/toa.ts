@@ -21,7 +21,7 @@ import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { type Minigame, XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
-import { Bank, LootTable, itemID, randomVariation, resolveItems } from 'oldschooljs';
+import { Bank, Items, LootTable, itemID, randomVariation, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 import { clamp } from 'remeda';
 
@@ -210,7 +210,7 @@ const MELEE_REQUIRED_WEAPONS = resolveItems(['Zamorakian hasta', 'Ghrazi rapier'
 const MELEE_REQUIRED_ARMOR = resolveItems(['Fire cape', 'Infernal cape']);
 const BP_DARTS_NEEDED = 150;
 const BOW_ARROWS_NEEDED = 150;
-const ALLOWED_DARTS = ['Adamant dart', 'Rune dart', 'Amethyst dart', 'Dragon dart'].map(getOSItem);
+const ALLOWED_DARTS = ['Adamant dart', 'Rune dart', 'Amethyst dart', 'Dragon dart'].map(n => Items.getOrThrow(n));
 const BLOOD_FURY_CHARGES_PER_RAID = 150;
 const TUMEKEN_SHADOW_PER_RAID = 150;
 const toaRequirements: {

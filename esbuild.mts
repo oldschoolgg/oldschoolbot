@@ -49,10 +49,6 @@ build({
 		'src/lib/ActivityManager.ts'
 	],
 	outdir: './dist'
-	// logLevel: 'error',
-	// alias: {
-	// 	'@': path.resolve(import.meta.dirname, './src')
-	// },
 });
 
 // Workers
@@ -64,7 +60,4 @@ build({
 		'src/lib/workers/casket.worker.ts'
 	],
 	outdir: './dist/lib/workers'
-	// alias: {
-	// 	'@': path.resolve(import.meta.dirname, './src')
-	// },
 });
