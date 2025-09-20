@@ -14,6 +14,7 @@ import type LootTable from './LootTable';
 import Monster from './Monster';
 
 interface SimpleMonsterOptions extends MonsterOptions {
+	monsterName?: string;
 	table?: LootTable;
 	onTaskTable?: LootTable;
 	wildyCaveTable?: LootTable;
@@ -27,6 +28,7 @@ export default class SimpleMonster extends Monster {
 	public wildyCaveTable?: LootTable;
 	public pickpocketTable?: LootTable;
 	public customKillLogic?: CustomKillLogic;
+	public monsterName?: string;
 
 	constructor(options: SimpleMonsterOptions) {
 		let allItems: number[] = [];
@@ -42,6 +44,7 @@ export default class SimpleMonster extends Monster {
 		this.onTaskTable = options.onTaskTable;
 		this.wildyCaveTable = options.wildyCaveTable;
 		this.customKillLogic = options.customKillLogic;
+		this.monsterName = options.monsterName;
 	}
 
 	public kill(quantity = 1, options: MonsterKillOptions = {}): Bank {

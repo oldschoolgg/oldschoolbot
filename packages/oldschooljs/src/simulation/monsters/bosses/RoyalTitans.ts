@@ -100,6 +100,7 @@ const RoyalTitansSacTable = new LootTable()
 export const Branda = new SimpleMonster({
 	id: 12596,
 	name: 'Royal Titans (Branda)',
+	monsterName: 'Branda',
 	table: TotalBrandaTable,
 	aliases: ['royal titans (branda)', 'branda', 'fire queen']
 });
@@ -107,6 +108,7 @@ export const Branda = new SimpleMonster({
 export const Eldric = new SimpleMonster({
 	id: 14147,
 	name: 'Royal Titans (Eldric)',
+	monsterName: 'Eldric',
 	table: TotalEldricTable,
 	aliases: ['royal titans (eldric)', 'eldric', 'ice king']
 });
@@ -114,6 +116,7 @@ export const Eldric = new SimpleMonster({
 export const RoyalTitans = new SimpleMonster({
 	id: 14148,
 	name: 'Royal Titans (sacrifice)',
+	monsterName: 'Branda',
 	table: RoyalTitansSacTable,
 	aliases: ['royal titans (sacrifice)', 'royal', 'titans', 'sacrifice']
 });

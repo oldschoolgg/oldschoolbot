@@ -237,7 +237,8 @@ export default async function prepareMonsters(): Promise<void> {
 	)) {
 		console.log(`Preparing ${mon.name} manually`);
 		monsterMap[mon.id] = transformData(mon);
-		const doc = await wtf.fetch(`https://oldschool.runescape.wiki/${mon.name.toLowerCase().replace(/ /g, '_')}`);
+		const lookupName = mon.monsterName ?? mon.name;
+		const doc = await wtf.fetch(`https://oldschool.runescape.wiki/${lookupName.toLowerCase().replace(/ /g, '_')}`);
 		const json = (Array.isArray(doc) ? doc[0] : doc)?.json() as { sections: any[] };
 		if (!json) {
 			console.error(`Failed to fetch ${mon.name}`);
