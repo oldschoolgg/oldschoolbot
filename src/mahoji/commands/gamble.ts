@@ -1,6 +1,6 @@
-import type { CommandRunOptions, MahojiUserOption, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { randArrItem } from '@oldschoolgg/toolkit';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';

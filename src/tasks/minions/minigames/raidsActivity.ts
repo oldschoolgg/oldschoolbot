@@ -1,5 +1,5 @@
+import { randArrItem, roll, shuffleArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { randArrItem, roll, shuffleArr } from 'e';
 import { Bank, ChambersOfXeric, randomVariation, resolveItems, SkillsEnum } from 'oldschooljs';
 
 import { CHINCANNON_MESSAGES } from '@/lib/bso/bsoConstants.js';

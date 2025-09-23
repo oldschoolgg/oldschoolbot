@@ -1,6 +1,6 @@
+import { noOp } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { type Message, TextChannel } from 'discord.js';
-import { noOp } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
 import { MysteryBoxes } from './bsoOpenables.js';

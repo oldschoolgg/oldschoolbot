@@ -1,4 +1,4 @@
-import { randArrItem } from 'e';
+import { randArrItem } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';

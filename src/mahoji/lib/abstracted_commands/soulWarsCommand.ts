@@ -1,6 +1,6 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { User } from '@prisma/client';
-import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';

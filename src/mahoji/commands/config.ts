@@ -1,12 +1,6 @@
+import { clamp, removeFromArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import {
-	allAbstractCommands,
-	type CommandResponse,
-	type CommandRunOptions,
-	channelIsSendable,
-	hasBanMemberPerms,
-	type OSBMahojiCommand
-} from '@oldschoolgg/toolkit/discord-util';
+import { allAbstractCommands, channelIsSendable, hasBanMemberPerms } from '@oldschoolgg/toolkit/discord-util';
 import { miniID, stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { activity_type_enum } from '@prisma/client';
 import {
@@ -20,7 +14,6 @@ import {
 	resolveColor,
 	type User
 } from 'discord.js';
-import { clamp, removeFromArr, Time, uniqueArr } from 'e';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { gearImages } from '@/lib/canvas/gearImageData.js';

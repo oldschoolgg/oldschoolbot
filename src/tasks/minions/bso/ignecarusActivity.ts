@@ -1,5 +1,5 @@
+import { objectValues, percentChance, shuffleArr, sumArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { objectValues, percentChance, shuffleArr, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { isDoubleLootActive } from '@/lib/doubleLoot.js';

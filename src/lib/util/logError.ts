@@ -1,8 +1,8 @@
+import { isObject } from '@oldschoolgg/toolkit';
 import { convertAPIOptionsToCommandOptions } from '@oldschoolgg/toolkit/discord-util';
 import { deepMerge } from '@oldschoolgg/toolkit/util';
 import { captureException } from '@sentry/node';
 import type { Interaction } from 'discord.js';
-import { isObject } from 'e';
 
 import { globalConfig } from '@/lib/constants.js';
 

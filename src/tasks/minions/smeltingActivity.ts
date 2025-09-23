@@ -1,4 +1,4 @@
-import { percentChance, roll, Time } from 'e';
+import { percentChance, roll, Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';

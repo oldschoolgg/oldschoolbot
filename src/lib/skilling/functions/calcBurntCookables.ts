@@ -1,4 +1,4 @@
-import { randInt } from 'e';
+import { randInt } from '@oldschoolgg/toolkit';
 
 export default function calcBurntCookables(qtyCooking: number, stopBurningLvl: number, cookingLvl: number) {
 	let burnedAmount = 0;

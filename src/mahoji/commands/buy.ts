@@ -1,6 +1,5 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandRunOptions, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Bank, type ItemBank, itemID } from 'oldschooljs';
 

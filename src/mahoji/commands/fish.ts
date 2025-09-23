@@ -1,6 +1,6 @@
-import { type CommandRunOptions, formatDuration, stringSearch } from '@oldschoolgg/toolkit/util';
+import { Time } from '@oldschoolgg/toolkit';
+import { formatDuration, stringSearch } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
 import { ItemGroups, Items, Monsters } from 'oldschooljs';
 
 import { bsoTackleBoxes } from '@/lib/bso/bsoConstants.js';

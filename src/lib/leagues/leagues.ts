@@ -1,6 +1,5 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
 import { activity_type_enum, type User } from '@prisma/client';
-import { calcWhatPercent, sumArr } from 'e';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';

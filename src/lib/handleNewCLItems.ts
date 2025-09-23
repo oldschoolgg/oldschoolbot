@@ -1,7 +1,7 @@
+import { roll, sumArr } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit/util';
 import { type Prisma, UserEventType } from '@prisma/client';
-import { roll, sumArr } from 'e';
 import type { Bank } from 'oldschooljs';
 
 import { allCLItems, allCollectionLogsFlat, calcCLDetails } from '@/lib/data/Collections.js';

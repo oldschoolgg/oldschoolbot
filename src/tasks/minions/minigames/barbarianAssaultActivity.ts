@@ -1,4 +1,4 @@
-import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
+import { calcPercentOfNum, calcWhatPercent, randInt } from '@oldschoolgg/toolkit';
 
 import { KandarinDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { userHasFlappy } from '@/lib/invention/inventions.js';

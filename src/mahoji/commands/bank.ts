@@ -1,13 +1,7 @@
+import { chunk } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import {
-	type CommandRunOptions,
-	channelIsSendable,
-	makePaginatedMessage,
-	PaginatedMessage
-} from '@oldschoolgg/toolkit/discord-util';
+import { channelIsSendable, makePaginatedMessage, PaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, codeBlock, EmbedBuilder } from 'discord.js';
-import { chunk } from 'e';
 import type { Bank } from 'oldschooljs';
 
 import type { BankFlag } from '@/lib/canvas/bankImage.js';

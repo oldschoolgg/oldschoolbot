@@ -1,5 +1,5 @@
+import { reduceNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { reduceNumByPercent, sumArr, Time } from 'e';
 import type { Bank } from 'oldschooljs';
 
 import { sepulchreBoosts, sepulchreFloors } from '@/lib/minions/data/sepulchre.js';

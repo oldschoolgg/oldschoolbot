@@ -1,5 +1,5 @@
+import { calcWhatPercent } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
-import { calcWhatPercent } from 'e';
 import type { Bank } from 'oldschooljs';
 
 export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: number[]) {

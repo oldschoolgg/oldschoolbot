@@ -1,4 +1,4 @@
-import { percentChance } from 'e';
+import { percentChance } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, Misc, randomVariation } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';

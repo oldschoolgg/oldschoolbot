@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID } from 'oldschooljs';
 
 import type { Bar } from '@/lib/skilling/types.js';

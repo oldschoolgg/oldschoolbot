@@ -1,5 +1,5 @@
-import { type CommandResponse, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { calcPercentOfNum, calcWhatPercent, randArrItem, randInt, roll, Time } from 'e';
+import { calcPercentOfNum, calcWhatPercent, randArrItem, randInt, roll, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
 import { Plank } from '@/lib/skilling/skills/construction/constructables.js';

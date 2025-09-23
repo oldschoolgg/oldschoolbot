@@ -1,7 +1,6 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { reduceNumByPercent, Time } from 'e';
 import { Bank, ECreature, type ItemBank, itemID } from 'oldschooljs';
 
 import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';

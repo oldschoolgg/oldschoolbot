@@ -1,4 +1,4 @@
-import { calcWhatPercent, randInt } from 'e';
+import { calcWhatPercent, randInt } from '@oldschoolgg/toolkit';
 import type { GearStats } from 'oldschooljs/gear';
 
 import { KalphiteKingMonster } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';

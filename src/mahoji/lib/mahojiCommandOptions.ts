@@ -1,8 +1,8 @@
+import { uniqueArr } from '@oldschoolgg/toolkit';
 import type { CommandOption } from '@oldschoolgg/toolkit/discord-util';
 import { stringSearch, toTitleCase, truncateString } from '@oldschoolgg/toolkit/string-util';
 import type { GearPreset } from '@prisma/client';
 import { type APIApplicationCommandOptionChoice, ApplicationCommandOptionType, type User } from 'discord.js';
-import { uniqueArr } from 'e';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import { baseFilters, filterableTypes } from '@/lib/data/filterables.js';

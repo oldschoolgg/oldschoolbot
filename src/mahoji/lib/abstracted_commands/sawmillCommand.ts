@@ -1,5 +1,5 @@
+import { clamp, Time } from '@oldschoolgg/toolkit';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { clamp, Time } from 'e';
 import { Bank, Items, toKMB } from 'oldschooljs';
 
 import { Planks } from '@/lib/minions/data/planks.js';

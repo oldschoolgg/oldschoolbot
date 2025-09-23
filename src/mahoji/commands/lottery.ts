@@ -1,7 +1,6 @@
 import { userMention } from '@discordjs/builders';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { calcWhatPercent, sumArr } from 'e';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';

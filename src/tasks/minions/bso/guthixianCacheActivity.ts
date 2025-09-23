@@ -1,5 +1,5 @@
+import { percentChance, roll } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { percentChance, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';

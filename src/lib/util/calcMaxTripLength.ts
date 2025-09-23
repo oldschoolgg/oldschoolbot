@@ -1,5 +1,5 @@
+import { calcPercentOfNum, calcWhatPercent, Time } from '@oldschoolgg/toolkit';
 import type { activity_type_enum } from '@prisma/client';
-import { calcPercentOfNum, calcWhatPercent, Time } from 'e';
 
 import { BitField, PerkTier } from '@/lib/constants.js';
 

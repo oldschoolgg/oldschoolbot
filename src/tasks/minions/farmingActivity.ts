@@ -1,4 +1,4 @@
-import { randInt, Time } from 'e';
+import { randInt, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, increaseBankQuantitesByPercent, itemID, Monsters } from 'oldschooljs';
 
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';

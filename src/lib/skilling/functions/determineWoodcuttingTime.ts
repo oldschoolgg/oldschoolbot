@@ -1,4 +1,4 @@
-import { percentChance, Time } from 'e';
+import { percentChance, Time } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs/EItem';
 
 import { IVY_MAX_TRIP_LENGTH_BOOST } from '@/lib/bso/bsoConstants.js';

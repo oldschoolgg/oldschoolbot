@@ -1,6 +1,6 @@
+import { clamp, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { clamp, Time } from 'e';
 import { Bank, type Item, Items, resolveItems, SkillsEnum, toKMB } from 'oldschooljs';
 
 import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';

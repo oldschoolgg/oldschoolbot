@@ -1,5 +1,4 @@
-import { formatDuration } from '@oldschoolgg/toolkit';
-import { increaseNumByPercent, Time } from 'e';
+import { formatDuration, increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { degradeChargeBank } from '@/lib/degradeableItems.js';

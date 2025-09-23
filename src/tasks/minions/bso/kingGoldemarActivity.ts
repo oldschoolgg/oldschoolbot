@@ -1,5 +1,5 @@
+import { percentChance, randArrItem, roll } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { percentChance, randArrItem, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { isDoubleLootActive } from '@/lib/doubleLoot.js';

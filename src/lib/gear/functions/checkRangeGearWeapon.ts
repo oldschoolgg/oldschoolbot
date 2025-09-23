@@ -1,4 +1,4 @@
-import { objectEntries } from 'e';
+import { objectEntries } from '@oldschoolgg/toolkit';
 import { EItem, Items } from 'oldschooljs';
 
 import { projectiles } from '@/lib/constants.js';

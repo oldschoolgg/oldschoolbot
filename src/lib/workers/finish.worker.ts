@@ -1,7 +1,7 @@
 import '../../lib/customItems/customItems.js';
 import '../data/itemAliases.js';
 
-import { removeFromArr } from 'e';
+import { removeFromArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import getOSItem from '@/lib/util/getOSItem.js';

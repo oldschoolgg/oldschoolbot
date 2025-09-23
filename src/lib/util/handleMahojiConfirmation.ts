@@ -1,3 +1,4 @@
+import { noOp, Time } from '@oldschoolgg/toolkit';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import {
 	ActionRowBuilder,
@@ -11,7 +12,6 @@ import {
 	type MessageCreateOptions,
 	Routes
 } from 'discord.js';
-import { noOp, Time } from 'e';
 
 import { SILENT_ERROR } from '@/lib/constants.js';
 import { deferInteraction, interactionReply } from './interactionReply.js';

@@ -1,6 +1,5 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { premiumPatronTime } from '@/lib/premiumPatronTime.js';

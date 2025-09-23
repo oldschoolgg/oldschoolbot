@@ -1,5 +1,5 @@
+import { notEmpty, objectKeys, uniqueArr } from '@oldschoolgg/toolkit';
 import type { GearPreset } from '@prisma/client';
-import { notEmpty, objectKeys, uniqueArr } from 'e';
 import { Bank, EquipmentSlot, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 import type { EGear } from 'oldschooljs/EGear';
 import {

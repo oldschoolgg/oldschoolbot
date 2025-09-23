@@ -1,6 +1,5 @@
-import { deepEqual, deepObjectDiff } from '@oldschoolgg/toolkit';
+import { deepClone, deepEqual, deepObjectDiff, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
 import type { GearSetupType, Prisma } from '@prisma/client';
-import { deepClone, notEmpty, uniqueArr } from 'e';
 import { type ItemBank, Items } from 'oldschooljs';
 
 import { type GearSetup, GearSetupTypes } from '@/lib/gear/types.js';

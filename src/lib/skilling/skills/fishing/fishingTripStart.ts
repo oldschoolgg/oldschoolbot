@@ -1,5 +1,5 @@
+import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { reduceNumByPercent, Time } from 'e';
 import { Bank, EItem, Items, itemID } from 'oldschooljs';
 
 import { inventionBoosts } from '@/lib/invention/inventions.js';

@@ -1,4 +1,4 @@
-import { increaseNumByPercent, percentChance, randInt, roll, Time } from 'e';
+import { increaseNumByPercent, percentChance, randInt, roll, Time } from '@oldschoolgg/toolkit';
 import { addItemToBank, Bank, type ItemBank, randomVariation, toKMB } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';

@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
 
 import type { KillableMonster } from '@/lib/minions/types.js';

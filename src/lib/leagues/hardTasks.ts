@@ -1,4 +1,4 @@
-import { notEmpty, sumArr } from 'e';
+import { notEmpty, sumArr } from '@oldschoolgg/toolkit';
 import { Bank, calcCombatLevel, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
 
 import { divinationEnergies } from '@/lib/bso/divination.js';

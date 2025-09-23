@@ -4,16 +4,11 @@ import type {
 	APIInteractionDataResolvedGuildMember,
 	APIRole,
 	ApplicationCommandOptionType,
-	BaseInteraction,
 	Channel,
-	ChatInputCommandInteraction,
 	GuildMember,
-	InteractionReplyOptions,
 	Role,
 	User
 } from 'discord.js';
-
-import type { MahojiClient } from './Mahoji';
 
 export type CommandOption = {
 	name: string;
@@ -85,18 +80,3 @@ export interface CommandOptions {
 // }
 
 // export type CommandResponse = Promise<null | string | InteractionReplyOptions>;
-
-declare global {
-	interface CommandRunOptions<T extends CommandOptions = {}> {
-		interaction: ChatInputCommandInteraction;
-		options: T;
-		client: MahojiClient;
-		user: User;
-		member?: BaseInteraction['member'];
-		channelID: string;
-		guildID?: string;
-		userID: string;
-	}
-
-	type CommandResponse = Promise<null | string | InteractionReplyOptions>;
-}

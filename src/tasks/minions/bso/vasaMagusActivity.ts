@@ -1,4 +1,4 @@
-import { objectEntries, randArrItem, randInt, roll } from 'e';
+import { objectEntries, randArrItem, randInt, roll } from '@oldschoolgg/toolkit';
 import { Bank, Monsters, resolveItems } from 'oldschooljs';
 
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';

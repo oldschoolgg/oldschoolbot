@@ -1,6 +1,6 @@
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { calcPercentOfNum, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { calcPercentOfNum, Time } from 'e';
 import { Bank, resolveItems } from 'oldschooljs';
 
 import { BlacksmithOutfit } from '@/lib/bsoOpenables.js';

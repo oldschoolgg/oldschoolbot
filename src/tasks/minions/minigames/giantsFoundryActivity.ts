@@ -1,5 +1,5 @@
+import { deepClone } from '@oldschoolgg/toolkit';
 import { randomVariation } from '@oldschoolgg/toolkit/util';
-import { deepClone } from 'e';
 import { Bank } from 'oldschooljs';
 
 import type { GiantsFoundryBank } from '@/lib/giantsFoundry.js';

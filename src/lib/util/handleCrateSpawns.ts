@@ -1,4 +1,4 @@
-import { reduceNumByPercent, roll, Time } from 'e';
+import { reduceNumByPercent, roll, Time } from '@oldschoolgg/toolkit';
 import { Bank, resolveItems } from 'oldschooljs';
 
 import getOSItem from './getOSItem.js';

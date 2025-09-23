@@ -1,6 +1,6 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { type Activity, activity_type_enum, type Prisma } from '@prisma/client';
 import { ButtonBuilder, type ButtonInteraction, ButtonStyle } from 'discord.js';
-import { Time } from 'e';
 import { Items } from 'oldschooljs';
 
 import { divinationEnergies, memoryHarvestTypes } from '@/lib/bso/divination.js';

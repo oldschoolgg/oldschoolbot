@@ -1,7 +1,6 @@
-import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit';
+import { clamp, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { clamp, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions.js';

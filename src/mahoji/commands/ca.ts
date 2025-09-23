@@ -1,6 +1,6 @@
-import { type CommandRunOptions, mentionCommand, type OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { calcWhatPercent, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { buildCombatAchievementsResult } from '@/lib/combat_achievements/caUtils.js';

@@ -1,3 +1,4 @@
+import { isFunction, noOp, Time } from '@oldschoolgg/toolkit';
 import { awaitMessageComponentInteraction, makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import {
 	type BaseMessageOptions,
@@ -11,7 +12,6 @@ import {
 	type TextChannel,
 	type ThreadChannel
 } from 'discord.js';
-import { isFunction, noOp, Time } from 'e';
 import murmurhash from 'murmurhash';
 
 import { BLACKLISTED_USERS } from './blacklists.js';

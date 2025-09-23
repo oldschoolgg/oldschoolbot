@@ -1,4 +1,4 @@
-import { increaseNumByPercent, randInt } from 'e';
+import { increaseNumByPercent, randInt } from '@oldschoolgg/toolkit';
 
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
 import { BitField } from '@/lib/constants.js';

@@ -1,8 +1,8 @@
+import { percentChance, randInt, roll, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import type { activity_type_enum } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
-import { percentChance, randInt, roll, Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
 import type { MUserClass } from '@/lib/MUser.js';

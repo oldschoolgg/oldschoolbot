@@ -1,4 +1,4 @@
-import { increaseNumByPercent, percentChance, sumArr, Time } from 'e';
+import { increaseNumByPercent, percentChance, sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';

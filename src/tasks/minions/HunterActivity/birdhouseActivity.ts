@@ -1,5 +1,5 @@
+import { randFloat, roll } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import { randFloat, roll } from 'e';
 import { Bank, itemID } from 'oldschooljs';
 
 import { birdhouseLimit } from '@/lib/bso/bsoUtil.js';

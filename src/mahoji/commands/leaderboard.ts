@@ -1,10 +1,6 @@
+import { calcWhatPercent, chunk, isFunction, uniqueArr } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import {
-	type CommandRunOptions,
-	channelIsSendable,
-	makePaginatedMessage,
-	type OSBMahojiCommand
-} from '@oldschoolgg/toolkit/discord-util';
+import { channelIsSendable, makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import type { UserStats } from '@prisma/client';
 import { Prisma } from '@prisma/client';
@@ -14,7 +10,6 @@ import {
 	EmbedBuilder,
 	type MessageEditOptions
 } from 'discord.js';
-import { calcWhatPercent, chunk, isFunction, uniqueArr } from 'e';
 import { convertXPtoLVL } from 'oldschooljs';
 
 import type { ClueTier } from '@/lib/clues/clueTiers.js';

@@ -1,5 +1,3 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { EmbedBuilder } from 'discord.js';
 import { toKMB } from 'oldschooljs';
 

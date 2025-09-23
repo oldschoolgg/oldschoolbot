@@ -1,4 +1,4 @@
-import { sumArr } from 'e';
+import { sumArr } from '@oldschoolgg/toolkit';
 
 import { skillEmoji } from '@/lib/data/emojis.js';
 import type { AddXpParams } from '@/lib/minions/types.js';

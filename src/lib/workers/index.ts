@@ -1,6 +1,6 @@
 import path, { resolve } from 'node:path';
 import type { ItemBank, MonsterSlayerMaster } from 'oldschooljs';
-import Piscina from 'piscina';
+import { Piscina } from 'piscina';
 
 export interface CasketWorkerArgs {
 	clueTierID: number;

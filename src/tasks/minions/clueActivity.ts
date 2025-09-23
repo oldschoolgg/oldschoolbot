@@ -1,4 +1,4 @@
-import { randInt, roll, Time } from 'e';
+import { randInt, roll, Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';

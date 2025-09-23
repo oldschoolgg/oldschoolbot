@@ -1,6 +1,6 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { EmbedBuilder, type TextChannel } from 'discord.js';
-import { Time } from 'e';
 
 import { globalConfig } from '@/lib/constants.js';
 import { getPHeadDescriptor } from '@/lib/simulation/pumpkinHead.js';

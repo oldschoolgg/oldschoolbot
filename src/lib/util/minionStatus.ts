@@ -1,6 +1,11 @@
-import { formatDuration, formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
+import {
+	formatDuration,
+	formatOrdinal,
+	increaseNumByPercent,
+	reduceNumByPercent,
+	toTitleCase
+} from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Items, randomVariation, SkillsEnum } from 'oldschooljs';
 
 import { bossEvents } from '@/lib/bossEvents.js';

@@ -1,6 +1,6 @@
-export { JsonKVStore } from './JsonKVStore';
-export * from './lib/GeneralBank';
-export * from './lib/SimpleTable';
-export * from './lib/Stopwatch';
-export * from './lib/TSVWriter';
-export * from './lib/UserError';
+export { JsonKVStore } from './JsonKVStore.js';
+export * from './lib/GeneralBank.js';
+export * from './lib/SimpleTable.js';
+export * from './lib/Stopwatch.js';
+export * from './lib/TSVWriter.js';
+export * from './lib/UserError.js';

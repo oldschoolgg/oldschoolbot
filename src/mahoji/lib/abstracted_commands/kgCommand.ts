@@ -1,7 +1,7 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { type ChatInputCommandInteraction, EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
-import { Time } from 'e';
 import { Bank, toKMB } from 'oldschooljs';
 
 import KingGoldemar from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';

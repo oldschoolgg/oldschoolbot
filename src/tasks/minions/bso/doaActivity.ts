@@ -1,6 +1,5 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { formatOrdinal, randArrItem, reduceNumByPercent, roll, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { randArrItem, reduceNumByPercent, roll, Time, uniqueArr } from 'e';
 import { Bank, type ItemBank, resolveItems, SkillsEnum } from 'oldschooljs';
 
 import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';

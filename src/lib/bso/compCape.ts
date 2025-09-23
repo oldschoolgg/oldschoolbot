@@ -1,6 +1,5 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, objectEntries, sumArr, toTitleCase } from '@oldschoolgg/toolkit';
 import { tame_growth, type UserStats } from '@prisma/client';
-import { calcWhatPercent, objectEntries, sumArr } from 'e';
 import { Bank, type ItemBank, ItemGroups, Items, itemID, resolveItems } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';

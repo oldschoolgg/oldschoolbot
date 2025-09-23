@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { toKMB } from 'oldschooljs';
 
 import { userHasFlappy } from '@/lib/invention/inventions.js';

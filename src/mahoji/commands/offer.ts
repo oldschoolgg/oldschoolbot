@@ -1,8 +1,6 @@
-import { type CommandRunOptions, formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit';
+import { formatDuration, formatOrdinal, randArrItem, randInt, roll, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
-import { randArrItem, randInt, roll, Time } from 'e';
 import { Bank, ItemGroups, resolveItems } from 'oldschooljs';
 
 import { Offerables } from '@/lib/data/offerData.js';

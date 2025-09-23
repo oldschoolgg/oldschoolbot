@@ -1,7 +1,6 @@
 import { bold, userMention } from '@discordjs/builders';
-import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit';
+import { clamp, formatDuration, shuffleArr, Time } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { clamp, shuffleArr, Time } from 'e';
 
 import { type MaterialType, materialTypes } from '@/lib/invention/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';

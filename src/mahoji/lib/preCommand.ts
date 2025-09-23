@@ -1,6 +1,6 @@
+import { roll } from '@oldschoolgg/toolkit';
 import type { AbstractCommand, CommandOptions } from '@oldschoolgg/toolkit/discord-util';
 import type { InteractionReplyOptions, TextChannel, User } from 'discord.js';
-import { roll } from 'e';
 
 import { modifyBusyCounter, userIsBusy } from '@/lib/busyCounterCache.js';
 import { busyImmuneCommands } from '@/lib/constants.js';

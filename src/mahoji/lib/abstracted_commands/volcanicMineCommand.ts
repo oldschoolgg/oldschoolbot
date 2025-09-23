@@ -1,6 +1,6 @@
+import { objectEntries, Time } from '@oldschoolgg/toolkit';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { objectEntries, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { SkillsEnum } from '@/lib/skilling/types.js';

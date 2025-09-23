@@ -1,7 +1,6 @@
-import { type CommandRunOptions, formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
+import { formatDuration, reduceNumByPercent, stringMatches, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { reduceNumByPercent, Time } from 'e';
 import { Bank, itemID, SkillsEnum } from 'oldschooljs';
 
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions.js';

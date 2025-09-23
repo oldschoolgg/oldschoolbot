@@ -1,7 +1,7 @@
+import { increaseNumByPercent, reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { calcBossFood } from '@/lib/bso/calcBossFood.js';

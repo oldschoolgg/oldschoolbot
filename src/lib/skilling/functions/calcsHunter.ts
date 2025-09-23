@@ -1,4 +1,4 @@
-import { calcPercentOfNum, Time } from 'e';
+import { calcPercentOfNum, Time } from '@oldschoolgg/toolkit';
 import { LootTable } from 'oldschooljs';
 
 import type { Creature } from '@/lib/skilling/types.js';

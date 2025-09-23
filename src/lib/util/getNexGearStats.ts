@@ -1,4 +1,4 @@
-import { calcWhatPercent, randInt } from 'e';
+import { calcWhatPercent, randInt } from '@oldschoolgg/toolkit';
 import { itemID } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 

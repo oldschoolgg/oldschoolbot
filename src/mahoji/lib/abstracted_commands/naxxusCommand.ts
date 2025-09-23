@@ -1,6 +1,6 @@
+import { calcPercentOfNum, calcWhatPercent, increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/util';
 import { EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
-import { calcPercentOfNum, calcWhatPercent, increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Bank, type Item } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 

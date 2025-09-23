@@ -1,4 +1,4 @@
-import { uniqueArr } from 'e';
+import { uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, ItemGroups, resolveItems } from 'oldschooljs';
 
 import { skillingPetsCL } from '@/lib/data/CollectionsExport.js';

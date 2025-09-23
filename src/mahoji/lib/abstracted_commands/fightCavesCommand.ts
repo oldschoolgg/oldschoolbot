@@ -1,5 +1,5 @@
-import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit/util';
-import { calcWhatPercent, percentChance, randInt, reduceNumByPercent, Time } from 'e';
+import { calcWhatPercent, percentChance, randInt, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Bank, itemID, Monsters } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';

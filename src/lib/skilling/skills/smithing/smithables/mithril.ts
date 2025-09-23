@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { itemID } from 'oldschooljs';
 
 import type { SmithedItem } from '@/lib/skilling/types.js';

@@ -1,10 +1,3 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { type CommandResponse, channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import { type Minigame, XpGainSource } from '@prisma/client';
-import { bold } from 'discord.js';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -21,7 +14,14 @@ import {
 	sumArr,
 	Time,
 	uniqueArr
-} from 'e';
+} from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
+import { SimpleTable } from '@oldschoolgg/toolkit/structures';
+import { type Minigame, XpGainSource } from '@prisma/client';
+import { bold } from 'discord.js';
 import { Bank, itemID, LootTable, randomVariation, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 

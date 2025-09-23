@@ -1,6 +1,5 @@
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration, round } from '@oldschoolgg/toolkit';
 import { type Tame, type TameActivity, tame_growth, type User } from '@prisma/client';
-import { round } from 'e';
 import { type ItemBank, Items } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';

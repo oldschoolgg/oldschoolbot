@@ -1,4 +1,4 @@
-import { randFloat } from 'e';
+import { randFloat } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { userHasFlappy } from '@/lib/invention/inventions.js';

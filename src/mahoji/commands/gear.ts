@@ -1,4 +1,4 @@
-import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { GearSetupType } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Items } from 'oldschooljs';

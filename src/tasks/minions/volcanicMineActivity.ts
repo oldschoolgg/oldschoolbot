@@ -1,4 +1,4 @@
-import { randFloat, randInt, roll, Time } from 'e';
+import { randFloat, randInt, roll, Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { userHasFlappy } from '@/lib/invention/inventions.js';

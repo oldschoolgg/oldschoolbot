@@ -1,5 +1,5 @@
+import { randInt, roll, Time } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import { randInt, roll, Time } from 'e';
 import {
 	Bank,
 	ECreature,

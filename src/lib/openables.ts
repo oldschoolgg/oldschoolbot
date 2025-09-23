@@ -1,6 +1,6 @@
+import { percentChance, randInt } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
-import { percentChance, randInt } from 'e';
 import {
 	Bank,
 	BrimstoneChest,

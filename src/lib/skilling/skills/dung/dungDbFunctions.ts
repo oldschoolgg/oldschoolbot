@@ -1,4 +1,4 @@
-import { reduceNumByPercent } from 'e';
+import { reduceNumByPercent } from '@oldschoolgg/toolkit';
 
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/data/CollectionsExport.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';

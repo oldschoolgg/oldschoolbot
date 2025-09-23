@@ -1,4 +1,4 @@
-import { calcWhatPercent, sumArr, Time } from 'e';
+import { calcWhatPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters, SkillsEnum } from 'oldschooljs';
 import type { OffenceGearStat } from 'oldschooljs/gear';
 import { omit } from 'remeda';

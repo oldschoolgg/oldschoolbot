@@ -1,5 +1,5 @@
+import { calcWhatPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
-import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 
 import { BitField } from '@/lib/constants.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';

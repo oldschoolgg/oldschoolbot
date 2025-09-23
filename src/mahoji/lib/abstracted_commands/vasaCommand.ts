@@ -1,6 +1,6 @@
+import { randInt, sumArr, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { EmbedBuilder, type InteractionReplyOptions, type TextChannel } from 'discord.js';
-import { randInt, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus.js';

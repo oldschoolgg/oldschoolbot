@@ -1,6 +1,5 @@
-import { type CommandRunOptions, formatDuration, stringMatches, Table } from '@oldschoolgg/toolkit';
+import { formatDuration, stringMatches, Table, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';

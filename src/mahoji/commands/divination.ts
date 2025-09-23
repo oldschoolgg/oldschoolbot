@@ -1,8 +1,6 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration, increaseNumByPercent, removeFromArr, Time } from '@oldschoolgg/toolkit';
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { increaseNumByPercent, removeFromArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import {

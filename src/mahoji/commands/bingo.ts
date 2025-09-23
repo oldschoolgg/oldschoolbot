@@ -1,12 +1,10 @@
+import { chunk, noOp, notEmpty, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import {
-	type CommandResponse,
-	type CommandRunOptions,
 	channelIsSendable,
 	isValidDiscordSnowflake,
 	type MahojiUserOption,
-	mentionCommand,
-	type OSBMahojiCommand
+	mentionCommand
 } from '@oldschoolgg/toolkit/discord-util';
 import { md5sum } from '@oldschoolgg/toolkit/node';
 import { stringMatches, truncateString } from '@oldschoolgg/toolkit/string-util';
@@ -19,7 +17,6 @@ import {
 	type User,
 	userMention
 } from 'discord.js';
-import { chunk, noOp, notEmpty, Time, uniqueArr } from 'e';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';

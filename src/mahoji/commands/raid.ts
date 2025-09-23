@@ -1,7 +1,5 @@
-import { type CommandRunOptions, formatDuration } from '@oldschoolgg/toolkit';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { formatDuration, randArrItem, reduceNumByPercent, roll, sumArr } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { randArrItem, reduceNumByPercent, roll, sumArr } from 'e';
 import { averageBank, Bank, resolveItems } from 'oldschooljs';
 
 import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';

@@ -1,4 +1,4 @@
-import { clamp, objectValues } from 'e';
+import { clamp, objectValues } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
 
 import { SkillsEnum } from '@/lib/skilling/types.js';

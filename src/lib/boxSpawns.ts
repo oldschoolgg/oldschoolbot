@@ -1,6 +1,5 @@
-import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit';
+import { formatOrdinal, isFunction, randArrItem, roll, shuffleArr, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, type Message, type User } from 'discord.js';
-import { isFunction, randArrItem, roll, shuffleArr, Time } from 'e';
 import fetch from 'node-fetch';
 import { Bank, Items, LootTable, Monsters } from 'oldschooljs';
 

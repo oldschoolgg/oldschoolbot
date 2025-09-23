@@ -1,5 +1,4 @@
-import { calcPerHour } from '@oldschoolgg/toolkit';
-import { randInt, roll, Time } from 'e';
+import { calcPerHour, randInt, roll, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';

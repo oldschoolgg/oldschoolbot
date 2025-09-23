@@ -1,4 +1,4 @@
-import { isFunction, notEmpty } from 'e';
+import { isFunction, notEmpty } from '@oldschoolgg/toolkit';
 import { Bank, getItem, Implings, Monsters, resolveItems } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';

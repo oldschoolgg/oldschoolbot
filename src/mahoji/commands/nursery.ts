@@ -1,8 +1,7 @@
-import { type CommandRunOptions, formatDuration, gaussianRandom } from '@oldschoolgg/toolkit';
+import { formatDuration, gaussianRandom, randArrItem, reduceNumByPercent, roll } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { tame_growth } from '@prisma/client';
 import { ApplicationCommandOptionType, type ChatInputCommandInteraction } from 'discord.js';
-import { randArrItem, reduceNumByPercent, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { globalConfig } from '@/lib/constants.js';

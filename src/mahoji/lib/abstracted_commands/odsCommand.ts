@@ -1,6 +1,12 @@
-import { type CommandResponse, formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit';
+import {
+	formatDuration,
+	randInt,
+	randomVariation,
+	reduceNumByPercent,
+	stringMatches,
+	Time
+} from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { randInt, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';

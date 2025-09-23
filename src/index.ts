@@ -1,14 +1,16 @@
-import './lib/safeglobals.js';
+import './lib/ActivityManager.js';
 import './lib/globals.js';
 import './lib/MUser.js';
+import './lib/safeglobals.js';
 import './lib/util/transactItemsFromBank.js';
-import './lib/ActivityManager.js';
 
+import { isObject } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { convertMahojiCommandToAbstractCommand, MahojiClient } from '@oldschoolgg/toolkit/discord-util';
 import { init } from '@sentry/node';
 import { GatewayIntentBits, Options, Partials, type TextChannel } from 'discord.js';
-import { isObject } from 'e';
+
+import 'oldschooljs';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists.js';
 import { Channel, gitHash, globalConfig } from './lib/constants.js';
@@ -26,7 +28,6 @@ import { onStartup } from './mahoji/lib/events.js';
 import { exitCleanup } from './mahoji/lib/exitHandler.js';
 import { postCommand } from './mahoji/lib/postCommand.js';
 import { preCommand } from './mahoji/lib/preCommand.js';
-import 'oldschooljs';
 
 if (globalConfig.sentryDSN) {
 	init({

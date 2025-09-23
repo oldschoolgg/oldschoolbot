@@ -1,6 +1,6 @@
+import { notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { dateFm, formatDuration, getNextUTCReset } from '@oldschoolgg/toolkit/util';
-import { notEmpty, objectEntries, Time } from 'e';
 
 import { tears_of_guthix_cd } from '@/lib/events.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';

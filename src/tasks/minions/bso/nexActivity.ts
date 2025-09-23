@@ -1,6 +1,6 @@
+import { calcWhatPercent, noOp, percentChance, randArrItem, roll } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import { calcWhatPercent, noOp, percentChance, randArrItem, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { nexCL, nexUniqueDrops } from '@/lib/data/CollectionsExport.js';

@@ -1,7 +1,7 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { time } from 'discord.js';
-import { Time } from 'e';
 
 import { SeedableRNG } from '@/lib/util/rng.js';
 

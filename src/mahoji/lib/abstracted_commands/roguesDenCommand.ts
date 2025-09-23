@@ -1,5 +1,5 @@
+import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { SkillsEnum } from '@/lib/skilling/types.js';

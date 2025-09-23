@@ -1,4 +1,4 @@
-import { percentChance, randInt } from 'e';
+import { percentChance, randInt } from '@oldschoolgg/toolkit';
 import { ItemGroups } from 'oldschooljs';
 
 import Prayer from '@/lib/skilling/skills/prayer.js';

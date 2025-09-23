@@ -1,4 +1,4 @@
-import { round } from 'e';
+import { round } from '@oldschoolgg/toolkit';
 import { itemID } from 'oldschooljs';
 
 import type { GearSetup } from '@/lib/gear/types.js';

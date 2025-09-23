@@ -1,7 +1,11 @@
-import { type CommandRunOptions, formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import {
+	formatDuration,
+	increaseNumByPercent,
+	randomVariation,
+	reduceNumByPercent,
+	stringMatches
+} from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
 import { userhasDiaryTier } from '@/lib/diaries.js';
 import { QuestID } from '@/lib/minions/data/quests.js';

@@ -1,4 +1,4 @@
-import { clamp, percentChance } from 'e';
+import { clamp, percentChance } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import LeapingFish from '@/lib/skilling/skills/cooking/leapingFish.js';

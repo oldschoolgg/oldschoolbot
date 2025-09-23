@@ -1,7 +1,6 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/discord-util';
+import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
 import { generateHexColorForCashStack } from '@oldschoolgg/toolkit/runescape';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
-import { calcWhatPercent, objectEntries } from 'e';
 import { type Bank, Items, Util } from 'oldschooljs';
 
 import { bankImageTask } from '@/lib/canvas/bankImage.js';

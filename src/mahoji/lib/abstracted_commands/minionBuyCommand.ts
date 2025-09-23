@@ -1,6 +1,5 @@
-import { type CommandResponse, isAtleastThisOld } from '@oldschoolgg/toolkit';
+import { isAtleastThisOld, Time } from '@oldschoolgg/toolkit';
 import { ComponentType, type User } from 'discord.js';
-import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { mahojiInformationalButtons } from '@/lib/sharedComponents.js';

@@ -1,8 +1,16 @@
 import { userMention } from '@discordjs/builders';
-import { formatDuration, stringMatches, Table } from '@oldschoolgg/toolkit';
+import {
+	formatDuration,
+	randArrItem,
+	reduceNumByPercent,
+	roll,
+	stringMatches,
+	Table,
+	Time,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { User } from '@prisma/client';
-import { randArrItem, reduceNumByPercent, roll, Time, uniqueArr } from 'e';
 import { Bank, type Item, LootTable, resolveItems } from 'oldschooljs';
 
 import Grimy from '@/lib/skilling/skills/herblore/mixables/grimy.js';

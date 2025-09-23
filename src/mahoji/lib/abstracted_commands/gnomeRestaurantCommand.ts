@@ -1,6 +1,6 @@
+import { calcWhatPercent, randInt, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
-import { calcWhatPercent, randInt, reduceNumByPercent, Time } from 'e';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
 import { getPOHObject } from '@/lib/poh/index.js';

@@ -1,4 +1,4 @@
-import { randInt } from 'e';
+import { randInt } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import type { MUserClass } from '@/lib/MUser.js';

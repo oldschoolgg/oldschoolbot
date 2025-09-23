@@ -1,7 +1,7 @@
-import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/discord-util';
+import { calcWhatPercent, clamp, reduceNumByPercent, roll, round, Time } from '@oldschoolgg/toolkit';
+import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { calcWhatPercent, clamp, reduceNumByPercent, roll, round, Time } from 'e';
 import { Bank, randomVariation } from 'oldschooljs';
 
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';

@@ -1,8 +1,8 @@
+import { calcWhatPercent, noOp, objectEntries, sumArr } from '@oldschoolgg/toolkit';
 import { cleanUsername } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import type { Prisma, User } from '@prisma/client';
 import { bold, type Guild, userMention } from 'discord.js';
-import { calcWhatPercent, noOp, objectEntries, sumArr } from 'e';
 import { type Bank, calcCombatLevel, convertXPtoLVL, type Monster, Monsters } from 'oldschooljs';
 
 import { BitField, globalConfig, MAX_LEVEL, MAX_XP } from '@/lib/constants.js';

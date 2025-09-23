@@ -1,4 +1,4 @@
-import { calcPercentOfNum, roll } from 'e';
+import { calcPercentOfNum, roll } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { MysteryBoxes } from '@/lib/bsoOpenables.js';

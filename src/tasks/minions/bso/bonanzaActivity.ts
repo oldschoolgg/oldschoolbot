@@ -1,4 +1,4 @@
-import { calcPercentOfNum, calcWhatPercent, clamp, randArrItem, randInt, roll, shuffleArr } from 'e';
+import { calcPercentOfNum, calcWhatPercent, clamp, randArrItem, randInt, roll, shuffleArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { MAX_LEVEL } from '@/lib/constants.js';

@@ -1,4 +1,4 @@
-import { calcWhatPercent } from 'e';
+import { calcWhatPercent } from '@oldschoolgg/toolkit';
 
 import { Requirements } from '@/lib/structures/Requirements.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';

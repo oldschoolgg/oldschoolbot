@@ -1,6 +1,5 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandRunOptions, ellipsize } from '@oldschoolgg/toolkit/util';
+import { ellipsize } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';

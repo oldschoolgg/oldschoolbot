@@ -1,8 +1,7 @@
 import { bold } from '@discordjs/builders';
-import { type CommandRunOptions, calcPerHour, formatDuration } from '@oldschoolgg/toolkit';
+import { calcPerHour, formatDuration, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
-import { increaseNumByPercent, sumArr, Time } from 'e';
 import { Bank, convertBankToPerHourStats, itemID, toKMB } from 'oldschooljs';
 import { unique } from 'remeda';
 

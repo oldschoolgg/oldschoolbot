@@ -1,6 +1,6 @@
+import { randArrItem, roll } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { randArrItem, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { getItem } from '@/lib/util/getOSItem.js';

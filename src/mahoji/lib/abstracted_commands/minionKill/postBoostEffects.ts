@@ -1,5 +1,5 @@
+import { calcPercentOfNum, objectKeys, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import type { GearSetupType } from '@prisma/client';
-import { calcPercentOfNum, objectKeys, Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { dwarvenBlessing } from '@/lib/bso/dwarvenBlessing.js';

@@ -1,5 +1,5 @@
 import { time } from '@discordjs/builders';
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, resolveItems } from 'oldschooljs';
 
 import type { Buyable } from './buyables.js';

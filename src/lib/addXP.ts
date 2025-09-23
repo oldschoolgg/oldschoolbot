@@ -1,8 +1,8 @@
+import { increaseNumByPercent, noOp, notEmpty, Time } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { type User, UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
-import { increaseNumByPercent, noOp, notEmpty, objectValues, Time } from 'e';
 import { convertLVLtoXP, convertXPtoLVL, type Item, resolveItems, toKMB } from 'oldschooljs';
 
 import { Channel, globalConfig, LEVEL_120_XP, MAX_LEVEL, MAX_TOTAL_LEVEL, MAX_XP } from '@/lib/constants.js';
@@ -112,7 +112,7 @@ const allMasterCapes = Skillcapes.map(i => i.masterCape)
 	.flat(Number.POSITIVE_INFINITY) as number[];
 
 function getEquippedCapes(user: MUser) {
-	return objectValues(user.gear)
+	return Object.values(user.gear)
 		.map(val => val.cape)
 		.filter(notEmpty)
 		.map(i => i.item);

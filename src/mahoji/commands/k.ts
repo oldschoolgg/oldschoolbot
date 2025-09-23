@@ -1,4 +1,3 @@
-import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { PVM_METHODS, type PvMMethod } from '@/lib/constants.js';

@@ -1,5 +1,3 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { NMZ_STRATEGY, type NMZStrategy } from '@/lib/constants.js';

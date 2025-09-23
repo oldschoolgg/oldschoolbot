@@ -1,4 +1,4 @@
-import { reduceNumByPercent, roll, Time } from 'e';
+import { reduceNumByPercent, roll, Time } from '@oldschoolgg/toolkit';
 import { Bank, randomVariation, toKMB } from 'oldschooljs';
 
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';

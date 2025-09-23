@@ -1,6 +1,6 @@
+import { notEmpty } from '@oldschoolgg/toolkit';
 import { evalMathExpression } from '@oldschoolgg/toolkit/math';
 import { cleanString, stringMatches } from '@oldschoolgg/toolkit/util';
-import { notEmpty } from 'e';
 import { Bank, type Item, Items, itemNameMap } from 'oldschooljs';
 
 import { isDeletedItemName } from '@/lib/customItems/util.js';

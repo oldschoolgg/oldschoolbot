@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { LootTable, Monsters } from 'oldschooljs';
 
 import { KING_GOLDEMAR_GUARD_ID } from '@/lib/bso/bsoConstants.js';

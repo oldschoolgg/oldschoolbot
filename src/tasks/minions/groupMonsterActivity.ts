@@ -1,5 +1,5 @@
+import { noOp, randArrItem, roll, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { noOp, randArrItem, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { MysteryBoxes } from '@/lib/bsoOpenables.js';

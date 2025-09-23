@@ -1,5 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum, toTitleCase } from '@oldschoolgg/toolkit';
 
 import { type IMaterialBank, type MaterialType, materialTypes } from '@/lib/invention/index.js';
 import { assert } from '@/lib/util/logError.js';

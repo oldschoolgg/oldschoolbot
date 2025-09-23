@@ -1,4 +1,4 @@
-import { increaseNumByPercent } from 'e';
+import { increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';

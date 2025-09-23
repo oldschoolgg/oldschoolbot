@@ -1,5 +1,5 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
 import { Items, itemID } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';

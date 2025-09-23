@@ -1,5 +1,5 @@
+import { uniqueArr } from '@oldschoolgg/toolkit';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
-import { uniqueArr } from 'e';
 import { SkillsEnum } from 'oldschooljs';
 
 import type { AttackStyles } from '@/lib/minions/functions/index.js';

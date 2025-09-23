@@ -1,5 +1,5 @@
+import { calcPercentOfNum, increaseNumByPercent, roll } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { calcPercentOfNum, increaseNumByPercent, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import {

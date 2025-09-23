@@ -1,5 +1,5 @@
+import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import type { GearSetupType } from '@prisma/client';
-import { reduceNumByPercent, Time } from 'e';
 import { Bank, type Item } from 'oldschooljs';
 
 import getOSItem from './getOSItem.js';

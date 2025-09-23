@@ -1,4 +1,4 @@
-import { roll } from 'e';
+import { roll } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { NaxxusLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';

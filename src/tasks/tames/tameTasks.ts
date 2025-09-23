@@ -1,3 +1,12 @@
+import {
+	increaseNumByPercent,
+	isFunction,
+	percentChance,
+	randArrItem,
+	randInt,
+	roll,
+	Time
+} from '@oldschoolgg/toolkit';
 import { calcPerHour, formatDuration } from '@oldschoolgg/toolkit/util';
 import type { TameActivity } from '@prisma/client';
 import {
@@ -11,7 +20,6 @@ import {
 	type GuildMember,
 	userMention
 } from 'discord.js';
-import { increaseNumByPercent, isFunction, percentChance, randArrItem, randInt, roll, Time } from 'e';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { isEmpty } from 'remeda';
 

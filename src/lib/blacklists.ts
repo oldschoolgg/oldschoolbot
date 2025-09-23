@@ -1,5 +1,5 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
-import { Time } from 'e';
 
 import { globalConfig } from '@/lib/constants.js';
 

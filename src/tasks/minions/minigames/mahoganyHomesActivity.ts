@@ -1,4 +1,4 @@
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 
 import { userHasFlappy } from '@/lib/invention/inventions.js';
 import { calcConBonusXP } from '@/lib/skilling/skills/construction/calcConBonusXP.js';

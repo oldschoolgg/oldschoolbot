@@ -1,9 +1,9 @@
+import { noOp, removeFromArr, Time } from '@oldschoolgg/toolkit';
 import { awaitMessageComponentInteraction, cleanUsername } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
-import { noOp, removeFromArr, Time } from 'e';
 
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';

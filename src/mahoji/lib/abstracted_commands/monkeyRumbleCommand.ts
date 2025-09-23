@@ -1,6 +1,5 @@
-import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit';
+import { formatDuration, randArrItem, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { randArrItem, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';

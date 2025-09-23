@@ -1,7 +1,6 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandResponse, type CommandRunOptions, formatDuration, PerkTier } from '@oldschoolgg/toolkit/util';
+import { randInt, roll } from '@oldschoolgg/toolkit';
+import { formatDuration, PerkTier } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { randInt, roll } from 'e';
 import { averageBank, Bank, ChambersOfXeric, toKMB } from 'oldschooljs';
 
 import { ColosseumWaveBank, startColosseumRun } from '@/lib/colosseum.js';

@@ -1,5 +1,5 @@
+import { randInt } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder } from 'discord.js';
-import { randInt } from 'e';
 import { type Bank, ItemGroups, resolveItems, toKMB } from 'oldschooljs';
 import { type Image, loadImage } from 'skia-canvas';
 

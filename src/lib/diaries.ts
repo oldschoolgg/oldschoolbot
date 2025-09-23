@@ -1,5 +1,5 @@
+import { objectEntries } from '@oldschoolgg/toolkit';
 import type { Minigame } from '@prisma/client';
-import { objectEntries } from 'e';
 import { Monsters, resolveItems } from 'oldschooljs';
 
 import Skillcapes from '@/lib/skilling/skillcapes.js';

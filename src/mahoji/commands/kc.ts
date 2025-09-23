@@ -1,5 +1,4 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandRunOptions, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { type BossRecords, bossNameMap, Hiscores, mappedBossNames } from 'oldschooljs';
 

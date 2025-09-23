@@ -1,4 +1,4 @@
-import { sumArr } from 'e';
+import { sumArr } from '@oldschoolgg/toolkit';
 import { Bank, calcCombatLevel, type ItemBank, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
 import { BitField, MAX_LEVEL } from '@/lib/constants.js';

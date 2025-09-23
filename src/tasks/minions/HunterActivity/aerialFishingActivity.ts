@@ -1,5 +1,5 @@
+import { calcPercentOfNum, randInt } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { calcPercentOfNum, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';

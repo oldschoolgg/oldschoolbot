@@ -1,4 +1,4 @@
-import { roll, shuffleArr, Time, uniqueArr } from 'e';
+import { roll, shuffleArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, LootTable, Monsters, randomVariation, resolveItems, resolveNameBank } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 

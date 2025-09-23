@@ -1,6 +1,6 @@
+import { calcWhatPercent, reduceNumByPercent, round, sumArr, Time } from '@oldschoolgg/toolkit';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { calcWhatPercent, reduceNumByPercent, round, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import type { NMZStrategy } from '@/lib/constants.js';

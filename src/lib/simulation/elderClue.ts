@@ -1,4 +1,4 @@
-import { randArrItem, randInt, roll } from 'e';
+import { randArrItem, randInt, roll } from '@oldschoolgg/toolkit';
 import { Bank, LootTable, resolveItems } from 'oldschooljs';
 
 import { LampTable } from '@/lib/xpLamps.js';

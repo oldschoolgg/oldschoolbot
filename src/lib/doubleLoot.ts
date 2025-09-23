@@ -1,6 +1,6 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import type { TextChannel } from 'discord.js';
-import { Time } from 'e';
 
 import { Channel } from '@/lib/constants.js';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings.js';

@@ -1,5 +1,5 @@
+import { calcWhatPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 
 import type { TemporossActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';

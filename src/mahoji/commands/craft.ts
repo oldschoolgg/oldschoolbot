@@ -1,7 +1,5 @@
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { reduceNumByPercent, Time } from 'e';
 
 import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions.js';

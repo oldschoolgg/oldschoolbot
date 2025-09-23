@@ -1,7 +1,7 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import TitheFarmBuyables from '@/lib/data/buyables/titheFarmBuyables.js';

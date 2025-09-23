@@ -1,4 +1,4 @@
-import { roll } from 'e';
+import { roll } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';

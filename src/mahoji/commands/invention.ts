@@ -1,6 +1,5 @@
-import { type CommandRunOptions, calcPerHour, stringMatches, Table } from '@oldschoolgg/toolkit';
+import { calcPerHour, reduceNumByPercent, stringMatches, Table, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { reduceNumByPercent, Time } from 'e';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
 import {

@@ -1,5 +1,5 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
 import Runecraft from '@/lib/skilling/skills/runecraft.js';

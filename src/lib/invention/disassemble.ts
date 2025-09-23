@@ -1,5 +1,14 @@
-import { type CommandResponse, calcPerHour, formatDuration, Table } from '@oldschoolgg/toolkit';
-import { calcWhatPercent, clamp, percentChance, reduceNumByPercent, Time, uniqueArr } from 'e';
+import {
+	calcPerHour,
+	calcWhatPercent,
+	clamp,
+	formatDuration,
+	percentChance,
+	reduceNumByPercent,
+	Table,
+	Time,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import { Bank, type Item, toKMB } from 'oldschooljs';
 
 import { DisassemblyGroupMap, DisassemblySourceGroups } from '@/lib/invention/groups/index.js';

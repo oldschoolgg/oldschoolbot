@@ -1,4 +1,4 @@
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
+import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 
 import { userHasFlappy } from '@/lib/invention/inventions.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';

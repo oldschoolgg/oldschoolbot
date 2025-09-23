@@ -1,4 +1,4 @@
-import { percentChance } from 'e';
+import { percentChance } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import Prayer from '@/lib/skilling/skills/prayer.js';

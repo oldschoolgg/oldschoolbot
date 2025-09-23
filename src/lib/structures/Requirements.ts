@@ -1,5 +1,5 @@
+import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
 import type { activity_type_enum, Minigame, PlayerOwnedHouse } from '@prisma/client';
-import { calcWhatPercent, objectEntries } from 'e';
 import type { Bank } from 'oldschooljs';
 
 import type { ClueTier } from '@/lib/clues/clueTiers.js';

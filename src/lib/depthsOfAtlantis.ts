@@ -1,16 +1,17 @@
-import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { bold } from 'discord.js';
 import {
 	calcPercentOfNum,
 	clamp,
+	formatDuration,
+	formatOrdinal,
 	increaseNumByPercent,
 	percentChance,
 	randArrItem,
 	randInt,
 	reduceNumByPercent,
 	Time
-} from 'e';
+} from '@oldschoolgg/toolkit';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { bold } from 'discord.js';
 import { Bank, type ItemBank, itemID, resolveItems } from 'oldschooljs';
 
 import { calcSetupPercent } from '@/lib/data/cox.js';

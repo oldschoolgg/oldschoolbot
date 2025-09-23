@@ -1,4 +1,4 @@
-import { randArrItem, roll, Time, uniqueArr } from 'e';
+import { randArrItem, roll, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { monkeyHeadImage, monkeyTierOfUser } from '@/lib/monkeyRumble.js';

@@ -1,9 +1,4 @@
-import {
-	type CommandRunOptions,
-	type MahojiUserOption,
-	mentionCommand,
-	type OSBMahojiCommand
-} from '@oldschoolgg/toolkit/discord-util';
+import { type MahojiUserOption, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { containsBlacklistedWord, miniID, truncateString } from '@oldschoolgg/toolkit/string-util';
 import { GiftBoxStatus } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';

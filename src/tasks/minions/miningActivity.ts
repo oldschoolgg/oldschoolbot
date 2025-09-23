@@ -1,4 +1,4 @@
-import { increaseNumByPercent, randInt, roll, Time } from 'e';
+import { increaseNumByPercent, randInt, roll, Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID, SkillsEnum, toKMB } from 'oldschooljs';
 
 import { GLOBAL_BSO_XP_MULTIPLIER, MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';

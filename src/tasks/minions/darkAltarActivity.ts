@@ -1,4 +1,4 @@
-import { increaseNumByPercent, roll } from 'e';
+import { increaseNumByPercent, roll } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { darkAltarRunes } from '@/lib/minions/functions/darkAltarCommand.js';

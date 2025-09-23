@@ -1,5 +1,5 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { perTimeUnitChance } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
 import type { Bank } from 'oldschooljs';
 
 import { QuestID } from '@/lib/minions/data/quests.js';

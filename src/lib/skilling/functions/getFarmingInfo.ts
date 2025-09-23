@@ -1,6 +1,6 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { formatDuration, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { User } from '@prisma/client';
-import { Time } from 'e';
 
 import { defaultPatches } from '@/lib/minions/farming/index.js';
 import type { IPatchData, IPatchDataDetailed } from '@/lib/minions/farming/types.js';

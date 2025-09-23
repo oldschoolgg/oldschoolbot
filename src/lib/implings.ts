@@ -1,5 +1,5 @@
+import { objectEntries, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
-import { objectEntries, reduceNumByPercent, Time } from 'e';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';

@@ -1,8 +1,7 @@
-import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
-import { reduceNumByPercent, round, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions.js';

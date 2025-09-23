@@ -1,4 +1,4 @@
-import { sumArr } from 'e';
+import { sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, LuckyImpling, resolveItems } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';

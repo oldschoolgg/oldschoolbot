@@ -1,6 +1,5 @@
-import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
+import { calcPercentOfNum, calcWhatPercent, formatDuration, formatOrdinal, roll } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
-import { calcPercentOfNum, calcWhatPercent, roll } from 'e';
 import { Bank, type ItemBank, itemID, Monsters } from 'oldschooljs';
 
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';

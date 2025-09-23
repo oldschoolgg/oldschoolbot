@@ -1,5 +1,5 @@
+import { increaseNumByPercent, roll, Time } from '@oldschoolgg/toolkit';
 import type { UserStats } from '@prisma/client';
-import { increaseNumByPercent, roll, Time } from 'e';
 import { Bank, type ItemBank, MonsterAttribute, Monsters } from 'oldschooljs';
 
 import type { BitField } from '@/lib/constants.js';

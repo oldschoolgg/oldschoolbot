@@ -1,4 +1,4 @@
-import { randInt } from 'e';
+import { randInt } from '@oldschoolgg/toolkit';
 import { Bank, ItemGroups } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';

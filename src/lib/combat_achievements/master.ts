@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { EMonster, Monsters, resolveItems } from 'oldschooljs';
 
 import { spearWeapon } from '@/lib/constants.js';

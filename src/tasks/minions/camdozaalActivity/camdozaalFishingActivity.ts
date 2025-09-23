@@ -1,5 +1,5 @@
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { calcPercentOfNum } from 'e';
 import { LootTable } from 'oldschooljs';
 
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';

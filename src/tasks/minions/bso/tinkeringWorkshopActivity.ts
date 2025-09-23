@@ -1,4 +1,4 @@
-import { randArrItem, randInt, roll } from 'e';
+import { randArrItem, randInt, roll } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { inventorOutfit } from '@/lib/data/CollectionsExport.js';

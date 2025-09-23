@@ -1,4 +1,4 @@
-import { randInt } from 'e';
+import { randInt } from '@oldschoolgg/toolkit';
 
 import { masterFarmerOutfit } from '@/lib/bso/bsoConstants.js';
 import { hasUnlockedAtlantis } from '@/lib/bso/bsoUtil.js';

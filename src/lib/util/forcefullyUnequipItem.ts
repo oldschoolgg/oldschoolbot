@@ -1,4 +1,4 @@
-import { objectEntries } from 'e';
+import { objectEntries } from '@oldschoolgg/toolkit';
 import type { Item } from 'oldschooljs';
 
 export async function forcefullyUnequipItem(user: MUser, item: Item) {

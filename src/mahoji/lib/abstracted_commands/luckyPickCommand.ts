@@ -1,3 +1,4 @@
+import { chunk, noOp, roll, shuffleArr, Time } from '@oldschoolgg/toolkit';
 import { awaitMessageComponentInteraction, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import {
 	ActionRowBuilder,
@@ -8,7 +9,6 @@ import {
 	type CacheType,
 	type ChatInputCommandInteraction
 } from 'discord.js';
-import { chunk, noOp, roll, shuffleArr, Time } from 'e';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { SILENT_ERROR } from '@/lib/constants.js';

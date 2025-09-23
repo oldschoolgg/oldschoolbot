@@ -1,5 +1,13 @@
-import { randomVariation } from '@oldschoolgg/toolkit';
-import { calcPercentOfNum, calcWhatPercent, randFloat, randInt, reduceNumByPercent, round, Time } from 'e';
+import {
+	calcPercentOfNum,
+	calcWhatPercent,
+	randFloat,
+	randInt,
+	randomVariation,
+	reduceNumByPercent,
+	round,
+	Time
+} from '@oldschoolgg/toolkit';
 import { Bank, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 

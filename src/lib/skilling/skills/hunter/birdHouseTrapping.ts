@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { nestTable, strungRabbitFootNestTable } from '@/lib/simulation/birdsNest.js';

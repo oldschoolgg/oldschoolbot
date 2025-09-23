@@ -1,3 +1,4 @@
+import { notEmpty, randArrItem, randInt, roll, Time } from '@oldschoolgg/toolkit';
 import { channelIsSendable, makeComponents, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { activity_type_enum } from '@prisma/client';
@@ -8,7 +9,6 @@ import {
 	type MessageCollector,
 	type MessageCreateOptions
 } from 'discord.js';
-import { notEmpty, randArrItem, randInt, roll, Time } from 'e';
 import { Bank, EItem, itemID, toKMB } from 'oldschooljs';
 
 import { chargePortentIfHasCharges, getAllPortentCharges, PortentID } from '@/lib/bso/divination.js';

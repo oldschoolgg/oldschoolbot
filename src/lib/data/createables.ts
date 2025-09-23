@@ -1,4 +1,4 @@
-import { isFunction, uniqueArr } from 'e';
+import { isFunction, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, deepResolveItems, EItem, type ItemBank, itemID } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';

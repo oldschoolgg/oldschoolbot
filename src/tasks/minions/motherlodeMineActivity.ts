@@ -1,4 +1,4 @@
-import { roll, Time } from 'e';
+import { roll, Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';

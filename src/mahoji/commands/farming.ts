@@ -1,5 +1,4 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { AutoFarmFilterEnum, type CropUpgradeType } from '@prisma/client';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 

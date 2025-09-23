@@ -1,6 +1,6 @@
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { Time } from '@oldschoolgg/toolkit';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
 import { Bank, itemID, resolveItems } from 'oldschooljs';
 
 import Smithing from '@/lib/skilling/skills/smithing/index.js';

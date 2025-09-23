@@ -1,3 +1,4 @@
+import { noOp, sleep, Time } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import {
 	awaitMessageComponentInteraction,
@@ -5,7 +6,6 @@ import {
 	type MahojiUserOption
 } from '@oldschoolgg/toolkit/discord-util';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
-import { noOp, sleep, Time } from 'e';
 import { Bank, Util } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';

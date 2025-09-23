@@ -1,6 +1,6 @@
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { Time } from '@oldschoolgg/toolkit';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
-import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';

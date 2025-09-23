@@ -1,5 +1,5 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
 import { type ItemBank, randomVariation } from 'oldschooljs';
 
 import { type MaterialType, materialTypes } from '@/lib/invention/index.js';

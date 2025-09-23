@@ -1,5 +1,4 @@
-import { formatDuration, getInterval } from '@oldschoolgg/toolkit';
-import { Time } from 'e';
+import { formatDuration, getInterval, Time } from '@oldschoolgg/toolkit';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';

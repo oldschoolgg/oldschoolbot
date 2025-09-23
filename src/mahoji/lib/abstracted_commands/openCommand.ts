@@ -1,8 +1,8 @@
+import { noOp, notEmpty, percentChance, randArrItem, shuffleArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/discord-util';
+import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { noOp, notEmpty, percentChance, randArrItem, shuffleArr, uniqueArr } from 'e';
 import { Bank, Items, itemID, resolveItems } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';

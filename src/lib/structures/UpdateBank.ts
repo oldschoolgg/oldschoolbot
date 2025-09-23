@@ -1,6 +1,6 @@
+import { objectEntries } from '@oldschoolgg/toolkit';
 import { objHasAnyPropInCommon } from '@oldschoolgg/toolkit/util';
 import type { GearSetupType, Prisma, UserStats } from '@prisma/client';
-import { objectEntries } from 'e';
 import { Bank, type ItemBank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 

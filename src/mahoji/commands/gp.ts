@@ -1,6 +1,4 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { toKMB } from 'oldschooljs';
 
 import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';

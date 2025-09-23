@@ -1,7 +1,7 @@
+import { isObject, notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
 import { evalMathExpression } from '@oldschoolgg/toolkit/math';
 import type { GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import { bold } from 'discord.js';
-import { isObject, notEmpty, objectEntries, Time } from 'e';
 import { Bank, type ItemBank, ItemGroups, Items } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 

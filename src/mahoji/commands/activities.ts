@@ -1,4 +1,3 @@
-import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 
 import { Planks } from '@/lib/minions/data/planks.js';

@@ -1,5 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
-import { randArrItem, randInt } from 'e';
+import { randArrItem, randInt, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, itemID, SkillsEnum } from 'oldschooljs';
 
 import { userHasFlappy } from '@/lib/invention/inventions.js';

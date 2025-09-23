@@ -1,4 +1,4 @@
-import { calcWhatPercent, clamp, round, sumArr } from 'e';
+import { calcWhatPercent, clamp, round, sumArr } from '@oldschoolgg/toolkit';
 
 import { MAX_XP } from '@/lib/constants.js';
 import { getTotalCl } from '@/lib/data/Collections.js';

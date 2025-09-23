@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { resolveItems } from 'oldschooljs';
 
 export const GLOBAL_BSO_XP_MULTIPLIER = 5;

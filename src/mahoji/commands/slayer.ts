@@ -1,4 +1,3 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 

@@ -1,6 +1,6 @@
-import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
+import { notEmpty } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
-import { notEmpty } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { finishables } from '@/lib/finishables.js';

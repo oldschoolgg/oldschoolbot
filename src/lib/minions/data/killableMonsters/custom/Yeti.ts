@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { GemTable, HerbDropTable, LootTable, Monsters, UncommonSeedDropTable } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 

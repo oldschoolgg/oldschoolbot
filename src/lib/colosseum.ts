@@ -1,7 +1,3 @@
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
-import { GeneralBank, type GeneralBankType, UserError } from '@oldschoolgg/toolkit/structures';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -14,7 +10,11 @@ import {
 	reduceNumByPercent,
 	sumArr,
 	Time
-} from 'e';
+} from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
+import { GeneralBank, type GeneralBankType, UserError } from '@oldschoolgg/toolkit/structures';
 import { Bank, type EquipmentSlot, type ItemBank, LootTable, resolveItems } from 'oldschooljs';
 
 import { getSimilarItems } from '@/lib/data/similarItems.js';

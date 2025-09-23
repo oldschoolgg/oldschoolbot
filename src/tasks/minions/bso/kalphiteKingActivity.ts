@@ -1,6 +1,6 @@
+import { calcWhatPercent, noOp, percentChance } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import { calcWhatPercent, noOp, percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { kalphiteKingCL } from '@/lib/data/CollectionsExport.js';

@@ -1,7 +1,16 @@
-import { formatDuration, isWeekend, Table } from '@oldschoolgg/toolkit';
+import {
+	calcPercentOfNum,
+	calcWhatPercent,
+	formatDuration,
+	isWeekend,
+	randFloat,
+	reduceNumByPercent,
+	sumArr,
+	Table,
+	Time
+} from '@oldschoolgg/toolkit';
 import type { GearSetupType } from '@prisma/client';
 import { AttachmentBuilder, type BaseMessageOptions, type TextChannel } from 'discord.js';
-import { calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 

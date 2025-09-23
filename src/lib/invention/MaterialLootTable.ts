@@ -1,4 +1,4 @@
-import { randInt } from 'e';
+import { randInt } from '@oldschoolgg/toolkit';
 
 import type { IMaterialBank, MaterialType } from '@/lib/invention/index.js';
 

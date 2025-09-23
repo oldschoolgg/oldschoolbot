@@ -1,6 +1,6 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
-import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { handleDTD } from '@/lib/bso/handleDTD.js';

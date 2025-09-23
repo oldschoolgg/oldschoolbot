@@ -1,6 +1,6 @@
+import { calcWhatPercent, deepClone, percentChance, reduceNumByPercent, roll, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
-import { calcWhatPercent, deepClone, percentChance, reduceNumByPercent, roll, Time } from 'e';
 import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 
 import { type MidPVMEffectArgs, oriEffect, rollForBSOThings } from '@/lib/bso/pvmEffects.js';

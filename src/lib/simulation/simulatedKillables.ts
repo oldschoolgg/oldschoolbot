@@ -1,5 +1,5 @@
+import { randArrItem, randInt, roll } from '@oldschoolgg/toolkit';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import { randArrItem, randInt, roll } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
 import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';

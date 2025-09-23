@@ -1,7 +1,6 @@
-import { calcPerHour, formatOrdinal } from '@oldschoolgg/toolkit';
+import { calcPerHour, formatOrdinal, randInt } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { userMention } from 'discord.js';
-import { randInt } from 'e';
 import { Bank, increaseBankQuantitesByPercent, resolveItems, SkillsEnum } from 'oldschooljs';
 
 import { isDoubleLootActive } from '@/lib/doubleLoot.js';

@@ -1,4 +1,4 @@
-import { uniqueArr } from 'e';
+import { uniqueArr } from '@oldschoolgg/toolkit';
 import {
 	BeginnerClueTable,
 	EasyClueTable,

@@ -1,6 +1,6 @@
+import { sumArr } from '@oldschoolgg/toolkit';
 import type { UserStats, XpGainSource } from '@prisma/client';
 import type { User as RoboChimpUser } from '@prisma/robochimp';
-import { sumArr } from 'e';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';

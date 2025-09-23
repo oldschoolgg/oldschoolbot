@@ -1,6 +1,3 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-
 import { allUsableItems, useCommand } from '@/mahoji/lib/abstracted_commands/useCommand.js';
 import { ownedItemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 

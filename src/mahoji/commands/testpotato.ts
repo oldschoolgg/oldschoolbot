@@ -1,9 +1,8 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandRunOptions, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { noOp, randArrItem, randInt, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { type Prisma, tame_growth, xp_gains_skill_enum } from '@prisma/client';
 import { ApplicationCommandOptionType, MessageFlags, type User } from 'discord.js';
-import { noOp, randArrItem, randInt, Time, uniqueArr } from 'e';
 import { Bank, getItem, Items, itemID, MAX_INT_JAVA, resolveItems } from 'oldschooljs';
 
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';

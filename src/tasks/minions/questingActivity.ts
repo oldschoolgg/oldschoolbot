@@ -1,5 +1,5 @@
+import { randInt } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { globalDroprates } from '@/lib/data/globalDroprates.js';

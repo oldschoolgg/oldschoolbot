@@ -1,6 +1,6 @@
+import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { userhasDiaryTier, WesternProv } from '@/lib/diaries.js';

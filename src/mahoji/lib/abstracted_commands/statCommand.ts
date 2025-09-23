@@ -1,10 +1,9 @@
+import { sumArr, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import type { CommandResponse } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import type { activity_type_enum, UserStats } from '@prisma/client';
 import { bold } from 'discord.js';
-import { sumArr, Time } from 'e';
 import {
 	Bank,
 	type ItemBank,

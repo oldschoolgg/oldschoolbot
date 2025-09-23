@@ -1,4 +1,4 @@
-import { percentChance } from 'e';
+import { percentChance } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { SkillsEnum } from '@/lib/skilling/types.js';

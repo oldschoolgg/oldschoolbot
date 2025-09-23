@@ -1,8 +1,6 @@
-import { type CommandRunOptions, truncateString } from '@oldschoolgg/toolkit';
+import { roll, truncateString } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { roll } from 'e';
 import { Bank, type Item, type ItemBank, resolveItems, toKMB } from 'oldschooljs';
 
 import { cats } from '@/lib/growablePets.js';

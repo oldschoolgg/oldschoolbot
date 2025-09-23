@@ -1,4 +1,4 @@
-import { noOp, uniqueArr } from 'e';
+import { noOp, uniqueArr } from '@oldschoolgg/toolkit';
 
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { globalConfig } from '@/lib/constants.js';

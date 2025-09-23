@@ -1,4 +1,4 @@
-import { deepClone, objectEntries } from 'e';
+import { deepClone, objectEntries } from '@oldschoolgg/toolkit';
 import { Bank, type EquipmentSlot, type Item, itemID, resolveItems } from 'oldschooljs';
 
 import type { GearSetup } from '@/lib/gear/types.js';

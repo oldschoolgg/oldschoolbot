@@ -1,5 +1,5 @@
+import { objectEntries, Time } from '@oldschoolgg/toolkit';
 import type { Tame, TameActivity } from '@prisma/client';
-import { objectEntries, Time } from 'e';
 import {
 	Bank,
 	ChambersOfXeric,

@@ -1,5 +1,5 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
 import { type Item, itemID } from 'oldschooljs';
 
 import type { Skills } from '@/lib/types/index.js';

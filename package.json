@@ -2,6 +2,7 @@
 	"name": "oldschoolbot",
 	"version": "0.0.1",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"============DEVELOPMENT": "============",
 		"watch": "nodemon --delay 1ms -e ts -w src --exec \"tsx esbuild.mts && node --enable-source-maps dist\"",
@@ -66,6 +67,7 @@
 		"skia-canvas": "^1.0.2",
 		"sonic-boom": "^4.2.0",
 		"ts-pattern": "^5.7.1",
+		"tsdown": "^0.15.4",
 		"zod": "^3.25.67"
 	},
 	"devDependencies": {

@@ -1,4 +1,4 @@
-import type { CommandOption, CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import type { CommandOption } from '@oldschoolgg/toolkit/discord-util';
 import { cleanString, stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { EquipmentSlot, Items } from 'oldschooljs';

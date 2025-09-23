@@ -1,4 +1,4 @@
-import { roll } from 'e';
+import { roll } from '@oldschoolgg/toolkit';
 import { Bank, type Item } from 'oldschooljs';
 import { shuffle } from 'remeda';
 

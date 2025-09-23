@@ -1,6 +1,6 @@
+import { roll, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { userMention } from 'discord.js';
-import { roll, Time } from 'e';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { inventionBoosts, transactMaterialsFromUser } from '@/lib/invention/inventions.js';

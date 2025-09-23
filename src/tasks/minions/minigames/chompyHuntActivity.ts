@@ -1,4 +1,4 @@
-import { roll } from 'e';
+import { roll } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { chompyHats } from '@/lib/data/CollectionsExport.js';

@@ -1,6 +1,5 @@
-import { type CommandRunOptions, formatDuration } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, formatDuration, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { calcWhatPercent, Time } from 'e';
 
 import { PerkTier } from '@/lib/constants.js';
 import {

@@ -1,4 +1,4 @@
-import { notEmpty, uniqueArr } from 'e';
+import { notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
 import { deepResolveItems, Items } from 'oldschooljs';
 
 import { gods } from '@/lib/bso/divineDominion.js';

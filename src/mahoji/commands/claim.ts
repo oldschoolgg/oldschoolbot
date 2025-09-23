@@ -1,6 +1,5 @@
 import { CollectionLog } from '@oldschoolgg/collectionlog';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandRunOptions, dateFm, stringMatches } from '@oldschoolgg/toolkit/util';
+import { dateFm, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 

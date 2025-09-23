@@ -1,5 +1,5 @@
+import { randArrItem, roll } from '@oldschoolgg/toolkit';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import { randArrItem, roll } from 'e';
 import { Bank, type Item, LootTable } from 'oldschooljs';
 
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';

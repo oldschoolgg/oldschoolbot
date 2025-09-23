@@ -1,7 +1,6 @@
-import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit';
+import { clamp, formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { clamp, Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
 import { degradeItem } from '@/lib/degradeableItems.js';

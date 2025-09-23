@@ -1,7 +1,6 @@
 import { userMention } from '@discordjs/builders';
-import { type CommandResponse, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import { clamp, formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import { clamp, reduceNumByPercent, Time } from 'e';
 import { Bank, type Item, type ItemBank, resolveItems, toKMB } from 'oldschooljs';
 
 import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';

@@ -1,5 +1,4 @@
-import { perTimeUnitChance } from '@oldschoolgg/toolkit';
-import { objectEntries, percentChance, randInt, Time } from 'e';
+import { objectEntries, percentChance, perTimeUnitChance, randInt, Time } from '@oldschoolgg/toolkit';
 import { Bank, EItem, itemID } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';

@@ -1,6 +1,6 @@
+import { Time } from '@oldschoolgg/toolkit';
 import {
 	type CommandOptions,
-	type CommandResponse,
 	channelIsSendable,
 	convertMahojiCommandToAbstractCommand
 } from '@oldschoolgg/toolkit/discord-util';
@@ -12,7 +12,6 @@ import type {
 	GuildMember,
 	User
 } from 'discord.js';
-import { Time } from 'e';
 import { isEmpty } from 'remeda';
 
 import { PerkTier } from '@/lib/constants.js';

@@ -1,4 +1,4 @@
-import { roll, Time } from 'e';
+import { roll, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, Monsters, resolveItems } from 'oldschooljs';
 
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';

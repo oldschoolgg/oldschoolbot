@@ -1,6 +1,6 @@
+import { noOp, shuffleArr, Time } from '@oldschoolgg/toolkit';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ComponentType } from 'discord.js';
-import { noOp, shuffleArr, Time } from 'e';
 import murmurhash from 'murmurhash';
 
 import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';

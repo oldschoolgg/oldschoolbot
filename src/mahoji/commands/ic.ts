@@ -1,8 +1,7 @@
-import { type CommandRunOptions, formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
+import { formatDuration, formatOrdinal, randArrItem, roll } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
-import { randArrItem, roll } from 'e';
 import { Bank, type ItemBank, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
 
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';

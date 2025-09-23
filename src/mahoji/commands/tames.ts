@@ -1,22 +1,24 @@
 import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { bold, time } from '@discordjs/builders';
-import { type CommandResponse, formatDuration, isWeekend, stringMatches } from '@oldschoolgg/toolkit';
+import {
+	calcPercentOfNum,
+	calcWhatPercent,
+	formatDuration,
+	increaseNumByPercent,
+	isWeekend,
+	notEmpty,
+	percentChance,
+	randInt,
+	reduceNumByPercent,
+	stringMatches,
+	Time
+} from '@oldschoolgg/toolkit';
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { type Tame, tame_growth } from '@prisma/client';
 import { toTitleCase } from '@sapphire/utilities';
 import { ApplicationCommandOptionType, type ChatInputCommandInteraction, type User } from 'discord.js';
-import {
-	calcPercentOfNum,
-	calcWhatPercent,
-	increaseNumByPercent,
-	notEmpty,
-	percentChance,
-	randInt,
-	reduceNumByPercent,
-	Time
-} from 'e';
 import { Bank, type Item, type ItemBank, itemID, resolveItems } from 'oldschooljs';
 import { type Canvas, loadImage } from 'skia-canvas';
 

@@ -1,8 +1,7 @@
+import { noOp, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
 import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import { Prisma } from '@prisma/client';
-import { noOp, notEmpty, uniqueArr } from 'e';
 import { Bank, convertXPtoLVL, type ItemBank, resolveItems } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { partition } from 'remeda';

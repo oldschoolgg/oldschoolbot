@@ -1,5 +1,5 @@
+import { randArrItem } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { randArrItem } from 'e';
 
 import type { NexTaskOptions, RaidsOptions } from '@/lib/types/minions.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';

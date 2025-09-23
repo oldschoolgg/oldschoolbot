@@ -1,4 +1,4 @@
-import { percentChance, Time } from 'e';
+import { percentChance, Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, itemID, type Monster } from 'oldschooljs';
 
 import type { GearSetupType, PrimaryGearSetupType } from './gear/types.js';

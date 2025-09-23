@@ -1,7 +1,7 @@
+import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { reduceNumByPercent, Time } from 'e';
 
 import { setupParty } from '@/lib/party.js';
 import {

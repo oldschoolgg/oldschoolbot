@@ -1,6 +1,6 @@
+import { isObject } from '@oldschoolgg/toolkit';
 import type { AbstractCommand, CommandOptions, MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import type { command_name_enum, Prisma } from '@prisma/client';
-import { isObject } from 'e';
 
 function isMahojiUserOption(data: any): data is MahojiUserOption {
 	return 'user' in data && 'id' in data.user;

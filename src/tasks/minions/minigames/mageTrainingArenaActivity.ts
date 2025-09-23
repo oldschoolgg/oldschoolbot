@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, randomVariation } from 'oldschooljs';
 
 import { SkillsEnum } from '@/lib/skilling/types.js';

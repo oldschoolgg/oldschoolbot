@@ -1,6 +1,5 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { notEmpty, objectEntries, randArrItem, randInt, Time } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder, bold } from 'discord.js';
-import { notEmpty, objectEntries, randArrItem, randInt, Time } from 'e';
 import { Bank, type Item, resolveItems } from 'oldschooljs';
 
 import { divinationEnergies } from '@/lib/bso/divination.js';

@@ -1,7 +1,6 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandRunOptions, ProductID, products } from '@oldschoolgg/toolkit/util';
+import { notEmpty, Time } from '@oldschoolgg/toolkit';
+import { ProductID, products } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
-import { notEmpty, Time } from 'e';
 
 import { BOT_TYPE } from '@/lib/constants.js';
 import { addToDoubleLootTimer } from '@/lib/doubleLoot.js';

@@ -1,4 +1,4 @@
-import { calcWhatPercent, reduceNumByPercent } from 'e';
+import { calcWhatPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { GearStat } from 'oldschooljs/gear';
 
 import { inverseOfOffenceStat } from '@/lib/gear/functions/inverseOfStat.js';

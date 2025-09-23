@@ -1,6 +1,6 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import {

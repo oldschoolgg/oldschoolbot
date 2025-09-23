@@ -1,5 +1,5 @@
+import { randArrItem, roll } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { randArrItem, roll } from 'e';
 import { Bank, ItemGroups, Items, itemID, LootTable, resolveItems, TreeHerbSeedTable } from 'oldschooljs';
 
 import {

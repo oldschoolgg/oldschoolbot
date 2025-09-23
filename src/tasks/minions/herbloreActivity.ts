@@ -1,4 +1,4 @@
-import { randInt, roll, Time } from 'e';
+import { randInt, roll, Time } from '@oldschoolgg/toolkit';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
 import { herbertDroprate } from '@/lib/bso/bsoUtil.js';

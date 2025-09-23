@@ -1,4 +1,4 @@
-import SonicBoom from 'sonic-boom';
+import { SonicBoom } from 'sonic-boom';
 
 import { BOT_TYPE_LOWERCASE, globalConfig } from '@/lib/constants.js';
 

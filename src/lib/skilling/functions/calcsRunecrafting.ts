@@ -1,4 +1,4 @@
-import { percentChance } from 'e';
+import { percentChance } from '@oldschoolgg/toolkit';
 
 import { checkDegradeableItemCharges, degradeItem } from '@/lib/degradeableItems.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';

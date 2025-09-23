@@ -1,7 +1,6 @@
-import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { isFunction, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { isFunction, reduceNumByPercent } from 'e';
 import { Bank, type SkillsEnum } from 'oldschooljs';
 
 import Createables from '@/lib/data/createables.js';

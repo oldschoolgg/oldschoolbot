@@ -1,6 +1,6 @@
+import { objectEntries } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
 import { ChannelType } from 'discord.js';
-import { objectEntries } from 'e';
 
 import { globalConfig } from '@/lib/constants.js';
 import { runTimedLoggedFn } from '@/lib/util.js';

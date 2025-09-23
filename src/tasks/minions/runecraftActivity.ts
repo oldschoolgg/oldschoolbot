@@ -1,4 +1,4 @@
-import { increaseNumByPercent, Time } from 'e';
+import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';

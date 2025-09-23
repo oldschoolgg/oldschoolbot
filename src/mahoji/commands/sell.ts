@@ -1,9 +1,7 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { calcPercentOfNum, clamp, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { calcPercentOfNum, clamp, reduceNumByPercent } from 'e';
 import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
 
 import { customPrices } from '@/lib/customItems/util.js';

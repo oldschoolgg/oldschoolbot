@@ -1,15 +1,10 @@
+import { randArrItem, randInt, roll, shuffleArr, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import type {
-	CommandResponse,
-	CommandRunOptions,
-	MahojiUserOption,
-	OSBMahojiCommand
-} from '@oldschoolgg/toolkit/discord-util';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import { asyncGzip } from '@oldschoolgg/toolkit/node';
 import { formatDuration, PerkTier, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { Activity, User } from '@prisma/client';
 import { ApplicationCommandOptionType, ChannelType, EmbedBuilder, userMention } from 'discord.js';
-import { randArrItem, randInt, roll, shuffleArr, Time } from 'e';
 import {
 	Bank,
 	convertLVLtoXP,

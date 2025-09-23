@@ -1,4 +1,4 @@
-import { sumArr } from 'e';
+import { sumArr } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
 
 import {

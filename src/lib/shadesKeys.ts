@@ -1,4 +1,4 @@
-import { roll } from 'e';
+import { roll } from '@oldschoolgg/toolkit';
 import { Bank, type Item, ItemGroups, LootTable, resolveItems } from 'oldschooljs';
 
 import type { UnifiedOpenable } from './openables.js';

@@ -1,6 +1,6 @@
+import { increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
 import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';

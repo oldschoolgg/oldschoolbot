@@ -1,4 +1,4 @@
-import { percentChance, sumArr } from 'e';
+import { percentChance, sumArr } from '@oldschoolgg/toolkit';
 import { type Bank, itemID } from 'oldschooljs';
 
 import {

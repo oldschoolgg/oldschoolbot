@@ -1,5 +1,5 @@
+import { notEmpty, objectKeys, randFloat, randInt } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { notEmpty, objectKeys, randFloat, randInt } from 'e';
 import { Bank, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';

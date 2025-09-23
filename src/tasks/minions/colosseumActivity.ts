@@ -1,5 +1,5 @@
+import { randArrItem } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { randArrItem } from 'e';
 import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
 
 import { ColosseumWaveBank, colosseumWaves } from '@/lib/colosseum.js';
