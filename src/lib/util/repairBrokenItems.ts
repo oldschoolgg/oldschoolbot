@@ -5,7 +5,7 @@ import { type ItemBank, Items } from 'oldschooljs';
 
 import { type GearSetup, GearSetupTypes } from '@/lib/gear/types.js';
 import { moidLink } from '@/lib/util.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 type GearX = Required<Record<`gear_${GearSetupType}`, GearSetup | null>>;
 type Changes = {

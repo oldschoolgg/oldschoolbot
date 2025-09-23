@@ -2,7 +2,7 @@ import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { loadImage } from 'skia-canvas';
 
-import { BOT_TYPE } from '@/lib/constants';
+import { BOT_TYPE } from '@/lib/constants.js';
 import { CanvasSpritesheet } from './CanvasSpritesheet.js';
 import { ItemIconPacks } from './iconPacks.js';
 

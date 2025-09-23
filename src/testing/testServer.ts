@@ -15,8 +15,8 @@ import type { WebSocket } from 'ws';
 
 import '@/lib/safeglobals';
 
-import { BOT_TYPE, globalConfig, META_CONSTANTS } from '@/lib/constants';
-import killableMonsters from '@/lib/minions/data/killableMonsters';
+import { BOT_TYPE, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { minionStatusRaw } from './minionStatusRaw.js';
 import { testBotKvStore } from './TestBotStore.js';
 

@@ -5,13 +5,13 @@ import { Bank, convertXPtoLVL, type ItemBank, type SkillsScore, toKMB } from 'ol
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { getClueScoresFromOpenables } from '@/lib/clues/clueUtils.js';
-import { badges, MAX_LEVEL } from '@/lib/constants';
-import { calcCLDetails } from '@/lib/data/Collections';
-import { skillEmoji } from '@/lib/data/emojis';
+import { badges, MAX_LEVEL } from '@/lib/constants.js';
+import { calcCLDetails } from '@/lib/data/Collections.js';
+import { skillEmoji } from '@/lib/data/emojis.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
-import { MALEDICT_MORTIMER_ID } from '@/lib/simulation/maledictMortimer';
-import { courses } from '@/lib/skilling/skills/agility';
-import creatures from '@/lib/skilling/skills/hunter/creatures';
+import { MALEDICT_MORTIMER_ID } from '@/lib/simulation/maledictMortimer.js';
+import { courses } from '@/lib/skilling/skills/agility.js';
+import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import type { Skills } from '@/lib/types/index.js';
 import { logError } from './logError.js';
 

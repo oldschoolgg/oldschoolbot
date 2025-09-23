@@ -6,10 +6,10 @@ import { Bank, type Item, type ItemBank, resolveItems, toKMB } from 'oldschooljs
 
 import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { IMaterialBank, MaterialType } from '@/lib/invention/index.js';
-import type { GearBank } from '@/lib/structures/GearBank';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings';
-import getOSItem from '@/lib/util/getOSItem';
-import { logError } from '@/lib/util/logError';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { logError } from '@/lib/util/logError.js';
 import { MaterialBank } from './MaterialBank.js';
 
 const InventionFlags = ['equipped', 'bank'] as const;

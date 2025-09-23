@@ -15,10 +15,10 @@ import type { GearStats } from 'oldschooljs/gear';
 import { checkUserCanUseDegradeableItem } from '@/lib/degradeableItems.js';
 import { inventionBoosts } from '@/lib/invention/inventions.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import { constructGearSetup, Gear } from '@/lib/structures/Gear';
+import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
-import getOSItem from '@/lib/util/getOSItem';
-import { logError } from '@/lib/util/logError';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { logError } from '@/lib/util/logError.js';
 
 const bareMinStats: Skills = {
 	attack: 80,

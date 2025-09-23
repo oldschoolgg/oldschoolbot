@@ -7,7 +7,7 @@ import { Bank } from 'oldschooljs';
 import { calcBossFood } from '@/lib/bso/calcBossFood.js';
 import { gorajanArcherOutfit, pernixOutfit } from '@/lib/data/CollectionsExport.js';
 import { trackLoot } from '@/lib/lootTrack.js';
-import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood';
+import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { NexMonster } from '@/lib/nex.js';
 import { setupParty } from '@/lib/party.js';

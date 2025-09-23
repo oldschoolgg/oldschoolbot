@@ -4,7 +4,7 @@ import { itemID, resolveItems } from 'oldschooljs';
 
 import type { Plant } from '@/lib/skilling/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import getOSItem from '@/lib/util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem.js';
 import allotmentPlants from './allotments.js';
 import { bushes } from './bushes.js';
 import fruitTrees from './fruitTrees.js';

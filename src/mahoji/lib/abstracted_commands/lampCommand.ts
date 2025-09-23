@@ -4,7 +4,7 @@ import { Bank, type Item, type ItemBank, Items, itemID, resolveItems } from 'old
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { Skills } from '@/lib/types/index.js';
 import { assert } from '@/lib/util/logError.js';
-import { isValidSkill } from '@/lib/util/smallUtils';
+import { isValidSkill } from '@/lib/util/smallUtils.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 interface IXPLamp {

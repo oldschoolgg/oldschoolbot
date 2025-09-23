@@ -12,7 +12,7 @@ import {
 	type StringSelectMenuInteraction
 } from 'discord.js';
 
-import { SILENT_ERROR } from '@/lib/constants';
+import { SILENT_ERROR } from '@/lib/constants.js';
 import { logErrorForInteraction } from './logError.js';
 
 export async function interactionReply(interaction: RepliableInteraction, response: string | InteractionReplyOptions) {

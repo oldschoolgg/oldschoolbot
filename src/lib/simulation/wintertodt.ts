@@ -3,7 +3,7 @@ import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { calcPercentOfNum, randInt, roll } from 'e';
 import { Bank, convertXPtoLVL, itemID, LootTable, resolveItems } from 'oldschooljs';
 
-import { MAX_LEVEL, MAX_XP } from '@/lib/constants';
+import { MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
 import type { LevelRequirements } from '@/lib/skilling/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 

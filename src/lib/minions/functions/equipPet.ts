@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
-import { allPetIDs } from '@/lib/data/CollectionsExport';
-import { getItem } from '@/lib/util/getOSItem';
+import { allPetIDs } from '@/lib/data/CollectionsExport.js';
+import { getItem } from '@/lib/util/getOSItem.js';
 import { unequipPet } from './unequipPet.js';
 
 export async function equipPet(user: MUser, itemName: string) {

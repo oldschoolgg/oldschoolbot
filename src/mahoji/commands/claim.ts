@@ -4,12 +4,12 @@ import { type CommandRunOptions, dateFm, stringMatches } from '@oldschoolgg/tool
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
-import { BSO_MAX_TOTAL_LEVEL } from '@/lib/bso/bsoConstants';
-import { BitField, Channel } from '@/lib/constants';
-import { calcCLDetails } from '@/lib/data/Collections';
-import { getReclaimableItemsOfUser } from '@/lib/reclaimableItems';
-import { roboChimpUserFetch } from '@/lib/roboChimp';
-import { sendToChannelID } from '@/lib/util/webhook';
+import { BSO_MAX_TOTAL_LEVEL } from '@/lib/bso/bsoConstants.js';
+import { BitField, Channel } from '@/lib/constants.js';
+import { calcCLDetails } from '@/lib/data/Collections.js';
+import { getReclaimableItemsOfUser } from '@/lib/reclaimableItems.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
 
 const claimables = [
 	{

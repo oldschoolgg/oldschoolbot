@@ -5,9 +5,9 @@ import type { GearStats } from 'oldschooljs/gear';
 
 import { inventionBoosts } from '@/lib/invention/inventions.js';
 import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
-import { constructGearSetup, Gear } from '@/lib/structures/Gear';
-import getOSItem from '@/lib/util/getOSItem';
-import { logError } from '@/lib/util/logError';
+import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { logError } from '@/lib/util/logError.js';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit, pernixOutfit } from './CollectionsExport.js';
 
 interface TOBRoom {

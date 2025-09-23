@@ -4,7 +4,7 @@ import { calcPercentOfNum, calcWhatPercent } from 'e';
 import { Items } from 'oldschooljs';
 import type { Canvas } from 'skia-canvas';
 
-import type { GEListingWithTransactions } from '@/mahoji/commands/ge';
+import type { GEListingWithTransactions } from '@/mahoji/commands/ge.js';
 import { CanvasSpritesheet } from './CanvasSpritesheet.js';
 import { OSRSCanvas } from './OSRSCanvas.js';
 

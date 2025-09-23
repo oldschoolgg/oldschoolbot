@@ -1,7 +1,7 @@
 import type { activity_type_enum } from '@prisma/client';
 import { calcPercentOfNum, calcWhatPercent, Time } from 'e';
 
-import { BitField, PerkTier } from '@/lib/constants';
+import { BitField, PerkTier } from '@/lib/constants.js';
 
 export function patronMaxTripBonus(user: MUser) {
 	const perkTier = user.perkTier();

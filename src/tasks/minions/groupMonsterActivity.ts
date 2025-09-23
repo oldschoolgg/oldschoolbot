@@ -2,11 +2,11 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { noOp, randArrItem, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MysteryBoxes } from '@/lib/bsoOpenables';
-import killableMonsters from '@/lib/minions/data/killableMonsters';
-import { addMonsterXP } from '@/lib/minions/functions';
-import announceLoot from '@/lib/minions/functions/announceLoot';
-import isImportantItemForMonster from '@/lib/minions/functions/isImportantItemForMonster';
+import { MysteryBoxes } from '@/lib/bsoOpenables.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import announceLoot from '@/lib/minions/functions/announceLoot.js';
+import { addMonsterXP } from '@/lib/minions/functions/index.js';
+import isImportantItemForMonster from '@/lib/minions/functions/isImportantItemForMonster.js';
 import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 

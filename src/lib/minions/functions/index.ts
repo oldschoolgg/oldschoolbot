@@ -3,8 +3,8 @@ import type { User } from '@prisma/client';
 import { type Monster, Monsters, NIGHTMARES_HP } from 'oldschooljs';
 import { GearStat, type OffenceGearStat } from 'oldschooljs/gear';
 
-import type { PvMMethod } from '@/lib/constants';
-import type { PrimaryGearSetupType } from '@/lib/gear/types';
+import type { PvMMethod } from '@/lib/constants.js';
+import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '@/lib/minions/data/combatConstants.js';
 import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
 import { KalphiteKingMonster } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
@@ -14,9 +14,9 @@ import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/Vas
 import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/low.js';
 import type { AddMonsterXpParams, KillableMonster } from '@/lib/minions/types.js';
-import { NexMonster } from '@/lib/nex';
+import { NexMonster } from '@/lib/nex.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import { XPBank } from '@/lib/structures/XPBank';
+import { XPBank } from '@/lib/structures/XPBank.js';
 
 export const attackStylesArr = [
 	SkillsEnum.Attack,

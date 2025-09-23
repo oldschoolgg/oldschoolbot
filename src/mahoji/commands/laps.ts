@@ -3,13 +3,13 @@ import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '@/lib/constants';
-import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions';
-import { quests } from '@/lib/minions/data/quests';
-import { courses } from '@/lib/skilling/skills/agility';
+import { BitField } from '@/lib/constants.js';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions.js';
+import { quests } from '@/lib/minions/data/quests.js';
+import { courses } from '@/lib/skilling/skills/agility.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 

@@ -3,7 +3,7 @@ import { Bank, deepResolveItems, itemID, Monsters, resolveItems } from 'oldschoo
 import { GearStat } from 'oldschooljs/gear';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
-import type { KillableMonster } from '@/lib/minions/types';
+import type { KillableMonster } from '@/lib/minions/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 
 export const chaeldarMonsters: KillableMonster[] = [

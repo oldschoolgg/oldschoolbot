@@ -3,9 +3,9 @@ import { type CommandRunOptions, ProductID, products } from '@oldschoolgg/toolki
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { notEmpty, Time } from 'e';
 
-import { BOT_TYPE } from '@/lib/constants';
-import { addToDoubleLootTimer } from '@/lib/doubleLoot';
-import { roboChimpSyncData } from '@/lib/roboChimp';
+import { BOT_TYPE } from '@/lib/constants.js';
+import { addToDoubleLootTimer } from '@/lib/doubleLoot.js';
+import { roboChimpSyncData } from '@/lib/roboChimp.js';
 
 export const redeemCommand: OSBMahojiCommand = {
 	name: 'redeem',

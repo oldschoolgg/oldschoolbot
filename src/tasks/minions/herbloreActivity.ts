@@ -2,13 +2,13 @@ import { randInt, roll, Time } from 'e';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
 import { herbertDroprate } from '@/lib/bso/bsoUtil.js';
-import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries';
-import Herblore from '@/lib/skilling/skills/herblore/herblore';
+import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
+import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import type { Mixable } from '@/lib/skilling/types.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
-import getOSItem from '@/lib/util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { percentChance } from '@/lib/util/rng';
+import { percentChance } from '@/lib/util/rng.js';
 
 function BSOApplyExtraQuantity(user: MUser, quantity: number, mixableItem: Mixable, messages: string[]) {
 	const isMixingPotion = mixableItem.xp !== 0 && !mixableItem.wesley && !mixableItem.zahur;

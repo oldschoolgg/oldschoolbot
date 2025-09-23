@@ -1,6 +1,6 @@
 import { Openables } from 'oldschooljs';
 
-import { InfernalImpling } from '@/lib/simulation/customImplings';
+import { InfernalImpling } from '@/lib/simulation/customImplings.js';
 import getOSItem from './util/getOSItem.js';
 
 export const emojiMap = new Map([

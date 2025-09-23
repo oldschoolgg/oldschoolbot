@@ -8,7 +8,7 @@ import {
 	lowRuneHighAdamantTable,
 	runeWeaponTable,
 	StoneSpiritTable
-} from '@/lib/simulation/sharedTables';
+} from '@/lib/simulation/sharedTables.js';
 
 export const MOKTANG_ID = 391_241;
 const BarTable = new LootTable()

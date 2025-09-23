@@ -1,8 +1,8 @@
 import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { PVM_METHODS, type PvMMethod } from '@/lib/constants';
-import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters';
+import { PVM_METHODS, type PvMMethod } from '@/lib/constants.js';
+import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { minionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/minionKill.js';
 
 async function fetchUsersRecentlyKilledMonsters(userID: string) {

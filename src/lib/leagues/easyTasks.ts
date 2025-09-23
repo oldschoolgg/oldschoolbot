@@ -2,8 +2,8 @@ import { notEmpty, sumArr } from 'e';
 import { calcCombatLevel, type ItemBank, Monsters, resolveItems } from 'oldschooljs';
 
 import { divinationEnergies } from '@/lib/bso/divination.js';
-import { MAX_LEVEL } from '@/lib/constants';
-import { barrowsChestCL, customPetsCL } from '@/lib/data/CollectionsExport';
+import { MAX_LEVEL } from '@/lib/constants.js';
+import { barrowsChestCL, customPetsCL } from '@/lib/data/CollectionsExport.js';
 import {
 	ArdougneDiary,
 	DesertDiary,
@@ -19,12 +19,12 @@ import {
 	WesternProv,
 	WildernessDiary
 } from '@/lib/diaries.js';
-import { Cookables } from '@/lib/skilling/skills/cooking/cooking';
-import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
-import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins';
-import Runecraft from '@/lib/skilling/skills/runecraft';
+import { Cookables } from '@/lib/skilling/skills/cooking/cooking.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import { calcTotalLevel } from '@/lib/util.js';
-import { eggs } from '@/mahoji/commands/offer';
+import { eggs } from '@/mahoji/commands/offer.js';
 import { leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster, type Task } from './leaguesUtils.js';
 import { calculateTiarasMade, calculateTotalMahoganyHomesPoints } from './stats.js';
 

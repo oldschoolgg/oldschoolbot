@@ -1,10 +1,10 @@
 import { EquipmentSlot, Items } from 'oldschooljs';
 import type { GearStat } from 'oldschooljs/gear';
 
-import { getSimilarItems } from '@/lib/data/similarItems';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { allDyedItems } from '@/lib/dyedItems.js';
-import { Gear } from '@/lib/structures/Gear';
-import { allEquippableItems } from '@/mahoji/lib/mahojiCommandOptions';
+import { Gear } from '@/lib/structures/Gear.js';
+import { allEquippableItems } from '@/mahoji/lib/mahojiCommandOptions.js';
 
 export function findBestGearSetups(stat: GearStat): Gear[] {
 	const finalSetups: Gear[] = [];

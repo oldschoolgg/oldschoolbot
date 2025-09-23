@@ -16,9 +16,9 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { setupParty } from '@/lib/party.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { DOAOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
-import { bankToStrShortNames } from '@/lib/util/smallUtils';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { bankToStrShortNames } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { mahojiParseNumber, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 

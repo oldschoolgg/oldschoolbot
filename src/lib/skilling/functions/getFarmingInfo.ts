@@ -4,9 +4,9 @@ import { Time } from 'e';
 
 import { defaultPatches } from '@/lib/minions/farming/index.js';
 import type { IPatchData, IPatchDataDetailed } from '@/lib/minions/farming/types.js';
-import type { FarmingPatchName } from '@/lib/util/farmingHelpers';
-import { farmingKeys, farmingPatchNames, findPlant } from '@/lib/util/farmingHelpers';
-import { assert } from '@/lib/util/logError';
+import type { FarmingPatchName } from '@/lib/util/farmingHelpers.js';
+import { farmingKeys, farmingPatchNames, findPlant } from '@/lib/util/farmingHelpers.js';
+import { assert } from '@/lib/util/logError.js';
 import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export function getFarmingInfoFromUser(user: User) {

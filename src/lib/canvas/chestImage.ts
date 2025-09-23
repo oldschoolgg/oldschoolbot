@@ -3,7 +3,7 @@ import { randInt } from 'e';
 import { type Bank, ItemGroups, resolveItems, toKMB } from 'oldschooljs';
 import { type Image, loadImage } from 'skia-canvas';
 
-import { TOBUniques } from '@/lib/data/tob';
+import { TOBUniques } from '@/lib/data/tob.js';
 import { bankImageTask } from './bankImage.js';
 import type { CanvasImage } from './canvasUtil.js';
 import { OSRSCanvas } from './OSRSCanvas.js';

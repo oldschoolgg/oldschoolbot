@@ -4,7 +4,7 @@ import { Bank, type ItemBank } from 'oldschooljs';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
 import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
 import { filterLootReplace } from '@/lib/slayer/slayerUtil.js';
-import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager';
+import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager.js';
 import { logError } from './logError.js';
 import { userQueueFn } from './userQueues.js';
 

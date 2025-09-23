@@ -5,11 +5,11 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { roll } from 'e';
 import { Bank, type Item, type ItemBank, resolveItems, toKMB } from 'oldschooljs';
 
-import { cats } from '@/lib/growablePets';
-import minionIcons from '@/lib/minions/data/minionIcons';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '@/lib/util/interactionReply';
-import { parseBank } from '@/lib/util/parseStringBank';
+import { cats } from '@/lib/growablePets.js';
+import minionIcons from '@/lib/minions/data/minionIcons.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';

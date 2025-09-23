@@ -3,14 +3,14 @@ import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { reduceNumByPercent, Time } from 'e';
 
-import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries';
-import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions';
-import { Craftables } from '@/lib/skilling/skills/crafting/craftables';
-import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning';
+import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions.js';
+import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
+import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const craftCommand: OSBMahojiCommand = {

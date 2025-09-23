@@ -2,10 +2,10 @@ import { Bank, type EquipmentSlot, type Item } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import type { GearSetupType } from '@/lib/gear/types.js';
-import type { Gear } from '@/lib/structures/Gear';
+import type { Gear } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
-import getOSItem from '@/lib/util/getOSItem';
-import { assert } from '@/lib/util/logError';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { assert } from '@/lib/util/logError.js';
 import { skillsMeetRequirements } from '@/lib/util.js';
 
 function getItemScore(item: Item) {

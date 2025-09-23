@@ -5,17 +5,17 @@ import { calcWhatPercent, sumArr } from 'e';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
-import { ores, secondaries, seedsFilter } from '@/lib/data/filterables';
-import { Herb } from '@/lib/invention/groups/Herb';
-import { mahojiUserSettingsUpdate } from '@/lib/MUser';
-import Firemaking from '@/lib/skilling/skills/firemaking';
-import Runecraft from '@/lib/skilling/skills/runecraft';
-import { mahojiClientSettingsFetch } from '@/lib/util/clientSettings';
-import getOSItem from '@/lib/util/getOSItem';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
-import { assert } from '@/lib/util/logError';
-import { makeBankImage } from '@/lib/util/makeBankImage';
-import { parseBank } from '@/lib/util/parseStringBank';
+import { ores, secondaries, seedsFilter } from '@/lib/data/filterables.js';
+import { Herb } from '@/lib/invention/groups/Herb.js';
+import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
+import Firemaking from '@/lib/skilling/skills/firemaking.js';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import { mahojiClientSettingsFetch } from '@/lib/util/clientSettings.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { assert } from '@/lib/util/logError.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
 import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 

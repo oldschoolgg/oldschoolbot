@@ -5,7 +5,7 @@ import type { TextChannel } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector } from 'discord.js';
 import { debounce, noOp, Time } from 'e';
 
-import { SILENT_ERROR } from '@/lib/constants';
+import { SILENT_ERROR } from '@/lib/constants.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import { BLACKLISTED_USERS } from './blacklists.js';
 import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs.js';

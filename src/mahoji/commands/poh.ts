@@ -2,7 +2,7 @@ import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 
-import { PoHObjects } from '@/lib/poh';
+import { PoHObjects } from '@/lib/poh/index.js';
 import {
 	getPOH,
 	makePOHImage,

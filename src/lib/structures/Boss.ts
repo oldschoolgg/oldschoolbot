@@ -10,9 +10,9 @@ import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js'
 import { setupParty } from '@/lib/party.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { NewBossOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
-import { formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { type ClientBankKey, updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import type { Gear } from './Gear.js';
 

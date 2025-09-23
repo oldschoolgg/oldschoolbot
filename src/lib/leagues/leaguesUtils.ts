@@ -4,14 +4,14 @@ import { Bank, type ItemBank, type Monster } from 'oldschooljs';
 
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
-import Grimy from '@/lib/skilling/skills/herblore/mixables/grimy';
-import Potions from '@/lib/skilling/skills/herblore/mixables/potions';
-import unfinishedPotions from '@/lib/skilling/skills/herblore/mixables/unfinishedPotions';
-import creatures from '@/lib/skilling/skills/hunter/creatures';
+import Grimy from '@/lib/skilling/skills/herblore/mixables/grimy.js';
+import Potions from '@/lib/skilling/skills/herblore/mixables/potions.js';
+import unfinishedPotions from '@/lib/skilling/skills/herblore/mixables/unfinishedPotions.js';
+import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import type { getSlayerTaskStats } from '@/lib/slayer/slayerUtil.js';
 import type { Skills } from '@/lib/types/index.js';
-import type { ParsedUnit } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand';
-import type { personalSpellCastStats } from '@/mahoji/lib/abstracted_commands/statCommand';
+import type { ParsedUnit } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
+import type { personalSpellCastStats } from '@/mahoji/lib/abstracted_commands/statCommand.js';
 
 export interface HasFunctionArgs {
 	cl: Bank;

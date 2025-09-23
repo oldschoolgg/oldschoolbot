@@ -15,9 +15,9 @@ import type { Consumable, KillableMonster } from '@/lib/minions/types.js';
 import type { Rune } from '@/lib/skilling/skills/runecraft.js';
 import { addStatsOfItemsTogether, hasGracefulEquipped } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
-import type { JsonKeys } from '@/lib/util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
 import { formatItemReqs, formatList, hasSkillReqs, itemNameFromID, readableStatName } from '@/lib/util/smallUtils.js';
+import type { JsonKeys } from '@/lib/util.js';
 import { getItemCostFromConsumables } from './lib/abstracted_commands/minionKill/handleConsumables.js';
 
 export function mahojiParseNumber({

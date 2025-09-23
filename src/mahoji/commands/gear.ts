@@ -5,12 +5,12 @@ import { Items } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 import { loadImage } from 'skia-canvas';
 
-import { canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil';
-import { allPetIDs } from '@/lib/data/CollectionsExport';
-import { GearSetupTypes } from '@/lib/gear';
-import { equipPet } from '@/lib/minions/functions/equipPet';
-import { unequipPet } from '@/lib/minions/functions/unequipPet';
-import { findBestGearSetups } from '@/lib/util/findBISGear';
+import { canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil.js';
+import { allPetIDs } from '@/lib/data/CollectionsExport.js';
+import { GearSetupTypes } from '@/lib/gear/types.js';
+import { equipPet } from '@/lib/minions/functions/equipPet.js';
+import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
+import { findBestGearSetups } from '@/lib/util/findBISGear.js';
 import {
 	gearEquipCommand,
 	gearStatsCommand,

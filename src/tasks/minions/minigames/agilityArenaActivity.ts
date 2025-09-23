@@ -7,8 +7,8 @@ import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { userHasFlappy } from '@/lib/invention/inventions.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { skillingPetDropRate } from '@/lib/util';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 export const agilityArenaTask: MinionTask = {
 	type: 'AgilityArena',

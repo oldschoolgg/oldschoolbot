@@ -13,7 +13,7 @@ import {
 } from 'discord.js';
 import { noOp, Time } from 'e';
 
-import { SILENT_ERROR } from '@/lib/constants';
+import { SILENT_ERROR } from '@/lib/constants.js';
 import { deferInteraction, interactionReply } from './interactionReply.js';
 import { logErrorForInteraction } from './logError.js';
 

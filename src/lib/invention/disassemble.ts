@@ -1,4 +1,4 @@
-import { calcPerHour, type CommandResponse, formatDuration, Table } from '@oldschoolgg/toolkit';
+import { type CommandResponse, calcPerHour, formatDuration, Table } from '@oldschoolgg/toolkit';
 import { calcWhatPercent, clamp, percentChance, reduceNumByPercent, Time, uniqueArr } from 'e';
 import { Bank, type Item, toKMB } from 'oldschooljs';
 
@@ -10,13 +10,13 @@ import {
 	type DisassemblySourceGroup,
 	type MaterialType
 } from '@/lib/invention/index.js';
-import Skillcapes from '@/lib/skilling/skillcapes';
+import Skillcapes from '@/lib/skilling/skillcapes.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { DisassembleTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
-import { getItem } from '@/lib/util/getOSItem';
-import { inventionBoosts, InventionID, inventionItemBoost, materialBoosts } from './inventions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { getItem } from '@/lib/util/getOSItem.js';
+import { InventionID, inventionBoosts, inventionItemBoost, materialBoosts } from './inventions.js';
 import { MaterialBank } from './MaterialBank.js';
 import MaterialLootTable from './MaterialLootTable.js';
 

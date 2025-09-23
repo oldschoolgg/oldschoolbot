@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import type { GearSetupType } from '@/lib/gear/types.js';
 import { GearSetupTypes } from '@/lib/gear/types.js';
-import { defaultGear } from '@/lib/structures/Gear';
+import { defaultGear } from '@/lib/structures/Gear.js';
 
 export async function unEquipAllCommand(
 	userID: string,

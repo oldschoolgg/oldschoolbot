@@ -4,7 +4,7 @@ import { calcWhatPercent, objectEntries, sumArr } from 'e';
 import { Bank, type ItemBank, ItemGroups, Items, itemID, resolveItems } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
-import { BitField } from '@/lib/constants';
+import { BitField } from '@/lib/constants.js';
 import {
 	abyssalDragonCL,
 	abyssalSireCL,
@@ -137,11 +137,11 @@ import {
 	wintertodtCL,
 	zalcanoCL,
 	zulrahCL
-} from '@/lib/data/CollectionsExport';
-import { creatablesCL } from '@/lib/data/createables';
-import { kibbleCL } from '@/lib/data/kibble';
-import { getSimilarItems } from '@/lib/data/similarItems';
-import { slayerMasksHelmsCL } from '@/lib/data/slayerMaskHelms';
+} from '@/lib/data/CollectionsExport.js';
+import { creatablesCL } from '@/lib/data/createables.js';
+import { kibbleCL } from '@/lib/data/kibble.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { slayerMasksHelmsCL } from '@/lib/data/slayerMaskHelms.js';
 import { diaries, diariesObject } from '@/lib/diaries.js';
 import { growablePetsCL } from '@/lib/growablePets.js';
 import { implingsCL } from '@/lib/implings.js';
@@ -150,18 +150,18 @@ import { allLeagueTasks, leagueTasks } from '@/lib/leagues/leagues.js';
 import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import { type DiaryID, type DiaryTierName, diaryTiers } from '@/lib/minions/types.js';
 import { getPOHObject, PoHObjects } from '@/lib/poh/index.js';
-import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo';
-import Skillcapes from '@/lib/skilling/skillcapes';
-import Agility from '@/lib/skilling/skills/agility';
-import { cookingCL } from '@/lib/skilling/skills/cooking/cooking';
-import { craftingCL } from '@/lib/skilling/skills/crafting/craftables';
-import { dungBuyables } from '@/lib/skilling/skills/dung/dungData';
-import { allFarmingItems } from '@/lib/skilling/skills/farming';
-import { fletchingCL } from '@/lib/skilling/skills/fletching/fletchables';
-import { herbloreCL } from '@/lib/skilling/skills/herblore/mixables';
-import { smithingCL } from '@/lib/skilling/skills/smithing/smithables';
+import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
+import Skillcapes from '@/lib/skilling/skillcapes.js';
+import Agility from '@/lib/skilling/skills/agility.js';
+import { cookingCL } from '@/lib/skilling/skills/cooking/cooking.js';
+import { craftingCL } from '@/lib/skilling/skills/crafting/craftables/index.js';
+import { dungBuyables } from '@/lib/skilling/skills/dung/dungData.js';
+import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
+import { fletchingCL } from '@/lib/skilling/skills/fletching/fletchables/index.js';
+import { herbloreCL } from '@/lib/skilling/skills/herblore/mixables/index.js';
+import { smithingCL } from '@/lib/skilling/skills/smithing/smithables/index.js';
 import { slayerUnlockableRewards } from '@/lib/slayer/slayerUnlocks.js';
-import { type RequirementFailure, Requirements } from '@/lib/structures/Requirements';
+import { type RequirementFailure, Requirements } from '@/lib/structures/Requirements.js';
 import { TameSpeciesID, tameFeedableItems } from '@/lib/tames.js';
 import { divinationEnergies } from './divination.js';
 

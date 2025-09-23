@@ -1,7 +1,7 @@
 import { calcWhatPercent, clamp, round, sumArr } from 'e';
 
-import { MAX_XP } from '@/lib/constants';
-import { getTotalCl } from '@/lib/data/Collections';
+import { MAX_XP } from '@/lib/constants.js';
+import { getTotalCl } from '@/lib/data/Collections.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { calculateAchievementDiaryProgress } from '@/mahoji/lib/abstracted_commands/achievementDiaryCommand.js';
 import { allCombatAchievementTasks } from './combat_achievements/combatAchievements.js';

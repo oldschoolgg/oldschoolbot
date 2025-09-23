@@ -5,12 +5,12 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import TokkulShopItems from '@/lib/data/buyables/tokkulBuyables';
-import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries';
+import TokkulShopItems from '@/lib/data/buyables/tokkulBuyables.js';
+import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { TokkulShopOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const { TzTokJad } = Monsters;

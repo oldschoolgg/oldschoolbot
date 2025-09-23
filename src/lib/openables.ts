@@ -23,16 +23,16 @@ import {
 } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
-import { clueHunterOutfit } from '@/lib/data/CollectionsExport';
+import { clueHunterOutfit } from '@/lib/data/CollectionsExport.js';
 import { defaultFarmingContract } from '@/lib/minions/farming/index.js';
-import { nestTable } from '@/lib/simulation/birdsNest';
+import { nestTable } from '@/lib/simulation/birdsNest.js';
 import {
 	BagFullOfGemsTable,
 	BuildersSupplyCrateTable,
 	CasketTable,
 	CrystalChestTable,
 	SpoilsOfWarTable
-} from '@/lib/simulation/misc';
+} from '@/lib/simulation/misc.js';
 import { openSeedPack } from '@/lib/skilling/functions/calcFarmingContracts.js';
 import { bsoOpenables } from './bsoOpenables.js';
 import type { FarmingContract } from './minions/farming/types.js';

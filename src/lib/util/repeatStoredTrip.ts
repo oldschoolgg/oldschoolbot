@@ -4,14 +4,14 @@ import { Time } from 'e';
 import { Items } from 'oldschooljs';
 
 import { divinationEnergies, memoryHarvestTypes } from '@/lib/bso/divination.js';
-import type { PvMMethod } from '@/lib/constants';
-import { kibbles } from '@/lib/data/kibble';
+import type { PvMMethod } from '@/lib/constants.js';
+import { kibbles } from '@/lib/data/kibble.js';
 import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
 import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { runCommand } from '@/lib/settings/settings.js';
-import { courses } from '@/lib/skilling/skills/agility';
-import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
-import Hunter from '@/lib/skilling/skills/hunter/hunter';
+import { courses } from '@/lib/skilling/skills/agility.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import type {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,

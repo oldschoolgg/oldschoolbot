@@ -7,7 +7,7 @@ import { LRUCache } from 'lru-cache';
 import { Bank, type Item, type ItemBank, toKMB } from 'oldschooljs';
 import PQueue from 'p-queue';
 
-import { BitField, globalConfig, PerkTier } from '@/lib/constants';
+import { BitField, globalConfig, PerkTier } from '@/lib/constants.js';
 import { BLACKLISTED_USERS } from './blacklists.js';
 import { isGEUntradeable } from './bso/bsoUtil.js';
 import { isCustomItem } from './customItems/util.js';

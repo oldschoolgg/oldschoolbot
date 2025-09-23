@@ -1,6 +1,6 @@
 import { Items } from 'oldschooljs';
 
-import { globalConfig } from '@/lib/constants';
+import { globalConfig } from '@/lib/constants.js';
 import { sql } from './postgres.js';
 import { adminPingLog } from './util.js';
 

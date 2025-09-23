@@ -1,14 +1,14 @@
 import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 
-import { Planks } from '@/lib/minions/data/planks';
-import Potions from '@/lib/minions/data/potions';
-import { quests } from '@/lib/minions/data/quests';
-import Agility, { type UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility';
-import birdhouses from '@/lib/skilling/skills/hunter/birdHouseTrapping';
-import { Castables } from '@/lib/skilling/skills/magic/castables';
-import { Enchantables } from '@/lib/skilling/skills/magic/enchantables';
-import Prayer from '@/lib/skilling/skills/prayer';
+import { Planks } from '@/lib/minions/data/planks.js';
+import Potions from '@/lib/minions/data/potions.js';
+import { quests } from '@/lib/minions/data/quests.js';
+import Agility, { type UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
+import birdhouses from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
+import { Castables } from '@/lib/skilling/skills/magic/castables.js';
+import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
+import Prayer from '@/lib/skilling/skills/prayer.js';
 import { aerialFishingCommand } from '@/mahoji/lib/abstracted_commands/aerialFishingCommand.js';
 import { alchCommand } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 import { birdhouseCheckCommand, birdhouseHarvestCommand } from '@/mahoji/lib/abstracted_commands/birdhousesCommand.js';

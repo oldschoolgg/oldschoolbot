@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank, EMonster, Monsters } from 'oldschooljs';
 
-import { Requirements } from '@/lib/structures/Requirements';
+import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
 	GauntletOptions,
 	MonsterActivityTaskOptions,

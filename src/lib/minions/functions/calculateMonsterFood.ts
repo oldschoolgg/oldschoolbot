@@ -4,9 +4,9 @@ import { GearStat } from 'oldschooljs/gear';
 import { inverseOfOffenceStat } from '@/lib/gear/functions/inverseOfStat.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
-import { maxDefenceStats, maxOffenceStats } from '@/lib/structures/Gear';
-import type { GearBank } from '@/lib/structures/GearBank';
-import { readableStatName } from '@/lib/util/smallUtils';
+import { maxDefenceStats, maxOffenceStats } from '@/lib/structures/Gear.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import { readableStatName } from '@/lib/util/smallUtils.js';
 
 const { floor, max } = Math;
 

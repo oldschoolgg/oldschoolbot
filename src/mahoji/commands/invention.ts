@@ -1,17 +1,22 @@
-import { calcPerHour, type CommandRunOptions, stringMatches, Table } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, calcPerHour, stringMatches, Table } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { reduceNumByPercent, Time } from 'e';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
-import { allItemsThatCanBeDisassembledIDs, type IMaterialBank, type MaterialType } from '@/lib/invention';
-import { calcJunkChance, calculateDisXP, disassembleCommand, findDisassemblyGroup } from '@/lib/invention/disassemble';
-import { DisassemblySourceGroups } from '@/lib/invention/groups';
-import { inventCommand, inventingCost, inventionBoosts, Inventions } from '@/lib/invention/inventions';
-import { MaterialBank } from '@/lib/invention/MaterialBank';
-import { researchCommand } from '@/lib/invention/research';
+import {
+	calcJunkChance,
+	calculateDisXP,
+	disassembleCommand,
+	findDisassemblyGroup
+} from '@/lib/invention/disassemble.js';
+import { DisassemblySourceGroups } from '@/lib/invention/groups/index.js';
+import { allItemsThatCanBeDisassembledIDs, type IMaterialBank, type MaterialType } from '@/lib/invention/index.js';
+import { Inventions, inventCommand, inventingCost, inventionBoosts } from '@/lib/invention/inventions.js';
+import { MaterialBank } from '@/lib/invention/MaterialBank.js';
+import { researchCommand } from '@/lib/invention/research.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import { deferInteraction } from '@/lib/util/interactionReply';
-import { makeBankImage } from '@/lib/util/makeBankImage';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { ownedMaterialOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { mahojiParseNumber, mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 

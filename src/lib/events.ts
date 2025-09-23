@@ -7,7 +7,7 @@ import { type BaseMessageOptions, bold, EmbedBuilder, type Message, time } from 
 import { isFunction, Time } from 'e';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
-import { globalConfig } from '@/lib/constants';
+import { globalConfig } from '@/lib/constants.js';
 import { PATRON_DOUBLE_LOOT_COOLDOWN } from '@/mahoji/commands/tools.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';

@@ -16,7 +16,7 @@ import './pets.js';
 
 import { EquipmentSlot, type ItemRequirements, Items, resolveItems } from 'oldschooljs';
 
-import getOSItem from '@/lib/util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem.js';
 import { customItems, maxedRequirements, setCustomItem, UN_EQUIPPABLE } from './util.js';
 
 setCustomItem(1579, "Thieves' armband", 'Rune gloves', {}, 100_000);

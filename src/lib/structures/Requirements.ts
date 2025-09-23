@@ -3,18 +3,18 @@ import { calcWhatPercent, objectEntries } from 'e';
 import type { Bank } from 'oldschooljs';
 
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
-import type { BitField } from '@/lib/constants';
-import { BitFieldData, BOT_TYPE } from '@/lib/constants';
+import type { BitField } from '@/lib/constants.js';
+import { BitFieldData, BOT_TYPE } from '@/lib/constants.js';
 import { diaries, userhasDiaryTierSync } from '@/lib/diaries.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import type { ClueBank, DiaryID, DiaryTierName } from '@/lib/minions/types.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
 import { type MinigameName, minigameColumnToNameMap } from '@/lib/settings/minigames.js';
-import Agility from '@/lib/skilling/skills/agility';
+import Agility from '@/lib/skilling/skills/agility.js';
 import type { Skills } from '@/lib/types/index.js';
-import { formatList, itemNameFromID } from '@/lib/util/smallUtils';
-import type { ParsedUnit } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand';
-import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand';
+import { formatList, itemNameFromID } from '@/lib/util/smallUtils.js';
+import type { ParsedUnit } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
+import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 import type { MTame } from './MTame.js';
 import { MUserStats } from './MUserStats.js';
 

@@ -1,5 +1,5 @@
 import type { DisassemblySourceGroup } from '@/lib/invention/index.js';
-import getOSItem from '@/lib/util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem.js';
 import { Ashes } from './Ashes.js';
 import { Axes } from './Axes.js';
 import { Barrows } from './Barrows.js';

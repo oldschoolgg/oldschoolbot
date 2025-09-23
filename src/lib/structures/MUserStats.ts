@@ -3,7 +3,7 @@ import { Bank, type ItemBank } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { ClueBank } from '@/lib/minions/types.js';
-import { getToaKCs } from '@/lib/util/smallUtils';
+import { getToaKCs } from '@/lib/util/smallUtils.js';
 
 export class MUserStats {
 	userStats: UserStats;

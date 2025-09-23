@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import type { Mixable } from '@/lib/skilling/types.js';
-import getOSItem from '@/lib/util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem.js';
 
 export const bsoMixables: Mixable[] = [
 	{

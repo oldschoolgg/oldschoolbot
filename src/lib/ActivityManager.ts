@@ -1,6 +1,6 @@
 import type { Activity, activity_type_enum, Prisma } from '@prisma/client';
 
-import { globalConfig } from '@/lib/constants';
+import { globalConfig } from '@/lib/constants.js';
 import { modifyBusyCounter } from './busyCounterCache.js';
 import { onMinionActivityFinish } from './events.js';
 import { sql } from './postgres.js';

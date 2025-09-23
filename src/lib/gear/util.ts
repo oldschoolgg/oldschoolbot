@@ -3,8 +3,8 @@ import type { GearPreset } from '@prisma/client';
 import { type EquipmentSlot, type Item, itemID } from 'oldschooljs';
 
 import type { GearSetup } from '@/lib/gear/types.js';
-import { Gear } from '@/lib/structures/Gear';
-import getOSItem from '@/lib/util/getOSItem';
+import { Gear } from '@/lib/structures/Gear.js';
+import getOSItem from '@/lib/util/getOSItem.js';
 
 export function itemInSlot(setup: GearSetup, slot: EquipmentSlot): [null, null] | [Item, number] {
 	const equipped = setup[slot];

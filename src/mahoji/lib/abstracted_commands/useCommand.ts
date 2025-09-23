@@ -4,7 +4,7 @@ import { notEmpty, objectEntries, randArrItem, randInt, Time } from 'e';
 import { Bank, type Item, resolveItems } from 'oldschooljs';
 
 import { divinationEnergies } from '@/lib/bso/divination.js';
-import { gearImages } from '@/lib/canvas/gearImageData';
+import { gearImages } from '@/lib/canvas/gearImageData.js';
 import { BitField } from '@/lib/constants.js';
 import { addToDoubleLootTimer } from '@/lib/doubleLoot.js';
 import { allDyes, dyedItems } from '@/lib/dyedItems.js';

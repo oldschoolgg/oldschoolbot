@@ -3,7 +3,7 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { degradeableItems } from '@/lib/degradeableItems.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 

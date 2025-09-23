@@ -3,8 +3,8 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { premiumPatronTime } from '@/lib/premiumPatronTime';
-import { roboChimpUserFetch } from '@/lib/roboChimp';
+import { premiumPatronTime } from '@/lib/premiumPatronTime.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 
 const shop = [
 	{

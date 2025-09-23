@@ -1,22 +1,22 @@
 import { increaseNumByPercent, randInt, roll, Time } from 'e';
 import { Bank, itemID, SkillsEnum, toKMB } from 'oldschooljs';
 
-import { GLOBAL_BSO_XP_MULTIPLIER, MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants';
+import { GLOBAL_BSO_XP_MULTIPLIER, MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
-import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination';
-import { upgradedDragonstoneOutfit } from '@/lib/data/CollectionsExport';
-import { globalDroprates } from '@/lib/data/globalDroprates';
-import { InventionID } from '@/lib/invention/inventions';
-import { type StoneSpirit, stoneSpirits } from '@/lib/minions/data/stoneSpirits';
-import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot';
-import Mining from '@/lib/skilling/skills/mining';
-import Smithing from '@/lib/skilling/skills/smithing';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
+import { upgradedDragonstoneOutfit } from '@/lib/data/CollectionsExport.js';
+import { globalDroprates } from '@/lib/data/globalDroprates.js';
+import { InventionID } from '@/lib/invention/inventions.js';
+import { type StoneSpirit, stoneSpirits } from '@/lib/minions/data/stoneSpirits.js';
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import Mining from '@/lib/skilling/skills/mining.js';
+import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { Ore } from '@/lib/skilling/types.js';
-import type { GearBank } from '@/lib/structures/GearBank';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
-import { skillingPetDropRate } from '@/lib/util';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { mahojiUsersSettingsFetch, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { mahojiUsersSettingsFetch, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export function calculateMiningResult({
 	ore,

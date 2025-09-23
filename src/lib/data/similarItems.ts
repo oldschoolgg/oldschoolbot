@@ -1,8 +1,8 @@
 import { itemID, resolveItems } from 'oldschooljs';
 
 import { dyedItems } from '@/lib/dyedItems.js';
-import skillcapes from '@/lib/skilling/skillcapes';
-import getOSItem from '@/lib/util/getOSItem';
+import skillcapes from '@/lib/skilling/skillcapes.js';
+import getOSItem from '@/lib/util/getOSItem.js';
 import {
 	gracefulCapes,
 	gracefulFeet,

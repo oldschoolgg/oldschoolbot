@@ -3,15 +3,15 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { calcPercentOfNum, Time } from 'e';
 import { Bank, resolveItems } from 'oldschooljs';
 
-import { BlacksmithOutfit } from '@/lib/bsoOpenables';
-import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries';
-import Smithing from '@/lib/skilling/skills/smithing';
-import smithables from '@/lib/skilling/skills/smithing/smithables';
+import { BlacksmithOutfit } from '@/lib/bsoOpenables.js';
+import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import Smithing from '@/lib/skilling/skills/smithing/index.js';
+import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { SmithingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
-import { pluraliseItemName } from '@/lib/util/smallUtils';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { pluraliseItemName } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const smithCommand: OSBMahojiCommand = {

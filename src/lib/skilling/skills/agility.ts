@@ -1,6 +1,6 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 
-import { QuestID } from '@/lib/minions/data/quests';
+import { QuestID } from '@/lib/minions/data/quests.js';
 import { type Course, SkillsEnum } from '@/lib/skilling/types.js';
 
 export const courses: Course[] = [

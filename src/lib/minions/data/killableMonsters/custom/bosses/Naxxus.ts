@@ -2,8 +2,8 @@ import { Time } from 'e';
 import { LootTable, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import type { KillableMonster } from '@/lib/minions/types';
-import setCustomMonster, { makeKillTable } from '@/lib/util/setCustomMonster';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import setCustomMonster, { makeKillTable } from '@/lib/util/setCustomMonster.js';
 
 const runes = new LootTable()
 	.add('Air rune', [5000, 15_000])

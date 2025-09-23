@@ -1,5 +1,5 @@
 import { bold } from '@discordjs/builders';
-import { calcPerHour, formatDuration, type CommandRunOptions } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, calcPerHour, formatDuration } from '@oldschoolgg/toolkit';
 import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
 import { increaseNumByPercent, sumArr, Time } from 'e';
@@ -8,39 +8,39 @@ import { unique } from 'remeda';
 
 import {
 	BathhouseOres,
-	bathHouseTiers,
 	BathwaterMixtures,
+	bathHouseTiers,
 	calculateBathouseResult,
 	durationPerBaxBath
-} from '@/lib/baxtorianBathhouses';
-import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants';
-import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '@/lib/bso/divination';
-import { calculateTuraelsTrialsInput, TuraelsTrialsMethods } from '@/lib/bso/turaelsTrials';
-import { ClueTiers } from '@/lib/clues/clueTiers';
-import { inventionBoosts } from '@/lib/invention/inventions';
-import { stoneSpirits } from '@/lib/minions/data/stoneSpirits';
-import Agility from '@/lib/skilling/skills/agility';
+} from '@/lib/baxtorianBathhouses.js';
+import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
+import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '@/lib/bso/divination.js';
+import { calculateTuraelsTrialsInput, TuraelsTrialsMethods } from '@/lib/bso/turaelsTrials.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { inventionBoosts } from '@/lib/invention/inventions.js';
+import { stoneSpirits } from '@/lib/minions/data/stoneSpirits.js';
+import Agility from '@/lib/skilling/skills/agility.js';
 import {
 	calcGorajanShardChance,
 	calcMaxFloorUserCanDo,
 	numberOfGorajanOutfitsEquipped
-} from '@/lib/skilling/skills/dung/dungDbFunctions';
+} from '@/lib/skilling/skills/dung/dungDbFunctions.js';
 import {
 	mutatedSourceItems,
 	zygomiteFarmingSource,
 	zygomiteSeedMutChance
-} from '@/lib/skilling/skills/farming/zygomites';
-import Hunter from '@/lib/skilling/skills/hunter/hunter';
-import Mining from '@/lib/skilling/skills/mining';
-import Smithing from '@/lib/skilling/skills/smithing';
+} from '@/lib/skilling/skills/farming/zygomites.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
+import Mining from '@/lib/skilling/skills/mining.js';
+import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import { HunterTechniqueEnum } from '@/lib/skilling/types.js';
-import { Gear } from '@/lib/structures/Gear';
-import type { GearBank } from '@/lib/structures/GearBank';
+import { Gear } from '@/lib/structures/Gear.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { BathhouseTaskOptions } from '@/lib/types/minions.js';
-import { itemNameFromID } from '@/lib/util';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
-import { deferInteraction } from '@/lib/util/interactionReply';
-import { PeakTier } from '@/lib/util/peaks';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { PeakTier } from '@/lib/util/peaks.js';
+import { itemNameFromID } from '@/lib/util.js';
 import { calculateAgilityResult } from '@/tasks/minions/agilityActivity.js';
 import { calculateDungeoneeringResult } from '@/tasks/minions/bso/dungeoneeringActivity.js';
 import { memoryHarvestResult, totalTimePerRound } from '@/tasks/minions/bso/memoryHarvestActivity.js';

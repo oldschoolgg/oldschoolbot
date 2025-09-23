@@ -1,6 +1,6 @@
 import type { Item } from 'oldschooljs';
 
-import getOSItem from '@/lib/util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem.js';
 
 export interface StoneSpirit {
 	spirit: Item;

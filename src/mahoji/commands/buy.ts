@@ -4,16 +4,16 @@ import { type CommandRunOptions, formatOrdinal, stringMatches } from '@oldschool
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Bank, type ItemBank, itemID } from 'oldschooljs';
 
-import Buyables from '@/lib/data/buyables/buyables';
-import { quests } from '@/lib/minions/data/quests';
-import { countUsersWithItemInCl } from '@/lib/rawSql';
-import { Minigames } from '@/lib/settings/minigames';
-import { isElligibleForPresent } from '@/lib/settings/settings';
-import { MUserStats } from '@/lib/structures/MUserStats';
-import getOSItem from '@/lib/util/getOSItem';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '@/lib/util/interactionReply';
-import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils';
+import Buyables from '@/lib/data/buyables/buyables.js';
+import { quests } from '@/lib/minions/data/quests.js';
+import { countUsersWithItemInCl } from '@/lib/rawSql.js';
+import { Minigames } from '@/lib/settings/minigames.js';
+import { isElligibleForPresent } from '@/lib/settings/settings.js';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { buyFossilIslandNotes } from '@/mahoji/lib/abstracted_commands/buyFossilIslandNotes.js';
 import { buyKitten } from '@/mahoji/lib/abstracted_commands/buyKitten.js';

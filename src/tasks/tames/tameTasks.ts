@@ -15,31 +15,31 @@ import { increaseNumByPercent, isFunction, percentChance, randArrItem, randInt, 
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { isEmpty } from 'remeda';
 
-import { ClueTiers } from '@/lib/clues/clueTiers';
-import { BitField } from '@/lib/constants';
-import { handlePassiveImplings } from '@/lib/implings';
-import { trackLoot } from '@/lib/lootTrack';
-import { allOpenables } from '@/lib/openables';
-import { runCommand } from '@/lib/settings/settings';
-import { getTemporossLoot } from '@/lib/simulation/tempoross';
-import { WintertodtCrate } from '@/lib/simulation/wintertodt';
-import type { MTame } from '@/lib/structures/MTame';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { BitField } from '@/lib/constants.js';
+import { handlePassiveImplings } from '@/lib/implings.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { allOpenables } from '@/lib/openables.js';
+import { runCommand } from '@/lib/settings/settings.js';
+import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
+import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
+import type { MTame } from '@/lib/structures/MTame.js';
 import {
 	type ArbitraryTameActivity,
 	seaMonkeySpells,
-	tameKillableMonsters,
 	TameSpeciesID,
 	type TameTaskOptions,
-	TameType
-} from '@/lib/tames';
+	TameType,
+	tameKillableMonsters
+} from '@/lib/tames.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
-import getOSItem from '@/lib/util/getOSItem';
-import { handleCrateSpawns } from '@/lib/util/handleCrateSpawns';
-import { assert } from '@/lib/util/logError';
-import { makeBankImage } from '@/lib/util/makeBankImage';
-import { tameLastFinishedActivity } from '@/lib/util/tameUtil';
-import { sendToChannelID } from '@/lib/util/webhook';
-import { collectables } from '@/mahoji/lib/collectables';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { handleCrateSpawns } from '@/lib/util/handleCrateSpawns.js';
+import { assert } from '@/lib/util/logError.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { tameLastFinishedActivity } from '@/lib/util/tameUtil.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
+import { collectables } from '@/mahoji/lib/collectables.js';
 
 export async function handleFinish({
 	lootToAdd,

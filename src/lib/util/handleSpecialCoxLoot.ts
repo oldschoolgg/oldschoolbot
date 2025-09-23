@@ -2,7 +2,7 @@ import { roll } from 'e';
 import type { Bank } from 'oldschooljs';
 
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
-import { globalDroprates } from '@/lib/data/globalDroprates';
+import { globalDroprates } from '@/lib/data/globalDroprates.js';
 
 // user is null if tame is killing
 export function handleSpecialCoxLoot(user: MUser | null, loot: Bank) {

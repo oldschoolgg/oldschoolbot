@@ -5,9 +5,9 @@ import { removeDiscontinuedItems } from '@/lib/customItems/customItems.js';
 import { growablePets } from '@/lib/growablePets.js';
 import { stoneSpirits } from '@/lib/minions/data/stoneSpirits.js';
 import type { MinigameScore } from '@/lib/settings/minigames.js';
-import type { MUserStats } from '@/lib/structures/MUserStats';
-import getOSItem from '@/lib/util/getOSItem';
-import { assert } from '@/lib/util/logError';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { assert } from '@/lib/util/logError.js';
 import { LampTable } from '@/lib/xpLamps.js';
 import {
 	gracefulCapes,

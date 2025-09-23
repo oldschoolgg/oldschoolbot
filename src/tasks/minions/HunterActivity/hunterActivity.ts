@@ -4,8 +4,8 @@ import {
 	Bank,
 	ECreature,
 	EquipmentSlot,
-	increaseBankQuantitesByPercent,
 	type ItemBank,
+	increaseBankQuantitesByPercent,
 	itemID,
 	toKMB
 } from 'oldschooljs';
@@ -17,7 +17,7 @@ import { MAX_LEVEL } from '@/lib/constants.js';
 import { globalDroprates } from '@/lib/data/globalDroprates.js';
 import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
-import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions.js';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { calcLootXPHunting, generateHerbiTable } from '@/lib/skilling/functions/calcsHunter.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
@@ -25,10 +25,10 @@ import { type Creature, SkillsEnum } from '@/lib/skilling/types.js';
 import type { Gear } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
-import { skillingPetDropRate } from '@/lib/util';
 import { logError } from '@/lib/util/logError.js';
-import { PeakTier } from '@/lib/util/peaks';
+import { PeakTier } from '@/lib/util/peaks.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 const riskDeathNumbers = [

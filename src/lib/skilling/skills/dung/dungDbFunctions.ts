@@ -1,6 +1,6 @@
 import { reduceNumByPercent } from 'e';
 
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/data/CollectionsExport';
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/data/CollectionsExport.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { skillsMeetRequirements } from '@/lib/util.js';
 import { requiredSkills } from './dungData.js';

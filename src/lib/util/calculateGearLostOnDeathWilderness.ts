@@ -2,7 +2,7 @@ import { deepClone, objectEntries } from 'e';
 import { Bank, type EquipmentSlot, type Item, itemID, resolveItems } from 'oldschooljs';
 
 import type { GearSetup } from '@/lib/gear/types.js';
-import skillcapes from '@/lib/skilling/skillcapes';
+import skillcapes from '@/lib/skilling/skillcapes.js';
 import getOSItem from './getOSItem.js';
 
 interface IGearSwap {

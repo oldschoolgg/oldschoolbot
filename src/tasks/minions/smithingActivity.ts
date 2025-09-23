@@ -1,12 +1,12 @@
 import { Bank } from 'oldschooljs';
 
-import { BlacksmithOutfit } from '@/lib/bsoOpenables';
-import { dwarvenOutfit } from '@/lib/data/CollectionsExport';
-import Smithing from '@/lib/skilling/skills/smithing/';
+import { BlacksmithOutfit } from '@/lib/bsoOpenables.js';
+import { dwarvenOutfit } from '@/lib/data/CollectionsExport.js';
+import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { SmithingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager';
+import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager.js';
 
 export const smithingTask: MinionTask = {
 	type: 'Smithing',

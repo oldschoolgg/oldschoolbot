@@ -1,7 +1,7 @@
 import { type CommandRunOptions, channelIsSendable, type OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { deferInteraction } from '@/lib/util/interactionReply';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
 
 export const pollCommand: OSBMahojiCommand = {
 	name: 'poll',

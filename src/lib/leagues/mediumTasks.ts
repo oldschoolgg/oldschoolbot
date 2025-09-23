@@ -1,7 +1,7 @@
 import { sumArr } from 'e';
 import { Bank, calcCombatLevel, type ItemBank, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { BitField, MAX_LEVEL } from '@/lib/constants';
+import { BitField, MAX_LEVEL } from '@/lib/constants.js';
 import {
 	barrowsChestCL,
 	chambersOfXericCL,
@@ -10,7 +10,7 @@ import {
 	inventorOutfit,
 	theatreOfBLoodCL,
 	treeBeardCL
-} from '@/lib/data/CollectionsExport';
+} from '@/lib/data/CollectionsExport.js';
 import {
 	ArdougneDiary,
 	DesertDiary,
@@ -29,12 +29,12 @@ import {
 import { implings } from '@/lib/implings.js';
 import { QueenBlackDragon } from '@/lib/minions/data/killableMonsters/custom/demiBosses.js';
 import { SuperiorTormentedDemon } from '@/lib/minions/data/killableMonsters/custom/TormentedDemon.js';
-import Darts from '@/lib/skilling/skills/fletching/fletchables/darts';
-import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins';
-import { ashes } from '@/lib/skilling/skills/prayer';
+import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
+import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
+import { ashes } from '@/lib/skilling/skills/prayer.js';
 import { calcTotalLevel } from '@/lib/util.js';
 import { LampTable } from '@/lib/xpLamps.js';
-import { eggs } from '@/mahoji/commands/offer';
+import { eggs } from '@/mahoji/commands/offer.js';
 import { leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster, type Task } from './leaguesUtils.js';
 import { calculateChargedItems, calculateTiarasMade, calculateTotalMahoganyHomesPoints } from './stats.js';
 

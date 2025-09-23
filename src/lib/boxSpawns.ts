@@ -4,9 +4,9 @@ import { isFunction, randArrItem, roll, shuffleArr, Time } from 'e';
 import fetch from 'node-fetch';
 import { Bank, Items, LootTable, Monsters } from 'oldschooljs';
 
-import { globalConfig } from '@/lib/constants';
-import { allCollectionLogsFlat } from '@/lib/data/Collections';
-import Createables from '@/lib/data/createables';
+import { globalConfig } from '@/lib/constants.js';
+import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
+import Createables from '@/lib/data/createables.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 import { MysteryBoxes } from './bsoOpenables.js';
 import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters.js';

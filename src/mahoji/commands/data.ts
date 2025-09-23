@@ -2,7 +2,7 @@ import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { deferInteraction } from '@/lib/util/interactionReply';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { dataPoints, statsCommand } from '@/mahoji/lib/abstracted_commands/statCommand.js';
 
 export const dataCommand: OSBMahojiCommand = {

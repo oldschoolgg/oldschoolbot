@@ -8,14 +8,14 @@ import { Bank, type Item, type ItemBank, itemID, toKMB } from 'oldschooljs';
 import { loadImage } from 'skia-canvas';
 
 import { divinationEnergies } from '@/lib/bso/divination.js';
-import { BitField, PerkTier } from '@/lib/constants';
-import { allCLItems } from '@/lib/data/Collections';
-import { filterableTypes } from '@/lib/data/filterables';
+import { BitField, PerkTier } from '@/lib/constants.js';
+import { allCLItems } from '@/lib/data/Collections.js';
+import { filterableTypes } from '@/lib/data/filterables.js';
 import { marketPriceOfBank, marketPriceOrBotPrice } from '@/lib/marketPrices.js';
 import backgroundImages, { type BankBackground } from '@/lib/minions/data/bankBackgrounds.js';
 import type { FlagMap, Flags } from '@/lib/minions/types.js';
 import { type BankSortMethod, BankSortMethods, sorts } from '@/lib/sorts.js';
-import { XPLamps } from '@/mahoji/lib/abstracted_commands/lampCommand';
+import { XPLamps } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
 import { type BaseCanvasArgs, type BGSpriteName, CanvasImage, getClippedRegion, type IBgSprite } from './canvasUtil.js';
 import { OSRSCanvas } from './OSRSCanvas.js';
 

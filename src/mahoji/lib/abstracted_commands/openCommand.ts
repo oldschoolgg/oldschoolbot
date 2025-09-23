@@ -7,11 +7,11 @@ import { Bank, Items, itemID, resolveItems } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
-import { BitField, PerkTier } from '@/lib/constants';
+import { BitField, PerkTier } from '@/lib/constants.js';
 import type { UnifiedOpenable } from '@/lib/openables.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
-import { roboChimpUserFetch } from '@/lib/roboChimp';
-import { checkElderClueRequirements } from '@/lib/util/elderClueRequirements';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { checkElderClueRequirements } from '@/lib/util/elderClueRequirements.js';
 import getOSItem, { getItem } from '@/lib/util/getOSItem.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { assert } from '@/lib/util/logError.js';

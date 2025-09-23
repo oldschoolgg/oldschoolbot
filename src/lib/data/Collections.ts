@@ -28,8 +28,8 @@ import { keyCrates } from '@/lib/keyCrates.js';
 import { AkumuLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Akumu.js';
 import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
 import {
-	kalphiteKingLootTable,
-	KalphiteKingMonster
+	KalphiteKingMonster,
+	kalphiteKingLootTable
 } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
 import KingGoldemar from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';
 import { MOKTANG_ID, MoktangLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
@@ -45,23 +45,23 @@ import {
 	MediumEncounterLoot,
 	rewardTokens
 } from '@/lib/minions/data/templeTrekking.js';
-import { nexLootTable, NexMonster } from '@/lib/nex.js';
+import { NexMonster, nexLootTable } from '@/lib/nex.js';
 import { PaintBoxTable } from '@/lib/paintColors.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
-import { ElderClueTable } from '@/lib/simulation/elderClue';
-import { GrandmasterClueTable } from '@/lib/simulation/grandmasterClue';
-import { pumpkinHeadUniqueTable } from '@/lib/simulation/pumpkinHead';
-import { cookingCL } from '@/lib/skilling/skills/cooking/cooking';
-import { craftingCL } from '@/lib/skilling/skills/crafting/craftables';
-import { allFarmingItems } from '@/lib/skilling/skills/farming';
-import { fletchingCL } from '@/lib/skilling/skills/fletching/fletchables';
-import { herbloreCL } from '@/lib/skilling/skills/herblore/mixables';
-import smithables from '@/lib/skilling/skills/smithing/smithables';
+import { ElderClueTable } from '@/lib/simulation/elderClue.js';
+import { GrandmasterClueTable } from '@/lib/simulation/grandmasterClue.js';
+import { pumpkinHeadUniqueTable } from '@/lib/simulation/pumpkinHead.js';
+import { cookingCL } from '@/lib/skilling/skills/cooking/cooking.js';
+import { craftingCL } from '@/lib/skilling/skills/crafting/craftables/index.js';
+import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
+import { fletchingCL } from '@/lib/skilling/skills/fletching/fletchables/index.js';
+import { herbloreCL } from '@/lib/skilling/skills/herblore/mixables/index.js';
+import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import { MUserStats } from '@/lib/structures/MUserStats';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
 import { getAllIgneTameKCs, tameKillableMonsters } from '@/lib/tames.js';
-import getOSItem from '@/lib/util/getOSItem';
-import { shuffleRandom } from '@/lib/util/smallUtils';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { shuffleRandom } from '@/lib/util/smallUtils.js';
 import {
 	abyssalDragonCL,
 	abyssalSireCL,
@@ -122,12 +122,12 @@ import {
 	dungeoneeringCL,
 	emergedZukInfernoCL,
 	expertCapesCL,
+	type FormatProgressFunction,
 	fightCavesCL,
 	fishingContestCL,
 	fishingTrawlerCL,
 	fistOfGuthixCL,
 	forestryCL,
-	type FormatProgressFunction,
 	fossilIslandNotesCL,
 	generalGraardorCL,
 	giantMoleCL,
@@ -140,9 +140,9 @@ import {
 	hesporiCL,
 	holidayCL,
 	type ICollection,
-	ignecarusCL,
 	type ILeftListStatus,
 	type IToReturnCollection,
+	ignecarusCL,
 	kalphiteKingCL,
 	kalphiteQueenCL,
 	kingBlackDragonCL,

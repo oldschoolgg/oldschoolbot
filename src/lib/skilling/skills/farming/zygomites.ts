@@ -4,10 +4,10 @@ import { Bank, type Item, LootTable } from 'oldschooljs';
 
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { MysteryBoxes } from '@/lib/bsoOpenables.js';
-import { BitField } from '@/lib/constants';
-import { globalDroprates } from '@/lib/data/globalDroprates';
+import { BitField } from '@/lib/constants.js';
+import { globalDroprates } from '@/lib/data/globalDroprates.js';
 import type { Plant } from '@/lib/skilling/types.js';
-import getOSItem from '@/lib/util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem.js';
 
 export const zygomiteSeedMutChance = 15;
 

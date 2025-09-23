@@ -1,11 +1,11 @@
 import { randInt } from 'e';
 
-import { masterFarmerOutfit } from '@/lib/bso/bsoConstants';
+import { masterFarmerOutfit } from '@/lib/bso/bsoConstants.js';
 import { hasUnlockedAtlantis } from '@/lib/bso/bsoUtil.js';
-import { BitField } from '@/lib/constants';
-import { QuestID } from '@/lib/minions/data/quests';
+import { BitField } from '@/lib/constants.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
 import { type Plant, SkillsEnum } from '@/lib/skilling/types.js';
-import type { FarmingPatchName } from '@/lib/util/farmingHelpers';
+import type { FarmingPatchName } from '@/lib/util/farmingHelpers.js';
 
 export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number] {
 	let numOfPatches = plant.defaultNumOfPatches;

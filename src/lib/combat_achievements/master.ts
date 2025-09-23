@@ -1,9 +1,9 @@
 import { Time } from 'e';
 import { EMonster, Monsters, resolveItems } from 'oldschooljs';
 
-import { spearWeapon } from '@/lib/constants';
+import { spearWeapon } from '@/lib/constants.js';
 import { NexMonster } from '@/lib/nex.js';
-import { Requirements } from '@/lib/structures/Requirements';
+import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
 	GauntletOptions,
 	MonsterActivityTaskOptions,

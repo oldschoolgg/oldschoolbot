@@ -1,7 +1,7 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { itemID, LootTable } from 'oldschooljs';
 
-import { BitField } from '@/lib/constants';
+import { BitField } from '@/lib/constants.js';
 import { type Log, SkillsEnum } from '@/lib/skilling/types.js';
 
 const sulliuscepTable = new LootTable()

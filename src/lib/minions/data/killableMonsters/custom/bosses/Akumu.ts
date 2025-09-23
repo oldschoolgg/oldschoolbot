@@ -4,7 +4,7 @@ import { GearStat } from 'oldschooljs/gear';
 
 import { MysteryBoxes } from '@/lib/bsoOpenables.js';
 import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
-import { UncutGemTable } from '@/lib/simulation/sharedTables';
+import { UncutGemTable } from '@/lib/simulation/sharedTables.js';
 
 export const AkumuLootTable = new LootTable()
 	.tertiary(1000, 'Mini akumu')

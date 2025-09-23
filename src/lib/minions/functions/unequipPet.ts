@@ -1,6 +1,6 @@
 import { Bank, Items } from 'oldschooljs';
 
-import { logError } from '@/lib/util/logError';
+import { logError } from '@/lib/util/logError.js';
 
 export async function unequipPet(user: MUser) {
 	const equippedPet = user.user.minion_equippedPet;

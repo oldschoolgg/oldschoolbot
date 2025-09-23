@@ -4,9 +4,9 @@ import { Bank, deepResolveItems, EMonster, itemID, Monsters, NIGHTMARES_HP, reso
 import { GearStat } from 'oldschooljs/gear';
 
 import { bossKillables } from '@/lib/minions/data/killableMonsters/bosses/index.js';
-import type { KillableMonster } from '@/lib/minions/types';
-import { NexMonster } from '@/lib/nex';
-import { PUMPKINHEAD_ID } from '@/lib/simulation/pumpkinHead';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { NexMonster } from '@/lib/nex.js';
+import { PUMPKINHEAD_ID } from '@/lib/simulation/pumpkinHead.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { camdozaalMonsters } from './camdozaalMonsters.js';
 import { chaeldarMonsters } from './chaeldarMonsters.js';

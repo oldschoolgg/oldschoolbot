@@ -8,7 +8,7 @@ import { calcBossFood } from '@/lib/bso/calcBossFood.js';
 import { gorajanWarriorOutfit, torvaOutfit } from '@/lib/data/CollectionsExport.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { KalphiteKingMonster } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
-import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood';
+import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { setupParty } from '@/lib/party.js';
 import { Gear } from '@/lib/structures/Gear.js';

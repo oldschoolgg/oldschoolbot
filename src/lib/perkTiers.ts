@@ -1,4 +1,4 @@
-import { BitField, globalConfig, PerkTier, Roles } from '@/lib/constants';
+import { BitField, globalConfig, PerkTier, Roles } from '@/lib/constants.js';
 import { perkTierCache } from './cache.js';
 import { roboChimpCache } from './perkTier.js';
 

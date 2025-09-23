@@ -9,7 +9,7 @@ import { MorytaniaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { difficulties, rewardTokens, trekBankBoosts } from '@/lib/minions/data/templeTrekking.js';
 import type { AddXpParams } from '@/lib/minions/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import type { GearRequirement } from '@/lib/structures/Gear';
+import type { GearRequirement } from '@/lib/structures/Gear.js';
 import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';

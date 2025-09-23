@@ -15,8 +15,8 @@ import {
 	spectatorClothes,
 	troubleBrewingCL,
 	vasaMagusCL
-} from '@/lib/data/CollectionsExport';
-import { slayerMaskHelms } from '@/lib/data/slayerMaskHelms';
+} from '@/lib/data/CollectionsExport.js';
+import { slayerMaskHelms } from '@/lib/data/slayerMaskHelms.js';
 import {
 	ArdougneDiary,
 	DesertDiary,
@@ -35,12 +35,12 @@ import {
 import { implings } from '@/lib/implings.js';
 import { Naxxus } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
 import { SunMoonMonsters } from '@/lib/minions/data/killableMonsters/custom/SunMoon.js';
-import Darts from '@/lib/skilling/skills/fletching/fletchables/darts';
-import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins';
-import { ashes } from '@/lib/skilling/skills/prayer';
+import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
+import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
+import { ashes } from '@/lib/skilling/skills/prayer.js';
 import { TameSpeciesID, tameFeedableItems } from '@/lib/tames.js';
 import { calcTotalLevel } from '@/lib/util.js';
-import { eggs } from '@/mahoji/commands/offer';
+import { eggs } from '@/mahoji/commands/offer.js';
 import { leaguesHasCatches, leaguesHasKC, type Task } from './leaguesUtils.js';
 import { calculateTiarasMade } from './stats.js';
 

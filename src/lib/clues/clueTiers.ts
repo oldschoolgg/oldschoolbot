@@ -21,9 +21,9 @@ import {
 	cluesHardCL,
 	cluesMasterCL,
 	cluesMediumCL
-} from '@/lib/data/CollectionsExport';
-import { type ElderClue, ElderClueTable } from '@/lib/simulation/elderClue';
-import { GrandmasterClueTable } from '@/lib/simulation/grandmasterClue';
+} from '@/lib/data/CollectionsExport.js';
+import { type ElderClue, ElderClueTable } from '@/lib/simulation/elderClue.js';
+import { GrandmasterClueTable } from '@/lib/simulation/grandmasterClue.js';
 import type { ClueReqs } from './clueReqs.js';
 import { beginnerReqs } from './clueReqs.js';
 import type { StashUnitTier } from './stashUnits.js';

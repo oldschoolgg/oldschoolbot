@@ -1,7 +1,7 @@
 import { resolveItems } from 'oldschooljs';
 
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import getOSItem from '@/lib/util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem.js';
 
 export const expertCapesSource = [
 	{

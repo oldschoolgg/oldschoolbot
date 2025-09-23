@@ -11,8 +11,8 @@ import {
 } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { BitField } from '@/lib/constants';
-import { HighSeedPackTable } from '@/lib/data/seedPackTables';
+import { BitField } from '@/lib/constants.js';
+import { HighSeedPackTable } from '@/lib/data/seedPackTables.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { AbyssalDragonLootTable } from './AbyssalDragon.js';
 import type { CustomMonster } from './customMonsters.js';

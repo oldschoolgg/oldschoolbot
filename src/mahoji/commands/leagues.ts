@@ -2,16 +2,16 @@ import { type CommandRunOptions, formatDuration } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { calcWhatPercent, Time } from 'e';
 
-import { PerkTier } from '@/lib/constants';
+import { PerkTier } from '@/lib/constants.js';
 import {
 	allLeagueTasks,
 	generateLeaguesTasksTextFile,
 	leaguesCheckUser,
 	leaguesClaimCommand,
 	leagueTasks
-} from '@/lib/leagues/leagues';
-import { getUsersPerkTier } from '@/lib/perkTiers';
-import { deferInteraction } from '@/lib/util/interactionReply';
+} from '@/lib/leagues/leagues.js';
+import { getUsersPerkTier } from '@/lib/perkTiers.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 
 export const bsoLeaguesCommand: OSBMahojiCommand = {

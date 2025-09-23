@@ -4,12 +4,12 @@ import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
 import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
-import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions.js';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions.js';
 import type { DarkAltarOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
-import getOSItem from '@/lib/util/getOSItem';
-import { hasSkillReqs } from '@/lib/util/smallUtils';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 

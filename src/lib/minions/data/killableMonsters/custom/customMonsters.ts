@@ -1,7 +1,7 @@
 import type { LootTable, Monster, MonsterData } from 'oldschooljs';
 
-import type { KillableMonster } from '@/lib/minions/types';
-import setCustomMonster, { makeKillTable } from '@/lib/util/setCustomMonster';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import setCustomMonster, { makeKillTable } from '@/lib/util/setCustomMonster.js';
 import { customDemiBosses } from './demiBosses.js';
 import { MiscCustomMonsters } from './misc.js';
 import { resourceDungeonMonsters } from './resourceDungeons.js';

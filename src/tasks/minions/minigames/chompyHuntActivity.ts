@@ -5,7 +5,7 @@ import { chompyHats } from '@/lib/data/CollectionsExport.js';
 import { userhasDiaryTier, WesternProv } from '@/lib/diaries.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { formatList } from '@/lib/util/smallUtils';
+import { formatList } from '@/lib/util/smallUtils.js';
 
 export const chompHuntTask: MinionTask = {
 	type: 'BigChompyBirdHunting',

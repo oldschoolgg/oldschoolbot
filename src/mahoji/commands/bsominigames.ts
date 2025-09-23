@@ -9,13 +9,13 @@ import {
 	baxBathHelpStr,
 	baxBathSim,
 	baxtorianBathhousesStartCommand
-} from '@/lib/baxtorianBathhouses';
-import { allGodlyItems, divineDominionCheck, divineDominionSacrificeCommand } from '@/lib/bso/divineDominion';
-import { joinGuthixianCache } from '@/lib/bso/guthixianCache';
-import { type TuraelsTrialsMethod, TuraelsTrialsMethods, turaelsTrialsStartCommand } from '@/lib/bso/turaelsTrials';
-import { fishingLocations } from '@/lib/fishingContest';
-import type { MaterialType } from '@/lib/invention';
-import { itemNameFromID } from '@/lib/util';
+} from '@/lib/baxtorianBathhouses.js';
+import { allGodlyItems, divineDominionCheck, divineDominionSacrificeCommand } from '@/lib/bso/divineDominion.js';
+import { joinGuthixianCache } from '@/lib/bso/guthixianCache.js';
+import { type TuraelsTrialsMethod, TuraelsTrialsMethods, turaelsTrialsStartCommand } from '@/lib/bso/turaelsTrials.js';
+import { fishingLocations } from '@/lib/fishingContest.js';
+import type { MaterialType } from '@/lib/invention/index.js';
+import { itemNameFromID } from '@/lib/util.js';
 import { bonanzaCommand } from '@/mahoji/lib/abstracted_commands/bonanzaCommand.js';
 import {
 	fishingContestStartCommand,

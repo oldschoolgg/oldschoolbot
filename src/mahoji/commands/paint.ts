@@ -2,12 +2,12 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
-import { canvasToBuffer } from '@/lib/canvas/canvasUtil';
-import { renderPaintGrid } from '@/lib/canvas/renderPaintGrid';
-import { paintColors } from '@/lib/customItems/paintCans';
-import { getPaintedItemImage } from '@/lib/paintColors';
-import { itemEffectImageCache } from '@/lib/util/customItemEffects';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { canvasToBuffer } from '@/lib/canvas/canvasUtil.js';
+import { renderPaintGrid } from '@/lib/canvas/renderPaintGrid.js';
+import { paintColors } from '@/lib/customItems/paintCans.js';
+import { getPaintedItemImage } from '@/lib/paintColors.js';
+import { itemEffectImageCache } from '@/lib/util/customItemEffects.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { ownedItemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 
 export const paintCommand: OSBMahojiCommand = {

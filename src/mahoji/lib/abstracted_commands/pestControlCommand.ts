@@ -10,7 +10,7 @@ import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import getOSItem from '@/lib/util/getOSItem.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { hasSkillReqs } from '@/lib/util/smallUtils';
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const itemBoosts = [

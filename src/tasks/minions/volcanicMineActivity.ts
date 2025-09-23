@@ -1,12 +1,12 @@
 import { randFloat, randInt, roll, Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { userHasFlappy } from '@/lib/invention/inventions';
+import { userHasFlappy } from '@/lib/invention/inventions.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { skillingPetDropRate } from '@/lib/util';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { VolcanicMineGameTime } from '@/mahoji/lib/abstracted_commands/volcanicMineCommand';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { VolcanicMineGameTime } from '@/mahoji/lib/abstracted_commands/volcanicMineCommand.js';
 
 const fossilTable = new LootTable()
 	.add('Unidentified small fossil', 1, 10)

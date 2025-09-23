@@ -6,11 +6,11 @@ import { clamp, shuffleArr, Time } from 'e';
 import { type MaterialType, materialTypes } from '@/lib/invention/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ResearchTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { roll } from '@/lib/util/rng';
+import { roll } from '@/lib/util/rng.js';
 import { type Invention, Inventions, transactMaterialsFromUser } from './inventions.js';
 import { MaterialBank } from './MaterialBank.js';
 

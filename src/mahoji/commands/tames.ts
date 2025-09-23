@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { bold, time } from '@discordjs/builders';
 import { type CommandResponse, formatDuration, isWeekend, stringMatches } from '@oldschoolgg/toolkit';
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
@@ -15,12 +17,10 @@ import {
 	reduceNumByPercent,
 	Time
 } from 'e';
-import { readFileSync } from 'node:fs';
-import { readFile } from 'node:fs/promises';
 import { Bank, type Item, type ItemBank, itemID, resolveItems } from 'oldschooljs';
 import { type Canvas, loadImage } from 'skia-canvas';
 
-import { bankImageTask } from '@/lib/canvas/bankImage';
+import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import {
 	type CanvasContext,
 	type CanvasImage,
@@ -28,18 +28,18 @@ import {
 	createCanvas,
 	fillTextXTimesInCtx,
 	getClippedRegion
-} from '@/lib/canvas/canvasUtil';
-import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas';
-import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers';
-import { badges, PerkTier } from '@/lib/constants';
-import { Eatables } from '@/lib/data/eatables';
-import { getSimilarItems } from '@/lib/data/similarItems';
-import { trackLoot } from '@/lib/lootTrack';
-import { Planks } from '@/lib/minions/data/planks';
-import getUserFoodFromBank from '@/lib/minions/functions/getUserFoodFromBank';
-import { getUsersPerkTier } from '@/lib/perkTiers';
-import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning';
-import Bars from '@/lib/skilling/skills/smithing/smeltables';
+} from '@/lib/canvas/canvasUtil.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
+import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
+import { badges, PerkTier } from '@/lib/constants.js';
+import { Eatables } from '@/lib/data/eatables.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { Planks } from '@/lib/minions/data/planks.js';
+import getUserFoodFromBank from '@/lib/minions/functions/getUserFoodFromBank.js';
+import { getUsersPerkTier } from '@/lib/perkTiers.js';
+import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning.js';
+import Bars from '@/lib/skilling/skills/smithing/smeltables.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import {
 	createTameTask,
@@ -48,21 +48,20 @@ import {
 	type SeaMonkeySpell,
 	seaMonkeySpells,
 	seaMonkeyStaves,
-	tameFeedableItems,
 	type TameKillableMonster,
-	tameKillableMonsters,
-	tameSpecies,
 	TameSpeciesID,
-	TameType
-} from '@/lib/tames';
-import { itemNameFromID } from '@/lib/util';
-import { patronMaxTripBonus } from '@/lib/util/calcMaxTripLength';
-import getOSItem, { getItem } from '@/lib/util/getOSItem';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
-import { assert } from '@/lib/util/logError';
-import { makeBankImage } from '@/lib/util/makeBankImage';
-import { parseStringBank } from '@/lib/util/parseStringBank';
-import { formatSkillRequirements } from '@/lib/util/smallUtils';
+	TameType,
+	tameFeedableItems,
+	tameKillableMonsters,
+	tameSpecies
+} from '@/lib/tames.js';
+import { patronMaxTripBonus } from '@/lib/util/calcMaxTripLength.js';
+import getOSItem, { getItem } from '@/lib/util/getOSItem.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { assert } from '@/lib/util/logError.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { parseStringBank } from '@/lib/util/parseStringBank.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import {
 	calculateMaximumTameFeedingLevelGain,
 	getMainTameLevel,
@@ -72,8 +71,9 @@ import {
 	tameGrowthLevel,
 	tameHasBeenFed,
 	tameName
-} from '@/lib/util/tameUtil';
+} from '@/lib/util/tameUtil.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { itemNameFromID } from '@/lib/util.js';
 import { getItemCostFromConsumables } from '@/mahoji/lib/abstracted_commands/minionKill/handleConsumables.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 import { arbitraryTameActivities } from '@/tasks/tames/tameTasks.js';

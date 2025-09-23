@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import type { GearRequirements } from '@/lib/structures/Gear';
+import type { GearRequirements } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
 
 interface TrekDifficulty {

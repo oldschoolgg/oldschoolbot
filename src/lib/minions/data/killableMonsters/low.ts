@@ -3,7 +3,7 @@ import { Bank, itemID, Monsters, resolveItems, SkillsEnum } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
-import type { KillableMonster } from '@/lib/minions/types';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 const killableMonsters: KillableMonster[] = [
 	{

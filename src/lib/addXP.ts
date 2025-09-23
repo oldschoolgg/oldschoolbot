@@ -5,16 +5,16 @@ import { bold } from 'discord.js';
 import { increaseNumByPercent, noOp, notEmpty, objectValues, Time } from 'e';
 import { convertLVLtoXP, convertXPtoLVL, type Item, resolveItems, toKMB } from 'oldschooljs';
 
-import { Channel, globalConfig, LEVEL_120_XP, MAX_LEVEL, MAX_TOTAL_LEVEL, MAX_XP } from '@/lib/constants';
+import { Channel, globalConfig, LEVEL_120_XP, MAX_LEVEL, MAX_TOTAL_LEVEL, MAX_XP } from '@/lib/constants.js';
 import {
 	divinersOutfit,
 	gorajanArcherOutfit,
 	gorajanOccultOutfit,
 	gorajanWarriorOutfit,
 	inventorOutfit
-} from '@/lib/data/CollectionsExport';
-import { skillEmoji } from '@/lib/data/emojis';
-import { getSimilarItems } from '@/lib/data/similarItems';
+} from '@/lib/data/CollectionsExport.js';
+import { skillEmoji } from '@/lib/data/emojis.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
 import Skillcapes from '@/lib/skilling/skillcapes.js';
 import Skills from '@/lib/skilling/skills/index.js';
 import { type SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';

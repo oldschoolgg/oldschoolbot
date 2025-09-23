@@ -5,7 +5,7 @@ import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 import { noOp, removeFromArr, Time } from 'e';
 
-import { BitField, Channel, globalConfig } from '@/lib/constants';
+import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
 import Farming from '@/lib/skilling/skills/farming/index.js';
 import { runTameTask } from '@/tasks/tames/tameTasks.js';

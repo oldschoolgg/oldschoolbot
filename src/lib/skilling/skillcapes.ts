@@ -1,6 +1,6 @@
 import { Bank, type Item, itemID } from 'oldschooljs';
 
-import getOSItem from '@/lib/util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem.js';
 import { SkillsEnum } from './types.js';
 
 interface Skillcape {

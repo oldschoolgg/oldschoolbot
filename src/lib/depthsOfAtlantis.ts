@@ -13,8 +13,8 @@ import {
 } from 'e';
 import { Bank, type ItemBank, itemID, resolveItems } from 'oldschooljs';
 
-import { calcSetupPercent } from '@/lib/data/cox';
-import { getSimilarItems } from '@/lib/data/similarItems';
+import { calcSetupPercent } from '@/lib/data/cox.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import type { Skills } from '@/lib/types/index.js';
 import { Gear } from './structures/Gear.js';

@@ -1,9 +1,9 @@
 import { ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { warmGear } from '@/lib/data/filterables';
+import { warmGear } from '@/lib/data/filterables.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import { Requirements } from '@/lib/structures/Requirements';
-import getOSItem from '@/lib/util/getOSItem';
+import { Requirements } from '@/lib/structures/Requirements.js';
+import getOSItem from '@/lib/util/getOSItem.js';
 import { isCertainMonsterTrip } from './caUtils.js';
 import type { CombatAchievement } from './combatAchievements.js';
 

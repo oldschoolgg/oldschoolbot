@@ -1,4 +1,4 @@
-import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters';
+import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
 import { getMonster } from '@/lib/util.js';
 

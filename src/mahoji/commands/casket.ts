@@ -3,13 +3,13 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, toKMB } from 'oldschooljs';
 
-import { ClueTiers } from '@/lib/clues/clueTiers';
-import { PerkTier } from '@/lib/constants';
-import { marketPriceOfBank } from '@/lib/marketPrices';
-import { calcDropRatesFromBankWithoutUniques } from '@/lib/util/calcDropRatesFromBank';
-import { deferInteraction } from '@/lib/util/interactionReply';
-import { makeBankImage } from '@/lib/util/makeBankImage';
-import { Workers } from '@/lib/workers';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { PerkTier } from '@/lib/constants.js';
+import { marketPriceOfBank } from '@/lib/marketPrices.js';
+import { calcDropRatesFromBankWithoutUniques } from '@/lib/util/calcDropRatesFromBank.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { Workers } from '@/lib/workers/index.js';
 
 function determineLimit(user: MUser) {
 	const perkTier = user.perkTier();

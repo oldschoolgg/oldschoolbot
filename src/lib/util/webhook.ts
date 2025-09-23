@@ -10,7 +10,7 @@ import {
 	WebhookClient
 } from 'discord.js';
 
-import { globalConfig } from '@/lib/constants';
+import { globalConfig } from '@/lib/constants.js';
 import { logError } from './logError.js';
 
 async function resolveChannel(channelID: string): Promise<WebhookClient | Message['channel'] | undefined> {

@@ -6,7 +6,7 @@ import { type ArrayItemsResolved, type Bank, getItemOrThrow, type ItemBank, Item
 import { MersenneTwister19937, shuffle } from 'random-js';
 import z from 'zod';
 
-import { skillEmoji } from '@/lib/data/emojis';
+import { skillEmoji } from '@/lib/data/emojis.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { SkillRequirements, Skills } from '@/lib/types/index.js';
 import type { TOAOptions } from '@/lib/types/minions.js';

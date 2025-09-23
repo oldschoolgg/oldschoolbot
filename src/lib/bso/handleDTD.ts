@@ -2,8 +2,8 @@ import type { Prisma } from '@prisma/client';
 import { itemID } from 'oldschooljs';
 
 import type { KillableMonster } from '@/lib/minions/types.js';
-import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings';
+import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export async function handleDTD(monster: KillableMonster, user: MUser) {
 	const rangeSetup = { ...user.gear.range.raw() };

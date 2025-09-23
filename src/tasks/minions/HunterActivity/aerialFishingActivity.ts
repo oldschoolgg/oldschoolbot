@@ -6,7 +6,7 @@ import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import aerialFishingCreatures from '@/lib/skilling/skills/hunter/aerialFishing.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { roll } from '@/lib/util/rng';
+import { roll } from '@/lib/util/rng.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export const aerialFishingTask: MinionTask = {

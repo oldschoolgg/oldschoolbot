@@ -1,34 +1,34 @@
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 
-import { ClueTiers } from '@/lib/clues/clueTiers';
-import killableMonsters from '@/lib/minions/data/killableMonsters';
-import Agility from '@/lib/skilling/skills/agility';
-import Cooking from '@/lib/skilling/skills/cooking/cooking';
-import Crafting from '@/lib/skilling/skills/crafting';
-import Firemaking from '@/lib/skilling/skills/firemaking';
-import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
-import Mining from '@/lib/skilling/skills/mining';
-import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import Agility from '@/lib/skilling/skills/agility.js';
+import Cooking from '@/lib/skilling/skills/cooking/cooking.js';
+import Crafting from '@/lib/skilling/skills/crafting/index.js';
+import Firemaking from '@/lib/skilling/skills/firemaking.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import Mining from '@/lib/skilling/skills/mining.js';
+import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type {
-    ActivityTaskData,
-    ActivityTaskOptionsWithQuantity,
-    AgilityActivityTaskOptions,
-    ClueActivityTaskOptions,
-    ColoTaskOptions,
-    CookingActivityTaskOptions,
-    CraftingActivityTaskOptions,
-    FiremakingActivityTaskOptions,
-    FishingActivityTaskOptions,
-    FletchingActivityTaskOptions,
-    GroupMonsterActivityTaskOptions,
-    InfernoOptions,
-    MinigameActivityTaskOptionsWithNoChanges,
-    MiningActivityTaskOptions,
-    MonsterActivityTaskOptions,
-    NightmareActivityTaskOptions,
-    TheatreOfBloodTaskOptions,
-    TOAOptions,
-    WoodcuttingActivityTaskOptions
+	ActivityTaskData,
+	ActivityTaskOptionsWithQuantity,
+	AgilityActivityTaskOptions,
+	ClueActivityTaskOptions,
+	ColoTaskOptions,
+	CookingActivityTaskOptions,
+	CraftingActivityTaskOptions,
+	FiremakingActivityTaskOptions,
+	FishingActivityTaskOptions,
+	FletchingActivityTaskOptions,
+	GroupMonsterActivityTaskOptions,
+	InfernoOptions,
+	MinigameActivityTaskOptionsWithNoChanges,
+	MiningActivityTaskOptions,
+	MonsterActivityTaskOptions,
+	NightmareActivityTaskOptions,
+	TheatreOfBloodTaskOptions,
+	TOAOptions,
+	WoodcuttingActivityTaskOptions
 } from '@/lib/types/minions.js';
 
 export function minionStatusRaw(task: ActivityTaskData): string {

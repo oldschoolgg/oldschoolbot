@@ -4,7 +4,7 @@ import { notEmpty } from 'e';
 import { Bank, type Item, Items, itemNameMap } from 'oldschooljs';
 
 import { isDeletedItemName } from '@/lib/customItems/util.js';
-import { filterableTypes } from '@/lib/data/filterables';
+import { filterableTypes } from '@/lib/data/filterables.js';
 
 const { floor, max, min } = Math;
 

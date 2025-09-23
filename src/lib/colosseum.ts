@@ -17,9 +17,9 @@ import {
 } from 'e';
 import { Bank, type EquipmentSlot, type ItemBank, LootTable, resolveItems } from 'oldschooljs';
 
-import { getSimilarItems } from '@/lib/data/similarItems';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
 import type { Skills } from '@/lib/types/index.js';
-import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils';
+import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 import { gorajanGearBoost } from './bso/gorajanGearBoost.js';
 import { degradeChargeBank } from './degradeableItems.js';

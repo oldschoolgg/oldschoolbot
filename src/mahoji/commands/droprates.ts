@@ -3,13 +3,13 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants';
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { calcBabyYagaHouseDroprate, clAdjustedDroprate, herbertDroprate } from '@/lib/bso/bsoUtil.js';
-import { MAX_XP } from '@/lib/constants';
-import { globalDroprates } from '@/lib/data/globalDroprates';
-import { slayerMaskHelms } from '@/lib/data/slayerMaskHelms';
-import Constructables from '@/lib/skilling/skills/construction/constructables';
-import Potions from '@/lib/skilling/skills/herblore/mixables/potions';
+import { MAX_XP } from '@/lib/constants.js';
+import { globalDroprates } from '@/lib/data/globalDroprates.js';
+import { slayerMaskHelms } from '@/lib/data/slayerMaskHelms.js';
+import Constructables from '@/lib/skilling/skills/construction/constructables.js';
+import Potions from '@/lib/skilling/skills/herblore/mixables/potions.js';
 
 interface GlobalDroprate {
 	name: string;

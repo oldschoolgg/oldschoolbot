@@ -1,4 +1,4 @@
-import getOSItem from '@/lib/util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem.js';
 
 export type Floor = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 

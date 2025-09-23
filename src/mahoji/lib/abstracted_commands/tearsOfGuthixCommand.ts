@@ -2,7 +2,7 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { dateFm, formatDuration, getNextUTCReset } from '@oldschoolgg/toolkit/util';
 import { notEmpty, objectEntries, Time } from 'e';
 
-import { tears_of_guthix_cd } from '@/lib/events';
+import { tears_of_guthix_cd } from '@/lib/events.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';

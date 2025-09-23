@@ -3,7 +3,7 @@ import type { DeepPartial } from '@sapphire/utilities';
 import deepMerge from 'deepmerge';
 import { type Item, type ItemRequirements, Items, itemNameMap } from 'oldschooljs';
 
-import getOSItem from '@/lib/util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem.js';
 
 export const customPrices: Record<number, number> = [];
 

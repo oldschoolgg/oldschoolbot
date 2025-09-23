@@ -1,7 +1,7 @@
 import { TimerManager } from '@sapphire/timer-manager';
 import { Time } from 'e';
 
-import { globalConfig } from '@/lib/constants';
+import { globalConfig } from '@/lib/constants.js';
 
 export const BLACKLISTED_USERS = new Set<string>();
 export const BLACKLISTED_GUILDS = new Set<string>();

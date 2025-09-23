@@ -3,7 +3,7 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { EmbedBuilder } from 'discord.js';
 import { toKMB } from 'oldschooljs';
 
-import { getItem } from '@/lib/util/getOSItem';
+import { getItem } from '@/lib/util/getOSItem.js';
 import { itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { sellPriceOfItem } from './sell.js';
 

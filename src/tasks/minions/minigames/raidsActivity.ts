@@ -4,7 +4,7 @@ import { Bank, ChambersOfXeric, randomVariation, resolveItems, SkillsEnum } from
 
 import { CHINCANNON_MESSAGES } from '@/lib/bso/bsoConstants.js';
 import { MysteryBoxes } from '@/lib/bsoOpenables.js';
-import { drawChestLootImage } from '@/lib/canvas/chestImage';
+import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '@/lib/data/CollectionsExport.js';
 import { createTeam } from '@/lib/data/cox.js';
 import { userHasFlappy } from '@/lib/invention/inventions.js';

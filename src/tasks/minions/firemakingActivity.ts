@@ -1,4 +1,4 @@
-import Firemaking from '@/lib/skilling/skills/firemaking';
+import Firemaking from '@/lib/skilling/skills/firemaking.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { FiremakingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';

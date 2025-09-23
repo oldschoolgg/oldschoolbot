@@ -5,7 +5,7 @@ import Prayer from '@/lib/skilling/skills/prayer.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { OfferingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { roll } from '@/lib/util/rng';
+import { roll } from '@/lib/util/rng.js';
 
 export function zealOutfitBoost(user: MUser) {
 	let zealOutfitAmount = 0;

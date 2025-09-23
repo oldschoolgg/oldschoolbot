@@ -2,7 +2,7 @@ import { AutoFarmFilterEnum } from '@prisma/client';
 import { SkillsEnum } from 'oldschooljs';
 
 import type { IPatchDataDetailed } from '@/lib/minions/farming/types.js';
-import { plants } from '@/lib/skilling/skills/farming';
+import { plants } from '@/lib/skilling/skills/farming/index.js';
 import type { Plant } from '@/lib/skilling/types.js';
 import { farmingPlantCommand } from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
 import { allFarm, replant } from './autoFarmFilters.js';

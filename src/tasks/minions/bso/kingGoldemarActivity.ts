@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { isDoubleLootActive } from '@/lib/doubleLoot.js';
 import { trackLoot } from '@/lib/lootTrack.js';
-import KingGoldemar, { KingGoldemarLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
+import KingGoldemar, { KingGoldemarLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';
 import { addMonsterXP } from '@/lib/minions/functions/index.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { calcDwwhChance } from '@/lib/structures/Boss.js';

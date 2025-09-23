@@ -15,11 +15,11 @@ import type {
 import { Time } from 'e';
 import { isEmpty } from 'remeda';
 
-import { PerkTier } from '@/lib/constants';
-import { deferInteraction, handleInteractionError, interactionReply } from '@/lib/util/interactionReply';
-import { logError } from '@/lib/util/logError';
-import { postCommand } from '@/mahoji/lib/postCommand';
-import { preCommand } from '@/mahoji/lib/preCommand';
+import { PerkTier } from '@/lib/constants.js';
+import { deferInteraction, handleInteractionError, interactionReply } from '@/lib/util/interactionReply.js';
+import { logError } from '@/lib/util/logError.js';
+import { postCommand } from '@/mahoji/lib/postCommand.js';
+import { preCommand } from '@/mahoji/lib/preCommand.js';
 
 export * from './minigames.js';
 

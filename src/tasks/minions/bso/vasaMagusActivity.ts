@@ -11,11 +11,11 @@ import { VasaMagus, VasaMagusLootTable } from '@/lib/minions/data/killableMonste
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
 import { addMonsterXP } from '@/lib/minions/functions/index.js';
 import type { NewBossOptions } from '@/lib/types/minions.js';
-import { getMonster, itemNameFromID } from '@/lib/util';
 import getOSItem from '@/lib/util/getOSItem.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { getMonster, itemNameFromID } from '@/lib/util.js';
 
 const vasaBosses = [
 	Monsters.AbyssalSire,

@@ -6,19 +6,19 @@ import { increaseNumByPercent, removeFromArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import {
-    basePortentCost,
-    divinationEnergies,
-    getAllPortentCharges,
-    MemoryHarvestType,
-    memoryHarvestTypes,
-    portents
-} from '@/lib/bso/divination';
-import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions';
+	basePortentCost,
+	divinationEnergies,
+	getAllPortentCharges,
+	MemoryHarvestType,
+	memoryHarvestTypes,
+	portents
+} from '@/lib/bso/divination.js';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions.js';
 import type { MemoryHarvestOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
-import { assert } from '@/lib/util/logError';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { assert } from '@/lib/util/logError.js';
 import { memoryHarvestResult, totalTimePerRound } from '@/tasks/minions/bso/memoryHarvestActivity.js';
 
 export const divinationCommand: OSBMahojiCommand = {

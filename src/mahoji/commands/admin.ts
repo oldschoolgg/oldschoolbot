@@ -11,7 +11,7 @@ import { ApplicationCommandOptionType, AttachmentBuilder, type InteractionReplyO
 import { calcWhatPercent, noOp, notEmpty, randArrItem, sleep, Time, uniqueArr } from 'e';
 import { Bank, convertBankToPerHourStats, type ItemBank, toKMB } from 'oldschooljs';
 
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '@/lib/blacklists';
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '@/lib/blacklists.js';
 import {
 	BadgesEnum,
 	BitField,
@@ -21,21 +21,21 @@ import {
 	DISABLED_COMMANDS,
 	globalConfig,
 	META_CONSTANTS
-} from '@/lib/constants';
-import { economyLog } from '@/lib/economyLogs';
-import type { GearSetup } from '@/lib/gear/types';
-import { GrandExchange } from '@/lib/grandExchange';
-import { mahojiUserSettingsUpdate } from '@/lib/MUser';
-import { countUsersWithItemInCl } from '@/lib/rawSql';
-import { sorts } from '@/lib/sorts';
-import { memoryAnalysis } from '@/lib/util/cachedUserIDs';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings';
-import getOSItem, { getItem } from '@/lib/util/getOSItem';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
-import { deferInteraction, interactionReply } from '@/lib/util/interactionReply';
-import { makeBankImage } from '@/lib/util/makeBankImage';
-import { parseBank } from '@/lib/util/parseStringBank';
-import { sendToChannelID } from '@/lib/util/webhook';
+} from '@/lib/constants.js';
+import { economyLog } from '@/lib/economyLogs.js';
+import type { GearSetup } from '@/lib/gear/types.js';
+import { GrandExchange } from '@/lib/grandExchange.js';
+import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
+import { countUsersWithItemInCl } from '@/lib/rawSql.js';
+import { sorts } from '@/lib/sorts.js';
+import { memoryAnalysis } from '@/lib/util/cachedUserIDs.js';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
+import getOSItem, { getItem } from '@/lib/util/getOSItem.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { deferInteraction, interactionReply } from '@/lib/util/interactionReply.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 import { syncCustomPrices } from '@/mahoji/lib/events.js';
 import { itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';

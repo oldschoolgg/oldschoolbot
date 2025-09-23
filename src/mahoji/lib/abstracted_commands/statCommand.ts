@@ -18,7 +18,7 @@ import {
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { getClueScoresFromOpenables } from '@/lib/clues/clueUtils.js';
-import { PerkTier } from '@/lib/constants';
+import { PerkTier } from '@/lib/constants.js';
 import { calcCLDetails, isCLItem } from '@/lib/data/Collections.js';
 import { skillEmoji } from '@/lib/data/emojis.js';
 import { slayerMaskHelms } from '@/lib/data/slayerMaskHelms.js';

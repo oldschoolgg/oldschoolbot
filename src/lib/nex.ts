@@ -10,7 +10,7 @@ import {
 	pernixOutfit,
 	torvaOutfit,
 	virtusOutfit
-} from '@/lib/data/CollectionsExport';
+} from '@/lib/data/CollectionsExport.js';
 import type { KillableMonster } from './minions/types.js';
 import getOSItem from './util/getOSItem.js';
 import { makeKillTable } from './util/setCustomMonster.js';

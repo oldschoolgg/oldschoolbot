@@ -5,16 +5,16 @@ import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { randArrItem, randInt, roll, Time } from 'e';
 import { Bank, ItemGroups, resolveItems } from 'oldschooljs';
 
-import { Offerables } from '@/lib/data/offerData';
-import { birdsNestID, treeSeedsNest } from '@/lib/simulation/birdsNest';
-import Prayer from '@/lib/skilling/skills/prayer';
+import { Offerables } from '@/lib/data/offerData.js';
+import { birdsNestID, treeSeedsNest } from '@/lib/simulation/birdsNest.js';
+import Prayer from '@/lib/skilling/skills/prayer.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { OfferingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
-import getOSItem from '@/lib/util/getOSItem';
-import { deferInteraction } from '@/lib/util/interactionReply';
-import { makeBankImage } from '@/lib/util/makeBankImage';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const specialBones = [

@@ -8,7 +8,7 @@ import { GroupedPohObjects, getPOHObject, itemsNotRefundable, PoHObjects } from 
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import getOSItem from '@/lib/util/getOSItem.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { formatSkillRequirements } from '@/lib/util/smallUtils';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const pohWallkits = [

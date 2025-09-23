@@ -4,7 +4,7 @@ import { round } from 'e';
 import { type ItemBank, Items } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
-import { getSimilarItems } from '@/lib/data/similarItems';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
 import {
 	type Species,
 	seaMonkeySpells,
@@ -13,7 +13,7 @@ import {
 	tameKillableMonsters,
 	tameSpecies
 } from '@/lib/tames.js';
-import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 import { itemNameFromID } from './smallUtils.js';
 
 export async function tameLastFinishedActivity(user: MUser) {

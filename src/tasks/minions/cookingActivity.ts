@@ -1,12 +1,12 @@
 import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants';
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
-import { globalDroprates } from '@/lib/data/globalDroprates';
-import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries';
-import calcBurntCookables from '@/lib/skilling/functions/calcBurntCookables';
-import Cooking from '@/lib/skilling/skills/cooking/cooking';
+import { globalDroprates } from '@/lib/data/globalDroprates.js';
+import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import calcBurntCookables from '@/lib/skilling/functions/calcBurntCookables.js';
+import Cooking from '@/lib/skilling/skills/cooking/cooking.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { CookingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';

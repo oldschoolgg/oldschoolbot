@@ -10,18 +10,18 @@ import {
 	customBossesDropsThatCantBeDroppedInMBs,
 	theatreOfBloodHardUniques,
 	theatreOfBloodNormalUniques
-} from '@/lib/data/CollectionsExport';
-import { baseHolidayItems, PartyhatTable } from '@/lib/data/holidayItems';
-import { allTrophyItems } from '@/lib/data/itemAliases';
+} from '@/lib/data/CollectionsExport.js';
+import { baseHolidayItems, PartyhatTable } from '@/lib/data/holidayItems.js';
+import { allTrophyItems } from '@/lib/data/itemAliases.js';
 import {
 	ChimplingImpling,
 	EternalImpling,
 	InfernalImpling,
 	MysteryImpling,
 	ShrimplingImpling
-} from '@/lib/simulation/customImplings';
-import { RuneTable } from '@/lib/simulation/seedTable';
-import { ExoticSeedsTable } from '@/lib/simulation/sharedTables';
+} from '@/lib/simulation/customImplings.js';
+import { RuneTable } from '@/lib/simulation/seedTable.js';
+import { ExoticSeedsTable } from '@/lib/simulation/sharedTables.js';
 import { OSB_VIRTUS_IDS } from './bso/bsoConstants.js';
 import { clAdjustedDroprate } from './bso/bsoUtil.js';
 import { divinationEnergies } from './bso/divination.js';

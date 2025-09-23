@@ -1,6 +1,6 @@
 import type { ActivityTaskData, MonsterActivityTaskOptions, TOAOptions } from '@/lib/types/minions.js';
-import { normalizeTOAUsers } from '@/lib/util/smallUtils';
-import type { CAViewType } from '@/mahoji/commands/ca';
+import { normalizeTOAUsers } from '@/lib/util/smallUtils.js';
+import type { CAViewType } from '@/mahoji/commands/ca.js';
 import type { CombatAchievement } from './combatAchievements.js';
 
 export function isCertainMonsterTrip(monsterID: number) {

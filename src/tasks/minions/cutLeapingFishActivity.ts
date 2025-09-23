@@ -1,7 +1,7 @@
 import { clamp, percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
-import LeapingFish from '@/lib/skilling/skills/cooking/leapingFish';
+import LeapingFish from '@/lib/skilling/skills/cooking/leapingFish.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { CutLeapingFishActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';

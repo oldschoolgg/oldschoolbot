@@ -1,8 +1,8 @@
 import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MysteryBoxes } from '@/lib/bsoOpenables';
-import { Planks } from '@/lib/minions/data/planks';
+import { MysteryBoxes } from '@/lib/bsoOpenables.js';
+import { Planks } from '@/lib/minions/data/planks.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { SawmillActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';

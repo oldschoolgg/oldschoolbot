@@ -1,27 +1,27 @@
 import { randInt, Time } from 'e';
-import { Bank, increaseBankQuantitesByPercent, itemID, Items, Monsters } from 'oldschooljs';
+import { Bank, Items, increaseBankQuantitesByPercent, itemID, Monsters } from 'oldschooljs';
 
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
-import { MysteryBoxes } from '@/lib/bsoOpenables';
-import chatHeadImage from '@/lib/canvas/chatHeadImage';
-import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements';
-import { BitField } from '@/lib/constants';
-import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions';
-import type { PatchTypes } from '@/lib/minions/farming';
-import type { FarmingContract } from '@/lib/minions/farming/types';
-import { calcVariableYield } from '@/lib/skilling/functions/calcsFarming';
-import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo';
-import Farming, { plants } from '@/lib/skilling/skills/farming';
+import { MysteryBoxes } from '@/lib/bsoOpenables.js';
+import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
+import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
+import { BitField } from '@/lib/constants.js';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions.js';
+import type { PatchTypes } from '@/lib/minions/farming/index.js';
+import type { FarmingContract } from '@/lib/minions/farming/types.js';
+import { calcVariableYield } from '@/lib/skilling/functions/calcsFarming.js';
+import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
+import Farming, { plants } from '@/lib/skilling/skills/farming/index.js';
 import { type Plant, SkillsEnum } from '@/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
-import { skillingPetDropRate } from '@/lib/util';
-import { getFarmingKeyFromName } from '@/lib/util/farmingHelpers';
+import { getFarmingKeyFromName } from '@/lib/util/farmingHelpers.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { assert } from '@/lib/util/logError';
-import { roll } from '@/lib/util/rng';
+import { assert } from '@/lib/util/logError.js';
+import { roll } from '@/lib/util/rng.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { sendToChannelID } from '@/lib/util/webhook';
-import { userStatsBankUpdate } from '@/mahoji/mahojiSettings';
+import { sendToChannelID } from '@/lib/util/webhook.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 const plopperBoostPercent = 100;
 

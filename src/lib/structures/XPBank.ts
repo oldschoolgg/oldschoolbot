@@ -1,6 +1,6 @@
 import { sumArr } from 'e';
 
-import { skillEmoji } from '@/lib/data/emojis';
+import { skillEmoji } from '@/lib/data/emojis.js';
 import type { AddXpParams } from '@/lib/minions/types.js';
 import type { SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
 import type { Skills } from '@/lib/types/index.js';

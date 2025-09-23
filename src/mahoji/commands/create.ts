@@ -4,13 +4,13 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { isFunction, reduceNumByPercent } from 'e';
 import { Bank, type SkillsEnum } from 'oldschooljs';
 
-import Createables from '@/lib/data/createables';
-import type { IMaterialBank } from '@/lib/invention';
-import { transactMaterialsFromUser } from '@/lib/invention/inventions';
-import { MaterialBank } from '@/lib/invention/MaterialBank';
-import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks';
-import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import Createables from '@/lib/data/createables.js';
+import type { IMaterialBank } from '@/lib/invention/index.js';
+import { transactMaterialsFromUser } from '@/lib/invention/inventions.js';
+import { MaterialBank } from '@/lib/invention/MaterialBank.js';
+import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { mahojiUsersSettingsFetch, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 

@@ -4,12 +4,12 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { randArrItem, reduceNumByPercent, roll, sumArr } from 'e';
 import { averageBank, Bank, resolveItems } from 'oldschooljs';
 
-import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable';
-import { doaStartCommand } from '@/lib/bso/doa/doaStartCommand';
-import { globalConfig } from '@/lib/constants';
-import { doaMetamorphPets } from '@/lib/data/CollectionsExport';
-import { globalDroprates } from '@/lib/data/globalDroprates';
-import { degradeableItems } from '@/lib/degradeableItems';
+import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';
+import { doaStartCommand } from '@/lib/bso/doa/doaStartCommand.js';
+import { globalConfig } from '@/lib/constants.js';
+import { doaMetamorphPets } from '@/lib/data/CollectionsExport.js';
+import { globalDroprates } from '@/lib/data/globalDroprates.js';
+import { degradeableItems } from '@/lib/degradeableItems.js';
 import {
 	calcDOAInput,
 	chanceOfDOAUnique,
@@ -17,10 +17,10 @@ import {
 	DOARooms,
 	doaHelpCommand,
 	pickUniqueToGiveUser
-} from '@/lib/depthsOfAtlantis';
-import { mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '@/lib/simulation/toa';
-import { deferInteraction } from '@/lib/util/interactionReply';
-import { makeBankImage } from '@/lib/util/makeBankImage';
+} from '@/lib/depthsOfAtlantis.js';
+import { mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '@/lib/simulation/toa.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { coxCommand, coxStatsCommand } from '@/mahoji/lib/abstracted_commands/coxCommand.js';
 import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '@/mahoji/lib/abstracted_commands/tobCommand.js';
 

@@ -3,7 +3,7 @@ import { isAtleastThisOld } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { compCapeCreatableBank } from '@/lib/skilling/skillcapes';
+import { compCapeCreatableBank } from '@/lib/skilling/skillcapes.js';
 import type { Buyable } from './buyables.js';
 import { circusBuyables } from './circusBuyables.js';
 import { fistOfGuthixBuyables } from './fistOfGuthixBuyables.js';

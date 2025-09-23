@@ -18,7 +18,7 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
-import { allCollectionLogsFlat } from '@/lib/data/Collections';
+import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 import {
 	chambersOfXericCL,
 	chambersOfXericNormalCL,
@@ -41,13 +41,13 @@ import {
 	theNightmareCL,
 	theNightmareNormalCL,
 	wintertodtCL
-} from '@/lib/data/CollectionsExport';
-import pets from '@/lib/data/pets';
-import { birdsNestID, treeSeedsNest } from '@/lib/simulation/birdsNest';
-import { gauntlet } from '@/lib/simulation/gauntlet';
-import { getTemporossLoot } from '@/lib/simulation/tempoross';
-import { TheatreOfBlood } from '@/lib/simulation/tob';
-import { WintertodtCrate } from '@/lib/simulation/wintertodt';
+} from '@/lib/data/CollectionsExport.js';
+import pets from '@/lib/data/pets.js';
+import { birdsNestID, treeSeedsNest } from '@/lib/simulation/birdsNest.js';
+import { gauntlet } from '@/lib/simulation/gauntlet.js';
+import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
+import { TheatreOfBlood } from '@/lib/simulation/tob.js';
+import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
 import { rollNaxxusLoot } from './bso/naxxus/rollNaxxusLoot.js';
 import {
 	KalphiteKingMonster,

@@ -3,9 +3,9 @@ import type { User as RoboChimpUser } from '@prisma/robochimp';
 import { sumArr } from 'e';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import Darts from '@/lib/skilling/skills/fletching/fletchables/darts';
-import { gloriesInventorySize } from '@/mahoji/lib/abstracted_commands/chargeGloriesCommand';
-import { wealthInventorySize } from '@/mahoji/lib/abstracted_commands/chargeWealthCommand';
+import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
+import { gloriesInventorySize } from '@/mahoji/lib/abstracted_commands/chargeGloriesCommand.js';
+import { wealthInventorySize } from '@/mahoji/lib/abstracted_commands/chargeWealthCommand.js';
 
 export function totalLampedXP(userStats: UserStats) {
 	return sumArr(Object.values(userStats.lamped_xp as ItemBank));

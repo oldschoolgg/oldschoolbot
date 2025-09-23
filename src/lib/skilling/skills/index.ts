@@ -1,6 +1,6 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 
-import { skillEmoji } from '@/lib/data/emojis';
+import { skillEmoji } from '@/lib/data/emojis.js';
 import { Construction } from '@/lib/skilling/skills/construction/index.js';
 import Crafting from '@/lib/skilling/skills/crafting/index.js';
 import Farming from '@/lib/skilling/skills/farming/index.js';

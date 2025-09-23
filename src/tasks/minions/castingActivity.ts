@@ -1,4 +1,4 @@
-import { Castables } from '@/lib/skilling/skills/magic/castables';
+import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { CastingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';

@@ -4,7 +4,7 @@ import { randArrItem, reduceNumByPercent, roll, Time, uniqueArr } from 'e';
 import { Bank, type ItemBank, resolveItems, SkillsEnum } from 'oldschooljs';
 
 import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';
-import { drawChestLootImage } from '@/lib/canvas/chestImage';
+import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { doaCL, doaMetamorphPets } from '@/lib/data/CollectionsExport.js';
 import { globalDroprates } from '@/lib/data/globalDroprates.js';
 import { chanceOfDOAUnique, DOARooms, pickUniqueToGiveUser } from '@/lib/depthsOfAtlantis.js';

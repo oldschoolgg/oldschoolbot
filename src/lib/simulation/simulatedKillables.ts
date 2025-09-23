@@ -3,7 +3,7 @@ import { randArrItem, randInt, roll } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
 import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';
-import { nexUniqueDrops } from '@/lib/data/CollectionsExport';
+import { nexUniqueDrops } from '@/lib/data/CollectionsExport.js';
 import { chanceOfDOAUnique, pickUniqueToGiveUser } from '@/lib/depthsOfAtlantis.js';
 import {
 	KalphiteKingMonster,
@@ -12,8 +12,8 @@ import {
 import { KingGoldemarLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';
 import { MoktangLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
 import { NEX_UNIQUE_DROPRATE, nexLootTable } from '@/lib/nex.js';
-import { zygomiteFarmingSource } from '@/lib/skilling/skills/farming/zygomites';
-import { calcDwwhChance } from '@/lib/structures/Boss';
+import { zygomiteFarmingSource } from '@/lib/skilling/skills/farming/zygomites.js';
+import { calcDwwhChance } from '@/lib/structures/Boss.js';
 import { WintertodtCrate } from './wintertodt.js';
 
 export const winterTodtPointsTable = new SimpleTable<number>()

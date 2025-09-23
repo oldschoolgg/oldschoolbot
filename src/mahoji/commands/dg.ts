@@ -3,26 +3,26 @@ import { formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolk
 import { ApplicationCommandOptionType } from 'discord.js';
 import { reduceNumByPercent, Time } from 'e';
 
-import { setupParty } from '@/lib/party';
+import { setupParty } from '@/lib/party.js';
 import {
-    determineDgLevelForFloor,
-    dungBuyables,
-    isValidFloor,
-    requiredSkills
-} from '@/lib/skilling/skills/dung/dungData';
+	determineDgLevelForFloor,
+	dungBuyables,
+	isValidFloor,
+	requiredSkills
+} from '@/lib/skilling/skills/dung/dungData.js';
 import {
-    calcMaxFloorUserCanDo,
-    calcUserGorajanShardChance,
-    hasRequiredLevels,
-    numberOfGorajanOutfitsEquipped
-} from '@/lib/skilling/skills/dung/dungDbFunctions';
+	calcMaxFloorUserCanDo,
+	calcUserGorajanShardChance,
+	hasRequiredLevels,
+	numberOfGorajanOutfitsEquipped
+} from '@/lib/skilling/skills/dung/dungDbFunctions.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import type { MakePartyOptions } from '@/lib/types';
+import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { DungeoneeringOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
-import { deferInteraction } from '@/lib/util/interactionReply';
-import { formatSkillRequirements } from '@/lib/util/smallUtils';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 // Max people in a party:
 const maxTeamSize = 20;

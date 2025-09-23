@@ -2,9 +2,9 @@ import { channelIsSendable, makeComponents, mentionCommand } from '@oldschoolgg/
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { activity_type_enum } from '@prisma/client';
 import {
-	bold,
 	type AttachmentBuilder,
 	type ButtonBuilder,
+	bold,
 	type MessageCollector,
 	type MessageCreateOptions
 } from 'discord.js';
@@ -18,28 +18,28 @@ import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
-import { BitField, PerkTier } from '@/lib/constants';
+import { BitField, PerkTier } from '@/lib/constants.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
-import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions.js';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions.js';
 import { mysteriousStepData } from '@/lib/mysteryTrail.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
-import { RuneTable, WilvusTable, WoodTable } from '@/lib/simulation/seedTable';
-import { DougTable, PekyTable } from '@/lib/simulation/sharedTables';
-import { calculateZygomiteLoot } from '@/lib/skilling/skills/farming/zygomites';
-import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses';
+import { RuneTable, WilvusTable, WoodTable } from '@/lib/simulation/seedTable.js';
+import { DougTable, PekyTable } from '@/lib/simulation/sharedTables.js';
+import { calculateZygomiteLoot } from '@/lib/skilling/skills/farming/zygomites.js';
+import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { perHourChance } from '@/lib/util/rng.js';
-import { alching } from '@/mahoji/commands/laps';
-import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand';
-import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand';
+import { alching } from '@/mahoji/commands/laps.js';
+import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
+import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
 import {
 	tearsOfGuthixIronmanReqs,
 	tearsOfGuthixSkillReqs
-} from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand';
-import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings';
+} from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
+import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 import { handleCrateSpawns } from './handleCrateSpawns.js';
 import {
 	makeAutoContractButton,

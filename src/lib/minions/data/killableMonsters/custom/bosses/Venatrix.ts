@@ -4,7 +4,7 @@ import { GearStat } from 'oldschooljs/gear';
 
 import { BitField } from '@/lib/constants.js';
 import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
-import { addStatsOfItemsTogether } from '@/lib/structures/Gear';
+import { addStatsOfItemsTogether } from '@/lib/structures/Gear.js';
 
 export const VenatrixLootTable = new LootTable()
 	.every('Venatrix eggs')

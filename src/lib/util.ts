@@ -5,7 +5,7 @@ import { bold, type Guild, userMention } from 'discord.js';
 import { calcWhatPercent, noOp, objectEntries, sumArr } from 'e';
 import { type Bank, calcCombatLevel, convertXPtoLVL, type Monster, Monsters } from 'oldschooljs';
 
-import { BitField, globalConfig, MAX_LEVEL, MAX_XP } from '@/lib/constants';
+import { BitField, globalConfig, MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
 import type { SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
 import type { Skills } from '@/lib/types/index.js';
 import { usernameWithBadgesCache } from './cache.js';

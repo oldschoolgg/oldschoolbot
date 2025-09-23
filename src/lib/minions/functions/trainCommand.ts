@@ -3,7 +3,7 @@ import { uniqueArr } from 'e';
 import { SkillsEnum } from 'oldschooljs';
 
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
-import { formatList } from '@/lib/util/smallUtils';
+import { formatList } from '@/lib/util/smallUtils.js';
 
 const validStyles: AttackStyles[] = [
 	SkillsEnum.Attack,

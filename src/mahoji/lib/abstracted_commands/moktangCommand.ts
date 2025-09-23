@@ -8,10 +8,10 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { PercentCounter } from '@/lib/structures/PercentCounter.js';
 import type { MoktangTaskOptions } from '@/lib/types/minions.js';
-import { itemNameFromID } from '@/lib/util';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { itemNameFromID } from '@/lib/util.js';
 
 const requiredPickaxes = resolveItems(['Crystal pickaxe', 'Volcanic pickaxe', 'Dwarven pickaxe', 'Dragon pickaxe']);
 

@@ -3,9 +3,9 @@ import { UserError } from '@oldschoolgg/toolkit/structures';
 import { objectEntries, reduceNumByPercent } from 'e';
 import { type Bank, itemID } from 'oldschooljs';
 
-import { Eatables } from '@/lib/data/eatables';
+import { Eatables } from '@/lib/data/eatables.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
-import type { GearBank } from '@/lib/structures/GearBank';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import getUserFoodFromBank, { getRealHealAmount } from './getUserFoodFromBank.js';
 

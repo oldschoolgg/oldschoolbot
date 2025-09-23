@@ -2,8 +2,8 @@ import { type CommandRunOptions, truncateString } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { clamp } from 'e';
 
-import { allOpenables, allOpenablesIDs } from '@/lib/openables';
-import { deferInteraction } from '@/lib/util/interactionReply';
+import { allOpenables, allOpenablesIDs } from '@/lib/openables.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
 import {
 	abstractedOpenCommand,
 	abstractedOpenUntilCommand,

@@ -3,18 +3,18 @@ import type { ArrayItemsResolved, Bank, Item, ItemBank, MonsterKillOptions, Simp
 import type { OffenceGearStat } from 'oldschooljs/gear';
 
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
-import type { BitField } from '@/lib/constants';
+import type { BitField } from '@/lib/constants.js';
 import type { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import type { QuestID } from '@/lib/minions/data/quests.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { POHBoosts } from '@/lib/poh/index.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import type { LevelRequirements, SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
-import type { XPBank } from '@/lib/structures/Bank';
-import type { GearRequirement, GearRequirements } from '@/lib/structures/Gear';
-import type { GearBank } from '@/lib/structures/GearBank';
-import type { MUserStats } from '@/lib/structures/MUserStats';
-import type { UpdateBank } from '@/lib/structures/UpdateBank';
+import type { XPBank } from '@/lib/structures/Bank.js';
+import type { GearRequirement, GearRequirements } from '@/lib/structures/Gear.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
+import type { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
 

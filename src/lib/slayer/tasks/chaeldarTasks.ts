@@ -1,8 +1,8 @@
 import { Monsters } from 'oldschooljs';
 
-import { KalphiteKingMonster } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
-import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters';
-import { QuestID } from '@/lib/minions/data/quests';
+import { KalphiteKingMonster } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
+import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
 import { bossTasks } from './bossTasks.js';

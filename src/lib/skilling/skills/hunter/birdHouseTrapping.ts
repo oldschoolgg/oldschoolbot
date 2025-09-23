@@ -1,8 +1,8 @@
 import { Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { nestTable, strungRabbitFootNestTable } from '@/lib/simulation/birdsNest';
-import getOSItem from '@/lib/util/getOSItem';
+import { nestTable, strungRabbitFootNestTable } from '@/lib/simulation/birdsNest.js';
+import getOSItem from '@/lib/util/getOSItem.js';
 
 export interface Birdhouse {
 	name: string;

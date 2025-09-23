@@ -2,12 +2,12 @@ import type { UserStats } from '@prisma/client';
 import { increaseNumByPercent, roll, Time } from 'e';
 import { Bank, type ItemBank, MonsterAttribute, Monsters } from 'oldschooljs';
 
-import type { BitField } from '@/lib/constants';
-import { slayerMaskHelms } from '@/lib/data/slayerMaskHelms';
+import type { BitField } from '@/lib/constants.js';
+import { slayerMaskHelms } from '@/lib/data/slayerMaskHelms.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
-import type { GearBank } from '@/lib/structures/GearBank';
-import type { UpdateBank } from '@/lib/structures/UpdateBank';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import type { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { SlayerContext } from '@/tasks/minions/monsterActivity.js';
 import { clAdjustedDroprate } from './bsoUtil.js';
 import { bonecrusherEffect, clueUpgraderEffect, portableTannerEffect } from './inventionEffects.js';

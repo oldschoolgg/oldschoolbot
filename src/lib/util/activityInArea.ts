@@ -1,9 +1,9 @@
 import { activity_type_enum } from '@prisma/client';
 import { Monsters, resolveItems } from 'oldschooljs';
 
-import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements';
-import { courses } from '@/lib/skilling/skills/agility';
-import butterflyNettingCreatures from '@/lib/skilling/skills/hunter/creatures/butterflyNetting';
+import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
+import { courses } from '@/lib/skilling/skills/agility.js';
+import butterflyNettingCreatures from '@/lib/skilling/skills/hunter/creatures/butterflyNetting.js';
 import type {
 	ActivityTaskData,
 	AgilityActivityTaskOptions,

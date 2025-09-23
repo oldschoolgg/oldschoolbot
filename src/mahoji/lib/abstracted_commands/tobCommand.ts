@@ -28,13 +28,13 @@ import getUserFoodFromBank from '@/lib/minions/functions/getUserFoodFromBank.js'
 import { setupParty } from '@/lib/party.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
-import { skillsMeetRequirements } from '@/lib/util';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
 import getOSItem from '@/lib/util/getOSItem.js';
-import { formatSkillRequirements } from '@/lib/util/smallUtils';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { skillsMeetRequirements } from '@/lib/util.js';
 import { mahojiParseNumber, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 const minStats = {

@@ -19,14 +19,14 @@ import { type DisassembleFlag, disassembleFlagMaterials, materialTypes } from '@
 import Potions from '@/lib/minions/data/potions.js';
 import { monkeyEatables } from '@/lib/monkeyRumble.js';
 import { allOpenables } from '@/lib/openables.js';
-import { GrandmasterClueTable } from '@/lib/simulation/grandmasterClue';
-import { gracefulItems } from '@/lib/skilling/skills/agility';
-import { Craftables } from '@/lib/skilling/skills/crafting/craftables';
-import { Fletchables } from '@/lib/skilling/skills/fletching/fletchables';
-import Grimy from '@/lib/skilling/skills/herblore/mixables/grimy';
-import PotionsMixable from '@/lib/skilling/skills/herblore/mixables/potions';
-import unfinishedPotions from '@/lib/skilling/skills/herblore/mixables/unfinishedPotions';
-import { Lampables } from '@/mahoji/lib/abstracted_commands/lampCommand';
+import { GrandmasterClueTable } from '@/lib/simulation/grandmasterClue.js';
+import { gracefulItems } from '@/lib/skilling/skills/agility.js';
+import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
+import { Fletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
+import Grimy from '@/lib/skilling/skills/herblore/mixables/grimy.js';
+import PotionsMixable from '@/lib/skilling/skills/herblore/mixables/potions.js';
+import unfinishedPotions from '@/lib/skilling/skills/herblore/mixables/unfinishedPotions.js';
+import { Lampables } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
 import {
 	allClueItems,
 	allPetIDs,

@@ -3,7 +3,7 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { randArrItem, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { mahojiChatHead } from '@/lib/canvas/chatHeadImage';
+import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
 import {
 	fightingMessages,
 	getMonkeyPhrase,

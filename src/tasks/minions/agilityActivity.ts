@@ -1,21 +1,21 @@
 import { increaseNumByPercent, percentChance, randInt, roll, Time } from 'e';
 import { addItemToBank, Bank, type ItemBank, randomVariation, toKMB } from 'oldschooljs';
 
-import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants';
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
-import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination';
-import { globalDroprates } from '@/lib/data/globalDroprates';
-import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries';
-import { isDoubleLootActive } from '@/lib/doubleLoot';
-import Agility from '@/lib/skilling/skills/agility';
-import { calcUserGorajanShardChance } from '@/lib/skilling/skills/dung/dungDbFunctions';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
+import { globalDroprates } from '@/lib/data/globalDroprates.js';
+import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { isDoubleLootActive } from '@/lib/doubleLoot.js';
+import Agility from '@/lib/skilling/skills/agility.js';
+import { calcUserGorajanShardChance } from '@/lib/skilling/skills/dung/dungDbFunctions.js';
 import { type Course, SkillsEnum } from '@/lib/skilling/types.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
-import { skillingPetDropRate } from '@/lib/util';
-import getOSItem from '@/lib/util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { logError } from '@/lib/util/logError';
-import { updateClientGPTrackSetting, userStatsUpdate } from '@/mahoji/mahojiSettings';
+import { logError } from '@/lib/util/logError.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { updateClientGPTrackSetting, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 function chanceOfFailingAgilityPyramid(lvl: number) {
 	if (lvl < 40) return 95;

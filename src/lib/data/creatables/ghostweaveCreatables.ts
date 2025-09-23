@@ -1,7 +1,7 @@
 import { Bank, resolveItems } from 'oldschooljs';
 
 import type { Createable } from '@/lib/data/createables.js';
-import { itemNameFromID } from '@/lib/util/smallUtils';
+import { itemNameFromID } from '@/lib/util/smallUtils.js';
 
 const ghostWeaveItems = resolveItems([
 	'Ghostly zombie gloves',

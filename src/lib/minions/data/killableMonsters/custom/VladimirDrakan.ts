@@ -3,9 +3,9 @@ import { Bank, LootTable, Monsters, randomVariation, resolveItems, resolveNameBa
 import { GearStat } from 'oldschooljs/gear';
 
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
-import { vladDrakanCL } from '@/lib/data/CollectionsExport';
-import { globalDroprates } from '@/lib/data/globalDroprates';
-import { runeWeaponTable } from '@/lib/simulation/sharedTables';
+import { vladDrakanCL } from '@/lib/data/CollectionsExport.js';
+import { globalDroprates } from '@/lib/data/globalDroprates.js';
+import { runeWeaponTable } from '@/lib/simulation/sharedTables.js';
 import type { CustomMonster } from './customMonsters.js';
 
 const JewelleryTable = new LootTable()

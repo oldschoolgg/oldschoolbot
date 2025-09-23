@@ -4,8 +4,8 @@ import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
-import { BitField } from '@/lib/constants';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { BitField } from '@/lib/constants.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { capeGambleCommand, capeGambleStatsCommand } from '@/mahoji/lib/abstracted_commands/capegamble.js';
 import { diceCommand } from '@/mahoji/lib/abstracted_commands/diceCommand.js';
 import { duelCommand } from '@/mahoji/lib/abstracted_commands/duelCommand.js';

@@ -1,6 +1,6 @@
 import { type Bank, itemID, resolveItems } from 'oldschooljs';
 
-import { getSimilarItems } from '@/lib/data/similarItems';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import type { MaterialBank } from '@/lib/invention/MaterialBank.js';
 import type { Skills, SkillsRequired } from '@/lib/types/index.js';

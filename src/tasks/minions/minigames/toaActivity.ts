@@ -4,7 +4,7 @@ import { bold } from 'discord.js';
 import { isObject, Time, uniqueArr } from 'e';
 import { Bank, type ItemBank, ItemGroups, resolveItems } from 'oldschooljs';
 
-import { drawChestLootImage } from '@/lib/canvas/chestImage';
+import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import {
@@ -17,7 +17,7 @@ import {
 import type { TOAOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { assert } from '@/lib/util/logError.js';
-import { normalizeTOAUsers } from '@/lib/util/smallUtils';
+import { normalizeTOAUsers } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 

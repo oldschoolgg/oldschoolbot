@@ -1,4 +1,4 @@
-import { DISABLED_COMMANDS, globalConfig } from '@/lib/constants';
+import { DISABLED_COMMANDS, globalConfig } from '@/lib/constants.js';
 
 export async function syncDisabledCommands() {
 	const disabledCommands = await prisma.clientStorage.upsert({

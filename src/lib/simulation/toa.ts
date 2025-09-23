@@ -25,34 +25,34 @@ import {
 import { Bank, itemID, LootTable, randomVariation, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
-import { getSimilarItems } from '@/lib/data/similarItems';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { degradeItem } from '@/lib/degradeableItems.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import {
 	canAffordInventionBoost,
-	inventionBoosts,
 	InventionID,
+	inventionBoosts,
 	inventionItemBoost
 } from '@/lib/invention/inventions.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { setupParty } from '@/lib/party.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import { constructGearSetup, Gear } from '@/lib/structures/Gear';
+import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
 import type { MakePartyOptions, Skills } from '@/lib/types/index.js';
 import type { TOAOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
-import getOSItem from '@/lib/util/getOSItem';
-import { assert } from '@/lib/util/logError';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { assert } from '@/lib/util/logError.js';
 import {
 	bankToStrShortNames,
 	formatList,
 	formatSkillRequirements,
 	getToaKCs,
 	itemNameFromID
-} from '@/lib/util/smallUtils';
+} from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { mahojiParseNumber, userStatsBankUpdate } from '@/mahoji/mahojiSettings';
+import { mahojiParseNumber, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 import { TeamLoot } from './TeamLoot.js';
 
 const teamSizeScale: Record<number, number> = {

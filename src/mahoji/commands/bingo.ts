@@ -22,14 +22,14 @@ import {
 import { chunk, noOp, notEmpty, Time, uniqueArr } from 'e';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '@/lib/blacklists';
-import { clImageGenerator } from '@/lib/collectionLogTask';
-import { BOT_TYPE, globalConfig } from '@/lib/constants';
-import { getUsername, getUsernameSync } from '@/lib/util';
-import { getItem } from '@/lib/util/getOSItem';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
-import { parseBank } from '@/lib/util/parseStringBank';
-import { isValidNickname } from '@/lib/util/smallUtils';
+import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { clImageGenerator } from '@/lib/collectionLogTask.js';
+import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
+import { getItem } from '@/lib/util/getOSItem.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
+import { isValidNickname } from '@/lib/util/smallUtils.js';
+import { getUsername, getUsernameSync } from '@/lib/util.js';
 import { BingoManager, BingoTrophies } from '@/mahoji/lib/bingo/BingoManager.js';
 import { generateTileName, getAllTileItems, isGlobalTile, type StoredBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';

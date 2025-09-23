@@ -2,7 +2,7 @@ import { notEmpty, uniqueArr } from 'e';
 import { deepResolveItems, Items } from 'oldschooljs';
 
 import { gods } from '@/lib/bso/divineDominion.js';
-import { BitField, BitFieldData, MAX_XP } from '@/lib/constants';
+import { BitField, BitFieldData, MAX_XP } from '@/lib/constants.js';
 import {
 	cluesBeginnerCL,
 	cluesEasyCL,
@@ -13,9 +13,9 @@ import {
 	cluesMediumCL,
 	cluesSharedCL,
 	expertCapesCL
-} from '@/lib/data/CollectionsExport';
-import { getSimilarItems } from '@/lib/data/similarItems';
-import { slayerMaskHelms } from '@/lib/data/slayerMaskHelms';
+} from '@/lib/data/CollectionsExport.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { slayerMaskHelms } from '@/lib/data/slayerMaskHelms.js';
 
 export const elderRequiredClueCLItems = uniqueArr([
 	...cluesGrandmasterCL,

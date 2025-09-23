@@ -1,4 +1,4 @@
-import { Enchantables } from '@/lib/skilling/skills/magic/enchantables';
+import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { EnchantingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';

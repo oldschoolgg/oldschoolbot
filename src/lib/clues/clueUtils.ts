@@ -1,7 +1,7 @@
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import type { Bank } from 'oldschooljs';
 
-import { BitField } from '@/lib/constants';
+import { BitField } from '@/lib/constants.js';
 import { ClueTiers } from './clueTiers.js';
 
 export function getClueScoresFromOpenables(openableScores: Bank) {

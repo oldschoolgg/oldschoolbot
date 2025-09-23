@@ -3,7 +3,7 @@ import type { Bank, Item, ItemBank, LootTable } from 'oldschooljs';
 import type { QuestID } from '@/lib/minions/data/quests.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import type { Skills } from '@/lib/types/index.js';
-import type { FarmingPatchName } from '@/lib/util/farmingHelpers';
+import type { FarmingPatchName } from '@/lib/util/farmingHelpers.js';
 
 export enum SkillsEnum {
 	Agility = 'agility',

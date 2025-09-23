@@ -4,7 +4,7 @@ import '../data/itemAliases.js';
 import { removeFromArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import getOSItem from '@/lib/util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem.js';
 import type { FinishWorkerArgs, FinishWorkerReturn } from '@/lib/workers/index.js';
 
 if (global.prisma) {

@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { monkeyTiers } from '@/lib/monkeyRumble.js';
-import getOSItem from '@/lib/util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem.js';
 import type { Buyable } from './buyables.js';
 
 export const monkeyRumbleBuyables: Buyable[] = [

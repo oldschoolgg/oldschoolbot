@@ -1,20 +1,20 @@
 import { percentChance, randInt, roll, Time } from 'e';
 import { resolveItems, SkillsEnum } from 'oldschooljs';
 
-import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants';
-import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination';
-import { clueUpgraderEffect } from '@/lib/bso/inventionEffects';
-import { ClueTiers } from '@/lib/clues/clueTiers';
-import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/stealables';
-import { UpdateBank } from '@/lib/structures/UpdateBank';
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
+import { clueUpgraderEffect } from '@/lib/bso/inventionEffects.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/stealables.js';
+import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
-import { skillingPetDropRate } from '@/lib/util';
-import { forcefullyUnequipItem } from '@/lib/util/forcefullyUnequipItem';
-import getOSItem from '@/lib/util/getOSItem';
+import { forcefullyUnequipItem } from '@/lib/util/forcefullyUnequipItem.js';
+import getOSItem from '@/lib/util/getOSItem.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { makeBankImage } from '@/lib/util/makeBankImage';
-import { perHourChance } from '@/lib/util/rng';
-import { rogueOutfitPercentBonus, updateClientGPTrackSetting, userStatsBankUpdate } from '@/mahoji/mahojiSettings';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { perHourChance } from '@/lib/util/rng.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { rogueOutfitPercentBonus, updateClientGPTrackSetting, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 const notMultiplied = resolveItems([
 	'Blood shard',

@@ -1,6 +1,6 @@
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { Requirements } from '@/lib/structures/Requirements';
+import { Requirements } from '@/lib/structures/Requirements.js';
 import type { TOAOptions } from '@/lib/types/minions.js';
 import { isCertainMonsterTrip } from './caUtils.js';
 import type { CombatAchievement } from './combatAchievements.js';

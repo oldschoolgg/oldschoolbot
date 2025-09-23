@@ -1,6 +1,6 @@
-import { brokenVirtusOutfit, virtusOutfit } from '@/lib/data/CollectionsExport';
+import { brokenVirtusOutfit, virtusOutfit } from '@/lib/data/CollectionsExport.js';
 import type { DisassemblySourceGroup } from '@/lib/invention/index.js';
-import getOSItem from '@/lib/util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem.js';
 
 const i = getOSItem;
 

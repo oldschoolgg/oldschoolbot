@@ -1,7 +1,7 @@
 import { noOp, uniqueArr } from 'e';
 
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
-import { globalConfig } from '@/lib/constants';
+import { globalConfig } from '@/lib/constants.js';
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 import { syncCustomPrices } from '@/mahoji/lib/events.js';
 import { cacheBadges } from './badges.js';

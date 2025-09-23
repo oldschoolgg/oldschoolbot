@@ -1,8 +1,8 @@
 import { Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
-import { BitField } from '@/lib/constants';
-import type { GearBank } from '@/lib/structures/GearBank';
+import { BitField } from '@/lib/constants.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 
 export function calculateDwarvenBlessingPotsNeeded(duration: number) {
 	const fiveMinIncrements = Math.ceil(duration / (Time.Minute * 5));

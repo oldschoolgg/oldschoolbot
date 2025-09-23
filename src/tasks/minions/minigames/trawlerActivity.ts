@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { MysteryBoxes } from '@/lib/bsoOpenables.js';
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { fishingTrawlerLoot } from '@/lib/simulation/fishingTrawler.js';
-import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 

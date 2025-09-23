@@ -1,7 +1,7 @@
 import { LootTable, Monsters, RareDropTable } from 'oldschooljs';
 
 import { MysteryBoxes } from '@/lib/bsoOpenables.js';
-import setCustomMonster from '@/lib/util/setCustomMonster';
+import setCustomMonster from '@/lib/util/setCustomMonster.js';
 
 export const VasaMagusLootTable = new LootTable()
 	.add('Rune pickaxe', [1, 9])

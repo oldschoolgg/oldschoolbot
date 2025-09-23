@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import type { PvMMethod } from '@/lib/constants';
+import type { PvMMethod } from '@/lib/constants.js';
 import { canAffordInventionBoostRaw, InventionID } from '@/lib/invention/inventions.js';
 import { cannonBanks } from '@/lib/minions/data/combatConstants.js';
 import { wildyKillableMonsters } from '@/lib/minions/data/killableMonsters/bosses/wildy.js';

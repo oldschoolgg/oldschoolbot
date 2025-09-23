@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import type { Createable } from '@/lib/data/createables.js';
-import getOSItem from '@/lib/util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem.js';
 
 export const toaCreatables: Createable[] = [
 	{

@@ -3,7 +3,7 @@ import { GemTable, HerbDropTable, LootTable, Monsters, UncommonSeedDropTable } f
 import { GearStat } from 'oldschooljs/gear';
 
 import { YETI_ID } from '@/lib/bso//bsoConstants.js';
-import { BitField } from '@/lib/constants';
+import { BitField } from '@/lib/constants.js';
 import type { CustomMonster } from './customMonsters.js';
 
 const DeadTable = new LootTable().add('Iron med helm').add('Bones').add('Skull').add('Bronze sword');

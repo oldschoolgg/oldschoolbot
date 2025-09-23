@@ -3,7 +3,7 @@ import { type Item, type Monster, Monsters } from 'oldschooljs';
 import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
 import { allSlayerTasks } from '@/lib/slayer/tasks/index.js';
-import getOSItem from '@/lib/util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem.js';
 
 interface SlayerMaskHelm {
 	mask: Item;

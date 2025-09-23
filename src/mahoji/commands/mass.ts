@@ -1,20 +1,20 @@
 import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { channelIsSendable, type CommandRunOptions } from '@oldschoolgg/toolkit/discord-util';
+import { type CommandRunOptions, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type TextChannel } from 'discord.js';
 import { objectKeys, Time } from 'e';
 
-import killableMonsters from '@/lib/minions/data/killableMonsters';
-import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood';
-import hasEnoughFoodForMonster from '@/lib/minions/functions/hasEnoughFoodForMonster';
-import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser';
-import type { KillableMonster } from '@/lib/minions/types';
-import { setupParty } from '@/lib/party';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
+import hasEnoughFoodForMonster from '@/lib/minions/functions/hasEnoughFoodForMonster.js';
+import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { setupParty } from '@/lib/party.js';
 import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
-import calcDurQty from '@/lib/util/calcMassDurationQuantity';
-import findMonster from '@/lib/util/findMonster';
-import { deferInteraction } from '@/lib/util/interactionReply';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
+import findMonster from '@/lib/util/findMonster.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {

@@ -2,8 +2,8 @@ import { Time } from 'e';
 import { deepResolveItems, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { commanderZilyanaCL, generalGraardorCL, kreeArraCL, krilTsutsarothCL } from '@/lib/data/CollectionsExport';
-import type { KillableMonster } from '@/lib/minions/types';
+import { commanderZilyanaCL, generalGraardorCL, kreeArraCL, krilTsutsarothCL } from '@/lib/data/CollectionsExport.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 
 const killableBosses: KillableMonster[] = [

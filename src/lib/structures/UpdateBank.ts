@@ -9,9 +9,9 @@ import type { GearSetup } from '@/lib/gear/types.js';
 import { transactMaterialsFromUser } from '@/lib/invention/inventions.js';
 import { MaterialBank } from '@/lib/invention/MaterialBank.js';
 import type { MUserClass } from '@/lib/MUser.js';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
 import type { JsonKeys } from '@/lib/util.js';
-import { type ClientBankKey, userStatsUpdate } from '@/mahoji/mahojiSettings';
+import { type ClientBankKey, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 import { ChargeBank, XPBank } from './Bank.js';
 import { KCBank } from './KCBank.js';
 

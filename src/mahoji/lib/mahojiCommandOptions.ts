@@ -5,13 +5,13 @@ import { type APIApplicationCommandOptionChoice, ApplicationCommandOptionType, t
 import { uniqueArr } from 'e';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
-import { baseFilters, filterableTypes } from '@/lib/data/filterables';
-import { GearSetupTypes } from '@/lib/gear/types';
-import { type IMaterialBank, materialTypes } from '@/lib/invention';
-import { MaterialBank } from '@/lib/invention/MaterialBank';
-import { effectiveMonsters } from '@/lib/minions/data/killableMonsters';
+import { baseFilters, filterableTypes } from '@/lib/data/filterables.js';
+import { GearSetupTypes } from '@/lib/gear/types.js';
+import { type IMaterialBank, materialTypes } from '@/lib/invention/index.js';
+import { MaterialBank } from '@/lib/invention/MaterialBank.js';
+import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import { Gear, type GlobalPreset, globalPresets } from '@/lib/structures/Gear';
+import { Gear, type GlobalPreset, globalPresets } from '@/lib/structures/Gear.js';
 import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export const filterOption: CommandOption = {

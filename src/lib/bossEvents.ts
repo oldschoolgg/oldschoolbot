@@ -2,8 +2,8 @@ import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { EmbedBuilder, type TextChannel } from 'discord.js';
 import { Time } from 'e';
 
-import { globalConfig } from '@/lib/constants';
-import { getPHeadDescriptor } from '@/lib/simulation/pumpkinHead';
+import { globalConfig } from '@/lib/constants.js';
+import { getPHeadDescriptor } from '@/lib/simulation/pumpkinHead.js';
 import { BossInstance, type BossOptions, type BossUser } from './structures/Boss.js';
 import type { NewBossOptions } from './types/minions.js';
 import getOSItem from './util/getOSItem.js';

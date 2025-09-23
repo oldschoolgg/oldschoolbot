@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { birdhouseLimit } from '@/lib/bso/bsoUtil.js';
 import birdhouses, { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
-import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses';
+import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
 import type { BirdhouseActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';

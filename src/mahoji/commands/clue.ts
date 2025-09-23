@@ -3,14 +3,14 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { clamp, increaseNumByPercent, notEmpty, randInt, Time } from 'e';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
-import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers';
-import { clueHunterOutfit } from '@/lib/data/CollectionsExport';
-import { getPOHObject } from '@/lib/poh';
+import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
+import { clueHunterOutfit } from '@/lib/data/CollectionsExport.js';
+import { getPOHObject } from '@/lib/poh/index.js';
 import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
-import { checkElderClueRequirements } from '@/lib/util/elderClueRequirements';
-import getOSItem from '@/lib/util/getOSItem';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { checkElderClueRequirements } from '@/lib/util/elderClueRequirements.js';
+import getOSItem from '@/lib/util/getOSItem.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { getMahojiBank, mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 

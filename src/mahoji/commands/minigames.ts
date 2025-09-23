@@ -3,9 +3,9 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { NMZ_STRATEGY, type NMZStrategy } from '@/lib/constants.js';
-import TrekShopItems from '@/lib/data/buyables/trekBuyables';
-import { LMSBuyables } from '@/lib/data/CollectionsExport';
-import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables';
+import TrekShopItems from '@/lib/data/buyables/trekBuyables.js';
+import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
+import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import {
 	agilityArenaBuyables,
 	agilityArenaBuyCommand,

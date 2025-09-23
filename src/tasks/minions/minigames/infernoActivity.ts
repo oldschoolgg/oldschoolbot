@@ -6,7 +6,7 @@ import { Bank, type ItemBank, itemID, Monsters } from 'oldschooljs';
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
 import { diariesObject, userhasDiaryTier } from '@/lib/diaries.js';
 import { DiaryID } from '@/lib/minions/types.js';
-import { countUsersWithItemInCl } from '@/lib/rawSql';
+import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { InfernoOptions } from '@/lib/types/minions.js';

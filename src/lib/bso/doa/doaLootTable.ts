@@ -1,7 +1,7 @@
 import { LootTable } from 'oldschooljs';
 
-import { DragonTable } from '@/lib/simulation/grandmasterClue';
-import { runeAlchablesTable, StoneSpiritTable } from '@/lib/simulation/sharedTables';
+import { DragonTable } from '@/lib/simulation/grandmasterClue.js';
+import { runeAlchablesTable, StoneSpiritTable } from '@/lib/simulation/sharedTables.js';
 
 const DragonFletchingTable = new LootTable()
 	.add('Dragon arrowtips', [10, 20])

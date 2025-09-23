@@ -4,11 +4,11 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '@/lib/canvas/canvasUtil';
-import { globalConfig } from '@/lib/constants';
-import { defaultMegaDuckLocation, type MegaDuckLocation } from '@/lib/minions/types';
-import { getUsernameSync } from '@/lib/util';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '@/lib/canvas/canvasUtil.js';
+import { globalConfig } from '@/lib/constants.js';
+import { defaultMegaDuckLocation, type MegaDuckLocation } from '@/lib/minions/types.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { getUsernameSync } from '@/lib/util.js';
 import { mahojiGuildSettingsUpdate } from '@/mahoji/guildSettings.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 

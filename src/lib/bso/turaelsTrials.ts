@@ -3,11 +3,11 @@ import { increaseNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
-import { ChargeBank } from '@/lib/structures/Banks';
+import { ChargeBank } from '@/lib/structures/Banks.js';
 import type { TuraelsTrialsOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
-import { trackClientBankStats, userStatsBankUpdate } from '@/mahoji/mahojiSettings';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { trackClientBankStats, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const TuraelsTrialsMethods = ['melee', 'mage', 'range'] as const;
 export type TuraelsTrialsMethod = (typeof TuraelsTrialsMethods)[number];

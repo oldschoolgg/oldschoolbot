@@ -1,7 +1,7 @@
 import { round } from 'e';
 import { itemID } from 'oldschooljs';
 
-import type { GearBank } from '@/lib/structures/GearBank';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 
 const anglerItems = [
 	[itemID('Angler hat'), 0.4],
@@ -59,4 +59,4 @@ function calcAnglerBoostPercent(gearBank: GearBank) {
 	return round(boostPercent, 1);
 }
 
-export { calcRadasBlessingBoost, calcMinnowQuantityRange, calcAnglerBoostPercent, anglerItems };
+export { anglerItems, calcAnglerBoostPercent, calcMinnowQuantityRange, calcRadasBlessingBoost };

@@ -2,7 +2,7 @@ import { calcPercentOfNum, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { calcBabyYagaHouseDroprate } from '@/lib/bso/bsoUtil.js';
-import { Construction } from '@/lib/skilling/skills/construction';
+import { Construction } from '@/lib/skilling/skills/construction/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ConstructionActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';

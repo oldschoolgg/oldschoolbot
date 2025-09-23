@@ -4,8 +4,8 @@ import { calcWhatPercent, round, sumArr } from 'e';
 import deepEqual from 'fast-deep-equal';
 import type { Bank } from 'oldschooljs';
 
-import { BOT_TYPE, globalConfig, masteryKey } from '@/lib/constants';
-import { getTotalCl } from '@/lib/data/Collections';
+import { BOT_TYPE, globalConfig, masteryKey } from '@/lib/constants.js';
+import { getTotalCl } from '@/lib/data/Collections.js';
 import { calculateMastery } from './mastery.js';
 import { cacheRoboChimpUser } from './perkTier.js';
 import { MUserStats } from './structures/MUserStats.js';

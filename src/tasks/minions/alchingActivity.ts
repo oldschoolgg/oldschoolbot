@@ -1,13 +1,13 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants';
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
-import getOSItem from '@/lib/util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { roll } from '@/lib/util/rng';
-import { updateClientGPTrackSetting } from '@/mahoji/mahojiSettings';
+import { roll } from '@/lib/util/rng.js';
+import { updateClientGPTrackSetting } from '@/mahoji/mahojiSettings.js';
 
 export const alchingTask: MinionTask = {
 	type: 'Alching',

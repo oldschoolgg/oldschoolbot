@@ -5,9 +5,9 @@ import { omit } from 'remeda';
 
 import { dwarvenBlessing } from '@/lib/bso/dwarvenBlessing.js';
 import { gearstatToSetup, gorajanBoosts } from '@/lib/bso/gorajanGearBoost.js';
-import type { PvMMethod } from '@/lib/constants';
+import type { PvMMethod } from '@/lib/constants.js';
 import { degradeableItems, degradeablePvmBoostItems } from '@/lib/degradeableItems.js';
-import type { PrimaryGearSetupType } from '@/lib/gear';
+import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
 import { InventionID } from '@/lib/invention/inventions.js';
 import {
 	boostCannon,

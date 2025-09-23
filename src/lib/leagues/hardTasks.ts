@@ -2,10 +2,10 @@ import { notEmpty, sumArr } from 'e';
 import { Bank, calcCombatLevel, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
 
 import { divinationEnergies } from '@/lib/bso/divination.js';
-import { MAX_LEVEL } from '@/lib/constants';
-import { circusBuyables } from '@/lib/data/buyables/circusBuyables';
-import { fistOfGuthixBuyables } from '@/lib/data/buyables/fistOfGuthixBuyables';
-import { stealingCreationBuyables } from '@/lib/data/buyables/stealingCreationBuyables';
+import { MAX_LEVEL } from '@/lib/constants.js';
+import { circusBuyables } from '@/lib/data/buyables/circusBuyables.js';
+import { fistOfGuthixBuyables } from '@/lib/data/buyables/fistOfGuthixBuyables.js';
+import { stealingCreationBuyables } from '@/lib/data/buyables/stealingCreationBuyables.js';
 import {
 	allGildedItems,
 	brokenPernixOutfit,
@@ -18,8 +18,8 @@ import {
 	skillingPetsCL,
 	torvaOutfit,
 	virtusOutfit
-} from '@/lib/data/CollectionsExport';
-import { PartyhatTable } from '@/lib/data/holidayItems';
+} from '@/lib/data/CollectionsExport.js';
+import { PartyhatTable } from '@/lib/data/holidayItems.js';
 import {
 	ArdougneDiary,
 	DesertDiary,
@@ -41,12 +41,12 @@ import { Inventions } from '@/lib/invention/inventions.js';
 import { MOKTANG_ID } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
 import { Naxxus } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
 import { NexMonster } from '@/lib/nex.js';
-import { allThirdAgeItems } from '@/lib/simulation/sharedTables';
-import Darts from '@/lib/skilling/skills/fletching/fletchables/darts';
-import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins';
-import { ashes } from '@/lib/skilling/skills/prayer';
+import { allThirdAgeItems } from '@/lib/simulation/sharedTables.js';
+import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
+import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
+import { ashes } from '@/lib/skilling/skills/prayer.js';
 import { calcTotalLevel } from '@/lib/util.js';
-import { eggs } from '@/mahoji/commands/offer';
+import { eggs } from '@/mahoji/commands/offer.js';
 import { leaguesHasCatches, leaguesHasKC, type Task } from './leaguesUtils.js';
 import { calculateChargedItems, calculateTiarasMade } from './stats.js';
 

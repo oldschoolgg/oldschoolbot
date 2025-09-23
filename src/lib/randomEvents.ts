@@ -3,7 +3,7 @@ import { randArrItem, roll, Time } from 'e';
 import { LRUCache } from 'lru-cache';
 import { Bank, ItemGroups, LootTable } from 'oldschooljs';
 
-import { BitField } from '@/lib/constants';
+import { BitField } from '@/lib/constants.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 interface RandomEvent {

@@ -12,7 +12,7 @@ import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BadgesEnum, globalConfig, MAX_LEVEL, Roles } from '@/lib/constants.js';
 import { getCollectionItems, overallPlusItems } from '@/lib/data/Collections.js';
 import { Minigames } from '@/lib/settings/minigames.js';
-import { TeamLoot } from '@/lib/simulation/TeamLoot';
+import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import { loggedRawPrismaQuery, RawSQL } from './rawSql.js';
 import { fetchMultipleCLLeaderboards, fetchTameCLLeaderboard } from './util/clLeaderboard.js';

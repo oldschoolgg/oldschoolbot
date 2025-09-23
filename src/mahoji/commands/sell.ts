@@ -6,11 +6,11 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { calcPercentOfNum, clamp, reduceNumByPercent } from 'e';
 import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
 
-import { customPrices } from '@/lib/customItems/util';
-import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries';
-import { NestBoxesTable } from '@/lib/simulation/misc';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
-import { parseBank } from '@/lib/util/parseStringBank';
+import { customPrices } from '@/lib/customItems/util.js';
+import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
+import { NestBoxesTable } from '@/lib/simulation/misc.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
