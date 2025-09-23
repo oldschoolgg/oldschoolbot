@@ -1,4 +1,4 @@
-import { Time, calcPercentOfNum, calcWhatPercent, randArrItem, randInt, roll } from '@oldschoolgg/toolkit';
+import { calcPercentOfNum, calcWhatPercent, randArrItem, randInt, roll, Time } from '@oldschoolgg/toolkit';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank, Items } from 'oldschooljs';
 

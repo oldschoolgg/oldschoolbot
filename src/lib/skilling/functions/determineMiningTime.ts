@@ -1,4 +1,4 @@
-import { Time, percentChance } from '@oldschoolgg/toolkit';
+import { percentChance, Time } from '@oldschoolgg/toolkit';
 
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { Ore } from './../types.js';

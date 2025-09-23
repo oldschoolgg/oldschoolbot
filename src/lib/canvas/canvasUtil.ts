@@ -3,8 +3,8 @@ import {
 	type CanvasRenderingContext2D as CanvasContext,
 	FontLibrary,
 	Image,
-	Canvas as RawCanvas,
-	loadImage
+	loadImage,
+	Canvas as RawCanvas
 } from 'skia-canvas';
 
 import type { DetailedFarmingContract } from '@/lib/minions/farming/types.js';

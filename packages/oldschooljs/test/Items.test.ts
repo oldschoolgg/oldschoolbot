@@ -1,4 +1,5 @@
 import { beforeAll, describe, expect, test } from 'vitest';
+
 import { EquipmentSlot, Items, Openables } from '../src/index.js';
 
 const expectedIDTuple = [

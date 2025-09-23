@@ -2,7 +2,7 @@ import { chunk } from '@oldschoolgg/toolkit';
 import { channelIsSendable, makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType, EmbedBuilder, type MessageEditOptions } from 'discord.js';
-import { type BossRecords, Hiscores, bossNameMap } from 'oldschooljs/hiscores';
+import { type BossRecords, bossNameMap, Hiscores } from 'oldschooljs/hiscores';
 
 import pets from '@/lib/data/pets.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';

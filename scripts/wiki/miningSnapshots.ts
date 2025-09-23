@@ -1,4 +1,4 @@
-import { Table, calcPerHour } from '@oldschoolgg/toolkit';
+import { calcPerHour, Table } from '@oldschoolgg/toolkit';
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { type Bank, convertLVLtoXP } from 'oldschooljs';
 import { uniqueBy } from 'remeda';

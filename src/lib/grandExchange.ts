@@ -1,4 +1,4 @@
-import { Time, calcPercentOfNum, miniID, noOp, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
+import { calcPercentOfNum, miniID, noOp, sumArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { getInterval } from '@oldschoolgg/toolkit/util';
 import { type GEListing, GEListingType, type GETransaction } from '@prisma/client';
@@ -12,7 +12,7 @@ import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/uti
 import { assert, logError } from '@/lib/util/logError.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 import { BLACKLISTED_USERS } from './blacklists.js';
-import { BitField, PerkTier, globalConfig } from './constants.js';
+import { BitField, globalConfig, PerkTier } from './constants.js';
 import { marketPricemap } from './marketPrices.js';
 import type { RobochimpUser } from './roboChimp.js';
 import { roboChimpUserFetch } from './roboChimp.js';

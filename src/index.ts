@@ -1,11 +1,11 @@
-import './lib/safeglobals.js';
+import './lib/ActivityManager.js';
 import './lib/globals.js';
 import './lib/MUser.js';
-import './lib/ActivityManager.js';
+import './lib/safeglobals.js';
 
 import { isObject } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
-import { MahojiClient, convertMahojiCommandToAbstractCommand } from '@oldschoolgg/toolkit/discord-util';
+import { convertMahojiCommandToAbstractCommand, MahojiClient } from '@oldschoolgg/toolkit/discord-util';
 import { init } from '@sentry/node';
 import { GatewayIntentBits, Options, Partials, type TextChannel } from 'discord.js';
 

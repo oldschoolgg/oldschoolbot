@@ -1,6 +1,5 @@
-import { randArrItem } from '@/util/smallUtils.js';
-
 import type { Item } from '@/meta/item.js';
+import { randArrItem } from '@/util/smallUtils.js';
 import itemID from '../util/itemID.js';
 import { toKMB } from '../util/smallUtils.js';
 import Items from './Items.js';

@@ -1,19 +1,19 @@
-import { Time, isObject, objectEntries } from '@oldschoolgg/toolkit';
+import { isObject, objectEntries, Time } from '@oldschoolgg/toolkit';
 import { evalMathExpression } from '@oldschoolgg/toolkit/math';
 import type { Prisma, User, UserStats } from '@prisma/client';
 import { bold } from 'discord.js';
 import { Bank, type ItemBank, ItemGroups, Items } from 'oldschooljs';
 
-import type { SelectedUserStats } from '@/lib/MUser.js';
 import { globalConfig } from '@/lib/constants.js';
 import { userhasDiaryTier } from '@/lib/diaries.js';
+import type { SelectedUserStats } from '@/lib/MUser.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import type { Consumable, KillableMonster } from '@/lib/minions/types.js';
 import type { Rune } from '@/lib/skilling/skills/runecraft.js';
 import { hasGracefulEquipped } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
-import type { JsonKeys } from '@/lib/util.js';
 import { formatItemReqs, formatList, hasSkillReqs, itemNameFromID, readableStatName } from '@/lib/util/smallUtils.js';
+import type { JsonKeys } from '@/lib/util.js';
 import { getItemCostFromConsumables } from './lib/abstracted_commands/minionKill/handleConsumables.js';
 
 export function mahojiParseNumber({

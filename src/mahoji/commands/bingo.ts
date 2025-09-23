@@ -1,9 +1,9 @@
-import { Time, chunk, noOp, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
+import { chunk, noOp, notEmpty, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import {
-	type MahojiUserOption,
 	channelIsSendable,
 	isValidDiscordSnowflake,
+	type MahojiUserOption,
 	mentionCommand
 } from '@oldschoolgg/toolkit/discord-util';
 import { md5sum } from '@oldschoolgg/toolkit/node';
@@ -12,9 +12,9 @@ import { dateFm, formatOrdinal } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import {
 	ApplicationCommandOptionType,
+	bold,
 	type ChatInputCommandInteraction,
 	type User,
-	bold,
 	userMention
 } from 'discord.js';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
@@ -22,10 +22,10 @@ import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { clImageGenerator } from '@/lib/collectionLogTask.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
-import { getUsername, getUsernameSync } from '@/lib/util.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
+import { getUsername, getUsernameSync } from '@/lib/util.js';
 import { BingoManager, BingoTrophies } from '@/mahoji/lib/bingo/BingoManager.js';
 import type { StoredBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { generateTileName, getAllTileItems, isGlobalTile } from '@/mahoji/lib/bingo/bingoUtil.js';

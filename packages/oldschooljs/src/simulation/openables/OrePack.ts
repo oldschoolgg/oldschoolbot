@@ -1,7 +1,6 @@
-import { randInt } from '@/util/smallUtils.js';
-
 import LootTable from '@/structures/LootTable.js';
 import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
+import { randInt } from '@/util/smallUtils.js';
 
 // Giant's Foundry Ore pack
 const GiantsFoundryOrePackTable = new LootTable()

@@ -1,6 +1,5 @@
 import { evalMathExpression } from '@oldschoolgg/toolkit/math';
-import { cleanString, stringMatches } from '@oldschoolgg/toolkit/util';
-import { notEmpty } from '@oldschoolgg/toolkit/util';
+import { cleanString, notEmpty, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank, type Item, Items, itemNameMap } from 'oldschooljs';
 
 import { filterableTypes } from '../data/filterables.js';

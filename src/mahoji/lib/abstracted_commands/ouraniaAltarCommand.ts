@@ -1,4 +1,4 @@
-import { Time, increaseNumByPercent } from '@oldschoolgg/toolkit';
+import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Bank, EItem } from 'oldschooljs';
 

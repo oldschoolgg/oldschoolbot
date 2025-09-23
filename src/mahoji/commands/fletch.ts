@@ -1,6 +1,5 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
-import { stringMatches } from '@oldschoolgg/toolkit/util';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { Fletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';

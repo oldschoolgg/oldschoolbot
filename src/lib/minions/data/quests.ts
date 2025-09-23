@@ -1,4 +1,4 @@
-import { Time, sumArr } from '@oldschoolgg/toolkit';
+import { sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { Skills } from '@/lib/types/index.js';

@@ -4,7 +4,7 @@ import { Bank, Items } from 'oldschooljs';
 
 import { pohImageGenerator } from '@/lib/canvas/pohImage.js';
 import { BitField } from '@/lib/constants.js';
-import { GroupedPohObjects, PoHObjects, getPOHObject, itemsNotRefundable } from '@/lib/poh/index.js';
+import { GroupedPohObjects, getPOHObject, itemsNotRefundable, PoHObjects } from '@/lib/poh/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';

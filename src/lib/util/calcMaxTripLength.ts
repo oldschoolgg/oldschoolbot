@@ -1,4 +1,4 @@
-import { Time, calcPercentOfNum, calcWhatPercent } from '@oldschoolgg/toolkit';
+import { calcPercentOfNum, calcWhatPercent, Time } from '@oldschoolgg/toolkit';
 import type { activity_type_enum } from '@prisma/client';
 
 import { PerkTier } from '../constants.js';

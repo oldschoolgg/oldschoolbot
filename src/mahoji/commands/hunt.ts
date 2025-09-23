@@ -3,9 +3,6 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, ECreature, itemID } from 'oldschooljs';
 
-import { type Peak, generateDailyPeakIntervals } from '@/lib/util/peaks.js';
-import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-
 import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
@@ -14,6 +11,8 @@ import { HunterTechniqueEnum, SkillsEnum } from '@/lib/skilling/types.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { generateDailyPeakIntervals, type Peak } from '@/lib/util/peaks.js';
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userHasGracefulEquipped } from '../mahojiSettings.js';
 

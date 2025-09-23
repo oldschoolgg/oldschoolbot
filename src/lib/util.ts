@@ -9,9 +9,9 @@ import type { SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
-import type { MUserClass } from './MUser.js';
 import { usernameWithBadgesCache } from './cache.js';
-import { BitField, MAX_LEVEL, MAX_XP, globalConfig } from './constants.js';
+import { BitField, globalConfig, MAX_LEVEL, MAX_XP } from './constants.js';
+import type { MUserClass } from './MUser.js';
 import type { Skills } from './types/index.js';
 import type { GroupMonsterActivityTaskOptions } from './types/minions.js';
 

@@ -1,5 +1,5 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
-import { Bank, Monsters, SkillsEnum, itemID } from 'oldschooljs';
+import { Bank, itemID, Monsters, SkillsEnum } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import type { KillableMonster } from '@/lib/minions/types.js';

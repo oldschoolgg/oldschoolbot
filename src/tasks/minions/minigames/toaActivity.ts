@@ -1,4 +1,4 @@
-import { Time, isObject, uniqueArr } from '@oldschoolgg/toolkit';
+import { isObject, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { bold } from 'discord.js';
@@ -8,9 +8,9 @@ import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import {
-	type RaidLevel,
 	calcTOALoot,
 	calculateXPFromRaid,
+	type RaidLevel,
 	toaOrnamentKits,
 	toaPetTransmogItems
 } from '@/lib/simulation/toa.js';

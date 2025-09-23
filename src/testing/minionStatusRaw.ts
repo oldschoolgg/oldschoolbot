@@ -26,8 +26,8 @@ import type {
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	NightmareActivityTaskOptions,
-	TOAOptions,
 	TheatreOfBloodTaskOptions,
+	TOAOptions,
 	WoodcuttingActivityTaskOptions
 } from '@/lib/types/minions.js';
 

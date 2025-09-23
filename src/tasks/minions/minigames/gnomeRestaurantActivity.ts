@@ -1,5 +1,4 @@
-import { Bank } from 'oldschooljs';
-import { LootTable } from 'oldschooljs';
+import { Bank, LootTable } from 'oldschooljs';
 
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { GnomeRestaurantActivityTaskOptions } from '@/lib/types/minions.js';

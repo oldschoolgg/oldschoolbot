@@ -2,10 +2,10 @@ import { reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import type { Prisma } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank, type Item, MAX_INT_JAVA, itemID, toKMB } from 'oldschooljs';
+import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
-import { WildernessDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import { NestBoxesTable } from '@/lib/simulation/misc.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';

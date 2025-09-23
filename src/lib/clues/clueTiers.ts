@@ -5,10 +5,10 @@ import {
 	EasyCasket,
 	EliteCasket,
 	HardCasket,
+	itemID,
 	type LootTable,
 	MasterCasket,
 	MediumCasket,
-	itemID,
 	resolveItems
 } from 'oldschooljs';
 

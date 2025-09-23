@@ -1,7 +1,15 @@
 import { convertXPtoLVL } from '../util/util.js';
+import {
+	ACCOUNT_TYPES,
+	type AccountType,
+	BASE_API_URL,
+	CLUES,
+	Errors,
+	MINIGAMES,
+	mappedBossNames,
+	SKILLS
+} from './constants.js';
 import { Player, type SkillsScore } from './Player.js';
-import { BASE_API_URL, CLUES, Errors, SKILLS } from './constants.js';
-import { ACCOUNT_TYPES, type AccountType, MINIGAMES, mappedBossNames } from './constants.js';
 
 function resolvePlayerFromHiscores(csvData: string, accountType: AccountType): Player {
 	const data: string[][] = csvData

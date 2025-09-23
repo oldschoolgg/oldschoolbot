@@ -1,5 +1,6 @@
 import combatAchievements from '@data/combat_achievements.json';
 import { useEffect, useState } from 'preact/hooks';
+
 import { toTitleCase } from '../docs-util.js';
 
 const tiers = Object.keys(combatAchievements).map(t => t.toLowerCase());

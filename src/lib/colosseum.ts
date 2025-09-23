@@ -1,5 +1,4 @@
 import {
-	Time,
 	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
@@ -7,7 +6,8 @@ import {
 	percentChance,
 	randInt,
 	reduceNumByPercent,
-	sumArr
+	sumArr,
+	Time
 } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';

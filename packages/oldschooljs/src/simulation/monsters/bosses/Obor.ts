@@ -1,5 +1,4 @@
-import LootTable from '@/structures/LootTable.js';
-import { itemTupleToTable } from '@/structures/LootTable.js';
+import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
 const OborTable = new LootTable({ limit: 118 })

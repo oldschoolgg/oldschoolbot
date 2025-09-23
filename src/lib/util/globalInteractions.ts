@@ -1,4 +1,4 @@
-import { Time, removeFromArr, uniqueArr } from '@oldschoolgg/toolkit';
+import { removeFromArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
@@ -10,10 +10,10 @@ import { Bank, type ItemBank } from 'oldschooljs';
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 import { autoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { shootingStarsCommand, starCache } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
-import { InteractionID } from '../InteractionID.js';
 import { giveawayCache } from '../cache.js';
 import type { ClueTier } from '../clues/clueTiers.js';
 import { BitField, PerkTier } from '../constants.js';
+import { InteractionID } from '../InteractionID.js';
 import { runCommand } from '../settings/settings.js';
 import { updateGiveawayMessage } from './giveaway.js';
 import { interactionReply } from './interactionReply.js';

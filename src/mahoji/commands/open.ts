@@ -4,9 +4,9 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { allOpenables, allOpenablesIDs } from '@/lib/openables.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import {
-	OpenUntilItems,
 	abstractedOpenCommand,
-	abstractedOpenUntilCommand
+	abstractedOpenUntilCommand,
+	OpenUntilItems
 } from '@/mahoji/lib/abstracted_commands/openCommand.js';
 
 export const openCommand: OSBMahojiCommand = {

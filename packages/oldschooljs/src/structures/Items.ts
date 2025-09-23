@@ -1,6 +1,7 @@
 import deepMerge from 'deepmerge';
 
 import _items from '../assets/item_data.json' with { type: 'json' };
+
 const items = _items as any as Record<string, Item>;
 
 import type { Item } from '@/meta/item.js';

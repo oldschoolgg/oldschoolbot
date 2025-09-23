@@ -1,7 +1,7 @@
 import { calcPercentOfNum, randInt, roll } from '@oldschoolgg/toolkit';
 import { normal } from '@oldschoolgg/toolkit/math';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import { Bank, LootTable, convertXPtoLVL, itemID, resolveItems } from 'oldschooljs';
+import { Bank, convertXPtoLVL, itemID, LootTable, resolveItems } from 'oldschooljs';
 
 import type { LevelRequirements } from '@/lib/skilling/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';

@@ -1,5 +1,4 @@
 import {
-	Time,
 	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
@@ -12,6 +11,7 @@ import {
 	round,
 	scaleNumber,
 	sumArr,
+	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
@@ -21,13 +21,13 @@ import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { type Minigame, XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
-import { Bank, Items, LootTable, itemID, randomVariation, resolveItems } from 'oldschooljs';
+import { Bank, Items, itemID, LootTable, randomVariation, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 import { clamp } from 'remeda';
 
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import { Gear, constructGearSetup } from '@/lib/structures/Gear.js';
+import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { assert } from '@/lib/util/logError.js';

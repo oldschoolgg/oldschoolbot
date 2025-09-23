@@ -1,7 +1,7 @@
 import type { Monster } from '@/structures/Monster.js';
 import { Collection } from '../../structures/Collection.js';
-import { CreatureCreation } from './CreatureCreation.js';
 import { allBosses } from './bosses/index.js';
+import { CreatureCreation } from './CreatureCreation.js';
 import { CamdozaalGolems } from './low/camdozaalGolems.js';
 import { allLowMonsters } from './low/index.js';
 import { ReanimatedMonsters } from './low/reanimated.js';

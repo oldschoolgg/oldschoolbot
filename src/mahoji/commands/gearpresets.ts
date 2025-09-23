@@ -3,7 +3,7 @@ import { cleanString, stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { EquipmentSlot, Items } from 'oldschooljs';
 
-import { ParsedCustomEmojiWithGroups, globalConfig } from '@/lib/constants.js';
+import { globalConfig, ParsedCustomEmojiWithGroups } from '@/lib/constants.js';
 import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
 import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
 import { GearSetupTypes } from '@/lib/gear/types.js';

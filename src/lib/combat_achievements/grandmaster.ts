@@ -9,8 +9,8 @@ import type {
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	RaidsOptions,
-	TOAOptions,
-	TheatreOfBloodTaskOptions
+	TheatreOfBloodTaskOptions,
+	TOAOptions
 } from '../types/minions.js';
 import { isCertainMonsterTrip } from './caUtils.js';
 import type { CombatAchievement } from './combatAchievements.js';

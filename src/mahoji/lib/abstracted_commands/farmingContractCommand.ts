@@ -1,5 +1,4 @@
-import { roughMergeMahojiResponse } from '@oldschoolgg/toolkit/discord-util';
-import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
+import { makeComponents, roughMergeMahojiResponse } from '@oldschoolgg/toolkit/discord-util';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 

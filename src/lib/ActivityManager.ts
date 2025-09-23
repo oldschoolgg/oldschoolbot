@@ -1,12 +1,12 @@
-import type { Activity, Prisma, activity_type_enum } from '@prisma/client';
+import type { Activity, activity_type_enum, Prisma } from '@prisma/client';
 
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { logError } from '@/lib/util/logError.js';
-import { allTasks } from './Task.js';
 import { modifyBusyCounter } from './busyCounterCache.js';
 import { globalConfig } from './constants.js';
 import { onMinionActivityFinish } from './events.js';
 import { sql } from './postgres.js';
+import { allTasks } from './Task.js';
 import type { ActivityTaskData } from './types/minions.js';
 import { isGroupActivity } from './util.js';
 

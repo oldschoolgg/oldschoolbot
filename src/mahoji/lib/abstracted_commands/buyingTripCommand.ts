@@ -1,4 +1,5 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
@@ -9,7 +10,6 @@ import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { calculateShopBuyCost } from '@/lib/util/calculateShopBuyCost.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
 
 export async function buyingTripCommand(
 	user: MUser,

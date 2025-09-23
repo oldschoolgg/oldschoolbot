@@ -1,5 +1,4 @@
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { formatDuration, Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, EItem, Items, itemID } from 'oldschooljs';
 
 import type { Fish } from '@/lib/skilling/types.js';

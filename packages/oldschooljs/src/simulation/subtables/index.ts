@@ -6,6 +6,7 @@ import TreeHerbSeedTable from './TreeHerbSeedTable.js';
 import WyvernHerbTable from './WyvernHerbTable.js';
 
 export { HerbDropTable, CommonSeedDropTable, RareSeedTable, WyvernHerbTable, TreeHerbSeedTable };
+
 export * from './RareDropTable.js';
 
 export const UncommonSeedDropTable = new LootTable()

@@ -1,5 +1,5 @@
 import { ApplicationCommandOptionType } from 'discord.js';
-import { type SkillsEnum, convertLVLtoXP, convertXPtoLVL } from 'oldschooljs';
+import { convertLVLtoXP, convertXPtoLVL, type SkillsEnum } from 'oldschooljs';
 import { Hiscores } from 'oldschooljs/hiscores';
 
 import { MAX_LEVEL, MAX_XP } from '@/lib/constants.js';

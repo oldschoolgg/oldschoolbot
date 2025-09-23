@@ -14,10 +14,11 @@ import { Bank, Items } from 'oldschooljs';
 import type { WebSocket } from 'ws';
 
 import '@/lib/safeglobals.js';
-import { BOT_TYPE, META_CONSTANTS, globalConfig } from '@/lib/constants.js';
+
+import { BOT_TYPE, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
-import { testBotKvStore } from './TestBotStore.js';
 import { minionStatusRaw } from './minionStatusRaw.js';
+import { testBotKvStore } from './TestBotStore.js';
 
 type HonoServerGeneric = { Bindings: {}; Variables: {} };
 

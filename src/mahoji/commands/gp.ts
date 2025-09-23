@@ -1,5 +1,4 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-
 import { toKMB } from 'oldschooljs';
 
 import { mahojiUsersSettingsFetch } from '../mahojiSettings.js';

@@ -1,4 +1,5 @@
 import { percentChance, randInt, roll } from '@oldschoolgg/toolkit';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -6,11 +7,10 @@ import type { Stealable } from '@/lib/skilling/skills/thieving/stealables.js';
 import { stealables } from '@/lib/skilling/skills/thieving/stealables.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
-import { skillingPetDropRate } from '@/lib/util.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 import { rogueOutfitPercentBonus, updateClientGPTrackSetting } from '@/mahoji/mahojiSettings.js';
-import { Events } from '@oldschoolgg/toolkit/constants';
 
 export function calcLootXPPickpocketing(
 	currentLevel: number,

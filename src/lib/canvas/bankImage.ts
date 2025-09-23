@@ -15,8 +15,8 @@ import { allCLItems } from '../data/Collections.js';
 import { filterableTypes } from '../data/filterables.js';
 import { marketPriceOfBank, marketPriceOrBotPrice } from '../marketPrices.js';
 import { type BankSortMethod, BankSortMethods, sorts } from '../sorts.js';
+import { type BaseCanvasArgs, type BGSpriteName, CanvasImage, getClippedRegion, type IBgSprite } from './canvasUtil.js';
 import { OSRSCanvas } from './OSRSCanvas.js';
-import { type BGSpriteName, type BaseCanvasArgs, CanvasImage, type IBgSprite, getClippedRegion } from './canvasUtil.js';
 
 interface BankImageResult {
 	image: Buffer;

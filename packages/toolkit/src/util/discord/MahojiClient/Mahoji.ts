@@ -14,6 +14,7 @@ import {
 	type Snowflake,
 	type User
 } from 'discord.js';
+
 import type { CommandOption, CommandOptions } from './mahojiTypes.js';
 
 export function convertCommandOptionToAPIOption(option: CommandOption): any {

@@ -1,8 +1,7 @@
-import { Time, reduceNumByPercent } from '@oldschoolgg/toolkit';
+import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 
 import { plunderBoosts, plunderRooms } from '@/lib/minions/data/plunder.js';
-
 import type { PlunderActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';

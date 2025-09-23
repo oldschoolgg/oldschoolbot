@@ -1,7 +1,7 @@
-import { Time, reduceNumByPercent } from '@oldschoolgg/toolkit';
+import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Bank, EMonster, Items, ZAM_HASTA_CRUSH, resolveItems } from 'oldschooljs';
+import { Bank, EMonster, Items, resolveItems, ZAM_HASTA_CRUSH } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
 import { degradeItem } from '@/lib/degradeableItems.js';

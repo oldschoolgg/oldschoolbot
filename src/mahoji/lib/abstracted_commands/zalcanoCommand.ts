@@ -1,4 +1,4 @@
-import { Time, calcWhatPercent, percentChance, reduceNumByPercent } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, percentChance, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { EMonster } from 'oldschooljs';
 

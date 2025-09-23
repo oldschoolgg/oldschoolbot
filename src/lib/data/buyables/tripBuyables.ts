@@ -1,4 +1,5 @@
 import { EItem } from 'oldschooljs';
+
 import type { Buyable } from './buyables.js';
 
 export interface TripBuyable extends Omit<Buyable, 'name' | 'outputItems'> {

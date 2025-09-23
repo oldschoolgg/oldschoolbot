@@ -1,4 +1,4 @@
-import { Time, chunk, noOp, roll, shuffleArr } from '@oldschoolgg/toolkit';
+import { chunk, noOp, roll, shuffleArr, Time } from '@oldschoolgg/toolkit';
 import { awaitMessageComponentInteraction, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import {
 	ActionRowBuilder,

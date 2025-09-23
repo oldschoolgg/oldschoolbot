@@ -2,17 +2,17 @@ import { calcWhatPercent } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { Bank, Items, TOBRooms, itemID, randomVariation } from 'oldschooljs';
+import { Bank, Items, itemID, randomVariation, TOBRooms } from 'oldschooljs';
 
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import {
-	TENTACLE_CHARGES_PER_RAID,
 	baseTOBUniques,
 	calcTOBBaseDuration,
 	calculateTOBDeaths,
 	calculateTOBUserGearPercents,
 	createTOBRaid,
-	minimumTOBSuppliesNeeded
+	minimumTOBSuppliesNeeded,
+	TENTACLE_CHARGES_PER_RAID
 } from '@/lib/data/tob.js';
 import { checkUserCanUseDegradeableItem, degradeItem } from '@/lib/degradeableItems.js';
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -21,12 +21,12 @@ import getUserFoodFromBank from '@/lib/minions/functions/getUserFoodFromBank.js'
 import { setupParty } from '@/lib/party.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
-import { skillsMeetRequirements } from '@/lib/util.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { skillsMeetRequirements } from '@/lib/util.js';
 import { mahojiParseNumber, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 const minStats = {

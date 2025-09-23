@@ -3,8 +3,9 @@ import { Collection, type Message } from 'discord.js';
 import { vi } from 'vitest';
 
 import '../src/lib/safeglobals.js';
+
 import { InteractionID } from '@/lib/InteractionID.js';
-import { TEST_CHANNEL_ID, mockChannel, mockInteraction } from './integration/util.js';
+import { mockChannel, mockInteraction, TEST_CHANNEL_ID } from './integration/util.js';
 
 vi.mock('@oldschoolgg/toolkit/discord-util', async () => {
 	const actualToolkit = await vi.importActual('@oldschoolgg/toolkit/discord-util');

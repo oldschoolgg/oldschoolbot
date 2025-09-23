@@ -1,6 +1,6 @@
 import { beforeAll, describe, test } from 'vitest';
 
-import { LootTable, Monsters, SimpleMonster, itemTupleToTable } from '../src/index.js';
+import { itemTupleToTable, LootTable, Monsters, SimpleMonster } from '../src/index.js';
 import { checkThreshold } from './testUtil.js';
 
 describe('Monsters', () => {

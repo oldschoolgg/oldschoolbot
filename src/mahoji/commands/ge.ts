@@ -8,7 +8,7 @@ import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { PerkTier } from '@/lib/constants.js';
-import { GrandExchange, createGECancelButton } from '@/lib/grandExchange.js';
+import { createGECancelButton, GrandExchange } from '@/lib/grandExchange.js';
 import { marketPricemap } from '@/lib/marketPrices.js';
 import { createChart } from '@/lib/util/chart.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';

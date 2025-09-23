@@ -1,4 +1,4 @@
-import { Time, notEmpty, randInt } from '@oldschoolgg/toolkit';
+import { notEmpty, randInt, Time } from '@oldschoolgg/toolkit';
 import { formatDuration, isWeekend, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';

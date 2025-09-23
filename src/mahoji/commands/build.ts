@@ -1,4 +1,4 @@
-import { Time, round } from '@oldschoolgg/toolkit';
+import { round, Time } from '@oldschoolgg/toolkit';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Bank } from 'oldschooljs';

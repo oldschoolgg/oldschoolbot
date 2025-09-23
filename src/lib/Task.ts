@@ -1,13 +1,6 @@
 import { activity_type_enum } from '@prisma/client';
 
 import type { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity.js';
-import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity.js';
-import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity.js';
-import { hunterTask } from '../tasks/minions/HunterActivity/hunterActivity.js';
-import { buryingTask } from '../tasks/minions/PrayerActivity/buryingActivity.js';
-import { offeringTask } from '../tasks/minions/PrayerActivity/offeringActivity.js';
-import { scatteringTask } from '../tasks/minions/PrayerActivity/scatteringActivity.js';
 import { agilityTask } from '../tasks/minions/agilityActivity.js';
 import { alchingTask } from '../tasks/minions/alchingActivity.js';
 import { butlerTask } from '../tasks/minions/butlerActivity.js';
@@ -33,6 +26,10 @@ import { fletchingTask } from '../tasks/minions/fletchingActivity.js';
 import { CreateForestersRationsTask } from '../tasks/minions/forestersRationActivity.js';
 import { gloryChargingTask } from '../tasks/minions/gloryChargingActivity.js';
 import { groupoMonsterTask } from '../tasks/minions/groupMonsterActivity.js';
+import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity.js';
+import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity.js';
+import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity.js';
+import { hunterTask } from '../tasks/minions/HunterActivity/hunterActivity.js';
 import { herbloreTask } from '../tasks/minions/herbloreActivity.js';
 import { mageArenaTwoTask } from '../tasks/minions/mageArena2Activity.js';
 import { mageArenaTask } from '../tasks/minions/mageArenaActivity.js';
@@ -43,12 +40,15 @@ import { championsChallengeTask } from '../tasks/minions/minigames/championsChal
 import { chompHuntTask } from '../tasks/minions/minigames/chompyHuntActivity.js';
 import { fightCavesTask } from '../tasks/minions/minigames/fightCavesActivity.js';
 import { gauntletTask } from '../tasks/minions/minigames/gauntletActivity.js';
+import { giantsFoundryTask } from './../tasks/minions/minigames/giantsFoundryActivity.js';
 import { gnomeResTask } from '../tasks/minions/minigames/gnomeRestaurantActivity.js';
+import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOfTheRiftActivity.js';
 import { infernoTask } from '../tasks/minions/minigames/infernoActivity.js';
 import { lmsTask } from '../tasks/minions/minigames/lmsActivity.js';
 import { mageTrainingTask } from '../tasks/minions/minigames/mageTrainingArenaActivity.js';
 import { mahoganyHomesTask } from '../tasks/minions/minigames/mahoganyHomesActivity.js';
 import { nightmareTask } from '../tasks/minions/minigames/nightmareActivity.js';
+import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneActivity.js';
 import { pestControlTask } from '../tasks/minions/minigames/pestControlActivity.js';
 import { plunderTask } from '../tasks/minions/minigames/plunderActivity.js';
 import { puroPuroTask } from '../tasks/minions/minigames/puroPuroActivity.js';
@@ -75,6 +75,9 @@ import { motherlodeMiningTask } from '../tasks/minions/motherlodeMineActivity.js
 import { myNotesTask } from '../tasks/minions/myNotesActivity.js';
 import { nexTask } from '../tasks/minions/nexActivity.js';
 import ouraniaAltarTask from '../tasks/minions/ouraniaAltarActivity.js';
+import { buryingTask } from '../tasks/minions/PrayerActivity/buryingActivity.js';
+import { offeringTask } from '../tasks/minions/PrayerActivity/offeringActivity.js';
+import { scatteringTask } from '../tasks/minions/PrayerActivity/scatteringActivity.js';
 import { pickpocketTask } from '../tasks/minions/pickpocketActivity.js';
 import { questingTask } from '../tasks/minions/questingActivity.js';
 import { runecraftTask } from '../tasks/minions/runecraftActivity.js';
@@ -86,13 +89,10 @@ import { specificQuestTask } from '../tasks/minions/specificQuestActivity.js';
 import { strongholdTask } from '../tasks/minions/strongholdOfSecurityActivity.js';
 import { tiaraRunecraftTask } from '../tasks/minions/tiaraRunecraftActivity.js';
 import { tokkulShopTask } from '../tasks/minions/tokkulShopActivity.js';
+import { underwaterAgilityThievingTask } from './../tasks/minions/underwaterActivity.js';
 import { vmTask } from '../tasks/minions/volcanicMineActivity.js';
 import { wealthChargeTask } from '../tasks/minions/wealthChargingActivity.js';
 import { woodcuttingTask } from '../tasks/minions/woodcuttingActivity.js';
-import { giantsFoundryTask } from './../tasks/minions/minigames/giantsFoundryActivity.js';
-import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOfTheRiftActivity.js';
-import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneActivity.js';
-import { underwaterAgilityThievingTask } from './../tasks/minions/underwaterActivity.js';
 
 export const allTasks: MinionTask[] = [
 	aerialFishingTask,

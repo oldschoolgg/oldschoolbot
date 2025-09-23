@@ -1,6 +1,6 @@
-import { Time, objectEntries, randArrItem, randInt } from '@oldschoolgg/toolkit';
+import { objectEntries, randArrItem, randInt, Time } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
-import { Bank, type ItemBank, convertLVLtoXP } from 'oldschooljs';
+import { Bank, convertLVLtoXP, type ItemBank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { ClueTiers } from '../../src/lib/clues/clueTiers.js';

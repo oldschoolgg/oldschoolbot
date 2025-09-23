@@ -1,9 +1,8 @@
-import { Time, calcWhatPercent, randInt, reduceNumByPercent } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, randInt, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
 import { getPOHObject } from '@/lib/poh/index.js';
-
 import type { GnomeRestaurantActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';

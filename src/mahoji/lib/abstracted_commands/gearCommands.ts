@@ -11,7 +11,7 @@ import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
 import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
 import getUserBestGearFromBank from '@/lib/minions/functions/getUserBestGearFromBank.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
-import { Gear, defaultGear, globalPresets } from '@/lib/structures/Gear.js';
+import { defaultGear, Gear, globalPresets } from '@/lib/structures/Gear.js';
 import calculateGearLostOnDeathWilderness from '@/lib/util/calculateGearLostOnDeathWilderness.js';
 import { gearEquipMultiImpl } from '@/lib/util/equipMulti.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';

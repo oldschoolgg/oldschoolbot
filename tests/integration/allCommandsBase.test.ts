@@ -1,4 +1,4 @@
-import { Time, sumArr } from '@oldschoolgg/toolkit';
+import { sumArr, Time } from '@oldschoolgg/toolkit';
 import { generateCommandInputs } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { Bank, Items } from 'oldschooljs';
@@ -11,7 +11,7 @@ import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirm
 import { allCommands } from '../../src/mahoji/commands/allCommands.js';
 import { getMaxUserValues } from '../../src/mahoji/commands/testpotato.js';
 import { allUsableItems } from '../../src/mahoji/lib/abstracted_commands/useCommand.js';
-import { TestClient, createTestUser, mockClient } from './util.js';
+import { createTestUser, mockClient, TestClient } from './util.js';
 
 test(
 	'All Commands Base Test',

@@ -1,7 +1,7 @@
-import { Time, calcPercentOfNum, percentChance, randInt, roll, sumArr } from '@oldschoolgg/toolkit';
+import { calcPercentOfNum, percentChance, randInt, roll, sumArr, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
-import { Bank, type ItemBank, Items, Monsters, itemID } from 'oldschooljs';
+import { Bank, type ItemBank, Items, itemID, Monsters } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
 import type { ProjectileType } from '@/lib/constants.js';

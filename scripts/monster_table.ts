@@ -2,12 +2,13 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { TSVWriter } from '@oldschoolgg/toolkit/structures';
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import type { PlayerOwnedHouse } from '@prisma/client';
-import { Bank, Items, convertBankToPerHourStats, resolveItems, toKMB } from 'oldschooljs';
+import { Bank, convertBankToPerHourStats, Items, resolveItems, toKMB } from 'oldschooljs';
 import { omit } from 'remeda';
 
 applyStaticDefine();
 
 import '../src/lib/safeglobals.js';
+
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import { applyStaticDefine } from '../meta.js';

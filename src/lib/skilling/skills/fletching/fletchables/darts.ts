@@ -1,5 +1,6 @@
-import type { Fletchable } from '@/lib/skilling/types.js';
 import { Bank, itemID } from 'oldschooljs';
+
+import type { Fletchable } from '@/lib/skilling/types.js';
 
 const Darts: Fletchable[] = [
 	{

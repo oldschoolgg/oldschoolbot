@@ -4,8 +4,7 @@ import deepMerge from 'deepmerge';
 import { clone } from 'remeda';
 
 import { EquipmentSlot, type Item } from '@/meta/item.js';
-import Items from '@/structures/Items.js';
-import { CLUE_SCROLLS, CLUE_SCROLL_NAMES, USELESS_ITEMS } from '@/structures/Items.js';
+import Items, { CLUE_SCROLL_NAMES, CLUE_SCROLLS, USELESS_ITEMS } from '@/structures/Items.js';
 import { increaseNumByPercent, reduceNumByPercent } from '@/util/smallUtils.js';
 import bsoItemsJson from '../../../data/bso/bso_items.json' with { type: 'json' };
 import { itemChanges } from './manualItemChanges.js';

@@ -1,13 +1,12 @@
-import { Time, reduceNumByPercent } from '@oldschoolgg/toolkit';
+import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
 
 import { PVM_METHODS, type PvMMethod } from '@/lib/constants.js';
-import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
-
 import { Eatables } from '@/lib/data/eatables.js';
 import { autocompleteMonsters, wikiMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
 import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import findMonster from '@/lib/util/findMonster.js';

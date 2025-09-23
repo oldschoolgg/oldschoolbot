@@ -1,5 +1,5 @@
 import { increaseNumByPercent } from '@oldschoolgg/toolkit';
-import { Bank, EItem, ItemGroups, convertLVLtoXP } from 'oldschooljs';
+import { Bank, convertLVLtoXP, EItem, ItemGroups } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
 import { MAX_LEVEL } from '../../../src/lib/constants.js';

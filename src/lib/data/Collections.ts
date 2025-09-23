@@ -32,7 +32,6 @@ import type { MinigameName } from '../settings/minigames.js';
 import { allFarmingItems } from '../skilling/skills/farming/index.js';
 import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport.js';
 import {
-	NexCL,
 	abyssalSireCL,
 	aerialFishingCL,
 	alchemicalHydraCL,
@@ -103,6 +102,7 @@ import {
 	motherlodeMineCL,
 	muspahCL,
 	myNotesCL,
+	NexCL,
 	oborCL,
 	pestControlCL,
 	questCL,
@@ -121,13 +121,13 @@ import {
 	spiritAnglerOutfit,
 	templeTrekkingCL,
 	temporossCL,
+	theatreOfBLoodCL,
 	theGauntletCL,
 	theInfernoCL,
 	theLeviathanCL,
 	theNightmareCL,
-	theWhispererCL,
-	theatreOfBLoodCL,
 	thermonuclearSmokeDevilCL,
+	theWhispererCL,
 	titheFarmCL,
 	tormentedDemonCL,
 	troubleBrewingCL,

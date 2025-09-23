@@ -2,7 +2,7 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
-import { WildernessDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import type { SkillsEnum } from '@/lib/skilling/types.js';
 import type { CollectingOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';

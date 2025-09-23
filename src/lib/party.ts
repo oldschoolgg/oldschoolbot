@@ -1,4 +1,4 @@
-import { Time, debounce, noOp } from '@oldschoolgg/toolkit';
+import { debounce, noOp, Time } from '@oldschoolgg/toolkit';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { UserError } from '@oldschoolgg/toolkit/structures';
 import { TimerManager } from '@sapphire/timer-manager';

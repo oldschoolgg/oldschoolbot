@@ -1,4 +1,4 @@
-import { Time, notEmpty, objectEntries } from '@oldschoolgg/toolkit';
+import { notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { dateFm, formatDuration, getNextUTCReset } from '@oldschoolgg/toolkit/util';
 

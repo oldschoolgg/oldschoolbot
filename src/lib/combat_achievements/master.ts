@@ -8,8 +8,8 @@ import type {
 	MonsterActivityTaskOptions,
 	NightmareActivityTaskOptions,
 	RaidsOptions,
-	TOAOptions,
-	TheatreOfBloodTaskOptions
+	TheatreOfBloodTaskOptions,
+	TOAOptions
 } from '../types/minions.js';
 import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils.js';
 import type { CombatAchievement } from './combatAchievements.js';

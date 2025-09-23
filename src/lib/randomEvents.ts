@@ -1,8 +1,7 @@
-import { Time, randArrItem, roll } from '@oldschoolgg/toolkit';
+import { randArrItem, roll, Time } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { LRUCache } from 'lru-cache';
-import { Bank, ItemGroups } from 'oldschooljs';
-import { LootTable } from 'oldschooljs';
+import { Bank, ItemGroups, LootTable } from 'oldschooljs';
 
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 import { BitField } from './constants.js';

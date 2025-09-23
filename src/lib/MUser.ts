@@ -5,14 +5,14 @@ import { UserError } from '@oldschoolgg/toolkit/structures';
 import type { GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { escapeMarkdown, userMention } from 'discord.js';
 import {
+	addItemToBank,
 	Bank,
+	convertXPtoLVL,
 	EMonster,
 	EquipmentSlot,
 	type Item,
 	type ItemBank,
 	Items,
-	addItemToBank,
-	convertXPtoLVL,
 	resolveItems
 } from 'oldschooljs';
 import { pick } from 'remeda';
@@ -21,7 +21,7 @@ import type { GearSetup, UserFullGearSetup } from '@/lib/gear/types.js';
 import Farming from '@/lib/skilling/skills/farming/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
-import { Gear, defaultGear } from '@/lib/structures/Gear.js';
+import { defaultGear, Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import type { XPBank } from '@/lib/structures/XPBank.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';

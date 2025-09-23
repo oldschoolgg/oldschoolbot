@@ -2,7 +2,7 @@ import { notEmpty, randArrItem } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
-import { Items, convertLVLtoXP } from 'oldschooljs';
+import { convertLVLtoXP, Items } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { bankImageTask } from '@/lib/canvas/bankImage.js';

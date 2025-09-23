@@ -8,8 +8,8 @@ import type { Peak } from '@/lib/util/peaks.js';
 import type { NMZStrategy } from '../constants.js';
 import type { MinigameName } from '../settings/minigames.js';
 import type { UnderwaterAgilityThievingTrainingSkill } from '../skilling/skills/agility.js';
-import type { TwitcherGloves } from '../skilling/skills/woodcutting/woodcutting.js';
 import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap.js';
+import type { TwitcherGloves } from '../skilling/skills/woodcutting/woodcutting.js';
 
 export interface ActivityTaskOptions {
 	userID: string;

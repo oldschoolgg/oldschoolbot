@@ -1,13 +1,13 @@
 import { randInt, shuffleArr, uniqueArr } from '@oldschoolgg/toolkit';
 import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import type { User as DJSUser } from 'discord.js';
-import { Bank, type EMonster, type ItemBank, Items, Monsters, type SkillsEnum, convertLVLtoXP } from 'oldschooljs';
+import { Bank, convertLVLtoXP, type EMonster, type ItemBank, Items, Monsters, type SkillsEnum } from 'oldschooljs';
 import { integer, nodeCrypto } from 'random-js';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
 
+import { globalConfig, type PvMMethod } from '../../src/lib/constants.js';
 import { MUserClass } from '../../src/lib/MUser.js';
-import { type PvMMethod, globalConfig } from '../../src/lib/constants.js';
 import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types.js';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters.js';
 import { Gear } from '../../src/lib/structures/Gear.js';

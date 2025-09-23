@@ -3,7 +3,7 @@ import { Bank, Items, itemID } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 import { describe, expect, it, test } from 'vitest';
 
-import { Gear, constructGearSetup } from '../../src/lib/structures/Gear.js';
+import { constructGearSetup, Gear } from '../../src/lib/structures/Gear.js';
 
 describe('Gear', () => {
 	const testGear = new Gear({

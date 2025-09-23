@@ -1,6 +1,5 @@
 import { stringMatches } from '@oldschoolgg/toolkit/util';
-import { bold } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import Buyables from '@/lib/data/buyables/buyables.js';
@@ -13,8 +12,8 @@ import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { buyFossilIslandNotes } from '@/mahoji/lib/abstracted_commands/buyFossilIslandNotes.js';
-import { buyKitten } from '@/mahoji/lib/abstracted_commands/buyKitten.js';
 import { buyingTripCommand } from '@/mahoji/lib/abstracted_commands/buyingTripCommand.js';
+import { buyKitten } from '@/mahoji/lib/abstracted_commands/buyKitten.js';
 import { mahojiParseNumber, userStatsUpdate } from '../mahojiSettings.js';
 
 const allBuyablesAutocomplete = [

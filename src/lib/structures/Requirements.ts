@@ -1,5 +1,5 @@
 import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
-import type { Minigame, PlayerOwnedHouse, activity_type_enum } from '@prisma/client';
+import type { activity_type_enum, Minigame, PlayerOwnedHouse } from '@prisma/client';
 import type { Bank } from 'oldschooljs';
 
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
@@ -9,7 +9,7 @@ import type { ParsedUnit } from '@/mahoji/lib/abstracted_commands/stashUnitsComm
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 import type { ClueTier } from '../clues/clueTiers.js';
 import type { BitField } from '../constants.js';
-import { BOT_TYPE, BitFieldData } from '../constants.js';
+import { BitFieldData, BOT_TYPE } from '../constants.js';
 import { diaries, userhasDiaryTierSync } from '../diaries.js';
 import type { RobochimpUser } from '../roboChimp.js';
 import { type MinigameName, minigameColumnToNameMap } from '../settings/minigames.js';

@@ -1,9 +1,9 @@
-import { Time, reduceNumByPercent } from '@oldschoolgg/toolkit';
+import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
-import { WesternProv, userhasDiaryTier } from '@/lib/diaries.js';
+import { userhasDiaryTier, WesternProv } from '@/lib/diaries.js';
 import type { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';

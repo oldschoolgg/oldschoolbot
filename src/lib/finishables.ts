@@ -10,18 +10,17 @@ import {
 	HardCasket,
 	ItemGroups,
 	Items,
+	itemID,
 	MasterCasket,
 	MasterMimicTable,
 	MediumCasket,
 	Monsters,
 	Nightmare,
-	itemID,
 	resolveItems
 } from 'oldschooljs';
 
 import { allCollectionLogsFlat } from './data/Collections.js';
 import {
-	NexCL,
 	chambersOfXericCL,
 	chambersOfXericNormalCL,
 	cluesBeginnerCL,
@@ -30,12 +29,13 @@ import {
 	cluesHardCL,
 	cluesMasterCL,
 	cluesMediumCL,
+	NexCL,
 	temporossCL,
+	theatreOfBLoodCL,
+	theatreOfBLoodNormalCL,
 	theGauntletCL,
 	theNightmareCL,
 	theNightmareNormalCL,
-	theatreOfBLoodCL,
-	theatreOfBLoodNormalCL,
 	wintertodtCL
 } from './data/CollectionsExport.js';
 import pets from './data/pets.js';

@@ -4,7 +4,7 @@ import type { StashUnit, User } from '@prisma/client';
 import { Bank, ItemGroups, Items } from 'oldschooljs';
 
 import type { IStashUnit, StashUnitTier } from '@/lib/clues/stashUnits.js';
-import { allStashUnitTiers, allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
+import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { assert } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { getMahojiBank } from '@/mahoji/mahojiSettings.js';

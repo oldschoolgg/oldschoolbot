@@ -7,11 +7,11 @@ import {
 	getTotemChanceFromHP,
 	roll
 } from '@/util/util.js';
+import _monsterData from '../assets/monsters_data.json' with { type: 'json' };
 import { Bank } from './Bank.js';
 import type LootTable from './LootTable.js';
 import type { LootTableRollOptions } from './LootTable.js';
 
-import _monsterData from '../assets/monsters_data.json' with { type: 'json' };
 const monsterData = _monsterData as { [key: string]: MonsterData };
 
 export interface MonsterOptions {

@@ -1,7 +1,7 @@
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 
-import { InteractionID } from '../InteractionID.js';
 import type { ClueTier } from '../clues/clueTiers.js';
+import { InteractionID } from '../InteractionID.js';
 
 export function makeOpenCasketButton(tier: ClueTier) {
 	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;

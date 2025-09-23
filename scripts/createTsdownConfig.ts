@@ -1,5 +1,5 @@
 import { relative, resolve as resolveDir } from 'node:path';
-import { type Options, defineConfig } from 'tsdown';
+import { defineConfig, type Options } from 'tsdown';
 
 const tsconfigPath = relative(import.meta.dirname, resolveDir(process.cwd(), 'src', 'tsconfig.json'));
 

@@ -6,9 +6,9 @@ import { Bank } from 'oldschooljs';
 import { buildCombatAchievementsResult } from '@/lib/combat_achievements/caUtils.js';
 import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
 import {
-	CombatAchievements,
 	allCAMonsterNames,
 	allCombatAchievementTasks,
+	CombatAchievements,
 	caToPlayerString,
 	nextCATier
 } from '@/lib/combat_achievements/combatAchievements.js';

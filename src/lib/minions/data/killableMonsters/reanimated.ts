@@ -1,9 +1,9 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, Monsters } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
 
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { XPBank } from '@/lib/structures/Bank.js';
-import { GearStat } from 'oldschooljs/gear';
 
 const renanimatedMonstersRaw = [
 	{

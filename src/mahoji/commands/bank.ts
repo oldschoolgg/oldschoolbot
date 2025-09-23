@@ -1,11 +1,8 @@
 import { chunk } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { PaginatedMessage, makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
-import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { ApplicationCommandOptionType, EmbedBuilder, codeBlock } from 'discord.js';
+import { channelIsSendable, makePaginatedMessage, PaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
+import { ApplicationCommandOptionType, codeBlock, EmbedBuilder } from 'discord.js';
 import type { Bank } from 'oldschooljs';
-
-import { logError, logErrorForInteraction } from '@/lib/util/logError.js';
 
 import type { BankFlag } from '@/lib/canvas/bankImage.js';
 import { bankFlags } from '@/lib/canvas/bankImage.js';
@@ -14,6 +11,7 @@ import type { Flags } from '@/lib/minions/types.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
 import { BankSortMethods } from '@/lib/sorts.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { logError, logErrorForInteraction } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { filterOption, itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';

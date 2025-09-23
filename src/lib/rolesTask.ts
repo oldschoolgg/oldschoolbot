@@ -2,12 +2,12 @@ import { noOp, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
 import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { Prisma } from '@prisma/client';
-import { type ItemBank, convertXPtoLVL } from 'oldschooljs';
+import { convertXPtoLVL, type ItemBank } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { partition } from 'remeda';
 import z from 'zod';
 
-import { BadgesEnum, MAX_LEVEL, Roles, globalConfig } from '@/lib/constants.js';
+import { BadgesEnum, globalConfig, MAX_LEVEL, Roles } from '@/lib/constants.js';
 import { getCollectionItems } from '@/lib/data/Collections.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { SkillsArray } from '@/lib/skilling/types.js';

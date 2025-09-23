@@ -1,5 +1,5 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
-import { Monsters, deepResolveItems, resolveItems } from 'oldschooljs';
+import { deepResolveItems, Monsters, resolveItems } from 'oldschooljs';
 
 import type { KillableMonster } from '@/lib/minions/types.js';
 

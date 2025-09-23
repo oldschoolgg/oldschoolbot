@@ -1,4 +1,5 @@
 import SonicBoomDefault from 'sonic-boom';
+
 const { SonicBoom } = SonicBoomDefault;
 
 import { BOT_TYPE_LOWERCASE, globalConfig } from '../constants.js';

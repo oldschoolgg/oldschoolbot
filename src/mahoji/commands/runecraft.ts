@@ -1,7 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank, Items, SkillsEnum, itemID } from 'oldschooljs';
+import { Bank, Items, itemID, SkillsEnum } from 'oldschooljs';
 
 import { darkAltarCommand } from '@/lib/minions/functions/darkAltarCommand.js';
 import { sinsOfTheFatherSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';

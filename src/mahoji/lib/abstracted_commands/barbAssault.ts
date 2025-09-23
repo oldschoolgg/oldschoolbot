@@ -1,4 +1,4 @@
-import { Time, calcWhatPercent, reduceNumByPercent, roll, round } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, reduceNumByPercent, roll, round, Time } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration, formatOrdinal, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';

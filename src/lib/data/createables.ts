@@ -1,4 +1,4 @@
-import { Bank, EItem, type ItemBank, Items, deepResolveItems, itemID } from 'oldschooljs';
+import { Bank, deepResolveItems, EItem, type ItemBank, Items, itemID } from 'oldschooljs';
 
 import { blisterwoodRequirements, ivandisRequirements } from '@/lib/minions/data/templeTrekking.js';
 import { formatList, itemNameFromID } from '@/lib/util/smallUtils.js';

@@ -1,8 +1,8 @@
 import { sumArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { Bank } from 'oldschooljs';
-import { ClueTiers } from '../clues/clueTiers.js';
 
+import { ClueTiers } from '../clues/clueTiers.js';
 import { MAX_CLUES_DROPPED } from '../constants.js';
 import { allPetsCL } from '../data/CollectionsExport.js';
 import pets from '../data/pets.js';

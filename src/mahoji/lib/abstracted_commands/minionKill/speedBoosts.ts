@@ -6,7 +6,6 @@ import type { PvMMethod } from '@/lib/constants.js';
 import { degradeableItems, degradeablePvmBoostItems } from '@/lib/degradeableItems.js';
 import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
 import {
-	SlayerActivityConstants,
 	boostCannon,
 	boostCannonMulti,
 	boostIceBarrage,
@@ -14,7 +13,8 @@ import {
 	cannonMultiConsumables,
 	cannonSingleConsumables,
 	iceBarrageConsumables,
-	iceBurstConsumables
+	iceBurstConsumables,
+	SlayerActivityConstants
 } from '@/lib/minions/data/combatConstants.js';
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';

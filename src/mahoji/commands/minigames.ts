@@ -2,23 +2,23 @@ import { ApplicationCommandOptionType } from 'discord.js';
 
 import type { NMZStrategy } from '@/lib/constants.js';
 import { NMZ_STRATEGY } from '@/lib/constants.js';
-import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
 import TrekShopItems from '@/lib/data/buyables/trekBuyables.js';
+import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import {
-	agilityArenaBuyCommand,
 	agilityArenaBuyables,
+	agilityArenaBuyCommand,
 	agilityArenaCommand,
 	agilityArenaXPCommand
 } from '@/mahoji/lib/abstracted_commands/agilityArenaCommand.js';
 import {
 	BarbBuyables,
-	GambleTiers,
 	barbAssaultBuyCommand,
 	barbAssaultGambleCommand,
 	barbAssaultLevelCommand,
 	barbAssaultStartCommand,
-	barbAssaultStatsCommand
+	barbAssaultStatsCommand,
+	GambleTiers
 } from '@/mahoji/lib/abstracted_commands/barbAssault.js';
 import { castleWarsStartCommand, castleWarsStatsCommand } from '@/mahoji/lib/abstracted_commands/castleWarsCommand.js';
 import { fishingTrawlerCommand } from '@/mahoji/lib/abstracted_commands/fishingTrawler.js';
@@ -36,29 +36,29 @@ import { lmsCommand } from '@/mahoji/lib/abstracted_commands/lmsCommand.js';
 import { mageArena2Command } from '@/mahoji/lib/abstracted_commands/mageArena2Command.js';
 import { mageArenaCommand } from '@/mahoji/lib/abstracted_commands/mageArenaCommand.js';
 import {
-	mageTrainingArenaBuyCommand,
 	mageTrainingArenaBuyables,
+	mageTrainingArenaBuyCommand,
 	mageTrainingArenaPointsCommand,
 	mageTrainingArenaStartCommand
 } from '@/mahoji/lib/abstracted_commands/mageTrainingArenaCommand.js';
 import {
 	contractTiers,
 	mahoganyHomesBuildCommand,
-	mahoganyHomesBuyCommand,
 	mahoganyHomesBuyables,
+	mahoganyHomesBuyCommand,
 	mahoganyHomesPointsCommand
 } from '@/mahoji/lib/abstracted_commands/mahoganyHomesCommand.js';
 import {
 	nightmareZoneBuyables,
-	nightmareZoneImbueCommand,
 	nightmareZoneImbueables,
+	nightmareZoneImbueCommand,
 	nightmareZoneShopCommand,
 	nightmareZoneStartCommand,
 	nightmareZoneStatsCommand
 } from '@/mahoji/lib/abstracted_commands/nightmareZoneCommand.js';
 import {
-	pestControlBuyCommand,
 	pestControlBuyables,
+	pestControlBuyCommand,
 	pestControlStartCommand,
 	pestControlStatsCommand,
 	pestControlXPCommand
@@ -72,10 +72,10 @@ import {
 	shadesOfMortonStartCommand
 } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
 import {
-	soulWarsBuyCommand,
 	soulWarsBuyables,
-	soulWarsImbueCommand,
+	soulWarsBuyCommand,
 	soulWarsImbueables,
+	soulWarsImbueCommand,
 	soulWarsStartCommand,
 	soulWarsTokensCommand
 } from '@/mahoji/lib/abstracted_commands/soulWarsCommand.js';

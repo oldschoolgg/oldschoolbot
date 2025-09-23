@@ -4,10 +4,9 @@ import '../../src/lib/util/transactItemsFromBank.js';
 import '../../src/lib/ActivityManager.js';
 import './mocks.js';
 
-import { beforeEach, vi } from 'vitest';
-
 import { noOp } from '@oldschoolgg/toolkit/util';
 import { PrismaClient } from '@prisma/client';
+import { beforeEach, vi } from 'vitest';
 
 if (!roboChimpClient) {
 	throw new Error('Robochimp client not found.');

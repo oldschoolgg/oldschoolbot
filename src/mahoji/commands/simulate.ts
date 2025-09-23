@@ -1,7 +1,7 @@
 import { randInt, roll } from '@oldschoolgg/toolkit';
-import { PerkTier, formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration, PerkTier } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank, ChambersOfXeric, averageBank, toKMB } from 'oldschooljs';
+import { averageBank, Bank, ChambersOfXeric, toKMB } from 'oldschooljs';
 
 import { ColosseumWaveBank, startColosseumRun } from '@/lib/colosseum.js';
 import pets from '@/lib/data/pets.js';

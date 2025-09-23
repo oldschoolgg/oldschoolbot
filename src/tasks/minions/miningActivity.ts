@@ -1,4 +1,4 @@
-import { Time, increaseNumByPercent, randInt, roll, sumArr } from '@oldschoolgg/toolkit';
+import { increaseNumByPercent, randInt, roll, sumArr, Time } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { toKMB } from 'oldschooljs';
 
@@ -9,9 +9,9 @@ import { type Ore, SkillsEnum } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
-import { skillingPetDropRate } from '@/lib/util.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { rollForMoonKeyHalf } from '@/lib/util/minionUtils.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 export function determineMiningResult({
 	ore,

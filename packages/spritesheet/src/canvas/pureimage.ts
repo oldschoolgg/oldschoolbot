@@ -1,5 +1,4 @@
-import { Writable } from 'node:stream';
-import { Readable } from 'node:stream';
+import { Readable, Writable } from 'node:stream';
 import * as Canvas from 'pureimage';
 
 import type { ImageGroup, LayoutResult } from '../types.js';

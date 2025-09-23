@@ -1,4 +1,5 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
 import Prayer from '@/lib/skilling/skills/prayer.js';
@@ -6,7 +7,6 @@ import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ScatteringActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 
 export async function scatterCommand(user: MUser, channelID: string, ashName: string, quantity?: number) {
 	const speedMod = 1;

@@ -4,8 +4,8 @@ import { GearStat } from 'oldschooljs/gear';
 import type { GearSetupType } from '@/lib/gear/types.js';
 import type { Gear } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
-import { skillsMeetRequirements } from '@/lib/util.js';
 import { assert } from '@/lib/util/logError.js';
+import { skillsMeetRequirements } from '@/lib/util.js';
 
 function getItemScore(item: Item) {
 	return Object.values(item.equipment!).reduce(

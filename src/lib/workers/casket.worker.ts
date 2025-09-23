@@ -1,8 +1,8 @@
 import '../data/itemAliases.js';
 
-import { roll } from '@/lib/util/rng.js';
 import { EliteMimicTable, type ItemBank, MasterMimicTable } from 'oldschooljs';
 
+import { roll } from '@/lib/util/rng.js';
 import { ClueTiers } from '../clues/clueTiers.js';
 import type { CasketWorkerArgs } from './index.js';
 

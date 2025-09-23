@@ -1,4 +1,4 @@
-import { Time, percentChance } from '@oldschoolgg/toolkit';
+import { percentChance, Time } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs/EItem';
 
 import type { MUserClass } from '@/lib/MUser.js';

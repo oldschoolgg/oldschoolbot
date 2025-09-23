@@ -6,6 +6,7 @@ import { omit } from 'remeda';
 applyStaticDefine();
 
 import '../src/lib/safeglobals.js';
+
 import { wikiMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { applyStaticDefine } from '../meta.js';
 import { ClueTiers } from '../src/lib/clues/clueTiers.js';

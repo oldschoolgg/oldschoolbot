@@ -1,5 +1,5 @@
 import { perkTierCache } from './cache.js';
-import { BitField, PerkTier, Roles, globalConfig } from './constants.js';
+import { BitField, globalConfig, PerkTier, Roles } from './constants.js';
 import { roboChimpCache } from './perkTier.js';
 
 export const allPerkBitfields: BitField[] = [

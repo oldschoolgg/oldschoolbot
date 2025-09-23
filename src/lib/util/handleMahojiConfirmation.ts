@@ -1,4 +1,4 @@
-import { Time, noOp } from '@oldschoolgg/toolkit';
+import { noOp, Time } from '@oldschoolgg/toolkit';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import {
 	ActionRowBuilder,

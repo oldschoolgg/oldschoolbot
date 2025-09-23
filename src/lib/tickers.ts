@@ -1,4 +1,4 @@
-import { Time, noOp, removeFromArr } from '@oldschoolgg/toolkit';
+import { noOp, removeFromArr, Time } from '@oldschoolgg/toolkit';
 import { awaitMessageComponentInteraction, cleanUsername } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { TimerManager } from '@sapphire/timer-manager';
@@ -10,9 +10,9 @@ import { farmingPatchNames, getFarmingKeyFromName } from '@/lib/util/farmingHelp
 import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
 import { logError } from '@/lib/util/logError.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
-import { mahojiUserSettingsUpdate } from './MUser.js';
 import { BitField, Channel, globalConfig } from './constants.js';
 import { GrandExchange } from './grandExchange.js';
+import { mahojiUserSettingsUpdate } from './MUser.js';
 import { collectMetrics } from './metrics.js';
 import { populateRoboChimpCache } from './perkTier.js';
 import { fetchUsersWithoutUsernames } from './rawSql.js';

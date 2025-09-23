@@ -1,4 +1,4 @@
-import { Bank, ItemGroups, deepResolveItems, resolveItems } from 'oldschooljs';
+import { Bank, deepResolveItems, ItemGroups, resolveItems } from 'oldschooljs';
 
 import type { ClueTier } from './clueTiers.js';
 

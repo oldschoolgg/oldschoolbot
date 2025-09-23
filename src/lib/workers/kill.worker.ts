@@ -1,7 +1,7 @@
 import '../data/itemAliases.js';
 
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { Bank, Misc, Monsters, calcDropRatesFromBank, resolveItems } from 'oldschooljs';
+import { Bank, calcDropRatesFromBank, Misc, Monsters, resolveItems } from 'oldschooljs';
 
 import { handleNexKills } from '@/lib/simulation/nex.js';
 import { simulatedKillables } from '@/lib/simulation/simulatedKillables.js';

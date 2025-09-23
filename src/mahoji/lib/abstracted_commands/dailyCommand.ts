@@ -1,12 +1,12 @@
-import { Time, roll, shuffleArr, uniqueArr } from '@oldschoolgg/toolkit';
+import { roll, shuffleArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import type { ItemBank } from 'oldschooljs';
 
-import { DynamicButtons } from '@/lib/DynamicButtons.js';
 import { globalConfig } from '@/lib/constants.js';
+import { DynamicButtons } from '@/lib/DynamicButtons.js';
 import pets from '@/lib/data/pets.js';
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 import dailyRoll from '@/lib/simulation/dailyTable.js';

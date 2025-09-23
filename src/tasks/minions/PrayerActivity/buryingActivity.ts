@@ -1,10 +1,10 @@
-import { percentChance } from '@/lib/util/rng.js';
 import { Bank } from 'oldschooljs';
 
 import Prayer from '@/lib/skilling/skills/prayer.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { BuryingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { percentChance } from '@/lib/util/rng.js';
 import { zealOutfitBoost } from './offeringActivity.js';
 
 export const buryingTask: MinionTask = {

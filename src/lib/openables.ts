@@ -4,22 +4,22 @@ import {
 	Bank,
 	BrimstoneChest,
 	EItem,
-	EMonster,
 	EliteMimicTable,
+	EMonster,
 	HallowedSackTable,
 	Implings,
 	type Item,
 	type ItemBank,
 	Items,
+	itemID,
 	LarransChest,
 	LootTable,
 	MasterMimicTable,
 	type OpenableOpenOptions,
 	Openables,
+	resolveItems,
 	SkillsEnum,
-	ZombiePiratesLocker,
-	itemID,
-	resolveItems
+	ZombiePiratesLocker
 } from 'oldschooljs';
 
 import { roll } from '@/lib/util/rng.js';

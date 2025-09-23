@@ -1,6 +1,6 @@
-import { Table, calcPerHour } from '@oldschoolgg/toolkit';
+import { calcPerHour, Table } from '@oldschoolgg/toolkit';
 import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type Bank, EItem, Items, convertLVLtoXP } from 'oldschooljs';
+import { type Bank, convertLVLtoXP, EItem, Items } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
 
 applyStaticDefine();

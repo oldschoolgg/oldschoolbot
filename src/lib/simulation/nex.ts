@@ -1,5 +1,4 @@
 import {
-	Time,
 	calcWhatPercent,
 	increaseNumByPercent,
 	percentChance,
@@ -7,7 +6,8 @@ import {
 	randInt,
 	reduceNumByPercent,
 	roll,
-	sumArr
+	sumArr,
+	Time
 } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
@@ -20,8 +20,8 @@ import { arrows, bolts, bows, crossbows } from '@/lib/util/archery.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { formatList, formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
 import { BitField } from '../constants.js';
-import { TeamLoot } from './TeamLoot.js';
 import { NexNonUniqueTable, NexUniqueTable } from './misc.js';
+import { TeamLoot } from './TeamLoot.js';
 
 const minStats: Skills = {
 	defence: 90,

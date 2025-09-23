@@ -3,9 +3,9 @@ import { Bank } from 'oldschooljs';
 
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { TitheFarmActivityTaskOptions } from '@/lib/types/minions.js';
-import { skillingPetDropRate } from '@/lib/util.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { roll } from '@/lib/util/rng.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const titheFarmTask: MinionTask = {

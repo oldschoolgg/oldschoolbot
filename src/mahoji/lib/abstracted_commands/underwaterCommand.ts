@@ -1,4 +1,4 @@
-import { Time, randFloat, reduceNumByPercent } from '@oldschoolgg/toolkit';
+import { randFloat, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
