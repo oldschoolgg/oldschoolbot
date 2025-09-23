@@ -1,22 +1,21 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit/runescape';
-import fetch from 'node-fetch';
 import {
 	type Canvas,
 	type CanvasRenderingContext2D as CanvasContext,
 	FontLibrary,
 	type Image,
-	Canvas as SkiaCanvas,
-	loadImage
+	loadImage,
+	Canvas as SkiaCanvas
 } from 'skia-canvas';
 
 import { EItem } from 'oldschooljs';
-import { BOT_TYPE } from '../constants';
-import { CanvasModule } from './CanvasModule';
-import type { CanvasSpritesheet, SpriteData } from './CanvasSpritesheet';
-import { type CanvasImage, type IBgSprite, drawImageWithOutline, getClippedRegion } from './canvasUtil';
-import { type IconPackID, ItemIconPacks } from './iconPacks';
+import { BOT_TYPE } from '@/lib/constants.js';
+import { CanvasModule } from './CanvasModule.js';
+import type { CanvasSpritesheet, SpriteData } from './CanvasSpritesheet.js';
+import { type CanvasImage, drawImageWithOutline, getClippedRegion, type IBgSprite } from './canvasUtil.js';
+import { type IconPackID, ItemIconPacks } from './iconPacks.js';
 
 // use correct IDs when generating DT2 rings
 export const manualSpriteIDs = [
@@ -121,15 +120,7 @@ export class OSRSCanvas {
 		return this.canvas;
 	}
 
-	private rawDrawText({
-		text,
-		x,
-		y
-	}: {
-		text: string;
-		x: number;
-		y: number;
-	}) {
+	private rawDrawText({ text, x, y }: { text: string; x: number; y: number }) {
 		const textPath = this.ctx.outlineText(text);
 		this.ctx.fill(textPath.offset(x, y));
 	}
@@ -331,7 +322,10 @@ export class OSRSCanvas {
 	public static async getItemImage({
 		itemID,
 		iconPackId
-	}: { itemID: number; iconPackId?: IconPackID }): Promise<Canvas | CanvasImage> {
+	}: {
+		itemID: number;
+		iconPackId?: IconPackID;
+	}): Promise<Canvas | CanvasImage> {
 		// Custom item icon pack icons
 		if (iconPackId && ItemIconPacks[iconPackId].icons.has(itemID)) {
 			return ItemIconPacks[iconPackId].icons.get(itemID) as Image;
@@ -361,7 +355,7 @@ export class OSRSCanvas {
 			return image;
 		}
 		const imageBuffer = await fetch(`https://chisel.weirdgloop.org/static/img/osrs-sprite/${itemID}.png`).then(
-			result => result.buffer()
+			result => result.arrayBuffer().then(Buffer.from)
 		);
 
 		await writeFile(path.join(OSRSCanvas.ITEM_ICON_CACHE_DIR, `${itemID}.png`), imageBuffer);

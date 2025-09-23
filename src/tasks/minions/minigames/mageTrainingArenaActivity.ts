@@ -1,9 +1,9 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, randomVariation } from 'oldschooljs';
 
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const pizazzPointsPerHour = 100;
 

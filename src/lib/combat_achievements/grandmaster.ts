@@ -1,7 +1,7 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, EMonster, Monsters } from 'oldschooljs';
 
-import { Requirements } from '../structures/Requirements';
+import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
 	ActivityTaskData,
 	GauntletOptions,
@@ -9,11 +9,11 @@ import type {
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	RaidsOptions,
-	TOAOptions,
-	TheatreOfBloodTaskOptions
-} from '../types/minions';
-import { isCertainMonsterTrip } from './caUtils';
-import type { CombatAchievement } from './combatAchievements';
+	TheatreOfBloodTaskOptions,
+	TOAOptions
+} from '@/lib/types/minions.js';
+import { isCertainMonsterTrip } from './caUtils.js';
+import type { CombatAchievement } from './combatAchievements.js';
 
 export const grandmasterCombatAchievements: CombatAchievement[] = [
 	{
@@ -405,7 +405,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 	{
 		id: 3030,
 		name: "Phosani's Speedrunner",
-		desc: "Defeat Phosani's Nightmare within 7:30 minutes.",
+		desc: "Defeat Phosani's Nightmare within 6 minutes.",
 		type: 'speed',
 		monster: "Phosani's Nightmare",
 		rng: {
@@ -1277,11 +1277,11 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 	{
 		id: 3108,
 		name: 'Duke Sucellus Speed-Runner',
-		desc: 'Kill Duke Sucellus in less than 1:25 minutes without a slayer task.',
+		desc: 'Kill Duke Sucellus in less than 40 seconds without a slayer task.',
 		type: 'speed',
 		monster: 'Duke Sucellus',
 		rng: {
-			chancePerKill: 150,
+			chancePerKill: 100,
 			hasChance: isCertainMonsterTrip(Monsters.DukeSucellus.id)
 		}
 	},

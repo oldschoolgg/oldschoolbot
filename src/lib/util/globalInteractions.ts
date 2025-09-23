@@ -1,24 +1,24 @@
+import { removeFromArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { Giveaway } from '@prisma/client';
 import { RateLimitManager } from '@sapphire/ratelimits';
 import type { ButtonInteraction, Interaction } from 'discord.js';
-import { Time, removeFromArr, uniqueArr } from 'e';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { cancelGEListingCommand } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
-import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
-import { InteractionID } from '../InteractionID';
-import { giveawayCache } from '../cache.js';
-import type { ClueTier } from '../clues/clueTiers';
-import { BitField, PerkTier } from '../constants';
-import { runCommand } from '../settings/settings';
-import { updateGiveawayMessage } from './giveaway';
-import { interactionReply } from './interactionReply';
-import { isValidGlobalInteraction } from './interactions';
-import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
+import { giveawayCache } from '@/lib/cache.js';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import { BitField, PerkTier } from '@/lib/constants.js';
+import { InteractionID } from '@/lib/InteractionID.js';
+import { runCommand } from '@/lib/settings/settings.js';
+import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
+import { autoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
+import { shootingStarsCommand, starCache } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
+import { updateGiveawayMessage } from './giveaway.js';
+import { interactionReply } from './interactionReply.js';
+import { isValidGlobalInteraction } from './interactions.js';
+import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip.js';
 
 const buttonRatelimiter = new RateLimitManager(Time.Second * 2, 1);
 
@@ -229,13 +229,7 @@ async function handleGEButton(user: MUser, id: string, interaction: ButtonIntera
 
 export async function interactionHook(interaction: Interaction) {
 	if (!interaction.isButton()) return;
-	const ignoredInteractionIDs = [
-		'CONFIRM',
-		'CANCEL',
-		'PARTY_JOIN',
-		...Object.values(InteractionID.PaginatedMessage),
-		...Object.values(InteractionID.Slayer)
-	];
+	const ignoredInteractionIDs = ['CONFIRM', 'CANCEL', 'PARTY_JOIN', ...Object.values(InteractionID.PaginatedMessage)];
 	if (ignoredInteractionIDs.includes(interaction.customId)) return;
 	if (['DYN_', 'LP_'].some(s => interaction.customId.startsWith(s))) return;
 
@@ -411,6 +405,60 @@ export async function interactionHook(interaction: Interaction) {
 				bypassInhibitors: true,
 				...options
 			});
+		}
+		case InteractionID.Slayer.AutoSlaySaved: {
+			await runCommand({
+				commandName: 'slayer',
+				args: { autoslay: {} },
+				bypassInhibitors: true,
+				...options
+			});
+			return;
+		}
+		case InteractionID.Slayer.AutoSlayDefault: {
+			await runCommand({
+				commandName: 'slayer',
+				args: { autoslay: { mode: 'default' } },
+				bypassInhibitors: true,
+				...options
+			});
+			return;
+		}
+		case InteractionID.Slayer.AutoSlayEHP: {
+			await runCommand({
+				commandName: 'slayer',
+				args: { autoslay: { mode: 'ehp' } },
+				bypassInhibitors: true,
+				...options
+			});
+			return;
+		}
+		case InteractionID.Slayer.AutoSlayBoss: {
+			await runCommand({
+				commandName: 'slayer',
+				args: { autoslay: { mode: 'boss' } },
+				bypassInhibitors: true,
+				...options
+			});
+			return;
+		}
+		case InteractionID.Slayer.SkipTask: {
+			await runCommand({
+				commandName: 'slayer',
+				args: { manage: { command: 'skip', new: true } },
+				bypassInhibitors: true,
+				...options
+			});
+			return;
+		}
+		case InteractionID.Slayer.BlockTask: {
+			await runCommand({
+				commandName: 'slayer',
+				args: { manage: { command: 'block', new: true } },
+				bypassInhibitors: true,
+				...options
+			});
+			return;
 		}
 		case 'AUTO_FARM': {
 			return runCommand({

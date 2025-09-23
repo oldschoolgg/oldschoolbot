@@ -1,4 +1,4 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '@/structures/LootTable.js';
 
 const MegaRareTable = new LootTable({ limit: 128 })
 	.add('Rune spear', 1, 8)
@@ -43,5 +43,3 @@ export const RareDropTable = new LootTable()
 	/* Subtables */
 	.add(GemTable, 1, 20)
 	.add(MegaRareTable, 1, 15);
-
-export default RareDropTable;

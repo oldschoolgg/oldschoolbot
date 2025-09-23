@@ -1,24 +1,22 @@
+import { noOp, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
 import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import { Prisma } from '@prisma/client';
-import { noOp, notEmpty, uniqueArr } from 'e';
-import { convertXPtoLVL } from 'oldschooljs';
+import { convertXPtoLVL, type ItemBank } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { partition } from 'remeda';
 import z from 'zod';
 
-import { BadgesEnum, MAX_LEVEL, Roles, globalConfig } from '../lib/constants';
-import { getCollectionItems } from '../lib/data/Collections';
-import { Minigames } from '../lib/settings/minigames';
-import { ClueTiers } from './clues/clueTiers';
-import { loggedRawPrismaQuery } from './rawSql';
-import { TeamLoot } from './simulation/TeamLoot';
-import { SkillsArray } from './skilling/types';
-import type { ItemBank } from './types';
-import { getUsernameSync } from './util';
-import { fetchMultipleCLLeaderboards } from './util/clLeaderboard';
-import { logError } from './util/logError';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { BadgesEnum, globalConfig, MAX_LEVEL, Roles } from '@/lib/constants.js';
+import { getCollectionItems } from '@/lib/data/Collections.js';
+import { Minigames } from '@/lib/settings/minigames.js';
+import { SkillsArray } from '@/lib/skilling/types.js';
+import { fetchMultipleCLLeaderboards } from '@/lib/util/clLeaderboard.js';
+import { logError } from '@/lib/util/logError.js';
+import { loggedRawPrismaQuery } from './rawSql.js';
+import { TeamLoot } from './simulation/TeamLoot.js';
+import { getUsernameSync } from './util.js';
 
 const RoleResultSchema = z.object({
 	roleID: z.string().min(17).max(19),
@@ -40,7 +38,8 @@ const CLS_THAT_GET_ROLE = [
 	'slayer',
 	'other',
 	'custom',
-	'overall'
+	'overall',
+	'creatables'
 ];
 
 for (const cl of CLS_THAT_GET_ROLE) {

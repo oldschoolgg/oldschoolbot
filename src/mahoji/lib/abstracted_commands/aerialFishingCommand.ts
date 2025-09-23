@@ -1,9 +1,9 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
 
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export async function aerialFishingCommand(user: MUser, channelID: string) {
 	if (user.skillsAsLevels.fishing < 43 || user.skillsAsLevels.hunter < 35) {

@@ -1,5 +1,5 @@
+import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
 import {
 	Bank,
 	ChambersOfXeric,
@@ -14,25 +14,24 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
-import type { ClueTier } from '../clues/clueTiers';
-import { ClueTiers } from '../clues/clueTiers';
-import killableMonsters, { NightmareMonster } from '../minions/data/killableMonsters';
-import { sepulchreFloors } from '../minions/data/sepulchre';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import killableMonsters, { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
+import { sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
 import {
 	EasyEncounterLoot,
 	HardEncounterLoot,
 	MediumEncounterLoot,
 	rewardTokens
-} from '../minions/data/templeTrekking';
-import type { MinigameName } from '../settings/minigames';
-import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc';
-import { allFarmingItems } from '../skilling/skills/farming';
-import { SkillsEnum } from '../skilling/types';
-import { MUserStats } from '../structures/MUserStats';
-import { shuffleRandom } from '../util/smallUtils';
-import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport';
+} from '@/lib/minions/data/templeTrekking.js';
+import type { MinigameName } from '@/lib/settings/minigames.js';
+import { NexNonUniqueTable, NexUniqueTable } from '@/lib/simulation/misc.js';
+import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
+import { SeedableRNG } from '@/lib/util/rng.js';
+import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport.js';
 import {
-	NexCL,
 	abyssalSireCL,
 	aerialFishingCL,
 	alchemicalHydraCL,
@@ -103,6 +102,7 @@ import {
 	motherlodeMineCL,
 	muspahCL,
 	myNotesCL,
+	NexCL,
 	oborCL,
 	pestControlCL,
 	questCL,
@@ -121,13 +121,13 @@ import {
 	spiritAnglerOutfit,
 	templeTrekkingCL,
 	temporossCL,
+	theatreOfBLoodCL,
 	theGauntletCL,
 	theInfernoCL,
 	theLeviathanCL,
 	theNightmareCL,
-	theWhispererCL,
-	theatreOfBLoodCL,
 	thermonuclearSmokeDevilCL,
+	theWhispererCL,
 	titheFarmCL,
 	tormentedDemonCL,
 	troubleBrewingCL,
@@ -140,9 +140,9 @@ import {
 	wintertodtCL,
 	zalcanoCL,
 	zulrahCL
-} from './CollectionsExport';
-import Createables from './createables';
-import { leagueBuyables } from './leaguesBuyables';
+} from './CollectionsExport.js';
+import Createables from './createables.js';
+import { leagueBuyables } from './leaguesBuyables.js';
 
 function kcProg(mon: Monster): FormatProgressFunction {
 	return ({ stats }) => `${stats.kcBank[mon.id] ?? 0} KC`;
@@ -473,6 +473,29 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.PhantomMuspah.allItems,
 				items: muspahCL,
 				fmtProg: kcProg(Monsters.PhantomMuspah)
+			},
+			'Royal Titans': {
+				alias: ['branda', 'eldric', 'royal', 'titans', 'royal titans'],
+				kcActivity: {
+					Default: [Monsters.Branda.name, Monsters.Eldric.name, Monsters.RoyalTitans.name],
+					Branda: Monsters.Branda.name,
+					Eldric: Monsters.Eldric.name,
+					Sac: Monsters.RoyalTitans.name
+				},
+				items: resolveItems([
+					'Bran',
+					'Deadeye prayer scroll',
+					'Mystic vigour prayer scroll',
+					'Giantsoul amulet (uncharged)',
+					'Ice element staff crown',
+					'Fire element staff crown',
+					'Desiccated page'
+				]),
+				fmtProg: ({ stats }) => [
+					`${stats.kcBank[Monsters.Branda.id] ?? 0} Branda KC`,
+					`${stats.kcBank[Monsters.Eldric.id] ?? 0} Eldric KC`,
+					`${stats.kcBank[Monsters.RoyalTitans.id] ?? 0} Sacrifice KC`
+				]
 			},
 			Sarachnis: {
 				alias: Monsters.Sarachnis.aliases,
@@ -1256,10 +1279,8 @@ export function calcCLDetails(user: MUser | Bank) {
 	const clItems = (user instanceof Bank ? user : user.cl).filter(i => allCLItemsFiltered.includes(i.id));
 	const debugBank = new Bank(clItems);
 	const owned = clItems.filter(i => allCLItemsFiltered.includes(i.id));
-	const notOwned = shuffleRandom(
-		Number(user instanceof Bank ? '1' : user.id),
-		allCLItemsFiltered.filter(i => !clItems.has(i))
-	).slice(0, 10);
+	const seededRng = new SeedableRNG(Number(user instanceof Bank ? '1' : user.id));
+	const notOwned: number[] = seededRng.shuffle(allCLItemsFiltered.filter(i => !clItems.has(i))).slice(0, 10);
 	return {
 		percent: calcWhatPercent(owned.length, allCLItemsFiltered.length),
 		notOwned,

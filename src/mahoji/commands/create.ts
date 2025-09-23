@@ -1,15 +1,14 @@
-import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import Createables from '../../lib/data/createables';
-import type { SkillsEnum } from '../../lib/skilling/types';
-import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
-import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { userStatsBankUpdate } from '../mahojiSettings';
+import Createables from '@/lib/data/createables.js';
+import type { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const createCommand: OSBMahojiCommand = {
 	name: 'create',
@@ -178,8 +177,7 @@ export const createCommand: OSBMahojiCommand = {
 			addToCl = true;
 		}
 
-		await transactItems({
-			userID: userID.toString(),
+		await user.transactItems({
 			collectionLog: addToCl,
 			itemsToAdd: outItems,
 			itemsToRemove: inItems

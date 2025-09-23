@@ -1,14 +1,13 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
-import { type Item, itemID } from 'oldschooljs';
+import { type Item, Items, itemID } from 'oldschooljs';
 
+import type { Skills } from '@/lib/types/index.js';
+import type { PuroPuroActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import type { Skills } from '../../../lib/types';
-import type { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import getOSItem from '../../../lib/util/getOSItem';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 interface PuroImpling {
 	name: string;
@@ -34,12 +33,18 @@ const darkLureSkillRequirements: Skills = {
 const puroOptions: PuroImpling[] = [
 	{ name: 'All Implings', hunterLevel: 17, spell: true, item: null, tier: 1 },
 	{ name: 'High-tier Implings', hunterLevel: 58, spell: true, item: null, tier: 2 },
-	{ name: 'Eclectic Implings', hunterLevel: 50, spell: false, item: getOSItem('Eclectic impling jar'), tier: 3 },
-	{ name: 'Essence Implings', hunterLevel: 42, spell: false, item: getOSItem('Essence impling jar'), tier: 4 },
-	{ name: 'Earth Implings', hunterLevel: 36, spell: false, item: getOSItem('Earth impling jar'), tier: 5 },
-	{ name: 'Gourmet Implings', hunterLevel: 28, spell: false, item: getOSItem('Gourmet impling jar'), tier: 6 },
-	{ name: 'Young Implings', hunterLevel: 22, spell: false, item: getOSItem('Young impling jar'), tier: 7 },
-	{ name: 'Baby Implings', hunterLevel: 17, spell: false, item: getOSItem('Baby impling jar'), tier: 8 }
+	{
+		name: 'Eclectic Implings',
+		hunterLevel: 50,
+		spell: false,
+		item: Items.getOrThrow('Eclectic impling jar'),
+		tier: 3
+	},
+	{ name: 'Essence Implings', hunterLevel: 42, spell: false, item: Items.getOrThrow('Essence impling jar'), tier: 4 },
+	{ name: 'Earth Implings', hunterLevel: 36, spell: false, item: Items.getOrThrow('Earth impling jar'), tier: 5 },
+	{ name: 'Gourmet Implings', hunterLevel: 28, spell: false, item: Items.getOrThrow('Gourmet impling jar'), tier: 6 },
+	{ name: 'Young Implings', hunterLevel: 22, spell: false, item: Items.getOrThrow('Young impling jar'), tier: 7 },
+	{ name: 'Baby Implings', hunterLevel: 17, spell: false, item: Items.getOrThrow('Baby impling jar'), tier: 8 }
 ];
 
 export default puroOptions;
@@ -61,7 +66,7 @@ export async function puroPuroStartCommand(
 	const [hasDarkLureSkillReqs, lureReason] = hasSkillReqs(user, darkLureSkillRequirements);
 	if (!hasReqs) return `To hunt in Puro-Puro, you need: ${reason}.`;
 	if (user.QP < 3) return 'To hunt in Puro-Puro, you need 3 QP.';
-	let impToHunt: PuroImpling | undefined = undefined;
+	let impToHunt: PuroImpling | undefined;
 	if (impling) {
 		impToHunt = puroOptions.find(i => stringMatches(i.name, impling));
 	} else if (implingTier) {

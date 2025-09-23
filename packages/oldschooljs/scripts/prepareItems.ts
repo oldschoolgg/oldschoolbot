@@ -1,28 +1,26 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { diff } from 'deep-object-diff';
 import deepMerge from 'deepmerge';
-import { deepClone, increaseNumByPercent, notEmpty, objectEntries, reduceNumByPercent } from 'e';
-import fetch from 'node-fetch';
-import bsoItemsJson from '../../../data/bso/bso_items.json';
+import { clone } from 'remeda';
 
-import { EquipmentSlot, type Item } from '../src/meta/types';
-import Items, { CLUE_SCROLLS, CLUE_SCROLL_NAMES, USELESS_ITEMS } from '../src/structures/Items';
-import itemID from '../src/util/itemID';
-import { getItemOrThrow } from '../src/util/util';
-import { itemChanges, itemsToDuplicate } from './manualItemChanges';
+import { EquipmentSlot, type Item } from '@/meta/item.js';
+import Items, { CLUE_SCROLL_NAMES, CLUE_SCROLLS, USELESS_ITEMS } from '@/structures/Items.js';
+import { increaseNumByPercent, reduceNumByPercent } from '@/util/smallUtils.js';
+import bsoItemsJson from '../../../data/bso/bso_items.json' with { type: 'json' };
+import { itemChanges, itemsToDuplicate } from './manualItemChanges.js';
 
 const ITEM_UPDATE_CONFIG = {
 	SHOULD_UPDATE_PRICES: false
 };
 
-const previousItems = JSON.parse(readFileSync('./src/data/items/item_data.json', 'utf-8'));
+const previousItems = JSON.parse(readFileSync('./src/assets/item_data.json', 'utf-8'));
 
 const equipmentModifications = new Map();
 const equipmentModSrc = [
-	['Pink stained full helm', 'Bronze full helm'].map(itemID),
-	['Pink stained platebody', 'Bronze platebody'].map(itemID),
-	['Pink stained platelegs', 'Bronze platelegs'].map(itemID),
-	['Bulging sack', 'Red cape'].map(itemID)
+	Items.resolveItems(['Pink stained full helm', 'Bronze full helm']),
+	Items.resolveItems(['Pink stained platebody', 'Bronze platebody']),
+	Items.resolveItems(['Pink stained platelegs', 'Bronze platelegs']),
+	Items.resolveItems(['Bulging sack', 'Red cape'])
 ] as const;
 for (const [toChange, toCopy] of equipmentModSrc) {
 	equipmentModifications.set(toChange, toCopy);
@@ -268,9 +266,7 @@ const itemsToIgnorePrices = [
 	'Roast beast meat',
 	"Relicym's mix(2)",
 	'Antidote+ mix(1)'
-]
-	.map(getItemOrThrow)
-	.map(i => i.id);
+].map(name => Items.getOrThrow(name).id);
 
 const keysToWarnIfRemovedOrAdded: (keyof Item)[] = ['equipable', 'equipment', 'weapon'];
 
@@ -279,7 +275,7 @@ export default async function prepareItems(): Promise<void> {
 	const allItemsRaw: RawItemCollection = await fetch(
 		'https://raw.githubusercontent.com/0xNeffarion/osrsreboxed-db/37322fed3abb2d58236c59dfc6babb37a27a50ea/docs/items-complete.json'
 	).then((res): Promise<any> => res.json());
-	const allItems = deepClone(allItemsRaw);
+	const allItems = clone(allItemsRaw);
 
 	const allPrices = await fetch('https://prices.runescape.wiki/api/v1/osrs/latest', {
 		headers: {
@@ -323,7 +319,7 @@ export default async function prepareItems(): Promise<void> {
 			'examine',
 			'wiki_url'
 		]) {
-			// @ts-ignore
+			// @ts-expect-error
 			delete item[delKey];
 		}
 
@@ -337,7 +333,6 @@ export default async function prepareItems(): Promise<void> {
 			'equipable',
 			'equipable_by_player',
 			'equipable_weapon',
-			'weight',
 			'buy_limit',
 			'equipment',
 			'weapon'
@@ -352,10 +347,8 @@ export default async function prepareItems(): Promise<void> {
 		if (!previousItem) {
 			// if (item.wiki_name?.includes('Trailblazer') || item.name.includes('echoes')) continue;
 			newItems.push(item);
-			if (bsoItemsJson[item.id]) {
-				console.log(
-					`!!!!!!! New item added ${item.name}[${item.id}] clashes with BSO item ${bsoItemsJson[item.id]} !!!!!!!`
-				);
+			if (bsoItemsJson[item.id.toString() as keyof typeof bsoItemsJson]) {
+				console.log(`!!!!!!! New item added ${item.name}[${item.id}] clashes with BSO item !!!!!!!`);
 			}
 		}
 
@@ -401,14 +394,17 @@ export default async function prepareItems(): Promise<void> {
 			previousItem?.price &&
 			item.price > reduceNumByPercent(previousItem.price, 10) &&
 			item.price < increaseNumByPercent(previousItem.price, 10) &&
+			previousItem?.price &&
+			item.price > reduceNumByPercent(previousItem?.price, 10) &&
+			item.price < increaseNumByPercent(previousItem?.price, 10) &&
 			item.price < 100_000
 		) {
 			item.price = previousItem.price;
 		} else if (
 			// Ignore <3% changes in any way
 			previousItem?.price &&
-			item.price > reduceNumByPercent(previousItem.price, 3) &&
-			item.price < increaseNumByPercent(previousItem.price, 3)
+			item.price > reduceNumByPercent(previousItem?.price, 3) &&
+			item.price < increaseNumByPercent(previousItem?.price, 3)
 		) {
 			item.price = previousItem.price;
 		}
@@ -443,7 +439,7 @@ export default async function prepareItems(): Promise<void> {
 			item.highalch = previousItem.highalch;
 			item.wiki_name = previousItem.wiki_name;
 			if (previousItem.equipment?.requirements) {
-				// @ts-ignore ignore
+				// @ts-expect-error ignore
 				item.equipment = {
 					...item.equipment,
 					requirements: previousItem.equipment.requirements
@@ -469,7 +465,7 @@ export default async function prepareItems(): Promise<void> {
 		}
 
 		if (previousItem?.equipment?.requirements && !item.equipment?.requirements) {
-			// @ts-ignore ignore
+			// @ts-expect-error ignore
 			item.equipment = {
 				...item.equipment,
 				requirements: previousItem.equipment.requirements
@@ -483,6 +479,7 @@ export default async function prepareItems(): Promise<void> {
 		}
 	}
 
+	// @ts-expect-error
 	newItemJSON[0] = undefined;
 
 	for (const item of itemsToDuplicate) {
@@ -498,7 +495,7 @@ export default async function prepareItems(): Promise<void> {
 
 	const deletedItems: any[] = Object.values(previousItems)
 		.filter((i: any) => !(newItemJSON as any)[i.id])
-		.filter(notEmpty);
+		.filter(i => i !== null && i !== undefined);
 
 	messages.push(`
 New Items: ${moidLink(newItems.map(i => i.id))}
@@ -527,10 +524,10 @@ GROUP BY id
 	}
 
 	const diffOutput: any = diff(previousItems, newItemJSON);
-	for (const [key, val] of objectEntries(diffOutput as any)) {
+	for (const [key, val] of Object.entries(diffOutput as any)) {
 		if (!val || Object.values(val).every(t => !t)) {
 			delete diffOutput[key];
 		}
 	}
-	writeFileSync('./src/data/items/item_data.json', `${JSON.stringify(newItemJSON, null, '	')}\n`);
+	writeFileSync('./src/assets/item_data.json', `${JSON.stringify(newItemJSON, null, '	')}\n`);
 }

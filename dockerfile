@@ -11,10 +11,10 @@ RUN apt-get update && apt-get install -y \
     libfontconfig1 \
     curl
 
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \
     apt-get install -y nodejs && \
     corepack enable && \
-    corepack prepare pnpm@9.12.2 --activate
+    corepack prepare pnpm@10.17.0 --activate
 
 ENTRYPOINT ["dumb-init", "--"]
 
@@ -23,9 +23,10 @@ WORKDIR /usr/src/app
 
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc ./
 COPY packages/oldschooljs/package.json ./packages/oldschooljs/package.json
-COPY packages/server/package.json ./packages/server/package.json
 COPY packages/test-dashboard/package.json ./packages/test-dashboard/package.json
 COPY packages/toolkit/package.json ./packages/toolkit/package.json
+COPY packages/spritesheet/package.json ./packages/spritesheet/package.json
+COPY packages/cli/package.json ./packages/cli/package.json
 COPY docs/package.json ./docs/package.json
 
 RUN pnpm install --frozen-lockfile

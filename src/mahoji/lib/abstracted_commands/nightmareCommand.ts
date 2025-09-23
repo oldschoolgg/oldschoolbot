@@ -1,23 +1,22 @@
+import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, reduceNumByPercent } from 'e';
-import { Bank, EMonster, ZAM_HASTA_CRUSH, resolveItems } from 'oldschooljs';
+import { Bank, EMonster, Items, resolveItems, ZAM_HASTA_CRUSH } from 'oldschooljs';
 
-import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood';
-import { BitField } from '../../../lib/constants';
-import { degradeItem } from '../../../lib/degradeableItems';
-import { trackLoot } from '../../../lib/lootTrack';
-import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
-import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import type { KillableMonster } from '../../../lib/minions/types';
-import { Gear } from '../../../lib/structures/Gear';
-import type { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
-import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
-import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { hasMonsterRequirements } from '../../mahojiSettings';
+import { BitField } from '@/lib/constants.js';
+import { degradeItem } from '@/lib/degradeableItems.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
+import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
+import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { Gear } from '@/lib/structures/Gear.js';
+import type { NightmareActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
+import { getNightmareGearStats } from '@/lib/util/getNightmareGearStats.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 async function soloMessage(user: MUser, duration: number, quantity: number, isPhosani: boolean) {
 	const name = isPhosani ? "Phosani's Nightmare" : 'The Nightmare';
@@ -36,12 +35,7 @@ async function soloMessage(user: MUser, duration: number, quantity: number, isPh
 	return `${str} The trip will take approximately ${formatDuration(duration)}.`;
 }
 
-const inquisitorItems = resolveItems([
-	"Inquisitor's great helm",
-	"Inquisitor's hauberk",
-	"Inquisitor's plateskirt",
-	"Inquisitor's mace"
-]);
+const inquisitorItems = resolveItems(["Inquisitor's great helm", "Inquisitor's hauberk", "Inquisitor's plateskirt"]);
 
 const phosaniBISGear = new Gear({
 	head: "Inquisitor's great helm",
@@ -57,8 +51,8 @@ const phosaniBISGear = new Gear({
 	ammo: "Rada's blessing 4"
 });
 
-const shadowChargesPerKc = 70;
-const sangChargesPerKc = 85;
+const shadowChargesPerKc = 40;
+const sangChargesPerKc = 60;
 
 async function checkReqs(user: MUser, monster: KillableMonster, isPhosani: boolean): Promise<string | undefined> {
 	// Check the user has the requirements to kill The Nightmare
@@ -93,7 +87,14 @@ async function checkReqs(user: MUser, monster: KillableMonster, isPhosani: boole
 	}
 }
 
-function perUserCost(user: MUser, quantity: number, isPhosani: boolean, hasShadow: boolean, hasSang: boolean) {
+function perUserCost(
+	user: MUser,
+	quantity: number,
+	isPhosani: boolean,
+	hasShadow: boolean,
+	hasSang: boolean,
+	hasHarm: boolean
+) {
 	const cost = new Bank();
 	const tumCharges = shadowChargesPerKc * quantity;
 	const sangCharges = sangChargesPerKc * quantity;
@@ -111,15 +112,17 @@ function perUserCost(user: MUser, quantity: number, isPhosani: boolean, hasShado
 				'charge'
 			)}`;
 		}
+
 		cost.add('Super combat potion(4)', Math.max(1, Math.floor(quantity / 2)))
 			.add('Sanfew serum(4)', quantity)
 			.add('Super restore(4)', quantity);
 		if (hasShadow || hasSang) {
 			return cost;
+		} else if (hasHarm) {
+			cost.add('Fire rune', 10 * 70 * quantity)
+				.add('Air rune', 7 * 70 * quantity)
+				.add('Wrath rune', 70 * quantity);
 		}
-		cost.add('Fire rune', 10 * 70 * quantity)
-			.add('Air rune', 7 * 70 * quantity)
-			.add('Wrath rune', 70 * quantity);
 	}
 	if (!user.owns(cost)) {
 		return `${user} doesn't own ${cost}.`;
@@ -128,8 +131,10 @@ function perUserCost(user: MUser, quantity: number, isPhosani: boolean, hasShado
 }
 
 export async function nightmareCommand(user: MUser, channelID: string, name: string, qty: number | undefined) {
+	const hasMace = !!user.gear.melee.hasEquipped("Inquisitor's mace");
 	const hasShadow = !!user.gear.mage.hasEquipped("Tumeken's shadow");
 	const hasSang = !!user.gear.mage.hasEquipped('Sanguinesti staff');
+	const hasHarm = !!user.gear.mage.hasEquipped('Harmonised nightmare staff');
 	name = name.toLowerCase();
 	let isPhosani = false;
 	let type: 'solo' | 'mass' = 'solo';
@@ -155,7 +160,11 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 	const meleeGear = user.gear.melee;
 
 	if (users.length === 1 && isPhosani) {
-		if (user.bitfield.includes(BitField.HasSlepeyTablet)) {
+		if (
+			user.bitfield.includes(BitField.HasSlepeyTablet) ||
+			user.bank.has('Slepey tablet') ||
+			user.cl.has('Slepey tablet')
+		) {
 			effectiveTime = reduceNumByPercent(effectiveTime, 15);
 			soloBoosts.push('15% for Slepey tablet');
 		}
@@ -170,11 +179,11 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 
 	// Special inquisitor outfit damage boost
 	if (meleeGear.hasEquipped(inquisitorItems, true)) {
-		effectiveTime *= users.length === 1 ? 0.9 : 0.97;
+		effectiveTime *= users.length === 1 ? 0.9 : 0.95;
 	} else {
 		for (const inqItem of inquisitorItems) {
 			if (meleeGear.hasEquipped([inqItem])) {
-				effectiveTime *= users.length === 1 ? 0.98 : 0.995;
+				effectiveTime *= users.length === 1 ? 0.98 : 0.99;
 			}
 		}
 	}
@@ -206,24 +215,28 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 		effectiveTime *= 0.96;
 	}
 	if (isPhosani) {
-		effectiveTime = reduceNumByPercent(effectiveTime, 31);
-		if (user.hasEquippedOrInBank('Dragon claws')) {
-			effectiveTime = reduceNumByPercent(effectiveTime, 3);
-			soloBoosts.push('3% for Dragon claws');
+		effectiveTime = reduceNumByPercent(effectiveTime, 30);
+		if (hasMace) {
+			effectiveTime = reduceNumByPercent(effectiveTime, 15);
+			soloBoosts.push("15% for Inquisitor's mace");
 		}
 		if (hasShadow) {
-			effectiveTime = reduceNumByPercent(effectiveTime, 6);
-			soloBoosts.push("6% for Tumeken's shadow");
+			effectiveTime = reduceNumByPercent(effectiveTime, 10);
+			soloBoosts.push("10% for Tumeken's shadow");
 		} else if (hasSang) {
-			effectiveTime = reduceNumByPercent(effectiveTime, 3);
-			soloBoosts.push('3% for Sanguinesti Staff');
+			effectiveTime = reduceNumByPercent(effectiveTime, 4);
+			soloBoosts.push('4% for Sanguinesti Staff');
 		} else if (user.hasEquippedOrInBank('Harmonised nightmare staff')) {
-			effectiveTime = reduceNumByPercent(effectiveTime, 3);
-			soloBoosts.push('3% for Harmonised nightmare staff');
+			effectiveTime = reduceNumByPercent(effectiveTime, 7);
+			soloBoosts.push('7% for Harmonised nightmare staff');
+		}
+		if (user.hasEquippedOrInBank('Voidwaker')) {
+			effectiveTime = reduceNumByPercent(effectiveTime, 5);
+			soloBoosts.push('5% for Voidwaker');
 		}
 		if (user.hasEquippedOrInBank('Elder maul')) {
-			effectiveTime = reduceNumByPercent(effectiveTime, 3);
-			soloBoosts.push('3% for Elder maul');
+			effectiveTime = reduceNumByPercent(effectiveTime, 2);
+			soloBoosts.push('2% for Elder maul');
 		}
 	}
 
@@ -240,7 +253,7 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 	const totalCost = new Bank();
 	let soloFoodUsage: Bank | null = null;
 	const [healAmountNeeded] = calculateMonsterFood(NightmareMonster, user);
-	const cost = perUserCost(user, quantity, isPhosani, hasShadow, hasSang);
+	const cost = perUserCost(user, quantity, isPhosani, hasShadow, hasSang, hasHarm);
 	if (typeof cost === 'string') return cost;
 
 	const healingMod = isPhosani ? 1.5 : 1;
@@ -269,13 +282,13 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 	if (isPhosani) {
 		if (user.gear.mage.hasEquipped("Tumeken's shadow")) {
 			await degradeItem({
-				item: getOSItem("Tumeken's shadow"),
+				item: Items.getOrThrow("Tumeken's shadow"),
 				chargesToDegrade: shadowChargesPerKc * quantity,
 				user
 			});
 		} else if (user.gear.mage.hasEquipped('Sanguinesti staff')) {
 			await degradeItem({
-				item: getOSItem('Sanguinesti staff'),
+				item: Items.getOrThrow('Sanguinesti staff'),
 				chargesToDegrade: sangChargesPerKc * quantity,
 				user
 			});

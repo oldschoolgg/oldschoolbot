@@ -14,11 +14,11 @@ import {
 	type SelectMenuInteraction
 } from 'discord.js';
 
-import { chunk, randArrItem, shuffleArr } from '../array';
-import { randInt } from '../chanceTemporary';
-import { stripEmojis } from '../misc';
-import type { MahojiClient } from './MahojiClient/Mahoji';
-import type { CommandOption } from './MahojiClient/mahojiTypes';
+import { chunk, randArrItem, shuffleArr } from '../array.js';
+import { randInt } from '../chanceTemporary.js';
+import { stripEmojis } from '../misc.js';
+import type { MahojiClient } from './MahojiClient/Mahoji.js';
+import type { CommandOption } from './MahojiClient/mahojiTypes.js';
 
 const discordEpoch = 1_420_070_400_000;
 

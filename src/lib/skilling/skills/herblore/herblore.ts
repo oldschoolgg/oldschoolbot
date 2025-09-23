@@ -1,6 +1,7 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { SkillsEnum } from '../../types';
-import mixables from './mixables/index';
+
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import mixables from './mixables/index.js';
 
 const Herblore = {
 	aliases: ['herb', 'herblore'],

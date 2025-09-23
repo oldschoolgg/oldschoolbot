@@ -1,10 +1,10 @@
 import { Monsters } from 'oldschooljs';
 
-import killableMonsters from '../../minions/data/killableMonsters';
-import { QuestID } from '../../minions/data/quests';
-import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
-import type { AssignableSlayerTask } from '../types';
-import { bossTasks } from './bossTasks';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
+import { bossTasks } from './bossTasks.js';
 
 export const konarTasks: AssignableSlayerTask[] = [
 	{

@@ -1,6 +1,5 @@
-import LootTable from '../../structures/LootTable';
-import SimpleOpenable from '../../structures/SimpleOpenable';
-import { itemTupleToTable } from '../../util';
+import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
+import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
 /* Dragonstone armour roll */
 const DragonStoneArmorTable = new LootTable()
@@ -20,7 +19,7 @@ const coinsKeyHalfTable = new LootTable()
 /* Rune armor roll */
 const runeArmorTable = new LootTable()
 	.every('Uncut dragonstone')
-	.every('Crystal shard', [4, 6])
+	.every('Crystal shard', [7, 9])
 	.add('Rune platelegs', 1, 1)
 	.add('Rune plateskirt', 1, 1);
 
@@ -56,7 +55,7 @@ const ElvenCrystalChestTable = new LootTable()
 		itemTupleToTable([
 			['Uncut dragonstone', 1],
 			['Coins', [30_000, 50_000]],
-			['Crystal shard', [8, 13]]
+			['Crystal shard', [13, 19]]
 		]),
 		1,
 		20
@@ -64,7 +63,7 @@ const ElvenCrystalChestTable = new LootTable()
 	.add(
 		itemTupleToTable([
 			['Uncut dragonstone', 1],
-			['Crystal shard', [20, 30]]
+			['Crystal shard', [25, 35]]
 		]),
 		1,
 		17
@@ -117,7 +116,7 @@ const ElvenCrystalChestTable = new LootTable()
 	.add(
 		itemTupleToTable([
 			['Uncut dragonstone', 1],
-			['Crystal acorn', [1, 2]]
+			['Crystal acorn', [4, 6]]
 		]),
 		1,
 		7

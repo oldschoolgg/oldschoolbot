@@ -1,8 +1,8 @@
-import { Time } from 'e';
-import { Bank, Monsters, SkillsEnum, itemID } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Bank, itemID, Monsters, SkillsEnum } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import type { KillableMonster } from '../../types';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 export const creatureCreationCreatures: KillableMonster[] = [];
 const creatures = [

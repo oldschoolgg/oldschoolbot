@@ -1,30 +1,29 @@
-import { Bank, EItem, deepResolveItems, itemID } from 'oldschooljs';
+import { Bank, deepResolveItems, EItem, type ItemBank, Items, itemID } from 'oldschooljs';
 
-import { BitField } from '../constants';
-import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
-import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
-import type { ItemBank, Skills } from '../types';
-import getOSItem from '../util/getOSItem';
-import { formatList, itemNameFromID } from '../util/smallUtils';
-import { chambersOfXericMetamorphPets, tobMetamorphPets } from './CollectionsExport';
-import { amrodCreatables } from './creatables/amrod';
-import { armorAndItemPacks } from './creatables/armorPacks';
-import { caCreatables } from './creatables/caCreatables';
-import { capeCreatables } from './creatables/capes';
-import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
-import { dtCreatables } from './creatables/dt';
-import { forestryCreatables } from './creatables/forestryCreatables';
-import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
-import { guardiansOfTheRiftCreatables } from './creatables/guardiansOfTheRiftCreatables';
-import { leaguesCreatables } from './creatables/leagueCreatables';
-import { lmsCreatables } from './creatables/lms';
-import { mysticStavesCreatables } from './creatables/mysticStaves';
-import { nexCreatables } from './creatables/nex';
-import { ornamentKits } from './creatables/ornaments';
-import { shadesOfMortonCreatables } from './creatables/shadesOfMorton';
-import { slayerCreatables } from './creatables/slayer';
-import { toaCreatables } from './creatables/toa';
-import { tobCreatables } from './creatables/tob';
+import { BitField } from '@/lib/constants.js';
+import { blisterwoodRequirements, ivandisRequirements } from '@/lib/minions/data/templeTrekking.js';
+import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import type { Skills } from '@/lib/types/index.js';
+import { formatList, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { chambersOfXericMetamorphPets, tobMetamorphPets } from './CollectionsExport.js';
+import { amrodCreatables } from './creatables/amrod.js';
+import { armorAndItemPacks } from './creatables/armorPacks.js';
+import { caCreatables } from './creatables/caCreatables.js';
+import { capeCreatables } from './creatables/capes.js';
+import { dragonFireShieldCreatables } from './creatables/dragonfireShields.js';
+import { dtCreatables } from './creatables/dt.js';
+import { forestryCreatables } from './creatables/forestryCreatables.js';
+import { gracefulOutfitCreatables } from './creatables/gracefulOutfits.js';
+import { guardiansOfTheRiftCreatables } from './creatables/guardiansOfTheRiftCreatables.js';
+import { leaguesCreatables } from './creatables/leagueCreatables.js';
+import { lmsCreatables } from './creatables/lms.js';
+import { mysticStavesCreatables } from './creatables/mysticStaves.js';
+import { nexCreatables } from './creatables/nex.js';
+import { ornamentKits } from './creatables/ornaments.js';
+import { shadesOfMortonCreatables } from './creatables/shadesOfMorton.js';
+import { slayerCreatables } from './creatables/slayer.js';
+import { toaCreatables } from './creatables/toa.js';
+import { tobCreatables } from './creatables/tob.js';
 
 export interface Createable {
 	name: string;
@@ -54,8 +53,8 @@ const bloodBarkPairs = [
 const bloodBarkCreatables: Createable[] = [];
 
 for (const [bbPart, sbPart, bloodRunes, lvlReq] of bloodBarkPairs) {
-	const bbItem = getOSItem(bbPart);
-	const sbItem = getOSItem(sbPart);
+	const bbItem = Items.getOrThrow(bbPart);
+	const sbItem = Items.getOrThrow(sbPart);
 
 	bloodBarkCreatables.push({
 		name: bbItem.name,
@@ -85,8 +84,8 @@ const swampBarkPairs = [
 const swampBarkCreatables: Createable[] = [];
 
 for (const [bbPart, sbPart, natRunes, lvlReq] of swampBarkPairs) {
-	const bbItem = getOSItem(bbPart);
-	const sbItem = getOSItem(sbPart);
+	const bbItem = Items.getOrThrow(bbPart);
+	const sbItem = Items.getOrThrow(sbPart);
 
 	swampBarkCreatables.push({
 		name: bbItem.name,
@@ -1432,6 +1431,16 @@ const Reverteables: Createable[] = [
 		outputItems: new Bank().add('Sunfire splinters', 4000),
 		noCl: true
 	},
+	{
+		name: 'Revert Giantsoul amulet (uncharged)',
+		inputItems: {
+			[itemID('Giantsoul amulet (uncharged)')]: 1
+		},
+		outputItems: {
+			[itemID('Big bones')]: 30
+		},
+		noCl: true
+	},
 	...revertMetamorphPets
 ];
 
@@ -2617,6 +2626,54 @@ const Createables: Createable[] = [
 		}),
 		outputItems: new Bank({
 			'Scarred extract': 1
+		})
+	},
+	{
+		name: 'Twinflame staff',
+		inputItems: new Bank({
+			Battlestaff: 1,
+			'Ice element staff crown': 1,
+			'Fire element staff crown': 1
+		}),
+		outputItems: new Bank({
+			'Twinflame staff': 1
+		})
+	},
+	{
+		name: 'Giantsoul amulet',
+		inputItems: new Bank({
+			'Giantsoul amulet (uncharged)': 1,
+			'Big bones': 500
+		}),
+		outputItems: new Bank({
+			'Giantsoul amulet': 1
+		})
+	},
+	{
+		name: 'Burnt page',
+		inputItems: new Bank({
+			'Desiccated page': 1
+		}),
+		outputItems: new Bank({
+			'Burnt page': 1
+		})
+	},
+	{
+		name: 'Soaked page',
+		inputItems: new Bank({
+			'Desiccated page': 1
+		}),
+		outputItems: new Bank({
+			'Soaked page': 1
+		})
+	},
+	{
+		name: 'Soiled page',
+		inputItems: new Bank({
+			'Desiccated page': 1
+		}),
+		outputItems: new Bank({
+			'Soiled page': 1
 		})
 	},
 	...Reverteables,

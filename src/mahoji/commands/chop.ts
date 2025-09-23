@@ -1,13 +1,12 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandRunOptions, formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
+import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
+import { formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Items, itemID, resolveItems } from 'oldschooljs';
 
-import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
-import Woodcutting, { type TwitcherGloves } from '../../lib/skilling/skills/woodcutting/woodcutting';
-import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { determineWoodcuttingTime } from '@/lib/skilling/functions/determineWoodcuttingTime.js';
+import Woodcutting, { type TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
+import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 
 const axes = [
 	{

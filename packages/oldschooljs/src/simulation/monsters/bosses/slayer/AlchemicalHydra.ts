@@ -1,8 +1,7 @@
-import LootTable from '../../../../structures/LootTable';
-import SimpleMonster from '../../../../structures/SimpleMonster';
-import { itemTupleToTable } from '../../../../util';
-import RareDropTable from '../../../subtables/RareDropTable';
-import TreeHerbSeedTable from '../../../subtables/TreeHerbSeedTable';
+import { RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import TreeHerbSeedTable from '@/simulation/subtables/TreeHerbSeedTable.js';
+import LootTable, { itemTupleToTable } from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const AlchemicalHydraBrimstoneRingTable = new LootTable().add("Hydra's eye").add("Hydra's fang").add("Hydra's heart");
 

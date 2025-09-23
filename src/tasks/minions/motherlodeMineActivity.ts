@@ -1,13 +1,13 @@
-import { roll } from 'e';
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
-import Mining from '../../lib/skilling/skills/mining';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { MotherlodeMiningActivityTaskOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import Mining from '@/lib/skilling/skills/mining.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { MotherlodeMiningActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { roll } from '@/lib/util/rng.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 export const motherlodeMiningTask: MinionTask = {
 	type: 'MotherlodeMining',
@@ -113,8 +113,7 @@ export const motherlodeMiningTask: MinionTask = {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

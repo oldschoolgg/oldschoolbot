@@ -1,25 +1,23 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
-import { SlayerRewardsShop } from '../../lib/slayer/slayerUnlocks';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { autoSlayCommand } from '../lib/abstracted_commands/autoSlayCommand';
+import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
+import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
 import {
 	slayerShopBuyCommand,
 	slayerShopListMyUnlocks,
 	slayerShopListRewards
-} from '../lib/abstracted_commands/slayerShopCommand';
+} from '@/mahoji/lib/abstracted_commands/slayerShopCommand.js';
 import {
 	slayerListBlocksCommand,
 	slayerNewTaskCommand,
 	slayerSkipTaskCommand,
 	slayerStatusCommand,
 	slayerUnblockCommand
-} from '../lib/abstracted_commands/slayerTaskCommand';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+} from '@/mahoji/lib/abstracted_commands/slayerTaskCommand.js';
+import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export const slayerCommand: OSBMahojiCommand = {
 	name: 'slayer',
@@ -276,7 +274,7 @@ export const slayerCommand: OSBMahojiCommand = {
 
 		await deferInteraction(interaction);
 		if (options.autoslay) {
-			autoSlayCommand({
+			await autoSlayCommand({
 				mahojiUser,
 				channelID,
 				modeOverride: options.autoslay.mode,
@@ -286,10 +284,9 @@ export const slayerCommand: OSBMahojiCommand = {
 			return null;
 		}
 		if (options.new_task) {
-			slayerNewTaskCommand({
+			await slayerNewTaskCommand({
 				userID: mahojiUser.id,
 				interaction,
-				channelID,
 				slayerMasterOverride: options.new_task.master,
 				saveDefaultSlayerMaster: Boolean(options.new_task.save),
 				showButtons: true
@@ -301,12 +298,11 @@ export const slayerCommand: OSBMahojiCommand = {
 				return slayerListBlocksCommand(mahojiUser);
 			}
 			if (options.manage.command === 'skip' || options.manage.command === 'block') {
-				slayerSkipTaskCommand({
+				await slayerSkipTaskCommand({
 					userID: mahojiUser.id,
 					block: options.manage.command === 'block',
 					newTask: Boolean(options.manage.new),
-					interaction,
-					channelID
+					interaction
 				});
 				return null;
 			}

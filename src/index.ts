@@ -1,36 +1,34 @@
-import './lib/safeglobals';
-import './lib/globals';
-import './lib/MUser';
-import './lib/util/transactItemsFromBank';
-import './lib/ActivityManager';
+import './lib/ActivityManager.js';
+import './lib/globals.js';
+import './lib/MUser.js';
+import './lib/safeglobals.js';
 
+import { isObject } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
-import { MahojiClient, convertMahojiCommandToAbstractCommand } from '@oldschoolgg/toolkit/discord-util';
+import { convertMahojiCommandToAbstractCommand, MahojiClient } from '@oldschoolgg/toolkit/discord-util';
 import { init } from '@sentry/node';
 import { GatewayIntentBits, Options, Partials, type TextChannel } from 'discord.js';
-import { isObject } from 'e';
 
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
-import { Channel, gitHash, globalConfig } from './lib/constants';
-import { economyLog } from './lib/economyLogs';
-import { onMessage } from './lib/events';
-import { modalInteractionHook } from './lib/modals';
-import { preStartup } from './lib/preStartup';
-import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
-import { CACHED_ACTIVE_USER_IDS } from './lib/util/cachedUserIDs';
-import { interactionHook } from './lib/util/globalInteractions';
-import { handleInteractionError, interactionReply } from './lib/util/interactionReply';
-import { logError } from './lib/util/logError';
-import { allCommands } from './mahoji/commands/allCommands';
-import { onStartup } from './mahoji/lib/events';
-import { exitCleanup } from './mahoji/lib/exitHandler';
-import { postCommand } from './mahoji/lib/postCommand';
-import { preCommand } from './mahoji/lib/preCommand';
+import { onStartup } from '@/mahoji/lib/events.js';
+import { exitCleanup } from '@/mahoji/lib/exitHandler.js';
+import { postCommand } from '@/mahoji/lib/postCommand.js';
+import { preCommand } from '@/mahoji/lib/preCommand.js';
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists.js';
+import { Channel, gitHash, globalConfig } from './lib/constants.js';
+import { economyLog } from './lib/economyLogs.js';
+import { onMessage } from './lib/events.js';
+import { modalInteractionHook } from './lib/modals.js';
+import { preStartup } from './lib/preStartup.js';
+import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient.js';
+import { CACHED_ACTIVE_USER_IDS } from './lib/util/cachedUserIDs.js';
+import { interactionHook } from './lib/util/globalInteractions.js';
+import { handleInteractionError, interactionReply } from './lib/util/interactionReply.js';
+import { logError } from './lib/util/logError.js';
+import { allCommands } from './mahoji/commands/allCommands.js';
 
 if (globalConfig.sentryDSN) {
 	init({
 		dsn: globalConfig.sentryDSN,
-		enableTracing: false,
 		defaultIntegrations: false,
 		integrations: [],
 		release: gitHash
@@ -227,6 +225,7 @@ client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
 client.once('ready', () => onStartup());
 
 async function main() {
+	console.log('Starting up Old School Bot...');
 	await Promise.all([
 		preStartup(),
 		import('exit-hook').then(({ asyncExitHook }) =>
@@ -238,9 +237,9 @@ async function main() {
 	]);
 	console.log(`Logged in as ${globalClient.user.username}`);
 
-	if (process.env.NODE_ENV !== 'production' && Boolean(process.env.TEST_BOT_SERVER)) {
-		import('@/testing/testServer.js').then(_mod => _mod.startTestBotServer());
-	}
+	// if (process.env.NODE_ENV !== 'production' && Boolean(process.env.TEST_BOT_SERVER)) {
+	// 	import('@/testing/testServer.js').then(_mod => _mod.startTestBotServer());
+	// }
 }
 
 process.on('uncaughtException', err => {

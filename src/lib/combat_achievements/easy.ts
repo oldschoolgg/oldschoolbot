@@ -1,11 +1,10 @@
-import { ItemGroups, Monsters, resolveItems } from 'oldschooljs';
+import { ItemGroups, Items, Monsters, resolveItems } from 'oldschooljs';
 
-import { warmGear } from '../data/filterables';
-import { SkillsEnum } from '../skilling/types';
-import { Requirements } from '../structures/Requirements';
-import getOSItem from '../util/getOSItem';
-import { isCertainMonsterTrip } from './caUtils';
-import type { CombatAchievement } from './combatAchievements';
+import { warmGear } from '@/lib/data/filterables.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
+import { isCertainMonsterTrip } from './caUtils.js';
+import type { CombatAchievement } from './combatAchievements.js';
 
 export const easyCombatAchievements: CombatAchievement[] = [
 	{
@@ -97,7 +96,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		rng: {
 			hasChance: (data, user) =>
 				isCertainMonsterTrip(Monsters.Bryophyta.id)(data) &&
-				user.gear[user.attackClass()].allItems(false).every(i => getOSItem(i).members !== true),
+				user.gear[user.attackClass()].allItems(false).every(i => Items.getOrThrow(i).members !== true),
 			chancePerKill: 1
 		}
 	},
@@ -278,7 +277,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		rng: {
 			hasChance: (data, user) =>
 				isCertainMonsterTrip(Monsters.Obor.id)(data) &&
-				user.gear[user.attackClass()].allItems(false).every(i => getOSItem(i).members !== true),
+				user.gear[user.attackClass()].allItems(false).every(i => Items.getOrThrow(i).members !== true),
 			chancePerKill: 1
 		}
 	},
@@ -437,5 +436,47 @@ export const easyCombatAchievements: CombatAchievement[] = [
 				[Monsters.Scurrius.id]: 1
 			}
 		})
+	},
+	{
+		id: 36,
+		name: 'Elemental Company',
+		type: 'restriction',
+		monster: 'Royal Titans',
+		desc: 'Kill the Royal Titans without attacking any elementals.',
+		rng: {
+			chancePerKill: 5,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
+		}
+	},
+	{
+		id: 37,
+		name: 'Let them fight',
+		type: 'restriction',
+		monster: 'Royal Titans',
+		desc: 'Kill the Royal Titans while having the Royal Titans kill a total of 10 elementals.',
+		rng: {
+			chancePerKill: 5,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
+		}
+	},
+	{
+		id: 38,
+		name: 'One by one',
+		type: 'restriction',
+		monster: 'Royal Titans',
+		desc: 'Kill one Titan at a time, without attacking the other.',
+		rng: {
+			chancePerKill: 5,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
+		}
 	}
 ];

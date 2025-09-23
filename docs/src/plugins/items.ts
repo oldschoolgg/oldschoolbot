@@ -2,8 +2,8 @@ import { collapseWhiteSpace } from 'collapse-white-space';
 import { Items } from 'oldschooljs';
 import { visitParents } from 'unist-util-visit-parents';
 
-import bsoItemsJson from '../../../data/bso/bso_items.json';
-import commandsJson from '../../../data/osb/commands.json';
+import bsoItemsJson from '../../../data/bso/bso_items.json' with { type: 'json' };
+import commandsJson from '../../../data/osb/commands.json' with { type: 'json' };
 import { authors, authorsMap } from '../../../scripts/wiki/authors.js';
 import { SkillsArray } from '../../../src/lib/skilling/types.js';
 import { toTitleCase } from '../docs-util.js';
@@ -79,7 +79,6 @@ ${author?.avatar ? `<img class="contributor_avatar" src="${author.avatar}" />` :
 				} else {
 					let imageURL = null;
 					let [itemName, flag] = content.split('?');
-					console.log({ itemName, flag });
 					const bsoItem = bsoItems.find(
 						([id, name]) =>
 							name.toLowerCase() === itemName.toLowerCase() || id.toLowerCase() === itemName.toLowerCase()

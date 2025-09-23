@@ -1,10 +1,10 @@
 import { Bank } from 'oldschooljs';
 
-import Prayer from '../../../lib/skilling/skills/prayer';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ScatteringActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
+import Prayer from '@/lib/skilling/skills/prayer.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { ScatteringActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const scatteringTask: MinionTask = {
 	type: 'Scattering',

@@ -1,22 +1,27 @@
-import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
-import { bold } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank, type ItemBank } from 'oldschooljs';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType, bold } from 'discord.js';
+import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import Buyables from '../../lib/data/buyables/buyables';
-import { quests } from '../../lib/minions/data/quests';
-import { Minigames } from '../../lib/settings/minigames';
-import { MUserStats } from '../../lib/structures/MUserStats';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { formatSkillRequirements, itemNameFromID } from '../../lib/util/smallUtils';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
-import { buyKitten } from '../lib/abstracted_commands/buyKitten';
-import { mahojiParseNumber, userStatsUpdate } from '../mahojiSettings';
+import Buyables from '@/lib/data/buyables/buyables.js';
+import { tripBuyables } from '@/lib/data/buyables/tripBuyables.js';
+import { quests } from '@/lib/minions/data/quests.js';
+import { Minigames } from '@/lib/settings/minigames.js';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { buyFossilIslandNotes } from '@/mahoji/lib/abstracted_commands/buyFossilIslandNotes.js';
+import { buyingTripCommand } from '@/mahoji/lib/abstracted_commands/buyingTripCommand.js';
+import { buyKitten } from '@/mahoji/lib/abstracted_commands/buyKitten.js';
+import { mahojiParseNumber, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
-const allBuyablesAutocomplete = [...Buyables, { name: 'Kitten' }, { name: 'Fossil Island Notes' }];
+const allBuyablesAutocomplete = [
+	...Buyables.map(b => ({ name: b.name })),
+	...tripBuyables.map(tb => ({ name: tb.displayName ?? Items.get(tb.item)?.name ?? 'Unknown item' })),
+	{ name: 'Kitten' },
+	{ name: 'Fossil Island Notes' }
+];
 
 export const buyCommand: OSBMahojiCommand = {
 	name: 'buy',
@@ -40,22 +45,40 @@ export const buyCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity?: string }>) => {
+	run: async ({
+		options,
+		userID,
+		interaction,
+		channelID
+	}: CommandRunOptions<{ name: string; quantity?: string }>) => {
 		const user = await mUserFetch(userID.toString());
 		const { name } = options;
-		let quantity = mahojiParseNumber({ input: options.quantity, min: 1 }) ?? 1;
+		let quantity: number | null = mahojiParseNumber({ input: options.quantity, min: 1 });
+
 		if (stringMatches(name, 'kitten')) {
 			return buyKitten(user);
 		}
 		if (stringMatches(name, 'Fossil Island Notes')) {
-			return buyFossilIslandNotes(user, interaction, quantity);
+			return buyFossilIslandNotes(user, interaction, quantity ?? 1);
 		}
 
+		const tripBuyable = tripBuyables.find(
+			tb => stringMatches(name, Items.get(tb.item)?.name ?? '') || stringMatches(name, tb.displayName ?? '')
+		);
+
+		if (tripBuyable) {
+			return buyingTripCommand(user, channelID.toString(), tripBuyable, quantity, interaction);
+		}
 		const buyable = Buyables.find(
 			item => stringMatches(name, item.name) || item.aliases?.some(alias => stringMatches(alias, name))
 		);
 
 		if (!buyable) return "That's not a valid item you can buy.";
+
+		// Leave quantity as null if it's undefined AND the item uses quantityPerHour
+		if (quantity === null && buyable.quantityPerHour === undefined) {
+			quantity = 1;
+		}
 
 		if (buyable.collectionLogReqs) {
 			const { cl } = user;
@@ -73,7 +96,7 @@ export const buyCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (buyable.maxQuantity) {
+		if (quantity !== null && buyable.maxQuantity) {
 			quantity = quantity > buyable.maxQuantity ? buyable.maxQuantity : quantity;
 		}
 
@@ -112,6 +135,10 @@ export const buyCommand: OSBMahojiCommand = {
 			}
 		}
 
+		if (quantity === null) {
+			throw new Error('Quantity must be defined at this point');
+		}
+
 		const gpCost = user.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
 
 		// If itemCost is undefined, it creates a new empty Bank, like we want:
@@ -137,8 +164,7 @@ export const buyCommand: OSBMahojiCommand = {
 			`${user}, please confirm that you want to buy **${outItems}** for: ${totalCost}.`
 		);
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			itemsToAdd: outItems,
 			collectionLog: true,
 			itemsToRemove: totalCost

@@ -1,8 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import fetch from 'node-fetch';
-
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 
 export const wikiCommand: OSBMahojiCommand = {
 	name: 'wiki',
@@ -16,7 +12,7 @@ export const wikiCommand: OSBMahojiCommand = {
 			autocomplete: async value => {
 				if (!value) return [];
 				try {
-					const autocompleteResult = await fetch(
+					const autocompleteResult: any = await fetch(
 						`https://oldschool.runescape.wiki/api.php?action=opensearch&format=json&formatversion=2&search=${encodeURIComponent(
 							value
 						)}&namespace=0&limit=10`

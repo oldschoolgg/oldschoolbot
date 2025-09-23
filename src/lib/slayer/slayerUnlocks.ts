@@ -1,4 +1,4 @@
-import { Monsters, itemID } from 'oldschooljs';
+import { itemID, Monsters } from 'oldschooljs';
 
 interface SlayerTaskUnlocks {
 	id: SlayerTaskUnlocksEnum;

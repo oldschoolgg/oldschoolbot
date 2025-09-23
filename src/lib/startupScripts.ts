@@ -1,7 +1,7 @@
 import { Items } from 'oldschooljs';
 
-import { globalConfig } from './constants';
-import { sql } from './postgres';
+import { globalConfig } from './constants.js';
+import { sql } from './postgres.js';
 import { adminPingLog } from './util.js';
 
 const startupScripts: { sql: string; ignoreErrors?: true }[] = [];

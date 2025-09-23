@@ -1,14 +1,14 @@
+import { objectEntries, Time } from '@oldschoolgg/toolkit';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { Time, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 
 const skillReqs = {
 	[SkillsEnum.Prayer]: 70,
@@ -157,7 +157,7 @@ export async function volcanicMineCommand(user: MUser, channelID: string, gameQu
 		return `You don't have all the required supplies for this number of games. You need ${suppliesUsage} for ${gameQuantity} games of Volcanic Mine.`;
 	}
 
-	await transactItems({ userID: user.id, itemsToRemove: suppliesUsage });
+	await user.transactItems({ itemsToRemove: suppliesUsage });
 
 	const duration = VolcanicMineGameTime * gameQuantity;
 
@@ -210,8 +210,7 @@ export async function volcanicMineShopCommand(
 	if (shopItem.clOnly) {
 		await user.addItemsToCollectionLog(new Bank().add(shopItem.output).multiply(quantity));
 	} else {
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: shopItem.addToCl === true,
 			itemsToAdd: new Bank().add(shopItem.output).multiply(quantity)
 		});

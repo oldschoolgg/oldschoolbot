@@ -1,11 +1,9 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { coxBoostsCommand, coxCommand, coxStatsCommand } from '../lib/abstracted_commands/coxCommand';
-import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '../lib/abstracted_commands/tobCommand';
+import { mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '@/lib/simulation/toa.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { coxBoostsCommand, coxCommand, coxStatsCommand } from '@/mahoji/lib/abstracted_commands/coxCommand.js';
+import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '@/mahoji/lib/abstracted_commands/tobCommand.js';
 
 export const raidCommand: OSBMahojiCommand = {
 	name: 'raid',

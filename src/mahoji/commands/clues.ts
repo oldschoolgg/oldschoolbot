@@ -1,9 +1,6 @@
-import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
-import { EmbedBuilder } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Hiscores } from 'oldschooljs';
-
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
+import { Hiscores } from 'oldschooljs/hiscores';
 
 export const cluesCommand: OSBMahojiCommand = {
 	name: 'clues',

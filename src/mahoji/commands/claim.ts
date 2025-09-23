@@ -1,14 +1,13 @@
 import { CollectionLog } from '@oldschoolgg/collectionlog';
-import { type CommandRunOptions, dateFm, stringMatches } from '@oldschoolgg/toolkit/util';
+import { dateFm, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { BSO_MAX_TOTAL_LEVEL, BitField, Channel } from '../../lib/constants';
-import { calcCLDetails } from '../../lib/data/Collections';
-import { getReclaimableItemsOfUser } from '../../lib/reclaimableItems';
-import { roboChimpUserFetch } from '../../lib/roboChimp';
-import { sendToChannelID } from '../../lib/util/webhook';
+import { BitField, BSO_MAX_TOTAL_LEVEL, Channel } from '@/lib/constants.js';
+import { calcCLDetails } from '@/lib/data/Collections.js';
+import { getReclaimableItemsOfUser } from '@/lib/reclaimableItems.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
 
 const claimables = [
 	{

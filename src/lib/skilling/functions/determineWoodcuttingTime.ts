@@ -1,9 +1,9 @@
-import { Time, percentChance } from 'e';
+import { percentChance, Time } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs/EItem';
 
-import { calcMaxTripLength } from '../../util/calcMaxTripLength';
-import type { MUserClass } from './../../MUser';
-import type { Log } from './../types';
+import type { MUserClass } from '@/lib/MUser.js';
+import type { Log } from '@/lib/skilling/types.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 interface WoodcuttingTimeOptions {
 	quantity: number | undefined;

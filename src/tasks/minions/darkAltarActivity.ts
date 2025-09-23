@@ -1,18 +1,18 @@
-import { increaseNumByPercent, roll } from 'e';
+import { increaseNumByPercent, roll } from '@oldschoolgg/toolkit';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { darkAltarRunes } from '../../lib/minions/functions/darkAltarCommand';
-import { bloodEssence, raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { DarkAltarOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { darkAltarRunes } from '@/lib/minions/functions/darkAltarCommand.js';
+import { bloodEssence, raimentBonus } from '@/lib/skilling/functions/calcsRunecrafting.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { DarkAltarOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 export const darkAltarTask: MinionTask = {
 	type: 'DarkAltar',
 	async run(data: DarkAltarOptions) {
-		const { quantity, userID, channelID, duration, hasElite, rune } = data;
+		const { quantity, userID, channelID, duration, hasElite, rune, useExtracts } = data;
 		const user = await mUserFetch(userID);
 
 		const runeData = darkAltarRunes[rune];
@@ -54,6 +54,12 @@ export const darkAltarTask: MinionTask = {
 			runeQuantity += bonusBlood;
 		}
 
+		let extractBonus = 0;
+		if (useExtracts) {
+			extractBonus = 60 * quantity;
+			runeQuantity += extractBonus;
+		}
+
 		const loot = new Bank().add(runeData.item.id, runeQuantity);
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, runeData.petChance);
 		for (let i = 0; i < quantity; i++) {
@@ -72,6 +78,10 @@ export const darkAltarTask: MinionTask = {
 			str += ` **Blood essence Quantity:** ${bonusBlood.toLocaleString()}`;
 		}
 
+		if (useExtracts) {
+			str += ` **Extract bonus:** ${extractBonus.toLocaleString()}`;
+		}
+
 		if (loot.amount('Rift guardian') > 0) {
 			globalClient.emit(
 				Events.ServerNotification,
@@ -83,8 +93,7 @@ export const darkAltarTask: MinionTask = {
 			);
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

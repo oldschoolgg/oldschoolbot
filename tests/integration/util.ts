@@ -1,22 +1,21 @@
-import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/util';
+import { randInt, shuffleArr, uniqueArr } from '@oldschoolgg/toolkit';
 import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import type { User as DJSUser } from 'discord.js';
-import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
-import { Bank, type EMonster, Items, Monsters, convertLVLtoXP } from 'oldschooljs';
+import { Bank, convertLVLtoXP, type EMonster, type ItemBank, Items, Monsters, type SkillsEnum } from 'oldschooljs';
 import { integer, nodeCrypto } from 'random-js';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
 
-import { MUserClass } from '../../src/lib/MUser';
-import { type PvMMethod, globalConfig } from '../../src/lib/constants';
-import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types';
-import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
-import { Gear } from '../../src/lib/structures/Gear';
-import type { ItemBank, SkillsRequired } from '../../src/lib/types';
-import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
-import { minionKCommand } from '../../src/mahoji/commands/k';
-import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
-import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
+import { globalConfig, type PvMMethod } from '../../src/lib/constants.js';
+import { MUserClass } from '../../src/lib/MUser.js';
+import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types.js';
+import { slayerMasters } from '../../src/lib/slayer/slayerMasters.js';
+import { Gear } from '../../src/lib/structures/Gear.js';
+import type { SkillsRequired } from '../../src/lib/types/index.js';
+import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions.js';
+import { minionKCommand } from '../../src/mahoji/commands/k.js';
+import { giveMaxStats } from '../../src/mahoji/commands/testpotato.js';
+import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand.js';
 
 export const TEST_CHANNEL_ID = '1111111111111111';
 
@@ -33,16 +32,32 @@ export function mockDjsUser({ userId }: { userId: string }) {
 	} as any as DJSUser;
 }
 
+class MockInteraction {
+	id = '111155555';
+	__response__: any = {};
+	channelId = TEST_CHANNEL_ID;
+	async deferReply() {
+		return Promise.resolve();
+	}
+	async editReply(res: any) {
+		this.__response__ = res;
+	}
+	async followUp(res: any) {
+		this.__response__ = res;
+	}
+	async reply(res: any) {
+		this.__response__ = res;
+	}
+	user = {
+		id: '123456789'
+	};
+	constructor(userId: string) {
+		this.user.id = userId;
+	}
+}
+
 export function mockInteraction({ userId }: { userId: string }) {
-	return {
-		channelId: TEST_CHANNEL_ID,
-		deferReply: () => Promise.resolve(),
-		editReply: () => Promise.resolve(),
-		followUp: () => Promise.resolve(),
-		user: {
-			id: userId
-		}
-	} as any;
+	return new MockInteraction(userId) as any;
 }
 
 export function mockChannel({ userId }: { userId: string }) {
@@ -226,7 +241,7 @@ export class TestUser extends MUserClass {
 		const newXP = clone(this.skillsAsXP);
 		const xpGained: SkillsRequired = {} as SkillsRequired;
 		for (const skill of SkillsArray) xpGained[skill] = 0;
-		for (const skill of objectKeys(newXP)) {
+		for (const skill of Object.keys(newXP) as SkillsEnum[]) {
 			xpGained[skill as SkillNameType] = newXP[skill] - currentXP[skill];
 		}
 
@@ -234,15 +249,16 @@ export class TestUser extends MUserClass {
 	}
 
 	async runCommand(command: OSBMahojiCommand, options: object = {}, syncAfter = false) {
+		const cmdOpts = commandRunOptions(this.id);
 		const result = await command.run({
-			...commandRunOptions(this.id),
+			...cmdOpts,
 			user: { createdAt: new Date(), id: this.id } as DJSUser,
 			options
 		});
 		if (syncAfter) {
 			await this.sync();
 		}
-		return result;
+		return result ?? (cmdOpts.interaction as any).__response__;
 	}
 
 	async bankAmountMatch(itemName: string, amount: number) {

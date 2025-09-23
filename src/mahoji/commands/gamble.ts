@@ -1,17 +1,17 @@
-import type { CommandRunOptions, MahojiUserOption, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { randArrItem } from '@oldschoolgg/toolkit';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '../../lib/constants';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
-import { diceCommand } from '../lib/abstracted_commands/diceCommand';
-import { duelCommand } from '../lib/abstracted_commands/duelCommand';
-import { hotColdCommand } from '../lib/abstracted_commands/hotColdCommand';
-import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
-import { slotsCommand } from '../lib/abstracted_commands/slotsCommand';
+import { BitField } from '@/lib/constants.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
+import { capeGambleCommand, capeGambleStatsCommand } from '@/mahoji/lib/abstracted_commands/capegamble.js';
+import { diceCommand } from '@/mahoji/lib/abstracted_commands/diceCommand.js';
+import { duelCommand } from '@/mahoji/lib/abstracted_commands/duelCommand.js';
+import { hotColdCommand } from '@/mahoji/lib/abstracted_commands/hotColdCommand.js';
+import { luckyPickCommand } from '@/mahoji/lib/abstracted_commands/luckyPickCommand.js';
+import { slotsCommand } from '@/mahoji/lib/abstracted_commands/slotsCommand.js';
 
 export const gambleCommand: OSBMahojiCommand = {
 	name: 'gamble',
@@ -249,9 +249,8 @@ export const gambleCommand: OSBMahojiCommand = {
 			const [item, qty] = entry;
 			const loot = new Bank().add(item.id, qty);
 
-			await transactItems({ userID: senderUser.id, itemsToRemove: loot });
-			await transactItems({
-				userID: recipientuser.id,
+			await senderUser.transactItems({ itemsToRemove: loot });
+			await recipientuser.transactItems({
 				itemsToAdd: loot,
 				collectionLog: false,
 				filterLoot: false

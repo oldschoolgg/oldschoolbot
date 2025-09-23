@@ -7,7 +7,7 @@ import {
 	gracefulHoods,
 	gracefulLegs,
 	gracefulTops
-} from './gracefulVariants';
+} from './gracefulVariants.js';
 
 const scytheChargedSimilar = ['Holy scythe of vitur', 'Sanguine scythe of vitur'];
 const scytheUnchargedSimilar = ['Holy scythe of vitur (uncharged)', 'Sanguine scythe of vitur (uncharged)'];
@@ -193,15 +193,9 @@ const source: [string, (string | number)[]][] = [
 	["Ava's accumulator", ['Accumulator max cape']],
 	[
 		"Ava's assembler",
-		[
-			'Assembler max cape',
-			'Assembler max cape (l)',
-			'Masori assembler',
-			'Masori assembler max cape',
-			"Blessed dizana's quiver",
-			"Dizana's max cape"
-		]
+		['Assembler max cape', 'Assembler max cape (l)', 'Masori assembler', 'Masori assembler max cape']
 	],
+	["Blessed dizana's quiver", ["Dizana's max cape"]],
 	['Mythical cape', ['Mythical max cape']],
 	['Achievement diary cape', ['Achievement diary cape(t)']],
 	[

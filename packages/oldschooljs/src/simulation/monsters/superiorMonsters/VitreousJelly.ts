@@ -1,6 +1,6 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { JellyPreTable } from '../low/g-m/Jelly';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import { JellyPreTable } from '../low/g-m/Jelly.js';
 
 const VitreousJellyTable = new LootTable()
 	.every(JellyPreTable, 3)

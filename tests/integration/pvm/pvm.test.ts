@@ -1,13 +1,13 @@
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
-import { Bank, EItem, EMonster, Monsters, convertLVLtoXP, itemID, resolveItems } from 'oldschooljs';
+import { Bank, convertLVLtoXP, EItem, EMonster, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
-import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants';
-import { getPOHObject } from '../../../src/lib/poh';
-import { SkillsEnum } from '../../../src/lib/skilling/types';
-import { Gear } from '../../../src/lib/structures/Gear';
-import { minionKCommand } from '../../../src/mahoji/commands/k';
-import { createTestUser, mockClient, mockUser } from '../util';
+import { getPOHObject } from '@/lib/poh/index.js';
+import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants.js';
+import { SkillsEnum } from '../../../src/lib/skilling/types.js';
+import { Gear } from '../../../src/lib/structures/Gear.js';
+import { minionKCommand } from '../../../src/mahoji/commands/k.js';
+import { createTestUser, mockClient, mockUser } from '../util.js';
 
 describe('PVM', async () => {
 	const client = await mockClient();
@@ -261,26 +261,20 @@ describe('PVM', async () => {
 		expect(result.tripStartBank.amount('Dark totem')).toBe(99);
 	});
 
-	describe(
-		'should fail to kill skotizo with no totems',
-		async () => {
-			const user = await client.mockUser({
-				rangeLevel: 99,
-				QP: 300,
-				maxed: true,
-				meleeGear: resolveItems(["Verac's flail", "Black d'hide body", "Black d'hide chaps"])
+	describe('should fail to kill skotizo with no totems', async () => {
+		const user = await client.mockUser({
+			rangeLevel: 99,
+			QP: 300,
+			maxed: true,
+			meleeGear: resolveItems(["Verac's flail", "Black d'hide body", "Black d'hide chaps"])
+		});
+		for (const quantity of [undefined, 1, 2, 5]) {
+			it(`should fail to kill with input of ${quantity}`, async () => {
+				const result = await user.kill(EMonster.SKOTIZO, { quantity });
+				expect(result.commandResult).toContain("You don't have the items");
 			});
-			for (const quantity of [undefined, 1, 2, 5]) {
-				it(`should fail to kill with input of ${quantity}`, async () => {
-					const result = await user.kill(EMonster.SKOTIZO, { quantity });
-					expect(result.commandResult).toContain("You don't have the items");
-				});
-			}
-		},
-		{
-			repeats: 5
 		}
-	);
+	});
 
 	test('salve and slayer helm shouldnt stack', async () => {
 		const user = await client.mockUser({

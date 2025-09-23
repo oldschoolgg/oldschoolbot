@@ -1,17 +1,16 @@
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { Time } from '@oldschoolgg/toolkit/datetime';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
 import { Bank, itemID, resolveItems } from 'oldschooljs';
 
+import Smithing from '@/lib/skilling/skills/smithing/index.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SmeltingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import Smithing from '../../lib/skilling/skills/smithing';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped } from '../mahojiSettings';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export const smeltingCommand: OSBMahojiCommand = {
 	name: 'smelt',
@@ -150,7 +149,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			cost.add('Coins', coinsToRemove);
 		}
 
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 		updateBankSetting('smithing_cost', cost);
 
 		await addSubTaskToActivityTask<SmeltingActivityTaskOptions>({

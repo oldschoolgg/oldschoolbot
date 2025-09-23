@@ -1,10 +1,10 @@
 import { Bank } from 'oldschooljs';
 
-import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { randFloat } from '../../lib/util/rng';
+import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { randFloat } from '@/lib/util/rng.js';
 
 export const craftingTask: MinionTask = {
 	type: 'Crafting',
@@ -39,8 +39,7 @@ export const craftingTask: MinionTask = {
 
 		const str = `${user}, ${user.minionName} finished crafting ${quantity}${sets} ${item.name}, and received ${loot}. ${xpRes}`;
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

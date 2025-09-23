@@ -1,17 +1,17 @@
-import type { CommandOption, CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import type { CommandOption } from '@oldschoolgg/toolkit/discord-util';
 import { cleanString, stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { EquipmentSlot, Items } from 'oldschooljs';
 
-import { ParsedCustomEmojiWithGroups, globalConfig } from '../../lib/constants';
-import { isValidGearSetup } from '../../lib/gear/functions/isValidGearSetup';
-import type { GearSetup, GearSetupType } from '../../lib/gear/types';
-import { GearSetupTypes } from '../../lib/gear/types';
-import { Gear, globalPresets } from '../../lib/structures/Gear';
-import { emojiServers } from '../../lib/util/cachedUserIDs';
-import { isValidNickname } from '../../lib/util/smallUtils';
-import { gearEquipCommand } from '../lib/abstracted_commands/gearCommands';
-import { allEquippableItems, gearPresetOption, gearSetupOption } from '../lib/mahojiCommandOptions';
+import { globalConfig, ParsedCustomEmojiWithGroups } from '@/lib/constants.js';
+import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
+import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
+import { GearSetupTypes } from '@/lib/gear/types.js';
+import { Gear, globalPresets } from '@/lib/structures/Gear.js';
+import { emojiServers } from '@/lib/util/cachedUserIDs.js';
+import { isValidNickname } from '@/lib/util/smallUtils.js';
+import { gearEquipCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
+import { allEquippableItems, gearPresetOption, gearSetupOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 
 function maxPresets(user: MUser) {
 	return user.perkTier() * 2 + 4;

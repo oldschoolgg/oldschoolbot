@@ -1,11 +1,10 @@
-import { Bank } from 'oldschooljs';
-import { LootTable } from 'oldschooljs';
+import { Bank, LootTable } from 'oldschooljs';
 
-import { roll } from '@/lib/util/rng';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { GnomeRestaurantActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { roll } from '@/lib/util/rng.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const tipTable = new LootTable()
 	.oneIn(210, 'Gnome scarf')
@@ -77,8 +76,7 @@ export const gnomeResTask: MinionTask = {
 			loot.add(tipTable.roll());
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

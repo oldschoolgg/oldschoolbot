@@ -1,13 +1,13 @@
-import type { AssignableSlayerTask } from '../types';
-import { bossTasks } from './bossTasks';
-import { chaeldarTasks } from './chaeldarTasks';
-import { duradelTasks } from './duradelTasks';
-import { konarTasks } from './konarTasks';
-import { krystiliaTasks } from './krystiliaTasks';
-import { mazchnaTasks } from './mazchnaTasks';
-import { nieveTasks } from './nieveTasks';
-import { turaelTasks } from './turaelTasks';
-import { vannakaTasks } from './vannakaTasks';
+import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
+import { bossTasks } from './bossTasks.js';
+import { chaeldarTasks } from './chaeldarTasks.js';
+import { duradelTasks } from './duradelTasks.js';
+import { konarTasks } from './konarTasks.js';
+import { krystiliaTasks } from './krystiliaTasks.js';
+import { mazchnaTasks } from './mazchnaTasks.js';
+import { nieveTasks } from './nieveTasks.js';
+import { turaelTasks } from './turaelTasks.js';
+import { vannakaTasks } from './vannakaTasks.js';
 
 export const allSlayerTasks: AssignableSlayerTask[] = [
 	...bossTasks,

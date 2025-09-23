@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 
-import { logError } from './util/logError';
+import { logError } from '@/lib/util/logError.js';
 
 const u = Prisma.UserScalarFieldEnum;
 
@@ -15,7 +15,9 @@ WHERE last_command_date > now() - INTERVAL '1 week';`,
 SET ${u.cl_array} = (
     SELECT (ARRAY(SELECT jsonb_object_keys("${u.collectionLogBank}")::int))
 )
-WHERE ${u.id} = '${userID}';`
+WHERE ${u.id} = '${userID}';`,
+	sumOfAllCLItems: (clItems: number[]) =>
+		`NULLIF(${clItems.map(i => `COALESCE(("collectionLogBank"->>'${i}')::int, 0)`).join(' + ')}, 0)`
 };
 
 export async function loggedRawPrismaQuery<T>(query: string): Promise<T | null> {

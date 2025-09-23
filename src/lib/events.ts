@@ -1,20 +1,22 @@
+import { isFunction, roll, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { UserError } from '@oldschoolgg/toolkit/structures';
+import { dateFm, getNextUTCReset } from '@oldschoolgg/toolkit/util';
 import { command_name_enum } from '@prisma/client';
-import { type BaseMessageOptions, EmbedBuilder, type Message, type TextChannel, bold } from 'discord.js';
-import { Time, isFunction, roll } from 'e';
+import { type BaseMessageOptions, bold, EmbedBuilder, type Message, type TextChannel } from 'discord.js';
 import { LRUCache } from 'lru-cache';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
-import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
-import { untrustedGuildSettingsCache } from './cache.js';
-import { Channel, globalConfig } from './constants';
-import pets from './data/pets';
-import { logError } from './util/logError';
-import { makeBankImage } from './util/makeBankImage';
-import { minionStatsEmbed } from './util/minionStatsEmbed';
+import pets from '@/lib/data/pets.js';
+import { logError } from '@/lib/util/logError.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
+import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
+import { lastRoboChimpSyncCache, untrustedGuildSettingsCache } from './cache.js';
+import { Channel, globalConfig } from './constants.js';
+import { roboChimpSyncData } from './roboChimp.js';
+import type { ActivityTaskData } from './types/minions.js';
 
 const rareRolesSrc: [string, number, string][] = [
 	['670211706907000842', 250, 'Bronze'],
@@ -114,23 +116,28 @@ Type \`/tools user mypets\` to see your pets.`);
 const mentionText = `<@${globalConfig.clientID}>`;
 const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
 
+export const TEARS_OF_GUTHIX_CD = Time.Day * 7;
+
 const cooldownTimers: {
 	name: string;
 	timeStamp: (user: MUser, stats: { last_daily_timestamp: bigint; last_tears_of_guthix_timestamp: bigint }) => number;
 	cd: number | ((user: MUser) => number);
 	command: [string] | [string, string] | [string, string, string];
+	utcReset: boolean;
 }[] = [
 	{
 		name: 'Tears of Guthix',
 		timeStamp: (_, stats) => Number(stats.last_tears_of_guthix_timestamp),
-		cd: Time.Day * 7,
-		command: ['minigames', 'tears_of_guthix', 'start']
+		cd: TEARS_OF_GUTHIX_CD,
+		command: ['minigames', 'tears_of_guthix', 'start'],
+		utcReset: true
 	},
 	{
 		name: 'Daily',
 		timeStamp: (_, stats) => Number(stats.last_daily_timestamp),
 		cd: Time.Hour * 12,
-		command: ['minion', 'daily']
+		command: ['minion', 'daily'],
+		utcReset: false
 	}
 ];
 
@@ -252,10 +259,11 @@ const mentionCommands: MentionCommand[] = [
 				content: cooldownTimers
 					.map(cd => {
 						const lastDone = cd.timeStamp(user, stats);
-						const difference = Date.now() - lastDone;
 						const cooldown = isFunction(cd.cd) ? cd.cd(user) : cd.cd;
-						if (difference < cooldown) {
-							const durationRemaining = formatDuration(Date.now() - (lastDone + cooldown));
+						const nextReset = cd.utcReset ? getNextUTCReset(lastDone, cooldown) : lastDone + cooldown;
+
+						if (Date.now() < nextReset) {
+							const durationRemaining = dateFm(new Date(nextReset));
 							return `${cd.name}: ${durationRemaining}`;
 						}
 						return bold(
@@ -327,5 +335,18 @@ export async function onMessage(msg: Message) {
 			content: result.content,
 			components
 		});
+	}
+}
+
+export async function onMinionActivityFinish(activity: ActivityTaskData) {
+	try {
+		const lastSyncTime = lastRoboChimpSyncCache.get(activity.userID) ?? 0;
+		// Max once per 30 minutes
+		if (Date.now() - lastSyncTime > Time.Minute * 30) {
+			lastRoboChimpSyncCache.set(activity.userID, Date.now());
+			await roboChimpSyncData(await mUserFetch(activity.userID));
+		}
+	} catch (err) {
+		logError(err, { activity: JSON.stringify(activity) });
 	}
 }
