@@ -1,23 +1,23 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { Bank, EMonster, Monsters, NIGHTMARES_HP, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { Bank, deepResolveItems, EMonster, itemID, Monsters, NIGHTMARES_HP, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { SkillsEnum } from '../../../skilling/types';
-import type { KillableMonster } from '../../types';
-import bosses from './bosses';
-import { camdozaalMonsters } from './camdozaalMonsters';
-import { chaeldarMonsters } from './chaeldarMonsters';
-import { creatureCreationCreatures } from './creatureCreation';
-import { konarMonsters } from './konarMonsters';
-import { krystiliaMonsters } from './krystiliaMonsters';
-import low from './low';
-import { mazchnaMonsters } from './mazchnaMonsters';
-import { nieveMonsters } from './nieveMonsters';
-import { reanimatedMonsters } from './reanimated';
-import { revenantMonsters } from './revs';
-import { turaelMonsters } from './turaelMonsters';
-import { vannakaMonsters } from './vannakaMonsters';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import bosses from './bosses/index.js';
+import { camdozaalMonsters } from './camdozaalMonsters.js';
+import { chaeldarMonsters } from './chaeldarMonsters.js';
+import { creatureCreationCreatures } from './creatureCreation.js';
+import { konarMonsters } from './konarMonsters.js';
+import { krystiliaMonsters } from './krystiliaMonsters.js';
+import { lowKillableMonsters } from './low.js';
+import { mazchnaMonsters } from './mazchnaMonsters.js';
+import { nieveMonsters } from './nieveMonsters.js';
+import { reanimatedMonsters } from './reanimated.js';
+import { revenantMonsters } from './revs.js';
+import { turaelMonsters } from './turaelMonsters.js';
+import { vannakaMonsters } from './vannakaMonsters.js';
 
 const killableMonsters: KillableMonster[] = [
 	...bosses,
@@ -29,7 +29,7 @@ const killableMonsters: KillableMonster[] = [
 	...nieveMonsters,
 	...turaelMonsters,
 	...vannakaMonsters,
-	...low,
+	...lowKillableMonsters,
 	...revenantMonsters,
 	...creatureCreationCreatures,
 	...reanimatedMonsters,

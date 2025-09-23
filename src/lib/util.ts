@@ -1,21 +1,21 @@
+import { noOp, objectEntries } from '@oldschoolgg/toolkit';
 import { cleanUsername } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import type { Prisma, User } from '@prisma/client';
 import { type Guild, userMention } from 'discord.js';
-import { noOp, objectEntries } from 'e';
 import { calcCombatLevel, convertXPtoLVL } from 'oldschooljs';
 
-import type { MUserClass } from './MUser';
-import { usernameWithBadgesCache } from './cache';
-import { BitField, MAX_LEVEL, MAX_XP, globalConfig } from './constants';
-import type { SkillNameType, SkillsEnum } from './skilling/types';
-import type { GearBank } from './structures/GearBank';
-import type { Skills } from './types';
-import type { GroupMonsterActivityTaskOptions } from './types/minions';
-import { makeBadgeString } from './util/makeBadgeString';
-import { sendToChannelID } from './util/webhook.js';
+import type { SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
+import { usernameWithBadgesCache } from './cache.js';
+import { BitField, globalConfig, MAX_LEVEL, MAX_XP } from './constants.js';
+import type { MUserClass } from './MUser.js';
+import type { Skills } from './types/index.js';
+import type { GroupMonsterActivityTaskOptions } from './types/minions.js';
 
-// @ts-ignore ignore
+// @ts-expect-error ignore
 BigInt.prototype.toJSON = function () {
 	return this.toString();
 };

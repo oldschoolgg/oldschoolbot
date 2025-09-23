@@ -1,17 +1,17 @@
+import { randArrItem, randInt } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
-import { randArrItem, randInt } from 'e';
 import { Bank, EItem } from 'oldschooljs';
 
-import { trackLoot } from '../../../lib/lootTrack';
-import { bloodEssence } from '../../../lib/skilling/functions/calcsRunecrafting';
-import Runecraft from '../../../lib/skilling/skills/runecraft';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { calcMaxRCQuantity, userStatsUpdate } from '../../../mahoji/mahojiSettings';
-import { rewardsGuardianTable } from './../../../lib/simulation/rewardsGuardian';
-import type { GuardiansOfTheRiftActivityTaskOptions } from './../../../lib/types/minions';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { rewardsGuardianTable } from '@/lib/simulation/rewardsGuardian.js';
+import { bloodEssence } from '@/lib/skilling/functions/calcsRunecrafting.js';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import type { GuardiansOfTheRiftActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { calcMaxRCQuantity, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const catalyticRunesArray: string[] = [
 	'Mind rune',
@@ -143,8 +143,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		runesLoot.add('Blood rune', bonusBloods);
 		totalLoot.add(runesLoot);
 
-		const { previousCL } = await transactItems({
-			userID: user.id,
+		const { previousCL } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: totalLoot
 		});

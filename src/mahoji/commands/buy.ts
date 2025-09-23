@@ -1,22 +1,20 @@
-import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
-import { bold } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import { tripBuyables } from '@/lib/data/buyables/tripBuyables';
-
-import Buyables from '../../lib/data/buyables/buyables';
-import { quests } from '../../lib/minions/data/quests';
-import { Minigames } from '../../lib/settings/minigames';
-import { MUserStats } from '../../lib/structures/MUserStats';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { formatSkillRequirements, itemNameFromID } from '../../lib/util/smallUtils';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
-import { buyKitten } from '../lib/abstracted_commands/buyKitten';
-import { buyingTripCommand } from '../lib/abstracted_commands/buyingTripCommand';
-import { mahojiParseNumber, userStatsUpdate } from '../mahojiSettings';
+import Buyables from '@/lib/data/buyables/buyables.js';
+import { tripBuyables } from '@/lib/data/buyables/tripBuyables.js';
+import { quests } from '@/lib/minions/data/quests.js';
+import { Minigames } from '@/lib/settings/minigames.js';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { buyFossilIslandNotes } from '@/mahoji/lib/abstracted_commands/buyFossilIslandNotes.js';
+import { buyingTripCommand } from '@/mahoji/lib/abstracted_commands/buyingTripCommand.js';
+import { buyKitten } from '@/mahoji/lib/abstracted_commands/buyKitten.js';
+import { mahojiParseNumber, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const allBuyablesAutocomplete = [
 	...Buyables.map(b => ({ name: b.name })),
@@ -166,8 +164,7 @@ export const buyCommand: OSBMahojiCommand = {
 			`${user}, please confirm that you want to buy **${outItems}** for: ${totalCost}.`
 		);
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			itemsToAdd: outItems,
 			collectionLog: true,
 			itemsToRemove: totalCost

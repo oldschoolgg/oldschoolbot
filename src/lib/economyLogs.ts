@@ -1,5 +1,5 @@
-import { Channel } from './constants';
-import { sendToChannelID } from './util/webhook';
+import { sendToChannelID } from '@/lib/util/webhook.js';
+import { Channel } from './constants.js';
 
 let economyLogBuffer: string[] = [];
 

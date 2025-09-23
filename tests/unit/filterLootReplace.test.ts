@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
-import { filterLootReplace } from '../../src/lib/slayer/slayerUtil';
+import { filterLootReplace } from '../../src/lib/slayer/slayerUtil.js';
 
 describe('filterLootReplace', () => {
 	it('Should replace blugeon pieces when owning none', () => {

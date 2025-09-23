@@ -1,9 +1,12 @@
 {
-	"extends": "../tsconfig.json",
+	"extends": "../../../tsconfig.base.json",
+	"include": [".", "../src/**/*"],
 	"compilerOptions": {
-		"sourceMap": false,
-		"types": ["node"],
-		"esModuleInterop": true,
-		"noEmit": true
+		"noEmit": true,
+		"incremental": false,
+		"composite": false,
+		"paths": {
+			"@/*": ["../src/*"]
+		}
 	}
 }

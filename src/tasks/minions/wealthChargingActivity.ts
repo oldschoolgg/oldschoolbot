@@ -1,9 +1,9 @@
 import { Bank } from 'oldschooljs';
 
-import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { roll } from '../../lib/util/rng';
-import { wealthInventorySize } from '../../mahoji/lib/abstracted_commands/chargeWealthCommand';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { roll } from '@/lib/util/rng.js';
+import { wealthInventorySize } from '@/mahoji/lib/abstracted_commands/chargeWealthCommand.js';
 
 export const wealthChargeTask: MinionTask = {
 	type: 'WealthCharging',
@@ -33,8 +33,7 @@ export const wealthChargeTask: MinionTask = {
 			str += ` They died ${deaths}x times, causing the loss of ${wealthInventorySize * deaths} rings of wealth.`;
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

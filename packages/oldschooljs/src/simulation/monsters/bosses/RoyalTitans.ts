@@ -1,6 +1,7 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
+// Drop rates are based off the user doing a duo with 50% damage contribution
 const BrandaTable = new LootTable({ limit: 55 })
 	.add('Mystic fire staff', 2, 2)
 	.add('Fire battlestaff', 3, 2)
@@ -38,8 +39,8 @@ const BrandaTable = new LootTable({ limit: 55 })
 	.add('Desiccated page', [3, 12], 2);
 
 const TotalBrandaTable = new LootTable()
-	.oneIn(16, 'Giantsoul amulet (uncharged)')
-	.oneIn(75, 'Fire element staff crown')
+	.oneIn(32, 'Giantsoul amulet (uncharged)')
+	.oneIn(150, 'Fire element staff crown')
 	.tertiary(25, 'Clue scroll (hard)')
 	.tertiary(100, 'Clue scroll (elite)')
 	.tertiary(3000, 'Bran')
@@ -83,8 +84,8 @@ const EldricTable = new LootTable({ limit: 56 })
 	.add('Desiccated page', [3, 12], 2);
 
 const TotalEldricTable = new LootTable()
-	.oneIn(16, 'Giantsoul amulet (uncharged)')
-	.oneIn(75, 'Ice element staff crown')
+	.oneIn(32, 'Giantsoul amulet (uncharged)')
+	.oneIn(150, 'Ice element staff crown')
 	.tertiary(25, 'Clue scroll (hard)')
 	.tertiary(100, 'Clue scroll (elite)')
 	.tertiary(3000, 'Bran')

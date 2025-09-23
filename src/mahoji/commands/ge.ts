@@ -1,30 +1,22 @@
+import { sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import {
-	type CommandOption,
-	type CommandRunOptions,
-	type OSBMahojiCommand,
-	makeComponents,
-	returnStringOrFile
-} from '@oldschoolgg/toolkit/discord-util';
+import { type CommandOption, makeComponents, returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import { evalMathExpression } from '@oldschoolgg/toolkit/math';
 import type { GEListing, GETransaction } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { sumArr, uniqueArr } from 'e';
-import { Bank, type ItemBank, getItem, toKMB } from 'oldschooljs';
+import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
-import { GeImageGenerator } from '@/lib/canvas/geImage';
-import { PerkTier } from '../../lib/constants';
-import { GrandExchange, createGECancelButton } from '../../lib/grandExchange';
-import { marketPricemap } from '../../lib/marketPrices';
-import { createChart } from '../../lib/util/chart';
-import getOSItem from '../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { itemNameFromID } from '../../lib/util/smallUtils';
-import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
-import { itemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { GeImageGenerator } from '@/lib/canvas/geImage.js';
+import { PerkTier } from '@/lib/constants.js';
+import { createGECancelButton, GrandExchange } from '@/lib/grandExchange.js';
+import { marketPricemap } from '@/lib/marketPrices.js';
+import { createChart } from '@/lib/util/chart.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
+import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
+import { itemOption, tradeableItemArr } from '@/mahoji/lib/mahojiCommandOptions.js';
+import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export type GEListingWithTransactions = GEListing & {
 	buyTransactions: GETransaction[];
@@ -42,7 +34,7 @@ function geListingToString(
 	listing: GEListingWithTransactions,
 	buyLimit?: Awaited<ReturnType<(typeof GrandExchange)['checkBuyLimitForListing']>>
 ) {
-	const item = getOSItem(listing.item_id);
+	const item = Items.getOrThrow(listing.item_id);
 	const allTransactions = [...listing.buyTransactions, ...listing.sellTransactions];
 	const verb = listing.type === 'Buy' ? 'Buying' : 'Selling';
 	const pastVerb = listing.type === 'Buy' ? 'bought' : 'sold';
@@ -118,7 +110,7 @@ export const geCommand: OSBMahojiCommand = {
 								})
 							).map(i => i.item_id);
 							return uniqueArr(tradesOfUser).map(itemID => ({
-								name: itemNameFromID(itemID)!,
+								name: Items.itemNameFromId(itemID)!,
 								value: itemID.toString()
 							}));
 						}
@@ -185,7 +177,7 @@ export const geCommand: OSBMahojiCommand = {
 						return listings
 							.filter(i => !i.cancelled_at && !i.fulfilled_at && i.quantity_remaining > 0)
 							.map(l => ({
-								name: `${l.type} ${l.total_quantity}x ${itemNameFromID(l.item_id)!}`,
+								name: `${l.type} ${l.total_quantity}x ${Items.itemNameFromId(l.item_id)!}`,
 								value: l.userfacing_id
 							}));
 					}
@@ -212,10 +204,12 @@ export const geCommand: OSBMahojiCommand = {
 						const listings = Array.from(marketPricemap.values());
 						return listings
 							.filter(i =>
-								!input ? true : itemNameFromID(i.itemID)?.toLowerCase().includes(input.toLowerCase())
+								!input
+									? true
+									: Items.itemNameFromId(i.itemID)?.toLowerCase().includes(input.toLowerCase())
 							)
 							.map(l => ({
-								name: `${itemNameFromID(l.itemID)!}`,
+								name: `${Items.itemNameFromId(l.itemID)!}`,
 								value: l.itemID
 							}));
 					}
@@ -268,7 +262,7 @@ export const geCommand: OSBMahojiCommand = {
 			if (!data) {
 				return "We don't have price data for that item.";
 			}
-			return `The current market price of ${itemNameFromID(data.itemID)!} is ${toKMB(
+			return `The current market price of ${Items.itemNameFromId(data.itemID)!} is ${toKMB(
 				data.guidePrice
 			)} (${data.guidePrice.toLocaleString()}) GP.
 
@@ -400,7 +394,7 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 
 		if (options.view) {
 			if (options.view.item) {
-				const item = getItem(options.view.item);
+				const item = Items.getItem(options.view.item);
 				if (!item) return 'Invalid item.';
 				if (!itemIsTradeable(item.id)) return 'That item is not tradeable on the Grand Exchange.';
 				const priceData = marketPricemap.get(item.id);
@@ -492,7 +486,7 @@ ORDER BY
 			return {
 				content: `Successfully created a listing to buy ${toKMB(
 					createdListing.total_quantity
-				)} ${itemNameFromID(createdListing.item_id)} for ${toKMB(
+				)} ${Items.itemNameFromId(createdListing.item_id)} for ${toKMB(
 					Number(createdListing.asking_price_per_item)
 				)} GP each.`,
 				components: makeComponents([createGECancelButton(createdListing)])
@@ -514,7 +508,7 @@ ORDER BY
 			return {
 				content: `Successfully created a listing to sell ${toKMB(
 					createdListing.total_quantity
-				)} ${itemNameFromID(createdListing.item_id)} for ${toKMB(
+				)} ${Items.itemNameFromId(createdListing.item_id)} for ${toKMB(
 					Number(createdListing.asking_price_per_item)
 				)} GP each.`,
 				components: makeComponents([createGECancelButton(createdListing)])

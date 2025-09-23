@@ -1,11 +1,11 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
-import { lootRoom, plunderRooms } from '../../../lib/minions/data/plunder';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import type { PlunderActivityTaskOptions } from './../../../lib/types/minions';
+import { lootRoom, plunderRooms } from '@/lib/minions/data/plunder.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { PlunderActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const plunderTask: MinionTask = {
 	type: 'Plunder',
@@ -31,8 +31,7 @@ export const plunderTask: MinionTask = {
 			}
 		}
 
-		const { itemsAdded, previousCL } = await transactItems({
-			userID: user.id,
+		const { itemsAdded, previousCL } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

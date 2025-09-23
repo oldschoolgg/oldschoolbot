@@ -1,7 +1,7 @@
 import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit/string-util';
-import { ItemGroups, Items, getItemOrThrow, itemNameMap, resolveItems } from 'oldschooljs';
+import { ItemGroups, Items, itemNameMap, resolveItems } from 'oldschooljs';
 
-export function setItemAlias(id: number, name: string | string[], rename = true) {
+function setItemAlias(id: number, name: string | string[], rename = true) {
 	const existingItem = Items.get(id);
 	if (!existingItem) {
 		throw new Error(`Tried to add item alias for a non-existant item: ${name} ${id}`);
@@ -361,20 +361,21 @@ for (const item of allTrophyItems) {
  * Item modifications
  */
 
-export interface CustomItemData {
-	cantBeSacrificed?: true;
-}
 declare module 'oldschooljs' {
 	interface Item {
 		customItemData?: CustomItemData;
 	}
 }
 
+export interface CustomItemData {
+	cantBeSacrificed?: true;
+}
+
 for (const id of ItemGroups.teamCapes) {
 	Items.modifyItem(id, {
 		price: 100
 	});
-	if (getItemOrThrow(id).price !== 100) {
+	if (Items.getOrThrow(id).price !== 100) {
 		throw new Error(`Failed to modify price of item ${id}`);
 	}
 }

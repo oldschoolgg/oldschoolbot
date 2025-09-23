@@ -1,11 +1,10 @@
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
-import getOSItem from '../../../../util/getOSItem';
-import type { Mixable } from '../../../types';
+import type { Mixable } from '@/lib/skilling/types.js';
 
 const Potions: Mixable[] = [
 	{
-		item: getOSItem('Attack potion (3)'),
+		item: Items.getOrThrow('Attack potion (3)'),
 		aliases: ['attack potion', 'attack', 'attack potion (3)'],
 		level: 3,
 		xp: 25,
@@ -14,7 +13,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Antipoison (3)'),
+		item: Items.getOrThrow('Antipoison (3)'),
 		aliases: ['antipoison (3)', 'antipoison'],
 		level: 5,
 		xp: 37.5,
@@ -26,7 +25,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Strength potion (3)'),
+		item: Items.getOrThrow('Strength potion (3)'),
 		aliases: ['strength potion (3)', 'strength potion', 'strength'],
 		level: 12,
 		xp: 50,
@@ -35,7 +34,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Serum 207 (3)'),
+		item: Items.getOrThrow('Serum 207 (3)'),
 		aliases: ['serum 207 (3)', 'serum 207'],
 		level: 15,
 		xp: 50,
@@ -44,7 +43,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Guthix rest (3)'),
+		item: Items.getOrThrow('Guthix rest (3)'),
 		aliases: ['guthix rest (3)', 'guthix rest'],
 		level: 18,
 		xp: 59,
@@ -59,7 +58,7 @@ const Potions: Mixable[] = [
 		zahur: false
 	},
 	{
-		item: getOSItem('Compost potion (3)'),
+		item: Items.getOrThrow('Compost potion (3)'),
 		aliases: ['compost potion (3)', 'compost potion', 'compost'],
 		level: 22,
 		xp: 60,
@@ -68,7 +67,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Restore potion (3)'),
+		item: Items.getOrThrow('Restore potion (3)'),
 		aliases: ['restore potion (3)', 'restore potion', 'restore'],
 		level: 22,
 		xp: 62.5,
@@ -80,7 +79,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Guthix balance (3)'),
+		item: Items.getOrThrow('Guthix balance (3)'),
 		aliases: ['guthix balance (3)', 'guthix balance'],
 		level: 22,
 		xp: 50,
@@ -93,7 +92,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Energy potion (3)'),
+		item: Items.getOrThrow('Energy potion (3)'),
 		aliases: ['energy potion (3)', 'energy potion', 'energy'],
 		level: 26,
 		xp: 67.5,
@@ -105,7 +104,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Defence potion (3)'),
+		item: Items.getOrThrow('Defence potion (3)'),
 		aliases: ['defence potion (3)', 'defence potion', 'defence'],
 		level: 30,
 		xp: 75,
@@ -114,7 +113,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Agility potion (3)'),
+		item: Items.getOrThrow('Agility potion (3)'),
 		aliases: ['agility potion (3)', 'agility potion', 'agility'],
 		level: 34,
 		xp: 80,
@@ -123,7 +122,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Combat potion (3)'),
+		item: Items.getOrThrow('Combat potion (3)'),
 		aliases: ['combat potion (3)', 'combat potion', 'combat'],
 		level: 36,
 		xp: 84,
@@ -135,7 +134,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Prayer potion (3)'),
+		item: Items.getOrThrow('Prayer potion (3)'),
 		aliases: ['prayer potion', 'prayer', 'prayer potion (3)'],
 		level: 38,
 		xp: 87.5,
@@ -144,7 +143,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Super attack (3)'),
+		item: Items.getOrThrow('Super attack (3)'),
 		aliases: ['super attack (3)', 'super attack'],
 		level: 45,
 		xp: 100,
@@ -153,7 +152,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Superantipoison (3)'),
+		item: Items.getOrThrow('Superantipoison (3)'),
 		aliases: ['superantipoison (3)', 'superantipoison'],
 		level: 48,
 		xp: 106.5,
@@ -162,7 +161,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Fishing potion (3)'),
+		item: Items.getOrThrow('Fishing potion (3)'),
 		aliases: ['fishing potion (3)', 'fishing potion', 'fishing'],
 		level: 50,
 		xp: 112.5,
@@ -171,7 +170,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Super energy (3)'),
+		item: Items.getOrThrow('Super energy (3)'),
 		aliases: ['super energy (3)', 'super energy'],
 		level: 52,
 		xp: 117.5,
@@ -180,7 +179,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Hunter potion (3)'),
+		item: Items.getOrThrow('Hunter potion (3)'),
 		aliases: ['hunter potion (3)', 'hunter potion', 'hunter'],
 		level: 53,
 		xp: 120,
@@ -189,7 +188,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Super strength (3)'),
+		item: Items.getOrThrow('Super strength (3)'),
 		aliases: ['super strength (3)', 'super strength'],
 		level: 55,
 		xp: 125,
@@ -198,7 +197,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Weapon poison'),
+		item: Items.getOrThrow('Weapon poison'),
 		aliases: ['weapon poison(+)'],
 		level: 60,
 		xp: 137.5,
@@ -207,7 +206,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Super restore (3)'),
+		item: Items.getOrThrow('Super restore (3)'),
 		aliases: ['super restore (3)', 'super restore'],
 		level: 63,
 		xp: 142.5,
@@ -219,7 +218,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Prayer regeneration potion(3)'),
+		item: Items.getOrThrow('Prayer regeneration potion(3)'),
 		aliases: ['prayer regeneration potion'],
 		level: 58,
 		xp: 132,
@@ -228,7 +227,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Super defence (3)'),
+		item: Items.getOrThrow('Super defence (3)'),
 		aliases: ['super defence (3)', 'super defence'],
 		level: 66,
 		xp: 150,
@@ -237,7 +236,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Antidote+ (4)'),
+		item: Items.getOrThrow('Antidote+ (4)'),
 		aliases: ['antidote+ (4)', 'antidote+'],
 		level: 68,
 		xp: 155,
@@ -246,7 +245,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.45
 	},
 	{
-		item: getOSItem('Antifire potion (3)'),
+		item: Items.getOrThrow('Antifire potion (3)'),
 		aliases: ['antifire potion (3)', 'antifire potion', 'antifire'],
 		level: 69,
 		xp: 157.5,
@@ -258,7 +257,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Ranging potion (3)'),
+		item: Items.getOrThrow('Ranging potion (3)'),
 		aliases: ['ranging potion (3)', 'ranging potion', 'ranging'],
 		level: 72,
 		xp: 162.5,
@@ -270,7 +269,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Weapon poison(+)'),
+		item: Items.getOrThrow('Weapon poison(+)'),
 		aliases: ['weapon poison(+)'],
 		level: 73,
 		xp: 165,
@@ -283,7 +282,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Magic potion (3)'),
+		item: Items.getOrThrow('Magic potion (3)'),
 		aliases: ['magic potion (3)', 'magic potion', 'magic'],
 		level: 76,
 		xp: 172.5,
@@ -292,7 +291,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Stamina potion (4)'),
+		item: Items.getOrThrow('Stamina potion (4)'),
 		aliases: ['stamina potion (4)', 'stamina potion', 'stamina'],
 		level: 77,
 		xp: 102,
@@ -301,7 +300,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.17
 	},
 	{
-		item: getOSItem('Zamorak brew (3)'),
+		item: Items.getOrThrow('Zamorak brew (3)'),
 		aliases: ['zamorak brew (3)', 'zamorak brew'],
 		level: 78,
 		xp: 175,
@@ -310,7 +309,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Antidote++ (4)'),
+		item: Items.getOrThrow('Antidote++ (4)'),
 		aliases: ['antidote++ (4)', 'antidote++'],
 		level: 79,
 		xp: 177.5,
@@ -323,7 +322,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.45
 	},
 	{
-		item: getOSItem('Bastion potion (3)'),
+		item: Items.getOrThrow('Bastion potion (3)'),
 		aliases: ['bastion potion (3)', 'bastion potion', 'bastion'],
 		level: 80,
 		xp: 155,
@@ -335,7 +334,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Battlemage potion (3)'),
+		item: Items.getOrThrow('Battlemage potion (3)'),
 		aliases: ['battlemage potion (3)', 'battlemage potion', 'battlemage'],
 		level: 80,
 		xp: 155,
@@ -347,7 +346,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Saradomin brew (3)'),
+		item: Items.getOrThrow('Saradomin brew (3)'),
 		aliases: ['saradomin brew (3)', 'saradomin brew', 'sara brew'],
 		level: 81,
 		xp: 180,
@@ -359,7 +358,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Weapon poison(++)'),
+		item: Items.getOrThrow('Weapon poison(++)'),
 		aliases: ['weapon poison(++)'],
 		level: 82,
 		xp: 165,
@@ -372,7 +371,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Extended antifire (4)'),
+		item: Items.getOrThrow('Extended antifire (4)'),
 		aliases: ['extended antifire (4)', 'extended antifire'],
 		level: 84,
 		xp: 110,
@@ -381,7 +380,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.17
 	},
 	{
-		item: getOSItem('Ancient brew (3)'),
+		item: Items.getOrThrow('Ancient brew (3)'),
 		aliases: ['ancient brew (3)', 'ancient brew'],
 		level: 85,
 		xp: 190,
@@ -390,7 +389,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.17
 	},
 	{
-		item: getOSItem('Anti-venom (4)'),
+		item: Items.getOrThrow('Anti-venom (4)'),
 		aliases: ['anti-venom (4)', 'anti-venom'],
 		level: 87,
 		xp: 120,
@@ -399,7 +398,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.17
 	},
 	{
-		item: getOSItem('Menaphite remedy (3)'),
+		item: Items.getOrThrow('Menaphite remedy (3)'),
 		aliases: ['menaphite', 'remedy'],
 		level: 88,
 		xp: 200,
@@ -408,7 +407,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Super combat potion (4)'),
+		item: Items.getOrThrow('Super combat potion (4)'),
 		aliases: ['super combat potion (4)', 'super combat potion', 'super combat'],
 		level: 90,
 		xp: 150,
@@ -422,7 +421,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.5
 	},
 	{
-		item: getOSItem('Forgotten brew (4)'),
+		item: Items.getOrThrow('Forgotten brew (4)'),
 		aliases: ['forgotten brew (4)', 'forgotten brew', 'forgotten'],
 		level: 91,
 		xp: 145,
@@ -431,7 +430,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.17
 	},
 	{
-		item: getOSItem('Super antifire potion (4)'),
+		item: Items.getOrThrow('Super antifire potion (4)'),
 		aliases: ['super antifire potion (4)', 'super antifire potion', 'super antifire'],
 		level: 92,
 		xp: 130,
@@ -444,7 +443,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Anti-venom+(4)'),
+		item: Items.getOrThrow('Anti-venom+(4)'),
 		aliases: ['Anti-venom+(4)', 'Anti-venom+'],
 		level: 94,
 		xp: 125,
@@ -453,7 +452,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Extended anti-venom+(4)'),
+		item: Items.getOrThrow('Extended anti-venom+(4)'),
 		aliases: ['Extended anti-venom+(4)', 'Extended anti-venom'],
 		level: 94,
 		xp: 80,
@@ -462,7 +461,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Extended super antifire (4)'),
+		item: Items.getOrThrow('Extended super antifire (4)'),
 		aliases: ['Extended super antifire (4)', 'Extended super antifire'],
 		level: 98,
 		xp: 160,
@@ -475,7 +474,7 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Sanfew serum(4)'),
+		item: Items.getOrThrow('Sanfew serum(4)'),
 		aliases: ['sanfew', 'sanfew serum', 'sanfew serum(4)'],
 		level: 65,
 		xp: 192,

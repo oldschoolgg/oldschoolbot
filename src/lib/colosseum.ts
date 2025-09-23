@@ -1,33 +1,32 @@
+import {
+	calcPercentOfNum,
+	calcWhatPercent,
+	increaseNumByPercent,
+	objectEntries,
+	percentChance,
+	randInt,
+	reduceNumByPercent,
+	sumArr,
+	Time
+} from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { GeneralBank, type GeneralBankType, UserError } from '@oldschoolgg/toolkit/structures';
-import {
-	Time,
-	calcPercentOfNum,
-	calcWhatPercent,
-	clamp,
-	increaseNumByPercent,
-	objectEntries,
-	objectValues,
-	percentChance,
-	randInt,
-	reduceNumByPercent,
-	sumArr
-} from 'e';
 import { Bank, type EquipmentSlot, type ItemBank, LootTable, resolveItems } from 'oldschooljs';
+import { clamp } from 'remeda';
 
-import { formatList, formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils';
-import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
-import { degradeChargeBank } from './degradeableItems';
-import type { GearSetupType } from './gear/types';
-import { trackLoot } from './lootTrack';
-import { QuestID } from './minions/data/quests';
-import { ChargeBank } from './structures/Bank';
-import type { Skills } from './types';
-import type { ColoTaskOptions } from './types/minions';
-import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
-import { updateBankSetting } from './util/updateBankSetting';
+import type { GearSetupType } from '@/lib/gear/types.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { formatList, formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
+import { degradeChargeBank } from './degradeableItems.js';
+import { trackLoot } from './lootTrack.js';
+import { QuestID } from './minions/data/quests.js';
+import type { Skills } from './types/index.js';
+import type { ColoTaskOptions } from './types/minions.js';
 
 function combinedChance(percentages: number[]): number {
 	const failureProbabilities = percentages.map(p => (100 - p) / 100);
@@ -301,7 +300,7 @@ function calculateDeathChance(waveKC: number, hasBF: boolean, hasSGS: boolean): 
 		newChance = reduceNumByPercent(newChance, 5);
 	}
 
-	return clamp(newChance, 1, 80);
+	return clamp(newChance, { min: 1, max: 80 });
 }
 
 export class ColosseumWaveBank extends GeneralBank<number> {
@@ -344,7 +343,7 @@ function calculateTimeInMs(waveTwelveKC: number): number {
 function calculateGlory(kcBank: ColosseumWaveBank, wave: Wave) {
 	const waveKCSkillBank = new ColosseumWaveBank();
 	for (const [waveNumber, kc] of kcBank.entries()) {
-		waveKCSkillBank.add(waveNumber, clamp(calcWhatPercent(kc, 30 - waveNumber), 1, 100));
+		waveKCSkillBank.add(waveNumber, clamp(calcWhatPercent(kc, 30 - waveNumber), { min: 1, max: 100 }));
 	}
 	const kcSkill = waveKCSkillBank.amount(wave.waveNumber) ?? 0;
 	const totalKCSkillPercent = sumArr(waveKCSkillBank.entries().map(ent => ent[1])) / waveKCSkillBank.length();
@@ -514,8 +513,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	for (const [gearType, gearNeeded] of objectEntries(requiredItems)) {
 		const gear = user.gear[gearType];
 		if (!gearNeeded) continue;
-		for (const items of objectValues(gearNeeded)) {
-			if (!items) continue;
+		for (const items of Object.values(gearNeeded)) {
 			if (!items.some(g => gear.hasEquipped(g))) {
 				return `You need one of these equipped in your ${gearType} setup to enter the Colosseum: ${formatList(
 					items.map(itemNameFromID),

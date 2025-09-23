@@ -1,6 +1,6 @@
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import { globalBingoTiles } from './globalTiles';
+import { globalBingoTiles } from './globalTiles.js';
 
 interface CustomReq {
 	customReq: (cl: Bank) => boolean;

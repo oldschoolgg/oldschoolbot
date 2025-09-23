@@ -1,9 +1,8 @@
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { formatDuration, Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, EItem, Items, itemID } from 'oldschooljs';
 
-import type { GearBank } from '@/lib/structures/GearBank';
-import type { Fish } from '../../types';
+import type { Fish } from '@/lib/skilling/types.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 
 export function calcFishingTripStart({
 	gearBank,

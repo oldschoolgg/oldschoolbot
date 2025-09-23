@@ -1,13 +1,12 @@
-import { Time, roll } from 'e';
-import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
-
+import { roll, Time } from '@oldschoolgg/toolkit';
+import { Bank, deepResolveItems, itemID, Monsters, resolveItems, SkillsEnum } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
-import { BitField } from '../../../../../../src/lib/constants';
-import { corporealBeastCL, muspahCL } from '../../../../data/CollectionsExport';
-import { SkillsEnum } from '../../../../skilling/types';
-import { Gear } from '../../../../structures/Gear';
-import type { KillableMonster } from '../../../types';
-import { QuestID } from '../../quests';
+
+import { BitField } from '@/lib/constants.js';
+import { corporealBeastCL, muspahCL } from '@/lib/data/CollectionsExport.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { Gear } from '@/lib/structures/Gear.js';
 
 const killableBosses: KillableMonster[] = [
 	{
@@ -1053,7 +1052,7 @@ const killableBosses: KillableMonster[] = [
 		name: Monsters.Branda.name,
 		aliases: Monsters.Branda.aliases,
 		timeToFinish: Time.Minute * 2.5,
-		respawnTime: Time.Second * 15,
+		respawnTime: Time.Second * 10,
 		table: Monsters.Branda,
 		deathProps: {
 			hardness: 0.2,
@@ -1186,7 +1185,7 @@ const killableBosses: KillableMonster[] = [
 			const hasBitfield = bitfield?.includes(BitField.HasMysticVigourScroll);
 			if (hasScroll || hasBitfield) return;
 			for (let i = 0; i < quantity; i++) {
-				if (roll(75)) {
+				if (roll(150)) {
 					loot.add('Mystic vigour prayer scroll');
 					break;
 				}
@@ -1198,7 +1197,7 @@ const killableBosses: KillableMonster[] = [
 		name: Monsters.Eldric.name,
 		aliases: Monsters.Eldric.aliases,
 		timeToFinish: Time.Minute * 2.5,
-		respawnTime: Time.Second * 15,
+		respawnTime: Time.Second * 10,
 		table: Monsters.Eldric,
 		deathProps: {
 			hardness: 0.1,
@@ -1331,7 +1330,7 @@ const killableBosses: KillableMonster[] = [
 			const hasBitfield = bitfield?.includes(BitField.HasDeadeyeScroll);
 			if (hasScroll || hasBitfield) return;
 			for (let i = 0; i < quantity; i++) {
-				if (roll(75)) {
+				if (roll(150)) {
 					loot.add('Deadeye prayer scroll');
 					break;
 				}
@@ -1343,7 +1342,7 @@ const killableBosses: KillableMonster[] = [
 		name: Monsters.RoyalTitans.name,
 		aliases: Monsters.RoyalTitans.aliases,
 		timeToFinish: Time.Minute * 2.5,
-		respawnTime: Time.Second * 15,
+		respawnTime: Time.Second * 10,
 		table: Monsters.RoyalTitans,
 		deathProps: {
 			hardness: 0.1,

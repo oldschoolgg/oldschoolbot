@@ -1,13 +1,13 @@
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
-import { Bank, EItem, EMonster, Monsters, convertLVLtoXP, itemID, resolveItems } from 'oldschooljs';
+import { Bank, convertLVLtoXP, EItem, EMonster, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
-import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants';
-import { getPOHObject } from '../../../src/lib/poh';
-import { SkillsEnum } from '../../../src/lib/skilling/types';
-import { Gear } from '../../../src/lib/structures/Gear';
-import { minionKCommand } from '../../../src/mahoji/commands/k';
-import { createTestUser, mockClient, mockUser } from '../util';
+import { getPOHObject } from '@/lib/poh/index.js';
+import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants.js';
+import { SkillsEnum } from '../../../src/lib/skilling/types.js';
+import { Gear } from '../../../src/lib/structures/Gear.js';
+import { minionKCommand } from '../../../src/mahoji/commands/k.js';
+import { createTestUser, mockClient, mockUser } from '../util.js';
 
 describe('PVM', async () => {
 	const client = await mockClient();

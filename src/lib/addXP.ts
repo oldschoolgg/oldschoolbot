@@ -1,18 +1,18 @@
+import { noOp, Time } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { type User, UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
-import { Time, noOp } from 'e';
 import { convertXPtoLVL, toKMB } from 'oldschooljs';
 
-import { LEVEL_99_XP, MAX_LEVEL, MAX_TOTAL_LEVEL, MAX_XP, globalConfig } from './constants';
-import { skillEmoji } from './data/emojis';
-import type { AddXpParams } from './minions/types';
-import { sql } from './postgres';
-import Skills from './skilling/skills';
-import { mahojiClientSettingsFetch } from './util/clientSettings';
-import { insertUserEvent } from './util/userEvents';
-import { sendToChannelID } from './util/webhook';
+import { skillEmoji } from '@/lib/data/emojis.js';
+import { Skills } from '@/lib/skilling/skills/index.js';
+import { mahojiClientSettingsFetch } from '@/lib/util/clientSettings.js';
+import { insertUserEvent } from '@/lib/util/userEvents.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
+import { globalConfig, LEVEL_99_XP, MAX_LEVEL, MAX_TOTAL_LEVEL, MAX_XP } from './constants.js';
+import type { AddXpParams } from './minions/types.js';
+import { sql } from './postgres.js';
 
 const skillsVals = Object.values(Skills);
 const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${LEVEL_99_XP}`).join(' AND ');
