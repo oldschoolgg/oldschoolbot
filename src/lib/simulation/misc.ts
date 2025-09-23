@@ -10,7 +10,7 @@ export const CrystalChestTable = new LootTable()
 		1,
 		1
 	)
-	.add('Uncut dragonstone', 1)
+	.add('Uncut dragonstone', 2)
 	.add(
 		itemTupleToTable([
 			['Uncut dragonstone', 1],
