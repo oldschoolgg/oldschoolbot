@@ -2,9 +2,9 @@ import { Bank, type Monster, Monsters } from 'oldschooljs';
 import { EGear } from 'oldschooljs/EGear';
 import { expect, test } from 'vitest';
 
-import { Gear } from '../../src/lib/structures/Gear';
-import { GearBank } from '../../src/lib/structures/GearBank';
-import { calculateVirtusBoost } from '../../src/mahoji/lib/abstracted_commands/minionKill/minionKillData';
+import { Gear } from '../../src/lib/structures/Gear.js';
+import { GearBank } from '../../src/lib/structures/GearBank.js';
+import { calculateVirtusBoost } from '../../src/mahoji/lib/abstracted_commands/minionKill/minionKillData.js';
 
 test('calculateVirtusBoost', () => {
 	type VirtusTestOptions = {

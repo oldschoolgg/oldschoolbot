@@ -23,7 +23,8 @@ export function calculateVirtusBoost({
 }: {
 	gearBank: GearBank;
 	isInWilderness: boolean;
-	isOnTask: boolean; osjsMon: Monster | undefined;
+	isOnTask: boolean;
+	osjsMon: Monster | undefined;
 }) {
 	let virtusPiecesEquipped = 0;
 	const isUndead = osjsMon?.data?.attributes?.includes(MonsterAttribute.Undead);
