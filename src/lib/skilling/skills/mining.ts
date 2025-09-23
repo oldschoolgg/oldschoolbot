@@ -1,7 +1,7 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { LootTable, itemID, resolveItems } from 'oldschooljs';
+import { itemID, LootTable, resolveItems } from 'oldschooljs';
 
-import { type Ore, SkillsEnum } from '../types';
+import { type Ore, SkillsEnum } from '@/lib/skilling/types.js';
 
 export const GemRockTable = new LootTable()
 	.add('Uncut opal', 1, 60)

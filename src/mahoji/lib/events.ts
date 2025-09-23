@@ -1,17 +1,16 @@
 import type { ItemBank } from 'oldschooljs';
 
-import { startBlacklistSyncing } from '../../lib/blacklists';
-import { usernameWithBadgesCache } from '../../lib/cache';
-import { Channel, META_CONSTANTS, badges, globalConfig } from '../../lib/constants';
-import { initCrons } from '../../lib/crons';
-import { syncDoubleLoot } from '../../lib/doubleLoot';
-
-import { initTickers } from '../../lib/tickers';
-import { logWrapFn } from '../../lib/util';
-import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
-import { syncSlayerMaskLeaderboardCache } from '../../lib/util/slayerMaskLeaderboard';
-import { sendToChannelID } from '../../lib/util/webhook';
-import { CUSTOM_PRICE_CACHE } from '../commands/sell';
+import { startBlacklistSyncing } from '@/lib/blacklists';
+import { usernameWithBadgesCache } from '@/lib/cache';
+import { badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants';
+import { initCrons } from '@/lib/crons';
+import { syncDoubleLoot } from '@/lib/doubleLoot';
+import { initTickers } from '@/lib/tickers';
+import { logWrapFn } from '@/lib/util';
+import { mahojiClientSettingsFetch } from '@/lib/util/clientSettings';
+import { syncSlayerMaskLeaderboardCache } from '@/lib/util/slayerMaskLeaderboard';
+import { sendToChannelID } from '@/lib/util/webhook';
+import { CUSTOM_PRICE_CACHE } from '@/mahoji/commands/sell.js';
 
 export async function syncCustomPrices() {
 	const clientData = await mahojiClientSettingsFetch({ custom_prices: true });

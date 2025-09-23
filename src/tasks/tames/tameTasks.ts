@@ -1,8 +1,8 @@
 import { calcPerHour, formatDuration } from '@oldschoolgg/toolkit/util';
 import type { TameActivity } from '@prisma/client';
 import {
-	type APIInteractionGuildMember,
 	ActionRowBuilder,
+	type APIInteractionGuildMember,
 	AttachmentBuilder,
 	ButtonBuilder,
 	type ButtonInteraction,
@@ -11,35 +11,35 @@ import {
 	type GuildMember,
 	userMention
 } from 'discord.js';
-import { Time, increaseNumByPercent, isFunction, percentChance, randArrItem, randInt, roll } from 'e';
+import { increaseNumByPercent, isFunction, percentChance, randArrItem, randInt, roll, Time } from 'e';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { isEmpty } from 'remeda';
 
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import { BitField } from '../../lib/constants';
-import { handlePassiveImplings } from '../../lib/implings';
-import { trackLoot } from '../../lib/lootTrack';
-import { allOpenables } from '../../lib/openables';
-import { runCommand } from '../../lib/settings/settings';
-import { getTemporossLoot } from '../../lib/simulation/tempoross';
-import { WintertodtCrate } from '../../lib/simulation/wintertodt';
-import type { MTame } from '../../lib/structures/MTame';
+import { ClueTiers } from '@/lib/clues/clueTiers';
+import { BitField } from '@/lib/constants';
+import { handlePassiveImplings } from '@/lib/implings';
+import { trackLoot } from '@/lib/lootTrack';
+import { allOpenables } from '@/lib/openables';
+import { runCommand } from '@/lib/settings/settings';
+import { getTemporossLoot } from '@/lib/simulation/tempoross';
+import { WintertodtCrate } from '@/lib/simulation/wintertodt';
+import type { MTame } from '@/lib/structures/MTame';
 import {
 	type ArbitraryTameActivity,
+	seaMonkeySpells,
+	tameKillableMonsters,
 	TameSpeciesID,
 	type TameTaskOptions,
-	TameType,
-	seaMonkeySpells,
-	tameKillableMonsters
-} from '../../lib/tames';
-import type { ActivityTaskData } from '../../lib/types/minions';
-import getOSItem from '../../lib/util/getOSItem';
-import { handleCrateSpawns } from '../../lib/util/handleCrateSpawns';
-import { assert } from '../../lib/util/logError';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { tameLastFinishedActivity } from '../../lib/util/tameUtil';
-import { sendToChannelID } from '../../lib/util/webhook';
-import { collectables } from '../../mahoji/lib/collectables';
+	TameType
+} from '@/lib/tames';
+import type { ActivityTaskData } from '@/lib/types/minions.js';
+import getOSItem from '@/lib/util/getOSItem';
+import { handleCrateSpawns } from '@/lib/util/handleCrateSpawns';
+import { assert } from '@/lib/util/logError';
+import { makeBankImage } from '@/lib/util/makeBankImage';
+import { tameLastFinishedActivity } from '@/lib/util/tameUtil';
+import { sendToChannelID } from '@/lib/util/webhook';
+import { collectables } from '@/mahoji/lib/collectables';
 
 export async function handleFinish({
 	lootToAdd,
@@ -47,7 +47,13 @@ export async function handleFinish({
 	activity,
 	tame,
 	message
-}: { lootToAdd: Bank; message: string; user: MUser; tame: MTame; activity: TameActivity }) {
+}: {
+	lootToAdd: Bank;
+	message: string;
+	user: MUser;
+	tame: MTame;
+	activity: TameActivity;
+}) {
 	const results: string[] = [message];
 	const previousTameCl = tame.totalLoot.clone();
 	const crateRes = handleCrateSpawns(user, activity.duration);

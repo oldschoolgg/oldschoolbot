@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
-import { inventionBoosts } from '../../invention/inventions';
-import type { Consumable } from '../types';
+
+import { inventionBoosts } from '@/lib/invention/inventions.js';
+import type { Consumable } from '@/lib/minions/types.js';
 
 // Configure boost percents
 export const boostCannon = 30;

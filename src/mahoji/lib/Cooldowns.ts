@@ -1,6 +1,6 @@
 import { LRUCache } from 'lru-cache';
 
-import { assert } from '../../lib/util/logError';
+import { assert } from '@/lib/util/logError';
 
 class CooldownsSingleton {
 	cooldownMap = new LRUCache<string, Map<string, number>>({ max: 1000 });

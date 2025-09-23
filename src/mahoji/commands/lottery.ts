@@ -4,22 +4,20 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { calcWhatPercent, sumArr } from 'e';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
-import { mahojiUserSettingsUpdate } from '../../lib/MUser';
-import { ores, secondaries, seedsFilter } from '../../lib/data/filterables';
-import { Herb } from '../../lib/invention/groups/Herb';
-
-import { isSuperUntradeable } from '../../lib/bso/bsoUtil';
-import Firemaking from '../../lib/skilling/skills/firemaking';
-import Runecraft from '../../lib/skilling/skills/runecraft';
-import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
-import getOSItem from '../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { assert } from '../../lib/util/logError';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { filterOption } from '../lib/mahojiCommandOptions';
-
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
+import { ores, secondaries, seedsFilter } from '@/lib/data/filterables';
+import { Herb } from '@/lib/invention/groups/Herb';
+import { mahojiUserSettingsUpdate } from '@/lib/MUser';
+import Firemaking from '@/lib/skilling/skills/firemaking';
+import Runecraft from '@/lib/skilling/skills/runecraft';
+import { mahojiClientSettingsFetch } from '@/lib/util/clientSettings';
+import getOSItem from '@/lib/util/getOSItem';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { assert } from '@/lib/util/logError';
+import { makeBankImage } from '@/lib/util/makeBankImage';
+import { parseBank } from '@/lib/util/parseStringBank';
+import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
+import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 async function addToLotteryBank(userID: string, bankToAdd: Bank) {
 	const currentUserSettings = await mahojiUsersSettingsFetch(userID, {

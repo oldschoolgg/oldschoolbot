@@ -1,13 +1,13 @@
-import { Time, roll } from 'e';
-import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { roll, Time } from 'e';
+import { Bank, deepResolveItems, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
+import { OSB_VIRTUS_IDS } from '@/lib/bso/bsoConstants.js';
 import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '@/lib/data/CollectionsExport';
-import { SkillsEnum } from '@/lib/skilling/types';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import type { KillableMonster, KillableMonsterEffect } from '@/lib/minions/types';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 import { getOSItem } from '@/lib/util/getOSItem';
-import { OSB_VIRTUS_IDS } from '../../../../bso/bsoConstants';
-import type { KillableMonster, KillableMonsterEffect } from '../../../types';
-import { QuestID } from '../../quests';
 
 const awakenedDeathProps = {
 	hardness: 0.9,

@@ -3,12 +3,12 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { LMSBuyables } from '../../../lib/data/CollectionsExport';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { getUsersLMSStats } from '../../../tasks/minions/minigames/lmsActivity';
+import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { getUsersLMSStats } from '@/tasks/minions/minigames/lmsActivity.js';
 
 export async function lmsCommand(
 	options: {

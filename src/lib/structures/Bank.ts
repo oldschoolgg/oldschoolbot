@@ -1,8 +1,7 @@
 import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit/structures';
 import { Bank } from 'oldschooljs';
 
-import type { DegradeableItem } from '../degradeableItems';
-import { degradeableItems } from '../degradeableItems';
+import { type DegradeableItem, degradeableItems } from '@/lib/degradeableItems.js';
 
 export class ChargeBank extends GeneralBank<DegradeableItem['settingsKey']> {
 	constructor(initialBank?: GeneralBankType<DegradeableItem['settingsKey']>) {
@@ -19,7 +18,7 @@ export class ChargeBank extends GeneralBank<DegradeableItem['settingsKey']> {
 	}
 }
 
-export { XPBank } from './XPBank';
+export { XPBank } from './XPBank.js';
 
 export class FloatBank extends GeneralBank<number> {
 	constructor() {

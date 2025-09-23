@@ -4,19 +4,18 @@ import type { FishingContestCatch } from '@prisma/client';
 import { calcPercentOfNum, randArrItem } from 'e';
 import type { Item } from 'oldschooljs';
 
+import { SkillsEnum } from '@/lib/skilling/types.js';
 import {
 	ArdougneDiary,
 	DesertDiary,
 	KourendKebosDiary,
 	LumbridgeDraynorDiary,
 	MorytaniaDiary,
-	WildernessDiary,
-	userhasDiaryTier
-} from './diaries';
-
-import { SkillsEnum } from './skilling/types';
-import { ISODateString } from './util';
-import getOSItem from './util/getOSItem';
+	userhasDiaryTier,
+	WildernessDiary
+} from './diaries.js';
+import getOSItem from './util/getOSItem.js';
+import { ISODateString } from './util.js';
 
 const warmVerbs = ['freshwater', 'waterborn', 'silver'];
 const coldVerbs = ['pacific', 'long-finned', 'spotted'];

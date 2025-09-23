@@ -1,6 +1,6 @@
-import getOSItem from '../util/getOSItem';
-import { itemNameFromID } from '../util/smallUtils';
-import { doaMetamorphPets } from './CollectionsExport';
+import getOSItem from '@/lib/util/getOSItem';
+import { itemNameFromID } from '@/lib/util/smallUtils';
+import { doaMetamorphPets } from './CollectionsExport.js';
 
 export const globalDroprates = {
 	doug: {

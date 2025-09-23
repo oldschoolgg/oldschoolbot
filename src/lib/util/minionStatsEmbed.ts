@@ -1,19 +1,19 @@
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { EmbedBuilder } from 'discord.js';
 import { shuffleArr, sumArr } from 'e';
-import { Bank, type SkillsScore, convertXPtoLVL, toKMB } from 'oldschooljs';
+import { Bank, convertXPtoLVL, type ItemBank, type SkillsScore, toKMB } from 'oldschooljs';
 
-import { ClueTiers } from '../clues/clueTiers';
-import { getClueScoresFromOpenables } from '../clues/clueUtils';
-import { MAX_LEVEL, badges } from '../constants';
-import { calcCLDetails } from '../data/Collections';
-import { skillEmoji } from '../data/emojis';
-import { effectiveMonsters } from '../minions/data/killableMonsters';
-import { MALEDICT_MORTIMER_ID } from '../simulation/maledictMortimer';
-import { courses } from '../skilling/skills/agility';
-import creatures from '../skilling/skills/hunter/creatures';
-import type { ItemBank, Skills } from '../types';
-import { logError } from './logError';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { getClueScoresFromOpenables } from '@/lib/clues/clueUtils.js';
+import { badges, MAX_LEVEL } from '@/lib/constants';
+import { calcCLDetails } from '@/lib/data/Collections';
+import { skillEmoji } from '@/lib/data/emojis';
+import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import { MALEDICT_MORTIMER_ID } from '@/lib/simulation/maledictMortimer';
+import { courses } from '@/lib/skilling/skills/agility';
+import creatures from '@/lib/skilling/skills/hunter/creatures';
+import type { Skills } from '@/lib/types/index.js';
+import { logError } from './logError.js';
 
 export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	const { QP } = user;

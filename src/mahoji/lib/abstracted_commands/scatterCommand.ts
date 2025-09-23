@@ -1,12 +1,12 @@
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import Prayer from '../../../lib/skilling/skills/prayer';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ScatteringActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import Prayer from '@/lib/skilling/skills/prayer.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { ScatteringActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export async function scatterCommand(user: MUser, channelID: string, ashName: string, quantity?: number) {
 	const speedMod = 1;

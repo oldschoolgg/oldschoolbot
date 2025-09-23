@@ -4,29 +4,29 @@ import {
 	EasyClueTable,
 	EliteClueTable,
 	HardClueTable,
+	itemID,
 	MasterClueTable,
 	MediumClueTable,
-	itemID,
 	resolveItems
 } from 'oldschooljs';
 
-import { Lampables } from '../../mahoji/lib/abstracted_commands/lampCommand';
-import { gods } from '../bso/divineDominion';
-import { tmbTable, umbTable } from '../bsoOpenables';
-import { customItems } from '../customItems/util';
-import { type DisassembleFlag, disassembleFlagMaterials, materialTypes } from '../invention';
-import { DisassemblySourceGroups } from '../invention/groups';
-import Potions from '../minions/data/potions';
-import { monkeyEatables } from '../monkeyRumble';
-import { allOpenables } from '../openables';
-import { GrandmasterClueTable } from '../simulation/grandmasterClue';
-import { gracefulItems } from '../skilling/skills/agility';
-import { Craftables } from '../skilling/skills/crafting/craftables';
-import { Fletchables } from '../skilling/skills/fletching/fletchables';
-import Grimy from '../skilling/skills/herblore/mixables/grimy';
-import PotionsMixable from '../skilling/skills/herblore/mixables/potions';
-import unfinishedPotions from '../skilling/skills/herblore/mixables/unfinishedPotions';
-import { allCollectionLogs } from './Collections';
+import { gods } from '@/lib/bso/divineDominion.js';
+import { tmbTable, umbTable } from '@/lib/bsoOpenables.js';
+import { customItems } from '@/lib/customItems/util.js';
+import { allCollectionLogs } from '@/lib/data/Collections.js';
+import { DisassemblySourceGroups } from '@/lib/invention/groups/index.js';
+import { type DisassembleFlag, disassembleFlagMaterials, materialTypes } from '@/lib/invention/index.js';
+import Potions from '@/lib/minions/data/potions.js';
+import { monkeyEatables } from '@/lib/monkeyRumble.js';
+import { allOpenables } from '@/lib/openables.js';
+import { GrandmasterClueTable } from '@/lib/simulation/grandmasterClue';
+import { gracefulItems } from '@/lib/skilling/skills/agility';
+import { Craftables } from '@/lib/skilling/skills/crafting/craftables';
+import { Fletchables } from '@/lib/skilling/skills/fletching/fletchables';
+import Grimy from '@/lib/skilling/skills/herblore/mixables/grimy';
+import PotionsMixable from '@/lib/skilling/skills/herblore/mixables/potions';
+import unfinishedPotions from '@/lib/skilling/skills/herblore/mixables/unfinishedPotions';
+import { Lampables } from '@/mahoji/lib/abstracted_commands/lampCommand';
 import {
 	allClueItems,
 	allPetIDs,
@@ -46,9 +46,9 @@ import {
 	torvaOutfit,
 	virtusOutfit,
 	wintertodtCL
-} from './CollectionsExport';
-import { Eatables } from './eatables';
-import { PartyhatTable } from './holidayItems';
+} from './CollectionsExport.js';
+import { Eatables } from './eatables.js';
+import { PartyhatTable } from './holidayItems.js';
 
 export const superCompostables = [
 	'Pineapple',

@@ -1,15 +1,15 @@
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, toKMB } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import { PerkTier } from '../../lib/constants';
-import { marketPriceOfBank } from '../../lib/marketPrices';
-import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { Workers } from '../../lib/workers';
+import { ClueTiers } from '@/lib/clues/clueTiers';
+import { PerkTier } from '@/lib/constants';
+import { marketPriceOfBank } from '@/lib/marketPrices';
+import { calcDropRatesFromBankWithoutUniques } from '@/lib/util/calcDropRatesFromBank';
+import { deferInteraction } from '@/lib/util/interactionReply';
+import { makeBankImage } from '@/lib/util/makeBankImage';
+import { Workers } from '@/lib/workers';
 
 function determineLimit(user: MUser) {
 	const perkTier = user.perkTier();

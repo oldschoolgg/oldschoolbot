@@ -1,13 +1,13 @@
 import { randFloat } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { userHasFlappy } from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/lootTrack';
-import { ExoticSeedsTable } from '../../../lib/simulation/sharedTables';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { userHasFlappy } from '@/lib/invention/inventions.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { ExoticSeedsTable } from '@/lib/simulation/sharedTables.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const PrayerPageTable = new LootTable()
 	.add('Saradomin page 1')

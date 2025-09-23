@@ -1,23 +1,23 @@
 import { type CommandRunOptions, formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, reduceNumByPercent } from 'e';
-import { Bank, SkillsEnum, itemID } from 'oldschooljs';
+import { reduceNumByPercent, Time } from 'e';
+import { Bank, itemID, SkillsEnum } from 'oldschooljs';
 
-import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
-import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
-import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
-import Runecraft from '../../lib/skilling/skills/runecraft';
-import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { determineRunes } from '../../lib/util/determineRunes';
-import { getOSItem } from '../../lib/util/getOSItem';
-import { formatSkillRequirements } from '../../lib/util/smallUtils';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { ouraniaAltarStartCommand } from '../lib/abstracted_commands/ouraniaAltarCommand';
-import { tiaraRunecraftCommand } from '../lib/abstracted_commands/tiaraRunecraftCommand';
-import { calcMaxRCQuantity, userHasGracefulEquipped } from '../mahojiSettings';
+import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions';
+import { darkAltarCommand } from '@/lib/minions/functions/darkAltarCommand';
+import { sinsOfTheFatherSkillRequirements } from '@/lib/skilling/functions/questRequirements';
+import Runecraft from '@/lib/skilling/skills/runecraft';
+import type { RunecraftActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import { determineRunes } from '@/lib/util/determineRunes';
+import { getOSItem } from '@/lib/util/getOSItem';
+import { formatSkillRequirements } from '@/lib/util/smallUtils';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { ouraniaAltarStartCommand } from '@/mahoji/lib/abstracted_commands/ouraniaAltarCommand.js';
+import { tiaraRunecraftCommand } from '@/mahoji/lib/abstracted_commands/tiaraRunecraftCommand.js';
+import { calcMaxRCQuantity, userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 const runeTypes = [
 	{ item: getOSItem('Warped extract'), runes: new Set(['air', 'mind', 'water', 'earth', 'fire', 'body']) },

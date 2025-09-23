@@ -1,9 +1,9 @@
 import { type Tame, tame_growth } from '@prisma/client';
-import { Time, roll, round } from 'e';
+import { roll, round, Time } from 'e';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
-import { getSimilarItems } from '../data/similarItems';
-import { type Species, TameSpeciesID, tameFeedableItems, tameSpecies } from '../tames';
+import { getSimilarItems } from '@/lib/data/similarItems';
+import { type Species, TameSpeciesID, tameFeedableItems, tameSpecies } from '@/lib/tames.js';
 
 export class MTame {
 	tame: Tame;

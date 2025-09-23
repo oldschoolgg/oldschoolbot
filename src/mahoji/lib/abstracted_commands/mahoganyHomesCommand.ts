@@ -1,14 +1,14 @@
 import { type CommandResponse, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Time, calcPercentOfNum, calcWhatPercent, randArrItem, randInt, roll } from 'e';
+import { calcPercentOfNum, calcWhatPercent, randArrItem, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Plank } from '../../../lib/skilling/skills/construction/constructables';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { Plank } from '@/lib/skilling/skills/construction/constructables.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { MahoganyHomesActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 interface IContract {
 	name: string;

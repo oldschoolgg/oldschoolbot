@@ -6,58 +6,58 @@ import type {
 	OSBMahojiCommand
 } from '@oldschoolgg/toolkit/discord-util';
 import { asyncGzip } from '@oldschoolgg/toolkit/node';
-import { PerkTier, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, PerkTier, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { Activity, User } from '@prisma/client';
 import { ApplicationCommandOptionType, ChannelType, EmbedBuilder, userMention } from 'discord.js';
-import { Time, randArrItem, randInt, roll, shuffleArr } from 'e';
+import { randArrItem, randInt, roll, shuffleArr, Time } from 'e';
 import {
 	Bank,
+	convertLVLtoXP,
 	type Item,
 	type ItemBank,
 	ItemGroups,
-	Items,
-	ToBUniqueTable,
-	convertLVLtoXP,
 	itemID,
-	resolveItems
+	Items,
+	resolveItems,
+	ToBUniqueTable
 } from 'oldschooljs';
 
+import { MysteryBoxes, spookyTable } from '@/lib/bsoOpenables';
+import { ClueTiers } from '@/lib/clues/clueTiers';
+import { allStashUnitsFlat } from '@/lib/clues/stashUnits';
+import { BitField, Channel, globalConfig } from '@/lib/constants';
+import { allCLItemsFiltered, allDroppedItems } from '@/lib/data/Collections';
+import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/lib/data/CollectionsExport';
+import pets from '@/lib/data/pets';
+import { addToDoubleLootTimer } from '@/lib/doubleLoot';
+import { keyCrates } from '@/lib/keyCrates.js';
+import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters';
+import { giveBoxResetTime, mahojiUserSettingsUpdate, spawnLampResetTime } from '@/lib/MUser';
+import { allOpenables, type UnifiedOpenable } from '@/lib/openables';
+import type { MinigameName } from '@/lib/settings/minigames';
+import { Minigames } from '@/lib/settings/minigames';
+import Skills from '@/lib/skilling/skills';
+import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
 import { getUsername, isGroupActivity } from '@/lib/util';
+import { findGroupOfUser } from '@/lib/util/findGroupOfUser';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { deferInteraction } from '@/lib/util/interactionReply';
+import { makeBankImage } from '@/lib/util/makeBankImage';
+import { repairBrokenItemsFromUser } from '@/lib/util/repairBrokenItems';
 import { parseStaticTimeInterval, staticTimeIntervals } from '@/lib/util/smallUtils';
-import { giveBoxResetTime, mahojiUserSettingsUpdate, spawnLampResetTime } from '../../lib/MUser';
-import { MysteryBoxes, spookyTable } from '../../lib/bsoOpenables';
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
-import { BitField, Channel, globalConfig } from '../../lib/constants';
-import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
-import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '../../lib/data/CollectionsExport';
-import pets from '../../lib/data/pets';
-import { addToDoubleLootTimer } from '../../lib/doubleLoot';
-import { keyCrates } from '../../lib/keyCrates.js';
-import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
-import { type UnifiedOpenable, allOpenables } from '../../lib/openables';
-import type { MinigameName } from '../../lib/settings/minigames';
-import { Minigames } from '../../lib/settings/minigames';
-import Skills from '../../lib/skilling/skills';
-import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '../../lib/types/minions';
-import { findGroupOfUser } from '../../lib/util/findGroupOfUser';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { repairBrokenItemsFromUser } from '../../lib/util/repairBrokenItems';
-import { LampTable } from '../../lib/xpLamps';
-import { Cooldowns } from '../lib/Cooldowns';
+import { LampTable } from '@/lib/xpLamps';
 import {
 	getParsedStashUnits,
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand,
 	stashUnitUnfillCommand,
 	stashUnitViewCommand
-} from '../lib/abstracted_commands/stashUnitsCommand';
-import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
-import { buttonUserPicker } from '../lib/buttonUserPicker';
-import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
-import { patronMsg } from '../mahojiSettings';
+} from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
+import { dataPoints, statsCommand } from '@/mahoji/lib/abstracted_commands/statCommand.js';
+import { buttonUserPicker } from '@/mahoji/lib/buttonUserPicker.js';
+import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
+import { itemOption, monsterOption, skillOption } from '@/mahoji/lib/mahojiCommandOptions.js';
+import { patronMsg } from '@/mahoji/mahojiSettings.js';
 
 function isRaidsActivity(data: any): data is RaidsOptions {
 	return 'challengeMode' in data;

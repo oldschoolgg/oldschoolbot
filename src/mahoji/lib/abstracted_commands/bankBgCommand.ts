@@ -3,11 +3,11 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, resolveItems, toKMB } from 'oldschooljs';
 
 import { bankImageTask } from '@/lib/canvas/bankImage';
+import { BitField } from '@/lib/constants.js';
 import { findGroupOfUser } from '@/lib/util/findGroupOfUser';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { BitField } from '../../../lib/constants';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function bankBgCommand(interaction: ChatInputCommandInteraction, user: MUser, name: string) {
 	const bankImages = bankImageTask.backgroundImages;

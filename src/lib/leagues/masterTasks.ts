@@ -1,7 +1,7 @@
 import { sumArr } from 'e';
 import { Bank, type ItemBank, LuckyImpling, resolveItems } from 'oldschooljs';
 
-import { BitField } from '../constants';
+import { BitField } from '@/lib/constants';
 import {
 	all3rdAgeItems,
 	chambersOfXericCL,
@@ -13,18 +13,18 @@ import {
 	gorajanOccultOutfit,
 	gorajanWarriorOutfit,
 	naxxusCL
-} from '../data/CollectionsExport';
-import { slayerMaskHelms } from '../data/slayerMaskHelms';
-import { implings } from '../implings';
-import { Inventions } from '../invention/inventions';
-import { MysteryImpling } from '../simulation/customImplings';
-import { dungBuyables } from '../skilling/skills/dung/dungData';
-import { ashes } from '../skilling/skills/prayer';
-import Dwarven from '../skilling/skills/smithing/smithables/dwarven';
-import { slayerUnlockableRewards } from '../slayer/slayerUnlocks';
-import { calcTotalLevel } from '../util';
-import { getTameSpecies } from '../util/tameUtil';
-import type { Task } from './leaguesUtils';
+} from '@/lib/data/CollectionsExport';
+import { slayerMaskHelms } from '@/lib/data/slayerMaskHelms';
+import { implings } from '@/lib/implings.js';
+import { Inventions } from '@/lib/invention/inventions.js';
+import { MysteryImpling } from '@/lib/simulation/customImplings';
+import { dungBuyables } from '@/lib/skilling/skills/dung/dungData';
+import { ashes } from '@/lib/skilling/skills/prayer';
+import Dwarven from '@/lib/skilling/skills/smithing/smithables/dwarven';
+import { slayerUnlockableRewards } from '@/lib/slayer/slayerUnlocks.js';
+import { getTameSpecies } from '@/lib/util/tameUtil';
+import { calcTotalLevel } from '@/lib/util.js';
+import type { Task } from './leaguesUtils.js';
 
 export const masterTasks: Task[] = [
 	{

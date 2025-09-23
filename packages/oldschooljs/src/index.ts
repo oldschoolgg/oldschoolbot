@@ -1,8 +1,9 @@
 import './structures/Items';
+
+import * as constants from './constants';
 import { ECreature } from './ECreature';
 import { EItem } from './EItem';
 import { EMonster } from './EMonster';
-import * as constants from './constants';
 import { MonsterSlayerMaster } from './meta/monsterData';
 import type { MonsterKillOptions } from './meta/types';
 import * as Misc from './simulation/misc';
@@ -16,6 +17,7 @@ import Player from './structures/Player';
 import SimpleMonster from './structures/SimpleMonster';
 import SimpleOpenable from './structures/SimpleOpenable';
 import * as Util from './util';
+
 export * from './simulation/clues';
 
 export {
@@ -38,19 +40,19 @@ export {
 	ECreature
 };
 
-export * from './simulation/monsters';
 export * from './constants';
-export * from './util';
-export * from './structures/Items';
-export * from './meta/types';
-export type { default as Monster } from './structures/Monster';
-export * from './simulation/clues';
-export * from './simulation/openables';
-export * from './simulation/misc';
-export * from './simulation/openables/Implings';
-export * from './meta/monsterData';
-export * from './simulation/subtables/index';
 export * as ItemGroups from './itemGroups';
+export * from './meta/monsterData';
+export * from './meta/types';
+export * from './simulation/clues';
+export * from './simulation/misc';
+export * from './simulation/monsters';
+export * from './simulation/openables';
+export * from './simulation/openables/Implings';
+export * from './simulation/subtables/index';
+export * from './structures/Items';
+export type { default as Monster } from './structures/Monster';
+export * from './util';
 
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;

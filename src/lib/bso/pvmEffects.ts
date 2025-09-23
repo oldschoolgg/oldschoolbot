@@ -1,17 +1,16 @@
 import type { UserStats } from '@prisma/client';
-import { Time, increaseNumByPercent, roll } from 'e';
-import { Bank, MonsterAttribute, Monsters } from 'oldschooljs';
+import { increaseNumByPercent, roll, Time } from 'e';
+import { Bank, type ItemBank, MonsterAttribute, Monsters } from 'oldschooljs';
 
-import type { SlayerContext } from '../../tasks/minions/monsterActivity';
-import type { BitField } from '../constants';
-import { slayerMaskHelms } from '../data/slayerMaskHelms';
-import type { KillableMonster } from '../minions/types';
-import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
-import type { GearBank } from '../structures/GearBank';
-import type { UpdateBank } from '../structures/UpdateBank';
-import type { ItemBank } from '../types';
-import { clAdjustedDroprate } from './bsoUtil';
-import { bonecrusherEffect, clueUpgraderEffect, portableTannerEffect } from './inventionEffects';
+import type { BitField } from '@/lib/constants';
+import { slayerMaskHelms } from '@/lib/data/slayerMaskHelms';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import type { GearBank } from '@/lib/structures/GearBank';
+import type { UpdateBank } from '@/lib/structures/UpdateBank';
+import type { SlayerContext } from '@/tasks/minions/monsterActivity.js';
+import { clAdjustedDroprate } from './bsoUtil.js';
+import { bonecrusherEffect, clueUpgraderEffect, portableTannerEffect } from './inventionEffects.js';
 
 export type MidPVMEffectArgs = {
 	gearBank: GearBank;

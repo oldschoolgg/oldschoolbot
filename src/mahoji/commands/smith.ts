@@ -1,18 +1,18 @@
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, calcPercentOfNum } from 'e';
+import { calcPercentOfNum, Time } from 'e';
 import { Bank, resolveItems } from 'oldschooljs';
 
-import { BlacksmithOutfit } from '../../lib/bsoOpenables';
-import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
-import Smithing from '../../lib/skilling/skills/smithing';
-import smithables from '../../lib/skilling/skills/smithing/smithables';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { SmithingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { pluraliseItemName } from '../../lib/util/smallUtils';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { BlacksmithOutfit } from '@/lib/bsoOpenables';
+import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries';
+import Smithing from '@/lib/skilling/skills/smithing';
+import smithables from '@/lib/skilling/skills/smithing/smithables';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SmithingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import { pluraliseItemName } from '@/lib/util/smallUtils';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const smithCommand: OSBMahojiCommand = {
 	name: 'smith',

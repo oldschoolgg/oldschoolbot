@@ -3,15 +3,15 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { type Eatable, Eatables } from '@/lib/data/eatables';
+import { kibbles } from '@/lib/data/kibble';
+import { getRealHealAmount } from '@/lib/minions/functions/getUserFoodFromBank';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { KibbleOptions } from '@/lib/types/minions.js';
 import { itemNameFromID } from '@/lib/util';
-import { type Eatable, Eatables } from '../../lib/data/eatables';
-import { kibbles } from '../../lib/data/kibble';
-import { getRealHealAmount } from '../../lib/minions/functions/getUserFoodFromBank';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { KibbleOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const kibbleCommand: OSBMahojiCommand = {
 	name: 'kibble',

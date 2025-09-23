@@ -1,7 +1,8 @@
 import { type CommandRunOptions, formatDuration } from '@oldschoolgg/toolkit';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { randArrItem, reduceNumByPercent, roll, sumArr } from 'e';
-import { Bank, averageBank, resolveItems } from 'oldschooljs';
+import { averageBank, Bank, resolveItems } from 'oldschooljs';
 
 import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable';
 import { doaStartCommand } from '@/lib/bso/doa/doaStartCommand';
@@ -10,19 +11,18 @@ import { doaMetamorphPets } from '@/lib/data/CollectionsExport';
 import { globalDroprates } from '@/lib/data/globalDroprates';
 import { degradeableItems } from '@/lib/degradeableItems';
 import {
-	DOARooms,
 	calcDOAInput,
 	chanceOfDOAUnique,
 	createDOATeam,
+	DOARooms,
 	doaHelpCommand,
 	pickUniqueToGiveUser
 } from '@/lib/depthsOfAtlantis';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { coxCommand, coxStatsCommand } from '../lib/abstracted_commands/coxCommand';
-import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '../lib/abstracted_commands/tobCommand';
+import { mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '@/lib/simulation/toa';
+import { deferInteraction } from '@/lib/util/interactionReply';
+import { makeBankImage } from '@/lib/util/makeBankImage';
+import { coxCommand, coxStatsCommand } from '@/mahoji/lib/abstracted_commands/coxCommand.js';
+import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '@/mahoji/lib/abstracted_commands/tobCommand.js';
 
 export const raidCommand: OSBMahojiCommand = {
 	name: 'raid',

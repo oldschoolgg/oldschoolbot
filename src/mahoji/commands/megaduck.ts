@@ -6,11 +6,11 @@ import { Bank } from 'oldschooljs';
 
 import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '@/lib/canvas/canvasUtil';
 import { globalConfig } from '@/lib/constants';
-import { type MegaDuckLocation, defaultMegaDuckLocation } from '../../lib/minions/types';
-import { getUsernameSync } from '../../lib/util';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { mahojiGuildSettingsUpdate } from '../guildSettings';
-import { Cooldowns } from '../lib/Cooldowns';
+import { defaultMegaDuckLocation, type MegaDuckLocation } from '@/lib/minions/types';
+import { getUsernameSync } from '@/lib/util';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { mahojiGuildSettingsUpdate } from '@/mahoji/guildSettings.js';
+import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 
 const apeAtoll = [1059, 1226];
 const portSarim = [1418, 422];

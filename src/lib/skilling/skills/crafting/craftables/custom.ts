@@ -1,7 +1,7 @@
 import { Bank, itemID } from 'oldschooljs';
 
-import type { Craftable } from '../../../types';
-import { carapaceCraftables } from './carapace';
+import type { Craftable } from '@/lib/skilling/types.js';
+import { carapaceCraftables } from './carapace.js';
 
 export const customCraftables: Craftable[] = [
 	{

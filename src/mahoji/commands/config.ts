@@ -1,49 +1,49 @@
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import {
+	allAbstractCommands,
 	type CommandResponse,
 	type CommandRunOptions,
-	type OSBMahojiCommand,
-	allAbstractCommands,
 	channelIsSendable,
-	hasBanMemberPerms
+	hasBanMemberPerms,
+	type OSBMahojiCommand
 } from '@oldschoolgg/toolkit/discord-util';
 import { miniID, stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { activity_type_enum } from '@prisma/client';
 import {
 	ApplicationCommandOptionType,
+	bold,
 	type ChatInputCommandInteraction,
 	EmbedBuilder,
 	type Guild,
 	type HexColorString,
-	type User,
-	bold,
 	inlineCode,
-	resolveColor
+	resolveColor,
+	type User
 } from 'discord.js';
-import { Time, clamp, removeFromArr, uniqueArr } from 'e';
+import { clamp, removeFromArr, Time, uniqueArr } from 'e';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { gearImages } from '@/lib/canvas/gearImageData';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks';
-import { DynamicButtons } from '../../lib/DynamicButtons';
-import { mahojiUserSettingsUpdate } from '../../lib/MUser';
-import { BitField, ParsedCustomEmojiWithGroups, PerkTier } from '../../lib/constants';
-import { Eatables } from '../../lib/data/eatables';
-import { Inventions } from '../../lib/invention/inventions';
-import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
-import { birdhouseSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrapping';
-import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
-import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
-import { BankSortMethods } from '../../lib/sorts';
-import { emojiServers } from '../../lib/util/cachedUserIDs';
-import { getItem } from '../../lib/util/getOSItem';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { isValidNickname, itemNameFromID } from '../../lib/util/smallUtils';
-import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
-import { itemOption } from '../lib/mahojiCommandOptions';
-import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
+import { BitField, ParsedCustomEmojiWithGroups, PerkTier } from '@/lib/constants';
+import { DynamicButtons } from '@/lib/DynamicButtons';
+import { Eatables } from '@/lib/data/eatables';
+import { Inventions } from '@/lib/invention/inventions';
+import { mahojiUserSettingsUpdate } from '@/lib/MUser';
+import { CombatOptionsArray, CombatOptionsEnum } from '@/lib/minions/data/combatConstants';
+import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping';
+import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants';
+import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerUtil';
+import { BankSortMethods } from '@/lib/sorts';
+import { emojiServers } from '@/lib/util/cachedUserIDs';
+import { getItem } from '@/lib/util/getOSItem';
+import { deferInteraction } from '@/lib/util/interactionReply';
+import { makeBankImage } from '@/lib/util/makeBankImage';
+import { parseBank } from '@/lib/util/parseStringBank';
+import { isValidNickname, itemNameFromID } from '@/lib/util/smallUtils';
+import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '@/mahoji/guildSettings.js';
+import { itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
+import { mahojiUsersSettingsFetch, patronMsg } from '@/mahoji/mahojiSettings.js';
 
 interface UserConfigToggle {
 	name: string;

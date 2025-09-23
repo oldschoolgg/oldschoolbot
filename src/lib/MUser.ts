@@ -5,72 +5,71 @@ import { seedShuffle } from '@oldschoolgg/toolkit/rng';
 import { UserError } from '@oldschoolgg/toolkit/structures';
 import type { GearSetupType, Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { escapeMarkdown, userMention } from 'discord.js';
-import { Time, calcWhatPercent, notEmpty, objectValues, percentChance, randArrItem, sumArr, uniqueArr } from 'e';
+import { calcWhatPercent, notEmpty, objectValues, percentChance, randArrItem, sumArr, Time, uniqueArr } from 'e';
 import {
+	addItemToBank,
 	Bank,
+	convertXPtoLVL,
 	EMonster,
 	EquipmentSlot,
 	type Item,
 	type ItemBank,
 	Items,
-	addItemToBank,
-	convertXPtoLVL,
 	itemID,
 	resolveItems
 } from 'oldschooljs';
 import { pick } from 'remeda';
 
-import { timePerAlch, timePerAlchAgility } from '../mahoji/lib/abstracted_commands/alchCommand';
-import { getParsedStashUnits } from '../mahoji/lib/abstracted_commands/stashUnitsCommand';
-import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
-import { addXP } from './addXP';
-import { calculateCompCapeProgress } from './bso/calculateCompCapeProgress';
-import type { GodFavourBank, GodName } from './bso/divineDominion';
-import { userIsBusy } from './busyCounterCache';
-import { partialUserCache } from './cache';
-import { generateAllGearImage, generateGearImage } from './canvas/generateGearImage';
-import type { IconPackID } from './canvas/iconPacks';
-import { ClueTiers } from './clues/clueTiers';
-import { type CATier, CombatAchievements } from './combat_achievements/combatAchievements';
-import { BitField, MAX_LEVEL, projectiles } from './constants';
-import { bossCLItems } from './data/Collections';
-import { allPetIDs, avasDevices } from './data/CollectionsExport';
-import { degradeableItems } from './degradeableItems';
-import { type GearSetup, type UserFullGearSetup, defaultGear } from './gear';
-import { handleNewCLItems } from './handleNewCLItems';
-import type { IMaterialBank } from './invention';
-import { MaterialBank } from './invention/MaterialBank';
-import { marketPriceOfBank } from './marketPrices';
-import backgroundImages from './minions/data/bankBackgrounds';
-import type { CombatOptionsEnum } from './minions/data/combatConstants';
-import { defaultFarmingContract } from './minions/farming';
-import type { DetailedFarmingContract, FarmingContract } from './minions/farming/types';
-import type { AttackStyles } from './minions/functions';
-import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
-import type { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
-import { mysteriousStepData, mysteriousTrailTracks } from './mysteryTrail';
-import { getUsersPerkTier } from './perkTiers';
-import { roboChimpUserFetch } from './roboChimp';
-import type { MinigameName, MinigameScore } from './settings/minigames';
-import { Minigames } from './settings/minigames';
-import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
-import Farming from './skilling/skills/farming';
-import { SkillsEnum } from './skilling/types';
-import type { BankSortMethod } from './sorts';
-import { ChargeBank, type XPBank } from './structures/Banks';
-import { Gear } from './structures/Gear';
-import { GearBank } from './structures/GearBank';
-import { MTame } from './structures/MTame';
-import type { Skills } from './types';
-import type { SkillRequirements } from './types';
-import { determineRunes } from './util/determineRunes';
-import { findGroupOfUser } from './util/findGroupOfUser';
-import { getKCByName } from './util/getKCByName';
-import { logError } from './util/logError';
-import { makeBadgeString } from './util/makeBadgeString';
-import { repairBrokenItemsFromUser } from './util/repairBrokenItems';
-import { hasSkillReqsRaw, itemNameFromID } from './util/smallUtils';
-import type { TransactItemsArgs } from './util/transactItemsFromBank';
+import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
+import type { IconPackID } from '@/lib/canvas/iconPacks.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { BitField, MAX_LEVEL, projectiles } from '@/lib/constants';
+import { bossCLItems } from '@/lib/data/Collections';
+import { allPetIDs, avasDevices } from '@/lib/data/CollectionsExport';
+import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
+import Farming from '@/lib/skilling/skills/farming/index.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
+import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
+import { fetchUserStats, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
+import { addXP } from './addXP.js';
+import { calculateCompCapeProgress } from './bso/calculateCompCapeProgress.js';
+import type { GodFavourBank, GodName } from './bso/divineDominion.js';
+import { userIsBusy } from './busyCounterCache.js';
+import { partialUserCache } from './cache.js';
+import { type CATier, CombatAchievements } from './combat_achievements/combatAchievements.js';
+import { degradeableItems } from './degradeableItems.js';
+import { defaultGear, type GearSetup, type UserFullGearSetup } from './gear/index.js';
+import { handleNewCLItems } from './handleNewCLItems.js';
+import type { IMaterialBank } from './invention/index.js';
+import { MaterialBank } from './invention/MaterialBank.js';
+import { marketPriceOfBank } from './marketPrices.js';
+import backgroundImages from './minions/data/bankBackgrounds.js';
+import type { CombatOptionsEnum } from './minions/data/combatConstants.js';
+import { defaultFarmingContract } from './minions/farming/index.js';
+import type { DetailedFarmingContract, FarmingContract } from './minions/farming/types.js';
+import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand.js';
+import type { AttackStyles } from './minions/functions/index.js';
+import type { AddXpParams, BlowpipeData, ClueBank } from './minions/types.js';
+import { mysteriousStepData, mysteriousTrailTracks } from './mysteryTrail.js';
+import { getUsersPerkTier } from './perkTiers.js';
+import { roboChimpUserFetch } from './roboChimp.js';
+import type { MinigameName, MinigameScore } from './settings/minigames.js';
+import { Minigames } from './settings/minigames.js';
+import type { BankSortMethod } from './sorts.js';
+import { ChargeBank, type XPBank } from './structures/Banks.js';
+import { Gear } from './structures/Gear.js';
+import { GearBank } from './structures/GearBank.js';
+import { MTame } from './structures/MTame.js';
+import type { SkillRequirements, Skills } from './types/index.js';
+import { determineRunes } from './util/determineRunes.js';
+import { findGroupOfUser } from './util/findGroupOfUser.js';
+import { getKCByName } from './util/getKCByName.js';
+import { logError } from './util/logError.js';
+import { makeBadgeString } from './util/makeBadgeString.js';
+import { repairBrokenItemsFromUser } from './util/repairBrokenItems.js';
+import { hasSkillReqsRaw, itemNameFromID } from './util/smallUtils.js';
+import type { TransactItemsArgs } from './util/transactItemsFromBank.js';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {

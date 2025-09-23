@@ -3,7 +3,7 @@ import { ComponentType, type User } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { mahojiInformationalButtons } from '../../../lib/sharedComponents';
+import { mahojiInformationalButtons } from '@/lib/sharedComponents.js';
 
 export async function minionBuyCommand(apiUser: User, user: MUser, ironman: boolean): CommandResponse {
 	if (user.user.minion_hasBought) return 'You already have a minion!';

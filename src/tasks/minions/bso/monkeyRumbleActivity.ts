@@ -1,11 +1,11 @@
-import { Time, randArrItem, roll, uniqueArr } from 'e';
+import { randArrItem, roll, Time, uniqueArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { monkeyHeadImage, monkeyTierOfUser } from '../../../lib/monkeyRumble';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MonkeyRumbleOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { monkeyHeadImage, monkeyTierOfUser } from '@/lib/monkeyRumble.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { MonkeyRumbleOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const rewardTable = new LootTable().add('Monkey egg').add('Monkey dye').add('Big banana');
 const baseTable = new LootTable().tertiary(25, 'Monkey crate');

@@ -1,14 +1,14 @@
-import { Time, percentChance, roll } from 'e';
+import { percentChance, roll, Time } from 'e';
 import { Bank, itemID } from 'oldschooljs';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
-import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
-import { BlacksmithOutfit } from '../../lib/bsoOpenables';
-import { globalDroprates } from '../../lib/data/globalDroprates';
-import Smithing from '../../lib/skilling/skills/smithing';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { BlacksmithOutfit } from '@/lib/bsoOpenables';
+import { globalDroprates } from '@/lib/data/globalDroprates';
+import Smithing from '@/lib/skilling/skills/smithing';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SmeltingActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const smeltingTask: MinionTask = {
 	type: 'Smelting',

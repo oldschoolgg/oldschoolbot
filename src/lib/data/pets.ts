@@ -1,6 +1,6 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 
-import getOSItem from '../util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem';
 
 const xpEmoji = Emoji.XP;
 const gpEmoji = Emoji.GP;

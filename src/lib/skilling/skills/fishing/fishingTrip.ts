@@ -3,16 +3,16 @@ import { type Bank, EItem } from 'oldschooljs';
 import { match } from 'ts-pattern';
 
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants';
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { globalDroprates } from '@/lib/data/globalDroprates';
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot';
+import { Cookables } from '@/lib/skilling/skills/cooking/cooking.js';
+import type { Fish } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank';
 import { UpdateBank } from '@/lib/structures/UpdateBank';
 import { skillingPetDropRate } from '@/lib/util';
 import type { RNGProvider } from '@/lib/util/rng';
-import type { Fish } from '../../types';
-import { Cookables } from '../cooking/cooking';
-import { calcAnglerBoostPercent, calcMinnowQuantityRange, calcRadasBlessingBoost } from './fishingUtil';
+import { calcAnglerBoostPercent, calcMinnowQuantityRange, calcRadasBlessingBoost } from './fishingUtil.js';
 
 export function calcFishingTripResult({
 	fish,

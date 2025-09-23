@@ -2,8 +2,8 @@ import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { percentChance, roll, sumArr } from 'e';
 import { Bank, JSONClone, type LootBank, LootTable } from 'oldschooljs';
 
-import { TOBRooms } from '../data/tob';
-import { assert } from '../util/logError';
+import { TOBRooms } from '@/lib/data/tob';
+import { assert } from '@/lib/util/logError';
 
 interface TeamMember {
 	id: string;

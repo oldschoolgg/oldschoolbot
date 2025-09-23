@@ -1,6 +1,6 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 
-import { badges } from '../constants';
+import { badges } from '@/lib/constants';
 
 export function makeBadgeString(badgeIDs: number[] | null | undefined, isIronman: boolean) {
 	const rawBadges: string[] = (badgeIDs ?? []).map(num => badges[num]);

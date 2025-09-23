@@ -1,6 +1,6 @@
 import { type Item, LootTable } from 'oldschooljs';
 
-import getOSItem from './util/getOSItem';
+import getOSItem from './util/getOSItem.js';
 
 interface Crate {
 	item: Item;

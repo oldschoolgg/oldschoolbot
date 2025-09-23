@@ -1,6 +1,6 @@
-import type { DisassemblySourceGroup } from '..';
-import { brokenPernixOutfit, pernixOutfit } from '../../data/CollectionsExport';
-import getOSItem from '../../util/getOSItem';
+import { brokenPernixOutfit, pernixOutfit } from '@/lib/data/CollectionsExport';
+import type { DisassemblySourceGroup } from '@/lib/invention/index.js';
+import getOSItem from '@/lib/util/getOSItem';
 
 const i = getOSItem;
 

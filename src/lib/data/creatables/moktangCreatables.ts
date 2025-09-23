@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
-import { MaterialBank } from '../../invention/MaterialBank';
-import type { Createable } from '../createables';
+import type { Createable } from '@/lib/data/createables.js';
+import { MaterialBank } from '@/lib/invention/MaterialBank.js';
 
 export const moktangCreatables: Createable[] = [
 	{

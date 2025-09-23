@@ -2,14 +2,14 @@ import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { deepClone } from 'e';
 import { Bank } from 'oldschooljs';
 
-import type { GiantsFoundryBank } from '../../../lib/giantsFoundry';
-import { encodeGiantWeapons, generateRandomGiantWeapon, giantWeaponName } from '../../../lib/giantsFoundry';
-import { trackLoot } from '../../../lib/lootTrack';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import type { GiantsFoundryBank } from '@/lib/giantsFoundry.js';
+import { encodeGiantWeapons, generateRandomGiantWeapon, giantWeaponName } from '@/lib/giantsFoundry.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { GiantsFoundryActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const giantsFoundryTask: MinionTask = {
 	type: 'GiantsFoundry',

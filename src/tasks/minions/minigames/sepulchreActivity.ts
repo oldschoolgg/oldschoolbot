@@ -1,14 +1,14 @@
 import { Bank, GrandHallowedCoffin } from 'oldschooljs';
 
-import { userHasFlappy } from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/lootTrack';
-import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
-import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { roll } from '../../../lib/util/rng';
+import { userHasFlappy } from '@/lib/invention/inventions.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { openCoffin, sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
+import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { roll } from '@/lib/util/rng.js';
 
 export const sepulchreTask: MinionTask = {
 	type: 'Sepulchre',
@@ -47,7 +47,7 @@ export const sepulchreTask: MinionTask = {
 		let fletchQuantity = 0;
 		const fletchingLoot = new Bank();
 
-		let fletchable: (typeof zeroTimeFletchables)[number] | undefined = undefined;
+		let fletchable: (typeof zeroTimeFletchables)[number] | undefined;
 
 		if (fletch) {
 			fletchable = zeroTimeFletchables.find(item => item.id === fletch.id);

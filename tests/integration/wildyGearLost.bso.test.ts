@@ -26,7 +26,7 @@ test('calculateGearLostOnDeathWilderness', async () => {
 		gear_wildy: gear.raw() as any
 	});
 
-	// @ts-ignore
+	// @ts-expect-error
 	await monsterTask.run({
 		type: 'MonsterKilling',
 		mi: Monsters.Venenatis.id,
@@ -37,7 +37,7 @@ test('calculateGearLostOnDeathWilderness', async () => {
 		userID: user.id,
 		duration: Time.Hour,
 		id: 123,
-		finishDate: new Date().getTime(),
+		finishDate: Date.now(),
 		channelID: ''
 	} as MonsterActivityTaskOptions);
 

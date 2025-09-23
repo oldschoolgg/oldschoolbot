@@ -4,13 +4,13 @@ import { type Prisma, UserEventType } from '@prisma/client';
 import { roll, sumArr } from 'e';
 import type { Bank } from 'oldschooljs';
 
-import { allCLItems, allCollectionLogsFlat, calcCLDetails } from './data/Collections';
-import { calculateMastery } from './mastery';
-import { RawSQL } from './rawSql';
-import { calculateOwnCLRanking, roboChimpSyncData } from './roboChimp';
-import { MUserStats } from './structures/MUserStats';
-import { fetchCLLeaderboard } from './util/clLeaderboard';
-import { insertUserEvent } from './util/userEvents';
+import { allCLItems, allCollectionLogsFlat, calcCLDetails } from '@/lib/data/Collections';
+import { calculateMastery } from './mastery.js';
+import { RawSQL } from './rawSql.js';
+import { calculateOwnCLRanking, roboChimpSyncData } from './roboChimp.js';
+import { MUserStats } from './structures/MUserStats.js';
+import { fetchCLLeaderboard } from './util/clLeaderboard.js';
+import { insertUserEvent } from './util/userEvents.js';
 
 async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataUncheckedCreateInput> {
 	const clStats = calcCLDetails(user);

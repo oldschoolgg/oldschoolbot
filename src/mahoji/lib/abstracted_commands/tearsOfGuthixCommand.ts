@@ -1,12 +1,12 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { dateFm, formatDuration, getNextUTCReset } from '@oldschoolgg/toolkit/util';
-import { Time, notEmpty, objectEntries } from 'e';
+import { notEmpty, objectEntries, Time } from 'e';
 
 import { tears_of_guthix_cd } from '@/lib/events';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
 export const tearsOfGuthixSkillReqs = {
 	[SkillsEnum.Firemaking]: 49,

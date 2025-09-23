@@ -3,7 +3,7 @@ import { Bank, LootTable } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import type { GearRequirements } from '@/lib/structures/Gear';
-import type { Skills } from '../../types';
+import type { Skills } from '@/lib/types/index.js';
 
 interface TrekDifficulty {
 	difficulty: string;

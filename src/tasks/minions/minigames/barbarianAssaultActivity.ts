@@ -1,10 +1,10 @@
 import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
 
-import { KandarinDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { userHasFlappy } from '../../../lib/invention/inventions';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { KandarinDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { userHasFlappy } from '@/lib/invention/inventions.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const barbAssaultTask: MinionTask = {
 	type: 'BarbarianAssault',

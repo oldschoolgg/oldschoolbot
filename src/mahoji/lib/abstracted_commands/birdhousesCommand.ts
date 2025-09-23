@@ -2,13 +2,13 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { time } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { birdhouseLimit } from '@/lib/bso/bsoUtil';
+import { birdhouseLimit } from '@/lib/bso/bsoUtil.js';
+import birdhouses, { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses';
-import birdhouses, { birdhouseSeeds } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
-import type { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../../mahojiSettings';
+import type { BirdhouseActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function birdhouseCheckCommand(user: MUser) {
 	const details = calculateBirdhouseDetails(user);
@@ -21,7 +21,7 @@ export async function birdhouseCheckCommand(user: MUser) {
 
 export async function birdhouseHarvestCommand(user: MUser, channelID: string, inputBirdhouseName: string | undefined) {
 	const userBank = user.bank;
-	const currentDate = new Date().getTime();
+	const currentDate = Date.now();
 	const infoStr: string[] = [];
 	const boostStr: string[] = [];
 

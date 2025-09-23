@@ -1,7 +1,7 @@
 import { randArrItem, randInt, roll } from 'e';
 import { Bank, LootTable, resolveItems } from 'oldschooljs';
 
-import { LampTable } from '../xpLamps';
+import { LampTable } from '@/lib/xpLamps.js';
 
 const boxTable = new LootTable()
 	.add('Pet mystery box')

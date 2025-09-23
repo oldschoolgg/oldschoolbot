@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { type Canvas, type Image, loadImage } from 'skia-canvas';
-import { type CanvasContext, createCanvas } from './canvasUtil';
+
+import { type CanvasContext, createCanvas } from './canvasUtil.js';
 
 export interface SpriteData {
 	x: number;

@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+
 import { Wiki } from '../src/structures/Wiki.js';
 
 describe.skip('Wiki', () => {

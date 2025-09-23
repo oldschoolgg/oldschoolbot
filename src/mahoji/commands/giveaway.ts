@@ -1,10 +1,10 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import {
 	type CommandRunOptions,
-	type OSBMahojiCommand,
 	channelIsSendable,
 	makeComponents,
-	makeEphemeralPaginatedMessage
+	makeEphemeralPaginatedMessage,
+	type OSBMahojiCommand
 } from '@oldschoolgg/toolkit/discord-util';
 import type { Giveaway } from '@prisma/client';
 import { Duration } from '@sapphire/time-utilities';
@@ -21,23 +21,22 @@ import {
 	messageLink,
 	time
 } from 'discord.js';
-import { Time, randInt } from 'e';
-import { chunk } from 'e';
+import { chunk, randInt, Time } from 'e';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
+import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
+import { giveawayCache } from '@/lib/cache.js';
+import { patronFeatures } from '@/lib/constants';
+import { marketPriceOfBank } from '@/lib/marketPrices';
+import { generateGiveawayContent } from '@/lib/util/giveaway';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import itemIsTradeable from '@/lib/util/itemIsTradeable';
+import { logError, logErrorForInteraction } from '@/lib/util/logError';
+import { makeBankImage } from '@/lib/util/makeBankImage';
+import { parseBank } from '@/lib/util/parseStringBank';
 import { isModOrAdmin } from '@/lib/util.js';
-import { isSuperUntradeable } from '../../lib/bso/bsoUtil.js';
-import { giveawayCache } from '../../lib/cache.js';
-import { patronFeatures } from '../../lib/constants';
-import { marketPriceOfBank } from '../../lib/marketPrices';
-import { generateGiveawayContent } from '../../lib/util/giveaway';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { logError, logErrorForInteraction } from '../../lib/util/logError';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { filterOption } from '../lib/mahojiCommandOptions';
-import { addToGPTaxBalance } from '../mahojiSettings';
+import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
+import { addToGPTaxBalance } from '@/mahoji/mahojiSettings.js';
 
 function makeGiveawayButtons(giveawayID: number): BaseMessageOptions['components'] {
 	return [

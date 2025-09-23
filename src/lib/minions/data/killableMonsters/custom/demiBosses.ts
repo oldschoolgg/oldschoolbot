@@ -1,24 +1,24 @@
 import { Time } from 'e';
 import {
+	deepResolveItems,
+	itemID,
 	LootTable,
 	MonsterAttribute,
 	Monsters,
 	RareDropTable,
-	deepResolveItems,
-	itemID,
 	resolveItems,
 	resolveNameBank
 } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { BitField } from '../../../../constants';
-import { HighSeedPackTable } from '../../../../data/seedPackTables';
-import { SkillsEnum } from '../../../../skilling/types';
-import { AbyssalDragonLootTable } from './AbyssalDragon';
-import { NihilizLootTable } from './Nihiliz';
-import { KrakenTable } from './SeaKraken';
-import { TreebeardLootTable } from './Treebeard';
-import type { CustomMonster } from './customMonsters';
+import { BitField } from '@/lib/constants';
+import { HighSeedPackTable } from '@/lib/data/seedPackTables';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { AbyssalDragonLootTable } from './AbyssalDragon.js';
+import type { CustomMonster } from './customMonsters.js';
+import { NihilizLootTable } from './Nihiliz.js';
+import { KrakenTable } from './SeaKraken.js';
+import { TreebeardLootTable } from './Treebeard.js';
 
 const SeaKraken: CustomMonster = {
 	isCustom: true,

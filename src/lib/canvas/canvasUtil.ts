@@ -3,13 +3,13 @@ import {
 	CanvasRenderingContext2D as CanvasContext,
 	FontLibrary,
 	Image,
-	Canvas as RawCanvas,
-	loadImage
+	loadImage,
+	Canvas as RawCanvas
 } from 'skia-canvas';
 
-import type { DetailedFarmingContract } from '../minions/farming/types';
-import { assert } from '../util/logError';
-import type { IconPackID } from './iconPacks';
+import type { DetailedFarmingContract } from '@/lib/minions/farming/types.js';
+import { assert } from '@/lib/util/logError';
+import type { IconPackID } from './iconPacks.js';
 
 export function registerFont(fontFamily: string, fontPath: string) {
 	FontLibrary.use(fontFamily, fontPath);

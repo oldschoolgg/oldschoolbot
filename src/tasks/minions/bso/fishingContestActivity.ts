@@ -1,15 +1,15 @@
 import { calcPercentOfNum, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MysteryBoxes } from '../../../lib/bsoOpenables';
-import { catchFishAtLocation, fishingLocations } from '../../../lib/fishingContest';
-import { trackLoot } from '../../../lib/lootTrack';
-import { ClueTable } from '../../../lib/simulation/sharedTables';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { FishingContestOptions } from '../../../lib/types/minions';
-import getOSItem from '../../../lib/util/getOSItem';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { MysteryBoxes } from '@/lib/bsoOpenables.js';
+import { catchFishAtLocation, fishingLocations } from '@/lib/fishingContest.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { ClueTable } from '@/lib/simulation/sharedTables.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { FishingContestOptions } from '@/lib/types/minions.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export function calculateFishingContestXP({ fishingLevel, fishSizeCM }: { fishSizeCM: number; fishingLevel: number }) {
 	let fishingXP = (fishSizeCM + 100) * (170 + Math.min(100, fishingLevel) / 5);

@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import type { KillableMonster } from '../../types';
+import type { KillableMonster } from '@/lib/minions/types';
 
 export const revenantMonsters: KillableMonster[] = [
 	{

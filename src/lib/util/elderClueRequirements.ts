@@ -1,8 +1,8 @@
 import { notEmpty, uniqueArr } from 'e';
-import { Items, deepResolveItems } from 'oldschooljs';
+import { deepResolveItems, Items } from 'oldschooljs';
 
-import { gods } from '../bso/divineDominion';
-import { BitField, BitFieldData, MAX_XP } from '../constants';
+import { gods } from '@/lib/bso/divineDominion.js';
+import { BitField, BitFieldData, MAX_XP } from '@/lib/constants';
 import {
 	cluesBeginnerCL,
 	cluesEasyCL,
@@ -13,9 +13,9 @@ import {
 	cluesMediumCL,
 	cluesSharedCL,
 	expertCapesCL
-} from '../data/CollectionsExport';
-import { getSimilarItems } from '../data/similarItems';
-import { slayerMaskHelms } from '../data/slayerMaskHelms';
+} from '@/lib/data/CollectionsExport';
+import { getSimilarItems } from '@/lib/data/similarItems';
+import { slayerMaskHelms } from '@/lib/data/slayerMaskHelms';
 
 export const elderRequiredClueCLItems = uniqueArr([
 	...cluesGrandmasterCL,

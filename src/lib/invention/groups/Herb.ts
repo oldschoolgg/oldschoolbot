@@ -1,5 +1,5 @@
-import type { DisassemblySourceGroup } from '..';
-import getOSItem from '../../util/getOSItem';
+import type { DisassemblySourceGroup } from '@/lib/invention/index.js';
+import getOSItem from '@/lib/util/getOSItem';
 
 const i = getOSItem;
 

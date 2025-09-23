@@ -1,24 +1,24 @@
 import { randomVariation } from '@oldschoolgg/toolkit/util';
 import {
-	Time,
 	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
 	percentChance,
 	randInt,
 	reduceNumByPercent,
-	shuffleArr
+	shuffleArr,
+	Time
 } from 'e';
 import { Bank, type ChambersOfXericOptions, type Item } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
-import { checkUserCanUseDegradeableItem } from '../degradeableItems';
-import { inventionBoosts } from '../invention/inventions';
-import { SkillsEnum } from '../skilling/types';
-import { Gear, constructGearSetup } from '../structures/Gear';
-import type { Skills } from '../types';
-import getOSItem from '../util/getOSItem';
-import { logError } from '../util/logError';
+import { checkUserCanUseDegradeableItem } from '@/lib/degradeableItems.js';
+import { inventionBoosts } from '@/lib/invention/inventions.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { constructGearSetup, Gear } from '@/lib/structures/Gear';
+import type { Skills } from '@/lib/types/index.js';
+import getOSItem from '@/lib/util/getOSItem';
+import { logError } from '@/lib/util/logError';
 
 const bareMinStats: Skills = {
 	attack: 80,

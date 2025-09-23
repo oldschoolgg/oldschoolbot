@@ -2,40 +2,38 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import {
 	type CommandResponse,
 	type CommandRunOptions,
-	type MahojiUserOption,
-	type OSBMahojiCommand,
 	channelIsSendable,
 	isValidDiscordSnowflake,
-	mentionCommand
+	type MahojiUserOption,
+	mentionCommand,
+	type OSBMahojiCommand
 } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches, truncateString } from '@oldschoolgg/toolkit/string-util';
-
 import { md5sum } from '@oldschoolgg/toolkit/node';
+import { stringMatches, truncateString } from '@oldschoolgg/toolkit/string-util';
 import { dateFm, formatOrdinal } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import {
 	ApplicationCommandOptionType,
+	bold,
 	type ChatInputCommandInteraction,
 	type User,
-	bold,
 	userMention
 } from 'discord.js';
-import { Time, chunk, noOp, notEmpty, uniqueArr } from 'e';
+import { chunk, noOp, notEmpty, Time, uniqueArr } from 'e';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import { clImageGenerator } from '../../lib/collectionLogTask';
-import { BOT_TYPE, globalConfig } from '../../lib/constants';
-import { getUsername, getUsernameSync } from '../../lib/util';
-import { getItem } from '../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { isValidNickname } from '../../lib/util/smallUtils';
-import { BingoManager, BingoTrophies } from '../lib/bingo/BingoManager';
-import type { StoredBingoTile } from '../lib/bingo/bingoUtil';
-import { generateTileName, getAllTileItems, isGlobalTile } from '../lib/bingo/bingoUtil';
-import { globalBingoTiles } from '../lib/bingo/globalTiles';
-import { doMenu, getPos } from './leaderboard';
+import { BLACKLISTED_USERS } from '@/lib/blacklists';
+import { clImageGenerator } from '@/lib/collectionLogTask';
+import { BOT_TYPE, globalConfig } from '@/lib/constants';
+import { getUsername, getUsernameSync } from '@/lib/util';
+import { getItem } from '@/lib/util/getOSItem';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { parseBank } from '@/lib/util/parseStringBank';
+import { isValidNickname } from '@/lib/util/smallUtils';
+import { BingoManager, BingoTrophies } from '@/mahoji/lib/bingo/BingoManager.js';
+import { generateTileName, getAllTileItems, isGlobalTile, type StoredBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
+import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';
+import { doMenu, getPos } from './leaderboard.js';
 
 const bingoAutocomplete = async (value: string, user: User) => {
 	const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);

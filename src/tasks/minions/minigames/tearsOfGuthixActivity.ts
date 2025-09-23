@@ -1,12 +1,12 @@
 import { increaseNumByPercent, randInt } from 'e';
 
-import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';
-import { BitField } from '../../../lib/constants';
-import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../../lib/diaries';
-import type { SkillsEnum } from '../../../lib/skilling/types';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
+import { BitField } from '@/lib/constants.js';
+import { LumbridgeDraynorDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import type { SkillsEnum } from '@/lib/skilling/types.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const togTask: MinionTask = {
 	type: 'TearsOfGuthix',
@@ -17,7 +17,7 @@ export const togTask: MinionTask = {
 		await userStatsUpdate(
 			user.id,
 			{
-				last_tears_of_guthix_timestamp: new Date().getTime()
+				last_tears_of_guthix_timestamp: Date.now()
 			},
 			{}
 		);

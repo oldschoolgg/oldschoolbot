@@ -1,11 +1,11 @@
 import { calcPercentOfNum, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { calcBabyYagaHouseDroprate } from '@/lib/bso/bsoUtil';
+import { calcBabyYagaHouseDroprate } from '@/lib/bso/bsoUtil.js';
 import { Construction } from '@/lib/skilling/skills/construction';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { ConstructionActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const constructionTask: MinionTask = {
 	type: 'Construction',

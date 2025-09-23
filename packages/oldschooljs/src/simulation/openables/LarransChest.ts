@@ -4,7 +4,7 @@ import type { OpenableOpenOptions } from '../../meta/types';
 import Bank from '../../structures/Bank';
 import LootTable from '../../structures/LootTable';
 import SimpleOpenable from '../../structures/SimpleOpenable';
-import { LarransBigChestFish, LarransSmallChestFish, chanceOfFish } from './BonusOpenables';
+import { chanceOfFish, LarransBigChestFish, LarransSmallChestFish } from './BonusOpenables';
 
 // TODO: check wiki for more accurate results in future
 const LarransSmallChestTable = new LootTable()

@@ -1,16 +1,16 @@
 import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, clamp, reduceNumByPercent } from 'e';
+import { clamp, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions';
-import Herblore from '../../lib/skilling/skills/herblore/herblore';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { HerbloreActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions';
+import Herblore from '@/lib/skilling/skills/herblore/herblore';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const mixCommand: OSBMahojiCommand = {
 	name: 'mix',

@@ -1,4 +1,3 @@
-import { canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil';
 import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { GearSetupType } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
@@ -6,20 +5,26 @@ import { Items } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 import { loadImage } from 'skia-canvas';
 
+import { canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil';
+import { allPetIDs } from '@/lib/data/CollectionsExport';
 import { GearSetupTypes } from '@/lib/gear';
-import { allPetIDs } from '../../lib/data/CollectionsExport';
-import { equipPet } from '../../lib/minions/functions/equipPet';
-import { unequipPet } from '../../lib/minions/functions/unequipPet';
-import { findBestGearSetups } from '../../lib/util/findBISGear';
+import { equipPet } from '@/lib/minions/functions/equipPet';
+import { unequipPet } from '@/lib/minions/functions/unequipPet';
+import { findBestGearSetups } from '@/lib/util/findBISGear';
 import {
 	gearEquipCommand,
 	gearStatsCommand,
 	gearSwapCommand,
 	gearUnequipCommand,
 	gearViewCommand
-} from '../lib/abstracted_commands/gearCommands';
-import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '../lib/mahojiCommandOptions';
-import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
+} from '@/mahoji/lib/abstracted_commands/gearCommands.js';
+import {
+	equippedItemOption,
+	gearPresetOption,
+	gearSetupOption,
+	ownedItemOption
+} from '@/mahoji/lib/mahojiCommandOptions.js';
+import { getMahojiBank, mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export const gearValidationChecks = new Set();
 

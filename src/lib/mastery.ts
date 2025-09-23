@@ -1,13 +1,13 @@
 import { calcWhatPercent, clamp, round, sumArr } from 'e';
 
-import { calculateAchievementDiaryProgress } from '../mahoji/lib/abstracted_commands/achievementDiaryCommand';
-import { allCombatAchievementTasks } from './combat_achievements/combatAchievements';
-import { MAX_XP } from './constants';
-import { getTotalCl } from './data/Collections';
-import { maxLeaguesPoints } from './leagues/leagues';
-import { MAX_QP } from './minions/data/quests';
-import { SkillsEnum } from './skilling/types';
-import type { MUserStats } from './structures/MUserStats';
+import { MAX_XP } from '@/lib/constants';
+import { getTotalCl } from '@/lib/data/Collections';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { calculateAchievementDiaryProgress } from '@/mahoji/lib/abstracted_commands/achievementDiaryCommand.js';
+import { allCombatAchievementTasks } from './combat_achievements/combatAchievements.js';
+import { maxLeaguesPoints } from './leagues/leagues.js';
+import { MAX_QP } from './minions/data/quests.js';
+import type { MUserStats } from './structures/MUserStats.js';
 
 export async function calculateMastery(user: MUser, stats: MUserStats) {
 	const [totalClItems, clItems] = await getTotalCl(user, 'collection', stats);

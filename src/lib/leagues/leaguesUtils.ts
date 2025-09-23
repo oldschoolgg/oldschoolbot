@@ -1,17 +1,17 @@
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import type { Minigame, PlayerOwnedHouse, Tame, User, UserStats, activity_type_enum } from '@prisma/client';
+import type { activity_type_enum, Minigame, PlayerOwnedHouse, Tame, User, UserStats } from '@prisma/client';
 import { Bank, type ItemBank, type Monster } from 'oldschooljs';
 
-import type { ParsedUnit } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
-import type { personalSpellCastStats } from '../../mahoji/lib/abstracted_commands/statCommand';
-import type { UserFullGearSetup } from '../gear';
-import type { CustomMonster } from '../minions/data/killableMonsters/custom/customMonsters';
-import Grimy from '../skilling/skills/herblore/mixables/grimy';
-import Potions from '../skilling/skills/herblore/mixables/potions';
-import unfinishedPotions from '../skilling/skills/herblore/mixables/unfinishedPotions';
-import creatures from '../skilling/skills/hunter/creatures';
-import type { getSlayerTaskStats } from '../slayer/slayerUtil';
-import type { Skills } from '../types';
+import type { UserFullGearSetup } from '@/lib/gear/types.js';
+import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
+import Grimy from '@/lib/skilling/skills/herblore/mixables/grimy';
+import Potions from '@/lib/skilling/skills/herblore/mixables/potions';
+import unfinishedPotions from '@/lib/skilling/skills/herblore/mixables/unfinishedPotions';
+import creatures from '@/lib/skilling/skills/hunter/creatures';
+import type { getSlayerTaskStats } from '@/lib/slayer/slayerUtil.js';
+import type { Skills } from '@/lib/types/index.js';
+import type { ParsedUnit } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand';
+import type { personalSpellCastStats } from '@/mahoji/lib/abstracted_commands/statCommand';
 
 export interface HasFunctionArgs {
 	cl: Bank;

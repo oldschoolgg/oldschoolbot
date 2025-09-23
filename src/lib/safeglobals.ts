@@ -1,3 +1,3 @@
-import './customItems/customItems';
-import './data/itemAliases';
-import './util/logger';
+import './customItems/customItems.js';
+import './data/itemAliases.js';
+import './util/logger.js';

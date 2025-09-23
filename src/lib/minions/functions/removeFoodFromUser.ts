@@ -3,11 +3,11 @@ import { UserError } from '@oldschoolgg/toolkit/structures';
 import { objectEntries, reduceNumByPercent } from 'e';
 import { type Bank, itemID } from 'oldschooljs';
 
-import { Eatables } from '../../data/eatables';
-import type { GearSetupType } from '../../gear/types';
-import type { GearBank } from '../../structures/GearBank';
-import { updateBankSetting } from '../../util/updateBankSetting';
-import getUserFoodFromBank, { getRealHealAmount } from './getUserFoodFromBank';
+import { Eatables } from '@/lib/data/eatables';
+import type { GearSetupType } from '@/lib/gear/types.js';
+import type { GearBank } from '@/lib/structures/GearBank';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import getUserFoodFromBank, { getRealHealAmount } from './getUserFoodFromBank.js';
 
 export function removeFoodFromUserRaw({
 	totalHealingNeeded,

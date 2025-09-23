@@ -1,20 +1,20 @@
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
+import { randArrItem, randInt, roll } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
-import { randArrItem, randInt, roll } from 'e';
-import { DOANonUniqueTable } from '../bso/doa/doaLootTable';
-import { nexUniqueDrops } from '../data/CollectionsExport';
-import { chanceOfDOAUnique, pickUniqueToGiveUser } from '../depthsOfAtlantis';
+import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';
+import { nexUniqueDrops } from '@/lib/data/CollectionsExport';
+import { chanceOfDOAUnique, pickUniqueToGiveUser } from '@/lib/depthsOfAtlantis.js';
 import {
 	KalphiteKingMonster,
 	kalphiteKingLootTable
-} from '../minions/data/killableMonsters/custom/bosses/KalphiteKing';
-import { KingGoldemarLootTable } from '../minions/data/killableMonsters/custom/bosses/KingGoldemar';
-import { MoktangLootTable } from '../minions/data/killableMonsters/custom/bosses/Moktang';
-import { NEX_UNIQUE_DROPRATE, nexLootTable } from '../nex';
-import { zygomiteFarmingSource } from '../skilling/skills/farming/zygomites';
-import { calcDwwhChance } from '../structures/Boss';
-import { WintertodtCrate } from './wintertodt';
+} from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
+import { KingGoldemarLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';
+import { MoktangLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
+import { NEX_UNIQUE_DROPRATE, nexLootTable } from '@/lib/nex.js';
+import { zygomiteFarmingSource } from '@/lib/skilling/skills/farming/zygomites';
+import { calcDwwhChance } from '@/lib/structures/Boss';
+import { WintertodtCrate } from './wintertodt.js';
 
 export const winterTodtPointsTable = new SimpleTable<number>()
 	.add(420)

@@ -1,15 +1,19 @@
 import { Time } from 'e';
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { clawWeapon } from '../constants';
-import { NexMonster } from '../nex';
-import { SkillsEnum } from '../skilling/types';
-import { Requirements } from '../structures/Requirements';
-import type { GauntletOptions, NightmareActivityTaskOptions, TOAOptions } from '../types/minions';
-import type { MonsterActivityTaskOptions } from '../types/minions';
-import { crossbows } from '../util/archery';
-import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils';
-import type { CombatAchievement } from './combatAchievements';
+import { anyoneDiedInTOARaid, isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
+import { clawWeapon } from '@/lib/constants';
+import { NexMonster } from '@/lib/nex.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { Requirements } from '@/lib/structures/Requirements';
+import type {
+	GauntletOptions,
+	MonsterActivityTaskOptions,
+	NightmareActivityTaskOptions,
+	TOAOptions
+} from '@/lib/types/minions.js';
+import { crossbows } from '@/lib/util/archery';
 
 export const eliteCombatAchievements: CombatAchievement[] = [
 	{

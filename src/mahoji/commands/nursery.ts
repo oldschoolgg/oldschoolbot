@@ -5,12 +5,12 @@ import { ApplicationCommandOptionType, type ChatInputCommandInteraction } from '
 import { randArrItem, reduceNumByPercent, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { globalConfig } from '../../lib/constants';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '../../lib/tames';
-import { getItem } from '../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { globalConfig } from '@/lib/constants';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '@/lib/tames';
+import { getItem } from '@/lib/util/getOSItem';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 function makeTameNickname(species: Species) {
 	switch (species.id) {

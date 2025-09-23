@@ -69,7 +69,7 @@
 		"zod": "^3.25.67"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.9.4",
+		"@biomejs/biome": "^2.2.4",
 		"@hono/node-ws": "^1.2.0",
 		"@types/luxon": "^3.7.1",
 		"@types/node": "^20.14.9",

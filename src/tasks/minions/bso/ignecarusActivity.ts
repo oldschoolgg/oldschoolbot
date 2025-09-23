@@ -2,22 +2,22 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { objectValues, percentChance, shuffleArr, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { isDoubleLootActive } from '../../../lib/doubleLoot';
-import { trackLoot } from '../../../lib/lootTrack';
+import { isDoubleLootActive } from '@/lib/doubleLoot.js';
+import { trackLoot } from '@/lib/lootTrack.js';
 import {
 	Ignecarus,
 	IgnecarusLootTable,
 	IgnecarusNotifyDrops
-} from '../../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
-import { addMonsterXP } from '../../../lib/minions/functions';
-import announceLoot from '../../../lib/minions/functions/announceLoot';
-import { TeamLoot } from '../../../lib/simulation/TeamLoot';
-import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import type { BossUser } from '../../../lib/structures/Boss';
-import type { NewBossOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { sendToChannelID } from '../../../lib/util/webhook';
+} from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
+import announceLoot from '@/lib/minions/functions/announceLoot.js';
+import { addMonsterXP } from '@/lib/minions/functions/index.js';
+import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
+import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import type { BossUser } from '@/lib/structures/Boss.js';
+import type { NewBossOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
 
 const methodsOfDeath = ['Burnt to death', 'Eaten', 'Crushed', 'Incinerated'];
 

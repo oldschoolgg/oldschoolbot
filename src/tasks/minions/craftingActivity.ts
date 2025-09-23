@@ -1,11 +1,11 @@
 import { increaseNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { randFloat } from '../../lib/util/rng';
+import { Craftables } from '@/lib/skilling/skills/crafting/craftables';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { randFloat } from '@/lib/util/rng';
 
 export const craftingTask: MinionTask = {
 	type: 'Crafting',

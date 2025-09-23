@@ -1,8 +1,8 @@
 import LootTable from '../../../../structures/LootTable';
 import SimpleMonster from '../../../../structures/SimpleMonster';
 import HerbDropTable from '../../../subtables/HerbDropTable';
-import { GemTable } from '../../../subtables/RareDropTable';
 import { UncommonSeedDropTable } from '../../../subtables/index';
+import { GemTable } from '../../../subtables/RareDropTable';
 
 const TatteredPageTable = new LootTable()
 	.add('Tattered moon page')

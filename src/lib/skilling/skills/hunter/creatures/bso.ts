@@ -1,7 +1,7 @@
 import { Bank, LootTable } from 'oldschooljs';
 
-import { MysteryBoxes } from '../../../../bsoOpenables';
-import { type Creature, HunterTechniqueEnum } from '../../../types';
+import { MysteryBoxes } from '@/lib/bsoOpenables.js';
+import { type Creature, HunterTechniqueEnum } from '@/lib/skilling/types.js';
 
 const customBSOCreatures: Creature[] = [
 	{

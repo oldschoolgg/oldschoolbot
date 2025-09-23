@@ -4,20 +4,20 @@ import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { type BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import { roll, stripNonAlphanumeric } from 'e';
 
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { BitField, PerkTier } from '@/lib/constants.js';
+import { getUsersFishingContestDetails } from '@/lib/fishingContest.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { minionBuyButton } from '@/lib/sharedComponents.js';
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses';
 import { makeAutoContractButton, makeAutoSlayButton, makeBirdHouseTripButton } from '@/lib/util/interactions';
-import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { BitField, PerkTier } from '../../../lib/constants';
-import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
-import { roboChimpUserFetch } from '../../../lib/roboChimp';
-import { minionBuyButton } from '../../../lib/sharedComponents';
-import { minionStatus } from '../../../lib/util/minionStatus';
-import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
-import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../../lib/util/tameUtil';
-import { getItemContractDetails } from '../../commands/ic';
-import { spawnLampIsReady } from '../../commands/tools';
-import { isUsersDailyReady } from './dailyCommand';
-import { canRunAutoContract } from './farmingContractCommand';
+import { minionStatus } from '@/lib/util/minionStatus.js';
+import { makeRepeatTripButtons } from '@/lib/util/repeatStoredTrip.js';
+import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '@/lib/util/tameUtil.js';
+import { getItemContractDetails } from '@/mahoji/commands/ic.js';
+import { spawnLampIsReady } from '@/mahoji/commands/tools.js';
+import { isUsersDailyReady } from './dailyCommand.js';
+import { canRunAutoContract } from './farmingContractCommand.js';
 
 async function fetchFavoriteGearPresets(userID: string) {
 	const pinnedPresets = await prisma.gearPreset.findMany({

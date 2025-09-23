@@ -4,16 +4,16 @@ import { objectEntries } from 'e';
 import { Bank, type ItemBank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 
-import { type ClientBankKey, userStatsUpdate } from '../../mahoji/mahojiSettings';
-import type { MUserClass } from '../MUser';
-import { degradeChargeBank } from '../degradeableItems';
-import type { GearSetup } from '../gear/types';
-import { MaterialBank } from '../invention/MaterialBank';
-import { transactMaterialsFromUser } from '../invention/inventions';
-import type { JsonKeys } from '../util';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../util/clientSettings';
-import { ChargeBank, XPBank } from './Bank';
-import { KCBank } from './KCBank';
+import { degradeChargeBank } from '@/lib/degradeableItems.js';
+import type { GearSetup } from '@/lib/gear/types.js';
+import { transactMaterialsFromUser } from '@/lib/invention/inventions.js';
+import { MaterialBank } from '@/lib/invention/MaterialBank.js';
+import type { MUserClass } from '@/lib/MUser.js';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings';
+import type { JsonKeys } from '@/lib/util.js';
+import { type ClientBankKey, userStatsUpdate } from '@/mahoji/mahojiSettings';
+import { ChargeBank, XPBank } from './Bank.js';
+import { KCBank } from './KCBank.js';
 
 export class UpdateBank {
 	// Things removed

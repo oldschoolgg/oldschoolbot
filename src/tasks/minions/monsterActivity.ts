@@ -3,33 +3,33 @@ import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import { Time, calcWhatPercent, deepClone, percentChance, reduceNumByPercent, roll } from 'e';
 import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 
+import { type MidPVMEffectArgs, oriEffect, rollForBSOThings } from '@/lib/bso/pvmEffects';
+import { MysteryBoxes } from '@/lib/bsoOpenables';
+import type { BitField } from '@/lib/constants';
+import { userhasDiaryTierSync } from '@/lib/diaries';
+import { isDoubleLootActive } from '@/lib/doubleLoot';
+import { trackLoot } from '@/lib/lootTrack';
+import killableMonsters from '@/lib/minions/data/killableMonsters';
+import { KOSCHEI_ID } from '@/lib/minions/data/killableMonsters/custom/bosses/Koschei';
+import { type AttackStyles, addMonsterXPRaw } from '@/lib/minions/functions';
+import announceLoot from '@/lib/minions/functions/announceLoot';
+import { DiaryID, type KillableMonster } from '@/lib/minions/types';
+import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks';
+import { type CurrentSlayerInfo, calculateSlayerPoints, getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil';
+import type { SlayerMaster } from '@/lib/slayer/types';
+import type { GearBank } from '@/lib/structures/GearBank';
+import { type KCBank, safelyMakeKCBank } from '@/lib/structures/KCBank';
+import { MUserStats } from '@/lib/structures/MUserStats';
+import { UpdateBank } from '@/lib/structures/UpdateBank';
+import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import { ashSanctifierEffect } from '@/lib/util/ashSanctifier';
+import calculateGearLostOnDeathWilderness from '@/lib/util/calculateGearLostOnDeathWilderness';
+import { increaseWildEvasionXp } from '@/lib/util/calcWildyPkChance';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { logError } from '@/lib/util/logError';
+import { makeBankImage } from '@/lib/util/makeBankImage';
 import { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils';
-import { type MidPVMEffectArgs, oriEffect, rollForBSOThings } from '../../lib/bso/pvmEffects';
-import { MysteryBoxes } from '../../lib/bsoOpenables';
-import type { BitField } from '../../lib/constants';
-import { userhasDiaryTierSync } from '../../lib/diaries';
-import { isDoubleLootActive } from '../../lib/doubleLoot';
-import { trackLoot } from '../../lib/lootTrack';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { KOSCHEI_ID } from '../../lib/minions/data/killableMonsters/custom/bosses/Koschei';
-import { type AttackStyles, addMonsterXPRaw } from '../../lib/minions/functions';
-import announceLoot from '../../lib/minions/functions/announceLoot';
-import { DiaryID, type KillableMonster } from '../../lib/minions/types';
-import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
-import { type CurrentSlayerInfo, calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
-import type { SlayerMaster } from '../../lib/slayer/types';
-import type { GearBank } from '../../lib/structures/GearBank';
-import { type KCBank, safelyMakeKCBank } from '../../lib/structures/KCBank';
-import { MUserStats } from '../../lib/structures/MUserStats';
-import { UpdateBank } from '../../lib/structures/UpdateBank';
-import type { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
-import { increaseWildEvasionXp } from '../../lib/util/calcWildyPkChance';
-import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { sendToChannelID } from '../../lib/util/webhook';
+import { sendToChannelID } from '@/lib/util/webhook';
 
 function handleSlayerTaskCompletion({
 	slayerContext,
@@ -622,7 +622,7 @@ export const monsterTask: MinionTask = {
 		messages.push(...rawResults.filter(r => typeof r === 'string'));
 		const str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name} (${calcPerHour(data.q, data.duration).toFixed(1)}/hr), you now have ${newKC} KC.`;
 
-		let image = undefined;
+		let image;
 
 		if (itemTransactionResult && itemTransactionResult.itemsAdded.length > 0) {
 			announceLoot({

@@ -9,17 +9,16 @@ import {
 	EliteMimicTable,
 	HardCasket,
 	ItemGroups,
+	itemID,
 	MasterCasket,
 	MasterMimicTable,
 	MediumCasket,
 	Monsters,
 	Nightmare,
-	itemID,
 	resolveItems
 } from 'oldschooljs';
 
-import { rollNaxxusLoot } from './bso/naxxus/rollNaxxusLoot';
-import { allCollectionLogsFlat } from './data/Collections';
+import { allCollectionLogsFlat } from '@/lib/data/Collections';
 import {
 	chambersOfXericCL,
 	chambersOfXericNormalCL,
@@ -35,28 +34,32 @@ import {
 	nexCL,
 	nexUniqueDrops,
 	temporossCL,
-	theGauntletCL,
-	theNightmareCL,
-	theNightmareNormalCL,
 	theatreOfBloodCapes,
 	theatreOfBloodHardUniques,
 	theatreOfBloodNormalUniques,
+	theGauntletCL,
+	theNightmareCL,
+	theNightmareNormalCL,
 	wintertodtCL
-} from './data/CollectionsExport';
-import pets from './data/pets';
-import killableMonsters from './minions/data/killableMonsters';
-import { KalphiteKingMonster, kalphiteKingLootTable } from './minions/data/killableMonsters/custom/bosses/KalphiteKing';
-import { MoktangLootTable } from './minions/data/killableMonsters/custom/bosses/Moktang';
-import { Naxxus } from './minions/data/killableMonsters/custom/bosses/Naxxus';
-import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
-import { NEX_UNIQUE_DROPRATE, NexMonster } from './nex';
-import { openShadeChest } from './shadesKeys';
-import { birdsNestID, treeSeedsNest } from './simulation/birdsNest';
-import { gauntlet } from './simulation/gauntlet';
-import { getTemporossLoot } from './simulation/tempoross';
-import { TheatreOfBlood } from './simulation/tob';
-import { WintertodtCrate } from './simulation/wintertodt';
-import getOSItem from './util/getOSItem';
+} from '@/lib/data/CollectionsExport';
+import pets from '@/lib/data/pets';
+import { birdsNestID, treeSeedsNest } from '@/lib/simulation/birdsNest';
+import { gauntlet } from '@/lib/simulation/gauntlet';
+import { getTemporossLoot } from '@/lib/simulation/tempoross';
+import { TheatreOfBlood } from '@/lib/simulation/tob';
+import { WintertodtCrate } from '@/lib/simulation/wintertodt';
+import { rollNaxxusLoot } from './bso/naxxus/rollNaxxusLoot.js';
+import {
+	KalphiteKingMonster,
+	kalphiteKingLootTable
+} from './minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
+import { MoktangLootTable } from './minions/data/killableMonsters/custom/bosses/Moktang.js';
+import { Naxxus } from './minions/data/killableMonsters/custom/bosses/Naxxus.js';
+import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters.js';
+import killableMonsters from './minions/data/killableMonsters/index.js';
+import { NEX_UNIQUE_DROPRATE, NexMonster } from './nex.js';
+import { openShadeChest } from './shadesKeys.js';
+import getOSItem from './util/getOSItem.js';
 
 interface KillArgs {
 	accumulatedLoot: Bank;

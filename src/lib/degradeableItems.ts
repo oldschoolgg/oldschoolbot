@@ -1,13 +1,13 @@
-import { Time, percentChance } from 'e';
-import { Bank, type Item, type Monster, itemID } from 'oldschooljs';
+import { percentChance, Time } from 'e';
+import { Bank, type Item, itemID, type Monster } from 'oldschooljs';
 
-import type { GearSetupType, PrimaryGearSetupType } from './gear/types';
-import type { KillableMonster } from './minions/types';
-import type { ChargeBank } from './structures/Banks';
-import type { GearBank } from './structures/GearBank';
-import getOSItem from './util/getOSItem';
-import { assert } from './util/logError';
-import { updateBankSetting } from './util/updateBankSetting';
+import type { GearSetupType, PrimaryGearSetupType } from './gear/types.js';
+import type { KillableMonster } from './minions/types.js';
+import type { ChargeBank } from './structures/Banks.js';
+import type { GearBank } from './structures/GearBank.js';
+import getOSItem from './util/getOSItem.js';
+import { assert } from './util/logError.js';
+import { updateBankSetting } from './util/updateBankSetting.js';
 
 export interface DegradeableItem {
 	item: Item;
@@ -409,7 +409,7 @@ export async function degradeItem({
 			await user.addItemsToBank({ items: refundItems, collectionLog: false });
 		} else if (hasInBank) {
 			// If its in bank, just remove 1 from bank.
-			let itemsToAdd = undefined;
+			let itemsToAdd;
 			if (degItem.itemsToRefundOnBreak) {
 				itemsToAdd = degItem.itemsToRefundOnBreak;
 			}

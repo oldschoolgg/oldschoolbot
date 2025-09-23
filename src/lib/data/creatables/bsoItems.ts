@@ -1,21 +1,21 @@
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Bank, itemID, resolveBank, resolveItems, resolveNameBank } from 'oldschooljs';
 
-import { expertCapesSource } from '../../bso/expertCapes';
-import { dyedItems } from '../../dyedItems';
-import { MaterialBank } from '../../invention/MaterialBank';
-import { nexBrokenArmorDetails } from '../../nex';
-import Skillcapes from '../../skilling/skillcapes';
-import { bones } from '../../skilling/skills/prayer';
-import type { Bone } from '../../skilling/types';
-import { seaMonkeyStaves } from '../../tames';
-import getOSItem from '../../util/getOSItem';
-import { assert } from '../../util/logError';
-import { brokenPernixOutfit, brokenTorvaOutfit, brokenVirtusOutfit } from '../CollectionsExport';
-import type { Createable } from '../createables';
-import { divinationCreatables } from './divinationCreatables';
-import { ghostCreatables } from './ghostweaveCreatables';
-import { slayerMaskCreatables } from './slayerMasks';
+import { expertCapesSource } from '@/lib/bso/expertCapes.js';
+import { brokenPernixOutfit, brokenTorvaOutfit, brokenVirtusOutfit } from '@/lib/data/CollectionsExport.js';
+import type { Createable } from '@/lib/data/createables.js';
+import { dyedItems } from '@/lib/dyedItems.js';
+import { MaterialBank } from '@/lib/invention/MaterialBank.js';
+import { nexBrokenArmorDetails } from '@/lib/nex.js';
+import Skillcapes from '@/lib/skilling/skillcapes';
+import { bones } from '@/lib/skilling/skills/prayer';
+import type { Bone } from '@/lib/skilling/types.js';
+import { seaMonkeyStaves } from '@/lib/tames.js';
+import getOSItem from '@/lib/util/getOSItem';
+import { assert } from '@/lib/util/logError';
+import { divinationCreatables } from './divinationCreatables.js';
+import { ghostCreatables } from './ghostweaveCreatables.js';
+import { slayerMaskCreatables } from './slayerMasks.js';
 
 const dyeCreatables: Createable[] = [];
 for (const { baseItem, dyedVersions } of dyedItems) {

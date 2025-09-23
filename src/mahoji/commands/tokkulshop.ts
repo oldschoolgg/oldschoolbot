@@ -1,17 +1,17 @@
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { activity_type_enum } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import TokkulShopItems from '../../lib/data/buyables/tokkulBuyables';
-import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
-import type { TokkulShopOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import TokkulShopItems from '@/lib/data/buyables/tokkulBuyables';
+import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries';
+import type { TokkulShopOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const { TzTokJad } = Monsters;
 

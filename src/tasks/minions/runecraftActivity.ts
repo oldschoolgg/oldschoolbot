@@ -1,16 +1,16 @@
-import { Time, increaseNumByPercent } from 'e';
+import { increaseNumByPercent, Time } from 'e';
 import { Bank, EItem } from 'oldschooljs';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { bloodEssence, raimentBonus } from '@/lib/skilling/functions/calcsRunecrafting';
+import Runecraft from '@/lib/skilling/skills/runecraft';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { RunecraftActivityTaskOptions } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { roll } from '@/lib/util/rng';
-import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
-import { bloodEssence, raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
-import Runecraft from '../../lib/skilling/skills/runecraft';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings';
+import { calcMaxRCQuantity } from '@/mahoji/mahojiSettings';
 
 export const runecraftTask: MinionTask = {
 	type: 'Runecraft',

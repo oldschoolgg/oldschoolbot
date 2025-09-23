@@ -2,6 +2,7 @@ import '../../src/lib/customItems/customItems';
 import '../../src/lib/data/itemAliases';
 import { Decimal } from '@prisma/client/runtime/library';
 import '../../src/lib/ActivityManager';
+
 import { MUserStats } from '../../src/lib/structures/MUserStats';
 
 MUserStats.fromID = async (id: string) => {

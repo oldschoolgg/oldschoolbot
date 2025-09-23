@@ -1,28 +1,28 @@
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, reduceNumByPercent } from 'e';
+import { reduceNumByPercent, Time } from 'e';
 
+import { setupParty } from '@/lib/party';
+import {
+    determineDgLevelForFloor,
+    dungBuyables,
+    isValidFloor,
+    requiredSkills
+} from '@/lib/skilling/skills/dung/dungData';
+import {
+    calcMaxFloorUserCanDo,
+    calcUserGorajanShardChance,
+    hasRequiredLevels,
+    numberOfGorajanOutfitsEquipped
+} from '@/lib/skilling/skills/dung/dungDbFunctions';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { MakePartyOptions } from '@/lib/types';
+import type { DungeoneeringOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import { deferInteraction } from '@/lib/util/interactionReply';
 import { formatSkillRequirements } from '@/lib/util/smallUtils';
-import { setupParty } from '../../lib/party';
-import {
-	determineDgLevelForFloor,
-	dungBuyables,
-	isValidFloor,
-	requiredSkills
-} from '../../lib/skilling/skills/dung/dungData';
-import {
-	calcMaxFloorUserCanDo,
-	calcUserGorajanShardChance,
-	hasRequiredLevels,
-	numberOfGorajanOutfitsEquipped
-} from '../../lib/skilling/skills/dung/dungDbFunctions';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { MakePartyOptions } from '../../lib/types';
-import type { DungeoneeringOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { deferInteraction } from '../../lib/util/interactionReply';
 
 // Max people in a party:
 const maxTeamSize = 20;

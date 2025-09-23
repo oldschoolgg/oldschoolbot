@@ -1,11 +1,11 @@
 import { ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { warmGear } from '../data/filterables';
-import { SkillsEnum } from '../skilling/types';
-import { Requirements } from '../structures/Requirements';
-import getOSItem from '../util/getOSItem';
-import { isCertainMonsterTrip } from './caUtils';
-import type { CombatAchievement } from './combatAchievements';
+import { warmGear } from '@/lib/data/filterables';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { Requirements } from '@/lib/structures/Requirements';
+import getOSItem from '@/lib/util/getOSItem';
+import { isCertainMonsterTrip } from './caUtils.js';
+import type { CombatAchievement } from './combatAchievements.js';
 
 export const easyCombatAchievements: CombatAchievement[] = [
 	{

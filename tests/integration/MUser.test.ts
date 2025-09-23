@@ -1,6 +1,6 @@
 import { activity_type_enum } from '@prisma/client';
-import { Time, objectEntries, randArrItem, randInt } from 'e';
-import { Bank, type ItemBank, convertLVLtoXP } from 'oldschooljs';
+import { objectEntries, randArrItem, randInt, Time } from 'e';
+import { Bank, convertLVLtoXP, type ItemBank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { GLOBAL_BSO_XP_MULTIPLIER } from '../../src/lib/bso/bsoConstants';

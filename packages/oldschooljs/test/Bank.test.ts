@@ -1,6 +1,6 @@
 import { describe, expect, it, test } from 'vitest';
 
-import { Bank, EItem, type ItemBank, Items, addItemToBank, getItemOrThrow, itemID, resolveNameBank } from '../';
+import { addItemToBank, Bank, EItem, getItemOrThrow, type ItemBank, Items, itemID, resolveNameBank } from '../';
 
 describe('Bank', () => {
 	test('convert string bank to number bank', () => {

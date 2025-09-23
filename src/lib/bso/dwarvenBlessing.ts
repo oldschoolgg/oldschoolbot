@@ -1,8 +1,8 @@
 import { Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
-import { BitField } from '../constants';
-import type { GearBank } from '../structures/GearBank';
+import { BitField } from '@/lib/constants';
+import type { GearBank } from '@/lib/structures/GearBank';
 
 export function calculateDwarvenBlessingPotsNeeded(duration: number) {
 	const fiveMinIncrements = Math.ceil(duration / (Time.Minute * 5));
@@ -14,7 +14,11 @@ export function dwarvenBlessing({
 	gearBank,
 	duration,
 	bitfield
-}: { bitfield: readonly BitField[]; gearBank: GearBank; duration: number }): null | {
+}: {
+	bitfield: readonly BitField[];
+	gearBank: GearBank;
+	duration: number;
+}): null | {
 	message: string;
 	itemCost: Bank;
 	percentageReduction: number;

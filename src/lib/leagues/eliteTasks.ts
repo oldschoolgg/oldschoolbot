@@ -1,7 +1,6 @@
 import { sumArr } from 'e';
 import { Bank, EMonster, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
 
-import { eggs } from '../../mahoji/commands/offer';
 import {
 	abyssalDragonCL,
 	all3rdAgeItems,
@@ -16,8 +15,8 @@ import {
 	spectatorClothes,
 	troubleBrewingCL,
 	vasaMagusCL
-} from '../data/CollectionsExport';
-import { slayerMaskHelms } from '../data/slayerMaskHelms';
+} from '@/lib/data/CollectionsExport';
+import { slayerMaskHelms } from '@/lib/data/slayerMaskHelms';
 import {
 	ArdougneDiary,
 	DesertDiary,
@@ -28,21 +27,22 @@ import {
 	KourendKebosDiary,
 	LumbridgeDraynorDiary,
 	MorytaniaDiary,
+	userhasDiaryTier,
 	VarrockDiary,
 	WesternProv,
-	WildernessDiary,
-	userhasDiaryTier
-} from '../diaries';
-import { implings } from '../implings';
-import { SunMoonMonsters } from '../minions/data/killableMonsters/custom/SunMoon';
-import { Naxxus } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
-import Darts from '../skilling/skills/fletching/fletchables/darts';
-import Javelins from '../skilling/skills/fletching/fletchables/javelins';
-import { ashes } from '../skilling/skills/prayer';
-import { TameSpeciesID, tameFeedableItems } from '../tames';
-import { calcTotalLevel } from '../util';
-import { type Task, leaguesHasCatches, leaguesHasKC } from './leaguesUtils';
-import { calculateTiarasMade } from './stats';
+	WildernessDiary
+} from '@/lib/diaries.js';
+import { implings } from '@/lib/implings.js';
+import { Naxxus } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
+import { SunMoonMonsters } from '@/lib/minions/data/killableMonsters/custom/SunMoon.js';
+import Darts from '@/lib/skilling/skills/fletching/fletchables/darts';
+import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins';
+import { ashes } from '@/lib/skilling/skills/prayer';
+import { TameSpeciesID, tameFeedableItems } from '@/lib/tames.js';
+import { calcTotalLevel } from '@/lib/util.js';
+import { eggs } from '@/mahoji/commands/offer';
+import { leaguesHasCatches, leaguesHasKC, type Task } from './leaguesUtils.js';
+import { calculateTiarasMade } from './stats.js';
 
 export const eliteTasks: Task[] = [
 	{

@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { itemID } from 'oldschooljs';
 
-import type { SmithedItem } from '../../../types';
+import type { SmithedItem } from '@/lib/skilling/types.js';
 
 const items = [
 	['Gorajan warrior helmet', 'Torva full helm'],

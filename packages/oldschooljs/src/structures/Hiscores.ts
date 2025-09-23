@@ -7,8 +7,8 @@ import {
 	CLUES,
 	Errors,
 	MINIGAMES,
-	SKILLS,
-	mappedBossNames
+	mappedBossNames,
+	SKILLS
 } from '../constants';
 import type { SkillsScore } from '../meta/types';
 import { convertXPtoLVL, isValidUsername } from '../util/util';

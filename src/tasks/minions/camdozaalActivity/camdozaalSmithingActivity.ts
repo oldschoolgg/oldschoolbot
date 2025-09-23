@@ -1,9 +1,9 @@
 import { Bank, LootTable } from 'oldschooljs';
 
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 // Barronite deposit loot table
 const barroniteDepositLootTable = new LootTable()

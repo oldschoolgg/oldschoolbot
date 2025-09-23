@@ -1,9 +1,9 @@
-import { Bank, Monsters, itemID, resolveItems } from 'oldschooljs';
+import { Bank, itemID, Monsters, resolveItems } from 'oldschooljs';
 
-import creatures from './skilling/skills/hunter/creatures/index.js';
-import { getUsersCurrentSlayerInfo } from './slayer/slayerUtil';
-import type { ActivityTaskData } from './types/minions';
-import getOSItem from './util/getOSItem';
+import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
+import { getUsersCurrentSlayerInfo } from './slayer/slayerUtil.js';
+import type { ActivityTaskData } from './types/minions.js';
+import getOSItem from './util/getOSItem.js';
 
 const firstStep = {
 	hint: `In Lumbridge's dawn, where bovine graze,

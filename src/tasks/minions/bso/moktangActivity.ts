@@ -2,24 +2,24 @@ import { calcPerHour, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { userMention } from 'discord.js';
 import { randInt } from 'e';
-import { Bank, SkillsEnum, increaseBankQuantitesByPercent, resolveItems } from 'oldschooljs';
+import { Bank, increaseBankQuantitesByPercent, resolveItems, SkillsEnum } from 'oldschooljs';
 
-import { isDoubleLootActive } from '../../../lib/doubleLoot';
-import { trackLoot } from '../../../lib/lootTrack';
-import { MOKTANG_ID, MoktangLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/Moktang';
+import { isDoubleLootActive } from '@/lib/doubleLoot.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { MOKTANG_ID, MoktangLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
 import {
 	FletchingTipsTable,
 	HighTierStoneSpiritTable,
-	StoneSpiritTable,
 	lowRuneHighAdamantTable,
-	runeWeaponTable
-} from '../../../lib/simulation/sharedTables';
-import Smithing from '../../../lib/skilling/skills/smithing';
-import type { MoktangTaskOptions } from '../../../lib/types/minions';
-import { itemNameFromID } from '../../../lib/util';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+	runeWeaponTable,
+	StoneSpiritTable
+} from '@/lib/simulation/sharedTables.js';
+import Smithing from '@/lib/skilling/skills/smithing/index.js';
+import type { MoktangTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { itemNameFromID } from '@/lib/util.js';
 
 export const moktangTask: MinionTask = {
 	type: 'Moktang',

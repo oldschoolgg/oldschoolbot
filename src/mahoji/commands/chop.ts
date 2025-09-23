@@ -3,12 +3,12 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Items, itemID, resolveItems } from 'oldschooljs';
 
-import { IVY_MAX_TRIP_LENGTH_BOOST } from '../../lib/bso/bsoConstants';
-import { InventionID, inventionItemBoost } from '../../lib/invention/inventions';
-import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
-import Woodcutting, { type TwitcherGloves } from '../../lib/skilling/skills/woodcutting/woodcutting';
-import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { IVY_MAX_TRIP_LENGTH_BOOST } from '@/lib/bso/bsoConstants';
+import { InventionID, inventionItemBoost } from '@/lib/invention/inventions';
+import { determineWoodcuttingTime } from '@/lib/skilling/functions/determineWoodcuttingTime';
+import Woodcutting, { type TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting';
+import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
 
 const axes = [
 	{

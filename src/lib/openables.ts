@@ -1,44 +1,44 @@
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
+import { percentChance, randInt } from 'e';
 import {
 	Bank,
 	BrimstoneChest,
 	EItem,
-	EMonster,
 	EliteMimicTable,
+	EMonster,
 	HallowedSackTable,
 	Implings,
 	type Item,
 	type ItemBank,
+	itemID,
 	LarransChest,
 	LootTable,
 	MasterMimicTable,
 	type OpenableOpenOptions,
 	Openables,
+	resolveItems,
 	SkillsEnum,
-	ZombiePiratesLocker,
-	itemID,
-	resolveItems
+	ZombiePiratesLocker
 } from 'oldschooljs';
 
-import { percentChance, randInt } from 'e';
-import { bsoOpenables } from './bsoOpenables';
-import { ClueTiers } from './clues/clueTiers';
-import { clueHunterOutfit } from './data/CollectionsExport';
-import { defaultFarmingContract } from './minions/farming';
-import type { FarmingContract } from './minions/farming/types';
-import { shadeChestOpenables } from './shadesKeys';
-import { nestTable } from './simulation/birdsNest';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { clueHunterOutfit } from '@/lib/data/CollectionsExport';
+import { defaultFarmingContract } from '@/lib/minions/farming/index.js';
+import { nestTable } from '@/lib/simulation/birdsNest';
 import {
 	BagFullOfGemsTable,
 	BuildersSupplyCrateTable,
 	CasketTable,
 	CrystalChestTable,
 	SpoilsOfWarTable
-} from './simulation/misc';
-import { openSeedPack } from './skilling/functions/calcFarmingContracts';
-import getOSItem from './util/getOSItem';
-import { roll } from './util/rng';
+} from '@/lib/simulation/misc';
+import { openSeedPack } from '@/lib/skilling/functions/calcFarmingContracts.js';
+import { bsoOpenables } from './bsoOpenables.js';
+import type { FarmingContract } from './minions/farming/types.js';
+import { shadeChestOpenables } from './shadesKeys.js';
+import getOSItem from './util/getOSItem.js';
+import { roll } from './util/rng.js';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)

@@ -1,19 +1,19 @@
 import { type CommandRunOptions, truncateString } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { roll } from 'e';
 import { Bank, type Item, type ItemBank, resolveItems, toKMB } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { cats } from '../../lib/growablePets';
-import minionIcons from '../../lib/minions/data/minionIcons';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { filterOption } from '../lib/mahojiCommandOptions';
-import { userStatsBankUpdate } from '../mahojiSettings';
-import { sellPriceOfItem } from './sell';
+import { cats } from '@/lib/growablePets';
+import minionIcons from '@/lib/minions/data/minionIcons';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { deferInteraction } from '@/lib/util/interactionReply';
+import { parseBank } from '@/lib/util/parseStringBank';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
+import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
+import { sellPriceOfItem } from './sell.js';
 
 async function trackSacBank(user: MUser, bank: Bank) {
 	await Promise.all([

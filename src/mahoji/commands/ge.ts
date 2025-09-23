@@ -2,8 +2,8 @@ import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import {
 	type CommandOption,
 	type CommandRunOptions,
-	type OSBMahojiCommand,
 	makeComponents,
+	type OSBMahojiCommand,
 	returnStringOrFile
 } from '@oldschoolgg/toolkit/discord-util';
 import { evalMathExpression } from '@oldschoolgg/toolkit/math';
@@ -12,20 +12,20 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { sumArr, uniqueArr } from 'e';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
+import { isGEUntradeable } from '@/lib/bso/bsoUtil.js';
 import { GeImageGenerator } from '@/lib/canvas/geImage';
+import { PerkTier } from '@/lib/constants';
+import { createGECancelButton, GrandExchange } from '@/lib/grandExchange';
+import { marketPricemap } from '@/lib/marketPrices';
 import { itemNameFromID } from '@/lib/util';
-import { isGEUntradeable } from '../../lib/bso/bsoUtil';
-import { PerkTier } from '../../lib/constants';
-import { GrandExchange, createGECancelButton } from '../../lib/grandExchange';
-import { marketPricemap } from '../../lib/marketPrices';
-import { createChart } from '../../lib/util/chart';
-import getOSItem, { getItem } from '../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
-import { itemArr, itemOption } from '../lib/mahojiCommandOptions';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { createChart } from '@/lib/util/chart';
+import getOSItem, { getItem } from '@/lib/util/getOSItem';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { deferInteraction } from '@/lib/util/interactionReply';
+import itemIsTradeable from '@/lib/util/itemIsTradeable';
+import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
+import { itemArr, itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
+import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export type GEListingWithTransactions = GEListing & {
 	buyTransactions: GETransaction[];

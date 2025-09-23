@@ -1,17 +1,17 @@
 import { calcPerHour } from '@oldschoolgg/toolkit';
-import { Time, randInt, roll } from 'e';
+import { randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
-import { userHasFlappy } from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/lootTrack';
-import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
-import Firemaking from '../../../lib/skilling/skills/firemaking';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { userHasFlappy } from '@/lib/invention/inventions.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
+import Firemaking from '@/lib/skilling/skills/firemaking.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const wintertodtTask: MinionTask = {
 	type: 'Wintertodt',

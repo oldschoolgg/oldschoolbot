@@ -1,7 +1,6 @@
 import LootTable from '../../../structures/LootTable';
 import SimpleMonster from '../../../structures/SimpleMonster';
-import RareDropTable from '../../subtables/RareDropTable';
-import { GemTable } from '../../subtables/RareDropTable';
+import RareDropTable, { GemTable } from '../../subtables/RareDropTable';
 import TreeHerbSeedTable from '../../subtables/TreeHerbSeedTable';
 
 const DerangedArchaeologistTable = new LootTable()

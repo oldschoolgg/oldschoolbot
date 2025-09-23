@@ -1,8 +1,8 @@
 import { Bank } from 'oldschooljs';
 
-import { userHasFlappy } from '../../../lib/invention/inventions';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { userHasFlappy } from '@/lib/invention/inventions.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const fogTask: MinionTask = {
 	type: 'FistOfGuthix',

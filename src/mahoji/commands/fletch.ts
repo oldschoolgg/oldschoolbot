@@ -2,13 +2,13 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 
-import Fletching from '../../lib/skilling/skills/fletching';
-import { Fletchables } from '../../lib/skilling/skills/fletching/fletchables';
-import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
-import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
-import type { FletchingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import Fletching from '@/lib/skilling/skills/fletching';
+import { Fletchables } from '@/lib/skilling/skills/fletching/fletchables';
+import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks';
+import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil';
+import type { FletchingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
 
 export const fletchCommand: OSBMahojiCommand = {
 	name: 'fletch',

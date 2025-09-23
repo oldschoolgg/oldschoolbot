@@ -1,45 +1,45 @@
 import {
+	allAbstractCommands,
+	bulkUpdateCommands,
 	type CommandRunOptions,
 	type MahojiUserOption,
-	type OSBMahojiCommand,
-	allAbstractCommands,
-	bulkUpdateCommands
+	type OSBMahojiCommand
 } from '@oldschoolgg/toolkit/discord-util';
 import { calcPerHour, cleanString, dateFm, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { type ClientStorage, economy_transaction_type } from '@prisma/client';
 import { ApplicationCommandOptionType, AttachmentBuilder, type InteractionReplyOptions } from 'discord.js';
-import { Time, calcWhatPercent, noOp, notEmpty, randArrItem, sleep, uniqueArr } from 'e';
-import { Bank, type ItemBank, convertBankToPerHourStats, toKMB } from 'oldschooljs';
+import { calcWhatPercent, noOp, notEmpty, randArrItem, sleep, Time, uniqueArr } from 'e';
+import { Bank, convertBankToPerHourStats, type ItemBank, toKMB } from 'oldschooljs';
 
-import { countUsersWithItemInCl } from '@/lib/rawSql';
-import { mahojiUserSettingsUpdate } from '../../lib/MUser';
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '@/lib/blacklists';
 import {
 	BadgesEnum,
 	BitField,
 	BitFieldData,
+	badges,
 	Channel,
 	DISABLED_COMMANDS,
-	META_CONSTANTS,
-	badges,
-	globalConfig
-} from '../../lib/constants';
-import { economyLog } from '../../lib/economyLogs';
-import type { GearSetup } from '../../lib/gear/types';
-import { GrandExchange } from '../../lib/grandExchange';
-import { sorts } from '../../lib/sorts';
-import { memoryAnalysis } from '../../lib/util/cachedUserIDs';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
-import getOSItem, { getItem } from '../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { sendToChannelID } from '../../lib/util/webhook';
-import { Cooldowns } from '../lib/Cooldowns';
-import { syncCustomPrices } from '../lib/events';
-import { itemOption } from '../lib/mahojiCommandOptions';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+	globalConfig,
+	META_CONSTANTS
+} from '@/lib/constants';
+import { economyLog } from '@/lib/economyLogs';
+import type { GearSetup } from '@/lib/gear/types';
+import { GrandExchange } from '@/lib/grandExchange';
+import { mahojiUserSettingsUpdate } from '@/lib/MUser';
+import { countUsersWithItemInCl } from '@/lib/rawSql';
+import { sorts } from '@/lib/sorts';
+import { memoryAnalysis } from '@/lib/util/cachedUserIDs';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings';
+import getOSItem, { getItem } from '@/lib/util/getOSItem';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { deferInteraction, interactionReply } from '@/lib/util/interactionReply';
+import { makeBankImage } from '@/lib/util/makeBankImage';
+import { parseBank } from '@/lib/util/parseStringBank';
+import { sendToChannelID } from '@/lib/util/webhook';
+import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
+import { syncCustomPrices } from '@/mahoji/lib/events.js';
+import { itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
+import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',

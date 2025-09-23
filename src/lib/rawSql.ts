@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
+import type { ItemBank } from 'oldschooljs';
 
-import type { ItemBank } from './types';
-import { logError } from './util/logError';
+import { logError } from './util/logError.js';
 
 const u = Prisma.UserScalarFieldEnum;
 

@@ -1,15 +1,15 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { userMention } from 'discord.js';
-import { Time, roll } from 'e';
+import { roll, Time } from 'e';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { MaterialBank } from '../../../lib/invention/MaterialBank';
-import { inventionBoosts, transactMaterialsFromUser } from '../../../lib/invention/inventions';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { DisassembleTaskOptions } from '../../../lib/types/minions';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
-import getOSItem from '../../../lib/util/getOSItem';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { inventionBoosts, transactMaterialsFromUser } from '@/lib/invention/inventions.js';
+import { MaterialBank } from '@/lib/invention/MaterialBank.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { DisassembleTaskOptions } from '@/lib/types/minions.js';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export async function disassemblyTask(data: DisassembleTaskOptions) {
 	const { userID, qty } = data;

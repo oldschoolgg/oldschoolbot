@@ -1,5 +1,5 @@
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../data/CollectionsExport';
-import type { KillableMonster } from '../minions/types';
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/data/CollectionsExport';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 export const gorajanBoosts = [
 	[gorajanArcherOutfit, 'range'],

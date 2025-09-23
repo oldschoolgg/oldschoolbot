@@ -2,18 +2,18 @@ import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { objectValues, randInt } from 'e';
 import { Bank, ItemGroups } from 'oldschooljs';
 
-import { userHasFlappy } from '../../../lib/invention/inventions';
+import { userHasFlappy } from '@/lib/invention/inventions.js';
 import {
 	EasyEncounterLoot,
 	HardEncounterLoot,
 	MediumEncounterLoot,
 	rewardTokens
-} from '../../../lib/minions/data/templeTrekking';
-import type { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
-import getOSItem from '../../../lib/util/getOSItem';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { percentChance } from '../../../lib/util/rng';
+} from '@/lib/minions/data/templeTrekking.js';
+import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { percentChance } from '@/lib/util/rng.js';
 
 function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 	let lowestCountPiece = 0;

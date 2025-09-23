@@ -2,9 +2,9 @@ import { LRUCache } from 'lru-cache';
 import { itemID } from 'oldschooljs';
 import { type Canvas, loadImage } from 'skia-canvas';
 
-import { OSRSCanvas } from '../canvas/OSRSCanvas';
-import { type CanvasImage, canvasToBuffer, createCanvas } from '../canvas/canvasUtil';
-import { getPaintedItemImage, paintColorsMap } from '../paintColors';
+import { type CanvasImage, canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
+import { getPaintedItemImage, paintColorsMap } from '@/lib/paintColors.js';
 
 export const customItemEffect = new Map([
 	[

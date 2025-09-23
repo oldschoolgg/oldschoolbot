@@ -3,16 +3,16 @@ import { calcPercentOfNum, increaseNumByPercent, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import {
-	type DivinationEnergy,
-	MemoryHarvestType,
 	calcEnergyPerMemory,
-	divinationEnergies
-} from '../../../lib/bso/divination';
-import { inventionBoosts } from '../../../lib/invention/inventions';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MemoryHarvestOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
+	type DivinationEnergy,
+	divinationEnergies,
+	MemoryHarvestType
+} from '@/lib/bso/divination.js';
+import { inventionBoosts } from '@/lib/invention/inventions.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { MemoryHarvestOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 const SECONDS_TO_HARVEST = 60;
 const SECONDS_TO_CONVERT = 1;

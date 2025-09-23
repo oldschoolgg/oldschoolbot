@@ -2,12 +2,12 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { globalDroprates } from '../../lib/data/globalDroprates';
-import { MAX_QP } from '../../lib/minions/data/quests';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { roll } from '../../lib/util/rng';
+import { globalDroprates } from '@/lib/data/globalDroprates';
+import { MAX_QP } from '@/lib/minions/data/quests';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { roll } from '@/lib/util/rng';
 
 export const questingTask: MinionTask = {
 	type: 'Questing',

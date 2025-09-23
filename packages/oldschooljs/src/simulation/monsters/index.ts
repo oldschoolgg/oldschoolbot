@@ -1,7 +1,7 @@
 import { Collection } from '../../structures/Collection';
 import type Monster from '../../structures/Monster';
-import { CreatureCreation } from './CreatureCreation';
 import { allBosses } from './bosses';
+import { CreatureCreation } from './CreatureCreation';
 import { allLowMonsters } from './low';
 import { CamdozaalGolems } from './low/camdozaalGolems';
 import { ReanimatedMonsters } from './low/reanimated';

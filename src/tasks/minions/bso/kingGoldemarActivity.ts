@@ -2,17 +2,15 @@ import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { percentChance, randArrItem, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { isDoubleLootActive } from '../../../lib/doubleLoot';
-import { trackLoot } from '../../../lib/lootTrack';
-import KingGoldemar, {
-	KingGoldemarLootTable
-} from '../../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
-import { addMonsterXP } from '../../../lib/minions/functions';
-import { TeamLoot } from '../../../lib/simulation/TeamLoot';
-import { calcDwwhChance } from '../../../lib/structures/Boss';
-import type { NewBossOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { isDoubleLootActive } from '@/lib/doubleLoot.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import KingGoldemar, { KingGoldemarLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
+import { addMonsterXP } from '@/lib/minions/functions/index.js';
+import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
+import { calcDwwhChance } from '@/lib/structures/Boss.js';
+import type { NewBossOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const methodsOfDeath = [
 	'Beheaded',

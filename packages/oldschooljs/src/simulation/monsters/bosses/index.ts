@@ -22,15 +22,15 @@ import { Branda, Eldric, RoyalTitans } from './RoyalTitans';
 import Sarachnis from './Sarachnis';
 import Scurrius from './Scurrius';
 import Skotizo from './Skotizo';
+import { allSlayerBosses } from './slayer';
 import { TheHueycoatl } from './TheHueycoatl';
 import { TheLeviathan } from './TheLeviathan';
 import { TheWhisperer } from './TheWhisperer';
 import { Vardorvis } from './Vardorvis';
 import Vorkath from './Vorkath';
-import Zulrah from './Zulrah';
-import { allSlayerBosses } from './slayer';
 import { allWildyBosses } from './wildy';
 import CorporealBeast from './wildy/CorporealBeast';
+import Zulrah from './Zulrah';
 
 export const allBosses = {
 	Araxxor,

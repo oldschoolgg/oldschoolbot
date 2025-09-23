@@ -1,14 +1,14 @@
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Util } from 'oldschooljs';
 
-import { deferInteraction } from '../../../lib/util/interactionReply';
-import { cryptoRand, percentChance } from '../../../lib/util/rng';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { cryptoRand, percentChance } from '@/lib/util/rng.js';
 import {
 	mahojiParseNumber,
 	updateClientGPTrackSetting,
 	updateGPTrackSetting,
 	userStatsUpdate
-} from '../../mahojiSettings';
+} from '@/mahoji/mahojiSettings.js';
 
 export async function diceCommand(user: MUser, interaction: ChatInputCommandInteraction, diceamount?: string) {
 	await deferInteraction(interaction);

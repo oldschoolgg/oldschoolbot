@@ -1,12 +1,12 @@
 import { calcPercentOfNum, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { MysteryBoxes } from '@/lib/bsoOpenables.js';
+import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { fishingTrawlerLoot } from '@/lib/simulation/fishingTrawler.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
-import { MysteryBoxes } from '../../../lib/bsoOpenables';
-import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const trawlerTask: MinionTask = {
 	type: 'FishingTrawler',

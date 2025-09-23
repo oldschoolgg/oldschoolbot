@@ -1,8 +1,8 @@
 import { Time } from 'e';
-import { Bank, Monsters, itemID } from 'oldschooljs';
+import { Bank, itemID, Monsters } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import type { KillableMonster } from '../../types';
+import type { KillableMonster } from '@/lib/minions/types';
 
 export const mazchnaMonsters: KillableMonster[] = [
 	{

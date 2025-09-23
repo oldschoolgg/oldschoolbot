@@ -1,25 +1,25 @@
-import { formatDuration } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit';
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, increaseNumByPercent, removeFromArr } from 'e';
+import { increaseNumByPercent, removeFromArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import {
-	MemoryHarvestType,
-	basePortentCost,
-	divinationEnergies,
-	getAllPortentCharges,
-	memoryHarvestTypes,
-	portents
-} from '../../lib/bso/divination';
-import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
-import type { MemoryHarvestOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { assert } from '../../lib/util/logError';
-import { memoryHarvestResult, totalTimePerRound } from '../../tasks/minions/bso/memoryHarvestActivity';
+    basePortentCost,
+    divinationEnergies,
+    getAllPortentCharges,
+    MemoryHarvestType,
+    memoryHarvestTypes,
+    portents
+} from '@/lib/bso/divination';
+import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions';
+import type { MemoryHarvestOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { assert } from '@/lib/util/logError';
+import { memoryHarvestResult, totalTimePerRound } from '@/tasks/minions/bso/memoryHarvestActivity.js';
 
 export const divinationCommand: OSBMahojiCommand = {
 	name: 'divination',

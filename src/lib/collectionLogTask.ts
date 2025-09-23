@@ -4,12 +4,12 @@ import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { calcWhatPercent, objectEntries } from 'e';
 import { type Bank, Items, Util } from 'oldschooljs';
 
-import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
-import type { CollectionStatus, IToReturnCollection } from '../lib/data/CollectionsExport';
-import { OSRSCanvas } from './canvas/OSRSCanvas';
-import { bankImageTask } from './canvas/bankImage';
-import type { IBgSprite } from './canvas/canvasUtil';
-import type { MUserStats } from './structures/MUserStats';
+import { bankImageTask } from '@/lib/canvas/bankImage.js';
+import type { IBgSprite } from '@/lib/canvas/canvasUtil.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
+import { allCollectionLogs, getCollection, getTotalCl } from '@/lib/data/Collections.js';
+import type { CollectionStatus, IToReturnCollection } from '@/lib/data/CollectionsExport.js';
+import type { MUserStats } from './structures/MUserStats.js';
 
 export const collectionLogTypes = [
 	{ name: 'collection', description: 'Normal Collection Log' },
@@ -118,7 +118,7 @@ class CollectionLogTask {
 
 		const { collection, type, user, flags } = options;
 
-		let collectionLog: IToReturnCollection | undefined | false = undefined;
+		let collectionLog: IToReturnCollection | undefined | false;
 
 		if (options.collectionLog) {
 			collectionLog = options.collectionLog;
@@ -464,7 +464,7 @@ class CollectionLogTask {
 		}
 
 		return {
-			files: [{ attachment: await canvas.toScaledOutput(2), name: `${type}_log_${new Date().valueOf()}.png` }]
+			files: [{ attachment: await canvas.toScaledOutput(2), name: `${type}_log_${Date.now()}.png` }]
 		};
 	}
 

@@ -4,15 +4,15 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { isFunction, reduceNumByPercent } from 'e';
 import { Bank, type SkillsEnum } from 'oldschooljs';
 
-import Createables from '../../lib/data/createables';
-import type { IMaterialBank } from '../../lib/invention';
-import { MaterialBank } from '../../lib/invention/MaterialBank';
-import { transactMaterialsFromUser } from '../../lib/invention/inventions';
-import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
-import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { mahojiUsersSettingsFetch, userStatsBankUpdate } from '../mahojiSettings';
+import Createables from '@/lib/data/createables';
+import type { IMaterialBank } from '@/lib/invention';
+import { transactMaterialsFromUser } from '@/lib/invention/inventions';
+import { MaterialBank } from '@/lib/invention/MaterialBank';
+import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks';
+import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { mahojiUsersSettingsFetch, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const createCommand: OSBMahojiCommand = {
 	name: 'create',

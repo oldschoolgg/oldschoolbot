@@ -4,11 +4,11 @@ import { Bank, Items } from 'oldschooljs';
 
 import { canvasToBuffer } from '@/lib/canvas/canvasUtil';
 import { renderPaintGrid } from '@/lib/canvas/renderPaintGrid';
-import { paintColors } from '../../lib/customItems/paintCans';
-import { getPaintedItemImage } from '../../lib/paintColors';
-import { itemEffectImageCache } from '../../lib/util/customItemEffects';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { ownedItemOption } from '../lib/mahojiCommandOptions';
+import { paintColors } from '@/lib/customItems/paintCans';
+import { getPaintedItemImage } from '@/lib/paintColors';
+import { itemEffectImageCache } from '@/lib/util/customItemEffects';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { ownedItemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 
 export const paintCommand: OSBMahojiCommand = {
 	name: 'paint',

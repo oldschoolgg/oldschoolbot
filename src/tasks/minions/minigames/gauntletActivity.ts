@@ -4,11 +4,11 @@ import { calcWhatPercent, percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
 import type { MinigameName } from '@/lib/settings/minigames';
-import { gauntlet } from '../../../lib/simulation/gauntlet';
-import type { GauntletOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { gauntlet } from '@/lib/simulation/gauntlet.js';
+import type { GauntletOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const gauntletTask: MinionTask = {
 	type: 'Gauntlet',

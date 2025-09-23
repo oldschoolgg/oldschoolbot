@@ -1,14 +1,14 @@
 import { randomVariation } from '@oldschoolgg/toolkit';
-import { Time, calcPercentOfNum, calcWhatPercent, randFloat, randInt, reduceNumByPercent, round } from 'e';
+import { calcPercentOfNum, calcWhatPercent, randFloat, randInt, reduceNumByPercent, round, Time } from 'e';
 import { Bank, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
-import { inventionBoosts } from '../invention/inventions';
-import { blowpipeDarts } from '../minions/functions/blowpipeCommand';
-import { Gear, constructGearSetup } from '../structures/Gear';
-import getOSItem from '../util/getOSItem';
-import { logError } from '../util/logError';
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit, pernixOutfit } from './CollectionsExport';
+import { inventionBoosts } from '@/lib/invention/inventions.js';
+import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
+import { constructGearSetup, Gear } from '@/lib/structures/Gear';
+import getOSItem from '@/lib/util/getOSItem';
+import { logError } from '@/lib/util/logError';
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit, pernixOutfit } from './CollectionsExport.js';
 
 interface TOBRoom {
 	name: string;

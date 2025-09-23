@@ -1,10 +1,10 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { premiumPatronTime } from '../../lib/premiumPatronTime';
-import { roboChimpUserFetch } from '../../lib/roboChimp';
+import { premiumPatronTime } from '@/lib/premiumPatronTime';
+import { roboChimpUserFetch } from '@/lib/roboChimp';
 
 const shop = [
 	{

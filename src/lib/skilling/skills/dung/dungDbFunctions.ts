@@ -1,9 +1,9 @@
 import { reduceNumByPercent } from 'e';
 
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../data/CollectionsExport';
-import { skillsMeetRequirements } from '../../../util';
-import { SkillsEnum } from '../../types';
-import { requiredSkills } from './dungData';
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/data/CollectionsExport';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { skillsMeetRequirements } from '@/lib/util.js';
+import { requiredSkills } from './dungData.js';
 
 export function hasRequiredLevels(user: MUser, floor: number) {
 	return skillsMeetRequirements(user.skillsAsXP, requiredSkills(floor));

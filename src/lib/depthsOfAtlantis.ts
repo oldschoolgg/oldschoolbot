@@ -2,24 +2,24 @@ import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { bold } from 'discord.js';
 import {
-	Time,
 	calcPercentOfNum,
 	clamp,
 	increaseNumByPercent,
 	percentChance,
 	randArrItem,
 	randInt,
-	reduceNumByPercent
+	reduceNumByPercent,
+	Time
 } from 'e';
 import { Bank, type ItemBank, itemID, resolveItems } from 'oldschooljs';
 
-import { calcSetupPercent } from './data/cox';
-import { getSimilarItems } from './data/similarItems';
-import type { UserFullGearSetup } from './gear';
-import { Gear } from './structures/Gear';
-import type { Skills } from './types';
-import type { DOAStoredRaid } from './types/minions';
-import { formatSkillRequirements, itemNameFromID } from './util/smallUtils';
+import { calcSetupPercent } from '@/lib/data/cox';
+import { getSimilarItems } from '@/lib/data/similarItems';
+import type { UserFullGearSetup } from '@/lib/gear/types.js';
+import type { Skills } from '@/lib/types/index.js';
+import { Gear } from './structures/Gear.js';
+import type { DOAStoredRaid } from './types/minions.js';
+import { formatSkillRequirements, itemNameFromID } from './util/smallUtils.js';
 
 const { floor } = Math;
 

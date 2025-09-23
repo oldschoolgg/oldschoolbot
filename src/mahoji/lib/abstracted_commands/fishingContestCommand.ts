@@ -9,11 +9,11 @@ import {
 	getTopDailyFishingCatch,
 	getUsersFishingContestDetails,
 	getValidLocationsForFishType
-} from '../../../lib/fishingContest';
-import { trackLoot } from '../../../lib/lootTrack';
-import type { FishingContestOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+} from '@/lib/fishingContest.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import type { FishingContestOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function fishingContestStartCommand(user: MUser, channelID: string, loc: string | undefined) {
 	const currentFishType = getCurrentFishType();

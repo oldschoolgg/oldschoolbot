@@ -1,11 +1,11 @@
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { EmbedBuilder, type InteractionReplyOptions, type TextChannel } from 'discord.js';
-import { Time, randInt, sumArr } from 'e';
+import { randInt, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { VasaMagus } from '../../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
-import { BossInstance } from '../../../lib/structures/Boss';
-import { Gear } from '../../../lib/structures/Gear';
+import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus.js';
+import { BossInstance } from '@/lib/structures/Boss.js';
+import { Gear } from '@/lib/structures/Gear.js';
 
 export const vasaBISGear = new Gear({
 	head: 'Gorajan occult helmet',

@@ -3,13 +3,13 @@ import { isAtleastThisOld } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { compCapeCreatableBank } from '../../skilling/skillcapes';
-import type { Buyable } from './buyables';
-import { circusBuyables } from './circusBuyables';
-import { fistOfGuthixBuyables } from './fistOfGuthixBuyables';
-import { keyCrateBuyables } from './keyCrateBuyables';
-import { stealingCreationBuyables } from './stealingCreationBuyables';
-import { veteranCapeBuyables } from './veteranCapeBuyables';
+import { compCapeCreatableBank } from '@/lib/skilling/skillcapes';
+import type { Buyable } from './buyables.js';
+import { circusBuyables } from './circusBuyables.js';
+import { fistOfGuthixBuyables } from './fistOfGuthixBuyables.js';
+import { keyCrateBuyables } from './keyCrateBuyables.js';
+import { stealingCreationBuyables } from './stealingCreationBuyables.js';
+import { veteranCapeBuyables } from './veteranCapeBuyables.js';
 
 const items = [
 	['Castle wars cape (beginner)', 100],

@@ -1,8 +1,7 @@
 import { sumArr } from 'e';
-import { Bank, type ItemBank, ItemGroups, Monsters, calcCombatLevel, resolveItems } from 'oldschooljs';
+import { Bank, calcCombatLevel, type ItemBank, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { eggs } from '../../mahoji/commands/offer';
-import { BitField, MAX_LEVEL } from '../constants';
+import { BitField, MAX_LEVEL } from '@/lib/constants';
 import {
 	barrowsChestCL,
 	chambersOfXericCL,
@@ -11,7 +10,7 @@ import {
 	inventorOutfit,
 	theatreOfBLoodCL,
 	treeBeardCL
-} from '../data/CollectionsExport';
+} from '@/lib/data/CollectionsExport';
 import {
 	ArdougneDiary,
 	DesertDiary,
@@ -22,21 +21,22 @@ import {
 	KourendKebosDiary,
 	LumbridgeDraynorDiary,
 	MorytaniaDiary,
+	userhasDiaryTier,
 	VarrockDiary,
 	WesternProv,
-	WildernessDiary,
-	userhasDiaryTier
-} from '../diaries';
-import { implings } from '../implings';
-import { SuperiorTormentedDemon } from '../minions/data/killableMonsters/custom/TormentedDemon';
-import { QueenBlackDragon } from '../minions/data/killableMonsters/custom/demiBosses';
-import Darts from '../skilling/skills/fletching/fletchables/darts';
-import Javelins from '../skilling/skills/fletching/fletchables/javelins';
-import { ashes } from '../skilling/skills/prayer';
-import { calcTotalLevel } from '../util';
-import { LampTable } from '../xpLamps';
-import { type Task, leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster } from './leaguesUtils';
-import { calculateChargedItems, calculateTiarasMade, calculateTotalMahoganyHomesPoints } from './stats';
+	WildernessDiary
+} from '@/lib/diaries.js';
+import { implings } from '@/lib/implings.js';
+import { QueenBlackDragon } from '@/lib/minions/data/killableMonsters/custom/demiBosses.js';
+import { SuperiorTormentedDemon } from '@/lib/minions/data/killableMonsters/custom/TormentedDemon.js';
+import Darts from '@/lib/skilling/skills/fletching/fletchables/darts';
+import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins';
+import { ashes } from '@/lib/skilling/skills/prayer';
+import { calcTotalLevel } from '@/lib/util.js';
+import { LampTable } from '@/lib/xpLamps.js';
+import { eggs } from '@/mahoji/commands/offer';
+import { leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster, type Task } from './leaguesUtils.js';
+import { calculateChargedItems, calculateTiarasMade, calculateTotalMahoganyHomesPoints } from './stats.js';
 
 export const mediumTasks: Task[] = [
 	{

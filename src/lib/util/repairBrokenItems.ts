@@ -1,13 +1,11 @@
 import { deepEqual, deepObjectDiff } from '@oldschoolgg/toolkit';
 import type { GearSetupType, Prisma } from '@prisma/client';
 import { deepClone, notEmpty, uniqueArr } from 'e';
-import { Items } from 'oldschooljs';
+import { type ItemBank, Items } from 'oldschooljs';
 
-import { userStatsUpdate } from '../../mahoji/mahojiSettings';
-import { type GearSetup, GearSetupTypes } from '../gear';
-
-import type { ItemBank } from '../types';
-import { moidLink } from '../util';
+import { type GearSetup, GearSetupTypes } from '@/lib/gear/types.js';
+import { moidLink } from '@/lib/util.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings';
 
 type GearX = Required<Record<`gear_${GearSetupType}`, GearSetup | null>>;
 type Changes = {

@@ -3,10 +3,10 @@ import type { Prisma } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import type { ItemBank } from 'oldschooljs';
 
-import { BitField } from '../../../lib/constants';
-import { roboChimpUserFetch } from '../../../lib/roboChimp';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { assert } from '../../../lib/util/logError';
+import { BitField } from '@/lib/constants.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { assert } from '@/lib/util/logError.js';
 
 export async function ironmanCommand(user: MUser, interaction: ChatInputCommandInteraction | null) {
 	if (user.minionIsBusy) return 'Your minion is busy.';

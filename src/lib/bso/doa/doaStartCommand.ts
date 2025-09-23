@@ -1,26 +1,26 @@
 import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { Time, clamp } from 'e';
+import { clamp, Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
-import { bankToStrShortNames } from '@/lib/util/smallUtils';
-import { mahojiParseNumber, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
-import { degradeItem } from '../../degradeableItems';
+import { degradeItem } from '@/lib/degradeableItems.js';
 import {
 	calcDOAInput,
 	calculateUserGearPercents,
 	checkDOATeam,
 	checkDOAUser,
 	createDOATeam
-} from '../../depthsOfAtlantis';
-import { trackLoot } from '../../lootTrack';
-import { setupParty } from '../../party';
-import type { MakePartyOptions } from '../../types';
-import type { DOAOptions } from '../../types/minions';
-import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../util/calcMaxTripLength';
-import { updateBankSetting } from '../../util/updateBankSetting';
+} from '@/lib/depthsOfAtlantis.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { setupParty } from '@/lib/party.js';
+import type { MakePartyOptions } from '@/lib/types/index.js';
+import type { DOAOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import { bankToStrShortNames } from '@/lib/util/smallUtils';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { mahojiParseNumber, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 export async function doaStartCommand(
 	user: MUser,

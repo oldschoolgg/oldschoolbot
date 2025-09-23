@@ -4,11 +4,11 @@ import { type ChatInputCommandInteraction, EmbedBuilder, type InteractionReplyOp
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { dwarvenOutfit } from '../../../lib/data/CollectionsExport';
-import { Ignecarus } from '../../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
-import { BossInstance } from '../../../lib/structures/Boss';
-import { Gear } from '../../../lib/structures/Gear';
-import { deferInteraction } from '../../../lib/util/interactionReply';
+import { dwarvenOutfit } from '@/lib/data/CollectionsExport.js';
+import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
+import { BossInstance } from '@/lib/structures/Boss.js';
+import { Gear } from '@/lib/structures/Gear.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
 
 export async function igneCommand(
 	interaction: ChatInputCommandInteraction | null,

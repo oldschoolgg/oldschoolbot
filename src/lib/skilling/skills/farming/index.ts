@@ -2,17 +2,17 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { CropUpgradeType } from '@prisma/client';
 import { itemID, resolveItems } from 'oldschooljs';
 
-import getOSItem from '../../../util/getOSItem';
-import type { Plant } from '../../types';
-import { SkillsEnum } from '../../types';
-import allotmentPlants from './allotments';
-import { bushes } from './bushes';
-import fruitTrees from './fruitTrees';
-import herbPlants from './herbPlants';
-import hopsPlants from './hops';
-import specialPlants from './specialPlants';
-import trees from './trees';
-import { zygomitePlants } from './zygomites';
+import type { Plant } from '@/lib/skilling/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import getOSItem from '@/lib/util/getOSItem';
+import allotmentPlants from './allotments.js';
+import { bushes } from './bushes.js';
+import fruitTrees from './fruitTrees.js';
+import herbPlants from './herbPlants.js';
+import hopsPlants from './hops.js';
+import specialPlants from './specialPlants.js';
+import trees from './trees.js';
+import { zygomitePlants } from './zygomites.js';
 
 export const plants: Plant[] = [
 	...herbPlants,

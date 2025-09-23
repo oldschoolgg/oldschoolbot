@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
-import type { ActivityTaskOptionsWithNoChanges } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const strongholdTask: MinionTask = {
 	type: 'StrongholdOfSecurity',

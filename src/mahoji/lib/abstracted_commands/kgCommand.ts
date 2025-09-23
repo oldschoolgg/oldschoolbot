@@ -4,10 +4,10 @@ import { type ChatInputCommandInteraction, EmbedBuilder, type InteractionReplyOp
 import { Time } from 'e';
 import { Bank, toKMB } from 'oldschooljs';
 
-import KingGoldemar from '../../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
-import { BossInstance, gpCostPerKill } from '../../../lib/structures/Boss';
-import { Gear } from '../../../lib/structures/Gear';
-import { deferInteraction } from '../../../lib/util/interactionReply';
+import KingGoldemar from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';
+import { BossInstance, gpCostPerKill } from '@/lib/structures/Boss.js';
+import { Gear } from '@/lib/structures/Gear.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
 
 export async function kgCommand(
 	interaction: ChatInputCommandInteraction | null,

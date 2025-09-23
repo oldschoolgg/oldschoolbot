@@ -1,10 +1,10 @@
 import { schedule } from 'node-cron';
 
-import { analyticsTick } from './analytics';
-import { syncPrescence } from './doubleLoot';
-import { cacheGEPrices } from './marketPrices';
-import { cacheCleanup } from './util/cachedUserIDs';
-import { syncSlayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard';
+import { analyticsTick } from './analytics.js';
+import { syncPrescence } from './doubleLoot.js';
+import { cacheGEPrices } from './marketPrices.js';
+import { cacheCleanup } from './util/cachedUserIDs.js';
+import { syncSlayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard.js';
 
 export const crons = new Set<ReturnType<typeof schedule>>();
 

@@ -1,8 +1,8 @@
 import { Bank, LootTable } from 'oldschooljs';
 
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import type { ActivityTaskOptionsWithQuantity } from './../../lib/types/minions';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage';
 
 const ancientPageTable = new LootTable()
 	.add(11_341, 1, 1)

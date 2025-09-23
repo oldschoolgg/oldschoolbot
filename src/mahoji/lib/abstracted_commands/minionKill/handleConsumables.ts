@@ -1,4 +1,4 @@
-import { Time, reduceNumByPercent } from 'e';
+import { reduceNumByPercent, Time } from 'e';
 import { EItem, itemID } from 'oldschooljs';
 
 import { getSimilarItems } from '@/lib/data/similarItems';

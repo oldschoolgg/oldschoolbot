@@ -1,10 +1,7 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { randArrItem, roll } from 'e';
-import { Bank, ItemGroups, Items, LootTable, TreeHerbSeedTable, itemID, resolveItems } from 'oldschooljs';
+import { Bank, ItemGroups, Items, itemID, LootTable, resolveItems, TreeHerbSeedTable } from 'oldschooljs';
 
-import { OSB_VIRTUS_IDS } from './bso/bsoConstants';
-import { clAdjustedDroprate } from './bso/bsoUtil';
-import { divinationEnergies } from './bso/divination';
 import {
 	allPetIDs,
 	allPetsCL,
@@ -13,24 +10,27 @@ import {
 	customBossesDropsThatCantBeDroppedInMBs,
 	theatreOfBloodHardUniques,
 	theatreOfBloodNormalUniques
-} from './data/CollectionsExport';
-import { PartyhatTable, baseHolidayItems } from './data/holidayItems';
-import { allTrophyItems } from './data/itemAliases';
-import { keyCrates } from './keyCrates';
-import { FishTable } from './minions/data/killableMonsters/custom/SeaKraken';
-import type { UnifiedOpenable } from './openables';
-import { PaintBoxTable } from './paintColors';
+} from '@/lib/data/CollectionsExport';
+import { baseHolidayItems, PartyhatTable } from '@/lib/data/holidayItems';
+import { allTrophyItems } from '@/lib/data/itemAliases';
 import {
 	ChimplingImpling,
 	EternalImpling,
 	InfernalImpling,
 	MysteryImpling,
 	ShrimplingImpling
-} from './simulation/customImplings';
-import { RuneTable } from './simulation/seedTable';
-import { ExoticSeedsTable } from './simulation/sharedTables';
-import getOSItem from './util/getOSItem';
-import { LampTable } from './xpLamps';
+} from '@/lib/simulation/customImplings';
+import { RuneTable } from '@/lib/simulation/seedTable';
+import { ExoticSeedsTable } from '@/lib/simulation/sharedTables';
+import { OSB_VIRTUS_IDS } from './bso/bsoConstants.js';
+import { clAdjustedDroprate } from './bso/bsoUtil.js';
+import { divinationEnergies } from './bso/divination.js';
+import { keyCrates } from './keyCrates.js';
+import { FishTable } from './minions/data/killableMonsters/custom/SeaKraken.js';
+import type { UnifiedOpenable } from './openables.js';
+import { PaintBoxTable } from './paintColors.js';
+import getOSItem from './util/getOSItem.js';
+import { LampTable } from './xpLamps.js';
 
 const MR_E_DROPRATE_FROM_UMB_AND_TMB = 5000;
 const MR_E_DROPRATE_FROM_PMB = 200;

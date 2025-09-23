@@ -24,6 +24,6 @@ export const GrandHallowedCoffin = new LootTable()
 
 export { BarbarianAssault, ChambersOfXeric, FishingTrawler, Gauntlet, Nightmare, Tempoross, Zalcano };
 
+export type { ChambersOfXericOptions } from './ChambersOfXeric';
 export * from './Mimic';
 export * from './TheatreOfBlood';
-export type { ChambersOfXericOptions } from './ChambersOfXeric';

@@ -1,20 +1,20 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { Time, randArrItem, reduceNumByPercent, roll, uniqueArr } from 'e';
-import { Bank, type ItemBank, SkillsEnum, resolveItems } from 'oldschooljs';
+import { randArrItem, reduceNumByPercent, roll, Time, uniqueArr } from 'e';
+import { Bank, type ItemBank, resolveItems, SkillsEnum } from 'oldschooljs';
 
+import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';
 import { drawChestLootImage } from '@/lib/canvas/chestImage';
-import { DOANonUniqueTable } from '../../../lib/bso/doa/doaLootTable';
-import { doaCL, doaMetamorphPets } from '../../../lib/data/CollectionsExport';
-import { globalDroprates } from '../../../lib/data/globalDroprates';
-import { DOARooms, chanceOfDOAUnique, pickUniqueToGiveUser } from '../../../lib/depthsOfAtlantis';
-import { trackLoot } from '../../../lib/lootTrack';
-import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { TeamLoot } from '../../../lib/simulation/TeamLoot';
-import type { DOAOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { doaCL, doaMetamorphPets } from '@/lib/data/CollectionsExport.js';
+import { globalDroprates } from '@/lib/data/globalDroprates.js';
+import { chanceOfDOAUnique, DOARooms, pickUniqueToGiveUser } from '@/lib/depthsOfAtlantis.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
+import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
+import type { DOAOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 async function handleDOAXP(user: MUser, qty: number, isCm: boolean) {
 	let rangeXP = 10_000 * qty;

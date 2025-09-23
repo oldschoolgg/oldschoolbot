@@ -1,17 +1,17 @@
 import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, reduceNumByPercent } from 'e';
-
 import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
-import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
-import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
-import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { reduceNumByPercent, Time } from 'e';
+
+import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries';
+import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions';
+import { Craftables } from '@/lib/skilling/skills/crafting/craftables';
+import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const craftCommand: OSBMahojiCommand = {
 	name: 'craft',

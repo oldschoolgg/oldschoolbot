@@ -3,7 +3,6 @@ import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { GeneralBank, type GeneralBankType, UserError } from '@oldschoolgg/toolkit/structures';
 import {
-	Time,
 	calcPercentOfNum,
 	calcWhatPercent,
 	clamp,
@@ -13,24 +12,25 @@ import {
 	percentChance,
 	randInt,
 	reduceNumByPercent,
-	sumArr
+	sumArr,
+	Time
 } from 'e';
 import { Bank, type EquipmentSlot, type ItemBank, LootTable, resolveItems } from 'oldschooljs';
 
+import { getSimilarItems } from '@/lib/data/similarItems';
+import type { Skills } from '@/lib/types/index.js';
 import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils';
-import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
-import { gorajanGearBoost } from './bso/gorajanGearBoost';
-import { getSimilarItems } from './data/similarItems';
-import { degradeChargeBank } from './degradeableItems';
-import type { GearSetupType } from './gear/types';
-import { trackLoot } from './lootTrack';
-import { QuestID } from './minions/data/quests';
-import { ChargeBank } from './structures/Bank';
-import type { Skills } from './types';
-import type { ColoTaskOptions } from './types/minions';
-import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from './util/calcMaxTripLength';
-import { updateBankSetting } from './util/updateBankSetting';
+import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
+import { gorajanGearBoost } from './bso/gorajanGearBoost.js';
+import { degradeChargeBank } from './degradeableItems.js';
+import type { GearSetupType } from './gear/types.js';
+import { trackLoot } from './lootTrack.js';
+import { QuestID } from './minions/data/quests.js';
+import { ChargeBank } from './structures/Bank.js';
+import type { ColoTaskOptions } from './types/minions.js';
+import addSubTaskToActivityTask from './util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from './util/calcMaxTripLength.js';
+import { updateBankSetting } from './util/updateBankSetting.js';
 
 function combinedChance(percentages: number[]): number {
 	const failureProbabilities = percentages.map(p => (100 - p) / 100);

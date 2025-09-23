@@ -2,7 +2,7 @@ import { time } from '@discordjs/builders';
 import { Time } from 'e';
 import { Bank, resolveItems } from 'oldschooljs';
 
-import type { Buyable } from './buyables';
+import type { Buyable } from './buyables.js';
 
 const veteranCapeSrc = [
 	{

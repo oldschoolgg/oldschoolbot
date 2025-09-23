@@ -4,9 +4,9 @@ import { randArrItem, randInt, roll } from 'e';
 import type { Item } from 'oldschooljs';
 import { loadImage } from 'skia-canvas';
 
-import { type CanvasImage, canvasToBuffer, createCanvas, printWrappedText } from './canvas/canvasUtil';
-import { textBoxFile } from './canvas/chatHeadImage';
-import getOSItem from './util/getOSItem';
+import { type CanvasImage, canvasToBuffer, createCanvas, printWrappedText } from '@/lib/canvas/canvasUtil.js';
+import { textBoxFile } from '@/lib/canvas/chatHeadImage.js';
+import getOSItem from './util/getOSItem.js';
 
 interface MonkeyTier {
 	id: number;

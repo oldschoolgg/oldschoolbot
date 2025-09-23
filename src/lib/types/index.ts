@@ -1,6 +1,6 @@
 import type { BaseMessageOptions } from 'discord.js';
 
-import type { SkillsEnum } from '../skilling/types';
+import type { SkillsEnum } from '@/lib/skilling/types.js';
 
 export interface ItemBank {
 	[key: string]: number;

@@ -2,13 +2,13 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 import { type Item, itemID } from 'oldschooljs';
 
+import type { Skills } from '@/lib/types/index.js';
+import type { PuroPuroActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import getOSItem from '@/lib/util/getOSItem.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import type { Skills } from '../../../lib/types';
-import type { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import getOSItem from '../../../lib/util/getOSItem';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 interface PuroImpling {
 	name: string;
@@ -61,7 +61,7 @@ export async function puroPuroStartCommand(
 	const [hasDarkLureSkillReqs, lureReason] = hasSkillReqs(user, darkLureSkillRequirements);
 	if (!hasReqs) return `To hunt in Puro-Puro, you need: ${reason}.`;
 	if (user.QP < 3) return 'To hunt in Puro-Puro, you need 3 QP.';
-	let impToHunt: PuroImpling | undefined = undefined;
+	let impToHunt: PuroImpling | undefined;
 	if (impling) {
 		impToHunt = puroOptions.find(i => stringMatches(i.name, impling));
 	} else if (implingTier) {

@@ -1,9 +1,9 @@
 import { type Item, type Monster, Monsters } from 'oldschooljs';
 
-import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
-import { slayerMasters } from '../slayer/slayerMasters';
-import { allSlayerTasks } from '../slayer/tasks';
-import getOSItem from '../util/getOSItem';
+import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
+import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
+import { allSlayerTasks } from '@/lib/slayer/tasks/index.js';
+import getOSItem from '@/lib/util/getOSItem';
 
 interface SlayerMaskHelm {
 	mask: Item;

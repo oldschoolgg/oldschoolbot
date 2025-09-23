@@ -1,21 +1,21 @@
 import { objectEntries, randArrItem, randInt, roll } from 'e';
 import { Bank, Monsters, resolveItems } from 'oldschooljs';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { globalDroprates } from '@/lib/data/globalDroprates.js';
+import { isDoubleLootActive } from '@/lib/doubleLoot.js';
+import { kittens } from '@/lib/growablePets.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { bossKillables } from '@/lib/minions/data/killableMonsters/bosses/index.js';
+import { VasaMagus, VasaMagusLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus.js';
+import announceLoot from '@/lib/minions/functions/announceLoot.js';
+import { addMonsterXP } from '@/lib/minions/functions/index.js';
+import type { NewBossOptions } from '@/lib/types/minions.js';
 import { getMonster, itemNameFromID } from '@/lib/util';
-import { globalDroprates } from '../../../lib/data/globalDroprates';
-import { isDoubleLootActive } from '../../../lib/doubleLoot';
-import { kittens } from '../../../lib/growablePets';
-import { trackLoot } from '../../../lib/lootTrack';
-import { bossKillables } from '../../../lib/minions/data/killableMonsters/bosses';
-import { VasaMagus, VasaMagusLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
-import { addMonsterXP } from '../../../lib/minions/functions';
-import announceLoot from '../../../lib/minions/functions/announceLoot';
-import type { NewBossOptions } from '../../../lib/types/minions';
-import getOSItem from '../../../lib/util/getOSItem';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const vasaBosses = [
 	Monsters.AbyssalSire,

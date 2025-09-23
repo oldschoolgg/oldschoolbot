@@ -1,6 +1,6 @@
 import type { Item } from 'oldschooljs';
 
-import { DisassemblySourceGroups } from './groups';
+import { DisassemblySourceGroups } from '@/lib/invention/groups/index.js';
 
 export const materialTypes = [
 	'junk',

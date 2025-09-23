@@ -1,17 +1,17 @@
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
+import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
-import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
-import { KourendKebosDiary, userhasDiaryTier } from '../../diaries';
-import { InventionID, inventionBoosts, inventionItemBoost } from '../../invention/inventions';
-import type { DarkAltarOptions } from '../../types/minions';
-import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../util/calcMaxTripLength';
-import getOSItem from '../../util/getOSItem';
-import { hasSkillReqs } from '../../util/smallUtils';
-import { updateBankSetting } from '../../util/updateBankSetting';
+import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions.js';
+import type { DarkAltarOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import getOSItem from '@/lib/util/getOSItem';
+import { hasSkillReqs } from '@/lib/util/smallUtils';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export const darkAltarRunes = {
 	soul: {
@@ -39,7 +39,12 @@ export async function darkAltarCommand({
 	channelID,
 	name,
 	extracts
-}: { user: MUser; channelID: string; name: string; extracts?: boolean }) {
+}: {
+	user: MUser;
+	channelID: string;
+	name: string;
+	extracts?: boolean;
+}) {
 	const stats = user.skillsAsLevels;
 	if (!['blood', 'soul'].includes(name.toLowerCase().split(' ')[0])) return 'Invalid rune.';
 	const [hasReqs, neededReqs] = hasSkillReqs(user, {

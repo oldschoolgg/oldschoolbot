@@ -2,11 +2,11 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { percentChance, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';
-import { divinersOutfit } from '../../../lib/data/CollectionsExport';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
+import { divinersOutfit } from '@/lib/data/CollectionsExport.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const guthixianCacheTask: MinionTask = {
 	type: 'GuthixianCache',

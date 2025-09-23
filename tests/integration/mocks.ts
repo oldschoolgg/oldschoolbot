@@ -9,5 +9,5 @@ vi.mock('../../src/lib/util/interactionReply', () => ({
 	interactionReply: vi.fn()
 }));
 
-// @ts-ignore
+// @ts-expect-error
 globalClient.channels.cache.get = () => ({ id: '1234', isTextBased: () => true, isDMBased: () => true, send: vi.fn() });

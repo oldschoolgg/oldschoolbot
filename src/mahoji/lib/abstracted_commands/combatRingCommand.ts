@@ -1,8 +1,8 @@
 import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 
-import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 
 export async function combatRingCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) {

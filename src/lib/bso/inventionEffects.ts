@@ -1,14 +1,14 @@
-import { Time, increaseNumByPercent, percentChance, sumArr } from 'e';
+import { increaseNumByPercent, percentChance, sumArr, Time } from 'e';
 import { Bank, toKMB } from 'oldschooljs';
 
-import { ClueTiers } from '../clues/clueTiers';
-import { BitField } from '../constants';
-import { InventionID, inventionBoosts, inventionItemBoostRaw } from '../invention/inventions';
-import { bones } from '../skilling/skills/prayer';
-import type { GearBank } from '../structures/GearBank';
-import type { UpdateBank } from '../structures/UpdateBank';
-import getOSItem from '../util/getOSItem';
-import { assert } from '../util/logError';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { BitField } from '@/lib/constants';
+import { InventionID, inventionBoosts, inventionItemBoostRaw } from '@/lib/invention/inventions.js';
+import { bones } from '@/lib/skilling/skills/prayer';
+import type { GearBank } from '@/lib/structures/GearBank';
+import type { UpdateBank } from '@/lib/structures/UpdateBank';
+import getOSItem from '@/lib/util/getOSItem';
+import { assert } from '@/lib/util/logError';
 
 export function clueUpgraderEffect({
 	gearBank,

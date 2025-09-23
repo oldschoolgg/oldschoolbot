@@ -1,8 +1,8 @@
 import type { Item } from 'oldschooljs';
 
-import type { PaintColor } from '../paintColors';
-import getOSItem from '../util/getOSItem';
-import { setCustomItem } from './util';
+import { setCustomItem } from '@/lib/customItems/util.js';
+import type { PaintColor } from '@/lib/paintColors.js';
+import getOSItem from '@/lib/util/getOSItem';
 
 export const paintColors: PaintColor[] = [
 	{ itemId: 72_450, name: 'Guthix Green', rgb: [50, 205, 50], paintCanItem: null as any as Item },

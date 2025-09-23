@@ -1,7 +1,6 @@
-import { Bank } from 'oldschooljs';
+import { Bank, EItem, itemID } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { EItem, itemID } from 'oldschooljs';
 import { calcFishingTripStart } from '../../src/lib/skilling/skills/fishing/fishingTripStart';
 import { makeGearBank } from './utils';
 

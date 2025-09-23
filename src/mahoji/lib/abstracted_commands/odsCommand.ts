@@ -1,14 +1,14 @@
 import { type CommandResponse, formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { Time, randInt, reduceNumByPercent } from 'e';
+import { randInt, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { trackLoot } from '../../../lib/lootTrack';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { trackLoot } from '@/lib/lootTrack.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const OuraniaBuyables = [
 	{

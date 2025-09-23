@@ -1,7 +1,7 @@
-import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { EnchantingActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { Enchantables } from '@/lib/skilling/skills/magic/enchantables';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { EnchantingActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const enchantingTask: MinionTask = {
 	type: 'Enchanting',

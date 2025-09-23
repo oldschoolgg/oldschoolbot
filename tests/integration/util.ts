@@ -3,13 +3,13 @@ import {
 	type ClientStorage,
 	type GearSetupType,
 	type Prisma,
+	tame_growth,
 	type User,
-	type UserStats,
-	tame_growth
+	type UserStats
 } from '@prisma/client';
 import type { User as DJSUser } from 'discord.js';
 import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
-import { Bank, type EMonster, Items, Monsters, convertLVLtoXP } from 'oldschooljs';
+import { Bank, convertLVLtoXP, type EMonster, Items, Monsters } from 'oldschooljs';
 import { integer, nodeCrypto } from 'random-js';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
@@ -19,8 +19,8 @@ import { MaterialBank } from '@/lib/invention/MaterialBank';
 import getOSItem from '@/lib/util/getOSItem';
 import { giveMaxStats } from '@/mahoji/commands/testpotato';
 import { ironmanCommand } from '@/mahoji/lib/abstracted_commands/ironmanCommand';
+import { globalConfig, type PvMMethod } from '../../src/lib/constants';
 import { MUserClass } from '../../src/lib/MUser';
-import { type PvMMethod, globalConfig } from '../../src/lib/constants';
 import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { Gear } from '../../src/lib/structures/Gear';

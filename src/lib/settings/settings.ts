@@ -15,13 +15,13 @@ import type {
 import { Time } from 'e';
 import { isEmpty } from 'remeda';
 
-import { postCommand } from '../../mahoji/lib/postCommand';
-import { preCommand } from '../../mahoji/lib/preCommand';
-import { PerkTier } from '../constants';
-import { deferInteraction, handleInteractionError, interactionReply } from '../util/interactionReply';
-import { logError } from '../util/logError';
+import { PerkTier } from '@/lib/constants';
+import { deferInteraction, handleInteractionError, interactionReply } from '@/lib/util/interactionReply';
+import { logError } from '@/lib/util/logError';
+import { postCommand } from '@/mahoji/lib/postCommand';
+import { preCommand } from '@/mahoji/lib/preCommand';
 
-export * from './minigames';
+export * from './minigames.js';
 
 export async function getNewUser(id: string): Promise<NewUser> {
 	const value = await prisma.newUser.findUnique({ where: { id } });

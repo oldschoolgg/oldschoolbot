@@ -1,11 +1,11 @@
 import { percentChance, randInt } from 'e';
 import { ItemGroups } from 'oldschooljs';
 
+import Prayer from '@/lib/skilling/skills/prayer.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { OfferingActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { roll } from '@/lib/util/rng';
-import Prayer from '../../../lib/skilling/skills/prayer';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { OfferingActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export function zealOutfitBoost(user: MUser) {
 	let zealOutfitAmount = 0;

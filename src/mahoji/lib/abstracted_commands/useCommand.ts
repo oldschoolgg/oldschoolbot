@@ -1,18 +1,18 @@
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder, bold } from 'discord.js';
-import { Time, notEmpty, objectEntries, randArrItem, randInt } from 'e';
+import { notEmpty, objectEntries, randArrItem, randInt, Time } from 'e';
 import { Bank, type Item, resolveItems } from 'oldschooljs';
 
+import { divinationEnergies } from '@/lib/bso/divination.js';
 import { gearImages } from '@/lib/canvas/gearImageData';
-import { divinationEnergies } from '../../../lib/bso/divination';
-import { BitField } from '../../../lib/constants';
-import { addToDoubleLootTimer } from '../../../lib/doubleLoot';
-import { allDyes, dyedItems } from '../../../lib/dyedItems';
-import { mysteriousStepData } from '../../../lib/mysteryTrail';
-import { makeScriptImage } from '../../../lib/scriptImages';
-import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import { assert } from '../../../lib/util/logError';
-import { flowerTable } from './hotColdCommand';
+import { BitField } from '@/lib/constants.js';
+import { addToDoubleLootTimer } from '@/lib/doubleLoot.js';
+import { allDyes, dyedItems } from '@/lib/dyedItems.js';
+import { mysteriousStepData } from '@/lib/mysteryTrail.js';
+import { makeScriptImage } from '@/lib/scriptImages.js';
+import getOSItem, { getItem } from '@/lib/util/getOSItem.js';
+import { assert } from '@/lib/util/logError.js';
+import { flowerTable } from './hotColdCommand.js';
 
 const messageInABottleMessages = [
 	"We are but a week from finishing our journey, yet the seas have claimed my dearest and only friend, Felris, a noble pup. He was loyal and uplifting, and warmed the heart on a cold day. The tragedy of his loss echoes in the lonely crash of the waves, a vivid reminder of a journey he couldn't complete. Alone, I endure, with only his memory as my companion.",

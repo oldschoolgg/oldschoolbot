@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
-import calculateMonsterFood from '../minions/functions/calculateMonsterFood';
-import type { KillableMonster } from '../minions/types';
+import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 export async function calcBossFood(user: MUser, monster: KillableMonster, teamSize: number, quantity: number) {
 	let [healAmountNeeded] = calculateMonsterFood(monster, user);

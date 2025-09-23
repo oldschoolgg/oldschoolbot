@@ -1,24 +1,24 @@
 import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { Time, calcPercentOfNum, increaseNumByPercent, percentChance, randInt, roll, sumArr } from 'e';
-import { Bank, type ItemBank, Items, Monsters, itemID, randomVariation, resolveItems } from 'oldschooljs';
+import { calcPercentOfNum, increaseNumByPercent, percentChance, randInt, roll, sumArr, Time } from 'e';
+import { Bank, type ItemBank, Items, itemID, Monsters, randomVariation, resolveItems } from 'oldschooljs';
 
 import { determineProjectileTypeFromGear } from '@/lib/bso/gear/util';
-import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage';
-import { BitField, projectiles } from '../../../lib/constants';
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
-import { getSimilarItems } from '../../../lib/data/similarItems';
-import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
-import type { BlowpipeData } from '../../../lib/minions/types';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import type { Gear } from '../../../lib/structures/Gear';
-import { PercentCounter } from '../../../lib/structures/PercentCounter';
-import type { Skills } from '../../../lib/types';
-import type { InfernoOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
+import { BitField, projectiles } from '@/lib/constants.js';
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/data/CollectionsExport.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
+import type { BlowpipeData } from '@/lib/minions/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import type { Gear } from '@/lib/structures/Gear.js';
+import { PercentCounter } from '@/lib/structures/PercentCounter.js';
+import type { Skills } from '@/lib/types/index.js';
+import type { InfernoOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const minimumRangeItems = [
 	'Amulet of fury',

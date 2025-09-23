@@ -1,8 +1,8 @@
 import type { Portent } from '@prisma/client';
-import { Bank, type Item, Items, LootTable, itemID } from 'oldschooljs';
+import { Bank, type Item, Items, itemID, LootTable } from 'oldschooljs';
 
-import { BitField } from '../constants';
-import { hasUnlockedAtlantis } from './bsoUtil';
+import { BitField } from '@/lib/constants';
+import { hasUnlockedAtlantis } from './bsoUtil.js';
 
 export function calcEnergyPerMemory(energy: DivinationEnergy) {
 	return (120 - energy.level) / 150;
@@ -243,7 +243,7 @@ export function calcAtomicEnergy(energy: DivinationEnergy): number {
 export type DivinationEnergy = (typeof divinationEnergies)[number];
 
 for (const energy of divinationEnergies) {
-	// @ts-ignore Ignore
+	// @ts-expect-error Ignore
 	energy.boonEnergyCost = energy.level * 50;
 }
 

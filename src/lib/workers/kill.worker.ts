@@ -1,14 +1,14 @@
-import '../customItems/customItems';
-import '../data/itemAliases';
+import '../customItems/customItems.js';
+import '../data/itemAliases.js';
 
 import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank, Monsters } from 'oldschooljs';
 
-import type { KillWorkerArgs, KillWorkerReturn } from '.';
-import { ORI_DISABLED_MONSTERS, YETI_ID } from '../bso/bsoConstants';
-import { customKillableMonsters } from '../minions/data/killableMonsters/custom/customMonsters.js';
-import killableMonsters from '../minions/data/killableMonsters/index';
-import { simulatedKillables } from '../simulation/simulatedKillables';
+import { ORI_DISABLED_MONSTERS, YETI_ID } from '@/lib/bso/bsoConstants.js';
+import { customKillableMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { simulatedKillables } from '@/lib/simulation/simulatedKillables';
+import type { KillWorkerArgs, KillWorkerReturn } from '@/lib/workers/index.js';
 
 if (global.prisma) {
 	throw new Error('Prisma is loaded in the kill worker!');

@@ -1,25 +1,25 @@
 import { awaitMessageComponentInteraction, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
-import { Time, notEmpty, removeFromArr } from 'e';
+import { notEmpty, removeFromArr, Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import { InteractionID } from '../../../lib/InteractionID';
-import killableMonsters from '../../../lib/minions/data/killableMonsters';
-import { runCommand } from '../../../lib/settings/settings';
-import { slayerMasters } from '../../../lib/slayer/slayerMasters';
+import { InteractionID } from '@/lib/InteractionID.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { runCommand } from '@/lib/settings/settings.js';
+import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
 import {
 	assignNewSlayerTask,
 	calcMaxBlockedTasks,
 	getCommonTaskName,
 	getUsersCurrentSlayerInfo,
 	userCanUseMaster
-} from '../../../lib/slayer/slayerUtil';
-import type { AssignableSlayerTask } from '../../../lib/slayer/types';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { interactionReply } from '../../../lib/util/interactionReply';
-import { logError } from '../../../lib/util/logError';
-import { userStatsUpdate } from '../../mahojiSettings';
+} from '@/lib/slayer/slayerUtil.js';
+import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { interactionReply } from '@/lib/util/interactionReply.js';
+import { logError } from '@/lib/util/logError.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const returnSuccessButtons = [
 	new ActionRowBuilder<ButtonBuilder>().addComponents([

@@ -1,4 +1,4 @@
-import { Time, randFloat, roll, shuffleArr, sumArr } from 'e';
+import { randFloat, roll, shuffleArr, sumArr, Time } from 'e';
 
 import type { ItemBank, LootBank } from '../../meta/types';
 import Bank from '../../structures/Bank';

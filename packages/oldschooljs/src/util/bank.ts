@@ -1,4 +1,5 @@
-import { Time, calcWhatPercent, increaseNumByPercent } from 'e';
+import { calcWhatPercent, increaseNumByPercent, Time } from 'e';
+
 import type { ItemBank } from '../meta/types';
 import Bank from '../structures/Bank';
 import Items from '../structures/Items';

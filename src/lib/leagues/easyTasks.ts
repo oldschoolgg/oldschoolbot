@@ -1,10 +1,9 @@
 import { notEmpty, sumArr } from 'e';
-import { type ItemBank, Monsters, calcCombatLevel, resolveItems } from 'oldschooljs';
+import { calcCombatLevel, type ItemBank, Monsters, resolveItems } from 'oldschooljs';
 
-import { eggs } from '../../mahoji/commands/offer';
-import { divinationEnergies } from '../bso/divination';
-import { MAX_LEVEL } from '../constants';
-import { barrowsChestCL, customPetsCL } from '../data/CollectionsExport';
+import { divinationEnergies } from '@/lib/bso/divination.js';
+import { MAX_LEVEL } from '@/lib/constants';
+import { barrowsChestCL, customPetsCL } from '@/lib/data/CollectionsExport';
 import {
 	ArdougneDiary,
 	DesertDiary,
@@ -15,18 +14,19 @@ import {
 	KourendKebosDiary,
 	LumbridgeDraynorDiary,
 	MorytaniaDiary,
+	userhasDiaryTier,
 	VarrockDiary,
 	WesternProv,
-	WildernessDiary,
-	userhasDiaryTier
-} from '../diaries';
-import { Cookables } from '../skilling/skills/cooking/cooking';
-import { Fishing } from '../skilling/skills/fishing/fishing';
-import Javelins from '../skilling/skills/fletching/fletchables/javelins';
-import Runecraft from '../skilling/skills/runecraft';
-import { calcTotalLevel } from '../util';
-import { type Task, leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster } from './leaguesUtils';
-import { calculateTiarasMade, calculateTotalMahoganyHomesPoints } from './stats';
+	WildernessDiary
+} from '@/lib/diaries.js';
+import { Cookables } from '@/lib/skilling/skills/cooking/cooking';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
+import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins';
+import Runecraft from '@/lib/skilling/skills/runecraft';
+import { calcTotalLevel } from '@/lib/util.js';
+import { eggs } from '@/mahoji/commands/offer';
+import { leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster, type Task } from './leaguesUtils.js';
+import { calculateTiarasMade, calculateTotalMahoganyHomesPoints } from './stats.js';
 
 export const easyTasks: Task[] = [
 	{

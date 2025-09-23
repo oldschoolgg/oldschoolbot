@@ -1,11 +1,10 @@
 import { writeFileSync } from 'node:fs';
 import fetch from 'node-fetch';
+import { omitBy } from 'remeda';
+import * as wtf from 'wtf_wikipedia';
 
 import { Monsters } from '../src';
 import type { MonsterAttackType, MonsterAttribute, MonsterData, MonsterSlayerMaster } from '../src/meta/monsterData';
-
-import { omitBy } from 'remeda';
-import * as wtf from 'wtf_wikipedia';
 
 const monsterMap: { [key: string]: MonsterData } = {};
 
@@ -156,7 +155,7 @@ export default async function prepareMonsters(): Promise<void> {
 	const monIDs = new Set(Monsters.map(mon => mon.id));
 
 	for (const mon of Object.values(allMonsters).filter(mon => monIDs.has(mon.id))) {
-		// @ts-ignore ignore
+		// @ts-expect-error ignore
 		mon.drops = undefined;
 
 		const newMonster: MonsterData = {
@@ -229,7 +228,7 @@ export default async function prepareMonsters(): Promise<void> {
 			.flat(100)
 			.filter(s => s && Boolean(s.name) && (Boolean(s.examine) || Boolean(s.examine1)))
 			.map(s =>
-				omitBy(s, (value, key) =>
+				omitBy(s, (_value, key) =>
 					['version', 'image', 'release', 'examine', 'update'].some(str => key.startsWith(str))
 				)
 			);

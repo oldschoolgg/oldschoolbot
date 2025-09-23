@@ -1,35 +1,35 @@
 import type { Prisma } from '@prisma/client';
-import { Time, randInt, roll } from 'e';
+import { randInt, roll, Time } from 'e';
 import {
 	Bank,
 	ECreature,
 	EquipmentSlot,
-	type ItemBank,
 	increaseBankQuantitesByPercent,
+	type ItemBank,
 	itemID,
 	toKMB
 } from 'oldschooljs';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
+import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
+import { MAX_LEVEL } from '@/lib/constants.js';
+import { globalDroprates } from '@/lib/data/globalDroprates.js';
+import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
+import type { UserFullGearSetup } from '@/lib/gear/types.js';
+import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { calcLootXPHunting, generateHerbiTable } from '@/lib/skilling/functions/calcsHunter.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
+import { type Creature, SkillsEnum } from '@/lib/skilling/types.js';
+import type { Gear } from '@/lib/structures/Gear.js';
+import type { Skills } from '@/lib/types/index.js';
+import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util';
+import { logError } from '@/lib/util/logError.js';
 import { PeakTier } from '@/lib/util/peaks';
-import { GLOBAL_BSO_XP_MULTIPLIER } from '../../../lib/bso/bsoConstants';
-import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';
-import { MAX_LEVEL } from '../../../lib/constants';
-import { globalDroprates } from '../../../lib/data/globalDroprates';
-import type { UserFullGearSetup } from '../../../lib/gear';
-import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
-import { InventionID, inventionBoosts, inventionItemBoost } from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/lootTrack';
-import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter';
-import Hunter from '../../../lib/skilling/skills/hunter/hunter';
-import { type Creature, SkillsEnum } from '../../../lib/skilling/types';
-import type { Gear } from '../../../lib/structures/Gear';
-import type { Skills } from '../../../lib/types';
-import type { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { logError } from '../../../lib/util/logError.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 const riskDeathNumbers = [
 	{

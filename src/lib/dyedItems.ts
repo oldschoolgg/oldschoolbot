@@ -1,6 +1,6 @@
 import { type Item, resolveItems } from 'oldschooljs';
 
-import getOSItem from './util/getOSItem';
+import getOSItem from './util/getOSItem.js';
 
 interface DyedItem {
 	baseItem: Item;

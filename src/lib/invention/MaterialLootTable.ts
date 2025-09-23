@@ -1,6 +1,6 @@
 import { randInt } from 'e';
 
-import type { IMaterialBank, MaterialType } from '.';
+import type { IMaterialBank, MaterialType } from '@/lib/invention/index.js';
 
 interface MaterialTableItem {
 	material: MaterialType;

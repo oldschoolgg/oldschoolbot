@@ -6,7 +6,9 @@ import { DateTime } from 'luxon';
 import { Bank } from 'oldschooljs';
 
 import { applyStaticDefine } from '../meta.js';
+
 applyStaticDefine();
+
 import { BOT_TYPE } from '@/lib/constants';
 import Createables from '@/lib/data/createables';
 

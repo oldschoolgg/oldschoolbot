@@ -1,9 +1,11 @@
 import { notEmpty, sumArr } from 'e';
-import { Bank, type ItemBank, Monsters, Openables, calcCombatLevel, resolveItems } from 'oldschooljs';
+import { Bank, calcCombatLevel, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
 
-import { eggs } from '../../mahoji/commands/offer';
-import { divinationEnergies } from '../bso/divination';
-import { MAX_LEVEL } from '../constants';
+import { divinationEnergies } from '@/lib/bso/divination.js';
+import { MAX_LEVEL } from '@/lib/constants';
+import { circusBuyables } from '@/lib/data/buyables/circusBuyables';
+import { fistOfGuthixBuyables } from '@/lib/data/buyables/fistOfGuthixBuyables';
+import { stealingCreationBuyables } from '@/lib/data/buyables/stealingCreationBuyables';
 import {
 	allGildedItems,
 	brokenPernixOutfit,
@@ -16,11 +18,8 @@ import {
 	skillingPetsCL,
 	torvaOutfit,
 	virtusOutfit
-} from '../data/CollectionsExport';
-import { circusBuyables } from '../data/buyables/circusBuyables';
-import { fistOfGuthixBuyables } from '../data/buyables/fistOfGuthixBuyables';
-import { stealingCreationBuyables } from '../data/buyables/stealingCreationBuyables';
-import { PartyhatTable } from '../data/holidayItems';
+} from '@/lib/data/CollectionsExport';
+import { PartyhatTable } from '@/lib/data/holidayItems';
 import {
 	ArdougneDiary,
 	DesertDiary,
@@ -31,24 +30,25 @@ import {
 	KourendKebosDiary,
 	LumbridgeDraynorDiary,
 	MorytaniaDiary,
+	userhasDiaryTier,
 	VarrockDiary,
 	WesternProv,
-	WildernessDiary,
-	userhasDiaryTier
-} from '../diaries';
-import { dyedItems } from '../dyedItems';
-import { implings } from '../implings';
-import { Inventions } from '../invention/inventions';
-import { MOKTANG_ID } from '../minions/data/killableMonsters/custom/bosses/Moktang';
-import { Naxxus } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
-import { NexMonster } from '../nex';
-import { allThirdAgeItems } from '../simulation/sharedTables';
-import Darts from '../skilling/skills/fletching/fletchables/darts';
-import Javelins from '../skilling/skills/fletching/fletchables/javelins';
-import { ashes } from '../skilling/skills/prayer';
-import { calcTotalLevel } from '../util';
-import { type Task, leaguesHasCatches, leaguesHasKC } from './leaguesUtils';
-import { calculateChargedItems, calculateTiarasMade } from './stats';
+	WildernessDiary
+} from '@/lib/diaries.js';
+import { dyedItems } from '@/lib/dyedItems.js';
+import { implings } from '@/lib/implings.js';
+import { Inventions } from '@/lib/invention/inventions.js';
+import { MOKTANG_ID } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
+import { Naxxus } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
+import { NexMonster } from '@/lib/nex.js';
+import { allThirdAgeItems } from '@/lib/simulation/sharedTables';
+import Darts from '@/lib/skilling/skills/fletching/fletchables/darts';
+import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins';
+import { ashes } from '@/lib/skilling/skills/prayer';
+import { calcTotalLevel } from '@/lib/util.js';
+import { eggs } from '@/mahoji/commands/offer';
+import { leaguesHasCatches, leaguesHasKC, type Task } from './leaguesUtils.js';
+import { calculateChargedItems, calculateTiarasMade } from './stats.js';
 
 export const hardTasks: Task[] = [
 	{

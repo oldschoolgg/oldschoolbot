@@ -1,14 +1,14 @@
-import Adamant from './adamant';
-import Bronze from './bronze';
-import BSOSmithables from './bsoSmithables';
-import Dwarven from './dwarven';
-import Gold from './gold';
-import Gorajan from './gorajan';
-import Iron from './iron';
-import Mithril from './mithril';
-import Rune from './rune';
-import Silver from './silver';
-import Steel from './steel';
+import Adamant from './adamant.js';
+import Bronze from './bronze.js';
+import BSOSmithables from './bsoSmithables.js';
+import Dwarven from './dwarven.js';
+import Gold from './gold.js';
+import Gorajan from './gorajan.js';
+import Iron from './iron.js';
+import Mithril from './mithril.js';
+import Rune from './rune.js';
+import Silver from './silver.js';
+import Steel from './steel.js';
 
 const smithables = [
 	...Bronze,

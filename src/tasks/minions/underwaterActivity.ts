@@ -1,9 +1,9 @@
 import { percentChance } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { UnderwaterAgilityThievingTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { UnderwaterAgilityThievingTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 // Bonus loot from clams and chests, TODO: check wiki in future for more accurate rates
 const clamChestTable = new LootTable()

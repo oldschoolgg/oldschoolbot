@@ -2,12 +2,12 @@ import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Items } from 'oldschooljs';
 
-import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
-import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
-import Mining from '../../../lib/skilling/skills/mining';
-import type { MotherlodeMiningActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
+import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
+import Mining from '@/lib/skilling/skills/mining.js';
+import type { MotherlodeMiningActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export async function motherlodeMineCommand({
 	user,

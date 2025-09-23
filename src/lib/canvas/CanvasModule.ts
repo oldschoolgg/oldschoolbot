@@ -1,10 +1,10 @@
-import { readFile, readdir } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { loadImage } from 'skia-canvas';
 
-import { BOT_TYPE } from '../constants';
-import { CanvasSpritesheet } from './CanvasSpritesheet';
-import { ItemIconPacks } from './iconPacks';
+import { BOT_TYPE } from '@/lib/constants';
+import { CanvasSpritesheet } from './CanvasSpritesheet.js';
+import { ItemIconPacks } from './iconPacks.js';
 
 class CanvasModuleSingleton {
 	private didInit = false;

@@ -1,6 +1,6 @@
-import type { DisassemblySourceGroup } from '..';
-import { brokenTorvaOutfit, torvaOutfit } from '../../data/CollectionsExport';
-import getOSItem from '../../util/getOSItem';
+import { brokenTorvaOutfit, torvaOutfit } from '@/lib/data/CollectionsExport';
+import type { DisassemblySourceGroup } from '@/lib/invention/index.js';
+import getOSItem from '@/lib/util/getOSItem';
 
 const i = getOSItem;
 

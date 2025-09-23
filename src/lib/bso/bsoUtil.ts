@@ -1,8 +1,8 @@
 import { CollectionLog } from '@oldschoolgg/collectionlog';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 
-import { BitField, MAX_XP } from '../constants';
-import { doaCL } from '../data/CollectionsExport';
+import { BitField, MAX_XP } from '@/lib/constants';
+import { doaCL } from '@/lib/data/CollectionsExport';
 
 export function hasUnlockedAtlantis(user: MUser) {
 	return doaCL.some(itemID => user.cl.has(itemID));

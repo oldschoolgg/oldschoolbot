@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Bank, EMonster, type ItemBank, SkillsEnum, itemID, resolveItems } from 'oldschooljs';
+import { Bank, EMonster, type ItemBank, itemID, resolveItems, SkillsEnum } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
 import { gorajanArcherOutfit, gorajanWarriorOutfit } from '../../../src/lib/data/CollectionsExport';

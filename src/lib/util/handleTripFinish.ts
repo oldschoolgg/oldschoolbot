@@ -2,44 +2,45 @@ import { channelIsSendable, makeComponents, mentionCommand } from '@oldschoolgg/
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { activity_type_enum } from '@prisma/client';
 import {
+	bold,
 	type AttachmentBuilder,
 	type ButtonBuilder,
 	type MessageCollector,
-	type MessageCreateOptions,
-	bold
+	type MessageCreateOptions
 } from 'discord.js';
-import { Time, notEmpty, randArrItem, randInt, roll } from 'e';
+import { notEmpty, randArrItem, randInt, roll, Time } from 'e';
 import { Bank, EItem, itemID, toKMB } from 'oldschooljs';
 
-import { alching } from '../../mahoji/commands/laps';
-import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
+import { chargePortentIfHasCharges, getAllPortentCharges, PortentID } from '@/lib/bso/divination.js';
+import { gods } from '@/lib/bso/divineDominion.js';
+import { MysteryBoxes } from '@/lib/bsoOpenables.js';
+import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { buildClueButtons } from '@/lib/clues/clueUtils.js';
+import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
+import { BitField, PerkTier } from '@/lib/constants';
+import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
+import { handlePassiveImplings } from '@/lib/implings.js';
+import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions.js';
+import { mysteriousStepData } from '@/lib/mysteryTrail.js';
+import { triggerRandomEvent } from '@/lib/randomEvents.js';
+import { RuneTable, WilvusTable, WoodTable } from '@/lib/simulation/seedTable';
+import { DougTable, PekyTable } from '@/lib/simulation/sharedTables';
+import { calculateZygomiteLoot } from '@/lib/skilling/skills/farming/zygomites';
+import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import type { ActivityTaskData } from '@/lib/types/minions.js';
+import { perHourChance } from '@/lib/util/rng.js';
+import { alching } from '@/mahoji/commands/laps';
+import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand';
+import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand';
 import {
 	tearsOfGuthixIronmanReqs,
 	tearsOfGuthixSkillReqs
-} from '../../mahoji/lib/abstracted_commands/tearsOfGuthixCommand';
-import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
-import { PortentID, chargePortentIfHasCharges, getAllPortentCharges } from '../bso/divination';
-import { gods } from '../bso/divineDominion';
-import { MysteryBoxes } from '../bsoOpenables';
-import { mahojiChatHead } from '../canvas/chatHeadImage';
-import { ClueTiers } from '../clues/clueTiers';
-import { buildClueButtons } from '../clues/clueUtils';
-import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
-import { BitField, PerkTier } from '../constants';
-import { handleGrowablePetGrowth } from '../growablePets';
-import { handlePassiveImplings } from '../implings';
-import { InventionID, inventionBoosts, inventionItemBoost } from '../invention/inventions';
-import { mysteriousStepData } from '../mysteryTrail';
-import { triggerRandomEvent } from '../randomEvents';
-import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
-import { DougTable, PekyTable } from '../simulation/sharedTables';
-import { calculateZygomiteLoot } from '../skilling/skills/farming/zygomites';
-import { calculateBirdhouseDetails } from '../skilling/skills/hunter/birdhouses';
-import { SkillsEnum } from '../skilling/types';
-import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
-import type { ActivityTaskData } from '../types/minions';
-import { handleCrateSpawns } from './handleCrateSpawns';
+} from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand';
+import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings';
+import { handleCrateSpawns } from './handleCrateSpawns.js';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
@@ -50,12 +51,11 @@ import {
 	makeOpenSeedPackButton,
 	makeRepeatTripButton,
 	makeTearsOfGuthixButton
-} from './interactions';
-import { logError } from './logError';
-import { perHourChance } from './rng';
-import { hasSkillReqs } from './smallUtils';
-import { updateBankSetting } from './updateBankSetting';
-import { sendToChannelID } from './webhook';
+} from './interactions.js';
+import { logError } from './logError.js';
+import { hasSkillReqs } from './smallUtils.js';
+import { updateBankSetting } from './updateBankSetting.js';
+import { sendToChannelID } from './webhook.js';
 
 const collectors = new Map<string, MessageCollector>();
 

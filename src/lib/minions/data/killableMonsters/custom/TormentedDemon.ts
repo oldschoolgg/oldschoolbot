@@ -2,8 +2,8 @@ import { Time } from 'e';
 import { Bank, LootTable, Monsters, RareDropTable, resolveNameBank } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { GrimyHerbTable, lowRuneHighAdamantTable, runeAlchablesTable } from '../../../../simulation/sharedTables';
-import type { CustomMonster } from './customMonsters';
+import { GrimyHerbTable, lowRuneHighAdamantTable, runeAlchablesTable } from '@/lib/simulation/sharedTables';
+import type { CustomMonster } from './customMonsters.js';
 
 export const SuperiorTormentedDemon: CustomMonster = {
 	isCustom: true,

@@ -2,7 +2,7 @@ import { isMainThread } from 'node:worker_threads';
 import { PrismaClient } from '@prisma/client';
 import { PrismaClient as RobochimpPrismaClient } from '@prisma/robochimp';
 
-import { globalConfig } from './constants';
+import { globalConfig } from '@/lib/constants';
 
 declare global {
 	var prisma: PrismaClient;

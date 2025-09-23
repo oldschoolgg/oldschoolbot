@@ -5,18 +5,18 @@ import { GearStat, type OffenceGearStat } from 'oldschooljs/gear';
 
 import type { PvMMethod } from '@/lib/constants';
 import type { PrimaryGearSetupType } from '@/lib/gear/types';
+import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '@/lib/minions/data/combatConstants.js';
+import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
+import { KalphiteKingMonster } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
+import KingGoldemar from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';
+import { NAXXUS_HP, Naxxus } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
+import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus.js';
+import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/low.js';
+import type { AddMonsterXpParams, KillableMonster } from '@/lib/minions/types.js';
 import { NexMonster } from '@/lib/nex';
-import { SkillsEnum } from '../../skilling/types';
-import { XPBank } from '../../structures/XPBank';
-import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
-import killableMonsters from '../data/killableMonsters';
-import { Ignecarus } from '../data/killableMonsters/custom/bosses/Ignecarus';
-import { KalphiteKingMonster } from '../data/killableMonsters/custom/bosses/KalphiteKing';
-import KingGoldemar from '../data/killableMonsters/custom/bosses/KingGoldemar';
-import { NAXXUS_HP, Naxxus } from '../data/killableMonsters/custom/bosses/Naxxus';
-import { VasaMagus } from '../data/killableMonsters/custom/bosses/VasaMagus';
-import { BSOMonsters } from '../data/killableMonsters/custom/customMonsters';
-import type { AddMonsterXpParams, KillableMonster } from '../types';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { XPBank } from '@/lib/structures/XPBank';
 
 export const attackStylesArr = [
 	SkillsEnum.Attack,
@@ -129,7 +129,7 @@ export function addMonsterXPRaw(params: {
 	// Remove superiors from the regular count to be added separately.
 	let normalQty = 0;
 	let superiorQty = 0;
-	let osjsSuperior: Monster | undefined = undefined;
+	let osjsSuperior: Monster | undefined;
 	if (params.isOnTask && params.superiorCount && maybeMonster?.superior) {
 		osjsSuperior = maybeMonster.superior;
 		if (osjsSuperior?.data?.hitpoints && osjsSuperior?.data?.slayerXP) {

@@ -3,15 +3,15 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { isSuperUntradeable } from '../../lib/bso/bsoUtil';
-import { BitField } from '../../lib/constants';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
-import { diceCommand } from '../lib/abstracted_commands/diceCommand';
-import { duelCommand } from '../lib/abstracted_commands/duelCommand';
-import { hotColdCommand } from '../lib/abstracted_commands/hotColdCommand';
-import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
-import { slotsCommand } from '../lib/abstracted_commands/slotsCommand';
+import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
+import { BitField } from '@/lib/constants';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { capeGambleCommand, capeGambleStatsCommand } from '@/mahoji/lib/abstracted_commands/capegamble.js';
+import { diceCommand } from '@/mahoji/lib/abstracted_commands/diceCommand.js';
+import { duelCommand } from '@/mahoji/lib/abstracted_commands/duelCommand.js';
+import { hotColdCommand } from '@/mahoji/lib/abstracted_commands/hotColdCommand.js';
+import { luckyPickCommand } from '@/mahoji/lib/abstracted_commands/luckyPickCommand.js';
+import { slotsCommand } from '@/mahoji/lib/abstracted_commands/slotsCommand.js';
 
 export const gambleCommand: OSBMahojiCommand = {
 	name: 'gamble',

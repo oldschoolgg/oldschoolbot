@@ -1,10 +1,10 @@
 import { Time } from 'e';
-import { Bank, Monsters, deepResolveItems, itemID } from 'oldschooljs';
+import { Bank, deepResolveItems, itemID, Monsters } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { SkillsEnum } from '../../../../skilling/types';
-import type { KillableMonster } from '../../../types';
-import { DiaryID } from '../../../types';
+import type { KillableMonster } from '@/lib/minions/types';
+import { DiaryID } from '@/lib/minions/types';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 
 export const wildyKillableMonsters: KillableMonster[] = [
 	{

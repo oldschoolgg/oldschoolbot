@@ -1,4 +1,4 @@
-import getOSItem from '../../../util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem';
 
 export type Floor = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 

@@ -1,18 +1,18 @@
-import { Time, reduceNumByPercent, roll } from 'e';
+import { reduceNumByPercent, roll, Time } from 'e';
 import { Bank, randomVariation, toKMB } from 'oldschooljs';
 
-import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';
-import { MysteryBoxes } from '../../../lib/bsoOpenables';
-import { isDoubleLootActive } from '../../../lib/doubleLoot';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
+import { MysteryBoxes } from '@/lib/bsoOpenables.js';
+import { isDoubleLootActive } from '@/lib/doubleLoot.js';
 import {
 	calcMaxFloorUserCanDo,
 	calcUserGorajanShardChance,
 	numberOfGorajanOutfitsEquipped
-} from '../../../lib/skilling/skills/dung/dungDbFunctions';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { DungeoneeringOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+} from '@/lib/skilling/skills/dung/dungDbFunctions.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { DungeoneeringOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export function calculateDungeoneeringResult({
 	floor,

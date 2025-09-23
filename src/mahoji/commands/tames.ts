@@ -1,5 +1,3 @@
-import { readFileSync } from 'node:fs';
-import { readFile } from 'node:fs/promises';
 import { bold, time } from '@discordjs/builders';
 import { type CommandResponse, formatDuration, isWeekend, stringMatches } from '@oldschoolgg/toolkit';
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
@@ -8,19 +6,20 @@ import { type Tame, tame_growth } from '@prisma/client';
 import { toTitleCase } from '@sapphire/utilities';
 import { ApplicationCommandOptionType, type ChatInputCommandInteraction, type User } from 'discord.js';
 import {
-	Time,
 	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
 	notEmpty,
 	percentChance,
 	randInt,
-	reduceNumByPercent
+	reduceNumByPercent,
+	Time
 } from 'e';
+import { readFileSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { Bank, type Item, type ItemBank, itemID, resolveItems } from 'oldschooljs';
 import { type Canvas, loadImage } from 'skia-canvas';
 
-import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas';
 import { bankImageTask } from '@/lib/canvas/bankImage';
 import {
 	type CanvasContext,
@@ -30,39 +29,40 @@ import {
 	fillTextXTimesInCtx,
 	getClippedRegion
 } from '@/lib/canvas/canvasUtil';
-import { itemNameFromID } from '@/lib/util';
-import { formatSkillRequirements } from '@/lib/util/smallUtils';
-import { type ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
-import { PerkTier, badges } from '../../lib/constants';
-import { Eatables } from '../../lib/data/eatables';
-import { getSimilarItems } from '../../lib/data/similarItems';
-import { trackLoot } from '../../lib/lootTrack';
-import { Planks } from '../../lib/minions/data/planks';
-import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
-import { getUsersPerkTier } from '../../lib/perkTiers';
-import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
-import Bars from '../../lib/skilling/skills/smithing/smeltables';
-import { SkillsEnum } from '../../lib/skilling/types';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas';
+import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers';
+import { badges, PerkTier } from '@/lib/constants';
+import { Eatables } from '@/lib/data/eatables';
+import { getSimilarItems } from '@/lib/data/similarItems';
+import { trackLoot } from '@/lib/lootTrack';
+import { Planks } from '@/lib/minions/data/planks';
+import getUserFoodFromBank from '@/lib/minions/functions/getUserFoodFromBank';
+import { getUsersPerkTier } from '@/lib/perkTiers';
+import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning';
+import Bars from '@/lib/skilling/skills/smithing/smeltables';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 import {
-	type SeaMonkeySpell,
-	type TameKillableMonster,
-	TameSpeciesID,
-	TameType,
 	createTameTask,
 	getIgneTameKC,
 	igneArmors,
+	type SeaMonkeySpell,
 	seaMonkeySpells,
 	seaMonkeyStaves,
 	tameFeedableItems,
+	type TameKillableMonster,
 	tameKillableMonsters,
-	tameSpecies
-} from '../../lib/tames';
-import { patronMaxTripBonus } from '../../lib/util/calcMaxTripLength';
-import getOSItem, { getItem } from '../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { assert } from '../../lib/util/logError';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { parseStringBank } from '../../lib/util/parseStringBank';
+	tameSpecies,
+	TameSpeciesID,
+	TameType
+} from '@/lib/tames';
+import { itemNameFromID } from '@/lib/util';
+import { patronMaxTripBonus } from '@/lib/util/calcMaxTripLength';
+import getOSItem, { getItem } from '@/lib/util/getOSItem';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { assert } from '@/lib/util/logError';
+import { makeBankImage } from '@/lib/util/makeBankImage';
+import { parseStringBank } from '@/lib/util/parseStringBank';
+import { formatSkillRequirements } from '@/lib/util/smallUtils';
 import {
 	calculateMaximumTameFeedingLevelGain,
 	getMainTameLevel,
@@ -72,11 +72,11 @@ import {
 	tameGrowthLevel,
 	tameHasBeenFed,
 	tameName
-} from '../../lib/util/tameUtil';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { arbitraryTameActivities } from '../../tasks/tames/tameTasks';
-import { getItemCostFromConsumables } from '../lib/abstracted_commands/minionKill/handleConsumables';
-import { collectables } from '../lib/collectables';
+} from '@/lib/util/tameUtil';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { getItemCostFromConsumables } from '@/mahoji/lib/abstracted_commands/minionKill/handleConsumables.js';
+import { collectables } from '@/mahoji/lib/collectables.js';
+import { arbitraryTameActivities } from '@/tasks/tames/tameTasks.js';
 
 const tameImageSize = 96;
 

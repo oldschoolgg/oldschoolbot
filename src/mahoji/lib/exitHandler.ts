@@ -1,8 +1,8 @@
 import { TimerManager } from '@sapphire/timer-manager';
 
-import { crons } from '../../lib/crons';
-import { sql } from '../../lib/postgres';
-import { sonicBoom } from '../../lib/util/logger';
+import { crons } from '@/lib/crons';
+import { sql } from '@/lib/postgres';
+import { sonicBoom } from '@/lib/util/logger';
 
 export async function exitCleanup() {
 	try {

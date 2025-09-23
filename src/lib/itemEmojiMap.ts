@@ -1,7 +1,7 @@
 import { Openables } from 'oldschooljs';
 
-import { InfernalImpling } from './simulation/customImplings';
-import getOSItem from './util/getOSItem';
+import { InfernalImpling } from '@/lib/simulation/customImplings';
+import getOSItem from './util/getOSItem.js';
 
 export const emojiMap = new Map([
 	[Openables.BabyImpling.id, '<:Baby_impling_jar:883170214068514877>'],

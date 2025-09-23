@@ -1,12 +1,12 @@
-import { Time, randInt, roll } from 'e';
+import { randInt, roll, Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import type { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { incrementUserCounter } from '../../mahoji/lib/userCounter.js';
-import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { ClueTiers } from '@/lib/clues/clueTiers';
+import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { incrementUserCounter } from '@/mahoji/lib/userCounter.js';
+import { userStatsBankUpdate } from '@/mahoji/mahojiSettings';
 
 const possibleFound = new LootTable()
 	.add('Reward casket (beginner)')

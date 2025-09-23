@@ -1,21 +1,21 @@
 import type { CropUpgradeType } from '@prisma/client';
 import type { ItemBank } from 'oldschooljs';
 
-import type { BathhouseTierName } from '../baxtorianBathhouses';
-import type { TuraelsTrialsMethod } from '../bso/turaelsTrials';
-import type { NMZStrategy } from '../constants';
-import type { Kibble } from '../data/kibble';
-import type { IMaterialBank, MaterialType } from '../invention';
-import type { SlayerActivityConstants } from '../minions/data/combatConstants';
-import type { IPatchData } from '../minions/farming/types';
-import type { AttackStyles } from '../minions/functions';
-import type { Monkey } from '../monkeyRumble';
-import type { MinigameName } from '../settings/minigames';
-import type { UnderwaterAgilityThievingTrainingSkill } from '../skilling/skills/agility';
-import type { TwitcherGloves } from '../skilling/skills/woodcutting/woodcutting';
-import type { BossUser } from '../structures/Boss';
-import type { Peak } from '../util/peaks';
-import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
+import type { BathhouseTierName } from '@/lib/baxtorianBathhouses.js';
+import type { TuraelsTrialsMethod } from '@/lib/bso/turaelsTrials.js';
+import type { NMZStrategy } from '@/lib/constants';
+import type { Kibble } from '@/lib/data/kibble';
+import type { IMaterialBank, MaterialType } from '@/lib/invention/index.js';
+import type { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
+import type { IPatchData } from '@/lib/minions/farming/types.js';
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import type { Monkey } from '@/lib/monkeyRumble.js';
+import type { MinigameName } from '@/lib/settings/minigames.js';
+import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility';
+import type { BirdhouseData } from '@/lib/skilling/skills/hunter/defaultBirdHouseTrap.js';
+import type { TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting';
+import type { BossUser } from '@/lib/structures/Boss';
+import type { Peak } from '@/lib/util/peaks';
 
 export interface ActivityTaskOptions {
 	userID: string;

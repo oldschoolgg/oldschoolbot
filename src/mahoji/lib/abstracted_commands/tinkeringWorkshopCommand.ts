@@ -2,13 +2,13 @@ import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 import { type ItemBank, randomVariation } from 'oldschooljs';
 
-import { type MaterialType, materialTypes } from '../../../lib/invention';
-import { MaterialBank } from '../../../lib/invention/MaterialBank';
-import { transactMaterialsFromUser } from '../../../lib/invention/inventions';
-import type { TinkeringWorkshopOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { userStatsUpdate } from '../../mahojiSettings';
+import { type MaterialType, materialTypes } from '@/lib/invention/index.js';
+import { transactMaterialsFromUser } from '@/lib/invention/inventions.js';
+import { MaterialBank } from '@/lib/invention/MaterialBank.js';
+import type { TinkeringWorkshopOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export async function tinkeringWorkshopCommand(user: MUser, material: MaterialType, channelID: string) {
 	if (!materialTypes.includes(material)) {

@@ -4,11 +4,11 @@ import { Time } from 'e';
 import { ItemGroups, Items, Monsters } from 'oldschooljs';
 
 import { bsoTackleBoxes } from '@/lib/bso/bsoConstants';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
-import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
-import type { FishingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
 
 export const fishCommand: OSBMahojiCommand = {
 	name: 'fish',

@@ -2,10 +2,10 @@ import type { AbstractCommand, CommandOptions } from '@oldschoolgg/toolkit/disco
 import type { InteractionReplyOptions, TextChannel, User } from 'discord.js';
 import { roll } from 'e';
 
-import { modifyBusyCounter, userIsBusy } from '../../lib/busyCounterCache';
-import { busyImmuneCommands } from '../../lib/constants';
-import { gearValidationChecks } from '../commands/gear';
-import { runInhibitors } from './inhibitors';
+import { modifyBusyCounter, userIsBusy } from '@/lib/busyCounterCache';
+import { busyImmuneCommands } from '@/lib/constants';
+import { gearValidationChecks } from '@/mahoji/commands/gear.js';
+import { runInhibitors } from './inhibitors.js';
 
 interface PreCommandOptions {
 	apiUser: User | null;

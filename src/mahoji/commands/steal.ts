@@ -1,21 +1,21 @@
 import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType, type User, bold } from 'discord.js';
+import { ApplicationCommandOptionType, bold, type User } from 'discord.js';
 import { randInt, reduceNumByPercent } from 'e';
 
-import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
-import { quests } from '../../lib/minions/data/quests';
-import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
-import type { Stealable } from '../../lib/skilling/skills/thieving/stealables';
-import { stealables } from '../../lib/skilling/skills/thieving/stealables';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { logError } from '../../lib/util/logError';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
-import { rogueOutfitPercentBonus, userStatsBankUpdate } from '../mahojiSettings';
+import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries';
+import { quests } from '@/lib/minions/data/quests';
+import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser';
+import type { Stealable } from '@/lib/skilling/skills/thieving/stealables';
+import { stealables } from '@/lib/skilling/skills/thieving/stealables';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import { logError } from '@/lib/util/logError';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { rogueOutfitPercentBonus, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
+import { calcLootXPPickpocketing } from '@/tasks/minions/pickpocketActivity.js';
 
 export const stealCommand: OSBMahojiCommand = {
 	name: 'steal',

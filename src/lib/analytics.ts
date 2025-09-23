@@ -1,10 +1,10 @@
 import type { ItemBank } from 'oldschooljs';
 
-import { ActivityGroup, globalConfig } from '../lib/constants';
-import type { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
-import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
+import { ActivityGroup, globalConfig } from '@/lib/constants.js';
+import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import { taskGroupFromActivity } from '@/lib/util/taskGroupFromActivity.js';
 import { sql } from './postgres.js';
-import { getItem } from './util/getOSItem';
+import { getItem } from './util/getOSItem.js';
 
 async function calculateMinionTaskCounts() {
 	const minionTaskCounts: Record<ActivityGroup, number> = {
@@ -42,7 +42,7 @@ export async function analyticsTick() {
 		ironman_count: bigint;
 		total_gp: bigint;
 	}[] = await sql`
-SELECT 
+SELECT
     COUNT(*) FILTER (WHERE "minion.hasBought" = true) AS has_bought_count,
     SUM("sacrificedValue")::bigint AS total_sacrificed_value,
     COUNT(*) FILTER (WHERE "minion.ironman" = true) AS ironman_count,

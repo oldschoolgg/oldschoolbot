@@ -1,4 +1,4 @@
-import { MersenneTwister19937, Random, bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
+import { bool, integer, MersenneTwister19937, nativeMath, nodeCrypto, Random, real } from 'random-js';
 
 const randEngine = process.env.TEST ? nativeMath : nodeCrypto;
 

@@ -1,14 +1,14 @@
 import { LootTable } from 'oldschooljs';
 
-import { MysteryBoxes } from '../../../../../bsoOpenables';
+import { MysteryBoxes } from '@/lib/bsoOpenables.js';
 import {
 	ClueTable,
 	FletchingTipsTable,
 	HighTierStoneSpiritTable,
-	StoneSpiritTable,
 	lowRuneHighAdamantTable,
-	runeWeaponTable
-} from '../../../../../simulation/sharedTables';
+	runeWeaponTable,
+	StoneSpiritTable
+} from '@/lib/simulation/sharedTables';
 
 export const MOKTANG_ID = 391_241;
 const BarTable = new LootTable()

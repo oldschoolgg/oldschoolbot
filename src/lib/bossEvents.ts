@@ -2,12 +2,12 @@ import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { EmbedBuilder, type TextChannel } from 'discord.js';
 import { Time } from 'e';
 
-import { globalConfig } from './constants';
-import { getPHeadDescriptor } from './simulation/pumpkinHead';
-import { BossInstance, type BossOptions, type BossUser } from './structures/Boss';
-import type { NewBossOptions } from './types/minions';
-import getOSItem from './util/getOSItem';
-import { logError } from './util/logError';
+import { globalConfig } from '@/lib/constants';
+import { getPHeadDescriptor } from '@/lib/simulation/pumpkinHead';
+import { BossInstance, type BossOptions, type BossUser } from './structures/Boss.js';
+import type { NewBossOptions } from './types/minions.js';
+import getOSItem from './util/getOSItem.js';
+import { logError } from './util/logError.js';
 
 interface BossEvent {
 	id: number;

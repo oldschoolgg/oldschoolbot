@@ -1,11 +1,11 @@
 import type { LootTable, Monster, MonsterData } from 'oldschooljs';
 
-import setCustomMonster, { makeKillTable } from '../../../../util/setCustomMonster';
-import type { KillableMonster } from '../../../types';
-import { SunMoonMonsters } from './SunMoon';
-import { customDemiBosses } from './demiBosses';
-import { MiscCustomMonsters } from './misc';
-import { resourceDungeonMonsters } from './resourceDungeons';
+import type { KillableMonster } from '@/lib/minions/types';
+import setCustomMonster, { makeKillTable } from '@/lib/util/setCustomMonster';
+import { customDemiBosses } from './demiBosses.js';
+import { MiscCustomMonsters } from './misc.js';
+import { resourceDungeonMonsters } from './resourceDungeons.js';
+import { SunMoonMonsters } from './SunMoon.js';
 
 export interface CustomMonster extends Readonly<Omit<Readonly<KillableMonster>, 'table'>> {
 	readonly table: LootTable;

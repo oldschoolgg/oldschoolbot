@@ -1,24 +1,24 @@
 import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { Time, randArrItem, reduceNumByPercent } from 'e';
+import { randArrItem, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { mahojiChatHead } from '@/lib/canvas/chatHeadImage';
 import {
-	type Monkey,
-	TOTAL_MONKEYS,
 	fightingMessages,
 	getMonkeyPhrase,
 	getRandomMonkey,
+	type Monkey,
 	monkeyEatables,
 	monkeyHeadImage,
 	monkeyTierOfUser,
-	monkeyTiers
-} from '../../../lib/monkeyRumble';
-import type { MonkeyRumbleOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+	monkeyTiers,
+	TOTAL_MONKEYS
+} from '@/lib/monkeyRumble.js';
+import type { MonkeyRumbleOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function monkeyRumbleStatsCommand(user: MUser) {
 	const tier = monkeyTiers.find(t => t.id === monkeyTierOfUser(user))!;

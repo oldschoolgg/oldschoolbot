@@ -1,24 +1,24 @@
 import { formatDuration, isWeekend } from '@oldschoolgg/toolkit';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import type { ChatInputCommandInteraction } from 'discord.js';
+import { increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { calcBossFood } from '@/lib/bso/calcBossFood.js';
+import { gorajanArcherOutfit, pernixOutfit } from '@/lib/data/CollectionsExport.js';
+import { trackLoot } from '@/lib/lootTrack.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood';
-import { Time, increaseNumByPercent, reduceNumByPercent, round } from 'e';
-import { calcBossFood } from '../../../lib/bso/calcBossFood';
-import { gorajanArcherOutfit, pernixOutfit } from '../../../lib/data/CollectionsExport';
-import { trackLoot } from '../../../lib/lootTrack';
-import type { KillableMonster } from '../../../lib/minions/types';
-import { NexMonster } from '../../../lib/nex';
-import { setupParty } from '../../../lib/party';
-import type { MakePartyOptions } from '../../../lib/types';
-import type { BossActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
-import { getNexGearStats } from '../../../lib/util/getNexGearStats';
-import { deferInteraction } from '../../../lib/util/interactionReply';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { hasMonsterRequirements } from '../../mahojiSettings';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { NexMonster } from '@/lib/nex.js';
+import { setupParty } from '@/lib/party.js';
+import type { MakePartyOptions } from '@/lib/types/index.js';
+import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
+import { getNexGearStats } from '@/lib/util/getNexGearStats.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): Promise<string | undefined> {
 	// Check if every user has the requirements for this monster.

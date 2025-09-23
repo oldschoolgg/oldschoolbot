@@ -1,24 +1,23 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
 import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { type CommandRunOptions, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
-import { bold } from 'discord.js';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Bank, type ItemBank, itemID } from 'oldschooljs';
 
+import Buyables from '@/lib/data/buyables/buyables';
+import { quests } from '@/lib/minions/data/quests';
 import { countUsersWithItemInCl } from '@/lib/rawSql';
-import Buyables from '../../lib/data/buyables/buyables';
-import { quests } from '../../lib/minions/data/quests';
-import { Minigames } from '../../lib/settings/minigames';
-import { isElligibleForPresent } from '../../lib/settings/settings';
-import { MUserStats } from '../../lib/structures/MUserStats';
-import getOSItem from '../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { formatSkillRequirements, itemNameFromID } from '../../lib/util/smallUtils';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
-import { buyKitten } from '../lib/abstracted_commands/buyKitten';
-import { mahojiParseNumber, userStatsUpdate } from '../mahojiSettings';
+import { Minigames } from '@/lib/settings/minigames';
+import { isElligibleForPresent } from '@/lib/settings/settings';
+import { MUserStats } from '@/lib/structures/MUserStats';
+import getOSItem from '@/lib/util/getOSItem';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { deferInteraction } from '@/lib/util/interactionReply';
+import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { buyFossilIslandNotes } from '@/mahoji/lib/abstracted_commands/buyFossilIslandNotes.js';
+import { buyKitten } from '@/mahoji/lib/abstracted_commands/buyKitten.js';
+import { mahojiParseNumber, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const allBuyablesAutocomplete = [...Buyables, { name: 'Kitten' }, { name: 'Fossil Island Notes' }];
 

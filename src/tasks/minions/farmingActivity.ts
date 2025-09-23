@@ -1,27 +1,27 @@
-import { Time, randInt } from 'e';
-import { Bank, Items, Monsters, increaseBankQuantitesByPercent, itemID } from 'oldschooljs';
+import { randInt, Time } from 'e';
+import { Bank, increaseBankQuantitesByPercent, itemID, Items, Monsters } from 'oldschooljs';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { MysteryBoxes } from '@/lib/bsoOpenables';
+import chatHeadImage from '@/lib/canvas/chatHeadImage';
+import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements';
+import { BitField } from '@/lib/constants';
+import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions';
+import type { PatchTypes } from '@/lib/minions/farming';
+import type { FarmingContract } from '@/lib/minions/farming/types';
+import { calcVariableYield } from '@/lib/skilling/functions/calcsFarming';
+import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo';
+import Farming, { plants } from '@/lib/skilling/skills/farming';
+import { type Plant, SkillsEnum } from '@/lib/skilling/types.js';
+import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util';
+import { getFarmingKeyFromName } from '@/lib/util/farmingHelpers';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { assert } from '@/lib/util/logError';
 import { roll } from '@/lib/util/rng';
-import { MysteryBoxes } from '../../lib/bsoOpenables';
-import chatHeadImage from '../../lib/canvas/chatHeadImage';
-import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
-import { BitField } from '../../lib/constants';
-import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
-import type { PatchTypes } from '../../lib/minions/farming';
-import type { FarmingContract } from '../../lib/minions/farming/types';
-import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
-import { getFarmingInfoFromUser } from '../../lib/skilling/functions/getFarmingInfo';
-import Farming, { plants } from '../../lib/skilling/skills/farming';
-import { type Plant, SkillsEnum } from '../../lib/skilling/types';
-import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { assert } from '../../lib/util/logError';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { sendToChannelID } from '../../lib/util/webhook';
-import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { sendToChannelID } from '@/lib/util/webhook';
+import { userStatsBankUpdate } from '@/mahoji/mahojiSettings';
 
 const plopperBoostPercent = 100;
 
@@ -306,7 +306,7 @@ export const farmingTask: MinionTask = {
 					const livesHolder = lives;
 					for (let k = 0; k < alivePlants; k++) {
 						lives = livesHolder;
-						for (let n = 0; lives > 0; n++) {
+						for (let _n = 0; lives > 0; _n++) {
 							if (Math.random() > chanceToSaveLife) {
 								lives -= 1;
 								cropYield += 1;

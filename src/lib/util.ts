@@ -1,22 +1,22 @@
 import { cleanUsername } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import type { Prisma, User } from '@prisma/client';
-import { type Guild, bold, userMention } from 'discord.js';
+import { bold, type Guild, userMention } from 'discord.js';
 import { calcWhatPercent, noOp, objectEntries, sumArr } from 'e';
-import { type Bank, type Monster, Monsters, calcCombatLevel, convertXPtoLVL } from 'oldschooljs';
+import { type Bank, calcCombatLevel, convertXPtoLVL, type Monster, Monsters } from 'oldschooljs';
 
-import type { MUserClass } from './MUser';
-import { usernameWithBadgesCache } from './cache';
-import { BitField, MAX_LEVEL, MAX_XP, globalConfig } from './constants';
-import type { SkillNameType, SkillsEnum } from './skilling/types';
-import type { GearBank } from './structures/GearBank';
-import type { Skills } from './types';
-import type { GroupMonsterActivityTaskOptions } from './types/minions';
-import { makeBadgeString } from './util/makeBadgeString';
-import { itemNameFromID } from './util/smallUtils';
+import { BitField, globalConfig, MAX_LEVEL, MAX_XP } from '@/lib/constants';
+import type { SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
+import type { Skills } from '@/lib/types/index.js';
+import { usernameWithBadgesCache } from './cache.js';
+import type { MUserClass } from './MUser.js';
+import type { GearBank } from './structures/GearBank.js';
+import type { GroupMonsterActivityTaskOptions } from './types/minions.js';
+import { makeBadgeString } from './util/makeBadgeString.js';
+import { itemNameFromID } from './util/smallUtils.js';
 import { sendToChannelID } from './util/webhook.js';
 
-// @ts-ignore ignore
+// @ts-expect-error ignore
 BigInt.prototype.toJSON = function () {
 	return this.toString();
 };

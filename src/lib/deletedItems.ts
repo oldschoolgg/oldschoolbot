@@ -1,7 +1,7 @@
 import { cleanString } from '@oldschoolgg/toolkit';
 import { Items, itemNameMap } from 'oldschooljs';
 
-import getOSItem from './util/getOSItem';
+import getOSItem from './util/getOSItem.js';
 
 export const itemsToDelete = [
 	[26_237, 'Zaryte bow'],

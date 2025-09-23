@@ -1,10 +1,10 @@
 import { calcPercentOfNum } from 'e';
 
-import { userHasFlappy } from '../../../lib/invention/inventions';
-import { calcConBonusXP } from '../../../lib/skilling/skills/construction/calcConBonusXP';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { userHasFlappy } from '@/lib/invention/inventions.js';
+import { calcConBonusXP } from '@/lib/skilling/skills/construction/calcConBonusXP.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { MahoganyHomesActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const mahoganyHomesTask: MinionTask = {
 	type: 'MahoganyHomes',

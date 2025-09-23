@@ -1,16 +1,20 @@
 import { Bank } from 'oldschooljs';
 
-import type { TuraelsTrialsMethod } from '../../../lib/bso/turaelsTrials';
-import { XPBank } from '../../../lib/structures/Banks';
-import type { TuraelsTrialsOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { trackClientBankStats, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
+import type { TuraelsTrialsMethod } from '@/lib/bso/turaelsTrials.js';
+import { XPBank } from '@/lib/structures/Banks.js';
+import type { TuraelsTrialsOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { trackClientBankStats, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 export function calculateTuraelsTrialsResult({
 	quantity,
 	method,
 	duration
-}: { duration: number; quantity: number; method: TuraelsTrialsMethod }) {
+}: {
+	duration: number;
+	quantity: number;
+	method: TuraelsTrialsMethod;
+}) {
 	const loot = new Bank();
 	const options = { source: 'TuraelsTrials', duration, minimal: true } as const;
 	const xpBank = new XPBank().add('slayer', 36_009 * quantity, options);

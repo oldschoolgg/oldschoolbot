@@ -1,22 +1,21 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { calcWhatPercent, noOp, percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { kalphiteKingCL } from '../../../lib/data/CollectionsExport';
-import { isDoubleLootActive } from '../../../lib/doubleLoot';
-import { trackLoot } from '../../../lib/lootTrack';
-import { KalphiteKingMonster } from '../../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
-import { addMonsterXP } from '../../../lib/minions/functions';
-import announceLoot from '../../../lib/minions/functions/announceLoot';
-
-import { TeamLoot } from '../../../lib/simulation/TeamLoot';
-import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import type { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { kalphiteKingCL } from '@/lib/data/CollectionsExport.js';
+import { isDoubleLootActive } from '@/lib/doubleLoot.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { KalphiteKingMonster } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
+import announceLoot from '@/lib/minions/functions/announceLoot.js';
+import { addMonsterXP } from '@/lib/minions/functions/index.js';
+import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
+import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
+import { getKalphiteKingGearStats } from '@/lib/util/getKalphiteKingGearStats.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 interface KalphiteKingUser {
 	id: string;

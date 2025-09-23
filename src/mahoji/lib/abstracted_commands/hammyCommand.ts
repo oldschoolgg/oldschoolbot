@@ -3,8 +3,8 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { randArrItem, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { getItem } from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { getItem } from '@/lib/util/getOSItem.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 
 // roll(chanceToDouble) to decide if the item doubles
 const chanceToDouble = 100;

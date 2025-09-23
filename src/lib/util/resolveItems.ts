@@ -1,6 +1,4 @@
-import { Items } from 'oldschooljs';
-
-import type { ArrayItemsResolvable, ArrayItemsResolved } from '../types';
+import { type ArrayItemsResolvable, type ArrayItemsResolved, Items } from 'oldschooljs';
 
 // Resolve an array of item IDs or names into an array of item IDs
 export default function resolveItems(_itemArray: string | number | (string | number)[]): number[] {

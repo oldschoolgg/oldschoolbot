@@ -2,12 +2,13 @@ import { TSVWriter } from '@oldschoolgg/toolkit/structures';
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { Time } from 'e';
-import { Bank, Items, SkillsEnum, convertBankToPerHourStats, itemID, resolveItems, toKMB } from 'oldschooljs';
+import { Bank, convertBankToPerHourStats, Items, itemID, resolveItems, SkillsEnum, toKMB } from 'oldschooljs';
 import { omit } from 'remeda';
 
 applyStaticDefine();
 
 import '../src/lib/safeglobals';
+
 import { applyStaticDefine } from '../meta';
 import { type BitField, PVM_METHODS } from '../src/lib/constants';
 import { degradeableItems } from '../src/lib/degradeableItems';

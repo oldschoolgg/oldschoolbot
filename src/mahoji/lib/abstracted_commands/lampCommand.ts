@@ -1,11 +1,11 @@
 import { clamp, objectValues } from 'e';
 import { Bank, type Item, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
 
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { Skills } from '@/lib/types/index.js';
+import { assert } from '@/lib/util/logError.js';
 import { isValidSkill } from '@/lib/util/smallUtils';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { Skills } from '../../../lib/types';
-import { assert } from '../../../lib/util/logError';
-import { userStatsUpdate } from '../../mahojiSettings';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 interface IXPLamp {
 	itemID: number;
@@ -328,7 +328,7 @@ export async function lampCommand(user: MUser, itemToUse: string, skill: string,
 	}
 
 	let skillsToReceive: Skills = {};
-	let skillsRequirements: Skills | undefined = undefined;
+	let skillsRequirements: Skills | undefined;
 
 	[skillsToReceive, skillsRequirements] = xpObject.function({
 		user,

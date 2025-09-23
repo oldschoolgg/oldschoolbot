@@ -1,10 +1,10 @@
 import { Time } from 'e';
-import { Bank, LootTable, Monsters, itemID, resolveItems } from 'oldschooljs';
+import { Bank, itemID, LootTable, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { BitField } from '../../../../../constants';
-import { addStatsOfItemsTogether } from '../../../../../structures/Gear';
-import type { CustomMonster } from '../customMonsters';
+import { BitField } from '@/lib/constants.js';
+import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
+import { addStatsOfItemsTogether } from '@/lib/structures/Gear';
 
 export const VenatrixLootTable = new LootTable()
 	.every('Venatrix eggs')

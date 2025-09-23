@@ -1,8 +1,8 @@
 import { formatDuration, getInterval } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
 
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../types/minions';
-import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
 
 export const getGuthixianCacheInterval = () => getInterval(24);
 

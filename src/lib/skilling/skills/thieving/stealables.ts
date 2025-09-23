@@ -1,8 +1,8 @@
 import { Time } from 'e';
 import { LootTable, Monsters } from 'oldschooljs';
 
-import { KING_GOLDEMAR_GUARD_ID } from '../../../bso/bsoConstants';
-import { QuestID } from '../../../minions/data/quests';
+import { KING_GOLDEMAR_GUARD_ID } from '@/lib/bso/bsoConstants.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
 
 const {
 	BeardedBandit,

@@ -1,7 +1,7 @@
 import { LootTable, resolveItems } from 'oldschooljs';
 
-import { GemRockTable } from '../skilling/skills/mining';
-import { SeedTable } from './seedTable';
+import { GemRockTable } from '@/lib/skilling/skills/mining';
+import { SeedTable } from './seedTable.js';
 
 export const allThirdAgeItems = resolveItems([
 	'3rd age range coif',

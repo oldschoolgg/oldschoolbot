@@ -2,51 +2,49 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { CommandResponse } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-
-import type { UserStats, activity_type_enum } from '@prisma/client';
+import type { activity_type_enum, UserStats } from '@prisma/client';
 import { bold } from 'discord.js';
-import { Time, sumArr } from 'e';
+import { sumArr, Time } from 'e';
 import {
 	Bank,
 	type ItemBank,
 	Monsters,
+	resolveItems,
 	SkillsEnum,
 	type SkillsScore,
 	TOBRooms,
-	resolveItems,
 	toKMB
 } from 'oldschooljs';
 
-import { SQL_sumOfAllCLItems } from '@/lib/util/smallUtils.js';
-import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
-import { calcCLDetails, isCLItem } from '../../../lib/data/Collections';
-import { skillEmoji } from '../../../lib/data/emojis';
-import { slayerMaskHelms } from '../../../lib/data/slayerMaskHelms';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { getClueScoresFromOpenables } from '@/lib/clues/clueUtils.js';
+import { PerkTier } from '@/lib/constants';
+import { calcCLDetails, isCLItem } from '@/lib/data/Collections.js';
+import { skillEmoji } from '@/lib/data/emojis.js';
+import { slayerMaskHelms } from '@/lib/data/slayerMaskHelms.js';
 import {
 	calculateAllFletchedItems,
 	calculateChargedItems,
 	calculateDartsFletchedFromScratch,
 	calculateTiarasMade,
 	calculateXPSources
-} from '../../../lib/leagues/stats';
-import { getBankBgById } from '../../../lib/minions/data/bankBackgrounds';
-import killableMonsters from '../../../lib/minions/data/killableMonsters';
-import { RandomEvents } from '../../../lib/randomEvents';
-
-import { PerkTier } from '@/lib/constants';
-import Agility from '../../../lib/skilling/skills/agility';
-import { Castables } from '../../../lib/skilling/skills/magic/castables';
-import { ForestryEvents } from '../../../lib/skilling/skills/woodcutting/forestry';
-import { getAllAlternateMonsters, getCommonTaskName, getSlayerTaskStats } from '../../../lib/slayer/slayerUtil';
-import { sorts } from '../../../lib/sorts';
-import type { InfernoOptions } from '../../../lib/types/minions';
-import { getUsername } from '../../../lib/util';
-import { createChart } from '../../../lib/util/chart';
-import { getItem } from '../../../lib/util/getOSItem';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { Cooldowns } from '../Cooldowns';
-import { collectables } from '../collectables';
+} from '@/lib/leagues/stats.js';
+import { getBankBgById } from '@/lib/minions/data/bankBackgrounds.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { RandomEvents } from '@/lib/randomEvents.js';
+import Agility from '@/lib/skilling/skills/agility.js';
+import { Castables } from '@/lib/skilling/skills/magic/castables.js';
+import { ForestryEvents } from '@/lib/skilling/skills/woodcutting/forestry.js';
+import { getAllAlternateMonsters, getCommonTaskName, getSlayerTaskStats } from '@/lib/slayer/slayerUtil.js';
+import { sorts } from '@/lib/sorts.js';
+import type { InfernoOptions } from '@/lib/types/minions.js';
+import { createChart } from '@/lib/util/chart.js';
+import { getItem } from '@/lib/util/getOSItem.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { SQL_sumOfAllCLItems } from '@/lib/util/smallUtils.js';
+import { getUsername } from '@/lib/util.js';
+import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
+import { collectables } from '@/mahoji/lib/collectables.js';
 
 interface DataPiece {
 	name: string;

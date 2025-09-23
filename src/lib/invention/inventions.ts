@@ -1,16 +1,16 @@
 import { userMention } from '@discordjs/builders';
 import { type CommandResponse, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import { Time, clamp, reduceNumByPercent } from 'e';
+import { clamp, reduceNumByPercent, Time } from 'e';
 import { Bank, type Item, type ItemBank, resolveItems, toKMB } from 'oldschooljs';
 
-import type { IMaterialBank, MaterialType } from '.';
-import { type ClueTier, ClueTiers } from '../clues/clueTiers';
-import type { GearBank } from '../structures/GearBank';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../util/clientSettings';
-import getOSItem from '../util/getOSItem';
-import { logError } from '../util/logError';
-import { MaterialBank } from './MaterialBank';
+import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
+import type { IMaterialBank, MaterialType } from '@/lib/invention/index.js';
+import type { GearBank } from '@/lib/structures/GearBank';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings';
+import getOSItem from '@/lib/util/getOSItem';
+import { logError } from '@/lib/util/logError';
+import { MaterialBank } from './MaterialBank.js';
 
 const InventionFlags = ['equipped', 'bank'] as const;
 type InventionFlag = (typeof InventionFlags)[number];

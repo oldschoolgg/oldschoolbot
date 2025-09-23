@@ -2,7 +2,7 @@ import deepEqual from 'fast-deep-equal';
 import { Bank, itemID } from 'oldschooljs';
 import { assert, describe, test } from 'vitest';
 
-import { Gear, defaultGear } from '../../src/lib/structures/Gear';
+import { defaultGear, Gear } from '../../src/lib/structures/Gear';
 import { createTestUser, mockClient } from './util';
 
 describe('Gear Fixing', async () => {

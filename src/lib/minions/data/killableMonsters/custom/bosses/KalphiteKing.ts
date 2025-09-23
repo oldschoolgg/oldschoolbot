@@ -1,14 +1,13 @@
 import { Time } from 'e';
-import { Monsters, resolveItems } from 'oldschooljs';
-import { LootTable } from 'oldschooljs';
+import { LootTable, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { kalphiteKingCL } from '../../../../../data/CollectionsExport';
-import { SeedTable } from '../../../../../simulation/seedTable';
-import { decideLoot } from '../../../../../util/LootDecider.js';
-import setCustomMonster, { makeKillTable } from '../../../../../util/setCustomMonster';
-import type { KillableMonster } from '../../../../types';
-import { GrimyHerbTable } from '../Treebeard';
+import { kalphiteKingCL } from '@/lib/data/CollectionsExport';
+import type { KillableMonster } from '@/lib/minions/types';
+import { SeedTable } from '@/lib/simulation/seedTable';
+import { GrimyHerbTable } from '@/lib/simulation/sharedTables.js';
+import { decideLoot } from '@/lib/util/LootDecider.js';
+import setCustomMonster, { makeKillTable } from '@/lib/util/setCustomMonster';
 
 export const kalphiteKingLootTable = new LootTable()
 	.tertiary(18, 'Clue scroll (grandmaster)')

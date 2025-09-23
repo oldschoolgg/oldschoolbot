@@ -1,11 +1,11 @@
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { EmbedBuilder } from 'discord.js';
 import { toKMB } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { getItem } from '../../lib/util/getOSItem';
-import { itemOption } from '../lib/mahojiCommandOptions';
-import { sellPriceOfItem } from './sell';
+import { getItem } from '@/lib/util/getOSItem';
+import { itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
+import { sellPriceOfItem } from './sell.js';
 
 export const priceCommand: OSBMahojiCommand = {
 	name: 'price',

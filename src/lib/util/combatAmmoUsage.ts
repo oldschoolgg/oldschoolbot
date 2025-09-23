@@ -1,8 +1,8 @@
-import { Time, reduceNumByPercent } from 'e';
+import type { GearSetupType } from '@prisma/client';
+import { reduceNumByPercent, Time } from 'e';
 import { Bank, type Item } from 'oldschooljs';
 
-import type { GearSetupType } from '../gear';
-import getOSItem from './getOSItem';
+import getOSItem from './getOSItem.js';
 
 interface CombatItemConsumption {
 	requiredGearType: GearSetupType[];

@@ -1,14 +1,14 @@
-import { Time, randInt, roll } from 'e';
+import { randInt, roll, Time } from 'e';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
-import { herbertDroprate } from '../../lib/bso/bsoUtil';
-import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries';
-import Herblore from '../../lib/skilling/skills/herblore/herblore';
-import type { Mixable } from '../../lib/skilling/types';
-import type { HerbloreActivityTaskOptions } from '../../lib/types/minions';
-import getOSItem from '../../lib/util/getOSItem';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { percentChance } from '../../lib/util/rng';
+import { herbertDroprate } from '@/lib/bso/bsoUtil.js';
+import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries';
+import Herblore from '@/lib/skilling/skills/herblore/herblore';
+import type { Mixable } from '@/lib/skilling/types.js';
+import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
+import getOSItem from '@/lib/util/getOSItem';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { percentChance } from '@/lib/util/rng';
 
 function BSOApplyExtraQuantity(user: MUser, quantity: number, mixableItem: Mixable, messages: string[]) {
 	const isMixingPotion = mixableItem.xp !== 0 && !mixableItem.wesley && !mixableItem.zahur;

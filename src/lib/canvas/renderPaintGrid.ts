@@ -1,9 +1,9 @@
 import type { Item } from 'oldschooljs';
 
-import { paintColors } from '../customItems/paintCans.js';
-import { getPaintedItemImage } from '../paintColors.js';
-import { OSRSCanvas } from './OSRSCanvas.js';
-import { bankImageTask } from './bankImage.js';
+import { bankImageTask } from '@/lib/canvas/bankImage.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
+import { paintColors } from '@/lib/customItems/paintCans.js';
+import { getPaintedItemImage } from '@/lib/paintColors.js';
 
 export async function renderPaintGrid({ item }: { item: Item }): Promise<Buffer> {
 	const canvases = await Promise.all(paintColors.map(color => getPaintedItemImage(color, item.id)));

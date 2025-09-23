@@ -1,8 +1,8 @@
 import {
 	type CommandRunOptions,
+	isValidDiscordSnowflake,
 	type MahojiUserOption,
-	type OSBMahojiCommand,
-	isValidDiscordSnowflake
+	type OSBMahojiCommand
 } from '@oldschoolgg/toolkit/discord-util';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
@@ -10,36 +10,37 @@ import { dateFm } from '@oldschoolgg/toolkit/util';
 import { UserEventType, xp_gains_skill_enum } from '@prisma/client';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Duration } from '@sapphire/time-utilities';
-import { ApplicationCommandOptionType, SnowflakeUtil, codeBlock } from 'discord.js';
-import { Time, randArrItem, sumArr } from 'e';
+import { ApplicationCommandOptionType, codeBlock, SnowflakeUtil } from 'discord.js';
+import { randArrItem, sumArr, Time } from 'e';
 import { Bank, type Item } from 'oldschooljs';
 
-import { BitField, Channel, globalConfig } from '../../lib/constants';
-import { allCollectionLogsFlat } from '../../lib/data/Collections';
-import type { GearSetupType } from '../../lib/gear/types';
-import { GrandExchange } from '../../lib/grandExchange';
-import { marketPricemap } from '../../lib/marketPrices';
-import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
-import { unequipPet } from '../../lib/minions/functions/unequipPet';
-import { sql } from '../../lib/postgres';
-import { premiumPatronTime } from '../../lib/premiumPatronTime';
-import { runRolesTask } from '../../lib/rolesTask';
-import { TeamLoot } from '../../lib/simulation/TeamLoot';
-import type { ItemBank } from '../../lib/types';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { logError } from '../../lib/util/logError';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { migrateUser } from '../../lib/util/migrateUser';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { insertUserEvent } from '../../lib/util/userEvents';
-import { sendToChannelID } from '../../lib/util/webhook';
-import { cancelUsersListings } from '../lib/abstracted_commands/cancelGEListingCommand';
-import { gearSetupOption } from '../lib/mahojiCommandOptions';
-import { gifs } from './admin';
-import { getUserInfo } from './minion';
-import { sellPriceOfItem } from './sell';
+import { BitField, Channel, globalConfig } from '@/lib/constants';
+import { allCollectionLogsFlat } from '@/lib/data/Collections';
+import type { GearSetupType } from '@/lib/gear/types';
+import { GrandExchange } from '@/lib/grandExchange';
+import { marketPricemap } from '@/lib/marketPrices';
+import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand';
+import { unequipPet } from '@/lib/minions/functions/unequipPet';
+import { sql } from '@/lib/postgres';
+import { premiumPatronTime } from '@/lib/premiumPatronTime';
+import { runRolesTask } from '@/lib/rolesTask';
+import { TeamLoot } from '@/lib/simulation/TeamLoot';
+import type { ItemBank } from '@/lib/types';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { deferInteraction } from '@/lib/util/interactionReply';
+import itemIsTradeable from '@/lib/util/itemIsTradeable';
+import { logError } from '@/lib/util/logError';
+import { makeBankImage } from '@/lib/util/makeBankImage';
+import { migrateUser } from '@/lib/util/migrateUser';
+import { parseBank } from '@/lib/util/parseStringBank';
+import { insertUserEvent } from '@/lib/util/userEvents';
+import { sendToChannelID } from '@/lib/util/webhook';
+import { cancelUsersListings } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
+import { gearSetupOption } from '@/mahoji/lib/mahojiCommandOptions.js';
+import { gifs } from './admin.js';
+import { getUserInfo } from './minion.js';
+import { sellPriceOfItem } from './sell.js';
+
 const itemFilters = [
 	{
 		name: 'Tradeable',
@@ -576,8 +577,8 @@ export const rpCommand: OSBMahojiCommand = {
 			if (!userId) return null;
 			const targetUser = await mUserFetch(userId);
 			let type: UserEventType = UserEventType.CLCompletion;
-			let skill = undefined;
-			let collectionLogName = undefined;
+			let skill;
+			let collectionLogName;
 
 			let confirmationStr = `Please confirm:
 User: ${targetUser.rawUsername}

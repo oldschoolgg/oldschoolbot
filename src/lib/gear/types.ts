@@ -1,6 +1,6 @@
 import type { EquipmentSlot } from 'oldschooljs';
 
-import type { Gear } from '../structures/Gear';
+import type { Gear } from '@/lib/structures/Gear';
 
 export type UserFullGearSetup = {
 	[key in GearSetupType]: Gear;

@@ -1,5 +1,5 @@
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
-import { Bank, EItem, EMonster, Monsters, convertLVLtoXP, resolveItems } from 'oldschooljs';
+import { Bank, convertLVLtoXP, EItem, EMonster, Monsters, resolveItems } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
 import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants';

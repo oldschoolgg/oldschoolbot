@@ -1,17 +1,17 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { randArrItem, randInt } from 'e';
-import { Bank, SkillsEnum, itemID } from 'oldschooljs';
+import { Bank, itemID, SkillsEnum } from 'oldschooljs';
 
-import { userHasFlappy } from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/lootTrack';
-import { bloodEssence } from '../../../lib/skilling/functions/calcsRunecrafting';
-import Runecraft from '../../../lib/skilling/skills/runecraft';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { calcMaxRCQuantity, userStatsUpdate } from '../../../mahoji/mahojiSettings';
-import { rewardsGuardianTable } from './../../../lib/simulation/rewardsGuardian';
-import type { GuardiansOfTheRiftActivityTaskOptions } from './../../../lib/types/minions';
+import { userHasFlappy } from '@/lib/invention/inventions.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { rewardsGuardianTable } from '@/lib/simulation/rewardsGuardian.js';
+import { bloodEssence } from '@/lib/skilling/functions/calcsRunecrafting.js';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import type { GuardiansOfTheRiftActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { calcMaxRCQuantity, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const catalyticRunesArray: string[] = [
 	'Mind rune',

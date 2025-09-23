@@ -10,26 +10,26 @@ import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
 import Mining from '@/lib/skilling/skills/mining';
 import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting';
 import type {
-	ActivityTaskData,
-	ActivityTaskOptionsWithQuantity,
-	AgilityActivityTaskOptions,
-	ClueActivityTaskOptions,
-	ColoTaskOptions,
-	CookingActivityTaskOptions,
-	CraftingActivityTaskOptions,
-	FiremakingActivityTaskOptions,
-	FishingActivityTaskOptions,
-	FletchingActivityTaskOptions,
-	GroupMonsterActivityTaskOptions,
-	InfernoOptions,
-	MinigameActivityTaskOptionsWithNoChanges,
-	MiningActivityTaskOptions,
-	MonsterActivityTaskOptions,
-	NightmareActivityTaskOptions,
-	TOAOptions,
-	TheatreOfBloodTaskOptions,
-	WoodcuttingActivityTaskOptions
-} from '@/lib/types/minions';
+    ActivityTaskData,
+    ActivityTaskOptionsWithQuantity,
+    AgilityActivityTaskOptions,
+    ClueActivityTaskOptions,
+    ColoTaskOptions,
+    CookingActivityTaskOptions,
+    CraftingActivityTaskOptions,
+    FiremakingActivityTaskOptions,
+    FishingActivityTaskOptions,
+    FletchingActivityTaskOptions,
+    GroupMonsterActivityTaskOptions,
+    InfernoOptions,
+    MinigameActivityTaskOptionsWithNoChanges,
+    MiningActivityTaskOptions,
+    MonsterActivityTaskOptions,
+    NightmareActivityTaskOptions,
+    TheatreOfBloodTaskOptions,
+    TOAOptions,
+    WoodcuttingActivityTaskOptions
+} from '@/lib/types/minions.js';
 
 export function minionStatusRaw(task: ActivityTaskData): string {
 	const duration = task.finishDate - Date.now();

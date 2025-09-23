@@ -7,17 +7,17 @@ import { chunk, sumArr } from 'e';
 import { Bank, type Item, type ItemBank, itemID, toKMB } from 'oldschooljs';
 import { loadImage } from 'skia-canvas';
 
-import { XPLamps } from '../../mahoji/lib/abstracted_commands/lampCommand';
-import { divinationEnergies } from '../bso/divination';
-import { BitField, PerkTier } from '../constants';
-import { allCLItems } from '../data/Collections';
-import { filterableTypes } from '../data/filterables';
-import { marketPriceOfBank, marketPriceOrBotPrice } from '../marketPrices';
-import backgroundImages, { type BankBackground } from '../minions/data/bankBackgrounds';
-import type { FlagMap, Flags } from '../minions/types';
-import { type BankSortMethod, BankSortMethods, sorts } from '../sorts';
-import { OSRSCanvas } from './OSRSCanvas';
-import { type BGSpriteName, type BaseCanvasArgs, CanvasImage, type IBgSprite, getClippedRegion } from './canvasUtil';
+import { divinationEnergies } from '@/lib/bso/divination.js';
+import { BitField, PerkTier } from '@/lib/constants';
+import { allCLItems } from '@/lib/data/Collections';
+import { filterableTypes } from '@/lib/data/filterables';
+import { marketPriceOfBank, marketPriceOrBotPrice } from '@/lib/marketPrices.js';
+import backgroundImages, { type BankBackground } from '@/lib/minions/data/bankBackgrounds.js';
+import type { FlagMap, Flags } from '@/lib/minions/types.js';
+import { type BankSortMethod, BankSortMethods, sorts } from '@/lib/sorts.js';
+import { XPLamps } from '@/mahoji/lib/abstracted_commands/lampCommand';
+import { type BaseCanvasArgs, type BGSpriteName, CanvasImage, getClippedRegion, type IBgSprite } from './canvasUtil.js';
+import { OSRSCanvas } from './OSRSCanvas.js';
 
 interface BankImageResult {
 	image: Buffer;

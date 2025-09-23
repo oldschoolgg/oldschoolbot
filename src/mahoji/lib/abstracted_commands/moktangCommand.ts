@@ -3,15 +3,15 @@ import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 import { Bank, resolveItems } from 'oldschooljs';
 
+import { dwarvenOutfit } from '@/lib/data/CollectionsExport.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { PercentCounter } from '@/lib/structures/PercentCounter.js';
+import type { MoktangTaskOptions } from '@/lib/types/minions.js';
 import { itemNameFromID } from '@/lib/util';
-import { dwarvenOutfit } from '../../../lib/data/CollectionsExport';
-import { trackLoot } from '../../../lib/lootTrack';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import { PercentCounter } from '../../../lib/structures/PercentCounter';
-import type { MoktangTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const requiredPickaxes = resolveItems(['Crystal pickaxe', 'Volcanic pickaxe', 'Dwarven pickaxe', 'Dragon pickaxe']);
 

@@ -1,9 +1,9 @@
 import { Bank } from 'oldschooljs';
 
-import { kibbles } from '../../../lib/data/kibble';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { KibbleOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { kibbles } from '@/lib/data/kibble.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { KibbleOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const kibbleTask: MinionTask = {
 	type: 'KibbleMaking',

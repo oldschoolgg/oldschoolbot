@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank, type Item, Items } from 'oldschooljs';
 
-import type { Skills } from '../../lib/types';
+import type { Skills } from '@/lib/types';
 
 interface Collectable {
 	item: Item;

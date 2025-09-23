@@ -1,25 +1,25 @@
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { Time, increaseNumByPercent, reduceNumByPercent, round } from 'e';
+import { increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { calcBossFood } from '@/lib/bso/calcBossFood.js';
+import { gorajanWarriorOutfit, torvaOutfit } from '@/lib/data/CollectionsExport.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { KalphiteKingMonster } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood';
-import { calcBossFood } from '../../../lib/bso/calcBossFood';
-import { gorajanWarriorOutfit, torvaOutfit } from '../../../lib/data/CollectionsExport';
-import { trackLoot } from '../../../lib/lootTrack';
-import { KalphiteKingMonster } from '../../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
-import type { KillableMonster } from '../../../lib/minions/types';
-import { setupParty } from '../../../lib/party';
-import { Gear } from '../../../lib/structures/Gear';
-import type { MakePartyOptions } from '../../../lib/types';
-import type { BossActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
-import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
-import { deferInteraction } from '../../../lib/util/interactionReply';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { hasMonsterRequirements } from '../../mahojiSettings';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { setupParty } from '@/lib/party.js';
+import { Gear } from '@/lib/structures/Gear.js';
+import type { MakePartyOptions } from '@/lib/types/index.js';
+import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
+import { getKalphiteKingGearStats } from '@/lib/util/getKalphiteKingGearStats.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): Promise<string | undefined> {
 	// Check if every user has the requirements for this monster.

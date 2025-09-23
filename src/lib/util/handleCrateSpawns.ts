@@ -1,8 +1,8 @@
-import { Time, reduceNumByPercent, roll } from 'e';
+import { reduceNumByPercent, roll, Time } from 'e';
 import { Bank, resolveItems } from 'oldschooljs';
 
-import getOSItem from './getOSItem';
-import { itemNameFromID } from './smallUtils';
+import getOSItem from './getOSItem.js';
+import { itemNameFromID } from './smallUtils.js';
 
 const crateItem = getOSItem('Frozen crate (s8)');
 

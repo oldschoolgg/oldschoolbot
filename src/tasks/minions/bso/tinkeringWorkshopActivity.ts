@@ -1,13 +1,13 @@
 import { randArrItem, randInt, roll } from 'e';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { inventorOutfit } from '../../../lib/data/CollectionsExport';
-import { MaterialBank } from '../../../lib/invention/MaterialBank';
-import { ClueTable } from '../../../lib/simulation/sharedTables';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { TinkeringWorkshopOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { inventorOutfit } from '@/lib/data/CollectionsExport.js';
+import { MaterialBank } from '@/lib/invention/MaterialBank.js';
+import { ClueTable } from '@/lib/simulation/sharedTables.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { TinkeringWorkshopOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 function tinkerLoot(user: MUser, quantity: number) {
 	const loot = new Bank();

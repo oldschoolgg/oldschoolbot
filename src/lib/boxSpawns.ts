@@ -1,18 +1,18 @@
 import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, type Message, type User } from 'discord.js';
-import { Time, isFunction, randArrItem, roll, shuffleArr } from 'e';
+import { isFunction, randArrItem, roll, shuffleArr, Time } from 'e';
 import fetch from 'node-fetch';
 import { Bank, Items, LootTable, Monsters } from 'oldschooljs';
 
-import { userStatsUpdate } from '../mahoji/mahojiSettings';
-import { MysteryBoxes } from './bsoOpenables';
-import { globalConfig } from './constants';
-import { allCollectionLogsFlat } from './data/Collections';
-import Createables from './data/createables';
-import killableMonsters from './minions/data/killableMonsters';
-import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
-import { sendToChannelID } from './util/webhook';
-import { LampTable } from './xpLamps';
+import { globalConfig } from '@/lib/constants';
+import { allCollectionLogsFlat } from '@/lib/data/Collections';
+import Createables from '@/lib/data/createables';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
+import { MysteryBoxes } from './bsoOpenables.js';
+import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters.js';
+import killableMonsters from './minions/data/killableMonsters/index.js';
+import { sendToChannelID } from './util/webhook.js';
+import { LampTable } from './xpLamps.js';
 
 const triviaChallenge: Challenge = async (msg: Message): Promise<User | null> => {
 	if (!msg.channel.isSendable()) return null;
@@ -43,7 +43,7 @@ const triviaChallenge: Challenge = async (msg: Message): Promise<User | null> =>
 
 		const winner = collected.first()?.author;
 		return winner ?? null;
-	} catch (err) {
+	} catch (_err) {
 		await sendToChannelID(msg.channelId, 'Nobody answered in time, sorry!');
 		return null;
 	}
@@ -76,7 +76,7 @@ const itemChallenge: Challenge = async (msg: Message): Promise<User | null> => {
 
 		const winner = collected.first()?.author;
 		return winner ?? null;
-	} catch (err) {
+	} catch (_err) {
 		await sendToChannelID(msg.channelId, 'Nobody answered in time, sorry!');
 		return null;
 	}
@@ -121,7 +121,7 @@ const createdChallenge: Challenge = async (msg: Message): Promise<User | null> =
 
 		const winner = collected.first()?.author;
 		return winner ?? null;
-	} catch (err) {
+	} catch (_err) {
 		await msg.channel.send(`Nobody answered in time, sorry! The correct answer was: ${randomCreatable.name}`);
 		return null;
 	}
@@ -168,7 +168,7 @@ const monsterDropChallenge: Challenge = async (msg: Message): Promise<User | nul
 
 		const winner = collected.first()?.author;
 		return winner ?? null;
-	} catch (err) {
+	} catch (_err) {
 		await sendToChannelID(msg.channelId, `Nobody answered in time, sorry! The correct answer was: ${monster.name}`);
 		return null;
 	}
@@ -196,7 +196,7 @@ const collectionLogChallenge: Challenge = async (msg: Message): Promise<User | n
 
 		const winner = collected.first()?.author;
 		return winner ?? null;
-	} catch (err) {
+	} catch (_err) {
 		await sendToChannelID(msg.channelId, 'Nobody answered in time, sorry!');
 		return null;
 	}

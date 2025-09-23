@@ -1,22 +1,20 @@
-import { type Tame, type TameActivity, type User, tame_growth } from '@prisma/client';
-import { round } from 'e';
-import { Items } from 'oldschooljs';
-
-import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
-import { ClueTiers } from '../clues/clueTiers';
-import { getSimilarItems } from '../data/similarItems';
-
 import { formatDuration } from '@oldschoolgg/toolkit';
+import { type Tame, type TameActivity, tame_growth, type User } from '@prisma/client';
+import { round } from 'e';
+import { type ItemBank, Items } from 'oldschooljs';
+
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { getSimilarItems } from '@/lib/data/similarItems';
 import {
 	type Species,
+	seaMonkeySpells,
 	type TameTaskOptions,
 	TameType,
-	seaMonkeySpells,
 	tameKillableMonsters,
 	tameSpecies
-} from '../tames';
-import type { ItemBank } from '../types';
-import { itemNameFromID } from './smallUtils';
+} from '@/lib/tames.js';
+import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings';
+import { itemNameFromID } from './smallUtils.js';
 
 export async function tameLastFinishedActivity(user: MUser) {
 	const tameID = user.user.selected_tame;
@@ -144,7 +142,7 @@ export async function getUsersTame(
 
 export function getTameStatus(tameActivity: TameActivity | null) {
 	if (tameActivity) {
-		const currentDate = new Date().valueOf();
+		const currentDate = Date.now();
 		const timeRemaining = `${formatDuration(tameActivity.finish_date.valueOf() - currentDate, true)} remaining`;
 		const activityData = tameActivity.data as any as TameTaskOptions;
 		switch (activityData.type) {

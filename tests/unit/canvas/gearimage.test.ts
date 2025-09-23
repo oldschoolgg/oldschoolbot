@@ -6,7 +6,7 @@ import { describe, test } from 'vitest';
 
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage';
 import Farming from '@/lib/skilling/skills/farming';
-import { Gear, constructGearSetup } from '@/lib/structures/Gear';
+import { constructGearSetup, Gear } from '@/lib/structures/Gear';
 import { baseSnapshotPath } from '../../testConstants.js';
 
 const COXMaxMeleeGear = constructGearSetup({

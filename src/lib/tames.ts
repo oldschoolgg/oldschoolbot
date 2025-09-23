@@ -1,29 +1,29 @@
 import type { Tame, TameActivity } from '@prisma/client';
-import { Time, objectEntries } from 'e';
+import { objectEntries, Time } from 'e';
 import {
 	Bank,
 	ChambersOfXeric,
 	type Item,
 	type ItemBank,
+	itemID,
 	Misc,
 	Monsters,
-	TheatreOfBlood,
-	itemID,
-	resolveItems
+	resolveItems,
+	TheatreOfBlood
 } from 'oldschooljs';
 
-import type { handleFinish } from '../tasks/tames/tameTasks';
-import killableMonsters, { NightmareMonster } from './minions/data/killableMonsters';
-import { customDemiBosses } from './minions/data/killableMonsters/custom/demiBosses';
-import { Planks } from './minions/data/planks';
-import type { KillableMonster } from './minions/types';
-import Tanning from './skilling/skills/crafting/craftables/tanning';
-import Bars from './skilling/skills/smithing/smeltables';
-import type { MTame } from './structures/MTame';
-import getOSItem from './util/getOSItem';
-import { handleSpecialCoxLoot } from './util/handleSpecialCoxLoot';
-import { assert } from './util/logError';
-import { calculateSimpleMonsterDeathChance } from './util/smallUtils';
+import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning.js';
+import Bars from '@/lib/skilling/skills/smithing/smeltables.js';
+import type { handleFinish } from '@/tasks/tames/tameTasks.js';
+import { customDemiBosses } from './minions/data/killableMonsters/custom/demiBosses.js';
+import killableMonsters, { NightmareMonster } from './minions/data/killableMonsters/index.js';
+import { Planks } from './minions/data/planks.js';
+import type { KillableMonster } from './minions/types.js';
+import type { MTame } from './structures/MTame.js';
+import getOSItem from './util/getOSItem.js';
+import { handleSpecialCoxLoot } from './util/handleSpecialCoxLoot.js';
+import { assert } from './util/logError.js';
+import { calculateSimpleMonsterDeathChance } from './util/smallUtils.js';
 
 export enum TameSpeciesID {
 	Igne = 1,
@@ -389,7 +389,7 @@ const overrides = [
 for (const override of overrides) {
 	const obj = tameKillableMonsters.find(i => i.id === override.id)!;
 	for (const [key, val] of objectEntries(override)) {
-		// @ts-ignore trust me
+		// @ts-expect-error trust me
 		obj[key] = val;
 	}
 }

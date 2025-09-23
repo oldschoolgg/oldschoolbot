@@ -14,6 +14,7 @@ import {
 	type Snowflake,
 	type User
 } from 'discord.js';
+
 import type { CommandOption, CommandOptions } from './mahojiTypes';
 
 export function convertCommandOptionToAPIOption(option: CommandOption): any {
@@ -31,7 +32,7 @@ export function convertCommandOptionToAPIOption(option: CommandOption): any {
 			return {
 				...option,
 				// TODO(gc): How the fuck do I fix this
-				// @ts-ignore
+				// @ts-expect-error
 				options:
 					'options' in option && option.options ? option.options.map(convertCommandOptionToAPIOption) : []
 			};

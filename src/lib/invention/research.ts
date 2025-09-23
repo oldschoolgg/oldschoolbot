@@ -1,18 +1,18 @@
 import { bold, userMention } from '@discordjs/builders';
 import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { Time, clamp, shuffleArr } from 'e';
+import { clamp, shuffleArr, Time } from 'e';
 
-import { type MaterialType, materialTypes } from '.';
-import { SkillsEnum } from '../skilling/types';
-import type { ResearchTaskOptions } from '../types/minions';
-import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../util/handleMahojiConfirmation';
-import { handleTripFinish } from '../util/handleTripFinish';
-import { roll } from '../util/rng';
-import { MaterialBank } from './MaterialBank';
-import { type Invention, Inventions, transactMaterialsFromUser } from './inventions';
+import { type MaterialType, materialTypes } from '@/lib/invention/index.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { ResearchTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { roll } from '@/lib/util/rng';
+import { type Invention, Inventions, transactMaterialsFromUser } from './inventions.js';
+import { MaterialBank } from './MaterialBank.js';
 
 function inventionsCanUnlockFromResearch(user: MUser, researchedMaterial: MaterialType): Invention[] {
 	const inventionLevel = user.skillsAsLevels.invention;

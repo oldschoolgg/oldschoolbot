@@ -1,23 +1,23 @@
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, reduceNumByPercent } from 'e';
-import { Bank, EMonster, ZAM_HASTA_CRUSH, resolveItems } from 'oldschooljs';
+import { reduceNumByPercent, Time } from 'e';
+import { Bank, EMonster, resolveItems, ZAM_HASTA_CRUSH } from 'oldschooljs';
 
+import { BitField } from '@/lib/constants.js';
+import { degradeItem } from '@/lib/degradeableItems.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood';
-import { BitField } from '../../../lib/constants';
-import { degradeItem } from '../../../lib/degradeableItems';
-import { trackLoot } from '../../../lib/lootTrack';
-import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
-import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import type { KillableMonster } from '../../../lib/minions/types';
-import { Gear } from '../../../lib/structures/Gear';
-import type { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
-import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
-import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { hasMonsterRequirements } from '../../mahojiSettings';
+import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { Gear } from '@/lib/structures/Gear.js';
+import type { NightmareActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
+import { getNightmareGearStats } from '@/lib/util/getNightmareGearStats.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 async function soloMessage(user: MUser, duration: number, quantity: number, isPhosani: boolean) {
 	const name = isPhosani ? "Phosani's Nightmare" : 'The Nightmare';

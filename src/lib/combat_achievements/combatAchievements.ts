@@ -2,18 +2,18 @@ import type { activity_type_enum } from '@prisma/client';
 import { deepClone, notEmpty, roll, sumArr, uniqueArr } from 'e';
 import type { Item } from 'oldschooljs';
 
-import type { Requirements } from '../structures/Requirements';
-import type { ActivityTaskData, TOAOptions } from '../types/minions';
-import getOSItem from '../util/getOSItem';
-import type { TripFinishEffect } from '../util/handleTripFinish';
-import { assert } from '../util/logError';
-import { formatList } from '../util/smallUtils';
-import { easyCombatAchievements } from './easy';
-import { eliteCombatAchievements } from './elite';
-import { grandmasterCombatAchievements } from './grandmaster';
-import { hardCombatAchievements } from './hard';
-import { masterCombatAchievements } from './master';
-import { mediumCombatAchievements } from './medium';
+import type { Requirements } from '@/lib/structures/Requirements';
+import type { ActivityTaskData, TOAOptions } from '@/lib/types/minions.js';
+import getOSItem from '@/lib/util/getOSItem';
+import type { TripFinishEffect } from '@/lib/util/handleTripFinish.js';
+import { assert } from '@/lib/util/logError';
+import { formatList } from '@/lib/util/smallUtils';
+import { easyCombatAchievements } from './easy.js';
+import { eliteCombatAchievements } from './elite.js';
+import { grandmasterCombatAchievements } from './grandmaster.js';
+import { hardCombatAchievements } from './hard.js';
+import { masterCombatAchievements } from './master.js';
+import { mediumCombatAchievements } from './medium.js';
 
 const collectMonsterNames = (...achievements: CombatAchievement[][]) => {
 	const allMonsterNamesSet = new Set<string>();

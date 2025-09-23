@@ -2,14 +2,14 @@ import { type CommandResponse, formatDuration, stringMatches } from '@oldschoolg
 import { Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { getNewUser } from '../../../lib/settings/settings';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { determineRunes } from '../../../lib/util/determineRunes';
-import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { pizazzPointsPerHour } from '../../../tasks/minions/minigames/mageTrainingArenaActivity';
+import { getNewUser } from '@/lib/settings/settings.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { determineRunes } from '@/lib/util/determineRunes.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { pizazzPointsPerHour } from '@/tasks/minions/minigames/mageTrainingArenaActivity.js';
 
 const RuneTable = new LootTable()
 	.every('Law rune', [11, 14])
@@ -111,7 +111,7 @@ export async function mageTrainingArenaPointsCommand(user: MUser) {
 ${mageTrainingArenaBuyables
 	.map(i => `${i.item.name} - ${i.cost} pts - ${formatDuration((i.cost / pizazzPointsPerHour) * (Time.Minute * 60))}`)
 	.join('\n')}
-        
+
 Hint: Magic Training Arena is combined into 1 room, and 1 set of points - rewards take approximately the same amount of time to get. To get started use **/minigames mage_training_arena start**. You can buy rewards using **/minigames mage_training_arena buy**.`;
 }
 

@@ -1,22 +1,22 @@
-import { Time, increaseNumByPercent, randInt, roll } from 'e';
-import { Bank, SkillsEnum, itemID, toKMB } from 'oldschooljs';
+import { increaseNumByPercent, randInt, roll, Time } from 'e';
+import { Bank, itemID, SkillsEnum, toKMB } from 'oldschooljs';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
+import { GLOBAL_BSO_XP_MULTIPLIER, MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination';
+import { upgradedDragonstoneOutfit } from '@/lib/data/CollectionsExport';
+import { globalDroprates } from '@/lib/data/globalDroprates';
+import { InventionID } from '@/lib/invention/inventions';
+import { type StoneSpirit, stoneSpirits } from '@/lib/minions/data/stoneSpirits';
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot';
+import Mining from '@/lib/skilling/skills/mining';
+import Smithing from '@/lib/skilling/skills/smithing';
+import type { Ore } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank';
+import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util';
-import { GLOBAL_BSO_XP_MULTIPLIER, MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
-import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
-import { upgradedDragonstoneOutfit } from '../../lib/data/CollectionsExport';
-import { globalDroprates } from '../../lib/data/globalDroprates';
-import { InventionID } from '../../lib/invention/inventions';
-import { type StoneSpirit, stoneSpirits } from '../../lib/minions/data/stoneSpirits';
-import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
-import Mining from '../../lib/skilling/skills/mining';
-import Smithing from '../../lib/skilling/skills/smithing';
-import type { Ore } from '../../lib/skilling/types';
-import type { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mahojiUsersSettingsFetch, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { mahojiUsersSettingsFetch, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings';
 
 export function calculateMiningResult({
 	ore,

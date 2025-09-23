@@ -1,20 +1,20 @@
-import { Table, formatDuration, isWeekend } from '@oldschoolgg/toolkit';
+import { formatDuration, isWeekend, Table } from '@oldschoolgg/toolkit';
 import type { GearSetupType } from '@prisma/client';
 import { AttachmentBuilder, type BaseMessageOptions, type TextChannel } from 'discord.js';
-import { Time, calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent, sumArr } from 'e';
+import { calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
-import { trackLoot } from '../lootTrack';
-import { effectiveMonsters } from '../minions/data/killableMonsters';
-import { setupParty } from '../party';
-import type { Skills } from '../types';
-import type { NewBossOptions } from '../types/minions';
-import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../util/calcMaxTripLength';
-import { formatSkillRequirements, hasSkillReqs } from '../util/smallUtils';
-import { type ClientBankKey, updateBankSetting } from '../util/updateBankSetting';
-import type { Gear } from './Gear';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import { setupParty } from '@/lib/party.js';
+import type { Skills } from '@/lib/types/index.js';
+import type { NewBossOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import { formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils';
+import { type ClientBankKey, updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import type { Gear } from './Gear.js';
 
 export const gpCostPerKill = (user: MUser) =>
 	user.gear.melee.hasEquipped(['Ring of charos', 'Ring of charos(a)'], false) ? 5_000_000 : 10_000_000;

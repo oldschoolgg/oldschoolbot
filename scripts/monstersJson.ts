@@ -6,7 +6,9 @@ import { DateTime } from 'luxon';
 import { Bank, Items, type LootTable } from 'oldschooljs';
 
 import { applyStaticDefine } from '../meta.js';
+
 applyStaticDefine();
+
 import { BOT_TYPE } from '@/lib/constants';
 import killableMonsters from '@/lib/minions/data/killableMonsters';
 

@@ -1,6 +1,6 @@
 import { Bank, LootTable } from 'oldschooljs';
 
-import { MysteryBoxes } from '../bsoOpenables';
+import { MysteryBoxes } from '@/lib/bsoOpenables.js';
 
 const RareTable = new LootTable()
 	.add('Hornwood helm')

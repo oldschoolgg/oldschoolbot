@@ -1,8 +1,8 @@
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { randArrItem } from 'e';
 
-import type { NexTaskOptions, RaidsOptions } from '../../../lib/types/minions';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import type { NexTaskOptions, RaidsOptions } from '@/lib/types/minions.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 
 export async function cancelTaskCommand(user: MUser, interaction?: ChatInputCommandInteraction): Promise<string> {
 	const currentTask = ActivityManager.getActivityOfUser(user.id);

@@ -1,22 +1,22 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
 import {
 	type CommandRunOptions,
-	type MahojiUserOption,
-	type OSBMahojiCommand,
 	discrimName,
-	mentionCommand
+	type MahojiUserOption,
+	mentionCommand,
+	type OSBMahojiCommand
 } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { tradePlayerItems } from '../../lib/util/tradePlayerItems';
-import { filterOption } from '../lib/mahojiCommandOptions';
-import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings';
+import { BLACKLISTED_USERS } from '@/lib/blacklists';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { deferInteraction } from '@/lib/util/interactionReply';
+import itemIsTradeable from '@/lib/util/itemIsTradeable';
+import { parseBank } from '@/lib/util/parseStringBank';
+import { tradePlayerItems } from '@/lib/util/tradePlayerItems';
+import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
+import { addToGPTaxBalance, mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 const MAX_CHARACTER_LENGTH = 950;
 

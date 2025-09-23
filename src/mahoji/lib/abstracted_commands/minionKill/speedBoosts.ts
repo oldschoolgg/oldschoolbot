@@ -1,16 +1,15 @@
-import { Time, calcWhatPercent, sumArr } from 'e';
+import { calcWhatPercent, sumArr, Time } from 'e';
 import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters, SkillsEnum } from 'oldschooljs';
 import type { OffenceGearStat } from 'oldschooljs/gear';
 import { omit } from 'remeda';
 
+import { dwarvenBlessing } from '@/lib/bso/dwarvenBlessing.js';
+import { gearstatToSetup, gorajanBoosts } from '@/lib/bso/gorajanGearBoost.js';
 import type { PvMMethod } from '@/lib/constants';
+import { degradeableItems, degradeablePvmBoostItems } from '@/lib/degradeableItems.js';
 import type { PrimaryGearSetupType } from '@/lib/gear';
-import { dwarvenBlessing } from '../../../../lib/bso/dwarvenBlessing';
-import { gearstatToSetup, gorajanBoosts } from '../../../../lib/bso/gorajanGearBoost';
-import { degradeableItems, degradeablePvmBoostItems } from '../../../../lib/degradeableItems';
-import { InventionID } from '../../../../lib/invention/inventions';
+import { InventionID } from '@/lib/invention/inventions.js';
 import {
-	SlayerActivityConstants,
 	boostCannon,
 	boostCannonMulti,
 	boostIceBarrage,
@@ -19,23 +18,24 @@ import {
 	cannonSingleConsumables,
 	iceBarrageConsumables,
 	iceBurstConsumables,
+	SlayerActivityConstants,
 	superiorCannonMultiConsumables,
 	superiorCannonSingleConsumables
-} from '../../../../lib/minions/data/combatConstants';
-import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
-import type { AttackStyles } from '../../../../lib/minions/functions';
-import type { Consumable } from '../../../../lib/minions/types';
-import { calcPOHBoosts } from '../../../../lib/poh';
-import { ChargeBank } from '../../../../lib/structures/Bank';
-import { maxOffenceStats } from '../../../../lib/structures/Gear';
-import type { MonsterActivityTaskOptions } from '../../../../lib/types/minions';
-import getOSItem from '../../../../lib/util/getOSItem';
-import { resolveAvailableItemBoosts } from '../../../mahojiSettings';
-import { determineIfUsingCannon } from './determineIfUsingCannon';
-import { dragonHunterWeapons } from './minionKillData';
-import type { MinionKillOptions } from './newMinionKill';
-import type { PostBoostEffect } from './postBoostEffects';
-import { staticEquippedItemBoosts } from './staticEquippedItemBoosts';
+} from '@/lib/minions/data/combatConstants.js';
+import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import type { Consumable } from '@/lib/minions/types.js';
+import { calcPOHBoosts } from '@/lib/poh/index.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
+import { maxOffenceStats } from '@/lib/structures/Gear.js';
+import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { resolveAvailableItemBoosts } from '@/mahoji/mahojiSettings.js';
+import { determineIfUsingCannon } from './determineIfUsingCannon.js';
+import { dragonHunterWeapons } from './minionKillData.js';
+import type { MinionKillOptions } from './newMinionKill.js';
+import type { PostBoostEffect } from './postBoostEffects.js';
+import { staticEquippedItemBoosts } from './staticEquippedItemBoosts.js';
 
 const revSpecialWeapons = {
 	melee: getOSItem("Viggora's chainmace"),

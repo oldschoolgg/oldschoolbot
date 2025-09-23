@@ -1,12 +1,12 @@
-import { rollNaxxusLoot } from '../../../lib/bso/naxxus/rollNaxxusLoot';
-import { trackLoot } from '../../../lib/lootTrack';
-import { Naxxus } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
-import { addMonsterXP } from '../../../lib/minions/functions';
-import announceLoot from '../../../lib/minions/functions/announceLoot';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { rollNaxxusLoot } from '@/lib/bso/naxxus/rollNaxxusLoot.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { Naxxus } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
+import announceLoot from '@/lib/minions/functions/announceLoot.js';
+import { addMonsterXP } from '@/lib/minions/functions/index.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const naxxusTask: MinionTask = {
 	type: 'Naxxus',

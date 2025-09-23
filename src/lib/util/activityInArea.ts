@@ -1,9 +1,9 @@
 import { activity_type_enum } from '@prisma/client';
 import { Monsters, resolveItems } from 'oldschooljs';
 
-import { soteSkillRequirements } from '../skilling/functions/questRequirements';
-import { courses } from '../skilling/skills/agility';
-import butterflyNettingCreatures from '../skilling/skills/hunter/creatures/butterflyNetting';
+import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements';
+import { courses } from '@/lib/skilling/skills/agility';
+import butterflyNettingCreatures from '@/lib/skilling/skills/hunter/creatures/butterflyNetting';
 import type {
 	ActivityTaskData,
 	AgilityActivityTaskOptions,
@@ -11,7 +11,7 @@ import type {
 	MonsterActivityTaskOptions,
 	PickpocketActivityTaskOptions,
 	WoodcuttingActivityTaskOptions
-} from '../types/minions';
+} from '@/lib/types/minions.js';
 
 export enum WorldLocations {
 	Priffdinas = 0,

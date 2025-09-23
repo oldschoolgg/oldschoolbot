@@ -5,9 +5,9 @@ import { dateFm } from '@oldschoolgg/toolkit/util';
 import type { User } from '@prisma/client';
 import type { BaseMessageOptions, ButtonBuilder } from 'discord.js';
 
-import type { IPatchData, IPatchDataDetailed } from '../minions/farming/types';
-import Farming from '../skilling/skills/farming';
-import { formatList, makeAutoFarmButton } from './smallUtils';
+import type { IPatchData, IPatchDataDetailed } from '@/lib/minions/farming/types.js';
+import Farming from '@/lib/skilling/skills/farming';
+import { formatList, makeAutoFarmButton } from './smallUtils.js';
 
 export const farmingPatchNames = [
 	'herb',

@@ -1,5 +1,5 @@
-import { keyCrates } from '../../keyCrates';
-import type { Buyable } from './buyables';
+import { keyCrates } from '@/lib/keyCrates.js';
+import type { Buyable } from './buyables.js';
 
 export const keyCrateBuyables: Buyable[] = [];
 

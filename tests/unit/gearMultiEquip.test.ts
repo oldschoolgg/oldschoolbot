@@ -1,4 +1,4 @@
-import { Bank, EquipmentSlot, convertLVLtoXP, itemID } from 'oldschooljs';
+import { Bank, convertLVLtoXP, EquipmentSlot, itemID } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { Gear } from '../../src/lib/structures/Gear';

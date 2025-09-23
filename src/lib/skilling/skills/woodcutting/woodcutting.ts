@@ -1,9 +1,8 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { LootTable, itemID } from 'oldschooljs';
+import { itemID, LootTable } from 'oldschooljs';
 
-import { BitField } from '../../../constants';
-import type { Log } from '../../types';
-import { SkillsEnum } from '../../types';
+import { BitField } from '@/lib/constants';
+import { type Log, SkillsEnum } from '@/lib/skilling/types.js';
 
 const sulliuscepTable = new LootTable()
 	.add('Numulite', [4, 8], 34)

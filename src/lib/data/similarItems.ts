@@ -1,9 +1,8 @@
 import { itemID, resolveItems } from 'oldschooljs';
 
-import { dyedItems } from '../dyedItems';
-import skillcapes from '../skilling/skillcapes';
-import getOSItem from '../util/getOSItem';
-
+import { dyedItems } from '@/lib/dyedItems.js';
+import skillcapes from '@/lib/skilling/skillcapes';
+import getOSItem from '@/lib/util/getOSItem';
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -11,7 +10,7 @@ import {
 	gracefulHoods,
 	gracefulLegs,
 	gracefulTops
-} from './gracefulVariants';
+} from './gracefulVariants.js';
 
 const scytheChargedSimilar = ['Holy scythe of vitur', 'Sanguine scythe of vitur'];
 const scytheUnchargedSimilar = ['Holy scythe of vitur (uncharged)', 'Sanguine scythe of vitur (uncharged)'];

@@ -1,9 +1,9 @@
 import { type Item, LootTable } from 'oldschooljs';
 import type { Canvas } from 'skia-canvas';
 
-import { OSRSCanvas } from './canvas/OSRSCanvas';
-import { type CanvasImage, createCanvas } from './canvas/canvasUtil';
-import { paintColors } from './customItems/paintCans';
+import { type CanvasImage, createCanvas } from '@/lib/canvas/canvasUtil.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
+import { paintColors } from './customItems/paintCans.js';
 
 export interface PaintColor {
 	name: string;

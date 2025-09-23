@@ -1,6 +1,6 @@
 import type { Item } from 'oldschooljs';
 
-import getOSItem from '../util/getOSItem';
+import getOSItem from '@/lib/util/getOSItem';
 
 export interface Kibble {
 	item: Item;

@@ -1,11 +1,11 @@
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import ForestryRations from '../../../lib/skilling/skills/cooking/forestersRations';
-import type { CreateForestersRationsActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
+import type { CreateForestersRationsActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export async function forestersRationCommand({
 	user,

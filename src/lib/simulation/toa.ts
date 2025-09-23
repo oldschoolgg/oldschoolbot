@@ -6,7 +6,6 @@ import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { type Minigame, XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
 import {
-	Time,
 	calcPercentOfNum,
 	calcWhatPercent,
 	clamp,
@@ -20,35 +19,41 @@ import {
 	round,
 	scaleNumber,
 	sumArr,
+	Time,
 	uniqueArr
 } from 'e';
-import { Bank, LootTable, itemID, randomVariation, resolveItems } from 'oldschooljs';
+import { Bank, itemID, LootTable, randomVariation, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
-import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
-import { getSimilarItems } from '../data/similarItems';
-import { degradeItem } from '../degradeableItems';
-import type { UserFullGearSetup } from '../gear/types';
-import { InventionID, canAffordInventionBoost, inventionBoosts, inventionItemBoost } from '../invention/inventions';
-import { trackLoot } from '../lootTrack';
-import { setupParty } from '../party';
-import { SkillsEnum } from '../skilling/types';
-import { Gear, constructGearSetup } from '../structures/Gear';
-import type { MakePartyOptions, Skills } from '../types';
-import type { TOAOptions } from '../types/minions';
-import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../util/calcMaxTripLength';
-import getOSItem from '../util/getOSItem';
-import { assert } from '../util/logError';
+import { getSimilarItems } from '@/lib/data/similarItems';
+import { degradeItem } from '@/lib/degradeableItems.js';
+import type { UserFullGearSetup } from '@/lib/gear/types.js';
+import {
+	canAffordInventionBoost,
+	inventionBoosts,
+	InventionID,
+	inventionItemBoost
+} from '@/lib/invention/inventions.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { setupParty } from '@/lib/party.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { constructGearSetup, Gear } from '@/lib/structures/Gear';
+import type { MakePartyOptions, Skills } from '@/lib/types/index.js';
+import type { TOAOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import getOSItem from '@/lib/util/getOSItem';
+import { assert } from '@/lib/util/logError';
 import {
 	bankToStrShortNames,
 	formatList,
 	formatSkillRequirements,
 	getToaKCs,
 	itemNameFromID
-} from '../util/smallUtils';
-import { updateBankSetting } from '../util/updateBankSetting';
-import { TeamLoot } from './TeamLoot';
+} from '@/lib/util/smallUtils';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { mahojiParseNumber, userStatsBankUpdate } from '@/mahoji/mahojiSettings';
+import { TeamLoot } from './TeamLoot.js';
 
 const teamSizeScale: Record<number, number> = {
 	1: 1.0,

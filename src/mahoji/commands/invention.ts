@@ -1,25 +1,19 @@
-import { type CommandRunOptions, Table, calcPerHour, stringMatches } from '@oldschoolgg/toolkit';
+import { calcPerHour, type CommandRunOptions, stringMatches, Table } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, reduceNumByPercent } from 'e';
+import { reduceNumByPercent, Time } from 'e';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
-import { type IMaterialBank, type MaterialType, allItemsThatCanBeDisassembledIDs } from '../../lib/invention';
-import { MaterialBank } from '../../lib/invention/MaterialBank';
-import {
-	calcJunkChance,
-	calculateDisXP,
-	disassembleCommand,
-	findDisassemblyGroup
-} from '../../lib/invention/disassemble';
-import { DisassemblySourceGroups } from '../../lib/invention/groups';
-import { Inventions, inventCommand, inventingCost, inventionBoosts } from '../../lib/invention/inventions';
-import { researchCommand } from '../../lib/invention/research';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { ownedMaterialOption } from '../lib/mahojiCommandOptions';
-
-import { mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { allItemsThatCanBeDisassembledIDs, type IMaterialBank, type MaterialType } from '@/lib/invention';
+import { calcJunkChance, calculateDisXP, disassembleCommand, findDisassemblyGroup } from '@/lib/invention/disassemble';
+import { DisassemblySourceGroups } from '@/lib/invention/groups';
+import { inventCommand, inventingCost, inventionBoosts, Inventions } from '@/lib/invention/inventions';
+import { MaterialBank } from '@/lib/invention/MaterialBank';
+import { researchCommand } from '@/lib/invention/research';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { deferInteraction } from '@/lib/util/interactionReply';
+import { makeBankImage } from '@/lib/util/makeBankImage';
+import { ownedMaterialOption } from '@/mahoji/lib/mahojiCommandOptions.js';
+import { mahojiParseNumber, mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export const inventionCommand: OSBMahojiCommand = {
 	name: 'invention',

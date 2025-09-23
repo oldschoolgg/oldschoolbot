@@ -1,7 +1,7 @@
 import { EliteClueTable, HardClueTable, LootTable, MasterClueTable } from 'oldschooljs';
 
-import { LampTable } from '../xpLamps';
-import { AllBarrows, BattlestaffTable, CosmeticsTable, StaffOrbTable, runeAlchablesTable } from './sharedTables';
+import { LampTable } from '@/lib/xpLamps.js';
+import { AllBarrows, BattlestaffTable, CosmeticsTable, runeAlchablesTable, StaffOrbTable } from './sharedTables.js';
 
 const ClueHunterTable = new LootTable()
 	.add('Helm of raedwald')

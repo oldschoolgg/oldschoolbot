@@ -10,8 +10,8 @@ import {
 	WebhookClient
 } from 'discord.js';
 
-import { globalConfig } from '../constants';
-import { logError } from './logError';
+import { globalConfig } from '@/lib/constants';
+import { logError } from './logError.js';
 
 async function resolveChannel(channelID: string): Promise<WebhookClient | Message['channel'] | undefined> {
 	const channel = globalClient.channels.cache.get(channelID);

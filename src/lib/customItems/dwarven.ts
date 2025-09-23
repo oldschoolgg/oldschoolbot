@@ -1,7 +1,7 @@
 import { EquipmentSlot } from 'oldschooljs';
 
-import getOSItem from '../util/getOSItem';
-import { setCustomItem } from './util';
+import { setCustomItem } from '@/lib/customItems/util.js';
+import getOSItem from '@/lib/util/getOSItem';
 
 // 2x faster chopping and wintertodt
 setCustomItem(472, 'Dwarven greataxe', 'Dragon pickaxe', {}, 1_000_000);

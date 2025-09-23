@@ -1,14 +1,14 @@
 import type { Minigame } from '@prisma/client';
-import { Bank, type Item, ItemGroups, getItemOrThrow, resolveItems } from 'oldschooljs';
+import { Bank, getItemOrThrow, type Item, ItemGroups, resolveItems } from 'oldschooljs';
 
-import { removeDiscontinuedItems } from '../customItems/customItems';
-import { growablePets } from '../growablePets';
-import { stoneSpirits } from '../minions/data/stoneSpirits';
-import type { MinigameScore } from '../settings/minigames';
-import type { MUserStats } from '../structures/MUserStats';
-import getOSItem from '../util/getOSItem';
-import { assert } from '../util/logError';
-import { LampTable } from '../xpLamps';
+import { removeDiscontinuedItems } from '@/lib/customItems/customItems.js';
+import { growablePets } from '@/lib/growablePets.js';
+import { stoneSpirits } from '@/lib/minions/data/stoneSpirits.js';
+import type { MinigameScore } from '@/lib/settings/minigames.js';
+import type { MUserStats } from '@/lib/structures/MUserStats';
+import getOSItem from '@/lib/util/getOSItem';
+import { assert } from '@/lib/util/logError';
+import { LampTable } from '@/lib/xpLamps.js';
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -16,8 +16,8 @@ import {
 	gracefulHoods,
 	gracefulLegs,
 	gracefulTops
-} from './gracefulVariants';
-import { PartyhatTable, allHolidayItems } from './holidayItems';
+} from './gracefulVariants.js';
+import { allHolidayItems, PartyhatTable } from './holidayItems.js';
 
 export interface IToReturnCollection {
 	category: string;

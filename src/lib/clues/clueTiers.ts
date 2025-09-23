@@ -5,10 +5,10 @@ import {
 	EasyCasket,
 	EliteCasket,
 	HardCasket,
+	itemID,
 	type LootTable,
 	MasterCasket,
 	MediumCasket,
-	itemID,
 	resolveItems
 } from 'oldschooljs';
 
@@ -21,13 +21,13 @@ import {
 	cluesHardCL,
 	cluesMasterCL,
 	cluesMediumCL
-} from '../data/CollectionsExport';
-import { type ElderClue, ElderClueTable } from '../simulation/elderClue';
-import { GrandmasterClueTable } from '../simulation/grandmasterClue';
-import type { ClueReqs } from './clueReqs';
-import { beginnerReqs } from './clueReqs';
-import type { StashUnitTier } from './stashUnits';
-import { beginnerStashes, easyStashes, eliteStashes, hardStashes, masterStashes, mediumStashes } from './stashUnits';
+} from '@/lib/data/CollectionsExport';
+import { type ElderClue, ElderClueTable } from '@/lib/simulation/elderClue';
+import { GrandmasterClueTable } from '@/lib/simulation/grandmasterClue';
+import type { ClueReqs } from './clueReqs.js';
+import { beginnerReqs } from './clueReqs.js';
+import type { StashUnitTier } from './stashUnits.js';
+import { beginnerStashes, easyStashes, eliteStashes, hardStashes, masterStashes, mediumStashes } from './stashUnits.js';
 
 const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
 

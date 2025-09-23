@@ -1,9 +1,9 @@
 import { Monsters } from 'oldschooljs';
 
-import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
-import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
-import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
-import type { AssignableSlayerTask } from '../types';
+import { KalphiteKingMonster } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
+import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters';
+import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
 
 export const vannakaTasks: AssignableSlayerTask[] = [
 	{

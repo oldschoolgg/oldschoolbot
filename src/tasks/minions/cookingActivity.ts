@@ -1,15 +1,15 @@
 import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
-import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
-import { globalDroprates } from '../../lib/data/globalDroprates';
-import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
-import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
-import Cooking from '../../lib/skilling/skills/cooking/cooking';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { CookingActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { globalDroprates } from '@/lib/data/globalDroprates';
+import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries';
+import calcBurntCookables from '@/lib/skilling/functions/calcBurntCookables';
+import Cooking from '@/lib/skilling/skills/cooking/cooking';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { CookingActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const cookingTask: MinionTask = {
 	type: 'Cooking',

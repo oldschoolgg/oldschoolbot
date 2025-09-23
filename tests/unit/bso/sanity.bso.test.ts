@@ -1,5 +1,5 @@
 import { type Tame, tame_growth } from '@prisma/client';
-import { EquipmentSlot, Items, Monsters, itemID, resolveItems } from 'oldschooljs';
+import { EquipmentSlot, Items, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { combinedTmbUmbEmbTables } from '@/lib/bsoOpenables';

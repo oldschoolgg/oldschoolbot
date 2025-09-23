@@ -1,6 +1,6 @@
 import { EquipmentSlot } from 'oldschooljs';
 
-import { setCustomItem } from './util';
+import { setCustomItem } from '@/lib/customItems/util.js';
 
 /**
  *

@@ -1,8 +1,8 @@
 import path from 'node:path';
 import { AttachmentBuilder } from 'discord.js';
 
-import { OSRSCanvas } from './OSRSCanvas';
-import { createCanvas, loadAndCacheLocalImage, printWrappedText } from './canvasUtil';
+import { createCanvas, loadAndCacheLocalImage, printWrappedText } from './canvasUtil.js';
+import { OSRSCanvas } from './OSRSCanvas.js';
 
 export const textBoxFile = loadAndCacheLocalImage('./src/lib/resources/images/textbox.png');
 

@@ -1,12 +1,12 @@
-import { Time, roll, shuffleArr, uniqueArr } from 'e';
+import { roll, shuffleArr, Time, uniqueArr } from 'e';
 import { Bank, LootTable, Monsters, randomVariation, resolveItems, resolveNameBank } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
-import { vladDrakanCL } from '../../../../data/CollectionsExport';
-import { globalDroprates } from '../../../../data/globalDroprates';
-import { runeWeaponTable } from '../../../../simulation/sharedTables';
-import type { CustomMonster } from './customMonsters';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { vladDrakanCL } from '@/lib/data/CollectionsExport';
+import { globalDroprates } from '@/lib/data/globalDroprates';
+import { runeWeaponTable } from '@/lib/simulation/sharedTables';
+import type { CustomMonster } from './customMonsters.js';
 
 const JewelleryTable = new LootTable()
 	.add(new LootTable().add('Onyx ring').add('Onyx necklace').add('Onyx bracelet').add('Onyx amulet'))

@@ -1,17 +1,17 @@
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import {
-	type MahojiUserOption,
 	awaitMessageComponentInteraction,
-	channelIsSendable
+	channelIsSendable,
+	type MahojiUserOption
 } from '@oldschoolgg/toolkit/discord-util';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
-import { Time, noOp, sleep } from 'e';
+import { noOp, sleep, Time } from 'e';
 import { Bank, Util } from 'oldschooljs';
 
-import { MUserClass } from '../../../lib/MUser';
-import { BLACKLISTED_USERS } from '../../../lib/blacklists';
-import { deferInteraction } from '../../../lib/util/interactionReply';
-import { mahojiParseNumber, userStatsUpdate } from '../../mahojiSettings';
+import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { MUserClass } from '@/lib/MUser.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { mahojiParseNumber, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 async function checkBal(user: MUser, amount: number) {
 	return user.GP >= amount;
@@ -177,7 +177,7 @@ export async function duelCommand(
 		if (selection.customId === 'CONFIRM') {
 			return await confirm(amount);
 		}
-	} catch (err) {
+	} catch (_err) {
 		return cancel();
 	}
 	return cancel();

@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank, itemID } from 'oldschooljs';
 
-import type { Bar } from '../../types';
+import type { Bar } from '@/lib/skilling/types.js';
 
 const Bars: Bar[] = [
 	{

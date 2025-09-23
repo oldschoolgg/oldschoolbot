@@ -1,7 +1,7 @@
 import { Bank, resolveItems } from 'oldschooljs';
 
-import driftNetCreatures from '../../../lib/skilling/skills/hunter/driftNet';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import driftNetCreatures from '@/lib/skilling/skills/hunter/driftNet.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 // Bonus loot from higher fishing level
 const fishBonusLoot = [

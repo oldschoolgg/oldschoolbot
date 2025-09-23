@@ -1,5 +1,5 @@
 import { increaseNumByPercent } from 'e';
-import { ItemGroups, convertLVLtoXP } from 'oldschooljs';
+import { convertLVLtoXP, ItemGroups } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing';

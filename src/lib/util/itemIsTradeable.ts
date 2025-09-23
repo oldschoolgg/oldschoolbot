@@ -1,7 +1,7 @@
 import { EItem } from 'oldschooljs';
 
-import { isSuperUntradeable } from '../bso/bsoUtil';
-import getOSItem from './getOSItem';
+import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
+import getOSItem from './getOSItem.js';
 
 export default function itemIsTradeable(itemID: number | string, allowCoins = false) {
 	const osItem = getOSItem(itemID);

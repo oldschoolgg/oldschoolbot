@@ -2,14 +2,14 @@ import { miniID, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { clamp, objectEntries } from 'e';
-import { type ArrayItemsResolved, type Bank, type ItemBank, Items, getItemOrThrow } from 'oldschooljs';
+import { type ArrayItemsResolved, type Bank, getItemOrThrow, type ItemBank, Items } from 'oldschooljs';
 import { MersenneTwister19937, shuffle } from 'random-js';
 import z from 'zod';
 
-import { skillEmoji } from '../data/emojis';
-import { SkillsEnum } from '../skilling/types';
-import type { SkillRequirements, Skills } from '../types';
-import type { TOAOptions } from '../types/minions';
+import { skillEmoji } from '@/lib/data/emojis';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SkillRequirements, Skills } from '@/lib/types/index.js';
+import type { TOAOptions } from '@/lib/types/minions.js';
 
 export function itemNameFromID(itemID: number) {
 	return Items.get(itemID)?.name;

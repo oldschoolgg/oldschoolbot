@@ -1,6 +1,6 @@
 import SonicBoom from 'sonic-boom';
 
-import { BOT_TYPE_LOWERCASE, globalConfig } from '../constants';
+import { BOT_TYPE_LOWERCASE, globalConfig } from '@/lib/constants';
 
 const today = new Date();
 const year = today.getFullYear();

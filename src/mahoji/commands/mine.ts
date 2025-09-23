@@ -3,19 +3,19 @@ import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
+import { userhasDiaryTier } from '@/lib/diaries.js';
+import { QuestID } from '@/lib/minions/data/quests';
+import { DiaryID } from '@/lib/minions/types.js';
+import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime';
+import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '@/lib/skilling/functions/miningBoosts';
+import { sinsOfTheFatherSkillRequirements } from '@/lib/skilling/functions/questRequirements';
+import Mining from '@/lib/skilling/skills/mining';
 import type { GearBank } from '@/lib/structures/GearBank.js';
-import { userhasDiaryTier } from '../../lib/diaries.js';
-import { QuestID } from '../../lib/minions/data/quests';
-import { DiaryID } from '../../lib/minions/types.js';
-import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
-import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../../lib/skilling/functions/miningBoosts';
-import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
-import Mining from '../../lib/skilling/skills/mining';
-import type { MiningActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { formatSkillRequirements, itemNameFromID } from '../../lib/util/smallUtils.js';
-import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand';
+import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { motherlodeMineCommand } from '@/mahoji/lib/abstracted_commands/motherlodeMineCommand.js';
 
 export function calculateMiningInput({
 	nameInput,

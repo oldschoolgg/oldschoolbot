@@ -1,12 +1,12 @@
 import { Time } from 'e';
-import { Bank, LootTable, Monsters, RareDropTable, itemID, itemTupleToTable, resolveItems } from 'oldschooljs';
+import { Bank, itemID, itemTupleToTable, LootTable, Monsters, RareDropTable, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../../../../data/seedPackTables';
-import { lowRuneHighAdamantTable, runeWeaponTable } from '../../../../simulation/sharedTables';
-import { SkillsEnum } from '../../../../skilling/types';
-import { GrimyHerbTable } from './Treebeard';
-import type { CustomMonster } from './customMonsters';
+import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '@/lib/data/seedPackTables';
+import { lowRuneHighAdamantTable, runeWeaponTable } from '@/lib/simulation/sharedTables';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { CustomMonster } from './customMonsters.js';
+import { GrimyHerbTable } from './Treebeard.js';
 
 function neemCost(extraCost?: Bank) {
 	const cost = new Bank().add('Neem oil', 1);

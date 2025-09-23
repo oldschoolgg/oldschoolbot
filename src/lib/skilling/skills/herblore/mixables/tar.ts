@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
-import getOSItem from '../../../../util/getOSItem';
-import type { Mixable } from '../../../types';
+import type { Mixable } from '@/lib/skilling/types.js';
+import getOSItem from '@/lib/util/getOSItem';
 
 const Tar: Mixable[] = [
 	{

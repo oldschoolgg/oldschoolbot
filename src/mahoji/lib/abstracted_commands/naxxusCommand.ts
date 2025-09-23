@@ -4,16 +4,16 @@ import { calcPercentOfNum, calcWhatPercent, increaseNumByPercent, reduceNumByPer
 import { Bank, type Item } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
-import { checkUserCanUseDegradeableItem, degradeItem, degradeablePvmBoostItems } from '../../../lib/degradeableItems';
-import { trackLoot } from '../../../lib/lootTrack';
-import { NAXXUS_HP, Naxxus } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
-import { Gear } from '../../../lib/structures/Gear';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { hasMonsterRequirements } from '../../mahojiSettings';
+import { checkUserCanUseDegradeableItem, degradeablePvmBoostItems, degradeItem } from '@/lib/degradeableItems.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { NAXXUS_HP, Naxxus } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
+import { Gear } from '@/lib/structures/Gear.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 const bisMageGear = new Gear({
 	head: 'Gorajan occult helmet', // 20

@@ -2,16 +2,16 @@ import { percentChance, sumArr } from 'e';
 import { type Bank, itemID } from 'oldschooljs';
 
 import {
-	birdsNestID,
-	eggNest,
-	nestTable,
-	ringNests,
-	strungRabbitFootNestTable,
-	treeSeedsNest
-} from '../../simulation/birdsNest';
-import { type SkillNameType, SkillsEnum } from '../../skilling/types';
-import { GearBank } from '../../structures/GearBank';
-import { randFloat, roll } from '../../util/rng';
+    birdsNestID,
+    eggNest,
+    nestTable,
+    ringNests,
+    strungRabbitFootNestTable,
+    treeSeedsNest
+} from '@/lib/simulation/birdsNest';
+import { type SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
+import { GearBank } from '@/lib/structures/GearBank';
+import { randFloat, roll } from '@/lib/util/rng';
 
 const clues = [
 	[itemID('Elder scroll piece'), 0.2 / 10],

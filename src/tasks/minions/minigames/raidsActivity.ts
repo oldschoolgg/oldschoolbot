@@ -1,20 +1,20 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { randArrItem, roll, shuffleArr } from 'e';
-import { Bank, ChambersOfXeric, SkillsEnum, randomVariation, resolveItems } from 'oldschooljs';
+import { Bank, ChambersOfXeric, randomVariation, resolveItems, SkillsEnum } from 'oldschooljs';
 
+import { CHINCANNON_MESSAGES } from '@/lib/bso/bsoConstants.js';
+import { MysteryBoxes } from '@/lib/bsoOpenables.js';
 import { drawChestLootImage } from '@/lib/canvas/chestImage';
-import { CHINCANNON_MESSAGES } from '../../../lib/bso/bsoConstants';
-import { MysteryBoxes } from '../../../lib/bsoOpenables';
-import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
-import { createTeam } from '../../../lib/data/cox';
-import { userHasFlappy } from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/lootTrack';
-import { resolveAttackStyles } from '../../../lib/minions/functions';
-import type { RaidsOptions } from '../../../lib/types/minions';
-import { handleSpecialCoxLoot } from '../../../lib/util/handleSpecialCoxLoot';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { chambersOfXericCL, chambersOfXericMetamorphPets } from '@/lib/data/CollectionsExport.js';
+import { createTeam } from '@/lib/data/cox.js';
+import { userHasFlappy } from '@/lib/invention/inventions.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
+import type { RaidsOptions } from '@/lib/types/minions.js';
+import { handleSpecialCoxLoot } from '@/lib/util/handleSpecialCoxLoot.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 interface RaidResultUser {
 	personalPoints: number;

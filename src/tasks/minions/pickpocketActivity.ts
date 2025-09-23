@@ -1,20 +1,20 @@
-import { Time, percentChance, randInt, roll } from 'e';
-import { SkillsEnum, resolveItems } from 'oldschooljs';
+import { percentChance, randInt, roll, Time } from 'e';
+import { resolveItems, SkillsEnum } from 'oldschooljs';
 
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination';
+import { clueUpgraderEffect } from '@/lib/bso/inventionEffects';
+import { ClueTiers } from '@/lib/clues/clueTiers';
+import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/stealables';
+import { UpdateBank } from '@/lib/structures/UpdateBank';
+import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util';
+import { forcefullyUnequipItem } from '@/lib/util/forcefullyUnequipItem';
+import getOSItem from '@/lib/util/getOSItem';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage';
 import { perHourChance } from '@/lib/util/rng';
-import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
-import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
-import { clueUpgraderEffect } from '../../lib/bso/inventionEffects';
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import { type Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
-import { UpdateBank } from '../../lib/structures/UpdateBank';
-import type { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { forcefullyUnequipItem } from '../../lib/util/forcefullyUnequipItem';
-import getOSItem from '../../lib/util/getOSItem';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { rogueOutfitPercentBonus, updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { rogueOutfitPercentBonus, updateClientGPTrackSetting, userStatsBankUpdate } from '@/mahoji/mahojiSettings';
 
 const notMultiplied = resolveItems([
 	'Blood shard',

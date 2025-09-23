@@ -2,9 +2,9 @@ import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Time } from 'e';
 import { randomVariation } from 'oldschooljs';
 
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export async function fistOfGuthixCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) return 'Your minion is busy.';

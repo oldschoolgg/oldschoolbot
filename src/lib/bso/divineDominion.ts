@@ -1,7 +1,7 @@
-import { Time, roll } from 'e';
+import { roll, Time } from 'e';
 import { Bank, Items, Monsters, resolveItems } from 'oldschooljs';
 
-import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { userStatsBankUpdate } from '@/mahoji/mahojiSettings';
 
 export const gods = [
 	{

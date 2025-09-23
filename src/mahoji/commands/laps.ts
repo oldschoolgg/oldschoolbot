@@ -3,15 +3,15 @@ import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '../../lib/constants';
-import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
-import { quests } from '../../lib/minions/data/quests';
-import { courses } from '../../lib/skilling/skills/agility';
-import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { timePerAlchAgility } from '../lib/abstracted_commands/alchCommand';
+import { BitField } from '@/lib/constants';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions';
+import { quests } from '@/lib/minions/data/quests';
+import { courses } from '@/lib/skilling/skills/agility';
+import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 
 const unlimitedFireRuneProviders = [
 	'Staff of fire',

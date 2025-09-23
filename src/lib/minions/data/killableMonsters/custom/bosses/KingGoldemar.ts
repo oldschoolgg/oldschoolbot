@@ -1,8 +1,7 @@
-import { Monsters } from 'oldschooljs';
-import { LootTable } from 'oldschooljs';
+import { LootTable, Monsters } from 'oldschooljs';
 
-import { MysteryBoxes } from '../../../../../bsoOpenables';
-import setCustomMonster from '../../../../../util/setCustomMonster';
+import { MysteryBoxes } from '@/lib/bsoOpenables.js';
+import setCustomMonster from '@/lib/util/setCustomMonster';
 
 const dwarvenArmorTable = new LootTable()
 	.add('Dwarven full helm')

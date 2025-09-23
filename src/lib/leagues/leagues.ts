@@ -1,10 +1,15 @@
 import type { CommandResponse } from '@oldschoolgg/toolkit';
-import { type User, activity_type_enum } from '@prisma/client';
+import { activity_type_enum, type User } from '@prisma/client';
 import { calcWhatPercent, sumArr } from 'e';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import { getPOH } from '../../mahoji/lib/abstracted_commands/pohCommand';
-import { getParsedStashUnits } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
+import { BitField } from '@/lib/constants';
+import { calcCLDetails } from '@/lib/data/Collections';
+import smithables from '@/lib/skilling/skills/smithing/smithables';
+import { getSlayerTaskStats } from '@/lib/slayer/slayerUtil.js';
+import { getAllUserTames } from '@/lib/tames.js';
+import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand';
+import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand';
 import {
 	personalAlchingStats,
 	personalCollectingStats,
@@ -15,24 +20,19 @@ import {
 	personalSmithingStats,
 	personalSpellCastStats,
 	personalWoodcuttingStats
-} from '../../mahoji/lib/abstracted_commands/statCommand';
-import { BitField } from '../constants';
-import { calcCLDetails } from '../data/Collections';
-import smithables from '../skilling/skills/smithing/smithables';
-import { getSlayerTaskStats } from '../slayer/slayerUtil';
-import { getAllUserTames } from '../tames';
-import { easyTasks } from './easyTasks';
-import { eliteTasks } from './eliteTasks';
-import { hardTasks } from './hardTasks';
-import { type HasFunctionArgs, type Task, betterHerbloreStats } from './leaguesUtils';
-import { masterTasks } from './masterTasks';
-import { mediumTasks } from './mediumTasks';
+} from '@/mahoji/lib/abstracted_commands/statCommand';
+import { easyTasks } from './easyTasks.js';
+import { eliteTasks } from './eliteTasks.js';
+import { hardTasks } from './hardTasks.js';
+import { betterHerbloreStats, type HasFunctionArgs, type Task } from './leaguesUtils.js';
+import { masterTasks } from './masterTasks.js';
+import { mediumTasks } from './mediumTasks.js';
 import {
 	calcLeaguesRanking,
 	calculateAllFletchedItems,
 	calculateDartsFletchedFromScratch,
 	totalLampedXP
-} from './stats';
+} from './stats.js';
 
 export const leagueTasks = [
 	{ name: 'Easy', tasks: easyTasks, points: 20 },
@@ -73,7 +73,7 @@ FROM activity
 WHERE user_id = ${user.id}
 GROUP BY type;`);
 	const parsed = result.map(i => ({ type: i.type, count: Number(i.count) }));
-	// @ts-ignore trust me
+	// @ts-expect-error trust me
 	const rec: Record<activity_type_enum, number> = {};
 	for (const a of Object.values(activity_type_enum)) {
 		rec[a] = 0;

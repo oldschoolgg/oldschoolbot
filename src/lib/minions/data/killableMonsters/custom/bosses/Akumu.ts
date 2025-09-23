@@ -1,10 +1,10 @@
 import { Time } from 'e';
-import { Bank, LootTable, Monsters, itemID, resolveItems } from 'oldschooljs';
+import { Bank, itemID, LootTable, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { MysteryBoxes } from '../../../../../bsoOpenables';
-import { UncutGemTable } from '../../../../../simulation/sharedTables';
-import type { CustomMonster } from '../customMonsters';
+import { MysteryBoxes } from '@/lib/bsoOpenables.js';
+import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
+import { UncutGemTable } from '@/lib/simulation/sharedTables';
 
 export const AkumuLootTable = new LootTable()
 	.tertiary(1000, 'Mini akumu')

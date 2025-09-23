@@ -1,11 +1,11 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
-import type { CollectingOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { collectables } from '../../mahoji/lib/collectables';
+import { MorytaniaDiary, userhasDiaryTier } from '@/lib/diaries';
+import type { CollectingOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { collectables } from '@/mahoji/lib/collectables';
 
 export const collectingTask: MinionTask = {
 	type: 'Collecting',

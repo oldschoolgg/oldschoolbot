@@ -1,24 +1,24 @@
 import { perTimeUnitChance } from '@oldschoolgg/toolkit';
-import { Time, objectEntries, percentChance, randInt } from 'e';
+import { objectEntries, percentChance, randInt, Time } from 'e';
 import { Bank, EItem, itemID } from 'oldschooljs';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { MAX_LEVEL } from '@/lib/constants';
+import { MediumSeedPackTable } from '@/lib/data/seedPackTables';
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot';
+import { eggNest } from '@/lib/simulation/birdsNest';
+import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements';
+import Firemaking from '@/lib/skilling/skills/firemaking';
+import { ForestryEvents, LeafTable } from '@/lib/skilling/skills/woodcutting/forestry';
+import Woodcutting, { type TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util';
-import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
-import { MAX_LEVEL } from '../../lib/constants';
-import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
-import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
-import { eggNest } from '../../lib/simulation/birdsNest';
-import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
-import Firemaking from '../../lib/skilling/skills/firemaking';
-import { ForestryEvents, LeafTable } from '../../lib/skilling/skills/woodcutting/forestry';
-import Woodcutting, { type TwitcherGloves } from '../../lib/skilling/skills/woodcutting/woodcutting';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { rollForMoonKeyHalf } from '../../lib/util/minionUtils';
-import { roll } from '../../lib/util/rng';
-import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { rollForMoonKeyHalf } from '@/lib/util/minionUtils';
+import { roll } from '@/lib/util/rng';
+import { userStatsBankUpdate } from '@/mahoji/mahojiSettings';
 
 async function handleForestry({ user, duration, loot }: { user: MUser; duration: number; loot: Bank }) {
 	const eventCounts: { [key: number]: number } = {};

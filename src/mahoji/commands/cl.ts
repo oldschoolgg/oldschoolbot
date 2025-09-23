@@ -2,11 +2,11 @@ import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import type { CollectionLogType } from '../../lib/collectionLogTask';
-import { CollectionLogFlags, clImageGenerator, collectionLogTypes } from '../../lib/collectionLogTask';
-import { allCollectionLogs } from '../../lib/data/Collections';
-import { MUserStats } from '../../lib/structures/MUserStats';
-import { deferInteraction } from '../../lib/util/interactionReply';
+import type { CollectionLogType } from '@/lib/collectionLogTask';
+import { CollectionLogFlags, clImageGenerator, collectionLogTypes } from '@/lib/collectionLogTask';
+import { allCollectionLogs } from '@/lib/data/Collections';
+import { MUserStats } from '@/lib/structures/MUserStats';
+import { deferInteraction } from '@/lib/util/interactionReply';
 
 export const collectionLogCommand: OSBMahojiCommand = {
 	name: 'cl',

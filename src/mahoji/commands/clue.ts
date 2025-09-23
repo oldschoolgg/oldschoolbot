@@ -1,19 +1,18 @@
 import { type CommandRunOptions, formatDuration, isWeekend, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, clamp, increaseNumByPercent, notEmpty, randInt } from 'e';
+import { clamp, increaseNumByPercent, notEmpty, randInt, Time } from 'e';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
-import { type ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
-import { clueHunterOutfit } from '../../lib/data/CollectionsExport';
-import { getPOHObject } from '../../lib/poh';
-import type { ClueActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { checkElderClueRequirements } from '../../lib/util/elderClueRequirements';
-import getOSItem from '../../lib/util/getOSItem';
-import { getPOH } from '../lib/abstracted_commands/pohCommand';
-
-import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers';
+import { clueHunterOutfit } from '@/lib/data/CollectionsExport';
+import { getPOHObject } from '@/lib/poh';
+import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import { checkElderClueRequirements } from '@/lib/util/elderClueRequirements';
+import getOSItem from '@/lib/util/getOSItem';
+import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
+import { getMahojiBank, mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export async function calcClueScores(user: MUser) {
 	const { actualCluesBank } = await user.calcActualClues();

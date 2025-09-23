@@ -1,11 +1,11 @@
 import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MysteryBoxes } from '../../lib/bsoOpenables';
-import { Planks } from '../../lib/minions/data/planks';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { SawmillActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { MysteryBoxes } from '@/lib/bsoOpenables';
+import { Planks } from '@/lib/minions/data/planks';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SawmillActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const sawmillTask: MinionTask = {
 	type: 'Sawmill',

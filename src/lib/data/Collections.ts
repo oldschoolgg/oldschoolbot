@@ -9,60 +9,59 @@ import {
 	type Item,
 	type ItemBank,
 	ItemGroups,
+	itemID,
 	type Monster,
 	Monsters,
-	itemID,
 	resolveItems
 } from 'oldschooljs';
 
-import { OSB_VIRTUS_IDS } from '../bso/bsoConstants';
-import { divinationEnergies, portents } from '../bso/divination';
-import type { ClueTier } from '../clues/clueTiers';
-import { ClueTiers } from '../clues/clueTiers';
-import type { CollectionLogType } from '../collectionLogTask';
-import { discontinuedDyes, dyedItems } from '../dyedItems';
-import { growablePetsCL } from '../growablePets';
-import { implingsCL } from '../implings';
-import { inventionCL } from '../invention/inventions';
-import { keyCrates } from '../keyCrates';
-import killableMonsters, { NightmareMonster } from '../minions/data/killableMonsters';
-import { AkumuLootTable } from '../minions/data/killableMonsters/custom/bosses/Akumu';
-import { Ignecarus } from '../minions/data/killableMonsters/custom/bosses/Ignecarus';
+import { OSB_VIRTUS_IDS } from '@/lib/bso/bsoConstants.js';
+import { divinationEnergies, portents } from '@/lib/bso/divination.js';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import type { CollectionLogType } from '@/lib/collectionLogTask.js';
+import { discontinuedDyes, dyedItems } from '@/lib/dyedItems.js';
+import { growablePetsCL } from '@/lib/growablePets.js';
+import { implingsCL } from '@/lib/implings.js';
+import { inventionCL } from '@/lib/invention/inventions.js';
+import { keyCrates } from '@/lib/keyCrates.js';
+import { AkumuLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Akumu.js';
+import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
 import {
-	KalphiteKingMonster,
-	kalphiteKingLootTable
-} from '../minions/data/killableMonsters/custom/bosses/KalphiteKing';
-import KingGoldemar from '../minions/data/killableMonsters/custom/bosses/KingGoldemar';
-import { MOKTANG_ID, MoktangLootTable } from '../minions/data/killableMonsters/custom/bosses/Moktang';
-import { Naxxus, NaxxusLootTableFinishable } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
-import { VasaMagus } from '../minions/data/killableMonsters/custom/bosses/VasaMagus';
-import { VenatrixLootTable } from '../minions/data/killableMonsters/custom/bosses/Venatrix';
-import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
-import { sepulchreFloors } from '../minions/data/sepulchre';
+	kalphiteKingLootTable,
+	KalphiteKingMonster
+} from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
+import KingGoldemar from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';
+import { MOKTANG_ID, MoktangLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
+import { Naxxus, NaxxusLootTableFinishable } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
+import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus.js';
+import { VenatrixLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Venatrix.js';
+import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
+import killableMonsters, { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
+import { sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
 import {
 	EasyEncounterLoot,
 	HardEncounterLoot,
 	MediumEncounterLoot,
 	rewardTokens
-} from '../minions/data/templeTrekking';
-import { NexMonster, nexLootTable } from '../nex';
-import { PaintBoxTable } from '../paintColors';
-import type { MinigameName } from '../settings/minigames';
-import { ElderClueTable } from '../simulation/elderClue';
-import { GrandmasterClueTable } from '../simulation/grandmasterClue';
-import { pumpkinHeadUniqueTable } from '../simulation/pumpkinHead';
-import { cookingCL } from '../skilling/skills/cooking/cooking';
-import { craftingCL } from '../skilling/skills/crafting/craftables';
-import { allFarmingItems } from '../skilling/skills/farming';
-import { fletchingCL } from '../skilling/skills/fletching/fletchables';
-import { herbloreCL } from '../skilling/skills/herblore/mixables';
-import smithables from '../skilling/skills/smithing/smithables';
-import { SkillsEnum } from '../skilling/types';
-import { MUserStats } from '../structures/MUserStats';
-import { getAllIgneTameKCs, tameKillableMonsters } from '../tames';
-import getOSItem from '../util/getOSItem';
-import { shuffleRandom } from '../util/smallUtils';
-import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport';
+} from '@/lib/minions/data/templeTrekking.js';
+import { nexLootTable, NexMonster } from '@/lib/nex.js';
+import { PaintBoxTable } from '@/lib/paintColors.js';
+import type { MinigameName } from '@/lib/settings/minigames.js';
+import { ElderClueTable } from '@/lib/simulation/elderClue';
+import { GrandmasterClueTable } from '@/lib/simulation/grandmasterClue';
+import { pumpkinHeadUniqueTable } from '@/lib/simulation/pumpkinHead';
+import { cookingCL } from '@/lib/skilling/skills/cooking/cooking';
+import { craftingCL } from '@/lib/skilling/skills/crafting/craftables';
+import { allFarmingItems } from '@/lib/skilling/skills/farming';
+import { fletchingCL } from '@/lib/skilling/skills/fletching/fletchables';
+import { herbloreCL } from '@/lib/skilling/skills/herblore/mixables';
+import smithables from '@/lib/skilling/skills/smithing/smithables';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { MUserStats } from '@/lib/structures/MUserStats';
+import { getAllIgneTameKCs, tameKillableMonsters } from '@/lib/tames.js';
+import getOSItem from '@/lib/util/getOSItem';
+import { shuffleRandom } from '@/lib/util/smallUtils';
 import {
 	abyssalDragonCL,
 	abyssalSireCL,
@@ -128,6 +127,7 @@ import {
 	fishingTrawlerCL,
 	fistOfGuthixCL,
 	forestryCL,
+	type FormatProgressFunction,
 	fossilIslandNotesCL,
 	generalGraardorCL,
 	giantMoleCL,
@@ -139,7 +139,10 @@ import {
 	hallowedSepulchreCL,
 	hesporiCL,
 	holidayCL,
+	type ICollection,
 	ignecarusCL,
+	type ILeftListStatus,
+	type IToReturnCollection,
 	kalphiteKingCL,
 	kalphiteQueenCL,
 	kingBlackDragonCL,
@@ -189,13 +192,13 @@ import {
 	superiorTormentedDemonCL,
 	templeTrekkingCL,
 	temporossCL,
+	theatreOfBLoodCL,
 	theGauntletCL,
 	theInfernoCL,
 	theLeviathanCL,
 	theNightmareCL,
-	theWhispererCL,
-	theatreOfBLoodCL,
 	thermonuclearSmokeDevilCL,
+	theWhispererCL,
 	tinkeringWorshopCL,
 	titheFarmCL,
 	tormentedDemonCL,
@@ -213,10 +216,10 @@ import {
 	wintertodtCL,
 	zalcanoCL,
 	zulrahCL
-} from './CollectionsExport';
-import { creatablesCL } from './createables';
-import { kibbleCL } from './kibble';
-import { slayerMasksHelmsCL } from './slayerMaskHelms';
+} from './CollectionsExport.js';
+import { creatablesCL } from './createables.js';
+import { kibbleCL } from './kibble.js';
+import { slayerMasksHelmsCL } from './slayerMaskHelms.js';
 
 function kcProg(mon: Monster | number): FormatProgressFunction {
 	return ({ stats }) => `${stats.kcBank[typeof mon === 'number' ? mon : mon.id] ?? 0} KC`;
@@ -2094,7 +2097,7 @@ export function getBank(user: MUser, type: CLType, userStats: MUserStats | null)
 }
 
 export async function getTotalCl(user: MUser, logType: CLType, userStats: MUserStats | null) {
-	let result = undefined;
+	let result;
 	try {
 		result = getUserClData(getBank(user, logType, userStats), allCLItemsFiltered);
 	} catch (_e) {

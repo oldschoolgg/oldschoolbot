@@ -1,6 +1,7 @@
 import { LootTable, Monsters } from 'oldschooljs';
-import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../data/seedPackTables';
-import { CrystalChestTable } from './misc';
+
+import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '@/lib/data/seedPackTables';
+import { CrystalChestTable } from './misc.js';
 
 export const SeedTable = new LootTable()
 	.every(LowSeedPackTable)

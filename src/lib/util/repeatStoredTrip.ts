@@ -1,17 +1,17 @@
-import { type Activity, type Prisma, activity_type_enum } from '@prisma/client';
+import { type Activity, activity_type_enum, type Prisma } from '@prisma/client';
 import { ButtonBuilder, type ButtonInteraction, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 import { Items } from 'oldschooljs';
 
-import { divinationEnergies, memoryHarvestTypes } from '../bso/divination';
-import type { PvMMethod } from '../constants';
-import { kibbles } from '../data/kibble';
-import { SlayerActivityConstants } from '../minions/data/combatConstants';
-import { autocompleteMonsters } from '../minions/data/killableMonsters';
-import { runCommand } from '../settings/settings';
-import { courses } from '../skilling/skills/agility';
-import { Fishing } from '../skilling/skills/fishing/fishing';
-import Hunter from '../skilling/skills/hunter/hunter';
+import { divinationEnergies, memoryHarvestTypes } from '@/lib/bso/divination.js';
+import type { PvMMethod } from '@/lib/constants';
+import { kibbles } from '@/lib/data/kibble';
+import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
+import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import { runCommand } from '@/lib/settings/settings.js';
+import { courses } from '@/lib/skilling/skills/agility';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
+import Hunter from '@/lib/skilling/skills/hunter/hunter';
 import type {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
@@ -29,9 +29,9 @@ import type {
 	CraftingActivityTaskOptions,
 	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
-	DOAOptions,
 	DarkAltarOptions,
 	DisassembleTaskOptions,
+	DOAOptions,
 	DungeoneeringOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
@@ -55,6 +55,7 @@ import type {
 	NewBossOptions,
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
+	NightmareZoneActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	OuraniaAltarOptions,
 	PickpocketActivityTaskOptions,
@@ -68,19 +69,19 @@ import type {
 	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
-	TOAOptions,
 	TempleTrekkingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
 	TinkeringWorkshopOptions,
+	TOAOptions,
 	TuraelsTrialsOptions,
+	UnderwaterAgilityThievingTaskOptions,
 	UndoneChangesMonsterOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
-} from '../types/minions';
-import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
-import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
-import { interactionReply } from './interactionReply';
+} from '@/lib/types/minions.js';
+import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
+import { interactionReply } from './interactionReply.js';
 
 export const taskCanBeRepeated = (activity: Activity) => {
 	return !(

@@ -1,24 +1,24 @@
 import { evalMathExpression } from '@oldschoolgg/toolkit/math';
 import type { GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import { bold } from 'discord.js';
-import { Time, isObject, notEmpty, objectEntries } from 'e';
+import { isObject, notEmpty, objectEntries, Time } from 'e';
 import { Bank, type ItemBank, ItemGroups, Items } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
+import { globalConfig } from '@/lib/constants.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { userhasDiaryTier } from '@/lib/diaries.js';
+import type { SelectedUserStats } from '@/lib/MUser.js';
+import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
+import { quests } from '@/lib/minions/data/quests.js';
+import type { Consumable, KillableMonster } from '@/lib/minions/types.js';
+import type { Rune } from '@/lib/skilling/skills/runecraft.js';
+import { addStatsOfItemsTogether, hasGracefulEquipped } from '@/lib/structures/Gear.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { JsonKeys } from '@/lib/util';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
 import { formatItemReqs, formatList, hasSkillReqs, itemNameFromID, readableStatName } from '@/lib/util/smallUtils.js';
-import type { SelectedUserStats } from '../lib/MUser';
-import { globalConfig } from '../lib/constants';
-import { getSimilarItems } from '../lib/data/similarItems';
-import { userhasDiaryTier } from '../lib/diaries';
-import { BSOMonsters } from '../lib/minions/data/killableMonsters/custom/customMonsters';
-import { quests } from '../lib/minions/data/quests';
-import type { Consumable, KillableMonster } from '../lib/minions/types';
-import type { Rune } from '../lib/skilling/skills/runecraft';
-import { addStatsOfItemsTogether, hasGracefulEquipped } from '../lib/structures/Gear';
-import type { GearBank } from '../lib/structures/GearBank';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../lib/util/clientSettings';
-import { getItemCostFromConsumables } from './lib/abstracted_commands/minionKill/handleConsumables';
+import { getItemCostFromConsumables } from './lib/abstracted_commands/minionKill/handleConsumables.js';
 
 export function mahojiParseNumber({
 	input,

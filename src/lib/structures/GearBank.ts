@@ -1,11 +1,11 @@
 import { type Bank, itemID, resolveItems } from 'oldschooljs';
 
+import { getSimilarItems } from '@/lib/data/similarItems';
+import type { UserFullGearSetup } from '@/lib/gear/types.js';
+import type { MaterialBank } from '@/lib/invention/MaterialBank.js';
+import type { Skills, SkillsRequired } from '@/lib/types/index.js';
 import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
-import { getSimilarItems } from '../data/similarItems';
-import type { UserFullGearSetup } from '../gear/types';
-import type { MaterialBank } from '../invention/MaterialBank';
-import type { Skills, SkillsRequired } from '../types';
-import type { ChargeBank } from './Bank';
+import type { ChargeBank } from './Bank.js';
 
 export class GearBank {
 	gear: UserFullGearSetup;

@@ -1,4 +1,4 @@
-import { canvasToBuffer, createCanvas, loadAndCacheLocalImage, printWrappedText } from './canvas/canvasUtil';
+import { canvasToBuffer, createCanvas, loadAndCacheLocalImage, printWrappedText } from '@/lib/canvas/canvasUtil.js';
 
 export async function makeScriptImage(text: string) {
 	const image = await loadAndCacheLocalImage('./src/lib/resources/images/bare-scroll.png');

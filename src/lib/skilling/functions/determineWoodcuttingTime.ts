@@ -1,10 +1,10 @@
-import { Time, percentChance } from 'e';
+import { percentChance, Time } from 'e';
 import { EItem } from 'oldschooljs/EItem';
 
-import { IVY_MAX_TRIP_LENGTH_BOOST } from '../../bso/bsoConstants';
-import { calcMaxTripLength } from '../../util/calcMaxTripLength';
-import type { MUserClass } from './../../MUser';
-import type { Log } from './../types';
+import { IVY_MAX_TRIP_LENGTH_BOOST } from '@/lib/bso/bsoConstants.js';
+import type { MUserClass } from '@/lib/MUser.js';
+import type { Log } from '@/lib/skilling/types.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
 
 interface WoodcuttingTimeOptions {
 	quantity: number | undefined;

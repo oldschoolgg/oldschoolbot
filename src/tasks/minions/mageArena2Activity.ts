@@ -1,8 +1,8 @@
 import { percentChance, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
-import type { ActivityTaskOptionsWithNoChanges } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const mageArenaTwoTask: MinionTask = {
 	type: 'MageArena2',
@@ -11,7 +11,7 @@ export const mageArenaTwoTask: MinionTask = {
 		const user = await mUserFetch(userID);
 
 		let str = '';
-		let loot: Bank | undefined = undefined;
+		let loot: Bank | undefined;
 		if (percentChance(70)) {
 			const deathReason = randArrItem([
 				'Died to Porazdir',

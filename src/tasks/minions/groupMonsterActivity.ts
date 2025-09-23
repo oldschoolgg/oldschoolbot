@@ -1,14 +1,14 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { Time, noOp, randArrItem, roll } from 'e';
+import { noOp, randArrItem, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MysteryBoxes } from '../../lib/bsoOpenables';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { addMonsterXP } from '../../lib/minions/functions';
-import announceLoot from '../../lib/minions/functions/announceLoot';
-import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
-import type { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { MysteryBoxes } from '@/lib/bsoOpenables';
+import killableMonsters from '@/lib/minions/data/killableMonsters';
+import { addMonsterXP } from '@/lib/minions/functions';
+import announceLoot from '@/lib/minions/functions/announceLoot';
+import isImportantItemForMonster from '@/lib/minions/functions/isImportantItemForMonster';
+import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const groupoMonsterTask: MinionTask = {
 	type: 'GroupMonsterKilling',

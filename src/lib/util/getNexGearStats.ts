@@ -2,8 +2,8 @@ import { calcWhatPercent, randInt } from 'e';
 import { itemID } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
-import { maxOffenceStats } from '../gear';
-import { NexMonster } from '../nex';
+import { NexMonster } from '@/lib/nex.js';
+import { maxOffenceStats } from '@/lib/structures/Gear.js';
 
 export async function getNexGearStats(
 	user: MUser,

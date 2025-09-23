@@ -12,22 +12,22 @@ import {
 	createTeam,
 	hasMinRaidsRequirements,
 	minimumCoxSuppliesNeeded
-} from '../../../lib/data/cox';
-import { degradeItem } from '../../../lib/degradeableItems';
+} from '@/lib/data/cox.js';
+import { degradeItem } from '@/lib/degradeableItems.js';
 import {
-	InventionID,
 	canAffordInventionBoost,
+	InventionID,
 	inventionBoosts,
 	inventionItemBoost
-} from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/lootTrack';
-import { setupParty } from '../../../lib/party';
-import type { MakePartyOptions } from '../../../lib/types';
-import type { RaidsOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { mahojiParseNumber } from '../../mahojiSettings';
+} from '@/lib/invention/inventions.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { setupParty } from '@/lib/party.js';
+import type { MakePartyOptions } from '@/lib/types/index.js';
+import type { RaidsOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 const uniques = [
 	'Dexterous prayer scroll',

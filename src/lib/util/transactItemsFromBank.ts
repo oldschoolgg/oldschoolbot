@@ -1,13 +1,12 @@
 import type { Prisma } from '@prisma/client';
-import { Bank } from 'oldschooljs';
+import { Bank, type ItemBank } from 'oldschooljs';
 
-import { findBingosWithUserParticipating } from '../../mahoji/lib/bingo/BingoManager';
-import { mahojiUserSettingsUpdate } from '../MUser';
-import { handleNewCLItems } from '../handleNewCLItems';
-import { filterLootReplace } from '../slayer/slayerUtil';
-import type { ItemBank } from '../types';
-import { logError } from './logError';
-import { userQueueFn } from './userQueues';
+import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
+import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
+import { filterLootReplace } from '@/lib/slayer/slayerUtil.js';
+import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager';
+import { logError } from './logError.js';
+import { userQueueFn } from './userQueues.js';
 
 export interface TransactItemsArgs {
 	userID: string;
@@ -65,7 +64,7 @@ async function transactItemsFromBank({
 			clUpdates = collectionLog ? settings.calculateAddItemsToCLUpdates({ items: clLoot, dontAddToTempCL }) : {};
 		}
 
-		let gpUpdate: { increment: number } | undefined = undefined;
+		let gpUpdate: { increment: number } | undefined;
 		if (itemsToAdd) {
 			const coinsInLoot = itemsToAdd.amount('Coins');
 			if (coinsInLoot > 0) {

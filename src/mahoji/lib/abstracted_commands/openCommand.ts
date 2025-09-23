@@ -5,18 +5,23 @@ import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { noOp, notEmpty, percentChance, randArrItem, shuffleArr, uniqueArr } from 'e';
 import { Bank, Items, itemID, resolveItems } from 'oldschooljs';
 
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { BitField, PerkTier } from '@/lib/constants';
+import type { UnifiedOpenable } from '@/lib/openables.js';
+import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp';
 import { checkElderClueRequirements } from '@/lib/util/elderClueRequirements';
-import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import type { UnifiedOpenable } from '../../../lib/openables';
-import { allOpenables, getOpenableLoot } from '../../../lib/openables';
-import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { assert } from '../../../lib/util/logError';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahojiSettings';
+import getOSItem, { getItem } from '@/lib/util/getOSItem.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { assert } from '@/lib/util/logError.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import {
+	addToOpenablesScores,
+	patronMsg,
+	updateClientGPTrackSetting,
+	userStatsBankUpdate
+} from '@/mahoji/mahojiSettings.js';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 

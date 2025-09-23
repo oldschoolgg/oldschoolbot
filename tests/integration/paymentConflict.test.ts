@@ -1,4 +1,4 @@
-import { Time, randArrItem, randInt, roll } from 'e';
+import { randArrItem, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 

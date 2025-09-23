@@ -2,12 +2,12 @@ import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { randArrItem, roll } from 'e';
 import { Bank, type Item, LootTable } from 'oldschooljs';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
-import { MysteryBoxes } from '../../../bsoOpenables';
-import { BitField } from '../../../constants';
-import { globalDroprates } from '../../../data/globalDroprates';
-import getOSItem from '../../../util/getOSItem';
-import type { Plant } from '../../types';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { MysteryBoxes } from '@/lib/bsoOpenables.js';
+import { BitField } from '@/lib/constants';
+import { globalDroprates } from '@/lib/data/globalDroprates';
+import type { Plant } from '@/lib/skilling/types.js';
+import getOSItem from '@/lib/util/getOSItem';
 
 export const zygomiteSeedMutChance = 15;
 

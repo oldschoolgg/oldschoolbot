@@ -1,15 +1,15 @@
-import type { Craftable } from '../../../types';
-import Birdhouse from './birdhouse';
-import Built from './built';
-import { customCraftables } from './custom';
-import Dragonhide from './dragonhide';
-import Gems from './gems';
-import Glassblowing from './glassblowing';
-import Gold from './gold';
-import Leather from './leather';
-import Misc from './misc';
-import Silver from './silver';
-import Tanning from './tanning';
+import type { Craftable } from '@/lib/skilling/types.js';
+import Birdhouse from './birdhouse.js';
+import Built from './built.js';
+import { customCraftables } from './custom.js';
+import Dragonhide from './dragonhide.js';
+import Gems from './gems.js';
+import Glassblowing from './glassblowing.js';
+import Gold from './gold.js';
+import Leather from './leather.js';
+import Misc from './misc.js';
+import Silver from './silver.js';
+import Tanning from './tanning.js';
 
 export const Craftables: Craftable[] = [
 	...Birdhouse,

@@ -1,4 +1,4 @@
-import { Bank, EMonster, EquipmentSlot, Items, getItem, getItemOrThrow, itemID } from 'oldschooljs';
+import { Bank, EMonster, EquipmentSlot, getItem, getItemOrThrow, Items, itemID } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import Buyables from '../../src/lib/data/buyables/buyables';

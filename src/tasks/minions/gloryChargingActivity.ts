@@ -2,9 +2,9 @@ import { Events } from '@oldschoolgg/toolkit/constants';
 import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { gloriesInventorySize } from '../../mahoji/lib/abstracted_commands/chargeGloriesCommand';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { gloriesInventorySize } from '@/mahoji/lib/abstracted_commands/chargeGloriesCommand';
 
 export const gloryChargingTask: MinionTask = {
 	type: 'GloryCharging',

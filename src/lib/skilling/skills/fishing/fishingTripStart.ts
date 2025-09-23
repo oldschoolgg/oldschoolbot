@@ -1,10 +1,10 @@
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { Time, reduceNumByPercent } from 'e';
+import { reduceNumByPercent, Time } from 'e';
 import { Bank, EItem, Items, itemID } from 'oldschooljs';
 
 import { inventionBoosts } from '@/lib/invention/inventions';
+import type { Fish } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank';
-import type { Fish } from '../../types';
 
 export function calcFishingTripStart({
 	gearBank,

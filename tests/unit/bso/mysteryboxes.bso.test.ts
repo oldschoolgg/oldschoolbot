@@ -2,7 +2,7 @@ import { ItemGroups, itemID, resolveItems } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
 import { itemNameFromID } from '@/lib/util';
-import { PMBTable, combinedTmbUmbEmbTables, embTable, tmbTable, umbTable } from '../../../src/lib/bsoOpenables';
+import { combinedTmbUmbEmbTables, embTable, PMBTable, tmbTable, umbTable } from '../../../src/lib/bsoOpenables';
 import { growablePets } from '../../../src/lib/growablePets';
 
 test("Items that shouldn't be dropped in mystery boxes", () => {

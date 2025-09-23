@@ -2,30 +2,29 @@ import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { type User, UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
-import { Time, increaseNumByPercent, noOp, notEmpty, objectValues } from 'e';
-import { type Item, convertLVLtoXP, convertXPtoLVL, resolveItems, toKMB } from 'oldschooljs';
+import { increaseNumByPercent, noOp, notEmpty, objectValues, Time } from 'e';
+import { convertLVLtoXP, convertXPtoLVL, type Item, resolveItems, toKMB } from 'oldschooljs';
 
-import { Channel, LEVEL_120_XP, MAX_LEVEL, MAX_TOTAL_LEVEL, MAX_XP, globalConfig } from './constants';
+import { Channel, globalConfig, LEVEL_120_XP, MAX_LEVEL, MAX_TOTAL_LEVEL, MAX_XP } from '@/lib/constants';
 import {
 	divinersOutfit,
 	gorajanArcherOutfit,
 	gorajanOccultOutfit,
 	gorajanWarriorOutfit,
 	inventorOutfit
-} from './data/CollectionsExport';
-import { skillEmoji } from './data/emojis';
-import { getSimilarItems } from './data/similarItems';
-import type { AddXpParams } from './minions/types';
-
-import { GLOBAL_BSO_XP_MULTIPLIER } from './bso/bsoConstants';
-import { sql } from './postgres';
-import Skillcapes from './skilling/skillcapes';
-import Skills from './skilling/skills';
-import { type SkillNameType, SkillsEnum } from './skilling/types';
-import getOSItem from './util/getOSItem';
-import { itemNameFromID } from './util/smallUtils';
-import { insertUserEvent } from './util/userEvents';
-import { sendToChannelID } from './util/webhook';
+} from '@/lib/data/CollectionsExport';
+import { skillEmoji } from '@/lib/data/emojis';
+import { getSimilarItems } from '@/lib/data/similarItems';
+import Skillcapes from '@/lib/skilling/skillcapes.js';
+import Skills from '@/lib/skilling/skills/index.js';
+import { type SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
+import { GLOBAL_BSO_XP_MULTIPLIER } from './bso/bsoConstants.js';
+import type { AddXpParams } from './minions/types.js';
+import { sql } from './postgres.js';
+import getOSItem from './util/getOSItem.js';
+import { itemNameFromID } from './util/smallUtils.js';
+import { insertUserEvent } from './util/userEvents.js';
+import { sendToChannelID } from './util/webhook.js';
 
 const skillsVals = Object.values(Skills);
 const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${LEVEL_120_XP}`).join(' AND ');
@@ -129,8 +128,8 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	}
 
 	// Look for Mastery skill cape:
-	let matchingCapeID: number | undefined = undefined;
-	let masterCape: number | undefined = undefined;
+	let matchingCapeID: number | undefined;
+	let masterCape: number | undefined;
 	const skillCape = Skillcapes.find(cape => params.skillName === cape.skill)?.masterCape;
 
 	if (skillCape && (multiplier || params.masterCapeBoost)) {

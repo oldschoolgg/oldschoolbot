@@ -1,32 +1,32 @@
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Time } from 'e';
-import { Bank, EMonster, Monsters, NIGHTMARES_HP, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { Bank, deepResolveItems, EMonster, itemID, Monsters, NIGHTMARES_HP, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
+import { bossKillables } from '@/lib/minions/data/killableMonsters/bosses/index.js';
+import type { KillableMonster } from '@/lib/minions/types';
 import { NexMonster } from '@/lib/nex';
-import { PUMPKINHEAD_ID } from '../../../simulation/pumpkinHead';
-import { SkillsEnum } from '../../../skilling/types';
-import type { KillableMonster } from '../../types';
-import { bossKillables } from './bosses';
-import { camdozaalMonsters } from './camdozaalMonsters';
-import { chaeldarMonsters } from './chaeldarMonsters';
-import { creatureCreationCreatures } from './creatureCreation';
-import { Ignecarus } from './custom/bosses/Ignecarus';
-import { KalphiteKingMonster } from './custom/bosses/KalphiteKing';
-import KingGoldemar from './custom/bosses/KingGoldemar';
-import { MOKTANG_ID } from './custom/bosses/Moktang';
-import { Naxxus } from './custom/bosses/Naxxus';
-import { VasaMagus } from './custom/bosses/VasaMagus';
-import { customKillableMonsters } from './custom/customMonsters';
-import { konarMonsters } from './konarMonsters';
-import { krystiliaMonsters } from './krystiliaMonsters';
-import low from './low';
-import { mazchnaMonsters } from './mazchnaMonsters';
-import { nieveMonsters } from './nieveMonsters';
-import { reanimatedMonsters } from './reanimated';
-import { revenantMonsters } from './revs';
-import { turaelMonsters } from './turaelMonsters';
-import { vannakaMonsters } from './vannakaMonsters';
+import { PUMPKINHEAD_ID } from '@/lib/simulation/pumpkinHead';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { camdozaalMonsters } from './camdozaalMonsters.js';
+import { chaeldarMonsters } from './chaeldarMonsters.js';
+import { creatureCreationCreatures } from './creatureCreation.js';
+import { Ignecarus } from './custom/bosses/Ignecarus.js';
+import { KalphiteKingMonster } from './custom/bosses/KalphiteKing.js';
+import KingGoldemar from './custom/bosses/KingGoldemar.js';
+import { MOKTANG_ID } from './custom/bosses/Moktang.js';
+import { Naxxus } from './custom/bosses/Naxxus.js';
+import { VasaMagus } from './custom/bosses/VasaMagus.js';
+import { customKillableMonsters } from './custom/customMonsters.js';
+import { konarMonsters } from './konarMonsters.js';
+import { krystiliaMonsters } from './krystiliaMonsters.js';
+import low from './low.js';
+import { mazchnaMonsters } from './mazchnaMonsters.js';
+import { nieveMonsters } from './nieveMonsters.js';
+import { reanimatedMonsters } from './reanimated.js';
+import { revenantMonsters } from './revs.js';
+import { turaelMonsters } from './turaelMonsters.js';
+import { vannakaMonsters } from './vannakaMonsters.js';
 
 const killableMonsters: KillableMonster[] = [
 	...bossKillables,

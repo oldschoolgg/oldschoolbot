@@ -1,15 +1,15 @@
-import { Time, roll } from 'e';
+import { roll, Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { globalDroprates } from '@/lib/data/globalDroprates';
+import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries';
+import Mining from '@/lib/skilling/skills/mining';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { MotherlodeMiningActivityTaskOptions } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util';
-import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
-import { globalDroprates } from '../../lib/data/globalDroprates';
-import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
-import Mining from '../../lib/skilling/skills/mining';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { MotherlodeMiningActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const motherlodeMiningTask: MinionTask = {
 	type: 'MotherlodeMining',

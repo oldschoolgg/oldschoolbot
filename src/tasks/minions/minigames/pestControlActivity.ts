@@ -1,11 +1,11 @@
 import { Time } from 'e';
 import { toKMB } from 'oldschooljs';
 
-import { userHasFlappy } from '../../../lib/invention/inventions';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { getBoatType } from '../../../mahoji/lib/abstracted_commands/pestControlCommand';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { userHasFlappy } from '@/lib/invention/inventions.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { getBoatType } from '@/mahoji/lib/abstracted_commands/pestControlCommand.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const pestControlTask: MinionTask = {
 	type: 'PestControl',

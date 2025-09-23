@@ -1,10 +1,10 @@
 import { objectEntries } from 'e';
 import { EItem, Items } from 'oldschooljs';
 
+import { projectiles } from '@/lib/constants';
+import { getSimilarItems } from '@/lib/data/similarItems';
+import type { Gear } from '@/lib/structures/Gear';
 import { formatList } from '@/lib/util/smallUtils';
-import { projectiles } from '../../constants';
-import { getSimilarItems } from '../../data/similarItems';
-import type { Gear } from '../../structures/Gear';
 
 export function checkRangeGearWeapon(gear: Gear) {
 	const weapon = gear.equippedWeapon();

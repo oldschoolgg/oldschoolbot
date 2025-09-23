@@ -3,9 +3,9 @@ import type { ChatInputCommandInteraction, User } from 'discord.js';
 import { shuffleArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { partyHatTableRoll } from '../../../lib/data/holidayItems';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { addToOpenablesScores } from '../../mahojiSettings';
+import { partyHatTableRoll } from '@/lib/data/holidayItems.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
 
 const JunkTable = new LootTable()
 	.add('Chocolate bar', 1, 1 / 5.2)

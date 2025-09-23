@@ -1,7 +1,7 @@
 import LootTable from '../../../../structures/LootTable';
 import SimpleMonster from '../../../../structures/SimpleMonster';
-import { GemTable } from '../../../subtables/RareDropTable';
 import { UncommonSeedDropTable } from '../../../subtables/index';
+import { GemTable } from '../../../subtables/RareDropTable';
 
 const OgressShamanTable = new LootTable()
 	.every('Big bones')

@@ -3,8 +3,8 @@ import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { calcPerHour, formatOrdinal, gaussianRandom } from '@oldschoolgg/toolkit/util';
 import { clamp, percentChance, sumArr } from 'e';
 
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 interface LMSGameSimulated {
 	position: number;

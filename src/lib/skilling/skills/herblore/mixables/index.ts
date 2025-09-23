@@ -1,11 +1,11 @@
-import type { Mixable } from '../../../types';
-import { barbMixes } from './barbMixes';
-import { bsoMixables } from './bsoMixables';
-import Crush from './crush';
-import Grimy from './grimy';
-import Potions from './potions';
-import Tar from './tar';
-import Unf from './unfinishedPotions';
+import type { Mixable } from '@/lib/skilling/types.js';
+import { barbMixes } from './barbMixes.js';
+import { bsoMixables } from './bsoMixables.js';
+import Crush from './crush.js';
+import Grimy from './grimy.js';
+import Potions from './potions.js';
+import Tar from './tar.js';
+import Unf from './unfinishedPotions.js';
 
 const mixables: Mixable[] = [...Grimy, ...Unf, ...Potions, ...Crush, ...Tar, ...bsoMixables, ...barbMixes];
 

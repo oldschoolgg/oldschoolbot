@@ -3,10 +3,10 @@ import { diff } from 'deep-object-diff';
 import deepMerge from 'deepmerge';
 import { deepClone, increaseNumByPercent, notEmpty, objectEntries, reduceNumByPercent } from 'e';
 import fetch from 'node-fetch';
-import bsoItemsJson from '../../../data/bso/bso_items.json';
 
+import bsoItemsJson from '../../../data/bso/bso_items.json';
 import { EquipmentSlot, type Item } from '../src/meta/types';
-import Items, { CLUE_SCROLLS, CLUE_SCROLL_NAMES, USELESS_ITEMS } from '../src/structures/Items';
+import Items, { CLUE_SCROLL_NAMES, CLUE_SCROLLS, USELESS_ITEMS } from '../src/structures/Items';
 import itemID from '../src/util/itemID';
 import { getItemOrThrow } from '../src/util/util';
 import { itemChanges } from './manualItemChanges';
@@ -332,7 +332,7 @@ export default async function prepareItems(): Promise<void> {
 			'examine',
 			'wiki_url'
 		]) {
-			// @ts-ignore
+			// @ts-expect-error
 			delete item[delKey];
 		}
 
@@ -459,7 +459,7 @@ export default async function prepareItems(): Promise<void> {
 			item.highalch = previousItem.highalch;
 			item.wiki_name = previousItem.wiki_name;
 			if (previousItem.equipment?.requirements) {
-				// @ts-ignore ignore
+				// @ts-expect-error ignore
 				item.equipment = {
 					...item.equipment,
 					requirements: previousItem.equipment.requirements
@@ -485,7 +485,7 @@ export default async function prepareItems(): Promise<void> {
 		}
 
 		if (previousItem?.equipment?.requirements && !item.equipment?.requirements) {
-			// @ts-ignore ignore
+			// @ts-expect-error ignore
 			item.equipment = {
 				...item.equipment,
 				requirements: previousItem.equipment.requirements

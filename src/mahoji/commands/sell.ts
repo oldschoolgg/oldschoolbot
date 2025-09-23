@@ -1,19 +1,19 @@
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { calcPercentOfNum, clamp, reduceNumByPercent } from 'e';
-import { Bank, type Item, MAX_INT_JAVA, itemID, toKMB } from 'oldschooljs';
+import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
 
 import { customPrices } from '@/lib/customItems/util';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries';
-import { NestBoxesTable } from '../../lib/simulation/misc';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { filterOption } from '../lib/mahojiCommandOptions';
-import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../mahojiSettings';
+import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries';
+import { NestBoxesTable } from '@/lib/simulation/misc';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { parseBank } from '@/lib/util/parseStringBank';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
+import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 /**
  * - Hardcoded prices

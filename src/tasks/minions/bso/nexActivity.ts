@@ -3,18 +3,18 @@ import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { calcWhatPercent, noOp, percentChance, randArrItem, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { nexCL, nexUniqueDrops } from '../../../lib/data/CollectionsExport';
-import { isDoubleLootActive } from '../../../lib/doubleLoot';
-import { trackLoot } from '../../../lib/lootTrack';
-import { addMonsterXP } from '../../../lib/minions/functions';
-import announceLoot from '../../../lib/minions/functions/announceLoot';
-import { NEX_UNIQUE_DROPRATE, NexMonster } from '../../../lib/nex';
-import { TeamLoot } from '../../../lib/simulation/TeamLoot';
-import type { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { getNexGearStats } from '../../../lib/util/getNexGearStats';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { nexCL, nexUniqueDrops } from '@/lib/data/CollectionsExport.js';
+import { isDoubleLootActive } from '@/lib/doubleLoot.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import announceLoot from '@/lib/minions/functions/announceLoot.js';
+import { addMonsterXP } from '@/lib/minions/functions/index.js';
+import { NEX_UNIQUE_DROPRATE, NexMonster } from '@/lib/nex.js';
+import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
+import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
+import { getNexGearStats } from '@/lib/util/getNexGearStats.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 interface NexUser {
 	id: string;

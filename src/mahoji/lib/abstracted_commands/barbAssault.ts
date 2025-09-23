@@ -1,20 +1,20 @@
 import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { Time, calcWhatPercent, clamp, reduceNumByPercent, roll, round } from 'e';
+import { calcWhatPercent, clamp, reduceNumByPercent, roll, round, Time } from 'e';
 import { Bank, randomVariation } from 'oldschooljs';
 
-import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { degradeItem } from '../../../lib/degradeableItems';
-import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
-import { maxOtherStats } from '../../../lib/structures/Gear';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { userStatsUpdate } from '../../mahojiSettings';
+import { buildClueButtons } from '@/lib/clues/clueUtils.js';
+import { degradeItem } from '@/lib/degradeableItems.js';
+import { HighGambleTable, LowGambleTable, MediumGambleTable } from '@/lib/simulation/baGamble.js';
+import { maxOtherStats } from '@/lib/structures/Gear.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import getOSItem from '@/lib/util/getOSItem.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const BarbBuyables = [
 	{

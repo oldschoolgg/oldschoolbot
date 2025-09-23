@@ -2,7 +2,6 @@ import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { itemNameFromID } from '@/lib/util';
 import {
 	BathhouseOres,
 	BathwaterMixtures,
@@ -10,29 +9,30 @@ import {
 	baxBathHelpStr,
 	baxBathSim,
 	baxtorianBathhousesStartCommand
-} from '../../lib/baxtorianBathhouses';
-import { allGodlyItems, divineDominionCheck, divineDominionSacrificeCommand } from '../../lib/bso/divineDominion';
-import { joinGuthixianCache } from '../../lib/bso/guthixianCache';
-import { type TuraelsTrialsMethod, TuraelsTrialsMethods, turaelsTrialsStartCommand } from '../../lib/bso/turaelsTrials';
-import { fishingLocations } from '../../lib/fishingContest';
-import type { MaterialType } from '../../lib/invention';
-import { bonanzaCommand } from '../lib/abstracted_commands/bonanzaCommand';
+} from '@/lib/baxtorianBathhouses';
+import { allGodlyItems, divineDominionCheck, divineDominionSacrificeCommand } from '@/lib/bso/divineDominion';
+import { joinGuthixianCache } from '@/lib/bso/guthixianCache';
+import { type TuraelsTrialsMethod, TuraelsTrialsMethods, turaelsTrialsStartCommand } from '@/lib/bso/turaelsTrials';
+import { fishingLocations } from '@/lib/fishingContest';
+import type { MaterialType } from '@/lib/invention';
+import { itemNameFromID } from '@/lib/util';
+import { bonanzaCommand } from '@/mahoji/lib/abstracted_commands/bonanzaCommand.js';
 import {
 	fishingContestStartCommand,
 	fishingContestStatsCommand
-} from '../lib/abstracted_commands/fishingContestCommand';
-import { fistOfGuthixCommand } from '../lib/abstracted_commands/fistOfGuthix';
-import { monkeyRumbleCommand, monkeyRumbleStatsCommand } from '../lib/abstracted_commands/monkeyRumbleCommand';
+} from '@/mahoji/lib/abstracted_commands/fishingContestCommand.js';
+import { fistOfGuthixCommand } from '@/mahoji/lib/abstracted_commands/fistOfGuthix.js';
+import { monkeyRumbleCommand, monkeyRumbleStatsCommand } from '@/mahoji/lib/abstracted_commands/monkeyRumbleCommand.js';
 import {
 	OuraniaBuyables,
 	odsBuyCommand,
 	odsStartCommand,
 	odsStatsCommand
-} from '../lib/abstracted_commands/odsCommand';
-import { stealingCreationCommand } from '../lib/abstracted_commands/stealingCreation';
-import { tinkeringWorkshopCommand } from '../lib/abstracted_commands/tinkeringWorkshopCommand';
-import { ownedMaterialOption } from '../lib/mahojiCommandOptions';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+} from '@/mahoji/lib/abstracted_commands/odsCommand.js';
+import { stealingCreationCommand } from '@/mahoji/lib/abstracted_commands/stealingCreation.js';
+import { tinkeringWorkshopCommand } from '@/mahoji/lib/abstracted_commands/tinkeringWorkshopCommand.js';
+import { ownedMaterialOption } from '@/mahoji/lib/mahojiCommandOptions.js';
+import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export const bsoMinigamesCommand: OSBMahojiCommand = {
 	name: 'bsominigames',

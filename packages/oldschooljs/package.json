@@ -68,6 +68,10 @@
 		"fast-glob": "^3.3.3",
 		"wtf_wikipedia": "^10.3.2"
 	},
-	"keywords": ["runescape"],
-	"files": ["dist"]
+	"keywords": [
+		"runescape"
+	],
+	"files": [
+		"dist"
+	]
 }

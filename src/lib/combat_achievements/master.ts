@@ -1,19 +1,19 @@
 import { Time } from 'e';
 import { EMonster, Monsters, resolveItems } from 'oldschooljs';
 
-import { spearWeapon } from '../constants';
-import { NexMonster } from '../nex';
-import { Requirements } from '../structures/Requirements';
+import { spearWeapon } from '@/lib/constants';
+import { NexMonster } from '@/lib/nex.js';
+import { Requirements } from '@/lib/structures/Requirements';
 import type {
 	GauntletOptions,
 	MonsterActivityTaskOptions,
 	NightmareActivityTaskOptions,
 	RaidsOptions,
-	TOAOptions,
-	TheatreOfBloodTaskOptions
-} from '../types/minions';
-import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils';
-import type { CombatAchievement } from './combatAchievements';
+	TheatreOfBloodTaskOptions,
+	TOAOptions
+} from '@/lib/types/minions.js';
+import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils.js';
+import type { CombatAchievement } from './combatAchievements.js';
 
 export const masterCombatAchievements: CombatAchievement[] = [
 	{

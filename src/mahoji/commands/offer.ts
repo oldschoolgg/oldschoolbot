@@ -1,21 +1,21 @@
 import { type CommandRunOptions, formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
+import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
-import { Time, randArrItem, randInt, roll } from 'e';
+import { randArrItem, randInt, roll, Time } from 'e';
 import { Bank, ItemGroups, resolveItems } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { Offerables } from '../../lib/data/offerData';
-import { birdsNestID, treeSeedsNest } from '../../lib/simulation/birdsNest';
-import Prayer from '../../lib/skilling/skills/prayer';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { OfferingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import getOSItem from '../../lib/util/getOSItem';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { userStatsBankUpdate, userStatsUpdate } from '../mahojiSettings';
+import { Offerables } from '@/lib/data/offerData';
+import { birdsNestID, treeSeedsNest } from '@/lib/simulation/birdsNest';
+import Prayer from '@/lib/skilling/skills/prayer';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { OfferingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import getOSItem from '@/lib/util/getOSItem';
+import { deferInteraction } from '@/lib/util/interactionReply';
+import { makeBankImage } from '@/lib/util/makeBankImage';
+import { userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const specialBones = [
 	{

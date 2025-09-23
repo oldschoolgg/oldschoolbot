@@ -4,14 +4,14 @@ import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import { roll, shuffleArr, uniqueArr } from 'e';
 
-import { DynamicButtons } from '../../../lib/DynamicButtons';
-import { dailyResetTime } from '../../../lib/MUser';
-import { globalConfig } from '../../../lib/constants';
-import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
-import dailyRoll from '../../../lib/simulation/dailyTable';
-import { deferInteraction } from '../../../lib/util/interactionReply';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
+import { globalConfig } from '@/lib/constants.js';
+import { DynamicButtons } from '@/lib/DynamicButtons.js';
+import { dailyResetTime } from '@/lib/MUser.js';
+import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
+import dailyRoll from '@/lib/simulation/dailyTable.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { updateClientGPTrackSetting, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export async function isUsersDailyReady(
 	user: MUser

@@ -3,24 +3,24 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
 import { randArrItem, roll } from 'e';
-import { Bank, type ItemBank, Items, LootTable, itemID, resolveItems } from 'oldschooljs';
+import { Bank, type ItemBank, itemID, Items, LootTable, resolveItems } from 'oldschooljs';
 
-import { itemContractResetTime } from '../../lib/MUser';
-import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
-import { MysteryBoxes, PMBTable, combinedTmbUmbEmbTables } from '../../lib/bsoOpenables';
-import { BitField } from '../../lib/constants';
-import { AbyssalDragonLootTable } from '../../lib/minions/data/killableMonsters/custom/AbyssalDragon';
-import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
-import { kalphiteKingLootTable } from '../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
-import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
-import { BSOMonsters } from '../../lib/minions/data/killableMonsters/custom/customMonsters';
-import { nexLootTable } from '../../lib/nex';
-import { DragonTable } from '../../lib/simulation/grandmasterClue';
-import { allThirdAgeItems, runeAlchablesTable } from '../../lib/simulation/sharedTables';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { LampTable } from '../../lib/xpLamps';
-import { updateClientGPTrackSetting, userStatsBankUpdate } from '../mahojiSettings';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination';
+import { combinedTmbUmbEmbTables, MysteryBoxes, PMBTable } from '@/lib/bsoOpenables';
+import { BitField } from '@/lib/constants';
+import { AbyssalDragonLootTable } from '@/lib/minions/data/killableMonsters/custom/AbyssalDragon';
+import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
+import { kalphiteKingLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
+import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
+import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters';
+import { itemContractResetTime } from '@/lib/MUser';
+import { nexLootTable } from '@/lib/nex';
+import { DragonTable } from '@/lib/simulation/grandmasterClue';
+import { allThirdAgeItems, runeAlchablesTable } from '@/lib/simulation/sharedTables';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { LampTable } from '@/lib/xpLamps';
+import { updateClientGPTrackSetting, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 const contractTable = new LootTable()
 	.every('Coins', [1_000_000, 3_500_000])

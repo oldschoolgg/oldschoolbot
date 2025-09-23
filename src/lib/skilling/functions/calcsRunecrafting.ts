@@ -1,8 +1,8 @@
 import { percentChance } from 'e';
 
-import { checkDegradeableItemCharges, degradeItem } from '../../degradeableItems';
-import getOSItem from '../../util/getOSItem';
-import Runecraft from '../skills/runecraft';
+import { checkDegradeableItemCharges, degradeItem } from '@/lib/degradeableItems.js';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import getOSItem from '@/lib/util/getOSItem';
 
 export async function bloodEssence(user: MUser, quantity: number): Promise<number> {
 	let bonusQuantity = 0;

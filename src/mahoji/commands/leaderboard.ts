@@ -1,41 +1,41 @@
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import {
-	type CommandRunOptions,
-	type OSBMahojiCommand,
-	channelIsSendable,
-	makePaginatedMessage
+    type CommandRunOptions,
+    type OSBMahojiCommand,
+    channelIsSendable,
+    makePaginatedMessage
 } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import type { UserStats } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import {
-	ApplicationCommandOptionType,
-	type ChatInputCommandInteraction,
-	EmbedBuilder,
-	type MessageEditOptions
+    ApplicationCommandOptionType,
+    type ChatInputCommandInteraction,
+    EmbedBuilder,
+    type MessageEditOptions
 } from 'discord.js';
 import { calcWhatPercent, chunk, isFunction, uniqueArr } from 'e';
 import { convertXPtoLVL } from 'oldschooljs';
 
+import type { ClueTier } from '@/lib/clues/clueTiers';
+import { ClueTiers } from '@/lib/clues/clueTiers';
+import { MAX_LEVEL, masteryKey } from '@/lib/constants';
+import { allClNames, getCollectionItems } from '@/lib/data/Collections';
+import { allLeagueTasks } from '@/lib/leagues/leagues';
+import { effectiveMonsters } from '@/lib/minions/data/killableMonsters';
+import { allOpenables } from '@/lib/openables';
+import { SQL } from '@/lib/rawSql.js';
+import { Minigames } from '@/lib/settings/minigames';
+import Skills from '@/lib/skilling/skills';
+import Agility from '@/lib/skilling/skills/agility';
+import Hunter from '@/lib/skilling/skills/hunter/hunter';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 import { getUsername, getUsernameSync } from '@/lib/util';
+import { fetchCLLeaderboard, fetchTameCLLeaderboard } from '@/lib/util/clLeaderboard';
+import { deferInteraction } from '@/lib/util/interactionReply';
 import { logError, logErrorForInteraction } from '@/lib/util/logError';
-import { Prisma } from '@prisma/client';
-import type { ClueTier } from '../../lib/clues/clueTiers';
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import { MAX_LEVEL, masteryKey } from '../../lib/constants';
-import { allClNames, getCollectionItems } from '../../lib/data/Collections';
-import { allLeagueTasks } from '../../lib/leagues/leagues';
-import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import { allOpenables } from '../../lib/openables';
-import { SQL } from '../../lib/rawSql.js';
-import { Minigames } from '../../lib/settings/minigames';
-import Skills from '../../lib/skilling/skills';
-import Agility from '../../lib/skilling/skills/agility';
-import Hunter from '../../lib/skilling/skills/hunter/hunter';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { fetchCLLeaderboard, fetchTameCLLeaderboard } from '../../lib/util/clLeaderboard';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { userEventsToMap } from '../../lib/util/userEvents';
-import { sendToChannelID } from '../../lib/util/webhook';
+import { userEventsToMap } from '@/lib/util/userEvents';
+import { sendToChannelID } from '@/lib/util/webhook';
 
 const LB_PAGE_SIZE = 10;
 

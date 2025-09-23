@@ -1,24 +1,24 @@
-import { type CommandResponse, Table, calcPerHour, formatDuration } from '@oldschoolgg/toolkit';
-import { Time, calcWhatPercent, clamp, percentChance, reduceNumByPercent, uniqueArr } from 'e';
+import { calcPerHour, type CommandResponse, formatDuration, Table } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, clamp, percentChance, reduceNumByPercent, Time, uniqueArr } from 'e';
 import { Bank, type Item, toKMB } from 'oldschooljs';
 
+import { DisassemblyGroupMap, DisassemblySourceGroups } from '@/lib/invention/groups/index.js';
 import {
+	allItemsThatCanBeDisassembledIDs,
 	type DisassembleFlag,
 	type DisassemblyItem,
 	type DisassemblySourceGroup,
-	type MaterialType,
-	allItemsThatCanBeDisassembledIDs
-} from '.';
-import Skillcapes from '../skilling/skillcapes';
-import { SkillsEnum } from '../skilling/types';
-import type { DisassembleTaskOptions } from '../types/minions';
-import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../util/calcMaxTripLength';
-import { getItem } from '../util/getOSItem';
-import { MaterialBank } from './MaterialBank';
-import MaterialLootTable from './MaterialLootTable';
-import { DisassemblyGroupMap, DisassemblySourceGroups } from './groups';
-import { InventionID, inventionBoosts, inventionItemBoost, materialBoosts } from './inventions';
+	type MaterialType
+} from '@/lib/invention/index.js';
+import Skillcapes from '@/lib/skilling/skillcapes';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { DisassembleTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import { getItem } from '@/lib/util/getOSItem';
+import { inventionBoosts, InventionID, inventionItemBoost, materialBoosts } from './inventions.js';
+import { MaterialBank } from './MaterialBank.js';
+import MaterialLootTable from './MaterialLootTable.js';
 
 const MASTER_CAPE_JUNK_REDUCTION = 5;
 
@@ -323,7 +323,7 @@ export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user
 		totalMaterials.add(result.materials);
 		results.push({ ...result, item });
 	}
-	// @ts-ignore ignore
+	// @ts-expect-error ignore
 	results.sort((a, b) => b.xp - a.xp);
 	const table = new Table();
 	table.addHeader('Item', 'XP', 'Time');
