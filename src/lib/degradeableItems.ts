@@ -16,7 +16,8 @@ export interface DegradeableItem {
 		| 'celestial_ring_charges'
 		| 'ash_sanctifier_charges'
 		| 'serp_helm_charges'
-		| 'blood_fury_charges'
+                | 'blood_fury_charges'
+                | 'chemistry_amulet_charges'
 		| 'tum_shadow_charges'
 		| 'blood_essence_charges'
 		| 'trident_charges'
@@ -126,9 +127,9 @@ export const degradeableItems: DegradeableItem[] = [
 		unchargedItem: getOSItem('Ash sanctifier'),
 		emoji: '<:Ash_sanctifier:1068551364168405032>'
 	},
-	{
-		item: getOSItem('Serpentine helm'),
-		settingsKey: 'serp_helm_charges',
+        {
+                item: getOSItem('Serpentine helm'),
+                settingsKey: 'serp_helm_charges',
 		itemsToRefundOnBreak: new Bank().add('Serpentine helm (uncharged)').freeze(),
 		refundVariants: [],
 		setup: 'melee',
@@ -139,11 +140,24 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		unchargedItem: getOSItem('Serpentine helm (uncharged)'),
 		convertOnCharge: true,
-		emoji: '<:Serpentine_helm:1068491236123619379>'
-	},
-	{
-		item: getOSItem('Amulet of blood fury'),
-		settingsKey: 'blood_fury_charges',
+                emoji: '<:Serpentine_helm:1068491236123619379>'
+        },
+        {
+                item: getOSItem('Amulet of chemistry'),
+                settingsKey: 'chemistry_amulet_charges',
+                itemsToRefundOnBreak: new Bank().freeze(),
+                refundVariants: [],
+                setup: 'skilling',
+                aliases: ['amulet of chemistry', 'chemistry'],
+                chargeInput: {
+                        cost: new Bank().add('Amulet of chemistry').freeze(),
+                        charges: 5
+                },
+                emoji: ''
+        },
+        {
+                item: getOSItem('Amulet of blood fury'),
+                settingsKey: 'blood_fury_charges',
 		itemsToRefundOnBreak: new Bank().add('Amulet of fury').freeze(),
 		refundVariants: [],
 		setup: 'melee',
