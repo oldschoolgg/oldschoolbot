@@ -12,12 +12,12 @@ import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, type ChambersOfXericOptions, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
+import { SkillsEnum } from '@/lib/skilling/types.js';
 import { Gear, constructGearSetup } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
 import { logError } from '@/lib/util/logError.js';
 import { formatList, itemNameFromID } from '@/lib/util/smallUtils.js';
 import { checkUserCanUseDegradeableItem } from '../degradeableItems.js';
-import { SkillsEnum } from '../skilling/types.js';
 import { getSimilarItems } from './similarItems.js';
 
 const bareMinStats: Skills = {

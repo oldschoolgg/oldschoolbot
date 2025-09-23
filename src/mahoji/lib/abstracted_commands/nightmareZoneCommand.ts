@@ -9,12 +9,12 @@ import { MAX_QP } from '@/lib/minions/data/quests.js';
 import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { Skills } from '@/lib/types/index.js';
+import type { NightmareZoneActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import type { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions.js';
 
 const itemBoosts = [
 	// Special weapons

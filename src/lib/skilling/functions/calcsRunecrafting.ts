@@ -1,7 +1,7 @@
 import { Items } from 'oldschooljs';
 
+import { checkDegradeableItemCharges, degradeItem } from '@/lib/degradeableItems.js';
 import { percentChance } from '@/lib/util/rng.js';
-import { checkDegradeableItemCharges, degradeItem } from '../../degradeableItems.js';
 import Runecraft from '../skills/runecraft.js';
 
 export async function bloodEssence(user: MUser, quantity: number): Promise<number> {

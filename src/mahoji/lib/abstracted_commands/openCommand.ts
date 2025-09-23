@@ -12,7 +12,7 @@ import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting } from '../../mahojiSettings.js';
+import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting } from '@/mahoji/mahojiSettings.js';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 

@@ -8,7 +8,7 @@ import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userHasGracefulEquipped } from '../../mahojiSettings.js';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function castCommand(channelID: string, user: MUser, name: string, quantity: number | undefined) {
 	const spell = Castables.find(spell => stringMatches(spell.id.toString(), name) || stringMatches(spell.name, name));

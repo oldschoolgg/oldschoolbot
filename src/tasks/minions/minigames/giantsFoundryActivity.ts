@@ -9,7 +9,7 @@ import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { GiantsFoundryActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings.js';
+import { userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const giantsFoundryTask: MinionTask = {
 	type: 'GiantsFoundry',

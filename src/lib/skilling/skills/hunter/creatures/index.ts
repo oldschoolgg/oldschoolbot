@@ -1,4 +1,4 @@
-import type { Creature } from '../../../types.js';
+import type { Creature } from '@/lib/skilling/types.js';
 import birdSnaringCreatures from './birdSnaring.js';
 import boxTrappingCreatures from './boxTrapping.js';
 import butterflyNettingCreatures from './butterflyNetting.js';

@@ -4,7 +4,7 @@ import { Bank, SkillsEnum, itemID } from 'oldschooljs';
 import { implings, puroImpHighTierTable, puroImpNormalTable, puroImpSpellTable, puroImplings } from '@/lib/implings.js';
 import type { PuroPuroActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { userHasGracefulEquipped, userStatsBankUpdate } from '../../../mahoji/mahojiSettings.js';
+import { userHasGracefulEquipped, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 function hunt(minutes: number, user: MUser, min: number, max: number) {
 	let totalQty = 0;

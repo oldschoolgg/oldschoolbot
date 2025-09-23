@@ -5,7 +5,7 @@ import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 import type { ShadesOfMortonOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { userStatsBankUpdate } from '../../mahojiSettings.js';
+import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 type Remains = 'Loar' | 'Phrin' | 'Riyl' | 'Fiyr' | 'Asyn' | 'Urium';
 

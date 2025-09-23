@@ -15,7 +15,7 @@ import { logError } from '@/lib/util/logError.js';
 import { PeakTier } from '@/lib/util/peaks.js';
 import { roll } from '@/lib/util/rng.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings.js';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 const riskDeathNumbers = [
 	{

@@ -3,8 +3,8 @@ import { Bank, Items, Monsters, deepResolveItems, itemID, resolveItems } from 'o
 import { GearStat } from 'oldschooljs/gear';
 
 import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '@/lib/data/CollectionsExport.js';
+import type { KillableMonster, KillableMonsterEffect } from '@/lib/minions/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import type { KillableMonster, KillableMonsterEffect } from '../../../types.js';
 import { QuestID } from '../../quests.js';
 
 const awakenedDeathProps = {

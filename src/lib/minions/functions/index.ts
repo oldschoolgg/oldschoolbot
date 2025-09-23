@@ -5,8 +5,8 @@ import { GearStat, type OffenceGearStat } from 'oldschooljs/gear';
 
 import type { PvMMethod } from '@/lib/constants.js';
 import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
-import { SkillsEnum } from '../../skilling/types.js';
-import { XPBank } from '../../structures/XPBank.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { XPBank } from '@/lib/structures/XPBank.js';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants.js';
 import killableMonsters from '../data/killableMonsters/index.js';
 import type { AddMonsterXpParams, KillableMonster } from '../types.js';

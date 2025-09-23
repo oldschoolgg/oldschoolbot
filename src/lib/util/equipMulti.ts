@@ -1,7 +1,7 @@
 import { Bank, EquipmentSlot } from 'oldschooljs';
 
-import { isValidGearSetup } from '../gear/functions/isValidGearSetup.js';
-import type { GearSetup } from '../gear/types.js';
+import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
+import type { GearSetup } from '@/lib/gear/types.js';
 import { skillsMeetRequirements } from '../util.js';
 import { parseStringBank } from './parseStringBank.js';
 

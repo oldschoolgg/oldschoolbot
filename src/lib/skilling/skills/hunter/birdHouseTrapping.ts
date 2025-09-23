@@ -1,7 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, Items, LootTable } from 'oldschooljs';
 
-import { nestTable, strungRabbitFootNestTable } from '../../../simulation/birdsNest.js';
+import { nestTable, strungRabbitFootNestTable } from '@/lib/simulation/birdsNest.js';
 
 export interface Birdhouse {
 	name: string;

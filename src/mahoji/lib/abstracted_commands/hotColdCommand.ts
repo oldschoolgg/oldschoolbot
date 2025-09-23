@@ -4,7 +4,7 @@ import { LootTable, resolveItems, toKMB } from 'oldschooljs';
 
 import { mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { mahojiParseNumber, userStatsUpdate } from '../../mahojiSettings.js';
+import { mahojiParseNumber, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const flowerTable = new LootTable()
 	.add('Red flowers', 1, 150)

@@ -1,6 +1,6 @@
 import { Time, percentChance } from '@oldschoolgg/toolkit';
 
-import type { GearBank } from '../../structures/GearBank.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { Ore } from './../types.js';
 
 interface MiningTimeOptions {

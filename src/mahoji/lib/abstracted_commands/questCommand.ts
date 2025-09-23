@@ -5,7 +5,7 @@ import { MAX_GLOBAL_QP, MAX_QP, quests } from '@/lib/minions/data/quests.js';
 import type { ActivityTaskOptionsWithNoChanges, SpecificQuestOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import { userHasGracefulEquipped } from '../../mahojiSettings.js';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function questCommand(user: MUser, channelID: string, name?: string) {
 	if (!user.user.minion_hasBought) {

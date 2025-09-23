@@ -1,5 +1,7 @@
 import type { Activity, Prisma, activity_type_enum } from '@prisma/client';
 
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { logError } from '@/lib/util/logError.js';
 import { allTasks } from './Task.js';
 import { modifyBusyCounter } from './busyCounterCache.js';
 import { globalConfig } from './constants.js';
@@ -7,8 +9,6 @@ import { onMinionActivityFinish } from './events.js';
 import { sql } from './postgres.js';
 import type { ActivityTaskData } from './types/minions.js';
 import { isGroupActivity } from './util.js';
-import { handleTripFinish } from './util/handleTripFinish.js';
-import { logError } from './util/logError.js';
 
 class SActivityManager {
 	private minionActivityCache: Map<string, ActivityTaskData> = new Map();

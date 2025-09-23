@@ -12,7 +12,7 @@ import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '@/lib/slayer/s
 import type { InfernoOptions } from '@/lib/types/minions.js';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const infernoTask: MinionTask = {
 	type: 'Inferno',

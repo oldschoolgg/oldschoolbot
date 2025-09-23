@@ -3,9 +3,9 @@ import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
 import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
+import type { UnderwaterAgilityThievingTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import type { UnderwaterAgilityThievingTaskOptions } from './../../../lib/types/minions.js';
 
 export async function underwaterAgilityThievingCommand(
 	channelID: string,

@@ -1,9 +1,9 @@
 import { Bank } from 'oldschooljs';
 
-import type { MUserClass } from '../../MUser.js';
-import { calcNumOfPatches } from '../../skilling/functions/calcsFarming.js';
-import type { Plant } from '../../skilling/types.js';
-import type { IPatchDataDetailed } from '../farming/types.js';
+import type { MUserClass } from '@/lib/MUser.js';
+import type { IPatchDataDetailed } from '@/lib/minions/farming/types.js';
+import { calcNumOfPatches } from '@/lib/skilling/functions/calcsFarming.js';
+import type { Plant } from '@/lib/skilling/types.js';
 
 export function replant(
 	p: Plant,

@@ -2,6 +2,7 @@ import type { GearSetupType, XpGainSource } from '@prisma/client';
 import type { ArrayItemsResolved, Bank, Item, ItemBank, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
 import type { OffenceGearStat } from 'oldschooljs/gear';
 
+import type { LevelRequirements, SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
 import type { XPBank } from '@/lib/structures/Bank.js';
 import type { GearRequirements } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
@@ -11,7 +12,6 @@ import type { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js
 import type { ClueTier } from '../clues/clueTiers.js';
 import type { POHBoosts } from '../poh/index.js';
 import type { MinigameName } from '../settings/minigames.js';
-import type { LevelRequirements, SkillNameType, SkillsEnum } from '../skilling/types.js';
 import type { Skills } from '../types/index.js';
 import type { QuestID } from './data/quests.js';
 import type { AttackStyles } from './functions/index.js';

@@ -1,9 +1,9 @@
-import { StoreBitfield } from '@oldschoolgg/toolkit/util';
+import { PerkTier, StoreBitfield } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
 import type { CanvasImage } from '@/lib/canvas/canvasUtil.js';
+import { BitField } from '@/lib/constants.js';
 import type { Skills } from '@/lib/types/index.js';
-import { BitField, PerkTier } from '../../constants.js';
 
 export type BankBackground = {
 	image: CanvasImage | null;

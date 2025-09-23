@@ -5,15 +5,15 @@ import type { Prisma, User } from '@prisma/client';
 import { type Guild, userMention } from 'discord.js';
 import { calcCombatLevel, convertXPtoLVL } from 'oldschooljs';
 
+import type { SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
 import type { MUserClass } from './MUser.js';
 import { usernameWithBadgesCache } from './cache.js';
 import { BitField, MAX_LEVEL, MAX_XP, globalConfig } from './constants.js';
-import type { SkillNameType, SkillsEnum } from './skilling/types.js';
-import type { GearBank } from './structures/GearBank.js';
 import type { Skills } from './types/index.js';
 import type { GroupMonsterActivityTaskOptions } from './types/minions.js';
-import { makeBadgeString } from './util/makeBadgeString.js';
-import { sendToChannelID } from './util/webhook.js';
 
 // @ts-ignore ignore
 BigInt.prototype.toJSON = function () {

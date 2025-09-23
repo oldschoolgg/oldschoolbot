@@ -3,7 +3,7 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { TOTAL_GIANT_WEAPONS } from '@/lib/giantsFoundry.js';
+import { type GiantsFoundryBank, TOTAL_GIANT_WEAPONS } from '@/lib/giantsFoundry.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
@@ -12,8 +12,7 @@ import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userStatsBankUpdate, userStatsUpdate } from '../../mahojiSettings.js';
-import type { GiantsFoundryBank } from './../../../lib/giantsFoundry.js';
+import { userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const giantsFoundryAlloys = [
 	{

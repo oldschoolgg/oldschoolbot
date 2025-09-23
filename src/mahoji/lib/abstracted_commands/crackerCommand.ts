@@ -4,7 +4,7 @@ import type { ChatInputCommandInteraction, User } from 'discord.js';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { addToOpenablesScores } from '../../mahojiSettings.js';
+import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
 
 const HatTable = new LootTable()
 	.add('Red partyhat', 1, 32)

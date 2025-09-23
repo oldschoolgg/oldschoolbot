@@ -17,7 +17,7 @@ import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { userStatsUpdate } from '../../mahojiSettings.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const BarbBuyables = [
 	{

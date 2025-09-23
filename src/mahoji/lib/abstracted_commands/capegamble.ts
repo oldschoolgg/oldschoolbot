@@ -8,7 +8,7 @@ import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
 import { petMessage } from '@/lib/util/displayCluesAndPets.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { roll } from '@/lib/util/rng.js';
-import { userStatsUpdate } from '../../mahojiSettings.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export async function capeGambleStatsCommand(user: MUser) {
 	const stats = await user.fetchStats({

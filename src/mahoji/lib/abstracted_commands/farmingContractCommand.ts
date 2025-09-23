@@ -10,7 +10,7 @@ import { getPlantToGrow } from '@/lib/skilling/functions/calcFarmingContracts.js
 import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
 import { plants } from '@/lib/skilling/skills/farming/index.js';
 import { findPlant } from '@/lib/util/farmingHelpers.js';
-import { mahojiUsersSettingsFetch } from '../../mahojiSettings.js';
+import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 import { farmingPlantCommand, harvestCommand } from './farmingCommand.js';
 import { abstractedOpenCommand } from './openCommand.js';
 

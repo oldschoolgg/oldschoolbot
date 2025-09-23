@@ -10,7 +10,7 @@ import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import { userStatsUpdate } from '../../mahojiSettings.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const itemBoosts = [
 	[Items.resolveFullItems(['Abyssal whip', 'Abyssal tentacle']), 12],

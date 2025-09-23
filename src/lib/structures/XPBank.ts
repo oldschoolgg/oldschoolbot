@@ -1,8 +1,8 @@
 import { sumArr } from '@oldschoolgg/toolkit';
 
 import type { AddXpParams } from '@/lib/minions/types.js';
+import type { SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
 import { skillEmoji } from '../data/emojis.js';
-import type { SkillNameType, SkillsEnum } from '../skilling/types.js';
 import type { Skills } from '../types/index.js';
 
 export class XPBank {

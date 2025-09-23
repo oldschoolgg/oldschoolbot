@@ -4,8 +4,8 @@ import type { Prisma } from '@prisma/client';
 import { type ArrayItemsResolved, type Bank, type ItemBank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
+import { SkillsEnum } from '@/lib/skilling/types.js';
 import { skillEmoji } from '../data/emojis.js';
-import { SkillsEnum } from '../skilling/types.js';
 import type { SkillRequirements, Skills } from '../types/index.js';
 import type { TOAOptions } from '../types/minions.js';
 

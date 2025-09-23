@@ -2,13 +2,13 @@ import { Time, increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/too
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { Bank, Items, SkillsEnum } from 'oldschooljs';
 
-import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings.js';
-import { KourendKebosDiary, userhasDiaryTier } from '../../diaries.js';
-import type { DarkAltarOptions } from '../../types/minions.js';
-import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../../util/calcMaxTripLength.js';
-import { hasSkillReqs } from '../../util/smallUtils.js';
-import { updateBankSetting } from '../../util/updateBankSetting.js';
+import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import type { DarkAltarOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export const darkAltarRunes = {
 	soul: {

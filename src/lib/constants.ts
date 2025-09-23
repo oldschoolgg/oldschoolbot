@@ -8,7 +8,7 @@ import * as dotenv from 'dotenv';
 import { resolveItems } from 'oldschooljs';
 import { z } from 'zod';
 
-import { SkillsEnum } from './skilling/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 
 export { PerkTier };
 

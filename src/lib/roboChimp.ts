@@ -4,11 +4,11 @@ import type { TriviaQuestion, User } from '@prisma/robochimp';
 import deepEqual from 'fast-deep-equal';
 import type { Bank } from 'oldschooljs';
 
+import { MUserStats } from '@/lib/structures/MUserStats.js';
 import { BOT_TYPE, globalConfig, masteryKey } from './constants.js';
 import { getTotalCl } from './data/Collections.js';
 import { calculateMastery } from './mastery.js';
 import { cacheRoboChimpUser } from './perkTier.js';
-import { MUserStats } from './structures/MUserStats.js';
 
 export type RobochimpUser = User;
 

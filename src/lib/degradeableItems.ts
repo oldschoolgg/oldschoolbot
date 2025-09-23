@@ -1,11 +1,11 @@
 import { percentChance } from '@/lib/util/rng.js';
 import { Bank, type Item, Items, type Monster, itemID } from 'oldschooljs';
 
-import type { GearSetupType, PrimaryGearSetupType } from './gear/types.js';
+import type { GearSetupType, PrimaryGearSetupType } from '@/lib/gear/types.js';
+import type { ChargeBank } from '@/lib/structures/Bank.js';
+import { assert } from '@/lib/util/logError.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import type { KillableMonster } from './minions/types.js';
-import type { ChargeBank } from './structures/Bank.js';
-import { assert } from './util/logError.js';
-import { updateBankSetting } from './util/updateBankSetting.js';
 
 export interface DegradeableItem {
 	item: Item;

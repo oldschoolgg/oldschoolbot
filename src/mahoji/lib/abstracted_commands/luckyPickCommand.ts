@@ -15,7 +15,7 @@ import { SILENT_ERROR } from '@/lib/constants.js';
 import { handleMahojiConfirmation, silentButtonAck } from '@/lib/util/handleMahojiConfirmation.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { logError } from '@/lib/util/logError.js';
-import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '../../mahojiSettings.js';
+import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '@/mahoji/mahojiSettings.js';
 
 export async function luckyPickCommand(user: MUser, luckypickamount: string, interaction: ChatInputCommandInteraction) {
 	const amount = mahojiParseNumber({ input: luckypickamount, min: 1_000_000, max: 3_000_000_000 });

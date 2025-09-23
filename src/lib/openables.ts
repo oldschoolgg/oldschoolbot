@@ -22,6 +22,7 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
+import { roll } from '@/lib/util/rng.js';
 import { ClueTiers } from './clues/clueTiers.js';
 import { cluesRaresCL } from './data/CollectionsExport.js';
 import { defaultFarmingContract } from './minions/farming/index.js';
@@ -36,7 +37,6 @@ import {
 	SpoilsOfWarTable
 } from './simulation/misc.js';
 import { openSeedPack } from './skilling/functions/calcFarmingContracts.js';
-import { roll } from './util/rng.js';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)

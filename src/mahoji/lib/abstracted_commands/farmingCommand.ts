@@ -17,7 +17,7 @@ import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { farmingPatchNames, findPlant, isPatchName } from '@/lib/util/farmingHelpers.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userHasGracefulEquipped, userStatsBankUpdate } from '../../mahojiSettings.js';
+import { userHasGracefulEquipped, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number): string | null {
 	if (plant.needsChopForHarvest && plant.treeWoodcuttingLevel && wcLevel < plant.treeWoodcuttingLevel) {

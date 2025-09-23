@@ -1,4 +1,4 @@
-import type { Craftable } from '../../../types.js';
+import type { Craftable } from '@/lib/skilling/types.js';
 import Birdhouse from './birdhouse.js';
 import Built from './built.js';
 import Dragonhide from './dragonhide.js';

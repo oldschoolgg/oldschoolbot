@@ -10,7 +10,7 @@ import { Bank, toKMB } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
-import { mahojiParseNumber, updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings.js';
+import { mahojiParseNumber, updateClientGPTrackSetting, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 async function checkBal(user: MUser, amount: number) {
 	return user.GP >= amount;

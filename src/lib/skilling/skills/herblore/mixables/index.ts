@@ -1,4 +1,4 @@
-import type { Mixable } from '../../../types.js';
+import type { Mixable } from '@/lib/skilling/types.js';
 import { barbMixes } from './barbMixes.js';
 import Crush from './crush.js';
 import Grimy from './grimy.js';

@@ -13,7 +13,7 @@ import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import findMonster from '@/lib/util/findMonster.js';
 import { generateDailyPeakIntervals } from '@/lib/util/peaks.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { hasMonsterRequirements } from '../../../mahojiSettings.js';
+import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 import { nexCommand } from '../nexCommand.js';
 import { nightmareCommand } from '../nightmareCommand.js';
 import { getPOH } from '../pohCommand.js';

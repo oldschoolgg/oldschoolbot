@@ -14,8 +14,8 @@ import {
 } from 'discord.js';
 import murmurhash from 'murmurhash';
 
+import { silentButtonAck } from '@/lib/util/handleMahojiConfirmation.js';
 import { BLACKLISTED_USERS } from './blacklists.js';
-import { silentButtonAck } from './util/handleMahojiConfirmation.js';
 
 type DynamicButtonFn = (opts: { message: Message; interaction: MessageComponentInteraction }) => unknown;
 

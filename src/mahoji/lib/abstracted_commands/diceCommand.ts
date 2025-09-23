@@ -8,7 +8,7 @@ import {
 	updateClientGPTrackSetting,
 	updateGPTrackSetting,
 	userStatsUpdate
-} from '../../mahojiSettings.js';
+} from '@/mahoji/mahojiSettings.js';
 
 export async function diceCommand(user: MUser, interaction: ChatInputCommandInteraction, diceamount?: string) {
 	await deferInteraction(interaction);

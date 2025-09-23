@@ -9,7 +9,7 @@ import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minio
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { getUsersLMSStats } from '../../../tasks/minions/minigames/lmsActivity.js';
+import { getUsersLMSStats } from '@/tasks/minions/minigames/lmsActivity.js';
 
 export async function lmsCommand(
 	options: {

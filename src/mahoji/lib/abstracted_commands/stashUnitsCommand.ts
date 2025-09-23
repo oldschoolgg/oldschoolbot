@@ -7,7 +7,7 @@ import type { IStashUnit, StashUnitTier } from '@/lib/clues/stashUnits.js';
 import { allStashUnitTiers, allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
 import { assert } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { getMahojiBank } from '../../mahojiSettings.js';
+import { getMahojiBank } from '@/mahoji/mahojiSettings.js';
 
 const NAILS_PER_STASH_UNIT = 10;
 

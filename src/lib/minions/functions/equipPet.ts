@@ -1,6 +1,6 @@
 import { Bank, Items } from 'oldschooljs';
 
-import { allPetIDs } from '../../data/CollectionsExport.js';
+import { allPetIDs } from '@/lib/data/CollectionsExport.js';
 import { unequipPet } from './unequipPet.js';
 
 export async function equipPet(user: MUser, itemName: string) {

@@ -14,7 +14,7 @@ import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings.js';
+import { userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 async function handleTobXP(user: MUser, isHm: boolean) {
 	let hitpointsXP = 13_000;

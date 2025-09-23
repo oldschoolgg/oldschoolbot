@@ -1,6 +1,6 @@
 import { Bank, LootTable } from 'oldschooljs';
 
-import { type Creature, HunterTechniqueEnum } from '../../../types.js';
+import { type Creature, HunterTechniqueEnum } from '@/lib/skilling/types.js';
 
 const butterflyNettingCreatures: Creature[] = [
 	{

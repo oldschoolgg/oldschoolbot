@@ -4,7 +4,7 @@ import { LumbridgeDraynorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const togTask: MinionTask = {
 	type: 'TearsOfGuthix',

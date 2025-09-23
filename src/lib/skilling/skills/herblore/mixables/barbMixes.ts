@@ -1,6 +1,6 @@
 import { Bank, Items } from 'oldschooljs';
 
-import type { Mixable } from '../../../types.js';
+import type { Mixable } from '@/lib/skilling/types.js';
 
 export const barbMixes: Mixable[] = [
 	{

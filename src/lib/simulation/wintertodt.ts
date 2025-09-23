@@ -3,9 +3,9 @@ import { normal } from '@oldschoolgg/toolkit/math';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { Bank, LootTable, convertXPtoLVL, itemID, resolveItems } from 'oldschooljs';
 
+import type { LevelRequirements } from '@/lib/skilling/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 import { MAX_LEVEL, MAX_XP } from '../constants.js';
-import type { LevelRequirements } from '../skilling/types.js';
-import { SkillsEnum } from '../skilling/types.js';
 
 interface WintertodtCrateOptions {
 	points: number;

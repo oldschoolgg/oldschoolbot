@@ -6,7 +6,7 @@ import type { TitheFarmActivityTaskOptions } from '@/lib/types/minions.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { roll } from '@/lib/util/rng.js';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const titheFarmTask: MinionTask = {
 	type: 'TitheFarm',

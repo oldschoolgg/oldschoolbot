@@ -25,7 +25,7 @@ import type { RaidsOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { mahojiParseNumber } from '../../mahojiSettings.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export async function coxBoostsCommand(user: MUser) {
 	const boostStr = [];

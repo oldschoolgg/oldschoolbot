@@ -1,4 +1,4 @@
-import type { Fletchable } from '../../../types.js';
+import type { Fletchable } from '@/lib/skilling/types.js';
 import Arrows from './arrows.js';
 import Bolts from './bolts.js';
 import Bows from './bows.js';

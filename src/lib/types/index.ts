@@ -1,4 +1,4 @@
-import type { SkillsEnum } from '../skilling/types.js';
+import type { SkillsEnum } from '@/lib/skilling/types.js';
 
 export interface ItemBank {
 	[key: string]: number;

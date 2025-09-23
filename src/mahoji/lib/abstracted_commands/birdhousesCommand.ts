@@ -7,7 +7,7 @@ import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhous
 import type { BirdhouseActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../../mahojiSettings.js';
+import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function birdhouseCheckCommand(user: MUser) {
 	const details = calculateBirdhouseDetails(user);

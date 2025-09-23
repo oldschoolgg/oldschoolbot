@@ -18,7 +18,7 @@ import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { interactionReply } from '@/lib/util/interactionReply.js';
 import { logError } from '@/lib/util/logError.js';
-import { userStatsUpdate } from '../../mahojiSettings.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 function getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
 	if (assignedTask) {

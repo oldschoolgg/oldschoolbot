@@ -3,7 +3,7 @@ import { calcPercentOfNum, calcWhatPercent, randInt } from '@oldschoolgg/toolkit
 import { KandarinDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const barbAssaultTask: MinionTask = {
 	type: 'BarbarianAssault',

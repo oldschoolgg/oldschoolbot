@@ -8,10 +8,10 @@ import {
 	ringNests,
 	strungRabbitFootNestTable,
 	treeSeedsNest
-} from '../../simulation/birdsNest.js';
-import { type SkillNameType, SkillsEnum } from '../../skilling/types.js';
-import { GearBank } from '../../structures/GearBank.js';
-import { randFloat, roll } from '../../util/rng.js';
+} from '@/lib/simulation/birdsNest.js';
+import { type SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
+import { GearBank } from '@/lib/structures/GearBank.js';
+import { randFloat, roll } from '@/lib/util/rng.js';
 
 const clues = [
 	[itemID('Clue scroll(elite)'), 1 / 10],

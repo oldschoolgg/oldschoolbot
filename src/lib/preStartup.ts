@@ -1,5 +1,7 @@
 import { noOp, uniqueArr } from '@oldschoolgg/toolkit';
 
+import { syncActiveUserIDs } from '@/lib/util/cachedUserIDs.js';
+import { syncDisabledCommands } from '@/lib/util/syncDisabledCommands.js';
 import { syncCustomPrices } from '@/mahoji/lib/events.js';
 import { cacheBadges } from './badges.js';
 import { syncBlacklists } from './blacklists.js';
@@ -12,8 +14,6 @@ import { populateRoboChimpCache } from './perkTier.js';
 import { RawSQL } from './rawSql.js';
 import { runStartupScripts } from './startupScripts.js';
 import { logWrapFn } from './util.js';
-import { syncActiveUserIDs } from './util/cachedUserIDs.js';
-import { syncDisabledCommands } from './util/syncDisabledCommands.js';
 
 async function syncCollectionLogSlotTable() {
 	await prisma.collectionLogSlot.deleteMany();

@@ -1,5 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 
+import type { NMZStrategy } from '@/lib/constants.js';
+import { NMZ_STRATEGY } from '@/lib/constants.js';
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
 import TrekShopItems from '@/lib/data/buyables/trekBuyables.js';
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
@@ -22,6 +24,8 @@ import { castleWarsStartCommand, castleWarsStatsCommand } from '@/mahoji/lib/abs
 import { fishingTrawlerCommand } from '@/mahoji/lib/abstracted_commands/fishingTrawler.js';
 import { gauntletCommand } from '@/mahoji/lib/abstracted_commands/gauntletCommand.js';
 import {
+	giantsFoundryAlloys,
+	giantsFoundryBuyables,
 	giantsFoundryShopCommand,
 	giantsFoundryStartCommand,
 	giantsFoundryStatsCommand
@@ -45,6 +49,9 @@ import {
 	mahoganyHomesPointsCommand
 } from '@/mahoji/lib/abstracted_commands/mahoganyHomesCommand.js';
 import {
+	nightmareZoneBuyables,
+	nightmareZoneImbueCommand,
+	nightmareZoneImbueables,
 	nightmareZoneShopCommand,
 	nightmareZoneStartCommand,
 	nightmareZoneStatsCommand
@@ -81,14 +88,6 @@ import {
 	volcanicMineShopCommand,
 	volcanicMineStatsCommand
 } from '@/mahoji/lib/abstracted_commands/volcanicMineCommand.js';
-import type { NMZStrategy } from './../../lib/constants.js';
-import { NMZ_STRATEGY } from './../../lib/constants.js';
-import { giantsFoundryAlloys, giantsFoundryBuyables } from './../lib/abstracted_commands/giantsFoundryCommand.js';
-import {
-	nightmareZoneBuyables,
-	nightmareZoneImbueCommand,
-	nightmareZoneImbueables
-} from './../lib/abstracted_commands/nightmareZoneCommand.js';
 
 export const minigamesCommand: OSBMahojiCommand = {
 	name: 'minigames',

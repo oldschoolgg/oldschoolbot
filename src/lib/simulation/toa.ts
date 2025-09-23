@@ -25,6 +25,8 @@ import { Bank, Items, LootTable, itemID, randomVariation, resolveItems } from 'o
 import type { GearStats } from 'oldschooljs/gear';
 import { clamp } from 'remeda';
 
+import type { UserFullGearSetup } from '@/lib/gear/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 import { Gear, constructGearSetup } from '@/lib/structures/Gear.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -40,10 +42,8 @@ import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { mahojiParseNumber, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 import { getSimilarItems } from '../data/similarItems.js';
 import { degradeItem } from '../degradeableItems.js';
-import type { UserFullGearSetup } from '../gear/types.js';
 import { trackLoot } from '../lootTrack.js';
 import { setupParty } from '../party.js';
-import { SkillsEnum } from '../skilling/types.js';
 import type { MakePartyOptions, Skills } from '../types/index.js';
 import type { TOAOptions } from '../types/minions.js';
 import { TeamLoot } from './TeamLoot.js';

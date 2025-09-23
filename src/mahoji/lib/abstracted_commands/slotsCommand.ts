@@ -12,7 +12,7 @@ import { Bank, toKMB } from 'oldschooljs';
 
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
-import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '../../mahojiSettings.js';
+import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '@/mahoji/mahojiSettings.js';
 
 interface Button {
 	name: string;

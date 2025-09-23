@@ -2,10 +2,10 @@ import { stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { mahojiParseNumber } from '../../../mahoji/mahojiSettings.js';
-import { degradeableItems } from '../../degradeableItems.js';
-import { handleMahojiConfirmation } from '../../util/handleMahojiConfirmation.js';
-import { updateBankSetting } from '../../util/updateBankSetting.js';
+import { degradeableItems } from '@/lib/degradeableItems.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export async function degradeableItemsCommand(
 	interaction: ChatInputCommandInteraction,

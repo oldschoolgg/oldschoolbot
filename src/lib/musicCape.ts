@@ -2,12 +2,12 @@ import { objectEntries, partition } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { Bank, EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
+import type { RequirementFailure } from '@/lib/structures/Requirements.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
+import { formatList, itemNameFromID } from '@/lib/util/smallUtils.js';
 import { RandomEvents } from './randomEvents.js';
 import type { MinigameName } from './settings/minigames.js';
 import { Minigames } from './settings/minigames.js';
-import type { RequirementFailure } from './structures/Requirements.js';
-import { Requirements } from './structures/Requirements.js';
-import { formatList, itemNameFromID } from './util/smallUtils.js';
 
 export const musicCapeRequirements = new Requirements()
 	.add({

@@ -19,7 +19,7 @@ import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { assert } from '@/lib/util/logError.js';
 import { normalizeTOAUsers } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const purpleButNotAnnounced = resolveItems([
 	"Elidinis' ward",

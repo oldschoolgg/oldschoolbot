@@ -2,7 +2,7 @@ import { uniqueArr } from '@oldschoolgg/toolkit';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { SkillsEnum } from 'oldschooljs';
 
-import { formatList } from '../../util/smallUtils.js';
+import { formatList } from '@/lib/util/smallUtils.js';
 import type { AttackStyles } from './index.js';
 
 const validStyles: AttackStyles[] = [

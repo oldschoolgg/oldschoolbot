@@ -1,5 +1,6 @@
 import { activity_type_enum } from '@prisma/client';
 
+import type { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity.js';
 import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity.js';
 import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity.js';
@@ -92,7 +93,6 @@ import { giantsFoundryTask } from './../tasks/minions/minigames/giantsFoundryAct
 import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOfTheRiftActivity.js';
 import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneActivity.js';
 import { underwaterAgilityThievingTask } from './../tasks/minions/underwaterActivity.js';
-import type { handleTripFinish } from './util/handleTripFinish.js';
 
 export const allTasks: MinionTask[] = [
 	aerialFishingTask,

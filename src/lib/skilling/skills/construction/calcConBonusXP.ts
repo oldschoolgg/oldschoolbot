@@ -1,7 +1,7 @@
 import { round } from '@oldschoolgg/toolkit';
 import { itemID } from 'oldschooljs';
 
-import type { GearSetup } from '../../../gear/types.js';
+import type { GearSetup } from '@/lib/gear/types.js';
 
 export function calcConBonusXP(setup: GearSetup): number {
 	let bonusMultiplier = 0;

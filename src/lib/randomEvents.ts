@@ -4,7 +4,7 @@ import { LRUCache } from 'lru-cache';
 import { Bank, ItemGroups } from 'oldschooljs';
 import { LootTable } from 'oldschooljs';
 
-import { userStatsBankUpdate } from '../mahoji/mahojiSettings.js';
+import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 import { BitField } from './constants.js';
 
 interface RandomEvent {

@@ -12,7 +12,7 @@ import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 import dailyRoll from '@/lib/simulation/dailyTable.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings.js';
+import { updateClientGPTrackSetting, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export async function isUsersDailyReady(
 	user: MUser

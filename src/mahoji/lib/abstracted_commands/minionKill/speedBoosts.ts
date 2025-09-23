@@ -23,7 +23,7 @@ import { calcPOHBoosts } from '@/lib/poh/index.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { maxOffenceStats } from '@/lib/structures/Gear.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
-import { resolveAvailableItemBoosts } from '../../../mahojiSettings.js';
+import { resolveAvailableItemBoosts } from '@/mahoji/mahojiSettings.js';
 import { determineIfUsingCannon } from './determineIfUsingCannon.js';
 import { calculateVirtusBoost, dragonHunterWeapons } from './minionKillData.js';
 import type { MinionKillOptions } from './newMinionKill.js';

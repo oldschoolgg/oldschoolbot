@@ -1,6 +1,6 @@
 import { Bank, itemID } from 'oldschooljs';
 
-import type { Craftable } from '../../../types.js';
+import type { Craftable } from '@/lib/skilling/types.js';
 
 const Gold: Craftable[] = [
 	{

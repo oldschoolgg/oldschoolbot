@@ -16,7 +16,7 @@ import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { percentChance } from '@/lib/util/rng.js';
 import { readableStatName } from '@/lib/util/smallUtils.js';
-import { userHasGracefulEquipped } from '../../mahojiSettings.js';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function trekCommand(user: MUser, channelID: string, difficulty: string, quantity: number | undefined) {
 	const tier = difficulties.find(item => stringMatches(item.difficulty, difficulty));

@@ -5,10 +5,10 @@ import { type Bank, Items, toKMB } from 'oldschooljs';
 
 import { allCollectionLogs, getCollection, getTotalCl } from '@/lib/data/Collections.js';
 import type { CollectionStatus, IToReturnCollection } from '@/lib/data/CollectionsExport.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import { OSRSCanvas } from './canvas/OSRSCanvas.js';
 import { bankImageTask } from './canvas/bankImage.js';
 import type { IBgSprite } from './canvas/canvasUtil.js';
-import type { MUserStats } from './structures/MUserStats.js';
 
 export const collectionLogTypes = [
 	{ name: 'collection', description: 'Normal Collection Log' },

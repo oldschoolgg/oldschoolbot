@@ -1,0 +1,6 @@
+{
+	"typescript.preferences.importModuleSpecifier": "non-relative",
+	"typescript.updateImportsOnFileMove.enabled": "always",
+	"typescript.preferences.importModuleSpecifierEnding": "js",
+	"typescript.preferences.preferTypeOnlyAutoImports": false
+}

@@ -4,7 +4,7 @@ import Prayer from '@/lib/skilling/skills/prayer.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ScatteringActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { userStatsBankUpdate } from '../../../mahoji/mahojiSettings.js';
+import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const scatteringTask: MinionTask = {
 	type: 'Scattering',

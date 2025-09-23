@@ -8,7 +8,7 @@ import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { pizazzPointsPerHour } from '../../../tasks/minions/minigames/mageTrainingArenaActivity.js';
+import { pizazzPointsPerHour } from '@/tasks/minions/minigames/mageTrainingArenaActivity.js';
 
 const RuneTable = new LootTable()
 	.every('Law rune', [11, 14])

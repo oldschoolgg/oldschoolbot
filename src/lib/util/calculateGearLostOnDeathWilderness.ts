@@ -2,7 +2,7 @@ import { objectEntries } from '@oldschoolgg/toolkit';
 import { Bank, type EquipmentSlot, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 import { clone } from 'remeda';
 
-import type { GearSetup } from '../gear/types.js';
+import type { GearSetup } from '@/lib/gear/types.js';
 
 interface IGearSwap {
 	[key: number]: number[];

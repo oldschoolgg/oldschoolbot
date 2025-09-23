@@ -18,7 +18,7 @@ import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { userHasGracefulEquipped } from '../../mahojiSettings.js';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function sepulchreCommand(user: MUser, channelID: string, fletching?: number) {
 	const skills = user.skillsAsLevels;

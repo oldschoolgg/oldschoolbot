@@ -16,7 +16,7 @@ import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
 import { getNightmareGearStats } from '@/lib/util/getNightmareGearStats.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { hasMonsterRequirements } from '../../mahojiSettings.js';
+import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 async function soloMessage(user: MUser, duration: number, quantity: number, isPhosani: boolean) {
 	const name = isPhosani ? "Phosani's Nightmare" : 'The Nightmare';

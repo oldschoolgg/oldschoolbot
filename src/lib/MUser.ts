@@ -17,9 +17,21 @@ import {
 } from 'oldschooljs';
 import { pick } from 'remeda';
 
+import type { GearSetup, UserFullGearSetup } from '@/lib/gear/types.js';
 import Farming from '@/lib/skilling/skills/farming/index.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
+import { Gear, defaultGear } from '@/lib/structures/Gear.js';
+import { GearBank } from '@/lib/structures/GearBank.js';
+import type { XPBank } from '@/lib/structures/XPBank.js';
+import { determineRunes } from '@/lib/util/determineRunes.js';
+import { getKCByName } from '@/lib/util/getKCByName.js';
+import { logError } from '@/lib/util/logError.js';
+import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
+import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
+import { type TransactItemsArgs, transactItemsFromBank } from '@/lib/util/transactItemsFromBank.js';
 import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
-import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings.js';
+import { fetchUserStats, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 import { addXP } from './addXP.js';
 import { userIsBusy } from './busyCounterCache.js';
 import { partialUserCache } from './cache.js';
@@ -32,7 +44,6 @@ import { BitField, MAX_LEVEL, projectiles } from './constants.js';
 import { bossCLItems } from './data/Collections.js';
 import { allPetIDs, avasDevices } from './data/CollectionsExport.js';
 import { degradeableItems } from './degradeableItems.js';
-import type { GearSetup, UserFullGearSetup } from './gear/types.js';
 import { handleNewCLItems } from './handleNewCLItems.js';
 import { marketPriceOfBank } from './marketPrices.js';
 import backgroundImages from './minions/data/bankBackgrounds.js';
@@ -47,19 +58,8 @@ import { roboChimpUserFetch } from './roboChimp.js';
 import type { MinigameName, MinigameScore } from './settings/minigames.js';
 import { Minigames } from './settings/minigames.js';
 import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo.js';
-import { SkillsEnum } from './skilling/types.js';
 import type { BankSortMethod } from './sorts.js';
-import { ChargeBank } from './structures/Bank.js';
-import { Gear, defaultGear } from './structures/Gear.js';
-import { GearBank } from './structures/GearBank.js';
-import type { XPBank } from './structures/XPBank.js';
 import type { SkillRequirements, Skills } from './types/index.js';
-import { determineRunes } from './util/determineRunes.js';
-import { getKCByName } from './util/getKCByName.js';
-import { logError } from './util/logError.js';
-import { makeBadgeString } from './util/makeBadgeString.js';
-import { hasSkillReqsRaw } from './util/smallUtils.js';
-import { type TransactItemsArgs, transactItemsFromBank } from './util/transactItemsFromBank.js';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {

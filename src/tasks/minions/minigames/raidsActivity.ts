@@ -11,7 +11,7 @@ import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
 import type { RaidsOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 interface RaidResultUser {
 	personalPoints: number;

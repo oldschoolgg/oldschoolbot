@@ -1,7 +1,7 @@
 import { Bank, itemID } from 'oldschooljs';
 
-import { SlayerTaskUnlocksEnum } from '../../../../slayer/slayerUnlocks.js';
-import type { Fletchable } from '../../../types.js';
+import type { Fletchable } from '@/lib/skilling/types.js';
+import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 
 const Slayer: Fletchable[] = [
 	{

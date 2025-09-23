@@ -7,7 +7,7 @@ import type { PuroPuroActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import { userHasGracefulEquipped } from '../../mahojiSettings.js';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 interface PuroImpling {
 	name: string;

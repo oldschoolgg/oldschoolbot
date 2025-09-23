@@ -4,10 +4,10 @@ import type { User } from '@prisma/client';
 
 import { defaultPatches } from '@/lib/minions/farming/index.js';
 import type { IPatchData, IPatchDataDetailed } from '@/lib/minions/farming/types.js';
-import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings.js';
-import type { FarmingPatchName } from '../../util/farmingHelpers.js';
-import { farmingKeys, farmingPatchNames, findPlant } from '../../util/farmingHelpers.js';
-import { assert } from '../../util/logError.js';
+import type { FarmingPatchName } from '@/lib/util/farmingHelpers.js';
+import { farmingKeys, farmingPatchNames, findPlant } from '@/lib/util/farmingHelpers.js';
+import { assert } from '@/lib/util/logError.js';
+import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export function getFarmingInfoFromUser(user: User) {
 	const patches: Record<FarmingPatchName, IPatchData> = {} as Record<FarmingPatchName, IPatchData>;
