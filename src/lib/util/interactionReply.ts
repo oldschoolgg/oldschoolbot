@@ -12,11 +12,11 @@ import {
 	type StringSelectMenuInteraction
 } from 'discord.js';
 
-import { SILENT_ERROR } from '../constants';
-import { logErrorForInteraction } from './logError';
+import { SILENT_ERROR } from '../constants.js';
+import { logErrorForInteraction } from './logError.js';
 
 export async function interactionReply(interaction: RepliableInteraction, response: string | InteractionReplyOptions) {
-	let i: Promise<InteractionResponse> | Promise<Message> | undefined = undefined;
+	let i: Promise<InteractionResponse> | Promise<Message> | undefined;
 	let method = '';
 
 	if (interaction.replied) {

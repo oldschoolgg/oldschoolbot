@@ -1,24 +1,24 @@
+import { randInt } from '@/lib/util/rng.js';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { roll } from '@/lib/util/rng';
-import chatHeadImage from '../../lib/canvas/chatHeadImage';
-import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
-import { BitField } from '../../lib/constants';
-import type { PatchTypes } from '../../lib/minions/farming';
-import type { FarmingContract } from '../../lib/minions/farming/types';
-import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
-import Farming from '../../lib/skilling/skills/farming';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { assert } from '../../lib/util/logError';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { sendToChannelID } from '../../lib/util/webhook';
-import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
+import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
+import { BitField } from '@/lib/constants.js';
+import type { PatchTypes } from '@/lib/minions/farming/index.js';
+import type { FarmingContract } from '@/lib/minions/farming/types.js';
+import { calcVariableYield } from '@/lib/skilling/functions/calcsFarming.js';
+import Farming from '@/lib/skilling/skills/farming/index.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { getFarmingKeyFromName } from '@/lib/util/farmingHelpers.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { assert } from '@/lib/util/logError.js';
+import { roll } from '@/lib/util/rng.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
+import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const farmingTask: MinionTask = {
 	type: 'Farming',
@@ -127,8 +127,7 @@ export const farmingTask: MinionTask = {
 			if (loot.length > 0) str += `\n\nYou received: ${loot}.`;
 
 			updateBankSetting('farming_loot_bank', loot);
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});
@@ -207,7 +206,7 @@ export const farmingTask: MinionTask = {
 					const livesHolder = lives;
 					for (let k = 0; k < alivePlants; k++) {
 						lives = livesHolder;
-						for (let n = 0; lives > 0; n++) {
+						for (let _n = 0; lives > 0; _n++) {
 							if (Math.random() > chanceToSaveLife) {
 								lives -= 1;
 								cropYield += 1;
@@ -437,8 +436,7 @@ export const farmingTask: MinionTask = {
 			}
 
 			await updateBankSetting('farming_loot_bank', loot);
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});

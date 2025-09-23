@@ -1,10 +1,10 @@
-import { percentChance, randInt, roll } from 'e';
+import { percentChance, randInt, roll } from '@/util/smallUtils.js';
 
-import type { OpenableOpenOptions } from '../../meta/types';
-import Bank from '../../structures/Bank';
-import LootTable from '../../structures/LootTable';
-import SimpleOpenable from '../../structures/SimpleOpenable';
-import { LarransBigChestFish, LarransSmallChestFish, chanceOfFish } from './BonusOpenables';
+import { Bank } from '@/structures/Bank.js';
+import LootTable from '@/structures/LootTable.js';
+import type { OpenableOpenOptions } from '@/structures/Openable.js';
+import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
+import { LarransBigChestFish, LarransSmallChestFish, chanceOfFish } from './BonusOpenables.js';
 
 // TODO: check wiki for more accurate results in future
 const LarransSmallChestTable = new LootTable()
@@ -63,7 +63,7 @@ const LarransBigChestTable = new LootTable()
 const LarransChestTable = new LootTable().add(LarransSmallChestTable).add(LarransBigChestTable);
 
 export class LarransChestOpenable extends SimpleOpenable {
-	public open(quantity = 1, options: OpenableOpenOptions = { fishLvl: 99, chestSize: 'big' }) {
+	public override open(quantity = 1, options: OpenableOpenOptions = { fishLvl: 99, chestSize: 'big' }) {
 		const loot = new Bank();
 		const tier = options.chestSize ?? 'big';
 		const fishLvl = options.fishLvl ?? 99;

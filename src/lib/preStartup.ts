@@ -1,19 +1,19 @@
-import { noOp, uniqueArr } from 'e';
+import { noOp, uniqueArr } from '@oldschoolgg/toolkit';
 
-import { syncCustomPrices } from '../mahoji/lib/events';
-import { cacheBadges } from './badges';
-import { syncBlacklists } from './blacklists';
-import { GeImageGenerator } from './canvas/geImage';
-import { globalConfig } from './constants';
+import { syncActiveUserIDs } from '@/lib/util/cachedUserIDs.js';
+import { syncDisabledCommands } from '@/lib/util/syncDisabledCommands.js';
+import { syncCustomPrices } from '@/mahoji/lib/events.js';
+import { cacheBadges } from './badges.js';
+import { syncBlacklists } from './blacklists.js';
+import { GeImageGenerator } from './canvas/geImage.js';
+import { globalConfig } from './constants.js';
 import { allCollectionLogsFlat } from './data/Collections.js';
-import { GrandExchange } from './grandExchange';
-import { cacheGEPrices } from './marketPrices';
-import { populateRoboChimpCache } from './perkTier';
-import { RawSQL } from './rawSql';
-import { runStartupScripts } from './startupScripts';
-import { logWrapFn } from './util';
-import { syncActiveUserIDs } from './util/cachedUserIDs';
-import { syncDisabledCommands } from './util/syncDisabledCommands';
+import { GrandExchange } from './grandExchange.js';
+import { cacheGEPrices } from './marketPrices.js';
+import { populateRoboChimpCache } from './perkTier.js';
+import { RawSQL } from './rawSql.js';
+import { runStartupScripts } from './startupScripts.js';
+import { logWrapFn } from './util.js';
 
 async function syncCollectionLogSlotTable() {
 	await prisma.collectionLogSlot.deleteMany();

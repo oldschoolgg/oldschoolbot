@@ -1,10 +1,6 @@
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
-import { userMention } from 'discord.js';
 import {
 	Time,
 	calcWhatPercent,
-	clamp,
 	increaseNumByPercent,
 	percentChance,
 	randFloat,
@@ -12,16 +8,20 @@ import {
 	reduceNumByPercent,
 	roll,
 	sumArr
-} from 'e';
+} from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
+import { userMention } from 'discord.js';
 import { Bank, EMonster, itemID, randomVariation, resolveItems } from 'oldschooljs';
+import { clamp } from 'remeda';
 
-import { BitField } from '../constants';
-import type { Skills } from '../types';
-import { arrows, bolts, bows, crossbows } from '../util/archery';
-import { calcMaxTripLength } from '../util/calcMaxTripLength';
-import { formatList, formatSkillRequirements, itemNameFromID } from '../util/smallUtils';
-import { TeamLoot } from './TeamLoot';
-import { NexNonUniqueTable, NexUniqueTable } from './misc';
+import type { Skills } from '@/lib/types/index.js';
+import { arrows, bolts, bows, crossbows } from '@/lib/util/archery.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { formatList, formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { BitField } from '../constants.js';
+import { TeamLoot } from './TeamLoot.js';
+import { NexNonUniqueTable, NexUniqueTable } from './misc.js';
 
 const minStats: Skills = {
 	defence: 90,
@@ -201,7 +201,7 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 		let deathChance = 100;
 		const nexKC = await member.getKC(EMonster.NEX);
 		const kcLearningCap = 500;
-		const kcPercent = clamp(calcWhatPercent(nexKC, kcLearningCap), 0, 100);
+		const kcPercent = clamp(calcWhatPercent(nexKC, kcLearningCap), { min: 0, max: 100 });
 		const messages: string[] = [];
 
 		if ([rangeGear.ammo?.item].includes(itemID('Rune arrow'))) {
@@ -219,16 +219,16 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 		const hasRigour = member.bitfield.includes(BitField.HasDexScroll);
 		if (hasRigour) offence += 5;
 
-		const offensivePercents = [offence, clamp(calcWhatPercent(nexKC, 100), 0, 100)];
+		const offensivePercents = [offence, clamp(calcWhatPercent(nexKC, 100), { min: 0, max: 100 })];
 		const totalOffensivePecent = sumArr(offensivePercents) / offensivePercents.length;
 		const contribution = totalOffensivePecent;
 
-		const defensivePercents = [defence, clamp(kcPercent * 2, 0, 100)];
+		const defensivePercents = [defence, clamp(kcPercent * 2, { min: 0, max: 100 })];
 		const totalDefensivePercent = sumArr(defensivePercents) / defensivePercents.length;
 		deathChance = reduceNumByPercent(deathChance, totalDefensivePercent);
-		deathChance = clamp(deathChance, 5, 100);
+		deathChance = clamp(deathChance, { min: 5, max: 100 });
 
-		let timeReductionPercent = clamp(kcPercent / 4.5 + offence / 7, 1, 100);
+		let timeReductionPercent = clamp(kcPercent / 4.5 + offence / 7, { min: 1, max: 100 });
 		if (isUsingZCB) timeReductionPercent = increaseNumByPercent(timeReductionPercent, 5);
 		const reducedTime = reduceNumByPercent(lengthPerKill, timeReductionPercent);
 		messages.push(`${timeReductionPercent.toFixed(1)}% faster`);
@@ -272,7 +272,7 @@ export async function calculateNexDetails({ team }: { team: MUser[] }) {
 		});
 	}
 
-	lengthPerKill = clamp(lengthPerKill, Time.Minute * 6, Time.Hour);
+	lengthPerKill = clamp(lengthPerKill, { min: Time.Minute * 6, max: Time.Hour });
 
 	const quantity = Math.floor(maxTripLength / lengthPerKill);
 

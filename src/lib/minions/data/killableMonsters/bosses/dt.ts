@@ -1,12 +1,11 @@
-import { Time, roll } from 'e';
-import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { Time, roll } from '@oldschoolgg/toolkit';
+import { Bank, Items, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '@/lib/data/CollectionsExport';
-import { SkillsEnum } from '@/lib/skilling/types';
-import { getOSItem } from '@/lib/util/getOSItem';
-import type { KillableMonster, KillableMonsterEffect } from '../../../types';
-import { QuestID } from '../../quests';
+import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '@/lib/data/CollectionsExport.js';
+import type { KillableMonster, KillableMonsterEffect } from '@/lib/minions/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { QuestID } from '../../quests.js';
 
 const awakenedDeathProps = {
 	hardness: 0.9,
@@ -16,7 +15,7 @@ const awakenedDeathProps = {
 };
 
 function makeTabletEffect(itemName: string): KillableMonster['effect'] {
-	const item = getOSItem(itemName);
+	const item = Items.getOrThrow(itemName);
 	return ({ quantity, gearBank }: Parameters<KillableMonsterEffect>['0']): ReturnType<KillableMonsterEffect> => {
 		if (gearBank.bank.has(item)) return;
 		let gotTab = false;

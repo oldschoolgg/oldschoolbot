@@ -1,13 +1,12 @@
-import type { OpenableOptions } from '../meta/types';
-import Bank from './Bank';
-import type LootTable from './LootTable';
-import Openable from './Openable';
+import { Bank } from './Bank.js';
+import type LootTable from './LootTable.js';
+import Openable, { type OpenableOptions } from './Openable.js';
 
 interface SimpleOpenableOptions extends OpenableOptions {
 	table: LootTable;
 }
 
-export default class SimpleOpenable extends Openable {
+export class SimpleOpenable extends Openable {
 	public table: LootTable;
 
 	constructor(options: SimpleOpenableOptions) {

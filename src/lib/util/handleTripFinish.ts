@@ -5,24 +5,24 @@ import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { Bank, EItem } from 'oldschooljs';
 
-import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
+import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
+import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
 import {
 	tearsOfGuthixIronmanReqs,
 	tearsOfGuthixSkillReqs
-} from '../../mahoji/lib/abstracted_commands/tearsOfGuthixCommand';
-import { updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
-import { ClueTiers } from '../clues/clueTiers';
-import { buildClueButtons } from '../clues/clueUtils';
-import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
-import { BitField, PerkTier } from '../constants';
-import { handleGrowablePetGrowth } from '../growablePets';
-import { handlePassiveImplings } from '../implings';
-import { triggerRandomEvent } from '../randomEvents';
-import { calculateBirdhouseDetails } from '../skilling/skills/hunter/birdhouses';
-import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
-import type { ActivityTaskData } from '../types/minions';
-import { displayCluesAndPets } from './displayCluesAndPets';
+} from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
+import { updateClientGPTrackSetting, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
+import { ClueTiers } from '../clues/clueTiers.js';
+import { buildClueButtons } from '../clues/clueUtils.js';
+import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements.js';
+import { BitField, PerkTier } from '../constants.js';
+import { handleGrowablePetGrowth } from '../growablePets.js';
+import { handlePassiveImplings } from '../implings.js';
+import { triggerRandomEvent } from '../randomEvents.js';
+import { calculateBirdhouseDetails } from '../skilling/skills/hunter/birdhouses.js';
+import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil.js';
+import type { ActivityTaskData } from '../types/minions.js';
+import { displayCluesAndPets } from './displayCluesAndPets.js';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
@@ -33,9 +33,9 @@ import {
 	makeOpenSeedPackButton,
 	makeRepeatTripButton,
 	makeTearsOfGuthixButton
-} from './interactions';
-import { hasSkillReqs } from './smallUtils';
-import { sendToChannelID } from './webhook';
+} from './interactions.js';
+import { hasSkillReqs } from './smallUtils.js';
+import { sendToChannelID } from './webhook.js';
 
 const collectors = new Map<string, MessageCollector>();
 

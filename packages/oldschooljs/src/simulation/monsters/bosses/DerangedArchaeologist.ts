@@ -1,8 +1,8 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import RareDropTable from '../../subtables/RareDropTable';
-import { GemTable } from '../../subtables/RareDropTable';
-import TreeHerbSeedTable from '../../subtables/TreeHerbSeedTable';
+import { RareDropTable } from '@/simulation/subtables/RareDropTable.js';
+import { GemTable } from '@/simulation/subtables/RareDropTable.js';
+import TreeHerbSeedTable from '@/simulation/subtables/TreeHerbSeedTable.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const DerangedArchaeologistTable = new LootTable()
 	.every('Bones')

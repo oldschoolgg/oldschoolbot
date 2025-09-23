@@ -1,6 +1,7 @@
-import SonicBoom from 'sonic-boom';
+import SonicBoomDefault from 'sonic-boom';
+const { SonicBoom } = SonicBoomDefault;
 
-import { BOT_TYPE_LOWERCASE, globalConfig } from '../constants';
+import { BOT_TYPE_LOWERCASE, globalConfig } from '../constants.js';
 
 const today = new Date();
 const year = today.getFullYear();

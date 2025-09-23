@@ -1,12 +1,12 @@
-import { type CommandRunOptions, formatDuration, stringSearch } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringSearch } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { ItemGroups, Monsters } from 'oldschooljs';
 
-import type { FishingActivityTaskOptions } from '@/lib/types/minions';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength';
+import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
-import { Fishing } from '../../lib/skilling/skills/fishing/fishing';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 
 export const fishCommand: OSBMahojiCommand = {
 	name: 'fish',

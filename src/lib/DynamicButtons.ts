@@ -1,3 +1,4 @@
+import { Time, isFunction, noOp } from '@oldschoolgg/toolkit';
 import { awaitMessageComponentInteraction, makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import {
 	type BaseMessageOptions,
@@ -11,11 +12,10 @@ import {
 	type TextChannel,
 	type ThreadChannel
 } from 'discord.js';
-import { Time, isFunction, noOp } from 'e';
 import murmurhash from 'murmurhash';
 
-import { BLACKLISTED_USERS } from './blacklists';
-import { silentButtonAck } from './util/handleMahojiConfirmation';
+import { silentButtonAck } from '@/lib/util/handleMahojiConfirmation.js';
+import { BLACKLISTED_USERS } from './blacklists.js';
 
 type DynamicButtonFn = (opts: { message: Message; interaction: MessageComponentInteraction }) => unknown;
 

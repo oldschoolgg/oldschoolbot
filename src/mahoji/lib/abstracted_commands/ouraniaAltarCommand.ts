@@ -1,14 +1,14 @@
+import { Time, increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, increaseNumByPercent } from 'e';
 import { Bank, EItem } from 'oldschooljs';
 
-import Runecraft from '../../../lib/skilling/skills/runecraft';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { OuraniaAltarOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { OuraniaAltarOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 const gracefulPenalty = 20;
 

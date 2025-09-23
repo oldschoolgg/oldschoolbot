@@ -1,18 +1,18 @@
+import { calcPercentOfNum, calcWhatPercent, randInt } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit/util';
-import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
 import { Bank, Monsters, itemID } from 'oldschooljs';
 
-import chatHeadImage from '../../../lib/canvas/chatHeadImage';
-import { userhasDiaryTier } from '../../../lib/diaries';
-import { DiaryID } from '../../../lib/minions/types';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import type { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { percentChance } from '../../../lib/util/rng';
-import { fightCavesCost } from '../../../mahoji/lib/abstracted_commands/fightCavesCommand';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
+import { userhasDiaryTier } from '@/lib/diaries.js';
+import { DiaryID } from '@/lib/minions/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import type { FightCavesActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { percentChance } from '@/lib/util/rng.js';
+import { fightCavesCost } from '@/mahoji/lib/abstracted_commands/fightCavesCommand.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const TokkulID = itemID('Tokkul');
 
@@ -72,7 +72,7 @@ export const fightCavesTask: MinionTask = {
 				}
 			}
 
-			await transactItems({ userID: user.id, itemsToAdd: itemLootBank, collectionLog: false });
+			await user.transactItems({ itemsToAdd: itemLootBank, collectionLog: false });
 
 			return handleTripFinish(
 				user,
@@ -91,7 +91,7 @@ export const fightCavesTask: MinionTask = {
 
 		if (diedToJad) {
 			const failBank = new Bank({ [TokkulID]: tokkulReward });
-			await transactItems({ userID: user.id, collectionLog: true, itemsToAdd: failBank });
+			await user.transactItems({ collectionLog: true, itemsToAdd: failBank });
 
 			const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 46_080, duration });
 			const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_322, duration });
@@ -146,8 +146,7 @@ export const fightCavesTask: MinionTask = {
 			);
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

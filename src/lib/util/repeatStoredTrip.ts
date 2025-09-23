@@ -3,15 +3,8 @@ import { type Activity, type Prisma, activity_type_enum } from '@prisma/client';
 import { ButtonBuilder, type ButtonInteraction, ButtonStyle } from 'discord.js';
 import { Items } from 'oldschooljs';
 
-import { ClueTiers } from '../clues/clueTiers';
-import type { PvMMethod } from '../constants';
-import { findTripBuyable } from '../data/buyables/tripBuyables';
-import { SlayerActivityConstants } from '../minions/data/combatConstants';
-import { autocompleteMonsters } from '../minions/data/killableMonsters';
-import { runCommand } from '../settings/settings';
-import { courses } from '../skilling/skills/agility';
-import { Fishing } from '../skilling/skills/fishing/fishing';
-import Hunter from '../skilling/skills/hunter/hunter';
+import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
+import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import type {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
@@ -64,10 +57,17 @@ import type {
 	TiaraRunecraftActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
-} from '../types/minions';
-import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
-import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
-import { interactionReply } from './interactionReply';
+} from '@/lib/types/minions.js';
+import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
+import { ClueTiers } from '../clues/clueTiers.js';
+import type { PvMMethod } from '../constants.js';
+import { findTripBuyable } from '../data/buyables/tripBuyables.js';
+import { runCommand } from '../settings/settings.js';
+import { courses } from '../skilling/skills/agility.js';
+import { Fishing } from '../skilling/skills/fishing/fishing.js';
+import Hunter from '../skilling/skills/hunter/hunter.js';
+import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions.js';
+import { interactionReply } from './interactionReply.js';
 
 const taskCanBeRepeated = (activity: Activity, user: MUser) => {
 	if (activity.type === activity_type_enum.ClueCompletion) {

@@ -1,11 +1,11 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, Monsters, SkillsEnum, itemID, resolveItems } from 'oldschooljs';
 
+import type { KillableMonster } from '@/lib/minions/types.js';
 import { GearStat } from 'oldschooljs/gear';
-import type { KillableMonster } from '../../types';
-import { QuestID } from '../quests';
+import { QuestID } from '../quests.js';
 
-const killableMonsters: KillableMonster[] = [
+export const lowKillableMonsters: KillableMonster[] = [
 	{
 		id: Monsters.Imp.id,
 		name: Monsters.Imp.name,
@@ -294,5 +294,3 @@ const killableMonsters: KillableMonster[] = [
 		canCannon: true
 	}
 ];
-
-export default killableMonsters;

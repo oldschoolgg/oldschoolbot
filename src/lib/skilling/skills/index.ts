@@ -1,24 +1,24 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 
-import type { Skill } from '../types';
-import { SkillsEnum } from '../types';
-import Agility from './agility';
-import { Construction } from './construction';
-import Cooking from './cooking/cooking';
-import Crafting from './crafting';
-import Farming from './farming';
-import Firemaking from './firemaking';
-import { Fishing } from './fishing/fishing';
-import Fletching from './fletching';
-import Herblore from './herblore/herblore';
-import Hunter from './hunter/hunter';
-import Magic from './magic';
-import Mining from './mining';
-import Prayer from './prayer';
-import Runecraft from './runecraft';
-import Smithing from './smithing';
-import Thieving from './thieving';
-import Woodcutting from './woodcutting/woodcutting';
+import type { Skill } from '../types.js';
+import { SkillsEnum } from '../types.js';
+import Agility from './agility.js';
+import { Construction } from './construction/index.js';
+import Cooking from './cooking/cooking.js';
+import Crafting from './crafting/index.js';
+import Farming from './farming/index.js';
+import Firemaking from './firemaking.js';
+import { Fishing } from './fishing/fishing.js';
+import Fletching from './fletching/index.js';
+import Herblore from './herblore/herblore.js';
+import Hunter from './hunter/hunter.js';
+import Magic from './magic/index.js';
+import Mining from './mining.js';
+import Prayer from './prayer.js';
+import Runecraft from './runecraft.js';
+import Smithing from './smithing/index.js';
+import Thieving from './thieving/index.js';
+import Woodcutting from './woodcutting/woodcutting.js';
 
 export const Skills: Record<string, Skill> = {
 	Crafting,
@@ -75,5 +75,3 @@ export const Skills: Record<string, Skill> = {
 		name: 'Slayer'
 	}
 };
-
-export default Skills;

@@ -1,12 +1,11 @@
-import { randInt } from 'e';
+import { randInt } from '@/lib/util/rng.js';
 import { Bank, Items, itemID } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import getOSItem from '../../src/lib/util/getOSItem';
-import { parseBank, parseQuantityAndItem, parseStringBank } from '../../src/lib/util/parseStringBank';
+import { parseBank, parseQuantityAndItem, parseStringBank } from '../../src/lib/util/parseStringBank.js';
 
 const psb = parseStringBank;
-const get = getOSItem;
+const get = Items.getOrThrow.bind(Items);
 const pQI = parseQuantityAndItem;
 
 describe('Bank Parsers', () => {

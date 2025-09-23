@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 
-import { Bank, type Item, Items, LootTable, getItemOrThrow, itemID, resolveNameBank } from '../';
+import { Bank, type Item, Items, LootTable, itemID } from '../src/index.js';
 
 const TestLootTable = new LootTable().add('Toolkit');
 
@@ -25,7 +25,7 @@ describe('Bank Class', () => {
 
 		expect(bank.length).toEqual(0);
 
-		bank.add(resolveNameBank({ Coal: 1, Emerald: 1, Ruby: 1 }));
+		bank.add(Bank.fromNameBank({ Coal: 1, Emerald: 1, Ruby: 1 }));
 		bank.remove({ Coal: 9999, Emerald: 9999, Toolkit: 10_000 });
 		expect(bank.amount(1603)).toEqual(1);
 		expect(bank.length).toEqual(1);
@@ -60,10 +60,10 @@ describe('Bank Class', () => {
 		bank.remove({ 1: 4 });
 		expect(bank.amount(1)).toBe(0);
 
-		bank.add(resolveNameBank({ Toolkit: 4 }));
+		bank.add(Bank.fromNameBank({ Toolkit: 4 }));
 		expect(bank.amount(1)).toBe(4);
 
-		bank.remove(resolveNameBank({ Toolkit: 4 }));
+		bank.remove(Bank.fromNameBank({ Toolkit: 4 }));
 		expect(bank.amount(1)).toBe(0);
 
 		bank.add(TestLootTable.roll());
@@ -83,7 +83,7 @@ describe('Bank Class', () => {
 	});
 
 	test('has', () => {
-		const source = resolveNameBank({
+		const source = Bank.fromNameBank({
 			Coal: 100,
 			'Monkey nuts': 100,
 			Ruby: 100
@@ -109,7 +109,7 @@ describe('Bank Class', () => {
 	});
 
 	test('toString', () => {
-		const bank = new Bank(resolveNameBank({ Coal: 20, Egg: 5000, Emerald: 1, Ruby: 20_000 }));
+		const bank = Bank.fromNameBank({ Coal: 20, Egg: 5000, Emerald: 1, Ruby: 20_000 });
 		bank.add('Twisted bow', 0);
 		expect(bank.toString()).toEqual('20x Coal, 5k Egg, 1x Emerald, 20k Ruby');
 		expect(bank.length).toEqual(4);
@@ -121,7 +121,7 @@ describe('Bank Class', () => {
 	});
 
 	test('.items()', () => {
-		const bank = new Bank(resolveNameBank({ Coal: 20, Egg: 5000, Emerald: 1, Ruby: 20_000 }));
+		const bank = Bank.fromNameBank({ Coal: 20, Egg: 5000, Emerald: 1, Ruby: 20_000 });
 		const actual = bank.items();
 		const expected = [
 			[Items.get('Coal'), 20],
@@ -134,7 +134,7 @@ describe('Bank Class', () => {
 	});
 
 	test('dont mutate', () => {
-		const base = resolveNameBank({ Coal: 5 });
+		const base = Bank.fromNameBank({ Coal: 5 }).toJSON();
 		const bank = new Bank(base);
 		bank.add('Coal', 500);
 		bank.add('Egg', 100);
@@ -145,7 +145,7 @@ describe('Bank Class', () => {
 	});
 
 	test('.forEach()', () => {
-		const bank = new Bank(resolveNameBank({ Coal: 20, Egg: 5000, Emerald: 1, Ruby: 20_000 }));
+		const bank = Bank.fromNameBank({ Coal: 20, Egg: 5000, Emerald: 1, Ruby: 20_000 });
 		const mockCallback = vi.fn();
 		bank.forEach(mockCallback);
 		expect(mockCallback).toHaveBeenCalledTimes(bank.length);
@@ -153,7 +153,7 @@ describe('Bank Class', () => {
 	});
 
 	test('.filter()', () => {
-		const baseBank = resolveNameBank({
+		const baseBank = Bank.fromNameBank({
 			Coal: 20,
 			Egg: 5000,
 			Emerald: 1,
@@ -171,7 +171,7 @@ describe('Bank Class', () => {
 	});
 
 	test('.clone()', () => {
-		const baseBank = resolveNameBank({
+		const baseBank = Bank.fromNameBank({
 			Coal: 20,
 			Egg: 5000,
 			Emerald: 1,
@@ -186,7 +186,7 @@ describe('Bank Class', () => {
 	});
 
 	test('.fits()', () => {
-		const baseBank = resolveNameBank({
+		const baseBank = Bank.fromNameBank({
 			Coal: 20,
 			Egg: 5000,
 			Emerald: 1,
@@ -199,22 +199,22 @@ describe('Bank Class', () => {
 		const b1 = new Bank(bank.clone().multiply(2));
 		expect(b1.fits(bank)).toEqual(2);
 
-		const b2 = new Bank(resolveNameBank({ Coal: 1 }));
+		const b2 = Bank.fromNameBank({ Coal: 1 });
 		expect(bank.fits(b2)).toEqual(20);
 
-		const b3 = new Bank(resolveNameBank({ Coal: 1, Emerald: 5 }));
+		const b3 = Bank.fromNameBank({ Coal: 1, Emerald: 5 });
 		expect(bank.fits(b3)).toEqual(0);
 
-		const b4 = new Bank(resolveNameBank({ Coal: 1, Ruby: 10_000 }));
+		const b4 = Bank.fromNameBank({ Coal: 1, Ruby: 10_000 });
 		expect(bank.fits(b4)).toEqual(2);
 
-		const b5 = new Bank(resolveNameBank({ Coal: 1, 'Twisted bow': 5 }));
+		const b5 = Bank.fromNameBank({ Coal: 1, 'Twisted bow': 5 });
 		expect(bank.fits(b5)).toEqual(0);
 
-		const b6 = new Bank(resolveNameBank({ Coal: 10, Ruby: 10_000 }));
+		const b6 = Bank.fromNameBank({ Coal: 10, Ruby: 10_000 });
 		expect(bank.fits(b6)).toEqual(2);
 
-		const b7 = new Bank(resolveNameBank({ Coal: 11, Ruby: 10_000 }));
+		const b7 = Bank.fromNameBank({ Coal: 11, Ruby: 10_000 });
 		expect(bank.fits(b7)).toEqual(1);
 		expect(b7.fits(bank)).toEqual(0);
 
@@ -233,15 +233,15 @@ describe('Bank Class', () => {
 			Ruby: 20_000,
 			Toolkit: 1
 		};
-		const idVersion = resolveNameBank(baseBank);
+		const idVersion = Bank.fromNameBank(baseBank);
 		const bank = new Bank(baseBank);
 		expect(bank.amount('Coal')).toEqual(20);
-		expect(new Bank(idVersion).toString()).toEqual(new Bank(bank).toString());
+		expect(new Bank(idVersion).toString()).toEqual(bank.toString());
 		expect(bank.has(idVersion)).toBeTruthy();
 
 		const otherBank = new Bank(idVersion);
 		expect(otherBank.amount('Coal')).toEqual(20);
-		expect(new Bank(otherBank).equals(new Bank(bank))).toBeTruthy();
+		expect(new Bank(otherBank).equals(bank)).toBeTruthy();
 		expect(otherBank.has(idVersion)).toBeTruthy();
 
 		const base = {
@@ -255,17 +255,19 @@ describe('Bank Class', () => {
 			'Ancestral robe top': 1,
 			'Ancestral robe bottom': 1,
 			'Dragonfire shield': 1,
-			'Amulet of glory': 1,
-			'Blade of saeldor': 0
+			'Amulet of glory': 1
 		};
-
-		expect(new Bank(base).equals(new Bank(resolveNameBank(base)))).toBeTruthy();
+		const b1 = new Bank(base);
+		const b2 = Bank.fromNameBank(base);
+		expect(b1.length).toEqual(b2.length);
+		expect(b1.toString()).toEqual(b2.toString());
+		expect(b1.equals(b2)).toBeTruthy();
 	});
 
 	test('has item obj', () => {
 		const bank = new Bank();
 		bank.add('Coal');
-		expect(bank.has(getItemOrThrow('Coal'))).toBeTruthy();
-		expect(bank.has(getItemOrThrow('Egg'))).toBeFalsy();
+		expect(bank.has(Items.getOrThrow('Coal'))).toBeTruthy();
+		expect(bank.has(Items.getOrThrow('Egg'))).toBeFalsy();
 	});
 });

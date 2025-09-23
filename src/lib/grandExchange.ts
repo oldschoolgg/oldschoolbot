@@ -1,23 +1,24 @@
+import { Time, calcPercentOfNum, miniID, noOp, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { getInterval } from '@oldschoolgg/toolkit/util';
 import { type GEListing, GEListingType, type GETransaction } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
-import { Time, calcPercentOfNum, clamp, noOp, sumArr, uniqueArr } from 'e';
 import { LRUCache } from 'lru-cache';
-import { Bank, type Item, type ItemBank, toKMB } from 'oldschooljs';
+import { Bank, type Item, type ItemBank, Items, toKMB } from 'oldschooljs';
 import PQueue from 'p-queue';
+import { clamp } from 'remeda';
 
-import { BLACKLISTED_USERS } from './blacklists';
-import { BitField, PerkTier, globalConfig } from './constants';
-import { marketPricemap } from './marketPrices';
-import type { RobochimpUser } from './roboChimp';
-import { roboChimpUserFetch } from './roboChimp';
-import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
-import getOSItem, { getItem } from './util/getOSItem';
-import { assert, logError } from './util/logError';
-import { generateGrandExchangeID, itemNameFromID } from './util/smallUtils';
-import { sendToChannelID } from './util/webhook';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
+import { assert, logError } from '@/lib/util/logError.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
+import { BLACKLISTED_USERS } from './blacklists.js';
+import { BitField, PerkTier, globalConfig } from './constants.js';
+import { marketPricemap } from './marketPrices.js';
+import type { RobochimpUser } from './roboChimp.js';
+import { roboChimpUserFetch } from './roboChimp.js';
+import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank.js';
+
+export const generateGrandExchangeID = () => miniID(6).toLowerCase();
 
 interface CreateListingArgs {
 	user: MUser;
@@ -49,7 +50,7 @@ function sanityCheckListing(listing: GEListing) {
 	if (listing.quantity_remaining !== 0 && listing.fulfilled_at) {
 		throw new Error(`Listing ${listing.id} has quantity remaining but is fulfilled.`);
 	}
-	const item = getItem(listing.item_id);
+	const item = Items.getItem(listing.item_id);
 	if (!item) {
 		throw new Error(`Listing ${listing.id} has invalid item ID ${listing.item_id}.`);
 	}
@@ -96,7 +97,10 @@ export function createGECancelButton(listing: GEListing) {
 	const button = new ButtonBuilder()
 		.setCustomId(`ge_cancel_${listing.userfacing_id}`)
 		.setLabel(
-			`Cancel ${listing.type} ${toKMB(listing.total_quantity)} ${itemNameFromID(listing.item_id)}`.slice(0, 79)
+			`Cancel ${listing.type} ${toKMB(listing.total_quantity)} ${Items.itemNameFromId(listing.item_id)}`.slice(
+				0,
+				79
+			)
 		)
 		.setStyle(ButtonStyle.Secondary);
 
@@ -104,7 +108,7 @@ export function createGECancelButton(listing: GEListing) {
 }
 
 class GrandExchangeSingleton {
-	public queue = new PQueue({ concurrency: 1 });
+	public queue: PQueue = new PQueue({ concurrency: 1 });
 	public locked = false;
 	public isTicking = false;
 	public ready = false;
@@ -217,7 +221,7 @@ class GrandExchangeSingleton {
 		const rate = this.config.tax.rate();
 		let amount = calcPercentOfNum(rate, pricePerItem);
 		amount = Math.floor(amount);
-		amount = clamp(amount, 0, this.config.tax.cap());
+		amount = clamp(amount, { min: 0, max: this.config.tax.cap() });
 		validateNumber(amount);
 
 		const newPrice = pricePerItem - amount;
@@ -265,7 +269,7 @@ class GrandExchangeSingleton {
 			}
 		});
 
-		const item = getOSItem(geListing.item_id);
+		const item = Items.getOrThrow(geListing.item_id);
 		const buyLimit = this.getItemBuyLimit(item);
 		const totalSold = sumArr(allActiveListingsInTimePeriod.map(listing => listing.quantity_bought));
 		const remainingItemsCanBuy = Math.max(0, buyLimit - totalSold);
@@ -295,7 +299,7 @@ class GrandExchangeSingleton {
 			return { error: 'The Grand Exchange is temporarily closed! Sorry, please try again later.' };
 		}
 		if (user.isIronman) return { error: "You're an ironman." };
-		const item = getItem(itemName);
+		const item = Items.getItem(itemName);
 		if (!item || !item.tradeable_on_ge || ['Coins'].includes(item.name)) {
 			return { error: 'Invalid item.' };
 		}
@@ -396,35 +400,38 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		quantity,
 		type
 	}: CreateListingArgs): Promise<{ error: string } | { createdListing: GEListing; error: null }> {
-		return this.queue.add(async () => {
-			const result = await this.preCreateListing({ user, itemName, price, quantity, type });
-			if ('error' in result) return result;
+		return this.queue.add(
+			async () => {
+				const result = await this.preCreateListing({ user, itemName, price, quantity, type });
+				if ('error' in result) return result;
 
-			await user.removeItemsFromBank(result.cost);
+				await user.removeItemsFromBank(result.cost);
 
-			const [listing] = await prisma.$transaction([
-				prisma.gEListing.create({
-					data: {
-						user_id: user.id,
-						item_id: result.item.id,
-						asking_price_per_item: price,
-						total_quantity: quantity,
-						type,
-						quantity_remaining: quantity,
-						userfacing_id: generateGrandExchangeID()
-					}
-				}),
-				...makeTransactFromTableBankQueries({ bankToAdd: result.cost })
-			]);
+				const [listing] = await prisma.$transaction([
+					prisma.gEListing.create({
+						data: {
+							user_id: user.id,
+							item_id: result.item.id,
+							asking_price_per_item: price,
+							total_quantity: quantity,
+							type,
+							quantity_remaining: quantity,
+							userfacing_id: generateGrandExchangeID()
+						}
+					}),
+					...makeTransactFromTableBankQueries({ bankToAdd: result.cost })
+				]);
 
-			sanityCheckListing(listing);
-			this.log(`${user.id} created ${type} listing, removing ${result.cost}, adding it to the g.e bank.`);
+				sanityCheckListing(listing);
+				this.log(`${user.id} created ${type} listing, removing ${result.cost}, adding it to the g.e bank.`);
 
-			return {
-				createdListing: listing,
-				error: null
-			};
-		});
+				return {
+					createdListing: listing,
+					error: null
+				};
+			},
+			{ throwOnTimeout: true }
+		);
 	}
 
 	private async createTransaction(
@@ -646,7 +653,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			neverUpdateHistory: true
 		});
 
-		const itemName = itemNameFromID(buyerListing.item_id)!;
+		const itemName = Items.itemNameFromId(buyerListing.item_id)!;
 
 		const disableDMsButton = new ButtonBuilder()
 			.setCustomId('ge_cancel_dms')

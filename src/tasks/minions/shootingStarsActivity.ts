@@ -1,5 +1,5 @@
-import type { ShootingStarsOptions } from '../../lib/types/minions';
-import { shootingStarsActivity } from './shootingStarActivity';
+import type { ShootingStarsOptions } from '@/lib/types/minions.js';
+import { shootingStarsActivity } from './shootingStarActivity.js';
 
 export const shootingStarTask: MinionTask = {
 	type: 'ShootingStars',

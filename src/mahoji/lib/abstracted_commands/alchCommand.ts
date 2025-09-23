@@ -1,13 +1,14 @@
+import { Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { Time, clamp } from 'e';
 import { Bank, type Item, Items, SkillsEnum, resolveItems, toKMB } from 'oldschooljs';
+import { clamp } from 'remeda';
 
-import type { AlchingActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const unlimitedFireRuneProviders = resolveItems([
 	'Staff of fire',
@@ -53,7 +54,7 @@ export async function alchCommand(
 	if (!quantity) {
 		quantity = maxCasts;
 	}
-	quantity = clamp(quantity, 1, maxCasts);
+	quantity = clamp(quantity, { min: 1, max: maxCasts });
 
 	if (quantity * timePerAlch > maxTripLength) {
 		return `The max number of alchs you can do is ${maxCasts}!`;

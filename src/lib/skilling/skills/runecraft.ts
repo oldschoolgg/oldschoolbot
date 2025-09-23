@@ -2,7 +2,7 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, LootTable, itemID } from 'oldschooljs';
 
-import { SkillsEnum } from '../types';
+import { SkillsEnum } from '../types.js';
 
 export interface Rune {
 	levels: number[][];

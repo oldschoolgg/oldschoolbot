@@ -1,9 +1,9 @@
-import { type CommandRunOptions, ProductID, products } from '@oldschoolgg/toolkit/util';
+import { ProductID, products } from '@oldschoolgg/toolkit/util';
+import { notEmpty } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
-import { notEmpty } from 'e';
 
-import { BOT_TYPE } from '../../lib/constants';
-import { roboChimpSyncData } from '../../lib/roboChimp';
+import { BOT_TYPE } from '@/lib/constants.js';
+import { roboChimpSyncData } from '@/lib/roboChimp.js';
 
 export const redeemCommand: OSBMahojiCommand = {
 	name: 'redeem',

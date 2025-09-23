@@ -1,15 +1,15 @@
+import { Time, calcWhatPercent, randInt, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
-import { Time, calcWhatPercent, randInt, reduceNumByPercent } from 'e';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
-import { getPOHObject } from '../../../lib/poh';
+import { getPOHObject } from '@/lib/poh/index.js';
 
-import type { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
-import { getPOH } from './pohCommand';
+import type { GnomeRestaurantActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
+import { getPOH } from './pohCommand.js';
 
 export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 	let deliveryLength = Time.Minute * 7;

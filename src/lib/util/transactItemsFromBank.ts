@@ -1,14 +1,13 @@
 import type { Prisma } from '@prisma/client';
-import { Bank } from 'oldschooljs';
+import { Bank, type ItemBank } from 'oldschooljs';
 
-import { findBingosWithUserParticipating } from '../../mahoji/lib/bingo/BingoManager';
-import { mahojiUserSettingsUpdate } from '../MUser';
-import { deduplicateClueScrolls } from '../clues/clueUtils';
-import { handleNewCLItems } from '../handleNewCLItems';
-import { filterLootReplace } from '../slayer/slayerUtil';
-import type { ItemBank } from '../types';
-import { logError } from './logError';
-import { userQueueFn } from './userQueues';
+import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager.js';
+import { mahojiUserSettingsUpdate } from '../MUser.js';
+import { deduplicateClueScrolls } from '../clues/clueUtils.js';
+import { handleNewCLItems } from '../handleNewCLItems.js';
+import { filterLootReplace } from '../slayer/slayerUtil.js';
+import { logError } from './logError.js';
+import { userQueueFn } from './userQueues.js';
 
 export interface TransactItemsArgs {
 	userID: string;
@@ -21,12 +20,7 @@ export interface TransactItemsArgs {
 	otherUpdates?: Prisma.UserUpdateArgs['data'];
 }
 
-declare global {
-	var transactItems: typeof transactItemsFromBank;
-}
-
-global.transactItems = transactItemsFromBank;
-async function transactItemsFromBank({
+export async function transactItemsFromBank({
 	userID,
 	collectionLog = false,
 	filterLoot = true,
@@ -66,7 +60,7 @@ async function transactItemsFromBank({
 			clUpdates = collectionLog ? settings.calculateAddItemsToCLUpdates({ items: clLoot, dontAddToTempCL }) : {};
 		}
 
-		let gpUpdate: { increment: number } | undefined = undefined;
+		let gpUpdate: { increment: number } | undefined;
 		if (itemsToAdd) {
 			const coinsInLoot = itemsToAdd.amount('Coins');
 			if (coinsInLoot > 0) {

@@ -1,12 +1,12 @@
+import { randInt } from '@/lib/util/rng.js';
 import { AttachmentBuilder } from 'discord.js';
-import { randInt } from 'e';
 import { type Bank, ItemGroups, resolveItems, toKMB } from 'oldschooljs';
 import { type Image, loadImage } from 'skia-canvas';
 
-import { TOBUniques } from '../data/tob';
-import { OSRSCanvas } from './OSRSCanvas';
-import { bankImageTask } from './bankImage';
-import type { CanvasImage } from './canvasUtil';
+import { TOBUniques } from '../data/tob.js';
+import { OSRSCanvas } from './OSRSCanvas.js';
+import { bankImageTask } from './bankImage.js';
+import type { CanvasImage } from './canvasUtil.js';
 
 const chestLootTypes: {
 	title: string;

@@ -1,17 +1,17 @@
-import { type OSBMahojiCommand, generateCommandInputs } from '@oldschoolgg/toolkit/discord-util';
+import { Time, sumArr } from '@oldschoolgg/toolkit';
+import { generateCommandInputs } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { Time, sumArr } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import PromiseQueue from 'p-queue';
 import { shuffle } from 'remeda';
 import { expect, test, vi } from 'vitest';
 
-import { getMaxUserValues } from '@/mahoji/commands/testpotato';
-import { allUsableItems } from '@/mahoji/lib/abstracted_commands/useCommand';
-import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
-import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirmation';
-import { allCommands } from '../../src/mahoji/commands/allCommands';
-import { TestClient, createTestUser, mockClient } from './util';
+import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings.js';
+import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirmation.js';
+import { allCommands } from '../../src/mahoji/commands/allCommands.js';
+import { getMaxUserValues } from '../../src/mahoji/commands/testpotato.js';
+import { allUsableItems } from '../../src/mahoji/lib/abstracted_commands/useCommand.js';
+import { TestClient, createTestUser, mockClient } from './util.js';
 
 test(
 	'All Commands Base Test',

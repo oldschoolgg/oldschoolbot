@@ -1,13 +1,13 @@
 import { Bank, GrandHallowedCoffin } from 'oldschooljs';
 
-import { trackLoot } from '../../../lib/lootTrack';
-import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
-import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { roll } from '../../../lib/util/rng';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { openCoffin, sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
+import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { roll } from '@/lib/util/rng.js';
 
 export const sepulchreTask: MinionTask = {
 	type: 'Sepulchre',
@@ -46,7 +46,7 @@ export const sepulchreTask: MinionTask = {
 		let fletchQuantity = 0;
 		const fletchingLoot = new Bank();
 
-		let fletchable: (typeof zeroTimeFletchables)[number] | undefined = undefined;
+		let fletchable: (typeof zeroTimeFletchables)[number] | undefined;
 
 		if (fletch) {
 			fletchable = zeroTimeFletchables.find(item => item.id === fletch.id);
@@ -71,8 +71,7 @@ export const sepulchreTask: MinionTask = {
 			fletchingLoot.add(fletchable.id, quantityToGive);
 		}
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
@@ -118,8 +117,7 @@ export const sepulchreTask: MinionTask = {
 
 		// Handle fletching loot separately after generating the main loot image
 		if (fletchable && fletch) {
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: fletchingLoot
 			});

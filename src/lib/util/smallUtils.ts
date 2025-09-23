@@ -1,15 +1,13 @@
-import { miniID, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { objectEntries } from '@oldschoolgg/toolkit';
+import { stripEmojis, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
-import { clamp, objectEntries } from 'e';
-import { type ArrayItemsResolved, type Bank, type ItemBank, Items, getItemOrThrow } from 'oldschooljs';
-import { MersenneTwister19937, shuffle } from 'random-js';
-import z from 'zod';
+import { type ArrayItemsResolved, type Bank, type ItemBank, Items } from 'oldschooljs';
+import { clamp } from 'remeda';
 
-import { skillEmoji } from '../data/emojis';
-import { SkillsEnum } from '../skilling/types';
-import type { SkillRequirements, Skills } from '../types';
-import type { TOAOptions } from '../types/minions';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { skillEmoji } from '../data/emojis.js';
+import type { SkillRequirements, Skills } from '../types/index.js';
+import type { TOAOptions } from '../types/minions.js';
 
 export function itemNameFromID(itemID: number) {
 	return Items.get(itemID)?.name;
@@ -39,17 +37,12 @@ export function pluraliseItemName(name: string): string {
 	return name + (name.endsWith('s') ? '' : 's');
 }
 
-export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
-	const engine = MersenneTwister19937.seed(input);
-	return shuffle(engine, [...arr]);
-}
-
 const shortItemNames = new Map([
-	[getItemOrThrow('Saradomin brew(4)'), 'Brew'],
-	[getItemOrThrow('Super restore(4)'), 'Restore'],
-	[getItemOrThrow('Super combat potion(4)'), 'Super combat'],
-	[getItemOrThrow('Sanfew serum(4)'), 'Sanfew'],
-	[getItemOrThrow('Ranging potion(4)'), 'Range pot']
+	[Items.getOrThrow('Saradomin brew(4)'), 'Brew'],
+	[Items.getOrThrow('Super restore(4)'), 'Restore'],
+	[Items.getOrThrow('Super combat potion(4)'), 'Super combat'],
+	[Items.getOrThrow('Sanfew serum(4)'), 'Sanfew'],
+	[Items.getOrThrow('Ranging potion(4)'), 'Range pot']
 ]);
 
 export function bankToStrShortNames(bank: Bank) {
@@ -64,27 +57,6 @@ export function bankToStrShortNames(bank: Bank) {
 export function readableStatName(slot: string) {
 	return toTitleCase(slot.replace('_', ' '));
 }
-
-export function makeEasierFarmingContractButton() {
-	return new ButtonBuilder()
-		.setCustomId('FARMING_CONTRACT_EASIER')
-		.setLabel('Ask for easier Contract')
-		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('977410792754413668');
-}
-
-export function makeAutoFarmButton() {
-	return new ButtonBuilder()
-		.setCustomId('AUTO_FARM')
-		.setLabel('Auto Farm')
-		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('630911040355565599');
-}
-
-export const SQL_sumOfAllCLItems = (clItems: number[]) =>
-	`NULLIF(${clItems.map(i => `COALESCE(("collectionLogBank"->>'${i}')::int, 0)`).join(' + ')}, 0)`;
-
-export const generateGrandExchangeID = () => miniID(6).toLowerCase();
 
 export function getToaKCs(toaRaidLevelsBank: Prisma.JsonValue) {
 	let entryKC = 0;
@@ -124,7 +96,7 @@ export function calculateSimpleMonsterDeathChance({
 	const maxScalingKC = 5 + (75 * hardness) / steepness;
 	const reductionFactor = Math.min(1, currentKC / maxScalingKC);
 	const deathChance = baseDeathChance - reductionFactor * (baseDeathChance - lowestDeathChance);
-	return clamp(deathChance, lowestDeathChance, highestDeathChance);
+	return clamp(deathChance, { min: lowestDeathChance, max: highestDeathChance });
 }
 
 export const staticTimeIntervals = ['day', 'week', 'month'] as const;
@@ -155,20 +127,6 @@ export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null
 }
 
 export const zodEnum = <T>(arr: T[] | readonly T[]): [T, ...T[]] => arr as [T, ...T[]];
-
-export function numberEnum<T extends number>(values: readonly T[]) {
-	const set = new Set<unknown>(values);
-	return (v: number, ctx: z.RefinementCtx): v is T => {
-		if (!set.has(v)) {
-			ctx.addIssue({
-				code: z.ZodIssueCode.invalid_enum_value,
-				received: v,
-				options: [...values]
-			});
-		}
-		return z.NEVER;
-	};
-}
 
 export function isValidNickname(str?: string) {
 	return Boolean(

@@ -2,9 +2,9 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { SkillsEnum } from '../../../skilling/types';
-import type { KillableMonster } from '../../types';
-import { QuestID } from '../quests';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { QuestID } from '../quests.js';
 
 export const chaeldarMonsters: KillableMonster[] = [
 	{

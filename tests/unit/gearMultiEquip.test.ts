@@ -1,9 +1,9 @@
 import { Bank, EquipmentSlot, convertLVLtoXP, itemID } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { Gear } from '../../src/lib/structures/Gear';
-import { gearEquipMultiImpl } from '../../src/lib/util/equipMulti';
-import { mockMUser } from './userutil';
+import { Gear } from '../../src/lib/structures/Gear.js';
+import { gearEquipMultiImpl } from '../../src/lib/util/equipMulti.js';
+import { mockMUser } from './userutil.js';
 
 describe('Multi-equip Gear Test', () => {
 	const userBank = new Bank();

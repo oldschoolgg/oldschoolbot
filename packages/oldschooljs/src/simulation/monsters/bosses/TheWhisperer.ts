@@ -1,11 +1,11 @@
-import { randInt, roll, uniqueArr } from 'e';
+import { randInt, roll, uniqueArr } from '@/util/smallUtils.js';
 
-import type { MonsterKillOptions } from '../../../meta/types';
-import Bank from '../../../structures/Bank';
-import LootTable from '../../../structures/LootTable';
-import Monster from '../../../structures/Monster';
-import { itemID } from '../../../util';
-import { VirtusTable } from '../../subtables/VirtusTable';
+import { VirtusTable } from '@/simulation/subtables/VirtusTable.js';
+import { Bank } from '@/structures/Bank.js';
+import LootTable from '@/structures/LootTable.js';
+import type { MonsterKillOptions } from '@/structures/Monster.js';
+import { Monster } from '@/structures/Monster.js';
+import { itemID } from '@/util/index.js';
 
 const TradeableUniqueTable = new LootTable({ limit: 8 })
 	.add(VirtusTable, 1, 1)
@@ -54,7 +54,7 @@ const ResourceTable = new LootTable()
 	.add('Chaos rune', [140, 210], 1);
 
 class TheWhispererSingleton extends Monster {
-	public allItems: number[] = uniqueArr([
+	public override allItems: number[] = uniqueArr([
 		...ClueTable.allItems,
 		...SupplyTable.allItems,
 		...ResourceTable.allItems,

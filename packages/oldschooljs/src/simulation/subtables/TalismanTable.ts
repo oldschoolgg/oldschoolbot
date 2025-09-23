@@ -1,4 +1,4 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '@/structures/LootTable.js';
 
 const TalismanTable = new LootTable()
 	.add('Air talisman', 1, 10)

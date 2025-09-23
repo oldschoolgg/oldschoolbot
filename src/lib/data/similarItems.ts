@@ -1,5 +1,4 @@
 import { itemID, resolveItems } from 'oldschooljs';
-
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -7,7 +6,7 @@ import {
 	gracefulHoods,
 	gracefulLegs,
 	gracefulTops
-} from './gracefulVariants';
+} from './gracefulVariants.js';
 
 const scytheChargedSimilar = ['Holy scythe of vitur', 'Sanguine scythe of vitur'];
 const scytheUnchargedSimilar = ['Holy scythe of vitur (uncharged)', 'Sanguine scythe of vitur (uncharged)'];

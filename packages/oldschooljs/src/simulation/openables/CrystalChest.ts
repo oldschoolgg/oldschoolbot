@@ -1,6 +1,6 @@
-import LootTable from '../../structures/LootTable';
-import SimpleOpenable from '../../structures/SimpleOpenable';
-import { itemTupleToTable } from '../../util';
+import LootTable from '@/structures/LootTable.js';
+import { itemTupleToTable } from '@/structures/LootTable.js';
+import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
 const runeArmorTable = new LootTable().add('Rune platelegs', 1, 1).add('Rune plateskirt', 1, 1);
 

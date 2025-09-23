@@ -1,9 +1,8 @@
-import { roll } from 'e';
-
-import type { MonsterKillOptions } from '../../../meta/types';
-import Bank from '../../../structures/Bank';
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/Monster';
+import { Bank } from '@/structures/Bank.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import type { MonsterKillOptions } from '@/structures/Monster.js';
+import { roll } from '@/util/smallUtils.js';
 
 const HesporiTable = new LootTable()
 	.add('Attas seed', [1, 2], 1)
@@ -65,7 +64,7 @@ const MainTable = new LootTable()
 	.add('Redwood tree seed', 1, 1);
 
 export class Hespori extends SimpleMonster {
-	public kill(quantity = 1, options: MonsterKillOptions = { farmingLevel: 99 }): Bank {
+	public override kill(quantity = 1, options: MonsterKillOptions = { farmingLevel: 99 }): Bank {
 		const loot = new Bank();
 		const farmingLvl = options.farmingLevel ?? 99;
 

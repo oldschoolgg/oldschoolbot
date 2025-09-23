@@ -1,9 +1,9 @@
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { Bank } from 'oldschooljs';
 
-import type { GearSetupType } from '../../gear/types';
-import { GearSetupTypes } from '../../gear/types';
-import { defaultGear } from '../../structures/Gear';
+import type { GearSetupType } from '@/lib/gear/types.js';
+import { GearSetupTypes } from '@/lib/gear/types.js';
+import { defaultGear } from '@/lib/structures/Gear.js';
 
 export async function unEquipAllCommand(
 	userID: string,

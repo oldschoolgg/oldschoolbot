@@ -1,14 +1,14 @@
+import { calcWhatPercent, round, sumArr } from '@oldschoolgg/toolkit';
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import type { TriviaQuestion, User } from '@prisma/robochimp';
-import { calcWhatPercent, round, sumArr } from 'e';
 import deepEqual from 'fast-deep-equal';
 import type { Bank } from 'oldschooljs';
 
-import { BOT_TYPE, globalConfig, masteryKey } from './constants';
-import { getTotalCl } from './data/Collections';
-import { calculateMastery } from './mastery';
-import { cacheRoboChimpUser } from './perkTier';
-import { MUserStats } from './structures/MUserStats';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
+import { BOT_TYPE, globalConfig, masteryKey } from './constants.js';
+import { getTotalCl } from './data/Collections.js';
+import { calculateMastery } from './mastery.js';
+import { cacheRoboChimpUser } from './perkTier.js';
 
 export type RobochimpUser = User;
 

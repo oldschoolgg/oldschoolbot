@@ -1,7 +1,6 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { cryptoRand } from '../../lib/util/rng';
+import { cryptoRand } from '@/lib/util/rng.js';
 
 export const rollCommand: OSBMahojiCommand = {
 	name: 'roll',

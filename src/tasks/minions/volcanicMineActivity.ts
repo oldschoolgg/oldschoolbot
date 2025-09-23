@@ -1,12 +1,12 @@
+import { Time, randFloat, randInt, roll } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { Time, randFloat, randInt, roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { VolcanicMineGameTime } from '../../mahoji/lib/abstracted_commands/volcanicMineCommand';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { VolcanicMineGameTime } from '@/mahoji/lib/abstracted_commands/volcanicMineCommand.js';
 
 const fossilTable = new LootTable()
 	.add('Unidentified small fossil', 1, 10)
@@ -90,8 +90,7 @@ export const vmTask: MinionTask = {
 			);
 		}
 
-		const { itemsAdded } = await transactItems({
-			userID: user.id,
+		const { itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

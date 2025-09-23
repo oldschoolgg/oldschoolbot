@@ -1,6 +1,6 @@
 import { Bank, itemID } from 'oldschooljs';
 
-import type { Createable } from '../createables';
+import type { Createable } from '../createables.js';
 
 export const dragonFireShieldCreatables: Createable[] = [
 	// Uncharged

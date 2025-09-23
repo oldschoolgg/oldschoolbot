@@ -1,8 +1,8 @@
-import { resolveAvailableItemBoosts } from '../../../mahoji/mahojiSettings';
-import { calcPOHBoosts } from '../../poh';
+import { calcPOHBoosts } from '@/lib/poh/index.js';
+import { resolveAvailableItemBoosts } from '@/mahoji/mahojiSettings.js';
 
-import type { KillableMonster } from '../types';
-import reducedTimeFromKC from './reducedTimeFromKC';
+import type { KillableMonster } from '../types.js';
+import reducedTimeFromKC from './reducedTimeFromKC.js';
 
 export default async function reducedTimeForGroup(
 	users: MUser[],

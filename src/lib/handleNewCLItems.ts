@@ -1,16 +1,16 @@
+import { roll, sumArr } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit/util';
 import { type Prisma, UserEventType } from '@prisma/client';
-import { roll, sumArr } from 'e';
 import type { Bank } from 'oldschooljs';
 
-import { allCLItems, allCollectionLogsFlat, calcCLDetails } from './data/Collections';
-import { calculateMastery } from './mastery';
-import { RawSQL } from './rawSql';
-import { calculateOwnCLRanking, roboChimpSyncData } from './roboChimp';
-import { MUserStats } from './structures/MUserStats';
-import { fetchCLLeaderboard } from './util/clLeaderboard';
-import { insertUserEvent } from './util/userEvents';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
+import { fetchCLLeaderboard } from '@/lib/util/clLeaderboard.js';
+import { insertUserEvent } from '@/lib/util/userEvents.js';
+import { allCLItems, allCollectionLogsFlat, calcCLDetails } from './data/Collections.js';
+import { calculateMastery } from './mastery.js';
+import { RawSQL } from './rawSql.js';
+import { calculateOwnCLRanking, roboChimpSyncData } from './roboChimp.js';
 
 async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataUncheckedCreateInput> {
 	const clStats = calcCLDetails(user);

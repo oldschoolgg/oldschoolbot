@@ -1,7 +1,7 @@
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 
 import { SQL } from '../rawSql.js';
-import { userEventsToMap } from './userEvents';
+import { userEventsToMap } from './userEvents.js';
 
 export async function fetchMultipleCLLeaderboards(
 	leaderboards: {

@@ -1,16 +1,16 @@
-import { percentChance, roll } from 'e';
+import { percentChance, roll } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
+import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { raimentBonus } from '@/lib/skilling/functions/calcsRunecrafting.js';
+import Runecraft, { ouraniaAltarTables } from '@/lib/skilling/skills/runecraft.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { OuraniaAltarOptions } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { Events } from '@oldschoolgg/toolkit/constants';
-import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
-import { trackLoot } from '../../lib/lootTrack';
-import { raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
-import Runecraft, { ouraniaAltarTables } from '../../lib/skilling/skills/runecraft';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { OuraniaAltarOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 
 const ouraniaAltarTask: MinionTask = {
 	type: 'OuraniaAltar',
@@ -82,8 +82,7 @@ const ouraniaAltarTask: MinionTask = {
 			);
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

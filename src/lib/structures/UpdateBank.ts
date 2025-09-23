@@ -1,17 +1,16 @@
+import { objectEntries } from '@oldschoolgg/toolkit';
 import { objHasAnyPropInCommon } from '@oldschoolgg/toolkit/util';
 import type { GearSetupType, Prisma, UserStats } from '@prisma/client';
-import { objectEntries } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, type ItemBank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 
-import { userStatsUpdate } from '../../mahoji/mahojiSettings';
-import type { MUserClass } from '../MUser';
-import { degradeChargeBank } from '../degradeableItems';
-import type { GearSetup } from '../gear/types';
-import type { ItemBank } from '../types';
-import type { JsonKeys } from '../util';
-import { ChargeBank, XPBank } from './Bank';
-import { KCBank } from './KCBank';
+import type { GearSetup } from '@/lib/gear/types.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
+import type { MUserClass } from '../MUser.js';
+import { degradeChargeBank } from '../degradeableItems.js';
+import type { JsonKeys } from '../util.js';
+import { ChargeBank, XPBank } from './Bank.js';
+import { KCBank } from './KCBank.js';
 
 export class UpdateBank {
 	// Things removed

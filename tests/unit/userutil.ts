@@ -1,11 +1,11 @@
 import type { Prisma, User } from '@prisma/client';
 import { Bank, convertLVLtoXP } from 'oldschooljs';
 
-import { MUserClass } from '../../src/lib/MUser';
-import type { BitField } from '../../src/lib/constants';
-import type { GearSetup } from '../../src/lib/gear/types';
-import { Gear } from '../../src/lib/structures/Gear';
-import { type PartialGearSetup, constructGearSetup } from '../../src/lib/structures/Gear';
+import { MUserClass } from '../../src/lib/MUser.js';
+import type { BitField } from '../../src/lib/constants.js';
+import type { GearSetup } from '../../src/lib/gear/types.js';
+import { Gear } from '../../src/lib/structures/Gear.js';
+import { type PartialGearSetup, constructGearSetup } from '../../src/lib/structures/Gear.js';
 
 function filterGearSetup(gear: undefined | null | GearSetup | PartialGearSetup): GearSetup | undefined {
 	const filteredGear = !gear
