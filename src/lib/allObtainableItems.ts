@@ -5,9 +5,9 @@ import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
 import { flowerTable } from '@/mahoji/lib/abstracted_commands/hotColdCommand.js';
 import { tipTable } from '../tasks/minions/minigames/gnomeRestaurantActivity.js';
 import { ClueTiers } from './clues/clueTiers.js';
+import Buyables from './data/buyables/buyables.js';
 import { allCLItems } from './data/Collections.js';
 import { LMSBuyables } from './data/CollectionsExport.js';
-import Buyables from './data/buyables/buyables.js';
 import { armorAndItemPacks } from './data/creatables/armorPacks.js';
 import Createables from './data/createables.js';
 import { ChewedBonesLootTable } from './data/offerData.js';
@@ -112,7 +112,7 @@ for (const room of plunderRooms) {
 for (const item of tipTable.allItems) ALL_OBTAINABLE_ITEMS.add(item);
 for (const plank of Planks) ALL_OBTAINABLE_ITEMS.add(plank.inputItem);
 for (const impling of Implings) {
-	impling.table.allItems.forEach(i => ALL_OBTAINABLE_ITEMS.add(i));
+	impling.table.allItems.map(i => ALL_OBTAINABLE_ITEMS.add(i));
 }
 
 for (const item of [

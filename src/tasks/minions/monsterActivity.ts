@@ -1,4 +1,4 @@
-import { Time, percentChance, roll } from '@oldschoolgg/toolkit';
+import { percentChance, roll, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
@@ -19,8 +19,8 @@ import { MUserStats } from '@/lib/structures/MUserStats.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { ashSanctifierEffect } from '@/lib/util/ashSanctifier.js';
-import { increaseWildEvasionXp } from '@/lib/util/calcWildyPkChance.js';
 import calculateGearLostOnDeathWilderness from '@/lib/util/calculateGearLostOnDeathWilderness.js';
+import { increaseWildEvasionXp } from '@/lib/util/calcWildyPkChance.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { logError } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -530,7 +530,7 @@ export const monsterTask: MinionTask = {
 		messages.push(...rawResults.filter(r => typeof r === 'string'));
 		const str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name} (${calcPerHour(data.q, data.duration).toFixed(1)}/hr), you now have ${newKC} KC.`;
 
-		let image = undefined;
+		let image: Awaited<ReturnType<typeof makeBankImage>> | undefined;
 
 		if (itemTransactionResult && itemTransactionResult.itemsAdded.length > 0) {
 			announceLoot({

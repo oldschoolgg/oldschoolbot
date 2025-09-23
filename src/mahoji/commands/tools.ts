@@ -2,7 +2,7 @@ import { asyncGzip } from '@oldschoolgg/toolkit/node';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { Activity, User } from '@prisma/client';
 import { ApplicationCommandOptionType, ChannelType, EmbedBuilder } from 'discord.js';
-import { Bank, type Item, type ItemBank, ItemGroups, Items, ToBUniqueTable, resolveItems } from 'oldschooljs';
+import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
@@ -11,16 +11,16 @@ import { allCLItemsFiltered, allDroppedItems } from '@/lib/data/Collections.js';
 import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
-import { type UnifiedOpenable, allOpenables } from '@/lib/openables.js';
+import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
-import { getUsername, isGroupActivity } from '@/lib/util.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseStaticTimeInterval, staticTimeIntervals } from '@/lib/util/smallUtils.js';
+import { getUsername, isGroupActivity } from '@/lib/util.js';
 import {
 	getParsedStashUnits,
 	stashUnitBuildAllCommand,
@@ -615,7 +615,8 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 	return `**Dry Streaks for ${item.name} from ${mon.name}:**\n${(
 		await Promise.all(
 			result.map(
-				async ({ id, KC }) => `${(await getUsername(id)) as string}: ${Number.parseInt(KC).toLocaleString()}`
+				async ({ id, KC }) =>
+					`${(await getUsername(id)) as string}: ${Number.parseInt(KC, 10).toLocaleString()}`
 			)
 		)
 	).join('\n')}`;
@@ -650,7 +651,7 @@ async function mostDrops(user: MUser, itemName: string, filter: string) {
 		await Promise.all(
 			result.map(
 				async ({ id, qty }) =>
-					`${result.length < 10 ? '(Anonymous)' : await getUsername(id)}: ${Number.parseInt(qty).toLocaleString()}`
+					`${result.length < 10 ? '(Anonymous)' : await getUsername(id)}: ${Number.parseInt(qty, 10).toLocaleString()}`
 			)
 		)
 	).join('\n')}`;
@@ -695,7 +696,9 @@ async function checkMassesCommand(guildID: string | undefined) {
 					}> in ${formatDuration(remainingTime, true)})`
 				];
 			}
+			return null;
 		})
+		.filter((m): m is [number, string] => m !== null)
 		.sort((a, b) => (a![0] < b![0] ? -1 : a![0] > b![0] ? 1 : 0))
 		.map(m => m![1])
 		.join('\n');

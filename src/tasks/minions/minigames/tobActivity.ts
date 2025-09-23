@@ -179,7 +179,7 @@ export const tobTask: MinionTask = {
 		// Give everyone their loot:
 		await Promise.all(
 			allUsers.map(u => {
-				u.addItemsToBank({ items: teamsLoot.get(u.id), collectionLog: true });
+				return u.addItemsToBank({ items: teamsLoot.get(u.id), collectionLog: true });
 			})
 		);
 

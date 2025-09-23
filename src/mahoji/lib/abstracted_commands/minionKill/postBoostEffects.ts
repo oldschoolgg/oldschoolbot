@@ -1,4 +1,4 @@
-import { Time, calcPercentOfNum, uniqueArr } from '@oldschoolgg/toolkit';
+import { calcPercentOfNum, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import type { GearSetupType } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
@@ -114,10 +114,10 @@ export const postBoostEffects: PostBoostEffect[] = [
 		}) => {
 			if (!isInWilderness) return;
 
-			let confirmationString: string | undefined = undefined;
+			let confirmationString: string | undefined;
 			const messages: string[] = [];
 
-			let hasWildySupplies = undefined;
+			let hasWildySupplies: boolean;
 
 			const antiPkBrewsNeeded = Math.max(1, Math.floor(duration / (4 * Time.Minute)));
 			const antiPkRestoresNeeded = Math.max(1, Math.floor(duration / (8 * Time.Minute)));

@@ -1,8 +1,8 @@
-import { Time, sumArr } from '@oldschoolgg/toolkit';
+import { sumArr, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { PerkTier, formatDuration } from '@oldschoolgg/toolkit/util';
-import type { UserStats, activity_type_enum } from '@prisma/client';
+import { formatDuration, PerkTier } from '@oldschoolgg/toolkit/util';
+import type { activity_type_enum, UserStats } from '@prisma/client';
 import { Bank, type ItemBank, Items, Monsters, SkillsEnum, TOBRooms, toKMB } from 'oldschooljs';
 import type { SkillsScore } from 'oldschooljs/hiscores';
 
@@ -20,9 +20,9 @@ import { ForestryEvents } from '@/lib/skilling/skills/woodcutting/forestry.js';
 import { getSlayerTaskStats } from '@/lib/slayer/slayerUtil.js';
 import { sorts } from '@/lib/sorts.js';
 import type { InfernoOptions } from '@/lib/types/minions.js';
-import { getUsername } from '@/lib/util.js';
 import { createChart } from '@/lib/util/chart.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { getUsername } from '@/lib/util.js';
 import { Cooldowns } from '../Cooldowns.js';
 import { collectables } from '../collectables.js';
 
@@ -835,7 +835,7 @@ ${result
 			const result = await prisma.$queryRawUnsafe<any>(
 				'SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true;'
 			);
-			return `There are ${Number.parseInt(result[0].count).toLocaleString()} ironman minions!`;
+			return `There are ${Number.parseInt(result[0].count, 10).toLocaleString()} ironman minions!`;
 		}
 	},
 	{
@@ -862,7 +862,7 @@ GROUP BY "bankBackground";`);
 			return result
 				.map(
 					(res: any) =>
-						`**${getBankBgById(res.bankBackground).name}:** ${Number.parseInt(res.count).toLocaleString()}`
+						`**${getBankBgById(res.bankBackground).name}:** ${Number.parseInt(res.count, 10).toLocaleString()}`
 				)
 				.join('\n');
 		}
@@ -872,7 +872,7 @@ GROUP BY "bankBackground";`);
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
 			const result = await prisma.$queryRawUnsafe<any>('SELECT SUM ("sacrificedValue") AS total FROM users;');
-			return `There has been ${Number.parseInt(result[0].total).toLocaleString()} GP worth of items sacrificed!`;
+			return `There has been ${Number.parseInt(result[0].total, 10).toLocaleString()} GP worth of items sacrificed!`;
 		}
 	},
 	{
@@ -887,18 +887,18 @@ GROUP BY "bankBackground";`);
 
 			const banks: ItemBank[] = res[0].array;
 
-			banks.map(bank => {
+			for (const bank of banks) {
 				for (const [id, qty] of Object.entries(bank)) {
 					if (!totalBank[id]) totalBank[id] = qty;
 					else totalBank[id] += qty;
 				}
-			});
+			}
 
 			let str = 'Bot Stats Monsters\n\n';
 			str += Object.entries(totalBank)
 				.sort(([, qty1], [, qty2]) => qty2 - qty1)
 				.map(([monID, qty]) => {
-					return `${Monsters.get(Number.parseInt(monID))?.name}: ${qty.toLocaleString()}`;
+					return `${Monsters.get(Number.parseInt(monID, 10))?.name}: ${qty.toLocaleString()}`;
 				})
 				.join('\n');
 
@@ -917,18 +917,18 @@ GROUP BY "bankBackground";`);
 
 			const banks: ItemBank[] = res[0].array;
 
-			banks.map(bank => {
+			for (const bank of banks) {
 				for (const [id, qty] of Object.entries(bank)) {
 					if (!ClueTiers.some(i => i.id === Number(id))) continue;
 					if (!totalBank[id]) totalBank[id] = qty;
 					else totalBank[id] += qty;
 				}
-			});
+			}
 
 			return Object.entries(totalBank)
 				.map(
 					([clueID, qty]) =>
-						`**${ClueTiers.find(t => t.id === Number.parseInt(clueID))?.name}:** ${qty.toLocaleString()}`
+						`**${ClueTiers.find(t => t.id === Number.parseInt(clueID, 10))?.name}:** ${qty.toLocaleString()}`
 				)
 				.join('\n');
 		}
@@ -959,7 +959,10 @@ GROUP BY "bankBackground";`);
 		name: 'Personal Agility Stats',
 		perkTierNeeded: null,
 		run: async (user, stats) => {
-			const entries = Object.entries(stats.laps_scores as ItemBank).map(arr => [Number.parseInt(arr[0]), arr[1]]);
+			const entries = Object.entries(stats.laps_scores as ItemBank).map(arr => [
+				Number.parseInt(arr[0], 10),
+				arr[1]
+			]);
 			const sepulchreCount = await user.fetchMinigameScore('sepulchre');
 			if (sepulchreCount === 0 && entries.length === 0) {
 				return "You haven't done any laps yet! Sad.";

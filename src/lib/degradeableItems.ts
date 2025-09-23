@@ -1,9 +1,8 @@
-import { percentChance } from '@/lib/util/rng.js';
-import { Bank, type Item, Items, type Monster, itemID } from 'oldschooljs';
-
+import { Bank, type Item, Items, itemID, type Monster } from 'oldschooljs';
 import type { GearSetupType, PrimaryGearSetupType } from '@/lib/gear/types.js';
 import type { ChargeBank } from '@/lib/structures/Bank.js';
 import { assert } from '@/lib/util/logError.js';
+import { percentChance } from '@/lib/util/rng.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import type { KillableMonster } from './minions/types.js';
 
@@ -372,13 +371,12 @@ export async function degradeItem({
 			});
 			// Give the user the uncharged version of their charged item.
 			await user.addItemsToBank({ items: refundItems, collectionLog: false });
-		} else if (hasInBank) {
+		} else if (hasInBank && degItem.itemsToRefundOnBreak) {
 			// If its in bank, just remove 1 from bank.
-			let itemsToAdd = undefined;
-			if (degItem.itemsToRefundOnBreak) {
-				itemsToAdd = degItem.itemsToRefundOnBreak;
-			}
-			await user.transactItems({ itemsToRemove: new Bank().add(item.id, 1), itemsToAdd });
+			await user.transactItems({
+				itemsToRemove: new Bank().add(item.id, 1),
+				itemsToAdd: degItem.itemsToRefundOnBreak
+			});
 		} else {
 			// If its not in bank OR equipped, something weird has gone on.
 			throw new Error(

@@ -47,9 +47,8 @@ export async function coxBoostsCommand(user: MUser) {
 				if (item.setup && user.gear[item.setup].hasEquipped(item.item.id, false, true)) {
 					return true;
 				}
-			} else {
-				return user.hasEquippedOrInBank(getSimilarItems(item.item.id));
 			}
+			return user.hasEquippedOrInBank(getSimilarItems(item.item.id));
 		});
 		if (ownedItems.length > 0) {
 			const maxBoost = Math.max(...ownedItems.map(item => item.boost));
