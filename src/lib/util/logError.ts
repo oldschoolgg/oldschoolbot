@@ -4,7 +4,7 @@ import { deepMerge } from '@oldschoolgg/toolkit/util';
 import { captureException } from '@sentry/node';
 import type { Interaction } from 'discord.js';
 
-import { globalConfig } from '../constants.js';
+import { globalConfig } from '@/lib/constants.js';
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
 	if (!condition) {

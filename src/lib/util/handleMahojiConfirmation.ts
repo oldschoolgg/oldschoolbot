@@ -12,7 +12,7 @@ import {
 	Routes
 } from 'discord.js';
 
-import { SILENT_ERROR } from '../constants.js';
+import { SILENT_ERROR } from '@/lib/constants.js';
 import { deferInteraction, interactionReply } from './interactionReply.js';
 import { logErrorForInteraction } from './logError.js';
 

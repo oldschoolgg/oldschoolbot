@@ -4,10 +4,10 @@ import type { Prisma } from '@prisma/client';
 import { type ArrayItemsResolved, type Bank, type ItemBank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
+import { skillEmoji } from '@/lib/data/emojis.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import { skillEmoji } from '../data/emojis.js';
-import type { SkillRequirements, Skills } from '../types/index.js';
-import type { TOAOptions } from '../types/minions.js';
+import type { SkillRequirements, Skills } from '@/lib/types/index.js';
+import type { TOAOptions } from '@/lib/types/minions.js';
 
 export function itemNameFromID(itemID: number) {
 	return Items.get(itemID)?.name;

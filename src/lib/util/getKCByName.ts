@@ -2,8 +2,8 @@ import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { Monster } from 'oldschooljs';
 
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
-import { Minigames } from '../settings/minigames.js';
-import Hunter from '../skilling/skills/hunter/hunter.js';
+import { Minigames } from '@/lib/settings/minigames.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 
 export async function getKCByName(user: MUser, kcName: string): Promise<[string, number] | [null, 0]> {
 	const mon = effectiveMonsters.find(

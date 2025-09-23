@@ -5,6 +5,16 @@ import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { Bank, EItem } from 'oldschooljs';
 
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { buildClueButtons } from '@/lib/clues/clueUtils.js';
+import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
+import { BitField, PerkTier } from '@/lib/constants.js';
+import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
+import { handlePassiveImplings } from '@/lib/implings.js';
+import { triggerRandomEvent } from '@/lib/randomEvents.js';
+import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
+import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
 import {
@@ -12,16 +22,6 @@ import {
 	tearsOfGuthixSkillReqs
 } from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
 import { updateClientGPTrackSetting, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
-import { ClueTiers } from '../clues/clueTiers.js';
-import { buildClueButtons } from '../clues/clueUtils.js';
-import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements.js';
-import { BitField, PerkTier } from '../constants.js';
-import { handleGrowablePetGrowth } from '../growablePets.js';
-import { handlePassiveImplings } from '../implings.js';
-import { triggerRandomEvent } from '../randomEvents.js';
-import { calculateBirdhouseDetails } from '../skilling/skills/hunter/birdhouses.js';
-import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil.js';
-import type { ActivityTaskData } from '../types/minions.js';
 import { displayCluesAndPets } from './displayCluesAndPets.js';
 import {
 	makeAutoContractButton,

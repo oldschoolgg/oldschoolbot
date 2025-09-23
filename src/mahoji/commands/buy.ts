@@ -14,7 +14,7 @@ import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { buyFossilIslandNotes } from '@/mahoji/lib/abstracted_commands/buyFossilIslandNotes.js';
 import { buyingTripCommand } from '@/mahoji/lib/abstracted_commands/buyingTripCommand.js';
 import { buyKitten } from '@/mahoji/lib/abstracted_commands/buyKitten.js';
-import { mahojiParseNumber, userStatsUpdate } from '../mahojiSettings.js';
+import { mahojiParseNumber, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const allBuyablesAutocomplete = [
 	...Buyables.map(b => ({ name: b.name })),

@@ -2,15 +2,15 @@ import { notEmpty, randFloat, randInt } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Bank, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
+import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
+import type { PvMMethod } from '@/lib/constants.js';
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
+import { getNewUser } from '@/lib/settings/settings.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { logError } from '@/lib/util/logError.js';
 import { roll } from '@/lib/util/rng.js';
-import { CombatAchievements } from '../combat_achievements/combatAchievements.js';
-import type { PvMMethod } from '../constants.js';
-import { getNewUser } from '../settings/settings.js';
 import { autoslayModes } from './constants.js';
 import { slayerMasters } from './slayerMasters.js';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks.js';

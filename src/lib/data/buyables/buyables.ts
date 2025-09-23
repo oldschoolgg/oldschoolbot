@@ -1,12 +1,12 @@
 import { Bank, ItemGroups, Items } from 'oldschooljs';
 
+import { chompyHats } from '@/lib/data/CollectionsExport.js';
 import { CombatCannonItemBank } from '@/lib/minions/data/combatConstants.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { Skills } from '@/lib/types/index.js';
-import { chompyHats } from '../CollectionsExport.js';
 import { aerialFishBuyables } from './aerialFishBuyables.js';
 import { canifisClothes } from './canifisClothes.js';
 import { capeBuyables } from './capes.js';

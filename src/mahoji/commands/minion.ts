@@ -39,7 +39,7 @@ import { Lampables, lampCommand } from '@/mahoji/lib/abstracted_commands/lampCom
 import { minionBuyCommand } from '@/mahoji/lib/abstracted_commands/minionBuyCommand.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
 import { skillOption } from '@/mahoji/lib/mahojiCommandOptions.js';
-import { patronMsg } from '../mahojiSettings.js';
+import { patronMsg } from '@/mahoji/mahojiSettings.js';
 
 const patMessages = [
 	'You pat {name} on the head.',

@@ -19,7 +19,7 @@ import {
 	cluesHardCL,
 	cluesMasterCL,
 	cluesMediumCL
-} from '../data/CollectionsExport.js';
+} from '@/lib/data/CollectionsExport.js';
 import type { ClueReqs } from './clueReqs.js';
 import { beginnerReqs } from './clueReqs.js';
 import type { StashUnitTier } from './stashUnits.js';

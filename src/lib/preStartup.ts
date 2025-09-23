@@ -1,13 +1,13 @@
 import { noOp, uniqueArr } from '@oldschoolgg/toolkit';
 
+import { GeImageGenerator } from '@/lib/canvas/geImage.js';
+import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 import { syncActiveUserIDs } from '@/lib/util/cachedUserIDs.js';
 import { syncDisabledCommands } from '@/lib/util/syncDisabledCommands.js';
 import { syncCustomPrices } from '@/mahoji/lib/events.js';
 import { cacheBadges } from './badges.js';
 import { syncBlacklists } from './blacklists.js';
-import { GeImageGenerator } from './canvas/geImage.js';
 import { globalConfig } from './constants.js';
-import { allCollectionLogsFlat } from './data/Collections.js';
 import { GrandExchange } from './grandExchange.js';
 import { cacheGEPrices } from './marketPrices.js';
 import { populateRoboChimpCache } from './perkTier.js';

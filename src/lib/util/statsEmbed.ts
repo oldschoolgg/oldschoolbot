@@ -2,7 +2,7 @@ import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { EmbedBuilder } from 'discord.js';
 import type { CluesScore, Player, SkillScore, SkillsScore } from 'oldschooljs/hiscores';
 
-import { skillEmoji } from '../data/emojis.js';
+import { skillEmoji } from '@/lib/data/emojis.js';
 
 export function statsEmbed({
 	username,

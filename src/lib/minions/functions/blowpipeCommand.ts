@@ -1,7 +1,7 @@
 import type { Prisma } from '@prisma/client';
 import { Bank, EItem, Items } from 'oldschooljs';
 
-import type { BlowpipeData } from '../types.js';
+import type { BlowpipeData } from '@/lib/minions/types.js';
 
 const defaultBlowpipe: BlowpipeData = {
 	scales: 0,

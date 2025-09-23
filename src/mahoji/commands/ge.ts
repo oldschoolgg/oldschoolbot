@@ -16,7 +16,7 @@ import { deferInteraction } from '@/lib/util/interactionReply.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 import { itemOption, tradeableItemArr } from '@/mahoji/lib/mahojiCommandOptions.js';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings.js';
+import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export type GEListingWithTransactions = GEListing & {
 	buyTransactions: GETransaction[];

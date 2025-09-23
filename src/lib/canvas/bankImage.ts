@@ -7,14 +7,14 @@ import { UserError } from '@oldschoolgg/toolkit/structures';
 import { Bank, type Item, type ItemBank, itemID, toKMB } from 'oldschooljs';
 import { loadImage } from 'skia-canvas';
 
+import { BitField, PerkTier } from '@/lib/constants.js';
+import { allCLItems } from '@/lib/data/Collections.js';
+import { filterableTypes } from '@/lib/data/filterables.js';
+import { marketPriceOfBank, marketPriceOrBotPrice } from '@/lib/marketPrices.js';
 import backgroundImages, { type BankBackground } from '@/lib/minions/data/bankBackgrounds.js';
 import type { FlagMap, Flags } from '@/lib/minions/types.js';
+import { type BankSortMethod, BankSortMethods, sorts } from '@/lib/sorts.js';
 import { XPLamps } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
-import { BitField, PerkTier } from '../constants.js';
-import { allCLItems } from '../data/Collections.js';
-import { filterableTypes } from '../data/filterables.js';
-import { marketPriceOfBank, marketPriceOrBotPrice } from '../marketPrices.js';
-import { type BankSortMethod, BankSortMethods, sorts } from '../sorts.js';
 import { type BaseCanvasArgs, type BGSpriteName, CanvasImage, getClippedRegion, type IBgSprite } from './canvasUtil.js';
 import { OSRSCanvas } from './OSRSCanvas.js';
 

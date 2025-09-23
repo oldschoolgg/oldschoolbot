@@ -2,8 +2,8 @@ import '../data/itemAliases.js';
 
 import { EliteMimicTable, type ItemBank, MasterMimicTable } from 'oldschooljs';
 
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { roll } from '@/lib/util/rng.js';
-import { ClueTiers } from '../clues/clueTiers.js';
 import type { CasketWorkerArgs } from './index.js';
 
 if (global.prisma) {

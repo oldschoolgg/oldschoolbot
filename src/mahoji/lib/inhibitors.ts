@@ -7,8 +7,8 @@ import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { type PartialUser, partialUserCache, perkTierCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
 import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, globalConfig } from '@/lib/constants.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
-import { mahojiGuildSettingsFetch } from '../guildSettings.js';
-import { Cooldowns } from './Cooldowns.js';
+import { mahojiGuildSettingsFetch } from '@/mahoji/guildSettings.js';
+import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 
 interface Inhibitor {
 	name: string;

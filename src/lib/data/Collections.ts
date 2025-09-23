@@ -14,6 +14,8 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import killableMonsters, { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
 import {
@@ -22,14 +24,12 @@ import {
 	MediumEncounterLoot,
 	rewardTokens
 } from '@/lib/minions/data/templeTrekking.js';
+import type { MinigameName } from '@/lib/settings/minigames.js';
 import { NexNonUniqueTable, NexUniqueTable } from '@/lib/simulation/misc.js';
+import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import { SeedableRNG } from '@/lib/util/rng.js';
-import type { ClueTier } from '../clues/clueTiers.js';
-import { ClueTiers } from '../clues/clueTiers.js';
-import type { MinigameName } from '../settings/minigames.js';
-import { allFarmingItems } from '../skilling/skills/farming/index.js';
 import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport.js';
 import {
 	abyssalSireCL,

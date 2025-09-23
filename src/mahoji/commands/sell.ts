@@ -11,7 +11,7 @@ import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
-import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../mahojiSettings.js';
+import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 /**
  * - Hardcoded prices

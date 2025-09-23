@@ -1,7 +1,7 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 
-import type { Skill } from '../types.js';
-import { SkillsEnum } from '../types.js';
+import type { Skill } from '@/lib/skilling/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 import Agility from './agility.js';
 import { Construction } from './construction/index.js';
 import Cooking from './cooking/cooking.js';

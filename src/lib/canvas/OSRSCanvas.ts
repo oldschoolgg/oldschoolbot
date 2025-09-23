@@ -10,7 +10,7 @@ import {
 	Canvas as SkiaCanvas
 } from 'skia-canvas';
 
-import { BOT_TYPE } from '../constants.js';
+import { BOT_TYPE } from '@/lib/constants.js';
 import { CanvasModule } from './CanvasModule.js';
 import type { CanvasSpritesheet, SpriteData } from './CanvasSpritesheet.js';
 import { type CanvasImage, drawImageWithOutline, getClippedRegion, type IBgSprite } from './canvasUtil.js';

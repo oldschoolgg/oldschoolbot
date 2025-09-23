@@ -8,7 +8,7 @@ import { initTickers } from '@/lib/tickers.js';
 import { mahojiClientSettingsFetch } from '@/lib/util/clientSettings.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 import { logWrapFn } from '@/lib/util.js';
-import { CUSTOM_PRICE_CACHE } from '../commands/sell.js';
+import { CUSTOM_PRICE_CACHE } from '@/mahoji/commands/sell.js';
 
 export async function syncCustomPrices() {
 	const clientData = await mahojiClientSettingsFetch({ custom_prices: true });

@@ -2,7 +2,7 @@ import SonicBoomDefault from 'sonic-boom';
 
 const { SonicBoom } = SonicBoomDefault;
 
-import { BOT_TYPE_LOWERCASE, globalConfig } from '../constants.js';
+import { BOT_TYPE_LOWERCASE, globalConfig } from '@/lib/constants.js';
 
 const today = new Date();
 const year = today.getFullYear();

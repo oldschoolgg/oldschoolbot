@@ -10,7 +10,7 @@ import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
 import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
-import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings.js';
+import { addToGPTaxBalance, mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 const MAX_CHARACTER_LENGTH = 950;
 

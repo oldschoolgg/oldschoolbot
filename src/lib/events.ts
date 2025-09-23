@@ -8,13 +8,13 @@ import { type BaseMessageOptions, bold, EmbedBuilder, type Message, type TextCha
 import { LRUCache } from 'lru-cache';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
+import pets from '@/lib/data/pets.js';
 import { logError } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
 import { lastRoboChimpSyncCache, untrustedGuildSettingsCache } from './cache.js';
 import { Channel, globalConfig } from './constants.js';
-import pets from './data/pets.js';
 import { roboChimpSyncData } from './roboChimp.js';
 import type { ActivityTaskData } from './types/minions.js';
 

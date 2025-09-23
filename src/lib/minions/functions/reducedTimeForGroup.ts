@@ -1,6 +1,6 @@
+import type { KillableMonster } from '@/lib/minions/types.js';
 import { calcPOHBoosts } from '@/lib/poh/index.js';
 import { resolveAvailableItemBoosts } from '@/mahoji/mahojiSettings.js';
-import type { KillableMonster } from '../types.js';
 import reducedTimeFromKC from './reducedTimeFromKC.js';
 
 export default async function reducedTimeForGroup(

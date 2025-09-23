@@ -1,7 +1,7 @@
 import { Bank, EItem, Items, resolveItems } from 'oldschooljs';
 
-import { leaguesCreatables } from '../data/creatables/leagueCreatables.js';
-import { leagueBuyables } from '../data/leaguesBuyables.js';
+import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
+import { leagueBuyables } from '@/lib/data/leaguesBuyables.js';
 
 const specialUntradeables = resolveItems([
 	'Coins',

@@ -22,9 +22,10 @@ import {
 	ZombiePiratesLocker
 } from 'oldschooljs';
 
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { cluesRaresCL } from '@/lib/data/CollectionsExport.js';
+import { openSeedPack } from '@/lib/skilling/functions/calcFarmingContracts.js';
 import { roll } from '@/lib/util/rng.js';
-import { ClueTiers } from './clues/clueTiers.js';
-import { cluesRaresCL } from './data/CollectionsExport.js';
 import { defaultFarmingContract } from './minions/farming/index.js';
 import type { FarmingContract } from './minions/farming/types.js';
 import { shadeChestOpenables } from './shadesKeys.js';
@@ -36,7 +37,6 @@ import {
 	CrystalChestTable,
 	SpoilsOfWarTable
 } from './simulation/misc.js';
-import { openSeedPack } from './skilling/functions/calcFarmingContracts.js';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)

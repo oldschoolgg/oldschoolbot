@@ -1,8 +1,8 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { LootTable } from 'oldschooljs';
 
+import type { Creature } from '@/lib/skilling/types.js';
 import { percentChance } from '@/lib/util/rng.js';
-import type { Creature } from '../types.js';
 
 export function calcLootXPHunting(
 	currentLevel: number,

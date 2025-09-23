@@ -1,6 +1,6 @@
 import { Items } from 'oldschooljs';
 
-import type { GearSetup } from '../types.js';
+import type { GearSetup } from '@/lib/gear/types.js';
 
 export function hasWildyHuntGearEquipped(setup: GearSetup): [boolean, string, number] {
 	const userBodyID = setup.body?.item;

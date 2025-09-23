@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
-import { SlayerTaskUnlocksEnum } from '../slayerUnlocks.js';
-import type { AssignableSlayerTask } from '../types.js';
+import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
 
 export const mazchnaTasks: AssignableSlayerTask[] = [
 	{

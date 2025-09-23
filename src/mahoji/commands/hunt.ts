@@ -14,7 +14,7 @@ import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { generateDailyPeakIntervals, type Peak } from '@/lib/util/peaks.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userHasGracefulEquipped } from '../mahojiSettings.js';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export const huntCommand: OSBMahojiCommand = {
 	name: 'hunt',

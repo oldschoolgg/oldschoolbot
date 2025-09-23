@@ -29,7 +29,7 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isModOrAdmin } from '@/lib/util.js';
 import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
-import { addToGPTaxBalance } from '../mahojiSettings.js';
+import { addToGPTaxBalance } from '@/mahoji/mahojiSettings.js';
 
 function makeGiveawayButtons(giveawayID: number): BaseMessageOptions['components'] {
 	return [

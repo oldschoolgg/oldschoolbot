@@ -21,7 +21,7 @@ import {
 	gearSetupOption,
 	ownedItemOption
 } from '@/mahoji/lib/mahojiCommandOptions.js';
-import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings.js';
+import { getMahojiBank, mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 const gearValidationChecks = new Set();
 

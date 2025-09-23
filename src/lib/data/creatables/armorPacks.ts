@@ -1,6 +1,6 @@
 import { Bank, type Item, Items, itemID } from 'oldschooljs';
 
-import type { Createable } from '../createables.js';
+import type { Createable } from '@/lib/data/createables.js';
 
 export const armorAndItemPacks: Createable[] = [
 	// Melee armour sets

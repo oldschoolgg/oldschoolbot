@@ -2,14 +2,14 @@ import { objectEntries } from '@oldschoolgg/toolkit';
 import type { Minigame } from '@prisma/client';
 import { Items, Monsters, resolveItems } from 'oldschooljs';
 
+import Skillcapes from '@/lib/skilling/skillcapes.js';
+import Agility from '@/lib/skilling/skills/agility.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import { formatList, formatSkillRequirements, hasSkillReqs, itemNameFromID } from '@/lib/util/smallUtils.js';
 import { MAX_QP } from './minions/data/quests.js';
 import type { DiaryTier, DiaryTierName } from './minions/types.js';
 import { DiaryID } from './minions/types.js';
 import { Minigames } from './settings/minigames.js';
-import Skillcapes from './skilling/skillcapes.js';
-import Agility from './skilling/skills/agility.js';
 import type { Skills } from './types/index.js';
 
 interface Diary {

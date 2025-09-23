@@ -4,15 +4,15 @@ import { EmbedBuilder } from 'discord.js';
 import { Bank, convertXPtoLVL, type ItemBank, toKMB } from 'oldschooljs';
 import type { SkillsScore } from 'oldschooljs/hiscores';
 
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { getClueScoresFromOpenables } from '@/lib/clues/clueUtils.js';
+import { badges, MAX_LEVEL } from '@/lib/constants.js';
+import { calcCLDetails } from '@/lib/data/Collections.js';
+import { skillEmoji } from '@/lib/data/emojis.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
-import { ClueTiers } from '../clues/clueTiers.js';
-import { getClueScoresFromOpenables } from '../clues/clueUtils.js';
-import { badges, MAX_LEVEL } from '../constants.js';
-import { calcCLDetails } from '../data/Collections.js';
-import { skillEmoji } from '../data/emojis.js';
-import { courses } from '../skilling/skills/agility.js';
-import Hunter from '../skilling/skills/hunter/hunter.js';
-import type { Skills } from '../types/index.js';
+import { courses } from '@/lib/skilling/skills/agility.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
+import type { Skills } from '@/lib/types/index.js';
 import { logError } from './logError.js';
 
 export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {

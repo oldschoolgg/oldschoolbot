@@ -14,7 +14,7 @@ import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { ouraniaAltarStartCommand } from '@/mahoji/lib/abstracted_commands/ouraniaAltarCommand.js';
 import { tiaraRunecraftCommand } from '@/mahoji/lib/abstracted_commands/tiaraRunecraftCommand.js';
-import { calcMaxRCQuantity, userHasGracefulEquipped } from '../mahojiSettings.js';
+import { calcMaxRCQuantity, userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 const runeTypes = [
 	{ item: Items.getOrThrow('Warped extract'), runes: new Set(['air', 'mind', 'water', 'earth', 'fire', 'body']) },

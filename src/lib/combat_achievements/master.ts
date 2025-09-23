@@ -10,7 +10,7 @@ import type {
 	RaidsOptions,
 	TheatreOfBloodTaskOptions,
 	TOAOptions
-} from '../types/minions.js';
+} from '@/lib/types/minions.js';
 import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils.js';
 import type { CombatAchievement } from './combatAchievements.js';
 

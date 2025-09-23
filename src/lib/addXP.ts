@@ -5,14 +5,14 @@ import { type User, UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
 import { convertXPtoLVL, toKMB } from 'oldschooljs';
 
+import { skillEmoji } from '@/lib/data/emojis.js';
+import { Skills } from '@/lib/skilling/skills/index.js';
 import { mahojiClientSettingsFetch } from '@/lib/util/clientSettings.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 import { globalConfig, LEVEL_99_XP, MAX_LEVEL, MAX_TOTAL_LEVEL, MAX_XP } from './constants.js';
-import { skillEmoji } from './data/emojis.js';
 import type { AddXpParams } from './minions/types.js';
 import { sql } from './postgres.js';
-import { Skills } from './skilling/skills/index.js';
 
 const skillsVals = Object.values(Skills);
 const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${LEVEL_99_XP}`).join(' AND ');

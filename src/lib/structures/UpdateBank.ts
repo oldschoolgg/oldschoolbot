@@ -4,11 +4,11 @@ import type { GearSetupType, Prisma, UserStats } from '@prisma/client';
 import { Bank, type ItemBank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 
+import { degradeChargeBank } from '@/lib/degradeableItems.js';
 import type { GearSetup } from '@/lib/gear/types.js';
+import type { MUserClass } from '@/lib/MUser.js';
+import type { JsonKeys } from '@/lib/util.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
-import { degradeChargeBank } from '../degradeableItems.js';
-import type { MUserClass } from '../MUser.js';
-import type { JsonKeys } from '../util.js';
 import { ChargeBank, XPBank } from './Bank.js';
 import { KCBank } from './KCBank.js';
 

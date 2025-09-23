@@ -1,8 +1,8 @@
 import { Monsters, resolveItems } from 'oldschooljs';
 
-import { soteSkillRequirements } from '../skilling/functions/questRequirements.js';
-import { courses } from '../skilling/skills/agility.js';
-import butterflyNettingCreatures from '../skilling/skills/hunter/creatures/butterflyNetting.js';
+import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
+import { courses } from '@/lib/skilling/skills/agility.js';
+import butterflyNettingCreatures from '@/lib/skilling/skills/hunter/creatures/butterflyNetting.js';
 import type {
 	ActivityTaskData,
 	AgilityActivityTaskOptions,
@@ -10,7 +10,7 @@ import type {
 	MonsterActivityTaskOptions,
 	PickpocketActivityTaskOptions,
 	WoodcuttingActivityTaskOptions
-} from '../types/minions.js';
+} from '@/lib/types/minions.js';
 
 export enum WorldLocations {
 	Priffdinas = 0,

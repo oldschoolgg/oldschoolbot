@@ -15,7 +15,7 @@ import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
 import findMonster from '@/lib/util/findMonster.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
-import { hasMonsterRequirements } from '../mahojiSettings.js';
+import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 	// Check if every user has the requirements for this monster.

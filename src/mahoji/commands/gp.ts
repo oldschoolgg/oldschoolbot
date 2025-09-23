@@ -1,7 +1,7 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { toKMB } from 'oldschooljs';
 
-import { mahojiUsersSettingsFetch } from '../mahojiSettings.js';
+import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export const gpCommand: OSBMahojiCommand = {
 	name: 'gp',

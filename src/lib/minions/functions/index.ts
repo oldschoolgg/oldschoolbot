@@ -5,11 +5,11 @@ import { GearStat, type OffenceGearStat } from 'oldschooljs/gear';
 
 import type { PvMMethod } from '@/lib/constants.js';
 import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
+import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '@/lib/minions/data/combatConstants.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import type { AddMonsterXpParams, KillableMonster } from '@/lib/minions/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { XPBank } from '@/lib/structures/XPBank.js';
-import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants.js';
-import killableMonsters from '../data/killableMonsters/index.js';
-import type { AddMonsterXpParams, KillableMonster } from '../types.js';
 
 export const attackStylesArr = [
 	SkillsEnum.Attack,

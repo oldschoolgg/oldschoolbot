@@ -4,10 +4,10 @@ import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit/util';
 import { type Prisma, UserEventType } from '@prisma/client';
 import type { Bank } from 'oldschooljs';
 
+import { allCLItems, allCollectionLogsFlat, calcCLDetails } from '@/lib/data/Collections.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import { fetchCLLeaderboard } from '@/lib/util/clLeaderboard.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
-import { allCLItems, allCollectionLogsFlat, calcCLDetails } from './data/Collections.js';
 import { calculateMastery } from './mastery.js';
 import { RawSQL } from './rawSql.js';
 import { calculateOwnCLRanking, roboChimpSyncData } from './roboChimp.js';

@@ -1,12 +1,12 @@
 import { calcWhatPercent, round, sumArr } from '@oldschoolgg/toolkit';
 import { clamp } from 'remeda';
 
+import { getTotalCl } from '@/lib/data/Collections.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import { calculateAchievementDiaryProgress } from '@/mahoji/lib/abstracted_commands/achievementDiaryCommand.js';
 import { allCombatAchievementTasks } from './combat_achievements/combatAchievements.js';
 import { MAX_XP } from './constants.js';
-import { getTotalCl } from './data/Collections.js';
 import { MAX_QP } from './minions/data/quests.js';
 
 export async function calculateMastery(user: MUser, stats: MUserStats) {

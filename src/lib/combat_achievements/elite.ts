@@ -3,14 +3,14 @@ import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
-import { crossbows } from '@/lib/util/archery.js';
 import type {
 	ActivityTaskData,
 	GauntletOptions,
 	MonsterActivityTaskOptions,
 	NightmareActivityTaskOptions,
 	TOAOptions
-} from '../types/minions.js';
+} from '@/lib/types/minions.js';
+import { crossbows } from '@/lib/util/archery.js';
 import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils.js';
 import type { CombatAchievement } from './combatAchievements.js';
 

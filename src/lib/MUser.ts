@@ -17,7 +17,13 @@ import {
 } from 'oldschooljs';
 import { pick } from 'remeda';
 
+import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
+import type { IconPackID } from '@/lib/canvas/iconPacks.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { bossCLItems } from '@/lib/data/Collections.js';
+import { allPetIDs, avasDevices } from '@/lib/data/CollectionsExport.js';
 import type { GearSetup, UserFullGearSetup } from '@/lib/gear/types.js';
+import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
 import Farming from '@/lib/skilling/skills/farming/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
@@ -35,14 +41,9 @@ import { fetchUserStats, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 import { addXP } from './addXP.js';
 import { userIsBusy } from './busyCounterCache.js';
 import { partialUserCache } from './cache.js';
-import { generateAllGearImage, generateGearImage } from './canvas/generateGearImage.js';
-import type { IconPackID } from './canvas/iconPacks.js';
-import { ClueTiers } from './clues/clueTiers.js';
 import type { CATier } from './combat_achievements/combatAchievements.js';
 import { CombatAchievements } from './combat_achievements/combatAchievements.js';
 import { BitField, MAX_LEVEL, projectiles } from './constants.js';
-import { bossCLItems } from './data/Collections.js';
-import { allPetIDs, avasDevices } from './data/CollectionsExport.js';
 import { degradeableItems } from './degradeableItems.js';
 import { handleNewCLItems } from './handleNewCLItems.js';
 import { marketPriceOfBank } from './marketPrices.js';
@@ -57,7 +58,6 @@ import { getUsersPerkTier } from './perkTiers.js';
 import { roboChimpUserFetch } from './roboChimp.js';
 import type { MinigameName, MinigameScore } from './settings/minigames.js';
 import { Minigames } from './settings/minigames.js';
-import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo.js';
 import type { BankSortMethod } from './sorts.js';
 import type { SkillRequirements, Skills } from './types/index.js';
 

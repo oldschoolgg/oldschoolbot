@@ -19,7 +19,7 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
-import { allCollectionLogsFlat } from './data/Collections.js';
+import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 import {
 	chambersOfXericCL,
 	chambersOfXericNormalCL,
@@ -37,8 +37,8 @@ import {
 	theNightmareCL,
 	theNightmareNormalCL,
 	wintertodtCL
-} from './data/CollectionsExport.js';
-import pets from './data/pets.js';
+} from '@/lib/data/CollectionsExport.js';
+import pets from '@/lib/data/pets.js';
 import killableMonsters from './minions/data/killableMonsters/index.js';
 import { openShadeChest } from './shadesKeys.js';
 import { birdsNestID, treeSeedsNest } from './simulation/birdsNest.js';

@@ -3,7 +3,7 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { time } from 'discord.js';
 
-import { SeedableRNG } from './rng.js';
+import { SeedableRNG } from '@/lib/util/rng.js';
 
 export interface Peak {
 	startTime: number;

@@ -3,9 +3,9 @@ import '../data/itemAliases.js';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Bank, calcDropRatesFromBank, Misc, Monsters, resolveItems } from 'oldschooljs';
 
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { handleNexKills } from '@/lib/simulation/nex.js';
 import { simulatedKillables } from '@/lib/simulation/simulatedKillables.js';
-import killableMonsters from '../minions/data/killableMonsters/index.js';
 import type { KillWorkerArgs, KillWorkerReturn } from './index.js';
 
 if (global.prisma) {

@@ -1,15 +1,15 @@
 import type { CropUpgradeType } from '@prisma/client';
 import type { ItemBank } from 'oldschooljs';
 
+import type { NMZStrategy } from '@/lib/constants.js';
 import type { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
 import type { IPatchData } from '@/lib/minions/farming/types.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import type { MinigameName } from '@/lib/settings/minigames.js';
+import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
+import type { TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { Peak } from '@/lib/util/peaks.js';
-import type { NMZStrategy } from '../constants.js';
-import type { MinigameName } from '../settings/minigames.js';
-import type { UnderwaterAgilityThievingTrainingSkill } from '../skilling/skills/agility.js';
 import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap.js';
-import type { TwitcherGloves } from '../skilling/skills/woodcutting/woodcutting.js';
 
 export interface ActivityTaskOptions {
 	userID: string;

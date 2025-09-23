@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import type { Consumable } from '../types.js';
+import type { Consumable } from '@/lib/minions/types.js';
 
 // Configure boost percents
 export const boostCannon = 30;

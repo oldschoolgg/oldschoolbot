@@ -32,7 +32,7 @@ import { sendToChannelID } from '@/lib/util/webhook.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 import { syncCustomPrices } from '@/mahoji/lib/events.js';
 import { itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings.js';
+import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',

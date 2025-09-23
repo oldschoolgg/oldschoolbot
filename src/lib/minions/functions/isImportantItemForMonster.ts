@@ -1,4 +1,4 @@
-import type { KillableMonster } from '../types.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 export default function isImportantItemForMonster(itemID: number, monster: KillableMonster) {
 	if (!monster.uniques) return false;

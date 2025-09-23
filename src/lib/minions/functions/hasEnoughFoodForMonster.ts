@@ -1,4 +1,4 @@
-import type { KillableMonster } from '../types.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
 import calculateMonsterFood from './calculateMonsterFood.js';
 import getUserFoodFromBank from './getUserFoodFromBank.js';
 

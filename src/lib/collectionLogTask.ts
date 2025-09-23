@@ -3,12 +3,12 @@ import { generateHexColorForCashStack } from '@oldschoolgg/toolkit/runescape';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { type Bank, Items, toKMB } from 'oldschooljs';
 
+import { bankImageTask } from '@/lib/canvas/bankImage.js';
+import type { IBgSprite } from '@/lib/canvas/canvasUtil.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { allCollectionLogs, getCollection, getTotalCl } from '@/lib/data/Collections.js';
 import type { CollectionStatus, IToReturnCollection } from '@/lib/data/CollectionsExport.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
-import { bankImageTask } from './canvas/bankImage.js';
-import type { IBgSprite } from './canvas/canvasUtil.js';
-import { OSRSCanvas } from './canvas/OSRSCanvas.js';
 
 export const collectionLogTypes = [
 	{ name: 'collection', description: 'Normal Collection Log' },

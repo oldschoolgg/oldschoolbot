@@ -7,13 +7,13 @@ import PQueue from 'p-queue';
 import { partition } from 'remeda';
 import z from 'zod';
 
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BadgesEnum, globalConfig, MAX_LEVEL, Roles } from '@/lib/constants.js';
 import { getCollectionItems } from '@/lib/data/Collections.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import { fetchMultipleCLLeaderboards } from '@/lib/util/clLeaderboard.js';
 import { logError } from '@/lib/util/logError.js';
-import { ClueTiers } from './clues/clueTiers.js';
 import { loggedRawPrismaQuery } from './rawSql.js';
 import { TeamLoot } from './simulation/TeamLoot.js';
 import { getUsernameSync } from './util.js';

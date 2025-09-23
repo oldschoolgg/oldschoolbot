@@ -31,9 +31,9 @@ import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '@/mahoji/guildSettings.js';
 import { itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
-import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings.js';
-import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings.js';
+import { mahojiUsersSettingsFetch, patronMsg } from '@/mahoji/mahojiSettings.js';
 
 interface UserConfigToggle {
 	name: string;

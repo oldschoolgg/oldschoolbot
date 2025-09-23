@@ -29,7 +29,7 @@ import {
 	stashUnitViewCommand
 } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 import { itemOption, monsterOption, skillOption } from '@/mahoji/lib/mahojiCommandOptions.js';
-import { patronMsg } from '../mahojiSettings.js';
+import { patronMsg } from '@/mahoji/mahojiSettings.js';
 
 function isRaidsActivity(data: any): data is RaidsOptions {
 	return 'challengeMode' in data;

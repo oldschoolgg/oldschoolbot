@@ -5,7 +5,7 @@ import type { Giveaway } from '@prisma/client';
 import { type MessageEditOptions, time, userMention } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { sql } from '../postgres.js';
+import { sql } from '@/lib/postgres.js';
 import { logError } from './logError.js';
 import { sendToChannelID } from './webhook.js';
 

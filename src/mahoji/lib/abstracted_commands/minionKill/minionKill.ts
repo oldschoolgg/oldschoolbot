@@ -13,14 +13,14 @@ import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import findMonster from '@/lib/util/findMonster.js';
 import { generateDailyPeakIntervals } from '@/lib/util/peaks.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { newMinionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/newMinionKill.js';
+import { nexCommand } from '@/mahoji/lib/abstracted_commands/nexCommand.js';
+import { nightmareCommand } from '@/mahoji/lib/abstracted_commands/nightmareCommand.js';
+import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
+import { temporossCommand } from '@/mahoji/lib/abstracted_commands/temporossCommand.js';
+import { wintertodtCommand } from '@/mahoji/lib/abstracted_commands/wintertodtCommand.js';
+import { zalcanoCommand } from '@/mahoji/lib/abstracted_commands/zalcanoCommand.js';
 import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
-import { nexCommand } from '../nexCommand.js';
-import { nightmareCommand } from '../nightmareCommand.js';
-import { getPOH } from '../pohCommand.js';
-import { temporossCommand } from '../temporossCommand.js';
-import { wintertodtCommand } from '../wintertodtCommand.js';
-import { zalcanoCommand } from '../zalcanoCommand.js';
-import { newMinionKillCommand } from './newMinionKill.js';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 

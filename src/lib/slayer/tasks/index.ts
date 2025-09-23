@@ -1,4 +1,4 @@
-import type { AssignableSlayerTask } from '../types.js';
+import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
 import { bossTasks } from './bossTasks.js';
 import { chaeldarTasks } from './chaeldarTasks.js';
 import { duradelTasks } from './duradelTasks.js';

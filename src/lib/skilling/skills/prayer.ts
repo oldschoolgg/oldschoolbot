@@ -1,8 +1,8 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { itemID } from 'oldschooljs';
 
-import type { Ash, Bone } from '../types.js';
-import { SkillsEnum } from '../types.js';
+import type { Ash, Bone } from '@/lib/skilling/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 
 const bones: Bone[] = [
 	{

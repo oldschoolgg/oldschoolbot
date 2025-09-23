@@ -1,11 +1,11 @@
 import type { Prisma } from '@prisma/client';
 import { Bank, type ItemBank } from 'oldschooljs';
 
+import { deduplicateClueScrolls } from '@/lib/clues/clueUtils.js';
+import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
+import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
+import { filterLootReplace } from '@/lib/slayer/slayerUtil.js';
 import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager.js';
-import { deduplicateClueScrolls } from '../clues/clueUtils.js';
-import { handleNewCLItems } from '../handleNewCLItems.js';
-import { mahojiUserSettingsUpdate } from '../MUser.js';
-import { filterLootReplace } from '../slayer/slayerUtil.js';
 import { logError } from './logError.js';
 import { userQueueFn } from './userQueues.js';
 

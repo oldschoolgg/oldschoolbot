@@ -2,18 +2,18 @@ import type { GearSetupType, XpGainSource } from '@prisma/client';
 import type { ArrayItemsResolved, Bank, Item, ItemBank, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
 import type { OffenceGearStat } from 'oldschooljs/gear';
 
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import type { QuestID } from '@/lib/minions/data/quests.js';
+import type { POHBoosts } from '@/lib/poh/index.js';
+import type { MinigameName } from '@/lib/settings/minigames.js';
 import type { LevelRequirements, SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
 import type { XPBank } from '@/lib/structures/Bank.js';
 import type { GearRequirements } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import type { Skills } from '@/lib/types/index.js';
 import type { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
-import type { ClueTier } from '../clues/clueTiers.js';
-import type { POHBoosts } from '../poh/index.js';
-import type { MinigameName } from '../settings/minigames.js';
-import type { Skills } from '../types/index.js';
-import type { QuestID } from './data/quests.js';
 import type { AttackStyles } from './functions/index.js';
 
 export type KillableMonsterEffect = (opts: {

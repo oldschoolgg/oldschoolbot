@@ -35,8 +35,8 @@ import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.j
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { allUsableItems } from '@/mahoji/lib/abstracted_commands/useCommand.js';
 import { BingoManager } from '@/mahoji/lib/bingo/BingoManager.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 import { testBotKvStore } from '@/testing/TestBotStore.js';
-import { userStatsUpdate } from '../mahojiSettings.js';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo.js';
 
 export function getMaxUserValues() {

@@ -10,7 +10,7 @@ import { GearSetupTypes } from '@/lib/gear/types.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { Gear, type GlobalPreset, globalPresets } from '@/lib/structures/Gear.js';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings.js';
+import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export const filterOption: CommandOption = {
 	type: ApplicationCommandOptionType.String,

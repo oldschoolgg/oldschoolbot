@@ -2,9 +2,9 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { deepResolveItems, itemID, Monsters } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
+import { QuestID } from '@/lib/minions/data/quests.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import { QuestID } from '../quests.js';
 
 export const turaelMonsters: KillableMonster[] = [
 	{

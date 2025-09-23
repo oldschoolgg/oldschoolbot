@@ -16,7 +16,7 @@ import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
-import { addToOpenablesScores, getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings.js';
+import { addToOpenablesScores, getMahojiBank, mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export const clueTierBoosts: Record<
 	ClueTier['name'],
