@@ -14,7 +14,7 @@ export default class LastManStandingUsage {
 
 	public parse(usage: string): void {
 		let current = '';
-		let char: string | undefined = undefined;
+		let char: string | undefined;
 		for (let i = 0; i < usage.length; i++) {
 			char = usage.charAt(i);
 			if (char === '{') {

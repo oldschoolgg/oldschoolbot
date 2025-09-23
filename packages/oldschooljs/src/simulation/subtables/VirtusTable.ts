@@ -1,3 +1,3 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '@/structures/LootTable.js';
 
 export const VirtusTable = new LootTable().add('Virtus mask').add('Virtus robe top').add('Virtus robe bottom');

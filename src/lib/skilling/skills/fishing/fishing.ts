@@ -1,11 +1,11 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { itemID } from 'oldschooljs';
 
-import type { Fish } from '../../types';
-import { SkillsEnum } from '../../types';
-import { calcFishingTripResult } from './fishingTrip';
-import { calcFishingTripStart } from './fishingTripStart';
-import { anglerItems, calcAnglerBoostPercent, calcMinnowQuantityRange, calcRadasBlessingBoost } from './fishingUtil';
+import type { Fish } from '@/lib/skilling/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { calcFishingTripResult } from './fishingTrip.js';
+import { calcFishingTripStart } from './fishingTripStart.js';
+import { anglerItems, calcAnglerBoostPercent, calcMinnowQuantityRange, calcRadasBlessingBoost } from './fishingUtil.js';
 
 const fishes: Fish[] = [
 	{

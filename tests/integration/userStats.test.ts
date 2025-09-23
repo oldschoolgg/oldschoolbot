@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 
-import { userStatsUpdate } from '../../src/mahoji/mahojiSettings';
-import { createTestUser, mockClient } from './util';
+import { userStatsUpdate } from '../../src/mahoji/mahojiSettings.js';
+import { createTestUser, mockClient } from './util.js';
 
 describe('User Stats', async () => {
 	await mockClient();

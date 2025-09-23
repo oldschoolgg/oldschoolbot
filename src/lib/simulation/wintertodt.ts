@@ -1,11 +1,11 @@
+import { calcPercentOfNum, randInt, roll } from '@oldschoolgg/toolkit';
 import { normal } from '@oldschoolgg/toolkit/math';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import { calcPercentOfNum, randInt, roll } from 'e';
-import { Bank, LootTable, convertXPtoLVL, itemID, resolveItems } from 'oldschooljs';
+import { Bank, convertXPtoLVL, itemID, LootTable, resolveItems } from 'oldschooljs';
 
-import { MAX_LEVEL, MAX_XP } from '../constants';
-import type { LevelRequirements } from '../skilling/types';
-import { SkillsEnum } from '../skilling/types';
+import { MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
+import type { LevelRequirements } from '@/lib/skilling/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 
 interface WintertodtCrateOptions {
 	points: number;

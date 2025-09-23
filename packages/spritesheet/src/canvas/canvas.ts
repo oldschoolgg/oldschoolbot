@@ -4,5 +4,8 @@ export type CanvasProvider = {
 	generateSpriteSheet({
 		layout,
 		images
-	}: { layout: LayoutResult; images: ImageGroup }): Promise<{ imageBuffer: Buffer }>;
+	}: {
+		layout: LayoutResult;
+		images: ImageGroup;
+	}): Promise<{ imageBuffer: Buffer }>;
 };

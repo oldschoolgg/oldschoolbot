@@ -1,9 +1,8 @@
-import { randInt, roll } from 'e';
-
-import type { OpenableOpenOptions } from '../../meta/types';
-import Bank from '../../structures/Bank';
-import LootTable from '../../structures/LootTable';
-import SimpleOpenable from '../../structures/SimpleOpenable';
+import { Bank } from '@/structures/Bank.js';
+import LootTable from '@/structures/LootTable.js';
+import type { OpenableOpenOptions } from '@/structures/Openable.js';
+import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
+import { randInt, roll } from '@/util/smallUtils.js';
 
 const LowSeedPackTable = new LootTable()
 	.add('Potato seed', [8, 12], 2)
@@ -78,7 +77,7 @@ const HighSeedPackTable = new LootTable()
 const SeedPackTable = new LootTable().add(LowSeedPackTable).add(MediumSeedPackTable).add(HighSeedPackTable);
 
 export class SeedPackOpenable extends SimpleOpenable {
-	public open(quantity = 1, options: OpenableOpenOptions = { seedTier: '5' }) {
+	public override open(quantity = 1, options: OpenableOpenOptions = { seedTier: '5' }) {
 		const tempTable = new LootTable();
 		const loot = new Bank();
 		const tier = options.seedTier ?? '5';

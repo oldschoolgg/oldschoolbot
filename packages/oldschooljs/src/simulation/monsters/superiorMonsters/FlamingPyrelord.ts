@@ -1,6 +1,6 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
-import { PyrefiendPreTable } from '../low/n-s/Pyrefiend';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
+import { PyrefiendPreTable } from '../low/n-s/Pyrefiend.js';
 
 const FlamingPyrelordTable = new LootTable()
 	.every('Fiendish ashes')

@@ -1,13 +1,13 @@
+import { objectEntries, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { UserError } from '@oldschoolgg/toolkit/structures';
-import { objectEntries, reduceNumByPercent } from 'e';
 import { type Bank, itemID } from 'oldschooljs';
 
-import { Eatables } from '../../data/eatables';
-import type { GearSetupType } from '../../gear/types';
-import type { GearBank } from '../../structures/GearBank';
-import { updateBankSetting } from '../../util/updateBankSetting';
-import getUserFoodFromBank from './getUserFoodFromBank';
+import { Eatables } from '@/lib/data/eatables.js';
+import type { GearSetupType } from '@/lib/gear/types.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import getUserFoodFromBank from './getUserFoodFromBank.js';
 
 export function removeFoodFromUserRaw({
 	totalHealingNeeded,
@@ -106,7 +106,7 @@ export default async function removeFoodFromUser({
 			).join(', ')}.`
 		);
 	} else {
-		await transactItems({ userID: user.id, itemsToRemove: result.foodToRemove });
+		await user.transactItems({ itemsToRemove: result.foodToRemove });
 		await updateBankSetting('economyStats_PVMCost', result.foodToRemove);
 		return {
 			foodRemoved: result.foodToRemove,

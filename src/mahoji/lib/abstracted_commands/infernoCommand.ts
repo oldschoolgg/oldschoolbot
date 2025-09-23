@@ -1,23 +1,22 @@
+import { calcPercentOfNum, percentChance, randInt, roll, sumArr, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { type CommandResponse, formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
-import { Time, calcPercentOfNum, percentChance, randInt, roll, sumArr } from 'e';
-import { Bank, type ItemBank, Items, Monsters, itemID } from 'oldschooljs';
+import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
+import { Bank, type ItemBank, Items, itemID, Monsters } from 'oldschooljs';
 
-import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage';
-import type { ProjectileType } from '../../../lib/constants';
-import { BitField, projectiles } from '../../../lib/constants';
-import { getSimilarItems } from '../../../lib/data/similarItems';
-import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
-import type { BlowpipeData } from '../../../lib/minions/types';
-import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { PercentCounter } from '../../../lib/structures/PercentCounter';
-import type { Skills } from '../../../lib/types';
-import type { InfernoOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
+import type { ProjectileType } from '@/lib/constants.js';
+import { BitField, projectiles } from '@/lib/constants.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
+import type { BlowpipeData } from '@/lib/minions/types.js';
+import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import { PercentCounter } from '@/lib/structures/PercentCounter.js';
+import type { Skills } from '@/lib/types/index.js';
+import type { InfernoOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
-const minimumRangeItems = [
+const minimumRangeItems = Items.resolveFullItems([
 	'Amulet of fury',
 	"Karil's leathertop",
 	"Karil's leatherskirt",
@@ -25,12 +24,12 @@ const minimumRangeItems = [
 	'Twisted bow',
 	"Ava's assembler",
 	'Snakeskin boots'
-].map(getOSItem);
+]);
 
 const minimumRangeAttackStat = sumArr(minimumRangeItems.map(i => i.equipment!.attack_ranged));
 const minimumRangeMagicDefenceStat = sumArr(minimumRangeItems.map(i => i.equipment!.defence_magic)) - 10;
 
-const minimumMageItems = [
+const minimumMageItems = Items.resolveFullItems([
 	'Amulet of fury',
 	'Imbued guthix cape',
 	"Ahrim's robetop",
@@ -38,7 +37,7 @@ const minimumMageItems = [
 	'Barrows gloves',
 	'Splitbark boots',
 	'Ancient staff'
-].map(getOSItem);
+]);
 
 const minimumMageAttackStat = sumArr(minimumMageItems.map(i => i.equipment!.attack_magic));
 const minimumMageMagicDefenceStat = sumArr(minimumMageItems.map(i => i.equipment!.defence_magic)) - 10;
@@ -241,7 +240,7 @@ async function infernoRun({
 	}
 
 	const darts = blowpipeData.dartID;
-	const dartItem = getOSItem(darts);
+	const dartItem = Items.getOrThrow(darts);
 	const dartIndex = blowpipeDarts.indexOf(dartItem);
 	const percent = dartIndex >= 3 ? dartIndex * 0.9 : -(4 * (4 - dartIndex));
 	if (dartIndex < 5) {

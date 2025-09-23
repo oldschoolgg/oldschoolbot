@@ -1,6 +1,6 @@
-import { type CommandRunOptions, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { type BossRecords, Hiscores, bossNameMap, mappedBossNames } from 'oldschooljs';
+import { type BossRecords, bossNameMap, Hiscores, mappedBossNames } from 'oldschooljs/hiscores';
 
 export const kcCommand: OSBMahojiCommand = {
 	name: 'kc',

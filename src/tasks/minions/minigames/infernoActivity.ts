@@ -1,18 +1,18 @@
+import { calcPercentOfNum, calcWhatPercent } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit/util';
-import { calcPercentOfNum, calcWhatPercent } from 'e';
-import { Bank, type ItemBank, Monsters, itemID } from 'oldschooljs';
+import { Bank, type ItemBank, itemID, Monsters } from 'oldschooljs';
 
-import { countUsersWithItemInCl } from '@/lib/rawSql';
-import chatHeadImage from '../../../lib/canvas/chatHeadImage';
-import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
-import { DiaryID } from '../../../lib/minions/types';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import type { InfernoOptions } from '../../../lib/types/minions';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
+import { diariesObject, userhasDiaryTier } from '@/lib/diaries.js';
+import { DiaryID } from '@/lib/minions/types.js';
+import { countUsersWithItemInCl } from '@/lib/rawSql.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import type { InfernoOptions } from '@/lib/types/minions.js';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const infernoTask: MinionTask = {
 	type: 'Inferno',
