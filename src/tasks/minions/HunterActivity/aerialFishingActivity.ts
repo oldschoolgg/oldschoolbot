@@ -1,14 +1,13 @@
+import { calcPercentOfNum, randInt } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { calcPercentOfNum, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { roll } from '@/lib/util/rng';
-import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
-import Fishing from '../../../lib/skilling/skills/fishing';
-import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { skillingPetDropRate } from '../../../lib/util';
-import { anglerBoostPercent } from '../../../mahoji/mahojiSettings';
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import aerialFishingCreatures from '@/lib/skilling/skills/hunter/aerialFishing.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { roll } from '@/lib/util/rng.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 export const aerialFishingTask: MinionTask = {
 	type: 'AerialFishing',
@@ -82,7 +81,7 @@ export const aerialFishingTask: MinionTask = {
 		// If they have the entire angler outfit, give an extra 2.5% xp bonus
 		if (
 			user.gear.skilling.hasEquipped(
-				Object.keys(Fishing.anglerItems).map(i => Number.parseInt(i)),
+				Fishing.anglerItems.map(i => i[0]),
 				true
 			)
 		) {
@@ -91,8 +90,8 @@ export const aerialFishingTask: MinionTask = {
 			bonusXP += amountToAdd;
 		} else {
 			// For each angler item, check if they have it, give its' XP boost if so.
-			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasEquipped(Number.parseInt(itemID))) {
+			for (const [itemID, bonus] of Fishing.anglerItems) {
+				if (user.hasEquipped(itemID)) {
 					const amountToAdd = Math.floor(fishXpReceived * (bonus / 100));
 					fishXpReceived += amountToAdd;
 					bonusXP += amountToAdd;
@@ -117,7 +116,7 @@ export const aerialFishingTask: MinionTask = {
 		await user.incrementCreatureScore(mottledEel.id, mottledEelCaught);
 		await user.incrementCreatureScore(greaterSiren.id, greaterSirenCaught);
 
-		const xpBonusPercent = anglerBoostPercent(user);
+		const xpBonusPercent = Fishing.util.calcAnglerBoostPercent(user.gearBank);
 		if (xpBonusPercent > 0) {
 			bonusXP += Math.ceil(calcPercentOfNum(xpBonusPercent, fishXpReceived));
 		}
@@ -143,8 +142,7 @@ export const aerialFishingTask: MinionTask = {
 			);
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

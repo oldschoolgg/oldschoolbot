@@ -1,14 +1,14 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import TitheFarmBuyables from '../../../lib/data/buyables/titheFarmBuyables';
-import type { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { userHasGracefulEquipped, userStatsUpdate } from '../../mahojiSettings';
+import TitheFarmBuyables from '@/lib/data/buyables/titheFarmBuyables.js';
+import type { TitheFarmActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { userHasGracefulEquipped, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 async function determineDuration(user: MUser): Promise<[number, string[]]> {
 	let baseTime = Time.Second * 1500;
@@ -100,8 +100,7 @@ export async function titheFarmShopCommand(
 		{}
 	);
 
-	await transactItems({
-		userID: user.id,
+	await user.transactItems({
 		collectionLog: true,
 		itemsToAdd: loot
 	});

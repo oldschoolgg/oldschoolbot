@@ -1,8 +1,8 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { perTimeUnitChance } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
 import type { Bank } from 'oldschooljs';
 
-import { QuestID } from '../minions/data/quests';
+import { QuestID } from '@/lib/minions/data/quests.js';
 
 export function rollForMoonKeyHalf({ user, duration, loot }: { user: MUser | boolean; duration: number; loot: Bank }) {
 	if (typeof user === 'boolean' && !user) return;

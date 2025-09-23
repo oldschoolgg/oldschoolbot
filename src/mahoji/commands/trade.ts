@@ -1,17 +1,16 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
-import { type CommandRunOptions, type MahojiUserOption, discrimName, mentionCommand } from '@oldschoolgg/toolkit/util';
+import { discrimName, type MahojiUserOption, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { tradePlayerItems } from '../../lib/util/tradePlayerItems';
-import { filterOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
-import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings';
+import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
+import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
+import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
+import { addToGPTaxBalance, mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 const MAX_CHARACTER_LENGTH = 950;
 
@@ -175,7 +174,7 @@ Both parties must click confirm to make the trade.`,
 		const content = `${discrimName(senderAPIUser)} sold ${formatBankForDisplay(itemsSent)} to ${discrimName(
 			recipientAPIUser
 		)} in return for ${formatBankForDisplay(itemsReceived)}.
-  
+
   You can now buy/sell items in the Grand Exchange: ${mentionCommand(globalClient, 'ge')}`;
 
 		return files.length > 0 ? { content, files } : content;

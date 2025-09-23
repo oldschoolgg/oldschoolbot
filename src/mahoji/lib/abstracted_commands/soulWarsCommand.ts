@@ -1,135 +1,134 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { User } from '@prisma/client';
-import { Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import getOSItem from '../../../lib/util/getOSItem';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export const soulWarsBuyables = [
 	{
-		item: getOSItem('Red soul cape'),
+		item: Items.getOrThrow('Red soul cape'),
 		tokens: 2500
 	},
 	{
-		item: getOSItem('Blue soul cape'),
+		item: Items.getOrThrow('Blue soul cape'),
 		tokens: 2500
 	},
 	{
-		item: getOSItem('Ectoplasmator'),
+		item: Items.getOrThrow('Ectoplasmator'),
 		tokens: 250
 	},
 	{
-		item: getOSItem('Spoils of war'),
+		item: Items.getOrThrow('Spoils of war'),
 		tokens: 30
 	}
 ];
 
 export const soulWarsImbueables = [
-	{ input: getOSItem('Black mask'), output: getOSItem('Black mask (i)'), tokens: 500 },
-	{ input: getOSItem('Slayer helmet'), output: getOSItem('Slayer helmet (i)'), tokens: 500 },
+	{ input: Items.getOrThrow('Black mask'), output: Items.getOrThrow('Black mask (i)'), tokens: 500 },
+	{ input: Items.getOrThrow('Slayer helmet'), output: Items.getOrThrow('Slayer helmet (i)'), tokens: 500 },
 	{
-		input: getOSItem('Turquoise slayer helmet'),
-		output: getOSItem('Turquoise slayer helmet (i)'),
+		input: Items.getOrThrow('Turquoise slayer helmet'),
+		output: Items.getOrThrow('Turquoise slayer helmet (i)'),
 		tokens: 500
 	},
 	{
-		input: getOSItem('Red slayer helmet'),
-		output: getOSItem('Red slayer helmet (i)'),
+		input: Items.getOrThrow('Red slayer helmet'),
+		output: Items.getOrThrow('Red slayer helmet (i)'),
 		tokens: 500
 	},
 	{
-		input: getOSItem('Green slayer helmet'),
-		output: getOSItem('Green slayer helmet (i)'),
+		input: Items.getOrThrow('Green slayer helmet'),
+		output: Items.getOrThrow('Green slayer helmet (i)'),
 		tokens: 500
 	},
 	{
-		input: getOSItem('Twisted slayer helmet'),
-		output: getOSItem('Twisted slayer helmet (i)'),
+		input: Items.getOrThrow('Twisted slayer helmet'),
+		output: Items.getOrThrow('Twisted slayer helmet (i)'),
 		tokens: 500
 	},
 	{
-		input: getOSItem('Black slayer helmet'),
-		output: getOSItem('Black slayer helmet (i)'),
+		input: Items.getOrThrow('Black slayer helmet'),
+		output: Items.getOrThrow('Black slayer helmet (i)'),
 		tokens: 500
 	},
 	{
-		input: getOSItem('Purple slayer helmet'),
-		output: getOSItem('Purple slayer helmet (i)'),
+		input: Items.getOrThrow('Purple slayer helmet'),
+		output: Items.getOrThrow('Purple slayer helmet (i)'),
 		tokens: 500
 	},
 	{
-		input: getOSItem('Hydra slayer helmet'),
-		output: getOSItem('Hydra slayer helmet (i)'),
+		input: Items.getOrThrow('Hydra slayer helmet'),
+		output: Items.getOrThrow('Hydra slayer helmet (i)'),
 		tokens: 500
 	},
 	{
-		input: getOSItem('Tztok slayer helmet'),
-		output: getOSItem('Tztok slayer helmet (i)'),
+		input: Items.getOrThrow('Tztok slayer helmet'),
+		output: Items.getOrThrow('Tztok slayer helmet (i)'),
 		tokens: 500
 	},
 	{
-		input: getOSItem('Vampyric slayer helmet'),
-		output: getOSItem('Vampyric slayer helmet (i)'),
+		input: Items.getOrThrow('Vampyric slayer helmet'),
+		output: Items.getOrThrow('Vampyric slayer helmet (i)'),
 		tokens: 500
 	},
 	{
-		input: getOSItem('Tzkal slayer helmet'),
-		output: getOSItem('Tzkal slayer helmet (i)'),
+		input: Items.getOrThrow('Tzkal slayer helmet'),
+		output: Items.getOrThrow('Tzkal slayer helmet (i)'),
 		tokens: 500
 	},
-	{ input: getOSItem('Salve amulet'), output: getOSItem('Salve amulet(i)'), tokens: 320 },
-	{ input: getOSItem('Salve amulet (e)'), output: getOSItem('Salve amulet(ei)'), tokens: 320 },
+	{ input: Items.getOrThrow('Salve amulet'), output: Items.getOrThrow('Salve amulet(i)'), tokens: 320 },
+	{ input: Items.getOrThrow('Salve amulet (e)'), output: Items.getOrThrow('Salve amulet(ei)'), tokens: 320 },
 	{
-		input: getOSItem('Ring of the gods'),
-		output: getOSItem('Ring of the gods (i)'),
+		input: Items.getOrThrow('Ring of the gods'),
+		output: Items.getOrThrow('Ring of the gods (i)'),
 		tokens: 260
 	},
 	{
-		input: getOSItem('Ring of suffering'),
-		output: getOSItem('Ring of suffering (i)'),
+		input: Items.getOrThrow('Ring of suffering'),
+		output: Items.getOrThrow('Ring of suffering (i)'),
 		tokens: 300
 	},
 	{
-		input: getOSItem('Ring of suffering (r)'),
-		output: getOSItem('Ring of suffering (ri)'),
+		input: Items.getOrThrow('Ring of suffering (r)'),
+		output: Items.getOrThrow('Ring of suffering (ri)'),
 		tokens: 300
 	},
 	{
-		input: getOSItem('Berserker ring'),
-		output: getOSItem('Berserker ring (i)'),
+		input: Items.getOrThrow('Berserker ring'),
+		output: Items.getOrThrow('Berserker ring (i)'),
 		tokens: 260
 	},
 	{
-		input: getOSItem('Warrior ring'),
-		output: getOSItem('Warrior ring (i)'),
+		input: Items.getOrThrow('Warrior ring'),
+		output: Items.getOrThrow('Warrior ring (i)'),
 		tokens: 260
 	},
 	{
-		input: getOSItem('Archers ring'),
-		output: getOSItem('Archers ring (i)'),
+		input: Items.getOrThrow('Archers ring'),
+		output: Items.getOrThrow('Archers ring (i)'),
 		tokens: 260
 	},
 	{
-		input: getOSItem('Seers ring'),
-		output: getOSItem('Seers ring (i)'),
+		input: Items.getOrThrow('Seers ring'),
+		output: Items.getOrThrow('Seers ring (i)'),
 		tokens: 260
 	},
 	{
-		input: getOSItem('Tyrannical ring'),
-		output: getOSItem('Tyrannical ring (i)'),
+		input: Items.getOrThrow('Tyrannical ring'),
+		output: Items.getOrThrow('Tyrannical ring (i)'),
 		tokens: 260
 	},
 	{
-		input: getOSItem('Treasonous ring'),
-		output: getOSItem('Treasonous ring (i)'),
+		input: Items.getOrThrow('Treasonous ring'),
+		output: Items.getOrThrow('Treasonous ring (i)'),
 		tokens: 260
 	},
 	{
-		input: getOSItem('Granite ring'),
-		output: getOSItem('Granite ring (i)'),
+		input: Items.getOrThrow('Granite ring'),
+		output: Items.getOrThrow('Granite ring (i)'),
 		tokens: 200
 	}
 ];
@@ -219,8 +218,7 @@ export async function soulWarsImbueCommand(user: MUser, input = '') {
 	});
 	const cost = new Bank().add(item.input.id);
 	const loot = new Bank().add(item.output.id);
-	await transactItems({
-		userID: user.id,
+	await user.transactItems({
 		itemsToAdd: loot,
 		itemsToRemove: cost,
 		collectionLog: true

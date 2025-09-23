@@ -430,6 +430,8 @@ model User {
 
   cl_array Int[] @default([])
 
+  gear_template Int? @db.SmallInt
+
   @@index([id, last_command_date])
   @@map("users")
 }
@@ -934,6 +936,7 @@ enum activity_type_enum {
   MyNotes
   Colosseum
   CreateForestersRations
+  Buy
 }
 
 enum xp_gains_skill_enum {

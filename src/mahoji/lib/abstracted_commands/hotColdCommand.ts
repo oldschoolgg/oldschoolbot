@@ -1,11 +1,10 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { EmbedBuilder } from 'discord.js';
 import { LootTable, resolveItems, toKMB } from 'oldschooljs';
 
-import { mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { mahojiParseNumber, userStatsUpdate } from '../../mahojiSettings';
+import { mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { mahojiParseNumber, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const flowerTable = new LootTable()
 	.add('Red flowers', 1, 150)
@@ -50,8 +49,7 @@ ${explanation}`
 
 	await user.sync();
 	if (user.GP < amount) return "You can't afford to gamble that much.";
-	await transactItems({
-		userID: user.id,
+	await user.transactItems({
 		itemsToAdd: flowerLoot,
 		collectionLog: true
 	});

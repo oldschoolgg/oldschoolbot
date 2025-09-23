@@ -1,11 +1,11 @@
 import { AutoFarmFilterEnum } from '@prisma/client';
 import { SkillsEnum } from 'oldschooljs';
 
-import { farmingPlantCommand } from '../../../mahoji/lib/abstracted_commands/farmingCommand';
-import { plants } from '../../skilling/skills/farming';
-import type { IPatchDataDetailed } from '../farming/types';
-import type { Plant } from './../../skilling/types';
-import { allFarm, replant } from './autoFarmFilters';
+import type { IPatchDataDetailed } from '@/lib/minions/farming/types.js';
+import { plants } from '@/lib/skilling/skills/farming/index.js';
+import type { Plant } from '@/lib/skilling/types.js';
+import { farmingPlantCommand } from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
+import { allFarm, replant } from './autoFarmFilters.js';
 
 export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[], channelID: string) {
 	if (user.minionIsBusy) {
@@ -13,9 +13,9 @@ export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[
 	}
 	const userBank = user.bank;
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
-	let toPlant: Plant | undefined = undefined;
-	let canPlant: Plant | undefined = undefined;
-	let canHarvest: Plant | undefined = undefined;
+	let toPlant: Plant | undefined;
+	let canPlant: Plant | undefined;
+	let canHarvest: Plant | undefined;
 	let elligible: Plant[] = [];
 	let errorString = '';
 	let { autoFarmFilter } = user;

@@ -1,14 +1,14 @@
 import { Events } from '@oldschoolgg/toolkit/constants';
-import { formatOrdinal, mentionCommand } from '@oldschoolgg/toolkit/util';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
-import { petMessage } from '@/lib/util/displayCluesAndPets';
-import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
-import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { roll } from '../../../lib/util/rng';
-import { userStatsUpdate } from '../../mahojiSettings';
+import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
+import { petMessage } from '@/lib/util/displayCluesAndPets.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { roll } from '@/lib/util/rng.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export async function capeGambleStatsCommand(user: MUser) {
 	const stats = await user.fetchStats({
@@ -27,12 +27,12 @@ export async function capeGambleStatsCommand(user: MUser) {
 const itemGambles = [
 	{
 		type: 'fire',
-		item: getOSItem('Fire cape'),
+		item: Items.getOrThrow('Fire cape'),
 		trackerKey: 'firecapes_sacrificed',
 		chatHead: 'mejJal',
 		chance: 200,
 		success: {
-			loot: getOSItem('Tzrek-Jad'),
+			loot: Items.getOrThrow('Tzrek-Jad'),
 			message: 'You lucky. Better train him good else TzTok-Jad find you, JalYt.'
 		},
 		failMessage: (newSacrificedCount: number) =>
@@ -42,12 +42,12 @@ const itemGambles = [
 	},
 	{
 		type: 'infernal',
-		item: getOSItem('Infernal cape'),
+		item: Items.getOrThrow('Infernal cape'),
 		trackerKey: 'infernal_cape_sacrifices',
 		chatHead: 'ketKeh',
 		chance: 100,
 		success: {
-			loot: getOSItem('Jal-nib-rek'),
+			loot: Items.getOrThrow('Jal-nib-rek'),
 			message: 'Luck be a TzHaar tonight. Jal-Nib-Rek is yours.'
 		},
 		failMessage: (newSacrificedCount: number) =>
@@ -55,12 +55,12 @@ const itemGambles = [
 	},
 	{
 		type: 'quiver',
-		item: getOSItem("Dizana's quiver (uncharged)"),
+		item: Items.getOrThrow("Dizana's quiver (uncharged)"),
 		trackerKey: 'quivers_sacrificed',
 		chatHead: 'minimus',
 		chance: 200,
 		success: {
-			loot: getOSItem('Smol heredit'),
+			loot: Items.getOrThrow('Smol heredit'),
 			message: 'He seems to like you. Smol heredit is yours.'
 		},
 		failMessage: (newSacrificedCount: number) =>

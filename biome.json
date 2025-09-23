@@ -1,22 +1,24 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
-	"organizeImports": {
-		"enabled": true
+	"$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": {
+					"level": "on",
+					"options": {
+						"groups": [
+							[":URL:", ":BUN:", ":NODE:", ":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:"],
+							":BLANK_LINE:",
+							[":ALIAS:", ":PATH:"]
+						]
+					}
+				}
+			}
+		}
 	},
 	"files": {
 		"maxSize": 10000000,
-		"ignore": [
-			"node_modules",
-			"dist",
-			"coverage",
-			"profiling",
-			"logs",
-			"icon_cache",
-			".astro",
-			".yarn",
-			".pnpm-store"
-		],
-		"include": [
+		"includes": [
 			"**/*.ts",
 			"**/*.mts",
 			"**/*.json",
@@ -26,7 +28,15 @@
 			"**/*.mjs",
 			"**/*.cjs",
 			"**/*.tsx",
-			"**/*.astro"
+			"!**/node_modules",
+			"!**/dist",
+			"!**/coverage",
+			"!**/profiling",
+			"!**/logs",
+			"!**/icon_cache",
+			"!**/.astro",
+			"!**/.yarn",
+			"!**/.pnpm-store"
 		]
 	},
 	"vcs": {
@@ -56,17 +66,20 @@
 				"noParameterAssign": "off",
 				"useExponentiationOperator": "off",
 				"noUselessElse": "off",
-				"useLiteralEnumMembers": "warn"
+				"useLiteralEnumMembers": "warn",
+				"noInferrableTypes": "off"
 			},
 			"correctness": {
 				"useExhaustiveDependencies": "warn",
-				"noUnnecessaryContinue": "warn",
-				"noConstructorReturn": "off"
+				"noConstructorReturn": "off",
+				"useParseIntRadix": "off"
 			},
 			"complexity": {
 				"noExtraBooleanCast": "warn",
 				"noBannedTypes": "warn",
-				"noForEach": "warn"
+				"noForEach": "warn",
+				"noStaticOnlyClass": "off",
+				"noUselessContinue": "warn"
 			},
 			"performance": {
 				"noAccumulatingSpread": "warn"

@@ -1,11 +1,12 @@
+import { notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, notEmpty, objectEntries } from 'e';
+import { dateFm, formatDuration, getNextUTCReset } from '@oldschoolgg/toolkit/util';
 
+import { TEARS_OF_GUTHIX_CD } from '@/lib/events.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
 export const tearsOfGuthixSkillReqs = {
 	[SkillsEnum.Firemaking]: 49,
@@ -50,17 +51,13 @@ function getTearsOfGuthixMissingSkillMessage(user: MUser): string | null {
 
 export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
-	const currentDate = Date.now();
-
 	const currentStats = await user.fetchStats({ last_tears_of_guthix_timestamp: true });
-
 	const lastPlayedDate = Number(currentStats.last_tears_of_guthix_timestamp);
-	const difference = currentDate - lastPlayedDate;
+	const nextReset = getNextUTCReset(lastPlayedDate, TEARS_OF_GUTHIX_CD);
 
 	// If they have already claimed a ToG in the past 7days
-	if (difference < Time.Day * 7) {
-		const duration = formatDuration(Date.now() - (lastPlayedDate + Time.Day * 7));
-		return `**${Emoji.Snake} Juna says...** You can drink from the Tears of Guthix in ${duration}.`;
+	if (Date.now() < nextReset) {
+		return `**${Emoji.Snake} Juna says...** You can drink from the Tears of Guthix in ${dateFm(new Date(nextReset))}`;
 	}
 
 	// 43 QP for the quest

@@ -1,6 +1,6 @@
 import { EItem, ItemGroups, Items, type Monster, MonsterAttribute } from 'oldschooljs';
 
-import type { GearBank } from '@/lib/structures/GearBank';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 
 export const dragonHunterWeapons = [
 	{
@@ -20,7 +20,11 @@ export function calculateVirtusBoost({
 	gearBank,
 	isOnTask,
 	osjsMon
-}: { gearBank: GearBank; isInWilderness: boolean; isOnTask: boolean; osjsMon: Monster | undefined }) {
+}: {
+	gearBank: GearBank;
+	isInWilderness: boolean;
+	isOnTask: boolean; osjsMon: Monster | undefined;
+}) {
 	let virtusPiecesEquipped = 0;
 	const isUndead = osjsMon?.data?.attributes?.includes(MonsterAttribute.Undead);
 	const hasSalve =

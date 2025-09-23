@@ -1,8 +1,7 @@
-import type { Item } from 'oldschooljs';
+import { type Item, Items } from 'oldschooljs';
 
-import type { PrimaryGearSetupType } from '@/lib/gear/types';
-import getOSItem from '@/lib/util/getOSItem';
-import type { PvMMethod } from '../../../commands/k';
+import type { PvMMethod } from '@/lib/constants.js';
+import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
 
 interface StaticEquippedItemBoost {
 	item: Item;
@@ -13,7 +12,7 @@ interface StaticEquippedItemBoost {
 
 export const staticEquippedItemBoosts: StaticEquippedItemBoost[] = [
 	{
-		item: getOSItem('Kodai wand'),
+		item: Items.getOrThrow('Kodai wand'),
 		attackStyle: 'mage',
 		anyRequiredPVMMethod: ['barrage', 'burst'],
 		percentageBoost: 15

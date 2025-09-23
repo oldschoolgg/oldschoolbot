@@ -1,9 +1,8 @@
-import { randArrItem } from 'e';
-import { Bank } from 'oldschooljs';
+import { randArrItem } from '@oldschoolgg/toolkit';
+import { Bank, Items } from 'oldschooljs';
 
-import { kittens } from '../../../lib/growablePets';
-import { mahojiChatHead } from '../../../lib/util/chatHeadImage';
-import getOSItem from '../../../lib/util/getOSItem';
+import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
+import { kittens } from '@/lib/growablePets.js';
 
 export async function buyKitten(user: MUser) {
 	const cost = new Bank().add('Coins', 1000);
@@ -28,11 +27,11 @@ export async function buyKitten(user: MUser) {
 		});
 	}
 
-	const kitten = getOSItem(randArrItem(kittens));
+	const kitten = Items.getOrThrow(randArrItem(kittens));
 
 	const loot = new Bank().add(kitten.id);
 
-	await transactItems({ userID: user.id, itemsToRemove: cost, itemsToAdd: loot, collectionLog: true });
+	await user.transactItems({ itemsToRemove: cost, itemsToAdd: loot, collectionLog: true });
 
 	return {
 		...(await mahojiChatHead({

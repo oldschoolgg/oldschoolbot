@@ -1,4 +1,4 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '@/structures/LootTable.js';
 
 const DiedTable = new LootTable()
 	.add('Adamant dagger')

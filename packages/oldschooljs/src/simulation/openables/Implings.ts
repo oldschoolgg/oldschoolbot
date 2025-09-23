@@ -1,10 +1,10 @@
-import LootTable from '../../structures/LootTable';
-import SimpleOpenable from '../../structures/SimpleOpenable';
-import { EasyClueTable } from '../clues/Easy';
-import { EliteClueTable } from '../clues/Elite';
-import { HardClueTable } from '../clues/Hard';
-import { MasterClueTable } from '../clues/Master';
-import { MediumClueTable } from '../clues/Medium';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
+import { EasyClueTable } from '../clues/Easy.js';
+import { EliteClueTable } from '../clues/Elite.js';
+import { HardClueTable } from '../clues/Hard.js';
+import { MasterClueTable } from '../clues/Master.js';
+import { MediumClueTable } from '../clues/Medium.js';
 
 export const BabyImpling = new SimpleOpenable({
 	id: 11_238,
@@ -260,7 +260,7 @@ export const CrystalImpling = new SimpleOpenable({
 	table: new LootTable()
 		.add('Amulet of power', [5, 7])
 		.add('Crystal acorn')
-		.add('Crystal shard', [5, 10])
+		.add('Crystal shard', [30, 40])
 		.add('Dragonstone amulet')
 		.add('Dragonstone', 2)
 		.add('Ruby bolt tips', [50, 125])

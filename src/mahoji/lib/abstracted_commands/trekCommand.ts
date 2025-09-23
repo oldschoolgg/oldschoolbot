@@ -1,21 +1,22 @@
+import { objectEntries, randInt, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { objectEntries, randInt, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
-
 import { GearStat } from 'oldschooljs/gear';
-import TrekShopItems, { TrekExperience } from '../../../lib/data/buyables/trekBuyables';
-import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { difficulties, rewardTokens, trekBankBoosts } from '../../../lib/minions/data/templeTrekking';
-import type { AddXpParams, GearRequirement } from '../../../lib/minions/types';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { percentChance } from '../../../lib/util/rng';
-import { readableStatName } from '../../../lib/util/smallUtils';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+
+import TrekShopItems, { TrekExperience } from '@/lib/data/buyables/trekBuyables.js';
+import { MorytaniaDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { difficulties, rewardTokens, trekBankBoosts } from '@/lib/minions/data/templeTrekking.js';
+import type { AddXpParams } from '@/lib/minions/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { GearRequirement } from '@/lib/structures/Gear.js';
+import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { percentChance } from '@/lib/util/rng.js';
+import { readableStatName } from '@/lib/util/smallUtils.js';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function trekCommand(user: MUser, channelID: string, difficulty: string, quantity: number | undefined) {
 	const tier = difficulties.find(item => stringMatches(item.difficulty, difficulty));

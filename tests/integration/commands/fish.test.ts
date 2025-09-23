@@ -1,8 +1,11 @@
-import { Bank, EItem } from 'oldschooljs';
+import { increaseNumByPercent } from '@oldschoolgg/toolkit';
+import { Bank, convertLVLtoXP, EItem, ItemGroups } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
-import { fishCommand } from '../../../src/mahoji/commands/fish';
-import { createTestUser, mockClient } from '../util';
+import { MAX_LEVEL } from '../../../src/lib/constants.js';
+import { fishCommand } from '../../../src/mahoji/commands/fish.js';
+import { XP_MULTIPLIER } from '../../testConstants.js';
+import { createTestUser, mockClient } from '../util.js';
 
 describe('Fish Command', async () => {
 	const client = await mockClient();
@@ -70,6 +73,7 @@ describe('Fish Command', async () => {
 	it('should fish barrel boost', async () => {
 		const user = await client.mockUser({ maxed: true });
 		await user.equip('skilling', [EItem.FISH_SACK_BARREL]);
+		expect(user.skillsAsLevels.fishing).toBe(MAX_LEVEL);
 		const res = await user.runCommand(fishCommand, { name: 'shrimps' });
 		expect(res).toContain('is now fishing 643x Shrimps');
 	});
@@ -77,14 +81,17 @@ describe('Fish Command', async () => {
 	it('should handle using flakes without flakes in bank', async () => {
 		const user = await createTestUser();
 		const res = await user.runCommand(fishCommand, { name: 'shrimps', flakes: true });
-		expect(res).toEqual('You need to have at least one spirit flake!');
+		expect(res).toEqual('You need to have at least one Spirit flake!');
 	});
 
 	it('should fish with flakes', async () => {
 		const user = await createTestUser();
 		await user.update({ bank: new Bank({ 'Spirit flakes': 100 }) });
-		const res = await user.runCommand(fishCommand, { name: 'shrimps', flakes: true });
-		expect(res).toContain('is now fishing 251x Shrimps');
+		const res = await user.runCommand(fishCommand, { name: 'shrimps', flakes: true, quantity: 50 });
+		expect(res).toContain('is now fishing 50x Shrimps');
+		await user.runActivity();
+		expect(user.bank.amount('Raw shrimps')).toBeGreaterThan(50);
+		expect(user.bank.amount('Spirit flakes')).toEqual(50);
 	});
 
 	it('should still use flakes if bank contains fewer flakes than fish quantity', async () => {
@@ -92,5 +99,37 @@ describe('Fish Command', async () => {
 		await user.update({ bank: new Bank({ 'Spirit flakes': 100 }) });
 		const res = await user.runCommand(fishCommand, { name: 'shrimps', flakes: true });
 		expect(res).toContain('is now fishing 251x Shrimps');
+	});
+
+	it('should use fishing bait', async () => {
+		const user = await createTestUser();
+		await user.update({ skills_fishing: 100_000, bank: new Bank({ 'Fishing bait': 100 }) });
+		const res = await user.runCommand(fishCommand, { name: 'sardine', quantity: 50 });
+		expect(res).toContain('is now fishing 50x Sardine');
+		await user.runActivity();
+		expect(user.bank.amount('Fishing bait')).toEqual(50);
+		expect(user.bank.amount('Raw sardine')).toEqual(50);
+		expect(user.skillsAsXP.fishing).toEqual(100_000 + 50 * 20 * XP_MULTIPLIER);
+	});
+
+	it('should not let you fish without fishing bait', async () => {
+		const user = await createTestUser();
+		await user.update({ skills_fishing: 100_000 });
+		const res = await user.runCommand(fishCommand, { name: 'sardine', quantity: 50 });
+		expect(res).toContain('You need Fishing bait');
+	});
+
+	it('should give angler boost', async () => {
+		const user = await createTestUser();
+		await user.equip('skilling', ItemGroups.anglerOutfit);
+		const startingXP = convertLVLtoXP(80);
+		await user.update({ skills_fishing: startingXP });
+		const res = await user.runCommand(fishCommand, { name: 'lobster', quantity: 50 });
+		expect(res).toContain('is now fishing 50x Lobster');
+		await user.runActivity();
+		expect(user.bank.amount('Raw lobster')).toEqual(50);
+		const xpToReceive = 50 * 90 * XP_MULTIPLIER;
+		const xpWithAnglerBoost = increaseNumByPercent(xpToReceive, 2.5);
+		expect(user.skillsAsXP.fishing).toEqual(Math.ceil(startingXP + xpWithAnglerBoost));
 	});
 });

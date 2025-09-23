@@ -1,8 +1,7 @@
-import { randInt } from 'e';
-
-import { QuestID } from '../../minions/data/quests';
-import type { Plant } from '../types';
-import { SkillsEnum } from '../types';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import type { Plant } from '@/lib/skilling/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { randInt } from '@/lib/util/rng.js';
 
 export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number] {
 	let numOfPatches = plant.defaultNumOfPatches;

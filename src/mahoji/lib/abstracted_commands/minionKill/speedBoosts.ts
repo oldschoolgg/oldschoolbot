@@ -1,11 +1,11 @@
-import { calcWhatPercent, sumArr } from 'e';
+import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters, SkillsEnum } from 'oldschooljs';
 import type { OffenceGearStat } from 'oldschooljs/gear';
 
-import { degradeableItems, degradeablePvmBoostItems } from '@/lib/degradeableItems';
-import type { PrimaryGearSetupType } from '@/lib/gear/types';
+import type { PvMMethod } from '@/lib/constants.js';
+import { degradeableItems, degradeablePvmBoostItems } from '@/lib/degradeableItems.js';
+import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
 import {
-	SlayerActivityConstants,
 	boostCannon,
 	boostCannonMulti,
 	boostIceBarrage,
@@ -13,34 +13,33 @@ import {
 	cannonMultiConsumables,
 	cannonSingleConsumables,
 	iceBarrageConsumables,
-	iceBurstConsumables
-} from '@/lib/minions/data/combatConstants';
-import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs';
-import type { AttackStyles } from '@/lib/minions/functions';
-import type { Consumable } from '@/lib/minions/types';
-import { calcPOHBoosts } from '@/lib/poh';
-import { ChargeBank } from '@/lib/structures/Bank';
-import { maxOffenceStats } from '@/lib/structures/Gear';
-import type { MonsterActivityTaskOptions } from '@/lib/types/minions';
-import getOSItem from '@/lib/util/getOSItem';
-import type { PvMMethod } from '../../../commands/k';
-import { resolveAvailableItemBoosts } from '../../../mahojiSettings';
-import { determineIfUsingCannon } from './determineIfUsingCannon';
-import { calculateVirtusBoost, dragonHunterWeapons } from './minionKillData';
-import type { MinionKillOptions } from './newMinionKill';
-import type { PostBoostEffect } from './postBoostEffects';
-import { staticEquippedItemBoosts } from './staticEquippedItemBoosts';
+	iceBurstConsumables,
+	SlayerActivityConstants
+} from '@/lib/minions/data/combatConstants.js';
+import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import type { Consumable } from '@/lib/minions/types.js';
+import { calcPOHBoosts } from '@/lib/poh/index.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
+import { maxOffenceStats } from '@/lib/structures/Gear.js';
+import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import { resolveAvailableItemBoosts } from '@/mahoji/mahojiSettings.js';
+import { determineIfUsingCannon } from './determineIfUsingCannon.js';
+import { calculateVirtusBoost, dragonHunterWeapons } from './minionKillData.js';
+import type { MinionKillOptions } from './newMinionKill.js';
+import type { PostBoostEffect } from './postBoostEffects.js';
+import { staticEquippedItemBoosts } from './staticEquippedItemBoosts.js';
 
 const revSpecialWeapons = {
-	melee: getOSItem("Viggora's chainmace"),
-	range: getOSItem("Craw's bow"),
-	mage: getOSItem("Thammaron's sceptre")
+	melee: Items.getOrThrow("Viggora's chainmace"),
+	range: Items.getOrThrow("Craw's bow"),
+	mage: Items.getOrThrow("Thammaron's sceptre")
 } as const;
 
 const revUpgradedWeapons = {
-	melee: getOSItem('Ursine chainmace'),
-	range: getOSItem('Webweaver bow'),
-	mage: getOSItem('Accursed sceptre')
+	melee: Items.getOrThrow('Ursine chainmace'),
+	range: Items.getOrThrow('Webweaver bow'),
+	mage: Items.getOrThrow('Accursed sceptre')
 } as const;
 
 export type CombatMethodOptions = Pick<
@@ -362,7 +361,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 					);
 					if (equippedInThisSet) {
 						degItemBeingUsed.push({
-							item: getOSItem(equippedInThisSet.itemID),
+							item: Items.getOrThrow(equippedInThisSet.itemID),
 							boostPercent: equippedInThisSet.boostPercent
 						});
 					}

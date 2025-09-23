@@ -1,46 +1,39 @@
-import {
-	type CommandResponse,
-	type CommandRunOptions,
-	channelIsSendable,
-	formatDuration,
-	hasBanMemberPerms,
-	miniID,
-	stringMatches
-} from '@oldschoolgg/toolkit/util';
+import { removeFromArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { allAbstractCommands, channelIsSendable, hasBanMemberPerms } from '@oldschoolgg/toolkit/discord-util';
+import { miniID, stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { activity_type_enum } from '@prisma/client';
 import {
 	ApplicationCommandOptionType,
+	bold,
 	type ChatInputCommandInteraction,
 	EmbedBuilder,
 	type Guild,
 	type HexColorString,
-	type User,
-	bold,
 	inlineCode,
-	resolveColor
+	resolveColor,
+	type User
 } from 'discord.js';
-import { Time, clamp, removeFromArr, uniqueArr } from 'e';
-import { Bank, type ItemBank } from 'oldschooljs';
+import { Bank, type ItemBank, Items } from 'oldschooljs';
+import { clamp } from 'remeda';
 
-import { DynamicButtons } from '../../lib/DynamicButtons';
-import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier, globalConfig } from '../../lib/constants';
-import { Eatables } from '../../lib/data/eatables';
-import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
-import { birdhouseSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrapping';
-import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
-import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
-import { BankSortMethods } from '../../lib/sorts';
-import { emojiServers } from '../../lib/util/cachedUserIDs';
-import { getItem } from '../../lib/util/getOSItem';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { isValidNickname, itemNameFromID } from '../../lib/util/smallUtils';
-import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
-import { itemOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
-import { allAbstractCommands } from '../lib/util';
-import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
+import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
+import { BitField, globalConfig, ParsedCustomEmojiWithGroups, PerkTier } from '@/lib/constants.js';
+import { DynamicButtons } from '@/lib/DynamicButtons.js';
+import { Eatables } from '@/lib/data/eatables.js';
+import { CombatOptionsArray, CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
+import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
+import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
+import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerUtil.js';
+import { BankSortMethods } from '@/lib/sorts.js';
+import { emojiServers } from '@/lib/util/cachedUserIDs.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
+import { isValidNickname, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '@/mahoji/guildSettings.js';
+import { itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
+import { mahojiUsersSettingsFetch, patronMsg } from '@/mahoji/mahojiSettings.js';
 
 interface UserConfigToggle {
 	name: string;
@@ -202,7 +195,7 @@ async function favFoodConfig(
 		return 'Cleared all favorite food.';
 	}
 	const currentFavorites = user.user.favorite_food;
-	const item = getItem(itemToAdd ?? itemToRemove);
+	const item = Items.getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite food is: ${
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
 	}.`;
@@ -233,7 +226,7 @@ async function favItemConfig(
 		return 'Cleared all favorite items.';
 	}
 	const currentFavorites = user.user.favoriteItems;
-	const item = getItem(itemToAdd ?? itemToRemove);
+	const item = Items.getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite items are: ${
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ').slice(0, 1500)
 	}.`;
@@ -283,8 +276,8 @@ async function favAlchConfig(
 			.join(', ')} to your favorites.`;
 	}
 
-	const removeItem = itemToRemove ? getItem(itemToRemove) : null;
-	const addItem = itemToAdd ? getItem(itemToAdd) : null;
+	const removeItem = itemToRemove ? Items.getItem(itemToRemove) : null;
+	const addItem = itemToAdd ? Items.getItem(itemToAdd) : null;
 	const item = removeItem || addItem;
 
 	if (!item) {
@@ -326,7 +319,7 @@ async function favBhSeedsConfig(
 
 	const currentFavorites = user.user.favorite_bh_seeds;
 	if (itemToAdd || itemToRemove) {
-		const item = getItem(itemToAdd ?? itemToRemove);
+		const item = Items.getItem(itemToAdd ?? itemToRemove);
 		if (!item) return "That item doesn't exist.";
 		if (!birdhouseSeeds.some(seed => seed.item.id === item.id)) return "That item can't be used in birdhouses.";
 		if (itemToAdd) {
@@ -638,7 +631,7 @@ async function handleRSN(user: MUser, newRSN: string) {
 }
 
 function pinnedTripLimit(perkTier: number) {
-	return clamp(perkTier + 1, 1, 4);
+	return clamp(perkTier + 1, { min: 1, max: 4 });
 }
 export async function pinTripCommand(
 	user: MUser,
@@ -1133,7 +1126,7 @@ LIMIT 20;
 							name: 'name',
 							description: 'The icon pack you want to use.',
 							required: true,
-							choices: ['Default', ...ItemIconPacks.map(i => i.name)].map(i => ({
+							choices: ['Default', ...Object.values(ItemIconPacks).map(i => i.name)].map(i => ({
 								name: i,
 								value: i
 							}))
@@ -1215,7 +1208,7 @@ LIMIT 20;
 						return 'Your icon pack is already set to default.';
 					}
 
-					const pack = ItemIconPacks.find(i => i.name === icon_pack.name);
+					const pack = Object.values(ItemIconPacks).find(i => i.name === icon_pack.name);
 					if (!pack) return 'Invalid icon pack.';
 
 					if (!user.user.store_bitfield.includes(pack.storeBitfield)) {

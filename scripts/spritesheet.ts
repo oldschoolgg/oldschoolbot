@@ -1,18 +1,21 @@
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
+import { type GenerateResult, SpriteSheetGenerator } from '@oldschoolgg/spritesheet';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-// @ts-expect-error
-import Spritesmith from 'spritesmith';
-import '../src/lib/safeglobals';
+import '../src/lib/safeglobals.js';
+import { isFunction, uniqueArr } from '@oldschoolgg/toolkit';
+import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
+import sharp from 'sharp';
 
-import { isFunction, uniqueArr } from 'e';
-import { Bank, Items, resolveItems } from 'oldschooljs';
-import { ALL_OBTAINABLE_ITEMS } from '../src/lib/allObtainableItems';
-import { BOT_TYPE } from '../src/lib/constants';
-import { allCLItems } from '../src/lib/data/Collections';
-import Buyables from '../src/lib/data/buyables/buyables';
-import Createables from '../src/lib/data/createables';
+import bsoItemsJson from '../data/bso/bso_items.json' with { type: 'json' };
+import bsoMonstersJson from '../data/bso/monsters.json' with { type: 'json' };
+import { ALL_OBTAINABLE_ITEMS } from '../src/lib/allObtainableItems.js';
+import { BOT_TYPE } from '../src/lib/constants.js';
+import Buyables from '../src/lib/data/buyables/buyables.js';
+import { allCLItems } from '../src/lib/data/Collections.js';
+import Createables from '../src/lib/data/createables.js';
 
+const SPRITESHEETS_DIR = './src/lib/resources/spritesheets';
 const stopwatch = new Stopwatch();
 
 const manualIDs = [
@@ -75,7 +78,12 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 		'Rune staff of collection',
 		'Dragon staff of collection',
 		'Gilded staff of collection'
-	])
+	]),
+	...uniqueArr(bsoMonstersJson.data.map(m => m.all_droppable_items).flat(100)).filter(id => {
+		if ((bsoItemsJson as any as ItemBank)[id]) return false;
+		if (!Items.has(id)) return false;
+		return true;
+	})
 ]);
 
 const getPngFiles = async (dir: string): Promise<string[]> => {
@@ -83,36 +91,28 @@ const getPngFiles = async (dir: string): Promise<string[]> => {
 	return files.filter(file => path.extname(file).toLowerCase() === '.png').map(file => path.join(dir, file));
 };
 
-const createSpriteSheet = (files: string[], outputPath: string): Promise<Spritesmith.Result> => {
-	return new Promise((resolve, reject) => {
-		Spritesmith.run({ src: files }, async (err: any, result: any) => {
-			if (err) return reject(err);
-			try {
-				await fs.writeFile(outputPath, result.image);
-				resolve(result);
-			} catch (writeError) {
-				reject(writeError);
-			}
-		});
-	});
+const createSpriteSheet = async (files: string[], outputPath: string) => {
+	const result = await SpriteSheetGenerator.generate({ images: files });
+
+	const compressedBuff = await sharp(result.imageBuffer)
+		.png({
+			compressionLevel: 9
+		})
+		.toBuffer();
+	await fs.writeFile(outputPath, compressedBuff);
+	return result;
 };
 
-const generateJsonData = (result: Spritesmith.Result): Record<string, any> => {
-	stopwatch.check('Generating spritesheet.json');
-	const jsonData: Record<string, any> = {};
-	for (const [filePath, data] of Object.entries(result.coordinates) as any[]) {
-		const fileName = path.basename(filePath, '.png');
-		jsonData[fileName] = [data.x, data.y, data.width, data.height];
+const generateJsonData = (result: GenerateResult) => {
+	stopwatch.check('Generating spritesheet json');
+	const jsonData: Record<string, [number, number, number, number]> = {};
+	for (const [id, data] of Object.entries(result.positions)) {
+		jsonData[id] = [data.x, data.y, data.width, data.height];
 	}
 	return jsonData;
 };
 
-async function makeSpritesheet(
-	iconsDir: string,
-	outputImageFilePath: string,
-	outputJsonFilePath: string,
-	allItems?: number[]
-) {
+async function makeSpritesheet(iconsDir: string, name: string, allItems?: number[]) {
 	const pngFiles = await getPngFiles(iconsDir);
 	stopwatch.check(`Found ${pngFiles.length} PNG files in ${iconsDir}`);
 	if (pngFiles.length === 0) {
@@ -132,29 +132,56 @@ async function makeSpritesheet(
 	stopwatch.check(`Rendering spritesheet image with ${filesToDo.length} items`);
 	const result = await createSpriteSheet(
 		filesToDo.map(p => path.join(iconsDir, p)),
-		outputImageFilePath
+		path.join(SPRITESHEETS_DIR, `${name}.png`)
 	);
 	const jsonData = generateJsonData(result);
-	await fs.writeFile(outputJsonFilePath, JSON.stringify(jsonData, null, 2));
+	await fs.writeFile(path.join(SPRITESHEETS_DIR, `${name}.json`), JSON.stringify(jsonData, null, 2));
 	stopwatch.check('Spritesheet and JSON created successfully');
+}
+
+async function generateGenericSpritesheet(inputDir: string, outputName: string) {
+	const outputImagePath = path.join(SPRITESHEETS_DIR, `${outputName}.png`);
+	const outputJsonPath = path.join(SPRITESHEETS_DIR, `${outputName}.json`);
+
+	try {
+		stopwatch.check(`Generating generic spritesheet from ${inputDir}`);
+
+		const pngFiles = await getPngFiles(inputDir);
+		stopwatch.check(`Found ${pngFiles.length} PNG files in ${inputDir}`);
+
+		if (pngFiles.length === 0) {
+			throw new Error('No PNG files found in the directory');
+		}
+
+		stopwatch.check(`Creating spritesheet with ${pngFiles.length} images`);
+		const result = await createSpriteSheet(pngFiles, outputImagePath);
+
+		const jsonData = generateJsonData(result);
+		await fs.writeFile(outputJsonPath, JSON.stringify(jsonData, null, 2));
+
+		stopwatch.check(`Generic spritesheet '${outputName}' created successfully`);
+		return {
+			imagePath: outputImagePath,
+			jsonPath: outputJsonPath
+		};
+	} catch (error) {
+		throw new Error(`Failed to generate generic spritesheet: ${error}`);
+	}
 }
 
 async function main() {
 	if (BOT_TYPE !== 'OSB') throw new Error('This script is only for OSB.');
 	stopwatch.check('Making OSB spritesheet');
-	await makeSpritesheet(
-		'./tmp/icons',
-		'./src/lib/resources/images/spritesheet.png',
-		'./src/lib/resources/images/spritesheet.json',
-		itemsMustBeInSpritesheet
-	).catch(err => console.error(`Failed to make OSB spritesheet: ${err.message}`));
+	await makeSpritesheet('./tmp/icons', 'items-spritesheet', itemsMustBeInSpritesheet).catch(err =>
+		console.error(`Failed to make OSB spritesheet: ${err.message}`)
+	);
 
 	stopwatch.check('Making BSO spritesheet');
-	await makeSpritesheet(
-		'./src/lib/resources/images/bso_icons',
-		'./src/lib/resources/images/bso_spritesheet.png',
-		'./src/lib/resources/images/bso_spritesheet.json'
-	).catch(err => console.error(`Failed to make BSO spritesheet: ${err.message}`));
+	await makeSpritesheet('./src/lib/resources/images/bso_icons', 'bso-items-spritesheet').catch(err =>
+		console.error(`Failed to make BSO spritesheet: ${err.message}`)
+	);
+
+	await generateGenericSpritesheet('./src/lib/resources/images/grandexchange/', 'ge-spritesheet');
 
 	stopwatch.check('Finished');
 	process.exit();

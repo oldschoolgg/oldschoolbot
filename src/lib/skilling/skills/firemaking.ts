@@ -1,8 +1,8 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { EItem } from 'oldschooljs/EItem';
 
-import type { Burnable } from '../types';
-import { SkillsEnum } from '../types';
+import type { Burnable } from '@/lib/skilling/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 
 const burnables: Burnable[] = [
 	{

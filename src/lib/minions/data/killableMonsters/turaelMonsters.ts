@@ -1,9 +1,10 @@
-import { Time } from 'e';
-import { Monsters, deepResolveItems, itemID } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit/datetime';
+import { deepResolveItems, itemID, Monsters } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { SkillsEnum } from '../../../skilling/types';
-import type { KillableMonster } from '../../types';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 
 export const turaelMonsters: KillableMonster[] = [
 	{
@@ -216,7 +217,10 @@ export const turaelMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 1,
-		qpRequired: 0
+		qpRequired: 0,
+		canCannon: true,
+		cannonMulti: false,
+		canBarrage: false
 	},
 	{
 		id: Monsters.CrawlingHand.id,
@@ -1252,6 +1256,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		difficultyRating: 2,
 		qpRequired: 20,
+		requiredQuests: [QuestID.TheCurseOfArrav],
 		canBarrage: true,
 		canChinning: true,
 		healAmountNeeded: 20,

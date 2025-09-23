@@ -1,3 +1,10 @@
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Time } from '@oldschoolgg/toolkit/datetime';
+import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import { time } from 'discord.js';
+
+import { SeedableRNG } from '@/lib/util/rng.js';
+
 export interface Peak {
 	startTime: number;
 	finishTime: number;
@@ -25,16 +32,58 @@ export const peakFactor = [
 	}
 ];
 
-export function getCurrentPeak() {
-	const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
-	let currentPeak = cachedPeakInterval[0];
-	const date = new Date().getTime();
-	for (const peak of cachedPeakInterval) {
-		if (peak.startTime < date && peak.finishTime > date) {
-			currentPeak = peak;
-			break;
-		}
+function getSeedFromDate(date: Date): number {
+	const year = date.getUTCFullYear();
+	const month = date.getUTCMonth() + 1;
+	const day = date.getUTCDate();
+	return year * 10000 + month * 100 + day;
+}
+
+export function generateDailyPeakIntervals(date: Date = new Date()): { peaks: Peak[]; currentPeak: Peak } {
+	const seed = getSeedFromDate(date);
+	const rng = new SeedableRNG(seed);
+	const peakTiers: PeakTier[] = [PeakTier.High, PeakTier.Medium, PeakTier.Low];
+
+	let hoursUsed = 0;
+	let peaks: Peak[] = [];
+
+	for (let i = 0; i < 10; i++) {
+		const duration = rng.randInt(1, 2);
+		const peakTier = rng.shuffle(peakTiers)[0];
+		peaks.push({ startTime: duration, finishTime: duration, peakTier });
+		hoursUsed += duration;
 	}
 
-	return currentPeak;
+	const finalDuration = 24 - hoursUsed;
+	if (finalDuration > 0) {
+		peaks.push({ startTime: finalDuration, finishTime: finalDuration, peakTier: PeakTier.Low });
+	}
+
+	peaks = rng.shuffle(peaks);
+
+	let current = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+	for (const p of peaks) {
+		p.startTime = current;
+		current += p.finishTime * Time.Hour;
+		p.finishTime = current;
+	}
+
+	return {
+		peaks,
+		currentPeak: peaks.find(p => p.startTime <= Date.now() && p.finishTime >= Date.now()) || peaks[0]
+	};
+}
+
+export function getPeakTimesString(): string {
+	let str = '';
+	for (const peak of generateDailyPeakIntervals().peaks) {
+		str += `${Emoji.Stopwatch} **${toTitleCase(peak.peakTier)}** peak time: ${time(
+			new Date(peak.startTime),
+			'T'
+		)} to ${time(new Date(peak.finishTime), 'T')} (**${Math.round(
+			(peak.finishTime - peak.startTime) / Time.Hour
+		)}** hour peak ${time(new Date(peak.startTime), 'R')})\n`;
+	}
+
+	return str;
 }

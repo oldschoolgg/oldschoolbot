@@ -1,62 +1,24 @@
-import { awaitMessageComponentInteraction, channelIsSendable, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
-import { Time, notEmpty, randInt, removeFromArr } from 'e';
-import { Monsters } from 'oldschooljs';
+import { notEmpty, randInt, removeFromArr } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { type ChatInputCommandInteraction, MessageFlags } from 'discord.js';
+import { EItem, Monsters } from 'oldschooljs';
 
-import { InteractionID } from '../../../lib/InteractionID';
-import killableMonsters from '../../../lib/minions/data/killableMonsters';
-import { runCommand } from '../../../lib/settings/settings';
-import { slayerMasters } from '../../../lib/slayer/slayerMasters';
-import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { slayerActionButtons } from '@/lib/slayer/slayerButtons.js';
+import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
+import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 import {
 	assignNewSlayerTask,
 	calcMaxBlockedTasks,
 	getCommonTaskName,
 	getUsersCurrentSlayerInfo,
 	userCanUseMaster
-} from '../../../lib/slayer/slayerUtil';
-import type { AssignableSlayerTask } from '../../../lib/slayer/types';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { interactionReply } from '../../../lib/util/interactionReply';
-import { logError } from '../../../lib/util/logError';
-import { userStatsUpdate } from '../../mahojiSettings';
-
-const returnSuccessButtons = [
-	new ActionRowBuilder<ButtonBuilder>().addComponents([
-		new ButtonBuilder({
-			label: 'Autoslay (Saved)',
-			style: ButtonStyle.Secondary,
-			customId: InteractionID.Slayer.AutoSlaySaved
-		}),
-		new ButtonBuilder({
-			label: 'Autoslay (Default)',
-			style: ButtonStyle.Secondary,
-			customId: InteractionID.Slayer.AutoSlayDefault
-		}),
-		new ButtonBuilder({
-			label: 'Autoslay (EHP)',
-			style: ButtonStyle.Secondary,
-			customId: InteractionID.Slayer.AutoSlayEHP
-		}),
-		new ButtonBuilder({
-			label: 'Autoslay (Boss)',
-			style: ButtonStyle.Secondary,
-			customId: InteractionID.Slayer.AutoSlayBoss
-		})
-	]),
-	new ActionRowBuilder<ButtonBuilder>().addComponents([
-		new ButtonBuilder({
-			label: 'Cancel Task + New (30 points)',
-			style: ButtonStyle.Danger,
-			customId: InteractionID.Slayer.SkipTask
-		}),
-		new ButtonBuilder({
-			label: 'Block Task + New (100 points)',
-			style: ButtonStyle.Danger,
-			customId: InteractionID.Slayer.BlockTask
-		})
-	])
-];
+} from '@/lib/slayer/slayerUtil.js';
+import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { interactionReply } from '@/lib/util/interactionReply.js';
+import { logError } from '@/lib/util/logError.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 function getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
 	if (assignedTask) {
@@ -111,109 +73,9 @@ export async function slayerStatusCommand(mahojiUser: MUser) {
 	);
 }
 
-async function returnSuccess(channelID: string, user: MUser, content: string) {
-	const channel = globalClient.channels.cache.get(String(channelID));
-	if (!channelIsSendable(channel)) return;
-
-	const sentMessage = await channel.send({ content, components: returnSuccessButtons });
-
-	const options = {
-		channelID: channel.id,
-		userID: user.id,
-		guildID: channel.guild ? channel.guild.id : undefined,
-		user,
-		member: null,
-		continueDeltaMillis: null
-	};
-
-	try {
-		const selection = await awaitMessageComponentInteraction({
-			message: sentMessage,
-			filter: i => {
-				if (i.user.id !== user.id) {
-					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
-					return false;
-				}
-				return true;
-			},
-			time: Time.Second * 15
-		});
-		if (!selection.isButton()) return;
-		switch (selection.customId) {
-			case InteractionID.Slayer.AutoSlaySaved: {
-				await runCommand({
-					commandName: 'slayer',
-					args: { autoslay: {} },
-					bypassInhibitors: true,
-					interaction: selection,
-					...options
-				});
-				return;
-			}
-			case InteractionID.Slayer.AutoSlayDefault: {
-				await runCommand({
-					commandName: 'slayer',
-					args: { autoslay: { mode: 'default' } },
-					bypassInhibitors: true,
-					interaction: selection,
-					...options
-				});
-				return;
-			}
-			case InteractionID.Slayer.AutoSlayEHP: {
-				await runCommand({
-					commandName: 'slayer',
-					args: { autoslay: { mode: 'ehp' } },
-					bypassInhibitors: true,
-					interaction: selection,
-					...options
-				});
-				return;
-			}
-			case InteractionID.Slayer.AutoSlayBoss: {
-				await runCommand({
-					commandName: 'slayer',
-					args: { autoslay: { mode: 'boss' } },
-					bypassInhibitors: true,
-					interaction: selection,
-					...options
-				});
-				return;
-			}
-			case InteractionID.Slayer.SkipTask: {
-				await runCommand({
-					commandName: 'slayer',
-					args: { manage: { command: 'skip', new: true } },
-					bypassInhibitors: true,
-					interaction: selection,
-					...options
-				});
-				return;
-			}
-			case InteractionID.Slayer.BlockTask: {
-				await runCommand({
-					commandName: 'slayer',
-					args: { manage: { command: 'block', new: true } },
-					bypassInhibitors: true,
-					interaction: selection,
-					...options
-				});
-			}
-		}
-	} catch (err: unknown) {
-		if ((err as any).message === 'time') return;
-		logError(err, {
-			user_id: user.id.toString(),
-			channel_id: channelID
-		});
-	} finally {
-		await sentMessage.edit({ components: [] });
-	}
-}
 export async function slayerNewTaskCommand({
 	userID,
 	interaction,
-	channelID,
 	extraContent,
 	slayerMasterOverride,
 	saveDefaultSlayerMaster,
@@ -221,7 +83,6 @@ export async function slayerNewTaskCommand({
 }: {
 	userID: string;
 	interaction: ChatInputCommandInteraction;
-	channelID: string;
 	extraContent?: string;
 	slayerMasterOverride?: string | undefined;
 	saveDefaultSlayerMaster?: boolean;
@@ -241,7 +102,7 @@ export async function slayerNewTaskCommand({
 		return;
 	}
 
-	const has99SlayerCape = user.skillLevel('slayer') >= 99 && user.hasEquippedOrInBank('Slayer cape');
+	const has99SlayerCape = user.skillsAsLevels.slayer >= 99 && user.hasEquippedOrInBank(EItem.SLAYER_CAPE);
 
 	// Chooses a default slayer master (excluding Krystilia):
 	const proposedDefaultMaster = slayerMasters
@@ -276,7 +137,7 @@ export async function slayerNewTaskCommand({
 	// Special handling for Turael skip
 	if (currentTask && slayerMasterOverride && slayerMaster && slayerMaster.name === 'Turael') {
 		if (slayerMaster.tasks.find(t => t.monster.id === currentTask.monster_id)) {
-			interactionReply(interaction, 'You cannot skip this task because Turael assigns it.');
+			await interactionReply(interaction, 'You cannot skip this task because Turael assigns it.');
 			return;
 		}
 		const isUsingKrystilia = Boolean(currentTask?.slayer_master_id === 8);
@@ -306,13 +167,17 @@ export async function slayerNewTaskCommand({
 			)}.`;
 
 		if (showButtons) {
-			await returnSuccess(channelID, user, `${extraContent ?? ''}\n\n${returnMessage}`);
-			await interactionReply(interaction, { content: 'Slayer task assigned.', ephemeral: true });
+			await interactionReply(interaction, {
+				content: `${extraContent ?? ''}\n\n${returnMessage}`,
+				flags: MessageFlags.Ephemeral,
+				components: slayerActionButtons
+			});
 			return;
 		}
 		await interactionReply(interaction, `${extraContent ?? ''}\n\n${returnMessage}`);
 		return;
 	}
+
 	let resultMessage = '';
 	// Store favorite slayer master if requested:
 	if (saveDefaultSlayerMaster && slayerMaster) {
@@ -338,12 +203,15 @@ export async function slayerNewTaskCommand({
 		resultMessage += `${warningInfo}${baseInfo}`;
 		if (currentTask && !warningInfo) {
 			if (showButtons) {
-				returnSuccess(channelID, user, resultMessage);
-				interactionReply(interaction, { content: 'Here is your current slayer task', ephemeral: true });
+				await interactionReply(interaction, {
+					content: `You already have a slayer task: ${resultMessage}`,
+					flags: MessageFlags.Ephemeral,
+					components: slayerActionButtons
+				});
 				return;
 			}
 		}
-		interactionReply(interaction, resultMessage);
+		await interactionReply(interaction, resultMessage);
 		return;
 	}
 
@@ -378,10 +246,14 @@ export async function slayerNewTaskCommand({
 		newSlayerTask.currentTask.quantity
 	}x ${commonName}${getAlternateMonsterList(newSlayerTask.assignedTask)}.`;
 	if (showButtons) {
-		returnSuccess(channelID, user, resultMessage);
-		await interactionReply(interaction, { content: 'Slayer task assigned.', ephemeral: true });
+		await interactionReply(interaction, {
+			content: resultMessage,
+			flags: MessageFlags.Ephemeral,
+			components: slayerActionButtons
+		});
 		return;
 	}
+
 	await interactionReply(interaction, resultMessage);
 }
 
@@ -389,21 +261,19 @@ export async function slayerSkipTaskCommand({
 	userID,
 	block,
 	newTask,
-	interaction,
-	channelID
+	interaction
 }: {
 	userID: string;
 	block: boolean;
 	newTask: boolean;
 	interaction: ChatInputCommandInteraction;
-	channelID: string | string;
 }): Promise<void> {
 	const user = await mUserFetch(userID);
 	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 	const myBlockList = user.user.slayer_blocked_ids;
 	const maxBlocks = await calcMaxBlockedTasks(user);
 	if (user.minionIsBusy) {
-		interactionReply(interaction, 'You cannot change your task while your minion is busy.');
+		await interactionReply(interaction, 'You cannot change your task while your minion is busy.');
 		return;
 	}
 	if (!currentTask) {
@@ -411,40 +281,38 @@ export async function slayerSkipTaskCommand({
 			return slayerNewTaskCommand({
 				userID: user.id,
 				interaction,
-				channelID,
 				showButtons: true
 			});
 		}
-		interactionReply(interaction, "You don't have an active task!");
+		await interactionReply(interaction, "You don't have an active task!");
 		return;
 	}
 
 	if (block && myBlockList.length >= maxBlocks) {
-		interactionReply(
+		await interactionReply(
 			interaction,
 			`You cannot have more than ${maxBlocks} slayer blocks!\n\nUse:\n\`/slayer rewards unblock assignment:kalphite\`\n to remove a blocked monster.\n\`/slayer manage command:list_blocks\` for your list of blocked monsters.`
 		);
 		return;
 	}
-	let slayerPoints = user.user.slayer_points ?? 0;
-	if (slayerPoints < (block ? 100 : 30)) {
-		interactionReply(
+	const slayerPoints = user.user.slayer_points;
+	const cost = block ? 100 : 30;
+	if (slayerPoints < cost) {
+		await interactionReply(
 			interaction,
-			`You need ${block ? 100 : 30} points to ${block ? 'block' : 'cancel'},` +
-				` you only have: ${slayerPoints.toLocaleString()}`
+			`You need ${cost} points to ${block ? 'block' : 'cancel'}, you only have: ${slayerPoints.toLocaleString()}.`
 		);
 		return;
 	}
-
-	slayerPoints -= block ? 100 : 30;
-	const updateData: { slayer_points: number; slayer_blocked_ids?: number[] } = { slayer_points: slayerPoints };
-
+	const updateData: Parameters<typeof user.update>[0] = {
+		slayer_points: {
+			decrement: cost
+		}
+	};
+	if (block) {
+		updateData.slayer_blocked_ids = [...removeFromArr(myBlockList, currentTask.monster_id), currentTask.monster_id];
+	}
 	try {
-		if (block)
-			updateData.slayer_blocked_ids = [
-				...removeFromArr(myBlockList, currentTask.monster_id),
-				currentTask.monster_id
-			];
 		await user.update(updateData);
 		await prisma.slayerTask.update({
 			where: {
@@ -455,20 +323,17 @@ export async function slayerSkipTaskCommand({
 				quantity_remaining: 0
 			}
 		});
-		const resultMessage = `Your task has been ${
-			block ? 'blocked' : 'skipped'
-		}. You have ${slayerPoints.toLocaleString()} slayer points.`;
+		const resultMessage = `Your task has been ${block ? 'blocked' : 'skipped'}. You now have ${user.user.slayer_points.toLocaleString()} slayer points.`;
 
 		if (newTask) {
 			return slayerNewTaskCommand({
 				userID: user.id,
 				interaction,
-				channelID,
 				extraContent: resultMessage,
 				showButtons: true
 			});
 		}
-		interactionReply(interaction, resultMessage);
+		await interactionReply(interaction, resultMessage);
 	} catch (e) {
 		logError(e, {
 			user_id: user.id.toString(),
@@ -476,7 +341,7 @@ export async function slayerSkipTaskCommand({
 			current_task_id: currentTask.id.toString(),
 			current_task: currentTask.monster_id.toString()
 		});
-		interactionReply(
+		await interactionReply(
 			interaction,
 			'An error occurred while performing this action. Please try again, or contact #help-and-support if the issue persists.'
 		);

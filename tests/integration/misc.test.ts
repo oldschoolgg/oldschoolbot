@@ -1,13 +1,13 @@
-import { randArrItem } from 'e';
+import { randArrItem } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { analyticsTick } from '../../src/lib/analytics';
-import { allCollectionLogsFlat } from '../../src/lib/data/Collections';
-import { chambersOfXericCL } from '../../src/lib/data/CollectionsExport';
-import { fetchCLLeaderboard } from '../../src/lib/util/clLeaderboard';
-import { minionStatsEmbed } from '../../src/lib/util/minionStatsEmbed';
-import { createTestUser, mockClient } from './util';
+import { analyticsTick } from '../../src/lib/analytics.js';
+import { allCollectionLogsFlat } from '../../src/lib/data/Collections.js';
+import { chambersOfXericCL } from '../../src/lib/data/CollectionsExport.js';
+import { fetchCLLeaderboard } from '../../src/lib/util/clLeaderboard.js';
+import { minionStatsEmbed } from '../../src/lib/util/minionStatsEmbed.js';
+import { createTestUser, mockClient } from './util.js';
 
 describe('Integration Misc', () => {
 	test('minionStatsEmbed', async () => {

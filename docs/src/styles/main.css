@@ -499,8 +499,13 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 }
 
 .osrs_item_image {
+	display: inline !important;
 	max-height: 21px;
 	vertical-align: middle;
+}
+
+.osrs_item_image_full {
+	max-height: unset;
 }
 
 .osrs_item_name,

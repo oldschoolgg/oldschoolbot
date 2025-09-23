@@ -1,39 +1,33 @@
-import { makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
-import {
-	type CommandRunOptions,
-	channelIsSendable,
-	formatDuration,
-	stringMatches,
-	toTitleCase
-} from '@oldschoolgg/toolkit/util';
+import { calcWhatPercent, chunk, isFunction, uniqueArr } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { channelIsSendable, makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import {
 	ApplicationCommandOptionType,
 	type ChatInputCommandInteraction,
 	EmbedBuilder,
 	type MessageEditOptions
 } from 'discord.js';
-import { calcWhatPercent, chunk, isFunction, uniqueArr } from 'e';
 import { convertXPtoLVL } from 'oldschooljs';
 
-import { getUsername, getUsernameSync } from '@/lib/util';
-import { logError, logErrorForInteraction } from '@/lib/util/logError';
-import type { ClueTier } from '../../lib/clues/clueTiers';
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import { MAX_LEVEL, masteryKey } from '../../lib/constants';
-import { allClNames, getCollectionItems } from '../../lib/data/Collections';
-import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import { allOpenables } from '../../lib/openables';
-import { SQL } from '../../lib/rawSql.js';
-import { Minigames } from '../../lib/settings/minigames';
-import Skills from '../../lib/skilling/skills';
-import Agility from '../../lib/skilling/skills/agility';
-import Hunter from '../../lib/skilling/skills/hunter/hunter';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { fetchCLLeaderboard } from '../../lib/util/clLeaderboard';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { userEventsToMap } from '../../lib/util/userEvents';
-import { sendToChannelID } from '../../lib/util/webhook';
-import type { OSBMahojiCommand } from '../lib/util';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { MAX_LEVEL, masteryKey } from '@/lib/constants.js';
+import { allClNames, getCollectionItems } from '@/lib/data/Collections.js';
+import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import { allOpenables } from '@/lib/openables.js';
+import { SQL } from '@/lib/rawSql.js';
+import { Minigames } from '@/lib/settings/minigames.js';
+import Agility from '@/lib/skilling/skills/agility.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
+import { Skills } from '@/lib/skilling/skills/index.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { fetchCLLeaderboard } from '@/lib/util/clLeaderboard.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { logError, logErrorForInteraction } from '@/lib/util/logError.js';
+import { userEventsToMap } from '@/lib/util/userEvents.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
+import { getUsername, getUsernameSync } from '@/lib/util.js';
 
 const LB_PAGE_SIZE = 10;
 
@@ -235,14 +229,14 @@ async function sacrificeLb(
 	if (type === 'value') {
 		const list = (
 			await prisma.$queryRawUnsafe<{ id: string; full_name: string; amount: number }[]>(
-				`SELECT 
+				`SELECT
 	u.id,
     ${SQL.SELECT_FULL_NAME},
 	"sacrificedValue"
-FROM 
+FROM
     users u
 ${SQL.LEFT_JOIN_BADGES}
-WHERE 
+WHERE
     "sacrificedValue" > 10000
 ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 ${SQL.GROUP_BY_U_ID}
@@ -270,28 +264,28 @@ LIMIT 400;`
 
 	const mostUniques: { full_name: string; sacbanklength: number }[] = await prisma.$queryRawUnsafe(
 		`
-SELECT 
-    ${SQL.SELECT_FULL_NAME}, 
+SELECT
+    ${SQL.SELECT_FULL_NAME},
     u.sacbanklength
 FROM (
-    SELECT 
-        (SELECT COUNT(*)::int FROM JSONB_OBJECT_KEYS(sacrificed_bank)) AS sacbanklength, 
+    SELECT
+        (SELECT COUNT(*)::int FROM JSONB_OBJECT_KEYS(sacrificed_bank)) AS sacbanklength,
         u.id AS user_id,
         u.username,
         u.badges
-    FROM 
-        user_stats 
-    INNER JOIN 
+    FROM
+        user_stats
+    INNER JOIN
         users u ON u.id::bigint = user_stats.user_id
 	WHERE
 		sacrificed_bank::text != '{}'
 		${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 ) u
-LEFT JOIN 
+LEFT JOIN
     badges b ON b.id = ANY(u.badges)
-GROUP BY 
+GROUP BY
     u.username, u.sacbanklength
-ORDER BY 
+ORDER BY
     u.sacbanklength DESC
 LIMIT 10;
 `

@@ -1,17 +1,17 @@
+import { randArrItem, randInt } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
-import { randArrItem, randInt } from 'e';
-import { Bank, SkillsEnum, itemID } from 'oldschooljs';
+import { Bank, EItem } from 'oldschooljs';
 
-import { trackLoot } from '../../../lib/lootTrack';
-import { bloodEssence } from '../../../lib/skilling/functions/calcsRunecrafting';
-import Runecraft from '../../../lib/skilling/skills/runecraft';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { calcMaxRCQuantity, userStatsUpdate } from '../../../mahoji/mahojiSettings';
-import { rewardsGuardianTable } from './../../../lib/simulation/rewardsGuardian';
-import type { GuardiansOfTheRiftActivityTaskOptions } from './../../../lib/types/minions';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { rewardsGuardianTable } from '@/lib/simulation/rewardsGuardian.js';
+import { bloodEssence } from '@/lib/skilling/functions/calcsRunecrafting.js';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import type { GuardiansOfTheRiftActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { calcMaxRCQuantity, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const catalyticRunesArray: string[] = [
 	'Mind rune',
@@ -45,26 +45,25 @@ export const guardiansOfTheRiftTask: MinionTask = {
 
 		const miningXP = quantity * 5 * minedFragments;
 		const craftingXP = quantity * 80 * barrierAndGuardian;
+		const rcLevel = user.skillsAsLevels.runecraft;
 		const rcXP =
-			quantity *
-			(45 * user.skillLevel(SkillsEnum.Runecraft) + 300 * barrierAndGuardian + 17 * minedFragments) *
-			Math.min(user.skillLevel(SkillsEnum.Runecraft) / 99, 1);
+			quantity * (45 * rcLevel + 300 * barrierAndGuardian + 17 * minedFragments) * Math.min(rcLevel / 99, 1);
 
 		const [xpResRunecraft, xpResCrafting, xpResMining] = await Promise.all([
 			user.addXP({
-				skillName: SkillsEnum.Runecraft,
+				skillName: 'runecraft',
 				amount: Math.floor(rcXP),
 				duration,
 				source: 'GuardiansOfTheRift'
 			}),
 			user.addXP({
-				skillName: SkillsEnum.Crafting,
+				skillName: 'crafting',
 				amount: Math.floor(craftingXP),
 				duration,
 				source: 'GuardiansOfTheRift'
 			}),
 			user.addXP({
-				skillName: SkillsEnum.Mining,
+				skillName: 'mining',
 				amount: Math.floor(miningXP),
 				duration,
 				source: 'GuardiansOfTheRift'
@@ -76,9 +75,9 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		const { bank } = user;
 		// For each pouch the user has, increase their inventory size.
 		for (const pouch of Runecraft.pouches) {
-			if (user.skillLevel(SkillsEnum.Runecraft) < pouch.level) continue;
+			if (rcLevel < pouch.level) continue;
 			if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
-			if (bank.has(pouch.id) && pouch.id === itemID('Colossal pouch')) break;
+			if (bank.has(pouch.id) && pouch.id === EItem.COLOSSAL_POUCH) break;
 		}
 
 		// If they have the entire Raiments of the Eye outfit, give an extra 20% quantity bonus (NO bonus XP)
@@ -144,8 +143,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		runesLoot.add('Blood rune', bonusBloods);
 		totalLoot.add(runesLoot);
 
-		const { previousCL } = await transactItems({
-			userID: user.id,
+		const { previousCL } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: totalLoot
 		});
@@ -172,9 +170,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 				Events.ServerNotification,
 				`**${user.badgedUsername}'s** minion, ${
 					user.minionName
-				}, just received a Abyssal Protector while doing the Guardians of the Rift minigame at level ${user.skillLevel(
-					SkillsEnum.Runecraft
-				)} Runecrafting and on run ${formatOrdinal(kcForPet)}!`
+				}, just received a Abyssal Protector while doing the Guardians of the Rift minigame at level ${rcLevel} Runecrafting and on run ${formatOrdinal(kcForPet)}!`
 			);
 		}
 

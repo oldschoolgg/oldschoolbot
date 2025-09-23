@@ -1,8 +1,8 @@
-import { Time } from 'e';
-import { Bank, Monsters, itemID } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Bank, itemID, Monsters } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import type { KillableMonster } from '../../types';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 export const mazchnaMonsters: KillableMonster[] = [
 	{
@@ -183,7 +183,12 @@ export const mazchnaMonsters: KillableMonster[] = [
 		itemCost: { itemCost: new Bank().add('Giant key', 1), qtyPerKill: 1 },
 		healAmountNeeded: 20 * 5,
 		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged]
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
+		itemInBankBoosts: [
+			{
+				[itemID('Giantsoul amulet')]: 20
+			}
+		]
 	},
 	{
 		id: Monsters.Hobgoblin.id,

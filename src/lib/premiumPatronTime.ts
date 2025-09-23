@@ -1,8 +1,8 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { Time } from 'e';
 
-import { handleMahojiConfirmation } from './util/handleMahojiConfirmation';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 
 export async function premiumPatronTime(
 	timeMs: number,

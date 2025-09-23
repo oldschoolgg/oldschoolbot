@@ -1,16 +1,15 @@
+import { increaseNumByPercent, percentChance, randInt, roll, Time } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { Time, increaseNumByPercent, percentChance, randInt, roll } from 'e';
-import { Bank, type ItemBank, addItemToBank } from 'oldschooljs';
+import { addItemToBank, Bank, type ItemBank, Items } from 'oldschooljs';
 
-import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
-import Agility from '../../lib/skilling/skills/agility';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { logError } from '../../lib/util/logError';
-import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import Agility from '@/lib/skilling/skills/agility.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { logError } from '@/lib/util/logError.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { updateClientGPTrackSetting, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 function chanceOfFailingAgilityPyramid(user: MUser) {
 	const lvl = user.skillLevel(SkillsEnum.Agility);
@@ -130,7 +129,7 @@ export const agilityTask: MinionTask = {
 		}
 
 		if (alch) {
-			const alchedItem = getOSItem(alch.itemID);
+			const alchedItem = Items.getOrThrow(alch.itemID);
 			const alchGP = alchedItem.highalch! * alch.quantity;
 			loot.add('Coins', alchGP);
 			xpRes += ` ${await user.addXP({
@@ -161,8 +160,7 @@ export const agilityTask: MinionTask = {
 			);
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

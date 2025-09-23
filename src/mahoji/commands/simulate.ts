@@ -1,14 +1,13 @@
-import { type CommandResponse, type CommandRunOptions, PerkTier, formatDuration } from '@oldschoolgg/toolkit/util';
+import { randInt, roll } from '@oldschoolgg/toolkit';
+import { formatDuration, PerkTier } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { randInt, roll } from 'e';
-import { Bank, ChambersOfXeric, averageBank, toKMB } from 'oldschooljs';
+import { averageBank, Bank, ChambersOfXeric, toKMB } from 'oldschooljs';
 
-import { ColosseumWaveBank, startColosseumRun } from '../../lib/colosseum';
-import pets from '../../lib/data/pets';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { assert } from '../../lib/util/logError';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import type { OSBMahojiCommand } from '../lib/util';
+import { ColosseumWaveBank, startColosseumRun } from '@/lib/colosseum.js';
+import pets from '@/lib/data/pets.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { assert } from '@/lib/util/logError.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 function determineCoxLimit(user: MUser) {
 	const perkTier = user.perkTier();

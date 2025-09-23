@@ -1,8 +1,8 @@
 import { TimerManager } from '@sapphire/timer-manager';
 
-import { crons } from '../../lib/crons';
-import { sql } from '../../lib/postgres';
-import { sonicBoom } from '../../lib/util/logger';
+import { crons } from '@/lib/crons.js';
+import { sql } from '@/lib/postgres.js';
+import { sonicBoom } from '@/lib/util/logger.js';
 
 export async function exitCleanup() {
 	try {
@@ -14,7 +14,7 @@ export async function exitCleanup() {
 		sonicBoom.destroy();
 
 		await Promise.all([globalClient.destroy(), sql.end()]);
-		crons.forEach(cron => cron.stop());
+		for (const cron of crons) cron.stop();
 
 		console.log('\nCleaned up and exited.');
 	} catch (err) {

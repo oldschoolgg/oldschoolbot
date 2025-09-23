@@ -3,16 +3,13 @@ import type { User } from '@prisma/client';
 import { type Monster, Monsters, NIGHTMARES_HP } from 'oldschooljs';
 import { GearStat, type OffenceGearStat } from 'oldschooljs/gear';
 
-import type { PrimaryGearSetupType } from '@/lib/gear/types';
-import type { PvMMethod } from '../../../mahoji/commands/k';
-import { SkillsEnum } from '../../skilling/types';
-import { XPBank } from '../../structures/XPBank';
-import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
-import killableMonsters from '../data/killableMonsters';
-import type { AddMonsterXpParams, KillableMonster } from '../types';
-
-export { default as calculateMonsterFood } from './calculateMonsterFood';
-export { default as reducedTimeForGroup } from './reducedTimeForGroup';
+import type { PvMMethod } from '@/lib/constants.js';
+import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
+import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '@/lib/minions/data/combatConstants.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import type { AddMonsterXpParams, KillableMonster } from '@/lib/minions/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { XPBank } from '@/lib/structures/XPBank.js';
 
 export const attackStylesArr = [
 	SkillsEnum.Attack,
@@ -104,7 +101,7 @@ export function addMonsterXPRaw(params: {
 	// Remove superiors from the regular count to be added separately.
 	let normalQty = 0;
 	let superiorQty = 0;
-	let osjsSuperior: Monster | undefined = undefined;
+	let osjsSuperior: Monster | undefined;
 	if (params.isOnTask && params.superiorCount && maybeMonster?.superior) {
 		osjsSuperior = maybeMonster.superior;
 		if (osjsSuperior?.data?.hitpoints && osjsSuperior?.data?.slayerXP) {

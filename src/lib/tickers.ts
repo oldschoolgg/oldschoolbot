@@ -1,25 +1,25 @@
-import { awaitMessageComponentInteraction, cleanUsername, stringMatches } from '@oldschoolgg/toolkit/util';
+import { noOp, removeFromArr, Time } from '@oldschoolgg/toolkit';
+import { awaitMessageComponentInteraction, cleanUsername } from '@oldschoolgg/toolkit/discord-util';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
-import { Time, noOp, randInt, removeFromArr, shuffleArr } from 'e';
 
-import { mahojiUserSettingsUpdate } from './MUser';
-import { BitField, Channel, globalConfig } from './constants';
-import { GrandExchange } from './grandExchange';
-import { collectMetrics } from './metrics';
-import { populateRoboChimpCache } from './perkTier';
-import { fetchUsersWithoutUsernames } from './rawSql';
-import { runCommand } from './settings/settings';
-import { informationalButtons } from './sharedComponents';
-import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
-import Farming from './skilling/skills/farming';
-import { getSupportGuild } from './util';
-import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers';
-import { handleGiveawayCompletion } from './util/giveaway';
-import { logError } from './util/logError';
-import { makeBadgeString } from './util/makeBadgeString';
-import { type Peak, PeakTier } from './util/peaks';
+import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
+import Farming from '@/lib/skilling/skills/farming/index.js';
+import { farmingPatchNames, getFarmingKeyFromName } from '@/lib/util/farmingHelpers.js';
+import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
+import { logError } from '@/lib/util/logError.js';
+import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
+import { BitField, Channel, globalConfig } from './constants.js';
+import { GrandExchange } from './grandExchange.js';
+import { mahojiUserSettingsUpdate } from './MUser.js';
+import { collectMetrics } from './metrics.js';
+import { populateRoboChimpCache } from './perkTier.js';
+import { fetchUsersWithoutUsernames } from './rawSql.js';
+import { runCommand } from './settings/settings.js';
+import { informationalButtons } from './sharedComponents.js';
+import { getSupportGuild } from './util.js';
 
 let lastMessageID: string | null = null;
 let lastMessageGEID: string | null = null;
@@ -113,49 +113,6 @@ export const tickers: {
 		interval: globalConfig.isProduction ? Time.Second * 5 : 500,
 		cb: async () => {
 			await ActivityManager.processPendingActivities();
-		}
-	},
-	{
-		name: 'wilderness_peak_times',
-		timer: null,
-		interval: Time.Hour * 24,
-		cb: async () => {
-			let hoursUsed = 0;
-			let peakInterval: Peak[] = [];
-			const peakTiers: PeakTier[] = [PeakTier.High, PeakTier.Medium, PeakTier.Low];
-
-			// Divide the current day into interverals
-			for (let i = 0; i <= 10; i++) {
-				const randomedTime = randInt(1, 2);
-				const [peakTier] = shuffleArr(peakTiers);
-				const peak: Peak = {
-					startTime: randomedTime,
-					finishTime: randomedTime,
-					peakTier
-				};
-				peakInterval.push(peak);
-				hoursUsed += randomedTime;
-			}
-
-			const lastPeak: Peak = {
-				startTime: 24 - hoursUsed,
-				finishTime: 24 - hoursUsed,
-				peakTier: PeakTier.Low
-			};
-
-			peakInterval.push(lastPeak);
-
-			peakInterval = shuffleArr(peakInterval);
-
-			let currentTime = new Date().getTime();
-
-			for (const peak of peakInterval) {
-				peak.startTime = currentTime;
-				currentTime += peak.finishTime * Time.Hour;
-				peak.finishTime = currentTime;
-			}
-
-			globalClient._peakIntervalCache = peakInterval;
 		}
 	},
 	{
@@ -343,11 +300,10 @@ export const tickers: {
 		name: 'username_filling',
 		startupWait: Time.Minute * 10,
 		timer: null,
-		interval: Time.Minute * 7.33,
+		interval: Time.Minute * 33.33,
 		cb: async () => {
 			const users = await fetchUsersWithoutUsernames();
 			if (process.env.TEST) return;
-			debugLog(`username_filling: Found ${users.length} users without usernames.`);
 			for (const { id } of users) {
 				const djsUser = await globalClient.users.fetch(id).catch(() => null);
 				if (!djsUser) {

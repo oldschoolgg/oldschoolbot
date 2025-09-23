@@ -1,20 +1,20 @@
+import { roll, shuffleArr } from '@oldschoolgg/toolkit';
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { convertPercentChance, formatOrdinal, miniID } from '@oldschoolgg/toolkit/util';
-import { roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { drawChestLootImage } from '../../../lib/bankImage';
-import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
-import { TOBRooms, TOBUniques, TOBUniquesToAnnounce } from '../../../lib/data/tob';
-import { trackLoot } from '../../../lib/lootTrack';
-import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { TeamLoot } from '../../../lib/simulation/TeamLoot';
-import { TheatreOfBlood } from '../../../lib/simulation/tob';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
+import { tobMetamorphPets } from '@/lib/data/CollectionsExport.js';
+import { TOBRooms, TOBUniques, TOBUniquesToAnnounce } from '@/lib/data/tob.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
+import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
+import { TheatreOfBlood } from '@/lib/simulation/tob.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 async function handleTobXP(user: MUser, isHm: boolean) {
 	let hitpointsXP = 13_000;
@@ -179,7 +179,7 @@ export const tobTask: MinionTask = {
 		// Give everyone their loot:
 		await Promise.all(
 			allUsers.map(u => {
-				u.addItemsToBank({ items: teamsLoot.get(u.id), collectionLog: true });
+				return u.addItemsToBank({ items: teamsLoot.get(u.id), collectionLog: true });
 			})
 		);
 

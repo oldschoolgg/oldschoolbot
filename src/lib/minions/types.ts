@@ -1,22 +1,20 @@
-import type { StoreBitfield } from '@oldschoolgg/toolkit/util';
 import type { GearSetupType, XpGainSource } from '@prisma/client';
 import type { ArrayItemsResolved, Bank, Item, ItemBank, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
-import type { GearStat, OffenceGearStat } from 'oldschooljs/gear';
+import type { OffenceGearStat } from 'oldschooljs/gear';
 
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import type { QuestID } from '@/lib/minions/data/quests.js';
+import type { POHBoosts } from '@/lib/poh/index.js';
+import type { MinigameName } from '@/lib/settings/minigames.js';
+import type { LevelRequirements, SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
+import type { XPBank } from '@/lib/structures/Bank.js';
+import type { GearRequirements } from '@/lib/structures/Gear.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
+import type { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import type { Skills } from '@/lib/types/index.js';
 import type { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
-import type { ClueTier } from '../clues/clueTiers';
-import type { BitField, PerkTier } from '../constants';
-import type { POHBoosts } from '../poh';
-import type { MinigameName } from '../settings/minigames';
-import type { LevelRequirements, SkillNameType, SkillsEnum } from '../skilling/types';
-import type { XPBank } from '../structures/Bank';
-import type { GearBank } from '../structures/GearBank';
-import type { MUserStats } from '../structures/MUserStats';
-import type { UpdateBank } from '../structures/UpdateBank';
-import type { Skills } from '../types';
-import type { CanvasImage } from '../util/canvasUtil';
-import type { QuestID } from './data/quests';
-import type { AttackStyles } from './functions';
+import type { AttackStyles } from './functions/index.js';
 
 export type KillableMonsterEffect = (opts: {
 	gearBank: GearBank;
@@ -25,35 +23,6 @@ export type KillableMonsterEffect = (opts: {
 	loot: Bank;
 	updateBank: UpdateBank;
 }) => void | { xpBank?: XPBank; loot?: Bank; messages: string[] };
-
-export type BankBackground = {
-	image: CanvasImage | null;
-	id: number;
-	name: string;
-	available: boolean;
-	collectionLogItemsNeeded?: Bank;
-	perkTierNeeded?: PerkTier;
-	gpCost?: number;
-	itemCost?: Bank;
-	repeatImage?: CanvasImage | null;
-	bitfield?: BitField;
-	sacValueRequired?: number;
-	skillsNeeded?: Skills;
-	transparent?: true;
-	alternateImages?: { id: number }[];
-	storeBitField?: StoreBitfield;
-} & (
-	| {
-			hasPurple: true;
-			purpleImage: CanvasImage | null;
-	  }
-	| {
-			hasPurple?: null;
-	  }
-);
-
-export type GearRequirement = Partial<{ [key in GearStat]: number }>;
-export type GearRequirements = Partial<{ [key in GearSetupType]: GearRequirement }>;
 
 export interface KillableMonster {
 	id: number;
@@ -120,7 +89,7 @@ export interface KillableMonster {
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;
-	specialLoot?: (data: { loot: Bank; ownedItems: Bank; quantity: number; cl: Bank }) => void;
+	specialLoot?: (data: { loot: Bank; ownedItems: Bank; quantity: number; cl: Bank; user?: MUser }) => void;
 	effect?: KillableMonsterEffect;
 	degradeableItemUsage?: {
 		required: boolean;

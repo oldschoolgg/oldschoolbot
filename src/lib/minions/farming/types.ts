@@ -1,7 +1,7 @@
 import type { CropUpgradeType } from '@prisma/client';
 
-import type { Plant } from '../../skilling/types';
-import type { FarmingPatchName } from '../../util/farmingHelpers';
+import type { Plant } from '@/lib/skilling/types.js';
+import type { FarmingPatchName } from '@/lib/util/farmingHelpers.js';
 
 export interface IPatchData {
 	lastPlanted: string | null;
@@ -37,3 +37,9 @@ export interface FarmingContract {
 
 export const ContractOptions = ['easy', 'medium', 'hard', 'easier'] as const;
 export type ContractOption = (typeof ContractOptions)[number];
+
+export type DetailedFarmingContract = {
+	contract: FarmingContract;
+	plant: Plant | undefined;
+	matchingPlantedCrop: IPatchDataDetailed | undefined;
+};

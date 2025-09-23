@@ -1,23 +1,22 @@
-import { type CommandResponse, PerkTier, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { PerkTier, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { GearPreset } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { objectValues } from 'e';
 import { Bank, Items } from 'oldschooljs';
-
 import { GearStat } from 'oldschooljs/gear';
-import { PATRON_ONLY_GEAR_SETUP } from '../../../lib/constants';
-import { getSimilarItems } from '../../../lib/data/similarItems';
-import { generateAllGearImage, generateGearImage } from '../../../lib/gear/functions/generateGearImage';
-import { isValidGearSetup } from '../../../lib/gear/functions/isValidGearSetup';
-import type { GearSetup, GearSetupType } from '../../../lib/gear/types';
-import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestGearFromBank';
-import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
-import { Gear, defaultGear, globalPresets } from '../../../lib/structures/Gear';
-import calculateGearLostOnDeathWilderness from '../../../lib/util/calculateGearLostOnDeathWilderness';
-import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { assert } from '../../../lib/util/logError';
-import { formatSkillRequirements } from '../../../lib/util/smallUtils';
+
+import { generateGearImage } from '@/lib/canvas/generateGearImage.js';
+import { PATRON_ONLY_GEAR_SETUP } from '@/lib/constants.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
+import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
+import getUserBestGearFromBank from '@/lib/minions/functions/getUserBestGearFromBank.js';
+import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
+import { defaultGear, Gear, globalPresets } from '@/lib/structures/Gear.js';
+import calculateGearLostOnDeathWilderness from '@/lib/util/calculateGearLostOnDeathWilderness.js';
+import { gearEquipMultiImpl } from '@/lib/util/equipMulti.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { assert } from '@/lib/util/logError.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
 	if (user.minionIsBusy) {
@@ -55,7 +54,7 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 	}
 
 	const userBankWithEquippedItems = user.bank.clone();
-	for (const e of objectValues(user.gear[gearSetup].raw())) {
+	for (const e of Object.values(user.gear[gearSetup].raw())) {
 		if (e) userBankWithEquippedItems.add(e.item, Math.max(e.quantity, 1));
 	}
 
@@ -106,12 +105,27 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 	await user.update({
 		[`gear_${gearSetup}`]: newGear
 	});
-	const updatedGear = user.gear[gearSetup];
-	const image = await generateGearImage(user, updatedGear, gearSetup, user.user.minion_equippedPet);
+
+	if (userPreset && !globalPreset) {
+		await prisma.gearPreset.update({
+			where: {
+				user_id_name: {
+					user_id: user.id,
+					name: userPreset.name
+				}
+			},
+			data: {
+				times_equipped: {
+					increment: 1
+				}
+			}
+		});
+	}
+	const image = await user.generateGearImage({ setupType: gearSetup });
 
 	return {
 		content: `You equipped the ${preset.name} preset in your ${gearSetup} setup.`,
-		files: [{ name: 'gear.jpg', attachment: image }]
+		files: [{ name: 'gear.png', attachment: image }]
 	};
 }
 
@@ -131,17 +145,16 @@ async function gearEquipMultiCommand(user: MUser, setup: string, items: string) 
 	if (!resultSuccess) return failMsg!;
 
 	const dbKey = `gear_${setup}` as const;
-	const { newUser } = await user.update({
+	await user.update({
 		[dbKey]: equippedGear
 	});
-	await transactItems({
-		userID: user.id,
+	await user.transactItems({
 		filterLoot: false,
 		itemsToRemove: equipBank,
 		itemsToAdd: unequipBank
 	});
 
-	const image = await generateGearImage(user, newUser[dbKey] as GearSetup, setup, user.user.minion_equippedPet);
+	const image = await user.generateGearImage({ setupType: setup });
 	let content = `You equipped ${equipBank} on your ${setup} setup, and unequipped ${unequipBank}.`;
 	if (skillFailBank!.length > 0) {
 		content += `\nThese items failed to be equipped as you don't have the requirements: ${skillFailBank}.`;
@@ -154,7 +167,7 @@ async function gearEquipMultiCommand(user: MUser, setup: string, items: string) 
 
 	return {
 		content,
-		files: [{ name: 'gear.jpg', attachment: image }]
+		files: [{ name: 'gear.png', attachment: image }]
 	};
 }
 
@@ -240,11 +253,11 @@ export async function gearUnequipCommand(
 		[`gear_${gearSetup}`]: newGear
 	});
 
-	const image = await generateGearImage(user, new Gear(newGear), gearSetup, user.user.minion_equippedPet);
+	const image = await user.generateGearImage({ setupType: gearSetup });
 
 	return {
 		content: `You unequipped ${item.name} from your ${toTitleCase(gearSetup)} setup.`,
-		files: [{ name: 'gear.jpg', attachment: image }]
+		files: [{ name: 'gear.png', attachment: image }]
 	};
 }
 
@@ -279,10 +292,10 @@ async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipment
 		[`gear_${gearSetup}`]: gearToEquip
 	});
 
-	const image = await generateGearImage(user, user.gear[gearSetup], gearSetup, user.user.minion_equippedPet);
+	const image = await user.generateGearImage({ setupType: gearSetup });
 	return {
 		content: `You auto-equipped your best ${equipmentType} in your ${gearSetup} preset.`,
-		files: [{ name: 'gear.jpg', attachment: image }]
+		files: [{ name: 'gear.png', attachment: image }]
 	};
 }
 
@@ -294,8 +307,8 @@ export async function gearStatsCommand(user: MUser, input: string): CommandRespo
 			gear[item.equipment.slot] = { item: item.id, quantity: 1 };
 		}
 	}
-	const image = await generateGearImage(user, new Gear(gear), null, null);
-	return { files: [{ name: 'image.jpg', attachment: image }] };
+	const image = await user.generateGearImage({ gearSetup: new Gear(gear) });
+	return { files: [{ name: 'image.png', attachment: image }] };
 }
 
 export async function gearViewCommand(user: MUser, input: string, text: boolean): CommandResponse {
@@ -309,7 +322,7 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 					),
 					name: 'gear.txt'
 				}
-			: { attachment: await generateAllGearImage(user), name: 'osbot.png' };
+			: { attachment: await user.generateGearImage({ setupType: 'all' }), name: 'osbot.png' };
 		return {
 			content: 'Here are all your gear setups',
 			files: [file]
@@ -370,8 +383,8 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 	if (text) {
 		return gear.toString();
 	}
-	const image = await generateGearImage(user, gear, input, user.user.minion_equippedPet);
-	return { files: [{ attachment: image, name: 'gear.jpg' }] };
+	const image = await generateGearImage({ gearSetup: gear, gearType: input, petID: user.user.minion_equippedPet });
+	return { files: [{ attachment: image, name: 'gear.png' }] };
 }
 
 export async function gearSwapCommand(

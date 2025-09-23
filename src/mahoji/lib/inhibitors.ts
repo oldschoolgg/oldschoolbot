@@ -1,29 +1,14 @@
-import { PerkTier, formatDuration } from '@oldschoolgg/toolkit/util';
+import type { AbstractCommand } from '@oldschoolgg/toolkit/discord-util';
+import { formatDuration, PerkTier } from '@oldschoolgg/toolkit/util';
 import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChannel } from 'discord.js';
 import { ComponentType, PermissionsBitField } from 'discord.js';
 
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
-import { type PartialUser, partialUserCache, perkTierCache, untrustedGuildSettingsCache } from '../../lib/cache';
-import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, globalConfig } from '../../lib/constants';
-import { minionBuyButton } from '../../lib/sharedComponents';
-import type { CategoryFlag } from '../../lib/types';
-import { mahojiGuildSettingsFetch } from '../guildSettings';
-import { Cooldowns } from './Cooldowns';
-
-export interface AbstractCommandAttributes {
-	examples?: string[];
-	categoryFlags?: CategoryFlag[];
-	enabled?: boolean;
-	cooldown?: number;
-	requiresMinionNotBusy?: boolean;
-	requiresMinion?: boolean;
-	description: string;
-}
-
-export interface AbstractCommand {
-	name: string;
-	attributes?: AbstractCommandAttributes;
-}
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { type PartialUser, partialUserCache, perkTierCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
+import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, globalConfig } from '@/lib/constants.js';
+import { minionBuyButton } from '@/lib/sharedComponents.js';
+import { mahojiGuildSettingsFetch } from '@/mahoji/guildSettings.js';
+import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 
 interface Inhibitor {
 	name: string;

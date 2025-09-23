@@ -1,6 +1,6 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 
-import type { KillableMonster } from '../types';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 const FIVE_HOURS = Time.Hour * 5;
 

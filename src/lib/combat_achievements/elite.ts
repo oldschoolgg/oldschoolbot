@@ -1,18 +1,18 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { SkillsEnum } from '../skilling/types';
-import { Requirements } from '../structures/Requirements';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
 	ActivityTaskData,
 	GauntletOptions,
 	MonsterActivityTaskOptions,
 	NightmareActivityTaskOptions,
 	TOAOptions
-} from '../types/minions';
-import { crossbows } from '../util/archery';
-import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils';
-import type { CombatAchievement } from './combatAchievements';
+} from '@/lib/types/minions.js';
+import { crossbows } from '@/lib/util/archery.js';
+import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils.js';
+import type { CombatAchievement } from './combatAchievements.js';
 
 export const eliteCombatAchievements: CombatAchievement[] = [
 	{
@@ -1697,7 +1697,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 	{
 		id: 1147,
 		name: 'Duke Sucellus Speed-Trialist',
-		desc: 'Kill Duke Sucellus in less than 1:45 minutes without a slayer task.',
+		desc: 'Kill Duke Sucellus in less than 1:00 minutes without a slayer task.',
 		type: 'speed',
 		monster: 'Duke Sucellus',
 		rng: {
@@ -1771,6 +1771,20 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 150,
 			hasChance: isCertainMonsterTrip(Monsters.Amoxliatl.id)
+		}
+	},
+	{
+		id: 1154,
+		name: 'No time to pray',
+		type: 'restriction',
+		monster: 'Royal Titans',
+		desc: 'Kill the Royal Titans without losing any prayer points.',
+		rng: {
+			chancePerKill: 20,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
 		}
 	}
 ];

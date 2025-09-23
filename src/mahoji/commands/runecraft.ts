@@ -1,31 +1,29 @@
-import { type CommandRunOptions, formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { Time } from '@oldschoolgg/toolkit/datetime';
+import { formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
-import { Bank, SkillsEnum, itemID } from 'oldschooljs';
+import { Bank, Items, itemID, SkillsEnum } from 'oldschooljs';
 
-import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
-import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
-import Runecraft from '../../lib/skilling/skills/runecraft';
-import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { determineRunes } from '../../lib/util/determineRunes';
-import { getOSItem } from '../../lib/util/getOSItem';
-import { formatSkillRequirements } from '../../lib/util/smallUtils';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { ouraniaAltarStartCommand } from '../lib/abstracted_commands/ouraniaAltarCommand';
-import { tiaraRunecraftCommand } from '../lib/abstracted_commands/tiaraRunecraftCommand';
-import type { OSBMahojiCommand } from '../lib/util';
-import { calcMaxRCQuantity, userHasGracefulEquipped } from '../mahojiSettings';
+import { darkAltarCommand } from '@/lib/minions/functions/darkAltarCommand.js';
+import { sinsOfTheFatherSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import type { RunecraftActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { determineRunes } from '@/lib/util/determineRunes.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { ouraniaAltarStartCommand } from '@/mahoji/lib/abstracted_commands/ouraniaAltarCommand.js';
+import { tiaraRunecraftCommand } from '@/mahoji/lib/abstracted_commands/tiaraRunecraftCommand.js';
+import { calcMaxRCQuantity, userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 const runeTypes = [
-	{ item: getOSItem('Warped extract'), runes: new Set(['air', 'mind', 'water', 'earth', 'fire', 'body']) },
+	{ item: Items.getOrThrow('Warped extract'), runes: new Set(['air', 'mind', 'water', 'earth', 'fire', 'body']) },
 	{
-		item: getOSItem('Twisted extract'),
+		item: Items.getOrThrow('Twisted extract'),
 		runes: new Set(['mist', 'dust', 'mud', 'smoke', 'steam', 'lava', 'cosmic', 'chaos', 'sunfire'])
 	},
-	{ item: getOSItem('Mangled extract'), runes: new Set(['nature', 'law', 'astral', 'death']) },
-	{ item: getOSItem('Scarred extract'), runes: new Set(['blood', 'soul', 'wrath']) }
+	{ item: Items.getOrThrow('Mangled extract'), runes: new Set(['nature', 'law', 'astral', 'death']) },
+	{ item: Items.getOrThrow('Scarred extract'), runes: new Set(['blood', 'soul', 'wrath']) }
 ];
 
 export const runecraftCommand: OSBMahojiCommand = {
@@ -116,7 +114,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}
 
 		if (rune.includes('(zeah)')) {
-			return darkAltarCommand({ user, channelID, name: rune });
+			return darkAltarCommand({ user, channelID, name: rune, extracts });
 		}
 
 		const runeObj = Runecraft.Runes.find(

@@ -1,23 +1,22 @@
-import { type CommandRunOptions, formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
+import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
+import { formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { itemID } from 'oldschooljs';
+import { Items, itemID } from 'oldschooljs';
 
-import { userhasDiaryTier } from '../../lib/diaries.js';
-import { QuestID } from '../../lib/minions/data/quests';
-import { DiaryID } from '../../lib/minions/types.js';
-import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
-import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../../lib/skilling/functions/miningBoosts';
-import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
-import Mining from '../../lib/skilling/skills/mining';
-import type { Ore } from '../../lib/skilling/types';
-import type { GearBank } from '../../lib/structures/GearBank';
-import type { MiningActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { formatSkillRequirements, itemNameFromID } from '../../lib/util/smallUtils.js';
-import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand';
-import type { OSBMahojiCommand } from '../lib/util';
+import { userhasDiaryTier } from '@/lib/diaries.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import { DiaryID } from '@/lib/minions/types.js';
+import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
+import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '@/lib/skilling/functions/miningBoosts.js';
+import { sinsOfTheFatherSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
+import Mining from '@/lib/skilling/skills/mining.js';
+import type { Ore } from '@/lib/skilling/types.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
+import { motherlodeMineCommand } from '@/mahoji/lib/abstracted_commands/motherlodeMineCommand.js';
 
 export function determineMiningTrip({
 	gearBank,
@@ -50,14 +49,16 @@ export function determineMiningTrip({
 	}
 	// Default bronze pickaxe, last in the array
 	let currentPickaxe = pickaxes[pickaxes.length - 1];
-	boosts.push(`**${currentPickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(currentPickaxe.id)}`);
+	boosts.push(
+		`**${currentPickaxe.ticksBetweenRolls}** ticks between rolls for ${Items.itemNameFromId(currentPickaxe.id)}`
+	);
 
 	// For each pickaxe, if they have it, give them its' bonus and break.
 	for (const pickaxe of pickaxes) {
 		if (!gearBank.hasEquippedOrInBank([pickaxe.id]) || gearBank.skillsAsLevels.mining < pickaxe.miningLvl) continue;
 		currentPickaxe = pickaxe;
 		boosts.pop();
-		boosts.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(pickaxe.id)}`);
+		boosts.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${Items.itemNameFromId(pickaxe.id)}`);
 		break;
 	}
 
@@ -68,7 +69,7 @@ export function determineMiningTrip({
 			glovesEffect = glove.Depletions[ore.name];
 			if (glovesEffect) {
 				boosts.push(
-					`mining gloves saves ${ore.name} from becoming depleted **${glovesEffect}x** ${glovesEffect > 1 ? 'times' : 'time'} using ${itemNameFromID(glove.id)}`
+					`mining gloves saves ${ore.name} from becoming depleted **${glovesEffect}x** ${glovesEffect > 1 ? 'times' : 'time'} using ${Items.itemNameFromId(glove.id)}`
 				);
 				break;
 			}
@@ -80,7 +81,7 @@ export function determineMiningTrip({
 		if (!gearBank.hasEquippedOrInBank(armour.id) || !armour.Percentages[ore.name]) continue;
 		armourEffect = armour.Percentages[ore.name];
 		if (armourEffect) {
-			boosts.push(`**${armourEffect}%** chance to mine an extra ore using ${itemNameFromID(armour.id)}`);
+			boosts.push(`**${armourEffect}%** chance to mine an extra ore using ${Items.itemNameFromId(armour.id)}`);
 			break;
 		}
 	}
@@ -200,13 +201,13 @@ export const mineCommand: OSBMahojiCommand = {
 		if (motherlodeMine) {
 			return motherlodeMineCommand({ user, channelID, quantity });
 		}
-
 		const ore = Mining.Ores.find(
 			ore =>
 				stringMatches(ore.id, options.name) ||
 				stringMatches(ore.name, options.name) ||
 				ore.aliases?.some(a => stringMatches(a, options.name))
 		);
+
 		if (!ore) {
 			return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}, or ${
 				Mining.MotherlodeMine.name

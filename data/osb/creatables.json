@@ -1,6 +1,6 @@
 {
-	"hash": "382baccc4a91a3e8fa11baedaf38068f",
-	"date": "2025-07-05T08:06:15.546Z",
+	"hash": "522e115ab1f404fc820b160a4159ecc0",
+	"date": "2025-08-14T03:54:33.680Z",
 	"data": [
 		{
 			"name": "3rd age felling axe",
@@ -1792,6 +1792,18 @@
 			"required_slayer_unlocks": []
 		},
 		{
+			"name": "Burnt page",
+			"items_created": {
+				"Burnt page": 1
+			},
+			"items_required": {
+				"Desiccated page": 1
+			},
+			"required_stats": {},
+			"qp_required": 0,
+			"required_slayer_unlocks": []
+		},
+		{
 			"name": "Cabbage",
 			"items_created": {
 				"Cabbage": 10
@@ -3139,6 +3151,19 @@
 				"Giant pouch": 1
 			},
 			"items_required": {},
+			"required_stats": {},
+			"qp_required": 0,
+			"required_slayer_unlocks": []
+		},
+		{
+			"name": "Giantsoul amulet",
+			"items_created": {
+				"Giantsoul amulet": 1
+			},
+			"items_required": {
+				"Big bones": 500,
+				"Giantsoul amulet (uncharged)": 1
+			},
 			"required_stats": {},
 			"qp_required": 0,
 			"required_slayer_unlocks": []
@@ -7339,6 +7364,18 @@
 			"required_slayer_unlocks": []
 		},
 		{
+			"name": "Revert Giantsoul amulet (uncharged)",
+			"items_created": {
+				"Big bones": 30
+			},
+			"items_required": {
+				"Giantsoul amulet (uncharged)": 1
+			},
+			"required_stats": {},
+			"qp_required": 0,
+			"required_slayer_unlocks": []
+		},
+		{
 			"name": "Revert gold decorative body",
 			"items_created": {
 				"Castle wars ticket": 800
@@ -10657,6 +10694,30 @@
 			"required_slayer_unlocks": []
 		},
 		{
+			"name": "Soaked page",
+			"items_created": {
+				"Soaked page": 1
+			},
+			"items_required": {
+				"Desiccated page": 1
+			},
+			"required_stats": {},
+			"qp_required": 0,
+			"required_slayer_unlocks": []
+		},
+		{
+			"name": "Soiled page",
+			"items_created": {
+				"Soiled page": 1
+			},
+			"items_required": {
+				"Desiccated page": 1
+			},
+			"required_stats": {},
+			"qp_required": 0,
+			"required_slayer_unlocks": []
+		},
+		{
 			"name": "Soulreaper axe",
 			"items_created": {
 				"Soulreaper axe": 1
@@ -11356,6 +11417,20 @@
 			"required_stats": {},
 			"qp_required": 0,
 			"required_slayer_unlocks": [2, 15]
+		},
+		{
+			"name": "Twinflame staff",
+			"items_created": {
+				"Twinflame staff": 1
+			},
+			"items_required": {
+				"Battlestaff": 1,
+				"Fire element staff crown": 1,
+				"Ice element staff crown": 1
+			},
+			"required_stats": {},
+			"qp_required": 0,
+			"required_slayer_unlocks": []
 		},
 		{
 			"name": "Twisted ancestral hat",

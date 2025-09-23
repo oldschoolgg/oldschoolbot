@@ -1,43 +1,41 @@
-import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
+import { chunk } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { chunk } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
-import { leagueBuyables } from '../../lib/data/leaguesBuyables';
-import { roboChimpUserFetch } from '../../lib/roboChimp';
-import { getUsername } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import type { OSBMahojiCommand } from '../lib/util';
-import { doMenu } from './leaderboard';
+import { leagueBuyables } from '@/lib/data/leaguesBuyables.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { getUsername } from '@/lib/util.js';
+import { doMenu } from './leaderboard.js';
 
 const leaguesTrophiesBuyables = [
 	{
-		item: getOSItem('BSO dragon trophy'),
+		item: Items.getOrThrow('BSO dragon trophy'),
 		leaguesPointsRequired: 60_000
 	},
 	{
-		item: getOSItem('BSO rune trophy'),
+		item: Items.getOrThrow('BSO rune trophy'),
 		leaguesPointsRequired: 50_000
 	},
 	{
-		item: getOSItem('BSO adamant trophy'),
+		item: Items.getOrThrow('BSO adamant trophy'),
 		leaguesPointsRequired: 40_000
 	},
 	{
-		item: getOSItem('BSO mithril trophy'),
+		item: Items.getOrThrow('BSO mithril trophy'),
 		leaguesPointsRequired: 30_000
 	},
 	{
-		item: getOSItem('BSO steel trophy'),
+		item: Items.getOrThrow('BSO steel trophy'),
 		leaguesPointsRequired: 20_000
 	},
 	{
-		item: getOSItem('BSO iron trophy'),
+		item: Items.getOrThrow('BSO iron trophy'),
 		leaguesPointsRequired: 10_000
 	},
 	{
-		item: getOSItem('BSO bronze trophy'),
+		item: Items.getOrThrow('BSO bronze trophy'),
 		leaguesPointsRequired: 5000
 	}
 ];
@@ -142,8 +140,7 @@ ${leaguesTrophiesBuyables
 			});
 
 			const loot = new Bank().add(item.item.id, quantity);
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				itemsToAdd: loot,
 				collectionLog: true
 			});
@@ -185,6 +182,6 @@ ${leaguesTrophiesBuyables
 			return null;
 		}
 
-		return 'https://bso-wiki.oldschool.gg/leagues';
+		return 'https://wiki.oldschool.gg/bso/leagues/';
 	}
 };

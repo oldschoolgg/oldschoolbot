@@ -1,4 +1,5 @@
-import { channelIsSendable, splitMessage } from '@oldschoolgg/toolkit/util';
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import { splitMessage } from '@oldschoolgg/toolkit/string-util';
 import {
 	type AttachmentBuilder,
 	type BaseMessageOptions,
@@ -9,8 +10,8 @@ import {
 	WebhookClient
 } from 'discord.js';
 
-import { globalConfig } from '../constants';
-import { logError } from './logError';
+import { globalConfig } from '@/lib/constants.js';
+import { logError } from './logError.js';
 
 async function resolveChannel(channelID: string): Promise<WebhookClient | Message['channel'] | undefined> {
 	const channel = globalClient.channels.cache.get(channelID);

@@ -1,20 +1,19 @@
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 
-import Constructables from '../../lib/skilling/skills/construction/constructables';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { calcConBonusXP } from '../../lib/util/calcConBonusXP';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { Construction } from '@/lib/skilling/skills/construction/index.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { ConstructionActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const constructionTask: MinionTask = {
 	type: 'Construction',
 	async run(data: ConstructionActivityTaskOptions) {
 		const { objectID, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
-		const object = Constructables.find(object => object.id === objectID)!;
+		const object = Construction.constructables.find(object => object.id === objectID)!;
 		const xpReceived = quantity * object.xp;
 		let bonusXP = 0;
-		const outfitMultiplier = calcConBonusXP(user.gear.skilling);
+		const outfitMultiplier = Construction.util.calcConBonusXP(user.gear.skilling);
 		if (outfitMultiplier > 0) {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xpReceived);
 		}

@@ -1,49 +1,38 @@
-import { bulkUpdateCommands } from '@oldschoolgg/toolkit/discord-util';
-import {
-	type CommandRunOptions,
-	type MahojiUserOption,
-	calcPerHour,
-	cleanString,
-	dateFm,
-	formatDuration,
-	stringMatches
-} from '@oldschoolgg/toolkit/util';
+import { calcWhatPercent, noOp, notEmpty, randArrItem, sleep, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { allAbstractCommands, bulkUpdateCommands, type MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
+import { calcPerHour, cleanString, dateFm, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { type ClientStorage, economy_transaction_type } from '@prisma/client';
 import { ApplicationCommandOptionType, AttachmentBuilder, type InteractionReplyOptions } from 'discord.js';
-import { Time, calcWhatPercent, noOp, notEmpty, randArrItem, sleep, uniqueArr } from 'e';
-import { Bank, type ItemBank, convertBankToPerHourStats, toKMB } from 'oldschooljs';
+import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
-import { countUsersWithItemInCl } from '@/lib/rawSql';
-import { mahojiUserSettingsUpdate } from '../../lib/MUser';
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '@/lib/blacklists.js';
 import {
 	BadgesEnum,
 	BitField,
 	BitFieldData,
+	badges,
 	Channel,
 	DISABLED_COMMANDS,
-	META_CONSTANTS,
-	badges,
-	globalConfig
-} from '../../lib/constants';
-import { economyLog } from '../../lib/economyLogs';
-import type { GearSetup } from '../../lib/gear/types';
-import { GrandExchange } from '../../lib/grandExchange';
-import { sorts } from '../../lib/sorts';
-import { memoryAnalysis } from '../../lib/util/cachedUserIDs';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
-import getOSItem, { getItem } from '../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { sendToChannelID } from '../../lib/util/webhook';
-import { Cooldowns } from '../lib/Cooldowns';
-import { syncCustomPrices } from '../lib/events';
-import { itemOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
-import { allAbstractCommands } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+	globalConfig,
+	META_CONSTANTS
+} from '@/lib/constants.js';
+import { economyLog } from '@/lib/economyLogs.js';
+import type { GearSetup } from '@/lib/gear/types.js';
+import { GrandExchange } from '@/lib/grandExchange.js';
+import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
+import { countUsersWithItemInCl } from '@/lib/rawSql.js';
+import { sorts } from '@/lib/sorts.js';
+import { memoryAnalysis } from '@/lib/util/cachedUserIDs.js';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { deferInteraction, interactionReply } from '@/lib/util/interactionReply.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
+import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
+import { syncCustomPrices } from '@/mahoji/lib/events.js';
+import { itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
+import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
@@ -136,7 +125,7 @@ AND ("gear.melee" IS NOT NULL OR
 				for (const gear of Object.values(user)
 					.flatMap(i => (i === null ? [] : Object.values(i)))
 					.filter(notEmpty)) {
-					const item = getItem(gear.item);
+					const item = Items.getItem(gear.item);
 					if (item) {
 						bank.add(gear.item, gear.quantity);
 					}
@@ -333,7 +322,7 @@ LIMIT
 					.map(
 						(row, index) =>
 							`${index + 1}. ${
-								getOSItem(Number(row.item_id)).name
+								Items.getOrThrow(Number(row.item_id)).name
 							} - ${row.total_gp_spent.toLocaleString()} GP`
 					)
 					.join('\n')
@@ -365,7 +354,7 @@ from bot_item_sell;`);
 								.map(
 									(row, index) =>
 										`${index + 1}. ${
-											getOSItem(Number(row.item_id)).name
+											Items.getOrThrow(Number(row.item_id)).name
 										} - ${row.gp.toLocaleString()} GP (${calcWhatPercent(
 											row.gp,
 											totalGPGivenOut[0].total_gp_given_out
@@ -434,25 +423,6 @@ export const adminCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'sync_blacklist',
 			description: 'Sync blacklist'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'loot_track',
-			description: 'Loot track',
-			options: [
-				{
-					type: ApplicationCommandOptionType.String,
-					name: 'name',
-					description: 'The name',
-					autocomplete: async (value: string) => {
-						const tracks = await prisma.lootTrack.findMany({ select: { id: true } });
-						return tracks
-							.filter(i => (!value ? true : i.id.includes(value)))
-							.map(i => ({ name: i.id, value: i.id }));
-					},
-					required: true
-				}
-			]
 		},
 		//
 		{
@@ -657,7 +627,6 @@ export const adminCommand: OSBMahojiCommand = {
 		sync_commands?: {};
 		item_stats?: { item: string };
 		sync_blacklist?: {};
-		loot_track?: { name: string };
 		cancel_task?: { user: MahojiUserOption };
 		badges?: { user: MahojiUserOption; add?: string; remove?: string };
 		bypass_age?: { user: MahojiUserOption };
@@ -673,11 +642,9 @@ export const adminCommand: OSBMahojiCommand = {
 		const adminUser = await mUserFetch(userID);
 		const isAdmin = globalConfig.adminUserIDs.includes(userID);
 		const isMod = isAdmin || adminUser.bitfield.includes(BitField.isModerator);
-		if (!guildID || !isMod || (globalConfig.isProduction && guildID.toString() !== globalConfig.supportServerID))
+		if (!guildID || !isMod || (globalConfig.isProduction && guildID.toString() !== globalConfig.supportServerID)) {
 			return randArrItem(gifs);
-
-		if (!guildID || !isMod || (globalConfig.isProduction && guildID.toString() !== '342983479501389826'))
-			return randArrItem(gifs);
+		}
 
 		/**
 		 *
@@ -788,7 +755,7 @@ export const adminCommand: OSBMahojiCommand = {
 			return 'Invalid.';
 		}
 		if (options.set_price) {
-			const item = getItem(options.set_price.item);
+			const item = Items.getItem(options.set_price.item);
 			if (!item) return 'Invalid item.';
 			const { price } = options.set_price;
 			if (!price || price < 1 || price > 1_000_000_000) return 'Invalid price.';
@@ -982,7 +949,7 @@ ${guildCommands.length} Guild commands`;
 		}
 
 		if (options.item_stats) {
-			const item = getItem(options.item_stats.item);
+			const item = Items.getItem(options.item_stats.item);
 			if (!item) return 'Invalid item.';
 			const isIron = false;
 			const ownedResult: any = await prisma.$queryRawUnsafe(`SELECT SUM((bank->>'${item.id}')::int) as qty
@@ -994,36 +961,13 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			} in their collection log.`;
 		}
 
-		if (options.loot_track) {
-			const loot = await prisma.lootTrack.findFirst({
-				where: {
-					id: options.loot_track.name
-				}
-			});
-			if (!loot) return 'Invalid';
-
-			const durationMillis = loot.total_duration * Time.Minute;
-
-			const arr = [
-				['Cost', new Bank(loot.cost as ItemBank)],
-				['Loot', new Bank(loot.loot as ItemBank)]
-			] as const;
-
-			let content = `${loot.id} ${formatDuration(loot.total_duration * Time.Minute)} KC${loot.total_kc}`;
-			const files = [];
-			for (const [name, bank] of arr) {
-				content += `\n${convertBankToPerHourStats(bank, durationMillis).join(', ')}`;
-				files.push((await makeBankImage({ bank, title: name })).file);
-			}
-			return { content, files };
-		}
 		if (options.ltc) {
 			let str = '';
 			const results = await prisma.lootTrack.findMany();
 
 			if (options.ltc.item) {
 				str += `${['id', 'total_of_item', 'item_per_kc', 'per_hour'].join('\t')}\n`;
-				const item = getOSItem(options.ltc.item);
+				const item = Items.getOrThrow(options.ltc.item);
 
 				for (const res of results) {
 					const loot = new Bank(res.loot as ItemBank);

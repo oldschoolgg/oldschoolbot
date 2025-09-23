@@ -1,19 +1,25 @@
+import { isObject, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { bold } from 'discord.js';
-import { Time, isObject, uniqueArr } from 'e';
 import { Bank, type ItemBank, ItemGroups, resolveItems } from 'oldschooljs';
 
-import { normalizeTOAUsers } from '@/lib/util';
-import { drawChestLootImage } from '../../../lib/bankImage';
-import { trackLoot } from '../../../lib/lootTrack';
-import { TeamLoot } from '../../../lib/simulation/TeamLoot';
-import { calcTOALoot, calculateXPFromRaid, toaOrnamentKits, toaPetTransmogItems } from '../../../lib/simulation/toa';
-import type { TOAOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { assert } from '../../../lib/util/logError';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
+import {
+	calcTOALoot,
+	calculateXPFromRaid,
+	type RaidLevel,
+	toaOrnamentKits,
+	toaPetTransmogItems
+} from '@/lib/simulation/toa.js';
+import type { TOAOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { assert } from '@/lib/util/logError.js';
+import { normalizeTOAUsers } from '@/lib/util/smallUtils.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const purpleButNotAnnounced = resolveItems([
 	"Elidinis' ward",
@@ -99,7 +105,7 @@ export const toaTask: MinionTask = {
 						deaths: i.deaths
 					};
 				}),
-				raidLevel
+				raidLevel: raidLevel as RaidLevel
 			});
 			for (const { id, points, deaths } of detailedUsers[x]) {
 				const currentUser = raidResults.get(id)!;
@@ -147,8 +153,7 @@ export const toaTask: MinionTask = {
 				}
 			}
 
-			const { itemsAdded } = await transactItems({
-				userID,
+			const { itemsAdded } = await user.transactItems({
 				itemsToAdd: totalLoot.get(userID),
 				collectionLog: true
 			});

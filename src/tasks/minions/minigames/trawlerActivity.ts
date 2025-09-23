@@ -1,11 +1,11 @@
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { anglerBoostPercent } from '../../../mahoji/mahojiSettings';
+import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { fishingTrawlerLoot } from '@/lib/simulation/fishingTrawler.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const trawlerTask: MinionTask = {
 	type: 'FishingTrawler',
@@ -28,7 +28,7 @@ export const trawlerTask: MinionTask = {
 			loot.add(_loot);
 		}
 
-		const xpBonusPercent = anglerBoostPercent(user);
+		const xpBonusPercent = Fishing.util.calcAnglerBoostPercent(user.gearBank);
 		if (xpBonusPercent > 0) {
 			const bonusXP = Math.ceil(calcPercentOfNum(xpBonusPercent, totalXP));
 			totalXP += bonusXP;
@@ -48,8 +48,7 @@ export const trawlerTask: MinionTask = {
 
 		if (hasEliteArdy) str += '\n\n50% Extra fish for Ardougne Elite diary';
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

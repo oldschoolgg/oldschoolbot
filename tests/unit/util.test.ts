@@ -1,28 +1,28 @@
+import { reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { stripEmojis, truncateString } from '@oldschoolgg/toolkit/util';
-import { reduceNumByPercent } from 'e';
-import { Bank, convertLVLtoXP } from 'oldschooljs';
+import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { baseModifyBusyCounter } from '../../src/lib/busyCounterCache';
-import getUserFoodFromBank from '../../src/lib/minions/functions/getUserFoodFromBank';
-import { SkillsEnum } from '../../src/lib/skilling/types';
-import { pluraliseItemName, skillingPetDropRate } from '../../src/lib/util';
-import getOSItem from '../../src/lib/util/getOSItem';
-import { sellPriceOfItem, sellStorePriceOfItem } from '../../src/mahoji/commands/sell';
-import { mockMUser } from './userutil';
+import { pluraliseItemName } from '@/lib/util/smallUtils.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { baseModifyBusyCounter } from '../../src/lib/busyCounterCache.js';
+import getUserFoodFromBank from '../../src/lib/minions/functions/getUserFoodFromBank.js';
+import { SkillsEnum } from '../../src/lib/skilling/types.js';
+import { sellPriceOfItem, sellStorePriceOfItem } from '../../src/mahoji/commands/sell.js';
+import { mockMUser } from './userutil.js';
 
 describe('util', () => {
 	test('stripEmojis', () => {
 		expect(stripEmojis('b👏r👏u👏h')).toEqual('bruh');
 	});
 
-	test('getOSItem', () => {
-		expect(getOSItem('Twisted bow').id).toEqual(20_997);
-		expect(getOSItem(20_997).id).toEqual(20_997);
-		expect(getOSItem('20997').id).toEqual(20_997);
-		expect(getOSItem('3rd age platebody').id).toEqual(10_348);
+	test('Items.getOrThrow', () => {
+		expect(Items.getOrThrow('Twisted bow').id).toEqual(20_997);
+		expect(Items.getOrThrow(20_997).id).toEqual(20_997);
+		expect(Items.getOrThrow('20997').id).toEqual(20_997);
+		expect(Items.getOrThrow('3rd age platebody').id).toEqual(10_348);
 
-		expect(() => getOSItem('Non-existant item')).toThrowError('Item Non-existant item not found.');
+		expect(() => Items.getOrThrow('Non-existant item')).toThrowError('Item Non-existant item not found.');
 	});
 
 	test('getUserFoodFromBank', () => {
@@ -63,15 +63,15 @@ describe('util', () => {
 	});
 
 	test('sellPriceOfItem', () => {
-		const item = getOSItem('Dragon pickaxe');
+		const item = Items.getOrThrow('Dragon pickaxe');
 		const { price } = item;
 		const expected = reduceNumByPercent(price!, 20);
 		expect(sellPriceOfItem(item)).toEqual({ price: expected, basePrice: price });
-		expect(sellPriceOfItem(getOSItem('Yellow square'))).toEqual({ price: 0, basePrice: 0 });
+		expect(sellPriceOfItem(Items.getOrThrow('Yellow square'))).toEqual({ price: 0, basePrice: 0 });
 	});
 
 	test('sellStorePriceOfItem', () => {
-		const item = getOSItem('Dragon pickaxe');
+		const item = Items.getOrThrow('Dragon pickaxe');
 		const { cost } = item;
 
 		const expectedOneQty =
@@ -80,7 +80,7 @@ describe('util', () => {
 			(((0.4 - 0.015 * Math.min(22 - 1, 10)) * Math.min(22, 11) + Math.max(22 - 11, 0) * 0.1) * cost!) / 22;
 		expect(sellStorePriceOfItem(item, 1)).toEqual({ price: expectedOneQty, basePrice: cost! });
 		expect(sellStorePriceOfItem(item, 22)).toEqual({ price: expectedTwentytwoQty, basePrice: cost! });
-		expect(sellStorePriceOfItem(getOSItem('Yellow square'), 1)).toEqual({ price: 0, basePrice: 0 });
+		expect(sellStorePriceOfItem(Items.getOrThrow('Yellow square'), 1)).toEqual({ price: 0, basePrice: 0 });
 	});
 
 	test('skillingPetRateFunction', () => {

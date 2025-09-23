@@ -1,54 +1,58 @@
-import path from 'node:path';
-import { build } from 'esbuild';
+import { existsSync } from 'node:fs';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { type BuildOptions, build } from 'esbuild';
+
+const STATIC_DEFINE = {
+	__BOT_TYPE__: existsSync(path.resolve(dirname(fileURLToPath(import.meta.url)), './src/lib/bso')) ? '"BSO"' : '"OSB"'
+};
 
 const external = [
-	'skia-canvas',
-	'@prisma/robochimp',
 	'@prisma/client',
+	'@sentry/node',
+	'skia-canvas',
+	'sonic-boom',
 	'bufferutil',
-	'oldschooljs',
 	'discord.js',
-	'node-fetch',
-	'piscina'
+	'@prisma/robochimp',
+	'dotenv',
+	'micromatch',
+	'node-cron',
+	'piscina',
+	'node:*'
 ];
 
-build({
-	entryPoints: ['src/index.ts'],
-	sourcemap: 'inline',
-	minify: true,
-	legalComments: 'none',
-	outdir: './dist',
-	logLevel: 'error',
+const baseBuildOptions: BuildOptions = {
 	bundle: true,
+	format: 'esm',
+	outExtension: { '.js': '.js' },
+	legalComments: 'none',
 	platform: 'node',
+	treeShaking: true,
 	loader: {
 		'.node': 'file'
 	},
+	target: 'node24.8.0',
 	external,
-	alias: {
-		'@': path.resolve(import.meta.dirname, './src')
-	}
+	define: STATIC_DEFINE,
+	sourcemap: 'inline',
+	minify: true,
+	metafile: true
+};
+
+build({
+	...baseBuildOptions,
+	entryPoints: ['src/index.ts'],
+	outdir: './dist'
 });
 
 // Workers
 build({
+	...baseBuildOptions,
 	entryPoints: [
 		'src/lib/workers/kill.worker.ts',
 		'src/lib/workers/finish.worker.ts',
 		'src/lib/workers/casket.worker.ts'
 	],
-	sourcemap: 'inline',
-	logLevel: 'error',
-	bundle: true,
-	minify: true,
-	legalComments: 'none',
-	outdir: './dist/lib/workers',
-	platform: 'node',
-	loader: {
-		'.node': 'file'
-	},
-	external,
-	alias: {
-		'@': path.resolve(import.meta.dirname, './src')
-	}
+	outdir: './dist/lib/workers'
 });

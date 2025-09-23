@@ -1,20 +1,19 @@
+import { increaseNumByPercent, randInt } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { calcPerHour, formatOrdinal } from '@oldschoolgg/toolkit/util';
-import { increaseNumByPercent, randInt } from 'e';
 
-import { getTemporossLoot } from '../../../lib/simulation/tempoross';
-import Fishing from '../../../lib/skilling/skills/fishing';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { TemporossActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import type { TemporossActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const temporossTask: MinionTask = {
 	type: 'Tempoross',
 	async run(data: TemporossActivityTaskOptions) {
 		const { userID, channelID, quantity, rewardBoost, duration } = data;
 		const user = await mUserFetch(userID);
-		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
+		const currentLevel = user.skillsAsLevels.fishing;
 		const previousScore = await user.fetchMinigameScore('tempoross');
 		const { newScore } = await user.incrementMinigameScore('tempoross', quantity);
 		const kcForPet = randInt(previousScore, newScore);
@@ -42,7 +41,7 @@ export const temporossTask: MinionTask = {
 		// If they have the entire angler outfit, give an extra 0.5% xp bonus
 		if (
 			user.gear.skilling.hasEquipped(
-				Object.keys(Fishing.anglerItems).map(i => Number.parseInt(i)),
+				Fishing.anglerItems.map(i => i[1]),
 				true
 			)
 		) {
@@ -51,8 +50,8 @@ export const temporossTask: MinionTask = {
 			fBonusXP += amountToAdd;
 		} else {
 			// For each angler item, check if they have it, give its' XP boost if so.
-			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasEquipped(Number.parseInt(itemID))) {
+			for (const [itemID, bonus] of Fishing.anglerItems) {
+				if (user.hasEquipped(itemID)) {
 					const amountToAdd = Math.floor(fXPtoGive * (bonus / 100));
 					fXPtoGive += amountToAdd;
 					fBonusXP += amountToAdd;
@@ -61,14 +60,13 @@ export const temporossTask: MinionTask = {
 		}
 
 		const xpStr = await user.addXP({
-			skillName: SkillsEnum.Fishing,
+			skillName: 'fishing',
 			amount: fXPtoGive,
 			duration,
 			source: 'Tempoross'
 		});
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

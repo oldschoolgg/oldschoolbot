@@ -1,9 +1,9 @@
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
-import { calcConBonusXP } from '../../../lib/util/calcConBonusXP';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { calcConBonusXP } from '@/lib/skilling/skills/construction/calcConBonusXP.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { MahoganyHomesActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const mahoganyHomesTask: MinionTask = {
 	type: 'MahoganyHomes',

@@ -1,11 +1,10 @@
+import { randArrItem, roll, Time } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
-import { Time, randArrItem, roll } from 'e';
 import { LRUCache } from 'lru-cache';
-import { Bank, ItemGroups } from 'oldschooljs';
-import { LootTable } from 'oldschooljs';
+import { Bank, ItemGroups, LootTable } from 'oldschooljs';
 
-import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
-import { BitField } from './constants';
+import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
+import { BitField } from './constants.js';
 
 interface RandomEvent {
 	id: number;
@@ -177,7 +176,7 @@ export const RandomEvents: RandomEvent[] = [
 
 const cache = new LRUCache<string, number>({ max: 500 });
 
-const doesntGetRandomEvent: activity_type_enum[] = [activity_type_enum.TombsOfAmascut];
+const doesntGetRandomEvent: activity_type_enum[] = [activity_type_enum.TombsOfAmascut, activity_type_enum.Buy];
 
 export async function triggerRandomEvent(user: MUser, type: activity_type_enum, duration: number, messages: string[]) {
 	if (doesntGetRandomEvent.includes(type)) return {};

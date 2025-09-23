@@ -1,5 +1,3 @@
-import type { OSBMahojiCommand } from '../lib/util';
-
 export const inviteCommand: OSBMahojiCommand = {
 	name: 'invite',
 	description: 'Shows the invite link for the bot.',

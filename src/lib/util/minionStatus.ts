@@ -1,40 +1,40 @@
+import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Items, SkillsEnum } from 'oldschooljs';
 
-import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
-import { collectables } from '../../mahoji/lib/collectables';
-import { ClueTiers } from '../clues/clueTiers';
-import killableMonsters from '../minions/data/killableMonsters';
-import { Planks } from '../minions/data/planks';
-import { quests } from '../minions/data/quests';
-import Agility from '../skilling/skills/agility';
-import Constructables from '../skilling/skills/construction/constructables';
-import Cooking from '../skilling/skills/cooking/cooking';
-import ForestryRations from '../skilling/skills/cooking/forestersRations';
-import LeapingFish from '../skilling/skills/cooking/leapingFish';
-import Crafting from '../skilling/skills/crafting';
-import Farming from '../skilling/skills/farming';
-import Firemaking from '../skilling/skills/firemaking';
-import Fishing from '../skilling/skills/fishing';
-import { zeroTimeFletchables } from '../skilling/skills/fletching/fletchables';
-import Herblore from '../skilling/skills/herblore/herblore';
-import Hunter from '../skilling/skills/hunter/hunter';
-import { Castables } from '../skilling/skills/magic/castables';
-import { Enchantables } from '../skilling/skills/magic/enchantables';
-import Mining from '../skilling/skills/mining';
-import Prayer from '../skilling/skills/prayer';
-import Runecraft from '../skilling/skills/runecraft';
-import Smithing from '../skilling/skills/smithing';
-import { stealables } from '../skilling/skills/thieving/stealables';
-import Woodcutting from '../skilling/skills/woodcutting/woodcutting';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { Planks } from '@/lib/minions/data/planks.js';
+import { quests } from '@/lib/minions/data/quests.js';
+import Agility from '@/lib/skilling/skills/agility.js';
+import Constructables from '@/lib/skilling/skills/construction/constructables.js';
+import Cooking from '@/lib/skilling/skills/cooking/cooking.js';
+import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
+import LeapingFish from '@/lib/skilling/skills/cooking/leapingFish.js';
+import Crafting from '@/lib/skilling/skills/crafting/index.js';
+import Farming from '@/lib/skilling/skills/farming/index.js';
+import Firemaking from '@/lib/skilling/skills/firemaking.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
+import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
+import { Castables } from '@/lib/skilling/skills/magic/castables.js';
+import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
+import Mining from '@/lib/skilling/skills/mining.js';
+import Prayer from '@/lib/skilling/skills/prayer.js';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import Smithing from '@/lib/skilling/skills/smithing/index.js';
+import { stealables } from '@/lib/skilling/skills/thieving/stealables.js';
+import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	ButlerActivityTaskOptions,
+	BuyActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CollectingOptions,
@@ -75,12 +75,14 @@ import type {
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	SpecificQuestOptions,
-	TOAOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
+	TOAOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
-} from '../types/minions';
+} from '@/lib/types/minions.js';
+import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
+import { collectables } from '@/mahoji/lib/collectables.js';
 
 export function minionStatus(user: MUser) {
 	const currentTask = ActivityManager.getActivityOfUser(user.id);
@@ -565,9 +567,9 @@ export function minionStatus(user: MUser) {
 
 		case 'DarkAltar': {
 			const data = currentTask as DarkAltarOptions;
-			return `${name} is currently runecrafting ${toTitleCase(
-				data.rune
-			)} runes at the Dark Altar. ${formattedDuration}`;
+			return `${name} is currently runecrafting ${toTitleCase(data.rune)} runes at the Dark Altar${
+				data.useExtracts ? ' with extracts' : ''
+			}. ${formattedDuration}`;
 		}
 		case 'OuraniaAltar': {
 			return `${name} is currently runecrafting at the Ourania Altar. ${formattedDuration}`;
@@ -622,6 +624,16 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently shopping at Tzhaar stores. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
+		}
+		case 'Buy': {
+			const data = currentTask as BuyActivityTaskOptions;
+			const tripBuyable = findTripBuyable(data.itemID, data.quantity);
+			const itemName = tripBuyable?.displayName ?? Items.get(data.itemID)?.name ?? `Item[${data.itemID}]`;
+			const quantity =
+				tripBuyable?.quantity && tripBuyable.quantity > 0
+					? data.quantity / tripBuyable.quantity
+					: data.quantity;
+			return `${name} is currently buying ${quantity}x ${itemName}. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'Nex': {
 			const data = currentTask as NexTaskOptions;

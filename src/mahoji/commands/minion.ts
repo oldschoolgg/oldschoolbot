@@ -1,52 +1,45 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import {
-	type CommandRunOptions,
-	type MahojiUserOption,
-	formatOrdinal,
-	roboChimpCLRankQuery,
-	toTitleCase
-} from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType, type BaseMessageOptions, bold, time } from 'discord.js';
-import { Time, notEmpty, randArrItem } from 'e';
-import { convertLVLtoXP } from 'oldschooljs';
+import { notEmpty, randArrItem } from '@oldschoolgg/toolkit';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
+import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit/util';
+import { ApplicationCommandOptionType, bold } from 'discord.js';
+import { convertLVLtoXP, Items } from 'oldschooljs';
 
-import type { Peak } from '@/lib/util/peaks';
-import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import { BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '../../lib/constants';
-import { degradeableItems } from '../../lib/degradeableItems';
-import { diaries } from '../../lib/diaries';
-import { calculateMastery } from '../../lib/mastery';
-import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import type { AttackStyles } from '../../lib/minions/functions';
-import { blowpipeCommand, blowpipeDarts } from '../../lib/minions/functions/blowpipeCommand';
-import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
-import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand';
-import { roboChimpCache } from '../../lib/perkTier';
-import { roboChimpUserFetch } from '../../lib/roboChimp';
-import { Minigames } from '../../lib/settings/minigames';
-import Skills from '../../lib/skilling/skills';
-import creatures from '../../lib/skilling/skills/hunter/creatures';
-import { MUserStats } from '../../lib/structures/MUserStats';
-import { getKCByName } from '../../lib/util/getKCByName';
-import getOSItem, { getItem } from '../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
-import { isValidNickname } from '../../lib/util/smallUtils';
+import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { bankImageTask } from '@/lib/canvas/bankImage.js';
+import { BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
+import { degradeableItems } from '@/lib/degradeableItems.js';
+import { diaries } from '@/lib/diaries.js';
+import { calculateMastery } from '@/lib/mastery.js';
+import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import { blowpipeCommand, blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
+import { degradeableItemsCommand } from '@/lib/minions/functions/degradeableItemsCommand.js';
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import { allPossibleStyles, trainCommand } from '@/lib/minions/functions/trainCommand.js';
+import { roboChimpCache } from '@/lib/perkTier.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { Minigames } from '@/lib/settings/minigames.js';
+import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
+import { Skills } from '@/lib/skilling/skills/index.js';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
+import { getKCByName } from '@/lib/util/getKCByName.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
+import { getPeakTimesString } from '@/lib/util/peaks.js';
+import { isValidNickname } from '@/lib/util/smallUtils.js';
 import {
 	achievementDiaryCommand,
 	claimAchievementDiaryCommand
-} from '../lib/abstracted_commands/achievementDiaryCommand';
-import { bankBgCommand } from '../lib/abstracted_commands/bankBgCommand';
-import { cancelTaskCommand } from '../lib/abstracted_commands/cancelTaskCommand';
-import { crackerCommand } from '../lib/abstracted_commands/crackerCommand';
-import { dailyCommand } from '../lib/abstracted_commands/dailyCommand';
-import { ironmanCommand } from '../lib/abstracted_commands/ironmanCommand';
-import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
-import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
-import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusCommand';
-import { skillOption } from '../lib/mahojiCommandOptions';
-import type { OSBMahojiCommand } from '../lib/util';
-import { patronMsg } from '../mahojiSettings';
+} from '@/mahoji/lib/abstracted_commands/achievementDiaryCommand.js';
+import { bankBgCommand } from '@/mahoji/lib/abstracted_commands/bankBgCommand.js';
+import { cancelTaskCommand } from '@/mahoji/lib/abstracted_commands/cancelTaskCommand.js';
+import { crackerCommand } from '@/mahoji/lib/abstracted_commands/crackerCommand.js';
+import { dailyCommand } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
+import { ironmanCommand } from '@/mahoji/lib/abstracted_commands/ironmanCommand.js';
+import { Lampables, lampCommand } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
+import { minionBuyCommand } from '@/mahoji/lib/abstracted_commands/minionBuyCommand.js';
+import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
+import { skillOption } from '@/mahoji/lib/mahojiCommandOptions.js';
+import { patronMsg } from '@/mahoji/mahojiSettings.js';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -112,23 +105,6 @@ export async function getUserInfo(user: MUser) {
 		} points (Rank ${leaguesRanking > 500 ? 'Unranked! Get more points!' : formatOrdinal(leaguesRanking)})
 **Global CL:** ${globalCLPercent}% (${clRank > 500 ? 'Unranked! Get more CL slots completed!' : formatOrdinal(clRank)})
 `
-	};
-}
-
-function checkPeakTimes(): BaseMessageOptions {
-	const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
-	let str = '';
-	for (const peak of cachedPeakInterval) {
-		str += `${Emoji.Stopwatch} **${toTitleCase(peak.peakTier)}** peak time: ${time(
-			new Date(peak.startTime),
-			'T'
-		)} to ${time(new Date(peak.finishTime), 'T')} (**${Math.round(
-			(peak.finishTime - peak.startTime) / Time.Hour
-		)}** hour peak ${time(new Date(peak.startTime), 'R')})\n`;
-	}
-
-	return {
-		content: str
 	};
 }
 
@@ -204,7 +180,7 @@ export const minionCommand: OSBMahojiCommand = {
 					autocomplete: async (value, user) => {
 						const mUser = await mUserFetch(user.id);
 						const isMod = mUser.bitfield.includes(BitField.isModerator);
-						const bankImages = bankImageGenerator.backgroundImages;
+						const bankImages = bankImageTask.backgroundImages;
 						const owned = bankImages
 							.filter(bg => bg.storeBitField && mUser.user.store_bitfield.includes(bg.storeBitField))
 							.map(bg => bg.id);
@@ -233,7 +209,7 @@ export const minionCommand: OSBMahojiCommand = {
 					autocomplete: async (value, user) => {
 						const mappedLampables = Lampables.map(i => i.items)
 							.flat(2)
-							.map(getItem)
+							.map(id => Items.get(id))
 							.filter(notEmpty)
 							.map(i => ({ id: i.id, name: i.name }));
 
@@ -405,7 +381,7 @@ export const minionCommand: OSBMahojiCommand = {
 					name: 'add',
 					description: 'Add darts or scales to your blowpipe',
 					required: false,
-					choices: [...blowpipeDarts, getOSItem("Zulrah's scales")].map(i => ({
+					choices: [...blowpipeDarts, Items.getOrThrow("Zulrah's scales")].map(i => ({
 						name: i.name,
 						value: i.name
 					}))
@@ -561,7 +537,7 @@ export const minionCommand: OSBMahojiCommand = {
 			);
 		}
 
-		if (options.peak) return checkPeakTimes();
+		if (options.peak) return getPeakTimesString();
 
 		if (options.mastery) {
 			const { masteryFactors, totalMastery } = await calculateMastery(user, await MUserStats.fromID(user.id));

@@ -2,8 +2,8 @@ import { collapseWhiteSpace } from 'collapse-white-space';
 import { Items } from 'oldschooljs';
 import { visitParents } from 'unist-util-visit-parents';
 
-import bsoItemsJson from '../../../data/bso/bso_items.json';
-import commandsJson from '../../../data/osb/commands.json';
+import bsoItemsJson from '../../../data/bso/bso_items.json' with { type: 'json' };
+import commandsJson from '../../../data/osb/commands.json' with { type: 'json' };
 import { authors, authorsMap } from '../../../scripts/wiki/authors.js';
 import { SkillsArray } from '../../../src/lib/skilling/types.js';
 import { toTitleCase } from '../docs-util.js';
@@ -78,26 +78,30 @@ ${author?.avatar ? `<img class="contributor_avatar" src="${author.avatar}" />` :
 					html = `<div class="github_link">${githubIcon}<a target="_blank" href="https://github.com/oldschoolgg/oldschoolbot/compare/${content}">Commits</a></div>`;
 				} else {
 					let imageURL = null;
-					let itemName = content;
+					let [itemName, flag] = content.split('?');
 					const bsoItem = bsoItems.find(
 						([id, name]) =>
-							name.toLowerCase() === content.toLowerCase() || id.toLowerCase() === content.toLowerCase()
+							name.toLowerCase() === itemName.toLowerCase() || id.toLowerCase() === itemName.toLowerCase()
 					);
-					const osbItem = Items.get(content) ?? Items.get(Number(content));
+					const osbItem = Items.get(itemName) ?? Items.get(Number(itemName));
 					if (bsoItem) {
 						imageURL = `https://raw.githubusercontent.com/oldschoolgg/oldschoolbot/refs/heads/master/src/lib/resources/images/bso_icons/${bsoItem[0]}.png`;
 					} else if (osbItem) {
 						imageURL = `https://cdn.oldschool.gg/icons/items/${osbItem.id}.png`;
 						itemName = osbItem.name;
 					} else {
-						console.warn(`Could not find item: ${content}`);
-						html = `<span class="unknown_item">${content}</span>`;
+						console.warn(`Could not find item: ${itemName}`);
+						html = `<span class="unknown_item">${itemName}</span>`;
 					}
 					if (imageURL) {
-						html = `<span class="osrs_item">
+						if (flag === 'raw') {
+							html = `<img class="osrs_item_image osrs_item_image_full" src="${imageURL}" alt="${itemName}" />`;
+						} else {
+							html = `<span class="osrs_item">
 									<img class="osrs_item_image" src="${imageURL}" alt="${itemName}" />
-									<span class="osrs_item_name">${itemName}</span>
+									${flag !== 'raw' ? `<span class="osrs_item_name">${itemName}</span>` : ''}
 								</span>`;
+						}
 					}
 				}
 

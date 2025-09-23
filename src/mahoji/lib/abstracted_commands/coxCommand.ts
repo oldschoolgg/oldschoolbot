@@ -1,7 +1,8 @@
+import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { channelIsSendable, formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
-import { calcWhatPercent, sumArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import { Bank, randomVariation } from 'oldschooljs';
 
 import {
 	calcCoxDuration,
@@ -14,18 +15,17 @@ import {
 	itemBoosts,
 	maxSpeedReductionFromItems,
 	minimumCoxSuppliesNeeded
-} from '../../../lib/data/cox';
-import { getSimilarItems } from '../../../lib/data/similarItems';
-import { degradeItem } from '../../../lib/degradeableItems';
-import { trackLoot } from '../../../lib/lootTrack';
-import { setupParty } from '../../../lib/party';
-
-import type { MakePartyOptions } from '../../../lib/types';
-import type { RaidsOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { mahojiParseNumber } from '../../mahojiSettings';
+} from '@/lib/data/cox.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { degradeItem } from '@/lib/degradeableItems.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { setupParty } from '@/lib/party.js';
+import type { MakePartyOptions } from '@/lib/types/index.js';
+import type { RaidsOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export async function coxBoostsCommand(user: MUser) {
 	const boostStr = [];
@@ -47,9 +47,8 @@ export async function coxBoostsCommand(user: MUser) {
 				if (item.setup && user.gear[item.setup].hasEquipped(item.item.id, false, true)) {
 					return true;
 				}
-			} else {
-				return user.hasEquippedOrInBank(getSimilarItems(item.item.id));
 			}
+			return user.hasEquippedOrInBank(getSimilarItems(item.item.id));
 		});
 		if (ownedItems.length > 0) {
 			const maxBoost = Math.max(...ownedItems.map(item => item.boost));

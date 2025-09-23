@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
-import { Eatables } from '../../data/eatables';
-import type { GearBank } from '../../structures/GearBank';
+import { Eatables } from '@/lib/data/eatables.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
 
 function getRealHealAmount(gearBank: GearBank, healAmount: ((user: GearBank) => number) | number) {
 	if (typeof healAmount === 'number') {

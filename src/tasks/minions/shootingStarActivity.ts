@@ -1,9 +1,9 @@
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
-import type { ShootingStarsOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { starSizes } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
+import type { ShootingStarsOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { starSizes } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
 
 export async function shootingStarsActivity(data: ShootingStarsOptions) {
 	const user = await mUserFetch(data.userID);

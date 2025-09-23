@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest';
-import { cleanUsername } from '../src/util';
+
+import { cleanUsername } from '../src/util/discord/index.js';
 
 test('cleanUsername', () => {
 	expect(cleanUsername('just_as')).toEqual('just_as');

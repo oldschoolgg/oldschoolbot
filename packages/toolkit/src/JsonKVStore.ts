@@ -26,7 +26,6 @@ export class JsonKVStore<T extends Record<string, any> = Record<string, any>> {
 
 	getAll(pattern: string): { key: string; value: T[keyof T] }[] {
 		const keys = Object.keys(this.data);
-		console.log({ keys, pattern });
 		const matches = micromatch(keys, pattern);
 		const result: { key: string; value: T[keyof T] }[] = [];
 		for (const key of matches) {

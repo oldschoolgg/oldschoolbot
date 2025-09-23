@@ -1,18 +1,19 @@
-import { noOp, uniqueArr } from 'e';
+import { noOp, uniqueArr } from '@oldschoolgg/toolkit';
 
-import { syncCustomPrices } from '../mahoji/lib/events';
-import { cacheBadges } from './badges';
-import { syncBlacklists } from './blacklists';
-import { globalConfig } from './constants';
-import { allCollectionLogsFlat } from './data/Collections.js';
-import { GrandExchange } from './grandExchange';
-import { cacheGEPrices } from './marketPrices';
-import { populateRoboChimpCache } from './perkTier';
-import { RawSQL } from './rawSql';
-import { runStartupScripts } from './startupScripts';
-import { logWrapFn } from './util';
-import { syncActiveUserIDs } from './util/cachedUserIDs';
-import { syncDisabledCommands } from './util/syncDisabledCommands';
+import { GeImageGenerator } from '@/lib/canvas/geImage.js';
+import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
+import { syncActiveUserIDs } from '@/lib/util/cachedUserIDs.js';
+import { syncDisabledCommands } from '@/lib/util/syncDisabledCommands.js';
+import { syncCustomPrices } from '@/mahoji/lib/events.js';
+import { cacheBadges } from './badges.js';
+import { syncBlacklists } from './blacklists.js';
+import { globalConfig } from './constants.js';
+import { GrandExchange } from './grandExchange.js';
+import { cacheGEPrices } from './marketPrices.js';
+import { populateRoboChimpCache } from './perkTier.js';
+import { RawSQL } from './rawSql.js';
+import { runStartupScripts } from './startupScripts.js';
+import { logWrapFn } from './util.js';
 
 async function syncCollectionLogSlotTable() {
 	await prisma.collectionLogSlot.deleteMany();
@@ -31,6 +32,8 @@ async function syncCollectionLogSlotTable() {
 }
 
 export const preStartup = logWrapFn('PreStartup', async () => {
+	await GeImageGenerator.init();
+
 	await Promise.all([
 		prisma.clientStorage.upsert({
 			where: { id: globalConfig.clientID },

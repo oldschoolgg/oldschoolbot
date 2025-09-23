@@ -1,6 +1,6 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import type { PerkTier } from '@oldschoolgg/toolkit/util';
 import type { Giveaway, Guild, User } from '@prisma/client';
-import { Time } from 'e';
 import { LRUCache } from 'lru-cache';
 
 export const perkTierCache = new Map<string, 0 | PerkTier>();
@@ -19,3 +19,4 @@ export const giveawayCache = new LRUCache<number, Giveaway>({
 });
 
 export const usernameWithBadgesCache = new Map<string, string>();
+export const lastRoboChimpSyncCache = new Map<string, number>();

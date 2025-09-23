@@ -1,7 +1,13 @@
 import { type ExecOptions, exec as execNonPromise } from 'node:child_process';
 import { promisify } from 'node:util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { TimerManager } from '@sapphire/timer-manager';
 import { Bank, type ItemBank } from 'oldschooljs';
+
+import { crons } from '@/lib/crons.js';
+import { sql } from '@/lib/postgres.js';
+import { sonicBoom } from '@/lib/util/logger.js';
+import { Workers } from '@/lib/workers/index.js';
 
 const rawExecAsync = promisify(execNonPromise);
 
@@ -23,12 +29,12 @@ export async function execAsync(command: string | string[], options?: ExecOption
 	}
 }
 
-export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>) {
+export async function runTimedLoggedFn(name: string, fn: () => unknown) {
 	const stopwatch = new Stopwatch();
-	stopwatch.start();
+	console.log(`Starting ${name}...`);
 	await fn();
 	stopwatch.stop();
-	console.log(`Finished ${name} in ${stopwatch.toString()}`);
+	console.log(`${name} completed in ${stopwatch.toString()}`);
 }
 
 export function getItemNamesFromBank(bank: Bank | ItemBank): string[] {
@@ -39,4 +45,13 @@ export function getItemNamesFromBank(bank: Bank | ItemBank): string[] {
 			.sort((a, b) => a.localeCompare(b));
 	}
 	return getItemNamesFromBank(new Bank(bank));
+}
+
+export async function tearDownScript() {
+	await Workers.destroyAll();
+	await sql.end();
+	TimerManager.destroy();
+	sonicBoom.destroy();
+	for (const cron of crons) cron.stop();
+	process.exit(0);
 }

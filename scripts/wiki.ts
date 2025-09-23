@@ -1,20 +1,24 @@
 import { writeFileSync } from 'node:fs';
-import process from 'node:process';
 import { Markdown, Tab, Tabs, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 import { omit } from 'remeda';
 
-import '../src/lib/safeglobals';
-import { ClueTiers } from '../src/lib/clues/clueTiers';
-import { CombatAchievements } from '../src/lib/combat_achievements/combatAchievements';
-import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear, itemBoosts } from '../src/lib/data/cox';
-import { wikiMonsters } from '../src/lib/minions/data/killableMonsters';
-import { quests } from '../src/lib/minions/data/quests';
-import { sorts } from '../src/lib/sorts';
-import { clueGlobalBoosts, clueTierBoosts } from '../src/mahoji/commands/clue';
-import { miningSnapshots } from './wiki/miningSnapshots.js';
-import { updateAuthors } from './wiki/updateAuthors';
-import { handleMarkdownEmbed } from './wiki/wikiScriptUtil';
+applyStaticDefine();
+
+import '../src/lib/safeglobals.js';
+
+import { wikiMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import { applyStaticDefine } from '../meta.js';
+import { ClueTiers } from '../src/lib/clues/clueTiers.js';
+import { CombatAchievements } from '../src/lib/combat_achievements/combatAchievements.js';
+import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear, itemBoosts } from '../src/lib/data/cox.js';
+import { quests } from '../src/lib/minions/data/quests.js';
+import { sorts } from '../src/lib/sorts.js';
+import { clueGlobalBoosts, clueTierBoosts } from '../src/mahoji/commands/clue.js';
+import { execAsync, runTimedLoggedFn } from './scriptUtil.js';
+import { renderTripBuyables } from './wiki/tripBuyables.js';
+import { updateAuthors } from './wiki/updateAuthors.js';
+import { handleMarkdownEmbed } from './wiki/wikiScriptUtil.js';
 
 function escapeItemName(str: string) {
 	return str.replace(/\[/g, '\\[').replace(/\]/g, '\\]');
@@ -36,7 +40,7 @@ function renderMonstersMarkdown() {
 			);
 			md.addLine(`- You can send your minion to kill this monster using: [[/k name:${monster.name}]]`);
 			md.addLine(`- You can check your KC using: [[/minion kc name:${monster.name}]]`);
-			md.addLine(`- You can check the KC leaderboard using: [[/lb kc monster\:${monster.name}]]`);
+			md.addLine(`- You can check the KC leaderboard using: [[/lb kc monster:${monster.name}]]`);
 			md.addLine(`- You can check your collection log using: [[/cl name\\:${monster.name}]]`);
 			md.addLine(`- You can check the collection log leaderboard using: [[/lb cl cl:${monster.name}]]`);
 
@@ -378,14 +382,21 @@ function renderCombatAchievementsFile() {
 }
 
 async function wiki() {
-	renderCombatAchievementsFile();
-	renderQuestsMarkdown();
-	rendeCoxMarkdown();
-	clueBoosts();
-	renderMonstersMarkdown();
-	await updateAuthors();
-	miningSnapshots();
-	process.exit(0);
+	await Promise.all([
+		runTimedLoggedFn('Fishing Snapshots', () =>
+			execAsync('tsx --tsconfig scripts/tsconfig.json ./scripts/wiki/fishingSnapshots.ts')
+		),
+		runTimedLoggedFn('Mining Snapshots', () =>
+			execAsync('tsx --tsconfig scripts/tsconfig.json ./scripts/wiki/miningSnapshots.ts')
+		),
+		runTimedLoggedFn('Update Authors', updateAuthors),
+		runTimedLoggedFn('Render Combat Achievements', renderCombatAchievementsFile),
+		runTimedLoggedFn('Render Clue Boosts', clueBoosts),
+		runTimedLoggedFn('Render Quests Markdown', renderQuestsMarkdown),
+		runTimedLoggedFn('Render CoX Markdown', rendeCoxMarkdown),
+		runTimedLoggedFn('Render Trip Buyables', renderTripBuyables),
+		runTimedLoggedFn('Render Monsters Markdown', renderMonstersMarkdown)
+	]);
 }
 
 wiki();

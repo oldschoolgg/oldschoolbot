@@ -1,4 +1,4 @@
-import { isFunction } from 'e';
+import { isFunction } from './typeChecking.js';
 
 const untrustworthyEscapeHTML = (str: string) =>
 	str

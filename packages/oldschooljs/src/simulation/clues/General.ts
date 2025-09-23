@@ -1,4 +1,4 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '@/structures/LootTable.js';
 
 export const PrayerPageTable = new LootTable()
 	.add('Saradomin page 1')

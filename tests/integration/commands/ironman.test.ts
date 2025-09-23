@@ -1,11 +1,12 @@
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { miniID } from '@oldschoolgg/toolkit/util';
 import type { Prisma } from '@prisma/client';
-import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { ironmanCommand } from '../../../src/mahoji/lib/abstracted_commands/ironmanCommand';
-import { mockedId } from '../util';
+import { DELETED_USER_ID } from '../../../src/lib/constants.js';
+import { ironmanCommand } from '../../../src/mahoji/lib/abstracted_commands/ironmanCommand.js';
+import { mockedId } from '../util.js';
 
 describe('Ironman Command', () => {
 	async function createUserWithEverything(userId: string, userData: Partial<Prisma.UserCreateInput> = {}) {
@@ -67,11 +68,40 @@ describe('Ironman Command', () => {
 				}
 			})
 		]);
+
+		// Bingo
+		const testBingo = await prisma.bingo.create({
+			data: {
+				creator_id: userId,
+				duration_days: 1,
+				team_size: 1,
+				title: '',
+				notifications_channel_id: '',
+				ticket_price: 1,
+				guild_id: '1',
+				start_date: new Date(Date.now() - Time.Day * 4),
+				was_finalized: true
+			}
+		});
+		const testTeam = await prisma.bingoTeam.create({
+			data: {
+				bingo_id: testBingo.id
+			}
+		});
+		await prisma.bingoParticipant.create({
+			data: {
+				user_id: userId,
+				bingo_team_id: testTeam.id,
+				bingo_id: testBingo.id,
+				tickets_bought: 1
+			}
+		});
+		return { testBingo };
 	}
 
 	test('Should reset everything', async () => {
 		const userId = mockedId();
-		await createUserWithEverything(userId);
+		const { testBingo } = await createUserWithEverything(userId);
 
 		const result = await ironmanCommand(await mUserFetch(userId), null, false);
 		expect(result).toEqual('You are now an ironman.');
@@ -96,6 +126,13 @@ describe('Ironman Command', () => {
 		const userStats = await global.prisma!.userStats.findFirst({ where: { user_id: BigInt(userId) } });
 		expect(userStats?.cl_array).toEqual(undefined);
 		expect(userStats?.cl_array_length).toEqual(undefined);
+
+		// Bingo
+		expect(await prisma.bingo.count({ where: { creator_id: userId } })).toEqual(0);
+		expect(await prisma.bingoParticipant.count({ where: { user_id: userId } })).toEqual(0);
+		expect((await prisma.bingo.findUniqueOrThrow({ where: { id: testBingo.id } })).creator_id).toEqual(
+			DELETED_USER_ID
+		);
 	});
 
 	test('Should de-iron', async () => {

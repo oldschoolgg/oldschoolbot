@@ -1,8 +1,8 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, randomVariation, resolveItems } from 'oldschooljs';
 
-import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 
 export async function strongHoldOfSecurityCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) {
@@ -24,8 +24,7 @@ export async function strongHoldOfSecurityCommand(user: MUser, channelID: string
 			}
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: bootsBank
 		});

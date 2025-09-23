@@ -2,14 +2,13 @@ import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { type CommandOptions, PerkTier, StoreBitfield, dateFm } from '@oldschoolgg/toolkit/util';
+import type { AbstractCommand, CommandOptions } from '@oldschoolgg/toolkit/discord-util';
+import { dateFm, PerkTier } from '@oldschoolgg/toolkit/util';
 import * as dotenv from 'dotenv';
 import { resolveItems } from 'oldschooljs';
 import { z } from 'zod';
 
-import type { AbstractCommand } from '../mahoji/lib/inhibitors';
-import { SkillsEnum } from './skilling/types';
-import type { CanvasImage } from './util/canvasUtil';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 
 export { PerkTier };
 
@@ -27,6 +26,7 @@ const GENERAL_CHANNEL_ID =
 			: '1154056119019393035';
 const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
 const TEST_SERVER_LOG_CHANNEL = '1042760447830536212';
+export const DELETED_USER_ID = '111111111111111111';
 
 interface ChannelConfig {
 	ServerGeneral: string;
@@ -151,7 +151,10 @@ export enum BitField {
 	DisableOpenableNames = 41,
 	ShowDetailedInfo = 42,
 	DisableTearsOfGuthixButton = 43,
-	DisableDailyButton = 44
+	DisableDailyButton = 44,
+
+	HasDeadeyeScroll = 45,
+	HasMysticVigourScroll = 46
 }
 
 interface BitFieldData {
@@ -264,7 +267,10 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		name: 'Disable Minion Daily Button',
 		protected: false,
 		userConfigurable: true
-	}
+	},
+
+	[BitField.HasDeadeyeScroll]: { name: 'Deadeye Scroll Used', protected: false, userConfigurable: false },
+	[BitField.HasMysticVigourScroll]: { name: 'Mystic Vigour Scroll Used', protected: false, userConfigurable: false }
 } as const;
 
 export const BadgesEnum = {
@@ -431,15 +437,6 @@ META_CONSTANTS.RENDERED_STR = `**Date/Time:** ${dateFm(META_CONSTANTS.STARTUP_DA
 
 export const masteryKey = BOT_TYPE === 'OSB' ? 'osb_mastery' : 'bso_mastery';
 
-export const ItemIconPacks = [
-	{
-		name: 'Halloween',
-		storeBitfield: StoreBitfield.HalloweenItemIconPack,
-		id: 'halloween',
-		icons: new Map<number, CanvasImage>()
-	}
-];
-
 export const patronFeatures = {
 	ShowEnteredInGiveawayList: {
 		tier: PerkTier.Four
@@ -455,3 +452,6 @@ if (!process.env.TEST && isMainThread) {
 }
 
 export const MAX_CLUES_DROPPED = 100;
+
+export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
+export type PvMMethod = (typeof PVM_METHODS)[number];

@@ -1,13 +1,12 @@
-import { makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandRunOptions, channelIsSendable, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { chunk } from '@oldschoolgg/toolkit';
+import { channelIsSendable, makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
+import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType, EmbedBuilder, type MessageEditOptions } from 'discord.js';
-import { chunk } from 'e';
-import { type BossRecords, Hiscores, bossNameMap } from 'oldschooljs';
+import { type BossRecords, bossNameMap, Hiscores } from 'oldschooljs/hiscores';
 
-import { logError, logErrorForInteraction } from '@/lib/util/logError';
-import pets from '../../lib/data/pets';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import type { OSBMahojiCommand } from '../lib/util';
+import pets from '@/lib/data/pets.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { logError, logErrorForInteraction } from '@/lib/util/logError.js';
 
 // Emojis for bosses with no pets
 const miscEmojis = {

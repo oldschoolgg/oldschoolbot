@@ -1,10 +1,10 @@
+import { isObject } from '@oldschoolgg/toolkit';
 import { convertAPIOptionsToCommandOptions } from '@oldschoolgg/toolkit/discord-util';
 import { deepMerge } from '@oldschoolgg/toolkit/util';
 import { captureException } from '@sentry/node';
 import type { Interaction } from 'discord.js';
-import { isObject } from 'e';
 
-import { globalConfig } from '../constants';
+import { globalConfig } from '@/lib/constants.js';
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
 	if (!condition) {
@@ -16,7 +16,7 @@ export function assert(condition: boolean, desc?: string, context?: Record<strin
 	}
 }
 
-export function logError(err: any, context?: Record<string, string>, extra?: Record<string, string>) {
+export function logError(err: any, context?: Record<string, string | number>, extra?: Record<string, string | number>) {
 	const metaInfo = deepMerge(context ?? {}, extra ?? {});
 	if (err?.requestBody?.files) {
 		err.requestBody = [];
@@ -37,6 +37,10 @@ export function logError(err: any, context?: Record<string, string>, extra?: Rec
 			tags: context,
 			extra: metaInfo
 		});
+	}
+
+	if (process.env.TEST) {
+		throw err;
 	}
 }
 

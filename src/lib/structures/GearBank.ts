@@ -1,10 +1,10 @@
 import { type Bank, resolveItems } from 'oldschooljs';
 
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import type { UserFullGearSetup } from '@/lib/gear/types.js';
+import type { Skills, SkillsRequired } from '@/lib/types/index.js';
 import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
-import { getSimilarItems } from '../data/similarItems';
-import type { UserFullGearSetup } from '../gear/types';
-import type { Skills, SkillsRequired } from '../types';
-import type { ChargeBank } from './Bank';
+import type { ChargeBank } from './Bank.js';
 
 export class GearBank {
 	gear: UserFullGearSetup;
@@ -12,25 +12,29 @@ export class GearBank {
 	skillsAsLevels: SkillsRequired;
 	skillsAsXP: SkillsRequired;
 	chargeBank: ChargeBank;
+	minionName: string;
 
 	constructor({
 		gear,
 		bank,
 		skillsAsLevels,
 		chargeBank,
-		skillsAsXP
+		skillsAsXP,
+		minionName
 	}: {
 		gear: UserFullGearSetup;
 		bank: Bank;
 		skillsAsLevels: SkillsRequired;
 		chargeBank: ChargeBank;
 		skillsAsXP: SkillsRequired;
+		minionName: string;
 	}) {
 		this.gear = gear;
 		this.bank = bank;
 		this.skillsAsLevels = skillsAsLevels;
 		this.chargeBank = chargeBank;
 		this.skillsAsXP = skillsAsXP;
+		this.minionName = minionName;
 	}
 
 	wildyGearCheck(item: string | number, isWildy: boolean) {
