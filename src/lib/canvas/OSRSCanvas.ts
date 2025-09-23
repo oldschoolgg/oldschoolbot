@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit/runescape';
+import { EItem } from 'oldschooljs';
 import {
 	type Canvas,
 	type CanvasRenderingContext2D as CanvasContext,
@@ -10,7 +11,6 @@ import {
 	Canvas as SkiaCanvas
 } from 'skia-canvas';
 
-import { EItem } from 'oldschooljs';
 import { BOT_TYPE } from '@/lib/constants.js';
 import { CanvasModule } from './CanvasModule.js';
 import type { CanvasSpritesheet, SpriteData } from './CanvasSpritesheet.js';
