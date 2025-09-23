@@ -43,7 +43,7 @@ export async function harvestCommand({
 	}
 	const { GP } = user;
 	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
-	const currentDate = new Date().getTime();
+	const currentDate = Date.now();
 	if (!isPatchName(seedType)) {
 		return `That is not a valid patch type! The available patches are: ${farmingPatchNames.join(
 			', '
@@ -145,7 +145,7 @@ export async function farmingPlantCommand({
 	const questPoints = user.QP;
 	const { GP } = user;
 	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
-	const currentDate = new Date().getTime();
+	const currentDate = Date.now();
 
 	const infoStr: string[] = [];
 	const boostStr: string[] = [];

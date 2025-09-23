@@ -329,7 +329,7 @@ export default async function prepareItems(): Promise<void> {
 			'examine',
 			'wiki_url'
 		]) {
-			// @ts-ignore
+			// @ts-expect-error
 			delete item[delKey];
 		}
 
@@ -453,7 +453,7 @@ export default async function prepareItems(): Promise<void> {
 			item.highalch = previousItem.highalch;
 			item.wiki_name = previousItem.wiki_name;
 			if (previousItem.equipment?.requirements) {
-				// @ts-ignore ignore
+				// @ts-expect-error ignore
 				item.equipment = {
 					...item.equipment,
 					requirements: previousItem.equipment.requirements
@@ -479,7 +479,7 @@ export default async function prepareItems(): Promise<void> {
 		}
 
 		if (previousItem?.equipment?.requirements && !item.equipment?.requirements) {
-			// @ts-ignore ignore
+			// @ts-expect-error ignore
 			item.equipment = {
 				...item.equipment,
 				requirements: previousItem.equipment.requirements
@@ -497,7 +497,7 @@ export default async function prepareItems(): Promise<void> {
 		}
 	}
 
-	// @ts-ignore
+	// @ts-expect-error
 	newItemJSON[0] = undefined;
 
 	if (nameChanges.length > 0) {

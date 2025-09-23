@@ -19,6 +19,3 @@ declare global {
 		attributes?: Omit<AbstractCommandAttributes, 'description'>;
 	}
 }
-
-// biome-ignore lint/complexity/noUselessEmptyExport:
-export {};

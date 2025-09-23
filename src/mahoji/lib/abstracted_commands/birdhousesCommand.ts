@@ -20,7 +20,7 @@ export async function birdhouseCheckCommand(user: MUser) {
 
 export async function birdhouseHarvestCommand(user: MUser, channelID: string, inputBirdhouseName: string | undefined) {
 	const userBank = user.bank;
-	const currentDate = new Date().getTime();
+	const currentDate = Date.now();
 	const infoStr: string[] = [];
 	const boostStr: string[] = [];
 

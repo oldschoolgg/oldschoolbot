@@ -180,7 +180,7 @@ export async function duelCommand(
 		if (selection.customId === 'CONFIRM') {
 			return await confirm(amount);
 		}
-	} catch (err) {
+	} catch (_err) {
 		return cancel();
 	}
 	return cancel();

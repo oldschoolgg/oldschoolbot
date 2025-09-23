@@ -10,7 +10,7 @@ export async function unequipPet(user: MUser) {
 
 	try {
 		await user.addItemsToBank({ items: loot, collectionLog: false });
-	} catch (e) {
+	} catch (_e) {
 		logError(new Error('Failed to add pet to bank'), {
 			user_id: user.id,
 			pet_to_unequip: equippedPet.toString()

@@ -111,7 +111,7 @@ class CollectionLogTask {
 		}
 		const { collection, type, user, flags } = options;
 
-		let collectionLog: IToReturnCollection | undefined | false = undefined;
+		let collectionLog: IToReturnCollection | undefined | false;
 
 		if (options.collectionLog) {
 			collectionLog = options.collectionLog;
@@ -449,7 +449,7 @@ class CollectionLogTask {
 		}
 
 		return {
-			files: [{ attachment: await canvas.toScaledOutput(2), name: `${type}_log_${new Date().valueOf()}.png` }]
+			files: [{ attachment: await canvas.toScaledOutput(2), name: `${type}_log_${Date.now()}.png` }]
 		};
 	}
 

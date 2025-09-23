@@ -17,7 +17,14 @@ export function calcFishingTripResult({
 	flakesQuantity,
 	gearBank,
 	rng
-}: { fish: Fish; quantity: number; duration: number; flakesQuantity?: number; gearBank: GearBank; rng: RNGProvider }) {
+}: {
+	fish: Fish;
+	quantity: number;
+	duration: number;
+	flakesQuantity?: number;
+	gearBank: GearBank;
+	rng: RNGProvider;
+}) {
 	const updateBank = new UpdateBank();
 	const boosts: string[] = [];
 

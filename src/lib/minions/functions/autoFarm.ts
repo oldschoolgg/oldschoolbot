@@ -13,9 +13,9 @@ export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[
 	}
 	const userBank = user.bank;
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
-	let toPlant: Plant | undefined = undefined;
-	let canPlant: Plant | undefined = undefined;
-	let canHarvest: Plant | undefined = undefined;
+	let toPlant: Plant | undefined;
+	let canPlant: Plant | undefined;
+	let canHarvest: Plant | undefined;
 	let elligible: Plant[] = [];
 	let errorString = '';
 	let { autoFarmFilter } = user;

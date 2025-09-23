@@ -3,7 +3,7 @@
 	"assist": {
 		"actions": {
 			"source": {
-				"organizeImports": "on"
+				"organizeImports": "off"
 			}
 		}
 	},
@@ -19,7 +19,6 @@
 			"**/*.mjs",
 			"**/*.cjs",
 			"**/*.tsx",
-			"**/*.astro",
 			"!**/node_modules",
 			"!**/dist",
 			"!**/coverage",
@@ -64,7 +63,7 @@
 			"correctness": {
 				"useExhaustiveDependencies": "warn",
 				"noConstructorReturn": "off",
-				"useParseIntRadix": "warn"
+				"useParseIntRadix": "off"
 			},
 			"complexity": {
 				"noExtraBooleanCast": "warn",

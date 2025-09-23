@@ -101,7 +101,7 @@ export function addMonsterXPRaw(params: {
 	// Remove superiors from the regular count to be added separately.
 	let normalQty = 0;
 	let superiorQty = 0;
-	let osjsSuperior: Monster | undefined = undefined;
+	let osjsSuperior: Monster | undefined;
 	if (params.isOnTask && params.superiorCount && maybeMonster?.superior) {
 		osjsSuperior = maybeMonster.superior;
 		if (osjsSuperior?.data?.hitpoints && osjsSuperior?.data?.slayerXP) {

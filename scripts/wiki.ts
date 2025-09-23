@@ -39,7 +39,7 @@ function renderMonstersMarkdown() {
 			);
 			md.addLine(`- You can send your minion to kill this monster using: [[/k name:${monster.name}]]`);
 			md.addLine(`- You can check your KC using: [[/minion kc name:${monster.name}]]`);
-			md.addLine(`- You can check the KC leaderboard using: [[/lb kc monster\:${monster.name}]]`);
+			md.addLine(`- You can check the KC leaderboard using: [[/lb kc monster:${monster.name}]]`);
 			md.addLine(`- You can check your collection log using: [[/cl name\\:${monster.name}]]`);
 			md.addLine(`- You can check the collection log leaderboard using: [[/lb cl cl:${monster.name}]]`);
 

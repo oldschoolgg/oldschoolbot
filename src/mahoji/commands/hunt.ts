@@ -239,7 +239,7 @@ export const huntCommand: OSBMahojiCommand = {
 		let wildyStr = '';
 
 		if (creature.wildy) {
-			const date = new Date().getTime();
+			const date = Date.now();
 			const cachedPeakInterval: Peak[] = generateDailyPeakIntervals().peaks;
 			for (const peak of cachedPeakInterval) {
 				if (peak.startTime < date && peak.finishTime > date) {

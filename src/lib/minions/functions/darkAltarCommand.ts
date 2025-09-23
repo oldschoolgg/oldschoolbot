@@ -36,7 +36,12 @@ export async function darkAltarCommand({
 	channelID,
 	name,
 	extracts
-}: { user: MUser; channelID: string; name: string; extracts?: boolean }) {
+}: {
+	user: MUser;
+	channelID: string;
+	name: string;
+	extracts?: boolean;
+}) {
 	const stats = user.skillsAsLevels;
 	if (!['blood', 'soul'].includes(name.toLowerCase().split(' ')[0])) return 'Invalid rune.';
 	const [hasReqs, neededReqs] = hasSkillReqs(user, {

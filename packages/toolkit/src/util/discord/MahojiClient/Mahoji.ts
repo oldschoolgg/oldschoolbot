@@ -30,8 +30,6 @@ export function convertCommandOptionToAPIOption(option: CommandOption): any {
 		default: {
 			return {
 				...option,
-				// TODO(gc): How the fuck do I fix this
-				// @ts-ignore
 				options:
 					'options' in option && option.options ? option.options.map(convertCommandOptionToAPIOption) : []
 			};

@@ -292,7 +292,7 @@ export async function lampCommand(user: MUser, itemToUse: string, skill: string,
 	}
 
 	let skillsToReceive: Skills = {};
-	let skillsRequirements: Skills | undefined = undefined;
+	let skillsRequirements: Skills | undefined;
 
 	[skillsToReceive, skillsRequirements] = xpObject.function({
 		user,

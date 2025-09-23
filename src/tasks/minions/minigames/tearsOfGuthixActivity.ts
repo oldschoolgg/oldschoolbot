@@ -15,7 +15,7 @@ export const togTask: MinionTask = {
 		await userStatsUpdate(
 			user.id,
 			{
-				last_tears_of_guthix_timestamp: new Date().getTime()
+				last_tears_of_guthix_timestamp: Date.now()
 			},
 			{}
 		);

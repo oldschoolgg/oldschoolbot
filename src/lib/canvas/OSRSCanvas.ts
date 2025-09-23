@@ -111,15 +111,7 @@ export class OSRSCanvas {
 		return this.canvas;
 	}
 
-	private rawDrawText({
-		text,
-		x,
-		y
-	}: {
-		text: string;
-		x: number;
-		y: number;
-	}) {
+	private rawDrawText({ text, x, y }: { text: string; x: number; y: number }) {
 		const textPath = this.ctx.outlineText(text);
 		this.ctx.fill(textPath.offset(x, y));
 	}
@@ -321,7 +313,10 @@ export class OSRSCanvas {
 	public static async getItemImage({
 		itemID,
 		iconPackId
-	}: { itemID: number; iconPackId?: IconPackID }): Promise<Canvas | CanvasImage> {
+	}: {
+		itemID: number;
+		iconPackId?: IconPackID;
+	}): Promise<Canvas | CanvasImage> {
 		// Custom item icon pack icons
 		if (iconPackId && ItemIconPacks[iconPackId].icons.has(itemID)) {
 			return ItemIconPacks[iconPackId].icons.get(itemID) as Image;

@@ -66,7 +66,7 @@ export async function puroPuroStartCommand(
 	const [hasDarkLureSkillReqs, lureReason] = hasSkillReqs(user, darkLureSkillRequirements);
 	if (!hasReqs) return `To hunt in Puro-Puro, you need: ${reason}.`;
 	if (user.QP < 3) return 'To hunt in Puro-Puro, you need 3 QP.';
-	let impToHunt: PuroImpling | undefined = undefined;
+	let impToHunt: PuroImpling | undefined;
 	if (impling) {
 		impToHunt = puroOptions.find(i => stringMatches(i.name, impling));
 	} else if (implingTier) {

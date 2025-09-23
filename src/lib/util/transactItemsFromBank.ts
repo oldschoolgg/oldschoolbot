@@ -60,7 +60,7 @@ export async function transactItemsFromBank({
 			clUpdates = collectionLog ? settings.calculateAddItemsToCLUpdates({ items: clLoot, dontAddToTempCL }) : {};
 		}
 
-		let gpUpdate: { increment: number } | undefined = undefined;
+		let gpUpdate: { increment: number } | undefined;
 		if (itemsToAdd) {
 			const coinsInLoot = itemsToAdd.amount('Coins');
 			if (coinsInLoot > 0) {

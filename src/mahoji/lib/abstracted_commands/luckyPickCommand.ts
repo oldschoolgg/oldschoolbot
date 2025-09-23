@@ -147,11 +147,7 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 		components: getCurrentButtons({ showTrueNames: false })
 	});
 
-	const finalize = async ({
-		button
-	}: {
-		button: ButtonInstance;
-	}) => {
+	const finalize = async ({ button }: { button: ButtonInstance }) => {
 		const amountReceived = Math.floor(button.mod(amount));
 		if (amountReceived > 0) {
 			await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
@@ -202,7 +198,7 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 			logError(err);
 			return 'Error.';
 		}
-	} catch (err) {
+	} catch (_err) {
 		return cancel();
 	}
 }

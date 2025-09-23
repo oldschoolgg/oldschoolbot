@@ -1,7 +1,6 @@
 {
 	"name": "cli",
 	"version": "0.0.0",
-	"bin": "dist/cli.js",
 	"type": "module",
 	"engines": {
 		"node": ">=20"
@@ -10,7 +9,9 @@
 		"build": "tsc",
 		"dev": "tsc --watch"
 	},
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"dependencies": {
 		"ink": "^4.1.0",
 		"ink-spinner": "^5.0.0",

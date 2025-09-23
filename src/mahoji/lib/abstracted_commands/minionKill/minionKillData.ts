@@ -19,7 +19,11 @@ export function calculateVirtusBoost({
 	isInWilderness,
 	gearBank,
 	isOnTask
-}: { gearBank: GearBank; isInWilderness: boolean; isOnTask: boolean }) {
+}: {
+	gearBank: GearBank;
+	isInWilderness: boolean;
+	isOnTask: boolean;
+}) {
 	let virtusPiecesEquipped = 0;
 	const hasBlackMask =
 		(isOnTask && gearBank.gear.mage.hasEquipped('Black mask (i)')) ||

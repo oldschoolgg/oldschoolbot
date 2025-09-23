@@ -15,7 +15,7 @@ import { BitField, MAX_LEVEL, MAX_XP, globalConfig } from './constants.js';
 import type { Skills } from './types/index.js';
 import type { GroupMonsterActivityTaskOptions } from './types/minions.js';
 
-// @ts-ignore ignore
+// @ts-expect-error ignore
 BigInt.prototype.toJSON = function () {
 	return this.toString();
 };

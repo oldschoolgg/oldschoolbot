@@ -110,6 +110,7 @@ export const Root: React.FC = () => {
 	const [timings, setTimings] = useState<Timings>({});
 	const [_tick, setTick] = useState(0);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies:-
 	useEffect(() => {
 		const interval = setInterval(() => setTick(t => t + 1), 500);
 		(async () => {
@@ -124,7 +125,7 @@ export const Root: React.FC = () => {
 						} else {
 							await run(cmdGroup, timings);
 						}
-						setTimings({ ...timings });
+						setTimings(t => ({ ...t, ...timings }));
 					}
 				}
 				setStatus('done');

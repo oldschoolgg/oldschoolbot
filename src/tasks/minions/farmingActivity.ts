@@ -206,7 +206,7 @@ export const farmingTask: MinionTask = {
 					const livesHolder = lives;
 					for (let k = 0; k < alivePlants; k++) {
 						lives = livesHolder;
-						for (let n = 0; lives > 0; n++) {
+						for (let _n = 0; lives > 0; _n++) {
 							if (Math.random() > chanceToSaveLife) {
 								lives -= 1;
 								cropYield += 1;

@@ -11,7 +11,7 @@ export const mageArenaTwoTask: MinionTask = {
 		const user = await mUserFetch(userID);
 
 		let str = '';
-		let loot: Bank | undefined = undefined;
+		let loot: Bank | undefined;
 		if (percentChance(70)) {
 			const deathReason = randArrItem([
 				'Died to Porazdir',

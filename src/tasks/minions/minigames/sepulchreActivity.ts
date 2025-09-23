@@ -46,7 +46,7 @@ export const sepulchreTask: MinionTask = {
 		let fletchQuantity = 0;
 		const fletchingLoot = new Bank();
 
-		let fletchable: (typeof zeroTimeFletchables)[number] | undefined = undefined;
+		let fletchable: (typeof zeroTimeFletchables)[number] | undefined;
 
 		if (fletch) {
 			fletchable = zeroTimeFletchables.find(item => item.id === fletch.id);
