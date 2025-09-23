@@ -1053,7 +1053,7 @@ const killableBosses: KillableMonster[] = [
 		name: Monsters.Branda.name,
 		aliases: Monsters.Branda.aliases,
 		timeToFinish: Time.Minute * 2.5,
-		respawnTime: 500,
+		respawnTime: Time.Second * 15,
 		table: Monsters.Branda,
 		deathProps: {
 			hardness: 0.2,
@@ -1198,7 +1198,7 @@ const killableBosses: KillableMonster[] = [
 		name: Monsters.Eldric.name,
 		aliases: Monsters.Eldric.aliases,
 		timeToFinish: Time.Minute * 2.5,
-		respawnTime: 500,
+		respawnTime: Time.Second * 15,
 		table: Monsters.Eldric,
 		deathProps: {
 			hardness: 0.1,
@@ -1343,7 +1343,7 @@ const killableBosses: KillableMonster[] = [
 		name: Monsters.RoyalTitans.name,
 		aliases: Monsters.RoyalTitans.aliases,
 		timeToFinish: Time.Minute * 2.5,
-		respawnTime: 500,
+		respawnTime: Time.Second * 15,
 		table: Monsters.RoyalTitans,
 		deathProps: {
 			hardness: 0.1,
