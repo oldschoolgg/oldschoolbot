@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
-import { afterEach, describe, expect, test, vi } from 'vitest';
 import type { Mock } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 
 import * as degradeableItemsModule from '../../src/lib/degradeableItems';
 import type { HerbloreActivityTaskOptions } from '../../src/lib/types/minions';
