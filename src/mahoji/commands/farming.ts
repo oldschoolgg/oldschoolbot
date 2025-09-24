@@ -204,10 +204,10 @@ export const farmingCommand: OSBMahojiCommand = {
 	}>) => {
 		await deferInteraction(interaction);
 		const klasaUser = await mUserFetch(userID);
-		const { patchesDetailed } = getFarmingInfoFromUser(klasaUser.user);
+                const { patchesDetailed, patches } = getFarmingInfoFromUser(klasaUser.user);
 
 		if (options.auto_farm) {
-			return autoFarm(klasaUser, patchesDetailed, channelID);
+                        return autoFarm(klasaUser, patchesDetailed, patches, channelID);
 		}
 		if (options.always_pay) {
 			const isEnabled = klasaUser.user.minion_defaultPay;

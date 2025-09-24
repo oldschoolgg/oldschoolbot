@@ -10,6 +10,7 @@ import { calcVariableYield } from '@/lib/skilling/functions/calcsFarming.js';
 import Farming from '@/lib/skilling/skills/farming/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { getFarmingKeyFromName } from '@/lib/util/farmingHelpers.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { assert } from '@/lib/util/logError.js';
@@ -147,7 +148,26 @@ export const farmingTask: MinionTask = {
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
-			handleTripFinish(user, channelID, str, undefined, data, null);
+                        handleTripFinish(user, channelID, str, undefined, data, null);
+                        if (data.autoFarmPlan?.length) {
+                                const [nextStep, ...remainingSteps] = data.autoFarmPlan;
+                                await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
+                                        plantsName: nextStep.plantsName,
+                                        patchType: nextStep.patchType,
+                                        userID,
+                                        channelID,
+                                        quantity: nextStep.quantity,
+                                        upgradeType: nextStep.upgradeType,
+                                        payment: nextStep.payment,
+                                        planting: nextStep.planting,
+                                        duration: nextStep.duration,
+                                        currentDate: nextStep.currentDate,
+                                        type: 'Farming',
+                                        autoFarmed: true,
+                                        pid: nextStep.pid,
+                                        autoFarmPlan: remainingSteps
+                                });
+                        }
 		} else if (patchType.patchPlanted) {
 			// If they do have something planted here, harvest it and possibly replant.
 			const plantToHarvest = Farming.Plants.find(plant => plant.name === patchType.lastPlanted)!;
@@ -451,21 +471,40 @@ export const farmingTask: MinionTask = {
 				});
 			}
 
-			handleTripFinish(
-				user,
-				channelID,
-				infoStr.join('\n'),
-				janeMessage
-					? await chatHeadImage({
-							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
-								contractsCompleted + 1
-							} farming contracts.`,
-							head: 'jane'
-						})
-					: undefined,
-				data,
-				loot
-			);
-		}
-	}
+                        handleTripFinish(
+                                user,
+                                channelID,
+                                infoStr.join('\n'),
+                                janeMessage
+                                        ? await chatHeadImage({
+                                                        content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
+                                                                contractsCompleted + 1
+                                                        } farming contracts.`,
+                                                        head: 'jane'
+                                                })
+                                        : undefined,
+                                data,
+                                loot
+                        );
+                        if (data.autoFarmPlan?.length) {
+                                const [nextStep, ...remainingSteps] = data.autoFarmPlan;
+                                await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
+                                        plantsName: nextStep.plantsName,
+                                        patchType: nextStep.patchType,
+                                        userID,
+                                        channelID,
+                                        quantity: nextStep.quantity,
+                                        upgradeType: nextStep.upgradeType,
+                                        payment: nextStep.payment,
+                                        planting: nextStep.planting,
+                                        duration: nextStep.duration,
+                                        currentDate: nextStep.currentDate,
+                                        type: 'Farming',
+                                        autoFarmed: true,
+                                        pid: nextStep.pid,
+                                        autoFarmPlan: remainingSteps
+                                });
+                        }
+                }
+        }
 };
