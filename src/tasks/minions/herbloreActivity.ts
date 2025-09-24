@@ -1,4 +1,4 @@
-import { Bank, EItem, Items, type Item } from 'oldschooljs';
+import { Bank, EItem, type Item, Items } from 'oldschooljs';
 
 import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
@@ -42,10 +42,10 @@ export const herbloreTask: MinionTask = {
 		}
 
 		if (!zahur && !wesley && mixableItem.item.name.includes('(3)')) {
-                        const chemistryItem = Items.getOrThrow('Amulet of chemistry');
+			const chemistryItem = Items.getOrThrow('Amulet of chemistry');
 			if (user.gear.skilling.hasEquipped(chemistryItem.id, false, false)) {
 				const potentialFourDoseName = mixableItem.item.name.replace(' (3)', '(4)').replace('(3)', '(4)');
-                                fourDoseItem = Items.get(potentialFourDoseName) ?? null;
+				fourDoseItem = Items.get(potentialFourDoseName) ?? null;
 				if (fourDoseItem) {
 					const chemistryCharges = await checkDegradeableItemCharges({
 						item: chemistryItem,
