@@ -5,36 +5,36 @@ import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import { percentChance } from '@/lib/util/rng.js';
 
 export async function bloodEssence(user: MUser, quantity: number): Promise<number> {
-        let bonusQuantity = 0;
-        const bloodEssenceCharges = await checkDegradeableItemCharges({
-                item: Items.getOrThrow('Blood essence (active)'),
-                user
-        });
-        if (bloodEssenceCharges > 0) {
-                let chargesRemaining = bloodEssenceCharges;
-                let chargesConsumed = 0;
-                for (let i = 0; i < quantity; i++) {
-                        if (chargesRemaining <= 0) {
-                                break;
-                        }
-                        if (percentChance(50)) {
-                                bonusQuantity++;
-                                if (shouldConsumeDegradeableCharge(user)) {
-                                        chargesRemaining--;
-                                        chargesConsumed++;
-                                }
-                        }
-                }
-                if (chargesConsumed > 0) {
-                        await degradeItem({
-                                item: Items.getOrThrow('Blood essence (active)'),
-                                chargesToDegrade: chargesConsumed,
-                                user,
-                                applyLuckyPenny: false
-                        });
-                }
-        }
-        return bonusQuantity;
+	let bonusQuantity = 0;
+	const bloodEssenceCharges = await checkDegradeableItemCharges({
+		item: Items.getOrThrow('Blood essence (active)'),
+		user
+	});
+	if (bloodEssenceCharges > 0) {
+		let chargesRemaining = bloodEssenceCharges;
+		let chargesConsumed = 0;
+		for (let i = 0; i < quantity; i++) {
+			if (chargesRemaining <= 0) {
+				break;
+			}
+			if (percentChance(50)) {
+				bonusQuantity++;
+				if (shouldConsumeDegradeableCharge(user)) {
+					chargesRemaining--;
+					chargesConsumed++;
+				}
+			}
+		}
+		if (chargesConsumed > 0) {
+			await degradeItem({
+				item: Items.getOrThrow('Blood essence (active)'),
+				chargesToDegrade: chargesConsumed,
+				user,
+				applyLuckyPenny: false
+			});
+		}
+	}
+	return bonusQuantity;
 }
 
 export function raimentBonus(user: MUser, quantity: number): number {

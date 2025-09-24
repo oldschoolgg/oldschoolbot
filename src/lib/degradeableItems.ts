@@ -319,45 +319,45 @@ export function checkUserCanUseDegradeableItem({
 }
 
 export function shouldConsumeDegradeableCharge(user: MUser) {
-        if (!user.hasEquipped("Ghommal's lucky penny")) {
-                return true;
-        }
-        return !percentChance(5);
+	if (!user.hasEquipped("Ghommal's lucky penny")) {
+		return true;
+	}
+	return !percentChance(5);
 }
 
 export async function degradeItem({
-        item,
-        chargesToDegrade,
-        user,
-        applyLuckyPenny = true
+	item,
+	chargesToDegrade,
+	user,
+	applyLuckyPenny = true
 }: {
-        item: Item;
-        chargesToDegrade: number;
-        user: MUser;
-        applyLuckyPenny?: boolean;
+	item: Item;
+	chargesToDegrade: number;
+	user: MUser;
+	applyLuckyPenny?: boolean;
 }) {
-        const degItem = degradeableItems.find(i => i.item === item);
-        if (!degItem) throw new Error('Invalid degradeable item');
+	const degItem = degradeableItems.find(i => i.item === item);
+	if (!degItem) throw new Error('Invalid degradeable item');
 
-        let chargesSpent = chargesToDegrade;
+	let chargesSpent = chargesToDegrade;
 
-        if (applyLuckyPenny) {
-                chargesSpent = 0;
-                for (let i = 0; i < chargesToDegrade; i++) {
-                        if (shouldConsumeDegradeableCharge(user)) {
-                                chargesSpent++;
-                        }
-                }
-        }
+	if (applyLuckyPenny) {
+		chargesSpent = 0;
+		for (let i = 0; i < chargesToDegrade; i++) {
+			if (shouldConsumeDegradeableCharge(user)) {
+				chargesSpent++;
+			}
+		}
+	}
 
-        const currentCharges = user.user[degItem.settingsKey];
-        assert(typeof currentCharges === 'number');
-        const newCharges = Math.floor(currentCharges - chargesSpent);
+	const currentCharges = user.user[degItem.settingsKey];
+	assert(typeof currentCharges === 'number');
+	const newCharges = Math.floor(currentCharges - chargesSpent);
 
-        if (newCharges <= 0) {
-                // If no more charges left, break and refund the item.
-                const hasEquipped = user.gear[degItem.setup].hasEquipped(item.id, false);
-                const hasInBank = user.owns(item.id);
+	if (newCharges <= 0) {
+		// If no more charges left, break and refund the item.
+		const hasEquipped = user.gear[degItem.setup].hasEquipped(item.id, false);
+		const hasInBank = user.owns(item.id);
 		await user.update({
 			[degItem.settingsKey]: 0
 		});
@@ -389,25 +389,25 @@ export async function degradeItem({
 			});
 		} else {
 			// If its not in bank OR equipped, something weird has gone on.
-                        throw new Error(
-                                `${user.usernameOrMention} had missing ${item.name} when trying to degrade by ${chargesSpent}`
-                        );
-                }
+			throw new Error(
+				`${user.usernameOrMention} had missing ${item.name} when trying to degrade by ${chargesSpent}`
+			);
+		}
 
-                return {
-                        userMessage: `Your ${item.name} ran out of charges and broke.`
-                };
-        }
-        // If it has charges left still, just remove those charges and nothing else.
-        await user.update({
-                [degItem.settingsKey]: newCharges
-        });
-        const chargesAfter = user.user[degItem.settingsKey];
-        assert(typeof chargesAfter === 'number' && chargesAfter > 0);
-        return {
-                chargesToDegrade: chargesSpent,
-                userMessage: `Your ${item.name} degraded by ${chargesSpent} charges`
-        };
+		return {
+			userMessage: `Your ${item.name} ran out of charges and broke.`
+		};
+	}
+	// If it has charges left still, just remove those charges and nothing else.
+	await user.update({
+		[degItem.settingsKey]: newCharges
+	});
+	const chargesAfter = user.user[degItem.settingsKey];
+	assert(typeof chargesAfter === 'number' && chargesAfter > 0);
+	return {
+		chargesToDegrade: chargesSpent,
+		userMessage: `Your ${item.name} degraded by ${chargesSpent} charges`
+	};
 }
 
 export async function checkDegradeableItemCharges({ item, user }: { item: Item; user: MUser }) {
