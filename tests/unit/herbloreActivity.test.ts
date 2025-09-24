@@ -14,13 +14,14 @@ const attackPotion3 = Items.getOrThrow('Attack potion (3)');
 const attackPotion4 = Items.getOrThrow('Attack potion (4)');
 
 const globalAny = globalThis as unknown as {
-        mUserFetch?: (...args: any[]) => Promise<any>;
+	mUserFetch?: (...args: any[]) => Promise<any>;
 };
 
 const originalMUserFetch = globalAny.mUserFetch;
 
 function defaultTaskData(overrides: Partial<HerbloreActivityTaskOptions> = {}): HerbloreActivityTaskOptions {
 	return {
+		id: 1,
 		type: 'Herblore',
 		mixableID: attackPotion3.id,
 		quantity: 3,
@@ -29,6 +30,7 @@ function defaultTaskData(overrides: Partial<HerbloreActivityTaskOptions> = {}): 
 		userID: '123',
 		channelID: '456',
 		duration: 1,
+		finishDate: Date.now() + 1,
 		...overrides
 	};
 }
@@ -36,14 +38,21 @@ function defaultTaskData(overrides: Partial<HerbloreActivityTaskOptions> = {}): 
 describe('herbloreTask amulet of chemistry behaviour', () => {
 	afterEach(() => {
 		vi.restoreAllMocks();
-                globalAny.mUserFetch = originalMUserFetch;
+		globalAny.mUserFetch = originalMUserFetch;
 	});
 
 	test('produces four-dose potions and consumes charges when the amulet procs', async () => {
-                const user = mockMUser({ id: '123' });
-                user.gear.skilling.equip(chemistryItem);
-                user.addXP = vi.fn().mockResolvedValue('xp result');
-                const transactSpy = vi.spyOn(user, 'transactItems').mockResolvedValue({ newUser: user.user });
+		const user = mockMUser({ id: '123' });
+		user.gear.skilling.equip(chemistryItem);
+		user.addXP = vi.fn().mockResolvedValue('xp result');
+		const transactSpy = vi.spyOn(user, 'transactItems').mockResolvedValue({
+			previousCL: new Bank(),
+			itemsAdded: new Bank(),
+			itemsRemoved: undefined,
+			newBank: new Bank(),
+			newCL: new Bank(),
+			newUser: user.user
+		});
 
 		const percentResults = [true, true, false];
 		const percentSpy = vi
@@ -56,16 +65,19 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 		});
 		const handleSpy = vi.spyOn(handleTripFinishModule, 'handleTripFinish').mockResolvedValue();
 
-                globalAny.mUserFetch = vi.fn().mockResolvedValue(user);
+		globalAny.mUserFetch = vi.fn().mockResolvedValue(user);
 
-                await herbloreTask.run(defaultTaskData());
+		await herbloreTask.run(defaultTaskData(), {
+			user,
+			handleTripFinish: handleTripFinishModule.handleTripFinish
+		} as never);
 
 		expect(percentSpy).toHaveBeenCalledTimes(3);
 		expect(checkSpy).toHaveBeenCalledWith({ item: chemistryItem, user });
 		expect(degradeSpy).toHaveBeenCalledWith({ item: chemistryItem, chargesToDegrade: 2, user });
 
-                const transactCall = (transactSpy as unknown as Mock).mock.calls[0][0];
-                expect(transactCall).toMatchObject({ collectionLog: true });
+		const transactCall = (transactSpy as unknown as Mock).mock.calls[0][0];
+		expect(transactCall).toMatchObject({ collectionLog: true });
 		expect(transactCall.itemsToAdd).toBeInstanceOf(Bank);
 		expect(transactCall.itemsToAdd.amount(attackPotion4.id)).toBe(2);
 		expect(transactCall.itemsToAdd.amount(attackPotion3.id)).toBe(1);
@@ -76,24 +88,34 @@ describe('herbloreTask amulet of chemistry behaviour', () => {
 	});
 
 	test('skips amulet logic when it is not equipped', async () => {
-                const user = mockMUser({ id: '789' });
-                user.addXP = vi.fn().mockResolvedValue('xp result');
-                const transactSpy = vi.spyOn(user, 'transactItems').mockResolvedValue({ newUser: user.user });
+		const user = mockMUser({ id: '789' });
+		user.addXP = vi.fn().mockResolvedValue('xp result');
+		const transactSpy = vi.spyOn(user, 'transactItems').mockResolvedValue({
+			previousCL: new Bank(),
+			itemsAdded: new Bank(),
+			itemsRemoved: undefined,
+			newBank: new Bank(),
+			newCL: new Bank(),
+			newUser: user.user
+		});
 
 		const percentSpy = vi.spyOn(rngModule, 'percentChance').mockReturnValue(true);
 		const checkSpy = vi.spyOn(degradeableItemsModule, 'checkDegradeableItemCharges').mockResolvedValue(5);
 		const degradeSpy = vi.spyOn(degradeableItemsModule, 'degradeItem');
 		const handleSpy = vi.spyOn(handleTripFinishModule, 'handleTripFinish').mockResolvedValue();
 
-                globalAny.mUserFetch = vi.fn().mockResolvedValue(user);
+		globalAny.mUserFetch = vi.fn().mockResolvedValue(user);
 
-		await herbloreTask.run(defaultTaskData({ userID: '789' }));
+		await herbloreTask.run(defaultTaskData({ userID: '789' }), {
+			user,
+			handleTripFinish: handleTripFinishModule.handleTripFinish
+		} as never);
 
 		expect(percentSpy).not.toHaveBeenCalled();
 		expect(checkSpy).not.toHaveBeenCalled();
 		expect(degradeSpy).not.toHaveBeenCalled();
 
-                const transactCall = (transactSpy as unknown as Mock).mock.calls[0][0];
+		const transactCall = (transactSpy as unknown as Mock).mock.calls[0][0];
 		expect(transactCall.itemsToAdd.amount(attackPotion4.id)).toBe(0);
 		expect(transactCall.itemsToAdd.amount(attackPotion3.id)).toBe(3);
 
