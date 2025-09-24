@@ -4,9 +4,6 @@
 	"compilerOptions": {
 		"noEmit": true,
 		"incremental": false,
-		"composite": false,
-		"paths": {
-			"@/*": ["../../src/*"]
-		}
+		"composite": false
 	}
 }
