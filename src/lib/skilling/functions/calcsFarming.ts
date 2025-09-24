@@ -1,11 +1,10 @@
-import { randInt } from '@oldschoolgg/toolkit';
-
 import { masterFarmerOutfit } from '@/lib/bso/bsoConstants.js';
 import { hasUnlockedAtlantis } from '@/lib/bso/bsoUtil.js';
 import { BitField } from '@/lib/constants.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import { type Plant, SkillsEnum } from '@/lib/skilling/types.js';
 import type { FarmingPatchName } from '@/lib/util/farmingHelpers.js';
+import { randInt } from '@/lib/util/rng.js';
 
 export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number] {
 	let numOfPatches = plant.defaultNumOfPatches;

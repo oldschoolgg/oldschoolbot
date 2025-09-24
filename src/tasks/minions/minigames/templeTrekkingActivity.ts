@@ -1,4 +1,3 @@
-import { randInt } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Bank, ItemGroups } from 'oldschooljs';
 
@@ -13,7 +12,7 @@ import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
 import getOSItem from '@/lib/util/getOSItem.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { percentChance } from '@/lib/util/rng.js';
+import { percentChance, randInt } from '@/lib/util/rng.js';
 
 function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 	let lowestCountPiece = 0;

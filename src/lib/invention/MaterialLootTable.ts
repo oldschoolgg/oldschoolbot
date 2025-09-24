@@ -1,6 +1,5 @@
-import { randInt } from '@oldschoolgg/toolkit';
-
 import type { IMaterialBank, MaterialType } from '@/lib/invention/index.js';
+import { randInt } from '@/lib/util/rng.js';
 
 interface MaterialTableItem {
 	material: MaterialType;

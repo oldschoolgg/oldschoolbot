@@ -1,4 +1,4 @@
-import { randInt } from '@oldschoolgg/toolkit';
+import { randInt } from '@/lib/util/rng.js';
 
 // Difference between this and ItemBank, is ItemBank is expected to have only integers as strings
 export interface GiantsFoundryBank {
