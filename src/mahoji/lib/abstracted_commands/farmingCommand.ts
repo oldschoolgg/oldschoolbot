@@ -11,6 +11,7 @@ import { getFarmingInfo, getFarmingInfoFromUser } from '@/lib/skilling/functions
 import Farming from '@/lib/skilling/skills/farming/index.js';
 import type { Plant } from '@/lib/skilling/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
+import { prepareFarmingStep, treeCheck } from '@/lib/minions/functions/farmingTripHelpers.js';
 import type { FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -19,20 +20,10 @@ import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userHasGracefulEquipped, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
-function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number): string | null {
-	if (plant.needsChopForHarvest && plant.treeWoodcuttingLevel && wcLevel < plant.treeWoodcuttingLevel) {
-		const gpToCutTree = plant.seedType === 'redwood' ? 2000 * quantity : 200 * quantity;
-		if (bal < gpToCutTree) {
-			return `Your minion does not have ${plant.treeWoodcuttingLevel} Woodcutting or the ${gpToCutTree} GP required to be able to harvest the currently planted trees, and so they cannot harvest them.`;
-		}
-	}
-	return null;
-}
-
 export async function harvestCommand({
-	user,
-	channelID,
-	seedType
+        user,
+        channelID,
+        seedType
 }: {
 	user: MUser;
 	channelID: string;
@@ -140,15 +131,12 @@ export async function farmingPlantCommand({
 	if (user.minionIsBusy) {
 		return 'Your minion must not be busy to use this command.';
 	}
-	const userBank = user.bank;
-	const alwaysPay = user.user.minion_defaultPay;
-	const questPoints = user.QP;
-	const { GP } = user;
-	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
-	const currentDate = Date.now();
+        const alwaysPay = user.user.minion_defaultPay;
+        const questPoints = user.QP;
+        const currentDate = Date.now();
 
-	const infoStr: string[] = [];
-	const boostStr: string[] = [];
+        const infoStr: string[] = [];
+        const boostStr: string[] = [];
 
 	const plant = findPlant(plantName);
 
@@ -167,109 +155,42 @@ export async function farmingPlantCommand({
 	const { patchesDetailed, patches } = await getFarmingInfo(user.id);
 	const patchType = patchesDetailed.find(i => i.patchName === plant.seedType)!;
 
-	const timePerPatchTravel = Time.Second * plant.timePerPatchTravel;
-	const timePerPatchHarvest = Time.Second * plant.timePerHarvest;
-	const timePerPatchPlant = Time.Second * 5;
+        const [numOfPatches] = calcNumOfPatches(plant, user, questPoints);
+        if (numOfPatches === 0) {
+                return 'There are no available patches to you.';
+        }
 
-	const planted = findPlant(patchType.lastPlanted);
+        const maxTripLength = calcMaxTripLength(user, 'Farming');
 
-	if (patchType.ready === false) {
-		return `Please come back when your crops have finished growing in ${formatDuration(patchType.readyIn!)}!`;
-	}
+        if (quantity !== null && quantity > numOfPatches) {
+                return `There are not enough ${plant.seedType} patches to plant that many. The max amount of patches to plant in is ${numOfPatches}.`;
+        }
 
-	const treeStr = !planted ? null : treeCheck(planted, currentWoodcuttingLevel, GP, patchType.lastQuantity);
-	if (treeStr) return treeStr;
+        const compostTier = (user.user.minion_defaultCompostToUse as CropUpgradeType) ?? 'compost';
+        const availableBank = user.bank.clone().add('Coins', user.GP);
+        const prepared = await prepareFarmingStep({
+                user,
+                plant,
+                quantity,
+                pay: wantsToPay,
+                patchDetailed: patchType,
+                maxTripLength,
+                availableBank,
+                compostTier
+        });
+        if (!prepared.success) {
+                return prepared.error;
+        }
 
-	const [numOfPatches] = calcNumOfPatches(plant, user, questPoints);
-	if (numOfPatches === 0) {
-		return 'There are no available patches to you.';
-	}
+        quantity = prepared.data.quantity;
+        const { cost, didPay, duration, upgradeType, infoStr: preparedInfo, boostStr: preparedBoosts } = prepared.data;
+        infoStr.push(...preparedInfo);
+        boostStr.push(...preparedBoosts);
 
-	const maxTripLength = calcMaxTripLength(user, 'Farming');
+        if (!user.owns(cost)) return `You don't own ${cost}.`;
+        await user.transactItems({ itemsToRemove: cost });
 
-	// If no quantity provided, set it to the max PATCHES available.
-	const maxCanDo = Math.floor(maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest));
-	if (quantity === null) {
-		quantity = maxCanDo;
-	}
-	quantity = Math.min(quantity, numOfPatches);
-
-	if (quantity > numOfPatches) {
-		return `There are not enough ${plant.seedType} patches to plant that many. The max amount of patches to plant in is ${numOfPatches}.`;
-	}
-
-	let duration = 0;
-	if (patchType.patchPlanted) {
-		duration = patchType.lastQuantity * (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest);
-		if (quantity > patchType.lastQuantity) {
-			duration += (quantity - patchType.lastQuantity) * (timePerPatchTravel + timePerPatchPlant);
-		}
-	} else {
-		duration = quantity * (timePerPatchTravel + timePerPatchPlant);
-	}
-
-	// Reduce time if user has graceful equipped
-	if (userHasGracefulEquipped(user)) {
-		boostStr.push('10% time for Graceful');
-		duration *= 0.9;
-	}
-
-	if (user.hasEquipped('Ring of endurance')) {
-		boostStr.push('10% time for Ring of Endurance');
-		duration *= 0.9;
-	}
-
-	for (const [diary, tier] of [[ArdougneDiary, ArdougneDiary.elite]] as const) {
-		const [has] = await userhasDiaryTier(user, tier);
-		if (has) {
-			boostStr.push(`4% time for ${diary.name} ${tier.name}`);
-			duration *= 0.96;
-		}
-	}
-
-	if (duration > maxTripLength) {
-		return `${user.minionName} can't go on trips longer than ${formatDuration(
-			maxTripLength
-		)}, try a lower quantity. The highest amount of ${plant.name} you can plant is ${maxCanDo}.`;
-	}
-
-	const cost = new Bank();
-	for (const [seed, qty] of plant.inputItems.items()) {
-		if (userBank.amount(seed.id) < qty * quantity) {
-			if (userBank.amount(seed.id) > qty) {
-				quantity = Math.floor(userBank.amount(seed.id) / qty);
-			}
-		}
-		cost.add(seed.id, qty * quantity);
-	}
-
-	let didPay = false;
-	if (wantsToPay && plant.protectionPayment) {
-		const paymentCost = plant.protectionPayment.clone().multiply(quantity);
-		if (userBank.has(paymentCost)) {
-			cost.add(paymentCost);
-			didPay = true;
-			infoStr.push(`You are paying a nearby farmer ${paymentCost} to look after your patches.`);
-		} else {
-			infoStr.push('You did not have enough payment to automatically pay for crop protection.');
-		}
-	}
-
-	const compostTier = (user.user.minion_defaultCompostToUse as CropUpgradeType) ?? 'compost';
-	let upgradeType: CropUpgradeType | null = null;
-	if ((didPay && plant.canCompostandPay) || (!didPay && plant.canCompostPatch && compostTier)) {
-		const compostCost = new Bank().add(compostTier, quantity);
-		if (user.owns(compostCost)) {
-			infoStr.push(`You are treating your patches with ${compostCost}.`);
-			cost.add(compostCost);
-			upgradeType = compostTier;
-		}
-	}
-
-	if (!user.owns(cost)) return `You don't own ${cost}.`;
-	await user.transactItems({ itemsToRemove: cost });
-
-	updateBankSetting('farming_cost_bank', cost);
+        updateBankSetting('farming_cost_bank', cost);
 	// If user does not have something already planted, just plant the new seeds.
 	if (!patchType.patchPlanted) {
 		infoStr.unshift(`${user.minionName} is now planting ${quantity}x ${plant.name}.`);
