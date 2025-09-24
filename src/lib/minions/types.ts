@@ -3,12 +3,14 @@ import type { ArrayItemsResolved, Bank, Item, ItemBank, MonsterKillOptions, Simp
 import type { OffenceGearStat } from 'oldschooljs/gear';
 
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import type { BitField } from '@/lib/constants.js';
+import type { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import type { QuestID } from '@/lib/minions/data/quests.js';
 import type { POHBoosts } from '@/lib/poh/index.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import type { LevelRequirements, SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
 import type { XPBank } from '@/lib/structures/Bank.js';
-import type { GearRequirements } from '@/lib/structures/Gear.js';
+import type { GearRequirement, GearRequirements } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { UpdateBank } from '@/lib/structures/UpdateBank.js';
@@ -97,6 +99,7 @@ export interface KillableMonster {
 		items: { boostPercent: number; itemID: number }[];
 	}[];
 	projectileUsage?: {
+		requiredAmmo?: number[];
 		required: boolean;
 		calculateQuantity: (opts: { quantity: number }) => number;
 	};
@@ -109,6 +112,12 @@ export interface KillableMonster {
 	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
 	diaryRequirement?: [DiaryID, DiaryTierName];
 	wildySlayerCave?: boolean;
+	requiredBitfield?: BitField;
+	minimumWeaponShieldStats?: Partial<Record<GearSetupType, Required<GearRequirement>>>;
+	tameCantKill?: true;
+	customRequirement?: (user: MUser) => Promise<string | null>;
+	setupsUsed?: GearSetupType[];
+	kcRequirements?: Partial<Record<keyof typeof BSOMonsters, number>>;
 }
 /*
  * Monsters will have an array of Consumables
@@ -134,6 +143,7 @@ export interface AddXpParams {
 	minimal?: boolean;
 	artificial?: boolean;
 	source?: XpGainSource;
+	masterCapeBoost?: boolean;
 }
 
 export interface AddMonsterXpParams {
@@ -158,7 +168,7 @@ export type Flags = Record<string, string | number>;
 export type FlagMap = Map<string, string | number>;
 export type ClueBank = Record<ClueTier['name'], number>;
 
-const diaryTiers = ['easy', 'medium', 'hard', 'elite'] as const;
+export const diaryTiers = ['easy', 'medium', 'hard', 'elite'] as const;
 export type DiaryTierName = (typeof diaryTiers)[number];
 
 export interface DiaryTier {

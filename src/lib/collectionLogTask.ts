@@ -14,7 +14,9 @@ export const collectionLogTypes = [
 	{ name: 'collection', description: 'Normal Collection Log' },
 	{ name: 'sacrifice', description: 'Sacrificed Items Log' },
 	{ name: 'bank', description: 'Owned Items Log' },
-	{ name: 'temp', description: 'Temporary Log' }
+	{ name: 'temp', description: 'Temporary Log' },
+	{ name: 'tame', description: 'Tames Collection Log' },
+	{ name: 'disassembly', description: 'Disassembly Collection Log' }
 ] as const;
 export type CollectionLogType = (typeof collectionLogTypes)[number]['name'];
 export const CollectionLogFlags = [
@@ -164,7 +166,7 @@ class CollectionLogTask {
 
 		const fullSize = flags.nl || !collectionLog.leftList;
 
-		const userTotalCl = getTotalCl(user, type, options.stats);
+		const userTotalCl = await getTotalCl(user, type, options.stats);
 		const leftListCanvas = this.drawLeftList(collectionLog, sprite);
 
 		let leftDivisor = 214;

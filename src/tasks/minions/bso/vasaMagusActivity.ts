@@ -2,8 +2,8 @@ import { objectEntries, randArrItem, randInt, roll } from '@oldschoolgg/toolkit'
 import { Bank, Items, Monsters, resolveItems } from 'oldschooljs';
 
 import { clAdjustedDroprate, getMonster } from '@/lib/bso/bsoUtil.js';
-import { globalDroprates } from '@/lib/data/globalDroprates.js';
-import { isDoubleLootActive } from '@/lib/doubleLoot.js';
+import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 import { kittens } from '@/lib/growablePets.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { bossKillables } from '@/lib/minions/data/killableMonsters/bosses/index.js';

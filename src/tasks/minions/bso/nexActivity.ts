@@ -3,8 +3,8 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { Bank } from 'oldschooljs';
 
+import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { nexCL, nexUniqueDrops } from '@/lib/data/CollectionsExport.js';
-import { isDoubleLootActive } from '@/lib/doubleLoot.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
 import { addMonsterXP } from '@/lib/minions/functions/index.js';

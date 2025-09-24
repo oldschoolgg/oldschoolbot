@@ -1,6 +1,5 @@
 import {
 	calcPercentOfNum,
-	clamp,
 	formatDuration,
 	formatOrdinal,
 	increaseNumByPercent,
@@ -13,6 +12,7 @@ import {
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { bold } from 'discord.js';
 import { Bank, type ItemBank, itemID, resolveItems } from 'oldschooljs';
+import { clamp } from 'remeda';
 
 import { calcSetupPercent } from '@/lib/data/cox.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
@@ -631,7 +631,7 @@ export function createDOATeam({
 			let deaths = 0;
 			let roomTime = room.baseTime;
 
-			const cappedTeamSize = clamp(team.length, 1, 5);
+			const cappedTeamSize = clamp(team.length, { min: 1, max: 5 });
 			if (cappedTeamSize > 1) {
 				roomTime = reduceNumByPercent(roomTime, cappedTeamSize * 2.25);
 			}
@@ -674,7 +674,7 @@ export function createDOATeam({
 				if (addedDeathChance !== 0) {
 					messages.push(`    Had an extra ${addedDeathChance}% added because of one of the rooms mechanics`);
 				}
-				const deathChanceForThisUserRoom = clamp(baseDeathChance + addedDeathChance, 2, 99);
+				const deathChanceForThisUserRoom = clamp(baseDeathChance + addedDeathChance, { min: 2, max: 99 });
 				messages.push(
 					`    Final death chance for ${user.usernameOrMention} in ${room.name} room: ${deathChanceForThisUserRoom}%`
 				);
@@ -807,7 +807,7 @@ ${requirements
 }
 
 export function chanceOfDOAUnique(teamSize: number, cm: boolean) {
-	let base = 100 - clamp(teamSize, 1, 5) * 5;
+	let base = 100 - clamp(teamSize, { min: 1, max: 5 }) * 5;
 	if (cm) base = Math.floor(reduceNumByPercent(base, 20));
 	return base;
 }

@@ -3,11 +3,11 @@ import { AttachmentBuilder, bold } from 'discord.js';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 
 import { divinationEnergies } from '@/lib/bso/divination.js';
+import { addToDoubleLootTimer } from '@/lib/bso/doubleLoot.js';
 import { allDyes, dyedItems } from '@/lib/bso/dyedItems.js';
 import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
 import { gearImages } from '@/lib/canvas/gearImageData.js';
 import { BitField } from '@/lib/constants.js';
-import { addToDoubleLootTimer } from '@/lib/doubleLoot.js';
 import { makeScriptImage } from '@/lib/scriptImages.js';
 import { assert } from '@/lib/util/logError.js';
 import { flowerTable } from './hotColdCommand.js';

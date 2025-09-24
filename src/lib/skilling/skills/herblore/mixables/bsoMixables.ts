@@ -1,4 +1,4 @@
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import type { Mixable } from '@/lib/skilling/types.js';
 

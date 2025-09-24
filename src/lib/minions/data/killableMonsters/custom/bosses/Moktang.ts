@@ -1,6 +1,6 @@
 import { LootTable } from 'oldschooljs';
 
-import { MysteryBoxes } from '@/lib/bso/bsoOpenables.js';
+import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import {
 	ClueTable,
 	FletchingTipsTable,

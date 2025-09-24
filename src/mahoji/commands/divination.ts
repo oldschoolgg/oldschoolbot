@@ -11,7 +11,7 @@ import {
 	memoryHarvestTypes,
 	portents
 } from '@/lib/bso/divination.js';
-import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions.js';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 import type { MemoryHarvestOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';

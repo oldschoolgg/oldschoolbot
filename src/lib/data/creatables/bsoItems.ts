@@ -1,17 +1,18 @@
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { Bank, itemID, resolveItems } from 'oldschooljs';
+import { Bank, Items, itemID, resolveItems } from 'oldschooljs';
 
 import { dyedItems } from '@/lib/bso/dyedItems.js';
 import { expertCapesSource } from '@/lib/bso/expertCapes.js';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { tameCreatables } from '@/lib/bso/tameCreatables.js';
 import { seaMonkeyStaves } from '@/lib/bso/tames.js';
 import { brokenPernixOutfit, brokenTorvaOutfit, brokenVirtusOutfit } from '@/lib/data/CollectionsExport.js';
 import { moktangCreatables } from '@/lib/data/creatables/moktangCreatables.js';
 import { sunMoonCreatables } from '@/lib/data/creatables/sunMoonCreatables.js';
 import type { Createable } from '@/lib/data/createables.js';
-import { MaterialBank } from '@/lib/invention/MaterialBank.js';
 import { nexBrokenArmorDetails } from '@/lib/nex.js';
 import Skillcapes from '@/lib/skilling/skillcapes.js';
+import Prayer from '@/lib/skilling/skills/prayer.js';
 import type { Bone } from '@/lib/skilling/types.js';
 import { assert } from '@/lib/util/logError.js';
 import { divinationCreatables } from './divinationCreatables.js';
@@ -488,7 +489,7 @@ const brokenItems: Createable[] = [
 	},
 	{
 		name: 'Fix hellfire bow',
-		inputItems: resolveBank({
+		inputItems: new Bank({
 			'Hellfire bow (broken)': 1,
 			'Ignecarus dragonclaw': 1,
 			'Smouldering stone': 1,
@@ -502,7 +503,7 @@ const brokenItems: Createable[] = [
 	},
 	{
 		name: 'Fix hellfire bownana',
-		inputItems: resolveBank({
+		inputItems: new Bank({
 			'Hellfire bownana (broken)': 1,
 			'Ignecarus dragonclaw': 1,
 			'Smouldering stone': 1,
@@ -721,7 +722,7 @@ const bsoItems: Createable[] = [
 	},
 	{
 		name: 'Heart crystal',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Chunk of crystal': 1,
 			'Hunk of crystal': 1,
 			'Lump of crystal': 1
@@ -752,7 +753,7 @@ const bsoItems: Createable[] = [
 	},
 	{
 		name: "Bryophyta's staff(i)",
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			"Bryophyta's staff": 1,
 			'Magus scroll': 1
 		}),
@@ -766,7 +767,7 @@ const bsoItems: Createable[] = [
 	},
 	{
 		name: 'Ignis ring(i)',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ignis ring': 1,
 			'Magus scroll': 1
 		}),
@@ -780,31 +781,31 @@ const bsoItems: Createable[] = [
 	},
 	{
 		name: 'Abyssal pouch',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Abyssal thread': 1,
 			'Giant pouch': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Abyssal pouch': 1
 		})
 	},
 	{
 		name: 'Elder pouch',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Abyssal pouch': 1,
 			'Elder thread': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Elder pouch': 1
 		})
 	},
 	{
 		name: 'Bucket of sand',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			Sand: 1,
 			Bucket: 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Bucket of sand': 1
 		})
 	},
@@ -916,12 +917,12 @@ const bsoItems: Createable[] = [
 	},
 	{
 		name: 'Void staff (u)',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Virtus wand': 1,
 			'Dark crystal': 1,
 			'Dark animica': 750
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Void staff (u)': 1
 		}),
 		requiredSkills: {
@@ -932,58 +933,58 @@ const bsoItems: Createable[] = [
 	},
 	{
 		name: 'Void staff',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Void staff (u)': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Void staff': 1
 		})
 	},
 	{
 		name: 'Revert void staff',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Void staff': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Void staff (u)': 1
 		})
 	},
 	{
 		name: 'Abyssal tome',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Tattered tome': 1,
 			'Virtus book': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Abyssal tome': 1
 		})
 	},
 	{
 		name: 'Spellbound ring(i)',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Spellbound ring': 1,
 			'Magus scroll': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Spellbound ring(i)': 1
 		})
 	},
 	{
 		name: 'Black swan',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			Seer: 1,
 			'Squid dye': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Black swan': 1
 		})
 	},
 	{
 		name: 'Nexterminator',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Bloodsoaked feather': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			Nexterminator: 1
 		})
 	}
@@ -1003,31 +1004,31 @@ for (const staff of seaMonkeyStaves) {
 const ganodermic: Createable[] = [
 	{
 		name: 'Ganodermic visor',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Mycelium visor web': 1,
 			'Ganodermic flake': 500
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Ganodermic visor': 1
 		})
 	},
 	{
 		name: 'Ganodermic poncho',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Mycelium poncho web': 1,
 			'Ganodermic flake': 5000
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Ganodermic poncho': 1
 		})
 	},
 	{
 		name: 'Ganodermic leggings',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Mycelium leggings web': 1,
 			'Ganodermic flake': 1500
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Ganodermic leggings': 1
 		})
 	}
@@ -1036,31 +1037,31 @@ const ganodermic: Createable[] = [
 const grifolic: Createable[] = [
 	{
 		name: 'Grifolic visor',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Mycelium visor web': 1,
 			'Grifolic flake': 500
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Grifolic visor': 1
 		})
 	},
 	{
 		name: 'Grifolic poncho',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Mycelium poncho web': 1,
 			'Grifolic flake': 5000
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Grifolic poncho': 1
 		})
 	},
 	{
 		name: 'Grifolic leggings',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Mycelium leggings web': 1,
 			'Grifolic flake': 1500
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Grifolic leggings': 1
 		})
 	}
@@ -1069,140 +1070,140 @@ const grifolic: Createable[] = [
 const dragonBoneCreatables: Createable[] = [
 	{
 		name: 'Dragonbone boots',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Dragonbone upgrade kit': 1,
 			'Dragon boots': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Dragonbone boots': 1
 		})
 	},
 	{
 		name: 'Dragonbone full helm',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Dragonbone upgrade kit': 1,
 			'Dragon full helm': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Dragonbone full helm': 1
 		})
 	},
 	{
 		name: 'Dragonbone platebody',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Dragonbone upgrade kit': 1,
 			'Dragon platebody': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Dragonbone platebody': 1
 		})
 	},
 	{
 		name: 'Dragonbone platelegs',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Dragonbone upgrade kit': 1,
 			'Dragon platelegs': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Dragonbone platelegs': 1
 		})
 	},
 	{
 		name: 'Dragonbone gloves',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Dragonbone upgrade kit': 1,
 			'Dragon gloves': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Dragonbone gloves': 1
 		})
 	},
 	{
 		name: 'Dragonbone mage boots',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Dragonbone upgrade kit': 1,
 			'Infinity boots': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Dragonbone mage boots': 1
 		})
 	},
 	{
 		name: 'Dragonbone mage gloves',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Dragonbone upgrade kit': 1,
 			'Infinity gloves': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Dragonbone mage gloves': 1
 		})
 	},
 	{
 		name: 'Dragonbone mage bottoms',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Dragonbone upgrade kit': 1,
 			'Infinity bottoms': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Dragonbone mage bottoms': 1
 		})
 	},
 	{
 		name: 'Dragonbone mage hat',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Dragonbone upgrade kit': 1,
 			'Infinity hat': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Dragonbone mage hat': 1
 		})
 	},
 	{
 		name: 'Dragonbone mage top',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Dragonbone upgrade kit': 1,
 			'Infinity top': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Dragonbone mage top': 1
 		})
 	},
 	{
 		name: 'Royal dragon platebody',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ruined dragon armour slice': 1,
 			'Ruined dragon armour lump': 1,
 			'Ruined dragon armour shard': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Royal dragon platebody': 1
 		})
 	},
 	{
 		name: 'Frosty',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			Snowball: 50,
 			'Festive scarf': 1,
 			'Snowman top hat': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			Frosty: 1
 		})
 	}
 ];
 
-const divineWaterBones = bones.map(bone => bone.name);
+const divineWaterBones = Prayer.Bones.map(bone => bone.name);
 
 function divineWaterInputItems(user: MUser, preferredBone?: Bone) {
 	const userBank = user.bank;
 	const bonesToUse =
 		preferredBone ??
-		bones
-			.filter(i => userBank.has(i.inputId))
-			.sort((a, b) => userBank.amount(b.inputId) - userBank.amount(a.inputId))[0] ??
-		bones[0];
+		Prayer.Bones.filter(i => userBank.has(i.inputId)).sort(
+			(a, b) => userBank.amount(b.inputId) - userBank.amount(a.inputId)
+		)[0] ??
+		Prayer.Bones[0];
 	let perBone = 2000;
-	if (bones.indexOf(bonesToUse) < bones.indexOf(bones.find(b => b.name === 'Dragon bones')!)) {
+	if (Prayer.Bones.indexOf(bonesToUse) < Prayer.Bones.indexOf(Prayer.Bones.find(b => b.name === 'Dragon bones')!)) {
 		perBone *= 2;
 	}
 	const quantity = Math.ceil(Math.floor(perBone / bonesToUse.xp));
@@ -1214,18 +1215,18 @@ const divineWaterCreatbles: Createable[] = [
 	{
 		name: 'Divine water',
 		inputItems: (user: MUser) => divineWaterInputItems(user),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Divine water': 1
 		})
 	}
 ];
 
 for (const bone of divineWaterBones) {
-	const preferredBone = bones.find(b => stringMatches(b.name, bone))!;
+	const preferredBone = Prayer.Bones.find(b => stringMatches(b.name, bone))!;
 	divineWaterCreatbles.push({
 		name: `Divine water (${preferredBone.name})`,
 		inputItems: (user: MUser) => divineWaterInputItems(user, preferredBone),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Divine water': 1
 		})
 	});

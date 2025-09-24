@@ -9,8 +9,8 @@ import {
 	EliteMimicTable,
 	HardCasket,
 	ItemGroups,
-	itemID,
 	Items,
+	itemID,
 	MasterCasket,
 	MasterMimicTable,
 	MediumCasket,
@@ -51,8 +51,8 @@ import { TheatreOfBlood } from '@/lib/simulation/tob.js';
 import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
 import { rollNaxxusLoot } from './bso/naxxus/rollNaxxusLoot.js';
 import {
-	kalphiteKingLootTable,
-	KalphiteKingMonster
+	KalphiteKingMonster,
+	kalphiteKingLootTable
 } from './minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
 import { MoktangLootTable } from './minions/data/killableMonsters/custom/bosses/Moktang.js';
 import { Naxxus } from './minions/data/killableMonsters/custom/bosses/Naxxus.js';
@@ -325,7 +325,7 @@ const monsterPairedCLs = [...Monsters.values(), ...Object.values(BSOMonsters)]
 	.map(mon => {
 		const cl = allCollectionLogsFlat.find(c => stringMatches(c.name, mon.name));
 		if (!cl) return null;
-		if (!('allItems' in mon) || !mon.allItems) return;
+		if (!('allItems' in mon) || !mon.allItems) return null;
 		if (!cl.items.every(id => mon.allItems!.includes(id))) return null;
 		if (finishables.some(f => stringMatches(f.name, mon.name))) return null;
 		return {

@@ -2,6 +2,7 @@ import { objectEntries, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 import { BitField } from '@/lib/constants.js';
 import {
 	ChimplingImpling,
@@ -11,7 +12,6 @@ import {
 	ShrimplingImpling
 } from '@/lib/simulation/customImplings.js';
 import activityInArea, { WorldLocations } from '@/lib/util/activityInArea.js';
-import { inventionBoosts, InventionID, inventionItemBoost } from './invention/inventions.js';
 import type { ActivityTaskData } from './types/minions.js';
 
 const {

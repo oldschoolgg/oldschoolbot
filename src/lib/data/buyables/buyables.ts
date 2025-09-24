@@ -37,6 +37,7 @@ export interface Buyable {
 	minigameScoreReq?: [MinigameName, number];
 	ironmanPrice?: number;
 	collectionLogReqs?: number[];
+	globalAnnouncementOnFirstBuy?: boolean;
 	customReq?: (user: MUser, userStats: MUserStats) => Promise<[true] | [false, string]>;
 	maxQuantity?: number;
 	quantityPerHour?: number;

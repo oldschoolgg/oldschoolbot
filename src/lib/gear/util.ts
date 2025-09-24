@@ -1,15 +1,9 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import type { GearPreset } from '@prisma/client';
-import { type EquipmentSlot, type Item, itemID } from 'oldschooljs';
+import { type EquipmentSlot, itemID } from 'oldschooljs';
 
 import type { GearSetup } from '@/lib/gear/types.js';
 import { Gear } from '@/lib/structures/Gear.js';
-
-export function itemInSlot(setup: GearSetup, slot: EquipmentSlot): [null, null] | [Item, number] {
-	const equipped = setup[slot];
-	if (!equipped) return [null, null];
-	return [Items.getOrThrow(equipped.item), equipped.quantity];
-}
 
 export function readableStatName(slot: string) {
 	return toTitleCase(slot.replace('_', ' '));

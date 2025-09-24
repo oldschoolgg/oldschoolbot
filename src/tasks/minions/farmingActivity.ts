@@ -1,26 +1,27 @@
-import { Time } from '@oldschoolgg/toolkit';
-import { Bank, Items, Monsters, itemID } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Bank, Items, increaseBankQuantitesByPercent, Monsters } from 'oldschooljs';
 
-import { MysteryBoxes } from '@/lib/bso/bsoOpenables.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
+import { mutations } from '@/lib/bso/skills/farming/mutations.js';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField } from '@/lib/constants.js';
-import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions.js';
 import type { PatchTypes } from '@/lib/minions/farming/index.js';
 import type { FarmingContract } from '@/lib/minions/farming/types.js';
 import { calcVariableYield } from '@/lib/skilling/functions/calcsFarming.js';
 import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
-import Farming, { plants } from '@/lib/skilling/skills/farming/index.js';
+import Farming from '@/lib/skilling/skills/farming/index.js';
 import { type Plant, SkillsEnum } from '@/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
-import { skillingPetDropRate } from '@/lib/util.js';
 import { getFarmingKeyFromName } from '@/lib/util/farmingHelpers.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { assert } from '@/lib/util/logError.js';
 import { randInt, roll } from '@/lib/util/rng.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 const plopperBoostPercent = 100;
@@ -57,43 +58,6 @@ async function farmingLootBoosts(
 		}
 	}
 	increaseBankQuantitesByPercent(loot, bonusPercentage);
-}
-
-const mutations = [
-	{
-		chance: 30,
-		plantName: 'Mango bush',
-		output: itemID('Shiny mango')
-	},
-	{
-		chance: 7,
-		plantName: 'Cabbage',
-		output: itemID('Cannonball cabbage')
-	},
-	{
-		chance: 7,
-		plantName: 'Potato',
-		output: itemID('Sweet potato')
-	},
-	{
-		chance: 7,
-		plantName: 'Sweetcorn',
-		output: itemID('Rainbow sweetcorn')
-	},
-	{
-		chance: 7,
-		plantName: 'Strawberry',
-		output: itemID('White strawberry')
-	},
-	{
-		chance: 7,
-		plantName: 'Mushroom',
-		output: itemID('Mooshroom')
-	}
-];
-for (const mut of mutations) {
-	const plant = plants.find(i => i.name === mut.plantName);
-	if (!plant) throw new Error(`Missing ${mut.plantName}`);
 }
 
 export const farmingTask: MinionTask = {

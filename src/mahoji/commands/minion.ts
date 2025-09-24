@@ -5,6 +5,7 @@ import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { feedHammyCommand } from '@/lib/bso/commands/hammyCommand.js';
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import { BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
@@ -35,7 +36,6 @@ import { bankBgCommand } from '@/mahoji/lib/abstracted_commands/bankBgCommand.js
 import { cancelTaskCommand } from '@/mahoji/lib/abstracted_commands/cancelTaskCommand.js';
 import { crackerCommand } from '@/mahoji/lib/abstracted_commands/crackerCommand.js';
 import { dailyCommand } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
-import { feedHammyCommand } from '@/mahoji/lib/abstracted_commands/hammyCommand.js';
 import { ironmanCommand } from '@/mahoji/lib/abstracted_commands/ironmanCommand.js';
 import { Lampables, lampCommand } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
 import { minionBuyCommand } from '@/mahoji/lib/abstracted_commands/minionBuyCommand.js';

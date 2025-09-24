@@ -3,9 +3,9 @@ import { Events } from '@oldschoolgg/toolkit/constants';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
+import { defaultMegaDuckLocation, type MegaDuckLocation } from '@/lib/bso/megaDuck.js';
 import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '@/lib/canvas/canvasUtil.js';
 import { globalConfig } from '@/lib/constants.js';
-import { defaultMegaDuckLocation, type MegaDuckLocation } from '@/lib/minions/types.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { getUsernameSync } from '@/lib/util.js';
 import { mahojiGuildSettingsUpdate } from '@/mahoji/guildSettings.js';

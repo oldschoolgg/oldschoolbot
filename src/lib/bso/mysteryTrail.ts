@@ -1,4 +1,4 @@
-import { Bank, itemID, Monsters, resolveItems } from 'oldschooljs';
+import { Bank, Items, itemID, Monsters, resolveItems } from 'oldschooljs';
 
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil.js';

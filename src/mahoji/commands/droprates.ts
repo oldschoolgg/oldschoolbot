@@ -4,9 +4,9 @@ import { Bank } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { calcBabyYagaHouseDroprate, clAdjustedDroprate, herbertDroprate } from '@/lib/bso/bsoUtil.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
 import { MAX_XP } from '@/lib/constants.js';
-import { globalDroprates } from '@/lib/data/globalDroprates.js';
-import { slayerMaskHelms } from '@/lib/data/slayerMaskHelms.js';
 import Constructables from '@/lib/skilling/skills/construction/constructables.js';
 import Potions from '@/lib/skilling/skills/herblore/mixables/potions.js';
 

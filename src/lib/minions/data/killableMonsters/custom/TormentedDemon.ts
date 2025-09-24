@@ -1,9 +1,9 @@
 import { Time } from '@oldschoolgg/toolkit';
-import { Bank, LootTable, Monsters, RareDropTable, resolveNameBank } from 'oldschooljs';
+import { Bank, LootTable, Monsters, RareDropTable } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
+import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/CustomMonster.js';
 import { GrimyHerbTable, lowRuneHighAdamantTable, runeAlchablesTable } from '@/lib/simulation/sharedTables.js';
-import type { CustomMonster } from './customMonsters.js';
 
 export const SuperiorTormentedDemon: CustomMonster = {
 	isCustom: true,
@@ -66,12 +66,5 @@ export const SuperiorTormentedDemon: CustomMonster = {
 		itemCost: new Bank().add('Divine water')
 	},
 	hp: 657,
-	itemInBankBoosts: [
-		resolveNameBank({
-			'TzKal cape': 5
-		}),
-		resolveNameBank({
-			'Axe of the high sungod': 10
-		})
-	]
+	itemInBankBoosts: [new Bank().add('TzKal cape', 5).toJSON(), new Bank().add('Axe of the high sungod', 10).toJSON()]
 };

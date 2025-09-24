@@ -1,7 +1,8 @@
-import { clamp, formatDuration, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { Bank, Items } from 'oldschooljs';
+import { clamp } from 'remeda';
 
 import {
 	calcDOAInput,
@@ -100,8 +101,8 @@ export async function doaStartCommand(
 		challengeMode
 	}).fakeDuration;
 	const maxTripLength = Math.max(...users.map(i => calcMaxTripLength(i, 'DepthsOfAtlantis')));
-	const maxQuantity = clamp(Math.floor(maxTripLength / baseDuration), 1, 5);
-	const quantity = clamp(quantityInput ?? maxQuantity, 1, maxQuantity);
+	const maxQuantity = clamp(Math.floor(maxTripLength / baseDuration), { min: 1, max: 5 });
+	const quantity = clamp(quantityInput ?? maxQuantity, { min: 1, max: maxQuantity });
 
 	const createdDOATeam = createDOATeam({
 		team: teamCheck,

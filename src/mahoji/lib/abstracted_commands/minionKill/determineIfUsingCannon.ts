@@ -1,8 +1,8 @@
 import { Time } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
 
+import { canAffordInventionBoostRaw, InventionID } from '@/lib/bso/skills/invention/inventions.js';
 import type { PvMMethod } from '@/lib/constants.js';
-import { canAffordInventionBoostRaw, InventionID } from '@/lib/invention/inventions.js';
 import { cannonBanks } from '@/lib/minions/data/combatConstants.js';
 import { wildyKillableMonsters } from '@/lib/minions/data/killableMonsters/bosses/wildy.js';
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';

@@ -4,14 +4,14 @@ import { match } from 'ts-pattern';
 
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
-import { globalDroprates } from '@/lib/data/globalDroprates.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
 import { Cookables } from '@/lib/skilling/skills/cooking/cooking.js';
 import type { Fish } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
-import { skillingPetDropRate } from '@/lib/util.js';
 import type { RNGProvider } from '@/lib/util/rng.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 import { calcAnglerBoostPercent, calcMinnowQuantityRange, calcRadasBlessingBoost } from './fishingUtil.js';
 
 export function calcFishingTripResult({

@@ -5,8 +5,8 @@ import { describe, expect, test } from 'vitest';
 
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { Eatables } from '@/lib/data/eatables.js';
-import { skillingPetDropRate } from '@/lib/util.js';
 import { pluraliseItemName } from '@/lib/util/smallUtils.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 import { baseModifyBusyCounter } from '../../src/lib/busyCounterCache.js';
 import getUserFoodFromBank from '../../src/lib/minions/functions/getUserFoodFromBank.js';
 import { SkillsEnum } from '../../src/lib/skilling/types.js';

@@ -1,6 +1,6 @@
 import { describe, test } from 'vitest';
 
-import { allLeagueTasks } from '../../../src/lib/leagues/leagues';
+import { allLeagueTasks } from '@/lib/bso/leagues/leagues.js';
 
 describe('Leagues', async () => {
 	test('No duplicates', async () => {

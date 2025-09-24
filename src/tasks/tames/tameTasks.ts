@@ -27,10 +27,10 @@ import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
 import {
 	type ArbitraryTameActivity,
 	seaMonkeySpells,
-	tameKillableMonsters,
 	TameSpeciesID,
 	type TameTaskOptions,
-	TameType
+	TameType,
+	tameKillableMonsters
 } from '@/lib/bso/tames.js';
 import { tameLastFinishedActivity } from '@/lib/bso/tameUtil.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';

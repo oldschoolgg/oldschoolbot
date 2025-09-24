@@ -1,21 +1,21 @@
 import { Time } from '@oldschoolgg/toolkit';
 import {
+	Bank,
 	deepResolveItems,
 	itemID,
 	LootTable,
 	MonsterAttribute,
 	Monsters,
 	RareDropTable,
-	resolveItems,
-	resolveNameBank
+	resolveItems
 } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { BitField } from '@/lib/constants.js';
 import { HighSeedPackTable } from '@/lib/data/seedPackTables.js';
+import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/CustomMonster.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { AbyssalDragonLootTable } from './AbyssalDragon.js';
-import type { CustomMonster } from './customMonsters.js';
 import { NihilizLootTable } from './Nihiliz.js';
 import { KrakenTable } from './SeaKraken.js';
 import { TreebeardLootTable } from './Treebeard.js';
@@ -145,9 +145,9 @@ const Treebeard: CustomMonster = {
 	},
 	baseMonster: Monsters.Hespori,
 	itemInBankBoosts: [
-		resolveNameBank({
+		new Bank({
 			'Axe of the high sungod': 10
-		})
+		}).toJSON()
 	],
 	canBePked: true
 };

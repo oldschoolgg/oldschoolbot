@@ -1,12 +1,11 @@
 import { writeFileSync } from 'node:fs';
-import { calcPerHour } from '@oldschoolgg/toolkit';
-import { Time } from 'e';
+import { calcPerHour, Time } from '@oldschoolgg/toolkit';
 import { itemID } from 'oldschooljs';
 import { groupBy } from 'remeda';
 import { test } from 'vitest';
 
-import { ClueTiers } from '../../../src/lib/clues/clueTiers';
-import { determineTameClueResult } from '../../../src/mahoji/commands/tames';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { determineTameClueResult } from '@/mahoji/commands/tames.js';
 
 test('Tame Clues', () => {
 	const rawResults = [];

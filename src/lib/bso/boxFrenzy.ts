@@ -3,9 +3,9 @@ import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { type Message, TextChannel } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
+import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { makeBankImage } from '../util/makeBankImage.js';
 import { sendToChannelID } from '../util/webhook.js';
-import { MysteryBoxes } from './bsoOpenables.js';
 
 export async function boxFrenzy(channelID: string, content: string, quantity: number) {
 	const channel = globalClient.channels.cache.get(channelID);

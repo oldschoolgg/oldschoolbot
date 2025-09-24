@@ -4,7 +4,6 @@ import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
-	ActivityTaskData,
 	GauntletOptions,
 	MonsterActivityTaskOptions,
 	NightmareActivityTaskOptions,
@@ -1510,8 +1509,9 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 12,
-			hasChance: (data: ActivityTaskData) =>
-				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 7))
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' &&
+				(!data.diedAt || (Array.isArray(data.diedAt) && (!data.diedAt[index] || data.diedAt[index] > 7)))
 		}
 	},
 	{
@@ -1522,8 +1522,9 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 12,
-			hasChance: (data: ActivityTaskData) =>
-				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 4))
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' &&
+				(!data.diedAt || (Array.isArray(data.diedAt) && (!data.diedAt[index] || data.diedAt[index] > 4)))
 		}
 	},
 	{

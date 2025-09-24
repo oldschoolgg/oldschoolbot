@@ -1,4 +1,4 @@
-import { resolveItems } from 'oldschooljs';
+import { Items, resolveItems } from 'oldschooljs';
 
 import { SkillsEnum } from '@/lib/skilling/types.js';
 

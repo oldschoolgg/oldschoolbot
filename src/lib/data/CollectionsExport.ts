@@ -1,6 +1,7 @@
 import type { Minigame } from '@prisma/client';
-import { Bank, type Item, ItemGroups, Items, type MinigameScore, resolveItems } from 'oldschooljs';
+import { Bank, type Item, ItemGroups, Items, resolveItems } from 'oldschooljs';
 
+import { stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
 import { removeDiscontinuedItems } from '@/lib/customItems/customItems.js';
 import {
 	gracefulCapes,
@@ -12,7 +13,7 @@ import {
 } from '@/lib/data/gracefulVariants.js';
 import { allHolidayItems, PartyhatTable } from '@/lib/data/holidayItems.js';
 import { growablePets } from '@/lib/growablePets.js';
-import { stoneSpirits } from '@/lib/minions/data/stoneSpirits.js';
+import type { MinigameScore } from '@/lib/settings/minigames.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import { assert } from '@/lib/util/logError.js';
 import { LampTable } from '@/lib/xpLamps.js';

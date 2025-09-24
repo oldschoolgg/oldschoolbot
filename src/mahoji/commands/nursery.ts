@@ -2,12 +2,11 @@ import { formatDuration, gaussianRandom, randArrItem, reduceNumByPercent, roll }
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { tame_growth } from '@prisma/client';
 import { ApplicationCommandOptionType, type ChatInputCommandInteraction } from 'discord.js';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '@/lib/bso/tames.js';
 import { globalConfig } from '@/lib/constants.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import { getItem } from '@/lib/util/getOSItem.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
@@ -182,7 +181,7 @@ async function addCommand(interaction: ChatInputCommandInteraction, user: MUser,
 	if (!nursery.hasFuel) {
 		return 'Your nursery has no fuel for a fire to keep the egg warm, add fuel for the egg using `/nursery fuel`.';
 	}
-	const item = getItem(itemName);
+	const item = Items.get(itemName);
 	if (!item) return "That's not a valid item.";
 
 	const { bank } = user;

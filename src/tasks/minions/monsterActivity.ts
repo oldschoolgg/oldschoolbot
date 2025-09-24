@@ -1,14 +1,14 @@
-import { Time, calcWhatPercent, percentChance, reduceNumByPercent, roll } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, percentChance, reduceNumByPercent, roll, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';
 
-import { MysteryBoxes } from '@/lib/bso/bsoOpenables.js';
+import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
+import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { type MidPVMEffectArgs, oriEffect, rollForBSOThings } from '@/lib/bso/pvmEffects.js';
 import type { BitField } from '@/lib/constants.js';
 import { userhasDiaryTierSync } from '@/lib/diaries.js';
-import { isDoubleLootActive } from '@/lib/doubleLoot.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { KOSCHEI_ID } from '@/lib/minions/data/killableMonsters/custom/bosses/Koschei.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';

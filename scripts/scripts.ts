@@ -2,14 +2,14 @@ import { TimerManager } from '@sapphire/timer-manager';
 import '../src/lib/safeglobals';
 import { execSync } from 'node:child_process';
 
-applyStaticDefine();
-
-import { sonicBoom } from '@/lib/util/logger';
+import { sonicBoom } from '@/lib/util/logger.js';
 import { applyStaticDefine } from '../meta.js';
-import { renderBsoItemsFile } from './bsoData';
-import { renderCreatablesFile } from './creatables';
+import { renderBsoItemsFile } from './bsoData.js';
+import { renderCreatablesFile } from './creatables.js';
 import { createMonstersJson } from './monstersJson.js';
-import { renderCommandsFile } from './renderCommandsFile';
+import { renderCommandsFile } from './renderCommandsFile.js';
+
+applyStaticDefine();
 
 function scriptsMain() {
 	createMonstersJson();

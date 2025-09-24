@@ -1,8 +1,8 @@
 import { calcPercentOfNum, roll } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
-import { MysteryBoxes } from '@/lib/bso/bsoOpenables.js';
 import { catchFishAtLocation, fishingLocations } from '@/lib/bso/fishingContest.js';
+import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { ClueTable } from '@/lib/simulation/sharedTables.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';

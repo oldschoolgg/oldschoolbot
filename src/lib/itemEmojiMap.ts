@@ -1,4 +1,4 @@
-import { Openables } from 'oldschooljs';
+import { Items, Openables } from 'oldschooljs';
 
 import { InfernalImpling } from '@/lib/simulation/customImplings.js';
 

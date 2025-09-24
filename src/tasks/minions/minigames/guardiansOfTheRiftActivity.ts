@@ -2,7 +2,7 @@ import { randArrItem, randInt } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank, EItem } from 'oldschooljs';
 
-import { userHasFlappy } from '@/lib/invention/inventions.js';
+import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { rewardsGuardianTable } from '@/lib/simulation/rewardsGuardian.js';
 import { bloodEssence } from '@/lib/skilling/functions/calcsRunecrafting.js';

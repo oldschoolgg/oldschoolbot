@@ -2,10 +2,10 @@ import { isFunction, reduceNumByPercent, stringMatches } from '@oldschoolgg/tool
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type SkillsEnum } from 'oldschooljs';
 
+import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
+import { transactMaterialsFromUser } from '@/lib/bso/skills/invention/inventions.js';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import Createables from '@/lib/data/createables.js';
-import type { IMaterialBank } from '@/lib/invention/index.js';
-import { transactMaterialsFromUser } from '@/lib/invention/inventions.js';
-import { MaterialBank } from '@/lib/invention/MaterialBank.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';

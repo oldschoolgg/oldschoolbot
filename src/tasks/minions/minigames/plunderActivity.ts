@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { userHasFlappy } from '@/lib/invention/inventions.js';
+import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import { lootRoom, plunderRooms } from '@/lib/minions/data/plunder.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { PlunderActivityTaskOptions } from '@/lib/types/minions.js';

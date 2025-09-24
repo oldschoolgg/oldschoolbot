@@ -1,10 +1,10 @@
 import { increaseNumByPercent, percentChance, sumArr, Time } from '@oldschoolgg/toolkit';
-import { Bank, toKMB } from 'oldschooljs';
+import { Bank, Items, toKMB } from 'oldschooljs';
 
+import { InventionID, inventionBoosts, inventionItemBoostRaw } from '@/lib/bso/skills/invention/inventions.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BitField } from '@/lib/constants.js';
-import { inventionBoosts, InventionID, inventionItemBoostRaw } from '@/lib/invention/inventions.js';
-import { bones } from '@/lib/skilling/skills/prayer.js';
+import Prayer from '@/lib/skilling/skills/prayer.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import { assert } from '@/lib/util/logError.js';
@@ -128,7 +128,7 @@ export function bonecrusherEffect({
 	let hasSuperior = gearBank.bank.has('Superior bonecrusher');
 
 	let totalXP = 0;
-	for (const bone of bones) {
+	for (const bone of Prayer.Bones) {
 		const amount = updateBank.itemLootBank.amount(bone.inputId);
 		if (amount > 0) {
 			totalXP += bone.xp * amount * 4;

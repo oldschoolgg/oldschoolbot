@@ -1,18 +1,18 @@
 // Base custom items are referenced elsewhere in the custom items files and must be loaded first
-import '../bso/deletedItems.js';
 import './baseCustomItems.js';
-import './baxBath.js';
-import './customItemsFancy.js';
-import './dwarven.js';
-import './farming.js';
-import './fishing.js';
+import '../bso/deletedItems.js';
 import './invention/index.js';
-import './leagues.js';
-import './moktang.js';
+import './customItemsFancy.js';
+import './farming.js';
+import './pets.js';
+import './fishing.js';
 import './nex.js';
 import './nonCustomChanges.js';
+import './baxBath.js';
+import './dwarven.js';
+import './moktang.js';
+import './leagues.js';
 import './paintCans.js';
-import './pets.js';
 
 import { EquipmentSlot, type ItemRequirements, Items, resolveItems } from 'oldschooljs';
 

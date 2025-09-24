@@ -8,7 +8,7 @@ import {
 	divinationEnergies,
 	MemoryHarvestType
 } from '@/lib/bso/divination.js';
-import { inventionBoosts } from '@/lib/invention/inventions.js';
+import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MemoryHarvestOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';

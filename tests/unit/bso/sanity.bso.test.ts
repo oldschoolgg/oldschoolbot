@@ -2,19 +2,18 @@ import { type Tame, tame_growth } from '@prisma/client';
 import { EquipmentSlot, Items, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { combinedTmbUmbEmbTables } from '@/lib/bsoOpenables';
-import { allPetIDs } from '@/lib/data/CollectionsExport';
-import { itemsToDelete } from '@/lib/deletedItems';
-import killableMonsters from '@/lib/minions/data/killableMonsters';
-import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
-import { KalphiteKingMonster } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
-import KingGoldemar from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
-import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
-import { allOpenables } from '@/lib/openables';
-import { Gear } from '@/lib/structures/Gear';
-import getOSItem from '@/lib/util/getOSItem';
-import itemIsTradeable from '@/lib/util/itemIsTradeable';
-import { calculateMaximumTameFeedingLevelGain } from '../../../src/lib/util/tameUtil';
+import { itemsToDelete } from '@/lib/bso/deletedItems.js';
+import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/bsoOpenables.js';
+import { calculateMaximumTameFeedingLevelGain } from '@/lib/bso/tameUtil.js';
+import { allPetIDs } from '@/lib/data/CollectionsExport.js';
+import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
+import { KalphiteKingMonster } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
+import KingGoldemar from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';
+import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { allOpenables } from '@/lib/openables.js';
+import { Gear } from '@/lib/structures/Gear.js';
+import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 
 describe('Sanity', () => {
 	test('calculateMaximumTameFeedingLevelGain', () => {
@@ -46,17 +45,17 @@ describe('Sanity', () => {
 		expect(itemID('Phoenix')).toEqual(20_693);
 		expect(itemID('Kalphite princess')).toEqual(12_647);
 		expect(itemID('Green phoenix')).toEqual(24_483);
-		expect(getOSItem('Nexterminator').id).toEqual(50_588);
-		expect(getOSItem('Smokey').customItemData?.cantDropFromMysteryBoxes).toEqual(true);
-		expect(getOSItem('Pink partyhat').customItemData?.cantDropFromMysteryBoxes).toEqual(true);
-		expect(getOSItem('Pink partyhat').equipment?.slot).toEqual(EquipmentSlot.Head);
+		expect(Items.getOrThrow('Nexterminator').id).toEqual(50_588);
+		expect(Items.getOrThrow('Smokey').customItemData?.cantDropFromMysteryBoxes).toEqual(true);
+		expect(Items.getOrThrow('Pink partyhat').customItemData?.cantDropFromMysteryBoxes).toEqual(true);
+		expect(Items.getOrThrow('Pink partyhat').equipment?.slot).toEqual(EquipmentSlot.Head);
 		expect(resolveItems(['Nexterminator', 'Herbi', 'Smokey', 'Craig']).every(id => allPetIDs.includes(id))).toEqual(
 			true
 		);
 		expect(itemID('Red chinchompa')).toEqual(10_034);
 		expect(itemID('Broad arrows')).toEqual(4160);
 		expect(itemID('Frozen key')).toEqual(26_356);
-		for (const item of ['Hellfire bow (broken)', 'Hellfire bownana (broken)'].map(getOSItem)) {
+		for (const item of ['Hellfire bow (broken)', 'Hellfire bownana (broken)'].map(Items.getOrThrow)) {
 			expect(item.equipable).toEqual(undefined);
 			expect(item.equipable_by_player).toEqual(undefined);
 			expect(item.equipment).toEqual(undefined);

@@ -1,7 +1,7 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
-import { globalDroprates } from '@/lib/data/globalDroprates.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 import { MAX_QP } from '@/lib/minions/data/quests.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';

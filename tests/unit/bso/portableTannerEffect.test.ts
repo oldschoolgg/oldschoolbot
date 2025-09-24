@@ -1,11 +1,11 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { itemID } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
-import { portableTannerEffect } from '../../../src/lib/bso/inventionEffects';
-import { MaterialBank } from '../../../src/lib/invention/MaterialBank';
-import { UpdateBank } from '../../../src/lib/structures/UpdateBank';
-import { makeGearBank } from '../utils';
+import { portableTannerEffect } from '@/lib/bso/inventionEffects.js';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
+import { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import { makeGearBank } from '../utils.js';
 
 test('portableTannerEffect.test', () => {
 	const bank = new UpdateBank();

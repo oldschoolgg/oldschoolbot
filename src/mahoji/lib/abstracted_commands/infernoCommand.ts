@@ -10,7 +10,7 @@ import {
 } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { randomVariation } from '@oldschoolgg/toolkit/util';
-import { Bank, type ItemBank, itemID, Items, Monsters, resolveItems } from 'oldschooljs';
+import { Bank, type ItemBank, Items, itemID, Monsters, resolveItems } from 'oldschooljs';
 
 import { determineProjectileTypeFromGear } from '@/lib/bso/gear/util.js';
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';

@@ -147,8 +147,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 44,
-			hasChance: data =>
-				data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
+			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
 		}
 	},
 	{
@@ -159,8 +158,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 25,
-			hasChance: data =>
-				data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
+			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
 		}
 	},
 	{
@@ -182,8 +180,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 22,
-			hasChance: data =>
-				data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
+			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
 		}
 	},
 	{
@@ -262,7 +259,9 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
-				data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
+				data.type === 'Raids' &&
+				(data as RaidsOptions).users.length === 1 &&
+				(data as RaidsOptions).users.length === 1
 		}
 	},
 	{
@@ -285,7 +284,9 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 33,
 			hasChance: data =>
-				data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
+				data.type === 'Raids' &&
+				(data as RaidsOptions).users.length === 1 &&
+				(data as RaidsOptions).users.length === 1
 		}
 	},
 	{
@@ -311,7 +312,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 				data.type === 'Raids' &&
 				(data as RaidsOptions).challengeMode &&
 				(data as RaidsOptions).users.length === 1 &&
-				!(data as RaidsOptions).isFakeMass
+				(data as RaidsOptions).users.length === 1
 		}
 	},
 	{
@@ -337,7 +338,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 				data.type === 'Raids' &&
 				(data as RaidsOptions).challengeMode &&
 				(data as RaidsOptions).users.length === 1 &&
-				!(data as RaidsOptions).isFakeMass
+				(data as RaidsOptions).users.length === 1
 		}
 	},
 	{
@@ -1475,8 +1476,9 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 15,
-			hasChance: (data: ActivityTaskData) =>
-				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 11))
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' &&
+				(!data.diedAt || (Array.isArray(data.diedAt) && (!data.diedAt[index] || data.diedAt[index] > 11)))
 		}
 	},
 	{

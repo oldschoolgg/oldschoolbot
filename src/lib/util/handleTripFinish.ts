@@ -6,10 +6,12 @@ import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateO
 import { bold } from 'discord.js';
 import { Bank, EItem, itemID, toKMB } from 'oldschooljs';
 
-import { MysteryBoxes } from '@/lib/bso/bsoOpenables.js';
+import { tearsOfGuthixIronmanReqs, tearsOfGuthixSkillReqs } from '@/lib/bso/commands/tearsOfGuthixCommand.js';
 import { chargePortentIfHasCharges, getAllPortentCharges, PortentID } from '@/lib/bso/divination.js';
 import { gods } from '@/lib/bso/divineDominion.js';
 import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
+import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
@@ -17,7 +19,6 @@ import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAch
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
-import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
 import { RuneTable, WilvusTable, WoodTable } from '@/lib/simulation/seedTable.js';
 import { DougTable, PekyTable } from '@/lib/simulation/sharedTables.js';
@@ -30,10 +31,6 @@ import { perHourChance } from '@/lib/util/rng.js';
 import { alching } from '@/mahoji/commands/laps.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
-import {
-	tearsOfGuthixIronmanReqs,
-	tearsOfGuthixSkillReqs
-} from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
 import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 import { handleCrateSpawns } from '../bso/handleCrateSpawns.js';
 import {

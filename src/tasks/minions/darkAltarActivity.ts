@@ -5,8 +5,8 @@ import { darkAltarRunes } from '@/lib/minions/functions/darkAltarCommand.js';
 import { bloodEssence, raimentBonus } from '@/lib/skilling/functions/calcsRunecrafting.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { DarkAltarOptions } from '@/lib/types/minions.js';
-import { skillingPetDropRate } from '@/lib/util.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 export const darkAltarTask: MinionTask = {
 	type: 'DarkAltar',

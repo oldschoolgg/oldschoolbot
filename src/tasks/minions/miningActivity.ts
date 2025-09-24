@@ -4,18 +4,18 @@ import { Bank, itemID, SkillsEnum, toKMB } from 'oldschooljs';
 import { GLOBAL_BSO_XP_MULTIPLIER, MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+import { InventionID } from '@/lib/bso/skills/invention/inventions.js';
+import { type StoneSpirit, stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
 import { upgradedDragonstoneOutfit } from '@/lib/data/CollectionsExport.js';
-import { globalDroprates } from '@/lib/data/globalDroprates.js';
-import { InventionID } from '@/lib/invention/inventions.js';
-import { type StoneSpirit, stoneSpirits } from '@/lib/minions/data/stoneSpirits.js';
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
 import Mining from '@/lib/skilling/skills/mining.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { Ore } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
-import { skillingPetDropRate } from '@/lib/util.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 import { mahojiUsersSettingsFetch, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export function calculateMiningResult({
@@ -294,8 +294,7 @@ export const miningTask: MinionTask = {
 			collectionLog: user.cl
 		});
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot,
 			itemsToRemove: totalCost

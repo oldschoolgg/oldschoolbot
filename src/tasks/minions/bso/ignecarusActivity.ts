@@ -1,8 +1,8 @@
-import { objectValues, percentChance, shuffleArr, sumArr } from '@oldschoolgg/toolkit';
+import { percentChance, shuffleArr, sumArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
-import { isDoubleLootActive } from '@/lib/doubleLoot.js';
+import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import {
 	Ignecarus,
@@ -59,7 +59,7 @@ export const ignecarusTask: MinionTask = {
 			});
 		}
 
-		if (sumArr(objectValues(deaths).map(d => d.qty)) === idArr.length * quantity) {
+		if (sumArr(Object.values(deaths).map(d => d.qty)) === idArr.length * quantity) {
 			handleTripFinish(bossUsers[0].user, channelID, `${tagAll}\n\nYour team all died.`, undefined, data, null);
 			return;
 		}
@@ -125,8 +125,8 @@ export const ignecarusTask: MinionTask = {
 		updateBankSetting('ignecarus_loot', totalLoot);
 
 		// Show deaths in the result
-		if (objectValues(deaths).length > 0) {
-			resultStr += `\n\n**Died in battle**: ${objectValues(deaths).map(
+		if (Object.values(deaths).length > 0) {
+			resultStr += `\n\n**Died in battle**: ${Object.values(deaths).map(
 				u =>
 					`${u.user.toString()}${u.qty > 1 ? ` x${u.qty}` : ''} (${
 						wrongFoodDeaths.includes(u.user)

@@ -1,5 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration, Time } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, type Item, Items, resolveItems, SkillsEnum, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
@@ -32,7 +31,8 @@ export async function alchCommand(
 	channelID: string,
 	user: MUser,
 	item: string,
-	quantity: number | undefined
+	quantity: number | undefined,
+	speedInput: number | undefined
 ) {
 	const userBank = user.bank;
 	let osItem = Items.getItem(item);
@@ -60,7 +60,7 @@ export async function alchCommand(
 		return `The max number of alchs you can do is ${maxCasts}!`;
 	}
 
-	const duration = quantity * timePerAlch;
+	let duration = quantity * timePerAlch;
 	let fireRuneCost = quantity * 5;
 
 	for (const runeProvider of unlimitedFireRuneProviders) {
@@ -75,6 +75,12 @@ export async function alchCommand(
 		...(fireRuneCost > 0 ? { 'Fire rune': fireRuneCost } : {}),
 		'Nature rune': quantity
 	});
+	const speed = speedInput ? clamp(speedInput, { min: 1, max: 5 }) : null;
+	if (speed && speed > 1 && speed < 6) {
+		consumedItems.multiply(speed);
+		consumedItems.add('Nature rune', Math.floor(consumedItems.amount('Nature rune') * 0.5));
+		duration /= speed;
+	}
 	consumedItems.add(osItem.id, quantity);
 
 	if (!user.owns(consumedItems)) {
@@ -85,12 +91,9 @@ export async function alchCommand(
 			interaction,
 			`${user}, please confirm you want to alch ${quantity} ${osItem.name} (${toKMB(
 				alchValue
-			)}). This will take approximately ${formatDuration(duration)}, and consume ${
-				fireRuneCost > 0 ? `${fireRuneCost}x Fire rune` : ''
-			} ${quantity}x Nature runes.`
+			)}). This will take approximately ${formatDuration(duration)}, and consume ${consumedItems}`
 		);
 	}
-
 	await user.removeItemsFromBank(consumedItems);
 	await updateBankSetting('magic_cost_bank', consumedItems);
 

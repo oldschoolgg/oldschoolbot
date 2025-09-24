@@ -56,3 +56,11 @@ export const bsoTackleBoxes = resolveItems([
 	'Standard tackle box',
 	'Basic tackle box'
 ]);
+
+export const BlacksmithOutfit = resolveItems([
+	'Blacksmith helmet',
+	'Blacksmith top',
+	'Blacksmith apron',
+	'Blacksmith gloves',
+	'Blacksmith boots'
+]);

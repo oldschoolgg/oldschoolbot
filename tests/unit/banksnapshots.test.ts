@@ -1,10 +1,10 @@
-import { isFunction } from 'e';
 import { Bank } from 'oldschooljs';
+import { isFunction } from 'remeda';
 import { expect, it } from 'vitest';
 
-import { BOT_TYPE } from '../../src/lib/constants.js';
-import Buyables from '../../src/lib/data/buyables/buyables.js';
-import Createables from '../../src/lib/data/createables.js';
+import { BOT_TYPE } from '@/lib/constants.js';
+import Buyables from '@/lib/data/buyables/buyables.js';
+import Createables from '@/lib/data/createables.js';
 import { mockMUser } from './userutil.js';
 
 it(`${BOT_TYPE} Creatables`, () => {

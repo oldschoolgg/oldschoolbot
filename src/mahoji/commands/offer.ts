@@ -25,7 +25,7 @@ const specialBones = [
 	}
 ];
 
-const eggs = Items.resolveFullItems(['Red bird egg', 'Green bird egg', 'Blue bird egg']);
+export const eggs = Items.resolveFullItems(['Red bird egg', 'Green bird egg', 'Blue bird egg']);
 
 const offerables = new Set(
 	[...Offerables, ...specialBones.map(i => i.item), ...eggs, ...Prayer.Bones]

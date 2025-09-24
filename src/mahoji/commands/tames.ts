@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { bold, time } from '@discordjs/builders';
 import {
 	calcPercentOfNum,
@@ -17,9 +19,7 @@ import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { type Tame, tame_growth } from '@prisma/client';
 import { toTitleCase } from '@sapphire/utilities';
 import { ApplicationCommandOptionType, type ChatInputCommandInteraction, type User } from 'discord.js';
-import { readFileSync } from 'node:fs';
-import { readFile } from 'node:fs/promises';
-import { Bank, type Item, type ItemBank, itemID, resolveItems } from 'oldschooljs';
+import { Bank, type Item, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
 import { type Canvas, loadImage } from 'skia-canvas';
 
 import {
@@ -29,12 +29,12 @@ import {
 	type SeaMonkeySpell,
 	seaMonkeySpells,
 	seaMonkeyStaves,
-	tameFeedableItems,
 	type TameKillableMonster,
-	tameKillableMonsters,
-	tameSpecies,
 	TameSpeciesID,
-	TameType
+	TameType,
+	tameFeedableItems,
+	tameKillableMonsters,
+	tameSpecies
 } from '@/lib/bso/tames.js';
 import {
 	calculateMaximumTameFeedingLevelGain,
@@ -67,14 +67,12 @@ import { getUsersPerkTier } from '@/lib/perkTiers.js';
 import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning.js';
 import Bars from '@/lib/skilling/skills/smithing/smeltables.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import { itemNameFromID } from '@/lib/util.js';
 import { patronMaxTripBonus } from '@/lib/util/calcMaxTripLength.js';
-import { getItem } from '@/lib/util/getOSItem.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { assert } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
-import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
+import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { getItemCostFromConsumables } from '@/mahoji/lib/abstracted_commands/minionKill/handleConsumables.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
@@ -1152,7 +1150,7 @@ async function collectCommand(user: MUser, channelID: string, str: string) {
 	for (const item of resolveItems(['Voidling', 'Ring of endurance'])) {
 		if (tameHasBeenFed(tame, item)) {
 			speed = reduceNumByPercent(speed, 10);
-			boosts.push(`10% for ${itemNameFromID(item)}`);
+			boosts.push(`10% for ${Items.itemNameFromId(item)}`);
 		}
 	}
 
@@ -1546,7 +1544,7 @@ async function tameEquipCommand(user: MUser, itemName: string) {
 	if (activity) {
 		return "You can't equip something to your tame, because it is busy.";
 	}
-	const item = getItem(itemName);
+	const item = Items.get(itemName);
 	if (!item) return "That's not a valid item.";
 	const equippable = tameEquippables.find(i => i.item === item);
 	if (!equippable) return "That's not an item you can equip to a tame.";
@@ -1574,7 +1572,7 @@ async function tameEquipCommand(user: MUser, itemName: string) {
 	});
 
 	const refundStr = existingItem
-		? ` A ${itemNameFromID(existingItem)} was unequipped and returned to your bank.`
+		? ` A ${Items.itemNameFromId(existingItem)} was unequipped and returned to your bank.`
 		: '';
 	return `You equipped a ${equippable.item.name} to your ${tameName(tame)}.${refundStr}`;
 }
@@ -1585,7 +1583,7 @@ async function tameUnequipCommand(user: MUser, itemName: string) {
 	if (activity) {
 		return "You can't unequip something to your tame, because it is busy.";
 	}
-	const item = getItem(itemName);
+	const item = Items.get(itemName);
 	if (!item) return "That's not a valid item.";
 	const equippable = tameEquippables.find(i => i.item === item);
 	if (!equippable) return "That's not an item you can equip to a tame.";
@@ -1752,7 +1750,7 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 		fakeDuration: undefined
 	});
 
-	let reply = `${tame} is now completing ${quantity}x ${itemNameFromID(
+	let reply = `${tame} is now completing ${quantity}x ${Items.itemNameFromId(
 		clueTier.scrollID
 	)}. Removed ${cost} from your bank. The trip will take ${formatDuration(task.duration)}.`;
 
@@ -1958,7 +1956,7 @@ export const tamesCommand: OSBMahojiCommand = {
 						return tameEquipSlots
 							.map(i => tame?.[i])
 							.filter(notEmpty)
-							.map(itemNameFromID)
+							.map(i => Items.itemNameFromId(i))
 							.filter(notEmpty)
 							.map(i => ({ name: i, value: i }));
 					}

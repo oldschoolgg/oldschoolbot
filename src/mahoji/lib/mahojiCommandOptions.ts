@@ -5,10 +5,10 @@ import type { GearPreset } from '@prisma/client';
 import { type APIApplicationCommandOptionChoice, ApplicationCommandOptionType, type User } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
+import { type IMaterialBank, materialTypes } from '@/lib/bso/skills/invention/index.js';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { baseFilters, filterableTypes } from '@/lib/data/filterables.js';
 import { GearSetupTypes } from '@/lib/gear/types.js';
-import { type IMaterialBank, materialTypes } from '@/lib/invention/index.js';
-import { MaterialBank } from '@/lib/invention/MaterialBank.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { Gear, type GlobalPreset, globalPresets } from '@/lib/structures/Gear.js';

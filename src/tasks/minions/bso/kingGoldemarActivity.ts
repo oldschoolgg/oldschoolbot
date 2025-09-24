@@ -2,7 +2,7 @@ import { percentChance, randArrItem, roll } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
-import { isDoubleLootActive } from '@/lib/doubleLoot.js';
+import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import KingGoldemar, { KingGoldemarLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';
 import { addMonsterXP } from '@/lib/minions/functions/index.js';

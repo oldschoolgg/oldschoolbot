@@ -1,5 +1,6 @@
 import { Bank } from 'oldschooljs';
 
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import type { SkillsRequired } from '@/lib/types/index.js';
 import { GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types.js';
 import { SkillsArray } from '../../src/lib/skilling/types.js';
@@ -29,6 +30,8 @@ export function makeGearBank({ bank }: { bank?: Bank } = {}) {
 		bank: bank ?? new Bank(),
 		skillsAsLevels: makeSkillsAsLevels(),
 		chargeBank: new ChargeBank(),
+		materials: new MaterialBank(),
+		pet: null,
 		skillsAsXP: makeSkillsAsLevels(13034431),
 		minionName: 'Minion'
 	});

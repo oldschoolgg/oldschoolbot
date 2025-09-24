@@ -149,7 +149,7 @@ export const warmGear = resolveItems([
 	'Bomber cap'
 ]) as number[];
 
-const ores = resolveItems([
+export const ores = resolveItems([
 	'Copper ore',
 	'Tin ore',
 	'Iron ore',
@@ -260,7 +260,7 @@ const barrows = resolveItems([
 	'Bolt rack'
 ]);
 
-const seeds = resolveItems([
+export const seeds = resolveItems([
 	'Pineapple seed',
 	'Crystal acorn',
 	'Magic seed',
@@ -334,20 +334,20 @@ const seeds = resolveItems([
 	'Potato seed'
 ]);
 
-const allPotions = Potions.flatMap(potion => potion.items);
-const potions = [...new Set(allPotions)];
+export const allPotions = Potions.flatMap(potion => potion.items);
+export const potions = [...new Set(allPotions)];
 
-const grimyHerbs = Grimy.flatMap(grimy => grimy.inputItems.itemIDs);
-const cleanHerbs = Grimy.flatMap(clean => clean.item.id);
-const herbs = [...new Set(grimyHerbs), ...new Set(cleanHerbs)];
+export const grimyHerbs = Grimy.flatMap(grimy => grimy.inputItems.itemIDs);
+export const cleanHerbs = Grimy.flatMap(clean => clean.item.id);
+export const herbs = [...new Set(grimyHerbs), ...new Set(cleanHerbs)];
 
-const unfPots = unfinishedPotions.flatMap(unf => unf.item.id);
-const unfPotions = resolveItems(['Vial of water', ...new Set(unfPots)]);
+export const unfPots = unfinishedPotions.flatMap(unf => unf.item.id);
+export const unfPotions = resolveItems(['Vial of water', ...new Set(unfPots)]);
 
-const allSecondaries = PotionsMixable.flatMap(item => item.inputItems.itemIDs).filter(
+export const allSecondaries = PotionsMixable.flatMap(item => item.inputItems.itemIDs).filter(
 	item => !potions.includes(item) && !unfPotions.includes(item) && !herbs.includes(item)
 );
-const secondaries = [...new Set(allSecondaries)];
+export const secondaries = [...new Set(allSecondaries)];
 
 const herblore = resolveItems([...potions, ...herbs, ...unfPotions, ...secondaries]);
 

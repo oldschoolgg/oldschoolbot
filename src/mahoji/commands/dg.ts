@@ -3,19 +3,19 @@ import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { setupParty } from '@/lib/party.js';
 import {
 	determineDgLevelForFloor,
 	dungBuyables,
 	isValidFloor,
 	requiredSkills
-} from '@/lib/skilling/skills/dung/dungData.js';
+} from '@/lib/bso/skills/dungoneering/dungData.js';
 import {
 	calcMaxFloorUserCanDo,
 	calcUserGorajanShardChance,
 	hasRequiredLevels,
 	numberOfGorajanOutfitsEquipped
-} from '@/lib/skilling/skills/dung/dungDbFunctions.js';
+} from '@/lib/bso/skills/dungoneering/dungDbFunctions.js';
+import { setupParty } from '@/lib/party.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { DungeoneeringOptions } from '@/lib/types/minions.js';

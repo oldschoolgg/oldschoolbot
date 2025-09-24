@@ -4,16 +4,16 @@ import { addItemToBank, Bank, type ItemBank, Items, randomVariation, toKMB } fro
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
-import { globalDroprates } from '@/lib/data/globalDroprates.js';
+import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+import { calcUserGorajanShardChance } from '@/lib/bso/skills/dungoneering/dungDbFunctions.js';
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
-import { isDoubleLootActive } from '@/lib/doubleLoot.js';
 import Agility from '@/lib/skilling/skills/agility.js';
-import { calcUserGorajanShardChance } from '@/lib/skilling/skills/dung/dungDbFunctions.js';
 import { type Course, SkillsEnum } from '@/lib/skilling/types.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
-import { skillingPetDropRate } from '@/lib/util.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { logError } from '@/lib/util/logError.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 import { updateClientGPTrackSetting, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 function chanceOfFailingAgilityPyramid(lvl: number) {

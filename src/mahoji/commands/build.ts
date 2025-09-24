@@ -3,7 +3,7 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions.js';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 import Constructables from '@/lib/skilling/skills/construction/constructables.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { ConstructionActivityTaskOptions } from '@/lib/types/minions.js';

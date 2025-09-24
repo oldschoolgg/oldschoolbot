@@ -1,7 +1,7 @@
 import { averageArr, calcPercentOfNum, gaussianRandom, randArrItem, toTitleCase } from '@oldschoolgg/toolkit';
 import { seedShuffle } from '@oldschoolgg/toolkit/rng';
 import type { FishingContestCatch } from '@prisma/client';
-import type { Item } from 'oldschooljs';
+import { type Item, Items } from 'oldschooljs';
 
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import {

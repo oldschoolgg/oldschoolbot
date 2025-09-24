@@ -1,7 +1,7 @@
 import { Bank, Items } from 'oldschooljs';
 
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import type { Createable } from '@/lib/data/createables.js';
-import { MaterialBank } from '@/lib/invention/MaterialBank.js';
 
 const eagleTameCreatables: Createable[] = [
 	{

@@ -1,10 +1,9 @@
-import { formatDuration } from '@oldschoolgg/toolkit';
-import { reduceNumByPercent } from 'e';
+import { formatDuration, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { EMonster } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
-import { gorajanWarriorOutfit } from '../../../src/lib/data/CollectionsExport';
-import { mockClient } from '../util';
+import { gorajanWarriorOutfit } from '@/lib/data/CollectionsExport.js';
+import { mockClient } from '../util.js';
 
 describe('Gorajan', async () => {
 	const client = await mockClient();

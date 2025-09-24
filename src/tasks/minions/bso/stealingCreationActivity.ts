@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { userHasFlappy } from '@/lib/invention/inventions.js';
+import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 

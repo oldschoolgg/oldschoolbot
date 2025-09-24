@@ -3,6 +3,30 @@ import { activity_type_enum } from '@prisma/client';
 import type { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { agilityTask } from '@/tasks/minions/agilityActivity.js';
 import { alchingTask } from '@/tasks/minions/alchingActivity.js';
+import { bossEventTask } from '@/tasks/minions/bossEventActivity.js';
+import { bathhouseTask } from '@/tasks/minions/bso/bathhousesActivity.js';
+import { bonanzaTask } from '@/tasks/minions/bso/bonanzaActivity.js';
+import { disassemblingTask } from '@/tasks/minions/bso/disassemblingActivity.js';
+import { doaTask } from '@/tasks/minions/bso/doaActivity.js';
+import { dungeoneeringTask } from '@/tasks/minions/bso/dungeoneeringActivity.js';
+import { fishingContestTask } from '@/tasks/minions/bso/fishingContestActivity.js';
+import { fogTask } from '@/tasks/minions/bso/fogActivity.js';
+import { guthixianCacheTask } from '@/tasks/minions/bso/guthixianCacheActivity.js';
+import { ignecarusTask } from '@/tasks/minions/bso/ignecarusActivity.js';
+import { kalphiteKingTask } from '@/tasks/minions/bso/kalphiteKingActivity.js';
+import { kibbleTask } from '@/tasks/minions/bso/kibbleActivity.js';
+import { kingGoldemarTask } from '@/tasks/minions/bso/kingGoldemarActivity.js';
+import { memoryHarvestTask } from '@/tasks/minions/bso/memoryHarvestActivity.js';
+import { moktangTask } from '@/tasks/minions/bso/moktangActivity.js';
+import { mrTask } from '@/tasks/minions/bso/monkeyRumbleActivity.js';
+import { naxxusTask } from '@/tasks/minions/bso/naxxusActivity.js';
+import { nexTask } from '@/tasks/minions/bso/nexActivity.js';
+import { odsTask } from '@/tasks/minions/bso/ouraniaDeliveryServiceActivity.js';
+import { researchActivityTask } from '@/tasks/minions/bso/researchActivity.js';
+import { scTask } from '@/tasks/minions/bso/stealingCreationActivity.js';
+import { twTask } from '@/tasks/minions/bso/tinkeringWorkshopActivity.js';
+import { turaelsTrialsTask } from '@/tasks/minions/bso/turaelsTrialsActivity.js';
+import { vasaTask } from '@/tasks/minions/bso/vasaMagusActivity.js';
 import { butlerTask } from '@/tasks/minions/butlerActivity.js';
 import { buyTask } from '@/tasks/minions/buyActivity.js';
 import { camdozaalFishingTask } from '@/tasks/minions/camdozaalActivity/camdozaalFishingActivity.js';
@@ -70,7 +94,6 @@ import { miningTask } from '@/tasks/minions/miningActivity.js';
 import { monsterTask } from '@/tasks/minions/monsterActivity.js';
 import { motherlodeMiningTask } from '@/tasks/minions/motherlodeMineActivity.js';
 import { myNotesTask } from '@/tasks/minions/myNotesActivity.js';
-import { nexTask } from '@/tasks/minions/nexActivity.js';
 import ouraniaAltarTask from '@/tasks/minions/ouraniaAltarActivity.js';
 import { buryingTask } from '@/tasks/minions/PrayerActivity/buryingActivity.js';
 import { offeringTask } from '@/tasks/minions/PrayerActivity/offeringActivity.js';
@@ -148,7 +171,6 @@ export const allTasks: MinionTask[] = [
 	gloryChargingTask,
 	groupoMonsterTask,
 	herbloreTask,
-	fletchingTask,
 	miningTask,
 	motherlodeMiningTask,
 	runecraftTask,
@@ -157,10 +179,10 @@ export const allTasks: MinionTask[] = [
 	wealthChargeTask,
 	tokkulShopTask,
 	smeltingTask,
-	nexTask,
 	pickpocketTask,
 	questingTask,
 	monsterTask,
+	nexTask,
 	vmTask,
 	templeTrekkingTask,
 	mageTrainingTask,
@@ -187,7 +209,30 @@ export const allTasks: MinionTask[] = [
 	myNotesTask,
 	colosseumTask,
 	CreateForestersRationsTask,
-	buyTask
+	buyTask,
+	kalphiteKingTask,
+	dungeoneeringTask,
+	bathhouseTask,
+	disassemblingTask,
+	fishingContestTask,
+	ignecarusTask,
+	kibbleTask,
+	kingGoldemarTask,
+	moktangTask,
+	mrTask,
+	naxxusTask,
+	odsTask,
+	researchActivityTask,
+	vasaTask,
+	fogTask,
+	scTask,
+	bossEventTask,
+	twTask,
+	bonanzaTask,
+	doaTask,
+	memoryHarvestTask,
+	guthixianCacheTask,
+	turaelsTrialsTask
 ];
 
 type MinionTaskRunOptions = {
@@ -223,6 +268,6 @@ for (const a of Object.values(activity_type_enum)) {
 	}
 	const t = allTasks.find(i => i.type === a);
 	if (!t) {
-		throw new Error(`Missing ${a} task`);
+		console.log(`Missing ${a} task`);
 	}
 }

@@ -1,4 +1,4 @@
-import { itemID, resolveItems } from 'oldschooljs';
+import { Items, itemID, resolveItems } from 'oldschooljs';
 
 import { dyedItems } from '@/lib/bso/dyedItems.js';
 import skillcapes from '@/lib/skilling/skillcapes.js';

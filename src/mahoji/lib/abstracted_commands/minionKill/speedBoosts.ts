@@ -5,10 +5,10 @@ import { omit } from 'remeda';
 
 import { dwarvenBlessing } from '@/lib/bso/dwarvenBlessing.js';
 import { gearstatToSetup, gorajanBoosts } from '@/lib/bso/gorajanGearBoost.js';
+import { InventionID } from '@/lib/bso/skills/invention/inventions.js';
 import type { PvMMethod } from '@/lib/constants.js';
 import { degradeableItems, degradeablePvmBoostItems } from '@/lib/degradeableItems.js';
 import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
-import { InventionID } from '@/lib/invention/inventions.js';
 import {
 	boostCannon,
 	boostCannonMulti,
@@ -29,7 +29,7 @@ import { calcPOHBoosts } from '@/lib/poh/index.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { maxOffenceStats } from '@/lib/structures/Gear.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
-import type { determineIfUsingCannon } from '@/mahoji/lib/abstracted_commands/minionKill/determineIfUsingCannon.js';
+import { determineIfUsingCannon } from '@/mahoji/lib/abstracted_commands/minionKill/determineIfUsingCannon.js';
 import { dragonHunterWeapons } from '@/mahoji/lib/abstracted_commands/minionKill/minionKillData.js';
 import { resolveAvailableItemBoosts } from '@/mahoji/mahojiSettings.js';
 import type { MinionKillOptions } from './newMinionKill.js';

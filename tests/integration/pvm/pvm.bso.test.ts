@@ -1,15 +1,16 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type ItemBank, itemID, resolveItems, SkillsEnum } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
-import { gorajanArcherOutfit, gorajanWarriorOutfit } from '../../../src/lib/data/CollectionsExport';
-import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants';
-import { VasaMagus } from '../../../src/lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
-import { BSOMonsters } from '../../../src/lib/minions/data/killableMonsters/custom/customMonsters';
-import { Gear } from '../../../src/lib/structures/Gear';
-import { gearCommand } from '../../../src/mahoji/commands/gear';
-import { vasaBISGear } from '../../../src/mahoji/lib/abstracted_commands/vasaCommand';
-import { mockClient } from '../util';
+import { gorajanArcherOutfit, gorajanWarriorOutfit } from '@/lib/data/CollectionsExport.js';
+import { CombatCannonItemBank } from '@/lib/minions/data/combatConstants.js';
+import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus.js';
+import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
+import { Gear } from '@/lib/structures/Gear.js';
+import { gearCommand } from '@/mahoji/commands/gear.js';
+import { vasaBISGear } from '@/mahoji/lib/abstracted_commands/vasaCommand.js';
+import { BSOTestUtil } from '../bso/bsoTestUtil.js';
+import { mockClient } from '../util.js';
 
 describe('BSO PVM', async () => {
 	const client = await mockClient();
@@ -148,7 +149,7 @@ describe('BSO PVM', async () => {
 			QP: 300,
 			maxed: true
 		});
-		await user.giveMaterials();
+		await BSOTestUtil.giveMaterials(user);
 		const previousMats = user.materialsOwned().clone();
 		await user.kill(EMonster.GREEN_DRAGON);
 		const newMats = user.materialsOwned().clone();

@@ -1,4 +1,4 @@
-import { clamp, removeFromArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { removeFromArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { allAbstractCommands, channelIsSendable, hasBanMemberPerms } from '@oldschoolgg/toolkit/discord-util';
 import { miniID, stringMatches } from '@oldschoolgg/toolkit/string-util';
@@ -15,15 +15,16 @@ import {
 	type User
 } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
+import { clamp } from 'remeda';
 
+import { Inventions } from '@/lib/bso/skills/invention/inventions.js';
 import { gearImages } from '@/lib/canvas/gearImageData.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BitField, ParsedCustomEmojiWithGroups, PerkTier } from '@/lib/constants.js';
-import { Eatables } from '@/lib/data/eatables.js';
 import { DynamicButtons } from '@/lib/DynamicButtons.js';
-import { Inventions } from '@/lib/invention/inventions.js';
-import { CombatOptionsArray, CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
+import { Eatables } from '@/lib/data/eatables.js';
 import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
+import { CombatOptionsArray, CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerUtil.js';

@@ -1,7 +1,7 @@
-import './lib/ActivityManager.js';
+import './lib/safeglobals.js';
 import './lib/globals.js';
 import './lib/MUser.js';
-import './lib/safeglobals.js';
+import './lib/ActivityManager.js';
 
 import { isObject } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';

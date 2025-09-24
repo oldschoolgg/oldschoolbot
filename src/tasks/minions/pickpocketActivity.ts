@@ -8,11 +8,11 @@ import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/stealables.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
-import { skillingPetDropRate } from '@/lib/util.js';
 import { forcefullyUnequipItem } from '@/lib/util/forcefullyUnequipItem.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { perHourChance } from '@/lib/util/rng.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 import { rogueOutfitPercentBonus, updateClientGPTrackSetting, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 const notMultiplied = resolveItems([

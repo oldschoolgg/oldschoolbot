@@ -1,15 +1,8 @@
 import { notEmpty, removeFromArr } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import {
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonStyle,
-	type ChatInputCommandInteraction,
-	MessageFlags
-} from 'discord.js';
+import { type ChatInputCommandInteraction, MessageFlags } from 'discord.js';
 import { EItem, Monsters } from 'oldschooljs';
 
-import { InteractionID } from '@/lib/InteractionID.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { slayerActionButtons } from '@/lib/slayer/slayerButtons.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
@@ -25,43 +18,6 @@ import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js
 import { interactionReply } from '@/lib/util/interactionReply.js';
 import { logError } from '@/lib/util/logError.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
-
-const returnSuccessButtons = [
-	new ActionRowBuilder<ButtonBuilder>().addComponents([
-		new ButtonBuilder({
-			label: 'Autoslay (Saved)',
-			style: ButtonStyle.Secondary,
-			customId: InteractionID.Slayer.AutoSlaySaved
-		}),
-		new ButtonBuilder({
-			label: 'Autoslay (Default)',
-			style: ButtonStyle.Secondary,
-			customId: InteractionID.Slayer.AutoSlayDefault
-		}),
-		new ButtonBuilder({
-			label: 'Autoslay (EHP)',
-			style: ButtonStyle.Secondary,
-			customId: InteractionID.Slayer.AutoSlayEHP
-		}),
-		new ButtonBuilder({
-			label: 'Autoslay (Boss)',
-			style: ButtonStyle.Secondary,
-			customId: InteractionID.Slayer.AutoSlayBoss
-		})
-	]),
-	new ActionRowBuilder<ButtonBuilder>().addComponents([
-		new ButtonBuilder({
-			label: 'Cancel Task + New (30 points)',
-			style: ButtonStyle.Danger,
-			customId: InteractionID.Slayer.SkipTask
-		}),
-		new ButtonBuilder({
-			label: 'Block Task + New (100 points)',
-			style: ButtonStyle.Danger,
-			customId: InteractionID.Slayer.BlockTask
-		})
-	])
-];
 
 function getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
 	if (assignedTask) {

@@ -1,8 +1,10 @@
 import { CollectionLog } from '@oldschoolgg/collectionlog';
+import { sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
 import { BitField, MAX_XP } from '@/lib/constants.js';
 import { doaCL } from '@/lib/data/CollectionsExport.js';
+import type { Skills } from '@/lib/types/index.js';
 
 export function hasUnlockedAtlantis(user: MUser) {
 	return doaCL.some(itemID => user.cl.has(itemID));
@@ -96,4 +98,8 @@ export function getMonster(str: string): Monster {
 		throw new Error(`Invalid monster name given: ${str}`);
 	}
 	return mon;
+}
+
+export function calcTotalLevel(skills: Skills) {
+	return sumArr(Object.values(skills));
 }

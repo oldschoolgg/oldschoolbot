@@ -61,7 +61,7 @@ export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 		})
 	);
 
-	const [totalClItems, clItems] = getTotalCl(user, 'collection', stats);
+	const [totalClItems, clItems] = await getTotalCl(user, 'collection', stats);
 	const clCompletionPercentage = round(calcWhatPercent(clItems, totalClItems), 2);
 	const totalXP = sumArr(Object.values(user.skillsAsXP));
 

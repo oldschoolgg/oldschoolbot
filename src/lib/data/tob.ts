@@ -3,13 +3,13 @@ import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, Items, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
+import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 import {
 	gorajanArcherOutfit,
 	gorajanOccultOutfit,
 	gorajanWarriorOutfit,
 	pernixOutfit
 } from '@/lib/data/CollectionsExport.js';
-import { inventionBoosts } from '@/lib/invention/inventions.js';
 import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
 import { logError } from '@/lib/util/logError.js';

@@ -11,8 +11,8 @@ import {
 	Implings,
 	type Item,
 	type ItemBank,
-	itemID,
 	Items,
+	itemID,
 	LarransChest,
 	LootTable,
 	MasterMimicTable,
@@ -35,7 +35,7 @@ import {
 	SpoilsOfWarTable
 } from '@/lib/simulation/misc.js';
 import { openSeedPack } from '@/lib/skilling/functions/calcFarmingContracts.js';
-import { bsoOpenables } from './bso/bsoOpenables.js';
+import { bsoOpenables } from './bso/openables/bsoOpenables.js';
 import type { FarmingContract } from './minions/farming/types.js';
 import { shadeChestOpenables } from './shadesKeys.js';
 import { roll } from './util/rng.js';

@@ -1,7 +1,8 @@
-import { clamp, increaseNumByPercent, notEmpty, randInt, Time } from '@oldschoolgg/toolkit';
+import { increaseNumByPercent, notEmpty, randInt, Time } from '@oldschoolgg/toolkit';
 import { formatDuration, isWeekend, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
+import { clamp } from 'remeda';
 
 import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
 import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -20,8 +21,7 @@ export async function calcClueScores(user: MUser) {
 	return openableBank
 		.items()
 		.map(entry => {
-			const tier = ClueTiers.find(i => i.id === entry[0].id);
-			if (!tier) return;
+			const tier = ClueTiers.find(i => i.id === entry[0].id)!;
 			return {
 				tier,
 				casket: Items.getOrThrow(tier.id),
@@ -366,7 +366,7 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 		if (!quantity) {
 			quantity = maxPerTrip;
 		}
-		quantity = clamp(quantity, 1, user.bank.amount(clueTier.scrollID));
+		quantity = clamp(quantity, { min: 1, max: user.bank.amount(clueTier.scrollID) });
 
 		if (quantity === 0) {
 			return `You don't have any ${clueTier.name} clue scrolls.`;

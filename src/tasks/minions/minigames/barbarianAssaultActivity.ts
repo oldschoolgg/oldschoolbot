@@ -1,7 +1,7 @@
 import { calcPercentOfNum, calcWhatPercent, randInt } from '@oldschoolgg/toolkit';
 
+import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import { KandarinDiary, userhasDiaryTier } from '@/lib/diaries.js';
-import { userHasFlappy } from '@/lib/invention/inventions.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';

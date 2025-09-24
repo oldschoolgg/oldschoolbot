@@ -1,13 +1,12 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import { kibbles } from '@/lib/bso/kibble.js';
 import { type Eatable, Eatables } from '@/lib/data/eatables.js';
 import { getRealHealAmount } from '@/lib/minions/functions/getUserFoodFromBank.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { KibbleOptions } from '@/lib/types/minions.js';
-import { itemNameFromID } from '@/lib/util.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
@@ -83,7 +82,7 @@ export const kibbleCommand: OSBMahojiCommand = {
 		const rawFishComponent = suitableFish.find(i => userBank.amount(i.raw!) >= calcFish(i));
 		if (!rawFishComponent) {
 			return `You don't have enough raw fish, you can use these raw fish for ${kibble.item.name}: ${suitableFish
-				.map(i => itemNameFromID(i.raw!))
+				.map(i => Items.itemNameFromId(i.raw!))
 				.join(', ')}.`;
 		}
 		const fishNeeded = calcFish(rawFishComponent);

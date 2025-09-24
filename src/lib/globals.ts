@@ -1,6 +1,6 @@
+import { isMainThread } from 'node:worker_threads';
 import { PrismaClient } from '@prisma/client';
 import { PrismaClient as RobochimpPrismaClient } from '@prisma/robochimp';
-import { isMainThread } from 'node:worker_threads';
 
 import { globalConfig } from '@/lib/constants.js';
 

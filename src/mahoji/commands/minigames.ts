@@ -1,5 +1,6 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 
+import { tearsOfGuthixCommand } from '@/lib/bso/commands/tearsOfGuthixCommand.js';
 import type { NMZStrategy } from '@/lib/constants.js';
 import { NMZ_STRATEGY } from '@/lib/constants.js';
 import TrekShopItems from '@/lib/data/buyables/trekBuyables.js';
@@ -12,12 +13,12 @@ import {
 	agilityArenaXPCommand
 } from '@/mahoji/lib/abstracted_commands/agilityArenaCommand.js';
 import {
+	BarbBuyables,
 	barbAssaultBuyCommand,
 	barbAssaultGambleCommand,
 	barbAssaultLevelCommand,
 	barbAssaultStartCommand,
 	barbAssaultStatsCommand,
-	BarbBuyables,
 	GambleTiers
 } from '@/mahoji/lib/abstracted_commands/barbAssault.js';
 import { castleWarsStartCommand, castleWarsStatsCommand } from '@/mahoji/lib/abstracted_commands/castleWarsCommand.js';
@@ -79,12 +80,11 @@ import {
 	soulWarsStartCommand,
 	soulWarsTokensCommand
 } from '@/mahoji/lib/abstracted_commands/soulWarsCommand.js';
-import { tearsOfGuthixCommand } from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
 import { trekCommand, trekShop } from '@/mahoji/lib/abstracted_commands/trekCommand.js';
 import { troubleBrewingStartCommand } from '@/mahoji/lib/abstracted_commands/troubleBrewingCommand.js';
 import {
-	volcanicMineCommand,
 	VolcanicMineShop,
+	volcanicMineCommand,
 	volcanicMineShopCommand,
 	volcanicMineStatsCommand
 } from '@/mahoji/lib/abstracted_commands/volcanicMineCommand.js';

@@ -11,23 +11,22 @@ import {
 } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { User } from '@prisma/client';
-import { Bank, type Item, LootTable, resolveItems } from 'oldschooljs';
+import { Bank, type Item, Items, LootTable, resolveItems } from 'oldschooljs';
 
+import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import Grimy from '@/lib/skilling/skills/herblore/mixables/grimy.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { BathhouseTaskOptions } from '../types/minions.js';
-import { skillsMeetRequirements } from '../util.js';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '../util/calcMaxTripLength.js';
 import { handleTripFinish } from '../util/handleTripFinish.js';
 import { makeBankImage } from '../util/makeBankImage.js';
 import { formatSkillRequirements } from '../util/smallUtils.js';
 import { updateBankSetting } from '../util/updateBankSetting.js';
+import { skillsMeetRequirements } from '../util.js';
 import { GLOBAL_BSO_XP_MULTIPLIER } from './bsoConstants.js';
-import { MysteryBoxes } from './bsoOpenables.js';
 import { getAllUserTames, TameSpeciesID } from './tames.js';
-import getOSItem from './util/getOSItem.js';
 
 export const bathhouseTierNames = ['Warm', 'Hot', 'Fiery'] as const;
 export type BathhouseTierName = (typeof bathhouseTierNames)[number];
@@ -420,7 +419,7 @@ export function calculateBathouseResult(data: BathhouseTaskOptions) {
 		firemakingXP,
 		ore,
 		tier,
-		herbs: [firstHerb, secondHerb].map(i => i.item.id).map(getOSItem),
+		herbs: Items.resolveFullItems([firstHerb, secondHerb].map(i => i.item.id)),
 		speciesServed,
 		mixture,
 		gaveExtraTips
@@ -484,8 +483,7 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 		}
 	}
 
-	const { previousCL, itemsAdded } = await transactItems({
-		userID: user.id,
+	const { previousCL, itemsAdded } = await user.transactItems({
 		collectionLog: true,
 		itemsToAdd: loot
 	});

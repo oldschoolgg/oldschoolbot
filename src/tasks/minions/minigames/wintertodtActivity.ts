@@ -3,7 +3,7 @@ import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
-import { userHasFlappy } from '@/lib/invention/inventions.js';
+import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
 import Firemaking from '@/lib/skilling/skills/firemaking.js';

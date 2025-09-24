@@ -1,8 +1,8 @@
-import { Bank, deepResolveItems, EItem, type ItemBank, itemID, Items } from 'oldschooljs';
+import { Bank, deepResolveItems, EItem, type ItemBank, Items, itemID } from 'oldschooljs';
 
+import type { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { BitField } from '@/lib/constants.js';
 import { BsoCreateables } from '@/lib/data/creatables/bsoItems.js';
-import type { MaterialBank } from '@/lib/invention/MaterialBank.js';
 import { blisterwoodRequirements, ivandisRequirements } from '@/lib/minions/data/templeTrekking.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import type { Skills } from '@/lib/types/index.js';
@@ -17,7 +17,6 @@ import { dtCreatables } from './creatables/dt.js';
 import { forestryCreatables } from './creatables/forestryCreatables.js';
 import { gracefulOutfitCreatables } from './creatables/gracefulOutfits.js';
 import { guardiansOfTheRiftCreatables } from './creatables/guardiansOfTheRiftCreatables.js';
-import { leaguesCreatables } from './creatables/leagueCreatables.js';
 import { lmsCreatables } from './creatables/lms.js';
 import { mysticStavesCreatables } from './creatables/mysticStaves.js';
 import { nexCreatables } from './creatables/nex.js';
@@ -2690,7 +2689,6 @@ const Createables: Createable[] = [
 	...nexCreatables,
 	...amrodCreatables,
 	...goldenProspectorCreatables,
-	...leaguesCreatables,
 	...guardiansOfTheRiftCreatables,
 	...shadesOfMortonCreatables,
 	...toaCreatables,

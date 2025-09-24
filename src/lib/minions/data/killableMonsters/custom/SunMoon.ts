@@ -2,8 +2,8 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID, LootTable, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
+import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/CustomMonster.js';
 import { addStatsOfItemsTogether, Gear } from '@/lib/structures/Gear.js';
-import type { CustomMonster } from './customMonsters.js';
 
 const solisMinGear = new Gear();
 solisMinGear.equip('Gorajan warrior helmet');

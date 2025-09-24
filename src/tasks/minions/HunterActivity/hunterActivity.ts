@@ -1,27 +1,35 @@
 import { randInt, Time } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import { Bank, ECreature, EquipmentSlot, itemID, toKMB, type ItemBank } from 'oldschooljs';
+import {
+	Bank,
+	ECreature,
+	EquipmentSlot,
+	type ItemBank,
+	increaseBankQuantitesByPercent,
+	itemID,
+	toKMB
+} from 'oldschooljs';
 
 import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 import { MAX_LEVEL } from '@/lib/constants.js';
-import { globalDroprates } from '@/lib/data/globalDroprates.js';
 import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
-import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { calcLootXPHunting, generateHerbiTable } from '@/lib/skilling/functions/calcsHunter.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
-import { SkillsEnum, type Creature } from '@/lib/skilling/types.js';
+import { type Creature, SkillsEnum } from '@/lib/skilling/types.js';
 import type { Gear } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
-import { skillingPetDropRate } from '@/lib/util.js';
 import { logError } from '@/lib/util/logError.js';
 import { PeakTier } from '@/lib/util/peaks.js';
 import { roll } from '@/lib/util/rng.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 const riskDeathNumbers = [

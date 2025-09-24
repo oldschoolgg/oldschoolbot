@@ -2,7 +2,7 @@ import { Bank } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
-import { globalDroprates } from '@/lib/data/globalDroprates.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import calcBurntCookables from '@/lib/skilling/functions/calcBurntCookables.js';
 import Cooking from '@/lib/skilling/skills/cooking/cooking.js';

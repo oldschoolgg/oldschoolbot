@@ -8,8 +8,6 @@ import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitFieldData, globalConfig } from '@/lib/constants.js';
-import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '@/lib/data/cox.js';
-import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '@/lib/data/tob.js';
 import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
@@ -90,12 +88,6 @@ for (const gear of Items.resolveItems([
 }
 
 const gearPresets = [
-	{
-		name: 'Cox',
-		melee: COXMaxMeleeGear,
-		mage: COXMaxMageGear,
-		range: COXMaxRangeGear
-	},
 	{
 		name: 'ToB',
 		melee: TOBMaxMeleeGear,
@@ -179,9 +171,6 @@ farmingPreset.add('Ultracompost', 10_000);
 const usables = new Bank();
 for (const usable of allUsableItems) usables.add(usable, 100);
 
-const leaguesPreset = new Bank();
-for (const a of leaguesCreatables) leaguesPreset.add(a.outputItems);
-
 const allStashUnitItems = new Bank();
 for (const unit of allStashUnitsFlat) {
 	for (const i of [unit.items].flat(2)) {
@@ -232,7 +221,6 @@ const spawnPresets = [
 	['equippables', equippablesBank],
 	['farming', farmingPreset],
 	['usables', usables],
-	['leagues', leaguesPreset],
 	['stashunits', allStashUnitItems],
 	['potions', potionsPreset],
 	['food', foodPreset],

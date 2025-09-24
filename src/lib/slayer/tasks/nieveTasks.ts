@@ -1,10 +1,14 @@
 import { Monsters } from 'oldschooljs';
 
+import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
+import { KalphiteKingMonster } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
+import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { bossTasks } from '@/lib/slayer/tasks/bossTasks.js';
+import { polyporeTasks } from '@/lib/slayer/tasks/polyporeTasks.js';
 import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
-import { bossTasks } from './bossTasks.js';
 
 export const nieveTasks: AssignableSlayerTask[] = [
 	{
@@ -25,7 +29,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		extendedAmount: [200, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.AugmentMyAbbies,
 		weight: 9,
-		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
+		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, BSOMonsters.Malygos.id],
 		combatLevel: 85,
 		slayerLevel: 85,
 		questPoints: 1,
@@ -88,7 +92,9 @@ export const nieveTasks: AssignableSlayerTask[] = [
 			Monsters.BlackDragon.id,
 			Monsters.BabyBlackDragon.id,
 			Monsters.BrutalBlackDragon.id,
-			Monsters.KingBlackDragon.id
+			Monsters.KingBlackDragon.id,
+			Ignecarus.id,
+			BSOMonsters.QueenBlackDragon.id
 		],
 		extendedAmount: [40, 60],
 		extendedUnlockId: SlayerTaskUnlocksEnum.FireAndDarkness,
@@ -150,7 +156,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		extendedAmount: [150, 200],
 		extendedUnlockId: SlayerTaskUnlocksEnum.KrackOn,
 		weight: 6,
-		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id],
+		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id, BSOMonsters.SeaKraken.id],
 		combatLevel: 80,
 		slayerLevel: 87,
 		unlocked: true
@@ -297,7 +303,8 @@ export const nieveTasks: AssignableSlayerTask[] = [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
-			Monsters.KalphiteQueen.id
+			Monsters.KalphiteQueen.id,
+			KalphiteKingMonster.id
 		],
 		combatLevel: 15,
 		unlocked: true
@@ -469,7 +476,8 @@ export const nieveTasks: AssignableSlayerTask[] = [
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
 			Monsters.Vyrewatch.id,
-			Monsters.VyrewatchSentinel.id
+			Monsters.VyrewatchSentinel.id,
+			BSOMonsters.VladimirDrakan.id
 		],
 		questPoints: 1,
 		unlocked: false
@@ -482,6 +490,8 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		slayerLevel: 62,
 		unlocked: true
 	},
+	...bossTasks,
+	...polyporeTasks,
 	{
 		monster: Monsters.Araxyte,
 		amount: [40, 60],

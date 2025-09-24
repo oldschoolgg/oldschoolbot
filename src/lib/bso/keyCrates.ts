@@ -1,4 +1,4 @@
-import { type Item, LootTable } from 'oldschooljs';
+import { type Item, Items, LootTable } from 'oldschooljs';
 
 interface Crate {
 	item: Item;

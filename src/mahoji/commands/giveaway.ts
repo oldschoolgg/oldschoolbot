@@ -22,13 +22,13 @@ import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
 import { giveawayCache } from '@/lib/cache.js';
 import { patronFeatures } from '@/lib/constants.js';
 import { marketPriceOfBank } from '@/lib/marketPrices.js';
-import { isModOrAdmin } from '@/lib/util.js';
 import { generateGiveawayContent } from '@/lib/util/giveaway.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { logError, logErrorForInteraction } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
+import { isModOrAdmin } from '@/lib/util.js';
 import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { addToGPTaxBalance } from '@/mahoji/mahojiSettings.js';
 

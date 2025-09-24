@@ -1,24 +1,26 @@
-import { calcPercentOfNum, noOp, sumArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { calcPercentOfNum, miniID, noOp, sumArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { getInterval } from '@oldschoolgg/toolkit/util';
 import { type GEListing, GEListingType, type GETransaction } from '@prisma/client';
-import { bold, ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
 import { LRUCache } from 'lru-cache';
 import { Bank, type Item, type ItemBank, Items, toKMB } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { clamp } from 'remeda';
 
-import { BitField, globalConfig, PerkTier } from '@/lib/constants.js';
+import { isGEUntradeable } from '@/lib/bso/bsoUtil.js';
+import { isCustomItem } from '@/lib/customItems/util.js';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
+import { assert, logError } from '@/lib/util/logError.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
 import { BLACKLISTED_USERS } from './blacklists.js';
-import { isGEUntradeable } from './bso/bsoUtil.js';
-import { isCustomItem } from './customItems/util.js';
+import { BitField, globalConfig, PerkTier } from './constants.js';
 import { marketPricemap } from './marketPrices.js';
 import type { RobochimpUser } from './roboChimp.js';
 import { roboChimpUserFetch } from './roboChimp.js';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank.js';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings.js';
-import { assert, logError } from './util/logError.js';
-import { sendToChannelID } from './util/webhook.js';
+
+export const generateGrandExchangeID = () => miniID(6).toLowerCase();
 
 interface CreateListingArgs {
 	user: MUser;

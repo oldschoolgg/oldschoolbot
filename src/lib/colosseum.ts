@@ -1,10 +1,8 @@
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
-	clamp,
 	increaseNumByPercent,
 	objectEntries,
-	objectValues,
 	percentChance,
 	randInt,
 	reduceNumByPercent,
@@ -16,6 +14,7 @@ import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { GeneralBank, type GeneralBankType, UserError } from '@oldschoolgg/toolkit/structures';
 import { Bank, type EquipmentSlot, type ItemBank, LootTable, resolveItems } from 'oldschooljs';
+import { clamp } from 'remeda';
 
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
@@ -572,7 +571,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 	for (const [gearType, gearNeeded] of objectEntries(requiredItems)) {
 		const gear = user.gear[gearType];
 		if (!gearNeeded) continue;
-		for (const items of objectValues(gearNeeded)) {
+		for (const items of Object.values(gearNeeded)) {
 			if (!items) continue;
 			if (!items.some(g => gear.hasEquipped(g, true))) {
 				const simGear = items.flatMap(i => getSimilarItems(i));

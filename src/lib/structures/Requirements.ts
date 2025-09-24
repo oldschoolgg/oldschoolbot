@@ -3,19 +3,18 @@ import type { activity_type_enum, Minigame, PlayerOwnedHouse } from '@prisma/cli
 import type { Bank } from 'oldschooljs';
 
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
-import type { BitField } from '@/lib/constants.js';
-import { BitFieldData, BOT_TYPE } from '@/lib/constants.js';
+import { type BitField, BitFieldData, BOT_TYPE } from '@/lib/constants.js';
 import { diaries, userhasDiaryTierSync } from '@/lib/diaries.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import type { ClueBank, DiaryID, DiaryTierName } from '@/lib/minions/types.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
 import { type MinigameName, minigameColumnToNameMap } from '@/lib/settings/minigames.js';
 import Agility from '@/lib/skilling/skills/agility.js';
+import type { MTame } from '@/lib/structures/MTame.js';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { Skills } from '@/lib/types/index.js';
 import { formatList, itemNameFromID } from '@/lib/util/smallUtils.js';
-import type { ParsedUnit } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
-import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
-import { MUserStats } from './MUserStats.js';
+import { getParsedStashUnits, type ParsedUnit } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
 export interface RequirementFailure {
 	reason: string;
@@ -31,6 +30,7 @@ interface RequirementUserArgs {
 	poh: PlayerOwnedHouse;
 	uniqueRunesCrafted: number[];
 	uniqueActivitiesDone: activity_type_enum[];
+	tames: MTame[];
 }
 
 type ManualHasFunction = (args: RequirementUserArgs) => RequirementFailure[] | undefined | string | boolean;
@@ -375,6 +375,9 @@ GROUP BY type;`,
 			prisma.playerOwnedHouse.upsert({ where: { user_id: user.id }, update: {}, create: { user_id: user.id } })
 		]);
 		const uniqueRunesCrafted = _uniqueRunesCrafted.map(i => Number(i.rune_id));
+
+		const tames = await user.fetchTames();
+
 		return {
 			user,
 			minigames,
@@ -384,7 +387,8 @@ GROUP BY type;`,
 			clueCounts,
 			poh,
 			uniqueRunesCrafted,
-			uniqueActivitiesDone: uniqueActivitiesDone.map(i => i.type)
+			uniqueActivitiesDone: uniqueActivitiesDone.map(i => i.type),
+			tames
 		};
 	}
 

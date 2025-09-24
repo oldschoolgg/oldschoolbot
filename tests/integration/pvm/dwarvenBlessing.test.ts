@@ -1,8 +1,8 @@
 import { Bank, EMonster, resolveItems } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
-import { calculateDwarvenBlessingPotsNeeded } from '../../../src/lib/bso/dwarvenBlessing';
-import { mockClient } from '../util';
+import { calculateDwarvenBlessingPotsNeeded } from '@/lib/bso/dwarvenBlessing.js';
+import { mockClient } from '../util.js';
 
 describe('Dwarven Blessing', async () => {
 	const client = await mockClient();

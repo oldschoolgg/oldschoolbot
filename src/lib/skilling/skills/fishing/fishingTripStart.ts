@@ -1,6 +1,8 @@
+import { reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { formatDuration, Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, EItem, Items, itemID } from 'oldschooljs';
 
+import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 import type { Fish } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 
@@ -9,13 +11,15 @@ export function calcFishingTripStart({
 	fish,
 	maxTripLength,
 	quantityInput,
-	wantsToUseFlakes
+	wantsToUseFlakes,
+	isUsingMechaRod
 }: {
 	gearBank: GearBank;
 	fish: Fish;
 	maxTripLength: number;
 	quantityInput: number | undefined;
 	wantsToUseFlakes: boolean;
+	isUsingMechaRod: boolean;
 }) {
 	let scaledTimePerFish = Time.Second * fish.timePerFish * (1 + (100 - gearBank.skillsAsLevels.fishing) / 100);
 
@@ -55,6 +59,17 @@ export function calcFishingTripStart({
 		);
 	}
 
+	if (gearBank.hasEquippedOrInBank('Shark tooth necklace')) {
+		scaledTimePerFish = reduceNumByPercent(scaledTimePerFish, 5);
+		boosts.push('5% for Shark tooth necklace');
+	}
+
+	const hasShelldon = gearBank.usingPet('Shelldon');
+	if (hasShelldon) {
+		scaledTimePerFish /= 2;
+		boosts.push('2x faster for Shelldon');
+	}
+
 	if (gearBank.hasEquippedOrInBank('Fish sack barrel') || gearBank.hasEquippedOrInBank('Fish barrel')) {
 		boosts.push('+9 trip minutes for Fish barrel');
 	}
@@ -75,6 +90,10 @@ export function calcFishingTripStart({
 
 	if (quantity === 0) {
 		return `You can't fish any ${fish.name}. Try a higher quantity or ensure you have the required supplies.`;
+	}
+
+	if (isUsingMechaRod) {
+		scaledTimePerFish = reduceNumByPercent(scaledTimePerFish, inventionBoosts.mechaRod.speedBoostPercent);
 	}
 
 	const duration = quantity * scaledTimePerFish;

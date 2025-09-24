@@ -5,10 +5,21 @@ import { EGear } from 'oldschooljs/EGear';
 import { describe, test } from 'vitest';
 
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
-import { COXMaxMeleeGear } from '@/lib/data/cox.js';
 import Farming from '@/lib/skilling/skills/farming/index.js';
-import { Gear } from '@/lib/structures/Gear.js';
+import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
 import { baseSnapshotPath } from '../../testConstants.js';
+
+const COXMaxMeleeGear = constructGearSetup({
+	head: 'Torva full helm',
+	neck: 'Amulet of torture',
+	body: 'Torva platebody',
+	cape: 'Infernal cape',
+	hands: 'Ferocious gloves',
+	legs: 'Torva platelegs',
+	feet: 'Primordial boots',
+	'2h': 'Scythe of vitur',
+	ring: 'Ultor ring'
+});
 
 describe('Gear Images', async () => {
 	const gear = COXMaxMeleeGear.clone();

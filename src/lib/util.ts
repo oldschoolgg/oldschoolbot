@@ -153,3 +153,7 @@ export async function adminPingLog(message: string) {
 		allowedMentions: { users: globalConfig.adminUserIDs }
 	}).catch(noOp);
 }
+
+export function ISODateString(date?: Date) {
+	return (date ?? new Date()).toISOString().slice(0, 10);
+}

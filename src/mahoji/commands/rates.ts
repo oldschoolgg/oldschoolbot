@@ -2,28 +2,28 @@ import { bold } from '@discordjs/builders';
 import { calcPerHour, formatDuration, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
-import { Bank, convertBankToPerHourStats, itemID, toKMB } from 'oldschooljs';
+import { Bank, convertBankToPerHourStats, Items, itemID, toKMB } from 'oldschooljs';
 import { unique } from 'remeda';
 
 import {
 	BathhouseOres,
-	bathHouseTiers,
 	BathwaterMixtures,
+	bathHouseTiers,
 	calculateBathouseResult,
 	durationPerBaxBath
 } from '@/lib/bso/baxtorianBathhouses.js';
 import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
 import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '@/lib/bso/divination.js';
-import { calculateTuraelsTrialsInput, TuraelsTrialsMethods } from '@/lib/bso/turaelsTrials.js';
-import { ClueTiers } from '@/lib/clues/clueTiers.js';
-import { inventionBoosts } from '@/lib/invention/inventions.js';
-import { stoneSpirits } from '@/lib/minions/data/stoneSpirits.js';
-import Agility from '@/lib/skilling/skills/agility.js';
 import {
 	calcGorajanShardChance,
 	calcMaxFloorUserCanDo,
 	numberOfGorajanOutfitsEquipped
-} from '@/lib/skilling/skills/dung/dungDbFunctions.js';
+} from '@/lib/bso/skills/dungoneering/dungDbFunctions.js';
+import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
+import { stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
+import { calculateTuraelsTrialsInput, TuraelsTrialsMethods } from '@/lib/bso/turaelsTrials.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import Agility from '@/lib/skilling/skills/agility.js';
 import {
 	mutatedSourceItems,
 	zygomiteFarmingSource,
@@ -36,7 +36,6 @@ import { HunterTechniqueEnum } from '@/lib/skilling/types.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { BathhouseTaskOptions } from '@/lib/types/minions.js';
-import { itemNameFromID } from '@/lib/util.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { PeakTier } from '@/lib/util/peaks.js';
@@ -236,7 +235,7 @@ ${zygomiteFarmingSource
 							.filter(msi => msi.zygomite === z.name)
 							.map(i => i.item.name)
 							.join(', ')
-			}, drops these items: ${!z.lootTable ? 'Nothing' : z.lootTable.allItems.map(itemNameFromID).join(', ')}.`
+			}, drops these items: ${!z.lootTable ? 'Nothing' : z.lootTable.allItems.map(i => Items.itemNameFromId(i)).join(', ')}.`
 	)
 	.join('\n\n')}`;
 		}

@@ -1,6 +1,4 @@
-import type { Item } from 'oldschooljs';
-
-import getOSItem from '@/lib/util/getOSItem.js';
+import { type Item, Items } from 'oldschooljs';
 
 export interface Kibble {
 	item: Item;
@@ -17,8 +15,8 @@ export const kibbles: Kibble[] = [
 		item: Items.getOrThrow('Simple kibble'),
 		type: 'simple',
 		minimumFishHeal: 1,
-		cropComponent: ['Cabbage', 'Potato', 'Avocado'].map(getOSItem),
-		herbComponent: ['Marrentill', 'Tarromin'].map(getOSItem),
+		cropComponent: Items.resolveFullItems(['Cabbage', 'Potato', 'Avocado']),
+		herbComponent: Items.resolveFullItems(['Marrentill', 'Tarromin']),
 		xp: 600,
 		level: 105
 	},
@@ -26,8 +24,8 @@ export const kibbles: Kibble[] = [
 		item: Items.getOrThrow('Delicious kibble'),
 		type: 'delicious',
 		minimumFishHeal: 19,
-		cropComponent: ['Strawberry', 'Papaya fruit', 'Mango'].map(getOSItem),
-		herbComponent: ['Cadantine', 'Kwuarm'].map(getOSItem),
+		cropComponent: Items.resolveFullItems(['Strawberry', 'Papaya fruit', 'Mango']),
+		herbComponent: Items.resolveFullItems(['Cadantine', 'Kwuarm']),
 		xp: 900,
 		level: 110
 	},
@@ -35,8 +33,8 @@ export const kibbles: Kibble[] = [
 		item: Items.getOrThrow('Extraordinary kibble'),
 		type: 'extraordinary',
 		minimumFishHeal: 26,
-		cropComponent: ['Orange', 'Pineapple', 'Lychee'].map(getOSItem),
-		herbComponent: ['Torstol', 'Dwarf weed'].map(getOSItem),
+		cropComponent: Items.resolveFullItems(['Orange', 'Pineapple', 'Lychee']),
+		herbComponent: Items.resolveFullItems(['Torstol', 'Dwarf weed']),
 		xp: 1100,
 		level: 120
 	}

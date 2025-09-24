@@ -2,19 +2,20 @@ import { formatDuration, formatOrdinal, randArrItem, roll } from '@oldschoolgg/t
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
-import { Bank, type ItemBank, itemID, Items, LootTable, resolveItems } from 'oldschooljs';
+import { Bank, type ItemBank, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
 
-import { combinedTmbUmbEmbTables, MysteryBoxes, PMBTable } from '@/lib/bso/bsoOpenables.js';
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
+import { DragonTable } from '@/lib/bso/grandmasterClue.js';
+import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/bsoOpenables.js';
+import { MysteryBoxes, PMBTable } from '@/lib/bso/openables/tables.js';
 import { BitField } from '@/lib/constants.js';
+import { itemContractResetTime } from '@/lib/MUser.js';
 import { AbyssalDragonLootTable } from '@/lib/minions/data/killableMonsters/custom/AbyssalDragon.js';
 import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
 import { kalphiteKingLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
 import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus.js';
 import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
-import { itemContractResetTime } from '@/lib/MUser.js';
 import { nexLootTable } from '@/lib/nex.js';
-import { DragonTable } from '@/lib/simulation/grandmasterClue.js';
 import { allThirdAgeItems, runeAlchablesTable } from '@/lib/simulation/sharedTables.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';

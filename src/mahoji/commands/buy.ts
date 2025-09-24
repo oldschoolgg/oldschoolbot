@@ -157,6 +157,10 @@ export const buyCommand: OSBMahojiCommand = {
 			quantity = 1;
 		}
 
+		if (quantity === null) {
+			throw new Error('Quantity must be defined at this point');
+		}
+
 		// If itemCost is undefined, it creates a new empty Bank, like we want:
 		const singleCost: Bank = new Bank(buyable.itemCost);
 		if (gpCost) singleCost.add('Coins', gpCost);

@@ -1,26 +1,40 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Time } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { Bank, deepResolveItems, EMonster, itemID, Monsters, NIGHTMARES_HP, resolveItems } from 'oldschooljs';
+import {
+	Bank,
+	deepResolveItems,
+	EMonster,
+	itemID,
+	Monsters,
+	NIGHTMARES_HP,
+	resolveItems,
+	SkillsEnum
+} from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
+import {
+	bsoAutocompleteMonsters,
+	bsoEffectiveMonsters,
+	bsoKillableMonsters
+} from '@/lib/bso/monsters/bsoKillableMonsters.js';
+import { bossKillables } from '@/lib/minions/data/killableMonsters/bosses/index.js';
+import { camdozaalMonsters } from '@/lib/minions/data/killableMonsters/camdozaalMonsters.js';
+import { chaeldarMonsters } from '@/lib/minions/data/killableMonsters/chaeldarMonsters.js';
+import { creatureCreationCreatures } from '@/lib/minions/data/killableMonsters/creatureCreation.js';
+import { konarMonsters } from '@/lib/minions/data/killableMonsters/konarMonsters.js';
+import { krystiliaMonsters } from '@/lib/minions/data/killableMonsters/krystiliaMonsters.js';
+import { mazchnaMonsters } from '@/lib/minions/data/killableMonsters/mazchnaMonsters.js';
+import { nieveMonsters } from '@/lib/minions/data/killableMonsters/nieveMonsters.js';
+import { reanimatedMonsters } from '@/lib/minions/data/killableMonsters/reanimated.js';
+import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
+import { turaelMonsters } from '@/lib/minions/data/killableMonsters/turaelMonsters.js';
+import { vannakaMonsters } from '@/lib/minions/data/killableMonsters/vannakaMonsters.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
-import bosses from './bosses/index.js';
-import { camdozaalMonsters } from './camdozaalMonsters.js';
-import { chaeldarMonsters } from './chaeldarMonsters.js';
-import { creatureCreationCreatures } from './creatureCreation.js';
-import { konarMonsters } from './konarMonsters.js';
-import { krystiliaMonsters } from './krystiliaMonsters.js';
 import { lowKillableMonsters } from './low.js';
-import { mazchnaMonsters } from './mazchnaMonsters.js';
-import { nieveMonsters } from './nieveMonsters.js';
-import { reanimatedMonsters } from './reanimated.js';
-import { revenantMonsters } from './revs.js';
-import { turaelMonsters } from './turaelMonsters.js';
-import { vannakaMonsters } from './vannakaMonsters.js';
 
-const killableMonsters: KillableMonster[] = [
-	...bosses,
+export const killableMonsters: KillableMonster[] = [
+	...bsoKillableMonsters,
+	...bossKillables,
 	...chaeldarMonsters,
 	...konarMonsters,
 	...krystiliaMonsters,
@@ -41,10 +55,8 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.Barrows,
 		emoji: '<:Dharoks_helm:403038864199122947>',
 		wildy: false,
-
 		difficultyRating: 4,
 		itemsRequired: resolveItems([]),
-		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{ [itemID('Barrows gloves')]: 2 },
@@ -63,7 +75,8 @@ const killableMonsters: KillableMonster[] = [
 			pool: {
 				'Rejuvenation pool': 10,
 				'Fancy rejuvenation pool': 10,
-				'Ornate rejuvenation pool': 10
+				'Ornate rejuvenation pool': 10,
+				'Ancient rejuvenation pool': 20
 			}
 		},
 		defaultAttackStyles: [SkillsEnum.Attack, SkillsEnum.Magic, SkillsEnum.Ranged],
@@ -85,10 +98,10 @@ const killableMonsters: KillableMonster[] = [
 			"Guthan's chainskirt",
 			"Guthan's helm",
 			"Guthan's warspear",
-			['Armadyl chestplate', "Karil's leathertop"],
-			['Armadyl chainskirt', "Karil's leatherskirt"]
+			['Gorajan archer top', 'Pernix body', 'Armadyl chestplate', "Karil's leathertop"],
+			['Gorajan archer legs', 'Pernix chaps', 'Armadyl chainskirt', "Karil's leatherskirt"]
 		]),
-		notifyDrops: resolveItems(['Pet dagannoth prime']),
+
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -126,10 +139,9 @@ const killableMonsters: KillableMonster[] = [
 			"Guthan's chainskirt",
 			"Guthan's helm",
 			"Guthan's warspear",
-			['Torva platebody', 'Bandos chestplate', "Torag's platebody"],
-			['Torva platelegs', 'Bandos tassets', "Torag's platelegs"]
+			['Gorajan warrior top', 'Torva platebody', 'Bandos chestplate', "Torag's platebody"],
+			['Gorajan warrior legs', 'Torva platelegs', 'Bandos tassets', "Torag's platelegs"]
 		]),
-		notifyDrops: resolveItems(['Pet dagannoth rex']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -164,10 +176,10 @@ const killableMonsters: KillableMonster[] = [
 			"Guthan's chainskirt",
 			"Guthan's helm",
 			"Guthan's warspear",
-			['Bandos chestplate', "Torag's platebody", 'Torva platebody'],
-			['Bandos tassets', "Torag's platelegs", 'Torva platelegs']
+			['Gorajan warrior top', 'Torva platebody', 'Bandos chestplate', "Torag's platebody"],
+			['Gorajan warrior legs', 'Torva platelegs', 'Bandos tassets', "Torag's platelegs"]
 		]),
-		notifyDrops: resolveItems(['Pet dagannoth supreme']),
+
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -200,7 +212,8 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		difficultyRating: 0,
 		qpRequired: 0,
-		defaultAttackStyles: [SkillsEnum.Attack]
+		defaultAttackStyles: [SkillsEnum.Attack],
+		attackStyleToUse: GearStat.AttackSlash
 	},
 	{
 		id: Monsters.Guard.id,
@@ -274,6 +287,7 @@ const killableMonsters: KillableMonster[] = [
 			}
 		}
 	},
+
 	{
 		id: Monsters.PriffRabbit.id,
 		name: Monsters.PriffRabbit.name,
@@ -282,7 +296,6 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.PriffRabbit,
 		emoji: '',
 		wildy: false,
-
 		difficultyRating: 10,
 		qpRequired: 205,
 		levelRequirements: {
@@ -389,11 +402,7 @@ export const effectiveMonsters = [
 		aliases: ['phosani', 'phosanis nightmare'],
 		id: EMonster.PHOSANI_NIGHTMARE
 	},
-	{
-		name: 'Nex',
-		aliases: ['nex'],
-		id: EMonster.NEX
-	}
+	...bsoEffectiveMonsters
 ];
 
 export const allKillableMonsterIDs = new Set(effectiveMonsters.map(m => m.id));
@@ -417,18 +426,13 @@ const otherMonsters = [
 		link: `/bosses/the-nightmare/${stringMatches(s.split(' ')[0], "Phosani's") ? '#phosanis-nightmare' : ''}`
 	})),
 	{
-		name: 'Nex',
-		aliases: ['nex'],
-		id: EMonster.NEX,
-		link: '/bosses/nex/'
-	},
-	{
 		name: 'Zalcano',
 		aliases: ['zalcano'],
 		id: EMonster.ZALCANO,
 		emoji: '<:Smolcano:604670895113633802>',
 		link: '/miscellaneous/zalcano/'
 	},
+
 	{
 		name: 'Wintertodt',
 		aliases: ['wt', 'wintertodt', 'todt'],
@@ -444,4 +448,4 @@ const otherMonsters = [
 	}
 ];
 
-export const autocompleteMonsters = [...killableMonsters, ...otherMonsters];
+export const autocompleteMonsters = [...killableMonsters, ...otherMonsters, ...bsoAutocompleteMonsters];

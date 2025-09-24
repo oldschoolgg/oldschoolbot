@@ -12,8 +12,8 @@ import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, type ChambersOfXericOptions, type Item, Items } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
+import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 import { checkUserCanUseDegradeableItem } from '@/lib/degradeableItems.js';
-import { inventionBoosts } from '@/lib/invention/inventions.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';

@@ -8,16 +8,16 @@ import { GearStat } from 'oldschooljs/gear';
 import { globalConfig } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { userhasDiaryTier } from '@/lib/diaries.js';
+import type { SelectedUserStats } from '@/lib/MUser.js';
 import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import type { Consumable, KillableMonster } from '@/lib/minions/types.js';
-import type { SelectedUserStats } from '@/lib/MUser.js';
 import type { Rune } from '@/lib/skilling/skills/runecraft.js';
 import { addStatsOfItemsTogether, hasGracefulEquipped } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
-import type { JsonKeys } from '@/lib/util.js';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
 import { formatItemReqs, formatList, hasSkillReqs, itemNameFromID, readableStatName } from '@/lib/util/smallUtils.js';
+import type { JsonKeys } from '@/lib/util.js';
 import { getItemCostFromConsumables } from './lib/abstracted_commands/minionKill/handleConsumables.js';
 
 export function mahojiParseNumber({

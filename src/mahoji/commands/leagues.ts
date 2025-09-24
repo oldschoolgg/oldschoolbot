@@ -1,14 +1,14 @@
 import { calcWhatPercent, formatDuration, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { PerkTier } from '@/lib/constants.js';
 import {
 	allLeagueTasks,
 	generateLeaguesTasksTextFile,
 	leaguesCheckUser,
 	leaguesClaimCommand,
 	leagueTasks
-} from '@/lib/leagues/leagues.js';
+} from '@/lib/bso/leagues/leagues.js';
+import { PerkTier } from '@/lib/constants.js';
 import { getUsersPerkTier } from '@/lib/perkTiers.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';

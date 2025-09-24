@@ -4,9 +4,9 @@ import { Bank, type ItemBank, resolveItems, SkillsEnum } from 'oldschooljs';
 
 import { chanceOfDOAUnique, DOARooms, pickUniqueToGiveUser } from '@/lib/bso/depthsOfAtlantis.js';
 import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { doaCL, doaMetamorphPets } from '@/lib/data/CollectionsExport.js';
-import { globalDroprates } from '@/lib/data/globalDroprates.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
@@ -180,8 +180,7 @@ export const doaTask: MinionTask = {
 			Array.from(raidResults.entries()).map(async ([userID, userData]) => {
 				const { deaths, mUser: user } = userData;
 
-				const { itemsAdded } = await transactItems({
-					userID,
+				const { itemsAdded } = await user.transactItems({
 					itemsToAdd: totalLoot.get(userID),
 					collectionLog: true
 				});

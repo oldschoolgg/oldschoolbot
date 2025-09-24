@@ -1,9 +1,9 @@
 import { calcPerHour, formatOrdinal, randInt } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { userMention } from 'discord.js';
-import { Bank, increaseBankQuantitesByPercent, resolveItems, SkillsEnum } from 'oldschooljs';
+import { Bank, Items, increaseBankQuantitesByPercent, resolveItems, SkillsEnum } from 'oldschooljs';
 
-import { isDoubleLootActive } from '@/lib/doubleLoot.js';
+import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { MOKTANG_ID, MoktangLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
 import {
@@ -18,7 +18,6 @@ import type { MoktangTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { itemNameFromID } from '@/lib/util.js';
 
 export const moktangTask: MinionTask = {
 	type: 'Moktang',
@@ -90,7 +89,7 @@ export const moktangTask: MinionTask = {
 					Events.ServerNotification,
 					`**${user.usernameOrMention}'s** minion just received their ${formatOrdinal(
 						user.cl.amount(item)
-					)} ${itemNameFromID(item)} on their ${formatOrdinal(randInt(newKC - qty, newKC))} kill!`
+					)} ${Items.itemNameFromId(item)} on their ${formatOrdinal(randInt(newKC - qty, newKC))} kill!`
 				);
 			}
 		}

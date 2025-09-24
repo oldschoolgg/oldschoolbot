@@ -1,5 +1,5 @@
 import { Time } from '@oldschoolgg/toolkit';
-import { itemID, LootTable, RareDropTable } from 'oldschooljs';
+import { Items, itemID, LootTable, RareDropTable } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import {

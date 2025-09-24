@@ -4,7 +4,7 @@ import { type GenerateResult, SpriteSheetGenerator } from '@oldschoolgg/spritesh
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import '../src/lib/safeglobals.js';
 import { isFunction, uniqueArr } from '@oldschoolgg/toolkit';
-import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
+import { type ItemBank, Items, resolveItems } from 'oldschooljs';
 import sharp from 'sharp';
 
 import bsoItemsJson from '../data/bso/bso_items.json' with { type: 'json' };
@@ -13,7 +13,6 @@ import { ALL_OBTAINABLE_ITEMS } from '../src/lib/allObtainableItems.js';
 import { BOT_TYPE } from '../src/lib/constants.js';
 import Buyables from '../src/lib/data/buyables/buyables.js';
 import { allCLItems } from '../src/lib/data/Collections.js';
-import Createables from '../src/lib/data/createables.js';
 
 const SPRITESHEETS_DIR = './src/lib/resources/spritesheets';
 const stopwatch = new Stopwatch();
@@ -46,7 +45,6 @@ const trades = Items.filter(i => Boolean(i.tradeable_on_ge)).map(i => i.id);
 const itemsMustBeInSpritesheet: number[] = uniqueArr([
 	...allCLItems,
 	...trades,
-	...Createables.map(c => new Bank(c.outputItems).items().flatMap(i => i[0].id)).flat(2),
 	...Buyables.flatMap(b => {
 		if (!b.outputItems) return [];
 		if (isFunction(b.outputItems)) {

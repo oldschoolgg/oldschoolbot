@@ -1,16 +1,15 @@
 import { userMention } from '@discordjs/builders';
 import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank, type Item, type ItemBank } from 'oldschooljs';
+import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
-import { ores, secondaries, seedsFilter } from '@/lib/data/filterables.js';
-import { Herb } from '@/lib/invention/groups/Herb.js';
+import { Herb } from '@/lib/bso/skills/invention/groups/Herb.js';
+import { ores, secondaries, seeds } from '@/lib/data/filterables.js';
 import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
 import Firemaking from '@/lib/skilling/skills/firemaking.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import { mahojiClientSettingsFetch } from '@/lib/util/clientSettings.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { assert } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -156,19 +155,19 @@ for (const herb of Herb.items.flatMap(i => i.item)) {
 	}
 }
 
-for (const seed of seedsFilter.map(getOSItem)) {
+for (const seed of Items.resolveFullItems(seeds)) {
 	if (!specialPricesBeforeMultiplying.has(seed.id)) {
 		specialPricesBeforeMultiplying.add(seed.id, (seed.price ?? 0) * 3.5);
 	}
 }
 
-for (const seed of secondaries.map(getOSItem)) {
+for (const seed of Items.resolveFullItems(secondaries)) {
 	if (!specialPricesBeforeMultiplying.has(seed.id)) {
 		specialPricesBeforeMultiplying.add(seed.id, (seed.price ?? 0) * 3.5);
 	}
 }
 
-for (const seed of ores.map(getOSItem)) {
+for (const seed of Items.resolveFullItems(ores)) {
 	if (!specialPricesBeforeMultiplying.has(seed.id)) {
 		specialPricesBeforeMultiplying.add(seed.id, (seed.price ?? 0) * 3.5);
 	}

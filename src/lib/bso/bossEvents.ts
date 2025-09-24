@@ -3,8 +3,8 @@ import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { EmbedBuilder, type TextChannel } from 'discord.js';
 import { Items } from 'oldschooljs';
 
+import { getPHeadDescriptor } from '@/lib/bso/pumpkinHead.js';
 import { globalConfig } from '@/lib/constants.js';
-import { getPHeadDescriptor } from '@/lib/simulation/pumpkinHead.js';
 import { BossInstance, type BossOptions, type BossUser } from '../structures/Boss.js';
 import type { NewBossOptions } from '../types/minions.js';
 import { logError } from '../util/logError.js';

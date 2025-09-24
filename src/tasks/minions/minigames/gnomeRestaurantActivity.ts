@@ -1,6 +1,6 @@
 import { Bank, LootTable } from 'oldschooljs';
 
-import { userHasFlappy } from '@/lib/invention/inventions.js';
+import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { GnomeRestaurantActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';

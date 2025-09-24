@@ -1,12 +1,12 @@
 import { roll, shuffleArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { Bank, LootTable, Monsters, randomVariation, resolveItems, resolveNameBank } from 'oldschooljs';
+import { Bank, LootTable, Monsters, randomVariation, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 import { vladDrakanCL } from '@/lib/data/CollectionsExport.js';
-import { globalDroprates } from '@/lib/data/globalDroprates.js';
+import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/CustomMonster.js';
 import { runeWeaponTable } from '@/lib/simulation/sharedTables.js';
-import type { CustomMonster } from './customMonsters.js';
 
 const JewelleryTable = new LootTable()
 	.add(new LootTable().add('Onyx ring').add('Onyx necklace').add('Onyx bracelet').add('Onyx amulet'))
@@ -69,9 +69,9 @@ export const VladimirDrakan: CustomMonster = {
 		hitpoints: 120
 	},
 	itemInBankBoosts: [
-		resolveNameBank({
+		new Bank({
 			'Axe of the high sungod': 10
-		})
+		}).toJSON()
 	],
 	itemCost: {
 		itemCost: new Bank().add('Vial of blood', 1).add('Silver stake', 1),

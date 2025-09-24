@@ -1,6 +1,6 @@
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { slayerMaskHelms } from '@/lib/data/slayerMaskHelms.js';
+import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
 
 export const slayerMaskLeaderboardCache = new Map<number, string>();
 export const allSlayerMaskHelmsAndMasks = new Set(slayerMaskHelms.flatMap(i => [i.mask.id, i.helm.id]));

@@ -4,7 +4,7 @@ import { itemID, LootTable } from 'oldschooljs';
 import type { Ore } from '@/lib/skilling/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 
-const GemRockTable = new LootTable()
+export const GemRockTable = new LootTable()
 	.add('Uncut opal', 1, 60)
 	.add('Uncut jade', 1, 30)
 	.add('Uncut red topaz', 1, 15)

@@ -10,27 +10,27 @@ import {
 	baxBathSim,
 	baxtorianBathhousesStartCommand
 } from '@/lib/bso/baxtorianBathhouses.js';
+import { bonanzaCommand } from '@/lib/bso/commands/bonanzaCommand.js';
+import { fistOfGuthixCommand } from '@/lib/bso/commands/fistOfGuthix.js';
+import { monkeyRumbleCommand, monkeyRumbleStatsCommand } from '@/lib/bso/commands/monkeyRumbleCommand.js';
+import { stealingCreationCommand } from '@/lib/bso/commands/stealingCreation.js';
+import { tinkeringWorkshopCommand } from '@/lib/bso/commands/tinkeringWorkshopCommand.js';
 import { allGodlyItems, divineDominionCheck, divineDominionSacrificeCommand } from '@/lib/bso/divineDominion.js';
 import { fishingLocations } from '@/lib/bso/fishingContest.js';
 import { joinGuthixianCache } from '@/lib/bso/guthixianCache.js';
-import { type TuraelsTrialsMethod, TuraelsTrialsMethods, turaelsTrialsStartCommand } from '@/lib/bso/turaelsTrials.js';
-import type { MaterialType } from '@/lib/invention/index.js';
-import { itemNameFromID } from '@/lib/util/smallUtils.js';
-import { bonanzaCommand } from '@/mahoji/lib/abstracted_commands/bonanzaCommand.js';
-import {
-	fishingContestStartCommand,
-	fishingContestStatsCommand
-} from '@/mahoji/lib/abstracted_commands/fishingContestCommand.js';
-import { fistOfGuthixCommand } from '@/mahoji/lib/abstracted_commands/fistOfGuthix.js';
-import { monkeyRumbleCommand, monkeyRumbleStatsCommand } from '@/mahoji/lib/abstracted_commands/monkeyRumbleCommand.js';
 import {
 	OuraniaBuyables,
 	odsBuyCommand,
 	odsStartCommand,
 	odsStatsCommand
-} from '@/mahoji/lib/abstracted_commands/odsCommand.js';
-import { stealingCreationCommand } from '@/mahoji/lib/abstracted_commands/stealingCreation.js';
-import { tinkeringWorkshopCommand } from '@/mahoji/lib/abstracted_commands/tinkeringWorkshopCommand.js';
+} from '@/lib/bso/minigames/ods/odsCommand.js';
+import type { MaterialType } from '@/lib/bso/skills/invention/index.js';
+import { type TuraelsTrialsMethod, TuraelsTrialsMethods, turaelsTrialsStartCommand } from '@/lib/bso/turaelsTrials.js';
+import { itemNameFromID } from '@/lib/util/smallUtils.js';
+import {
+	fishingContestStartCommand,
+	fishingContestStatsCommand
+} from '@/mahoji/lib/abstracted_commands/fishingContestCommand.js';
 import { ownedMaterialOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 

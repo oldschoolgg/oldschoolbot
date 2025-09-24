@@ -1,12 +1,12 @@
 import { formatDuration, round } from '@oldschoolgg/toolkit';
-import { type Tame, type TameActivity, type User, tame_growth } from '@prisma/client';
+import { type Tame, type TameActivity, tame_growth, type User } from '@prisma/client';
 import { type ItemBank, Items } from 'oldschooljs';
 
 import {
 	type Species,
+	seaMonkeySpells,
 	type TameTaskOptions,
 	TameType,
-	seaMonkeySpells,
 	tameKillableMonsters,
 	tameSpecies
 } from '@/lib/bso/tames.js';

@@ -1,5 +1,5 @@
-import { clamp } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
+import { clamp } from 'remeda';
 
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { Skills } from '@/lib/types/index.js';

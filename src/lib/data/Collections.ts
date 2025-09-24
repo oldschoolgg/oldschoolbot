@@ -9,30 +9,34 @@ import {
 	type Item,
 	type ItemBank,
 	ItemGroups,
-	itemID,
 	Items,
+	itemID,
 	type Monster,
 	Monsters,
 	resolveItems
 } from 'oldschooljs';
 
+import { cookingCL, craftingCL, creatablesCL, herbloreCL } from '@/lib/bso/bsoCl.js';
 import { OSB_VIRTUS_IDS } from '@/lib/bso/bsoConstants.js';
-import { creatablesCL } from '@/lib/bso/creatablesCl.js';
 import { divinationEnergies, portents } from '@/lib/bso/divination.js';
 import { discontinuedDyes, dyedItems } from '@/lib/bso/dyedItems.js';
+import { ElderClueTable } from '@/lib/bso/elderClue.js';
+import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
 import { keyCrates } from '@/lib/bso/keyCrates.js';
 import { PaintBoxTable } from '@/lib/bso/paintColors.js';
+import { pumpkinHeadUniqueTable } from '@/lib/bso/pumpkinHead.js';
+import { inventionCL } from '@/lib/bso/skills/invention/inventions.js';
 import { getAllIgneTameKCs, tameKillableMonsters } from '@/lib/bso/tames.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { CollectionLogType } from '@/lib/collectionLogTask.js';
+import { growablePetsCL } from '@/lib/growablePets.js';
 import { implingsCL } from '@/lib/implings.js';
-import { inventionCL } from '@/lib/invention/inventions.js';
 import { AkumuLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Akumu.js';
 import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
 import {
-	kalphiteKingLootTable,
-	KalphiteKingMonster
+	KalphiteKingMonster,
+	kalphiteKingLootTable
 } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
 import KingGoldemar from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';
 import { MOKTANG_ID, MoktangLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
@@ -48,11 +52,8 @@ import {
 	MediumEncounterLoot,
 	rewardTokens
 } from '@/lib/minions/data/templeTrekking.js';
-import { nexLootTable, NexMonster } from '@/lib/nex.js';
+import { NexMonster, nexLootTable } from '@/lib/nex.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
-import { ElderClueTable } from '@/lib/simulation/elderClue.js';
-import { GrandmasterClueTable } from '@/lib/simulation/grandmasterClue.js';
-import { pumpkinHeadUniqueTable } from '@/lib/simulation/pumpkinHead.js';
 import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
 import { fletchingCL } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
@@ -60,6 +61,7 @@ import { SkillsEnum } from '@/lib/skilling/types.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import { SeedableRNG } from '@/lib/util/rng.js';
 import { kibbleCL } from '../bso/kibble.js';
+import { slayerMasksHelmsCL } from '../bso/slayerMaskHelms.js';
 import {
 	abyssalDragonCL,
 	abyssalSireCL,
@@ -120,12 +122,12 @@ import {
 	dungeoneeringCL,
 	emergedZukInfernoCL,
 	expertCapesCL,
+	type FormatProgressFunction,
 	fightCavesCL,
 	fishingContestCL,
 	fishingTrawlerCL,
 	fistOfGuthixCL,
 	forestryCL,
-	type FormatProgressFunction,
 	fossilIslandNotesCL,
 	generalGraardorCL,
 	giantMoleCL,
@@ -138,9 +140,9 @@ import {
 	hesporiCL,
 	holidayCL,
 	type ICollection,
-	ignecarusCL,
 	type ILeftListStatus,
 	type IToReturnCollection,
+	ignecarusCL,
 	kalphiteKingCL,
 	kalphiteQueenCL,
 	kingBlackDragonCL,
@@ -215,7 +217,6 @@ import {
 	zalcanoCL,
 	zulrahCL
 } from './CollectionsExport.js';
-import { slayerMasksHelmsCL } from './slayerMaskHelms.js';
 
 function kcProg(mon: Monster | number): FormatProgressFunction {
 	return ({ stats }) => `${stats.kcBank[typeof mon === 'number' ? mon : mon.id] ?? 0} KC`;
@@ -2091,7 +2092,7 @@ export function getBank(user: MUser, type: CLType, userStats: MUserStats | null)
 }
 
 export async function getTotalCl(user: MUser, logType: CLType, userStats: MUserStats | null) {
-	let result;
+	let result: [number, number];
 	try {
 		result = getUserClData(getBank(user, logType, userStats), allCLItemsFiltered);
 	} catch (_e) {

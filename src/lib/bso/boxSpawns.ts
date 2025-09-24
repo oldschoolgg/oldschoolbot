@@ -1,8 +1,8 @@
 import { formatOrdinal, isFunction, randArrItem, roll, shuffleArr, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, type Message, type User } from 'discord.js';
-import fetch from 'node-fetch';
 import { Bank, Items, LootTable, Monsters } from 'oldschooljs';
 
+import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { globalConfig } from '@/lib/constants.js';
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 import Createables from '@/lib/data/createables.js';
@@ -11,7 +11,6 @@ import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonst
 import killableMonsters from '../minions/data/killableMonsters/index.js';
 import { sendToChannelID } from '../util/webhook.js';
 import { LampTable } from '../xpLamps.js';
-import { MysteryBoxes } from './bsoOpenables.js';
 
 const triviaChallenge: Challenge = async (msg: Message): Promise<User | null> => {
 	if (!msg.channel.isSendable()) return null;
@@ -19,7 +18,7 @@ const triviaChallenge: Challenge = async (msg: Message): Promise<User | null> =>
 		'https://opentdb.com/api.php?amount=1&category=9&difficulty=medium&type=multiple'
 	)
 		.then(res => res.json())
-		.then(res => res.results[0]);
+		.then((res: any) => res.results[0]);
 
 	const allAnswers = [correct_answer, ...incorrect_answers].sort(() => 0.5 - Math.random());
 
@@ -150,7 +149,9 @@ const monsterDropChallenge: Challenge = async (msg: Message): Promise<User | nul
 
 	const embed = new EmbedBuilder()
 		.setTitle('Reply with the answer for a reward!')
-		.setDescription(`Name a monster that drops these 3 items: ${items.map(Items.itemNameFromId).join(', ')}`)
+		.setDescription(
+			`Name a monster that drops these 3 items: ${items.map(id => Items.itemNameFromId(id)).join(', ')}`
+		)
 		.setThumbnail(
 			'https://cdn.discordapp.com/attachments/357422607982919680/1100378550189707314/534px-Mystery_box_detail.png'
 		);

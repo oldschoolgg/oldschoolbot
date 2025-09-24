@@ -5,6 +5,12 @@ import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { Bank, randomVariation } from 'oldschooljs';
 
 import {
+	canAffordInventionBoost,
+	InventionID,
+	inventionBoosts,
+	inventionItemBoost
+} from '@/lib/bso/skills/invention/inventions.js';
+import {
 	calcCoxDuration,
 	calcCoxInput,
 	calculateUserGearPercents,
@@ -14,12 +20,6 @@ import {
 	minimumCoxSuppliesNeeded
 } from '@/lib/data/cox.js';
 import { degradeItem } from '@/lib/degradeableItems.js';
-import {
-	canAffordInventionBoost,
-	inventionBoosts,
-	InventionID,
-	inventionItemBoost
-} from '@/lib/invention/inventions.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { setupParty } from '@/lib/party.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';

@@ -1,10 +1,10 @@
-import { uniqueArr } from 'e';
+import { uniqueArr } from '@oldschoolgg/toolkit';
 import { expect, test } from 'vitest';
 
-import { isSuperUntradeable } from '../../../src/lib/bso/bsoUtil';
-import { combinedTmbUmbEmbTables } from '../../../src/lib/bsoOpenables';
-import { dyedItems } from '../../../src/lib/dyedItems';
-import itemIsTradeable from '../../../src/lib/util/itemIsTradeable';
+import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
+import { dyedItems } from '@/lib/bso/dyedItems.js';
+import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/bsoOpenables.js';
+import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 
 test('No duplicate dyed items', () => {
 	const all = dyedItems.map(i => i.dyedVersions.map(i => i.item.id)).flat(2);

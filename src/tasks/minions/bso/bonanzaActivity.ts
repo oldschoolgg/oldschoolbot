@@ -1,5 +1,6 @@
-import { calcPercentOfNum, calcWhatPercent, clamp, randArrItem, randInt, roll, shuffleArr } from '@oldschoolgg/toolkit';
+import { calcPercentOfNum, calcWhatPercent, randArrItem, randInt, roll, shuffleArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
+import { clamp } from 'remeda';
 
 import { getAllUserTames, TameSpeciesID } from '@/lib/bso/tames.js';
 import { tameName } from '@/lib/bso/tameUtil.js';
@@ -52,7 +53,7 @@ export const bonanzaTask: MinionTask = {
 			user.skillLevel(SkillsEnum.Ranged) +
 			user.skillLevel(SkillsEnum.Thieving) / 3;
 
-		const tickets = randInt(clamp(averageLevel / 2, 1, 120), averageLevel);
+		const tickets = randInt(clamp(averageLevel / 2, { min: 1, max: 120 }), averageLevel);
 		loot.add('Circus ticket', tickets);
 
 		const freeIgneTames = tames.filter(i => i.tame_activity.length === 0 && i.species_id === TameSpeciesID.Igne);

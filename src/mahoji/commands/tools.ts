@@ -11,35 +11,35 @@ import {
 	type Item,
 	type ItemBank,
 	ItemGroups,
-	itemID,
 	Items,
+	itemID,
 	resolveItems,
 	ToBUniqueTable
 } from 'oldschooljs';
 
-import { MysteryBoxes, spookyTable } from '@/lib/bso/bsoOpenables.js';
+import { addToDoubleLootTimer } from '@/lib/bso/doubleLoot.js';
 import { keyCrates } from '@/lib/bso/keyCrates.js';
+import { MysteryBoxes, spookyTable } from '@/lib/bso/openables/tables.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { allCLItemsFiltered, allDroppedItems } from '@/lib/data/Collections.js';
 import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
-import { addToDoubleLootTimer } from '@/lib/doubleLoot.js';
-import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { giveBoxResetTime, mahojiUserSettingsUpdate, spawnLampResetTime } from '@/lib/MUser.js';
+import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
-import { getUsername, isGroupActivity } from '@/lib/util.js';
 import { findGroupOfUser } from '@/lib/util/findGroupOfUser.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { repairBrokenItemsFromUser } from '@/lib/util/repairBrokenItems.js';
 import { parseStaticTimeInterval, staticTimeIntervals } from '@/lib/util/smallUtils.js';
+import { getUsername, isGroupActivity } from '@/lib/util.js';
 import { LampTable } from '@/lib/xpLamps.js';
 import {
 	getParsedStashUnits,

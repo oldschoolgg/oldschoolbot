@@ -1,7 +1,7 @@
 import { writeFileSync } from 'node:fs';
 import { Items } from 'oldschooljs';
 
-import { customItems } from '../src/lib/customItems/util';
+import { customItems } from '@/lib/customItems/util.js';
 
 export function renderBsoItemsFile() {
 	writeFileSync(

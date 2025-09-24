@@ -1,9 +1,9 @@
-import { ItemGroups, itemID, resolveItems } from 'oldschooljs';
+import { ItemGroups, Items, itemID, resolveItems } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
-import { itemNameFromID } from '@/lib/util';
-import { combinedTmbUmbEmbTables, embTable, PMBTable, tmbTable, umbTable } from '../../../src/lib/bsoOpenables';
-import { growablePets } from '../../../src/lib/growablePets';
+import { combinedTmbUmbEmbTables, embTable, tmbTable, umbTable } from '@/lib/bso/openables/bsoOpenables.js';
+import { PMBTable } from '@/lib/bso/openables/tables.js';
+import { growablePets } from '@/lib/growablePets.js';
 
 test("Items that shouldn't be dropped in mystery boxes", () => {
 	const shouldntBeIn = resolveItems([
@@ -44,7 +44,7 @@ test("Items that shouldn't be dropped in mystery boxes", () => {
 	]);
 	for (const i of shouldntBeIn) {
 		if (combinedTmbUmbEmbTables.includes(i)) {
-			throw new Error(`${itemNameFromID(i)} is in the mystery box tables, but it shouldn't be.`);
+			throw new Error(`${Items.itemNameFromId(i)} is in the mystery box tables, but it shouldn't be.`);
 		}
 	}
 });
@@ -95,13 +95,13 @@ test('exclude certain openables from mystery boxes', () => {
 	for (const i of shouldntBeIn) {
 		if (combinedTmbUmbEmbTables.includes(i)) {
 			console.error('wtf');
-			throw new Error(`Item ${itemNameFromID(i)} shouldn't be in Mystery Boxes, but is.`);
+			throw new Error(`Item ${Items.itemNameFromId(i)} shouldn't be in Mystery Boxes, but is.`);
 		}
 	}
 	for (const i of shouldBeIn) {
 		if (!combinedTmbUmbEmbTables.includes(i)) {
 			console.error('wtf');
-			throw new Error(`Item ${itemNameFromID(i)} should be in Mystery Boxes, but isn't.`);
+			throw new Error(`Item ${Items.itemNameFromId(i)} should be in Mystery Boxes, but isn't.`);
 		}
 	}
 	expect(shouldBeIn.every(ss => combinedTmbUmbEmbTables.includes(ss))).toEqual(true);

@@ -1,8 +1,8 @@
 import {
 	calcWhatPercent,
 	notEmpty,
-	percentChance,
 	PerkTier,
+	percentChance,
 	randArrItem,
 	sumArr,
 	Time,
@@ -22,12 +22,14 @@ import {
 	EquipmentSlot,
 	type Item,
 	type ItemBank,
-	itemID,
 	Items,
+	itemID,
 	resolveItems
 } from 'oldschooljs';
 import { pick } from 'remeda';
 
+import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -50,8 +52,6 @@ import { type CATier, CombatAchievements } from './combat_achievements/combatAch
 import { degradeableItems } from './degradeableItems.js';
 import { defaultGear, type GearSetup, type UserFullGearSetup } from './gear/index.js';
 import { handleNewCLItems } from './handleNewCLItems.js';
-import type { IMaterialBank } from './invention/index.js';
-import { MaterialBank } from './invention/MaterialBank.js';
 import { marketPriceOfBank } from './marketPrices.js';
 import backgroundImages from './minions/data/bankBackgrounds.js';
 import type { CombatOptionsEnum } from './minions/data/combatConstants.js';

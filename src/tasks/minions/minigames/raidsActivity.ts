@@ -3,12 +3,12 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Bank, ChambersOfXeric, randomVariation, resolveItems, SkillsEnum } from 'oldschooljs';
 
 import { CHINCANNON_MESSAGES } from '@/lib/bso/bsoConstants.js';
-import { MysteryBoxes } from '@/lib/bso/bsoOpenables.js';
 import { handleSpecialCoxLoot } from '@/lib/bso/handleSpecialCoxLoot.js';
+import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
+import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '@/lib/data/CollectionsExport.js';
 import { createTeam } from '@/lib/data/cox.js';
-import { userHasFlappy } from '@/lib/invention/inventions.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
 import type { RaidsOptions } from '@/lib/types/minions.js';

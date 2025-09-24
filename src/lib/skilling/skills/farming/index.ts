@@ -1,15 +1,16 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { CropUpgradeType } from '@prisma/client';
-import { Items, itemID } from 'oldschooljs';
+import { Items, itemID, resolveItems, SkillsEnum } from 'oldschooljs';
 
+import allotmentPlants from '@/lib/skilling/skills/farming/allotments.js';
+import { bushes } from '@/lib/skilling/skills/farming/bushes.js';
+import fruitTrees from '@/lib/skilling/skills/farming/fruitTrees.js';
+import herbPlants from '@/lib/skilling/skills/farming/herbPlants.js';
+import hopsPlants from '@/lib/skilling/skills/farming/hops.js';
+import specialPlants from '@/lib/skilling/skills/farming/specialPlants.js';
+import trees from '@/lib/skilling/skills/farming/trees.js';
+import { zygomitePlants } from '@/lib/skilling/skills/farming/zygomites.js';
 import type { Plant } from '@/lib/skilling/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
-import allotmentPlants from './allotments.js';
-import fruitTrees from './fruitTrees.js';
-import herbPlants from './herbPlants.js';
-import hopsPlants from './hops.js';
-import specialPlants from './specialPlants.js';
-import trees from './trees.js';
 
 export const plants: Plant[] = [
 	...herbPlants,
@@ -17,7 +18,9 @@ export const plants: Plant[] = [
 	...allotmentPlants,
 	...fruitTrees,
 	...hopsPlants,
-	...specialPlants
+	...specialPlants,
+	...bushes,
+	...zygomitePlants
 ];
 
 const maleFarmerItems: { [key: number]: number } = {
@@ -52,6 +55,7 @@ export const CompostTiers = [
 ] as const;
 
 for (const plant of plants) {
+	if (resolveItems(['Pumpkin']).includes(plant.id)) continue;
 	if (plant.outputCrop) allFarmingItems.push(plant.outputCrop);
 	for (const [item] of plant.inputItems.items()) {
 		allFarmingItems.push(item.id);
@@ -59,7 +63,20 @@ for (const plant of plants) {
 	if (plant.outputLogs) allFarmingItems.push(plant.outputLogs);
 	if (plant.outputRoots) allFarmingItems.push(plant.outputRoots);
 }
-allFarmingItems.push(itemID('Tangleroot'));
+
+allFarmingItems.push(
+	...resolveItems([
+		'Master farmer hat',
+		'Master farmer jacket',
+		'Master farmer pants',
+		'Master farmer gloves',
+		'Master farmer boots',
+		'Tangleroot',
+		'Plopper',
+		'Shiny mango',
+		'Fungo'
+	])
+);
 
 const Farming = {
 	aliases: ['farming'],

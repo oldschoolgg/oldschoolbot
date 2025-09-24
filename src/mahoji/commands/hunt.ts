@@ -3,10 +3,10 @@ import { formatDuration, reduceNumByPercent, stringMatches } from '@oldschoolgg/
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, ECreature, type ItemBank, itemID } from 'oldschooljs';
 
-import { monkeyTiers } from '@/lib/bso/monkeyRumble.js';
+import { monkeyTiers } from '@/lib/bso/minigames/monkey-rumble/monkeyRumble.js';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
-import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';

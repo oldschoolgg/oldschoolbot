@@ -4,7 +4,7 @@ import { GearStat } from 'oldschooljs/gear';
 
 import { YETI_ID } from '@/lib/bso//bsoConstants.js';
 import { BitField } from '@/lib/constants.js';
-import type { CustomMonster } from './customMonsters.js';
+import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/CustomMonster.js';
 
 const DeadTable = new LootTable().add('Iron med helm').add('Bones').add('Skull').add('Bronze sword');
 
