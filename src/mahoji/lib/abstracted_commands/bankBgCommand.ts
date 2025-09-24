@@ -4,7 +4,6 @@ import { Bank, resolveItems, toKMB } from 'oldschooljs';
 
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import { BitField } from '@/lib/constants.js';
-import { findGroupOfUser } from '@/lib/util/findGroupOfUser.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
@@ -21,9 +20,7 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 		return 'This is already your bank background.';
 	}
 
-	const owners = selectedImage.owners ?? [];
-	const allAccounts = await findGroupOfUser(user.id);
-	if (user.bitfield.includes(BitField.isModerator) || allAccounts.some(a => owners.includes(a))) {
+	if (user.bitfield.includes(BitField.isModerator)) {
 		await user.update({
 			bankBackground: selectedImage.id
 		});

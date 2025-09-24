@@ -1,11 +1,10 @@
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import type { Mixable } from '@/lib/skilling/types.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 
 const Tar: Mixable[] = [
 	{
-		item: getOSItem('Guam tar'),
+		item: Items.getOrThrow('Guam tar'),
 		aliases: ['guam tar'],
 		level: 19,
 		xp: 30,
@@ -15,7 +14,7 @@ const Tar: Mixable[] = [
 		outputMultiple: 15
 	},
 	{
-		item: getOSItem('Marrentill tar'),
+		item: Items.getOrThrow('Marrentill tar'),
 		aliases: ['marrentill tar'],
 		level: 31,
 		xp: 42.5,
@@ -25,7 +24,7 @@ const Tar: Mixable[] = [
 		outputMultiple: 15
 	},
 	{
-		item: getOSItem('Tarromin tar'),
+		item: Items.getOrThrow('Tarromin tar'),
 		aliases: ['tarromin tar'],
 		level: 39,
 		xp: 55,
@@ -35,7 +34,7 @@ const Tar: Mixable[] = [
 		outputMultiple: 15
 	},
 	{
-		item: getOSItem('Harralander tar'),
+		item: Items.getOrThrow('Harralander tar'),
 		aliases: ['harralander tar'],
 		level: 44,
 		xp: 72.5,

@@ -1,7 +1,7 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 
-import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
+import creatures from './creatures/index.js';
 
 const Hunter = {
 	aliases: ['hunt', 'hunter'],

@@ -42,7 +42,6 @@ import { icCommand } from './ic.js';
 import { inventionCommand } from './invention.js';
 import { inviteCommand } from './invite.js';
 import { minionKCommand } from './k.js';
-import { kcCommand } from './kc.js';
 import { kibbleCommand } from './kibble.js';
 import { killCommand } from './kill.js';
 import { lapsCommand } from './laps.js';
@@ -120,7 +119,6 @@ export const allCommands: OSBMahojiCommand[] = [
 	huntCommand,
 	giftCommand,
 	inviteCommand,
-	kcCommand,
 	minionKCommand,
 	lapsCommand,
 	leaderboardCommand,

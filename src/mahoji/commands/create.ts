@@ -1,5 +1,4 @@
-import { isFunction, reduceNumByPercent } from '@oldschoolgg/toolkit';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { isFunction, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type SkillsEnum } from 'oldschooljs';
 
@@ -218,8 +217,7 @@ export const createCommand: OSBMahojiCommand = {
 			addToCl = true;
 		}
 
-		await transactItems({
-			userID: userID.toString(),
+		await user.transactItems({
 			collectionLog: addToCl,
 			itemsToAdd: outItems,
 			itemsToRemove: inItems

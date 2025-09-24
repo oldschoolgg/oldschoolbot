@@ -1,6 +1,6 @@
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { EmbedBuilder } from 'discord.js';
-import type { CluesScore, Player, SkillScore, SkillsScore } from 'oldschooljs';
+import type { CluesScore, Player, SkillScore, SkillsScore } from 'oldschooljs/hiscores';
 
 import { skillEmoji } from '@/lib/data/emojis.js';
 

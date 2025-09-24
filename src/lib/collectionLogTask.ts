@@ -1,22 +1,20 @@
 import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
 import { generateHexColorForCashStack } from '@oldschoolgg/toolkit/runescape';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
-import { type Bank, Items, Util } from 'oldschooljs';
+import { type Bank, Items, toKMB } from 'oldschooljs';
 
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import type { IBgSprite } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { allCollectionLogs, getCollection, getTotalCl } from '@/lib/data/Collections.js';
 import type { CollectionStatus, IToReturnCollection } from '@/lib/data/CollectionsExport.js';
-import type { MUserStats } from './structures/MUserStats.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
 
 export const collectionLogTypes = [
 	{ name: 'collection', description: 'Normal Collection Log' },
 	{ name: 'sacrifice', description: 'Sacrificed Items Log' },
 	{ name: 'bank', description: 'Owned Items Log' },
-	{ name: 'temp', description: 'Temporary Log' },
-	{ name: 'tame', description: 'Tames Collection Log' },
-	{ name: 'disassembly', description: 'Disassembly Collection Log' }
+	{ name: 'temp', description: 'Temporary Log' }
 ] as const;
 export type CollectionLogType = (typeof collectionLogTypes)[number]['name'];
 export const CollectionLogFlags = [
@@ -86,7 +84,7 @@ class CollectionLogTask {
 				text: clPageName,
 				x: 4,
 				y: index * ITEM_HEIGHT + 13,
-				color: collectionLog.category === 'Discontinued' ? colors.not_started : colors[status]
+				color: colors[status]
 			});
 			index++;
 		}
@@ -111,10 +109,6 @@ class CollectionLogTask {
 		if (options.flags.temp) {
 			options.type = 'temp';
 		}
-		if (options.flags.tame) {
-			options.type = 'tame';
-		}
-
 		const { collection, type, user, flags } = options;
 
 		let collectionLog: IToReturnCollection | undefined | false;
@@ -170,7 +164,7 @@ class CollectionLogTask {
 
 		const fullSize = flags.nl || !collectionLog.leftList;
 
-		const userTotalCl = await getTotalCl(user, type, options.stats);
+		const userTotalCl = getTotalCl(user, type, options.stats);
 		const leftListCanvas = this.drawLeftList(collectionLog, sprite);
 
 		let leftDivisor = 214;
@@ -266,10 +260,6 @@ class CollectionLogTask {
 				y += 1;
 			}
 
-			if (!userCollectionBank.has(item)) {
-				ctx.globalAlpha = 0.3;
-			}
-
 			let qtyText = 0;
 			if (!userCollectionBank.has(item)) {
 				ctx.globalAlpha = 0.3;
@@ -323,10 +313,6 @@ class CollectionLogTask {
 			color = this.COLORS.PAGE_TITLE.PARTIAL_COMPLETION;
 		}
 
-		if (collectionLog.category === 'Discontinued') {
-			color = this.COLORS.PAGE_TITLE.NOT_STARTED;
-		}
-
 		const obtainableMeasure = canvas.measureText(toDraw, 'Compact');
 		canvas.drawText({
 			text: `${flags.missing ? '' : `${collectionLog.collectionObtained.toLocaleString()}/`}${collectionLog.collectionTotal.toLocaleString()}`,
@@ -335,7 +321,7 @@ class CollectionLogTask {
 			color
 		});
 
-		if (collectionLog.completions && ['collection', 'bank', 'tames'].includes(type)) {
+		if (collectionLog.completions && ['collection', 'bank'].includes(type)) {
 			const baseText = collectionLog.isActivity ? 'Completions: ' : 'Kills: ';
 			let drawnSoFar = baseText;
 			// Times done/killed
@@ -393,7 +379,7 @@ class CollectionLogTask {
 		ctx.restore();
 
 		ctx.save();
-		const value = Util.toKMB(totalPrice);
+		const value = toKMB(totalPrice);
 		canvas.drawText({
 			text: value,
 			x: canvas.width - 15 - canvas.measureTextWidth(value),

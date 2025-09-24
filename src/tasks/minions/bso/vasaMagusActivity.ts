@@ -1,7 +1,7 @@
 import { objectEntries, randArrItem, randInt, roll } from '@oldschoolgg/toolkit';
-import { Bank, Monsters, resolveItems } from 'oldschooljs';
+import { Bank, Items, Monsters, resolveItems } from 'oldschooljs';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { clAdjustedDroprate, getMonster } from '@/lib/bso/bsoUtil.js';
 import { globalDroprates } from '@/lib/data/globalDroprates.js';
 import { isDoubleLootActive } from '@/lib/doubleLoot.js';
 import { kittens } from '@/lib/growablePets.js';
@@ -11,11 +11,10 @@ import { VasaMagus, VasaMagusLootTable } from '@/lib/minions/data/killableMonste
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
 import { addMonsterXP } from '@/lib/minions/functions/index.js';
 import type { NewBossOptions } from '@/lib/types/minions.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { itemNameFromID } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { getMonster, itemNameFromID } from '@/lib/util.js';
 
 const vasaBosses = [
 	Monsters.AbyssalSire,
@@ -74,7 +73,7 @@ export const vasaTask: MinionTask = {
 		const pet = user.user.minion_equippedPet;
 		if (pet && kittens.includes(pet) && roll(1)) {
 			await user.update({
-				minion_equippedPet: getOSItem('Magic kitten').id
+				minion_equippedPet: Items.getOrThrow('Magic kitten').id
 			});
 			await user.addItemsToCollectionLog(new Bank().add('Magic kitten'));
 			resultStr += `\n**Vasa cast a spell on you, but your ${itemNameFromID(

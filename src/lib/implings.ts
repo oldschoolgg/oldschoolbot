@@ -10,9 +10,9 @@ import {
 	MysteryImpling,
 	ShrimplingImpling
 } from '@/lib/simulation/customImplings.js';
-import { InventionID, inventionBoosts, inventionItemBoost } from './invention/inventions.js';
+import activityInArea, { WorldLocations } from '@/lib/util/activityInArea.js';
+import { inventionBoosts, InventionID, inventionItemBoost } from './invention/inventions.js';
 import type { ActivityTaskData } from './types/minions.js';
-import activityInArea, { WorldLocations } from './util/activityInArea.js';
 
 const {
 	BabyImpling,

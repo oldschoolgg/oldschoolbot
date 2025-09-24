@@ -1,11 +1,10 @@
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import type { Mixable } from '@/lib/skilling/types.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 
 const Crush: Mixable[] = [
 	{
-		item: getOSItem('Unicorn horn dust'),
+		item: Items.getOrThrow('Unicorn horn dust'),
 		aliases: ['unicorn horn dust', 'unicorn horn'],
 		level: 1,
 		xp: 0,
@@ -15,7 +14,7 @@ const Crush: Mixable[] = [
 		wesley: true
 	},
 	{
-		item: getOSItem('Chocolate dust'),
+		item: Items.getOrThrow('Chocolate dust'),
 		aliases: ['chocolate dust', 'chocolate', 'chocolate bar'],
 		level: 1,
 		xp: 0,
@@ -25,7 +24,7 @@ const Crush: Mixable[] = [
 		wesley: true
 	},
 	{
-		item: getOSItem('Kebbit teeth dust'),
+		item: Items.getOrThrow('Kebbit teeth dust'),
 		aliases: ['kebbit teeth', 'kebbit teeth dust'],
 		level: 1,
 		xp: 0,
@@ -35,7 +34,7 @@ const Crush: Mixable[] = [
 		wesley: true
 	},
 	{
-		item: getOSItem('Crushed nest'),
+		item: Items.getOrThrow('Crushed nest'),
 		aliases: ['crushed nest', 'nest', 'bird nest', 'birds nest'],
 		level: 1,
 		xp: 0,
@@ -45,7 +44,7 @@ const Crush: Mixable[] = [
 		wesley: true
 	},
 	{
-		item: getOSItem('Goat horn dust'),
+		item: Items.getOrThrow('Goat horn dust'),
 		aliases: ['goat horn dust', 'goat', 'goat horn', 'desert goat horn'],
 		level: 1,
 		xp: 0,
@@ -55,7 +54,7 @@ const Crush: Mixable[] = [
 		wesley: true
 	},
 	{
-		item: getOSItem('Silver dust'),
+		item: Items.getOrThrow('Silver dust'),
 		aliases: ['silver dust', 'silver'],
 		level: 1,
 		xp: 0,
@@ -65,7 +64,7 @@ const Crush: Mixable[] = [
 		wesley: false
 	},
 	{
-		item: getOSItem('Crushed superior dragon bones'),
+		item: Items.getOrThrow('Crushed superior dragon bones'),
 		aliases: [
 			'crushed superior dragon bones',
 			'superior dragon bones',
@@ -81,7 +80,7 @@ const Crush: Mixable[] = [
 		wesley: true
 	},
 	{
-		item: getOSItem('Dragon scale dust'),
+		item: Items.getOrThrow('Dragon scale dust'),
 		aliases: ['dragon scale dust', 'dragon scale', 'blue dragon scale'],
 		level: 1,
 		xp: 0,
@@ -91,7 +90,7 @@ const Crush: Mixable[] = [
 		wesley: true
 	},
 	{
-		item: getOSItem('Lava scale shard'),
+		item: Items.getOrThrow('Lava scale shard'),
 		aliases: ['lava dragon scale', 'lava dragon dust', 'lava dragon', 'lava shard'],
 		level: 1,
 		xp: 0,
@@ -101,7 +100,7 @@ const Crush: Mixable[] = [
 		wesley: true
 	},
 	{
-		item: getOSItem('Athelas paste'),
+		item: Items.getOrThrow('Athelas paste'),
 		aliases: ['athelas paste', 'athelas'],
 		level: 82,
 		xp: 10,
@@ -112,7 +111,7 @@ const Crush: Mixable[] = [
 		outputMultiple: 2
 	},
 	{
-		item: getOSItem('Nihil Dust'),
+		item: Items.getOrThrow('Nihil Dust'),
 		aliases: ['nihil dust', 'nihil shard', 'nihil'],
 		level: 1,
 		xp: 0,

@@ -1,10 +1,9 @@
-import { percentChance, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { CropUpgradeType } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { Bank, type Item } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
-import { BitField } from '@/lib/constants.js';
 import { superCompostables } from '@/lib/data/filterables.js';
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { calcNumOfPatches } from '@/lib/skilling/functions/calcsFarming.js';
@@ -82,11 +81,6 @@ export async function harvestCommand({
 	if (user.hasEquippedOrInBank(['Ring of endurance'])) {
 		boostStr.push('10% time for Ring of Endurance');
 		duration *= 0.9;
-	}
-
-	if (user.bitfield.includes(BitField.HasMoondashCharm)) {
-		boostStr.push('25% faster for Moondash charm');
-		duration = reduceNumByPercent(duration, 25);
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'Farming');
@@ -225,11 +219,6 @@ export async function farmingPlantCommand({
 		duration *= 0.9;
 	}
 
-	if (user.bitfield.includes(BitField.HasMoondashCharm)) {
-		boostStr.push('25% faster for Moondash charm');
-		duration = reduceNumByPercent(duration, 25);
-	}
-
 	for (const [diary, tier] of [[ArdougneDiary, ArdougneDiary.elite]] as const) {
 		const [has] = await userhasDiaryTier(user, tier);
 		if (has) {
@@ -252,22 +241,6 @@ export async function farmingPlantCommand({
 			}
 		}
 		cost.add(seed.id, qty * quantity);
-	}
-
-	const hasScroll = user.owns('Scroll of life');
-	const hasMasterFarmingCape = user.hasEquippedOrInBank('Farming master cape');
-	let seedSavingPercent = 0;
-	if (hasScroll && hasMasterFarmingCape) seedSavingPercent = 50;
-	else if (hasScroll || hasMasterFarmingCape) seedSavingPercent = 15;
-	if (seedSavingPercent > 0) {
-		boostStr.push(`${seedSavingPercent}% less seeds used`);
-		for (const [seed, amountCost] of plant.inputItems
-			.items()
-			.map((i): [Item, number] => [i[0], cost.amount(i[0].id)])) {
-			for (let i = 0; i < amountCost; i++) {
-				if (percentChance(seedSavingPercent)) cost.remove(seed.id, 1);
-			}
-		}
 	}
 
 	let didPay = false;
@@ -294,7 +267,7 @@ export async function farmingPlantCommand({
 	}
 
 	if (!user.owns(cost)) return `You don't own ${cost}.`;
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 
 	updateBankSetting('farming_cost_bank', cost);
 	// If user does not have something already planted, just plant the new seeds.
@@ -374,7 +347,7 @@ export async function compostBinCommand(
 		`${user}, please confirm that you want to compost ${cost} into ${loot}.`
 	);
 
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 	await user.addItemsToBank({ items: loot });
 
 	return `You composted ${cost} into ${loot}.`;

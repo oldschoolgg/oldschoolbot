@@ -1,12 +1,15 @@
-import { percentChance } from '@oldschoolgg/toolkit';
+import { Items } from 'oldschooljs';
 
 import { checkDegradeableItemCharges, degradeItem } from '@/lib/degradeableItems.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
-import getOSItem from '@/lib/util/getOSItem.js';
+import { percentChance } from '@/lib/util/rng.js';
 
 export async function bloodEssence(user: MUser, quantity: number): Promise<number> {
 	let bonusQuantity = 0;
-	const bloodEssenceCharges = await checkDegradeableItemCharges({ item: getOSItem('Blood essence (active)'), user });
+	const bloodEssenceCharges = await checkDegradeableItemCharges({
+		item: Items.getOrThrow('Blood essence (active)'),
+		user
+	});
 	if (bloodEssenceCharges > 0) {
 		for (let i = 0; i < quantity; i++) {
 			if (bonusQuantity === bloodEssenceCharges - 1) {
@@ -17,7 +20,7 @@ export async function bloodEssence(user: MUser, quantity: number): Promise<numbe
 		}
 		if (bonusQuantity > 0) {
 			await degradeItem({
-				item: getOSItem('Blood essence (active)'),
+				item: Items.getOrThrow('Blood essence (active)'),
 				chargesToDegrade: bonusQuantity,
 				user
 			});
@@ -29,9 +32,9 @@ export async function bloodEssence(user: MUser, quantity: number): Promise<numbe
 export function raimentBonus(user: MUser, quantity: number): number {
 	let bonusQuantity = 0;
 	if (
-		user.hasEquippedOrInBank(
+		user.gear.skilling.hasEquipped(
 			Object.keys(Runecraft.raimentsOfTheEyeItems).map(i => Number.parseInt(i)),
-			'every'
+			true
 		)
 	) {
 		const amountToAdd = Math.floor(quantity * (60 / 100));
@@ -39,7 +42,7 @@ export function raimentBonus(user: MUser, quantity: number): number {
 	} else {
 		// For each Raiments of the Eye item, check if they have it, give its' quantity boost if so (NO bonus XP).
 		for (const [itemID, bonus] of Object.entries(Runecraft.raimentsOfTheEyeItems)) {
-			if (user.hasEquippedOrInBank(Number.parseInt(itemID))) {
+			if (user.gear.skilling.hasEquipped([Number.parseInt(itemID)], false)) {
 				const amountToAdd = Math.floor(quantity * (bonus / 100));
 				bonusQuantity += amountToAdd;
 			}

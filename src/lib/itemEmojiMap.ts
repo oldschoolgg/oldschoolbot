@@ -1,7 +1,6 @@
 import { Openables } from 'oldschooljs';
 
 import { InfernalImpling } from '@/lib/simulation/customImplings.js';
-import getOSItem from './util/getOSItem.js';
 
 export const emojiMap = new Map([
 	[Openables.BabyImpling.id, '<:Baby_impling_jar:883170214068514877>'],
@@ -16,8 +15,8 @@ export const emojiMap = new Map([
 	[Openables.CrystalImpling.id, '<:Crystal_impling_jar:883170214152405013>'],
 	[Openables.DragonImpling.id, '<:Dragon_impling_jar:883170214131417119>'],
 	[Openables.LuckyImpling.id, '<:Lucky_impling_jar:883170214534074448>'],
-	[getOSItem('Builders supply crate').id, '<:Builders_supply_crate:883173659731198002>'],
-	[getOSItem('Spoils of war').id, '<:Spoils_of_war:883173659613736960>']
+	[Items.getOrThrow('Builders supply crate').id, '<:Builders_supply_crate:883173659731198002>'],
+	[Items.getOrThrow('Spoils of war').id, '<:Spoils_of_war:883173659613736960>']
 ]);
 
 const bsoEmojis = [

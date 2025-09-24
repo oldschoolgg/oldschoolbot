@@ -23,6 +23,16 @@ import {
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { isEmpty } from 'remeda';
 
+import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
+import {
+	type ArbitraryTameActivity,
+	seaMonkeySpells,
+	tameKillableMonsters,
+	TameSpeciesID,
+	type TameTaskOptions,
+	TameType
+} from '@/lib/bso/tames.js';
+import { tameLastFinishedActivity } from '@/lib/bso/tameUtil.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BitField } from '@/lib/constants.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
@@ -32,20 +42,9 @@ import { runCommand } from '@/lib/settings/settings.js';
 import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
 import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
 import type { MTame } from '@/lib/structures/MTame.js';
-import {
-	type ArbitraryTameActivity,
-	seaMonkeySpells,
-	TameSpeciesID,
-	type TameTaskOptions,
-	TameType,
-	tameKillableMonsters
-} from '@/lib/tames.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
-import getOSItem from '@/lib/util/getOSItem.js';
-import { handleCrateSpawns } from '@/lib/util/handleCrateSpawns.js';
 import { assert } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { tameLastFinishedActivity } from '@/lib/util/tameUtil.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
@@ -466,7 +465,7 @@ export async function repeatTameTrip({
 				commandName: 'tames',
 				args: {
 					collect: {
-						name: getOSItem(data.itemID).name
+						name: Items.getOrThrow(data.itemID).name
 					}
 				},
 				bypassInhibitors: true,
@@ -483,13 +482,13 @@ export async function repeatTameTrip({
 			switch (data.spellID) {
 				case 1: {
 					args = {
-						tan: getOSItem(data.itemID).name
+						tan: Items.getOrThrow(data.itemID).name
 					};
 					break;
 				}
 				case 2: {
 					args = {
-						plank_make: getOSItem(data.itemID).name
+						plank_make: Items.getOrThrow(data.itemID).name
 					};
 					break;
 				}
@@ -507,7 +506,7 @@ export async function repeatTameTrip({
 				}
 				case 5: {
 					args = {
-						superheat_item: getOSItem(data.itemID).name
+						superheat_item: Items.getOrThrow(data.itemID).name
 					};
 					break;
 				}

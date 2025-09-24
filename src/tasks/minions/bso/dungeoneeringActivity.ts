@@ -1,8 +1,8 @@
 import { reduceNumByPercent, roll, Time } from '@oldschoolgg/toolkit';
 import { Bank, randomVariation, toKMB } from 'oldschooljs';
 
+import { MysteryBoxes } from '@/lib/bso/bsoOpenables.js';
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
-import { MysteryBoxes } from '@/lib/bsoOpenables.js';
 import { isDoubleLootActive } from '@/lib/doubleLoot.js';
 import {
 	calcMaxFloorUserCanDo,

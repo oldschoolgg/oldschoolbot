@@ -1,4 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
@@ -82,7 +82,7 @@ export async function collectCommand(
 		if (!user.owns(cost)) {
 			return `You don't have the items needed for this trip, you need: ${cost}.`;
 		}
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 
 		await updateBankSetting('collecting_cost', cost);
 	}

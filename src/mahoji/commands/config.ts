@@ -14,22 +14,21 @@ import {
 	resolveColor,
 	type User
 } from 'discord.js';
-import { Bank, type ItemBank } from 'oldschooljs';
+import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import { gearImages } from '@/lib/canvas/gearImageData.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BitField, ParsedCustomEmojiWithGroups, PerkTier } from '@/lib/constants.js';
-import { DynamicButtons } from '@/lib/DynamicButtons.js';
 import { Eatables } from '@/lib/data/eatables.js';
+import { DynamicButtons } from '@/lib/DynamicButtons.js';
 import { Inventions } from '@/lib/invention/inventions.js';
-import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
 import { CombatOptionsArray, CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
+import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
 import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerUtil.js';
 import { BankSortMethods } from '@/lib/sorts.js';
 import { emojiServers } from '@/lib/util/cachedUserIDs.js';
-import { getItem } from '@/lib/util/getOSItem.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
@@ -222,7 +221,7 @@ async function favFoodConfig(
 		return 'Cleared all favorite food.';
 	}
 	const currentFavorites = user.user.favorite_food;
-	const item = getItem(itemToAdd ?? itemToRemove);
+	const item = Items.getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite food is: ${
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
 	}.`;
@@ -253,7 +252,7 @@ async function favItemConfig(
 		return 'Cleared all favorite items.';
 	}
 	const currentFavorites = user.user.favoriteItems;
-	const item = getItem(itemToAdd ?? itemToRemove);
+	const item = Items.getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite items are: ${
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ').slice(0, 1500)
 	}.`;
@@ -302,8 +301,8 @@ async function favAlchConfig(
 			.join(', ')} to your favorites.`;
 	}
 
-	const removeItem = itemToRemove ? getItem(itemToRemove) : null;
-	const addItem = itemToAdd ? getItem(itemToAdd) : null;
+	const removeItem = itemToRemove ? Items.getItem(itemToRemove) : null;
+	const addItem = itemToAdd ? Items.getItem(itemToAdd) : null;
 	const item = removeItem || addItem;
 
 	if (!item) {
@@ -345,7 +344,7 @@ async function favBhSeedsConfig(
 
 	const currentFavorites = user.user.favorite_bh_seeds;
 	if (itemToAdd || itemToRemove) {
-		const item = getItem(itemToAdd ?? itemToRemove);
+		const item = Items.getItem(itemToAdd ?? itemToRemove);
 		if (!item) return "That item doesn't exist.";
 		if (!birdhouseSeeds.some(seed => seed.item.id === item.id)) return "That item can't be used in birdhouses.";
 		if (itemToAdd) {
@@ -629,7 +628,7 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 }
 
 function pinnedTripLimit(perkTier: number) {
-	return clamp(perkTier + 1, 1, 4);
+	return clamp(perkTier + 1, { min: 1, max: 4 });
 }
 export async function pinTripCommand(
 	user: MUser,
@@ -967,7 +966,7 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'Add an item to your favorite food.',
 							required: false,
 							autocomplete: async (value: string) => {
-								const rawFood = Eatables.filter(i => i.raw).map(i => getItem(i.raw!)!);
+								const rawFood = Eatables.filter(i => i.raw).map(i => Items.getItem(i.raw!)!);
 								const autocompleteList = Eatables.filter(i =>
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({
@@ -993,7 +992,7 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'Remove an item from your favorite food.',
 							required: false,
 							autocomplete: async (value: string, user: User) => {
-								const rawFood = Eatables.filter(i => i.raw).map(i => getItem(i.raw!)!);
+								const rawFood = Eatables.filter(i => i.raw).map(i => Items.getItem(i.raw!)!);
 								const allFood = Eatables.map(i => {
 									return { name: i.name, id: i.id };
 								});

@@ -1,4 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { randomVariation } from '@oldschoolgg/toolkit/util';
 
 import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';

@@ -1,13 +1,13 @@
-import { increaseNumByPercent } from 'e';
+import { increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { convertLVLtoXP, ItemGroups } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
-import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
-import { activitiesCommand } from '@/mahoji/commands/activities';
-import { createTestUser } from '../util';
+import { Fishing } from '../../../src/lib/skilling/skills/fishing/fishing.js';
+import { activitiesCommand } from '../../../src/mahoji/commands/activities.js';
+import { createTestUser } from '../util.js';
 
 describe('Camdozzal Fish Command', async () => {
-	it.skip('should give angler boost', async () => {
+	it('should give angler boost', async () => {
 		const user = await createTestUser();
 		await user.equip('skilling', ItemGroups.anglerOutfit);
 		const startingXP = convertLVLtoXP(80);

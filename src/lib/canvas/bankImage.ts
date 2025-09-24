@@ -7,7 +7,6 @@ import { UserError } from '@oldschoolgg/toolkit/structures';
 import { Bank, type Item, type ItemBank, itemID, toKMB } from 'oldschooljs';
 import { loadImage } from 'skia-canvas';
 
-import { divinationEnergies } from '@/lib/bso/divination.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { allCLItems } from '@/lib/data/Collections.js';
 import { filterableTypes } from '@/lib/data/filterables.js';
@@ -201,40 +200,8 @@ const forcedShortNameMap = new Map<number, string>([
 
 	// Ore Packs
 	[27_019, 'GF Pack'],
-	[27_693, 'VM Pack'],
-
-	// BSO exclusive misc
-	[i('Athelas'), 'athelas'],
-	[i('Korulsi'), 'korulsi'],
-	[i('Grimy korulsi'), 'korulsi'],
-	[i('Athelas seed'), 'athelas'],
-	[i('Mysterious seed'), 'mysterious'],
-	[i('Mango seed'), 'mango'],
-	[i('Avocado seed'), 'avocado'],
-	[i('Lychee seed'), 'lychee'],
-	[i('Blood orange seed'), 'b.orange'],
-	[i('Spirit weed seed'), 'spirit.w'],
-	[i('Spirit weed'), 'spirit.w'],
-	[i('Advax berry seed'), 'advax'],
-	[i('Advax berry'), 'advax'],
-	[i('Divination Potion'), 'div'],
-	[i('Elder logs'), 'elder'],
-	[i('Clue scroll (grandmaster)'), 'grandmaster'],
-	[i('Reward casket (grandmaster)'), 'grandmaster'],
-	[i('Atomic energy'), 'atomic'],
-	[i('Fruity zygomite spores'), 'fruity'],
-	[i('Barky zygomite spores'), 'barky'],
-	[i('Herbal zygomite spores'), 'herbal'],
-	[i('Clue scroll (elder)'), 'elder'],
-	[i('Reward casket (elder)'), 'elder']
+	[27_693, 'VM Pack']
 ]);
-
-for (const energy of divinationEnergies) {
-	forcedShortNameMap.set(energy.item.id, energy.item.name.slice(0, 4));
-	if (energy.boon) {
-		forcedShortNameMap.set(energy.boon.id, energy.item.name.slice(0, 4));
-	}
-}
 
 export const bankFlags = [
 	'show_price',
@@ -244,8 +211,7 @@ export const bankFlags = [
 	'show_names',
 	'show_weights',
 	'show_all',
-	'wide',
-	'invention_xp'
+	'wide'
 ] as const;
 export type BankFlag = (typeof bankFlags)[number];
 

@@ -1,4 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank } from 'oldschooljs';
 
 import { MorytaniaDiary, userhasDiaryTier } from '@/lib/diaries.js';
@@ -23,8 +23,7 @@ export const collectingTask: MinionTask = {
 		}
 		const totalQuantity = quantity * colQuantity;
 		const loot = new Bank().add(collectable.item.id, totalQuantity);
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

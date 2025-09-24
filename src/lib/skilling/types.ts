@@ -206,9 +206,9 @@ export interface Craftable {
 	crushChance?: number[];
 	bankChest?: boolean;
 	outputMultiple?: number;
-	otherSkillRequirements?: Partial<Skills>;
 	qpRequired?: number;
 	wcLvl?: number;
+	otherSkillRequirements?: Partial<Skills>;
 	cantBeDoubled?: boolean;
 }
 

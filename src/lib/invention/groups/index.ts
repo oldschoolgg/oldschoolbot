@@ -1,5 +1,4 @@
 import type { DisassemblySourceGroup } from '@/lib/invention/index.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { Ashes } from './Ashes.js';
 import { Axes } from './Axes.js';
 import { Barrows } from './Barrows.js';
@@ -55,7 +54,7 @@ import { UnstrungBows } from './UnstrungBows.js';
 
 const Whips: DisassemblySourceGroup = {
 	name: 'Whips',
-	items: [{ item: getOSItem('Abyssal whip'), lvl: 90, flags: new Set(['abyssal']) }],
+	items: [{ item: Items.getOrThrow('Abyssal whip'), lvl: 90, flags: new Set(['abyssal']) }],
 	parts: { abyssal: 50, sharp: 25, flexible: 25 }
 };
 

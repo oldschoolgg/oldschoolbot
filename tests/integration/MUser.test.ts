@@ -1,14 +1,13 @@
+import { objectEntries, randArrItem, randInt, Time } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
-import { objectEntries, randArrItem, randInt, Time } from 'e';
 import { Bank, convertLVLtoXP, type ItemBank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { GLOBAL_BSO_XP_MULTIPLIER } from '../../src/lib/bso/bsoConstants';
-import { ClueTiers } from '../../src/lib/clues/clueTiers';
-import { SkillsEnum } from '../../src/lib/skilling/types';
-import { assert } from '../../src/lib/util/logError';
-import { mahojiUsersSettingsFetch } from '../../src/mahoji/mahojiSettings';
-import { createTestUser } from './util';
+import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
+import { SkillsEnum } from '../../src/lib/skilling/types.js';
+import { assert } from '../../src/lib/util/logError.js';
+import { mahojiUsersSettingsFetch } from '../../src/mahoji/mahojiSettings.js';
+import { createTestUser } from './util.js';
 
 async function stressTest(userID: string) {
 	const user = await mUserFetch(userID);
@@ -36,8 +35,8 @@ async function stressTest(userID: string) {
 
 	await assertBankMatches();
 
-	await transactItems({ userID, itemsToRemove: currentBank, filterLoot: false });
-	await transactItems({ userID, itemsToAdd: currentBank, filterLoot: false });
+	await user.transactItems({ itemsToRemove: currentBank, filterLoot: false });
+	await user.transactItems({ itemsToAdd: currentBank, filterLoot: false });
 	await assertBankMatches();
 	await user.removeItemsFromBank(currentBank);
 	await assertGP(currentGP);
@@ -48,22 +47,21 @@ async function stressTest(userID: string) {
 	await assertBankMatches();
 
 	await assertGP(currentGP);
-	await transactItems({ userID, itemsToRemove: gpBank, filterLoot: false });
+	await user.transactItems({ itemsToRemove: gpBank, filterLoot: false });
 	await assertGP(0);
-	await transactItems({ userID, itemsToAdd: gpBank, filterLoot: false });
+	await user.transactItems({ itemsToAdd: gpBank, filterLoot: false });
 	await assertBankMatches();
 	await assertGP(currentGP);
 
 	// Adding and removing at same time
 	const everything = currentBank.clone().add(gpBank);
-	await transactItems({ userID, itemsToRemove: everything, itemsToAdd: everything, filterLoot: false });
+	await user.transactItems({ itemsToRemove: everything, itemsToAdd: everything, filterLoot: false });
 	await assertBankMatches();
 
 	// Collection Log
 	const clBankChange = new Bank().add('Coins').add('Twisted bow').freeze();
 	assert(currentCL.equals(await fetchCL()), `CL should not have changed ${currentCL.difference(await fetchCL())}`);
-	const { previousCL, newCL } = await transactItems({
-		userID,
+	const { previousCL, newCL } = await user.transactItems({
 		itemsToAdd: clBankChange,
 		collectionLog: true,
 		filterLoot: false
@@ -91,19 +89,18 @@ describe('MUser', () => {
 		const user = await createTestUser();
 		expect(user.skillsAsLevels.agility).toEqual(1);
 		const result = await user.addXP({ skillName: SkillsEnum.Agility, amount: 1000 });
-		const xpMultiplied = 1000 * GLOBAL_BSO_XP_MULTIPLIER;
-		expect(user.skillsAsLevels.agility).toEqual(20);
-		expect(result).toEqual(`You received ${xpMultiplied.toLocaleString()} <:agility:630911040355565568> XP.
-**Congratulations! Your Agility level is now 20** 🎉`);
+		expect(user.skillsAsLevels.agility).toEqual(9);
+		expect(result).toEqual(`You received 1,000 <:agility:630911040355565568> XP.
+**Congratulations! Your Agility level is now 9** 🎉`);
 		const xpAdded = await global.prisma!.xPGain.findMany({
 			where: {
 				user_id: BigInt(user.id),
 				skill: 'agility',
-				xp: xpMultiplied
+				xp: 1000
 			}
 		});
 		expect(xpAdded.length).toEqual(1);
-		expect(xpAdded[0].xp).toEqual(xpMultiplied);
+		expect(xpAdded[0].xp).toEqual(1000);
 	});
 
 	test('skillsAsLevels/skillsAsXP', async () => {
@@ -116,16 +113,13 @@ describe('MUser', () => {
 			const expectedVal = key === 'hitpoints' ? convertLVLtoXP(10) : convertLVLtoXP(1);
 			expect(val).toEqual(expectedVal);
 		}
-		expect(user.skillsAsLevels.dungeoneering).toEqual(1);
-		await user.addXP({ skillName: SkillsEnum.Agility, amount: convertLVLtoXP(50) / 5 });
-		await user.addXP({ skillName: SkillsEnum.Attack, amount: convertLVLtoXP(50) / 5 });
-		await user.addXP({ skillName: SkillsEnum.Invention, amount: convertLVLtoXP(50) / 5 });
+		await user.addXP({ skillName: SkillsEnum.Agility, amount: convertLVLtoXP(50) });
+		await user.addXP({ skillName: SkillsEnum.Attack, amount: convertLVLtoXP(50) });
 
 		expect(user.skillsAsLevels.agility).toEqual(50);
 		expect(user.skillsAsLevels.attack).toEqual(50);
 		expect(user.skillsAsXP.agility).toEqual(convertLVLtoXP(50));
 		expect(user.skillsAsXP.attack).toEqual(convertLVLtoXP(50));
-		expect(user.skillsAsLevels.invention).toEqual(50);
 	});
 
 	test('addItemsToCollectionLog', async () => {

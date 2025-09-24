@@ -1,5 +1,6 @@
+import { randInt } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { Bank, ItemGroups } from 'oldschooljs';
+import { Bank, ItemGroups, Items } from 'oldschooljs';
 
 import { userHasFlappy } from '@/lib/invention/inventions.js';
 import {
@@ -9,10 +10,9 @@ import {
 	rewardTokens
 } from '@/lib/minions/data/templeTrekking.js';
 import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { percentChance, randInt } from '@/lib/util/rng.js';
+import { percentChance } from '@/lib/util/rng.js';
 
 function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 	let lowestCountPiece = 0;
@@ -46,10 +46,10 @@ export const templeTrekkingTask: MinionTask = {
 		const loot = new Bank();
 
 		const rewardToken = stringMatches(difficulty, 'hard')
-			? getOSItem(rewardTokens.hard)
+			? Items.getOrThrow(rewardTokens.hard)
 			: stringMatches(difficulty, 'medium')
-				? getOSItem(rewardTokens.medium)
-				: getOSItem(rewardTokens.easy);
+				? Items.getOrThrow(rewardTokens.medium)
+				: Items.getOrThrow(rewardTokens.easy);
 
 		let totalEncounters = 0;
 		for (let trip = 0; trip < quantity; trip++) {
@@ -87,8 +87,7 @@ export const templeTrekkingTask: MinionTask = {
 			loot.multiply(2);
 		}
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

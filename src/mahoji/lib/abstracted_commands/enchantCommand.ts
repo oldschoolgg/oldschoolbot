@@ -1,8 +1,7 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Items, itemID } from 'oldschooljs';
+import { Items } from 'oldschooljs';
 
-import { BitField } from '@/lib/constants.js';
 import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { EnchantingActivityTaskOptions } from '@/lib/types/minions.js';
@@ -21,10 +20,6 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 
 	if (!enchantable) {
 		return 'That is not a valid item to enchant.';
-	}
-
-	if (enchantable.id === itemID('Magic banana') && !user.bitfield.includes(BitField.HasBananaEnchantmentScroll)) {
-		return "You haven't learnt this spell yet.";
 	}
 
 	if (user.skillLevel(SkillsEnum.Magic) < enchantable.level) {
@@ -61,7 +56,7 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 			enchantable.input
 		}, you're missing **${cost.clone().remove(userBank)}**.`;
 	}
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 
 	updateBankSetting('magic_cost_bank', cost);
 
@@ -71,8 +66,7 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 		channelID: channelID.toString(),
 		quantity,
 		duration,
-		type: 'Enchanting',
-		cantBeDoubled: enchantable.cantBeDoubled
+		type: 'Enchanting'
 	});
 
 	const xpHr = `${Math.round(((enchantable.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;

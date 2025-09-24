@@ -8,13 +8,12 @@ import { MaterialBank } from '@/lib/invention/MaterialBank.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { DisassembleTaskOptions } from '@/lib/types/minions.js';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export async function disassemblyTask(data: DisassembleTaskOptions) {
 	const { userID, qty } = data;
 	const user = await mUserFetch(userID);
-	const item = getOSItem(data.i);
+	const item = Items.getOrThrow(data.i);
 
 	const messages: string[] = [];
 	const cost = new Bank().add(item.id, qty);

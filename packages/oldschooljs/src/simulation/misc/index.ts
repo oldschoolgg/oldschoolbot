@@ -1,11 +1,11 @@
-import LootTable from '../../structures/LootTable';
-import { BarbarianAssault } from './BarbarianAssault';
-import { ChambersOfXeric } from './ChambersOfXeric';
-import { FishingTrawler } from './FishingTrawler';
-import { Gauntlet } from './Gauntlet';
-import Nightmare from './Nightmare';
-import { Tempoross } from './Tempoross';
-import Zalcano from './Zalcano';
+import LootTable from '@/structures/LootTable.js';
+import { BarbarianAssault } from './BarbarianAssault.js';
+import { ChambersOfXeric } from './ChambersOfXeric.js';
+import { FishingTrawler } from './FishingTrawler.js';
+import { Gauntlet } from './Gauntlet.js';
+import Nightmare from './Nightmare.js';
+import { Tempoross } from './Tempoross.js';
+import Zalcano from './Zalcano.js';
 
 export const GrandHallowedCoffin = new LootTable()
 	.every('Hallowed mark', [8, 10])
@@ -24,6 +24,6 @@ export const GrandHallowedCoffin = new LootTable()
 
 export { BarbarianAssault, ChambersOfXeric, FishingTrawler, Gauntlet, Nightmare, Tempoross, Zalcano };
 
-export type { ChambersOfXericOptions } from './ChambersOfXeric';
-export * from './Mimic';
-export * from './TheatreOfBlood';
+export type { ChambersOfXericOptions } from './ChambersOfXeric.js';
+export * from './Mimic.js';
+export * from './TheatreOfBlood.js';

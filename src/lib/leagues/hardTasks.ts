@@ -2,6 +2,7 @@ import { notEmpty, sumArr } from '@oldschoolgg/toolkit';
 import { Bank, calcCombatLevel, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
 
 import { divinationEnergies } from '@/lib/bso/divination.js';
+import { dyedItems } from '@/lib/bso/dyedItems.js';
 import { MAX_LEVEL } from '@/lib/constants.js';
 import { circusBuyables } from '@/lib/data/buyables/circusBuyables.js';
 import { fistOfGuthixBuyables } from '@/lib/data/buyables/fistOfGuthixBuyables.js';
@@ -35,7 +36,6 @@ import {
 	WesternProv,
 	WildernessDiary
 } from '@/lib/diaries.js';
-import { dyedItems } from '@/lib/dyedItems.js';
 import { implings } from '@/lib/implings.js';
 import { Inventions } from '@/lib/invention/inventions.js';
 import { MOKTANG_ID } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';

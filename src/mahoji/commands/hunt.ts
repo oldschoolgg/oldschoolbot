@@ -1,15 +1,14 @@
-import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { Time } from '@oldschoolgg/toolkit/datetime';
+import { formatDuration, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, ECreature, type ItemBank, itemID } from 'oldschooljs';
 
+import { monkeyTiers } from '@/lib/bso/monkeyRumble.js';
 import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
-import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions.js';
+import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions.js';
 import { trackLoot } from '@/lib/lootTrack.js';
-import { monkeyTiers } from '@/lib/monkeyRumble.js';
 import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
-import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import { type Creature, HunterTechniqueEnum } from '@/lib/skilling/types.js';
 import type { Skills } from '@/lib/types/index.js';
@@ -293,12 +292,12 @@ export const huntCommand: OSBMahojiCommand = {
 			description: 'The creature you want to hunt.',
 			required: true,
 			autocomplete: async (value: string) => {
-				return creatures
-					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-					.map(i => ({
-						name: i.name,
-						value: i.name
-					}));
+				return Hunter.Creatures.filter(i =>
+					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+				).map(i => ({
+					name: i.name,
+					value: i.name
+				}));
 			}
 		},
 		{

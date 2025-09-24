@@ -4,9 +4,9 @@ import { tame_growth } from '@prisma/client';
 import { ApplicationCommandOptionType, type ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
+import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '@/lib/bso/tames.js';
 import { globalConfig } from '@/lib/constants.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '@/lib/tames.js';
 import { getItem } from '@/lib/util/getOSItem.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';

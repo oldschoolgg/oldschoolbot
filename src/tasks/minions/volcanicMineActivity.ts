@@ -4,8 +4,8 @@ import { Bank, LootTable } from 'oldschooljs';
 import { userHasFlappy } from '@/lib/invention/inventions.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { skillingPetDropRate } from '@/lib/util.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { VolcanicMineGameTime } from '@/mahoji/lib/abstracted_commands/volcanicMineCommand.js';
 
 const fossilTable = new LootTable()
@@ -100,8 +100,7 @@ export const vmTask: MinionTask = {
 			str += `\n${flappyRes.userMsg}`;
 		}
 
-		const { itemsAdded } = await transactItems({
-			userID: user.id,
+		const { itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

@@ -1,18 +1,18 @@
 import { noOp, uniqueArr } from '@oldschoolgg/toolkit';
 
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
-import { globalConfig } from '@/lib/constants.js';
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
+import { syncActiveUserIDs } from '@/lib/util/cachedUserIDs.js';
+import { syncDisabledCommands } from '@/lib/util/syncDisabledCommands.js';
 import { syncCustomPrices } from '@/mahoji/lib/events.js';
 import { cacheBadges } from './badges.js';
 import { syncBlacklists } from './blacklists.js';
+import { globalConfig } from './constants.js';
 import { GrandExchange } from './grandExchange.js';
 import { cacheGEPrices } from './marketPrices.js';
 import { populateRoboChimpCache } from './perkTier.js';
 import { RawSQL } from './rawSql.js';
 import { runStartupScripts } from './startupScripts.js';
-import { syncActiveUserIDs } from './util/cachedUserIDs.js';
-import { syncDisabledCommands } from './util/syncDisabledCommands.js';
 import { logWrapFn } from './util.js';
 
 async function syncCollectionLogSlotTable() {

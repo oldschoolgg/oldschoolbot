@@ -3,7 +3,7 @@ import type { Monster } from 'oldschooljs';
 
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { Minigames } from '@/lib/settings/minigames.js';
-import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 
 export async function getKCByName(user: MUser, kcName: string): Promise<[string, number] | [null, 0]> {
 	const mon = effectiveMonsters.find(
@@ -20,7 +20,7 @@ export async function getKCByName(user: MUser, kcName: string): Promise<[string,
 		return [minigame.name, await user.fetchMinigameScore(minigame.column)];
 	}
 
-	const creature = creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
+	const creature = Hunter.Creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
 	if (creature) {
 		return [creature.name, await user.getCreatureScore(creature.id)];
 	}

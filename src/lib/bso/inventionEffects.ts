@@ -3,11 +3,10 @@ import { Bank, toKMB } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BitField } from '@/lib/constants.js';
-import { InventionID, inventionBoosts, inventionItemBoostRaw } from '@/lib/invention/inventions.js';
+import { inventionBoosts, InventionID, inventionItemBoostRaw } from '@/lib/invention/inventions.js';
 import { bones } from '@/lib/skilling/skills/prayer.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { UpdateBank } from '@/lib/structures/UpdateBank.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { assert } from '@/lib/util/logError.js';
 
 export function clueUpgraderEffect({
@@ -60,11 +59,11 @@ export function clueUpgraderEffect({
 }
 
 const hideLeatherMap = [
-	[getOSItem('Green dragonhide'), getOSItem('Green dragon leather')],
-	[getOSItem('Blue dragonhide'), getOSItem('Blue dragon leather')],
-	[getOSItem('Red dragonhide'), getOSItem('Red dragon leather')],
-	[getOSItem('Black dragonhide'), getOSItem('Black dragon leather')],
-	[getOSItem('Royal dragonhide'), getOSItem('Royal dragon leather')]
+	[Items.getOrThrow('Green dragonhide'), Items.getOrThrow('Green dragon leather')],
+	[Items.getOrThrow('Blue dragonhide'), Items.getOrThrow('Blue dragon leather')],
+	[Items.getOrThrow('Red dragonhide'), Items.getOrThrow('Red dragon leather')],
+	[Items.getOrThrow('Black dragonhide'), Items.getOrThrow('Black dragon leather')],
+	[Items.getOrThrow('Royal dragonhide'), Items.getOrThrow('Royal dragon leather')]
 ] as const;
 
 export function portableTannerEffect({

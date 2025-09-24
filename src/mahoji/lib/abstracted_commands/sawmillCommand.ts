@@ -45,7 +45,7 @@ export async function sawmillCommand(
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerPlank);
 	}
-	quantity = clamp(quantity, 1, 100_000);
+	quantity = clamp(quantity, { min: 1, max: 100_000 });
 
 	const inputItemOwned = user.bank.amount(plank.inputItem);
 	if (inputItemOwned < quantity) {

@@ -1,37 +1,21 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import {
-	type ClientStorage,
-	type GearSetupType,
-	type Prisma,
-	tame_growth,
-	type User,
-	type UserStats
-} from '@prisma/client';
+import { randInt, shuffleArr, uniqueArr } from '@oldschoolgg/toolkit';
+import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import type { User as DJSUser } from 'discord.js';
-import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
-import { Bank, convertLVLtoXP, type EMonster, Items, Monsters } from 'oldschooljs';
+import { Bank, convertLVLtoXP, type EMonster, type ItemBank, Items, Monsters, type SkillsEnum } from 'oldschooljs';
 import { integer, nodeCrypto } from 'random-js';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
 
-import { materialTypes } from '@/lib/invention';
-import { MaterialBank } from '@/lib/invention/MaterialBank';
-import getOSItem from '@/lib/util/getOSItem';
-import { giveMaxStats } from '@/mahoji/commands/testpotato';
-import { ironmanCommand } from '@/mahoji/lib/abstracted_commands/ironmanCommand';
-import { globalConfig, type PvMMethod } from '../../src/lib/constants';
-import { MUserClass } from '../../src/lib/MUser';
-import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types';
-import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
-import { Gear } from '../../src/lib/structures/Gear';
-import { MTame } from '../../src/lib/structures/MTame';
-import { TameSpeciesID } from '../../src/lib/tames';
-import type { ItemBank, SkillsRequired } from '../../src/lib/types';
-import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
-import { minionKCommand } from '../../src/mahoji/commands/k';
-import { stealCommand } from '../../src/mahoji/commands/steal';
-import { tamesCommand } from '../../src/mahoji/commands/tames';
-import { runTameTask } from '../../src/tasks/tames/tameTasks';
+import { globalConfig, type PvMMethod } from '../../src/lib/constants.js';
+import { MUserClass } from '../../src/lib/MUser.js';
+import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types.js';
+import { slayerMasters } from '../../src/lib/slayer/slayerMasters.js';
+import { Gear } from '../../src/lib/structures/Gear.js';
+import type { SkillsRequired } from '../../src/lib/types/index.js';
+import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions.js';
+import { minionKCommand } from '../../src/mahoji/commands/k.js';
+import { giveMaxStats } from '../../src/mahoji/commands/testpotato.js';
+import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand.js';
 
 export const TEST_CHANNEL_ID = '1111111111111111';
 
@@ -48,16 +32,32 @@ export function mockDjsUser({ userId }: { userId: string }) {
 	} as any as DJSUser;
 }
 
+class MockInteraction {
+	id = '111155555';
+	__response__: any = {};
+	channelId = TEST_CHANNEL_ID;
+	async deferReply() {
+		return Promise.resolve();
+	}
+	async editReply(res: any) {
+		this.__response__ = res;
+	}
+	async followUp(res: any) {
+		this.__response__ = res;
+	}
+	async reply(res: any) {
+		this.__response__ = res;
+	}
+	user = {
+		id: '123456789'
+	};
+	constructor(userId: string) {
+		this.user.id = userId;
+	}
+}
+
 export function mockInteraction({ userId }: { userId: string }) {
-	return {
-		channelId: TEST_CHANNEL_ID,
-		deferReply: () => Promise.resolve(),
-		editReply: () => Promise.resolve(),
-		followUp: () => Promise.resolve(),
-		user: {
-			id: userId
-		}
-	} as any;
+	return new MockInteraction(userId) as any;
 }
 
 export function mockChannel({ userId }: { userId: string }) {
@@ -126,60 +126,6 @@ export class TestUser extends MUserClass {
 		this.client = client!;
 	}
 
-	async giveIgneTame() {
-		const tame = await prisma.tame.create({
-			data: {
-				user_id: this.id,
-				species_id: TameSpeciesID.Igne,
-				max_artisan_level: 100,
-				max_combat_level: 100,
-				max_gatherer_level: 100,
-				max_support_level: 100,
-				growth_stage: tame_growth.adult
-			}
-		});
-		await this.update({
-			selected_tame: tame.id
-		});
-		return new MTame(tame);
-	}
-
-	async giveMaterials() {
-		const materials = new MaterialBank();
-		for (const mat of materialTypes) materials.add(mat, 10_000);
-		await this.update({
-			materials_owned: materials.bank
-		});
-	}
-
-	async tamePVMTrip(monsterID: number) {
-		const tames = await this.fetchTames();
-		const tame = tames.find(t => t.species.id === TameSpeciesID.Igne)!;
-		const commandResult = await this.runCommand(tamesCommand, {
-			kill: {
-				name: Monsters.get(monsterID)!.name
-			}
-		});
-
-		const activity = await prisma.tameActivity.findFirst({
-			where: {
-				user_id: this.id
-			},
-			include: {
-				tame: true
-			}
-		});
-
-		if (activity) {
-			await runTameTask(activity, tame);
-		}
-		await this.sync();
-		return {
-			commandResult,
-			activity
-		};
-	}
-
 	async runActivity() {
 		const activity = await prisma.activity.findFirst({
 			where: {
@@ -246,10 +192,13 @@ export class TestUser extends MUserClass {
 	}
 
 	async reset() {
-		await ironmanCommand(this, null);
-		await prisma.userStats.deleteMany({ where: { user_id: BigInt(this.id) } });
-		await prisma.user.delete({ where: { id: this.id } });
-		const user = await prisma.user.create({ data: { id: this.id } });
+		const res = await ironmanCommand(this, null);
+		if (res !== 'You are now an ironman.') {
+			throw new Error(`Failed to reset: ${res}`);
+		}
+		await global.prisma!.userStats.deleteMany({ where: { user_id: BigInt(this.id) } });
+		await global.prisma!.user.delete({ where: { id: this.id } });
+		const user = await global.prisma!.user.create({ data: { id: this.id } });
 		await global.prisma!.userStats.create({ data: { user_id: BigInt(this.id) } });
 		this.user = user;
 	}
@@ -274,18 +223,13 @@ export class TestUser extends MUserClass {
 
 	async kill(
 		monster: EMonster,
-		{
-			quantity,
-			method,
-			shouldFail = false,
-			wilderness = false
-		}: { method?: PvMMethod; shouldFail?: boolean; quantity?: number; wilderness?: boolean } = {}
+		{ quantity, method, shouldFail = false }: { method?: PvMMethod; shouldFail?: boolean; quantity?: number } = {}
 	) {
 		const previousBank = this.bank.clone();
 		const currentXP = clone(this.skillsAsXP);
 		const commandResult = await this.runCommand(
 			minionKCommand,
-			{ name: Monsters.get(monster)!.name, method, quantity, wilderness },
+			{ name: Monsters.get(monster)!.name, method, quantity },
 			true
 		);
 		if (shouldFail) {
@@ -297,48 +241,24 @@ export class TestUser extends MUserClass {
 		const newXP = clone(this.skillsAsXP);
 		const xpGained: SkillsRequired = {} as SkillsRequired;
 		for (const skill of SkillsArray) xpGained[skill] = 0;
-		for (const skill of objectKeys(newXP)) {
+		for (const skill of Object.keys(newXP) as SkillsEnum[]) {
 			xpGained[skill as SkillNameType] = newXP[skill] - currentXP[skill];
 		}
 
 		return { commandResult, newKC, xpGained, previousBank, tripStartBank, activityResult };
 	}
 
-	async pickpocket(
-		monster: EMonster,
-		{ quantity, shouldFail = false }: { shouldFail?: boolean; quantity?: number } = {}
-	) {
-		const previousBank = this.bank.clone();
-		const currentXP = clone(this.skillsAsXP);
-		const commandResult = await this.runCommand(
-			stealCommand,
-			{ name: Monsters.get(monster)!.name, quantity },
-			true
-		);
-		if (shouldFail) {
-			expect(commandResult).not.toContain('is now going to');
-		}
-		const activityResult = (await this.runActivity()) as MonsterActivityTaskOptions | undefined;
-		const newXP = clone(this.skillsAsXP);
-		const xpGained: SkillsRequired = {} as SkillsRequired;
-		for (const skill of SkillsArray) xpGained[skill] = 0;
-		for (const skill of objectKeys(newXP)) {
-			xpGained[skill as SkillNameType] = newXP[skill] - currentXP[skill];
-		}
-
-		return { commandResult, xpGained, previousBank, activityResult };
-	}
-
 	async runCommand(command: OSBMahojiCommand, options: object = {}, syncAfter = false) {
+		const cmdOpts = commandRunOptions(this.id);
 		const result = await command.run({
-			...commandRunOptions(this.id),
+			...cmdOpts,
 			user: { createdAt: new Date(), id: this.id } as DJSUser,
 			options
 		});
 		if (syncAfter) {
 			await this.sync();
 		}
-		return result;
+		return result ?? (cmdOpts.interaction as any).__response__;
 	}
 
 	async bankAmountMatch(itemName: string, amount: number) {
@@ -358,11 +278,7 @@ export class TestUser extends MUserClass {
 	async statsMatch(key: keyof UserStats, value: any) {
 		await this.sync();
 		const stats = await this.fetchStats({ [key]: true });
-		if (value instanceof Bank) {
-			if (!new Bank(stats[key]).equals(value)) {
-				throw new Error(`Expected ${key} to be ${value} but got ${new Bank(stats[key])}`);
-			}
-		} else if (stats[key] !== value) {
+		if (stats[key] !== value) {
 			throw new Error(`Expected ${key} to be ${value} but got ${stats[key]}`);
 		}
 	}
@@ -397,7 +313,6 @@ export async function mockUser(
 		rangeGear: number[];
 		rangeLevel: number;
 		mageGear: number[];
-		wildyGear: number[];
 		mageLevel: number;
 		meleeGear: number[];
 		slayerLevel: number;
@@ -427,13 +342,6 @@ export async function mockUser(
 		}
 	}
 
-	const wildyGear = new Gear();
-	if (options.wildyGear) {
-		for (const item of options.wildyGear) {
-			wildyGear.equip(getOSItem(item));
-		}
-	}
-
 	const user = await createTestUser(options.bank, {
 		skills_ranged: options.rangeLevel ? convertLVLtoXP(options.rangeLevel) : undefined,
 		skills_slayer: options.slayerLevel ? convertLVLtoXP(options.slayerLevel) : undefined,
@@ -441,7 +349,6 @@ export async function mockUser(
 		gear_mage: options.mageGear ? (mageGear.raw() as Prisma.InputJsonValue) : undefined,
 		gear_melee: options.meleeGear ? (meleeGear.raw() as Prisma.InputJsonValue) : undefined,
 		gear_range: options.rangeGear ? (rangeGear.raw() as Prisma.InputJsonValue) : undefined,
-		gear_wildy: options.wildyGear ? (wildyGear.raw() as Prisma.InputJsonValue) : undefined,
 		venator_bow_charges: options.venatorBowCharges,
 		QP: options.QP
 	});
@@ -480,8 +387,7 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 				id,
 				...userData,
 				bank: bank?.toJSON(),
-				GP: GP ?? undefined,
-				minion_hasBought: true
+				GP: GP ?? undefined
 			},
 			update: {
 				...userData,

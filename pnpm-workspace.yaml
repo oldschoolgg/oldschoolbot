@@ -1,3 +1,16 @@
 packages:
-  - "packages/*"
-  - "docs"
+  - packages/*
+  - docs
+
+ignoredBuiltDependencies:
+  - wtf_wikipedia
+
+onlyBuiltDependencies:
+  - '@prisma/client'
+  - '@prisma/engines'
+  - '@tailwindcss/oxide'
+  - bufferutil
+  - esbuild
+  - prisma
+  - sharp
+  - skia-canvas

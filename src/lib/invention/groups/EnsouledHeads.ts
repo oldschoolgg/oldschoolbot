@@ -1,95 +1,94 @@
 import type { DisassemblySourceGroup } from '@/lib/invention/index.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 
 export const EnsouledHeads: DisassemblySourceGroup = {
 	name: 'Ensouled Heads',
 	items: [
 		{
-			item: getOSItem('Ensouled abyssal head'),
+			item: Items.getOrThrow('Ensouled abyssal head'),
 			lvl: 90
 		},
 		{
-			item: getOSItem('Ensouled aviansie head'),
+			item: Items.getOrThrow('Ensouled aviansie head'),
 			lvl: 90
 		},
 		{
-			item: getOSItem('Ensouled bear head'),
+			item: Items.getOrThrow('Ensouled bear head'),
 			lvl: 16
 		},
 		{
-			item: getOSItem('Ensouled bloodveld head'),
+			item: Items.getOrThrow('Ensouled bloodveld head'),
 			lvl: 72
 		},
 		{
-			item: getOSItem('Ensouled chaos druid head'),
+			item: Items.getOrThrow('Ensouled chaos druid head'),
 			lvl: 41
 		},
 		{
-			item: getOSItem('Ensouled dagannoth head'),
+			item: Items.getOrThrow('Ensouled dagannoth head'),
 			lvl: 72
 		},
 		{
-			item: getOSItem('Ensouled demon head'),
+			item: Items.getOrThrow('Ensouled demon head'),
 			lvl: 72
 		},
 		{
-			item: getOSItem('Ensouled dog head'),
+			item: Items.getOrThrow('Ensouled dog head'),
 			lvl: 41
 		},
 		{
-			item: getOSItem('Ensouled dragon head'),
+			item: Items.getOrThrow('Ensouled dragon head'),
 			lvl: 90
 		},
 		{
-			item: getOSItem('Ensouled elf head'),
+			item: Items.getOrThrow('Ensouled elf head'),
 			lvl: 41
 		},
 		{
-			item: getOSItem('Ensouled giant head'),
+			item: Items.getOrThrow('Ensouled giant head'),
 			lvl: 41
 		},
 		{
-			item: getOSItem('Ensouled goblin head'),
+			item: Items.getOrThrow('Ensouled goblin head'),
 			lvl: 16
 		},
 		{
-			item: getOSItem('Ensouled horror head'),
+			item: Items.getOrThrow('Ensouled horror head'),
 			lvl: 41
 		},
 		{
-			item: getOSItem('Ensouled imp head'),
+			item: Items.getOrThrow('Ensouled imp head'),
 			lvl: 16
 		},
 		{
-			item: getOSItem('Ensouled kalphite head'),
+			item: Items.getOrThrow('Ensouled kalphite head'),
 			lvl: 72
 		},
 		{
-			item: getOSItem('Ensouled minotaur head'),
+			item: Items.getOrThrow('Ensouled minotaur head'),
 			lvl: 16
 		},
 		{
-			item: getOSItem('Ensouled monkey head'),
+			item: Items.getOrThrow('Ensouled monkey head'),
 			lvl: 16
 		},
 		{
-			item: getOSItem('Ensouled ogre head'),
+			item: Items.getOrThrow('Ensouled ogre head'),
 			lvl: 41
 		},
 		{
-			item: getOSItem('Ensouled scorpion head'),
+			item: Items.getOrThrow('Ensouled scorpion head'),
 			lvl: 16
 		},
 		{
-			item: getOSItem('Ensouled troll head'),
+			item: Items.getOrThrow('Ensouled troll head'),
 			lvl: 41
 		},
 		{
-			item: getOSItem('Ensouled tzhaar head'),
+			item: Items.getOrThrow('Ensouled tzhaar head'),
 			lvl: 72
 		},
 		{
-			item: getOSItem('Ensouled unicorn head'),
+			item: Items.getOrThrow('Ensouled unicorn head'),
 			lvl: 16
 		}
 	],

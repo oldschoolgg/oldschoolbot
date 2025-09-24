@@ -1,9 +1,8 @@
-import { clamp, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { Time } from '@oldschoolgg/toolkit/datetime';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions.js';
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
@@ -97,9 +96,8 @@ export const mixCommand: OSBMahojiCommand = {
 			} gp for each item so they don't have to go.`;
 		}
 
-		const boosts: string[] = [];
 		const maxTripLength = calcMaxTripLength(user, 'Herblore');
-		let quantity = optionQuantity ?? mixableItem.defaultQuantity;
+		let quantity = optionQuantity;
 		const maxCanDo = user.bankWithGP.fits(baseCost);
 		const maxCanMix = Math.floor(maxTripLength / timeToMixSingleItem);
 
@@ -112,30 +110,7 @@ export const mixCommand: OSBMahojiCommand = {
 			if (maxCanDo < quantity && maxCanDo !== 0) quantity = maxCanDo;
 		}
 
-		if (!(wesley && mixableWesley) && !(zahur && mixableZahur)) {
-			const boostedTimeToMixSingleItem = reduceNumByPercent(
-				timeToMixSingleItem,
-				inventionBoosts.mechaMortar.herbloreSpeedBoostPercent
-			);
-			const boostResult = await inventionItemBoost({
-				user,
-				inventionID: InventionID.MechaMortar,
-				duration: Math.min(
-					maxTripLength,
-					Math.min(maxCanDo, options.quantity ?? Math.floor(maxTripLength / boostedTimeToMixSingleItem)) *
-						boostedTimeToMixSingleItem
-				)
-			});
-			if (boostResult.success) {
-				timeToMixSingleItem = boostedTimeToMixSingleItem;
-				boosts.push(
-					`${inventionBoosts.mechaMortar.herbloreSpeedBoostPercent}% boost for Mecha-Mortar (${boostResult.messages})`
-				);
-				if (!options.quantity) quantity = Math.min(maxCanDo, Math.floor(maxTripLength / timeToMixSingleItem));
-			}
-		}
-
-		quantity = clamp(quantity, 1, maxCanDo);
+		quantity = Math.max(1, quantity);
 
 		if (quantity * timeToMixSingleItem > maxTripLength)
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
@@ -163,13 +138,8 @@ export const mixCommand: OSBMahojiCommand = {
 			type: 'Herblore'
 		});
 
-		let str = `${user.minionName} ${cost} making ${quantity}x ${
+		return `${user.minionName} ${cost} making ${quantity}x ${
 			mixableItem.outputMultiple ? 'batches of' : ''
 		}${itemName}, it'll take around ${formatDuration(quantity * timeToMixSingleItem)} to finish.`;
-		if (boosts.length > 0) {
-			str += `\n**Boosts:** ${boosts.join(', ')}`;
-		}
-
-		return str;
 	}
 };

@@ -173,12 +173,12 @@ for (const seed of ores.map(getOSItem)) {
 		specialPricesBeforeMultiplying.add(seed.id, (seed.price ?? 0) * 3.5);
 	}
 }
-for (const seed of Runecraft.Runes.map(i => getOSItem(i.id))) {
+for (const seed of Runecraft.Runes.map(i => Items.getOrThrow(i.id))) {
 	if (!specialPricesBeforeMultiplying.has(seed.id)) {
 		specialPricesBeforeMultiplying.add(seed.id, (seed.price ?? 0) * 3.5);
 	}
 }
-for (const seed of Firemaking.Burnables.map(i => getOSItem(i.inputLogs))) {
+for (const seed of Firemaking.Burnables.map(i => Items.getOrThrow(i.inputLogs))) {
 	if (!specialPricesBeforeMultiplying.has(seed.id)) {
 		specialPricesBeforeMultiplying.add(seed.id, (seed.price ?? 0) * 3.5);
 	}
@@ -207,7 +207,7 @@ function getPriceOfItem(item: Item) {
 	return item.price ?? 0;
 }
 
-const LOTTERY_TICKET_ITEM = getOSItem('Bank lottery ticket');
+const LOTTERY_TICKET_ITEM = Items.getOrThrow('Bank lottery ticket');
 assert(LOTTERY_TICKET_ITEM.id === 5021);
 const VALUE_PER_TICKET = 10_000_000;
 

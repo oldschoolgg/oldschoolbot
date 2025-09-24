@@ -1,18 +1,14 @@
-import {
-	formatDuration,
-	formatOrdinal,
-	increaseNumByPercent,
-	reduceNumByPercent,
-	toTitleCase
-} from '@oldschoolgg/toolkit';
+import { formatOrdinal, increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { Items, randomVariation, SkillsEnum } from 'oldschooljs';
+import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { Items, SkillsEnum } from 'oldschooljs';
 
-import { bossEvents } from '@/lib/bossEvents.js';
+import { bossEvents } from '@/lib/bso/bossEvents.js';
 import { divinationEnergies, memoryHarvestTypes } from '@/lib/bso/divination.js';
+import { fishingLocations } from '@/lib/bso/fishingContest.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
-import { fishingLocations } from '@/lib/fishingContest.js';
-import killableMonsters from '@/lib/minions/data/killableMonsters/low.js';
+import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { Planks } from '@/lib/minions/data/planks.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import Agility from '@/lib/skilling/skills/agility.js';
@@ -42,6 +38,7 @@ import type {
 	BossActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	ButlerActivityTaskOptions,
+	BuyActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CollectingOptions,
@@ -97,9 +94,9 @@ import type {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '@/lib/types/minions.js';
+import { itemNameFromID } from '@/lib/util/smallUtils.js';
 import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
-import { itemNameFromID } from './smallUtils.js';
 
 export function minionStatus(user: MUser) {
 	const currentTask = ActivityManager.getActivityOfUser(user.id);
@@ -641,6 +638,16 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently shopping at Tzhaar stores. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
+		}
+		case 'Buy': {
+			const data = currentTask as BuyActivityTaskOptions;
+			const tripBuyable = findTripBuyable(data.itemID, data.quantity);
+			const itemName = tripBuyable?.displayName ?? Items.get(data.itemID)?.name ?? `Item[${data.itemID}]`;
+			const quantity =
+				tripBuyable?.quantity && tripBuyable.quantity > 0
+					? data.quantity / tripBuyable.quantity
+					: data.quantity;
+			return `${name} is currently buying ${quantity}x ${itemName}. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'TroubleBrewing': {
 			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;

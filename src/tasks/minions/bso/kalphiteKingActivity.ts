@@ -3,6 +3,7 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { Bank } from 'oldschooljs';
 
+import { getKalphiteKingGearStats } from '@/lib/bso/getKalphiteKingGearStats.js';
 import { kalphiteKingCL } from '@/lib/data/CollectionsExport.js';
 import { isDoubleLootActive } from '@/lib/doubleLoot.js';
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -12,7 +13,6 @@ import { addMonsterXP } from '@/lib/minions/functions/index.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
-import { getKalphiteKingGearStats } from '@/lib/util/getKalphiteKingGearStats.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';

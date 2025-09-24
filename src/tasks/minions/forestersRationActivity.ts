@@ -26,8 +26,7 @@ export const CreateForestersRationsTask: MinionTask = {
 
 		const str = `${user}, ${user.minionName} finished creating ${quantity}x ${ration.name}. ${xpRes}\n\n You received: ${rationBank}.`;
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: rationBank
 		});

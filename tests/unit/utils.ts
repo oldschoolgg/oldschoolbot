@@ -1,12 +1,11 @@
 import { Bank } from 'oldschooljs';
 
-import { GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types';
-import { MaterialBank } from '../../src/lib/invention/MaterialBank';
-import { SkillsArray } from '../../src/lib/skilling/types';
-import { ChargeBank } from '../../src/lib/structures/Bank';
-import { Gear } from '../../src/lib/structures/Gear';
-import { GearBank } from '../../src/lib/structures/GearBank';
-import type { SkillsRequired } from '../../src/lib/types';
+import type { SkillsRequired } from '@/lib/types/index.js';
+import { GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types.js';
+import { SkillsArray } from '../../src/lib/skilling/types.js';
+import { ChargeBank } from '../../src/lib/structures/Bank.js';
+import { Gear } from '../../src/lib/structures/Gear.js';
+import { GearBank } from '../../src/lib/structures/GearBank.js';
 
 function makeSkillsAsLevels(lvl = 99) {
 	const obj: any = {};
@@ -30,8 +29,6 @@ export function makeGearBank({ bank }: { bank?: Bank } = {}) {
 		bank: bank ?? new Bank(),
 		skillsAsLevels: makeSkillsAsLevels(),
 		chargeBank: new ChargeBank(),
-		materials: new MaterialBank(),
-		pet: null,
 		skillsAsXP: makeSkillsAsLevels(13034431),
 		minionName: 'Minion'
 	});

@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { NMZ_STRATEGY, type NMZStrategy } from '@/lib/constants.js';
+import type { NMZStrategy } from '@/lib/constants.js';
+import { NMZ_STRATEGY } from '@/lib/constants.js';
 import TrekShopItems from '@/lib/data/buyables/trekBuyables.js';
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
@@ -11,12 +12,12 @@ import {
 	agilityArenaXPCommand
 } from '@/mahoji/lib/abstracted_commands/agilityArenaCommand.js';
 import {
-	BarbBuyables,
 	barbAssaultBuyCommand,
 	barbAssaultGambleCommand,
 	barbAssaultLevelCommand,
 	barbAssaultStartCommand,
 	barbAssaultStatsCommand,
+	BarbBuyables,
 	GambleTiers
 } from '@/mahoji/lib/abstracted_commands/barbAssault.js';
 import { castleWarsStartCommand, castleWarsStatsCommand } from '@/mahoji/lib/abstracted_commands/castleWarsCommand.js';
@@ -48,6 +49,9 @@ import {
 	mahoganyHomesPointsCommand
 } from '@/mahoji/lib/abstracted_commands/mahoganyHomesCommand.js';
 import {
+	nightmareZoneBuyables,
+	nightmareZoneImbueables,
+	nightmareZoneImbueCommand,
 	nightmareZoneShopCommand,
 	nightmareZoneStartCommand,
 	nightmareZoneStatsCommand
@@ -79,16 +83,11 @@ import { tearsOfGuthixCommand } from '@/mahoji/lib/abstracted_commands/tearsOfGu
 import { trekCommand, trekShop } from '@/mahoji/lib/abstracted_commands/trekCommand.js';
 import { troubleBrewingStartCommand } from '@/mahoji/lib/abstracted_commands/troubleBrewingCommand.js';
 import {
-	VolcanicMineShop,
 	volcanicMineCommand,
+	VolcanicMineShop,
 	volcanicMineShopCommand,
 	volcanicMineStatsCommand
 } from '@/mahoji/lib/abstracted_commands/volcanicMineCommand.js';
-import {
-	nightmareZoneBuyables,
-	nightmareZoneImbueables,
-	nightmareZoneImbueCommand
-} from './../lib/abstracted_commands/nightmareZoneCommand.js';
 
 export const minigamesCommand: OSBMahojiCommand = {
 	name: 'minigames',

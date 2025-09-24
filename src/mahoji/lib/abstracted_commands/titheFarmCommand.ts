@@ -1,5 +1,6 @@
 import { Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
@@ -100,8 +101,7 @@ export async function titheFarmShopCommand(
 		{}
 	);
 
-	await transactItems({
-		userID: user.id,
+	await user.transactItems({
 		collectionLog: true,
 		itemsToAdd: loot
 	});

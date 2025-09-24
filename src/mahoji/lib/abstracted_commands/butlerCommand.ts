@@ -1,6 +1,7 @@
-import { clamp, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank, Items, resolveItems, toKMB } from 'oldschooljs';
+import { clamp } from 'remeda';
 
 import { Planks } from '@/lib/minions/data/planks.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
@@ -54,7 +55,7 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerPlank);
 	}
-	quantity = clamp(quantity, 1, 100_000);
+	quantity = clamp(quantity, { min: 1, max: 100_000 });
 
 	const inputItemOwned = user.bank.amount(plank.inputItem);
 	if (inputItemOwned < quantity) {

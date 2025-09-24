@@ -2,13 +2,12 @@ import { objectEntries, partition } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { Bank, EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { NexMonster } from './nex.js';
+import type { RequirementFailure } from '@/lib/structures/Requirements.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
+import { formatList, itemNameFromID } from '@/lib/util/smallUtils.js';
 import { RandomEvents } from './randomEvents.js';
 import type { MinigameName } from './settings/minigames.js';
 import { Minigames } from './settings/minigames.js';
-import type { RequirementFailure } from './structures/Requirements.js';
-import { Requirements } from './structures/Requirements.js';
-import { formatList, itemNameFromID } from './util/smallUtils.js';
 
 export const musicCapeRequirements = new Requirements()
 	.add({
@@ -63,7 +62,7 @@ export const musicCapeRequirements = new Requirements()
 			[Monsters.CommanderZilyana.id]: 1,
 			[Monsters.Kreearra.id]: 1,
 			[Monsters.KrilTsutsaroth.id]: 1,
-			[NexMonster.id]: 1,
+			[EMonster.NEX]: 1,
 			[Monsters.Cerberus.id]: 1,
 			[Monsters.GiantMole.id]: 1,
 			[Monsters.Jogre.id]: 1,
@@ -83,11 +82,9 @@ export const musicCapeRequirements = new Requirements()
 		}
 	})
 	.add({
-		name: '200 QP',
 		qpRequirement: 200
 	})
 	.add({
-		name: 'Sacrifice Fire Cape',
 		sacrificedItemsRequirement: new Bank().add('Fire cape')
 	})
 	.add({
@@ -141,14 +138,8 @@ export const musicCapeRequirements = new Requirements()
 				activity_type_enum.BlastFurnace, // During the slash command migration this moved to under the smelting activity
 				activity_type_enum.ChampionsChallenge,
 				activity_type_enum.Nex,
-				activity_type_enum.BossEvent,
-				activity_type_enum.TrickOrTreat,
 				activity_type_enum.Revenants, // This is now under monsterActivity
-				activity_type_enum.KourendFavour, // Kourend favor activity was removed
-				activity_type_enum.HalloweenMiniMinigame,
-				activity_type_enum.Mortimer,
-				activity_type_enum.BirthdayCollectIngredients,
-				activity_type_enum.SnoozeSpellActive
+				activity_type_enum.KourendFavour // Kourend favor activity was removed
 			];
 			const notDoneActivities = Object.values(activity_type_enum).filter(
 				type => !typesNotRequiredForMusicCape.includes(type) && !uniqueActivitiesDone.includes(type)

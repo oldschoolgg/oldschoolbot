@@ -1,5 +1,5 @@
 import { percentChance, randInt, roll, Time } from '@oldschoolgg/toolkit';
-import { resolveItems, SkillsEnum } from 'oldschooljs';
+import { Items, resolveItems, SkillsEnum } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
@@ -8,12 +8,11 @@ import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/stealables.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 import { forcefullyUnequipItem } from '@/lib/util/forcefullyUnequipItem.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { perHourChance } from '@/lib/util/rng.js';
-import { skillingPetDropRate } from '@/lib/util.js';
 import { rogueOutfitPercentBonus, updateClientGPTrackSetting, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 const notMultiplied = resolveItems([
@@ -109,7 +108,7 @@ export const pickpocketTask: MinionTask = {
 			boosts.push('3x loot for Thieves armband');
 			updateBank.itemLootBank.multiply(3, notMultiplied);
 			await perHourChance(duration, 40, async () => {
-				await forcefullyUnequipItem(user, getOSItem("Thieves' armband"));
+				await forcefullyUnequipItem(user, Items.getOrThrow("Thieves' armband"));
 				boosts.push('Your thieves armband broke!');
 			});
 		} else {

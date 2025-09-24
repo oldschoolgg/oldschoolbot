@@ -1,5 +1,6 @@
 import { miniID, randArrItem, roll, shuffleArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { convertPercentChance } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
 import { CHINCANNON_MESSAGES } from '@/lib/bso/bsoConstants.js';
@@ -14,7 +15,6 @@ import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { convertPercentChance } from '@/lib/util.js';
 import { userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 async function handleTobXP(user: MUser, isHm: boolean) {

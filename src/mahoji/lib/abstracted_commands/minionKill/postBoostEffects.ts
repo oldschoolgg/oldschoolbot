@@ -1,4 +1,4 @@
-import { calcPercentOfNum, objectKeys, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { calcPercentOfNum, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import type { GearSetupType } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
@@ -51,7 +51,10 @@ export const postBoostEffects: PostBoostEffect[] = [
 				totalHealingNeeded: healAmountNeeded * quantity,
 				attackStylesUsed: isInWilderness
 					? ['wildy']
-					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
+					: uniqueArr([
+							...(Object.keys(monster.minimumGearRequirements ?? {}) as GearSetupType[]),
+							gearToCheck
+						]),
 				learningPercentage: percentReduced,
 				isWilderness: isInWilderness,
 				minimumHealAmount: monster.minimumHealAmount
@@ -115,7 +118,7 @@ export const postBoostEffects: PostBoostEffect[] = [
 			let confirmationString: string | undefined;
 			const messages: string[] = [];
 
-			let hasWildySupplies;
+			let hasWildySupplies: boolean;
 
 			const antiPkBrewsNeeded = Math.max(1, Math.floor(duration / (4 * Time.Minute)));
 			const antiPkRestoresNeeded = Math.max(1, Math.floor(duration / (8 * Time.Minute)));

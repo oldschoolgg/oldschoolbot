@@ -1,12 +1,13 @@
-import { roll, shuffleArr, uniqueArr } from '@oldschoolgg/toolkit';
+import { roll, shuffleArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
+import type { ItemBank } from 'oldschooljs';
 
 import { globalConfig } from '@/lib/constants.js';
 import { DynamicButtons } from '@/lib/DynamicButtons.js';
-import { dailyResetTime } from '@/lib/MUser.js';
+import pets from '@/lib/data/pets.js';
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 import dailyRoll from '@/lib/simulation/dailyTable.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
@@ -21,8 +22,8 @@ export async function isUsersDailyReady(
 	const lastVoteDate = Number(stats.last_daily_timestamp);
 	const difference = currentDate - lastVoteDate;
 
-	if (difference < dailyResetTime) {
-		const duration = Date.now() - (lastVoteDate + dailyResetTime);
+	if (difference < Time.Hour * 12) {
+		const duration = Date.now() - (lastVoteDate + Time.Hour * 12);
 		return { isReady: false, durationUntilReady: duration };
 	}
 
@@ -33,7 +34,7 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	const guild = globalClient.guilds.cache.get(globalConfig.supportServerID);
 	const member = await guild?.members.fetch(user.id).catch(() => null);
 
-	const loot = dailyRoll(3, triviaCorrect);
+	const loot = dailyRoll(1, triviaCorrect);
 
 	const bonuses = [];
 
@@ -68,10 +69,7 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	}
 
 	if (!triviaCorrect) {
-		coinsToGive = 0;
-	} else if (coinsToGive <= 1_000_000_000) {
-		// Correct daily gives 10% more cash if the jackpot is not won
-		coinsToGive = Math.floor(coinsToGive * 1.1);
+		coinsToGive = Math.floor(coinsToGive * 0.4);
 	}
 
 	if (user.isIronman) {
@@ -87,19 +85,26 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 
 	let dmStr = `${bonuses.join('')} **${Emoji.Diango} Diango says..** That's ${correct}! ${reward}\n`;
 
-	const hasSkipper = user.usingPet('Skipper') || user.bank.amount('Skipper') > 0;
-	if (!user.isIronman && triviaCorrect && hasSkipper) {
-		coinsToGive = Math.floor(coinsToGive * 1.5);
-		dmStr +=
-			'\n<:skipper:755853421801766912> Skipper has negotiated with Diango and gotten you 50% extra GP from your daily!';
+	if (triviaCorrect && roll(13)) {
+		const pet = pets[Math.floor(Math.random() * pets.length)];
+		const userPets = {
+			...(user.user.pets as ItemBank)
+		};
+		if (!userPets[pet.id]) userPets[pet.id] = 1;
+		else userPets[pet.id]++;
+
+		await user.update({
+			pets: { ...userPets }
+		});
+
+		dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
 	}
 
 	if (coinsToGive) {
 		updateClientGPTrackSetting('gp_daily', coinsToGive);
 	}
 
-	const { itemsAdded, previousCL } = await transactItems({
-		userID: user.id,
+	const { itemsAdded, previousCL } = await user.transactItems({
 		collectionLog: true,
 		itemsToAdd: loot
 	});

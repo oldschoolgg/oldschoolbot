@@ -5,6 +5,7 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { calcBossFood } from '@/lib/bso/calcBossFood.js';
+import { getKalphiteKingGearStats } from '@/lib/bso/getKalphiteKingGearStats.js';
 import { gorajanWarriorOutfit, torvaOutfit } from '@/lib/data/CollectionsExport.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { KalphiteKingMonster } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
@@ -16,7 +17,6 @@ import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
-import { getKalphiteKingGearStats } from '@/lib/util/getKalphiteKingGearStats.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';

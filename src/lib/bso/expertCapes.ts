@@ -1,11 +1,10 @@
 import { resolveItems } from 'oldschooljs';
 
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 
 export const expertCapesSource = [
 	{
-		cape: getOSItem('Support cape'),
+		cape: Items.getOrThrow('Support cape'),
 		requiredItems: resolveItems([
 			'Agility master cape',
 			'Dungeoneering master cape',
@@ -15,7 +14,7 @@ export const expertCapesSource = [
 		skills: [SkillsEnum.Slayer, SkillsEnum.Agility, SkillsEnum.Dungeoneering, SkillsEnum.Thieving]
 	},
 	{
-		cape: getOSItem("Gatherer's cape"),
+		cape: Items.getOrThrow("Gatherer's cape"),
 		requiredItems: resolveItems([
 			'Farming master cape',
 			'Fishing master cape',
@@ -34,7 +33,7 @@ export const expertCapesSource = [
 		]
 	},
 	{
-		cape: getOSItem("Combatant's cape"),
+		cape: Items.getOrThrow("Combatant's cape"),
 		requiredItems: resolveItems([
 			'Attack master cape',
 			'Hitpoints master cape',
@@ -55,7 +54,7 @@ export const expertCapesSource = [
 		]
 	},
 	{
-		cape: getOSItem("Artisan's cape"),
+		cape: Items.getOrThrow("Artisan's cape"),
 		requiredItems: resolveItems([
 			'Crafting master cape',
 			'Construction master cape',

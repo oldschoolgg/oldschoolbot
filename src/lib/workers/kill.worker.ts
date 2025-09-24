@@ -9,6 +9,7 @@ import { customKillableMonsters } from '@/lib/minions/data/killableMonsters/cust
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { simulatedKillables } from '@/lib/simulation/simulatedKillables.js';
 import type { KillWorkerArgs, KillWorkerReturn } from '@/lib/workers/index.js';
+import '../data/itemAliases.js';
 
 if (global.prisma) {
 	throw new Error('Prisma is loaded in the kill worker!');

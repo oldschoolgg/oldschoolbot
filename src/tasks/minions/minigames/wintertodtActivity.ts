@@ -1,4 +1,5 @@
 import { calcPerHour, randInt, roll, Time } from '@oldschoolgg/toolkit';
+import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
@@ -6,7 +7,6 @@ import { userHasFlappy } from '@/lib/invention/inventions.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
 import Firemaking from '@/lib/skilling/skills/firemaking.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -48,15 +48,26 @@ export const wintertodtTask: MinionTask = {
 		// Track loot in Economy Stats
 		await updateBankSetting('economyStats_wintertodtLoot', loot);
 
+		if (loot.has('Phoenix')) {
+			globalClient.emit(
+				Events.ServerNotification,
+				`${Emoji.Phoenix} **${user.badgedUsername}'s** minion, ${
+					user.minionName
+				}, just received a Phoenix! Their Wintertodt KC is ${
+					newScore
+				}, and their Firemaking level is ${user.skillsAsLevels.firemaking}.`
+			);
+		}
+
 		/**
 		 * https://oldschool.runescape.wiki/w/Wintertodt#Rewards_2
 		 *
 		 * Adding/cutting a root gives 10pts, therefore number of roots from this trip is totalPoints/10
 		 */
 		const numberOfRoots = Math.floor((totalPoints - 50 * quantity) / 10);
-		const fmLvl = user.skillLevel(SkillsEnum.Firemaking);
-		const wcLvl = user.skillLevel(SkillsEnum.Woodcutting);
-		const conLevel = user.skillLevel(SkillsEnum.Construction);
+		const fmLvl = user.skillsAsLevels.firemaking;
+		const wcLvl = user.skillsAsLevels.woodcutting;
+		const conLevel = user.skillsAsLevels.construction;
 
 		let fmXpToGive = Math.floor(fmLvl * 100 * quantity + numberOfRoots * (fmLvl * 3));
 		let fmBonusXP = 0;
@@ -67,7 +78,7 @@ export const wintertodtTask: MinionTask = {
 			numberOfBraziers += randInt(1, 7);
 		}
 		const conXP = numberOfBraziers * constructionXPPerBrazier;
-		let xpStr = await user.addXP({ skillName: SkillsEnum.Construction, amount: conXP, duration: data.duration });
+		let xpStr = await user.addXP({ skillName: 'construction', amount: conXP, duration: data.duration });
 
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
 		if (
@@ -91,13 +102,13 @@ export const wintertodtTask: MinionTask = {
 		}
 
 		xpStr += `, ${await user.addXP({
-			skillName: SkillsEnum.Woodcutting,
+			skillName: 'woodcutting',
 			amount: wcXpToGive,
 			duration: data.duration,
 			source: 'Wintertodt'
 		})}`;
 		xpStr += `, ${await user.addXP({
-			skillName: SkillsEnum.Firemaking,
+			skillName: 'firemaking',
 			amount: fmXpToGive,
 			duration: data.duration,
 			source: 'Wintertodt'
@@ -110,8 +121,7 @@ export const wintertodtTask: MinionTask = {
 			loot.multiply(2);
 		}
 
-		const { itemsAdded, previousCL } = await transactItems({
-			userID: user.id,
+		const { itemsAdded, previousCL } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

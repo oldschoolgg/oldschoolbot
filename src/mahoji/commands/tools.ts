@@ -11,13 +11,14 @@ import {
 	type Item,
 	type ItemBank,
 	ItemGroups,
-	Items,
 	itemID,
+	Items,
 	resolveItems,
 	ToBUniqueTable
 } from 'oldschooljs';
 
-import { MysteryBoxes, spookyTable } from '@/lib/bsoOpenables.js';
+import { MysteryBoxes, spookyTable } from '@/lib/bso/bsoOpenables.js';
+import { keyCrates } from '@/lib/bso/keyCrates.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
@@ -25,22 +26,20 @@ import { allCLItemsFiltered, allDroppedItems } from '@/lib/data/Collections.js';
 import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
 import { addToDoubleLootTimer } from '@/lib/doubleLoot.js';
-import { keyCrates } from '@/lib/keyCrates.js';
+import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { giveBoxResetTime, mahojiUserSettingsUpdate, spawnLampResetTime } from '@/lib/MUser.js';
-import { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
-import killableMonsters from '@/lib/minions/data/killableMonsters/low.js';
 import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import { Minigames } from '@/lib/settings/minigames.js';
-import Skills from '@/lib/skilling/skills/index.js';
+import { Skills } from '@/lib/skilling/skills/index.js';
 import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
+import { getUsername, isGroupActivity } from '@/lib/util.js';
 import { findGroupOfUser } from '@/lib/util/findGroupOfUser.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { repairBrokenItemsFromUser } from '@/lib/util/repairBrokenItems.js';
 import { parseStaticTimeInterval, staticTimeIntervals } from '@/lib/util/smallUtils.js';
-import { getUsername, isGroupActivity } from '@/lib/util.js';
 import { LampTable } from '@/lib/xpLamps.js';
 import {
 	getParsedStashUnits,
@@ -848,7 +847,8 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 	return `**Dry Streaks for ${item.name} from ${mon.name}:**\n${(
 		await Promise.all(
 			result.map(
-				async ({ id, KC }) => `${(await getUsername(id)) as string}: ${Number.parseInt(KC).toLocaleString()}`
+				async ({ id, KC }) =>
+					`${(await getUsername(id)) as string}: ${Number.parseInt(KC, 10).toLocaleString()}`
 			)
 		)
 	).join('\n')}`;
@@ -883,7 +883,7 @@ async function mostDrops(user: MUser, itemName: string, filter: string) {
 		await Promise.all(
 			result.map(
 				async ({ id, qty }) =>
-					`${result.length < 10 ? '(Anonymous)' : await getUsername(id)}: ${Number.parseInt(qty).toLocaleString()}`
+					`${result.length < 10 ? '(Anonymous)' : await getUsername(id)}: ${Number.parseInt(qty, 10).toLocaleString()}`
 			)
 		)
 	).join('\n')}`;
@@ -928,7 +928,9 @@ async function checkMassesCommand(guildID: string | undefined) {
 					}> in ${formatDuration(remainingTime, true)})`
 				];
 			}
+			return null;
 		})
+		.filter((m): m is [number, string] => m !== null)
 		.sort((a, b) => (a![0] < b![0] ? -1 : a![0] > b![0] ? 1 : 0))
 		.map(m => m![1])
 		.join('\n');

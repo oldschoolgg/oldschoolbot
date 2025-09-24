@@ -571,8 +571,8 @@ export const rpCommand: OSBMahojiCommand = {
 			if (!userId) return null;
 			const targetUser = await mUserFetch(userId);
 			let type: UserEventType = UserEventType.CLCompletion;
-			let skill;
-			let collectionLogName;
+			let skill: xp_gains_skill_enum | undefined;
+			let collectionLogName: string | undefined;
 
 			let confirmationStr = `Please confirm:
 User: ${targetUser.rawUsername}

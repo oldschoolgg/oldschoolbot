@@ -1,16 +1,15 @@
 import { clamp, increaseNumByPercent, notEmpty, randInt, Time } from '@oldschoolgg/toolkit';
 import { formatDuration, isWeekend, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank, type Item, type ItemBank } from 'oldschooljs';
+import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
+import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
 import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
 import { clueHunterOutfit } from '@/lib/data/CollectionsExport.js';
 import { getPOHObject } from '@/lib/poh/index.js';
 import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { checkElderClueRequirements } from '@/lib/util/elderClueRequirements.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { getMahojiBank, mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
@@ -25,8 +24,8 @@ export async function calcClueScores(user: MUser) {
 			if (!tier) return;
 			return {
 				tier,
-				casket: getOSItem(tier.id),
-				clueScroll: getOSItem(tier.scrollID),
+				casket: Items.getOrThrow(tier.id),
+				clueScroll: Items.getOrThrow(tier.scrollID),
 				opened: openableBank.amount(tier.id),
 				actualOpened: actualCluesBank.amount(tier.scrollID)
 			};
@@ -230,124 +229,124 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 		const clueTierBoosts: Record<ClueTier['name'], ClueBoost[]> = {
 			Beginner: [
 				{
-					item: getOSItem('Ring of the elements'),
+					item: Items.getOrThrow('Ring of the elements'),
 					boost: '10% for Ring of the elements',
 					durationMultiplier: 0.9
 				}
 			],
 			Easy: [
 				{
-					item: getOSItem('Achievement diary cape'),
+					item: Items.getOrThrow('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
 					durationMultiplier: 0.9
 				},
 				{
-					item: getOSItem('Ring of the elements'),
+					item: Items.getOrThrow('Ring of the elements'),
 					boost: '6% for Ring of the elements',
 					durationMultiplier: 0.94
 				}
 			],
 			Medium: [
 				{
-					item: getOSItem('Ring of the elements'),
+					item: Items.getOrThrow('Ring of the elements'),
 					boost: '8% for Ring of the elements',
 					durationMultiplier: 0.92
 				}
 			],
 			Hard: [
 				{
-					item: getOSItem('Achievement diary cape'),
+					item: Items.getOrThrow('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
 					durationMultiplier: 0.9
 				},
 				{
-					item: getOSItem('Wilderness sword 3'),
+					item: Items.getOrThrow('Wilderness sword 3'),
 					boost: '8% for Wilderness sword 3',
 					durationMultiplier: 0.92
 				},
 				{
-					item: getOSItem('Royal seed pod'),
+					item: Items.getOrThrow('Royal seed pod'),
 					boost: '6% for Royal seed pod',
 					durationMultiplier: 0.94
 				},
 				{
-					item: getOSItem('Eternal teleport crystal'),
+					item: Items.getOrThrow('Eternal teleport crystal'),
 					boost: '4% for Eternal teleport crystal',
 					durationMultiplier: 0.96
 				},
 				{
-					item: getOSItem("Pharaoh's sceptre"),
+					item: Items.getOrThrow("Pharaoh's sceptre"),
 					boost: "4% for Pharaoh's sceptre",
 					durationMultiplier: 0.96
 				},
 				{
-					item: getOSItem('Toxic blowpipe'),
+					item: Items.getOrThrow('Toxic blowpipe'),
 					boost: '4% for Toxic blowpipe',
 					durationMultiplier: 0.96
 				}
 			],
 			Elite: [
 				{
-					item: getOSItem('Achievement diary cape'),
+					item: Items.getOrThrow('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
 					durationMultiplier: 0.9
 				},
 				{
-					item: getOSItem('Kandarin headgear 4'),
+					item: Items.getOrThrow('Kandarin headgear 4'),
 					boost: '7% for Kandarin headgear 4',
 					durationMultiplier: 0.93
 				},
 				{
-					item: getOSItem('Fremennik sea boots 4'),
+					item: Items.getOrThrow('Fremennik sea boots 4'),
 					boost: '3% for Fremennik sea boots 4',
 					durationMultiplier: 0.97
 				},
 				{
-					item: getOSItem("Pharaoh's sceptre"),
+					item: Items.getOrThrow("Pharaoh's sceptre"),
 					boost: "4% for Pharaoh's sceptre",
 					durationMultiplier: 0.96
 				},
 				{
-					item: getOSItem('Toxic blowpipe'),
+					item: Items.getOrThrow('Toxic blowpipe'),
 					boost: '4% for Toxic blowpipe',
 					durationMultiplier: 0.96
 				}
 			],
 			Master: [
 				{
-					item: getOSItem('Achievement diary cape'),
+					item: Items.getOrThrow('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
 					durationMultiplier: 0.9
 				},
 				{
-					item: getOSItem('Kandarin headgear 4'),
+					item: Items.getOrThrow('Kandarin headgear 4'),
 					boost: '6% for Kandarin headgear 4',
 					durationMultiplier: 0.94
 				},
 				{
-					item: getOSItem('Music cape'),
+					item: Items.getOrThrow('Music cape'),
 					boost: '5% for Music cape',
 					durationMultiplier: 0.95
 				},
 				{
-					item: getOSItem('Eternal teleport crystal'),
+					item: Items.getOrThrow('Eternal teleport crystal'),
 					boost: '3% for Eternal teleport crystal',
 					durationMultiplier: 0.97
 				},
 				{
-					item: getOSItem('Toxic blowpipe'),
+					item: Items.getOrThrow('Toxic blowpipe'),
 					boost: '2% for Toxic blowpipe',
 					durationMultiplier: 0.98
 				},
 				{
-					item: getOSItem('Dragon claws'),
+					item: Items.getOrThrow('Dragon claws'),
 					boost: '1% for Dragon claws',
 					durationMultiplier: 0.99
 				}
 			],
 			Grandmaster: [
 				{
-					item: getOSItem('Achievement diary cape'),
+					item: Items.getOrThrow('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
 					durationMultiplier: 0.9
 				}

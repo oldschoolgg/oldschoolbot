@@ -9,7 +9,7 @@ import {
 	getTopDailyFishingCatch,
 	getUsersFishingContestDetails,
 	getValidLocationsForFishType
-} from '@/lib/fishingContest.js';
+} from '@/lib/bso/fishingContest.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import type { FishingContestOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';

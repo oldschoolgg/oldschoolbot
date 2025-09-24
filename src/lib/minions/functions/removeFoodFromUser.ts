@@ -7,7 +7,7 @@ import { Eatables } from '@/lib/data/eatables.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import getUserFoodFromBank, { getRealHealAmount } from './getUserFoodFromBank.js';
+import getUserFoodFromBank from './getUserFoodFromBank.js';
 
 export function removeFoodFromUserRaw({
 	totalHealingNeeded,
@@ -79,8 +79,7 @@ export default async function removeFoodFromUser({
 	attackStylesUsed,
 	learningPercentage,
 	isWilderness,
-	unavailableBank,
-	minimumHealAmount
+	unavailableBank
 }: {
 	user: MUser;
 	totalHealingNeeded: number;
@@ -90,7 +89,6 @@ export default async function removeFoodFromUser({
 	learningPercentage?: number;
 	isWilderness?: boolean;
 	unavailableBank?: Bank;
-	minimumHealAmount?: number;
 }): Promise<{ foodRemoved: Bank; reductions: string[]; reductionRatio: number }> {
 	const result = removeFoodFromUserRaw({
 		gearBank: user.gearBank,
@@ -103,17 +101,12 @@ export default async function removeFoodFromUser({
 	});
 	if (!result) {
 		throw new UserError(
-			`You don't have enough food to do ${activityName}! You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per action). You can use these food items${
-				minimumHealAmount ? ` (Each food item must heal atleast ${minimumHealAmount}HP)` : ''
-			}: ${Eatables.filter(food => {
-				if (!minimumHealAmount) return true;
-				return getRealHealAmount(user.gearBank, food.healAmount) >= minimumHealAmount;
-			})
-				.map(i => i.name)
-				.join(', ')}.`
+			`You don't have enough food to do ${activityName}! You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per action). You can use these food items: ${Eatables.map(
+				i => i.name
+			).join(', ')}.`
 		);
 	} else {
-		await transactItems({ userID: user.id, itemsToRemove: result.foodToRemove });
+		await user.transactItems({ itemsToRemove: result.foodToRemove });
 		await updateBankSetting('economyStats_PVMCost', result.foodToRemove);
 		return {
 			foodRemoved: result.foodToRemove,

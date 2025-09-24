@@ -5,10 +5,13 @@ import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 
-import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
 import Farming from '@/lib/skilling/skills/farming/index.js';
-import { runTameTask } from '@/tasks/tames/tameTasks.js';
+import { farmingPatchNames, getFarmingKeyFromName } from '@/lib/util/farmingHelpers.js';
+import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
+import { logError } from '@/lib/util/logError.js';
+import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
+import { BitField, Channel, globalConfig } from './constants.js';
 import { GrandExchange } from './grandExchange.js';
 import { mahojiUserSettingsUpdate } from './MUser.js';
 import { collectMetrics } from './metrics.js';
@@ -16,14 +19,10 @@ import { populateRoboChimpCache } from './perkTier.js';
 import { fetchUsersWithoutUsernames } from './rawSql.js';
 import { runCommand } from './settings/settings.js';
 import { informationalButtons } from './sharedComponents.js';
-import { MTame } from './structures/MTame.js';
-import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers.js';
-import { handleGiveawayCompletion } from './util/giveaway.js';
-import { logError } from './util/logError.js';
-import { makeBadgeString } from './util/makeBadgeString.js';
 import { getSupportGuild } from './util.js';
 
 let lastMessageID: string | null = null;
+let lastMessageGEID: string | null = null;
 const supportEmbed = new EmbedBuilder()
 	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
 	.addFields({
@@ -41,6 +40,25 @@ const supportEmbed = new EmbedBuilder()
 	.addFields({
 		name: '⚠️ Dont ping anyone',
 		value: 'Do not ping mods, or any roles/people in here. You will be muted. Ask your question, and wait.'
+	});
+
+const geEmbed = new EmbedBuilder()
+	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
+	.addFields({
+		name: "⚠️ Don't get scammed",
+		value: 'Beware of people "buying out banks" or buying lots of skilling supplies, which can be worth a lot more in the bot than they pay you. Skilling supplies are often worth a lot more than they are ingame. Don\'t just trust that they\'re giving you a fair price.'
+	})
+	.addFields({
+		name: '🔎 Search',
+		value: 'Search this channel first, someone might already be selling/buying what you want.'
+	})
+	.addFields({
+		name: '💬 Read the rules/Pins',
+		value: 'Read the pinned rules/instructions before using the channel.'
+	})
+	.addFields({
+		name: 'Keep Ads Short',
+		value: 'Keep your ad less than 10 lines long, as short as possible.'
 	});
 
 /**
@@ -238,40 +256,25 @@ export const tickers: {
 		}
 	},
 	{
-		name: 'tame_activities',
-		startupWait: Time.Second * 15,
+		name: 'ge_channel_messages',
+		startupWait: Time.Second * 19,
 		timer: null,
-		interval: Time.Second * 5,
+		interval: Time.Minute * 20,
 		cb: async () => {
-			const tameTasks = await prisma.tameActivity.findMany({
-				where: {
-					finish_date: globalConfig.isProduction
-						? {
-								lt: new Date()
-							}
-						: undefined,
-					completed: false
-				},
-				include: {
-					tame: true
-				},
-				take: 5
-			});
-
-			await prisma.tameActivity.updateMany({
-				where: {
-					id: {
-						in: tameTasks.map(i => i.id)
-					}
-				},
-				data: {
-					completed: true
+			if (!globalConfig.isProduction) return;
+			const guild = getSupportGuild();
+			const channel = guild?.channels.cache.get(Channel.GrandExchange) as TextChannel | undefined;
+			if (!channel) return;
+			const messages = await channel.messages.fetch({ limit: 5 });
+			if (messages.some(m => m.author.id === globalClient.user?.id)) return;
+			if (lastMessageGEID) {
+				const message = await channel.messages.fetch(lastMessageGEID).catch(noOp);
+				if (message) {
+					await message.delete();
 				}
-			});
-
-			for (const task of tameTasks) {
-				await runTameTask(task, new MTame(task.tame));
 			}
+			const res = await channel.send({ embeds: [geEmbed] });
+			lastMessageGEID = res.id;
 		}
 	},
 	{

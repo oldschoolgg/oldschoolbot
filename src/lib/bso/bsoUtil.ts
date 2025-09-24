@@ -1,5 +1,5 @@
 import { CollectionLog } from '@oldschoolgg/collectionlog';
-import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
+import { Bank, type Item, Items, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
 import { BitField, MAX_XP } from '@/lib/constants.js';
 import { doaCL } from '@/lib/data/CollectionsExport.js';
@@ -83,4 +83,17 @@ export function calcBabyYagaHouseDroprate(xpBeingReceived: number, cl: Bank) {
 	const amountInCl = cl.amount('Baby yaga house');
 	if (amountInCl > 1) rate *= amountInCl;
 	return Math.floor(rate);
+}
+
+export function moidLink(items: number[]) {
+	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
+}
+
+export function getMonster(str: string): Monster {
+	const mon = Monsters.find(_m => _m.name === str);
+
+	if (!mon) {
+		throw new Error(`Invalid monster name given: ${str}`);
+	}
+	return mon;
 }

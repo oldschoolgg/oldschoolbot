@@ -1,5 +1,4 @@
 import { calcWhatPercent, randInt, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, SkillsEnum } from 'oldschooljs';
 
@@ -38,11 +37,6 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 	if (user.skillLevel(SkillsEnum.Magic) >= 66) {
 		deliveryLength = reduceNumByPercent(deliveryLength, 25);
 		boosts.push('25% for 66 Magic (teleports)');
-	}
-
-	if (user.hasEquipped('Kuro')) {
-		deliveryLength = reduceNumByPercent(deliveryLength, 50);
-		boosts.push(`${Emoji.Kuro} 2x faster with Kuro's help`);
 	}
 
 	const poh = await getPOH(user.id);

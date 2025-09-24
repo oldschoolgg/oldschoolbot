@@ -6,12 +6,11 @@ import type { GearStats } from 'oldschooljs/gear';
 
 import { checkUserCanUseDegradeableItem, degradeablePvmBoostItems, degradeItem } from '@/lib/degradeableItems.js';
 import { trackLoot } from '@/lib/lootTrack.js';
-import { NAXXUS_HP, Naxxus } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
+import { Naxxus, NAXXUS_HP } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
@@ -47,37 +46,37 @@ const itemBoosts: {
 	setup: 'mage' | 'melee';
 }[] = [
 	{
-		item: getOSItem('Void staff'),
+		item: Items.getOrThrow('Void staff'),
 		boost: 10,
 		setup: 'mage'
 	},
 	{
-		item: getOSItem('Abyssal tome'),
+		item: Items.getOrThrow('Abyssal tome'),
 		boost: 7.5,
 		setup: 'mage'
 	},
 	{
-		item: getOSItem('Tzkal cape'),
+		item: Items.getOrThrow('Tzkal cape'),
 		boost: 5,
 		setup: 'melee'
 	},
 	{
-		item: getOSItem('Vasa cloak'),
+		item: Items.getOrThrow('Vasa cloak'),
 		boost: 5,
 		setup: 'mage'
 	},
 	{
-		item: getOSItem('Ignis ring(i)'),
+		item: Items.getOrThrow('Ignis ring(i)'),
 		boost: 2.5,
 		setup: 'melee'
 	},
 	{
-		item: getOSItem('Spellbound ring(i)'),
+		item: Items.getOrThrow('Spellbound ring(i)'),
 		boost: 2.5,
 		setup: 'mage'
 	},
 	{
-		item: getOSItem('Spellbound ring'),
+		item: Items.getOrThrow('Spellbound ring'),
 		boost: 2,
 		setup: 'mage'
 	}

@@ -1,8 +1,8 @@
 import { convertXPtoLVL } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { SkillsEnum } from '../../src/lib/skilling/types';
-import { createTestUser, mockClient } from './util';
+import { SkillsEnum } from '../../src/lib/skilling/types.js';
+import { createTestUser, mockClient } from './util.js';
 
 describe('XP', async () => {
 	await mockClient();

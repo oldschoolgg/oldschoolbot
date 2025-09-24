@@ -1,10 +1,8 @@
 import { schedule } from 'node-cron';
 
+import { cacheCleanup } from '@/lib/util/cachedUserIDs.js';
 import { analyticsTick } from './analytics.js';
-import { syncPrescence } from './doubleLoot.js';
 import { cacheGEPrices } from './marketPrices.js';
-import { cacheCleanup } from './util/cachedUserIDs.js';
-import { syncSlayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard.js';
 
 export const crons = new Set<ReturnType<typeof schedule>>();
 
@@ -15,7 +13,7 @@ export function initCrons() {
 	crons.add(
 		schedule('0 */6 * * *', async () => {
 			await prisma.$queryRawUnsafe(`INSERT INTO economy_item
-SELECT item_id::integer, SUM(qty)::bigint FROM 
+SELECT item_id::integer, SUM(qty)::bigint FROM
 (
     SELECT id, (jdata).key AS item_id, (jdata).value::text::bigint AS qty FROM (select id, json_each(bank) AS jdata FROM users) AS banks
 )
@@ -38,7 +36,7 @@ GROUP BY item_id;`);
 	 */
 	crons.add(
 		schedule('0 * * * *', () => {
-			syncPrescence();
+			globalClient.user?.setActivity('/help');
 		})
 	);
 
@@ -48,12 +46,6 @@ GROUP BY item_id;`);
 	crons.add(
 		schedule('0 0 */1 * *', async () => {
 			cacheCleanup();
-		})
-	);
-
-	crons.add(
-		schedule('0 0 * * *', async () => {
-			syncSlayerMaskLeaderboardCache();
 		})
 	);
 

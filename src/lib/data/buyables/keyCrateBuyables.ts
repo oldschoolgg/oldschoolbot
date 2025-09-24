@@ -1,4 +1,4 @@
-import { keyCrates } from '@/lib/keyCrates.js';
+import { keyCrates } from '@/lib/bso/keyCrates.js';
 import type { Buyable } from './buyables.js';
 
 export const keyCrateBuyables: Buyable[] = [];

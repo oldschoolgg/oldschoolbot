@@ -1,4 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';

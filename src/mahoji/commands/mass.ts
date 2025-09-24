@@ -1,6 +1,7 @@
-import { objectKeys, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
+import type { GearSetupType } from '@prisma/client';
 import { ApplicationCommandOptionType, type TextChannel } from 'discord.js';
 
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
@@ -148,7 +149,7 @@ export const massCommand: OSBMahojiCommand = {
 					totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity,
 					healPerAction: Math.ceil(healAmountNeeded / quantity),
 					activityName: monster.name,
-					attackStylesUsed: objectKeys(monster.minimumGearRequirements ?? {})
+					attackStylesUsed: Object.keys(monster.minimumGearRequirements ?? {}) as GearSetupType[]
 				});
 			}
 		}

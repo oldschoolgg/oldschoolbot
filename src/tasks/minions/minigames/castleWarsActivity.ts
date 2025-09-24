@@ -28,8 +28,7 @@ export const castleWarsTask: MinionTask = {
 			boosts.push(flappyRes.userMsg);
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

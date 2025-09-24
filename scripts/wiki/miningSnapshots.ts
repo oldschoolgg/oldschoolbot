@@ -1,19 +1,19 @@
 import { calcPerHour, Table } from '@oldschoolgg/toolkit';
-import { Time } from 'e';
-import { Bank, convertLVLtoXP } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit/datetime';
+import { type Bank, convertLVLtoXP } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
 
 applyStaticDefine();
 
 import '../../src/lib/safeglobals.js';
 
-import { calculateMiningInput } from '@/mahoji/commands/mine.js';
-import { calculateMiningResult } from '@/tasks/minions/miningActivity.js';
 import { applyStaticDefine } from '../../meta.js';
 import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
 import Mining from '../../src/lib/skilling/skills/mining.js';
 import type { Ore } from '../../src/lib/skilling/types.js';
 import { FloatBank } from '../../src/lib/structures/Bank.js';
+import { determineMiningTrip } from '../../src/mahoji/commands/mine.js';
+import { determineMiningResult } from '../../src/tasks/minions/miningActivity.js';
 import { makeGearBank } from '../../tests/unit/utils.js';
 import { handleMarkdownEmbed } from './wikiScriptUtil.js';
 
@@ -63,47 +63,34 @@ export function main() {
 
 						const tripLengthHours = 1000;
 
-						const trip = calculateMiningInput({
-							quantityInput: undefined,
-							nameInput: ore.name,
+						const trip = determineMiningTrip({
+							gearBank,
+							ore,
 							maxTripLength: Time.Hour * tripLengthHours,
 							isPowermining,
+							quantityInput: undefined,
 							hasKaramjaMedium,
-							randomVariationEnabled: false,
-							qp: 5000,
-							miningLevel: level,
-							hasSOTFQuest: true,
-							craftingLevel: 120,
-							gearBank,
-							strengthLevel: 120,
-							hasDT2Quest: true
+							randomVariationEnabled: false
 						});
-						if (typeof trip === 'string') {
-							console.warn(`Skipping ${ore.name} for level ${level} (${trip})`);
-							continue;
-						}
-						const result = calculateMiningResult({
+						const result = determineMiningResult({
 							ore,
-							quantity: trip.newQuantity,
+							quantity: trip.quantity,
 							gearBank,
 							duration: trip.duration,
 							isPowermining,
-							disabledInventions: [],
-							isUsingObsidianPickaxe: true,
-							collectionLog: new Bank(),
-							hasMiningMasterCape: true,
-							portentResult: null,
-							amountOfSpiritsToUse: 0,
-							spiritOre: undefined
+							hasFinishedCOTS
 						});
-						result.loot.remove('Rock golem', 1000);
-						result.loot.remove('Loop half of key (moon key)', 1000);
+						result.updateBank.itemLootBank.remove('Rock golem', 1000);
+						result.updateBank.itemLootBank.remove('Loop half of key (moon key)', 1000);
 
 						for (const clueTier of ClueTiers) {
-							result.loot.remove(clueTier.scrollID, result.loot.amount(clueTier.scrollID));
+							result.updateBank.itemLootBank.remove(
+								clueTier.scrollID,
+								result.updateBank.itemLootBank.amount(clueTier.scrollID)
+							);
 						}
 
-						const xp = result.totalMiningXPToAdd;
+						const xp = result.updateBank.xpBank.amount('mining');
 						let xpHr = calcPerHour(xp, trip.duration);
 						// Round down to nearest 1000
 						xpHr = Math.floor(xpHr / 1000) * 1000;
@@ -114,7 +101,7 @@ export function main() {
 							isPowermining,
 							others,
 							level,
-							itemsPerHour: bankToPerHour(result.loot, trip.duration)
+							itemsPerHour: bankToPerHour(result.updateBank.itemLootBank, trip.duration)
 						});
 					}
 				}

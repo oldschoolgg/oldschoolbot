@@ -1,11 +1,10 @@
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import { allPetIDs } from '@/lib/data/CollectionsExport.js';
-import { getItem } from '@/lib/util/getOSItem.js';
 import { unequipPet } from './unequipPet.js';
 
 export async function equipPet(user: MUser, itemName: string) {
-	const petItem = getItem(itemName);
+	const petItem = Items.getItem(itemName);
 	if (!petItem) return "That's not a valid item.";
 	const cost = new Bank().add(petItem.id);
 
@@ -26,7 +25,7 @@ export async function equipPet(user: MUser, itemName: string) {
 	await user.update({
 		minion_equippedPet: petItem.id
 	});
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 
 	return `${user.minionName} takes their ${petItem.name} from their bank, and puts it down to follow them.`;
 }

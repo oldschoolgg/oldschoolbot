@@ -1,5 +1,5 @@
 // Base custom items are referenced elsewhere in the custom items files and must be loaded first
-import '../deletedItems.js';
+import '../bso/deletedItems.js';
 import './baseCustomItems.js';
 import './baxBath.js';
 import './customItemsFancy.js';
@@ -16,7 +16,6 @@ import './pets.js';
 
 import { EquipmentSlot, type ItemRequirements, Items, resolveItems } from 'oldschooljs';
 
-import getOSItem from '@/lib/util/getOSItem.js';
 import { customItems, maxedRequirements, setCustomItem, UN_EQUIPPABLE } from './util.js';
 
 setCustomItem(1579, "Thieves' armband", 'Rune gloves', {}, 100_000);
@@ -785,7 +784,7 @@ setCustomItem(
 			}
 		}
 	},
-	(getOSItem('Twisted bow').price! + getOSItem('Zaryte bow').price!) * 1.1
+	(Items.getOrThrow('Twisted bow').price! + Items.getOrThrow('Zaryte bow').price!) * 1.1
 );
 // ----------
 // MMMR
@@ -2912,7 +2911,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		},
 		equipment: {
-			...getOSItem('Dragon dagger').equipment!,
+			...Items.getOrThrow('Dragon dagger').equipment!,
 			slot: EquipmentSlot.Shield
 		}
 	},
@@ -6094,7 +6093,7 @@ setCustomItem(
 			isSuperUntradeable: true
 		},
 		equipment: {
-			...getOSItem('Heavy ballista').equipment!,
+			...Items.getOrThrow('Heavy ballista').equipment!,
 			requirements: {
 				strength: 120
 			}

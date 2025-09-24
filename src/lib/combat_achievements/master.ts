@@ -1,10 +1,9 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { EMonster, Monsters, resolveItems } from 'oldschooljs';
 
-import { spearWeapon } from '@/lib/constants.js';
-import { NexMonster } from '@/lib/nex.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
+	ActivityTaskData,
 	GauntletOptions,
 	MonsterActivityTaskOptions,
 	NightmareActivityTaskOptions,
@@ -148,7 +147,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 44,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			hasChance: data =>
+				data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -159,7 +159,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 25,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			hasChance: data =>
+				data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -181,7 +182,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 22,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			hasChance: data =>
+				data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -259,7 +261,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 1,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			hasChance: data =>
+				data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -281,7 +284,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 33,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			hasChance: data =>
+				data.type === 'Raids' && (data as RaidsOptions).users.length === 1 && !(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -306,7 +310,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 			hasChance: data =>
 				data.type === 'Raids' &&
 				(data as RaidsOptions).challengeMode &&
-				(data as RaidsOptions).users.length === 1
+				(data as RaidsOptions).users.length === 1 &&
+				!(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -331,7 +336,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 			hasChance: data =>
 				data.type === 'Raids' &&
 				(data as RaidsOptions).challengeMode &&
-				(data as RaidsOptions).users.length === 1
+				(data as RaidsOptions).users.length === 1 &&
+				!(data as RaidsOptions).isFakeMass
 		}
 	},
 	{
@@ -590,7 +596,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Nex',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[NexMonster.id]: 25
+				[EMonster.NEX]: 25
 			}
 		})
 	},
@@ -1469,9 +1475,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 15,
-			hasChance: (data, _user, index) =>
-				data.type === 'Colosseum' &&
-				(!data.diedAt || (Array.isArray(data.diedAt) && (!data.diedAt[index] || data.diedAt[index] > 11)))
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 11))
 		}
 	},
 	{
@@ -1482,8 +1487,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 15,
-			hasChance: (data, _user, index) =>
-				data.type === 'Colosseum' && Array.isArray(data.diedAt) && !data.diedAt[index]
+			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && !data.diedAt
 		}
 	},
 	{
@@ -1494,11 +1498,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 15,
-			hasChance: (data, user, index) =>
-				user.hasEquippedOrInBank(spearWeapon, 'one') &&
-				data.type === 'Colosseum' &&
-				Array.isArray(data.diedAt) &&
-				!data.diedAt[index]
+			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && !data.diedAt
 		}
 	},
 	{
@@ -1521,10 +1521,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 1,
-			hasChance: (data, _user, index) =>
-				data.type === 'Colosseum' &&
-				(!data.diedAt || (Array.isArray(data.diedAt) && !data.diedAt[index])) &&
-				data.duration < Time.Minute * 28 * data.quantity
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'Colosseum' && !data.diedAt && data.duration < Time.Minute * 28
 		}
 	},
 	{

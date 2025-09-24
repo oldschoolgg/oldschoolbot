@@ -1,10 +1,9 @@
 import { Time } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { roll } from '@/lib/util/rng.js';
 import { updateClientGPTrackSetting } from '@/mahoji/mahojiSettings.js';
@@ -16,7 +15,7 @@ export const alchingTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const loot = new Bank({ Coins: alchValue });
 
-		const item = getOSItem(itemID);
+		const item = Items.getOrThrow(itemID);
 
 		// If bryophyta's staff is equipped when starting the alch activity
 		// calculate how many runes have been saved

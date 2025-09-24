@@ -1,8 +1,7 @@
 import type { Item } from 'oldschooljs';
 
+import type { PaintColor } from '@/lib/bso/paintColors.js';
 import { setCustomItem } from '@/lib/customItems/util.js';
-import type { PaintColor } from '@/lib/paintColors.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 
 export const paintColors: PaintColor[] = [
 	{ itemId: 72_450, name: 'Guthix Green', rgb: [50, 205, 50], paintCanItem: null as any as Item },
@@ -34,5 +33,5 @@ for (const paintColor of paintColors) {
 		100_000
 	);
 
-	paintColor.paintCanItem = getOSItem(`${paintColor.name} paint can`);
+	paintColor.paintCanItem = Items.getOrThrow(`${paintColor.name} paint can`);
 }

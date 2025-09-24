@@ -4,9 +4,8 @@ import { Bank, Items } from 'oldschooljs';
 
 import { pohImageGenerator } from '@/lib/canvas/pohImage.js';
 import { BitField } from '@/lib/constants.js';
-import { GroupedPohObjects, getPOHObject, itemsNotRefundable, PoHObjects } from '@/lib/poh/index.js';
+import { getPOHObject, GroupedPohObjects, itemsNotRefundable, PoHObjects } from '@/lib/poh/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
@@ -162,7 +161,7 @@ export async function pohMountItemCommand(user: MUser, name: string) {
 		return 'You need to build a mount for the item first.';
 	}
 
-	const item = getOSItem(name);
+	const item = Items.getOrThrow(name);
 	if (['Magic stone', 'Coins'].includes(item.name)) {
 		return "You can't mount this item.";
 	}

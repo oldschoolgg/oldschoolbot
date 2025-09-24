@@ -1,9 +1,8 @@
-import { ItemGroups, Monsters, resolveItems } from 'oldschooljs';
+import { ItemGroups, Items, Monsters, resolveItems } from 'oldschooljs';
 
 import { warmGear } from '@/lib/data/filterables.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { isCertainMonsterTrip } from './caUtils.js';
 import type { CombatAchievement } from './combatAchievements.js';
 
@@ -97,7 +96,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		rng: {
 			hasChance: (data, user) =>
 				isCertainMonsterTrip(Monsters.Bryophyta.id)(data) &&
-				user.gear[user.attackClass()].allItems(false).every(i => getOSItem(i).members !== true),
+				user.gear[user.attackClass()].allItems(false).every(i => Items.getOrThrow(i).members !== true),
 			chancePerKill: 1
 		}
 	},
@@ -278,7 +277,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		rng: {
 			hasChance: (data, user) =>
 				isCertainMonsterTrip(Monsters.Obor.id)(data) &&
-				user.gear[user.attackClass()].allItems(false).every(i => getOSItem(i).members !== true),
+				user.gear[user.attackClass()].allItems(false).every(i => Items.getOrThrow(i).members !== true),
 			chancePerKill: 1
 		}
 	},

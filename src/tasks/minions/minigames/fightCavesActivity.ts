@@ -73,7 +73,7 @@ export const fightCavesTask: MinionTask = {
 				}
 			}
 
-			await transactItems({ userID: user.id, itemsToAdd: itemLootBank, collectionLog: false });
+			await user.transactItems({ itemsToAdd: itemLootBank, collectionLog: false });
 
 			return handleTripFinish(
 				user,
@@ -92,7 +92,7 @@ export const fightCavesTask: MinionTask = {
 
 		if (diedToJad) {
 			const failBank = new Bank({ [TokkulID]: tokkulReward });
-			await transactItems({ userID: user.id, collectionLog: true, itemsToAdd: failBank });
+			await user.transactItems({ collectionLog: true, itemsToAdd: failBank });
 
 			const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 46_080, duration });
 			const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_322, duration });
@@ -152,8 +152,7 @@ export const fightCavesTask: MinionTask = {
 			loot.multiply(2);
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

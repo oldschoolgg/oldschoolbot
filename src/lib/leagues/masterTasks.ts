@@ -1,6 +1,7 @@
 import { sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, LuckyImpling, resolveItems } from 'oldschooljs';
 
+import { getTameSpecies } from '@/lib/bso/tameUtil.js';
 import { BitField } from '@/lib/constants.js';
 import {
 	all3rdAgeItems,
@@ -22,7 +23,6 @@ import { dungBuyables } from '@/lib/skilling/skills/dung/dungData.js';
 import { ashes } from '@/lib/skilling/skills/prayer.js';
 import Dwarven from '@/lib/skilling/skills/smithing/smithables/dwarven.js';
 import { slayerUnlockableRewards } from '@/lib/slayer/slayerUnlocks.js';
-import { getTameSpecies } from '@/lib/util/tameUtil.js';
 import { calcTotalLevel } from '@/lib/util.js';
 import type { Task } from './leaguesUtils.js';
 

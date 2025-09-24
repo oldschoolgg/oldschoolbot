@@ -1,7 +1,6 @@
-import prepareItems from './prepareItems';
-import './enum';
-
-import prepareMonsters from './prepareMonsters';
+import prepareItems from './prepareItems.js';
+import './enum.js';
+// import prepareMonsters from './prepareMonsters.js';
 
 prepareItems();
-prepareMonsters();
+// prepareMonsters();

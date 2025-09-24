@@ -77,8 +77,7 @@ export const sepulchreTask: MinionTask = {
 			loot.multiply(2);
 		}
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
@@ -126,8 +125,7 @@ export const sepulchreTask: MinionTask = {
 
 		// Handle fletching loot separately after generating the main loot image
 		if (fletchable && fletch) {
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: fletchingLoot
 			});

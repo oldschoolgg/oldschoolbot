@@ -5,14 +5,13 @@ import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items, itemID, resolveItems } from 'oldschooljs';
 
+import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
 import type { UnifiedOpenable } from '@/lib/openables.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
-import { checkElderClueRequirements } from '@/lib/util/elderClueRequirements.js';
-import getOSItem, { getItem } from '@/lib/util/getOSItem.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { assert } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -26,7 +25,7 @@ import {
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
 export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2))
-	.map(getOSItem)
+	.map(id => Items.getOrThrow(id))
 	.sort((a, b) => {
 		if (b.name.includes('Clue')) return 1;
 		if (a.name.includes('Clue')) return -1;
@@ -47,7 +46,7 @@ export async function abstractedOpenUntilCommand(
 	if (!openableItem) return "That's not a valid item.";
 	const openable = allOpenables.find(i => i.openedItem === openableItem.openedItem);
 	if (!openable) return "That's not a valid item.";
-	const openUntil = getItem(openUntilItem);
+	const openUntil = Items.get(openUntilItem);
 	if (!openUntil) {
 		return `That's not a valid item to open until, you can only do it with items that you can get from ${openable.openedItem.name}.`;
 	}
@@ -187,7 +186,7 @@ async function finalizeOpening({
 	if (!user.owns(cost)) {
 		return `You don't own: ${cost}.`;
 	}
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 	const { previousCL } = await user.addItemsToBank({
 		items: loot,
 		collectionLog: true,

@@ -1,15 +1,14 @@
 import { notEmpty, objectEntries, randArrItem, randInt, Time } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder, bold } from 'discord.js';
-import { Bank, type Item, resolveItems } from 'oldschooljs';
+import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 
 import { divinationEnergies } from '@/lib/bso/divination.js';
+import { allDyes, dyedItems } from '@/lib/bso/dyedItems.js';
+import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
 import { gearImages } from '@/lib/canvas/gearImageData.js';
 import { BitField } from '@/lib/constants.js';
 import { addToDoubleLootTimer } from '@/lib/doubleLoot.js';
-import { allDyes, dyedItems } from '@/lib/dyedItems.js';
-import { mysteriousStepData } from '@/lib/mysteryTrail.js';
 import { makeScriptImage } from '@/lib/scriptImages.js';
-import getOSItem, { getItem } from '@/lib/util/getOSItem.js';
 import { assert } from '@/lib/util/logError.js';
 import { flowerTable } from './hotColdCommand.js';
 
@@ -45,94 +44,94 @@ interface UsableUnlock {
 }
 const usableUnlocks: UsableUnlock[] = [
 	{
-		item: getOSItem('Torn prayer scroll'),
+		item: Items.getOrThrow('Torn prayer scroll'),
 		bitfield: BitField.HasTornPrayerScroll,
 		resultMessage: 'You used your Torn prayer scroll, and unlocked the Preserve prayer.'
 	},
 	{
-		item: getOSItem('Dexterous prayer scroll'),
+		item: Items.getOrThrow('Dexterous prayer scroll'),
 		bitfield: BitField.HasDexScroll,
 		resultMessage: 'You used your Dexterous prayer scroll, and unlocked the Rigour prayer.'
 	},
 	{
-		item: getOSItem('Arcane prayer scroll'),
+		item: Items.getOrThrow('Arcane prayer scroll'),
 		bitfield: BitField.HasArcaneScroll,
 		resultMessage: 'You used your Arcane prayer scroll, and unlocked the Augury prayer.'
 	},
 	{
-		item: getOSItem('Slepey tablet'),
+		item: Items.getOrThrow('Slepey tablet'),
 		bitfield: BitField.HasSlepeyTablet,
 		resultMessage: 'You used your Slepey tablet, and unlocked the Slepe teleport.'
 	},
 	{
-		item: getOSItem('Scroll of farming'),
+		item: Items.getOrThrow('Scroll of farming'),
 		bitfield: BitField.HasScrollOfFarming,
 		resultMessage:
 			'You have used your Scroll of farming - you feel your Farming skills have improved and are now able to use more Farming patches.'
 	},
 	{
-		item: getOSItem('Scroll of longevity'),
+		item: Items.getOrThrow('Scroll of longevity'),
 		bitfield: BitField.HasScrollOfLongevity,
 		resultMessage:
 			'You have used your Scroll of longevity - your future slayer tasks will always have 2x more quantity.'
 	},
 	{
-		item: getOSItem('Scroll of the hunt'),
+		item: Items.getOrThrow('Scroll of the hunt'),
 		bitfield: BitField.HasScrollOfTheHunt,
 		resultMessage: 'You have used your Scroll of the hunt - you feel your hunting skills have improved.'
 	},
 	{
-		item: getOSItem('Banana enchantment scroll'),
+		item: Items.getOrThrow('Banana enchantment scroll'),
 		bitfield: BitField.HasBananaEnchantmentScroll,
 		resultMessage: 'You have used your Banana enchantment scroll - you feel your monkey magic skills have improved.'
 	},
 	{
-		item: getOSItem('Daemonheim agility pass'),
+		item: Items.getOrThrow('Daemonheim agility pass'),
 		bitfield: BitField.HasDaemonheimAgilityPass,
 		resultMessage: 'You show your pass to the Daemonheim guards, and they grant you access to their rooftops.'
 	},
 	{
-		item: getOSItem('Guthix engram'),
+		item: Items.getOrThrow('Guthix engram'),
 		bitfield: BitField.HasGuthixEngram,
 		resultMessage: "You place the Guthix engram in Juna's cave, restoring some balance to the world..."
 	},
 	{
-		item: getOSItem('Runescroll of bloodbark'),
+		item: Items.getOrThrow('Runescroll of bloodbark'),
 		bitfield: BitField.HasBloodbarkScroll,
 		resultMessage: 'You used your Runescroll of bloodbark, and unlocked the ability to create Bloodbark armour.'
 	},
 	{
-		item: getOSItem('Runescroll of swampbark'),
+		item: Items.getOrThrow('Runescroll of swampbark'),
 		bitfield: BitField.HasSwampbarkScroll,
 		resultMessage: 'You used your Runescroll of Swampbark, and unlocked the ability to create Swampbark armour.'
 	},
 	{
-		item: getOSItem("Saradomin's light"),
+		item: Items.getOrThrow("Saradomin's light"),
 		bitfield: BitField.HasSaradominsLight,
 		resultMessage: "You used your Saradomin's light."
 	},
 	{
-		item: getOSItem('Frozen tablet'),
+		item: Items.getOrThrow('Frozen tablet'),
 		bitfield: BitField.UsedFrozenTablet,
 		resultMessage: 'You used your Frozen tablet.'
 	},
 	{
-		item: getOSItem('Scarred tablet'),
+		item: Items.getOrThrow('Scarred tablet'),
 		bitfield: BitField.UsedScarredTablet,
 		resultMessage: 'You used your Scarred tablet.'
 	},
 	{
-		item: getOSItem('Sirenic tablet'),
+		item: Items.getOrThrow('Sirenic tablet'),
 		bitfield: BitField.UsedSirenicTablet,
 		resultMessage: 'You used your Sirenic tablet.'
 	},
 	{
-		item: getOSItem('Strangled tablet'),
+		item: Items.getOrThrow('Strangled tablet'),
 		bitfield: BitField.UsedStrangledTablet,
 		resultMessage: 'You used your Strangled tablet.'
 	},
 	{
-		item: getOSItem('Moondash charm'),
+		item: Items.getOrThrow('Moondash charm'),
 		bitfield: BitField.HasMoondashCharm,
 		resultMessage: 'You used your Moondash charm, the power of the moon now boosts your farming trips.'
 	},
@@ -144,12 +143,12 @@ const usableUnlocks: UsableUnlock[] = [
 			resultMessage: `You used your ${e.boon!.name}, and now receive bonus XP!`
 		})),
 	{
-		item: getOSItem('Deadeye prayer scroll'),
+		item: Items.getOrThrow('Deadeye prayer scroll'),
 		bitfield: BitField.HasDeadeyeScroll,
 		resultMessage: 'You used your Deadeye prayer scroll, and unlocked the Deadeye prayer.'
 	},
 	{
-		item: getOSItem('Mystic vigour prayer scroll'),
+		item: Items.getOrThrow('Mystic vigour prayer scroll'),
 		bitfield: BitField.HasMysticVigourScroll,
 		resultMessage: 'You used your Mystic vigour prayer scroll, and unlocked the Mystic vigour prayer.'
 	}
@@ -180,27 +179,27 @@ const genericUsables: {
 	addToCL?: boolean;
 }[] = [
 	{
-		items: [getOSItem('Banana'), getOSItem('Monkey')],
+		items: [Items.getOrThrow('Banana'), Items.getOrThrow('Monkey')],
 		cost: new Bank().add('Banana').freeze(),
 		loot: null,
 		response: () => 'You fed a Banana to your Monkey!'
 	},
 	{
-		items: [getOSItem('Knife'), getOSItem('Turkey')],
+		items: [Items.getOrThrow('Knife'), Items.getOrThrow('Turkey')],
 		cost: new Bank().add('Turkey'),
 		loot: new Bank().add('Turkey drumstick', 3),
 		response: () => 'You cut your Turkey into 3 drumsticks!',
 		addToCL: true
 	},
 	{
-		items: [getOSItem('Shiny mango'), getOSItem('Magus scroll')],
+		items: [Items.getOrThrow('Shiny mango'), Items.getOrThrow('Magus scroll')],
 		cost: new Bank().add('Shiny mango').add('Magus scroll'),
 		loot: new Bank().add('Magical mango'),
 		response: () => 'You enchanted your Shiny mango into a Magical mango!',
 		addToCL: true
 	},
 	{
-		items: [getOSItem('Blabberbeak'), getOSItem('Magical mango')],
+		items: [Items.getOrThrow('Blabberbeak'), Items.getOrThrow('Magical mango')],
 		cost: new Bank().add('Magical mango').add('Blabberbeak'),
 		loot: new Bank().add('Mangobeak'),
 		response: () =>
@@ -208,34 +207,34 @@ const genericUsables: {
 		addToCL: true
 	},
 	{
-		items: [getOSItem('Candle'), getOSItem('Celebratory cake')],
+		items: [Items.getOrThrow('Candle'), Items.getOrThrow('Celebratory cake')],
 		cost: new Bank().add('Candle').add('Celebratory cake'),
 		loot: new Bank().add('Celebratory cake with candle'),
 		response: () => 'You stick a candle in your cake.',
 		addToCL: true
 	},
 	{
-		items: [getOSItem('Tinderbox'), getOSItem('Celebratory cake with candle')],
+		items: [Items.getOrThrow('Tinderbox'), Items.getOrThrow('Celebratory cake with candle')],
 		cost: new Bank().add('Celebratory cake with candle'),
 		loot: new Bank().add('Lit celebratory cake'),
 		response: () => 'You light the candle in your cake.',
 		addToCL: true
 	},
 	{
-		items: [getOSItem('Klik'), getOSItem('Celebratory cake with candle')],
+		items: [Items.getOrThrow('Klik'), Items.getOrThrow('Celebratory cake with candle')],
 		cost: new Bank().add('Celebratory cake with candle'),
 		loot: new Bank().add('Burnt celebratory cake'),
 		response: () => 'You try to get Klik to light the candle... but he burnt the cake..',
 		addToCL: true
 	},
 	{
-		items: [getOSItem('Mithril seeds')],
+		items: [Items.getOrThrow('Mithril seeds')],
 		cost: new Bank().add('Mithril seeds').freeze(),
 		loot: () => flowerTable.roll(),
 		response: loot => `You planted a Mithril seed and got ${loot}!`
 	},
 	{
-		items: [getOSItem('Gloom and doom potion'), getOSItem('Broomstick')],
+		items: [Items.getOrThrow('Gloom and doom potion'), Items.getOrThrow('Broomstick')],
 		cost: new Bank().add('Gloom and doom potion').add('Broomstick'),
 		loot: new Bank().add('Grim sweeper'),
 		response: () =>
@@ -243,7 +242,7 @@ const genericUsables: {
 		addToCL: true
 	},
 	{
-		items: [getOSItem('Message in a bottle')],
+		items: [Items.getOrThrow('Message in a bottle')],
 		cost: new Bank().add('Message in a bottle'),
 		loot: null,
 		response: async () => ({
@@ -256,7 +255,7 @@ const genericUsables: {
 		})
 	},
 	{
-		items: [getOSItem('Spooky aura'), getOSItem('Spooky sheet')],
+		items: [Items.getOrThrow('Spooky aura'), Items.getOrThrow('Spooky sheet')],
 		cost: new Bank().add('Spooky aura').add('Spooky sheet'),
 		loot: new Bank().add('Casper'),
 		response: () =>
@@ -270,7 +269,7 @@ const genericUsables: {
 	 */
 	// Raw rat milk
 	{
-		items: [getOSItem('Bucket'), getOSItem('Remy')],
+		items: [Items.getOrThrow('Bucket'), Items.getOrThrow('Remy')],
 		cost: new Bank().add('Bucket'),
 		loot: new Bank().add('Raw rat milk'),
 		response: () => 'You milk Remy (???) and obtain some raw rat milk. Gross.',
@@ -278,7 +277,7 @@ const genericUsables: {
 	},
 	// Scorched rat milk
 	{
-		items: [getOSItem('Raw rat milk'), getOSItem('Klik')],
+		items: [Items.getOrThrow('Raw rat milk'), Items.getOrThrow('Klik')],
 		cost: new Bank().add('Raw rat milk'),
 		loot: new Bank().add('Scorched rat milk'),
 		response: () =>
@@ -287,14 +286,14 @@ const genericUsables: {
 	},
 	// Fresh rat milk
 	{
-		items: [getOSItem('Scorched rat milk'), getOSItem('Wintertoad')],
+		items: [Items.getOrThrow('Scorched rat milk'), Items.getOrThrow('Wintertoad')],
 		cost: new Bank().add('Scorched rat milk'),
 		loot: new Bank().add('Fresh rat milk'),
 		response: () => 'You put your Wintertoad in the milk to cool it down.',
 		addToCL: true
 	},
 	{
-		items: [getOSItem('Scorched rat milk'), getOSItem('Frosty')],
+		items: [Items.getOrThrow('Scorched rat milk'), Items.getOrThrow('Frosty')],
 		cost: new Bank().add('Scorched rat milk'),
 		loot: new Bank().add('Fresh rat milk'),
 		response: () => 'You dip your Frosty into the milk, cooling it down. Frosty seems a little slimmer now.',
@@ -307,14 +306,14 @@ const genericUsables: {
 	 */
 	// Chomped chocolate bits
 	{
-		items: [getOSItem('Cocoa bean'), getOSItem('Steve')],
+		items: [Items.getOrThrow('Cocoa bean'), Items.getOrThrow('Steve')],
 		cost: new Bank().add('Cocoa bean'),
 		loot: new Bank().add('Chomped chocolate bits'),
 		response: () => "You throw the cocoa bean in Steve's mouth, who then chomps it into tiny pieces.",
 		addToCL: true
 	},
 	{
-		items: [getOSItem('Cocoa bean'), getOSItem('Frostbite')],
+		items: [Items.getOrThrow('Cocoa bean'), Items.getOrThrow('Frostbite')],
 		cost: new Bank().add('Cocoa bean'),
 		loot: new Bank().add('Chomped chocolate bits'),
 		response: () => "You throw the cocoa bean in Frostbite's mouth, who then chomps it into tiny pieces.",
@@ -322,7 +321,7 @@ const genericUsables: {
 	},
 	// Metallic cocolate dust
 	{
-		items: [getOSItem('Chomped chocolate bits'), getOSItem('Takon')],
+		items: [Items.getOrThrow('Chomped chocolate bits'), Items.getOrThrow('Takon')],
 		cost: new Bank().add('Chomped chocolate bits'),
 		loot: new Bank().add('Metallic chocolate dust'),
 		response: () =>
@@ -330,7 +329,7 @@ const genericUsables: {
 		addToCL: true
 	},
 	{
-		items: [getOSItem('Chomped chocolate bits'), getOSItem('Ori')],
+		items: [Items.getOrThrow('Chomped chocolate bits'), Items.getOrThrow('Ori')],
 		cost: new Bank().add('Chomped chocolate bits'),
 		loot: new Bank().add('Metallic chocolate dust'),
 		response: () =>
@@ -339,7 +338,7 @@ const genericUsables: {
 	},
 	// Chocolate bar
 	{
-		items: [getOSItem('Metallic chocolate dust'), getOSItem('Fresh rat milk')],
+		items: [Items.getOrThrow('Metallic chocolate dust'), Items.getOrThrow('Fresh rat milk')],
 		cost: new Bank().add('Metallic chocolate dust').add('Fresh rat milk'),
 		loot: new Bank().add('Pristine chocolate bar'),
 		response: () => 'You created a Pristine chocolate bar.',
@@ -347,7 +346,7 @@ const genericUsables: {
 	},
 	// Ashy Flour
 	{
-		items: [getOSItem('Ashes'), getOSItem('Skipper')],
+		items: [Items.getOrThrow('Ashes'), Items.getOrThrow('Skipper')],
 		cost: new Bank().add('Ashes'),
 		loot: new Bank().add('Ashy flour'),
 		response: () => "Skipper manages to do some paperwork magic, and legally classify the ashes as 'Ashy flour'.",
@@ -359,14 +358,14 @@ const genericUsables: {
 	 *
 	 */
 	{
-		items: [getOSItem('Vial'), getOSItem('Gary')],
+		items: [Items.getOrThrow('Vial'), Items.getOrThrow('Gary')],
 		cost: new Bank().add('Vial'),
 		loot: new Bank().add('Snail oil'),
 		response: () => "You scrape some of Gary's oil into a vial.",
 		addToCL: true
 	},
 	{
-		items: [getOSItem('Vial'), getOSItem('Plopper')],
+		items: [Items.getOrThrow('Vial'), Items.getOrThrow('Plopper')],
 		cost: new Bank().add('Vial'),
 		loot: new Bank().add('Snail oil'),
 		response: () => 'You pick some snails off Ploppers skin and squeeze them into the vials.',
@@ -378,14 +377,14 @@ const genericUsables: {
 	 *
 	 */
 	{
-		items: [getOSItem('Vial'), getOSItem('Herbert')],
+		items: [Items.getOrThrow('Vial'), Items.getOrThrow('Herbert')],
 		cost: new Bank().add('Vial'),
 		loot: new Bank().add('Grimy salt'),
 		response: () => 'You scrape a knife along Herberts back, collecting some salt.',
 		addToCL: true
 	},
 	{
-		items: [getOSItem('Vial'), getOSItem('Ishi')],
+		items: [Items.getOrThrow('Vial'), Items.getOrThrow('Ishi')],
 		cost: new Bank().add('Vial'),
 		loot: new Bank().add('Grimy salt'),
 		response: () => 'You collect some salt from Ishi.',
@@ -397,14 +396,14 @@ const genericUsables: {
 	 *
 	 */
 	{
-		items: [getOSItem('Wooden spoon'), getOSItem('Fresh rat milk')],
+		items: [Items.getOrThrow('Wooden spoon'), Items.getOrThrow('Fresh rat milk')],
 		cost: new Bank().add('Wooden spoon').add('Fresh rat milk'),
 		loot: new Bank().add('Milk with spoon'),
 		response: () => 'You put a spoon in the bucket, someone just needs to mix it now.',
 		addToCL: true
 	},
 	{
-		items: [getOSItem('Milk with spoon'), getOSItem('Harry')],
+		items: [Items.getOrThrow('Milk with spoon'), Items.getOrThrow('Harry')],
 		cost: new Bank().add('Milk with spoon'),
 		loot: new Bank().add('Hairy banana-butter'),
 		response: () =>
@@ -412,7 +411,7 @@ const genericUsables: {
 		addToCL: true
 	},
 	{
-		items: [getOSItem('Hairy banana-butter'), getOSItem('Peky')],
+		items: [Items.getOrThrow('Hairy banana-butter'), Items.getOrThrow('Peky')],
 		cost: new Bank().add('Hairy banana-butter'),
 		loot: new Bank().add('Banana-butter'),
 		response: () =>
@@ -421,14 +420,14 @@ const genericUsables: {
 	},
 	// Phoenix egg (u)
 	{
-		items: [getOSItem('Logs'), getOSItem('Phoenix eggling')],
+		items: [Items.getOrThrow('Logs'), Items.getOrThrow('Phoenix eggling')],
 		cost: new Bank().add('Logs'),
 		loot: new Bank().add('Smokey egg'),
 		response: () => 'You feed some logs to your Phoenix eggling, and it poops out a hot, smokey egg.',
 		addToCL: true
 	},
 	{
-		items: [getOSItem('Egg'), getOSItem('Klik')],
+		items: [Items.getOrThrow('Egg'), Items.getOrThrow('Klik')],
 		cost: new Bank().add('Egg'),
 		loot: new Bank().add('Smokey egg'),
 		response: () => 'You hold a egg to Klik, he sets it on fire, and it turns into a smokey egg.',
@@ -436,14 +435,14 @@ const genericUsables: {
 	},
 	// Ginger root
 	{
-		items: [getOSItem('Christmas cake recipe'), getOSItem('Doug')],
+		items: [Items.getOrThrow('Christmas cake recipe'), Items.getOrThrow('Doug')],
 		cost: new Bank(),
 		loot: new Bank().add('Ginger root'),
 		response: () => 'You show the recipe to Doug, who goes off digging and returns with a Ginger root.',
 		addToCL: true
 	},
 	{
-		items: [getOSItem('Christmas cake recipe'), getOSItem('Wilvus')],
+		items: [Items.getOrThrow('Christmas cake recipe'), Items.getOrThrow('Wilvus')],
 		cost: new Bank(),
 		loot: new Bank().add('Ginger root'),
 		response: () => 'You show the recipe to Wilvus, who goes off and steals it from a mole who had one.',
@@ -451,7 +450,7 @@ const genericUsables: {
 	},
 	// Dodgy bread
 	{
-		items: [getOSItem('Ashy flour'), getOSItem('Fresh rat milk')],
+		items: [Items.getOrThrow('Ashy flour'), Items.getOrThrow('Fresh rat milk')],
 		cost: new Bank().add('Ashy flour').add('Fresh rat milk'),
 		loot: new Bank().add('Dodgy bread'),
 		response: () => 'You make some Dodgy bread.',
@@ -459,14 +458,14 @@ const genericUsables: {
 	},
 	// Gingerbread
 	{
-		items: [getOSItem('Ginger root'), getOSItem('Dodgy bread')],
+		items: [Items.getOrThrow('Ginger root'), Items.getOrThrow('Dodgy bread')],
 		cost: new Bank().add('Ginger root').add('Dodgy bread'),
 		loot: new Bank().add('Gingerbread'),
 		response: () => 'You make some Gingerbread.',
 		addToCL: true
 	},
 	{
-		items: [getOSItem('Note from pets')],
+		items: [Items.getOrThrow('Note from pets')],
 		cost: new Bank(),
 		loot: null,
 		response: async () => {
@@ -484,28 +483,28 @@ const genericUsables: {
 		}
 	},
 	{
-		items: [getOSItem('Pumpkin carving knife'), getOSItem('Heirloom pumpkin')],
+		items: [Items.getOrThrow('Pumpkin carving knife'), Items.getOrThrow('Heirloom pumpkin')],
 		cost: new Bank().add('Heirloom pumpkin'),
 		loot: new Bank().add('Jack-o-lantern'),
 		response: () => 'You carve your Heirloom pumpkin into a Jack-o-lantern.',
 		addToCL: true
 	},
 	{
-		items: [getOSItem('Ensouled demon head'), getOSItem('Mumpkin')],
+		items: [Items.getOrThrow('Ensouled demon head'), Items.getOrThrow('Mumpkin')],
 		cost: new Bank().add('Ensouled demon head').add('Mumpkin'),
 		loot: new Bank().add('Mumpkin (demonic)'),
 		response: () => 'Your mumpkin is now demonic.',
 		addToCL: true
 	},
 	{
-		items: [getOSItem('Pumpkin'), getOSItem('Mumpkin')],
+		items: [Items.getOrThrow('Pumpkin'), Items.getOrThrow('Mumpkin')],
 		cost: new Bank().add('Pumpkin').add('Mumpkin'),
 		loot: new Bank().add('Mumpkin (pumpkin)'),
 		response: () => 'Your mumpkin is now wearing a Pumpkin on his head.',
 		addToCL: true
 	},
 	{
-		items: [getOSItem('Bones'), getOSItem('Mumpkin')],
+		items: [Items.getOrThrow('Bones'), Items.getOrThrow('Mumpkin')],
 		cost: new Bank().add('Bones').add('Mumpkin'),
 		loot: new Bank().add('Mumpkin (dead)'),
 		response: () => 'You have turned your mumpkin into a dead mumpkin.',
@@ -513,7 +512,7 @@ const genericUsables: {
 	}
 ];
 usables.push({
-	items: [getOSItem('Ivy seed')],
+	items: [Items.getOrThrow('Ivy seed')],
 	run: async user => {
 		if (user.bitfield.includes(BitField.HasPlantedIvy)) {
 			return 'You already planted Ivy in your PoH.';
@@ -531,7 +530,7 @@ usables.push({
 	}
 });
 usables.push({
-	items: [getOSItem('Spooky gear frame unlock')],
+	items: [Items.getOrThrow('Spooky gear frame unlock')],
 	run: async user => {
 		const gearFrame = gearImages[1];
 		if (user.user.unlocked_gear_templates.includes(gearFrame.id)) {
@@ -547,34 +546,34 @@ usables.push({
 	}
 });
 usables.push({
-	items: [getOSItem('Mysterious token')],
+	items: [Items.getOrThrow('Mysterious token')],
 	run: async () => {
 		return 'Nothing mysterious happens.';
 	}
 });
 
 usables.push({
-	items: [getOSItem('Echo'), getOSItem('Banana')],
+	items: [Items.getOrThrow('Echo'), Items.getOrThrow('Banana')],
 	run: async () => {
 		return 'https://media.tenor.com/LqrZCROBYzQAAAAd/eat-banana-bat.gif';
 	}
 });
 
 usables.push({
-	items: [getOSItem('Mumpkin'), getOSItem('Grapes')],
+	items: [Items.getOrThrow('Mumpkin'), Items.getOrThrow('Grapes')],
 	run: async () => {
 		return 'https://media1.tenor.com/m/kH25W3XYcPAAAAAd/red-panda-panda.gif';
 	}
 });
 usables.push({
-	items: [getOSItem('Mumpkin'), getOSItem('Bread')],
+	items: [Items.getOrThrow('Mumpkin'), Items.getOrThrow('Bread')],
 	run: async () => {
 		return 'https://media1.tenor.com/m/w7_fsFxm2yUAAAAd/red-panda.gif';
 	}
 });
 
 usables.push({
-	items: [getOSItem('Guthixian cache boost')],
+	items: [Items.getOrThrow('Guthixian cache boost')],
 	run: async user => {
 		const cost = new Bank().add('Guthixian cache boost');
 		if (!user.owns(cost)) {
@@ -591,7 +590,7 @@ usables.push({
 });
 
 usables.push({
-	items: [getOSItem('Christmas cake recipe')],
+	items: [Items.getOrThrow('Christmas cake recipe')],
 	run: async () => {
 		return {
 			files: [
@@ -650,7 +649,7 @@ for (const genericU of genericUsables) {
 	});
 }
 usables.push({
-	items: [getOSItem('Double loot token')],
+	items: [Items.getOrThrow('Double loot token')],
 	run: async (user: MUser) => {
 		await user.removeItemsFromBank(new Bank().add('Double loot token'));
 		await addToDoubleLootTimer(Time.Minute * randInt(6, 36), `${user} used a Double Loot token!`);
@@ -660,7 +659,7 @@ usables.push({
 
 for (const zygomite of resolveItems(['Herbal zygomite spores', 'Barky zygomite spores', 'Fruity zygomite spores'])) {
 	usables.push({
-		items: [getOSItem(zygomite), getOSItem('Deathly toxic potion')],
+		items: [Items.getOrThrow(zygomite), Items.getOrThrow('Deathly toxic potion')],
 		run: async (user: MUser) => {
 			const cost = new Bank().add('Deathly toxic potion').add(zygomite);
 			const loot = new Bank().add('Toxic zygomite spores');
@@ -691,7 +690,7 @@ ${minionMessage}`;
 	});
 }
 usables.push({
-	items: [getOSItem('Mysterious clue (1)')],
+	items: [Items.getOrThrow('Mysterious clue (1)')],
 	run: async (user: MUser) => {
 		const { step, track, stepData, minionMessage } = user.getMysteriousTrailData();
 		if (!step || !track || !stepData) return 'Hmmm..';
@@ -708,8 +707,8 @@ This looks like a treasure trail. ${minionMessage}`;
 export const allUsableItems = new Set(usables.map(i => i.items.map(i => i.id)).flat(2));
 
 export async function useCommand(user: MUser, _firstItem: string, _secondItem?: string) {
-	const firstItem = getItem(_firstItem);
-	const secondItem = _secondItem === undefined ? null : getItem(_secondItem);
+	const firstItem = Items.get(_firstItem);
+	const secondItem = _secondItem === undefined ? null : Items.get(_secondItem);
 	if (!firstItem || (_secondItem !== undefined && !secondItem)) return "That's not a valid item.";
 	const items = [firstItem, secondItem].filter(notEmpty);
 	assert(items.length === 1 || items.length === 2);

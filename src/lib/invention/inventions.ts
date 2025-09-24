@@ -7,7 +7,6 @@ import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { IMaterialBank, MaterialType } from '@/lib/invention/index.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { logError } from '@/lib/util/logError.js';
 import { MaterialBank } from './MaterialBank.js';
 
@@ -150,7 +149,7 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.SuperiorBonecrusher,
 		name: 'Superior bonecrusher',
 		description: `Provides a ${inventionBoosts.superiorBonecrusher.xpBoostPercent}% increase in XP over the Gorajan bonecrusher.`,
-		item: getOSItem('Superior bonecrusher'),
+		item: Items.getOrThrow('Superior bonecrusher'),
 		materialTypeBank: new MaterialBank({
 			pious: 5,
 			sharp: 1,
@@ -165,7 +164,7 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.SuperiorDwarfMultiCannon,
 		name: 'Superior dwarf multicannon',
 		description: `A ${inventionBoosts.superiorCannon.speedBoostPercentSingles}-${inventionBoosts.superiorCannon.speedBoostPercentMulti}% stronger version of the Dwarven multicannon.`,
-		item: getOSItem('Superior dwarf multicannon'),
+		item: Items.getOrThrow('Superior dwarf multicannon'),
 		materialTypeBank: new MaterialBank({
 			strong: 4,
 			heavy: 2,
@@ -186,7 +185,7 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.SuperiorInfernoAdze,
 		name: 'Superior inferno adze',
 		description: 'Chops, and firemakes logs. Mines, and smelts ores.',
-		item: getOSItem('Superior inferno adze'),
+		item: Items.getOrThrow('Superior inferno adze'),
 		materialTypeBank: new MaterialBank({
 			sharp: 3,
 			base: 3,
@@ -206,7 +205,7 @@ export const Inventions: readonly Invention[] = [
 		}x faster, and gives up to ${toKMB(
 			inventionBoosts.silverHawks.passiveXPCalc(Time.Hour, 120)
 		)}/hr passive agility XP.`,
-		item: getOSItem('Silverhawk boots'),
+		item: Items.getOrThrow('Silverhawk boots'),
 		materialTypeBank: new MaterialBank({
 			swift: 5,
 			protective: 1,
@@ -221,7 +220,7 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.MechaMortar,
 		name: 'Mecha mortar',
 		description: `Makes Herblore training ${inventionBoosts.mechaMortar.herbloreSpeedBoostPercent}% faster.`,
-		item: getOSItem('Mecha mortar'),
+		item: Items.getOrThrow('Mecha mortar'),
 		materialTypeBank: new MaterialBank({
 			organic: 8,
 			metallic: 2
@@ -235,7 +234,7 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.QuickTrap,
 		name: 'Quick trap',
 		description: `Makes box-trap hunting ${inventionBoosts.quickTrap.boxTrapBoostPercent}% faster.`,
-		item: getOSItem('Quick trap'),
+		item: Items.getOrThrow('Quick trap'),
 		materialTypeBank: new MaterialBank({
 			precious: 1,
 			magic: 6,
@@ -250,7 +249,7 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.ArcaneHarvester,
 		name: 'Arcane harvester',
 		description: `Increases farming and herbiboar yield by ${inventionBoosts.arcaneHarvester.harvestBoostPercent}%.`,
-		item: getOSItem('Arcane harvester'),
+		item: Items.getOrThrow('Arcane harvester'),
 		materialTypeBank: new MaterialBank({
 			organic: 5,
 			magic: 5
@@ -264,7 +263,7 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.PortableTanner,
 		name: 'Portable tanner',
 		description: 'Tans hides received from PvM.',
-		item: getOSItem('Portable tanner'),
+		item: Items.getOrThrow('Portable tanner'),
 		materialTypeBank: new MaterialBank({
 			metallic: 2,
 			plated: 3,
@@ -279,7 +278,7 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.DrygoreSaw,
 		name: 'Drygore saw',
 		description: `${inventionBoosts.drygoreSaw.buildBoostPercent}% faster construction building.`,
-		item: getOSItem('Drygore saw'),
+		item: Items.getOrThrow('Drygore saw'),
 		materialTypeBank: new MaterialBank({
 			drygore: 7,
 			sharp: 3
@@ -293,7 +292,7 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.ClueUpgrader,
 		name: 'Clue upgrader',
 		description: 'Has a chance to upgrade Beginner-Elite clues to the next tier when received as loot in PvM.',
-		item: getOSItem('Clue upgrader'),
+		item: Items.getOrThrow('Clue upgrader'),
 		materialTypeBank: new MaterialBank({
 			treasured: 8,
 			metallic: 2
@@ -318,7 +317,7 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.DwarvenToolkit,
 		name: 'Dwarven toolkit',
 		description: `Makes disassembly ${inventionBoosts.dwarvenToolkit.disassembleBoostPercent}% faster`,
-		item: getOSItem('Dwarven toolkit'),
+		item: Items.getOrThrow('Dwarven toolkit'),
 		materialTypeBank: new MaterialBank({
 			dwarven: 8,
 			metallic: 2
@@ -332,7 +331,7 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.MechaRod,
 		name: 'Mecha Rod',
 		description: `Makes fishing ${inventionBoosts.mechaRod.speedBoostPercent}% faster.`,
-		item: getOSItem('Mecha rod'),
+		item: Items.getOrThrow('Mecha rod'),
 		materialTypeBank: new MaterialBank({
 			flexible: 4,
 			organic: 4,
@@ -347,7 +346,7 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.MasterHammerAndChisel,
 		name: 'Master Hammer and Chisel',
 		description: `Makes Crafting ${inventionBoosts.masterHammerAndChisel.speedBoostPercent}% faster.`,
-		item: getOSItem('Master hammer and chisel'),
+		item: Items.getOrThrow('Master hammer and chisel'),
 		materialTypeBank: new MaterialBank({
 			simple: 3,
 			sharp: 2,
@@ -363,7 +362,7 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.AbyssalAmulet,
 		name: 'Abyssal amulet',
 		description: 'Provides a significant boost to Runecrafting runes.',
-		item: getOSItem('Abyssal amulet'),
+		item: Items.getOrThrow('Abyssal amulet'),
 		materialTypeBank: new MaterialBank({
 			magic: 4,
 			treasured: 3,
@@ -385,7 +384,7 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.RoboFlappy,
 		name: 'RoboFlappy',
 		description: 'A robotic terrorbird which provides extra loot from minigames.',
-		item: getOSItem('RoboFlappy'),
+		item: Items.getOrThrow('RoboFlappy'),
 		materialTypeBank: new MaterialBank({
 			magic: 4,
 			organic: 2,
@@ -400,7 +399,7 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.ChinCannon,
 		name: 'Chincannon',
 		description: 'A cannon that shoots chinchompas with extra ferocity and speed.',
-		item: getOSItem('Chincannon'),
+		item: Items.getOrThrow('Chincannon'),
 		materialTypeBank: new MaterialBank({
 			explosive: 10
 		}),
@@ -413,7 +412,7 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.WispBuster,
 		name: 'Wisp-buster',
 		description: `A device increases the speed of memory harvesting, giving ${inventionBoosts.wispBuster.xpIncreasePercent}% more xp.`,
-		item: getOSItem('Wisp-buster'),
+		item: Items.getOrThrow('Wisp-buster'),
 		materialTypeBank: new MaterialBank({
 			pious: 4,
 			powerful: 1,
@@ -429,7 +428,7 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.DivineHand,
 		name: 'Divine hand',
 		description: `A device that enhances the harvesting of divination memories, increasing energy yield by ${inventionBoosts.divineHand.memoryHarvestExtraYieldPercent}% and harvesting clue scrolls.`,
-		item: getOSItem('Divine hand'),
+		item: Items.getOrThrow('Divine hand'),
 		materialTypeBank: new MaterialBank({
 			pious: 2,
 			magic: 7,
@@ -444,7 +443,7 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.DrygoreAxe,
 		name: 'Drygore axe',
 		description: `Speeds up woodcutting by ${inventionBoosts.drygoreAxe.woodcuttingSpeedBoostPercent}%.`,
-		item: getOSItem('Drygore axe'),
+		item: Items.getOrThrow('Drygore axe'),
 		materialTypeBank: new MaterialBank({
 			drygore: 7,
 			sharp: 3
@@ -458,7 +457,7 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.MoonlightMutator,
 		name: 'Moonlight mutator',
 		description: 'Mutates seeds from your bank into zygomite spores.',
-		item: getOSItem('Moonlight mutator'),
+		item: Items.getOrThrow('Moonlight mutator'),
 		materialTypeBank: new MaterialBank({
 			organic: 5,
 			magic: 5
@@ -472,7 +471,7 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.Webshooter,
 		name: 'Webshooter',
 		description: `A handheld webshooter that helps catch implings by ${inventionBoosts.webshooter.passiveImplingBoostPercent}% and hunter creatures by ${inventionBoosts.webshooter.hunterBoostPercent}%.`,
-		item: getOSItem('Webshooter'),
+		item: Items.getOrThrow('Webshooter'),
 		materialTypeBank: new MaterialBank({
 			strong: 4,
 			flexible: 4,

@@ -1,4 +1,6 @@
 import { makeComponents, roughMergeMahojiResponse } from '@oldschoolgg/toolkit/discord-util';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { toTitleCase } from 'remeda';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
 import { defaultFarmingContract } from '@/lib/minions/farming/index.js';
@@ -7,10 +9,17 @@ import { getPlantToGrow } from '@/lib/skilling/functions/calcFarmingContracts.js
 import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
 import { plants } from '@/lib/skilling/skills/farming/index.js';
 import { findPlant } from '@/lib/util/farmingHelpers.js';
-import { makeEasierFarmingContractButton } from '@/lib/util/smallUtils.js';
 import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 import { farmingPlantCommand, harvestCommand } from './farmingCommand.js';
 import { abstractedOpenCommand } from './openCommand.js';
+
+function makeEasierFarmingContractButton() {
+	return new ButtonBuilder()
+		.setCustomId('FARMING_CONTRACT_EASIER')
+		.setLabel('Ask for easier Contract')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('977410792754413668');
+}
 
 async function janeImage(content: string) {
 	const image = await newChatHeadImage({ content, head: 'jane' });
@@ -27,6 +36,10 @@ export function getFarmingContractOfUser(user: MUser) {
 	const currentContract: FarmingContract =
 		(user.user.minion_farmingContract as FarmingContract | null) ?? defaultFarmingContract;
 	return currentContract;
+}
+
+function formatNewContractContent(plantName: string, difficulty: FarmingContractDifficultyLevel) {
+	return `Your new farming contract is: ${plantName} (${toTitleCase(difficulty)} contract)`;
 }
 
 export async function farmingContractCommand(userID: string, input?: ContractOption): CommandResponse {
@@ -67,7 +80,8 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 			if (currentContract.difficultyLevel === 'easy') {
 				return janeImage('Pardon me, but you already have the easiest contract level available!');
 			}
-			const newContractLevel: ContractOption = currentContract.difficultyLevel === 'hard' ? 'medium' : 'easy';
+			const newContractLevel: FarmingContractDifficultyLevel =
+				currentContract.difficultyLevel === 'hard' ? 'medium' : 'easy';
 			const plantInformation = getPlantToGrow(user, {
 				contractLevel: newContractLevel,
 				ignorePlant: currentContract.plantToGrow!
@@ -87,6 +101,7 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 			});
 
 			return {
+				content: formatNewContractContent(plantToGrow, newContractLevel),
 				files: (
 					await janeImage(
 						`I suppose you were too chicken for the challenge. Please could you grow a ${plantToGrow} instead for us? I'll reward you once you have checked its health.`
@@ -141,6 +156,7 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 	});
 
 	return {
+		content: formatNewContractContent(plantToGrow, input as FarmingContractDifficultyLevel),
 		files: (
 			await janeImage(
 				`Please could you grow a ${plantToGrow} for us? I'll reward you once you have checked its health.`

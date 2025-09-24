@@ -60,7 +60,7 @@ export const shadesOfMortonTask: MinionTask = {
 			}
 		}
 
-		const { itemsAdded } = await transactItems({ userID: user.id, collectionLog: true, itemsToAdd: loot });
+		const { itemsAdded } = await user.transactItems({ collectionLog: true, itemsToAdd: loot });
 
 		if (loot.has('Gary')) {
 			await user.sync();

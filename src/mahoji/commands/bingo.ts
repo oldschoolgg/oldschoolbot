@@ -17,18 +17,18 @@ import {
 	type User,
 	userMention
 } from 'discord.js';
-import { Bank, type ItemBank, toKMB } from 'oldschooljs';
+import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { clImageGenerator } from '@/lib/collectionLogTask.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
-import { getItem } from '@/lib/util/getOSItem.js';
+import { getUsername, getUsernameSync } from '@/lib/util.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
-import { getUsername, getUsernameSync } from '@/lib/util.js';
 import { BingoManager, BingoTrophies } from '@/mahoji/lib/bingo/BingoManager.js';
-import { generateTileName, getAllTileItems, isGlobalTile, type StoredBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
+import type { StoredBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
+import { generateTileName, getAllTileItems, isGlobalTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';
 import { doMenu, getPos } from './leaderboard.js';
 
@@ -238,7 +238,7 @@ function parseTileAddInput(input: string): StoredBingoTile | null {
 	const items = [];
 
 	for (const name of arr) {
-		const item = getItem(name);
+		const item = Items.getItem(name);
 		if (item) {
 			items.push(item);
 		}

@@ -1,4 +1,3 @@
-import { roll } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
@@ -10,6 +9,7 @@ import Cooking from '@/lib/skilling/skills/cooking/cooking.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { CookingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { roll } from '@/lib/util/rng.js';
 
 export const cookingTask: MinionTask = {
 	type: 'Cooking',
@@ -74,8 +74,7 @@ export const cookingTask: MinionTask = {
 
 		str += `\nYou received: ${loot}.`;
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

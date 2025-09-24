@@ -1,3 +1,4 @@
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { Bank, EMonster, Misc } from 'oldschooljs';
 
 import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
@@ -72,8 +73,16 @@ export const zalcanoTask: MinionTask = {
 			}
 		}
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		if (loot.amount('Smolcano') > 0) {
+			globalClient.emit(
+				Events.ServerNotification,
+				`**${user.badgedUsername}'s** minion, ${
+					user.minionName
+				}, just received **Smolcano**, their Zalcano KC is ${randInt(newKC - quantity, newKC)}!`
+			);
+		}
+
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: updateBank.itemLootBank
 		});

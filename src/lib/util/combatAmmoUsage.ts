@@ -1,8 +1,6 @@
 import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import type { GearSetupType } from '@prisma/client';
-import { Bank, type Item } from 'oldschooljs';
-
-import getOSItem from './getOSItem.js';
+import { Bank, type Item, Items } from 'oldschooljs';
 
 interface CombatItemConsumption {
 	requiredGearType: GearSetupType[];
@@ -25,7 +23,7 @@ export const combatItemsConsumption: CombatItemConsumption[] = [
 			"Ava's assembler": 50,
 			'Ranged master cape': 90
 		}),
-		item: getOSItem('Hellfire bow')
+		item: Items.getOrThrow('Hellfire bow')
 	}
 ];
 

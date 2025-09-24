@@ -1,28 +1,25 @@
 import { increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { Bank, SkillsEnum } from 'oldschooljs';
+import { Bank, Items, SkillsEnum } from 'oldschooljs';
 
 import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
-import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions.js';
 import type { DarkAltarOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export const darkAltarRunes = {
 	soul: {
-		item: getOSItem('Soul rune'),
+		item: Items.getOrThrow('Soul rune'),
 		baseTime: Time.Second * 2.2,
 		xp: 19.6,
 		level: 90,
 		petChance: 782_999
 	},
 	blood: {
-		item: getOSItem('Blood rune'),
+		item: Items.getOrThrow('Blood rune'),
 		baseTime: Time.Second * 2.2,
 		xp: 17.2,
 		level: 77,
@@ -87,24 +84,6 @@ export async function darkAltarCommand({
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'DarkAltar');
-
-	// Calculate Abyssal amulet boost:
-	if (user.hasEquippedOrInBank(['Abyssal amulet'])) {
-		const abyssalAmuletBoost = inventionBoosts.abyssalAmulet.boosts.find(b =>
-			b.runes.some(r => stringMatches(r, `${rune} rune (zeah)`))
-		);
-		if (abyssalAmuletBoost) {
-			const res = await inventionItemBoost({
-				user,
-				inventionID: InventionID.AbyssalAmulet,
-				duration: maxTripLength
-			});
-			if (res.success) {
-				timePerRune = reduceNumByPercent(timePerRune, abyssalAmuletBoost.boost);
-				boosts.push(`${abyssalAmuletBoost.boost}% boost for Abyssal amulet (Removed ${res.materialCost})`);
-			}
-		}
-	}
 	let quantity = Math.floor(maxTripLength / timePerRune);
 	let duration = maxTripLength;
 	const totalCost = new Bank();

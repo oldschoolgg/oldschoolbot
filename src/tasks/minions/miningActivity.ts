@@ -14,8 +14,8 @@ import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { Ore } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { skillingPetDropRate } from '@/lib/util.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { mahojiUsersSettingsFetch, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export function calculateMiningResult({

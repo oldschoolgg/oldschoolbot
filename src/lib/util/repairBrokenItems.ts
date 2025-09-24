@@ -1,9 +1,10 @@
-import { deepClone, deepEqual, deepObjectDiff, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
+import { deepEqual, deepObjectDiff, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
 import type { GearSetupType, Prisma } from '@prisma/client';
 import { type ItemBank, Items } from 'oldschooljs';
+import { clone } from 'remeda';
 
+import { moidLink } from '@/lib/bso/bsoUtil.js';
 import { type GearSetup, GearSetupTypes } from '@/lib/gear/types.js';
-import { moidLink } from '@/lib/util.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 type GearX = Required<Record<`gear_${GearSetupType}`, GearSetup | null>>;
@@ -17,7 +18,7 @@ type Changes = {
 } & GearX;
 
 export async function repairBrokenItemsFromUser(mUser: MUser) {
-	const previousUser = deepClone(mUser.user);
+	const previousUser = clone(mUser.user);
 
 	const { user } = mUser;
 	const userTames = await prisma.tame.findMany({
@@ -45,7 +46,7 @@ export async function repairBrokenItemsFromUser(mUser: MUser) {
 		gear_skilling: user.gear_skilling as GearSetup | null,
 		gear_wildy: user.gear_wildy as GearSetup | null
 	};
-	const currentValues: Changes = deepClone(__currentValues);
+	const currentValues: Changes = clone(__currentValues);
 	const currentGearValues = [
 		currentValues.gear_fashion,
 		currentValues.gear_melee,
@@ -83,7 +84,7 @@ export async function repairBrokenItemsFromUser(mUser: MUser) {
 	}
 
 	// Fix
-	const newValues = deepClone(currentValues);
+	const newValues = clone(currentValues);
 	newValues.favoriteItems = currentValues.favoriteItems.filter(i => !brokenBank.includes(i));
 	for (const id of brokenBank) {
 		delete newValues.bank[id];

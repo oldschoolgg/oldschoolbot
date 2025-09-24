@@ -2,7 +2,7 @@ import { noOp, randArrItem, roll, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
-import { MysteryBoxes } from '@/lib/bsoOpenables.js';
+import { MysteryBoxes } from '@/lib/bso/bsoOpenables.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
 import { addMonsterXP } from '@/lib/minions/functions/index.js';
@@ -52,8 +52,7 @@ export const groupoMonsterTask: MinionTask = {
 			if (user.usingPet('Ori') && duration > Time.Minute * 5) {
 				loot.add(monster.table.kill(Math.ceil(kcToAdd * 0.25), {}));
 			}
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});

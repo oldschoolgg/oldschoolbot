@@ -1,13 +1,12 @@
 import { calcPercentOfNum, roll } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { MysteryBoxes } from '@/lib/bsoOpenables.js';
-import { catchFishAtLocation, fishingLocations } from '@/lib/fishingContest.js';
+import { MysteryBoxes } from '@/lib/bso/bsoOpenables.js';
+import { catchFishAtLocation, fishingLocations } from '@/lib/bso/fishingContest.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { ClueTable } from '@/lib/simulation/sharedTables.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { FishingContestOptions } from '@/lib/types/minions.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
@@ -50,7 +49,7 @@ export const fishingContestTask: MinionTask = {
 				['Professional tackle box', 90],
 				["Champion's tackle box", 110]
 			] as const) {
-				const item = getOSItem(tackleBox);
+				const item = Items.getOrThrow(tackleBox);
 				if (user.skillLevel(SkillsEnum.Fishing) < fishLevel) break;
 				if (user.hasEquippedOrInBank(item.id)) continue;
 

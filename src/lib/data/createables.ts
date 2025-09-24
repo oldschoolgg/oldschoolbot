@@ -1,19 +1,15 @@
-import { isFunction, uniqueArr } from '@oldschoolgg/toolkit';
-import { Bank, deepResolveItems, EItem, type ItemBank, itemID } from 'oldschooljs';
+import { Bank, deepResolveItems, EItem, type ItemBank, itemID, Items } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
-import { discontinuedItems } from '@/lib/customItems/customItems.js';
-import { allDyedItems } from '@/lib/dyedItems.js';
+import { BsoCreateables } from '@/lib/data/creatables/bsoItems.js';
 import type { MaterialBank } from '@/lib/invention/MaterialBank.js';
 import { blisterwoodRequirements, ivandisRequirements } from '@/lib/minions/data/templeTrekking.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import type { Skills } from '@/lib/types/index.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { formatList, itemNameFromID } from '@/lib/util/smallUtils.js';
 import { chambersOfXericMetamorphPets, tobMetamorphPets } from './CollectionsExport.js';
 import { amrodCreatables } from './creatables/amrod.js';
 import { armorAndItemPacks } from './creatables/armorPacks.js';
-import { BsoCreateables } from './creatables/bsoItems.js';
 import { caCreatables } from './creatables/caCreatables.js';
 import { capeCreatables } from './creatables/capes.js';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields.js';
@@ -23,16 +19,13 @@ import { gracefulOutfitCreatables } from './creatables/gracefulOutfits.js';
 import { guardiansOfTheRiftCreatables } from './creatables/guardiansOfTheRiftCreatables.js';
 import { leaguesCreatables } from './creatables/leagueCreatables.js';
 import { lmsCreatables } from './creatables/lms.js';
-import { moktangCreatables } from './creatables/moktangCreatables.js';
 import { mysticStavesCreatables } from './creatables/mysticStaves.js';
 import { nexCreatables } from './creatables/nex.js';
 import { ornamentKits } from './creatables/ornaments.js';
 import { shadesOfMortonCreatables } from './creatables/shadesOfMorton.js';
 import { slayerCreatables } from './creatables/slayer.js';
-import { sunMoonCreatables } from './creatables/sunMoonCreatables.js';
 import { toaCreatables } from './creatables/toa.js';
 import { tobCreatables } from './creatables/tob.js';
-import { tameCreatables } from './tameCreatables.js';
 
 export interface Createable {
 	name: string;
@@ -64,8 +57,8 @@ const bloodBarkPairs = [
 const bloodBarkCreatables: Createable[] = [];
 
 for (const [bbPart, sbPart, bloodRunes, lvlReq] of bloodBarkPairs) {
-	const bbItem = getOSItem(bbPart);
-	const sbItem = getOSItem(sbPart);
+	const bbItem = Items.getOrThrow(bbPart);
+	const sbItem = Items.getOrThrow(sbPart);
 
 	bloodBarkCreatables.push({
 		name: bbItem.name,
@@ -95,8 +88,8 @@ const swampBarkPairs = [
 const swampBarkCreatables: Createable[] = [];
 
 for (const [bbPart, sbPart, natRunes, lvlReq] of swampBarkPairs) {
-	const bbItem = getOSItem(bbPart);
-	const sbItem = getOSItem(sbPart);
+	const bbItem = Items.getOrThrow(bbPart);
+	const sbItem = Items.getOrThrow(sbPart);
 
 	swampBarkCreatables.push({
 		name: bbItem.name,
@@ -1509,16 +1502,6 @@ const Createables: Createable[] = [
 		}
 	},
 	{
-		name: 'Ancient godsword',
-		inputItems: {
-			[itemID('Godsword blade')]: 1,
-			[itemID('Ancient hilt')]: 1
-		},
-		outputItems: {
-			[itemID('Ancient godsword')]: 1
-		}
-	},
-	{
 		name: 'Infernal pickaxe',
 		inputItems: {
 			[itemID('Dragon pickaxe')]: 1,
@@ -1828,9 +1811,7 @@ const Createables: Createable[] = [
 			'Dragon sq shield': 1
 		}),
 		QPRequired: 111,
-		requiredSkills: {
-			smithing: 60
-		}
+		requiredSkills: { smithing: 60 }
 	},
 	{
 		name: 'Dragon kiteshield',
@@ -2184,8 +2165,7 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Partyhat & specs')]: 1
-		},
-		noCreatablesCl: true
+		}
 	},
 	{
 		name: 'Ivandis Flail',
@@ -2279,16 +2259,6 @@ const Createables: Createable[] = [
 		}),
 		outputItems: {
 			[itemID('Fish sack barrel')]: 1
-		}
-	},
-	{
-		name: 'Kodai wand',
-		inputItems: {
-			[itemID('Master wand')]: 1,
-			[itemID('Kodai insignia')]: 1
-		},
-		outputItems: {
-			[itemID('Kodai wand')]: 1
 		}
 	},
 	{
@@ -2401,11 +2371,6 @@ const Createables: Createable[] = [
 		outputItems: new Bank({
 			'Trident of the swamp': 1
 		})
-	},
-	{
-		name: 'Golden cape',
-		inputItems: new Bank().add('Golden cape shard', 7),
-		outputItems: new Bank().add('Golden cape')
 	},
 	{
 		name: 'Voidwaker',
@@ -2718,7 +2683,6 @@ const Createables: Createable[] = [
 	...dragonFireShieldCreatables,
 	...revWeapons,
 	...armorAndItemPacks,
-	...BsoCreateables,
 	...gracefulOutfitCreatables,
 	...tobCreatables,
 	...lmsCreatables,
@@ -2728,8 +2692,6 @@ const Createables: Createable[] = [
 	...goldenProspectorCreatables,
 	...leaguesCreatables,
 	...guardiansOfTheRiftCreatables,
-	...tameCreatables,
-	...moktangCreatables,
 	...shadesOfMortonCreatables,
 	...toaCreatables,
 	...bloodBarkCreatables,
@@ -2738,12 +2700,7 @@ const Createables: Createable[] = [
 	...caCreatables,
 	...forestryCreatables,
 	...camdozaalItems,
-	...sunMoonCreatables
+	...BsoCreateables
 ];
 
 export default Createables;
-export const creatablesCL = uniqueArr(
-	Createables.filter(i => i.noCl !== true && i.noCreatablesCl !== true)
-		.flatMap(i => (isFunction(i.outputItems) ? [] : new Bank(i.outputItems).items().map(i => i[0].id)))
-		.filter(i => !discontinuedItems.includes(i) && !allDyedItems.includes(i))
-);

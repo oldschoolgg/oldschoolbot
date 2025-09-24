@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { BlacksmithOutfit } from '@/lib/bsoOpenables.js';
+import { BlacksmithOutfit } from '@/lib/bso/bsoOpenables.js';
 import { dwarvenOutfit } from '@/lib/data/CollectionsExport.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
@@ -42,9 +42,8 @@ export const smithingTask: MinionTask = {
 			collectionLog = false;
 		}
 
-		await transactItems({
-			userID: user.id,
-			collectionLog,
+		await user.transactItems({
+			collectionLog: true,
 			itemsToAdd: loot
 		});
 

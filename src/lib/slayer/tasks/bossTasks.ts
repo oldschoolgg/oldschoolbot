@@ -1,8 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
-import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
-import { getMonster } from '@/lib/util.js';
 
 export const bossTasks: AssignableSlayerTask[] = [
 	{
@@ -156,7 +154,7 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Kraken,
 		amount: [3, 35],
 		weight: 1,
-		monsters: [Monsters.Kraken.id, BSOMonsters.SeaKraken.id],
+		monsters: [Monsters.Kraken.id],
 		slayerLevel: 87,
 		isBoss: true
 	},
@@ -233,19 +231,6 @@ export const bossTasks: AssignableSlayerTask[] = [
 		},
 		questPoints: 75,
 		monsters: [Monsters.Zulrah.id],
-		isBoss: true
-	},
-	{
-		monster: getMonster('Queen Black Dragon'),
-		amount: [3, 15],
-		weight: 1,
-		levelRequirements: {
-			prayer: 70,
-			defence: 80,
-			ranged: 85
-		},
-		questPoints: 75,
-		monsters: [BSOMonsters.QueenBlackDragon.id],
 		isBoss: true
 	},
 	{

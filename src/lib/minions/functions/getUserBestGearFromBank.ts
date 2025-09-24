@@ -1,10 +1,9 @@
-import { Bank, type EquipmentSlot, type Item } from 'oldschooljs';
+import { Bank, type EquipmentSlot, type Item, Items } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import type { GearSetupType } from '@/lib/gear/types.js';
 import type { Gear } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { assert } from '@/lib/util/logError.js';
 import { skillsMeetRequirements } from '@/lib/util.js';
 
@@ -95,7 +94,6 @@ export default function getUserBestGearFromBank(
 			? skillsMeetRequirements(skills, item.equipment.requirements)
 			: true;
 		if (item.equipable_by_player && item.equipment && item.equipment[gearStat] >= 0 && quantity > 0 && hasStats) {
-			// Ignore wilderness only items if non wildy gear type
 			equipables[item.equipment.slot].push(item.id);
 		}
 	}
@@ -105,8 +103,8 @@ export default function getUserBestGearFromBank(
 		if (equipables[slot as EquipmentSlot][0]) {
 			// Sort by the extra gear first if that is set
 			equipables[slot as EquipmentSlot] = items.sort((a, b) => {
-				const itemA = getOSItem(a);
-				const itemB = getOSItem(b);
+				const itemA = Items.getOrThrow(a);
+				const itemB = Items.getOrThrow(b);
 				const aGearScore = getItemScore(itemA);
 				const bGearScore = getItemScore(itemB);
 				if (gearStatExtra) {
@@ -120,7 +118,7 @@ export default function getUserBestGearFromBank(
 			});
 
 			// Get the best item (first in slot) and if that exists, add its stats to the calculation
-			const item = getOSItem(equipables[slot as EquipmentSlot][0]);
+			const item = Items.getOrThrow(equipables[slot as EquipmentSlot][0]);
 			gearToEquip[slot as EquipmentSlot] = { item: item.id, quantity: 1 };
 			score2h += slot !== 'weapon' && slot !== 'shield' ? item.equipment![gearStat] : 0;
 			scoreWs += slot !== '2h' ? item.equipment![gearStat] : 0;

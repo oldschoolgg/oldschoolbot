@@ -18,19 +18,19 @@ import { GeneralBank, type GeneralBankType, UserError } from '@oldschoolgg/toolk
 import { Bank, type EquipmentSlot, type ItemBank, LootTable, resolveItems } from 'oldschooljs';
 
 import { getSimilarItems } from '@/lib/data/similarItems.js';
+import type { GearSetupType } from '@/lib/gear/types.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
 import type { Skills } from '@/lib/types/index.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 import { gorajanGearBoost } from './bso/gorajanGearBoost.js';
 import { degradeChargeBank } from './degradeableItems.js';
-import type { GearSetupType } from './gear/types.js';
 import { trackLoot } from './lootTrack.js';
 import { QuestID } from './minions/data/quests.js';
-import { ChargeBank } from './structures/Bank.js';
 import type { ColoTaskOptions } from './types/minions.js';
-import addSubTaskToActivityTask from './util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from './util/calcMaxTripLength.js';
-import { updateBankSetting } from './util/updateBankSetting.js';
 
 function combinedChance(percentages: number[]): number {
 	const failureProbabilities = percentages.map(p => (100 - p) / 100);
@@ -307,7 +307,7 @@ function calculateDeathChance(waveKC: number, hasBF: boolean, hasSGS: boolean, h
 		newChance = reduceNumByPercent(newChance, 20);
 	}
 
-	return clamp(newChance, 1, 80);
+	return clamp(newChance, { min: 1, max: 80 });
 }
 
 export class ColosseumWaveBank extends GeneralBank<number> {
@@ -350,7 +350,7 @@ function calculateTimeInMs(waveTwelveKC: number): number {
 function calculateGlory(kcBank: ColosseumWaveBank, wave: Wave) {
 	const waveKCSkillBank = new ColosseumWaveBank();
 	for (const [waveNumber, kc] of kcBank.entries()) {
-		waveKCSkillBank.add(waveNumber, clamp(calcWhatPercent(kc, 30 - waveNumber), 1, 100));
+		waveKCSkillBank.add(waveNumber, clamp(calcWhatPercent(kc, 30 - waveNumber), { min: 1, max: 100 }));
 	}
 	const kcSkill = waveKCSkillBank.amount(wave.waveNumber) ?? 0;
 	const totalKCSkillPercent = sumArr(waveKCSkillBank.entries().map(ent => ent[1])) / waveKCSkillBank.length();

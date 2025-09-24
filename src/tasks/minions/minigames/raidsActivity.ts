@@ -3,7 +3,8 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Bank, ChambersOfXeric, randomVariation, resolveItems, SkillsEnum } from 'oldschooljs';
 
 import { CHINCANNON_MESSAGES } from '@/lib/bso/bsoConstants.js';
-import { MysteryBoxes } from '@/lib/bsoOpenables.js';
+import { MysteryBoxes } from '@/lib/bso/bsoOpenables.js';
+import { handleSpecialCoxLoot } from '@/lib/bso/handleSpecialCoxLoot.js';
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '@/lib/data/CollectionsExport.js';
 import { createTeam } from '@/lib/data/cox.js';
@@ -11,7 +12,6 @@ import { userHasFlappy } from '@/lib/invention/inventions.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
 import type { RaidsOptions } from '@/lib/types/minions.js';
-import { handleSpecialCoxLoot } from '@/lib/util/handleSpecialCoxLoot.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
@@ -166,7 +166,7 @@ export const raidsTask: MinionTask = {
 		} finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
 		await Promise.all(allUsers.map(u => u.incrementMinigameScore(minigameID, quantity)));
 
-		for (const [userID, userData] of raidResults) {
+		for (const [_userID, userData] of raidResults) {
 			const { personalPoints, deaths, deathChance, loot, mUser: user, naturalDouble, flappyMsg } = userData;
 			if (!user) continue;
 			if (naturalDouble) loot.add(MysteryBoxes.roll());
@@ -177,8 +177,7 @@ export const raidsTask: MinionTask = {
 					? userStatsBankUpdate(user.id, 'chincannon_destroyed_loot_bank', loot).then(() => ({
 							itemsAdded: new Bank()
 						}))
-					: transactItems({
-							userID,
+					: user.transactItems({
 							itemsToAdd: loot,
 							collectionLog: true
 						}),

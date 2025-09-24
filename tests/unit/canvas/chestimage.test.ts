@@ -3,7 +3,7 @@ import path from 'node:path';
 import { Bank } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
-import { drawChestLootImage } from '@/lib/canvas/chestImage';
+import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { baseSnapshotPath } from '../../testConstants.js';
 
 describe('Chest Images', async () => {

@@ -157,8 +157,7 @@ export const toaTask: MinionTask = {
 
 			let str = 'Nothing';
 			if (!chincannonUser) {
-				const { itemsAdded } = await transactItems({
-					userID,
+				const { itemsAdded } = await user.transactItems({
 					itemsToAdd: totalLoot.get(userID),
 					collectionLog: true
 				});

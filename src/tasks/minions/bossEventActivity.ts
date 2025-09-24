@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { bossEvents } from '@/lib/bossEvents.js';
+import { bossEvents } from '@/lib/bso/bossEvents.js';
 import type { BossUser } from '@/lib/structures/Boss.js';
 import type { NewBossOptions } from '@/lib/types/minions.js';
 

@@ -2,7 +2,6 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { time } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { birdhouseLimit } from '@/lib/bso/bsoUtil.js';
 import birdhouses, { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
 import type { BirdhouseActivityTaskOptions } from '@/lib/types/minions.js';
@@ -24,8 +23,6 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 	const currentDate = Date.now();
 	const infoStr: string[] = [];
 	const boostStr: string[] = [];
-
-	const birdHouses = birdhouseLimit(user);
 
 	const existingBirdhouse = calculateBirdhouseDetails(user);
 	if (!existingBirdhouse.isReady && existingBirdhouse.raw.lastPlaced) return birdhouseCheckCommand(user);
@@ -65,7 +62,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 	}
 	let gotCraft = false;
 	const removeBank = new Bank();
-	const premadeBankCost = birdhouseToPlant.houseItemReq.clone().multiply(birdHouses);
+	const premadeBankCost = birdhouseToPlant.houseItemReq.clone().multiply(4);
 	if (user.owns(premadeBankCost)) {
 		removeBank.add(premadeBankCost);
 	} else {
@@ -73,7 +70,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 			return `${user.minionName} needs ${birdhouseToPlant.craftLvl} Crafting to make ${birdhouseToPlant.name} during the run or write \`/activities birdhouse run --nocraft\`.`;
 		}
 		gotCraft = true;
-		removeBank.add(birdhouseToPlant.craftItemReq.clone().multiply(birdHouses));
+		removeBank.add(birdhouseToPlant.craftItemReq.clone().multiply(4));
 	}
 
 	let canPay = false;
@@ -84,7 +81,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 		for (const fav of favourites) {
 			const seed = birdhouseSeeds.find(s => s.item.id === fav);
 			if (!seed) continue;
-			const seedCost = new Bank().add(seed.item, seed.amount * birdHouses);
+			const seedCost = new Bank().add(seed.item.id, seed.amount * 4);
 			if (userBank.has(seedCost)) {
 				infoStr.push(`You baited the birdhouses with ${seedCost}.`);
 				removeBank.add(seedCost);
@@ -111,14 +108,14 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 	if (!user.owns(removeBank)) return `You don't own: ${removeBank}.`;
 
 	await updateBankSetting('farming_cost_bank', removeBank);
-	await transactItems({ userID: user.id, itemsToRemove: removeBank });
+	await user.transactItems({ itemsToRemove: removeBank });
 
 	// If user does not have something already placed, just place the new birdhouses.
 	if (!existingBirdhouse.raw.birdhousePlaced) {
-		infoStr.unshift(`${user.minionName} is now placing ${birdHouses}x ${birdhouseToPlant.name}.`);
+		infoStr.unshift(`${user.minionName} is now placing 4x ${birdhouseToPlant.name}.`);
 	} else {
 		infoStr.unshift(
-			`${user.minionName} is now collecting ${birdHouses}x ${existingBirdhouse.raw.lastPlaced}, and then placing ${birdHouses}x ${birdhouseToPlant.name}.`
+			`${user.minionName} is now collecting 4x ${existingBirdhouse.raw.lastPlaced}, and then placing 4x ${birdhouseToPlant.name}.`
 		);
 	}
 

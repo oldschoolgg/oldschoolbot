@@ -2,7 +2,6 @@ import './lib/ActivityManager.js';
 import './lib/globals.js';
 import './lib/MUser.js';
 import './lib/safeglobals.js';
-import './lib/util/transactItemsFromBank.js';
 
 import { isObject } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
@@ -10,8 +9,10 @@ import { convertMahojiCommandToAbstractCommand, MahojiClient } from '@oldschoolg
 import { init } from '@sentry/node';
 import { GatewayIntentBits, Options, Partials, type TextChannel } from 'discord.js';
 
-import 'oldschooljs';
-
+import { onStartup } from '@/mahoji/lib/events.js';
+import { exitCleanup } from '@/mahoji/lib/exitHandler.js';
+import { postCommand } from '@/mahoji/lib/postCommand.js';
+import { preCommand } from '@/mahoji/lib/preCommand.js';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists.js';
 import { Channel, gitHash, globalConfig } from './lib/constants.js';
 import { economyLog } from './lib/economyLogs.js';
@@ -24,10 +25,6 @@ import { interactionHook } from './lib/util/globalInteractions.js';
 import { handleInteractionError, interactionReply } from './lib/util/interactionReply.js';
 import { logError } from './lib/util/logError.js';
 import { allCommands } from './mahoji/commands/allCommands.js';
-import { onStartup } from './mahoji/lib/events.js';
-import { exitCleanup } from './mahoji/lib/exitHandler.js';
-import { postCommand } from './mahoji/lib/postCommand.js';
-import { preCommand } from './mahoji/lib/preCommand.js';
 
 if (globalConfig.sentryDSN) {
 	init({
@@ -147,7 +144,7 @@ client.on('interactionCreate', async interaction => {
 		if (interaction.isRepliable()) {
 			await interactionReply(interaction, {
 				content:
-					'BSO is currently shutting down for maintenance/updates, please try again in a couple minutes! Thank you <3',
+					'Old School Bot is currently shutting down for maintenance/updates, please try again in a couple minutes! Thank you <3',
 				ephemeral: true
 			});
 		}
@@ -228,6 +225,7 @@ client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
 client.once('ready', () => onStartup());
 
 async function main() {
+	console.log('Starting up Old School Bot...');
 	await Promise.all([
 		preStartup(),
 		import('exit-hook').then(({ asyncExitHook }) =>
@@ -239,9 +237,9 @@ async function main() {
 	]);
 	console.log(`Logged in as ${globalClient.user.username}`);
 
-	if (process.env.NODE_ENV !== 'production' && Boolean(process.env.TEST_BOT_SERVER)) {
-		import('@/testing/testServer.js').then(_mod => _mod.startTestBotServer());
-	}
+	// if (process.env.NODE_ENV !== 'production' && Boolean(process.env.TEST_BOT_SERVER)) {
+	// 	import('@/testing/testServer.js').then(_mod => _mod.startTestBotServer());
+	// }
 }
 
 process.on('uncaughtException', err => {

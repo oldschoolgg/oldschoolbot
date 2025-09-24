@@ -1,26 +1,17 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Bank, deepResolveItems, EMonster, itemID, Monsters, NIGHTMARES_HP, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { bossKillables } from '@/lib/minions/data/killableMonsters/bosses/index.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
-import { NexMonster } from '@/lib/nex.js';
-import { PUMPKINHEAD_ID } from '@/lib/simulation/pumpkinHead.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
+import bosses from './bosses/index.js';
 import { camdozaalMonsters } from './camdozaalMonsters.js';
 import { chaeldarMonsters } from './chaeldarMonsters.js';
 import { creatureCreationCreatures } from './creatureCreation.js';
-import { Ignecarus } from './custom/bosses/Ignecarus.js';
-import { KalphiteKingMonster } from './custom/bosses/KalphiteKing.js';
-import KingGoldemar from './custom/bosses/KingGoldemar.js';
-import { MOKTANG_ID } from './custom/bosses/Moktang.js';
-import { Naxxus } from './custom/bosses/Naxxus.js';
-import { VasaMagus } from './custom/bosses/VasaMagus.js';
-import { customKillableMonsters } from './custom/customMonsters.js';
 import { konarMonsters } from './konarMonsters.js';
 import { krystiliaMonsters } from './krystiliaMonsters.js';
-import low from './low.js';
+import { lowKillableMonsters } from './low.js';
 import { mazchnaMonsters } from './mazchnaMonsters.js';
 import { nieveMonsters } from './nieveMonsters.js';
 import { reanimatedMonsters } from './reanimated.js';
@@ -29,7 +20,7 @@ import { turaelMonsters } from './turaelMonsters.js';
 import { vannakaMonsters } from './vannakaMonsters.js';
 
 const killableMonsters: KillableMonster[] = [
-	...bossKillables,
+	...bosses,
 	...chaeldarMonsters,
 	...konarMonsters,
 	...krystiliaMonsters,
@@ -38,11 +29,10 @@ const killableMonsters: KillableMonster[] = [
 	...nieveMonsters,
 	...turaelMonsters,
 	...vannakaMonsters,
-	...low,
+	...lowKillableMonsters,
 	...revenantMonsters,
 	...creatureCreationCreatures,
 	...reanimatedMonsters,
-	...customKillableMonsters,
 	{
 		id: Monsters.Barrows.id,
 		name: Monsters.Barrows.name,
@@ -51,8 +41,10 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.Barrows,
 		emoji: '<:Dharoks_helm:403038864199122947>',
 		wildy: false,
+
 		difficultyRating: 4,
 		itemsRequired: resolveItems([]),
+		notifyDrops: resolveItems([]),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{ [itemID('Barrows gloves')]: 2 },
@@ -71,8 +63,7 @@ const killableMonsters: KillableMonster[] = [
 			pool: {
 				'Rejuvenation pool': 10,
 				'Fancy rejuvenation pool': 10,
-				'Ornate rejuvenation pool': 10,
-				'Ancient rejuvenation pool': 20
+				'Ornate rejuvenation pool': 10
 			}
 		},
 		defaultAttackStyles: [SkillsEnum.Attack, SkillsEnum.Magic, SkillsEnum.Ranged],
@@ -94,10 +85,10 @@ const killableMonsters: KillableMonster[] = [
 			"Guthan's chainskirt",
 			"Guthan's helm",
 			"Guthan's warspear",
-			['Gorajan archer top', 'Pernix body', 'Armadyl chestplate', "Karil's leathertop"],
-			['Gorajan archer legs', 'Pernix chaps', 'Armadyl chainskirt', "Karil's leatherskirt"]
+			['Armadyl chestplate', "Karil's leathertop"],
+			['Armadyl chainskirt', "Karil's leatherskirt"]
 		]),
-
+		notifyDrops: resolveItems(['Pet dagannoth prime']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -135,9 +126,10 @@ const killableMonsters: KillableMonster[] = [
 			"Guthan's chainskirt",
 			"Guthan's helm",
 			"Guthan's warspear",
-			['Gorajan warrior top', 'Torva platebody', 'Bandos chestplate', "Torag's platebody"],
-			['Gorajan warrior legs', 'Torva platelegs', 'Bandos tassets', "Torag's platelegs"]
+			['Torva platebody', 'Bandos chestplate', "Torag's platebody"],
+			['Torva platelegs', 'Bandos tassets', "Torag's platelegs"]
 		]),
+		notifyDrops: resolveItems(['Pet dagannoth rex']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -172,10 +164,10 @@ const killableMonsters: KillableMonster[] = [
 			"Guthan's chainskirt",
 			"Guthan's helm",
 			"Guthan's warspear",
-			['Gorajan warrior top', 'Torva platebody', 'Bandos chestplate', "Torag's platebody"],
-			['Gorajan warrior legs', 'Torva platelegs', 'Bandos tassets', "Torag's platelegs"]
+			['Bandos chestplate', "Torag's platebody", 'Torva platebody'],
+			['Bandos tassets', "Torag's platelegs", 'Torva platelegs']
 		]),
-
+		notifyDrops: resolveItems(['Pet dagannoth supreme']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -208,8 +200,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		difficultyRating: 0,
 		qpRequired: 0,
-		defaultAttackStyles: [SkillsEnum.Attack],
-		attackStyleToUse: GearStat.AttackSlash
+		defaultAttackStyles: [SkillsEnum.Attack]
 	},
 	{
 		id: Monsters.Guard.id,
@@ -283,7 +274,6 @@ const killableMonsters: KillableMonster[] = [
 			}
 		}
 	},
-
 	{
 		id: Monsters.PriffRabbit.id,
 		name: Monsters.PriffRabbit.name,
@@ -292,6 +282,7 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.PriffRabbit,
 		emoji: '',
 		wildy: false,
+
 		difficultyRating: 10,
 		qpRequired: 205,
 		levelRequirements: {
@@ -390,53 +381,18 @@ export const effectiveMonsters = [
 		id: EMonster.ZALCANO,
 		emoji: '<:Smolcano:604670895113633802>'
 	},
-	{
-		id: 46_274,
-		name: 'Nex',
-		aliases: ['nex']
-	},
-	{
-		id: KalphiteKingMonster.id,
-		name: 'Kalphite King',
-		aliases: ['kalphite king', 'kk']
-	},
 	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127, emoji: '<:Tzrekjad:324127379188613121>' },
 	{ name: 'Mimic', aliases: ['mimic'], id: 23_184, emoji: '<:Tangleroot:324127378978635778>' },
 	{ name: 'Hespori', aliases: ['hespori'], id: 8583, emoji: '<:Casket:365003978678730772>' },
-	{
-		id: KingGoldemar.id,
-		name: 'King Goldemar',
-		aliases: ['king goldemar', 'kg']
-	},
-	{
-		id: VasaMagus.id,
-		name: 'Vasa Magus',
-		aliases: ['vasa', 'vasa magus', 'vm']
-	},
-	{
-		id: Naxxus.id,
-		name: 'Naxxus',
-		aliases: ['naxx', 'nax', 'naxxus']
-	},
-	{
-		id: Ignecarus.id,
-		name: 'Ignecarus',
-		aliases: ['igne', 'ignecarus']
-	},
-	{
-		id: PUMPKINHEAD_ID,
-		name: 'Pumpkinhead',
-		aliases: ['pumpkinhead', 'ph']
-	},
 	{
 		name: "Phosani's Nightmare",
 		aliases: ['phosani', 'phosanis nightmare'],
 		id: EMonster.PHOSANI_NIGHTMARE
 	},
 	{
-		name: 'Moktang',
-		aliases: ['moktang'],
-		id: MOKTANG_ID
+		name: 'Nex',
+		aliases: ['nex'],
+		id: EMonster.NEX
 	}
 ];
 
@@ -461,6 +417,12 @@ const otherMonsters = [
 		link: `/bosses/the-nightmare/${stringMatches(s.split(' ')[0], "Phosani's") ? '#phosanis-nightmare' : ''}`
 	})),
 	{
+		name: 'Nex',
+		aliases: ['nex'],
+		id: EMonster.NEX,
+		link: '/bosses/nex/'
+	},
+	{
 		name: 'Zalcano',
 		aliases: ['zalcano'],
 		id: EMonster.ZALCANO,
@@ -468,66 +430,11 @@ const otherMonsters = [
 		link: '/miscellaneous/zalcano/'
 	},
 	{
-		...VasaMagus,
-		link: '/bso/monsters/bosses/vasa-magus/'
-	},
-	{
-		...Ignecarus,
-		name: 'Ignecarus (Solo)',
-		link: '/bso/monsters/bosses/ignecarus/'
-	},
-	{
-		...Ignecarus,
-		name: 'Ignecarus (Mass)',
-		link: '/bso/monsters/bosses/ignecarus/'
-	},
-	{
-		...KingGoldemar,
-		name: 'King Goldemar (Solo)',
-		link: '/bso/monsters/bosses/king-goldemar/'
-	},
-	{
-		...KingGoldemar,
-		name: 'King Goldemar (Mass)',
-		link: '/bso/monsters/bosses/king-goldemar/'
-	},
-	{
-		...NexMonster,
-		name: 'Nex (Solo)',
-		link: '/bso/monsters/bosses/nex/'
-	},
-	{
-		...NexMonster,
-		name: 'Nex (Mass)',
-		link: '/bso/monsters/bosses/nex/'
-	},
-	{
-		...KalphiteKingMonster,
-		name: 'Kalphite King (Solo)',
-		link: '/bso/monsters/bosses/kalphite-king/'
-	},
-	{
-		...KalphiteKingMonster,
-		name: 'Kalphite King (Mass)',
-		link: '/bso/monsters/bosses/kalphite-king/'
-	},
-	{
-		...Naxxus,
-		name: 'Naxxus',
-		link: '/bso/monsters/bosses/naxxus/'
-	},
-	{
 		name: 'Wintertodt',
 		aliases: ['wt', 'wintertodt', 'todt'],
 		id: -1,
 		emoji: '<:Phoenix:324127378223792129>',
 		link: '/activities/wintertodt/'
-	},
-	{
-		name: 'Moktang',
-		aliases: ['moktang'],
-		id: MOKTANG_ID,
-		link: '/bso/monsters/bosses/moktang/'
 	},
 	{
 		name: 'Colosseum',

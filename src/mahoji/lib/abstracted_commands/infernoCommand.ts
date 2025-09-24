@@ -9,7 +9,8 @@ import {
 	Time
 } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { Bank, type ItemBank, Items, itemID, Monsters, randomVariation, resolveItems } from 'oldschooljs';
+import { randomVariation } from '@oldschoolgg/toolkit/util';
+import { Bank, type ItemBank, itemID, Items, Monsters, resolveItems } from 'oldschooljs';
 
 import { determineProjectileTypeFromGear } from '@/lib/bso/gear/util.js';
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
@@ -25,10 +26,9 @@ import { PercentCounter } from '@/lib/structures/PercentCounter.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { InfernoOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
-const minimumRangeItems = [
+const minimumRangeItems = Items.resolveFullItems([
 	'Amulet of fury',
 	"Karil's leathertop",
 	"Karil's leatherskirt",
@@ -36,12 +36,12 @@ const minimumRangeItems = [
 	'Twisted bow',
 	"Ava's assembler",
 	'Snakeskin boots'
-].map(getOSItem);
+]);
 
 const minimumRangeAttackStat = sumArr(minimumRangeItems.map(i => i.equipment!.attack_ranged));
 const minimumRangeMagicDefenceStat = sumArr(minimumRangeItems.map(i => i.equipment!.defence_magic)) - 10;
 
-const minimumMageItems = [
+const minimumMageItems = Items.resolveFullItems([
 	'Amulet of fury',
 	'Imbued guthix cape',
 	"Ahrim's robetop",
@@ -49,7 +49,7 @@ const minimumMageItems = [
 	'Barrows gloves',
 	'Splitbark boots',
 	'Ancient staff'
-].map(getOSItem);
+]);
 
 const minimumMageAttackStat = sumArr(minimumMageItems.map(i => i.equipment!.attack_magic));
 const minimumMageMagicDefenceStat = sumArr(minimumMageItems.map(i => i.equipment!.defence_magic)) - 10;
@@ -330,7 +330,7 @@ async function infernoRun({
 	}
 
 	const darts = blowpipeData.dartID;
-	const dartItem = getOSItem(darts);
+	const dartItem = Items.getOrThrow(darts);
 	const dartIndex = blowpipeDarts.indexOf(dartItem);
 	const percent = dartIndex >= 3 ? dartIndex * 0.9 : -(4 * (4 - dartIndex));
 	if (dartIndex < 5) {

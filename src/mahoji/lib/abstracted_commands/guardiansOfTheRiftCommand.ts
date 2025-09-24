@@ -1,4 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, Items, itemID } from 'oldschooljs';
 

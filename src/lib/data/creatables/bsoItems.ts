@@ -1,17 +1,18 @@
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { Bank, itemID, resolveBank, resolveItems, resolveNameBank } from 'oldschooljs';
+import { Bank, itemID, resolveItems } from 'oldschooljs';
 
+import { dyedItems } from '@/lib/bso/dyedItems.js';
 import { expertCapesSource } from '@/lib/bso/expertCapes.js';
+import { tameCreatables } from '@/lib/bso/tameCreatables.js';
+import { seaMonkeyStaves } from '@/lib/bso/tames.js';
 import { brokenPernixOutfit, brokenTorvaOutfit, brokenVirtusOutfit } from '@/lib/data/CollectionsExport.js';
+import { moktangCreatables } from '@/lib/data/creatables/moktangCreatables.js';
+import { sunMoonCreatables } from '@/lib/data/creatables/sunMoonCreatables.js';
 import type { Createable } from '@/lib/data/createables.js';
-import { dyedItems } from '@/lib/dyedItems.js';
 import { MaterialBank } from '@/lib/invention/MaterialBank.js';
 import { nexBrokenArmorDetails } from '@/lib/nex.js';
 import Skillcapes from '@/lib/skilling/skillcapes.js';
-import { bones } from '@/lib/skilling/skills/prayer.js';
 import type { Bone } from '@/lib/skilling/types.js';
-import { seaMonkeyStaves } from '@/lib/tames.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { assert } from '@/lib/util/logError.js';
 import { divinationCreatables } from './divinationCreatables.js';
 import { ghostCreatables } from './ghostweaveCreatables.js';
@@ -32,7 +33,7 @@ const nexArmourCreatables: Createable[] = [];
 for (const [component, brokenOutfit, repairedOutfit] of nexBrokenArmorDetails) {
 	for (let i = 0; i < brokenOutfit.length; i++) {
 		nexArmourCreatables.push({
-			name: getOSItem(repairedOutfit[i]).name,
+			name: Items.getOrThrow(repairedOutfit[i]).name,
 			inputItems: {
 				[component.id]: 1,
 				[brokenOutfit[i]]: 1
@@ -70,7 +71,7 @@ const nexCreatables: Createable[] = [
 	},
 	...nexArmourCreatables,
 	...brokenPernixOutfit.map(piece => ({
-		name: `Revert ${getOSItem(piece).name}`,
+		name: `Revert ${Items.getOrThrow(piece).name}`,
 		inputItems: new Bank().add(piece),
 		outputItems: {
 			[itemID('Pernix components')]: 1
@@ -78,7 +79,7 @@ const nexCreatables: Createable[] = [
 		forceAddToCl: true
 	})),
 	...brokenTorvaOutfit.map(piece => ({
-		name: `Revert ${getOSItem(piece).name}`,
+		name: `Revert ${Items.getOrThrow(piece).name}`,
 		inputItems: new Bank().add(piece),
 		outputItems: {
 			[itemID('Bandosian components')]: 1
@@ -86,7 +87,7 @@ const nexCreatables: Createable[] = [
 		forceAddToCl: true
 	})),
 	...brokenVirtusOutfit.map(piece => ({
-		name: `Revert ${getOSItem(piece).name}`,
+		name: `Revert ${Items.getOrThrow(piece).name}`,
 		inputItems: new Bank().add(piece),
 		outputItems: {
 			[itemID('Ancestral components')]: 1
@@ -1243,6 +1244,14 @@ export const BsoCreateables: Createable[] = [
 	...nexCreatables,
 	...componentRevertables,
 	...divineWaterCreatbles,
+	...sunMoonCreatables,
+	...moktangCreatables,
+	...tameCreatables,
+	{
+		name: 'Golden cape',
+		inputItems: new Bank().add('Golden cape shard', 7),
+		outputItems: new Bank().add('Golden cape')
+	},
 	{
 		name: 'Crystal dust',
 		inputItems: new Bank({
@@ -1398,19 +1407,19 @@ export const BsoCreateables: Createable[] = [
 
 const potionOfLightLogs = [
 	{
-		item: getOSItem('Elder logs'),
+		item: Items.getOrThrow('Elder logs'),
 		qty: 5
 	},
 	{
-		item: getOSItem('Redwood logs'),
+		item: Items.getOrThrow('Redwood logs'),
 		qty: 10
 	},
 	{
-		item: getOSItem('Magic logs'),
+		item: Items.getOrThrow('Magic logs'),
 		qty: 30
 	},
 	{
-		item: getOSItem('Yew logs'),
+		item: Items.getOrThrow('Yew logs'),
 		qty: 50
 	}
 ];

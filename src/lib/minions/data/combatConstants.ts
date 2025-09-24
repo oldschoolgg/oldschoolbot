@@ -1,13 +1,10 @@
 import { Bank } from 'oldschooljs';
 
-import { inventionBoosts } from '@/lib/invention/inventions.js';
 import type { Consumable } from '@/lib/minions/types.js';
 
 // Configure boost percents
 export const boostCannon = 30;
 export const boostCannonMulti = 55;
-export const boostSuperiorCannon = inventionBoosts.superiorCannon.speedBoostPercentSingles;
-export const boostSuperiorCannonMulti = inventionBoosts.superiorCannon.speedBoostPercentMulti;
 export const boostIceBurst = 35;
 export const boostIceBarrage = 55;
 // What % of the kills should be cannon XP
@@ -85,14 +82,4 @@ export const iceBurstConsumables: Consumable = {
 	itemCost: new Bank().add('Water rune', 4).add('Chaos rune', 4).add('Death rune', 2),
 	qtyPerMinute: 16,
 	isRuneCost: true
-};
-
-export const superiorCannonSingleConsumables: Consumable = {
-	itemCost: new Bank().add('Cannonball', 1),
-	qtyPerMinute: 20
-};
-
-export const superiorCannonMultiConsumables: Consumable = {
-	itemCost: new Bank().add('Cannonball', 1),
-	qtyPerMinute: 60
 };

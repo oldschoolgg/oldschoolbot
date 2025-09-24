@@ -4,16 +4,16 @@ import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { type BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 
+import { getUsersFishingContestDetails } from '@/lib/bso/fishingContest.js';
+import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '@/lib/bso/tameUtil.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
-import { getUsersFishingContestDetails } from '@/lib/fishingContest.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
 import { makeAutoContractButton, makeAutoSlayButton, makeBirdHouseTripButton } from '@/lib/util/interactions.js';
 import { minionStatus } from '@/lib/util/minionStatus.js';
 import { makeRepeatTripButtons } from '@/lib/util/repeatStoredTrip.js';
-import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '@/lib/util/tameUtil.js';
 import { getItemContractDetails } from '@/mahoji/commands/ic.js';
 import { spawnLampIsReady } from '@/mahoji/commands/tools.js';
 import { isUsersDailyReady } from './dailyCommand.js';

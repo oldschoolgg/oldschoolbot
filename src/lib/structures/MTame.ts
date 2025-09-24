@@ -2,8 +2,8 @@ import { roll, round, Time } from '@oldschoolgg/toolkit';
 import { type Tame, tame_growth } from '@prisma/client';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
+import { type Species, tameFeedableItems, tameSpecies, TameSpeciesID } from '@/lib/bso/tames.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
-import { type Species, TameSpeciesID, tameFeedableItems, tameSpecies } from '@/lib/tames.js';
 
 export class MTame {
 	tame: Tame;

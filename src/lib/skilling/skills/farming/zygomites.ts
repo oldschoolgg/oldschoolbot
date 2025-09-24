@@ -1,13 +1,12 @@
 import { randArrItem, roll } from '@oldschoolgg/toolkit';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import { Bank, type Item, LootTable } from 'oldschooljs';
+import { Bank, type Item, Items, LootTable } from 'oldschooljs';
 
+import { MysteryBoxes } from '@/lib/bso/bsoOpenables.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
-import { MysteryBoxes } from '@/lib/bsoOpenables.js';
 import { BitField } from '@/lib/constants.js';
 import { globalDroprates } from '@/lib/data/globalDroprates.js';
 import type { Plant } from '@/lib/skilling/types.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 
 export const zygomiteSeedMutChance = 15;
 
@@ -20,55 +19,55 @@ interface MutatedSourceItem {
 
 export const mutatedSourceItems: MutatedSourceItem[] = [
 	{
-		item: getOSItem('Papaya tree seed'),
+		item: Items.getOrThrow('Papaya tree seed'),
 		zygomite: 'Fruity zygomite',
 		weight: 6,
 		surivalChance: 19
 	},
 	{
-		item: getOSItem('Palm tree seed'),
+		item: Items.getOrThrow('Palm tree seed'),
 		zygomite: 'Fruity zygomite',
 		weight: 5,
 		surivalChance: 15
 	},
 	{
-		item: getOSItem('Dragonfruit tree seed'),
+		item: Items.getOrThrow('Dragonfruit tree seed'),
 		zygomite: 'Fruity zygomite',
 		weight: 1,
 		surivalChance: 3
 	},
 	{
-		item: getOSItem('Lantadyme seed'),
+		item: Items.getOrThrow('Lantadyme seed'),
 		zygomite: 'Herbal zygomite',
 		weight: 14,
 		surivalChance: 16
 	},
 	{
-		item: getOSItem('Torstol seed'),
+		item: Items.getOrThrow('Torstol seed'),
 		zygomite: 'Herbal zygomite',
 		weight: 13,
 		surivalChance: 14
 	},
 	{
-		item: getOSItem('Dwarf weed seed'),
+		item: Items.getOrThrow('Dwarf weed seed'),
 		zygomite: 'Herbal zygomite',
 		weight: 2,
 		surivalChance: 3
 	},
 	{
-		item: getOSItem('Yew seed'),
+		item: Items.getOrThrow('Yew seed'),
 		zygomite: 'Barky zygomite',
 		weight: 17,
 		surivalChance: 15
 	},
 	{
-		item: getOSItem('Magic seed'),
+		item: Items.getOrThrow('Magic seed'),
 		zygomite: 'Barky zygomite',
 		weight: 11,
 		surivalChance: 13
 	},
 	{
-		item: getOSItem('Redwood tree seed'),
+		item: Items.getOrThrow('Redwood tree seed'),
 		zygomite: 'Barky zygomite',
 		weight: 1,
 		surivalChance: 2
@@ -87,7 +86,7 @@ export const zygomiteFarmingSource = [
 	{
 		name: 'Herbal zygomite',
 		mutatedFromItems: sourceItemsToTable(mutatedSourceItems.filter(m => m.zygomite === 'Herbal zygomite')),
-		seedItem: getOSItem('Herbal zygomite spores'),
+		seedItem: Items.getOrThrow('Herbal zygomite spores'),
 		lootTable: new LootTable()
 			.every(
 				new LootTable().add('Mushroom spore').add('Mort myre fungus', [40, 100]).add('Mushroom', [20, 50]),
@@ -99,7 +98,7 @@ export const zygomiteFarmingSource = [
 	{
 		name: 'Barky zygomite',
 		mutatedFromItems: sourceItemsToTable(mutatedSourceItems.filter(m => m.zygomite === 'Barky zygomite')),
-		seedItem: getOSItem('Barky zygomite spores'),
+		seedItem: Items.getOrThrow('Barky zygomite spores'),
 		lootTable: new LootTable()
 			.every(
 				new LootTable().add('Mushroom spore').add('Mort myre fungus', [40, 100]).add('Mushroom', [20, 50]),
@@ -111,7 +110,7 @@ export const zygomiteFarmingSource = [
 	{
 		name: 'Fruity zygomite',
 		mutatedFromItems: sourceItemsToTable(mutatedSourceItems.filter(m => m.zygomite === 'Fruity zygomite')),
-		seedItem: getOSItem('Fruity zygomite spores'),
+		seedItem: Items.getOrThrow('Fruity zygomite spores'),
 		lootTable: new LootTable()
 			.every(
 				new LootTable().add('Mushroom spore').add('Mort myre fungus', [40, 100]).add('Mushroom', [20, 50]),
@@ -123,7 +122,7 @@ export const zygomiteFarmingSource = [
 	{
 		name: 'Toxic zygomite',
 		mutatedFromItems: null,
-		seedItem: getOSItem('Toxic zygomite spores'),
+		seedItem: Items.getOrThrow('Toxic zygomite spores'),
 		lootTable: null
 	}
 ];

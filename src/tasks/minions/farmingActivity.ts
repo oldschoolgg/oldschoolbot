@@ -1,8 +1,8 @@
-import { randInt, Time } from '@oldschoolgg/toolkit';
-import { Bank, Items, increaseBankQuantitesByPercent, itemID, Monsters } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, Items, Monsters, itemID } from 'oldschooljs';
 
+import { MysteryBoxes } from '@/lib/bso/bsoOpenables.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
-import { MysteryBoxes } from '@/lib/bsoOpenables.js';
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField } from '@/lib/constants.js';
@@ -14,13 +14,13 @@ import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.
 import Farming, { plants } from '@/lib/skilling/skills/farming/index.js';
 import { type Plant, SkillsEnum } from '@/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 import { getFarmingKeyFromName } from '@/lib/util/farmingHelpers.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { assert } from '@/lib/util/logError.js';
-import { roll } from '@/lib/util/rng.js';
+import { randInt, roll } from '@/lib/util/rng.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
-import { skillingPetDropRate } from '@/lib/util.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 const plopperBoostPercent = 100;
@@ -224,8 +224,7 @@ export const farmingTask: MinionTask = {
 			}
 
 			updateBankSetting('farming_loot_bank', loot);
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});
@@ -611,8 +610,7 @@ export const farmingTask: MinionTask = {
 			}
 
 			updateBankSetting('farming_loot_bank', loot);
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});

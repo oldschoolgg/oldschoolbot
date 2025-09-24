@@ -12,6 +12,16 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
+import { beginnerReqs, ClueReqs } from '@/lib/clues/clueReqs.js';
+import {
+	beginnerStashes,
+	easyStashes,
+	eliteStashes,
+	hardStashes,
+	masterStashes,
+	mediumStashes,
+	type StashUnitTier
+} from '@/lib/clues/stashUnits.js';
 import {
 	cluesBeginnerCL,
 	cluesEasyCL,
@@ -22,12 +32,8 @@ import {
 	cluesMasterCL,
 	cluesMediumCL
 } from '@/lib/data/CollectionsExport.js';
-import { type ElderClue, ElderClueTable } from '@/lib/simulation/elderClue.js';
+import { ElderClue, ElderClueTable } from '@/lib/simulation/elderClue.js';
 import { GrandmasterClueTable } from '@/lib/simulation/grandmasterClue.js';
-import type { ClueReqs } from './clueReqs.js';
-import { beginnerReqs } from './clueReqs.js';
-import type { StashUnitTier } from './stashUnits.js';
-import { beginnerStashes, easyStashes, eliteStashes, hardStashes, masterStashes, mediumStashes } from './stashUnits.js';
 
 const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
 

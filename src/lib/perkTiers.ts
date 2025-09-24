@@ -1,5 +1,5 @@
-import { BitField, globalConfig, PerkTier, Roles } from '@/lib/constants.js';
 import { perkTierCache } from './cache.js';
+import { BitField, globalConfig, PerkTier, Roles } from './constants.js';
 import { roboChimpCache } from './perkTier.js';
 
 export const allPerkBitfields: BitField[] = [
@@ -31,10 +31,6 @@ function getUsersPerkTierRaw(user: { bitfield: BitField[]; id: string }): PerkTi
 		if (member && [Roles.Booster].some(roleID => member.roles.cache.has(roleID))) {
 			elligibleTiers.push(PerkTier.One);
 		}
-	}
-
-	if (user.bitfield.includes(BitField.IsPatronTier2) || user.bitfield.includes(BitField.HasPermanentTierOne)) {
-		elligibleTiers.push(PerkTier.Three);
 	}
 
 	const roboChimpCached = roboChimpCache.get(user.id);

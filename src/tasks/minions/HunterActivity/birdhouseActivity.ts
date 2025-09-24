@@ -99,8 +99,7 @@ export const birdHouseTask: MinionTask = {
 					loot.add(birdhouseToCollect.normalNestTable.roll());
 				}
 			}
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});

@@ -2,18 +2,14 @@ import { notEmpty, randArrItem, randInt, roll, Time } from '@oldschoolgg/toolkit
 import { channelIsSendable, makeComponents, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { activity_type_enum } from '@prisma/client';
-import {
-	type AttachmentBuilder,
-	type ButtonBuilder,
-	bold,
-	type MessageCollector,
-	type MessageCreateOptions
-} from 'discord.js';
+import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
+import { bold } from 'discord.js';
 import { Bank, EItem, itemID, toKMB } from 'oldschooljs';
 
+import { MysteryBoxes } from '@/lib/bso/bsoOpenables.js';
 import { chargePortentIfHasCharges, getAllPortentCharges, PortentID } from '@/lib/bso/divination.js';
 import { gods } from '@/lib/bso/divineDominion.js';
-import { MysteryBoxes } from '@/lib/bsoOpenables.js';
+import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
 import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
@@ -21,8 +17,7 @@ import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAch
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
-import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions.js';
-import { mysteriousStepData } from '@/lib/mysteryTrail.js';
+import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
 import { RuneTable, WilvusTable, WoodTable } from '@/lib/simulation/seedTable.js';
 import { DougTable, PekyTable } from '@/lib/simulation/sharedTables.js';
@@ -40,7 +35,7 @@ import {
 	tearsOfGuthixSkillReqs
 } from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
 import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
-import { handleCrateSpawns } from './handleCrateSpawns.js';
+import { handleCrateSpawns } from '../bso/handleCrateSpawns.js';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,

@@ -6,7 +6,7 @@ import {
 	type MahojiUserOption
 } from '@oldschoolgg/toolkit/discord-util';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
-import { Bank, Util } from 'oldschooljs';
+import { Bank, toKMB } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { MUserClass } from '@/lib/MUser.js';
@@ -55,7 +55,7 @@ export async function duelCommand(
 	const channel = globalClient.channels.cache.get(interaction.channelId);
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	const duelMessage = await channel.send({
-		content: `${duelTargetUser}, do you accept the duel for ${Util.toKMB(amount)} GP?`,
+		content: `${duelTargetUser}, do you accept the duel for ${toKMB(amount)} GP?`,
 		components: [
 			new ActionRowBuilder<ButtonBuilder>().addComponents([
 				new ButtonBuilder({
@@ -141,7 +141,7 @@ export async function duelCommand(
 		if (amount >= 1_000_000_000) {
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.MoneyBag} **${winner.badgedUsername}** just won a **${Util.toKMB(
+				`${Emoji.MoneyBag} **${winner.badgedUsername}** just won a **${toKMB(
 					winningAmount
 				)}** GP duel against ${loser.badgedUsername}.`
 			);
@@ -153,7 +153,7 @@ export async function duelCommand(
 		);
 
 		duelMessage.edit(
-			`Congratulations ${winner.usernameOrMention}! You won ${Util.toKMB(winningAmount)}, and paid 0 tax.`
+			`Congratulations ${winner.usernameOrMention}! You won ${toKMB(winningAmount)}, and paid 0 tax.`
 		);
 
 		return `Duel finished, ${winner} won.`;

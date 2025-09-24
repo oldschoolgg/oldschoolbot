@@ -2,9 +2,8 @@ import '../../lib/customItems/customItems.js';
 import '../data/itemAliases.js';
 
 import { removeFromArr } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
-import getOSItem from '@/lib/util/getOSItem.js';
 import type { FinishWorkerArgs, FinishWorkerReturn } from '@/lib/workers/index.js';
 
 if (global.prisma) {
@@ -46,8 +45,7 @@ export default async ({ name, tertiaries }: FinishWorkerArgs): FinishWorkerRetur
 		if (kc === maxAttempts) {
 			return `After ${maxAttempts.toLocaleString()} KC, you still didn't finish the CL, so we're giving up! Missing: ${finishCL
 				.filter(id => !loot.has(id))
-				.map(getOSItem)
-				.map(i => i.name)
+				.map(i => Items.itemNameFromId(i))
 				.join(', ')}`;
 		}
 	}

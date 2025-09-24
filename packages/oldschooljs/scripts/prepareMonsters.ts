@@ -1,10 +1,9 @@
 import { writeFileSync } from 'node:fs';
-import fetch from 'node-fetch';
 import { omitBy } from 'remeda';
 import * as wtf from 'wtf_wikipedia';
 
-import { Monsters } from '../src';
-import type { MonsterAttackType, MonsterAttribute, MonsterData, MonsterSlayerMaster } from '../src/meta/monsterData';
+import type { MonsterAttackType, MonsterAttribute, MonsterData, MonsterSlayerMaster } from '@/meta/monsterData.js';
+import { Monsters } from '@/simulation/monsters/index.js';
 
 const monsterMap: { [key: string]: MonsterData } = {};
 
@@ -133,7 +132,7 @@ const transformData = (data: any): MonsterData => {
 		isSlayerMonster: !!slaylvl,
 		slayerLevelRequired: slaylvl,
 		slayerXP: slayxp,
-		assignableSlayerMasters: assignedby?.split(',').map(master => master.trim().toLowerCase())
+		assignableSlayerMasters: assignedby?.split(',').map((master: string) => master.trim().toLowerCase())
 	};
 };
 
@@ -268,7 +267,7 @@ export default async function prepareMonsters(): Promise<void> {
 		.replace(/\]"/g, ']')
 		.replace(/\\"/g, '"');
 
-	writeFileSync('./src/data/monsters_data.json', `${lintedJSON}\n`);
+	writeFileSync('./src/assets/monsters_data.json', `${lintedJSON}\n`);
 
 	console.log('Prepared Monsters. Check any new monsters quickly to see that the data looks okay.');
 }

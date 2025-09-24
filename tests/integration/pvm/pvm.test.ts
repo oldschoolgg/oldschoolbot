@@ -1,13 +1,13 @@
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
-import { Bank, convertLVLtoXP, EItem, EMonster, Monsters, resolveItems } from 'oldschooljs';
+import { Bank, convertLVLtoXP, EItem, EMonster, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
-import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants';
-import { getPOHObject } from '../../../src/lib/poh';
-import { SkillsEnum } from '../../../src/lib/skilling/types';
-import { Gear } from '../../../src/lib/structures/Gear';
-import { minionKCommand } from '../../../src/mahoji/commands/k';
-import { createTestUser, mockClient, mockUser } from '../util';
+import { getPOHObject } from '@/lib/poh/index.js';
+import { CombatCannonItemBank } from '../../../src/lib/minions/data/combatConstants.js';
+import { SkillsEnum } from '../../../src/lib/skilling/types.js';
+import { Gear } from '../../../src/lib/structures/Gear.js';
+import { minionKCommand } from '../../../src/mahoji/commands/k.js';
+import { createTestUser, mockClient, mockUser } from '../util.js';
 
 describe('PVM', async () => {
 	const client = await mockClient();
@@ -31,9 +31,9 @@ describe('PVM', async () => {
 		expect(res).toContain('now killing');
 		await user.runActivity();
 		const kc = await user.getKC(EMonster.GENERAL_GRAARDOR);
-		expect(kc).toBeGreaterThan(8);
+		expect(kc).toEqual(4);
 		expect(user.bank.amount('Shark')).toBeLessThan(1000);
-		expect(user.bank.amount('Big bones')).toBeGreaterThanOrEqual(kc);
+		expect(user.bank.amount('Big bones')).toEqual(kc);
 	});
 
 	it('Should remove charges', async () => {
@@ -100,7 +100,7 @@ describe('PVM', async () => {
 		expect(x).to.contain("You don't have the items");
 		await user.addItemsToBank({ items: new Bank().add('Anti-venom+(4)', 1) });
 		const result = await user.kill(EMonster.HYDRA);
-		expect(result.commandResult).to.contain('is now killing');
+		expect(result.commandResult).to.contain('is now killing 10x Hydra');
 		expect(user.bank.amount('Anti-venom+(4)')).toEqual(0);
 	});
 
@@ -111,9 +111,8 @@ describe('PVM', async () => {
 			mageLevel: 99,
 			mageGear: resolveItems(['Ancient staff'])
 		});
-		const result = await user.kill(EMonster.BLOODVELD, { method: 'barrage' });
-		expect(result.commandResult).not.toContain('Barrage');
-		expect(result.commandResult).not.toContain('Burst');
+		const result = await user.kill(EMonster.BLOODVELD, { method: 'barrage', shouldFail: true });
+		expect(result.commandResult).toEqual('Bloodveld cannot be barraged or burst.');
 	});
 
 	it('should check slayer level requirement', async () => {
@@ -134,8 +133,73 @@ describe('PVM', async () => {
 			mageLevel: 99,
 			mageGear: resolveItems(['Ancient staff'])
 		});
-		const result = await user.kill(EMonster.NECHRYAEL, { method: 'barrage' });
-		expect(result.commandResult).not.toContain('Barrage');
+		const result = await user.kill(EMonster.NECHRYAEL, { method: 'barrage', shouldFail: true });
+		expect(result.commandResult).toEqual('Nechryael cannot be barraged or burst.');
+	});
+
+	it('barrages abby demons', async () => {
+		const user = await client.mockUser({
+			slayerLevel: 99,
+			bank: new Bank().add('Blood rune', 1000).add('Death rune', 1000).add('Water rune', 10000000),
+			mageLevel: 99,
+			mageGear: resolveItems(['Ancient staff'])
+		});
+		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
+		expect(result.commandResult).toContain('is now killing ');
+		expect(user.bank.amount('Blood rune')).toBeLessThan(1000);
+		expect(user.bank.amount('Water rune')).toBeLessThan(10000000);
+		expect(user.bank.amount('Death rune')).toBeLessThan(1000);
+		expect(result.newKC).toBeGreaterThan(0);
+		expect(result.xpGained.magic).toBeGreaterThan(0);
+	});
+
+	it('should get kodai buff', async () => {
+		const user = await client.mockUser({
+			slayerLevel: 99,
+			bank: new Bank().add('Blood rune', 1000).add('Death rune', 1000).add('Water rune', 10000000),
+			mageLevel: 99,
+			mageGear: resolveItems(['Kodai wand'])
+		});
+		expect(user.gear.mage.weapon?.item).toEqual(itemID('Kodai wand'));
+		await user.setAttackStyle([SkillsEnum.Magic]);
+		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
+		expect(result.xpGained.magic).toBeGreaterThan(0);
+		expect(user.bank.amount('Blood rune')).toBeLessThan(1000);
+		expect(user.bank.amount('Death rune')).toBeLessThan(1000);
+		expect(result.newKC).toBeGreaterThan(0);
+	});
+
+	it('should get kodai buff even if forced to switch to mage', async () => {
+		const user = await client.mockUser({
+			slayerLevel: 99,
+			bank: new Bank().add('Blood rune', 1000).add('Death rune', 1000).add('Water rune', 10000000),
+			mageLevel: 99,
+			mageGear: resolveItems(['Kodai wand'])
+		});
+		expect(user.gear.mage.weapon?.item).toEqual(itemID('Kodai wand'));
+		await user.setAttackStyle([SkillsEnum.Attack]);
+		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
+		expect(result.xpGained.magic).toBeGreaterThan(0);
+		expect(user.bank.amount('Blood rune')).toBeLessThan(1000);
+		expect(user.bank.amount('Death rune')).toBeLessThan(1000);
+		expect(result.commandResult).toContain('% boost for Kodai wand');
+		expect(result.commandResult).toContain('% for Ice Barrage');
+		expect(result.newKC).toBeGreaterThan(0);
+	});
+
+	it('should use cannon', async () => {
+		const user = await client.mockUser({
+			bank: new Bank().add('Cannonball', 100_000).add(CombatCannonItemBank),
+			rangeLevel: 99,
+			QP: 300,
+			maxed: true
+		});
+		await user.max();
+		await user.setAttackStyle([SkillsEnum.Ranged]);
+		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'cannon' });
+		expect(result.xpGained.ranged).toBeGreaterThan(0);
+		expect(user.bank.amount('Cannonball')).toBeLessThan(100_000);
+		expect(result.newKC).toBeGreaterThan(0);
 	});
 
 	it('shouldnt use cannon if no cannonballs', async () => {
@@ -149,6 +213,19 @@ describe('PVM', async () => {
 		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'cannon', shouldFail: true });
 		expect(result.commandResult).toContain("You don't have the items needed to kill this monster");
 		expect(user.bank.amount('Cannonball')).toEqual(0);
+	});
+
+	it('should use chins', async () => {
+		const user = await client.mockUser({
+			bank: new Bank().add('Red chinchompa', 5000),
+			rangeLevel: 99,
+			QP: 300,
+			maxed: true
+		});
+		await user.setAttackStyle([SkillsEnum.Ranged]);
+		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'chinning' });
+		expect(result.commandResult).toContain('% for Red chinchomp');
+		expect(user.bank.amount('Red chinchompa')).toBeLessThan(5000);
 	});
 
 	it('should give poh boost', async () => {
@@ -167,7 +244,7 @@ describe('PVM', async () => {
 		});
 		const result = await user.kill(EMonster.KALPHITE_QUEEN);
 		expect(result.commandResult).toContain('10% for Rejuvenation pool');
-		expect(result.commandResult).toContain('8% for no food');
+		expect(result.commandResult).toContain('5% for no food');
 		expect(result.commandResult).toContain('15.00% for stats');
 	});
 

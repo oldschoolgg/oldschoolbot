@@ -1,4 +1,4 @@
-import { clamp, truncateString } from '@oldschoolgg/toolkit';
+import { truncateString } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { allOpenables, allOpenablesIDs } from '@/lib/openables.js';
@@ -57,17 +57,19 @@ export const openCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
-			name: 'disable_pets',
-			description: 'Disables octo & smokey when opening.',
-			required: false
+			type: ApplicationCommandOptionType.Integer,
+			name: 'result_quantity',
+			description: 'The number of the target item you want to obtain before stopping.',
+			required: false,
+			min_value: 1,
+			max_value: 1000
 		}
 	],
 	run: async ({
 		userID,
 		options,
 		interaction
-	}: CommandRunOptions<{ name?: string; quantity?: number; open_until?: string; disable_pets?: boolean }>) => {
+	}: CommandRunOptions<{ name?: string; quantity?: number; open_until?: string; result_quantity?: number }>) => {
 		if (interaction) await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		if (!options.name) {
@@ -76,13 +78,18 @@ export const openCommand: OSBMahojiCommand = {
 				1950
 			)}.`;
 		}
-		options.quantity = clamp(options.quantity ?? 1, 1, 100_000_000);
 		if (options.open_until) {
-			return abstractedOpenUntilCommand(user.id, options.name, options.open_until, options.disable_pets);
+			return abstractedOpenUntilCommand(
+				interaction,
+				user.id,
+				options.name,
+				options.open_until,
+				options.result_quantity
+			);
 		}
 		if (options.name.toLowerCase() === 'all') {
-			return abstractedOpenCommand(interaction, user.id, ['all'], 'auto', false);
+			return abstractedOpenCommand(interaction, user.id, ['all'], 'auto');
 		}
-		return abstractedOpenCommand(interaction, user.id, [options.name], options.quantity, options.disable_pets);
+		return abstractedOpenCommand(interaction, user.id, [options.name], options.quantity);
 	}
 };

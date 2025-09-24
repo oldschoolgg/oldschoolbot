@@ -1,7 +1,7 @@
 import { execSync, spawn } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
-const ls = spawn('git', ['--no-pager', 'diff', '--name-only', '--diff-filter=U', '*.ts']);
+const ls = spawn('git', ['--no-pager', 'ls-files', '-u', '*.ts']);
 
 let res = '';
 ls.stdout.on('data', data => {
@@ -13,12 +13,24 @@ ls.stderr.on('data', data => {
 });
 
 ls.on('close', _code => {
-	const conflicted = res.trim().split('\n').filter(Boolean);
+	const conflicted = [
+		...new Set(
+			res
+				.trim()
+				.split('\n')
+				.filter(Boolean)
+				.map(line => line.split('\t')[1])
+		)
+	];
 
-	console.log(conflicted);
-
+	let toBeMerged = 0;
 	for (const file of conflicted) {
+		if (!existsSync(file)) {
+			console.log(`File no longer exists: ${file}`);
+			continue;
+		}
 		const content = readFileSync(file, 'utf8');
+		if (!content.includes('<<<<<<<')) continue;
 		const conflicts = content.split(/(?=^<<<<<<<)/m);
 
 		let onlyImports = true;
@@ -37,11 +49,12 @@ ls.on('close', _code => {
 
 		if (onlyImports) {
 			try {
+				toBeMerged++;
 				execSync(`git checkout --theirs -- "${file}"`);
 			} catch (_err) {}
-			console.log(`Accepted theirs for imports-only conflict: ${file}`);
+			console.log(`Accepted theirs for imports-only conflict: ${file} (${toBeMerged} total)`);
 		} else {
-			console.log(`Left unresolved: ${file}`);
+			// console.log(`Left unresolved: ${file}`);
 		}
 	}
 });

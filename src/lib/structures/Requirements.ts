@@ -15,7 +15,6 @@ import type { Skills } from '@/lib/types/index.js';
 import { formatList, itemNameFromID } from '@/lib/util/smallUtils.js';
 import type { ParsedUnit } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
-import type { MTame } from './MTame.js';
 import { MUserStats } from './MUserStats.js';
 
 export interface RequirementFailure {
@@ -32,7 +31,6 @@ interface RequirementUserArgs {
 	poh: PlayerOwnedHouse;
 	uniqueRunesCrafted: number[];
 	uniqueActivitiesDone: activity_type_enum[];
-	tames: MTame[];
 }
 
 type ManualHasFunction = (args: RequirementUserArgs) => RequirementFailure[] | undefined | string | boolean;
@@ -377,9 +375,6 @@ GROUP BY type;`,
 			prisma.playerOwnedHouse.upsert({ where: { user_id: user.id }, update: {}, create: { user_id: user.id } })
 		]);
 		const uniqueRunesCrafted = _uniqueRunesCrafted.map(i => Number(i.rune_id));
-
-		const tames = await user.fetchTames();
-
 		return {
 			user,
 			minigames,
@@ -389,8 +384,7 @@ GROUP BY type;`,
 			clueCounts,
 			poh,
 			uniqueRunesCrafted,
-			uniqueActivitiesDone: uniqueActivitiesDone.map(i => i.type),
-			tames
+			uniqueActivitiesDone: uniqueActivitiesDone.map(i => i.type)
 		};
 	}
 

@@ -11,7 +11,7 @@ import { skillEmoji } from '@/lib/data/emojis.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { MALEDICT_MORTIMER_ID } from '@/lib/simulation/maledictMortimer.js';
 import { courses } from '@/lib/skilling/skills/agility.js';
-import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import type { Skills } from '@/lib/types/index.js';
 import { logError } from './logError.js';
 
@@ -122,11 +122,7 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 			name: '<:Clue_scroll:365003979840552960> Clue Scores',
 			value: clueEntries
 				.map(([item, qty]) => {
-					const clueTier = ClueTiers.find(t => t.id === item.id);
-					if (!clueTier) {
-						logError(`No clueTier: ${item.id}`);
-						return;
-					}
+					const clueTier = ClueTiers.find(t => t.id === item.id)!;
 					return `**${toTitleCase(clueTier.name)}:** ${qty.toLocaleString()}`;
 				})
 				.join('\n'),
@@ -174,7 +170,7 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 		.filter(i => ![MALEDICT_MORTIMER_ID].includes(Number(i[0])));
 	if (monsterScores.length > 0) {
 		const [id, score] = monsterScores[0];
-		const res = effectiveMonsters.find(c => c.id === Number.parseInt(id))!;
+		const res = effectiveMonsters.find(c => c.id === Number.parseInt(id, 10))!;
 		if (!res) {
 			logError(`No monster found with id ${id} for stats embed`);
 		} else {
@@ -185,7 +181,7 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	const hunterScores = Object.entries(userStats.creature_scores as ItemBank).sort((a, b) => a[1] - b[1]);
 	if (hunterScores.length > 0) {
 		const [id, score] = hunterScores[0];
-		const res = creatures.find(c => c.id === Number.parseInt(id))!;
+		const res = Hunter.Creatures.find(c => c.id === Number.parseInt(id, 10))!;
 		if (res) {
 			otherStats.push([`${res.name}'s Caught`, score]);
 		}

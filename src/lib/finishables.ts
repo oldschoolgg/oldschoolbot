@@ -10,6 +10,7 @@ import {
 	HardCasket,
 	ItemGroups,
 	itemID,
+	Items,
 	MasterCasket,
 	MasterMimicTable,
 	MediumCasket,
@@ -50,8 +51,8 @@ import { TheatreOfBlood } from '@/lib/simulation/tob.js';
 import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
 import { rollNaxxusLoot } from './bso/naxxus/rollNaxxusLoot.js';
 import {
-	KalphiteKingMonster,
-	kalphiteKingLootTable
+	kalphiteKingLootTable,
+	KalphiteKingMonster
 } from './minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
 import { MoktangLootTable } from './minions/data/killableMonsters/custom/bosses/Moktang.js';
 import { Naxxus } from './minions/data/killableMonsters/custom/bosses/Naxxus.js';
@@ -59,7 +60,6 @@ import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonste
 import killableMonsters from './minions/data/killableMonsters/index.js';
 import { NEX_UNIQUE_DROPRATE, NexMonster } from './nex.js';
 import { openShadeChest } from './shadesKeys.js';
-import getOSItem from './util/getOSItem.js';
 
 interface KillArgs {
 	accumulatedLoot: Bank;
@@ -311,8 +311,8 @@ export const finishables: Finishable[] = [
 		aliases: ['shades of morton'],
 		kill: ({ accumulatedLoot, totalRuns }) => {
 			for (const tier of ['Bronze', 'Steel', 'Black', 'Silver', 'Gold'] as const) {
-				const key = getOSItem(`${tier} key red`);
-				const lock = getOSItem(`${tier} locks`);
+				const key = Items.getOrThrow(`${tier} key red`);
+				const lock = Items.getOrThrow(`${tier} locks`);
 				if (accumulatedLoot.has(lock.id) && tier !== 'Gold') continue;
 				return openShadeChest({ item: key, allItemsOwned: accumulatedLoot, qty: totalRuns }).bank;
 			}

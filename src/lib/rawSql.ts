@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import type { ItemBank } from 'oldschooljs';
 
-import { logError } from './util/logError.js';
+import { logError } from '@/lib/util/logError.js';
 
 const u = Prisma.UserScalarFieldEnum;
 
@@ -46,6 +46,8 @@ SET ${u.cl_array} = (
     SELECT (ARRAY(SELECT jsonb_object_keys("${u.collectionLogBank}")::int))
 )
 WHERE ${u.id} = '${userID}';`,
+	sumOfAllCLItems: (clItems: number[]) =>
+		`NULLIF(${clItems.map(i => `COALESCE(("collectionLogBank"->>'${i}')::int, 0)`).join(' + ')}, 0)`,
 	...RawBSOSQL
 };
 

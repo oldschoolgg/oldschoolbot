@@ -1,7 +1,6 @@
 import { percentChance, Time } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs/EItem';
 
-import { IVY_MAX_TRIP_LENGTH_BOOST } from '@/lib/bso/bsoConstants.js';
 import type { MUserClass } from '@/lib/MUser.js';
 import type { Log } from '@/lib/skilling/types.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -53,8 +52,6 @@ export function determineWoodcuttingTime({
 	if (log.name === 'Redwood Logs') {
 		userMaxTripTicks *= 2;
 	}
-
-	if (log.name === 'Ivy') userMaxTripTicks += IVY_MAX_TRIP_LENGTH_BOOST / (Time.Second * 0.6);
 
 	while (timeElapsed < userMaxTripTicks) {
 		// Keep rolling until log chopped

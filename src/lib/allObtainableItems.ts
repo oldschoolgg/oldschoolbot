@@ -1,5 +1,5 @@
 import { isFunction, notEmpty } from '@oldschoolgg/toolkit';
-import { Bank, getItem, Implings, Monsters, resolveItems } from 'oldschooljs';
+import { Bank, Implings, Items, Monsters, resolveItems } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import Buyables from '@/lib/data/buyables/buyables.js';
@@ -48,7 +48,7 @@ for (const item of Smithing.SmithableItems) ALL_OBTAINABLE_ITEMS.add(item.id);
 for (const item of Smithing.BlastableBars) ALL_OBTAINABLE_ITEMS.add(item.id);
 for (const item of Buyables) {
 	totalBankToAdd.add(isFunction(item.outputItems) ? undefined : item.outputItems);
-	const buyable = getItem(item.name);
+	const buyable = Items.getOrThrow(item.name);
 	if (buyable) totalBankToAdd.add(buyable);
 }
 for (const item of allFarmingItems) ALL_OBTAINABLE_ITEMS.add(item);
@@ -118,7 +118,7 @@ for (const room of plunderRooms) {
 for (const item of tipTable.allItems) ALL_OBTAINABLE_ITEMS.add(item);
 for (const plank of Planks) ALL_OBTAINABLE_ITEMS.add(plank.inputItem);
 for (const impling of Implings) {
-	impling.table.allItems.forEach(i => ALL_OBTAINABLE_ITEMS.add(i));
+	impling.table.allItems.map(i => ALL_OBTAINABLE_ITEMS.add(i));
 }
 
 for (const item of [
@@ -165,7 +165,7 @@ for (const i of totalBankToAdd.items()) ALL_OBTAINABLE_ITEMS.add(i[0].id);
 // 	'not_in_list_but_owned.txt',
 // 	ids
 // 		.filter(i => !ALL_OBTAINABLE_ITEMS.has(i))
-// 		.map(getOSItem)
+// 		.map(Items.getOrThrow)
 // 		.filter(i => i.tradeable)
 // 		.map(i => i.name)
 // 		.join('\n')
@@ -175,7 +175,7 @@ for (const i of totalBankToAdd.items()) ALL_OBTAINABLE_ITEMS.add(i[0].id);
 // 	'in_list_but_not_owned.txt',
 // 	Array.from(ALL_OBTAINABLE_ITEMS.values())
 // 		.filter(i => !ids.includes(i))
-// 		.map(getOSItem)
+// 		.map(Items.getOrThrow)
 // 		.filter(i => i.tradeable)
 // 		.map(i => i.name)
 // 		.join('\n')

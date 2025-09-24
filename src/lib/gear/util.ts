@@ -4,12 +4,11 @@ import { type EquipmentSlot, type Item, itemID } from 'oldschooljs';
 
 import type { GearSetup } from '@/lib/gear/types.js';
 import { Gear } from '@/lib/structures/Gear.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 
 export function itemInSlot(setup: GearSetup, slot: EquipmentSlot): [null, null] | [Item, number] {
 	const equipped = setup[slot];
 	if (!equipped) return [null, null];
-	return [getOSItem(equipped.item), equipped.quantity];
+	return [Items.getOrThrow(equipped.item), equipped.quantity];
 }
 
 export function readableStatName(slot: string) {

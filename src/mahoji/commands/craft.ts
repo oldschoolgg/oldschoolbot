@@ -1,4 +1,5 @@
-import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
+import { formatDuration, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';

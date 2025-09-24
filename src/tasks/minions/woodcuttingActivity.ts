@@ -1,4 +1,5 @@
-import { objectEntries, percentChance, perTimeUnitChance, randInt, Time } from '@oldschoolgg/toolkit';
+import { objectEntries, percentChance, randInt, Time } from '@oldschoolgg/toolkit';
+import { perTimeUnitChance } from '@oldschoolgg/toolkit/util';
 import { Bank, EItem, itemID } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
@@ -13,10 +14,10 @@ import { ForestryEvents, LeafTable } from '@/lib/skilling/skills/woodcutting/for
 import Woodcutting, { type TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { rollForMoonKeyHalf } from '@/lib/util/minionUtils.js';
 import { roll } from '@/lib/util/rng.js';
-import { skillingPetDropRate } from '@/lib/util.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 async function handleForestry({ user, duration, loot }: { user: MUser; duration: number; loot: Bank }) {
@@ -375,8 +376,7 @@ export const woodcuttingTask: MinionTask = {
 		}`;
 
 		// Update cl, give loot, and remove items used
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot,
 			itemsToRemove

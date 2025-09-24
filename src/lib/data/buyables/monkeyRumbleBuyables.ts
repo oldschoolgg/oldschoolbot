@@ -1,24 +1,23 @@
 import { Bank } from 'oldschooljs';
 
-import { monkeyTiers } from '@/lib/monkeyRumble.js';
-import getOSItem from '@/lib/util/getOSItem.js';
+import { monkeyTiers } from '@/lib/bso/monkeyRumble.js';
 import type { Buyable } from './buyables.js';
 
 export const monkeyRumbleBuyables: Buyable[] = [
 	{
-		name: getOSItem('Banana enchantment scroll').name,
+		name: Items.getOrThrow('Banana enchantment scroll').name,
 		itemCost: new Bank().add('Rumble token', 200)
 	},
 	{
-		name: getOSItem('Monkey dye').name,
+		name: Items.getOrThrow('Monkey dye').name,
 		itemCost: new Bank().add('Rumble token', 500)
 	},
 	{
-		name: getOSItem('Monkey crate').name,
+		name: Items.getOrThrow('Monkey crate').name,
 		itemCost: new Bank().add('Rumble token', 35)
 	},
 	{
-		name: getOSItem('Gorilla rumble greegree').name,
+		name: Items.getOrThrow('Gorilla rumble greegree').name,
 		itemCost: new Bank().add('Rumble token', 1000),
 		skillsNeeded: {
 			strength: 120

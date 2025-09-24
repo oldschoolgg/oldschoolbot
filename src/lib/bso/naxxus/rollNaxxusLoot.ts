@@ -1,7 +1,7 @@
-import { roll } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { NaxxusLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
+import { roll } from '@/lib/util/rng.js';
 
 export function rollNaxxusLoot(quantity = 1, cl?: Bank) {
 	const loot = new Bank();

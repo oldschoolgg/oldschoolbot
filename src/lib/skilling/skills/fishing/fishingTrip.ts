@@ -10,8 +10,8 @@ import { Cookables } from '@/lib/skilling/skills/cooking/cooking.js';
 import type { Fish } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
-import type { RNGProvider } from '@/lib/util/rng.js';
 import { skillingPetDropRate } from '@/lib/util.js';
+import type { RNGProvider } from '@/lib/util/rng.js';
 import { calcAnglerBoostPercent, calcMinnowQuantityRange, calcRadasBlessingBoost } from './fishingUtil.js';
 
 export function calcFishingTripResult({

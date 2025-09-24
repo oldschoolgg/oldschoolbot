@@ -15,8 +15,7 @@ export const brewingTask: MinionTask = {
 		const flappyRes = await userHasFlappy({ user, duration });
 		if (flappyRes.shouldGiveBoost) loot.multiply(2);
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

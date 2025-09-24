@@ -1,4 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { activity_type_enum } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
@@ -182,7 +182,7 @@ export const tksCommand: OSBMahojiCommand = {
 		);
 
 		// Remove the cost, and update bank settings
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 		await updateBankSetting('tks_cost', cost);
 
 		// Tokkul shop activity

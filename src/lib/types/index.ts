@@ -1,14 +1,8 @@
-import type { BaseMessageOptions } from 'discord.js';
-
 import type { SkillsEnum } from '@/lib/skilling/types.js';
 
 export interface ItemBank {
 	[key: string]: number;
 }
-
-type ResolvableItem = number | string;
-export type ArrayItemsResolvable = (ResolvableItem | ResolvableItem[])[];
-export type ArrayItemsResolved = (number | number[])[];
 
 export interface MakePartyOptions {
 	maxSize: number;
@@ -18,8 +12,6 @@ export interface MakePartyOptions {
 	ironmanAllowed: boolean;
 	usersAllowed?: string[];
 	customDenier?(user: MUser): Promise<[false] | [true, string]>;
-	massTimeout?: number;
-	allowedMentions?: BaseMessageOptions['allowedMentions'];
 }
 
 export type Skills = Partial<{

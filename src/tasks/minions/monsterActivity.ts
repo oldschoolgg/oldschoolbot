@@ -1,10 +1,11 @@
-import { calcWhatPercent, deepClone, percentChance, reduceNumByPercent, roll, Time } from '@oldschoolgg/toolkit';
+import { Time, calcWhatPercent, percentChance, reduceNumByPercent, roll } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
+import { clone } from 'remeda';
 
+import { MysteryBoxes } from '@/lib/bso/bsoOpenables.js';
 import { type MidPVMEffectArgs, oriEffect, rollForBSOThings } from '@/lib/bso/pvmEffects.js';
-import { MysteryBoxes } from '@/lib/bsoOpenables.js';
 import type { BitField } from '@/lib/constants.js';
 import { userhasDiaryTierSync } from '@/lib/diaries.js';
 import { isDoubleLootActive } from '@/lib/doubleLoot.js';
@@ -250,7 +251,7 @@ export function doMonsterTrip(data: newOptions) {
 			// 1 in 20 to get smited without antiPKSupplies and 1 in 300 if the user has super restores
 			const hasPrayerLevel = gearBank.skillsAsLevels.prayer >= 25;
 			const protectItem = roll(hasWildySupplies ? 300 : 20) ? false : hasPrayerLevel;
-			const userGear = { ...deepClone(gearBank.gear.wildy.raw()) };
+			const userGear = { ...clone(gearBank.gear.wildy.raw()) };
 
 			const calc = calculateGearLostOnDeathWilderness({
 				gear: userGear,
@@ -622,7 +623,7 @@ export const monsterTask: MinionTask = {
 		messages.push(...rawResults.filter(r => typeof r === 'string'));
 		const str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name} (${calcPerHour(data.q, data.duration).toFixed(1)}/hr), you now have ${newKC} KC.`;
 
-		let image;
+		let image: Awaited<ReturnType<typeof makeBankImage>> | undefined;
 
 		if (itemTransactionResult && itemTransactionResult.itemsAdded.length > 0) {
 			announceLoot({

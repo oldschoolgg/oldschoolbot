@@ -1,22 +1,19 @@
-import {
-	calcPercentOfNum,
-	calcWhatPercent,
-	randFloat,
-	randInt,
-	randomVariation,
-	reduceNumByPercent,
-	round,
-	Time
-} from '@oldschoolgg/toolkit';
-import { Bank, resolveItems } from 'oldschooljs';
+import { calcPercentOfNum, calcWhatPercent, reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
+import { randomVariation } from '@oldschoolgg/toolkit/util';
+import { Bank, Items, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
+import {
+	gorajanArcherOutfit,
+	gorajanOccultOutfit,
+	gorajanWarriorOutfit,
+	pernixOutfit
+} from '@/lib/data/CollectionsExport.js';
 import { inventionBoosts } from '@/lib/invention/inventions.js';
 import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { logError } from '@/lib/util/logError.js';
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit, pernixOutfit } from './CollectionsExport.js';
+import { randFloat, randInt } from '@/lib/util/rng.js';
 
 interface TOBRoom {
 	name: string;
@@ -325,7 +322,7 @@ export function calcTOBBaseDuration({ team, hardMode }: { team: TobTeam[]; hardM
 		const gearPercents = calculateTOBUserGearPercents(u.user);
 		// Blowpipe
 		const darts = u.user.blowpipe.dartID!;
-		const dartItem = getOSItem(darts);
+		const dartItem = Items.getOrThrow(darts);
 		const dartIndex = blowpipeDarts.indexOf(dartItem);
 		let blowPipePercent = 0;
 		if (dartIndex >= 3) {

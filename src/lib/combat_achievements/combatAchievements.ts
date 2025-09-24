@@ -1,10 +1,10 @@
-import { deepClone, notEmpty, roll, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
+import { notEmpty, roll, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import type { activity_type_enum } from '@prisma/client';
-import type { Item } from 'oldschooljs';
+import { type Item, Items } from 'oldschooljs';
+import { clone } from 'remeda';
 
 import type { Requirements } from '@/lib/structures/Requirements.js';
 import type { ActivityTaskData, TOAOptions } from '@/lib/types/minions.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import type { TripFinishEffect } from '@/lib/util/handleTripFinish.js';
 import { assert } from '@/lib/util/logError.js';
 import { formatList } from '@/lib/util/smallUtils.js';
@@ -48,7 +48,7 @@ export type CombatAchievement = {
 	| {
 			rng: {
 				chancePerKill: number;
-				hasChance: activity_type_enum | ((data: ActivityTaskData, user: MUser, index: number) => boolean);
+				hasChance: activity_type_enum | ((data: ActivityTaskData, user: MUser) => boolean);
 			};
 	  }
 	| {
@@ -72,8 +72,8 @@ const easy: CARootItem = {
 	length: easyCombatAchievements.length,
 	name: 'Easy',
 	staticRewards: [
-		{ item: getOSItem("Ghommal's hilt 1"), reclaimable: true },
-		{ item: getOSItem('Antique lamp (easy ca)'), reclaimable: false }
+		{ item: Items.getOrThrow("Ghommal's hilt 1"), reclaimable: true },
+		{ item: Items.getOrThrow('Antique lamp (easy ca)'), reclaimable: false }
 	],
 	taskPoints: 1,
 	rewardThreshold: easyCombatAchievements.length
@@ -83,8 +83,8 @@ const medium: CARootItem = {
 	length: mediumCombatAchievements.length,
 	name: 'Medium',
 	staticRewards: [
-		{ item: getOSItem("Ghommal's hilt 2"), reclaimable: true },
-		{ item: getOSItem('Antique lamp (medium ca)'), reclaimable: false }
+		{ item: Items.getOrThrow("Ghommal's hilt 2"), reclaimable: true },
+		{ item: Items.getOrThrow('Antique lamp (medium ca)'), reclaimable: false }
 	],
 	taskPoints: 2,
 	rewardThreshold: easy.rewardThreshold + mediumCombatAchievements.length * 2
@@ -94,8 +94,8 @@ const hard: CARootItem = {
 	length: hardCombatAchievements.length,
 	name: 'Hard',
 	staticRewards: [
-		{ item: getOSItem("Ghommal's hilt 3"), reclaimable: true },
-		{ item: getOSItem('Antique lamp (hard ca)'), reclaimable: false }
+		{ item: Items.getOrThrow("Ghommal's hilt 3"), reclaimable: true },
+		{ item: Items.getOrThrow('Antique lamp (hard ca)'), reclaimable: false }
 	],
 	taskPoints: 3,
 	rewardThreshold: medium.rewardThreshold + hardCombatAchievements.length * 3
@@ -105,8 +105,8 @@ const elite: CARootItem = {
 	length: eliteCombatAchievements.length,
 	name: 'Elite',
 	staticRewards: [
-		{ item: getOSItem("Ghommal's hilt 4"), reclaimable: true },
-		{ item: getOSItem('Antique lamp (elite ca)'), reclaimable: false }
+		{ item: Items.getOrThrow("Ghommal's hilt 4"), reclaimable: true },
+		{ item: Items.getOrThrow('Antique lamp (elite ca)'), reclaimable: false }
 	],
 	taskPoints: 4,
 	rewardThreshold: hard.rewardThreshold + eliteCombatAchievements.length * 4
@@ -116,9 +116,9 @@ const master: CARootItem = {
 	length: masterCombatAchievements.length,
 	name: 'Master',
 	staticRewards: [
-		{ item: getOSItem("Ghommal's hilt 5"), reclaimable: true },
-		{ item: getOSItem("Ghommal's lucky penny"), reclaimable: true },
-		{ item: getOSItem('Antique lamp (master ca)'), reclaimable: false }
+		{ item: Items.getOrThrow("Ghommal's hilt 5"), reclaimable: true },
+		{ item: Items.getOrThrow("Ghommal's lucky penny"), reclaimable: true },
+		{ item: Items.getOrThrow('Antique lamp (master ca)'), reclaimable: false }
 	],
 	taskPoints: 5,
 	rewardThreshold: elite.rewardThreshold + masterCombatAchievements.length * 5
@@ -128,9 +128,9 @@ const grandmaster: CARootItem = {
 	length: grandmasterCombatAchievements.length,
 	name: 'Grandmaster',
 	staticRewards: [
-		{ item: getOSItem("Ghommal's hilt 6"), reclaimable: true },
+		{ item: Items.getOrThrow("Ghommal's hilt 6"), reclaimable: true },
 		{
-			item: getOSItem('Antique lamp (grandmaster ca)'),
+			item: Items.getOrThrow('Antique lamp (grandmaster ca)'),
 			reclaimable: false
 		}
 	],
@@ -162,7 +162,7 @@ assert(sumArr(Object.values(CombatAchievements).map(i => i.length)) === allCATas
 const indexesWithRng = entries.flatMap(i => i[1].tasks.filter(t => 'rng' in t));
 
 export const combatAchievementTripEffect = async ({ data, messages, user }: Parameters<TripFinishEffect['fn']>[0]) => {
-	const dataCopy = deepClone(data);
+	const dataCopy = clone(data);
 
 	let quantity = 1;
 	if ('q' in dataCopy) {
@@ -195,12 +195,12 @@ export const combatAchievementTripEffect = async ({ data, messages, user }: Para
 			if (qty === 0) break;
 			if (user.user.completed_ca_task_ids.includes(task.id)) continue;
 			if (!('rng' in task)) continue;
+			const hasChance =
+				typeof task.rng.hasChance === 'string'
+					? dataCopy.type === task.rng.hasChance
+					: task.rng.hasChance(dataCopy, user);
+			if (!hasChance) continue;
 			for (let i = 0; i < qty; i++) {
-				const hasChance =
-					typeof task.rng.hasChance === 'string'
-						? dataCopy.type === task.rng.hasChance
-						: task.rng.hasChance(dataCopy, user, i);
-				if (!hasChance) continue;
 				if (roll(task.rng.chancePerKill)) {
 					completedTasks.push(task);
 					qty--;

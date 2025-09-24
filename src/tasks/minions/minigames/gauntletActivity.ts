@@ -1,19 +1,19 @@
-import { calcWhatPercent, formatOrdinal, percentChance } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, percentChance } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
+import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import { gauntlet } from '@/lib/simulation/gauntlet.js';
 import type { GauntletOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const gauntletTask: MinionTask = {
 	type: 'Gauntlet',
-	async run(data: GauntletOptions) {
-		const { channelID, quantity, userID, corrupted } = data;
-		const user = await mUserFetch(userID);
+	isNew: true,
+	async run(data: GauntletOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, corrupted } = data;
 		const key: MinigameName = corrupted ? 'corrupted_gauntlet' : 'gauntlet';
 
 		const kc = await user.fetchMinigameScore(key);
@@ -42,8 +42,7 @@ export const gauntletTask: MinionTask = {
 
 		await user.incrementMinigameScore(key, quantity - deaths);
 
-		const { previousCL } = await transactItems({
-			userID: user.id,
+		const { previousCL } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

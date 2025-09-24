@@ -1,10 +1,10 @@
 import type { Prisma, User } from '@prisma/client';
 import { Bank, convertLVLtoXP } from 'oldschooljs';
 
-import type { BitField } from '../../src/lib/constants';
-import type { GearSetup } from '../../src/lib/gear/types';
-import { MUserClass } from '../../src/lib/MUser';
-import { constructGearSetup, Gear, type PartialGearSetup } from '../../src/lib/structures/Gear';
+import type { BitField } from '../../src/lib/constants.js';
+import type { GearSetup } from '../../src/lib/gear/types.js';
+import { MUserClass } from '../../src/lib/MUser.js';
+import { constructGearSetup, Gear, type PartialGearSetup } from '../../src/lib/structures/Gear.js';
 
 function filterGearSetup(gear: undefined | null | GearSetup | PartialGearSetup): GearSetup | undefined {
 	const filteredGear = !gear
@@ -79,11 +79,7 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		sacrificedValue: 0,
 		id: overrides?.id ?? '',
 		monsterScores: {},
-		badges: [],
-
-		skills_invention: 0,
-		skills_dungeoneering: 0,
-		skills_divination: 0
+		badges: []
 	} as unknown as User;
 
 	return r;

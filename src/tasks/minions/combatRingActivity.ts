@@ -37,8 +37,7 @@ export const combatRingTask: MinionTask = {
 			'Shayzien body (5)': 1
 		});
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

@@ -1,5 +1,5 @@
 import { increaseNumByPercent, percentChance, randInt, roll, Time } from '@oldschoolgg/toolkit';
-import { addItemToBank, Bank, type ItemBank, randomVariation, toKMB } from 'oldschooljs';
+import { addItemToBank, Bank, type ItemBank, Items, randomVariation, toKMB } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
@@ -11,10 +11,9 @@ import Agility from '@/lib/skilling/skills/agility.js';
 import { calcUserGorajanShardChance } from '@/lib/skilling/skills/dung/dungDbFunctions.js';
 import { type Course, SkillsEnum } from '@/lib/skilling/types.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
-import getOSItem from '@/lib/util/getOSItem.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { logError } from '@/lib/util/logError.js';
-import { skillingPetDropRate } from '@/lib/util.js';
 import { updateClientGPTrackSetting, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 function chanceOfFailingAgilityPyramid(lvl: number) {
@@ -232,7 +231,7 @@ export const agilityTask: MinionTask = {
 		}
 
 		if (alch) {
-			const alchedItem = getOSItem(alch.itemID);
+			const alchedItem = Items.getOrThrow(alch.itemID);
 			const alchGP = alchedItem.highalch! * alch.quantity;
 			loot.add('Coins', alchGP);
 			xpRes += ` ${await user.addXP({
@@ -295,7 +294,7 @@ export const agilityTask: MinionTask = {
 					user.skillLevel(SkillsEnum.Dungeoneering) >= 80 &&
 					roll(Math.floor((calcUserGorajanShardChance(user).chance * 2.5) / minutes))
 				) {
-					const item = roll(30) ? getOSItem('Dungeoneering dye') : getOSItem('Gorajan shards');
+					const item = roll(30) ? Items.getOrThrow('Dungeoneering dye') : Items.getOrThrow('Gorajan shards');
 					let shardQty = 1;
 					if (isDoubleLootActive(duration)) {
 						shardQty *= 2;
@@ -316,8 +315,7 @@ export const agilityTask: MinionTask = {
 			loot.add('Giant squirrel');
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

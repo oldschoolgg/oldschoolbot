@@ -3,14 +3,14 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { Bank, Items } from 'oldschooljs';
 
-import { degradeItem } from '@/lib/degradeableItems.js';
 import {
 	calcDOAInput,
 	calculateUserGearPercents,
 	checkDOATeam,
 	checkDOAUser,
 	createDOATeam
-} from '@/lib/depthsOfAtlantis.js';
+} from '@/lib/bso/depthsOfAtlantis.js';
+import { degradeItem } from '@/lib/degradeableItems.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { setupParty } from '@/lib/party.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';

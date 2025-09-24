@@ -1,9 +1,8 @@
 import {
 	calcWhatPercent,
 	notEmpty,
-	objectValues,
-	PerkTier,
 	percentChance,
+	PerkTier,
 	randArrItem,
 	sumArr,
 	Time,
@@ -23,8 +22,8 @@ import {
 	EquipmentSlot,
 	type Item,
 	type ItemBank,
-	Items,
 	itemID,
+	Items,
 	resolveItems
 } from 'oldschooljs';
 import { pick } from 'remeda';
@@ -44,6 +43,7 @@ import { fetchUserStats, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 import { addXP } from './addXP.js';
 import { calculateCompCapeProgress } from './bso/calculateCompCapeProgress.js';
 import type { GodFavourBank, GodName } from './bso/divineDominion.js';
+import { mysteriousStepData, mysteriousTrailTracks } from './bso/mysteryTrail.js';
 import { userIsBusy } from './busyCounterCache.js';
 import { partialUserCache } from './cache.js';
 import { type CATier, CombatAchievements } from './combat_achievements/combatAchievements.js';
@@ -60,7 +60,6 @@ import type { DetailedFarmingContract, FarmingContract } from './minions/farming
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand.js';
 import type { AttackStyles } from './minions/functions/index.js';
 import type { AddXpParams, BlowpipeData, ClueBank } from './minions/types.js';
-import { mysteriousStepData, mysteriousTrailTracks } from './mysteryTrail.js';
 import { getUsersPerkTier } from './perkTiers.js';
 import { roboChimpUserFetch } from './roboChimp.js';
 import type { MinigameName, MinigameScore } from './settings/minigames.js';
@@ -77,8 +76,8 @@ import { getKCByName } from './util/getKCByName.js';
 import { logError } from './util/logError.js';
 import { makeBadgeString } from './util/makeBadgeString.js';
 import { repairBrokenItemsFromUser } from './util/repairBrokenItems.js';
-import { hasSkillReqsRaw, itemNameFromID } from './util/smallUtils.js';
-import type { TransactItemsArgs } from './util/transactItemsFromBank.js';
+import { hasSkillReqsRaw } from './util/smallUtils.js';
+import { type TransactItemsArgs, transactItemsFromBank } from './util/transactItemsFromBank.js';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {
@@ -411,12 +410,11 @@ export class MUserClass {
 		dontAddToTempCL?: boolean;
 		neverUpdateHistory?: boolean;
 	}) {
-		const res = await transactItems({
+		const res = await this.transactItems({
 			collectionLog,
 			itemsToAdd: new Bank(items),
 			filterLoot,
 			dontAddToTempCL,
-			userID: this.id,
 			neverUpdateHistory
 		});
 		this.user = res.newUser;
@@ -425,8 +423,7 @@ export class MUserClass {
 	}
 
 	async removeItemsFromBank(bankToRemove: Bank) {
-		const res = await transactItems({
-			userID: this.id,
+		const res = await this.transactItems({
 			itemsToRemove: bankToRemove
 		});
 		this.user = res.newUser;
@@ -435,7 +432,7 @@ export class MUserClass {
 	}
 
 	async transactItems(options: Omit<TransactItemsArgs, 'userID'>) {
-		const res = await transactItems({ userID: this.user.id, ...options });
+		const res = await transactItemsFromBank({ userID: this.user.id, ...options });
 		this.user = res.newUser;
 		this.updateProperties();
 		return res;
@@ -468,7 +465,7 @@ export class MUserClass {
 			bank.add(this.user.minion_equippedPet);
 		}
 
-		for (const setup of objectValues(this.gear)) {
+		for (const setup of Object.values(this.gear)) {
 			bank.add(setup.toBank());
 		}
 
@@ -705,7 +702,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			}
 			if (rawBlowpipeData.dartQuantity < dart[1]) {
 				throw new UserError(
-					`You don't have enough ${itemNameFromID(
+					`You don't have enough ${Items.itemNameFromId(
 						rawBlowpipeData.dartID
 					)}s in your Toxic blowpipe, you need ${dart[1]}, but you have only ${rawBlowpipeData.dartQuantity}.`
 				);
@@ -726,7 +723,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			if (!this.bankWithGP.has(bankRemove)) {
 				throw new UserError(`You don't own: ${bankRemove.clone().remove(this.bankWithGP)}.`);
 			}
-			await transactItems({ userID: this.id, itemsToRemove: bankRemove });
+			await this.transactItems({ itemsToRemove: bankRemove });
 		}
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
 		this.user = newUser;
@@ -1094,7 +1091,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			for (const slot of Object.values(EquipmentSlot)) {
 				const item = gearSetup[slot];
 				if (!item) continue;
-				const osItem = Items.getItem(item.item);
+				const osItem = Items.get(item.item);
 				if (!osItem) {
 					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Invalid item');
 					itemsUnequippedAndRefunded.add(refundBank);

@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
-import { type Canvas, type Image, loadImage } from 'skia-canvas';
+import { type Canvas, type CanvasRenderingContext2D, type Image, loadImage } from 'skia-canvas';
 
-import { type CanvasContext, createCanvas } from './canvasUtil.js';
+import { createCanvas } from './canvasUtil.js';
 
 export interface SpriteData {
 	x: number;
@@ -61,7 +61,7 @@ export class CanvasSpritesheet {
 	}
 
 	drawSprite(
-		ctx: CanvasContext,
+		ctx: CanvasRenderingContext2D,
 		spriteId: string | number,
 		dx: number,
 		dy: number,
@@ -131,7 +131,7 @@ export class CanvasSpritesheet {
 	}
 
 	drawSpriteRaw(
-		ctx: CanvasContext,
+		ctx: CanvasRenderingContext2D,
 		spriteId: string | number,
 		sx?: number,
 		sy?: number,

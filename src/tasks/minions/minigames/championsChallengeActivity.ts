@@ -12,8 +12,7 @@ export const championsChallengeTask: MinionTask = {
 
 		const loot = new Bank({ "Champion's cape": 1 });
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

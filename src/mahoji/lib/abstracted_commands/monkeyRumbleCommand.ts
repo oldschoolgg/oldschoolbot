@@ -2,7 +2,6 @@ import { formatDuration, randArrItem, reduceNumByPercent, Time } from '@oldschoo
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
-import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
 import {
 	fightingMessages,
 	getMonkeyPhrase,
@@ -13,7 +12,8 @@ import {
 	monkeyTierOfUser,
 	monkeyTiers,
 	TOTAL_MONKEYS
-} from '@/lib/monkeyRumble.js';
+} from '@/lib/bso/monkeyRumble.js';
+import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
 import type { MonkeyRumbleOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';

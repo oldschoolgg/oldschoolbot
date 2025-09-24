@@ -19,6 +19,11 @@ export default defineConfig({
 				minForks: 5,
 				execArgv: ['--disable-warning=ExperimentalWarning']
 			}
+		},
+		coverage: {
+			provider: 'v8',
+			include: ['src/lib/util/parseStringBank.ts', 'src/lib/structures/Gear.ts', 'src/lib/canvas/**/*.ts'],
+			reporter: ['text']
 		}
 	},
 	resolve: {

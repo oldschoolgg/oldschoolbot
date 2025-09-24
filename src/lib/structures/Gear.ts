@@ -1,4 +1,4 @@
-import { notEmpty, objectKeys, uniqueArr } from '@oldschoolgg/toolkit';
+import { deepEqual, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
 import type { GearPreset } from '@prisma/client';
 import { Bank, EquipmentSlot, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 import type { EGear } from 'oldschooljs/EGear';
@@ -12,35 +12,16 @@ import {
 
 import { getSimilarItems, inverseSimilarItems } from '@/lib/data/similarItems.js';
 import type { GearSetup, GearSetupType, GearSlotItem } from '@/lib/gear/types.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { assert } from '@/lib/util/logError.js';
 
 export type PartialGearSetup = Partial<{
 	[key in EquipmentSlot]: string;
 }>;
 
-export function addStatsOfItemsTogether(items: number[], statWhitelist = Object.values(GearStat)) {
-	const osItems = items.map(i => getOSItem(i));
-	const base: Required<GearRequirement> = {} as Required<GearRequirement>;
-	for (const item of osItems) {
-		for (const stat of Object.values(GearStat)) {
-			const thisStat = item.equipment?.[stat] ?? 0;
-			if (!base[stat]) base[stat] = 0;
-			if (statWhitelist.includes(stat)) {
-				base[stat] += thisStat;
-			}
-		}
-	}
-	return base;
-}
-
 export function hasGracefulEquipped(setup: Gear) {
-	return (
-		setup.hasEquipped('Agility master cape') ||
-		setup.hasEquipped(
-			['Graceful hood', 'Graceful top', 'Graceful legs', 'Graceful boots', 'Graceful gloves', 'Graceful cape'],
-			true
-		)
+	return setup.hasEquipped(
+		['Graceful hood', 'Graceful top', 'Graceful legs', 'Graceful boots', 'Graceful gloves', 'Graceful cape'],
+		true
 	);
 }
 
@@ -299,27 +280,6 @@ export const globalPresets: GlobalPreset[] = [
 		pinned_setup: null
 	},
 	{
-		name: 'diviner',
-		user_id: '123',
-		head: itemID("Diviner's headwear"),
-		neck: null,
-		body: itemID("Diviner's robe"),
-		legs: itemID("Diviner's legwear"),
-		cape: null,
-		two_handed: null,
-		hands: itemID("Diviner's handwear"),
-		feet: itemID("Diviner's footwear"),
-		shield: null,
-		weapon: null,
-		ring: null,
-		ammo: null,
-		ammo_qty: null,
-		emoji_id: null,
-		times_equipped: 0,
-		defaultSetup: 'skilling',
-		pinned_setup: null
-	},
-	{
 		name: 'smithing',
 		user_id: '123',
 		head: null,
@@ -342,7 +302,7 @@ export const globalPresets: GlobalPreset[] = [
 	}
 ];
 
-export const baseStats: GearStats = {
+const baseStats: GearStats = {
 	attack_stab: 0,
 	attack_slash: 0,
 	attack_crush: 0,
@@ -532,14 +492,14 @@ export class Gear {
 		const normalWeapon = this.weapon;
 		const twoHandedWeapon = this['2h'];
 		if (!normalWeapon && !twoHandedWeapon) return null;
-		return getOSItem(normalWeapon === null ? twoHandedWeapon!.item : normalWeapon.item);
+		return Items.getOrThrow(normalWeapon === null ? twoHandedWeapon!.item : normalWeapon.item);
 	}
 
 	getStats() {
 		const sum = { ...baseStats };
 		for (const id of this.allItems(false)) {
-			const item = getOSItem(id);
-			for (const keyToAdd of objectKeys(sum)) {
+			const item = Items.getOrThrow(id);
+			for (const keyToAdd of Object.keys(sum) as (keyof GearStats)[]) {
 				sum[keyToAdd] += item.equipment ? item.equipment[keyToAdd] : 0;
 			}
 		}
@@ -547,7 +507,7 @@ export class Gear {
 	}
 
 	meetsStatRequirements(gearRequirements: GearRequirement): [false, keyof GearStats, number] | [true, null, null] {
-		const keys = objectKeys(this.stats as Record<keyof GearStats, number>);
+		const keys = Object.keys(this.stats) as (keyof GearStats)[];
 		for (const key of keys) {
 			const required = gearRequirements?.[key];
 			if (!required) continue;
@@ -579,7 +539,7 @@ export class Gear {
 	equip(_itemToEquip: EGear | Item | string, quantity = 1): { refundBank: Bank | null } {
 		const itemToEquip: Item =
 			typeof _itemToEquip === 'string' || typeof _itemToEquip === 'number'
-				? getOSItem(_itemToEquip)
+				? Items.getOrThrow(_itemToEquip)
 				: _itemToEquip;
 		assert(quantity >= 1, 'Cannot equip less than 1 item.');
 		if (!itemToEquip.equipment) throw new Error(`${itemToEquip.name} is not equippable.`);
@@ -635,12 +595,18 @@ export class Gear {
 
 	toBank() {
 		const bank = new Bank();
-		for (const slot of objectKeys(defaultGear)) {
+		for (const slot of Object.keys(defaultGear) as (keyof typeof defaultGear)[]) {
 			const equipped = this[slot];
 			if (!equipped || !equipped.item || !equipped.quantity) continue;
 			bank.add(equipped.item, equipped.quantity);
 		}
 		return bank;
+	}
+
+	equals(other: Gear): boolean {
+		const thisRaw = this.raw();
+		const otherRaw = other.raw();
+		return deepEqual(thisRaw, otherRaw);
 	}
 }
 

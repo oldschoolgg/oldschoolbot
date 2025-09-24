@@ -1,4 +1,3 @@
-import { percentChance } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, Misc, randomVariation } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
@@ -10,6 +9,7 @@ import type { NightmareActivityTaskOptions } from '@/lib/types/minions.js';
 import { getNightmareGearStats } from '@/lib/util/getNightmareGearStats.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { percentChance } from '@/lib/util/rng.js';
 
 const RawNightmare = Misc.Nightmare;
 

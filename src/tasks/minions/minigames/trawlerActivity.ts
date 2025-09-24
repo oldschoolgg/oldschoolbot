@@ -1,7 +1,7 @@
 import { calcPercentOfNum, roll } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { MysteryBoxes } from '@/lib/bsoOpenables.js';
+import { MysteryBoxes } from '@/lib/bso/bsoOpenables.js';
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { fishingTrawlerLoot } from '@/lib/simulation/fishingTrawler.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
@@ -63,8 +63,7 @@ export const trawlerTask: MinionTask = {
 			str += '\n\nYou received **4x** extra fish because you are a master at Fishing.';
 		}
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

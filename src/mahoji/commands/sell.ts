@@ -1,8 +1,9 @@
-import { calcPercentOfNum, clamp, reduceNumByPercent } from '@oldschoolgg/toolkit';
+import { calcPercentOfNum, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import type { Prisma } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
+import { clamp } from 'remeda';
 
 import { customPrices } from '@/lib/customItems/util.js';
 import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
@@ -51,7 +52,7 @@ export function sellPriceOfItem(item: Item, taxRate = 25): { price: number; base
 	if (!(item.id in customPrices) && price < (item.highalch ?? 0) * 3) {
 		price = calcPercentOfNum(30, item.highalch!);
 	}
-	price = clamp(price, 0, MAX_INT_JAVA);
+	price = clamp(price, { min: 0, max: MAX_INT_JAVA });
 	return { price, basePrice };
 }
 
@@ -61,7 +62,7 @@ export function sellStorePriceOfItem(item: Item, qty: number): { price: number; 
 	// Sell price decline with stock by 3% until 10% of item value and is always low alch price when stock is 0.
 	const percentageFirstEleven = (0.4 - 0.015 * Math.min(qty - 1, 10)) * Math.min(qty, 11);
 	let price = ((percentageFirstEleven + Math.max(qty - 11, 0) * 0.1) * item.cost) / qty;
-	price = clamp(price, 0, MAX_INT_JAVA);
+	price = clamp(price, { min: 0, max: MAX_INT_JAVA });
 	return { price, basePrice };
 }
 export const sellCommand: OSBMahojiCommand = {
@@ -268,8 +269,7 @@ export const sellCommand: OSBMahojiCommand = {
 			return "You don't have the items you're trying to sell.";
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			itemsToAdd: new Bank().add('Coins', totalPrice),
 			itemsToRemove: bankToSell
 		});

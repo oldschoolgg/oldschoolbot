@@ -1,14 +1,15 @@
-import { percentChance, roll, Time } from '@oldschoolgg/toolkit';
+import { roll, Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
+import { BlacksmithOutfit } from '@/lib/bso/bsoOpenables.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
-import { BlacksmithOutfit } from '@/lib/bsoOpenables.js';
 import { globalDroprates } from '@/lib/data/globalDroprates.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { SmeltingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { percentChance } from '@/lib/util/rng.js';
 
 export const smeltingTask: MinionTask = {
 	type: 'Smelting',
@@ -83,8 +84,7 @@ export const smeltingTask: MinionTask = {
 			}
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

@@ -1,11 +1,10 @@
 import { Bank } from 'oldschooljs';
 
 import type { Mixable } from '@/lib/skilling/types.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 
 export const bsoMixables: Mixable[] = [
 	{
-		item: getOSItem('Neem oil'),
+		item: Items.getOrThrow('Neem oil'),
 		aliases: ['neem oil'],
 		level: 82,
 		xp: 1.5,
@@ -17,7 +16,7 @@ export const bsoMixables: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
-		item: getOSItem('Deathly toxic potion'),
+		item: Items.getOrThrow('Deathly toxic potion'),
 		aliases: ['deathly toxic potion'],
 		level: 95,
 		xp: 12_000.5,

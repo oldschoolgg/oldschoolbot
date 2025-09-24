@@ -2,11 +2,11 @@ import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
 import { activity_type_enum, type User } from '@prisma/client';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
+import { getAllUserTames } from '@/lib/bso/tames.js';
 import { BitField } from '@/lib/constants.js';
 import { calcCLDetails } from '@/lib/data/Collections.js';
 import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
 import { getSlayerTaskStats } from '@/lib/slayer/slayerUtil.js';
-import { getAllUserTames } from '@/lib/tames.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 import {

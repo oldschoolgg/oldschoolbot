@@ -1,8 +1,7 @@
 import type { Prisma } from '@prisma/client';
-import { Bank } from 'oldschooljs';
+import { Bank, EItem, Items } from 'oldschooljs';
 
 import type { BlowpipeData } from '@/lib/minions/types.js';
-import getOSItem, { getItem } from '@/lib/util/getOSItem.js';
 
 const defaultBlowpipe: BlowpipeData = {
 	scales: 0,
@@ -20,7 +19,7 @@ export const blowpipeDarts = [
 	'Rune dart',
 	'Amethyst dart',
 	'Dragon dart'
-].map(getOSItem);
+].map(name => Items.getOrThrow(name));
 
 export function validateBlowpipeData(data: BlowpipeData) {
 	if (Object.keys(data).length !== 3) throw new Error('Failed BP validation');
@@ -64,7 +63,7 @@ export async function blowpipeCommand(
 Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 `;
 
-	const item = rawBlowpipeData.dartID ? getOSItem(rawBlowpipeData.dartID) : null;
+	const item = rawBlowpipeData.dartID ? Items.getItem(rawBlowpipeData.dartID) : null;
 	if (item) {
 		str += `${item.name}'s: ${rawBlowpipeData.dartQuantity?.toLocaleString()}x`;
 	}
@@ -89,13 +88,13 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 		return "You don't own a Toxic blowpipe.";
 	}
 
-	const item = getItem(itemName);
+	const item = Items.getItem(itemName);
 	if (!item) return 'Invalid item.';
 
 	const userBank = user.bank;
 
 	const itemsToRemove = new Bank();
-	if (!blowpipeDarts.includes(item) && item !== getOSItem("Zulrah's scales")) {
+	if (!blowpipeDarts.includes(item) && item.id !== EItem.ZULRAHS_SCALES) {
 		return "You can only charge your blowpipe with darts and Zulrah's scales.";
 	}
 	itemsToRemove.add(item.id, Math.max(1, quantity || userBank.amount(item.id)));
@@ -110,7 +109,7 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 
 	if (rawBlowpipeData.dartID !== null && dart && rawBlowpipeData.dartID !== dart[0].id) {
 		return `You already have ${
-			getOSItem(rawBlowpipeData.dartID).name
+			Items.getOrThrow(rawBlowpipeData.dartID).name
 		}'s in your Blowpipe, do \`/minion blowpipe remove_darts:true\` to remove them first.`;
 	}
 

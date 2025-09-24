@@ -1,4 +1,4 @@
-import { calcPercentOfNum, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { LootTable } from 'oldschooljs';
 
 import type { Creature } from '@/lib/skilling/types.js';
@@ -10,8 +10,7 @@ export function calcLootXPHunting(
 	quantity: number,
 	usingStaminaPotion: boolean,
 	graceful: boolean,
-	experienceScore: number,
-	noRandomness = false
+	experienceScore: number
 ): [number, number, number] {
 	let xpReceived = 0;
 	let successful = 0;
@@ -36,20 +35,13 @@ export function calcLootXPHunting(
 		chanceOfSuccess += chanceOfSuccess * (percentIncrease / 100);
 	}
 
-	const xpToAdd = creature.hunterXP + (creature.name === 'Herbiboar' ? 27 * (currentLevel - 80) : 0);
-
-	if (noRandomness) {
-		const successes = Math.floor(calcPercentOfNum(chanceOfSuccess, quantity));
-		successful = successes;
-		xpReceived = successes * xpToAdd;
-	} else {
-		for (let i = 0; i < quantity; i++) {
-			if (!percentChance(chanceOfSuccess)) {
-				continue;
-			}
-			successful++;
-			xpReceived += xpToAdd;
+	for (let i = 0; i < quantity; i++) {
+		if (!percentChance(chanceOfSuccess)) {
+			continue;
 		}
+		successful++;
+
+		xpReceived += creature.hunterXP + (creature.name === 'Herbiboar' ? 27 * (currentLevel - 80) : 0);
 	}
 
 	return [successful, xpReceived, chanceOfSuccess];

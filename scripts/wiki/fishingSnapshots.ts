@@ -1,6 +1,6 @@
 import { calcPerHour, Table } from '@oldschoolgg/toolkit';
-import { Time } from 'e';
-import { Bank, convertLVLtoXP, EItem, Items } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit/datetime';
+import { type Bank, convertLVLtoXP, EItem, Items } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
 
 applyStaticDefine();
@@ -82,8 +82,7 @@ export function renderFishingXpHrTable() {
 					fish,
 					maxTripLength: Time.Hour * tripLengthHours,
 					quantityInput: undefined,
-					wantsToUseFlakes: false,
-					isUsingMechaRod: true
+					wantsToUseFlakes: false
 				});
 				if (typeof trip === 'string') throw new Error(`Error calculating trip: ${trip}`);
 				const result = Fishing.util.calcFishingTripResult({
@@ -92,8 +91,7 @@ export function renderFishingXpHrTable() {
 					gearBank,
 					duration: trip.duration,
 					flakesQuantity: trip.flakesBeingUsed,
-					rng: new SeedableRNG(1),
-					collectionLog: new Bank()
+					rng: new SeedableRNG(1)
 				});
 				result.updateBank.itemLootBank.remove('Heron', 1000);
 

@@ -1,7 +1,6 @@
 import type { Craftable } from '@/lib/skilling/types.js';
 import Birdhouse from './birdhouse.js';
 import Built from './built.js';
-import { customCraftables } from './custom.js';
 import Dragonhide from './dragonhide.js';
 import Gems from './gems.js';
 import Glassblowing from './glassblowing.js';
@@ -21,8 +20,5 @@ export const Craftables: Craftable[] = [
 	...Leather,
 	...Misc,
 	...Silver,
-	...Tanning,
-	...customCraftables
+	...Tanning
 ];
-
-export const craftingCL = Craftables.map(i => i.id);

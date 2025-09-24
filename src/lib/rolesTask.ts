@@ -2,20 +2,20 @@ import { noOp, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
 import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { Prisma } from '@prisma/client';
-import { Bank, convertXPtoLVL, type ItemBank, resolveItems } from 'oldschooljs';
+import { convertXPtoLVL, type ItemBank } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { partition } from 'remeda';
 import z from 'zod';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BadgesEnum, globalConfig, MAX_LEVEL, Roles } from '@/lib/constants.js';
-import { getCollectionItems, overallPlusItems } from '@/lib/data/Collections.js';
+import { getCollectionItems } from '@/lib/data/Collections.js';
 import { Minigames } from '@/lib/settings/minigames.js';
-import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
-import { loggedRawPrismaQuery, RawSQL } from './rawSql.js';
-import { fetchMultipleCLLeaderboards, fetchTameCLLeaderboard } from './util/clLeaderboard.js';
-import { logError } from './util/logError.js';
+import { fetchMultipleCLLeaderboards } from '@/lib/util/clLeaderboard.js';
+import { logError } from '@/lib/util/logError.js';
+import { loggedRawPrismaQuery } from './rawSql.js';
+import { TeamLoot } from './simulation/TeamLoot.js';
 import { getUsernameSync } from './util.js';
 
 const RoleResultSchema = z.object({
@@ -28,7 +28,19 @@ type RoleResult = z.infer<typeof RoleResultSchema>;
 
 const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');
 
-const CLS_THAT_GET_ROLE = ['skilling', 'clues', 'minigames', 'other', 'overall'];
+const CLS_THAT_GET_ROLE = [
+	'pets',
+	'skilling',
+	'clues',
+	'bosses',
+	'minigames',
+	'raids',
+	'slayer',
+	'other',
+	'custom',
+	'overall',
+	'creatables'
+];
 
 for (const cl of CLS_THAT_GET_ROLE) {
 	const items = getCollectionItems(cl);
@@ -59,7 +71,7 @@ async function topSkillers() {
 	for (const { id, skill } of top200ms.flat()) {
 		results.push({
 			userID: id,
-			roleID: Roles.BSOTopSkiller,
+			roleID: Roles.OSBTopSkiller,
 			reason: `Rank 1 ${skill} XP`,
 			badge: BadgesEnum.TopSkiller
 		});
@@ -80,7 +92,7 @@ async function topSkillers() {
 
 	results.push({
 		userID: rankOneTotal.id,
-		roleID: Roles.BSOTopSkiller,
+		roleID: Roles.OSBTopSkiller,
 		reason: 'Rank 1 Total Level',
 		badge: BadgesEnum.TopSkiller
 	});
@@ -108,7 +120,7 @@ async function topCollector() {
 		for (const user of users) {
 			results.push({
 				userID: user.id,
-				roleID: Roles.BSOTopCollector,
+				roleID: Roles.OSBTopCollector,
 				reason: `Rank 1 ${ironmenOnly ? 'Iron' : 'Main'} ${clName}`,
 				badge: BadgesEnum.TopCollector
 			});
@@ -142,7 +154,7 @@ ORDER BY u.sacbanklength DESC LIMIT 1;`)
 		results.push({
 			userID: res.id,
 			reason: res.reason,
-			roleID: Roles.BSOTopSacrificer,
+			roleID: Roles.OSBTopSacrificer,
 			badge: BadgesEnum.TopSacrifice
 		});
 	}
@@ -166,7 +178,7 @@ LIMIT 1;`
 	for (const { id, minigame_name } of topMinigamers.flat()) {
 		results.push({
 			userID: id,
-			roleID: Roles.BSOTopMinigamer,
+			roleID: Roles.OSBTopMinigamer,
 			reason: `Rank 1 ${minigame_name}`,
 			badge: BadgesEnum.TopMinigame
 		});
@@ -193,7 +205,7 @@ LIMIT 1;`
 	for (const res of topClueHunters.flat()) {
 		results.push({
 			userID: res.user_id,
-			roleID: Roles.BSOTopClueHunter,
+			roleID: Roles.OSBTopClueHunter,
 			reason: `Rank 1 ${res.tier_name} Clues`,
 			badge: BadgesEnum.TopMinigame
 		});
@@ -230,7 +242,7 @@ LIMIT 2;`
 	for (const { id, desc } of res.flat()) {
 		results.push({
 			userID: id,
-			roleID: Roles.BSOTopFarmer,
+			roleID: Roles.OSBTopFarmer,
 			reason: desc,
 			badge: BadgesEnum.Farmer
 		});
@@ -263,7 +275,7 @@ LIMIT 1;`)
 	for (const { id, desc } of topSlayers.flat()) {
 		results.push({
 			userID: id,
-			roleID: Roles.BSOTopSlayer,
+			roleID: Roles.OSBTopSlayer,
 			reason: desc,
 			badge: BadgesEnum.Slayer
 		});
@@ -312,7 +324,7 @@ async function giveaways() {
 
 	results.push({
 		userID: highestID,
-		roleID: '1104155653745946746',
+		roleID: '1052481561603346442',
 		reason: `Most Value Given Away (${loot.value()})`,
 		badge: BadgesEnum.TopGiveawayer
 	});
@@ -332,104 +344,12 @@ async function globalCL() {
 	for (const user of result) {
 		results.push({
 			userID: user.id,
-			roleID: Roles.BSOTopGlobalCL,
+			roleID: Roles.OSBTopGlobalCL,
 			reason: `Top Global CL ${user.total_cl_percent}%`,
 			badge: BadgesEnum.TopCollector
 		});
 	}
 	return results;
-}
-
-async function topLeagues() {
-	const [topPoints, topTasks] = await prisma.$transaction([
-		roboChimpClient.user.findMany({
-			where: {
-				leagues_points_total: {
-					gt: 0
-				}
-			},
-			orderBy: {
-				leagues_points_total: 'desc'
-			},
-			take: 2
-		}),
-		RawSQL.leaguesTaskLeaderboard()
-	]);
-
-	const results: RoleResult[] = [];
-	for (const userID of [topPoints, topTasks].flat().map(i => i.id.toString())) {
-		results.push({
-			userID: userID,
-			roleID: Roles.BSOTopLeagues,
-			reason: 'Top 2 leagues points/points'
-		});
-	}
-	return results;
-}
-
-async function topTamer(): Promise<RoleResult[]> {
-	const [rankOne] = await fetchTameCLLeaderboard({ items: overallPlusItems, resultLimit: 1 });
-	if (rankOne) {
-		return [
-			{
-				userID: rankOne.user_id,
-				roleID: Roles.BSOTopTamer,
-				reason: 'Rank 1 Tames CL'
-			}
-		];
-	}
-	return [];
-}
-
-async function topMysterious(): Promise<RoleResult[]> {
-	const items = resolveItems([
-		'Pet mystery box',
-		'Holiday mystery box',
-		'Equippable mystery box',
-		'Clothing mystery box',
-		'Tradeable mystery box',
-		'Untradeable mystery box'
-	]);
-	const res = await Promise.all(items.map(id => RawSQL.openablesLeaderboard(id)));
-
-	const userScoreMap: Record<string, number> = {};
-	for (const lb of res) {
-		const [rankOne] = lb;
-		for (const user of lb) {
-			if (!userScoreMap[user.id]) userScoreMap[user.id] = 0;
-			userScoreMap[user.id] += user.score / rankOne.score;
-		}
-	}
-
-	const entries = Object.entries(userScoreMap).sort((a, b) => b[1] - a[1]);
-	const [[rankOneID]] = entries;
-
-	return [
-		{
-			userID: rankOneID,
-			roleID: Roles.BSOTopMysterious,
-			reason: 'Rank 1 Mystery Box Opens'
-		}
-	];
-}
-
-async function monkeyKing(): Promise<RoleResult[]> {
-	const [user] = await RawSQL.monkeysFoughtLeaderboard();
-	return [{ userID: user.id, roleID: '886180040465870918', reason: 'Most Monkeys Fought' }];
-}
-
-async function topInventor(): Promise<RoleResult[]> {
-	const mostUniquesLb = await RawSQL.inventionDisassemblyLeaderboard();
-	const topInventors: string[] = [mostUniquesLb[0].id];
-	const parsed = mostUniquesLb
-		.map(i => ({ ...i, value: new Bank(i.disassembled_items_bank).value() }))
-		.sort((a, b) => b.value - a.value);
-	topInventors.push(parsed[0].id);
-	return topInventors.map(i => ({
-		userID: i,
-		roleID: Roles.BSOTopInventor,
-		reason: 'Most Uniques/Value Disassembled'
-	}));
 }
 
 export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
@@ -447,14 +367,7 @@ export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 		['Top Skillers', topSkillers],
 		['Top Farmers', topFarmers],
 		['Top Giveawayers', giveaways],
-		['Global CL', globalCL],
-
-		// BSO Only
-		['Top Leagues', topLeagues],
-		['Top Tamer', topTamer],
-		['Top Mysterious', topMysterious],
-		['Monkey King', monkeyKing],
-		['Top Inventor', topInventor]
+		['Global CL', globalCL]
 	] as const;
 
 	for (const [name, fn] of tup) {

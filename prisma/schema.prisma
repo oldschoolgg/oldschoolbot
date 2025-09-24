@@ -1247,6 +1247,7 @@ enum activity_type_enum {
   Colosseum
   CreateForestersRations
   SnoozeSpellActive
+  Buy
 }
 
 enum xp_gains_skill_enum {

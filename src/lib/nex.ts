@@ -12,13 +12,12 @@ import {
 	virtusOutfit
 } from '@/lib/data/CollectionsExport.js';
 import type { KillableMonster } from './minions/types.js';
-import getOSItem from './util/getOSItem.js';
 import { makeKillTable } from './util/setCustomMonster.js';
 
 export const nexBrokenArmorDetails = [
-	[getOSItem('Armadylean components'), brokenPernixOutfit, pernixOutfit],
-	[getOSItem('Bandosian components'), brokenTorvaOutfit, torvaOutfit],
-	[getOSItem('Ancestral components'), brokenVirtusOutfit, virtusOutfit]
+	[Items.getOrThrow('Armadylean components'), brokenPernixOutfit, pernixOutfit],
+	[Items.getOrThrow('Bandosian components'), brokenTorvaOutfit, torvaOutfit],
+	[Items.getOrThrow('Ancestral components'), brokenVirtusOutfit, virtusOutfit]
 ] as const;
 
 export const nexLootTable = new LootTable()

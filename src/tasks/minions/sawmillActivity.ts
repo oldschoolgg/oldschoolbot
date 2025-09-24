@@ -1,11 +1,11 @@
-import { roll } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { MysteryBoxes } from '@/lib/bsoOpenables.js';
+import { MysteryBoxes } from '@/lib/bso/bsoOpenables.js';
 import { Planks } from '@/lib/minions/data/planks.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { SawmillActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { roll } from '@/lib/util/rng.js';
 
 export const sawmillTask: MinionTask = {
 	type: 'Sawmill',
@@ -37,8 +37,7 @@ export const sawmillTask: MinionTask = {
 				"\n\nWhile on the way to the sawmill, a helmet falls out of a tree onto the ground infront of you... **You've found the Helm of Raedwald!**";
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

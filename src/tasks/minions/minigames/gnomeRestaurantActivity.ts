@@ -82,8 +82,7 @@ export const gnomeResTask: MinionTask = {
 			loot.multiply(2);
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

@@ -1,5 +1,3 @@
-import { readFileSync } from 'node:fs';
-import { readFile } from 'node:fs/promises';
 import { bold, time } from '@discordjs/builders';
 import {
 	calcPercentOfNum,
@@ -19,9 +17,35 @@ import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { type Tame, tame_growth } from '@prisma/client';
 import { toTitleCase } from '@sapphire/utilities';
 import { ApplicationCommandOptionType, type ChatInputCommandInteraction, type User } from 'discord.js';
+import { readFileSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { Bank, type Item, type ItemBank, itemID, resolveItems } from 'oldschooljs';
 import { type Canvas, loadImage } from 'skia-canvas';
 
+import {
+	createTameTask,
+	getIgneTameKC,
+	igneArmors,
+	type SeaMonkeySpell,
+	seaMonkeySpells,
+	seaMonkeyStaves,
+	tameFeedableItems,
+	type TameKillableMonster,
+	tameKillableMonsters,
+	tameSpecies,
+	TameSpeciesID,
+	TameType
+} from '@/lib/bso/tames.js';
+import {
+	calculateMaximumTameFeedingLevelGain,
+	getMainTameLevel,
+	getTameSpecies,
+	getTameStatus,
+	getUsersTame,
+	tameGrowthLevel,
+	tameHasBeenFed,
+	tameName
+} from '@/lib/bso/tameUtil.js';
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import {
 	type CanvasContext,
@@ -43,39 +67,15 @@ import { getUsersPerkTier } from '@/lib/perkTiers.js';
 import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning.js';
 import Bars from '@/lib/skilling/skills/smithing/smeltables.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import {
-	createTameTask,
-	getIgneTameKC,
-	igneArmors,
-	type SeaMonkeySpell,
-	seaMonkeySpells,
-	seaMonkeyStaves,
-	type TameKillableMonster,
-	TameSpeciesID,
-	TameType,
-	tameFeedableItems,
-	tameKillableMonsters,
-	tameSpecies
-} from '@/lib/tames.js';
+import { itemNameFromID } from '@/lib/util.js';
 import { patronMaxTripBonus } from '@/lib/util/calcMaxTripLength.js';
-import getOSItem, { getItem } from '@/lib/util/getOSItem.js';
+import { getItem } from '@/lib/util/getOSItem.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { assert } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import {
-	calculateMaximumTameFeedingLevelGain,
-	getMainTameLevel,
-	getTameSpecies,
-	getTameStatus,
-	getUsersTame,
-	tameGrowthLevel,
-	tameHasBeenFed,
-	tameName
-} from '@/lib/util/tameUtil.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { itemNameFromID } from '@/lib/util.js';
 import { getItemCostFromConsumables } from '@/mahoji/lib/abstracted_commands/minionKill/handleConsumables.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 import { arbitraryTameActivities } from '@/tasks/tames/tameTasks.js';
@@ -113,68 +113,68 @@ interface TameEquippable {
 
 const igneClaws = [
 	{
-		item: getOSItem('Runite igne claws'),
+		item: Items.getOrThrow('Runite igne claws'),
 		boost: 5
 	},
 	{
-		item: getOSItem('Dragon igne claws'),
+		item: Items.getOrThrow('Dragon igne claws'),
 		boost: 8
 	},
 	{
-		item: getOSItem('Barrows igne claws'),
+		item: Items.getOrThrow('Barrows igne claws'),
 		boost: 14
 	},
 	{
-		item: getOSItem('Volcanic igne claws'),
+		item: Items.getOrThrow('Volcanic igne claws'),
 		boost: 17
 	},
 	{
-		item: getOSItem('Drygore igne claws'),
+		item: Items.getOrThrow('Drygore igne claws'),
 		boost: 22
 	},
 	{
-		item: getOSItem('Dwarven igne claws'),
+		item: Items.getOrThrow('Dwarven igne claws'),
 		boost: 27
 	},
 	{
-		item: getOSItem('Gorajan igne claws'),
+		item: Items.getOrThrow('Gorajan igne claws'),
 		boost: 35
 	}
 ].map(i => ({ ...i, tameSpecies: [TameSpeciesID.Igne], slot: 'equipped_primary' as const }));
 
 const eagleEquippables: TameEquippable[] = [
 	{
-		item: getOSItem('Demonic jibwings'),
+		item: Items.getOrThrow('Demonic jibwings'),
 		slot: 'equipped_armor',
 		tameSpecies: [TameSpeciesID.Eagle]
 	},
 	{
-		item: getOSItem('Abyssal jibwings'),
+		item: Items.getOrThrow('Abyssal jibwings'),
 		slot: 'equipped_armor',
 		tameSpecies: [TameSpeciesID.Eagle]
 	},
 	{
-		item: getOSItem('3rd age jibwings'),
+		item: Items.getOrThrow('3rd age jibwings'),
 		slot: 'equipped_armor',
 		tameSpecies: [TameSpeciesID.Eagle]
 	},
 	{
-		item: getOSItem('Demonic jibwings (e)'),
+		item: Items.getOrThrow('Demonic jibwings (e)'),
 		slot: 'equipped_armor',
 		tameSpecies: [TameSpeciesID.Eagle]
 	},
 	{
-		item: getOSItem('Abyssal jibwings (e)'),
+		item: Items.getOrThrow('Abyssal jibwings (e)'),
 		slot: 'equipped_armor',
 		tameSpecies: [TameSpeciesID.Eagle]
 	},
 	{
-		item: getOSItem('3rd age jibwings (e)'),
+		item: Items.getOrThrow('3rd age jibwings (e)'),
 		slot: 'equipped_armor',
 		tameSpecies: [TameSpeciesID.Eagle]
 	},
 	{
-		item: getOSItem('Divine ring'),
+		item: Items.getOrThrow('Divine ring'),
 		slot: 'equipped_primary',
 		tameSpecies: [TameSpeciesID.Eagle]
 	}
@@ -1342,7 +1342,7 @@ async function monkeyMagicHandler(
 }
 
 async function tanLeatherCommand(user: MUser, channelID: string, itemName: string) {
-	const item = Tanning.find(i => getOSItem(i.id).name === itemName);
+	const item = Tanning.find(i => Items.getOrThrow(i.id).name === itemName);
 	if (!item) {
 		return "That's not a valid item to tan.";
 	}
@@ -1361,7 +1361,7 @@ async function tanLeatherCommand(user: MUser, channelID: string, itemName: strin
 }
 
 async function superGlassCommand(user: MUser, channelID: string) {
-	const moltenGlass = getOSItem('Molten glass');
+	const moltenGlass = Items.getOrThrow('Molten glass');
 
 	return monkeyMagicHandler(user, channelID, {
 		spell: seaMonkeySpells.find(i => i.id === 4)!,
@@ -1377,7 +1377,7 @@ async function superGlassCommand(user: MUser, channelID: string) {
 }
 
 async function superheatItemCommand(user: MUser, channelID: string, itemName: string) {
-	const item = Bars.find(i => getOSItem(i.id).name === itemName);
+	const item = Bars.find(i => Items.getOrThrow(i.id).name === itemName);
 
 	const { tame, activity } = await getUsersTame(user);
 	if (!tame) return `You don't have a tame selected.`;
@@ -1425,8 +1425,8 @@ async function plankMakeCommand(user: MUser, channelID: string, plankName: strin
 }
 
 async function spinFlaxCommand(user: MUser, channelID: string) {
-	const flax = getOSItem('Flax');
-	const bowstring = getOSItem('Bow string');
+	const flax = Items.getOrThrow('Flax');
+	const bowstring = Items.getOrThrow('Bow string');
 
 	return monkeyMagicHandler(user, channelID, {
 		spell: seaMonkeySpells.find(i => i.id === 3)!,

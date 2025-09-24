@@ -1,52 +1,55 @@
-import { calcWhatPercent, clamp, reduceNumByPercent, roll, round, Time } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, reduceNumByPercent, roll, round, Time } from '@oldschoolgg/toolkit';
+import { Events } from '@oldschoolgg/toolkit/constants';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, formatOrdinal, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { Bank, randomVariation } from 'oldschooljs';
+import { Bank, Items, itemID } from 'oldschooljs';
+import { clamp } from 'remeda';
 
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { degradeItem } from '@/lib/degradeableItems.js';
+import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '@/lib/simulation/baGamble.js';
 import { maxOtherStats } from '@/lib/structures/Gear.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import getOSItem from '@/lib/util/getOSItem.js';
+import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const BarbBuyables = [
 	{
-		item: getOSItem('Fighter hat'),
+		item: Items.getOrThrow('Fighter hat'),
 		cost: 275 * 4
 	},
 	{
-		item: getOSItem('Ranger hat'),
+		item: Items.getOrThrow('Ranger hat'),
 		cost: 275 * 4
 	},
 	{
-		item: getOSItem('Healer hat'),
+		item: Items.getOrThrow('Healer hat'),
 		cost: 275 * 4
 	},
 	{
-		item: getOSItem('Runner hat'),
+		item: Items.getOrThrow('Runner hat'),
 		cost: 275 * 4
 	},
 	{
-		item: getOSItem('Fighter torso'),
+		item: Items.getOrThrow('Fighter torso'),
 		cost: 375 * 4
 	},
 	{
-		item: getOSItem('Penance skirt'),
+		item: Items.getOrThrow('Penance skirt'),
 		cost: 375 * 4
 	},
 	{
-		item: getOSItem('Runner boots'),
+		item: Items.getOrThrow('Runner boots'),
 		cost: 100 * 4
 	},
 	{
-		item: getOSItem('Penance gloves'),
+		item: Items.getOrThrow('Penance gloves'),
 		cost: 150 * 4
 	}
 ];
@@ -179,7 +182,7 @@ export async function barbAssaultGambleCommand(
 		interaction,
 		`Are you sure you want to do ${quantity.toLocaleString()}x ${name} gamble, using ${(cost * quantity).toLocaleString()} honour points?`
 	);
-	await userStatsUpdate(
+	const newStats = await userStatsUpdate(
 		user.id,
 		{
 			honour_points: {
@@ -198,10 +201,21 @@ export async function barbAssaultGambleCommand(
 		}
 	);
 	const loot = new Bank().add(table.roll(quantity));
-	const str = `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`;
-
 	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
+	let str = `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`;
+	str += await displayCluesAndPets(user, loot);
+	if (loot.has('Pet Penance Queen')) {
+		const amount = await countUsersWithItemInCl(itemID('Pet penance queen'), false);
 
+		globalClient.emit(
+			Events.ServerNotification,
+			`<:Pet_penance_queen:324127377649303553> **${user.badgedUsername}'s** minion, ${
+				user.minionName
+			}, just received a Pet penance queen from their ${formatOrdinal(
+				newStats.high_gambles
+			)} High gamble! They are the ${formatOrdinal(amount + 1)} to it.`
+		);
+	}
 	const perkTier = user.perkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
@@ -242,7 +256,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 
 	// Up to 10%, at 200 kc, speed boost for team average kc
 	const kc = await user.fetchMinigameScore('barb_assault');
-	const kcPercent = clamp(calcWhatPercent(kc, 200), 1, 100);
+	const kcPercent = clamp(calcWhatPercent(kc, 200), { min: 1, max: 100 });
 	const kcPercentBoost = kcPercent / 10;
 	boosts.push(`${kcPercentBoost.toFixed(2)}% for average KC`);
 	waveTime = reduceNumByPercent(waveTime, kcPercentBoost);
@@ -255,7 +269,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 	let venBowMsg = '';
 	if (user.gear.range.hasEquipped('Venator Bow') && user.user.venator_bow_charges >= totalVenChargesUsed) {
 		await degradeItem({
-			item: getOSItem('Venator Bow'),
+			item: Items.getOrThrow('Venator Bow'),
 			chargesToDegrade: totalVenChargesUsed,
 			user
 		});

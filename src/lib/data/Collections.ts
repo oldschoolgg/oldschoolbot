@@ -10,26 +10,29 @@ import {
 	type ItemBank,
 	ItemGroups,
 	itemID,
+	Items,
 	type Monster,
 	Monsters,
 	resolveItems
 } from 'oldschooljs';
 
 import { OSB_VIRTUS_IDS } from '@/lib/bso/bsoConstants.js';
+import { creatablesCL } from '@/lib/bso/creatablesCl.js';
 import { divinationEnergies, portents } from '@/lib/bso/divination.js';
+import { discontinuedDyes, dyedItems } from '@/lib/bso/dyedItems.js';
+import { keyCrates } from '@/lib/bso/keyCrates.js';
+import { PaintBoxTable } from '@/lib/bso/paintColors.js';
+import { getAllIgneTameKCs, tameKillableMonsters } from '@/lib/bso/tames.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { CollectionLogType } from '@/lib/collectionLogTask.js';
-import { discontinuedDyes, dyedItems } from '@/lib/dyedItems.js';
-import { growablePetsCL } from '@/lib/growablePets.js';
 import { implingsCL } from '@/lib/implings.js';
 import { inventionCL } from '@/lib/invention/inventions.js';
-import { keyCrates } from '@/lib/keyCrates.js';
 import { AkumuLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Akumu.js';
 import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
 import {
-	KalphiteKingMonster,
-	kalphiteKingLootTable
+	kalphiteKingLootTable,
+	KalphiteKingMonster
 } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
 import KingGoldemar from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';
 import { MOKTANG_ID, MoktangLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
@@ -45,23 +48,18 @@ import {
 	MediumEncounterLoot,
 	rewardTokens
 } from '@/lib/minions/data/templeTrekking.js';
-import { NexMonster, nexLootTable } from '@/lib/nex.js';
-import { PaintBoxTable } from '@/lib/paintColors.js';
+import { nexLootTable, NexMonster } from '@/lib/nex.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import { ElderClueTable } from '@/lib/simulation/elderClue.js';
 import { GrandmasterClueTable } from '@/lib/simulation/grandmasterClue.js';
 import { pumpkinHeadUniqueTable } from '@/lib/simulation/pumpkinHead.js';
-import { cookingCL } from '@/lib/skilling/skills/cooking/cooking.js';
-import { craftingCL } from '@/lib/skilling/skills/crafting/craftables/index.js';
 import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
 import { fletchingCL } from '@/lib/skilling/skills/fletching/fletchables/index.js';
-import { herbloreCL } from '@/lib/skilling/skills/herblore/mixables/index.js';
 import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
-import { getAllIgneTameKCs, tameKillableMonsters } from '@/lib/tames.js';
-import getOSItem from '@/lib/util/getOSItem.js';
-import { shuffleRandom } from '@/lib/util/smallUtils.js';
+import { SeedableRNG } from '@/lib/util/rng.js';
+import { kibbleCL } from '../bso/kibble.js';
 import {
 	abyssalDragonCL,
 	abyssalSireCL,
@@ -122,12 +120,12 @@ import {
 	dungeoneeringCL,
 	emergedZukInfernoCL,
 	expertCapesCL,
-	type FormatProgressFunction,
 	fightCavesCL,
 	fishingContestCL,
 	fishingTrawlerCL,
 	fistOfGuthixCL,
 	forestryCL,
+	type FormatProgressFunction,
 	fossilIslandNotesCL,
 	generalGraardorCL,
 	giantMoleCL,
@@ -140,9 +138,9 @@ import {
 	hesporiCL,
 	holidayCL,
 	type ICollection,
+	ignecarusCL,
 	type ILeftListStatus,
 	type IToReturnCollection,
-	ignecarusCL,
 	kalphiteKingCL,
 	kalphiteQueenCL,
 	kingBlackDragonCL,
@@ -217,8 +215,6 @@ import {
 	zalcanoCL,
 	zulrahCL
 } from './CollectionsExport.js';
-import { creatablesCL } from './createables.js';
-import { kibbleCL } from './kibble.js';
 import { slayerMasksHelmsCL } from './slayerMaskHelms.js';
 
 function kcProg(mon: Monster | number): FormatProgressFunction {
@@ -1980,7 +1976,7 @@ for (const crate of keyCrates) {
 	allCollectionLogs.Discontinued.activities[crate.item.name] = {
 		alias: [crate.item.name.toLowerCase()],
 		items: resolveItems([crate.item.id, crate.key.id, ...crate.table.allItems]).filter(
-			i => !getOSItem(i).customItemData?.isSecret
+			i => !Items.getOrThrow(i).customItemData?.isSecret
 		),
 		counts: false,
 		kcActivity: {
@@ -2037,10 +2033,8 @@ export function calcCLDetails(user: MUser | Bank) {
 	const clItems = (user instanceof Bank ? user : user.cl).filter(i => allCLItemsFiltered.includes(i.id));
 	const debugBank = new Bank(clItems);
 	const owned = clItems.filter(i => allCLItemsFiltered.includes(i.id));
-	const notOwned = shuffleRandom(
-		Number(user instanceof Bank ? '1' : user.id),
-		allCLItemsFiltered.filter(i => !clItems.has(i))
-	).slice(0, 10);
+	const seededRng = new SeedableRNG(Number(user instanceof Bank ? '1' : user.id));
+	const notOwned: number[] = seededRng.shuffle(allCLItemsFiltered.filter(i => !clItems.has(i))).slice(0, 10);
 	return {
 		percent: calcWhatPercent(owned.length, allCLItemsFiltered.length),
 		notOwned,

@@ -1,5 +1,5 @@
-import LootTable from '../../structures/LootTable';
-import { itemID } from '../../util';
+import LootTable from '@/structures/LootTable.js';
+import { itemID } from '@/util/index.js';
 import {
 	BlessingTable,
 	FirelighterTable,
@@ -7,7 +7,7 @@ import {
 	GiveHalfKeyTable,
 	PrayerPageTable,
 	TeleportScrollTable
-} from './General';
+} from './General.js';
 
 export const Elite3rdageTable = new LootTable()
 	.add('3rd age range coif')

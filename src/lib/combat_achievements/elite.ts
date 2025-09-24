@@ -1,19 +1,18 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { anyoneDiedInTOARaid, isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
-import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
-import { clawWeapon } from '@/lib/constants.js';
-import { NexMonster } from '@/lib/nex.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
+	ActivityTaskData,
 	GauntletOptions,
 	MonsterActivityTaskOptions,
 	NightmareActivityTaskOptions,
 	TOAOptions
 } from '@/lib/types/minions.js';
 import { crossbows } from '@/lib/util/archery.js';
+import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils.js';
+import type { CombatAchievement } from './combatAchievements.js';
 
 export const eliteCombatAchievements: CombatAchievement[] = [
 	{
@@ -787,7 +786,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Nex',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[NexMonster.id]: 1
+				[EMonster.NEX]: 1
 			}
 		})
 	},
@@ -1500,11 +1499,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 5,
-			hasChance: (data, user, index) =>
-				user.hasEquippedOrInBank(clawWeapon, 'one') &&
-				data.type === 'Colosseum' &&
-				Array.isArray(data.diedAt) &&
-				data.diedAt[index]! > 1
+			hasChance: 'Colosseum'
 		}
 	},
 	{
@@ -1515,9 +1510,8 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 12,
-			hasChance: (data, _user, index) =>
-				data.type === 'Colosseum' &&
-				(!data.diedAt || (Array.isArray(data.diedAt) && (!data.diedAt[index] || data.diedAt[index] > 7)))
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 7))
 		}
 	},
 	{
@@ -1528,9 +1522,8 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 12,
-			hasChance: (data, _user, index) =>
-				data.type === 'Colosseum' &&
-				(!data.diedAt || (Array.isArray(data.diedAt) && (!data.diedAt[index] || data.diedAt[index] > 4)))
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 4))
 		}
 	},
 	{

@@ -1,6 +1,7 @@
-import { roll } from '@oldschoolgg/toolkit';
 import { Bank, type Item } from 'oldschooljs';
 import { shuffle } from 'remeda';
+
+import { roll } from '@/lib/util/rng.js';
 
 type PrimitiveDroppable = Item | string | number;
 

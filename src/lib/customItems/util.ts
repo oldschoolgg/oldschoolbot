@@ -3,8 +3,6 @@ import type { DeepPartial } from '@sapphire/utilities';
 import deepMerge from 'deepmerge';
 import { type Item, type ItemRequirements, Items, itemNameMap } from 'oldschooljs';
 
-import getOSItem from '@/lib/util/getOSItem.js';
-
 export const customPrices: Record<number, number> = [];
 
 export const customItems: number[] = [];
@@ -36,7 +34,7 @@ export function setCustomItem(id: number, name: string, baseItem: string, newIte
 		throw new Error('Tried to add a custom item with superTradeableButTradeableOnGE, but not isSuperUntradeable');
 	}
 
-	const data: Item = deepMerge({ ...getOSItem(baseItem) }, { ...newItemData, name, id }) as Item;
+	const data: Item = deepMerge({ ...Items.getOrThrow(baseItem) }, { ...newItemData, name, id }) as Item;
 	data.price = price || 1;
 
 	// Track names of re-mapped items to break the link:

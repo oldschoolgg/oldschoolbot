@@ -1,12 +1,11 @@
 import { randInt, roll, Time } from '@oldschoolgg/toolkit';
-import { Bank, SkillsEnum } from 'oldschooljs';
+import { Bank, EItem } from 'oldschooljs';
 
 import { herbertDroprate } from '@/lib/bso/bsoUtil.js';
 import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import type { Mixable } from '@/lib/skilling/types.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { percentChance } from '@/lib/util/rng.js';
 
@@ -54,9 +53,9 @@ export const herbloreTask: MinionTask = {
 		let outputQuantity = mixableItem.outputMultiple ? quantity * mixableItem.outputMultiple : quantity;
 
 		// Special case for Lava scale shard
-		if (mixableItem.item === getOSItem('Lava scale shard')) {
+		if (mixableItem.item.id === EItem.LAVA_SCALE_SHARD) {
 			const [hasWildyDiary] = await userhasDiaryTier(user, WildernessDiary.hard);
-			const currentHerbLevel = user.skillLevel(SkillsEnum.Herblore);
+			const currentHerbLevel = user.skillsAsLevels.herblore;
 			let scales = 0;
 			// Having 99 herblore gives a 98% chance to recieve the max amount of shards
 			const maxShardChance = currentHerbLevel >= 99 ? 98 : 0;
@@ -75,12 +74,12 @@ export const herbloreTask: MinionTask = {
 			outputQuantity = scales;
 		}
 
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Herblore, amount: xpReceived, duration });
+		const xpRes = await user.addXP({ skillName: 'herblore', amount: xpReceived, duration });
 		const loot = new Bank().add(mixableItem.item.id, outputQuantity);
 
 		BSOHerbetRoll(user, duration, mixableItem, loot, messages);
 
-		await transactItems({ userID: user.id, collectionLog: true, itemsToAdd: loot });
+		await user.transactItems({ collectionLog: true, itemsToAdd: loot });
 
 		handleTripFinish(
 			user,

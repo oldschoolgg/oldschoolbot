@@ -1,7 +1,7 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 
-import { Fletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
+import { Fletchables } from './fletchables/index.js';
 
 const Fletching = {
 	aliases: ['fletch', 'fletching'],

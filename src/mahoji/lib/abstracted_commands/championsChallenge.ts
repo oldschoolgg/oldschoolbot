@@ -1,4 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, ItemGroups } from 'oldschooljs';
 
@@ -17,7 +17,7 @@ export async function championsChallengeCommand(user: MUser, channelID: string) 
 
 	const cost = new Bank();
 	for (const id of ItemGroups.championScrolls) cost.add(id);
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,

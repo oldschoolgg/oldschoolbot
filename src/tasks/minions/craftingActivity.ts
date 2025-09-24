@@ -56,8 +56,7 @@ export const craftingTask: MinionTask = {
 			str += '\n\nYour Scroll of dexterity allows you to receive 15% extra items.';
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

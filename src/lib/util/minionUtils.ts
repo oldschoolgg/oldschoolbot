@@ -1,4 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { perTimeUnitChance } from '@oldschoolgg/toolkit/util';
 import type { Bank } from 'oldschooljs';
 

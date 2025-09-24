@@ -1,6 +1,6 @@
 import { LootTable, Monsters } from 'oldschooljs';
 
-import { MysteryBoxes } from '@/lib/bsoOpenables.js';
+import { MysteryBoxes } from '@/lib/bso/bsoOpenables.js';
 import setCustomMonster from '@/lib/util/setCustomMonster.js';
 
 const dwarvenArmorTable = new LootTable()

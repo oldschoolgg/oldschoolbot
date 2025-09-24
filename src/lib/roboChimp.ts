@@ -4,11 +4,11 @@ import type { TriviaQuestion, User } from '@prisma/robochimp';
 import deepEqual from 'fast-deep-equal';
 import type { Bank } from 'oldschooljs';
 
-import { BOT_TYPE, globalConfig, masteryKey } from '@/lib/constants.js';
 import { getTotalCl } from '@/lib/data/Collections.js';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
+import { BOT_TYPE, globalConfig, masteryKey } from './constants.js';
 import { calculateMastery } from './mastery.js';
 import { cacheRoboChimpUser } from './perkTier.js';
-import { MUserStats } from './structures/MUserStats.js';
 
 export type RobochimpUser = User;
 
@@ -34,8 +34,8 @@ LIMIT 10;`;
 	return random;
 }
 
-const clKey: keyof User = 'bso_cl_percent';
-const levelKey: keyof User = 'bso_total_level';
+const clKey: keyof User = 'osb_cl_percent';
+const levelKey: keyof User = 'osb_total_level';
 const totalXPKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_total_xp' : 'bso_total_xp';
 
 export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
@@ -61,7 +61,7 @@ export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 		})
 	);
 
-	const [totalClItems, clItems] = await getTotalCl(user, 'collection', stats);
+	const [totalClItems, clItems] = getTotalCl(user, 'collection', stats);
 	const clCompletionPercentage = round(calcWhatPercent(clItems, totalClItems), 2);
 	const totalXP = sumArr(Object.values(user.skillsAsXP));
 

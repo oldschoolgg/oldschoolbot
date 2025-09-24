@@ -1,16 +1,15 @@
-import { percentChance, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
-import { gambleCommand } from '../../../src/mahoji/commands/gamble';
-import { createTestUser, mockClient, mockMathRandom } from '../util';
+import { randInt } from '@/lib/util/rng.js';
+import { gambleCommand } from '../../../src/mahoji/commands/gamble.js';
+import { createTestUser, mockClient, mockMathRandom } from '../util.js';
 
 vi.mock('../../../src/lib/util', async () => {
 	const actual: any = await vi.importActual('../../../src/lib/util');
 	return {
 		...actual,
-		cryptoRand: (min: number, max: number) => randInt(min, max),
-		percentChance: (percent: number) => percentChance(percent)
+		cryptoRand: (min: number, max: number) => randInt(min, max)
 	};
 });
 

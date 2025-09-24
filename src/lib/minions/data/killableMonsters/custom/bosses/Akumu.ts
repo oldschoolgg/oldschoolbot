@@ -2,7 +2,7 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID, LootTable, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { MysteryBoxes } from '@/lib/bsoOpenables.js';
+import { MysteryBoxes } from '@/lib/bso/bsoOpenables.js';
 import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import { UncutGemTable } from '@/lib/simulation/sharedTables.js';
 

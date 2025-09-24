@@ -13,36 +13,35 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const OuraniaBuyables = [
 	{
-		item: getOSItem('Master runecrafter hat'),
+		item: Items.getOrThrow('Master runecrafter hat'),
 		cost: 250
 	},
 	{
-		item: getOSItem('Master runecrafter robe'),
+		item: Items.getOrThrow('Master runecrafter robe'),
 		cost: 350
 	},
 	{
-		item: getOSItem('Master runecrafter skirt'),
+		item: Items.getOrThrow('Master runecrafter skirt'),
 		cost: 300
 	},
 	{
-		item: getOSItem('Master runecrafter boots'),
+		item: Items.getOrThrow('Master runecrafter boots'),
 		cost: 200
 	},
 	{
-		item: getOSItem('Elder thread'),
+		item: Items.getOrThrow('Elder thread'),
 		cost: 500
 	},
 	{
-		item: getOSItem('Elder talisman'),
+		item: Items.getOrThrow('Elder talisman'),
 		cost: 350
 	},
 	{
-		item: getOSItem('Magic crate'),
+		item: Items.getOrThrow('Magic crate'),
 		cost: 115
 	}
 ];

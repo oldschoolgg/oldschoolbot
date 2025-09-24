@@ -1,7 +1,7 @@
 import { beforeAll, describe, test } from 'vitest';
 
-import { itemTupleToTable, LootTable, Monsters, SimpleMonster } from '../';
-import { checkThreshold } from './testUtil';
+import { itemTupleToTable, LootTable, Monsters, SimpleMonster } from '../src/index.js';
+import { checkThreshold } from './testUtil.js';
 
 describe('Monsters', () => {
 	const currentMonIDs = new Set();

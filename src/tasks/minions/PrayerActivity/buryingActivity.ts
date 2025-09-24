@@ -1,10 +1,10 @@
-import { percentChance } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import Prayer from '@/lib/skilling/skills/prayer.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { BuryingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { percentChance } from '@/lib/util/rng.js';
 import { zealOutfitBoost } from './offeringActivity.js';
 
 export const buryingTask: MinionTask = {
@@ -45,8 +45,7 @@ export const buryingTask: MinionTask = {
 			user.hasEquipped(['Iron dagger', 'Bronze arrow', 'Iron med helm'], true) &&
 			!user.hasEquippedOrInBank(['Clue hunter garb'])
 		) {
-			await transactItems({
-				userID,
+			await user.transactItems({
 				itemsToAdd: new Bank({ 'Clue hunter garb': 1, 'Clue hunter trousers': 1 }),
 				collectionLog: true
 			});

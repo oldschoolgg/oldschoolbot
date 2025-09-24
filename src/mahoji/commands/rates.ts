@@ -7,11 +7,11 @@ import { unique } from 'remeda';
 
 import {
 	BathhouseOres,
-	BathwaterMixtures,
 	bathHouseTiers,
+	BathwaterMixtures,
 	calculateBathouseResult,
 	durationPerBaxBath
-} from '@/lib/baxtorianBathhouses.js';
+} from '@/lib/bso/baxtorianBathhouses.js';
 import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
 import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '@/lib/bso/divination.js';
 import { calculateTuraelsTrialsInput, TuraelsTrialsMethods } from '@/lib/bso/turaelsTrials.js';
@@ -36,10 +36,10 @@ import { HunterTechniqueEnum } from '@/lib/skilling/types.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { BathhouseTaskOptions } from '@/lib/types/minions.js';
+import { itemNameFromID } from '@/lib/util.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { PeakTier } from '@/lib/util/peaks.js';
-import { itemNameFromID } from '@/lib/util.js';
 import { calculateAgilityResult } from '@/tasks/minions/agilityActivity.js';
 import { calculateDungeoneeringResult } from '@/tasks/minions/bso/dungeoneeringActivity.js';
 import { memoryHarvestResult, totalTimePerRound } from '@/tasks/minions/bso/memoryHarvestActivity.js';

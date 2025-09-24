@@ -5,17 +5,17 @@ import { type Prisma, UserEventType } from '@prisma/client';
 import type { Bank } from 'oldschooljs';
 
 import { allCLItems, allCollectionLogsFlat, calcCLDetails } from '@/lib/data/Collections.js';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
+import { fetchCLLeaderboard } from '@/lib/util/clLeaderboard.js';
+import { insertUserEvent } from '@/lib/util/userEvents.js';
 import { calculateMastery } from './mastery.js';
 import { RawSQL } from './rawSql.js';
 import { calculateOwnCLRanking, roboChimpSyncData } from './roboChimp.js';
-import { MUserStats } from './structures/MUserStats.js';
-import { fetchCLLeaderboard } from './util/clLeaderboard.js';
-import { insertUserEvent } from './util/userEvents.js';
 
 async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataUncheckedCreateInput> {
 	const clStats = calcCLDetails(user);
 	const clRank = await roboChimpClient.$queryRawUnsafe<{ count: number }[]>(roboChimpCLRankQuery(BigInt(user.id)));
-	const { totalMastery, compCapeProgress } = await calculateMastery(user, await MUserStats.fromID(user.id));
+	const { totalMastery } = await calculateMastery(user, await MUserStats.fromID(user.id));
 
 	return {
 		user_id: user.id,
@@ -24,8 +24,6 @@ async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataU
 		cl_completion_percentage: clStats.percent,
 		cl_completion_count: clStats.owned.length,
 		cl_global_rank: Number(clRank[0].count),
-		comp_cape_percent: compCapeProgress.totalPercentTrimmed,
-		comp_cape_percent_untrimmed: compCapeProgress.totalPercentUntrimmed,
 		mastery_percentage: totalMastery
 	};
 }
@@ -69,9 +67,7 @@ export async function handleNewCLItems({
 	const milestonePercentages = [25, 50, 70, 80, 90, 95, 100];
 	for (const milestone of milestonePercentages) {
 		if (previousCLDetails.percent < milestone && newCLDetails.percent >= milestone) {
-			newCLPercentMessage = `${user} just reached ${milestone}% Collection Log completion, after receiving ${newCLItems
-				.toString()
-				.slice(0, 500)}!`;
+			newCLPercentMessage = `${user} just reached ${milestone}% Collection Log completion, after receiving ${newCLItems}!`;
 
 			if (previousCLRank !== newCLRank && newCLRank !== null && previousCLRank !== null) {
 				newCLPercentMessage += ` In the overall CL leaderboard, they went from rank ${previousCLRank} to rank ${newCLRank}.`;

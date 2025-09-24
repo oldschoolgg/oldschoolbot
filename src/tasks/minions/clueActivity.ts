@@ -66,8 +66,7 @@ export const clueTask: MinionTask = {
 			str += `\n\nZippy has found these items for you: ${new Bank(bonusLoot)}`;
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

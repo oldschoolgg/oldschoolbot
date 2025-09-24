@@ -1,8 +1,8 @@
 import { EquipmentSlot, Items } from 'oldschooljs';
 import type { GearStat } from 'oldschooljs/gear';
 
+import { allDyedItems } from '@/lib/bso/dyedItems.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
-import { allDyedItems } from '@/lib/dyedItems.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import { allEquippableItems } from '@/mahoji/lib/mahojiCommandOptions.js';
 

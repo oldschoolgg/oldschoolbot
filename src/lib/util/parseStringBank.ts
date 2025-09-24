@@ -1,10 +1,9 @@
-import { notEmpty } from '@oldschoolgg/toolkit';
 import { evalMathExpression } from '@oldschoolgg/toolkit/math';
-import { cleanString, stringMatches } from '@oldschoolgg/toolkit/util';
+import { cleanString, notEmpty, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank, type Item, Items, itemNameMap } from 'oldschooljs';
 
-import { isDeletedItemName } from '@/lib/customItems/util.js';
 import { filterableTypes } from '@/lib/data/filterables.js';
+import itemIsTradeable from './itemIsTradeable.js';
 
 const { floor, max, min } = Math;
 
@@ -21,10 +20,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 		return parseQuantityAndItem(split.join(' '));
 	}
 
-	let [potentialQty, ...potentialName] = split.length === 1 ? ['', split[0]] : split;
-
-	if (isDeletedItemName(str)) return [];
-	if (!Number.isNaN(Number(potentialQty)) && isDeletedItemName(potentialName.join(' '))) return [];
+	let [potentialQty, ...potentialName] = split.length === 1 ? ['', [split[0]]] : split;
 
 	const lazyItemGet = Items.get(potentialName.join(' ')) ?? Items.get(Number(potentialName.join(' ')));
 	if (str.includes('#') && lazyItemGet && inputBank) {
@@ -103,8 +99,8 @@ function parseBankFromFlags({
 	const itemFilter = filter ? filter.items(user) : undefined;
 	for (const [item, quantity] of bank.items()) {
 		if (maxSize && newBank.length >= maxSize) break;
-		if (flagsKeys.includes('tradeables') && !item.tradeable) continue;
-		if (flagsKeys.includes('untradeables') && item.tradeable) continue;
+		if (flagsKeys.includes('tradeables') && !itemIsTradeable(item.id)) continue;
+		if (flagsKeys.includes('untradeables') && itemIsTradeable(item.id)) continue;
 		if (flagsKeys.includes('equippables') && !item.equipment?.slot) continue;
 		if (
 			flagsKeys.includes('search') &&

@@ -1,17 +1,17 @@
-import { generateCommandInputs, type OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { sumArr, Time } from '@oldschoolgg/toolkit';
+import { generateCommandInputs } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { sumArr, Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import PromiseQueue from 'p-queue';
 import { shuffle } from 'remeda';
 import { expect, test, vi } from 'vitest';
 
-import { getMaxUserValues } from '@/mahoji/commands/testpotato';
-import { allUsableItems } from '@/mahoji/lib/abstracted_commands/useCommand';
-import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
-import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirmation';
-import { allCommands } from '../../src/mahoji/commands/allCommands';
-import { createTestUser, mockClient, TestClient } from './util';
+import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings.js';
+import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirmation.js';
+import { allCommands } from '../../src/mahoji/commands/allCommands.js';
+import { getMaxUserValues } from '../../src/mahoji/commands/testpotato.js';
+import { allUsableItems } from '../../src/mahoji/lib/abstracted_commands/useCommand.js';
+import { createTestUser, mockClient, TestClient } from './util.js';
 
 test(
 	'All Commands Base Test',
@@ -59,9 +59,7 @@ test(
 
 			'simulate',
 			'leagues',
-			'kill',
-			'ic',
-			'rates'
+			'kill'
 		];
 		const commandsToTest = allCommands.filter(c => !ignoredCommands.includes(c.name));
 
@@ -74,8 +72,7 @@ test(
 			['minion', 'daily'],
 			['gamble', 'luckypick'],
 			['gamble', 'duel'],
-			['config', 'toggle'],
-			['gear', 'best_in_slot']
+			['config', 'toggle']
 		];
 
 		const useCommandOptions: Record<string, any>[] = [];
@@ -127,11 +124,6 @@ test(
 			for (const options of allOptions) {
 				queue.add(async () => {
 					try {
-						for (const [cmdName, optName] of ignoredSubCommands) {
-							if (command.name === cmdName && options[optName]) {
-								return;
-							}
-						}
 						const maxUser = await createTestUser(bankWithAllItems, {
 							...(getMaxUserValues() as any),
 							GP: 100_000_000_000

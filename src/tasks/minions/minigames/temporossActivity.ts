@@ -3,7 +3,6 @@ import { calcPerHour } from '@oldschoolgg/toolkit/util';
 
 import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { TemporossActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -13,7 +12,7 @@ export const temporossTask: MinionTask = {
 	async run(data: TemporossActivityTaskOptions) {
 		const { userID, channelID, quantity, rewardBoost, duration } = data;
 		const user = await mUserFetch(userID);
-		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
+		const currentLevel = user.skillsAsLevels.fishing;
 		const { newScore } = await user.incrementMinigameScore('tempoross', quantity);
 
 		let rewardTokens = quantity * 6;
@@ -47,14 +46,13 @@ export const temporossTask: MinionTask = {
 		}
 
 		const xpStr = await user.addXP({
-			skillName: SkillsEnum.Fishing,
+			skillName: 'fishing',
 			amount: fXPtoGive,
 			duration,
 			source: 'Tempoross'
 		});
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

@@ -1,8 +1,8 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { itemID } from 'oldschooljs';
 import { EItem } from 'oldschooljs/EItem';
 
-import { type Burnable, SkillsEnum } from '@/lib/skilling/types.js';
+import type { Burnable } from '@/lib/skilling/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 
 const burnables: Burnable[] = [
 	{
@@ -64,12 +64,6 @@ const burnables: Burnable[] = [
 		level: 90,
 		xp: 350,
 		inputLogs: EItem.REDWOOD_LOGS
-	},
-	{
-		name: 'Elder logs',
-		level: 99,
-		xp: 450,
-		inputLogs: itemID('Elder logs')
 	}
 ];
 

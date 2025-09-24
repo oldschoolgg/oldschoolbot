@@ -6,15 +6,8 @@ import { GearStat, type OffenceGearStat } from 'oldschooljs/gear';
 import type { PvMMethod } from '@/lib/constants.js';
 import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '@/lib/minions/data/combatConstants.js';
-import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
-import { KalphiteKingMonster } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
-import KingGoldemar from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';
-import { NAXXUS_HP, Naxxus } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
-import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus.js';
-import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
-import killableMonsters from '@/lib/minions/data/killableMonsters/low.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import type { AddMonsterXpParams, KillableMonster } from '@/lib/minions/types.js';
-import { NexMonster } from '@/lib/nex.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { XPBank } from '@/lib/structures/XPBank.js';
 
@@ -28,22 +21,14 @@ export const attackStylesArr = [
 export type AttackStyles = (typeof attackStylesArr)[number];
 
 const miscHpMap: Record<number, number> = {
-	3127: 250,
-	46274: 5000,
 	9415: NIGHTMARES_HP,
-	[KingGoldemar.id]: 10_000,
-	[VasaMagus.id]: 3900,
-	[KalphiteKingMonster.id]: 5300,
-	[BSOMonsters.SeaKraken.id]: 5200,
-	[Ignecarus.id]: 10_000,
-	[Naxxus.id]: NAXXUS_HP
+	3127: 250
 };
 
-function meleeOnly(skills: AttackStyles[]): AttackStyles[] {
-	if (skills.some(skill => skill === SkillsEnum.Ranged || skill === SkillsEnum.Magic)) {
-		return [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
-	}
-	return skills;
+interface ResolveAttackStylesParams {
+	boostMethod?: PvMMethod[] | readonly PvMMethod[];
+	attackStyles: AttackStyles[];
+	monster?: KillableMonster;
 }
 
 export function resolveAttackStyles({
@@ -51,13 +36,6 @@ export function resolveAttackStyles({
 	boostMethod,
 	attackStyles: inputAttackStyle
 }: ResolveAttackStylesParams): AttackStyles[] {
-	if (monster?.id === KingGoldemar.id) return meleeOnly(inputAttackStyle);
-	if (monster?.id === VasaMagus.id) return [SkillsEnum.Magic];
-	if (monster?.id === NexMonster.id) return [SkillsEnum.Ranged];
-	if (monster?.id === KalphiteKingMonster.id) return meleeOnly(inputAttackStyle);
-	if (monster?.id === Naxxus.id) {
-		return [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Magic];
-	}
 	// The styles chosen by this user to use.
 	let attackStyles = inputAttackStyle ?? [];
 
@@ -89,12 +67,6 @@ export function resolveAttackStyles({
 		attackStyles = [SkillsEnum.Magic];
 	}
 	return attackStyles;
-}
-
-interface ResolveAttackStylesParams {
-	boostMethod?: PvMMethod[] | readonly PvMMethod[];
-	attackStyles: AttackStyles[];
-	monster?: KillableMonster;
 }
 
 export function addMonsterXPRaw(params: {

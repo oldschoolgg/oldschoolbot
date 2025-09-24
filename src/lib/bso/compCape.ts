@@ -1,7 +1,9 @@
 import { calcWhatPercent, objectEntries, sumArr, toTitleCase } from '@oldschoolgg/toolkit';
 import { tame_growth, type UserStats } from '@prisma/client';
-import { Bank, type ItemBank, ItemGroups, Items, itemID, resolveItems } from 'oldschooljs';
+import { Bank, type ItemBank, ItemGroups, itemID, Items, resolveItems } from 'oldschooljs';
 
+import { kibbleCL } from '@/lib/bso/kibble.js';
+import { tameFeedableItems, TameSpeciesID } from '@/lib/bso/tames.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BitField } from '@/lib/constants.js';
 import {
@@ -138,7 +140,6 @@ import {
 	zulrahCL
 } from '@/lib/data/CollectionsExport.js';
 import { creatablesCL } from '@/lib/data/createables.js';
-import { kibbleCL } from '@/lib/data/kibble.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { slayerMasksHelmsCL } from '@/lib/data/slayerMaskHelms.js';
 import { diaries, diariesObject } from '@/lib/diaries.js';
@@ -161,7 +162,6 @@ import { herbloreCL } from '@/lib/skilling/skills/herblore/mixables/index.js';
 import { smithingCL } from '@/lib/skilling/skills/smithing/smithables/index.js';
 import { slayerUnlockableRewards } from '@/lib/slayer/slayerUnlocks.js';
 import { type RequirementFailure, Requirements } from '@/lib/structures/Requirements.js';
-import { TameSpeciesID, tameFeedableItems } from '@/lib/tames.js';
 import { divinationEnergies } from './divination.js';
 
 const minigameRequirements = new Requirements()

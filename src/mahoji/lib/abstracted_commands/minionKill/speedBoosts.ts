@@ -29,24 +29,23 @@ import { calcPOHBoosts } from '@/lib/poh/index.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { maxOffenceStats } from '@/lib/structures/Gear.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
-import getOSItem from '@/lib/util/getOSItem.js';
+import type { determineIfUsingCannon } from '@/mahoji/lib/abstracted_commands/minionKill/determineIfUsingCannon.js';
+import { dragonHunterWeapons } from '@/mahoji/lib/abstracted_commands/minionKill/minionKillData.js';
 import { resolveAvailableItemBoosts } from '@/mahoji/mahojiSettings.js';
-import { determineIfUsingCannon } from './determineIfUsingCannon.js';
-import { dragonHunterWeapons } from './minionKillData.js';
 import type { MinionKillOptions } from './newMinionKill.js';
 import type { PostBoostEffect } from './postBoostEffects.js';
 import { staticEquippedItemBoosts } from './staticEquippedItemBoosts.js';
 
 const revSpecialWeapons = {
-	melee: getOSItem("Viggora's chainmace"),
-	range: getOSItem("Craw's bow"),
-	mage: getOSItem("Thammaron's sceptre")
+	melee: Items.getOrThrow("Viggora's chainmace"),
+	range: Items.getOrThrow("Craw's bow"),
+	mage: Items.getOrThrow("Thammaron's sceptre")
 } as const;
 
 const revUpgradedWeapons = {
-	melee: getOSItem('Ursine chainmace'),
-	range: getOSItem('Webweaver bow'),
-	mage: getOSItem('Accursed sceptre')
+	melee: Items.getOrThrow('Ursine chainmace'),
+	range: Items.getOrThrow('Webweaver bow'),
+	mage: Items.getOrThrow('Accursed sceptre')
 } as const;
 
 export type CombatMethodOptions = Pick<
@@ -397,7 +396,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 					);
 					if (equippedInThisSet) {
 						degItemBeingUsed.push({
-							item: getOSItem(equippedInThisSet.itemID),
+							item: Items.getOrThrow(equippedInThisSet.itemID),
 							boostPercent: equippedInThisSet.boostPercent
 						});
 					}

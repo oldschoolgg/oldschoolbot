@@ -11,9 +11,9 @@ import { globalConfig } from '@/lib/constants.js';
 import { PATRON_DOUBLE_LOOT_COOLDOWN } from '@/mahoji/commands/tools.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
-import { boxSpawnHandler } from './boxSpawns.js';
+import { boxSpawnHandler } from './bso/boxSpawns.js';
+import { allIronmanMbTables, allMbTables } from './bso/bsoOpenables.js';
 import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from './bso/guthixianCache.js';
-import { allIronmanMbTables, allMbTables } from './bsoOpenables.js';
 import { lastRoboChimpSyncCache } from './cache.js';
 import { customItems } from './customItems/util.js';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot.js';
@@ -27,7 +27,7 @@ import { minionStatsEmbed } from './util/minionStatsEmbed.js';
 const mentionText = `<@${globalConfig.clientID}>`;
 const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
 
-export const tears_of_guthix_cd = Time.Day * 7;
+export const TEARS_OF_GUTHIX_CD = Time.Day * 7;
 
 const cooldownTimers: {
 	name: string;
@@ -39,7 +39,7 @@ const cooldownTimers: {
 	{
 		name: 'Tears of Guthix',
 		timeStamp: (_, stats) => Number(stats.last_tears_of_guthix_timestamp),
-		cd: tears_of_guthix_cd,
+		cd: TEARS_OF_GUTHIX_CD,
 		command: ['minigames', 'tears_of_guthix', 'start'],
 		utcReset: true
 	},

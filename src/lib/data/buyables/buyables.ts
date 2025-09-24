@@ -1,13 +1,13 @@
 import { Bank, ItemGroups, Items } from 'oldschooljs';
 
 import { chompyHats } from '@/lib/data/CollectionsExport.js';
+import { CombatCannonItemBank } from '@/lib/minions/data/combatConstants.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { Skills } from '@/lib/types/index.js';
 import { aerialFishBuyables } from './aerialFishBuyables.js';
-import { bsoBuyables } from './bsoBuyables.js';
 import { canifisClothes } from './canifisClothes.js';
 import { capeBuyables } from './capes.js';
 import { castleWarsBuyables } from './castleWars.js';
@@ -17,7 +17,6 @@ import { gnomeClothes } from './gnomeClothes.js';
 import { guardiansOfTheRiftBuyables } from './guardiansOfTheRifBuyables.js';
 import { mairinsMarketBuyables } from './mairinsMarketBuyables.js';
 import { miningBuyables } from './mining.js';
-import { monkeyRumbleBuyables } from './monkeyRumbleBuyables.js';
 import { godCapes, perduBuyables, prayerBooks } from './perdu.js';
 import { runeBuyables } from './runes.js';
 import { shootingStarsBuyables } from './shootingStarsBuyables.js';
@@ -38,9 +37,11 @@ export interface Buyable {
 	minigameScoreReq?: [MinigameName, number];
 	ironmanPrice?: number;
 	collectionLogReqs?: number[];
-	globalAnnouncementOnFirstBuy?: boolean;
 	customReq?: (user: MUser, userStats: MUserStats) => Promise<[true] | [false, string]>;
 	maxQuantity?: number;
+	quantityPerHour?: number;
+	shopQuantity?: number;
+	changePer?: number;
 }
 
 const randomEventBuyables: Buyable[] = [
@@ -143,29 +144,6 @@ const tobCapes: Buyable[] = [
 		minigameScoreReq: ['tob', 2000]
 	}
 ];
-
-const oceanicShroudsRaw = [
-	['Oceanic shroud (tier 1)', 100],
-	['Oceanic shroud (tier 2)', 250],
-	['Oceanic shroud (tier 3)', 500],
-	['Oceanic shroud (tier 4)', 750],
-	['Oceanic shroud (tier 5)', 1000]
-] as const;
-
-const oceanicShrouds: Buyable[] = [];
-
-for (const [name, kcReq] of oceanicShroudsRaw) {
-	oceanicShrouds.push({
-		name,
-		gpCost: kcReq * 10,
-		customReq: async (user: MUser) => {
-			const minigames = await user.fetchMinigames();
-			return minigames.depths_of_atlantis + minigames.depths_of_atlantis_cm >= kcReq
-				? [true]
-				: [false, `You need ${kcReq} Normal/CM Depths of Atlantis KCs to buy this.`];
-		}
-	});
-}
 
 const cmCapes: Buyable[] = [
 	{
@@ -724,48 +702,31 @@ const questBuyables: Buyable[] = [
 	},
 	{
 		name: 'Dwarf multicannon',
-		outputItems: new Bank({
-			'Cannon barrels': 1,
-			'Cannon base': 1,
-			'Cannon furnace': 1,
-			'Cannon stand': 1
-		}).freeze(),
+		outputItems: CombatCannonItemBank,
 		gpCost: 10_000_000,
 		qpRequired: 5,
 		ironmanPrice: 750_000
 	},
 	{
 		name: 'Cannon barrels',
-		outputItems: new Bank({
-			'Cannon barrels': 1
-		}),
 		gpCost: 2_500_000,
 		qpRequired: 5,
 		ironmanPrice: 200_625
 	},
 	{
 		name: 'Cannon base',
-		outputItems: new Bank({
-			'Cannon base': 1
-		}),
 		gpCost: 2_500_000,
 		qpRequired: 5,
 		ironmanPrice: 200_625
 	},
 	{
 		name: 'Cannon furnace',
-		outputItems: new Bank({
-			'Cannon furnace': 1
-		}),
 		gpCost: 2_500_000,
 		qpRequired: 5,
 		ironmanPrice: 200_625
 	},
 	{
 		name: 'Cannon stand',
-		outputItems: new Bank({
-			'Cannon stand': 1
-		}),
 		gpCost: 2_500_000,
 		qpRequired: 5,
 		ironmanPrice: 200_625
@@ -811,12 +772,6 @@ const noveltyFood: Buyable[] = [
 ];
 
 const Buyables: Buyable[] = [
-	{
-		name: 'Rope',
-		aliases: ['rope'],
-		gpCost: 100,
-		ironmanPrice: 25
-	},
 	{
 		name: 'Rope',
 		aliases: ['rope'],
@@ -891,18 +846,8 @@ const Buyables: Buyable[] = [
 		gpCost: 300
 	},
 	{
-		name: 'Empty bucket pack',
-		outputItems: new Bank({
-			Bucket: 100
-		}),
-		gpCost: 10_000
-	},
-	{
 		name: 'Compost',
-		outputItems: new Bank({
-			Compost: 1
-		}),
-		gpCost: 500
+		gpCost: 400
 	},
 	{
 		name: 'Amylase pack (Mark of grace)',
@@ -925,10 +870,7 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Potato with cheese',
-		outputItems: new Bank({
-			'Potato with cheese': 1
-		}),
-		gpCost: 1666,
+		gpCost: 650,
 		skillsNeeded: {
 			attack: 65,
 			strength: 65
@@ -940,14 +882,7 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Ogre bow',
-		outputItems: new Bank({
-			'Ogre bow': 1
-		}),
 		gpCost: 10_000
-	},
-	{
-		name: "M'speak amulet",
-		gpCost: 100_000
 	},
 	{
 		name: 'Salve amulet',
@@ -961,11 +896,6 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Sandworms',
 		gpCost: 500
-	},
-	{
-		name: 'Festive present',
-		gpCost: 100_000_000,
-		itemCost: new Bank().add('Festive wrapping paper', 10)
 	},
 	{
 		name: 'Granite Body',
@@ -1209,7 +1139,6 @@ const Buyables: Buyable[] = [
 	...capeBuyables,
 	...miningBuyables,
 	...runeBuyables,
-	...bsoBuyables,
 	...randomEventBuyables,
 	...tobCapes,
 	...perduBuyables,
@@ -1218,13 +1147,11 @@ const Buyables: Buyable[] = [
 	...skillCapeBuyables,
 	...aerialFishBuyables,
 	...troubleBrewingBuyables,
-	...monkeyRumbleBuyables,
 	...ironmenBuyables,
 	...shootingStarsBuyables,
 	...guardiansOfTheRiftBuyables,
 	...toaCapes,
 	...mairinsMarketBuyables,
-	...oceanicShrouds,
 	...forestryBuyables,
 	...colossalWyrmAgilityBuyables
 ];
@@ -1242,7 +1169,7 @@ for (const id of ItemGroups.teamCapes) {
 	Buyables.push({
 		name: Items.itemNameFromId(id)!,
 		outputItems: new Bank().add(id),
-		gpCost: 50_000
+		gpCost: 15_000
 	});
 }
 

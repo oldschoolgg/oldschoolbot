@@ -1,4 +1,4 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { randArrItem, randInt, shuffleArr, sumArr, Time } from '@oldschoolgg/toolkit';
 import {
 	type Activity,
 	type activity_type_enum,
@@ -26,38 +26,38 @@ import {
 	type UserStats,
 	type XPGain
 } from '@prisma/client';
-import { deepClone, randArrItem, randInt, shuffleArr, sumArr, Time } from 'e';
-import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
+import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
+import { clone } from 'remeda';
 import { beforeAll, expect, test, vi } from 'vitest';
 
-import { BitField } from '../../src/lib/constants';
-import type { GearSetupType, UserFullGearSetup } from '../../src/lib/gear/types';
-import { trackLoot } from '../../src/lib/lootTrack';
-import type { MinigameName } from '../../src/lib/settings/minigames';
-import type { SkillsEnum } from '../../src/lib/skilling/types';
-import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
-import { assignNewSlayerTask } from '../../src/lib/slayer/slayerUtil';
-import type { Skills } from '../../src/lib/types';
-import { isGroupActivity } from '../../src/lib/util';
-import { gearEquipMultiImpl } from '../../src/lib/util/equipMulti';
-import { findPlant } from '../../src/lib/util/farmingHelpers';
-import getOSItem from '../../src/lib/util/getOSItem';
-import { migrateUser } from '../../src/lib/util/migrateUser';
-import { tradePlayerItems } from '../../src/lib/util/tradePlayerItems';
-import { updateBankSetting } from '../../src/lib/util/updateBankSetting';
-import { pinTripCommand } from '../../src/mahoji/commands/config';
-import { geCommand } from '../../src/mahoji/commands/ge';
-import { createOrEditGearSetup } from '../../src/mahoji/commands/gearpresets';
-import { minionCommand } from '../../src/mahoji/commands/minion';
-import { getPOH, pohWallkitCommand } from '../../src/mahoji/lib/abstracted_commands/pohCommand';
+import { defaultGear, Gear } from '@/lib/structures/Gear.js';
+import { BitField } from '../../src/lib/constants.js';
+import { type GearSetupType, GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types.js';
+import { trackLoot } from '../../src/lib/lootTrack.js';
+import type { MinigameName } from '../../src/lib/settings/minigames.js';
+import type { SkillsEnum } from '../../src/lib/skilling/types.js';
+import { slayerMasters } from '../../src/lib/slayer/slayerMasters.js';
+import { assignNewSlayerTask } from '../../src/lib/slayer/slayerUtil.js';
+import type { Skills } from '../../src/lib/types/index.js';
+import { gearEquipMultiImpl } from '../../src/lib/util/equipMulti.js';
+import { findPlant } from '../../src/lib/util/farmingHelpers.js';
+import { migrateUser } from '../../src/lib/util/migrateUser.js';
+import { tradePlayerItems } from '../../src/lib/util/tradePlayerItems.js';
+import { updateBankSetting } from '../../src/lib/util/updateBankSetting.js';
+import { isGroupActivity } from '../../src/lib/util.js';
+import { pinTripCommand } from '../../src/mahoji/commands/config.js';
+import { geCommand } from '../../src/mahoji/commands/ge.js';
+import { createOrEditGearSetup } from '../../src/mahoji/commands/gearpresets.js';
+import { minionCommand } from '../../src/mahoji/commands/minion.js';
+import { getPOH, pohWallkitCommand } from '../../src/mahoji/lib/abstracted_commands/pohCommand.js';
 import {
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand
-} from '../../src/mahoji/lib/abstracted_commands/stashUnitsCommand';
-import { updateClientGPTrackSetting, userStatsUpdate } from '../../src/mahoji/mahojiSettings';
-import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity';
-import type { TestUser } from './util';
-import { createTestUser, mockClient, mockedId } from './util';
+} from '../../src/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
+import { updateClientGPTrackSetting, userStatsUpdate } from '../../src/mahoji/mahojiSettings.js';
+import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity.js';
+import type { TestUser } from './util.js';
+import { createTestUser, mockClient, mockedId } from './util.js';
 
 interface TestCommand {
 	name: string;
@@ -121,8 +121,12 @@ class UserData {
 
 		this.bank = new Bank(this.mUser.bank);
 		this.clbank = new Bank(this.mUser.cl);
-		this.gear = { ...deepClone(this.mUser.gear) };
-		this.skillsAsLevels = deepClone(this.mUser.skillsAsLevels);
+
+		this.gear = {} as UserFullGearSetup;
+		for (const setupType of GearSetupTypes) {
+			this.gear[setupType] = new Gear(this.mUser.gear[setupType].raw() ?? { ...defaultGear }).clone();
+		}
+		this.skillsAsLevels = clone(this.mUser.skillsAsLevels);
 
 		const robochimpUser = await roboChimpClient.user.findFirst({
 			where: { id: BigInt(this.id) },
@@ -279,11 +283,9 @@ class UserData {
 		if (!this.clbank!.equals(target.clbank!)) {
 			errors.push(`CL's don't match. Difference: ${this.clbank!.remove(target.clbank!)}`);
 		}
-		for (const gearSlot of Object.keys(this.gear!)) {
-			if (
-				this.gear![gearSlot as GearSetupType].toString() !== target.gear![gearSlot as GearSetupType].toString()
-			) {
-				errors.push(`${gearSlot} gear doesn't match`);
+		for (const gearSetup of Object.keys(this.gear!) as GearSetupType[]) {
+			if (!this.gear![gearSetup].equals(target.gear![gearSetup])) {
+				errors.push(`${gearSetup} gear doesn't match`);
 			}
 		}
 
@@ -920,7 +922,7 @@ const allTableCommands: TestCommand[] = [
 			const randomSellItems = ['Shield left half', 'Feather', 'Cannonball', 'Elysian sigil', 'Fire rune'];
 			const itemPrice = randInt(500, 50_000_000);
 			const bankToSell = new Bank();
-			const item = getOSItem(randArrItem(randomSellItems));
+			const item = Items.getOrThrow(randArrItem(randomSellItems));
 			const qty = randInt(1, 10);
 			const totalPrice = itemPrice * qty;
 

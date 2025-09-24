@@ -3,7 +3,7 @@ import type { Prisma } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import type { ItemBank } from 'oldschooljs';
 
-import { BitField } from '@/lib/constants.js';
+import { BitField, DELETED_USER_ID } from '@/lib/constants.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { assert } from '@/lib/util/logError.js';
@@ -27,7 +27,8 @@ export async function ironmanCommand(user: MUser, interaction: ChatInputCommandI
 
 	const bingos = await prisma.bingo.count({
 		where: {
-			creator_id: user.id
+			creator_id: user.id,
+			was_finalized: false
 		}
 	});
 
@@ -114,7 +115,19 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		bitfield: bitFieldsToKeep.filter(i => user.bitfield.includes(i))
 	};
 
+	// Bingo
+	await prisma.user.upsert({
+		where: {
+			id: DELETED_USER_ID
+		},
+		create: { id: DELETED_USER_ID },
+		update: {}
+	});
+	await prisma.bingoParticipant.updateMany({ where: { user_id: user.id }, data: { user_id: DELETED_USER_ID } });
+	await prisma.bingo.updateMany({ where: { creator_id: user.id }, data: { creator_id: DELETED_USER_ID } });
+
 	// Delete tables with foreign keys first:
+	await prisma.bingo.deleteMany({ where: { creator_id: user.id } });
 	await prisma.historicalData.deleteMany({ where: { user_id: user.id } });
 	await prisma.botItemSell.deleteMany({ where: { user_id: user.id } });
 	await prisma.pinnedTrip.deleteMany({ where: { user_id: user.id } });

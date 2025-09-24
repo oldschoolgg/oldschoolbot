@@ -1,11 +1,11 @@
-import { increaseNumByPercent } from 'e';
+import { increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, EItem, ItemGroups } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
-import { MAX_LEVEL } from '@/lib/constants';
-import { fishCommand } from '../../../src/mahoji/commands/fish';
+import { MAX_LEVEL } from '../../../src/lib/constants.js';
+import { fishCommand } from '../../../src/mahoji/commands/fish.js';
 import { XP_MULTIPLIER } from '../../testConstants.js';
-import { createTestUser, mockClient } from '../util';
+import { createTestUser, mockClient } from '../util.js';
 
 describe('Fish Command', async () => {
 	const client = await mockClient();
@@ -75,7 +75,7 @@ describe('Fish Command', async () => {
 		await user.equip('skilling', [EItem.FISH_SACK_BARREL]);
 		expect(user.skillsAsLevels.fishing).toBe(MAX_LEVEL);
 		const res = await user.runCommand(fishCommand, { name: 'shrimps' });
-		expect(res).toContain('+9 trip minutes for having a Fish sack barrel');
+		expect(res).toContain('is now fishing 643x Shrimps');
 	});
 
 	it('should handle using flakes without flakes in bank', async () => {
@@ -98,7 +98,7 @@ describe('Fish Command', async () => {
 		const user = await createTestUser();
 		await user.update({ bank: new Bank({ 'Spirit flakes': 100 }) });
 		const res = await user.runCommand(fishCommand, { name: 'shrimps', flakes: true });
-		expect(res).toContain('is now fishing');
+		expect(res).toContain('is now fishing 251x Shrimps');
 	});
 
 	it('should use fishing bait', async () => {
@@ -119,7 +119,7 @@ describe('Fish Command', async () => {
 		expect(res).toContain('You need Fishing bait');
 	});
 
-	it.skip('should give angler boost', async () => {
+	it('should give angler boost', async () => {
 		const user = await createTestUser();
 		await user.equip('skilling', ItemGroups.anglerOutfit);
 		const startingXP = convertLVLtoXP(80);

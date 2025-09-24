@@ -6,12 +6,9 @@ import { mergeDeep } from 'remeda';
 
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
 import type { GearSetup } from '@/lib/gear/types.js';
-import { transactMaterialsFromUser } from '@/lib/invention/inventions.js';
-import { MaterialBank } from '@/lib/invention/MaterialBank.js';
 import type { MUserClass } from '@/lib/MUser.js';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
 import type { JsonKeys } from '@/lib/util.js';
-import { type ClientBankKey, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 import { ChargeBank, XPBank } from './Bank.js';
 import { KCBank } from './KCBank.js';
 
@@ -19,7 +16,6 @@ export class UpdateBank {
 	// Things removed
 	public chargeBank: ChargeBank = new ChargeBank();
 	public itemCostBank: Bank = new Bank();
-	public materialsCostBank: MaterialBank = new MaterialBank();
 
 	// Things added
 	public itemLootBank: Bank = new Bank();
@@ -33,21 +29,13 @@ export class UpdateBank {
 	public userStatsBankUpdates: Partial<Record<JsonKeys<UserStats>, Bank>> = {};
 	public userUpdates: Pick<Prisma.UserUpdateInput, 'slayer_points'> = {};
 
-	public clientStatsBankUpdates: Partial<Record<ClientBankKey, Bank>> = {};
-
 	public merge(other: UpdateBank) {
 		this.chargeBank.add(other.chargeBank);
 		this.itemCostBank.add(other.itemCostBank);
 		this.itemLootBank.add(other.itemLootBank);
 		this.xpBank.add(other.xpBank);
 		this.kcBank.add(other.kcBank);
-		this.materialsCostBank.add(other.materialsCostBank);
 		this.itemLootBankNoCL.add(other.itemLootBankNoCL);
-
-		for (const [key, value] of objectEntries(other.clientStatsBankUpdates)) {
-			this.clientStatsBankUpdates[key] = (this.clientStatsBankUpdates[key] ?? new Bank()).add(value);
-		}
-
 		for (const [key, value] of objectEntries(other.userStatsBankUpdates)) {
 			this.userStatsBankUpdates[key] = (this.userStatsBankUpdates[key] ?? new Bank()).add(value);
 		}
@@ -64,20 +52,6 @@ export class UpdateBank {
 		this.gearChanges = mergeDeep(this.gearChanges, other.gearChanges);
 		this.userStats = mergeDeep(this.userStats, other.userStats);
 		this.userUpdates = mergeDeep(this.userUpdates, other.userUpdates);
-	}
-
-	async transactWithItemsOrThrow(...args: Parameters<UpdateBank['transact']>) {
-		const res = await this.transact(...args);
-		if (typeof res === 'string') {
-			throw new Error(res);
-		}
-		if (!res.itemTransactionResult) {
-			throw new Error('No item transaction result');
-		}
-		return {
-			...res,
-			itemTransactionResult: res.itemTransactionResult!
-		};
 	}
 
 	async transact(user: MUser, { isInWilderness }: { isInWilderness?: boolean } = { isInWilderness: false }) {
@@ -161,29 +135,8 @@ export class UpdateBank {
 			await user.update(userUpdates);
 		}
 
-		if (this.materialsCostBank.values().length > 0) {
-			await transactMaterialsFromUser({
-				user,
-				remove: this.materialsCostBank
-			});
-		}
-
 		if (this.itemLootBankNoCL.length > 0) {
 			await user.transactItems({ itemsToAdd: this.itemLootBankNoCL, collectionLog: false });
-		}
-
-		if (Object.keys(this.clientStatsBankUpdates).length > 0) {
-			const clientUpdates: Prisma.ClientStorageUpdateInput = {};
-			const keysToSelect = Object.keys(this.clientStatsBankUpdates).reduce(
-				(acc, key) => ({ ...acc, [key]: true }),
-				{} as Record<string, boolean>
-			);
-			const currentStats = await mahojiClientSettingsFetch(keysToSelect);
-			for (const [key, value] of objectEntries(this.clientStatsBankUpdates)) {
-				const newValue = new Bank((currentStats[key] ?? {}) as ItemBank).add(value);
-				clientUpdates[key] = newValue.toJSON();
-			}
-			await mahojiClientSettingsUpdate(clientUpdates);
 		}
 
 		await user.sync();

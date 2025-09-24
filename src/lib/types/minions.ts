@@ -1,15 +1,15 @@
 import type { CropUpgradeType } from '@prisma/client';
 import type { ItemBank } from 'oldschooljs';
 
-import type { BathhouseTierName } from '@/lib/baxtorianBathhouses.js';
+import type { BathhouseTierName } from '@/lib/bso/baxtorianBathhouses.js';
+import type { Kibble } from '@/lib/bso/kibble.js';
+import type { Monkey } from '@/lib/bso/monkeyRumble.js';
 import type { TuraelsTrialsMethod } from '@/lib/bso/turaelsTrials.js';
 import type { NMZStrategy } from '@/lib/constants.js';
-import type { Kibble } from '@/lib/data/kibble.js';
 import type { IMaterialBank, MaterialType } from '@/lib/invention/index.js';
 import type { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
 import type { IPatchData } from '@/lib/minions/farming/types.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
-import type { Monkey } from '@/lib/monkeyRumble.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
 import type { BirdhouseData } from '@/lib/skilling/skills/hunter/defaultBirdHouseTrap.js';
@@ -638,6 +638,13 @@ export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
 	type: 'KourendFavour';
 	favour: string;
 	quantity: number;
+}
+
+export interface BuyActivityTaskOptions extends ActivityTaskOptions {
+	type: 'Buy';
+	itemID: number;
+	quantity: number;
+	totalCost: number;
 }
 
 export interface TokkulShopOptions extends ActivityTaskOptions {

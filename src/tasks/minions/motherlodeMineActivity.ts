@@ -1,4 +1,4 @@
-import { roll, Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
@@ -8,8 +8,9 @@ import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Mining from '@/lib/skilling/skills/mining.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MotherlodeMiningActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { skillingPetDropRate } from '@/lib/util.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { roll } from '@/lib/util/rng.js';
 
 export const motherlodeMiningTask: MinionTask = {
 	type: 'MotherlodeMining',
@@ -143,8 +144,7 @@ export const motherlodeMiningTask: MinionTask = {
 			str += '\n2x nuggets for Mining master cape.';
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

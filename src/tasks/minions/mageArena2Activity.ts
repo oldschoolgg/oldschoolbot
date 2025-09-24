@@ -25,8 +25,7 @@ export const mageArenaTwoTask: MinionTask = {
 		} else {
 			loot = new Bank().add('Imbued saradomin cape').add('Imbued zamorak cape').add('Imbued guthix cape');
 
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});

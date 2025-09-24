@@ -1,32 +1,10 @@
 import { activity_type_enum } from '@prisma/client';
 
+import type { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { agilityTask } from '@/tasks/minions/agilityActivity.js';
 import { alchingTask } from '@/tasks/minions/alchingActivity.js';
-import { bossEventTask } from '@/tasks/minions/bossEventActivity.js';
-import { bathhouseTask } from '@/tasks/minions/bso/bathhousesActivity.js';
-import { bonanzaTask } from '@/tasks/minions/bso/bonanzaActivity.js';
-import { disassemblingTask } from '@/tasks/minions/bso/disassemblingActivity.js';
-import { doaTask } from '@/tasks/minions/bso/doaActivity.js';
-import { dungeoneeringTask } from '@/tasks/minions/bso/dungeoneeringActivity.js';
-import { fishingContestTask } from '@/tasks/minions/bso/fishingContestActivity.js';
-import { fogTask } from '@/tasks/minions/bso/fogActivity.js';
-import { guthixianCacheTask } from '@/tasks/minions/bso/guthixianCacheActivity.js';
-import { ignecarusTask } from '@/tasks/minions/bso/ignecarusActivity.js';
-import { kalphiteKingTask } from '@/tasks/minions/bso/kalphiteKingActivity.js';
-import { kibbleTask } from '@/tasks/minions/bso/kibbleActivity.js';
-import { kingGoldemarTask } from '@/tasks/minions/bso/kingGoldemarActivity.js';
-import { memoryHarvestTask } from '@/tasks/minions/bso/memoryHarvestActivity.js';
-import { moktangTask } from '@/tasks/minions/bso/moktangActivity.js';
-import { mrTask } from '@/tasks/minions/bso/monkeyRumbleActivity.js';
-import { naxxusTask } from '@/tasks/minions/bso/naxxusActivity.js';
-import { nexTask } from '@/tasks/minions/bso/nexActivity.js';
-import { odsTask } from '@/tasks/minions/bso/ouraniaDeliveryServiceActivity.js';
-import { researchActivityTask } from '@/tasks/minions/bso/researchActivity.js';
-import { scTask } from '@/tasks/minions/bso/stealingCreationActivity.js';
-import { twTask } from '@/tasks/minions/bso/tinkeringWorkshopActivity.js';
-import { turaelsTrialsTask } from '@/tasks/minions/bso/turaelsTrialsActivity.js';
-import { vasaTask } from '@/tasks/minions/bso/vasaMagusActivity.js';
 import { butlerTask } from '@/tasks/minions/butlerActivity.js';
+import { buyTask } from '@/tasks/minions/buyActivity.js';
 import { camdozaalFishingTask } from '@/tasks/minions/camdozaalActivity/camdozaalFishingActivity.js';
 import { camdozaalMiningTask } from '@/tasks/minions/camdozaalActivity/camdozaalMiningActivity.js';
 import { camdozaalSmithingTask } from '@/tasks/minions/camdozaalActivity/camdozaalSmithingActivity.js';
@@ -62,15 +40,12 @@ import { championsChallengeTask } from '@/tasks/minions/minigames/championsChall
 import { chompHuntTask } from '@/tasks/minions/minigames/chompyHuntActivity.js';
 import { fightCavesTask } from '@/tasks/minions/minigames/fightCavesActivity.js';
 import { gauntletTask } from '@/tasks/minions/minigames/gauntletActivity.js';
-import { giantsFoundryTask } from '@/tasks/minions/minigames/giantsFoundryActivity.js';
 import { gnomeResTask } from '@/tasks/minions/minigames/gnomeRestaurantActivity.js';
-import { guardiansOfTheRiftTask } from '@/tasks/minions/minigames/guardiansOfTheRiftActivity.js';
 import { infernoTask } from '@/tasks/minions/minigames/infernoActivity.js';
 import { lmsTask } from '@/tasks/minions/minigames/lmsActivity.js';
 import { mageTrainingTask } from '@/tasks/minions/minigames/mageTrainingArenaActivity.js';
 import { mahoganyHomesTask } from '@/tasks/minions/minigames/mahoganyHomesActivity.js';
 import { nightmareTask } from '@/tasks/minions/minigames/nightmareActivity.js';
-import { nightmareZoneTask } from '@/tasks/minions/minigames/nightmareZoneActivity.js';
 import { pestControlTask } from '@/tasks/minions/minigames/pestControlActivity.js';
 import { plunderTask } from '@/tasks/minions/minigames/plunderActivity.js';
 import { puroPuroTask } from '@/tasks/minions/minigames/puroPuroActivity.js';
@@ -95,6 +70,7 @@ import { miningTask } from '@/tasks/minions/miningActivity.js';
 import { monsterTask } from '@/tasks/minions/monsterActivity.js';
 import { motherlodeMiningTask } from '@/tasks/minions/motherlodeMineActivity.js';
 import { myNotesTask } from '@/tasks/minions/myNotesActivity.js';
+import { nexTask } from '@/tasks/minions/nexActivity.js';
 import ouraniaAltarTask from '@/tasks/minions/ouraniaAltarActivity.js';
 import { buryingTask } from '@/tasks/minions/PrayerActivity/buryingActivity.js';
 import { offeringTask } from '@/tasks/minions/PrayerActivity/offeringActivity.js';
@@ -110,11 +86,13 @@ import { specificQuestTask } from '@/tasks/minions/specificQuestActivity.js';
 import { strongholdTask } from '@/tasks/minions/strongholdOfSecurityActivity.js';
 import { tiaraRunecraftTask } from '@/tasks/minions/tiaraRunecraftActivity.js';
 import { tokkulShopTask } from '@/tasks/minions/tokkulShopActivity.js';
-import { underwaterAgilityThievingTask } from '@/tasks/minions/underwaterActivity.js';
 import { vmTask } from '@/tasks/minions/volcanicMineActivity.js';
 import { wealthChargeTask } from '@/tasks/minions/wealthChargingActivity.js';
 import { woodcuttingTask } from '@/tasks/minions/woodcuttingActivity.js';
-import type { handleTripFinish } from './util/handleTripFinish.js';
+import { giantsFoundryTask } from './../tasks/minions/minigames/giantsFoundryActivity.js';
+import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOfTheRiftActivity.js';
+import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneActivity.js';
+import { underwaterAgilityThievingTask } from './../tasks/minions/underwaterActivity.js';
 
 export const allTasks: MinionTask[] = [
 	aerialFishingTask,
@@ -179,6 +157,7 @@ export const allTasks: MinionTask[] = [
 	wealthChargeTask,
 	tokkulShopTask,
 	smeltingTask,
+	nexTask,
 	pickpocketTask,
 	questingTask,
 	monsterTask,
@@ -196,42 +175,19 @@ export const allTasks: MinionTask[] = [
 	tiaraRunecraftTask,
 	nightmareZoneTask,
 	shadesOfMortonTask,
-	nexTask,
-	bathhouseTask,
-	disassemblingTask,
-	fishingContestTask,
-	ignecarusTask,
-	kalphiteKingTask,
-	kibbleTask,
-	kingGoldemarTask,
-	moktangTask,
-	mrTask,
-	naxxusTask,
-	odsTask,
-	researchActivityTask,
-	vasaTask,
-	dungeoneeringTask,
-	fogTask,
-	scTask,
-	bossEventTask,
-	twTask,
 	cutLeapingFishTask,
 	toaTask,
-	bonanzaTask,
 	underwaterAgilityThievingTask,
-	doaTask,
 	strongholdTask,
 	combatRingTask,
 	specificQuestTask,
 	camdozaalMiningTask,
 	camdozaalSmithingTask,
 	camdozaalFishingTask,
-	memoryHarvestTask,
-	guthixianCacheTask,
-	turaelsTrialsTask,
 	myNotesTask,
 	colosseumTask,
-	CreateForestersRationsTask
+	CreateForestersRationsTask,
+	buyTask
 ];
 
 type MinionTaskRunOptions = {
@@ -257,16 +213,9 @@ const ignored: activity_type_enum[] = [
 	activity_type_enum.BirthdayEvent,
 	activity_type_enum.BlastFurnace,
 	activity_type_enum.Easter,
-	activity_type_enum.HalloweenMiniMinigame,
-	activity_type_enum.TrickOrTreat,
-	activity_type_enum.BossEvent,
 	activity_type_enum.HalloweenEvent,
-	activity_type_enum.BirthdayCollectIngredients,
-	activity_type_enum.HalloweenEvent,
-	activity_type_enum.Mortimer,
 	activity_type_enum.Revenants,
-	activity_type_enum.KourendFavour,
-	activity_type_enum.SnoozeSpellActive
+	activity_type_enum.KourendFavour
 ];
 for (const a of Object.values(activity_type_enum)) {
 	if (ignored.includes(a)) {
@@ -274,6 +223,6 @@ for (const a of Object.values(activity_type_enum)) {
 	}
 	const t = allTasks.find(i => i.type === a);
 	if (!t) {
-		console.log(`Missing ${a} task`);
+		throw new Error(`Missing ${a} task`);
 	}
 }

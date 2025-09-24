@@ -1,10 +1,9 @@
-import type { ItemBank } from 'oldschooljs';
+import { type ItemBank, Items } from 'oldschooljs';
 
 import { ActivityGroup, globalConfig } from '@/lib/constants.js';
 import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { taskGroupFromActivity } from '@/lib/util/taskGroupFromActivity.js';
 import { sql } from './postgres.js';
-import { getItem } from './util/getOSItem.js';
 
 async function calculateMinionTaskCounts() {
 	const minionTaskCounts: Record<ActivityGroup, number> = {
@@ -50,8 +49,8 @@ SELECT
 FROM users;
 `;
 
-	const artifact = getItem('Magical artifact')!;
-	const statuette = getItem('Demon statuette')!;
+	const artifact = Items.getOrThrow('Magical artifact')!;
+	const statuette = Items.getOrThrow('Demon statuette')!;
 
 	const economyBank = (
 		(await sql`

@@ -159,7 +159,7 @@ export async function volcanicMineCommand(user: MUser, channelID: string, gameQu
 		return `You don't have all the required supplies for this number of games. You need ${suppliesUsage} for ${gameQuantity} games of Volcanic Mine.`;
 	}
 
-	await transactItems({ userID: user.id, itemsToRemove: suppliesUsage });
+	await user.transactItems({ itemsToRemove: suppliesUsage });
 
 	if (user.usingPet('Doug')) {
 		boosts.push('20% more Mining XP for having Doug helping you!');
@@ -216,8 +216,7 @@ export async function volcanicMineShopCommand(
 	if (shopItem.clOnly) {
 		await user.addItemsToCollectionLog(new Bank().add(shopItem.output).multiply(quantity));
 	} else {
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: shopItem.addToCl === true,
 			itemsToAdd: new Bank().add(shopItem.output).multiply(quantity)
 		});

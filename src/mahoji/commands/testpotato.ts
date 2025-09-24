@@ -1,13 +1,15 @@
 import { noOp, randArrItem, randInt, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { type Prisma, tame_growth, xp_gains_skill_enum } from '@prisma/client';
+import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { type Prisma, xp_gains_skill_enum } from '@prisma/client';
 import { ApplicationCommandOptionType, MessageFlags, type User } from 'discord.js';
-import { Bank, getItem, Items, itemID, MAX_INT_JAVA, resolveItems } from 'oldschooljs';
+import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
 
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
-import { BitFieldData, globalConfig, MAX_XP } from '@/lib/constants.js';
+import { BitFieldData, globalConfig } from '@/lib/constants.js';
+import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '@/lib/data/cox.js';
+import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '@/lib/data/tob.js';
 import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
@@ -18,16 +20,14 @@ import { allOpenables } from '@/lib/openables.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { getFarmingInfo } from '@/lib/skilling/functions/getFarmingInfo.js';
 import Farming from '@/lib/skilling/skills/farming/index.js';
-import Skills from '@/lib/skilling/skills/index.js';
+import { Skills } from '@/lib/skilling/skills/index.js';
 import { slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';
 import { Gear } from '@/lib/structures/Gear.js';
-import { TameSpeciesID, tameFeedableItems } from '@/lib/tames.js';
 import type { FarmingPatchName } from '@/lib/util/farmingHelpers.js';
 import { farmingPatchNames, getFarmingKeyFromName, userGrowingProgressStr } from '@/lib/util/farmingHelpers.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { logError } from '@/lib/util/logError.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
 import { userEventToStr } from '@/lib/util/userEvents.js';
@@ -38,12 +38,11 @@ import { BingoManager } from '@/mahoji/lib/bingo/BingoManager.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 import { testBotKvStore } from '@/testing/TestBotStore.js';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo.js';
-import { tameEquippables } from './tames.js';
 
 export function getMaxUserValues() {
 	const updates: Omit<Prisma.UserUpdateArgs['data'], 'id'> = {};
 	for (const skill of Object.values(xp_gains_skill_enum)) {
-		updates[`skills_${skill}`] = MAX_XP - 50_000_000;
+		updates[`skills_${skill}`] = convertLVLtoXP(99);
 	}
 	return {
 		QP: MAX_QP,
@@ -62,7 +61,7 @@ export async function giveMaxStats(user: MUser) {
 }
 
 const coloMelee = new Gear();
-for (const gear of resolveItems([
+for (const gear of Items.resolveItems([
 	'Torva full helm',
 	'Infernal cape',
 	'Amulet of blood fury',
@@ -72,11 +71,11 @@ for (const gear of resolveItems([
 	'Ultor ring',
 	'Scythe of vitur'
 ])) {
-	coloMelee.equip(getOSItem(gear));
+	coloMelee.equip(Items.getOrThrow(gear));
 }
 
 const coloRange = new Gear();
-for (const gear of resolveItems([
+for (const gear of Items.resolveItems([
 	"Dizana's quiver",
 	'Masori mask (f)',
 	'Necklace of anguish',
@@ -87,10 +86,16 @@ for (const gear of resolveItems([
 	'Dragon arrow',
 	'Twisted bow'
 ])) {
-	coloRange.equip(getOSItem(gear));
+	coloRange.equip(Items.getOrThrow(gear));
 }
 
 const gearPresets = [
+	{
+		name: 'Cox',
+		melee: COXMaxMeleeGear,
+		mage: COXMaxMageGear,
+		range: COXMaxRangeGear
+	},
 	{
 		name: 'ToB',
 		melee: TOBMaxMeleeGear,
@@ -174,6 +179,9 @@ farmingPreset.add('Ultracompost', 10_000);
 const usables = new Bank();
 for (const usable of allUsableItems) usables.add(usable, 100);
 
+const leaguesPreset = new Bank();
+for (const a of leaguesCreatables) leaguesPreset.add(a.outputItems);
+
 const allStashUnitItems = new Bank();
 for (const unit of allStashUnitsFlat) {
 	for (const i of [unit.items].flat(2)) {
@@ -224,6 +232,7 @@ const spawnPresets = [
 	['equippables', equippablesBank],
 	['farming', farmingPreset],
 	['usables', usables],
+	['leagues', leaguesPreset],
 	['stashunits', allStashUnitItems],
 	['potions', potionsPreset],
 	['food', foodPreset],
@@ -300,9 +309,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							name: 'skill',
 							description: 'The skill.',
 							required: true,
-							choices: Object.values(Skills)
-								.map(s => ({ name: s.name, value: s.id }))
-								.slice(0, 25)
+							choices: Object.values(Skills).map(s => ({ name: s.name, value: s.id }))
 						},
 						{
 							type: ApplicationCommandOptionType.Integer,
@@ -823,70 +830,6 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 							}
 						}
 					});
-					// Tames at each growth stage without items
-					await Promise.all(
-						Object.entries(TameSpeciesID)
-							.filter(([, value]) => typeof value === 'number')
-							.flatMap(([speciesName, speciesID]) =>
-								(Object.keys(tame_growth) as Array<keyof typeof tame_growth>).map(async stageKey => {
-									const stage = tame_growth[stageKey];
-									const prefix = stageKey;
-									const nickname = `${prefix}_${speciesName.toLowerCase()}`;
-
-									await prisma.tame.create({
-										data: {
-											user_id: user.id,
-											species_id: speciesID as number,
-											max_artisan_level: 100,
-											max_combat_level: 100,
-											max_gatherer_level: 100,
-											max_support_level: 100,
-											growth_stage: stage,
-											nickname
-										}
-									});
-								})
-							)
-					);
-					// Max tames with max items
-					await Promise.all(
-						Object.entries(TameSpeciesID)
-							.filter(([, value]) => typeof value === 'number')
-							.map(async ([speciesName, speciesID]) => {
-								const nickname = `Max_adult_${speciesName.toLowerCase()}`;
-								const feedItems = tameFeedableItems
-									.filter(feedItem =>
-										feedItem.tameSpeciesCanBeFedThis.includes(speciesID as TameSpeciesID)
-									)
-									.reduce(
-										(acc, feedItem) => {
-											acc[feedItem.item.id] = 1;
-											return acc;
-										},
-										{} as Record<number, number>
-									);
-
-								await prisma.tame.create({
-									data: {
-										user_id: user.id,
-										species_id: speciesID as number,
-										max_artisan_level: 100,
-										max_combat_level: 100,
-										max_gatherer_level: 100,
-										max_support_level: 100,
-										growth_stage: tame_growth.adult,
-										nickname,
-										fed_items: feedItems
-									}
-								});
-							})
-					);
-					// Add all tame gear to users bank
-					for (const tameGear of tameEquippables) {
-						await user.addItemsToBank({
-							items: new Bank().add(tameGear.item, 1)
-						});
-					}
 					await user.addItemsToBank({
 						items: new Bank()
 							.add('Rune pouch')
@@ -938,14 +881,14 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 						finished_quest_ids: quests.map(q => q.id)
 					});
 					await giveMaxStats(user);
-					return 'Fully maxed your account, stocked your bank, charged all chargeable items, spawned tames & gear.';
+					return 'Fully maxed your account, stocked your bank, charged all chargeable items.';
 				}
 				if (options.gear) {
 					const gear = gearPresets.find(i => stringMatches(i.name, options.gear?.thing))!;
 
 					for (const type of ['melee', 'range', 'mage'] as const) {
 						const currentGear = gear[type];
-						if (currentGear.ammo && getItem(currentGear.ammo.item)?.stackable) {
+						if (currentGear.ammo && Items.getItem(currentGear.ammo.item)?.stackable) {
 							currentGear.ammo.quantity = 10000;
 						}
 					}
@@ -986,7 +929,7 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 					}
 					if (item) {
 						try {
-							bankToGive.add(getOSItem(item).id);
+							bankToGive.add(Items.getOrThrow(item).id);
 						} catch (err) {
 							return err as string;
 						}

@@ -1,20 +1,19 @@
-import { calcWhatPercent, noOp, objectEntries, sumArr } from '@oldschoolgg/toolkit';
+import { noOp, objectEntries } from '@oldschoolgg/toolkit';
 import { cleanUsername } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import type { Prisma, User } from '@prisma/client';
-import { bold, type Guild, userMention } from 'discord.js';
-import { type Bank, calcCombatLevel, convertXPtoLVL, type Monster, Monsters } from 'oldschooljs';
+import { type Guild, userMention } from 'discord.js';
+import { calcCombatLevel, convertXPtoLVL } from 'oldschooljs';
 
-import { BitField, globalConfig, MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
 import type { SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
-import type { Skills } from '@/lib/types/index.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
 import { usernameWithBadgesCache } from './cache.js';
+import { BitField, globalConfig, MAX_LEVEL, MAX_XP } from './constants.js';
 import type { MUserClass } from './MUser.js';
-import type { GearBank } from './structures/GearBank.js';
+import type { Skills } from './types/index.js';
 import type { GroupMonsterActivityTaskOptions } from './types/minions.js';
-import { makeBadgeString } from './util/makeBadgeString.js';
-import { itemNameFromID } from './util/smallUtils.js';
-import { sendToChannelID } from './util/webhook.js';
 
 // @ts-expect-error ignore
 BigInt.prototype.toJSON = function () {
@@ -32,10 +31,6 @@ export function getSupportGuild(): Guild | null {
 	return guild;
 }
 
-export function calcTotalLevel(skills: Skills) {
-	return sumArr(Object.values(skills));
-}
-
 export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 	for (const [skillName, level] of objectEntries(requirements)) {
 		if ((skillName as string) === 'combat') {
@@ -47,49 +42,6 @@ export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 		}
 	}
 	return true;
-}
-
-export function getMonster(str: string): Monster {
-	const mon = Monsters.find(_m => _m.name === str);
-
-	if (!mon) {
-		throw new Error(`Invalid monster name given: ${str}`);
-	}
-	return mon;
-}
-
-export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: number[]) {
-	const result = [];
-	let uniquesReceived = 0;
-	for (const [item, qty] of bank.items().sort((a, b) => a[1] - b[1])) {
-		if (uniques.includes(item.id)) {
-			uniquesReceived += qty;
-		}
-		const rate = Math.round(iterations / qty);
-		if (rate < 2) continue;
-		let { name } = item;
-		if (uniques.includes(item.id)) name = bold(name);
-		result.push(`${qty}x ${name} (1 in ${rate})`);
-	}
-	result.push(
-		`\n**${uniquesReceived}x Uniques (1 in ${Math.round(iterations / uniquesReceived)} which is ${calcWhatPercent(
-			uniquesReceived,
-			iterations
-		)}%)**`
-	);
-	return result.join(', ');
-}
-
-export function convertPercentChance(percent: number) {
-	return (1 / (percent / 100)).toFixed(1);
-}
-
-export function ISODateString(date?: Date) {
-	return (date ?? new Date()).toISOString().slice(0, 10);
-}
-
-export function moidLink(items: number[]) {
-	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
 }
 
 export function skillingPetDropRate(
@@ -201,5 +153,3 @@ export async function adminPingLog(message: string) {
 		allowedMentions: { users: globalConfig.adminUserIDs }
 	}).catch(noOp);
 }
-
-export { itemNameFromID };

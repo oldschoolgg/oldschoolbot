@@ -1,6 +1,7 @@
 import type { Prisma } from '@prisma/client';
 import { Bank, type ItemBank } from 'oldschooljs';
 
+import { deduplicateClueScrolls } from '@/lib/clues/clueUtils.js';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
 import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
 import { filterLootReplace } from '@/lib/slayer/slayerUtil.js';
@@ -19,12 +20,7 @@ export interface TransactItemsArgs {
 	otherUpdates?: Prisma.UserUpdateArgs['data'];
 }
 
-declare global {
-	var transactItems: typeof transactItemsFromBank;
-}
-
-global.transactItems = transactItemsFromBank;
-async function transactItemsFromBank({
+export async function transactItemsFromBank({
 	userID,
 	collectionLog = false,
 	filterLoot = true,
@@ -106,6 +102,8 @@ async function transactItemsFromBank({
 			}
 			newBank.remove(itemsToRemove);
 		}
+
+		deduplicateClueScrolls(newBank);
 
 		const { newUser } = await mahojiUserSettingsUpdate(userID, {
 			bank: newBank.toJSON(),

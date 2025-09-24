@@ -1,7 +1,6 @@
 import type { Creature } from '@/lib/skilling/types.js';
 import birdSnaringCreatures from './birdSnaring.js';
 import boxTrappingCreatures from './boxTrapping.js';
-import customBSOCreatures from './bso.js';
 import butterflyNettingCreatures from './butterflyNetting.js';
 import deadfallTrappingCreatures from './deadfallTrapping.js';
 import falconryCreatures from './falconry.js';
@@ -21,8 +20,7 @@ const creatures: Creature[] = [
 	...netTrappingCreatures,
 	...pitfallTrappingCreatures,
 	...rabbitSnaringCreatures,
-	...trackingCreatures,
-	...customBSOCreatures
+	...trackingCreatures
 ];
 
 export default creatures;

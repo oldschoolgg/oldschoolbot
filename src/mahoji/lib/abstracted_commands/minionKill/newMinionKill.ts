@@ -1,12 +1,12 @@
 import { increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/datetime';
 import type { PlayerOwnedHouse } from '@prisma/client';
-import { EItem, Items, itemID, Monsters } from 'oldschooljs';
+import { EItem, itemID, Items, Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import z from 'zod';
 
 import { YETI_ID } from '@/lib/bso/bsoConstants.js';
-import { BitField, type PvMMethod } from '@/lib/constants.js';
+import { BitField, PvMMethod } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { checkRangeGearWeapon } from '@/lib/gear/functions/checkRangeGearWeapon.js';
 import type { InventionID } from '@/lib/invention/inventions.js';

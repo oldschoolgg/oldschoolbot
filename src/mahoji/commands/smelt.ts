@@ -1,4 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, itemID, resolveItems } from 'oldschooljs';
@@ -168,7 +168,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			cost.add('Coins', coinsToRemove);
 		}
 
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 		updateBankSetting('smithing_cost', cost);
 
 		await addSubTaskToActivityTask<SmeltingActivityTaskOptions>({

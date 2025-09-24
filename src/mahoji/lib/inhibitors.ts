@@ -8,7 +8,7 @@ import { type PartialUser, partialUserCache, perkTierCache, untrustedGuildSettin
 import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, globalConfig } from '@/lib/constants.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
 import { mahojiGuildSettingsFetch } from '@/mahoji/guildSettings.js';
-import { Cooldowns } from './Cooldowns.js';
+import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 
 interface Inhibitor {
 	name: string;

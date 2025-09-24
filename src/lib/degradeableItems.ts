@@ -1,11 +1,10 @@
 import { percentChance, Time } from '@oldschoolgg/toolkit';
-import { Bank, type Item, itemID, type Monster } from 'oldschooljs';
+import { Bank, type Item, itemID, Items, type Monster } from 'oldschooljs';
 
 import type { GearSetupType, PrimaryGearSetupType } from './gear/types.js';
 import type { KillableMonster } from './minions/types.js';
 import type { ChargeBank } from './structures/Banks.js';
 import type { GearBank } from './structures/GearBank.js';
-import getOSItem from './util/getOSItem.js';
 import { assert } from './util/logError.js';
 import { updateBankSetting } from './util/updateBankSetting.js';
 
@@ -69,7 +68,7 @@ interface RefundResult {
 
 export const degradeableItems: DegradeableItem[] = [
 	{
-		item: getOSItem('Abyssal tentacle'),
+		item: Items.getOrThrow('Abyssal tentacle'),
 		settingsKey: 'tentacle_charges',
 		itemsToRefundOnBreak: new Bank().add('Kraken tentacle').freeze(),
 		refundVariants: [],
@@ -82,12 +81,12 @@ export const degradeableItems: DegradeableItem[] = [
 		emoji: '<:Abyssal_tentacle:1068551359755989033>'
 	},
 	{
-		item: getOSItem('Sanguinesti staff'),
+		item: Items.getOrThrow('Sanguinesti staff'),
 		settingsKey: 'sang_charges',
 		itemsToRefundOnBreak: new Bank().add('Sanguinesti staff (uncharged)').freeze(),
 		refundVariants: [
 			{
-				variant: getOSItem('Holy sanguinesti staff'),
+				variant: Items.getOrThrow('Holy sanguinesti staff'),
 				refund: new Bank().add('Holy sanguinesti staff (uncharged)').freeze()
 			}
 		],
@@ -97,11 +96,11 @@ export const degradeableItems: DegradeableItem[] = [
 			cost: new Bank().add('Blood rune', 3).freeze(),
 			charges: 1
 		},
-		unchargedItem: getOSItem('Sanguinesti staff (uncharged)'),
+		unchargedItem: Items.getOrThrow('Sanguinesti staff (uncharged)'),
 		convertOnCharge: true
 	},
 	{
-		item: getOSItem('Void staff'),
+		item: Items.getOrThrow('Void staff'),
 		settingsKey: 'void_staff_charges',
 		itemsToRefundOnBreak: new Bank().add('Void staff (u)'),
 		setup: 'mage',
@@ -111,12 +110,12 @@ export const degradeableItems: DegradeableItem[] = [
 			charges: 1
 		},
 		convertOnCharge: true,
-		unchargedItem: getOSItem('Void staff (u)'),
+		unchargedItem: Items.getOrThrow('Void staff (u)'),
 		emoji: '<:Sanguinesti_staff_uncharged:455403545298993162>',
 		refundVariants: []
 	},
 	{
-		item: getOSItem('Celestial ring'),
+		item: Items.getOrThrow('Celestial ring'),
 		settingsKey: 'celestial_ring_charges',
 		itemsToRefundOnBreak: new Bank().add('Celestial ring (uncharged)').freeze(),
 		refundVariants: [],
@@ -126,12 +125,12 @@ export const degradeableItems: DegradeableItem[] = [
 			cost: new Bank().add('Stardust', 10).freeze(),
 			charges: 10
 		},
-		unchargedItem: getOSItem('Celestial ring (uncharged)'),
+		unchargedItem: Items.getOrThrow('Celestial ring (uncharged)'),
 		convertOnCharge: true,
 		emoji: '<:Celestial_ring:1068551362587132084>'
 	},
 	{
-		item: getOSItem('Ash sanctifier'),
+		item: Items.getOrThrow('Ash sanctifier'),
 		settingsKey: 'ash_sanctifier_charges',
 		itemsToRefundOnBreak: new Bank().add('Ash sanctifier').freeze(),
 		refundVariants: [],
@@ -141,11 +140,11 @@ export const degradeableItems: DegradeableItem[] = [
 			cost: new Bank().add('Death rune', 1).freeze(),
 			charges: 10
 		},
-		unchargedItem: getOSItem('Ash sanctifier'),
+		unchargedItem: Items.getOrThrow('Ash sanctifier'),
 		emoji: '<:Ash_sanctifier:1068551364168405032>'
 	},
 	{
-		item: getOSItem('Serpentine helm'),
+		item: Items.getOrThrow('Serpentine helm'),
 		settingsKey: 'serp_helm_charges',
 		itemsToRefundOnBreak: new Bank().add('Serpentine helm (uncharged)').freeze(),
 		refundVariants: [],
@@ -155,12 +154,12 @@ export const degradeableItems: DegradeableItem[] = [
 			cost: new Bank().add("Zulrah's scales").freeze(),
 			charges: 1
 		},
-		unchargedItem: getOSItem('Serpentine helm (uncharged)'),
+		unchargedItem: Items.getOrThrow('Serpentine helm (uncharged)'),
 		convertOnCharge: true,
 		emoji: '<:Serpentine_helm:1068491236123619379>'
 	},
 	{
-		item: getOSItem('Amulet of blood fury'),
+		item: Items.getOrThrow('Amulet of blood fury'),
 		settingsKey: 'blood_fury_charges',
 		itemsToRefundOnBreak: new Bank().add('Amulet of fury').freeze(),
 		refundVariants: [],
@@ -170,12 +169,12 @@ export const degradeableItems: DegradeableItem[] = [
 			cost: new Bank().add('Blood shard').freeze(),
 			charges: 10_000
 		},
-		unchargedItem: getOSItem('Amulet of fury'),
+		unchargedItem: Items.getOrThrow('Amulet of fury'),
 		convertOnCharge: true,
 		emoji: '<:Amulet_of_blood_fury:1068491286530752562>'
 	},
 	{
-		item: getOSItem("Tumeken's shadow"),
+		item: Items.getOrThrow("Tumeken's shadow"),
 		settingsKey: 'tum_shadow_charges',
 		itemsToRefundOnBreak: new Bank().add("Tumeken's shadow (uncharged)").freeze(),
 		refundVariants: [],
@@ -185,12 +184,12 @@ export const degradeableItems: DegradeableItem[] = [
 			cost: new Bank().add('Soul rune', 2).add('Chaos rune', 5).freeze(),
 			charges: 1
 		},
-		unchargedItem: getOSItem("Tumeken's shadow (uncharged)"),
+		unchargedItem: Items.getOrThrow("Tumeken's shadow (uncharged)"),
 		convertOnCharge: true,
 		emoji: '<:Tumekens_shadow:1068491239302901831>'
 	},
 	{
-		item: getOSItem('Blood essence (active)'),
+		item: Items.getOrThrow('Blood essence (active)'),
 		settingsKey: 'blood_essence_charges',
 		itemsToRefundOnBreak: new Bank().freeze(),
 		refundVariants: [],
@@ -203,7 +202,7 @@ export const degradeableItems: DegradeableItem[] = [
 		emoji: ''
 	},
 	{
-		item: getOSItem('Trident of the swamp'),
+		item: Items.getOrThrow('Trident of the swamp'),
 		settingsKey: 'trident_charges',
 		itemsToRefundOnBreak: new Bank().add('Uncharged toxic trident').freeze(),
 		refundVariants: [],
@@ -213,21 +212,21 @@ export const degradeableItems: DegradeableItem[] = [
 			cost: new Bank().add('Death rune').add('Chaos rune').add('Fire rune', 5).add("Zulrah's scales").freeze(),
 			charges: 1
 		},
-		unchargedItem: getOSItem('Uncharged toxic trident'),
+		unchargedItem: Items.getOrThrow('Uncharged toxic trident'),
 		convertOnCharge: true,
 		emoji: '🔱'
 	},
 	{
-		item: getOSItem('Scythe of vitur'),
+		item: Items.getOrThrow('Scythe of vitur'),
 		settingsKey: 'scythe_of_vitur_charges',
 		itemsToRefundOnBreak: new Bank().add('Scythe of vitur (uncharged)').freeze(),
 		refundVariants: [
 			{
-				variant: getOSItem('Holy scythe of vitur'),
+				variant: Items.getOrThrow('Holy scythe of vitur'),
 				refund: new Bank().add('Holy scythe of vitur (uncharged)').freeze()
 			},
 			{
-				variant: getOSItem('Sanguine scythe of vitur'),
+				variant: Items.getOrThrow('Sanguine scythe of vitur'),
 				refund: new Bank().add('Sanguine scythe of vitur (uncharged)').freeze()
 			}
 		],
@@ -237,12 +236,12 @@ export const degradeableItems: DegradeableItem[] = [
 			cost: new Bank().add('Blood rune', 200).add('Vial of blood').freeze(),
 			charges: 100
 		},
-		unchargedItem: getOSItem('Scythe of vitur (uncharged)'),
+		unchargedItem: Items.getOrThrow('Scythe of vitur (uncharged)'),
 		convertOnCharge: true,
 		emoji: ''
 	},
 	{
-		item: getOSItem('Venator bow'),
+		item: Items.getOrThrow('Venator bow'),
 		settingsKey: 'venator_bow_charges',
 		itemsToRefundOnBreak: new Bank().add('Venator bow (uncharged)').freeze(),
 		refundVariants: [],
@@ -252,7 +251,7 @@ export const degradeableItems: DegradeableItem[] = [
 			cost: new Bank().add('Ancient essence', 1).freeze(),
 			charges: 1
 		},
-		unchargedItem: getOSItem('Venator bow (uncharged)'),
+		unchargedItem: Items.getOrThrow('Venator bow (uncharged)'),
 		convertOnCharge: true,
 		emoji: ''
 	}
@@ -260,49 +259,49 @@ export const degradeableItems: DegradeableItem[] = [
 
 export const degradeablePvmBoostItems: DegradeableItemPVMBoost[] = [
 	{
-		item: getOSItem("Tumeken's shadow"),
+		item: Items.getOrThrow("Tumeken's shadow"),
 		degradeable: degradeableItems.find(di => di.item.id === itemID("Tumeken's shadow"))!,
 		attackStyle: 'mage',
 		charges: ({ totalHP }) => totalHP / 40,
 		boost: 6
 	},
 	{
-		item: getOSItem('Sanguinesti staff'),
+		item: Items.getOrThrow('Sanguinesti staff'),
 		degradeable: degradeableItems.find(di => di.item.id === itemID('Sanguinesti staff'))!,
 		attackStyle: 'mage',
 		charges: ({ totalHP }) => totalHP / 25,
 		boost: 5
 	},
 	{
-		item: getOSItem('Trident of the swamp'),
+		item: Items.getOrThrow('Trident of the swamp'),
 		degradeable: degradeableItems.find(di => di.item.id === itemID('Trident of the swamp'))!,
 		attackStyle: 'mage',
 		charges: ({ totalHP }) => totalHP / 40,
 		boost: 3
 	},
 	{
-		item: getOSItem('Scythe of vitur'),
+		item: Items.getOrThrow('Scythe of vitur'),
 		degradeable: degradeableItems.find(di => di.item.id === itemID('Scythe of vitur'))!,
 		attackStyle: 'melee',
 		charges: ({ totalHP }) => totalHP / 40,
 		boost: 5
 	},
 	{
-		item: getOSItem('Abyssal tentacle'),
+		item: Items.getOrThrow('Abyssal tentacle'),
 		degradeable: degradeableItems.find(di => di.item.id === itemID('Abyssal tentacle'))!,
 		attackStyle: 'melee',
 		charges: ({ totalHP }) => totalHP / 20,
 		boost: 3
 	},
 	{
-		item: getOSItem('Venator bow'),
+		item: Items.getOrThrow('Venator bow'),
 		degradeable: degradeableItems.find(di => di.item.id === itemID('Venator bow'))!,
 		attackStyle: 'range',
 		charges: ({ totalHP }) => totalHP / 25,
 		boost: 3
 	},
 	{
-		item: getOSItem('Void staff'),
+		item: Items.getOrThrow('Void staff'),
 		degradeable: degradeableItems.find(di => di.item.id === itemID('Void staff'))!,
 		attackStyle: 'mage',
 		boost: 8,
@@ -318,7 +317,7 @@ export const degradeablePvmBoostItems: DegradeableItemPVMBoost[] = [
 		}
 	},
 	{
-		item: getOSItem('Amulet of blood fury'),
+		item: Items.getOrThrow('Amulet of blood fury'),
 		degradeable: degradeableItems.find(di => di.item.id === itemID('Amulet of blood fury'))!,
 		attackStyle: 'melee',
 		charges: ({ totalHP }) => totalHP / 25,
@@ -407,7 +406,7 @@ export async function degradeItem({
 			});
 			// Give the user the uncharged version of their charged item.
 			await user.addItemsToBank({ items: refundItems, collectionLog: false });
-		} else if (hasInBank) {
+		} else if (hasInBank && degItem.itemsToRefundOnBreak) {
 			// If its in bank, just remove 1 from bank.
 			let itemsToAdd;
 			if (degItem.itemsToRefundOnBreak) {

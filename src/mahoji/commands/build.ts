@@ -1,10 +1,9 @@
 import { reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/invention/inventions.js';
+import { inventionBoosts, InventionID, inventionItemBoost } from '@/lib/invention/inventions.js';
 import Constructables from '@/lib/skilling/skills/construction/constructables.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { ConstructionActivityTaskOptions } from '@/lib/types/minions.js';
@@ -160,7 +159,7 @@ export const buildCommand: OSBMahojiCommand = {
 		cost.add('Coins', gpNeeded);
 		if (!user.owns(cost)) return `You don't own: ${cost}.`;
 
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 
 		updateBankSetting('construction_cost_bank', cost);
 

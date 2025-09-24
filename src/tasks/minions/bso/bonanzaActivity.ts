@@ -1,13 +1,13 @@
 import { calcPercentOfNum, calcWhatPercent, clamp, randArrItem, randInt, roll, shuffleArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
+import { getAllUserTames, TameSpeciesID } from '@/lib/bso/tames.js';
+import { tameName } from '@/lib/bso/tameUtil.js';
 import { MAX_LEVEL } from '@/lib/constants.js';
 import { spectatorClothes } from '@/lib/data/CollectionsExport.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
-import { getAllUserTames, TameSpeciesID } from '@/lib/tames.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { tameName } from '@/lib/util/tameUtil.js';
 
 function calcXP(user: MUser, duration: number, skill: SkillsEnum) {
 	return calcPercentOfNum(calcWhatPercent(user.skillLevel(skill), MAX_LEVEL), duration / 80);

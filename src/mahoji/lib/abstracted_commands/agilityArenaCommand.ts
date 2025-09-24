@@ -1,6 +1,6 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
 import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
@@ -8,7 +8,6 @@ import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import getOSItem from '@/lib/util/getOSItem.js';
 import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 const plainGraceful = new Bank({
@@ -148,7 +147,7 @@ export async function agilityArenaBuyCommand(user: MUser, input: string, qty = 1
 			itemsToAdd.add(buyable.output);
 			itemsToRemove.add(buyable.input).add('Brimhaven voucher', cost);
 		} else {
-			itemsToAdd.add(getOSItem(buyable.name), qty);
+			itemsToAdd.add(Items.getOrThrow(buyable.name), qty);
 			itemsToRemove.add('Brimhaven voucher', cost);
 		}
 		await user.transactItems({
@@ -176,7 +175,7 @@ export async function agilityArenaXPCommand(user: MUser, qty: number): CommandRe
 	const xpToGive = (hasKaramjaMed ? 379.5 : 345) * qty;
 
 	const str = `Redeemed ${qty}x Agility arena tickets for ${xpToGive.toLocaleString()} Agility XP. (${(xpToGive / qty).toFixed(2)} ea)`;
-	await transactItems({ userID: user.id, itemsToRemove: new Bank().add('Agility arena ticket', qty) });
+	await user.transactItems({ itemsToRemove: new Bank().add('Agility arena ticket', qty) });
 	await user.addXP({
 		skillName: SkillsEnum.Agility,
 		amount: xpToGive,

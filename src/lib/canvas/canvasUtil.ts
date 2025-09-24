@@ -19,9 +19,10 @@ export function createCanvas(width: number, height: number) {
 }
 
 export type Canvas = ReturnType<typeof createCanvas>;
-export type { CanvasContext };
 export const CanvasImage = Image;
 export type CanvasImage = Image;
+
+export type { CanvasContext };
 
 export function fillTextXTimesInCtx(ctx: CanvasContext, text: string, x: number, y: number) {
 	const textPath = ctx.outlineText(text);

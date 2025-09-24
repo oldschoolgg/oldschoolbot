@@ -42,7 +42,7 @@ export type FinishWorkerReturn = Promise<
 
 const maxThreads = 1;
 
-let dirName = __dirname.replace(path.join('src', 'lib'), path.join('dist', 'lib'));
+let dirName = import.meta.dirname.replace(path.join('src', 'lib'), path.join('dist', 'lib'));
 if (dirName.endsWith('dist')) {
 	dirName = resolve(dirName, 'lib', 'workers');
 }
@@ -67,5 +67,8 @@ const casketWorker = new Piscina({
 export const Workers = {
 	casketOpen: (args: CasketWorkerArgs): Promise<[ItemBank, string]> => casketWorker.run(args),
 	kill: (args: KillWorkerArgs): KillWorkerReturn => killWorker.run(args),
-	finish: (args: FinishWorkerArgs): FinishWorkerReturn => finishWorker.run(args)
+	finish: (args: FinishWorkerArgs): FinishWorkerReturn => finishWorker.run(args),
+	destroyAll: async () => {
+		return Promise.all([finishWorker.destroy(), killWorker.destroy(), casketWorker.destroy()]);
+	}
 };

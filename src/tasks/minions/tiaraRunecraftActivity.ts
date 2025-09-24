@@ -27,8 +27,7 @@ export const tiaraRunecraftTask: MinionTask = {
 
 		str += `\n\nYou received: ${loot}.`;
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

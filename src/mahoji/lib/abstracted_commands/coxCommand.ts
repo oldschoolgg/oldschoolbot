@@ -16,8 +16,8 @@ import {
 import { degradeItem } from '@/lib/degradeableItems.js';
 import {
 	canAffordInventionBoost,
-	InventionID,
 	inventionBoosts,
+	InventionID,
 	inventionItemBoost
 } from '@/lib/invention/inventions.js';
 import { trackLoot } from '@/lib/lootTrack.js';

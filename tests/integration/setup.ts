@@ -1,11 +1,11 @@
-import '../globalSetup';
-import '../../src/lib/globals';
-import '../../src/lib/util/transactItemsFromBank';
-import '../../src/lib/ActivityManager';
-import './mocks';
+import '../globalSetup.js';
+import '../../src/lib/globals.js';
+import '../../src/lib/util/transactItemsFromBank.js';
+import '../../src/lib/ActivityManager.js';
+import './mocks.js';
 
+import { noOp } from '@oldschoolgg/toolkit/util';
 import { PrismaClient } from '@prisma/client';
-import { noOp } from 'e';
 import { beforeEach, vi } from 'vitest';
 
 if (!roboChimpClient) {

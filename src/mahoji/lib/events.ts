@@ -1,15 +1,15 @@
 import type { ItemBank } from 'oldschooljs';
 
 import { startBlacklistSyncing } from '@/lib/blacklists.js';
+import { syncSlayerMaskLeaderboardCache } from '@/lib/bso/slayerMaskLeaderboard.js';
 import { usernameWithBadgesCache } from '@/lib/cache.js';
 import { badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { initCrons } from '@/lib/crons.js';
 import { syncDoubleLoot } from '@/lib/doubleLoot.js';
 import { initTickers } from '@/lib/tickers.js';
-import { mahojiClientSettingsFetch } from '@/lib/util/clientSettings.js';
-import { syncSlayerMaskLeaderboardCache } from '@/lib/util/slayerMaskLeaderboard.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 import { logWrapFn } from '@/lib/util.js';
+import { mahojiClientSettingsFetch } from '@/lib/util/clientSettings.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
 import { CUSTOM_PRICE_CACHE } from '@/mahoji/commands/sell.js';
 
 export async function syncCustomPrices() {

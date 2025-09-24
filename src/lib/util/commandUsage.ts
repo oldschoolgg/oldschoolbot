@@ -1,5 +1,5 @@
 import { isObject } from '@oldschoolgg/toolkit';
-import type { AbstractCommand, CommandOptions, MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
+import type { CommandOptions, MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import type { command_name_enum, Prisma } from '@prisma/client';
 
 function isMahojiUserOption(data: any): data is MahojiUserOption {
@@ -85,15 +85,4 @@ export function makeCommandUsage({
 		inhibited,
 		continue_delta_millis: continueDeltaMillis
 	};
-}
-
-const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
-export function shouldTrackCommand(command: AbstractCommand, args: CommandOptions) {
-	if (!Array.isArray(args)) return true;
-	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
-		if (command.name === name && typeof args[0] === 'string' && subs.includes(args[0])) {
-			return false;
-		}
-	}
-	return true;
 }

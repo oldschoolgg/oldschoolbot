@@ -1,9 +1,10 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { itemID } from 'oldschooljs';
 
-import { type Ash, type Bone, SkillsEnum } from '@/lib/skilling/types.js';
+import type { Ash, Bone } from '@/lib/skilling/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 
-export const bones: Bone[] = [
+const bones: Bone[] = [
 	{
 		name: 'Bones',
 		level: 1,
@@ -123,24 +124,6 @@ export const bones: Bone[] = [
 		level: 70,
 		xp: 150,
 		inputId: itemID('Superior dragon bones')
-	},
-	{
-		name: 'Abyssal dragon bones',
-		level: 99,
-		xp: 250,
-		inputId: itemID('Abyssal dragon bones')
-	},
-	{
-		name: 'Frost dragon bones',
-		level: 80,
-		xp: 165,
-		inputId: itemID('Frost dragon bones')
-	},
-	{
-		name: 'Royal dragon bones',
-		level: 99,
-		xp: 250,
-		inputId: itemID('Royal dragon bones')
 	}
 ];
 
@@ -174,12 +157,6 @@ export const ashes: Ash[] = [
 		level: 1,
 		xp: 110,
 		inputId: itemID('Infernal ashes')
-	},
-	{
-		name: 'Nightmarish ashes',
-		level: 1,
-		xp: 965,
-		inputId: itemID('Nightmarish ashes')
 	}
 ];
 

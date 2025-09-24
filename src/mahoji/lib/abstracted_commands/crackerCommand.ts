@@ -3,9 +3,16 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { ChatInputCommandInteraction, User } from 'discord.js';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { partyHatTableRoll } from '@/lib/data/holidayItems.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
+
+const HatTable = new LootTable()
+	.add('Red partyhat', 1, 32)
+	.add('Yellow partyhat', 1, 28)
+	.add('White partyhat', 1, 23)
+	.add('Green partyhat', 1, 20)
+	.add('Blue partyhat', 1, 15)
+	.add('Purple partyhat', 1, 10);
 
 const JunkTable = new LootTable()
 	.add('Chocolate bar', 1, 1 / 5.2)
@@ -31,17 +38,7 @@ export async function crackerCommand({
 }) {
 	const otherPerson = await mUserFetch(otherPersonID);
 	const owner = await mUserFetch(ownerID);
-	if (owner.isIronman && owner.id === otherPerson.id) {
-		if (!owner.owns('Christmas cracker')) {
-			return "You don't have any Christmas crackers!";
-		}
-		await owner.removeItemsFromBank(new Bank().add('Christmas cracker', 1));
-		const loot = partyHatTableRoll();
-		await owner.addItemsToBank({ items: loot, collectionLog: true });
-		return `${Emoji.ChristmasCracker} ${owner} pulled a Christmas cracker with... yourself? You received ${loot}.`;
-	}
-
-	if (otherPerson.isIronman) return 'That person is an ironman, they stand alone.';
+	if (otherPerson.user.minion_ironman) return 'That person is an ironman, they stand alone.';
 	if (otherPersonAPIUser.bot) return "Bot's don't have hands.";
 	if (otherPerson.id === owner.id) return 'Nice try.';
 
@@ -55,7 +52,7 @@ export async function crackerCommand({
 	);
 
 	await owner.removeItemsFromBank(new Bank().add('Christmas cracker', 1));
-	const winnerLoot = partyHatTableRoll();
+	const winnerLoot = HatTable.roll();
 	const loserLoot = JunkTable.roll();
 	const [winner, loser] = shuffleArr([otherPerson, owner]);
 	await winner.addItemsToBank({ items: winnerLoot, collectionLog: true });

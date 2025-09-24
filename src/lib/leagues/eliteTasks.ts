@@ -1,6 +1,7 @@
 import { sumArr } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
 
+import { tameFeedableItems, TameSpeciesID } from '@/lib/bso/tames.js';
 import {
 	abyssalDragonCL,
 	all3rdAgeItems,
@@ -38,7 +39,6 @@ import { SunMoonMonsters } from '@/lib/minions/data/killableMonsters/custom/SunM
 import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
 import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
 import { ashes } from '@/lib/skilling/skills/prayer.js';
-import { TameSpeciesID, tameFeedableItems } from '@/lib/tames.js';
 import { calcTotalLevel } from '@/lib/util.js';
 import { eggs } from '@/mahoji/commands/offer.js';
 import { leaguesHasCatches, leaguesHasKC, type Task } from './leaguesUtils.js';
