@@ -1,9 +1,9 @@
 import { alphabeticalSort } from '@oldschoolgg/toolkit/util';
 import { expect, it } from 'vitest';
 
-import { BOT_TYPE } from '../../src/lib/constants';
-import { allCLItemsFiltered, allCollectionLogsFlat } from '../../src/lib/data/Collections';
-import { itemNameFromID } from '../../src/lib/util/smallUtils';
+import { BOT_TYPE } from '../../src/lib/constants.js';
+import { allCLItemsFiltered, allCollectionLogsFlat } from '../../src/lib/data/Collections.js';
+import { itemNameFromID } from '../../src/lib/util/smallUtils.js';
 
 it(`${BOT_TYPE} Overall Collection Log Items`, () => {
 	expect(

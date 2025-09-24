@@ -2,7 +2,7 @@ import { promises as fsPromises } from 'node:fs';
 import { type Item, Items } from 'oldschooljs';
 import { loadImage } from 'skia-canvas';
 
-import type { CanvasImage } from '@/lib/canvas/canvasUtil';
+import type { CanvasImage } from '@/lib/canvas/canvasUtil.js';
 
 interface TransmogItem {
 	item: Item;

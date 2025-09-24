@@ -1,13 +1,11 @@
-import { randInt } from 'e';
 import { Bank, EItem, type Item } from 'oldschooljs';
 
 import { checkDegradeableItemCharges, degradeItem } from '../../lib/degradeableItems';
-import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries';
-import Herblore from '../../lib/skilling/skills/herblore/herblore';
-import type { HerbloreActivityTaskOptions } from '../../lib/types/minions';
-import getOSItem from '../../lib/util/getOSItem';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { percentChance } from '../../lib/util/rng';
+import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
+import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
+import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { percentChance, randInt } from '@/lib/util/rng.js';
 
 export const herbloreTask: MinionTask = {
 	type: 'Herblore',
@@ -95,7 +93,7 @@ export const herbloreTask: MinionTask = {
 			loot.add(mixableItem.item.id, outputQuantity);
 		}
 
-		await transactItems({ userID: user.id, collectionLog: true, itemsToAdd: loot });
+		await user.transactItems({ collectionLog: true, itemsToAdd: loot });
 
 		let completionMessage = `${user}, ${user.minionName} finished making ${outputQuantity}x ${mixableItem.item.name}.`;
 		if (chemistryMessages.length > 0) {

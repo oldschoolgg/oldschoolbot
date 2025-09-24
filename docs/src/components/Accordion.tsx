@@ -13,7 +13,7 @@ const Accordion = ({ type = 'single', children, className, ...props }: Accordion
 		<div className={className} {...props}>
 			{React.Children.map(children, child => {
 				if (React.isValidElement(child)) {
-					// @ts-ignore
+					// @ts-expect-error
 					return React.cloneElement(child, {
 						...(type === 'single' && { name: accordionName })
 					});
@@ -37,7 +37,7 @@ const AccordionItem = ({ className, children, name, defaultOpen, title, ...props
 	return (
 		<details
 			className="group hover:border-orange-300/40! pr-4"
-			// @ts-ignore
+			// @ts-expect-error
 			defaultOpen={defaultOpen}
 			{...props}
 			style={{

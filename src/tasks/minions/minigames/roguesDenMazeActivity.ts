@@ -1,9 +1,9 @@
-import { randInt } from 'e';
 import { Bank, ItemGroups } from 'oldschooljs';
 
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { randInt } from '@/lib/util/rng.js';
 
 function getLowestCountOutfitPiece(bank: Bank): number {
 	let lowestCountPiece = 0;
@@ -47,8 +47,7 @@ export const roguesDenTask: MinionTask = {
 			str += `\n**${user.minionName} failed to find any Rogue outfit pieces!**`;
 		}
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

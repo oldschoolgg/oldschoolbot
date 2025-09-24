@@ -1,11 +1,11 @@
-import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { formatList } from '@/lib/util/smallUtils';
-import { chompyHats } from '../../../lib/data/CollectionsExport';
-import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { chompyHats } from '@/lib/data/CollectionsExport.js';
+import { userhasDiaryTier, WesternProv } from '@/lib/diaries.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { roll } from '@/lib/util/rng.js';
+import { formatList } from '@/lib/util/smallUtils.js';
 
 export const chompHuntTask: MinionTask = {
 	type: 'BigChompyBirdHunting',
@@ -28,8 +28,7 @@ export const chompHuntTask: MinionTask = {
 			}
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

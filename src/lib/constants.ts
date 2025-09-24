@@ -3,12 +3,12 @@ import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { AbstractCommand, CommandOptions } from '@oldschoolgg/toolkit/discord-util';
-import { PerkTier, dateFm } from '@oldschoolgg/toolkit/util';
+import { dateFm, PerkTier } from '@oldschoolgg/toolkit/util';
 import * as dotenv from 'dotenv';
 import { resolveItems } from 'oldschooljs';
 import { z } from 'zod';
 
-import { SkillsEnum } from './skilling/types';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 
 export { PerkTier };
 

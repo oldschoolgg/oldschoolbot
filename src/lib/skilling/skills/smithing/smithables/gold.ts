@@ -1,7 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { itemID } from 'oldschooljs';
 
-import type { SmithedItem } from '../../../types';
+import type { SmithedItem } from '@/lib/skilling/types.js';
 
 const Gold: SmithedItem[] = [
 	{

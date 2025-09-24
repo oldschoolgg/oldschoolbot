@@ -1,10 +1,10 @@
 import { Bank } from 'oldschooljs';
 import { expect, it } from 'vitest';
 
-import { BOT_TYPE } from '../../src/lib/constants';
-import Buyables from '../../src/lib/data/buyables/buyables';
-import Createables from '../../src/lib/data/createables';
-import { mockMUser } from './userutil';
+import { BOT_TYPE } from '../../src/lib/constants.js';
+import Buyables from '../../src/lib/data/buyables/buyables.js';
+import Createables from '../../src/lib/data/createables.js';
+import { mockMUser } from './userutil.js';
 
 it(`${BOT_TYPE} Creatables`, () => {
 	const result = Createables.map(i => ({

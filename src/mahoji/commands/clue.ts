@@ -1,29 +1,22 @@
-import {
-	type CommandResponse,
-	type CommandRunOptions,
-	formatDuration,
-	isWeekend,
-	stringMatches
-} from '@oldschoolgg/toolkit/util';
+import { notEmpty, randInt, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, isWeekend, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, notEmpty, randInt } from 'e';
-import { Bank, type ItemBank } from 'oldschooljs';
+import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import type { ClueTier } from '../../lib/clues/clueTiers';
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import { BitField, MAX_CLUES_DROPPED } from '../../lib/constants';
-import { allOpenables, getOpenableLoot } from '../../lib/openables';
-import { getPOHObject } from '../../lib/poh';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { ClueActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { getItem } from '../../lib/util/getOSItem';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { getParsedStashUnits } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
-import { getPOH } from '../lib/abstracted_commands/pohCommand';
-import { addToOpenablesScores, getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { BitField, MAX_CLUES_DROPPED } from '@/lib/constants.js';
+import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
+import { getPOHObject } from '@/lib/poh/index.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
+import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
+import { addToOpenablesScores, getMahojiBank, mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export const clueTierBoosts: Record<
 	ClueTier['name'],
@@ -272,7 +265,7 @@ export const clueCommand: OSBMahojiCommand = {
 					.map(i => i.implings)
 					.filter(notEmpty)
 					.flat()
-					.map(getItem)
+					.map(id => Items.get(id))
 					.filter(notEmpty);
 				const bank = getMahojiBank(await mahojiUsersSettingsFetch(user.id, { bank: true }));
 				const hasClueImps = allClueImps.filter(imp => bank.has(imp.id));
@@ -298,7 +291,7 @@ export const clueCommand: OSBMahojiCommand = {
 		const maxTripLength = calcMaxTripLength(user, 'ClueCompletion');
 
 		const clueImpling = options.implings
-			? getItem(/^[0-9]+$/.test(options.implings) ? Number(options.implings) : options.implings)
+			? Items.get(/^[0-9]+$/.test(options.implings) ? Number(options.implings) : options.implings)
 			: null;
 
 		if (options.implings) {

@@ -1,8 +1,8 @@
 import { Bank, itemID } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
-import { roboChimpSyncData } from '../../src/lib/roboChimp';
-import { createTestUser } from './util';
+import { roboChimpSyncData } from '../../src/lib/roboChimp.js';
+import { createTestUser } from './util.js';
 
 test('CL Updates', async () => {
 	const user = await createTestUser();

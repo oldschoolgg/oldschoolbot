@@ -54,5 +54,3 @@ export function returnStringOrFile(string: string | InteractionReplyOptions): Aw
 	}
 	return string;
 }
-
-export type { CommandResponse, CommandRunOptions, OSBMahojiCommand };

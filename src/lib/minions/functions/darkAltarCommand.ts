@@ -1,26 +1,25 @@
+import { increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
-import { Bank, SkillsEnum } from 'oldschooljs';
+import { Bank, Items, SkillsEnum } from 'oldschooljs';
 
-import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
-import { KourendKebosDiary, userhasDiaryTier } from '../../diaries';
-import type { DarkAltarOptions } from '../../types/minions';
-import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../util/calcMaxTripLength';
-import getOSItem from '../../util/getOSItem';
-import { hasSkillReqs } from '../../util/smallUtils';
-import { updateBankSetting } from '../../util/updateBankSetting';
+import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import type { DarkAltarOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export const darkAltarRunes = {
 	soul: {
-		item: getOSItem('Soul rune'),
+		item: Items.getOrThrow('Soul rune'),
 		baseTime: Time.Second * 2.2,
 		xp: 19.6,
 		level: 90,
 		petChance: 782_999
 	},
 	blood: {
-		item: getOSItem('Blood rune'),
+		item: Items.getOrThrow('Blood rune'),
 		baseTime: Time.Second * 2.2,
 		xp: 17.2,
 		level: 77,
@@ -37,7 +36,12 @@ export async function darkAltarCommand({
 	channelID,
 	name,
 	extracts
-}: { user: MUser; channelID: string; name: string; extracts?: boolean }) {
+}: {
+	user: MUser;
+	channelID: string;
+	name: string;
+	extracts?: boolean;
+}) {
 	const stats = user.skillsAsLevels;
 	if (!['blood', 'soul'].includes(name.toLowerCase().split(' ')[0])) return 'Invalid rune.';
 	const [hasReqs, neededReqs] = hasSkillReqs(user, {

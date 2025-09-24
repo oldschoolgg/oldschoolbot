@@ -1,14 +1,13 @@
-import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { chunk } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { chunk } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
-import { leagueBuyables } from '../../lib/data/leaguesBuyables';
-import { roboChimpUserFetch } from '../../lib/roboChimp';
-import { getUsername } from '../../lib/util';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { doMenu } from './leaderboard';
+import { leagueBuyables } from '@/lib/data/leaguesBuyables.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { getUsername } from '@/lib/util.js';
+import { doMenu } from './leaderboard.js';
 
 const leaguesTrophiesBuyables = [
 	{
@@ -141,8 +140,7 @@ ${leaguesTrophiesBuyables
 			});
 
 			const loot = new Bank().add(item.item.id, quantity);
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				itemsToAdd: loot,
 				collectionLog: true
 			});

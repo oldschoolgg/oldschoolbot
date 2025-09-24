@@ -1,7 +1,7 @@
-import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import type { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
+import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { NightmareZoneActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const nightmareZoneTask: MinionTask = {
 	type: 'NightmareZone',

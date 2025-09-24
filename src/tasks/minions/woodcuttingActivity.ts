@@ -1,21 +1,21 @@
+import { objectEntries, percentChance, randInt, Time } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { perTimeUnitChance } from '@oldschoolgg/toolkit/util';
-import { Time, objectEntries, percentChance, randInt } from 'e';
 import { Bank, EItem } from 'oldschooljs';
 
-import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
-import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
-import { eggNest } from '../../lib/simulation/birdsNest';
-import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
-import { ForestryEvents, LeafTable } from '../../lib/skilling/skills/woodcutting/forestry';
-import Woodcutting, { type TwitcherGloves } from '../../lib/skilling/skills/woodcutting/woodcutting';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { rollForMoonKeyHalf } from '../../lib/util/minionUtils';
-import { roll } from '../../lib/util/rng';
-import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { MediumSeedPackTable } from '@/lib/data/seedPackTables.js';
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import { eggNest } from '@/lib/simulation/birdsNest.js';
+import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
+import { ForestryEvents, LeafTable } from '@/lib/skilling/skills/woodcutting/forestry.js';
+import Woodcutting, { type TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { rollForMoonKeyHalf } from '@/lib/util/minionUtils.js';
+import { roll } from '@/lib/util/rng.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 async function handleForestry({ user, duration, loot }: { user: MUser; duration: number; loot: Bank }) {
 	const eventCounts: { [key: number]: number } = {};
@@ -347,8 +347,7 @@ export const woodcuttingTask: MinionTask = {
 		}`;
 
 		// Update cl, give loot, and remove items used
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot,
 			itemsToRemove

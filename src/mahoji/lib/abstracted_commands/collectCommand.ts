@@ -2,14 +2,14 @@ import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
-import { WildernessDiary, userhasDiaryTier } from '../../../lib/diaries';
-import type { SkillsEnum } from '../../../lib/skilling/types';
-import type { CollectingOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { collectables } from '../collectables';
-import { getPOH } from './pohCommand';
+import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
+import type { SkillsEnum } from '@/lib/skilling/types.js';
+import type { CollectingOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { collectables } from '@/mahoji/lib/collectables.js';
+import { getPOH } from './pohCommand.js';
 
 export async function collectCommand(
 	user: MUser,
@@ -78,7 +78,7 @@ export async function collectCommand(
 		if (!user.owns(cost)) {
 			return `You don't have the items needed for this trip, you need: ${cost}.`;
 		}
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 
 		await updateBankSetting('collecting_cost', cost);
 	}

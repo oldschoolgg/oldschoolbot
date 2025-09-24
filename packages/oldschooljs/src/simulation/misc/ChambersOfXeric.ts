@@ -1,13 +1,11 @@
-import { Time, randFloat, roll, shuffleArr, sumArr } from 'e';
-
-import type { ItemBank, LootBank } from '../../meta/types';
-import Bank from '../../structures/Bank';
-import LootTable from '../../structures/LootTable';
-import Minigame from '../../structures/Minigame';
-import SimpleTable from '../../structures/SimpleTable';
-import { resolveNameBank } from '../../util/bank';
-import itemID from '../../util/itemID';
-import { JSONClone } from '../../util/util';
+import { Bank, type ItemBank, type LootBank } from '@/structures/Bank.js';
+import LootTable from '@/structures/LootTable.js';
+import Minigame from '@/structures/Minigame.js';
+import SimpleTable from '@/structures/SimpleTable.js';
+import { resolveNameBank } from '@/util/bank.js';
+import itemID from '@/util/itemID.js';
+import { randFloat, roll, shuffleArr, sumArr, Time } from '@/util/smallUtils.js';
+import { JSONClone } from '@/util/util.js';
 
 export interface TeamMember {
 	id: string;

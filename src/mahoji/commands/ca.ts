@@ -1,19 +1,19 @@
-import { type CommandRunOptions, type OSBMahojiCommand, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { calcWhatPercent, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { buildCombatAchievementsResult } from '../../lib/combat_achievements/caUtils';
-import type { CombatAchievement } from '../../lib/combat_achievements/combatAchievements';
+import { buildCombatAchievementsResult } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
 import {
-	CombatAchievements,
 	allCAMonsterNames,
 	allCombatAchievementTasks,
+	CombatAchievements,
 	caToPlayerString,
 	nextCATier
-} from '../../lib/combat_achievements/combatAchievements';
-import { Requirements } from '../../lib/structures/Requirements';
-import { deferInteraction } from '../../lib/util/interactionReply';
+} from '@/lib/combat_achievements/combatAchievements.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
 
 const viewTypes = ['all', 'incomplete', 'complete'] as const;
 

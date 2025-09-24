@@ -1,13 +1,12 @@
-import { Time, roll } from 'e';
-import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
-
+import { roll, Time } from '@oldschoolgg/toolkit';
+import { Bank, deepResolveItems, itemID, Monsters, resolveItems, SkillsEnum } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
-import { BitField } from '../../../../../../src/lib/constants';
-import { corporealBeastCL, muspahCL } from '../../../../data/CollectionsExport';
-import { SkillsEnum } from '../../../../skilling/types';
-import { Gear } from '../../../../structures/Gear';
-import type { KillableMonster } from '../../../types';
-import { QuestID } from '../../quests';
+
+import { BitField } from '@/lib/constants.js';
+import { corporealBeastCL, muspahCL } from '@/lib/data/CollectionsExport.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { Gear } from '@/lib/structures/Gear.js';
 
 const killableBosses: KillableMonster[] = [
 	{

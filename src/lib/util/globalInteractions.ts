@@ -1,24 +1,24 @@
+import { removeFromArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { Giveaway } from '@prisma/client';
 import { RateLimitManager } from '@sapphire/ratelimits';
 import type { ButtonInteraction, Interaction } from 'discord.js';
-import { Time, removeFromArr, uniqueArr } from 'e';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { cancelGEListingCommand } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
-import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
-import { InteractionID } from '../InteractionID';
-import { giveawayCache } from '../cache.js';
-import type { ClueTier } from '../clues/clueTiers';
-import { BitField, PerkTier } from '../constants';
-import { runCommand } from '../settings/settings';
-import { updateGiveawayMessage } from './giveaway';
-import { interactionReply } from './interactionReply';
-import { isValidGlobalInteraction } from './interactions';
-import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
+import { giveawayCache } from '@/lib/cache.js';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import { BitField, PerkTier } from '@/lib/constants.js';
+import { InteractionID } from '@/lib/InteractionID.js';
+import { runCommand } from '@/lib/settings/settings.js';
+import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
+import { autoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
+import { shootingStarsCommand, starCache } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
+import { updateGiveawayMessage } from './giveaway.js';
+import { interactionReply } from './interactionReply.js';
+import { isValidGlobalInteraction } from './interactions.js';
+import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip.js';
 
 const buttonRatelimiter = new RateLimitManager(Time.Second * 2, 1);
 

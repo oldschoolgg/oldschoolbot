@@ -1,5 +1,5 @@
+import { notEmpty, randArrItem, roll } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { notEmpty, randArrItem, roll } from 'e';
 import {
 	Bank,
 	BeginnerCasket,
@@ -9,18 +9,18 @@ import {
 	EliteMimicTable,
 	HardCasket,
 	ItemGroups,
+	Items,
+	itemID,
 	MasterCasket,
 	MasterMimicTable,
 	MediumCasket,
 	Monsters,
 	Nightmare,
-	itemID,
 	resolveItems
 } from 'oldschooljs';
 
-import { allCollectionLogsFlat } from './data/Collections';
+import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 import {
-	NexCL,
 	chambersOfXericCL,
 	chambersOfXericNormalCL,
 	cluesBeginnerCL,
@@ -29,24 +29,24 @@ import {
 	cluesHardCL,
 	cluesMasterCL,
 	cluesMediumCL,
+	NexCL,
 	temporossCL,
+	theatreOfBLoodCL,
+	theatreOfBLoodNormalCL,
 	theGauntletCL,
 	theNightmareCL,
 	theNightmareNormalCL,
-	theatreOfBLoodCL,
-	theatreOfBLoodNormalCL,
 	wintertodtCL
-} from './data/CollectionsExport';
-import pets from './data/pets';
-import killableMonsters from './minions/data/killableMonsters';
-import { openShadeChest } from './shadesKeys';
-import { birdsNestID, treeSeedsNest } from './simulation/birdsNest';
-import { gauntlet } from './simulation/gauntlet';
-import { handleNexKills } from './simulation/nex';
-import { getTemporossLoot } from './simulation/tempoross';
-import { TheatreOfBlood } from './simulation/tob';
-import { WintertodtCrate } from './simulation/wintertodt';
-import getOSItem from './util/getOSItem';
+} from '@/lib/data/CollectionsExport.js';
+import pets from '@/lib/data/pets.js';
+import killableMonsters from './minions/data/killableMonsters/index.js';
+import { openShadeChest } from './shadesKeys.js';
+import { birdsNestID, treeSeedsNest } from './simulation/birdsNest.js';
+import { gauntlet } from './simulation/gauntlet.js';
+import { handleNexKills } from './simulation/nex.js';
+import { getTemporossLoot } from './simulation/tempoross.js';
+import { TheatreOfBlood } from './simulation/tob.js';
+import { WintertodtCrate } from './simulation/wintertodt.js';
 
 interface KillArgs {
 	accumulatedLoot: Bank;
@@ -262,8 +262,8 @@ export const finishables: Finishable[] = [
 		aliases: ['shades of morton'],
 		kill: ({ accumulatedLoot, totalRuns }) => {
 			for (const tier of ['Bronze', 'Steel', 'Black', 'Silver', 'Gold'] as const) {
-				const key = getOSItem(`${tier} key red`);
-				const lock = getOSItem(`${tier} locks`);
+				const key = Items.getOrThrow(`${tier} key red`);
+				const lock = Items.getOrThrow(`${tier} locks`);
 				if (accumulatedLoot.has(lock.id) && tier !== 'Gold') continue;
 				return openShadeChest({ item: key, allItemsOwned: accumulatedLoot, qty: totalRuns }).bank;
 			}

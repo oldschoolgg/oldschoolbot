@@ -1,12 +1,13 @@
-import { calcWhatPercent, clamp, round, sumArr } from 'e';
+import { calcWhatPercent, round, sumArr } from '@oldschoolgg/toolkit';
+import { clamp } from 'remeda';
 
-import { calculateAchievementDiaryProgress } from '../mahoji/lib/abstracted_commands/achievementDiaryCommand';
-import { allCombatAchievementTasks } from './combat_achievements/combatAchievements';
-import { MAX_XP } from './constants';
-import { getTotalCl } from './data/Collections';
-import { MAX_QP } from './minions/data/quests';
-import { SkillsEnum } from './skilling/types';
-import type { MUserStats } from './structures/MUserStats';
+import { getTotalCl } from '@/lib/data/Collections.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
+import { calculateAchievementDiaryProgress } from '@/mahoji/lib/abstracted_commands/achievementDiaryCommand.js';
+import { allCombatAchievementTasks } from './combat_achievements/combatAchievements.js';
+import { MAX_XP } from './constants.js';
+import { MAX_QP } from './minions/data/quests.js';
 
 export async function calculateMastery(user: MUser, stats: MUserStats) {
 	const [totalClItems, clItems] = getTotalCl(user, 'collection', stats);
@@ -23,19 +24,19 @@ export async function calculateMastery(user: MUser, stats: MUserStats) {
 	const masteryFactors = [
 		{
 			name: 'CL',
-			percentage: clamp(clCompletionPercentage, 0, 100)
+			percentage: clamp(clCompletionPercentage, { min: 0, max: 100 })
 		},
 		{
 			name: 'XP',
-			percentage: clamp(totalXPPercent, 0, 100)
+			percentage: clamp(totalXPPercent, { min: 0, max: 100 })
 		},
 		{
 			name: 'Combat Achievements',
-			percentage: clamp(combatAchievementPercent, 0, 100)
+			percentage: clamp(combatAchievementPercent, { min: 0, max: 100 })
 		},
 		{
 			name: 'Quests',
-			percentage: clamp(calcWhatPercent(user.QP, MAX_QP), 0, 100)
+			percentage: clamp(calcWhatPercent(user.QP, MAX_QP), { min: 0, max: 100 })
 		},
 		{
 			name: 'Achievement Diaries',

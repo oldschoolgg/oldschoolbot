@@ -4,20 +4,20 @@ import type { CropUpgradeType } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { superCompostables } from '../../../lib/data/filterables';
-import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { calcNumOfPatches } from '../../../lib/skilling/functions/calcsFarming';
-import { getFarmingInfo, getFarmingInfoFromUser } from '../../../lib/skilling/functions/getFarmingInfo';
-import Farming from '../../../lib/skilling/skills/farming';
-import type { Plant } from '../../../lib/skilling/types';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { FarmingActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { farmingPatchNames, findPlant, isPatchName } from '../../../lib/util/farmingHelpers';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped, userStatsBankUpdate } from '../../mahojiSettings';
+import { superCompostables } from '@/lib/data/filterables.js';
+import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { calcNumOfPatches } from '@/lib/skilling/functions/calcsFarming.js';
+import { getFarmingInfo, getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
+import Farming from '@/lib/skilling/skills/farming/index.js';
+import type { Plant } from '@/lib/skilling/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { FarmingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { farmingPatchNames, findPlant, isPatchName } from '@/lib/util/farmingHelpers.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { userHasGracefulEquipped, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number): string | null {
 	if (plant.needsChopForHarvest && plant.treeWoodcuttingLevel && wcLevel < plant.treeWoodcuttingLevel) {
@@ -43,7 +43,7 @@ export async function harvestCommand({
 	}
 	const { GP } = user;
 	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
-	const currentDate = new Date().getTime();
+	const currentDate = Date.now();
 	if (!isPatchName(seedType)) {
 		return `That is not a valid patch type! The available patches are: ${farmingPatchNames.join(
 			', '
@@ -145,7 +145,7 @@ export async function farmingPlantCommand({
 	const questPoints = user.QP;
 	const { GP } = user;
 	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
-	const currentDate = new Date().getTime();
+	const currentDate = Date.now();
 
 	const infoStr: string[] = [];
 	const boostStr: string[] = [];
@@ -267,7 +267,7 @@ export async function farmingPlantCommand({
 	}
 
 	if (!user.owns(cost)) return `You don't own ${cost}.`;
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 
 	updateBankSetting('farming_cost_bank', cost);
 	// If user does not have something already planted, just plant the new seeds.
@@ -347,7 +347,7 @@ export async function compostBinCommand(
 		`${user}, please confirm that you want to compost ${cost} into ${loot}.`
 	);
 
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 	await user.addItemsToBank({ items: loot });
 
 	return `You composted ${cost} into ${loot}.`;
