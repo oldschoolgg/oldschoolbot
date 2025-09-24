@@ -55,7 +55,7 @@ describe('Sanity', () => {
 		expect(itemID('Red chinchompa')).toEqual(10_034);
 		expect(itemID('Broad arrows')).toEqual(4160);
 		expect(itemID('Frozen key')).toEqual(26_356);
-		for (const item of ['Hellfire bow (broken)', 'Hellfire bownana (broken)'].map(Items.getOrThrow)) {
+		for (const item of Items.resolveFullItems(['Hellfire bow (broken)', 'Hellfire bownana (broken)'])) {
 			expect(item.equipable).toEqual(undefined);
 			expect(item.equipable_by_player).toEqual(undefined);
 			expect(item.equipment).toEqual(undefined);

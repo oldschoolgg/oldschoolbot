@@ -1,4 +1,4 @@
-import { Items, resolveItems } from 'oldschooljs';
+import { Items } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
 import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/bsoOpenables.js';
@@ -15,7 +15,7 @@ test('trophies', async () => {
 	expect(Items.getOrThrow('Placeholder dragon trophy')).toMatchObject({ id: 26_515 });
 	expect(Items.getOrThrow('Placeholder bronze trophy')).toMatchObject({ id: 26_503 });
 
-	for (const trophy of resolveItems(allTrophyItems).map(Items.getOrThrow)) {
+	for (const trophy of Items.resolveFullItems(allTrophyItems)) {
 		expect(itemIsTradeable(trophy.id)).toEqual(false);
 		expect(trophy.customItemData?.isSuperUntradeable).toEqual(true);
 		expect(combinedTmbUmbEmbTables.includes(trophy.id)).toEqual(false);
