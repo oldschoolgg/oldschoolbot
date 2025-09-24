@@ -18,6 +18,21 @@ export type PartialGearSetup = Partial<{
 	[key in EquipmentSlot]: string;
 }>;
 
+export function addStatsOfItemsTogether(items: number[], statWhitelist = Object.values(GearStat)) {
+	const osItems = items.map(i => Items.getOrThrow(i));
+	const base: Required<GearRequirement> = {} as Required<GearRequirement>;
+	for (const item of osItems) {
+		for (const stat of Object.values(GearStat)) {
+			const thisStat = item.equipment?.[stat] ?? 0;
+			if (!base[stat]) base[stat] = 0;
+			if (statWhitelist.includes(stat)) {
+				base[stat] += thisStat;
+			}
+		}
+	}
+	return base;
+}
+
 export function hasGracefulEquipped(setup: Gear) {
 	return setup.hasEquipped(
 		['Graceful hood', 'Graceful top', 'Graceful legs', 'Graceful boots', 'Graceful gloves', 'Graceful cape'],

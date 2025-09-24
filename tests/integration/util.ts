@@ -223,13 +223,18 @@ export class TestUser extends MUserClass {
 
 	async kill(
 		monster: EMonster,
-		{ quantity, method, shouldFail = false }: { method?: PvMMethod; shouldFail?: boolean; quantity?: number } = {}
+		{
+			quantity,
+			method,
+			shouldFail = false,
+			wilderness = false
+		}: { method?: PvMMethod; shouldFail?: boolean; quantity?: number; wilderness?: boolean } = {}
 	) {
 		const previousBank = this.bank.clone();
 		const currentXP = clone(this.skillsAsXP);
 		const commandResult = await this.runCommand(
 			minionKCommand,
-			{ name: Monsters.get(monster)!.name, method, quantity },
+			{ name: Monsters.get(monster)!.name, method, quantity, wilderness },
 			true
 		);
 		if (shouldFail) {
@@ -314,6 +319,7 @@ export async function mockUser(
 		rangeLevel: number;
 		mageGear: number[];
 		mageLevel: number;
+		wildyGear: number[];
 		meleeGear: number[];
 		slayerLevel: number;
 		venatorBowCharges: number;
@@ -339,6 +345,12 @@ export async function mockUser(
 	if (options.meleeGear) {
 		for (const item of options.meleeGear) {
 			meleeGear.equip(Items.getOrThrow(item));
+		}
+	}
+	const wildyGear = new Gear();
+	if (options.wildyGear) {
+		for (const item of options.wildyGear) {
+			wildyGear.equip(Items.getOrThrow(item));
 		}
 	}
 
