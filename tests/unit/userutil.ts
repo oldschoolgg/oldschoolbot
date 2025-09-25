@@ -22,6 +22,7 @@ export interface MockUserArgs {
 	meleeGear?: GearSetup | PartialGearSetup;
 	skills_agility?: number;
 	skills_attack?: number;
+	skills_farming?: number;
 	skills_strength?: number;
 	skills_ranged?: number;
 	skills_magic?: number;
@@ -61,7 +62,7 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		skills_prayer: overrides?.skills_prayer ?? 0,
 		skills_fletching: 0,
 		skills_thieving: 0,
-		skills_farming: 0,
+		skills_farming: overrides?.skills_farming ?? 0,
 		skills_herblore: 0,
 		skills_hunter: 0,
 		skills_construction: 0,
