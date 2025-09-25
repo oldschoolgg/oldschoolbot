@@ -71,11 +71,16 @@ export class SeedableRNG implements RNGProvider {
 export function perHourChance(
 	durationMilliseconds: number,
 	oneInXPerHourChance: number,
-	successFunction: () => unknown
+	successFunction: () => unknown,
+	options?: {
+		randFloat?: (min: number, max: number) => number;
+	}
 ) {
 	if (durationMilliseconds <= 0 || oneInXPerHourChance <= 0) {
 		return;
 	}
+
+	const rand = options?.randFloat ?? randFloat;
 
 	const hoursPassed = durationMilliseconds / 3_600_000;
 	if (hoursPassed <= 0) {
@@ -87,14 +92,14 @@ export function perHourChance(
 	const remainingHours = hoursPassed - wholeHours;
 
 	for (let i = 0; i < wholeHours; i++) {
-		if (randFloat(0, 1) < chancePerHour) {
+		if (rand(0, 1) < chancePerHour) {
 			successFunction();
 		}
 	}
 
 	if (remainingHours > 0) {
 		const remainderChance = chancePerHour >= 1 ? 1 : 1 - Math.pow(1 - chancePerHour, remainingHours);
-		if (randFloat(0, 1) < remainderChance) {
+		if (rand(0, 1) < remainderChance) {
 			successFunction();
 		}
 	}
