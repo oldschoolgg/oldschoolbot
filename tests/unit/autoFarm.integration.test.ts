@@ -243,4 +243,58 @@ describe('autoFarm tree clearing fees', () => {
 		const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
 		expect(firstCallArgs?.treeChopFeePaid).toBe(2000);
 	});
+
+	it('reserves the tree clearing fee when switching to a different tree type', async () => {
+		const magicPlant = Farming.Plants.find(plant => plant.name === 'Magic tree');
+		const yewPlant = Farming.Plants.find(plant => plant.name === 'Yew tree');
+		if (!magicPlant || !yewPlant) {
+			throw new Error('Expected magic and yew plant data');
+		}
+
+		const user = createAutoFarmStub({
+			gp: 1000,
+			farmingLevel: 99,
+			woodcuttingLevel: 1,
+			bank: new Bank({ 'Yew tree seed': 1 })
+		});
+		user.autoFarmFilter = AutoFarmFilterEnum.AllFarm;
+
+		const patchName = magicPlant.seedType as FarmingPatchName;
+		const patchesDetailed: IPatchDataDetailed[] = [
+			{
+				lastPlanted: magicPlant.name,
+				patchPlanted: true,
+				plantTime: Date.now(),
+				lastQuantity: 1,
+				lastUpgradeType: null,
+				lastPayment: false,
+				patchName,
+				ready: true,
+				readyIn: null,
+				readyAt: null,
+				friendlyName: 'Tree patch',
+				plant: magicPlant
+			}
+		];
+
+		const patches: Partial<Record<FarmingPatchName, IPatchData>> = {
+			[patchName]: {
+				lastPlanted: magicPlant.name,
+				patchPlanted: true,
+				plantTime: patchesDetailed[0]!.plantTime,
+				lastQuantity: patchesDetailed[0]!.lastQuantity,
+				lastUpgradeType: patchesDetailed[0]!.lastUpgradeType,
+				lastPayment: patchesDetailed[0]!.lastPayment
+			}
+		};
+
+		const response = await autoFarm(user, patchesDetailed, patches as Record<FarmingPatchName, IPatchData>, '123');
+
+		expect(response).toContain('auto farming');
+		expect(user.user.GP).toBe(800);
+		expect(addSubTaskMock).toHaveBeenCalled();
+		const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
+		expect(firstCallArgs?.plantsName).toBe(yewPlant.name);
+		expect(firstCallArgs?.treeChopFeePaid).toBe(200);
+	});
 });

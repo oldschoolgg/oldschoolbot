@@ -8,6 +8,7 @@ import type { IPatchDataDetailed } from '@/lib/minions/farming/types.js';
 import { calcNumOfPatches } from '@/lib/skilling/functions/calcsFarming.js';
 import type { Plant } from '@/lib/skilling/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
+import { findPlant } from '@/lib/util/farmingHelpers.js';
 import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export interface PrepareFarmingStepOptions {
@@ -78,8 +79,8 @@ export async function prepareFarmingStep({
 	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
 
 	let treeChopCost = 0;
-	if (patchDetailed.patchPlanted && patchDetailed.lastPlanted) {
-		const plantedPlant = plant.name === patchDetailed.lastPlanted ? plant : null;
+	if (patchDetailed.patchPlanted) {
+		const plantedPlant = patchDetailed.plant ?? findPlant(patchDetailed.lastPlanted);
 		if (plantedPlant) {
 			const { error: treeError, fee } = treeCheck(
 				plantedPlant,
