@@ -1,7 +1,12 @@
 {
 	"extends": "../tsconfig.base.json",
 	"compilerOptions": {
-		"incremental": false
+		"rootDir": "./",
+		"outDir": "../dist",
+		"incremental": false,
+		"paths": {
+			"@/*": ["./*"]
+		}
 	},
 	"include": ["."]
 }
