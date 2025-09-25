@@ -5,7 +5,6 @@
 		"declaration": true,
 		"declarationMap": true,
 		"esModuleInterop": true,
-		"baseUrl": ".",
 		"importHelpers": false,
 		"incremental": true,
 		"lib": ["es2024", "ESNext.Array", "ESNext.Collection", "ESNext.Iterator", "ESNext.Promise"],
@@ -32,38 +31,6 @@
 		"noImplicitOverride": true,
 		"skipDefaultLibCheck": true,
 		"skipLibCheck": true,
-		"types": ["node"],
-		"paths": {
-			"oldschooljs": ["./packages/oldschooljs/src/index.ts"],
-			"oldschooljs/*": ["./packages/oldschooljs/src/*"],
-			"oldschooljs/gear": ["./packages/oldschooljs/src/gear/index.ts"],
-			"oldschooljs/EGear": ["./packages/oldschooljs/src/EGear.ts"],
-			"oldschooljs/EItem": ["./packages/oldschooljs/src/EItem.ts"],
-			"oldschooljs/EMonster": ["./packages/oldschooljs/src/EMonster.ts"],
-			"oldschooljs/hiscores": ["./packages/oldschooljs/src/hiscores/index.ts"],
-			"@oldschoolgg/collectionlog": ["./packages/collectionlog/src/index.ts"],
-			"@oldschoolgg/collectionlog/*": ["./packages/collectionlog/src/*"],
-			"@oldschoolgg/spritesheet": ["./packages/spritesheet/src/index.ts"],
-			"@oldschoolgg/spritesheet/*": ["./packages/spritesheet/src/*"],
-			"@oldschoolgg/toolkit": ["./packages/toolkit/src/util.ts"],
-			"@oldschoolgg/toolkit/util": ["./packages/toolkit/src/util.ts"],
-			"@oldschoolgg/toolkit/constants": ["./packages/toolkit/src/constants.ts"],
-			"@oldschoolgg/toolkit/structures": ["./packages/toolkit/src/structures.ts"],
-			"@oldschoolgg/toolkit/test-bot-websocket": ["./packages/toolkit/src/testBotWebsocket.ts"],
-			"@oldschoolgg/toolkit/datetime": ["./packages/toolkit/src/util/datetime.ts"],
-			"@oldschoolgg/toolkit/discord-util": ["./packages/toolkit/src/util/discord/index.ts"],
-			"@oldschoolgg/toolkit/math": ["./packages/toolkit/src/util/math/index.ts"],
-			"@oldschoolgg/toolkit/string-util": ["./packages/toolkit/src/string-util.ts"],
-			"@oldschoolgg/toolkit/node": ["./packages/toolkit/src/util/node.ts"],
-			"@oldschoolgg/toolkit/runescape": ["./packages/toolkit/src/util/runescape.ts"],
-			"@oldschoolgg/toolkit/rng": ["./packages/toolkit/src/rng/index.ts"],
-			"@/*": [
-				"./src/*",
-				"./packages/oldschooljs/src/*",
-				"./packages/toolkit/src/*",
-				"./packages/collectionlog/src/*",
-				"./packages/spritesheet/src/*"
-			]
-		}
+		"types": ["node"]
 	}
 }
