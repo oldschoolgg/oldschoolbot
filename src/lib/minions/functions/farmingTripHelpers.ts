@@ -31,14 +31,25 @@ export interface PreparedFarmingStep {
 	boostStr: string[];
 }
 
-export function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number): string | null {
+export function treeCheck(
+	plant: Plant,
+	wcLevel: number,
+	bal: number,
+	quantity: number
+): { error: string | null; fee: number } {
 	if (plant.needsChopForHarvest && plant.treeWoodcuttingLevel && wcLevel < plant.treeWoodcuttingLevel) {
-		const gpToCutTree = plant.seedType === 'redwood' ? 2000 * quantity : 200 * quantity;
-		if (bal < gpToCutTree) {
-			return `Your minion does not have ${plant.treeWoodcuttingLevel} Woodcutting or the ${gpToCutTree} GP required to be able to harvest the currently planted trees, and so they cannot harvest them.`;
+		const gpToCutTree = (plant.seedType === 'redwood' ? 2000 : 200) * quantity;
+		if (gpToCutTree > 0) {
+			if (bal < gpToCutTree) {
+				return {
+					error: `Your minion does not have ${plant.treeWoodcuttingLevel} Woodcutting or the ${gpToCutTree} GP required to be able to harvest the currently planted trees, and so they cannot harvest them.`,
+					fee: gpToCutTree
+				};
+			}
+			return { error: null, fee: gpToCutTree };
 		}
 	}
-	return null;
+	return { error: null, fee: 0 };
 }
 
 export async function prepareFarmingStep({
@@ -64,15 +75,21 @@ export async function prepareFarmingStep({
 	}
 
 	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
-	const { GP } = user;
 
+	let treeChopCost = 0;
 	if (patchDetailed.patchPlanted && patchDetailed.lastPlanted) {
 		const plantedPlant = plant.name === patchDetailed.lastPlanted ? plant : null;
 		if (plantedPlant) {
-			const treeStr = treeCheck(plantedPlant, currentWoodcuttingLevel, GP, patchDetailed.lastQuantity);
-			if (treeStr) {
-				return { success: false, error: treeStr };
+			const { error: treeError, fee } = treeCheck(
+				plantedPlant,
+				currentWoodcuttingLevel,
+				availableBank.amount('Coins'),
+				patchDetailed.lastQuantity
+			);
+			if (treeError) {
+				return { success: false, error: treeError };
 			}
+			treeChopCost = fee;
 		}
 	}
 
@@ -113,6 +130,10 @@ export async function prepareFarmingStep({
 	}
 
 	const cost = inputItems.reduce((bank, [seed, qty]) => bank.add(seed.id, qty * quantityToDo), new Bank());
+	if (treeChopCost > 0) {
+		cost.add('Coins', treeChopCost);
+		infoStr.push(`You are paying a nearby farmer ${treeChopCost} GP to remove the previous trees.`);
+	}
 
 	if (!availableBank.has(cost)) {
 		return { success: false, error: `You don't own ${cost}.` };
@@ -161,11 +182,14 @@ export async function prepareFarmingStep({
 		duration *= 0.9;
 	}
 
-	for (const [diary, tier] of [[ArdougneDiary, ArdougneDiary.elite]] as const) {
-		const [has] = await userhasDiaryTier(user, tier);
-		if (has) {
-			boostStr.push(`4% time for ${diary.name} ${tier.name}`);
-			duration *= 0.96;
+	const prismaAvailable = Boolean((globalThis as { prisma?: unknown }).prisma);
+	if (prismaAvailable) {
+		for (const [diary, tier] of [[ArdougneDiary, ArdougneDiary.elite]] as const) {
+			const [has] = await userhasDiaryTier(user, tier);
+			if (has) {
+				boostStr.push(`4% time for ${diary.name} ${tier.name}`);
+				duration *= 0.96;
+			}
 		}
 	}
 

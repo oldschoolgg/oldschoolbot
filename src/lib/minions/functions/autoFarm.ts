@@ -148,7 +148,7 @@ export async function autoFarm(
 		const inserted = await prisma.farmedCrop.create({
 			data: {
 				user_id: user.id,
-				date_planted: new Date(),
+				date_planted: new Date(planningStartTime + accumulatedDuration),
 				item_id: step.plant.id,
 				quantity_planted: step.quantity,
 				was_autofarmed: true,

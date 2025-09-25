@@ -29,7 +29,7 @@ export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number
 		}
 	}
 
-	if (user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
+	if (user.user.finished_quest_ids?.includes(QuestID.ChildrenOfTheSun)) {
 		switch (plant.seedType) {
 			case 'allotment':
 				numOfPatches += 2;
