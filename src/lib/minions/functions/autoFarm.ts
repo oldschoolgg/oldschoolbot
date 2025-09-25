@@ -142,6 +142,8 @@ export async function autoFarm(
 	await userStatsBankUpdate(user, 'farming_plant_cost_bank', totalCost);
 
 	const autoFarmPlan: AutoFarmStepData[] = [];
+	const planningStartTime = Date.now();
+	let accumulatedDuration = 0;
 	for (const step of plannedSteps) {
 		const inserted = await prisma.farmedCrop.create({
 			data: {
@@ -162,10 +164,11 @@ export async function autoFarm(
 			payment: step.didPay,
 			patchType: step.patch,
 			planting: true,
-			currentDate: Date.now(),
+			currentDate: planningStartTime + accumulatedDuration,
 			duration: step.duration,
 			pid: inserted.id
 		});
+		accumulatedDuration += step.duration;
 	}
 
 	const [firstStep, ...remainingSteps] = autoFarmPlan;
