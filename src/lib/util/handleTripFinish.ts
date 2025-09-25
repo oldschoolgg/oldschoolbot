@@ -172,8 +172,8 @@ export async function handleTripFinish(
 		collectors.delete(user.id);
 	}
 
-	const channel = globalClient.channels.cache.get(channelID);
-	if (!channelIsSendable(channel)) return;
+	const channel = globalClient?.channels?.cache.get(channelID);
+	if (channel && !channelIsSendable(channel)) return;
 
 	const components: ButtonBuilder[] = [];
 	components.push(makeRepeatTripButton());
