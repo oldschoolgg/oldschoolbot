@@ -335,6 +335,7 @@ export interface AutoFarmStepData {
 	quantity: number;
 	upgradeType: CropUpgradeType | null;
 	payment?: boolean;
+	treeChopFeePaid?: number;
 	patchType: IPatchData;
 	planting: boolean;
 	currentDate: number;
@@ -349,6 +350,7 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 	upgradeType: CropUpgradeType | null;
 	payment?: boolean;
+	treeChopFeePaid?: number;
 	patchType: IPatchData;
 	planting: boolean;
 	currentDate: number;

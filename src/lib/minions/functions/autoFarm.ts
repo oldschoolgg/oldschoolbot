@@ -20,6 +20,7 @@ interface PlannedAutoFarmStep {
 	duration: number;
 	upgradeType: CropUpgradeType | null;
 	didPay: boolean;
+	treeChopFee: number;
 	patch: IPatchData;
 	patchName: FarmingPatchName;
 	friendlyName: string;
@@ -101,7 +102,7 @@ export async function autoFarm(
 			continue;
 		}
 
-		const { quantity, duration, cost, upgradeType, didPay, infoStr, boostStr } = prepared.data;
+		const { quantity, duration, cost, upgradeType, didPay, infoStr, boostStr, treeChopFee } = prepared.data;
 		if (quantity <= 0 || duration <= 0) {
 			continue;
 		}
@@ -120,6 +121,7 @@ export async function autoFarm(
 			duration,
 			upgradeType,
 			didPay,
+			treeChopFee,
 			patch,
 			patchName: patchDetailed.patchName,
 			friendlyName: patchDetailed.friendlyName,
@@ -162,6 +164,7 @@ export async function autoFarm(
 			quantity: step.quantity,
 			upgradeType: step.upgradeType,
 			payment: step.didPay,
+			treeChopFeePaid: step.treeChopFee,
 			patchType: step.patch,
 			planting: true,
 			currentDate: planningStartTime + accumulatedDuration,
@@ -184,6 +187,7 @@ export async function autoFarm(
 		quantity: firstStep.quantity,
 		upgradeType: firstStep.upgradeType,
 		payment: firstStep.payment,
+		treeChopFeePaid: firstStep.treeChopFeePaid,
 		planting: firstStep.planting,
 		duration: firstStep.duration,
 		currentDate: firstStep.currentDate,

@@ -159,6 +159,7 @@ export const farmingTask: MinionTask = {
 					quantity: nextStep.quantity,
 					upgradeType: nextStep.upgradeType,
 					payment: nextStep.payment,
+					treeChopFeePaid: nextStep.treeChopFeePaid,
 					planting: nextStep.planting,
 					duration: nextStep.duration,
 					currentDate: nextStep.currentDate,
@@ -265,13 +266,19 @@ export const farmingTask: MinionTask = {
 				} else {
 					const GP = Number(user.user.GP);
 					const gpToCutTree = plantToHarvest.seedType === 'redwood' ? 2000 * alivePlants : 200 * alivePlants;
-					if (GP < gpToCutTree) {
+					const prePaid = data.treeChopFeePaid ?? 0;
+					const remainingFee = Math.max(0, gpToCutTree - prePaid);
+					if (GP < remainingFee) {
 						return sendToChannelID(channelID, {
-							content: `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You need ${gpToCutTree} GP.`
+							content: `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You still need ${remainingFee} GP.`
 						});
 					}
-					payStr = `*You did not have the woodcutting level required, so you paid a nearby farmer ${gpToCutTree} GP to remove the previous trees.*`;
-					await user.removeItemsFromBank(new Bank().add('Coins', gpToCutTree));
+					if (remainingFee > 0) {
+						payStr = `*You did not have the woodcutting level required, so you paid a nearby farmer ${remainingFee} GP to remove the previous trees.*`;
+						await user.removeItemsFromBank(new Bank().add('Coins', remainingFee));
+					} else {
+						payStr = `*You already paid a nearby farmer ${Math.min(prePaid, gpToCutTree)} GP to remove the previous trees.*`;
+					}
 
 					harvestXp = 0;
 				}
@@ -496,6 +503,7 @@ export const farmingTask: MinionTask = {
 					quantity: nextStep.quantity,
 					upgradeType: nextStep.upgradeType,
 					payment: nextStep.payment,
+					treeChopFeePaid: nextStep.treeChopFeePaid,
 					planting: nextStep.planting,
 					duration: nextStep.duration,
 					currentDate: nextStep.currentDate,

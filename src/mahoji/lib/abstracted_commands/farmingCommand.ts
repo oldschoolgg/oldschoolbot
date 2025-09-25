@@ -183,7 +183,15 @@ export async function farmingPlantCommand({
 	}
 
 	quantity = prepared.data.quantity;
-	const { cost, didPay, duration, upgradeType, infoStr: preparedInfo, boostStr: preparedBoosts } = prepared.data;
+	const {
+		cost,
+		didPay,
+		duration,
+		upgradeType,
+		infoStr: preparedInfo,
+		boostStr: preparedBoosts,
+		treeChopFee
+	} = prepared.data;
 	infoStr.push(...preparedInfo);
 	boostStr.push(...preparedBoosts);
 
@@ -229,6 +237,7 @@ export async function farmingPlantCommand({
 		quantity,
 		upgradeType,
 		payment: didPay,
+		treeChopFeePaid: treeChopFee,
 		planting: true,
 		duration,
 		currentDate,
