@@ -96,50 +96,15 @@ export async function prepareFarmingStep({
 		};
 	}
 
-	let duration = 0;
-	if (patchDetailed.patchPlanted) {
-		duration = patchDetailed.lastQuantity * (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest);
-		if (quantityToDo > patchDetailed.lastQuantity) {
-			duration += (quantityToDo - patchDetailed.lastQuantity) * (timePerPatchTravel + timePerPatchPlant);
-		}
-	} else {
-		duration = quantityToDo * (timePerPatchTravel + timePerPatchPlant);
-	}
-
-	if (userHasGracefulEquipped(user)) {
-		boostStr.push('10% time for Graceful');
-		duration *= 0.9;
-	}
-
-	if (user.hasEquipped('Ring of endurance')) {
-		boostStr.push('10% time for Ring of Endurance');
-		duration *= 0.9;
-	}
-
-	for (const [diary, tier] of [[ArdougneDiary, ArdougneDiary.elite]] as const) {
-		const [has] = await userhasDiaryTier(user, tier);
-		if (has) {
-			boostStr.push(`4% time for ${diary.name} ${tier.name}`);
-			duration *= 0.96;
-		}
-	}
-
-	if (duration > maxTripLength) {
-		return {
-			success: false,
-			error: `${user.minionName} can't go on trips longer than ${formatDuration(maxTripLength)}, try a lower quantity. The highest amount of ${plant.name} you can plant is ${maxCanDo}.`
-		};
-	}
-
-	const cost = new Bank();
-	for (const [seed, qty] of plant.inputItems.items()) {
-		if (availableBank.amount(seed.id) < qty * quantityToDo) {
-			if (availableBank.amount(seed.id) > qty) {
-				quantityToDo = Math.floor(availableBank.amount(seed.id) / qty);
-			}
-		}
-		cost.add(seed.id, qty * quantityToDo);
-	}
+        const cost = new Bank();
+        for (const [seed, qty] of plant.inputItems.items()) {
+                if (availableBank.amount(seed.id) < qty * quantityToDo) {
+                        if (availableBank.amount(seed.id) >= qty) {
+                                quantityToDo = Math.floor(availableBank.amount(seed.id) / qty);
+                        }
+                }
+                cost.add(seed.id, qty * quantityToDo);
+        }
 
 	if (!availableBank.has(cost)) {
 		return { success: false, error: `You don't own ${cost}.` };
@@ -165,12 +130,47 @@ export async function prepareFarmingStep({
 			infoStr.push(`You are treating your patches with ${compostCost}.`);
 			cost.add(compostCost);
 			upgradeType = compostTier;
-		}
-	}
+                }
+        }
 
-	return {
-		success: true,
-		data: {
+        let duration = 0;
+        if (patchDetailed.patchPlanted) {
+                duration = patchDetailed.lastQuantity * (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest);
+                if (quantityToDo > patchDetailed.lastQuantity) {
+                        duration += (quantityToDo - patchDetailed.lastQuantity) * (timePerPatchTravel + timePerPatchPlant);
+                }
+        } else {
+                duration = quantityToDo * (timePerPatchTravel + timePerPatchPlant);
+        }
+
+        if (userHasGracefulEquipped(user)) {
+                boostStr.push('10% time for Graceful');
+                duration *= 0.9;
+        }
+
+        if (user.hasEquipped('Ring of endurance')) {
+                boostStr.push('10% time for Ring of Endurance');
+                duration *= 0.9;
+        }
+
+        for (const [diary, tier] of [[ArdougneDiary, ArdougneDiary.elite]] as const) {
+                const [has] = await userhasDiaryTier(user, tier);
+                if (has) {
+                        boostStr.push(`4% time for ${diary.name} ${tier.name}`);
+                        duration *= 0.96;
+                }
+        }
+
+        if (duration > maxTripLength) {
+                return {
+                        success: false,
+                        error: `${user.minionName} can't go on trips longer than ${formatDuration(maxTripLength)}, try a lower quantity. The highest amount of ${plant.name} you can plant is ${maxCanDo}.`
+                };
+        }
+
+        return {
+                success: true,
+                data: {
 			quantity: quantityToDo,
 			duration,
 			cost,
