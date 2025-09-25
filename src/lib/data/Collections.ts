@@ -772,6 +772,24 @@ export const allCollectionLogs: ICollection = {
 				items: uniqueArr([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL]),
 				isActivity: true,
 				fmtProg: clueProg(['Hard', 'Elite', 'Master'])
+			},
+			'Scroll Cases': {
+				alias: ['scroll cases', 'casses'],
+				items: resolveItems([
+					'Minor beginner scroll case',
+					'Major beginner scroll case',
+					'Minor easy scroll case',
+					'Major easy scroll case',
+					'Minor medium scroll case',
+					'Major medium scroll case',
+					'Minor hard scroll case',
+					'Major hard scroll case',
+					'Minor elite scroll case',
+					'Major elite scroll case',
+					'Minor master scroll case',
+					'Major master scroll case',
+					'Mimic scroll case'
+				])
 			}
 		}
 	},

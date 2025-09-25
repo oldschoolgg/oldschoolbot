@@ -94,7 +94,7 @@ export interface UnifiedOpenable {
 }
 
 const clueItemsToNotifyOf = cluesRaresCL
-	.concat(ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward))
+	.concat(ClueTiers.flatMap(i => (i.milestoneRewards ? i.milestoneRewards.map(r => r.itemReward) : [])))
 	.concat([itemID('Bloodhound'), itemID('Ranger boots')]);
 
 const clueOpenables: UnifiedOpenable[] = [];
@@ -126,27 +126,25 @@ for (const clueTier of ClueTiers) {
 			const stats = await user.fetchStats({ openable_scores: true });
 			const nthCasket = ((stats.openable_scores as ItemBank)[clueTier.id] ?? 0) + quantity;
 
-			let gotMilestoneReward = false;
 			// If this tier has a milestone reward, and their new score meets the req, and
 			// they don't own it already, add it to the loot.
-			if (
-				clueTier.milestoneReward &&
-				nthCasket >= clueTier.milestoneReward.scoreNeeded &&
-				user.allItemsOwned.amount(clueTier.milestoneReward.itemReward) === 0
-			) {
-				await user.addItemsToBank({
-					items: new Bank().add(clueTier.milestoneReward.itemReward),
-					collectionLog: true
-				});
-				gotMilestoneReward = true;
+
+			if (clueTier.milestoneRewards) {
+				for (const reward of clueTier.milestoneRewards) {
+					if (nthCasket >= reward.scoreNeeded && user.allItemsOwned.amount(reward.itemReward) === 0) {
+						loot.add(reward.itemReward);
+					}
+				}
 			}
 
 			// Here we check if the loot has any ultra-rares (3rd age, gilded, bloodhound),
 			// and send a notification if they got one.
-			const announcedLoot = loot.filter(i => clueItemsToNotifyOf.includes(i.id));
-			if (gotMilestoneReward) {
-				announcedLoot.add(clueTier.milestoneReward?.itemReward);
-			}
+			const announcedLoot = loot.filter(
+				i =>
+					clueItemsToNotifyOf.includes(i.id) &&
+					!clueTier.milestoneRewards?.some(r => r.itemReward === i.id && user.cl.has(i.id))
+			);
+
 			if (announcedLoot.length > 0) {
 				globalClient.emit(
 					Events.ServerNotification,
@@ -161,6 +159,9 @@ for (const clueTier of ClueTiers) {
 			}
 
 			if (mimicNumber > 0) {
+				if (!user.owns('Mimic scroll case')) {
+					loot.add('Mimic scroll case');
+				}
 				await user.incrementKC(EMonster.MIMIC, mimicNumber);
 			}
 
