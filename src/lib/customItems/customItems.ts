@@ -11412,7 +11412,7 @@ setCustomItem(
 
 setCustomItem(
 	73_099,
-	'3rd age jibwings',
+	'Third age jibwings',
 	'Coal',
 	{
 		customItemData: {
@@ -11472,7 +11472,7 @@ setCustomItem(
 
 setCustomItem(
 	73_104,
-	'3rd age jibwings (e)',
+	'Third age jibwings (e)',
 	'Coal',
 	{
 		customItemData: {

@@ -1608,10 +1608,10 @@ export const allCollectionLogs: ICollection = {
 					'Divine ring',
 					'Abyssal jibwings (e)',
 					'Demonic jibwings (e)',
-					'3rd age jibwings (e)',
+					'Third age jibwings (e)',
 					'Abyssal jibwings',
 					'Demonic jibwings',
-					'3rd age jibwings'
+					'Third age jibwings'
 				])
 			},
 			'Divine Dominion': {

@@ -152,7 +152,7 @@ const eagleEquippables: TameEquippable[] = [
 		tameSpecies: [TameSpeciesID.Eagle]
 	},
 	{
-		item: getOSItem('3rd age jibwings'),
+		item: getOSItem('Third age jibwings'),
 		slot: 'equipped_armor',
 		tameSpecies: [TameSpeciesID.Eagle]
 	},
@@ -167,7 +167,7 @@ const eagleEquippables: TameEquippable[] = [
 		tameSpecies: [TameSpeciesID.Eagle]
 	},
 	{
-		item: getOSItem('3rd age jibwings (e)'),
+		item: getOSItem('Third age jibwings (e)'),
 		slot: 'equipped_armor',
 		tameSpecies: [TameSpeciesID.Eagle]
 	},
@@ -1630,7 +1630,7 @@ export function determineTameClueResult({
 	let maxTripLength = Time.Minute * 20 * (4 - tameGrowthLevel);
 	if (
 		equippedArmor &&
-		resolveItems(['Abyssal jibwings (e)', 'Demonic jibwings (e)', '3rd age jibwings (e)']).includes(equippedArmor)
+		resolveItems(['Abyssal jibwings (e)', 'Demonic jibwings (e)', 'Third age jibwings (e)']).includes(equippedArmor)
 	) {
 		maxTripLength += Time.Minute * 30;
 		boosts.push('+30mins trip length for enhanced jibwings');

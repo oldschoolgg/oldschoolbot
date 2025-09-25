@@ -419,7 +419,7 @@ const source: [string, (string | number)[]][] = [
 
 	// Tame gear
 	['Abyssal jibwings', ['Abyssal jibwings (e)']],
-	['3rd age jibwings', ['3rd age jibwings (e)']],
+	['Third age jibwings', ['Third age jibwings (e)']],
 	['Demonic jibwings', ['Demonic jibwings (e)']],
 
 	// Inventions
