@@ -12,22 +12,22 @@ import type { FarmingActivityTaskOptions } from '../../src/lib/types/minions.js'
 import { farmingTask } from '../../src/tasks/minions/farmingActivity.js';
 
 vi.mock('@/lib/util/handleTripFinish.js', () => ({
-        handleTripFinish: vi.fn()
+	handleTripFinish: vi.fn()
 }));
 vi.mock('@/lib/util/updateBankSetting.js', () => ({
-        updateBankSetting: vi.fn()
+	updateBankSetting: vi.fn()
 }));
 vi.mock('@/lib/util/addSubTaskToActivityTask.js', () => ({
-        default: vi.fn()
+	default: vi.fn()
 }));
 vi.mock('@/lib/util/webhook.js', () => ({
-        sendToChannelID: vi.fn()
+	sendToChannelID: vi.fn()
 }));
 vi.mock('@/lib/combat_achievements/combatAchievements.js', () => ({
-        combatAchievementTripEffect: vi.fn().mockResolvedValue(null)
+	combatAchievementTripEffect: vi.fn().mockResolvedValue(null)
 }));
 vi.mock('@/lib/canvas/chatHeadImage.js', () => ({
-        default: vi.fn()
+	default: vi.fn()
 }));
 vi.mock('@/mahoji/mahojiSettings.js', () => ({
 	userStatsBankUpdate: vi.fn(),
