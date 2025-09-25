@@ -11,23 +11,23 @@ import { SkillsEnum } from '../../src/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions } from '../../src/lib/types/minions.js';
 import { farmingTask } from '../../src/tasks/minions/farmingActivity.js';
 
-vi.mock('../../src/lib/util/handleTripFinish.js', () => ({
-	handleTripFinish: vi.fn()
+vi.mock('@/lib/util/handleTripFinish.js', () => ({
+        handleTripFinish: vi.fn()
 }));
-vi.mock('../../src/lib/util/updateBankSetting.js', () => ({
-	updateBankSetting: vi.fn()
+vi.mock('@/lib/util/updateBankSetting.js', () => ({
+        updateBankSetting: vi.fn()
 }));
-vi.mock('../../src/lib/util/addSubTaskToActivityTask.js', () => ({
-	default: vi.fn()
+vi.mock('@/lib/util/addSubTaskToActivityTask.js', () => ({
+        default: vi.fn()
 }));
-vi.mock('../../src/lib/util/webhook.js', () => ({
-	sendToChannelID: vi.fn()
+vi.mock('@/lib/util/webhook.js', () => ({
+        sendToChannelID: vi.fn()
 }));
-vi.mock('../../src/lib/combat_achievements/combatAchievements.js', () => ({
-	combatAchievementTripEffect: vi.fn().mockResolvedValue(null)
+vi.mock('@/lib/combat_achievements/combatAchievements.js', () => ({
+        combatAchievementTripEffect: vi.fn().mockResolvedValue(null)
 }));
-vi.mock('../../src/lib/canvas/chatHeadImage.js', () => ({
-	default: vi.fn()
+vi.mock('@/lib/canvas/chatHeadImage.js', () => ({
+        default: vi.fn()
 }));
 vi.mock('@/mahoji/mahojiSettings.js', () => ({
 	userStatsBankUpdate: vi.fn(),
