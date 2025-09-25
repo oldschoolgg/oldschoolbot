@@ -29,6 +29,7 @@ export interface PreparedFarmingStep {
 	upgradeType: CropUpgradeType | null;
 	infoStr: string[];
 	boostStr: string[];
+	treeChopFee: number;
 }
 
 export function treeCheck(
@@ -209,7 +210,8 @@ export async function prepareFarmingStep({
 			didPay,
 			upgradeType,
 			infoStr,
-			boostStr
+			boostStr,
+			treeChopFee: treeChopCost
 		}
 	};
 }
