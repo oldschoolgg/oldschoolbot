@@ -1,10 +1,11 @@
-import { Bank, EItem } from 'oldschooljs';
+import { Bank, EItem, type Item, Items } from 'oldschooljs';
 
 import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { percentChance, randInt } from '@/lib/util/rng.js';
+import { checkDegradeableItemCharges, degradeItem } from '../../lib/degradeableItems.js';
 
 export const herbloreTask: MinionTask = {
 	type: 'Herblore',
@@ -14,6 +15,9 @@ export const herbloreTask: MinionTask = {
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.item.id === mixableID)!;
 		const xpReceived = zahur && mixableItem.zahur ? 0 : quantity * mixableItem.xp;
 		let outputQuantity = mixableItem.outputMultiple ? quantity * mixableItem.outputMultiple : quantity;
+		let fourDoseItem: Item | null = null;
+		let fourDoseCount = 0;
+		const chemistryMessages: string[] = [];
 
 		// Special case for Lava scale shard
 		if (mixableItem.item.id === EItem.LAVA_SCALE_SHARD) {
@@ -37,18 +41,62 @@ export const herbloreTask: MinionTask = {
 			outputQuantity = scales;
 		}
 
+		if (!zahur && !wesley && mixableItem.item.name.includes('(3)')) {
+			const chemistryItem = Items.getOrThrow('Amulet of chemistry');
+			if (user.gear.skilling.hasEquipped(chemistryItem.id, false, false)) {
+				const potentialFourDoseName = mixableItem.item.name.replace(' (3)', '(4)').replace('(3)', '(4)');
+				fourDoseItem = Items.get(potentialFourDoseName) ?? null;
+				if (fourDoseItem) {
+					const chemistryCharges = await checkDegradeableItemCharges({
+						item: chemistryItem,
+						user
+					});
+					let chargesRemaining = chemistryCharges;
+					if (chargesRemaining > 0) {
+						for (let i = 0; i < quantity && chargesRemaining > 0; i++) {
+							if (percentChance(5)) {
+								fourDoseCount++;
+								chargesRemaining--;
+							}
+						}
+						if (fourDoseCount > 0) {
+							const degradeResult = await degradeItem({
+								item: chemistryItem,
+								chargesToDegrade: fourDoseCount,
+								user
+							});
+							chemistryMessages.push(
+								`${fourDoseCount}x ${fourDoseItem.name} were made thanks to your Amulet of chemistry.`
+							);
+							if (degradeResult.userMessage.includes('broke')) {
+								chemistryMessages.push(degradeResult.userMessage);
+							}
+						}
+					}
+				}
+			}
+		}
+
 		const xpRes = await user.addXP({ skillName: 'herblore', amount: xpReceived, duration });
-		const loot = new Bank().add(mixableItem.item.id, outputQuantity);
+		const loot = new Bank();
+		if (fourDoseCount > 0 && fourDoseItem) {
+			const threeDoseCount = Math.max(outputQuantity - fourDoseCount, 0);
+			if (threeDoseCount > 0) {
+				loot.add(mixableItem.item.id, threeDoseCount);
+			}
+			loot.add(fourDoseItem.id, fourDoseCount);
+		} else {
+			loot.add(mixableItem.item.id, outputQuantity);
+		}
 
 		await user.transactItems({ collectionLog: true, itemsToAdd: loot });
 
-		handleTripFinish(
-			user,
-			channelID,
-			`${user}, ${user.minionName} finished making ${outputQuantity}x ${mixableItem.item.name}. ${xpRes}`,
-			undefined,
-			data,
-			loot
-		);
+		let completionMessage = `${user}, ${user.minionName} finished making ${outputQuantity}x ${mixableItem.item.name}.`;
+		if (chemistryMessages.length > 0) {
+			completionMessage = `${completionMessage} ${chemistryMessages.join(' ')}`;
+		}
+		completionMessage = `${completionMessage} ${xpRes}`;
+
+		handleTripFinish(user, channelID, completionMessage, undefined, data, loot);
 	}
 };
