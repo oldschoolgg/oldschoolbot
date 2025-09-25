@@ -95,7 +95,7 @@ function alchPrice(bank: Bank, item: Item, tripLength: number, agility?: boolean
 }
 
 export type SelectedUserStats<T extends Prisma.UserStatsSelect> = {
-        [K in keyof T]: K extends keyof UserStats ? UserStats[K] : never;
+	[K in keyof T]: K extends keyof UserStats ? UserStats[K] : never;
 };
 
 export type MUser = MUserClass;
@@ -1021,7 +1021,6 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 }
 declare global {
-	export type MUser = MUserClass;
 	var mUserFetch: typeof srcMUserFetch;
 	var GlobalMUserClass: typeof MUserClass;
 }
