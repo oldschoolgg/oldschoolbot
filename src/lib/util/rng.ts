@@ -73,11 +73,28 @@ export function perHourChance(
 	oneInXPerHourChance: number,
 	successFunction: () => unknown
 ) {
-	const minutesPassed = Math.floor(durationMilliseconds / 60_000);
-	const perMinuteChance = oneInXPerHourChance * 60;
+	if (durationMilliseconds <= 0 || oneInXPerHourChance <= 0) {
+		return;
+	}
 
-	for (let i = 0; i < minutesPassed; i++) {
-		if (roll(perMinuteChance)) {
+	const hoursPassed = durationMilliseconds / 3_600_000;
+	if (hoursPassed <= 0) {
+		return;
+	}
+
+	const chancePerHour = Math.min(1, 1 / oneInXPerHourChance);
+	const wholeHours = Math.floor(hoursPassed);
+	const remainingHours = hoursPassed - wholeHours;
+
+	for (let i = 0; i < wholeHours; i++) {
+		if (randFloat(0, 1) < chancePerHour) {
+			successFunction();
+		}
+	}
+
+	if (remainingHours > 0) {
+		const remainderChance = chancePerHour >= 1 ? 1 : 1 - Math.pow(1 - chancePerHour, remainingHours);
+		if (randFloat(0, 1) < remainderChance) {
 			successFunction();
 		}
 	}
