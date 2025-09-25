@@ -12,9 +12,9 @@ describe('prepareFarmingStep auto farm limits', () => {
 	it('charges only for the achievable quantity when inputs differ', async () => {
 		const user = mockMUser({
 			bank: new Bank({ 'Grape seed': 5, Saltpetre: 1 }),
-			QP: 200
+			QP: 200,
+			skills_farming: convertLVLtoXP(99)
 		});
-		user.user.skills_farming = convertLVLtoXP(99);
 
 		const grapePlant = Farming.Plants.find(plant => plant.name === 'Grape');
 		if (!grapePlant) {
