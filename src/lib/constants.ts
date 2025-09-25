@@ -5,7 +5,7 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { AbstractCommand, CommandOptions } from '@oldschoolgg/toolkit/discord-util';
 import { dateFm, PerkTier } from '@oldschoolgg/toolkit/util';
 import * as dotenv from 'dotenv';
-import { resolveItems } from 'oldschooljs';
+import { convertLVLtoXP, resolveItems } from 'oldschooljs';
 import { z } from 'zod';
 
 import { SkillsEnum } from '@/lib/skilling/types.js';
@@ -313,10 +313,9 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.Hacktoberfest]: '<:hacktoberfest:1304259875634942082>'
 };
 
-export const MAX_XP = 200_000_000;
-
-export const LEVEL_99_XP = 13_034_431;
+export const MAX_XP = BOT_TYPE === 'OSB' ? 200_000_000 : 5_000_000_000;
 export const MAX_LEVEL = BOT_TYPE === 'OSB' ? 99 : 120;
+export const MAX_LEVEL_XP = convertLVLtoXP(MAX_LEVEL);
 export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;
 export const SILENT_ERROR = 'SILENT_ERROR';
 
