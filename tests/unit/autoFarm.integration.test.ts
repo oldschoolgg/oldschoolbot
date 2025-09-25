@@ -39,17 +39,17 @@ interface AutoFarmStubOptions {
 }
 
 function createAutoFarmStub({ gp, farmingLevel, woodcuttingLevel, bank }: AutoFarmStubOptions) {
-	const bankState = bank.clone();
+        const bankState = bank.clone();
 	const emptyGearSetup = {
 		hasEquipped: vi.fn().mockReturnValue(false),
 		equippedWeapon: vi.fn().mockReturnValue({ name: '' })
 	} as const;
-	const user = {
-		id: '1',
-		user: {
-			id: '1',
-			GP: gp,
-			bank: bankState.bank,
+        const user = {
+                id: '1',
+                user: {
+                        id: '1',
+                        GP: gp,
+                        bank: bankState.toJSON(),
 			minion_defaultPay: false,
 			minion_defaultCompostToUse: null,
 			completed_ca_task_ids: []
@@ -146,8 +146,8 @@ function createAutoFarmStub({ gp, farmingLevel, woodcuttingLevel, bank }: AutoFa
 					user.GP -= coins;
 					removal.remove('Coins', coins);
 				}
-				bankState.remove(removal);
-				user.user.bank = bankState.bank;
+                                bankState.remove(removal);
+                                user.user.bank = bankState.toJSON();
 			}
 			return { newUser: user.user };
 		}),
@@ -168,9 +168,9 @@ function createAutoFarmStub({ gp, farmingLevel, woodcuttingLevel, bank }: AutoFa
 		perkTier: vi.fn().mockReturnValue(0),
 		hasSkillReqs: vi.fn().mockReturnValue([true, null]),
 		getAttackStyles: vi.fn().mockReturnValue([]),
-		update: vi.fn().mockResolvedValue(undefined)
-	} satisfies Partial<MUser> as MUser;
-	return user;
+                update: vi.fn().mockResolvedValue(undefined)
+        } as any;
+        return user as MUser;
 }
 
 describe('autoFarm tree clearing fees', () => {
@@ -224,9 +224,9 @@ describe('autoFarm tree clearing fees', () => {
 			}
 		];
 
-		const patches: Record<FarmingPatchName, IPatchData> = {
-			[basePatch.patchName]: {
-				lastPlanted: basePatch.lastPlanted,
+                const patches: Partial<Record<FarmingPatchName, IPatchData>> = {
+                        [basePatch.patchName]: {
+                                lastPlanted: basePatch.lastPlanted,
 				patchPlanted: basePatch.patchPlanted,
 				plantTime: basePatch.plantTime,
 				lastQuantity: basePatch.lastQuantity,
@@ -235,7 +235,12 @@ describe('autoFarm tree clearing fees', () => {
 			}
 		};
 
-		const response = await autoFarm(user, patchesDetailed, patches, '123');
+                const response = await autoFarm(
+                        user,
+                        patchesDetailed,
+                        patches as Record<FarmingPatchName, IPatchData>,
+                        '123'
+                );
 
 		expect(response).toContain('auto farming');
 		expect(user.user.GP).toBe(3000);

@@ -95,8 +95,10 @@ function alchPrice(bank: Bank, item: Item, tripLength: number, agility?: boolean
 }
 
 export type SelectedUserStats<T extends Prisma.UserStatsSelect> = {
-	[K in keyof T]: K extends keyof UserStats ? UserStats[K] : never;
+        [K in keyof T]: K extends keyof UserStats ? UserStats[K] : never;
 };
+
+export type MUser = MUserClass;
 
 export class MUserClass {
 	user: Readonly<User>;

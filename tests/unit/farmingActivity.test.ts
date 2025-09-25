@@ -11,11 +11,6 @@ import { SkillsEnum } from '../../src/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions } from '../../src/lib/types/minions.js';
 import { farmingTask } from '../../src/tasks/minions/farmingActivity.js';
 
-declare global {
-	// eslint-disable-next-line no-var
-	var mUserFetch: ((userID: string) => Promise<any>) | undefined;
-}
-
 vi.mock('../../src/lib/util/handleTripFinish.js', () => ({
 	handleTripFinish: vi.fn()
 }));
@@ -177,10 +172,10 @@ function createStubUser({ gp, farmingLevel, woodcuttingLevel }: StubUserOptions)
 }
 
 describe('tree clearing fees', () => {
-	const redwoodPlant = Farming.Plants.find(plant => plant.name === 'Redwood tree');
-	if (!redwoodPlant) {
-		throw new Error('Expected redwood plant data');
-	}
+        const redwoodPlant = Farming.Plants.find(plant => plant.name === 'Redwood tree');
+        if (!redwoodPlant) {
+                throw new Error('Expected redwood plant data');
+        }
 
 	const basePatch: IPatchDataDetailed = {
 		ready: true,
@@ -197,52 +192,36 @@ describe('tree clearing fees', () => {
 		lastPayment: false
 	};
 
-	beforeEach(() => {
-		vi.restoreAllMocks();
-		(
-			globalThis as {
-				globalClient?: {
-					emit: ReturnType<typeof vi.fn>;
-					channels: { cache: Map<string, unknown> };
-				};
-			}
-		).globalClient = { emit: vi.fn(), channels: { cache: new Map() } };
-		(
-			globalThis as {
-				prisma?: {
-					clientStorage: {
-						findFirst: ReturnType<typeof vi.fn>;
-						update: ReturnType<typeof vi.fn>;
-					};
-					farmedCrop: {
-						update: ReturnType<typeof vi.fn>;
-					};
-					userStats: {
-						update: ReturnType<typeof vi.fn>;
-					};
-				};
-			}
-		).prisma = {
-			clientStorage: {
-				findFirst: vi.fn().mockResolvedValue({ id: '1', farming_loot_bank: {} }),
-				update: vi.fn().mockResolvedValue({ id: '1' })
-			},
-			farmedCrop: {
-				update: vi.fn().mockResolvedValue(undefined)
-			},
-			userStats: {
-				update: vi.fn().mockResolvedValue({})
-			}
-		};
-	});
+        const mutableGlobal = globalThis as any;
+        let originalMUserFetch = mutableGlobal.mUserFetch;
 
-	afterEach(() => {
-		delete (globalThis as { prisma?: unknown }).prisma;
-	});
+        beforeEach(() => {
+                vi.restoreAllMocks();
+                originalMUserFetch = mutableGlobal.mUserFetch;
+                mutableGlobal.globalClient = { emit: vi.fn(), channels: { cache: new Map() } };
+                mutableGlobal.prisma = {
+                        clientStorage: {
+                                findFirst: vi.fn().mockResolvedValue({ id: '1', farming_loot_bank: {} }),
+                                update: vi.fn().mockResolvedValue({ id: '1' })
+                        },
+                        farmedCrop: {
+                                update: vi.fn().mockResolvedValue(undefined)
+                        },
+                        userStats: {
+                                update: vi.fn().mockResolvedValue({})
+                        }
+                };
+        });
+
+        afterEach(() => {
+                mutableGlobal.prisma = undefined;
+                mutableGlobal.globalClient = undefined;
+                mutableGlobal.mUserFetch = originalMUserFetch;
+        });
 
 	it('only removes the tree clearing fee once during manual replant', async () => {
 		const user = createStubUser({ gp: 5000, farmingLevel: 99, woodcuttingLevel: 1 });
-		globalThis.mUserFetch = vi.fn().mockResolvedValue(user);
+                mutableGlobal.mUserFetch = vi.fn().mockResolvedValue(user);
 
 		const prepared = await prepareFarmingStep({
 			user: user as unknown as MUser,
@@ -267,33 +246,34 @@ describe('tree clearing fees', () => {
 		const removeSpy = vi.spyOn(user, 'removeItemsFromBank');
 		vi.spyOn(Math, 'random').mockReturnValue(1);
 
-		const task: FarmingActivityTaskOptions = {
-			type: 'Farming',
-			userID: user.id,
-			channelID: '123',
-			plantsName: redwoodPlant.name,
-			quantity: 1,
+                const task: FarmingActivityTaskOptions = {
+                        id: 1,
+                        type: 'Farming',
+                        userID: user.id,
+                        channelID: '123',
+                        plantsName: redwoodPlant.name,
+                        quantity: 1,
 			upgradeType: null,
 			payment: false,
 			treeChopFeePaid: treeFee,
-			patchType: {
-				lastPlanted: basePatch.lastPlanted,
-				patchPlanted: true,
-				plantTime: basePatch.plantTime,
-				lastQuantity: basePatch.lastQuantity,
-				lastUpgradeType: null,
-				lastPayment: false
-			},
-			planting: true,
-			currentDate: Date.now(),
-			duration: Time.Minute * 5,
-			autoFarmed: false
-		};
+                        patchType: {
+                                lastPlanted: basePatch.lastPlanted,
+                                patchPlanted: true,
+                                plantTime: basePatch.plantTime,
+                                lastQuantity: basePatch.lastQuantity,
+                                lastUpgradeType: null,
+                                lastPayment: false
+                        },
+                        planting: true,
+                        currentDate: Date.now(),
+                        finishDate: Date.now() + Time.Minute * 5,
+                        duration: Time.Minute * 5,
+                        autoFarmed: false
+                };
 
-		await farmingTask.run(task);
+                await (farmingTask.run as (data: FarmingActivityTaskOptions) => Promise<void>)(task);
 
-		expect(removeSpy).not.toHaveBeenCalled();
-		expect(user.user.GP).toBe(5000 - treeFee);
-		globalThis.mUserFetch = undefined;
-	});
+                expect(removeSpy).not.toHaveBeenCalled();
+                expect(user.user.GP).toBe(5000 - treeFee);
+        });
 });
