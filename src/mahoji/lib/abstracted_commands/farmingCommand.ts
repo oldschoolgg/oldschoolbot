@@ -53,8 +53,10 @@ export async function harvestCommand({
 		return `Please come back when your crops have finished growing in ${formatDuration(patch.readyIn!)}!`;
 	}
 
-	const treeStr = !plant ? null : treeCheck(plant, currentWoodcuttingLevel, GP, patch.lastQuantity);
-	if (treeStr) return treeStr;
+	const treeCheckResult = !plant
+		? { error: null, fee: 0 }
+		: treeCheck(plant, currentWoodcuttingLevel, GP, patch.lastQuantity);
+	if (treeCheckResult.error) return treeCheckResult.error;
 
 	const timePerPatchTravel = Time.Second * plant.timePerPatchTravel;
 	const timePerPatchHarvest = Time.Second * plant.timePerHarvest;
@@ -208,7 +210,7 @@ export async function farmingPlantCommand({
 	const inserted = await prisma.farmedCrop.create({
 		data: {
 			user_id: user.id,
-			date_planted: new Date(),
+			date_planted: new Date(currentDate),
 			item_id: plant.id,
 			quantity_planted: quantity,
 			was_autofarmed: autoFarmed,
