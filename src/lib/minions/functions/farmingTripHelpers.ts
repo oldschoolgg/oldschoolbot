@@ -96,19 +96,30 @@ export async function prepareFarmingStep({
 		};
 	}
 
-        const cost = new Bank();
-        for (const [seed, qty] of plant.inputItems.items()) {
-                if (availableBank.amount(seed.id) < qty * quantityToDo) {
-                        if (availableBank.amount(seed.id) >= qty) {
-                                quantityToDo = Math.floor(availableBank.amount(seed.id) / qty);
-                        }
+        const inputItems = [...plant.inputItems.items()];
+        for (const [seed, qty] of inputItems) {
+                const availableQty = availableBank.amount(seed.id);
+                if (availableQty < qty) {
+                        const singleCost = new Bank().add(seed.id, qty);
+                        return { success: false, error: `You don't own ${singleCost}.` };
                 }
-                cost.add(seed.id, qty * quantityToDo);
+                const maxForThisSeed = Math.floor(availableQty / qty);
+                quantityToDo = Math.min(quantityToDo, maxForThisSeed);
         }
 
-	if (!availableBank.has(cost)) {
-		return { success: false, error: `You don't own ${cost}.` };
-	}
+        if (quantityToDo <= 0) {
+                const minimumCost = inputItems.reduce((bank, [seed, qty]) => bank.add(seed.id, qty), new Bank());
+                return { success: false, error: `You don't own ${minimumCost}.` };
+        }
+
+        const cost = inputItems.reduce(
+                (bank, [seed, qty]) => bank.add(seed.id, qty * quantityToDo),
+                new Bank()
+        );
+
+        if (!availableBank.has(cost)) {
+                return { success: false, error: `You don't own ${cost}.` };
+        }
 
 	const wantsToPay = (pay || user.user.minion_defaultPay) && plant.canPayFarmer;
 	let didPay = false;
