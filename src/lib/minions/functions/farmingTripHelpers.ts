@@ -181,7 +181,7 @@ export async function prepareFarmingStep({
 	}
 
 	if (user.hasEquipped('Ring of endurance')) {
-		boostStr.push('10% time for Ring of Endurance');
+		boostStr.push('10% time for Ring of endurance');
 		duration *= 0.9;
 	}
 
