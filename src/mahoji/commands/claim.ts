@@ -3,8 +3,7 @@ import { dateFm, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
-import { BSO_MAX_TOTAL_LEVEL } from '@/lib/bso/bsoConstants.js';
-import { BitField, Channel } from '@/lib/constants.js';
+import { BitField, Channel, MAX_TOTAL_LEVEL } from '@/lib/constants.js';
 import { calcCLDetails } from '@/lib/data/Collections.js';
 import { getReclaimableItemsOfUser } from '@/lib/reclaimableItems.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
@@ -15,7 +14,7 @@ const claimables = [
 		name: 'Free T1 Perks',
 		hasRequirement: async (user: MUser): Promise<true | string> => {
 			const roboChimpUser = await roboChimpUserFetch(user.id);
-			if (roboChimpUser.osb_total_level === 2277 && roboChimpUser.bso_total_level === BSO_MAX_TOTAL_LEVEL) {
+			if (roboChimpUser.osb_total_level === 2277 && roboChimpUser.bso_total_level === MAX_TOTAL_LEVEL) {
 				return true;
 			}
 			return 'You need to be maxed in both bots (OSB and BSO) to claim this.';

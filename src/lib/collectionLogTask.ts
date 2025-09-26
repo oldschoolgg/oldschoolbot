@@ -86,7 +86,7 @@ class CollectionLogTask {
 				text: clPageName,
 				x: 4,
 				y: index * ITEM_HEIGHT + 13,
-				color: colors[status]
+				color: collectionLog.category === 'Discontinued' ? colors.not_started : colors[status]
 			});
 			index++;
 		}
@@ -110,6 +110,9 @@ class CollectionLogTask {
 
 		if (options.flags.temp) {
 			options.type = 'temp';
+		}
+		if (options.flags.tame) {
+			options.type = 'tame';
 		}
 		const { collection, type, user, flags } = options;
 
@@ -315,6 +318,10 @@ class CollectionLogTask {
 			color = this.COLORS.PAGE_TITLE.PARTIAL_COMPLETION;
 		}
 
+		if (collectionLog.category === 'Discontinued') {
+			color = this.COLORS.PAGE_TITLE.NOT_STARTED;
+		}
+
 		const obtainableMeasure = canvas.measureText(toDraw, 'Compact');
 		canvas.drawText({
 			text: `${flags.missing ? '' : `${collectionLog.collectionObtained.toLocaleString()}/`}${collectionLog.collectionTotal.toLocaleString()}`,
@@ -323,7 +330,7 @@ class CollectionLogTask {
 			color
 		});
 
-		if (collectionLog.completions && ['collection', 'bank'].includes(type)) {
+		if (collectionLog.completions && ['collection', 'bank', 'tames'].includes(type)) {
 			const baseText = collectionLog.isActivity ? 'Completions: ' : 'Kills: ';
 			let drawnSoFar = baseText;
 			// Times done/killed

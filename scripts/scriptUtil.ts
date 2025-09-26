@@ -4,6 +4,8 @@ import { Stopwatch } from '@oldschoolgg/toolkit/structures';
 import { TimerManager } from '@sapphire/timer-manager';
 import { Bank, type ItemBank } from 'oldschooljs';
 
+import '../src/lib/safeglobals.js';
+
 import { crons } from '@/lib/crons.js';
 import { sql } from '@/lib/postgres.js';
 import { sonicBoom } from '@/lib/util/logger.js';

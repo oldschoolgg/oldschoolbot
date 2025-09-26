@@ -13,7 +13,7 @@ import { SkillsEnum } from '@/lib/skilling/types.js';
 export { PerkTier };
 
 type BotType = 'OSB' | 'BSO';
-export const BOT_TYPE: BotType = 'OSB' as 'BSO' | 'OSB';
+export const BOT_TYPE: BotType = 'BSO' as 'BSO' | 'OSB';
 export const BOT_TYPE_LOWERCASE: 'bso' | 'osb' = BOT_TYPE.toLowerCase() as 'bso' | 'osb';
 const isProduction = process.env.NODE_ENV === 'production';
 const GENERAL_CHANNEL_ID =
@@ -499,7 +499,7 @@ export const PATRON_ONLY_GEAR_SETUP =
 
 export const projectiles = {
 	arrow: {
-		items: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
+		items: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow', 'Hellfire arrow']),
 		savedByAvas: true,
 		weapons: resolveItems(['Twisted bow'])
 	},
@@ -526,7 +526,7 @@ export const projectiles = {
 		])
 	},
 	javelin: {
-		items: resolveItems(['Amethyst javelin', 'Rune javelin', 'Dragon javelin']),
+		items: resolveItems(['Amethyst javelin', 'Rune javelin', 'Dragon javelin', 'Obsidian javelin']),
 		savedByAvas: false,
 		weapons: resolveItems(['Heavy ballista'])
 	}
@@ -617,15 +617,11 @@ export const patronFeatures = {
 	}
 };
 
-export const BSO_MAX_TOTAL_LEVEL = 3120;
-
 if (!process.env.TEST && isMainThread) {
 	console.log(
 		`Starting... Git[${gitHash}] ClientID[${globalConfig.clientID}] Production[${globalConfig.isProduction}]`
 	);
 }
-
-export const MAX_CLUES_DROPPED = 100;
 
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
 export type PvMMethod = (typeof PVM_METHODS)[number];

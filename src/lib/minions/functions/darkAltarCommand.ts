@@ -1,7 +1,8 @@
-import { increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { increaseNumByPercent, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { Bank, Items, SkillsEnum } from 'oldschooljs';
 
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { DarkAltarOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
@@ -84,6 +85,23 @@ export async function darkAltarCommand({
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'DarkAltar');
+	// Calculate Abyssal amulet boost:
+	if (user.hasEquippedOrInBank(['Abyssal amulet'])) {
+		const abyssalAmuletBoost = inventionBoosts.abyssalAmulet.boosts.find(b =>
+			b.runes.some(r => stringMatches(r, `${rune} rune (zeah)`))
+		);
+		if (abyssalAmuletBoost) {
+			const res = await inventionItemBoost({
+				user,
+				inventionID: InventionID.AbyssalAmulet,
+				duration: maxTripLength
+			});
+			if (res.success) {
+				timePerRune = reduceNumByPercent(timePerRune, abyssalAmuletBoost.boost);
+				boosts.push(`${abyssalAmuletBoost.boost}% boost for Abyssal amulet (Removed ${res.materialCost})`);
+			}
+		}
+	}
 	let quantity = Math.floor(maxTripLength / timePerRune);
 	let duration = maxTripLength;
 	const totalCost = new Bank();

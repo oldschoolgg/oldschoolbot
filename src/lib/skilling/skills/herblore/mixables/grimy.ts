@@ -1,5 +1,6 @@
 import { Bank, Items } from 'oldschooljs';
 
+import { bsoGrimy } from '@/lib/bso/skills/herblore/bsoGrimy.js';
 import type { Mixable } from '@/lib/skilling/types.js';
 
 const Grimy: Mixable[] = [
@@ -152,7 +153,8 @@ const Grimy: Mixable[] = [
 		tickRate: 0.5,
 		bankTimePerPotion: 0.15,
 		zahur: true
-	}
+	},
+	...bsoGrimy
 ];
 
 export default Grimy;

@@ -1,6 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { EMonster, Monsters, resolveItems } from 'oldschooljs';
 
+import { NexMonster } from '@/lib/nex.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
 	ActivityTaskData,
@@ -597,7 +598,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Nex',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[EMonster.NEX]: 25
+				[NexMonster.id]: 25
 			}
 		})
 	},

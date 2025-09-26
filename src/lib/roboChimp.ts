@@ -34,8 +34,8 @@ LIMIT 10;`;
 	return random;
 }
 
-const clKey: keyof User = 'osb_cl_percent';
-const levelKey: keyof User = 'osb_total_level';
+const clKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_cl_percent' : 'bso_cl_percent';
+const levelKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_total_level' : 'bso_total_level';
 const totalXPKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_total_xp' : 'bso_total_xp';
 
 export async function roboChimpSyncData(user: MUser, newCL?: Bank) {

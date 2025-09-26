@@ -1,6 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
+import { NexMonster } from '@/lib/nex.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
@@ -785,7 +786,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Nex',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[EMonster.NEX]: 1
+				[NexMonster.id]: 1
 			}
 		})
 	},

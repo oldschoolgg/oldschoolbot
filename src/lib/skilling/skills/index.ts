@@ -1,5 +1,6 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 
+import { skillEmoji } from '@/lib/data/emojis.js';
 import type { Skill } from '@/lib/skilling/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import Agility from './agility.js';
@@ -73,5 +74,23 @@ export const Skills: Record<string, Skill> = {
 		id: SkillsEnum.Slayer,
 		emoji: Emoji.Slayer,
 		name: 'Slayer'
+	},
+	Dungeoneering: {
+		aliases: ['dg', 'dungeoneering'],
+		id: SkillsEnum.Dungeoneering,
+		emoji: Emoji.Dungeoneering,
+		name: 'Dungeoneering'
+	},
+	Invention: {
+		aliases: ['invention', 'inv'],
+		id: SkillsEnum.Invention,
+		emoji: Emoji.Invention,
+		name: 'Invention'
+	},
+	Divination: {
+		aliases: ['divination', 'div'],
+		id: SkillsEnum.Divination,
+		emoji: skillEmoji.divination,
+		name: 'Divination'
 	}
 };

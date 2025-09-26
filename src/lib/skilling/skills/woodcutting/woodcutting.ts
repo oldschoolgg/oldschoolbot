@@ -1,6 +1,7 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { itemID, LootTable } from 'oldschooljs';
 
+import { bsoLogs } from '@/lib/bso/skills/woodcutting/logs.js';
 import type { Log } from '@/lib/skilling/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 
@@ -215,7 +216,8 @@ const logs: Log[] = [
 		qpRequired: 0,
 		clueScrollChance: 72_321,
 		clueNestsOnly: true
-	}
+	},
+	...bsoLogs
 ];
 
 const twitchersGloves = ['egg', 'ring', 'seed', 'clue'] as const;

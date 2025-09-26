@@ -1,6 +1,7 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { EItem } from 'oldschooljs/EItem';
 
+import { bsoBurnables } from '@/lib/bso/skills/firemaking/bsoBurnables.js';
 import type { Burnable } from '@/lib/skilling/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 
@@ -64,7 +65,8 @@ const burnables: Burnable[] = [
 		level: 90,
 		xp: 350,
 		inputLogs: EItem.REDWOOD_LOGS
-	}
+	},
+	...bsoBurnables
 ];
 
 const pyromancerItems: { [key: number]: number } = {

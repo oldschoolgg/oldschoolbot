@@ -2,7 +2,6 @@ import { Time } from '@oldschoolgg/toolkit';
 import { resolveItems } from 'oldschooljs';
 
 export const GLOBAL_BSO_XP_MULTIPLIER = 5;
-export const BSO_MAX_TOTAL_LEVEL = 3120;
 
 export const MIN_LENGTH_FOR_PET = Time.Minute * 5;
 

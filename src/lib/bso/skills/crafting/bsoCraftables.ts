@@ -1,9 +1,9 @@
 import { Bank, itemID } from 'oldschooljs';
 
+import { carapaceCraftables } from '@/lib/bso/skills/crafting/carapace.js';
 import type { Craftable } from '@/lib/skilling/types.js';
-import { carapaceCraftables } from './carapace.js';
 
-export const customCraftables: Craftable[] = [
+export const bsoCraftables: Craftable[] = [
 	{
 		name: 'Master farmer hat',
 		id: itemID('Master farmer hat'),

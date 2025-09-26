@@ -23,7 +23,7 @@ const items = [
 	['Gorajan archer boots', 'Pernix boots']
 ];
 
-const Gorajan: SmithedItem[] = items.map(([gora, other]) => ({
+export const bsoGorajanSmithables: SmithedItem[] = items.map(([gora, other]) => ({
 	name: gora,
 	level: 99,
 	xp: 50_000,
@@ -32,5 +32,3 @@ const Gorajan: SmithedItem[] = items.map(([gora, other]) => ({
 	timeToUse: Time.Second * 3.4,
 	outputMultiple: 1
 }));
-
-export default Gorajan;

@@ -1,3 +1,4 @@
+import { bsoCreatures } from '@/lib/bso/skills/hunter/bsoCreatures.js';
 import type { Creature } from '@/lib/skilling/types.js';
 import birdSnaringCreatures from './birdSnaring.js';
 import boxTrappingCreatures from './boxTrapping.js';
@@ -20,7 +21,8 @@ const creatures: Creature[] = [
 	...netTrappingCreatures,
 	...pitfallTrappingCreatures,
 	...rabbitSnaringCreatures,
-	...trackingCreatures
+	...trackingCreatures,
+	...bsoCreatures
 ];
 
 export default creatures;

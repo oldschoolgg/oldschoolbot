@@ -1,6 +1,10 @@
+import { masterFarmerOutfit } from '@/lib/bso/bsoConstants.js';
+import { hasUnlockedAtlantis } from '@/lib/bso/bsoUtil.js';
+import { BitField } from '@/lib/constants.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import type { Plant } from '@/lib/skilling/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { FarmingPatchName } from '@/lib/util/farmingHelpers.js';
 import { randInt } from '@/lib/util/rng.js';
 
 export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number] {
@@ -28,6 +32,21 @@ export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number
 			break;
 		}
 	}
+	if (user.bitfield.includes(BitField.HasScrollOfFarming)) numOfPatches += 2;
+	if (user.hasEquipped(masterFarmerOutfit, true)) numOfPatches += 3;
+
+	// Unlock extra patches in Atlantis
+	const atlantisPatches: Partial<Record<FarmingPatchName, number>> = {
+		fruit_tree: 1,
+		seaweed: 2,
+		tree: 1
+	};
+	if (hasUnlockedAtlantis(user)) {
+		const extraAtlantisPatches = atlantisPatches[plant.seedType];
+		if (extraAtlantisPatches) {
+			numOfPatches += extraAtlantisPatches;
+		}
+	}
 
 	if (user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
 		switch (plant.seedType) {
@@ -52,13 +71,13 @@ export function calcVariableYield(
 ) {
 	if (!plant.variableYield) return 0;
 	let cropYield = 0;
-	if (plant.name === 'Crystal tree') {
+	if (plant.name === 'Crystal tree' || plant.name === 'Grand crystal tree') {
 		if (!plant.variableOutputAmount) return 0;
-		for (let i = plant.variableOutputAmount.length; i > 0; i--) {
-			const [upgradeTypeNeeded, min, max] = plant.variableOutputAmount[i - 1];
+		for (const [upgradeTypeNeeded, min, max] of plant.variableOutputAmount) {
 			if (upgradeType === upgradeTypeNeeded) {
-				cropYield += randInt(min, max);
-				cropYield *= quantityAlive;
+				for (let i = 0; i < quantityAlive; i++) {
+					cropYield += randInt(min, max);
+				}
 				break;
 			}
 		}

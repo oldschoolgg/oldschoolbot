@@ -2,6 +2,7 @@ import { objectEntries, partition } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { Bank, EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
+import { NexMonster } from '@/lib/nex.js';
 import type { RequirementFailure } from '@/lib/structures/Requirements.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
 import { formatList, itemNameFromID } from '@/lib/util/smallUtils.js';
@@ -62,7 +63,7 @@ export const musicCapeRequirements = new Requirements()
 			[Monsters.CommanderZilyana.id]: 1,
 			[Monsters.Kreearra.id]: 1,
 			[Monsters.KrilTsutsaroth.id]: 1,
-			[EMonster.NEX]: 1,
+			[NexMonster.id]: 1,
 			[Monsters.Cerberus.id]: 1,
 			[Monsters.GiantMole.id]: 1,
 			[Monsters.Jogre.id]: 1,

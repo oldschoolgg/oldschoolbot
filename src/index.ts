@@ -144,7 +144,7 @@ client.on('interactionCreate', async interaction => {
 		if (interaction.isRepliable()) {
 			await interactionReply(interaction, {
 				content:
-					'Old School Bot is currently shutting down for maintenance/updates, please try again in a couple minutes! Thank you <3',
+					'The bot is currently shutting down for maintenance/updates, please try again in a couple minutes! Thank you <3',
 				ephemeral: true
 			});
 		}
@@ -225,7 +225,7 @@ client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
 client.once('ready', () => onStartup());
 
 async function main() {
-	console.log('Starting up Old School Bot...');
+	console.log('Starting up...');
 	await Promise.all([
 		preStartup(),
 		import('exit-hook').then(({ asyncExitHook }) =>

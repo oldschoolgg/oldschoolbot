@@ -3,7 +3,7 @@ import { Bank, LootTable } from 'oldschooljs';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { type Creature, HunterTechniqueEnum } from '@/lib/skilling/types.js';
 
-const customBSOCreatures: Creature[] = [
+export const bsoCreatures: Creature[] = [
 	{
 		name: 'Sand Gecko',
 		id: 3251,
@@ -66,5 +66,3 @@ const customBSOCreatures: Creature[] = [
 		}
 	}
 ];
-
-export default customBSOCreatures;

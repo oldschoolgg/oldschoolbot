@@ -1,8 +1,8 @@
 import { Bank, deepResolveItems, EItem, type ItemBank, Items, itemID } from 'oldschooljs';
 
+import { bsoCreatables } from '@/lib/bso/creatables/bsoCreatables.js';
 import type { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { BitField } from '@/lib/constants.js';
-import { BsoCreateables } from '@/lib/data/creatables/bsoItems.js';
 import { blisterwoodRequirements, ivandisRequirements } from '@/lib/minions/data/templeTrekking.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import type { Skills } from '@/lib/types/index.js';
@@ -2157,6 +2157,16 @@ const Createables: Createable[] = [
 		requiredSkills: { magic: 60, runecraft: 60 }
 	},
 	{
+		name: 'Kodai wand',
+		inputItems: {
+			[itemID('Master wand')]: 1,
+			[itemID('Kodai insignia')]: 1
+		},
+		outputItems: {
+			[itemID('Kodai wand')]: 1
+		}
+	},
+	{
 		name: 'Partyhat & specs',
 		inputItems: {
 			[itemID('Blue partyhat')]: 1,
@@ -2698,7 +2708,7 @@ const Createables: Createable[] = [
 	...caCreatables,
 	...forestryCreatables,
 	...camdozaalItems,
-	...BsoCreateables
+	...bsoCreatables
 ];
 
 export default Createables;

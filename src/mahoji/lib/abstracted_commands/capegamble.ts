@@ -5,7 +5,6 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
-import { petMessage } from '@/lib/util/displayCluesAndPets.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { roll } from '@/lib/util/rng.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
@@ -113,9 +112,7 @@ export async function capeGambleCommand(
 	const loot = gotPet ? new Bank().add(pet.id) : undefined;
 
 	await user.transactItems({ itemsToAdd: loot, itemsToRemove: new Bank().add(item.id), collectionLog: true });
-	let str = '';
 	if (gotPet) {
-		str += petMessage(loot);
 		globalClient.emit(
 			Events.ServerNotification,
 			`**${user.badgedUsername}'s** just received their ${formatOrdinal(
@@ -123,7 +120,6 @@ export async function capeGambleCommand(
 			)} ${pet.name} pet by sacrificing a ${item.name} for the ${formatOrdinal(newSacrificedCount)} time!`
 		);
 		return {
-			content: str,
 			files: [
 				{
 					name: 'image.jpg',

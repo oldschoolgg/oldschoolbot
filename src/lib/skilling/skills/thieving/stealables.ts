@@ -1,6 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { LootTable, Monsters } from 'oldschooljs';
 
+import { bsoStealables } from '@/lib/bso/skills/thieving/bsoStealables.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 
 const {
@@ -700,7 +701,8 @@ const pickpocketables: Stealable[] = [
 		intercept: -80.993_75,
 		fireCapeRequired: true,
 		petChance: 176_743
-	}
+	},
+	...bsoStealables
 ];
 
 export const stealables: Stealable[] = [...stalls, ...pickpocketables];

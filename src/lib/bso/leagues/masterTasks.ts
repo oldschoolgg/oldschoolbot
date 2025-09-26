@@ -4,6 +4,7 @@ import { Bank, type ItemBank, LuckyImpling, resolveItems } from 'oldschooljs';
 import { calcTotalLevel } from '@/lib/bso/bsoUtil.js';
 import { dungBuyables } from '@/lib/bso/skills/dungoneering/dungData.js';
 import { Inventions } from '@/lib/bso/skills/invention/inventions.js';
+import { bsoDwarvenSmithables } from '@/lib/bso/skills/smithing/dwarven.js';
 import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
 import { getTameSpecies } from '@/lib/bso/tameUtil.js';
 import { BitField } from '@/lib/constants.js';
@@ -22,7 +23,6 @@ import {
 import { implings } from '@/lib/implings.js';
 import { MysteryImpling } from '@/lib/simulation/customImplings.js';
 import { ashes } from '@/lib/skilling/skills/prayer.js';
-import Dwarven from '@/lib/skilling/skills/smithing/smithables/dwarven.js';
 import { slayerUnlockableRewards } from '@/lib/slayer/slayerUnlocks.js';
 import type { Task } from './leaguesUtils.js';
 
@@ -358,7 +358,7 @@ export const masterTasks: Task[] = [
 		name: 'Create every Dwarven item from scratch',
 		has: async ({ cl, skillsLevels }) => {
 			const totalInput = new Bank();
-			for (const item of Dwarven) {
+			for (const item of bsoDwarvenSmithables) {
 				if (skillsLevels.smithing < item.level) return false;
 				if (!cl.has(item.id)) return false;
 				totalInput.add(item.inputBars);

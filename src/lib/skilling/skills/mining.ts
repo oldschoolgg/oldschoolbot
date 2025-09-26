@@ -1,6 +1,7 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { itemID, LootTable } from 'oldschooljs';
 
+import { bsoOres } from '@/lib/bso/skills/mining/ores.js';
 import type { Ore } from '@/lib/skilling/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 
@@ -268,7 +269,8 @@ const ores: Ore[] = [
 		minerals: 20,
 		clueScrollChance: 46_350,
 		aliases: ['amy', 'ame']
-	}
+	},
+	...bsoOres
 ];
 
 // Uses determineMiningTime function, therefore Ore object and id -1

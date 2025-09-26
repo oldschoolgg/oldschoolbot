@@ -157,6 +157,8 @@ const GoldChest = new LootTable({ limit: 143 })
 	.every('Swamp paste', [40, 70])
 	.tertiary(61, 'Gold locks')
 	.tertiary(54, SplitBarkScrollsTable)
+	.oneIn(75 * 5, 'Necromancer kit')
+	.oneIn(80 * 5, 'Shade skull')
 
 	.add('Battlestaff', 3, 11)
 	.add('Adamant spear', 1, 7)
@@ -225,13 +227,7 @@ const chests = [
 	{
 		name: 'Silver chest',
 		table: SilverChest,
-		items: resolveItems([
-			'Silver key red',
-			'Silver key brown',
-			'Silver key crimson',
-			'Silver key black',
-			'Silver key purple'
-		])
+		items: resolveItems(['Silver key red', 'Silver key brown', 'Silver key crimson', 'Silver key black'])
 	},
 	{
 		name: 'Gold chest',

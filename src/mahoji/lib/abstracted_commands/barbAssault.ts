@@ -1,20 +1,17 @@
 import { calcWhatPercent, reduceNumByPercent, roll, round, Time } from '@oldschoolgg/toolkit';
-import { Events } from '@oldschoolgg/toolkit/constants';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { formatDuration, formatOrdinal, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { Bank, Items, itemID } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { degradeItem } from '@/lib/degradeableItems.js';
-import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '@/lib/simulation/baGamble.js';
 import { maxOtherStats } from '@/lib/structures/Gear.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
@@ -182,7 +179,7 @@ export async function barbAssaultGambleCommand(
 		interaction,
 		`Are you sure you want to do ${quantity.toLocaleString()}x ${name} gamble, using ${(cost * quantity).toLocaleString()} honour points?`
 	);
-	const newStats = await userStatsUpdate(
+	await userStatsUpdate(
 		user.id,
 		{
 			honour_points: {
@@ -202,20 +199,8 @@ export async function barbAssaultGambleCommand(
 	);
 	const loot = new Bank().add(table.roll(quantity));
 	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
-	let str = `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`;
-	str += await displayCluesAndPets(user, loot);
-	if (loot.has('Pet Penance Queen')) {
-		const amount = await countUsersWithItemInCl(itemID('Pet penance queen'), false);
+	const str = `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received... ${loot}`;
 
-		globalClient.emit(
-			Events.ServerNotification,
-			`<:Pet_penance_queen:324127377649303553> **${user.badgedUsername}'s** minion, ${
-				user.minionName
-			}, just received a Pet penance queen from their ${formatOrdinal(
-				newStats.high_gambles
-			)} High gamble! They are the ${formatOrdinal(amount + 1)} to it.`
-		);
-	}
 	const perkTier = user.perkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 

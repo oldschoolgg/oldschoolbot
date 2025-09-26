@@ -1,8 +1,9 @@
-import { randArrItem, roll, Time } from '@oldschoolgg/toolkit';
+import { randArrItem, Time } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { LRUCache } from 'lru-cache';
 import { Bank, ItemGroups, LootTable } from 'oldschooljs';
 
+import { roll } from '@/lib/util/rng.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 import { BitField } from './constants.js';
 
@@ -206,6 +207,10 @@ export async function triggerRandomEvent(user: MUser, type: activity_type_enum, 
 		}
 	}
 	loot.add(event.loot.roll());
+	if (roll(150)) {
+		loot.add('Balloon cat');
+		messages.push('Found a cute Balloon cat!');
+	}
 	await userStatsBankUpdate(user, 'random_event_completions_bank', new Bank().add(event.id));
 	messages.push(`Did ${event.name} random event and got ${loot}`);
 	return {

@@ -3,7 +3,7 @@ import { itemID } from 'oldschooljs';
 
 import type { SmithedItem } from '@/lib/skilling/types.js';
 
-const Silver: SmithedItem[] = [
+export const bsoSilverSmithables: SmithedItem[] = [
 	{
 		name: 'Silver stake',
 		level: 95,
@@ -24,5 +24,3 @@ const Silver: SmithedItem[] = [
 		outputMultiple: 10
 	}
 ];
-
-export default Silver;

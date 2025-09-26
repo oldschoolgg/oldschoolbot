@@ -1,3 +1,4 @@
+import { bsoCraftables } from '@/lib/bso/skills/crafting/bsoCraftables.js';
 import type { Craftable } from '@/lib/skilling/types.js';
 import Birdhouse from './birdhouse.js';
 import Built from './built.js';
@@ -20,5 +21,6 @@ export const Craftables: Craftable[] = [
 	...Leather,
 	...Misc,
 	...Silver,
-	...Tanning
+	...Tanning,
+	...bsoCraftables
 ];

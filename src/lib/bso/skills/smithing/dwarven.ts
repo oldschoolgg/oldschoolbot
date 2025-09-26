@@ -3,7 +3,7 @@ import { itemID } from 'oldschooljs';
 
 import type { SmithedItem } from '@/lib/skilling/types.js';
 
-const Dwarven: SmithedItem[] = [
+export const bsoDwarvenSmithables: SmithedItem[] = [
 	{
 		name: 'Dwarven greataxe',
 		level: 99,
@@ -126,5 +126,3 @@ const Dwarven: SmithedItem[] = [
 		cantBeDoubled: true
 	}
 ];
-
-export default Dwarven;

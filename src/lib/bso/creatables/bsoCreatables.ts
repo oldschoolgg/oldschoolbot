@@ -1,6 +1,7 @@
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Bank, Items, itemID, resolveItems } from 'oldschooljs';
 
+import { sunMoonCreatables } from '@/lib/bso/creatables/sunMoonCreatables.js';
 import { dyedItems } from '@/lib/bso/dyedItems.js';
 import { expertCapesSource } from '@/lib/bso/expertCapes.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
@@ -8,7 +9,6 @@ import { tameCreatables } from '@/lib/bso/tameCreatables.js';
 import { seaMonkeyStaves } from '@/lib/bso/tames.js';
 import { brokenPernixOutfit, brokenTorvaOutfit, brokenVirtusOutfit } from '@/lib/data/CollectionsExport.js';
 import { moktangCreatables } from '@/lib/data/creatables/moktangCreatables.js';
-import { sunMoonCreatables } from '@/lib/data/creatables/sunMoonCreatables.js';
 import type { Createable } from '@/lib/data/createables.js';
 import { nexBrokenArmorDetails } from '@/lib/nex.js';
 import Skillcapes from '@/lib/skilling/skillcapes.js';
@@ -1232,7 +1232,7 @@ for (const bone of divineWaterBones) {
 	});
 }
 
-export const BsoCreateables: Createable[] = [
+export const bsoCreatables: Createable[] = [
 	...bsoItems,
 	...chaoticCreatables,
 	...brokenItems,
@@ -1426,7 +1426,7 @@ const potionOfLightLogs = [
 ];
 
 for (const { item, qty } of potionOfLightLogs) {
-	BsoCreateables.push({
+	bsoCreatables.push({
 		name: `Lumina (${item.name})`,
 		inputItems: new Bank().add('Elder rune', 30).add(item, qty),
 		outputItems: new Bank().add('Lumina')
@@ -1436,7 +1436,7 @@ for (const { item, qty } of potionOfLightLogs) {
 for (const { cape, skills } of expertCapesSource) {
 	const capeBank = new Bank().add(cape.id).freeze();
 
-	BsoCreateables.push({
+	bsoCreatables.push({
 		name: `Revert ${cape.name}`,
 		inputItems: capeBank,
 		outputItems: user => {
@@ -1454,13 +1454,13 @@ for (const { cape, skills } of expertCapesSource) {
 }
 
 for (const cape of Skillcapes) {
-	BsoCreateables.push({
+	bsoCreatables.push({
 		name: cape.masterCapeInverted.name,
 		inputItems: new Bank().add(cape.masterCape).add('Coins', 100_000_000),
 		outputItems: new Bank().add(cape.masterCapeInverted),
 		noCl: true
 	});
-	BsoCreateables.push({
+	bsoCreatables.push({
 		name: `Revert ${cape.masterCapeInverted.name}`,
 		inputItems: new Bank().add(cape.masterCapeInverted),
 		outputItems: new Bank().add(cape.masterCape),
