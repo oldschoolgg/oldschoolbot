@@ -8,7 +8,7 @@ import Createables from '@/lib/data/createables.js';
 import { mockMUser } from './userutil.js';
 
 it(`${BOT_TYPE} Creatables`, () => {
-	const result = Createables.map(i => ({
+	const result = Createables.sort((a, b) => a.name.localeCompare(b.name)).map(i => ({
 		...i,
 		inputItems: isFunction(i.inputItems) ? 'function' : new Bank(i.inputItems),
 		outputItems: isFunction(i.outputItems) ? 'function' : new Bank(i.outputItems),
@@ -18,7 +18,7 @@ it(`${BOT_TYPE} Creatables`, () => {
 });
 
 it(`${BOT_TYPE} Buyables`, () => {
-	const result = Buyables.map(i => ({
+	const result = Buyables.sort((a, b) => a.name.localeCompare(b.name)).map(i => ({
 		...i,
 		itemCost: new Bank(i.itemCost),
 		outputItems: !i.outputItems
