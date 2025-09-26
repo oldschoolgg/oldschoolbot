@@ -70,7 +70,7 @@ export async function harvestCommand({
 	}
 
 	if (user.hasEquippedOrInBank(['Ring of endurance'])) {
-		boostStr.push('10% time for Ring of Endurance');
+		boostStr.push('10% time for Ring of endurance');
 		duration *= 0.9;
 	}
 
