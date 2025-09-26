@@ -1,7 +1,6 @@
 import { Bank, Items, itemID } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { BOT_TYPE } from '@/lib/constants.js';
 import { randInt } from '@/lib/util/rng.js';
 import { parseBank, parseQuantityAndItem, parseStringBank } from '../../src/lib/util/parseStringBank.js';
 
@@ -76,8 +75,8 @@ describe('Bank Parsers', () => {
 			inputBank: bank,
 			flags: { tradeables: '' }
 		});
-		// All 4 tradeable in BSO
-		expect(res2.length).toEqual(BOT_TYPE === 'OSB' ? 3 : 4);
+
+		expect(res2.length).toEqual(3);
 
 		const res3 = parseBank({
 			inputBank: bank,
