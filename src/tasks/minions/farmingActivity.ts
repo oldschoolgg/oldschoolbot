@@ -311,9 +311,10 @@ export const farmingTask: MinionTask = {
 					const plannedFee = data.treeChopFeePlanned ?? (prePaid > 0 ? prePaid : 0);
 					const coinsOwedNow = Math.max(0, gpToCutTree - prePaid);
 					if (GP < coinsOwedNow) {
-						return sendToChannelID(channelID, {
+						await sendToChannelID(channelID, {
 							content: `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You still need ${coinsOwedNow} GP.`
 						});
+						return;
 					}
 					if (coinsOwedNow > 0) {
 						await user.removeItemsFromBank(new Bank().add('Coins', coinsOwedNow));
