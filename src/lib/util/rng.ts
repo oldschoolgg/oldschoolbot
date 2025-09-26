@@ -87,20 +87,20 @@ export function perHourChance(
 		return;
 	}
 
-	const chancePerHour = Math.min(1, 1 / oneInXPerHourChance);
-	const wholeHours = Math.floor(hoursPassed);
-	const remainingHours = hoursPassed - wholeHours;
-
-	for (let i = 0; i < wholeHours; i++) {
-		if (rand(0, 1) < chancePerHour) {
-			successFunction();
-		}
+	const ratePerHour = 1 / oneInXPerHourChance;
+	if (ratePerHour <= 0) {
+		return;
 	}
 
-	if (remainingHours > 0) {
-		const remainderChance = chancePerHour >= 1 ? 1 : 1 - Math.pow(1 - chancePerHour, remainingHours);
-		if (rand(0, 1) < remainderChance) {
-			successFunction();
+	let elapsedHours = 0;
+	while (true) {
+		const randomValue = rand(0, 1);
+		const clamped = Math.min(Math.max(randomValue, Number.EPSILON), 1 - Number.EPSILON);
+		const waitTime = -Math.log(1 - clamped) / ratePerHour;
+		elapsedHours += waitTime;
+		if (elapsedHours > hoursPassed) {
+			break;
 		}
+		successFunction();
 	}
 }

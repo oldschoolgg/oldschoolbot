@@ -133,8 +133,9 @@ export async function prepareFarmingStep({
 
 	const cost = inputItems.reduce((bank, [seed, qty]) => bank.add(seed.id, qty * quantityToDo), new Bank());
 	if (treeChopCost > 0) {
-		cost.add('Coins', treeChopCost);
-		infoStr.push(`You are paying a nearby farmer ${treeChopCost} GP to remove the previous trees.`);
+		infoStr.push(
+			`You may need to pay a nearby farmer up to ${treeChopCost} GP to remove the previous trees when harvesting.`
+		);
 	}
 
 	if (!availableBank.has(cost)) {
