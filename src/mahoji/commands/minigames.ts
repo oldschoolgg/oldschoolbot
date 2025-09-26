@@ -82,6 +82,8 @@ import {
 import { tearsOfGuthixCommand } from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
 import { trekCommand, trekShop } from '@/mahoji/lib/abstracted_commands/trekCommand.js';
 import { troubleBrewingStartCommand } from '@/mahoji/lib/abstracted_commands/troubleBrewingCommand.js';
+import { ValeTotemsBuyables, ValeTotemsSellables } from '@/lib/data/buyables/valeTotemsBuyables.js';
+import { ValeTotemsDecorations, valeTotemsStartCommand } from '@/mahoji/lib/abstracted_commands/valeTotemsCommand.js';
 import {
 	VolcanicMineShop,
 	volcanicMineCommand,
@@ -1058,6 +1060,74 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		/**
+		 *
+		 * Vale Totems
+		 *
+		 */
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'vale_totems',
+			description: "Vale Totems fletching minigame.",
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a trip.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'item_to_fletch',
+							description: 'Item to fletch during minigame.',
+							required: true,
+							choices: ValeTotemsDecorations.map(i => ({ name: i.item.name, value: i.item.name }))
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'stamina_pot',
+							description: 'Whether to use Stamina Potion for trip.',
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'buy',
+					description: 'Buy Vale Totem minigame reward.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'item',
+							description: 'Item to buy using research points.',
+							required: true,
+							autocomplete: async (value: string) => {
+								return ValeTotemsBuyables.filter(i =>
+									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+								).map(i => ({ name: i.name, value: i.name }));
+							}
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'sell',
+					description: 'Sell Vale Totem minigame reward.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'item',
+							description: 'Item to sell using research points.',
+							required: true,
+							autocomplete: async (value: string) => {
+								return ValeTotemsSellables.filter(i =>
+									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+								).map(i => ({ name: i.name, value: i.name }));
+							}
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({
@@ -1144,6 +1214,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 				logs: string;
 			};
 		};
+		vale_totems?: {
+			start?: { item_to_fletch: string, stamina_pot?: boolean };
+			buy?: { item: string };
+			sell?: { item: string };
+		}
 	}>) => {
 		const user = await mUserFetch(userID);
 
@@ -1470,6 +1545,26 @@ export const minigamesCommand: OSBMahojiCommand = {
 				options.shades_of_morton.start.logs,
 				options.shades_of_morton.start.shade
 			);
+		}
+
+		/**
+		 *
+		 * Vale Totems
+		 *
+		 */
+		if (options.vale_totems?.start) {
+			return valeTotemsStartCommand(
+				user,
+				channelID,
+				options.vale_totems?.start.item_to_fletch,
+				options.vale_totems?.start.stamina_pot
+			);
+		}
+		if (options.vale_totems?.buy) {
+
+		}
+		if (options.vale_totems?.sell) {
+
 		}
 
 		return 'Invalid command.';

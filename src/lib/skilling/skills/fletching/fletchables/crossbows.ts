@@ -10,7 +10,8 @@ const Crossbows: Fletchable[] = [
 		level: 9,
 		xp: 6,
 		inputItems: new Bank({ Logs: 1 }),
-		tickRate: 3
+		tickRate: 3,
+        fletchingKnifeBoost: true
 	},
 	{
 		name: 'Oak stock',
@@ -18,7 +19,8 @@ const Crossbows: Fletchable[] = [
 		level: 24,
 		xp: 16,
 		inputItems: new Bank({ 'Oak logs': 1 }),
-		tickRate: 3
+		tickRate: 3,
+        fletchingKnifeBoost: true
 	},
 	{
 		name: 'Willow stock',
@@ -26,7 +28,8 @@ const Crossbows: Fletchable[] = [
 		level: 39,
 		xp: 22,
 		inputItems: new Bank({ 'Willow logs': 1 }),
-		tickRate: 3
+		tickRate: 3,
+        fletchingKnifeBoost: true
 	},
 	{
 		name: 'Teak stock',
@@ -34,7 +37,8 @@ const Crossbows: Fletchable[] = [
 		level: 46,
 		xp: 27,
 		inputItems: new Bank({ 'Teak logs': 1 }),
-		tickRate: 3
+		tickRate: 3,
+        fletchingKnifeBoost: true
 	},
 	{
 		name: 'Maple stock',
@@ -42,7 +46,8 @@ const Crossbows: Fletchable[] = [
 		level: 54,
 		xp: 32,
 		inputItems: new Bank({ 'Maple logs': 1 }),
-		tickRate: 3
+		tickRate: 3,
+        fletchingKnifeBoost: true
 	},
 	{
 		name: 'Mahogany stock',
@@ -50,7 +55,8 @@ const Crossbows: Fletchable[] = [
 		level: 61,
 		xp: 41,
 		inputItems: new Bank({ 'Mahogany logs': 1 }),
-		tickRate: 3
+		tickRate: 3,
+        fletchingKnifeBoost: true
 	},
 	{
 		name: 'Yew stock',
@@ -58,7 +64,8 @@ const Crossbows: Fletchable[] = [
 		level: 69,
 		xp: 50,
 		inputItems: new Bank({ 'Yew logs': 1 }),
-		tickRate: 3
+		tickRate: 3,
+        fletchingKnifeBoost: true
 	},
 	{
 		name: 'Magic stock',
@@ -66,7 +73,8 @@ const Crossbows: Fletchable[] = [
 		level: 78,
 		xp: 70,
 		inputItems: new Bank({ 'Magic logs': 1 }),
-		tickRate: 3
+		tickRate: 3,
+        fletchingKnifeBoost: true
 	},
 	// unfinished cbows
 	{

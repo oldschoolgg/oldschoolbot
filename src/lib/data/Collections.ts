@@ -132,6 +132,7 @@ import {
 	tormentedDemonCL,
 	troubleBrewingCL,
 	tzHaarCL,
+	valeTotemsCL,
 	vardorvisCL,
 	venenatisCL,
 	vetionCL,
@@ -922,6 +923,12 @@ export const allCollectionLogs: ICollection = {
 				items: troubleBrewingCL,
 				isActivity: true,
 				fmtProg: mgProg('trouble_brewing')
+			},
+			'Vale Totems': {
+				alias: ['vt', 'vale', 'totems', 'vale totems'],
+				items: valeTotemsCL,
+				isActivity: true,
+				fmtProg: mgProg('vale_totems')
 			},
 			'Volcanic Mine': {
 				items: volcanicMineCL,

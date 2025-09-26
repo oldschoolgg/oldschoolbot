@@ -62,6 +62,7 @@ import { titheFarmTask } from '@/tasks/minions/minigames/titheFarmActivity.js';
 import { toaTask } from '@/tasks/minions/minigames/toaActivity.js';
 import { tobTask } from '@/tasks/minions/minigames/tobActivity.js';
 import { trawlerTask } from '@/tasks/minions/minigames/trawlerActivity.js';
+import { valeTotemsTask } from '@/tasks/minions/minigames/valeTotemActivity.js';
 import { brewingTask } from '@/tasks/minions/minigames/troubleBrewingActivity.js';
 import { animatedArmorTask } from '@/tasks/minions/minigames/warriorsGuild/animatedArmourActivity.js';
 import { cyclopsTask } from '@/tasks/minions/minigames/warriorsGuild/cyclopsActivity.js';
@@ -166,6 +167,7 @@ export const allTasks: MinionTask[] = [
 	templeTrekkingTask,
 	mageTrainingTask,
 	sepulchreTask,
+	valeTotemsTask,
 	titheFarmTask,
 	temporossTask,
 	smithingTask,

@@ -1,6 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
+import { itemID } from 'oldschooljs';
 
 import { Fletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import Fletching from '@/lib/skilling/skills/fletching/index.js';
@@ -68,11 +69,14 @@ export const fletchCommand: OSBMahojiCommand = {
 		}
 
 		const userBank = user.bank;
+		const hasFletchingKnife = user.hasEquippedOrInBank(itemID('Fletching knife'));
 
 		// Get the base time to fletch the item then add on quarter of a second per item to account for banking/etc.
 		let timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6 + Time.Second / 4;
 		if (fletchable.tickRate < 1) {
 			timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6;
+		} else if (fletchable.tickRate > 1 && fletchable.fletchingKnifeBoost && hasFletchingKnife) {
+			timeToFletchSingleItem = (fletchable.tickRate - 1) * Time.Second * 0.6 + Time.Second / 4;
 		}
 
 		const maxTripLength = calcMaxTripLength(user, 'Fletching');
