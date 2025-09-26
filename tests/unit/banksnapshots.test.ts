@@ -22,7 +22,7 @@ it(`${BOT_TYPE} Buyables`, () => {
 		...i,
 		itemCost: new Bank(i.itemCost),
 		outputItems: !i.outputItems
-			? undefined
+			? i.name
 			: i.outputItems instanceof Bank
 				? i.outputItems
 				: i.outputItems(mockMUser())
