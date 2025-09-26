@@ -31,18 +31,13 @@ export async function bloodEssence(user: MUser, quantity: number): Promise<numbe
 
 export function raimentBonus(user: MUser, quantity: number): number {
 	let bonusQuantity = 0;
-	if (
-		user.gear.skilling.hasEquipped(
-			Object.keys(Runecraft.raimentsOfTheEyeItems).map(i => Number.parseInt(i)),
-			true
-		)
-	) {
+	if (user.hasEquippedOrInBank(Object.keys(Runecraft.raimentsOfTheEyeItems).map(i => Number.parseInt(i)))) {
 		const amountToAdd = Math.floor(quantity * (60 / 100));
 		bonusQuantity = amountToAdd;
 	} else {
 		// For each Raiments of the Eye item, check if they have it, give its' quantity boost if so (NO bonus XP).
 		for (const [itemID, bonus] of Object.entries(Runecraft.raimentsOfTheEyeItems)) {
-			if (user.gear.skilling.hasEquipped([Number.parseInt(itemID)], false)) {
+			if (user.hasEquippedOrInBank([Number.parseInt(itemID)])) {
 				const amountToAdd = Math.floor(quantity * (bonus / 100));
 				bonusQuantity += amountToAdd;
 			}
