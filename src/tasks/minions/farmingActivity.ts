@@ -16,7 +16,6 @@ import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { assert } from '@/lib/util/logError.js';
 import { randInt, roll } from '@/lib/util/rng.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
@@ -311,6 +310,7 @@ export const farmingTask: MinionTask = {
 					const plannedFee = data.treeChopFeePlanned ?? (prePaid > 0 ? prePaid : 0);
 					const coinsOwedNow = Math.max(0, gpToCutTree - prePaid);
 					if (GP < coinsOwedNow) {
+						const { sendToChannelID } = await import('@/lib/util/webhook.js');
 						await sendToChannelID(channelID, {
 							content: `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You still need ${coinsOwedNow} GP.`
 						});
