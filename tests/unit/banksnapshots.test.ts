@@ -7,7 +7,7 @@ import Createables from '../../src/lib/data/createables.js';
 import { mockMUser } from './userutil.js';
 
 it(`${BOT_TYPE} Creatables`, () => {
-	const result = Createables.map(i => ({
+	const result = Createables.sort((a, b) => a.name.localeCompare(b.name)).map(i => ({
 		...i,
 		inputItems: new Bank(i.inputItems),
 		outputItems: new Bank(i.outputItems),
@@ -17,7 +17,7 @@ it(`${BOT_TYPE} Creatables`, () => {
 });
 
 it(`${BOT_TYPE} Buyables`, () => {
-	const result = Buyables.map(i => ({
+	const result = Buyables.sort((a, b) => a.name.localeCompare(b.name)).map(i => ({
 		...i,
 		itemCost: new Bank(i.itemCost),
 		outputItems: !i.outputItems
