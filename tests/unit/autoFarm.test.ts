@@ -147,6 +147,6 @@ describe('prepareFarmingStep auto farm limits', () => {
 		}
 
 		expect(prepared.data.treeChopFee).toBe(2000);
-		expect(prepared.data.cost).toStrictEqual(new Bank({ 'Redwood tree seed': 1, Coins: 2000 }));
+		expect(prepared.data.cost).toStrictEqual(new Bank({ 'Redwood tree seed': 1 }));
 	});
 });

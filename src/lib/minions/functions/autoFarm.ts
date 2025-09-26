@@ -69,6 +69,7 @@ export async function autoFarm(
 	const remainingBank = baseBank.clone();
 
 	let errorString = '';
+	let firstPrepareError: string | null = null;
 	if (autoFarmFilter === AutoFarmFilterEnum.AllFarm) {
 		errorString = "There's no Farming crops that you have the requirements to plant, and nothing to harvest.";
 	} else {
@@ -99,6 +100,9 @@ export async function autoFarm(
 			compostTier
 		});
 		if (!prepared.success) {
+			if (!firstPrepareError) {
+				firstPrepareError = prepared.error;
+			}
 			continue;
 		}
 
@@ -110,7 +114,17 @@ export async function autoFarm(
 			continue;
 		}
 
+		if (treeChopFee > 0 && remainingBank.amount('Coins') < treeChopFee) {
+			if (!firstPrepareError) {
+				firstPrepareError = `You don't own ${new Bank().add('Coins', treeChopFee)}.`;
+			}
+			continue;
+		}
+
 		remainingBank.remove(cost);
+		if (treeChopFee > 0) {
+			remainingBank.remove(new Bank().add('Coins', treeChopFee));
+		}
 		totalCost.add(cost);
 		totalDuration += duration;
 
@@ -133,7 +147,7 @@ export async function autoFarm(
 	}
 
 	if (plannedSteps.length === 0) {
-		return errorString;
+		return firstPrepareError ?? errorString;
 	}
 
 	if (!user.owns(totalCost)) {
@@ -164,7 +178,8 @@ export async function autoFarm(
 			quantity: step.quantity,
 			upgradeType: step.upgradeType,
 			payment: step.didPay,
-			treeChopFeePaid: step.treeChopFee,
+			treeChopFeePaid: 0,
+			treeChopFeePlanned: step.treeChopFee,
 			patchType: step.patch,
 			planting: true,
 			currentDate: planningStartTime + accumulatedDuration,
@@ -188,6 +203,7 @@ export async function autoFarm(
 		upgradeType: firstStep.upgradeType,
 		payment: firstStep.payment,
 		treeChopFeePaid: firstStep.treeChopFeePaid,
+		treeChopFeePlanned: firstStep.treeChopFeePlanned,
 		planting: firstStep.planting,
 		duration: firstStep.duration,
 		currentDate: firstStep.currentDate,

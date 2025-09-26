@@ -160,6 +160,7 @@ export const farmingTask: MinionTask = {
 					upgradeType: nextStep.upgradeType,
 					payment: nextStep.payment,
 					treeChopFeePaid: nextStep.treeChopFeePaid,
+					treeChopFeePlanned: nextStep.treeChopFeePlanned,
 					planting: nextStep.planting,
 					duration: nextStep.duration,
 					currentDate: nextStep.currentDate,
@@ -267,17 +268,31 @@ export const farmingTask: MinionTask = {
 					const GP = Number(user.user.GP);
 					const gpToCutTree = plantToHarvest.seedType === 'redwood' ? 2000 * alivePlants : 200 * alivePlants;
 					const prePaid = data.treeChopFeePaid ?? 0;
-					const remainingFee = Math.max(0, gpToCutTree - prePaid);
-					if (GP < remainingFee) {
+					const plannedFee = data.treeChopFeePlanned ?? (prePaid > 0 ? prePaid : 0);
+					const coinsOwedNow = Math.max(0, gpToCutTree - prePaid);
+					if (GP < coinsOwedNow) {
 						return sendToChannelID(channelID, {
-							content: `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You still need ${remainingFee} GP.`
+							content: `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You still need ${coinsOwedNow} GP.`
 						});
 					}
-					if (remainingFee > 0) {
-						payStr = `*You did not have the woodcutting level required, so you paid a nearby farmer ${remainingFee} GP to remove the previous trees.*`;
-						await user.removeItemsFromBank(new Bank().add('Coins', remainingFee));
+					if (coinsOwedNow > 0) {
+						await user.removeItemsFromBank(new Bank().add('Coins', coinsOwedNow));
+						const savings = plannedFee > gpToCutTree ? plannedFee - gpToCutTree : 0;
+						const paymentMessage = `You did not have the woodcutting level required, so you paid a nearby farmer ${coinsOwedNow.toLocaleString()} GP to remove the previous trees.`;
+						payStr =
+							savings > 0
+								? `*${paymentMessage} This was ${savings.toLocaleString()} GP less than you initially expected to pay.*`
+								: `*${paymentMessage}*`;
 					} else {
-						payStr = `*You already paid a nearby farmer ${Math.min(prePaid, gpToCutTree)} GP to remove the previous trees.*`;
+						const refund = Math.max(0, prePaid - gpToCutTree);
+						if (refund > 0) {
+							await user.addItemsToBank({ items: new Bank().add('Coins', refund) });
+							payStr = `*You had prepaid ${prePaid.toLocaleString()} GP to remove the previous trees, but only ${gpToCutTree.toLocaleString()} GP was needed, so ${refund.toLocaleString()} GP was refunded to you.*`;
+						} else if (gpToCutTree > 0) {
+							payStr = `*You had already paid a nearby farmer ${Math.min(prePaid, gpToCutTree).toLocaleString()} GP to remove the previous trees.*`;
+						} else if (plannedFee > 0) {
+							payStr = `*No payment was needed to remove the previous trees.*`;
+						}
 					}
 
 					harvestXp = 0;
@@ -504,6 +519,7 @@ export const farmingTask: MinionTask = {
 					upgradeType: nextStep.upgradeType,
 					payment: nextStep.payment,
 					treeChopFeePaid: nextStep.treeChopFeePaid,
+					treeChopFeePlanned: nextStep.treeChopFeePlanned,
 					planting: nextStep.planting,
 					duration: nextStep.duration,
 					currentDate: nextStep.currentDate,

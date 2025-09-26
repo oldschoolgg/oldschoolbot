@@ -215,7 +215,7 @@ describe('autoFarm tree clearing fees', () => {
 		globalThis.prisma = undefined;
 	});
 
-	it('pre-pays the tree clearing fee during auto farm planning', async () => {
+	it('reserves the tree clearing fee during auto farm planning', async () => {
 		const user = createAutoFarmStub({
 			gp: 5000,
 			farmingLevel: 99,
@@ -248,10 +248,11 @@ describe('autoFarm tree clearing fees', () => {
 		const response = await autoFarm(user, patchesDetailed, patches as Record<FarmingPatchName, IPatchData>, '123');
 
 		expect(response).toContain('auto farming');
-		expect(user.user.GP).toBe(3000);
+		expect(user.user.GP).toBe(5000);
 		expect(addSubTaskMock).toHaveBeenCalled();
 		const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
-		expect(firstCallArgs?.treeChopFeePaid).toBe(2000);
+		expect(firstCallArgs?.treeChopFeePaid).toBe(0);
+		expect(firstCallArgs?.treeChopFeePlanned).toBe(2000);
 	});
 
 	it('reserves the tree clearing fee when switching to a different tree type', async () => {
@@ -301,10 +302,48 @@ describe('autoFarm tree clearing fees', () => {
 		const response = await autoFarm(user, patchesDetailed, patches as Record<FarmingPatchName, IPatchData>, '123');
 
 		expect(response).toContain('auto farming');
-		expect(user.user.GP).toBe(800);
+		expect(user.user.GP).toBe(1000);
 		expect(addSubTaskMock).toHaveBeenCalled();
 		const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
 		expect(firstCallArgs?.plantsName).toBe(yewPlant.name);
-		expect(firstCallArgs?.treeChopFeePaid).toBe(200);
+		expect(firstCallArgs?.treeChopFeePaid).toBe(0);
+		expect(firstCallArgs?.treeChopFeePlanned).toBe(200);
+	});
+
+	it('returns the first prepare error when no steps can be planned', async () => {
+		const user = createAutoFarmStub({
+			gp: 1000,
+			farmingLevel: 99,
+			woodcuttingLevel: 1,
+			bank: new Bank({ 'Redwood tree seed': 1 })
+		});
+
+		const patchesDetailed: IPatchDataDetailed[] = [
+			{
+				...basePatch,
+				ready: true,
+				readyIn: null,
+				readyAt: null,
+				friendlyName: 'Redwood patch',
+				plant: redwoodPlant
+			}
+		];
+
+		const patches: Partial<Record<FarmingPatchName, IPatchData>> = {
+			[basePatch.patchName]: {
+				lastPlanted: basePatch.lastPlanted,
+				patchPlanted: basePatch.patchPlanted,
+				plantTime: basePatch.plantTime,
+				lastQuantity: basePatch.lastQuantity,
+				lastUpgradeType: basePatch.lastUpgradeType,
+				lastPayment: basePatch.lastPayment
+			}
+		};
+
+		const response = await autoFarm(user, patchesDetailed, patches as Record<FarmingPatchName, IPatchData>, '123');
+
+		expect(response).toBe(
+			'Your minion does not have 90 Woodcutting or the 2000 GP required to be able to harvest the currently planted trees, and so they cannot harvest them.'
+		);
 	});
 });
