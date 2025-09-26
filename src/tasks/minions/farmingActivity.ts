@@ -23,7 +23,7 @@ import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 export const farmingTask: MinionTask = {
 	type: 'Farming',
 	async run(data: FarmingActivityTaskOptions) {
-		const { plantsName, patchType, quantity, upgradeType, payment, userID, channelID, planting, currentDate, pid } =
+		const { plantsName, patchType, quantity, upgradeType, payment, userID, channelID, planting, currentDate } =
 			data;
 		const user = await mUserFetch(userID);
 		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
@@ -54,6 +54,22 @@ export const farmingTask: MinionTask = {
 
 		const plant = Farming.Plants.find(plant => plant.name === plantsName)!;
 		assert(Boolean(plant));
+
+		let pid = data.pid;
+		if (!pid && planting) {
+			const inserted = await prisma.farmedCrop.create({
+				data: {
+					user_id: user.id,
+					date_planted: new Date(currentDate),
+					item_id: plant.id,
+					quantity_planted: quantity,
+					was_autofarmed: data.autoFarmed,
+					paid_for_protection: payment ?? false,
+					upgrade_type: upgradeType
+				}
+			});
+			pid = inserted.id;
+		}
 
 		if (user.hasEquippedOrInBank('Magic secateurs')) {
 			baseBonus += 0.1;
@@ -151,6 +167,24 @@ export const farmingTask: MinionTask = {
 			handleTripFinish(user, channelID, str, undefined, data, null);
 			if (data.autoFarmPlan?.length) {
 				const [nextStep, ...remainingSteps] = data.autoFarmPlan;
+				let nextPid = nextStep.pid;
+				if (!nextPid && nextStep.planting && nextStep.plantsName) {
+					const nextPlant = Farming.Plants.find(plant => plant.name === nextStep.plantsName);
+					if (nextPlant) {
+						const inserted = await prisma.farmedCrop.create({
+							data: {
+								user_id: userID,
+								date_planted: new Date(nextStep.currentDate),
+								item_id: nextPlant.id,
+								quantity_planted: nextStep.quantity,
+								was_autofarmed: true,
+								paid_for_protection: nextStep.payment ?? false,
+								upgrade_type: nextStep.upgradeType
+							}
+						});
+						nextPid = inserted.id;
+					}
+				}
 				await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
 					plantsName: nextStep.plantsName,
 					patchType: nextStep.patchType,
@@ -166,7 +200,7 @@ export const farmingTask: MinionTask = {
 					currentDate: nextStep.currentDate,
 					type: 'Farming',
 					autoFarmed: true,
-					pid: nextStep.pid,
+					pid: nextPid,
 					autoFarmPlan: remainingSteps
 				});
 			}
@@ -510,6 +544,24 @@ export const farmingTask: MinionTask = {
 			);
 			if (data.autoFarmPlan?.length) {
 				const [nextStep, ...remainingSteps] = data.autoFarmPlan;
+				let nextPid = nextStep.pid;
+				if (!nextPid && nextStep.planting && nextStep.plantsName) {
+					const nextPlant = Farming.Plants.find(plant => plant.name === nextStep.plantsName);
+					if (nextPlant) {
+						const inserted = await prisma.farmedCrop.create({
+							data: {
+								user_id: userID,
+								date_planted: new Date(nextStep.currentDate),
+								item_id: nextPlant.id,
+								quantity_planted: nextStep.quantity,
+								was_autofarmed: true,
+								paid_for_protection: nextStep.payment ?? false,
+								upgrade_type: nextStep.upgradeType
+							}
+						});
+						nextPid = inserted.id;
+					}
+				}
 				await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
 					plantsName: nextStep.plantsName,
 					patchType: nextStep.patchType,
@@ -525,7 +577,7 @@ export const farmingTask: MinionTask = {
 					currentDate: nextStep.currentDate,
 					type: 'Farming',
 					autoFarmed: true,
-					pid: nextStep.pid,
+					pid: nextPid,
 					autoFarmPlan: remainingSteps
 				});
 			}

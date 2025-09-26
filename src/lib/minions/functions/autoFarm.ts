@@ -161,18 +161,6 @@ export async function autoFarm(
 	const planningStartTime = Date.now();
 	let accumulatedDuration = 0;
 	for (const step of plannedSteps) {
-		const inserted = await prisma.farmedCrop.create({
-			data: {
-				user_id: user.id,
-				date_planted: new Date(planningStartTime + accumulatedDuration),
-				item_id: step.plant.id,
-				quantity_planted: step.quantity,
-				was_autofarmed: true,
-				paid_for_protection: step.didPay,
-				upgrade_type: step.upgradeType
-			}
-		});
-
 		autoFarmPlan.push({
 			plantsName: step.plant.name,
 			quantity: step.quantity,
@@ -183,8 +171,7 @@ export async function autoFarm(
 			patchType: step.patch,
 			planting: true,
 			currentDate: planningStartTime + accumulatedDuration,
-			duration: step.duration,
-			pid: inserted.id
+			duration: step.duration
 		});
 		accumulatedDuration += step.duration;
 	}
