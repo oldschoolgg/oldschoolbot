@@ -32,38 +32,44 @@ vi.mock('../../src/lib/util/calcMaxTripLength.js', () => ({
 }));
 
 interface AutoFarmStubOptions {
-        gp: number;
-        farmingLevel: number;
-        woodcuttingLevel: number;
-        bank: Bank;
-        autoFarmFilter?: AutoFarmFilterEnum;
+	gp: number;
+	farmingLevel: number;
+	woodcuttingLevel: number;
+	bank: Bank;
+	autoFarmFilter?: AutoFarmFilterEnum;
 }
 
-function createAutoFarmStub({ gp, farmingLevel, woodcuttingLevel, bank, autoFarmFilter = AutoFarmFilterEnum.Replant }: AutoFarmStubOptions) {
-        const bankState = bank.clone();
-        const emptyGearSetup = {
-                hasEquipped: vi.fn().mockReturnValue(false),
-                equippedWeapon: vi.fn().mockReturnValue({ name: '' })
-        } as const;
-        const user = {
-                id: '1',
-                user: {
-                        id: '1',
-                        GP: gp,
-                        bank: bankState.toJSON(),
-                        auto_farm_filter: autoFarmFilter,
-                        minion_defaultPay: false,
-                        minion_defaultCompostToUse: null,
-                        completed_ca_task_ids: []
-                },
-                bank: bankState,
-                cl: new Bank(),
-                GP: gp,
-                minionName: 'Stub Minion',
-                minionIsBusy: false,
-                get autoFarmFilter() {
-                        return this.user.auto_farm_filter;
-                },
+function createAutoFarmStub({
+	gp,
+	farmingLevel,
+	woodcuttingLevel,
+	bank,
+	autoFarmFilter = AutoFarmFilterEnum.Replant
+}: AutoFarmStubOptions) {
+	const bankState = bank.clone();
+	const emptyGearSetup = {
+		hasEquipped: vi.fn().mockReturnValue(false),
+		equippedWeapon: vi.fn().mockReturnValue({ name: '' })
+	} as const;
+	const user = {
+		id: '1',
+		user: {
+			id: '1',
+			GP: gp,
+			bank: bankState.toJSON(),
+			auto_farm_filter: autoFarmFilter,
+			minion_defaultPay: false,
+			minion_defaultCompostToUse: null,
+			completed_ca_task_ids: []
+		},
+		bank: bankState,
+		cl: new Bank(),
+		GP: gp,
+		minionName: 'Stub Minion',
+		minionIsBusy: false,
+		get autoFarmFilter() {
+			return this.user.auto_farm_filter;
+		},
 		QP: 200,
 		bitfield: [] as number[],
 		toString() {
@@ -255,13 +261,13 @@ describe('autoFarm tree clearing fees', () => {
 			throw new Error('Expected magic and yew plant data');
 		}
 
-                const user = createAutoFarmStub({
-                        gp: 1000,
-                        farmingLevel: 99,
-                        woodcuttingLevel: 1,
-                        bank: new Bank({ 'Yew tree seed': 1 }),
-                        autoFarmFilter: AutoFarmFilterEnum.AllFarm
-                });
+		const user = createAutoFarmStub({
+			gp: 1000,
+			farmingLevel: 99,
+			woodcuttingLevel: 1,
+			bank: new Bank({ 'Yew tree seed': 1 }),
+			autoFarmFilter: AutoFarmFilterEnum.AllFarm
+		});
 
 		const patchName = magicPlant.seedType as FarmingPatchName;
 		const patchesDetailed: IPatchDataDetailed[] = [
