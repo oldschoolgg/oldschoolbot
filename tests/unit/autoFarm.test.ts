@@ -1,7 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import type { CropUpgradeType } from '@prisma/client';
 import { Bank, convertLVLtoXP } from 'oldschooljs';
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import type { IPatchDataDetailed } from '../../src/lib/minions/farming/types.js';
 import { prepareFarmingStep } from '../../src/lib/minions/functions/farmingTripHelpers.js';
@@ -9,6 +9,23 @@ import Farming from '../../src/lib/skilling/skills/farming/index.js';
 import { mockMUser } from './userutil.js';
 
 describe('prepareFarmingStep auto farm limits', () => {
+	let originalPrisma: unknown;
+
+	beforeEach(() => {
+		const globalObj = globalThis as { prisma?: unknown };
+		originalPrisma = globalObj.prisma;
+		globalObj.prisma = null;
+	});
+
+	afterEach(() => {
+		const globalObj = globalThis as { prisma?: unknown };
+		if (typeof originalPrisma === 'undefined') {
+			Reflect.deleteProperty(globalObj, 'prisma');
+		} else {
+			globalObj.prisma = originalPrisma;
+		}
+	});
+
 	it('charges only for the achievable quantity when inputs differ', async () => {
 		const user = mockMUser({
 			bank: new Bank({ 'Grape seed': 5, Saltpetre: 1 }),
