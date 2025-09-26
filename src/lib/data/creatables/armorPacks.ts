@@ -2351,6 +2351,7 @@ export const armorAndItemPacks: Createable[] = [
 			[itemID('Purple partyhat')]: 1,
 			[itemID('White partyhat')]: 1
 		},
+		noCreatablesCl: true,
 		noCl: true
 	},
 	{
@@ -2363,6 +2364,7 @@ export const armorAndItemPacks: Createable[] = [
 			[itemID('Purple partyhat')]: 1,
 			[itemID('White partyhat')]: 1
 		},
+		noCreatablesCl: true,
 		outputItems: {
 			[itemID('Partyhat set')]: 1
 		}

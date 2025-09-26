@@ -91,7 +91,7 @@ export const toaCreatables: Createable[] = [
 		outputItems: new Bank({ 'Masori chaps (f)': 1 })
 	},
 	{
-		name: 'Revert Armadyl helmet',
+		name: 'Revert Armadyl helmet (to plates)',
 		inputItems: new Bank({
 			'Armadyl helmet': 1
 		}),
@@ -107,7 +107,7 @@ export const toaCreatables: Createable[] = [
 		forceAddToCl: true
 	},
 	{
-		name: 'Revert Armadyl chainskirt',
+		name: 'Revert Armadyl chainskirt (to plates)',
 		inputItems: new Bank({
 			'Armadyl chainskirt': 1
 		}),

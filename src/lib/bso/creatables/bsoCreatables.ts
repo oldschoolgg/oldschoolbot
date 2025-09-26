@@ -1,3 +1,4 @@
+import { bsoShadesOfMortonCreatables } from '@/lib/bso/creatables/shadesOfMorton.js';
 import { sunMoonCreatables } from '@/lib/bso/creatables/sunMoonCreatables.js';
 import { dyedItems } from '@/lib/bso/dyedItems.js';
 import { expertCapesSource } from '@/lib/bso/expertCapes.js';
@@ -1249,6 +1250,7 @@ export const bsoCreatables: Createable[] = [
 	...sunMoonCreatables,
 	...moktangCreatables,
 	...tameCreatables,
+	...bsoShadesOfMortonCreatables,
 	{
 		name: 'Golden cape',
 		inputItems: new Bank().add('Golden cape shard', 7),

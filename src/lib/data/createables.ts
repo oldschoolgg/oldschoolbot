@@ -4,6 +4,7 @@ import type { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { Bank, deepResolveItems, EItem, type ItemBank, Items, itemID } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
+import { leaguesCreatables } from '@/lib/data/leagueCreatables.js';
 import { blisterwoodRequirements, ivandisRequirements } from '@/lib/minions/data/templeTrekking.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import type { Skills } from '@/lib/types/index.js';
@@ -2175,7 +2176,8 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Partyhat & specs')]: 1
-		}
+		},
+		noCreatablesCl: true
 	},
 	{
 		name: 'Ivandis Flail',
@@ -2700,6 +2702,7 @@ const Createables: Createable[] = [
 	...nexCreatables,
 	...amrodCreatables,
 	...goldenProspectorCreatables,
+	...leaguesCreatables,
 	...guardiansOfTheRiftCreatables,
 	...shadesOfMortonCreatables,
 	...toaCreatables,
