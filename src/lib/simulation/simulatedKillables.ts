@@ -1,9 +1,10 @@
+import { chanceOfDOAUnique, pickUniqueToGiveUser } from '@/lib/bso/depthsOfAtlantis.js';
+import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';
+
 import { randArrItem, randInt, roll } from '@oldschoolgg/toolkit';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { Bank, Misc } from 'oldschooljs';
 
-import { chanceOfDOAUnique, pickUniqueToGiveUser } from '@/lib/bso/depthsOfAtlantis.js';
-import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';
 import { nexUniqueDrops } from '@/lib/data/CollectionsExport.js';
 import {
 	KalphiteKingMonster,

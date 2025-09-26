@@ -1,7 +1,3 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank, type ItemBank } from 'oldschooljs';
-
 import {
 	BathhouseOres,
 	BathwaterMixtures,
@@ -26,6 +22,11 @@ import {
 } from '@/lib/bso/minigames/ods/odsCommand.js';
 import type { MaterialType } from '@/lib/bso/skills/invention/index.js';
 import { type TuraelsTrialsMethod, TuraelsTrialsMethods, turaelsTrialsStartCommand } from '@/lib/bso/turaelsTrials.js';
+
+import { toTitleCase } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Bank, type ItemBank } from 'oldschooljs';
+
 import { itemNameFromID } from '@/lib/util/smallUtils.js';
 import {
 	fishingContestStartCommand,

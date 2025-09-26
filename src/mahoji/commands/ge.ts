@@ -1,3 +1,5 @@
+import { isGEUntradeable } from '@/lib/bso/bsoUtil.js';
+
 import { sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { type CommandOption, makeComponents, returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
@@ -6,7 +8,6 @@ import type { GEListing, GETransaction } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
-import { isGEUntradeable } from '@/lib/bso/bsoUtil.js';
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { PerkTier } from '@/lib/constants.js';
 import { createGECancelButton, GrandExchange } from '@/lib/grandExchange.js';

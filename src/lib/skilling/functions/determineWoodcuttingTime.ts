@@ -1,7 +1,8 @@
+import { IVY_MAX_TRIP_LENGTH_BOOST } from '@/lib/bso/bsoConstants.js';
+
 import { percentChance, Time } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs/EItem';
 
-import { IVY_MAX_TRIP_LENGTH_BOOST } from '@/lib/bso/bsoConstants.js';
 import type { MUserClass } from '@/lib/MUser.js';
 import type { Log } from '@/lib/skilling/types.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';

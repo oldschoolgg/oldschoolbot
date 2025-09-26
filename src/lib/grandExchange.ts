@@ -1,3 +1,5 @@
+import { isGEUntradeable } from '@/lib/bso/bsoUtil.js';
+
 import { calcPercentOfNum, miniID, noOp, sumArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { getInterval } from '@oldschoolgg/toolkit/util';
@@ -8,7 +10,6 @@ import { Bank, type Item, type ItemBank, Items, toKMB } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { clamp } from 'remeda';
 
-import { isGEUntradeable } from '@/lib/bso/bsoUtil.js';
 import { isCustomItem } from '@/lib/customItems/util.js';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
 import { assert, logError } from '@/lib/util/logError.js';

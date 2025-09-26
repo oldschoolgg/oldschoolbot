@@ -1,11 +1,12 @@
-import { notEmpty, objectEntries, randArrItem, randInt, Time } from '@oldschoolgg/toolkit';
-import { AttachmentBuilder, bold } from 'discord.js';
-import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
-
 import { divinationEnergies } from '@/lib/bso/divination.js';
 import { addToDoubleLootTimer } from '@/lib/bso/doubleLoot.js';
 import { allDyes, dyedItems } from '@/lib/bso/dyedItems.js';
 import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
+
+import { notEmpty, objectEntries, randArrItem, randInt, Time } from '@oldschoolgg/toolkit';
+import { AttachmentBuilder, bold } from 'discord.js';
+import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
+
 import { gearImages } from '@/lib/canvas/gearImageData.js';
 import { BitField } from '@/lib/constants.js';
 import { makeScriptImage } from '@/lib/scriptImages.js';

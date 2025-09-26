@@ -1,9 +1,10 @@
+import { MALEDICT_MORTIMER_ID } from '@/lib/bso/maledictMortimer.js';
+
 import { shuffleArr, sumArr } from '@oldschoolgg/toolkit';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { EmbedBuilder } from 'discord.js';
 import { Bank, convertXPtoLVL, type ItemBank, type SkillsScore, toKMB } from 'oldschooljs';
 
-import { MALEDICT_MORTIMER_ID } from '@/lib/bso/maledictMortimer.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { getClueScoresFromOpenables } from '@/lib/clues/clueUtils.js';
 import { badges, MAX_LEVEL } from '@/lib/constants.js';

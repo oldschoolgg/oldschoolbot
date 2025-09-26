@@ -1,10 +1,11 @@
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
+
 import { randArrItem, roll } from '@oldschoolgg/toolkit';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { Bank, type Item, Items, LootTable } from 'oldschooljs';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
-import { globalDroprates } from '@/lib/bso/globalDroprates.js';
-import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { BitField } from '@/lib/constants.js';
 import type { Plant } from '@/lib/skilling/types.js';
 

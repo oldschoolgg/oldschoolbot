@@ -1,34 +1,39 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { compCapeCreatableBank } from '@/lib/bso/bsoConstants.js';
+import { circusBuyables } from '@/lib/bso/buyables/circusBuyables.js';
+import { fistOfGuthixBuyables } from '@/lib/bso/buyables/fistOfGuthixBuyables.js';
+import { keyCrateBuyables } from '@/lib/bso/buyables/keyCrateBuyables.js';
+import { monkeyRumbleBuyables } from '@/lib/bso/buyables/monkeyRumbleBuyables.js';
+import { oceanicShroudsBuyables } from '@/lib/bso/buyables/oceanic.js';
+import { stealingCreationBuyables } from '@/lib/bso/buyables/stealingCreationBuyables.js';
+import { veteranCapeBuyables } from '@/lib/bso/buyables/veteranCapeBuyables.js';
+import { expertCapesSource } from '@/lib/bso/expertCapes.js';
+
+import { isAtleastThisOld, Time } from '@oldschoolgg/toolkit';
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { isAtleastThisOld } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
-import { compCapeCreatableBank } from '@/lib/skilling/skillcapes.js';
-import type { Buyable } from './buyables.js';
-import { circusBuyables } from './circusBuyables.js';
-import { fistOfGuthixBuyables } from './fistOfGuthixBuyables.js';
-import { keyCrateBuyables } from './keyCrateBuyables.js';
-import { stealingCreationBuyables } from './stealingCreationBuyables.js';
-import { veteranCapeBuyables } from './veteranCapeBuyables.js';
+import type { Buyable } from '@/lib/data/buyables/buyables.js';
+import { capeBuyables } from '@/lib/data/buyables/capes.js';
 
-const items = [
-	['Castle wars cape (beginner)', 100],
-	['Castle wars cape (intermediate)', 500],
-	['Castle wars cape (advanced)', 1000],
-	['Castle wars cape (expert)', 2500],
-	['Castle wars cape (legend)', 5000]
-] as const;
+const bsoCastleWarsBuyables: Buyable[] = (
+	[
+		['Castle wars cape (beginner)', 100],
+		['Castle wars cape (intermediate)', 500],
+		['Castle wars cape (advanced)', 1000],
+		['Castle wars cape (expert)', 2500],
+		['Castle wars cape (legend)', 5000]
+	] as const
+).map(i => ({
+	name: i[0],
+	outputItems: new Bank({
+		[i[0]]: 1
+	}),
+	itemCost: new Bank({
+		'Castle wars ticket': i[1]
+	})
+}));
 
 export const bsoBuyables: Buyable[] = [
-	...items.map(i => ({
-		name: i[0],
-		outputItems: new Bank({
-			[i[0]]: 1
-		}),
-		itemCost: new Bank({
-			'Castle wars ticket': i[1]
-		})
-	})),
 	{
 		name: 'Fishbowl helmet',
 		outputItems: new Bank({
@@ -72,11 +77,7 @@ export const bsoBuyables: Buyable[] = [
 		}),
 		gpCost: 1_000_000
 	},
-	...fistOfGuthixBuyables,
-	...stealingCreationBuyables,
-	...circusBuyables,
-	...keyCrateBuyables,
-	...veteranCapeBuyables,
+
 	{
 		name: 'Golden cape shard',
 		outputItems: new Bank().add('Golden cape shard'),
@@ -153,5 +154,46 @@ export const bsoBuyables: Buyable[] = [
 		outputItems: new Bank().add('Pumpkin seed'),
 		ironmanPrice: 500,
 		maxQuantity: 500
-	}
+	},
+	{
+		name: 'Festive present',
+		gpCost: 100_000_000,
+		itemCost: new Bank().add('Festive wrapping paper', 10)
+	},
+	{
+		name: 'Master quest cape',
+		outputItems: new Bank({
+			'Master quest cape': 1
+		}),
+		gpCost: 1_000_000_000,
+		qpRequired: 5000
+	},
+	...monkeyRumbleBuyables,
+	...oceanicShroudsBuyables,
+	...bsoCastleWarsBuyables,
+	...fistOfGuthixBuyables,
+	...stealingCreationBuyables,
+	...circusBuyables,
+	...keyCrateBuyables,
+	...veteranCapeBuyables
 ];
+
+for (const { cape, requiredItems, skills } of expertCapesSource) {
+	const itemCost = new Bank();
+	for (const i of requiredItems) itemCost.add(i);
+	const capeBank = new Bank().add(cape.id).freeze();
+
+	capeBuyables.push({
+		name: cape.name,
+		itemCost,
+		outputItems: capeBank,
+		customReq: async user => {
+			for (const skill of skills) {
+				if (user.skillsAsXP[skill] < 500_000_000) {
+					return [false, `You don't have 500m ${skill}.`];
+				}
+			}
+			return [true];
+		}
+	});
+}

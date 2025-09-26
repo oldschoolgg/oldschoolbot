@@ -1,4 +1,5 @@
 import { PUMPKINHEAD_ID } from '@/lib/bso/pumpkinHead.js';
+
 import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
 import { KalphiteKingMonster } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
 import KingGoldemar from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';

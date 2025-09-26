@@ -1,6 +1,7 @@
+import { KING_GOLDEMAR_GUARD_ID } from '@/lib/bso/bsoConstants.js';
+
 import { LootTable, Monsters } from 'oldschooljs';
 
-import { KING_GOLDEMAR_GUARD_ID } from '@/lib/bso/bsoConstants.js';
 import type { Stealable } from '@/lib/skilling/skills/thieving/stealables.js';
 
 export const bsoStealables: Stealable[] = [

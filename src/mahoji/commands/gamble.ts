@@ -1,9 +1,10 @@
+import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
+
 import { randArrItem } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
 import { BitField } from '@/lib/constants.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { capeGambleCommand, capeGambleStatsCommand } from '@/mahoji/lib/abstracted_commands/capegamble.js';

@@ -1,3 +1,6 @@
+import { type ElderClue, ElderClueTable } from '@/lib/bso/elderClue.js';
+import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
+
 import { Time } from '@oldschoolgg/toolkit';
 import {
 	BeginnerCasket,
@@ -12,8 +15,6 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
-import { type ElderClue, ElderClueTable } from '@/lib/bso/elderClue.js';
-import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
 import { beginnerReqs, type ClueReqs } from '@/lib/clues/clueReqs.js';
 import {
 	beginnerStashes,

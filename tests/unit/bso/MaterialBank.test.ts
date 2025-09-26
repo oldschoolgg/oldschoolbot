@@ -1,6 +1,6 @@
-import { describe, expect, test } from 'vitest';
-
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
+
+import { describe, expect, test } from 'vitest';
 
 describe('materialLoot', () => {
 	test('materialLoot', () => {

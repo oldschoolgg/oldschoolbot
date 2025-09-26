@@ -1,8 +1,9 @@
+import { gods } from '@/lib/bso/divineDominion.js';
+import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
+
 import { notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
 import { deepResolveItems, Items } from 'oldschooljs';
 
-import { gods } from '@/lib/bso/divineDominion.js';
-import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
 import { BitField, BitFieldData, MAX_XP } from '@/lib/constants.js';
 import {
 	cluesBeginnerCL,

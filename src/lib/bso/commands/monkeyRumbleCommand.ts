@@ -1,7 +1,3 @@
-import { formatDuration, randArrItem, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { Bank } from 'oldschooljs';
-
 import {
 	fightingMessages,
 	getMonkeyPhrase,
@@ -13,6 +9,11 @@ import {
 	monkeyTiers,
 	TOTAL_MONKEYS
 } from '@/lib/bso/minigames/monkey-rumble/monkeyRumble.js';
+
+import { formatDuration, randArrItem, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Bank } from 'oldschooljs';
+
 import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
 import type { MonkeyRumbleOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';

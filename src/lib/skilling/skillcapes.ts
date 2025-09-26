@@ -1,4 +1,4 @@
-import { Bank, type Item, Items, itemID } from 'oldschooljs';
+import { type Item, Items, itemID } from 'oldschooljs';
 
 import { SkillsEnum } from '@/lib/skilling/types.js';
 
@@ -250,13 +250,3 @@ const Skillcapes: Skillcape[] = [
 ];
 
 export default Skillcapes;
-
-export const compCapeCreatableBank = new Bank();
-for (const cape of Skillcapes) {
-	compCapeCreatableBank.add(cape.masterCape.id);
-}
-compCapeCreatableBank.add('Master quest cape');
-compCapeCreatableBank.add('Achievement diary cape (t)');
-compCapeCreatableBank.add('Music cape (t)');
-
-compCapeCreatableBank.freeze();

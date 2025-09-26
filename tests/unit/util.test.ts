@@ -1,9 +1,10 @@
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+
 import { calcPercentOfNum, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { stripEmojis, truncateString } from '@oldschoolgg/toolkit/util';
 import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { pluraliseItemName } from '@/lib/util/smallUtils.js';
 import { skillingPetDropRate } from '@/lib/util.js';

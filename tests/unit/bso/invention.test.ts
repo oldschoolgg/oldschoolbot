@@ -1,7 +1,7 @@
-import { describe, expect, test } from 'vitest';
-
 import { dissasemblyWeighting } from '@/lib/bso/skills/invention/disassemble.js';
 import { DisassemblySourceGroups } from '@/lib/bso/skills/invention/groups/index.js';
+
+import { describe, expect, test } from 'vitest';
 
 describe('Invention', () => {
 	test('Min/max item weighting', () => {

@@ -1,3 +1,12 @@
+import { DisassemblyGroupMap, DisassemblySourceGroups } from '@/lib/bso/skills/invention/groups/index.js';
+import {
+	allItemsThatCanBeDisassembledIDs,
+	type DisassembleFlag,
+	type DisassemblyItem,
+	type DisassemblySourceGroup,
+	type MaterialType
+} from '@/lib/bso/skills/invention/index.js';
+
 import {
 	calcPerHour,
 	calcWhatPercent,
@@ -11,14 +20,6 @@ import {
 import { Bank, type Item, Items, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
-import { DisassemblyGroupMap, DisassemblySourceGroups } from '@/lib/bso/skills/invention/groups/index.js';
-import {
-	allItemsThatCanBeDisassembledIDs,
-	type DisassembleFlag,
-	type DisassemblyItem,
-	type DisassemblySourceGroup,
-	type MaterialType
-} from '@/lib/bso/skills/invention/index.js';
 import Skillcapes from '@/lib/skilling/skillcapes.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { DisassembleTaskOptions } from '@/lib/types/minions.js';

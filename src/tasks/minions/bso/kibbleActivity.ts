@@ -1,6 +1,7 @@
+import { kibbles } from '@/lib/bso/kibble.js';
+
 import { Bank } from 'oldschooljs';
 
-import { kibbles } from '@/lib/bso/kibble.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { KibbleOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';

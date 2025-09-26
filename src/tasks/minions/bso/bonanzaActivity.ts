@@ -1,9 +1,10 @@
+import { getAllUserTames, TameSpeciesID } from '@/lib/bso/tames.js';
+import { tameName } from '@/lib/bso/tameUtil.js';
+
 import { calcPercentOfNum, calcWhatPercent, randArrItem, randInt, roll, shuffleArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { clamp } from 'remeda';
 
-import { getAllUserTames, TameSpeciesID } from '@/lib/bso/tames.js';
-import { tameName } from '@/lib/bso/tameUtil.js';
 import { MAX_LEVEL } from '@/lib/constants.js';
 import { spectatorClothes } from '@/lib/data/CollectionsExport.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';

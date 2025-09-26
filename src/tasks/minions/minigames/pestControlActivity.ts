@@ -1,7 +1,8 @@
+import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
+
 import { Time } from '@oldschoolgg/toolkit';
 import { toKMB } from 'oldschooljs';
 
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { getBoatType } from '@/mahoji/lib/abstracted_commands/pestControlCommand.js';

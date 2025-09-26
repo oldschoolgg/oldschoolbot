@@ -1,6 +1,7 @@
+import { getPaintedItemImage } from '@/lib/bso/paintColors.js';
+
 import type { Item } from 'oldschooljs';
 
-import { getPaintedItemImage } from '@/lib/bso/paintColors.js';
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { paintColors } from '@/lib/customItems/paintCans.js';

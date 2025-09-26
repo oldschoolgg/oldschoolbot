@@ -1,10 +1,11 @@
+import { itemsToDelete } from '@/lib/bso/deletedItems.js';
+import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/bsoOpenables.js';
+import { calculateMaximumTameFeedingLevelGain } from '@/lib/bso/tameUtil.js';
+
 import { type Tame, tame_growth } from '@prisma/client';
 import { EquipmentSlot, Items, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { itemsToDelete } from '@/lib/bso/deletedItems.js';
-import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/bsoOpenables.js';
-import { calculateMaximumTameFeedingLevelGain } from '@/lib/bso/tameUtil.js';
 import { allPetIDs } from '@/lib/data/CollectionsExport.js';
 import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
 import { KalphiteKingMonster } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
@@ -14,6 +15,10 @@ import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables } from '@/lib/openables.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
+import { assert } from '@/lib/util/logError.js';
+
+assert(Items.get('Lil lamb')!.id === 9619);
+console.log(Items.get(9619)!.name);
 
 describe('Sanity', () => {
 	test('calculateMaximumTameFeedingLevelGain', () => {

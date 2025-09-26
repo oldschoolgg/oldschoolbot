@@ -1,9 +1,10 @@
+import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
+
 import { calcPercentOfNum, calcWhatPercent, reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
 import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, Items, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
-import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 import {
 	gorajanArcherOutfit,
 	gorajanOccultOutfit,

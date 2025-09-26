@@ -1,6 +1,6 @@
-import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
-
 import { generateAllCompCapeTasksList } from '@/lib/bso/compCape.js';
+
+import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
 
 export const completionCommand: OSBMahojiCommand = {
 	name: 'completion',

@@ -1,7 +1,8 @@
+import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
+
 import { randFloat, randInt, roll, Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';

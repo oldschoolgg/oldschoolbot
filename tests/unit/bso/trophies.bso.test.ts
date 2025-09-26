@@ -1,7 +1,8 @@
+import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/bsoOpenables.js';
+
 import { Items } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
-import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/bsoOpenables.js';
 import { allTrophyItems } from '@/lib/data/itemAliases.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 

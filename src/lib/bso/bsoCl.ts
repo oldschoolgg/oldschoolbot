@@ -1,8 +1,9 @@
+import { allDyedItems } from '@/lib/bso/dyedItems.js';
+
 import { uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { isFunction } from 'remeda';
 
-import { allDyedItems } from '@/lib/bso/dyedItems.js';
 import { discontinuedItems, removeDiscontinuedItems } from '@/lib/customItems/customItems.js';
 import Createables from '@/lib/data/createables.js';
 import { Cookables } from '@/lib/skilling/skills/cooking/cooking.js';

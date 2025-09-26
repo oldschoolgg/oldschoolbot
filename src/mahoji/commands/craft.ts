@@ -1,8 +1,9 @@
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
+
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
 import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning.js';

@@ -1,8 +1,3 @@
-import { formatDuration, increaseNumByPercent, removeFromArr, Time } from '@oldschoolgg/toolkit';
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank } from 'oldschooljs';
-
 import {
 	basePortentCost,
 	divinationEnergies,
@@ -12,6 +7,12 @@ import {
 	portents
 } from '@/lib/bso/divination.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
+
+import { formatDuration, increaseNumByPercent, removeFromArr, Time } from '@oldschoolgg/toolkit';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Bank } from 'oldschooljs';
+
 import type { MemoryHarvestOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';

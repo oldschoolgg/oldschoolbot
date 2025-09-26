@@ -1,7 +1,8 @@
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
+
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
-import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';

@@ -1,7 +1,8 @@
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
+
 import { randArrItem, randInt, roll } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { inventorOutfit } from '@/lib/data/CollectionsExport.js';
 import { ClueTable } from '@/lib/simulation/sharedTables.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';

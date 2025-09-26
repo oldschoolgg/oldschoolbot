@@ -1,6 +1,7 @@
+import type { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
+
 import { type Bank, Items, resolveItems } from 'oldschooljs';
 
-import type { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import type { Skills, SkillsRequired } from '@/lib/types/index.js';

@@ -1,7 +1,8 @@
+import { monkeyTiers } from '@/lib/bso/minigames/monkey-rumble/monkeyRumble.js';
+
 import { Bank, Items } from 'oldschooljs';
 
-import { monkeyTiers } from '@/lib/bso/minigames/monkey-rumble/monkeyRumble.js';
-import type { Buyable } from '../../../data/buyables/buyables.js';
+import type { Buyable } from '@/lib/data/buyables/buyables.js';
 
 export const monkeyRumbleBuyables: Buyable[] = [
 	{
@@ -23,6 +24,10 @@ export const monkeyRumbleBuyables: Buyable[] = [
 			strength: 120
 		},
 		minigameScoreReq: ['monkey_rumble', 1000]
+	},
+	{
+		name: "M'speak amulet",
+		gpCost: 100_000
 	}
 ];
 

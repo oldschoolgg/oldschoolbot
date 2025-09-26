@@ -1,27 +1,3 @@
-import { readFileSync } from 'node:fs';
-import { readFile } from 'node:fs/promises';
-import { bold, time } from '@discordjs/builders';
-import {
-	calcPercentOfNum,
-	calcWhatPercent,
-	formatDuration,
-	increaseNumByPercent,
-	isWeekend,
-	notEmpty,
-	percentChance,
-	randInt,
-	reduceNumByPercent,
-	stringMatches,
-	Time
-} from '@oldschoolgg/toolkit';
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
-import { type Tame, tame_growth } from '@prisma/client';
-import { toTitleCase } from '@sapphire/utilities';
-import { ApplicationCommandOptionType, type ChatInputCommandInteraction, type User } from 'discord.js';
-import { Bank, type Item, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
-import { type Canvas, loadImage } from 'skia-canvas';
-
 import {
 	createTameTask,
 	getIgneTameKC,
@@ -46,6 +22,31 @@ import {
 	tameHasBeenFed,
 	tameName
 } from '@/lib/bso/tameUtil.js';
+
+import { readFileSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
+import { bold, time } from '@discordjs/builders';
+import {
+	calcPercentOfNum,
+	calcWhatPercent,
+	formatDuration,
+	increaseNumByPercent,
+	isWeekend,
+	notEmpty,
+	percentChance,
+	randInt,
+	reduceNumByPercent,
+	stringMatches,
+	Time
+} from '@oldschoolgg/toolkit';
+import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
+import { type Tame, tame_growth } from '@prisma/client';
+import { toTitleCase } from '@sapphire/utilities';
+import { ApplicationCommandOptionType, type ChatInputCommandInteraction, type User } from 'discord.js';
+import { Bank, type Item, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
+import { type Canvas, loadImage } from 'skia-canvas';
+
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import {
 	type CanvasContext,

@@ -1,8 +1,9 @@
+import { getAllUserTames } from '@/lib/bso/tames.js';
+
 import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
 import { activity_type_enum, type User } from '@prisma/client';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import { getAllUserTames } from '@/lib/bso/tames.js';
 import { BitField } from '@/lib/constants.js';
 import { calcCLDetails } from '@/lib/data/Collections.js';
 import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';

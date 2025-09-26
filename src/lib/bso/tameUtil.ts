@@ -1,7 +1,3 @@
-import { formatDuration, round } from '@oldschoolgg/toolkit';
-import { type Tame, type TameActivity, tame_growth, type User } from '@prisma/client';
-import { type ItemBank, Items } from 'oldschooljs';
-
 import {
 	type Species,
 	seaMonkeySpells,
@@ -10,6 +6,11 @@ import {
 	tameKillableMonsters,
 	tameSpecies
 } from '@/lib/bso/tames.js';
+
+import { formatDuration, round } from '@oldschoolgg/toolkit';
+import { type Tame, type TameActivity, tame_growth, type User } from '@prisma/client';
+import { type ItemBank, Items } from 'oldschooljs';
+
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';

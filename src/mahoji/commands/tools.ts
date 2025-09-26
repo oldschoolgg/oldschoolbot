@@ -1,3 +1,7 @@
+import { addToDoubleLootTimer } from '@/lib/bso/doubleLoot.js';
+import { keyCrates } from '@/lib/bso/keyCrates.js';
+import { MysteryBoxes, spookyTable } from '@/lib/bso/openables/tables.js';
+
 import { randArrItem, randInt, roll, shuffleArr, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
@@ -17,9 +21,6 @@ import {
 	ToBUniqueTable
 } from 'oldschooljs';
 
-import { addToDoubleLootTimer } from '@/lib/bso/doubleLoot.js';
-import { keyCrates } from '@/lib/bso/keyCrates.js';
-import { MysteryBoxes, spookyTable } from '@/lib/bso/openables/tables.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';

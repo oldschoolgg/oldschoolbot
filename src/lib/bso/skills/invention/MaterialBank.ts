@@ -1,6 +1,7 @@
+import { type IMaterialBank, type MaterialType, materialTypes } from '@/lib/bso/skills/invention/index.js';
+
 import { calcPercentOfNum, toTitleCase } from '@oldschoolgg/toolkit';
 
-import { type IMaterialBank, type MaterialType, materialTypes } from '@/lib/bso/skills/invention/index.js';
 import { assert } from '@/lib/util/logError.js';
 
 export class MaterialBank {

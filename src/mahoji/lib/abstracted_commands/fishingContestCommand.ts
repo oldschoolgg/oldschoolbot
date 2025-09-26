@@ -1,8 +1,3 @@
-import { Time } from '@oldschoolgg/toolkit';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Bank } from 'oldschooljs';
-
 import {
 	fishingLocations,
 	getCurrentFishType,
@@ -10,6 +5,12 @@ import {
 	getUsersFishingContestDetails,
 	getValidLocationsForFishType
 } from '@/lib/bso/fishingContest.js';
+
+import { Time } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { Bank } from 'oldschooljs';
+
 import { trackLoot } from '@/lib/lootTrack.js';
 import type { FishingContestOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';

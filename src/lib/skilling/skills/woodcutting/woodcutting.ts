@@ -1,7 +1,8 @@
+import { bsoLogs } from '@/lib/bso/skills/woodcutting/logs.js';
+
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { itemID, LootTable } from 'oldschooljs';
 
-import { bsoLogs } from '@/lib/bso/skills/woodcutting/logs.js';
 import type { Log } from '@/lib/skilling/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 

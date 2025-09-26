@@ -1,7 +1,3 @@
-import { formatDuration, randArrItem, reduceNumByPercent, roll, sumArr } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { averageBank, Bank, resolveItems } from 'oldschooljs';
-
 import {
 	calcDOAInput,
 	chanceOfDOAUnique,
@@ -13,6 +9,11 @@ import {
 import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';
 import { doaStartCommand } from '@/lib/bso/doa/doaStartCommand.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+
+import { formatDuration, randArrItem, reduceNumByPercent, roll, sumArr } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { averageBank, Bank, resolveItems } from 'oldschooljs';
+
 import { globalConfig } from '@/lib/constants.js';
 import { doaMetamorphPets } from '@/lib/data/CollectionsExport.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';

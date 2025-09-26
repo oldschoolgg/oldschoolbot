@@ -61,7 +61,11 @@ describe('Gear', () => {
 				'Smithing cape',
 				'Strength cape',
 				'Thieving cape',
-				'Woodcutting cape'
+				'Woodcutting cape',
+
+				'Divination cape',
+				'Dungeoneering cape',
+				'Invention cape'
 			].sort()
 		);
 	});

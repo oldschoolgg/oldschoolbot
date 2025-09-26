@@ -1,6 +1,7 @@
+import type { PaintColor } from '@/lib/bso/paintColors.js';
+
 import { type Item, Items } from 'oldschooljs';
 
-import type { PaintColor } from '@/lib/bso/paintColors.js';
 import { setCustomItem } from '@/lib/customItems/util.js';
 
 export const paintColors: PaintColor[] = [

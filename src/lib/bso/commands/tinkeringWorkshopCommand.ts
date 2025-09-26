@@ -1,10 +1,11 @@
+import { type MaterialType, materialTypes } from '@/lib/bso/skills/invention/index.js';
+import { transactMaterialsFromUser } from '@/lib/bso/skills/invention/inventions.js';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
+
 import { Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { type ItemBank, randomVariation } from 'oldschooljs';
 
-import { type MaterialType, materialTypes } from '@/lib/bso/skills/invention/index.js';
-import { transactMaterialsFromUser } from '@/lib/bso/skills/invention/inventions.js';
-import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import type { TinkeringWorkshopOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';

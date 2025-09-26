@@ -1,9 +1,10 @@
-import { Time } from '@oldschoolgg/toolkit';
-import { Bank, LootTable } from 'oldschooljs';
-
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, LootTable } from 'oldschooljs';
+
 import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Mining from '@/lib/skilling/skills/mining.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';

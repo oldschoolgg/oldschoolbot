@@ -1,6 +1,7 @@
+import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
+
 import { LootTable, Monsters, RareDropTable } from 'oldschooljs';
 
-import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import setCustomMonster from '@/lib/util/setCustomMonster.js';
 
 export const VasaMagusLootTable = new LootTable()

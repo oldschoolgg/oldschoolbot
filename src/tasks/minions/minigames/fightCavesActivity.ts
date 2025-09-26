@@ -1,9 +1,10 @@
+import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
+
 import { calcPercentOfNum, calcWhatPercent, randInt } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { Bank, itemID, Monsters } from 'oldschooljs';
 
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
 import { userhasDiaryTier } from '@/lib/diaries.js';
 import { DiaryID } from '@/lib/minions/types.js';

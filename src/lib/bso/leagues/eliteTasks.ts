@@ -1,9 +1,10 @@
-import { sumArr } from '@oldschoolgg/toolkit';
-import { Bank, EMonster, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
-
 import { calcTotalLevel } from '@/lib/bso/bsoUtil.js';
 import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
 import { TameSpeciesID, tameFeedableItems } from '@/lib/bso/tames.js';
+
+import { sumArr } from '@oldschoolgg/toolkit';
+import { Bank, EMonster, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
+
 import {
 	abyssalDragonCL,
 	all3rdAgeItems,

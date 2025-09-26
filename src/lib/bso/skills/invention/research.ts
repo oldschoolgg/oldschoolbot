@@ -1,9 +1,10 @@
+import { type MaterialType, materialTypes } from '@/lib/bso/skills/invention/index.js';
+
 import { bold, userMention } from '@discordjs/builders';
 import { formatDuration, shuffleArr, Time } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { clamp } from 'remeda';
 
-import { type MaterialType, materialTypes } from '@/lib/bso/skills/invention/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ResearchTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';

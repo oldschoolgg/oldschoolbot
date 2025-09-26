@@ -1,8 +1,9 @@
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
+
 import { percentChance, roll } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
-import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
 import { divinersOutfit } from '@/lib/data/CollectionsExport.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';

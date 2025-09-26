@@ -1,3 +1,5 @@
+import { allLeagueTasks } from '@/lib/bso/leagues/leagues.js';
+
 import { calcWhatPercent, chunk, isFunction, uniqueArr } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { channelIsSendable, makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
@@ -12,7 +14,6 @@ import {
 } from 'discord.js';
 import { convertXPtoLVL } from 'oldschooljs';
 
-import { allLeagueTasks } from '@/lib/bso/leagues/leagues.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { MAX_LEVEL, masteryKey } from '@/lib/constants.js';

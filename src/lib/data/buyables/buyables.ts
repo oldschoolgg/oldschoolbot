@@ -1,3 +1,5 @@
+import { bsoBuyables } from '@/lib/bso/buyables/bsoBuyables.js';
+
 import { Bank, ItemGroups, Items } from 'oldschooljs';
 
 import { chompyHats } from '@/lib/data/CollectionsExport.js';
@@ -848,7 +850,7 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Compost',
-		gpCost: 400
+		gpCost: 700
 	},
 	{
 		name: 'Amylase pack (Mark of grace)',
@@ -871,7 +873,7 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Potato with cheese',
-		gpCost: 650,
+		gpCost: 2650,
 		skillsNeeded: {
 			attack: 65,
 			strength: 65
@@ -1154,7 +1156,8 @@ const Buyables: Buyable[] = [
 	...toaCapes,
 	...mairinsMarketBuyables,
 	...forestryBuyables,
-	...colossalWyrmAgilityBuyables
+	...colossalWyrmAgilityBuyables,
+	...bsoBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {
@@ -1170,7 +1173,7 @@ for (const id of ItemGroups.teamCapes) {
 	Buyables.push({
 		name: Items.itemNameFromId(id)!,
 		outputItems: new Bank().add(id),
-		gpCost: 15_000
+		gpCost: 50_000
 	});
 }
 

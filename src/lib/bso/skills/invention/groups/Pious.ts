@@ -1,6 +1,6 @@
-import { Items } from 'oldschooljs';
-
 import type { DisassemblySourceGroup } from '@/lib/bso/skills/invention/index.js';
+
+import { Items } from 'oldschooljs';
 
 export const Pious: DisassemblySourceGroup = {
 	name: 'Pious',

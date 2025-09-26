@@ -1,16 +1,19 @@
-import { calcWhatPercent, round, sumArr } from '@oldschoolgg/toolkit';
-import { clamp } from 'remeda';
+import { maxLeaguesPoints } from '@/lib/bso/leagues/leagues.js';
 
+import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit/util';
+import { clamp, round } from 'remeda';
+
+import { allCombatAchievementTasks } from '@/lib/combat_achievements/combatAchievements.js';
+import { MAX_XP } from '@/lib/constants.js';
 import { getTotalCl } from '@/lib/data/Collections.js';
+import { MAX_QP } from '@/lib/minions/data/quests.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import { calculateAchievementDiaryProgress } from '@/mahoji/lib/abstracted_commands/achievementDiaryCommand.js';
-import { allCombatAchievementTasks } from './combat_achievements/combatAchievements.js';
-import { MAX_XP } from './constants.js';
-import { MAX_QP } from './minions/data/quests.js';
 
 export async function calculateMastery(user: MUser, stats: MUserStats) {
 	const [totalClItems, clItems] = await getTotalCl(user, 'collection', stats);
+	const roboChimpUser = await user.fetchRobochimpUser();
 	const clCompletionPercentage = round(calcWhatPercent(clItems, totalClItems), 2);
 	const totalXP = sumArr(Object.values(user.skillsAsXP));
 	const maxTotalXP = Object.values(SkillsEnum).length * MAX_XP;
@@ -20,6 +23,10 @@ export async function calculateMastery(user: MUser, stats: MUserStats) {
 		calcWhatPercent(user.user.completed_ca_task_ids.length, allCombatAchievementTasks.length),
 		2
 	);
+
+	const leaguesPoints = roboChimpUser.leagues_points_total;
+
+	const { totalPercentTrimmed, totalPercentUntrimmed } = await user.calculateCompCapeProgress();
 
 	const masteryFactors = [
 		{
@@ -41,12 +48,28 @@ export async function calculateMastery(user: MUser, stats: MUserStats) {
 		{
 			name: 'Achievement Diaries',
 			percentage: calculateAchievementDiaryProgress(user, stats, await user.fetchMinigames()).percentComplete
+		},
+		{
+			name: 'Leagues',
+			percentage: calcWhatPercent(leaguesPoints, maxLeaguesPoints)
+		},
+		{
+			name: 'Trimmed Completion',
+			percentage: totalPercentTrimmed
+		},
+		{
+			name: 'Untrimmed Completion',
+			percentage: totalPercentUntrimmed
 		}
 	] as const;
 
 	const totalMastery = sumArr(masteryFactors.map(i => i.percentage)) / masteryFactors.length;
 	return {
 		masteryFactors,
-		totalMastery
+		totalMastery,
+		compCapeProgress: {
+			totalPercentTrimmed,
+			totalPercentUntrimmed
+		}
 	};
 }

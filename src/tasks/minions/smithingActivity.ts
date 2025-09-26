@@ -1,6 +1,7 @@
+import { BlacksmithOutfit } from '@/lib/bso/bsoConstants.js';
+
 import { Bank } from 'oldschooljs';
 
-import { BlacksmithOutfit } from '@/lib/bso/bsoConstants.js';
 import { dwarvenOutfit } from '@/lib/data/CollectionsExport.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';

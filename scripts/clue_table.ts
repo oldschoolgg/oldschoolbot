@@ -1,5 +1,6 @@
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import '../src/lib/safeglobals';
+
 import { TSVWriter } from '@oldschoolgg/toolkit/structures';
 import { Bank } from 'oldschooljs';
 

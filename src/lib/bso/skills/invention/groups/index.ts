@@ -1,6 +1,7 @@
+import type { DisassemblySourceGroup } from '@/lib/bso/skills/invention/index.js';
+
 import { Items } from 'oldschooljs';
 
-import type { DisassemblySourceGroup } from '@/lib/bso/skills/invention/index.js';
 import { Ashes } from './Ashes.js';
 import { Axes } from './Axes.js';
 import { Barrows } from './Barrows.js';

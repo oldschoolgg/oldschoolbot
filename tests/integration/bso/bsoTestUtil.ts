@@ -1,11 +1,12 @@
+import { materialTypes } from '@/lib/bso/skills/invention/index.js';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
+import { TameSpeciesID } from '@/lib/bso/tames.js';
+
 import { tame_growth } from '@prisma/client';
 import { type EMonster, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';
 import { expect } from 'vitest';
 
-import { materialTypes } from '@/lib/bso/skills/invention/index.js';
-import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
-import { TameSpeciesID } from '@/lib/bso/tames.js';
 import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import { MTame } from '@/lib/structures/MTame.js';
 import type { SkillsRequired } from '@/lib/types/index.js';

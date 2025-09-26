@@ -1,9 +1,10 @@
+import { defaultMegaDuckLocation, type MegaDuckLocation } from '@/lib/bso/megaDuck.js';
+
 import { Time } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { defaultMegaDuckLocation, type MegaDuckLocation } from '@/lib/bso/megaDuck.js';
 import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '@/lib/canvas/canvasUtil.js';
 import { globalConfig } from '@/lib/constants.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';

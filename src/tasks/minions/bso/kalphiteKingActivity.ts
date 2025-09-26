@@ -1,10 +1,11 @@
+import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
+import { getKalphiteKingGearStats } from '@/lib/bso/getKalphiteKingGearStats.js';
+
 import { calcWhatPercent, noOp, percentChance } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { Bank } from 'oldschooljs';
 
-import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
-import { getKalphiteKingGearStats } from '@/lib/bso/getKalphiteKingGearStats.js';
 import { kalphiteKingCL } from '@/lib/data/CollectionsExport.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { KalphiteKingMonster } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';

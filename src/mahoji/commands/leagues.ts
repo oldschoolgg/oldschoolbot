@@ -1,6 +1,3 @@
-import { calcWhatPercent, formatDuration, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
-
 import {
 	allLeagueTasks,
 	generateLeaguesTasksTextFile,
@@ -8,6 +5,10 @@ import {
 	leaguesClaimCommand,
 	leagueTasks
 } from '@/lib/bso/leagues/leagues.js';
+
+import { calcWhatPercent, formatDuration, Time } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
+
 import { PerkTier } from '@/lib/constants.js';
 import { getUsersPerkTier } from '@/lib/perkTiers.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';

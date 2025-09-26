@@ -1,8 +1,9 @@
+import { kibbles } from '@/lib/bso/kibble.js';
+
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
-import { kibbles } from '@/lib/bso/kibble.js';
 import { type Eatable, Eatables } from '@/lib/data/eatables.js';
 import { getRealHealAmount } from '@/lib/minions/functions/getUserFoodFromBank.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';

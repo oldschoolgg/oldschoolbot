@@ -1,7 +1,8 @@
+import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
+
 import { calcPercentOfNum, roll } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { fishingTrawlerLoot } from '@/lib/simulation/fishingTrawler.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';

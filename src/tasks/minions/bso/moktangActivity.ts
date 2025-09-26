@@ -1,9 +1,10 @@
+import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
+
 import { calcPerHour, formatOrdinal, randInt } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { userMention } from 'discord.js';
 import { Bank, Items, increaseBankQuantitesByPercent, resolveItems, SkillsEnum } from 'oldschooljs';
 
-import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { MOKTANG_ID, MoktangLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
 import {

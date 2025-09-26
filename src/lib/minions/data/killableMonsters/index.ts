@@ -1,3 +1,9 @@
+import {
+	bsoAutocompleteMonsters,
+	bsoEffectiveMonsters,
+	bsoKillableMonsters
+} from '@/lib/bso/monsters/bsoKillableMonsters.js';
+
 import { Time } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import {
@@ -12,11 +18,6 @@ import {
 } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import {
-	bsoAutocompleteMonsters,
-	bsoEffectiveMonsters,
-	bsoKillableMonsters
-} from '@/lib/bso/monsters/bsoKillableMonsters.js';
 import { bossKillables } from '@/lib/minions/data/killableMonsters/bosses/index.js';
 import { camdozaalMonsters } from '@/lib/minions/data/killableMonsters/camdozaalMonsters.js';
 import { chaeldarMonsters } from '@/lib/minions/data/killableMonsters/chaeldarMonsters.js';

@@ -1,5 +1,6 @@
 import { activity_type_enum } from '@prisma/client';
 
+import { DEPRECATED_ACTIVITY_TYPES } from '@/lib/constants.js';
 import type { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { agilityTask } from '@/tasks/minions/agilityActivity.js';
 import { alchingTask } from '@/tasks/minions/alchingActivity.js';
@@ -254,20 +255,12 @@ declare global {
 	export type MinionTask = IMinionTask;
 }
 
-const ignored: activity_type_enum[] = [
-	activity_type_enum.BirthdayEvent,
-	activity_type_enum.BlastFurnace,
-	activity_type_enum.Easter,
-	activity_type_enum.HalloweenEvent,
-	activity_type_enum.Revenants,
-	activity_type_enum.KourendFavour
-];
 for (const a of Object.values(activity_type_enum)) {
-	if (ignored.includes(a)) {
+	if (DEPRECATED_ACTIVITY_TYPES.includes(a)) {
 		continue;
 	}
 	const t = allTasks.find(i => i.type === a);
 	if (!t) {
-		console.log(`Missing ${a} task`);
+		throw new Error(`Missing ${a} task`);
 	}
 }

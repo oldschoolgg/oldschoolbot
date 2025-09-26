@@ -1,7 +1,8 @@
-import { Bank, deepResolveItems, EItem, type ItemBank, Items, itemID } from 'oldschooljs';
-
 import { bsoCreatables } from '@/lib/bso/creatables/bsoCreatables.js';
 import type { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
+
+import { Bank, deepResolveItems, EItem, type ItemBank, Items, itemID } from 'oldschooljs';
+
 import { BitField } from '@/lib/constants.js';
 import { blisterwoodRequirements, ivandisRequirements } from '@/lib/minions/data/templeTrekking.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';

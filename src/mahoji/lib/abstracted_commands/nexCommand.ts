@@ -1,9 +1,10 @@
+import { calcBossFood } from '@/lib/bso/calcBossFood.js';
+
 import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { calcBossFood } from '@/lib/bso/calcBossFood.js';
 import { gorajanArcherOutfit, pernixOutfit } from '@/lib/data/CollectionsExport.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';

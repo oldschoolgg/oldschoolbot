@@ -1,7 +1,8 @@
+import { InventionID, inventionBoosts, inventionItemBoostRaw } from '@/lib/bso/skills/invention/inventions.js';
+
 import { increaseNumByPercent, percentChance, sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, toKMB } from 'oldschooljs';
 
-import { InventionID, inventionBoosts, inventionItemBoostRaw } from '@/lib/bso/skills/invention/inventions.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BitField } from '@/lib/constants.js';
 import Prayer from '@/lib/skilling/skills/prayer.js';

@@ -1,10 +1,11 @@
+import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
+import { transactMaterialsFromUser } from '@/lib/bso/skills/invention/inventions.js';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
+
 import { isFunction, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type SkillsEnum } from 'oldschooljs';
 
-import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
-import { transactMaterialsFromUser } from '@/lib/bso/skills/invention/inventions.js';
-import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import Createables from '@/lib/data/createables.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';

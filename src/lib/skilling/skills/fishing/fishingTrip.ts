@@ -1,10 +1,11 @@
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+
 import { calcPercentOfNum, roll } from '@oldschoolgg/toolkit';
 import { type Bank, EItem } from 'oldschooljs';
 import { match } from 'ts-pattern';
 
-import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
-import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
 import { Cookables } from '@/lib/skilling/skills/cooking/cooking.js';
 import type { Fish } from '@/lib/skilling/types.js';

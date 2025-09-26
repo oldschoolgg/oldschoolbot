@@ -1,10 +1,11 @@
 import '../customItems/customItems.js';
 import '../data/itemAliases.js';
 
+import { ORI_DISABLED_MONSTERS, YETI_ID } from '@/lib/bso/bsoConstants.js';
+
 import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { ORI_DISABLED_MONSTERS, YETI_ID } from '@/lib/bso/bsoConstants.js';
 import { customKillableMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { simulatedKillables } from '@/lib/simulation/simulatedKillables.js';

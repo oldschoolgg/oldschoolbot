@@ -1,5 +1,6 @@
 import { masterFarmerOutfit } from '@/lib/bso/bsoConstants.js';
 import { hasUnlockedAtlantis } from '@/lib/bso/bsoUtil.js';
+
 import { BitField } from '@/lib/constants.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import type { Plant } from '@/lib/skilling/types.js';

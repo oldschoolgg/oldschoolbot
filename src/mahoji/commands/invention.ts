@@ -1,7 +1,3 @@
-import { calcPerHour, reduceNumByPercent, stringMatches, Table, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank, type ItemBank, toKMB } from 'oldschooljs';
-
 import {
 	calcJunkChance,
 	calculateDisXP,
@@ -17,6 +13,11 @@ import {
 import { Inventions, inventCommand, inventingCost, inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { researchCommand } from '@/lib/bso/skills/invention/research.js';
+
+import { calcPerHour, reduceNumByPercent, stringMatches, Table, Time } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Bank, type ItemBank, toKMB } from 'oldschooljs';
+
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';

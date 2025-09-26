@@ -1,8 +1,9 @@
+import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
+
 import { reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { formatDuration, Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, EItem, Items, itemID } from 'oldschooljs';
 
-import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 import type { Fish } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 

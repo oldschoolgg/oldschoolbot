@@ -1,8 +1,9 @@
+import { dwarvenBlessing } from '@/lib/bso/dwarvenBlessing.js';
+
 import { Time } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { dwarvenBlessing } from '@/lib/bso/dwarvenBlessing.js';
 import { BitField } from '@/lib/constants.js';
 import { makeGearBank } from '../utils.js';
 

@@ -1,6 +1,24 @@
-import { uniqueArr } from '@oldschoolgg/toolkit';
-import { resolveItems } from 'oldschooljs';
+import { BSOItemGroups } from '@/lib/bso/bsoItemGroups.js';
+import { gods } from '@/lib/bso/divineDominion.js';
+import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
+import { monkeyEatables } from '@/lib/bso/minigames/monkey-rumble/monkeyRumble.js';
+import { tmbTable, umbTable } from '@/lib/bso/openables/bsoOpenables.js';
+import { DisassemblySourceGroups } from '@/lib/bso/skills/invention/groups/index.js';
+import { type DisassembleFlag, disassembleFlagMaterials, materialTypes } from '@/lib/bso/skills/invention/index.js';
 
+import { uniqueArr } from '@oldschoolgg/toolkit';
+import {
+	BeginnerClueTable,
+	EasyClueTable,
+	EliteClueTable,
+	HardClueTable,
+	MasterClueTable,
+	MediumClueTable,
+	resolveItems
+} from 'oldschooljs';
+
+import { customItems } from '@/lib/customItems/util.js';
+import { PartyhatTable } from '@/lib/data/holidayItems.js';
 import Potions from '@/lib/minions/data/potions.js';
 import { allOpenables } from '@/lib/openables.js';
 import { gracefulItems } from '@/lib/skilling/skills/agility.js';
@@ -13,6 +31,7 @@ import { Lampables } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
 import { allCollectionLogs } from './Collections.js';
 import {
 	allClueItems,
+	allPetIDs,
 	cluesBeginnerCL,
 	cluesEasyCL,
 	cluesEliteCL,
@@ -161,7 +180,9 @@ export const ores = resolveItems([
 	'Mithril ore',
 	'Lovakite ore',
 	'Adamantite ore',
-	'Runite ore'
+	'Runite ore',
+	'Dwarven ore',
+	'Dark animica'
 ]);
 
 const bars = resolveItems([
@@ -175,7 +196,8 @@ const bars = resolveItems([
 	'Lovakite bar',
 	'Mithril bar',
 	'Adamantite bar',
-	'Runite bar'
+	'Runite bar',
+	'Dwarven bar'
 ]);
 
 const smithingMisc = resolveItems([
@@ -197,6 +219,7 @@ const smithingMisc = resolveItems([
 	'Arcane sigil',
 	'Spectral sigil',
 	'Elysian sigil',
+	'Divine sigil',
 	'Blessed Spirit Shield',
 	'Smouldering stone',
 	'Dragon metal lump',
@@ -331,14 +354,16 @@ export const seeds = resolveItems([
 	'Tomato seed',
 	'Cabbage seed',
 	'Onion seed',
-	'Potato seed'
+	'Potato seed',
+	...BSOItemGroups.bsoSeeds
 ]);
 
 export const allPotions = Potions.flatMap(potion => potion.items);
 export const potions = [...new Set(allPotions)];
 
 export const grimyHerbs = Grimy.flatMap(grimy => grimy.inputItems.itemIDs);
-export const cleanHerbs = Grimy.flatMap(clean => clean.item.id);
+export const cleanHerbs = [...Grimy.flatMap(clean => clean.item.id), ...BSOItemGroups.bsoHerbs];
+
 export const herbs = [...new Set(grimyHerbs), ...new Set(cleanHerbs)];
 
 export const unfPots = unfinishedPotions.flatMap(unf => unf.item.id);
@@ -376,7 +401,8 @@ const bones = resolveItems([
 	'Wolf bones',
 	'Wyrm bones',
 	'Wyvern bones',
-	'Zogre bones'
+	'Zogre bones',
+	...BSOItemGroups.bsoBones
 ]);
 
 const fletchingItemsSet = uniqueArr(Fletchables.flatMap(item => item.inputItems.itemIDs));
@@ -435,7 +461,8 @@ const spiritShields = resolveItems([
 	'Blessed spirit shield',
 	'Spectral spirit shield',
 	'Arcane spirit shield',
-	'Elysian spirit shield'
+	'Elysian spirit shield',
+	'Divine spirit shield'
 ]);
 
 const gear = resolveItems([
@@ -460,7 +487,13 @@ const cluesAndCaskets = resolveItems([
 	'Reward casket (medium)',
 	'Reward casket (hard)',
 	'Reward casket (elite)',
-	'Reward casket (master)'
+	'Reward casket (master)',
+
+	'Clue scroll (grandmaster)',
+	'Clue scroll (elder)',
+	'Reward casket (grandmaster)',
+	'Reward casket (elder)',
+	'Elder scroll piece'
 ]);
 
 const godwars = resolveItems([
@@ -917,6 +950,72 @@ export const baseFilters: Filterable[] = [
 
 			return user.user.favorite_alchables;
 		}
+	},
+	// BSO
+	{
+		name: 'umb',
+		aliases: ['umb'],
+		items: () => umbTable
+	},
+	{
+		name: 'tmb',
+		aliases: ['tmb'],
+		items: () => tmbTable
+	},
+	{
+		name: 'Pets',
+		aliases: ['pets', 'pmb'],
+		items: () => allPetIDs.flat(Number.POSITIVE_INFINITY) as number[]
+	},
+	{
+		name: 'Holiday',
+		aliases: ['holiday', 'hmb', 'rare', 'rares'],
+		items: () => [...allOpenables.find(o => o.name === 'Holiday Mystery box')!.allItems, ...PartyhatTable.allItems]
+	},
+	{
+		name: 'Custom Items',
+		aliases: ['custom', 'custom items'],
+		items: () => customItems
+	},
+	{
+		name: 'Beginner rewards',
+		aliases: ['beginnerrewards'],
+		items: () => BeginnerClueTable.allItems
+	},
+	{
+		name: 'Easy rewards',
+		aliases: ['easyrewards'],
+		items: () => EasyClueTable.allItems
+	},
+	{
+		name: 'Medium rewards',
+		aliases: ['mediumrewards'],
+		items: () => MediumClueTable.allItems
+	},
+	{
+		name: 'Hard rewards',
+		aliases: ['hardrewards'],
+		items: () => HardClueTable.allItems
+	},
+	{
+		name: 'Elite rewards',
+		aliases: ['eliterewards'],
+		items: () => EliteClueTable.allItems
+	},
+	{
+		name: 'Master rewards',
+		aliases: ['masterrewards'],
+		items: () => MasterClueTable.allItems
+	},
+	{
+		name: 'Grandmaster rewards',
+		aliases: ['grandmasterrewards'],
+		items: () => GrandmasterClueTable.allItems
+	},
+	{
+		name: 'Fruit',
+		aliases: ['fruit'],
+		items: () => monkeyEatables.map(i => i.item.id)
 	}
 ];
 
@@ -934,4 +1033,33 @@ for (const clGroup of Object.values(allCollectionLogs).map(c => c.activities)) {
 			});
 		}
 	}
+}
+
+for (const type of materialTypes) {
+	let items: number[] = [];
+	if (disassembleFlagMaterials.includes(type as DisassembleFlag)) {
+		items = DisassemblySourceGroups.flatMap(group =>
+			group.items
+				.filter(item => item.flags?.has(type as DisassembleFlag))
+				.flatMap(item => (Array.isArray(item.item) ? item.item.map(i => i.id) : [item.item.id]))
+		);
+	} else {
+		items = DisassemblySourceGroups.filter(group => Boolean(group.parts[type])).flatMap(group =>
+			group.items.flatMap(item => (Array.isArray(item.item) ? item.item.map(i => i.id) : [item.item.id]))
+		);
+	}
+	filterableTypes.push({
+		name: `${type}-material`,
+		aliases: [type],
+		items: () => items
+	});
+}
+
+for (const god of gods) {
+	const name = `${god.name} Divine Dominion God Items`;
+	filterableTypes.push({
+		name,
+		aliases: [name.toLowerCase()],
+		items: () => god.godItems
+	});
 }

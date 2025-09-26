@@ -1,3 +1,5 @@
+import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
+
 import { noOp, notEmpty, percentChance, randArrItem, shuffleArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
@@ -5,7 +7,6 @@ import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items, itemID, resolveItems } from 'oldschooljs';
 
-import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { BitField, PerkTier } from '@/lib/constants.js';

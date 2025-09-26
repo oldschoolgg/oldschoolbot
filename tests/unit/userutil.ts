@@ -5,6 +5,7 @@ import type { BitField } from '../../src/lib/constants.js';
 import type { GearSetup } from '../../src/lib/gear/types.js';
 import { MUserClass } from '../../src/lib/MUser.js';
 import { constructGearSetup, Gear, type PartialGearSetup } from '../../src/lib/structures/Gear.js';
+import { cryptoRand } from '@/lib/util/rng.js';
 
 function filterGearSetup(gear: undefined | null | GearSetup | PartialGearSetup): GearSetup | undefined {
 	const filteredGear = !gear
@@ -72,12 +73,15 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		skills_defence: overrides?.skills_defence ?? 0,
 		skills_slayer: 0,
 		skills_hitpoints: overrides?.skills_hitpoints ?? convertLVLtoXP(10),
+		skills_invention: 0,
+		skills_dungeoneering: 0,
+		skills_divination: 0,
 		GP: overrides?.GP ?? 0,
 		bitfield: overrides?.bitfield ?? [],
 		username: 'Magnaboy',
 		QP: overrides?.QP ?? 0,
 		sacrificedValue: 0,
-		id: overrides?.id ?? '',
+		id: overrides?.id ?? cryptoRand(1, 1_000_000_000).toString(),
 		monsterScores: {},
 		badges: []
 	} as unknown as User;

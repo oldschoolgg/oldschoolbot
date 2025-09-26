@@ -1,11 +1,12 @@
+import { getUsersFishingContestDetails } from '@/lib/bso/fishingContest.js';
+import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '@/lib/bso/tameUtil.js';
+
 import { roll, stripNonAlphanumeric } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { type BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 
-import { getUsersFishingContestDetails } from '@/lib/bso/fishingContest.js';
-import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '@/lib/bso/tameUtil.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';

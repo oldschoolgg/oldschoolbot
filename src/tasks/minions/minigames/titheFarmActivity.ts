@@ -1,7 +1,8 @@
+import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
+
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { TitheFarmActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';

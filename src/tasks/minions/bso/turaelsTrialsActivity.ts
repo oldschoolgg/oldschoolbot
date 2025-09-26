@@ -1,6 +1,7 @@
+import type { TuraelsTrialsMethod } from '@/lib/bso/turaelsTrials.js';
+
 import { Bank } from 'oldschooljs';
 
-import type { TuraelsTrialsMethod } from '@/lib/bso/turaelsTrials.js';
 import { XPBank } from '@/lib/structures/Banks.js';
 import type { TuraelsTrialsOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';

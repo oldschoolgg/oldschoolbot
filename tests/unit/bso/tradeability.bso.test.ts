@@ -1,7 +1,8 @@
+import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
+
 import { Items, itemID } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
-import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
 import { masterCapesCL } from '@/lib/data/CollectionsExport.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 

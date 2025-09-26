@@ -1,6 +1,7 @@
+import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
+
 import { Bank } from 'oldschooljs';
 
-import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 import type { Consumable } from '@/lib/minions/types.js';
 
 // Configure boost percents

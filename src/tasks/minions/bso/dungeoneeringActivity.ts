@@ -1,6 +1,3 @@
-import { reduceNumByPercent, roll, Time } from '@oldschoolgg/toolkit';
-import { Bank, randomVariation, toKMB } from 'oldschooljs';
-
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
@@ -9,6 +6,10 @@ import {
 	calcUserGorajanShardChance,
 	numberOfGorajanOutfitsEquipped
 } from '@/lib/bso/skills/dungoneering/dungDbFunctions.js';
+
+import { reduceNumByPercent, roll, Time } from '@oldschoolgg/toolkit';
+import { Bank, randomVariation, toKMB } from 'oldschooljs';
+
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { DungeoneeringOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';

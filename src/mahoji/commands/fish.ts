@@ -1,9 +1,10 @@
+import { bsoTackleBoxes } from '@/lib/bso/bsoConstants.js';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
+
 import { formatDuration, stringSearch, Time } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { ItemGroups, Items, Monsters } from 'oldschooljs';
 
-import { bsoTackleBoxes } from '@/lib/bso/bsoConstants.js';
-import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';

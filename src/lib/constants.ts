@@ -1,9 +1,12 @@
+import { bsoDeprecatedActivities } from '@/lib/bso/bsoConstants.js';
+
 import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { AbstractCommand, CommandOptions } from '@oldschoolgg/toolkit/discord-util';
 import { dateFm, PerkTier } from '@oldschoolgg/toolkit/util';
+import { activity_type_enum } from '@prisma/client';
 import * as dotenv from 'dotenv';
 import { convertLVLtoXP, resolveItems } from 'oldschooljs';
 import { z } from 'zod';
@@ -625,3 +628,13 @@ if (!process.env.TEST && isMainThread) {
 
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
 export type PvMMethod = (typeof PVM_METHODS)[number];
+
+export const DEPRECATED_ACTIVITY_TYPES: activity_type_enum[] = [
+	activity_type_enum.BirthdayEvent,
+	activity_type_enum.Easter,
+	activity_type_enum.HalloweenEvent,
+	activity_type_enum.BlastFurnace, // During the slash command migration this moved to under the smelting activity
+	activity_type_enum.Revenants, // This is now under monsterActivity
+	activity_type_enum.KourendFavour, // Kourend favor activity was removed
+	...bsoDeprecatedActivities
+];

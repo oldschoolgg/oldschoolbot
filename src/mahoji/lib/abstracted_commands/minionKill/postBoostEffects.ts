@@ -1,8 +1,9 @@
+import { dwarvenBlessing } from '@/lib/bso/dwarvenBlessing.js';
+
 import { calcPercentOfNum, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import type { GearSetupType } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
-import { dwarvenBlessing } from '@/lib/bso/dwarvenBlessing.js';
 import { BitField } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { convertAttackStyleToGearSetup } from '@/lib/gear/functions/convertAttackStyleToGearSetup.js';

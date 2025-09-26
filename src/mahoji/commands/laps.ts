@@ -1,9 +1,10 @@
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
+
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 import { BitField } from '@/lib/constants.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import { courses } from '@/lib/skilling/skills/agility.js';

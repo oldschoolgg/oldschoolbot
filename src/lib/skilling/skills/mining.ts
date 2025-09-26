@@ -1,7 +1,8 @@
+import { bsoOres } from '@/lib/bso/skills/mining/ores.js';
+
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { itemID, LootTable } from 'oldschooljs';
 
-import { bsoOres } from '@/lib/bso/skills/mining/ores.js';
 import type { Ore } from '@/lib/skilling/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 

@@ -1,4 +1,5 @@
 import { bsoMixables } from '@/lib/bso/skills/herblore/bsoMixables.js';
+
 import type { Mixable } from '@/lib/skilling/types.js';
 import { barbMixes } from './barbMixes.js';
 import Crush from './crush.js';

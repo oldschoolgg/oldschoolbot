@@ -1,8 +1,9 @@
+import { getPaintedItemImage, paintColorsMap } from '@/lib/bso/paintColors.js';
+
 import { LRUCache } from 'lru-cache';
 import { itemID } from 'oldschooljs';
 import { type Canvas, loadImage } from 'skia-canvas';
 
-import { getPaintedItemImage, paintColorsMap } from '@/lib/bso/paintColors.js';
 import { type CanvasImage, canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 

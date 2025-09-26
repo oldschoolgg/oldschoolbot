@@ -1,6 +1,7 @@
+import { bsoGrimy } from '@/lib/bso/skills/herblore/bsoGrimy.js';
+
 import { Bank, Items } from 'oldschooljs';
 
-import { bsoGrimy } from '@/lib/bso/skills/herblore/bsoGrimy.js';
 import type { Mixable } from '@/lib/skilling/types.js';
 
 const Grimy: Mixable[] = [

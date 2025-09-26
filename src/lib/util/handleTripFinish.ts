@@ -1,3 +1,10 @@
+import { tearsOfGuthixIronmanReqs, tearsOfGuthixSkillReqs } from '@/lib/bso/commands/tearsOfGuthixCommand.js';
+import { chargePortentIfHasCharges, getAllPortentCharges, PortentID } from '@/lib/bso/divination.js';
+import { gods } from '@/lib/bso/divineDominion.js';
+import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
+import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
+
 import { notEmpty, randArrItem, randInt, roll, Time } from '@oldschoolgg/toolkit';
 import { channelIsSendable, makeComponents, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
@@ -6,12 +13,6 @@ import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateO
 import { bold } from 'discord.js';
 import { Bank, EItem, itemID, toKMB } from 'oldschooljs';
 
-import { tearsOfGuthixIronmanReqs, tearsOfGuthixSkillReqs } from '@/lib/bso/commands/tearsOfGuthixCommand.js';
-import { chargePortentIfHasCharges, getAllPortentCharges, PortentID } from '@/lib/bso/divination.js';
-import { gods } from '@/lib/bso/divineDominion.js';
-import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
-import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
-import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';

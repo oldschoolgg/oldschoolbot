@@ -1,8 +1,9 @@
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
+
 import { increaseNumByPercent, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { Bank, Items, SkillsEnum } from 'oldschooljs';
 
-import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { DarkAltarOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';

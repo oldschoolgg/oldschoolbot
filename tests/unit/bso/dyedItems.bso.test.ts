@@ -1,9 +1,10 @@
-import { uniqueArr } from '@oldschoolgg/toolkit';
-import { expect, test } from 'vitest';
-
 import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
 import { dyedItems } from '@/lib/bso/dyedItems.js';
 import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/bsoOpenables.js';
+
+import { uniqueArr } from '@oldschoolgg/toolkit';
+import { expect, test } from 'vitest';
+
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 
 test('No duplicate dyed items', () => {

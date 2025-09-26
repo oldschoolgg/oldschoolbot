@@ -1,6 +1,7 @@
+import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
+
 import { Bank, GrandHallowedCoffin } from 'oldschooljs';
 
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { openCoffin, sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';

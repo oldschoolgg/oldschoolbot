@@ -1,10 +1,11 @@
+import { IVY_MAX_TRIP_LENGTH_BOOST } from '@/lib/bso/bsoConstants.js';
+import { InventionID, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
+
 import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Items, itemID, resolveItems } from 'oldschooljs';
 
-import { IVY_MAX_TRIP_LENGTH_BOOST } from '@/lib/bso/bsoConstants.js';
-import { InventionID, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 import { determineWoodcuttingTime } from '@/lib/skilling/functions/determineWoodcuttingTime.js';
 import Woodcutting, { type TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';

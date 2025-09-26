@@ -1,6 +1,6 @@
-import type { Item } from 'oldschooljs';
-
 import { DisassemblySourceGroups } from '@/lib/bso/skills/invention/groups/index.js';
+
+import type { Item } from 'oldschooljs';
 
 export const materialTypes = [
 	'junk',

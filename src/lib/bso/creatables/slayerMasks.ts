@@ -1,6 +1,7 @@
+import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
+
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
 import type { Createable } from '@/lib/data/createables.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 

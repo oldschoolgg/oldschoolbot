@@ -1,11 +1,12 @@
-import type { CropUpgradeType } from '@prisma/client';
-import type { ItemBank } from 'oldschooljs';
-
 import type { BathhouseTierName } from '@/lib/bso/baxtorianBathhouses.js';
 import type { Kibble } from '@/lib/bso/kibble.js';
 import type { Monkey } from '@/lib/bso/minigames/monkey-rumble/monkeyRumble.js';
 import type { IMaterialBank, MaterialType } from '@/lib/bso/skills/invention/index.js';
 import type { TuraelsTrialsMethod } from '@/lib/bso/turaelsTrials.js';
+
+import type { CropUpgradeType } from '@prisma/client';
+import type { ItemBank } from 'oldschooljs';
+
 import type { NMZStrategy } from '@/lib/constants.js';
 import type { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
 import type { IPatchData } from '@/lib/minions/farming/types.js';

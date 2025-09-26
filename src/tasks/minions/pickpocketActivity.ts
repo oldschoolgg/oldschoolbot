@@ -1,9 +1,10 @@
-import { percentChance, randInt, roll, Time } from '@oldschoolgg/toolkit';
-import { Items, resolveItems, SkillsEnum } from 'oldschooljs';
-
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
 import { clueUpgraderEffect } from '@/lib/bso/inventionEffects.js';
+
+import { percentChance, randInt, roll, Time } from '@oldschoolgg/toolkit';
+import { Items, resolveItems, SkillsEnum } from 'oldschooljs';
+
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/stealables.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';

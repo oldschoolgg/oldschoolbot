@@ -1,5 +1,8 @@
 import { Time } from '@oldschoolgg/toolkit';
-import { resolveItems } from 'oldschooljs';
+import { activity_type_enum } from '@prisma/client';
+import { Bank, resolveItems } from 'oldschooljs';
+
+import Skillcapes from '@/lib/skilling/skillcapes.js';
 
 export const GLOBAL_BSO_XP_MULTIPLIER = 5;
 
@@ -63,3 +66,22 @@ export const BlacksmithOutfit = resolveItems([
 	'Blacksmith gloves',
 	'Blacksmith boots'
 ]);
+
+export const bsoDeprecatedActivities: activity_type_enum[] = [
+	activity_type_enum.BossEvent,
+	activity_type_enum.TrickOrTreat,
+	activity_type_enum.HalloweenMiniMinigame,
+	activity_type_enum.Mortimer,
+	activity_type_enum.BirthdayCollectIngredients,
+	activity_type_enum.SnoozeSpellActive
+];
+
+export const compCapeCreatableBank = new Bank();
+for (const cape of Skillcapes) {
+	compCapeCreatableBank.add(cape.masterCape.id);
+}
+compCapeCreatableBank.add('Master quest cape');
+compCapeCreatableBank.add('Achievement diary cape (t)');
+compCapeCreatableBank.add('Music cape (t)');
+
+compCapeCreatableBank.freeze();

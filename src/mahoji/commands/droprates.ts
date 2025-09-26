@@ -1,11 +1,12 @@
-import { formatDuration, stringMatches, Table, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank } from 'oldschooljs';
-
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { calcBabyYagaHouseDroprate, clAdjustedDroprate, herbertDroprate } from '@/lib/bso/bsoUtil.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
+
+import { formatDuration, stringMatches, Table, Time } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Bank } from 'oldschooljs';
+
 import { MAX_XP } from '@/lib/constants.js';
 import Constructables from '@/lib/skilling/skills/construction/constructables.js';
 import Potions from '@/lib/skilling/skills/herblore/mixables/potions.js';

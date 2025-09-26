@@ -1,11 +1,12 @@
+import { bossEvents } from '@/lib/bso/bossEvents.js';
+import { divinationEnergies, memoryHarvestTypes } from '@/lib/bso/divination.js';
+import { fishingLocations } from '@/lib/bso/fishingContest.js';
+
 import { formatOrdinal, increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
 import { Items, SkillsEnum } from 'oldschooljs';
 
-import { bossEvents } from '@/lib/bso/bossEvents.js';
-import { divinationEnergies, memoryHarvestTypes } from '@/lib/bso/divination.js';
-import { fishingLocations } from '@/lib/bso/fishingContest.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';

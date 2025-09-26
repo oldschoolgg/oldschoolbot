@@ -1,14 +1,15 @@
-import { Time } from '@oldschoolgg/toolkit';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
-import { Monsters } from 'oldschooljs';
-
 import { igneCommand } from '@/lib/bso/commands/igneCommand.js';
 import { kgCommand } from '@/lib/bso/commands/kgCommand.js';
 import { kkCommand } from '@/lib/bso/commands/kkCommand.js';
 import { moktangCommand } from '@/lib/bso/commands/moktangCommand.js';
 import { naxxusCommand } from '@/lib/bso/commands/naxxusCommand.js';
 import { handleDTD } from '@/lib/bso/handleDTD.js';
+
+import { Time } from '@oldschoolgg/toolkit';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
+import { Monsters } from 'oldschooljs';
+
 import { colosseumCommand } from '@/lib/colosseum.js';
 import type { PvMMethod } from '@/lib/constants.js';
 import { trackLoot } from '@/lib/lootTrack.js';

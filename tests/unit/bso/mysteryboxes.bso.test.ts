@@ -1,8 +1,9 @@
+import { combinedTmbUmbEmbTables, embTable, tmbTable, umbTable } from '@/lib/bso/openables/bsoOpenables.js';
+import { PMBTable } from '@/lib/bso/openables/tables.js';
+
 import { ItemGroups, Items, itemID, resolveItems } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
-import { combinedTmbUmbEmbTables, embTable, tmbTable, umbTable } from '@/lib/bso/openables/bsoOpenables.js';
-import { PMBTable } from '@/lib/bso/openables/tables.js';
 import { growablePets } from '@/lib/growablePets.js';
 
 test("Items that shouldn't be dropped in mystery boxes", () => {

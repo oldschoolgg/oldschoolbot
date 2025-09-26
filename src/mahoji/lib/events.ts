@@ -1,8 +1,9 @@
+import { syncDoubleLoot } from '@/lib/bso/doubleLoot.js';
+import { syncSlayerMaskLeaderboardCache } from '@/lib/bso/slayerMaskLeaderboard.js';
+
 import type { ItemBank } from 'oldschooljs';
 
 import { startBlacklistSyncing } from '@/lib/blacklists.js';
-import { syncDoubleLoot } from '@/lib/bso/doubleLoot.js';
-import { syncSlayerMaskLeaderboardCache } from '@/lib/bso/slayerMaskLeaderboard.js';
 import { usernameWithBadgesCache } from '@/lib/cache.js';
 import { badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { initCrons } from '@/lib/crons.js';

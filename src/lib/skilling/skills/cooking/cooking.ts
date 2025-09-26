@@ -1,7 +1,8 @@
+import { bsoCookables } from '@/lib/bso/skills/cooking/bsoCookables.js';
+
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { itemID } from 'oldschooljs';
 
-import { bsoCookables } from '@/lib/bso/skills/cooking/bsoCookables.js';
 import type { Cookable } from '@/lib/skilling/types.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 

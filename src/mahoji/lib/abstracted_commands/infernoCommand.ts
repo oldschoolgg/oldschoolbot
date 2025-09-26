@@ -1,3 +1,5 @@
+import { determineProjectileTypeFromGear } from '@/lib/bso/gear/util.js';
+
 import {
 	calcPercentOfNum,
 	formatDuration,
@@ -12,7 +14,6 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, type ItemBank, Items, itemID, Monsters, resolveItems } from 'oldschooljs';
 
-import { determineProjectileTypeFromGear } from '@/lib/bso/gear/util.js';
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
 import { BitField, projectiles } from '@/lib/constants.js';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/data/CollectionsExport.js';

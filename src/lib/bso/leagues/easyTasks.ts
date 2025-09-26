@@ -1,8 +1,9 @@
+import { calcTotalLevel } from '@/lib/bso/bsoUtil.js';
+import { divinationEnergies } from '@/lib/bso/divination.js';
+
 import { notEmpty, sumArr } from '@oldschoolgg/toolkit';
 import { calcCombatLevel, type ItemBank, Monsters, resolveItems } from 'oldschooljs';
 
-import { calcTotalLevel } from '@/lib/bso/bsoUtil.js';
-import { divinationEnergies } from '@/lib/bso/divination.js';
 import { MAX_LEVEL } from '@/lib/constants.js';
 import { barrowsChestCL, customPetsCL } from '@/lib/data/CollectionsExport.js';
 import {

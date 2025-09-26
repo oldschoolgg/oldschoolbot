@@ -1,6 +1,7 @@
+import { DragonTable } from '@/lib/bso/grandmasterClue.js';
+
 import { LootTable } from 'oldschooljs';
 
-import { DragonTable } from '@/lib/bso/grandmasterClue.js';
 import { runeAlchablesTable, StoneSpiritTable } from '@/lib/simulation/sharedTables.js';
 
 const DragonFletchingTable = new LootTable()

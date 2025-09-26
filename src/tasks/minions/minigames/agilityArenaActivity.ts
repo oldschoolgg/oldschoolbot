@@ -1,9 +1,10 @@
+import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
+
 import { calcWhatPercent, reduceNumByPercent, roll, Time } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Bank, randomVariation, toKMB } from 'oldschooljs';
 
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';

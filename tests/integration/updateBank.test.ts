@@ -1,7 +1,8 @@
+import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
+
 import { Bank, EMonster, type ItemBank } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
-import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import { createTestUser } from './util.js';
 

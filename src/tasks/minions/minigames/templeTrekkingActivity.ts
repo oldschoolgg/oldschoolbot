@@ -1,8 +1,9 @@
+import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
+
 import { randInt } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Bank, ItemGroups, Items } from 'oldschooljs';
 
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import {
 	EasyEncounterLoot,
 	HardEncounterLoot,

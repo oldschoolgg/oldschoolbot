@@ -1,6 +1,7 @@
+import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
+
 import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import { calcConBonusXP } from '@/lib/skilling/skills/construction/calcConBonusXP.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MahoganyHomesActivityTaskOptions } from '@/lib/types/minions.js';

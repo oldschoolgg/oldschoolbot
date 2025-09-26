@@ -1,5 +1,6 @@
 import { TimerManager } from '@sapphire/timer-manager';
 import '../src/lib/safeglobals';
+
 import { execSync } from 'node:child_process';
 
 import { sonicBoom } from '@/lib/util/logger.js';

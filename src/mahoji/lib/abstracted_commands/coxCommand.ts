@@ -1,15 +1,16 @@
-import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { Bank, randomVariation } from 'oldschooljs';
-
 import {
 	canAffordInventionBoost,
 	InventionID,
 	inventionBoosts,
 	inventionItemBoost
 } from '@/lib/bso/skills/invention/inventions.js';
+
+import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import { Bank, randomVariation } from 'oldschooljs';
+
 import {
 	calcCoxDuration,
 	calcCoxInput,

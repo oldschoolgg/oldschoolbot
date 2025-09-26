@@ -1,7 +1,8 @@
-import { schedule } from 'node-cron';
-
 import { syncPrescence } from '@/lib/bso/doubleLoot.js';
 import { syncSlayerMaskLeaderboardCache } from '@/lib/bso/slayerMaskLeaderboard.js';
+
+import { schedule } from 'node-cron';
+
 import { cacheCleanup } from '@/lib/util/cachedUserIDs.js';
 import { analyticsTick } from './analytics.js';
 import { cacheGEPrices } from './marketPrices.js';

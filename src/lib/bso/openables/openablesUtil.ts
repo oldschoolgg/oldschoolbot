@@ -1,5 +1,3 @@
-import { ItemGroups, resolveItems } from 'oldschooljs';
-
 import { OSB_VIRTUS_IDS } from '@/lib/bso/bsoConstants.js';
 import {
 	BeachMysteryBoxTable,
@@ -9,6 +7,9 @@ import {
 	PMBTable,
 	RoyalMysteryBoxTable
 } from '@/lib/bso/openables/tables.js';
+
+import { ItemGroups, resolveItems } from 'oldschooljs';
+
 import {
 	allPetIDs,
 	chambersOfXericCL,

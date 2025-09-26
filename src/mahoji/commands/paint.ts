@@ -1,7 +1,8 @@
+import { getPaintedItemImage } from '@/lib/bso/paintColors.js';
+
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
-import { getPaintedItemImage } from '@/lib/bso/paintColors.js';
 import { canvasToBuffer } from '@/lib/canvas/canvasUtil.js';
 import { renderPaintGrid } from '@/lib/canvas/renderPaintGrid.js';
 import { paintColors } from '@/lib/customItems/paintCans.js';

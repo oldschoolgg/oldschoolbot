@@ -1,3 +1,6 @@
+import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
+
 import {
 	calcWhatPercent,
 	notEmpty,
@@ -28,8 +31,6 @@ import {
 } from 'oldschooljs';
 import { pick } from 'remeda';
 
-import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
-import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';

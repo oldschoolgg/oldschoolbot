@@ -1,6 +1,7 @@
+import { basePortentCost, calcAtomicEnergy, divinationEnergies, portents } from '@/lib/bso/divination.js';
+
 import { Bank } from 'oldschooljs';
 
-import { basePortentCost, calcAtomicEnergy, divinationEnergies, portents } from '@/lib/bso/divination.js';
 import type { Createable } from '@/lib/data/createables.js';
 
 export const divinationCreatables: Createable[] = [];

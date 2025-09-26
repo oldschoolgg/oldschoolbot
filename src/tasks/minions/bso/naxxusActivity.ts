@@ -1,4 +1,5 @@
 import { rollNaxxusLoot } from '@/lib/bso/naxxus/rollNaxxusLoot.js';
+
 import { trackLoot } from '@/lib/lootTrack.js';
 import { Naxxus } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';

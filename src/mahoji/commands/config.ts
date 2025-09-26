@@ -1,3 +1,5 @@
+import { Inventions } from '@/lib/bso/skills/invention/inventions.js';
+
 import { removeFromArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { allAbstractCommands, channelIsSendable, hasBanMemberPerms } from '@oldschoolgg/toolkit/discord-util';
@@ -17,7 +19,6 @@ import {
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
-import { Inventions } from '@/lib/bso/skills/invention/inventions.js';
 import { gearImages } from '@/lib/canvas/gearImageData.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BitField, ParsedCustomEmojiWithGroups, PerkTier } from '@/lib/constants.js';

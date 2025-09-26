@@ -1,10 +1,11 @@
+import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
+
 import { increaseNumByPercent, notEmpty, randInt, Time } from '@oldschoolgg/toolkit';
 import { formatDuration, isWeekend, stringMatches } from '@oldschoolgg/toolkit/util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
-import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
 import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
 import { clueHunterOutfit } from '@/lib/data/CollectionsExport.js';
 import { getPOHObject } from '@/lib/poh/index.js';

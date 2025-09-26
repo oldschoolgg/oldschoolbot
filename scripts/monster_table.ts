@@ -11,6 +11,7 @@ import '../src/lib/safeglobals';
 import { maxMage, maxMelee, maxRange } from '@/lib/bso/depthsOfAtlantis.js';
 import { materialTypes } from '@/lib/bso/skills/invention/index.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
+
 import { type BitField, PVM_METHODS } from '@/lib/constants.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';

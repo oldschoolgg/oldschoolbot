@@ -1,10 +1,11 @@
+import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '@/lib/bso/tames.js';
+
 import { formatDuration, gaussianRandom, randArrItem, reduceNumByPercent, roll } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { tame_growth } from '@prisma/client';
 import { ApplicationCommandOptionType, type ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
-import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '@/lib/bso/tames.js';
 import { globalConfig } from '@/lib/constants.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';

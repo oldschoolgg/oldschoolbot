@@ -1,7 +1,8 @@
+import { bsoStealables } from '@/lib/bso/skills/thieving/bsoStealables.js';
+
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { LootTable, Monsters } from 'oldschooljs';
 
-import { bsoStealables } from '@/lib/bso/skills/thieving/bsoStealables.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 
 const {

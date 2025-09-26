@@ -1,3 +1,5 @@
+import { bsoArmorSetsSrc } from '@/lib/bso/creatables/bsoArmorPacks.js';
+
 import { Bank, type Item, Items, itemID } from 'oldschooljs';
 
 import type { Createable } from '@/lib/data/createables.js';
@@ -2463,6 +2465,7 @@ export const armorAndItemPacks: Createable[] = [
 ];
 
 const armorSetsSrc: { unpacked: Bank; packed: Item }[] = [
+	...bsoArmorSetsSrc,
 	{
 		unpacked: new Bank().add("Dagon'hai hat").add("Dagon'hai robe top").add("Dagon'hai robe bottom"),
 		packed: Items.getOrThrow("Dagon'hai robes set")

@@ -1,7 +1,3 @@
-import { calcPercentOfNum, increaseNumByPercent, roll } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { Bank } from 'oldschooljs';
-
 import {
 	calcEnergyPerMemory,
 	type DivinationEnergy,
@@ -9,6 +5,11 @@ import {
 	MemoryHarvestType
 } from '@/lib/bso/divination.js';
 import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
+
+import { calcPercentOfNum, increaseNumByPercent, roll } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Bank } from 'oldschooljs';
+
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MemoryHarvestOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';

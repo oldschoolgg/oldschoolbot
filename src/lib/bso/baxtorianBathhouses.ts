@@ -1,3 +1,5 @@
+import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
+
 import { userMention } from '@discordjs/builders';
 import {
 	formatDuration,
@@ -13,7 +15,6 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import type { User } from '@prisma/client';
 import { Bank, type Item, Items, LootTable, resolveItems } from 'oldschooljs';
 
-import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import Grimy from '@/lib/skilling/skills/herblore/mixables/grimy.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { Skills } from '@/lib/types/index.js';

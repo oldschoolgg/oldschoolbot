@@ -1,7 +1,8 @@
+import { stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
+
 import type { Minigame } from '@prisma/client';
 import { Bank, type Item, ItemGroups, Items, resolveItems } from 'oldschooljs';
 
-import { stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
 import { removeDiscontinuedItems } from '@/lib/customItems/customItems.js';
 import {
 	gracefulCapes,

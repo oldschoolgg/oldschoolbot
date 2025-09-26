@@ -1,3 +1,15 @@
+import { cookingCL, craftingCL, creatablesCL, herbloreCL } from '@/lib/bso/bsoCl.js';
+import { OSB_VIRTUS_IDS } from '@/lib/bso/bsoConstants.js';
+import { divinationEnergies, portents } from '@/lib/bso/divination.js';
+import { discontinuedDyes, dyedItems } from '@/lib/bso/dyedItems.js';
+import { ElderClueTable } from '@/lib/bso/elderClue.js';
+import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
+import { keyCrates } from '@/lib/bso/keyCrates.js';
+import { PaintBoxTable } from '@/lib/bso/paintColors.js';
+import { pumpkinHeadUniqueTable } from '@/lib/bso/pumpkinHead.js';
+import { inventionCL } from '@/lib/bso/skills/invention/inventions.js';
+import { getAllIgneTameKCs, tameKillableMonsters } from '@/lib/bso/tames.js';
+
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import {
@@ -16,17 +28,6 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
-import { cookingCL, craftingCL, creatablesCL, herbloreCL } from '@/lib/bso/bsoCl.js';
-import { OSB_VIRTUS_IDS } from '@/lib/bso/bsoConstants.js';
-import { divinationEnergies, portents } from '@/lib/bso/divination.js';
-import { discontinuedDyes, dyedItems } from '@/lib/bso/dyedItems.js';
-import { ElderClueTable } from '@/lib/bso/elderClue.js';
-import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
-import { keyCrates } from '@/lib/bso/keyCrates.js';
-import { PaintBoxTable } from '@/lib/bso/paintColors.js';
-import { pumpkinHeadUniqueTable } from '@/lib/bso/pumpkinHead.js';
-import { inventionCL } from '@/lib/bso/skills/invention/inventions.js';
-import { getAllIgneTameKCs, tameKillableMonsters } from '@/lib/bso/tames.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { CollectionLogType } from '@/lib/collectionLogTask.js';

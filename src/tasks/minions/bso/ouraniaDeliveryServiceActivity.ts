@@ -1,7 +1,8 @@
+import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
+
 import { randFloat } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { ExoticSeedsTable } from '@/lib/simulation/sharedTables.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';

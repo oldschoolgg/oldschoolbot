@@ -1,12 +1,13 @@
-import { increaseNumByPercent, percentChance, randInt, roll, Time } from '@oldschoolgg/toolkit';
-import { addItemToBank, Bank, type ItemBank, Items, randomVariation, toKMB } from 'oldschooljs';
-
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 import { calcUserGorajanShardChance } from '@/lib/bso/skills/dungoneering/dungDbFunctions.js';
+
+import { increaseNumByPercent, percentChance, randInt, roll, Time } from '@oldschoolgg/toolkit';
+import { addItemToBank, Bank, type ItemBank, Items, randomVariation, toKMB } from 'oldschooljs';
+
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Agility from '@/lib/skilling/skills/agility.js';
 import { type Course, SkillsEnum } from '@/lib/skilling/types.js';

@@ -1,9 +1,10 @@
+import { portableTannerEffect } from '@/lib/bso/inventionEffects.js';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
+
 import { Time } from '@oldschoolgg/toolkit';
 import { itemID } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
-import { portableTannerEffect } from '@/lib/bso/inventionEffects.js';
-import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import { makeGearBank } from '../utils.js';
 

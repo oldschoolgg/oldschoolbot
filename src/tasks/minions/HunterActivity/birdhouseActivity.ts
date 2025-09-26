@@ -1,8 +1,9 @@
+import { birdhouseLimit } from '@/lib/bso/bsoUtil.js';
+
 import { randFloat, roll } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import { Bank, itemID } from 'oldschooljs';
 
-import { birdhouseLimit } from '@/lib/bso/bsoUtil.js';
 import birdhouses from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import type { BirdhouseData } from '@/lib/skilling/skills/hunter/defaultBirdHouseTrap.js';
 import type { BirdhouseActivityTaskOptions } from '@/lib/types/minions.js';

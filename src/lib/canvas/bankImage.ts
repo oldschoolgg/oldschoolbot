@@ -1,3 +1,5 @@
+import { bsoShortNameMap } from '@/lib/bso/bsoShortNameMap.js';
+
 import { existsSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
 import { chunk, sumArr } from '@oldschoolgg/toolkit';
@@ -200,7 +202,10 @@ const forcedShortNameMap = new Map<number, string>([
 
 	// Ore Packs
 	[27_019, 'GF Pack'],
-	[27_693, 'VM Pack']
+	[27_693, 'VM Pack'],
+
+	// BSO,
+	...bsoShortNameMap
 ]);
 
 export const bankFlags = [
@@ -211,7 +216,8 @@ export const bankFlags = [
 	'show_names',
 	'show_weights',
 	'show_all',
-	'wide'
+	'wide',
+	'invention_xp'
 ] as const;
 export type BankFlag = (typeof bankFlags)[number];
 

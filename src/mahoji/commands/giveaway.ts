@@ -1,3 +1,5 @@
+import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
+
 import { chunk, randInt, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { channelIsSendable, makeComponents, makeEphemeralPaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
@@ -18,7 +20,6 @@ import {
 } from 'discord.js';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
-import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
 import { giveawayCache } from '@/lib/cache.js';
 import { patronFeatures } from '@/lib/constants.js';
 import { marketPriceOfBank } from '@/lib/marketPrices.js';

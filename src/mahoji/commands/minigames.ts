@@ -1,6 +1,7 @@
+import { tearsOfGuthixCommand } from '@/lib/bso/commands/tearsOfGuthixCommand.js';
+
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { tearsOfGuthixCommand } from '@/lib/bso/commands/tearsOfGuthixCommand.js';
 import type { NMZStrategy } from '@/lib/constants.js';
 import { NMZ_STRATEGY } from '@/lib/constants.js';
 import TrekShopItems from '@/lib/data/buyables/trekBuyables.js';

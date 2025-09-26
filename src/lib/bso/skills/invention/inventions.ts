@@ -1,10 +1,11 @@
+import type { IMaterialBank, MaterialType } from '@/lib/bso/skills/invention/index.js';
+
 import { userMention } from '@discordjs/builders';
 import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import { Bank, type Item, type ItemBank, Items, resolveItems, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
-import type { IMaterialBank, MaterialType } from '@/lib/bso/skills/invention/index.js';
 import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';

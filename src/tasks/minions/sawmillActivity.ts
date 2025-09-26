@@ -1,6 +1,7 @@
+import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
+
 import { Bank } from 'oldschooljs';
 
-import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { Planks } from '@/lib/minions/data/planks.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { SawmillActivityTaskOptions } from '@/lib/types/minions.js';

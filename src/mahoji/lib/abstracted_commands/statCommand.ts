@@ -1,3 +1,12 @@
+import {
+	calculateAllFletchedItems,
+	calculateChargedItems,
+	calculateDartsFletchedFromScratch,
+	calculateTiarasMade,
+	calculateXPSources
+} from '@/lib/bso/leagues/stats.js';
+import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
+
 import { sumArr, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/string-util';
@@ -16,14 +25,6 @@ import {
 	toKMB
 } from 'oldschooljs';
 
-import {
-	calculateAllFletchedItems,
-	calculateChargedItems,
-	calculateDartsFletchedFromScratch,
-	calculateTiarasMade,
-	calculateXPSources
-} from '@/lib/bso/leagues/stats.js';
-import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { getClueScoresFromOpenables } from '@/lib/clues/clueUtils.js';
 import { calcCLDetails, isCLItem } from '@/lib/data/Collections.js';

@@ -1,7 +1,3 @@
-import { randArrItem, roll } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { Bank, Items, itemID, LootTable } from 'oldschooljs';
-
 import { cantBeDropped } from '@/lib/bso/openables/openablesUtil.js';
 import {
 	BeachMysteryBoxTable,
@@ -19,6 +15,11 @@ import {
 	spookyTable,
 	testerGiftTable
 } from '@/lib/bso/openables/tables.js';
+
+import { randArrItem, roll } from '@oldschoolgg/toolkit';
+import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Bank, Items, itemID, LootTable } from 'oldschooljs';
+
 import { cmbClothes } from '@/lib/data/CollectionsExport.js';
 import { baseHolidayItems } from '@/lib/data/holidayItems.js';
 import {

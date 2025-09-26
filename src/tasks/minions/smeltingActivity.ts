@@ -1,9 +1,10 @@
-import { roll, Time } from '@oldschoolgg/toolkit';
-import { Bank, itemID } from 'oldschooljs';
-
 import { BlacksmithOutfit, MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+
+import { roll, Time } from '@oldschoolgg/toolkit';
+import { Bank, itemID } from 'oldschooljs';
+
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { SmeltingActivityTaskOptions } from '@/lib/types/minions.js';
