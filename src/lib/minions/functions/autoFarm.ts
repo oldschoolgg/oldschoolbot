@@ -77,42 +77,42 @@ export async function autoFarm(
 			"There's no Farming crops that you have planted that are ready to be replanted or no seeds remaining.";
 	}
 
-        for (const plant of eligiblePlants) {
-                const patchDetailed = patchesDetailed.find(p => p.patchName === plant.seedType);
-                if (!patchDetailed) continue;
-                if (usedPatches.has(patchDetailed.patchName)) continue;
-                if (patchDetailed.ready === false) continue;
+	for (const plant of eligiblePlants) {
+		const patchDetailed = patchesDetailed.find(p => p.patchName === plant.seedType);
+		if (!patchDetailed) continue;
+		if (usedPatches.has(patchDetailed.patchName)) continue;
+		if (patchDetailed.ready === false) continue;
 
-                const prepared = await prepareFarmingStep({
-                        user,
-                        plant,
-                        quantity: null,
-                        pay: false,
-                        patchDetailed,
-                        maxTripLength,
-                        availableBank: remainingBank,
-                        compostTier
-                });
-                if (!prepared.success) {
+		const prepared = await prepareFarmingStep({
+			user,
+			plant,
+			quantity: null,
+			pay: false,
+			patchDetailed,
+			maxTripLength,
+			availableBank: remainingBank,
+			compostTier
+		});
+		if (!prepared.success) {
 			if (!firstPrepareError) {
 				firstPrepareError = prepared.error;
 			}
 			continue;
 		}
 
-                const { quantity, duration, cost, upgradeType, didPay, infoStr, boostStr, treeChopFee } = prepared.data;
-                if (quantity <= 0 || duration <= 0) {
-                        continue;
-                }
-                if (duration > maxTripLength) {
-                        if (!firstPrepareError) {
-                                firstPrepareError = `${user.minionName} can't go on trips longer than ${formatDuration(maxTripLength)}.`;
-                        }
-                        continue;
-                }
-                if (!remainingBank.has(cost)) {
-                        continue;
-                }
+		const { quantity, duration, cost, upgradeType, didPay, infoStr, boostStr, treeChopFee } = prepared.data;
+		if (quantity <= 0 || duration <= 0) {
+			continue;
+		}
+		if (duration > maxTripLength) {
+			if (!firstPrepareError) {
+				firstPrepareError = `${user.minionName} can't go on trips longer than ${formatDuration(maxTripLength)}.`;
+			}
+			continue;
+		}
+		if (!remainingBank.has(cost)) {
+			continue;
+		}
 
 		if (treeChopFee > 0 && remainingBank.amount('Coins') < treeChopFee) {
 			if (!firstPrepareError) {
