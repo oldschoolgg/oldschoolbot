@@ -36,9 +36,16 @@ interface AutoFarmStubOptions {
 	farmingLevel: number;
 	woodcuttingLevel: number;
 	bank: Bank;
+	autoFarmFilter?: AutoFarmFilterEnum;
 }
 
-function createAutoFarmStub({ gp, farmingLevel, woodcuttingLevel, bank }: AutoFarmStubOptions) {
+function createAutoFarmStub({
+	gp,
+	farmingLevel,
+	woodcuttingLevel,
+	bank,
+	autoFarmFilter = AutoFarmFilterEnum.Replant
+}: AutoFarmStubOptions) {
 	const bankState = bank.clone();
 	const emptyGearSetup = {
 		hasEquipped: vi.fn().mockReturnValue(false),
@@ -50,6 +57,7 @@ function createAutoFarmStub({ gp, farmingLevel, woodcuttingLevel, bank }: AutoFa
 			id: '1',
 			GP: gp,
 			bank: bankState.toJSON(),
+			auto_farm_filter: autoFarmFilter,
 			minion_defaultPay: false,
 			minion_defaultCompostToUse: null,
 			completed_ca_task_ids: []
@@ -59,7 +67,9 @@ function createAutoFarmStub({ gp, farmingLevel, woodcuttingLevel, bank }: AutoFa
 		GP: gp,
 		minionName: 'Stub Minion',
 		minionIsBusy: false,
-		autoFarmFilter: AutoFarmFilterEnum.Replant,
+		get autoFarmFilter() {
+			return this.user.auto_farm_filter;
+		},
 		QP: 200,
 		bitfield: [] as number[],
 		toString() {
@@ -255,9 +265,9 @@ describe('autoFarm tree clearing fees', () => {
 			gp: 1000,
 			farmingLevel: 99,
 			woodcuttingLevel: 1,
-			bank: new Bank({ 'Yew tree seed': 1 })
+			bank: new Bank({ 'Yew seed': 10 }),
+			autoFarmFilter: AutoFarmFilterEnum.AllFarm
 		});
-		user.autoFarmFilter = AutoFarmFilterEnum.AllFarm;
 
 		const patchName = magicPlant.seedType as FarmingPatchName;
 		const patchesDetailed: IPatchDataDetailed[] = [
