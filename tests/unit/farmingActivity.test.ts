@@ -245,6 +245,10 @@ describe('farmingActivity tree clearing fees', () => {
 				update: vi.fn().mockResolvedValue(undefined),
 				upsert: vi.fn().mockResolvedValue(undefined)
 			},
+			farmedCrop: {
+				create: vi.fn().mockResolvedValue({ id: 1 }),
+				update: vi.fn().mockResolvedValue(undefined)
+			},
 			user: {
 				upsert: vi.fn().mockResolvedValue({
 					username: 'Tester',
