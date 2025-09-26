@@ -325,4 +325,52 @@ describe('farmingActivity tree clearing fees', () => {
 
 		randomSpy.mockRestore();
 	});
+
+	it('does not create farmed crop record when lacking GP to clear trees', async () => {
+		const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(1);
+
+		userGP = 100;
+
+		const data: FarmingActivityTaskOptions = {
+			type: 'Farming',
+			plantsName: 'Redwood tree',
+			patchType: {
+				lastPlanted: 'Redwood tree',
+				patchPlanted: true,
+				plantTime: Date.now() - 1,
+				lastQuantity: 1,
+				lastUpgradeType: null,
+				lastPayment: false,
+				pid: 123
+			} as any,
+			quantity: 1,
+			upgradeType: null,
+			payment: false,
+			treeChopFeePaid: 0,
+			treeChopFeePlanned: 2000,
+			planting: true,
+			duration: 60_000,
+			currentDate: Date.now(),
+			id: 1,
+			finishDate: Date.now() + 60_000,
+			userID: '1',
+			channelID: '123',
+			autoFarmed: true
+		};
+
+		if ('isNew' in farmingTask) {
+			await farmingTask.run(data, { user: userStub, handleTripFinish: handleTripFinishMock });
+		} else {
+			await farmingTask.run(data);
+		}
+
+		expect(sendToChannelMock).toHaveBeenCalledWith('123', {
+			content:
+				'You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You still need 2000 GP.'
+		});
+		expect(prismaMock.farmedCrop.create).not.toHaveBeenCalled();
+		expect(handleTripFinishMock).not.toHaveBeenCalled();
+
+		randomSpy.mockRestore();
+	});
 });
