@@ -310,6 +310,77 @@ describe('autoFarm tree clearing fees', () => {
 		expect(firstCallArgs?.treeChopFeePlanned).toBe(200);
 	});
 
+	it('plans sequential trips even when combined duration exceeds the max trip length', async () => {
+		mockedCalcMaxTripLength.mockReturnValue(45 * 1000);
+
+		const magicPlant = Farming.Plants.find(plant => plant.name === 'Magic tree');
+		if (!magicPlant) {
+			throw new Error('Expected magic plant data');
+		}
+
+		const user = createAutoFarmStub({
+			gp: 10_000,
+			farmingLevel: 99,
+			woodcuttingLevel: 99,
+			bank: new Bank({ 'Redwood tree seed': 4, 'Magic seed': 10 }),
+			autoFarmFilter: AutoFarmFilterEnum.AllFarm
+		});
+
+		const redwoodPatchDetailed: IPatchDataDetailed = {
+			...basePatch,
+			ready: true,
+			readyIn: null,
+			readyAt: null,
+			friendlyName: 'Redwood patch',
+			plant: redwoodPlant
+		};
+
+		const treePatchDetailed: IPatchDataDetailed = {
+			lastPlanted: magicPlant.name,
+			patchPlanted: true,
+			plantTime: Date.now(),
+			lastQuantity: 1,
+			lastUpgradeType: null,
+			lastPayment: false,
+			patchName: 'tree' as FarmingPatchName,
+			ready: true,
+			readyIn: null,
+			readyAt: null,
+			friendlyName: 'Tree patch',
+			plant: magicPlant
+		};
+
+		const patchesDetailed: IPatchDataDetailed[] = [redwoodPatchDetailed, treePatchDetailed];
+
+		const patches: Partial<Record<FarmingPatchName, IPatchData>> = {
+			[redwoodPatchDetailed.patchName]: {
+				lastPlanted: redwoodPatchDetailed.lastPlanted,
+				patchPlanted: redwoodPatchDetailed.patchPlanted,
+				plantTime: redwoodPatchDetailed.plantTime,
+				lastQuantity: redwoodPatchDetailed.lastQuantity,
+				lastUpgradeType: redwoodPatchDetailed.lastUpgradeType,
+				lastPayment: redwoodPatchDetailed.lastPayment
+			},
+			[treePatchDetailed.patchName]: {
+				lastPlanted: treePatchDetailed.lastPlanted,
+				patchPlanted: treePatchDetailed.patchPlanted,
+				plantTime: treePatchDetailed.plantTime,
+				lastQuantity: treePatchDetailed.lastQuantity,
+				lastUpgradeType: treePatchDetailed.lastUpgradeType,
+				lastPayment: treePatchDetailed.lastPayment
+			}
+		};
+
+		const response = await autoFarm(user, patchesDetailed, patches as Record<FarmingPatchName, IPatchData>, '123');
+
+		expect(response).toContain('Redwood patch');
+		expect(response).toContain('Tree patch');
+		expect(addSubTaskMock).toHaveBeenCalled();
+		const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
+		expect(firstCallArgs?.autoFarmPlan).toHaveLength(1);
+		expect(firstCallArgs?.autoFarmPlan?.[0]?.plantsName).toBe(magicPlant.name);
+	});
+
 	it('returns the first prepare error when no steps can be planned', async () => {
 		const user = createAutoFarmStub({
 			gp: 1000,

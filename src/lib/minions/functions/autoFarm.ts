@@ -78,16 +78,10 @@ export async function autoFarm(
 	}
 
 	for (const plant of eligiblePlants) {
-		if (totalDuration >= maxTripLength) {
-			break;
-		}
 		const patchDetailed = patchesDetailed.find(p => p.patchName === plant.seedType);
 		if (!patchDetailed) continue;
 		if (usedPatches.has(patchDetailed.patchName)) continue;
 		if (patchDetailed.ready === false) continue;
-
-		const remainingTime = maxTripLength - totalDuration;
-		if (remainingTime <= 0) break;
 
 		const prepared = await prepareFarmingStep({
 			user,
@@ -95,7 +89,7 @@ export async function autoFarm(
 			quantity: null,
 			pay: false,
 			patchDetailed,
-			maxTripLength: remainingTime,
+			maxTripLength,
 			availableBank: remainingBank,
 			compostTier
 		});
@@ -108,6 +102,12 @@ export async function autoFarm(
 
 		const { quantity, duration, cost, upgradeType, didPay, infoStr, boostStr, treeChopFee } = prepared.data;
 		if (quantity <= 0 || duration <= 0) {
+			continue;
+		}
+		if (duration > maxTripLength) {
+			if (!firstPrepareError) {
+				firstPrepareError = `${user.minionName} can't go on trips longer than ${formatDuration(maxTripLength)}.`;
+			}
 			continue;
 		}
 		if (!remainingBank.has(cost)) {
