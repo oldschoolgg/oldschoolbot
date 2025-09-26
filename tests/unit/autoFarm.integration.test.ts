@@ -265,7 +265,7 @@ describe('autoFarm tree clearing fees', () => {
 			gp: 1000,
 			farmingLevel: 99,
 			woodcuttingLevel: 1,
-			bank: new Bank({ 'Yew tree seed': 1 }),
+			bank: new Bank({ 'Yew seed': 1 }),
 			autoFarmFilter: AutoFarmFilterEnum.AllFarm
 		});
 
