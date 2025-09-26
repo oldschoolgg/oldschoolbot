@@ -167,8 +167,15 @@ describe('farmingActivity tree clearing fees', () => {
 
 	const userStub = {
 		id: '1',
-		user: { GP: userGP, completed_ca_task_ids: [] as number[] },
-		GP: userGP,
+		user: {
+			get GP() {
+				return userGP;
+			},
+			completed_ca_task_ids: [] as number[]
+		},
+		get GP() {
+			return userGP;
+		},
 		minionName: 'Test Minion',
 		badgedUsername: 'Tester',
 		bank: new Bank(),
@@ -217,16 +224,12 @@ describe('farmingActivity tree clearing fees', () => {
 			return 'Tester';
 		},
 		update: vi.fn().mockResolvedValue(undefined),
-		transactItems: vi.fn().mockResolvedValue({ newUser: { GP: userGP } }),
+		transactItems: vi.fn().mockImplementation(async () => ({ newUser: { GP: userGP } })),
 		removeItemsFromBank: removeItemsFromBankMock.mockImplementation(async (bank: Bank) => {
 			userGP -= bank.amount('Coins');
-			userStub.user.GP = userGP;
-			userStub.GP = userGP;
 		}),
 		addItemsToBank: addItemsToBankMock.mockImplementation(async ({ items }: { items: Bank }) => {
 			userGP += items.amount('Coins');
-			userStub.user.GP = userGP;
-			userStub.GP = userGP;
 		}),
 		addXP: vi.fn().mockResolvedValue('XP'),
 		addItemsToCollectionLog: vi.fn().mockResolvedValue(undefined),
@@ -267,8 +270,6 @@ describe('farmingActivity tree clearing fees', () => {
 			user: null
 		});
 		userGP = 5_000;
-		userStub.user.GP = userGP;
-		userStub.GP = userGP;
 		removeItemsFromBankMock.mockClear();
 		addItemsToBankMock.mockClear();
 		handleTripFinishMock.mockClear();
@@ -300,17 +301,23 @@ describe('farmingActivity tree clearing fees', () => {
 			planting: true,
 			duration: 60_000,
 			currentDate: Date.now(),
+			id: 1,
+			finishDate: Date.now() + 60_000,
 			userID: '1',
 			channelID: '123',
 			autoFarmed: true
 		};
 
-		await farmingTask.run(data);
+		if ('isNew' in farmingTask) {
+			await farmingTask.run(data, { user: userStub, handleTripFinish: handleTripFinishMock });
+		} else {
+			await farmingTask.run(data);
+		}
 
 		expect(removeItemsFromBankMock).not.toHaveBeenCalled();
 		expect(addItemsToBankMock).not.toHaveBeenCalled();
 		expect(sendToChannelMock).not.toHaveBeenCalled();
-		expect(userStub.user.GP).toBe(5_000);
+		expect(userStub.GP).toBe(5_000);
 
 		randomSpy.mockRestore();
 	});
