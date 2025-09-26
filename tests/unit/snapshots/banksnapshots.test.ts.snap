@@ -7,7 +7,7 @@ exports[`OSB Buyables 1`] = `
       "26792": 1500,
     },
     "name": "Abyssal lantern",
-    "outputItems": undefined,
+    "outputItems": "Abyssal lantern",
   },
   {
     "aliases": [
@@ -40,7 +40,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 3250,
     "itemCost": {},
     "name": "Adamant gloves",
-    "outputItems": undefined,
+    "outputItems": "Adamant gloves",
     "qpRequired": 65,
   },
   {
@@ -48,7 +48,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 50000,
     "itemCost": {},
     "name": "Adamant halberd",
-    "outputItems": undefined,
+    "outputItems": "Adamant halberd",
     "qpRequired": 150,
     "skillsNeeded": {
       "agility": 70,
@@ -66,7 +66,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 3200,
     "itemCost": {},
     "name": "Adamant pickaxe",
-    "outputItems": undefined,
+    "outputItems": "Adamant pickaxe",
   },
   {
     "customReq": [Function],
@@ -82,20 +82,20 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 15,
     "itemCost": {},
     "name": "Air rune",
-    "outputItems": undefined,
+    "outputItems": "Air rune",
   },
   {
     "itemCost": {
       "26792": 10,
     },
     "name": "Air talisman",
-    "outputItems": undefined,
+    "outputItems": "Air talisman",
   },
   {
     "gpCost": 50000,
     "itemCost": {},
     "name": "Amulet of accuracy",
-    "outputItems": undefined,
+    "outputItems": "Amulet of accuracy",
     "qpRequired": 5,
   },
   {
@@ -120,7 +120,7 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 100000,
     "itemCost": {},
     "name": "Ancient signet",
-    "outputItems": undefined,
+    "outputItems": "Ancient signet",
     "qpRequired": 105,
   },
   {
@@ -128,54 +128,54 @@ exports[`OSB Buyables 1`] = `
       "22820": 100,
     },
     "name": "Angler boots",
-    "outputItems": undefined,
+    "outputItems": "Angler boots",
   },
   {
     "itemCost": {
       "22820": 100,
     },
     "name": "Angler hat",
-    "outputItems": undefined,
+    "outputItems": "Angler hat",
   },
   {
     "itemCost": {
       "22820": 100,
     },
     "name": "Angler top",
-    "outputItems": undefined,
+    "outputItems": "Angler top",
   },
   {
     "itemCost": {
       "22820": 100,
     },
     "name": "Angler waders",
-    "outputItems": undefined,
+    "outputItems": "Angler waders",
   },
   {
     "gpCost": 10000,
     "itemCost": {},
     "name": "Anti-dragon shield",
-    "outputItems": undefined,
+    "outputItems": "Anti-dragon shield",
     "qpRequired": 35,
   },
   {
     "gpCost": 10000,
     "itemCost": {},
     "name": "Antipoison(4)",
-    "outputItems": undefined,
+    "outputItems": "Antipoison(4)",
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Arceuus signet",
-    "outputItems": undefined,
+    "outputItems": "Arceuus signet",
   },
   {
     "gpCost": 780000,
     "ironmanPrice": 78000,
     "itemCost": {},
     "name": "Archer helm",
-    "outputItems": undefined,
+    "outputItems": "Archer helm",
     "qpRequired": 60,
   },
   {
@@ -186,7 +186,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Ardougne cloak 1",
-    "outputItems": undefined,
+    "outputItems": "Ardougne cloak 1",
   },
   {
     "collectionLogReqs": [
@@ -196,7 +196,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Ardougne cloak 2",
-    "outputItems": undefined,
+    "outputItems": "Ardougne cloak 2",
   },
   {
     "collectionLogReqs": [
@@ -206,7 +206,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Ardougne cloak 3",
-    "outputItems": undefined,
+    "outputItems": "Ardougne cloak 3",
   },
   {
     "collectionLogReqs": [
@@ -216,7 +216,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Ardougne cloak 4",
-    "outputItems": undefined,
+    "outputItems": "Ardougne cloak 4",
   },
   {
     "gpCost": 5000000,
@@ -244,7 +244,7 @@ exports[`OSB Buyables 1`] = `
       "12012": 40,
     },
     "name": "Bag full of gems",
-    "outputItems": undefined,
+    "outputItems": "Bag full of gems",
   },
   {
     "itemCost": {
@@ -272,7 +272,7 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 300,
     "itemCost": {},
     "name": "Ball of wool",
-    "outputItems": undefined,
+    "outputItems": "Ball of wool",
   },
   {
     "aliases": [
@@ -281,7 +281,7 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 2000000,
     "itemCost": {},
     "name": "Barrelchest anchor",
-    "outputItems": undefined,
+    "outputItems": "Barrelchest anchor",
     "qpRequired": 30,
   },
   {
@@ -289,35 +289,35 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 130000,
     "itemCost": {},
     "name": "Barrows gloves",
-    "outputItems": undefined,
+    "outputItems": "Barrows gloves",
     "qpRequired": 175,
   },
   {
     "gpCost": 1000000,
     "itemCost": {},
     "name": "Bearhead",
-    "outputItems": undefined,
+    "outputItems": "Bearhead",
     "qpRequired": 105,
   },
   {
     "gpCost": 1000000,
     "itemCost": {},
     "name": "Beer",
-    "outputItems": undefined,
+    "outputItems": "Beer",
   },
   {
     "gpCost": 780000,
     "ironmanPrice": 98000,
     "itemCost": {},
     "name": "Berserker helm",
-    "outputItems": undefined,
+    "outputItems": "Berserker helm",
     "qpRequired": 60,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Black cape",
-    "outputItems": undefined,
+    "outputItems": "Black cape",
     "qpRequired": 15,
   },
   {
@@ -325,7 +325,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 1000,
     "itemCost": {},
     "name": "Black gloves",
-    "outputItems": undefined,
+    "outputItems": "Black gloves",
     "qpRequired": 35,
   },
   {
@@ -333,41 +333,41 @@ exports[`OSB Buyables 1`] = `
       "8951": 1000,
     },
     "name": "Black naval shirt",
-    "outputItems": undefined,
+    "outputItems": "Black naval shirt",
   },
   {
     "itemCost": {
       "8951": 1000,
     },
     "name": "Black navy slacks",
-    "outputItems": undefined,
+    "outputItems": "Black navy slacks",
   },
   {
     "itemCost": {
       "8951": 500,
     },
     "name": "Black tricorn hat",
-    "outputItems": undefined,
+    "outputItems": "Black tricorn hat",
   },
   {
     "itemCost": {
       "26792": 100,
     },
     "name": "Blood talisman",
-    "outputItems": undefined,
+    "outputItems": "Blood talisman",
   },
   {
     "gpCost": 100000,
     "ironmanPrice": 5000,
     "itemCost": {},
     "name": "Blue boots",
-    "outputItems": undefined,
+    "outputItems": "Blue boots",
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Blue cape",
-    "outputItems": undefined,
+    "outputItems": "Blue cape",
     "qpRequired": 15,
   },
   {
@@ -375,62 +375,62 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 5000,
     "itemCost": {},
     "name": "Blue hat",
-    "outputItems": undefined,
+    "outputItems": "Blue hat",
   },
   {
     "itemCost": {
       "8951": 1000,
     },
     "name": "Blue naval shirt",
-    "outputItems": undefined,
+    "outputItems": "Blue naval shirt",
   },
   {
     "itemCost": {
       "8951": 1000,
     },
     "name": "Blue navy slacks",
-    "outputItems": undefined,
+    "outputItems": "Blue navy slacks",
   },
   {
     "gpCost": 100000,
     "ironmanPrice": 5000,
     "itemCost": {},
     "name": "Blue robe bottoms",
-    "outputItems": undefined,
+    "outputItems": "Blue robe bottoms",
   },
   {
     "gpCost": 100000,
     "ironmanPrice": 5000,
     "itemCost": {},
     "name": "Blue robe top",
-    "outputItems": undefined,
+    "outputItems": "Blue robe top",
   },
   {
     "itemCost": {
       "8951": 20,
     },
     "name": "Blue rum (trouble brewing)",
-    "outputItems": undefined,
+    "outputItems": "Blue rum (trouble brewing)",
   },
   {
     "itemCost": {
       "8951": 500,
     },
     "name": "Blue tricorn hat",
-    "outputItems": undefined,
+    "outputItems": "Blue tricorn hat",
   },
   {
     "gpCost": 20,
     "itemCost": {},
     "name": "Body rune",
-    "outputItems": undefined,
+    "outputItems": "Body rune",
   },
   {
     "itemCost": {
       "26792": 10,
     },
     "name": "Body talisman",
-    "outputItems": undefined,
+    "outputItems": "Body talisman",
   },
   {
     "gpCost": 5000,
@@ -444,39 +444,39 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 50000,
     "itemCost": {},
     "name": "Bomber cap",
-    "outputItems": undefined,
+    "outputItems": "Bomber cap",
     "qpRequired": 21,
   },
   {
     "gpCost": 50000,
     "itemCost": {},
     "name": "Bomber jacket",
-    "outputItems": undefined,
+    "outputItems": "Bomber jacket",
     "qpRequired": 21,
   },
   {
     "gpCost": 5000,
     "itemCost": {},
     "name": "Bone club",
-    "outputItems": undefined,
+    "outputItems": "Bone club",
   },
   {
     "gpCost": 8000,
     "itemCost": {},
     "name": "Bone dagger",
-    "outputItems": undefined,
+    "outputItems": "Bone dagger",
   },
   {
     "gpCost": 5000,
     "itemCost": {},
     "name": "Bone spear",
-    "outputItems": undefined,
+    "outputItems": "Bone spear",
   },
   {
     "gpCost": 1000000,
     "itemCost": {},
     "name": "Bonesack",
-    "outputItems": undefined,
+    "outputItems": "Bonesack",
     "qpRequired": 82,
   },
   {
@@ -484,28 +484,28 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 9500,
     "itemCost": {},
     "name": "Book of the dead",
-    "outputItems": undefined,
+    "outputItems": "Book of the dead",
     "qpRequired": 120,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Boots of stone",
-    "outputItems": undefined,
+    "outputItems": "Boots of stone",
   },
   {
     "itemCost": {
       "26792": 250,
     },
     "name": "Boots of the eye",
-    "outputItems": undefined,
+    "outputItems": "Boots of the eye",
   },
   {
     "itemCost": {
       "21656": 30,
     },
     "name": "Bowl of fish",
-    "outputItems": undefined,
+    "outputItems": "Bowl of fish",
   },
   {
     "gpCost": 22500,
@@ -521,41 +521,41 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 55,
     "itemCost": {},
     "name": "Broad arrowheads",
-    "outputItems": undefined,
+    "outputItems": "Broad arrowheads",
   },
   {
     "gpCost": 250,
     "ironmanPrice": 60,
     "itemCost": {},
     "name": "Broad arrows",
-    "outputItems": undefined,
+    "outputItems": "Broad arrows",
   },
   {
     "gpCost": 2000,
     "itemCost": {},
     "name": "Broken coffin",
-    "outputItems": undefined,
+    "outputItems": "Broken coffin",
   },
   {
     "gpCost": 500,
     "ironmanPrice": 16,
     "itemCost": {},
     "name": "Bronze axe",
-    "outputItems": undefined,
+    "outputItems": "Bronze axe",
   },
   {
     "itemCost": {
       "8951": 3000,
     },
     "name": "Bronze fist flag",
-    "outputItems": undefined,
+    "outputItems": "Bronze fist flag",
   },
   {
     "gpCost": 100000,
     "ironmanPrice": 130,
     "itemCost": {},
     "name": "Bronze gloves",
-    "outputItems": undefined,
+    "outputItems": "Bronze gloves",
     "qpRequired": 10,
   },
   {
@@ -563,62 +563,62 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 100,
     "itemCost": {},
     "name": "Bronze pickaxe",
-    "outputItems": undefined,
+    "outputItems": "Bronze pickaxe",
   },
   {
     "gpCost": 1000,
     "ironmanPrice": 250,
     "itemCost": {},
     "name": "Brown apron",
-    "outputItems": undefined,
+    "outputItems": "Brown apron",
   },
   {
     "itemCost": {
       "8951": 1000,
     },
     "name": "Brown naval shirt",
-    "outputItems": undefined,
+    "outputItems": "Brown naval shirt",
   },
   {
     "itemCost": {
       "8951": 1000,
     },
     "name": "Brown navy slacks",
-    "outputItems": undefined,
+    "outputItems": "Brown navy slacks",
   },
   {
     "itemCost": {
       "8951": 500,
     },
     "name": "Brown tricorn hat",
-    "outputItems": undefined,
+    "outputItems": "Brown tricorn hat",
   },
   {
     "gpCost": 30,
     "ironmanPrice": 10,
     "itemCost": {},
     "name": "Bucket",
-    "outputItems": undefined,
+    "outputItems": "Bucket",
   },
   {
     "gpCost": 500,
     "ironmanPrice": 12,
     "itemCost": {},
     "name": "Bucket of water",
-    "outputItems": undefined,
+    "outputItems": "Bucket of water",
   },
   {
     "gpCost": 1000,
     "ironmanPrice": 100,
     "itemCost": {},
     "name": "Bull roarer",
-    "outputItems": undefined,
+    "outputItems": "Bull roarer",
   },
   {
     "gpCost": 500,
     "itemCost": {},
     "name": "Butterfly jar",
-    "outputItems": undefined,
+    "outputItems": "Butterfly jar",
   },
   {
     "itemCost": {
@@ -634,7 +634,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200625,
     "itemCost": {},
     "name": "Cannon barrels",
-    "outputItems": undefined,
+    "outputItems": "Cannon barrels",
     "qpRequired": 5,
   },
   {
@@ -642,7 +642,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200625,
     "itemCost": {},
     "name": "Cannon base",
-    "outputItems": undefined,
+    "outputItems": "Cannon base",
     "qpRequired": 5,
   },
   {
@@ -650,7 +650,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200625,
     "itemCost": {},
     "name": "Cannon furnace",
-    "outputItems": undefined,
+    "outputItems": "Cannon furnace",
     "qpRequired": 5,
   },
   {
@@ -658,14 +658,14 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200625,
     "itemCost": {},
     "name": "Cannon stand",
-    "outputItems": undefined,
+    "outputItems": "Cannon stand",
     "qpRequired": 5,
   },
   {
     "gpCost": 250000,
     "itemCost": {},
     "name": "Cape of legends",
-    "outputItems": undefined,
+    "outputItems": "Cape of legends",
     "qpRequired": 105,
   },
   {
@@ -673,21 +673,21 @@ exports[`OSB Buyables 1`] = `
       "28134": 2500,
     },
     "name": "Cape pouch",
-    "outputItems": undefined,
+    "outputItems": "Cape pouch",
   },
   {
     "itemCost": {
       "25527": 2000,
     },
     "name": "Celestial ring (uncharged)",
-    "outputItems": undefined,
+    "outputItems": "Celestial ring (uncharged)",
   },
   {
     "itemCost": {
       "26792": 30,
     },
     "name": "Chaos talisman",
-    "outputItems": undefined,
+    "outputItems": "Chaos talisman",
   },
   {
     "aliases": [
@@ -697,7 +697,7 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 1000,
     "itemCost": {},
     "name": "Chocolate bar",
-    "outputItems": undefined,
+    "outputItems": "Chocolate bar",
   },
   {
     "gpCost": 1760,
@@ -931,14 +931,14 @@ exports[`OSB Buyables 1`] = `
       "28134": 10000,
     },
     "name": "Clothes pouch blueprint",
-    "outputItems": undefined,
+    "outputItems": "Clothes pouch blueprint",
   },
   {
     "itemCost": {
       "12012": 100,
     },
     "name": "Coal bag",
-    "outputItems": undefined,
+    "outputItems": "Coal bag",
   },
   {
     "itemCost": {
@@ -953,7 +953,7 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 400,
     "itemCost": {},
     "name": "Compost",
-    "outputItems": undefined,
+    "outputItems": "Compost",
   },
   {
     "customReq": [Function],
@@ -980,7 +980,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 25000,
     "itemCost": {},
     "name": "Cooking gauntlets",
-    "outputItems": undefined,
+    "outputItems": "Cooking gauntlets",
     "qpRequired": 25,
   },
   {
@@ -988,7 +988,7 @@ exports[`OSB Buyables 1`] = `
       "26792": 30,
     },
     "name": "Cosmic talisman",
-    "outputItems": undefined,
+    "outputItems": "Cosmic talisman",
   },
   {
     "customReq": [Function],
@@ -1005,34 +1005,34 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 5000,
     "itemCost": {},
     "name": "Cream boots",
-    "outputItems": undefined,
+    "outputItems": "Cream boots",
   },
   {
     "gpCost": 100000,
     "ironmanPrice": 5000,
     "itemCost": {},
     "name": "Cream hat",
-    "outputItems": undefined,
+    "outputItems": "Cream hat",
   },
   {
     "gpCost": 100000,
     "ironmanPrice": 5000,
     "itemCost": {},
     "name": "Cream robe bottoms",
-    "outputItems": undefined,
+    "outputItems": "Cream robe bottoms",
   },
   {
     "gpCost": 100000,
     "ironmanPrice": 5000,
     "itemCost": {},
     "name": "Cream robe top",
-    "outputItems": undefined,
+    "outputItems": "Cream robe top",
   },
   {
     "gpCost": 900000,
     "itemCost": {},
     "name": "Crystal bow",
-    "outputItems": undefined,
+    "outputItems": "Crystal bow",
   },
   {
     "aliases": [
@@ -1042,14 +1042,14 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 1500,
     "itemCost": {},
     "name": "Cup of hot water",
-    "outputItems": undefined,
+    "outputItems": "Cup of hot water",
   },
   {
     "itemCost": {
       "8951": 2000,
     },
     "name": "Cutthroat flag",
-    "outputItems": undefined,
+    "outputItems": "Cutthroat flag",
   },
   {
     "itemCost": {
@@ -1065,13 +1065,13 @@ exports[`OSB Buyables 1`] = `
       "24711": 300,
     },
     "name": "Dark dye",
-    "outputItems": undefined,
+    "outputItems": "Dark dye",
   },
   {
     "gpCost": 200000,
     "itemCost": {},
     "name": "Darklight",
-    "outputItems": undefined,
+    "outputItems": "Darklight",
     "qpRequired": 58,
   },
   {
@@ -1079,7 +1079,7 @@ exports[`OSB Buyables 1`] = `
       "26792": 80,
     },
     "name": "Death talisman",
-    "outputItems": undefined,
+    "outputItems": "Death talisman",
   },
   {
     "itemCost": {
@@ -1153,7 +1153,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Desert amulet 1",
-    "outputItems": undefined,
+    "outputItems": "Desert amulet 1",
   },
   {
     "collectionLogReqs": [
@@ -1163,7 +1163,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Desert amulet 2",
-    "outputItems": undefined,
+    "outputItems": "Desert amulet 2",
   },
   {
     "collectionLogReqs": [
@@ -1173,7 +1173,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Desert amulet 3",
-    "outputItems": undefined,
+    "outputItems": "Desert amulet 3",
   },
   {
     "collectionLogReqs": [
@@ -1183,7 +1183,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Desert amulet 4",
-    "outputItems": undefined,
+    "outputItems": "Desert amulet 4",
   },
   {
     "gpCost": 1000000,
@@ -1204,28 +1204,28 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 1000,
     "itemCost": {},
     "name": "Diving apparatus",
-    "outputItems": undefined,
+    "outputItems": "Diving apparatus",
     "qpRequired": 30,
   },
   {
     "gpCost": 60000,
     "itemCost": {},
     "name": "Doctor's hat",
-    "outputItems": undefined,
+    "outputItems": "Doctor's hat",
     "qpRequired": 60,
   },
   {
     "gpCost": 4000,
     "itemCost": {},
     "name": "Dorgeshuun crossbow",
-    "outputItems": undefined,
+    "outputItems": "Dorgeshuun crossbow",
   },
   {
     "gpCost": 850000,
     "ironmanPrice": 130000,
     "itemCost": {},
     "name": "Dragon gloves",
-    "outputItems": undefined,
+    "outputItems": "Dragon gloves",
     "qpRequired": 107,
   },
   {
@@ -1235,14 +1235,14 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 2500000,
     "itemCost": {},
     "name": "Dragon metal shard",
-    "outputItems": undefined,
+    "outputItems": "Dragon metal shard",
     "qpRequired": 205,
   },
   {
     "gpCost": 500000,
     "itemCost": {},
     "name": "Dragon scimitar",
-    "outputItems": undefined,
+    "outputItems": "Dragon scimitar",
     "qpRequired": 105,
   },
   {
@@ -1262,47 +1262,47 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 100000,
     "itemCost": {},
     "name": "Dwarven helmet",
-    "outputItems": undefined,
+    "outputItems": "Dwarven helmet",
     "qpRequired": 52,
   },
   {
     "gpCost": 20000,
     "itemCost": {},
     "name": "Earmuffs",
-    "outputItems": undefined,
+    "outputItems": "Earmuffs",
   },
   {
     "gpCost": 15,
     "itemCost": {},
     "name": "Earth rune",
-    "outputItems": undefined,
+    "outputItems": "Earth rune",
   },
   {
     "itemCost": {
       "26792": 10,
     },
     "name": "Earth talisman",
-    "outputItems": undefined,
+    "outputItems": "Earth talisman",
   },
   {
     "gpCost": 2500000,
     "ironmanPrice": 2000,
     "itemCost": {},
     "name": "Elemental shield",
-    "outputItems": undefined,
+    "outputItems": "Elemental shield",
     "qpRequired": 25,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Enchanted gem",
-    "outputItems": undefined,
+    "outputItems": "Enchanted gem",
   },
   {
     "gpCost": 50000,
     "itemCost": {},
     "name": "Excalibur",
-    "outputItems": undefined,
+    "outputItems": "Excalibur",
     "qpRequired": 15,
   },
   {
@@ -1312,7 +1312,7 @@ exports[`OSB Buyables 1`] = `
       "21345": 1,
     },
     "name": "Expert mining gloves",
-    "outputItems": undefined,
+    "outputItems": "Expert mining gloves",
   },
   {
     "collectionLogReqs": [
@@ -1322,7 +1322,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Explorer's ring 1",
-    "outputItems": undefined,
+    "outputItems": "Explorer's ring 1",
   },
   {
     "collectionLogReqs": [
@@ -1332,7 +1332,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Explorer's ring 2",
-    "outputItems": undefined,
+    "outputItems": "Explorer's ring 2",
   },
   {
     "collectionLogReqs": [
@@ -1342,7 +1342,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Explorer's ring 3",
-    "outputItems": undefined,
+    "outputItems": "Explorer's ring 3",
   },
   {
     "collectionLogReqs": [
@@ -1352,7 +1352,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Explorer's ring 4",
-    "outputItems": undefined,
+    "outputItems": "Explorer's ring 4",
   },
   {
     "aliases": [
@@ -1363,20 +1363,20 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 3,
     "itemCost": {},
     "name": "Eye of newt",
-    "outputItems": undefined,
+    "outputItems": "Eye of newt",
   },
   {
     "gpCost": 20000,
     "itemCost": {},
     "name": "Facemask",
-    "outputItems": undefined,
+    "outputItems": "Facemask",
   },
   {
     "gpCost": 100000,
     "ironmanPrice": 100,
     "itemCost": {},
     "name": "Fairy enchantment",
-    "outputItems": undefined,
+    "outputItems": "Fairy enchantment",
     "qpRequired": 23,
   },
   {
@@ -1387,7 +1387,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Falador shield 1",
-    "outputItems": undefined,
+    "outputItems": "Falador shield 1",
   },
   {
     "collectionLogReqs": [
@@ -1397,7 +1397,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Falador shield 2",
-    "outputItems": undefined,
+    "outputItems": "Falador shield 2",
   },
   {
     "collectionLogReqs": [
@@ -1407,7 +1407,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Falador shield 3",
-    "outputItems": undefined,
+    "outputItems": "Falador shield 3",
   },
   {
     "collectionLogReqs": [
@@ -1417,7 +1417,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Falador shield 4",
-    "outputItems": undefined,
+    "outputItems": "Falador shield 4",
   },
   {
     "customReq": [Function],
@@ -1434,7 +1434,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 78000,
     "itemCost": {},
     "name": "Farseer helm",
-    "outputItems": undefined,
+    "outputItems": "Farseer helm",
     "qpRequired": 60,
   },
   {
@@ -1445,7 +1445,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 4,
     "itemCost": {},
     "name": "Feather",
-    "outputItems": undefined,
+    "outputItems": "Feather",
   },
   {
     "itemCost": {
@@ -1453,20 +1453,20 @@ exports[`OSB Buyables 1`] = `
       "28134": 10000,
     },
     "name": "Felling axe handle",
-    "outputItems": undefined,
+    "outputItems": "Felling axe handle",
   },
   {
     "gpCost": 15,
     "itemCost": {},
     "name": "Fire rune",
-    "outputItems": undefined,
+    "outputItems": "Fire rune",
   },
   {
     "itemCost": {
       "26792": 10,
     },
     "name": "Fire talisman",
-    "outputItems": undefined,
+    "outputItems": "Fire talisman",
   },
   {
     "customReq": [Function],
@@ -1483,13 +1483,13 @@ exports[`OSB Buyables 1`] = `
       "22820": 1000,
     },
     "name": "Fish sack",
-    "outputItems": undefined,
+    "outputItems": "Fish sack",
   },
   {
     "gpCost": 1000,
     "itemCost": {},
     "name": "Fishbowl helmet",
-    "outputItems": undefined,
+    "outputItems": "Fishbowl helmet",
     "qpRequired": 30,
   },
   {
@@ -1508,7 +1508,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 3,
     "itemCost": {},
     "name": "Fishing Bait",
-    "outputItems": undefined,
+    "outputItems": "Fishing Bait",
   },
   {
     "customReq": [Function],
@@ -1626,7 +1626,7 @@ exports[`OSB Buyables 1`] = `
       "6333": 60,
     },
     "name": "Forestry boots",
-    "outputItems": undefined,
+    "outputItems": "Forestry boots",
   },
   {
     "itemCost": {
@@ -1643,14 +1643,14 @@ exports[`OSB Buyables 1`] = `
       "6333": 60,
     },
     "name": "Forestry hat",
-    "outputItems": undefined,
+    "outputItems": "Forestry hat",
   },
   {
     "customReq": [Function],
     "itemCost": {},
     "maxQuantity": 1,
     "name": "Forestry kit",
-    "outputItems": undefined,
+    "outputItems": "Forestry kit",
   },
   {
     "itemCost": {
@@ -1667,7 +1667,7 @@ exports[`OSB Buyables 1`] = `
       "6333": 60,
     },
     "name": "Forestry legs",
-    "outputItems": undefined,
+    "outputItems": "Forestry legs",
   },
   {
     "itemCost": {
@@ -1684,76 +1684,76 @@ exports[`OSB Buyables 1`] = `
       "6333": 60,
     },
     "name": "Forestry top",
-    "outputItems": undefined,
+    "outputItems": "Forestry top",
   },
   {
     "itemCost": {
       "28134": 75000,
     },
     "name": "Fox Whistle",
-    "outputItems": undefined,
+    "outputItems": "Fox Whistle",
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik black cloak",
-    "outputItems": undefined,
+    "outputItems": "Fremennik black cloak",
     "qpRequired": 55,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik blue cloak",
-    "outputItems": undefined,
+    "outputItems": "Fremennik blue cloak",
     "qpRequired": 55,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik brown cloak",
-    "outputItems": undefined,
+    "outputItems": "Fremennik brown cloak",
     "qpRequired": 55,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik cyan cloak",
-    "outputItems": undefined,
+    "outputItems": "Fremennik cyan cloak",
     "qpRequired": 55,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik green cloak",
-    "outputItems": undefined,
+    "outputItems": "Fremennik green cloak",
     "qpRequired": 55,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik grey cloak",
-    "outputItems": undefined,
+    "outputItems": "Fremennik grey cloak",
     "qpRequired": 55,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik pink cloak",
-    "outputItems": undefined,
+    "outputItems": "Fremennik pink cloak",
     "qpRequired": 55,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik purple cloak",
-    "outputItems": undefined,
+    "outputItems": "Fremennik purple cloak",
     "qpRequired": 55,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik red cloak",
-    "outputItems": undefined,
+    "outputItems": "Fremennik red cloak",
     "qpRequired": 55,
   },
   {
@@ -1764,7 +1764,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Fremennik sea boots 1",
-    "outputItems": undefined,
+    "outputItems": "Fremennik sea boots 1",
   },
   {
     "collectionLogReqs": [
@@ -1774,7 +1774,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Fremennik sea boots 2",
-    "outputItems": undefined,
+    "outputItems": "Fremennik sea boots 2",
   },
   {
     "collectionLogReqs": [
@@ -1784,7 +1784,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Fremennik sea boots 3",
-    "outputItems": undefined,
+    "outputItems": "Fremennik sea boots 3",
   },
   {
     "collectionLogReqs": [
@@ -1794,20 +1794,20 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Fremennik sea boots 4",
-    "outputItems": undefined,
+    "outputItems": "Fremennik sea boots 4",
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik teal cloak",
-    "outputItems": undefined,
+    "outputItems": "Fremennik teal cloak",
     "qpRequired": 55,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Fremennik yellow cloak",
-    "outputItems": undefined,
+    "outputItems": "Fremennik yellow cloak",
     "qpRequired": 55,
   },
   {
@@ -1833,14 +1833,14 @@ exports[`OSB Buyables 1`] = `
       "6333": 500,
     },
     "name": "Funky shaped log",
-    "outputItems": undefined,
+    "outputItems": "Funky shaped log",
   },
   {
     "itemCost": {
       "12012": 100,
     },
     "name": "Gem bag",
-    "outputItems": undefined,
+    "outputItems": "Gem bag",
   },
   {
     "itemCost": {
@@ -1855,42 +1855,42 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 10000,
     "itemCost": {},
     "name": "Ghostly boots",
-    "outputItems": undefined,
+    "outputItems": "Ghostly boots",
     "qpRequired": 10,
   },
   {
     "gpCost": 10000,
     "itemCost": {},
     "name": "Ghostly cloak",
-    "outputItems": undefined,
+    "outputItems": "Ghostly cloak",
     "qpRequired": 10,
   },
   {
     "gpCost": 10000,
     "itemCost": {},
     "name": "Ghostly gloves",
-    "outputItems": undefined,
+    "outputItems": "Ghostly gloves",
     "qpRequired": 10,
   },
   {
     "gpCost": 10000,
     "itemCost": {},
     "name": "Ghostly hood",
-    "outputItems": undefined,
+    "outputItems": "Ghostly hood",
     "qpRequired": 10,
   },
   {
     "gpCost": 10000,
     "itemCost": {},
     "name": "Ghostly robe bottom",
-    "outputItems": undefined,
+    "outputItems": "Ghostly robe bottom",
     "qpRequired": 10,
   },
   {
     "gpCost": 10000,
     "itemCost": {},
     "name": "Ghostly robe top",
-    "outputItems": undefined,
+    "outputItems": "Ghostly robe top",
     "qpRequired": 10,
   },
   {
@@ -1898,13 +1898,13 @@ exports[`OSB Buyables 1`] = `
       "8951": 2000,
     },
     "name": "Gilded smile flag",
-    "outputItems": undefined,
+    "outputItems": "Gilded smile flag",
   },
   {
     "gpCost": 1000000,
     "itemCost": {},
     "name": "Gin",
-    "outputItems": undefined,
+    "outputItems": "Gin",
   },
   {
     "itemCost": {
@@ -1983,14 +1983,14 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 130000,
     "itemCost": {},
     "name": "Gold leaf",
-    "outputItems": undefined,
+    "outputItems": "Gold leaf",
   },
   {
     "itemCost": {
       "28134": 75000,
     },
     "name": "Golden Pheasant Egg",
-    "outputItems": undefined,
+    "outputItems": "Golden Pheasant Egg",
   },
   {
     "gpCost": 1000000,
@@ -2019,20 +2019,20 @@ exports[`OSB Buyables 1`] = `
       10,
     ],
     "name": "Granite Body",
-    "outputItems": undefined,
+    "outputItems": "Granite Body",
   },
   {
     "gpCost": 100000,
     "ironmanPrice": 5000,
     "itemCost": {},
     "name": "Green boots",
-    "outputItems": undefined,
+    "outputItems": "Green boots",
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Green cape",
-    "outputItems": undefined,
+    "outputItems": "Green cape",
     "qpRequired": 15,
   },
   {
@@ -2040,62 +2040,62 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 5000,
     "itemCost": {},
     "name": "Green hat",
-    "outputItems": undefined,
+    "outputItems": "Green hat",
   },
   {
     "itemCost": {
       "8951": 1000,
     },
     "name": "Green naval shirt",
-    "outputItems": undefined,
+    "outputItems": "Green naval shirt",
   },
   {
     "itemCost": {
       "8951": 1000,
     },
     "name": "Green navy slacks",
-    "outputItems": undefined,
+    "outputItems": "Green navy slacks",
   },
   {
     "gpCost": 100000,
     "ironmanPrice": 5000,
     "itemCost": {},
     "name": "Green robe bottoms",
-    "outputItems": undefined,
+    "outputItems": "Green robe bottoms",
   },
   {
     "gpCost": 100000,
     "ironmanPrice": 5000,
     "itemCost": {},
     "name": "Green robe top",
-    "outputItems": undefined,
+    "outputItems": "Green robe top",
   },
   {
     "itemCost": {
       "8951": 500,
     },
     "name": "Green tricorn hat",
-    "outputItems": undefined,
+    "outputItems": "Green tricorn hat",
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Grey boots",
-    "outputItems": undefined,
+    "outputItems": "Grey boots",
     "qpRequired": 15,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Grey gloves",
-    "outputItems": undefined,
+    "outputItems": "Grey gloves",
     "qpRequired": 15,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Grey hat",
-    "outputItems": undefined,
+    "outputItems": "Grey hat",
     "qpRequired": 15,
   },
   {
@@ -2103,27 +2103,27 @@ exports[`OSB Buyables 1`] = `
       "8951": 1000,
     },
     "name": "Grey naval shirt",
-    "outputItems": undefined,
+    "outputItems": "Grey naval shirt",
   },
   {
     "itemCost": {
       "8951": 1000,
     },
     "name": "Grey navy slacks",
-    "outputItems": undefined,
+    "outputItems": "Grey navy slacks",
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Grey robe bottoms",
-    "outputItems": undefined,
+    "outputItems": "Grey robe bottoms",
     "qpRequired": 15,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Grey robe top",
-    "outputItems": undefined,
+    "outputItems": "Grey robe top",
     "qpRequired": 15,
   },
   {
@@ -2131,14 +2131,14 @@ exports[`OSB Buyables 1`] = `
       "8951": 500,
     },
     "name": "Grey tricorn hat",
-    "outputItems": undefined,
+    "outputItems": "Grey tricorn hat",
   },
   {
     "itemCost": {
       "26792": 3000,
     },
     "name": "Guardian's eye",
-    "outputItems": undefined,
+    "outputItems": "Guardian's eye",
   },
   {
     "itemCost": {
@@ -2154,63 +2154,63 @@ exports[`OSB Buyables 1`] = `
       "24711": 1,
     },
     "name": "Hallowed crystal shard",
-    "outputItems": undefined,
+    "outputItems": "Hallowed crystal shard",
   },
   {
     "itemCost": {
       "24711": 100,
     },
     "name": "Hallowed focus",
-    "outputItems": undefined,
+    "outputItems": "Hallowed focus",
   },
   {
     "itemCost": {
       "24711": 100,
     },
     "name": "Hallowed grapple",
-    "outputItems": undefined,
+    "outputItems": "Hallowed grapple",
   },
   {
     "itemCost": {
       "24711": 100,
     },
     "name": "Hallowed hammer",
-    "outputItems": undefined,
+    "outputItems": "Hallowed hammer",
   },
   {
     "itemCost": {
       "24711": 250,
     },
     "name": "Hallowed ring",
-    "outputItems": undefined,
+    "outputItems": "Hallowed ring",
   },
   {
     "itemCost": {
       "24711": 100,
     },
     "name": "Hallowed sack",
-    "outputItems": undefined,
+    "outputItems": "Hallowed sack",
   },
   {
     "itemCost": {
       "24711": 100,
     },
     "name": "Hallowed symbol",
-    "outputItems": undefined,
+    "outputItems": "Hallowed symbol",
   },
   {
     "itemCost": {
       "24711": 10,
     },
     "name": "Hallowed token",
-    "outputItems": undefined,
+    "outputItems": "Hallowed token",
   },
   {
     "gpCost": 50000,
     "ironmanPrice": 65,
     "itemCost": {},
     "name": "Hardleather gloves",
-    "outputItems": undefined,
+    "outputItems": "Hardleather gloves",
     "qpRequired": 5,
   },
   {
@@ -2218,14 +2218,14 @@ exports[`OSB Buyables 1`] = `
       "26792": 400,
     },
     "name": "Hat of the eye",
-    "outputItems": undefined,
+    "outputItems": "Hat of the eye",
   },
   {
     "gpCost": 500000,
     "ironmanPrice": 50000,
     "itemCost": {},
     "name": "Helm of neitiznot",
-    "outputItems": undefined,
+    "outputItems": "Helm of neitiznot",
     "qpRequired": 75,
   },
   {
@@ -2252,7 +2252,7 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 70000,
     "itemCost": {},
     "name": "Holy wrench",
-    "outputItems": undefined,
+    "outputItems": "Holy wrench",
     "qpRequired": 70,
   },
   {
@@ -2272,7 +2272,7 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 300000,
     "itemCost": {},
     "name": "Iban's staff",
-    "outputItems": undefined,
+    "outputItems": "Iban's staff",
     "qpRequired": 30,
   },
   {
@@ -2280,42 +2280,42 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 20000,
     "itemCost": {},
     "name": "Icthlarin's hood (tier 5)",
-    "outputItems": undefined,
+    "outputItems": "Icthlarin's hood (tier 5)",
   },
   {
     "customReq": [Function],
     "gpCost": 1000,
     "itemCost": {},
     "name": "Icthlarin's shroud (tier 1)",
-    "outputItems": undefined,
+    "outputItems": "Icthlarin's shroud (tier 1)",
   },
   {
     "customReq": [Function],
     "gpCost": 5000,
     "itemCost": {},
     "name": "Icthlarin's shroud (tier 2)",
-    "outputItems": undefined,
+    "outputItems": "Icthlarin's shroud (tier 2)",
   },
   {
     "customReq": [Function],
     "gpCost": 10000,
     "itemCost": {},
     "name": "Icthlarin's shroud (tier 3)",
-    "outputItems": undefined,
+    "outputItems": "Icthlarin's shroud (tier 3)",
   },
   {
     "customReq": [Function],
     "gpCost": 15000,
     "itemCost": {},
     "name": "Icthlarin's shroud (tier 4)",
-    "outputItems": undefined,
+    "outputItems": "Icthlarin's shroud (tier 4)",
   },
   {
     "customReq": [Function],
     "gpCost": 20000,
     "itemCost": {},
     "name": "Icthlarin's shroud (tier 5)",
-    "outputItems": undefined,
+    "outputItems": "Icthlarin's shroud (tier 5)",
   },
   {
     "gpCost": 250000,
@@ -2333,14 +2333,14 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 56,
     "itemCost": {},
     "name": "Iron axe",
-    "outputItems": undefined,
+    "outputItems": "Iron axe",
   },
   {
     "gpCost": 200000,
     "ironmanPrice": 325,
     "itemCost": {},
     "name": "Iron gloves",
-    "outputItems": undefined,
+    "outputItems": "Iron gloves",
     "qpRequired": 20,
   },
   {
@@ -2348,28 +2348,28 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 140,
     "itemCost": {},
     "name": "Iron pickaxe",
-    "outputItems": undefined,
+    "outputItems": "Iron pickaxe",
   },
   {
     "customReq": [Function],
     "gpCost": 1000,
     "itemCost": {},
     "name": "Ironman helm",
-    "outputItems": undefined,
+    "outputItems": "Ironman helm",
   },
   {
     "customReq": [Function],
     "gpCost": 1000,
     "itemCost": {},
     "name": "Ironman platebody",
-    "outputItems": undefined,
+    "outputItems": "Ironman platebody",
   },
   {
     "customReq": [Function],
     "gpCost": 1000,
     "itemCost": {},
     "name": "Ironman platelegs",
-    "outputItems": undefined,
+    "outputItems": "Ironman platelegs",
   },
   {
     "gpCost": 5000000,
@@ -2391,7 +2391,7 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 100,
     "itemCost": {},
     "name": "Jug of Water",
-    "outputItems": undefined,
+    "outputItems": "Jug of Water",
   },
   {
     "collectionLogReqs": [
@@ -2401,7 +2401,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Kandarin headgear 1",
-    "outputItems": undefined,
+    "outputItems": "Kandarin headgear 1",
   },
   {
     "collectionLogReqs": [
@@ -2411,7 +2411,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Kandarin headgear 2",
-    "outputItems": undefined,
+    "outputItems": "Kandarin headgear 2",
   },
   {
     "collectionLogReqs": [
@@ -2421,7 +2421,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Kandarin headgear 3",
-    "outputItems": undefined,
+    "outputItems": "Kandarin headgear 3",
   },
   {
     "collectionLogReqs": [
@@ -2431,7 +2431,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Kandarin headgear 4",
-    "outputItems": undefined,
+    "outputItems": "Kandarin headgear 4",
   },
   {
     "collectionLogReqs": [
@@ -2441,7 +2441,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Karamja gloves 1",
-    "outputItems": undefined,
+    "outputItems": "Karamja gloves 1",
   },
   {
     "collectionLogReqs": [
@@ -2451,7 +2451,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Karamja gloves 2",
-    "outputItems": undefined,
+    "outputItems": "Karamja gloves 2",
   },
   {
     "collectionLogReqs": [
@@ -2461,7 +2461,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Karamja gloves 3",
-    "outputItems": undefined,
+    "outputItems": "Karamja gloves 3",
   },
   {
     "collectionLogReqs": [
@@ -2471,14 +2471,14 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Karamja gloves 4",
-    "outputItems": undefined,
+    "outputItems": "Karamja gloves 4",
   },
   {
     "gpCost": 100000,
     "ironmanPrice": 60000,
     "itemCost": {},
     "name": "Keris partisan",
-    "outputItems": undefined,
+    "outputItems": "Keris partisan",
     "qpRequired": 172,
   },
   {
@@ -2486,27 +2486,27 @@ exports[`OSB Buyables 1`] = `
       "26792": 50,
     },
     "name": "Law talisman",
-    "outputItems": undefined,
+    "outputItems": "Law talisman",
   },
   {
     "gpCost": 310000,
     "itemCost": {},
     "name": "Leaf-bladed spear",
-    "outputItems": undefined,
+    "outputItems": "Leaf-bladed spear",
   },
   {
     "gpCost": 1000,
     "ironmanPrice": 40,
     "itemCost": {},
     "name": "Limestone brick",
-    "outputItems": undefined,
+    "outputItems": "Limestone brick",
   },
   {
     "gpCost": 5000,
     "ironmanPrice": 500,
     "itemCost": {},
     "name": "Lockpick",
-    "outputItems": undefined,
+    "outputItems": "Lockpick",
     "skillsNeeded": {
       "agility": 50,
       "thieving": 50,
@@ -2519,7 +2519,7 @@ exports[`OSB Buyables 1`] = `
       "28134": 5000,
     },
     "name": "Log basket",
-    "outputItems": undefined,
+    "outputItems": "Log basket",
   },
   {
     "itemCost": {
@@ -2528,14 +2528,14 @@ exports[`OSB Buyables 1`] = `
       "28134": 3000,
     },
     "name": "Log brace",
-    "outputItems": undefined,
+    "outputItems": "Log brace",
   },
   {
     "itemCost": {
       "8951": 4000,
     },
     "name": "Lucky shot flag",
-    "outputItems": undefined,
+    "outputItems": "Lucky shot flag",
   },
   {
     "itemCost": {
@@ -2544,7 +2544,7 @@ exports[`OSB Buyables 1`] = `
       "28134": 1000,
     },
     "name": "Lumberjack boots",
-    "outputItems": undefined,
+    "outputItems": "Lumberjack boots",
   },
   {
     "itemCost": {
@@ -2553,7 +2553,7 @@ exports[`OSB Buyables 1`] = `
       "28134": 1200,
     },
     "name": "Lumberjack hat",
-    "outputItems": undefined,
+    "outputItems": "Lumberjack hat",
   },
   {
     "itemCost": {
@@ -2562,7 +2562,7 @@ exports[`OSB Buyables 1`] = `
       "28134": 1300,
     },
     "name": "Lumberjack legs",
-    "outputItems": undefined,
+    "outputItems": "Lumberjack legs",
   },
   {
     "itemCost": {
@@ -2572,7 +2572,7 @@ exports[`OSB Buyables 1`] = `
       "28134": 1500,
     },
     "name": "Lumberjack top",
-    "outputItems": undefined,
+    "outputItems": "Lumberjack top",
   },
   {
     "gpCost": 5000000,
@@ -2595,14 +2595,14 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 100000,
     "itemCost": {},
     "name": "Lunar signet",
-    "outputItems": undefined,
+    "outputItems": "Lunar signet",
     "qpRequired": 52,
   },
   {
     "gpCost": 1500,
     "itemCost": {},
     "name": "Magic box",
-    "outputItems": undefined,
+    "outputItems": "Magic box",
   },
   {
     "customReq": [Function],
@@ -2619,7 +2619,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 40000,
     "itemCost": {},
     "name": "Magic secateurs",
-    "outputItems": undefined,
+    "outputItems": "Magic secateurs",
     "qpRequired": 40,
   },
   {
@@ -2627,14 +2627,14 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 975000,
     "itemCost": {},
     "name": "Magic stone",
-    "outputItems": undefined,
+    "outputItems": "Magic stone",
   },
   {
     "gpCost": 1000000,
     "ironmanPrice": 325000,
     "itemCost": {},
     "name": "Marble block",
-    "outputItems": undefined,
+    "outputItems": "Marble block",
   },
   {
     "customReq": [Function],
@@ -2642,7 +2642,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 10000,
     "itemCost": {},
     "name": "Mask of rebirth",
-    "outputItems": undefined,
+    "outputItems": "Mask of rebirth",
     "qpRequired": 172,
   },
   {
@@ -2659,7 +2659,7 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 60000,
     "itemCost": {},
     "name": "Medical gown",
-    "outputItems": undefined,
+    "outputItems": "Medical gown",
     "qpRequired": 60,
   },
   {
@@ -2691,19 +2691,19 @@ exports[`OSB Buyables 1`] = `
       "21656": 400,
     },
     "name": "Merfolk trident",
-    "outputItems": undefined,
+    "outputItems": "Merfolk trident",
   },
   {
     "gpCost": 25,
     "itemCost": {},
     "name": "Mind rune",
-    "outputItems": undefined,
+    "outputItems": "Mind rune",
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Mind shield",
-    "outputItems": undefined,
+    "outputItems": "Mind shield",
     "qpRequired": 35,
   },
   {
@@ -2711,7 +2711,7 @@ exports[`OSB Buyables 1`] = `
       "26792": 10,
     },
     "name": "Mind talisman",
-    "outputItems": undefined,
+    "outputItems": "Mind talisman",
   },
   {
     "customReq": [Function],
@@ -2728,14 +2728,14 @@ exports[`OSB Buyables 1`] = `
       "21341": 60,
     },
     "name": "Mining gloves",
-    "outputItems": undefined,
+    "outputItems": "Mining gloves",
   },
   {
     "gpCost": 500000,
     "ironmanPrice": 2000,
     "itemCost": {},
     "name": "Mithril gloves",
-    "outputItems": undefined,
+    "outputItems": "Mithril gloves",
     "qpRequired": 50,
   },
   {
@@ -2743,7 +2743,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 1300,
     "itemCost": {},
     "name": "Mithril pickaxe",
-    "outputItems": undefined,
+    "outputItems": "Mithril pickaxe",
   },
   {
     "gpCost": 3000,
@@ -2786,7 +2786,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Morytania legs 1",
-    "outputItems": undefined,
+    "outputItems": "Morytania legs 1",
   },
   {
     "collectionLogReqs": [
@@ -2796,7 +2796,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Morytania legs 2",
-    "outputItems": undefined,
+    "outputItems": "Morytania legs 2",
   },
   {
     "collectionLogReqs": [
@@ -2806,7 +2806,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Morytania legs 3",
-    "outputItems": undefined,
+    "outputItems": "Morytania legs 3",
   },
   {
     "collectionLogReqs": [
@@ -2816,7 +2816,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Morytania legs 4",
-    "outputItems": undefined,
+    "outputItems": "Morytania legs 4",
   },
   {
     "customReq": [Function],
@@ -2841,7 +2841,7 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 10000,
     "itemCost": {},
     "name": "Mystic boots",
-    "outputItems": undefined,
+    "outputItems": "Mystic boots",
     "skillsNeeded": {
       "magic": 66,
     },
@@ -2850,7 +2850,7 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 10000,
     "itemCost": {},
     "name": "Mystic gloves",
-    "outputItems": undefined,
+    "outputItems": "Mystic gloves",
     "skillsNeeded": {
       "magic": 66,
     },
@@ -2859,7 +2859,7 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 25000,
     "itemCost": {},
     "name": "Mystic hat",
-    "outputItems": undefined,
+    "outputItems": "Mystic hat",
     "skillsNeeded": {
       "magic": 66,
     },
@@ -2868,7 +2868,7 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 80000,
     "itemCost": {},
     "name": "Mystic robe bottom",
-    "outputItems": undefined,
+    "outputItems": "Mystic robe bottom",
     "skillsNeeded": {
       "magic": 66,
     },
@@ -2877,7 +2877,7 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 120000,
     "itemCost": {},
     "name": "Mystic robe top",
-    "outputItems": undefined,
+    "outputItems": "Mystic robe top",
     "skillsNeeded": {
       "magic": 66,
     },
@@ -2887,7 +2887,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 10000,
     "itemCost": {},
     "name": "Mythical cape",
-    "outputItems": undefined,
+    "outputItems": "Mythical cape",
     "qpRequired": 205,
   },
   {
@@ -2895,53 +2895,53 @@ exports[`OSB Buyables 1`] = `
       "26792": 50,
     },
     "name": "Nature talisman",
-    "outputItems": undefined,
+    "outputItems": "Nature talisman",
   },
   {
     "gpCost": 20000,
     "itemCost": {},
     "name": "Nose peg",
-    "outputItems": undefined,
+    "outputItems": "Nose peg",
   },
   {
     "gpCost": 60000,
     "itemCost": {},
     "name": "Nurse hat",
-    "outputItems": undefined,
+    "outputItems": "Nurse hat",
     "qpRequired": 60,
   },
   {
     "gpCost": 10000,
     "itemCost": {},
     "name": "Ogre bow",
-    "outputItems": undefined,
+    "outputItems": "Ogre bow",
   },
   {
     "itemCost": {
       "22820": 150,
     },
     "name": "Pearl barbarian rod",
-    "outputItems": undefined,
+    "outputItems": "Pearl barbarian rod",
   },
   {
     "itemCost": {
       "22820": 100,
     },
     "name": "Pearl fishing rod",
-    "outputItems": undefined,
+    "outputItems": "Pearl fishing rod",
   },
   {
     "itemCost": {
       "22820": 120,
     },
     "name": "Pearl fly fishing rod",
-    "outputItems": undefined,
+    "outputItems": "Pearl fly fishing rod",
   },
   {
     "gpCost": 500000,
     "itemCost": {},
     "name": "Pet rock",
-    "outputItems": undefined,
+    "outputItems": "Pet rock",
     "qpRequired": 60,
   },
   {
@@ -2949,66 +2949,66 @@ exports[`OSB Buyables 1`] = `
       "8951": 6000,
     },
     "name": "Phasmatys flag",
-    "outputItems": undefined,
+    "outputItems": "Phasmatys flag",
   },
   {
     "gpCost": 100000,
     "ironmanPrice": 5000,
     "itemCost": {},
     "name": "Pink boots",
-    "outputItems": undefined,
+    "outputItems": "Pink boots",
   },
   {
     "gpCost": 100000,
     "ironmanPrice": 5000,
     "itemCost": {},
     "name": "Pink hat",
-    "outputItems": undefined,
+    "outputItems": "Pink hat",
   },
   {
     "gpCost": 100000,
     "ironmanPrice": 5000,
     "itemCost": {},
     "name": "Pink robe bottoms",
-    "outputItems": undefined,
+    "outputItems": "Pink robe bottoms",
   },
   {
     "gpCost": 100000,
     "ironmanPrice": 5000,
     "itemCost": {},
     "name": "Pink robe top",
-    "outputItems": undefined,
+    "outputItems": "Pink robe top",
   },
   {
     "gpCost": 1000,
     "ironmanPrice": 100,
     "itemCost": {},
     "name": "Pink skirt",
-    "outputItems": undefined,
+    "outputItems": "Pink skirt",
   },
   {
     "gpCost": 20000,
     "itemCost": {},
     "name": "Pirate bandana (blue)",
-    "outputItems": undefined,
+    "outputItems": "Pirate bandana (blue)",
   },
   {
     "gpCost": 20000,
     "itemCost": {},
     "name": "Pirate bandana (brown)",
-    "outputItems": undefined,
+    "outputItems": "Pirate bandana (brown)",
   },
   {
     "gpCost": 20000,
     "itemCost": {},
     "name": "Pirate bandana (red)",
-    "outputItems": undefined,
+    "outputItems": "Pirate bandana (red)",
   },
   {
     "gpCost": 20000,
     "itemCost": {},
     "name": "Pirate bandana (white)",
-    "outputItems": undefined,
+    "outputItems": "Pirate bandana (white)",
   },
   {
     "gpCost": 100000,
@@ -3023,31 +3023,31 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 20000,
     "itemCost": {},
     "name": "Pirate leggings (blue)",
-    "outputItems": undefined,
+    "outputItems": "Pirate leggings (blue)",
   },
   {
     "gpCost": 20000,
     "itemCost": {},
     "name": "Pirate leggings (brown)",
-    "outputItems": undefined,
+    "outputItems": "Pirate leggings (brown)",
   },
   {
     "gpCost": 20000,
     "itemCost": {},
     "name": "Pirate leggings (red)",
-    "outputItems": undefined,
+    "outputItems": "Pirate leggings (red)",
   },
   {
     "gpCost": 20000,
     "itemCost": {},
     "name": "Pirate leggings (white)",
-    "outputItems": undefined,
+    "outputItems": "Pirate leggings (white)",
   },
   {
     "gpCost": 650,
     "itemCost": {},
     "name": "Potato with cheese",
-    "outputItems": undefined,
+    "outputItems": "Potato with cheese",
     "skillsNeeded": {
       "attack": 65,
       "strength": 65,
@@ -3100,48 +3100,48 @@ exports[`OSB Buyables 1`] = `
       "12012": 30,
     },
     "name": "Prospector boots",
-    "outputItems": undefined,
+    "outputItems": "Prospector boots",
   },
   {
     "itemCost": {
       "12012": 40,
     },
     "name": "Prospector helmet",
-    "outputItems": undefined,
+    "outputItems": "Prospector helmet",
   },
   {
     "itemCost": {
       "12012": 60,
     },
     "name": "Prospector jacket",
-    "outputItems": undefined,
+    "outputItems": "Prospector jacket",
   },
   {
     "itemCost": {
       "12012": 50,
     },
     "name": "Prospector legs",
-    "outputItems": undefined,
+    "outputItems": "Prospector legs",
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Purple boots",
-    "outputItems": undefined,
+    "outputItems": "Purple boots",
     "qpRequired": 15,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Purple gloves",
-    "outputItems": undefined,
+    "outputItems": "Purple gloves",
     "qpRequired": 15,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Purple hat",
-    "outputItems": undefined,
+    "outputItems": "Purple hat",
     "qpRequired": 15,
   },
   {
@@ -3149,27 +3149,27 @@ exports[`OSB Buyables 1`] = `
       "8951": 1000,
     },
     "name": "Purple naval shirt",
-    "outputItems": undefined,
+    "outputItems": "Purple naval shirt",
   },
   {
     "itemCost": {
       "8951": 1000,
     },
     "name": "Purple navy slacks",
-    "outputItems": undefined,
+    "outputItems": "Purple navy slacks",
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Purple robe bottoms",
-    "outputItems": undefined,
+    "outputItems": "Purple robe bottoms",
     "qpRequired": 15,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Purple robe top",
-    "outputItems": undefined,
+    "outputItems": "Purple robe top",
     "qpRequired": 15,
   },
   {
@@ -3177,7 +3177,7 @@ exports[`OSB Buyables 1`] = `
       "8951": 500,
     },
     "name": "Purple tricorn hat",
-    "outputItems": undefined,
+    "outputItems": "Purple tricorn hat",
   },
   {
     "aliases": [
@@ -3213,7 +3213,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Rada's blessing 1",
-    "outputItems": undefined,
+    "outputItems": "Rada's blessing 1",
   },
   {
     "collectionLogReqs": [
@@ -3223,7 +3223,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Rada's blessing 2",
-    "outputItems": undefined,
+    "outputItems": "Rada's blessing 2",
   },
   {
     "collectionLogReqs": [
@@ -3233,7 +3233,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Rada's blessing 3",
-    "outputItems": undefined,
+    "outputItems": "Rada's blessing 3",
   },
   {
     "collectionLogReqs": [
@@ -3243,13 +3243,13 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Rada's blessing 4",
-    "outputItems": undefined,
+    "outputItems": "Rada's blessing 4",
   },
   {
     "gpCost": 1000000,
     "itemCost": {},
     "name": "Ram skull helm",
-    "outputItems": undefined,
+    "outputItems": "Ram skull helm",
     "qpRequired": 82,
   },
   {
@@ -3266,7 +3266,7 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 200000,
     "itemCost": {},
     "name": "Rat pole",
-    "outputItems": undefined,
+    "outputItems": "Rat pole",
     "qpRequired": 85,
   },
   {
@@ -3390,14 +3390,14 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 100000,
     "itemCost": {},
     "name": "Red boots",
-    "outputItems": undefined,
+    "outputItems": "Red boots",
     "qpRequired": 15,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Red cape",
-    "outputItems": undefined,
+    "outputItems": "Red cape",
     "qpRequired": 15,
   },
   {
@@ -3477,20 +3477,20 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 500,
     "itemCost": {},
     "name": "Red dye",
-    "outputItems": undefined,
+    "outputItems": "Red dye",
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Red gloves",
-    "outputItems": undefined,
+    "outputItems": "Red gloves",
     "qpRequired": 15,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Red hat",
-    "outputItems": undefined,
+    "outputItems": "Red hat",
     "qpRequired": 15,
   },
   {
@@ -3498,27 +3498,27 @@ exports[`OSB Buyables 1`] = `
       "8951": 1000,
     },
     "name": "Red naval shirt",
-    "outputItems": undefined,
+    "outputItems": "Red naval shirt",
   },
   {
     "itemCost": {
       "8951": 1000,
     },
     "name": "Red navy slacks",
-    "outputItems": undefined,
+    "outputItems": "Red navy slacks",
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Red robe bottoms",
-    "outputItems": undefined,
+    "outputItems": "Red robe bottoms",
     "qpRequired": 15,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Red robe top",
-    "outputItems": undefined,
+    "outputItems": "Red robe top",
     "qpRequired": 15,
   },
   {
@@ -3526,27 +3526,27 @@ exports[`OSB Buyables 1`] = `
       "8951": 20,
     },
     "name": "Red rum (trouble brewing)",
-    "outputItems": undefined,
+    "outputItems": "Red rum (trouble brewing)",
   },
   {
     "itemCost": {
       "8951": 500,
     },
     "name": "Red tricorn hat",
-    "outputItems": undefined,
+    "outputItems": "Red tricorn hat",
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Ring of charos",
-    "outputItems": undefined,
+    "outputItems": "Ring of charos",
     "qpRequired": 60,
   },
   {
     "gpCost": 75000,
     "itemCost": {},
     "name": "Ring of shadows",
-    "outputItems": undefined,
+    "outputItems": "Ring of shadows",
     "requiredQuests": [
       1,
     ],
@@ -3556,7 +3556,7 @@ exports[`OSB Buyables 1`] = `
       "26792": 400,
     },
     "name": "Ring of the elements",
-    "outputItems": undefined,
+    "outputItems": "Ring of the elements",
   },
   {
     "itemCost": {
@@ -3564,28 +3564,28 @@ exports[`OSB Buyables 1`] = `
       "28134": 150,
     },
     "name": "Ritual mulch",
-    "outputItems": undefined,
+    "outputItems": "Ritual mulch",
   },
   {
     "itemCost": {
       "26792": 350,
     },
     "name": "Robe bottoms of the eye",
-    "outputItems": undefined,
+    "outputItems": "Robe bottoms of the eye",
   },
   {
     "itemCost": {
       "26792": 350,
     },
     "name": "Robe top of the eye",
-    "outputItems": undefined,
+    "outputItems": "Robe top of the eye",
   },
   {
     "gpCost": 70000,
     "ironmanPrice": 18720,
     "itemCost": {},
     "name": "Rolling pin",
-    "outputItems": undefined,
+    "outputItems": "Rolling pin",
   },
   {
     "aliases": [
@@ -3595,14 +3595,14 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 25,
     "itemCost": {},
     "name": "Rope",
-    "outputItems": undefined,
+    "outputItems": "Rope",
   },
   {
     "gpCost": 2500000,
     "ironmanPrice": 2000,
     "itemCost": {},
     "name": "Royal seed pod",
-    "outputItems": undefined,
+    "outputItems": "Royal seed pod",
     "qpRequired": 175,
   },
   {
@@ -3620,7 +3620,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 32000,
     "itemCost": {},
     "name": "Rune pickaxe",
-    "outputItems": undefined,
+    "outputItems": "Rune pickaxe",
   },
   {
     "customReq": [Function],
@@ -3637,7 +3637,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 20000,
     "itemCost": {},
     "name": "Salve amulet",
-    "outputItems": undefined,
+    "outputItems": "Salve amulet",
     "qpRequired": 58,
     "skillsNeeded": {
       "crafting": 35,
@@ -3647,7 +3647,7 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 500,
     "itemCost": {},
     "name": "Sandworms",
-    "outputItems": undefined,
+    "outputItems": "Sandworms",
   },
   {
     "itemCost": {
@@ -3699,7 +3699,7 @@ exports[`OSB Buyables 1`] = `
       "21656": 20,
     },
     "name": "Seaweed spore",
-    "outputItems": undefined,
+    "outputItems": "Seaweed spore",
   },
   {
     "itemCost": {
@@ -3708,13 +3708,13 @@ exports[`OSB Buyables 1`] = `
       "28134": 20,
     },
     "name": "Secateurs blade",
-    "outputItems": undefined,
+    "outputItems": "Secateurs blade",
   },
   {
     "gpCost": 10000,
     "itemCost": {},
     "name": "Shadow sword",
-    "outputItems": undefined,
+    "outputItems": "Shadow sword",
     "qpRequired": 10,
   },
   {
@@ -3725,14 +3725,14 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 1000000,
     "itemCost": {},
     "name": "Shield right half",
-    "outputItems": undefined,
+    "outputItems": "Shield right half",
     "qpRequired": 111,
   },
   {
     "gpCost": 50000,
     "itemCost": {},
     "name": "Silverlight",
-    "outputItems": undefined,
+    "outputItems": "Silverlight",
     "qpRequired": 3,
   },
   {
@@ -3743,7 +3743,7 @@ exports[`OSB Buyables 1`] = `
       100,
     ],
     "name": "Sinhaza shroud tier 1",
-    "outputItems": undefined,
+    "outputItems": "Sinhaza shroud tier 1",
   },
   {
     "gpCost": 500000,
@@ -3753,7 +3753,7 @@ exports[`OSB Buyables 1`] = `
       500,
     ],
     "name": "Sinhaza shroud tier 2",
-    "outputItems": undefined,
+    "outputItems": "Sinhaza shroud tier 2",
   },
   {
     "gpCost": 500000,
@@ -3763,7 +3763,7 @@ exports[`OSB Buyables 1`] = `
       1000,
     ],
     "name": "Sinhaza shroud tier 3",
-    "outputItems": undefined,
+    "outputItems": "Sinhaza shroud tier 3",
   },
   {
     "gpCost": 500000,
@@ -3773,7 +3773,7 @@ exports[`OSB Buyables 1`] = `
       1500,
     ],
     "name": "Sinhaza shroud tier 4",
-    "outputItems": undefined,
+    "outputItems": "Sinhaza shroud tier 4",
   },
   {
     "gpCost": 500000,
@@ -3783,13 +3783,13 @@ exports[`OSB Buyables 1`] = `
       2000,
     ],
     "name": "Sinhaza shroud tier 5",
-    "outputItems": undefined,
+    "outputItems": "Sinhaza shroud tier 5",
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Skull",
-    "outputItems": undefined,
+    "outputItems": "Skull",
   },
   {
     "customReq": [Function],
@@ -3805,7 +3805,7 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 210000,
     "itemCost": {},
     "name": "Slayer's staff",
-    "outputItems": undefined,
+    "outputItems": "Slayer's staff",
   },
   {
     "customReq": [Function],
@@ -3822,34 +3822,34 @@ exports[`OSB Buyables 1`] = `
       "25527": 150,
     },
     "name": "Soft clay pack",
-    "outputItems": undefined,
+    "outputItems": "Soft clay pack",
   },
   {
     "gpCost": 65000,
     "itemCost": {},
     "name": "Spiny helmet",
-    "outputItems": undefined,
+    "outputItems": "Spiny helmet",
   },
   {
     "itemCost": {
       "25527": 3000,
     },
     "name": "Star fragment",
-    "outputItems": undefined,
+    "outputItems": "Star fragment",
   },
   {
     "gpCost": 2000,
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Steel axe",
-    "outputItems": undefined,
+    "outputItems": "Steel axe",
   },
   {
     "gpCost": 300000,
     "ironmanPrice": 650,
     "itemCost": {},
     "name": "Steel gloves",
-    "outputItems": undefined,
+    "outputItems": "Steel gloves",
     "qpRequired": 25,
   },
   {
@@ -3857,7 +3857,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 600,
     "itemCost": {},
     "name": "Steel pickaxe",
-    "outputItems": undefined,
+    "outputItems": "Steel pickaxe",
   },
   {
     "customReq": [Function],
@@ -3873,66 +3873,66 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 20000,
     "itemCost": {},
     "name": "Stripy pirate shirt (blue)",
-    "outputItems": undefined,
+    "outputItems": "Stripy pirate shirt (blue)",
   },
   {
     "gpCost": 20000,
     "itemCost": {},
     "name": "Stripy pirate shirt (brown)",
-    "outputItems": undefined,
+    "outputItems": "Stripy pirate shirt (brown)",
   },
   {
     "gpCost": 20000,
     "itemCost": {},
     "name": "Stripy pirate shirt (red)",
-    "outputItems": undefined,
+    "outputItems": "Stripy pirate shirt (red)",
   },
   {
     "gpCost": 20000,
     "itemCost": {},
     "name": "Stripy pirate shirt (white)",
-    "outputItems": undefined,
+    "outputItems": "Stripy pirate shirt (white)",
   },
   {
     "itemCost": {
       "21341": 120,
     },
     "name": "Superior mining gloves",
-    "outputItems": undefined,
+    "outputItems": "Superior mining gloves",
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Teal boots",
-    "outputItems": undefined,
+    "outputItems": "Teal boots",
     "qpRequired": 15,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Teal gloves",
-    "outputItems": undefined,
+    "outputItems": "Teal gloves",
     "qpRequired": 15,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Teal hat",
-    "outputItems": undefined,
+    "outputItems": "Teal hat",
     "qpRequired": 15,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Teal robe bottoms",
-    "outputItems": undefined,
+    "outputItems": "Teal robe bottoms",
     "qpRequired": 15,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Teal robe top",
-    "outputItems": undefined,
+    "outputItems": "Teal robe top",
     "qpRequired": 15,
   },
   {
@@ -4340,7 +4340,7 @@ exports[`OSB Buyables 1`] = `
       "8951": 50,
     },
     "name": "The stuff",
-    "outputItems": undefined,
+    "outputItems": "The stuff",
   },
   {
     "customReq": [Function],
@@ -4357,42 +4357,42 @@ exports[`OSB Buyables 1`] = `
       "111": 1,
     },
     "name": "Torstol",
-    "outputItems": undefined,
+    "outputItems": "Torstol",
   },
   {
     "itemCost": {
       "8951": 5000,
     },
     "name": "Treasure flag",
-    "outputItems": undefined,
+    "outputItems": "Treasure flag",
   },
   {
     "gpCost": 100000,
     "ironmanPrice": 5000,
     "itemCost": {},
     "name": "Turquoise boots",
-    "outputItems": undefined,
+    "outputItems": "Turquoise boots",
   },
   {
     "gpCost": 100000,
     "ironmanPrice": 5000,
     "itemCost": {},
     "name": "Turquoise hat",
-    "outputItems": undefined,
+    "outputItems": "Turquoise hat",
   },
   {
     "gpCost": 100000,
     "ironmanPrice": 5000,
     "itemCost": {},
     "name": "Turquoise robe bottoms",
-    "outputItems": undefined,
+    "outputItems": "Turquoise robe bottoms",
   },
   {
     "gpCost": 100000,
     "ironmanPrice": 5000,
     "itemCost": {},
     "name": "Turquoise robe top",
-    "outputItems": undefined,
+    "outputItems": "Turquoise robe top",
   },
   {
     "itemCost": {
@@ -4400,7 +4400,7 @@ exports[`OSB Buyables 1`] = `
       "28134": 5000,
     },
     "name": "Twitcher's gloves",
-    "outputItems": undefined,
+    "outputItems": "Twitcher's gloves",
   },
   {
     "gpCost": 22500,
@@ -4414,28 +4414,28 @@ exports[`OSB Buyables 1`] = `
     "gpCost": 225,
     "itemCost": {},
     "name": "Unfinished broad bolts",
-    "outputItems": undefined,
+    "outputItems": "Unfinished broad bolts",
   },
   {
     "itemCost": {
       "21656": 300,
     },
     "name": "Unidentified large fossil",
-    "outputItems": undefined,
+    "outputItems": "Unidentified large fossil",
   },
   {
     "itemCost": {
       "21656": 200,
     },
     "name": "Unidentified medium fossil",
-    "outputItems": undefined,
+    "outputItems": "Unidentified medium fossil",
   },
   {
     "itemCost": {
       "21656": 100,
     },
     "name": "Unidentified small fossil",
-    "outputItems": undefined,
+    "outputItems": "Unidentified small fossil",
   },
   {
     "collectionLogReqs": [
@@ -4445,7 +4445,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Varrock armour 1",
-    "outputItems": undefined,
+    "outputItems": "Varrock armour 1",
   },
   {
     "collectionLogReqs": [
@@ -4455,7 +4455,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Varrock armour 2",
-    "outputItems": undefined,
+    "outputItems": "Varrock armour 2",
   },
   {
     "collectionLogReqs": [
@@ -4465,7 +4465,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Varrock armour 3",
-    "outputItems": undefined,
+    "outputItems": "Varrock armour 3",
   },
   {
     "collectionLogReqs": [
@@ -4475,7 +4475,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Varrock armour 4",
-    "outputItems": undefined,
+    "outputItems": "Varrock armour 4",
   },
   {
     "aliases": [
@@ -4485,7 +4485,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 2,
     "itemCost": {},
     "name": "Vial",
-    "outputItems": undefined,
+    "outputItems": "Vial",
   },
   {
     "aliases": [
@@ -4495,13 +4495,13 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 3,
     "itemCost": {},
     "name": "Vial of water",
-    "outputItems": undefined,
+    "outputItems": "Vial of water",
   },
   {
     "gpCost": 1000000,
     "itemCost": {},
     "name": "Vodka",
-    "outputItems": undefined,
+    "outputItems": "Vodka",
   },
   {
     "gpCost": 1000000,
@@ -4519,21 +4519,21 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 78000,
     "itemCost": {},
     "name": "Warrior helm",
-    "outputItems": undefined,
+    "outputItems": "Warrior helm",
     "qpRequired": 60,
   },
   {
     "gpCost": 15,
     "itemCost": {},
     "name": "Water rune",
-    "outputItems": undefined,
+    "outputItems": "Water rune",
   },
   {
     "itemCost": {
       "26792": 10,
     },
     "name": "Water talisman",
-    "outputItems": undefined,
+    "outputItems": "Water talisman",
   },
   {
     "collectionLogReqs": [
@@ -4543,7 +4543,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Western banner 1",
-    "outputItems": undefined,
+    "outputItems": "Western banner 1",
   },
   {
     "collectionLogReqs": [
@@ -4553,7 +4553,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Western banner 2",
-    "outputItems": undefined,
+    "outputItems": "Western banner 2",
   },
   {
     "collectionLogReqs": [
@@ -4563,7 +4563,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Western banner 3",
-    "outputItems": undefined,
+    "outputItems": "Western banner 3",
   },
   {
     "collectionLogReqs": [
@@ -4573,14 +4573,14 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Western banner 4",
-    "outputItems": undefined,
+    "outputItems": "Western banner 4",
   },
   {
     "gpCost": 1000,
     "ironmanPrice": 250,
     "itemCost": {},
     "name": "White apron",
-    "outputItems": undefined,
+    "outputItems": "White apron",
   },
   {
     "itemCost": {
@@ -4662,7 +4662,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Wilderness sword 1",
-    "outputItems": undefined,
+    "outputItems": "Wilderness sword 1",
   },
   {
     "collectionLogReqs": [
@@ -4672,7 +4672,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Wilderness sword 2",
-    "outputItems": undefined,
+    "outputItems": "Wilderness sword 2",
   },
   {
     "collectionLogReqs": [
@@ -4682,7 +4682,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Wilderness sword 3",
-    "outputItems": undefined,
+    "outputItems": "Wilderness sword 3",
   },
   {
     "collectionLogReqs": [
@@ -4692,7 +4692,7 @@ exports[`OSB Buyables 1`] = `
     "ironmanPrice": 200,
     "itemCost": {},
     "name": "Wilderness sword 4",
-    "outputItems": undefined,
+    "outputItems": "Wilderness sword 4",
   },
   {
     "customReq": [Function],
@@ -4712,7 +4712,7 @@ exports[`OSB Buyables 1`] = `
       2000,
     ],
     "name": "Xeric's champion",
-    "outputItems": undefined,
+    "outputItems": "Xeric's champion",
   },
   {
     "gpCost": 1500000,
@@ -4722,7 +4722,7 @@ exports[`OSB Buyables 1`] = `
       1500,
     ],
     "name": "Xeric's general",
-    "outputItems": undefined,
+    "outputItems": "Xeric's general",
   },
   {
     "gpCost": 100000,
@@ -4732,7 +4732,7 @@ exports[`OSB Buyables 1`] = `
       100,
     ],
     "name": "Xeric's guard",
-    "outputItems": undefined,
+    "outputItems": "Xeric's guard",
   },
   {
     "gpCost": 1000000,
@@ -4742,7 +4742,7 @@ exports[`OSB Buyables 1`] = `
       1000,
     ],
     "name": "Xeric's sentinel",
-    "outputItems": undefined,
+    "outputItems": "Xeric's sentinel",
   },
   {
     "gpCost": 500000,
@@ -4752,48 +4752,48 @@ exports[`OSB Buyables 1`] = `
       500,
     ],
     "name": "Xeric's warrior",
-    "outputItems": undefined,
+    "outputItems": "Xeric's warrior",
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Yellow boots",
-    "outputItems": undefined,
+    "outputItems": "Yellow boots",
     "qpRequired": 15,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Yellow cape",
-    "outputItems": undefined,
+    "outputItems": "Yellow cape",
     "qpRequired": 15,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Yellow gloves",
-    "outputItems": undefined,
+    "outputItems": "Yellow gloves",
     "qpRequired": 15,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Yellow hat",
-    "outputItems": undefined,
+    "outputItems": "Yellow hat",
     "qpRequired": 15,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Yellow robe bottoms",
-    "outputItems": undefined,
+    "outputItems": "Yellow robe bottoms",
     "qpRequired": 15,
   },
   {
     "gpCost": 100000,
     "itemCost": {},
     "name": "Yellow robe top",
-    "outputItems": undefined,
+    "outputItems": "Yellow robe top",
     "qpRequired": 15,
   },
   {
