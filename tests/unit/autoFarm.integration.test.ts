@@ -318,13 +318,13 @@ describe('autoFarm tree clearing fees', () => {
 			throw new Error('Expected magic plant data');
 		}
 
-                const user = createAutoFarmStub({
-                        gp: 10_000,
-                        farmingLevel: 99,
-                        woodcuttingLevel: 99,
-                        bank: new Bank({ 'Redwood tree seed': 4, 'Magic seed': 10 }),
-                        autoFarmFilter: AutoFarmFilterEnum.AllFarm
-                });
+		const user = createAutoFarmStub({
+			gp: 10_000,
+			farmingLevel: 99,
+			woodcuttingLevel: 99,
+			bank: new Bank({ 'Redwood tree seed': 4, 'Magic seed': 10 }),
+			autoFarmFilter: AutoFarmFilterEnum.AllFarm
+		});
 
 		const redwoodPatchDetailed: IPatchDataDetailed = {
 			...basePatch,
