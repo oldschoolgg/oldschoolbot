@@ -1106,6 +1106,13 @@ export const minigamesCommand: OSBMahojiCommand = {
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: i.name, value: i.name }));
 							}
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'Quantity.',
+							required: false,
+							min_value: 1
 						}
 					]
 				},
@@ -1124,6 +1131,13 @@ export const minigamesCommand: OSBMahojiCommand = {
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: i.name, value: i.name }));
 							}
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'Quantity.',
+							required: false,
+							min_value: 1
 						}
 					]
 				}
@@ -1216,8 +1230,8 @@ export const minigamesCommand: OSBMahojiCommand = {
 		};
 		vale_totems?: {
 			start?: { item_to_fletch: string, stamina_pot?: boolean };
-			buy?: { item: string };
-			sell?: { item: string };
+			buy?: { item: string, quantity?: number };
+			sell?: { item: string, quantity?: number };
 		}
 	}>) => {
 		const user = await mUserFetch(userID);
