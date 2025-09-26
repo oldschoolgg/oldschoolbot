@@ -55,8 +55,12 @@ export const farmingTask: MinionTask = {
 		const plant = Farming.Plants.find(plant => plant.name === plantsName)!;
 		assert(Boolean(plant));
 
+		const harvestedPid = patchType.pid ?? null;
 		let pid = data.pid;
-		if (!pid && planting) {
+		const ensurePid = async () => {
+			if (pid || !planting) {
+				return;
+			}
 			const inserted = await prisma.farmedCrop.create({
 				data: {
 					user_id: user.id,
@@ -69,7 +73,7 @@ export const farmingTask: MinionTask = {
 				}
 			});
 			pid = inserted.id;
-		}
+		};
 
 		if (user.hasEquippedOrInBank('Magic secateurs')) {
 			baseBonus += 0.1;
@@ -147,6 +151,8 @@ export const farmingTask: MinionTask = {
 				collectionLog: true,
 				itemsToAdd: loot
 			});
+
+			await ensurePid();
 
 			const newPatch: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
@@ -464,6 +470,7 @@ export const farmingTask: MinionTask = {
 			};
 
 			if (planting) {
+				await ensurePid();
 				newPatch = {
 					lastPlanted: plant.name,
 					patchPlanted: true,
@@ -516,10 +523,10 @@ export const farmingTask: MinionTask = {
 				itemsToAdd: loot
 			});
 			await userStatsBankUpdate(user, 'farming_harvest_loot_bank', loot);
-			if (pid) {
+			if (harvestedPid) {
 				await prisma.farmedCrop.update({
 					where: {
-						id: pid
+						id: harvestedPid
 					},
 					data: {
 						date_harvested: new Date()
