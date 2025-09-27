@@ -1,10 +1,6 @@
-import {
-	bsoAutocompleteMonsters,
-	bsoEffectiveMonsters,
-	bsoKillableMonsters
-} from '@/lib/bso/monsters/bsoKillableMonsters.js';
+import { PUMPKINHEAD_ID } from '@/lib/bso/pumpkinHead.js';
 
-import { Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import {
 	Bank,
@@ -22,8 +18,16 @@ import { bossKillables } from '@/lib/minions/data/killableMonsters/bosses/index.
 import { camdozaalMonsters } from '@/lib/minions/data/killableMonsters/camdozaalMonsters.js';
 import { chaeldarMonsters } from '@/lib/minions/data/killableMonsters/chaeldarMonsters.js';
 import { creatureCreationCreatures } from '@/lib/minions/data/killableMonsters/creatureCreation.js';
+import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
+import { KalphiteKingMonster } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
+import KingGoldemar from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';
+import { MOKTANG_ID } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
+import { Naxxus } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
+import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus.js';
+import { customKillableMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import { konarMonsters } from '@/lib/minions/data/killableMonsters/konarMonsters.js';
 import { krystiliaMonsters } from '@/lib/minions/data/killableMonsters/krystiliaMonsters.js';
+import low from '@/lib/minions/data/killableMonsters/low.js';
 import { mazchnaMonsters } from '@/lib/minions/data/killableMonsters/mazchnaMonsters.js';
 import { nieveMonsters } from '@/lib/minions/data/killableMonsters/nieveMonsters.js';
 import { reanimatedMonsters } from '@/lib/minions/data/killableMonsters/reanimated.js';
@@ -31,10 +35,9 @@ import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
 import { turaelMonsters } from '@/lib/minions/data/killableMonsters/turaelMonsters.js';
 import { vannakaMonsters } from '@/lib/minions/data/killableMonsters/vannakaMonsters.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
-import { lowKillableMonsters } from './low.js';
+import { NexMonster } from '@/lib/nex.js';
 
-export const killableMonsters: KillableMonster[] = [
-	...bsoKillableMonsters,
+const killableMonsters: KillableMonster[] = [
 	...bossKillables,
 	...chaeldarMonsters,
 	...konarMonsters,
@@ -44,10 +47,11 @@ export const killableMonsters: KillableMonster[] = [
 	...nieveMonsters,
 	...turaelMonsters,
 	...vannakaMonsters,
-	...lowKillableMonsters,
+	...low,
 	...revenantMonsters,
 	...creatureCreationCreatures,
 	...reanimatedMonsters,
+	...customKillableMonsters,
 	{
 		id: Monsters.Barrows.id,
 		name: Monsters.Barrows.name,
@@ -395,15 +399,54 @@ export const effectiveMonsters = [
 		id: EMonster.ZALCANO,
 		emoji: '<:Smolcano:604670895113633802>'
 	},
+	{
+		id: 46_274,
+		name: 'Nex',
+		aliases: ['nex']
+	},
+	{
+		id: KalphiteKingMonster.id,
+		name: 'Kalphite King',
+		aliases: ['kalphite king', 'kk']
+	},
 	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127, emoji: '<:Tzrekjad:324127379188613121>' },
 	{ name: 'Mimic', aliases: ['mimic'], id: 23_184, emoji: '<:Tangleroot:324127378978635778>' },
 	{ name: 'Hespori', aliases: ['hespori'], id: 8583, emoji: '<:Casket:365003978678730772>' },
+	{
+		id: KingGoldemar.id,
+		name: 'King Goldemar',
+		aliases: ['king goldemar', 'kg']
+	},
+	{
+		id: VasaMagus.id,
+		name: 'Vasa Magus',
+		aliases: ['vasa', 'vasa magus', 'vm']
+	},
+	{
+		id: Naxxus.id,
+		name: 'Naxxus',
+		aliases: ['naxx', 'nax', 'naxxus']
+	},
+	{
+		id: Ignecarus.id,
+		name: 'Ignecarus',
+		aliases: ['igne', 'ignecarus']
+	},
+	{
+		id: PUMPKINHEAD_ID,
+		name: 'Pumpkinhead',
+		aliases: ['pumpkinhead', 'ph']
+	},
 	{
 		name: "Phosani's Nightmare",
 		aliases: ['phosani', 'phosanis nightmare'],
 		id: EMonster.PHOSANI_NIGHTMARE
 	},
-	...bsoEffectiveMonsters
+	{
+		name: 'Moktang',
+		aliases: ['moktang'],
+		id: MOKTANG_ID
+	}
 ];
 
 export const allKillableMonsterIDs = new Set(effectiveMonsters.map(m => m.id));
@@ -433,13 +476,67 @@ const otherMonsters = [
 		emoji: '<:Smolcano:604670895113633802>',
 		link: '/miscellaneous/zalcano/'
 	},
-
+	{
+		...VasaMagus,
+		link: '/bso/monsters/bosses/vasa-magus/'
+	},
+	{
+		...Ignecarus,
+		name: 'Ignecarus (Solo)',
+		link: '/bso/monsters/bosses/ignecarus/'
+	},
+	{
+		...Ignecarus,
+		name: 'Ignecarus (Mass)',
+		link: '/bso/monsters/bosses/ignecarus/'
+	},
+	{
+		...KingGoldemar,
+		name: 'King Goldemar (Solo)',
+		link: '/bso/monsters/bosses/king-goldemar/'
+	},
+	{
+		...KingGoldemar,
+		name: 'King Goldemar (Mass)',
+		link: '/bso/monsters/bosses/king-goldemar/'
+	},
+	{
+		...NexMonster,
+		name: 'Nex (Solo)',
+		link: '/bso/monsters/bosses/nex/'
+	},
+	{
+		...NexMonster,
+		name: 'Nex (Mass)',
+		link: '/bso/monsters/bosses/nex/'
+	},
+	{
+		...KalphiteKingMonster,
+		name: 'Kalphite King (Solo)',
+		link: '/bso/monsters/bosses/kalphite-king/'
+	},
+	{
+		...KalphiteKingMonster,
+		name: 'Kalphite King (Mass)',
+		link: '/bso/monsters/bosses/kalphite-king/'
+	},
+	{
+		...Naxxus,
+		name: 'Naxxus',
+		link: '/bso/monsters/bosses/naxxus/'
+	},
 	{
 		name: 'Wintertodt',
 		aliases: ['wt', 'wintertodt', 'todt'],
 		id: -1,
 		emoji: '<:Phoenix:324127378223792129>',
 		link: '/activities/wintertodt/'
+	},
+	{
+		name: 'Moktang',
+		aliases: ['moktang'],
+		id: MOKTANG_ID,
+		link: '/bso/monsters/bosses/moktang/'
 	},
 	{
 		name: 'Colosseum',
@@ -449,4 +546,4 @@ const otherMonsters = [
 	}
 ];
 
-export const autocompleteMonsters = [...killableMonsters, ...otherMonsters, ...bsoAutocompleteMonsters];
+export const autocompleteMonsters = [...killableMonsters, ...otherMonsters];

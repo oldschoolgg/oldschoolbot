@@ -1,15 +1,15 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { GemTable, LootTable, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { LowSeedPackTable } from '@/lib/data/seedPackTables.js';
+import { Akumu } from '@/lib/minions/data/killableMonsters/custom/bosses/Akumu.js';
+import { Venatrix } from '@/lib/minions/data/killableMonsters/custom/bosses/Venatrix.js';
 import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/CustomMonster.js';
+import { SuperiorTormentedDemon } from '@/lib/minions/data/killableMonsters/custom/TormentedDemon.js';
+import { VladimirDrakan } from '@/lib/minions/data/killableMonsters/custom/VladimirDrakan.js';
+import { Yeti } from '@/lib/minions/data/killableMonsters/custom/Yeti.js';
 import { BattlestaffTable, runeAlchablesTable, StoneSpiritTable } from '@/lib/simulation/sharedTables.js';
-import { Akumu } from './bosses/Akumu.js';
-import { Venatrix } from './bosses/Venatrix.js';
-import { SuperiorTormentedDemon } from './TormentedDemon.js';
-import { VladimirDrakan } from './VladimirDrakan.js';
-import { Yeti } from './Yeti.js';
 
 export const CockroachSoldier: CustomMonster = {
 	isCustom: true,

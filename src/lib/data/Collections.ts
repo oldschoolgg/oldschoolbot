@@ -357,7 +357,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Corporeal Beast': {
 				alias: Monsters.CorporealBeast.aliases,
-				allItems: [...Monsters.CorporealBeast.allItems, itemID('Divine sigil')],
+				allItems: Monsters.CorporealBeast.allItems,
 				items: corporealBeastCL,
 				fmtProg: kcProg(Monsters.CorporealBeast)
 			},

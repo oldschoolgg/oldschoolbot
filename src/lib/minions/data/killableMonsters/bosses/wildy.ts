@@ -1,8 +1,9 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
-import { Bank, deepResolveItems, itemID, Monsters, resolveItems, SkillsEnum } from 'oldschooljs';
+import { Bank, deepResolveItems, itemID, Monsters } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { DiaryID, type KillableMonster } from '@/lib/minions/types.js';
+import { SkillsEnum } from '@/lib/skilling/types.js';
 
 export const wildyKillableMonsters: KillableMonster[] = [
 	{
@@ -36,7 +37,6 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		},
 
 		difficultyRating: 7,
-		notifyDrops: resolveItems(['Callisto cub']),
 		qpRequired: 0,
 		equippedItemBoosts: [
 			{
@@ -159,7 +159,6 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		},
 
 		difficultyRating: 2,
-		notifyDrops: resolveItems(['Callisto cub']),
 		qpRequired: 0,
 		equippedItemBoosts: [
 			{
@@ -273,7 +272,6 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		respawnTime: Time.Minute * 0.33,
 
 		difficultyRating: 7,
-		notifyDrops: resolveItems(["Vet'ion jr.", 'Skeleton champion scroll']),
 		qpRequired: 0,
 		equippedItemBoosts: [
 			{
@@ -387,7 +385,6 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		pkBaseDeathChance: 9,
 
 		difficultyRating: 2,
-		notifyDrops: resolveItems(["Vet'ion jr.", 'Skeleton champion scroll']),
 		qpRequired: 0,
 		equippedItemBoosts: [
 			{
@@ -523,7 +520,6 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		},
 
 		difficultyRating: 6,
-		notifyDrops: resolveItems(['Venenatis spiderling']),
 		qpRequired: 0,
 		equippedItemBoosts: [
 			{
@@ -662,7 +658,6 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		},
 
 		difficultyRating: 2,
-		notifyDrops: resolveItems(['Venenatis spiderling']),
 		qpRequired: 0,
 		equippedItemBoosts: [
 			{
@@ -781,10 +776,9 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		pkBaseDeathChance: 5,
 		difficultyRating: 8,
 		itemsRequired: deepResolveItems([
-			["Black d'hide body", "Karil's leathertop"],
-			["Black d'hide chaps", "Karil's leatherskirt"]
+			['Pernix body', "Black d'hide body", "Karil's leathertop"],
+			['Pernix chaps', "Black d'hide chaps", "Karil's leatherskirt"]
 		]),
-		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0,
 		equippedItemBoosts: [
 			{
@@ -824,7 +818,6 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		pkActivityRating: 4,
 		pkBaseDeathChance: 2,
 		difficultyRating: 6,
-		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0,
 		equippedItemBoosts: [
 			{
@@ -886,7 +879,6 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		pkActivityRating: 6,
 		pkBaseDeathChance: 7,
 		difficultyRating: 7,
-		notifyDrops: resolveItems(["Scorpia's offspring"]),
 		qpRequired: 0,
 		equippedItemBoosts: [
 			{

@@ -1,4 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, LootTable, Monsters, RareDropTable } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
@@ -66,5 +66,12 @@ export const SuperiorTormentedDemon: CustomMonster = {
 		itemCost: new Bank().add('Divine water')
 	},
 	hp: 657,
-	itemInBankBoosts: [new Bank().add('TzKal cape', 5).toJSON(), new Bank().add('Axe of the high sungod', 10).toJSON()]
+	itemInBankBoosts: [
+		new Bank({
+			'TzKal cape': 5
+		}).toJSON(),
+		new Bank({
+			'Axe of the high sungod': 10
+		}).toJSON()
+	]
 };

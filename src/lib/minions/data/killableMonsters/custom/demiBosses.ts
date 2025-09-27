@@ -1,4 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit';
+import { Time } from '@oldschoolgg/toolkit/datetime';
 import {
 	Bank,
 	deepResolveItems,
@@ -7,18 +7,18 @@ import {
 	MonsterAttribute,
 	Monsters,
 	RareDropTable,
-	resolveItems
+	resolveItems,
+	SkillsEnum
 } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { BitField } from '@/lib/constants.js';
 import { HighSeedPackTable } from '@/lib/data/seedPackTables.js';
+import { AbyssalDragonLootTable } from '@/lib/minions/data/killableMonsters/custom/AbyssalDragon.js';
 import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/CustomMonster.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
-import { AbyssalDragonLootTable } from './AbyssalDragon.js';
-import { NihilizLootTable } from './Nihiliz.js';
-import { KrakenTable } from './SeaKraken.js';
-import { TreebeardLootTable } from './Treebeard.js';
+import { NihilizLootTable } from '@/lib/minions/data/killableMonsters/custom/Nihiliz.js';
+import { KrakenTable } from '@/lib/minions/data/killableMonsters/custom/SeaKraken.js';
+import { TreebeardLootTable } from '@/lib/minions/data/killableMonsters/custom/Treebeard.js';
 
 const SeaKraken: CustomMonster = {
 	isCustom: true,
