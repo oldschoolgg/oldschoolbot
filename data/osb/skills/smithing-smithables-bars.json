@@ -651,18 +651,6 @@
 		"output_multiple": 4
 	},
 	{
-		"name": "Dwarven bar",
-		"level": 99,
-		"xp": 5000,
-		"id": 506,
-		"input_ores": {
-			"453": 20,
-			"508": 1
-		},
-		"chance_of_fail": 35,
-		"time_to_use": 2400
-	},
-	{
 		"name": "Gold bar",
 		"level": 40,
 		"xp": 22.5,
@@ -1986,17 +1974,5 @@
 		},
 		"time_to_use": 4000,
 		"output_multiple": 1
-	},
-	{
-		"name": "Sun-metal bar",
-		"level": 110,
-		"xp": 150,
-		"id": 73092,
-		"input_ores": {
-			"453": 12,
-			"73091": 1
-		},
-		"chance_of_fail": 1,
-		"time_to_use": 2400
 	}
 ]

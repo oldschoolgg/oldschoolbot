@@ -1219,7 +1219,7 @@ const logResult = (
 	}
 };
 
-test.concurrent('test preventing a double (clobber) robochimp migration (two bot-migration)', async () => {
+test('test preventing a double (clobber) robochimp migration (two bot-migration)', async () => {
 	const sourceUserId = mockedId();
 	const destUserId = mockedId();
 
@@ -1270,7 +1270,7 @@ beforeAll(async () => {
 	await mockClient();
 });
 
-test.concurrent('test migrating existing user to target with no records', async () => {
+test('test migrating existing user to target with no records', async () => {
 	const sourceUser = await buildBaseUser(mockedId());
 	await runAllTestCommandsOnUser(sourceUser);
 
@@ -1291,7 +1291,7 @@ test.concurrent('test migrating existing user to target with no records', async 
 	expect(compareResult.result).toBe(true);
 });
 
-test.concurrent('test migrating full user on top of full profile', async () => {
+test('test migrating full user on top of full profile', async () => {
 	const sourceUser = await buildBaseUser(mockedId());
 	const destUser = await buildBaseUser(mockedId());
 	await runAllTestCommandsOnUser(sourceUser);
@@ -1331,7 +1331,7 @@ test.concurrent('test migrating full user on top of full profile', async () => {
 	expect(badResult.errors).toEqual(expectedBadResult);
 });
 
-test.concurrent('test migrating random user on top of empty profile', async () => {
+test('test migrating random user on top of empty profile', async () => {
 	const sourceUser = await buildBaseUser(mockedId());
 	const destUserId = mockedId();
 
@@ -1355,7 +1355,7 @@ test.concurrent('test migrating random user on top of empty profile', async () =
 	expect(compareResult.result).toBe(true);
 });
 
-test.concurrent('test migrating random user on top of random profile', async () => {
+test('test migrating random user on top of random profile', async () => {
 	const sourceUser = await buildBaseUser(mockedId());
 	const destUser = await buildBaseUser(mockedId());
 
@@ -1380,7 +1380,7 @@ test.concurrent('test migrating random user on top of random profile', async () 
 	expect(compareResult.result).toBe(true);
 });
 
-test.concurrent('test migrating random user on top of full profile', async () => {
+test('test migrating random user on top of full profile', async () => {
 	const sourceUser = await buildBaseUser(mockedId());
 	const destUser = await buildBaseUser(mockedId());
 

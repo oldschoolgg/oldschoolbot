@@ -1,46 +1,5 @@
 [
 	{
-		"name": "1 Year Veteran Items",
-		"output_items": {
-			"71450": 1,
-			"71456": 1
-		},
-		"gp_cost": 1000000
-	},
-	{
-		"name": "2 Year Veteran Items",
-		"output_items": {
-			"71451": 1,
-			"71457": 1
-		},
-		"gp_cost": 2000000
-	},
-	{
-		"name": "3 Year Veteran Items",
-		"output_items": {
-			"71452": 1,
-			"71458": 1
-		},
-		"gp_cost": 3000000
-	},
-	{
-		"name": "4 Year Veteran Items",
-		"output_items": {
-			"71453": 1,
-			"71459": 1
-		},
-		"gp_cost": 4000000
-	},
-	{
-		"name": "5 Year Veteran Items",
-		"output_items": {
-			"73412": 1,
-			"73413": 1,
-			"73414": 1
-		},
-		"gp_cost": 5000000
-	},
-	{
 		"name": "Abyssal lantern",
 		"item_cost": {
 			"26792": 1500
@@ -62,26 +21,8 @@
 		"output_items": {
 			"13069": 1
 		},
-		"qp_required": 5028,
+		"qp_required": 321,
 		"gp_cost": 99000
-	},
-	{
-		"name": "Acrobat set",
-		"item_cost": {
-			"70361": 50
-		},
-		"output_items": {
-			"70389": 1
-		}
-	},
-	{
-		"name": "Adamant berserker shield",
-		"item_cost": {
-			"70064": 150
-		},
-		"output_items": {
-			"70062": 1
-		}
 	},
 	{
 		"name": "Adamant gloves",
@@ -120,23 +61,9 @@
 		}
 	},
 	{
-		"name": "Adamant spikeshield",
-		"item_cost": {
-			"70064": 100
-		},
-		"output_items": {
-			"70063": 1
-		}
-	},
-	{
 		"name": "Agility cape",
 		"output_items": "[Function]",
 		"gp_cost": 99000
-	},
-	{
-		"name": "Agility master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
 	},
 	{
 		"name": "Air rune",
@@ -234,10 +161,10 @@
 	},
 	{
 		"name": "Antipoison(4)",
+		"gp_cost": 10000,
 		"output_items": {
 			"2446": 1
-		},
-		"gp_cost": 10000
+		}
 	},
 	{
 		"name": "Arceuus signet",
@@ -302,30 +229,9 @@
 		"qp_required": 200
 	},
 	{
-		"name": "Artisan's cape",
-		"item_cost": {
-			"40000": 1,
-			"40001": 1,
-			"40002": 1,
-			"40004": 1,
-			"40006": 1,
-			"40007": 1,
-			"40012": 1,
-			"40013": 1
-		},
-		"output_items": {
-			"40057": 1
-		}
-	},
-	{
 		"name": "Attack cape",
 		"output_items": "[Function]",
 		"gp_cost": 99000
-	},
-	{
-		"name": "Attack master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
 	},
 	{
 		"name": "Bag full of gems",
@@ -362,15 +268,6 @@
 		}
 	},
 	{
-		"name": "Banana enchantment scroll",
-		"item_cost": {
-			"50046": 200
-		},
-		"output_items": {
-			"48225": 1
-		}
-	},
-	{
 		"name": "Barrelchest anchor",
 		"qp_required": 30,
 		"gp_cost": 2000000,
@@ -403,51 +300,12 @@
 		}
 	},
 	{
-		"name": "Beginner rumble greegree",
-		"minigame_score_req": ["monkey_rumble", 0],
-		"skills_needed": {
-			"strength": 80
-		},
-		"item_cost": {
-			"995": 50000
-		},
-		"output_items": {
-			"40061": 1
-		}
-	},
-	{
-		"name": "Beginner's tackle box",
-		"output_items": {
-			"50610": 1
-		},
-		"gp_cost": 500000,
-		"skills_needed": {
-			"fishing": 50
-		}
-	},
-	{
 		"name": "Berserker helm",
 		"gp_cost": 780000,
 		"qp_required": 60,
 		"ironman_price": 98000,
 		"output_items": {
 			"3751": 1
-		}
-	},
-	{
-		"name": "Birthday crate key (s2)",
-		"gp_cost": 50000000,
-		"ironman_price": 5000000,
-		"output_items": {
-			"71468": 1
-		}
-	},
-	{
-		"name": "Birthday crate key (s6)",
-		"gp_cost": 12000000,
-		"ironman_price": 1200000,
-		"output_items": {
-			"73201": 1
 		}
 	},
 	{
@@ -658,10 +516,10 @@
 	},
 	{
 		"name": "Boots of stone",
+		"gp_cost": 100000,
 		"output_items": {
 			"23037": 1
-		},
-		"gp_cost": 100000
+		}
 	},
 	{
 		"name": "Boots of the eye",
@@ -875,51 +733,6 @@
 		}
 	},
 	{
-		"name": "Castle wars cape (advanced)",
-		"output_items": {
-			"40074": 1
-		},
-		"item_cost": {
-			"4067": 1000
-		}
-	},
-	{
-		"name": "Castle wars cape (beginner)",
-		"output_items": {
-			"40072": 1
-		},
-		"item_cost": {
-			"4067": 100
-		}
-	},
-	{
-		"name": "Castle wars cape (expert)",
-		"output_items": {
-			"40075": 1
-		},
-		"item_cost": {
-			"4067": 2500
-		}
-	},
-	{
-		"name": "Castle wars cape (intermediate)",
-		"output_items": {
-			"40073": 1
-		},
-		"item_cost": {
-			"4067": 500
-		}
-	},
-	{
-		"name": "Castle wars cape (legend)",
-		"output_items": {
-			"40076": 1
-		},
-		"item_cost": {
-			"4067": 5000
-		}
-	},
-	{
 		"name": "Celestial ring (uncharged)",
 		"item_cost": {
 			"25527": 2000
@@ -1108,15 +921,6 @@
 		}
 	},
 	{
-		"name": "Clown set",
-		"item_cost": {
-			"70361": 200
-		},
-		"output_items": {
-			"70390": 1
-		}
-	},
-	{
 		"name": "Coal bag",
 		"item_cost": {
 			"12012": 100
@@ -1135,74 +939,8 @@
 		}
 	},
 	{
-		"name": "Combatant's cape",
-		"item_cost": {
-			"40009": 1,
-			"40011": 1,
-			"40017": 1,
-			"40018": 1,
-			"40019": 1,
-			"40020": 1,
-			"40021": 1
-		},
-		"output_items": {
-			"40056": 1
-		}
-	},
-	{
-		"name": "Completionist cape",
-		"output_items": {
-			"40058": 1,
-			"71479": 1
-		},
-		"item_cost": {
-			"13069": 1,
-			"13222": 1,
-			"40000": 1,
-			"40001": 1,
-			"40002": 1,
-			"40003": 1,
-			"40004": 1,
-			"40005": 1,
-			"40006": 1,
-			"40007": 1,
-			"40008": 1,
-			"40009": 1,
-			"40010": 1,
-			"40011": 1,
-			"40012": 1,
-			"40013": 1,
-			"40014": 1,
-			"40015": 1,
-			"40016": 1,
-			"40017": 1,
-			"40018": 1,
-			"40019": 1,
-			"40020": 1,
-			"40021": 1,
-			"40022": 1,
-			"40053": 1,
-			"40060": 1,
-			"63205": 1,
-			"73000": 1
-		},
-		"global_announcement_on_first_buy": true
-	},
-	{
-		"name": "Completionist cape (t)",
-		"output_items": {
-			"40059": 1,
-			"71946": 1
-		},
-		"item_cost": {
-			"40058": 1,
-			"71479": 1
-		},
-		"global_announcement_on_first_buy": true
-	},
-	{
 		"name": "Compost",
-		"gp_cost": 700,
+		"gp_cost": 400,
 		"output_items": {
 			"6032": 1
 		}
@@ -1211,21 +949,6 @@
 		"name": "Construction cape",
 		"output_items": "[Function]",
 		"gp_cost": 99000
-	},
-	{
-		"name": "Construction master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
-	},
-	{
-		"name": "Contest rod",
-		"output_items": {
-			"50615": 1
-		},
-		"gp_cost": 500000,
-		"skills_needed": {
-			"fishing": 50
-		}
 	},
 	{
 		"name": "Cooking cape",
@@ -1242,11 +965,6 @@
 		}
 	},
 	{
-		"name": "Cooking master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
-	},
-	{
 		"name": "Cosmic talisman",
 		"item_cost": {
 			"26792": 30
@@ -1259,11 +977,6 @@
 		"name": "Crafting cape",
 		"output_items": "[Function]",
 		"gp_cost": 99000
-	},
-	{
-		"name": "Crafting master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
 	},
 	{
 		"name": "Cream boots",
@@ -1415,11 +1128,6 @@
 		"gp_cost": 99000
 	},
 	{
-		"name": "Defence master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
-	},
-	{
 		"name": "Desert amulet 1",
 		"gp_cost": 1000,
 		"ironman_price": 200,
@@ -1470,30 +1178,12 @@
 		"qp_required": 20
 	},
 	{
-		"name": "Divination cape",
-		"output_items": "[Function]",
-		"gp_cost": 99000
-	},
-	{
-		"name": "Divination master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
-	},
-	{
 		"name": "Diving apparatus",
 		"gp_cost": 1000,
 		"qp_required": 30,
 		"output_items": {
 			"7535": 1
 		}
-	},
-	{
-		"name": "Diving apparatus",
-		"output_items": {
-			"7535": 1
-		},
-		"qp_required": 85,
-		"gp_cost": 500000
 	},
 	{
 		"name": "Doctor's hat",
@@ -1536,16 +1226,6 @@
 		}
 	},
 	{
-		"name": "Dungeoneering cape",
-		"output_items": "[Function]",
-		"gp_cost": 99000
-	},
-	{
-		"name": "Dungeoneering master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
-	},
-	{
 		"name": "Dwarf multicannon",
 		"output_items": {
 			"6": 1,
@@ -1567,10 +1247,10 @@
 	},
 	{
 		"name": "Earmuffs",
+		"gp_cost": 20000,
 		"output_items": {
 			"4166": 1
-		},
-		"gp_cost": 20000
+		}
 	},
 	{
 		"name": "Earth rune",
@@ -1589,27 +1269,6 @@
 		}
 	},
 	{
-		"name": "Easter crate key (s5)",
-		"gp_cost": 10000000,
-		"ironman_price": 1000000,
-		"output_items": {
-			"73122": 1
-		}
-	},
-	{
-		"name": "Elder rumble greegree",
-		"minigame_score_req": ["monkey_rumble", 500],
-		"skills_needed": {
-			"strength": 120
-		},
-		"item_cost": {
-			"50046": 42
-		},
-		"output_items": {
-			"40065": 1
-		}
-	},
-	{
 		"name": "Elemental shield",
 		"gp_cost": 2500000,
 		"qp_required": 25,
@@ -1620,10 +1279,10 @@
 	},
 	{
 		"name": "Enchanted gem",
+		"gp_cost": 100000,
 		"output_items": {
 			"4155": 1
-		},
-		"gp_cost": 100000
+		}
 	},
 	{
 		"name": "Excalibur",
@@ -1642,19 +1301,6 @@
 		},
 		"output_items": {
 			"21392": 1
-		}
-	},
-	{
-		"name": "Expert ninja rumble greegree",
-		"minigame_score_req": ["monkey_rumble", 200],
-		"skills_needed": {
-			"strength": 110
-		},
-		"item_cost": {
-			"50046": 34
-		},
-		"output_items": {
-			"40064": 1
 		}
 	},
 	{
@@ -1703,10 +1349,10 @@
 	},
 	{
 		"name": "Facemask",
+		"gp_cost": 20000,
 		"output_items": {
 			"4164": 1
-		},
-		"gp_cost": 20000
+		}
 	},
 	{
 		"name": "Fairy enchantment",
@@ -1759,11 +1405,6 @@
 		"gp_cost": 99000
 	},
 	{
-		"name": "Farming master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
-	},
-	{
 		"name": "Farseer helm",
 		"gp_cost": 780000,
 		"qp_required": 60,
@@ -1791,24 +1432,6 @@
 		}
 	},
 	{
-		"name": "Festive crate key (s4)",
-		"gp_cost": 20000000,
-		"ironman_price": 2000000,
-		"output_items": {
-			"72017": 1
-		}
-	},
-	{
-		"name": "Festive present",
-		"gp_cost": 100000000,
-		"item_cost": {
-			"62338": 10
-		},
-		"output_items": {
-			"62337": 1
-		}
-	},
-	{
 		"name": "Fire rune",
 		"gp_cost": 15,
 		"output_items": {
@@ -1830,11 +1453,6 @@
 		"gp_cost": 99000
 	},
 	{
-		"name": "Firemaking master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
-	},
-	{
 		"name": "Fish sack",
 		"item_cost": {
 			"22820": 1000
@@ -1850,14 +1468,6 @@
 		"output_items": {
 			"7534": 1
 		}
-	},
-	{
-		"name": "Fishbowl helmet",
-		"output_items": {
-			"7534": 1
-		},
-		"qp_required": 85,
-		"gp_cost": 500000
 	},
 	{
 		"name": "Fishbowl pet",
@@ -1880,77 +1490,9 @@
 		"gp_cost": 99000
 	},
 	{
-		"name": "Fishing master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
-	},
-	{
-		"name": "Fletcher's boots",
-		"item_cost": {
-			"70165": 20
-		},
-		"output_items": {
-			"70163": 1
-		}
-	},
-	{
-		"name": "Fletcher's gloves",
-		"item_cost": {
-			"70165": 20
-		},
-		"output_items": {
-			"70164": 1
-		}
-	},
-	{
-		"name": "Fletcher's hat",
-		"item_cost": {
-			"70165": 30
-		},
-		"output_items": {
-			"70160": 1
-		}
-	},
-	{
-		"name": "Fletcher's legs",
-		"item_cost": {
-			"70165": 40
-		},
-		"output_items": {
-			"70162": 1
-		}
-	},
-	{
-		"name": "Fletcher's skilling outfit",
-		"item_cost": {
-			"70165": 160
-		},
-		"output_items": {
-			"70160": 1,
-			"70161": 1,
-			"70162": 1,
-			"70163": 1,
-			"70164": 1
-		}
-	},
-	{
-		"name": "Fletcher's top",
-		"item_cost": {
-			"70165": 50
-		},
-		"output_items": {
-			"70161": 1
-		}
-	},
-	{
 		"name": "Fletching cape",
 		"output_items": "[Function]",
 		"gp_cost": 99000
-	},
-	{
-		"name": "Fletching master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
 	},
 	{
 		"name": "Flower crown",
@@ -2259,14 +1801,6 @@
 		}
 	},
 	{
-		"name": "Frozen crate key (s8)",
-		"gp_cost": 20666666,
-		"ironman_price": 2066666,
-		"output_items": {
-			"73300": 1
-		}
-	},
-	{
 		"name": "Funky shaped log",
 		"item_cost": {
 			"1513": 500,
@@ -2282,20 +1816,6 @@
 		},
 		"output_items": {
 			"28138": 1
-		}
-	},
-	{
-		"name": "Gatherer's cape",
-		"item_cost": {
-			"40003": 1,
-			"40005": 1,
-			"40008": 1,
-			"40010": 1,
-			"40015": 1,
-			"73000": 1
-		},
-		"output_items": {
-			"40055": 1
 		}
 	},
 	{
@@ -2461,46 +1981,12 @@
 		}
 	},
 	{
-		"name": "Golden cape shard",
-		"output_items": {
-			"71455": 1
-		},
-		"gp_cost": 5000000000
-	},
-	{
-		"name": "Golden naval shirt",
-		"item_cost": {
-			"8951": 1000
-		},
-		"output_items": {
-			"70057": 1
-		}
-	},
-	{
-		"name": "Golden navy slacks",
-		"item_cost": {
-			"8951": 1000
-		},
-		"output_items": {
-			"70058": 1
-		}
-	},
-	{
 		"name": "Golden Pheasant Egg",
 		"item_cost": {
 			"28134": 75000
 		},
 		"output_items": {
 			"28663": 1
-		}
-	},
-	{
-		"name": "Golden tricorn hat",
-		"item_cost": {
-			"8951": 500
-		},
-		"output_items": {
-			"70056": 1
 		}
 	},
 	{
@@ -2511,19 +1997,6 @@
 		"qp_required": 25,
 		"gp_cost": 1000000,
 		"ironman_price": 25000
-	},
-	{
-		"name": "Gorilla rumble greegree",
-		"item_cost": {
-			"50046": 1000
-		},
-		"skills_needed": {
-			"strength": 120
-		},
-		"minigame_score_req": ["monkey_rumble", 1000],
-		"output_items": {
-			"40066": 1
-		}
 	},
 	{
 		"name": "Graceful crafting kit",
@@ -2686,15 +2159,6 @@
 		}
 	},
 	{
-		"name": "Guthix engram",
-		"item_cost": {
-			"70064": 500
-		},
-		"output_items": {
-			"70065": 1
-		}
-	},
-	{
 		"name": "Guthix halo",
 		"output_items": {
 			"12639": 1
@@ -2808,19 +2272,9 @@
 		"gp_cost": 99000
 	},
 	{
-		"name": "Herblore master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
-	},
-	{
 		"name": "Hitpoints cape",
 		"output_items": "[Function]",
 		"gp_cost": 99000
-	},
-	{
-		"name": "Hitpoints master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
 	},
 	{
 		"name": "Holy wrench",
@@ -2834,11 +2288,6 @@
 		"name": "Hunter cape",
 		"output_items": "[Function]",
 		"gp_cost": 99000
-	},
-	{
-		"name": "Hunter master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
 	},
 	{
 		"name": "Iban's staff",
@@ -2901,29 +2350,6 @@
 		"qp_required": 35
 	},
 	{
-		"name": "Intermediate rumble greegree",
-		"minigame_score_req": ["monkey_rumble", 50],
-		"skills_needed": {
-			"strength": 90
-		},
-		"item_cost": {
-			"50046": 17
-		},
-		"output_items": {
-			"40062": 1
-		}
-	},
-	{
-		"name": "Invention cape",
-		"output_items": "[Function]",
-		"gp_cost": 99000
-	},
-	{
-		"name": "Invention master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
-	},
-	{
 		"name": "Iron axe",
 		"gp_cost": 1000,
 		"ironman_price": 56,
@@ -2979,15 +2405,6 @@
 		},
 		"gp_cost": 5000000,
 		"qp_required": 89
-	},
-	{
-		"name": "Jolly roger cape",
-		"item_cost": {
-			"8951": 8000
-		},
-		"output_items": {
-			"70055": 1
-		}
 	},
 	{
 		"name": "Jug of Water",
@@ -3088,10 +2505,10 @@
 	},
 	{
 		"name": "Leaf-bladed spear",
+		"gp_cost": 310000,
 		"output_items": {
 			"4158": 1
-		},
-		"gp_cost": 310000
+		}
 	},
 	{
 		"name": "Limestone brick",
@@ -3214,13 +2631,6 @@
 		}
 	},
 	{
-		"name": "M'speak amulet",
-		"gp_cost": 100000,
-		"output_items": {
-			"4021": 1
-		}
-	},
-	{
 		"name": "Magic box",
 		"gp_cost": 1500,
 		"output_items": {
@@ -3231,11 +2641,6 @@
 		"name": "Magic cape",
 		"output_items": "[Function]",
 		"gp_cost": 99000
-	},
-	{
-		"name": "Magic master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
 	},
 	{
 		"name": "Magic secateurs",
@@ -3270,14 +2675,6 @@
 		"output_items": {
 			"27370": 1
 		}
-	},
-	{
-		"name": "Master quest cape",
-		"output_items": {
-			"40053": 1
-		},
-		"gp_cost": 1000000000,
-		"qp_required": 5000
 	},
 	{
 		"name": "Max cape",
@@ -3365,11 +2762,6 @@
 		}
 	},
 	{
-		"name": "Mining master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
-	},
-	{
 		"name": "Mithril gloves",
 		"qp_required": 50,
 		"gp_cost": 500000,
@@ -3401,24 +2793,6 @@
 		},
 		"gp_cost": 1000000,
 		"qp_required": 182
-	},
-	{
-		"name": "Monkey crate",
-		"item_cost": {
-			"50046": 35
-		},
-		"output_items": {
-			"50048": 1
-		}
-	},
-	{
-		"name": "Monkey dye",
-		"item_cost": {
-			"50046": 500
-		},
-		"output_items": {
-			"48228": 1
-		}
 	},
 	{
 		"name": "Moonclan Outfit",
@@ -3554,24 +2928,11 @@
 		}
 	},
 	{
-		"name": "Ninja rumble greegree",
-		"minigame_score_req": ["monkey_rumble", 100],
-		"skills_needed": {
-			"strength": 100
-		},
-		"item_cost": {
-			"50046": 25
-		},
-		"output_items": {
-			"40063": 1
-		}
-	},
-	{
 		"name": "Nose peg",
+		"gp_cost": 20000,
 		"output_items": {
 			"4168": 1
-		},
-		"gp_cost": 20000
+		}
 	},
 	{
 		"name": "Nurse hat",
@@ -3579,41 +2940,6 @@
 		"qp_required": 60,
 		"output_items": {
 			"6548": 1
-		}
-	},
-	{
-		"name": "Oceanic shroud (tier 1)",
-		"gp_cost": 1000,
-		"output_items": {
-			"70442": 1
-		}
-	},
-	{
-		"name": "Oceanic shroud (tier 2)",
-		"gp_cost": 2500,
-		"output_items": {
-			"70443": 1
-		}
-	},
-	{
-		"name": "Oceanic shroud (tier 3)",
-		"gp_cost": 5000,
-		"output_items": {
-			"70444": 1
-		}
-	},
-	{
-		"name": "Oceanic shroud (tier 4)",
-		"gp_cost": 7500,
-		"output_items": {
-			"70445": 1
-		}
-	},
-	{
-		"name": "Oceanic shroud (tier 5)",
-		"gp_cost": 10000,
-		"output_items": {
-			"70446": 1
 		}
 	},
 	{
@@ -3773,7 +3099,7 @@
 	},
 	{
 		"name": "Potato with cheese",
-		"gp_cost": 2650,
+		"gp_cost": 650,
 		"skills_needed": {
 			"attack": 65,
 			"strength": 65
@@ -3786,11 +3112,6 @@
 		"name": "Prayer cape",
 		"output_items": "[Function]",
 		"gp_cost": 99000
-	},
-	{
-		"name": "Prayer master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
 	},
 	{
 		"name": "Prince outfit",
@@ -3858,15 +3179,6 @@
 		"output_items": {
 			"12015": 1
 		}
-	},
-	{
-		"name": "Pumpkin seed",
-		"gp_cost": 500,
-		"output_items": {
-			"70187": 1
-		},
-		"ironman_price": 500,
-		"max_quantity": 500
 	},
 	{
 		"name": "Purple boots",
@@ -3941,7 +3253,7 @@
 			"9813": 1,
 			"9814": 1
 		},
-		"qp_required": 5028,
+		"qp_required": 321,
 		"gp_cost": 99000
 	},
 	{
@@ -3949,7 +3261,7 @@
 		"output_items": {
 			"13068": 1
 		},
-		"qp_required": 5028,
+		"qp_required": 321,
 		"gp_cost": 99000
 	},
 	{
@@ -3989,13 +3301,6 @@
 		}
 	},
 	{
-		"name": "Rainbow cape",
-		"output_items": {
-			"70019": 1
-		},
-		"gp_cost": 1000000
-	},
-	{
 		"name": "Ram skull helm",
 		"gp_cost": 1000000,
 		"qp_required": 82,
@@ -4007,11 +3312,6 @@
 		"name": "Ranged cape",
 		"output_items": "[Function]",
 		"gp_cost": 99000
-	},
-	{
-		"name": "Ranged master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
 	},
 	{
 		"name": "Rat pole",
@@ -4301,15 +3601,6 @@
 		}
 	},
 	{
-		"name": "Ringmaster set",
-		"item_cost": {
-			"70361": 500
-		},
-		"output_items": {
-			"70388": 1
-		}
-	},
-	{
 		"name": "Ritual mulch",
 		"item_cost": {
 			"1517": 10,
@@ -4363,15 +3654,6 @@
 		}
 	},
 	{
-		"name": "Rune berserker shield",
-		"item_cost": {
-			"70064": 150
-		},
-		"output_items": {
-			"70060": 1
-		}
-	},
-	{
 		"name": "Rune gloves",
 		"output_items": {
 			"7460": 1
@@ -4389,23 +3671,9 @@
 		}
 	},
 	{
-		"name": "Rune spikeshield",
-		"item_cost": {
-			"70064": 100
-		},
-		"output_items": {
-			"70061": 1
-		}
-	},
-	{
 		"name": "Runecraft cape",
 		"output_items": "[Function]",
 		"gp_cost": 99000
-	},
-	{
-		"name": "Runecraft master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
 	},
 	{
 		"name": "Salve amulet",
@@ -4556,14 +3824,6 @@
 		}
 	},
 	{
-		"name": "Sinister crate key (s7)",
-		"gp_cost": 20666666,
-		"ironman_price": 2066666,
-		"output_items": {
-			"73251": 1
-		}
-	},
-	{
 		"name": "Skull",
 		"gp_cost": 100000,
 		"output_items": {
@@ -4576,26 +3836,16 @@
 		"gp_cost": 99000
 	},
 	{
-		"name": "Slayer master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
-	},
-	{
 		"name": "Slayer's staff",
+		"gp_cost": 210000,
 		"output_items": {
 			"4170": 1
-		},
-		"gp_cost": 210000
+		}
 	},
 	{
 		"name": "Smithing cape",
 		"output_items": "[Function]",
 		"gp_cost": 99000
-	},
-	{
-		"name": "Smithing master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
 	},
 	{
 		"name": "Soft clay pack",
@@ -4608,17 +3858,9 @@
 	},
 	{
 		"name": "Spiny helmet",
+		"gp_cost": 65000,
 		"output_items": {
 			"4551": 1
-		},
-		"gp_cost": 65000
-	},
-	{
-		"name": "Spooky crate key (s3)",
-		"gp_cost": 20000000,
-		"ironman_price": 2000000,
-		"output_items": {
-			"71581": 1
 		}
 	},
 	{
@@ -4661,11 +3903,6 @@
 		"gp_cost": 99000
 	},
 	{
-		"name": "Strength master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
-	},
-	{
 		"name": "Stripy pirate shirt (blue)",
 		"gp_cost": 20000,
 		"output_items": {
@@ -4700,26 +3937,6 @@
 		},
 		"output_items": {
 			"21345": 1
-		}
-	},
-	{
-		"name": "Supply crate key (s1)",
-		"gp_cost": 50000000,
-		"ironman_price": 5000000,
-		"output_items": {
-			"71434": 1
-		}
-	},
-	{
-		"name": "Support cape",
-		"item_cost": {
-			"40014": 1,
-			"40016": 1,
-			"40022": 1,
-			"40060": 1
-		},
-		"output_items": {
-			"40054": 1
 		}
 	},
 	{
@@ -4767,350 +3984,350 @@
 		"output_items": {
 			"4315": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-10 cape",
 		"output_items": {
 			"4333": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-11 cape",
 		"output_items": {
 			"4335": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-12 cape",
 		"output_items": {
 			"4337": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-13 cape",
 		"output_items": {
 			"4339": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-14 cape",
 		"output_items": {
 			"4341": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-15 cape",
 		"output_items": {
 			"4343": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-16 cape",
 		"output_items": {
 			"4345": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-17 cape",
 		"output_items": {
 			"4347": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-18 cape",
 		"output_items": {
 			"4349": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-19 cape",
 		"output_items": {
 			"4351": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-2 cape",
 		"output_items": {
 			"4317": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-20 cape",
 		"output_items": {
 			"4353": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-21 cape",
 		"output_items": {
 			"4355": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-22 cape",
 		"output_items": {
 			"4357": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-23 cape",
 		"output_items": {
 			"4359": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-24 cape",
 		"output_items": {
 			"4361": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-25 cape",
 		"output_items": {
 			"4363": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-26 cape",
 		"output_items": {
 			"4365": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-27 cape",
 		"output_items": {
 			"4367": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-28 cape",
 		"output_items": {
 			"4369": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-29 cape",
 		"output_items": {
 			"4371": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-3 cape",
 		"output_items": {
 			"4319": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-30 cape",
 		"output_items": {
 			"4373": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-31 cape",
 		"output_items": {
 			"4375": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-32 cape",
 		"output_items": {
 			"4377": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-33 cape",
 		"output_items": {
 			"4379": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-34 cape",
 		"output_items": {
 			"4381": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-35 cape",
 		"output_items": {
 			"4383": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-36 cape",
 		"output_items": {
 			"4385": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-37 cape",
 		"output_items": {
 			"4387": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-38 cape",
 		"output_items": {
 			"4389": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-39 cape",
 		"output_items": {
 			"4391": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-4 cape",
 		"output_items": {
 			"4321": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-40 cape",
 		"output_items": {
 			"4393": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-41 cape",
 		"output_items": {
 			"4395": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-42 cape",
 		"output_items": {
 			"4397": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-43 cape",
 		"output_items": {
 			"4399": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-44 cape",
 		"output_items": {
 			"4401": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-45 cape",
 		"output_items": {
 			"4403": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-46 cape",
 		"output_items": {
 			"4405": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-47 cape",
 		"output_items": {
 			"4407": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-48 cape",
 		"output_items": {
 			"4409": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-49 cape",
 		"output_items": {
 			"4411": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-5 cape",
 		"output_items": {
 			"4323": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-50 cape",
 		"output_items": {
 			"4413": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-6 cape",
 		"output_items": {
 			"4325": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-7 cape",
 		"output_items": {
 			"4327": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-8 cape",
 		"output_items": {
 			"4329": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "Team-9 cape",
 		"output_items": {
 			"4331": 1
 		},
-		"gp_cost": 50000
+		"gp_cost": 15000
 	},
 	{
 		"name": "The stuff",
@@ -5125,11 +4342,6 @@
 		"name": "Thieving cape",
 		"output_items": "[Function]",
 		"gp_cost": 99000
-	},
-	{
-		"name": "Thieving master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
 	},
 	{
 		"name": "Torstol",
@@ -5200,10 +4412,10 @@
 	},
 	{
 		"name": "Unfinished broad bolts",
+		"gp_cost": 225,
 		"output_items": {
 			"11876": 1
-		},
-		"gp_cost": 225
+		}
 	},
 	{
 		"name": "Unidentified large fossil",
@@ -5482,18 +4694,6 @@
 		"name": "Woodcutting cape",
 		"output_items": "[Function]",
 		"gp_cost": 99000
-	},
-	{
-		"name": "Woodcutting master cape",
-		"output_items": "[Function]",
-		"gp_cost": 1000000000
-	},
-	{
-		"name": "Wooden spoon",
-		"gp_cost": 2000,
-		"output_items": {
-			"7433": 1
-		}
 	},
 	{
 		"name": "Xeric's champion",

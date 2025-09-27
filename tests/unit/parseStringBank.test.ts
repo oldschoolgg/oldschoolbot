@@ -75,6 +75,7 @@ describe('Bank Parsers', () => {
 			inputBank: bank,
 			flags: { tradeables: '' }
 		});
+
 		expect(res2.length).toEqual(3);
 
 		const res3 = parseBank({

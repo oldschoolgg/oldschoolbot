@@ -93,67 +93,6 @@
 		"attack_styles_used": ["attack_magic", "attack_ranged"]
 	},
 	{
-		"is_custom": true,
-		"id": 93135,
-		"name": "Akumu",
-		"time_to_finish": 1500000,
-		"hp": 3330,
-		"table": {},
-		"difficulty_rating": 5,
-		"heal_amount_needed": 5500,
-		"attack_style_to_use": "attack_slash",
-		"attack_styles_used": ["attack_slash"],
-		"level_requirements": {
-			"hitpoints": 120,
-			"attack": 120,
-			"strength": 120,
-			"defence": 120,
-			"slayer": 120
-		},
-		"poh_boosts": {
-			"pool": {
-				"ancient_rejuvenation_pool": 5
-			}
-		},
-		"death_props": {
-			"hardness": 0.5,
-			"steepness": 0.999,
-			"lowest_death_chance": 5,
-			"highest_death_chance": 65
-		},
-		"minimum_heal_amount": 22,
-		"all_items": [],
-		"minimum_gear_requirements": {
-			"melee": {}
-		},
-		"item_cost": {
-			"item_cost": {
-				"3024": 1,
-				"6685": 3,
-				"12695": 1,
-				"73167": 1
-			},
-			"qty_per_kill": 1
-		},
-		"tame_cant_kill": true,
-		"items_required": ["Combatant's cape"],
-		"setups_used": ["melee"],
-		"equipped_item_boosts": [
-			{
-				"gear_setup": "melee",
-				"items": [
-					{
-						"boost_percent": 20,
-						"item_id": 73072
-					}
-				]
-			}
-		],
-		"kc_requirements": {
-			"solis": 1
-		}
-	},
-	{
 		"id": 8615,
 		"name": "Alchemical Hydra",
 		"time_to_finish": 240000,
@@ -283,7 +222,7 @@
 					},
 					{
 						"boost_percent": 5,
-						"item_id": 709
+						"item_id": 26384
 					},
 					{
 						"boost_percent": 5,
@@ -301,7 +240,7 @@
 					},
 					{
 						"boost_percent": 5,
-						"item_id": 2404
+						"item_id": 26386
 					},
 					{
 						"boost_percent": 5,
@@ -542,7 +481,7 @@
 					},
 					{
 						"boost_percent": 5,
-						"item_id": 709
+						"item_id": 26384
 					},
 					{
 						"boost_percent": 5,
@@ -560,7 +499,7 @@
 					},
 					{
 						"boost_percent": 5,
-						"item_id": 2404
+						"item_id": 26386
 					},
 					{
 						"boost_percent": 5,
@@ -1021,6 +960,7 @@
 		"wildy": false,
 		"difficulty_rating": 4,
 		"items_required": [],
+		"notify_drops": [],
 		"qp_required": 0,
 		"item_in_bank_boosts": [
 			{
@@ -1043,8 +983,7 @@
 			"pool": {
 				"rejuvenation_pool": 10,
 				"fancy_rejuvenation_pool": 10,
-				"ornate_rejuvenation_pool": 10,
-				"ancient_rejuvenation_pool": 20
+				"ornate_rejuvenation_pool": 10
 			}
 		},
 		"default_attack_styles": ["attack", "magic", "ranged"],
@@ -1317,12 +1256,7 @@
 		"wildy": false,
 		"exists_in_catacombs": true,
 		"difficulty_rating": 4,
-		"items_required": [
-			[1540, 11283, 22002],
-			[9185, 4734, 11785],
-			[40048, 605, 11828, 4736],
-			[40049, 4272, 11830, 4738]
-		],
+		"items_required": [[1540, 11283, 22002], [9185, 4734, 11785], [11828, 4736], [11830, 4738]],
 		"notify_drops": ["Draconic visage"],
 		"qp_required": 0,
 		"level_requirements": {
@@ -1631,7 +1565,7 @@
 					},
 					{
 						"boost_percent": 2,
-						"item_id": 432
+						"item_id": 26382
 					},
 					{
 						"boost_percent": 1.5,
@@ -1673,7 +1607,7 @@
 					},
 					{
 						"boost_percent": 6,
-						"item_id": 709
+						"item_id": 26384
 					},
 					{
 						"boost_percent": 3,
@@ -1690,7 +1624,7 @@
 					},
 					{
 						"boost_percent": 6,
-						"item_id": 2404
+						"item_id": 26386
 					},
 					{
 						"boost_percent": 3,
@@ -1857,7 +1791,7 @@
 		"time_to_finish": 16000,
 		"wildy": false,
 		"difficulty_rating": 2,
-		"items_required": [[40048, 605, 4736, 11828], [40049, 4272, 4738, 11830]],
+		"items_required": [[4736, 11828, 2503], [4738, 11830, 2497]],
 		"qp_required": 20,
 		"level_requirements": {
 			"slayer": 58
@@ -1904,99 +1838,6 @@
 		}
 	},
 	{
-		"is_custom": true,
-		"id": 129125,
-		"name": "Celestara",
-		"time_to_finish": 6000000,
-		"hp": 3330,
-		"table": {},
-		"difficulty_rating": 5,
-		"qp_required": 1500,
-		"heal_amount_needed": 50000,
-		"attack_style_to_use": "attack_stab",
-		"attack_styles_used": ["attack_stab"],
-		"level_requirements": {
-			"hitpoints": 100,
-			"attack": 100,
-			"strength": 100,
-			"defence": 100,
-			"magic": 100,
-			"ranged": 100,
-			"slayer": 100
-		},
-		"poh_boosts": {
-			"pool": {
-				"ancient_rejuvenation_pool": 5
-			}
-		},
-		"death_props": {
-			"hardness": 0.5,
-			"steepness": 0.999,
-			"lowest_death_chance": 5,
-			"highest_death_chance": 65
-		},
-		"minimum_heal_amount": 22,
-		"all_items": ["Lunite", "Moondash charm", "Moonlight essence", "Noom"],
-		"minimum_gear_requirements": {
-			"melee": {
-				"attack_stab": 0,
-				"attack_slash": 0,
-				"attack_crush": 0,
-				"attack_magic": 0,
-				"attack_ranged": 0,
-				"defence_stab": 0,
-				"defence_slash": 0,
-				"defence_crush": 0,
-				"defence_magic": 0,
-				"defence_ranged": 0,
-				"melee_strength": 0,
-				"ranged_strength": 0,
-				"magic_damage": 0,
-				"prayer": 0
-			}
-		},
-		"minimum_weapon_shield_stats": {
-			"melee": {
-				"attack_stab": 0,
-				"attack_slash": 134,
-				"attack_crush": 0,
-				"attack_magic": 0,
-				"attack_ranged": 0,
-				"defence_stab": 0,
-				"defence_slash": 0,
-				"defence_crush": 0,
-				"defence_magic": 0,
-				"defence_ranged": 0,
-				"melee_strength": 0,
-				"ranged_strength": 0,
-				"magic_damage": 0,
-				"prayer": 0
-			}
-		},
-		"item_cost": {
-			"item_cost": {
-				"12695": 1,
-				"70004": 3,
-				"70005": 1
-			},
-			"qty_per_kill": 1
-		},
-		"tame_cant_kill": true,
-		"items_required": ["Combatant's cape"],
-		"setups_used": ["melee"],
-		"equipped_item_boosts": [
-			{
-				"gear_setup": "melee",
-				"items": [
-					{
-						"boost_percent": 25,
-						"item_id": 73072
-					}
-				]
-			}
-		]
-	},
-	{
 		"id": 5862,
 		"name": "Cerberus",
 		"time_to_finish": 159000,
@@ -2004,8 +1845,8 @@
 		"wildy": false,
 		"difficulty_rating": 7,
 		"items_required": [
-			[4749, 4720, 11832, 709, 24420],
-			[4751, 4722, 11834, 2404, 24421],
+			[4749, 4720, 11832, 26384, 24420],
+			[4751, 4722, 11834, 26386, 24421],
 			[11824, 11889, 19675, 29589, 4151, 12006, 13263, 24417]
 		],
 		"notify_drops": ["Hellpuppy", "Jar of souls"],
@@ -2015,14 +1856,14 @@
 				"12821": 10
 			},
 			{
-				"709": 6,
 				"11832": 5,
-				"24420": 8
+				"24420": 8,
+				"26384": 6
 			},
 			{
-				"2404": 6,
 				"11834": 5,
-				"24421": 8
+				"24421": 8,
+				"26386": 6
 			},
 			{
 				"4151": 10,
@@ -2217,19 +2058,6 @@
 		"attack_styles_used": ["attack_crush"]
 	},
 	{
-		"is_custom": true,
-		"id": 31621,
-		"name": "Cockroach soldier",
-		"time_to_finish": 60000,
-		"table": {},
-		"heal_amount_needed": 50,
-		"attack_style_to_use": "attack_stab",
-		"attack_styles_used": ["attack_crush"],
-		"group_killable": false,
-		"respawn_time": 5000,
-		"hp": 60
-	},
-	{
 		"id": 2205,
 		"name": "Commander Zilyana",
 		"time_to_finish": 306000,
@@ -2330,7 +2158,7 @@
 				"items": [
 					{
 						"boost_percent": 2,
-						"item_id": 432
+						"item_id": 26382
 					}
 				],
 				"gear_setup": "melee"
@@ -2409,7 +2237,6 @@
 		},
 		"uniques": [
 			"Arcane sigil",
-			"Divine sigil",
 			"Elysian sigil",
 			"Holy elixir",
 			"Jar of spirits",
@@ -2587,7 +2414,8 @@
 		"emoji": "<:Pet_dagannoth_prime:324127376877289474>",
 		"wildy": false,
 		"difficulty_rating": 5,
-		"items_required": [4728, 4730, 4724, 4726, [40048, 605, 11828, 4736], [40049, 4272, 11830, 4738]],
+		"items_required": [4728, 4730, 4724, 4726, [11828, 4736], [11830, 4738]],
+		"notify_drops": ["Pet dagannoth prime"],
 		"qp_required": 0,
 		"item_in_bank_boosts": [
 			{
@@ -2617,7 +2445,8 @@
 		"emoji": "<:Pet_dagannoth_rex:324127377091330049>",
 		"wildy": false,
 		"difficulty_rating": 5,
-		"items_required": [4728, 4730, 4724, 4726, [40034, 709, 11832, 4749], [40035, 2404, 11834, 4751]],
+		"items_required": [4728, 4730, 4724, 4726, [26384, 11832, 4749], [26386, 11834, 4751]],
+		"notify_drops": ["Pet dagannoth rex"],
 		"qp_required": 0,
 		"item_in_bank_boosts": [
 			{
@@ -2655,16 +2484,17 @@
 		"emoji": "<:Pet_dagannoth_supreme:324127377066164245>",
 		"wildy": false,
 		"difficulty_rating": 5,
-		"items_required": [4728, 4730, 4724, 4726, [40034, 709, 11832, 4749], [40035, 2404, 11834, 4751]],
+		"items_required": [4728, 4730, 4724, 4726, [11832, 4749, 26384], [11834, 4751, 26386]],
+		"notify_drops": ["Pet dagannoth supreme"],
 		"qp_required": 0,
 		"item_in_bank_boosts": [
 			{
-				"709": 2,
-				"11832": 2
+				"11832": 2,
+				"26384": 2
 			},
 			{
-				"2404": 2,
-				"11834": 2
+				"11834": 2,
+				"26386": 2
 			},
 			{
 				"11806": 4,
@@ -2737,12 +2567,12 @@
 		"wildy": false,
 		"difficulty_rating": 7,
 		"items_required": [
-			[709, 11832],
-			[2404, 4759, 11834],
+			[26384, 11832],
+			[4759, 11834, 26386],
 			[19675, 29589, 4151, 4587],
 			[9185, 4734, 11785],
-			[40048, 605, 11828, 4736],
-			[40049, 4272, 11830, 4738]
+			[11828, 4736],
+			[11830, 4738]
 		],
 		"qp_required": 175,
 		"item_in_bank_boosts": [
@@ -2860,7 +2690,7 @@
 		"id": 12191,
 		"name": "Duke Sucellus",
 		"time_to_finish": 186000,
-		"notify_drops": ["Baron"],
+		"notify_drops": ["Baron", "Virtus mask", "Virtus robe bottom", "Virtus robe top"],
 		"qp_required": 100,
 		"equipped_item_boosts": [
 			{
@@ -2894,7 +2724,7 @@
 				"items": [
 					{
 						"boost_percent": 3,
-						"item_id": 432
+						"item_id": 26382
 					}
 				],
 				"gear_setup": "melee"
@@ -2903,7 +2733,7 @@
 				"items": [
 					{
 						"boost_percent": 3,
-						"item_id": 709
+						"item_id": 26384
 					}
 				],
 				"gear_setup": "melee"
@@ -2912,7 +2742,7 @@
 				"items": [
 					{
 						"boost_percent": 3,
-						"item_id": 2404
+						"item_id": 26386
 					}
 				],
 				"gear_setup": "melee"
@@ -2942,11 +2772,13 @@
 			"Chromium ingot",
 			"Eye of the duke",
 			"Frozen tablet",
-			"Frozen tablet",
 			"Ice quartz",
-			"Magus vestige"
+			"Magus vestige",
+			"Virtus mask",
+			"Virtus robe bottom",
+			"Virtus robe top"
 		],
-		"items_required": [[709, 11832], [2404, 11834]],
+		"items_required": [[26384, 11832], [26386, 11834]],
 		"default_attack_styles": ["attack"],
 		"combat_xp_multiplier": 1.525,
 		"heal_amount_needed": 900,
@@ -2974,7 +2806,7 @@
 		"id": 12192,
 		"name": "Duke Sucellus (Awakened)",
 		"time_to_finish": 930000,
-		"notify_drops": ["Baron"],
+		"notify_drops": ["Baron", "Virtus mask", "Virtus robe bottom", "Virtus robe top"],
 		"qp_required": 100,
 		"equipped_item_boosts": [
 			{
@@ -2999,7 +2831,7 @@
 				"items": [
 					{
 						"boost_percent": 3,
-						"item_id": 432
+						"item_id": 26382
 					}
 				],
 				"gear_setup": "melee"
@@ -3008,7 +2840,7 @@
 				"items": [
 					{
 						"boost_percent": 3,
-						"item_id": 709
+						"item_id": 26384
 					}
 				],
 				"gear_setup": "melee"
@@ -3017,7 +2849,7 @@
 				"items": [
 					{
 						"boost_percent": 3,
-						"item_id": 2404
+						"item_id": 26386
 					}
 				],
 				"gear_setup": "melee"
@@ -3047,11 +2879,13 @@
 			"Chromium ingot",
 			"Eye of the duke",
 			"Frozen tablet",
-			"Frozen tablet",
 			"Ice quartz",
-			"Magus vestige"
+			"Magus vestige",
+			"Virtus mask",
+			"Virtus robe bottom",
+			"Virtus robe top"
 		],
-		"items_required": [[709, 11832], [2404, 11834]],
+		"items_required": [[26384, 11832], [26386, 11834]],
 		"default_attack_styles": ["attack"],
 		"combat_xp_multiplier": 1.525,
 		"heal_amount_needed": 2250,
@@ -3201,20 +3035,6 @@
 		"can_barrage": false
 	},
 	{
-		"is_custom": true,
-		"id": 31651,
-		"name": "Elite Black Knight",
-		"time_to_finish": 240000,
-		"table": {},
-		"heal_amount_needed": 220,
-		"attack_style_to_use": "attack_stab",
-		"attack_styles_used": ["attack_stab"],
-		"group_killable": false,
-		"respawn_time": 8000,
-		"hp": 560,
-		"items_required": ["Dark Temple key"]
-	},
-	{
 		"id": 6594,
 		"name": "Ent",
 		"time_to_finish": 37000,
@@ -3319,12 +3139,12 @@
 		"qp_required": 35,
 		"item_in_bank_boosts": [
 			{
-				"709": 13,
-				"11832": 13
+				"11832": 13,
+				"26384": 13
 			},
 			{
-				"2404": 13,
-				"11834": 13
+				"11834": 13,
+				"26386": 13
 			},
 			{
 				"13652": 11
@@ -3350,143 +3170,12 @@
 		]
 	},
 	{
-		"is_custom": true,
-		"id": 345232,
-		"name": "Frost Dragon",
-		"time_to_finish": 360000,
-		"hp": 330,
-		"table": {},
-		"wildy": false,
-		"notify_drops": [],
-		"difficulty_rating": 5,
-		"items_required": [],
-		"qp_required": 60,
-		"heal_amount_needed": 280,
-		"attack_style_to_use": "attack_stab",
-		"attack_styles_used": ["attack_magic", "attack_ranged"],
-		"level_requirements": {
-			"dungeoneering": 85,
-			"prayer": 70
-		},
-		"item_in_bank_boosts": [
-			{
-				"6570": 2,
-				"21295": 4,
-				"48322": 8
-			}
-		],
-		"item_cost": {
-			"item_cost": {
-				"2434": 1
-			},
-			"qty_per_kill": 0.2
-		},
-		"poh_boosts": {
-			"pool": {
-				"rejuvenation_pool": 3,
-				"fancy_rejuvenation_pool": 3,
-				"ornate_rejuvenation_pool": 3,
-				"ancient_rejuvenation_pool": 5
-			}
-		}
-	},
-	{
 		"id": 13728,
 		"name": "Frost Nagua",
 		"time_to_finish": 28200,
 		"heal_amount_needed": 100,
 		"attack_style_to_use": "attack_crush",
 		"attack_styles_used": ["attack_crush"]
-	},
-	{
-		"is_custom": true,
-		"id": 341749,
-		"name": "Fungal mage",
-		"time_to_finish": 80000,
-		"hp": 155,
-		"table": {},
-		"heal_amount_needed": 100,
-		"attack_style_to_use": "attack_magic",
-		"attack_styles_used": ["attack_magic", "attack_ranged"],
-		"level_requirements": {
-			"dungeoneering": 82
-		},
-		"item_cost": {
-			"item_cost": {
-				"50061": 1
-			},
-			"qty_per_kill": 0.3
-		},
-		"disallowed_attack_styles": ["attack", "strength", "defence", "ranged"]
-	},
-	{
-		"is_custom": true,
-		"id": 669279,
-		"name": "Fungal Rodent",
-		"time_to_finish": 80000,
-		"hp": 85,
-		"table": {},
-		"heal_amount_needed": 40,
-		"attack_style_to_use": "attack_stab",
-		"attack_styles_used": ["attack_magic", "attack_ranged"],
-		"level_requirements": {
-			"dungeoneering": 82
-		},
-		"item_cost": {
-			"item_cost": {
-				"50061": 1
-			},
-			"qty_per_kill": 0.3
-		},
-		"disallowed_attack_styles": ["attack", "strength", "defence", "ranged"]
-	},
-	{
-		"is_custom": true,
-		"id": 194825,
-		"name": "Ganodermic Beast",
-		"time_to_finish": 600000,
-		"hp": 395,
-		"table": {},
-		"heal_amount_needed": 360,
-		"attack_style_to_use": "attack_magic",
-		"attack_styles_used": ["attack_magic", "attack_ranged"],
-		"level_requirements": {
-			"dungeoneering": 82,
-			"slayer": 98
-		},
-		"item_cost": {
-			"item_cost": {
-				"9075": 64,
-				"50061": 1,
-				"50063": 150
-			},
-			"qty_per_kill": 0.3
-		},
-		"disallowed_attack_styles": ["attack", "strength", "defence", "ranged"]
-	},
-	{
-		"is_custom": true,
-		"id": 129129,
-		"name": "Ganodermic Runt",
-		"time_to_finish": 360000,
-		"hp": 295,
-		"table": {},
-		"heal_amount_needed": 260,
-		"attack_style_to_use": "attack_magic",
-		"attack_styles_used": ["attack_magic", "attack_ranged"],
-		"level_requirements": {
-			"dungeoneering": 82,
-			"slayer": 95
-		},
-		"item_cost": {
-			"item_cost": {
-				"9075": 52,
-				"50061": 1,
-				"50063": 120
-			},
-			"qty_per_kill": 0.3
-		},
-		"disallowed_attack_styles": ["attack", "strength", "defence", "ranged"]
 	},
 	{
 		"id": 412,
@@ -3750,50 +3439,6 @@
 		"wildy_slayer_cave": true,
 		"pk_activity_rating": 2,
 		"pk_base_death_chance": 4
-	},
-	{
-		"is_custom": true,
-		"id": 721932,
-		"name": "Grifolapine",
-		"time_to_finish": 240000,
-		"hp": 195,
-		"table": {},
-		"heal_amount_needed": 180,
-		"attack_style_to_use": "attack_magic",
-		"attack_styles_used": ["attack_magic", "attack_ranged"],
-		"level_requirements": {
-			"dungeoneering": 82,
-			"slayer": 88
-		},
-		"item_cost": {
-			"item_cost": {
-				"50061": 1
-			},
-			"qty_per_kill": 0.3
-		},
-		"disallowed_attack_styles": ["attack", "strength", "defence", "ranged"]
-	},
-	{
-		"is_custom": true,
-		"id": 819581,
-		"name": "Grifolaroo",
-		"time_to_finish": 180000,
-		"hp": 155,
-		"table": {},
-		"heal_amount_needed": 100,
-		"attack_style_to_use": "attack_magic",
-		"attack_styles_used": ["attack_magic", "attack_ranged"],
-		"level_requirements": {
-			"dungeoneering": 82,
-			"slayer": 82
-		},
-		"item_cost": {
-			"item_cost": {
-				"50061": 1
-			},
-			"qty_per_kill": 0.3
-		},
-		"disallowed_attack_styles": ["attack", "strength", "defence", "ranged"]
 	},
 	{
 		"id": 3423,
@@ -4116,27 +3761,6 @@
 		"attack_styles_used": ["attack_magic"]
 	},
 	{
-		"is_custom": true,
-		"id": 194820,
-		"name": "Infested axe",
-		"time_to_finish": 80000,
-		"hp": 85,
-		"table": {},
-		"heal_amount_needed": 40,
-		"attack_style_to_use": "attack_magic",
-		"attack_styles_used": ["attack_magic", "attack_ranged"],
-		"level_requirements": {
-			"dungeoneering": 82
-		},
-		"item_cost": {
-			"item_cost": {
-				"50061": 1
-			},
-			"qty_per_kill": 0.3
-		},
-		"disallowed_attack_styles": ["attack", "strength", "defence", "ranged"]
-	},
-	{
 		"id": 3428,
 		"name": "Iorwerth Archer",
 		"time_to_finish": 30000,
@@ -4247,12 +3871,12 @@
 		"qp_required": 35,
 		"item_in_bank_boosts": [
 			{
-				"709": 13,
-				"11832": 13
+				"11832": 13,
+				"26384": 13
 			},
 			{
-				"2404": 13,
-				"11834": 13
+				"11834": 13,
+				"26386": 13
 			},
 			{
 				"13652": 11
@@ -4483,7 +4107,7 @@
 		"time_to_finish": 90000,
 		"wildy": false,
 		"difficulty_rating": 5,
-		"items_required": [[2834, 28583, 11907, 11905, 11908, 12900, 12899, 22323, 24423]],
+		"items_required": [[28583, 11907, 11905, 11908, 12900, 12899, 22323, 24423]],
 		"notify_drops": ["Jar of sand", "Pet kraken"],
 		"item_in_bank_boosts": [
 			{
@@ -4676,7 +4300,7 @@
 		"emoji": "<:Dragon_warhammer:405998717154623488>",
 		"wildy": false,
 		"difficulty_rating": 6,
-		"items_required": [[2832, 4734, 9185, 11785, 12926]],
+		"items_required": [[4734, 9185, 11785, 12926]],
 		"notify_drops": ["Dragon warhammer"],
 		"qp_required": 30,
 		"item_in_bank_boosts": [
@@ -4770,63 +4394,6 @@
 		"can_cannon": true
 	},
 	{
-		"is_custom": true,
-		"id": 707070,
-		"name": "Malygos",
-		"time_to_finish": 1800000,
-		"table": {},
-		"emoji": "",
-		"wildy": true,
-		"difficulty_rating": 9,
-		"qp_required": 999,
-		"heal_amount_needed": 500,
-		"attack_style_to_use": "attack_slash",
-		"attack_styles_used": ["attack_stab", "attack_slash", "attack_magic", "attack_ranged"],
-		"minimum_gear_requirements": {
-			"melee": {
-				"attack_stab": 100,
-				"defence_stab": 150,
-				"defence_slash": 150,
-				"defence_magic": -20,
-				"defence_ranged": 150
-			}
-		},
-		"item_in_bank_boosts": [
-			{
-				"11806": 5
-			},
-			{
-				"13576": 5
-			},
-			{
-				"11804": 5
-			},
-			{
-				"73072": 10
-			}
-		],
-		"items_required": [[1540, 24214]],
-		"group_killable": true,
-		"respawn_time": 20000,
-		"level_requirements": {
-			"prayer": 99,
-			"attack": 99,
-			"strength": 105,
-			"defence": 99
-		},
-		"poh_boosts": {
-			"pool": {
-				"ancient_rejuvenation_pool": 10
-			}
-		},
-		"uniques": ["Abyssal cape", "Abyssal thread", "Dragon hunter lance", "Ori"],
-		"notify_drops": ["Abyssal cape", "Ori"],
-		"custom_monster_data": {
-			"attributes": ["dragon", "fiery"]
-		},
-		"can_be_pked": true
-	},
-	{
 		"id": 6604,
 		"name": "Mammoth",
 		"time_to_finish": 38000,
@@ -4850,8 +4417,7 @@
 		"wildy": false,
 		"difficulty_rating": 0,
 		"qp_required": 0,
-		"default_attack_styles": ["attack"],
-		"attack_style_to_use": "attack_slash"
+		"default_attack_styles": ["attack"]
 	},
 	{
 		"id": 7118,
@@ -5124,12 +4690,12 @@
 		"qp_required": 35,
 		"item_in_bank_boosts": [
 			{
-				"709": 13,
-				"11832": 13
+				"11832": 13,
+				"26384": 13
 			},
 			{
-				"2404": 13,
-				"11834": 13
+				"11834": 13,
+				"26386": 13
 			},
 			{
 				"13652": 11
@@ -5153,67 +4719,6 @@
 				"13239": 15
 			}
 		]
-	},
-	{
-		"is_custom": true,
-		"id": 708080,
-		"name": "Nihiliz",
-		"time_to_finish": 960000,
-		"table": {},
-		"emoji": "",
-		"wildy": false,
-		"difficulty_rating": 9,
-		"qp_required": 1000,
-		"heal_amount_needed": 640,
-		"attack_style_to_use": "attack_stab",
-		"attack_styles_used": ["attack_stab", "attack_slash", "attack_magic", "attack_ranged"],
-		"minimum_gear_requirements": {
-			"melee": {
-				"attack_stab": 100,
-				"defence_stab": 150,
-				"defence_slash": 150,
-				"defence_magic": -20,
-				"defence_ranged": 150
-			}
-		},
-		"item_in_bank_boosts": [
-			{
-				"2832": 10,
-				"26374": 15
-			},
-			{
-				"47515": 15
-			},
-			{
-				"47516": 10,
-				"73164": 14
-			},
-			{
-				"13576": 5
-			},
-			{
-				"26235": 5
-			}
-		],
-		"group_killable": false,
-		"hp": 800,
-		"respawn_time": 10000,
-		"level_requirements": {
-			"prayer": 95,
-			"attack": 99,
-			"strength": 105,
-			"magic": 105,
-			"defence": 99
-		},
-		"poh_boosts": {
-			"pool": {
-				"fancy_rejuvenation_pool": 5,
-				"ornate_rejuvenation_pool": 10,
-				"ancient_rejuvenation_pool": 15
-			}
-		},
-		"uniques": ["Nexling", "Nihil horn", "Nihil shard", "Zaryte vambraces"],
-		"notify_drops": ["Nexling", "Nihil horn", "Zaryte vambraces"]
 	},
 	{
 		"id": 7416,
@@ -5541,90 +5046,6 @@
 		"heal_amount_needed": 15,
 		"attack_style_to_use": "attack_slash",
 		"attack_styles_used": ["attack_magic"]
-	},
-	{
-		"is_custom": true,
-		"id": 192195,
-		"name": "Queen Black Dragon",
-		"time_to_finish": 2700000,
-		"table": {},
-		"qp_required": 182,
-		"heal_amount_needed": 900,
-		"attack_style_to_use": "attack_ranged",
-		"attack_styles_used": ["attack_stab", "attack_slash", "attack_magic", "attack_ranged"],
-		"disallowed_attack_styles": ["attack", "strength", "defence", "magic"],
-		"minimum_gear_requirements": {
-			"range": {
-				"attack_stab": 0,
-				"attack_slash": 0,
-				"attack_crush": 0,
-				"attack_magic": -37,
-				"attack_ranged": 78,
-				"defence_stab": 0,
-				"defence_slash": 0,
-				"defence_crush": 0,
-				"defence_magic": 100,
-				"defence_ranged": 142,
-				"melee_strength": 0,
-				"ranged_strength": 2,
-				"magic_damage": 0,
-				"prayer": 3
-			}
-		},
-		"items_required": [[11283, 22002]],
-		"respawn_time": 20000,
-		"level_requirements": {
-			"prayer": 70,
-			"defence": 80,
-			"ranged": 85
-		},
-		"poh_boosts": {
-			"pool": {
-				"ancient_rejuvenation_pool": 6
-			}
-		},
-		"notify_drops": ["Queen black dragonling"],
-		"item_in_bank_boosts": [
-			{
-				"50098": 8
-			}
-		]
-	},
-	{
-		"is_custom": true,
-		"id": 22193,
-		"name": "Queen Goldemar",
-		"time_to_finish": 1920000,
-		"table": {},
-		"heal_amount_needed": 640,
-		"attack_style_to_use": "attack_stab",
-		"attack_styles_used": ["attack_stab", "attack_slash", "attack_magic", "attack_ranged"],
-		"minimum_gear_requirements": {
-			"melee": {
-				"attack_stab": 100,
-				"defence_stab": 150,
-				"defence_slash": 150,
-				"defence_magic": -20,
-				"defence_ranged": 150
-			}
-		},
-		"group_killable": false,
-		"hp": 800,
-		"respawn_time": 10000,
-		"level_requirements": {
-			"prayer": 121,
-			"attack": 99,
-			"strength": 105,
-			"magic": 105,
-			"defence": 99
-		},
-		"poh_boosts": {
-			"pool": {
-				"ancient_rejuvenation_pool": 15
-			}
-		},
-		"tame_cant_kill": true,
-		"required_bitfield": 7
 	},
 	{
 		"id": 9118,
@@ -6705,7 +6126,7 @@
 				"items": [
 					{
 						"boost_percent": 4,
-						"item_id": 709
+						"item_id": 26384
 					},
 					{
 						"boost_percent": 2,
@@ -6719,7 +6140,7 @@
 				"items": [
 					{
 						"boost_percent": 4,
-						"item_id": 2404
+						"item_id": 26386
 					},
 					{
 						"boost_percent": 2,
@@ -6891,7 +6312,7 @@
 				"items": [
 					{
 						"boost_percent": 4,
-						"item_id": 709
+						"item_id": 26384
 					},
 					{
 						"boost_percent": 2,
@@ -6905,7 +6326,7 @@
 				"items": [
 					{
 						"boost_percent": 4,
-						"item_id": 2404
+						"item_id": 26386
 					},
 					{
 						"boost_percent": 2,
@@ -7077,7 +6498,7 @@
 				"items": [
 					{
 						"boost_percent": 4,
-						"item_id": 709
+						"item_id": 26384
 					},
 					{
 						"boost_percent": 2,
@@ -7091,7 +6512,7 @@
 				"items": [
 					{
 						"boost_percent": 4,
-						"item_id": 2404
+						"item_id": 26386
 					},
 					{
 						"boost_percent": 2,
@@ -7196,21 +6617,6 @@
 			"mage": {
 				"attack_magic": 70
 			}
-		}
-	},
-	{
-		"is_custom": true,
-		"id": 918501,
-		"name": "Rum-pumped crab",
-		"time_to_finish": 40000,
-		"hp": 35,
-		"table": {},
-		"items_required": ["Diving apparatus", "Fishbowl helmet"],
-		"heal_amount_needed": 40,
-		"attack_style_to_use": "attack_crush",
-		"attack_styles_used": ["attack_magic", "attack_ranged"],
-		"level_requirements": {
-			"dungeoneering": 50
 		}
 	},
 	{
@@ -7428,39 +6834,6 @@
 		"heal_amount_needed": 20
 	},
 	{
-		"is_custom": true,
-		"id": 53466534,
-		"name": "Sea Kraken",
-		"time_to_finish": 1020000,
-		"table": {},
-		"emoji": "",
-		"notify_drops": [22838, 26, 21655],
-		"wildy": false,
-		"difficulty_rating": 7,
-		"qp_required": 0,
-		"heal_amount_needed": 400,
-		"attack_style_to_use": "attack_ranged",
-		"attack_styles_used": ["attack_magic"],
-		"minimum_gear_requirements": {
-			"range": {
-				"defence_magic": 150,
-				"attack_ranged": 80
-			}
-		},
-		"group_killable": true,
-		"respawn_time": 20000,
-		"level_requirements": {
-			"prayer": 43,
-			"ranged": 105,
-			"slayer": 101
-		},
-		"poh_boosts": {
-			"pool": {
-				"ancient_rejuvenation_pool": 10
-			}
-		}
-	},
-	{
 		"id": 1098,
 		"name": "Sea Snake Hatchling",
 		"time_to_finish": 20000,
@@ -7659,99 +7032,6 @@
 		"can_barrage": true
 	},
 	{
-		"is_custom": true,
-		"id": 129124,
-		"name": "Solis",
-		"time_to_finish": 7200000,
-		"hp": 3330,
-		"table": {},
-		"difficulty_rating": 5,
-		"qp_required": 2500,
-		"heal_amount_needed": 70000,
-		"attack_style_to_use": "attack_stab",
-		"attack_styles_used": ["attack_stab"],
-		"level_requirements": {
-			"hitpoints": 120,
-			"attack": 110,
-			"strength": 110,
-			"defence": 110,
-			"magic": 110,
-			"ranged": 110,
-			"slayer": 110
-		},
-		"poh_boosts": {
-			"pool": {
-				"ancient_rejuvenation_pool": 5
-			}
-		},
-		"death_props": {
-			"hardness": 0.8,
-			"steepness": 0.999,
-			"lowest_death_chance": 10,
-			"highest_death_chance": 80
-		},
-		"minimum_heal_amount": 22,
-		"all_items": ["Eagle egg", "Solite", "Sun-metal scraps"],
-		"minimum_gear_requirements": {
-			"melee": {
-				"attack_stab": 0,
-				"attack_slash": 0,
-				"attack_crush": 0,
-				"attack_magic": 0,
-				"attack_ranged": 0,
-				"defence_stab": 0,
-				"defence_slash": 0,
-				"defence_crush": 0,
-				"defence_magic": 0,
-				"defence_ranged": 0,
-				"melee_strength": 0,
-				"ranged_strength": 0,
-				"magic_damage": 0,
-				"prayer": 0
-			}
-		},
-		"minimum_weapon_shield_stats": {
-			"melee": {
-				"attack_stab": 160,
-				"attack_slash": 0,
-				"attack_crush": 0,
-				"attack_magic": 0,
-				"attack_ranged": 0,
-				"defence_stab": 0,
-				"defence_slash": 0,
-				"defence_crush": 0,
-				"defence_magic": 0,
-				"defence_ranged": 0,
-				"melee_strength": 0,
-				"ranged_strength": 0,
-				"magic_damage": 0,
-				"prayer": 0
-			}
-		},
-		"item_cost": {
-			"item_cost": {
-				"12695": 1,
-				"50026": 3,
-				"50027": 1
-			},
-			"qty_per_kill": 1
-		},
-		"tame_cant_kill": true,
-		"items_required": ["Combatant's cape"],
-		"setups_used": ["melee"],
-		"equipped_item_boosts": [
-			{
-				"gear_setup": "melee",
-				"items": [
-					{
-						"boost_percent": 7,
-						"item_id": 73164
-					}
-				]
-			}
-		]
-	},
-	{
 		"id": 3019,
 		"name": "Spider",
 		"time_to_finish": 5000,
@@ -7783,12 +7063,12 @@
 		"qp_required": 35,
 		"item_in_bank_boosts": [
 			{
-				"709": 13,
-				"11832": 13
+				"11832": 13,
+				"26384": 13
 			},
 			{
-				"2404": 13,
-				"11834": 13
+				"11834": 13,
+				"26386": 13
 			},
 			{
 				"13652": 11
@@ -7909,7 +7189,7 @@
 					},
 					{
 						"boost_percent": 3,
-						"item_id": 432
+						"item_id": 26382
 					},
 					{
 						"boost_percent": 2.5,
@@ -7960,7 +7240,7 @@
 					},
 					{
 						"boost_percent": 5,
-						"item_id": 709
+						"item_id": 26384
 					},
 					{
 						"boost_percent": 3,
@@ -7977,7 +7257,7 @@
 					},
 					{
 						"boost_percent": 5,
-						"item_id": 2404
+						"item_id": 26386
 					},
 					{
 						"boost_percent": 3,
@@ -8202,53 +7482,6 @@
 		"attack_styles_used": ["attack_crush"]
 	},
 	{
-		"is_custom": true,
-		"id": 941944,
-		"name": "Superior Tormented Demon",
-		"time_to_finish": 1020000,
-		"table": {},
-		"difficulty_rating": 7,
-		"qp_required": 126,
-		"heal_amount_needed": 1000,
-		"attack_style_to_use": "attack_stab",
-		"attack_styles_used": ["attack_slash"],
-		"minimum_gear_requirements": {
-			"melee": {
-				"attack_stab": 100,
-				"defence_stab": 150,
-				"defence_slash": 150,
-				"defence_magic": -20,
-				"defence_ranged": 150
-			}
-		},
-		"group_killable": false,
-		"respawn_time": 5000,
-		"level_requirements": {
-			"agility": 55,
-			"hunter": 65,
-			"thieving": 70,
-			"defence": 75,
-			"farming": 75,
-			"herblore": 70,
-			"magic": 80
-		},
-		"item_cost": {
-			"qty_per_kill": 1,
-			"item_cost": {
-				"50599": 1
-			}
-		},
-		"hp": 657,
-		"item_in_bank_boosts": [
-			{
-				"48322": 5
-			},
-			{
-				"73072": 10
-			}
-		]
-	},
-	{
 		"id": 787,
 		"name": "Suqah",
 		"time_to_finish": 23000,
@@ -8292,12 +7525,12 @@
 		"qp_required": 35,
 		"item_in_bank_boosts": [
 			{
-				"709": 13,
-				"11832": 13
+				"11832": 13,
+				"26384": 13
 			},
 			{
-				"2404": 13,
-				"11834": 13
+				"11834": 13,
+				"26386": 13
 			},
 			{
 				"13652": 11
@@ -8471,7 +7704,7 @@
 					},
 					{
 						"boost_percent": 5,
-						"item_id": 709
+						"item_id": 26384
 					},
 					{
 						"boost_percent": 5,
@@ -8489,7 +7722,7 @@
 					},
 					{
 						"boost_percent": 5,
-						"item_id": 2404
+						"item_id": 26386
 					},
 					{
 						"boost_percent": 5,
@@ -8584,7 +7817,7 @@
 		"id": 12214,
 		"name": "The Leviathan",
 		"time_to_finish": 288000,
-		"notify_drops": ["Lil'viathan"],
+		"notify_drops": ["Lil'viathan", "Virtus mask", "Virtus robe bottom", "Virtus robe top"],
 		"qp_required": 100,
 		"equipped_item_boosts": [
 			{
@@ -8690,7 +7923,10 @@
 			"Lil'viathan",
 			"Scarred tablet",
 			"Smoke quartz",
-			"Venator vestige"
+			"Venator vestige",
+			"Virtus mask",
+			"Virtus robe bottom",
+			"Virtus robe top"
 		],
 		"items_required": [[27229, 11828], [27232, 11830]],
 		"default_attack_styles": ["ranged"],
@@ -8708,7 +7944,7 @@
 		"id": 12215,
 		"name": "The Leviathan (Awakened)",
 		"time_to_finish": 930000,
-		"notify_drops": ["Lil'viathan"],
+		"notify_drops": ["Lil'viathan", "Virtus mask", "Virtus robe bottom", "Virtus robe top"],
 		"qp_required": 100,
 		"equipped_item_boosts": [
 			{
@@ -8812,7 +8048,10 @@
 			"Lil'viathan",
 			"Scarred tablet",
 			"Smoke quartz",
-			"Venator vestige"
+			"Venator vestige",
+			"Virtus mask",
+			"Virtus robe bottom",
+			"Virtus robe top"
 		],
 		"items_required": [[27229, 11828], [27232, 11830]],
 		"default_attack_styles": ["ranged"],
@@ -8838,7 +8077,7 @@
 		"id": 12204,
 		"name": "The Whisperer",
 		"time_to_finish": 306000,
-		"notify_drops": ["Wisp"],
+		"notify_drops": ["Virtus mask", "Virtus robe bottom", "Virtus robe top", "Wisp"],
 		"qp_required": 100,
 		"equipped_item_boosts": [
 			{
@@ -8876,7 +8115,7 @@
 					},
 					{
 						"boost_percent": 3,
-						"item_id": 788
+						"item_id": 26241
 					}
 				],
 				"gear_setup": "mage"
@@ -8889,7 +8128,7 @@
 					},
 					{
 						"boost_percent": 3,
-						"item_id": 983
+						"item_id": 26243
 					}
 				],
 				"gear_setup": "mage"
@@ -8902,7 +8141,7 @@
 					},
 					{
 						"boost_percent": 3,
-						"item_id": 2409
+						"item_id": 26245
 					}
 				],
 				"gear_setup": "mage"
@@ -8942,9 +8181,12 @@
 			"Shadow quartz",
 			"Siren's staff",
 			"Sirenic tablet",
+			"Virtus mask",
+			"Virtus robe bottom",
+			"Virtus robe top",
 			"Wisp"
 		],
-		"items_required": [[21021, 4712], [21024, 2409, 4714]],
+		"items_required": [[21021, 26243, 4712], [21024, 26245, 4714]],
 		"default_attack_styles": ["magic"],
 		"combat_xp_multiplier": 1.135,
 		"heal_amount_needed": 1100,
@@ -8986,7 +8228,7 @@
 		"id": 12205,
 		"name": "The Whisperer (Awakened)",
 		"time_to_finish": 930000,
-		"notify_drops": ["Wisp"],
+		"notify_drops": ["Virtus mask", "Virtus robe bottom", "Virtus robe top", "Wisp"],
 		"qp_required": 100,
 		"equipped_item_boosts": [
 			{
@@ -9024,7 +8266,7 @@
 					},
 					{
 						"boost_percent": 3,
-						"item_id": 788
+						"item_id": 26241
 					}
 				],
 				"gear_setup": "mage"
@@ -9037,7 +8279,7 @@
 					},
 					{
 						"boost_percent": 3,
-						"item_id": 983
+						"item_id": 26243
 					}
 				],
 				"gear_setup": "mage"
@@ -9050,7 +8292,7 @@
 					},
 					{
 						"boost_percent": 3,
-						"item_id": 2409
+						"item_id": 26245
 					}
 				],
 				"gear_setup": "mage"
@@ -9091,9 +8333,12 @@
 			"Shadow quartz",
 			"Siren's staff",
 			"Sirenic tablet",
+			"Virtus mask",
+			"Virtus robe bottom",
+			"Virtus robe top",
 			"Wisp"
 		],
-		"items_required": [[21021, 4712], [21024, 2409, 4714]],
+		"items_required": [[21021, 26243, 4712], [21024, 26245, 4714]],
 		"default_attack_styles": ["magic"],
 		"combat_xp_multiplier": 1.135,
 		"heal_amount_needed": 2250,
@@ -9228,7 +8473,7 @@
 		"time_to_finish": 70000,
 		"wildy": false,
 		"difficulty_rating": 6,
-		"items_required": [[709, 11832], [2404, 4759, 11834], [4151, 4587]],
+		"items_required": [[26384, 11832], [4759, 11834, 26386], [4151, 4587]],
 		"qp_required": 175,
 		"item_in_bank_boosts": [
 			{
@@ -9253,41 +8498,6 @@
 		"heal_amount_needed": 15,
 		"attack_style_to_use": "attack_slash",
 		"attack_styles_used": ["attack_crush"]
-	},
-	{
-		"is_custom": true,
-		"id": 932122,
-		"name": "Treebeard",
-		"time_to_finish": 600000,
-		"table": {},
-		"emoji": "",
-		"wildy": true,
-		"difficulty_rating": 9,
-		"qp_required": 100,
-		"heal_amount_needed": 600,
-		"attack_style_to_use": "attack_magic",
-		"attack_styles_used": ["attack_magic"],
-		"respawn_time": 40000,
-		"minimum_gear_requirements": {
-			"mage": {
-				"attack_magic": 90
-			}
-		},
-		"level_requirements": {
-			"magic": 105,
-			"slayer": 101
-		},
-		"poh_boosts": {
-			"pool": {
-				"ancient_rejuvenation_pool": 10
-			}
-		},
-		"item_in_bank_boosts": [
-			{
-				"73072": 10
-			}
-		],
-		"can_be_pked": true
 	},
 	{
 		"id": 4120,
@@ -9427,12 +8637,12 @@
 		"qp_required": 35,
 		"item_in_bank_boosts": [
 			{
-				"709": 13,
-				"11832": 13
+				"11832": 13,
+				"26384": 13
 			},
 			{
-				"2404": 13,
-				"11834": 13
+				"11834": 13,
+				"26386": 13
 			},
 			{
 				"13652": 11
@@ -9483,7 +8693,7 @@
 		"id": 12223,
 		"name": "Vardorvis",
 		"time_to_finish": 245999.99999999997,
-		"notify_drops": ["Baron"],
+		"notify_drops": ["Butch", "Virtus mask", "Virtus robe bottom", "Virtus robe top"],
 		"qp_required": 100,
 		"equipped_item_boosts": [
 			{
@@ -9526,7 +8736,7 @@
 				"items": [
 					{
 						"boost_percent": 3,
-						"item_id": 432
+						"item_id": 26382
 					}
 				],
 				"gear_setup": "melee"
@@ -9535,7 +8745,7 @@
 				"items": [
 					{
 						"boost_percent": 3,
-						"item_id": 709
+						"item_id": 26384
 					}
 				],
 				"gear_setup": "melee"
@@ -9544,7 +8754,7 @@
 				"items": [
 					{
 						"boost_percent": 3,
-						"item_id": 2404
+						"item_id": 26386
 					}
 				],
 				"gear_setup": "melee"
@@ -9580,9 +8790,12 @@
 			"Chromium ingot",
 			"Executioner's axe head",
 			"Strangled tablet",
-			"Ultor vestige"
+			"Ultor vestige",
+			"Virtus mask",
+			"Virtus robe bottom",
+			"Virtus robe top"
 		],
-		"items_required": [[709, 11832], [2404, 11834]],
+		"items_required": [[26384, 11832], [26386, 11834]],
 		"default_attack_styles": ["attack"],
 		"combat_xp_multiplier": 1.135,
 		"heal_amount_needed": 900,
@@ -9610,7 +8823,7 @@
 		"id": 12224,
 		"name": "Vardorvis (Awakened)",
 		"time_to_finish": 930000,
-		"notify_drops": ["Baron"],
+		"notify_drops": ["Butch", "Virtus mask", "Virtus robe bottom", "Virtus robe top"],
 		"qp_required": 100,
 		"equipped_item_boosts": [
 			{
@@ -9635,7 +8848,7 @@
 				"items": [
 					{
 						"boost_percent": 3,
-						"item_id": 432
+						"item_id": 26382
 					}
 				],
 				"gear_setup": "melee"
@@ -9644,7 +8857,7 @@
 				"items": [
 					{
 						"boost_percent": 3,
-						"item_id": 709
+						"item_id": 26384
 					}
 				],
 				"gear_setup": "melee"
@@ -9653,7 +8866,7 @@
 				"items": [
 					{
 						"boost_percent": 3,
-						"item_id": 2404
+						"item_id": 26386
 					}
 				],
 				"gear_setup": "melee"
@@ -9684,9 +8897,12 @@
 			"Chromium ingot",
 			"Executioner's axe head",
 			"Strangled tablet",
-			"Ultor vestige"
+			"Ultor vestige",
+			"Virtus mask",
+			"Virtus robe bottom",
+			"Virtus robe top"
 		],
-		"items_required": [[709, 11832], [2404, 11834]],
+		"items_required": [[26384, 11832], [26386, 11834]],
 		"default_attack_styles": ["attack"],
 		"combat_xp_multiplier": 1.135,
 		"heal_amount_needed": 2250,
@@ -9716,85 +8932,6 @@
 			"steepness": 0.1,
 			"lowest_death_chance": 50,
 			"highest_death_chance": 95
-		}
-	},
-	{
-		"is_custom": true,
-		"id": 93183,
-		"name": "Venatrix",
-		"time_to_finish": 1200000,
-		"hp": 3330,
-		"table": {},
-		"difficulty_rating": 5,
-		"qp_required": 500,
-		"heal_amount_needed": 2000,
-		"attack_style_to_use": "attack_slash",
-		"attack_styles_used": ["attack_slash"],
-		"level_requirements": {
-			"hitpoints": 120,
-			"attack": 120,
-			"strength": 120,
-			"defence": 120,
-			"slayer": 120
-		},
-		"poh_boosts": {
-			"pool": {
-				"ancient_rejuvenation_pool": 5
-			}
-		},
-		"death_props": {
-			"hardness": 0.5,
-			"steepness": 0.999,
-			"lowest_death_chance": 5,
-			"highest_death_chance": 65
-		},
-		"minimum_heal_amount": 22,
-		"all_items": [],
-		"minimum_gear_requirements": {
-			"melee": {}
-		},
-		"minimum_weapon_shield_stats": {
-			"melee": {
-				"attack_stab": 0,
-				"attack_slash": 134,
-				"attack_crush": 0,
-				"attack_magic": 0,
-				"attack_ranged": 0,
-				"defence_stab": 0,
-				"defence_slash": 0,
-				"defence_crush": 0,
-				"defence_magic": 0,
-				"defence_ranged": 0,
-				"melee_strength": 0,
-				"ranged_strength": 0,
-				"magic_damage": 0,
-				"prayer": 0
-			}
-		},
-		"item_cost": {
-			"item_cost": {
-				"6685": 1,
-				"12913": 2
-			},
-			"qty_per_kill": 1
-		},
-		"tame_cant_kill": true,
-		"items_required": [],
-		"setups_used": ["melee"],
-		"equipped_item_boosts": [
-			{
-				"gear_setup": "melee",
-				"items": [
-					{
-						"boost_percent": 20,
-						"item_id": 73072
-					}
-				]
-			}
-		],
-		"required_bitfield": 229,
-		"kc_requirements": {
-			"celestara": 1
 		}
 	},
 	{
@@ -9895,7 +9032,7 @@
 					},
 					{
 						"boost_percent": 3,
-						"item_id": 432
+						"item_id": 26382
 					},
 					{
 						"boost_percent": 2.5,
@@ -9946,7 +9083,7 @@
 					},
 					{
 						"boost_percent": 5,
-						"item_id": 709
+						"item_id": 26384
 					},
 					{
 						"boost_percent": 3,
@@ -9963,7 +9100,7 @@
 					},
 					{
 						"boost_percent": 5,
-						"item_id": 2404
+						"item_id": 26386
 					},
 					{
 						"boost_percent": 3,
@@ -10101,7 +9238,7 @@
 					},
 					{
 						"boost_percent": 2,
-						"item_id": 432
+						"item_id": 26382
 					},
 					{
 						"boost_percent": 1.5,
@@ -10143,7 +9280,7 @@
 					},
 					{
 						"boost_percent": 6,
-						"item_id": 709
+						"item_id": 26384
 					},
 					{
 						"boost_percent": 3,
@@ -10160,7 +9297,7 @@
 					},
 					{
 						"boost_percent": 6,
-						"item_id": 2404
+						"item_id": 26386
 					},
 					{
 						"boost_percent": 3,
@@ -10273,104 +9410,6 @@
 		"heal_amount_needed": 260,
 		"attack_style_to_use": "attack_crush",
 		"attack_styles_used": ["attack_slash"]
-	},
-	{
-		"is_custom": true,
-		"id": 291242,
-		"name": "Vladimir Drakan",
-		"time_to_finish": 900000,
-		"hp": 330,
-		"table": {},
-		"difficulty_rating": 5,
-		"qp_required": 160,
-		"heal_amount_needed": 500,
-		"attack_style_to_use": "attack_ranged",
-		"attack_styles_used": ["attack_ranged"],
-		"level_requirements": {
-			"hitpoints": 120
-		},
-		"item_in_bank_boosts": [
-			{
-				"73072": 10
-			}
-		],
-		"item_cost": {
-			"item_cost": {
-				"22446": 1,
-				"71936": 1
-			},
-			"qty_per_kill": 1
-		},
-		"poh_boosts": {
-			"pool": {
-				"ancient_rejuvenation_pool": 5
-			}
-		},
-		"death_props": {
-			"hardness": 0.5,
-			"steepness": 0.5,
-			"lowest_death_chance": 0.01,
-			"highest_death_chance": 70
-		},
-		"projectile_usage": {
-			"required": true,
-			"required_ammo": ["Silver bolts"]
-		},
-		"all_items": [
-			"Adamant platebody",
-			"Adamantite stone spirit",
-			"Blightbrand",
-			"Blood orange seed",
-			"Clue scroll (elite)",
-			"Clue scroll (grandmaster)",
-			"Clue scroll (master)",
-			"Coins",
-			"Crystal key",
-			"Diamond amulet",
-			"Diamond bracelet",
-			"Diamond necklace",
-			"Diamond ring",
-			"Dragon bones",
-			"Dragon necklace",
-			"Dragonstone amulet",
-			"Dragonstone bracelet",
-			"Dragonstone ring",
-			"Echo",
-			"Emerald amulet",
-			"Emerald bracelet",
-			"Emerald necklace",
-			"Emerald ring",
-			"Gold amulet",
-			"Gold bracelet",
-			"Gold necklace",
-			"Gold ring",
-			"Onyx amulet",
-			"Onyx bracelet",
-			"Onyx necklace",
-			"Onyx ring",
-			"Rune 2h sword",
-			"Rune arrow",
-			"Rune battleaxe",
-			"Rune dagger",
-			"Rune halberd",
-			"Rune longsword",
-			"Rune mace",
-			"Rune scimitar",
-			"Rune spear",
-			"Rune sword",
-			"Rune warhammer",
-			"Sapphire amulet",
-			"Sapphire bracelet",
-			"Sapphire necklace",
-			"Sapphire ring",
-			"Vampyre dust",
-			"Vampyre hunter boots",
-			"Vampyre hunter cuffs",
-			"Vampyre hunter hat",
-			"Vampyre hunter legs",
-			"Vampyre hunter top",
-			"Vampyric plushie"
-		]
 	},
 	{
 		"id": 8061,
@@ -10584,26 +9623,6 @@
 		"heal_amount_needed": 15,
 		"attack_style_to_use": "attack_slash",
 		"attack_styles_used": ["attack_slash", "attack_magic"]
-	},
-	{
-		"is_custom": true,
-		"id": 129521,
-		"name": "Yeti",
-		"time_to_finish": 1800000,
-		"table": {},
-		"heal_amount_needed": 16000,
-		"attack_style_to_use": "attack_stab",
-		"attack_styles_used": ["attack_stab"],
-		"group_killable": false,
-		"respawn_time": 240000,
-		"hp": 960,
-		"death_props": {
-			"lowest_death_chance": 10,
-			"highest_death_chance": 30,
-			"steepness": 0.99,
-			"hardness": 0.4
-		},
-		"required_bitfield": 212
 	},
 	{
 		"id": 866,
