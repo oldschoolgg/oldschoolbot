@@ -2,18 +2,25 @@ import './base.js';
 
 import { writeFileSync } from 'node:fs';
 import path from 'node:path';
+import { Bank } from 'oldschooljs';
 import { omit } from 'remeda';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 import { BOT_TYPE } from '@/lib/constants.js';
+import Buyables from '@/lib/data/buyables/buyables.js';
+import { TokkulShopItems } from '@/lib/data/buyables/tokkulBuyables.js';
 import { allCollectionLogs } from '@/lib/data/Collections.js';
+import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { similarItems } from '@/lib/data/similarItems.js';
+import { diariesObject } from '@/lib/diaries.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import Potions from '@/lib/minions/data/potions.js';
+import { quests } from '@/lib/minions/data/quests.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
+import { allOpenables } from '@/lib/openables.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import Agility from '@/lib/skilling/skills/agility.js';
 import Cooking from '@/lib/skilling/skills/cooking/cooking.js';
@@ -30,6 +37,7 @@ import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import Thieving from '@/lib/skilling/skills/thieving/index.js';
 import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
+import { genericUsables, usableUnlocks } from '@/mahoji/lib/abstracted_commands/useCommand.js';
 import { serializeSnapshotItem, Util } from './scriptUtil.js';
 
 const rootDir = path.join('data', BOT_TYPE.toLowerCase());
@@ -212,3 +220,54 @@ writeRootJson(
 );
 
 writeRootJson('collection-log.json', serializeSnapshotItem(allCollectionLogs));
+
+writeRootJson('openables.json', serializeSnapshotItem(allOpenables.sort((a, b) => a.name.localeCompare(b.name))));
+
+writeRootJson('usables.json', {
+	unlocks: usableUnlocks.sort((a, b) => a.item.name.localeCompare(b.item.name)).map(serializeSnapshotItem),
+	generic: genericUsables.sort((a, b) => a.items[0].name.localeCompare(b.items[0].name)).map(serializeSnapshotItem)
+});
+
+writeRootJson(
+	'tokkul-shop-buyables.json',
+	serializeSnapshotItem(TokkulShopItems.sort((a, b) => a.name.localeCompare(b.name)))
+);
+
+writeRootJson(
+	'lms-buyables.json',
+	serializeSnapshotItem(LMSBuyables.sort((a, b) => a.item.name.localeCompare(b.item.name)))
+);
+
+writeRootJson(
+	'buyables.json',
+	serializeSnapshotItem(
+		Buyables.sort((a, b) => a.name.localeCompare(b.name)).map(i => ({
+			...i,
+			...(i.itemCost ? { itemCost: new Bank(i.itemCost) } : {}),
+			outputItems: !i.outputItems
+				? new Bank().add(i.name)
+				: i.outputItems instanceof Bank
+					? i.outputItems
+					: '[Function]'
+		}))
+	)
+);
+
+writeRootJson(
+	'achievement-diaries.json',
+	serializeSnapshotItem(
+		Object.values(diariesObject)
+			.sort((a, b) => a.name.localeCompare(b.name))
+			.map(serializeSnapshotItem)
+	)
+);
+
+writeRootJson(
+	'quests.json',
+	serializeSnapshotItem(quests.sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem))
+);
+
+writeRootJson(
+	'quests.json',
+	serializeSnapshotItem(quests.sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem))
+);

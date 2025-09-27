@@ -62,8 +62,17 @@ export async function tearDownScript() {
 
 export function serializeSnapshotItem(item: any): any {
 	if (!isObjectType(item)) return item;
-
 	if (Array.isArray(item)) return item.map(serializeSnapshotItem);
+
+	// Items
+	if (
+		'id' in item &&
+		'name' in item &&
+		('tradeable' in item || 'customItemData' in item || 'wiki_name' in item || 'equipable_by_player' in item)
+	) {
+		return item.name;
+	}
+
 	const result: any = {};
 	for (let [key, value] of Object.entries(item) as [string, any][]) {
 		const isObj = isObjectType(value);
