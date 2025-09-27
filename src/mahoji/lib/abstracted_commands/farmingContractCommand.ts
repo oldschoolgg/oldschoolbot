@@ -1,6 +1,6 @@
 import { makeComponents, roughMergeMahojiResponse } from '@oldschoolgg/toolkit/discord-util';
+import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
-import { toTitleCase } from 'remeda';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
 import { defaultFarmingContract } from '@/lib/minions/farming/index.js';
