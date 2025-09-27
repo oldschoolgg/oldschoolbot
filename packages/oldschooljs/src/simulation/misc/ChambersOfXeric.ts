@@ -2,6 +2,7 @@ import { Bank, type ItemBank, type LootBank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
 import Minigame from '@/structures/Minigame.js';
 import SimpleTable from '@/structures/SimpleTable.js';
+import { resolveNameBank } from '@/util/bank.js';
 import itemID from '@/util/itemID.js';
 import { randFloat, roll, shuffleArr, sumArr, Time } from '@/util/smallUtils.js';
 import { JSONClone } from '@/util/util.js';
@@ -38,7 +39,7 @@ export interface ChambersOfXericOptions {
 	team: TeamMember[];
 }
 
-const itemScales = new Bank({
+const itemScales = resolveNameBank({
 	'Death rune': 36,
 	'Blood rune': 32,
 	'Soul rune': 20,
