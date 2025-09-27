@@ -16,7 +16,7 @@ interface UsableUnlock {
 	bitfield: BitField;
 	resultMessage: string;
 }
-const usableUnlocks: UsableUnlock[] = [
+export const usableUnlocks: UsableUnlock[] = [
 	{
 		item: Items.getOrThrow('Torn prayer scroll'),
 		bitfield: BitField.HasTornPrayerScroll,
@@ -101,7 +101,7 @@ for (const usableUnlock of usableUnlocks) {
 	});
 }
 
-const genericUsables: {
+export const genericUsables: {
 	items: [Item, Item] | [Item];
 	cost: Bank;
 	loot: Bank | (() => Bank) | null;

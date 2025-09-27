@@ -23,6 +23,18 @@ export const CLUE_SCROLLS = [
 type ResolvableItem = number | string;
 export type ArrayItemsResolvable = (ResolvableItem | ResolvableItem[])[];
 export type ArrayItemsResolved = (number | number[])[];
+export type ArrayItemsResolvedNames = (string | string[])[];
+export type SortableItem = string | { name: string } | SortableItem[];
+
+const collator = new Intl.Collator(undefined, { sensitivity: 'base', numeric: true });
+const key = (x: SortableItem): string =>
+	Array.isArray(x) ? (x.length ? key(x[0]!) : '') : typeof x === 'string' ? x : x.name;
+
+function sortAlpha(arr: SortableItem[]): SortableItem[] {
+	const sorted = [...arr].map(v => (Array.isArray(v) ? sortAlpha(v) : v));
+	sorted.sort((a, b) => collator.compare(key(a), key(b)));
+	return sorted;
+}
 
 export const CLUE_SCROLL_NAMES: string[] = [
 	'Clue scroll (beginner)',
@@ -55,6 +67,7 @@ export const USELESS_ITEMS = [
 ];
 
 class Items extends Collection<number, Item> {
+	sortAlpha = sortAlpha;
 	public override get(item: ItemResolvable): Item | undefined {
 		const id = this.resolveID(item);
 		if (typeof id === 'undefined') return undefined;
@@ -133,21 +146,36 @@ class Items extends Collection<number, Item> {
 		const newArray: ArrayItemsResolved = [];
 
 		for (const item of itemArray) {
-			if (typeof item === 'number') {
-				newArray.push(item);
-			} else if (Array.isArray(item)) {
+			if (Array.isArray(item)) {
 				const test = this.resolveItems(item);
 				newArray.push(test);
 			} else {
-				const osItem = this.get(item);
-				if (!osItem) {
-					throw new Error(`No item found for: ${item}.`);
-				}
+				const osItem = this.getOrThrow(item);
 				newArray.push(osItem.id);
 			}
 		}
 
 		return newArray;
+	}
+
+	public deepResolveNames(
+		itemArray: ArrayItemsResolvable,
+		options?: { sort?: 'alphabetical' }
+	): ArrayItemsResolvedNames {
+		const newArray: ArrayItemsResolvedNames = [];
+
+		const sortFn = options?.sort === 'alphabetical' ? (a: string, b: string) => a.localeCompare(b) : () => 0;
+
+		for (const item of itemArray) {
+			if (Array.isArray(item)) {
+				newArray.push(item.map(i => this.getOrThrow(i).name).sort(sortFn));
+			} else {
+				const osItem = this.getOrThrow(item);
+				newArray.push(osItem.name);
+			}
+		}
+
+		return newArray.sort((a, b) => sortFn(typeof a === 'string' ? a : a[0], typeof b === 'string' ? b : b[0]));
 	}
 }
 

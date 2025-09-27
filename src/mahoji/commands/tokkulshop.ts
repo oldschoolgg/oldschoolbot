@@ -4,7 +4,7 @@ import { activity_type_enum } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Monsters } from 'oldschooljs';
 
-import TokkulShopItems from '@/lib/data/buyables/tokkulBuyables.js';
+import { TokkulShopItems } from '@/lib/data/buyables/tokkulBuyables.js';
 import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { TokkulShopOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';

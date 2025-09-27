@@ -12,14 +12,6 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
-import {
-	cluesBeginnerCL,
-	cluesEasyCL,
-	cluesEliteCL,
-	cluesHardCL,
-	cluesMasterCL,
-	cluesMediumCL
-} from '@/lib/data/CollectionsExport.js';
 import type { ClueReqs } from './clueReqs.js';
 import { beginnerReqs } from './clueReqs.js';
 import type { StashUnitTier } from './stashUnits.js';
@@ -44,7 +36,6 @@ export interface ClueTier {
 	stashUnits: StashUnitTier;
 	reqs: ClueReqs;
 	implings?: number[];
-	cl: number[];
 }
 
 export const ClueTiers: ClueTier[] = [
@@ -58,8 +49,7 @@ export const ClueTiers: ClueTier[] = [
 		allItems: BeginnerCasket.allItems,
 		stashUnits: beginnerStashes,
 		reqs: beginnerReqs,
-		implings: resolveItems(['Baby impling jar', 'Young impling jar']),
-		cl: cluesBeginnerCL
+		implings: resolveItems(['Baby impling jar', 'Young impling jar'])
 	},
 	{
 		name: 'Easy',
@@ -75,8 +65,7 @@ export const ClueTiers: ClueTier[] = [
 		allItems: EasyCasket.allItems,
 		stashUnits: easyStashes,
 		reqs: beginnerReqs,
-		implings: resolveItems(['Baby impling jar', 'Young impling jar', 'Gourmet impling jar']),
-		cl: cluesEasyCL
+		implings: resolveItems(['Baby impling jar', 'Young impling jar', 'Gourmet impling jar'])
 	},
 	{
 		name: 'Medium',
@@ -92,8 +81,7 @@ export const ClueTiers: ClueTier[] = [
 		allItems: MediumCasket.allItems,
 		stashUnits: mediumStashes,
 		reqs: beginnerReqs,
-		implings: resolveItems(['Earth impling jar', 'Essence impling jar', 'Eclectic impling jar']),
-		cl: cluesMediumCL
+		implings: resolveItems(['Earth impling jar', 'Essence impling jar', 'Eclectic impling jar'])
 	},
 	{
 		name: 'Hard',
@@ -105,8 +93,7 @@ export const ClueTiers: ClueTier[] = [
 		allItems: HardCasket.allItems,
 		stashUnits: hardStashes,
 		reqs: beginnerReqs,
-		implings: resolveItems(['Nature impling jar', 'Magpie impling jar', 'Ninja impling jar']),
-		cl: cluesHardCL
+		implings: resolveItems(['Nature impling jar', 'Magpie impling jar', 'Ninja impling jar'])
 	},
 	{
 		name: 'Elite',
@@ -122,8 +109,7 @@ export const ClueTiers: ClueTier[] = [
 		allItems: EliteCasket.allItems,
 		stashUnits: eliteStashes,
 		reqs: beginnerReqs,
-		implings: resolveItems(['Crystal impling jar', 'Dragon impling jar']),
-		cl: cluesEliteCL
+		implings: resolveItems(['Crystal impling jar', 'Dragon impling jar'])
 	},
 	{
 		name: 'Master',
@@ -138,7 +124,6 @@ export const ClueTiers: ClueTier[] = [
 		mimicChance: 15,
 		allItems: MasterCasket.allItems,
 		stashUnits: masterStashes,
-		reqs: beginnerReqs,
-		cl: cluesMasterCL
+		reqs: beginnerReqs
 	}
 ];
