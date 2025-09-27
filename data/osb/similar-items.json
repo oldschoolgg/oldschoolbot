@@ -1,0 +1,1122 @@
+[
+	{
+		"main_item": "Abyssal tentacle",
+		"similar_items": ["Abyssal tentacle", "Abyssal tentacle (or)"]
+	},
+	{
+		"main_item": "Abyssal whip",
+		"similar_items": ["Abyssal tentacle", "Abyssal whip", "Frozen abyssal whip", "Volcanic abyssal whip"]
+	},
+	{
+		"main_item": "Achievement diary cape",
+		"similar_items": ["Achievement diary cape", "Achievement diary cape (t)"]
+	},
+	{
+		"main_item": "Adamant axe",
+		"similar_items": ["Adamant axe", "Adamant felling axe"]
+	},
+	{
+		"main_item": "Agility cape",
+		"similar_items": ["Agility cape", "Agility cape(t)", "Max cape"]
+	},
+	{
+		"main_item": "Amulet of fury",
+		"similar_items": ["Amulet of blood fury", "Amulet of fury", "Amulet of fury (or)"]
+	},
+	{
+		"main_item": "Amulet of glory",
+		"similar_items": [
+			"Amulet of eternal glory",
+			"Amulet of glory",
+			"Amulet of glory (t)",
+			"Amulet of glory (t1)",
+			"Amulet of glory (t2)",
+			"Amulet of glory (t3)",
+			"Amulet of glory (t4)",
+			"Amulet of glory (t5)",
+			"Amulet of glory (t6)",
+			"Amulet of glory(1)",
+			"Amulet of glory(2)",
+			"Amulet of glory(3)",
+			"Amulet of glory(4)",
+			"Amulet of glory(5)",
+			"Amulet of glory(6)"
+		]
+	},
+	{
+		"main_item": "Amulet of rancour",
+		"similar_items": ["Amulet of rancour", "Amulet of rancour (s)"]
+	},
+	{
+		"main_item": "Amulet of torture",
+		"similar_items": ["Amulet of rancour", "Amulet of rancour (s)", "Amulet of torture", "Amulet of torture (or)"]
+	},
+	{
+		"main_item": "Ancestral hat",
+		"similar_items": ["Ancestral hat", "Twisted ancestral hat"]
+	},
+	{
+		"main_item": "Ancestral robe bottom",
+		"similar_items": ["Ancestral robe bottom", "Twisted ancestral robe bottom"]
+	},
+	{
+		"main_item": "Ancestral robe top",
+		"similar_items": ["Ancestral robe top", "Twisted ancestral robe top"]
+	},
+	{
+		"main_item": "Ancient wyvern shield",
+		"similar_items": ["Ancient wyvern shield", "Uncharged ancient wyvern shield"]
+	},
+	{
+		"main_item": "Angler boots",
+		"similar_items": ["Angler boots", "Spirit angler boots"]
+	},
+	{
+		"main_item": "Angler hat",
+		"similar_items": ["Angler hat", "Spirit angler headband"]
+	},
+	{
+		"main_item": "Angler top",
+		"similar_items": ["Angler top", "Spirit angler top"]
+	},
+	{
+		"main_item": "Angler waders",
+		"similar_items": ["Angler waders", "Spirit angler waders"]
+	},
+	{
+		"main_item": "Anti-dragon shield",
+		"similar_items": [
+			"Ancient wyvern shield",
+			"Anti-dragon shield",
+			"Dragonfire shield",
+			"Dragonfire ward",
+			"Uncharged ancient wyvern shield",
+			"Uncharged dragonfire shield",
+			"Uncharged dragonfire ward"
+		]
+	},
+	{
+		"main_item": "Ardougne cloak 4",
+		"similar_items": ["Ardougne cloak 4", "Ardougne max cape"]
+	},
+	{
+		"main_item": "Armadyl chainskirt",
+		"similar_items": ["Armadyl chainskirt", "Masori chaps", "Masori chaps (f)"]
+	},
+	{
+		"main_item": "Armadyl chestplate",
+		"similar_items": ["Armadyl chestplate", "Armadyl chestplate", "Masori body", "Masori body (f)"]
+	},
+	{
+		"main_item": "Armadyl crossbow",
+		"similar_items": ["Armadyl crossbow", "Zaryte crossbow"]
+	},
+	{
+		"main_item": "Armadyl godsword",
+		"similar_items": ["Armadyl godsword", "Armadyl godsword (or)"]
+	},
+	{
+		"main_item": "Armadyl helmet",
+		"similar_items": ["Armadyl helmet", "Masori mask", "Masori mask (f)"]
+	},
+	{
+		"main_item": "Attack cape",
+		"similar_items": ["Attack cape", "Attack cape(t)", "Max cape"]
+	},
+	{
+		"main_item": "Ava's accumulator",
+		"similar_items": ["Accumulator max cape", "Ava's accumulator"]
+	},
+	{
+		"main_item": "Ava's assembler",
+		"similar_items": [
+			"Assembler max cape",
+			"Assembler max cape (l)",
+			"Ava's assembler",
+			"Blessed dizana's quiver",
+			"Dizana's max cape",
+			"Masori assembler",
+			"Masori assembler max cape"
+		]
+	},
+	{
+		"main_item": "Avernic defender",
+		"similar_items": [
+			"Avernic defender",
+			"Avernic defender (l)",
+			"Ghommal's avernic defender 5",
+			"Ghommal's avernic defender 6"
+		]
+	},
+	{
+		"main_item": "Bandos godsword",
+		"similar_items": ["Bandos godsword", "Bandos godsword (or)"]
+	},
+	{
+		"main_item": "Berserker necklace",
+		"similar_items": ["Berserker necklace", "Berserker necklace (or)"]
+	},
+	{
+		"main_item": "Black axe",
+		"similar_items": ["Black axe", "Black felling axe"]
+	},
+	{
+		"main_item": "Black d'hide body",
+		"similar_items": [
+			"Ancient d'hide body",
+			"Armadyl d'hide body",
+			"Bandos d'hide body",
+			"Black d'hide body",
+			"Black d'hide body (g)",
+			"Black d'hide body (t)",
+			"Guthix d'hide body",
+			"Saradomin d'hide body",
+			"Zamorak d'hide body"
+		]
+	},
+	{
+		"main_item": "Black d'hide chaps",
+		"similar_items": [
+			"Ancient chaps",
+			"Armadyl chaps",
+			"Bandos chaps",
+			"Black d'hide chaps",
+			"Black d'hide chaps (g)",
+			"Black d'hide chaps (t)",
+			"Guthix chaps",
+			"Saradomin chaps",
+			"Zamorak chaps"
+		]
+	},
+	{
+		"main_item": "Black mask",
+		"similar_items": [
+			"Araxyte slayer helmet",
+			"Araxyte slayer helmet (i)",
+			"Black mask",
+			"Black mask (1)",
+			"Black mask (1) (i)",
+			"Black mask (10)",
+			"Black mask (10) (i)",
+			"Black mask (2)",
+			"Black mask (2) (i)",
+			"Black mask (3)",
+			"Black mask (3) (i)",
+			"Black mask (4)",
+			"Black mask (4) (i)",
+			"Black mask (5)",
+			"Black mask (5) (i)",
+			"Black mask (6)",
+			"Black mask (6) (i)",
+			"Black mask (7)",
+			"Black mask (7) (i)",
+			"Black mask (8)",
+			"Black mask (8) (i)",
+			"Black mask (9)",
+			"Black mask (9) (i)",
+			"Black mask (i)",
+			"Black slayer helmet",
+			"Black slayer helmet (i)",
+			"Green slayer helmet",
+			"Green slayer helmet (i)",
+			"Hydra slayer helmet",
+			"Hydra slayer helmet (i)",
+			"Purple slayer helmet",
+			"Purple slayer helmet (i)",
+			"Red slayer helmet",
+			"Red slayer helmet (i)",
+			"Slayer helmet",
+			"Slayer helmet (i)",
+			"Turquoise slayer helmet",
+			"Turquoise slayer helmet (i)",
+			"Twisted slayer helmet",
+			"Twisted slayer helmet (i)",
+			"Tzkal slayer helmet",
+			"Tzkal slayer helmet (i)",
+			"Tztok slayer helmet",
+			"Tztok slayer helmet (i)",
+			"Vampyric slayer helmet",
+			"Vampyric slayer helmet (i)"
+		]
+	},
+	{
+		"main_item": "Black mask (i)",
+		"similar_items": [
+			"Araxyte slayer helmet (i)",
+			"Black mask (1) (i)",
+			"Black mask (10) (i)",
+			"Black mask (2) (i)",
+			"Black mask (3) (i)",
+			"Black mask (4) (i)",
+			"Black mask (5) (i)",
+			"Black mask (6) (i)",
+			"Black mask (7) (i)",
+			"Black mask (8) (i)",
+			"Black mask (9) (i)",
+			"Black mask (i)",
+			"Black slayer helmet (i)",
+			"Green slayer helmet (i)",
+			"Hydra slayer helmet (i)",
+			"Purple slayer helmet (i)",
+			"Red slayer helmet (i)",
+			"Slayer helmet (i)",
+			"Turquoise slayer helmet (i)",
+			"Twisted slayer helmet (i)",
+			"Tzkal slayer helmet (i)",
+			"Tztok slayer helmet (i)",
+			"Vampyric slayer helmet (i)"
+		]
+	},
+	{
+		"main_item": "Blessed dizana's quiver",
+		"similar_items": ["Blessed dizana's quiver", "Dizana's max cape"]
+	},
+	{
+		"main_item": "Boots of stone",
+		"similar_items": ["Boots of brimstone", "Boots of stone", "Granite boots", "Rada's blessing 4"]
+	},
+	{
+		"main_item": "Bow of faerdhinen (c)",
+		"similar_items": [
+			"Bow of faerdhinen (c)",
+			"Bow of faerdhinen (c)",
+			"Bow of faerdhinen (c)",
+			"Bow of faerdhinen (c)",
+			"Bow of faerdhinen (c)",
+			"Bow of faerdhinen (c)",
+			"Bow of faerdhinen (c)",
+			"Bow of faerdhinen (c)"
+		]
+	},
+	{
+		"main_item": "Bronze axe",
+		"similar_items": ["Bronze axe", "Bronze felling axe"]
+	},
+	{
+		"main_item": "Bronze felling axe",
+		"similar_items": [
+			"3rd age felling axe",
+			"Adamant felling axe",
+			"Black felling axe",
+			"Bronze felling axe",
+			"Bronze felling axe",
+			"Crystal felling axe",
+			"Dragon felling axe",
+			"Iron felling axe",
+			"Mithril felling axe",
+			"Rune felling axe",
+			"Steel felling axe"
+		]
+	},
+	{
+		"main_item": "Celestial ring",
+		"similar_items": ["Celestial ring", "Celestial signet"]
+	},
+	{
+		"main_item": "Celestial ring (uncharged)",
+		"similar_items": [
+			"Celestial ring",
+			"Celestial ring (uncharged)",
+			"Celestial signet",
+			"Celestial signet (uncharged)"
+		]
+	},
+	{
+		"main_item": "Celestial signet (uncharged)",
+		"similar_items": ["Celestial signet", "Celestial signet (uncharged)"]
+	},
+	{
+		"main_item": "Construct. cape",
+		"similar_items": ["Construct. cape", "Construct. cape(t)", "Max cape"]
+	},
+	{
+		"main_item": "Cooking cape",
+		"similar_items": ["Cooking cape", "Cooking cape(t)", "Max cape"]
+	},
+	{
+		"main_item": "Crafting cape",
+		"similar_items": ["Crafting cape", "Crafting cape(t)", "Max cape"]
+	},
+	{
+		"main_item": "Craw's bow",
+		"similar_items": ["Craw's bow", "Webweaver bow"]
+	},
+	{
+		"main_item": "Crystal axe",
+		"similar_items": ["Crystal axe", "Crystal felling axe"]
+	},
+	{
+		"main_item": "Dark bow",
+		"similar_items": ["Dark bow", "Dark bow (blue)", "Dark bow (green)", "Dark bow (white)", "Dark bow (yellow)"]
+	},
+	{
+		"main_item": "Defence cape",
+		"similar_items": ["Defence cape", "Defence cape(t)", "Max cape"]
+	},
+	{
+		"main_item": "Dragon axe",
+		"similar_items": ["3rd age axe", "3rd age felling axe", "Dragon axe", "Dragon felling axe"]
+	},
+	{
+		"main_item": "Dragon boots",
+		"similar_items": ["Dragon boots", "Dragon boots (g)"]
+	},
+	{
+		"main_item": "Dragon chainbody",
+		"similar_items": ["Dragon chainbody", "Dragon chainbody (g)"]
+	},
+	{
+		"main_item": "Dragon defender",
+		"similar_items": ["Dragon defender", "Dragon defender (l)", "Dragon defender (t)"]
+	},
+	{
+		"main_item": "Dragon full helm",
+		"similar_items": ["Dragon full helm", "Dragon full helm (g)"]
+	},
+	{
+		"main_item": "Dragon hunter crossbow",
+		"similar_items": ["Dragon hunter crossbow", "Dragon hunter crossbow (b)", "Dragon hunter crossbow (t)"]
+	},
+	{
+		"main_item": "Dragon kiteshield",
+		"similar_items": ["Dragon kiteshield", "Dragon kiteshield (g)"]
+	},
+	{
+		"main_item": "Dragon pickaxe",
+		"similar_items": [
+			"3rd age pickaxe",
+			"Crystal pickaxe",
+			"Dragon pickaxe",
+			"Dragon pickaxe (or)",
+			"Dragon pickaxe (upgraded)",
+			"Infernal pickaxe"
+		]
+	},
+	{
+		"main_item": "Dragon platebody",
+		"similar_items": ["Dragon platebody", "Dragon platebody (g)"]
+	},
+	{
+		"main_item": "Dragon platelegs",
+		"similar_items": ["Dragon platelegs", "Dragon platelegs (g)"]
+	},
+	{
+		"main_item": "Dragon plateskirt",
+		"similar_items": ["Dragon plateskirt", "Dragon plateskirt (g)"]
+	},
+	{
+		"main_item": "Dragon scimitar",
+		"similar_items": ["Dragon scimitar", "Dragon scimitar (or)"]
+	},
+	{
+		"main_item": "Dragon sq shield",
+		"similar_items": ["Dragon sq shield", "Dragon sq shield (g)"]
+	},
+	{
+		"main_item": "Dragonfire shield",
+		"similar_items": ["Dragonfire shield", "Uncharged dragonfire shield"]
+	},
+	{
+		"main_item": "Dragonfire ward",
+		"similar_items": ["Dragonfire ward", "Uncharged dragonfire ward"]
+	},
+	{
+		"main_item": "Earmuffs",
+		"similar_items": [
+			"Araxyte slayer helmet",
+			"Black slayer helmet",
+			"Earmuffs",
+			"Green slayer helmet",
+			"Hydra slayer helmet",
+			"Purple slayer helmet",
+			"Red slayer helmet",
+			"Slayer helmet",
+			"Turquoise slayer helmet",
+			"Twisted slayer helmet",
+			"Tzkal slayer helmet",
+			"Tztok slayer helmet",
+			"Vampyric slayer helmet"
+		]
+	},
+	{
+		"main_item": "Elidinis' ward (f)",
+		"similar_items": ["Elidinis' ward (f)", "Elidinis' ward (or)"]
+	},
+	{
+		"main_item": "Elite void robe",
+		"similar_items": ["Elite void robe", "Elite void robe (l)", "Elite void robe (or)"]
+	},
+	{
+		"main_item": "Elite void top",
+		"similar_items": ["Elite void top", "Elite void top (l)", "Elite void top (or)"]
+	},
+	{
+		"main_item": "Facemask",
+		"similar_items": [
+			"Araxyte slayer helmet",
+			"Black slayer helmet",
+			"Facemask",
+			"Green slayer helmet",
+			"Hydra slayer helmet",
+			"Purple slayer helmet",
+			"Red slayer helmet",
+			"Slayer helmet",
+			"Turquoise slayer helmet",
+			"Twisted slayer helmet",
+			"Tzkal slayer helmet",
+			"Tztok slayer helmet",
+			"Vampyric slayer helmet"
+		]
+	},
+	{
+		"main_item": "Farming cape",
+		"similar_items": ["Farming cape", "Farming cape(t)", "Max cape"]
+	},
+	{
+		"main_item": "Fire cape",
+		"similar_items": ["Fire cape", "Fire max cape", "Fire max cape (l)"]
+	},
+	{
+		"main_item": "Firemaking cape",
+		"similar_items": ["Firemaking cape", "Firemaking cape(t)", "Max cape"]
+	},
+	{
+		"main_item": "Fishing cape",
+		"similar_items": ["Fishing cape", "Fishing cape(t)", "Max cape"]
+	},
+	{
+		"main_item": "Fletching cape",
+		"similar_items": ["Fletching cape", "Fletching cape(t)", "Max cape"]
+	},
+	{
+		"main_item": "Flippers",
+		"similar_items": ["Dark flippers", "Flippers"]
+	},
+	{
+		"main_item": "Forestry kit",
+		"similar_items": ["Forestry basket", "Forestry kit"]
+	},
+	{
+		"main_item": "Ghrazi rapier",
+		"similar_items": ["Ghrazi rapier", "Holy ghrazi rapier"]
+	},
+	{
+		"main_item": "Graceful boots",
+		"similar_items": [
+			"Arceuus graceful boots",
+			"Brimhaven graceful boots",
+			"Dark graceful boots",
+			"Graceful boots",
+			"Graceful boots",
+			"Hosidius graceful boots",
+			"Kourend graceful boots",
+			"Lovakengj graceful boots",
+			"Piscarilius graceful boots",
+			"Shayzien graceful boots",
+			"Trailblazer graceful boots",
+			"Varlamore graceful boots"
+		]
+	},
+	{
+		"main_item": "Graceful cape",
+		"similar_items": [
+			"Agility cape",
+			"Agility cape(t)",
+			"Arceuus graceful cape",
+			"Brimhaven graceful cape",
+			"Dark graceful cape",
+			"Graceful cape",
+			"Graceful cape",
+			"Hosidius graceful cape",
+			"Kourend graceful cape",
+			"Lovakengj graceful cape",
+			"Max cape",
+			"Piscarilius graceful cape",
+			"Shayzien graceful cape",
+			"Trailblazer graceful cape",
+			"Varlamore graceful cape"
+		]
+	},
+	{
+		"main_item": "Graceful gloves",
+		"similar_items": [
+			"Arceuus graceful gloves",
+			"Brimhaven graceful gloves",
+			"Dark graceful gloves",
+			"Graceful gloves",
+			"Graceful gloves",
+			"Hosidius graceful gloves",
+			"Kourend graceful gloves",
+			"Lovakengj graceful gloves",
+			"Piscarilius graceful gloves",
+			"Shayzien graceful gloves",
+			"Trailblazer graceful gloves",
+			"Varlamore graceful gloves"
+		]
+	},
+	{
+		"main_item": "Graceful hood",
+		"similar_items": [
+			"Arceuus graceful hood",
+			"Brimhaven graceful hood",
+			"Dark graceful hood",
+			"Graceful hood",
+			"Graceful hood",
+			"Hosidius graceful hood",
+			"Kourend graceful hood",
+			"Lovakengj graceful hood",
+			"Piscarilius graceful hood",
+			"Shayzien graceful hood",
+			"Trailblazer graceful hood",
+			"Varlamore graceful hood"
+		]
+	},
+	{
+		"main_item": "Graceful legs",
+		"similar_items": [
+			"Arceuus graceful legs",
+			"Brimhaven graceful legs",
+			"Dark graceful legs",
+			"Graceful legs",
+			"Graceful legs",
+			"Hosidius graceful legs",
+			"Kourend graceful legs",
+			"Lovakengj graceful legs",
+			"Piscarilius graceful legs",
+			"Shayzien graceful legs",
+			"Trailblazer graceful legs",
+			"Varlamore graceful legs"
+		]
+	},
+	{
+		"main_item": "Graceful top",
+		"similar_items": [
+			"Arceuus graceful top",
+			"Brimhaven graceful top",
+			"Dark graceful top",
+			"Graceful top",
+			"Graceful top",
+			"Hosidius graceful top",
+			"Kourend graceful top",
+			"Lovakengj graceful top",
+			"Piscarilius graceful top",
+			"Shayzien graceful top",
+			"Trailblazer graceful top",
+			"Varlamore graceful top"
+		]
+	},
+	{
+		"main_item": "Granite maul",
+		"similar_items": ["Granite maul", "Granite maul (or)"]
+	},
+	{
+		"main_item": "Guthix cape",
+		"similar_items": [
+			"Guthix cape",
+			"Guthix max cape",
+			"Saradomin cape",
+			"Saradomin max cape",
+			"Zamorak cape",
+			"Zamorak max cape"
+		]
+	},
+	{
+		"main_item": "Guthix d'hide boots",
+		"similar_items": [
+			"Ancient d'hide boots",
+			"Armadyl d'hide boots",
+			"Bandos d'hide boots",
+			"Guthix d'hide boots",
+			"Saradomin d'hide boots",
+			"Zamorak d'hide boots"
+		]
+	},
+	{
+		"main_item": "Hat of the eye",
+		"similar_items": ["Hat of the eye", "Hat of the eye (blue)", "Hat of the eye (green)", "Hat of the eye (red)"]
+	},
+	{
+		"main_item": "Herblore cape",
+		"similar_items": ["Herblore cape", "Herblore cape(t)", "Max cape"]
+	},
+	{
+		"main_item": "Hitpoints cape",
+		"similar_items": ["Hitpoints cape", "Hitpoints cape(t)", "Max cape"]
+	},
+	{
+		"main_item": "Hunter cape",
+		"similar_items": ["Hunter cape", "Hunter cape(t)", "Max cape"]
+	},
+	{
+		"main_item": "Imbued guthix cape",
+		"similar_items": [
+			"Imbued guthix cape",
+			"Imbued guthix max cape",
+			"Imbued guthix max cape (l)",
+			"Imbued saradomin cape",
+			"Imbued saradomin max cape",
+			"Imbued saradomin max cape (l)",
+			"Imbued zamorak cape",
+			"Imbued zamorak max cape",
+			"Imbued zamorak max cape (l)"
+		]
+	},
+	{
+		"main_item": "Imbued heart",
+		"similar_items": ["Imbued heart", "Saturated heart"]
+	},
+	{
+		"main_item": "Infernal cape",
+		"similar_items": ["Infernal cape", "Infernal max cape", "Infernal max cape (l)"]
+	},
+	{
+		"main_item": "Infinity bottoms",
+		"similar_items": ["Dark infinity bottoms", "Infinity bottoms", "Light infinity bottoms"]
+	},
+	{
+		"main_item": "Infinity hat",
+		"similar_items": ["Dark infinity hat", "Infinity hat", "Light infinity hat"]
+	},
+	{
+		"main_item": "Infinity top",
+		"similar_items": ["Dark infinity top", "Infinity top", "Light infinity top"]
+	},
+	{
+		"main_item": "Iron axe",
+		"similar_items": ["Iron axe", "Iron felling axe"]
+	},
+	{
+		"main_item": "Ivandis flail",
+		"similar_items": ["Blisterwood flail", "Ivandis flail"]
+	},
+	{
+		"main_item": "Karil's coif",
+		"similar_items": ["Armadyl helmet", "Karil's coif", "Masori mask", "Masori mask (f)"]
+	},
+	{
+		"main_item": "Karil's leatherskirt",
+		"similar_items": ["Armadyl chainskirt", "Karil's leatherskirt", "Masori chaps", "Masori chaps (f)"]
+	},
+	{
+		"main_item": "Karil's leathertop",
+		"similar_items": ["Armadyl chestplate", "Karil's leathertop", "Masori body", "Masori body (f)"]
+	},
+	{
+		"main_item": "Lava battlestaff",
+		"similar_items": ["Lava battlestaff", "Lava battlestaff (or)"]
+	},
+	{
+		"main_item": "Log basket",
+		"similar_items": ["Forestry basket", "Log basket"]
+	},
+	{
+		"main_item": "Lumberjack boots",
+		"similar_items": ["Forestry boots", "Lumberjack boots"]
+	},
+	{
+		"main_item": "Lumberjack hat",
+		"similar_items": ["Forestry hat", "Lumberjack hat"]
+	},
+	{
+		"main_item": "Lumberjack legs",
+		"similar_items": ["Forestry legs", "Lumberjack legs"]
+	},
+	{
+		"main_item": "Lumberjack top",
+		"similar_items": ["Forestry top", "Lumberjack top"]
+	},
+	{
+		"main_item": "Magic cape",
+		"similar_items": ["Magic cape", "Magic cape(t)", "Max cape"]
+	},
+	{
+		"main_item": "Magic shortbow",
+		"similar_items": ["Magic shortbow", "Magic shortbow (i)"]
+	},
+	{
+		"main_item": "Malediction ward",
+		"similar_items": ["Malediction ward", "Malediction ward (or)"]
+	},
+	{
+		"main_item": "Merfolk trident",
+		"similar_items": [
+			"Merfolk trident",
+			"Trident of the seas",
+			"Trident of the seas (e)",
+			"Trident of the seas (full)",
+			"Trident of the swamp",
+			"Trident of the swamp (e)",
+			"Uncharged toxic trident",
+			"Uncharged toxic trident (e)",
+			"Uncharged trident",
+			"Uncharged trident (e)"
+		]
+	},
+	{
+		"main_item": "Mining cape",
+		"similar_items": ["Max cape", "Mining cape", "Mining cape(t)"]
+	},
+	{
+		"main_item": "Mithril axe",
+		"similar_items": ["Mithril axe", "Mithril felling axe"]
+	},
+	{
+		"main_item": "Music cape",
+		"similar_items": ["Music cape", "Music cape(t)"]
+	},
+	{
+		"main_item": "Mythical cape",
+		"similar_items": ["Mythical cape", "Mythical max cape"]
+	},
+	{
+		"main_item": "Necklace of anguish",
+		"similar_items": ["Necklace of anguish", "Necklace of anguish (or)"]
+	},
+	{
+		"main_item": "Nose peg",
+		"similar_items": [
+			"Araxyte slayer helmet",
+			"Black slayer helmet",
+			"Green slayer helmet",
+			"Hydra slayer helmet",
+			"Nose peg",
+			"Purple slayer helmet",
+			"Red slayer helmet",
+			"Slayer helmet",
+			"Turquoise slayer helmet",
+			"Twisted slayer helmet",
+			"Tzkal slayer helmet",
+			"Tztok slayer helmet",
+			"Vampyric slayer helmet"
+		]
+	},
+	{
+		"main_item": "Occult necklace",
+		"similar_items": ["Occult necklace", "Occult necklace (or)"]
+	},
+	{
+		"main_item": "Odium ward",
+		"similar_items": ["Odium ward", "Odium ward (or)"]
+	},
+	{
+		"main_item": "Osmumten's fang",
+		"similar_items": ["Osmumten's fang", "Osmumten's fang (or)"]
+	},
+	{
+		"main_item": "Prayer cape",
+		"similar_items": ["Max cape", "Prayer cape", "Prayer cape(t)"]
+	},
+	{
+		"main_item": "Prospector boots",
+		"similar_items": ["Golden prospector boots", "Prospector boots"]
+	},
+	{
+		"main_item": "Prospector helmet",
+		"similar_items": ["Golden prospector helmet", "Prospector helmet"]
+	},
+	{
+		"main_item": "Prospector jacket",
+		"similar_items": ["Golden prospector jacket", "Prospector jacket", "Varrock armour 4"]
+	},
+	{
+		"main_item": "Prospector legs",
+		"similar_items": ["Golden prospector legs", "Prospector legs"]
+	},
+	{
+		"main_item": "Ranging cape",
+		"similar_items": ["Max cape", "Ranging cape", "Ranging cape(t)"]
+	},
+	{
+		"main_item": "Reinforced goggles",
+		"similar_items": [
+			"Araxyte slayer helmet",
+			"Black slayer helmet",
+			"Green slayer helmet",
+			"Hydra slayer helmet",
+			"Purple slayer helmet",
+			"Red slayer helmet",
+			"Reinforced goggles",
+			"Slayer helmet",
+			"Turquoise slayer helmet",
+			"Twisted slayer helmet",
+			"Tzkal slayer helmet",
+			"Tztok slayer helmet",
+			"Vampyric slayer helmet"
+		]
+	},
+	{
+		"main_item": "Ring of stone",
+		"similar_items": [
+			"Crate ring",
+			"Ring of 3rd age",
+			"Ring of coins",
+			"Ring of nature",
+			"Ring of stone",
+			"Snowman ring"
+		]
+	},
+	{
+		"main_item": "Ring of suffering (i)",
+		"similar_items": ["Ring of suffering (i)", "Ring of suffering (ri)"]
+	},
+	{
+		"main_item": "Robe bottoms of the eye",
+		"similar_items": [
+			"Robe bottoms of the eye",
+			"Robe bottoms of the eye (blue)",
+			"Robe bottoms of the eye (green)",
+			"Robe bottoms of the eye (red)"
+		]
+	},
+	{
+		"main_item": "Robe top of the eye",
+		"similar_items": [
+			"Robe top of the eye",
+			"Robe top of the eye (blue)",
+			"Robe top of the eye (green)",
+			"Robe top of the eye (red)"
+		]
+	},
+	{
+		"main_item": "Rune axe",
+		"similar_items": ["Gilded axe", "Rune axe", "Rune felling axe"]
+	},
+	{
+		"main_item": "Rune pickaxe",
+		"similar_items": ["Gilded pickaxe", "Rune pickaxe"]
+	},
+	{
+		"main_item": "Rune pouch",
+		"similar_items": ["Divine rune pouch", "Rune pouch"]
+	},
+	{
+		"main_item": "Rune scimitar",
+		"similar_items": [
+			"Rune scimitar",
+			"Rune scimitar (guthix)",
+			"Rune scimitar (saradomin)",
+			"Rune scimitar (zamorak)"
+		]
+	},
+	{
+		"main_item": "Runecraft cape",
+		"similar_items": ["Max cape", "Runecraft cape", "Runecraft cape(t)"]
+	},
+	{
+		"main_item": "Salve amulet",
+		"similar_items": ["Salve amulet", "Salve amulet (e)", "Salve amulet(ei)", "Salve amulet(i)"]
+	},
+	{
+		"main_item": "Salve amulet (e)",
+		"similar_items": ["Salve amulet (e)", "Salve amulet(ei)"]
+	},
+	{
+		"main_item": "Salve amulet(i)",
+		"similar_items": ["Salve amulet(ei)", "Salve amulet(i)"]
+	},
+	{
+		"main_item": "Sanguinesti staff",
+		"similar_items": ["Holy sanguinesti staff", "Sanguinesti staff"]
+	},
+	{
+		"main_item": "Sanguinesti staff (uncharged)",
+		"similar_items": ["Holy sanguinesti staff (uncharged)", "Sanguinesti staff (uncharged)"]
+	},
+	{
+		"main_item": "Saradomin godsword",
+		"similar_items": ["Saradomin godsword", "Saradomin godsword (or)"]
+	},
+	{
+		"main_item": "Scythe of vitur",
+		"similar_items": ["Holy scythe of vitur", "Sanguine scythe of vitur", "Scythe of vitur"]
+	},
+	{
+		"main_item": "Scythe of vitur (uncharged)",
+		"similar_items": [
+			"Holy scythe of vitur (uncharged)",
+			"Sanguine scythe of vitur (uncharged)",
+			"Scythe of vitur (uncharged)"
+		]
+	},
+	{
+		"main_item": "Skull sceptre",
+		"similar_items": ["Skull sceptre", "Skull sceptre (i)"]
+	},
+	{
+		"main_item": "Slayer cape",
+		"similar_items": ["Max cape", "Slayer cape", "Slayer cape(t)"]
+	},
+	{
+		"main_item": "Slayer helmet",
+		"similar_items": [
+			"Araxyte slayer helmet",
+			"Black slayer helmet",
+			"Green slayer helmet",
+			"Hydra slayer helmet",
+			"Purple slayer helmet",
+			"Red slayer helmet",
+			"Slayer helmet",
+			"Slayer helmet",
+			"Turquoise slayer helmet",
+			"Twisted slayer helmet",
+			"Tzkal slayer helmet",
+			"Tztok slayer helmet",
+			"Vampyric slayer helmet"
+		]
+	},
+	{
+		"main_item": "Slayer helmet (i)",
+		"similar_items": [
+			"Araxyte slayer helmet (i)",
+			"Black slayer helmet (i)",
+			"Green slayer helmet (i)",
+			"Hydra slayer helmet (i)",
+			"Purple slayer helmet (i)",
+			"Red slayer helmet (i)",
+			"Slayer helmet (i)",
+			"Slayer helmet (i)",
+			"Turquoise slayer helmet (i)",
+			"Twisted slayer helmet (i)",
+			"Tzkal slayer helmet (i)",
+			"Tztok slayer helmet (i)",
+			"Vampyric slayer helmet (i)"
+		]
+	},
+	{
+		"main_item": "Smithing cape",
+		"similar_items": ["Max cape", "Smithing cape", "Smithing cape(t)"]
+	},
+	{
+		"main_item": "Spiny helmet",
+		"similar_items": [
+			"Araxyte slayer helmet",
+			"Black slayer helmet",
+			"Green slayer helmet",
+			"Hydra slayer helmet",
+			"Purple slayer helmet",
+			"Red slayer helmet",
+			"Slayer helmet",
+			"Spiny helmet",
+			"Turquoise slayer helmet",
+			"Twisted slayer helmet",
+			"Tzkal slayer helmet",
+			"Tztok slayer helmet",
+			"Vampyric slayer helmet"
+		]
+	},
+	{
+		"main_item": "Staff of water",
+		"similar_items": [
+			"Kodai wand",
+			"Mist battlestaff",
+			"Mud battlestaff",
+			"Mystic mist staff",
+			"Mystic mud staff",
+			"Mystic steam staff",
+			"Mystic water staff",
+			"Staff of water",
+			"Steam battlestaff",
+			"Tome of water",
+			"Tome of water (empty)",
+			"Water battlestaff"
+		]
+	},
+	{
+		"main_item": "Steam battlestaff",
+		"similar_items": ["Steam battlestaff", "Steam battlestaff (or)"]
+	},
+	{
+		"main_item": "Steel axe",
+		"similar_items": ["Steel axe", "Steel felling axe"]
+	},
+	{
+		"main_item": "Strength cape",
+		"similar_items": ["Max cape", "Strength cape", "Strength cape(t)"]
+	},
+	{
+		"main_item": "Thammaron's sceptre",
+		"similar_items": ["Accursed sceptre", "Thammaron's sceptre"]
+	},
+	{
+		"main_item": "Thieving cape",
+		"similar_items": ["Max cape", "Thieving cape", "Thieving cape(t)"]
+	},
+	{
+		"main_item": "Tormented bracelet",
+		"similar_items": ["Tormented bracelet", "Tormented bracelet (or)"]
+	},
+	{
+		"main_item": "Torva full helm",
+		"similar_items": ["Sanguine torva full helm", "Torva full helm"]
+	},
+	{
+		"main_item": "Torva platebody",
+		"similar_items": ["Sanguine torva platebody", "Torva platebody"]
+	},
+	{
+		"main_item": "Torva platelegs",
+		"similar_items": ["Sanguine torva platelegs", "Torva platelegs"]
+	},
+	{
+		"main_item": "Trident of the seas",
+		"similar_items": ["Trident of the seas", "Trident of the seas (e)", "Trident of the seas (full)"]
+	},
+	{
+		"main_item": "Trident of the swamp",
+		"similar_items": ["Trident of the swamp", "Trident of the swamp (e)"]
+	},
+	{
+		"main_item": "Tzhaar-ket-om",
+		"similar_items": ["Tzhaar-ket-om", "Tzhaar-ket-om (t)"]
+	},
+	{
+		"main_item": "Viggora's chainmace",
+		"similar_items": ["Ursine chainmace", "Viggora's chainmace"]
+	},
+	{
+		"main_item": "Void knight gloves",
+		"similar_items": ["Void knight gloves", "Void knight gloves (l)", "Void knight gloves (or)"]
+	},
+	{
+		"main_item": "Void knight robe",
+		"similar_items": [
+			"Elite void robe",
+			"Elite void robe (l)",
+			"Elite void robe (or)",
+			"Void knight robe",
+			"Void knight robe (l)",
+			"Void knight robe (or)"
+		]
+	},
+	{
+		"main_item": "Void knight top",
+		"similar_items": [
+			"Elite void top",
+			"Elite void top (l)",
+			"Elite void top (or)",
+			"Void knight top",
+			"Void knight top (l)",
+			"Void knight top (or)"
+		]
+	},
+	{
+		"main_item": "Void mage helm",
+		"similar_items": ["Void mage helm", "Void mage helm (l)", "Void mage helm (or)"]
+	},
+	{
+		"main_item": "Void melee helm",
+		"similar_items": ["Void melee helm", "Void melee helm (l)", "Void melee helm (or)"]
+	},
+	{
+		"main_item": "Void ranger helm",
+		"similar_items": ["Void ranger helm", "Void ranger helm (l)", "Void ranger helm (or)"]
+	},
+	{
+		"main_item": "Woodcutting cape",
+		"similar_items": ["Max cape", "Woodcut. cape(t)", "Woodcutting cape"]
+	},
+	{
+		"main_item": "Zamorak godsword",
+		"similar_items": ["Zamorak godsword", "Zamorak godsword (or)"]
+	}
+]

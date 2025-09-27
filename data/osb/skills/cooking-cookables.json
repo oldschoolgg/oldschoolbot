@@ -1,0 +1,326 @@
+[
+	{
+		"level": 1,
+		"xp": 30,
+		"id": 319,
+		"name": "Anchovies",
+		"input_cookables": {
+			"321": 1
+		},
+		"stop_burn_at": 34,
+		"burn_kourend_bonus": [31, 31, 31, 31],
+		"burnt_cookable": "Burnt fish"
+	},
+	{
+		"level": 84,
+		"xp": 230,
+		"id": 13441,
+		"name": "Anglerfish",
+		"input_cookables": {
+			"13439": 1
+		},
+		"stop_burn_at": 99,
+		"stop_burn_at_cg": 98,
+		"burn_kourend_bonus": [99, 99, 93, 88],
+		"burnt_cookable": "Burnt anglerfish"
+	},
+	{
+		"level": 43,
+		"xp": 130,
+		"id": 365,
+		"name": "Bass",
+		"input_cookables": {
+			"363": 1
+		},
+		"stop_burn_at": 80,
+		"burn_kourend_bonus": [75, 75, 75, 75],
+		"burnt_cookable": "Burnt fish"
+	},
+	{
+		"level": 1,
+		"xp": 30,
+		"id": 2142,
+		"name": "Beef",
+		"input_cookables": {
+			"2132": 1
+		},
+		"stop_burn_at": 34,
+		"burn_kourend_bonus": [31, 31, 31, 31],
+		"burnt_cookable": "Burnt meat"
+	},
+	{
+		"level": 38,
+		"xp": 115,
+		"id": 5003,
+		"name": "Cave eel",
+		"input_cookables": {
+			"5001": 1
+		},
+		"stop_burn_at": 74,
+		"burn_kourend_bonus": [70, 70, 70, 70],
+		"burnt_cookable": "Burnt cave eel"
+	},
+	{
+		"level": 1,
+		"xp": 30,
+		"id": 2140,
+		"name": "Chicken",
+		"input_cookables": {
+			"2138": 1
+		},
+		"stop_burn_at": 34,
+		"burn_kourend_bonus": [31, 31, 31, 31],
+		"burnt_cookable": "Burnt chicken"
+	},
+	{
+		"level": 18,
+		"xp": 75,
+		"id": 339,
+		"name": "Cod",
+		"input_cookables": {
+			"341": 1
+		},
+		"stop_burn_at": 51,
+		"burn_kourend_bonus": [46, 46, 46, 46],
+		"burnt_cookable": "Burnt fish"
+	},
+	{
+		"level": 30,
+		"xp": 190,
+		"id": 3144,
+		"name": "Cooked karambwan",
+		"input_cookables": {
+			"3142": 1
+		},
+		"stop_burn_at": 99,
+		"burn_kourend_bonus": [93, 87, 93, 87],
+		"burnt_cookable": "Burnt karambwan"
+	},
+	{
+		"level": 90,
+		"xp": 215,
+		"id": 11936,
+		"name": "Dark crab",
+		"input_cookables": {
+			"11934": 1
+		},
+		"stop_burn_at": 99,
+		"burnt_cookable": "Burnt dark crab"
+	},
+	{
+		"level": 5,
+		"xp": 50,
+		"id": 347,
+		"name": "Herring",
+		"input_cookables": {
+			"345": 1
+		},
+		"stop_burn_at": 41,
+		"burn_kourend_bonus": [38, 38, 38, 38],
+		"burnt_cookable": "Burnt fish"
+	},
+	{
+		"level": 41,
+		"xp": 160,
+		"id": 7568,
+		"name": "Jubbly",
+		"input_cookables": {
+			"7566": 1
+		},
+		"stop_burn_at": 99,
+		"burnt_cookable": "Burnt jubbly"
+	},
+	{
+		"level": 35,
+		"xp": 200,
+		"id": 1993,
+		"name": "Jug of wine",
+		"input_cookables": {
+			"1937": 1,
+			"1987": 1
+		},
+		"stop_burn_at": 68,
+		"burnt_cookable": "Jug of bad wine"
+	},
+	{
+		"level": 40,
+		"xp": 120,
+		"id": 379,
+		"name": "Lobster",
+		"input_cookables": {
+			"377": 1
+		},
+		"stop_burn_at": 74,
+		"stop_burn_at_cg": 64,
+		"burn_kourend_bonus": [70, 70, 61, 61],
+		"burnt_cookable": "Burnt lobster"
+	},
+	{
+		"level": 10,
+		"xp": 60,
+		"id": 355,
+		"name": "Mackerel",
+		"input_cookables": {
+			"353": 1
+		},
+		"stop_burn_at": 45,
+		"burn_kourend_bonus": [42, 42, 42, 42],
+		"burnt_cookable": "Burnt fish"
+	},
+	{
+		"level": 91,
+		"xp": 216.3,
+		"id": 391,
+		"name": "Manta ray",
+		"input_cookables": {
+			"389": 1
+		},
+		"stop_burn_at": 99,
+		"burnt_cookable": "Burnt manta ray"
+	},
+	{
+		"level": 62,
+		"xp": 150,
+		"id": 7946,
+		"name": "Monkfish",
+		"input_cookables": {
+			"7944": 1
+		},
+		"stop_burn_at": 90,
+		"stop_burn_at_cg": 87,
+		"burn_kourend_bonus": [86, 82, 82, 82],
+		"burnt_cookable": "Burnt monkfish"
+	},
+	{
+		"level": 20,
+		"xp": 80,
+		"id": 351,
+		"name": "Pike",
+		"input_cookables": {
+			"349": 1
+		},
+		"stop_burn_at": 54,
+		"burn_kourend_bonus": [50, 50, 50, 50],
+		"burnt_cookable": "Burnt fish"
+	},
+	{
+		"level": 25,
+		"xp": 90,
+		"id": 329,
+		"name": "Salmon",
+		"input_cookables": {
+			"331": 1
+		},
+		"stop_burn_at": 58,
+		"burn_kourend_bonus": [55, 55, 55, 55],
+		"burnt_cookable": "Burnt fish"
+	},
+	{
+		"level": 1,
+		"xp": 40,
+		"id": 325,
+		"name": "Sardine",
+		"input_cookables": {
+			"327": 1
+		},
+		"stop_burn_at": 38,
+		"burn_kourend_bonus": [34, 34, 34, 34],
+		"burnt_cookable": "Burnt fish"
+	},
+	{
+		"level": 82,
+		"xp": 211.3,
+		"id": 397,
+		"name": "Sea turtle",
+		"input_cookables": {
+			"395": 1
+		},
+		"stop_burn_at": 99,
+		"burnt_cookable": "Burnt sea turtle"
+	},
+	{
+		"level": 80,
+		"xp": 210,
+		"id": 385,
+		"name": "Shark",
+		"input_cookables": {
+			"383": 1
+		},
+		"stop_burn_at": 99,
+		"stop_burn_at_cg": 94,
+		"burn_kourend_bonus": [99, 99, 89, 84],
+		"burnt_cookable": "Burnt shark"
+	},
+	{
+		"level": 1,
+		"xp": 30,
+		"id": 315,
+		"name": "Shrimps",
+		"input_cookables": {
+			"317": 1
+		},
+		"stop_burn_at": 34,
+		"burn_kourend_bonus": [31, 31, 31, 31],
+		"burnt_cookable": "Burnt shrimp"
+	},
+	{
+		"level": 1,
+		"xp": 3,
+		"id": 9436,
+		"name": "Sinew",
+		"input_cookables": {
+			"2132": 1
+		},
+		"stop_burn_at": 1,
+		"burnt_cookable": "Burnt meat"
+	},
+	{
+		"level": 45,
+		"xp": 140,
+		"id": 373,
+		"name": "Swordfish",
+		"input_cookables": {
+			"371": 1
+		},
+		"stop_burn_at": 86,
+		"stop_burn_at_cg": 81,
+		"burn_kourend_bonus": [76, 76, 76, 76],
+		"burnt_cookable": "Burnt swordfish"
+	},
+	{
+		"level": 15,
+		"xp": 70,
+		"id": 333,
+		"name": "Trout",
+		"input_cookables": {
+			"335": 1
+		},
+		"stop_burn_at": 49,
+		"burn_kourend_bonus": [46, 46, 46, 46],
+		"burnt_cookable": "Burnt fish"
+	},
+	{
+		"level": 30,
+		"xp": 100,
+		"id": 361,
+		"name": "Tuna",
+		"input_cookables": {
+			"359": 1
+		},
+		"stop_burn_at": 63,
+		"burn_kourend_bonus": [59, 59, 59, 59],
+		"burnt_cookable": "Burnt fish"
+	},
+	{
+		"level": 65,
+		"xp": 200,
+		"id": 245,
+		"name": "Wine of zamorak",
+		"input_cookables": {
+			"1937": 1,
+			"20749": 1
+		},
+		"stop_burn_at": 98,
+		"burnt_cookable": "Jug of bad wine"
+	}
+]

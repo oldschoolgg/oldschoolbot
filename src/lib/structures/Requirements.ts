@@ -59,6 +59,10 @@ export class Requirements {
 		return this.requirements.length;
 	}
 
+	toJSON() {
+		return this.requirements;
+	}
+
 	formatRequirement(req: Requirement): (string | string[])[] {
 		const requirementParts: (string | string[])[] = [];
 		if ('skillRequirements' in req) {
