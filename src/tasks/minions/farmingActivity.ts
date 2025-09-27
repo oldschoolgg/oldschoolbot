@@ -8,7 +8,6 @@ import type { PatchTypes } from '@/lib/minions/farming/index.js';
 import type { FarmingContract } from '@/lib/minions/farming/types.js';
 import { calcVariableYield } from '@/lib/skilling/functions/calcsFarming.js';
 import Farming from '@/lib/skilling/skills/farming/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { getFarmingKeyFromName } from '@/lib/util/farmingHelpers.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
@@ -25,8 +24,8 @@ export const farmingTask: MinionTask = {
 		const { plantsName, patchType, quantity, upgradeType, payment, userID, channelID, planting, currentDate, pid } =
 			data;
 		const user = await mUserFetch(userID);
-		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
-		const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
+		const currentFarmingLevel = user.skillsAsLevels.farming;
+		const currentWoodcuttingLevel = user.skillsAsLevels.woodcutting;
 		let baseBonus = 1;
 		let bonusXP = 0;
 		let plantXp = 0;
@@ -118,7 +117,7 @@ export const farmingTask: MinionTask = {
 			}
 
 			str += `\n${await user.addXP({
-				skillName: SkillsEnum.Farming,
+				skillName: 'farming',
 				amount: Math.floor(farmingXpReceived + bonusXP),
 				duration: data.duration
 			})}`;
@@ -173,7 +172,7 @@ export const farmingTask: MinionTask = {
 			const shouldCleanHerb =
 				plantToHarvest.herbXp !== undefined &&
 				user.bitfield.includes(BitField.CleanHerbsFarming) &&
-				user.skillLevel(SkillsEnum.Herblore) >= plantToHarvest.herbLvl!;
+				user.skillsAsLevels.herblore >= plantToHarvest.herbLvl!;
 
 			if (plantToHarvest.givesCrops) {
 				let cropToHarvest = plantToHarvest.outputCrop;
@@ -196,7 +195,7 @@ export const farmingTask: MinionTask = {
 							Math.floor(
 								plantToHarvest.chance1 +
 									(plantToHarvest.chance99 - plantToHarvest.chance1) *
-										((user.skillLevel(SkillsEnum.Farming) - 1) / 98)
+										((user.skillsAsLevels.farming - 1) / 98)
 							) * baseBonus
 						) + 1;
 					const chanceToSaveLife = (plantChanceFactor + 1) / 256;
@@ -299,16 +298,16 @@ export const farmingTask: MinionTask = {
 			bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);
 
 			const xpRes = await user.addXP({
-				skillName: SkillsEnum.Farming,
+				skillName: 'farming',
 				amount: Math.floor(farmingXpReceived + bonusXP),
 				duration: data.duration
 			});
 			const wcXP = await user.addXP({
-				skillName: SkillsEnum.Woodcutting,
+				skillName: 'woodcutting',
 				amount: Math.floor(woodcuttingXp)
 			});
 			await user.addXP({
-				skillName: SkillsEnum.Herblore,
+				skillName: 'herblore',
 				amount: Math.floor(herbloreXp),
 				source: 'CleaningHerbsWhileFarming'
 			});
@@ -333,7 +332,7 @@ export const farmingTask: MinionTask = {
 				);
 			}
 
-			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Farming, plantToHarvest.petChance);
+			const { petDropRate } = skillingPetDropRate(user, 'farming', plantToHarvest.petChance);
 			if (plantToHarvest.seedType === 'hespori') {
 				await user.incrementKC(Monsters.Hespori.id, patchType.lastQuantity);
 				const hesporiLoot = Monsters.Hespori.kill(patchType.lastQuantity, {

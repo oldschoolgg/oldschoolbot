@@ -15,7 +15,7 @@ import { applyStaticDefine } from '../meta.js';
 import { type BitField, PVM_METHODS } from '../src/lib/constants.js';
 import { degradeableItems } from '../src/lib/degradeableItems.js';
 import { SlayerActivityConstants } from '../src/lib/minions/data/combatConstants.js';
-import { SkillsArray, SkillsEnum } from '../src/lib/skilling/types.js';
+import { SkillsArray } from '../src/lib/skilling/types.js';
 import { slayerMasters } from '../src/lib/slayer/slayerMasters.js';
 import type { SlayerTaskUnlocksEnum } from '../src/lib/slayer/slayerUnlocks.js';
 import { ChargeBank } from '../src/lib/structures/Bank.js';
@@ -46,11 +46,11 @@ const results: { tripResult: ReturnType<typeof doMonsterTrip>; commandResult: Mi
 const userStats = new MUserStats({} as any);
 
 const attackStyleSets: AttackStyles[][] = [
-	[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence],
-	[SkillsEnum.Ranged],
-	[SkillsEnum.Magic],
-	[SkillsEnum.Ranged, SkillsEnum.Defence],
-	[SkillsEnum.Magic, SkillsEnum.Defence]
+	['attack', 'strength', 'defence'],
+	['ranged'],
+	['magic'],
+	['ranged', 'defence'],
+	['magic', 'defence']
 ];
 
 const skillsAsXP: any = {};

@@ -2,8 +2,7 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { CropUpgradeType } from '@prisma/client';
 import { Items, itemID } from 'oldschooljs';
 
-import type { Plant } from '@/lib/skilling/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import { defineSkill, type Plant } from '@/lib/skilling/types.js';
 import allotmentPlants from './allotments.js';
 import fruitTrees from './fruitTrees.js';
 import herbPlants from './herbPlants.js';
@@ -61,14 +60,14 @@ for (const plant of plants) {
 }
 allFarmingItems.push(itemID('Tangleroot'));
 
-const Farming = {
+const Farming = defineSkill({
 	aliases: ['farming'],
 	Plants: plants,
-	id: SkillsEnum.Farming,
+	id: 'farming',
 	emoji: Emoji.Farming,
 	name: 'Farming',
 	maleFarmerItems,
 	femaleFarmerItems
-};
+});
 
 export default Farming;

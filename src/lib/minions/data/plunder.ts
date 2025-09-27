@@ -1,7 +1,6 @@
 import { Bank, LootTable } from 'oldschooljs';
 
 import type { MUserClass } from '@/lib/MUser.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { randInt, roll } from '@/lib/util/rng.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
@@ -128,7 +127,7 @@ export const plunderBoosts = new Bank({
 export function lootRoom(user: MUserClass, room: number): [Bank, number] {
 	const loot = new Bank();
 	const roomObj = plunderRooms[room - 1];
-	const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Thieving, roomObj.rockyChance);
+	const { petDropRate } = skillingPetDropRate(user, 'thieving', roomObj.rockyChance);
 	if (roll(petDropRate)) {
 		loot.add('Rocky');
 	}

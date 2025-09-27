@@ -1,7 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { Bank, type Item, Items, resolveItems, SkillsEnum, toKMB } from 'oldschooljs';
+import { Bank, type Item, Items, resolveItems, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
@@ -43,7 +43,7 @@ export async function alchCommand(
 	if (!osItem) return 'Invalid item.';
 	if (!osItem.highalch || !osItem.tradeable) return 'This item cannot be alched.';
 
-	if (user.skillLevel(SkillsEnum.Magic) < 55) {
+	if (user.skillsAsLevels.magic < 55) {
 		return 'You need level 55 Magic to cast High Alchemy';
 	}
 

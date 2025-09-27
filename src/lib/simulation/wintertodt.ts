@@ -5,7 +5,6 @@ import { Bank, convertXPtoLVL, itemID, LootTable, resolveItems } from 'oldschool
 
 import { MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
 import type { LevelRequirements } from '@/lib/skilling/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 
 interface WintertodtCrateOptions {
 	points: number;
@@ -152,17 +151,17 @@ class WintertodtCrateClass {
 	determineSkillOfTableSlot(table: WintertodtTable) {
 		switch (table) {
 			case HerbTable:
-				return SkillsEnum.Herblore;
+				return 'herblore';
 			case LogTable:
-				return SkillsEnum.Woodcutting;
+				return 'woodcutting';
 			case GemTable:
-				return SkillsEnum.Crafting;
+				return 'crafting';
 			case FishTable:
-				return SkillsEnum.Fishing;
+				return 'fishing';
 			case OreTable:
-				return SkillsEnum.Mining;
+				return 'mining';
 			default:
-				return SkillsEnum.Farming;
+				return 'farming';
 		}
 	}
 

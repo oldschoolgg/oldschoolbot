@@ -7,7 +7,6 @@ import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
 import { diariesObject, userhasDiaryTier } from '@/lib/diaries.js';
 import { DiaryID } from '@/lib/minions/types.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { InfernoOptions } from '@/lib/types/minions.js';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
@@ -52,7 +51,7 @@ export const infernoTask: MinionTask = {
 
 		xpBonuses.push(
 			await user.addXP({
-				skillName: SkillsEnum.Ranged,
+				skillName: 'ranged',
 				amount: calcPercentOfNum(percentMadeItThrough, 80_000),
 				duration,
 				minimal: true
@@ -60,7 +59,7 @@ export const infernoTask: MinionTask = {
 		);
 		xpBonuses.push(
 			await user.addXP({
-				skillName: SkillsEnum.Hitpoints,
+				skillName: 'hitpoints',
 				amount: calcPercentOfNum(percentMadeItThrough, 35_000),
 				duration,
 				minimal: true
@@ -68,7 +67,7 @@ export const infernoTask: MinionTask = {
 		);
 		xpBonuses.push(
 			await user.addXP({
-				skillName: SkillsEnum.Magic,
+				skillName: 'magic',
 				amount: calcPercentOfNum(percentMadeItThrough, 25_000),
 				duration,
 				minimal: true
@@ -77,7 +76,7 @@ export const infernoTask: MinionTask = {
 		if (isOnTask) {
 			xpBonuses.push(
 				await user.addXP({
-					skillName: SkillsEnum.Slayer,
+					skillName: 'slayer',
 					amount: deathTime === null ? 125_000 : calcPercentOfNum(percentMadeItThrough, 25_000),
 					duration
 				})

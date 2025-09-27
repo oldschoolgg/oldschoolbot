@@ -3,7 +3,7 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
 import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
-import type { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { CollectingOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -31,8 +31,8 @@ export async function collectCommand(
 	}
 
 	if (collectable.skillReqs) {
-		for (const [skillName, lvl] of Object.entries(collectable.skillReqs)) {
-			if (user.skillLevel(skillName as SkillsEnum) < lvl) {
+		for (const [skillName, lvl] of Object.entries(collectable.skillReqs) as [SkillNameType, number][]) {
+			if (user.skillsAsLevels[skillName] < lvl) {
 				return `You need ${lvl} ${skillName} to collect ${collectable.item.name}.`;
 			}
 		}

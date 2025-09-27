@@ -3,7 +3,6 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
 import Prayer from '@/lib/skilling/skills/prayer.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ScatteringActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -19,7 +18,7 @@ export async function scatterCommand(user: MUser, channelID: string, ashName: st
 		return "That's not a valid ash to scatter.";
 	}
 
-	if (user.skillLevel(SkillsEnum.Prayer) < ash.level) {
+	if (user.skillsAsLevels.prayer < ash.level) {
 		return `${user.minionName} needs ${ash.level} Prayer to scatter ${ash.name}.`;
 	}
 

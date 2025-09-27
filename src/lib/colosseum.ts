@@ -13,13 +13,13 @@ import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { GeneralBank, type GeneralBankType, UserError } from '@oldschoolgg/toolkit/structures';
-import { Bank, type EquipmentSlot, type ItemBank, LootTable, resolveItems } from 'oldschooljs';
+import { Bank, type EquipmentSlot, type ItemBank, Items, LootTable, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { GearSetupType } from '@/lib/gear/types.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { formatList, formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 import { degradeChargeBank } from './degradeableItems.js';
@@ -516,7 +516,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		for (const items of Object.values(gearNeeded)) {
 			if (!items.some(g => gear.hasEquipped(g))) {
 				return `You need one of these equipped in your ${gearType} setup to enter the Colosseum: ${formatList(
-					items.map(itemNameFromID),
+					items.map(i => Items.itemNameFromId(i)),
 					'or'
 				)}.`;
 			}
@@ -525,14 +525,14 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 
 	if (!meleeWeapons.some(i => user.gear.melee.hasEquipped(i, true, true))) {
 		return `You need one of these equipped in your melee setup to enter the Colosseum: ${formatList(
-			meleeWeapons.map(itemNameFromID),
+			meleeWeapons.map(i => Items.itemNameFromId(i)),
 			'or'
 		)}.`;
 	}
 
 	if (!rangeWeapons.some(i => user.gear.range.hasEquipped(i, true, true))) {
 		return `You need one of these equipped in your range setup to enter the Colosseum: ${formatList(
-			rangeWeapons.map(itemNameFromID),
+			rangeWeapons.map(i => Items.itemNameFromId(i)),
 			'or'
 		)}.`;
 	}

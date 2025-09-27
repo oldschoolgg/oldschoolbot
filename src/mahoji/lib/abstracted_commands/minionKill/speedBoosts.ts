@@ -1,5 +1,5 @@
 import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
-import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters, SkillsEnum } from 'oldschooljs';
+import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters } from 'oldschooljs';
 import type { OffenceGearStat } from 'oldschooljs/gear';
 
 import type { PvMMethod } from '@/lib/constants.js';
@@ -123,7 +123,7 @@ const chinningBoost: Boost = {
 		if (typeof cannonResult === 'string') return cannonResult;
 		if (cannonResult.usingCannon) return null;
 
-		if (combatMethods.includes('chinning') && attackStyles.includes(SkillsEnum.Ranged) && monster?.canChinning) {
+		if (combatMethods.includes('chinning') && attackStyles.includes('ranged') && monster?.canChinning) {
 			const chinchompas = ['Black chinchompa', 'Red chinchompa', 'Chinchompa'];
 			let chinchompa = chinchompas[0];
 			for (const chin of chinchompas) {
@@ -136,9 +136,9 @@ const chinningBoost: Boost = {
 			const chinBoostLongRanged = chinchompa === 'Chinchompa' ? 63 : chinchompa === 'Red chinchompa' ? 69 : 77;
 			const chinningConsumables: Consumable = {
 				itemCost: new Bank().add(chinchompa, 1),
-				qtyPerMinute: attackStyles.includes(SkillsEnum.Defence) ? 24 : 33
+				qtyPerMinute: attackStyles.includes('defence') ? 24 : 33
 			};
-			if (attackStyles.includes(SkillsEnum.Defence)) {
+			if (attackStyles.includes('defence')) {
 				return {
 					percentageReduction: chinBoostLongRanged,
 					consumables: [chinningConsumables],
@@ -234,7 +234,7 @@ const blackMaskBoost: Boost = {
 		const hasBlackMask = gearBank.wildyGearCheck('Black mask', isInWilderness);
 		const hasBlackMaskI = gearBank.wildyGearCheck('Black mask (i)', isInWilderness);
 
-		if (hasBlackMaskI && [SkillsEnum.Magic, SkillsEnum.Ranged].every(s => style.includes(s))) {
+		if (hasBlackMaskI && ['magic', 'ranged'].every(s => style.includes(s))) {
 			return {
 				percentageReduction: oneSixthBoost,
 				message: `${oneSixthBoost}% for Black mask (i) on task`
@@ -317,15 +317,15 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 			if (!canBarrageMonster || (!isBarraging && !isBursting)) return null;
 
 			let newAttackStyles = [...attackStyles];
-			if (!newAttackStyles.includes(SkillsEnum.Magic)) {
-				newAttackStyles = [SkillsEnum.Magic];
-				if (attackStyles.includes(SkillsEnum.Defence)) {
-					newAttackStyles.push(SkillsEnum.Defence);
+			if (!newAttackStyles.includes('magic')) {
+				newAttackStyles = ['magic'];
+				if (attackStyles.includes('defence')) {
+					newAttackStyles.push('defence');
 				}
 			}
 
 			const { virtusBoost } = calculateVirtusBoost({ isInWilderness, gearBank, isOnTask });
-			if (isBarraging && attackStyles.includes(SkillsEnum.Magic)) {
+			if (isBarraging && attackStyles.includes('magic')) {
 				return {
 					percentageReduction: boostIceBarrage + virtusBoost,
 					consumables: [iceBarrageConsumables],
@@ -337,7 +337,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				};
 			}
 
-			if (isBursting && attackStyles.includes(SkillsEnum.Magic)) {
+			if (isBursting && attackStyles.includes('magic')) {
 				return {
 					percentageReduction: boostIceBurst + virtusBoost,
 					consumables: [iceBurstConsumables],

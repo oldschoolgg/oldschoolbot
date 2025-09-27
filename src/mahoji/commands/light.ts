@@ -4,7 +4,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import Firemaking from '@/lib/skilling/skills/firemaking.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { FiremakingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -48,7 +47,7 @@ export const lightCommand: OSBMahojiCommand = {
 
 		if (!log) return "That's not a valid log to light.";
 
-		if (user.skillLevel(SkillsEnum.Firemaking) < log.level) {
+		if (user.skillsAsLevels.firemaking < log.level) {
 			return `${user.minionName} needs ${log.level} Firemaking to light ${log.name}.`;
 		}
 

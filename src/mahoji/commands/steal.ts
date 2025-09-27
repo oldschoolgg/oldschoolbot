@@ -7,7 +7,6 @@ import { quests } from '@/lib/minions/data/quests.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { Stealable } from '@/lib/skilling/skills/thieving/stealables.js';
 import { stealables } from '@/lib/skilling/skills/thieving/stealables.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -92,7 +91,7 @@ export const stealCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (user.skillLevel(SkillsEnum.Thieving) < stealable.level) {
+		if (user.skillsAsLevels.thieving < stealable.level) {
 			return `${user.minionName} needs ${stealable.level} Thieving to ${
 				stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
 			} a ${stealable.name}.`;
@@ -140,7 +139,7 @@ export const stealCommand: OSBMahojiCommand = {
 			}
 
 			[successfulQuantity, damageTaken, xpReceived] = calcLootXPPickpocketing(
-				user.skillLevel(SkillsEnum.Thieving),
+				user.skillsAsLevels.thieving,
 				stealable,
 				quantity,
 				user.hasEquipped(['Thieving cape', 'Thieving cape(t)']),

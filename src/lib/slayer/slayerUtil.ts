@@ -8,7 +8,6 @@ import { LumbridgeDraynorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { getNewUser } from '@/lib/settings/settings.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { logError } from '@/lib/util/logError.js';
 import { roll } from '@/lib/util/rng.js';
 import { autoslayModes } from './constants.js';
@@ -135,7 +134,7 @@ function weightedPick(filteredTasks: AssignableSlayerTask[]) {
 export function userCanUseMaster(user: MUser, master: SlayerMaster) {
 	return (
 		user.QP >= (master.questPoints ?? 0) &&
-		user.skillLevel(SkillsEnum.Slayer) >= (master.slayerLvl ?? 0) &&
+		user.skillsAsLevels.slayer >= (master.slayerLvl ?? 0) &&
 		user.combatLevel >= (master.combatLvl ?? 0)
 	);
 }
@@ -148,7 +147,7 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 	if (task.combatLevel && task.combatLevel > user.combatLevel) return false;
 	if (task.questPoints && task.questPoints > user.QP) return false;
 	if (task.requiredQuests?.find(quest => !user.user.finished_quest_ids.includes(quest))) return false;
-	if (task.slayerLevel && task.slayerLevel > user.skillLevel(SkillsEnum.Slayer)) return false;
+	if (task.slayerLevel && task.slayerLevel > user.skillsAsLevels.slayer) return false;
 	if (task.levelRequirements && !user.hasSkillReqs(task.levelRequirements)) return false;
 	const myBlockList = user.user.slayer_blocked_ids ?? [];
 	if (myBlockList.includes(task.monster.id)) return false;

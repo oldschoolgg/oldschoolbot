@@ -1,6 +1,6 @@
 import { calcWhatPercent, randInt, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
-import { Bank, SkillsEnum } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import { getPOHObject } from '@/lib/poh/index.js';
 import type { GnomeRestaurantActivityTaskOptions } from '@/lib/types/minions.js';
@@ -34,7 +34,7 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 		boosts.push('25% for Graceful');
 	}
 
-	if (user.skillLevel(SkillsEnum.Magic) >= 66) {
+	if (user.skillsAsLevels.magic >= 66) {
 		deliveryLength = reduceNumByPercent(deliveryLength, 25);
 		boosts.push('25% for 66 Magic (teleports)');
 	}
@@ -85,7 +85,7 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 	const quantity = Math.floor(calcMaxTripLength(user, 'GnomeRestaurant') / deliveryLength);
 	const duration = randomVariation(deliveryLength * quantity, 5);
 
-	if (user.skillLevel(SkillsEnum.Magic) >= 66) {
+	if (user.skillsAsLevels.magic >= 66) {
 		itemsToRemove.add('Law rune', Math.max(1, Math.floor(randInt(1, quantity * 1.5) / 2)));
 	}
 

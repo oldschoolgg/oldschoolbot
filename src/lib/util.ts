@@ -5,7 +5,7 @@ import type { Prisma, User } from '@prisma/client';
 import { type Guild, userMention } from 'discord.js';
 import { calcCombatLevel, convertXPtoLVL } from 'oldschooljs';
 
-import type { SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
@@ -46,7 +46,7 @@ export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 
 export function skillingPetDropRate(
 	user: MUserClass | GearBank | number,
-	skill: SkillsEnum | SkillNameType,
+	skill: SkillNameType,
 	baseDropRate: number
 ): { petDropRate: number } {
 	const xp = typeof user === 'number' ? user : user.skillsAsXP[skill];

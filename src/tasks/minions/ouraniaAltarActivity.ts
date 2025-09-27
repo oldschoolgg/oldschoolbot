@@ -6,7 +6,6 @@ import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { raimentBonus } from '@/lib/skilling/functions/calcsRunecrafting.js';
 import Runecraft, { ouraniaAltarTables } from '@/lib/skilling/skills/runecraft.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { OuraniaAltarOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
@@ -17,10 +16,10 @@ const ouraniaAltarTask: MinionTask = {
 	async run(data: OuraniaAltarOptions) {
 		const { quantity, userID, channelID, duration, daeyalt } = data;
 		const user = await mUserFetch(userID);
-		const lvl = user.skillLevel(SkillsEnum.Runecraft);
+		const lvl = user.skillsAsLevels.runecraft;
 		const loot = new Bank();
 		const [hasArdyMedium] = await userhasDiaryTier(user, ArdougneDiary.medium);
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, 1_487_213);
+		const { petDropRate } = skillingPetDropRate(user, 'runecraft', 1_487_213);
 		const selectedLootTable = ouraniaAltarTables[Math.min(Math.floor(lvl / 10), 10)];
 		let totalXp = 0;
 
@@ -59,7 +58,7 @@ const ouraniaAltarTask: MinionTask = {
 		}
 
 		const xpRes = `\n${await user.addXP({
-			skillName: SkillsEnum.Runecraft,
+			skillName: 'runecraft',
 			amount: totalXp,
 			duration,
 			source: 'OuraniaAltar'
@@ -77,7 +76,7 @@ const ouraniaAltarTask: MinionTask = {
 				`**${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a Rift guardian while runecrafting at the Ourania Altar at level ${user.skillLevel(
-					SkillsEnum.Runecraft
+					'runecraft'
 				)} Runecrafting!`
 			);
 		}

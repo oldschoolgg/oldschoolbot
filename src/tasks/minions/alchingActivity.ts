@@ -1,6 +1,5 @@
 import { Bank, Items, itemID } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { roll } from '@/lib/util/rng.js';
@@ -38,7 +37,7 @@ export const alchingTask: MinionTask = {
 
 		const xpReceived = quantity * 65;
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Magic,
+			skillName: 'magic',
 			amount: xpReceived,
 			duration
 		});

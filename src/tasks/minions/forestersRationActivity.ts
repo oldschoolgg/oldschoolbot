@@ -1,7 +1,6 @@
 import { Bank } from 'oldschooljs';
 
 import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { CreateForestersRationsActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
@@ -19,7 +18,7 @@ export const CreateForestersRationsTask: MinionTask = {
 		const xpPerAction = 51.1;
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Cooking,
+			skillName: 'cooking',
 			amount: xpPerAction * quantity,
 			duration
 		});

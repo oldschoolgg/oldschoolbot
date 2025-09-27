@@ -1,6 +1,5 @@
 import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { SkillsEnum } from 'oldschooljs';
 
 import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import type { CastingActivityTaskOptions } from '@/lib/types/minions.js';
@@ -21,11 +20,11 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 		)}.`;
 	}
 
-	if (user.skillLevel(SkillsEnum.Magic) < spell.level) {
+	if (user.skillsAsLevels.magic < spell.level) {
 		return `${user.minionName} needs ${spell.level} Magic to cast ${spell.name}.`;
 	}
 
-	if (spell.craftLevel && user.skillLevel(SkillsEnum.Crafting) < spell.craftLevel) {
+	if (spell.craftLevel && user.skillsAsLevels.crafting < spell.craftLevel) {
 		return `${user.minionName} needs ${spell.craftLevel} Crafting to cast ${spell.name}.`;
 	}
 
@@ -50,7 +49,7 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 			const boostLevels = spell.agilityBoost.map(boost => boost[0]);
 			const boostPercentages = spell.agilityBoost.map(boost => boost[1]);
 
-			const availableBoost = boostLevels.find(boost => user.skillLevel(SkillsEnum.Agility) >= boost);
+			const availableBoost = boostLevels.find(boost => user.skillsAsLevels.agility >= boost);
 			if (availableBoost) {
 				const boostIndex = boostLevels.indexOf(availableBoost);
 

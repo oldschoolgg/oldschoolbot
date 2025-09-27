@@ -11,7 +11,6 @@ import { crons } from '@/lib/crons.js';
 import { sql } from '@/lib/postgres.js';
 import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 import { sonicBoom } from '@/lib/util/logger.js';
-import { Workers } from '@/lib/workers/index.js';
 
 const rawExecAsync = promisify(execNonPromise);
 
@@ -52,7 +51,6 @@ export function getItemNamesFromBank(bank: Bank | ItemBank): string[] {
 }
 
 export async function tearDownScript() {
-	await Workers.destroyAll();
 	await sql.end();
 	TimerManager.destroy();
 	sonicBoom.destroy();

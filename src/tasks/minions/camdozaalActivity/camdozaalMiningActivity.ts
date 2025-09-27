@@ -3,7 +3,6 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
 import Mining from '@/lib/skilling/skills/mining.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -16,7 +15,7 @@ export const camdozaalMiningTask: MinionTask = {
 		const { quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
 		const camdozaalMine = Mining.CamdozaalMine;
-		const currentLevel = user.skillLevel(SkillsEnum.Mining);
+		const currentLevel = user.skillsAsLevels.mining;
 
 		// amulet of glory check for mining
 		let barroniteGems = 256;
@@ -83,7 +82,7 @@ export const camdozaalMiningTask: MinionTask = {
 
 		// Add xp to user
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Mining,
+			skillName: 'mining',
 			amount: miningXpReceived,
 			duration,
 			source: 'CamdozaalMining'
@@ -97,10 +96,10 @@ export const camdozaalMiningTask: MinionTask = {
 
 		// Add clue scrolls
 		const clueScrollChance = Mining.CamdozaalMine.clueScrollChance!;
-		addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, clueScrollChance, loot);
+		addSkillingClueToLoot(user, 'fishing', quantity, clueScrollChance, loot);
 
 		// Rock golem roll
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, camdozaalMine.petChance!);
+		const { petDropRate } = skillingPetDropRate(user, 'mining', camdozaalMine.petChance!);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Rock golem');
 			globalClient.emit(

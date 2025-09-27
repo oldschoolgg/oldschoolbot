@@ -1,7 +1,6 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
 	ActivityTaskData,
@@ -310,7 +309,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 				const styles = user.getAttackStyles();
 				return (
 					isCertainMonsterTrip(Monsters.CommanderZilyana.id)(data) &&
-					([SkillsEnum.Ranged, SkillsEnum.Magic] as const).every(styl => !styles.includes(styl))
+					(['ranged', 'magic'] as const).every(styl => !styles.includes(styl))
 				);
 			}
 		}

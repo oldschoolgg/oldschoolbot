@@ -1,6 +1,6 @@
 import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
 import type { activity_type_enum, Minigame, PlayerOwnedHouse } from '@prisma/client';
-import type { Bank } from 'oldschooljs';
+import { type Bank, Items } from 'oldschooljs';
 
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import type { BitField } from '@/lib/constants.js';
@@ -12,7 +12,7 @@ import type { RobochimpUser } from '@/lib/roboChimp.js';
 import { type MinigameName, minigameColumnToNameMap } from '@/lib/settings/minigames.js';
 import Agility from '@/lib/skilling/skills/agility.js';
 import type { Skills } from '@/lib/types/index.js';
-import { formatList, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { formatList } from '@/lib/util/smallUtils.js';
 import type { ParsedUnit } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 import { MUserStats } from './MUserStats.js';
@@ -77,7 +77,7 @@ export class Requirements {
 			requirementParts.push(
 				`Items Must Be in CL: ${
 					Array.isArray(req.clRequirement)
-						? formatList(req.clRequirement.map(itemNameFromID))
+						? formatList(req.clRequirement.map(i => Items.itemNameFromId(i)))
 						: req.clRequirement.toString()
 				}`
 			);
@@ -210,7 +210,9 @@ export class Requirements {
 		if ('clRequirement' in requirement) {
 			if (!user.cl.has(requirement.clRequirement)) {
 				const missingItems = Array.isArray(requirement.clRequirement)
-					? formatList(requirement.clRequirement.filter(i => !user.cl.has(i)).map(itemNameFromID))
+					? formatList(
+							requirement.clRequirement.filter(i => !user.cl.has(i)).map(i => Items.itemNameFromId(i))
+						)
 					: requirement.clRequirement.clone().remove(user.cl);
 				results.push({
 					reason: `You need ${missingItems} in your CL.`

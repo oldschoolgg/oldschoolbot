@@ -4,7 +4,6 @@ import { Bank, deepResolveItems, EMonster, itemID, Monsters, NIGHTMARES_HP, reso
 import { GearStat } from 'oldschooljs/gear';
 
 import type { KillableMonster } from '@/lib/minions/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { bossKillables } from './bosses/index.js';
 import { camdozaalMonsters } from './camdozaalMonsters.js';
 import { chaeldarMonsters } from './chaeldarMonsters.js';
@@ -66,7 +65,7 @@ const killableMonsters: KillableMonster[] = [
 				'Ornate rejuvenation pool': 10
 			}
 		},
-		defaultAttackStyles: [SkillsEnum.Attack, SkillsEnum.Magic, SkillsEnum.Ranged],
+		defaultAttackStyles: ['attack', 'magic', 'ranged'],
 		customMonsterHP: 600,
 		combatXpMultiplier: 1.09
 	},
@@ -200,7 +199,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		difficultyRating: 0,
 		qpRequired: 0,
-		defaultAttackStyles: [SkillsEnum.Attack]
+		defaultAttackStyles: ['attack']
 	},
 	{
 		id: Monsters.Guard.id,
@@ -311,7 +310,7 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 5,
 		qpRequired: 50,
 		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }],
-		defaultAttackStyles: [SkillsEnum.Magic],
+		defaultAttackStyles: ['magic'],
 		healAmountNeeded: 4 * 20,
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackMagic]

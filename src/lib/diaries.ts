@@ -5,7 +5,7 @@ import { Items, Monsters, resolveItems } from 'oldschooljs';
 import Skillcapes from '@/lib/skilling/skillcapes.js';
 import Agility from '@/lib/skilling/skills/agility.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
-import { formatList, formatSkillRequirements, hasSkillReqs, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { formatList, formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { MAX_QP } from './minions/data/quests.js';
 import type { DiaryTier, DiaryTierName } from './minions/types.js';
 import { DiaryID } from './minions/types.js';
@@ -51,7 +51,12 @@ export function userhasDiaryTierSync(
 		const unownedItems = tier.ownedItems.filter(i => !bank.has(i));
 		if (unownedItems.length > 0) {
 			canDo = false;
-			reasons.push(`You don't own ${formatList(unownedItems.map(itemNameFromID), 'or')}`);
+			reasons.push(
+				`You don't own ${formatList(
+					unownedItems.map(i => Items.itemNameFromId(i)),
+					'or'
+				)}`
+			);
 		}
 	}
 
@@ -60,7 +65,10 @@ export function userhasDiaryTierSync(
 		if (unownedItems.length > 0) {
 			canDo = false;
 			reasons.push(
-				`You don't have **${formatList(unownedItems.map(itemNameFromID), 'or')}** in your collection log`
+				`You don't have **${formatList(
+					unownedItems.map(i => Items.itemNameFromId(i)),
+					'or'
+				)}** in your collection log`
 			);
 		}
 	}

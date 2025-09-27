@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { Stealable } from '@/lib/skilling/skills/thieving/stealables.js';
 import { stealables } from '@/lib/skilling/skills/thieving/stealables.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -57,7 +56,7 @@ export const pickpocketTask: MinionTask = {
 		let rogueOutfitBoostActivated = false;
 
 		const loot = new Bank();
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Thieving, obj.petChance);
+		const { petDropRate } = skillingPetDropRate(user, 'thieving', obj.petChance);
 
 		if (obj.type === 'pickpockable') {
 			for (let i = 0; i < successfulQuantity; i++) {
@@ -108,7 +107,7 @@ export const pickpocketTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: xpReceived, duration });
+		const xpRes = await user.addXP({ skillName: 'thieving', amount: xpReceived, duration });
 
 		let str = `${user}, ${user.minionName} finished ${
 			obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'

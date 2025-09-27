@@ -3,7 +3,6 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Items } from 'oldschooljs';
 
 import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { EnchantingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -22,7 +21,7 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 		return 'That is not a valid item to enchant.';
 	}
 
-	if (user.skillLevel(SkillsEnum.Magic) < enchantable.level) {
+	if (user.skillsAsLevels.magic < enchantable.level) {
 		return `${user.minionName} needs ${enchantable.level} Magic to enchant ${enchantable.name}.`;
 	}
 

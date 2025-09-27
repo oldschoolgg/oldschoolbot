@@ -8,7 +8,6 @@ import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearE
 import { trackLoot } from '@/lib/lootTrack.js';
 import { calcLootXPHunting, generateHerbiTable } from '@/lib/skilling/functions/calcsHunter.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
 import { logError } from '@/lib/util/logError.js';
 import { PeakTier } from '@/lib/util/peaks.js';
@@ -38,8 +37,8 @@ export const hunterTask: MinionTask = {
 	async run(data: HunterActivityTaskOptions, { user, handleTripFinish }) {
 		const { creatureID, quantity, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } = data;
 		const userBank = user.bank;
-		const currentLevel = user.skillLevel(SkillsEnum.Hunter);
-		const currentHerbLevel = user.skillLevel(SkillsEnum.Herblore);
+		const currentLevel = user.skillsAsLevels.hunter;
+		const currentHerbLevel = user.skillsAsLevels.herblore;
 		let gotPked = false;
 		let died = false;
 		let diedStr = '';
@@ -129,7 +128,7 @@ export const hunterTask: MinionTask = {
 			babyChinChance =
 				creature.name === 'Chinchompa' ? 131_395 : creature.name === 'Carnivorous chinchompa' ? 98_373 : 82_758;
 		}
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Hunter, babyChinChance);
+		const { petDropRate } = skillingPetDropRate(user, 'hunter', babyChinChance);
 
 		let creatureTable = creature.table;
 		let magicSecStr = '';
@@ -147,7 +146,7 @@ export const hunterTask: MinionTask = {
 			if (currentHerbLevel >= 31) {
 				herbXP += quantity * randInt(25, 75);
 				xpStr = await user.addXP({
-					skillName: SkillsEnum.Herblore,
+					skillName: 'herblore',
 					amount: herbXP,
 					duration
 				});
@@ -168,7 +167,7 @@ export const hunterTask: MinionTask = {
 			itemsToAdd: loot
 		});
 		xpStr += await user.addXP({
-			skillName: SkillsEnum.Hunter,
+			skillName: 'hunter',
 			amount: xpReceived,
 			duration
 		});

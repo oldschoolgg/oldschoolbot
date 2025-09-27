@@ -12,7 +12,7 @@ import type { Consumable, KillableMonster } from '@/lib/minions/types.js';
 import type { Rune } from '@/lib/skilling/skills/runecraft.js';
 import { hasGracefulEquipped } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
-import { formatItemReqs, formatList, hasSkillReqs, itemNameFromID, readableStatName } from '@/lib/util/smallUtils.js';
+import { formatItemReqs, formatList, hasSkillReqs, readableStatName } from '@/lib/util/smallUtils.js';
 import type { JsonKeys } from '@/lib/util.js';
 import { getItemCostFromConsumables } from './lib/abstracted_commands/minionKill/handleConsumables.js';
 
@@ -265,7 +265,7 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 						monster.name
 					}: ${set.items
 						.map(i => i.itemID)
-						.map(itemNameFromID)
+						.map(i => Items.itemNameFromId(i))
 						.join(', ')}.`
 				];
 			}

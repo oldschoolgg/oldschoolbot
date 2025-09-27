@@ -1,7 +1,6 @@
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { TitheFarmActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { roll } from '@/lib/util/rng.js';
@@ -18,7 +17,7 @@ export const titheFarmTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const userStats = await user.fetchStats({ tithe_farm_points: true, tithe_farms_completed: true });
 
-		const farmingLvl = user.skillLevel(SkillsEnum.Farming);
+		const farmingLvl = user.skillsAsLevels.farming;
 		const titheFarmsCompleted = userStats.tithe_farms_completed;
 		const titheFarmPoints = userStats.tithe_farm_points;
 
@@ -90,13 +89,13 @@ export const titheFarmTask: MinionTask = {
 		}
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Farming,
+			skillName: 'farming',
 			amount: Math.floor(totalXp),
 			duration: data.duration
 		});
 
 		const loot = new Bank();
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Farming, 7_494_389);
+		const { petDropRate } = skillingPetDropRate(user, 'farming', 7_494_389);
 		if (roll(petDropRate / determineHarvest)) {
 			loot.add('Tangleroot');
 			globalClient.emit(

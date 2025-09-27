@@ -2,7 +2,6 @@ import { percentChance, randInt } from '@oldschoolgg/toolkit';
 import { ItemGroups } from 'oldschooljs';
 
 import Prayer from '@/lib/skilling/skills/prayer.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { OfferingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { roll } from '@/lib/util/rng.js';
@@ -67,7 +66,7 @@ export const offeringTask: MinionTask = {
 		const xpReceived = newQuantity * bone.xp * XPMod;
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Prayer,
+			skillName: 'prayer',
 			amount: xpReceived,
 			duration: data.duration,
 			source: 'OfferingBones'

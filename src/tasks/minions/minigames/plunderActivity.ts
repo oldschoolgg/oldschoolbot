@@ -2,7 +2,6 @@ import { Events } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
 import { lootRoom, plunderRooms } from '@/lib/minions/data/plunder.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { PlunderActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -35,7 +34,7 @@ export const plunderTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: thievingXP, duration: data.duration });
+		const xpRes = await user.addXP({ skillName: 'thieving', amount: thievingXP, duration: data.duration });
 
 		const str = `${user}, ${user.minionName} finished doing the Pyramid Plunder ${quantity}x times. ${totalAmountUrns}x urns opened. ${xpRes}`;
 
@@ -44,9 +43,7 @@ export const plunderTask: MinionTask = {
 				Events.ServerNotification,
 				`**${user.badgedUsername}'s** minion, ${
 					user.minionName
-				}, just received a **Rocky** <:Rocky:324127378647285771> while doing the Pyramid Plunder, their Thieving level is ${user.skillLevel(
-					SkillsEnum.Thieving
-				)}!`
+				}, just received a **Rocky** <:Rocky:324127378647285771> while doing the Pyramid Plunder, their Thieving level is ${user.skillsAsLevels.thieving}!`
 			);
 		}
 

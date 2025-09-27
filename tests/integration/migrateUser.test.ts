@@ -35,7 +35,7 @@ import { BitField } from '../../src/lib/constants.js';
 import { type GearSetupType, GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types.js';
 import { trackLoot } from '../../src/lib/lootTrack.js';
 import type { MinigameName } from '../../src/lib/settings/minigames.js';
-import type { SkillsEnum } from '../../src/lib/skilling/types.js';
+import { SkillsArray } from '../../src/lib/skilling/types.js';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters.js';
 import { assignNewSlayerTask } from '../../src/lib/slayer/slayerUtil.js';
 import type { Skills } from '../../src/lib/types/index.js';
@@ -290,9 +290,9 @@ class UserData {
 		}
 
 		// Check skill levels:
-		for (const skill of Object.keys(this.skillsAsLevels!)) {
-			const src = this.skillsAsLevels![skill as SkillsEnum];
-			const dst = target.skillsAsLevels![skill as SkillsEnum];
+		for (const skill of SkillsArray) {
+			const src = this.skillsAsLevels![skill];
+			const dst = target.skillsAsLevels![skill];
 			if (src !== dst) {
 				errors.push(`${skill} level doesn't match. ${src} vs ${dst}`);
 			}

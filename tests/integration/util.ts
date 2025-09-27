@@ -1,7 +1,7 @@
 import { randInt, shuffleArr, uniqueArr } from '@oldschoolgg/toolkit';
 import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import type { User as DJSUser } from 'discord.js';
-import { Bank, convertLVLtoXP, type EMonster, type ItemBank, Items, Monsters, type SkillsEnum } from 'oldschooljs';
+import { Bank, convertLVLtoXP, type EMonster, type ItemBank, Items, Monsters } from 'oldschooljs';
 import { integer, nodeCrypto } from 'random-js';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
@@ -246,7 +246,7 @@ export class TestUser extends MUserClass {
 		const newXP = clone(this.skillsAsXP);
 		const xpGained: SkillsRequired = {} as SkillsRequired;
 		for (const skill of SkillsArray) xpGained[skill] = 0;
-		for (const skill of Object.keys(newXP) as SkillsEnum[]) {
+		for (const skill of Object.keys(newXP) as SkillNameType[]) {
 			xpGained[skill as SkillNameType] = newXP[skill] - currentXP[skill];
 		}
 
