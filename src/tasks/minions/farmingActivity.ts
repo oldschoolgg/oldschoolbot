@@ -10,19 +10,19 @@ import { calcVariableYield } from '@/lib/skilling/functions/calcsFarming.js';
 import Farming from '@/lib/skilling/skills/farming/index.js';
 import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { getFarmingKeyFromName } from '@/lib/util/farmingHelpers.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { assert } from '@/lib/util/logError.js';
 import { randInt, roll } from '@/lib/util/rng.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { sendToChannelID } from '@/lib/util/webhook.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const farmingTask: MinionTask = {
 	type: 'Farming',
 	async run(data: FarmingActivityTaskOptions) {
-		const { plantsName, patchType, quantity, upgradeType, payment, userID, channelID, planting, currentDate, pid } =
+		const { plantsName, patchType, quantity, upgradeType, payment, userID, channelID, planting, currentDate } =
 			data;
 		const user = await mUserFetch(userID);
 		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
@@ -53,6 +53,26 @@ export const farmingTask: MinionTask = {
 
 		const plant = Farming.Plants.find(plant => plant.name === plantsName)!;
 		assert(Boolean(plant));
+
+		const harvestedPid = patchType.pid ?? null;
+		let pid = data.pid;
+		const ensurePid = async () => {
+			if (pid || !planting) {
+				return;
+			}
+			const inserted = await prisma.farmedCrop.create({
+				data: {
+					user_id: user.id,
+					date_planted: new Date(currentDate),
+					item_id: plant.id,
+					quantity_planted: quantity,
+					was_autofarmed: data.autoFarmed,
+					paid_for_protection: payment ?? false,
+					upgrade_type: upgradeType
+				}
+			});
+			pid = inserted.id;
+		};
 
 		if (user.hasEquippedOrInBank('Magic secateurs')) {
 			baseBonus += 0.1;
@@ -131,6 +151,8 @@ export const farmingTask: MinionTask = {
 				itemsToAdd: loot
 			});
 
+			await ensurePid();
+
 			const newPatch: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
 				patchPlanted: true,
@@ -148,6 +170,45 @@ export const farmingTask: MinionTask = {
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
 			handleTripFinish(user, channelID, str, undefined, data, null);
+			if (data.autoFarmPlan?.length) {
+				const [nextStep, ...remainingSteps] = data.autoFarmPlan;
+				let nextPid = nextStep.pid;
+				if (!nextPid && nextStep.planting && nextStep.plantsName) {
+					const nextPlant = Farming.Plants.find(plant => plant.name === nextStep.plantsName);
+					if (nextPlant) {
+						const inserted = await prisma.farmedCrop.create({
+							data: {
+								user_id: userID,
+								date_planted: new Date(nextStep.currentDate),
+								item_id: nextPlant.id,
+								quantity_planted: nextStep.quantity,
+								was_autofarmed: true,
+								paid_for_protection: nextStep.payment ?? false,
+								upgrade_type: nextStep.upgradeType
+							}
+						});
+						nextPid = inserted.id;
+					}
+				}
+				await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
+					plantsName: nextStep.plantsName,
+					patchType: nextStep.patchType,
+					userID,
+					channelID,
+					quantity: nextStep.quantity,
+					upgradeType: nextStep.upgradeType,
+					payment: nextStep.payment,
+					treeChopFeePaid: nextStep.treeChopFeePaid,
+					treeChopFeePlanned: nextStep.treeChopFeePlanned,
+					planting: nextStep.planting,
+					duration: nextStep.duration,
+					currentDate: nextStep.currentDate,
+					type: 'Farming',
+					autoFarmed: true,
+					pid: nextPid,
+					autoFarmPlan: remainingSteps
+				});
+			}
 		} else if (patchType.patchPlanted) {
 			// If they do have something planted here, harvest it and possibly replant.
 			const plantToHarvest = Farming.Plants.find(plant => plant.name === patchType.lastPlanted)!;
@@ -245,13 +306,35 @@ export const farmingTask: MinionTask = {
 				} else {
 					const GP = Number(user.user.GP);
 					const gpToCutTree = plantToHarvest.seedType === 'redwood' ? 2000 * alivePlants : 200 * alivePlants;
-					if (GP < gpToCutTree) {
-						return sendToChannelID(channelID, {
-							content: `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You need ${gpToCutTree} GP.`
+					const prePaid = data.treeChopFeePaid ?? 0;
+					const plannedFee = data.treeChopFeePlanned ?? (prePaid > 0 ? prePaid : 0);
+					const coinsOwedNow = Math.max(0, gpToCutTree - prePaid);
+					if (GP < coinsOwedNow) {
+						const { sendToChannelID } = await import('@/lib/util/webhook.js');
+						await sendToChannelID(channelID, {
+							content: `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You still need ${coinsOwedNow} GP.`
 						});
+						return;
 					}
-					payStr = `*You did not have the woodcutting level required, so you paid a nearby farmer ${gpToCutTree} GP to remove the previous trees.*`;
-					await user.removeItemsFromBank(new Bank().add('Coins', gpToCutTree));
+					if (coinsOwedNow > 0) {
+						await user.removeItemsFromBank(new Bank().add('Coins', coinsOwedNow));
+						const savings = plannedFee > gpToCutTree ? plannedFee - gpToCutTree : 0;
+						const paymentMessage = `You did not have the woodcutting level required, so you paid a nearby farmer ${coinsOwedNow.toLocaleString()} GP to remove the previous trees.`;
+						payStr =
+							savings > 0
+								? `*${paymentMessage} This was ${savings.toLocaleString()} GP less than you initially expected to pay.*`
+								: `*${paymentMessage}*`;
+					} else {
+						const refund = Math.max(0, prePaid - gpToCutTree);
+						if (refund > 0) {
+							await user.addItemsToBank({ items: new Bank().add('Coins', refund) });
+							payStr = `*You had prepaid ${prePaid.toLocaleString()} GP to remove the previous trees, but only ${gpToCutTree.toLocaleString()} GP was needed, so ${refund.toLocaleString()} GP was refunded to you.*`;
+						} else if (gpToCutTree > 0) {
+							payStr = `*You had already paid a nearby farmer ${Math.min(prePaid, gpToCutTree).toLocaleString()} GP to remove the previous trees.*`;
+						} else if (plannedFee > 0) {
+							payStr = `*No payment was needed to remove the previous trees.*`;
+						}
+					}
 
 					harvestXp = 0;
 				}
@@ -388,6 +471,7 @@ export const farmingTask: MinionTask = {
 			};
 
 			if (planting) {
+				await ensurePid();
 				newPatch = {
 					lastPlanted: plant.name,
 					patchPlanted: true,
@@ -440,10 +524,10 @@ export const farmingTask: MinionTask = {
 				itemsToAdd: loot
 			});
 			await userStatsBankUpdate(user, 'farming_harvest_loot_bank', loot);
-			if (pid) {
+			if (harvestedPid) {
 				await prisma.farmedCrop.update({
 					where: {
-						id: pid
+						id: harvestedPid
 					},
 					data: {
 						date_harvested: new Date()
@@ -466,6 +550,45 @@ export const farmingTask: MinionTask = {
 				data,
 				loot
 			);
+			if (data.autoFarmPlan?.length) {
+				const [nextStep, ...remainingSteps] = data.autoFarmPlan;
+				let nextPid = nextStep.pid;
+				if (!nextPid && nextStep.planting && nextStep.plantsName) {
+					const nextPlant = Farming.Plants.find(plant => plant.name === nextStep.plantsName);
+					if (nextPlant) {
+						const inserted = await prisma.farmedCrop.create({
+							data: {
+								user_id: userID,
+								date_planted: new Date(nextStep.currentDate),
+								item_id: nextPlant.id,
+								quantity_planted: nextStep.quantity,
+								was_autofarmed: true,
+								paid_for_protection: nextStep.payment ?? false,
+								upgrade_type: nextStep.upgradeType
+							}
+						});
+						nextPid = inserted.id;
+					}
+				}
+				await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
+					plantsName: nextStep.plantsName,
+					patchType: nextStep.patchType,
+					userID,
+					channelID,
+					quantity: nextStep.quantity,
+					upgradeType: nextStep.upgradeType,
+					payment: nextStep.payment,
+					treeChopFeePaid: nextStep.treeChopFeePaid,
+					treeChopFeePlanned: nextStep.treeChopFeePlanned,
+					planting: nextStep.planting,
+					duration: nextStep.duration,
+					currentDate: nextStep.currentDate,
+					type: 'Farming',
+					autoFarmed: true,
+					pid: nextPid,
+					autoFarmPlan: remainingSteps
+				});
+			}
 		}
 	}
 };

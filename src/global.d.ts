@@ -21,6 +21,8 @@ declare global {
 
 	type CommandResponse = Promise<null | string | InteractionReplyOptions>;
 
+	type MUser = import('./lib/MUser.js').MUser;
+
 	interface OSBMahojiCommand extends ICommand {
 		attributes?: Omit<AbstractCommandAttributes, 'description'>;
 	}
