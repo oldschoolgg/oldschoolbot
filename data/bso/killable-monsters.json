@@ -22,7 +22,6 @@
 		"time_to_finish": 29000,
 		"wildy": true,
 		"difficulty_rating": 3,
-		"notify_drops": ["Abyssal dagger", "Abyssal head"],
 		"qp_required": 0,
 		"level_requirements": {
 			"slayer": 85
@@ -60,7 +59,8 @@
 			"pool": {
 				"rejuvenation_pool": 10,
 				"fancy_rejuvenation_pool": 10,
-				"ornate_rejuvenation_pool": 10
+				"ornate_rejuvenation_pool": 10,
+				"ancient_rejuvenation_pool": 20
 			}
 		},
 		"slayer_only": true,
@@ -756,7 +756,6 @@
 			]
 		},
 		"difficulty_rating": 2,
-		"notify_drops": ["Callisto cub"],
 		"qp_required": 0,
 		"equipped_item_boosts": [
 			{
@@ -1432,7 +1431,6 @@
 			]
 		},
 		"difficulty_rating": 7,
-		"notify_drops": ["Callisto cub"],
 		"qp_required": 0,
 		"equipped_item_boosts": [
 			{
@@ -1620,7 +1618,6 @@
 		"pk_activity_rating": 10,
 		"pk_base_death_chance": 9,
 		"difficulty_rating": 2,
-		"notify_drops": ["Skeleton champion scroll", "Vet'ion jr."],
 		"qp_required": 0,
 		"equipped_item_boosts": [
 			{
@@ -2008,7 +2005,6 @@
 			[4751, 4722, 11834, 2404, 24421],
 			[11824, 11889, 19675, 29589, 4151, 12006, 13263, 24417]
 		],
-		"notify_drops": ["Hellpuppy", "Jar of souls"],
 		"qp_required": 0,
 		"item_in_bank_boosts": [
 			{
@@ -2089,8 +2085,7 @@
 		"pk_activity_rating": 4,
 		"pk_base_death_chance": 5,
 		"difficulty_rating": 8,
-		"items_required": [[2503, 4736], [2497, 4738]],
-		"notify_drops": ["Pet chaos elemental"],
+		"items_required": [[605, 2503, 4736], [4272, 2497, 4738]],
 		"qp_required": 0,
 		"equipped_item_boosts": [
 			{
@@ -2145,7 +2140,6 @@
 		"pk_activity_rating": 4,
 		"pk_base_death_chance": 2,
 		"difficulty_rating": 6,
-		"notify_drops": ["Pet chaos elemental"],
 		"qp_required": 0,
 		"equipped_item_boosts": [
 			{
@@ -2236,7 +2230,6 @@
 		"emoji": "<:Pet_zilyana:324127378248957952>",
 		"wildy": false,
 		"difficulty_rating": 7,
-		"notify_drops": ["Pet zilyana"],
 		"qp_required": 1,
 		"item_in_bank_boosts": [
 			{
@@ -2275,7 +2268,7 @@
 			"Saradomin sword",
 			"Saradomin's light"
 		],
-		"items_required": [[4736, 11828], [4738, 11830]],
+		"items_required": [[605, 4736, 11828], [4272, 4738, 11830]],
 		"default_attack_styles": ["ranged"],
 		"custom_monster_hp": 723,
 		"combat_xp_multiplier": 1.132,
@@ -2291,7 +2284,14 @@
 		"wildy": false,
 		"difficulty_rating": 6,
 		"items_required": [[11824, 26219]],
-		"notify_drops": ["Arcane sigil", "Elysian sigil", "Jar of spirits", "Pet dark core", "Spectral sigil"],
+		"notify_drops": [
+			"Arcane sigil",
+			"Divine sigil",
+			"Elysian sigil",
+			"Jar of spirits",
+			"Pet dark core",
+			"Spectral sigil"
+		],
 		"qp_required": 0,
 		"item_in_bank_boosts": [
 			{
@@ -2421,7 +2421,8 @@
 			"pool": {
 				"rejuvenation_pool": 50,
 				"fancy_rejuvenation_pool": 50,
-				"ornate_rejuvenation_pool": 50
+				"ornate_rejuvenation_pool": 50,
+				"ancient_rejuvenation_pool": 57
 			}
 		},
 		"default_attack_styles": ["attack"],
@@ -3509,7 +3510,6 @@
 		"emoji": "<:Pet_general_graardor:324127377376673792>",
 		"wildy": false,
 		"difficulty_rating": 7,
-		"notify_drops": ["Pet general graardor"],
 		"qp_required": 1,
 		"item_in_bank_boosts": [
 			{
@@ -3608,7 +3608,6 @@
 		"wildy": false,
 		"difficulty_rating": 3,
 		"items_required": ["Dharok's greataxe", "Dharok's helm", "Dharok's platebody", "Dharok's platelegs"],
-		"notify_drops": ["Baby mole"],
 		"qp_required": 0,
 		"item_in_bank_boosts": [
 			{
@@ -4307,7 +4306,6 @@
 		"emoji": "<:Pet_kril_tsutsaroth:324127377527406594>",
 		"wildy": false,
 		"difficulty_rating": 7,
-		"notify_drops": ["Pet k'ril tsutsaroth"],
 		"qp_required": 1,
 		"item_in_bank_boosts": [
 			{
@@ -4338,7 +4336,7 @@
 			"Zamorak hilt",
 			"Zamorakian spear"
 		],
-		"items_required": [[4736, 11828], [4738, 11830]],
+		"items_required": [[605, 4736, 11828], [4272, 4738, 11830]],
 		"default_attack_styles": ["attack"],
 		"custom_monster_hp": 708,
 		"combat_xp_multiplier": 1.135,
@@ -4367,8 +4365,7 @@
 		"emoji": "<:Kalphite_princess_2nd_form:324127376915300352>",
 		"wildy": false,
 		"difficulty_rating": 7,
-		"items_required": [4755, 4759, [2503, 4736, 11828], [2497, 4738, 11830]],
-		"notify_drops": ["Jar of sand", "Kalphite princess"],
+		"items_required": [4755, 4759, [605, 2503, 4736, 11828], [4272, 2497, 4738, 11830]],
 		"qp_required": 0,
 		"item_in_bank_boosts": [
 			{
@@ -4386,7 +4383,8 @@
 			"pool": {
 				"rejuvenation_pool": 10,
 				"fancy_rejuvenation_pool": 10,
-				"ornate_rejuvenation_pool": 10
+				"ornate_rejuvenation_pool": 10,
+				"ancient_rejuvenation_pool": 20
 			}
 		},
 		"default_attack_styles": ["strength"],
@@ -4449,10 +4447,14 @@
 		"name": "King Black Dragon",
 		"time_to_finish": 186000,
 		"emoji": "<:Prince_black_dragon:324127378538364928>",
-		"wildy": false,
+		"wildy": true,
 		"difficulty_rating": 6,
-		"items_required": [1540, [11785, 9185, 20997, 21012], [2503, 12381, 12385, 4736], [2497, 12383, 12387, 4738]],
-		"notify_drops": ["Draconic visage", "Prince black dragon"],
+		"items_required": [
+			[11283, 1540],
+			[2832, 11785, 9185, 20997, 21012],
+			[605, 2503, 12381, 12385, 4736],
+			[4272, 2497, 12383, 12387, 4738]
+		],
 		"qp_required": 0,
 		"item_in_bank_boosts": [
 			{
@@ -4519,7 +4521,6 @@
 		"emoji": "<:Pet_kreearra:324127377305239555>",
 		"wildy": false,
 		"difficulty_rating": 7,
-		"notify_drops": ["Pet kree'arra"],
 		"qp_required": 1,
 		"item_in_bank_boosts": [
 			{
@@ -4554,7 +4555,7 @@
 			"Godsword shard 3",
 			"Pet kree'arra"
 		],
-		"items_required": [[4736, 11828], [4738, 11830]],
+		"items_required": [[605, 4736, 11828], [4272, 4738, 11830]],
 		"default_attack_styles": ["ranged"],
 		"disallowed_attack_styles": ["attack", "strength", "magic"],
 		"custom_monster_hp": 641,
@@ -5267,6 +5268,7 @@
 		"id": 7990,
 		"name": "Ogress Warrior",
 		"time_to_finish": 25000,
+		"table": {},
 		"wildy": false,
 		"difficulty_rating": 2,
 		"qp_required": 0,
@@ -5326,6 +5328,10 @@
 				"gear_setup": "mage",
 				"items": [
 					{
+						"item_id": 70010,
+						"boost_percent": 20
+					},
+					{
 						"item_id": 27275,
 						"boost_percent": 15
 					},
@@ -5354,6 +5360,10 @@
 			{
 				"items": [
 					{
+						"boost_percent": 15,
+						"item_id": 48220
+					},
+					{
 						"boost_percent": 10,
 						"item_id": 20997
 					}
@@ -5362,6 +5372,10 @@
 			},
 			{
 				"items": [
+					{
+						"boost_percent": 15,
+						"item_id": 48219
+					},
 					{
 						"boost_percent": 10,
 						"item_id": 11212
@@ -5376,6 +5390,14 @@
 			{
 				"items": [
 					{
+						"boost_percent": 10,
+						"item_id": 40048
+					},
+					{
+						"boost_percent": 8,
+						"item_id": 605
+					},
+					{
 						"boost_percent": 6,
 						"item_id": 27238
 					},
@@ -5388,6 +5410,14 @@
 			},
 			{
 				"items": [
+					{
+						"boost_percent": 10,
+						"item_id": 40049
+					},
+					{
+						"boost_percent": 8,
+						"item_id": 4272
+					},
 					{
 						"boost_percent": 6,
 						"item_id": 27241
@@ -5402,6 +5432,14 @@
 			{
 				"items": [
 					{
+						"boost_percent": 10,
+						"item_id": 40043
+					},
+					{
+						"boost_percent": 8,
+						"item_id": 983
+					},
+					{
 						"boost_percent": 6,
 						"item_id": 21021
 					}
@@ -5411,11 +5449,71 @@
 			{
 				"items": [
 					{
+						"boost_percent": 10,
+						"item_id": 40044
+					},
+					{
+						"boost_percent": 8,
+						"item_id": 2409
+					},
+					{
 						"boost_percent": 6,
 						"item_id": 21024
 					}
 				],
 				"gear_setup": "mage"
+			},
+			{
+				"items": [
+					{
+						"boost_percent": 6,
+						"item_id": 70432
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 22109
+					}
+				],
+				"gear_setup": "range"
+			},
+			{
+				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 40050
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 26235
+					}
+				],
+				"gear_setup": "range"
+			},
+			{
+				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 40045
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 19544
+					}
+				],
+				"gear_setup": "mage"
+			},
+			{
+				"items": [
+					{
+						"boost_percent": 5,
+						"item_id": 40051
+					},
+					{
+						"boost_percent": 3,
+						"item_id": 13237
+					}
+				],
+				"gear_setup": "range"
 			},
 			{
 				"items": [
@@ -5433,8 +5531,12 @@
 			{
 				"items": [
 					{
+						"boost_percent": 5,
+						"item_id": 40046
+					},
+					{
 						"boost_percent": 3,
-						"item_id": 26235
+						"item_id": 13235
 					}
 				],
 				"gear_setup": "range"
@@ -7296,7 +7398,6 @@
 		"pk_activity_rating": 6,
 		"pk_base_death_chance": 7,
 		"difficulty_rating": 7,
-		"notify_drops": ["Scorpia's offspring"],
 		"qp_required": 0,
 		"equipped_item_boosts": [
 			{
@@ -7898,7 +7999,6 @@
 			]
 		},
 		"difficulty_rating": 2,
-		"notify_drops": ["Venenatis spiderling"],
 		"qp_required": 0,
 		"equipped_item_boosts": [
 			{
@@ -9884,7 +9984,6 @@
 			]
 		},
 		"difficulty_rating": 6,
-		"notify_drops": ["Venenatis spiderling"],
 		"qp_required": 0,
 		"equipped_item_boosts": [
 			{
@@ -10090,7 +10189,6 @@
 		"group_killable": true,
 		"respawn_time": 19800,
 		"difficulty_rating": 7,
-		"notify_drops": ["Skeleton champion scroll", "Vet'ion jr."],
 		"qp_required": 0,
 		"equipped_item_boosts": [
 			{
@@ -10379,8 +10477,7 @@
 		"emoji": "<:Vorki:400713309252222977>",
 		"wildy": false,
 		"difficulty_rating": 8,
-		"items_required": ["Armadyl chainskirt", "Armadyl chestplate"],
-		"notify_drops": ["Draconic visage", "Jar of decay", "Skeletal visage", "Vorki"],
+		"items_required": [[605, 11828], [4272, 11830]],
 		"qp_required": 205,
 		"item_in_bank_boosts": [
 			{
@@ -10457,7 +10554,7 @@
 		"wildy": false,
 		"difficulty_rating": 3,
 		"exists_in_catacombs": true,
-		"items_required": [[2503, 4736, 11828], [2497, 4738, 11830]],
+		"items_required": [[605, 2503, 4736, 11828], [4272, 2497, 4738, 11830]],
 		"qp_required": 0,
 		"level_requirements": {
 			"slayer": 52
@@ -10724,9 +10821,11 @@
 		"emoji": "<:Pet_snakeling:324127377816944642>",
 		"wildy": false,
 		"difficulty_rating": 8,
-		"notify_drops": ["Jar of swamp", "Magma mutagen", "Pet snakeling", "Tanzanite mutagen"],
 		"qp_required": 75,
 		"item_in_bank_boosts": [
+			{
+				"41084": 5
+			},
 			{
 				"2577": 2,
 				"13237": 4

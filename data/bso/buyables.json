@@ -823,39 +823,39 @@
 	},
 	{
 		"name": "Cannon barrels",
-		"gp_cost": 2500000,
-		"qp_required": 5,
-		"ironman_price": 200625,
 		"output_items": {
 			"10": 1
-		}
+		},
+		"gp_cost": 2500000,
+		"qp_required": 5,
+		"ironman_price": 200625
 	},
 	{
 		"name": "Cannon base",
-		"gp_cost": 2500000,
-		"qp_required": 5,
-		"ironman_price": 200625,
 		"output_items": {
 			"6": 1
-		}
+		},
+		"gp_cost": 2500000,
+		"qp_required": 5,
+		"ironman_price": 200625
 	},
 	{
 		"name": "Cannon furnace",
-		"gp_cost": 2500000,
-		"qp_required": 5,
-		"ironman_price": 200625,
 		"output_items": {
 			"12": 1
-		}
+		},
+		"gp_cost": 2500000,
+		"qp_required": 5,
+		"ironman_price": 200625
 	},
 	{
 		"name": "Cannon stand",
-		"gp_cost": 2500000,
-		"qp_required": 5,
-		"ironman_price": 200625,
 		"output_items": {
 			"8": 1
-		}
+		},
+		"gp_cost": 2500000,
+		"qp_required": 5,
+		"ironman_price": 200625
 	},
 	{
 		"name": "Cape of legends",
@@ -1202,10 +1202,10 @@
 	},
 	{
 		"name": "Compost",
-		"gp_cost": 700,
 		"output_items": {
 			"6032": 1
-		}
+		},
+		"gp_cost": 500
 	},
 	{
 		"name": "Construction cape",
@@ -1617,6 +1617,13 @@
 		"output_items": {
 			"2890": 1
 		}
+	},
+	{
+		"name": "Empty bucket pack",
+		"output_items": {
+			"1925": 100
+		},
+		"gp_cost": 10000
 	},
 	{
 		"name": "Enchanted gem",
@@ -3618,10 +3625,10 @@
 	},
 	{
 		"name": "Ogre bow",
-		"gp_cost": 10000,
 		"output_items": {
 			"2883": 1
-		}
+		},
+		"gp_cost": 10000
 	},
 	{
 		"name": "Pearl barbarian rod",
@@ -3773,13 +3780,13 @@
 	},
 	{
 		"name": "Potato with cheese",
-		"gp_cost": 2650,
+		"output_items": {
+			"6705": 1
+		},
+		"gp_cost": 1666,
 		"skills_needed": {
 			"attack": 65,
 			"strength": 65
-		},
-		"output_items": {
-			"6705": 1
 		}
 	},
 	{
@@ -4343,6 +4350,14 @@
 		"ironman_price": 18720,
 		"output_items": {
 			"7445": 1
+		}
+	},
+	{
+		"name": "Rope",
+		"gp_cost": 100,
+		"ironman_price": 25,
+		"output_items": {
+			"954": 1
 		}
 	},
 	{

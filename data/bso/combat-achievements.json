@@ -7,13 +7,15 @@
 				"type": "kill_count",
 				"monster": "Aberrant Spectre",
 				"desc": "Kill an Aberrant Spectre.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2,
@@ -21,13 +23,15 @@
 				"type": "kill_count",
 				"monster": "Barrows",
 				"desc": "Open the Barrows chest 10 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"1673": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"1673": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 3,
@@ -45,22 +49,24 @@
 				"type": "kill_count",
 				"monster": "Black Dragon",
 				"desc": "Kill a Black Dragon.",
-				"requirements": [
-					{
-						"OR": [
-							{
-								"kcRequirement": {
-									"6502": 1
+				"requirements": {
+					"requirements": [
+						{
+							"or": [
+								{
+									"kc_requirement": {
+										"6502": 1
+									}
+								},
+								{
+									"kc_requirement": {
+										"252": 1
+									}
 								}
-							},
-							{
-								"kcRequirement": {
-									"252": 1
-								}
-							}
-						]
-					}
-				]
+							]
+						}
+					]
+				}
 			},
 			{
 				"id": 5,
@@ -68,13 +74,15 @@
 				"type": "kill_count",
 				"monster": "Bloodveld",
 				"desc": "Kill a Bloodveld.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"484": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"484": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 6,
@@ -102,13 +110,15 @@
 				"type": "kill_count",
 				"monster": "Bryophyta",
 				"desc": "Kill Bryophyta once.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"8195": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"8195": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 9,
@@ -126,13 +136,15 @@
 				"type": "mechanical",
 				"monster": "Bryophyta",
 				"desc": "Kill Bryophyta with the Protect from Magic prayer active.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"8195": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"8195": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 11,
@@ -140,13 +152,15 @@
 				"type": "kill_count",
 				"monster": "Deranged Archaeologist",
 				"desc": "Kill the Deranged Archaeologist 10 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"7806": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"7806": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 12,
@@ -154,13 +168,15 @@
 				"type": "kill_count",
 				"monster": "Fire Giant",
 				"desc": "Kill a Fire Giant.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2075": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2075": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 13,
@@ -168,13 +184,15 @@
 				"type": "kill_count",
 				"monster": "Giant Mole",
 				"desc": "Kill the Giant Mole 10 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"5779": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"5779": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 14,
@@ -182,13 +200,15 @@
 				"type": "kill_count",
 				"monster": "Greater Demon",
 				"desc": "Kill a Greater Demon.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2025": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2025": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 15,
@@ -206,13 +226,15 @@
 				"type": "kill_count",
 				"monster": "Hellhound",
 				"desc": "Kill a Hellhound.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"104": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"104": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 17,
@@ -220,13 +242,15 @@
 				"type": "kill_count",
 				"monster": "King Black Dragon",
 				"desc": "Kill the King Black Dragon 10 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"6502": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"6502": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 18,
@@ -234,13 +258,15 @@
 				"type": "kill_count",
 				"monster": "Lizardman Shaman",
 				"desc": "Kill a Lizardman Shaman.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"6766": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"6766": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 19,
@@ -258,15 +284,17 @@
 				"type": "kill_count",
 				"monster": "Other",
 				"desc": "Kill a Hill Giant, Moss Giant and Fire Giant in the Giant Cave within the Shayzien region.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2075": 1,
-							"2090": 1,
-							"2098": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2075": 1,
+								"2090": 1,
+								"2098": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 21,
@@ -274,13 +302,15 @@
 				"type": "kill_count",
 				"monster": "Obor",
 				"desc": "Kill Obor once.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"7416": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"7416": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 22,
@@ -308,13 +338,15 @@
 				"type": "kill_count",
 				"monster": "Sarachnis",
 				"desc": "Kill Sarachnis 10 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"8713": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"8713": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 25,
@@ -355,13 +387,15 @@
 				"type": "kill_count",
 				"monster": "Tempoross",
 				"desc": "Subdue Tempoross 5 times.",
-				"requirements": [
-					{
-						"minigames": {
-							"tempoross": 5
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"tempoross": 5
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 29,
@@ -369,13 +403,15 @@
 				"type": "mechanical",
 				"monster": "Wintertodt",
 				"desc": "Repair a brazier which has been destroyed by the Wintertodt.",
-				"requirements": [
-					{
-						"minigames": {
-							"wintertodt": 1
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"wintertodt": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 30,
@@ -404,13 +440,15 @@
 				"type": "kill_count",
 				"monster": "Wintertodt",
 				"desc": "Subdue the Wintertodt 5 times.",
-				"requirements": [
-					{
-						"minigames": {
-							"wintertodt": 5
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"wintertodt": 5
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 33,
@@ -418,13 +456,15 @@
 				"type": "kill_count",
 				"monster": "Wyrm",
 				"desc": "Kill a Wyrm.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"8610": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"8610": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 34,
@@ -442,13 +482,15 @@
 				"type": "kill_count",
 				"monster": "Scurrius",
 				"desc": "Kill Scurrius once.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"7222": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"7222": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 36,
@@ -514,13 +556,15 @@
 				"type": "kill_count",
 				"monster": "Abyssal Sire",
 				"desc": "Kill the Abyssal Sire 50 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"5886": 50
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"5886": 50
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1002,
@@ -548,13 +592,15 @@
 				"type": "kill_count",
 				"monster": "Alchemical Hydra",
 				"desc": "Kill the Alchemical Hydra 75 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"8615": 75
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"8615": 75
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1005,
@@ -562,13 +608,15 @@
 				"type": "kill_count",
 				"monster": "Basilisk Knight",
 				"desc": "Kill a Basilisk Knight.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"9293": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"9293": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1006,
@@ -576,13 +624,15 @@
 				"type": "kill_count",
 				"monster": "Callisto",
 				"desc": "Kill Callisto 20 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"6503": 20
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"6503": 20
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1007,
@@ -610,13 +660,15 @@
 				"type": "kill_count",
 				"monster": "Cerberus",
 				"desc": "Kill Cerberus 75 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"5862": 75
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"5862": 75
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1010,
@@ -685,13 +737,15 @@
 				"type": "kill_count",
 				"monster": "Chambers of Xeric",
 				"desc": "Complete the Chambers of Xeric 25 times.",
-				"requirements": [
-					{
-						"minigames": {
-							"raids": 25
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"raids": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1017,
@@ -760,13 +814,15 @@
 				"desc": "Kill the Chaos Elemental 25 times.",
 				"type": "kill_count",
 				"monster": "Chaos Elemental",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2054": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2054": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1024,
@@ -774,13 +830,15 @@
 				"desc": "Kill Commander Zilyana 100 times.",
 				"type": "kill_count",
 				"monster": "Commander Zilyana",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2205": 100
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2205": 100
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1025,
@@ -818,13 +876,15 @@
 				"desc": "Kill the Corporeal Beast 25 times.",
 				"type": "kill_count",
 				"monster": "Corporeal Beast",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"319": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"319": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1029,
@@ -852,13 +912,15 @@
 				"desc": "Complete the Corrupted Gauntlet 5 times.",
 				"type": "kill_count",
 				"monster": "Corrupted Hunllef",
-				"requirements": [
-					{
-						"minigames": {
-							"corrupted_gauntlet": 5
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"corrupted_gauntlet": 5
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1032,
@@ -866,13 +928,15 @@
 				"desc": "Complete the Gauntlet 5 times.",
 				"type": "kill_count",
 				"monster": "Crystalline Hunllef",
-				"requirements": [
-					{
-						"minigames": {
-							"gauntlet": 5
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"gauntlet": 5
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1033,
@@ -980,13 +1044,15 @@
 				"desc": "Kill a Demonic Gorilla.",
 				"type": "kill_count",
 				"monster": "Demonic Gorilla",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"7144": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"7144": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1044,
@@ -1014,13 +1080,15 @@
 				"desc": "Kill General Graardor 100 times.",
 				"type": "kill_count",
 				"monster": "General Graardor",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2215": 100
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2215": 100
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1049,
@@ -1038,13 +1106,15 @@
 				"desc": "Kill the Grotesque Guardians 50 times.",
 				"type": "kill_count",
 				"monster": "Grotesque Guardians",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"7851": 50
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"7851": 50
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1052,
@@ -1052,13 +1122,15 @@
 				"desc": "Kill the Grotesque Guardians 10 times without leaving the instance.",
 				"type": "stamina",
 				"monster": "Grotesque Guardians",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"7851": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"7851": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1053,
@@ -1126,13 +1198,15 @@
 				"desc": "Kill K'ril Tsutsaroth 100 times.",
 				"type": "kill_count",
 				"monster": "K'ril Tsutsaroth",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"3129": 100
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"3129": 100
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1060,
@@ -1150,13 +1224,15 @@
 				"desc": "Kill the Kalphite Queen 50 times.",
 				"type": "kill_count",
 				"monster": "Kalphite Queen",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"963": 50
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"963": 50
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1062,
@@ -1184,13 +1260,15 @@
 				"desc": "Kill the Kraken 50 times in a private instance without leaving the room.",
 				"type": "stamina",
 				"monster": "Kraken",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"494": 50
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"494": 50
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1065,
@@ -1198,13 +1276,15 @@
 				"desc": "Kill Kree'arra 100 times.",
 				"type": "kill_count",
 				"monster": "Kree'arra",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"3162": 100
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"3162": 100
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1066,
@@ -1223,13 +1303,15 @@
 				"desc": "Kill Nex once.",
 				"type": "kill_count",
 				"monster": "Nex",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"46274": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"46274": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1068,
@@ -1237,13 +1319,15 @@
 				"desc": "Kill the Phantom Muspah 25 times.",
 				"type": "kill_count",
 				"monster": "Phantom Muspah",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"12077": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"12077": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1069,
@@ -1271,13 +1355,15 @@
 				"desc": "Kill the Phantom Muspah without running.",
 				"type": "restriction",
 				"monster": "Phantom Muspah",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"12077": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"12077": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1072,
@@ -1285,13 +1371,15 @@
 				"desc": "Kill Phosani's Nightmare once.",
 				"type": "kill_count",
 				"monster": "Phosani's Nightmare",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"9416": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"9416": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1073,
@@ -1299,13 +1387,15 @@
 				"desc": "Kill Scorpia 25 times.",
 				"type": "kill_count",
 				"monster": "Scorpia",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"6615": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"6615": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1074,
@@ -1333,13 +1423,15 @@
 				"desc": "Kill the Mimic once.",
 				"type": "kill_count",
 				"monster": "The Mimic",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"23184": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"23184": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1077,
@@ -1347,13 +1439,15 @@
 				"desc": "Kill The Nightmare 25 times.",
 				"type": "kill_count",
 				"monster": "The Nightmare",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"9415": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"9415": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1078,
@@ -1401,13 +1495,15 @@
 				"desc": "Complete the Theatre of Blood 25 times.",
 				"type": "kill_count",
 				"monster": "Theatre of Blood",
-				"requirements": [
-					{
-						"minigames": {
-							"tob": 25
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"tob": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1083,
@@ -1533,13 +1629,15 @@
 				"desc": "Kill the Thermonuclear Smoke Devil 20 times.",
 				"type": "kill_count",
 				"monster": "Thermonuclear Smoke Devil",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"499": 20
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"499": 20
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1095,
@@ -1557,13 +1655,15 @@
 				"desc": "Complete the Tombs of Amascut once.",
 				"type": "kill_count",
 				"monster": "Tombs of Amascut",
-				"requirements": [
-					{
-						"minigames": {
-							"tombs_of_amascut": 1
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"tombs_of_amascut": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1097,
@@ -1679,11 +1779,13 @@
 				"desc": "Complete the Tombs of Amascut in Entry mode (or above) 50 times.",
 				"type": "kill_count",
 				"monster": "Tombs of Amascut: Entry Mode",
-				"requirements": [
-					{
-						"name": "Complete the Tombs of Amascut Entry mode (or above) 50 times."
-					}
-				]
+				"requirements": {
+					"requirements": [
+						{
+							"name": "Complete the Tombs of Amascut Entry mode (or above) 50 times."
+						}
+					]
+				}
 			},
 			{
 				"id": 1108,
@@ -1691,11 +1793,13 @@
 				"desc": "Complete the Tombs of Amascut (Expert mode) once.",
 				"type": "kill_count",
 				"monster": "Tombs of Amascut: Expert Mode",
-				"requirements": [
-					{
-						"name": "Complete the Tombs of Amascut (Expert mode) once."
-					}
-				]
+				"requirements": {
+					"requirements": [
+						{
+							"name": "Complete the Tombs of Amascut (Expert mode) once."
+						}
+					]
+				}
 			},
 			{
 				"id": 1112,
@@ -1703,13 +1807,15 @@
 				"desc": "Kill a Jal-Zek within the Inferno.",
 				"type": "kill_count",
 				"monster": "TzKal-Zuk",
-				"requirements": [
-					{
-						"minigames": {
-							"inferno": 1
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"inferno": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1113,
@@ -1717,13 +1823,15 @@
 				"desc": "Complete the Fight Caves once.",
 				"type": "kill_count",
 				"monster": "TzTok-Jad",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"3127": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"3127": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1114,
@@ -1752,13 +1860,15 @@
 				"desc": "Kill Venenatis 20 times.",
 				"type": "kill_count",
 				"monster": "Venenatis",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"6610": 20
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"6610": 20
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1117,
@@ -1766,13 +1876,15 @@
 				"desc": "Kill Vet'ion 20 times.",
 				"type": "kill_count",
 				"monster": "Vet'ion",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"6611": 20
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"6611": 20
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1118,
@@ -1780,13 +1892,15 @@
 				"desc": "Kill Vorkath 50 times.",
 				"type": "kill_count",
 				"monster": "Vorkath",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"8061": 50
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"8061": 50
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1119,
@@ -1836,13 +1950,15 @@
 				"desc": "Kill Zalcano 25 times.",
 				"type": "kill_count",
 				"monster": "Zalcano",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"9049": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"9049": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1124,
@@ -1891,13 +2007,15 @@
 				"desc": "Kill Zulrah 75 times.",
 				"type": "kill_count",
 				"monster": "Zulrah",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2042": 75
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2042": 75
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1129,
@@ -1906,8 +2024,7 @@
 				"type": "mechanical",
 				"monster": "Colosseum",
 				"rng": {
-					"chance_per_kill": 5,
-					"has_chance": "Colosseum"
+					"chance_per_kill": 5
 				}
 			},
 			{
@@ -1936,13 +2053,15 @@
 				"desc": "Kill Araxxor 25 times.",
 				"type": "kill_count",
 				"monster": "Araxxor",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"13668": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"13668": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1133,
@@ -2000,13 +2119,15 @@
 				"desc": "Kill a Tormented Demon.",
 				"type": "kill_count",
 				"monster": "Tormented Demon",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"13600": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"13600": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1140,
@@ -2014,13 +2135,15 @@
 				"desc": "Kill the Leviathan once.",
 				"type": "kill_count",
 				"monster": "The Leviathan",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"12214": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"12214": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1141,
@@ -2058,13 +2181,15 @@
 				"desc": "Kill the Whisperer once.",
 				"type": "kill_count",
 				"monster": "The Whisperer",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"12204": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"12204": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1145,
@@ -2082,13 +2207,15 @@
 				"desc": "Kill Vardorvis once.",
 				"type": "kill_count",
 				"monster": "Vardorvis",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"12223": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"12223": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1147,
@@ -2106,13 +2233,15 @@
 				"desc": "Kill Duke Sucellus once.",
 				"type": "kill_count",
 				"monster": "Duke Sucellus",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"12191": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"12191": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1149,
@@ -2120,13 +2249,15 @@
 				"desc": "Kill the Hueycoatl 25 times.",
 				"type": "kill_count",
 				"monster": "TheHueycoatl",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"14009": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"14009": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 1150,
@@ -2232,13 +2363,15 @@
 				"desc": "Complete the Chambers of Xeric 150 times.",
 				"type": "kill_count",
 				"monster": "Chambers of Xeric",
-				"requirements": [
-					{
-						"minigames": {
-							"raids": 150
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"raids": 150
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 3004,
@@ -2276,13 +2409,15 @@
 				"desc": "Complete the Chambers of Xeric: Challenge Mode 25 times.",
 				"type": "kill_count",
 				"monster": "Chambers of Xeric: Challenge Mode",
-				"requirements": [
-					{
-						"minigames": {
-							"raids_challenge_mode": 25
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"raids_challenge_mode": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 3008,
@@ -2310,13 +2445,15 @@
 				"desc": "Kill Commander Zilyana 50 times in a privately rented instance without leaving the room.",
 				"type": "stamina",
 				"monster": "Commander Zilyana",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2205": 50
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2205": 50
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 3011,
@@ -2354,13 +2491,15 @@
 				"desc": "Complete the Corrupted Gauntlet 50 times.",
 				"type": "kill_count",
 				"monster": "Corrupted Hunllef",
-				"requirements": [
-					{
-						"minigames": {
-							"corrupted_gauntlet": 50
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"corrupted_gauntlet": 50
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 3015,
@@ -2389,13 +2528,15 @@
 				"desc": "Kill General Graardor 15 times in a private instance without leaving the room.",
 				"type": "stamina",
 				"monster": "General Graardor",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2215": 15
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2215": 15
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 3018,
@@ -2443,13 +2584,15 @@
 				"desc": "Kill K'ril Tsutsaroth 20 times in a private instance without leaving the room.",
 				"type": "stamina",
 				"monster": "K'ril Tsutsaroth",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"3129": 30
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"3129": 30
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 3023,
@@ -2457,13 +2600,15 @@
 				"desc": "Kill Kree'arra 30 times in a private instance without leaving the room.",
 				"type": "stamina",
 				"monster": "Kree'arra",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"3162": 30
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"3162": 30
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 3024,
@@ -2553,13 +2698,15 @@
 				"desc": "Kill Phosani's Nightmare 5 times in a row without leaving Phosani's Dream.",
 				"type": "stamina",
 				"monster": "Phosani's Nightmare",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"9416": 5
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"9416": 5
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 3033,
@@ -2567,13 +2714,15 @@
 				"desc": "Kill Phosani's Nightmare 25 times.",
 				"type": "kill_count",
 				"monster": "Phosani's Nightmare",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"9416": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"9416": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 3034,
@@ -2632,13 +2781,15 @@
 				"desc": "Complete the Theatre of Blood 150 times.",
 				"type": "kill_count",
 				"monster": "Theatre of Blood",
-				"requirements": [
-					{
-						"minigames": {
-							"tob": 150
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"tob": 150
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 3040,
@@ -2731,13 +2882,15 @@
 				"desc": "Complete the Theatre of Blood: Hard Mode 50 times.",
 				"type": "kill_count",
 				"monster": "Theatre of Blood: Hard Mode",
-				"requirements": [
-					{
-						"minigames": {
-							"tob_hard": 50
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"tob_hard": 50
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 3049,
@@ -2846,13 +2999,15 @@
 				"desc": "Complete the Tombs of Amascut at raid level 500 or above without anyone dying.",
 				"type": "mechanical",
 				"monster": "Tombs of Amascut: Expert Mode",
-				"requirements": [
-					{
-						"clRequirement": {
-							"27248": 1
+				"requirements": {
+					"requirements": [
+						{
+							"cl_requirement": {
+								"27248": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 3060,
@@ -2860,11 +3015,13 @@
 				"desc": "Complete the Tombs of Amascut (Expert mode) 50 times.",
 				"type": "kill_count",
 				"monster": "Tombs of Amascut: Expert Mode",
-				"requirements": [
-					{
-						"name": "Complete the Tombs of Amascut (Expert mode) 25 times."
-					}
-				]
+				"requirements": {
+					"requirements": [
+						{
+							"name": "Complete the Tombs of Amascut (Expert mode) 25 times."
+						}
+					]
+				}
 			},
 			{
 				"id": 3061,
@@ -3020,13 +3177,15 @@
 				"desc": "Complete the Inferno 5 times.",
 				"type": "kill_count",
 				"monster": "TzKal-Zuk",
-				"requirements": [
-					{
-						"minigames": {
-							"inferno": 5
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"inferno": 5
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 3079,
@@ -3190,13 +3349,15 @@
 				"desc": "Defeat Sol Heredit 10 times.",
 				"type": "kill_count",
 				"monster": "Colosseum",
-				"requirements": [
-					{
-						"minigames": {
-							"colosseum": 10
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"colosseum": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 3095,
@@ -3244,13 +3405,15 @@
 				"desc": "Kill the Awakened Leviathan.",
 				"type": "kill_count",
 				"monster": "The Leviathan",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"12215": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"12215": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 3100,
@@ -3268,13 +3431,15 @@
 				"desc": "Kill the Awakened Whisperer.",
 				"type": "kill_count",
 				"monster": "The Whisperer",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"12205": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"12205": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 3102,
@@ -3312,13 +3477,15 @@
 				"desc": "Kill Awakened Vardorvis.",
 				"type": "kill_count",
 				"monster": "Vardorvis",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"12224": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"12224": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 3106,
@@ -3336,13 +3503,15 @@
 				"desc": "Kill Awakened Duke Sucellus.",
 				"type": "kill_count",
 				"monster": "Duke Sucellus",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"12192": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"12192": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 3108,
@@ -3398,13 +3567,15 @@
 				"type": "kill_count",
 				"monster": "Abyssal Sire",
 				"desc": "Kill the Abyssal Sire 20 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"5886": 20
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"5886": 20
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 201,
@@ -3462,13 +3633,15 @@
 				"type": "kill_count",
 				"monster": "Callisto",
 				"desc": "Kill Callisto 10 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"6503": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"6503": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 207,
@@ -3476,13 +3649,15 @@
 				"type": "kill_count",
 				"monster": "Chaos Elemental",
 				"desc": "Kill the Chaos Elemental 10 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2054": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2054": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 208,
@@ -3520,13 +3695,15 @@
 				"type": "kill_count",
 				"monster": "Chaos Fanatic",
 				"desc": "Kill the Chaos Fanatic 25 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"6619": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"6619": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 212,
@@ -3544,13 +3721,15 @@
 				"type": "kill_count",
 				"monster": "Commander Zilyana",
 				"desc": "Kill Commander Zilyana 50 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2205": 50
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2205": 50
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 214,
@@ -3558,13 +3737,15 @@
 				"type": "kill_count",
 				"monster": "Crazy Archaeologist",
 				"desc": "Kill the Crazy Archaeologist 25 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"6618": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"6618": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 215,
@@ -3572,13 +3753,15 @@
 				"type": "kill_count",
 				"monster": "Dagannoth Rex",
 				"desc": "Kill Dagannoth Rex 25 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2267": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2267": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 216,
@@ -3586,13 +3769,15 @@
 				"type": "kill_count",
 				"monster": "Dagannoth Supreme",
 				"desc": "Kill Dagannoth Supreme 25 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2265": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2265": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 217,
@@ -3600,13 +3785,15 @@
 				"type": "kill_count",
 				"monster": "General Graardor",
 				"desc": "Kill General Graardor 50 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2215": 50
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2215": 50
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 218,
@@ -3704,13 +3891,15 @@
 				"type": "kill_count",
 				"monster": "Grotesque Guardians",
 				"desc": "Kill the Grotesque Guardians 25 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"7851": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"7851": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 228,
@@ -3718,13 +3907,15 @@
 				"type": "kill_count",
 				"monster": "Hespori",
 				"desc": "Kill Hespori 5 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"8583": 5
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"8583": 5
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 229,
@@ -3772,13 +3963,15 @@
 				"type": "kill_count",
 				"monster": "K'ril Tsutsaroth",
 				"desc": "Kill K'ril Tsutsaroth 50 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"3129": 50
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"3129": 50
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 234,
@@ -3796,13 +3989,15 @@
 				"type": "kill_count",
 				"monster": "Kalphite Queen",
 				"desc": "Kill the Kalphite Queen 25 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"963": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"963": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 236,
@@ -3820,13 +4015,15 @@
 				"type": "stamina",
 				"monster": "King Black Dragon",
 				"desc": "Kill The King Black Dragon 10 times in a private instance without leaving the instance.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"6502": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"6502": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 238,
@@ -3844,13 +4041,15 @@
 				"type": "stamina",
 				"monster": "Kraken",
 				"desc": "Kill the Kraken 25 times in a private instance without leaving the room.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"494": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"494": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 240,
@@ -3858,13 +4057,15 @@
 				"type": "kill_count",
 				"monster": "Kraken",
 				"desc": "Kill the Kraken 20 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"494": 20
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"494": 20
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 241,
@@ -3882,13 +4083,15 @@
 				"type": "kill_count",
 				"monster": "Kree'arra",
 				"desc": "Kill Kree'arra 50 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"3162": 50
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"3162": 50
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 243,
@@ -3896,13 +4099,15 @@
 				"type": "kill_count",
 				"monster": "Phantom Muspah",
 				"desc": "Kill the Phantom Muspah.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"12077": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"12077": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 244,
@@ -3950,13 +4155,15 @@
 				"type": "kill_count",
 				"monster": "Scorpia",
 				"desc": "Kill Scorpia 10 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"6615": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"6615": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 249,
@@ -3964,13 +4171,15 @@
 				"type": "kill_count",
 				"monster": "Skotizo",
 				"desc": "Kill Skotizo 5 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"7286": 5
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"7286": 5
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 250,
@@ -3998,13 +4207,15 @@
 				"type": "kill_count",
 				"monster": "The Nightmare",
 				"desc": "Kill The Nightmare once.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"9415": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"9415": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 253,
@@ -4012,13 +4223,15 @@
 				"type": "kill_count",
 				"monster": "Theatre of Blood: Entry Mode",
 				"desc": "Complete the Theatre of Blood: Entry Mode 1 time.",
-				"requirements": [
-					{
-						"minigames": {
-							"tob": 1
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"tob": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 254,
@@ -4026,13 +4239,15 @@
 				"type": "restriction",
 				"monster": "Tombs of Amascut: Entry Mode",
 				"desc": "Complete a Tombs of Amascut raid at level 100 or above.",
-				"requirements": [
-					{
-						"minigames": {
-							"tombs_of_amascut": 1
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"tombs_of_amascut": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 255,
@@ -4040,13 +4255,15 @@
 				"type": "kill_count",
 				"monster": "Tombs of Amascut: Entry Mode",
 				"desc": "Complete the Tombs of Amascut in Entry mode (or above) once.",
-				"requirements": [
-					{
-						"minigames": {
-							"tombs_of_amascut": 1
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"tombs_of_amascut": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 256,
@@ -4064,13 +4281,15 @@
 				"type": "kill_count",
 				"monster": "Tombs of Amascut: Entry Mode",
 				"desc": "Complete the Tombs of Amascut in Entry mode (or above) 25 times.",
-				"requirements": [
-					{
-						"minigames": {
-							"tombs_of_amascut": 25
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"tombs_of_amascut": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 258,
@@ -4078,13 +4297,15 @@
 				"type": "kill_count",
 				"monster": "Venenatis",
 				"desc": "Kill Venenatis 10 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"6610": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"6610": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 259,
@@ -4092,13 +4313,15 @@
 				"type": "kill_count",
 				"monster": "Vet'ion",
 				"desc": "Kill Vet'ion 10 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"6611": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"6611": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 260,
@@ -4116,13 +4339,15 @@
 				"type": "kill_count",
 				"monster": "Zulrah",
 				"desc": "Kill Zulrah 25 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2042": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2042": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 262,
@@ -4130,13 +4355,15 @@
 				"type": "kill_count",
 				"monster": "Dagannoth Prime",
 				"desc": "Kill Dagannoth Prime 25 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2266": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2266": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 263,
@@ -4164,13 +4391,15 @@
 				"desc": "Kill the Hueycoatl 10 times.",
 				"type": "kill_count",
 				"monster": "TheHueycoatl",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"14009": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"14009": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 266,
@@ -4188,13 +4417,15 @@
 				"desc": "Kill Amoxliatl 20 times.",
 				"type": "kill_count",
 				"monster": "Amoxliatl",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"13685": 20
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"13685": 20
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 268,
@@ -4340,13 +4571,15 @@
 				"desc": "Kill the Alchemical Hydra 150 times.",
 				"type": "kill_count",
 				"monster": "Alchemical Hydra",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"8615": 150
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"8615": 150
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2006,
@@ -4354,13 +4587,15 @@
 				"desc": "Kill the Alchemical Hydra 15 times without leaving the room.",
 				"type": "stamina",
 				"monster": "Alchemical Hydra",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"8615": 15
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"8615": 15
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2007,
@@ -4398,13 +4633,15 @@
 				"desc": "Kill Cerberus 150 times.",
 				"type": "kill_count",
 				"monster": "Cerberus",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"5862": 150
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"5862": 150
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2011,
@@ -4485,13 +4722,15 @@
 				"desc": "Complete the Chambers of Xeric 75 times.",
 				"type": "kill_count",
 				"monster": "Chambers of Xeric",
-				"requirements": [
-					{
-						"minigames": {
-							"raids": 75
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"raids": 75
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2019,
@@ -4603,13 +4842,15 @@
 				"desc": "Complete the Chambers of Xeric: Challenge Mode 10 times.",
 				"type": "kill_count",
 				"monster": "Chambers of Xeric: Challenge Mode",
-				"requirements": [
-					{
-						"minigames": {
-							"raids_challenge_mode": 10
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"raids_challenge_mode": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2030,
@@ -4637,13 +4878,15 @@
 				"desc": "Kill the Corporeal Beast 50 times.",
 				"type": "kill_count",
 				"monster": "Corporeal Beast",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"319": 50
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"319": 50
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2033,
@@ -4651,13 +4894,15 @@
 				"desc": "Complete the Corrupted Gauntlet 10 times.",
 				"type": "kill_count",
 				"monster": "Corrupted Hunllef",
-				"requirements": [
-					{
-						"minigames": {
-							"corrupted_gauntlet": 10
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"corrupted_gauntlet": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2034,
@@ -4705,13 +4950,15 @@
 				"desc": "Complete the Gauntlet 20 times.",
 				"type": "kill_count",
 				"monster": "Crystalline Hunllef",
-				"requirements": [
-					{
-						"minigames": {
-							"gauntlet": 20
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"gauntlet": 20
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2039,
@@ -4772,13 +5019,15 @@
 				"desc": "Kill the Grotesque Guardians 20 times without leaving the instance.",
 				"type": "stamina",
 				"monster": "Grotesque Guardians",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"7851": 20
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"7851": 20
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2045,
@@ -4796,13 +5045,15 @@
 				"desc": "Kill the Kraken 100 times in a private instance without leaving the room.",
 				"type": "stamina",
 				"monster": "Kraken",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"494": 100
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"494": 100
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2047,
@@ -4841,13 +5092,15 @@
 				"desc": "Kill Nex 25 times.",
 				"type": "kill_count",
 				"monster": "Nex",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"46274": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"46274": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2051,
@@ -4939,13 +5192,15 @@
 				"desc": "Kill the Phantom Muspah 10 times in one trip.",
 				"type": "stamina",
 				"monster": "Phantom Muspah",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"12077": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"12077": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2060,
@@ -4953,13 +5208,15 @@
 				"desc": "Kill the Phantom Muspah 50 times.",
 				"type": "kill_count",
 				"monster": "Phantom Muspah",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"12077": 50
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"12077": 50
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2061,
@@ -4977,13 +5234,15 @@
 				"desc": "Kill Phosani's Nightmare 5 times.",
 				"type": "kill_count",
 				"monster": "Phosani's Nightmare",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"9416": 5
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"9416": 5
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2063,
@@ -5051,13 +5310,15 @@
 				"desc": "Kill The Nightmare 50 times.",
 				"type": "kill_count",
 				"monster": "The Nightmare",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"9415": 50
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"9415": 50
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2070,
@@ -5228,13 +5489,15 @@
 				"desc": "Complete the Theatre of Blood 75 times.",
 				"type": "kill_count",
 				"monster": "Theatre of Blood",
-				"requirements": [
-					{
-						"minigames": {
-							"tob": 75
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"tob": 75
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2086,
@@ -5285,13 +5548,15 @@
 				"desc": "Complete the Tombs of Amascut 50 times.",
 				"type": "kill_count",
 				"monster": "Tombs of Amascut",
-				"requirements": [
-					{
-						"minigames": {
-							"tombs_of_amascut": 50
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"tombs_of_amascut": 50
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2091,
@@ -5321,13 +5586,15 @@
 				"desc": "Complete the Tombs of Amascut 25 times.",
 				"type": "kill_count",
 				"monster": "Tombs of Amascut",
-				"requirements": [
-					{
-						"minigames": {
-							"tombs_of_amascut": 25
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"tombs_of_amascut": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2094,
@@ -5477,11 +5744,13 @@
 				"desc": "Complete the Tombs of Amascut (Expert mode) 25 times.",
 				"type": "kill_count",
 				"monster": "Tombs of Amascut: Expert Mode",
-				"requirements": [
-					{
-						"name": "Complete the Tombs of Amascut (Expert mode) 25 times."
-					}
-				]
+				"requirements": {
+					"requirements": [
+						{
+							"name": "Complete the Tombs of Amascut (Expert mode) 25 times."
+						}
+					]
+				}
 			},
 			{
 				"id": 2108,
@@ -5554,13 +5823,15 @@
 				"desc": "Complete the Fight Caves 5 times.",
 				"type": "kill_count",
 				"monster": "TzTok-Jad",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"3127": 5
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"3127": 5
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2120,
@@ -5589,13 +5860,15 @@
 				"desc": "Kill Vorkath 10 times without leaving his area.",
 				"type": "stamina",
 				"monster": "Vorkath",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"8061": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"8061": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2123,
@@ -5623,13 +5896,15 @@
 				"desc": "Kill Vorkath 100 times.",
 				"type": "kill_count",
 				"monster": "Vorkath",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"8061": 100
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"8061": 100
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2126,
@@ -5647,13 +5922,15 @@
 				"desc": "Kill Zulrah 150 times.",
 				"type": "kill_count",
 				"monster": "Zulrah",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2042": 150
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2042": 150
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2128,
@@ -5701,13 +5978,15 @@
 				"desc": "Defeat Sol Heredit once.",
 				"type": "kill_count",
 				"monster": "Colosseum",
-				"requirements": [
-					{
-						"minigames": {
-							"colosseum": 1
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"colosseum": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2133,
@@ -5775,13 +6054,15 @@
 				"desc": "\tKill Araxxor 75 times.",
 				"type": "kill_count",
 				"monster": "Araxxor",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"13668": 75
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"13668": 75
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2140,
@@ -5809,13 +6090,15 @@
 				"desc": "Kill the Leviathan 50 times.",
 				"type": "kill_count",
 				"monster": "The Leviathan",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"12214": 50
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"12214": 50
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2143,
@@ -5843,13 +6126,15 @@
 				"desc": "Kill the Whisperer 50 times.",
 				"type": "kill_count",
 				"monster": "The Whisperer",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"12204": 50
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"12204": 50
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2146,
@@ -5887,13 +6172,15 @@
 				"desc": "Kill Vardorvis 50 times.",
 				"type": "kill_count",
 				"monster": "Vardorvis",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"12223": 50
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"12223": 50
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2150,
@@ -5951,13 +6238,15 @@
 				"desc": "Kill Duke Sucellus 50 times.",
 				"type": "kill_count",
 				"monster": "Duke Sucellus",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"12191": 50
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"12191": 50
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 2156,
@@ -6017,13 +6306,15 @@
 				"type": "kill_count",
 				"monster": "Barrows",
 				"desc": "Open the Barrows chest 25 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"1673": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"1673": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 102,
@@ -6041,13 +6332,15 @@
 				"type": "kill_count",
 				"monster": "Brutal Black Dragon",
 				"desc": "Kill a Brutal Black Dragon.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"7275": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"7275": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 104,
@@ -6055,13 +6348,15 @@
 				"type": "kill_count",
 				"monster": "Bryophyta",
 				"desc": "Kill Bryophyta 5 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"8195": 5
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"8195": 5
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 105,
@@ -6079,13 +6374,15 @@
 				"type": "kill_count",
 				"monster": "Chaos Fanatic",
 				"desc": "Kill the Chaos Fanatic 10 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"6619": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"6619": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 107,
@@ -6113,13 +6410,15 @@
 				"type": "kill_count",
 				"monster": "Crazy Archaeologist",
 				"desc": "Kill the Crazy Archaeologist 10 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"6618": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"6618": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 110,
@@ -6137,13 +6436,15 @@
 				"type": "kill_count",
 				"monster": "Dagannoth Prime",
 				"desc": "Kill Dagannoth Prime 10 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2266": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2266": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 112,
@@ -6151,13 +6452,15 @@
 				"type": "kill_count",
 				"monster": "Dagannoth Rex",
 				"desc": "Kill Dagannoth Rex 10 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2267": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2267": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 113,
@@ -6175,13 +6478,15 @@
 				"type": "kill_count",
 				"monster": "Dagannoth Supreme",
 				"desc": "Kill Dagannoth Supreme 10 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"2265": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"2265": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 115,
@@ -6209,13 +6514,15 @@
 				"type": "kill_count",
 				"monster": "Deranged Archaeologist",
 				"desc": "Kill the Deranged Archaeologist 25 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"7806": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"7806": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 118,
@@ -6223,13 +6530,15 @@
 				"type": "kill_count",
 				"monster": "Gargoyle",
 				"desc": "Kill a Gargoyle.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"412": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"412": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 119,
@@ -6237,13 +6546,15 @@
 				"type": "kill_count",
 				"monster": "Giant Mole",
 				"desc": "Kill the Giant mole 25 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"5779": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"5779": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 120,
@@ -6261,13 +6572,15 @@
 				"type": "kill_count",
 				"monster": "King Black Dragon",
 				"desc": "Kill the King Black Dragon 25 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"6502": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"6502": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 122,
@@ -6275,13 +6588,15 @@
 				"type": "mechanical",
 				"monster": "King Black Dragon",
 				"desc": "Kill the King Black Dragon with the Protect from Melee prayer activated.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"6502": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"6502": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 123,
@@ -6289,13 +6604,15 @@
 				"type": "restriction",
 				"monster": "King Black Dragon",
 				"desc": "Kill the King Black Dragon with an antifire potion active and an antidragon shield equipped.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"6502": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"6502": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 124,
@@ -6313,13 +6630,15 @@
 				"type": "kill_count",
 				"monster": "Kurask",
 				"desc": "Kill a Kurask.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"410": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"410": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 127,
@@ -6347,13 +6666,15 @@
 				"type": "kill_count",
 				"monster": "Obor",
 				"desc": "Kill Obor 5 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"7416": 5
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"7416": 5
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 130,
@@ -6361,13 +6682,15 @@
 				"type": "restriction",
 				"monster": "Sarachnis",
 				"desc": "Kill Sarachnis with a crush weapon.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"8713": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"8713": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 131,
@@ -6375,13 +6698,15 @@
 				"type": "kill_count",
 				"monster": "Sarachnis",
 				"desc": "Kill Sarachnis 25 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"8713": 25
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"8713": 25
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 132,
@@ -6389,13 +6714,15 @@
 				"type": "kill_count",
 				"monster": "Skeletal Wyvern",
 				"desc": "Kill a Skeletal Wyvern.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"465": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"465": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 133,
@@ -6413,13 +6740,15 @@
 				"type": "kill_count",
 				"monster": "Skotizo",
 				"desc": "Kill Skotizo once.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"7286": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"7286": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 135,
@@ -6437,13 +6766,15 @@
 				"type": "kill_count",
 				"monster": "Tempoross",
 				"desc": "Subdue Tempoross 10 times.",
-				"requirements": [
-					{
-						"minigames": {
-							"tempoross": 10
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"tempoross": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 137,
@@ -6482,13 +6813,15 @@
 				"type": "kill_count",
 				"monster": "Wintertodt",
 				"desc": "Subdue the Wintertodt 10 times.",
-				"requirements": [
-					{
-						"minigames": {
-							"wintertodt": 10
+				"requirements": {
+					"requirements": [
+						{
+							"minigames": {
+								"wintertodt": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 141,
@@ -6496,13 +6829,15 @@
 				"type": "kill_count",
 				"monster": "Scurrius",
 				"desc": "Kill Scurrius 10 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"7222": 10
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"7222": 10
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 142,
@@ -6540,13 +6875,15 @@
 				"desc": "Kill the Hueycoatl once.",
 				"type": "kill_count",
 				"monster": "TheHueycoatl",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"14009": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"14009": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 146,
@@ -6564,13 +6901,15 @@
 				"desc": "Kill Amoxliatl once.",
 				"type": "kill_count",
 				"monster": "Amoxliatl",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"13685": 1
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"13685": 1
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 148,
@@ -6588,13 +6927,15 @@
 				"type": "kill_count",
 				"monster": "Royal Titans",
 				"desc": "Kill the Royal Titans 25 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"Royal Titans": [25, 12596, 14147, 14148]
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"royal_titans": [25, 12596, 14147, 14148]
+							}
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"id": 150,
@@ -6602,13 +6943,15 @@
 				"type": "kill_count",
 				"monster": "Royal Titans",
 				"desc": "Kill the Royal Titans 10 times.",
-				"requirements": [
-					{
-						"kcRequirement": {
-							"Royal Titans": [10, 12596, 14147, 14148]
+				"requirements": {
+					"requirements": [
+						{
+							"kc_requirement": {
+								"royal_titans": [10, 12596, 14147, 14148]
+							}
 						}
-					}
-				]
+					]
+				}
 			}
 		],
 		"length": 50,

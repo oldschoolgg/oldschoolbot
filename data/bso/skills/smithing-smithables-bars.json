@@ -663,6 +663,150 @@
 		"time_to_use": 2400
 	},
 	{
+		"name": "Dwarven boots",
+		"level": 120,
+		"xp": 100000,
+		"id": 48018,
+		"input_bars": {
+			"506": 2
+		},
+		"time_to_use": 180000,
+		"output_multiple": 1,
+		"requires_blacksmith": true,
+		"cant_be_doubled": true
+	},
+	{
+		"name": "Dwarven full helm",
+		"level": 120,
+		"xp": 100000,
+		"id": 48015,
+		"input_bars": {
+			"506": 2
+		},
+		"time_to_use": 180000,
+		"output_multiple": 1,
+		"requires_blacksmith": true,
+		"cant_be_doubled": true
+	},
+	{
+		"name": "Dwarven gauntlets",
+		"level": 99,
+		"xp": 12.5,
+		"id": 12594,
+		"input_bars": {
+			"506": 3
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1,
+		"requires_blacksmith": true,
+		"cant_be_doubled": true
+	},
+	{
+		"name": "Dwarven gloves",
+		"level": 120,
+		"xp": 100000,
+		"id": 48019,
+		"input_bars": {
+			"506": 2
+		},
+		"time_to_use": 180000,
+		"output_multiple": 1,
+		"requires_blacksmith": true,
+		"cant_be_doubled": true
+	},
+	{
+		"name": "Dwarven greataxe",
+		"level": 99,
+		"xp": 12.5,
+		"id": 472,
+		"input_bars": {
+			"506": 3
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1,
+		"requires_blacksmith": true,
+		"cant_be_doubled": true
+	},
+	{
+		"name": "Dwarven greathammer",
+		"level": 99,
+		"xp": 12.5,
+		"id": 474,
+		"input_bars": {
+			"506": 4
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1,
+		"requires_blacksmith": true,
+		"cant_be_doubled": true
+	},
+	{
+		"name": "Dwarven knife",
+		"level": 99,
+		"xp": 12.5,
+		"id": 478,
+		"input_bars": {
+			"506": 2
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1,
+		"requires_blacksmith": true,
+		"cant_be_doubled": true
+	},
+	{
+		"name": "Dwarven pickaxe",
+		"level": 99,
+		"xp": 12.5,
+		"id": 476,
+		"input_bars": {
+			"506": 3
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1,
+		"requires_blacksmith": true,
+		"cant_be_doubled": true
+	},
+	{
+		"name": "Dwarven platebody",
+		"level": 120,
+		"xp": 100000,
+		"id": 48016,
+		"input_bars": {
+			"506": 5
+		},
+		"time_to_use": 180000,
+		"output_multiple": 1,
+		"requires_blacksmith": true,
+		"cant_be_doubled": true
+	},
+	{
+		"name": "Dwarven platelegs",
+		"level": 120,
+		"xp": 100000,
+		"id": 48017,
+		"input_bars": {
+			"506": 4
+		},
+		"time_to_use": 180000,
+		"output_multiple": 1,
+		"requires_blacksmith": true,
+		"cant_be_doubled": true
+	},
+	{
+		"name": "Dwarven warhammer",
+		"level": 120,
+		"xp": 100000,
+		"id": 6741,
+		"input_bars": {
+			"506": 3,
+			"47508": 1
+		},
+		"time_to_use": 180000,
+		"output_multiple": 1,
+		"requires_blacksmith": true,
+		"cant_be_doubled": true
+	},
+	{
 		"name": "Gold bar",
 		"level": 40,
 		"xp": 22.5,
@@ -696,6 +840,186 @@
 		"time_to_use": 4000,
 		"output_multiple": 1,
 		"qp_required": 4
+	},
+	{
+		"name": "Gorajan archer boots",
+		"level": 99,
+		"xp": 50000,
+		"id": 40051,
+		"input_bars": {
+			"758": 1,
+			"48012": 2
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Gorajan archer gloves",
+		"level": 99,
+		"xp": 50000,
+		"id": 40050,
+		"input_bars": {
+			"759": 1,
+			"48012": 2
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Gorajan archer helmet",
+		"level": 99,
+		"xp": 50000,
+		"id": 40047,
+		"input_bars": {
+			"601": 1,
+			"48012": 2
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Gorajan archer legs",
+		"level": 99,
+		"xp": 50000,
+		"id": 40049,
+		"input_bars": {
+			"4272": 1,
+			"48012": 2
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Gorajan archer top",
+		"level": 99,
+		"xp": 50000,
+		"id": 40048,
+		"input_bars": {
+			"605": 1,
+			"48012": 2
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Gorajan occult boots",
+		"level": 99,
+		"xp": 50000,
+		"id": 40046,
+		"input_bars": {
+			"9654": 1,
+			"48012": 2
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Gorajan occult gloves",
+		"level": 99,
+		"xp": 50000,
+		"id": 40045,
+		"input_bars": {
+			"2423": 1,
+			"48012": 2
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Gorajan occult helmet",
+		"level": 99,
+		"xp": 50000,
+		"id": 40042,
+		"input_bars": {
+			"788": 1,
+			"48012": 2
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Gorajan occult legs",
+		"level": 99,
+		"xp": 50000,
+		"id": 40044,
+		"input_bars": {
+			"2409": 1,
+			"48012": 2
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Gorajan occult top",
+		"level": 99,
+		"xp": 50000,
+		"id": 40043,
+		"input_bars": {
+			"983": 1,
+			"48012": 2
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Gorajan warrior boots",
+		"level": 99,
+		"xp": 50000,
+		"id": 40037,
+		"input_bars": {
+			"2838": 1,
+			"48012": 2
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Gorajan warrior gloves",
+		"level": 99,
+		"xp": 50000,
+		"id": 40036,
+		"input_bars": {
+			"4273": 1,
+			"48012": 2
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Gorajan warrior helmet",
+		"level": 99,
+		"xp": 50000,
+		"id": 40033,
+		"input_bars": {
+			"432": 1,
+			"48012": 2
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Gorajan warrior legs",
+		"level": 99,
+		"xp": 50000,
+		"id": 40035,
+		"input_bars": {
+			"2404": 1,
+			"48012": 2
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
+	},
+	{
+		"name": "Gorajan warrior top",
+		"level": 99,
+		"xp": 50000,
+		"id": 40034,
+		"input_bars": {
+			"709": 1,
+			"48012": 2
+		},
+		"time_to_use": 3400,
+		"output_multiple": 1
 	},
 	{
 		"name": "Iron 2h sword",
@@ -1668,6 +1992,30 @@
 		"time_to_use": 2400
 	},
 	{
+		"name": "Silver bolts (unf)",
+		"level": 21,
+		"xp": 50,
+		"id": 9382,
+		"input_bars": {
+			"2355": 1
+		},
+		"time_to_use": 3400,
+		"output_multiple": 10
+	},
+	{
+		"name": "Silver stake",
+		"level": 95,
+		"xp": 77,
+		"id": 71936,
+		"input_bars": {
+			"2355": 3,
+			"50017": 1
+		},
+		"time_to_use": 3000,
+		"output_multiple": 1,
+		"cant_be_doubled": true
+	},
+	{
 		"name": "Steel 2h sword",
 		"level": 44,
 		"xp": 112.5,
@@ -1986,6 +2334,19 @@
 		},
 		"time_to_use": 4000,
 		"output_multiple": 1
+	},
+	{
+		"name": "Sun-god axe head",
+		"level": 110,
+		"xp": 5123,
+		"id": 73095,
+		"input_bars": {
+			"73092": 2
+		},
+		"time_to_use": 4000,
+		"output_multiple": 1,
+		"qp_required": 400,
+		"cant_be_doubled": true
 	},
 	{
 		"name": "Sun-metal bar",
