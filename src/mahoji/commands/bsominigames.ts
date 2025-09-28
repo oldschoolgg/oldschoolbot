@@ -25,9 +25,8 @@ import { type TuraelsTrialsMethod, TuraelsTrialsMethods, turaelsTrialsStartComma
 
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank, type ItemBank } from 'oldschooljs';
+import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import { itemNameFromID } from '@/lib/util/smallUtils.js';
 import {
 	fishingContestStartCommand,
 	fishingContestStatsCommand
@@ -82,7 +81,7 @@ export const bsoMinigamesCommand: OSBMahojiCommand = {
 							description: 'The herbs you want to use for your water mixture.',
 							required: true,
 							choices: BathwaterMixtures.map(i => ({
-								name: `${i.name} (${i.items.map(itemNameFromID).join(', ')})`,
+								name: `${i.name} (${i.items.map(i => Items.itemNameFromId(i)).join(', ')})`,
 								value: i.name
 							}))
 						}

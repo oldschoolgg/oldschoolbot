@@ -6,35 +6,6 @@ import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { FarmingPatchName } from '@/lib/util/farmingHelpers.js';
 
-export enum SkillsEnum {
-	Agility = 'agility',
-	Cooking = 'cooking',
-	Fishing = 'fishing',
-	Mining = 'mining',
-	Smithing = 'smithing',
-	Woodcutting = 'woodcutting',
-	Firemaking = 'firemaking',
-	Runecraft = 'runecraft',
-	Crafting = 'crafting',
-	Prayer = 'prayer',
-	Fletching = 'fletching',
-	Farming = 'farming',
-	Herblore = 'herblore',
-	Thieving = 'thieving',
-	Hunter = 'hunter',
-	Construction = 'construction',
-	Magic = 'magic',
-	Attack = 'attack',
-	Strength = 'strength',
-	Defence = 'defence',
-	Ranged = 'ranged',
-	Hitpoints = 'hitpoints',
-	Dungeoneering = 'dungeoneering',
-	Slayer = 'slayer',
-	Invention = 'invention',
-	Divination = 'divination'
-}
-
 export const SkillsArray = [
 	'agility',
 	'cooking',
@@ -65,13 +36,6 @@ export const SkillsArray = [
 ] as const;
 
 export type SkillNameType = (typeof SkillsArray)[number];
-for (const skill of SkillsArray) {
-	const matching = Object.keys(SkillsEnum).find(key => key.toLowerCase() === skill);
-	if (!matching) throw new Error(`Missing skill enum for ${skill}`);
-}
-if (SkillsArray.length !== Object.keys(SkillsEnum).length) {
-	throw new Error('Not all skills have been added to the SkillsArray.');
-}
 
 export interface Ore {
 	level: number;
@@ -273,7 +237,7 @@ type Loose<T> = {
 export type BaseSkill = {
 	aliases: string[];
 	id: SkillNameType;
-	emoji: Emoji;
+	emoji: Emoji | string;
 	name: string;
 };
 
@@ -281,7 +245,6 @@ export type Skill = Loose<BaseSkill>;
 export function defineSkill<T extends BaseSkill>(s: T): T {
 	return s;
 }
-
 export interface Plankable {
 	name: string;
 	inputItem: number;

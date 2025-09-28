@@ -13,7 +13,7 @@ export const cutLeapingFishTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const barbarianFish = LeapingFish.find(LeapingFish => LeapingFish.item.id === fishID)!;
 
-		const currentLevel = user.skillLevel('cooking');
+		const currentLevel = user.skillsAsLevels.cooking;
 		let caviarChance = 0;
 		let caviarCreated = 0;
 		let roeChance = 0;

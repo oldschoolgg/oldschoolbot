@@ -63,7 +63,7 @@ export const mixCommand: OSBMahojiCommand = {
 		);
 		if (!mixableItem) return 'That is not a valid mixable item.';
 
-		if (user.skillLevel('herblore') < mixableItem.level) {
+		if (user.skillsAsLevels.herblore < mixableItem.level) {
 			return `${user.minionName} needs ${mixableItem.level} Herblore to make ${mixableItem.item.name}.`;
 		}
 

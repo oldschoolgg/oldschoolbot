@@ -11,8 +11,8 @@ import {
 	torvaOutfit,
 	virtusOutfit
 } from '@/lib/data/CollectionsExport.js';
-import type { KillableMonster } from './minions/types.js';
-import { makeKillTable } from './util/setCustomMonster.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { makeKillTable } from '@/lib/util/setCustomMonster.js';
 
 export const nexBrokenArmorDetails = [
 	[Items.getOrThrow('Armadylean components'), brokenPernixOutfit, pernixOutfit],

@@ -2,6 +2,7 @@ import { bsoShadesOfMortonCreatables } from '@/lib/bso/creatables/shadesOfMorton
 import { sunMoonCreatables } from '@/lib/bso/creatables/sunMoonCreatables.js';
 import { dyedItems } from '@/lib/bso/dyedItems.js';
 import { expertCapesSource } from '@/lib/bso/expertCapes.js';
+import { nexBrokenArmorDetails } from '@/lib/bso/monsters/nex.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { tameCreatables } from '@/lib/bso/tameCreatables.js';
 import { seaMonkeyStaves } from '@/lib/bso/tames.js';
@@ -12,7 +13,6 @@ import { Bank, Items, itemID, resolveItems } from 'oldschooljs';
 import { brokenPernixOutfit, brokenTorvaOutfit, brokenVirtusOutfit } from '@/lib/data/CollectionsExport.js';
 import { moktangCreatables } from '@/lib/data/creatables/moktangCreatables.js';
 import type { Createable } from '@/lib/data/createables.js';
-import { nexBrokenArmorDetails } from '@/lib/nex.js';
 import Skillcapes from '@/lib/skilling/skillcapes.js';
 import Prayer from '@/lib/skilling/skills/prayer.js';
 import type { Bone } from '@/lib/skilling/types.js';

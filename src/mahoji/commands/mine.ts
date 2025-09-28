@@ -6,6 +6,7 @@ import {
 	stringMatches
 } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
+import { Items } from 'oldschooljs';
 
 import { userhasDiaryTier } from '@/lib/diaries.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
@@ -18,7 +19,7 @@ import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { motherlodeMineCommand } from '@/mahoji/lib/abstracted_commands/motherlodeMineCommand.js';
 
 export function calculateMiningInput({
@@ -87,7 +88,7 @@ export function calculateMiningInput({
 	if (ore.requiredPickaxes) {
 		if (!ore.requiredPickaxes.some(pickaxe => gearBank.hasEquipped(pickaxe))) {
 			return `You need to be using one of these pickaxes to be able to mine ${ore.name}: ${ore.requiredPickaxes
-				.map(itemNameFromID)
+				.map(Items.itemNameFromId)
 				.join(', ')}.`;
 		}
 	}
@@ -117,7 +118,7 @@ export function calculateMiningInput({
 	// Default bronze pickaxe, last in the array
 	let currentPickaxe = pickaxes[pickaxes.length - 1];
 	messages.push(
-		`**${currentPickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(currentPickaxe.id)}`
+		`**${currentPickaxe.ticksBetweenRolls}** ticks between rolls for ${Items.itemNameFromId(currentPickaxe.id)}`
 	);
 
 	// For each pickaxe, if they have it, give them its' bonus and break.
@@ -125,7 +126,7 @@ export function calculateMiningInput({
 		if (!gearBank.hasEquipped([pickaxe.id]) || effectiveMiningLevel < pickaxe.miningLvl) continue;
 		currentPickaxe = pickaxe;
 		messages.pop();
-		messages.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(pickaxe.id)}`);
+		messages.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${Items.itemNameFromId(pickaxe.id)}`);
 		break;
 	}
 
@@ -135,7 +136,9 @@ export function calculateMiningInput({
 			if (!gearBank.hasEquipped(glove.id) || !glove.Percentages[ore.name]) continue;
 			glovesRate = glove.Percentages[ore.name];
 			if (glovesRate) {
-				messages.push(`Lowered rock depletion rate by **${glovesRate}%** for ${itemNameFromID(glove.id)}`);
+				messages.push(
+					`Lowered rock depletion rate by **${glovesRate}%** for ${Items.itemNameFromId(glove.id)}`
+				);
 				break;
 			}
 		}
@@ -146,7 +149,7 @@ export function calculateMiningInput({
 		if (!gearBank.hasEquippedOrInBank(armour.id) || !armour.Percentages[ore.name]) continue;
 		armourEffect = armour.Percentages[ore.name];
 		if (armourEffect) {
-			messages.push(`**${armourEffect}%** chance to mine an extra ore using ${itemNameFromID(armour.id)}`);
+			messages.push(`**${armourEffect}%** chance to mine an extra ore using ${Items.itemNameFromId(armour.id)}`);
 			break;
 		}
 	}

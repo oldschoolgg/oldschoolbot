@@ -15,7 +15,7 @@ export const agilityArenaTask: MinionTask = {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, duration, userID } = data;
 		const user = await mUserFetch(userID);
-		const currentLevel = user.skillLevel('agility');
+		const currentLevel = user.skillsAsLevels.agility;
 		const [hasKaramjaMed] = await userhasDiaryTier(user, KaramjaDiary.medium);
 		const xpPerTicket = hasKaramjaMed ? 379.5 : 345;
 

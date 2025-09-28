@@ -19,7 +19,7 @@ export async function driftNetCommand(
 		minutes = Math.floor(maxTripLength / Time.Minute);
 	}
 
-	if (user.skillLevel('fishing') < 47 || user.skillLevel('hunter') < 44) {
+	if (user.skillsAsLevels.fishing < 47 || user.skillsAsLevels.hunter < 44) {
 		return 'You need at least level 44 Hunter and 47 Fishing to do Drift net fishing.';
 	}
 

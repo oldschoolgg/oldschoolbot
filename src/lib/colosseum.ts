@@ -13,7 +13,7 @@ import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { GeneralBank, type GeneralBankType, UserError } from '@oldschoolgg/toolkit/structures';
-import { Bank, type EquipmentSlot, type ItemBank, LootTable, resolveItems } from 'oldschooljs';
+import { Bank, type EquipmentSlot, type ItemBank, Items, LootTable, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { getSimilarItems } from '@/lib/data/similarItems.js';
@@ -21,7 +21,7 @@ import type { GearSetupType } from '@/lib/gear/types.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import type { Skills } from '@/lib/types/index.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 import { gorajanGearBoost } from './bso/gorajanGearBoost.js';
@@ -577,26 +577,24 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 				const simGear = items.flatMap(i => getSimilarItems(i));
 				const gearNeeded = [...new Set([...simGear])];
 				return `You need one of these equipped in your ${gearType} setup to enter the Colosseum: ${gearNeeded
-					.map(itemNameFromID)
+					.map(i => Items.itemNameFromId(i))
 					.join(', ')}.`;
 			}
 		}
 	}
 
-	if (!meleeWeapons.some(i => user.gear.melee.hasEquipped(i, true))) {
-		const simMeleeWeapon = meleeWeapons.flatMap(itemID => getSimilarItems(itemID));
-		const meleeWeaponNeeded = [...new Set([...simMeleeWeapon])];
-		return `You need one of these equipped in your melee setup to enter the Colosseum: ${meleeWeaponNeeded
-			.map(itemNameFromID)
-			.join(', ')}.`;
+	if (!meleeWeapons.some(i => user.gear.melee.hasEquipped(i, true, true))) {
+		return `You need one of these equipped in your melee setup to enter the Colosseum: ${formatList(
+			meleeWeapons.map(i => Items.itemNameFromId(i)),
+			'or'
+		)}.`;
 	}
 
-	if (!rangeWeapons.some(i => user.gear.range.hasEquipped(i, true))) {
-		const simRangeWeapon = rangeWeapons.flatMap(itemID => getSimilarItems(itemID));
-		const rangeWeaponNeeded = [...new Set([...simRangeWeapon])];
-		return `You need one of these equipped in your range setup to enter the Colosseum: ${rangeWeaponNeeded
-			.map(itemNameFromID)
-			.join(', ')}.`;
+	if (!rangeWeapons.some(i => user.gear.range.hasEquipped(i, true, true))) {
+		return `You need one of these equipped in your range setup to enter the Colosseum: ${formatList(
+			rangeWeapons.map(i => Items.itemNameFromId(i)),
+			'or'
+		)}.`;
 	}
 
 	//OSB boost items:

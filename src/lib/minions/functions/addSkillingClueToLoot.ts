@@ -9,7 +9,7 @@ import {
 	strungRabbitFootNestTable,
 	treeSeedsNest
 } from '@/lib/simulation/birdsNest.js';
-import type { SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import { randFloat, roll } from '@/lib/util/rng.js';
 
@@ -23,7 +23,7 @@ const clues = [
 
 export default function addSkillingClueToLoot(
 	user: MUser | GearBank | number,
-	skill: SkillsEnum | SkillNameType,
+	skill: SkillNameType,
 	quantity: number,
 	clueChance: number,
 	loot: Bank,

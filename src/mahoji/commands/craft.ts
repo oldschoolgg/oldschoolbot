@@ -61,7 +61,7 @@ export const craftCommand: OSBMahojiCommand = {
 		}
 
 		const userQP = user.QP;
-		const currentWoodcutLevel = user.skillLevel('woodcutting');
+		const currentWoodcutLevel = user.skillsAsLevels.woodcutting;
 
 		if (craftable.qpRequired && userQP < craftable.qpRequired) {
 			return `${user.minionName} needs ${craftable.qpRequired} QP to craft ${craftable.name}.`;
@@ -71,7 +71,7 @@ export const craftCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${craftable.wcLvl} Woodcutting Level to craft ${craftable.name}.`;
 		}
 
-		if (user.skillLevel('crafting') < craftable.level) {
+		if (user.skillsAsLevels.crafting < craftable.level) {
 			return `${user.minionName} needs ${craftable.level} Crafting to craft ${craftable.name}.`;
 		}
 
@@ -82,7 +82,7 @@ export const craftCommand: OSBMahojiCommand = {
 		// Get the base time to craft the item then add on quarter of a second per item to account for banking/etc.
 		let timeToCraftSingleItem = craftable.tickRate * Time.Second * 0.6 + Time.Second / 4;
 		const [hasFallyHard] = await userhasDiaryTier(user, FaladorDiary.hard);
-		if (craftable.bankChest && (hasFallyHard || user.skillLevel('crafting') >= 99)) {
+		if (craftable.bankChest && (hasFallyHard || user.skillsAsLevels.crafting >= 99)) {
 			timeToCraftSingleItem /= 3.25;
 		}
 

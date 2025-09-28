@@ -157,7 +157,7 @@ export const agilityTask: MinionTask = {
 		const { courseID, quantity, userID, channelID, duration, alch } = data;
 		const minutes = Math.round(duration / Time.Minute);
 		const user = await mUserFetch(userID);
-		const currentLevel = user.skillLevel('agility');
+		const currentLevel = user.skillsAsLevels.agility;
 
 		const course = Agility.Courses.find(course => course.id === courseID);
 

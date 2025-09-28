@@ -47,7 +47,7 @@ export const lightCommand: OSBMahojiCommand = {
 
 		if (!log) return "That's not a valid log to light.";
 
-		if (user.skillLevel('firemaking') < log.level) {
+		if (user.skillsAsLevels.firemaking < log.level) {
 			return `${user.minionName} needs ${log.level} Firemaking to light ${log.name}.`;
 		}
 

@@ -8,7 +8,7 @@ import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function mageArenaCommand(user: MUser, channelID: string) {
-	if (user.skillLevel('magic') < 60) {
+	if (user.skillsAsLevels.magic < 60) {
 		return 'You need level 60 Magic to do the Mage Arena.';
 	}
 	const duration = randomVariation(Time.Minute * 10, 5);

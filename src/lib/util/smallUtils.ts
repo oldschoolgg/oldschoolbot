@@ -9,17 +9,13 @@ import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import type { SkillRequirements, Skills } from '@/lib/types/index.js';
 import type { TOAOptions } from '@/lib/types/minions.js';
 
-export function itemNameFromID(itemID: number) {
-	return Items.get(itemID)?.name;
-}
-
 export function formatItemReqs(items: ArrayItemsResolved) {
 	const str = [];
 	for (const item of items) {
 		if (Array.isArray(item)) {
-			str.push(item.map(itemNameFromID).join(' OR '));
+			str.push(item.map(i => Items.itemNameFromId(i)).join(' OR '));
 		} else {
-			str.push(itemNameFromID(item));
+			str.push(Items.itemNameFromId(item));
 		}
 	}
 	return str.join(', ');

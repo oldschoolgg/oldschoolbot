@@ -1,7 +1,8 @@
+import { NexMonster } from '@/lib/bso/monsters/nex.js';
+
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { NexMonster } from '@/lib/nex.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
 	GauntletOptions,

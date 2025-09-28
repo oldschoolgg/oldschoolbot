@@ -11,7 +11,7 @@ export const craftingTask: MinionTask = {
 	async run(data: CraftingActivityTaskOptions) {
 		const { craftableID, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
-		const currentLevel = user.skillLevel('crafting');
+		const currentLevel = user.skillsAsLevels.crafting;
 		const item = Craftables.find(craft => craft.id === craftableID)!;
 
 		let xpReceived = quantity * item.xp;

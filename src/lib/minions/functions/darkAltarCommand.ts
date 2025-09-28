@@ -80,7 +80,7 @@ export async function darkAltarCommand({
 		timePerRune = increaseNumByPercent(timePerRune, gracefulPenalty);
 	}
 
-	if (user.skillLevel('agility') < 73) {
+	if (user.skillsAsLevels.agility < 73) {
 		boosts.push(`${agilityPenalty}% slower for less than level 73 Agility`);
 		timePerRune = increaseNumByPercent(timePerRune, agilityPenalty);
 	}

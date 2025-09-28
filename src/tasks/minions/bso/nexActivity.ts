@@ -1,4 +1,5 @@
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
+import { NEX_UNIQUE_DROPRATE, NexMonster } from '@/lib/bso/monsters/nex.js';
 
 import { calcWhatPercent, noOp, percentChance, randArrItem, roll } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
@@ -9,7 +10,6 @@ import { nexCL, nexUniqueDrops } from '@/lib/data/CollectionsExport.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
 import { addMonsterXP } from '@/lib/minions/functions/index.js';
-import { NEX_UNIQUE_DROPRATE, NexMonster } from '@/lib/nex.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
 import { getNexGearStats } from '@/lib/util/getNexGearStats.js';

@@ -5,6 +5,7 @@ import { discontinuedDyes, dyedItems } from '@/lib/bso/dyedItems.js';
 import { ElderClueTable } from '@/lib/bso/elderClue.js';
 import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
 import { keyCrates } from '@/lib/bso/keyCrates.js';
+import { NexMonster, nexLootTable } from '@/lib/bso/monsters/nex.js';
 import { PaintBoxTable } from '@/lib/bso/paintColors.js';
 import { pumpkinHeadUniqueTable } from '@/lib/bso/pumpkinHead.js';
 import { inventionCL } from '@/lib/bso/skills/invention/inventions.js';
@@ -53,7 +54,6 @@ import {
 	MediumEncounterLoot,
 	rewardTokens
 } from '@/lib/minions/data/templeTrekking.js';
-import { NexMonster, nexLootTable } from '@/lib/nex.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
 import { fletchingCL } from '@/lib/skilling/skills/fletching/fletchables/index.js';

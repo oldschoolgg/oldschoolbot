@@ -201,7 +201,7 @@ export const offerCommand: OSBMahojiCommand = {
 			if (user.QP < 8) {
 				return 'You need at least 8 QP to offer long/curved bones for XP.';
 			}
-			if (user.skillLevel('construction') < 30) {
+			if (user.skillsAsLevels.construction < 30) {
 				return 'You need at least level 30 Construction to offer long/curved bones for XP.';
 			}
 			const amountHas = userBank.amount(specialBone.item.id);
@@ -232,7 +232,7 @@ export const offerCommand: OSBMahojiCommand = {
 			return "That's not a valid bone to offer.";
 		}
 
-		if (user.skillLevel('prayer') < bone.level) {
+		if (user.skillsAsLevels.prayer < bone.level) {
 			return `${user.minionName} needs ${bone.level} Prayer to offer ${bone.name}.`;
 		}
 

@@ -11,7 +11,7 @@ import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 async function miningCommand(user: MUser, channelID: string, quantity: number | undefined) {
-	let miningLevel = user.skillLevel('mining');
+	let miningLevel = user.skillsAsLevels.mining;
 	if (miningLevel < 14) {
 		return 'You need at least level 14 Mining to mine in the Ruins of Camdozaal.';
 	}
@@ -88,7 +88,7 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
 }
 
 async function smithingCommand(user: MUser, channelID: string, quantity: number | undefined) {
-	if (user.skillLevel('smithing') < 14) {
+	if (user.skillsAsLevels.smithing < 14) {
 		return 'You need at least level 14 Smithing to smith in the Ruins of Camdozaal.';
 	}
 
@@ -132,7 +132,7 @@ async function smithingCommand(user: MUser, channelID: string, quantity: number 
 }
 
 async function fishingCommand(user: MUser, channelID: string, quantity: number | undefined) {
-	if (user.skillLevel('fishing') < 7) {
+	if (user.skillsAsLevels.fishing < 7) {
 		return 'You need at least level 7 Fishing to fish in the Ruins of Camdozaal.';
 	}
 	const inputQuantity = quantity;

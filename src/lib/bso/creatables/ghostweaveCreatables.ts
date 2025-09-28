@@ -1,7 +1,6 @@
-import { Bank, resolveItems } from 'oldschooljs';
+import { Bank, Items, resolveItems } from 'oldschooljs';
 
 import type { Createable } from '@/lib/data/createables.js';
-import { itemNameFromID } from '@/lib/util/smallUtils.js';
 
 const ghostWeaveItems = resolveItems([
 	'Ghostly zombie gloves',
@@ -39,12 +38,12 @@ export const ghostCreatables: Createable[] = [];
 
 for (const item of ghostWeaveItems) {
 	ghostCreatables.push({
-		name: itemNameFromID(item)!,
+		name: Items.itemNameFromId(item)!,
 		inputItems: new Bank().add('Ghostweave', 100),
 		outputItems: new Bank().add(item)
 	});
 	ghostCreatables.push({
-		name: `Revert ${itemNameFromID(item)!}`,
+		name: `Revert ${Items.itemNameFromId(item)!}`,
 		inputItems: new Bank().add(item),
 		outputItems: new Bank().add('Ghostweave', 90)
 	});

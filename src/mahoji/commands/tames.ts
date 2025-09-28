@@ -72,7 +72,7 @@ import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js
 import { assert } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
-import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { getItemCostFromConsumables } from '@/mahoji/lib/abstracted_commands/minionKill/handleConsumables.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
@@ -612,7 +612,7 @@ export async function removeRawFood({
 			str: `You don't have enough Raw food to feed your tame in this trip. You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per action). You can use these food items: ${Eatables.filter(
 				i => i.raw
 			)
-				.map(i => itemNameFromID(i.raw!))
+				.map(i => Items.itemNameFromId(i.raw!))
 				.join(', ')}.`
 		};
 	}

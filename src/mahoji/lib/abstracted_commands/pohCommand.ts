@@ -85,7 +85,7 @@ export async function pohBuildCommand(interaction: ChatInputCommandInteraction, 
 		return "That's not a valid thing to build in your PoH.";
 	}
 
-	const level = user.skillLevel('construction');
+	const level = user.skillsAsLevels.construction;
 	if (typeof obj.level === 'number') {
 		if (level < obj.level) {
 			return `You need level ${obj.level} Construction to build a ${obj.name} in your house.`;

@@ -290,7 +290,7 @@ export const starCache = new Map<string, Star & { expiry: number }>();
 
 export function handleTriggerShootingStar(user: MUserClass, data: ActivityTaskData, components: ButtonBuilder[]) {
 	if (activitiesCantGetStars.includes(data.type)) return;
-	const miningLevel = user.skillLevel('mining');
+	const miningLevel = user.skillsAsLevels.mining;
 	const elligibleStars = starSizes.filter(i => i.chance > 0 && i.level <= miningLevel);
 	const minutes = data.duration / Time.Minute;
 	const baseChance = 540 / minutes;

@@ -12,7 +12,6 @@ describe('XP', async () => {
 		expect(user.skillsAsLevels.attack).toEqual(1);
 		expect(user.skillsAsXP.attack).toEqual(0);
 		expect(user.getSkills(false).attack).toEqual(0);
-
 		{
 			const expectedXP = 100 * 5;
 			const expectedLvl = convertXPtoLVL(expectedXP);

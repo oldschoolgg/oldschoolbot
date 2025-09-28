@@ -16,7 +16,7 @@ const ouraniaAltarTask: MinionTask = {
 	async run(data: OuraniaAltarOptions) {
 		const { quantity, userID, channelID, duration, daeyalt } = data;
 		const user = await mUserFetch(userID);
-		const lvl = user.skillLevel('runecraft');
+		const lvl = user.skillsAsLevels.runecraft;
 		const loot = new Bank();
 		const [hasArdyMedium] = await userhasDiaryTier(user, ArdougneDiary.medium);
 		const { petDropRate } = skillingPetDropRate(user, 'runecraft', 1_487_213);

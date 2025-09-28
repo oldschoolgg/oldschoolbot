@@ -253,7 +253,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 		): Promise<{
 			bank: Bank;
 		}> => {
-			const fishLvl = args.user.skillLevel('fishing');
+			const fishLvl = args.user.skillsAsLevels.fishing;
 			const brimstoneOptions: OpenableOpenOptions = {
 				fishLvl
 			};
@@ -337,7 +337,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 		): Promise<{
 			bank: Bank;
 		}> => {
-			const fishLvl = args.user.skillLevel('fishing');
+			const fishLvl = args.user.skillsAsLevels.fishing;
 			const larransOptions: OpenableOpenOptions = {
 				fishLvl,
 				chestSize: 'big'

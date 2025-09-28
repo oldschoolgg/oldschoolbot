@@ -1,6 +1,6 @@
 import type { BaseMessageOptions } from 'discord.js';
 
-import type { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 
 export interface MakePartyOptions {
 	maxSize: number;
@@ -14,7 +14,7 @@ export interface MakePartyOptions {
 	allowedMentions?: BaseMessageOptions['allowedMentions'];
 }
 export type Skills = Partial<{
-	[key in SkillsEnum]: number;
+	[key in SkillNameType]: number;
 }>;
 
 export type SkillRequirements = Skills & { combat?: number };

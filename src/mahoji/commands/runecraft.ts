@@ -153,10 +153,10 @@ export const runecraftCommand: OSBMahojiCommand = {
 			boosts.push('10% for Graceful');
 		}
 
-		if (user.skillLevel('agility') >= 90) {
+		if (user.skillsAsLevels.agility >= 90) {
 			tripLength *= 0.9;
 			boosts.push('10% for 90+ Agility');
-		} else if (user.skillLevel('agility') >= 60) {
+		} else if (user.skillsAsLevels.agility >= 60) {
 			tripLength *= 0.95;
 			boosts.push('5% for 60+ Agility');
 		}
@@ -174,14 +174,14 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		// For each pouch the user has, increase their inventory size.
 		for (const pouch of Runecraft.pouches) {
-			if (user.skillLevel('runecraft') < pouch.level) continue;
+			if (user.skillsAsLevels.runecraft < pouch.level) continue;
 			if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
 			if (bank.has(pouch.id) && pouch.id === itemID('Colossal pouch')) break;
 		}
 
 		if (inventorySize > 28) boosts.push(`+${inventorySize - 28} inv spaces from pouches`);
 
-		if (user.skillLevel('runecraft') >= 99 && user.hasEquippedOrInBank('Runecraft cape') && inventorySize > 28) {
+		if (user.skillsAsLevels.runecraft >= 99 && user.hasEquippedOrInBank('Runecraft cape') && inventorySize > 28) {
 			tripLength *= 0.97;
 			boosts.push('3% for Runecraft cape');
 		}
@@ -252,7 +252,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 					.clone()
 					.multiply(numberOfInventories)
 			);
-			if (user.skillLevel('magic') >= 82 && bank.has(magicImbueRuneCost)) {
+			if (user.skillsAsLevels.magic >= 82 && bank.has(magicImbueRuneCost)) {
 				removeTalismanAndOrRunes.add(magicImbueRuneCost);
 				imbueCasts = numberOfInventories;
 			} else {
@@ -279,7 +279,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 					1
 				)}x Binding necklace.`;
 			}
-			if (user.skillLevel('crafting') >= 99 && user.hasEquippedOrInBank('Crafting cape')) {
+			if (user.skillsAsLevels.crafting >= 99 && user.hasEquippedOrInBank('Crafting cape')) {
 				teleportReduction = 2;
 			}
 			const ringOfTheElementsRuneCost = determineRunes(

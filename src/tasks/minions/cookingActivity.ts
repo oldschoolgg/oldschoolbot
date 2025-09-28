@@ -34,7 +34,7 @@ export const cookingTask: MinionTask = {
 			stopBurningLvl = cookable.stopBurnAt;
 		}
 
-		burnedAmount = calcBurntCookables(quantity, stopBurningLvl, user.skillLevel('cooking'));
+		burnedAmount = calcBurntCookables(quantity, stopBurningLvl, user.skillsAsLevels.cooking);
 
 		const xpReceived = (quantity - burnedAmount) * cookable.xp;
 

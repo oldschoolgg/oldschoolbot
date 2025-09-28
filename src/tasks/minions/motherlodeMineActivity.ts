@@ -45,7 +45,7 @@ export const motherlodeMiningTask: MinionTask = {
 			}
 		}
 
-		const currentLevel = user.skillLevel('mining');
+		const currentLevel = user.skillsAsLevels.mining;
 
 		const loot = new Bank();
 

@@ -41,7 +41,7 @@ export const questingTask: MinionTask = {
 				increment: qpReceived
 			}
 		});
-		const herbLevel = user.skillLevel('herblore');
+		const herbLevel = user.skillsAsLevels.herblore;
 		if (herbLevel === 1 && newQP > 5 && roll(2)) {
 			await user.addXP({ skillName: 'herblore', amount: 250 });
 			str += `${Emoji.Herblore} You received 250 Herblore XP for completing Druidic Ritual.`;
@@ -60,7 +60,7 @@ export const questingTask: MinionTask = {
 		} else if (magicXP < 1000 && newQP > 15 && roll(2)) {
 			await user.addXP({ skillName: 'magic', amount: 1000 });
 			str += `${Emoji.Magic} You received 1000 Magic XP for completing Fairytale I - Growing Pains.`;
-		} else if (user.skillLevel('cooking') >= 40 && newQP > 50 && magicXP < 2500 && roll(2)) {
+		} else if (user.skillsAsLevels.cooking >= 40 && newQP > 50 && magicXP < 2500 && roll(2)) {
 			await user.addXP({ skillName: 'magic', amount: 2500 });
 			str += `${Emoji.Magic} You received 2500 Magic XP for completing Recipe For Disaster (Lumbridge guide subquest).`;
 		}

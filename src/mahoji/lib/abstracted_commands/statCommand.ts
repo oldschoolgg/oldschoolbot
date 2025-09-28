@@ -13,17 +13,7 @@ import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { formatDuration, PerkTier } from '@oldschoolgg/toolkit/util';
 import type { activity_type_enum, UserStats } from '@prisma/client';
 import { bold } from 'discord.js';
-import {
-	Bank,
-	type ItemBank,
-	Items,
-	type Monster,
-	Monsters,
-	SkillsEnum,
-	type SkillsScore,
-	TOBRooms,
-	toKMB
-} from 'oldschooljs';
+import { Bank, type ItemBank, Items, type Monster, Monsters, type SkillsScore, TOBRooms, toKMB } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { getClueScoresFromOpenables } from '@/lib/clues/clueUtils.js';
@@ -36,6 +26,7 @@ import { RawSQL } from '@/lib/rawSql.js';
 import Agility from '@/lib/skilling/skills/agility.js';
 import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import { ForestryEvents } from '@/lib/skilling/skills/woodcutting/forestry.js';
+import { SkillsArray } from '@/lib/skilling/types.js';
 import { getCommonTaskName, getSlayerTaskStats } from '@/lib/slayer/slayerUtil.js';
 import { allSlayerTasks } from '@/lib/slayer/tasks/index.js';
 import { sorts } from '@/lib/sorts.js';
@@ -754,7 +745,7 @@ GROUP BY 1;`;
 		run: async () => {
 			const result = (
 				await Promise.all(
-					Object.values(SkillsEnum).map(
+					SkillsArray.map(
 						skillName =>
 							prisma.$queryRawUnsafe(`SELECT '${skillName}' as skill_name, COUNT(id)::int AS qty
 FROM users

@@ -42,7 +42,7 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 		return `Thats not a valid plank to make. Valid planks are **${Planks.map(plank => plank.name).join(', ')}**.`;
 	}
 
-	const level = user.skillLevel('construction');
+	const level = user.skillsAsLevels.construction;
 	if (level < 50) {
 		return 'You need level 50 Construction to use the demon butler.';
 	}

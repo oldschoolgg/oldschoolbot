@@ -52,7 +52,7 @@ export const smithCommand: OSBMahojiCommand = {
 
 		if (!smithedItem) return 'That is not a valid item to smith.';
 
-		if (user.skillLevel('smithing') < smithedItem.level) {
+		if (user.skillsAsLevels.smithing < smithedItem.level) {
 			return `${user.minionName} needs ${smithedItem.level} Smithing to smith ${pluraliseItemName(
 				smithedItem.name
 			)}.`;

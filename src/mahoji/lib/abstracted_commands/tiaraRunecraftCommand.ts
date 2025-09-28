@@ -45,10 +45,10 @@ export async function tiaraRunecraftCommand({
 		boosts.push('10% for Graceful');
 	}
 
-	if (user.skillLevel('agility') >= 90) {
+	if (user.skillsAsLevels.agility >= 90) {
 		tripLength *= 0.9;
 		boosts.push('10% for 90+ Agility');
-	} else if (user.skillLevel('agility') >= 60) {
+	} else if (user.skillsAsLevels.agility >= 60) {
 		tripLength *= 0.95;
 		boosts.push('5% for 60+ Agility');
 	}

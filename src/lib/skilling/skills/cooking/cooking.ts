@@ -3,7 +3,7 @@ import { bsoCookables } from '@/lib/bso/skills/cooking/bsoCookables.js';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { itemID } from 'oldschooljs';
 
-import type { Cookable } from '@/lib/skilling/types.js';
+import { type Cookable, defineSkill } from '@/lib/skilling/types.js';
 
 export const Cookables: Cookable[] = [
 	{
@@ -288,12 +288,12 @@ export const Cookables: Cookable[] = [
 	...bsoCookables
 ];
 
-const Cooking = {
+const Cooking = defineSkill({
 	aliases: ['cooking', 'cook'],
 	Cookables,
 	id: 'cooking',
 	emoji: Emoji.Cooking,
 	name: 'Cooking'
-};
+});
 
 export default Cooking;

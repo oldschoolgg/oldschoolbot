@@ -16,7 +16,7 @@ import type { Rune } from '@/lib/skilling/skills/runecraft.js';
 import { addStatsOfItemsTogether, hasGracefulEquipped } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
-import { formatItemReqs, formatList, hasSkillReqs, itemNameFromID, readableStatName } from '@/lib/util/smallUtils.js';
+import { formatItemReqs, formatList, hasSkillReqs, readableStatName } from '@/lib/util/smallUtils.js';
 import type { JsonKeys } from '@/lib/util.js';
 import { getItemCostFromConsumables } from './lib/abstracted_commands/minionKill/handleConsumables.js';
 
@@ -280,7 +280,7 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 						monster.name
 					}: ${set.items
 						.map(i => i.itemID)
-						.map(itemNameFromID)
+						.map(i => Items.itemNameFromId(i))
 						.join(', ')}.`
 				];
 			}
@@ -430,7 +430,7 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 	) {
 		return `You need to be using one of these projectiles to fight ${
 			monster.name
-		}: ${monster.projectileUsage.requiredAmmo.map(itemNameFromID).join(', ')}.`;
+		}: ${monster.projectileUsage.requiredAmmo.map(i => Items.itemNameFromId(i)).join(', ')}.`;
 	}
 
 	return [true];

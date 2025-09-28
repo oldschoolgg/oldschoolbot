@@ -32,13 +32,13 @@ export async function ouraniaAltarStartCommand({
 	const numEssenceOwned = bank.amount('Pure essence');
 	const daeyaltEssenceOwned = bank.amount('Daeyalt essence');
 	const boosts = [];
-	const mageLvl = user.skillLevel('magic');
+	const mageLvl = user.skillsAsLevels.magic;
 	const spellbookSwap = mageLvl > 95;
 
 	let inventorySize = 28;
 	// For each pouch the user has, increase their inventory size.
 	for (const pouch of Runecraft.pouches) {
-		if (user.skillLevel('runecraft') < pouch.level) continue;
+		if (user.skillsAsLevels.runecraft < pouch.level) continue;
 		if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
 		if (bank.has(pouch.id) && pouch.id === EItem.COLOSSAL_POUCH) break;
 	}

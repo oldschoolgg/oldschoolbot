@@ -1,12 +1,13 @@
+import { NexMonster } from '@/lib/bso/monsters/nex.js';
+
 import { objectEntries, partition } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
-import { Bank, EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
+import { Bank, EMonster, ItemGroups, Items, Monsters, resolveItems } from 'oldschooljs';
 
 import { DEPRECATED_ACTIVITY_TYPES } from '@/lib/constants.js';
-import { NexMonster } from '@/lib/nex.js';
 import type { RequirementFailure } from '@/lib/structures/Requirements.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
-import { formatList, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { formatList } from '@/lib/util/smallUtils.js';
 import { RandomEvents } from './randomEvents.js';
 import type { MinigameName } from './settings/minigames.js';
 import { Minigames } from './settings/minigames.js';
@@ -120,7 +121,7 @@ export const musicCapeRequirements = new Requirements()
 			if (notDoneRunes.length > 0) {
 				return [
 					{
-						reason: `You need to Runecraft these runes at least once: ${formatList(notDoneRunes.map(itemNameFromID))}.`
+						reason: `You need to Runecraft these runes at least once: ${formatList(notDoneRunes.map(i => Items.itemNameFromId(i)))}.`
 					}
 				];
 			}

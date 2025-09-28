@@ -18,7 +18,7 @@ export async function buryCommand(user: MUser, channelID: string, boneName: stri
 		return "That's not a valid bone to bury.";
 	}
 
-	if (user.skillLevel('prayer') < bone.level) {
+	if (user.skillsAsLevels.prayer < bone.level) {
 		return `${user.minionName} needs ${bone.level} Prayer to bury ${bone.name}.`;
 	}
 

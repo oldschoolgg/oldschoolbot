@@ -1,13 +1,14 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 
+import { defineSkill } from '@/lib/skilling/types.js';
 import { Craftables } from './craftables/index.js';
 
-const Crafting = {
+const Crafting = defineSkill({
 	aliases: ['craft', 'crafting'],
 	Craftables,
 	id: 'crafting',
 	emoji: Emoji.Crafting,
 	name: 'Crafting'
-};
+});
 
 export default Crafting;

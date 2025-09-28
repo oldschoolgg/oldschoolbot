@@ -1,4 +1,3 @@
-import { SkillsEnum } from './constants.js';
 import { ECreature } from './ECreature.js';
 import { EGear } from './EGear.js';
 import { EItem } from './EItem.js';
@@ -55,7 +54,6 @@ export {
 	increaseBankQuantitesByPercent,
 	itemNameMap,
 	calcDropRatesFromBank,
-	SkillsEnum,
 	convertBankToPerHourStats,
 	SimpleMonster
 };

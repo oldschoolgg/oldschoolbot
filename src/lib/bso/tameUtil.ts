@@ -14,7 +14,6 @@ import { type ItemBank, Items } from 'oldschooljs';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
-import { itemNameFromID } from '../util/smallUtils.js';
 
 export async function tameLastFinishedActivity(user: MUser) {
 	const tameID = user.user.selected_tame;
@@ -38,7 +37,7 @@ export function shortTameTripDesc(activity: TameActivity) {
 			return `Killing ${mon!.name}`;
 		}
 		case TameType.Gatherer: {
-			return `Collecting ${itemNameFromID(data.itemID)}`;
+			return `Collecting ${Items.itemNameFromId(data.itemID)}`;
 		}
 		case 'SpellCasting':
 			return `Casting ${seaMonkeySpells.find(i => i.id === data.spellID)!.name}`;
@@ -154,7 +153,7 @@ export function getTameStatus(tameActivity: TameActivity | null) {
 					timeRemaining
 				];
 			case TameType.Gatherer:
-				return [`Collecting ${itemNameFromID(activityData.itemID)?.toLowerCase()}`, timeRemaining];
+				return [`Collecting ${Items.itemNameFromId(activityData.itemID)?.toLowerCase()}`, timeRemaining];
 			case 'SpellCasting':
 				return [
 					`Casting ${seaMonkeySpells.find(i => i.id === activityData.spellID)!.name} ${

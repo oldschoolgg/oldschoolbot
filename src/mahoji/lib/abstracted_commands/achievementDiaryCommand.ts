@@ -2,13 +2,13 @@ import { calcWhatPercent } from '@oldschoolgg/toolkit';
 import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
 import type { Minigame } from '@prisma/client';
 import { strikethrough } from 'discord.js';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, Items, Monsters } from 'oldschooljs';
 
 import { diaries, userhasDiaryTier, userhasDiaryTierSync } from '@/lib/diaries.js';
 import type { DiaryTier } from '@/lib/minions/types.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
-import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 const lampRewards = {
 	Easy: 'Antique lamp 1',
@@ -55,11 +55,11 @@ export async function achievementDiaryCommand(user: MUser, diaryName: string) {
 		thisStr += `- Skill Reqs: ${formatSkillRequirements(tier.skillReqs, false)}\n`;
 
 		if (tier.ownedItems) {
-			thisStr += `- Must Own: ${tier.ownedItems.map(itemNameFromID).join(', ')}\n`;
+			thisStr += `- Must Own: ${tier.ownedItems.map(i => Items.itemNameFromId(i)).join(', ')}\n`;
 		}
 
 		if (tier.collectionLogReqs) {
-			thisStr += `- Must Have in CL: ${tier.collectionLogReqs.map(itemNameFromID).join(', ')}\n`;
+			thisStr += `- Must Have in CL: ${tier.collectionLogReqs.map(i => Items.itemNameFromId(i)).join(', ')}\n`;
 		}
 
 		if (tier.qp) {

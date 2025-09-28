@@ -43,7 +43,7 @@ export async function alchCommand(
 	if (!osItem) return 'Invalid item.';
 	if (!osItem.highalch || !osItem.tradeable) return 'This item cannot be alched.';
 
-	if (user.skillLevel('magic') < 55) {
+	if (user.skillsAsLevels.magic < 55) {
 		return 'You need level 55 Magic to cast High Alchemy';
 	}
 

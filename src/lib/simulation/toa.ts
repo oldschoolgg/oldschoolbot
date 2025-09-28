@@ -37,13 +37,7 @@ import type { TOAOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { assert } from '@/lib/util/logError.js';
-import {
-	bankToStrShortNames,
-	formatList,
-	formatSkillRequirements,
-	getToaKCs,
-	itemNameFromID
-} from '@/lib/util/smallUtils.js';
+import { bankToStrShortNames, formatList, formatSkillRequirements, getToaKCs } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { mahojiParseNumber, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
@@ -256,7 +250,10 @@ const toaRequirements: {
 			}
 
 			if (!user.gear.range.hasEquipped(REQUIRED_RANGE_WEAPONS, false)) {
-				return `Must have one of these equipped: ${formatList(REQUIRED_RANGE_WEAPONS.map(itemNameFromID), 'or')}`;
+				return `Must have one of these equipped: ${formatList(
+					REQUIRED_RANGE_WEAPONS.map(i => Items.itemNameFromId(i)),
+					'or'
+				)}`;
 			}
 
 			const rangeAmmo = user.gear.range.ammo;
@@ -268,7 +265,10 @@ const toaRequirements: {
 				}
 
 				if (!REQUIRED_ARROWS.includes(rangeAmmo.item)) {
-					return `Need one of these arrows equipped: ${formatList(REQUIRED_ARROWS.map(itemNameFromID), 'or')}`;
+					return `Need one of these arrows equipped: ${formatList(
+						REQUIRED_ARROWS.map(i => Items.itemNameFromId(i)),
+						'or'
+					)}`;
 				}
 			}
 
@@ -276,7 +276,7 @@ const toaRequirements: {
 		},
 		desc: () =>
 			`decent range gear (BiS is ${maxRangeGear.toString()}), at least ${BOW_ARROWS_NEEDED}x arrows equipped, and one of these bows: ${formatList(
-				REQUIRED_RANGE_WEAPONS.map(itemNameFromID),
+				REQUIRED_RANGE_WEAPONS.map(i => Items.itemNameFromId(i)),
 				'or'
 			)}`
 	},
@@ -289,21 +289,27 @@ const toaRequirements: {
 
 			if (!user.gear.melee.hasEquipped(MELEE_REQUIRED_WEAPONS, false)) {
 				return `Need one of these weapons in your melee setup: ${formatList(
-					MELEE_REQUIRED_WEAPONS.map(itemNameFromID),
+					MELEE_REQUIRED_WEAPONS.map(i => Items.itemNameFromId(i)),
 					'or'
 				)}`;
 			}
 			if (!user.gear.melee.hasEquipped(MELEE_REQUIRED_ARMOR, false)) {
-				return `Need one of these in your melee setup: ${formatList(MELEE_REQUIRED_ARMOR.map(itemNameFromID), 'or')}`;
+				return `Need one of these in your melee setup: ${formatList(
+					MELEE_REQUIRED_ARMOR.map(i => Items.itemNameFromId(i)),
+					'or'
+				)}`;
 			}
 
 			return true;
 		},
 		desc: () =>
 			`decent melee gear (BiS is ${maxMeleeLessThan300Gear.toString()}, switched to a Osmumten fang if the raid level is over 300), and one of these weapons: ${formatList(
-				MELEE_REQUIRED_WEAPONS.map(itemNameFromID),
+				MELEE_REQUIRED_WEAPONS.map(i => Items.itemNameFromId(i)),
 				'or'
-			)}, and one of these armor pieces: ${formatList(MELEE_REQUIRED_ARMOR.map(itemNameFromID), 'or')}`
+			)}, and one of these armor pieces: ${formatList(
+				MELEE_REQUIRED_ARMOR.map(i => Items.itemNameFromId(i)),
+				'or'
+			)}`
 	},
 	{
 		name: 'Mage gear',
@@ -668,7 +674,7 @@ export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLe
 			}
 			messages.push(
 				`You all received a ${formatList(
-					specialItemsReceived.map(itemNameFromID)
+					specialItemsReceived.map(i => Items.itemNameFromId(i))
 				)} for completing the raid without any deaths!`
 			);
 		}

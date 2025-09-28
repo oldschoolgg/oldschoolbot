@@ -160,7 +160,7 @@ export async function giantsFoundryStartCommand(
 	channelID: string
 ) {
 	let timePerSection = Time.Minute * 0.84;
-	const userSmithingLevel = user.skillLevel('smithing');
+	const userSmithingLevel = user.skillsAsLevels.smithing;
 
 	const alloy = giantsFoundryAlloys.find(i => stringMatches(i.name, name));
 

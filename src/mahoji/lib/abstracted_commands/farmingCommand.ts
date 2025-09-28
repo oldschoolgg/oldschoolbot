@@ -41,7 +41,7 @@ export async function harvestCommand({
 		return 'Your minion must not be busy to use this command.';
 	}
 	const { GP } = user;
-	const currentWoodcuttingLevel = user.skillLevel('woodcutting');
+	const currentWoodcuttingLevel = user.skillsAsLevels.woodcutting;
 	const currentDate = Date.now();
 	if (!isPatchName(seedType)) {
 		return `That is not a valid patch type! The available patches are: ${farmingPatchNames.join(
@@ -143,7 +143,7 @@ export async function farmingPlantCommand({
 	const alwaysPay = user.user.minion_defaultPay;
 	const questPoints = user.QP;
 	const { GP } = user;
-	const currentWoodcuttingLevel = user.skillLevel('woodcutting');
+	const currentWoodcuttingLevel = user.skillsAsLevels.woodcutting;
 	const currentDate = Date.now();
 
 	const infoStr: string[] = [];
@@ -159,7 +159,7 @@ export async function farmingPlantCommand({
 
 	const wantsToPay = (pay || alwaysPay) && plant.canPayFarmer;
 
-	if (user.skillLevel('farming') < plant.level) {
+	if (user.skillsAsLevels.farming < plant.level) {
 		return `${user.minionName} needs ${plant.level} Farming to plant ${plant.name}.`;
 	}
 

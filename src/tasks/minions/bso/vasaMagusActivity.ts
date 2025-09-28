@@ -14,7 +14,6 @@ import { addMonsterXP } from '@/lib/minions/functions/index.js';
 import type { NewBossOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { itemNameFromID } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const vasaBosses = [
@@ -77,7 +76,7 @@ export const vasaTask: MinionTask = {
 				minion_equippedPet: Items.getOrThrow('Magic kitten').id
 			});
 			await user.addItemsToCollectionLog(new Bank().add('Magic kitten'));
-			resultStr += `\n**Vasa cast a spell on you, but your ${itemNameFromID(
+			resultStr += `\n**Vasa cast a spell on you, but your ${Items.itemNameFromId(
 				pet
 			)} jumped in the way to save you! Strangely, it didn't hurt them at all.**\n`;
 		}

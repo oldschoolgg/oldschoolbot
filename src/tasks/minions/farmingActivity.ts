@@ -78,8 +78,8 @@ export const farmingTask: MinionTask = {
 			duration
 		} = data;
 		const user = await mUserFetch(userID);
-		const currentFarmingLevel = Math.min(99, user.skillLevel('farming'));
-		const currentWoodcuttingLevel = Math.min(99, user.skillLevel('woodcutting'));
+		const currentFarmingLevel = Math.min(99, user.skillsAsLevels.farming);
+		const currentWoodcuttingLevel = Math.min(99, user.skillsAsLevels.woodcutting);
 		let baseBonus = 1;
 		let bonusXP = 0;
 		let plantXp = 0;
@@ -238,7 +238,7 @@ export const farmingTask: MinionTask = {
 			const shouldCleanHerb =
 				plantToHarvest.cleanHerbCrop !== undefined &&
 				user.bitfield.includes(BitField.CleanHerbsFarming) &&
-				user.skillLevel('herblore') >= (plantToHarvest.herbLvl ?? 0);
+				user.skillsAsLevels.herblore >= plantToHarvest.herbLvl!;
 
 			if (plantToHarvest.givesCrops) {
 				let cropToHarvest = plantToHarvest.outputCrop;
@@ -261,7 +261,7 @@ export const farmingTask: MinionTask = {
 							Math.floor(
 								plantToHarvest.chance1 +
 									(plantToHarvest.chance99 - plantToHarvest.chance1) *
-										((currentFarmingLevel - 1) / 98)
+										((user.skillsAsLevels.farming - 1) / 98)
 							) * baseBonus
 						) + 1;
 					const chanceToSaveLife = (plantChanceFactor + 1) / 256;

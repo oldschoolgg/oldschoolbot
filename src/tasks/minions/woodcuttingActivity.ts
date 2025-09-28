@@ -13,7 +13,7 @@ import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirement
 import Firemaking from '@/lib/skilling/skills/firemaking.js';
 import { ForestryEvents, LeafTable } from '@/lib/skilling/skills/woodcutting/forestry.js';
 import Woodcutting, { type TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
-import type { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { rollForMoonKeyHalf } from '@/lib/util/minionUtils.js';
@@ -23,14 +23,14 @@ import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 async function handleForestry({ user, duration, loot }: { user: MUser; duration: number; loot: Bank }) {
 	const eventCounts: { [key: number]: number } = {};
-	const eventXP = {} as { [key in SkillsEnum]: number };
+	const eventXP = {} as { [key in SkillNameType]: number };
 	ForestryEvents.forEach(event => {
 		eventCounts[event.id] = 0;
 		eventXP[event.uniqueXP] = 0;
 	});
 
 	let strForestry = '';
-	const userWcLevel = user.skillLevel('woodcutting');
+	const userWcLevel = user.skillsAsLevels.woodcutting;
 
 	perTimeUnitChance(duration, 8, Time.Minute, async () => {
 		const eventIndex = randInt(0, ForestryEvents.length - 1);
@@ -179,7 +179,7 @@ export const woodcuttingTask: MinionTask = {
 	async run(data: WoodcuttingActivityTaskOptions) {
 		const { logID, quantity, userID, channelID, duration, powerchopping, forestry, twitchers } = data;
 		const user = await mUserFetch(userID);
-		const userWcLevel = user.skillLevel('woodcutting');
+		const userWcLevel = user.skillsAsLevels.woodcutting;
 		const log = Woodcutting.Logs.find(i => i.id === logID)!;
 		const forestersRations = user.bank.amount("Forester's ration");
 		const wcCapeNestBoost =

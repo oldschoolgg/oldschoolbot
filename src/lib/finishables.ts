@@ -49,6 +49,7 @@ import { gauntlet } from '@/lib/simulation/gauntlet.js';
 import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
 import { TheatreOfBlood } from '@/lib/simulation/tob.js';
 import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
+import { NEX_UNIQUE_DROPRATE, NexMonster } from './bso/monsters/nex.js';
 import { rollNaxxusLoot } from './bso/naxxus/rollNaxxusLoot.js';
 import {
 	KalphiteKingMonster,
@@ -58,7 +59,6 @@ import { MoktangLootTable } from './minions/data/killableMonsters/custom/bosses/
 import { Naxxus } from './minions/data/killableMonsters/custom/bosses/Naxxus.js';
 import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters.js';
 import killableMonsters from './minions/data/killableMonsters/index.js';
-import { NEX_UNIQUE_DROPRATE, NexMonster } from './nex.js';
 import { openShadeChest } from './shadesKeys.js';
 
 interface KillArgs {

@@ -2,15 +2,15 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { CropUpgradeType } from '@prisma/client';
 import { Items, itemID, resolveItems } from 'oldschooljs';
 
-import allotmentPlants from '@/lib/skilling/skills/farming/allotments.js';
 import { bushes } from '@/lib/skilling/skills/farming/bushes.js';
-import fruitTrees from '@/lib/skilling/skills/farming/fruitTrees.js';
-import herbPlants from '@/lib/skilling/skills/farming/herbPlants.js';
-import hopsPlants from '@/lib/skilling/skills/farming/hops.js';
-import specialPlants from '@/lib/skilling/skills/farming/specialPlants.js';
-import trees from '@/lib/skilling/skills/farming/trees.js';
 import { zygomitePlants } from '@/lib/skilling/skills/farming/zygomites.js';
-import type { Plant } from '@/lib/skilling/types.js';
+import { defineSkill, type Plant } from '@/lib/skilling/types.js';
+import allotmentPlants from './allotments.js';
+import fruitTrees from './fruitTrees.js';
+import herbPlants from './herbPlants.js';
+import hopsPlants from './hops.js';
+import specialPlants from './specialPlants.js';
+import trees from './trees.js';
 
 export const plants: Plant[] = [
 	...herbPlants,
@@ -78,7 +78,7 @@ allFarmingItems.push(
 	])
 );
 
-const Farming = {
+const Farming = defineSkill({
 	aliases: ['farming'],
 	Plants: plants,
 	id: 'farming',
@@ -86,6 +86,6 @@ const Farming = {
 	name: 'Farming',
 	maleFarmerItems,
 	femaleFarmerItems
-};
+});
 
 export default Farming;

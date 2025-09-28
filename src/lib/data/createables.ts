@@ -8,7 +8,7 @@ import { leaguesCreatables } from '@/lib/data/leagueCreatables.js';
 import { blisterwoodRequirements, ivandisRequirements } from '@/lib/minions/data/templeTrekking.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import type { Skills } from '@/lib/types/index.js';
-import { formatList, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { formatList } from '@/lib/util/smallUtils.js';
 import { chambersOfXericMetamorphPets, tobMetamorphPets } from './CollectionsExport.js';
 import { amrodCreatables } from './creatables/amrod.js';
 import { armorAndItemPacks } from './creatables/armorPacks.js';
@@ -239,7 +239,7 @@ for (const [uWep, cWep, uUPWep, cUPWep] of [
 }
 
 const metamorphPetCreatables: Createable[] = chambersOfXericMetamorphPets.map(pet => ({
-	name: itemNameFromID(pet)!,
+	name: Items.itemNameFromId(pet)!,
 	inputItems: {
 		[itemID('Metamorphic dust')]: 1
 	},
@@ -249,7 +249,7 @@ const metamorphPetCreatables: Createable[] = chambersOfXericMetamorphPets.map(pe
 }));
 
 const tobMetamorphPetCreatables: Createable[] = tobMetamorphPets.map(pet => ({
-	name: itemNameFromID(pet)!,
+	name: Items.itemNameFromId(pet)!,
 	inputItems: {
 		[itemID('Sanguine dust')]: 1
 	},
@@ -2518,7 +2518,16 @@ const Createables: Createable[] = [
 				['Rax', 'Nid']
 			]);
 			if (!requiredItems.every(item => (Array.isArray(item) ? item.some(i => user.owns(i)) : user.owns(item)))) {
-				return `You need to own all these items to create the Amulet of rancour (s): ${formatList(requiredItems.map(item => (Array.isArray(item) ? formatList(item.map(itemNameFromID), 'OR') : itemNameFromID(item))))}.`;
+				return `You need to own all these items to create the Amulet of rancour (s): ${formatList(
+					requiredItems.map(item =>
+						Array.isArray(item)
+							? formatList(
+									item.map(i => Items.itemNameFromId(i)),
+									'OR'
+								)
+							: Items.itemNameFromId(item)
+					)
+				)}.`;
 			}
 			return null;
 		}

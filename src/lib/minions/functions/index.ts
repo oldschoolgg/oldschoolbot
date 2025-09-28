@@ -1,3 +1,5 @@
+import { NexMonster } from '@/lib/bso/monsters/nex.js';
+
 import { randomVariation } from '@oldschoolgg/toolkit/util';
 import type { User } from '@prisma/client';
 import { type Monster, Monsters, NIGHTMARES_HP } from 'oldschooljs';
@@ -14,7 +16,6 @@ import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/Vas
 import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import type { AddMonsterXpParams, KillableMonster } from '@/lib/minions/types.js';
-import { NexMonster } from '@/lib/nex.js';
 import { XPBank } from '@/lib/structures/XPBank.js';
 
 export const attackStylesArr = ['attack', 'strength', 'defence', 'magic', 'ranged'] as const;

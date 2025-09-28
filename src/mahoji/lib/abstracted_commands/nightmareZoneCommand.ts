@@ -331,7 +331,7 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 	const attackStyles = resolveAttackStyles({
 		attackStyles: user.getAttackStyles()
 	});
-	const skillTotal = sumArr(attackStyles.map(s => user.skillLevel(s))) + user.skillLevel('hitpoints');
+	const skillTotal = sumArr(attackStyles.map(s => user.skillLevel(s))) + user.skillsAsLevels.hitpoints;
 	if (attackStyles.includes('ranged') || attackStyles.includes('magic')) {
 		return 'The Nightmare Zone minigame requires melee combat for efficiency, swap training style using `/minion train style:`';
 	}

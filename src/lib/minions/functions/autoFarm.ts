@@ -11,7 +11,7 @@ export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[
 		return 'Your minion must not be busy to use this command.';
 	}
 	const userBank = user.bank;
-	const farmingLevel = user.skillLevel('farming');
+	const farmingLevel = user.skillsAsLevels.farming;
 	let toPlant: Plant | undefined;
 	let canPlant: Plant | undefined;
 	let canHarvest: Plant | undefined;

@@ -46,7 +46,7 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 	}
 	const readableName = `${toTitleCase(type)} Gauntlet`;
 	const requiredSkills = type === 'corrupted' ? corruptedRequirements : standardRequirements;
-	const prayLevel = user.skillLevel('prayer');
+	const prayLevel = user.skillsAsLevels.prayer;
 
 	if (!user.hasSkillReqs(requiredSkills)) {
 		return `You don't have the required stats to do the ${readableName}, you need: ${formatSkillRequirements(

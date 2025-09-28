@@ -137,12 +137,12 @@ describe('util', () => {
 		}) as any as MUser;
 		const dropRateLvl99 = Math.floor((baseDropRate - 99 * 25) / 1);
 		expect(skillingPetDropRate(testUser, 'agility', baseDropRate).petDropRate).toEqual(dropRateLvl99);
-		// Lvl 120 (BSO) and 5B xp
+		// Lvl 99 and 200M xp
 		testUser = mockMUser({
-			skills_agility: 5_000_000_000
-		});
-		const dropRate5b = Math.floor((baseDropRate - 120 * 25) / 15);
-		expect(skillingPetDropRate(testUser, 'agility', baseDropRate).petDropRate).toEqual(dropRate5b);
+			skills_agility: 200_000_000
+		}) as any as MUser;
+		const dropRate200M = Math.floor((baseDropRate - 99 * 25) / 15);
+		expect(skillingPetDropRate(testUser, 'agility', baseDropRate).petDropRate).toEqual(dropRate200M);
 	});
 
 	test('userBusyCache', () => {

@@ -39,7 +39,7 @@ export async function guardiansOfTheRiftStartCommand(
 	let inventorySize = 28;
 	// For each pouch the user has, increase their inventory size.
 	for (const pouch of Runecraft.pouches) {
-		if (user.skillLevel('runecraft') < pouch.level) continue;
+		if (user.skillsAsLevels.runecraft < pouch.level) continue;
 		if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
 		if (bank.has(pouch.id) && pouch.id === itemID('Colossal pouch')) break;
 	}
@@ -77,7 +77,7 @@ export async function guardiansOfTheRiftStartCommand(
 		break;
 	}
 
-	if (user.skillLevel('mining') >= 99 && user.hasEquippedOrInBank('Mining cape')) {
+	if (user.skillsAsLevels.mining >= 99 && user.hasEquippedOrInBank('Mining cape')) {
 		boosts.push('**5%** chance to mine an extra essence/fragment using Mining cape');
 		minedFragments *= 1.05;
 	}
@@ -102,10 +102,10 @@ export async function guardiansOfTheRiftStartCommand(
 		rolls -= 1;
 	}
 
-	if (user.skillLevel('runecraft') >= 99 && user.hasEquippedOrInBank('Runecraft cape') && inventorySize > 28) {
+	if (user.skillsAsLevels.runecraft >= 99 && user.hasEquippedOrInBank('Runecraft cape') && inventorySize > 28) {
 		barrierAndGuardian += 2;
 		boosts.push('Extra 2 Barriers/Guardians fixed for Runecraft cape');
-	} else if (user.skillLevel('magic') >= 67) {
+	} else if (user.skillsAsLevels.magic >= 67) {
 		const NPCContactRuneCost = determineRunes(
 			user,
 			new Bank({ 'Astral rune': 1, 'Cosmic rune': 1, 'Air rune': 2 }).clone().multiply(quantity)
@@ -140,7 +140,7 @@ export async function guardiansOfTheRiftStartCommand(
 				.clone()
 				.multiply(quantity * 5)
 		);
-		if (user.skillLevel('magic') < 82 || !bank.has(magicImbueRuneCost)) {
+		if (user.skillsAsLevels.magic < 82 || !bank.has(magicImbueRuneCost)) {
 			return `You need enough Magic Imbue runes and 82 Magic. You don't have enough runes and or Magic lvl. You need ${magicImbueRuneCost}`;
 		}
 		removeRunesAndNecks.add(magicImbueRuneCost);

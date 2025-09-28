@@ -21,7 +21,7 @@ export const vmTask: MinionTask = {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
-		const userMiningLevel = user.skillLevel('mining');
+		const userMiningLevel = user.skillsAsLevels.mining;
 		let boost = 1;
 		// Activity boosts
 		if (userMiningLevel >= 99 && user.hasEquippedOrInBank('Dwarven pickaxe')) {

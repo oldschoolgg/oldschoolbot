@@ -143,7 +143,7 @@ export async function mahoganyHomesPointsCommand(user: MUser) {
 export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, tier?: number): CommandResponse {
 	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
 
-	const conLevel = user.skillLevel('construction');
+	const conLevel = user.skillsAsLevels.construction;
 	const kc = await user.fetchMinigameScore('mahogany_homes');
 
 	let tierData = contractTiers.find(contractTier => conLevel >= contractTier.level)!;

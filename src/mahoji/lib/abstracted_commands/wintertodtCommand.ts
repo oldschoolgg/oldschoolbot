@@ -11,8 +11,8 @@ import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function wintertodtCommand(user: MUser, channelID: string, quantity?: number) {
-	const fmLevel = user.skillLevel('firemaking');
-	const wcLevel = user.skillLevel('woodcutting');
+	const fmLevel = user.skillsAsLevels.firemaking;
+	const wcLevel = user.skillsAsLevels.woodcutting;
 	if (fmLevel < 50) {
 		return 'You need 50 Firemaking to have a chance at defeating the Wintertodt.';
 	}

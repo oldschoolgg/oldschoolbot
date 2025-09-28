@@ -17,8 +17,8 @@ export const underwaterAgilityThievingTask: MinionTask = {
 	async run(data: UnderwaterAgilityThievingTaskOptions) {
 		const { quantity, userID, channelID, duration, trainingSkill } = data;
 		const user = await mUserFetch(userID);
-		const currentThievingLevel = user.skillLevel('thieving');
-		const currentAgilityLevel = user.skillLevel('agility');
+		const currentThievingLevel = user.skillsAsLevels.thieving;
+		const currentAgilityLevel = user.skillsAsLevels.agility;
 
 		let successful = 0;
 		// Search clam/chest until it becomes inactive chance

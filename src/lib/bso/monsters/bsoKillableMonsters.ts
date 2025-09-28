@@ -1,3 +1,4 @@
+import { NexMonster } from '@/lib/bso/monsters/nex.js';
 import { PUMPKINHEAD_ID } from '@/lib/bso/pumpkinHead.js';
 
 import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
@@ -8,7 +9,6 @@ import { Naxxus } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus
 import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus.js';
 import { customKillableMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
-import { NexMonster } from '@/lib/nex.js';
 
 export const bsoKillableMonsters: KillableMonster[] = [...customKillableMonsters];
 

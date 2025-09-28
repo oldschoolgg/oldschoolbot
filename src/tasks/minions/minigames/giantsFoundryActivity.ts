@@ -15,7 +15,7 @@ export const giantsFoundryTask: MinionTask = {
 	async run(data: GiantsFoundryActivityTaskOptions) {
 		const { quantity, userID, channelID, duration, metalScore } = data;
 		const user = await mUserFetch(userID);
-		const userSmithingLevel = user.skillLevel('smithing');
+		const userSmithingLevel = user.skillsAsLevels.smithing;
 		const boosts = [];
 		let avgMouldBonus = 37.667;
 		if (userSmithingLevel > 79) {

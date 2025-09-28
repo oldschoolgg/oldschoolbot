@@ -3,7 +3,7 @@ import { bsoOres } from '@/lib/bso/skills/mining/ores.js';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { itemID, LootTable } from 'oldschooljs';
 
-import type { Ore } from '@/lib/skilling/types.js';
+import { defineSkill, type Ore } from '@/lib/skilling/types.js';
 
 export const GemRockTable = new LootTable()
 	.add('Uncut opal', 1, 60)
@@ -313,7 +313,7 @@ export const prospectorItemsArr = Object.entries(prospectorItems).map(([itemID, 
 	boostPercent: bonus
 }));
 
-const Mining = {
+const Mining = defineSkill({
 	aliases: ['mining'],
 	Ores: ores,
 	MotherlodeMine,
@@ -325,6 +325,6 @@ const Mining = {
 	emoji: Emoji.Mining,
 	prospectorItems,
 	name: 'Mining'
-};
+});
 
 export default Mining;

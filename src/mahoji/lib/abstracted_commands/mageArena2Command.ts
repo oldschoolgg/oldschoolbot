@@ -8,7 +8,7 @@ import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function mageArena2Command(user: MUser, channelID: string) {
-	if (user.skillLevel('magic') < 75) {
+	if (user.skillsAsLevels.magic < 75) {
 		return 'You need level 75 Magic to do the Mage Arena II.';
 	}
 	if (user.cl.amount('Saradomin cape') === 0) {

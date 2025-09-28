@@ -11,7 +11,7 @@ import {
 } from '@oldschoolgg/toolkit';
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { bold } from 'discord.js';
-import { Bank, type ItemBank, itemID, resolveItems } from 'oldschooljs';
+import { Bank, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { calcSetupPercent } from '@/lib/data/cox.js';
@@ -20,7 +20,7 @@ import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import type { Skills } from '@/lib/types/index.js';
 import { Gear } from '../structures/Gear.js';
 import type { DOAStoredRaid } from '../types/minions.js';
-import { formatSkillRequirements, itemNameFromID } from '../util/smallUtils.js';
+import { formatSkillRequirements } from '../util/smallUtils.js';
 
 const { floor } = Math;
 
@@ -121,28 +121,32 @@ const requirements: {
 			}
 
 			if (!user.gear.range.hasEquipped(REQUIRED_RANGE_WEAPONS, false)) {
-				return `Must have one of these equipped: ${REQUIRED_RANGE_WEAPONS.map(itemNameFromID).join(', ')}`;
+				return `Must have one of these equipped: ${REQUIRED_RANGE_WEAPONS.map(i =>
+					Items.itemNameFromId(i)
+				).join(', ')}`;
 			}
 
 			const rangeAmmo = user.gear.range.ammo;
 			const arrowsNeeded = JAVELLINS_PER_RAID(user.skillsAsLevels.ranged) * quantity;
 
 			if (!rangeAmmo || !rangeAmmo.item || !JAVELLINS.includes(rangeAmmo.item)) {
-				return `You need to have javellins equipped in your range setup, one of: ${JAVELLINS.map(
-					itemNameFromID
+				return `You need to have javellins equipped in your range setup, one of: ${JAVELLINS.map(i =>
+					Items.itemNameFromId(i)
 				).join(', ')}`;
 			}
 
 			if (rangeAmmo.quantity < arrowsNeeded) {
-				return `You need atleast ${arrowsNeeded}x ${itemNameFromID(rangeAmmo.item)} in your range setup.`;
+				return `You need atleast ${arrowsNeeded}x ${Items.itemNameFromId(rangeAmmo.item)} in your range setup.`;
 			}
 
 			return true;
 		},
 		desc: () =>
 			`decent range gear (BiS is ${maxRange.toString()}), atleast ${JAVELLINS_PER_RAID}x javelins equipped (must be one of ${JAVELLINS.map(
-				itemNameFromID
-			).join(', ')}), and one of these ballista's: ${REQUIRED_RANGE_WEAPONS.map(itemNameFromID).join(', ')}`
+				i => Items.itemNameFromId(i)
+			).join(', ')}), and one of these ballista's: ${REQUIRED_RANGE_WEAPONS.map(i =>
+				Items.itemNameFromId(i)
+			).join(', ')}`
 	},
 	{
 		name: 'Melee gear',
@@ -152,8 +156,8 @@ const requirements: {
 			}
 
 			if (!user.gear.melee.hasEquipped(REQUIRED_MELEE_WEAPONS, false)) {
-				return `Need one of these weapons in your melee setup: ${REQUIRED_MELEE_WEAPONS.map(
-					itemNameFromID
+				return `Need one of these weapons in your melee setup: ${REQUIRED_MELEE_WEAPONS.map(i =>
+					Items.itemNameFromId(i)
 				).join(', ')}`;
 			}
 
@@ -161,7 +165,7 @@ const requirements: {
 		},
 		desc: () =>
 			`decent melee gear (BiS is ${maxMelee.toString()}, and one of these weapons: ${REQUIRED_MELEE_WEAPONS.map(
-				itemNameFromID
+				i => Items.itemNameFromId(i)
 			).join(', ')}`
 	},
 	{
@@ -172,9 +176,9 @@ const requirements: {
 			}
 
 			if (!user.gear.mage.hasEquipped(REQUIRED_MAGE_WEAPONS, false)) {
-				return `Need one of these weapons in your mage setup: ${REQUIRED_MAGE_WEAPONS.map(itemNameFromID).join(
-					', '
-				)}`;
+				return `Need one of these weapons in your mage setup: ${REQUIRED_MAGE_WEAPONS.map(i =>
+					Items.itemNameFromId(i)
+				).join(', ')}`;
 			}
 
 			return true;

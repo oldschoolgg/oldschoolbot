@@ -236,11 +236,11 @@ export const minimumCoxSuppliesNeeded = new Bank({
 });
 
 export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): Promise<string | null> {
-	const hasHerbalist = users.some(u => u.skillLevel('herblore') >= 78);
+	const hasHerbalist = users.some(u => u.skillsAsLevels.herblore >= 78);
 	if (!hasHerbalist) {
 		return 'nobody with at least level 78 Herblore';
 	}
-	const hasFarmer = users.some(u => u.skillLevel('farming') >= 55);
+	const hasFarmer = users.some(u => u.skillsAsLevels.farming >= 55);
 	if (!hasFarmer) {
 		return 'nobody with at least level 55 Farming';
 	}

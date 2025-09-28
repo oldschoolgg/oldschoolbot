@@ -4,6 +4,7 @@ import { fistOfGuthixBuyables } from '@/lib/bso/buyables/fistOfGuthixBuyables.js
 import { stealingCreationBuyables } from '@/lib/bso/buyables/stealingCreationBuyables.js';
 import { divinationEnergies } from '@/lib/bso/divination.js';
 import { dyedItems } from '@/lib/bso/dyedItems.js';
+import { NexMonster } from '@/lib/bso/monsters/nex.js';
 import { Inventions } from '@/lib/bso/skills/invention/inventions.js';
 
 import { notEmpty, sumArr } from '@oldschoolgg/toolkit';
@@ -42,7 +43,6 @@ import {
 import { implings } from '@/lib/implings.js';
 import { MOKTANG_ID } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
 import { Naxxus } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
-import { NexMonster } from '@/lib/nex.js';
 import { allThirdAgeItems } from '@/lib/simulation/sharedTables.js';
 import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
 import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';

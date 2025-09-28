@@ -1,6 +1,7 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { itemID } from 'oldschooljs';
 
+import { defineSkill } from '@/lib/skilling/types.js';
 import BlastableBars from './blastables.js';
 import Bars from './smeltables.js';
 import SmithableItems from './smithables/index.js';
@@ -12,7 +13,7 @@ const smithsUniformItems: { [key: number]: number } = {
 	[itemID('Smiths boots')]: 20
 };
 
-const Smithing = {
+const Smithing = defineSkill({
 	aliases: ['smithing'],
 	Bars,
 	SmithableItems,
@@ -21,6 +22,6 @@ const Smithing = {
 	emoji: Emoji.Smithing,
 	name: 'Smithing',
 	smithsUniformItems
-};
+});
 
 export default Smithing;

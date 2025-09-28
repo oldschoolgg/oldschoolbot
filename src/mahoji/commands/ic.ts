@@ -1,5 +1,6 @@
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
 import { DragonTable } from '@/lib/bso/grandmasterClue.js';
+import { nexLootTable } from '@/lib/bso/monsters/nex.js';
 import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/bsoOpenables.js';
 import { MysteryBoxes, PMBTable } from '@/lib/bso/openables/tables.js';
 
@@ -16,7 +17,6 @@ import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ign
 import { kalphiteKingLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
 import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus.js';
 import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
-import { nexLootTable } from '@/lib/nex.js';
 import { allThirdAgeItems, runeAlchablesTable } from '@/lib/simulation/sharedTables.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';

@@ -18,7 +18,7 @@ export async function scatterCommand(user: MUser, channelID: string, ashName: st
 		return "That's not a valid ash to scatter.";
 	}
 
-	if (user.skillLevel('prayer') < ash.level) {
+	if (user.skillsAsLevels.prayer < ash.level) {
 		return `${user.minionName} needs ${ash.level} Prayer to scatter ${ash.name}.`;
 	}
 

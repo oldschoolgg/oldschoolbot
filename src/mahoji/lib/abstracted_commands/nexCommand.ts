@@ -1,4 +1,5 @@
 import { calcBossFood } from '@/lib/bso/calcBossFood.js';
+import { NexMonster } from '@/lib/bso/monsters/nex.js';
 
 import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
@@ -9,7 +10,6 @@ import { gorajanArcherOutfit, pernixOutfit } from '@/lib/data/CollectionsExport.
 import { trackLoot } from '@/lib/lootTrack.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
-import { NexMonster } from '@/lib/nex.js';
 import { setupParty } from '@/lib/party.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { BossActivityTaskOptions } from '@/lib/types/minions.js';

@@ -20,11 +20,11 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 		)}.`;
 	}
 
-	if (user.skillLevel('magic') < spell.level) {
+	if (user.skillsAsLevels.magic < spell.level) {
 		return `${user.minionName} needs ${spell.level} Magic to cast ${spell.name}.`;
 	}
 
-	if (spell.craftLevel && user.skillLevel('crafting') < spell.craftLevel) {
+	if (spell.craftLevel && user.skillsAsLevels.crafting < spell.craftLevel) {
 		return `${user.minionName} needs ${spell.craftLevel} Crafting to cast ${spell.name}.`;
 	}
 
@@ -49,7 +49,7 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 			const boostLevels = spell.agilityBoost.map(boost => boost[0]);
 			const boostPercentages = spell.agilityBoost.map(boost => boost[1]);
 
-			const availableBoost = boostLevels.find(boost => user.skillLevel('agility') >= boost);
+			const availableBoost = boostLevels.find(boost => user.skillsAsLevels.agility >= boost);
 			if (availableBoost) {
 				const boostIndex = boostLevels.indexOf(availableBoost);
 

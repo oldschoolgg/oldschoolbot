@@ -1,3 +1,4 @@
+import { NexMonster } from '@/lib/bso/monsters/nex.js';
 import { PUMPKINHEAD_ID } from '@/lib/bso/pumpkinHead.js';
 
 import { Time } from '@oldschoolgg/toolkit/datetime';
@@ -26,7 +27,6 @@ import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
 import { turaelMonsters } from '@/lib/minions/data/killableMonsters/turaelMonsters.js';
 import { vannakaMonsters } from '@/lib/minions/data/killableMonsters/vannakaMonsters.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
-import { NexMonster } from '@/lib/nex.js';
 
 const killableMonsters: KillableMonster[] = [
 	...bossKillables,

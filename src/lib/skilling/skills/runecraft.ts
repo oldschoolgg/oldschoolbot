@@ -2,6 +2,8 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, itemID, LootTable } from 'oldschooljs';
 
+import { defineSkill } from '@/lib/skilling/types.js';
+
 export interface Rune {
 	levels: number[][];
 	xp: number;
@@ -584,7 +586,7 @@ export const ouraniaAltarTables: LootTable[] = [
 		.add('Soul rune', 1, 900)
 ];
 
-const Runecraft = {
+const Runecraft = defineSkill({
 	aliases: ['runecraft', 'runecrafting'],
 	Runes,
 	Tiaras,
@@ -594,6 +596,6 @@ const Runecraft = {
 	pouches: RCPouches,
 	name: 'Runecraft',
 	raimentsOfTheEyeItems
-};
+});
 
 export default Runecraft;
