@@ -1,3 +1,5 @@
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
+
 import { Bank, EGear } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 
@@ -49,12 +51,14 @@ describe('GearBank', () => {
 				attack: 13034431,
 				defence: 150_000_000
 			},
-			minionName: 'Minion'
+			minionName: 'Minion',
+			pet: null,
+			materials: new MaterialBank()
 		});
 		expect(gb1.skillsAsLevels.attack).toBe(99);
 		expect(gb1.skillsAsXP.attack).toBe(13034431);
 		expect(gb1.skillsAsLevels.strength).toBe(1);
-		expect(gb1.skillsAsLevels.defence).toBe(99);
+		expect(gb1.skillsAsLevels.defence).toBe(120);
 		expect(gb1.skillsAsXP.defence).toBe(150_000_000);
 	});
 

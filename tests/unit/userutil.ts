@@ -1,4 +1,3 @@
-import { cryptoRand } from '@oldschoolgg/rng';
 import type { Prisma, User } from '@prisma/client';
 import { Bank, convertLVLtoXP, Items, LootTable } from 'oldschooljs';
 import { isFunction, isObjectType } from 'remeda';
@@ -82,7 +81,7 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		username: 'Magnaboy',
 		QP: overrides?.QP ?? 0,
 		sacrificedValue: 0,
-		id: overrides?.id ?? cryptoRand(1, 1_000_000_000).toString(),
+		id: overrides?.id ?? '',
 		monsterScores: {},
 		badges: []
 	} as unknown as User;

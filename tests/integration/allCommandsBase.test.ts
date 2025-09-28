@@ -1,3 +1,4 @@
+import { SeedableRNG } from '@oldschoolgg/rng';
 import { generateCommandInputs, Stopwatch, sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 import PromiseQueue from 'p-queue';

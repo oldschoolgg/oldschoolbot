@@ -8,9 +8,6 @@ import { isFunction } from 'remeda';
 
 import { BOT_TYPE } from '@/lib/constants.js';
 import Createables from '@/lib/data/createables.js';
-import { applyStaticDefine } from '../meta.js';
-
-applyStaticDefine();
 
 export async function renderCreatablesFile() {
 	const stopwatch = new Stopwatch();
