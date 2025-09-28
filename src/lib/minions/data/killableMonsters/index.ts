@@ -2,16 +2,7 @@ import { PUMPKINHEAD_ID } from '@/lib/bso/pumpkinHead.js';
 
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import {
-	Bank,
-	deepResolveItems,
-	EMonster,
-	itemID,
-	Monsters,
-	NIGHTMARES_HP,
-	resolveItems,
-	SkillsEnum
-} from 'oldschooljs';
+import { Bank, deepResolveItems, EMonster, itemID, Monsters, NIGHTMARES_HP, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { bossKillables } from '@/lib/minions/data/killableMonsters/bosses/index.js';
@@ -84,7 +75,7 @@ const killableMonsters: KillableMonster[] = [
 				'Ancient rejuvenation pool': 20
 			}
 		},
-		defaultAttackStyles: [SkillsEnum.Attack, SkillsEnum.Magic, SkillsEnum.Ranged],
+		defaultAttackStyles: ['attack', 'magic', 'ranged'],
 		customMonsterHP: 600,
 		combatXpMultiplier: 1.09
 	},
@@ -217,7 +208,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		difficultyRating: 0,
 		qpRequired: 0,
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		attackStyleToUse: GearStat.AttackSlash
 	},
 	{
@@ -329,7 +320,7 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 5,
 		qpRequired: 50,
 		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }],
-		defaultAttackStyles: [SkillsEnum.Magic],
+		defaultAttackStyles: ['magic'],
 		healAmountNeeded: 4 * 20,
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackMagic]

@@ -10,7 +10,6 @@ import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot
 import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
 import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
 import type { Ore } from '@/lib/skilling/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ActivityTaskData, ShootingStarsOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength, patronMaxTripBonus } from '@/lib/util/calcMaxTripLength.js';
@@ -230,7 +229,7 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 		}
 		// Add clue scrolls , TODO: convert klasaUsers to user
 		if (star.clueScrollChance) {
-			addSkillingClueToLoot(user, SkillsEnum.Mining, newQuantity, star.clueScrollChance, loot);
+			addSkillingClueToLoot(user, 'mining', newQuantity, star.clueScrollChance, loot);
 		}
 
 		// Roll for pet
@@ -291,7 +290,7 @@ export const starCache = new Map<string, Star & { expiry: number }>();
 
 export function handleTriggerShootingStar(user: MUserClass, data: ActivityTaskData, components: ButtonBuilder[]) {
 	if (activitiesCantGetStars.includes(data.type)) return;
-	const miningLevel = user.skillLevel(SkillsEnum.Mining);
+	const miningLevel = user.skillLevel('mining');
 	const elligibleStars = starSizes.filter(i => i.chance > 0 && i.level <= miningLevel);
 	const minutes = data.duration / Time.Minute;
 	const baseChance = 540 / minutes;

@@ -7,11 +7,11 @@ import { clamp } from 'remeda';
 
 import { MAX_LEVEL } from '@/lib/constants.js';
 import { spectatorClothes } from '@/lib/data/CollectionsExport.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
-function calcXP(user: MUser, duration: number, skill: SkillsEnum) {
+function calcXP(user: MUser, duration: number, skill: SkillNameType) {
 	return calcPercentOfNum(calcWhatPercent(user.skillLevel(skill), MAX_LEVEL), duration / 80);
 }
 
@@ -26,22 +26,22 @@ export const bonanzaTask: MinionTask = {
 		const incrementResult = await user.incrementMinigameScore('balthazars_big_bonanza', quantity);
 		const xpStrs = await Promise.all([
 			user.addXP({
-				amount: calcXP(user, duration, SkillsEnum.Agility),
-				skillName: SkillsEnum.Agility,
+				amount: calcXP(user, duration, 'agility'),
+				skillName: 'agility',
 				duration,
 				source: 'BalthazarsBigBonanza',
 				minimal: true
 			}),
 			user.addXP({
-				amount: calcXP(user, duration, SkillsEnum.Ranged),
-				skillName: SkillsEnum.Ranged,
+				amount: calcXP(user, duration, 'ranged'),
+				skillName: 'ranged',
 				duration,
 				source: 'BalthazarsBigBonanza',
 				minimal: true
 			}),
 			user.addXP({
-				amount: calcXP(user, duration, SkillsEnum.Thieving),
-				skillName: SkillsEnum.Thieving,
+				amount: calcXP(user, duration, 'thieving'),
+				skillName: 'thieving',
 				duration,
 				source: 'BalthazarsBigBonanza',
 				minimal: true
@@ -49,10 +49,7 @@ export const bonanzaTask: MinionTask = {
 		]);
 		const loot = new Bank();
 
-		const averageLevel =
-			user.skillLevel(SkillsEnum.Agility) +
-			user.skillLevel(SkillsEnum.Ranged) +
-			user.skillLevel(SkillsEnum.Thieving) / 3;
+		const averageLevel = user.skillLevel('agility') + user.skillLevel('ranged') + user.skillLevel('thieving') / 3;
 
 		const tickets = randInt(clamp(averageLevel / 2, { min: 1, max: 120 }), averageLevel);
 		loot.add('Circus ticket', tickets);

@@ -1,6 +1,6 @@
 import { notEmpty, randFloat, randInt, roll } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { Bank, type Monster, Monsters, resolveItems, SkillsEnum } from 'oldschooljs';
+import { Bank, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField, type PvMMethod } from '@/lib/constants.js';
@@ -135,7 +135,7 @@ function weightedPick(filteredTasks: AssignableSlayerTask[]) {
 export function userCanUseMaster(user: MUser, master: SlayerMaster) {
 	return (
 		user.QP >= (master.questPoints ?? 0) &&
-		user.skillLevel(SkillsEnum.Slayer) >= (master.slayerLvl ?? 0) &&
+		user.skillLevel('slayer') >= (master.slayerLvl ?? 0) &&
 		user.combatLevel >= (master.combatLvl ?? 0)
 	);
 }
@@ -148,7 +148,7 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 	if (task.combatLevel && task.combatLevel > user.combatLevel) return false;
 	if (task.questPoints && task.questPoints > user.QP) return false;
 	if (task.requiredQuests?.find(quest => !user.user.finished_quest_ids.includes(quest))) return false;
-	if (task.slayerLevel && task.slayerLevel > user.skillLevel(SkillsEnum.Slayer)) return false;
+	if (task.slayerLevel && task.slayerLevel > user.skillLevel('slayer')) return false;
 	if (task.levelRequirements && !user.hasSkillReqs(task.levelRequirements)) return false;
 	const myBlockList = user.user.slayer_blocked_ids ?? [];
 	if (myBlockList.includes(task.monster.id)) return false;

@@ -5,7 +5,6 @@ import { Bank, Items, resolveItems } from 'oldschooljs';
 
 import { dwarvenOutfit } from '@/lib/data/CollectionsExport.js';
 import { trackLoot } from '@/lib/lootTrack.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { PercentCounter } from '@/lib/structures/PercentCounter.js';
 import type { MoktangTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
@@ -16,7 +15,7 @@ const requiredPickaxes = resolveItems(['Crystal pickaxe', 'Volcanic pickaxe', 'D
 
 export async function moktangCommand(user: MUser, channelID: string, inputQuantity: number | undefined) {
 	const timeToKill = new PercentCounter(Time.Minute * 15, 'time');
-	const miningLevel = user.skillLevel(SkillsEnum.Mining);
+	const miningLevel = user.skillLevel('mining');
 	if (miningLevel < 105) return 'You need 105 Mining to fight Moktang.';
 	if (!user.hasEquipped(requiredPickaxes, false)) {
 		return `You need to have one of these pickaxes equipped to fight Moktang: ${requiredPickaxes
@@ -30,7 +29,7 @@ export async function moktangCommand(user: MUser, channelID: string, inputQuanti
 	timeToKill.add(true, 0 - miningLevelBoost, 'Mining level');
 	timeToKill.add(user.hasEquipped('Volcanic pickaxe'), -5, 'Volcanic pickaxe');
 	timeToKill.add(
-		user.hasEquipped('Offhand volcanic pickaxe') && user.skillLevel(SkillsEnum.Strength) >= 100,
+		user.hasEquipped('Offhand volcanic pickaxe') && user.skillLevel('strength') >= 100,
 		-3,
 		'Offhand volcanic pickaxe'
 	);

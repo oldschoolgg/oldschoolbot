@@ -7,8 +7,7 @@ import {
 	MonsterAttribute,
 	Monsters,
 	RareDropTable,
-	resolveItems,
-	SkillsEnum
+	resolveItems
 } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
@@ -185,7 +184,7 @@ export const QueenBlackDragon: CustomMonster = {
 	healAmountNeeded: 20 * 45,
 	attackStyleToUse: GearStat.AttackRanged,
 	attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
-	disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Magic],
+	disallowedAttackStyles: ['attack', 'strength', 'defence', 'magic'],
 	minimumGearRequirements: {
 		range: {
 			attack_stab: 0,

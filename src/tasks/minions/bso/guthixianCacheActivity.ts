@@ -5,7 +5,6 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
 import { divinersOutfit } from '@/lib/data/CollectionsExport.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
@@ -17,7 +16,7 @@ export const guthixianCacheTask: MinionTask = {
 
 		const xp = user.skillLevel('divination') * user.skillLevel('divination') * 2.5;
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Divination,
+			skillName: 'divination',
 			amount: xp,
 			source: 'GuthixianCache',
 			duration

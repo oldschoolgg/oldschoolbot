@@ -2,7 +2,6 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { itemID } from 'oldschooljs';
 
 import type { Fish } from '@/lib/skilling/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { calcFishingTripResult } from './fishingTrip.js';
 import { calcFishingTripStart } from './fishingTripStart.js';
 import { anglerItems, calcAnglerBoostPercent, calcMinnowQuantityRange, calcRadasBlessingBoost } from './fishingUtil.js';
@@ -294,7 +293,7 @@ export const Fishing = {
 	aliases: ['fishing'],
 	Fishes: fishes,
 	camdozaalFishes,
-	id: SkillsEnum.Fishing,
+	id: 'fishing',
 	emoji: Emoji.Fishing,
 	anglerItems,
 	name: 'Fishing',

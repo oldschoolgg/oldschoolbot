@@ -6,7 +6,6 @@ import { Bank } from 'oldschooljs';
 import { type GiantsFoundryBank, TOTAL_GIANT_WEAPONS } from '@/lib/giantsFoundry.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { GiantsFoundryActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -161,7 +160,7 @@ export async function giantsFoundryStartCommand(
 	channelID: string
 ) {
 	let timePerSection = Time.Minute * 0.84;
-	const userSmithingLevel = user.skillLevel(SkillsEnum.Smithing);
+	const userSmithingLevel = user.skillLevel('smithing');
 
 	const alloy = giantsFoundryAlloys.find(i => stringMatches(i.name, name));
 

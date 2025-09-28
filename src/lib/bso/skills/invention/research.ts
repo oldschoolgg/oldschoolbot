@@ -5,7 +5,6 @@ import { formatDuration, shuffleArr, Time } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { clamp } from 'remeda';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ResearchTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -118,7 +117,7 @@ export async function researchTask(data: ResearchTaskOptions) {
 	}
 
 	const xpStr = await user.addXP({
-		skillName: SkillsEnum.Invention,
+		skillName: 'invention',
 		amount: quantity * 56.39,
 		duration: data.duration,
 		multiplier: false,

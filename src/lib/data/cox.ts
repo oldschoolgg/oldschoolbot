@@ -15,7 +15,6 @@ import { Bank, type ChambersOfXericOptions, type Item, Items } from 'oldschooljs
 import type { GearStats } from 'oldschooljs/gear';
 
 import { checkUserCanUseDegradeableItem } from '@/lib/degradeableItems.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
 import { logError } from '@/lib/util/logError.js';
@@ -237,11 +236,11 @@ export const minimumCoxSuppliesNeeded = new Bank({
 });
 
 export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): Promise<string | null> {
-	const hasHerbalist = users.some(u => u.skillLevel(SkillsEnum.Herblore) >= 78);
+	const hasHerbalist = users.some(u => u.skillLevel('herblore') >= 78);
 	if (!hasHerbalist) {
 		return 'nobody with at least level 78 Herblore';
 	}
-	const hasFarmer = users.some(u => u.skillLevel(SkillsEnum.Farming) >= 55);
+	const hasFarmer = users.some(u => u.skillLevel('farming') >= 55);
 	if (!hasFarmer) {
 		return 'nobody with at least level 55 Farming';
 	}

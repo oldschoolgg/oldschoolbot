@@ -6,7 +6,7 @@ import { InventionID } from '@/lib/bso/skills/invention/inventions.js';
 import { type StoneSpirit, stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
 
 import { increaseNumByPercent, randInt, roll, Time } from '@oldschoolgg/toolkit';
-import { Bank, itemID, SkillsEnum, toKMB } from 'oldschooljs';
+import { Bank, itemID, toKMB } from 'oldschooljs';
 
 import { upgradedDragonstoneOutfit } from '@/lib/data/CollectionsExport.js';
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
@@ -79,12 +79,12 @@ export function calculateMiningResult({
 
 	// Add clue scrolls
 	if (ore.clueScrollChance) {
-		addSkillingClueToLoot(gearBank.skillsAsLevels.mining, SkillsEnum.Mining, quantity, ore.clueScrollChance, loot);
+		addSkillingClueToLoot(gearBank.skillsAsLevels.mining, 'mining', quantity, ore.clueScrollChance, loot);
 	}
 
 	// Roll for pet
 	if (ore.petChance) {
-		const { petDropRate } = skillingPetDropRate(gearBank, SkillsEnum.Mining, ore.petChance);
+		const { petDropRate } = skillingPetDropRate(gearBank, 'mining', ore.petChance);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Rock golem');
 		}
@@ -302,14 +302,14 @@ export const miningTask: MinionTask = {
 		});
 
 		let xpRes = await user.addXP({
-			skillName: SkillsEnum.Mining,
+			skillName: 'mining',
 			amount: totalMiningXPToAdd,
 			duration
 		});
 
 		if (smithingXPFromAdze > 0) {
 			xpRes += ` ${await user.addXP({
-				skillName: SkillsEnum.Smithing,
+				skillName: 'smithing',
 				amount: smithingXPFromAdze,
 				duration
 			})}`;

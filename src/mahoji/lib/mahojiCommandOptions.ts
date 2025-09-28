@@ -11,7 +11,7 @@ import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 import { baseFilters, filterableTypes } from '@/lib/data/filterables.js';
 import { GearSetupTypes } from '@/lib/gear/types.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import { SkillsArray } from '@/lib/skilling/types.js';
 import { Gear, type GlobalPreset, globalPresets } from '@/lib/structures/Gear.js';
 import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
@@ -66,9 +66,10 @@ export const skillOption: CommandOption = {
 	description: 'The skill you want to select.',
 	required: false,
 	autocomplete: async (value: string) => {
-		return Object.values(SkillsEnum)
-			.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
-			.map(i => ({ name: toTitleCase(i), value: i }));
+		return SkillsArray.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase()))).map(i => ({
+			name: toTitleCase(i),
+			value: i
+		}));
 	}
 };
 

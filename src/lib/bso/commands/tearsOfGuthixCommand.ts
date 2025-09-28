@@ -3,20 +3,20 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { dateFm, formatDuration, getNextUTCReset } from '@oldschoolgg/toolkit/util';
 
 import { TEARS_OF_GUTHIX_CD } from '@/lib/events.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 export const tearsOfGuthixSkillReqs = {
-	[SkillsEnum.Firemaking]: 49,
-	[SkillsEnum.Crafting]: 20,
-	[SkillsEnum.Mining]: 20
+	firemaking: 49,
+	crafting: 20,
+	mining: 20
 };
 export const tearsOfGuthixIronmanReqs = {
-	[SkillsEnum.Smithing]: 49,
-	[SkillsEnum.Thieving]: 36,
-	[SkillsEnum.Slayer]: 35
+	smithing: 49,
+	thieving: 36,
+	slayer: 35
 };
 
 function getTearsOfGuthixMissingIronmanMessage(user: MUser): string | null {

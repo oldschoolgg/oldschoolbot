@@ -3,7 +3,6 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
 import Prayer from '@/lib/skilling/skills/prayer.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { BuryingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -19,7 +18,7 @@ export async function buryCommand(user: MUser, channelID: string, boneName: stri
 		return "That's not a valid bone to bury.";
 	}
 
-	if (user.skillLevel(SkillsEnum.Prayer) < bone.level) {
+	if (user.skillLevel('prayer') < bone.level) {
 		return `${user.minionName} needs ${bone.level} Prayer to bury ${bone.name}.`;
 	}
 

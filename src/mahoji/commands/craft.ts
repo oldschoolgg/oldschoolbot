@@ -7,7 +7,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
 import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -62,7 +61,7 @@ export const craftCommand: OSBMahojiCommand = {
 		}
 
 		const userQP = user.QP;
-		const currentWoodcutLevel = user.skillLevel(SkillsEnum.Woodcutting);
+		const currentWoodcutLevel = user.skillLevel('woodcutting');
 
 		if (craftable.qpRequired && userQP < craftable.qpRequired) {
 			return `${user.minionName} needs ${craftable.qpRequired} QP to craft ${craftable.name}.`;
@@ -72,7 +71,7 @@ export const craftCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${craftable.wcLvl} Woodcutting Level to craft ${craftable.name}.`;
 		}
 
-		if (user.skillLevel(SkillsEnum.Crafting) < craftable.level) {
+		if (user.skillLevel('crafting') < craftable.level) {
 			return `${user.minionName} needs ${craftable.level} Crafting to craft ${craftable.name}.`;
 		}
 
@@ -83,7 +82,7 @@ export const craftCommand: OSBMahojiCommand = {
 		// Get the base time to craft the item then add on quarter of a second per item to account for banking/etc.
 		let timeToCraftSingleItem = craftable.tickRate * Time.Second * 0.6 + Time.Second / 4;
 		const [hasFallyHard] = await userhasDiaryTier(user, FaladorDiary.hard);
-		if (craftable.bankChest && (hasFallyHard || user.skillLevel(SkillsEnum.Crafting) >= 99)) {
+		if (craftable.bankChest && (hasFallyHard || user.skillLevel('crafting') >= 99)) {
 			timeToCraftSingleItem /= 3.25;
 		}
 

@@ -1,7 +1,7 @@
 import { Bank, type Item, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import type { Skills } from '@/lib/types/index.js';
 import { assert } from '@/lib/util/logError.js';
 import { isValidSkill } from '@/lib/util/smallUtils.js';
@@ -12,7 +12,7 @@ interface IXPLamp {
 	amount: number;
 	name: string;
 	minimumLevel: number;
-	allowedSkills?: SkillsEnum[];
+	allowedSkills?: SkillNameType[];
 }
 
 export const XPLamps: IXPLamp[] = [
@@ -45,15 +45,7 @@ export const XPLamps: IXPLamp[] = [
 		amount: 100_000,
 		name: 'Ancient lamp',
 		minimumLevel: 60,
-		allowedSkills: [
-			SkillsEnum.Attack,
-			SkillsEnum.Strength,
-			SkillsEnum.Defence,
-			SkillsEnum.Hitpoints,
-			SkillsEnum.Ranged,
-			SkillsEnum.Magic,
-			SkillsEnum.Prayer
-		]
+		allowedSkills: ['attack', 'strength', 'defence', 'hitpoints', 'ranged', 'magic', 'prayer']
 	},
 	// BSO Lamps
 	{
@@ -91,28 +83,28 @@ export const XPLamps: IXPLamp[] = [
 		amount: 30_000,
 		name: 'Magic lamp (strength)',
 		minimumLevel: 1,
-		allowedSkills: [SkillsEnum.Strength]
+		allowedSkills: ['strength']
 	},
 	{
 		itemID: 28_588,
 		amount: 20_000,
 		name: 'Magic lamp (slayer)',
 		minimumLevel: 1,
-		allowedSkills: [SkillsEnum.Slayer]
+		allowedSkills: ['slayer']
 	},
 	{
 		itemID: 28_589,
 		amount: 5000,
 		name: 'Magic lamp (thieving)',
 		minimumLevel: 1,
-		allowedSkills: [SkillsEnum.Thieving]
+		allowedSkills: ['thieving']
 	},
 	{
 		itemID: 28_590,
 		amount: 500,
 		name: 'Magic lamp (magic)',
 		minimumLevel: 1,
-		allowedSkills: [SkillsEnum.Magic]
+		allowedSkills: ['magic']
 	},
 	{
 		itemID: 28_820,
@@ -174,28 +166,28 @@ export const Lampables: IXPObject[] = [
 		items: resolveItems(['Dark relic']),
 		function: data => {
 			const skills: Skills = {};
-			for (const skill of Object.values(SkillsEnum)) {
+			for (const skill of SkillsArray) {
 				skills[skill] =
 					data.user.skillLevel(skill) *
 					([
-						SkillsEnum.Attack,
-						SkillsEnum.Strength,
-						SkillsEnum.Defence,
-						SkillsEnum.Magic,
-						SkillsEnum.Ranged,
-						SkillsEnum.Hitpoints,
-						SkillsEnum.Prayer,
-						SkillsEnum.Mining,
-						SkillsEnum.Woodcutting,
-						SkillsEnum.Herblore,
-						SkillsEnum.Farming,
-						SkillsEnum.Hunter,
-						SkillsEnum.Cooking,
-						SkillsEnum.Fishing,
-						SkillsEnum.Thieving,
-						SkillsEnum.Firemaking,
-						SkillsEnum.Agility,
-						SkillsEnum.Dungeoneering
+						'attack',
+						'strength',
+						'defence',
+						'magic',
+						'ranged',
+						'hitpoints',
+						'prayer',
+						'mining',
+						'woodcutting',
+						'herblore',
+						'farming',
+						'hunter',
+						'cooking',
+						'fishing',
+						'thieving',
+						'firemaking',
+						'agility',
+						'dungeoneering'
 					].includes(skill)
 						? 150
 						: 50) *
@@ -208,7 +200,7 @@ export const Lampables: IXPObject[] = [
 		items: resolveItems(['Genie lamp']),
 		function: data => {
 			const skills: Skills = {};
-			for (const skill of Object.values(SkillsEnum)) {
+			for (const skill of SkillsArray) {
 				skills[skill] = data.user.skillLevel(skill) * 10 * data.quantity;
 			}
 			return [skills, undefined];
@@ -218,7 +210,7 @@ export const Lampables: IXPObject[] = [
 		items: resolveItems(['Book of knowledge']),
 		function: data => {
 			const skills: Skills = {};
-			for (const skill of Object.values(SkillsEnum)) {
+			for (const skill of SkillsArray) {
 				skills[skill] = data.user.skillLevel(skill) * 15 * data.quantity;
 			}
 			return [skills, undefined];
@@ -230,7 +222,7 @@ export const Lampables: IXPObject[] = [
 			const lamp = XPLamps.find(l => l.itemID === data.item.id)!;
 			const skills: Skills = {};
 			const requirements: Skills = {};
-			for (const skill of Object.values(SkillsEnum)) {
+			for (const skill of SkillsArray) {
 				if (lamp.allowedSkills && !lamp.allowedSkills.includes(skill)) continue;
 				skills[skill] = lamp.amount * data.quantity;
 				requirements[skill] = lamp.minimumLevel;
@@ -242,12 +234,11 @@ export const Lampables: IXPObject[] = [
 		items: resolveItems(['Book of arcane knowledge']),
 		function: data => {
 			const skills: Skills = {};
-			for (const skill of Object.values(SkillsEnum)) {
-				if (skill !== SkillsEnum.Magic && skill !== SkillsEnum.Runecraft) {
+			for (const skill of SkillsArray) {
+				if (skill !== 'magic' && skill !== 'runecraft') {
 					continue;
 				}
-				skills[skill] =
-					data.user.skillLevel(skill) * ([SkillsEnum.Magic].includes(skill) ? 15 : 5) * data.quantity;
+				skills[skill] = data.user.skillLevel(skill) * (['magic'].includes(skill) ? 15 : 5) * data.quantity;
 			}
 			return [skills, undefined];
 		}
@@ -256,10 +247,8 @@ export const Lampables: IXPObject[] = [
 		items: resolveItems(['Training manual']),
 		function: data => {
 			const skills: Skills = {};
-			for (const skill of Object.values(SkillsEnum)) {
-				if (
-					![SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Hitpoints].includes(skill)
-				) {
+			for (const skill of SkillsArray) {
+				if (!['attack', 'strength', 'defence', 'hitpoints'].includes(skill)) {
 					continue;
 				}
 				skills[skill] =
@@ -273,8 +262,8 @@ export const Lampables: IXPObject[] = [
 		items: resolveItems(["Duradel's Notes"]),
 		function: data => {
 			const skills: Skills = {};
-			for (const skill of Object.values(SkillsEnum)) {
-				if (![SkillsEnum.Slayer].includes(skill)) {
+			for (const skill of SkillsArray) {
+				if (!['slayer'].includes(skill)) {
 					continue;
 				}
 				skills[skill] = data.user.skillLevel(skill) * 15 * data.quantity;
@@ -287,22 +276,12 @@ export const Lampables: IXPObject[] = [
 		function: data => {
 			const skills: Skills = {};
 
-			for (const skill of Object.values(SkillsEnum)) {
-				if (
-					![
-						SkillsEnum.Attack,
-						SkillsEnum.Strength,
-						SkillsEnum.Defence,
-						SkillsEnum.Hitpoints,
-						SkillsEnum.Ranged,
-						SkillsEnum.Magic,
-						SkillsEnum.Prayer
-					].includes(skill)
-				) {
+			for (const skill of SkillsArray) {
+				if (!['attack', 'strength', 'defence', 'hitpoints', 'ranged', 'magic', 'prayer'].includes(skill)) {
 					continue;
 				}
 
-				skills[skill] = (skill === SkillsEnum.Prayer ? 3500 : 5000) * data.quantity;
+				skills[skill] = (skill === 'prayer' ? 3500 : 5000) * data.quantity;
 			}
 			return [skills, undefined];
 		}
@@ -317,7 +296,7 @@ export async function lampCommand(user: MUser, itemToUse: string, skill: string,
 	if (!xpObject) return "That's not a valid item to use.";
 
 	if (!isValidSkill(skill)) return "That's not a valid skill.";
-	if (skill === SkillsEnum.Invention) {
+	if (skill === 'invention') {
 		return 'A magic force prevents you from using lamps on this skill.';
 	}
 
@@ -336,7 +315,7 @@ export async function lampCommand(user: MUser, itemToUse: string, skill: string,
 		item
 	});
 
-	if (!skillsToReceive[skill]) {
+	if (!skillsToReceive[skill] || !isValidSkill(skill)) {
 		return 'This is not a valid skill for this item.';
 	}
 

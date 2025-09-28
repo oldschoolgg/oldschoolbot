@@ -1,5 +1,5 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { itemID, SkillsEnum } from 'oldschooljs';
+import { itemID } from 'oldschooljs';
 
 import type { Ash, Bone } from '@/lib/skilling/types.js';
 
@@ -187,7 +187,7 @@ const Prayer = {
 	aliases: ['prayer', 'pray'],
 	Bones: bones,
 	Ashes: ashes,
-	id: SkillsEnum.Prayer,
+	id: 'prayer',
 	emoji: Emoji.Prayer,
 	name: 'Prayer'
 };

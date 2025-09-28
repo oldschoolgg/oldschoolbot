@@ -2,7 +2,6 @@ import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 
 import { Bank, LootTable } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { GnomeRestaurantActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { roll } from '@/lib/util/rng.js';
@@ -88,7 +87,7 @@ export const gnomeResTask: MinionTask = {
 			itemsToAdd: loot
 		});
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Cooking,
+			skillName: 'cooking',
 			amount: totalXP,
 			duration
 		});

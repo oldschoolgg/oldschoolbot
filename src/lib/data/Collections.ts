@@ -58,7 +58,7 @@ import type { MinigameName } from '@/lib/settings/minigames.js';
 import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
 import { fletchingCL } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import { SeedableRNG } from '@/lib/util/rng.js';
 import { kibbleCL } from '../bso/kibble.js';
@@ -227,7 +227,7 @@ function mgProg(minigameName: MinigameName): FormatProgressFunction {
 	return ({ minigames }) => `${minigames[minigameName]} Completions`;
 }
 
-function skillProg(skillName: SkillsEnum): FormatProgressFunction {
+function skillProg(skillName: SkillNameType): FormatProgressFunction {
 	return ({ user }) => `Level ${user.skillLevel(skillName)} ${skillName}`;
 }
 
@@ -898,12 +898,12 @@ export const allCollectionLogs: ICollection = {
 			Slayer: {
 				alias: ['slay'],
 				items: slayerCL,
-				fmtProg: skillProg(SkillsEnum.Slayer)
+				fmtProg: skillProg('slayer')
 			},
 			'Slayer Masks/Helms': {
 				alias: ['slayer Masks/Helms'],
 				items: slayerMasksHelmsCL,
-				fmtProg: skillProg(SkillsEnum.Slayer)
+				fmtProg: skillProg('slayer')
 			},
 			TzHaar: {
 				kcActivity: {
@@ -1355,7 +1355,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			Forestry: {
 				alias: ['forestry', 'forest', 'for'],
-				fmtProg: skillProg(SkillsEnum.Woodcutting),
+				fmtProg: skillProg('woodcutting'),
 				allItems: forestryCL,
 				items: forestryCL
 			},
@@ -1390,7 +1390,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['rooftop', 'laps', 'agility', 'agil'],
 				items: rooftopAgilityCL,
 				isActivity: true,
-				fmtProg: skillProg(SkillsEnum.Agility)
+				fmtProg: skillProg('agility')
 			},
 			'Shooting Stars': { items: shootingStarsCL },
 			'Skilling Pets': {
@@ -1400,32 +1400,32 @@ export const allCollectionLogs: ICollection = {
 			Dungeoneering: {
 				alias: ['dg', 'dung', 'dungeoneering'],
 				items: dungeoneeringCL,
-				fmtProg: skillProg(SkillsEnum.Dungeoneering)
+				fmtProg: skillProg('dungeoneering')
 			},
 			Farming: {
 				counts: false,
 				items: allFarmingItems,
-				fmtProg: skillProg(SkillsEnum.Farming)
+				fmtProg: skillProg('farming')
 			},
 			Cooking: {
 				counts: false,
 				items: cookingCL,
-				fmtProg: skillProg(SkillsEnum.Cooking)
+				fmtProg: skillProg('cooking')
 			},
 			Crafting: {
 				counts: false,
 				items: craftingCL,
-				fmtProg: skillProg(SkillsEnum.Crafting)
+				fmtProg: skillProg('crafting')
 			},
 			Herblore: {
 				counts: false,
 				items: herbloreCL,
-				fmtProg: skillProg(SkillsEnum.Herblore)
+				fmtProg: skillProg('herblore')
 			},
 			Smithing: {
 				counts: false,
 				items: smithables.map(i => i.id),
-				fmtProg: skillProg(SkillsEnum.Smithing)
+				fmtProg: skillProg('smithing')
 			},
 			Kibble: {
 				counts: false,
@@ -1434,12 +1434,12 @@ export const allCollectionLogs: ICollection = {
 			Graceful: {
 				counts: false,
 				items: gracefulCL,
-				fmtProg: skillProg(SkillsEnum.Agility)
+				fmtProg: skillProg('agility')
 			},
 			Fletching: {
 				counts: false,
 				items: fletchingCL,
-				fmtProg: skillProg(SkillsEnum.Fletching)
+				fmtProg: skillProg('fletching')
 			},
 			'Skilling Misc': {
 				items: skillingMiscCL
@@ -1447,7 +1447,7 @@ export const allCollectionLogs: ICollection = {
 			Invention: {
 				alias: ['inv'],
 				items: inventionCL,
-				fmtProg: skillProg(SkillsEnum.Invention)
+				fmtProg: skillProg('invention')
 			},
 			Divination: {
 				alias: ['div'],
@@ -1459,7 +1459,7 @@ export const allCollectionLogs: ICollection = {
 					'Jar of memories',
 					'Doopy'
 				]),
-				fmtProg: skillProg(SkillsEnum.Divination)
+				fmtProg: skillProg('divination')
 			}
 		}
 	},

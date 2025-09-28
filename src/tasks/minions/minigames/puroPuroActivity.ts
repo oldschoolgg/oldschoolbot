@@ -1,5 +1,5 @@
 import { randInt, reduceNumByPercent, roll, Time } from '@oldschoolgg/toolkit';
-import { Bank, itemID, SkillsEnum } from 'oldschooljs';
+import { Bank, itemID } from 'oldschooljs';
 
 import { implings, puroImpHighTierTable, puroImplings, puroImpNormalTable, puroImpSpellTable } from '@/lib/implings.js';
 import type { PuroPuroActivityTaskOptions } from '@/lib/types/minions.js';
@@ -26,7 +26,7 @@ export const puroPuroTask: MinionTask = {
 		const missed = new Bank();
 		const itemCost = new Bank();
 		let hunterXP = 0;
-		const hunterLevel = user.skillLevel(SkillsEnum.Hunter);
+		const hunterLevel = user.skillLevel('hunter');
 		const allImpQty = hunt(minutes, user, 1, 3);
 		const highTierImpQty = hunt(minutes, user, 0.75, 1) * (darkLure ? 1.2 : 1);
 		const singleImpQty = hunt(minutes, user, 5, 6);
@@ -87,7 +87,7 @@ export const puroPuroTask: MinionTask = {
 		let str = `<@${userID}>, ${user.minionName} finished hunting in Puro-Puro. `;
 
 		const xpStr = await user.addXP({
-			skillName: SkillsEnum.Hunter,
+			skillName: 'hunter',
 			amount: hunterXP,
 			duration: data.duration,
 			source: 'PuroPuro'
@@ -120,7 +120,7 @@ export const puroPuroTask: MinionTask = {
 			magicXP += spellsUsed * 60;
 
 			const magicXpStr = await user.addXP({
-				skillName: SkillsEnum.Magic,
+				skillName: 'magic',
 				amount: magicXP,
 				duration: data.duration,
 				source: 'PuroPuro'

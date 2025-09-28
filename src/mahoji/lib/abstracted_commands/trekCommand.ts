@@ -8,7 +8,6 @@ import TrekShopItems, { TrekExperience } from '@/lib/data/buyables/trekBuyables.
 import { MorytaniaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { difficulties, rewardTokens, trekBankBoosts } from '@/lib/minions/data/templeTrekking.js';
 import type { AddXpParams } from '@/lib/minions/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { GearRequirement } from '@/lib/structures/Gear.js';
 import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
@@ -178,43 +177,43 @@ export async function trekShop(
 	const inItems = new Bank();
 	const outXP: AddXpParams[] = [
 		{
-			skillName: SkillsEnum.Agility,
+			skillName: 'agility',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'
 		},
 		{
-			skillName: SkillsEnum.Thieving,
+			skillName: 'thieving',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'
 		},
 		{
-			skillName: SkillsEnum.Slayer,
+			skillName: 'slayer',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'
 		},
 		{
-			skillName: SkillsEnum.Firemaking,
+			skillName: 'firemaking',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'
 		},
 		{
-			skillName: SkillsEnum.Fishing,
+			skillName: 'fishing',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'
 		},
 		{
-			skillName: SkillsEnum.Woodcutting,
+			skillName: 'woodcutting',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'
 		},
 		{
-			skillName: SkillsEnum.Mining,
+			skillName: 'mining',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'

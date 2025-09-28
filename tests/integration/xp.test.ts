@@ -1,7 +1,6 @@
 import { convertXPtoLVL } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { SkillsEnum } from '../../src/lib/skilling/types.js';
 import { createTestUser, mockClient } from './util.js';
 
 describe('XP', async () => {
@@ -17,7 +16,7 @@ describe('XP', async () => {
 		{
 			const expectedXP = 100 * 5;
 			const expectedLvl = convertXPtoLVL(expectedXP);
-			await user.addXP({ skillName: SkillsEnum.Attack, amount: 100 });
+			await user.addXP({ skillName: 'attack', amount: 100 });
 			expect(user.getSkills(true).attack).toEqual(expectedLvl);
 			expect(user.skillsAsLevels.attack).toEqual(expectedLvl);
 			expect(user.skillsAsXP.attack).toEqual(expectedXP);
@@ -26,7 +25,7 @@ describe('XP', async () => {
 
 		const expectedXP = 180 * 5;
 		const expectedLvl = convertXPtoLVL(expectedXP);
-		await user.addXP({ skillName: SkillsEnum.Attack, amount: 80 });
+		await user.addXP({ skillName: 'attack', amount: 80 });
 		expect(user.getSkills(true).attack).toEqual(expectedLvl);
 		expect(user.skillsAsLevels.attack).toEqual(expectedLvl);
 		expect(user.skillsAsXP.attack).toEqual(expectedXP);

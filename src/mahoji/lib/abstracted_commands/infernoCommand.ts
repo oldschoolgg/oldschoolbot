@@ -20,7 +20,6 @@ import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import type { BlowpipeData } from '@/lib/minions/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { Gear } from '@/lib/structures/Gear.js';
 import { PercentCounter } from '@/lib/structures/PercentCounter.js';
@@ -400,7 +399,7 @@ async function infernoRun({
 		zukDeathChance.add(hasTzkalCape, -5, 'TzKal cape');
 		emergedZukDeathChance.add(hasTzkalCape, -10, 'TzKal cape');
 		duration.add(allItems.includes(itemID('Ignis ring(i)')), -5, 'Ignis ring(i)');
-		emergedZukDeathChance.add(user.skillLevel(SkillsEnum.Defence) === 120, -10, '120 Defence');
+		emergedZukDeathChance.add(user.skillLevel('defence') === 120, -10, '120 Defence');
 		const emergedKC = await user.fetchMinigameScore('emerged_inferno');
 		if (emergedKC > 0) {
 			const effectiveKC = Math.min(emergedKC, 3);

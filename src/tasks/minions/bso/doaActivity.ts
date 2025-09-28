@@ -4,7 +4,7 @@ import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 
 import { formatOrdinal, randArrItem, reduceNumByPercent, roll, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { Bank, type ItemBank, resolveItems, SkillsEnum } from 'oldschooljs';
+import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { doaCL, doaMetamorphPets } from '@/lib/data/CollectionsExport.js';
@@ -28,17 +28,13 @@ async function handleDOAXP(user: MUser, qty: number, isCm: boolean) {
 	}
 
 	const results = [];
-	results.push(
-		user.addXP({ skillName: SkillsEnum.Ranged, amount: rangeXP, minimal: true, source: 'DepthsOfAtlantis' })
-	);
-	results.push(
-		user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, minimal: true, source: 'DepthsOfAtlantis' })
-	);
+	results.push(user.addXP({ skillName: 'ranged', amount: rangeXP, minimal: true, source: 'DepthsOfAtlantis' }));
+	results.push(user.addXP({ skillName: 'magic', amount: magicXP, minimal: true, source: 'DepthsOfAtlantis' }));
 	let styles = resolveAttackStyles({
 		attackStyles: user.getAttackStyles()
 	});
-	if (([SkillsEnum.Magic, SkillsEnum.Ranged] as const).some(style => styles.includes(style))) {
-		styles = [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
+	if ((['magic', 'ranged'] as const).some(style => styles.includes(style))) {
+		styles = ['attack', 'strength', 'defence'];
 	}
 	const perSkillMeleeXP = meleeXP / styles.length;
 	for (const style of styles) {
@@ -46,9 +42,7 @@ async function handleDOAXP(user: MUser, qty: number, isCm: boolean) {
 			user.addXP({ skillName: style, amount: perSkillMeleeXP, minimal: true, source: 'DepthsOfAtlantis' })
 		);
 	}
-	results.push(
-		user.addXP({ skillName: SkillsEnum.Hitpoints, amount: meleeXP, minimal: true, source: 'DepthsOfAtlantis' })
-	);
+	results.push(user.addXP({ skillName: 'hitpoints', amount: meleeXP, minimal: true, source: 'DepthsOfAtlantis' }));
 
 	return Promise.all(results);
 }

@@ -3,7 +3,6 @@ import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import { randFloat, randInt, roll, Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { skillingPetDropRate } from '@/lib/util.js';
@@ -22,7 +21,7 @@ export const vmTask: MinionTask = {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
-		const userMiningLevel = user.skillLevel(SkillsEnum.Mining);
+		const userMiningLevel = user.skillLevel('mining');
 		let boost = 1;
 		// Activity boosts
 		if (userMiningLevel >= 99 && user.hasEquippedOrInBank('Dwarven pickaxe')) {
@@ -49,7 +48,7 @@ export const vmTask: MinionTask = {
 		if (user.usingPet('Doug')) xpReceived = Math.floor(xpReceived * 1.2);
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Mining,
+			skillName: 'mining',
 			amount: xpReceived,
 			duration
 		});
@@ -83,7 +82,7 @@ export const vmTask: MinionTask = {
 
 		const fragmentRolls = randInt(38, 40) * quantity;
 		const loot = new Bank().add(fragmentTable.roll(fragmentRolls));
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, 60_000);
+		const { petDropRate } = skillingPetDropRate(user, 'mining', 60_000);
 		// Iterate over the fragments received
 		for (let i = 0; i < fragmentRolls; i++) {
 			// Roll for pet --- Average 40 fragments per game at 60K chance per fragment

@@ -1,5 +1,4 @@
 import { AutoFarmFilterEnum } from '@prisma/client';
-import { SkillsEnum } from 'oldschooljs';
 
 import type { IPatchDataDetailed } from '@/lib/minions/farming/types.js';
 import { plants } from '@/lib/skilling/skills/farming/index.js';
@@ -12,7 +11,7 @@ export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[
 		return 'Your minion must not be busy to use this command.';
 	}
 	const userBank = user.bank;
-	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
+	const farmingLevel = user.skillLevel('farming');
 	let toPlant: Plant | undefined;
 	let canPlant: Plant | undefined;
 	let canHarvest: Plant | undefined;

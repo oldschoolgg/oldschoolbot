@@ -5,7 +5,6 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import { ExoticSeedsTable } from '@/lib/simulation/sharedTables.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
@@ -57,7 +56,7 @@ export const odsTask: MinionTask = {
 
 		await user.incrementMinigameScore('ourania_delivery_service', quantity);
 
-		const level = user.skillLevel(SkillsEnum.Magic);
+		const level = user.skillLevel('magic');
 		let tokens = Math.floor((quantity / 2) * 3.235 * (level / 25 + 1));
 
 		const flappyRes = await userHasFlappy({ user, duration });
@@ -71,7 +70,7 @@ export const odsTask: MinionTask = {
 
 		const totalXP = level * (quantity * randFloat(39, 41));
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Runecraft,
+			skillName: 'runecraft',
 			amount: totalXP,
 			duration
 		});

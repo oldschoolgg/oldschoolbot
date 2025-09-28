@@ -10,7 +10,7 @@ import { addItemToBank, Bank, type ItemBank, Items, randomVariation, toKMB } fro
 
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Agility from '@/lib/skilling/skills/agility.js';
-import { type Course, SkillsEnum } from '@/lib/skilling/types.js';
+import type { Course } from '@/lib/skilling/types.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { logError } from '@/lib/util/logError.js';
@@ -157,7 +157,7 @@ export const agilityTask: MinionTask = {
 		const { courseID, quantity, userID, channelID, duration, alch } = data;
 		const minutes = Math.round(duration / Time.Minute);
 		const user = await mUserFetch(userID);
-		const currentLevel = user.skillLevel(SkillsEnum.Agility);
+		const currentLevel = user.skillLevel('agility');
 
 		const course = Agility.Courses.find(course => course.id === courseID);
 
@@ -201,7 +201,7 @@ export const agilityTask: MinionTask = {
 		);
 
 		let xpRes = await user.addXP({
-			skillName: SkillsEnum.Agility,
+			skillName: 'agility',
 			amount: xpReceived,
 			duration
 		});
@@ -236,7 +236,7 @@ export const agilityTask: MinionTask = {
 			const alchGP = alchedItem.highalch! * alch.quantity;
 			loot.add('Coins', alchGP);
 			xpRes += ` ${await user.addXP({
-				skillName: SkillsEnum.Magic,
+				skillName: 'magic',
 				amount: alch.quantity * 65,
 				duration
 			})}`;
@@ -292,7 +292,7 @@ export const agilityTask: MinionTask = {
 
 			if (course.id === 30) {
 				if (
-					user.skillLevel(SkillsEnum.Dungeoneering) >= 80 &&
+					user.skillsAsLevels.dungeoneering >= 80 &&
 					roll(Math.floor((calcUserGorajanShardChance(user).chance * 2.5) / minutes))
 				) {
 					const item = roll(30) ? Items.getOrThrow('Dungeoneering dye') : Items.getOrThrow('Gorajan shards');
@@ -309,7 +309,7 @@ export const agilityTask: MinionTask = {
 		// Roll for pet
 		const { petDropRate } = skillingPetDropRate(
 			user,
-			SkillsEnum.Agility,
+			'agility',
 			typeof course.petChance === 'number' ? course.petChance : course.petChance(currentLevel)
 		);
 		if (roll(petDropRate / quantity)) {

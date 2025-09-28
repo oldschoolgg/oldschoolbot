@@ -3,7 +3,6 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank, Items } from 'oldschooljs';
 
 import { Plank } from '@/lib/skilling/skills/construction/constructables.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MahoganyHomesActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -144,7 +143,7 @@ export async function mahoganyHomesPointsCommand(user: MUser) {
 export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, tier?: number): CommandResponse {
 	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
 
-	const conLevel = user.skillLevel(SkillsEnum.Construction);
+	const conLevel = user.skillLevel('construction');
 	const kc = await user.fetchMinigameScore('mahogany_homes');
 
 	let tierData = contractTiers.find(contractTier => conLevel >= contractTier.level)!;

@@ -4,7 +4,6 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { itemID, LootTable } from 'oldschooljs';
 
 import type { Log } from '@/lib/skilling/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 
 const sulliuscepTable = new LootTable()
 	.add('Numulite', [4, 8], 34)
@@ -234,7 +233,7 @@ const lumberjackItems: { [key: number]: number } = {
 const Woodcutting = {
 	aliases: ['wc', 'woodcutting'],
 	Logs: logs,
-	id: SkillsEnum.Woodcutting,
+	id: 'woodcutting',
 	emoji: Emoji.Woodcutting,
 	name: 'Woodcutting',
 	lumberjackItems,

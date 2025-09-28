@@ -3,7 +3,6 @@ import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Bank, EItem } from 'oldschooljs';
 
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { OuraniaAltarOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -33,13 +32,13 @@ export async function ouraniaAltarStartCommand({
 	const numEssenceOwned = bank.amount('Pure essence');
 	const daeyaltEssenceOwned = bank.amount('Daeyalt essence');
 	const boosts = [];
-	const mageLvl = user.skillLevel(SkillsEnum.Magic);
+	const mageLvl = user.skillLevel('magic');
 	const spellbookSwap = mageLvl > 95;
 
 	let inventorySize = 28;
 	// For each pouch the user has, increase their inventory size.
 	for (const pouch of Runecraft.pouches) {
-		if (user.skillLevel(SkillsEnum.Runecraft) < pouch.level) continue;
+		if (user.skillLevel('runecraft') < pouch.level) continue;
 		if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
 		if (bank.has(pouch.id) && pouch.id === EItem.COLOSSAL_POUCH) break;
 	}

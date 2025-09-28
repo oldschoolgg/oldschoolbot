@@ -6,7 +6,6 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { userMention } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { DisassembleTaskOptions } from '@/lib/types/minions.js';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
@@ -38,7 +37,7 @@ export async function disassemblyTask(data: DisassembleTaskOptions) {
 	});
 
 	const xpStr = await user.addXP({
-		skillName: SkillsEnum.Invention,
+		skillName: 'invention',
 		amount: data.xp,
 		duration: data.duration,
 		multiplier: false,

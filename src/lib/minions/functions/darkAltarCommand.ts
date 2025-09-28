@@ -2,7 +2,7 @@ import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skil
 
 import { increaseNumByPercent, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { Bank, Items, SkillsEnum } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { DarkAltarOptions } from '@/lib/types/minions.js';
@@ -80,7 +80,7 @@ export async function darkAltarCommand({
 		timePerRune = increaseNumByPercent(timePerRune, gracefulPenalty);
 	}
 
-	if (user.skillLevel(SkillsEnum.Agility) < 73) {
+	if (user.skillLevel('agility') < 73) {
 		boosts.push(`${agilityPenalty}% slower for less than level 73 Agility`);
 		timePerRune = increaseNumByPercent(timePerRune, agilityPenalty);
 	}

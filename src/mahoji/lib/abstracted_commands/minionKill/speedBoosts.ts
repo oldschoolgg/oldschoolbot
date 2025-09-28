@@ -3,7 +3,7 @@ import { gearstatToSetup, gorajanBoosts } from '@/lib/bso/gorajanGearBoost.js';
 import { InventionID } from '@/lib/bso/skills/invention/inventions.js';
 
 import { calcWhatPercent, sumArr, Time } from '@oldschoolgg/toolkit';
-import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters, SkillsEnum } from 'oldschooljs';
+import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters } from 'oldschooljs';
 import type { OffenceGearStat } from 'oldschooljs/gear';
 import { omit } from 'remeda';
 
@@ -148,7 +148,7 @@ const chinningBoost: Boost = {
 		if (typeof cannonResult === 'string') return cannonResult;
 		if (cannonResult.usingCannon) return null;
 
-		if (combatMethods.includes('chinning') && attackStyles.includes(SkillsEnum.Ranged) && monster?.canChinning) {
+		if (combatMethods.includes('chinning') && attackStyles.includes('ranged') && monster?.canChinning) {
 			const chinchompas = ['Black chinchompa', 'Red chinchompa', 'Chinchompa'];
 			let chinchompa = chinchompas[0];
 			for (const chin of chinchompas) {
@@ -161,9 +161,9 @@ const chinningBoost: Boost = {
 			const chinBoostLongRanged = chinchompa === 'Chinchompa' ? 63 : chinchompa === 'Red chinchompa' ? 69 : 77;
 			const chinningConsumables: Consumable = {
 				itemCost: new Bank().add(chinchompa, 1),
-				qtyPerMinute: attackStyles.includes(SkillsEnum.Defence) ? 24 : 33
+				qtyPerMinute: attackStyles.includes('defence') ? 24 : 33
 			};
-			if (attackStyles.includes(SkillsEnum.Defence)) {
+			if (attackStyles.includes('defence')) {
 				return {
 					percentageReduction: chinBoostLongRanged,
 					consumables: [chinningConsumables],
@@ -271,7 +271,7 @@ const blackMaskBoost: Boost = {
 				percentageReduction: 22,
 				message: '17% for Infernal slayer helmet on task'
 			};
-		} else if (hasBlackMaskI && [SkillsEnum.Magic, SkillsEnum.Ranged].every(s => style.includes(s))) {
+		} else if (hasBlackMaskI && ['magic', 'ranged'].every(s => style.includes(s))) {
 			return {
 				percentageReduction: oneSixthBoost,
 				message: `${oneSixthBoost}% for Black mask (i) on task`
@@ -354,14 +354,14 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 			if (!canBarrageMonster || (!isBarraging && !isBursting)) return null;
 
 			let newAttackStyles = [...attackStyles];
-			if (!newAttackStyles.includes(SkillsEnum.Magic)) {
-				newAttackStyles = [SkillsEnum.Magic];
-				if (attackStyles.includes(SkillsEnum.Defence)) {
-					newAttackStyles.push(SkillsEnum.Defence);
+			if (!newAttackStyles.includes('magic')) {
+				newAttackStyles = ['magic'];
+				if (attackStyles.includes('defence')) {
+					newAttackStyles.push('defence');
 				}
 			}
 
-			if (isBarraging && attackStyles.includes(SkillsEnum.Magic) && monster.canBarrage) {
+			if (isBarraging && attackStyles.includes('magic') && monster.canBarrage) {
 				return {
 					percentageReduction: boostIceBarrage,
 					consumables: [iceBarrageConsumables],
@@ -373,7 +373,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				};
 			}
 
-			if (isBursting && attackStyles.includes(SkillsEnum.Magic)) {
+			if (isBursting && attackStyles.includes('magic')) {
 				return {
 					percentageReduction: boostIceBurst,
 					consumables: [iceBurstConsumables],
@@ -542,19 +542,19 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 			}
 
 			// Master capes
-			if (attackStyles.includes(SkillsEnum.Ranged) && gearBank.hasEquipped('Ranged master cape')) {
+			if (attackStyles.includes('ranged') && gearBank.hasEquipped('Ranged master cape')) {
 				results.push({
 					percentageReduction: 15,
 					message: '15% for Ranged master cape'
 				});
-			} else if (attackStyles.includes(SkillsEnum.Magic) && gearBank.hasEquipped('Magic master cape')) {
+			} else if (attackStyles.includes('magic') && gearBank.hasEquipped('Magic master cape')) {
 				results.push({
 					percentageReduction: 15,
 					message: '15% for Magic master cape'
 				});
 			} else if (
-				!attackStyles.includes(SkillsEnum.Magic) &&
-				!attackStyles.includes(SkillsEnum.Ranged) &&
+				!attackStyles.includes('magic') &&
+				!attackStyles.includes('ranged') &&
 				gearBank.hasEquipped('Attack master cape')
 			) {
 				results.push({

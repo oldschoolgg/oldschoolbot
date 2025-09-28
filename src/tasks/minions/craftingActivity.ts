@@ -2,7 +2,6 @@ import { increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { randFloat } from '@/lib/util/rng.js';
@@ -12,7 +11,7 @@ export const craftingTask: MinionTask = {
 	async run(data: CraftingActivityTaskOptions) {
 		const { craftableID, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
-		const currentLevel = user.skillLevel(SkillsEnum.Crafting);
+		const currentLevel = user.skillLevel('crafting');
 		const item = Craftables.find(craft => craft.id === craftableID)!;
 
 		let xpReceived = quantity * item.xp;
@@ -45,7 +44,7 @@ export const craftingTask: MinionTask = {
 		}
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Crafting,
+			skillName: 'crafting',
 			amount: xpReceived,
 			duration
 		});

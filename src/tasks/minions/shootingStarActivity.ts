@@ -1,4 +1,4 @@
-import { Bank, SkillsEnum } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import type { ShootingStarsOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
@@ -12,7 +12,7 @@ export async function shootingStarsActivity(data: ShootingStarsOptions) {
 
 	await user.addItemsToBank({ items: loot, collectionLog: true });
 	const xpStr = await user.addXP({
-		skillName: SkillsEnum.Mining,
+		skillName: 'mining',
 		amount: data.totalXp,
 		duration: data.duration
 	});

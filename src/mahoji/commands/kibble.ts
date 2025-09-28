@@ -6,7 +6,6 @@ import { Bank, Items } from 'oldschooljs';
 
 import { type Eatable, Eatables } from '@/lib/data/eatables.js';
 import { getRealHealAmount } from '@/lib/minions/functions/getUserFoodFromBank.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { KibbleOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -42,10 +41,10 @@ export const kibbleCommand: OSBMahojiCommand = {
 		if (!kibble) {
 			return `No matching kibble found, they are: ${kibbles.map(k => k.item.name).join(', ')}.`;
 		}
-		if (user.skillLevel(SkillsEnum.Cooking) < kibble.level) {
+		if (user.skillLevel('cooking') < kibble.level) {
 			return `You need level ${kibble.level} Cooking to make this kibble.`;
 		}
-		if (user.skillLevel(SkillsEnum.Herblore) < kibble.level - 20) {
+		if (user.skillLevel('herblore') < kibble.level - 20) {
 			return `You need level ${kibble.level} Herblore to make this kibble.`;
 		}
 		const userBank = user.bank;

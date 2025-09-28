@@ -5,7 +5,6 @@ import { Bank, Items } from 'oldschooljs';
 import { pohImageGenerator } from '@/lib/canvas/pohImage.js';
 import { BitField } from '@/lib/constants.js';
 import { GroupedPohObjects, getPOHObject, itemsNotRefundable, PoHObjects } from '@/lib/poh/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
@@ -86,7 +85,7 @@ export async function pohBuildCommand(interaction: ChatInputCommandInteraction, 
 		return "That's not a valid thing to build in your PoH.";
 	}
 
-	const level = user.skillLevel(SkillsEnum.Construction);
+	const level = user.skillLevel('construction');
 	if (typeof obj.level === 'number') {
 		if (level < obj.level) {
 			return `You need level ${obj.level} Construction to build a ${obj.name} in your house.`;

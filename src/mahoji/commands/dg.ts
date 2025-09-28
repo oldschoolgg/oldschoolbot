@@ -17,7 +17,6 @@ import { formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolk
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { setupParty } from '@/lib/party.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { DungeoneeringOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
@@ -40,7 +39,7 @@ async function startCommand(channelID: string, user: MUser, floor: string | unde
 		return "That's an invalid floor.";
 	}
 
-	if (determineDgLevelForFloor(floorToDo) > user.skillLevel(SkillsEnum.Dungeoneering)) {
+	if (determineDgLevelForFloor(floorToDo) > user.skillsAsLevels.dungeoneering) {
 		return `You need level ${determineDgLevelForFloor(floorToDo)} to do Floor ${floorToDo}.`;
 	}
 

@@ -3,7 +3,6 @@ import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 
 import { calcConBonusXP } from '@/lib/skilling/skills/construction/calcConBonusXP.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MahoganyHomesActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
@@ -20,7 +19,7 @@ export const mahoganyHomesTask: MinionTask = {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xp);
 		}
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Construction,
+			skillName: 'construction',
 			amount: xp + bonusXP,
 			duration,
 			source: 'MahoganyHomes'

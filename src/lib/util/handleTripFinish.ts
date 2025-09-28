@@ -25,7 +25,6 @@ import { RuneTable, WilvusTable, WoodTable } from '@/lib/simulation/seedTable.js
 import { DougTable, PekyTable } from '@/lib/simulation/sharedTables.js';
 import { calculateZygomiteLoot } from '@/lib/skilling/skills/farming/zygomites.js';
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { perHourChance } from '@/lib/util/rng.js';
@@ -289,7 +288,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 				if (costRes.success) {
 					const xpToReceive = inventionBoosts.silverHawks.passiveXPCalc(
 						data.duration,
-						user.skillLevel(SkillsEnum.Agility)
+						user.skillLevel('agility')
 					);
 					await userStatsUpdate(user.id, {
 						silverhawk_boots_passive_xp: {
@@ -297,7 +296,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 						}
 					});
 					await user.addXP({
-						skillName: SkillsEnum.Agility,
+						skillName: 'agility',
 						amount: xpToReceive,
 						multiplier: false,
 						duration: data.duration

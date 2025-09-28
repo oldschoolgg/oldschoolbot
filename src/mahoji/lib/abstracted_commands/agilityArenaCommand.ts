@@ -4,7 +4,6 @@ import { Bank, Items } from 'oldschooljs';
 
 import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
 import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -177,7 +176,7 @@ export async function agilityArenaXPCommand(user: MUser, qty: number): CommandRe
 	const str = `Redeemed ${qty}x Agility arena tickets for ${xpToGive.toLocaleString()} Agility XP. (${(xpToGive / qty).toFixed(2)} ea)`;
 	await user.transactItems({ itemsToRemove: new Bank().add('Agility arena ticket', qty) });
 	await user.addXP({
-		skillName: SkillsEnum.Agility,
+		skillName: 'agility',
 		amount: xpToGive,
 		artificial: true
 	});

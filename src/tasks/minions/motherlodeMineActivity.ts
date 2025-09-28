@@ -7,7 +7,6 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Mining from '@/lib/skilling/skills/mining.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MotherlodeMiningActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { roll } from '@/lib/util/rng.js';
@@ -46,7 +45,7 @@ export const motherlodeMiningTask: MinionTask = {
 			}
 		}
 
-		const currentLevel = user.skillLevel(SkillsEnum.Mining);
+		const currentLevel = user.skillLevel('mining');
 
 		const loot = new Bank();
 
@@ -105,7 +104,7 @@ export const motherlodeMiningTask: MinionTask = {
 		xpReceived += cleaningXP;
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Mining,
+			skillName: 'mining',
 			amount: xpReceived,
 			duration,
 			source: 'MotherlodeMine'
@@ -113,7 +112,7 @@ export const motherlodeMiningTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished mining ${quantity} Pay-dirt. ${xpRes}`;
 
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, motherlode.petChance!);
+		const { petDropRate } = skillingPetDropRate(user, 'mining', motherlode.petChance!);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Rock golem');
 		}

@@ -3,7 +3,7 @@ import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { calcPerHour, formatOrdinal, randInt } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { userMention } from 'discord.js';
-import { Bank, Items, increaseBankQuantitesByPercent, resolveItems, SkillsEnum } from 'oldschooljs';
+import { Bank, Items, increaseBankQuantitesByPercent, resolveItems } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import { MOKTANG_ID, MoktangLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
@@ -34,7 +34,7 @@ export const moktangTask: MinionTask = {
 			loot.add(MoktangLootTable.roll());
 		}
 
-		const bonusPercent = Math.floor(user.skillLevel(SkillsEnum.Mining) / 6);
+		const bonusPercent = Math.floor(user.skillLevel('mining') / 6);
 
 		increaseBankQuantitesByPercent(loot, bonusPercent, [
 			...StoneSpiritTable.allItems,
@@ -69,8 +69,8 @@ export const moktangTask: MinionTask = {
 		});
 
 		const xpStr = await user.addXP({
-			skillName: SkillsEnum.Mining,
-			amount: user.skillLevel(SkillsEnum.Mining) * 2000 * qty,
+			skillName: 'mining',
+			amount: user.skillLevel('mining') * 2000 * qty,
 			duration: data.duration,
 			multiplier: false,
 			masterCapeBoost: true

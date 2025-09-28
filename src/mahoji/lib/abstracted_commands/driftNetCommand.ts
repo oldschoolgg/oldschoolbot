@@ -2,7 +2,6 @@ import { randFloat, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -20,7 +19,7 @@ export async function driftNetCommand(
 		minutes = Math.floor(maxTripLength / Time.Minute);
 	}
 
-	if (user.skillLevel(SkillsEnum.Fishing) < 47 || user.skillLevel(SkillsEnum.Hunter) < 44) {
+	if (user.skillLevel('fishing') < 47 || user.skillLevel('hunter') < 44) {
 		return 'You need at least level 44 Hunter and 47 Fishing to do Drift net fishing.';
 	}
 

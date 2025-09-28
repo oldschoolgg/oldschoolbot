@@ -1,7 +1,6 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { itemID } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import BlastableBars from './blastables.js';
 import Bars from './smeltables.js';
 import SmithableItems from './smithables/index.js';
@@ -18,7 +17,7 @@ const Smithing = {
 	Bars,
 	SmithableItems,
 	BlastableBars,
-	id: SkillsEnum.Smithing,
+	id: 'smithing',
 	emoji: Emoji.Smithing,
 	name: 'Smithing',
 	smithsUniformItems

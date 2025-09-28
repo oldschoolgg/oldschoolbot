@@ -22,7 +22,7 @@ import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { calcLootXPHunting, generateHerbiTable } from '@/lib/skilling/functions/calcsHunter.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
-import { type Creature, SkillsEnum } from '@/lib/skilling/types.js';
+import type { Creature } from '@/lib/skilling/types.js';
 import type { Gear } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
@@ -170,7 +170,7 @@ export function calculateHunterResult({
 		babyChinChance =
 			creature.name === 'Chinchompa' ? 131_395 : creature.name === 'Carnivorous chinchompa' ? 98_373 : 82_758;
 	}
-	const { petDropRate } = skillingPetDropRate(skillsAsXP.hunter, SkillsEnum.Hunter, babyChinChance);
+	const { petDropRate } = skillingPetDropRate(skillsAsXP.hunter, 'hunter', babyChinChance);
 
 	let creatureTable = creature.table;
 	let totalHerbloreXP = 0;
@@ -379,14 +379,14 @@ export const hunterTask: MinionTask = {
 
 		let xpStr = '';
 		xpStr += await user.addXP({
-			skillName: SkillsEnum.Hunter,
+			skillName: 'hunter',
 			amount: totalHunterXP,
 			duration
 		});
 
 		if (totalHerbloreXP > 0) {
 			xpStr = await user.addXP({
-				skillName: SkillsEnum.Herblore,
+				skillName: 'herblore',
 				amount: totalHerbloreXP,
 				duration
 			});

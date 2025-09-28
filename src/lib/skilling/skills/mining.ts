@@ -4,7 +4,6 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { itemID, LootTable } from 'oldschooljs';
 
 import type { Ore } from '@/lib/skilling/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 
 export const GemRockTable = new LootTable()
 	.add('Uncut opal', 1, 60)
@@ -322,7 +321,7 @@ const Mining = {
 	GemRockTable,
 	GraniteRockTable,
 	SandstoneRockTable,
-	id: SkillsEnum.Mining,
+	id: 'mining',
 	emoji: Emoji.Mining,
 	prospectorItems,
 	name: 'Mining'

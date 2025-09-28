@@ -16,7 +16,6 @@ import type { User } from '@prisma/client';
 import { Bank, type Item, Items, LootTable, resolveItems } from 'oldschooljs';
 
 import Grimy from '@/lib/skilling/skills/herblore/mixables/grimy.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { BathhouseTaskOptions } from '../types/minions.js';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask.js';
@@ -489,10 +488,10 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 		itemsToAdd: loot
 	});
 
-	let xpStr = await user.addXP({ skillName: SkillsEnum.Herblore, amount: herbXP, duration });
+	let xpStr = await user.addXP({ skillName: 'herblore', amount: herbXP, duration });
 	xpStr += '\n';
 	xpStr += await user.addXP({
-		skillName: SkillsEnum.Firemaking,
+		skillName: 'firemaking',
 		amount: firemakingXP,
 		duration
 	});

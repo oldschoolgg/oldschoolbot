@@ -1,5 +1,4 @@
 import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { NightmareZoneActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
@@ -34,7 +33,7 @@ export const nightmareZoneTask: MinionTask = {
 
 		res.push(
 			await user.addXP({
-				skillName: SkillsEnum.Hitpoints,
+				skillName: 'hitpoints',
 				amount: Math.floor((strategy === 'experience' ? 1.5 : 1) * monsterHP * quantity * 1.33),
 				duration,
 				source: 'NightmareZone'

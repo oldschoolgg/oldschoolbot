@@ -2,7 +2,6 @@ import { Events } from '@oldschoolgg/toolkit/constants';
 import { Bank, EMonster, Misc } from 'oldschooljs';
 
 import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { ZalcanoActivityTaskOptions } from '@/lib/types/minions.js';
 import { ashSanctifierEffect } from '@/lib/util/ashSanctifier.js';
@@ -38,19 +37,15 @@ export const zalcanoTask: MinionTask = {
 		const xpRes: string[] = [];
 		xpRes.push(
 			await user.addXP({
-				skillName: SkillsEnum.Mining,
+				skillName: 'mining',
 				amount: miningXP,
 				duration,
 				source: 'Zalcano'
 			})
 		);
 
-		xpRes.push(
-			await user.addXP({ skillName: SkillsEnum.Smithing, amount: smithingXP, duration, source: 'Zalcano' })
-		);
-		xpRes.push(
-			await user.addXP({ skillName: SkillsEnum.Runecraft, amount: runecraftXP, duration, source: 'Zalcano' })
-		);
+		xpRes.push(await user.addXP({ skillName: 'smithing', amount: smithingXP, duration, source: 'Zalcano' }));
+		xpRes.push(await user.addXP({ skillName: 'runecraft', amount: runecraftXP, duration, source: 'Zalcano' }));
 
 		let str = `${user}, ${
 			user.minionName

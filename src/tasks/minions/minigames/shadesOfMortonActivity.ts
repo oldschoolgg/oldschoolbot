@@ -6,7 +6,6 @@ import { bold } from 'discord.js';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { MorytaniaDiary, userhasDiaryTier } from '@/lib/diaries.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ShadesOfMortonOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { assert } from '@/lib/util/logError.js';
@@ -81,7 +80,7 @@ export const shadesOfMortonTask: MinionTask = {
 		}
 
 		let xpStr = await user.addXP({
-			skillName: SkillsEnum.Firemaking,
+			skillName: 'firemaking',
 			amount: firemakingXP,
 			duration,
 			source: 'ShadesOfMorton'
@@ -96,7 +95,7 @@ export const shadesOfMortonTask: MinionTask = {
 
 		xpStr += ', ';
 		xpStr += await user.addXP({
-			skillName: SkillsEnum.Prayer,
+			skillName: 'prayer',
 			amount: quantity * prayerXP,
 			duration,
 			source: 'ShadesOfMorton'

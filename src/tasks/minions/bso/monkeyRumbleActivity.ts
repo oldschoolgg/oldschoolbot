@@ -3,7 +3,6 @@ import { monkeyHeadImage, monkeyTierOfUser } from '@/lib/bso/minigames/monkey-ru
 import { randArrItem, roll, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MonkeyRumbleOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
@@ -32,23 +31,23 @@ export const mrTask: MinionTask = {
 
 		const monkeyTier = monkeyTierOfUser(user);
 		const tierBonusXP = quantity * monkeyTier * 1233;
-		const strengthBonusXP = quantity * user.skillLevel(SkillsEnum.Strength) * 1000;
+		const strengthBonusXP = quantity * user.skillLevel('strength') * 1000;
 		const strXP = Math.floor(tierBonusXP + strengthBonusXP) / 5;
 
 		let xpStr = await user.addXP({
-			skillName: SkillsEnum.Strength,
+			skillName: 'strength',
 			amount: strXP,
 			duration,
 			minimal: true
 		});
 		xpStr += await user.addXP({
-			skillName: SkillsEnum.Agility,
+			skillName: 'agility',
 			amount: Math.floor(strXP / 4),
 			duration,
 			minimal: true
 		});
 		xpStr += await user.addXP({
-			skillName: SkillsEnum.Defence,
+			skillName: 'defence',
 			amount: Math.floor(strXP / 6.5),
 			duration,
 			minimal: true

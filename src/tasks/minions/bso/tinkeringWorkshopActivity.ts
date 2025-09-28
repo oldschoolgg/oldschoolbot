@@ -5,7 +5,6 @@ import { Bank, type ItemBank } from 'oldschooljs';
 
 import { inventorOutfit } from '@/lib/data/CollectionsExport.js';
 import { ClueTable } from '@/lib/simulation/sharedTables.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { TinkeringWorkshopOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
@@ -46,7 +45,7 @@ export const twTask: MinionTask = {
 
 		if (data.material === 'junk') xp = Math.floor(xp / 2);
 
-		const xpStr = await user.addXP({ amount: xp, skillName: SkillsEnum.Invention, duration });
+		const xpStr = await user.addXP({ amount: xp, skillName: 'invention', duration });
 
 		const oldStats = await user.fetchStats({ tinker_workshop_mats_bank: true });
 		await userStatsUpdate(user.id, {

@@ -10,7 +10,6 @@ import { calcPercentOfNum, increaseNumByPercent, roll } from '@oldschoolgg/toolk
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MemoryHarvestOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
@@ -235,7 +234,7 @@ export const memoryHarvestTask: MinionTask = {
 		}
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Divination,
+			skillName: 'divination',
 			amount: totalDivinationXP,
 			source: 'MemoryHarvest',
 			duration

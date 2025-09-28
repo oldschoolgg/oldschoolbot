@@ -1,6 +1,6 @@
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { CropUpgradeType } from '@prisma/client';
-import { Items, itemID, resolveItems, SkillsEnum } from 'oldschooljs';
+import { Items, itemID, resolveItems } from 'oldschooljs';
 
 import allotmentPlants from '@/lib/skilling/skills/farming/allotments.js';
 import { bushes } from '@/lib/skilling/skills/farming/bushes.js';
@@ -81,7 +81,7 @@ allFarmingItems.push(
 const Farming = {
 	aliases: ['farming'],
 	Plants: plants,
-	id: SkillsEnum.Farming,
+	id: 'farming',
 	emoji: Emoji.Farming,
 	name: 'Farming',
 	maleFarmerItems,

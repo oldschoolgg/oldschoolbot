@@ -3,7 +3,6 @@ import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import { Bank } from 'oldschooljs';
 
 import { lootRoom, plunderRooms } from '@/lib/minions/data/plunder.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { PlunderActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -41,7 +40,7 @@ export const plunderTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: thievingXP, duration: data.duration });
+		const xpRes = await user.addXP({ skillName: 'thieving', amount: thievingXP, duration: data.duration });
 
 		const str = `${user}, ${user.minionName} finished doing the Pyramid Plunder ${quantity}x times. ${totalAmountUrns}x urns opened. ${xpRes}  ${flappyRes.userMsg}`;
 

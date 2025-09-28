@@ -1,5 +1,5 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
-import { Bank, itemID, Monsters, resolveItems, SkillsEnum } from 'oldschooljs';
+import { Bank, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
@@ -139,8 +139,8 @@ const killableMonsters: KillableMonster[] = [
 			}
 		],
 		attackStyleToUse: GearStat.AttackRanged,
-		defaultAttackStyles: [SkillsEnum.Ranged, SkillsEnum.Magic],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength]
+		defaultAttackStyles: ['ranged', 'magic'],
+		disallowedAttackStyles: ['attack', 'strength']
 	},
 	{
 		id: Monsters.BloodReaver.id,
@@ -154,7 +154,7 @@ const killableMonsters: KillableMonster[] = [
 		itemsRequired: resolveItems(['Frozen key']),
 		healAmountNeeded: 30,
 		attackStyleToUse: GearStat.AttackRanged,
-		disallowedAttackStyles: [SkillsEnum.Magic],
+		disallowedAttackStyles: ['magic'],
 		attackStylesUsed: [GearStat.AttackMagic],
 		itemInBankBoosts: [
 			{

@@ -4,7 +4,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -64,7 +63,7 @@ export const mixCommand: OSBMahojiCommand = {
 		);
 		if (!mixableItem) return 'That is not a valid mixable item.';
 
-		if (user.skillLevel(SkillsEnum.Herblore) < mixableItem.level) {
+		if (user.skillLevel('herblore') < mixableItem.level) {
 			return `${user.minionName} needs ${mixableItem.level} Herblore to make ${mixableItem.item.name}.`;
 		}
 

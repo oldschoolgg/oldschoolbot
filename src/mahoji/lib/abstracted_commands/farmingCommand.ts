@@ -10,7 +10,6 @@ import { calcNumOfPatches } from '@/lib/skilling/functions/calcsFarming.js';
 import { getFarmingInfo, getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
 import Farming from '@/lib/skilling/skills/farming/index.js';
 import type { Plant } from '@/lib/skilling/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -42,7 +41,7 @@ export async function harvestCommand({
 		return 'Your minion must not be busy to use this command.';
 	}
 	const { GP } = user;
-	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
+	const currentWoodcuttingLevel = user.skillLevel('woodcutting');
 	const currentDate = Date.now();
 	if (!isPatchName(seedType)) {
 		return `That is not a valid patch type! The available patches are: ${farmingPatchNames.join(
@@ -144,7 +143,7 @@ export async function farmingPlantCommand({
 	const alwaysPay = user.user.minion_defaultPay;
 	const questPoints = user.QP;
 	const { GP } = user;
-	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
+	const currentWoodcuttingLevel = user.skillLevel('woodcutting');
 	const currentDate = Date.now();
 
 	const infoStr: string[] = [];
@@ -160,7 +159,7 @@ export async function farmingPlantCommand({
 
 	const wantsToPay = (pay || alwaysPay) && plant.canPayFarmer;
 
-	if (user.skillLevel(SkillsEnum.Farming) < plant.level) {
+	if (user.skillLevel('farming') < plant.level) {
 		return `${user.minionName} needs ${plant.level} Farming to plant ${plant.name}.`;
 	}
 

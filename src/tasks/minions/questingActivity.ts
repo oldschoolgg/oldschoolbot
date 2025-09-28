@@ -4,7 +4,6 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 
 import { MAX_QP } from '@/lib/minions/data/quests.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { randInt, roll } from '@/lib/util/rng.js';
@@ -42,9 +41,9 @@ export const questingTask: MinionTask = {
 				increment: qpReceived
 			}
 		});
-		const herbLevel = user.skillLevel(SkillsEnum.Herblore);
+		const herbLevel = user.skillLevel('herblore');
 		if (herbLevel === 1 && newQP > 5 && roll(2)) {
-			await user.addXP({ skillName: SkillsEnum.Herblore, amount: 250 });
+			await user.addXP({ skillName: 'herblore', amount: 250 });
 			str += `${Emoji.Herblore} You received 250 Herblore XP for completing Druidic Ritual.`;
 		}
 
@@ -56,13 +55,13 @@ export const questingTask: MinionTask = {
 
 		const magicXP = Number(user.user.skills_magic);
 		if (magicXP === 0 && roll(2)) {
-			await user.addXP({ skillName: SkillsEnum.Magic, amount: 325 });
+			await user.addXP({ skillName: 'magic', amount: 325 });
 			str += `${Emoji.Magic} You received 325 Magic XP for completing Witch's Potion.`;
 		} else if (magicXP < 1000 && newQP > 15 && roll(2)) {
-			await user.addXP({ skillName: SkillsEnum.Magic, amount: 1000 });
+			await user.addXP({ skillName: 'magic', amount: 1000 });
 			str += `${Emoji.Magic} You received 1000 Magic XP for completing Fairytale I - Growing Pains.`;
-		} else if (user.skillLevel(SkillsEnum.Cooking) >= 40 && newQP > 50 && magicXP < 2500 && roll(2)) {
-			await user.addXP({ skillName: SkillsEnum.Magic, amount: 2500 });
+		} else if (user.skillLevel('cooking') >= 40 && newQP > 50 && magicXP < 2500 && roll(2)) {
+			await user.addXP({ skillName: 'magic', amount: 2500 });
 			str += `${Emoji.Magic} You received 2500 Magic XP for completing Recipe For Disaster (Lumbridge guide subquest).`;
 		}
 

@@ -5,7 +5,6 @@ import { clone } from 'remeda';
 import type { GiantsFoundryBank } from '@/lib/giantsFoundry.js';
 import { encodeGiantWeapons, generateRandomGiantWeapon, giantWeaponName } from '@/lib/giantsFoundry.js';
 import { trackLoot } from '@/lib/lootTrack.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { GiantsFoundryActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
@@ -16,7 +15,7 @@ export const giantsFoundryTask: MinionTask = {
 	async run(data: GiantsFoundryActivityTaskOptions) {
 		const { quantity, userID, channelID, duration, metalScore } = data;
 		const user = await mUserFetch(userID);
-		const userSmithingLevel = user.skillLevel(SkillsEnum.Smithing);
+		const userSmithingLevel = user.skillLevel('smithing');
 		const boosts = [];
 		let avgMouldBonus = 37.667;
 		if (userSmithingLevel > 79) {
@@ -50,7 +49,7 @@ export const giantsFoundryTask: MinionTask = {
 		reputationReceived = Math.floor(reputationReceived);
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Smithing,
+			skillName: 'smithing',
 			amount: xpReceived,
 			duration
 		});

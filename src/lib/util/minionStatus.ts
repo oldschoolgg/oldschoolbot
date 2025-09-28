@@ -5,7 +5,7 @@ import { fishingLocations } from '@/lib/bso/fishingContest.js';
 import { formatOrdinal, increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
-import { Items, SkillsEnum } from 'oldschooljs';
+import { Items } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
@@ -140,7 +140,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently crafting ${data.quantity}x ${craftable?.name}. ${formattedDuration} Your ${
 				Emoji.Crafting
-			} Crafting level is ${user.skillLevel(SkillsEnum.Crafting)}`;
+			} Crafting level is ${user.skillLevel('crafting')}`;
 		}
 
 		case 'Agility': {
@@ -150,7 +150,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently running ${data.quantity}x ${course?.name} laps. ${formattedDuration} Your ${
 				Emoji.Agility
-			} Agility level is ${user.skillLevel(SkillsEnum.Agility)}`;
+			} Agility level is ${user.skillLevel('agility')}`;
 		}
 
 		case 'Cooking': {
@@ -160,7 +160,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently cooking ${data.quantity}x ${cookable?.name}. ${formattedDuration} Your ${
 				Emoji.Cooking
-			} Cooking level is ${user.skillLevel(SkillsEnum.Cooking)}`;
+			} Cooking level is ${user.skillLevel('cooking')}`;
 		}
 
 		case 'Fishing': {
@@ -170,7 +170,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently fishing ${data.quantity}x ${fish?.name}. ${formattedDuration} Your ${
 				Emoji.Fishing
-			} Fishing level is ${user.skillLevel(SkillsEnum.Fishing)}`;
+			} Fishing level is ${user.skillLevel('fishing')}`;
 		}
 
 		case 'Mining': {
@@ -186,7 +186,7 @@ export function minionStatus(user: MUser) {
 						)} **to** ${formatDuration(
 							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
 						)} remaining.`
-			} Your ${Emoji.Mining} Mining level is ${user.skillLevel(SkillsEnum.Mining)}`;
+			} Your ${Emoji.Mining} Mining level is ${user.skillLevel('mining')}`;
 		}
 
 		case 'MotherlodeMining': {
@@ -200,7 +200,7 @@ export function minionStatus(user: MUser) {
 						)} **to** ${formatDuration(
 							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
 						)} remaining.`
-			} Your ${Emoji.Mining} Mining level is ${user.skillLevel(SkillsEnum.Mining)}`;
+			} Your ${Emoji.Mining} Mining level is ${user.skillLevel('mining')}`;
 		}
 
 		case 'Smelting': {
@@ -210,7 +210,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently smelting ${data.quantity}x ${bar?.name}. ${formattedDuration} Your ${
 				Emoji.Smithing
-			} Smithing level is ${user.skillLevel(SkillsEnum.Smithing)}`;
+			} Smithing level is ${user.skillLevel('smithing')}`;
 		}
 
 		case 'Smithing': {
@@ -220,7 +220,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently smithing ${data.quantity}x ${SmithableItem?.name}. ${formattedDuration} Your ${
 				Emoji.Smithing
-			} Smithing level is ${user.skillLevel(SkillsEnum.Smithing)}`;
+			} Smithing level is ${user.skillLevel('smithing')}`;
 		}
 
 		case 'Offering': {
@@ -230,7 +230,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently offering ${data.quantity}x ${bones?.name}. ${formattedDuration} Your ${
 				Emoji.Prayer
-			} Prayer level is ${user.skillLevel(SkillsEnum.Prayer)}`;
+			} Prayer level is ${user.skillLevel('prayer')}`;
 		}
 
 		case 'Burying': {
@@ -240,7 +240,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently burying ${data.quantity}x ${bones?.name}. ${formattedDuration} Your ${
 				Emoji.Prayer
-			} Prayer level is ${user.skillLevel(SkillsEnum.Prayer)}`;
+			} Prayer level is ${user.skillLevel('prayer')}`;
 		}
 
 		case 'Scattering': {
@@ -250,7 +250,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently scattering ${data.quantity}x ${ashes?.name}. ${formattedDuration} Your ${
 				Emoji.Prayer
-			} Prayer level is ${user.skillLevel(SkillsEnum.Prayer)}`;
+			} Prayer level is ${user.skillLevel('prayer')}`;
 		}
 
 		case 'Firemaking': {
@@ -260,7 +260,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently lighting ${data.quantity}x ${burn?.name}. ${formattedDuration} Your ${
 				Emoji.Firemaking
-			} Firemaking level is ${user.skillLevel(SkillsEnum.Firemaking)}`;
+			} Firemaking level is ${user.skillLevel('firemaking')}`;
 		}
 
 		case 'Questing': {
@@ -280,7 +280,7 @@ export function minionStatus(user: MUser) {
 						)} **to** ${formatDuration(
 							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
 						)} remaining.`
-			} Your ${Emoji.Woodcutting} Woodcutting level is ${user.skillLevel(SkillsEnum.Woodcutting)}`;
+			} Your ${Emoji.Woodcutting} Woodcutting level is ${user.skillLevel('woodcutting')}`;
 		}
 		case 'Runecraft': {
 			const data = currentTask as RunecraftActivityTaskOptions;
@@ -289,9 +289,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently turning ${data.essenceQuantity}x Essence into ${
 				rune?.name
-			}. ${formattedDuration} Your ${Emoji.Runecraft} Runecraft level is ${user.skillLevel(
-				SkillsEnum.Runecraft
-			)}`;
+			}. ${formattedDuration} Your ${Emoji.Runecraft} Runecraft level is ${user.skillLevel('runecraft')}`;
 		}
 
 		case 'TiaraRunecraft': {
@@ -300,7 +298,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently crafting ${data.tiaraQuantity} ${tiara?.name}. ${formattedDuration} Your ${
 				Emoji.Runecraft
-			} Runecraft level is ${user.skillLevel(SkillsEnum.Runecraft)}`;
+			} Runecraft level is ${user.skillLevel('runecraft')}`;
 		}
 
 		case 'FightCaves': {
@@ -319,9 +317,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently fletching ${data.quantity}x ${
 				data.fletchableName
-			}. ${formattedDuration} Your ${Emoji.Fletching} Fletching level is ${user.skillLevel(
-				SkillsEnum.Fletching
-			)}`;
+			}. ${formattedDuration} Your ${Emoji.Fletching} Fletching level is ${user.skillLevel('fletching')}`;
 		}
 		case 'Herblore': {
 			const data = currentTask as HerbloreActivityTaskOptions;
@@ -329,7 +325,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently mixing ${data.quantity}x ${mixable?.item.name}. ${formattedDuration} Your ${
 				Emoji.Herblore
-			} Herblore level is ${user.skillLevel(SkillsEnum.Herblore)}`;
+			} Herblore level is ${user.skillLevel('herblore')}`;
 		}
 		case 'CutLeapingFish': {
 			const data = currentTask as CutLeapingFishActivityTaskOptions;
@@ -337,7 +333,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently cutting ${data.quantity}x ${
 				barbarianFish?.item.name
-			}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${user.skillLevel(SkillsEnum.Cooking)}`;
+			}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${user.skillLevel('cooking')}`;
 		}
 		case 'CreateForestersRations': {
 			const data = currentTask as CreateForestersRationsActivityTaskOptions;
@@ -345,7 +341,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently creating ${data.quantity}x ${
 				ration.name
-			}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${user.skillLevel(SkillsEnum.Cooking)}`;
+			}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${user.skillLevel('cooking')}`;
 		}
 		case 'Wintertodt': {
 			const data = currentTask as ActivityTaskOptionsWithQuantity;
@@ -370,7 +366,7 @@ export function minionStatus(user: MUser) {
 
 			return `${name} is currently farming ${data.quantity}x ${plants?.name}. ${formattedDuration} Your ${
 				Emoji.Farming
-			} Farming level is ${user.skillLevel(SkillsEnum.Farming)}.`;
+			} Farming level is ${user.skillLevel('farming')}.`;
 		}
 
 		case 'Sawmill': {

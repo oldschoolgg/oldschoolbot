@@ -1,8 +1,14 @@
-import { Items, resolveItems } from 'oldschooljs';
+import { type Item, Items, resolveItems } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 
-export const expertCapesSource = [
+interface ExpertCapeSource {
+	cape: Item;
+	requiredItems: number[];
+	skills: SkillNameType[];
+}
+
+export const expertCapesSource: ExpertCapeSource[] = [
 	{
 		cape: Items.getOrThrow('Support cape'),
 		requiredItems: resolveItems([
@@ -11,7 +17,7 @@ export const expertCapesSource = [
 			'Thieving master cape',
 			'Slayer master cape'
 		]),
-		skills: [SkillsEnum.Slayer, SkillsEnum.Agility, SkillsEnum.Dungeoneering, SkillsEnum.Thieving]
+		skills: ['slayer', 'agility', 'dungeoneering', 'thieving']
 	},
 	{
 		cape: Items.getOrThrow("Gatherer's cape"),
@@ -23,14 +29,7 @@ export const expertCapesSource = [
 			'Woodcutting master cape',
 			'Divination master cape'
 		]),
-		skills: [
-			SkillsEnum.Farming,
-			SkillsEnum.Fishing,
-			SkillsEnum.Hunter,
-			SkillsEnum.Mining,
-			SkillsEnum.Woodcutting,
-			SkillsEnum.Divination
-		]
+		skills: ['farming', 'fishing', 'hunter', 'mining', 'woodcutting', 'divination']
 	},
 	{
 		cape: Items.getOrThrow("Combatant's cape"),
@@ -43,15 +42,7 @@ export const expertCapesSource = [
 			'Ranged master cape',
 			'Strength master cape'
 		]),
-		skills: [
-			SkillsEnum.Attack,
-			SkillsEnum.Hitpoints,
-			SkillsEnum.Defence,
-			SkillsEnum.Magic,
-			SkillsEnum.Prayer,
-			SkillsEnum.Ranged,
-			SkillsEnum.Strength
-		]
+		skills: ['attack', 'hitpoints', 'defence', 'magic', 'prayer', 'ranged', 'strength']
 	},
 	{
 		cape: Items.getOrThrow("Artisan's cape"),
@@ -65,15 +56,6 @@ export const expertCapesSource = [
 			'Runecraft master cape',
 			'Smithing master cape'
 		]),
-		skills: [
-			SkillsEnum.Crafting,
-			SkillsEnum.Construction,
-			SkillsEnum.Cooking,
-			SkillsEnum.Firemaking,
-			SkillsEnum.Fletching,
-			SkillsEnum.Herblore,
-			SkillsEnum.Runecraft,
-			SkillsEnum.Smithing
-		]
+		skills: ['crafting', 'construction', 'cooking', 'firemaking', 'fletching', 'herblore', 'runecraft', 'smithing']
 	}
 ];

@@ -10,7 +10,6 @@ import {
 import { reduceNumByPercent, roll, Time } from '@oldschoolgg/toolkit';
 import { Bank, randomVariation, toKMB } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { DungeoneeringOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
@@ -107,7 +106,7 @@ export const dungeoneeringTask: MinionTask = {
 			const { xp, tokens, loot, portentXP } = calculateDungeoneeringResult({
 				floor,
 				quantity,
-				dungeoneeringLevel: u.skillLevel('dungeoneering'),
+				dungeoneeringLevel: u.skillsAsLevels.dungeoneering,
 				gorajanEquipped,
 				hasScrollOfMystery: u.bank.has('Scroll of mystery'),
 				gorajanShardChance: calcUserGorajanShardChance(u).chance,
@@ -117,7 +116,7 @@ export const dungeoneeringTask: MinionTask = {
 			});
 
 			const xpStr = await u.addXP({
-				skillName: SkillsEnum.Dungeoneering,
+				skillName: 'dungeoneering',
 				amount: xp,
 				duration,
 				minimal: false

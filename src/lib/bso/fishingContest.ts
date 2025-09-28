@@ -3,7 +3,6 @@ import { seedShuffle } from '@oldschoolgg/toolkit/rng';
 import type { FishingContestCatch } from '@prisma/client';
 import { type Item, Items } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import {
 	ArdougneDiary,
 	DesertDiary,
@@ -84,7 +83,7 @@ export const fishingLocations: FishingLocation[] = [
 			{
 				name: '90+ Prayer',
 				has: async user => {
-					return user.skillLevel(SkillsEnum.Prayer) >= 90;
+					return user.skillLevel('prayer') >= 90;
 				},
 				percentAddedToMin: 5
 			}
@@ -313,10 +312,10 @@ export async function catchFishAtLocation({ user, location }: { user: MUser; loc
 	}
 
 	// Deduct from max length for <99 Fishing
-	maxLength -= (100 - Math.min(99, user.skillLevel(SkillsEnum.Fishing) + 1)) / 3;
+	maxLength -= (100 - Math.min(99, user.skillsAsLevels.fishing + 1)) / 3;
 
 	// Deduct from max length based on average agil/str level
-	const otherSkillAverage = averageArr([SkillsEnum.Agility, SkillsEnum.Strength].map(i => user.skillLevel(i)));
+	const otherSkillAverage = averageArr([user.skillsAsLevels.agility, user.skillsAsLevels.strength]);
 	maxLength -= (100 - Math.min(99, otherSkillAverage + 1)) / 5;
 
 	const lengthCentimetres = gaussianRandom(minLength, maxLength, 8);

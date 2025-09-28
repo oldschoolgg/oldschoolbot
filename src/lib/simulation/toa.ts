@@ -31,7 +31,6 @@ import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { setupParty } from '@/lib/party.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
 import type { MakePartyOptions, Skills } from '@/lib/types/index.js';
 import type { TOAOptions } from '@/lib/types/minions.js';
@@ -413,10 +412,8 @@ export function calculateXPFromRaid({
 	totalMeleeXPPerRaid = calcPercentOfNum(percentOfPossiblePoints, totalMeleeXPPerRaid);
 
 	let meleeStyles = user.getAttackStyles();
-	const isTrainingMelee = meleeStyles.some(style =>
-		[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].includes(style)
-	);
-	if (!isTrainingMelee) meleeStyles = [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
+	const isTrainingMelee = meleeStyles.some(style => ['attack', 'strength', 'defence'].includes(style));
+	if (!isTrainingMelee) meleeStyles = ['attack', 'strength', 'defence'];
 	const xpPerStyle = Math.floor(totalMeleeXPPerRaid / meleeStyles.length);
 	const promises: Promise<string>[] = [];
 
@@ -441,7 +438,7 @@ export function calculateXPFromRaid({
 
 	promises.push(
 		user.addXP({
-			skillName: SkillsEnum.Magic,
+			skillName: 'magic',
 			amount: mageXP,
 			duration: realDuration,
 			source: XpGainSource.TombsOfAmascut,
@@ -452,7 +449,7 @@ export function calculateXPFromRaid({
 	totalCombatXP += mageXP;
 	promises.push(
 		user.addXP({
-			skillName: SkillsEnum.Ranged,
+			skillName: 'ranged',
 			amount: mageXP,
 			duration: realDuration,
 			source: XpGainSource.TombsOfAmascut,
@@ -462,7 +459,7 @@ export function calculateXPFromRaid({
 
 	promises.push(
 		user.addXP({
-			skillName: SkillsEnum.Hitpoints,
+			skillName: 'hitpoints',
 			amount: Math.floor(totalCombatXP / 4),
 			duration: realDuration,
 			minimal: true,
@@ -815,7 +812,7 @@ function calculateTotalEffectiveness({
 
 	percents.push(clamp(calcWhatPercent(totalKC, 20), { min: 0, max: 100 }));
 	percents.push(clamp(calcWhatPercent(totalAttempts, 20), { min: 0, max: 100 }));
-	const skillsThatMatter = [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic, SkillsEnum.Ranged];
+	const skillsThatMatter = ['attack', 'strength', 'magic', 'ranged'];
 	const totalSkills = objectEntries(skillsAsLevels)
 		.filter(i => skillsThatMatter.includes(i[0]))
 		.reduce((prev, curr) => prev + curr[1]!, 0);

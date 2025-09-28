@@ -8,7 +8,6 @@ import { Bank, itemID, Monsters } from 'oldschooljs';
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
 import { userhasDiaryTier } from '@/lib/diaries.js';
 import { DiaryID } from '@/lib/minions/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { FightCavesActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
@@ -95,12 +94,12 @@ export const fightCavesTask: MinionTask = {
 			const failBank = new Bank({ [TokkulID]: tokkulReward });
 			await user.transactItems({ collectionLog: true, itemsToAdd: failBank });
 
-			const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 46_080, duration });
-			const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_322, duration });
+			const rangeXP = await user.addXP({ skillName: 'ranged', amount: 46_080, duration });
+			const hpXP = await user.addXP({ skillName: 'hitpoints', amount: 15_322, duration });
 
 			let msg = `${rangeXP}. ${hpXP}.`;
 			if (isOnTask) {
-				const slayXP = await user.addXP({ skillName: SkillsEnum.Slayer, amount: 11_760, duration });
+				const slayXP = await user.addXP({ skillName: 'slayer', amount: 11_760, duration });
 				msg = `**Slayer task cancelled.** \n${msg} ${slayXP}.`;
 
 				await prisma.slayerTask.update({
@@ -158,8 +157,8 @@ export const fightCavesTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 47_580, duration, minimal: true });
-		const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_860, duration, minimal: true });
+		const rangeXP = await user.addXP({ skillName: 'ranged', amount: 47_580, duration, minimal: true });
+		const hpXP = await user.addXP({ skillName: 'hitpoints', amount: 15_860, duration, minimal: true });
 
 		let msg = `${rangeXP}. ${hpXP}.`;
 		if (isOnTask) {
@@ -197,7 +196,7 @@ export const fightCavesTask: MinionTask = {
 			});
 
 			const slayXP = await user.addXP({
-				skillName: SkillsEnum.Slayer,
+				skillName: 'slayer',
 				amount: slayerXP,
 				duration,
 				minimal: true

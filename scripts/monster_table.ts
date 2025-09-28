@@ -1,7 +1,7 @@
 import { TSVWriter } from '@oldschoolgg/toolkit/structures';
 import { calcPerHour, Time } from '@oldschoolgg/toolkit/util';
 import type { PlayerOwnedHouse } from '@prisma/client';
-import { Bank, convertBankToPerHourStats, Items, itemID, resolveItems, SkillsEnum, toKMB } from 'oldschooljs';
+import { Bank, convertBankToPerHourStats, Items, itemID, resolveItems, toKMB } from 'oldschooljs';
 import { omit } from 'remeda';
 
 applyStaticDefine();
@@ -48,11 +48,11 @@ const results: { tripResult: ReturnType<typeof doMonsterTrip>; commandResult: Mi
 const userStats = new MUserStats({ sacrificed_bank: {} } as any);
 
 const attackStyleSets: AttackStyles[][] = [
-	[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence],
-	[SkillsEnum.Ranged],
-	[SkillsEnum.Magic],
-	[SkillsEnum.Ranged, SkillsEnum.Defence],
-	[SkillsEnum.Magic, SkillsEnum.Defence]
+	['attack', 'strength', 'defence'],
+	['ranged'],
+	['magic'],
+	['ranged', 'defence'],
+	['magic', 'defence']
 ];
 
 const skillsAsXP: any = {};

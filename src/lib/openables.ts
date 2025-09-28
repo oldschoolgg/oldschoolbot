@@ -19,7 +19,6 @@ import {
 	type OpenableOpenOptions,
 	Openables,
 	resolveItems,
-	SkillsEnum,
 	ZombiePiratesLocker
 } from 'oldschooljs';
 
@@ -254,7 +253,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 		): Promise<{
 			bank: Bank;
 		}> => {
-			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
+			const fishLvl = args.user.skillLevel('fishing');
 			const brimstoneOptions: OpenableOpenOptions = {
 				fishLvl
 			};
@@ -338,7 +337,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 		): Promise<{
 			bank: Bank;
 		}> => {
-			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
+			const fishLvl = args.user.skillLevel('fishing');
 			const larransOptions: OpenableOpenOptions = {
 				fishLvl,
 				chestSize: 'big'

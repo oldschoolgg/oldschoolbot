@@ -1,5 +1,5 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
-import { Bank, itemID, Monsters, SkillsEnum } from 'oldschooljs';
+import { Bank, itemID, Monsters } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import type { KillableMonster } from '@/lib/minions/types.js';
@@ -20,7 +20,7 @@ for (const [creature, cost] of creatures) {
 		aliases: creature.aliases,
 		timeToFinish: Time.Minute * 1.3,
 		table: creature,
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		healAmountNeeded: 20 * 3,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],

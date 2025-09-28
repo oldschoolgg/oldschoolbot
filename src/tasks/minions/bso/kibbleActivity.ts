@@ -2,7 +2,6 @@ import { kibbles } from '@/lib/bso/kibble.js';
 
 import { Bank } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { KibbleOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
@@ -16,13 +15,13 @@ export const kibbleTask: MinionTask = {
 		const loot = new Bank().add(kibble.item.id, quantity);
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 		let xpRes = await user.addXP({
-			skillName: SkillsEnum.Cooking,
+			skillName: 'cooking',
 			amount: kibble.xp * quantity,
 			duration,
 			minimal: true
 		});
 		xpRes += await user.addXP({
-			skillName: SkillsEnum.Herblore,
+			skillName: 'herblore',
 			amount: Math.floor((kibble.xp * quantity) / 2),
 			duration,
 			minimal: true

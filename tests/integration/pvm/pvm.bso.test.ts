@@ -1,5 +1,5 @@
 import { Time } from '@oldschoolgg/toolkit';
-import { Bank, EMonster, type ItemBank, itemID, resolveItems, SkillsEnum } from 'oldschooljs';
+import { Bank, EMonster, type ItemBank, itemID, resolveItems } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
 import { gorajanArcherOutfit, gorajanWarriorOutfit } from '@/lib/data/CollectionsExport.js';
@@ -68,7 +68,7 @@ describe('BSO PVM', async () => {
 		});
 		await user.giveSlayerTask(EMonster.ABYSSAL_DEMON);
 		expect(user.gear.mage.weapon?.item).toEqual(itemID('Kodai wand'));
-		await user.setAttackStyle([SkillsEnum.Magic]);
+		await user.setAttackStyle(['magic']);
 		const result = await user.kill(EMonster.ABYSSAL_DEMON, { method: 'barrage' });
 		expect(result.xpGained.magic).toBeGreaterThan(0);
 		expect(user.bank.amount('Blood rune')).toBeLessThan(1000);
@@ -83,7 +83,7 @@ describe('BSO PVM', async () => {
 			QP: 300,
 			maxed: true
 		});
-		await user.setAttackStyle([SkillsEnum.Ranged]);
+		await user.setAttackStyle(['ranged']);
 		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'cannon' });
 		expect(result.xpGained.ranged).toBeGreaterThan(0);
 		expect(user.bank.amount('Cannonball')).toBeLessThan(100_000);
@@ -97,7 +97,7 @@ describe('BSO PVM', async () => {
 			QP: 300,
 			maxed: true
 		});
-		await user.setAttackStyle([SkillsEnum.Ranged]);
+		await user.setAttackStyle(['ranged']);
 		const result = await user.kill(EMonster.MANIACAL_MONKEY, { method: 'chinning' });
 		expect(result.commandResult).toContain('% for Red chinchomp');
 		expect(user.bank.amount('Red chinchompa')).toBeLessThan(5000);
@@ -199,7 +199,7 @@ describe('BSO PVM', async () => {
 			maxed: true,
 			mageGear: vasaBISGear.allItems(false)
 		});
-		await user.setAttackStyle([SkillsEnum.Attack]);
+		await user.setAttackStyle(['attack']);
 		const result = await user.kill(VasaMagus.id);
 		const resultStr = (result.commandResult as any).embeds[0].description as string;
 		expect(resultStr).toContain('Your team is off to fight');
@@ -234,7 +234,7 @@ describe('BSO PVM', async () => {
 		});
 		await global.prisma!.playerOwnedHouse.create({ data: { user_id: user.id, pool: 99_950 } });
 		await user.incrementKC(BSOMonsters.Malygos.id, 5000);
-		await user.setAttackStyle([SkillsEnum.Ranged]);
+		await user.setAttackStyle(['ranged']);
 		const result = await user.kill(BSOMonsters.Malygos.id, { wilderness: true });
 		expect(result.commandResult).toContain('Your minion is now killing ');
 		expect(result.commandResult).toContain('3x boost for Hellfire bow');

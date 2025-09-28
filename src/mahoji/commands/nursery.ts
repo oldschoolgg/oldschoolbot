@@ -7,7 +7,6 @@ import { ApplicationCommandOptionType, type ChatInputCommandInteraction } from '
 import { Bank, Items } from 'oldschooljs';
 
 import { globalConfig } from '@/lib/constants.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
@@ -144,7 +143,7 @@ async function buildCommand(user: MUser) {
 	if (nursery) {
 		return 'You already have a nursery built.';
 	}
-	if (user.skillLevel(SkillsEnum.Construction) < 105) {
+	if (user.skillLevel('construction') < 105) {
 		return 'You need level 105 Construction to build a nursery.';
 	}
 	const cost = new Bank().add('Elder plank', 200).add('Marble block', 10).add('Feather', 500);

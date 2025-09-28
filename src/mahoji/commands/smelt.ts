@@ -4,7 +4,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, itemID, resolveItems } from 'oldschooljs';
 
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { SmeltingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -85,12 +84,12 @@ export const smeltingCommand: OSBMahojiCommand = {
 
 		if (blast_furnace) {
 			const requiredSkills = {
-				[SkillsEnum.Crafting]: 12,
-				[SkillsEnum.Firemaking]: 16,
-				[SkillsEnum.Magic]: 33,
-				[SkillsEnum.Mining]: 50,
-				[SkillsEnum.Smithing]: 20,
-				[SkillsEnum.Thieving]: 13
+				crafting: 12,
+				firemaking: 16,
+				magic: 33,
+				mining: 50,
+				smithing: 20,
+				thieving: 13
 			};
 			if (!user.hasSkillReqs(requiredSkills)) {
 				return `You don't have the required stats to use the Blast Furnace, you need: ${formatSkillRequirements(

@@ -21,7 +21,7 @@ import { Bank, type Item, Items, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import Skillcapes from '@/lib/skilling/skillcapes.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { DisassembleTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -31,7 +31,7 @@ import MaterialLootTable from './MaterialLootTable.js';
 
 const MASTER_CAPE_JUNK_REDUCTION = 5;
 
-const masterCapeBoosts: Record<SkillsEnum, DisassemblySourceGroup[]> = {
+const masterCapeBoosts: Record<SkillNameType, DisassemblySourceGroup[]> = {
 	smithing: [DisassemblyGroupMap.Metals],
 	mining: [DisassemblyGroupMap.Ores],
 
@@ -403,7 +403,7 @@ ${result.messages.length > 0 ? `**Messages:** ${result.messages.join(', ')}` : '
 
 export function calcWholeDisXP(user: MUser, item: Item, quantity: number) {
 	const group = findDisassemblyGroup(item);
-	const inventionLevel = user.skillLevel(SkillsEnum.Invention);
+	const inventionLevel = user.skillsAsLevels.invention;
 	if (group && inventionLevel >= group.data.lvl) {
 		return calculateDisXP(group.group, inventionLevel, quantity, group.data.lvl).xp;
 	}

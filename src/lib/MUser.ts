@@ -39,7 +39,6 @@ import { bossCLItems } from '@/lib/data/Collections.js';
 import { allPetIDs, avasDevices } from '@/lib/data/CollectionsExport.js';
 import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
 import Farming from '@/lib/skilling/skills/farming/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 import { fetchUserStats, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
@@ -332,15 +331,15 @@ export class MUserClass {
 
 	attackClass(): 'range' | 'mage' | 'melee' {
 		const styles = this.getAttackStyles();
-		if (styles.includes(SkillsEnum.Ranged)) return 'range';
-		if (styles.includes(SkillsEnum.Magic)) return 'mage';
+		if (styles.includes('ranged')) return 'range';
+		if (styles.includes('magic')) return 'mage';
 		return 'melee';
 	}
 
 	getAttackStyles(): AttackStyles[] {
 		const styles = this.user.attack_style;
 		if (styles.length === 0) {
-			return [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
+			return ['attack', 'strength', 'defence'];
 		}
 		return styles as AttackStyles[];
 	}

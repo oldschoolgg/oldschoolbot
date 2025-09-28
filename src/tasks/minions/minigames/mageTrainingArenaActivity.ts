@@ -1,7 +1,6 @@
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, randomVariation } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
@@ -20,7 +19,7 @@ export const mageTrainingTask: MinionTask = {
 		const baseXP = (25_000 / (Time.Minute * 60)) * duration;
 		const xp = randomVariation(baseXP, 5);
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Magic,
+			skillName: 'magic',
 			amount: xp,
 			duration
 		});

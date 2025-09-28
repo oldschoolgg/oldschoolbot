@@ -5,7 +5,6 @@ import { GearStat } from 'oldschooljs/gear';
 import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '@/lib/data/seedPackTables.js';
 import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/CustomMonster.js';
 import { GrimyHerbTable, lowRuneHighAdamantTable, runeWeaponTable } from '@/lib/simulation/sharedTables.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 
 function neemCost(extraCost?: Bank) {
 	const cost = new Bank().add('Neem oil', 1);
@@ -126,7 +125,7 @@ const FungalRodent: CustomMonster = {
 		dungeoneering: 82
 	},
 	itemCost: neemCost(),
-	disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Ranged]
+	disallowedAttackStyles: ['attack', 'strength', 'defence', 'ranged']
 };
 
 const InfestedAxe: CustomMonster = {
@@ -154,7 +153,7 @@ const InfestedAxe: CustomMonster = {
 		dungeoneering: 82
 	},
 	itemCost: neemCost(),
-	disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Ranged]
+	disallowedAttackStyles: ['attack', 'strength', 'defence', 'ranged']
 };
 
 const FungalMage: CustomMonster = {
@@ -186,7 +185,7 @@ const FungalMage: CustomMonster = {
 		dungeoneering: 82
 	},
 	itemCost: neemCost(),
-	disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Ranged]
+	disallowedAttackStyles: ['attack', 'strength', 'defence', 'ranged']
 };
 
 const Grifolaroo: CustomMonster = {
@@ -223,7 +222,7 @@ const Grifolaroo: CustomMonster = {
 		slayer: 82
 	},
 	itemCost: neemCost(),
-	disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Ranged]
+	disallowedAttackStyles: ['attack', 'strength', 'defence', 'ranged']
 };
 
 const Grifolapine: CustomMonster = {
@@ -254,7 +253,7 @@ const Grifolapine: CustomMonster = {
 		slayer: 88
 	},
 	itemCost: neemCost(),
-	disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Ranged]
+	disallowedAttackStyles: ['attack', 'strength', 'defence', 'ranged']
 };
 
 const GanodermicRunt: CustomMonster = {
@@ -290,7 +289,7 @@ const GanodermicRunt: CustomMonster = {
 		slayer: 95
 	},
 	itemCost: neemCost(new Bank().add('Polypore spore', 120).add('Astral rune', 52)),
-	disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Ranged]
+	disallowedAttackStyles: ['attack', 'strength', 'defence', 'ranged']
 };
 
 const GanodermicBeast: CustomMonster = {
@@ -330,7 +329,7 @@ const GanodermicBeast: CustomMonster = {
 		slayer: 98
 	},
 	itemCost: neemCost(new Bank().add('Polypore spore', 150).add('Astral rune', 64)),
-	disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Ranged]
+	disallowedAttackStyles: ['attack', 'strength', 'defence', 'ranged']
 };
 
 export const resourceDungeonMonsters = {

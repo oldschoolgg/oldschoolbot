@@ -18,7 +18,6 @@ import { calcPerHour, reduceNumByPercent, stringMatches, Table, Time } from '@ol
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { ownedMaterialOption } from '@/mahoji/lib/mahojiCommandOptions.js';
@@ -40,7 +39,7 @@ export const inventionCommand: OSBMahojiCommand = {
 					required: true,
 					autocomplete: async (value, { id }) => {
 						const user = await mUserFetch(id);
-						const inventionLevel = user.skillLevel(SkillsEnum.Invention);
+						const inventionLevel = user.skillLevel('invention');
 
 						return user.bank
 							.items()
@@ -360,7 +359,7 @@ These Inventions are still not unlocked: ${locked
 			}
 		}
 
-		if (user.skillLevel(SkillsEnum.Crafting) < 90) {
+		if (user.skillLevel('crafting') < 90) {
 			return "Your minion isn't skilled enough to train Invention, you need level 90 Crafting.";
 		}
 

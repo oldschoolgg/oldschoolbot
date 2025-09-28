@@ -6,7 +6,6 @@ import { Bank } from 'oldschooljs';
 import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { SmithingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -53,7 +52,7 @@ export const smithCommand: OSBMahojiCommand = {
 
 		if (!smithedItem) return 'That is not a valid item to smith.';
 
-		if (user.skillLevel(SkillsEnum.Smithing) < smithedItem.level) {
+		if (user.skillLevel('smithing') < smithedItem.level) {
 			return `${user.minionName} needs ${smithedItem.level} Smithing to smith ${pluraliseItemName(
 				smithedItem.name
 			)}.`;

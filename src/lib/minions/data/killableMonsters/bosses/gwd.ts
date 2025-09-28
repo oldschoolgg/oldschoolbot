@@ -4,7 +4,6 @@ import { GearStat } from 'oldschooljs/gear';
 
 import { commanderZilyanaCL, generalGraardorCL, kreeArraCL, krilTsutsarothCL } from '@/lib/data/CollectionsExport.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 
 export const gwdKillables: KillableMonster[] = [
 	{
@@ -37,7 +36,7 @@ export const gwdKillables: KillableMonster[] = [
 			strength: 70
 		},
 		uniques: [...resolveItems(['Rune sword']), ...generalGraardorCL],
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		customMonsterHP: 656,
 		combatXpMultiplier: 1.126,
 		healAmountNeeded: 20 * 5,
@@ -92,7 +91,7 @@ export const gwdKillables: KillableMonster[] = [
 			['Pernix body', "Karil's leathertop", 'Armadyl chestplate'],
 			['Pernix chaps', "Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
-		defaultAttackStyles: [SkillsEnum.Ranged],
+		defaultAttackStyles: ['ranged'],
 		customMonsterHP: 723,
 		combatXpMultiplier: 1.132,
 		healAmountNeeded: 18 * 4,
@@ -143,8 +142,8 @@ export const gwdKillables: KillableMonster[] = [
 			['Pernix body', "Karil's leathertop", 'Armadyl chestplate'],
 			['Pernix chaps', "Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
-		defaultAttackStyles: [SkillsEnum.Ranged],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
+		defaultAttackStyles: ['ranged'],
+		disallowedAttackStyles: ['attack', 'strength', 'magic'],
 		customMonsterHP: 641,
 		combatXpMultiplier: 1.159,
 		healAmountNeeded: 18 * 4,
@@ -191,7 +190,7 @@ export const gwdKillables: KillableMonster[] = [
 			['Pernix body', "Karil's leathertop", 'Armadyl chestplate'],
 			['Pernix chaps', "Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		customMonsterHP: 708,
 		combatXpMultiplier: 1.135,
 		healAmountNeeded: 20 * 3,

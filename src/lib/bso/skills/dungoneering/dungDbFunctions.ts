@@ -1,7 +1,6 @@
 import { reduceNumByPercent } from '@oldschoolgg/toolkit';
 
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/data/CollectionsExport.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { skillsMeetRequirements } from '@/lib/util.js';
 import { requiredSkills } from './dungData.js';
 
@@ -16,7 +15,7 @@ export function calcMaxFloorUserCanDo(user: MUser) {
 export function calcUserGorajanShardChance(user: MUser) {
 	return calcGorajanShardChance({
 		hasMasterCape: user.hasEquippedOrInBank('Dungeoneering master cape'),
-		dungLevel: user.skillLevel(SkillsEnum.Dungeoneering),
+		dungLevel: user.skillsAsLevels.dungeoneering,
 		hasRingOfLuck: user.hasEquippedOrInBank('Ring of luck')
 	});
 }

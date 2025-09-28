@@ -15,16 +15,9 @@ import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMo
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import type { AddMonsterXpParams, KillableMonster } from '@/lib/minions/types.js';
 import { NexMonster } from '@/lib/nex.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { XPBank } from '@/lib/structures/XPBank.js';
 
-export const attackStylesArr = [
-	SkillsEnum.Attack,
-	SkillsEnum.Strength,
-	SkillsEnum.Defence,
-	SkillsEnum.Magic,
-	SkillsEnum.Ranged
-] as const;
+export const attackStylesArr = ['attack', 'strength', 'defence', 'magic', 'ranged'] as const;
 export type AttackStyles = (typeof attackStylesArr)[number];
 
 const miscHpMap: Record<number, number> = {
@@ -46,8 +39,8 @@ interface ResolveAttackStylesParams {
 }
 
 function meleeOnly(skills: AttackStyles[]): AttackStyles[] {
-	if (skills.some(skill => skill === SkillsEnum.Ranged || skill === SkillsEnum.Magic)) {
-		return [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
+	if (skills.some(skill => skill === 'ranged' || skill === 'magic')) {
+		return ['attack', 'strength', 'defence'];
 	}
 	return skills;
 }
@@ -58,11 +51,11 @@ export function resolveAttackStyles({
 	attackStyles: inputAttackStyle
 }: ResolveAttackStylesParams): AttackStyles[] {
 	if (monster?.id === KingGoldemar.id) return meleeOnly(inputAttackStyle);
-	if (monster?.id === VasaMagus.id) return [SkillsEnum.Magic];
-	if (monster?.id === NexMonster.id) return [SkillsEnum.Ranged];
+	if (monster?.id === VasaMagus.id) return ['magic'];
+	if (monster?.id === NexMonster.id) return ['ranged'];
 	if (monster?.id === KalphiteKingMonster.id) return meleeOnly(inputAttackStyle);
 	if (monster?.id === Naxxus.id) {
-		return [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Magic];
+		return ['attack', 'strength', 'defence', 'magic'];
 	}
 	// The styles chosen by this user to use.
 	let attackStyles = inputAttackStyle ?? [];
@@ -82,17 +75,17 @@ export function resolveAttackStyles({
 	if (
 		boostMethod &&
 		(boostMethod.includes('barrage') || boostMethod.includes('burst')) &&
-		!attackStyles.includes(SkillsEnum.Magic)
+		!attackStyles.includes('magic')
 	) {
-		if (attackStyles.includes(SkillsEnum.Defence)) {
-			attackStyles = [SkillsEnum.Magic, SkillsEnum.Defence];
+		if (attackStyles.includes('defence')) {
+			attackStyles = ['magic', 'defence'];
 		} else {
-			attackStyles = [SkillsEnum.Magic];
+			attackStyles = ['magic'];
 		}
 	}
 
-	if (attackStyles.includes(SkillsEnum.Magic) && attackStyles.includes(SkillsEnum.Ranged)) {
-		attackStyles = [SkillsEnum.Magic];
+	if (attackStyles.includes('magic') && attackStyles.includes('ranged')) {
+		attackStyles = ['magic'];
 	}
 	return attackStyles;
 }
@@ -227,8 +220,8 @@ const gearStyleMap = { melee: GearStat.AttackCrush, mage: GearStat.AttackMagic, 
 
 export function getAttackStylesContext(styles: AttackStyles | User['attack_style']) {
 	let primaryStyle: PrimaryGearSetupType = 'melee';
-	if (styles.includes(SkillsEnum.Magic)) primaryStyle = 'mage';
-	else if (styles.includes(SkillsEnum.Ranged)) primaryStyle = 'range';
+	if (styles.includes('magic')) primaryStyle = 'mage';
+	else if (styles.includes('ranged')) primaryStyle = 'range';
 	const relevantGearStat: OffenceGearStat = gearStyleMap[primaryStyle];
 	return {
 		primaryStyle,

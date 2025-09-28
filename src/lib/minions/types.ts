@@ -8,7 +8,7 @@ import type { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/cus
 import type { QuestID } from '@/lib/minions/data/quests.js';
 import type { POHBoosts } from '@/lib/poh/index.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
-import type { LevelRequirements, SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
+import type { LevelRequirements, SkillNameType } from '@/lib/skilling/types.js';
 import type { XPBank } from '@/lib/structures/Bank.js';
 import type { GearRequirement, GearRequirements } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
@@ -136,7 +136,7 @@ export interface Consumable {
 }
 
 export interface AddXpParams {
-	skillName: SkillsEnum | SkillNameType;
+	skillName: SkillNameType;
 	amount: number;
 	duration?: number;
 	multiplier?: boolean;

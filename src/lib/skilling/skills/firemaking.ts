@@ -4,7 +4,6 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { EItem } from 'oldschooljs/EItem';
 
 import type { Burnable } from '@/lib/skilling/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 
 const burnables: Burnable[] = [
 	{
@@ -80,7 +79,7 @@ const pyromancerItems: { [key: number]: number } = {
 const Firemaking = {
 	aliases: ['fm', 'firemaking'],
 	Burnables: burnables,
-	id: SkillsEnum.Firemaking,
+	id: 'firemaking',
 	emoji: Emoji.Firemaking,
 	pyromancerItems,
 	name: 'Firemaking'

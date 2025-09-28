@@ -6,7 +6,6 @@ import { Bank, Items } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import { ClueTable } from '@/lib/simulation/sharedTables.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { FishingContestOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
@@ -51,7 +50,7 @@ export const fishingContestTask: MinionTask = {
 				["Champion's tackle box", 110]
 			] as const) {
 				const item = Items.getOrThrow(tackleBox);
-				if (user.skillLevel(SkillsEnum.Fishing) < fishLevel) break;
+				if (user.skillLevel('fishing') < fishLevel) break;
 				if (user.hasEquippedOrInBank(item.id)) continue;
 
 				loot.add(tackleBox);
@@ -86,11 +85,11 @@ export const fishingContestTask: MinionTask = {
 
 		const fishingXP = calculateFishingContestXP({
 			fishSizeCM: caughtFish[0].lengthCentimetres,
-			fishingLevel: user.skillLevel(SkillsEnum.Fishing)
+			fishingLevel: user.skillLevel('fishing')
 		});
 
 		const xpStr = await user.addXP({
-			skillName: SkillsEnum.Fishing,
+			skillName: 'fishing',
 			amount: fishingXP,
 			duration
 		});

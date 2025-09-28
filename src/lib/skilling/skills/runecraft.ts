@@ -2,8 +2,6 @@ import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { Bank, itemID, LootTable } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
-
 export interface Rune {
 	levels: number[][];
 	xp: number;
@@ -590,7 +588,7 @@ const Runecraft = {
 	aliases: ['runecraft', 'runecrafting'],
 	Runes,
 	Tiaras,
-	id: SkillsEnum.Runecraft,
+	id: 'runecraft',
 	emoji: Emoji.Runecraft,
 	timePerInventory: Time.Minute,
 	pouches: RCPouches,

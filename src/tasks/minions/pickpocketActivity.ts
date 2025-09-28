@@ -3,7 +3,7 @@ import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
 import { clueUpgraderEffect } from '@/lib/bso/inventionEffects.js';
 
 import { percentChance, randInt, roll, Time } from '@oldschoolgg/toolkit';
-import { Items, resolveItems, SkillsEnum } from 'oldschooljs';
+import { Items, resolveItems } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/stealables.js';
@@ -72,7 +72,7 @@ export const pickpocketTask: MinionTask = {
 		let rogueOutfitBoostActivated = false;
 
 		const updateBank = new UpdateBank();
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Thieving, obj.petChance);
+		const { petDropRate } = skillingPetDropRate(user, 'thieving', obj.petChance);
 
 		if (obj.type === 'pickpockable') {
 			for (let i = 0; i < successfulQuantity; i++) {
@@ -151,7 +151,7 @@ export const pickpocketTask: MinionTask = {
 		updateBank.userStatsBankUpdates.steal_loot_bank = updateBank.itemLootBank;
 
 		const txResult = await updateBank.transactWithItemsOrThrow(user);
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: xpReceived, duration });
+		const xpRes = await user.addXP({ skillName: 'thieving', amount: xpReceived, duration });
 
 		let str = `${user}, ${user.minionName} finished ${
 			obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'

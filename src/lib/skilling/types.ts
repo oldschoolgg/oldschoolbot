@@ -1,3 +1,4 @@
+import type { Emoji } from 'discord.js';
 import type { Bank, Item, ItemBank, LootTable } from 'oldschooljs';
 
 import type { QuestID } from '@/lib/minions/data/quests.js';
@@ -260,14 +261,25 @@ export interface Ash {
 }
 
 export type LevelRequirements = Partial<{
-	[key in SkillsEnum]: number;
+	[key in SkillNameType]: number;
 }>;
 
-export interface Skill {
+type Loose<T> = {
+	[K in keyof T]: T[K];
+} & {
+	[key: string]: unknown;
+};
+
+export type BaseSkill = {
 	aliases: string[];
-	id: SkillsEnum;
-	emoji: string;
+	id: SkillNameType;
+	emoji: Emoji;
 	name: string;
+};
+
+export type Skill = Loose<BaseSkill>;
+export function defineSkill<T extends BaseSkill>(s: T): T {
+	return s;
 }
 
 export interface Plankable {

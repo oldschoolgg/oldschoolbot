@@ -67,7 +67,6 @@ import getUserFoodFromBank from '@/lib/minions/functions/getUserFoodFromBank.js'
 import { getUsersPerkTier } from '@/lib/perkTiers.js';
 import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning.js';
 import Bars from '@/lib/skilling/skills/smithing/smeltables.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { patronMaxTripBonus } from '@/lib/util/calcMaxTripLength.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { assert } from '@/lib/util/logError.js';
@@ -699,9 +698,9 @@ async function cancelCommand(user: MUser) {
 
 async function mergeCommand(user: MUser, interaction: ChatInputCommandInteraction, tameID: number) {
 	const requirements = {
-		[SkillsEnum.Magic]: 110,
-		[SkillsEnum.Runecraft]: 110,
-		[SkillsEnum.Herblore]: 110
+		magic: 110,
+		runecraft: 110,
+		herblore: 110
 	};
 
 	if (!user.hasSkillReqs(requirements)) {

@@ -4,7 +4,6 @@ import { Bank, Items, resolveItems, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { Planks } from '@/lib/minions/data/planks.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ButlerActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -43,7 +42,7 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 		return `Thats not a valid plank to make. Valid planks are **${Planks.map(plank => plank.name).join(', ')}**.`;
 	}
 
-	const level = user.skillLevel(SkillsEnum.Construction);
+	const level = user.skillLevel('construction');
 	if (level < 50) {
 		return 'You need level 50 Construction to use the demon butler.';
 	}
