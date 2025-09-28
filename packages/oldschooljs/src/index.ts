@@ -13,7 +13,14 @@ import LootTable from './structures/LootTable.js';
 import { type Monster, type MonsterKillOptions, SimpleMonster } from './structures/Monster.js';
 import type { OpenableOpenOptions } from './structures/Openable.js';
 import { SimpleOpenable } from './structures/SimpleOpenable.js';
-import { addBanks, addItemToBank, averageBank, calcDropRatesFromBank, convertBankToPerHourStats } from './util/bank.js';
+import {
+	addBanks,
+	addItemToBank,
+	averageBank,
+	calcDropRatesFromBank,
+	convertBankToPerHourStats,
+	increaseBankQuantitesByPercent
+} from './util/bank.js';
 import itemID from './util/itemID.js';
 import { fromKMB, randomVariation, toKMB } from './util/smallUtils.js';
 import { calcCombatLevel, convertLVLtoXP, convertXPtoLVL } from './util/util.js';
@@ -44,6 +51,7 @@ export {
 	convertXPtoLVL,
 	deepResolveItems,
 	calcCombatLevel,
+	increaseBankQuantitesByPercent,
 	itemNameMap,
 	calcDropRatesFromBank,
 	convertBankToPerHourStats,
