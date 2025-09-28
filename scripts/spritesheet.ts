@@ -4,7 +4,11 @@ import { type GenerateResult, SpriteSheetGenerator } from '@oldschoolgg/spritesh
 import { isFunction, Stopwatch, uniqueArr } from '@oldschoolgg/toolkit';
 import '../src/lib/safeglobals.js';
 
+<<<<<<< HEAD
 import { type ItemBank, Items, resolveItems } from 'oldschooljs';
+=======
+import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
+>>>>>>> master
 import sharp from 'sharp';
 
 import bsoItemsJson from '../data/bso/bso_items.json' with { type: 'json' };

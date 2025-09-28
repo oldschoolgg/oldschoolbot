@@ -60,7 +60,7 @@ import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings
 import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
 import Farming from '@/lib/skilling/skills/farming/index.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
-import { ChargeBank } from '@/lib/structures/Banks.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
 import { defaultGear, Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import { MTame } from '@/lib/structures/MTame.js';

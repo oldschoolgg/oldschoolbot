@@ -22,11 +22,11 @@ import { shadesOfMortonCreatables } from '@/lib/data/creatables/shadesOfMorton.j
 import { slayerCreatables } from '@/lib/data/creatables/slayer.js';
 import { toaCreatables } from '@/lib/data/creatables/toa.js';
 import { tobCreatables } from '@/lib/data/creatables/tob.js';
-import { leaguesCreatables } from '@/lib/data/leagueCreatables.js';
-import { blisterwoodRequirements, ivandisRequirements } from '@/lib/minions/data/templeTrekking.js';
+import { formatList } from '@/lib/util/smallUtils.js';
+import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
+import { ivandisRequirements, blisterwoodRequirements } from '@/lib/minions/data/templeTrekking.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import type { Skills } from '@/lib/types/index.js';
-import { formatList } from '@/lib/util/smallUtils.js';
 
 export interface Createable {
 	name: string;
