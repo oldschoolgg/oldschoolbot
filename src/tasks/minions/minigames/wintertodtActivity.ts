@@ -1,3 +1,4 @@
+import { randInt } from '@oldschoolgg/rng';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { calcPerHour } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
@@ -9,7 +10,6 @@ import Firemaking from '@/lib/skilling/skills/firemaking.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { randInt } from '@/lib/util/rng.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const wintertodtTask: MinionTask = {

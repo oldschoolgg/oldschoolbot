@@ -1,4 +1,5 @@
-import { chunk, noOp, randInt, shuffleArr, sleep } from '@oldschoolgg/toolkit';
+import { randInt, shuffleArr } from '@oldschoolgg/rng';
+import { chunk, noOp, sleep } from '@oldschoolgg/toolkit';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import {

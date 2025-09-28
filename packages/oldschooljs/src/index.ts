@@ -8,7 +8,7 @@ import * as Misc from './simulation/misc/index.js';
 import { Monsters } from './simulation/monsters/index.js';
 import Openables from './simulation/openables/index.js';
 import { Bank, type ItemBank, type LootBank } from './structures/Bank.js';
-import Items, { type ArrayItemsResolved, deepResolveItems, itemNameMap, resolveItems } from './structures/Items.js';
+import { type ArrayItemsResolved, deepResolveItems, Items, itemNameMap, resolveItems } from './structures/Items.js';
 import LootTable from './structures/LootTable.js';
 import { type Monster, type MonsterKillOptions, SimpleMonster } from './structures/Monster.js';
 import type { OpenableOpenOptions } from './structures/Openable.js';
@@ -21,9 +21,8 @@ import {
 	convertBankToPerHourStats,
 	increaseBankQuantitesByPercent
 } from './util/bank.js';
-import itemID from './util/itemID.js';
-import { fromKMB, randomVariation, toKMB } from './util/smallUtils.js';
-import { calcCombatLevel, convertLVLtoXP, convertXPtoLVL } from './util/util.js';
+import { fromKMB, toKMB } from './util/smallUtils.js';
+import { convertLVLtoXP, convertXPtoLVL } from './util/util.js';
 
 export {
 	Bank,
@@ -41,16 +40,13 @@ export {
 	ItemGroups,
 	toKMB,
 	fromKMB,
-	itemID,
 	resolveItems,
 	addItemToBank,
 	addBanks,
-	randomVariation,
 	averageBank,
 	convertLVLtoXP,
 	convertXPtoLVL,
 	deepResolveItems,
-	calcCombatLevel,
 	increaseBankQuantitesByPercent,
 	itemNameMap,
 	calcDropRatesFromBank,
@@ -76,3 +72,7 @@ export const MAX_INT_JAVA = 2_147_483_647;
 
 export * from './gear/index.js';
 export * from './hiscores/index.js';
+
+export function itemID(name: string | number): number {
+	return Items.getId(name);
+}

@@ -1,4 +1,4 @@
-import { roll, shuffleArr } from '@oldschoolgg/toolkit';
+import { roll, shuffleArr } from '@oldschoolgg/rng';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { convertPercentChance, formatOrdinal, miniID } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';

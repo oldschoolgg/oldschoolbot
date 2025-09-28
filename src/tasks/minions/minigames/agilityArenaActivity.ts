@@ -1,7 +1,8 @@
-import { calcWhatPercent, reduceNumByPercent, roll, Time } from '@oldschoolgg/toolkit';
+import { randomVariation, roll } from '@oldschoolgg/rng';
+import { calcWhatPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Bank, randomVariation, toKMB } from 'oldschooljs';
+import { Bank, toKMB } from 'oldschooljs';
 
 import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';

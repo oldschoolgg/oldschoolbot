@@ -1,4 +1,5 @@
-import { objectEntries, percentChance, randInt, Time } from '@oldschoolgg/toolkit';
+import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+import { objectEntries, Time } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { perTimeUnitChance } from '@oldschoolgg/toolkit/util';
 import { Bank, EItem } from 'oldschooljs';
@@ -13,7 +14,6 @@ import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { rollForMoonKeyHalf } from '@/lib/util/minionUtils.js';
-import { roll } from '@/lib/util/rng.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 

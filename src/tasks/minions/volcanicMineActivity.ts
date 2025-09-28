@@ -1,4 +1,5 @@
-import { randFloat, randInt, roll, Time } from '@oldschoolgg/toolkit';
+import { randFloat, randInt, roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Bank, LootTable } from 'oldschooljs';
 

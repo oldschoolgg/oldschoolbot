@@ -1,8 +1,8 @@
+import { roll } from '@oldschoolgg/rng';
 import { Bank, LootTable } from 'oldschooljs';
 
 import type { GnomeRestaurantActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { roll } from '@/lib/util/rng.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const tipTable = new LootTable()

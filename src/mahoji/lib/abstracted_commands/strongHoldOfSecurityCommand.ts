@@ -1,5 +1,6 @@
+import { randomVariation } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit/datetime';
-import { Bank, randomVariation, resolveItems } from 'oldschooljs';
+import { Bank, resolveItems } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';

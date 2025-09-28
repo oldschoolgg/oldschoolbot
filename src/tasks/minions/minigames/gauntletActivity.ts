@@ -1,4 +1,5 @@
-import { calcWhatPercent, percentChance } from '@oldschoolgg/toolkit';
+import { percentChance } from '@oldschoolgg/rng';
+import { calcWhatPercent } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';

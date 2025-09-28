@@ -1,18 +1,9 @@
-import {
-	calcWhatPercent,
-	increaseNumByPercent,
-	percentChance,
-	randFloat,
-	randInt,
-	reduceNumByPercent,
-	roll,
-	sumArr,
-	Time
-} from '@oldschoolgg/toolkit';
+import { percentChance, randFloat, randInt, randomVariation, roll } from '@oldschoolgg/rng';
+import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/datetime';
 import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { userMention } from 'discord.js';
-import { Bank, EMonster, Items, itemID, randomVariation, resolveItems } from 'oldschooljs';
+import { Bank, EMonster, Items, itemID, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { BitField } from '@/lib/constants.js';

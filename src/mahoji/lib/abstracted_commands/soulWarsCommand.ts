@@ -1,5 +1,6 @@
+import { randomVariation } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { User } from '@prisma/client';
 import { Bank, Items } from 'oldschooljs';
 

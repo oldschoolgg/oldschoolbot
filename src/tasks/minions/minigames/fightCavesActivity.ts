@@ -1,4 +1,5 @@
-import { calcPercentOfNum, calcWhatPercent, randInt } from '@oldschoolgg/toolkit';
+import { percentChance, randInt } from '@oldschoolgg/rng';
+import { calcPercentOfNum, calcWhatPercent } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit/util';
 import { Bank, itemID, Monsters } from 'oldschooljs';
@@ -9,7 +10,6 @@ import { DiaryID } from '@/lib/minions/types.js';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { FightCavesActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { percentChance } from '@/lib/util/rng.js';
 import { fightCavesCost } from '@/mahoji/lib/abstracted_commands/fightCavesCommand.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 

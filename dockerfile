@@ -27,6 +27,7 @@ COPY packages/test-dashboard/package.json ./packages/test-dashboard/package.json
 COPY packages/toolkit/package.json ./packages/toolkit/package.json
 COPY packages/spritesheet/package.json ./packages/spritesheet/package.json
 COPY packages/cli/package.json ./packages/cli/package.json
+COPY packages/rng/package.json ./packages/rng/package.json
 COPY docs/package.json ./docs/package.json
 
 RUN pnpm install --frozen-lockfile

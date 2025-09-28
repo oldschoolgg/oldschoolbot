@@ -1,10 +1,9 @@
-import { percentChance, randInt } from '@oldschoolgg/toolkit';
+import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import { ItemGroups } from 'oldschooljs';
 
 import Prayer from '@/lib/skilling/skills/prayer.js';
 import type { OfferingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { roll } from '@/lib/util/rng.js';
 
 export function zealOutfitBoost(user: MUser) {
 	let zealOutfitAmount = 0;

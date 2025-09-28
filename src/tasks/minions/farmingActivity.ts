@@ -1,3 +1,4 @@
+import { randInt, roll } from '@oldschoolgg/rng';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { Bank, Monsters } from 'oldschooljs';
 
@@ -12,7 +13,6 @@ import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/l
 import { getFarmingKeyFromName } from '@/lib/util/farmingHelpers.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { assert } from '@/lib/util/logError.js';
-import { randInt, roll } from '@/lib/util/rng.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 import { skillingPetDropRate } from '@/lib/util.js';

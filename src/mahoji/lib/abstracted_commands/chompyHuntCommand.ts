@@ -1,4 +1,5 @@
-import { percentChance, Time } from '@oldschoolgg/toolkit';
+import { percentChance } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Bank } from 'oldschooljs';
 

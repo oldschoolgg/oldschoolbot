@@ -1,4 +1,4 @@
-import { randArrItem, randInt, roll } from '@oldschoolgg/toolkit';
+import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Bank, LootTable } from 'oldschooljs';
 

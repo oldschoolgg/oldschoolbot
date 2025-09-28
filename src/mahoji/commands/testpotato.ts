@@ -1,4 +1,5 @@
-import { noOp, randArrItem, randInt, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { randArrItem, randInt } from '@oldschoolgg/rng';
+import { noOp, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { stringMatches } from '@oldschoolgg/toolkit/util';
 import { type Prisma, xp_gains_skill_enum } from '@prisma/client';

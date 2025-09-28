@@ -1,4 +1,4 @@
-import { randArrItem, randInt } from '@oldschoolgg/toolkit';
+import { randArrItem, randInt } from '@oldschoolgg/rng';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
 import { Bank, EItem } from 'oldschooljs';

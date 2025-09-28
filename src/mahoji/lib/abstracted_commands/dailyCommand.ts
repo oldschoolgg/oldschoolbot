@@ -1,4 +1,5 @@
-import { roll, shuffleArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { roll, shuffleArr } from '@oldschoolgg/rng';
+import { Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
 import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/util';

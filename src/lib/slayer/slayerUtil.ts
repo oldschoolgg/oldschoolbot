@@ -1,4 +1,5 @@
-import { notEmpty, randFloat, randInt } from '@oldschoolgg/toolkit';
+import { randFloat, randInt, roll } from '@oldschoolgg/rng';
+import { notEmpty } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import { Bank, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
@@ -9,7 +10,6 @@ import { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { getNewUser } from '@/lib/settings/settings.js';
 import { logError } from '@/lib/util/logError.js';
-import { roll } from '@/lib/util/rng.js';
 import { autoslayModes } from './constants.js';
 import { slayerMasters } from './slayerMasters.js';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks.js';

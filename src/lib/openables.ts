@@ -1,3 +1,4 @@
+import { roll } from '@oldschoolgg/rng';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
 import {
@@ -24,7 +25,6 @@ import {
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { cluesRaresCL } from '@/lib/data/CollectionsExport.js';
 import { openSeedPack } from '@/lib/skilling/functions/calcFarmingContracts.js';
-import { roll } from '@/lib/util/rng.js';
 import { defaultFarmingContract } from './minions/farming/index.js';
 import type { FarmingContract } from './minions/farming/types.js';
 import { shadeChestOpenables } from './shadesKeys.js';

@@ -1,4 +1,5 @@
-import { objectEntries, randArrItem, randInt, Time } from '@oldschoolgg/toolkit';
+import { randArrItem, randInt } from '@oldschoolgg/rng';
+import { objectEntries, Time } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { Bank, convertLVLtoXP, type ItemBank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';

@@ -1,4 +1,5 @@
-import { chunk, randInt, Time } from '@oldschoolgg/toolkit';
+import { randInt } from '@oldschoolgg/rng';
+import { chunk, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { channelIsSendable, makeComponents, makeEphemeralPaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
 import type { Giveaway } from '@prisma/client';

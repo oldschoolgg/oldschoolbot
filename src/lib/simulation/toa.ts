@@ -1,13 +1,10 @@
+import { percentChance, randArrItem, randInt, randomVariation, roll } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
 	objectEntries,
-	percentChance,
-	randArrItem,
-	randInt,
 	reduceNumByPercent,
-	roll,
 	round,
 	scaleNumber,
 	sumArr,
@@ -21,7 +18,7 @@ import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { type Minigame, XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
-import { Bank, Items, itemID, LootTable, randomVariation, resolveItems } from 'oldschooljs';
+import { Bank, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 import { clamp } from 'remeda';
 

@@ -1,6 +1,7 @@
 import * as fs from 'node:fs';
 import path from 'node:path';
-import { objectEntries, randInt } from '@oldschoolgg/toolkit';
+import { randInt } from '@oldschoolgg/rng';
+import { objectEntries } from '@oldschoolgg/toolkit';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { loadImage } from 'skia-canvas';
 

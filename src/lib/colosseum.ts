@@ -1,10 +1,9 @@
+import { percentChance, randInt } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
 	objectEntries,
-	percentChance,
-	randInt,
 	reduceNumByPercent,
 	sumArr,
 	Time

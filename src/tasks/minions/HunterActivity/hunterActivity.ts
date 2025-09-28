@@ -1,4 +1,5 @@
-import { randInt, Time } from '@oldschoolgg/toolkit';
+import { randInt, roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import type { Prisma } from '@prisma/client';
 import { Bank, ECreature, EquipmentSlot, itemID } from 'oldschooljs';
@@ -11,7 +12,6 @@ import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
 import { logError } from '@/lib/util/logError.js';
 import { PeakTier } from '@/lib/util/peaks.js';
-import { roll } from '@/lib/util/rng.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';

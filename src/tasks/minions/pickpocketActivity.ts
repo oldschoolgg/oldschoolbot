@@ -1,4 +1,4 @@
-import { percentChance, randInt, roll } from '@oldschoolgg/toolkit';
+import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 

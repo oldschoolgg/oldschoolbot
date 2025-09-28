@@ -1,10 +1,10 @@
+import { percentChance, randInt } from '@oldschoolgg/rng';
 import { Bank, EItem } from 'oldschooljs';
 
 import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { percentChance, randInt } from '@/lib/util/rng.js';
 
 export const herbloreTask: MinionTask = {
 	type: 'Herblore',

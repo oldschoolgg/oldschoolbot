@@ -1,3 +1,4 @@
+import { randInt } from '@oldschoolgg/rng';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import {
@@ -7,7 +8,6 @@ import {
 	loadAndCacheLocalImage,
 	measureTextWidth
 } from '@/lib/canvas/canvasUtil.js';
-import { randInt } from '@/lib/util/rng.js';
 
 const bg = loadAndCacheLocalImage('./src/lib/resources/images/tob-bg.png');
 

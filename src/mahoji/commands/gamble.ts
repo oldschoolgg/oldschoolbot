@@ -1,4 +1,4 @@
-import { randArrItem } from '@oldschoolgg/toolkit';
+import { randArrItem } from '@oldschoolgg/rng';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';

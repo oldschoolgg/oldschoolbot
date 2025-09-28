@@ -1,4 +1,5 @@
-import { calcWhatPercent, noOp, notEmpty, randArrItem, sleep, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { randArrItem } from '@oldschoolgg/rng';
+import { calcWhatPercent, noOp, notEmpty, sleep, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { allAbstractCommands, bulkUpdateCommands, type MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import { calcPerHour, cleanString, dateFm, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import { type ClientStorage, economy_transaction_type } from '@prisma/client';

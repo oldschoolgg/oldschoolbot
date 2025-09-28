@@ -1,4 +1,5 @@
-import { noOp, randArrItem } from '@oldschoolgg/toolkit';
+import { randArrItem } from '@oldschoolgg/rng';
+import { noOp } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { Bank } from 'oldschooljs';
 

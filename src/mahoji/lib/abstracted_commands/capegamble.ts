@@ -1,3 +1,4 @@
+import { roll } from '@oldschoolgg/rng';
 import { Events } from '@oldschoolgg/toolkit/constants';
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
@@ -7,7 +8,6 @@ import { Bank, Items } from 'oldschooljs';
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
 import { petMessage } from '@/lib/util/displayCluesAndPets.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { roll } from '@/lib/util/rng.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export async function capeGambleStatsCommand(user: MUser) {

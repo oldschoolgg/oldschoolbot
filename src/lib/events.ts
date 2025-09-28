@@ -1,4 +1,5 @@
-import { isFunction, roll, Time } from '@oldschoolgg/toolkit';
+import { roll } from '@oldschoolgg/rng';
+import { isFunction, Time } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { UserError } from '@oldschoolgg/toolkit/structures';

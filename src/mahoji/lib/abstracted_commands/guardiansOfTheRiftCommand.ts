@@ -1,5 +1,6 @@
+import { randomVariation } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Bank, Items, itemID } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';

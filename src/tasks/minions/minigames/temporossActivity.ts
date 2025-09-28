@@ -1,4 +1,5 @@
-import { increaseNumByPercent, randInt } from '@oldschoolgg/toolkit';
+import { randInt } from '@oldschoolgg/rng';
+import { increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { calcPerHour, formatOrdinal } from '@oldschoolgg/toolkit/util';
 

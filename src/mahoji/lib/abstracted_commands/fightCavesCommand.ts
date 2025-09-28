@@ -1,4 +1,5 @@
-import { calcWhatPercent, percentChance, randInt, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { percentChance, randInt } from '@oldschoolgg/rng';
+import { calcWhatPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Bank, itemID, Monsters } from 'oldschooljs';
 

@@ -1,4 +1,4 @@
-import { randomVariation } from '@oldschoolgg/toolkit/util';
+import { randomVariation } from '@oldschoolgg/rng';
 import type { User } from '@prisma/client';
 import { type Monster, Monsters, NIGHTMARES_HP } from 'oldschooljs';
 import { GearStat, type OffenceGearStat } from 'oldschooljs/gear';

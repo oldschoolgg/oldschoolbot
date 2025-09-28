@@ -1,4 +1,5 @@
-import { randArrItem, randInt, shuffleArr, sumArr, Time } from '@oldschoolgg/toolkit';
+import { randArrItem, randInt, shuffleArr } from '@oldschoolgg/rng';
+import { sumArr, Time } from '@oldschoolgg/toolkit';
 import {
 	type Activity,
 	type activity_type_enum,

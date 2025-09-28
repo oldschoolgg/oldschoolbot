@@ -1,3 +1,4 @@
+import { SeedableRNG } from '@oldschoolgg/rng';
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import { stringMatches } from '@oldschoolgg/toolkit/string-util';
 import {
@@ -29,7 +30,6 @@ import { NexNonUniqueTable, NexUniqueTable } from '@/lib/simulation/misc.js';
 import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
-import { SeedableRNG } from '@/lib/util/rng.js';
 import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport.js';
 import {
 	abyssalSireCL,

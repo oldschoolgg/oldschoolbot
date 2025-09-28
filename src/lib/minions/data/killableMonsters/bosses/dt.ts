@@ -1,4 +1,5 @@
-import { roll, Time } from '@oldschoolgg/toolkit';
+import { roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, deepResolveItems, Items, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 

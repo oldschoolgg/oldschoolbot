@@ -1,3 +1,4 @@
+import { SeedableRNG } from '@oldschoolgg/rng';
 import { calcPerHour, Table } from '@oldschoolgg/toolkit';
 import { Time } from '@oldschoolgg/toolkit/datetime';
 import { type Bank, convertLVLtoXP, EItem, Items } from 'oldschooljs';
@@ -8,7 +9,6 @@ applyStaticDefine();
 import '../../src/lib/safeglobals.js';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
-import { SeedableRNG } from '@/lib/util/rng.js';
 import { applyStaticDefine } from '../../meta.js';
 import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
 import type { Fish } from '../../src/lib/skilling/types.js';

@@ -1,7 +1,7 @@
+import { randInt, roll } from '@oldschoolgg/rng';
 import { Bank, LootTable } from 'oldschooljs';
 
 import type { MUserClass } from '@/lib/MUser.js';
-import { randInt, roll } from '@/lib/util/rng.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 const Room1Table = new LootTable().add('Ivory Comb', 1, 3).add('Pottery scarab').add('Pottery statuette');

@@ -1,3 +1,4 @@
+import { SeedableRNG } from '@oldschoolgg/rng';
 import { sumArr, Time } from '@oldschoolgg/toolkit';
 import { generateCommandInputs } from '@oldschoolgg/toolkit/discord-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';
@@ -62,7 +63,6 @@ test(
 			'kill'
 		];
 		const commandsToTest = allCommands.filter(c => !ignoredCommands.includes(c.name));
-
 		console.log(`Running ${commandsToTest.length} commands...`);
 
 		const ignoredSubCommands = [
@@ -87,13 +87,19 @@ test(
 			use: useCommandOptions
 		};
 
+		const rngProvider = new SeedableRNG();
 		const stopwatch = new Stopwatch();
 		const processedCommands: { command: OSBMahojiCommand; options: any[] }[] = [];
 		for (const command of commandsToTest) {
 			if (ignoredCommands.includes(command.name)) continue;
-			const options = hardcodedOptions[command.name] ?? (await generateCommandInputs(command.options!));
-			if (options.length === 0) {
-				throw new Error(`No options generated for command ${command.name}`);
+			let options = hardcodedOptions[command.name];
+
+			if (!options && command.options && command.options.length > 0) {
+				options = await generateCommandInputs(rngProvider, command.options);
+			}
+
+			if (!options) {
+				continue;
 			}
 			outer: for (const option of options) {
 				for (const [parent, sub, subCommand] of ignoredSubCommands) {

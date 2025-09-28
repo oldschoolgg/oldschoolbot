@@ -1,9 +1,9 @@
+import { randInt, roll } from '@oldschoolgg/rng';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 
 import { MAX_QP } from '@/lib/minions/data/quests.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { randInt, roll } from '@/lib/util/rng.js';
 
 export const questingTask: MinionTask = {
 	type: 'Questing',

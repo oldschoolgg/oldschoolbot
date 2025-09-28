@@ -1,4 +1,5 @@
-import { increaseNumByPercent, randInt, roll, sumArr, Time } from '@oldschoolgg/toolkit';
+import { randInt, roll } from '@oldschoolgg/rng';
+import { increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { toKMB } from 'oldschooljs';
 

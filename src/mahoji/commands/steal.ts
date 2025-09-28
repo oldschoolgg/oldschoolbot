@@ -1,3 +1,4 @@
+import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
 import type { User } from 'discord.js';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
@@ -11,7 +12,6 @@ import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { logError } from '@/lib/util/logError.js';
-import { randInt } from '@/lib/util/rng.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { rogueOutfitPercentBonus } from '@/mahoji/mahojiSettings.js';
 import { calcLootXPPickpocketing } from '@/tasks/minions/pickpocketActivity.js';

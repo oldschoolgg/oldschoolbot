@@ -1,7 +1,7 @@
-import { roll, shuffleArr } from '@oldschoolgg/toolkit';
+import { randomVariation, roll, shuffleArr } from '@oldschoolgg/rng';
 import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import { formatOrdinal } from '@oldschoolgg/toolkit/util';
-import { Bank, ChambersOfXeric, randomVariation, resolveItems } from 'oldschooljs';
+import { Bank, ChambersOfXeric, resolveItems } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '@/lib/data/CollectionsExport.js';

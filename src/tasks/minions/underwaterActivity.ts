@@ -1,8 +1,8 @@
+import { percentChance } from '@oldschoolgg/rng';
 import { Bank, LootTable } from 'oldschooljs';
 
 import type { UnderwaterAgilityThievingTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { percentChance } from '@/lib/util/rng.js';
 
 // Bonus loot from clams and chests, TODO: check wiki in future for more accurate rates
 const clamChestTable = new LootTable()

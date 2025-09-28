@@ -1,4 +1,5 @@
-import { roll, stripNonAlphanumeric } from '@oldschoolgg/toolkit';
+import { roll } from '@oldschoolgg/rng';
+import { stripNonAlphanumeric } from '@oldschoolgg/toolkit';
 import { Emoji } from '@oldschoolgg/toolkit/constants';
 import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';

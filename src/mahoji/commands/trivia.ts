@@ -1,4 +1,5 @@
-import { shuffleArr, uniqueArr } from '@oldschoolgg/toolkit';
+import { shuffleArr } from '@oldschoolgg/rng';
+import { uniqueArr } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, type TextChannel, userMention } from 'discord.js';
 

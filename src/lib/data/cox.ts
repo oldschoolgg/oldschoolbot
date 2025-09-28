@@ -1,14 +1,11 @@
+import { percentChance, randInt, randomVariation, shuffleArr } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
-	percentChance,
-	randInt,
 	reduceNumByPercent,
-	shuffleArr,
 	Time
 } from '@oldschoolgg/toolkit';
-import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, type ChambersOfXericOptions, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 

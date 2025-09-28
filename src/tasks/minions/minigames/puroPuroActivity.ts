@@ -1,4 +1,5 @@
-import { randInt, reduceNumByPercent, roll, Time } from '@oldschoolgg/toolkit';
+import { randInt, roll } from '@oldschoolgg/rng';
+import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID } from 'oldschooljs';
 
 import { implings, puroImpHighTierTable, puroImplings, puroImpNormalTable, puroImpSpellTable } from '@/lib/implings.js';

@@ -1,4 +1,5 @@
-import { randArrItem, sumArr, Time } from '@oldschoolgg/toolkit';
+import { randArrItem } from '@oldschoolgg/rng';
+import { sumArr, Time } from '@oldschoolgg/toolkit';
 import { isValidDiscordSnowflake, type MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
 import { Stopwatch } from '@oldschoolgg/toolkit/structures';

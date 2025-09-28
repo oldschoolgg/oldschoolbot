@@ -1,3 +1,4 @@
+import { roll } from '@oldschoolgg/rng';
 import { Bank, GrandHallowedCoffin } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -6,7 +7,6 @@ import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables
 import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { roll } from '@/lib/util/rng.js';
 
 export const sepulchreTask: MinionTask = {
 	type: 'Sepulchre',

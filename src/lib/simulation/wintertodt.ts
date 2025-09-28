@@ -1,4 +1,5 @@
-import { calcPercentOfNum, randInt, roll } from '@oldschoolgg/toolkit';
+import { randInt, roll } from '@oldschoolgg/rng';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { normal } from '@oldschoolgg/toolkit/math';
 import { SimpleTable } from '@oldschoolgg/toolkit/structures';
 import { Bank, convertXPtoLVL, itemID, LootTable, resolveItems } from 'oldschooljs';

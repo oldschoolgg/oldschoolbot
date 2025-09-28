@@ -1,5 +1,6 @@
+import { randomVariation } from '@oldschoolgg/rng';
 import { increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { Bank, Items } from 'oldschooljs';
 
 import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';

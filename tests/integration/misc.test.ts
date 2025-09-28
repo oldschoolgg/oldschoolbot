@@ -1,4 +1,4 @@
-import { randArrItem } from '@oldschoolgg/toolkit';
+import { randArrItem } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 

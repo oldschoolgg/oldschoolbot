@@ -1,4 +1,5 @@
-import { increaseNumByPercent, randInt } from '@oldschoolgg/toolkit';
+import { randInt } from '@oldschoolgg/rng';
+import { increaseNumByPercent } from '@oldschoolgg/toolkit';
 
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';

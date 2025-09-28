@@ -1,4 +1,4 @@
-import { randomVariation } from '@oldschoolgg/toolkit/util';
+import { randomVariation } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 import { clone } from 'remeda';
 
