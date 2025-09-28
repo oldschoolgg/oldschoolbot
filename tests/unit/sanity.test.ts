@@ -1,8 +1,9 @@
-import { exponentialPercentScale } from '@oldschoolgg/toolkit';
+import { exponentialPercentScale, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, EquipmentSlot, Items, itemID } from 'oldschooljs';
 import { clamp } from 'remeda';
 import { describe, expect, test } from 'vitest';
 
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import Buyables from '../../src/lib/data/buyables/buyables.js';
 import { marketPriceOfBank } from '../../src/lib/marketPrices.js';
 import { allOpenables } from '../../src/lib/openables.js';
@@ -89,5 +90,13 @@ describe('Sanity', () => {
 	test('clamp', () => {
 		expect(clamp(100, { min: 0, max: 50 })).toEqual(50);
 		expect(clamp(100, { min: 200, max: 250 })).toEqual(200);
+	});
+
+	test('Duplicate killable monsters', () => {
+		const monsterNames = killableMonsters.map(m => m.name).sort((a, b) => a.localeCompare(b));
+		expect(uniqueArr(monsterNames).length).toEqual(monsterNames.length);
+
+		const monsterIDs = killableMonsters.map(m => m.id);
+		expect(uniqueArr(monsterIDs)).toEqual(monsterIDs);
 	});
 });

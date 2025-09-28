@@ -1,15 +1,14 @@
-import { randInt } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { gambleCommand } from '../../../src/mahoji/commands/gamble.js';
 import { createTestUser, mockClient, mockMathRandom } from '../util.js';
 
-vi.mock('../../../src/lib/util', async () => {
-	const actual: any = await vi.importActual('../../../src/lib/util');
+vi.mock('@oldschoolgg/rng', async importOriginal => {
+	const original = await importOriginal<typeof import('@oldschoolgg/rng')>();
 	return {
-		...actual,
-		cryptoRand: (min: number, max: number) => randInt(min, max)
+		...original,
+		cryptoRng: original.MathRNG
 	};
 });
 
@@ -26,8 +25,9 @@ describe('Dice Command', async () => {
 	test('Lose dice', async () => {
 		await user.gpMatch(100_000_000);
 		const unmock = mockMathRandom(0.1);
+
 		const result = await user.runCommand(gambleCommand, { dice: { amount: '100m' } });
-		expect(result).toEqual('Unknown rolled **30** on the percentile dice, and you lost -100m GP.');
+		expect(result).toEqual('Unknown rolled **11** on the percentile dice, and you lost -100m GP.');
 		await user.gpMatch(0);
 		await user.statsMatch('dice_losses', 1);
 		await user.statsMatch('gp_dice', BigInt(-100_000_000));
@@ -39,7 +39,7 @@ describe('Dice Command', async () => {
 		const unmock = mockMathRandom(0.9);
 		await user.gpMatch(100_000_000);
 		const result = await user.runCommand(gambleCommand, { dice: { amount: '100m' } });
-		expect(result).toEqual('Unknown rolled **67** on the percentile dice, and you won 100m GP.');
+		expect(result).toEqual('Unknown rolled **91** on the percentile dice, and you won 100m GP.');
 		await user.gpMatch(200_000_000);
 		await user.statsMatch('dice_wins', 1);
 		await user.statsMatch('gp_dice', BigInt(100_000_000));

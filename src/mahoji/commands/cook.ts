@@ -5,7 +5,7 @@ import { Bank, itemID } from 'oldschooljs';
 import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Cooking, { Cookables } from '@/lib/skilling/skills/cooking/cooking.js';
 import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
-import LeapingFish from '@/lib/skilling/skills/cooking/leapingFish.js';
+import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
 import type { CookingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';

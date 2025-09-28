@@ -3,9 +3,7 @@ import type { PlayerOwnedHouse } from '@prisma/client';
 import { Bank, convertBankToPerHourStats, Items, itemID, resolveItems, toKMB } from 'oldschooljs';
 import { omit } from 'remeda';
 
-applyStaticDefine();
-
-import '../src/lib/safeglobals';
+import '../src/lib/safeglobals.js';
 
 import { maxMage, maxMelee, maxRange } from '@/lib/bso/depthsOfAtlantis.js';
 import { materialTypes } from '@/lib/bso/skills/invention/index.js';
@@ -29,7 +27,6 @@ import {
 	newMinionKillCommand
 } from '@/mahoji/lib/abstracted_commands/minionKill/newMinionKill.js';
 import { doMonsterTrip } from '@/tasks/minions/monsterActivity.js';
-import { applyStaticDefine } from '../meta.js';
 
 const MAX_TRIP_LENGTH = Time.Hour * 600;
 const skills = ['attack', 'strength', 'defence', 'magic', 'ranged', 'hitpoints', 'slayer'];
@@ -97,7 +94,6 @@ for (const monster of killableMonsters) {
 		chargeBank,
 		gear,
 		bank,
-		skillsAsLevels,
 		materials,
 		pet: itemID('Ori'),
 		skillsAsXP,

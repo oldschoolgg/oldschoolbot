@@ -1,5 +1,5 @@
+import { normalizeTOAUsers } from '@/lib/simulation/toaUtils.js';
 import type { ActivityTaskData, MonsterActivityTaskOptions, TOAOptions } from '@/lib/types/minions.js';
-import { normalizeTOAUsers } from '@/lib/util/smallUtils.js';
 import type { CAViewType } from '@/mahoji/commands/ca.js';
 import type { CombatAchievement } from './combatAchievements.js';
 

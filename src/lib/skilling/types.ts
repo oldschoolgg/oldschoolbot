@@ -1,4 +1,4 @@
-import type { Emoji } from 'discord.js';
+import type { Emoji } from '@oldschoolgg/toolkit';
 import type { Bank, Item, ItemBank, LootTable } from 'oldschooljs';
 
 import type { QuestID } from '@/lib/minions/data/quests.js';
@@ -202,12 +202,6 @@ export interface Mixable {
 	wesley?: boolean;
 	qpRequired?: number;
 	defaultQuantity?: number;
-}
-
-export interface CutLeapingFish {
-	item: Item;
-	aliases: string[];
-	tickRate: number;
 }
 
 export interface Bone {

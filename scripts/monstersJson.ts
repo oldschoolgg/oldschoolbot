@@ -7,9 +7,6 @@ import { Bank, Items, type LootTable } from 'oldschooljs';
 
 import { BOT_TYPE } from '@/lib/constants.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
-import { applyStaticDefine } from '../meta.js';
-
-applyStaticDefine();
 
 export function createMonstersJson() {
 	const stopwatch = new Stopwatch();

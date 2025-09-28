@@ -1,8 +1,8 @@
-import { randInt, shuffleArr, uniqueArr } from '@oldschoolgg/toolkit';
+import { cryptoRng } from '@oldschoolgg/rng';
+import { uniqueArr } from '@oldschoolgg/toolkit';
 import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import type { User as DJSUser } from 'discord.js';
 import { Bank, convertLVLtoXP, type EMonster, type ItemBank, Items, Monsters } from 'oldschooljs';
-import { integer, nodeCrypto } from 'random-js';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
 
@@ -295,9 +295,9 @@ export class TestUser extends MUserClass {
 
 	randomBankSubset() {
 		const bank = new Bank();
-		const items = shuffleArr(this.bankWithGP.items()).slice(0, randInt(0, this.bankWithGP.length));
+		const items = cryptoRng.shuffle(this.bankWithGP.items()).slice(0, cryptoRng.randInt(0, this.bankWithGP.length));
 		for (const [item] of items) {
-			bank.add(item, randInt(1, this.bankWithGP.amount(item.id)));
+			bank.add(item, cryptoRng.randInt(1, this.bankWithGP.amount(item.id)));
 		}
 		return bank;
 	}
@@ -305,12 +305,13 @@ export class TestUser extends MUserClass {
 
 const idsUsed = new Set<string>();
 
-export function unMockedCyptoRand(min: number, max: number) {
-	return integer(min, max)(nodeCrypto);
-}
-
 export function mockedId() {
-	return unMockedCyptoRand(1, 5_000_000_000_000).toString();
+	const id = cryptoRng.randInt(1, 5_000_000_000_000).toString();
+	if (idsUsed.has(id)) {
+		throw new Error(`ID ${id} has already been used`);
+	}
+	idsUsed.add(id);
+	return id;
 }
 
 export async function mockUser(
@@ -377,10 +378,6 @@ export async function mockUser(
 
 export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
 	const id = userData?.id ?? mockedId();
-	if (idsUsed.has(id)) {
-		throw new Error(`ID ${id} has already been used`);
-	}
-	idsUsed.add(id);
 
 	const bank = _bank ? _bank.clone() : null;
 	let GP = userData.GP ? Number(userData.GP) : undefined;

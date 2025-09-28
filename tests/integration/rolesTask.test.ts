@@ -6,7 +6,7 @@ import { runRolesTask } from '../../src/lib/rolesTask.js';
 import type { MinigameName } from '../../src/lib/settings/minigames.js';
 import { Minigames } from '../../src/lib/settings/minigames.js';
 import { userStatsBankUpdate } from '../../src/mahoji/mahojiSettings.js';
-import { createTestUser, mockedId, unMockedCyptoRand } from './util.js';
+import { createTestUser, mockedId } from './util.js';
 
 describe.skip('Roles Task', async () => {
 	test('Should not throw', async () => {
@@ -44,7 +44,7 @@ describe.skip('Roles Task', async () => {
 				message_id: mockedId(),
 				reaction_id: mockedId(),
 				users_entered: [],
-				id: unMockedCyptoRand(1, 10_000_000),
+				id: Number(mockedId()),
 				completed: false,
 				duration: 10_000
 			}

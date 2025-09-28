@@ -77,9 +77,6 @@ importers:
       postgres:
         specifier: ^3.4.7
         version: 3.4.7
-      random-js:
-        specifier: ^2.1.0
-        version: 2.1.0
       remeda:
         specifier: ^2.23.0
         version: 2.23.0

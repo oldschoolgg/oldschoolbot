@@ -291,8 +291,9 @@ export function handleTriggerShootingStar(user: MUserClass, data: ActivityTaskDa
 	if (activitiesCantGetStars.includes(data.type)) return;
 	const miningLevel = user.skillsAsLevels.mining;
 	const elligibleStars = starSizes.filter(i => i.chance > 0 && i.level <= miningLevel);
-	const minutes = data.duration / Time.Minute;
-	const baseChance = 540 / minutes;
+	const minutes = Math.floor(data.duration / Time.Minute);
+	if (minutes < 1) return;
+	const baseChance = Math.floor(540 / minutes);
 	if (!roll(baseChance)) return;
 	const shootingStarTable = new SimpleTable<Star>();
 	for (const star of elligibleStars) shootingStarTable.add(star, star.chance);
