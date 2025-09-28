@@ -5,7 +5,7 @@ import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { MAX_CLUES_DROPPED } from '@/lib/constants.js';
 import { allPetsCL } from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
-import { formatList } from './smallUtils.js';
+import { formatList } from '@/lib/util/smallUtils.js';
 
 export function petMessage(loot: Bank | null | undefined) {
 	const emoji = pets.find(p => loot?.has(p.name))?.emoji;

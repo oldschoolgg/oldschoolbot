@@ -2,20 +2,20 @@ import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, deepResolveItems, EMonster, itemID, Monsters, NIGHTMARES_HP, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
+import { bossKillables } from '@/lib/minions/data/killableMonsters/bosses/index.js';
+import { camdozaalMonsters } from '@/lib/minions/data/killableMonsters/camdozaalMonsters.js';
+import { chaeldarMonsters } from '@/lib/minions/data/killableMonsters/chaeldarMonsters.js';
+import { creatureCreationCreatures } from '@/lib/minions/data/killableMonsters/creatureCreation.js';
+import { konarMonsters } from '@/lib/minions/data/killableMonsters/konarMonsters.js';
+import { krystiliaMonsters } from '@/lib/minions/data/killableMonsters/krystiliaMonsters.js';
+import { lowKillableMonsters } from '@/lib/minions/data/killableMonsters/low.js';
+import { mazchnaMonsters } from '@/lib/minions/data/killableMonsters/mazchnaMonsters.js';
+import { nieveMonsters } from '@/lib/minions/data/killableMonsters/nieveMonsters.js';
+import { reanimatedMonsters } from '@/lib/minions/data/killableMonsters/reanimated.js';
+import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
+import { turaelMonsters } from '@/lib/minions/data/killableMonsters/turaelMonsters.js';
+import { vannakaMonsters } from '@/lib/minions/data/killableMonsters/vannakaMonsters.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
-import { bossKillables } from './bosses/index.js';
-import { camdozaalMonsters } from './camdozaalMonsters.js';
-import { chaeldarMonsters } from './chaeldarMonsters.js';
-import { creatureCreationCreatures } from './creatureCreation.js';
-import { konarMonsters } from './konarMonsters.js';
-import { krystiliaMonsters } from './krystiliaMonsters.js';
-import { lowKillableMonsters } from './low.js';
-import { mazchnaMonsters } from './mazchnaMonsters.js';
-import { nieveMonsters } from './nieveMonsters.js';
-import { reanimatedMonsters } from './reanimated.js';
-import { revenantMonsters } from './revs.js';
-import { turaelMonsters } from './turaelMonsters.js';
-import { vannakaMonsters } from './vannakaMonsters.js';
 
 const killableMonsters: KillableMonster[] = [
 	...bossKillables,

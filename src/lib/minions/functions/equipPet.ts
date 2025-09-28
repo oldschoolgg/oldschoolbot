@@ -1,7 +1,7 @@
 import { Bank, Items } from 'oldschooljs';
 
 import { allPetIDs } from '@/lib/data/CollectionsExport.js';
-import { unequipPet } from './unequipPet.js';
+import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
 
 export async function equipPet(user: MUser, itemName: string) {
 	const petItem = Items.getItem(itemName);

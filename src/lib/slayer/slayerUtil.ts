@@ -8,12 +8,12 @@ import { LumbridgeDraynorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { getNewUser } from '@/lib/settings/settings.js';
+import { autoslayModes } from '@/lib/slayer/constants.js';
+import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
+import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { bossTasks, wildernessBossTasks } from '@/lib/slayer/tasks/bossTasks.js';
+import type { AssignableSlayerTask, SlayerMaster } from '@/lib/slayer/types.js';
 import { logError } from '@/lib/util/logError.js';
-import { autoslayModes } from './constants.js';
-import { slayerMasters } from './slayerMasters.js';
-import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks.js';
-import { bossTasks, wildernessBossTasks } from './tasks/bossTasks.js';
-import type { AssignableSlayerTask, SlayerMaster } from './types.js';
 
 export const wildySlayerOnlyMonsters = [
 	Monsters.DustDevil,

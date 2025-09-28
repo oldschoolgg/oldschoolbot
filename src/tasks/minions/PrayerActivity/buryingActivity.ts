@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import Prayer from '@/lib/skilling/skills/prayer.js';
 import type { BuryingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { zealOutfitBoost } from './offeringActivity.js';
+import { zealOutfitBoost } from '@/tasks/minions/PrayerActivity/offeringActivity.js';
 
 export const buryingTask: MinionTask = {
 	type: 'Burying',

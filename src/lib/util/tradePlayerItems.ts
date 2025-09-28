@@ -1,8 +1,8 @@
 import { Bank } from 'oldschooljs';
 
 import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
-import { logError } from './logError.js';
-import { userQueueFn } from './userQueues.js';
+import { logError } from '@/lib/util/logError.js';
+import { userQueueFn } from '@/lib/util/userQueues.js';
 
 export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsToSend?: Bank, _itemsToReceive?: Bank) {
 	if (recipient.isBusy) {

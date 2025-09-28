@@ -23,18 +23,18 @@ import {
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { cluesRaresCL } from '@/lib/data/CollectionsExport.js';
-import { openSeedPack } from '@/lib/skilling/functions/calcFarmingContracts.js';
-import { defaultFarmingContract } from './minions/farming/index.js';
-import type { FarmingContract } from './minions/farming/types.js';
-import { shadeChestOpenables } from './shadesKeys.js';
-import { nestTable } from './simulation/birdsNest.js';
+import { defaultFarmingContract } from '@/lib/minions/farming/index.js';
+import type { FarmingContract } from '@/lib/minions/farming/types.js';
+import { shadeChestOpenables } from '@/lib/shadesKeys.js';
+import { nestTable } from '@/lib/simulation/birdsNest.js';
 import {
 	BagFullOfGemsTable,
 	BuildersSupplyCrateTable,
 	CasketTable,
 	CrystalChestTable,
 	SpoilsOfWarTable
-} from './simulation/misc.js';
+} from '@/lib/simulation/misc.js';
+import { openSeedPack } from '@/lib/skilling/functions/calcFarmingContracts.js';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)

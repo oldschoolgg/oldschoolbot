@@ -10,11 +10,11 @@ import {
 	Canvas as SkiaCanvas
 } from 'skia-canvas';
 
+import { CanvasModule } from '@/lib/canvas/CanvasModule.js';
+import type { CanvasSpritesheet, SpriteData } from '@/lib/canvas/CanvasSpritesheet.js';
+import { type CanvasImage, drawImageWithOutline, getClippedRegion, type IBgSprite } from '@/lib/canvas/canvasUtil.js';
+import { type IconPackID, ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BOT_TYPE } from '@/lib/constants.js';
-import { CanvasModule } from './CanvasModule.js';
-import type { CanvasSpritesheet, SpriteData } from './CanvasSpritesheet.js';
-import { type CanvasImage, drawImageWithOutline, getClippedRegion, type IBgSprite } from './canvasUtil.js';
-import { type IconPackID, ItemIconPacks } from './iconPacks.js';
 
 const Fonts = {
 	Compact: '16px OSRSFontCompact',

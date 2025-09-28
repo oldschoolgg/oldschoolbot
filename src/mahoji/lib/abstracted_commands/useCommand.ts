@@ -3,7 +3,7 @@ import { Bank, type Item, Items } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
 import { assert } from '@/lib/util/logError.js';
-import { flowerTable } from './hotColdCommand.js';
+import { flowerTable } from '@/mahoji/lib/abstracted_commands/hotColdCommand.js';
 
 interface Usable {
 	items: Item[];

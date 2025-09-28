@@ -13,7 +13,7 @@ import {
 } from 'discord.js';
 
 import { SILENT_ERROR } from '@/lib/constants.js';
-import { logErrorForInteraction } from './logError.js';
+import { logErrorForInteraction } from '@/lib/util/logError.js';
 
 export async function interactionReply(interaction: RepliableInteraction, response: string | InteractionReplyOptions) {
 	let i: Promise<InteractionResponse> | Promise<Message> | undefined;

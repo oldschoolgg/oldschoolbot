@@ -1,6 +1,6 @@
 import reducedTimeForGroup from '@/lib/minions/functions/reducedTimeForGroup.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
-import { calcMaxTripLength } from './calcMaxTripLength.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export default async function calcDurQty(
 	users: MUser[],

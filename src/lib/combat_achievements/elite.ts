@@ -1,6 +1,8 @@
 import { Time } from '@oldschoolgg/toolkit';
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
+import { anyoneDiedInTOARaid, isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
 	ActivityTaskData,
@@ -10,8 +12,6 @@ import type {
 	TOAOptions
 } from '@/lib/types/minions.js';
 import { crossbows } from '@/lib/util/archery.js';
-import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils.js';
-import type { CombatAchievement } from './combatAchievements.js';
 
 export const eliteCombatAchievements: CombatAchievement[] = [
 	{

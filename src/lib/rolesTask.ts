@@ -8,13 +8,13 @@ import z from 'zod';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BadgesEnum, globalConfig, MAX_LEVEL, Roles } from '@/lib/constants.js';
 import { getCollectionItems } from '@/lib/data/Collections.js';
+import { loggedRawPrismaQuery } from '@/lib/rawSql.js';
 import { Minigames } from '@/lib/settings/minigames.js';
+import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import { fetchMultipleCLLeaderboards } from '@/lib/util/clLeaderboard.js';
 import { logError } from '@/lib/util/logError.js';
-import { loggedRawPrismaQuery } from './rawSql.js';
-import { TeamLoot } from './simulation/TeamLoot.js';
-import { getUsernameSync } from './util.js';
+import { getUsernameSync } from '@/lib/util.js';
 
 const RoleResultSchema = z.object({
 	roleID: z.string().min(17).max(19),

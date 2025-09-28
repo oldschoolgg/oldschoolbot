@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import type { Buyable } from './buyables.js';
+import type { Buyable } from '@/lib/data/buyables/buyables.js';
 
 // Most prices >=10k are x10, < 10k = x100
 export const slayerBuyables: Buyable[] = [

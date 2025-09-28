@@ -7,8 +7,8 @@ import type { CollectingOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
-import { getPOH } from './pohCommand.js';
 
 export async function collectCommand(
 	user: MUser,

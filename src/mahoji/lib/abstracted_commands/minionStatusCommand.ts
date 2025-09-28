@@ -15,8 +15,8 @@ import {
 } from '@/lib/util/interactions.js';
 import { minionStatus } from '@/lib/util/minionStatus.js';
 import { makeRepeatTripButtons } from '@/lib/util/repeatStoredTrip.js';
-import { isUsersDailyReady } from './dailyCommand.js';
-import { canRunAutoContract } from './farmingContractCommand.js';
+import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
+import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 
 async function fetchFavoriteGearPresets(userID: string) {
 	const pinnedPresets = await prisma.gearPreset.findMany({

@@ -3,12 +3,11 @@ import { activity_type_enum } from '@prisma/client';
 import { Bank, EMonster, ItemGroups, Items, Monsters, resolveItems } from 'oldschooljs';
 
 import { DEPRECATED_ACTIVITY_TYPES } from '@/lib/constants.js';
+import { RandomEvents } from '@/lib/randomEvents.js';
+import { type MinigameName, Minigames } from '@/lib/settings/minigames.js';
 import type { RequirementFailure } from '@/lib/structures/Requirements.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
 import { formatList } from '@/lib/util/smallUtils.js';
-import { RandomEvents } from './randomEvents.js';
-import type { MinigameName } from './settings/minigames.js';
-import { Minigames } from './settings/minigames.js';
 
 export const musicCapeRequirements = new Requirements()
 	.add({

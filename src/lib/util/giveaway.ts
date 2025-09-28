@@ -4,8 +4,8 @@ import { type MessageEditOptions, time, userMention } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { sql } from '@/lib/postgres.js';
-import { logError } from './logError.js';
-import { sendToChannelID } from './webhook.js';
+import { logError } from '@/lib/util/logError.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
 
 async function refundGiveaway(creator: MUser, loot: Bank) {
 	await creator.transactItems({

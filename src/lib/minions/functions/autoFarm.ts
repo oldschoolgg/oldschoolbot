@@ -2,17 +2,18 @@ import { formatDuration } from '@oldschoolgg/toolkit';
 import { AutoFarmFilterEnum, type CropUpgradeType } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
-import type { IPatchData, IPatchDataDetailed } from '@/lib/minions/farming/types.js';
-import { plants } from '@/lib/skilling/skills/farming/index.js';
-import type { Plant } from '@/lib/skilling/types.js';
+import type { IPatchData } from '@/lib/minions/farming/types.js';
 import type { AutoFarmStepData, FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import type { FarmingPatchName } from '@/lib/util/farmingHelpers.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
-import { allFarm, replant } from './autoFarmFilters.js';
 import { prepareFarmingStep } from './farmingTripHelpers.js';
+import type { IPatchDataDetailed } from '@/lib/minions/farming/types.js';
+import { allFarm, replant } from '@/lib/minions/functions/autoFarmFilters.js';
+import { plants } from '@/lib/skilling/skills/farming/index.js';
+import type { Plant } from '@/lib/skilling/types.js';
 
 interface PlannedAutoFarmStep {
 	plant: Plant;

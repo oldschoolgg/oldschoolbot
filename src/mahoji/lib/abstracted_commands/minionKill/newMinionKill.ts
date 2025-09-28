@@ -22,9 +22,15 @@ import type { GearBank } from '@/lib/structures/GearBank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { Peak } from '@/lib/util/peaks.js';
 import { zodEnum } from '@/lib/util/smallUtils.js';
-import { killsRemainingOnTask } from './calcTaskMonstersRemaining.js';
-import { type PostBoostEffect, postBoostEffects } from './postBoostEffects.js';
-import { CombatMethodOptionsSchema, speedCalculations } from './timeAndSpeed.js';
+import { killsRemainingOnTask } from '@/mahoji/lib/abstracted_commands/minionKill/calcTaskMonstersRemaining.js';
+import {
+	type PostBoostEffect,
+	postBoostEffects
+} from '@/mahoji/lib/abstracted_commands/minionKill/postBoostEffects.js';
+import {
+	CombatMethodOptionsSchema,
+	speedCalculations
+} from '@/mahoji/lib/abstracted_commands/minionKill/timeAndSpeed.js';
 
 const newMinionKillReturnSchema = z.object({
 	duration: z.number().int().positive(),

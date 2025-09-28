@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { bankCommand } from './bank.js';
+import { bankCommand } from '@/mahoji/commands/bank.js';
 
 const bankFormats = ['json', 'text_paged', 'text_full'] as const;
 type BankFormat = (typeof bankFormats)[number];
