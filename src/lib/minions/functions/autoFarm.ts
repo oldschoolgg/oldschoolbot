@@ -1,4 +1,4 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration } from '@oldschoolgg/toolkit';
 import { AutoFarmFilterEnum, type CropUpgradeType } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
@@ -39,7 +39,7 @@ export async function autoFarm(
 	}
 
 	const farmingLevel = user.skillsAsLevels.farming;
-	
+
 	let { autoFarmFilter } = user;
 	if (!autoFarmFilter) {
 		autoFarmFilter = AutoFarmFilterEnum.AllFarm;

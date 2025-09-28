@@ -2,7 +2,6 @@ import { Bank } from 'oldschooljs';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { MUser } from '../../src/lib/MUser.js';
-import { SkillsEnum } from '../../src/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions } from '../../src/lib/types/minions.js';
 
 const handleTripFinishMock = vi.fn();
@@ -194,18 +193,22 @@ describe('farmingActivity tree clearing fees', () => {
 		},
 		bitfield: [] as number[],
 		skillsAsXP: {
-			[SkillsEnum.Farming]: 13_034_431,
-			[SkillsEnum.Woodcutting]: 0
+			farming: 13_034_431,
+			woodcutting: 0
+		} as any,
+		skillsAsLevels: {
+			farming: 99,
+			woodcutting: 1
 		} as any,
 		hasEquippedOrInBank: vi.fn().mockReturnValue(false),
 		hasEquipped: vi.fn().mockReturnValue(false),
 		perkTier: vi.fn().mockReturnValue(0),
 		getAttackStyles: vi.fn().mockReturnValue(['accurate']),
-		skillLevel: vi.fn((skill: SkillsEnum) => {
-			if (skill === SkillsEnum.Farming) {
+		skillLevel: vi.fn((skill: string) => {
+			if (skill === 'farming') {
 				return 99;
 			}
-			if (skill === SkillsEnum.Woodcutting) {
+			if (skill === 'woodcutting') {
 				return 1;
 			}
 			return 1;

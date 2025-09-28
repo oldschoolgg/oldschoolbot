@@ -6,7 +6,6 @@ import type { MUser } from '../../src/lib/MUser.js';
 import type { IPatchData, IPatchDataDetailed } from '../../src/lib/minions/farming/types.js';
 import { autoFarm } from '../../src/lib/minions/functions/autoFarm.js';
 import Farming from '../../src/lib/skilling/skills/farming/index.js';
-import { SkillsEnum } from '../../src/lib/skilling/types.js';
 import type { FarmingPatchName } from '../../src/lib/util/farmingHelpers.js';
 
 const { addSubTaskMock, mockedCalcMaxTripLength } = vi.hoisted(() => {
@@ -83,8 +82,8 @@ function createAutoFarmStub({
 			skilling: emptyGearSetup
 		},
 		skillsAsXP: {
-			[SkillsEnum.Farming]: farmingLevel,
-			[SkillsEnum.Woodcutting]: woodcuttingLevel
+			farming: farmingLevel,
+			woodcutting: woodcuttingLevel
 		},
 		skillsAsLevels: {
 			agility: 1,
@@ -137,9 +136,9 @@ function createAutoFarmStub({
 			hitpoints: 10,
 			slayer: 1
 		},
-		skillLevel: vi.fn((skill: SkillsEnum) => {
-			if (skill === SkillsEnum.Farming) return farmingLevel;
-			if (skill === SkillsEnum.Woodcutting) return woodcuttingLevel;
+		skillLevel: vi.fn((skill: string) => {
+			if (skill === 'farming') return farmingLevel;
+			if (skill === 'woodcutting') return woodcuttingLevel;
 			return 1;
 		}),
 		owns: vi.fn((cost: Bank) => {

@@ -8,7 +8,6 @@ import { prepareFarmingStep, treeCheck } from '@/lib/minions/functions/farmingTr
 import { calcNumOfPatches } from '@/lib/skilling/functions/calcsFarming.js';
 import { getFarmingInfo, getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
 import Farming from '@/lib/skilling/skills/farming/index.js';
-
 import type { FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';

@@ -1,4 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Time } from '@oldschoolgg/toolkit';
 import type { CropUpgradeType } from '@prisma/client';
 import { Bank, convertLVLtoXP } from 'oldschooljs';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
