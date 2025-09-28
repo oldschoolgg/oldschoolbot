@@ -31,13 +31,14 @@ import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { setupParty } from '@/lib/party.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
+import { getToaKCs } from '@/lib/simulation/toaUtils.js';
 import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
 import type { MakePartyOptions, Skills } from '@/lib/types/index.js';
 import type { TOAOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { assert } from '@/lib/util/logError.js';
-import { bankToStrShortNames, formatList, formatSkillRequirements, getToaKCs } from '@/lib/util/smallUtils.js';
+import { bankToStrShortNames, formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { mahojiParseNumber, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 

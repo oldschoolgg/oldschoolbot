@@ -14,10 +14,10 @@ import {
 	toaOrnamentKits,
 	toaPetTransmogItems
 } from '@/lib/simulation/toa.js';
+import { normalizeTOAUsers } from '@/lib/simulation/toaUtils.js';
 import type { TOAOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { assert } from '@/lib/util/logError.js';
-import { normalizeTOAUsers } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
