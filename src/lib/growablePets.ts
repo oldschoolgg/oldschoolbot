@@ -1,4 +1,5 @@
-import { randFloat, roll, Time } from '@oldschoolgg/toolkit';
+import { randFloat, roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, resolveItems } from 'oldschooljs';
 
 import type { ActivityTaskOptions } from '@/lib/types/minions.js';

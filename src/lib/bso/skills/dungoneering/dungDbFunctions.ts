@@ -1,11 +1,10 @@
 import { reduceNumByPercent } from '@oldschoolgg/toolkit';
 
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/data/CollectionsExport.js';
-import { skillsMeetRequirements } from '@/lib/util.js';
 import { requiredSkills } from './dungData.js';
 
 export function hasRequiredLevels(user: MUser, floor: number) {
-	return skillsMeetRequirements(user.skillsAsXP, requiredSkills(floor));
+	return user.hasSkillReqs(requiredSkills(floor));
 }
 
 export function calcMaxFloorUserCanDo(user: MUser) {

@@ -4,7 +4,8 @@ import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
-import { randInt, Time } from '@oldschoolgg/toolkit';
+import { randInt, roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import {
 	Bank,
@@ -28,7 +29,6 @@ import type { Skills } from '@/lib/types/index.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
 import { logError } from '@/lib/util/logError.js';
 import { PeakTier } from '@/lib/util/peaks.js';
-import { roll } from '@/lib/util/rng.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';

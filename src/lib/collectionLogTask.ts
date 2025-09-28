@@ -1,6 +1,4 @@
-import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
-import { generateHexColorForCashStack } from '@oldschoolgg/toolkit/runescape';
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import { calcWhatPercent, generateHexColorForCashStack, objectEntries, toTitleCase } from '@oldschoolgg/toolkit';
 import { type Bank, Items, toKMB } from 'oldschooljs';
 
 import { bankImageTask } from '@/lib/canvas/bankImage.js';

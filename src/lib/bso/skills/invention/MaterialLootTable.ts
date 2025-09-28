@@ -1,6 +1,6 @@
 import type { IMaterialBank, MaterialType } from '@/lib/bso/skills/invention/index.js';
 
-import { randInt } from '@/lib/util/rng.js';
+import { randInt } from '@oldschoolgg/rng';
 
 interface MaterialTableItem {
 	material: MaterialType;

@@ -1,4 +1,4 @@
-import { PerkTier, StoreBitfield } from '@oldschoolgg/toolkit/util';
+import { PerkTier, StoreBitfield } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { CanvasImage } from '@/lib/canvas/canvasUtil.js';

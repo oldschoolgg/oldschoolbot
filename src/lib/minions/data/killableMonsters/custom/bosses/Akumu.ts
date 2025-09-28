@@ -1,6 +1,6 @@
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID, LootTable, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 

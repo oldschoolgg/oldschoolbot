@@ -17,8 +17,14 @@ import { stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
 import { calculateTuraelsTrialsInput, TuraelsTrialsMethods } from '@/lib/bso/turaelsTrials.js';
 
 import { bold } from '@discordjs/builders';
-import { calcPerHour, formatDuration, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
-import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
+import {
+	calcPerHour,
+	formatDuration,
+	increaseNumByPercent,
+	returnStringOrFile,
+	sumArr,
+	Time
+} from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
 import { Bank, convertBankToPerHourStats, Items, itemID, toKMB } from 'oldschooljs';
 import { unique } from 'remeda';

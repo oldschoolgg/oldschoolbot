@@ -16,8 +16,8 @@ import {
 	testerGiftTable
 } from '@/lib/bso/openables/tables.js';
 
-import { randArrItem, roll } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { randArrItem, roll } from '@oldschoolgg/rng';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID, LootTable } from 'oldschooljs';
 
 import { cmbClothes } from '@/lib/data/CollectionsExport.js';

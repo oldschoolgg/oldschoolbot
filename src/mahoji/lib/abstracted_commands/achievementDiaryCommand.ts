@@ -1,5 +1,4 @@
-import { calcWhatPercent } from '@oldschoolgg/toolkit';
-import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { calcWhatPercent, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import type { Minigame } from '@prisma/client';
 import { strikethrough } from 'discord.js';
 import { Bank, Items, Monsters } from 'oldschooljs';

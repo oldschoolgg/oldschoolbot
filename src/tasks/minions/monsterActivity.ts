@@ -2,9 +2,8 @@ import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { type MidPVMEffectArgs, oriEffect, rollForBSOThings } from '@/lib/bso/pvmEffects.js';
 
-import { calcWhatPercent, percentChance, reduceNumByPercent, roll, Time } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { calcPerHour } from '@oldschoolgg/toolkit/util';
+import { percentChance, roll } from '@oldschoolgg/rng';
+import { calcPerHour, calcWhatPercent, Emoji, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';
 

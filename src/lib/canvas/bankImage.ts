@@ -2,10 +2,7 @@ import { bsoShortNameMap } from '@/lib/bso/bsoShortNameMap.js';
 
 import { existsSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
-import { chunk, sumArr } from '@oldschoolgg/toolkit';
-import { generateHexColorForCashStack } from '@oldschoolgg/toolkit/runescape';
-import { cleanString } from '@oldschoolgg/toolkit/string-util';
-import { UserError } from '@oldschoolgg/toolkit/structures';
+import { chunk, cleanString, generateHexColorForCashStack, sumArr, UserError } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, itemID, toKMB } from 'oldschooljs';
 import { loadImage } from 'skia-canvas';
 

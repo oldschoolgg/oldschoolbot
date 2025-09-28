@@ -1,6 +1,4 @@
-import { objectEntries, reduceNumByPercent } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { UserError } from '@oldschoolgg/toolkit/structures';
+import { Emoji, objectEntries, reduceNumByPercent, UserError } from '@oldschoolgg/toolkit';
 import { type Bank, itemID } from 'oldschooljs';
 
 import { Eatables } from '@/lib/data/eatables.js';

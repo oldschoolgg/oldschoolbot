@@ -5,8 +5,11 @@ import _items from '../assets/item_data.json' with { type: 'json' };
 const items = _items as any as Record<string, Item>;
 
 import type { Item } from '@/meta/item.js';
-import { cleanString } from '../util/cleanString.js';
 import { Collection } from './Collection.js';
+
+function cleanString(str: string): string {
+	return str.replace(/\s/g, '').toUpperCase();
+}
 
 export const itemNameMap: Map<string, number> = new Map();
 
@@ -66,7 +69,7 @@ export const USELESS_ITEMS = [
 	23_814, 23_815, 23_816, 23_817
 ];
 
-class Items extends Collection<number, Item> {
+class ItemsSingleton extends Collection<number, Item> {
 	sortAlpha = sortAlpha;
 	public override get(item: ItemResolvable): Item | undefined {
 		const id = this.resolveID(item);
@@ -96,6 +99,12 @@ class Items extends Collection<number, Item> {
 
 	public itemNameFromId(itemID: number): string | undefined {
 		return super.get(itemID)?.name;
+	}
+
+	getId(_itemResolvable: ItemResolvable): number {
+		const id = this.resolveID(_itemResolvable);
+		if (typeof id === 'undefined') throw new Error(`No item found for ${_itemResolvable}`);
+		return id;
 	}
 
 	public getItem(itemName: string | number | undefined): Item | null {
@@ -179,21 +188,19 @@ class Items extends Collection<number, Item> {
 	}
 }
 
-const itemsExport = new Items();
+export const Items = new ItemsSingleton();
 
 for (const [id, item] of Object.entries(items)) {
 	const numID = Number.parseInt(id);
 
 	if (USELESS_ITEMS.includes(numID)) continue;
-	itemsExport.set(numID, item);
+	Items.set(numID, item);
 
 	const cleanName = cleanString(item.name);
 	if (!itemNameMap.has(cleanName)) {
 		itemNameMap.set(cleanName, numID);
 	}
 }
-
-export default itemsExport;
 
 export function resolveItems(_itemArray: string | number | (string | number)[]): number[] {
 	const itemArray = Array.isArray(_itemArray) ? _itemArray : [_itemArray];
@@ -203,7 +210,7 @@ export function resolveItems(_itemArray: string | number | (string | number)[]):
 		if (typeof item === 'number') {
 			newArray.push(item);
 		} else {
-			const osItem = itemsExport.get(item);
+			const osItem = Items.get(item);
 			if (!osItem) {
 				throw new Error(`No item found for: ${item}.`);
 			}
@@ -221,10 +228,10 @@ export function deepResolveItems(itemArray: ArrayItemsResolvable): ArrayItemsRes
 		if (typeof item === 'number') {
 			newArray.push(item);
 		} else if (Array.isArray(item)) {
-			const test = itemsExport.resolveItems(item);
+			const test = Items.resolveItems(item);
 			newArray.push(test);
 		} else {
-			const osItem = itemsExport.get(item);
+			const osItem = Items.get(item);
 			if (!osItem) {
 				throw new Error(`No item found for: ${item}.`);
 			}

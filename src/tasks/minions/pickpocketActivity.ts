@@ -2,7 +2,8 @@ import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
 import { clueUpgraderEffect } from '@/lib/bso/inventionEffects.js';
 
-import { percentChance, randInt, roll, Time } from '@oldschoolgg/toolkit';
+import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { Items, resolveItems } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -12,7 +13,7 @@ import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
 import { forcefullyUnequipItem } from '@/lib/util/forcefullyUnequipItem.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { perHourChance } from '@/lib/util/rng.js';
+import { perHourChance } from '@/lib/util/smallUtils.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 import { rogueOutfitPercentBonus, updateClientGPTrackSetting, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 

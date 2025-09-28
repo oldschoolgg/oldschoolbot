@@ -1,4 +1,4 @@
-import { notEmpty, ProductID, products } from '@oldschoolgg/toolkit/util';
+import { notEmpty, ProductID, products } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 
 import { BOT_TYPE } from '@/lib/constants.js';

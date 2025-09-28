@@ -1,5 +1,5 @@
-import { percentChance, roll } from '@oldschoolgg/toolkit';
-import { Events } from '@oldschoolgg/toolkit/constants';
+import { percentChance, roll } from '@oldschoolgg/rng';
+import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';

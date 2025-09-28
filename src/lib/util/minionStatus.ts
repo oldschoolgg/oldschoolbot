@@ -2,9 +2,15 @@ import { bossEvents } from '@/lib/bso/bossEvents.js';
 import { divinationEnergies, memoryHarvestTypes } from '@/lib/bso/divination.js';
 import { fishingLocations } from '@/lib/bso/fishingContest.js';
 
-import { formatOrdinal, increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { randomVariation } from '@oldschoolgg/rng';
+import {
+	Emoji,
+	formatDuration,
+	formatOrdinal,
+	increaseNumByPercent,
+	reduceNumByPercent,
+	toTitleCase
+} from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';

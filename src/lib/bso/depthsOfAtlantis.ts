@@ -1,15 +1,13 @@
+import { percentChance, randArrItem, randInt } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
 	formatDuration,
 	formatOrdinal,
 	increaseNumByPercent,
-	percentChance,
-	randArrItem,
-	randInt,
+	mentionCommand,
 	reduceNumByPercent,
 	Time
 } from '@oldschoolgg/toolkit';
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import { bold } from 'discord.js';
 import { Bank, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';

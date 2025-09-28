@@ -1,10 +1,10 @@
+import { randFloat } from '@oldschoolgg/rng';
 import { increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
 import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { randFloat } from '@/lib/util/rng.js';
 
 export const craftingTask: MinionTask = {
 	type: 'Crafting',

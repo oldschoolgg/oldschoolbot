@@ -1,7 +1,7 @@
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 
-import { formatOrdinal, increaseNumByPercent, randInt, roll } from '@oldschoolgg/toolkit';
-import { Events } from '@oldschoolgg/toolkit/constants';
+import { randInt, roll } from '@oldschoolgg/rng';
+import { Events, formatOrdinal, increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
 import { Bank, LootTable } from 'oldschooljs';
 

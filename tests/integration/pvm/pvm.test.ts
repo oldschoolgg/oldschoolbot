@@ -1,4 +1,4 @@
-import { calcPerHour } from '@oldschoolgg/toolkit/util';
+import { calcPerHour } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, EItem, EMonster, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { describe, expect, it, test } from 'vitest';
 

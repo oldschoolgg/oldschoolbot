@@ -1,6 +1,6 @@
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
-import { randArrItem, randInt, roll } from '@oldschoolgg/toolkit';
+import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { inventorOutfit } from '@/lib/data/CollectionsExport.js';

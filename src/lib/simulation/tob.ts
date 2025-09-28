@@ -1,5 +1,5 @@
-import { percentChance, roll, sumArr } from '@oldschoolgg/toolkit';
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
+import { percentChance, roll } from '@oldschoolgg/rng';
+import { SimpleTable, sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type LootBank, LootTable } from 'oldschooljs';
 import { clone } from 'remeda';
 

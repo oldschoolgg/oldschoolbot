@@ -1,6 +1,7 @@
 import { CorporealBeastTable } from '@/lib/bso/Corp.js';
 
-import { roll, Time } from '@oldschoolgg/toolkit';
+import { roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, deepResolveItems, itemID, Monsters, resolveItems, SimpleMonster } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 

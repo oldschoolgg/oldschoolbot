@@ -1,5 +1,5 @@
-import { objectEntries, randInt, reduceNumByPercent } from '@oldschoolgg/toolkit';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { percentChance } from '@oldschoolgg/rng';
+import { formatDuration, objectEntries, randInt, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
@@ -13,7 +13,6 @@ import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { percentChance } from '@/lib/util/rng.js';
 import { readableStatName } from '@/lib/util/smallUtils.js';
 import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 

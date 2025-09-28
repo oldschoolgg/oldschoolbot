@@ -1,5 +1,4 @@
-import { notEmpty, removeFromArr } from '@oldschoolgg/toolkit';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { notEmpty, removeFromArr, stringMatches } from '@oldschoolgg/toolkit';
 import { type ChatInputCommandInteraction, MessageFlags } from 'discord.js';
 import { EItem, Monsters } from 'oldschooljs';
 

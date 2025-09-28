@@ -1,8 +1,7 @@
 import { CHINCANNON_MESSAGES } from '@/lib/bso/bsoConstants.js';
 
-import { miniID, randArrItem, roll, shuffleArr } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { convertPercentChance } from '@oldschoolgg/toolkit/util';
+import { randArrItem, roll, shuffleArr } from '@oldschoolgg/rng';
+import { convertPercentChance, Emoji, miniID } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';

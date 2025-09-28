@@ -1,9 +1,9 @@
-import { Time } from '@oldschoolgg/toolkit';
 import {
 	type CommandOptions,
 	channelIsSendable,
-	convertMahojiCommandToAbstractCommand
-} from '@oldschoolgg/toolkit/discord-util';
+	convertMahojiCommandToAbstractCommand,
+	Time
+} from '@oldschoolgg/toolkit';
 import type { NewUser } from '@prisma/client';
 import {
 	type APIInteractionGuildMember,

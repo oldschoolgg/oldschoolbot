@@ -1,7 +1,7 @@
+import { randInt } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
-import { randInt } from '@/lib/util/rng.js';
 import { gambleCommand } from '../../../src/mahoji/commands/gamble.js';
 import { createTestUser, mockClient, mockMathRandom } from '../util.js';
 

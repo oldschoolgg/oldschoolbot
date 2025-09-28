@@ -1,6 +1,6 @@
 import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';

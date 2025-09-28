@@ -1,6 +1,6 @@
 import { NexMonster } from '@/lib/bso/monsters/nex.js';
 
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Time } from '@oldschoolgg/toolkit';
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
 import { Requirements } from '@/lib/structures/Requirements.js';

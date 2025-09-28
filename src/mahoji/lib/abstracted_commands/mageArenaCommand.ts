@@ -1,5 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
+import { formatDuration, randomVariation, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';

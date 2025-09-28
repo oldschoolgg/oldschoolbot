@@ -1,6 +1,6 @@
 import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 
-import { randFloat } from '@oldschoolgg/toolkit';
+import { randFloat } from '@oldschoolgg/rng';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';

@@ -6,8 +6,9 @@ applyStaticDefine();
 
 import '../../src/lib/safeglobals.js';
 
+import { SeedableRNG } from '@oldschoolgg/rng';
+
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
-import { SeedableRNG } from '@/lib/util/rng.js';
 import { applyStaticDefine } from '../../meta.js';
 import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
 import type { Fish } from '../../src/lib/skilling/types.js';

@@ -1,4 +1,5 @@
-import { reduceNumByPercent, roll, Time } from '@oldschoolgg/toolkit';
+import { roll } from '@oldschoolgg/rng';
+import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, resolveItems } from 'oldschooljs';
 
 const crateItem = Items.getOrThrow('Frozen crate (s8)');

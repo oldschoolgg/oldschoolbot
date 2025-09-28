@@ -1,5 +1,5 @@
-import { calcPercentOfNum, calcWhatPercent, percentChance, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { randomVariation } from '@oldschoolgg/toolkit/util';
+import { percentChance, randomVariation } from '@oldschoolgg/rng';
+import { calcPercentOfNum, calcWhatPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { maxDefenceStats } from '@/lib/structures/Gear.js';

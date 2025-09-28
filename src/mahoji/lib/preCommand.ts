@@ -1,9 +1,9 @@
-import type { AbstractCommand, CommandOptions } from '@oldschoolgg/toolkit/discord-util';
+import { roll } from '@oldschoolgg/rng';
+import type { AbstractCommand, CommandOptions } from '@oldschoolgg/toolkit';
 import type { InteractionReplyOptions, TextChannel, User } from 'discord.js';
 
 import { modifyBusyCounter, userIsBusy } from '@/lib/busyCounterCache.js';
 import { busyImmuneCommands } from '@/lib/constants.js';
-import { roll } from '@/lib/util/rng.js';
 import { gearValidationChecks } from '@/mahoji/commands/gear.js';
 import { runInhibitors } from './inhibitors.js';
 

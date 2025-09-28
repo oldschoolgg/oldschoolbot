@@ -1,5 +1,4 @@
-import { randInt, sumArr, Time } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration, randInt, sumArr, Time } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, type InteractionReplyOptions, type TextChannel } from 'discord.js';
 import { Bank } from 'oldschooljs';
 

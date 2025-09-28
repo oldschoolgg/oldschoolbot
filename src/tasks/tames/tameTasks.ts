@@ -9,16 +9,8 @@ import {
 } from '@/lib/bso/tames.js';
 import { tameLastFinishedActivity } from '@/lib/bso/tameUtil.js';
 
-import {
-	increaseNumByPercent,
-	isFunction,
-	percentChance,
-	randArrItem,
-	randInt,
-	roll,
-	Time
-} from '@oldschoolgg/toolkit';
-import { calcPerHour, formatDuration } from '@oldschoolgg/toolkit/util';
+import { percentChance, randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import { calcPerHour, formatDuration, increaseNumByPercent, isFunction, Time } from '@oldschoolgg/toolkit';
 import type { TameActivity } from '@prisma/client';
 import {
 	ActionRowBuilder,

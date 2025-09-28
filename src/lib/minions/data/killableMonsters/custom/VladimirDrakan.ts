@@ -1,8 +1,9 @@
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 
-import { roll, shuffleArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { Bank, LootTable, Monsters, randomVariation, resolveItems } from 'oldschooljs';
+import { randomVariation, roll, shuffleArr } from '@oldschoolgg/rng';
+import { Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { Bank, LootTable, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { vladDrakanCL } from '@/lib/data/CollectionsExport.js';

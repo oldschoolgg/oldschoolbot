@@ -1,16 +1,13 @@
 import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 
+import { percentChance, randInt, randomVariation, shuffleArr } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
-	percentChance,
-	randInt,
 	reduceNumByPercent,
-	shuffleArr,
 	Time
 } from '@oldschoolgg/toolkit';
-import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, type ChambersOfXericOptions, type Item, Items } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 

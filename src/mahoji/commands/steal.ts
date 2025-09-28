@@ -1,5 +1,4 @@
-import { randInt, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration, randInt, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, bold, type User } from 'discord.js';
 
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';

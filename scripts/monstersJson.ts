@@ -1,9 +1,7 @@
 import './base.js';
 
 import { readFileSync, writeFileSync } from 'node:fs';
-import { md5sum } from '@oldschoolgg/toolkit/node';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { uniqueArr } from '@oldschoolgg/toolkit/util';
+import { md5sum, Stopwatch, uniqueArr } from '@oldschoolgg/toolkit';
 import { DateTime } from 'luxon';
 import { Bank, Items, type LootTable } from 'oldschooljs';
 

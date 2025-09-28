@@ -1,5 +1,4 @@
-import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
-import { ellipsize } from '@oldschoolgg/toolkit/util';
+import { ellipsize, returnStringOrFile } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Items } from 'oldschooljs';
 

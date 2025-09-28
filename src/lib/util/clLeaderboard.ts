@@ -1,4 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { stringMatches } from '@oldschoolgg/toolkit';
 
 import { SQL } from '@/lib/rawSql.js';
 import { userEventsToMap } from './userEvents.js';

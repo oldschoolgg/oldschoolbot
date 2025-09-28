@@ -1,6 +1,7 @@
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 
-import { formatOrdinal, isFunction, randArrItem, roll, shuffleArr, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { randArrItem, roll, shuffleArr } from '@oldschoolgg/rng';
+import { formatOrdinal, isFunction, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, type Message, type User } from 'discord.js';
 import { Bank, Items, LootTable, Monsters } from 'oldschooljs';
 

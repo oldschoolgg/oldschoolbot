@@ -1,6 +1,6 @@
 import { maxLeaguesPoints } from '@/lib/bso/leagues/leagues.js';
 
-import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit/util';
+import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
 import { clamp, round } from 'remeda';
 
 import { allCombatAchievementTasks } from '@/lib/combat_achievements/combatAchievements.js';

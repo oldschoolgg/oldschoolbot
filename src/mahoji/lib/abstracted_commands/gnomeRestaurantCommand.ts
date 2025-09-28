@@ -1,5 +1,5 @@
-import { calcWhatPercent, randInt, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
+import { randInt, randomVariation } from '@oldschoolgg/rng';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { getPOHObject } from '@/lib/poh/index.js';

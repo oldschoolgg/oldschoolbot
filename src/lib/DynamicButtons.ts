@@ -1,5 +1,4 @@
-import { isFunction, noOp, Time } from '@oldschoolgg/toolkit';
-import { awaitMessageComponentInteraction, makeComponents } from '@oldschoolgg/toolkit/discord-util';
+import { awaitMessageComponentInteraction, isFunction, makeComponents, noOp, Time } from '@oldschoolgg/toolkit';
 import {
 	type BaseMessageOptions,
 	ButtonBuilder,

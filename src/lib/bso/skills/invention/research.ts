@@ -1,7 +1,8 @@
 import { type MaterialType, materialTypes } from '@/lib/bso/skills/invention/index.js';
 
 import { bold, userMention } from '@discordjs/builders';
-import { formatDuration, shuffleArr, Time } from '@oldschoolgg/toolkit';
+import { roll, shuffleArr } from '@oldschoolgg/rng';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { clamp } from 'remeda';
 
@@ -10,7 +11,6 @@ import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { roll } from '@/lib/util/rng.js';
 import { type Invention, Inventions, transactMaterialsFromUser } from './inventions.js';
 import { MaterialBank } from './MaterialBank.js';
 

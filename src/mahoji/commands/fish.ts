@@ -1,7 +1,7 @@
 import { bsoTackleBoxes } from '@/lib/bso/bsoConstants.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
-import { formatDuration, stringSearch, Time } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringSearch, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { ItemGroups, Items, Monsters } from 'oldschooljs';
 

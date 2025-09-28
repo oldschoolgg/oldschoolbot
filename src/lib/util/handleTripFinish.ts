@@ -5,9 +5,8 @@ import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
-import { notEmpty, randArrItem, randInt, roll, Time } from '@oldschoolgg/toolkit';
-import { channelIsSendable, makeComponents, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import { channelIsSendable, makeComponents, mentionCommand, notEmpty, Stopwatch, Time } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { bold } from 'discord.js';
@@ -27,7 +26,6 @@ import { calculateZygomiteLoot } from '@/lib/skilling/skills/farming/zygomites.j
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
-import { perHourChance } from '@/lib/util/rng.js';
 import { alching } from '@/mahoji/commands/laps.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
@@ -45,7 +43,7 @@ import {
 	makeTearsOfGuthixButton
 } from './interactions.js';
 import { logError } from './logError.js';
-import { hasSkillReqs } from './smallUtils.js';
+import { hasSkillReqs, perHourChance } from './smallUtils.js';
 import { updateBankSetting } from './updateBankSetting.js';
 import { sendToChannelID } from './webhook.js';
 

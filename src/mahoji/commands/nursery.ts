@@ -1,7 +1,7 @@
 import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '@/lib/bso/tames.js';
 
-import { formatDuration, gaussianRandom, randArrItem, reduceNumByPercent, roll } from '@oldschoolgg/toolkit';
-import { Events } from '@oldschoolgg/toolkit/constants';
+import { randArrItem, roll } from '@oldschoolgg/rng';
+import { Events, formatDuration, gaussianRandom, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { tame_growth } from '@prisma/client';
 import { ApplicationCommandOptionType, type ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';

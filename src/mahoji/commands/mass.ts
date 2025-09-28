@@ -1,6 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit';
-import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { channelIsSendable, formatDuration, Time } from '@oldschoolgg/toolkit';
 import type { GearSetupType } from '@prisma/client';
 import { ApplicationCommandOptionType, type TextChannel } from 'discord.js';
 

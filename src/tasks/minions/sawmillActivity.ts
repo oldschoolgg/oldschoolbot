@@ -1,11 +1,11 @@
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 
+import { roll } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 
 import { Planks } from '@/lib/minions/data/planks.js';
 import type { SawmillActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { roll } from '@/lib/util/rng.js';
 
 export const sawmillTask: MinionTask = {
 	type: 'Sawmill',

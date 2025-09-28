@@ -1,5 +1,4 @@
-import { randInt, roll } from '@oldschoolgg/toolkit';
-import { formatDuration, PerkTier } from '@oldschoolgg/toolkit/util';
+import { formatDuration, PerkTier, randInt, roll } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { averageBank, Bank, ChambersOfXeric, toKMB } from 'oldschooljs';
 

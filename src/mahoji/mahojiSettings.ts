@@ -1,5 +1,4 @@
-import { isObject, notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
-import { evalMathExpression } from '@oldschoolgg/toolkit/math';
+import { evalMathExpression, isObject, notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
 import type { GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import { bold } from 'discord.js';
 import { Bank, type ItemBank, ItemGroups, Items } from 'oldschooljs';

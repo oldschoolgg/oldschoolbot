@@ -1,10 +1,10 @@
 import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 
+import { roll } from '@oldschoolgg/rng';
 import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { roll } from '@/lib/util/rng.js';
 
 function calcPoints() {
 	let base = 42.5;

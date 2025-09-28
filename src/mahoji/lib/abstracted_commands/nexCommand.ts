@@ -1,8 +1,15 @@
 import { calcBossFood } from '@/lib/bso/calcBossFood.js';
 import { NexMonster } from '@/lib/bso/monsters/nex.js';
 
-import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
-import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import {
+	channelIsSendable,
+	formatDuration,
+	increaseNumByPercent,
+	isWeekend,
+	reduceNumByPercent,
+	round,
+	Time
+} from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 

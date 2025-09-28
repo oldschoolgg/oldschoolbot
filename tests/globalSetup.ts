@@ -1,4 +1,4 @@
-import { randArrItem } from '@oldschoolgg/toolkit';
+import { randArrItem } from '@oldschoolgg/rng';
 import { Collection, type Message } from 'discord.js';
 import { vi } from 'vitest';
 

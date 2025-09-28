@@ -5,7 +5,8 @@ import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 import { InventionID } from '@/lib/bso/skills/invention/inventions.js';
 import { type StoneSpirit, stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
 
-import { increaseNumByPercent, randInt, roll, Time } from '@oldschoolgg/toolkit';
+import { randInt, roll } from '@oldschoolgg/rng';
+import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID, toKMB } from 'oldschooljs';
 
 import { upgradedDragonstoneOutfit } from '@/lib/data/CollectionsExport.js';

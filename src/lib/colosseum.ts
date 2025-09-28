@@ -1,18 +1,19 @@
+import { percentChance, randInt } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
+	exponentialPercentScale,
+	formatDuration,
+	GeneralBank,
+	type GeneralBankType,
 	increaseNumByPercent,
+	mentionCommand,
 	objectEntries,
-	percentChance,
-	randInt,
 	reduceNumByPercent,
 	sumArr,
-	Time
+	Time,
+	UserError
 } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
-import { GeneralBank, type GeneralBankType, UserError } from '@oldschoolgg/toolkit/structures';
 import { Bank, type EquipmentSlot, type ItemBank, Items, LootTable, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 

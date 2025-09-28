@@ -4,9 +4,8 @@ import { nexLootTable } from '@/lib/bso/monsters/nex.js';
 import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/bsoOpenables.js';
 import { MysteryBoxes, PMBTable } from '@/lib/bso/openables/tables.js';
 
-import { formatDuration, formatOrdinal, randArrItem, roll } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
+import { randArrItem, roll } from '@oldschoolgg/rng';
+import { Emoji, formatDuration, formatOrdinal, makeComponents } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
 import { Bank, type ItemBank, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
 

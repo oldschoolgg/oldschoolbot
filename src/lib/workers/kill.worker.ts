@@ -3,7 +3,7 @@ import '../data/itemAliases.js';
 
 import { ORI_DISABLED_MONSTERS, YETI_ID } from '@/lib/bso/bsoConstants.js';
 
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { customKillableMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';

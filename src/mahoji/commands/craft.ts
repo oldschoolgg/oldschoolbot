@@ -1,7 +1,6 @@
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';

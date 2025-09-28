@@ -1,9 +1,9 @@
+import { randFloat } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
 	formatDuration,
 	isWeekend,
-	randFloat,
 	reduceNumByPercent,
 	sumArr,
 	Table,

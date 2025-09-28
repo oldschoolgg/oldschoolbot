@@ -1,5 +1,4 @@
-import { uniqueArr } from '@oldschoolgg/toolkit';
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import { toTitleCase, uniqueArr } from '@oldschoolgg/toolkit';
 
 import { formatList } from '@/lib/util/smallUtils.js';
 import type { AttackStyles } from './index.js';

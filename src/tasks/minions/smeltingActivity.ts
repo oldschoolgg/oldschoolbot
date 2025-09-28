@@ -2,13 +2,13 @@ import { BlacksmithOutfit, MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js'
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 
-import { roll, Time } from '@oldschoolgg/toolkit';
+import { percentChance, roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID } from 'oldschooljs';
 
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { SmeltingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { percentChance } from '@/lib/util/rng.js';
 
 export const smeltingTask: MinionTask = {
 	type: 'Smelting',

@@ -2,7 +2,7 @@ import './base.js';
 
 import { type ExecOptions, exec as execNonPromise } from 'node:child_process';
 import { promisify } from 'node:util';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { Stopwatch } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 import { Bank, type ItemBank, Items, LootTable } from 'oldschooljs';
 import { isFunction, isObjectType, toSnakeCase } from 'remeda';

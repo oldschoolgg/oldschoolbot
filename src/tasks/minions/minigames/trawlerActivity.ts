@@ -1,6 +1,7 @@
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 
-import { calcPercentOfNum, roll } from '@oldschoolgg/toolkit';
+import { roll } from '@oldschoolgg/rng';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';

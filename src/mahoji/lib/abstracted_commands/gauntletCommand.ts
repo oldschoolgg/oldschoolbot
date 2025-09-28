@@ -1,5 +1,11 @@
-import { calcWhatPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
+import {
+	calcWhatPercent,
+	formatDuration,
+	randomVariation,
+	reduceNumByPercent,
+	Time,
+	toTitleCase
+} from '@oldschoolgg/toolkit';
 
 import { BitField } from '@/lib/constants.js';
 import type { GauntletOptions } from '@/lib/types/minions.js';

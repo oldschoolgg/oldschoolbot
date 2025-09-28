@@ -1,4 +1,4 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { CropUpgradeType } from '@prisma/client';
 import { Items, itemID, resolveItems } from 'oldschooljs';
 

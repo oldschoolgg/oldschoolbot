@@ -1,6 +1,5 @@
-import { percentChance, randInt } from '@oldschoolgg/toolkit';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
+import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+import { Emoji, Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	BrimstoneChest,
@@ -37,7 +36,6 @@ import { openSeedPack } from '@/lib/skilling/functions/calcFarmingContracts.js';
 import { bsoOpenables } from './bso/openables/bsoOpenables.js';
 import type { FarmingContract } from './minions/farming/types.js';
 import { shadeChestOpenables } from './shadesKeys.js';
-import { roll } from './util/rng.js';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)

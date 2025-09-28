@@ -1,4 +1,4 @@
-import { randArrItem } from '@oldschoolgg/toolkit';
+import { randArrItem } from '@oldschoolgg/rng';
 import type { ChatInputCommandInteraction } from 'discord.js';
 
 import type { NexTaskOptions, RaidsOptions } from '@/lib/types/minions.js';

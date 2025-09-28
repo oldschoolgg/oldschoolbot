@@ -1,5 +1,12 @@
-import { calcWhatPercent, reduceNumByPercent, round, sumArr, Time } from '@oldschoolgg/toolkit';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import {
+	calcWhatPercent,
+	formatDuration,
+	reduceNumByPercent,
+	round,
+	stringMatches,
+	sumArr,
+	Time
+} from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 

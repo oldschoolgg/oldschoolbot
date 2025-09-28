@@ -1,17 +1,8 @@
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 
 import { userMention } from '@discordjs/builders';
-import {
-	formatDuration,
-	randArrItem,
-	reduceNumByPercent,
-	roll,
-	stringMatches,
-	Table,
-	Time,
-	uniqueArr
-} from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { randArrItem, roll } from '@oldschoolgg/rng';
+import { Emoji, formatDuration, reduceNumByPercent, stringMatches, Table, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import type { User } from '@prisma/client';
 import { Bank, type Item, Items, LootTable, resolveItems } from 'oldschooljs';
 

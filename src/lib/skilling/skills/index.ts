@@ -1,4 +1,4 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 
 import { skillEmoji } from '@/lib/data/emojis.js';
 import type { Skill } from '@/lib/skilling/types.js';

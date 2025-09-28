@@ -1,9 +1,16 @@
 import { allLeagueTasks } from '@/lib/bso/leagues/leagues.js';
 
-import { calcWhatPercent, chunk, isFunction, uniqueArr } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { channelIsSendable, makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import {
+	calcWhatPercent,
+	channelIsSendable,
+	chunk,
+	formatDuration,
+	isFunction,
+	makePaginatedMessage,
+	stringMatches,
+	toTitleCase,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import type { UserStats } from '@prisma/client';
 import { Prisma } from '@prisma/client';
 import {

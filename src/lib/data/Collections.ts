@@ -11,8 +11,16 @@ import { pumpkinHeadUniqueTable } from '@/lib/bso/pumpkinHead.js';
 import { inventionCL } from '@/lib/bso/skills/invention/inventions.js';
 import { getAllIgneTameKCs, tameKillableMonsters } from '@/lib/bso/tames.js';
 
-import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { SeedableRNG } from '@oldschoolgg/rng';
+import {
+	calcWhatPercent,
+	isObject,
+	notEmpty,
+	removeFromArr,
+	stringMatches,
+	sumArr,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	ChambersOfXeric,
@@ -60,7 +68,6 @@ import { fletchingCL } from '@/lib/skilling/skills/fletching/fletchables/index.j
 import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
-import { SeedableRNG } from '@/lib/util/rng.js';
 import { kibbleCL } from '../bso/kibble.js';
 import { slayerMasksHelmsCL } from '../bso/slayerMaskHelms.js';
 import {

@@ -1,4 +1,4 @@
-import { StoreBitfield } from '@oldschoolgg/toolkit/util';
+import { StoreBitfield } from '@oldschoolgg/toolkit';
 
 import type { CanvasImage } from './canvasUtil.js';
 

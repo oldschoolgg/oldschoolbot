@@ -1,5 +1,4 @@
-import { shuffleArr } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji, shuffleArr } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction, User } from 'discord.js';
 import { Bank, LootTable } from 'oldschooljs';
 

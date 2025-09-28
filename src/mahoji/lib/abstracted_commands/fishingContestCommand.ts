@@ -6,9 +6,7 @@ import {
 	getValidLocationsForFishType
 } from '@/lib/bso/fishingContest.js';
 
-import { Time } from '@oldschoolgg/toolkit';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';

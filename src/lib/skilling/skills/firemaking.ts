@@ -1,6 +1,6 @@
 import { bsoBurnables } from '@/lib/bso/skills/firemaking/bsoBurnables.js';
 
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs/EItem';
 
 import { type Burnable, defineSkill } from '@/lib/skilling/types.js';

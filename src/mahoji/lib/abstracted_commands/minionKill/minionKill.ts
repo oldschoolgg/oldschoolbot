@@ -5,8 +5,7 @@ import { moktangCommand } from '@/lib/bso/commands/moktangCommand.js';
 import { naxxusCommand } from '@/lib/bso/commands/naxxusCommand.js';
 import { handleDTD } from '@/lib/bso/handleDTD.js';
 
-import { Time } from '@oldschoolgg/toolkit';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 

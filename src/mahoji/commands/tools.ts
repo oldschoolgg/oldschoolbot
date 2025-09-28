@@ -2,11 +2,19 @@ import { addToDoubleLootTimer } from '@/lib/bso/doubleLoot.js';
 import { keyCrates } from '@/lib/bso/keyCrates.js';
 import { MysteryBoxes, spookyTable } from '@/lib/bso/openables/tables.js';
 
-import { randArrItem, randInt, roll, shuffleArr, Time } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import type { MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
-import { asyncGzip } from '@oldschoolgg/toolkit/node';
-import { formatDuration, PerkTier, stringMatches } from '@oldschoolgg/toolkit/util';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit';
+import {
+	asyncGzip,
+	Emoji,
+	formatDuration,
+	PerkTier,
+	randArrItem,
+	randInt,
+	roll,
+	shuffleArr,
+	stringMatches,
+	Time
+} from '@oldschoolgg/toolkit';
 import type { Activity, User } from '@prisma/client';
 import { ApplicationCommandOptionType, ChannelType, EmbedBuilder, userMention } from 'discord.js';
 import {

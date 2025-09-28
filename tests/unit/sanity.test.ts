@@ -1,4 +1,4 @@
-import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
+import { exponentialPercentScale } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, EquipmentSlot, Items, itemID } from 'oldschooljs';
 import { clamp } from 'remeda';
 import { describe, expect, test } from 'vitest';

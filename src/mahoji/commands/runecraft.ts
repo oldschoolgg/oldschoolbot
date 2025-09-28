@@ -1,5 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items, itemID } from 'oldschooljs';
 

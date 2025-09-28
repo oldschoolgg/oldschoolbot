@@ -1,5 +1,4 @@
-import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { calcWhatPercent, mentionCommand, objectEntries } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 

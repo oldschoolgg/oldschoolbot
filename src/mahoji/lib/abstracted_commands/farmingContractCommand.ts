@@ -1,5 +1,4 @@
-import { makeComponents, roughMergeMahojiResponse } from '@oldschoolgg/toolkit/discord-util';
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import { makeComponents, roughMergeMahojiResponse, toTitleCase } from '@oldschoolgg/toolkit';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';

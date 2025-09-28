@@ -1,7 +1,6 @@
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 
-import { calcPercentOfNum, reduceNumByPercent } from '@oldschoolgg/toolkit';
-import { stripEmojis, truncateString } from '@oldschoolgg/toolkit/util';
+import { calcPercentOfNum, reduceNumByPercent, stripEmojis, truncateString } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 

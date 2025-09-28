@@ -1,7 +1,7 @@
 import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 
-import { randArrItem, randInt } from '@oldschoolgg/toolkit';
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { randArrItem, randInt } from '@oldschoolgg/rng';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';

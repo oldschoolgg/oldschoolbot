@@ -8,8 +8,7 @@ import { stealingCreationBuyables } from '@/lib/bso/buyables/stealingCreationBuy
 import { veteranCapeBuyables } from '@/lib/bso/buyables/veteranCapeBuyables.js';
 import { expertCapesSource } from '@/lib/bso/expertCapes.js';
 
-import { isAtleastThisOld, Time } from '@oldschoolgg/toolkit';
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { isAtleastThisOld, mentionCommand, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { Buyable } from '@/lib/data/buyables/buyables.js';

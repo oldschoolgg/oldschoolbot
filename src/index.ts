@@ -3,9 +3,7 @@ import './lib/globals.js';
 import './lib/MUser.js';
 import './lib/ActivityManager.js';
 
-import { isObject } from '@oldschoolgg/toolkit';
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { convertMahojiCommandToAbstractCommand, MahojiClient } from '@oldschoolgg/toolkit/discord-util';
+import { convertMahojiCommandToAbstractCommand, Events, isObject, MahojiClient } from '@oldschoolgg/toolkit';
 import { init } from '@sentry/node';
 import { GatewayIntentBits, Options, Partials, type TextChannel } from 'discord.js';
 

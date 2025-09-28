@@ -1,5 +1,5 @@
-import { objectEntries } from '@oldschoolgg/toolkit';
-import { stripEmojis, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { roll } from '@oldschoolgg/rng';
+import { objectEntries, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import { type ArrayItemsResolved, type Bank, type ItemBank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
@@ -158,4 +158,19 @@ export function normalizeTOAUsers(data: TOAOptions) {
 
 export function isValidSkill(skill: string): skill is SkillNameType {
 	return SkillsArray.includes(skill as SkillNameType);
+}
+
+export function perHourChance(
+	durationMilliseconds: number,
+	oneInXPerHourChance: number,
+	successFunction: () => unknown
+) {
+	const minutesPassed = Math.floor(durationMilliseconds / 60_000);
+	const perMinuteChance = oneInXPerHourChance * 60;
+
+	for (let i = 0; i < minutesPassed; i++) {
+		if (roll(perMinuteChance)) {
+			successFunction();
+		}
+	}
 }

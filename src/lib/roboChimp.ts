@@ -1,5 +1,4 @@
-import { calcWhatPercent, round, sumArr } from '@oldschoolgg/toolkit';
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
+import { calcWhatPercent, formatOrdinal, round, sumArr } from '@oldschoolgg/toolkit';
 import type { TriviaQuestion, User } from '@prisma/robochimp';
 import deepEqual from 'fast-deep-equal';
 import type { Bank } from 'oldschooljs';

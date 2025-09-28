@@ -1,7 +1,12 @@
 import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
 
-import { type MahojiUserOption, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { containsBlacklistedWord, miniID, truncateString } from '@oldschoolgg/toolkit/string-util';
+import {
+	containsBlacklistedWord,
+	type MahojiUserOption,
+	mentionCommand,
+	miniID,
+	truncateString
+} from '@oldschoolgg/toolkit';
 import { GiftBoxStatus } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';

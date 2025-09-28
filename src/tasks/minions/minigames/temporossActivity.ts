@@ -1,5 +1,4 @@
-import { increaseNumByPercent } from '@oldschoolgg/toolkit';
-import { calcPerHour } from '@oldschoolgg/toolkit/util';
+import { calcPerHour, increaseNumByPercent } from '@oldschoolgg/toolkit';
 
 import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';

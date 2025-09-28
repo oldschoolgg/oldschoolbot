@@ -1,6 +1,7 @@
 import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
 
-import { increaseNumByPercent, roll, Time } from '@oldschoolgg/toolkit';
+import { roll } from '@oldschoolgg/rng';
+import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
 import type { UserStats } from '@prisma/client';
 import { Bank, type ItemBank, MonsterAttribute, Monsters } from 'oldschooljs';
 

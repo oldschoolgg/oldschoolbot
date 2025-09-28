@@ -10,8 +10,8 @@ import {
 	TOTAL_MONKEYS
 } from '@/lib/bso/minigames/monkey-rumble/monkeyRumble.js';
 
-import { formatDuration, randArrItem, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { randArrItem } from '@oldschoolgg/rng';
+import { Emoji, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';

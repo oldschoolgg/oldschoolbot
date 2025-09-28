@@ -1,4 +1,5 @@
-import { percentChance, sumArr } from '@oldschoolgg/toolkit';
+import { percentChance, randFloat, roll } from '@oldschoolgg/rng';
+import { sumArr } from '@oldschoolgg/toolkit';
 import { type Bank, itemID } from 'oldschooljs';
 
 import {
@@ -11,7 +12,6 @@ import {
 } from '@/lib/simulation/birdsNest.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
-import { randFloat, roll } from '@/lib/util/rng.js';
 
 const clues = [
 	[itemID('Elder scroll piece'), 0.2 / 10],

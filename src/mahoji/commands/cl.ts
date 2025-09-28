@@ -1,4 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import type { CollectionLogType } from '@/lib/collectionLogTask.js';

@@ -1,5 +1,4 @@
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
+import { Events, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Bank, type ItemBank, Items, itemID } from 'oldschooljs';
 

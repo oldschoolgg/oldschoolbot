@@ -2,9 +2,9 @@ import { type MaterialType, materialTypes } from '@/lib/bso/skills/invention/ind
 import { transactMaterialsFromUser } from '@/lib/bso/skills/invention/inventions.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
-import { Time } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { type ItemBank, randomVariation } from 'oldschooljs';
+import { randomVariation } from '@oldschoolgg/rng';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import type { ItemBank } from 'oldschooljs';
 
 import type { TinkeringWorkshopOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';

@@ -1,8 +1,8 @@
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 
-import { calcPerHour, randInt, roll, Time } from '@oldschoolgg/toolkit';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
+import { randInt, roll } from '@oldschoolgg/rng';
+import { calcPerHour, Emoji, Events, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';

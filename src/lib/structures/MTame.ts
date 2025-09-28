@@ -1,6 +1,7 @@
 import { type Species, TameSpeciesID, tameFeedableItems, tameSpecies } from '@/lib/bso/tames.js';
 
-import { roll, round, Time } from '@oldschoolgg/toolkit';
+import { roll } from '@oldschoolgg/rng';
+import { round, Time } from '@oldschoolgg/toolkit';
 import { type Tame, tame_growth } from '@prisma/client';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 

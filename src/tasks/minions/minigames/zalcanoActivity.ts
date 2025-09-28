@@ -1,4 +1,5 @@
-import { Events } from '@oldschoolgg/toolkit/constants';
+import { randInt } from '@oldschoolgg/rng';
+import { Events } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, Misc } from 'oldschooljs';
 
 import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
@@ -7,7 +8,6 @@ import type { ZalcanoActivityTaskOptions } from '@/lib/types/minions.js';
 import { ashSanctifierEffect } from '@/lib/util/ashSanctifier.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { randInt } from '@/lib/util/rng.js';
 
 export const zalcanoTask: MinionTask = {
 	type: 'Zalcano',

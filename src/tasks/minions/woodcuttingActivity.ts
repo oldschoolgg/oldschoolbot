@@ -1,8 +1,8 @@
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 
-import { objectEntries, percentChance, randInt, Time } from '@oldschoolgg/toolkit';
-import { perTimeUnitChance } from '@oldschoolgg/toolkit/util';
+import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+import { objectEntries, perTimeUnitChance, Time } from '@oldschoolgg/toolkit';
 import { Bank, EItem, itemID } from 'oldschooljs';
 
 import { MAX_LEVEL } from '@/lib/constants.js';
@@ -17,7 +17,6 @@ import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { rollForMoonKeyHalf } from '@/lib/util/minionUtils.js';
-import { roll } from '@/lib/util/rng.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 

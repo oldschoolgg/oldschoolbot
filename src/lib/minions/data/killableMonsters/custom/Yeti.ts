@@ -1,6 +1,6 @@
 import { YETI_ID } from '@/lib/bso/bsoConstants.js';
 
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Time } from '@oldschoolgg/toolkit';
 import { GemTable, HerbDropTable, LootTable, Monsters, UncommonSeedDropTable } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 

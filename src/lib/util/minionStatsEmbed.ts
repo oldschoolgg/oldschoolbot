@@ -1,7 +1,7 @@
 import { MALEDICT_MORTIMER_ID } from '@/lib/bso/maledictMortimer.js';
 
-import { shuffleArr, sumArr } from '@oldschoolgg/toolkit';
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import { shuffleArr } from '@oldschoolgg/rng';
+import { sumArr, toTitleCase } from '@oldschoolgg/toolkit';
 import { EmbedBuilder } from 'discord.js';
 import { Bank, convertXPtoLVL, type ItemBank, type SkillsScore, toKMB } from 'oldschooljs';
 

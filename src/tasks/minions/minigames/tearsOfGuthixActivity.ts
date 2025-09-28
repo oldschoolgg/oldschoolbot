@@ -1,6 +1,7 @@
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
 
-import { increaseNumByPercent, randInt } from '@oldschoolgg/toolkit';
+import { randInt } from '@oldschoolgg/rng';
+import { increaseNumByPercent } from '@oldschoolgg/toolkit';
 
 import { BitField } from '@/lib/constants.js';
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '@/lib/diaries.js';

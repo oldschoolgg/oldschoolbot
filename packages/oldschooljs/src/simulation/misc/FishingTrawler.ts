@@ -1,51 +1,52 @@
+import { EItem } from '@/EItem.js';
+import { anglerOutfit } from '@/itemGroups.js';
 import { Bank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
-import itemID from '@/util/itemID.js';
 import { randomVariation, roll } from '@/util/smallUtils.js';
 
 const trawlerFish = [
 	{
-		id: itemID('Raw shrimps'),
+		id: EItem.RAW_SHRIMPS,
 		level: 1,
 		xp: 10
 	},
 	{
-		id: itemID('Raw sardine'),
+		id: EItem.RAW_SARDINE,
 		level: 5,
 		xp: 20
 	},
 	{
-		id: itemID('Raw anchovies'),
+		id: EItem.RAW_ANCHOVIES,
 		level: 15,
 		xp: 40
 	},
 	{
-		id: itemID('Raw tuna'),
+		id: EItem.RAW_TUNA,
 		level: 35,
 		xp: 80
 	},
 	{
-		id: itemID('Raw lobster'),
+		id: EItem.RAW_LOBSTER,
 		level: 40,
 		xp: 90
 	},
 	{
-		id: itemID('Raw swordfish'),
+		id: EItem.RAW_SWORDFISH,
 		level: 50,
 		xp: 100
 	},
 	{
-		id: itemID('Raw shark'),
+		id: EItem.RAW_SHARK,
 		level: 76,
 		xp: 110
 	},
 	{
-		id: itemID('Raw sea turtle'),
+		id: EItem.RAW_SEA_TURTLE,
 		level: 79,
 		xp: 38
 	},
 	{
-		id: itemID('Raw manta ray'),
+		id: EItem.RAW_MANTA_RAY,
 		level: 81,
 		xp: 46
 	}
@@ -63,8 +64,6 @@ const RawJunkTable = new LootTable()
 	.add('Rusty sword');
 
 const JunkTable = new LootTable().add(RawJunkTable, [0, 1]).add(RawJunkTable, [0, 1]);
-
-const anglerOutfit = ['Angler hat', 'Angler top', 'Angler waders', 'Angler boots'].map(itemID);
 
 export function FishingTrawler(fishingLevel: number, hasEliteArd: boolean, bank?: Bank) {
 	const loot = new Bank();

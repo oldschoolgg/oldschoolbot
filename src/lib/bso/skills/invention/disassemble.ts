@@ -7,11 +7,11 @@ import {
 	type MaterialType
 } from '@/lib/bso/skills/invention/index.js';
 
+import { percentChance } from '@oldschoolgg/rng';
 import {
 	calcPerHour,
 	calcWhatPercent,
 	formatDuration,
-	percentChance,
 	reduceNumByPercent,
 	Table,
 	Time,

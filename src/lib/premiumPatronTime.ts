@@ -1,4 +1,4 @@
-import { formatDuration, Time } from '@oldschoolgg/toolkit/util';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';

@@ -1,5 +1,4 @@
-import { chunk, noOp, Time } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { chunk, Emoji, noOp, Time } from '@oldschoolgg/toolkit';
 import type { Bingo, Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
 import { addBanks, Bank, type ItemBank, Items, toKMB } from 'oldschooljs';

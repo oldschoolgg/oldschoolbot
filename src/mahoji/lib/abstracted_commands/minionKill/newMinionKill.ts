@@ -1,8 +1,7 @@
 import { YETI_ID } from '@/lib/bso/bsoConstants.js';
 import type { InventionID } from '@/lib/bso/skills/invention/inventions.js';
 
-import { increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/datetime';
+import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { EItem, Items, itemID, Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';

@@ -1,7 +1,6 @@
 import { getPHeadDescriptor } from '@/lib/bso/pumpkinHead.js';
 
-import { Time } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, type TextChannel } from 'discord.js';
 import { Items } from 'oldschooljs';
 

@@ -1,9 +1,15 @@
 import { calcBossFood } from '@/lib/bso/calcBossFood.js';
 import { getKalphiteKingGearStats } from '@/lib/bso/getKalphiteKingGearStats.js';
 
-import { increaseNumByPercent, reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
-import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/util';
+import {
+	channelIsSendable,
+	formatDuration,
+	increaseNumByPercent,
+	isWeekend,
+	reduceNumByPercent,
+	round,
+	Time
+} from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 

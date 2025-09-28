@@ -1,8 +1,7 @@
 import type { Item } from '@/meta/item.js';
 import { randArrItem } from '@/util/smallUtils.js';
-import itemID from '../util/itemID.js';
 import { toKMB } from '../util/smallUtils.js';
-import Items from './Items.js';
+import { Items } from './Items.js';
 
 const frozenErrorStr = 'Tried to mutate a frozen Bank.';
 
@@ -59,7 +58,7 @@ export class Bank {
 
 	private resolveItemID(item: ItemResolvable): number {
 		if (typeof item === 'number') return item;
-		if (typeof item === 'string') return itemID(item);
+		if (typeof item === 'string') return Items.getId(item);
 		return item.id;
 	}
 
@@ -146,7 +145,7 @@ export class Bank {
 		// Bank.add('Twisted bow');
 		// Bank.add('Twisted bow', 5);
 		if (typeof item === 'string') {
-			return this.addItem(itemID(item), quantity);
+			return this.addItem(Items.getId(item), quantity);
 		}
 
 		if (item instanceof Bank) {
@@ -186,7 +185,7 @@ export class Bank {
 		// Bank.remove('Twisted bow');
 		// Bank.remove('Twisted bow', 5);
 		if (typeof item === 'string') {
-			return this.removeItem(itemID(item), quantity);
+			return this.removeItem(Items.getId(item), quantity);
 		}
 
 		// Bank.remove(123);

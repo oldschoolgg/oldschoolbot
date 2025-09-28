@@ -1,7 +1,7 @@
 import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
 
-import { randArrItem } from '@oldschoolgg/toolkit';
-import type { MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
+import { randArrItem } from '@oldschoolgg/rng';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 

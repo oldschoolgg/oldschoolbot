@@ -1,4 +1,4 @@
-import { calcPerHour } from '@oldschoolgg/toolkit/util';
+import { calcPerHour } from '@oldschoolgg/toolkit';
 import { Bank, Items, toKMB } from 'oldschooljs';
 
 import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';

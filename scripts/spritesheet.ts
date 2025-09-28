@@ -1,7 +1,7 @@
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 import { type GenerateResult, SpriteSheetGenerator } from '@oldschoolgg/spritesheet';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { Stopwatch } from '@oldschoolgg/toolkit';
 import '../src/lib/safeglobals.js';
 
 import { isFunction, uniqueArr } from '@oldschoolgg/toolkit';

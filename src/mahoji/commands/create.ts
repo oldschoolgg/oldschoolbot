@@ -2,7 +2,7 @@ import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
 import { transactMaterialsFromUser } from '@/lib/bso/skills/invention/inventions.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
-import { isFunction, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit/util';
+import { isFunction, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 

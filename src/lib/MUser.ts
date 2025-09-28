@@ -1,20 +1,19 @@
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
+import { percentChance, randArrItem } from '@oldschoolgg/rng';
 import {
 	calcWhatPercent,
+	cleanUsername,
+	Emoji,
+	mentionCommand,
 	notEmpty,
 	PerkTier,
-	percentChance,
-	randArrItem,
 	sumArr,
 	Time,
+	UserError,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { seedShuffle } from '@oldschoolgg/toolkit/rng';
-import { UserError } from '@oldschoolgg/toolkit/structures';
 import type { GearSetupType, Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { escapeMarkdown, userMention } from 'discord.js';
 import {

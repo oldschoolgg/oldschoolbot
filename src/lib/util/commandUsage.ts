@@ -1,5 +1,5 @@
+import type { CommandOptions, MahojiUserOption } from '@oldschoolgg/toolkit';
 import { isObject } from '@oldschoolgg/toolkit';
-import type { CommandOptions, MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import type { command_name_enum, Prisma } from '@prisma/client';
 
 function isMahojiUserOption(data: any): data is MahojiUserOption {

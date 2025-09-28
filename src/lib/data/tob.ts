@@ -1,7 +1,7 @@
 import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 
+import { randFloat, randInt, randomVariation } from '@oldschoolgg/rng';
 import { calcPercentOfNum, calcWhatPercent, reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
-import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, Items, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
@@ -14,7 +14,6 @@ import {
 import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
 import { logError } from '@/lib/util/logError.js';
-import { randFloat, randInt } from '@/lib/util/rng.js';
 
 interface TOBRoom {
 	name: string;

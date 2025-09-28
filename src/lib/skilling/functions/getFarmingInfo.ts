@@ -1,5 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { formatDuration, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import type { User } from '@prisma/client';
 
 import { defaultPatches } from '@/lib/minions/farming/index.js';

@@ -1,5 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import type { PerkTier } from '@oldschoolgg/toolkit/util';
+import { type PerkTier, Time } from '@oldschoolgg/toolkit';
 import type { Giveaway, Guild, User } from '@prisma/client';
 import { LRUCache } from 'lru-cache';
 

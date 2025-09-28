@@ -1,7 +1,6 @@
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 
-import { percentChance, randArrItem, roll } from '@oldschoolgg/toolkit';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
+import { Emoji, Events, percentChance, randArrItem, roll } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';

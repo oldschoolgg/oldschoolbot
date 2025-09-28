@@ -2,8 +2,8 @@ import { chanceOfDOAUnique, pickUniqueToGiveUser } from '@/lib/bso/depthsOfAtlan
 import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';
 import { NEX_UNIQUE_DROPRATE, nexLootTable } from '@/lib/bso/monsters/nex.js';
 
-import { randArrItem, randInt, roll } from '@oldschoolgg/toolkit';
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
+import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { Bank, Misc } from 'oldschooljs';
 
 import { nexUniqueDrops } from '@/lib/data/CollectionsExport.js';

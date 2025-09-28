@@ -1,6 +1,4 @@
-import { sumArr, Time } from '@oldschoolgg/toolkit';
-import { generateCommandInputs } from '@oldschoolgg/toolkit/discord-util';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { generateCommandInputs, Stopwatch, sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 import PromiseQueue from 'p-queue';
 import { shuffle } from 'remeda';

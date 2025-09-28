@@ -3,9 +3,9 @@ import { handleSpecialCoxLoot } from '@/lib/bso/handleSpecialCoxLoot.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 
-import { randArrItem, roll, shuffleArr } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { Bank, ChambersOfXeric, randomVariation, resolveItems } from 'oldschooljs';
+import { randArrItem, randomVariation, roll, shuffleArr } from '@oldschoolgg/rng';
+import { Emoji } from '@oldschoolgg/toolkit';
+import { Bank, ChambersOfXeric, resolveItems } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '@/lib/data/CollectionsExport.js';

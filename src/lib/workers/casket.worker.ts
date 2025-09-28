@@ -1,7 +1,7 @@
 import '../../lib/customItems/customItems.js';
 import '../data/itemAliases.js';
 
-import { randInt, roll } from '@oldschoolgg/toolkit';
+import { randInt, roll } from '@oldschoolgg/rng';
 import type { ItemBank } from 'oldschooljs';
 import { Bank, EliteMimicTable, MasterMimicTable } from 'oldschooljs';
 

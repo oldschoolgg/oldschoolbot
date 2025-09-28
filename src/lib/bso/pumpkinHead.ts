@@ -1,4 +1,4 @@
-import { randArrItem } from '@oldschoolgg/toolkit';
+import { randArrItem } from '@oldschoolgg/rng';
 import { LootTable } from 'oldschooljs';
 
 export const PUMPKINHEAD_ID = 93_898_458;

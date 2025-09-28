@@ -1,4 +1,4 @@
-import { randArrItem } from '@oldschoolgg/toolkit';
+import { randArrItem } from '@oldschoolgg/rng';
 import { ApplicationCommandOptionType, inlineCode } from 'discord.js';
 
 export const chooseCommand: OSBMahojiCommand = {

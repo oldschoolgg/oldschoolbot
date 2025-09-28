@@ -1,6 +1,14 @@
-import { calcWhatPercent, reduceNumByPercent, roll, round, Time } from '@oldschoolgg/toolkit';
-import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
+import {
+	calcWhatPercent,
+	formatDuration,
+	makeComponents,
+	randomVariation,
+	reduceNumByPercent,
+	roll,
+	round,
+	stringMatches,
+	Time
+} from '@oldschoolgg/toolkit';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';

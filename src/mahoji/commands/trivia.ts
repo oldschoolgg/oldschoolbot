@@ -1,5 +1,5 @@
+import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import { shuffleArr, uniqueArr } from '@oldschoolgg/toolkit';
-import type { MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
 import { ApplicationCommandOptionType, type TextChannel, userMention } from 'discord.js';
 
 import { DynamicButtons } from '@/lib/DynamicButtons.js';

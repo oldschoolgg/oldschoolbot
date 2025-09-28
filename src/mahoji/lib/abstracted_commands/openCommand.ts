@@ -1,9 +1,7 @@
 import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
 
-import { noOp, notEmpty, percentChance, randArrItem, shuffleArr, uniqueArr } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { percentChance, randArrItem, shuffleArr } from '@oldschoolgg/rng';
+import { Emoji, makeComponents, noOp, notEmpty, stringMatches, uniqueArr } from '@oldschoolgg/toolkit';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items, itemID, resolveItems } from 'oldschooljs';
 

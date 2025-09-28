@@ -1,5 +1,5 @@
-import type { AbstractCommand } from '@oldschoolgg/toolkit/discord-util';
-import { formatDuration, PerkTier } from '@oldschoolgg/toolkit/util';
+import type { AbstractCommand } from '@oldschoolgg/toolkit';
+import { formatDuration, PerkTier } from '@oldschoolgg/toolkit';
 import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChannel } from 'discord.js';
 import { ComponentType, PermissionsBitField } from 'discord.js';
 

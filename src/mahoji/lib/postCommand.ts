@@ -1,4 +1,4 @@
-import type { AbstractCommand, CommandOptions } from '@oldschoolgg/toolkit/discord-util';
+import type { AbstractCommand, CommandOptions } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 
 import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
