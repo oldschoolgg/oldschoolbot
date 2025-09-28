@@ -2,12 +2,14 @@ import { makeComponents, roughMergeMahojiResponse, toTitleCase } from '@oldschoo
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
-import { defaultFarmingContract } from '@/lib/minions/farming/index.js';
-import type { ContractOption, FarmingContract, FarmingContractDifficultyLevel } from '@/lib/minions/farming/types.js';
-import { getPlantToGrow } from '@/lib/skilling/functions/calcFarmingContracts.js';
-import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
-import { plants } from '@/lib/skilling/skills/farming/index.js';
-import { findPlant } from '@/lib/util/farmingHelpers.js';
+import { Farming, plants } from '@/lib/skilling/skills/farming/index.js';
+import { getPlantToGrow } from '@/lib/skilling/skills/farming/utils/calcFarmingContracts.js';
+import { getFarmingInfoFromUser } from '@/lib/skilling/skills/farming/utils/getFarmingInfo.js';
+import type {
+	ContractOption,
+	FarmingContract,
+	FarmingContractDifficultyLevel
+} from '@/lib/skilling/skills/farming/utils/types.js';
 import { farmingPlantCommand, harvestCommand } from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
 import { abstractedOpenCommand } from '@/mahoji/lib/abstracted_commands/openCommand.js';
 import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
@@ -39,8 +41,8 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 	const user = await mUserFetch(userID);
 	const farmingLevel = user.skillsAsLevels.farming;
 	const currentContract: FarmingContract =
-		(user.user.minion_farmingContract as FarmingContract | null) ?? defaultFarmingContract;
-	const plant = currentContract.hasContract ? findPlant(currentContract.plantToGrow) : null;
+		(user.user.minion_farmingContract as FarmingContract | null) ?? Farming.defaultFarmingContract;
+	const plant = currentContract.hasContract ? Farming.findPlant(currentContract.plantToGrow) : null;
 
 	if (!input) {
 		if (!currentContract.hasContract) {
@@ -185,7 +187,7 @@ function bestFarmingContractUserCanDo(user: MUser) {
 export async function autoContract(user: MUser, channelID: string, userID: string): CommandResponse {
 	const farmingDetails = getFarmingInfoFromUser(user.user);
 	const contract = user.farmingContract();
-	const plant = contract?.contract ? findPlant(contract?.contract.plantToGrow) : null;
+	const plant = contract?.contract ? Farming.findPlant(contract?.contract.plantToGrow) : null;
 	const patch = farmingDetails.patchesDetailed.find(p => p.plant === plant);
 	const bestContractTierCanDo = bestFarmingContractUserCanDo(user);
 
@@ -199,7 +201,7 @@ export async function autoContract(user: MUser, channelID: string, userID: strin
 	if (!contract || !contract.contract) {
 		const contractResult = await farmingContractCommand(userID, bestContractTierCanDo);
 		const newUser = await mahojiUsersSettingsFetch(userID, { minion_farmingContract: true });
-		const newContract = (newUser.minion_farmingContract ?? defaultFarmingContract) as FarmingContract;
+		const newContract = (newUser.minion_farmingContract ?? Farming.defaultFarmingContract) as FarmingContract;
 		if (!newContract.hasContract || !newContract.plantToGrow) return contractResult;
 		return farmingPlantCommand({
 			userID: user.id,

@@ -2,8 +2,8 @@ import { dateFm, Emoji, makeComponents, stringMatches } from '@oldschoolgg/toolk
 import type { User } from '@prisma/client';
 import { type BaseMessageOptions, ButtonBuilder, ButtonStyle } from 'discord.js';
 
-import type { IPatchData, IPatchDataDetailed } from '@/lib/minions/farming/types.js';
-import Farming from '@/lib/skilling/skills/farming/index.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import type { IPatchData, IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
 import { formatList } from '@/lib/util/smallUtils.js';
 
 function makeAutoFarmButton() {
@@ -42,8 +42,6 @@ export function isPatchName(name: string): name is FarmingPatchName {
 	return farmingPatchNames.includes(name as FarmingPatchName);
 }
 
-export const farmingKeys: (keyof User)[] = farmingPatchNames.map(i => `farmingPatches_${i}` as const);
-
 export function getFarmingKeyFromName(name: FarmingPatchName): keyof User {
 	return `farmingPatches_${name}`;
 }
@@ -56,6 +54,7 @@ export function findPlant(lastPlanted: IPatchData['lastPlanted']) {
 	if (!plant) return null;
 	return plant;
 }
+
 export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]): BaseMessageOptions {
 	let str = '';
 	for (const patch of patchesDetailed.filter(i => i.ready === true)) {
