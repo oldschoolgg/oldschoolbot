@@ -1,7 +1,7 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import LeapingFish from '@/lib/skilling/skills/cooking/leapingFish.js';
+import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
 import type { CutLeapingFishActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';

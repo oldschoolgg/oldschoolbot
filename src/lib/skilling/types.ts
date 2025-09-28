@@ -192,12 +192,6 @@ export interface Mixable {
 	qpRequired?: number;
 }
 
-export interface CutLeapingFish {
-	item: Item;
-	aliases: string[];
-	tickRate: number;
-}
-
 export interface Bone {
 	level: number;
 	xp: number;

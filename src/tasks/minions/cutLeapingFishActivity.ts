@@ -2,7 +2,7 @@ import { percentChance } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 import { clamp } from 'remeda';
 
-import LeapingFish from '@/lib/skilling/skills/cooking/leapingFish.js';
+import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
 import type { CutLeapingFishActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 

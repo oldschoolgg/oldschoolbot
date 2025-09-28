@@ -11,7 +11,7 @@ import Agility from '@/lib/skilling/skills/agility.js';
 import Constructables from '@/lib/skilling/skills/construction/constructables.js';
 import Cooking from '@/lib/skilling/skills/cooking/cooking.js';
 import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
-import LeapingFish from '@/lib/skilling/skills/cooking/leapingFish.js';
+import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
 import Crafting from '@/lib/skilling/skills/crafting/index.js';
 import Farming from '@/lib/skilling/skills/farming/index.js';
 import Firemaking from '@/lib/skilling/skills/firemaking.js';
