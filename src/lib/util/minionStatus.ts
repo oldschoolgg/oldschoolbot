@@ -24,7 +24,7 @@ import Cooking from '@/lib/skilling/skills/cooking/cooking.js';
 import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
 import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
 import Crafting from '@/lib/skilling/skills/crafting/index.js';
-import Farming from '@/lib/skilling/skills/farming/index.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import Firemaking from '@/lib/skilling/skills/firemaking.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';

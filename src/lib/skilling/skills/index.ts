@@ -6,7 +6,7 @@ import Agility from './agility.js';
 import { Construction } from './construction/index.js';
 import Cooking from './cooking/cooking.js';
 import Crafting from './crafting/index.js';
-import Farming from './farming/index.js';
+import { Farming } from './farming/index.js';
 import Firemaking from './firemaking.js';
 import { Fishing } from './fishing/fishing.js';
 import Fletching from './fletching/index.js';

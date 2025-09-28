@@ -153,10 +153,9 @@ import { implingsCL } from '@/lib/implings.js';
 import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import { type DiaryID, type DiaryTierName, diaryTiers } from '@/lib/minions/types.js';
 import { getPOHObject, PoHObjects } from '@/lib/poh/index.js';
-import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
 import Skillcapes from '@/lib/skilling/skillcapes.js';
 import Agility from '@/lib/skilling/skills/agility.js';
-import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
+import { allFarmingItems, Farming } from '@/lib/skilling/skills/farming/index.js';
 import { fletchingCL } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import { slayerUnlockableRewards } from '@/lib/slayer/slayerUnlocks.js';
 import { type RequirementFailure, Requirements } from '@/lib/structures/Requirements.js';
@@ -330,7 +329,7 @@ const skillingRequirements = new Requirements()
 	.add({
 		name: 'Grow 5 Spirit trees',
 		has: ({ user }) => {
-			const info = getFarmingInfoFromUser(user.user);
+			const info = Farming.getFarmingInfoFromUser(user.user);
 			const hasFive = info.patches.spirit.lastQuantity >= 5;
 			return hasFive || user.bitfield.includes(BitField.GrewFiveSpiritTrees);
 		}

@@ -8,7 +8,7 @@ import {
 } from 'skia-canvas';
 
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
-import type { DetailedFarmingContract } from '@/lib/minions/farming/types.js';
+import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
 import { assert } from '@/lib/util/logError.js';
 
 export function registerFont(fontFamily: string, fontPath: string) {

@@ -5,8 +5,8 @@ import { randInt } from '@oldschoolgg/rng';
 
 import { BitField } from '@/lib/constants.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
+import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { Plant } from '@/lib/skilling/types.js';
-import type { FarmingPatchName } from '@/lib/util/farmingHelpers.js';
 
 export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number] {
 	let numOfPatches = plant.defaultNumOfPatches;

@@ -3,6 +3,7 @@ import { CropUpgradeType } from '@prisma/client';
 import { Items, itemID, resolveItems } from 'oldschooljs';
 
 import { bushes } from '@/lib/skilling/skills/farming/bushes.js';
+import { openSeedPack } from '@/lib/skilling/skills/farming/utils/calcFarmingContracts.js';
 import { zygomitePlants } from '@/lib/skilling/skills/farming/zygomites.js';
 import { defineSkill, type Plant } from '@/lib/skilling/types.js';
 import allotmentPlants from './allotments.js';
@@ -11,6 +12,17 @@ import herbPlants from './herbPlants.js';
 import hopsPlants from './hops.js';
 import specialPlants from './specialPlants.js';
 import trees from './trees.js';
+import { calcNumOfPatches, calcVariableYield } from './utils/calcsFarming.js';
+import { defaultFarmingContract, defaultPatches } from './utils/farmingConstants.js';
+import {
+	farmingPatchNames,
+	findPlant,
+	getFarmingKeyFromName,
+	isPatchName,
+	userGrowingProgressStr
+} from './utils/farmingHelpers.js';
+import { getFarmingInfo, getFarmingInfoFromUser } from './utils/getFarmingInfo.js';
+import * as PatchTypes from './utils/types.js';
 
 export const plants: Plant[] = [
 	...herbPlants,
@@ -78,14 +90,26 @@ allFarmingItems.push(
 	])
 );
 
-const Farming = defineSkill({
+export { PatchTypes };
+
+export const Farming = defineSkill({
 	aliases: ['farming'],
 	Plants: plants,
 	id: 'farming',
 	emoji: Emoji.Farming,
 	name: 'Farming',
 	maleFarmerItems,
-	femaleFarmerItems
+	femaleFarmerItems,
+	defaultFarmingContract,
+	defaultPatches,
+	calcNumOfPatches,
+	calcVariableYield,
+	userGrowingProgressStr,
+	findPlant,
+	getFarmingKeyFromName,
+	openSeedPack,
+	farmingPatchNames,
+	getFarmingInfoFromUser,
+	getFarmingInfo,
+	isPatchName
 });
-
-export default Farming;

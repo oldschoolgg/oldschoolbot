@@ -10,14 +10,11 @@ import { Bank, Items, increaseBankQuantitesByPercent, Monsters } from 'oldschool
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField } from '@/lib/constants.js';
-import type { PatchTypes } from '@/lib/minions/farming/index.js';
-import type { FarmingContract } from '@/lib/minions/farming/types.js';
-import { calcVariableYield } from '@/lib/skilling/functions/calcsFarming.js';
-import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
-import Farming from '@/lib/skilling/skills/farming/index.js';
+import { Farming, type PatchTypes } from '@/lib/skilling/skills/farming/index.js';
+import { getFarmingKeyFromName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
+import type { FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { Plant } from '@/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
-import { getFarmingKeyFromName } from '@/lib/util/farmingHelpers.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { assert } from '@/lib/util/logError.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
@@ -246,7 +243,7 @@ export const farmingTask: MinionTask = {
 					cropToHarvest = plantToHarvest.cleanHerbCrop;
 				}
 				if (plantToHarvest.variableYield) {
-					cropYield = calcVariableYield(
+					cropYield = Farming.calcVariableYield(
 						plantToHarvest,
 						patchType.lastUpgradeType,
 						currentFarmingLevel,
@@ -593,7 +590,7 @@ export const farmingTask: MinionTask = {
 
 			const seedPackCount = loot.amount('Seed pack');
 
-			const hasFive = getFarmingInfoFromUser(user.user).patches.spirit.lastQuantity >= 5;
+			const hasFive = Farming.getFarmingInfoFromUser(user.user).patches.spirit.lastQuantity >= 5;
 			if (hasFive && !user.bitfield.includes(BitField.GrewFiveSpiritTrees)) {
 				await user.update({
 					bitfield: {

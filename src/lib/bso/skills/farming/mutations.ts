@@ -1,6 +1,6 @@
 import { itemID } from 'oldschooljs';
 
-import Farming from '@/lib/skilling/skills/farming/index.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
 
 export const mutations = [
 	{

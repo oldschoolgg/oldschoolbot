@@ -9,10 +9,10 @@ import type { ItemBank } from 'oldschooljs';
 
 import type { NMZStrategy } from '@/lib/constants.js';
 import type { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
-import type { IPatchData } from '@/lib/minions/farming/types.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
+import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { BirdhouseData } from '@/lib/skilling/skills/hunter/defaultBirdHouseTrap.js';
 import type { TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { BossUser } from '@/lib/structures/Boss.js';

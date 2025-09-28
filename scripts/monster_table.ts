@@ -17,7 +17,7 @@ import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
 import { SlayerRewardsShop, type SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
-import { ChargeBank } from '@/lib/structures/Banks.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import { KCBank } from '@/lib/structures/KCBank.js';
