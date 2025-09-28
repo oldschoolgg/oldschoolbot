@@ -1,7 +1,8 @@
 import { catchFishAtLocation, fishingLocations } from '@/lib/bso/fishingContest.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 
-import { calcPercentOfNum, roll } from '@oldschoolgg/toolkit';
+import { roll } from '@oldschoolgg/rng';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';

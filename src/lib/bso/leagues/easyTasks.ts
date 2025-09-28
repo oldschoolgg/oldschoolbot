@@ -2,9 +2,8 @@ import { calcTotalLevel } from '@/lib/bso/bsoUtil.js';
 import { divinationEnergies } from '@/lib/bso/divination.js';
 
 import { notEmpty, sumArr } from '@oldschoolgg/toolkit';
-import { calcCombatLevel, type ItemBank, Monsters, resolveItems } from 'oldschooljs';
+import { type ItemBank, Monsters, resolveItems } from 'oldschooljs';
 
-import { MAX_LEVEL } from '@/lib/constants.js';
 import { barrowsChestCL, customPetsCL } from '@/lib/data/CollectionsExport.js';
 import {
 	ArdougneDiary,
@@ -173,8 +172,8 @@ export const easyTasks: Task[] = [
 	{
 		id: 21,
 		name: 'Reach combat level 50',
-		has: async ({ skillsXP }) => {
-			return calcCombatLevel(skillsXP, MAX_LEVEL) >= 30;
+		has: async ({ user }) => {
+			return user.combatLevel >= 30;
 		}
 	},
 	{

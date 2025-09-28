@@ -3,7 +3,8 @@ import { addToDoubleLootTimer } from '@/lib/bso/doubleLoot.js';
 import { allDyes, dyedItems } from '@/lib/bso/dyedItems.js';
 import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
 
-import { notEmpty, objectEntries, randArrItem, randInt, Time } from '@oldschoolgg/toolkit';
+import { randArrItem, randInt } from '@oldschoolgg/rng';
+import { notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder, bold } from 'discord.js';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 

@@ -1,6 +1,7 @@
 import { monkeyHeadImage, monkeyTierOfUser } from '@/lib/bso/minigames/monkey-rumble/monkeyRumble.js';
 
-import { randArrItem, roll, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { randArrItem, roll } from '@oldschoolgg/rng';
+import { Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import type { MonkeyRumbleOptions } from '@/lib/types/minions.js';

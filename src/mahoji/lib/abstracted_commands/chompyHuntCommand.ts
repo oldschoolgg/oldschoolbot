@@ -1,4 +1,5 @@
-import { formatDuration, percentChance, Time } from '@oldschoolgg/toolkit';
+import { percentChance } from '@oldschoolgg/rng';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { avasDevices, chompyHats } from '@/lib/data/CollectionsExport.js';

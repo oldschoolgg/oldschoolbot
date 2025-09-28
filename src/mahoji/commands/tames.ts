@@ -26,6 +26,7 @@ import {
 import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { bold, time } from '@discordjs/builders';
+import { percentChance, randInt } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -35,8 +36,6 @@ import {
 	isWeekend,
 	mentionCommand,
 	notEmpty,
-	percentChance,
-	randInt,
 	reduceNumByPercent,
 	stringMatches,
 	Time

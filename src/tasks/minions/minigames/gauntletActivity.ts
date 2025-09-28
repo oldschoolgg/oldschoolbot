@@ -1,4 +1,5 @@
-import { calcWhatPercent, Events, formatOrdinal, percentChance } from '@oldschoolgg/toolkit';
+import { percentChance } from '@oldschoolgg/rng';
+import { calcWhatPercent, Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { MinigameName } from '@/lib/settings/minigames.js';

@@ -2,16 +2,8 @@ import { chanceOfDOAUnique, DOARooms, pickUniqueToGiveUser } from '@/lib/bso/dep
 import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 
-import {
-	Emoji,
-	Events,
-	formatOrdinal,
-	randArrItem,
-	reduceNumByPercent,
-	roll,
-	Time,
-	uniqueArr
-} from '@oldschoolgg/toolkit';
+import { randArrItem, roll } from '@oldschoolgg/rng';
+import { Emoji, Events, formatOrdinal, reduceNumByPercent, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';

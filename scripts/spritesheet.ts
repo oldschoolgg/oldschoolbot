@@ -1,10 +1,9 @@
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 import { type GenerateResult, SpriteSheetGenerator } from '@oldschoolgg/spritesheet';
-import { Stopwatch } from '@oldschoolgg/toolkit';
+import { isFunction, Stopwatch, uniqueArr } from '@oldschoolgg/toolkit';
 import '../src/lib/safeglobals.js';
 
-import { isFunction, uniqueArr } from '@oldschoolgg/toolkit';
 import { type ItemBank, Items, resolveItems } from 'oldschooljs';
 import sharp from 'sharp';
 

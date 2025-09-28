@@ -1,8 +1,8 @@
+import { randArrItem } from '@oldschoolgg/rng';
 import {
 	dateFm,
 	isValidDiscordSnowflake,
 	type MahojiUserOption,
-	randArrItem,
 	Stopwatch,
 	sumArr,
 	Time,

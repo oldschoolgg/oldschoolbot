@@ -1,3 +1,4 @@
+import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { Events, formatDuration, formatOrdinal, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Bank, ItemGroups, Items, resolveItems } from 'oldschooljs';

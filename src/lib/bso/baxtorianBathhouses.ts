@@ -15,7 +15,6 @@ import { handleTripFinish } from '../util/handleTripFinish.js';
 import { makeBankImage } from '../util/makeBankImage.js';
 import { formatSkillRequirements } from '../util/smallUtils.js';
 import { updateBankSetting } from '../util/updateBankSetting.js';
-import { skillsMeetRequirements } from '../util.js';
 import { GLOBAL_BSO_XP_MULTIPLIER } from './bsoConstants.js';
 import { getAllUserTames, TameSpeciesID } from './tames.js';
 
@@ -317,7 +316,7 @@ export async function baxtorianBathhousesStartCommand({
 			.map(i => i.item.name)
 			.join(', ')}`;
 	}
-	const hasReq = skillsMeetRequirements(user.skillsAsXP, bathHouseTier.skillRequirements);
+	const hasReq = user.hasSkillReqs(bathHouseTier.skillRequirements);
 	if (!hasReq) {
 		return `You don't have the required skills to run ${
 			bathHouseTier.name

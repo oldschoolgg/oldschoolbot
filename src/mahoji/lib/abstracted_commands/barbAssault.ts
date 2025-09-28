@@ -1,10 +1,9 @@
+import { randomVariation, roll } from '@oldschoolgg/rng';
 import {
 	calcWhatPercent,
 	formatDuration,
 	makeComponents,
-	randomVariation,
 	reduceNumByPercent,
-	roll,
 	round,
 	stringMatches,
 	Time

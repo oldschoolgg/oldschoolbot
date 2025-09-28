@@ -1,4 +1,5 @@
-import { calcWhatPercent, formatDuration, percentChance, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { percentChance } from '@oldschoolgg/rng';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { EMonster } from 'oldschooljs';
 
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';

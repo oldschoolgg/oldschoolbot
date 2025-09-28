@@ -1,4 +1,5 @@
-import { formatDuration, randomVariation, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { randomVariation } from '@oldschoolgg/rng';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 

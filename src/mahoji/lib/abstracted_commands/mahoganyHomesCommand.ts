@@ -1,13 +1,5 @@
-import {
-	calcPercentOfNum,
-	calcWhatPercent,
-	formatDuration,
-	randArrItem,
-	randInt,
-	roll,
-	stringMatches,
-	Time
-} from '@oldschoolgg/toolkit';
+import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import { calcPercentOfNum, calcWhatPercent, formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { Plank } from '@/lib/skilling/skills/construction/constructables.js';

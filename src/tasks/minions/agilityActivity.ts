@@ -5,8 +5,9 @@ import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 import { calcUserGorajanShardChance } from '@/lib/bso/skills/dungoneering/dungDbFunctions.js';
 
-import { increaseNumByPercent, percentChance, randInt, roll, Time } from '@oldschoolgg/toolkit';
-import { addItemToBank, Bank, type ItemBank, Items, randomVariation, toKMB } from 'oldschooljs';
+import { percentChance, randInt, randomVariation, roll } from '@oldschoolgg/rng';
+import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { addItemToBank, Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Agility from '@/lib/skilling/skills/agility.js';

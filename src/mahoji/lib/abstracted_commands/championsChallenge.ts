@@ -1,4 +1,5 @@
-import { randomVariation, Time } from '@oldschoolgg/toolkit';
+import { randomVariation } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, ItemGroups } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';

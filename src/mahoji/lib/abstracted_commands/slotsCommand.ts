@@ -1,4 +1,5 @@
-import { channelIsSendable, chunk, noOp, randInt, SimpleTable, shuffleArr, sleep } from '@oldschoolgg/toolkit';
+import { randInt, shuffleArr } from '@oldschoolgg/rng';
+import { channelIsSendable, chunk, noOp, SimpleTable, sleep } from '@oldschoolgg/toolkit';
 import {
 	ActionRowBuilder,
 	type BaseMessageOptions,

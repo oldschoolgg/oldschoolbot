@@ -1,12 +1,5 @@
-import {
-	calcPerHour,
-	Emoji,
-	formatOrdinal,
-	gaussianRandom,
-	percentChance,
-	SimpleTable,
-	sumArr
-} from '@oldschoolgg/toolkit';
+import { percentChance } from '@oldschoolgg/rng';
+import { calcPerHour, Emoji, formatOrdinal, gaussianRandom, SimpleTable, sumArr } from '@oldschoolgg/toolkit';
 import { clamp } from 'remeda';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';

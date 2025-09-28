@@ -1,5 +1,4 @@
-import type { CommandOption } from '@oldschoolgg/toolkit';
-import { cleanString, stringMatches } from '@oldschoolgg/toolkit';
+import { type CommandOption, cleanString, stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { EquipmentSlot, Items } from 'oldschooljs';
 

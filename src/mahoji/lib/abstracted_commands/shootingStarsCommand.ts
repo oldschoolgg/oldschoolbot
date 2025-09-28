@@ -1,4 +1,5 @@
-import { formatDuration, percentChance, randInt, roll, SimpleTable, Time } from '@oldschoolgg/toolkit';
+import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+import { formatDuration, SimpleTable, Time } from '@oldschoolgg/toolkit';
 import type { activity_type_enum } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';

@@ -6,7 +6,8 @@ import {
 } from '@/lib/bso/divination.js';
 import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 
-import { calcPercentOfNum, Emoji, increaseNumByPercent, roll } from '@oldschoolgg/toolkit';
+import { roll } from '@oldschoolgg/rng';
+import { calcPercentOfNum, Emoji, increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { MemoryHarvestOptions } from '@/lib/types/minions.js';

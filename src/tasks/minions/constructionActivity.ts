@@ -1,6 +1,7 @@
 import { calcBabyYagaHouseDroprate } from '@/lib/bso/bsoUtil.js';
 
-import { calcPercentOfNum, roll } from '@oldschoolgg/toolkit';
+import { roll } from '@oldschoolgg/rng';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { Construction } from '@/lib/skilling/skills/construction/index.js';

@@ -1,7 +1,8 @@
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { getKalphiteKingGearStats } from '@/lib/bso/getKalphiteKingGearStats.js';
 
-import { calcWhatPercent, Emoji, noOp, percentChance, SimpleTable } from '@oldschoolgg/toolkit';
+import { percentChance } from '@oldschoolgg/rng';
+import { calcWhatPercent, Emoji, noOp, SimpleTable } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { kalphiteKingCL } from '@/lib/data/CollectionsExport.js';

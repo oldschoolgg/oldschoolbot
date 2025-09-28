@@ -1,5 +1,6 @@
 import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
 
+import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, increaseNumByPercent, isWeekend, notEmpty, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';

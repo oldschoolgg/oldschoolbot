@@ -7,8 +7,9 @@ import {
 	numberOfGorajanOutfitsEquipped
 } from '@/lib/bso/skills/dungoneering/dungDbFunctions.js';
 
-import { reduceNumByPercent, roll, Time } from '@oldschoolgg/toolkit';
-import { Bank, randomVariation, toKMB } from 'oldschooljs';
+import { randomVariation, roll } from '@oldschoolgg/rng';
+import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { Bank, toKMB } from 'oldschooljs';
 
 import type { DungeoneeringOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';

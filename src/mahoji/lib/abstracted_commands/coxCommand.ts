@@ -5,8 +5,9 @@ import {
 	inventionItemBoost
 } from '@/lib/bso/skills/invention/inventions.js';
 
+import { randomVariation } from '@oldschoolgg/rng';
 import { calcWhatPercent, channelIsSendable, Emoji, formatDuration, sumArr } from '@oldschoolgg/toolkit';
-import { Bank, randomVariation } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import {
 	calcCoxDuration,

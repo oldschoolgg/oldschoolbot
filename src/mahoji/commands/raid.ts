@@ -10,7 +10,8 @@ import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';
 import { doaStartCommand } from '@/lib/bso/doa/doaStartCommand.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 
-import { formatDuration, randArrItem, reduceNumByPercent, roll, sumArr } from '@oldschoolgg/toolkit';
+import { randArrItem, roll } from '@oldschoolgg/rng';
+import { formatDuration, reduceNumByPercent, sumArr } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { averageBank, Bank, resolveItems } from 'oldschooljs';
 

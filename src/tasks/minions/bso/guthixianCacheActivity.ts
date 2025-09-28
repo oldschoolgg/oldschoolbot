@@ -1,6 +1,7 @@
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
 
-import { Emoji, percentChance, roll } from '@oldschoolgg/toolkit';
+import { percentChance, roll } from '@oldschoolgg/rng';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { divinersOutfit } from '@/lib/data/CollectionsExport.js';

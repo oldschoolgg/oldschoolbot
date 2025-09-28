@@ -1,4 +1,5 @@
-import { formatDuration, randFloat, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { randFloat } from '@oldschoolgg/rng';
+import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';

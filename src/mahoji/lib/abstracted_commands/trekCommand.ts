@@ -1,5 +1,5 @@
-import { percentChance } from '@oldschoolgg/rng';
-import { formatDuration, objectEntries, randInt, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
+import { percentChance, randInt } from '@oldschoolgg/rng';
+import { formatDuration, objectEntries, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';

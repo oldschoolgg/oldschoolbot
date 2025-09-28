@@ -1,15 +1,7 @@
 import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 
-import { percentChance } from '@oldschoolgg/rng';
-import {
-	calcPercentOfNum,
-	calcWhatPercent,
-	Emoji,
-	Events,
-	formatDuration,
-	formatOrdinal,
-	randInt
-} from '@oldschoolgg/toolkit';
+import { percentChance, randInt } from '@oldschoolgg/rng';
+import { calcPercentOfNum, calcWhatPercent, Emoji, Events, formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank, itemID, Monsters } from 'oldschooljs';
 
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';

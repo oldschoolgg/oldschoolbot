@@ -1,11 +1,5 @@
-import {
-	calcWhatPercent,
-	formatDuration,
-	percentChance,
-	randInt,
-	reduceNumByPercent,
-	Time
-} from '@oldschoolgg/toolkit';
+import { percentChance, randInt } from '@oldschoolgg/rng';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID, Monsters } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';

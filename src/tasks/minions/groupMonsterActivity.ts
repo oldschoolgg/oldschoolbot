@@ -1,6 +1,7 @@
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 
-import { Emoji, noOp, randArrItem, roll, Time } from '@oldschoolgg/toolkit';
+import { randArrItem, roll } from '@oldschoolgg/rng';
+import { Emoji, noOp, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';

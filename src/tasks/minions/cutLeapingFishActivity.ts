@@ -1,4 +1,4 @@
-import { percentChance } from '@oldschoolgg/toolkit';
+import { percentChance } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 import { clamp } from 'remeda';
 

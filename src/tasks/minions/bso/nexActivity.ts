@@ -1,7 +1,8 @@
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { NEX_UNIQUE_DROPRATE, NexMonster } from '@/lib/bso/monsters/nex.js';
 
-import { calcWhatPercent, Emoji, noOp, percentChance, randArrItem, roll, SimpleTable } from '@oldschoolgg/toolkit';
+import { percentChance, randArrItem, roll } from '@oldschoolgg/rng';
+import { calcWhatPercent, Emoji, noOp, SimpleTable } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { nexCL, nexUniqueDrops } from '@/lib/data/CollectionsExport.js';

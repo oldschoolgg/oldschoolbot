@@ -1,4 +1,5 @@
-import { channelIsSendable, noOp, shuffleArr, Time } from '@oldschoolgg/toolkit';
+import { shuffleArr } from '@oldschoolgg/rng';
+import { channelIsSendable, noOp, Time } from '@oldschoolgg/toolkit';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ComponentType } from 'discord.js';
 import murmurhash from 'murmurhash';
 

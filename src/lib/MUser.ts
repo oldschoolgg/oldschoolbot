@@ -1,7 +1,7 @@
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
-import { percentChance, randArrItem } from '@oldschoolgg/rng';
+import { percentChance, randArrItem, SeedableRNG } from '@oldschoolgg/rng';
 import {
 	calcWhatPercent,
 	cleanUsername,
@@ -896,10 +896,8 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		if (currentStepID === null) {
 			return { step: null, track: null };
 		}
-		const [trackID] = seedShuffle(
-			mysteriousTrailTracks.map(i => i.id),
-			this.id
-		);
+		const rng = new SeedableRNG(Number(this.id));
+		const [trackID] = rng.shuffle(mysteriousTrailTracks.map(i => i.id));
 		const track = mysteriousTrailTracks.find(i => i.id === trackID)!;
 		const step = track.steps[currentStepID - 1];
 		if (!step) {

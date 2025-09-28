@@ -1,13 +1,5 @@
-import {
-	channelIsSendable,
-	Emoji,
-	formatDuration,
-	isWeekend,
-	roll,
-	shuffleArr,
-	Time,
-	uniqueArr
-} from '@oldschoolgg/toolkit';
+import { roll, shuffleArr } from '@oldschoolgg/rng';
+import { channelIsSendable, Emoji, formatDuration, isWeekend, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import type { ItemBank } from 'oldschooljs';
 

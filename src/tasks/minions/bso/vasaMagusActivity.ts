@@ -2,7 +2,8 @@ import { clAdjustedDroprate, getMonster } from '@/lib/bso/bsoUtil.js';
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 
-import { objectEntries, randArrItem, randInt, roll } from '@oldschoolgg/toolkit';
+import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import { objectEntries } from '@oldschoolgg/toolkit';
 import { Bank, Items, Monsters, resolveItems } from 'oldschooljs';
 
 import { kittens } from '@/lib/growablePets.js';

@@ -1,6 +1,7 @@
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 
-import { calcPerHour, Events, formatOrdinal, randInt } from '@oldschoolgg/toolkit';
+import { randInt } from '@oldschoolgg/rng';
+import { calcPerHour, Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import { userMention } from 'discord.js';
 import { Bank, Items, increaseBankQuantitesByPercent, resolveItems } from 'oldschooljs';
 

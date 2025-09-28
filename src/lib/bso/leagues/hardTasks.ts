@@ -8,9 +8,8 @@ import { NexMonster } from '@/lib/bso/monsters/nex.js';
 import { Inventions } from '@/lib/bso/skills/invention/inventions.js';
 
 import { notEmpty, sumArr } from '@oldschoolgg/toolkit';
-import { Bank, calcCombatLevel, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
+import { Bank, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
 
-import { MAX_LEVEL } from '@/lib/constants.js';
 import {
 	allGildedItems,
 	brokenPernixOutfit,
@@ -181,8 +180,8 @@ export const hardTasks: Task[] = [
 	{
 		id: 2018,
 		name: 'Reach combat level 126',
-		has: async ({ skillsXP }) => {
-			return calcCombatLevel(skillsXP, MAX_LEVEL) >= 126;
+		has: async ({ user }) => {
+			return user.combatLevel >= 126;
 		}
 	},
 	{

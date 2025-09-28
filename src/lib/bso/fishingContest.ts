@@ -1,4 +1,4 @@
-import { randArrItem } from '@oldschoolgg/rng';
+import { randArrItem, SeedableRNG } from '@oldschoolgg/rng';
 import { averageArr, calcPercentOfNum, gaussianRandom, toTitleCase } from '@oldschoolgg/toolkit';
 import type { FishingContestCatch } from '@prisma/client';
 import { type Item, Items } from 'oldschooljs';
@@ -241,11 +241,11 @@ interface FishType {
 }
 
 export function getCurrentFishType(dateOverride?: Date): FishType {
-	const day = (dateOverride ?? new Date()).toLocaleDateString();
-
+	const day = (dateOverride ?? new Date()).getTime();
+	const rng = new SeedableRNG(day);
 	return {
-		temperature: seedShuffle(['cold', 'warm'] as const, day)[0],
-		water: seedShuffle(['ocean', 'lake', 'river'] as const, day)[0]
+		temperature: rng.shuffle(['cold', 'warm'] as const)[0],
+		water: rng.shuffle(['ocean', 'lake', 'river'] as const)[0]
 	};
 }
 

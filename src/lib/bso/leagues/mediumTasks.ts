@@ -1,9 +1,9 @@
 import { calcTotalLevel } from '@/lib/bso/bsoUtil.js';
 
 import { sumArr } from '@oldschoolgg/toolkit';
-import { Bank, calcCombatLevel, type ItemBank, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
+import { Bank, type ItemBank, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { BitField, MAX_LEVEL } from '@/lib/constants.js';
+import { BitField } from '@/lib/constants.js';
 import {
 	barrowsChestCL,
 	chambersOfXericCL,
@@ -197,8 +197,8 @@ export const mediumTasks: Task[] = [
 	{
 		id: 1023,
 		name: 'Reach combat level 90',
-		has: async ({ skillsXP }) => {
-			return calcCombatLevel(skillsXP, MAX_LEVEL) >= 90;
+		has: async ({ user }) => {
+			return user.combatLevel >= 90;
 		}
 	},
 	{

@@ -2,16 +2,13 @@ import { addToDoubleLootTimer } from '@/lib/bso/doubleLoot.js';
 import { keyCrates } from '@/lib/bso/keyCrates.js';
 import { MysteryBoxes, spookyTable } from '@/lib/bso/openables/tables.js';
 
-import type { MahojiUserOption } from '@oldschoolgg/toolkit';
+import { randArrItem, randInt, roll, shuffleArr } from '@oldschoolgg/rng';
 import {
 	asyncGzip,
 	Emoji,
 	formatDuration,
+	type MahojiUserOption,
 	PerkTier,
-	randArrItem,
-	randInt,
-	roll,
-	shuffleArr,
 	stringMatches,
 	Time
 } from '@oldschoolgg/toolkit';
