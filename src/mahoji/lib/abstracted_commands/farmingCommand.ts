@@ -5,13 +5,11 @@ import { Bank } from 'oldschooljs';
 
 import { superCompostables } from '@/lib/data/filterables.js';
 import { prepareFarmingStep, treeCheck } from '@/lib/minions/functions/farmingTripHelpers.js';
-import { calcNumOfPatches } from '@/lib/skilling/functions/calcsFarming.js';
-import { getFarmingInfo, getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
-import Farming from '@/lib/skilling/skills/farming/index.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import { calcNumOfPatches } from '@/lib/skilling/skills/farming/utils/calcsFarming.js';
 import type { FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { farmingPatchNames, findPlant, isPatchName } from '@/lib/util/farmingHelpers.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userHasGracefulEquipped, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
@@ -31,12 +29,12 @@ export async function harvestCommand({
 	const { GP } = user;
 	const currentWoodcuttingLevel = user.skillsAsLevels.woodcutting;
 	const currentDate = Date.now();
-	if (!isPatchName(seedType)) {
-		return `That is not a valid patch type! The available patches are: ${farmingPatchNames.join(
+	if (!Farming.isPatchName(seedType)) {
+		return `That is not a valid patch type! The available patches are: ${Farming.farmingPatchNames.join(
 			', '
 		)}. *Don't include numbers, this command harvests all crops available of the specified patch type.*`;
 	}
-	const { patchesDetailed, patches } = await getFarmingInfoFromUser(user.user);
+	const { patchesDetailed, patches } = await Farming.getFarmingInfoFromUser(user.user);
 	const patch = patchesDetailed.find(i => i.patchName === seedType)!;
 	if (patch.ready === null) return 'You have nothing planted in those patches.';
 
@@ -45,7 +43,7 @@ export async function harvestCommand({
 	const boostStr = [];
 
 	const storeHarvestablePlant = patch.lastPlanted;
-	const plant = findPlant(patch.lastPlanted)!;
+	const plant = Farming.findPlant(patch.lastPlanted)!;
 
 	if (!patch.ready) {
 		return `Please come back when your crops have finished growing in ${formatDuration(patch.readyIn!)}!`;
@@ -136,7 +134,7 @@ export async function farmingPlantCommand({
 	const infoStr: string[] = [];
 	const boostStr: string[] = [];
 
-	const plant = findPlant(plantName);
+	const plant = Farming.findPlant(plantName);
 
 	if (!plant) {
 		return `That's not a valid seed to plant. Valid seeds are ${Farming.Plants.map(plants => plants.name).join(
@@ -150,7 +148,7 @@ export async function farmingPlantCommand({
 		return `${user.minionName} needs ${plant.level} Farming to plant ${plant.name}.`;
 	}
 
-	const { patchesDetailed, patches } = await getFarmingInfo(user.id);
+	const { patchesDetailed, patches } = await Farming.getFarmingInfo(user.id);
 	const patchType = patchesDetailed.find(i => i.patchName === plant.seedType)!;
 
 	const [numOfPatches] = calcNumOfPatches(plant, user, questPoints);

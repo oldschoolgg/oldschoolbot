@@ -3,7 +3,7 @@ import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '@/lib/data/seedPackTables.js';
-import type { PlantTier } from '@/lib/minions/farming/types.js';
+import type { PlantTier } from '@/lib/skilling/skills/farming/utils/types.js';
 
 export function openSeedPack(seedTier: number): Bank {
 	const loot = new Bank();

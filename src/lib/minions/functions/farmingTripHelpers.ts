@@ -3,10 +3,10 @@ import type { CropUpgradeType } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
-import type { IPatchDataDetailed } from '@/lib/minions/farming/types.js';
-import { calcNumOfPatches } from '@/lib/skilling/functions/calcsFarming.js';
+import { calcNumOfPatches } from '@/lib/skilling/skills/farming/utils/calcsFarming.js';
+import { findPlant } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
+import type { IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { Plant } from '@/lib/skilling/types.js';
-import { findPlant } from '@/lib/util/farmingHelpers.js';
 import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export interface PrepareFarmingStepOptions {

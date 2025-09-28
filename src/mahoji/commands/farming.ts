@@ -4,12 +4,10 @@ import { ApplicationCommandOptionType, type User } from 'discord.js';
 
 import TitheFarmBuyables from '@/lib/data/buyables/titheFarmBuyables.js';
 import { superCompostables } from '@/lib/data/filterables.js';
-import type { ContractOption } from '@/lib/minions/farming/types.js';
-import { ContractOptions } from '@/lib/minions/farming/types.js';
 import { autoFarm } from '@/lib/minions/functions/autoFarm.js';
-import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
-import Farming, { CompostTiers } from '@/lib/skilling/skills/farming/index.js';
-import { farmingPatchNames, userGrowingProgressStr } from '@/lib/util/farmingHelpers.js';
+import { CompostTiers, Farming } from '@/lib/skilling/skills/farming/index.js';
+import type { ContractOption } from '@/lib/skilling/skills/farming/utils/types.js';
+import { ContractOptions } from '@/lib/skilling/skills/farming/utils/types.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import {
 	compostBinCommand,
@@ -120,7 +118,7 @@ export const farmingCommand: OSBMahojiCommand = {
 					name: 'patch_name',
 					description: 'The patches you want to harvest.',
 					required: true,
-					choices: farmingPatchNames.map(i => ({ name: i, value: i }))
+					choices: Farming.farmingPatchNames.map(i => ({ name: i, value: i }))
 				}
 			]
 		},
@@ -191,11 +189,11 @@ export const farmingCommand: OSBMahojiCommand = {
 		interaction,
 		channelID
 	}: CommandRunOptions<{
-		check_patches?: {};
-		auto_farm?: {};
+		check_patches?: Record<string, never>;
+		auto_farm?: Record<string, never>;
 		auto_farm_filter?: { auto_farm_filter_data: string };
 		default_compost?: { compost: CropUpgradeType };
-		always_pay?: {};
+		always_pay?: Record<string, never>;
 		plant?: { plant_name: string; quantity?: number; pay?: boolean };
 		harvest?: { patch_name: string };
 		tithe_farm?: { buy_reward?: string };
@@ -204,7 +202,7 @@ export const farmingCommand: OSBMahojiCommand = {
 	}>) => {
 		await deferInteraction(interaction);
 		const klasaUser = await mUserFetch(userID);
-		const { patchesDetailed, patches } = getFarmingInfoFromUser(klasaUser.user);
+		const { patchesDetailed, patches } = Farming.getFarmingInfoFromUser(klasaUser.user);
 
 		if (options.auto_farm) {
 			return autoFarm(klasaUser, patchesDetailed, patches, channelID);
@@ -272,6 +270,6 @@ export const farmingCommand: OSBMahojiCommand = {
 			return farmingContractCommand(userID, options.contract.input);
 		}
 
-		return userGrowingProgressStr(patchesDetailed);
+		return Farming.userGrowingProgressStr(patchesDetailed);
 	}
 };

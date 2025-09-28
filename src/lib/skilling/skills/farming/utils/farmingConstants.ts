@@ -1,8 +1,6 @@
-import * as PatchTypes from './types.js';
+import type { FarmingContract, IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
 
-export { PatchTypes };
-
-export const defaultPatches: PatchTypes.IPatchData = {
+export const defaultPatches: IPatchData = {
 	lastPlanted: null,
 	patchPlanted: false,
 	plantTime: 0,
@@ -11,7 +9,7 @@ export const defaultPatches: PatchTypes.IPatchData = {
 	lastPayment: false
 };
 
-export const defaultFarmingContract: PatchTypes.FarmingContract = {
+export const defaultFarmingContract: FarmingContract = {
 	hasContract: false,
 	difficultyLevel: null,
 	plantToGrow: null,
