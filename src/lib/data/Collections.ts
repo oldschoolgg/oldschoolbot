@@ -24,20 +24,6 @@ import {
 
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
-import killableMonsters, { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
-import { sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
-import {
-	EasyEncounterLoot,
-	HardEncounterLoot,
-	MediumEncounterLoot,
-	rewardTokens
-} from '@/lib/minions/data/templeTrekking.js';
-import type { MinigameName } from '@/lib/settings/minigames.js';
-import { NexNonUniqueTable, NexUniqueTable } from '@/lib/simulation/misc.js';
-import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
-import type { SkillNameType } from '@/lib/skilling/types.js';
-import { MUserStats } from '@/lib/structures/MUserStats.js';
-import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport.js';
 import {
 	abyssalSireCL,
 	aerialFishingCL,
@@ -81,6 +67,7 @@ import {
 	demonicGorillaCL,
 	diariesCL,
 	dukeSucellusCL,
+	type FormatProgressFunction,
 	fightCavesCL,
 	fishingTrawlerCL,
 	forestryCL,
@@ -95,6 +82,9 @@ import {
 	guardiansOfTheRiftCL,
 	hallowedSepulchreCL,
 	hesporiCL,
+	type ICollection,
+	type ILeftListStatus,
+	type IToReturnCollection,
 	implingsCL,
 	kalphiteQueenCL,
 	kingBlackDragonCL,
@@ -147,9 +137,22 @@ import {
 	wintertodtCL,
 	zalcanoCL,
 	zulrahCL
-} from './CollectionsExport.js';
-import Createables from './createables.js';
-import { leagueBuyables } from './leaguesBuyables.js';
+} from '@/lib/data/CollectionsExport.js';
+import Createables from '@/lib/data/createables.js';
+import { leagueBuyables } from '@/lib/data/leaguesBuyables.js';
+import killableMonsters, { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
+import { sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
+import {
+	EasyEncounterLoot,
+	HardEncounterLoot,
+	MediumEncounterLoot,
+	rewardTokens
+} from '@/lib/minions/data/templeTrekking.js';
+import type { MinigameName } from '@/lib/settings/minigames.js';
+import { NexNonUniqueTable, NexUniqueTable } from '@/lib/simulation/misc.js';
+import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
 
 function kcProg(mon: Monster): FormatProgressFunction {
 	return ({ stats }) => `${stats.kcBank[mon.id] ?? 0} KC`;

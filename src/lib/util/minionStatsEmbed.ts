@@ -13,7 +13,7 @@ import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js'
 import { courses } from '@/lib/skilling/skills/agility.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import type { Skills } from '@/lib/types/index.js';
-import { logError } from './logError.js';
+import { logError } from '@/lib/util/logError.js';
 
 export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	const { QP } = user;

@@ -5,9 +5,9 @@ import { deduplicateClueScrolls } from '@/lib/clues/clueUtils.js';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
 import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
 import { filterLootReplace } from '@/lib/slayer/slayerUtil.js';
+import { logError } from '@/lib/util/logError.js';
+import { userQueueFn } from '@/lib/util/userQueues.js';
 import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager.js';
-import { logError } from './logError.js';
-import { userQueueFn } from './userQueues.js';
 
 export interface TransactItemsArgs {
 	userID: string;

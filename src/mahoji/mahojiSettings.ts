@@ -13,7 +13,7 @@ import { hasGracefulEquipped } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { formatItemReqs, formatList, hasSkillReqs, readableStatName } from '@/lib/util/smallUtils.js';
 import type { JsonKeys } from '@/lib/util.js';
-import { getItemCostFromConsumables } from './lib/abstracted_commands/minionKill/handleConsumables.js';
+import { getItemCostFromConsumables } from '@/mahoji/lib/abstracted_commands/minionKill/handleConsumables.js';
 
 export function mahojiParseNumber({
 	input,

@@ -14,15 +14,15 @@ import { type BaseMessageOptions, bold, EmbedBuilder, type Message, type TextCha
 import { LRUCache } from 'lru-cache';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
+import { lastRoboChimpSyncCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
+import { Channel, globalConfig } from '@/lib/constants.js';
 import pets from '@/lib/data/pets.js';
+import { roboChimpSyncData } from '@/lib/roboChimp.js';
+import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { logError } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
-import { lastRoboChimpSyncCache, untrustedGuildSettingsCache } from './cache.js';
-import { Channel, globalConfig } from './constants.js';
-import { roboChimpSyncData } from './roboChimp.js';
-import type { ActivityTaskData } from './types/minions.js';
 
 const rareRolesSrc: [string, number, string][] = [
 	['670211706907000842', 250, 'Bronze'],

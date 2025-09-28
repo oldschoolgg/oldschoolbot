@@ -1,7 +1,7 @@
 import { toTitleCase, uniqueArr } from '@oldschoolgg/toolkit';
 
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import { formatList } from '@/lib/util/smallUtils.js';
-import type { AttackStyles } from './index.js';
 
 const validStyles: AttackStyles[] = ['attack', 'strength', 'defence', 'ranged', 'magic'];
 

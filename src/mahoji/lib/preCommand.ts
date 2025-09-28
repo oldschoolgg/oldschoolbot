@@ -3,7 +3,7 @@ import type { InteractionReplyOptions, TextChannel, User } from 'discord.js';
 
 import { modifyBusyCounter, userIsBusy } from '@/lib/busyCounterCache.js';
 import { busyImmuneCommands } from '@/lib/constants.js';
-import { runInhibitors } from './inhibitors.js';
+import { runInhibitors } from '@/mahoji/lib/inhibitors.js';
 
 interface PreCommandOptions {
 	apiUser: User | null;

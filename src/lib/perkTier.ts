@@ -1,8 +1,8 @@
 import { pick } from 'remeda';
 
-import { perkTierCache } from './cache.js';
-import { globalConfig } from './constants.js';
-import type { RobochimpUser } from './roboChimp.js';
+import { perkTierCache } from '@/lib/cache.js';
+import { globalConfig } from '@/lib/constants.js';
+import type { RobochimpUser } from '@/lib/roboChimp.js';
 
 const robochimpCachedKeys = [
 	'bits',

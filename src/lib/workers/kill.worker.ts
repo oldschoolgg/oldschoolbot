@@ -6,7 +6,7 @@ import { Bank, calcDropRatesFromBank, Misc, Monsters, resolveItems } from 'oldsc
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { handleNexKills } from '@/lib/simulation/nex.js';
 import { simulatedKillables } from '@/lib/simulation/simulatedKillables.js';
-import type { KillWorkerArgs, KillWorkerReturn } from './index.js';
+import type { KillWorkerArgs, KillWorkerReturn } from '@/lib/workers/index.js';
 
 if (global.prisma) {
 	throw new Error('Prisma is loaded in the kill worker!');

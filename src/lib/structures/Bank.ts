@@ -18,8 +18,6 @@ export class ChargeBank extends GeneralBank<DegradeableItem['settingsKey']> {
 	}
 }
 
-export { XPBank } from './XPBank.js';
-
 export class FloatBank extends GeneralBank<number> {
 	constructor() {
 		super({ valueSchema: { floats: true, min: 0, max: 1_222_222.100_150_02 } });

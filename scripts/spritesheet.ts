@@ -3,6 +3,7 @@ import * as path from 'node:path';
 import { type GenerateResult, SpriteSheetGenerator } from '@oldschoolgg/spritesheet';
 import { isFunction, Stopwatch, uniqueArr } from '@oldschoolgg/toolkit';
 import '../src/lib/safeglobals.js';
+
 import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
 import sharp from 'sharp';
 

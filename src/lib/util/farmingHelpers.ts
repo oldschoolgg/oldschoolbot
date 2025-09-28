@@ -4,7 +4,7 @@ import { type BaseMessageOptions, ButtonBuilder, ButtonStyle } from 'discord.js'
 
 import type { IPatchData, IPatchDataDetailed } from '@/lib/minions/farming/types.js';
 import Farming from '@/lib/skilling/skills/farming/index.js';
-import { formatList } from './smallUtils.js';
+import { formatList } from '@/lib/util/smallUtils.js';
 
 function makeAutoFarmButton() {
 	return new ButtonBuilder()

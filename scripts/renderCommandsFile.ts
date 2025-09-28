@@ -1,4 +1,5 @@
 import './base.js';
+
 import { readFileSync, writeFileSync } from 'node:fs';
 import {
 	type AbstractCommand,

@@ -2,7 +2,7 @@ import { cleanString, evalMathExpression, notEmpty, stringMatches } from '@oldsc
 import { Bank, type Item, Items, itemNameMap } from 'oldschooljs';
 
 import { filterableTypes } from '@/lib/data/filterables.js';
-import itemIsTradeable from './itemIsTradeable.js';
+import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 
 const { floor, max, min } = Math;
 

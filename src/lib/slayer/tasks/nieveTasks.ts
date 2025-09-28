@@ -3,8 +3,8 @@ import { Monsters } from 'oldschooljs';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { bossTasks } from '@/lib/slayer/tasks/bossTasks.js';
 import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
-import { bossTasks } from './bossTasks.js';
 
 export const nieveTasks: AssignableSlayerTask[] = [
 	{

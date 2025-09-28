@@ -13,12 +13,12 @@ import { Bank, EMonster, Items, itemID, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { BitField } from '@/lib/constants.js';
+import { NexNonUniqueTable, NexUniqueTable } from '@/lib/simulation/misc.js';
+import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import type { Skills } from '@/lib/types/index.js';
 import { arrows, bolts, bows, crossbows } from '@/lib/util/archery.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { NexNonUniqueTable, NexUniqueTable } from './misc.js';
-import { TeamLoot } from './TeamLoot.js';
 
 const minStats: Skills = {
 	defence: 90,

@@ -12,10 +12,16 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
-import type { ClueReqs } from './clueReqs.js';
-import { beginnerReqs } from './clueReqs.js';
-import type { StashUnitTier } from './stashUnits.js';
-import { beginnerStashes, easyStashes, eliteStashes, hardStashes, masterStashes, mediumStashes } from './stashUnits.js';
+import { beginnerReqs, type ClueReqs } from '@/lib/clues/clueReqs.js';
+import {
+	beginnerStashes,
+	easyStashes,
+	eliteStashes,
+	hardStashes,
+	masterStashes,
+	mediumStashes,
+	type StashUnitTier
+} from '@/lib/clues/stashUnits.js';
 
 const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
 
