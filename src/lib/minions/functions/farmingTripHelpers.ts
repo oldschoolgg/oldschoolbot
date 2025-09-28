@@ -1,5 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import type { CropUpgradeType } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
@@ -7,7 +6,6 @@ import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { IPatchDataDetailed } from '@/lib/minions/farming/types.js';
 import { calcNumOfPatches } from '@/lib/skilling/functions/calcsFarming.js';
 import type { Plant } from '@/lib/skilling/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { findPlant } from '@/lib/util/farmingHelpers.js';
 import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
@@ -76,7 +74,7 @@ export async function prepareFarmingStep({
 		};
 	}
 
-	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
+	const currentWoodcuttingLevel = user.skillLevel('woodcutting');
 
 	let treeChopCost = 0;
 	if (patchDetailed.patchPlanted) {
