@@ -1,9 +1,8 @@
+import { percentChance } from '@oldschoolgg/rng';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { UnderwaterAgilityThievingTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { percentChance } from '@/lib/util/rng.js';
 
 // Bonus loot from clams and chests, TODO: check wiki in future for more accurate rates
 const clamChestTable = new LootTable()
@@ -18,8 +17,8 @@ export const underwaterAgilityThievingTask: MinionTask = {
 	async run(data: UnderwaterAgilityThievingTaskOptions) {
 		const { quantity, userID, channelID, duration, trainingSkill } = data;
 		const user = await mUserFetch(userID);
-		const currentThievingLevel = user.skillLevel(SkillsEnum.Thieving);
-		const currentAgilityLevel = user.skillLevel(SkillsEnum.Agility);
+		const currentThievingLevel = user.skillsAsLevels.thieving;
+		const currentAgilityLevel = user.skillsAsLevels.agility;
 
 		let successful = 0;
 		// Search clam/chest until it becomes inactive chance
@@ -56,13 +55,13 @@ export const underwaterAgilityThievingTask: MinionTask = {
 		);
 
 		let xpRes = `\n${await user.addXP({
-			skillName: SkillsEnum.Agility,
+			skillName: 'agility',
 			amount: agilityXpReceived,
 			duration,
 			source: 'UnderwaterAgilityThieving'
 		})}`;
 		xpRes += `\n${await user.addXP({
-			skillName: SkillsEnum.Thieving,
+			skillName: 'thieving',
 			amount: thievingXpReceived,
 			duration,
 			source: 'UnderwaterAgilityThieving'

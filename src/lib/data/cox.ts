@@ -1,23 +1,19 @@
+import { percentChance, randInt, randomVariation, shuffleArr } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
-	percentChance,
-	randInt,
 	reduceNumByPercent,
-	shuffleArr,
 	Time
 } from '@oldschoolgg/toolkit';
-import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, type ChambersOfXericOptions, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
 import { checkUserCanUseDegradeableItem } from '@/lib/degradeableItems.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
 import { logError } from '@/lib/util/logError.js';
-import { formatList, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { formatList } from '@/lib/util/smallUtils.js';
 import { getSimilarItems } from './similarItems.js';
 
 const bareMinStats: Skills = {
@@ -270,11 +266,11 @@ export const minimumCoxSuppliesNeeded = new Bank({
 });
 
 export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): Promise<string | null> {
-	const hasHerbalist = users.some(u => u.skillLevel(SkillsEnum.Herblore) >= 78);
+	const hasHerbalist = users.some(u => u.skillsAsLevels.herblore >= 78);
 	if (!hasHerbalist) {
 		return 'nobody with at least level 78 Herblore';
 	}
-	const hasFarmer = users.some(u => u.skillLevel(SkillsEnum.Farming) >= 55);
+	const hasFarmer = users.some(u => u.skillsAsLevels.farming >= 55);
 	if (!hasFarmer) {
 		return 'nobody with at least level 55 Farming';
 	}
@@ -325,11 +321,17 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 			if (rangeWeapon.id !== itemID('Bow of faerdhinen (c)')) {
 				if (REQUIRED_BOW.includes(rangeWeapon.id)) {
 					if (!rangeAmmo || rangeAmmo.quantity < arrowsNeeded || !REQUIRED_ARROWS.includes(rangeAmmo.item)) {
-						return `<@${user.id}> needs ${arrowsNeeded} of one of these arrows equipped: ${formatList(REQUIRED_ARROWS.map(itemNameFromID), 'or')}.`;
+						return `<@${user.id}> needs ${arrowsNeeded} of one of these arrows equipped: ${formatList(
+							REQUIRED_ARROWS.map(i => Items.itemNameFromId(i)),
+							'or'
+						)}.`;
 					}
 				} else if (REQUIRED_CROSSBOW.includes(rangeWeapon.id)) {
 					if (!rangeAmmo || rangeAmmo.quantity < boltsNeeded || !REQUIRED_BOLTS.includes(rangeAmmo.item)) {
-						return `<@${user.id}> needs ${boltsNeeded} of ones of these bolts equipped: ${formatList(REQUIRED_BOLTS.map(itemNameFromID), 'or')}.`;
+						return `<@${user.id}> needs ${boltsNeeded} of ones of these bolts equipped: ${formatList(
+							REQUIRED_BOLTS.map(i => Items.itemNameFromId(i)),
+							'or'
+						)}.`;
 					}
 				}
 			}

@@ -1,7 +1,6 @@
 import { Bank } from 'oldschooljs';
 
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { TiaraRunecraftActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
@@ -15,7 +14,7 @@ export const tiaraRunecraftTask: MinionTask = {
 
 		const xpReceived = tiaraQuantity * tiara.xp;
 		const xpRes = `\n${await user.addXP({
-			skillName: SkillsEnum.Runecraft,
+			skillName: 'runecraft',
 			amount: xpReceived,
 			duration
 		})}`;

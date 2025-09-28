@@ -1,7 +1,6 @@
 import { Bank } from 'oldschooljs';
 
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { SmithingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
@@ -15,7 +14,7 @@ export const smithingTask: MinionTask = {
 
 		const xpReceived = quantity * smithedItem.xp;
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Smithing,
+			skillName: 'smithing',
 			amount: xpReceived,
 			duration
 		});

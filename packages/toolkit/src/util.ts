@@ -15,4 +15,3 @@ export { detailedDiff as deepObjectDiff };
 export { default as deepEqual } from 'fast-deep-equal';
 
 export * from './string-util.js';
-export * from './util/chanceTemporary.js';

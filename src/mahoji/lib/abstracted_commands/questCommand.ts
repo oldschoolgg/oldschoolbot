@@ -1,5 +1,4 @@
-import { sumArr, Time } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration, sumArr, Time } from '@oldschoolgg/toolkit';
 
 import { MAX_GLOBAL_QP, MAX_QP, quests } from '@/lib/minions/data/quests.js';
 import type { ActivityTaskOptionsWithNoChanges, SpecificQuestOptions } from '@/lib/types/minions.js';

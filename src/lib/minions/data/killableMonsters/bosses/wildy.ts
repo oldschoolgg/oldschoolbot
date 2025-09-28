@@ -1,5 +1,5 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { Bank, deepResolveItems, itemID, Monsters, resolveItems, SkillsEnum } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, deepResolveItems, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { DiaryID, type KillableMonster } from '@/lib/minions/types.js';
@@ -126,7 +126,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			ranged: 65,
 			magic: 70
 		},
-		defaultAttackStyles: [SkillsEnum.Ranged],
+		defaultAttackStyles: ['ranged'],
 		combatXpMultiplier: 1.225,
 		healAmountNeeded: 13 * 20,
 		attackStyleToUse: GearStat.AttackRanged,
@@ -250,7 +250,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			magic: 70
 		},
 		diaryRequirement: [DiaryID.Wilderness, 'medium'],
-		defaultAttackStyles: [SkillsEnum.Ranged],
+		defaultAttackStyles: ['ranged'],
 		healAmountNeeded: 8 * 20,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackCrush]
@@ -366,7 +366,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			defence: 70,
 			magic: 70
 		},
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		customMonsterHP: 630,
 		combatXpMultiplier: 1.225,
 		healAmountNeeded: 13 * 20,
@@ -481,7 +481,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			magic: 70
 		},
 		diaryRequirement: [DiaryID.Wilderness, 'medium'],
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		customMonsterHP: 420,
 		healAmountNeeded: 8 * 20,
 		attackStyleToUse: GearStat.AttackCrush,
@@ -624,7 +624,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			magic: 70
 		},
 
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		combatXpMultiplier: 1.525,
 		healAmountNeeded: 13 * 20,
 		attackStyleToUse: GearStat.AttackCrush,
@@ -763,7 +763,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			magic: 70
 		},
 		diaryRequirement: [DiaryID.Wilderness, 'medium'],
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		healAmountNeeded: 8 * 20,
 		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackStab]
@@ -806,7 +806,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 				gearSetup: 'wildy'
 			}
 		],
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: ['attack'],
 		combatXpMultiplier: 1.075,
 		healAmountNeeded: 5 * 20,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -843,7 +843,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 				gearSetup: 'wildy'
 			}
 		],
-		defaultAttackStyles: [SkillsEnum.Ranged],
+		defaultAttackStyles: ['ranged'],
 		combatXpMultiplier: 1.125,
 		healAmountNeeded: 4 * 20,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -868,7 +868,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 				gearSetup: 'wildy'
 			}
 		],
-		defaultAttackStyles: [SkillsEnum.Magic],
+		defaultAttackStyles: ['magic'],
 		combatXpMultiplier: 1.25,
 		healAmountNeeded: 4 * 20,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -898,7 +898,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 				gearSetup: 'wildy'
 			}
 		],
-		defaultAttackStyles: [SkillsEnum.Magic],
+		defaultAttackStyles: ['magic'],
 		combatXpMultiplier: 1.3,
 		healAmountNeeded: 4 * 20,
 		attackStyleToUse: GearStat.AttackSlash,

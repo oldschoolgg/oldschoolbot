@@ -1,25 +1,22 @@
+import { percentChance, randFloat, randInt, randomVariation, roll } from '@oldschoolgg/rng';
 import {
 	calcWhatPercent,
+	exponentialPercentScale,
+	formatDuration,
 	increaseNumByPercent,
-	percentChance,
-	randFloat,
-	randInt,
 	reduceNumByPercent,
-	roll,
 	sumArr,
 	Time
 } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
 import { userMention } from 'discord.js';
-import { Bank, EMonster, itemID, randomVariation, resolveItems } from 'oldschooljs';
+import { Bank, EMonster, Items, itemID, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { BitField } from '@/lib/constants.js';
 import type { Skills } from '@/lib/types/index.js';
 import { arrows, bolts, bows, crossbows } from '@/lib/util/archery.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { formatList, formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { NexNonUniqueTable, NexUniqueTable } from './misc.js';
 import { TeamLoot } from './TeamLoot.js';
 
@@ -41,9 +38,15 @@ function nexGearStats(user: MUser) {
 }
 
 const allowedWeapons = resolveItems(['Armadyl crossbow', 'Dragon crossbow', 'Zaryte crossbow', 'Twisted bow']);
-const weaponsStr = formatList(allowedWeapons.map(itemNameFromID), 'or');
+const weaponsStr = formatList(
+	allowedWeapons.map(i => Items.itemNameFromId(i)),
+	'or'
+);
 const allowedAmmo = resolveItems(['Dragon arrow', 'Ruby dragon bolts (e)', 'Rune arrow']);
-const ammoStr = formatList(allowedAmmo.map(itemNameFromID), 'or');
+const ammoStr = formatList(
+	allowedAmmo.map(i => Items.itemNameFromId(i)),
+	'or'
+);
 
 const minimumCostOwned = new Bank()
 	.add('Saradomin brew(4)', 8)
@@ -92,7 +95,7 @@ export function checkNexUser(user: MUser): [false] | [true, string] {
 	if (ammo.quantity < 600) {
 		return [
 			true,
-			`${tag} has less than 600 ${itemNameFromID(ammo.item)} equipped, they might run out in the fight!`
+			`${tag} has less than 600 ${Items.itemNameFromId(ammo.item)} equipped, they might run out in the fight!`
 		];
 	}
 	const { bank } = user;

@@ -1,6 +1,5 @@
-import { notEmpty, randArrItem } from '@oldschoolgg/toolkit';
-import type { MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
-import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit/util';
+import { randArrItem } from '@oldschoolgg/rng';
+import { formatOrdinal, type MahojiUserOption, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 

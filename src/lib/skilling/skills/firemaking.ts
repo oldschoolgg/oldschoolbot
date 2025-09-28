@@ -1,8 +1,7 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs/EItem';
 
-import type { Burnable } from '@/lib/skilling/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import { type Burnable, defineSkill } from '@/lib/skilling/types.js';
 
 const burnables: Burnable[] = [
 	{
@@ -74,13 +73,13 @@ const pyromancerItems: { [key: number]: number } = {
 	[EItem.PYROMANCER_BOOTS]: 0.2
 };
 
-const Firemaking = {
+const Firemaking = defineSkill({
 	aliases: ['fm', 'firemaking'],
 	Burnables: burnables,
-	id: SkillsEnum.Firemaking,
+	id: 'firemaking',
 	emoji: Emoji.Firemaking,
 	pyromancerItems,
 	name: 'Firemaking'
-};
+});
 
 export default Firemaking;

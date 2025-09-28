@@ -1,15 +1,13 @@
-import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { formatDuration, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { formatDuration, reduceNumByPercent, stringMatches, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
 import { userhasDiaryTier, WesternProv } from '@/lib/diaries.js';
-import type { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { hasSkillReqs } from '@/lib/util/smallUtils.js';
+import { hasSkillReqs, isValidSkill } from '@/lib/util/smallUtils.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const itemBoosts = [
@@ -239,14 +237,14 @@ export async function pestControlXPCommand(
 	skillName: string,
 	amount: number
 ) {
-	if (!Object.keys(xpMultiplier).includes(skillName)) {
+	if (!Object.keys(xpMultiplier).includes(skillName) || !isValidSkill(skillName)) {
 		return "That's not a valid skill to buy XP for.";
 	}
 	if (!amount || amount < 1) {
 		return "That's not a valid amount of points to spend.}";
 	}
 
-	const level = user.skillLevel(skillName as SkillsEnum);
+	const level = user.skillsAsLevels[skillName];
 	if (level < 25) {
 		return 'You need at least level 25 to buy XP from Pest Control.';
 	}
@@ -270,7 +268,7 @@ export async function pestControlXPCommand(
 		{}
 	);
 	const xpRes = await user.addXP({
-		skillName: skillName as SkillsEnum,
+		skillName,
 		amount: xpPerPoint * amount,
 		duration: undefined,
 		minimal: false,

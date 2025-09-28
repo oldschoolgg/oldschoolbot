@@ -1,10 +1,10 @@
-import { objectEntries, randArrItem, randInt, Time } from '@oldschoolgg/toolkit';
+import { randArrItem, randInt } from '@oldschoolgg/rng';
+import { objectEntries, Time } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { Bank, convertLVLtoXP, type ItemBank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
-import { SkillsEnum } from '../../src/lib/skilling/types.js';
 import { assert } from '../../src/lib/util/logError.js';
 import { mahojiUsersSettingsFetch } from '../../src/mahoji/mahojiSettings.js';
 import { createTestUser } from './util.js';
@@ -88,7 +88,7 @@ describe('MUser', () => {
 	test('Should add XP', async () => {
 		const user = await createTestUser();
 		expect(user.skillsAsLevels.agility).toEqual(1);
-		const result = await user.addXP({ skillName: SkillsEnum.Agility, amount: 1000 });
+		const result = await user.addXP({ skillName: 'agility', amount: 1000 });
 		expect(user.skillsAsLevels.agility).toEqual(9);
 		expect(result).toEqual(`You received 1,000 <:agility:630911040355565568> XP.
 **Congratulations! Your Agility level is now 9** 🎉`);
@@ -113,8 +113,8 @@ describe('MUser', () => {
 			const expectedVal = key === 'hitpoints' ? convertLVLtoXP(10) : convertLVLtoXP(1);
 			expect(val).toEqual(expectedVal);
 		}
-		await user.addXP({ skillName: SkillsEnum.Agility, amount: convertLVLtoXP(50) });
-		await user.addXP({ skillName: SkillsEnum.Attack, amount: convertLVLtoXP(50) });
+		await user.addXP({ skillName: 'agility', amount: convertLVLtoXP(50) });
+		await user.addXP({ skillName: 'attack', amount: convertLVLtoXP(50) });
 
 		expect(user.skillsAsLevels.agility).toEqual(50);
 		expect(user.skillsAsLevels.attack).toEqual(50);

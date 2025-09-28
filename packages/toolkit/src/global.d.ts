@@ -1,4 +1,5 @@
 import type { BaseInteraction, ChatInputCommandInteraction, InteractionReplyOptions, User } from 'discord.js';
+
 import type { AbstractCommandAttributes, CommandOptions, ICommand, MahojiClient } from './util/discord/index.js';
 
 declare global {

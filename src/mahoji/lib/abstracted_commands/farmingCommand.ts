@@ -1,5 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import type { CropUpgradeType } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
@@ -9,7 +8,7 @@ import { prepareFarmingStep, treeCheck } from '@/lib/minions/functions/farmingTr
 import { calcNumOfPatches } from '@/lib/skilling/functions/calcsFarming.js';
 import { getFarmingInfo, getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
 import Farming from '@/lib/skilling/skills/farming/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
+
 import type { FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -31,7 +30,7 @@ export async function harvestCommand({
 		return 'Your minion must not be busy to use this command.';
 	}
 	const { GP } = user;
-	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
+	const currentWoodcuttingLevel = user.skillsAsLevels.woodcutting;
 	const currentDate = Date.now();
 	if (!isPatchName(seedType)) {
 		return `That is not a valid patch type! The available patches are: ${farmingPatchNames.join(
@@ -148,7 +147,7 @@ export async function farmingPlantCommand({
 
 	const wantsToPay = (pay || alwaysPay) && plant.canPayFarmer;
 
-	if (user.skillLevel(SkillsEnum.Farming) < plant.level) {
+	if (user.skillsAsLevels.farming < plant.level) {
 		return `${user.minionName} needs ${plant.level} Farming to plant ${plant.name}.`;
 	}
 

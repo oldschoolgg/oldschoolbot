@@ -1,5 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { miniID } from '@oldschoolgg/toolkit/util';
+import { miniID, Time } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';

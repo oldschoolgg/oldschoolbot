@@ -1,8 +1,8 @@
+import { percentChance } from '@oldschoolgg/rng';
 import { Items } from 'oldschooljs';
 
 import { checkDegradeableItemCharges, degradeItem } from '@/lib/degradeableItems.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
-import { percentChance } from '@/lib/util/rng.js';
 
 export async function bloodEssence(user: MUser, quantity: number): Promise<number> {
 	let bonusQuantity = 0;

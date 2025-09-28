@@ -1,4 +1,4 @@
-import { UserError } from '@oldschoolgg/toolkit/structures';
+import { UserError } from '@oldschoolgg/toolkit';
 
 import type { ActivityTaskData, ActivityTaskOptions } from '@/lib/types/minions.js';
 import { isGroupActivity } from '@/lib/util.js';

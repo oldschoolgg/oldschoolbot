@@ -1,5 +1,4 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { truncateString } from '@oldschoolgg/toolkit/util';
+import { Emoji, Events, truncateString } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type Item, type ItemBank, resolveItems, toKMB } from 'oldschooljs';
 

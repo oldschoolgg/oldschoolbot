@@ -1,5 +1,5 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
+import { roll } from '@oldschoolgg/rng';
+import { Emoji, Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	BrimstoneChest,
@@ -18,14 +18,12 @@ import {
 	type OpenableOpenOptions,
 	Openables,
 	resolveItems,
-	SkillsEnum,
 	ZombiePiratesLocker
 } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { cluesRaresCL } from '@/lib/data/CollectionsExport.js';
 import { openSeedPack } from '@/lib/skilling/functions/calcFarmingContracts.js';
-import { roll } from '@/lib/util/rng.js';
 import { defaultFarmingContract } from './minions/farming/index.js';
 import type { FarmingContract } from './minions/farming/types.js';
 import { shadeChestOpenables } from './shadesKeys.js';
@@ -182,7 +180,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 		): Promise<{
 			bank: Bank;
 		}> => {
-			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
+			const fishLvl = args.user.skillsAsLevels.fishing;
 			const brimstoneOptions: OpenableOpenOptions = {
 				fishLvl
 			};
@@ -266,7 +264,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 		): Promise<{
 			bank: Bank;
 		}> => {
-			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
+			const fishLvl = args.user.skillsAsLevels.fishing;
 			const larransOptions: OpenableOpenOptions = {
 				fishLvl,
 				chestSize: 'big'

@@ -1,6 +1,4 @@
-import { notEmpty, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
-import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { makeComponents, notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 

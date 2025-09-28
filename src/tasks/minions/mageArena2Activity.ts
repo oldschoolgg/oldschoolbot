@@ -1,4 +1,4 @@
-import { percentChance, randArrItem } from '@oldschoolgg/toolkit';
+import { percentChance, randArrItem } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';

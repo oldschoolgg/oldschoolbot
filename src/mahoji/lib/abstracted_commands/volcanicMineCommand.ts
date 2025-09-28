@@ -1,9 +1,7 @@
-import { objectEntries, Time } from '@oldschoolgg/toolkit';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, objectEntries, stringMatches, Time } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -11,9 +9,9 @@ import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js
 import { formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
 
 const skillReqs = {
-	[SkillsEnum.Prayer]: 70,
-	[SkillsEnum.Hitpoints]: 70,
-	[SkillsEnum.Mining]: 50
+	prayer: 70,
+	hitpoints: 70,
+	mining: 50
 };
 
 export const VolcanicMineGameTime = Time.Minute * 10;

@@ -1,8 +1,6 @@
-import { calcWhatPercent } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { Bank, Items, itemID, randomVariation, TOBRooms } from 'oldschooljs';
+import { randomVariation } from '@oldschoolgg/rng';
+import { calcWhatPercent, channelIsSendable, Emoji, formatDuration } from '@oldschoolgg/toolkit';
+import { Bank, Items, itemID, TOBRooms } from 'oldschooljs';
 
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import {
@@ -26,7 +24,6 @@ import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { skillsMeetRequirements } from '@/lib/util.js';
 import { mahojiParseNumber, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 const minStats = {
@@ -83,7 +80,7 @@ async function checkTOBUser(
 		return [true, `${user.usernameOrMention} doesn't have a minion`];
 	}
 
-	if (!skillsMeetRequirements(user.skillsAsXP, minStats)) {
+	if (!user.hasSkillReqs(minStats)) {
 		return [
 			true,
 			`${

@@ -1,7 +1,13 @@
-import type { AbstractCommand } from '@oldschoolgg/toolkit/discord-util';
-import { formatDuration, PerkTier } from '@oldschoolgg/toolkit/util';
-import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChannel } from 'discord.js';
-import { ComponentType, PermissionsBitField } from 'discord.js';
+import { type AbstractCommand, formatDuration, PerkTier } from '@oldschoolgg/toolkit';
+import {
+	ComponentType,
+	type DMChannel,
+	type Guild,
+	type GuildMember,
+	type InteractionReplyOptions,
+	PermissionsBitField,
+	type TextChannel
+} from 'discord.js';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { type PartialUser, partialUserCache, perkTierCache, untrustedGuildSettingsCache } from '@/lib/cache.js';

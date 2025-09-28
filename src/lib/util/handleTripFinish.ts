@@ -1,6 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { channelIsSendable, makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { channelIsSendable, makeComponents, Stopwatch, Time } from '@oldschoolgg/toolkit';
 import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { Bank, EItem } from 'oldschooljs';

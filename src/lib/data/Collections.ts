@@ -1,5 +1,13 @@
-import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { SeedableRNG } from '@oldschoolgg/rng';
+import {
+	calcWhatPercent,
+	isObject,
+	notEmpty,
+	removeFromArr,
+	stringMatches,
+	sumArr,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	ChambersOfXeric,
@@ -27,9 +35,8 @@ import {
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import { NexNonUniqueTable, NexUniqueTable } from '@/lib/simulation/misc.js';
 import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
-import { SeedableRNG } from '@/lib/util/rng.js';
 import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport.js';
 import {
 	abyssalSireCL,
@@ -152,7 +159,7 @@ function mgProg(minigameName: MinigameName): FormatProgressFunction {
 	return ({ minigames }) => `${minigames[minigameName]} Completions`;
 }
 
-function skillProg(skillName: SkillsEnum): FormatProgressFunction {
+function skillProg(skillName: SkillNameType): FormatProgressFunction {
 	return ({ user }) => `Level ${user.skillLevel(skillName)} ${skillName}`;
 }
 
@@ -975,7 +982,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			Forestry: {
 				alias: ['forestry', 'forest', 'for'],
-				fmtProg: skillProg(SkillsEnum.Woodcutting),
+				fmtProg: skillProg('woodcutting'),
 				allItems: forestryCL,
 				items: forestryCL
 			},
@@ -1051,7 +1058,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['rooftop', 'laps', 'agility', 'agil'],
 				items: rooftopAgilityCL,
 				isActivity: true,
-				fmtProg: skillProg(SkillsEnum.Agility)
+				fmtProg: skillProg('agility')
 			},
 			'Shayzien Armour': {
 				items: shayzienArmourCL
@@ -1064,7 +1071,7 @@ export const allCollectionLogs: ICollection = {
 			Slayer: {
 				alias: ['slay'],
 				items: slayerCL,
-				fmtProg: skillProg(SkillsEnum.Slayer)
+				fmtProg: skillProg('slayer')
 			},
 			TzHaar: {
 				kcActivity: {
@@ -1116,7 +1123,7 @@ export const allCollectionLogs: ICollection = {
 			Farming: {
 				counts: false,
 				items: allFarmingItems,
-				fmtProg: skillProg(SkillsEnum.Farming)
+				fmtProg: skillProg('farming')
 			},
 			Implings: {
 				counts: false,
@@ -1125,7 +1132,7 @@ export const allCollectionLogs: ICollection = {
 			Graceful: {
 				counts: false,
 				items: gracefulCL,
-				fmtProg: skillProg(SkillsEnum.Agility)
+				fmtProg: skillProg('agility')
 			},
 			'God Wars Dungeon': {
 				counts: false,

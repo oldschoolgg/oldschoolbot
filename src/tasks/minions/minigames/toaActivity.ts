@@ -1,6 +1,4 @@
-import { isObject, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
+import { Emoji, Events, formatOrdinal, isObject, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
 import { Bank, type ItemBank, ItemGroups, resolveItems } from 'oldschooljs';
 
@@ -14,10 +12,10 @@ import {
 	toaOrnamentKits,
 	toaPetTransmogItems
 } from '@/lib/simulation/toa.js';
+import { normalizeTOAUsers } from '@/lib/simulation/toaUtils.js';
 import type { TOAOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { assert } from '@/lib/util/logError.js';
-import { normalizeTOAUsers } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 

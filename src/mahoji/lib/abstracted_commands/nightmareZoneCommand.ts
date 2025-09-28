@@ -1,5 +1,12 @@
-import { calcWhatPercent, reduceNumByPercent, round, sumArr, Time } from '@oldschoolgg/toolkit';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import {
+	calcWhatPercent,
+	formatDuration,
+	reduceNumByPercent,
+	round,
+	stringMatches,
+	sumArr,
+	Time
+} from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
@@ -7,7 +14,6 @@ import type { NMZStrategy } from '@/lib/constants.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { MAX_QP } from '@/lib/minions/data/quests.js';
 import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { NightmareZoneActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
@@ -332,8 +338,8 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 	const attackStyles = resolveAttackStyles({
 		attackStyles: user.getAttackStyles()
 	});
-	const skillTotal = sumArr(attackStyles.map(s => user.skillLevel(s))) + user.skillLevel(SkillsEnum.Hitpoints);
-	if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
+	const skillTotal = sumArr(attackStyles.map(s => user.skillLevel(s))) + user.skillsAsLevels.hitpoints;
+	if (attackStyles.includes('ranged') || attackStyles.includes('magic')) {
 		return 'The Nightmare Zone minigame requires melee combat for efficiency, swap training style using `/minion train style:`';
 	}
 

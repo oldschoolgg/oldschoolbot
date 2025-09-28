@@ -1,10 +1,9 @@
+import { percentChance } from '@oldschoolgg/rng';
 import { Bank, itemID } from 'oldschooljs';
 
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { SmeltingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { percentChance } from '@/lib/util/rng.js';
 
 export const smeltingTask: MinionTask = {
 	type: 'Smelting',
@@ -33,7 +32,7 @@ export const smeltingTask: MinionTask = {
 		}
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Smithing,
+			skillName: 'smithing',
 			amount: xpReceived,
 			duration
 		});

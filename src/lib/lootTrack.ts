@@ -1,5 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { cleanString, formatDuration } from '@oldschoolgg/toolkit/util';
+import { cleanString, formatDuration, Time } from '@oldschoolgg/toolkit';
 import type { LootTrack, loot_track_type } from '@prisma/client';
 import { Bank, type ItemBank } from 'oldschooljs';
 

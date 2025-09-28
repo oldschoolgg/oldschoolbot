@@ -1,5 +1,4 @@
-import { removeFromArr } from '@oldschoolgg/toolkit';
-import { stringMatches, Table } from '@oldschoolgg/toolkit/util';
+import { removeFromArr, stringMatches, Table } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 

@@ -1,4 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { EquipmentSlot } from 'oldschooljs';
 
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';

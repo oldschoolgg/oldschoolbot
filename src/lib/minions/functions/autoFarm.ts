@@ -1,6 +1,6 @@
 import { formatDuration } from '@oldschoolgg/toolkit/util';
 import { AutoFarmFilterEnum, type CropUpgradeType } from '@prisma/client';
-import { Bank, SkillsEnum } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import type { IPatchData, IPatchDataDetailed } from '@/lib/minions/farming/types.js';
 import { plants } from '@/lib/skilling/skills/farming/index.js';
@@ -38,7 +38,8 @@ export async function autoFarm(
 		return 'Your minion must not be busy to use this command.';
 	}
 
-	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
+	const farmingLevel = user.skillsAsLevels.farming;
+	
 	let { autoFarmFilter } = user;
 	if (!autoFarmFilter) {
 		autoFarmFilter = AutoFarmFilterEnum.AllFarm;

@@ -1,7 +1,12 @@
-import { removeFromArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import {
+	cleanUsername,
+	formatDuration,
+	mentionCommand,
+	removeFromArr,
+	stringMatches,
+	Time,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import type { Giveaway } from '@prisma/client';
 import { RateLimitManager } from '@sapphire/ratelimits';
 import type { ButtonInteraction, Interaction } from 'discord.js';

@@ -2,7 +2,7 @@ import { calcWhatPercent, round, sumArr } from '@oldschoolgg/toolkit';
 import { clamp } from 'remeda';
 
 import { getTotalCl } from '@/lib/data/Collections.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import { SkillsArray } from '@/lib/skilling/types.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import { calculateAchievementDiaryProgress } from '@/mahoji/lib/abstracted_commands/achievementDiaryCommand.js';
 import { allCombatAchievementTasks } from './combat_achievements/combatAchievements.js';
@@ -13,7 +13,7 @@ export async function calculateMastery(user: MUser, stats: MUserStats) {
 	const [totalClItems, clItems] = getTotalCl(user, 'collection', stats);
 	const clCompletionPercentage = round(calcWhatPercent(clItems, totalClItems), 2);
 	const totalXP = sumArr(Object.values(user.skillsAsXP));
-	const maxTotalXP = Object.values(SkillsEnum).length * MAX_XP;
+	const maxTotalXP = SkillsArray.length * MAX_XP;
 
 	const totalXPPercent = round(calcWhatPercent(totalXP, maxTotalXP), 2);
 	const combatAchievementPercent = round(

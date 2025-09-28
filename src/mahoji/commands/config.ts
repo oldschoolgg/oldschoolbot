@@ -1,7 +1,14 @@
-import { removeFromArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { allAbstractCommands, channelIsSendable, hasBanMemberPerms } from '@oldschoolgg/toolkit/discord-util';
-import { miniID, stringMatches } from '@oldschoolgg/toolkit/string-util';
+import {
+	allAbstractCommands,
+	channelIsSendable,
+	formatDuration,
+	hasBanMemberPerms,
+	miniID,
+	removeFromArr,
+	stringMatches,
+	Time,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import type { activity_type_enum } from '@prisma/client';
 import {
 	ApplicationCommandOptionType,
@@ -30,7 +37,7 @@ import { emojiServers } from '@/lib/util/cachedUserIDs.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { isValidNickname, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '@/mahoji/guildSettings.js';
 import { itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { mahojiUsersSettingsFetch, patronMsg } from '@/mahoji/mahojiSettings.js';
@@ -197,7 +204,7 @@ async function favFoodConfig(
 	const currentFavorites = user.user.favorite_food;
 	const item = Items.getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite food is: ${
-		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
+		currentFavorites.length === 0 ? 'None' : currentFavorites.map(i => Items.itemNameFromId(i)).join(', ')
 	}.`;
 	if (!item) return currentItems;
 	if (!Eatables.some(i => i.id === item.id)) return "That's not a valid item.";
@@ -228,7 +235,12 @@ async function favItemConfig(
 	const currentFavorites = user.user.favoriteItems;
 	const item = Items.getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite items are: ${
-		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ').slice(0, 1500)
+		currentFavorites.length === 0
+			? 'None'
+			: currentFavorites
+					.map(i => Items.itemNameFromId(i))
+					.join(', ')
+					.slice(0, 1500)
 	}.`;
 
 	if (!item) return currentItems;
@@ -284,7 +296,7 @@ async function favAlchConfig(
 		if (currentFavorites.length === 0) {
 			return 'You have no favorited alchable items.';
 		}
-		return `Your current favorite alchable items are: ${currentFavorites.map(itemNameFromID).join(', ')}.`;
+		return `Your current favorite alchable items are: ${currentFavorites.map(i => Items.itemNameFromId(i)).join(', ')}.`;
 	}
 
 	if (!item.highalch) return "That item isn't alchable.";
@@ -335,7 +347,7 @@ async function favBhSeedsConfig(
 	}
 
 	const currentItems = `Your current favorite items are: ${
-		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
+		currentFavorites.length === 0 ? 'None' : currentFavorites.map(i => Items.itemNameFromId(i)).join(', ')
 	}.`;
 	return currentItems;
 }

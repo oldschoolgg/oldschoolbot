@@ -1,4 +1,4 @@
-import { UserError } from '@oldschoolgg/toolkit/structures';
+import { UserError } from '@oldschoolgg/toolkit';
 
 import { cancelUsersListings } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 import { logError } from './logError.js';

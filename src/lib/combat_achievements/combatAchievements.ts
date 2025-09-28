@@ -1,4 +1,5 @@
-import { notEmpty, roll, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
+import { roll } from '@oldschoolgg/rng';
+import { notEmpty, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import type { activity_type_enum } from '@prisma/client';
 import { type Item, Items } from 'oldschooljs';
 import { clone } from 'remeda';
