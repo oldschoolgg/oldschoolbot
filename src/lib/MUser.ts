@@ -39,16 +39,15 @@ import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
 import { marketPriceOfBank } from '@/lib/marketPrices.js';
 import backgroundImages from '@/lib/minions/data/bankBackgrounds.js';
 import type { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
-import { defaultFarmingContract } from '@/lib/minions/farming/index.js';
-import type { DetailedFarmingContract, FarmingContract } from '@/lib/minions/farming/types.js';
 import { blowpipeDarts, validateBlowpipeData } from '@/lib/minions/functions/blowpipeCommand.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { AddXpParams, BlowpipeData, ClueBank } from '@/lib/minions/types.js';
 import { getUsersPerkTier } from '@/lib/perkTiers.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
-import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
-import Farming from '@/lib/skilling/skills/farming/index.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import { getFarmingInfoFromUser } from '@/lib/skilling/skills/farming/utils/getFarmingInfo.js';
+import type { DetailedFarmingContract, FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { defaultGear, Gear } from '@/lib/structures/Gear.js';
@@ -786,7 +785,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			: Farming.Plants.find(i => i.name === currentFarmingContract?.plantToGrow);
 		const detailed = getFarmingInfoFromUser(this.user);
 		return {
-			contract: currentFarmingContract ?? defaultFarmingContract,
+			contract: currentFarmingContract ?? Farming.defaultFarmingContract,
 			plant,
 			matchingPlantedCrop: plant ? detailed.patchesDetailed.find(i => i.plant && i.plant === plant) : undefined
 		};

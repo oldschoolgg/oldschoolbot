@@ -23,8 +23,6 @@ import {
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { cluesRaresCL } from '@/lib/data/CollectionsExport.js';
-import { defaultFarmingContract } from '@/lib/minions/farming/index.js';
-import type { FarmingContract } from '@/lib/minions/farming/types.js';
 import { shadeChestOpenables } from '@/lib/shadesKeys.js';
 import { nestTable } from '@/lib/simulation/birdsNest.js';
 import {
@@ -34,7 +32,8 @@ import {
 	CrystalChestTable,
 	SpoilsOfWarTable
 } from '@/lib/simulation/misc.js';
-import { openSeedPack } from '@/lib/skilling/functions/calcFarmingContracts.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import type { FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)
@@ -351,10 +350,10 @@ const osjsOpenables: UnifiedOpenable[] = [
 			message?: string;
 		}> => {
 			const { plantTier } =
-				(args.user.user.minion_farmingContract as FarmingContract | null) ?? defaultFarmingContract;
+				(args.user.user.minion_farmingContract as FarmingContract | null) ?? Farming.defaultFarmingContract;
 			const openLoot = new Bank();
 			for (let i = 0; i < args.quantity; i++) {
-				openLoot.add(openSeedPack(plantTier));
+				openLoot.add(Farming.openSeedPack(plantTier));
 			}
 			return { bank: openLoot };
 		},

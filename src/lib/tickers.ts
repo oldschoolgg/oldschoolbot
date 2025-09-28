@@ -18,9 +18,7 @@ import { populateRoboChimpCache } from '@/lib/perkTier.js';
 import { fetchUsersWithoutUsernames } from '@/lib/rawSql.js';
 import { runCommand } from '@/lib/settings/settings.js';
 import { informationalButtons } from '@/lib/sharedComponents.js';
-import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
-import Farming from '@/lib/skilling/skills/farming/index.js';
-import { farmingPatchNames, getFarmingKeyFromName } from '@/lib/util/farmingHelpers.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
 import { logError } from '@/lib/util/logError.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
@@ -144,8 +142,8 @@ export const tickers: {
 			});
 			for (const user of users) {
 				if (user.bitfield.includes(BitField.DisabledFarmingReminders)) continue;
-				const { patches } = await getFarmingInfoFromUser(user);
-				for (const patchType of farmingPatchNames) {
+				const { patches } = await Farming.getFarmingInfoFromUser(user);
+				for (const patchType of Farming.farmingPatchNames) {
 					const patch = patches[patchType];
 					if (!patch) continue;
 					if (patch.plantTime < basePlantTime) continue;
@@ -164,7 +162,7 @@ export const tickers: {
 					if (difference < planted.growthTime * Time.Minute) continue;
 					if (patch.wasReminded) continue;
 					await mahojiUserSettingsUpdate(user.id, {
-						[getFarmingKeyFromName(patchType)]: { ...patch, wasReminded: true }
+						[Farming.getFarmingKeyFromName(patchType)]: { ...patch, wasReminded: true }
 					});
 
 					// Build buttons (only show Harvest/replant if not busy):

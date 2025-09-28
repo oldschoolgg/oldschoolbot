@@ -25,7 +25,7 @@ import { Minigames } from '@/lib/settings/minigames.js';
 import Agility from '@/lib/skilling/skills/agility.js';
 import Cooking from '@/lib/skilling/skills/cooking/cooking.js';
 import Crafting from '@/lib/skilling/skills/crafting/index.js';
-import Farming from '@/lib/skilling/skills/farming/index.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import Fletching from '@/lib/skilling/skills/fletching/index.js';
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
