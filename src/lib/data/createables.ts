@@ -14,6 +14,7 @@ import { dtCreatables } from '@/lib/data/creatables/dt.js';
 import { forestryCreatables } from '@/lib/data/creatables/forestryCreatables.js';
 import { gracefulOutfitCreatables } from '@/lib/data/creatables/gracefulOutfits.js';
 import { guardiansOfTheRiftCreatables } from '@/lib/data/creatables/guardiansOfTheRiftCreatables.js';
+import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
 import { lmsCreatables } from '@/lib/data/creatables/lms.js';
 import { mysticStavesCreatables } from '@/lib/data/creatables/mysticStaves.js';
 import { nexCreatables } from '@/lib/data/creatables/nex.js';
@@ -22,11 +23,10 @@ import { shadesOfMortonCreatables } from '@/lib/data/creatables/shadesOfMorton.j
 import { slayerCreatables } from '@/lib/data/creatables/slayer.js';
 import { toaCreatables } from '@/lib/data/creatables/toa.js';
 import { tobCreatables } from '@/lib/data/creatables/tob.js';
-import { formatList } from '@/lib/util/smallUtils.js';
-import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
-import { ivandisRequirements, blisterwoodRequirements } from '@/lib/minions/data/templeTrekking.js';
+import { blisterwoodRequirements, ivandisRequirements } from '@/lib/minions/data/templeTrekking.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import type { Skills } from '@/lib/types/index.js';
+import { formatList } from '@/lib/util/smallUtils.js';
 
 export interface Createable {
 	name: string;

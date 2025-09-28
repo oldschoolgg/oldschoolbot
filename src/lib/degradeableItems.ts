@@ -5,10 +5,10 @@ import { Bank, type Item, Items, itemID, type Monster } from 'oldschooljs';
 
 import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
+import type { ChargeBank } from '@/lib/structures/Bank.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { assert } from '@/lib/util/logError.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import type { ChargeBank } from '@/lib/structures/Bank.js';
 
 export interface DegradeableItem {
 	item: Item;

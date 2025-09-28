@@ -9,12 +9,12 @@ import { mergeDeep } from 'remeda';
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
 import type { GearSetup } from '@/lib/gear/types.js';
 import type { MUserClass } from '@/lib/MUser.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
 import { KCBank } from '@/lib/structures/KCBank.js';
 import { XPBank } from '@/lib/structures/XPBank.js';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
 import type { JsonKeys } from '@/lib/util.js';
 import { type ClientBankKey, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
-import  { ChargeBank } from '@/lib/structures/Bank.js';
 
 export class UpdateBank {
 	// Things removed
