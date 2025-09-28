@@ -155,7 +155,6 @@ export class MUserClass {
 		return new GearBank({
 			gear: this.gear,
 			bank: this.bank,
-			skillsAsLevels: this.skillsAsLevels,
 			chargeBank: this.ownedChargeBank(),
 			skillsAsXP: this.skillsAsXP,
 			minionName: this.minionName

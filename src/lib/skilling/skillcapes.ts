@@ -1,6 +1,6 @@
 import { itemID } from 'oldschooljs';
 
-import type { SkillNameType } from './types.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 
 interface Skillcape {
 	skill: SkillNameType;

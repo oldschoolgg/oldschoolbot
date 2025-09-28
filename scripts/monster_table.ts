@@ -76,7 +76,6 @@ async function main() {
 				other: new Gear()
 			},
 			bank,
-			skillsAsLevels,
 			skillsAsXP,
 			minionName: 'Minion'
 		});
