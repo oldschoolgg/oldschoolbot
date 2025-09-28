@@ -3,10 +3,11 @@ import { Bank } from 'oldschooljs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { MUser } from '../../src/lib/MUser.js';
-import type { IPatchData, IPatchDataDetailed } from '../../src/lib/minions/farming/types.js';
 import { autoFarm } from '../../src/lib/minions/functions/autoFarm.js';
-import Farming from '../../src/lib/skilling/skills/farming/index.js';
-import type { FarmingPatchName } from '../../src/lib/util/farmingHelpers.js';
+import { Farming } from '../../src/lib/skilling/skills/farming/index.js';
+import type { FarmingPatchName } from '../../src/lib/skilling/skills/farming/utils/farmingHelpers.js';
+import type { IPatchData, IPatchDataDetailed } from '../../src/lib/skilling/skills/farming/utils/types.js';
+import type { Plant } from '../../src/lib/skilling/types.js';
 
 const { addSubTaskMock, mockedCalcMaxTripLength } = vi.hoisted(() => {
 	const calcMaxTripLengthMock = vi.fn(() => 60 * 60 * 1000);
@@ -183,7 +184,7 @@ function createAutoFarmStub({
 }
 
 describe('autoFarm tree clearing fees', () => {
-	const redwoodPlant = Farming.Plants.find(plant => plant.name === 'Redwood tree');
+	const redwoodPlant = Farming.Plants.find((plant: Plant) => plant.name === 'Redwood tree');
 	if (!redwoodPlant) {
 		throw new Error('Expected redwood plant data');
 	}
@@ -255,8 +256,8 @@ describe('autoFarm tree clearing fees', () => {
 	});
 
 	it('reserves the tree clearing fee when switching to a different tree type', async () => {
-		const magicPlant = Farming.Plants.find(plant => plant.name === 'Magic tree');
-		const yewPlant = Farming.Plants.find(plant => plant.name === 'Yew tree');
+		const magicPlant = Farming.Plants.find((plant: Plant) => plant.name === 'Magic tree');
+		const yewPlant = Farming.Plants.find((plant: Plant) => plant.name === 'Yew tree');
 		if (!magicPlant || !yewPlant) {
 			throw new Error('Expected magic and yew plant data');
 		}
@@ -312,7 +313,7 @@ describe('autoFarm tree clearing fees', () => {
 	it('plans sequential trips even when combined duration exceeds the max trip length', async () => {
 		mockedCalcMaxTripLength.mockReturnValue(45 * 1000);
 
-		const magicPlant = Farming.Plants.find(plant => plant.name === 'Magic tree');
+		const magicPlant = Farming.Plants.find((plant: Plant) => plant.name === 'Magic tree');
 		if (!magicPlant) {
 			throw new Error('Expected magic plant data');
 		}

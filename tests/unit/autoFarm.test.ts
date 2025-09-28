@@ -3,9 +3,10 @@ import type { CropUpgradeType } from '@prisma/client';
 import { Bank, convertLVLtoXP } from 'oldschooljs';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import type { IPatchDataDetailed } from '../../src/lib/minions/farming/types.js';
 import { prepareFarmingStep } from '../../src/lib/minions/functions/farmingTripHelpers.js';
-import Farming from '../../src/lib/skilling/skills/farming/index.js';
+import { Farming } from '../../src/lib/skilling/skills/farming/index.js';
+import type { IPatchDataDetailed } from '../../src/lib/skilling/skills/farming/utils/types.js';
+import type { Plant } from '../../src/lib/skilling/types.js';
 import { mockMUser } from './userutil.js';
 
 describe('prepareFarmingStep auto farm limits', () => {
@@ -33,7 +34,7 @@ describe('prepareFarmingStep auto farm limits', () => {
 			skills_farming: convertLVLtoXP(99)
 		});
 
-		const grapePlant = Farming.Plants.find(plant => plant.name === 'Grape');
+		const grapePlant = Farming.Plants.find((plant: Plant) => plant.name === 'Grape');
 		if (!grapePlant) {
 			throw new Error('Expected grape plant data');
 		}
@@ -80,7 +81,7 @@ describe('prepareFarmingStep auto farm limits', () => {
 			skills_farming: convertLVLtoXP(99)
 		});
 
-		const redwoodPlant = Farming.Plants.find(plant => plant.name === 'Redwood tree');
+		const redwoodPlant = Farming.Plants.find((plant: Plant) => plant.name === 'Redwood tree');
 		if (!redwoodPlant) {
 			throw new Error('Expected redwood plant data');
 		}
@@ -127,7 +128,7 @@ describe('prepareFarmingStep auto farm limits', () => {
 			GP: 5000
 		});
 
-		const redwoodPlant = Farming.Plants.find(plant => plant.name === 'Redwood tree');
+		const redwoodPlant = Farming.Plants.find((plant: Plant) => plant.name === 'Redwood tree');
 		if (!redwoodPlant) {
 			throw new Error('Expected redwood plant data');
 		}
