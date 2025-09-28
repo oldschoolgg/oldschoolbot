@@ -1,4 +1,4 @@
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { WintertodtCrate } from './wintertodt.js';

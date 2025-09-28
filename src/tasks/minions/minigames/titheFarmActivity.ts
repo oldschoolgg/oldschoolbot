@@ -1,5 +1,5 @@
 import { roll } from '@oldschoolgg/rng';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
+import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { TitheFarmActivityTaskOptions } from '@/lib/types/minions.js';

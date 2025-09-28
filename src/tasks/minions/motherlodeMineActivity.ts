@@ -1,5 +1,5 @@
 import { roll } from '@oldschoolgg/rng';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
+import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';

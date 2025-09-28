@@ -1,6 +1,5 @@
 import { randFloat, randInt, roll } from '@oldschoolgg/rng';
-import { notEmpty } from '@oldschoolgg/toolkit';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';

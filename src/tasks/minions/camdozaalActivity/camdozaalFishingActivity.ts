@@ -1,6 +1,5 @@
 import { roll } from '@oldschoolgg/rng';
-import { calcPercentOfNum } from '@oldschoolgg/toolkit';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
+import { calcPercentOfNum, Emoji, Events } from '@oldschoolgg/toolkit';
 import { LootTable } from 'oldschooljs';
 
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';

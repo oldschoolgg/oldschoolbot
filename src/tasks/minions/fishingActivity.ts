@@ -1,5 +1,5 @@
 import { SeedableRNG } from '@oldschoolgg/rng';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
+import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';

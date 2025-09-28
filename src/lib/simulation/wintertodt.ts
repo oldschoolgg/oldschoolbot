@@ -1,7 +1,5 @@
 import { randInt, roll } from '@oldschoolgg/rng';
-import { calcPercentOfNum } from '@oldschoolgg/toolkit';
-import { normal } from '@oldschoolgg/toolkit/math';
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
+import { calcPercentOfNum, normal, SimpleTable } from '@oldschoolgg/toolkit';
 import { Bank, convertXPtoLVL, itemID, LootTable, resolveItems } from 'oldschooljs';
 
 import { MAX_LEVEL, MAX_XP } from '@/lib/constants.js';

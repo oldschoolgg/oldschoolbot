@@ -1,6 +1,5 @@
 import { randInt } from '@oldschoolgg/rng';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { calcPerHour } from '@oldschoolgg/toolkit/util';
+import { calcPerHour, Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';

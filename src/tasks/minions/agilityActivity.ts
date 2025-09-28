@@ -1,6 +1,5 @@
 import { percentChance, randInt, roll } from '@oldschoolgg/rng';
-import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
+import { Emoji, Events, increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { addItemToBank, Bank, type ItemBank, Items } from 'oldschooljs';
 
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';

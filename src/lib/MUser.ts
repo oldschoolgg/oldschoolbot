@@ -1,8 +1,13 @@
 import { percentChance } from '@oldschoolgg/rng';
-import { calcWhatPercent, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { UserError } from '@oldschoolgg/toolkit/structures';
+import {
+	calcWhatPercent,
+	cleanUsername,
+	Emoji,
+	mentionCommand,
+	sumArr,
+	UserError,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import type { GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { escapeMarkdown, userMention } from 'discord.js';
 import {

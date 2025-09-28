@@ -1,6 +1,5 @@
 import { randInt, roll } from '@oldschoolgg/rng';
-import { increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
+import { Emoji, Events, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 import { toKMB } from 'oldschooljs';
 
 import { QuestID } from '@/lib/minions/data/quests.js';

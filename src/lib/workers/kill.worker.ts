@@ -1,6 +1,6 @@
 import '../data/itemAliases.js';
 
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, calcDropRatesFromBank, Misc, Monsters, resolveItems } from 'oldschooljs';
 
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';

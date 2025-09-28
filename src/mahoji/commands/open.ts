@@ -1,4 +1,4 @@
-import { truncateString } from '@oldschoolgg/toolkit/util';
+import { truncateString } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { allOpenables, allOpenablesIDs } from '@/lib/openables.js';

@@ -1,4 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 
 import { globalConfig } from './constants.js';

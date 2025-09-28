@@ -1,7 +1,14 @@
-import { removeFromArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { allAbstractCommands, channelIsSendable, hasBanMemberPerms } from '@oldschoolgg/toolkit/discord-util';
-import { miniID, stringMatches } from '@oldschoolgg/toolkit/string-util';
+import {
+	allAbstractCommands,
+	channelIsSendable,
+	formatDuration,
+	hasBanMemberPerms,
+	miniID,
+	removeFromArr,
+	stringMatches,
+	Time,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import type { activity_type_enum } from '@prisma/client';
 import {
 	ApplicationCommandOptionType,

@@ -1,6 +1,4 @@
-import { chunk } from '@oldschoolgg/toolkit';
-import { channelIsSendable, makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import { channelIsSendable, chunk, makePaginatedMessage, toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, EmbedBuilder, type MessageEditOptions } from 'discord.js';
 import { type BossRecords, bossNameMap, Hiscores } from 'oldschooljs/hiscores';
 

@@ -1,8 +1,4 @@
-import {
-	type CommandOptions,
-	channelIsSendable,
-	convertMahojiCommandToAbstractCommand
-} from '@oldschoolgg/toolkit/discord-util';
+import { type CommandOptions, channelIsSendable, convertMahojiCommandToAbstractCommand } from '@oldschoolgg/toolkit';
 import type { NewUser } from '@prisma/client';
 import {
 	type APIInteractionGuildMember,

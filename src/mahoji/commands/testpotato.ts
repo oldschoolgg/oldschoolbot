@@ -1,7 +1,5 @@
 import { randArrItem, randInt } from '@oldschoolgg/rng';
-import { noOp, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { mentionCommand, noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { type Prisma, xp_gains_skill_enum } from '@prisma/client';
 import { ApplicationCommandOptionType, MessageFlags, type User } from 'discord.js';
 import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';

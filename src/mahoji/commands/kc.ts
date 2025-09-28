@@ -1,4 +1,4 @@
-import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { type BossRecords, bossNameMap, Hiscores, mappedBossNames } from 'oldschooljs/hiscores';
 

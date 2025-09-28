@@ -1,5 +1,4 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Emoji, Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID, LootTable } from 'oldschooljs';
 
 import { defineSkill } from '@/lib/skilling/types.js';

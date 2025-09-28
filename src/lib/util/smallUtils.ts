@@ -1,5 +1,4 @@
-import { objectEntries } from '@oldschoolgg/toolkit';
-import { stripEmojis, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { objectEntries, stripEmojis, toTitleCase } from '@oldschoolgg/toolkit';
 import { type ArrayItemsResolved, type Bank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 

@@ -1,6 +1,5 @@
 import { roll } from '@oldschoolgg/rng';
-import { increaseNumByPercent } from '@oldschoolgg/toolkit';
-import { Events } from '@oldschoolgg/toolkit/constants';
+import { Events, increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { darkAltarRunes } from '@/lib/minions/functions/darkAltarCommand.js';

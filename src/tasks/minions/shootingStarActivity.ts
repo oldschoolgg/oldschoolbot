@@ -1,4 +1,4 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
+import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { ShootingStarsOptions } from '@/lib/types/minions.js';

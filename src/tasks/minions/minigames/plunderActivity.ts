@@ -1,4 +1,4 @@
-import { Events } from '@oldschoolgg/toolkit/constants';
+import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { lootRoom, plunderRooms } from '@/lib/minions/data/plunder.js';

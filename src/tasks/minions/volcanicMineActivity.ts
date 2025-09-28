@@ -1,6 +1,5 @@
 import { randFloat, randInt, roll } from '@oldschoolgg/rng';
-import { Time } from '@oldschoolgg/toolkit';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
+import { Emoji, Events, Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';

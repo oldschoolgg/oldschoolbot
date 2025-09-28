@@ -1,5 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, type Item, Items, resolveItems, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';

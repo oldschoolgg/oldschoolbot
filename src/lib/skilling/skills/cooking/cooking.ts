@@ -1,4 +1,4 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { itemID } from 'oldschooljs';
 
 import { type Cookable, defineSkill } from '@/lib/skilling/types.js';

@@ -1,9 +1,13 @@
 import { randArrItem } from '@oldschoolgg/rng';
-import { sumArr, Time } from '@oldschoolgg/toolkit';
-import { isValidDiscordSnowflake, type MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { dateFm } from '@oldschoolgg/toolkit/util';
+import {
+	dateFm,
+	isValidDiscordSnowflake,
+	type MahojiUserOption,
+	Stopwatch,
+	sumArr,
+	Time,
+	toTitleCase
+} from '@oldschoolgg/toolkit';
 import { UserEventType, xp_gains_skill_enum } from '@prisma/client';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Duration } from '@sapphire/time-utilities';

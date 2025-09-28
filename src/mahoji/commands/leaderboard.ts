@@ -1,7 +1,14 @@
-import { calcWhatPercent, chunk, isFunction, uniqueArr } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { channelIsSendable, makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import {
+	calcWhatPercent,
+	channelIsSendable,
+	chunk,
+	formatDuration,
+	isFunction,
+	makePaginatedMessage,
+	stringMatches,
+	toTitleCase,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import {
 	ApplicationCommandOptionType,
 	type ChatInputCommandInteraction,

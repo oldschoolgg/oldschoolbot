@@ -1,4 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, resolveItems, toKMB } from 'oldschooljs';
 

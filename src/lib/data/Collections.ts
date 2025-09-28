@@ -1,6 +1,13 @@
 import { SeedableRNG } from '@oldschoolgg/rng';
-import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import {
+	calcWhatPercent,
+	isObject,
+	notEmpty,
+	removeFromArr,
+	stringMatches,
+	sumArr,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	ChambersOfXeric,

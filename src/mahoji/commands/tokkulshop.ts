@@ -1,5 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Monsters } from 'oldschooljs';

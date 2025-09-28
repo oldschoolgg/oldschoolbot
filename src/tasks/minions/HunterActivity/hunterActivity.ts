@@ -1,6 +1,5 @@
 import { randInt, roll } from '@oldschoolgg/rng';
-import { Time } from '@oldschoolgg/toolkit';
-import { Events } from '@oldschoolgg/toolkit/constants';
+import { Events, Time } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import { Bank, ECreature, EquipmentSlot, itemID } from 'oldschooljs';
 

@@ -1,4 +1,4 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 
 import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';

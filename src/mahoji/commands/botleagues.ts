@@ -1,5 +1,4 @@
-import { chunk } from '@oldschoolgg/toolkit';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { chunk, stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 

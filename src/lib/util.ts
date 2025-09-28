@@ -1,6 +1,4 @@
-import { noOp } from '@oldschoolgg/toolkit';
-import { cleanUsername } from '@oldschoolgg/toolkit/discord-util';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { cleanUsername, noOp, Stopwatch } from '@oldschoolgg/toolkit';
 import type { Prisma, User } from '@prisma/client';
 import { type Guild, userMention } from 'discord.js';
 import { convertXPtoLVL } from 'oldschooljs';

@@ -1,6 +1,5 @@
 import { roll, shuffleArr } from '@oldschoolgg/rng';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { convertPercentChance, formatOrdinal, miniID } from '@oldschoolgg/toolkit/util';
+import { convertPercentChance, Emoji, Events, formatOrdinal, miniID } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';

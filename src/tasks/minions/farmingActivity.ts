@@ -1,5 +1,5 @@
 import { randInt, roll } from '@oldschoolgg/rng';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
+import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank, Monsters } from 'oldschooljs';
 
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';

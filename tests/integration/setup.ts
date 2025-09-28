@@ -4,7 +4,7 @@ import '../../src/lib/util/transactItemsFromBank.js';
 import '../../src/lib/ActivityManager.js';
 import './mocks.js';
 
-import { noOp } from '@oldschoolgg/toolkit/util';
+import { noOp } from '@oldschoolgg/toolkit';
 import { PrismaClient } from '@prisma/client';
 import { beforeEach, vi } from 'vitest';
 

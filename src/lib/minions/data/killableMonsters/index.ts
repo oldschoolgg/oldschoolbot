@@ -1,5 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, deepResolveItems, EMonster, itemID, Monsters, NIGHTMARES_HP, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 

@@ -1,5 +1,5 @@
 import { roll } from '@oldschoolgg/rng';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
+import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
 import { bloodEssence, raimentBonus } from '@/lib/skilling/functions/calcsRunecrafting.js';

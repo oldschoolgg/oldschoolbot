@@ -1,5 +1,5 @@
 import { roll } from '@oldschoolgg/rng';
-import { Events } from '@oldschoolgg/toolkit/constants';
+import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';

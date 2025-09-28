@@ -1,7 +1,5 @@
 import { randomVariation, roll } from '@oldschoolgg/rng';
-import { calcWhatPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { calcWhatPercent, Emoji, Events, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';

@@ -1,8 +1,5 @@
 import { roll } from '@oldschoolgg/rng';
-import { stripNonAlphanumeric } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import { Emoji, makeComponents, stripNonAlphanumeric, toTitleCase } from '@oldschoolgg/toolkit';
 import { type BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';

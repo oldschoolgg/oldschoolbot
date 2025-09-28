@@ -1,4 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Time } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 

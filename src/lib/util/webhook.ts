@@ -1,5 +1,4 @@
-import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { splitMessage } from '@oldschoolgg/toolkit/string-util';
+import { channelIsSendable, splitMessage } from '@oldschoolgg/toolkit';
 import {
 	type AttachmentBuilder,
 	type BaseMessageOptions,

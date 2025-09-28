@@ -1,4 +1,4 @@
-import type { Emoji } from '@oldschoolgg/toolkit/constants';
+import type { Emoji } from '@oldschoolgg/toolkit';
 import type { Bank, Item, ItemBank, LootTable } from 'oldschooljs';
 
 import type { QuestID } from '@/lib/minions/data/quests.js';

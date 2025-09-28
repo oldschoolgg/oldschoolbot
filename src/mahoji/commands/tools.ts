@@ -1,5 +1,4 @@
-import { asyncGzip } from '@oldschoolgg/toolkit/node';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { asyncGzip, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import type { Activity, User } from '@prisma/client';
 import { ApplicationCommandOptionType, ChannelType, EmbedBuilder } from 'discord.js';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';

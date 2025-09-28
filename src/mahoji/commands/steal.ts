@@ -1,5 +1,5 @@
 import { randInt } from '@oldschoolgg/rng';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import type { User } from 'discord.js';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 

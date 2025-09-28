@@ -1,6 +1,5 @@
 import { randomVariation } from '@oldschoolgg/rng';
-import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Items, itemID } from 'oldschooljs';
 

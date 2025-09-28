@@ -1,6 +1,4 @@
-import { debounce, noOp, Time } from '@oldschoolgg/toolkit';
-import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { UserError } from '@oldschoolgg/toolkit/structures';
+import { debounce, makeComponents, noOp, Time, UserError } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector } from 'discord.js';

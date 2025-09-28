@@ -1,5 +1,4 @@
-import { sumArr } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji, sumArr } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';

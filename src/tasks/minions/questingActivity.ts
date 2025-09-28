@@ -1,5 +1,5 @@
 import { randInt, roll } from '@oldschoolgg/rng';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 
 import { MAX_QP } from '@/lib/minions/data/quests.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';

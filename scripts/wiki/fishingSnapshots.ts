@@ -1,6 +1,5 @@
 import { SeedableRNG } from '@oldschoolgg/rng';
-import { calcPerHour, Table } from '@oldschoolgg/toolkit';
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { calcPerHour, Table, Time } from '@oldschoolgg/toolkit';
 import { type Bank, convertLVLtoXP, EItem, Items } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
 

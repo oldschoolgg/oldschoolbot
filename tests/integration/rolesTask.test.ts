@@ -1,4 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 

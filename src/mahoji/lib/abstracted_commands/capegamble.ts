@@ -1,7 +1,5 @@
 import { roll } from '@oldschoolgg/rng';
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
+import { Events, formatOrdinal, mentionCommand } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 

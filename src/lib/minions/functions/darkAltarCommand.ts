@@ -1,5 +1,4 @@
-import { increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { formatDuration, increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';

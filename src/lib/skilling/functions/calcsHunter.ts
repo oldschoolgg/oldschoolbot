@@ -1,5 +1,5 @@
 import { percentChance } from '@oldschoolgg/rng';
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Time } from '@oldschoolgg/toolkit';
 import { LootTable } from 'oldschooljs';
 
 import type { Creature } from '@/lib/skilling/types.js';

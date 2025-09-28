@@ -1,4 +1,4 @@
-import { formatDuration, stringSearch } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringSearch } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { ItemGroups, Monsters } from 'oldschooljs';
 

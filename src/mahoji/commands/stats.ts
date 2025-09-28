@@ -1,4 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { ACCOUNT_TYPES, type AccountType, Hiscores } from 'oldschooljs/hiscores';
 

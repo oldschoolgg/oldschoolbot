@@ -1,4 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
 import { Hiscores } from 'oldschooljs/hiscores';
 

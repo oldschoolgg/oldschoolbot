@@ -1,5 +1,5 @@
 import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '@/lib/data/seedPackTables.js';

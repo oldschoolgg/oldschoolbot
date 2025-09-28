@@ -1,5 +1,5 @@
 import { percentChance, randInt, roll } from '@oldschoolgg/rng';
-import { Events } from '@oldschoolgg/toolkit/constants';
+import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';

@@ -1,6 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { TSVWriter } from '@oldschoolgg/toolkit/structures';
-import { calcPerHour } from '@oldschoolgg/toolkit/util';
+import { calcPerHour, Time, TSVWriter } from '@oldschoolgg/toolkit';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { Bank, convertBankToPerHourStats, Items, resolveItems, toKMB } from 'oldschooljs';
 import { omit } from 'remeda';

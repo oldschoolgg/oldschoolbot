@@ -1,4 +1,4 @@
-import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit/string-util';
+import { replaceWhitespaceAndUppercase } from '@oldschoolgg/toolkit';
 import { ItemGroups, Items, itemNameMap, resolveItems } from 'oldschooljs';
 
 function setItemAlias(id: number, name: string | string[], rename = true) {

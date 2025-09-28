@@ -1,5 +1,4 @@
-import { reduceNumByPercent } from '@oldschoolgg/toolkit';
-import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
+import { reduceNumByPercent, returnStringOrFile } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';

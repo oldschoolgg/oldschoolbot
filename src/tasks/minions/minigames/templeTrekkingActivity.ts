@@ -1,5 +1,5 @@
 import { percentChance, randInt } from '@oldschoolgg/rng';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, ItemGroups, Items } from 'oldschooljs';
 
 import {
