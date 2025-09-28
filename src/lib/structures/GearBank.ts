@@ -103,6 +103,6 @@ export class GearBank {
 		const melee = 0.325 * (attack + strength);
 		const range = 0.325 * (Math.floor(ranged / 2) + ranged);
 		const mage = 0.325 * (Math.floor(magic / 2) + magic);
-		return Math.floor(base + Math.max(melee, range, mage));
+		return Math.min(126, Math.floor(base + Math.max(melee, range, mage)));
 	}
 }
