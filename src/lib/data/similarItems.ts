@@ -2,7 +2,6 @@ import { dyedItems } from '@/lib/bso/dyedItems.js';
 
 import { Items, itemID, resolveItems } from 'oldschooljs';
 
-import skillcapes from '@/lib/skilling/skillcapes.js';
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -10,7 +9,8 @@ import {
 	gracefulHoods,
 	gracefulLegs,
 	gracefulTops
-} from './gracefulVariants.js';
+} from '@/lib/data/gracefulVariants.js';
+import skillcapes from '@/lib/skilling/skillcapes.js';
 
 const scytheChargedSimilar = ['Holy scythe of vitur', 'Sanguine scythe of vitur'];
 const scytheUnchargedSimilar = ['Holy scythe of vitur (uncharged)', 'Sanguine scythe of vitur (uncharged)'];

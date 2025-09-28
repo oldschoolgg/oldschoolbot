@@ -3,9 +3,9 @@ import { syncSlayerMaskLeaderboardCache } from '@/lib/bso/slayerMaskLeaderboard.
 
 import { schedule } from 'node-cron';
 
+import { analyticsTick } from '@/lib/analytics.js';
+import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { cacheCleanup } from '@/lib/util/cachedUserIDs.js';
-import { analyticsTick } from './analytics.js';
-import { cacheGEPrices } from './marketPrices.js';
 
 export const crons = new Set<ReturnType<typeof schedule>>();
 

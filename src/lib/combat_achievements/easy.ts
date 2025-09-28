@@ -1,9 +1,9 @@
 import { ItemGroups, Items, Monsters, resolveItems } from 'oldschooljs';
 
+import { isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
 import { warmGear } from '@/lib/data/filterables.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
-import { isCertainMonsterTrip } from './caUtils.js';
-import type { CombatAchievement } from './combatAchievements.js';
 
 export const easyCombatAchievements: CombatAchievement[] = [
 	{

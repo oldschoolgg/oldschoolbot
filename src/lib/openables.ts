@@ -1,3 +1,5 @@
+import { bsoOpenables } from '@/lib/bso/openables/bsoOpenables.js';
+
 import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import { Emoji, Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import {
@@ -24,6 +26,8 @@ import {
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { clueHunterOutfit } from '@/lib/data/CollectionsExport.js';
 import { defaultFarmingContract } from '@/lib/minions/farming/index.js';
+import type { FarmingContract } from '@/lib/minions/farming/types.js';
+import { shadeChestOpenables } from '@/lib/shadesKeys.js';
 import { nestTable } from '@/lib/simulation/birdsNest.js';
 import {
 	BagFullOfGemsTable,
@@ -33,9 +37,6 @@ import {
 	SpoilsOfWarTable
 } from '@/lib/simulation/misc.js';
 import { openSeedPack } from '@/lib/skilling/functions/calcFarmingContracts.js';
-import { bsoOpenables } from './bso/openables/bsoOpenables.js';
-import type { FarmingContract } from './minions/farming/types.js';
-import { shadeChestOpenables } from './shadesKeys.js';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)

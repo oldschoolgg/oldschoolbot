@@ -5,10 +5,12 @@ import { discontinuedDyes, dyedItems } from '@/lib/bso/dyedItems.js';
 import { ElderClueTable } from '@/lib/bso/elderClue.js';
 import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
 import { keyCrates } from '@/lib/bso/keyCrates.js';
+import { kibbleCL } from '@/lib/bso/kibble.js';
 import { NexMonster, nexLootTable } from '@/lib/bso/monsters/nex.js';
 import { PaintBoxTable } from '@/lib/bso/paintColors.js';
 import { pumpkinHeadUniqueTable } from '@/lib/bso/pumpkinHead.js';
 import { inventionCL } from '@/lib/bso/skills/invention/inventions.js';
+import { slayerMasksHelmsCL } from '@/lib/bso/slayerMaskHelms.js';
 import { getAllIgneTameKCs, tameKillableMonsters } from '@/lib/bso/tames.js';
 
 import { SeedableRNG } from '@oldschoolgg/rng';
@@ -40,36 +42,6 @@ import {
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { CollectionLogType } from '@/lib/collectionLogTask.js';
-import { growablePetsCL } from '@/lib/growablePets.js';
-import { implingsCL } from '@/lib/implings.js';
-import { AkumuLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Akumu.js';
-import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
-import {
-	KalphiteKingMonster,
-	kalphiteKingLootTable
-} from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
-import KingGoldemar from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';
-import { MOKTANG_ID, MoktangLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
-import { Naxxus, NaxxusLootTableFinishable } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
-import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus.js';
-import { VenatrixLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Venatrix.js';
-import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
-import killableMonsters, { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
-import { sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
-import {
-	EasyEncounterLoot,
-	HardEncounterLoot,
-	MediumEncounterLoot,
-	rewardTokens
-} from '@/lib/minions/data/templeTrekking.js';
-import type { MinigameName } from '@/lib/settings/minigames.js';
-import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
-import { fletchingCL } from '@/lib/skilling/skills/fletching/fletchables/index.js';
-import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
-import type { SkillNameType } from '@/lib/skilling/types.js';
-import { MUserStats } from '@/lib/structures/MUserStats.js';
-import { kibbleCL } from '../bso/kibble.js';
-import { slayerMasksHelmsCL } from '../bso/slayerMaskHelms.js';
 import {
 	abyssalDragonCL,
 	abyssalSireCL,
@@ -224,7 +196,35 @@ import {
 	wintertodtCL,
 	zalcanoCL,
 	zulrahCL
-} from './CollectionsExport.js';
+} from '@/lib/data/CollectionsExport.js';
+import { growablePetsCL } from '@/lib/growablePets.js';
+import { implingsCL } from '@/lib/implings.js';
+import { AkumuLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Akumu.js';
+import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
+import {
+	KalphiteKingMonster,
+	kalphiteKingLootTable
+} from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
+import KingGoldemar from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';
+import { MOKTANG_ID, MoktangLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
+import { Naxxus, NaxxusLootTableFinishable } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
+import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus.js';
+import { VenatrixLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Venatrix.js';
+import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
+import killableMonsters, { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
+import { sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
+import {
+	EasyEncounterLoot,
+	HardEncounterLoot,
+	MediumEncounterLoot,
+	rewardTokens
+} from '@/lib/minions/data/templeTrekking.js';
+import type { MinigameName } from '@/lib/settings/minigames.js';
+import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
+import { fletchingCL } from '@/lib/skilling/skills/fletching/fletchables/index.js';
+import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
 
 function kcProg(mon: Monster | number): FormatProgressFunction {
 	return ({ stats }) => `${stats.kcBank[typeof mon === 'number' ? mon : mon.id] ?? 0} KC`;

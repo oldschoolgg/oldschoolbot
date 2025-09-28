@@ -1,3 +1,5 @@
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { bonecrusherEffect, clueUpgraderEffect, portableTannerEffect } from '@/lib/bso/inventionEffects.js';
 import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
 
 import { roll } from '@oldschoolgg/rng';
@@ -11,8 +13,6 @@ import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { SlayerContext } from '@/tasks/minions/monsterActivity.js';
-import { clAdjustedDroprate } from './bsoUtil.js';
-import { bonecrusherEffect, clueUpgraderEffect, portableTannerEffect } from './inventionEffects.js';
 
 export type MidPVMEffectArgs = {
 	gearBank: GearBank;

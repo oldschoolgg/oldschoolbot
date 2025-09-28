@@ -1,3 +1,15 @@
+import { easyTasks } from '@/lib/bso/leagues/easyTasks.js';
+import { eliteTasks } from '@/lib/bso/leagues/eliteTasks.js';
+import { hardTasks } from '@/lib/bso/leagues/hardTasks.js';
+import { betterHerbloreStats, type HasFunctionArgs, type Task } from '@/lib/bso/leagues/leaguesUtils.js';
+import { masterTasks } from '@/lib/bso/leagues/masterTasks.js';
+import { mediumTasks } from '@/lib/bso/leagues/mediumTasks.js';
+import {
+	calcLeaguesRanking,
+	calculateAllFletchedItems,
+	calculateDartsFletchedFromScratch,
+	totalLampedXP
+} from '@/lib/bso/leagues/stats.js';
 import { getAllUserTames } from '@/lib/bso/tames.js';
 
 import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
@@ -21,18 +33,6 @@ import {
 	personalSpellCastStats,
 	personalWoodcuttingStats
 } from '@/mahoji/lib/abstracted_commands/statCommand.js';
-import { easyTasks } from './easyTasks.js';
-import { eliteTasks } from './eliteTasks.js';
-import { hardTasks } from './hardTasks.js';
-import { betterHerbloreStats, type HasFunctionArgs, type Task } from './leaguesUtils.js';
-import { masterTasks } from './masterTasks.js';
-import { mediumTasks } from './mediumTasks.js';
-import {
-	calcLeaguesRanking,
-	calculateAllFletchedItems,
-	calculateDartsFletchedFromScratch,
-	totalLampedXP
-} from './stats.js';
 
 export const leagueTasks = [
 	{ name: 'Easy', tasks: easyTasks, points: 20 },

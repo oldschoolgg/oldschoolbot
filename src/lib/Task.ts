@@ -65,12 +65,15 @@ import { championsChallengeTask } from '@/tasks/minions/minigames/championsChall
 import { chompHuntTask } from '@/tasks/minions/minigames/chompyHuntActivity.js';
 import { fightCavesTask } from '@/tasks/minions/minigames/fightCavesActivity.js';
 import { gauntletTask } from '@/tasks/minions/minigames/gauntletActivity.js';
+import { giantsFoundryTask } from '@/tasks/minions/minigames/giantsFoundryActivity.js';
 import { gnomeResTask } from '@/tasks/minions/minigames/gnomeRestaurantActivity.js';
+import { guardiansOfTheRiftTask } from '@/tasks/minions/minigames/guardiansOfTheRiftActivity.js';
 import { infernoTask } from '@/tasks/minions/minigames/infernoActivity.js';
 import { lmsTask } from '@/tasks/minions/minigames/lmsActivity.js';
 import { mageTrainingTask } from '@/tasks/minions/minigames/mageTrainingArenaActivity.js';
 import { mahoganyHomesTask } from '@/tasks/minions/minigames/mahoganyHomesActivity.js';
 import { nightmareTask } from '@/tasks/minions/minigames/nightmareActivity.js';
+import { nightmareZoneTask } from '@/tasks/minions/minigames/nightmareZoneActivity.js';
 import { pestControlTask } from '@/tasks/minions/minigames/pestControlActivity.js';
 import { plunderTask } from '@/tasks/minions/minigames/plunderActivity.js';
 import { puroPuroTask } from '@/tasks/minions/minigames/puroPuroActivity.js';
@@ -110,13 +113,10 @@ import { specificQuestTask } from '@/tasks/minions/specificQuestActivity.js';
 import { strongholdTask } from '@/tasks/minions/strongholdOfSecurityActivity.js';
 import { tiaraRunecraftTask } from '@/tasks/minions/tiaraRunecraftActivity.js';
 import { tokkulShopTask } from '@/tasks/minions/tokkulShopActivity.js';
+import { underwaterAgilityThievingTask } from '@/tasks/minions/underwaterActivity.js';
 import { vmTask } from '@/tasks/minions/volcanicMineActivity.js';
 import { wealthChargeTask } from '@/tasks/minions/wealthChargingActivity.js';
 import { woodcuttingTask } from '@/tasks/minions/woodcuttingActivity.js';
-import { giantsFoundryTask } from './../tasks/minions/minigames/giantsFoundryActivity.js';
-import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOfTheRiftActivity.js';
-import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneActivity.js';
-import { underwaterAgilityThievingTask } from './../tasks/minions/underwaterActivity.js';
 
 export const allTasks: MinionTask[] = [
 	aerialFishingTask,

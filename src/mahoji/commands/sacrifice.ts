@@ -8,9 +8,9 @@ import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
 import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
-import { sellPriceOfItem } from './sell.js';
 
 async function trackSacBank(user: MUser, bank: Bank) {
 	await Promise.all([

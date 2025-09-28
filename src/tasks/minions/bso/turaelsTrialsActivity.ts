@@ -2,7 +2,7 @@ import type { TuraelsTrialsMethod } from '@/lib/bso/turaelsTrials.js';
 
 import { Bank } from 'oldschooljs';
 
-import { XPBank } from '@/lib/structures/Banks.js';
+import { XPBank } from '@/lib/structures/XPBank.js';
 import type { TuraelsTrialsOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { trackClientBankStats, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';

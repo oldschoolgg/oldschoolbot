@@ -1,5 +1,12 @@
 import { calcTotalLevel } from '@/lib/bso/bsoUtil.js';
 import { divinationEnergies } from '@/lib/bso/divination.js';
+import {
+	leaguesHasCatches,
+	leaguesHasKC,
+	leaguesSlayerTaskForMonster,
+	type Task
+} from '@/lib/bso/leagues/leaguesUtils.js';
+import { calculateTiarasMade, calculateTotalMahoganyHomesPoints } from '@/lib/bso/leagues/stats.js';
 
 import { notEmpty, sumArr } from '@oldschoolgg/toolkit';
 import { type ItemBank, Monsters, resolveItems } from 'oldschooljs';
@@ -25,8 +32,6 @@ import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import { eggs } from '@/mahoji/commands/offer.js';
-import { leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster, type Task } from './leaguesUtils.js';
-import { calculateTiarasMade, calculateTotalMahoganyHomesPoints } from './stats.js';
 
 export const easyTasks: Task[] = [
 	{

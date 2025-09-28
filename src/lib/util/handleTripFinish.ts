@@ -1,6 +1,7 @@
 import { tearsOfGuthixIronmanReqs, tearsOfGuthixSkillReqs } from '@/lib/bso/commands/tearsOfGuthixCommand.js';
 import { chargePortentIfHasCharges, getAllPortentCharges, PortentID } from '@/lib/bso/divination.js';
 import { gods } from '@/lib/bso/divineDominion.js';
+import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
 import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
@@ -26,11 +27,6 @@ import { calculateZygomiteLoot } from '@/lib/skilling/skills/farming/zygomites.j
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
-import { alching } from '@/mahoji/commands/laps.js';
-import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
-import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
-import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
-import { handleCrateSpawns } from '../bso/handleCrateSpawns.js';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
@@ -41,11 +37,15 @@ import {
 	makeOpenSeedPackButton,
 	makeRepeatTripButton,
 	makeTearsOfGuthixButton
-} from './interactions.js';
-import { logError } from './logError.js';
-import { hasSkillReqs, perHourChance } from './smallUtils.js';
-import { updateBankSetting } from './updateBankSetting.js';
-import { sendToChannelID } from './webhook.js';
+} from '@/lib/util/interactions.js';
+import { logError } from '@/lib/util/logError.js';
+import { hasSkillReqs, perHourChance } from '@/lib/util/smallUtils.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
+import { alching } from '@/mahoji/commands/laps.js';
+import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
+import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
+import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const collectors = new Map<string, MessageCollector>();
 

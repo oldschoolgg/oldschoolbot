@@ -1,6 +1,7 @@
 import { debounce, makeComponents, noOp, Time, UserError } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
-import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector, type TextChannel } from 'discord.js';
+import type { TextChannel } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector } from 'discord.js';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { SILENT_ERROR } from '@/lib/constants.js';

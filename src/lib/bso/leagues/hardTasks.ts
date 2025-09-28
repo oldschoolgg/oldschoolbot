@@ -4,6 +4,8 @@ import { fistOfGuthixBuyables } from '@/lib/bso/buyables/fistOfGuthixBuyables.js
 import { stealingCreationBuyables } from '@/lib/bso/buyables/stealingCreationBuyables.js';
 import { divinationEnergies } from '@/lib/bso/divination.js';
 import { dyedItems } from '@/lib/bso/dyedItems.js';
+import { leaguesHasCatches, leaguesHasKC, type Task } from '@/lib/bso/leagues/leaguesUtils.js';
+import { calculateChargedItems, calculateTiarasMade } from '@/lib/bso/leagues/stats.js';
 import { NexMonster } from '@/lib/bso/monsters/nex.js';
 import { Inventions } from '@/lib/bso/skills/invention/inventions.js';
 
@@ -47,8 +49,6 @@ import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
 import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
 import { ashes } from '@/lib/skilling/skills/prayer.js';
 import { eggs } from '@/mahoji/commands/offer.js';
-import { leaguesHasCatches, leaguesHasKC, type Task } from './leaguesUtils.js';
-import { calculateChargedItems, calculateTiarasMade } from './stats.js';
 
 export const hardTasks: Task[] = [
 	{

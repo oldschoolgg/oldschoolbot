@@ -1,13 +1,14 @@
 import { percentChance } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
+import type { GearSetupType } from '@prisma/client';
 import { Bank, type Item, Items, itemID, type Monster } from 'oldschooljs';
 
-import type { GearSetupType, PrimaryGearSetupType } from './gear/types.js';
-import type { KillableMonster } from './minions/types.js';
-import type { ChargeBank } from './structures/Banks.js';
-import type { GearBank } from './structures/GearBank.js';
-import { assert } from './util/logError.js';
-import { updateBankSetting } from './util/updateBankSetting.js';
+import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import type { ChargeBank } from '@/lib/structures/Banks.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import { assert } from '@/lib/util/logError.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export interface DegradeableItem {
 	item: Item;

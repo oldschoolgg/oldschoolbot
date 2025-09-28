@@ -6,6 +6,14 @@ import {
 	type DisassemblySourceGroup,
 	type MaterialType
 } from '@/lib/bso/skills/invention/index.js';
+import {
+	InventionID,
+	inventionBoosts,
+	inventionItemBoost,
+	materialBoosts
+} from '@/lib/bso/skills/invention/inventions.js';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
+import MaterialLootTable from '@/lib/bso/skills/invention/MaterialLootTable.js';
 
 import { percentChance } from '@oldschoolgg/rng';
 import {
@@ -25,9 +33,6 @@ import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { DisassembleTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { InventionID, inventionBoosts, inventionItemBoost, materialBoosts } from './inventions.js';
-import { MaterialBank } from './MaterialBank.js';
-import MaterialLootTable from './MaterialLootTable.js';
 
 const MASTER_CAPE_JUNK_REDUCTION = 5;
 

@@ -1,8 +1,9 @@
+import { compCapeCategories, compCapeTrimmedRequirements } from '@/lib/bso/compCape.js';
+
 import { calcWhatPercent } from '@oldschoolgg/toolkit';
 
 import { Requirements } from '@/lib/structures/Requirements.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
-import { compCapeCategories, compCapeTrimmedRequirements } from './compCape.js';
 
 export async function calculateCompCapeProgress(user: MUser) {
 	let finalStr = '';

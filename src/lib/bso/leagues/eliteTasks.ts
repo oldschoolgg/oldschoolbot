@@ -1,4 +1,6 @@
 import { calcTotalLevel } from '@/lib/bso/bsoUtil.js';
+import { leaguesHasCatches, leaguesHasKC, type Task } from '@/lib/bso/leagues/leaguesUtils.js';
+import { calculateTiarasMade } from '@/lib/bso/leagues/stats.js';
 import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
 import { TameSpeciesID, tameFeedableItems } from '@/lib/bso/tames.js';
 
@@ -42,8 +44,6 @@ import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
 import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
 import { ashes } from '@/lib/skilling/skills/prayer.js';
 import { eggs } from '@/mahoji/commands/offer.js';
-import { leaguesHasCatches, leaguesHasKC, type Task } from './leaguesUtils.js';
-import { calculateTiarasMade } from './stats.js';
 
 export const eliteTasks: Task[] = [
 	{

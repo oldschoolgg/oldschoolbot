@@ -17,16 +17,15 @@ import { Bank, type Item, type ItemBank, Items, toKMB } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { clamp } from 'remeda';
 
+import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { BitField, globalConfig, PerkTier } from '@/lib/constants.js';
 import { isCustomItem } from '@/lib/customItems/util.js';
+import { marketPricemap } from '@/lib/marketPrices.js';
+import { type RobochimpUser, roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/tableBank.js';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
 import { assert, logError } from '@/lib/util/logError.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
-import { BLACKLISTED_USERS } from './blacklists.js';
-import { BitField, globalConfig, PerkTier } from './constants.js';
-import { marketPricemap } from './marketPrices.js';
-import type { RobochimpUser } from './roboChimp.js';
-import { roboChimpUserFetch } from './roboChimp.js';
-import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank.js';
 
 export const generateGrandExchangeID = () => miniID(6).toLowerCase();
 

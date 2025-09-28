@@ -17,8 +17,8 @@ import '@/lib/safeglobals.js';
 
 import { BOT_TYPE, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
-import { minionStatusRaw } from './minionStatusRaw.js';
-import { testBotKvStore } from './TestBotStore.js';
+import { minionStatusRaw } from '@/testing/minionStatusRaw.js';
+import { testBotKvStore } from '@/testing/TestBotStore.js';
 
 type HonoServerGeneric = { Bindings: {}; Variables: {} };
 

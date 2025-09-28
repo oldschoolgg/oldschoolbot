@@ -8,7 +8,6 @@ ignoredBuiltDependencies:
 onlyBuiltDependencies:
   - "@prisma/client"
   - "@prisma/engines"
-  - "@tailwindcss/oxide"
   - bufferutil
   - esbuild
   - prisma

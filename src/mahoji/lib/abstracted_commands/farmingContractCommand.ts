@@ -8,9 +8,9 @@ import { getPlantToGrow } from '@/lib/skilling/functions/calcFarmingContracts.js
 import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
 import { plants } from '@/lib/skilling/skills/farming/index.js';
 import { findPlant } from '@/lib/util/farmingHelpers.js';
+import { farmingPlantCommand, harvestCommand } from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
+import { abstractedOpenCommand } from '@/mahoji/lib/abstracted_commands/openCommand.js';
 import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
-import { farmingPlantCommand, harvestCommand } from './farmingCommand.js';
-import { abstractedOpenCommand } from './openCommand.js';
 
 function makeEasierFarmingContractButton() {
 	return new ButtonBuilder()

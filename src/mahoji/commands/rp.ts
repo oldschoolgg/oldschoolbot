@@ -34,11 +34,11 @@ import { migrateUser } from '@/lib/util/migrateUser.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
+import { gifs } from '@/mahoji/commands/admin.js';
+import { getUserInfo } from '@/mahoji/commands/minion.js';
+import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
 import { cancelUsersListings } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 import { gearSetupOption } from '@/mahoji/lib/mahojiCommandOptions.js';
-import { gifs } from './admin.js';
-import { getUserInfo } from './minion.js';
-import { sellPriceOfItem } from './sell.js';
 
 const itemFilters = [
 	{

@@ -1,4 +1,5 @@
 import { cookingCL, craftingCL, creatablesCL, herbloreCL, smithingCL } from '@/lib/bso/bsoCl.js';
+import { divinationEnergies } from '@/lib/bso/divination.js';
 import { kibbleCL } from '@/lib/bso/kibble.js';
 import { allLeagueTasks, leagueTasks } from '@/lib/bso/leagues/leagues.js';
 import { dungBuyables } from '@/lib/bso/skills/dungoneering/dungData.js';
@@ -159,7 +160,6 @@ import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
 import { fletchingCL } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import { slayerUnlockableRewards } from '@/lib/slayer/slayerUnlocks.js';
 import { type RequirementFailure, Requirements } from '@/lib/structures/Requirements.js';
-import { divinationEnergies } from './divination.js';
 
 const minigameRequirements = new Requirements()
 	.add({ name: "Complete Balthazar's Big Bonanza CL", clRequirement: balthazarsBigBonanzaCL })

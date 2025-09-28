@@ -83,8 +83,8 @@ import type {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '@/lib/types/minions.js';
+import { interactionReply } from '@/lib/util/interactionReply.js';
 import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
-import { interactionReply } from './interactionReply.js';
 
 export const taskCanBeRepeated = (activity: Activity) => {
 	return !(

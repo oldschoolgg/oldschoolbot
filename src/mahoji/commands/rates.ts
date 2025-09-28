@@ -46,15 +46,15 @@ import type { BathhouseTaskOptions } from '@/lib/types/minions.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { PeakTier } from '@/lib/util/peaks.js';
+import { calculateHunterInput } from '@/mahoji/commands/hunt.js';
+import { calculateMiningInput } from '@/mahoji/commands/mine.js';
+import { determineTameClueResult } from '@/mahoji/commands/tames.js';
 import { calculateAgilityResult } from '@/tasks/minions/agilityActivity.js';
 import { calculateDungeoneeringResult } from '@/tasks/minions/bso/dungeoneeringActivity.js';
 import { memoryHarvestResult, totalTimePerRound } from '@/tasks/minions/bso/memoryHarvestActivity.js';
 import { calculateTuraelsTrialsResult } from '@/tasks/minions/bso/turaelsTrialsActivity.js';
 import { calculateHunterResult } from '@/tasks/minions/HunterActivity/hunterActivity.js';
 import { calculateMiningResult } from '@/tasks/minions/miningActivity.js';
-import { calculateHunterInput } from './hunt.js';
-import { calculateMiningInput } from './mine.js';
-import { determineTameClueResult } from './tames.js';
 
 export const ratesCommand: OSBMahojiCommand = {
 	name: 'rates',

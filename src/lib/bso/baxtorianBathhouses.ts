@@ -1,4 +1,6 @@
+import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
+import { getAllUserTames, TameSpeciesID } from '@/lib/bso/tames.js';
 
 import { userMention } from '@discordjs/builders';
 import { randArrItem, roll } from '@oldschoolgg/rng';
@@ -8,15 +10,13 @@ import { Bank, type Item, Items, LootTable, resolveItems } from 'oldschooljs';
 
 import Grimy from '@/lib/skilling/skills/herblore/mixables/grimy.js';
 import type { Skills } from '@/lib/types/index.js';
-import type { BathhouseTaskOptions } from '../types/minions.js';
-import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '../util/calcMaxTripLength.js';
-import { handleTripFinish } from '../util/handleTripFinish.js';
-import { makeBankImage } from '../util/makeBankImage.js';
-import { formatSkillRequirements } from '../util/smallUtils.js';
-import { updateBankSetting } from '../util/updateBankSetting.js';
-import { GLOBAL_BSO_XP_MULTIPLIER } from './bsoConstants.js';
-import { getAllUserTames, TameSpeciesID } from './tames.js';
+import type { BathhouseTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const bathhouseTierNames = ['Warm', 'Hot', 'Fiery'] as const;
 export type BathhouseTierName = (typeof bathhouseTierNames)[number];

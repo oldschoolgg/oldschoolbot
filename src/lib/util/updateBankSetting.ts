@@ -1,6 +1,6 @@
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './clientSettings.js';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
 
 export type ClientBankKey =
 	| 'sold_items_bank'

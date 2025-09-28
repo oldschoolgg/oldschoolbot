@@ -1,4 +1,6 @@
 import { type MaterialType, materialTypes } from '@/lib/bso/skills/invention/index.js';
+import { type Invention, Inventions, transactMaterialsFromUser } from '@/lib/bso/skills/invention/inventions.js';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
 import { bold, userMention } from '@discordjs/builders';
 import { roll, shuffleArr } from '@oldschoolgg/rng';
@@ -11,8 +13,6 @@ import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { type Invention, Inventions, transactMaterialsFromUser } from './inventions.js';
-import { MaterialBank } from './MaterialBank.js';
 
 function inventionsCanUnlockFromResearch(user: MUser, researchedMaterial: MaterialType): Invention[] {
 	const inventionLevel = user.skillsAsLevels.invention;

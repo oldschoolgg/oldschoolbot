@@ -32,10 +32,10 @@ import { maxOffenceStats } from '@/lib/structures/Gear.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { determineIfUsingCannon } from '@/mahoji/lib/abstracted_commands/minionKill/determineIfUsingCannon.js';
 import { dragonHunterWeapons } from '@/mahoji/lib/abstracted_commands/minionKill/minionKillData.js';
+import type { MinionKillOptions } from '@/mahoji/lib/abstracted_commands/minionKill/newMinionKill.js';
+import type { PostBoostEffect } from '@/mahoji/lib/abstracted_commands/minionKill/postBoostEffects.js';
+import { staticEquippedItemBoosts } from '@/mahoji/lib/abstracted_commands/minionKill/staticEquippedItemBoosts.js';
 import { resolveAvailableItemBoosts } from '@/mahoji/mahojiSettings.js';
-import type { MinionKillOptions } from './newMinionKill.js';
-import type { PostBoostEffect } from './postBoostEffects.js';
-import { staticEquippedItemBoosts } from './staticEquippedItemBoosts.js';
 
 const revSpecialWeapons = {
 	melee: Items.getOrThrow("Viggora's chainmace"),

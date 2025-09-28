@@ -32,11 +32,11 @@ import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { getUsername, getUsernameSync } from '@/lib/util.js';
+import { doMenu, getPos } from '@/mahoji/commands/leaderboard.js';
 import { BingoManager, BingoTrophies } from '@/mahoji/lib/bingo/BingoManager.js';
 import type { StoredBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { generateTileName, getAllTileItems, isGlobalTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';
-import { doMenu, getPos } from './leaderboard.js';
 
 const bingoAutocomplete = async (value: string, user: User) => {
 	const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);

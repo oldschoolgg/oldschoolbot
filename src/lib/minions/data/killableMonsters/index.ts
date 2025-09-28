@@ -18,7 +18,7 @@ import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/Vas
 import { customKillableMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import { konarMonsters } from '@/lib/minions/data/killableMonsters/konarMonsters.js';
 import { krystiliaMonsters } from '@/lib/minions/data/killableMonsters/krystiliaMonsters.js';
-import low from '@/lib/minions/data/killableMonsters/low.js';
+import { lowKillableMonsters } from '@/lib/minions/data/killableMonsters/low.js';
 import { mazchnaMonsters } from '@/lib/minions/data/killableMonsters/mazchnaMonsters.js';
 import { nieveMonsters } from '@/lib/minions/data/killableMonsters/nieveMonsters.js';
 import { reanimatedMonsters } from '@/lib/minions/data/killableMonsters/reanimated.js';
@@ -37,7 +37,7 @@ const killableMonsters: KillableMonster[] = [
 	...nieveMonsters,
 	...turaelMonsters,
 	...vannakaMonsters,
-	...low,
+	...lowKillableMonsters,
 	...revenantMonsters,
 	...creatureCreationCreatures,
 	...reanimatedMonsters,

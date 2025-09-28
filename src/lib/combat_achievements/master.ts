@@ -3,6 +3,8 @@ import { NexMonster } from '@/lib/bso/monsters/nex.js';
 import { Time } from '@oldschoolgg/toolkit';
 import { EMonster, Monsters, resolveItems } from 'oldschooljs';
 
+import { anyoneDiedInTOARaid, isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
 	GauntletOptions,
@@ -12,8 +14,6 @@ import type {
 	TheatreOfBloodTaskOptions,
 	TOAOptions
 } from '@/lib/types/minions.js';
-import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils.js';
-import type { CombatAchievement } from './combatAchievements.js';
 
 export const masterCombatAchievements: CombatAchievement[] = [
 	{

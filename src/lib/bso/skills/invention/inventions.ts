@@ -1,4 +1,5 @@
 import type { IMaterialBank, MaterialType } from '@/lib/bso/skills/invention/index.js';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
 import { userMention } from '@discordjs/builders';
 import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
@@ -10,7 +11,6 @@ import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
 import { logError } from '@/lib/util/logError.js';
-import { MaterialBank } from './MaterialBank.js';
 
 const InventionFlags = ['equipped', 'bank'] as const;
 type InventionFlag = (typeof InventionFlags)[number];

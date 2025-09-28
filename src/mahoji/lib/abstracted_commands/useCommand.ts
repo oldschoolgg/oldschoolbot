@@ -12,7 +12,7 @@ import { gearImages } from '@/lib/canvas/gearImageData.js';
 import { BitField } from '@/lib/constants.js';
 import { makeScriptImage } from '@/lib/scriptImages.js';
 import { assert } from '@/lib/util/logError.js';
-import { flowerTable } from './hotColdCommand.js';
+import { flowerTable } from '@/mahoji/lib/abstracted_commands/hotColdCommand.js';
 
 const messageInABottleMessages = [
 	"We are but a week from finishing our journey, yet the seas have claimed my dearest and only friend, Felris, a noble pup. He was loyal and uplifting, and warmed the heart on a cold day. The tragedy of his loss echoes in the lonely crash of the waves, a vivid reminder of a journey he couldn't complete. Alone, I endure, with only his memory as my companion.",

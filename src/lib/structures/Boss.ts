@@ -17,13 +17,13 @@ import type { GearStats } from 'oldschooljs/gear';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { setupParty } from '@/lib/party.js';
+import type { Gear } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { NewBossOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { type ClientBankKey, updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import type { Gear } from './Gear.js';
 
 export const gpCostPerKill = (user: MUser) =>
 	user.gear.melee.hasEquipped(['Ring of charos', 'Ring of charos(a)'], false) ? 5_000_000 : 10_000_000;

@@ -1,7 +1,8 @@
+import { requiredSkills } from '@/lib/bso/skills/dungoneering/dungData.js';
+
 import { reduceNumByPercent } from '@oldschoolgg/toolkit';
 
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/data/CollectionsExport.js';
-import { requiredSkills } from './dungData.js';
 
 export function hasRequiredLevels(user: MUser, floor: number) {
 	return user.hasSkillReqs(requiredSkills(floor));

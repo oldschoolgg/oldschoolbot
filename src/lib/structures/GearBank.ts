@@ -6,9 +6,9 @@ import { MAX_LEVEL } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
+import type { ChargeBank } from '@/lib/structures/Banks.js';
 import type { SkillRequirements, SkillsRequired } from '@/lib/types/index.js';
 import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
-import type { ChargeBank } from './Bank.js';
 
 export class GearBank {
 	gear: UserFullGearSetup;

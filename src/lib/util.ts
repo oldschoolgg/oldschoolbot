@@ -3,14 +3,14 @@ import type { Prisma, User } from '@prisma/client';
 import { type Guild, userMention } from 'discord.js';
 import { convertXPtoLVL } from 'oldschooljs';
 
+import { usernameWithBadgesCache } from '@/lib/cache.js';
+import { BitField, globalConfig, MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
+import type { MUserClass } from '@/lib/MUser.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
+import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
-import { usernameWithBadgesCache } from './cache.js';
-import { BitField, globalConfig, MAX_LEVEL, MAX_XP } from './constants.js';
-import type { MUserClass } from './MUser.js';
-import type { GroupMonsterActivityTaskOptions } from './types/minions.js';
 
 // @ts-expect-error ignore
 BigInt.prototype.toJSON = function () {

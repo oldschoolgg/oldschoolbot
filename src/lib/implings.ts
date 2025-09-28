@@ -12,8 +12,8 @@ import {
 	MysteryImpling,
 	ShrimplingImpling
 } from '@/lib/simulation/customImplings.js';
+import type { ActivityTaskData } from '@/lib/types/minions.js';
 import activityInArea, { WorldLocations } from '@/lib/util/activityInArea.js';
-import type { ActivityTaskData } from './types/minions.js';
 
 const {
 	BabyImpling,

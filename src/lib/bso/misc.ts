@@ -1,7 +1,7 @@
 import { GearStat, type OffenceGearStat } from 'oldschooljs/gear';
 
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/data/CollectionsExport.js';
-import type { PrimaryGearSetupType } from '@/lib/gear/index.js';
+import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
 
 export const gorajanBoosts = [
 	[gorajanArcherOutfit, 'range'],

@@ -28,13 +28,13 @@ import { farmingPatchNames, getFarmingKeyFromName, userGrowingProgressStr } from
 import { logError } from '@/lib/util/logError.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
 import { userEventToStr } from '@/lib/util/userEvents.js';
+import { fetchBingosThatUserIsInvolvedIn } from '@/mahoji/commands/bingo.js';
 import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { allUsableItems } from '@/mahoji/lib/abstracted_commands/useCommand.js';
 import { BingoManager } from '@/mahoji/lib/bingo/BingoManager.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 import { testBotKvStore } from '@/testing/TestBotStore.js';
-import { fetchBingosThatUserIsInvolvedIn } from './bingo.js';
 
 export function getMaxUserValues() {
 	const updates: Omit<Prisma.UserUpdateArgs['data'], 'id'> = {};

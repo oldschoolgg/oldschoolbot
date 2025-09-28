@@ -3,10 +3,10 @@ import { AttachmentBuilder } from 'discord.js';
 import { type Bank, ItemGroups, resolveItems, toKMB } from 'oldschooljs';
 import { type Image, loadImage } from 'skia-canvas';
 
+import { bankImageTask } from '@/lib/canvas/bankImage.js';
+import type { CanvasImage } from '@/lib/canvas/canvasUtil.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { TOBUniques } from '@/lib/data/tob.js';
-import { bankImageTask } from './bankImage.js';
-import type { CanvasImage } from './canvasUtil.js';
-import { OSRSCanvas } from './OSRSCanvas.js';
 
 const chestLootTypes: {
 	title: string;

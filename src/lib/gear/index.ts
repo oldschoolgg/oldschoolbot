@@ -2,10 +2,9 @@ import type { GearPreset } from '@prisma/client';
 import { EquipmentSlot, itemID } from 'oldschooljs';
 import { type DefenceGearStat, GearStat, type OffenceGearStat, type OtherGearStat } from 'oldschooljs/gear';
 
-import type { GearSetup } from './types.js';
+import type { GearSetup } from '@/lib/gear/types.js';
 
-export * from './types.js';
-export * from './util.js';
+export * from '@/lib/util.js';
 
 export const maxDefenceStats: { [key in DefenceGearStat]: number } = {
 	[GearStat.DefenceCrush]: 789,

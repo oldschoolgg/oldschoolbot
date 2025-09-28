@@ -2,6 +2,22 @@ import { bsoBuyables } from '@/lib/bso/buyables/bsoBuyables.js';
 
 import { Bank, ItemGroups, Items } from 'oldschooljs';
 
+import { aerialFishBuyables } from '@/lib/data/buyables/aerialFishBuyables.js';
+import { canifisClothes } from '@/lib/data/buyables/canifisClothes.js';
+import { capeBuyables } from '@/lib/data/buyables/capes.js';
+import { castleWarsBuyables } from '@/lib/data/buyables/castleWars.js';
+import { forestryBuyables } from '@/lib/data/buyables/forestryBuyables.js';
+import { fremennikClothes } from '@/lib/data/buyables/frem.js';
+import { gnomeClothes } from '@/lib/data/buyables/gnomeClothes.js';
+import { guardiansOfTheRiftBuyables } from '@/lib/data/buyables/guardiansOfTheRifBuyables.js';
+import { mairinsMarketBuyables } from '@/lib/data/buyables/mairinsMarketBuyables.js';
+import { miningBuyables } from '@/lib/data/buyables/mining.js';
+import { godCapes, perduBuyables, prayerBooks } from '@/lib/data/buyables/perdu.js';
+import { runeBuyables } from '@/lib/data/buyables/runes.js';
+import { shootingStarsBuyables } from '@/lib/data/buyables/shootingStarsBuyables.js';
+import { skillCapeBuyables } from '@/lib/data/buyables/skillCapeBuyables.js';
+import { slayerBuyables } from '@/lib/data/buyables/slayerBuyables.js';
+import { troubleBrewingBuyables } from '@/lib/data/buyables/troubleBrewingShop.js';
 import { chompyHats } from '@/lib/data/CollectionsExport.js';
 import { CombatCannonItemBank } from '@/lib/minions/data/combatConstants.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
@@ -9,22 +25,6 @@ import type { MinigameName } from '@/lib/settings/minigames.js';
 import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { Skills } from '@/lib/types/index.js';
-import { aerialFishBuyables } from './aerialFishBuyables.js';
-import { canifisClothes } from './canifisClothes.js';
-import { capeBuyables } from './capes.js';
-import { castleWarsBuyables } from './castleWars.js';
-import { forestryBuyables } from './forestryBuyables.js';
-import { fremennikClothes } from './frem.js';
-import { gnomeClothes } from './gnomeClothes.js';
-import { guardiansOfTheRiftBuyables } from './guardiansOfTheRifBuyables.js';
-import { mairinsMarketBuyables } from './mairinsMarketBuyables.js';
-import { miningBuyables } from './mining.js';
-import { godCapes, perduBuyables, prayerBooks } from './perdu.js';
-import { runeBuyables } from './runes.js';
-import { shootingStarsBuyables } from './shootingStarsBuyables.js';
-import { skillCapeBuyables } from './skillCapeBuyables.js';
-import { slayerBuyables } from './slayerBuyables.js';
-import { troubleBrewingBuyables } from './troubleBrewingShop.js';
 
 export interface Buyable {
 	name: string;

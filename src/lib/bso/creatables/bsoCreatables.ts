@@ -1,4 +1,7 @@
+import { divinationCreatables } from '@/lib/bso/creatables/divinationCreatables.js';
+import { ghostCreatables } from '@/lib/bso/creatables/ghostweaveCreatables.js';
 import { bsoShadesOfMortonCreatables } from '@/lib/bso/creatables/shadesOfMorton.js';
+import { slayerMaskCreatables } from '@/lib/bso/creatables/slayerMasks.js';
 import { sunMoonCreatables } from '@/lib/bso/creatables/sunMoonCreatables.js';
 import { dyedItems } from '@/lib/bso/dyedItems.js';
 import { expertCapesSource } from '@/lib/bso/expertCapes.js';
@@ -17,9 +20,6 @@ import Skillcapes from '@/lib/skilling/skillcapes.js';
 import Prayer from '@/lib/skilling/skills/prayer.js';
 import type { Bone } from '@/lib/skilling/types.js';
 import { assert } from '@/lib/util/logError.js';
-import { divinationCreatables } from './divinationCreatables.js';
-import { ghostCreatables } from './ghostweaveCreatables.js';
-import { slayerMaskCreatables } from './slayerMasks.js';
 
 const dyeCreatables: Createable[] = [];
 for (const { baseItem, dyedVersions } of dyedItems) {

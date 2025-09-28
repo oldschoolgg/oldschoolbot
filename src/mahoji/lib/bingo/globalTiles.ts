@@ -4,7 +4,7 @@ import { Bank, ItemGroups, resolveItems } from 'oldschooljs';
 import { skillingPetsCL } from '@/lib/data/CollectionsExport.js';
 import { TanglerootTable } from '@/lib/minions/data/killableMonsters/custom/Treebeard.js';
 import { assert } from '@/lib/util/logError.js';
-import type { GlobalBingoTile } from './bingoUtil.js';
+import type { GlobalBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 
 const otherSpiritShieldParts = resolveItems(['Blessed spirit shield', 'Holy elixir', 'Spirit shield']);
 const allSpiritShieldSets = [
