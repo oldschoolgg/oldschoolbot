@@ -83,7 +83,12 @@ import { tearsOfGuthixCommand } from '@/mahoji/lib/abstracted_commands/tearsOfGu
 import { trekCommand, trekShop } from '@/mahoji/lib/abstracted_commands/trekCommand.js';
 import { troubleBrewingStartCommand } from '@/mahoji/lib/abstracted_commands/troubleBrewingCommand.js';
 import { ValeTotemsBuyables, ValeTotemsSellables } from '@/lib/data/buyables/valeTotemsBuyables.js';
-import { ValeTotemsDecorations, valeTotemsStartCommand } from '@/mahoji/lib/abstracted_commands/valeTotemsCommand.js';
+import { 
+	ValeTotemsDecorations, 
+	valeTotemsStartCommand,
+	valeTotemsBuyCommand,
+	valeTotemsSellCommand
+} from '@/mahoji/lib/abstracted_commands/valeTotemsCommand.js';
 import {
 	VolcanicMineShop,
 	volcanicMineCommand,
@@ -1575,10 +1580,20 @@ export const minigamesCommand: OSBMahojiCommand = {
 			);
 		}
 		if (options.vale_totems?.buy) {
-
+			return valeTotemsBuyCommand(
+				interaction,
+				user,
+				options.vale_totems.buy.item,
+				options.vale_totems.buy.quantity
+			);
 		}
 		if (options.vale_totems?.sell) {
-
+			return valeTotemsSellCommand(
+				interaction,
+				user,
+				options.vale_totems.sell.item,
+				options.vale_totems.sell.quantity
+			);
 		}
 
 		return 'Invalid command.';

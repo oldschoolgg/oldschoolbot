@@ -1,13 +1,16 @@
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Bank, type Item, itemID } from 'oldschooljs';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import type { ChatInputCommandInteraction } from 'discord.js';
+import { Bank, type Item, Items, itemID } from 'oldschooljs';
 
-import type { ValeTotemsActivityTaskOptions } from '@/lib/types/minions.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import getOSItem, { getItem } from '../../../lib/util/getOSItem';
+import { ValeTotemsBuyables, ValeTotemsSellables } from '@/lib/data/buyables/valeTotemsBuyables.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
-import { userHasGracefulEquipped, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
+import type { ValeTotemsActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { userHasGracefulEquipped, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
+
 
 interface TotemDecoration {
     log: Item;
@@ -22,7 +25,7 @@ interface TotemDecoration {
 export async function valeTotemsStartCommand(
     user: MUser,
     channelID: string,
-    itemToFletch: string,
+    itemToFletch: string | undefined,
     staminaPot?: boolean | undefined
 ) {
     if (user.minionIsBusy) {
@@ -42,7 +45,12 @@ export async function valeTotemsStartCommand(
         return 'You need 20 Fletching to start Vale Totems minigame.';
     }
 
-    const fletchableItem = getItem(itemToFletch);
+    // TODO: Allow already prepared decorations
+    if (!itemToFletch) {
+        return `You have to select an item to fletch during Vale Totems.`;
+    }
+
+    const fletchableItem = Items.get(itemToFletch);
     if (!fletchableItem) return 'Invalid fletchable item';
 
     const decoration = ValeTotemsDecorations.find(i => i.item.id === fletchableItem.id);
@@ -85,7 +93,7 @@ export async function valeTotemsStartCommand(
     let stringItem;
 
     if (decoration.stringing) {
-        stringItem = getItem('Bow string');
+        stringItem = Items.get('Bow string');
 	    if (!stringItem) return 'Internal error: Bow string is invalid item';
 
         if (userBank.amount(stringItem.id) < STRINGS_PER_LAP) return `You need at least 32 Bow strings to fletch ${decoration.item.name}!`;
@@ -170,7 +178,10 @@ export async function valeTotemsStartCommand(
     cost.add(logType.id, logCost);
     if (decoration.stringing) {
         const stringCost = STRINGS_PER_LAP * laps;
-        cost.add(stringItem.id, stringCost);
+        cost.add(stringItem!.id, stringCost);
+    }
+    if (staminaPot) {
+        // add stamina pot to cost
     }
 
     await user.removeItemsFromBank(cost);
@@ -184,14 +195,12 @@ export async function valeTotemsStartCommand(
         duration: duration,
         channelID: channelID.toString(),
         minigameID: 'vale_totems',
-        quantity: laps
+        quantity: laps,
+        logID: logType.name,
+        itemID: fletchableItem.name
     });
     // TODO:
-    // DONE: addSubTaskToActivityTask, no idea yet, how it works, but pass offerings to it
-    // DONE: Add Fletching knife bonus (more things to fletch in the same time span) to other knife fletchables.
-    // Add Bow string spool bonus (+5-10min to spinning)
-    // DONE: Add all uniques to Collection log
-    // Add possibility to fletch Atlatl dart shafts with ent branches
+    // Add Bow string spool bonus (+5-10min to fletching bows)
     let str = `${user.minionName} is off to do ${laps} laps of Vale Totems using ${cost} - the total trip will take ${
         formatDuration(duration)
     }, with each lap taking ${formatDuration(timePerLap)}.`;
@@ -202,6 +211,7 @@ export async function valeTotemsStartCommand(
 
     return str;
 }
+
 // xpPerLap (carving + decorating + fletching) * 8
 const groups = [
     {
@@ -276,12 +286,108 @@ const groups = [
 // Per lap basis
 export const ValeTotemsDecorations: TotemDecoration[] = groups.flatMap(({ log, items, offerings }) => 
     items.map(([itemName, level, xp, stringing, amount = 40]) => ({
-        log: getOSItem(log as string),
+        log: Items.getOrThrow(log as string),
         logAmount: amount as number,
-        item: getOSItem(itemName as string),
+        item: Items.getOrThrow(itemName as string),
         level: level as number,
         xpPerLap: xp as number,
         offerings: offerings as number,
         stringing: stringing as boolean
     }))
 );
+
+export async function valeTotemsBuyCommand(
+    interaction: ChatInputCommandInteraction,
+    user: MUser,
+    item: string | undefined,
+    quantity = 1
+) {
+    if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
+        return `${user.minionName} needs to complete the "Children of the Sun" quest before ${user.minionName} can access Vale Research Exchange. Send ${user.minionName} to do the quest using: ${mentionCommand(
+            globalClient,
+            'activities',
+            'quest'
+        )}.`;
+    }
+
+    const { vale_research_points: currentResearchPoints } = await user.fetchStats({ vale_research_points: true });
+    if (!item) {
+        return `You currently have ${currentResearchPoints.toLocaleString()} Vale Research points.`;
+    }
+
+    const shopItem = ValeTotemsBuyables.find(
+        i => stringMatches(item, i.name) || i.aliases?.some(alias => stringMatches(alias, item))
+    );
+    if (!shopItem) {
+        return `This is not a valid item to buy. These are the items that can be bought using Vale Research points: ${ValeTotemsBuyables
+            .map(v => v.name)
+            .join(', ')}`;
+    }
+
+    const cost = quantity * shopItem.valeResearchPoints;
+    if (cost > currentResearchPoints) {
+        return `You don't have enough Vale Research points to buy ${quantity.toLocaleString()}x ${shopItem.name} (${
+			shopItem.valeResearchPoints
+		} Vale Research points each).\nYou have ${currentResearchPoints} Vale Research points.\n${
+			currentResearchPoints < shopItem.valeResearchPoints
+				? "You don't have enough Vale Research points for any of this item."
+				: `You only have enough for ${Math.floor(currentResearchPoints / shopItem.valeResearchPoints).toLocaleString()}`
+		}`;
+    }
+
+    await handleMahojiConfirmation(
+        interaction,
+        `Are you sure you want to spent **${cost.toLocaleString()}** Vale Research points to buy **${quantity.toLocaleString()}x ${
+            shopItem.name
+        }**?`
+    );
+
+    await user.transactItems({
+		collectionLog: true,
+		itemsToAdd: new Bank(shopItem.output).multiply(quantity)
+	});
+
+    const { vale_research_points: newPoints } = await userStatsUpdate(
+        user.id,
+        {
+            vale_research_points: {
+                decrement: cost
+            }
+        },
+        { vale_research_points: true }
+    );
+
+    return `You successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.valeResearchPoints * quantity).toLocaleString()} Vale Research points.\nYou now have ${newPoints} Vale Research points left.`;
+}
+
+export async function valeTotemsSellCommand(
+    interaction: ChatInputCommandInteraction,
+    user: MUser,
+    item: string | undefined,
+    quantity = 1
+) {
+    if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
+        return `${user.minionName} needs to complete the "Children of the Sun" quest before ${user.minionName} can access Vale Research Exchange. Send ${user.minionName} to do the quest using: ${mentionCommand(
+            globalClient,
+            'activities',
+            'quest'
+        )}.`;
+    }
+
+    const shopItem = ValeTotemsSellables.find(
+        i => stringMatches(item, i.name) || i.aliases?.some(alias => stringMatches(alias, item))
+    );
+    if (!shopItem) {
+        return `This is not a valid item to sell. These are the items that can be bought using Vale Research points: ${ValeTotemsSellables
+            .map(v => v.name)
+            .join(', ')}`;
+    }
+
+    const sellable = Items.getOrThrow(shopItem.name);
+    const userBank = user.bank;
+    const itemOwned = userBank.amount(sellable);
+
+    if (!user.isIronman) {
+        // Can't sell mask if not ironman
+    }
+}

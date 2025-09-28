@@ -419,6 +419,8 @@ export interface ValeTotemsActivityTaskOptions extends MinigameActivityTaskOptio
 	type: 'ValeTotems';
 	offerings: number;
 	fletchXp: number;
+	logID: string;
+	itemID: string;
 }
 
 export interface ZalcanoActivityTaskOptions extends ActivityTaskOptions {

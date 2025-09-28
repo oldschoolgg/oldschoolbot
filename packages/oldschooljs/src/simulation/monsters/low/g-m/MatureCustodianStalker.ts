@@ -4,26 +4,26 @@ import { SimpleMonster } from '@/structures/Monster.js';
 
 export const MatureCustodianStalkerPreTable = new LootTable()
     /* Runes and ammunition*/
-    .add('Cannonball', [15, 30], 15) // 1/7.133
-    .add('Air rune', 150, 12) // 1/8.917
-    .add('Fire rune', 100, 12) // 1/8.917
-    .add('Rune arrow', [10, 25], 10) // 1/10.7
-    .add('Death rune', [25, 40], 6) // 1/17.83
+    .add('Cannonball', [15, 30], 15)
+    .add('Air rune', 150, 12)
+    .add('Fire rune', 100, 12)
+    .add('Rune arrow', [10, 25], 10)
+    .add('Death rune', [25, 40], 6)
 
     /* Resources */
-    .add('Pure essence', 20, 10) // 1/10.7
-    .add('Monkfish', [2, 3], 8) // 1/13.38
-    .add('Broken antler', 1, 7) // 1/16
-    .add('Mithril bar', [5, 10], 5) // 1/21.4
-    .add('Raw beef', 1, 4) // 1/26.75
-    .add('Huasca seed', 1, 1) // 1/107
+    .add('Pure essence', 20, 10)
+    .add('Monkfish', [2, 3], 8)
+    .add('Broken antler', 1, 7)
+    .add('Mithril bar', [5, 10], 5)
+    .add('Raw beef', 1, 4)
+    .add('Huasca seed', 1, 1)
 
     /* Coins */
-    .add('Coins', [800, 1050], 10) // 1/10.7
+    .add('Coins', [800, 1050], 10)
 
     /* Gem drop table */
-    .add(GemTable, 1, 6) // 6/107
-    .add(RareDropTable, 1, 1); // 1/107
+    .add(GemTable, 1, 6)
+    .add(RareDropTable, 1, 1);
 
 const MatureCustodianStalkerTable = new LootTable()
     .every('Big bones')
