@@ -184,7 +184,7 @@ export async function autoFarm(
 		accumulatedDuration += step.duration;
 	}
 
-	const [firstStep, ...remainingSteps] = autoFarmPlan;
+	const firstStep = autoFarmPlan[0];
 	if (!firstStep) {
 		return errorString;
 	}
@@ -200,12 +200,13 @@ export async function autoFarm(
 		treeChopFeePaid: firstStep.treeChopFeePaid,
 		treeChopFeePlanned: firstStep.treeChopFeePlanned,
 		planting: firstStep.planting,
-		duration: firstStep.duration,
+		duration: totalDuration,
 		currentDate: firstStep.currentDate,
 		type: 'Farming',
 		autoFarmed: true,
 		pid: firstStep.pid,
-		autoFarmPlan: remainingSteps
+		autoFarmPlan,
+		autoFarmCombined: true
 	});
 
 	const uniqueBoosts = [...new Set(plannedSteps.flatMap(step => step.boosts))];

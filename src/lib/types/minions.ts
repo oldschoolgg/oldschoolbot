@@ -358,6 +358,7 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	currentDate: number;
 	autoFarmed: boolean;
 	autoFarmPlan?: AutoFarmStepData[];
+	autoFarmCombined?: boolean;
 }
 
 export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {

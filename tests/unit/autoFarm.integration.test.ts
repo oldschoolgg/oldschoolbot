@@ -8,6 +8,7 @@ import { Farming } from '../../src/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchName } from '../../src/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { IPatchData, IPatchDataDetailed } from '../../src/lib/skilling/skills/farming/utils/types.js';
 import type { Plant } from '../../src/lib/skilling/types.js';
+import type { AutoFarmStepData } from '../../src/lib/types/minions.js';
 
 const { addSubTaskMock, mockedCalcMaxTripLength } = vi.hoisted(() => {
 	const calcMaxTripLengthMock = vi.fn(() => 60 * 60 * 1000);
@@ -472,8 +473,19 @@ describe('autoFarm tree clearing fees', () => {
 		expect(addSubTaskMock).toHaveBeenCalled();
 		const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
 		expect(firstCallArgs?.plantsName).toBe(celastrusPlant.name);
-		expect(firstCallArgs?.autoFarmPlan).toHaveLength(1);
-		expect(firstCallArgs?.autoFarmPlan?.[0]?.plantsName).toBe(mushroomPlant.name);
+		expect(firstCallArgs?.autoFarmCombined).toBe(true);
+		const plan = firstCallArgs?.autoFarmPlan as AutoFarmStepData[] | undefined;
+		expect(plan).toBeDefined();
+		if (!plan) {
+			throw new Error('Expected autoFarmPlan to be defined');
+		}
+		expect(plan).toHaveLength(2);
+		expect(plan.map((step: AutoFarmStepData) => step.plantsName)).toStrictEqual([
+			celastrusPlant.name,
+			mushroomPlant.name
+		]);
+		const expectedDuration = plan.reduce((acc: number, step: AutoFarmStepData) => acc + step.duration, 0);
+		expect(firstCallArgs?.duration).toBe(expectedDuration);
 	});
 
 	it('continues planning additional steps while staying within the max trip length', async () => {
@@ -544,8 +556,19 @@ describe('autoFarm tree clearing fees', () => {
 		expect(response).not.toContain('were skipped because the total trip length would exceed the maximum');
 		expect(addSubTaskMock).toHaveBeenCalled();
 		const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
-		expect(firstCallArgs?.autoFarmPlan).toHaveLength(1);
-		expect(firstCallArgs?.autoFarmPlan?.[0]?.plantsName).toBe(magicPlant.name);
+		expect(firstCallArgs?.autoFarmCombined).toBe(true);
+		const plan = firstCallArgs?.autoFarmPlan as AutoFarmStepData[] | undefined;
+		expect(plan).toBeDefined();
+		if (!plan) {
+			throw new Error('Expected autoFarmPlan to be defined');
+		}
+		expect(plan).toHaveLength(2);
+		expect(plan.map((step: AutoFarmStepData) => step.plantsName)).toStrictEqual([
+			redwoodPlant.name,
+			magicPlant.name
+		]);
+		const expectedDuration = plan.reduce((acc: number, step: AutoFarmStepData) => acc + step.duration, 0);
+		expect(firstCallArgs?.duration).toBe(expectedDuration);
 	});
 
 	it('returns the first prepare error when no steps can be planned', async () => {
