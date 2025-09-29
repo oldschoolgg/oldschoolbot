@@ -9,6 +9,7 @@ const updateBankSettingMock = vi.fn();
 const addSubTaskMock = vi.fn();
 const sendToChannelMock = vi.fn();
 const userStatsBankUpdateMock = vi.fn();
+const calcVariableYieldMock = vi.fn().mockReturnValue(0);
 
 const redwoodPlant = {
 	id: 1,
@@ -44,8 +45,9 @@ const redwoodPlant = {
 } as const;
 
 vi.mock('@/lib/skilling/skills/farming/index.js', () => ({
-	default: {
-		Plants: [redwoodPlant]
+	Farming: {
+		Plants: [redwoodPlant],
+		calcVariableYield: calcVariableYieldMock
 	}
 }));
 
@@ -120,8 +122,8 @@ vi.mock('../../src/lib/util.ts', () => ({
 	skillingPetDropRate: vi.fn().mockReturnValue({ petDropRate: Number.POSITIVE_INFINITY })
 }));
 
-vi.mock('@/lib/skilling/functions/calcsFarming.js', () => ({
-	calcVariableYield: vi.fn().mockReturnValue(0)
+vi.mock('@/lib/skilling/skills/farming/utils/calcsFarming.js', () => ({
+	calcVariableYield: calcVariableYieldMock
 }));
 
 vi.mock('@/lib/canvas/chatHeadImage.js', () => ({
