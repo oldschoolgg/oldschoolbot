@@ -116,9 +116,10 @@ export async function autoFarm(
 			continue;
 		}
 
-		if (treeChopFee > 0 && remainingBank.amount('Coins') < treeChopFee) {
+		const totalCoinCost = cost.amount('Coins') + treeChopFee;
+		if (totalCoinCost > 0 && remainingBank.amount('Coins') < totalCoinCost) {
 			if (!firstPrepareError) {
-				firstPrepareError = `You don't own ${new Bank().add('Coins', treeChopFee)}.`;
+				firstPrepareError = `You don't own ${new Bank().add('Coins', totalCoinCost)}.`;
 			}
 			continue;
 		}
