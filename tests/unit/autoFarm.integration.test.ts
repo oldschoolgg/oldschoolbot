@@ -269,10 +269,10 @@ describe('autoFarm tree clearing fees', () => {
 		Farming.Plants[redwoodIndex] = modifiedPlant;
 
 		const user = createAutoFarmStub({
-			gp: 4500,
+			gp: 0,
 			farmingLevel: 99,
 			woodcuttingLevel: 1,
-			bank: new Bank({ 'Redwood tree seed': 1 })
+			bank: new Bank({ 'Redwood tree seed': 1, Coins: 4500 })
 		});
 
 		const patchesDetailed: IPatchDataDetailed[] = [
