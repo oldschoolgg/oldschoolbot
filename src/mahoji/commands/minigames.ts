@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import type { NMZStrategy } from '@/lib/constants.js';
 import { NMZ_STRATEGY } from '@/lib/constants.js';
 import TrekShopItems from '@/lib/data/buyables/trekBuyables.js';
+import { ValeTotemsBuyables, ValeTotemsSellables } from '@/lib/data/buyables/valeTotemsBuyables.js';
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import {
@@ -82,12 +83,11 @@ import {
 import { tearsOfGuthixCommand } from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
 import { trekCommand, trekShop } from '@/mahoji/lib/abstracted_commands/trekCommand.js';
 import { troubleBrewingStartCommand } from '@/mahoji/lib/abstracted_commands/troubleBrewingCommand.js';
-import { ValeTotemsBuyables, ValeTotemsSellables } from '@/lib/data/buyables/valeTotemsBuyables.js';
-import { 
-	ValeTotemsDecorations, 
-	valeTotemsStartCommand,
+import {
+	ValeTotemsDecorations,
 	valeTotemsBuyCommand,
-	valeTotemsSellCommand
+	valeTotemsSellCommand,
+	valeTotemsStartCommand
 } from '@/mahoji/lib/abstracted_commands/valeTotemsCommand.js';
 import {
 	VolcanicMineShop,
@@ -1074,7 +1074,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.SubcommandGroup,
 			name: 'vale_totems',
-			description: "Vale Totems fletching minigame.",
+			description: 'Vale Totems fletching minigame.',
 			options: [
 				{
 					type: ApplicationCommandOptionType.Subcommand,
@@ -1234,10 +1234,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 			};
 		};
 		vale_totems?: {
-			start?: { item_to_fletch: string, stamina_pot?: boolean };
-			buy?: { item: string, quantity?: number };
-			sell?: { item: string, quantity?: number };
-		}
+			start?: { item_to_fletch: string; stamina_pot?: boolean };
+			buy?: { item: string; quantity?: number };
+			sell?: { item: string; quantity?: number };
+		};
 	}>) => {
 		const user = await mUserFetch(userID);
 

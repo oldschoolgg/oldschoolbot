@@ -573,5 +573,5 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 2.857,
 		canBeRemoved: true,
 		aliases: ['extend custodian stalkers', 'extend stalkers']
-	},
+	}
 ];

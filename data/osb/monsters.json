@@ -1,6 +1,6 @@
 {
-	"hash": "5c30cde39a793c978853119e8724e527",
-	"date": "2025-09-19T05:35:44.280Z",
+	"hash": "c767bcccfc816394bea62ae8b223fcb8",
+	"date": "2025-09-29T20:47:20.657Z",
 	"data": [
 		{
 			"id": 2,
@@ -1834,6 +1834,22 @@
 			"cannon_multi": true
 		},
 		{
+			"id": 14704,
+			"name": "Elder custodian stalker",
+			"base_kill_time_ms": 65000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 77,
+			"item_in_bank_boosts": [],
+			"can_barrage": true,
+			"can_chin": false,
+			"can_cannon": true,
+			"cannon_multi": true
+		},
+		{
 			"id": 5295,
 			"name": "Elf Archer",
 			"base_kill_time_ms": 27000,
@@ -2843,6 +2859,22 @@
 			"cannon_multi": false
 		},
 		{
+			"id": 14702,
+			"name": "Juvenile custodian stalker",
+			"base_kill_time_ms": 32000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 77,
+			"item_in_bank_boosts": [],
+			"can_barrage": true,
+			"can_chin": false,
+			"can_cannon": true,
+			"cannon_multi": true
+		},
+		{
 			"id": 3129,
 			"name": "K'ril Tsutsaroth",
 			"base_kill_time_ms": 306000,
@@ -3371,6 +3403,22 @@
 			],
 			"can_barrage": true,
 			"can_chin": true,
+			"can_cannon": true,
+			"cannon_multi": true
+		},
+		{
+			"id": 14703,
+			"name": "Mature custodian stalker",
+			"base_kill_time_ms": 48000,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [],
+			"qp_required": 77,
+			"item_in_bank_boosts": [],
+			"can_barrage": true,
+			"can_chin": false,
 			"can_cannon": true,
 			"cannon_multi": true
 		},

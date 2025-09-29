@@ -96,6 +96,8 @@ MUserStats.fromID = async (id: string) => {
 		colo_loot: {},
 		colo_kc_bank: {},
 		colo_max_glory: null,
-		quivers_sacrificed: 0
+		quivers_sacrificed: 0,
+		vale_offerings: 0,
+		vale_research_points: 0
 	});
 };

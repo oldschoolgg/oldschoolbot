@@ -10,7 +10,7 @@ const Shields: Fletchable[] = [
 		xp: 50,
 		inputItems: new Bank({ 'Oak logs': 2 }),
 		tickRate: 7,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Willow shield',
@@ -19,7 +19,7 @@ const Shields: Fletchable[] = [
 		xp: 83,
 		inputItems: new Bank({ 'Willow logs': 2 }),
 		tickRate: 7,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Maple shield',
@@ -28,7 +28,7 @@ const Shields: Fletchable[] = [
 		xp: 116.5,
 		inputItems: new Bank({ 'Maple logs': 2 }),
 		tickRate: 7,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Yew shield',
@@ -37,7 +37,7 @@ const Shields: Fletchable[] = [
 		xp: 150,
 		inputItems: new Bank({ 'Yew logs': 2 }),
 		tickRate: 7,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Magic shield',
@@ -46,7 +46,7 @@ const Shields: Fletchable[] = [
 		xp: 183,
 		inputItems: new Bank({ 'Magic logs': 2 }),
 		tickRate: 7,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Redwood shield',
@@ -55,7 +55,7 @@ const Shields: Fletchable[] = [
 		xp: 216,
 		inputItems: new Bank({ 'Redwood logs': 2 }),
 		tickRate: 7,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	}
 ];
 

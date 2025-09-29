@@ -11,7 +11,7 @@ const Shafts: Fletchable[] = [
 		inputItems: new Bank({ Logs: 1 }),
 		tickRate: 2,
 		outputMultiple: 15,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Javelin shaft',
@@ -21,7 +21,7 @@ const Shafts: Fletchable[] = [
 		inputItems: new Bank({ Logs: 1 }),
 		tickRate: 2,
 		outputMultiple: 15,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Ogre arrow shaft',
@@ -31,7 +31,7 @@ const Shafts: Fletchable[] = [
 		inputItems: new Bank({ 'Achey tree logs': 1 }),
 		tickRate: 2,
 		outputMultiple: 15,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Oak arrow shaft',
@@ -41,7 +41,7 @@ const Shafts: Fletchable[] = [
 		inputItems: new Bank({ 'Oak logs': 1 }),
 		tickRate: 2,
 		outputMultiple: 30,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Willow arrow shaft',
@@ -51,7 +51,7 @@ const Shafts: Fletchable[] = [
 		inputItems: new Bank({ 'Willow logs': 1 }),
 		tickRate: 2,
 		outputMultiple: 45,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Maple arrow shaft',
@@ -61,7 +61,7 @@ const Shafts: Fletchable[] = [
 		inputItems: new Bank({ 'Maple logs': 1 }),
 		tickRate: 2,
 		outputMultiple: 60,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Yew arrow shaft',
@@ -71,7 +71,7 @@ const Shafts: Fletchable[] = [
 		inputItems: new Bank({ 'Yew logs': 1 }),
 		tickRate: 2,
 		outputMultiple: 75,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Magic arrow shaft',
@@ -81,7 +81,7 @@ const Shafts: Fletchable[] = [
 		inputItems: new Bank({ 'Magic logs': 1 }),
 		tickRate: 2,
 		outputMultiple: 90,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Redwood arrow shaft',
@@ -91,7 +91,7 @@ const Shafts: Fletchable[] = [
 		inputItems: new Bank({ 'Redwood logs': 1 }),
 		tickRate: 2,
 		outputMultiple: 105,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Battlestaff',
@@ -100,7 +100,7 @@ const Shafts: Fletchable[] = [
 		xp: 80,
 		inputItems: new Bank({ 'Celastrus bark': 1 }),
 		tickRate: 4,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	}
 ];
 

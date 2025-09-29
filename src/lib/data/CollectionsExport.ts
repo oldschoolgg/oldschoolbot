@@ -1208,12 +1208,7 @@ export const hallowedSepulchreCL = resolveItems([
 	'Mysterious page 4',
 	'Mysterious page 5'
 ]);
-export const valeTotemsCL = resolveItems([
-	'Bow string spool',
-	'Fletching knife',
-	'Greenman mask',
-	'Ent branch'
-]);
+export const valeTotemsCL = resolveItems(['Bow string spool', 'Fletching knife', 'Greenman mask', 'Ent branch']);
 export const lastManStandingCL = resolveItems([
 	"Deadman's chest",
 	"Deadman's legs",

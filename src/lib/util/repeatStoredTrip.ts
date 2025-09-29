@@ -64,6 +64,7 @@ import type {
 	TiaraRunecraftActivityTaskOptions,
 	TOAOptions,
 	UnderwaterAgilityThievingTaskOptions,
+	ValeTotemsActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '@/lib/types/minions.js';
@@ -618,6 +619,12 @@ const tripHandlers = {
 	[activity_type_enum.TroubleBrewing]: {
 		commandName: 'minigames',
 		args: () => ({ trouble_brewing: { start: {} } })
+	},
+	[activity_type_enum.ValeTotems]: {
+		commandName: 'minigames',
+		args: (data: ValeTotemsActivityTaskOptions) => {
+			return { vale_totems: { start: { item_to_fletch: data.itemID, stamina_pot: data.staminaPot } } };
+		}
 	},
 	[activity_type_enum.VolcanicMine]: {
 		commandName: 'minigames',

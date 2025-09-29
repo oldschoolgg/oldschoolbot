@@ -10,7 +10,7 @@ const Bows: Fletchable[] = [
 		xp: 5,
 		inputItems: new Bank({ Logs: 1 }),
 		tickRate: 3,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Shortbow',
@@ -27,7 +27,7 @@ const Bows: Fletchable[] = [
 		xp: 10,
 		inputItems: new Bank({ Logs: 1 }),
 		tickRate: 3,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Longbow',
@@ -44,7 +44,7 @@ const Bows: Fletchable[] = [
 		xp: 16.5,
 		inputItems: new Bank({ 'Oak logs': 1 }),
 		tickRate: 3,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Oak shortbow',
@@ -61,7 +61,7 @@ const Bows: Fletchable[] = [
 		xp: 25,
 		inputItems: new Bank({ 'Oak logs': 1 }),
 		tickRate: 3,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Oak longbow',
@@ -78,7 +78,7 @@ const Bows: Fletchable[] = [
 		xp: 33.3,
 		inputItems: new Bank({ 'Willow logs': 1 }),
 		tickRate: 3,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Willow shortbow',
@@ -95,7 +95,7 @@ const Bows: Fletchable[] = [
 		xp: 41.5,
 		inputItems: new Bank({ 'Willow logs': 1 }),
 		tickRate: 3,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Willow longbow',
@@ -112,7 +112,7 @@ const Bows: Fletchable[] = [
 		xp: 50,
 		inputItems: new Bank({ 'Maple logs': 1 }),
 		tickRate: 3,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Maple shortbow',
@@ -129,7 +129,7 @@ const Bows: Fletchable[] = [
 		xp: 58.3,
 		inputItems: new Bank({ 'Maple logs': 1 }),
 		tickRate: 3,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Maple longbow',
@@ -146,7 +146,7 @@ const Bows: Fletchable[] = [
 		xp: 67.5,
 		inputItems: new Bank({ 'Yew logs': 1 }),
 		tickRate: 3,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Yew shortbow',
@@ -163,7 +163,7 @@ const Bows: Fletchable[] = [
 		xp: 75,
 		inputItems: new Bank({ 'Yew logs': 1 }),
 		tickRate: 3,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Yew longbow',
@@ -180,7 +180,7 @@ const Bows: Fletchable[] = [
 		xp: 83.3,
 		inputItems: new Bank({ 'Magic logs': 1 }),
 		tickRate: 3,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Magic shortbow',
@@ -197,7 +197,7 @@ const Bows: Fletchable[] = [
 		xp: 91.5,
 		inputItems: new Bank({ 'Magic logs': 1 }),
 		tickRate: 3,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Magic longbow',

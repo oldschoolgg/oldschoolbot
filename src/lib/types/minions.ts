@@ -421,6 +421,7 @@ export interface ValeTotemsActivityTaskOptions extends MinigameActivityTaskOptio
 	fletchXp: number;
 	logID: string;
 	itemID: string;
+	staminaPot: boolean | undefined;
 }
 
 export interface ZalcanoActivityTaskOptions extends ActivityTaskOptions {

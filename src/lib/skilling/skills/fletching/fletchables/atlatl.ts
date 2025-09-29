@@ -11,7 +11,7 @@ const Atlatl: Fletchable[] = [
 		inputItems: new Bank({ 'Ent branch': 1 }),
 		tickRate: 3,
 		outputMultiple: 100,
-        fletchingKnifeBoost: true
+		fletchingKnifeBoost: true
 	},
 	{
 		name: 'Headless atlatl dart',
@@ -20,16 +20,16 @@ const Atlatl: Fletchable[] = [
 		xp: 20,
 		inputItems: new Bank({ 'Atlatl dart shaft': 20, Feather: 20 }),
 		tickRate: 2,
-        outputMultiple: 20
+		outputMultiple: 20
 	},
-    {
+	{
 		name: 'Atlatl dart tips',
 		id: itemID('Atlatl dart tips'),
 		level: 74,
 		xp: 10,
 		inputItems: new Bank({ 'Broken antler': 1 }),
 		tickRate: 4,
-        outputMultiple: 100
+		outputMultiple: 100
 	},
 	{
 		name: 'Atlatl dart',
@@ -38,7 +38,7 @@ const Atlatl: Fletchable[] = [
 		xp: 190,
 		inputItems: new Bank({ 'Headless atlatl dart': 20, 'Atlatl dart tips': 20 }),
 		tickRate: 2,
-        outputMultiple: 20
+		outputMultiple: 20
 	}
 ];
 
