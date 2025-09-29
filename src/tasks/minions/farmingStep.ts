@@ -322,6 +322,8 @@ export async function executeFarmingStep({
 		wcBool = true;
 	}
 
+	bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);
+
 	const xpRes = await user.addXP({
 		skillName: 'farming',
 		duration: data.duration,
