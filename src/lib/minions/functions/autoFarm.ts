@@ -68,6 +68,7 @@ export async function autoFarm(
 	let totalDuration = 0;
 	const totalCost = new Bank();
 	const remainingBank = baseBank.clone();
+	let skippedDueToTripLength = false;
 
 	let errorString = '';
 	let firstPrepareError: string | null = null;
@@ -120,6 +121,11 @@ export async function autoFarm(
 				firstPrepareError = `You don't own ${new Bank().add('Coins', treeChopFee)}.`;
 			}
 			continue;
+		}
+
+		if (totalDuration + duration > maxTripLength) {
+			skippedDueToTripLength = true;
+			break;
 		}
 
 		remainingBank.remove(cost);
@@ -211,6 +217,11 @@ export async function autoFarm(
 	}
 	if (uniqueBoosts.length > 0) {
 		response += `\n\n**Boosts**: ${uniqueBoosts.join(', ')}`;
+	}
+	if (skippedDueToTripLength) {
+		response += `\n\nSome ready patches were skipped because the total trip length would exceed the maximum of ${formatDuration(
+			maxTripLength
+		)}.`;
 	}
 
 	return response;
