@@ -469,7 +469,10 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							name: 'patch_name',
 							description: 'The patches you want to harvest.',
 							required: true,
-							choices: farmingPatchNames.map(i => ({ name: i, value: i }))
+							choices: [
+								{ name: 'All patches', value: 'all' },
+								...farmingPatchNames.map(i => ({ name: i, value: i }))
+							]
 						}
 					]
 				},
@@ -581,7 +584,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 				spawn?: { preset?: string; collectionlog?: boolean; item?: string; items?: string };
 				setmonsterkc?: { monster: string; kc: string };
 				irontoggle?: {};
-				forcegrow?: { patch_name: FarmingPatchName };
+				forcegrow?: { patch_name: FarmingPatchName | 'all' };
 				wipe?: { thing: (typeof thingsToWipe)[number] };
 				set?: { qp?: number; all_ca_tasks?: boolean };
 				get_code?: {};
@@ -967,18 +970,30 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 				}
 				if (options.forcegrow) {
 					const farmingDetails = await getFarmingInfo(userID);
-					const thisPlant = farmingDetails.patchesDetailed.find(
-						p => p.plant?.seedType === options.forcegrow?.patch_name
-					);
-					if (!thisPlant || !thisPlant.plant) return 'You have nothing planted there.';
-					const rawPlant = farmingDetails.patches[thisPlant.plant.seedType];
+					const { patch_name } = options.forcegrow;
+					const patchesToGrow =
+						patch_name === 'all'
+							? farmingDetails.patchesDetailed.filter(patch => patch.plant)
+							: farmingDetails.patchesDetailed.filter(
+								patch => patch.patchName === patch_name && patch.plant
+							);
+					if (patchesToGrow.length === 0) {
+						return patch_name === 'all'
+							? 'You have nothing planted in any patches.'
+							: 'You have nothing planted there.';
+					}
+					const now = Date.now();
+					const updates = Object.fromEntries(
+						patchesToGrow.map(patch => [
+							getFarmingKeyFromName(patch.patchName),
+							{
+								...farmingDetails.patches[patch.patchName],
+								plantTime: now - Time.Month
+							}
+						])
+					) as Prisma.UserUncheckedUpdateInput;
 
-					await user.update({
-						[getFarmingKeyFromName(thisPlant.plant.seedType)]: {
-							...rawPlant,
-							plantTime: Date.now() - Time.Month
-						}
-					});
+					await user.update(updates);
 					return userGrowingProgressStr((await getFarmingInfo(userID)).patchesDetailed);
 				}
 
