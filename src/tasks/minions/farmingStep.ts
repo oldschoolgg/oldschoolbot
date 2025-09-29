@@ -16,10 +16,34 @@ import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 export type FarmingStepAttachment = Awaited<ReturnType<typeof chatHeadImage>>;
 
+type FarmingStepXPMessageSkill = 'farming' | 'woodcutting' | 'herblore';
+
+export interface FarmingStepXPBreakdown {
+	planting: number;
+	harvest: number;
+	checkHealth: number;
+	rake: number;
+	bonus: number;
+	totalFarming: number;
+	woodcutting: number;
+	herblore: number;
+}
+
+export interface FarmingStepSummary {
+	planted?: { itemName: string; quantity: number };
+	harvested?: { itemName: string; quantity: number; alive: number; died: number };
+	reminder?: string;
+	payNote?: string;
+	duration: number;
+	xp: FarmingStepXPBreakdown;
+	xpMessages: Partial<Record<FarmingStepXPMessageSkill, string>>;
+}
+
 export interface FarmingStepResult {
 	message: string;
 	loot: Bank | null;
 	attachment?: FarmingStepAttachment;
+	summary?: FarmingStepSummary;
 }
 
 interface ExecuteFarmingStepOptions {
@@ -147,11 +171,15 @@ export async function executeFarmingStep({
 			str += ` You received an additional ${bonusXP.toLocaleString()} in bonus XP.`;
 		}
 
-		str += `\n${await user.addXP({
+		const farmingXPAmount = Math.floor(farmingXpReceived + bonusXP);
+		const farmingXPResult = await user.addXP({
 			skillName: 'farming',
-			amount: Math.floor(farmingXpReceived + bonusXP),
+			amount: farmingXPAmount,
 			duration: data.duration
-		})}`;
+		});
+		if (farmingXPResult.length > 0) {
+			str += `\n${farmingXPResult}`;
+		}
 
 		if (loot.length > 0) str += `\n\nYou received: ${loot}.`;
 
@@ -177,9 +205,27 @@ export async function executeFarmingStep({
 			[getFarmingKeyFromName(plant.seedType)]: newPatch
 		});
 
-		str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
+		const reminder = `${user.minionName} tells you to come back after your plants have finished growing!`;
+		str += `\n\n${reminder}`;
 
-		return { message: str, loot: loot.length > 0 ? loot : null };
+		const summary: FarmingStepSummary = {
+			planted: { itemName: plant.name, quantity },
+			reminder,
+			xp: {
+				planting: plantXp,
+				harvest: harvestXp,
+				checkHealth: checkHealthXp,
+				rake: rakeXp,
+				bonus: bonusXP,
+				totalFarming: farmingXPAmount,
+				woodcutting: 0,
+				herblore: 0
+			},
+			duration: data.duration,
+			xpMessages: farmingXPResult.length > 0 ? { farming: farmingXPResult } : {}
+		};
+
+		return { message: str, loot: loot.length > 0 ? loot : null, summary };
 	}
 
 	// If they do have something planted here, harvest it and possibly replant.
@@ -324,20 +370,30 @@ export async function executeFarmingStep({
 
 	bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);
 
+	const farmingXPAmount = Math.floor(plantXp + harvestXp + checkHealthXp + rakeXp + bonusXP);
+	const woodcuttingXPAmount = Math.floor(woodcuttingXp);
 	const xpRes = await user.addXP({
 		skillName: 'farming',
 		duration: data.duration,
-		amount: Math.floor(plantXp + harvestXp + checkHealthXp + rakeXp + bonusXP)
+		amount: farmingXPAmount
 	});
 	const wcXP = await user.addXP({
 		skillName: 'woodcutting',
-		amount: Math.floor(woodcuttingXp)
+		amount: woodcuttingXPAmount
 	});
 	await user.addXP({
 		skillName: 'herblore',
 		amount: Math.floor(herbloreXp),
 		source: 'CleaningHerbsWhileFarming'
 	});
+
+	const xpMessages: Partial<Record<FarmingStepXPMessageSkill, string>> = {};
+	if (xpRes.length > 0) {
+		xpMessages.farming = xpRes;
+	}
+	if (wcXP.length > 0) {
+		xpMessages.woodcutting = wcXP;
+	}
 
 	infoStr.push(
 		`${plantingStr}harvesting ${patchType.lastQuantity}x ${
@@ -453,11 +509,34 @@ export async function executeFarmingStep({
 
 	if (loot.length > 0) infoStr.push(`\nYou received: ${loot}.`);
 
-	if (!planting) {
-		infoStr.push('\nThe patches have been cleared. They are ready to have new seeds planted.');
-	} else {
-		infoStr.push(`\n${user.minionName} tells you to come back after your plants have finished growing!`);
-	}
+	const reminder = !planting
+		? 'The patches have been cleared. They are ready to have new seeds planted.'
+		: `${user.minionName} tells you to come back after your plants have finished growing!`;
+	infoStr.push(`\n${reminder}`);
+
+	const summary: FarmingStepSummary = {
+		planted: planting ? { itemName: plant.name, quantity } : undefined,
+		harvested: {
+			itemName: plantToHarvest.name,
+			quantity: patchType.lastQuantity,
+			alive: alivePlants,
+			died: patchType.lastQuantity - alivePlants
+		},
+		reminder,
+		payNote: payStr || undefined,
+		duration: data.duration,
+		xp: {
+			planting: plantXp,
+			harvest: harvestXp,
+			checkHealth: checkHealthXp,
+			rake: rakeXp,
+			bonus: bonusXP,
+			totalFarming: farmingXPAmount,
+			woodcutting: woodcuttingXPAmount,
+			herblore: herbloreXp
+		},
+		xpMessages
+	};
 
 	await updateBankSetting('farming_loot_bank', loot);
 	await user.transactItems({
@@ -488,6 +567,7 @@ export async function executeFarmingStep({
 	return {
 		message: infoStr.join('\n'),
 		attachment,
-		loot: loot.length > 0 ? loot : null
+		loot: loot.length > 0 ? loot : null,
+		summary
 	};
 }

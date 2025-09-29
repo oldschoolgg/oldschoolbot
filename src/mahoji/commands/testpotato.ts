@@ -975,8 +975,8 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 						patch_name === 'all'
 							? farmingDetails.patchesDetailed.filter(patch => patch.plant)
 							: farmingDetails.patchesDetailed.filter(
-								patch => patch.patchName === patch_name && patch.plant
-							);
+									patch => patch.patchName === patch_name && patch.plant
+								);
 					if (patchesToGrow.length === 0) {
 						return patch_name === 'all'
 							? 'You have nothing planted in any patches.'
