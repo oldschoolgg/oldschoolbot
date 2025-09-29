@@ -310,29 +310,37 @@ describe('autoFarm tree clearing fees', () => {
 		expect(firstCallArgs?.treeChopFeePlanned).toBe(200);
 	});
 
-	it('stops planning once the combined duration would exceed the max trip length', async () => {
-		mockedCalcMaxTripLength.mockReturnValue(45 * 1000);
+	it('skips crops that would exceed the combined duration but continues planning smaller ones', async () => {
+		mockedCalcMaxTripLength.mockReturnValue(40 * 1000);
 
+		const celastrusPlant = Farming.Plants.find((plant: Plant) => plant.name === 'Celastrus tree');
 		const magicPlant = Farming.Plants.find((plant: Plant) => plant.name === 'Magic tree');
-		if (!magicPlant) {
-			throw new Error('Expected magic plant data');
+		const mushroomPlant = Farming.Plants.find((plant: Plant) => plant.name === 'Mushroom');
+		if (!celastrusPlant || !magicPlant || !mushroomPlant) {
+			throw new Error('Expected celastrus, magic, and mushroom plant data');
 		}
 
 		const user = createAutoFarmStub({
 			gp: 10_000,
 			farmingLevel: 99,
 			woodcuttingLevel: 99,
-			bank: new Bank({ 'Redwood tree seed': 4, 'Magic seed': 10 }),
+			bank: new Bank({ 'Celastrus seed': 10, 'Magic seed': 10, 'Mushroom spore': 10 }),
 			autoFarmFilter: AutoFarmFilterEnum.AllFarm
 		});
 
-		const redwoodPatchDetailed: IPatchDataDetailed = {
-			...basePatch,
+		const celastrusPatchDetailed: IPatchDataDetailed = {
+			lastPlanted: celastrusPlant.name,
+			patchPlanted: true,
+			plantTime: Date.now(),
+			lastQuantity: 1,
+			lastUpgradeType: null,
+			lastPayment: false,
+			patchName: 'celastrus' as FarmingPatchName,
 			ready: true,
 			readyIn: null,
 			readyAt: null,
-			friendlyName: 'Redwood patch',
-			plant: redwoodPlant
+			friendlyName: 'Celastrus patch',
+			plant: celastrusPlant
 		};
 
 		const treePatchDetailed: IPatchDataDetailed = {
@@ -350,16 +358,35 @@ describe('autoFarm tree clearing fees', () => {
 			plant: magicPlant
 		};
 
-		const patchesDetailed: IPatchDataDetailed[] = [redwoodPatchDetailed, treePatchDetailed];
+		const mushroomPatchDetailed: IPatchDataDetailed = {
+			lastPlanted: null,
+			patchPlanted: false,
+			plantTime: Date.now(),
+			lastQuantity: 0,
+			lastUpgradeType: null,
+			lastPayment: false,
+			patchName: 'mushroom' as FarmingPatchName,
+			ready: true,
+			readyIn: null,
+			readyAt: null,
+			friendlyName: 'Mushroom patch',
+			plant: mushroomPlant
+		};
+
+		const patchesDetailed: IPatchDataDetailed[] = [
+			celastrusPatchDetailed,
+			treePatchDetailed,
+			mushroomPatchDetailed
+		];
 
 		const patches: Partial<Record<FarmingPatchName, IPatchData>> = {
-			[redwoodPatchDetailed.patchName]: {
-				lastPlanted: redwoodPatchDetailed.lastPlanted,
-				patchPlanted: redwoodPatchDetailed.patchPlanted,
-				plantTime: redwoodPatchDetailed.plantTime,
-				lastQuantity: redwoodPatchDetailed.lastQuantity,
-				lastUpgradeType: redwoodPatchDetailed.lastUpgradeType,
-				lastPayment: redwoodPatchDetailed.lastPayment
+			[celastrusPatchDetailed.patchName]: {
+				lastPlanted: celastrusPatchDetailed.lastPlanted,
+				patchPlanted: celastrusPatchDetailed.patchPlanted,
+				plantTime: celastrusPatchDetailed.plantTime,
+				lastQuantity: celastrusPatchDetailed.lastQuantity,
+				lastUpgradeType: celastrusPatchDetailed.lastUpgradeType,
+				lastPayment: celastrusPatchDetailed.lastPayment
 			},
 			[treePatchDetailed.patchName]: {
 				lastPlanted: treePatchDetailed.lastPlanted,
@@ -368,17 +395,28 @@ describe('autoFarm tree clearing fees', () => {
 				lastQuantity: treePatchDetailed.lastQuantity,
 				lastUpgradeType: treePatchDetailed.lastUpgradeType,
 				lastPayment: treePatchDetailed.lastPayment
+			},
+			[mushroomPatchDetailed.patchName]: {
+				lastPlanted: mushroomPatchDetailed.lastPlanted,
+				patchPlanted: mushroomPatchDetailed.patchPlanted,
+				plantTime: mushroomPatchDetailed.plantTime,
+				lastQuantity: mushroomPatchDetailed.lastQuantity,
+				lastUpgradeType: mushroomPatchDetailed.lastUpgradeType,
+				lastPayment: mushroomPatchDetailed.lastPayment
 			}
 		};
 
 		const response = await autoFarm(user, patchesDetailed, patches as Record<FarmingPatchName, IPatchData>, '123');
 
-		expect(response).toContain('Redwood patch');
+		expect(response).toContain('Celastrus patch');
 		expect(response).not.toContain('Tree patch');
+		expect(response).toContain('Mushroom patch');
 		expect(response).toContain('were skipped because the total trip length would exceed the maximum');
 		expect(addSubTaskMock).toHaveBeenCalled();
 		const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
-		expect(firstCallArgs?.autoFarmPlan).toHaveLength(0);
+		expect(firstCallArgs?.plantsName).toBe(celastrusPlant.name);
+		expect(firstCallArgs?.autoFarmPlan).toHaveLength(1);
+		expect(firstCallArgs?.autoFarmPlan?.[0]?.plantsName).toBe(mushroomPlant.name);
 	});
 
 	it('continues planning additional steps while staying within the max trip length', async () => {
