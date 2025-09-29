@@ -255,6 +255,63 @@ describe('autoFarm tree clearing fees', () => {
 		expect(firstCallArgs?.treeChopFeePlanned).toBe(2000);
 	});
 
+	it('skips planning when combined planting and clearing coins are insufficient', async () => {
+		const redwoodIndex = Farming.Plants.findIndex((plant: Plant) => plant.name === 'Redwood tree');
+		if (redwoodIndex === -1) {
+			throw new Error('Expected redwood plant data');
+		}
+
+		const originalPlant = Farming.Plants[redwoodIndex]!;
+		const modifiedPlant: Plant = {
+			...originalPlant,
+			inputItems: new Bank({ 'Redwood tree seed': 1, Coins: 3000 }).freeze()
+		};
+		Farming.Plants[redwoodIndex] = modifiedPlant;
+
+		const user = createAutoFarmStub({
+			gp: 4500,
+			farmingLevel: 99,
+			woodcuttingLevel: 1,
+			bank: new Bank({ 'Redwood tree seed': 1 })
+		});
+
+		const patchesDetailed: IPatchDataDetailed[] = [
+			{
+				...basePatch,
+				ready: true,
+				readyIn: null,
+				readyAt: null,
+				friendlyName: 'Redwood patch',
+				plant: modifiedPlant
+			}
+		];
+
+		const patches: Partial<Record<FarmingPatchName, IPatchData>> = {
+			[basePatch.patchName]: {
+				lastPlanted: basePatch.lastPlanted,
+				patchPlanted: basePatch.patchPlanted,
+				plantTime: basePatch.plantTime,
+				lastQuantity: basePatch.lastQuantity,
+				lastUpgradeType: basePatch.lastUpgradeType,
+				lastPayment: basePatch.lastPayment
+			}
+		};
+
+		try {
+			const response = await autoFarm(
+				user,
+				patchesDetailed,
+				patches as Record<FarmingPatchName, IPatchData>,
+				'123'
+			);
+
+			expect(response).toBe(`You don't own ${new Bank().add('Coins', 5000)}.`);
+			expect(addSubTaskMock).not.toHaveBeenCalled();
+		} finally {
+			Farming.Plants[redwoodIndex] = originalPlant;
+		}
+	});
+
 	it('reserves the tree clearing fee when switching to a different tree type', async () => {
 		const magicPlant = Farming.Plants.find((plant: Plant) => plant.name === 'Magic tree');
 		const yewPlant = Farming.Plants.find((plant: Plant) => plant.name === 'Yew tree');
