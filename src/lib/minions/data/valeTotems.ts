@@ -2,8 +2,6 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { birdsNestID, valeOfferingNests } from '@/lib/simulation/birdsNest.js';
 
-type SeedLootDef = [name: string, qty: [number, number], weight: number];
-
 const clueTiers: [string, number][] = [
     ['beginner',    256],
     ['easy',        512],
@@ -18,49 +16,77 @@ function createClueNest(tier: string) {
         .add(`Clue scroll (${tier})`);
 }
 
-const baseSeeds: SeedLootDef[] = [
-    ['Acorn', [3, 6], 16],
-    ['Willow seed', [1, 2], 2],
-    ['Maple seed', [1, 2], 2],
-    ['Yew seed', [1, 2], 2],
-    ['Magic seed', [1, 2], 2],
-    ['Apple tree seed', [1, 2], 12],
-    ['Orange tree seed', [1, 2], 2],
-    ['Pineapple seed', [1, 2], 2],
-    ['Papaya tree seed', [1, 2], 2],
-    ['Dragonfruit tree seed', [1, 2], 1],
-    ['Limpwurt seed', [3, 6], 2],
-    ['Cadavaberry seed', [7, 11], 2],
-    ['Watermelon seed', [5, 8], 1]
-];
-
-function createSeedTable(weightOverrides: Record<string, number> = {}) {
-    const table = new LootTable();
-    for (const [name, qty, defaultWeight] of baseSeeds) {
-        const weight = weightOverrides[name] ?? defaultWeight;
-        table.add(name, qty, weight);
-    }
-    return table
-}
 const OfferingsSeedTableLevelUnder50 = new LootTable()
-    .add('Acorn', [3, 6], 16)
-    .add('Willow seed', [1, 2], 2)
-    .add('Maple seed', [1, 2], 2)
-    .add('Yew seed', [1, 2], 2)
-    .add('Magic seed', [1, 2], 2)
-    .add('Apple tree seed', [1, 2], 12)
-    .add('Orange tree seed', [1, 2], 2)
-    .add('Pineapple seed', [1, 2], 2)
-    .add('Papaya tree seed', [1, 2], 2)
-    .add('Dragonfruit tree seed', [1, 2], 1)
-    .add('Limpwurt seed', [3, 6], 2)
-    .add('Cadavaberry seed', [7, 11], 2)
-    .add('Watermelon seed', [5, 8], 1)
+    .add('Acorn', [3, 6], 525)
+    .add('Willow seed', [1, 2], 73)
+    .add('Maple seed', [1, 2], 9)
+    .add('Apple tree seed', [1, 2], 1035)
+    .add('Pineapple seed', [1, 2], 525)
+    .add('Papaya tree seed', [1, 2], 133)
+    .add('Limpwurt seed', [3, 6], 795)
+    .add('Cadavaberry seed', [7, 11], 1330)
+    .add('Watermelon seed', [5, 8], 858)
+    .add('Palm tree seed', [1, 2], 1)
     
 const OfferingsSeedTableLevelUnder65 = new LootTable()
+    .add('Acorn', [3, 6], 218)
+    .add('Willow seed', [1, 2], 148)
+    .add('Maple seed', [1, 2], 87)
+    .add('Yew seed', [1, 2], 50)
+    .add('Magic seed', [1, 2], 25)
+    .add('Apple tree seed', [1, 2], 389)
+    .add('Pineapple seed', [1, 2], 216)
+    .add('Papaya tree seed', [1, 2], 127)
+    .add('Dragonfruit tree seed', [1, 2], 1)
+    .add('Limpwurt seed', [3, 6], 324)
+    .add('Cadavaberry seed', [7, 11], 482)
+    .add('Watermelon seed', [5, 8], 324)
+    .add('Palm tree seed', [1, 2], 50)
+
 const OfferingsSeedTableLevelUnder80 = new LootTable()
+    .add('Acorn', [3, 6], 63)
+    .add('Willow seed', [1, 2], 155)
+    .add('Maple seed', [1, 2], 103)
+    .add('Yew seed', [1, 2], 61)
+    .add('Magic seed', [1, 2], 31)
+    .add('Apple tree seed', [1, 2], 65)
+    .add('Pineapple seed', [1, 2], 63)
+    .add('Papaya tree seed', [1, 2], 109)
+    .add('Dragonfruit tree seed', [1, 2], 1)
+    .add('Limpwurt seed', [3, 6], 90)
+    .add('Cadavaberry seed', [7, 11], 81)
+    .add('Watermelon seed', [5, 8], 54)
+    .add('Palm tree seed', [1, 2], 61)
+
 const OfferingsSeedTableLevelUnder90 = new LootTable()
+    .add('Acorn', [3, 6], 32)
+    .add('Willow seed', [1, 2], 147)
+    .add('Maple seed', [1, 2], 97)
+    .add('Yew seed', [1, 2], 58)
+    .add('Magic seed', [1, 2], 29)
+    .add('Apple tree seed', [1, 2], 7)
+    .add('Pineapple seed', [1, 2], 32)
+    .add('Papaya tree seed', [1, 2], 98)
+    .add('Dragonfruit tree seed', [1, 2], 1)
+    .add('Limpwurt seed', [3, 6], 44)
+    .add('Cadavaberry seed', [7, 11], 8)
+    .add('Watermelon seed', [5, 8], 5)
+    .add('Palm tree seed', [1, 2], 59)
+
 const OfferingsSeedTableLevel90Plus = new LootTable()
+    .add('Acorn', [3, 6], 536)
+    .add('Willow seed', [1, 2], 2656)
+    .add('Maple seed', [1, 2], 1758)
+    .add('Yew seed', [1, 2], 1064)
+    .add('Magic seed', [1, 2], 532)
+    .add('Apple tree seed', [1, 2], 8)
+    .add('Pineapple seed', [1, 2], 533)
+    .add('Papaya tree seed', [1, 2], 1760)
+    .add('Dragonfruit tree seed', [1, 2], 19)
+    .add('Limpwurt seed', [3, 6], 712)
+    .add('Cadavaberry seed', [7, 11], 1)
+    .add('Watermelon seed', [5, 8], 8)
+    .add('Palm tree seed', [1, 2], 1049)
 
 const dirtyArrowTableLevelUnder50 = new LootTable()
     .add('Steel arrowtips', 1, 69)

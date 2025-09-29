@@ -1,5 +1,5 @@
 import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit/util';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, type Item, Items, itemID } from 'oldschooljs';
 
@@ -42,16 +42,14 @@ export async function valeTotemsStartCommand(
 
     const fletchingLvl = user.skillLevel('fletching');
     if (fletchingLvl < 20) {
-        return 'You need 20 Fletching to start Vale Totems minigame.';
+        return `${user.minionName} needs 20 Fletching to start Vale Totems minigame.`;
     }
 
-    // TODO: Allow already prepared decorations
     if (!itemToFletch) {
-        return `You have to select an item to fletch during Vale Totems.`;
+        return `${user.minionName} have to select an item to fletch during Vale Totems.`;
     }
 
-    const fletchableItem = Items.get(itemToFletch);
-    if (!fletchableItem) return 'Invalid fletchable item';
+    const fletchableItem = Items.getOrThrow(itemToFletch);
 
     const decoration = ValeTotemsDecorations.find(i => i.item.id === fletchableItem.id);
     if (!decoration) return `Internal error: ${itemToFletch} not found`;
@@ -61,24 +59,30 @@ export async function valeTotemsStartCommand(
     const logCostLap = decoration.logAmount;
     const logsOwned = userBank.amount(logType)
     
+    // Question: Allow already prepared decorations or no (for more xp)?
     if (logsOwned < decoration.logAmount) {
-        return `You don't own: ${logCostLap} ${logType.name}.`;
+        return `${user.minionName} doesn't own: ${logCostLap}x ${logType.name}.`;
     }
 
     if (fletchingLvl < decoration.level) {
-        return `You need ${decoration.level} Fletching to fletch ${decoration.item.name}.`;
+        return `${user.minionName} need ${decoration.level} Fletching to fletch ${decoration.item.name}.`;
+    }
+
+    let staminaPotItem: Item | undefined;
+    if (staminaPot) {
+        staminaPotItem = Items.getOrThrow(12625);
+        if (userBank.amount(staminaPotItem) < 1) return `${user.minionName} doesn't own: ${staminaPotItem.name}.`;
     }
     
-    // '@oldschoolgg/toolkit/datetime' | 1 second = 1000 ms
-    const AVG_TIME_PER_LAP = 258000;
-    const NO_SHORTCUT_PENALTY = 10000;
-    const NO_GRACEFUL_PENALTY = 30000;
-    const NO_LOG_BASKET_PENALTY = 10000;
-    const NO_BANK_SHORTCUT_PENALTY = 10000;
-    const SHIELD_FLETCH_PENALTY = 30000;
-    const STRING_NO_SPOOL_PENALTY = 15000;
-    const FLETCHING_KNIFE_PENALTY = 15000;
-    const NO_STAMINA_POT_PENALTY = 40000;
+    const AVG_TIME_PER_LAP = 258 * Time.Second;
+    const NO_SHORTCUT_PENALTY = 10 * Time.Second;
+    const NO_GRACEFUL_PENALTY = 30 * Time.Second;
+    const NO_LOG_BASKET_PENALTY = 10 * Time.Second;
+    const NO_BANK_SHORTCUT_PENALTY = 10 * Time.Second;
+    const SHIELD_FLETCH_PENALTY = 30 * Time.Second;
+    const STRING_NO_SPOOL_PENALTY = 15 * Time.Second;
+    const FLETCHING_KNIFE_PENALTY = 15 * Time.Second;
+    const NO_STAMINA_POT_PENALTY = 40 * Time.Second;
 
     const STRINGS_PER_LAP = 32;
     const DEFAULT_LOG_COST_PER_LAP = 40;
@@ -90,13 +94,12 @@ export async function valeTotemsStartCommand(
 
     let timePerLap = AVG_TIME_PER_LAP;
  
-    let stringItem;
+    let stringItem: Item | undefined;
 
     if (decoration.stringing) {
-        stringItem = Items.get('Bow string');
-	    if (!stringItem) return 'Internal error: Bow string is invalid item';
+        stringItem = Items.getOrThrow('Bow string');
 
-        if (userBank.amount(stringItem.id) < STRINGS_PER_LAP) return `You need at least 32 Bow strings to fletch ${decoration.item.name}!`;
+        if (userBank.amount(stringItem.id) < STRINGS_PER_LAP) return `${user.minionName} need at least 32 Bow strings to fletch ${decoration.item.name}!`;
         if (!user.hasEquippedOrInBank(itemID('Bow string spool'))) {
             timePerLap += STRING_NO_SPOOL_PENALTY;
         } else {
@@ -119,9 +122,13 @@ export async function valeTotemsStartCommand(
     }
 
     const agilityLevel = user.skillLevel('agility');
+    const hasBasket = 
+        user.hasEquippedOrInBank(itemID('Log basket')) ||
+        user.hasEquippedOrInBank(itemID('Forestry basket'));
 
-    if (!user.hasEquippedOrInBank(itemID('Log basket')) || !user.hasEquippedOrInBank(itemID('Forestry basket'))) {
+    if (!hasBasket) {
         timePerLap += NO_LOG_BASKET_PENALTY;
+
         if (agilityLevel < BANK_SHORTCUT_AGILITY_LVL) { // Bank shortcut
             timePerLap += NO_BANK_SHORTCUT_PENALTY;
         } else {
@@ -137,10 +144,11 @@ export async function valeTotemsStartCommand(
         messages.push(`-${formatDuration(NO_BANK_SHORTCUT_PENALTY)} for other shortcuts`);
     }
 
-    if (agilityLevel < NO_STAMINA_POTION_AGILITY_LVL) {
-        if (!staminaPot) timePerLap += NO_STAMINA_POT_PENALTY;
-    } else {
+    if (agilityLevel < NO_STAMINA_POTION_AGILITY_LVL && !staminaPot) {
+        timePerLap += NO_STAMINA_POT_PENALTY;
+    } else if (agilityLevel >= NO_STAMINA_POTION_AGILITY_LVL) {
         messages.push(`-${formatDuration(NO_STAMINA_POT_PENALTY)} for agility level 70`);
+        staminaPot = false;
     }
 
     if (logCostLap > DEFAULT_LOG_COST_PER_LAP) {
@@ -181,7 +189,7 @@ export async function valeTotemsStartCommand(
         cost.add(stringItem!.id, stringCost);
     }
     if (staminaPot) {
-        // add stamina pot to cost
+        cost.add(staminaPotItem);
     }
 
     await user.removeItemsFromBank(cost);
@@ -200,7 +208,8 @@ export async function valeTotemsStartCommand(
         itemID: fletchableItem.name
     });
     // TODO:
-    // Add Bow string spool bonus (+5-10min to fletching bows)
+    // Add Bow string spool bonus (to fletching bows) - additional time (9mins)
+    // But not possible with current fletch implementation (duplicate actions to perform)
     let str = `${user.minionName} is off to do ${laps} laps of Vale Totems using ${cost} - the total trip will take ${
         formatDuration(duration)
     }, with each lap taking ${formatDuration(timePerLap)}.`;
@@ -357,7 +366,7 @@ export async function valeTotemsBuyCommand(
         { vale_research_points: true }
     );
 
-    return `You successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.valeResearchPoints * quantity).toLocaleString()} Vale Research points.\nYou now have ${newPoints} Vale Research points left.`;
+    return `${user.minionName} successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.valeResearchPoints * quantity).toLocaleString()} Vale Research points.\n${user.minionName} now have ${newPoints} Vale Research points left.`;
 }
 
 export async function valeTotemsSellCommand(
@@ -378,7 +387,8 @@ export async function valeTotemsSellCommand(
         i => stringMatches(item, i.name) || i.aliases?.some(alias => stringMatches(alias, item))
     );
     if (!shopItem) {
-        return `This is not a valid item to sell. These are the items that can be bought using Vale Research points: ${ValeTotemsSellables
+        return `That's not a valid item to sell. ${user.minionName} may sell following items for Vale Research points: ${ValeTotemsSellables
+            .filter(v => user.isIronman || !v.ironman)
             .map(v => v.name)
             .join(', ')}`;
     }
@@ -387,7 +397,37 @@ export async function valeTotemsSellCommand(
     const userBank = user.bank;
     const itemOwned = userBank.amount(sellable);
 
-    if (!user.isIronman) {
-        // Can't sell mask if not ironman
+    if (itemOwned < quantity) {
+        return `${user.minionName} doesn't have enough ${shopItem.name} to sell.\n${
+			itemOwned < 1
+				? `In fact, ${user.minionName} doesn't have any ${shopItem.name} in its bank.`
+				: `${user.minionName} only has ${itemOwned}x ${shopItem.name} in its bank.`
+		}`;
     }
+
+    if (!user.isIronman && sellable.name == 'Greenman mask') {
+        return `${user.minionName} is not an ironman. Only Ironman can sell Greenman masks to Vale Research Exchange.`;
+    }
+
+    const gain = quantity * shopItem.valeResearchPoints;
+
+    await handleMahojiConfirmation(
+        interaction,
+        `Are you sure you want to sell **${quantity.toLocaleString()}x ${shopItem.name}** for **${gain.toLocaleString()}** Vale Research points?`
+    );
+    await user.transactItems({
+		itemsToRemove: shopItem.output.multiply(quantity)
+	});
+
+    const { vale_research_points: newPoints } = await userStatsUpdate(
+        user.id,
+        {
+            vale_research_points: {
+                increment: gain
+            }
+        },
+        { vale_research_points: true }
+    );
+
+     return `${user.minionName} successfully sold **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.valeResearchPoints * quantity).toLocaleString()} Vale Research points.\nYou now have ${newPoints} Vale Research points.`;
 }

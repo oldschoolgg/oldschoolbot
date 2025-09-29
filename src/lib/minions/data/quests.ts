@@ -360,7 +360,8 @@ export const quests: Quest[] = [
 		qp: 2,
 		name: 'Shadows of Custodia',
 		prerequisitesQuests: [QuestID.ChildrenOfTheSun],
-		qpReq: 50,
+		qpReq: 75,
+		combatLevelReq: 50,
 		skillReqs: {
 			slayer: 54,
 			fishing: 45,
@@ -375,7 +376,7 @@ export const quests: Quest[] = [
 		},
 		calcTime: (user: MUser) => {
 			let duration = Time.Minute * 12;
-			if (user.combatLevel < 60) {
+			if (user.combatLevel < 65) {
 				duration += Time.Minute * 3;
 			}
 			return duration;

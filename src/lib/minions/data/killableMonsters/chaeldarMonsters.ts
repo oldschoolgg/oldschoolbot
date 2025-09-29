@@ -119,6 +119,29 @@ export const chaeldarMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackMagic]
 	},
 	{
+		id: Monsters.ElderCustodianStalker.id,
+		name: Monsters.ElderCustodianStalker.name,
+		aliases: Monsters.ElderCustodianStalker.aliases,
+		timeToFinish: Time.Second * 65,
+		table: Monsters.ElderCustodianStalker,
+		wildy: false,
+		existsInCatacombs: false,
+		difficultyRating: 3,
+		notifyDrops: resolveItems(['Antler guard']),
+		qpRequired: 77,
+		levelRequirements: {
+			slayer: 76
+		},
+		requiredQuests: [QuestID.ShadowsOfCustodia],
+		healAmountNeeded: 38,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic],
+		superior: Monsters.AncientCustodian,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: true
+	},
+	{
 		id: Monsters.FossilIslandWyvernAncient.id,
 		name: Monsters.FossilIslandWyvernAncient.name,
 		aliases: Monsters.FossilIslandWyvernAncient.aliases,
@@ -263,6 +286,28 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBarrage: false
 	},
 	{
+		id: Monsters.JuvenileCustodianStalker.id,
+		name: Monsters.JuvenileCustodianStalker.name,
+		aliases: Monsters.JuvenileCustodianStalker.aliases,
+		timeToFinish: Time.Second * 32,
+		table: Monsters.JuvenileCustodianStalker,
+		wildy: false,
+		existsInCatacombs: false,
+		difficultyRating: 2,
+		qpRequired: 77,
+		levelRequirements: {
+			slayer: 54
+		},
+		requiredQuests: [QuestID.ShadowsOfCustodia],
+		healAmountNeeded: 18,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic],
+		superior: Monsters.AncientCustodian,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: true
+	},
+	{
 		id: Monsters.Kraken.id,
 		name: Monsters.Kraken.name,
 		aliases: Monsters.Kraken.aliases,
@@ -384,6 +429,29 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canCannon: true,
 		cannonMulti: false,
 		canBarrage: false
+	},
+	{
+		id: Monsters.MatureCustodianStalker.id,
+		name: Monsters.MatureCustodianStalker.name,
+		aliases: Monsters.MatureCustodianStalker.aliases,
+		timeToFinish: Time.Second * 48,
+		table: Monsters.MatureCustodianStalker,
+		wildy: false,
+		existsInCatacombs: false,
+		difficultyRating: 2,
+		notifyDrops: resolveItems(['Antler guard']),
+		qpRequired: 77,
+		levelRequirements: {
+			slayer: 67
+		},
+		requiredQuests: [QuestID.ShadowsOfCustodia],
+		healAmountNeeded: 28,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic],
+		superior: Monsters.AncientCustodian,
+		canCannon: true,
+		cannonMulti: true,
+		canBarrage: true
 	},
 	{
 		id: Monsters.SkeletalWyvern.id,

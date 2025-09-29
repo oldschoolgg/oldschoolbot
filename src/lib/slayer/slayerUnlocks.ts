@@ -70,7 +70,8 @@ export enum SlayerTaskUnlocksEnum {
 	Revenenenenenants = 201,
 	EyeSeeYou = 202,
 	MoreEyesThanSense = 203,
-	WarpedReality = 204
+	WarpedReality = 204,
+	UnRestrainingOrder = 205
 }
 
 export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
@@ -562,5 +563,15 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		slayerPointCost: 60,
 		canBeRemoved: true,
 		aliases: ['warped reality']
-	}
+	},
+	{
+		id: SlayerTaskUnlocksEnum.UnRestrainingOrder,
+		name: 'Un-restraining Order',
+		desc: 'Number of custodian stalkers assigned is increased to 200-250.',
+		slayerPointCost: 100,
+		extendID: [Monsters.JuvenileCustodianStalker.id],
+		extendMult: 2.857,
+		canBeRemoved: true,
+		aliases: ['extend custodian stalkers', 'extend stalkers']
+	},
 ];
