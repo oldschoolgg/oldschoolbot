@@ -1,12 +1,11 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 
 import type { Skill } from '@/lib/skilling/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import Agility from './agility.js';
 import { Construction } from './construction/index.js';
 import Cooking from './cooking/cooking.js';
 import Crafting from './crafting/index.js';
-import Farming from './farming/index.js';
+import { Farming } from './farming/index.js';
 import Firemaking from './firemaking.js';
 import { Fishing } from './fishing/fishing.js';
 import Fletching from './fletching/index.js';
@@ -40,37 +39,37 @@ export const Skills: Record<string, Skill> = {
 	Magic,
 	Hitpoints: {
 		aliases: ['hitpoints', 'hp'],
-		id: SkillsEnum.Hitpoints,
+		id: 'hitpoints',
 		emoji: Emoji.Hitpoints,
 		name: 'Hitpoints'
 	},
 	Attack: {
 		aliases: ['attack', 'atk'],
-		id: SkillsEnum.Attack,
+		id: 'attack',
 		emoji: Emoji.Attack,
 		name: 'Attack'
 	},
 	Strength: {
 		aliases: ['str', 'strength'],
-		id: SkillsEnum.Strength,
+		id: 'strength',
 		emoji: Emoji.Strength,
 		name: 'Strength'
 	},
 	Defence: {
 		aliases: ['def', 'defence'],
-		id: SkillsEnum.Defence,
+		id: 'defence',
 		emoji: Emoji.Defence,
 		name: 'Defence'
 	},
 	Ranged: {
 		aliases: ['range', 'ranged'],
-		id: SkillsEnum.Ranged,
+		id: 'ranged',
 		emoji: Emoji.Ranged,
 		name: 'Ranged'
 	},
 	Slayer: {
 		aliases: ['worst skill', 'slayer', 'slay'],
-		id: SkillsEnum.Slayer,
+		id: 'slayer',
 		emoji: Emoji.Slayer,
 		name: 'Slayer'
 	}

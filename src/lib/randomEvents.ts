@@ -1,10 +1,11 @@
-import { randArrItem, roll, Time } from '@oldschoolgg/toolkit';
+import { randArrItem, roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { LRUCache } from 'lru-cache';
 import { Bank, ItemGroups, LootTable } from 'oldschooljs';
 
+import { BitField } from '@/lib/constants.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
-import { BitField } from './constants.js';
 
 interface RandomEvent {
 	id: number;

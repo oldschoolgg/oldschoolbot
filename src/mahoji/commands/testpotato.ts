@@ -1,6 +1,5 @@
-import { noOp, randArrItem, randInt, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { randArrItem, randInt } from '@oldschoolgg/rng';
+import { mentionCommand, noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { type Prisma, xp_gains_skill_enum } from '@prisma/client';
 import { ApplicationCommandOptionType, MessageFlags, type User } from 'discord.js';
 import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
@@ -18,26 +17,30 @@ import potions from '@/lib/minions/data/potions.js';
 import { MAX_QP, quests } from '@/lib/minions/data/quests.js';
 import { allOpenables } from '@/lib/openables.js';
 import { Minigames } from '@/lib/settings/minigames.js';
-import { getFarmingInfo } from '@/lib/skilling/functions/getFarmingInfo.js';
-import Farming from '@/lib/skilling/skills/farming/index.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
+import {
+	farmingPatchNames,
+	getFarmingKeyFromName,
+	userGrowingProgressStr
+} from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
+import { getFarmingInfo } from '@/lib/skilling/skills/farming/utils/getFarmingInfo.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';
 import { Gear } from '@/lib/structures/Gear.js';
-import type { FarmingPatchName } from '@/lib/util/farmingHelpers.js';
-import { farmingPatchNames, getFarmingKeyFromName, userGrowingProgressStr } from '@/lib/util/farmingHelpers.js';
 import { logError } from '@/lib/util/logError.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
 import { userEventToStr } from '@/lib/util/userEvents.js';
+import { fetchBingosThatUserIsInvolvedIn } from '@/mahoji/commands/bingo.js';
 import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { allUsableItems } from '@/mahoji/lib/abstracted_commands/useCommand.js';
 import { BingoManager } from '@/mahoji/lib/bingo/BingoManager.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 import { testBotKvStore } from '@/testing/TestBotStore.js';
-import { fetchBingosThatUserIsInvolvedIn } from './bingo.js';
 
 export function getMaxUserValues() {
 	const updates: Omit<Prisma.UserUpdateArgs['data'], 'id'> = {};

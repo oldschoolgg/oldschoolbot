@@ -1,4 +1,4 @@
-import { deepMerge, getWrappedArrayItem } from '@oldschoolgg/toolkit/util';
+import { deepMerge, getWrappedArrayItem } from '@oldschoolgg/toolkit';
 
 const colors = [
 	'#fd7f6f',

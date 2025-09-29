@@ -1,5 +1,5 @@
-import { notEmpty, randInt, Time } from '@oldschoolgg/toolkit';
-import { formatDuration, isWeekend, stringMatches } from '@oldschoolgg/toolkit/util';
+import { randInt } from '@oldschoolgg/rng';
+import { formatDuration, isWeekend, notEmpty, stringMatches, Time } from '@oldschoolgg/toolkit';
 import type { PlayerOwnedHouse } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
@@ -9,7 +9,6 @@ import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BitField, MAX_CLUES_DROPPED } from '@/lib/constants.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { getPOHObject } from '@/lib/poh/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -329,9 +328,7 @@ export const clueCommand: OSBMahojiCommand = {
 		// Combat stats boost
 		if (['Hard', 'Elite', 'Master'].includes(clueTier.name)) {
 			const totalCombatStats =
-				user.skillLevel(SkillsEnum.Attack) +
-				user.skillLevel(SkillsEnum.Strength) +
-				user.skillLevel(SkillsEnum.Ranged);
+				user.skillsAsLevels.attack + user.skillsAsLevels.strength + user.skillsAsLevels.ranged;
 			let combatBoost = (totalCombatStats / (3 * 99)) * 100;
 
 			if (combatBoost < 50) {

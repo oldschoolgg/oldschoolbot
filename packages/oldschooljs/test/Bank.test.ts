@@ -1,6 +1,6 @@
 import { describe, expect, it, test } from 'vitest';
 
-import { addItemToBank, Bank, EItem, type ItemBank, Items, itemID } from '../src/index.js';
+import { addItemToBank, Bank, EItem, type ItemBank, Items } from '../src/index.js';
 
 describe('Bank', () => {
 	test('convert string bank to number bank', () => {
@@ -118,7 +118,7 @@ describe('Bank', () => {
 		const bank = new Bank().add('Coal', 100).add('Trout', 100).add('Egg', 100).add('Bones', 100);
 		bank.add(undefined);
 		const expected = new Bank().add('Coal', 200).add('Trout', 100).add('Egg', 100).add('Bones', 200);
-		expect(bank.multiply(2, ['Trout', 'Egg'].map(itemID))).toEqual(expected);
+		expect(bank.multiply(2, [EItem.TROUT, EItem.EGG])).toEqual(expected);
 		expect(bank.amount('Coal')).toEqual(200);
 		expect(bank.amount('Egg')).toEqual(100);
 	});
@@ -156,11 +156,11 @@ describe('Bank', () => {
 			bank.add('Twisted bow');
 		} catch {}
 		try {
-			bank.addItem(itemID('Twisted bow'));
+			bank.addItem(EItem.TWISTED_BOW);
 		} catch {}
 		expect(() => bank.removeItem('Twisted bow')).toThrowError();
 		try {
-			bank.remove(itemID('Twisted bow'));
+			bank.remove(EItem.TWISTED_BOW);
 		} catch {}
 		try {
 			bank.multiply(5);
@@ -279,11 +279,9 @@ describe('Bank', () => {
 
 	test('itemIDs', () => {
 		expect(new Bank().itemIDs).toEqual([]);
-		expect(new Bank().add('Coal', 1).itemIDs.sort()).toEqual([itemID('Coal')].sort());
-		expect(new Bank().add('Coal', 1).add('Coal', 1).itemIDs.sort()).toEqual([itemID('Coal')].sort());
-		expect(new Bank().add('Coal', 1).add('Trout', 1).itemIDs.sort()).toEqual(
-			[itemID('Coal'), itemID('Trout')].sort()
-		);
+		expect(new Bank().add('Coal', 1).itemIDs.sort()).toEqual([EItem.COAL].sort());
+		expect(new Bank().add('Coal', 1).add('Coal', 1).itemIDs.sort()).toEqual([EItem.COAL].sort());
+		expect(new Bank().add('Coal', 1).add('Trout', 1).itemIDs.sort()).toEqual([EItem.COAL, EItem.TROUT].sort());
 	});
 
 	it('clears banks', () => {
@@ -304,15 +302,15 @@ describe('Bank', () => {
 	});
 
 	it('checks amount', () => {
-		const bank = new Bank().add(itemID('Coal'));
+		const bank = new Bank().add(EItem.COAL);
 		expect(bank.amount('Coal')).toEqual(1);
-		expect(bank.amount(itemID('Coal'))).toEqual(1);
+		expect(bank.amount(EItem.COAL)).toEqual(1);
 		expect(bank.amount(EItem.COAL)).toEqual(1);
 		expect(bank.amount(Items.getOrThrow('Coal'))).toEqual(1);
 	});
 
 	it('sets and clears items', () => {
-		const methods = ['Coal', itemID('Coal'), EItem.COAL, Items.getOrThrow('Coal')];
+		const methods = ['Coal', EItem.COAL, EItem.COAL, Items.getOrThrow('Coal')];
 		for (const setMethod of methods) {
 			for (const amountMethod of methods) {
 				const bank = new Bank().set(setMethod, 5).add('Trout', 100000);

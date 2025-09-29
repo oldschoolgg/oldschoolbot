@@ -1,10 +1,10 @@
 import { Bank } from 'oldschooljs';
 
+import type { Buyable } from '@/lib/data/buyables/buyables.js';
 import { diaries, userhasDiaryTier } from '@/lib/diaries.js';
 import { MAX_QP } from '@/lib/minions/data/quests.js';
 import { musicCapeRequirements } from '@/lib/musicCape.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
-import type { Buyable } from './buyables.js';
 
 export const capeBuyables: Buyable[] = [
 	{

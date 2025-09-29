@@ -1,7 +1,7 @@
+import { randInt } from '@oldschoolgg/rng';
 import { Bank, Items, itemID } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { randInt } from '@/lib/util/rng.js';
 import { parseBank, parseQuantityAndItem, parseStringBank } from '../../src/lib/util/parseStringBank.js';
 
 const psb = parseStringBank;

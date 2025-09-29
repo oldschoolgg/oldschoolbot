@@ -1,4 +1,5 @@
-import { calcPercentOfNum, calcWhatPercent, randInt } from '@oldschoolgg/toolkit';
+import { randInt } from '@oldschoolgg/rng';
+import { calcPercentOfNum, calcWhatPercent } from '@oldschoolgg/toolkit';
 
 import { KandarinDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';

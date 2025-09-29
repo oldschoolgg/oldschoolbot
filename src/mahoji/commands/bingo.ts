@@ -1,14 +1,20 @@
-import { chunk, noOp, notEmpty, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
 import {
 	channelIsSendable,
+	chunk,
+	dateFm,
+	Emoji,
+	formatOrdinal,
 	isValidDiscordSnowflake,
 	type MahojiUserOption,
-	mentionCommand
-} from '@oldschoolgg/toolkit/discord-util';
-import { md5sum } from '@oldschoolgg/toolkit/node';
-import { stringMatches, truncateString } from '@oldschoolgg/toolkit/string-util';
-import { dateFm, formatOrdinal } from '@oldschoolgg/toolkit/util';
+	md5sum,
+	mentionCommand,
+	noOp,
+	notEmpty,
+	stringMatches,
+	Time,
+	truncateString,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import {
 	ApplicationCommandOptionType,
@@ -26,11 +32,11 @@ import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { getUsername, getUsernameSync } from '@/lib/util.js';
+import { doMenu, getPos } from '@/mahoji/commands/leaderboard.js';
 import { BingoManager, BingoTrophies } from '@/mahoji/lib/bingo/BingoManager.js';
 import type { StoredBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { generateTileName, getAllTileItems, isGlobalTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';
-import { doMenu, getPos } from './leaderboard.js';
 
 const bingoAutocomplete = async (value: string, user: User) => {
 	const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);

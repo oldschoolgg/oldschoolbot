@@ -1,9 +1,9 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import Createables from '@/lib/data/createables.js';
-import type { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
@@ -75,8 +75,8 @@ export const createCommand: OSBMahojiCommand = {
 		}
 
 		if (createableItem.requiredSkills) {
-			for (const [skillName, lvl] of Object.entries(createableItem.requiredSkills)) {
-				if (user.skillLevel(skillName as SkillsEnum) < lvl) {
+			for (const [skillName, lvl] of Object.entries(createableItem.requiredSkills) as [SkillNameType, number][]) {
+				if (user.skillsAsLevels[skillName] < lvl) {
 					return `You need ${lvl} ${skillName} to ${action} this item.`;
 				}
 			}

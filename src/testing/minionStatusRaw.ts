@@ -1,4 +1,4 @@
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { formatDuration } from '@oldschoolgg/toolkit';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';

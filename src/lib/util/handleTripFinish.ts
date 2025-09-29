@@ -1,6 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { channelIsSendable, makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { channelIsSendable, makeComponents, Stopwatch, Time } from '@oldschoolgg/toolkit';
 import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { Bank, EItem } from 'oldschooljs';
@@ -15,14 +13,7 @@ import { triggerRandomEvent } from '@/lib/randomEvents.js';
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
-import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
-import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
-import {
-	tearsOfGuthixIronmanReqs,
-	tearsOfGuthixSkillReqs
-} from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
-import { updateClientGPTrackSetting, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
-import { displayCluesAndPets } from './displayCluesAndPets.js';
+import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
@@ -33,9 +24,16 @@ import {
 	makeOpenSeedPackButton,
 	makeRepeatTripButton,
 	makeTearsOfGuthixButton
-} from './interactions.js';
-import { hasSkillReqs } from './smallUtils.js';
-import { sendToChannelID } from './webhook.js';
+} from '@/lib/util/interactions.js';
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
+import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
+import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
+import {
+	tearsOfGuthixIronmanReqs,
+	tearsOfGuthixSkillReqs
+} from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
+import { updateClientGPTrackSetting, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 const collectors = new Map<string, MessageCollector>();
 

@@ -1,6 +1,5 @@
-import { roll, shuffleArr } from '@oldschoolgg/toolkit';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { convertPercentChance, formatOrdinal, miniID } from '@oldschoolgg/toolkit/util';
+import { roll, shuffleArr } from '@oldschoolgg/rng';
+import { convertPercentChance, Emoji, Events, formatOrdinal, miniID } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
@@ -10,7 +9,6 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { TheatreOfBlood } from '@/lib/simulation/tob.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
@@ -32,23 +30,19 @@ async function handleTobXP(user: MUser, isHm: boolean) {
 	const results = [];
 	results.push(
 		await user.addXP({
-			skillName: SkillsEnum.Hitpoints,
+			skillName: 'hitpoints',
 			amount: hitpointsXP,
 			minimal: true,
 			source: 'TheatreOfBlood'
 		})
 	);
-	results.push(
-		await user.addXP({ skillName: SkillsEnum.Ranged, amount: rangeXP, minimal: true, source: 'TheatreOfBlood' })
-	);
-	results.push(
-		await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, minimal: true, source: 'TheatreOfBlood' })
-	);
+	results.push(await user.addXP({ skillName: 'ranged', amount: rangeXP, minimal: true, source: 'TheatreOfBlood' }));
+	results.push(await user.addXP({ skillName: 'magic', amount: magicXP, minimal: true, source: 'TheatreOfBlood' }));
 	let styles = resolveAttackStyles({
 		attackStyles: user.getAttackStyles()
 	});
-	if (([SkillsEnum.Magic, SkillsEnum.Ranged] as const).some(style => styles.includes(style))) {
-		styles = [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
+	if ((['magic', 'ranged'] as const).some(style => styles.includes(style))) {
+		styles = ['attack', 'strength', 'defence'];
 	}
 	const perSkillMeleeXP = meleeXP / styles.length;
 	for (const style of styles) {

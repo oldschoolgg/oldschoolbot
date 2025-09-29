@@ -1,5 +1,4 @@
-import { chunk } from '@oldschoolgg/toolkit';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { chunk, stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
@@ -7,7 +6,7 @@ import { leagueBuyables } from '@/lib/data/leaguesBuyables.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { getUsername } from '@/lib/util.js';
-import { doMenu } from './leaderboard.js';
+import { doMenu } from '@/mahoji/commands/leaderboard.js';
 
 const leaguesTrophiesBuyables = [
 	{

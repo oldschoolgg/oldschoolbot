@@ -1,4 +1,4 @@
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { mentionCommand } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import type { ItemBank } from 'oldschooljs';

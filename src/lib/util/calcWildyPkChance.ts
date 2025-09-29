@@ -1,11 +1,11 @@
-import { calcPercentOfNum, calcWhatPercent, percentChance, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { randomVariation } from '@oldschoolgg/toolkit/util';
+import { percentChance, randomVariation } from '@oldschoolgg/rng';
+import { calcPercentOfNum, calcWhatPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { maxDefenceStats } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
+import { type Peak, peakFactor } from '@/lib/util/peaks.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
-import { type Peak, peakFactor } from './peaks.js';
 
 export async function increaseWildEvasionXp(user: MUser, duration: number) {
 	const oldPkXp: { pk_evasion_exp: number } = await user.fetchStats({ pk_evasion_exp: true });

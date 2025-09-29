@@ -1,10 +1,9 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, deepResolveItems, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { QuestID } from '@/lib/minions/data/quests.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 
 export const chaeldarMonsters: KillableMonster[] = [
 	{
@@ -34,8 +33,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: true,
 		difficultyRating: 4,
 		qpRequired: 0,
-		defaultAttackStyles: [SkillsEnum.Ranged],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
+		defaultAttackStyles: ['ranged'],
+		disallowedAttackStyles: ['attack', 'strength', 'magic'],
 		healAmountNeeded: 24,
 		pkActivityRating: 7,
 		pkBaseDeathChance: 10,
@@ -112,8 +111,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 			slayer: 87
 		},
 		slayerOnly: true,
-		defaultAttackStyles: [SkillsEnum.Magic],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged],
+		defaultAttackStyles: ['magic'],
+		disallowedAttackStyles: ['attack', 'strength', 'ranged'],
 		healAmountNeeded: 20,
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic]
@@ -350,8 +349,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 87
 		},
-		defaultAttackStyles: [SkillsEnum.Magic],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged],
+		defaultAttackStyles: ['magic'],
+		disallowedAttackStyles: ['attack', 'strength', 'ranged'],
 		slayerOnly: true,
 		healAmountNeeded: 20 * 7,
 		attackStyleToUse: GearStat.AttackMagic,
@@ -423,7 +422,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 			prayer: 43
 		},
 		healAmountNeeded: 20 * 2,
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
+		disallowedAttackStyles: ['attack', 'strength', 'magic'],
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged],
 		canCannon: true,

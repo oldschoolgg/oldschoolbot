@@ -1,7 +1,7 @@
 import { bold } from 'discord.js';
 
 import { quests } from '@/lib/minions/data/quests.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { SpecificQuestOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
@@ -20,10 +20,8 @@ export const specificQuestTask: MinionTask = {
 		}
 
 		if (quest.skillsRewards) {
-			for (const [skillName, amount] of Object.entries(quest.skillsRewards)) {
-				if (Object.values(SkillsEnum).includes(skillName as SkillsEnum)) {
-					await user.addXP({ skillName: skillName as SkillsEnum, amount });
-				}
+			for (const [skillName, amount] of Object.entries(quest.skillsRewards) as [SkillNameType, number][]) {
+				await user.addXP({ skillName: skillName as SkillNameType, amount });
 			}
 			completionMessage += ` You gained the following skills rewards: ${Object.entries(quest.skillsRewards)
 				.map(([skill, xp]) => `${xp} XP in ${skill}`)

@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 
-import { Bank, type Item, Items, itemID, LootTable } from '../src/index.js';
+import { Bank, EItem, type Item, Items, LootTable } from '../src/index.js';
 
 const TestLootTable = new LootTable().add('Toolkit');
 
@@ -92,9 +92,9 @@ describe('Bank Class', () => {
 
 		expect(bank.has('Coal')).toBe(true);
 		expect(bank.has('Ruby')).toBe(true);
-		expect(bank.has(itemID('Monkey nuts'))).toBe(true);
+		expect(bank.has(EItem.MONKEY_NUTS)).toBe(true);
 
-		expect(bank.has(itemID('Emerald'))).toBe(false);
+		expect(bank.has(EItem.EMERALD)).toBe(false);
 		expect(bank.has('Emerald')).toBe(false);
 
 		expect(bank.has(['Coal'])).toBe(true);

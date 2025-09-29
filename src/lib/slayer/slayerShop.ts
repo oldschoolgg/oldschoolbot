@@ -1,6 +1,6 @@
 import { Items } from 'oldschooljs';
 
-import type { SlayerShopItem } from './types.js';
+import type { SlayerShopItem } from '@/lib/slayer/types.js';
 
 export const slayerShopBuy: readonly SlayerShopItem[] = [
 	{

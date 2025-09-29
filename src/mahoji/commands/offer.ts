@@ -1,13 +1,11 @@
-import { randArrItem, randInt, roll, Time } from '@oldschoolgg/toolkit';
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
+import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import { Events, formatDuration, formatOrdinal, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Bank, ItemGroups, Items, resolveItems } from 'oldschooljs';
 
 import { Offerables } from '@/lib/data/offerData.js';
 import { birdsNestID, treeSeedsNest } from '@/lib/simulation/birdsNest.js';
 import Prayer from '@/lib/skilling/skills/prayer.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { OfferingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -171,7 +169,7 @@ export const offerCommand: OSBMahojiCommand = {
 			}
 
 			const xpStr = await user.addXP({
-				skillName: SkillsEnum.Prayer,
+				skillName: 'prayer',
 				amount: quantity * 100
 			});
 
@@ -203,7 +201,7 @@ export const offerCommand: OSBMahojiCommand = {
 			if (user.QP < 8) {
 				return 'You need at least 8 QP to offer long/curved bones for XP.';
 			}
-			if (user.skillLevel(SkillsEnum.Construction) < 30) {
+			if (user.skillsAsLevels.construction < 30) {
 				return 'You need at least level 30 Construction to offer long/curved bones for XP.';
 			}
 			const amountHas = userBank.amount(specialBone.item.id);
@@ -214,7 +212,7 @@ export const offerCommand: OSBMahojiCommand = {
 			const xp = quantity * specialBone.xp;
 			await Promise.all([
 				user.addXP({
-					skillName: SkillsEnum.Construction,
+					skillName: 'construction',
 					amount: xp
 				}),
 				user.removeItemsFromBank(new Bank().add(specialBone.item.id, quantity))
@@ -234,7 +232,7 @@ export const offerCommand: OSBMahojiCommand = {
 			return "That's not a valid bone to offer.";
 		}
 
-		if (user.skillLevel(SkillsEnum.Prayer) < bone.level) {
+		if (user.skillsAsLevels.prayer < bone.level) {
 			return `${user.minionName} needs ${bone.level} Prayer to offer ${bone.name}.`;
 		}
 

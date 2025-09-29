@@ -1,7 +1,6 @@
-import { roll, shuffleArr } from '@oldschoolgg/toolkit';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
-import { Bank, ChambersOfXeric, randomVariation, resolveItems, SkillsEnum } from 'oldschooljs';
+import { randomVariation, roll, shuffleArr } from '@oldschoolgg/rng';
+import { Emoji, Events, formatOrdinal } from '@oldschoolgg/toolkit';
+import { Bank, ChambersOfXeric, resolveItems } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '@/lib/data/CollectionsExport.js';
@@ -45,23 +44,19 @@ async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
 	const results = [];
 	results.push(
 		await user.addXP({
-			skillName: SkillsEnum.Hitpoints,
+			skillName: 'hitpoints',
 			amount: hitpointsXP,
 			minimal: true,
 			source: 'ChambersOfXeric'
 		})
 	);
-	results.push(
-		await user.addXP({ skillName: SkillsEnum.Ranged, amount: rangeXP, minimal: true, source: 'ChambersOfXeric' })
-	);
-	results.push(
-		await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, minimal: true, source: 'ChambersOfXeric' })
-	);
+	results.push(await user.addXP({ skillName: 'ranged', amount: rangeXP, minimal: true, source: 'ChambersOfXeric' }));
+	results.push(await user.addXP({ skillName: 'magic', amount: magicXP, minimal: true, source: 'ChambersOfXeric' }));
 	let styles = resolveAttackStyles({
 		attackStyles: user.getAttackStyles()
 	});
-	if (([SkillsEnum.Magic, SkillsEnum.Ranged] as const).some(style => styles.includes(style))) {
-		styles = [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
+	if ((['magic', 'ranged'] as const).some(style => styles.includes(style))) {
+		styles = ['attack', 'strength', 'defence'];
 	}
 	const perSkillMeleeXP = meleeXP / styles.length;
 	for (const style of styles) {

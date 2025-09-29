@@ -1,8 +1,6 @@
-import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -10,7 +8,7 @@ import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function roguesDenCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
-	if (user.skillLevel(SkillsEnum.Agility) < 50 || user.skillLevel(SkillsEnum.Thieving) < 50) {
+	if (user.skillsAsLevels.agility < 50 || user.skillsAsLevels.thieving < 50) {
 		return "To attempt the Rogues' Den maze you need 50 Agility and 50 Thieving.";
 	}
 
@@ -18,10 +16,10 @@ export async function roguesDenCommand(user: MUser, channelID: string) {
 	const boosts = [];
 	let baseTime = Time.Minute * 9;
 
-	let skillPercentage = (user.skillLevel(SkillsEnum.Agility) + user.skillLevel(SkillsEnum.Thieving)) / 20;
+	let skillPercentage = (user.skillsAsLevels.agility + user.skillsAsLevels.thieving) / 20;
 	boosts.push(`${skillPercentage}% boost for levels`);
 
-	if (user.skillLevel(SkillsEnum.Thieving) >= 80) {
+	if (user.skillsAsLevels.thieving >= 80) {
 		skillPercentage += 40;
 		boosts.push('40% boost for 80+ Thieving');
 	}

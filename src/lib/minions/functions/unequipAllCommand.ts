@@ -1,4 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { GearSetupType } from '@/lib/gear/types.js';

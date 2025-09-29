@@ -5,7 +5,7 @@ import { EGear } from 'oldschooljs/EGear';
 import { describe, test } from 'vitest';
 
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
-import Farming from '@/lib/skilling/skills/farming/index.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
 import { baseSnapshotPath } from '../../testConstants.js';
 

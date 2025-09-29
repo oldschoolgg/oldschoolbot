@@ -1,10 +1,9 @@
 import { ItemGroups, Items, Monsters, resolveItems } from 'oldschooljs';
 
+import { isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
 import { warmGear } from '@/lib/data/filterables.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
-import { isCertainMonsterTrip } from './caUtils.js';
-import type { CombatAchievement } from './combatAchievements.js';
 
 export const easyCombatAchievements: CombatAchievement[] = [
 	{
@@ -40,7 +39,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
-				isCertainMonsterTrip(Monsters.Barrows.id)(data) && user.getAttackStyles().includes(SkillsEnum.Magic)
+				isCertainMonsterTrip(Monsters.Barrows.id)(data) && user.getAttackStyles().includes('magic')
 		}
 	},
 	{

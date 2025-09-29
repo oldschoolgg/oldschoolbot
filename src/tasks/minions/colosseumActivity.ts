@@ -1,4 +1,4 @@
-import { randArrItem } from '@oldschoolgg/toolkit';
+import { randArrItem } from '@oldschoolgg/rng';
 import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
 
 import { ColosseumWaveBank, colosseumWaves } from '@/lib/colosseum.js';

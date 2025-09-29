@@ -1,13 +1,9 @@
-import { calcPerHour, Table } from '@oldschoolgg/toolkit';
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { calcPerHour, Table, Time } from '@oldschoolgg/toolkit';
 import { type Bank, convertLVLtoXP } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
 
-applyStaticDefine();
-
 import '../../src/lib/safeglobals.js';
 
-import { applyStaticDefine } from '../../meta.js';
 import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
 import Mining from '../../src/lib/skilling/skills/mining.js';
 import type { Ore } from '../../src/lib/skilling/types.js';

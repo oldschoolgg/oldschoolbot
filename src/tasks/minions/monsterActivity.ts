@@ -1,6 +1,5 @@
-import { percentChance, roll, Time } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { calcPerHour } from '@oldschoolgg/toolkit/util';
+import { percentChance, roll } from '@oldschoolgg/rng';
+import { calcPerHour, Emoji, Time } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';
 

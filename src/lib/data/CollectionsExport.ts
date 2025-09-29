@@ -2,10 +2,6 @@ import { objectEntries } from '@oldschoolgg/toolkit';
 import type { Minigame } from '@prisma/client';
 import { type Bank, type Item, ItemGroups, Items, resolveItems } from 'oldschooljs';
 
-import { growablePets } from '@/lib/growablePets.js';
-import { implings } from '@/lib/implings.js';
-import type { MinigameScore } from '@/lib/settings/minigames.js';
-import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -13,7 +9,11 @@ import {
 	gracefulHoods,
 	gracefulLegs,
 	gracefulTops
-} from './gracefulVariants.js';
+} from '@/lib/data/gracefulVariants.js';
+import { growablePets } from '@/lib/growablePets.js';
+import { implings } from '@/lib/implings.js';
+import type { MinigameScore } from '@/lib/settings/minigames.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
 
 export interface IToReturnCollection {
 	category: string;

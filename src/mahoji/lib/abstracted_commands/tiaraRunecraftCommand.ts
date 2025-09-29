@@ -1,6 +1,5 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Bank, SkillsEnum } from 'oldschooljs';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank } from 'oldschooljs';
 
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import type { TiaraRunecraftActivityTaskOptions } from '@/lib/types/minions.js';
@@ -45,10 +44,10 @@ export async function tiaraRunecraftCommand({
 		boosts.push('10% for Graceful');
 	}
 
-	if (user.skillLevel(SkillsEnum.Agility) >= 90) {
+	if (user.skillsAsLevels.agility >= 90) {
 		tripLength *= 0.9;
 		boosts.push('10% for 90+ Agility');
-	} else if (user.skillLevel(SkillsEnum.Agility) >= 60) {
+	} else if (user.skillsAsLevels.agility >= 60) {
 		tripLength *= 0.95;
 		boosts.push('5% for 60+ Agility');
 	}

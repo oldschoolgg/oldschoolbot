@@ -1,7 +1,7 @@
 import { ActivityGroup, globalConfig } from '@/lib/constants.js';
+import { sql } from '@/lib/postgres.js';
 import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { taskGroupFromActivity } from '@/lib/util/taskGroupFromActivity.js';
-import { sql } from './postgres.js';
 
 async function calculateMinionTaskCounts() {
 	const minionTaskCounts: Record<ActivityGroup, number> = {

@@ -1,7 +1,14 @@
-import { calcWhatPercent, chunk, isFunction, uniqueArr } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { channelIsSendable, makePaginatedMessage } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import {
+	calcWhatPercent,
+	channelIsSendable,
+	chunk,
+	formatDuration,
+	isFunction,
+	makePaginatedMessage,
+	stringMatches,
+	toTitleCase,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import {
 	ApplicationCommandOptionType,
 	type ChatInputCommandInteraction,
@@ -21,7 +28,7 @@ import { Minigames } from '@/lib/settings/minigames.js';
 import Agility from '@/lib/skilling/skills/agility.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import { SkillsArray } from '@/lib/skilling/types.js';
 import { fetchCLLeaderboard } from '@/lib/util/clLeaderboard.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { logError, logErrorForInteraction } from '@/lib/util/logError.js';
@@ -1087,7 +1094,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					required: true,
 					choices: [
 						{ name: 'Overall', value: 'overall' },
-						...Object.values(SkillsEnum).map(i => ({ name: toTitleCase(i), value: i }))
+						...SkillsArray.map(i => ({ name: toTitleCase(i), value: i }))
 					]
 				},
 				{
