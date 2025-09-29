@@ -125,7 +125,7 @@ export async function autoFarm(
 
 		if (totalDuration + duration > maxTripLength) {
 			skippedDueToTripLength = true;
-			break;
+			continue;
 		}
 
 		remainingBank.remove(cost);
