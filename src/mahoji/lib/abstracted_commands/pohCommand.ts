@@ -1,11 +1,9 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
 import { pohImageGenerator } from '@/lib/canvas/pohImage.js';
 import { BitField } from '@/lib/constants.js';
 import { GroupedPohObjects, getPOHObject, itemsNotRefundable, PoHObjects } from '@/lib/poh/index.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
@@ -73,7 +71,7 @@ export async function pohWallkitCommand(user: MUser, input: string) {
 	return makePOHImage(user);
 }
 
-export async function pohBuildCommand(interaction: ChatInputCommandInteraction, user: MUser, name: string) {
+export async function pohBuildCommand(interaction: MInteraction, user: MUser, name: string) {
 	const poh = await getPOH(user.id);
 
 	if (!name) {
@@ -113,7 +111,7 @@ export async function pohBuildCommand(interaction: ChatInputCommandInteraction, 
 		if (inPlace !== null) {
 			str += ` You will lose the ${getPOHObject(inPlace).name} that you currently have there.`;
 		}
-		await handleMahojiConfirmation(interaction, str);
+		await interaction.confirmation(str);
 		await user.removeItemsFromBank(obj.itemCost);
 		updateBankSetting('construction_cost_bank', obj.itemCost);
 	}

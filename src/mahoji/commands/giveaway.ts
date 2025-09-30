@@ -1,12 +1,5 @@
 import { randInt } from '@oldschoolgg/rng';
-import {
-	channelIsSendable,
-	chunk,
-	Emoji,
-	makeComponents,
-	makeEphemeralPaginatedMessage,
-	Time
-} from '@oldschoolgg/toolkit';
+import { channelIsSendable, chunk, Emoji, makeComponents, Time } from '@oldschoolgg/toolkit';
 import type { Giveaway } from '@prisma/client';
 import { Duration } from '@sapphire/time-utilities';
 import {
@@ -28,9 +21,8 @@ import { giveawayCache } from '@/lib/cache.js';
 import { patronFeatures } from '@/lib/constants.js';
 import { marketPriceOfBank } from '@/lib/marketPrices.js';
 import { generateGiveawayContent } from '@/lib/util/giveaway.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
-import { logError, logErrorForInteraction } from '@/lib/util/logError.js';
+import { logError } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isModOrAdmin } from '@/lib/util.js';
@@ -151,8 +143,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 			}
 
 			if (interaction) {
-				await handleMahojiConfirmation(
-					interaction,
+				await interaction.confirmation(
 					`Are you sure you want to do a giveaway with these items? You cannot cancel the giveaway or retrieve the items back afterwards: ${bank}`
 				);
 			}
@@ -280,18 +271,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 				embeds: [new EmbedBuilder().setDescription(chunkLines.join('\n'))]
 			}));
 
-			await makeEphemeralPaginatedMessage(
-				interaction,
-				pages,
-				(err, itx) => {
-					if (itx) {
-						logErrorForInteraction(err, itx);
-					} else {
-						logError(err);
-					}
-				},
-				user.id
-			);
+			await interaction.makePaginatedMessage({ pages, ephemeral: true });
 		}
 	}
 };

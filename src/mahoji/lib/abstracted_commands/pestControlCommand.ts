@@ -1,12 +1,10 @@
 import { formatDuration, reduceNumByPercent, stringMatches, Time, toTitleCase } from '@oldschoolgg/toolkit';
-import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
 import { userhasDiaryTier, WesternProv } from '@/lib/diaries.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { hasSkillReqs, isValidSkill } from '@/lib/util/smallUtils.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
@@ -231,12 +229,7 @@ export async function pestControlStartCommand(user: MUser, channelID: string) {
 	return str;
 }
 
-export async function pestControlXPCommand(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	skillName: string,
-	amount: number
-) {
+export async function pestControlXPCommand(interaction: MInteraction, user: MUser, skillName: string, amount: number) {
 	if (!Object.keys(xpMultiplier).includes(skillName) || !isValidSkill(skillName)) {
 		return "That's not a valid skill to buy XP for.";
 	}
@@ -254,8 +247,7 @@ export async function pestControlXPCommand(
 	if (balance < amount) {
 		return `You cannot afford this, because you have only ${balance} points.`;
 	}
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to spend ${amount} points on ${xpPerPoint * amount} ${toTitleCase(skillName)} XP?`
 	);
 	await userStatsUpdate(

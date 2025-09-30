@@ -1,7 +1,7 @@
 import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
-import { type AbstractCommand, type CommandOptions, dateFm, Emoji, PerkTier } from '@oldschoolgg/toolkit';
+import { type CommandOptions, dateFm, Emoji, PerkTier } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import * as dotenv from 'dotenv';
 import { convertLVLtoXP, resolveItems } from 'oldschooljs';
@@ -358,7 +358,8 @@ export const projectiles = {
 export type ProjectileType = keyof typeof projectiles;
 
 const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
-export function shouldTrackCommand(command: AbstractCommand, args: CommandOptions) {
+export function shouldTrackCommand(command: OSBMahojiCommand, args: CommandOptions) {
+	if (command.name === 'monkey') return false;
 	if (!Array.isArray(args)) return true;
 	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
 		if (command.name === name && typeof args[0] === 'string' && subs.includes(args[0])) {

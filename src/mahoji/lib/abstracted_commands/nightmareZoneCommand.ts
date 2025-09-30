@@ -7,7 +7,6 @@ import {
 	sumArr,
 	Time
 } from '@oldschoolgg/toolkit';
-import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
 import type { NMZStrategy } from '@/lib/constants.js';
@@ -18,7 +17,6 @@ import type { Skills } from '@/lib/types/index.js';
 import type { NightmareZoneActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
@@ -410,7 +408,7 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 }
 
 export async function nightmareZoneShopCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	user: MUser,
 	item: string | undefined,
 	quantity = 1
@@ -446,8 +444,7 @@ export async function nightmareZoneShopCommand(
 	}
 
 	const loot = new Bank(shopItem.output).multiply(quantity);
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to spend **${cost.toLocaleString()}** Nightmare Zone points to buy **${loot}**?`
 	);
 

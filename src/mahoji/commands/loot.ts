@@ -2,7 +2,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 
 import { PerkTier } from '@/lib/constants.js';
 import { getAllTrackedLootForUser, getDetailsOfSingleTrackedLoot } from '@/lib/lootTrack.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 
 export const lootCommand: OSBMahojiCommand = {
 	name: 'loot',
@@ -86,7 +85,7 @@ export const lootCommand: OSBMahojiCommand = {
 			return getDetailsOfSingleTrackedLoot(user, trackedLoot);
 		}
 		if (options.reset) {
-			await handleMahojiConfirmation(interaction, 'Are you sure you want to reset this loot tracker?');
+			await interaction.confirmation('Are you sure you want to reset this loot tracker?');
 			await prisma.lootTrack.delete({
 				where: {
 					id: trackedLoot.id

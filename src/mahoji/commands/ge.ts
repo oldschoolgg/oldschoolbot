@@ -16,8 +16,6 @@ import { PerkTier } from '@/lib/constants.js';
 import { createGECancelButton, GrandExchange } from '@/lib/grandExchange.js';
 import { marketPricemap } from '@/lib/marketPrices.js';
 import { createChart } from '@/lib/util/chart.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 import { itemOption, tradeableItemArr } from '@/mahoji/lib/mahojiCommandOptions.js';
@@ -259,7 +257,7 @@ export const geCommand: OSBMahojiCommand = {
 		price?: { item: string };
 		view?: { item?: string };
 	}>) => {
-		await deferInteraction(interaction);
+		await interaction.defer();
 		const user = await mUserFetch(userID);
 
 		if (options.price) {
@@ -469,7 +467,7 @@ ORDER BY
 
 			if ('error' in result) return result.error;
 
-			await handleMahojiConfirmation(interaction, result.confirmationStr);
+			await interaction.confirmation(result.confirmationStr);
 		}
 
 		if (options.cancel) {

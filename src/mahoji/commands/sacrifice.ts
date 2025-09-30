@@ -4,8 +4,6 @@ import { Bank, type Item, type ItemBank, resolveItems, toKMB } from 'oldschooljs
 
 import { cats } from '@/lib/growablePets.js';
 import minionIcons from '@/lib/minions/data/minionIcons.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
@@ -93,7 +91,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			);
 		}
 
-		await deferInteraction(interaction);
+		await interaction.defer();
 
 		const bankToSac = parseBank({
 			inputStr: options.items,
@@ -122,8 +120,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			const [item, quantity] = bankToSac.items()[0];
 			const deathRunes = quantity * 200;
 
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`${user.badgedUsername}.. are you sure you want to sacrifice your ${item.name}${
 					bankToSac.length > 1 ? 's' : ''
 				} for ${deathRunes} death runes? *Note: These are cute, fluffy little cats.*`
@@ -148,8 +145,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			}
 		}
 
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			`${user}, are you sure you want to sacrifice ${truncateString(bankToSac.toString(), 15000)}? This will add ${totalPrice.toLocaleString()} (${toKMB(
 				totalPrice
 			)}) to your sacrificed amount.`

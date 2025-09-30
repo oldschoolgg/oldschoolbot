@@ -11,7 +11,6 @@ import { Bank, type ItemBank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { BOT_TYPE } from '@/lib/constants.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
@@ -213,8 +212,7 @@ ${truncateString(giftsOwnedButNotOpened.map(g => `${g.name ? `${g.name} (${g.id}
 				return 'You do not have the required items to create this gift box.';
 			}
 
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`Are you sure you want to create this gift box? You will **lose these items**, and you **cannot get the items back**!
 
 ${items}`
@@ -260,8 +258,7 @@ ${items}`
 				return 'Invalid gift box.';
 			}
 
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`Are you sure you want to send this gift box (${giftBox.id}) to ${recipient.badgedUsername}? You cannot get it back.`
 			);
 			await prisma.giftBox.update({

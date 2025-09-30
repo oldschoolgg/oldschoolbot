@@ -1,4 +1,4 @@
-import { channelIsSendable, chunk, Emoji, makePaginatedMessage, PaginatedMessage } from '@oldschoolgg/toolkit';
+import { channelIsSendable, chunk, Emoji } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, codeBlock, EmbedBuilder } from 'discord.js';
 import type { Bank } from 'oldschooljs';
 
@@ -8,8 +8,6 @@ import { PerkTier } from '@/lib/constants.js';
 import type { Flags } from '@/lib/minions/types.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
 import { BankSortMethods } from '@/lib/sorts.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
-import { logError, logErrorForInteraction } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { filterOption, itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
@@ -117,7 +115,7 @@ export const bankCommand: OSBMahojiCommand = {
 		flag?: BankFlag;
 		flag_extra?: BankFlag;
 	}>) => {
-		if (interaction) await deferInteraction(interaction);
+		if (interaction) await interaction.defer();
 		const mUser = await mUserFetch(user.id);
 		const baseBank = mUser.bankWithGP;
 
@@ -179,19 +177,7 @@ export const bankCommand: OSBMahojiCommand = {
 			const channel = globalClient.channels.cache.get(channelID.toString());
 			if (!channelIsSendable(channel)) return 'Failed to send paginated bank message, sorry.';
 
-			makePaginatedMessage(
-				channel,
-				pages,
-				(err, itx) => {
-					if (itx) {
-						logErrorForInteraction(err, itx);
-					} else {
-						logError(err);
-					}
-				},
-				user.id
-			);
-			return { content: 'Here is your selected bank:', ephemeral: true };
+			return interaction.makePaginatedMessage({ pages });
 		}
 		if (options.format === 'json') {
 			const json = JSON.stringify(baseBank.toJSON());
@@ -216,12 +202,9 @@ export const bankCommand: OSBMahojiCommand = {
 
 		const result = await getBankPage(params);
 
-		const channel = globalClient.channels.cache.get(channelID);
 		const bankSize = Math.ceil(bank.length / 56);
 
 		if (
-			!channel ||
-			!channelIsSendable(channel) ||
 			mahojiFlags.includes('show_all') ||
 			mahojiFlags.includes('wide') ||
 			mUser.perkTier() < PerkTier.Two ||
@@ -230,27 +213,14 @@ export const bankCommand: OSBMahojiCommand = {
 			return result;
 		}
 
-		const m = new PaginatedMessage({
-			onError: (err, itx) => {
-				if (itx) {
-					logErrorForInteraction(err, itx);
-				} else {
-					logError(err);
-				}
-			},
+		return interaction.makePaginatedMessage({
 			pages: {
 				numPages: bankSize,
 				generate: async ({ currentPage }) => {
 					return getBankPage({ ...params, page: currentPage });
 				}
 			},
-			channel,
 			startingPage: Number(flags.page)
 		});
-		m.run([user.id]);
-		return {
-			content: 'Click the buttons below to view different pages of your bank.',
-			ephemeral: true
-		};
 	}
 };

@@ -1,5 +1,4 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
 import type { TripBuyable } from '@/lib/data/buyables/tripBuyables.js';
@@ -7,7 +6,6 @@ import type { BuyActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { calculateShopBuyCost } from '@/lib/util/calculateShopBuyCost.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function buyingTripCommand(
@@ -15,7 +13,7 @@ export async function buyingTripCommand(
 	channelID: string,
 	buyable: TripBuyable,
 	quantity: number | null,
-	interaction: ChatInputCommandInteraction
+	interaction: MInteraction
 ) {
 	let quantityPerHour = buyable.quantityPerHour!;
 
@@ -52,8 +50,7 @@ export async function buyingTripCommand(
 		return `You need ${cost} to buy ${quantity}x ${itemDisplayName}.`;
 	}
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Buying ${quantity}x ${itemDisplayName} will cost ${totalCost.toLocaleString()} GP (avg ${averageCost.toLocaleString()} ea) and take ${formatDuration(duration)}. Please confirm.`
 	);
 

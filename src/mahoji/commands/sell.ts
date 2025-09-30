@@ -6,7 +6,6 @@ import { clamp } from 'remeda';
 
 import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import { NestBoxesTable } from '@/lib/simulation/misc.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
@@ -145,10 +144,7 @@ export const sellCommand: OSBMahojiCommand = {
 				loot.add('Abyssal pearls', bankToSell.amount('Abyssal green dye') * 50);
 			}
 
-			await handleMahojiConfirmation(
-				interaction,
-				`${user}, please confirm you want to sell ${abbyBank} for **${loot}**.`
-			);
+			await interaction.confirmation(`${user}, please confirm you want to sell ${abbyBank} for **${loot}**.`);
 
 			await user.transactItems({
 				collectionLog: false,
@@ -188,10 +184,7 @@ export const sellCommand: OSBMahojiCommand = {
 				loot.add('Anima-infused bark', bankToSell.amount('Sturdy beehive parts') * 25);
 			}
 
-			await handleMahojiConfirmation(
-				interaction,
-				`${user}, please confirm you want to sell ${forestryBank} for **${loot}**.`
-			);
+			await interaction.confirmation(`${user}, please confirm you want to sell ${forestryBank} for **${loot}**.`);
 
 			await user.transactItems({
 				collectionLog: false,
@@ -208,10 +201,7 @@ export const sellCommand: OSBMahojiCommand = {
 
 			loot.add('Molch pearl', tenchBank.amount('Golden tench') * 100);
 
-			await handleMahojiConfirmation(
-				interaction,
-				`${user}, please confirm you want to sell ${tenchBank} for **${loot}**.`
-			);
+			await interaction.confirmation(`${user}, please confirm you want to sell ${tenchBank} for **${loot}**.`);
 
 			await user.transactItems({ itemsToRemove: tenchBank, itemsToAdd: loot });
 			return `You exchanged ${tenchBank} and received: ${loot}.`;
@@ -249,8 +239,7 @@ export const sellCommand: OSBMahojiCommand = {
 			});
 		}
 
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			`${user}, please confirm you want to sell ${bankToSell} for **${totalPrice.toLocaleString()}** (${toKMB(
 				totalPrice
 			)}).`

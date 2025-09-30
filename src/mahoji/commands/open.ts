@@ -2,7 +2,6 @@ import { truncateString } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { allOpenables, allOpenablesIDs } from '@/lib/openables.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import {
 	abstractedOpenCommand,
 	abstractedOpenUntilCommand,
@@ -70,7 +69,7 @@ export const openCommand: OSBMahojiCommand = {
 		options,
 		interaction
 	}: CommandRunOptions<{ name?: string; quantity?: number; open_until?: string; result_quantity?: number }>) => {
-		if (interaction) await deferInteraction(interaction);
+		if (interaction) await interaction.defer();
 		const user = await mUserFetch(userID);
 		if (!options.name) {
 			return `You have... ${truncateString(

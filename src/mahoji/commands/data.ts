@@ -1,6 +1,5 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { dataPoints, statsCommand } from '@/mahoji/lib/abstracted_commands/statCommand.js';
 
 export const dataCommand: OSBMahojiCommand = {
@@ -28,7 +27,7 @@ export const dataCommand: OSBMahojiCommand = {
 	],
 	run: async ({ interaction, options, userID }: CommandRunOptions<{ name: string }>) => {
 		const user = await mUserFetch(userID);
-		await deferInteraction(interaction);
+		await interaction.defer();
 		return statsCommand(user, options.name);
 	}
 };

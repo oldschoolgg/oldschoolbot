@@ -1,5 +1,5 @@
 import { calcPerHour, formatDuration } from '@oldschoolgg/toolkit';
-import { ChannelType, type ChatInputCommandInteraction, type TextChannel, userMention } from 'discord.js';
+import { ChannelType, type TextChannel, userMention } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -7,21 +7,15 @@ import { setupParty } from '@/lib/party.js';
 import { calculateNexDetails, checkNexUser } from '@/lib/simulation/nex.js';
 import type { NexTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
-export async function nexCommand(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	solo: boolean | undefined
-) {
+export async function nexCommand(interaction: MInteraction, user: MUser, channelID: string, solo: boolean | undefined) {
 	const ownerCheck = checkNexUser(user);
 	if (ownerCheck[1]) {
 		return `You can't start a Nex mass: ${ownerCheck[1]}`;
 	}
 
-	await deferInteraction(interaction);
+	await interaction.defer();
 
 	let mahojiUsers: MUser[] = [];
 

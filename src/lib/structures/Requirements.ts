@@ -15,7 +15,6 @@ import { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { Skills } from '@/lib/types/index.js';
 import { formatList } from '@/lib/util/smallUtils.js';
 import type { ParsedUnit } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
-import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
 export interface RequirementFailure {
 	reason: string;
@@ -362,7 +361,7 @@ export class Requirements {
 
 	static async fetchRequiredData(user: MUser) {
 		const minigames = await user.fetchMinigames();
-		const stashUnits = await getParsedStashUnits(user.id);
+		const stashUnits = await user.fetchStashUnits();
 		const stats = await MUserStats.fromID(user.id);
 		const roboChimpUser = await user.fetchRobochimpUser();
 		const clueCounts =

@@ -15,13 +15,10 @@ import type { MinigameName } from '@/lib/settings/minigames.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseStaticTimeInterval, staticTimeIntervals } from '@/lib/util/smallUtils.js';
 import { getUsername, isGroupActivity } from '@/lib/util.js';
 import {
-	getParsedStashUnits,
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand,
 	stashUnitUnfillCommand,
@@ -951,7 +948,8 @@ export const toolsCommand: OSBMahojiCommand = {
 							description: 'The specific unit you want to unfill.',
 							required: true,
 							autocomplete: async (value, user) => {
-								return (await getParsedStashUnits(user.id))
+								const mUser = await mUserFetch(user.id);
+								return (await mUser.fetchStashUnits())
 									.filter(i => i.builtUnit !== undefined && i.builtUnit.items_contained.length > 0)
 									.filter(i =>
 										!value ? true : i.unit.desc.toLowerCase().includes(value.toLowerCase())
@@ -1011,7 +1009,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			unfill?: { unit: string };
 		};
 	}>) => {
-		await deferInteraction(interaction);
+		await interaction.defer();
 		const mahojiUser = await mUserFetch(userID);
 
 		if (options.patron) {
@@ -1075,8 +1073,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			if (patron.activity_export) {
 				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				const promise = activityExport(mahojiUser.user);
-				await handleMahojiConfirmation(
-					interaction,
+				await interaction.confirmation(
 					'I will send a file containing ALL of your activities, intended for advanced users who want to use the data. Anyone in this channel will be able to see and download the file, are you sure you want to do this?'
 				);
 				const result = await promise;
@@ -1102,7 +1099,7 @@ export const toolsCommand: OSBMahojiCommand = {
 		if (options.stash_units) {
 			if (options.stash_units.view) {
 				return stashUnitViewCommand(
-					mahojiUser.user,
+					mahojiUser,
 					options.stash_units.view.unit,
 					options.stash_units.view.not_filled
 				);
@@ -1115,7 +1112,7 @@ export const toolsCommand: OSBMahojiCommand = {
 		}
 		if (options.user?.temp_cl) {
 			if (options.user.temp_cl.reset === true) {
-				await handleMahojiConfirmation(interaction, 'Are you sure you want to reset your temporary CL?');
+				await interaction.confirmation('Are you sure you want to reset your temporary CL?');
 				await mahojiUser.update({
 					temp_cl: {},
 					last_temp_cl_reset: new Date()

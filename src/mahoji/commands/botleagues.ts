@@ -4,7 +4,6 @@ import { Bank, Items } from 'oldschooljs';
 
 import { leagueBuyables } from '@/lib/data/leaguesBuyables.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { getUsername } from '@/lib/util.js';
 import { doMenu } from '@/mahoji/commands/leaderboard.js';
 
@@ -80,7 +79,6 @@ export const botLeaguesCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		userID,
-		channelID,
 		interaction
 	}: CommandRunOptions<{
 		help?: {};
@@ -159,11 +157,9 @@ ${leaguesTrophiesBuyables
 				},
 				take: 100
 			});
-			await deferInteraction(interaction);
+			await interaction.defer();
 			doMenu(
 				interaction,
-				user,
-				channelID,
 				await Promise.all(
 					chunk(result, 10).map(async subList =>
 						(

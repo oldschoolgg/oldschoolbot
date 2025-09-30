@@ -7,7 +7,6 @@ import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.
 import { simulatedKillables } from '@/lib/simulation/simulatedKillables.js';
 import { slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { Workers } from '@/lib/workers/index.js';
 
@@ -92,7 +91,7 @@ export const killCommand: OSBMahojiCommand = {
 		interaction
 	}: CommandRunOptions<{ name: string; quantity: number; catacombs: boolean; master: string }>) => {
 		const user = await mUserFetch(userID);
-		await deferInteraction(interaction);
+		await interaction.defer();
 		if (!ALL_VALID_KILLABLE_MONSTERS.some(i => i.name.toLowerCase() === options.name.toLowerCase())) {
 			return `That's not a valid monster to simulate killing.`;
 		}

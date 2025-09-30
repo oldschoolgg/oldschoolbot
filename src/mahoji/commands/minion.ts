@@ -21,7 +21,6 @@ import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { getPeakTimesString } from '@/lib/util/peaks.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
@@ -479,7 +478,7 @@ export const minionCommand: OSBMahojiCommand = {
 			const res = FormattedCustomEmoji.exec(options.set_icon.icon);
 			if (!res || !res[0]) return "That's not a valid emoji.";
 
-			await handleMahojiConfirmation(interaction, 'Icons cannot be inappropriate or NSFW. Do you understand?');
+			await interaction.confirmation('Icons cannot be inappropriate or NSFW. Do you understand?');
 			await user.update({
 				minion_icon: res[0]
 			});

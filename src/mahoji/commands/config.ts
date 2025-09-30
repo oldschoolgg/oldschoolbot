@@ -13,7 +13,6 @@ import type { activity_type_enum } from '@prisma/client';
 import {
 	ApplicationCommandOptionType,
 	bold,
-	type ChatInputCommandInteraction,
 	EmbedBuilder,
 	type Guild,
 	type HexColorString,
@@ -34,7 +33,6 @@ import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js'
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerUtil.js';
 import { BankSortMethods } from '@/lib/sorts.js';
 import { emojiServers } from '@/lib/util/cachedUserIDs.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
@@ -47,9 +45,10 @@ interface UserConfigToggle {
 	bit: BitField;
 	canToggle?: (
 		user: MUser,
-		interaction?: ChatInputCommandInteraction
+		interaction?: MInteraction
 	) => Promise<{ result: false; message: string } | { result: true; message?: string }>;
 }
+
 const toggles: UserConfigToggle[] = [
 	{
 		name: 'Disable Random Events',
@@ -108,7 +107,7 @@ const toggles: UserConfigToggle[] = [
 				];
 				const channel = globalClient.channels.cache.get(interaction.channelId);
 				if (!channelIsSendable(channel)) return { result: false, message: 'Could not find channel.' };
-				await deferInteraction(interaction);
+				await interaction.defer();
 				const buttons = new DynamicButtons({
 					channel: channel,
 					usersWhoCanInteract: [user.id],
@@ -171,7 +170,7 @@ const toggles: UserConfigToggle[] = [
 	}
 ];
 
-async function handleToggle(user: MUser, name: string, interaction?: ChatInputCommandInteraction) {
+async function handleToggle(user: MUser, name: string, interaction?: MInteraction) {
 	const toggle = toggles.find(i => stringMatches(i.name, name));
 	if (!toggle) return 'Invalid toggle name.';
 	let messageExtra = '';

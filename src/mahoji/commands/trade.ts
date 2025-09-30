@@ -3,8 +3,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
@@ -71,7 +69,8 @@ export const tradeCommand: OSBMahojiCommand = {
 		filter?: string;
 		search?: string;
 	}>) => {
-		await deferInteraction(interaction);
+		await interaction.defer();
+
 		if (!guildID) return 'You can only run this in a server.';
 		const senderUser = await mUserFetch(userID);
 		const senderAPIUser = user;
@@ -121,14 +120,13 @@ export const tradeCommand: OSBMahojiCommand = {
 		if (itemsSent.length === 0 && itemsReceived.length === 0) return "You can't make an empty trade.";
 		if (!senderUser.owns(itemsSent)) return "You don't own those items.";
 
-		await handleMahojiConfirmation(
-			interaction,
-			`**${senderUser}** is giving: ${formatBankForDisplay(itemsSent)}
+		await interaction.confirmation({
+			content: `**${senderUser}** is giving: ${formatBankForDisplay(itemsSent)}
 **${recipientUser}** is giving: ${formatBankForDisplay(itemsReceived)}
 
 Both parties must click confirm to make the trade.`,
-			[recipientUser.id, senderUser.id]
-		);
+			users: [recipientUser.id, senderUser.id]
+		});
 
 		await senderUser.sync();
 		await recipientUser.sync();

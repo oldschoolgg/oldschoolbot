@@ -16,19 +16,12 @@ import {
 	uniqueArr
 } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import {
-	ApplicationCommandOptionType,
-	bold,
-	type ChatInputCommandInteraction,
-	type User,
-	userMention
-} from 'discord.js';
+import { ApplicationCommandOptionType, bold, type User, userMention } from 'discord.js';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { clImageGenerator } from '@/lib/collectionLogTask.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { getUsername, getUsernameSync } from '@/lib/util.js';
@@ -81,18 +74,11 @@ export async function fetchBingosThatUserIsInvolvedIn(userID: string) {
 	return bingos;
 }
 
-async function bingoTeamLeaderboard(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	bingo: BingoManager
-): CommandResponse {
+async function bingoTeamLeaderboard(interaction: MInteraction, bingo: BingoManager): CommandResponse {
 	const { teams } = await bingo.fetchAllParticipants();
 
 	doMenu(
 		interaction,
-		user,
-		channelID,
 		chunk(teams, 10).map((subList, i) =>
 			subList
 				.map(
@@ -112,7 +98,7 @@ async function bingoTeamLeaderboard(
 }
 
 async function makeTeamCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	bingo: BingoManager,
 	creatorUser: MUser,
 	options: MakeTeamOptions
@@ -134,13 +120,12 @@ async function makeTeamCommand(
 	if (allUsers.length !== bingo.teamSize) return `Your team must have only ${bingo.teamSize} users, no more or less.`;
 	if (allUsers.some(u => BLACKLISTED_USERS.has(u.id))) return 'You cannot have blacklisted users on your team.';
 
-	await handleMahojiConfirmation(
-		interaction,
-		`${allUsers.map(i => userMention(i.id)).join(', ')} - Do you want to join a bingo team with eachother? All ${
+	await interaction.confirmation({
+		content: `${allUsers.map(i => userMention(i.id)).join(', ')} - Do you want to join a bingo team with eachother? All ${
 			bingo.teamSize
 		} users need to confirm. ${bold(`You will be charged ${toKMB(bingo.ticketPrice)}`)}`,
-		allUsers.map(i => i.id)
-	);
+		users: allUsers.map(i => i.id)
+	});
 
 	for (const user of allUsers) {
 		const teamWithUser = await bingo.findTeamWithUser(user.id);
@@ -185,7 +170,7 @@ async function makeTeamCommand(
 	return "Successfully created a bingo team! Have fun. You can leave the team before the bingo starts if you'd like, but doing so will delete the team, causing all users to have to join or make a new team.";
 }
 
-async function leaveTeamCommand(interaction: ChatInputCommandInteraction, bingo: BingoManager) {
+async function leaveTeamCommand(interaction: MInteraction, bingo: BingoManager) {
 	if (bingo.isActive()) return "You can't leave a bingo team after bingo has started.";
 	if (bingo.wasFinalized) {
 		return "You can't leave a bingo team after bingo has ended.";
@@ -194,8 +179,7 @@ async function leaveTeamCommand(interaction: ChatInputCommandInteraction, bingo:
 	const team = await bingo.findTeamWithUser(interaction.user.id);
 	if (!team) return "You're not in a team for this bingo.";
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		'Are you sure you want to leave your team? Doing so will delete/disband the team, and all of you will need to join a new team.'
 	);
 
@@ -565,8 +549,7 @@ export const bingoCommand: OSBMahojiCommand = {
 	run: async ({
 		userID,
 		options,
-		interaction,
-		channelID
+		interaction
 	}: CommandRunOptions<{
 		items?: {
 			bingo: string;
@@ -669,7 +652,7 @@ export const bingoCommand: OSBMahojiCommand = {
 		if (options.leaderboard) {
 			const bingo = await getBingoFromUserInput(options.leaderboard.bingo);
 			if (!bingo) return 'Invalid bingo.';
-			return bingoTeamLeaderboard(interaction, user, channelID, new BingoManager(bingo));
+			return bingoTeamLeaderboard(interaction, new BingoManager(bingo));
 		}
 
 		if (options.create_bingo) {
@@ -757,7 +740,7 @@ ${Emoji.Warning} **You will pay a ${toKMB(fee)} GP fee to create this bingo, you
 			}
 `;
 
-			await handleMahojiConfirmation(interaction, disclaimer);
+			await interaction.confirmation(disclaimer);
 
 			await user.removeItemsFromBank(new Bank().add('Coins', fee));
 			await prisma.bingo.create({
@@ -788,8 +771,7 @@ ${Emoji.Warning} **You will pay a ${toKMB(fee)} GP fee to create this bingo, you
 					return 'This bingo was already finalized.';
 				}
 				const loot = new Bank().add('Coins', await bingo.countTotalGPInPrizePool());
-				await handleMahojiConfirmation(
-					interaction,
+				await interaction.confirmation(
 					`Are you sure you want to end the Bingo? ${bold('This cannot be undone.')}
 
 The creator of the bingo (${userMention(
@@ -894,10 +876,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 					return 'Invalid tile to remove.';
 				}
 
-				await handleMahojiConfirmation(
-					interaction,
-					`Are you sure you want to remove this tile?\n\n${tileName}`
-				);
+				await interaction.confirmation(`Are you sure you want to remove this tile?\n\n${tileName}`);
 				await prisma.bingo.update({
 					where: {
 						id: bingo.id
@@ -921,8 +900,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 					return `You need at least ${cost} to add that much GP to the prize pool.`;
 				}
 
-				await handleMahojiConfirmation(
-					interaction,
+				await interaction.confirmation(
 					`Are you sure you want to add ${cost} to the prize pool? You cannot undo this.`
 				);
 

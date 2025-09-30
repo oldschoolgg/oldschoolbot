@@ -1,16 +1,8 @@
 import { randInt, shuffleArr } from '@oldschoolgg/rng';
 import { channelIsSendable, chunk, noOp, SimpleTable, sleep } from '@oldschoolgg/toolkit';
-import {
-	ActionRowBuilder,
-	type BaseMessageOptions,
-	ButtonBuilder,
-	ButtonStyle,
-	type ChatInputCommandInteraction
-} from 'discord.js';
+import { ActionRowBuilder, type BaseMessageOptions, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Bank, toKMB } from 'oldschooljs';
 
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '@/mahoji/mahojiSettings.js';
 
 interface Button {
@@ -86,11 +78,11 @@ function determineWinnings(bet: number, buttons: ButtonInstance[]) {
 }
 
 export async function slotsCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	user: MUser,
 	_amount: string | undefined
 ): CommandResponse {
-	await deferInteraction(interaction);
+	await interaction.defer();
 	const amount = mahojiParseNumber({ input: _amount, min: 1 });
 	if (user.isIronman) {
 		return "Ironmen can't gamble! Go pickpocket some men for GP.";
@@ -110,8 +102,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 	const channel = globalClient.channels.cache.get(interaction.channelId);
 	if (!channelIsSendable(channel)) return 'Invalid channel.';
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.`
 	);
 	await user.sync();

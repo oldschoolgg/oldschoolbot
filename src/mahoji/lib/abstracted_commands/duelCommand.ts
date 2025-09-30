@@ -8,11 +8,10 @@ import {
 	sleep,
 	Time
 } from '@oldschoolgg/toolkit';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { mahojiParseNumber, updateClientGPTrackSetting, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 async function checkBal(user: MUser, amount: number) {
@@ -21,12 +20,12 @@ async function checkBal(user: MUser, amount: number) {
 
 export async function duelCommand(
 	user: MUser,
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	duelUser: MUser,
 	targetAPIUser: MahojiUserOption,
 	duelAmount?: string
 ) {
-	await deferInteraction(interaction);
+	await interaction.defer();
 
 	const duelSourceUser = user;
 	const duelTargetUser = duelUser;

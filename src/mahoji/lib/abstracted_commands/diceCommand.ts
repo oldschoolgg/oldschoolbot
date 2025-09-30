@@ -1,8 +1,6 @@
 import { cryptoRng } from '@oldschoolgg/rng';
-import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, toKMB } from 'oldschooljs';
 
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import {
 	mahojiParseNumber,
 	updateClientGPTrackSetting,
@@ -10,8 +8,8 @@ import {
 	userStatsUpdate
 } from '@/mahoji/mahojiSettings.js';
 
-export async function diceCommand(user: MUser, interaction: ChatInputCommandInteraction, diceamount?: string) {
-	await deferInteraction(interaction);
+export async function diceCommand(user: MUser, interaction: MInteraction, diceamount?: string) {
+	await interaction.defer();
 	const roll = cryptoRng.randInt(1, 100);
 	const amount = mahojiParseNumber({ input: diceamount, min: 1, max: 500_000_000_000 });
 

@@ -57,29 +57,27 @@ function getCommandArgs(
 
 export function makeCommandUsage({
 	userID,
-	channelID,
-	guildID,
 	commandName,
 	args,
 	isContinue,
 	inhibited,
-	continueDeltaMillis
+	continueDeltaMillis,
+	interaction
 }: {
 	userID: string | bigint;
-	channelID: string | bigint;
-	guildID?: string | bigint | null;
 	commandName: string;
 	args: CommandOptions;
 	isContinue: null | boolean;
 	inhibited: boolean;
+	interaction: MInteraction;
 	continueDeltaMillis: number | null;
 }): Prisma.CommandUsageCreateInput {
 	return {
 		user_id: BigInt(userID),
 		command_name: commandName as command_name_enum,
 		args: getCommandArgs(commandName, args),
-		channel_id: BigInt(channelID),
-		guild_id: guildID ? BigInt(guildID) : null,
+		channel_id: BigInt(interaction.channelId),
+		guild_id: interaction.guildId ? BigInt(interaction.guildId) : null,
 		is_continue: isContinue ?? undefined,
 		inhibited,
 		continue_delta_millis: continueDeltaMillis

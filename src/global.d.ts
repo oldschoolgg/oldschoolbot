@@ -1,19 +1,22 @@
-import type { AbstractCommandAttributes, CommandOptions, ICommand, MahojiClient } from '@oldschoolgg/toolkit';
-import type { BaseInteraction, ChatInputCommandInteraction, InteractionReplyOptions, User } from 'discord.js';
+import type { AbstractCommandAttributes, CommandOptions, ICommand, SpecialResponse } from '@oldschoolgg/toolkit';
+import type { InteractionReplyOptions, User } from 'discord.js';
+
+import type { MMember } from '@/lib/structures/MInteraction.js';
 
 declare global {
+	type MInteraction = import('@/lib/structures/MInteraction.js').MInteraction;
+	type CompatibleResponse = import('@/lib/structures/PaginatedMessage.js').CompatibleResponse;
 	interface CommandRunOptions<T extends CommandOptions = {}> {
-		interaction: ChatInputCommandInteraction;
+		interaction: MInteraction;
 		options: T;
-		client: MahojiClient;
 		user: User;
-		member?: BaseInteraction['member'];
+		member?: MMember;
 		channelID: string;
 		guildID?: string;
 		userID: string;
 	}
 
-	type CommandResponse = Promise<null | string | InteractionReplyOptions>;
+	type CommandResponse = Promise<null | string | InteractionReplyOptions | SpecialResponse>;
 
 	interface OSBMahojiCommand extends ICommand {
 		attributes?: Omit<AbstractCommandAttributes, 'description'>;

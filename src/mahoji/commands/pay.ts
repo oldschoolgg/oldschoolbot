@@ -3,8 +3,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
 import { addToGPTaxBalance, mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
@@ -34,7 +32,7 @@ export const payCommand: OSBMahojiCommand = {
 		user: MahojiUserOption;
 		amount: string;
 	}>) => {
-		await deferInteraction(interaction);
+		await interaction.defer();
 		const user = await mUserFetch(userID.toString());
 		const recipient = await mUserFetch(options.user.user.id);
 		const amount = mahojiParseNumber({ input: options.amount, min: 1, max: 500_000_000_000 });
@@ -51,8 +49,7 @@ export const payCommand: OSBMahojiCommand = {
 		if (recipient.isBusy) return 'That user is busy right now.';
 
 		if (amount > 500_000_000) {
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`Are you sure you want to pay ${options.user.user.username}#${options.user.user.discriminator} (ID: ${
 					recipient.id
 				}) ${amount.toLocaleString()}?`

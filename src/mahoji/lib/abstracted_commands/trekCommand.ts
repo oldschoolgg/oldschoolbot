@@ -1,6 +1,5 @@
 import { percentChance, randInt } from '@oldschoolgg/rng';
 import { formatDuration, objectEntries, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
-import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
@@ -12,7 +11,6 @@ import type { GearRequirement } from '@/lib/structures/Gear.js';
 import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { readableStatName } from '@/lib/util/smallUtils.js';
 import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
@@ -146,7 +144,7 @@ export async function trekShop(
 	reward: string,
 	difficulty: string,
 	quantity: number | undefined,
-	interaction: ChatInputCommandInteraction
+	interaction: MInteraction
 ) {
 	const userBank = user.bank;
 	const specifiedItem = TrekShopItems.find(
@@ -255,8 +253,7 @@ export async function trekShop(
 		return "You don't have enough reward tokens for that.";
 	}
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`${user}, please confirm that you want to use ${quantity} ${difficulty} reward tokens to buy sets of ${specifiedItem.name}.`
 	);
 

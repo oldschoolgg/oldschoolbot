@@ -1,5 +1,5 @@
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
-import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
+import type { InteractionReplyOptions } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
 import { colosseumCommand } from '@/lib/colosseum.js';
@@ -26,7 +26,7 @@ const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:
 
 export async function minionKillCommand(
 	user: MUser,
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	channelID: string,
 	name: string,
 	inputQuantity: number | undefined,

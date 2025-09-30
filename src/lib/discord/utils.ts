@@ -1,5 +1,29 @@
-import deepMerge from 'deepmerge';
 import type { BaseMessageOptions, InteractionReplyOptions } from 'discord.js';
+
+import { allCommands } from '@/mahoji/commands/allCommands.js';
+
+export function mentionCommand(name: string, subCommand?: string, subSubCommand?: string) {
+	const command = allCommands.find(i => i.name === name);
+	if (!command) {
+		throw new Error(`Command ${name} not found`);
+	}
+	if (subCommand && !command.options.some(i => i.name === subCommand)) {
+		throw new Error(`Command ${name} does not have subcommand ${subCommand}`);
+	}
+
+	const apiCommand = globalClient.application
+		? Array.from(globalClient.application.commands.cache.values()).find(i => i.name === name)
+		: null;
+	if (!apiCommand) {
+		throw new Error(`Command ${name} not found`);
+	}
+
+	if (subCommand) {
+		return `</${name} ${subCommand}${subSubCommand ? ` ${subSubCommand}` : ''}:${apiCommand.id}>`;
+	}
+
+	return `</${name}:${apiCommand.id}>`;
+}
 
 export function normalizeMahojiResponse(one: Awaited<CommandResponse>): BaseMessageOptions {
 	if (!one) return {};
@@ -28,29 +52,4 @@ export function roughMergeMahojiResponse(
 	newResponse.content = newContent.join('\n\n');
 
 	return newResponse;
-}
-
-const TOO_LONG_STR = 'The result was too long (over 2000 characters), please read the attached file.';
-
-export function returnStringOrFile(string: string | InteractionReplyOptions): Awaited<CommandResponse> {
-	if (typeof string === 'string') {
-		if (string.length > 2000) {
-			return {
-				content: TOO_LONG_STR,
-				files: [{ attachment: Buffer.from(string), name: 'result.txt' }]
-			};
-		}
-		return string;
-	}
-	if (string.content && string.content.length > 2000) {
-		return deepMerge(
-			string,
-			{
-				content: TOO_LONG_STR,
-				files: [{ attachment: Buffer.from(string.content), name: 'result.txt' }]
-			},
-			{ clone: false }
-		);
-	}
-	return string;
 }

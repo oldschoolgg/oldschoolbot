@@ -1,6 +1,5 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import type { CropUpgradeType } from '@prisma/client';
-import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { superCompostables } from '@/lib/data/filterables.js';
@@ -10,7 +9,6 @@ import type { Plant } from '@/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userHasGracefulEquipped, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
@@ -318,7 +316,7 @@ ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 }
 
 export async function compostBinCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	user: MUser,
 	cropToCompost: string,
 	quantity: number | undefined
@@ -337,10 +335,7 @@ export async function compostBinCommand(
 
 	if (quantity === 0) return `You have no ${superCompostableCrop} to compost!`;
 
-	await handleMahojiConfirmation(
-		interaction,
-		`${user}, please confirm that you want to compost ${cost} into ${loot}.`
-	);
+	await interaction.confirmation(`${user}, please confirm that you want to compost ${cost} into ${loot}.`);
 
 	await user.transactItems({ itemsToRemove: cost });
 	await user.addItemsToBank({ items: loot });

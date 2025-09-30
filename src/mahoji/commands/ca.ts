@@ -12,7 +12,6 @@ import {
 	nextCATier
 } from '@/lib/combat_achievements/combatAchievements.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 
 const viewTypes = ['all', 'incomplete', 'complete'] as const;
 
@@ -67,7 +66,7 @@ export const caCommand: OSBMahojiCommand = {
 			type?: CAViewType;
 		};
 	}>) => {
-		await deferInteraction(interaction);
+		await interaction.defer();
 		const user = await mUserFetch(userID);
 		const completedTaskIDs = new Set(user.user.completed_ca_task_ids);
 

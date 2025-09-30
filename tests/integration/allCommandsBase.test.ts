@@ -1,16 +1,107 @@
-import { SeedableRNG } from '@oldschoolgg/rng';
-import { generateCommandInputs, Stopwatch, sumArr, Time } from '@oldschoolgg/toolkit';
+import { type RNGProvider, SeedableRNG } from '@oldschoolgg/rng';
+import { type CommandOption, randomSnowflake, Stopwatch, sumArr, Time } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 import PromiseQueue from 'p-queue';
 import { shuffle } from 'remeda';
 import { expect, test, vi } from 'vitest';
 
 import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings.js';
-import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirmation.js';
 import { allCommands } from '../../src/mahoji/commands/allCommands.js';
 import { getMaxUserValues } from '../../src/mahoji/commands/testpotato.js';
 import { allUsableItems } from '../../src/mahoji/lib/abstracted_commands/useCommand.js';
 import { createTestUser, mockClient, TestClient } from './util.js';
+
+type CommandInput = Record<string, any>;
+
+export async function generateCommandInputs(
+	rng: RNGProvider,
+	options: readonly CommandOption[]
+): Promise<CommandInput[]> {
+	const results: CommandInput[] = [];
+	const allPossibleOptions: Record<string, any[]> = {};
+
+	if (options.length === 0) {
+		return [{}];
+	}
+
+	for (const option of options) {
+		switch (option.type) {
+			case ApplicationCommandOptionType.SubcommandGroup:
+			case ApplicationCommandOptionType.Subcommand:
+				if (option.options) {
+					const subOptionsResults = await generateCommandInputs(rng, option.options);
+					results.push(...subOptionsResults.map(input => ({ [option.name]: input })));
+				}
+				break;
+			case ApplicationCommandOptionType.String:
+				if ('autocomplete' in option && option.autocomplete) {
+					const autoCompleteResults = await option.autocomplete(
+						'',
+						{ id: randomSnowflake() } as any,
+						{} as any
+					);
+					allPossibleOptions[option.name] = rng.shuffle(autoCompleteResults.map(c => c.value)).slice(0, 10);
+				} else if (option.choices) {
+					allPossibleOptions[option.name] = rng.shuffle(option.choices.map(c => c.value)).slice(0, 10);
+				} else if (['guild_id', 'message_id'].includes(option.name)) {
+					allPossibleOptions[option.name] = ['157797566833098752'];
+				} else {
+					allPossibleOptions[option.name] = ['plain string'];
+				}
+				break;
+			case ApplicationCommandOptionType.Integer:
+			case ApplicationCommandOptionType.Number:
+				if (option.choices) {
+					allPossibleOptions[option.name] = rng.shuffle(option.choices.map(c => c.value)).slice(0, 10);
+				} else {
+					let value = rng.randInt(1, 10);
+					if (option.min_value && option.max_value) {
+						value = rng.randInt(option.min_value, option.max_value);
+					}
+					allPossibleOptions[option.name] = [
+						option.min_value ?? 0,
+						rng.randInt(option.min_value ?? 0, value),
+						value
+					];
+				}
+				break;
+			case ApplicationCommandOptionType.Boolean: {
+				allPossibleOptions[option.name] = [true, false];
+				break;
+			}
+			case ApplicationCommandOptionType.User: {
+				allPossibleOptions[option.name] = [
+					{
+						user: {
+							id: '425134194436341760',
+							username: 'username',
+							bot: false
+						},
+						member: undefined
+					}
+				];
+				break;
+			}
+			case ApplicationCommandOptionType.Channel:
+			case ApplicationCommandOptionType.Role:
+			case ApplicationCommandOptionType.Mentionable:
+				// results.push({ ...currentPath, [option.name]: `Any ${option.type}` });
+				break;
+		}
+	}
+
+	const sorted = Object.values(allPossibleOptions).sort((a, b) => b.length - a.length);
+	const longestOptions = sorted[0]?.length;
+	for (let i = 0; i < longestOptions; i++) {
+		const obj: Record<string, any> = {};
+		for (const [key, val] of Object.entries(allPossibleOptions)) {
+			obj[key] = val[i] ?? (val.length > 0 && rng.pick(val));
+		}
+		results.push(obj);
+	}
+	return results;
+}
 
 test(
 	'All Commands Base Test',
@@ -22,7 +113,6 @@ test(
 		for (const item of Items.keys()) {
 			bankWithAllItems.add(item, 100_000);
 		}
-		expect(vi.isMockFunction(handleMahojiConfirmation)).toBe(true);
 		await mockClient();
 
 		await mahojiClientSettingsFetch({ construction_cost_bank: true });
@@ -85,7 +175,7 @@ test(
 			use: useCommandOptions
 		};
 
-		const rngProvider = new SeedableRNG();
+		const rngProvider = new SeedableRNG(1);
 		const stopwatch = new Stopwatch();
 		const processedCommands: { command: OSBMahojiCommand; options: any[] }[] = [];
 		for (const command of commandsToTest) {

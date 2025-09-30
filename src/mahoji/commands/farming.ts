@@ -8,7 +8,6 @@ import { autoFarm } from '@/lib/minions/functions/autoFarm.js';
 import { CompostTiers, Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { ContractOption } from '@/lib/skilling/skills/farming/utils/types.js';
 import { ContractOptions } from '@/lib/skilling/skills/farming/utils/types.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import {
 	compostBinCommand,
 	farmingPlantCommand,
@@ -200,7 +199,7 @@ export const farmingCommand: OSBMahojiCommand = {
 		compost_bin?: { plant_name: string; quantity?: number };
 		contract?: { input?: ContractOption };
 	}>) => {
-		await deferInteraction(interaction);
+		await interaction.defer();
 		const klasaUser = await mUserFetch(userID);
 		const { patchesDetailed } = Farming.getFarmingInfoFromUser(klasaUser.user);
 

@@ -1,9 +1,7 @@
-import type { ChatInputCommandInteraction } from 'discord.js';
 import { EmbedBuilder } from 'discord.js';
 import { LootTable, resolveItems, toKMB } from 'oldschooljs';
 
 import { mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { mahojiParseNumber, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const flowerTable = new LootTable()
@@ -28,7 +26,7 @@ const explanation =
 	"Hot and Cold Rules: You pick hot (red, yellow, orange) or cold (purple, blue, assorted), and if you guess right, you win. If it's mixed, you lose. If its black or white, you win **5x** your bet.";
 
 export async function hotColdCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	user: MUser,
 	choice: 'hot' | 'cold' | undefined,
 	_amount: string | undefined
@@ -41,8 +39,7 @@ export async function hotColdCommand(
 	const flowerLoot = flowerTable.roll();
 	const flower = flowerLoot.items()[0][0];
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.
 ${explanation}`
 	);

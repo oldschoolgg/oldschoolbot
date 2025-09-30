@@ -5,7 +5,6 @@ import { averageBank, Bank, ChambersOfXeric, toKMB } from 'oldschooljs';
 
 import { ColosseumWaveBank, startColosseumRun } from '@/lib/colosseum.js';
 import pets from '@/lib/data/pets.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { assert } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
@@ -209,7 +208,7 @@ export const simulateCommand: OSBMahojiCommand = {
 		};
 		colosseum?: {};
 	}>) => {
-		await deferInteraction(interaction);
+		await interaction.defer();
 		const user = await mUserFetch(userID.toString());
 		if (options.colosseum) {
 			return simulateColosseumRuns();

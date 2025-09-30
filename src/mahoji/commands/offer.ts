@@ -9,7 +9,6 @@ import Prayer from '@/lib/skilling/skills/prayer.js';
 import type { OfferingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
@@ -90,7 +89,7 @@ export const offerCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 		const userBank = user.bank;
 
-		await deferInteraction(interaction);
+		await interaction.defer();
 		let { quantity } = options;
 		const whichOfferable = Offerables.find(
 			item =>

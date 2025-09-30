@@ -6,25 +6,23 @@ import {
 	ButtonBuilder,
 	type ButtonInteraction,
 	ButtonStyle,
-	type CacheType,
-	type ChatInputCommandInteraction
+	type CacheType
 } from 'discord.js';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { SILENT_ERROR } from '@/lib/constants.js';
-import { handleMahojiConfirmation, silentButtonAck } from '@/lib/util/handleMahojiConfirmation.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { silentButtonAck } from '@/lib/util/handleMahojiConfirmation.js';
 import { logError } from '@/lib/util/logError.js';
 import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '@/mahoji/mahojiSettings.js';
 
-export async function luckyPickCommand(user: MUser, luckypickamount: string, interaction: ChatInputCommandInteraction) {
+export async function luckyPickCommand(user: MUser, luckypickamount: string, interaction: MInteraction) {
 	const amount = mahojiParseNumber({ input: luckypickamount, min: 1_000_000, max: 3_000_000_000 });
 
 	if (!amount) {
 		return 'amount must be between 1000000 and 3000000000 exclusively.';
 	}
 
-	await deferInteraction(interaction);
+	await interaction.defer();
 
 	interface Button {
 		name: string;
@@ -98,8 +96,7 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 		return "Ironmen can't gamble! Go pickpocket some men for GP.";
 	}
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.`
 	);
 	await user.sync();

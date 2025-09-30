@@ -1,12 +1,12 @@
 import { randArrItem } from '@oldschoolgg/rng';
 import {
 	allAbstractCommands,
-	bulkUpdateCommands,
 	calcPerHour,
 	calcWhatPercent,
 	cleanString,
 	dateFm,
 	formatDuration,
+	type ICommand,
 	type MahojiUserOption,
 	noOp,
 	notEmpty,
@@ -16,7 +16,15 @@ import {
 	uniqueArr
 } from '@oldschoolgg/toolkit';
 import { type ClientStorage, economy_transaction_type } from '@prisma/client';
-import { ApplicationCommandOptionType, AttachmentBuilder, type InteractionReplyOptions } from 'discord.js';
+import {
+	ApplicationCommandOptionType,
+	ApplicationCommandType,
+	AttachmentBuilder,
+	type InteractionReplyOptions,
+	type RESTPostAPIApplicationGuildCommandsJSONBody,
+	Routes,
+	type Snowflake
+} from 'discord.js';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '@/lib/blacklists.js';
@@ -30,6 +38,7 @@ import {
 	globalConfig,
 	META_CONSTANTS
 } from '@/lib/constants.js';
+import { convertCommandOptionToAPIOption } from '@/lib/discord/commandOptions.js';
 import { economyLog } from '@/lib/economyLogs.js';
 import type { GearSetup } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
@@ -38,8 +47,6 @@ import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { sorts } from '@/lib/sorts.js';
 import { memoryAnalysis } from '@/lib/util/cachedUserIDs.js';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { deferInteraction, interactionReply } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
@@ -53,6 +60,30 @@ export const gifs = [
 	'https://gfycat.com/serenegleamingfruitbat',
 	'https://tenor.com/view/monkey-monito-mask-gif-23036908'
 ];
+
+function convertCommandToAPICommand(
+	cmd: ICommand
+): RESTPostAPIApplicationGuildCommandsJSONBody & { description: string } {
+	return {
+		type: ApplicationCommandType.ChatInput,
+		name: cmd.name,
+		description: cmd.description,
+		options: cmd.options.map(convertCommandOptionToAPIOption)
+	};
+}
+
+async function bulkUpdateCommands({ commands, guildID }: { commands: ICommand[]; guildID: Snowflake | null }) {
+	const apiCommands = commands.map(convertCommandToAPICommand);
+
+	const route =
+		guildID === null
+			? Routes.applicationCommands(globalClient.user.id)
+			: Routes.applicationGuildCommands(globalClient.user.id, guildID);
+
+	return globalClient.rest.put(route, {
+		body: apiCommands
+	});
+}
 
 async function allEquippedPets() {
 	const pets = await prisma.$queryRawUnsafe<
@@ -651,7 +682,7 @@ export const adminCommand: OSBMahojiCommand = {
 		view?: { thing: string };
 		give_items?: { user: MahojiUserOption; items: string; reason?: string };
 	}>) => {
-		await deferInteraction(interaction);
+		await interaction.defer();
 
 		const adminUser = await mUserFetch(userID);
 		const isAdmin = globalConfig.adminUserIDs.includes(userID);
@@ -773,8 +804,7 @@ export const adminCommand: OSBMahojiCommand = {
 			if (!item) return 'Invalid item.';
 			const { price } = options.set_price;
 			if (!price || price < 1 || price > 1_000_000_000) return 'Invalid price.';
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`Are you sure you want to set the price of \`${item.name}\`(ID: ${item.id}) to \`${price.toLocaleString()}\`?`
 			);
 			const settings = await mahojiClientSettingsFetch({ custom_prices: true });
@@ -833,7 +863,7 @@ export const adminCommand: OSBMahojiCommand = {
 		if (options.reboot) {
 			globalClient.isShuttingDown = true;
 			await economyLog('Flushing economy log due to reboot', true);
-			await interactionReply(interaction, {
+			await interaction.reply({
 				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
 			});
 			await sleep(Time.Second * 20);
@@ -849,7 +879,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 			debugLog('SHUTTING DOWN');
 			globalClient.isShuttingDown = true;
 			const timer = globalConfig.isProduction ? Time.Second * 30 : Time.Second * 5;
-			await interactionReply(interaction, {
+			await interaction.reply({
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
 			await economyLog('Flushing economy log due to shutdown', true);
@@ -881,8 +911,6 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		if (options.sync_commands) {
 			if (!globalConfig.isProduction) {
 				await bulkUpdateCommands({
-					djsClient: globalClient,
-					client: globalClient.mahojiClient,
 					commands: Array.from(globalClient.mahojiClient.commands.values()),
 					guildID: globalConfig.supportServerID
 				});
@@ -895,21 +923,15 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
 			if (global) {
 				await bulkUpdateCommands({
-					djsClient: globalClient,
-					client: globalClient.mahojiClient,
 					commands: globalCommands,
 					guildID: null
 				});
 				await bulkUpdateCommands({
-					djsClient: globalClient,
-					client: globalClient.mahojiClient,
 					commands: guildCommands,
 					guildID: guildID.toString()
 				});
 			} else {
 				await bulkUpdateCommands({
-					djsClient: globalClient,
-					client: globalClient.mahojiClient,
 					commands: totalCommands,
 					guildID: guildID.toString()
 				});
@@ -918,8 +940,6 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			// If not in production, remove all global commands.
 			if (!globalConfig.isProduction) {
 				await bulkUpdateCommands({
-					djsClient: globalClient,
-					client: globalClient.mahojiClient,
 					commands: [],
 					guildID: null
 				});
@@ -948,10 +968,7 @@ ${guildCommands.length} Guild commands`;
 		if (options.give_items) {
 			const items = parseBank({ inputStr: options.give_items.items, noDuplicateItems: true });
 			const user = await mUserFetch(options.give_items.user.user.id);
-			await handleMahojiConfirmation(
-				interaction,
-				`Are you sure you want to give ${items} to ${user.usernameOrMention}?`
-			);
+			await interaction.confirmation(`Are you sure you want to give ${items} to ${user.usernameOrMention}?`);
 			await sendToChannelID(Channel.BotLogs, {
 				content: `${adminUser.logName} sent \`${items}\` to ${user.logName} for ${
 					options.give_items.reason ?? 'No reason'

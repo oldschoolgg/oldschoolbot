@@ -14,7 +14,6 @@ import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
-import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 import { addToOpenablesScores, getMahojiBank, mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export const clueTierBoosts: Record<
@@ -209,8 +208,8 @@ export const clueGlobalBoosts: {
 	}
 ];
 
-async function getStashBoost(userID: string, tierName: string): Promise<number> {
-	const parsedUnits = await getParsedStashUnits(userID);
+async function getStashBoost(user: MUser, tierName: string): Promise<number> {
+	const parsedUnits = await user.fetchStashUnits();
 
 	// Filter parsed units based on the found stash tier
 	const tierSpecificUnits = parsedUnits.filter(unit => unit.tier.tier === tierName);
@@ -321,7 +320,7 @@ export const clueCommand: OSBMahojiCommand = {
 		const poh = await getPOH(user.id);
 
 		// Stash Unit boost
-		const stashBoost = await getStashBoost(userID, clueTier.name);
+		const stashBoost = await getStashBoost(user, clueTier.name);
 		boosts.push(`${stashBoost.toFixed(2)}% for built STASH Units`);
 		timePerClue *= 1 - stashBoost / 100;
 

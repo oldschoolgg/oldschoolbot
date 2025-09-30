@@ -1,14 +1,12 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, resolveItems, toKMB } from 'oldschooljs';
 
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import { BitField } from '@/lib/constants.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
-export async function bankBgCommand(interaction: ChatInputCommandInteraction, user: MUser, name: string) {
+export async function bankBgCommand(interaction: MInteraction, user: MUser, name: string) {
 	const bankImages = bankImageTask.backgroundImages;
 	const selectedImage = bankImages.find(img => stringMatches(img.name, name));
 
@@ -117,7 +115,7 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 		str +=
 			" **Note:** You'll have to pay this cost again if you switch to another background and want this one again.";
 
-		await handleMahojiConfirmation(interaction, str);
+		await interaction.confirmation(str);
 
 		if (selectedImage.itemCost) {
 			economyCost.add(selectedImage.itemCost);

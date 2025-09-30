@@ -45,11 +45,11 @@ export interface ParsedUnit {
 	tier: StashUnitTier;
 }
 export async function stashUnitViewCommand(
-	user: User,
+	user: MUser,
 	stashID: string | undefined,
 	notBuilt: boolean | undefined
 ): CommandResponse {
-	const parsedUnits = await getParsedStashUnits(user.id);
+	const parsedUnits = await user.fetchStashUnits();
 	if (stashID) {
 		const unit = parsedUnits.find(i => stringMatches(i.unit.id.toString(), stashID));
 		if (!unit || !unit.builtUnit) return "You don't have this unit built.";
@@ -85,7 +85,7 @@ Contains: ${unit.builtUnit.items_contained.map(i => Items.itemNameFromId(i)).joi
 }
 
 export async function stashUnitBuildAllCommand(user: MUser) {
-	const parsedUnits = await getParsedStashUnits(user.id);
+	const parsedUnits = await user.fetchStashUnits();
 	const notBuilt = parsedUnits.filter(i => i.builtUnit === undefined);
 	if (notBuilt.length === 0) return 'You have already built all STASH units.';
 	const stats = user.skillsAsLevels;
@@ -132,7 +132,7 @@ export async function stashUnitBuildAllCommand(user: MUser) {
 }
 
 export async function stashUnitFillAllCommand(user: MUser, mahojiUser: User): CommandResponse {
-	const parsedUnits = await getParsedStashUnits(user.id);
+	const parsedUnits = await user.fetchStashUnits();
 	const notBuiltAndNotFilled = parsedUnits.filter(i => i.builtUnit !== undefined && !i.isFull);
 	if (notBuiltAndNotFilled.length === 0) return 'There are no STASH units left that you can fill.';
 
@@ -187,7 +187,7 @@ export async function stashUnitFillAllCommand(user: MUser, mahojiUser: User): Co
 }
 
 export async function stashUnitUnfillCommand(user: MUser, unitID: string) {
-	const parsedUnits = await getParsedStashUnits(user.id);
+	const parsedUnits = await user.fetchStashUnits();
 	const unit = parsedUnits.find(i => stringMatches(i.unit.id.toString(), unitID));
 	if (!unit || !unit.builtUnit) return 'Invald unit.';
 	const containedItems = unit.builtUnit.items_contained;

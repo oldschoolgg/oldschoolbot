@@ -18,7 +18,7 @@
 	},
 	"scripts": {
 		"test": "concurrently \"tsc -p src\" \"pnpm vitest run\" \"tsc -p tests\"",
-		"build": "tsdown"
+		"build": "tsc -p src --noEmit && tsdown"
 	},
 	"dependencies": {
 		"decimal.js": "^10.6.0",

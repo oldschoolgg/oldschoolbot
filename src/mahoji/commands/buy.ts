@@ -7,8 +7,6 @@ import { tripBuyables } from '@/lib/data/buyables/tripBuyables.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { buyFossilIslandNotes } from '@/mahoji/lib/abstracted_commands/buyFossilIslandNotes.js';
@@ -89,7 +87,7 @@ export const buyCommand: OSBMahojiCommand = {
 		}
 
 		if (buyable.customReq) {
-			await deferInteraction(interaction);
+			await interaction.defer();
 			const [hasCustomReq, reason] = await buyable.customReq(user, await MUserStats.fromID(user.id));
 			if (!hasCustomReq) {
 				return reason!;
@@ -159,8 +157,7 @@ export const buyCommand: OSBMahojiCommand = {
 
 		const outItems = singleOutput.clone().multiply(quantity);
 
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			`${user}, please confirm that you want to buy **${outItems}** for: ${totalCost}.`
 		);
 

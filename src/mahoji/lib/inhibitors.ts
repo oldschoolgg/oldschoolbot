@@ -1,30 +1,28 @@
-import { type AbstractCommand, formatDuration, PerkTier } from '@oldschoolgg/toolkit';
+import { formatDuration, PerkTier } from '@oldschoolgg/toolkit';
 import {
 	ComponentType,
-	type DMChannel,
 	type Guild,
-	type GuildMember,
 	type InteractionReplyOptions,
 	PermissionsBitField,
-	type TextChannel
+	type TextBasedChannel
 } from 'discord.js';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
-import { type PartialUser, partialUserCache, perkTierCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
+import { perkTierCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
 import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, globalConfig } from '@/lib/constants.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
+import type { MMember } from '@/lib/structures/MInteraction.js';
 import { mahojiGuildSettingsFetch } from '@/mahoji/guildSettings.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 
 interface Inhibitor {
 	name: string;
 	run: (options: {
-		cachedUser: PartialUser | undefined;
-		userID: string;
-		command: AbstractCommand;
+		user: MUser;
+		command: OSBMahojiCommand;
 		guild: Guild | null;
-		channel: TextChannel | DMChannel;
-		member: GuildMember | null;
+		channel: TextBasedChannel | null;
+		member: MMember | null;
 	}) => false | InteractionReplyOptions;
 	canBeDisabled: boolean;
 	silent?: true;
@@ -43,10 +41,10 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'hasMinion',
-		run: ({ cachedUser, command }) => {
-			if (!command.attributes?.requiresMinion || !cachedUser) return false;
+		run: ({ user, command }) => {
+			if (!command.attributes?.requiresMinion) return false;
 
-			if (!cachedUser.minion_hasBought) {
+			if (!user.hasMinion) {
 				return {
 					content: 'You need a minion to use this command.',
 					components: [
@@ -65,10 +63,10 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'minionNotBusy',
-		run: ({ userID, command }) => {
+		run: ({ user, command }) => {
 			if (!command.attributes?.requiresMinionNotBusy) return false;
 
-			if (ActivityManager.minionIsBusy(userID)) {
+			if (ActivityManager.minionIsBusy(user.id)) {
 				return { content: 'Your minion must not be busy to use this command.' };
 			}
 
@@ -78,9 +76,9 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'disabled',
-		run: ({ command, guild, userID }) => {
+		run: ({ command, guild, user }) => {
 			if (
-				!globalConfig.adminUserIDs.includes(userID) &&
+				!globalConfig.adminUserIDs.includes(user.id) &&
 				(command.attributes?.enabled === false || DISABLED_COMMANDS.has(command.name))
 			) {
 				return { content: 'This command is globally disabled.' };
@@ -96,10 +94,10 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'commandRoleLimit',
-		run: ({ member, guild, channel, userID }) => {
-			if (!guild || guild.id !== globalConfig.supportServerID) return false;
+		run: ({ member, guild, channel, user }) => {
+			if (!guild || guild.id !== globalConfig.supportServerID || !channel) return false;
 			if (channel.id !== Channel.ServerGeneral) return false;
-			const perkTier = perkTierCache.get(userID) ?? 0;
+			const perkTier = perkTierCache.get(user.id) ?? 0;
 			if (member && perkTier >= PerkTier.Two) {
 				return false;
 			}
@@ -111,15 +109,15 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'onlyStaffCanUseCommands',
-		run: ({ channel, guild, cachedUser, member }) => {
-			if (!guild || !member || !cachedUser) return false;
+		run: ({ channel, guild, user, member }) => {
+			if (!guild || !member || !channel) return false;
 			// Allow green gem badge holders to run commands in support channel:
-			if (channel.id === Channel.HelpAndSupport && cachedUser.badges.includes(BadgesEnum.GreenGem)) {
+			if (channel.id === Channel.HelpAndSupport && user.user.badges.includes(BadgesEnum.GreenGem)) {
 				return false;
 			}
 
 			// Allow contributors + moderators to use disabled channels in SupportServer
-			const userBitfield = cachedUser.bitfield;
+			const userBitfield = user.bitfield;
 			const isStaff = userBitfield.includes(BitField.isModerator);
 			if (guild.id === globalConfig.supportServerID && isStaff) {
 				return false;
@@ -141,11 +139,11 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'cooldown',
-		run: ({ userID, command, cachedUser }) => {
-			if (!command.attributes?.cooldown || !cachedUser) return false;
-			if (globalConfig.adminUserIDs.includes(userID) || cachedUser.bitfield.includes(BitField.isModerator))
+		run: ({ user, command }) => {
+			if (!command.attributes?.cooldown) return false;
+			if (globalConfig.adminUserIDs.includes(user.id) || user.bitfield.includes(BitField.isModerator))
 				return false;
-			const cooldownForThis = Cooldowns.get(userID, command.name, command.attributes.cooldown);
+			const cooldownForThis = Cooldowns.get(user.id, command.name, command.attributes.cooldown);
 			if (cooldownForThis) {
 				return {
 					content: `This command is on cooldown, you can use it again in ${formatDuration(cooldownForThis)}`
@@ -157,8 +155,8 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'blacklisted',
-		run: ({ userID, guild }) => {
-			if (BLACKLISTED_USERS.has(userID)) {
+		run: ({ user, guild }) => {
+			if (BLACKLISTED_USERS.has(user.id)) {
 				return { content: 'This user is blacklisted.' };
 			}
 			if (guild && BLACKLISTED_GUILDS.has(guild.id)) {
@@ -172,29 +170,28 @@ const inhibitors: Inhibitor[] = [
 ];
 
 export function runInhibitors({
-	userID,
+	user,
 	channel,
 	member,
 	command,
 	guild,
 	bypassInhibitors
 }: {
-	userID: string;
-	channel: TextChannel | DMChannel;
-	member: GuildMember | null;
-	command: AbstractCommand;
+	user: MUser;
+	channel: TextBasedChannel | null;
+	member: MMember | null;
+	command: OSBMahojiCommand;
 	guild: Guild | null;
 	bypassInhibitors: boolean;
 }): undefined | { reason: InteractionReplyOptions; silent: boolean } {
 	for (const { run, canBeDisabled, silent } of inhibitors) {
 		if (bypassInhibitors && canBeDisabled) continue;
 		const result = run({
-			userID: userID,
+			user,
 			channel,
 			member,
 			command,
-			guild,
-			cachedUser: partialUserCache.get(userID)
+			guild
 		});
 		if (result !== false) {
 			return { reason: result, silent: Boolean(silent) };

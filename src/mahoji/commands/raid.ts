@@ -1,7 +1,6 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '@/lib/simulation/toa.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { coxBoostsCommand, coxCommand, coxStatsCommand } from '@/mahoji/lib/abstracted_commands/coxCommand.js';
 import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '@/mahoji/lib/abstracted_commands/tobCommand.js';
 
@@ -199,7 +198,7 @@ export const raidCommand: OSBMahojiCommand = {
 			help?: {};
 		};
 	}>) => {
-		if (interaction) await deferInteraction(interaction);
+		if (interaction) await interaction.defer();
 		const user = await mUserFetch(userID);
 		const { cox, tob } = options;
 		if (cox?.stats) return coxStatsCommand(user);

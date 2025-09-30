@@ -3,7 +3,6 @@ import { Monsters } from 'oldschooljs';
 
 import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
 import {
 	slayerShopBuyCommand,
@@ -272,7 +271,7 @@ export const slayerCommand: OSBMahojiCommand = {
 	}>) => {
 		const mahojiUser = await mUserFetch(userID);
 
-		await deferInteraction(interaction);
+		await interaction.defer();
 		if (options.autoslay) {
 			await autoSlayCommand({
 				mahojiUser,

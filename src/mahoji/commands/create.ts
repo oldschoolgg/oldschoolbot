@@ -6,7 +6,6 @@ import Createables from '@/lib/data/createables.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
@@ -153,7 +152,7 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		}
 
-		await handleMahojiConfirmation(interaction, str);
+		await interaction.confirmation(str);
 
 		// Ensure they have the required items to create the item.
 		if (!user.owns(inItems)) {

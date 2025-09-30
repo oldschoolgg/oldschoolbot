@@ -25,8 +25,6 @@ import { sql } from '@/lib/postgres.js';
 import { premiumPatronTime } from '@/lib/premiumPatronTime.js';
 import { runRolesTask } from '@/lib/rolesTask.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { logError } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -550,7 +548,7 @@ export const rpCommand: OSBMahojiCommand = {
 			ge_cancel?: { user: MahojiUserOption };
 		};
 	}>) => {
-		await deferInteraction(interaction);
+		await interaction.defer();
 
 		const adminUser = await mUserFetch(userID);
 		const isAdmin = globalConfig.adminUserIDs.includes(userID);
@@ -595,7 +593,7 @@ Date: ${dateFm(date)}`;
 			if (options.user_event.max_total) {
 				type = options.user_event.max_total.type;
 			}
-			await handleMahojiConfirmation(interaction, confirmationStr);
+			await interaction.confirmation(confirmationStr);
 			await insertUserEvent({
 				userID: targetUser.id,
 				type,
@@ -633,8 +631,7 @@ Date: ${dateFm(date)}`;
 			const res = SnowflakeUtil.deconstruct(options.player.set_buy_date.message_id);
 			const date = new Date(Number(res.timestamp));
 
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`Are you sure you want to set the buy date of ${userToCheck.usernameOrMention} to ${dateFm(date)}?`
 			);
 			await sendToChannelID(Channel.BotLogs, {
@@ -685,8 +682,7 @@ Date: ${dateFm(date)}`;
 			if (gearSlot === undefined) {
 				return 'No gear slot specified.';
 			}
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`Unequip ${gearSlot} gear from ${targetUser.usernameOrMention}?${
 					warningMsgs.length > 0 ? warningMsgs.join('\n') : ''
 				}`
@@ -734,8 +730,7 @@ Date: ${dateFm(date)}`;
 					})
 				);
 			}
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`Are you sure you want to ${actionMsg} ${items.toString().slice(0, 500)} from ${
 					userToStealFrom.usernameOrMention
 				}?`
@@ -782,13 +777,11 @@ Date: ${dateFm(date)}`;
 			const sourceXp = sumArr(Object.values(sourceUser.skillsAsXP));
 			const destXp = sumArr(Object.values(destUser.skillsAsXP));
 			if (destXp > sourceXp) {
-				await handleMahojiConfirmation(
-					interaction,
+				await interaction.confirmation(
 					`The target user, ${destUser.logName}, has more XP than the source user; are you really sure the names aren't backwards?`
 				);
 			}
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`Are you 1000%, totally, **REALLY** sure that \`${sourceUser.logName}\` is the account you want to preserve, and \`${destUser.logName}\` is the new account that will have ALL existing data destroyed?`
 			);
 			const result = await migrateUser(sourceUser, destUser);

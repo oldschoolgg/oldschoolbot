@@ -1,11 +1,9 @@
 import { Emoji, formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import TitheFarmBuyables from '@/lib/data/buyables/titheFarmBuyables.js';
 import type { TitheFarmActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { userHasGracefulEquipped, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 async function determineDuration(user: MUser): Promise<[number, string[]]> {
@@ -59,7 +57,7 @@ export async function titheFarmCommand(user: MUser, channelID: string) {
 }
 
 export async function titheFarmShopCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	user: MUser,
 	buyableName: string,
 	_quantity?: number
@@ -87,7 +85,7 @@ export async function titheFarmShopCommand(
 
 	const purchaseMsg = `${loot} for ${cost} Tithe Farm points`;
 
-	await handleMahojiConfirmation(interaction, `${user}, please confirm that you want to purchase ${purchaseMsg}.`);
+	await interaction.confirmation(`${user}, please confirm that you want to purchase ${purchaseMsg}.`);
 	await userStatsUpdate(
 		user.id,
 		{

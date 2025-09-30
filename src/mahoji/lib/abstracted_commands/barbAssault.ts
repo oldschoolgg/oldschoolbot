@@ -10,7 +10,7 @@ import {
 	stringMatches,
 	Time
 } from '@oldschoolgg/toolkit';
-import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
+import type { ButtonBuilder } from 'discord.js';
 import { Bank, Items, itemID } from 'oldschooljs';
 import { clamp } from 'remeda';
 
@@ -23,7 +23,6 @@ import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minio
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
@@ -128,12 +127,7 @@ export async function barbAssaultLevelCommand(user: MUser) {
 	return "You've already reached the highest possible Honour level.";
 }
 
-export async function barbAssaultBuyCommand(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	input: string,
-	quantity?: number
-) {
+export async function barbAssaultBuyCommand(interaction: MInteraction, user: MUser, input: string, quantity?: number) {
 	if (typeof input !== 'string') input = '';
 	const buyable = BarbBuyables.find(i => stringMatches(input, i.item.name));
 	if (!buyable) {
@@ -152,8 +146,7 @@ export async function barbAssaultBuyCommand(
 	if (balance < cost * quantity) {
 		return `You don't have enough Honour Points to buy ${quantity.toLocaleString()}x ${item.name}. You need ${(cost * quantity).toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
 	}
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to buy ${quantity.toLocaleString()}x ${item.name}, for ${(cost * quantity).toLocaleString()} honour points?`
 	);
 	await userStatsUpdate(
@@ -171,12 +164,7 @@ export async function barbAssaultBuyCommand(
 	return `Successfully purchased ${quantity.toLocaleString()}x ${item.name} for ${(cost * quantity).toLocaleString()} Honour Points.`;
 }
 
-export async function barbAssaultGambleCommand(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	tier: string,
-	quantity = 1
-) {
+export async function barbAssaultGambleCommand(interaction: MInteraction, user: MUser, tier: string, quantity = 1) {
 	const buyable = GambleTiers.find(i => stringMatches(tier, i.name));
 	if (!buyable) {
 		return 'You can gamble your points for the Low, Medium and High tiers. For example, `/minigames gamble low`.';
@@ -186,8 +174,7 @@ export async function barbAssaultGambleCommand(
 	if (balance < cost * quantity) {
 		return `You don't have enough Honour Points to do ${quantity.toLocaleString()}x ${name} gamble. You need ${(cost * quantity).toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
 	}
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to do ${quantity.toLocaleString()}x ${name} gamble, using ${(cost * quantity).toLocaleString()} honour points?`
 	);
 	const newStats = await userStatsUpdate(

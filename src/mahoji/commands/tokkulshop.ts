@@ -8,7 +8,6 @@ import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { TokkulShopOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const { TzTokJad } = Monsters;
@@ -173,8 +172,7 @@ export const tksCommand: OSBMahojiCommand = {
 		}
 
 		// Confirmation the user has to accept before trip is sent
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			`Are you sure you want to spend ${cost} to get ${loot}? The trip to ${action} them will take ${formatDuration(
 				duration
 			)}.`

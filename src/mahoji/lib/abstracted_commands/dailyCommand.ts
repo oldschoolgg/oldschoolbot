@@ -1,6 +1,6 @@
 import { roll, shuffleArr } from '@oldschoolgg/rng';
 import { channelIsSendable, Emoji, formatDuration, isWeekend, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
+import type { TextChannel } from 'discord.js';
 import type { ItemBank } from 'oldschooljs';
 
 import { globalConfig } from '@/lib/constants.js';
@@ -8,7 +8,6 @@ import { DynamicButtons } from '@/lib/DynamicButtons.js';
 import pets from '@/lib/data/pets.js';
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 import dailyRoll from '@/lib/simulation/dailyTable.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { updateClientGPTrackSetting, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
@@ -115,12 +114,8 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	return { content: `${dmStr}\nYou received ${loot}`, files: [image.file] };
 }
 
-export async function dailyCommand(
-	interaction: ChatInputCommandInteraction | null,
-	channelID: string,
-	user: MUser
-): CommandResponse {
-	if (interaction) await deferInteraction(interaction);
+export async function dailyCommand(interaction: MInteraction | null, channelID: string, user: MUser): CommandResponse {
+	if (interaction) await interaction.defer();
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return 'Invalid channel.';
 	const check = await isUsersDailyReady(user);
