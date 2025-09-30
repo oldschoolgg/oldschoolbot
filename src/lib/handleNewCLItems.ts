@@ -1,16 +1,15 @@
-import { roll, sumArr } from '@oldschoolgg/toolkit';
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit/util';
+import { roll } from '@oldschoolgg/rng';
+import { Events, formatOrdinal, roboChimpCLRankQuery, sumArr } from '@oldschoolgg/toolkit';
 import { type Prisma, UserEventType } from '@prisma/client';
 import type { Bank } from 'oldschooljs';
 
 import { allCLItems, allCollectionLogsFlat, calcCLDetails } from '@/lib/data/Collections.js';
+import { calculateMastery } from '@/lib/mastery.js';
+import { RawSQL } from '@/lib/rawSql.js';
+import { calculateOwnCLRanking, roboChimpSyncData } from '@/lib/roboChimp.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import { fetchCLLeaderboard } from '@/lib/util/clLeaderboard.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
-import { calculateMastery } from './mastery.js';
-import { RawSQL } from './rawSql.js';
-import { calculateOwnCLRanking, roboChimpSyncData } from './roboChimp.js';
 
 async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataUncheckedCreateInput> {
 	const clStats = calcCLDetails(user);
@@ -67,7 +66,7 @@ export async function handleNewCLItems({
 	const milestonePercentages = [25, 50, 70, 80, 90, 95, 100];
 	for (const milestone of milestonePercentages) {
 		if (previousCLDetails.percent < milestone && newCLDetails.percent >= milestone) {
-			newCLPercentMessage = `${user} just reached ${milestone}% Collection Log completion, after receiving ${newCLItems}!`;
+			newCLPercentMessage = `${user} just reached ${milestone}% Collection Log completion, after receiving ${newCLItems.toString().slice(0, 500)}!`;
 
 			if (previousCLRank !== newCLRank && newCLRank !== null && previousCLRank !== null) {
 				newCLPercentMessage += ` In the overall CL leaderboard, they went from rank ${previousCLRank} to rank ${newCLRank}.`;

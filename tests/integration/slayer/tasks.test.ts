@@ -11,13 +11,14 @@ describe('Slayer Tasks', async () => {
 	test('Various', async () => {
 		const user = await createTestUser();
 		mockMathRandom(0.1);
+		expect(Math.random()).toEqual(0.1);
 		const res = await user.runCommand(slayerCommand, { new_task: {} });
 		expect(res.content).toContain('has assigned you to kill');
 
 		const res2 = await user.runCommand(slayerCommand, { new_task: {} });
 		expect(res2.content).toContain('You already have a slayer task');
 		expect(res2.content).toContain('Your current task');
-
+		expect(Math.random()).toEqual(0.1);
 		const res3 = await user.runCommand(slayerCommand, { manage: { command: 'skip' } });
 		expect(res3).toContain('You need 30 points to cancel, you only have: 0.');
 
@@ -27,7 +28,7 @@ describe('Slayer Tasks', async () => {
 
 		const res5 = await user.runCommand(slayerCommand, { new_task: {} });
 		expect(res5.content).toContain('has assigned you to kill');
-
+		expect(Math.random()).toEqual(0.1);
 		await user.update({ QP: 150 });
 		const res6 = await user.runCommand(slayerCommand, { manage: { command: 'block' } });
 		expect(res6).toContain('You need 100 points to block, you only have: 70');
@@ -36,6 +37,7 @@ describe('Slayer Tasks', async () => {
 		const res7 = await user.runCommand(slayerCommand, { manage: { command: 'block' } });
 		expect(res7).toContain('Your task has been blocked. You now have 50 slayer points.');
 		await user.sync();
+		expect(Math.random()).toEqual(0.1);
 		expect(user.user.slayer_blocked_ids).toHaveLength(1);
 		expect(user.user.slayer_blocked_ids[0]).toEqual(655);
 		expect(user.user.slayer_points).toEqual(50);

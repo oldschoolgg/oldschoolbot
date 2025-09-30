@@ -1,4 +1,4 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 

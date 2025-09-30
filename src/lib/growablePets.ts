@@ -1,7 +1,8 @@
-import { randFloat, Time } from '@oldschoolgg/toolkit';
+import { randFloat } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, resolveItems } from 'oldschooljs';
 
-import type { ActivityTaskOptions } from './types/minions.js';
+import type { ActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const kittens = resolveItems([
 	'Grey and black kitten',

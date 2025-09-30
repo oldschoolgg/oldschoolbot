@@ -1,32 +1,33 @@
+import { percentChance, randInt } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
+	exponentialPercentScale,
+	formatDuration,
+	GeneralBank,
+	type GeneralBankType,
 	increaseNumByPercent,
+	mentionCommand,
 	objectEntries,
-	percentChance,
-	randInt,
 	reduceNumByPercent,
 	sumArr,
-	Time
+	Time,
+	UserError
 } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
-import { GeneralBank, type GeneralBankType, UserError } from '@oldschoolgg/toolkit/structures';
-import { Bank, type EquipmentSlot, type ItemBank, LootTable, resolveItems } from 'oldschooljs';
+import { Bank, type EquipmentSlot, type ItemBank, Items, LootTable, resolveItems } from 'oldschooljs';
 import { clamp } from 'remeda';
 
+import { degradeChargeBank } from '@/lib/degradeableItems.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
+import type { Skills } from '@/lib/types/index.js';
+import type { ColoTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { formatList, formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
-import { degradeChargeBank } from './degradeableItems.js';
-import { trackLoot } from './lootTrack.js';
-import { QuestID } from './minions/data/quests.js';
-import type { Skills } from './types/index.js';
-import type { ColoTaskOptions } from './types/minions.js';
 
 function combinedChance(percentages: number[]): number {
 	const failureProbabilities = percentages.map(p => (100 - p) / 100);
@@ -516,7 +517,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		for (const items of Object.values(gearNeeded)) {
 			if (!items.some(g => gear.hasEquipped(g))) {
 				return `You need one of these equipped in your ${gearType} setup to enter the Colosseum: ${formatList(
-					items.map(itemNameFromID),
+					items.map(i => Items.itemNameFromId(i)),
 					'or'
 				)}.`;
 			}
@@ -525,14 +526,14 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 
 	if (!meleeWeapons.some(i => user.gear.melee.hasEquipped(i, true, true))) {
 		return `You need one of these equipped in your melee setup to enter the Colosseum: ${formatList(
-			meleeWeapons.map(itemNameFromID),
+			meleeWeapons.map(i => Items.itemNameFromId(i)),
 			'or'
 		)}.`;
 	}
 
 	if (!rangeWeapons.some(i => user.gear.range.hasEquipped(i, true, true))) {
 		return `You need one of these equipped in your range setup to enter the Colosseum: ${formatList(
-			rangeWeapons.map(itemNameFromID),
+			rangeWeapons.map(i => Items.itemNameFromId(i)),
 			'or'
 		)}.`;
 	}

@@ -1,10 +1,4 @@
-declare const __BOT_TYPE__: 'OSB' | 'BSO';
-import type {
-	AbstractCommandAttributes,
-	CommandOptions,
-	ICommand,
-	MahojiClient
-} from '@oldschoolgg/toolkit/discord-util';
+import type { AbstractCommandAttributes, CommandOptions, ICommand, MahojiClient } from '@oldschoolgg/toolkit';
 import type { BaseInteraction, ChatInputCommandInteraction, InteractionReplyOptions, User } from 'discord.js';
 
 declare global {

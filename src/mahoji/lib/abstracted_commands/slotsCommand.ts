@@ -1,6 +1,5 @@
-import { chunk, noOp, randInt, shuffleArr, sleep } from '@oldschoolgg/toolkit';
-import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
+import { randInt, shuffleArr } from '@oldschoolgg/rng';
+import { channelIsSendable, chunk, noOp, SimpleTable, sleep } from '@oldschoolgg/toolkit';
 import {
 	ActionRowBuilder,
 	type BaseMessageOptions,

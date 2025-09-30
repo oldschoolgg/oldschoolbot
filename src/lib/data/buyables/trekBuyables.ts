@@ -1,4 +1,4 @@
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 
 interface TrekShopItem {
 	name: string;
@@ -65,14 +65,14 @@ const TrekShopItems: TrekShopItem[] = [
 	}
 ];
 
-export const TrekExperience: SkillsEnum[] = [
-	SkillsEnum.Agility,
-	SkillsEnum.Thieving,
-	SkillsEnum.Slayer,
-	SkillsEnum.Firemaking,
-	SkillsEnum.Fishing,
-	SkillsEnum.Woodcutting,
-	SkillsEnum.Mining
+export const TrekExperience: SkillNameType[] = [
+	'agility',
+	'thieving',
+	'slayer',
+	'firemaking',
+	'fishing',
+	'woodcutting',
+	'mining'
 ];
 
 export default TrekShopItems;

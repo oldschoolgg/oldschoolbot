@@ -1,4 +1,4 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 const xpEmoji = Emoji.XP;

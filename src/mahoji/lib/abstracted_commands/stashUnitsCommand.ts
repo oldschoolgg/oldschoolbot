@@ -1,5 +1,4 @@
-import { partition } from '@oldschoolgg/toolkit';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { partition, stringMatches } from '@oldschoolgg/toolkit';
 import type { StashUnit, User } from '@prisma/client';
 import { Bank, ItemGroups, Items } from 'oldschooljs';
 

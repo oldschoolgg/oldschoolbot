@@ -1,12 +1,11 @@
-import { calcPercentOfNum, randInt } from '@oldschoolgg/toolkit';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
+import { randInt, roll } from '@oldschoolgg/rng';
+import { calcPercentOfNum, Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import aerialFishingCreatures from '@/lib/skilling/skills/hunter/aerialFishing.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { roll } from '@/lib/util/rng.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export const aerialFishingTask: MinionTask = {

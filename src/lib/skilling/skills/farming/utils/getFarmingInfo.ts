@@ -1,13 +1,14 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { formatDuration, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import type { User } from '@prisma/client';
 
-import { defaultPatches } from '@/lib/minions/farming/index.js';
-import type { IPatchData, IPatchDataDetailed } from '@/lib/minions/farming/types.js';
-import type { FarmingPatchName } from '@/lib/util/farmingHelpers.js';
-import { farmingKeys, farmingPatchNames, findPlant } from '@/lib/util/farmingHelpers.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
+import { farmingPatchNames, findPlant } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
+import type { IPatchData, IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
 import { assert } from '@/lib/util/logError.js';
 import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
+
+const farmingKeys: (keyof User)[] = farmingPatchNames.map(i => `farmingPatches_${i}` as const);
 
 export function getFarmingInfoFromUser(user: User) {
 	const patches: Record<FarmingPatchName, IPatchData> = {} as Record<FarmingPatchName, IPatchData>;
@@ -16,7 +17,7 @@ export function getFarmingInfoFromUser(user: User) {
 	const now = Date.now();
 
 	for (const key of farmingKeys) {
-		const patch: IPatchData = (user[key] as IPatchData | null) ?? defaultPatches;
+		const patch: IPatchData = (user[key] as IPatchData | null) ?? Farming.defaultPatches;
 		const patchName: FarmingPatchName = key.replace('farmingPatches_', '') as FarmingPatchName;
 		assert(farmingPatchNames.includes(patchName));
 		patches[patchName] = patch;

@@ -1,5 +1,4 @@
-import { type CommandOptions, isGuildChannel } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { type CommandOptions, isGuildChannel, stringMatches } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
@@ -10,7 +9,7 @@ import { AutoslayOptionsEnum, autoslayModes } from '@/lib/slayer/constants.js';
 import { getCommonTaskName, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '@/lib/slayer/slayerUtil.js';
 import { interactionReply } from '@/lib/util/interactionReply.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import { slayerNewTaskCommand } from './slayerTaskCommand.js';
+import { slayerNewTaskCommand } from '@/mahoji/lib/abstracted_commands/slayerTaskCommand.js';
 
 interface AutoslayLink {
 	monsterID: number;

@@ -1,3 +1,4 @@
+import type { RNGProvider } from '@oldschoolgg/rng';
 import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs';
 import { match } from 'ts-pattern';
@@ -6,7 +7,6 @@ import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot
 import type { Fish } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
-import type { RNGProvider } from '@/lib/util/rng.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 import { calcAnglerBoostPercent, calcMinnowQuantityRange, calcRadasBlessingBoost } from './fishingUtil.js';
 

@@ -1,15 +1,13 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { AutoFarmFilterEnum, type CropUpgradeType } from '@prisma/client';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 
 import TitheFarmBuyables from '@/lib/data/buyables/titheFarmBuyables.js';
 import { superCompostables } from '@/lib/data/filterables.js';
-import type { ContractOption } from '@/lib/minions/farming/types.js';
-import { ContractOptions } from '@/lib/minions/farming/types.js';
 import { autoFarm } from '@/lib/minions/functions/autoFarm.js';
-import { getFarmingInfoFromUser } from '@/lib/skilling/functions/getFarmingInfo.js';
-import Farming, { CompostTiers } from '@/lib/skilling/skills/farming/index.js';
-import { farmingPatchNames, userGrowingProgressStr } from '@/lib/util/farmingHelpers.js';
+import { CompostTiers, Farming } from '@/lib/skilling/skills/farming/index.js';
+import type { ContractOption } from '@/lib/skilling/skills/farming/utils/types.js';
+import { ContractOptions } from '@/lib/skilling/skills/farming/utils/types.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
 import {
 	compostBinCommand,
@@ -120,7 +118,7 @@ export const farmingCommand: OSBMahojiCommand = {
 					name: 'patch_name',
 					description: 'The patches you want to harvest.',
 					required: true,
-					choices: farmingPatchNames.map(i => ({ name: i, value: i }))
+					choices: Farming.farmingPatchNames.map(i => ({ name: i, value: i }))
 				}
 			]
 		},
@@ -204,7 +202,7 @@ export const farmingCommand: OSBMahojiCommand = {
 	}>) => {
 		await deferInteraction(interaction);
 		const klasaUser = await mUserFetch(userID);
-		const { patchesDetailed } = getFarmingInfoFromUser(klasaUser.user);
+		const { patchesDetailed } = Farming.getFarmingInfoFromUser(klasaUser.user);
 
 		if (options.auto_farm) {
 			return autoFarm(klasaUser, patchesDetailed, channelID);
@@ -272,6 +270,6 @@ export const farmingCommand: OSBMahojiCommand = {
 			return farmingContractCommand(userID, options.contract.input);
 		}
 
-		return userGrowingProgressStr(patchesDetailed);
+		return Farming.userGrowingProgressStr(patchesDetailed);
 	}
 };

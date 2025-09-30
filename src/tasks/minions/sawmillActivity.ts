@@ -1,6 +1,5 @@
 import { Bank } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { SawmillActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
@@ -18,7 +17,7 @@ export const sawmillTask: MinionTask = {
 
 		if (
 			user.hasEquipped(['Iron dagger', 'Bronze arrow', 'Iron med helm']) &&
-			user.getAttackStyles().includes(SkillsEnum.Strength) &&
+			user.getAttackStyles().includes('strength') &&
 			!user.hasEquippedOrInBank(['Helm of raedwald'])
 		) {
 			loot.add('Helm of raedwald');

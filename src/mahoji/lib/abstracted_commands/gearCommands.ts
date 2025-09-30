@@ -1,4 +1,4 @@
-import { PerkTier, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { PerkTier, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import type { GearPreset } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
@@ -270,14 +270,12 @@ async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipment
 		return 'Invalid gear stat.';
 	}
 
-	const { gearToEquip, toRemoveFromBank, toRemoveFromGear } = getUserBestGearFromBank(
-		user.bank,
-		user.gear[gearSetup],
+	const { gearToEquip, toRemoveFromBank, toRemoveFromGear } = getUserBestGearFromBank({
+		gearBank: user.gearBank,
+		gearStat: equipmentType as GearStat,
 		gearSetup,
-		user.skillsAsXP,
-		equipmentType as GearStat,
-		null
-	);
+		extra: null
+	});
 
 	if (Object.keys(toRemoveFromBank).length === 0) {
 		return "Couldn't find anything to equip.";

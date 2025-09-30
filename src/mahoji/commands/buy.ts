@@ -1,4 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
@@ -9,7 +9,7 @@ import { Minigames } from '@/lib/settings/minigames.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { deferInteraction } from '@/lib/util/interactionReply.js';
-import { formatSkillRequirements, itemNameFromID } from '@/lib/util/smallUtils.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { buyFossilIslandNotes } from '@/mahoji/lib/abstracted_commands/buyFossilIslandNotes.js';
 import { buyingTripCommand } from '@/mahoji/lib/abstracted_commands/buyingTripCommand.js';
@@ -84,7 +84,7 @@ export const buyCommand: OSBMahojiCommand = {
 			const { cl } = user;
 			const unownedItems = buyable.collectionLogReqs.filter(i => !cl.has(i));
 			if (unownedItems.length > 0) {
-				return `You don't have **${unownedItems.map(itemNameFromID).join(', ')}** in your collection log`;
+				return `You don't have **${unownedItems.map(i => Items.itemNameFromId(i)).join(', ')}** in your collection log`;
 			}
 		}
 

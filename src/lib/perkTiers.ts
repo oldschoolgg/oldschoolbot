@@ -1,6 +1,6 @@
-import { perkTierCache } from './cache.js';
-import { BitField, globalConfig, PerkTier, Roles } from './constants.js';
-import { roboChimpCache } from './perkTier.js';
+import { perkTierCache } from '@/lib/cache.js';
+import { BitField, globalConfig, PerkTier, Roles } from '@/lib/constants.js';
+import { roboChimpCache } from '@/lib/perkTier.js';
 
 export const allPerkBitfields: BitField[] = [
 	BitField.IsPatronTier6,

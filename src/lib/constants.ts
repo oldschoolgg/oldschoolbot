@@ -1,14 +1,13 @@
 import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import type { AbstractCommand, CommandOptions } from '@oldschoolgg/toolkit/discord-util';
-import { dateFm, PerkTier } from '@oldschoolgg/toolkit/util';
+import { type AbstractCommand, type CommandOptions, dateFm, Emoji, PerkTier } from '@oldschoolgg/toolkit';
+import { activity_type_enum } from '@prisma/client';
 import * as dotenv from 'dotenv';
-import { resolveItems } from 'oldschooljs';
+import { convertLVLtoXP, resolveItems } from 'oldschooljs';
 import { z } from 'zod';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import { SkillsArray } from '@/lib/skilling/types.js';
 
 export { PerkTier };
 
@@ -313,11 +312,10 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.Hacktoberfest]: '<:hacktoberfest:1304259875634942082>'
 };
 
-export const MAX_XP = 200_000_000;
-
-export const LEVEL_99_XP = 13_034_431;
+export const MAX_XP = BOT_TYPE === 'OSB' ? 200_000_000 : 5_000_000_000;
 export const MAX_LEVEL = BOT_TYPE === 'OSB' ? 99 : 120;
-export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;
+export const MAX_LEVEL_XP = convertLVLtoXP(MAX_LEVEL);
+export const MAX_TOTAL_LEVEL = SkillsArray.length * MAX_LEVEL;
 export const SILENT_ERROR = 'SILENT_ERROR';
 
 export const PATRON_ONLY_GEAR_SETUP =
@@ -455,3 +453,12 @@ export const MAX_CLUES_DROPPED = 100;
 
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
 export type PvMMethod = (typeof PVM_METHODS)[number];
+
+export const DEPRECATED_ACTIVITY_TYPES: activity_type_enum[] = [
+	activity_type_enum.BirthdayEvent,
+	activity_type_enum.Easter,
+	activity_type_enum.HalloweenEvent,
+	activity_type_enum.BlastFurnace, // During the slash command migration this moved to under the smelting activity
+	activity_type_enum.Revenants, // This is now under monsterActivity
+	activity_type_enum.KourendFavour // Kourend favor activity was removed
+];

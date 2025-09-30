@@ -1,4 +1,4 @@
-import { calcPerHour, formatDuration } from '@oldschoolgg/toolkit/util';
+import { calcPerHour, formatDuration } from '@oldschoolgg/toolkit';
 import { ChannelType, type ChatInputCommandInteraction, type TextChannel, userMention } from 'discord.js';
 import { Bank } from 'oldschooljs';
 

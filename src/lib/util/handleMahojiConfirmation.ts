@@ -1,5 +1,4 @@
-import { noOp, Time } from '@oldschoolgg/toolkit';
-import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import { channelIsSendable, noOp, Time } from '@oldschoolgg/toolkit';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -13,8 +12,8 @@ import {
 } from 'discord.js';
 
 import { SILENT_ERROR } from '@/lib/constants.js';
-import { deferInteraction, interactionReply } from './interactionReply.js';
-import { logErrorForInteraction } from './logError.js';
+import { deferInteraction, interactionReply } from '@/lib/util/interactionReply.js';
+import { logErrorForInteraction } from '@/lib/util/logError.js';
 
 export async function silentButtonAck(interaction: ButtonInteraction) {
 	return globalClient.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {

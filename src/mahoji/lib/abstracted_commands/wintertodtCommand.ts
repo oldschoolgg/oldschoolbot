@@ -1,6 +1,5 @@
-import { calcWhatPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Bank, SkillsEnum } from 'oldschooljs';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { Bank } from 'oldschooljs';
 
 import { Eatables } from '@/lib/data/eatables.js';
 import { warmGear } from '@/lib/data/filterables.js';
@@ -11,8 +10,8 @@ import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function wintertodtCommand(user: MUser, channelID: string, quantity?: number) {
-	const fmLevel = user.skillLevel(SkillsEnum.Firemaking);
-	const wcLevel = user.skillLevel(SkillsEnum.Woodcutting);
+	const fmLevel = user.skillsAsLevels.firemaking;
+	const wcLevel = user.skillsAsLevels.woodcutting;
 	if (fmLevel < 50) {
 		return 'You need 50 Firemaking to have a chance at defeating the Wintertodt.';
 	}

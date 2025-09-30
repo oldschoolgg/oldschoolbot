@@ -1,6 +1,20 @@
-import { calcWhatPercent, noOp, notEmpty, randArrItem, sleep, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { allAbstractCommands, bulkUpdateCommands, type MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
-import { calcPerHour, cleanString, dateFm, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { randArrItem } from '@oldschoolgg/rng';
+import {
+	allAbstractCommands,
+	bulkUpdateCommands,
+	calcPerHour,
+	calcWhatPercent,
+	cleanString,
+	dateFm,
+	formatDuration,
+	type MahojiUserOption,
+	noOp,
+	notEmpty,
+	sleep,
+	stringMatches,
+	Time,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import { type ClientStorage, economy_transaction_type } from '@prisma/client';
 import { ApplicationCommandOptionType, AttachmentBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';

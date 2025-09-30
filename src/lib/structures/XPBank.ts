@@ -2,7 +2,7 @@ import { sumArr } from '@oldschoolgg/toolkit';
 
 import { skillEmoji } from '@/lib/data/emojis.js';
 import type { AddXpParams } from '@/lib/minions/types.js';
-import type { SkillNameType, SkillsEnum } from '@/lib/skilling/types.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { Skills } from '@/lib/types/index.js';
 
 export class XPBank {
@@ -26,7 +26,7 @@ export class XPBank {
 		if (amount < 0) {
 			throw new Error(`${options.debugId} Provided a negative amount of XP to add for ${skill}`);
 		}
-		this.xpList.push({ skillName: skill as SkillsEnum, amount, ...options });
+		this.xpList.push({ skillName: skill as SkillNameType, amount, ...options });
 		return this;
 	}
 

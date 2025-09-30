@@ -1,8 +1,7 @@
-import { calcWhatPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { randomVariation } from '@oldschoolgg/rng';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time, toTitleCase } from '@oldschoolgg/toolkit';
 
 import { BitField } from '@/lib/constants.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { GauntletOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -47,7 +46,7 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 	}
 	const readableName = `${toTitleCase(type)} Gauntlet`;
 	const requiredSkills = type === 'corrupted' ? corruptedRequirements : standardRequirements;
-	const prayLevel = user.skillLevel(SkillsEnum.Prayer);
+	const prayLevel = user.skillsAsLevels.prayer;
 
 	if (!user.hasSkillReqs(requiredSkills)) {
 		return `You don't have the required stats to do the ${readableName}, you need: ${formatSkillRequirements(

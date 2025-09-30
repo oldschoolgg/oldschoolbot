@@ -1,6 +1,5 @@
 import { Bank, LootTable } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -34,7 +33,7 @@ export const camdozaalSmithingTask: MinionTask = {
 
 		// Add xp to user
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Smithing,
+			skillName: 'smithing',
 			amount: smithingXpReceived,
 			duration,
 			source: 'CamdozaalSmithing'

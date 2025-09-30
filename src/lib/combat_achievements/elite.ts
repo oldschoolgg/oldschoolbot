@@ -1,7 +1,8 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Time } from '@oldschoolgg/toolkit';
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { SkillsEnum } from '@/lib/skilling/types.js';
+import { anyoneDiedInTOARaid, isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
 	ActivityTaskData,
@@ -11,8 +12,6 @@ import type {
 	TOAOptions
 } from '@/lib/types/minions.js';
 import { crossbows } from '@/lib/util/archery.js';
-import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils.js';
-import type { CombatAchievement } from './combatAchievements.js';
 
 export const eliteCombatAchievements: CombatAchievement[] = [
 	{
@@ -310,7 +309,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 				const styles = user.getAttackStyles();
 				return (
 					isCertainMonsterTrip(Monsters.CommanderZilyana.id)(data) &&
-					([SkillsEnum.Ranged, SkillsEnum.Magic] as const).every(styl => !styles.includes(styl))
+					(['ranged', 'magic'] as const).every(styl => !styles.includes(styl))
 				);
 			}
 		}

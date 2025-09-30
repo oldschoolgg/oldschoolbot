@@ -1,4 +1,4 @@
-import { JsonKVStore } from '@oldschoolgg/toolkit/structures';
+import { JsonKVStore } from '@oldschoolgg/toolkit';
 
 import { BOT_TYPE } from '@/lib/constants.js';
 

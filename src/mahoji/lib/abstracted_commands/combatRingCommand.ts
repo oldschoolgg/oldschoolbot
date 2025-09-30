@@ -1,5 +1,5 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { randomVariation } from '@oldschoolgg/toolkit/util';
+import { randomVariation } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 
 import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';

@@ -1,4 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID } from 'oldschooljs';
 
 import type { BlastableBar } from '@/lib/skilling/types.js';

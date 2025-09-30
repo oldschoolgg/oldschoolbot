@@ -1,6 +1,4 @@
-import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration, reduceNumByPercent, returnStringOrFile, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
 
 import { PVM_METHODS, type PvMMethod } from '@/lib/constants.js';

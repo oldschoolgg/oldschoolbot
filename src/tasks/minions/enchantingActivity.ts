@@ -1,5 +1,4 @@
 import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { EnchantingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
@@ -13,7 +12,7 @@ export const enchantingTask: MinionTask = {
 
 		const xpReceived = quantity * enchantable.xp;
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Magic,
+			skillName: 'magic',
 			amount: xpReceived,
 			duration
 		});
