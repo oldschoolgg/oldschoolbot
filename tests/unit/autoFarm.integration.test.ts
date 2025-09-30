@@ -248,7 +248,7 @@ describe('autoFarm tree clearing fees', () => {
 
 		const response = await autoFarm(user, patchesDetailed, patches as Record<FarmingPatchName, IPatchData>, '123');
 
-		expect(response).toContain('auto farming');
+		expect(response).toContain('auto farm the following patches:');
 		expect(user.user.GP).toBe(5000);
 		expect(addSubTaskMock).toHaveBeenCalled();
 		const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
@@ -359,7 +359,7 @@ describe('autoFarm tree clearing fees', () => {
 
 		const response = await autoFarm(user, patchesDetailed, patches as Record<FarmingPatchName, IPatchData>, '123');
 
-		expect(response).toContain('auto farming');
+		expect(response).toContain('auto farm the following patches:');
 		expect(user.user.GP).toBe(1000);
 		expect(addSubTaskMock).toHaveBeenCalled();
 		const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
@@ -608,3 +608,4 @@ describe('autoFarm tree clearing fees', () => {
 		);
 	});
 });
+
