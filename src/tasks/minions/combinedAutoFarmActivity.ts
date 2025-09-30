@@ -4,6 +4,7 @@ import { Bank, toKMB } from 'oldschooljs';
 import { skillEmoji } from '@/lib/data/emojis.js';
 import type { FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeAutoContractButton } from '@/lib/util/interactions.js';
 import { executeFarmingStep, type FarmingStepAttachment, type FarmingStepSummary } from './farmingStep.js';
 
 interface HandleCombinedAutoFarmOptions {
@@ -46,6 +47,8 @@ function buildAggregateMessage({ summaries, totalLoot, user }: BuildAggregateMes
 	let farmingXP = 0;
 	let woodcuttingXP = 0;
 	let herbloreXP = 0;
+	const boosts = new Set<string>();
+	let contractsCompleted = 0;
 	const payNotes: string[] = [];
 	const payNotesSeen = new Set<string>();
 	const xpNotices: string[] = [];
@@ -99,6 +102,16 @@ function buildAggregateMessage({ summaries, totalLoot, user }: BuildAggregateMes
 				xpNotices.push(line);
 			}
 		}
+
+		if (summary.boosts) {
+			for (const boost of summary.boosts) {
+				boosts.add(boost);
+			}
+		}
+
+		if (summary.contractCompleted) {
+			contractsCompleted += 1;
+		}
 	}
 
 	const lines: string[] = [`${user}, ${user.minionName} finished auto farming your patches.`];
@@ -134,6 +147,15 @@ function buildAggregateMessage({ summaries, totalLoot, user }: BuildAggregateMes
 	}
 	if (xpParts.length > 0) {
 		lines.push(`You received ${formatList(xpParts)}.`);
+	}
+
+	if (boosts.size > 0) {
+		lines.push(`**Boosts:** ${Array.from(boosts).join(', ')}.`);
+	}
+
+	if (contractsCompleted > 0) {
+		const suffix = contractsCompleted === 1 ? '' : 's';
+		lines.push(`Completed ${contractsCompleted.toLocaleString()} farming contract${suffix}.`);
 	}
 
 	if (totalLoot.length > 0) {
@@ -229,6 +251,9 @@ export async function handleCombinedAutoFarm({ user, taskData }: HandleCombinedA
 	}
 
 	const loot = totalLoot.length > 0 ? totalLoot : null;
+	const shouldAddContractButton =
+		summaries.some(summary => summary.contractCompleted) && (loot?.has('Seed pack') ?? false);
+	const extraComponents = shouldAddContractButton ? [makeAutoContractButton()] : undefined;
 
-	await handleTripFinish(user, taskData.channelID, message, undefined, taskData, loot);
+	await handleTripFinish(user, taskData.channelID, message, undefined, taskData, loot, undefined, extraComponents);
 }

@@ -38,6 +38,8 @@ export interface FarmingStepSummary {
 	duration: number;
 	xp: FarmingStepXPBreakdown;
 	xpMessages: Partial<Record<FarmingStepXPMessageSkill, string>>;
+	boosts?: string[];
+	contractCompleted?: boolean;
 }
 
 export interface FarmingStepResult {
@@ -89,17 +91,24 @@ function getCompostXp(upgradeType: CropUpgradeType | null): number {
 	return 0;
 }
 
-function calculateEquipmentModifiers(user: MUser): { baseBonus: number; bonusXpMultiplier: number } {
+function calculateEquipmentModifiers(user: MUser): {
+	baseBonus: number;
+	bonusXpMultiplier: number;
+	boosts: string[];
+} {
 	let baseBonus = 1;
 	let bonusXpMultiplier = 0;
 	let farmersPiecesCheck = 0;
+	const boosts: string[] = [];
 
 	if (user.hasEquippedOrInBank('Magic secateurs')) {
 		baseBonus += 0.1;
+		boosts.push('Magic secateurs: +10% crop yield');
 	}
 
 	if (user.hasEquippedOrInBank('Farming cape')) {
 		baseBonus += 0.05;
+		boosts.push('Farming cape: +5% crop yield');
 	}
 
 	if (user.hasEquippedOrInBank("Farmer's strawhat")) {
@@ -120,7 +129,7 @@ function calculateEquipmentModifiers(user: MUser): { baseBonus: number; bonusXpM
 	}
 	if (farmersPiecesCheck === 4) bonusXpMultiplier += 0.005;
 
-	return { baseBonus, bonusXpMultiplier };
+	return { baseBonus, bonusXpMultiplier, boosts };
 }
 
 function calculatePatchSurvivalModifiers(patchType: PatchTypes.IPatchData): PatchSurvivalModifiers {
@@ -475,7 +484,7 @@ export async function executeFarmingStep({
 	const plant = Farming.Plants.find(plantItem => plantItem.name === plantsName)!;
 	assert(Boolean(plant));
 
-	const { baseBonus, bonusXpMultiplier } = calculateEquipmentModifiers(user);
+	const { baseBonus, bonusXpMultiplier, boosts } = calculateEquipmentModifiers(user);
 	const compostXp = getCompostXp(upgradeType ?? null);
 	const survivalModifiers = calculatePatchSurvivalModifiers(patchType);
 	const currentFarmingLevel = user.skillsAsLevels.farming;
@@ -608,6 +617,10 @@ export async function executeFarmingStep({
 		);
 	}
 
+	if (boosts.length > 0) {
+		infoStr.push(`\n**Boosts:** ${boosts.join(', ')}.`);
+	}
+
 	const { petDropRate } = skillingPetDropRate(user, 'farming', plantToHarvest.petChance);
 	if (plantToHarvest.seedType === 'hespori') {
 		await user.incrementKC(Monsters.Hespori.id, patchType.lastQuantity);
@@ -735,7 +748,9 @@ export async function executeFarmingStep({
 			woodcutting: woodcuttingXPAmount,
 			herblore: herbloreXp
 		},
-		xpMessages
+		xpMessages,
+		boosts: boosts.length > 0 ? [...boosts] : undefined,
+		contractCompleted: janeMessage
 	};
 
 	await updateBankSetting('farming_loot_bank', loot);
