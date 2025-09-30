@@ -24,6 +24,7 @@ export interface MockUserArgs {
 	skills_agility?: number;
 	skills_attack?: number;
 	skills_farming?: number;
+	skills_woodcutting?: number;
 	skills_strength?: number;
 	skills_ranged?: number;
 	skills_magic?: number;
@@ -56,7 +57,7 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		skills_fishing: overrides?.skills_fishing ?? 0,
 		skills_mining: 0,
 		skills_smithing: 0,
-		skills_woodcutting: 0,
+		skills_woodcutting: overrides?.skills_woodcutting ?? 0,
 		skills_firemaking: 0,
 		skills_runecraft: 0,
 		skills_crafting: 0,

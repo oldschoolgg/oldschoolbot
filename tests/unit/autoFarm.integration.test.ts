@@ -567,6 +567,9 @@ describe('autoFarm tree clearing fees', () => {
 			redwoodPlant.name,
 			magicPlant.name
 		]);
+		const redwoodStep = plan.find((step: AutoFarmStepData) => step.plantsName === redwoodPlant.name);
+		expect(redwoodStep?.treeChopFeePlanned).toBe(0);
+		expect(redwoodStep?.treeChopFeePaid).toBe(0);
 		const expectedDuration = plan.reduce((acc: number, step: AutoFarmStepData) => acc + step.duration, 0);
 		expect(firstCallArgs?.duration).toBe(expectedDuration);
 	});
