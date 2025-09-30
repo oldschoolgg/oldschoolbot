@@ -163,7 +163,7 @@ export async function coxCommand(
 			isChallengeMode ? '**Challenge mode** ' : ''
 		}Chambers of Xeric mass! Use the buttons below to join/leave.`,
 		customDenier: async user => {
-			if (!user.user.minion_hasBought) {
+			if (!user.hasMinion) {
 				return [true, "you don't have a minion."];
 			}
 			if (user.minionIsBusy) {

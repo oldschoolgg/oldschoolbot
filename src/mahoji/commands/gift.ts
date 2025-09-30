@@ -5,7 +5,6 @@ import { Bank, type ItemBank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { BOT_TYPE } from '@/lib/constants.js';
-import type { MahojiUserOption } from '@/lib/discord/commandOptions.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';

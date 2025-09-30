@@ -13,11 +13,9 @@ import {
 	Items,
 	resolveItems
 } from 'oldschooljs';
-import { pick } from 'remeda';
 
 import { addXP } from '@/lib/addXP.js';
 import { userIsBusy } from '@/lib/busyCounterCache.js';
-import { partialUserCache } from '@/lib/cache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -1051,7 +1049,6 @@ async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateInput) {
 	if (!user) {
 		return srcMUserFetch(userID, {});
 	}
-	partialUserCache.set(userID, pick(user, ['bitfield', 'minion_hasBought', 'badges']));
 	return new MUserClass(user);
 }
 

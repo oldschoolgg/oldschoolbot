@@ -8,7 +8,6 @@ import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import { BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import { diaries } from '@/lib/diaries.js';
-import type { MahojiUserOption } from '@/lib/discord/commandOptions.js';
 import { calculateMastery } from '@/lib/mastery.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { blowpipeCommand, blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
@@ -411,7 +410,7 @@ export const minionCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
-		user,
+		userID,
 		options,
 		interaction,
 		channelID
@@ -438,6 +437,7 @@ export const minionCommand: OSBMahojiCommand = {
 		peak?: {};
 		mastery?: {};
 	}>) => {
+		const user = await mUserFetch(userID);
 		const perkTier = user.perkTier();
 
 		if (options.info) return (await getUserInfo(user)).everythingString;

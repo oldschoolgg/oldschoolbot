@@ -17,7 +17,7 @@ import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 	// Check if every user has the requirements for this monster.
 	for (const user of users) {
-		if (!user.user.minion_hasBought) {
+		if (!user.hasMinion) {
 			return `${user.usernameOrMention} doesn't have a minion, so they can't join!`;
 		}
 
@@ -88,7 +88,7 @@ export const massCommand: OSBMahojiCommand = {
 				ironmanAllowed: false,
 				message: `${user.badgedUsername} is doing a ${monster.name} mass! Use the buttons below to join/leave.`,
 				customDenier: async user => {
-					if (!user.user.minion_hasBought) {
+					if (!user.hasMinion) {
 						return [true, "you don't have a minion."];
 					}
 					if (user.minionIsBusy) {

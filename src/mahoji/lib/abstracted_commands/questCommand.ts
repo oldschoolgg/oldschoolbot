@@ -7,7 +7,7 @@ import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function questCommand(user: MUser, channelID: string, name?: string) {
-	if (!user.user.minion_hasBought) {
+	if (!user.hasMinion) {
 		return 'You need a minion to do a questing trip';
 	}
 	if (user.minionIsBusy) {

@@ -8,7 +8,6 @@ import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
-import type { MahojiUserOption } from '@/lib/discord/commandOptions.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { marketPricemap } from '@/lib/marketPrices.js';

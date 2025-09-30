@@ -4,9 +4,6 @@ import { logError } from '@/lib/util/logError.js';
 import { cancelUsersListings } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 
 export async function migrateUser(_source: string | MUser, _dest: string | MUser): Promise<string | true> {
-	console.log(
-		`Migrating user ${typeof _source === 'string' ? _source : _source.id} => ${typeof _dest === 'string' ? _dest : _dest.id}`
-	);
 	const sourceUser = typeof _source === 'string' ? await mUserFetch(_source) : _source;
 	const destUser = typeof _dest === 'string' ? await mUserFetch(_dest) : _dest;
 

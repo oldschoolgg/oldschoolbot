@@ -1,8 +1,6 @@
 import { randInt } from '@oldschoolgg/rng';
 import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
 
-import type { MahojiUserOption } from '@/lib/discord/commandOptions.js';
-
 export const monkeyCommand: OSBMahojiCommand = {
 	name: 'monkey',
 	description: 'monkey',

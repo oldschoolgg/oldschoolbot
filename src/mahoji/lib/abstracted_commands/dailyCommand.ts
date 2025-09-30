@@ -47,7 +47,7 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 		bonuses.push(Emoji.OSBot);
 	}
 
-	if (user.user.minion_hasBought) {
+	if (user.hasMinion) {
 		coinsToGive /= 1.5;
 	}
 

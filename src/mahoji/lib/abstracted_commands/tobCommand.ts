@@ -76,7 +76,7 @@ async function checkTOBUser(
 	teamSize?: number,
 	quantity = 1
 ): Promise<[false] | [true, string]> {
-	if (!user.user.minion_hasBought) {
+	if (!user.hasMinion) {
 		return [true, `${user.usernameOrMention} doesn't have a minion`];
 	}
 

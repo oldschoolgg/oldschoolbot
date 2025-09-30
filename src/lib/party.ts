@@ -87,7 +87,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 						(!options.ironmanAllowed && user.user.minion_ironman) ||
 						interaction.user.bot ||
 						user.minionIsBusy ||
-						!user.user.minion_hasBought
+						!user.hasMinion
 					) {
 						interaction.reply({
 							content: `You cannot mass if you are busy${

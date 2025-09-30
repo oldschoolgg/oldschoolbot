@@ -103,7 +103,6 @@ export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.
 	if (!selectKeys || Object.keys(selectKeys).length === 0) {
 		keys = { user_id: true };
 	}
-	console.log('userStatsUpdate', { userID, id, data, selectKeys });
 	return (await prisma.userStats.update({
 		data,
 		where: {

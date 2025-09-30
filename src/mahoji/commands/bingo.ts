@@ -20,7 +20,6 @@ import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { clImageGenerator } from '@/lib/collectionLogTask.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
-import type { MahojiUserOption } from '@/lib/discord/commandOptions.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';

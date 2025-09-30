@@ -55,7 +55,7 @@ const sangChargesPerKc = 60;
 
 async function checkReqs(user: MUser, monster: KillableMonster, isPhosani: boolean): Promise<string | undefined> {
 	// Check the user has the requirements to kill The Nightmare
-	if (!user.user.minion_hasBought) {
+	if (!user.hasMinion) {
 		return `${user.usernameOrMention} doesn't have a minion, so they can't fight the nightmare!`;
 	}
 

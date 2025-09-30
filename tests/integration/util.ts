@@ -92,7 +92,6 @@ export function mockChannel({ userId }: { userId: string }) {
 			has: () => true
 		}),
 		send: vi.fn(() => {
-			// console.log('TestChannel send called with args:', args);
 			return Promise.resolve(mockMessage({ userId }));
 		})
 	} as any;
@@ -104,28 +103,24 @@ export function mockMessage({ userId }: { userId: string }) {
 		author: mockDjsUser({ userId }),
 		channel: TestChannel,
 		send: vi.fn(() => {
-			// console.log('TestMessage send called with args:', args);
 			return Promise.resolve({
 				id: '123456789',
 				channel: TestChannel
 			});
 		}),
 		reply: vi.fn(() => {
-			// console.log('TestMessage reply called with args:', args);
 			return Promise.resolve({
 				id: '123456789',
 				channel: TestChannel
 			});
 		}),
 		edit: vi.fn(() => {
-			// console.log('TestMessage edit called with args:', args);
 			return Promise.resolve({
 				id: '123456789',
 				channel: TestChannel
 			});
 		}),
 		delete: vi.fn(() => {
-			// console.log('TestMessage delete called');
 			return Promise.resolve();
 		})
 	};
@@ -267,6 +262,7 @@ export class TestUser extends MUserClass {
 	}
 
 	async runCommand(command: OSBMahojiCommand, options: object = {}, syncAfter = false) {
+		await this.sync();
 		const mockedInt = mockInteraction({ userId: this.user.id });
 		const result = await command.run({
 			userID: this.user.id,
@@ -407,7 +403,6 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 		bank.remove('Coins', GP);
 	}
 
-	console.log({ id });
 	const [user] = await prisma.$transaction([
 		prisma.user.upsert({
 			create: {

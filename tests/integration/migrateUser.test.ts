@@ -901,8 +901,6 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'User stats',
 		cmd: async user => {
-			const points = randInt(1000, 10_000);
-
 			await userStatsUpdate(
 				user.id,
 				{
@@ -910,13 +908,11 @@ const allTableCommands: TestCommand[] = [
 						increment: 1
 					},
 					tithe_farm_points: {
-						increment: points
+						increment: 666
 					}
 				},
 				{}
 			);
-
-			console.log(await prisma.userStats.findUnique({ where: { user_id: BigInt(user.id) } }));
 		}
 	},
 	{
@@ -1110,14 +1106,8 @@ async function runTestCommand(user: TestUser, command: TestCommand) {
 	}
 }
 async function runAllTestCommandsOnUser(user: TestUser) {
-	console.log(`runAllTestCommandsOnUser: ${user.id}`);
 	for (const command of allTableCommands) {
-		try {
-			await runTestCommand(user, command);
-		} catch (err) {
-			console.error(`Error running command ${command.name} on user ${user.id}`, err);
-			process.exit(1);
-		}
+		await runTestCommand(user, command);
 	}
 	return user;
 }
@@ -1234,10 +1224,7 @@ test('test preventing a double (clobber) robochimp migration (two bot-migration)
 
 	// Create source user, and populate data:
 	const sourceUser = await buildBaseUser(sourceUserId);
-	const stats = await prisma.userStats.findFirstOrThrow({
-		where: { user_id: BigInt(sourceUser.id) }
-	});
-	console.log({ stats });
+
 	const srcHistory = await runRandomTestCommandsOnUser(sourceUser, 5, true);
 	expect(
 		await prisma.userStats.count({
