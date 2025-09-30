@@ -164,6 +164,7 @@ describe('prepareFarmingStep auto farm limits', () => {
 			throw new Error(`Preparation failed: ${prepared.error}`);
 		}
 
+		expect(prepared.data.infoStr).not.toContain('You may need to pay a nearby farmer');
 		expect(prepared.data.treeChopFee).toBe(0);
 		expect(prepared.data.cost).toStrictEqual(new Bank({ 'Redwood tree seed': 1 }));
 	});
@@ -212,6 +213,9 @@ describe('prepareFarmingStep auto farm limits', () => {
 			throw new Error(`Preparation failed: ${prepared.error}`);
 		}
 
+		expect(prepared.data.infoStr).toContain(
+			'You may need to pay a nearby farmer up to 2000 GP to remove the previous trees when harvesting.'
+		);
 		expect(prepared.data.treeChopFee).toBe(2000);
 		expect(prepared.data.cost).toStrictEqual(new Bank({ 'Redwood tree seed': 1 }));
 	});

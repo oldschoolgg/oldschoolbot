@@ -249,6 +249,8 @@ describe('autoFarm tree clearing fees', () => {
 		const response = await autoFarm(user, patchesDetailed, patches as Record<FarmingPatchName, IPatchData>, '123');
 
 		expect(response).toContain('auto farm the following patches:');
+		expect(response).toContain('1. Redwood patch: 1x Redwood tree (Up to 2,000 GP to remove previous trees)');
+		expect(response).not.toContain('You may need to pay a nearby farmer');
 		expect(user.user.GP).toBe(5000);
 		expect(addSubTaskMock).toHaveBeenCalled();
 		const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
@@ -360,6 +362,7 @@ describe('autoFarm tree clearing fees', () => {
 		const response = await autoFarm(user, patchesDetailed, patches as Record<FarmingPatchName, IPatchData>, '123');
 
 		expect(response).toContain('auto farm the following patches:');
+		expect(response).toContain('1. Tree patch: 1x Yew tree (Up to 200 GP to remove previous trees)');
 		expect(user.user.GP).toBe(1000);
 		expect(addSubTaskMock).toHaveBeenCalled();
 		const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
@@ -467,8 +470,10 @@ describe('autoFarm tree clearing fees', () => {
 		const response = await autoFarm(user, patchesDetailed, patches as Record<FarmingPatchName, IPatchData>, '123');
 
 		expect(response).toContain('Celastrus patch');
+		expect(response).toContain('1. Celastrus patch: 1x Celastrus tree');
 		expect(response).not.toContain('Tree patch');
 		expect(response).toContain('Mushroom patch');
+		expect(response).toContain('2. Mushroom patch: 1x Mushroom');
 		expect(response).toContain('were skipped because the total trip length would exceed the maximum');
 		expect(addSubTaskMock).toHaveBeenCalled();
 		const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
@@ -552,7 +557,10 @@ describe('autoFarm tree clearing fees', () => {
 		const response = await autoFarm(user, patchesDetailed, patches as Record<FarmingPatchName, IPatchData>, '123');
 
 		expect(response).toContain('Redwood patch');
+		expect(response).toContain('1. Redwood patch: 1x Redwood tree');
+		expect(response).not.toContain('Up to 2,000 GP to remove previous trees');
 		expect(response).toContain('Tree patch');
+		expect(response).toContain('2. Tree patch: 1x Magic tree');
 		expect(response).not.toContain('were skipped because the total trip length would exceed the maximum');
 		expect(addSubTaskMock).toHaveBeenCalled();
 		const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
