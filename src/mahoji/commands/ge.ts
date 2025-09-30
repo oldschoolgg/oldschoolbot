@@ -1,6 +1,5 @@
 import { evalMathExpression, formatDuration, makeComponents, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import type { GEListing, GETransaction } from '@prisma/client';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Items, toKMB } from 'oldschooljs';
 
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
@@ -64,14 +63,14 @@ function geListingToString(
 const quantityOption: CommandOption = {
 	name: 'quantity',
 	description: 'The quantity of the item to exchange (e.g. 7, 5k, 10m).',
-	type: ApplicationCommandOptionType.String,
+	type: 'String',
 	required: true
 };
 
 const priceOption: CommandOption = {
 	name: 'price',
 	description: 'The price to exchange each item at. (e.g. 7, 5k, 10m).',
-	type: ApplicationCommandOptionType.String,
+	type: 'String',
 	required: true
 };
 
@@ -80,12 +79,12 @@ export const geCommand: OSBMahojiCommand = {
 	description: 'Exchange grandly with other players on the bot!',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'buy',
 			description: 'Purchase something from the grand exchange.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'item',
 					description: 'The item you want to pick.',
 					required: true,
@@ -117,13 +116,13 @@ export const geCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'sell',
 			description: 'Sell something on the grand exchange.',
 			options: [
 				{
 					name: 'item',
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					description: 'The item you want to sell.',
 					required: true,
 					autocomplete: async (value, user) => {
@@ -139,12 +138,12 @@ export const geCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'my_listings',
 			description: 'View your listings',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'page',
 					description: 'The page you want to view.',
 					required: false,
@@ -154,12 +153,12 @@ export const geCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'cancel',
 			description: 'Cancel one of your listings.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'listing',
 					description: 'The listing to cancel.',
 					required: true,
@@ -176,18 +175,18 @@ export const geCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'stats',
 			description: 'View your g.e stats',
 			options: []
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'price',
 			description: 'Lookup the market price of an item on the g.e',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'item',
 					description: 'The item to lookup.',
 					required: true,
@@ -208,7 +207,7 @@ export const geCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'view',
 			description: 'Lookup information about an item on the g.e',
 			options: [

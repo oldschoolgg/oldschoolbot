@@ -20,16 +20,9 @@ async function handleAutocomplete(
 	const data = autocompleteData.find(i => 'focused' in i && i.focused === true) ?? autocompleteData[0];
 	if (data.type === ApplicationCommandOptionType.SubcommandGroup) {
 		const group = command.options.find(c => c.name === data.name);
-		if (group?.type !== ApplicationCommandOptionType.SubcommandGroup) return [];
-		const subCommand = group.options?.find(
-			c => c.name === data.options?.[0].name && c.type === ApplicationCommandOptionType.Subcommand
-		);
-		if (
-			!subCommand ||
-			!data.options ||
-			!data.options[0] ||
-			subCommand.type !== ApplicationCommandOptionType.Subcommand
-		) {
+		if (group?.type !== 'SubcommandGroup') return [];
+		const subCommand = group.options?.find(c => c.name === data.options?.[0].name && c.type === 'Subcommand');
+		if (!subCommand || !data.options || !data.options[0] || subCommand.type !== 'Subcommand') {
 			return [];
 		}
 		const option = data.options[0].options?.find(t => (t as any).focused);
@@ -40,7 +33,7 @@ async function handleAutocomplete(
 	if (data.type === ApplicationCommandOptionType.Subcommand) {
 		if (!data.options || !data.options[0]) return [];
 		const subCommand = command.options.find(c => c.name === data.name);
-		if (subCommand?.type !== ApplicationCommandOptionType.Subcommand) return [];
+		if (subCommand?.type !== 'Subcommand') return [];
 		const option = data.options.find(o => ('focused' in o ? Boolean(o.focused) : false)) ?? data.options[0];
 		const subOption = subCommand.options?.find(c => c.name === option.name);
 		if (!subOption) return [];

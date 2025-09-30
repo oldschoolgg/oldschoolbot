@@ -1,6 +1,5 @@
 import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Items, itemID, resolveItems } from 'oldschooljs';
 
 import { determineWoodcuttingTime } from '@/lib/skilling/functions/determineWoodcuttingTime.js';
@@ -70,7 +69,7 @@ export const chopCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The tree you want to chop.',
 			required: true,
@@ -84,26 +83,26 @@ export const chopCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity of logs you want to chop (optional).',
 			required: false,
 			min_value: 1
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'powerchop',
 			description: 'Set this to true to powerchop. Higher xp/hour, No loot (default false, optional).',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'forestry_events',
 			description: 'Set this to true to participate in forestry events. (default false, optional).',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'twitchers_gloves',
 			description: "Change the settings of your Twitcher's gloves. (default egg, optional)",
 			required: false,

@@ -1,12 +1,11 @@
 import { cryptoRng } from '@oldschoolgg/rng';
-import { ApplicationCommandOptionType } from 'discord.js';
 
 export const rollCommand: OSBMahojiCommand = {
 	name: 'roll',
 	description: 'Roll a random number from 1, up to a limit.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'limit',
 			description: 'The upper limit of the roll. Defaults to 10.',
 			required: false,

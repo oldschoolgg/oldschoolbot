@@ -14,7 +14,6 @@ import {
 } from '@oldschoolgg/toolkit';
 import { type ClientStorage, economy_transaction_type } from '@prisma/client';
 import {
-	ApplicationCommandOptionType,
 	ApplicationCommandType,
 	AttachmentBuilder,
 	type InteractionReplyOptions,
@@ -25,16 +24,8 @@ import {
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '@/lib/blacklists.js';
-import {
-	BadgesEnum,
-	BitField,
-	BitFieldData,
-	badges,
-	Channel,
-	DISABLED_COMMANDS,
-	globalConfig,
-	META_CONSTANTS
-} from '@/lib/constants.js';
+import { DISABLED_COMMANDS } from '@/lib/cache.js';
+import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { convertCommandOptionToAPIOption, type ICommand, itemOption } from '@/lib/discord/index.js';
 import { economyLog } from '@/lib/economyLogs.js';
 import type { GearSetup } from '@/lib/gear/types.js';
@@ -437,40 +428,40 @@ export const adminCommand: OSBMahojiCommand = {
 	guildID: globalConfig.supportServerID,
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'shut_down',
 			description: 'Shut down the bot without rebooting.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'reboot',
 			description: 'Reboot the bot.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'sync_commands',
 			description: 'Sync commands',
 			options: []
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'item_stats',
 			description: 'item stats',
 			options: [{ ...itemOption(), required: true }]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'sync_blacklist',
 			description: 'Sync blacklist'
 		},
 		//
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'cancel_task',
 			description: 'Cancel a users task',
 			options: [
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'user',
 					description: 'The user',
 					required: true
@@ -478,12 +469,12 @@ export const adminCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'bypass_age',
 			description: 'Bypass age for a user',
 			options: [
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'user',
 					description: 'The user',
 					required: true
@@ -491,18 +482,18 @@ export const adminCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'badges',
 			description: 'Manage badges of a user',
 			options: [
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'user',
 					description: 'The user',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'add',
 					description: 'The badge to add',
 					required: false,
@@ -511,7 +502,7 @@ export const adminCommand: OSBMahojiCommand = {
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'remove',
 					description: 'The badge to remove',
 					required: false,
@@ -522,12 +513,12 @@ export const adminCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'command',
 			description: 'Enable/disable commands',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'disable',
 					description: 'The command to disable',
 					required: false,
@@ -540,7 +531,7 @@ export const adminCommand: OSBMahojiCommand = {
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'enable',
 					description: 'The command to enable',
 					required: false,
@@ -554,13 +545,13 @@ export const adminCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'set_price',
 			description: 'item stats',
 			options: [
 				{ ...itemOption(), required: true },
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'price',
 					description: 'The price to set',
 					required: true,
@@ -569,18 +560,18 @@ export const adminCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'bitfield',
 			description: 'Manage bitfield of a user',
 			options: [
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'user',
 					description: 'The user',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'add',
 					description: 'The bitfield to add',
 					required: false,
@@ -591,7 +582,7 @@ export const adminCommand: OSBMahojiCommand = {
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'remove',
 					description: 'The bitfield to remove',
 					required: false,
@@ -604,7 +595,7 @@ export const adminCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'ltc',
 			description: 'Ltc?',
 			options: [
@@ -617,12 +608,12 @@ export const adminCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'view',
 			description: 'View something',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'thing',
 					description: 'The thing',
 					required: true,
@@ -631,24 +622,24 @@ export const adminCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'give_items',
 			description: 'Spawn items for a user',
 			options: [
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'user',
 					description: 'The user',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'items',
 					description: 'The items to give',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'reason',
 					description: 'The reason'
 				}

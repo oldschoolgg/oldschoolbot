@@ -1,5 +1,5 @@
 import { randArrItem } from '@oldschoolgg/rng';
-import { ApplicationCommandOptionType, inlineCode } from 'discord.js';
+import { inlineCode } from 'discord.js';
 
 export const chooseCommand: OSBMahojiCommand = {
 	name: 'choose',
@@ -9,7 +9,7 @@ export const chooseCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'list',
 			description: 'The list of things to choose from, each separated by a comma.',
 			required: true

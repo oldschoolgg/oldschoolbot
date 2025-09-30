@@ -1,12 +1,11 @@
 import { channelIsSendable } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 
 export const pollCommand: OSBMahojiCommand = {
 	name: 'poll',
 	description: 'Create a reaction poll.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'question',
 			description: 'The poll question.',
 			required: true

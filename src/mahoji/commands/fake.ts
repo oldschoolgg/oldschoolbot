@@ -1,5 +1,4 @@
 import { randInt } from '@oldschoolgg/rng';
-import { ApplicationCommandOptionType } from 'discord.js';
 
 import {
 	type CanvasContext,
@@ -170,14 +169,14 @@ export const fakeCommand: OSBMahojiCommand = {
 	description: 'Generate fake images of getting loot.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'type',
 			description: 'The type you want to generate.',
 			required: true,
 			choices: thingMap.map(i => Array.from(i[0])[0]).map(i => ({ name: i, value: i }))
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'username',
 			description: 'The username to put on the image.',
 			required: true

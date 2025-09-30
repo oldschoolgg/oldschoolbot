@@ -1,5 +1,3 @@
-import { ApplicationCommandOptionType } from 'discord.js';
-
 import { PerkTier } from '@/lib/constants.js';
 import { getAllTrackedLootForUser, getDetailsOfSingleTrackedLoot } from '@/lib/lootTrack.js';
 
@@ -11,12 +9,12 @@ export const lootCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'view',
 			description: 'View your tracked loot for a certain thing.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'The thing you want to view.',
 					required: true,
@@ -32,12 +30,12 @@ export const lootCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'reset',
 			description: 'Reset one of your loot trackers.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'The thing you want to reset.',
 					required: true,

@@ -1,5 +1,5 @@
 import { chunk, Emoji } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, codeBlock, EmbedBuilder } from 'discord.js';
+import { codeBlock, EmbedBuilder } from 'discord.js';
 import type { Bank } from 'oldschooljs';
 
 import type { BankFlag } from '@/lib/canvas/bankImage.js';
@@ -52,47 +52,47 @@ export const bankCommand: OSBMahojiCommand = {
 	description: 'See your minions bank.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'page',
 			description: 'The page in your bank you want to see.',
 			required: false
 		},
 		itemOption(),
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'items',
 			description: 'Type a bank string to lookup'
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'format',
 			description: 'The format to return your bank in.',
 			required: false,
 			choices: bankFormats.map(i => ({ name: i, value: i }))
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'search',
 			description: 'Text to search your bank with.',
 			required: false
 		},
 		filterOption,
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'sort',
 			description: 'The method to sort your bank by.',
 			required: false,
 			choices: BankSortMethods.map(i => ({ name: i, value: i }))
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'flag',
 			description: 'A particular flag to apply to your bank.',
 			required: false,
 			choices: bankFlags.map(i => ({ name: i, value: i }))
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'flag_extra',
 			description: 'An additional flag to apply to your bank.',
 			required: false,

@@ -3,7 +3,7 @@ import type { NewUser } from '@prisma/client';
 import { type APIInteractionGuildMember, ButtonInteraction, type GuildMember } from 'discord.js';
 import { isEmpty } from 'remeda';
 
-import type { CommandOptions } from '@/lib/discord/index.js';
+import type { CommandOptions } from '@/lib/discord/commandOptions.js';
 import { postCommand } from '@/lib/discord/postCommand.js';
 import { preCommand } from '@/lib/discord/preCommand.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';

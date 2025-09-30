@@ -1,5 +1,4 @@
 import { formatDuration, round, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import Constructables from '@/lib/skilling/skills/construction/constructables.js';
@@ -38,7 +37,7 @@ export const buildCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The object you want to build.',
 			required: true,
@@ -54,7 +53,7 @@ export const buildCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to build (defaults to max).',
 			required: false,

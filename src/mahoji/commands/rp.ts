@@ -3,7 +3,7 @@ import { dateFm, isValidDiscordSnowflake, Stopwatch, sumArr, Time, toTitleCase }
 import { UserEventType, xp_gains_skill_enum } from '@prisma/client';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Duration } from '@sapphire/time-utilities';
-import { ApplicationCommandOptionType, codeBlock, SnowflakeUtil } from 'discord.js';
+import { codeBlock, SnowflakeUtil } from 'discord.js';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
@@ -169,34 +169,34 @@ export const rpCommand: OSBMahojiCommand = {
 	guildID: globalConfig.supportServerID,
 	options: [
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'action',
 			description: 'Actions',
 			options: actions.map(a => ({
-				type: ApplicationCommandOptionType.Subcommand,
+				type: 'Subcommand',
 				name: a.name,
 				description: a.name,
 				options: []
 			}))
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'player',
 			description: 'Player manipulation tools',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'set_buy_date',
 					description: 'Set the minion buy date of a user.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user.',
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'message_id',
 							description: 'The message id when they bought their minion.',
 							required: true
@@ -204,18 +204,18 @@ export const rpCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'viewbank',
 					description: 'View a users bank.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user.',
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'json',
 							description: 'Get bank in JSON format',
 							required: false
@@ -223,25 +223,25 @@ export const rpCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'add_patron_time',
 					description: 'Give user temporary patron time.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user.',
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'tier',
 							description: 'The tier to give.',
 							required: true,
 							choices: [1, 2, 3, 4, 5, 6].map(i => ({ name: i.toString(), value: i }))
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'time',
 							description: 'The time.',
 							required: true
@@ -249,12 +249,12 @@ export const rpCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'unequip_all_items',
 					description: 'Force unequip all items from a user.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user.',
 							required: true
@@ -266,60 +266,60 @@ export const rpCommand: OSBMahojiCommand = {
 						{
 							name: 'all',
 							description: 'Unequip all gear slots',
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							required: false
 						},
 						{
 							name: 'pet',
 							description: 'Unequip pet also?',
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							required: false
 						}
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'steal_items',
 					description: 'Steal items from a user',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user',
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'items',
 							description: 'The items to take',
 							required: false
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'item_filter',
 							description: 'A preconfigured item filter.',
 							required: false,
 							choices: itemFilters.map(i => ({ name: i.name, value: i.name }))
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'reason',
 							description: 'The reason'
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'delete',
 							description: 'To delete the items instead'
 						}
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'view_user',
 					description: 'View a users info',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user',
 							required: true
@@ -327,48 +327,48 @@ export const rpCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'migrate_user',
 					description: "Migrate a user's minion profile across Discord accounts",
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'source',
 							description: 'Source account with data to preserve and migrate',
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'dest',
 							description: 'Destination account (any existing data on this account will be deleted)',
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'reason',
 							description: 'The reason'
 						}
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'list_trades',
 					description: 'Show trades between users',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user',
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'partner',
 							description: 'Optional second user, will only show trades between the users',
 							required: false
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'guild_id',
 							description: 'Optional - Restrict search to this guild.',
 							required: false
@@ -376,12 +376,12 @@ export const rpCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'ge_cancel',
 					description: 'Cancel GE Listings',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user',
 							required: true
@@ -391,23 +391,23 @@ export const rpCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'user_event',
 			description: 'Manage user events.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'cl_completion',
 					description: 'CL Completion',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user that completed the cl.',
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'cl_name',
 							description: 'The cl the user completed',
 							required: true,
@@ -419,7 +419,7 @@ export const rpCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'message_id',
 							description: 'The message id of when they got it',
 							required: true
@@ -427,18 +427,18 @@ export const rpCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'max_total',
 					description: 'Set max total level or total xp',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user that reached max total xp or level',
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'type',
 							description: 'Did they reach max total level or max total xp',
 							required: true,
@@ -448,7 +448,7 @@ export const rpCommand: OSBMahojiCommand = {
 							]
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'message_id',
 							description: 'The message id of when they got it',
 							required: true
@@ -456,18 +456,18 @@ export const rpCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'max',
 					description: 'Set max level/xp, e.g. lvl 99 or 200m in one skill',
 					options: [
 						{
-							type: ApplicationCommandOptionType.User,
+							type: 'User',
 							name: 'user',
 							description: 'The user that reached max total xp or level',
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'type',
 							description: 'Did they reach max level or max xp',
 							required: true,
@@ -477,7 +477,7 @@ export const rpCommand: OSBMahojiCommand = {
 							]
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'skill',
 							description: 'What skill?',
 							required: true,
@@ -488,7 +488,7 @@ export const rpCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'message_id',
 							description: 'The message id of when they got it',
 							required: true

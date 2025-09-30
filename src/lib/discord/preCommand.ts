@@ -2,7 +2,7 @@ import type { InteractionReplyOptions } from 'discord.js';
 
 import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
 import { busyImmuneCommands } from '@/lib/constants.js';
-import type { CommandOptions } from '@/lib/discord/index.js';
+import type { CommandOptions } from '@/lib/discord/commandOptions.js';
 import { runInhibitors } from '@/lib/discord/inhibitors.js';
 
 interface PreCommandOptions {

@@ -8,8 +8,8 @@ import {
 } from 'discord.js';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
-import { perkTierCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
-import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, globalConfig } from '@/lib/constants.js';
+import { DISABLED_COMMANDS, perkTierCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
+import { BadgesEnum, BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
 import type { MMember } from '@/lib/structures/MInteraction.js';
 import { mahojiGuildSettingsFetch } from '@/mahoji/guildSettings.js';

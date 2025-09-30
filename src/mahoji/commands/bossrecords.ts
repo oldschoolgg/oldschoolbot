@@ -1,5 +1,5 @@
 import { chunk, toTitleCase } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { type BossRecords, bossNameMap, Hiscores } from 'oldschooljs/hiscores';
 
 import pets from '@/lib/data/pets.js';
@@ -31,7 +31,7 @@ export const bossrecordCommand: OSBMahojiCommand = {
 	description: 'Shows your OSRS boss records.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'rsn',
 			description: 'The runescape username you want to check.',
 			required: true

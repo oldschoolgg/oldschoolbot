@@ -1,6 +1,5 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { TokkulShopItems } from '@/lib/data/buyables/tokkulBuyables.js';
@@ -22,14 +21,14 @@ export const tksCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'buy',
 			description: 'Buy an item in exchange for tokkul',
 			options: [
 				{
 					name: 'name',
 					description: 'The item you want to purchase.',
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					required: true,
 					autocomplete: async (value: string) => {
 						return TokkulShopItems.filter(i =>
@@ -42,21 +41,21 @@ export const tksCommand: OSBMahojiCommand = {
 				{
 					name: 'quantity',
 					description: 'The quantity you want to purchase.',
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					required: true,
 					min_value: 1
 				}
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'sell',
 			description: 'Sell an item in exchange for tokkul',
 			options: [
 				{
 					name: 'name',
 					description: 'The item you want to sell.',
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					required: true,
 					autocomplete: async (value: string) => {
 						return TokkulShopItems.filter(i =>
@@ -69,7 +68,7 @@ export const tksCommand: OSBMahojiCommand = {
 				{
 					name: 'quantity',
 					description: 'The quantity you want to sell.',
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					required: true,
 					min_value: 1
 				}

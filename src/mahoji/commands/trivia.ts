@@ -1,6 +1,6 @@
 import { shuffleArr } from '@oldschoolgg/rng';
 import { uniqueArr } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, type TextChannel, userMention } from 'discord.js';
+import { type TextChannel, userMention } from 'discord.js';
 
 import { DynamicButtons } from '@/lib/DynamicButtons.js';
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
@@ -13,7 +13,7 @@ export const triviaCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.User,
+			type: 'User',
 			name: 'duel',
 			description: 'A user to duel in answering the question fastest.',
 			required: false

@@ -2,7 +2,6 @@ import './base.js';
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { md5sum, Stopwatch, stringMatches } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { DateTime } from 'luxon';
 
 import { allCommands } from '@/mahoji/commands/allCommands.js';
@@ -26,10 +25,7 @@ async function renderCommands() {
 			}
 			const subOptions: string[] = [];
 			for (const option of mahojiCommand.options) {
-				if (
-					option.type === ApplicationCommandOptionType.SubcommandGroup ||
-					option.type === ApplicationCommandOptionType.Subcommand
-				) {
+				if (option.type === 'SubcommandGroup' || option.type === 'Subcommand') {
 					subOptions.push(option.name);
 				}
 			}

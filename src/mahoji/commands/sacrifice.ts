@@ -1,5 +1,4 @@
 import { Emoji, Events, truncateString } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type Item, type ItemBank, resolveItems, toKMB } from 'oldschooljs';
 
 import { filterOption } from '@/lib/discord/index.js';
@@ -55,14 +54,14 @@ export const sacrificeCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'items',
 			description: 'The items you want to sacrifice.',
 			required: false
 		},
 		filterOption,
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'search',
 			description: 'A search query for items in your bank to sacrifice.',
 			required: false

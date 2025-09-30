@@ -20,3 +20,5 @@ export const lastRoboChimpSyncCache = new Map<string, number>();
 
 export const partyLockCache = new Set<string>();
 TimerManager.setInterval(() => partyLockCache.clear(), Time.Minute * 20);
+
+export const DISABLED_COMMANDS = new Set<string>();

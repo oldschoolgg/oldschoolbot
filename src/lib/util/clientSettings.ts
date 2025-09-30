@@ -129,11 +129,35 @@ async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
 	return res;
 }
 
+async function addToGPTaxBalance(user: MUser, amount: number) {
+	await Promise.all([
+		prisma.clientStorage.update({
+			where: {
+				id: globalConfig.clientID
+			},
+			data: {
+				gp_tax_balance: {
+					increment: amount
+				}
+			},
+			select: {
+				id: true
+			}
+		}),
+		user.statsUpdate({
+			total_gp_traded: {
+				increment: amount
+			}
+		})
+	]);
+}
+
 const ClientSettingsSrc = {
 	fetch: mahojiClientSettingsFetch,
 	update: mahojiClientSettingsUpdate,
 	updateClientGPTrackSetting,
-	updateBankSetting
+	updateBankSetting,
+	addToGPTaxBalance
 };
 
 declare global {

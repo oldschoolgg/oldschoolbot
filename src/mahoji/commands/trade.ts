@@ -1,5 +1,4 @@
 import { discrimName, Events } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
@@ -8,7 +7,7 @@ import { mentionCommand } from '@/lib/discord/utils.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
-import { addToGPTaxBalance, mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 const MAX_CHARACTER_LENGTH = 950;
 
@@ -25,32 +24,32 @@ export const tradeCommand: OSBMahojiCommand = {
 	description: 'Allows you to trade items with other players.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.User,
+			type: 'User',
 			name: 'user',
 			description: 'The user you want to trade items with.',
 			required: true
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'send',
 			description: 'The items you want to send to the other player.',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'receive',
 			description: 'The items you want to receieve from the other player.',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'price',
 			description: 'A shortcut for adding GP to the received items.',
 			required: false
 		},
 		filterOption,
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'search',
 			description: 'An optional search of items by name.',
 			required: false
@@ -153,10 +152,10 @@ Both parties must click confirm to make the trade.`,
 			`${senderUser.mention} sold ${itemsSent} to ${recipientUser.mention} for ${itemsReceived}.`
 		);
 		if (itemsReceived.has('Coins')) {
-			await addToGPTaxBalance(recipientUser, itemsReceived.amount('Coins'));
+			await ClientSettings.addToGPTaxBalance(recipientUser, itemsReceived.amount('Coins'));
 		}
 		if (itemsSent.has('Coins')) {
-			await addToGPTaxBalance(senderUser, itemsSent.amount('Coins'));
+			await ClientSettings.addToGPTaxBalance(senderUser, itemsSent.amount('Coins'));
 		}
 
 		const sentFull = itemsSent.toStringFull();

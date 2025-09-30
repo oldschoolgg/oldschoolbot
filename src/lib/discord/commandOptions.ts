@@ -14,11 +14,12 @@ import {
 
 export function convertCommandOptionToAPIOption(option: CommandOption): any {
 	switch (option.type) {
-		case ApplicationCommandOptionType.Number:
-		case ApplicationCommandOptionType.Integer:
-		case ApplicationCommandOptionType.String: {
+		case 'Number':
+		case 'Integer':
+		case 'String': {
 			return {
 				...option,
+				type: stringyToApiMap[option.type],
 				autocomplete: 'autocomplete' in option
 			};
 		}
@@ -26,6 +27,7 @@ export function convertCommandOptionToAPIOption(option: CommandOption): any {
 		default: {
 			return {
 				...option,
+				type: stringyToApiMap[option.type],
 				options:
 					'options' in option && option.options ? option.options.map(convertCommandOptionToAPIOption) : []
 			};
@@ -33,6 +35,30 @@ export function convertCommandOptionToAPIOption(option: CommandOption): any {
 	}
 }
 
+type StringyApplicationCommandOptionType =
+	| 'Subcommand'
+	| 'SubcommandGroup'
+	| 'String'
+	| 'Integer'
+	| 'Boolean'
+	| 'User'
+	| 'Channel'
+	| 'Role'
+	| 'Mentionable'
+	| 'Number';
+
+const stringyToApiMap: Record<StringyApplicationCommandOptionType, ApplicationCommandOptionType> = {
+	Subcommand: ApplicationCommandOptionType.Subcommand,
+	SubcommandGroup: ApplicationCommandOptionType.SubcommandGroup,
+	String: ApplicationCommandOptionType.String,
+	Integer: ApplicationCommandOptionType.Integer,
+	Boolean: ApplicationCommandOptionType.Boolean,
+	User: ApplicationCommandOptionType.User,
+	Channel: ApplicationCommandOptionType.Channel,
+	Role: ApplicationCommandOptionType.Role,
+	Mentionable: ApplicationCommandOptionType.Mentionable,
+	Number: ApplicationCommandOptionType.Number
+};
 export function convertAPIOptionsToCommandOptions(
 	options: ChatInputCommandInteraction['options']['data'],
 	resolvedObjects: ChatInputCommandInteraction['options']['resolved'] | null
@@ -84,11 +110,11 @@ export type CommandOption = {
 	required?: boolean;
 } & (
 	| {
-			type: ApplicationCommandOptionType.Subcommand | ApplicationCommandOptionType.SubcommandGroup;
+			type: 'Subcommand' | 'SubcommandGroup';
 			options?: CommandOption[];
 	  }
 	| {
-			type: ApplicationCommandOptionType.String;
+			type: 'String';
 			choices?: { name: string; value: string }[];
 			autocomplete?: (
 				value: string,
@@ -97,7 +123,7 @@ export type CommandOption = {
 			) => Promise<APIApplicationCommandOptionChoice[]>;
 	  }
 	| {
-			type: ApplicationCommandOptionType.Integer | ApplicationCommandOptionType.Number;
+			type: 'Integer' | 'Number';
 			choices?: { name: string; value: number }[];
 			autocomplete?: (
 				value: number,
@@ -108,12 +134,7 @@ export type CommandOption = {
 			max_value?: number;
 	  }
 	| {
-			type:
-				| ApplicationCommandOptionType.Boolean
-				| ApplicationCommandOptionType.User
-				| ApplicationCommandOptionType.Channel
-				| ApplicationCommandOptionType.Role
-				| ApplicationCommandOptionType.Mentionable;
+			type: 'Boolean' | 'User' | 'Channel' | 'Role' | 'Mentionable';
 	  }
 );
 

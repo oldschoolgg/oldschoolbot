@@ -1,4 +1,3 @@
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
 import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
@@ -22,19 +21,19 @@ export const slayerCommand: OSBMahojiCommand = {
 	description: 'Slayer skill commands',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'autoslay',
 			description: 'Send your minion to slay your current task.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'mode',
 					description: 'Which autoslay mode do you want?',
 					required: false,
 					choices: autoslayChoices
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'save',
 					description: 'Save your choice as default',
 					required: false
@@ -42,19 +41,19 @@ export const slayerCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'new_task',
 			description: 'Send your minion to slay your current task.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'master',
 					description: 'Which Slayer master do you want a task from?',
 					required: false,
 					choices: slayerMasterChoices
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'save',
 					description: 'Save your choice as default',
 					required: false
@@ -62,12 +61,12 @@ export const slayerCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'manage',
 			description: 'Manage your current Slayer task.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'command',
 					description: 'Skip your current task',
 					required: true,
@@ -76,7 +75,7 @@ export const slayerCommand: OSBMahojiCommand = {
 					})
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'new',
 					description: 'Get a new task (if applicable)',
 					required: false
@@ -84,18 +83,18 @@ export const slayerCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'rewards',
 			description: 'Spend your Slayer rewards points.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'unlock',
 					description: 'Unlock tasks, extensions, cosmetics, etc',
 					required: false,
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'unlockable',
 							description: 'Unlockable to purchase',
 							required: true,
@@ -120,13 +119,13 @@ export const slayerCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'unblock',
 					description: 'Unblock a task',
 					required: false,
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'assignment',
 							description: 'Assignment to unblock',
 							required: true,
@@ -147,13 +146,13 @@ export const slayerCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'buy',
 					description: 'Purchase something with points',
 					required: false,
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'item',
 							description: 'Item to purchase',
 							required: true,
@@ -173,7 +172,7 @@ export const slayerCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'The quantity to purchase, if applicable.',
 							required: false
@@ -181,19 +180,19 @@ export const slayerCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'my_unlocks',
 					description: 'Show purchased unlocks',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'show_all_rewards',
 					description: 'Show all rewards',
 					required: false,
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'type',
 							description: 'What type of rewards to show?',
 							required: false,
@@ -204,13 +203,13 @@ export const slayerCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'disable',
 					description: 'Disable unlocks, extensions, etc. They will need to be repurchased.',
 					required: false,
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'unlockable',
 							description: 'Slayer unlock to disable',
 							required: true,
@@ -236,7 +235,7 @@ export const slayerCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'status',
 			description: 'Shows status of current slayer task'
 		}

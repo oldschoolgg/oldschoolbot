@@ -1,6 +1,5 @@
 import { CollectionLog } from '@oldschoolgg/collectionlog';
 import { dateFm, stringMatches } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
 import { BitField, BSO_MAX_TOTAL_LEVEL, Channel } from '@/lib/constants.js';
@@ -67,7 +66,7 @@ export const claimCommand: OSBMahojiCommand = {
 	description: 'Claim prizes, rewards and other things.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to claim.',
 			required: true,

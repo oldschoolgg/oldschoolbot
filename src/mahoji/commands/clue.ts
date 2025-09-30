@@ -1,7 +1,6 @@
 import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, isWeekend, notEmpty, stringMatches, Time } from '@oldschoolgg/toolkit';
 import type { PlayerOwnedHouse } from '@prisma/client';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
@@ -232,7 +231,7 @@ export const clueCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'tier',
 			description: 'The clue you want to do.',
 			required: true,
@@ -244,14 +243,14 @@ export const clueCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity of clues you want to complete (optional).',
 			required: false,
 			min_value: 1
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'implings',
 			description: 'Implings to use for multiple clues per trip.',
 			required: false,

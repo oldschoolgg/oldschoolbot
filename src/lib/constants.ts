@@ -7,7 +7,6 @@ import * as dotenv from 'dotenv';
 import { convertLVLtoXP, resolveItems } from 'oldschooljs';
 import { z } from 'zod';
 
-import type { CommandOptions } from '@/lib/discord/index.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 
 export { PerkTier };
@@ -357,20 +356,6 @@ export const projectiles = {
 	}
 } as const;
 export type ProjectileType = keyof typeof projectiles;
-
-const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
-export function shouldTrackCommand(command: OSBMahojiCommand, args: CommandOptions) {
-	if (command.name === 'monkey') return false;
-	if (!Array.isArray(args)) return true;
-	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
-		if (command.name === name && typeof args[0] === 'string' && subs.includes(args[0])) {
-			return false;
-		}
-	}
-	return true;
-}
-
-export const DISABLED_COMMANDS = new Set<string>();
 
 export const NMZ_STRATEGY = ['experience', 'points'] as const;
 export type NMZStrategy = (typeof NMZ_STRATEGY)[number];

@@ -1,6 +1,5 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { AutoFarmFilterEnum, type CropUpgradeType } from '@prisma/client';
-import { ApplicationCommandOptionType } from 'discord.js';
 
 import TitheFarmBuyables from '@/lib/data/buyables/titheFarmBuyables.js';
 import { superCompostables } from '@/lib/data/filterables.js';
@@ -26,19 +25,19 @@ export const farmingCommand: OSBMahojiCommand = {
 	description: 'Allows you to do Farming related things.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'check_patches',
 			description: 'The page in your bank you want to see.',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'plant',
 			description: 'Allows you to plant seeds and train Farming.',
 			required: false,
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'plant_name',
 					description: 'The plant you want to plant.',
 					required: true,
@@ -51,13 +50,13 @@ export const farmingCommand: OSBMahojiCommand = {
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity you want to plant.',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'pay',
 					description: 'Pay farmers for protection.',
 					required: false
@@ -65,19 +64,19 @@ export const farmingCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'auto_farm',
 			description: 'Automatically farm any available things you can do.',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'auto_farm_filter',
 			description: 'Set which auto farm filter you want to use by default.',
 			required: false,
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'auto_farm_filter_data',
 					description: 'The auto farm filter you want to use by default. (default: AllFarm)',
 					required: true,
@@ -86,13 +85,13 @@ export const farmingCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'default_compost',
 			description: 'Set which compost you want to use by default.',
 			required: false,
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'compost',
 					description: 'The compost you want to use by default.',
 					required: true,
@@ -101,19 +100,19 @@ export const farmingCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'always_pay',
 			description: 'Toggle always paying farmers for protection.',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'harvest',
 			description: 'Allows you to harvest patches without replanting.',
 			required: false,
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'patch_name',
 					description: 'The patches you want to harvest.',
 					required: true,
@@ -122,13 +121,13 @@ export const farmingCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'tithe_farm',
 			description: 'Allows you to do the Tithe Farm minigame.',
 			required: false,
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'buy_reward',
 					description: 'Buy a Tithe Farm reward.',
 					required: false,
@@ -141,13 +140,13 @@ export const farmingCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'compost_bin',
 			description: 'Allows you to make compost from crops.',
 			required: false,
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'plant_name',
 					description: 'The plant you want to put in the Compost Bins.',
 					required: false,
@@ -158,7 +157,7 @@ export const farmingCommand: OSBMahojiCommand = {
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity you want to put in.',
 					required: false,
@@ -167,13 +166,13 @@ export const farmingCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'contract',
 			description: 'Allows you to do Farming Contracts.',
 			required: false,
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'input',
 					description: 'The input you want to give.',
 					required: false,

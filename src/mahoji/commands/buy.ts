@@ -1,5 +1,5 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, bold } from 'discord.js';
+import { bold } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import Buyables from '@/lib/data/buyables/buyables.js';
@@ -25,7 +25,7 @@ export const buyCommand: OSBMahojiCommand = {
 	description: 'Allows you to purchase items.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The item you want to buy.',
 			required: true,
@@ -36,7 +36,7 @@ export const buyCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'quantity',
 			description: 'The quantity you want to buy (optional).',
 			required: false

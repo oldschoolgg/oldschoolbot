@@ -38,7 +38,7 @@ import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import { genericUsables, usableUnlocks } from '@/mahoji/lib/abstracted_commands/useCommand.js';
-import { serializeSnapshotItem, Util } from './scriptUtil.js';
+import { serializeSnapshotItem, tearDownScript, Util } from './scriptUtil.js';
 
 const rootDir = path.join('data', BOT_TYPE.toLowerCase());
 
@@ -271,3 +271,5 @@ writeRootJson(
 	'quests.json',
 	serializeSnapshotItem(quests.sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem))
 );
+
+tearDownScript();

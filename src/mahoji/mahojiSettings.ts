@@ -2,7 +2,6 @@ import { evalMathExpression, objectEntries, Time } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import { globalConfig } from '@/lib/constants.js';
 import { userhasDiaryTier } from '@/lib/diaries.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import type { Consumable, KillableMonster } from '@/lib/minions/types.js';
@@ -231,29 +230,6 @@ export function calcMaxRCQuantity(rune: Rune, user: MUser) {
 	}
 
 	return 0;
-}
-
-export async function addToGPTaxBalance(user: MUser, amount: number) {
-	await Promise.all([
-		prisma.clientStorage.update({
-			where: {
-				id: globalConfig.clientID
-			},
-			data: {
-				gp_tax_balance: {
-					increment: amount
-				}
-			},
-			select: {
-				id: true
-			}
-		}),
-		user.statsUpdate({
-			total_gp_traded: {
-				increment: amount
-			}
-		})
-	]);
 }
 
 export async function addToOpenablesScores(user: MUser, kcBank: Bank) {

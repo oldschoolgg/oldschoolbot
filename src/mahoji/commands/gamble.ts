@@ -1,5 +1,4 @@
 import { randArrItem } from '@oldschoolgg/rng';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
@@ -21,12 +20,12 @@ export const gambleCommand: OSBMahojiCommand = {
 		 *
 		 */
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'item',
 			description: 'Allows you to gamble fire/infernal capes/quivers for a chance at the pets.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'item',
 					description: 'The item you wish to gamble.',
 					required: false,
@@ -37,7 +36,7 @@ export const gambleCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'autoconfirm',
 					description: "Don't ask confirmation message",
 					required: false
@@ -50,12 +49,12 @@ export const gambleCommand: OSBMahojiCommand = {
 		 *
 		 */
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'dice',
 			description: 'Allows you to simulate dice rolls, or dice your bot GP.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'amount',
 					description: 'Amount you wish to gamble.',
 					required: false
@@ -68,18 +67,18 @@ export const gambleCommand: OSBMahojiCommand = {
 		 *
 		 */
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'duel',
 			description: 'Simulates dueling another player, or allows you to duel another player for their bot GP.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'user',
 					description: 'The user you want to duel.',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'amount',
 					description: 'The GP you want to duel for.',
 					required: false
@@ -92,12 +91,12 @@ export const gambleCommand: OSBMahojiCommand = {
 		 *
 		 */
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'lucky_pick',
 			description: 'Allows you play lucky pick and risk your GP.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'amount',
 					description: 'Amount you wish to gamble.',
 					required: true
@@ -110,12 +109,12 @@ export const gambleCommand: OSBMahojiCommand = {
 		 *
 		 */
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'slots',
 			description: 'Allows you play slots and risk your GP to win big.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'amount',
 					description: 'Amount you wish to gamble.',
 					required: false
@@ -128,19 +127,19 @@ export const gambleCommand: OSBMahojiCommand = {
 		 *
 		 */
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'hot_cold',
 			description: 'Allows you play Hot Cold and risk your GP to win big.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'choice',
 					description: 'The flower type you want to guess.',
 					required: false,
 					choices: ['hot', 'cold'].map(i => ({ name: i, value: i }))
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'amount',
 					description: 'Amount you wish to gamble.',
 					required: false
@@ -153,12 +152,12 @@ export const gambleCommand: OSBMahojiCommand = {
 		 *
 		 */
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'give_random_item',
 			description: 'Give a random item from your bank to someone.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'user',
 					description: 'The user to give a random item too.',
 					required: true

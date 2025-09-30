@@ -1,5 +1,4 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, itemID, resolveItems } from 'oldschooljs';
 
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
@@ -16,7 +15,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The name of the thing you want to smelt.',
 			required: true,
@@ -27,7 +26,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to smelt.',
 			required: false,
@@ -35,7 +34,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			max_value: 100_000
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'blast_furnace',
 			description: 'If you want to blast furnace the bars.',
 			required: false

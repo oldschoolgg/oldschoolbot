@@ -1,5 +1,4 @@
 import { chunk, stringMatches } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
 import { leagueBuyables } from '@/lib/data/leaguesBuyables.js';
@@ -43,27 +42,27 @@ export const botLeaguesCommand: OSBMahojiCommand = {
 	description: 'Compete in the OSB/BSO Leagues.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'help',
 			description: 'Shows help and information about leagues.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'claim_trophy',
 			description: 'Claim your leagues trophys.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'leaderboard',
 			description: 'The leagues leaderboard.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'buy_reward',
 			description: 'Buy a reward with your leagues points.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'item',
 					description: 'The item to buy.',
 					required: true,

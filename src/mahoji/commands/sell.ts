@@ -1,6 +1,5 @@
 import { reduceNumByPercent } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
@@ -67,14 +66,14 @@ export const sellCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'items',
 			description: 'The items you want to sell (e.g. 1 trout, 5 coal',
 			required: false
 		},
 		filterOption,
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'search',
 			description: 'A search query for items in your bank to sell.',
 			required: false

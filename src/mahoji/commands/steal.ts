@@ -1,6 +1,6 @@
 import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, bold } from 'discord.js';
+import { bold } from 'discord.js';
 
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { quests } from '@/lib/minions/data/quests.js';
@@ -21,7 +21,7 @@ export const stealCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The object you try to steal from.',
 			required: true,
@@ -37,7 +37,7 @@ export const stealCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity (defaults to max).',
 			required: false,

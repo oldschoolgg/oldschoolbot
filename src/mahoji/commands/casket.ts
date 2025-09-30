@@ -1,4 +1,3 @@
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -23,14 +22,14 @@ export const casketCommand: OSBMahojiCommand = {
 	description: 'Simulate opening lots of clues caskets.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The casket you want to open.',
 			required: true,
 			choices: ClueTiers.map(i => ({ name: i.name, value: i.name }))
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to open.',
 			required: true,

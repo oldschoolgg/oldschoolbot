@@ -14,7 +14,7 @@ import {
 	uniqueArr
 } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import { ApplicationCommandOptionType, bold, userMention } from 'discord.js';
+import { bold, userMention } from 'discord.js';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
@@ -258,12 +258,12 @@ export const bingoCommand: OSBMahojiCommand = {
 	description: 'Bingo!',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'make_team',
 			description: 'Make your own bingo team, with other players.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
@@ -291,25 +291,25 @@ export const bingoCommand: OSBMahojiCommand = {
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'second_user',
 					description: 'The second user.',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'third_user',
 					description: 'The third user.',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'fourth_user',
 					description: 'The fourth user.',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'fifth_user',
 					description: 'The fifth user.',
 					required: false
@@ -317,12 +317,12 @@ export const bingoCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'leave_team',
 			description: 'Leave your bingo team.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
@@ -349,12 +349,12 @@ export const bingoCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'view',
 			description: 'View bingo info.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
@@ -363,12 +363,12 @@ export const bingoCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'leaderboard',
 			description: 'View the bingo leaderboard.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'bingo',
 					description: 'The bingo to check the leaderboard of.',
 					required: true,
@@ -377,18 +377,18 @@ export const bingoCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'create_bingo',
 			description: 'Create a bingo.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'title',
 					description: 'The title of the bingo.',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'duration_days',
 					description: 'The duration of the bingo in days.',
 					required: true,
@@ -396,20 +396,20 @@ export const bingoCommand: OSBMahojiCommand = {
 					max_value: 31
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'start_date_unix_seconds',
 					description: 'The start date in unix seconds.',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'ticket_price',
 					description: 'The ticket price.',
 					required: true,
 					min_value: 1
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'team_size',
 					description: 'The team size.',
 					required: true,
@@ -417,13 +417,13 @@ export const bingoCommand: OSBMahojiCommand = {
 					max_value: 5
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'notifications_channel_id',
 					description: 'The channel to send notifications to.',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'organizers',
 					description: 'The organizers (user IDs separated by comma).',
 					required: true
@@ -431,12 +431,12 @@ export const bingoCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'manage_bingo',
 			description: 'Manage your bingo.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
@@ -450,7 +450,7 @@ export const bingoCommand: OSBMahojiCommand = {
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'add_tile',
 					description: 'Add a tile to your bingo.',
 					required: false,
@@ -464,13 +464,13 @@ export const bingoCommand: OSBMahojiCommand = {
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'csv_dump',
 					description: 'Dump a csv file with all the bingo results.',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'remove_tile',
 					description: 'Remove a tile from your bingo.',
 					required: false,
@@ -503,20 +503,20 @@ export const bingoCommand: OSBMahojiCommand = {
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'finalize',
 					description: 'Finalize/end the bingo.',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'add_extra_gp',
 					description: 'Add extra gp to the prize.',
 					required: false,
 					min_value: 1_000_000
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'trophy_handout',
 					description: 'Hand out trophies.',
 					required: false
@@ -524,12 +524,12 @@ export const bingoCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'items',
 			description: 'View your progress/items.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'bingo',
 					description: 'The bingo to check your items of.',
 					required: true,

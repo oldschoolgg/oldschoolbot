@@ -1,6 +1,5 @@
 import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { Events, formatDuration, formatOrdinal, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, ItemGroups, Items, resolveItems } from 'oldschooljs';
 
 import { Offerables } from '@/lib/data/offerData.js';
@@ -52,7 +51,7 @@ export const offerCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to offer.',
 			required: true,
@@ -70,7 +69,7 @@ export const offerCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to offer (optional).',
 			required: false,

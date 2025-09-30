@@ -1,6 +1,6 @@
 import { asyncGzip, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import type { Activity, User } from '@prisma/client';
-import { ApplicationCommandOptionType, ChannelType, EmbedBuilder } from 'discord.js';
+import { ChannelType, EmbedBuilder } from 'discord.js';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -709,22 +709,22 @@ export const toolsCommand: OSBMahojiCommand = {
 		{
 			name: 'patron',
 			description: 'Tools that only patrons can use.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'clue_gains',
 					description: "Show's who has the highest clue scroll completions for a given time period.",
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'time',
 							description: 'The time period.',
 							required: true,
 							choices: staticTimeIntervals.map(i => ({ name: i, value: i }))
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'tier',
 							description: 'The tier of clue scroll.',
 							required: false,
@@ -735,7 +735,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'ironman',
 							description: 'Only check ironmen accounts.',
 							required: false
@@ -743,12 +743,12 @@ export const toolsCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'kc_gains',
 					description: "Show's who has the highest KC gains for a given time period.",
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'time',
 							description: 'The time period.',
 							required: true,
@@ -756,7 +756,7 @@ export const toolsCommand: OSBMahojiCommand = {
 						},
 						monsterOption,
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'ironman',
 							description: 'Only check ironmen accounts.',
 							required: false
@@ -764,12 +764,12 @@ export const toolsCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'xp_gains',
 					description: "Show's who has the highest XP gains for a given time period.",
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'time',
 							description: 'The time period.',
 							required: true,
@@ -777,7 +777,7 @@ export const toolsCommand: OSBMahojiCommand = {
 						},
 						skillOption,
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'ironman',
 							description: 'Only check ironmen accounts.',
 							required: false
@@ -785,12 +785,12 @@ export const toolsCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'drystreak',
 					description: "Show's the biggest drystreaks for certain drops from a certain monster.",
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'source',
 							description: 'The source of the item – a monster, minigame, clue, etc.',
 							required: true,
@@ -808,7 +808,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'ironman',
 							description: 'Only check ironmen accounts.',
 							required: false
@@ -816,7 +816,7 @@ export const toolsCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'mostdrops',
 					description:
 						"Show's which players have received the most drops of an item, based on their collection log.",
@@ -826,7 +826,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'filter',
 							description: 'Filter by account type.',
 							required: false,
@@ -835,17 +835,17 @@ export const toolsCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'sacrificed_bank',
 					description: 'Shows an image containing all your sacrificed items.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'cl_bank',
 					description: 'Shows a bank image containing all items in your collection log.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'format',
 							description: 'Bank Image or Json format?',
 							required: false,
@@ -854,12 +854,12 @@ export const toolsCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'minion_stats',
 					description: 'Shows statistics about your minion.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'activity_export',
 					description: 'Export all your activities (For advanced users).'
 				}
@@ -868,21 +868,21 @@ export const toolsCommand: OSBMahojiCommand = {
 		{
 			name: 'user',
 			description: 'Various tools for yourself.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'mypets',
 					description: 'See the chat pets you have.',
 					options: []
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'temp_cl',
 					description: 'Manage and view your temporary CL.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'reset',
 							description: 'Reset your temporary CL.',
 							required: false
@@ -890,7 +890,7 @@ export const toolsCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'checkmasses',
 					description: 'Check the masses going on in the server.'
 				}
@@ -899,15 +899,15 @@ export const toolsCommand: OSBMahojiCommand = {
 		{
 			name: 'stash_units',
 			description: 'Build and fill your treasure trails S.T.A.S.H units.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'view',
 					description: 'View your STASH units.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'unit',
 							description: 'The specific unit you want to view (optional).',
 							required: false,
@@ -918,7 +918,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'not_filled',
 							description: 'View all STASH units that you have not filled/built.',
 							required: false
@@ -926,24 +926,24 @@ export const toolsCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'build_all',
 					description: 'Automatically build all the STASH units that you can.',
 					options: []
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'fill_all',
 					description: 'Automatically fill all the STASH units that you can.',
 					options: []
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'unfill',
 					description: 'Remove the items from a specific stash.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'unit',
 							description: 'The specific unit you want to unfill.',
 							required: true,

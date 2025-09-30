@@ -1,7 +1,7 @@
 import { randArrItem, randInt } from '@oldschoolgg/rng';
 import { noOp, stringMatches, uniqueArr } from '@oldschoolgg/toolkit';
 import { type Prisma, xp_gains_skill_enum } from '@prisma/client';
-import { ApplicationCommandOptionType, MessageFlags } from 'discord.js';
+import { MessageFlags } from 'discord.js';
 import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
 
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
@@ -244,12 +244,12 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 			description: 'Commands for making testing easier and faster.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'wipe',
 					description: 'Wipe/reset a part of your account.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'thing',
 							description: 'The thing you want to wipe.',
 							required: true,
@@ -258,23 +258,23 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'spawn',
 					description: 'Spawn stuff.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'preset',
 							description: 'Choose from some preset things to spawn.',
 							choices: spawnPresets.map(i => ({ name: i[0], value: i[0] }))
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'collectionlog',
 							description: 'Add these items to your collection log?'
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'item',
 							description: 'Spawn a specific item',
 							autocomplete: async value => {
@@ -289,26 +289,26 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'items',
 							description: 'Spawn many items at once using a bank string.'
 						}
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'setxp',
 					description: 'Set skill kc.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'skill',
 							description: 'The skill.',
 							required: true,
 							choices: Object.values(Skills).map(s => ({ name: s.name, value: s.id }))
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'xp',
 							description: 'The xp you want.',
 							required: true,
@@ -318,12 +318,12 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'setminigamekc',
 					description: 'Set minigame kc.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'minigame',
 							description: 'The minigame you want to set your KC for.',
 							required: true,
@@ -338,7 +338,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'kc',
 							description: 'The minigame KC you want.',
 							required: true,
@@ -348,12 +348,12 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'reset',
 					description: 'Reset things',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'thing',
 							description: 'The thing to reset.',
 							required: true,
@@ -362,12 +362,12 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'gear',
 					description: 'Spawn and equip gear for a particular thing',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'thing',
 							description: 'The thing to spawn gear for.',
 							required: true,
@@ -376,17 +376,17 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'max',
 					description: 'Set all your stats to the maximum level, and get max QP.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'bitfield',
 					description: 'Manage your bitfields',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'add',
 							description: 'The bitfield to add',
 							required: false,
@@ -399,7 +399,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'remove',
 							description: 'The bitfield to remove',
 							required: false,
@@ -414,12 +414,12 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'setmonsterkc',
 					description: 'Set monster kc.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'monster',
 							description: 'The monster you want to set your KC for.',
 							required: true,
@@ -438,7 +438,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'kc',
 							description: 'The monster KC you want.',
 							required: true,
@@ -448,17 +448,17 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'irontoggle',
 					description: 'Toggle being an ironman on/off.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'set',
 					description: 'Set something',
 					options: [
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'qp',
 							description: 'Set your quest points.',
 							required: false,
@@ -466,7 +466,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							max_value: MAX_QP
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'all_ca_tasks',
 							description: 'Finish all CA tasks.',
 							required: false
@@ -474,18 +474,18 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'get_code',
 					description: 'Get your secret code for the test dashboard',
 					options: []
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'bingo_tools',
 					description: 'Bingo tools',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'start_bingo',
 							description: 'Make your bingo start now.',
 							required: true,
@@ -501,19 +501,19 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'setslayertask',
 					description: 'Set slayer task.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'master',
 							description: 'The master you wish to set your task.',
 							required: true,
 							choices: slayerMasterChoices
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'monster',
 							description: 'The monster you want to set your task as.',
 							required: true,
@@ -531,7 +531,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'The task quantity you want to assign.',
 							required: false,
@@ -541,7 +541,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'events',
 					description: 'See events',
 					options: []

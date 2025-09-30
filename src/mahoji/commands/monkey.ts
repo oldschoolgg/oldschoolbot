@@ -1,29 +1,29 @@
 import { randInt } from '@oldschoolgg/rng';
-import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 
 export const monkeyCommand: OSBMahojiCommand = {
 	name: 'monkey',
 	description: 'monkey',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'confirm',
 			description: 'A confirmation dialog',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'ephemeral',
 					description: 'Only you can see the response (default false)',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'other_person',
 					description: 'Other person who must confirm too (optional',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'another_person',
 					description: 'Another person who must confirm too (optional',
 					required: false
@@ -31,24 +31,24 @@ export const monkeyCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'party',
 			description: 'Create a party',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'ephemeral',
 					description: 'Only you can see the response (default false)',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'other_person',
 					description: 'Other person who must confirm too (optional',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'another_person',
 					description: 'Another person who must confirm too (optional',
 					required: false

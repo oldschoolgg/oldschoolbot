@@ -1,6 +1,5 @@
 import { randInt, roll } from '@oldschoolgg/rng';
 import { formatDuration, PerkTier } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { averageBank, Bank, ChambersOfXeric, toKMB } from 'oldschooljs';
 
 import { ColosseumWaveBank, startColosseumRun } from '@/lib/colosseum.js';
@@ -137,19 +136,19 @@ export const simulateCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'cox',
 			description: 'Simulate Chambers of Xeric.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The amount of raids to simulate.',
 					min_value: 1,
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'points',
 					description: 'How many points to have (default 25k).',
 					min_value: 1,
@@ -157,14 +156,14 @@ export const simulateCommand: OSBMahojiCommand = {
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'team_size',
 					description: 'The size of your team (default 4).',
 					min_value: 1,
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'challenge_mode',
 					description: 'Challenge mode raids? (default false)',
 					required: false
@@ -172,12 +171,12 @@ export const simulateCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'petroll',
 			description: 'Simulate rolls at every pet at once.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The amount of rolls.',
 					min_value: 1,
@@ -187,7 +186,7 @@ export const simulateCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'colosseum',
 			description: 'Simulate colosseum.'
 		}

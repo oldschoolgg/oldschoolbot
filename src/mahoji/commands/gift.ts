@@ -1,6 +1,5 @@
 import { containsBlacklistedWord, miniID, truncateString } from '@oldschoolgg/toolkit';
 import { GiftBoxStatus } from '@prisma/client';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
@@ -16,12 +15,12 @@ export const giftCommand: OSBMahojiCommand = {
 	description: 'Create gifts for other users, or open one you received.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'open',
 			description: 'Open one of the gifts you have.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'gift',
 					description: 'The gift to open.',
 					required: true,
@@ -44,24 +43,24 @@ export const giftCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'list',
 			description: 'List the boxes you have.',
 			options: []
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'create',
 			description: 'Create a gift.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'items',
 					description: 'The items to put in this gift.',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'A name for your gift (optional).',
 					required: false
@@ -69,12 +68,12 @@ export const giftCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'send',
 			description: 'Send someone a gift.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'gift',
 					description: 'The gift to send.',
 					required: true,
@@ -95,7 +94,7 @@ export const giftCommand: OSBMahojiCommand = {
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'user',
 					description: 'The user to send it to.',
 					required: true

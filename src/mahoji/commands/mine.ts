@@ -1,6 +1,5 @@
 import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Items, itemID } from 'oldschooljs';
 
 import { userhasDiaryTier } from '@/lib/diaries.js';
@@ -157,7 +156,7 @@ export const mineCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to mine.',
 			required: true,
@@ -171,14 +170,14 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to mine (optional).',
 			required: false,
 			min_value: 1
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'powermine',
 			description: 'Set this to true to powermine. Higher xp/hour, No loot (default false, optional).',
 			required: false

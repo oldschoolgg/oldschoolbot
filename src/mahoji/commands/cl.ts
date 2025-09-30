@@ -1,5 +1,4 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 
 import type { CollectionLogType } from '@/lib/collectionLogTask.js';
 import { CollectionLogFlags, clImageGenerator, collectionLogTypes } from '@/lib/collectionLogTask.js';
@@ -15,7 +14,7 @@ export const collectionLogCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The log you want to see.',
 			required: true,
@@ -38,7 +37,7 @@ export const collectionLogCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'type',
 			description: 'The type of log you want to see.',
 			required: false,
@@ -48,7 +47,7 @@ export const collectionLogCommand: OSBMahojiCommand = {
 			}))
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'flag',
 			description: 'The flag you want to pass.',
 			required: false,
@@ -58,7 +57,7 @@ export const collectionLogCommand: OSBMahojiCommand = {
 			}))
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'flag_extra',
 			description: 'An additional flag you want to pass.',
 			required: false,
@@ -68,7 +67,7 @@ export const collectionLogCommand: OSBMahojiCommand = {
 			}))
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'all',
 			description: 'Show all items?',
 			required: false

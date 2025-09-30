@@ -9,15 +9,7 @@ import {
 	uniqueArr
 } from '@oldschoolgg/toolkit';
 import type { activity_type_enum } from '@prisma/client';
-import {
-	ApplicationCommandOptionType,
-	bold,
-	EmbedBuilder,
-	type Guild,
-	type HexColorString,
-	inlineCode,
-	resolveColor
-} from 'discord.js';
+import { bold, EmbedBuilder, type Guild, type HexColorString, inlineCode, resolveColor } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
@@ -709,17 +701,17 @@ export const configCommand: OSBMahojiCommand = {
 	description: 'Commands configuring settings and options.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'server',
 			description: 'Change settings for your server.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'channel',
 					description: 'Enable or disable commands in this channel.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'choice',
 							description: 'Enable or disable commands for this channel.',
 							required: true,
@@ -731,12 +723,12 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'pet_messages',
 					description: 'Enable or disable Pet Messages in this server.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'choice',
 							description: 'Enable or disable Pet Messages for this server.',
 							required: true,
@@ -748,12 +740,12 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'command',
 					description: 'Enable or disable a command in your server.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'command',
 							description: 'The command you want to enable/disable.',
 							required: true,
@@ -764,7 +756,7 @@ export const configCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'choice',
 							description: 'Whether you want to enable or disable this command.',
 							required: true,
@@ -778,17 +770,17 @@ export const configCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'user',
 			description: 'Change settings for your account.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'toggle',
 					description: 'Toggle different settings on and off.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'name',
 							description: 'The setting you want to toggle on/off.',
 							required: true,
@@ -816,12 +808,12 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'combat_options',
 					description: 'Change combat options.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'action',
 							description: 'The action you want to perform.',
 							required: true,
@@ -833,7 +825,7 @@ export const configCommand: OSBMahojiCommand = {
 							]
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'input',
 							description: 'The option you want to add/remove.',
 							required: false,
@@ -846,12 +838,12 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'set_rsn',
 					description: 'Set your RuneScape username in the bot.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'username',
 							description: 'Your RuneScape username.',
 							required: true
@@ -859,12 +851,12 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'bg_color',
 					description: 'Set a custom color for transparent bank backgrounds.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'color',
 							description: 'The color in hex format.',
 							required: false
@@ -872,31 +864,31 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'bank_sort',
 					description: 'Change the way your bank is sorted.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'sort_method',
 							description: 'The way items in your bank should be sorted.',
 							required: false,
 							choices: BankSortMethods.map(i => ({ name: i, value: i }))
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'add_weightings',
 							description: "Add custom weightings for extra bank sorting (e.g. '1 trout, 5 coal')",
 							required: false
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'remove_weightings',
 							description: "Remove weightings for extra bank sorting (e.g. '1 trout, 5 coal')",
 							required: false
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'reset_weightings',
 							description: "Type 'reset' to confirm you want to delete ALL of your bank weightings.",
 							required: false
@@ -904,7 +896,7 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'favorite_alchs',
 					description: 'Manage your favorite alchables.',
 					options: [
@@ -921,13 +913,13 @@ export const configCommand: OSBMahojiCommand = {
 							required: false
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'add_many',
 							description: 'Add many to your favorite alchables at once.',
 							required: false
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'reset',
 							description: 'Reset all of your favorite alchs',
 							required: false
@@ -935,12 +927,12 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'favorite_bh_seeds',
 					description: 'Manage your favorite birdhouse seeds.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'add',
 							description: 'Add an item to your favorite birdhouse seeds.',
 							required: false,
@@ -954,7 +946,7 @@ export const configCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'remove',
 							description: 'Remove an item from your favorite birdhouse seeds.',
 							required: false,
@@ -971,7 +963,7 @@ export const configCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'reset',
 							description: 'Reset all of your favorite birdhouse seeds.',
 							required: false
@@ -979,12 +971,12 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'favorite_food',
 					description: 'Manage your favorite food.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'add',
 							description: 'Add an item to your favorite food.',
 							required: false,
@@ -998,7 +990,7 @@ export const configCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'remove',
 							description: 'Remove an item from your favorite food.',
 							required: false,
@@ -1013,7 +1005,7 @@ export const configCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'reset',
 							description: 'Reset all of your favorite foods',
 							required: false
@@ -1021,7 +1013,7 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'favorite_items',
 					description: 'Manage your favorite items.',
 					options: [
@@ -1038,7 +1030,7 @@ export const configCommand: OSBMahojiCommand = {
 							required: false
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'reset',
 							description: 'Reset all of your favorite items',
 							required: false
@@ -1046,19 +1038,19 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'slayer',
 					description: 'Manage your Slayer options',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'master',
 							description: 'Choose default slayer master',
 							required: false,
 							choices: slayerMasterChoices
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'autoslay',
 							description: 'Set default autoslay mode',
 							required: false,
@@ -1067,12 +1059,12 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'pin_trip',
 					description: 'Pin a trip so you can easily repeat it whenever you want.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'trip',
 							description: 'The trip you want to pin.',
 							required: false,
@@ -1096,19 +1088,19 @@ LIMIT 20;
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							required: false,
 							name: 'emoji',
 							description: 'Pick an emoji for the button (optional).'
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							required: false,
 							name: 'custom_name',
 							description: 'Custom name for the button (optional).'
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'unpin_trip',
 							description: 'The trip you want to unpin.',
 							required: false,
@@ -1123,12 +1115,12 @@ LIMIT 20;
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'icon_pack',
 					description: 'Change your icon pack',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'name',
 							description: 'The icon pack you want to use.',
 							required: true,

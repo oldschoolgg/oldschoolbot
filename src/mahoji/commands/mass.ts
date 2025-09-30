@@ -1,6 +1,5 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import type { GearSetupType } from '@prisma/client';
-import { ApplicationCommandOptionType } from 'discord.js';
 
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
@@ -52,7 +51,7 @@ export const massCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'monster',
 			description: 'The boss you want to mass.',
 			required: true,

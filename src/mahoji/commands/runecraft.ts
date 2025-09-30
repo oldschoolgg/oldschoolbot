@@ -1,5 +1,4 @@
 import { formatDuration, stringMatches, Time, toTitleCase } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items, itemID } from 'oldschooljs';
 
 import { darkAltarCommand } from '@/lib/minions/functions/darkAltarCommand.js';
@@ -33,7 +32,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'rune',
 			description: 'The Rune/Tiara you want to craft.',
 			required: true,
@@ -53,7 +52,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The amount of runes/tiaras you want to craft.',
 			required: false,
@@ -61,19 +60,19 @@ export const runecraftCommand: OSBMahojiCommand = {
 			max_value: 1_000_000_000
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'usestams',
 			description: 'Set this to false to not use stamina potions (default true)',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'daeyalt_essence',
 			description: 'Set this to true to use daeyalt essence (default false)',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'extracts',
 			description: 'Set this to true to use extracts (default false)',
 			required: false

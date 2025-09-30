@@ -1,5 +1,5 @@
 import { notEmpty, ProductID, products } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, bold } from 'discord.js';
+import { bold } from 'discord.js';
 
 import { BOT_TYPE } from '@/lib/constants.js';
 import { roboChimpSyncData } from '@/lib/roboChimp.js';
@@ -12,7 +12,7 @@ export const redeemCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'code',
 			description: 'The code to redeem.',
 			required: true

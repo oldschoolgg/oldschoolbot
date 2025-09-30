@@ -1,6 +1,5 @@
 import { type RNGProvider, SeedableRNG } from '@oldschoolgg/rng';
 import { randomSnowflake, Stopwatch, sumArr, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 import PromiseQueue from 'p-queue';
 import { shuffle } from 'remeda';
@@ -26,14 +25,14 @@ export async function generateCommandInputs(
 
 	for (const option of options) {
 		switch (option.type) {
-			case ApplicationCommandOptionType.SubcommandGroup:
-			case ApplicationCommandOptionType.Subcommand:
+			case 'SubcommandGroup':
+			case 'Subcommand':
 				if (option.options) {
 					const subOptionsResults = await generateCommandInputs(rng, option.options);
 					results.push(...subOptionsResults.map(input => ({ [option.name]: input })));
 				}
 				break;
-			case ApplicationCommandOptionType.String:
+			case 'String':
 				if ('autocomplete' in option && option.autocomplete) {
 					const autoCompleteResults = await option.autocomplete(
 						'',
@@ -49,8 +48,8 @@ export async function generateCommandInputs(
 					allPossibleOptions[option.name] = ['plain string'];
 				}
 				break;
-			case ApplicationCommandOptionType.Integer:
-			case ApplicationCommandOptionType.Number:
+			case 'Integer':
+			case 'Number':
 				if (option.choices) {
 					allPossibleOptions[option.name] = rng.shuffle(option.choices.map(c => c.value)).slice(0, 10);
 				} else {
@@ -65,11 +64,11 @@ export async function generateCommandInputs(
 					];
 				}
 				break;
-			case ApplicationCommandOptionType.Boolean: {
+			case 'Boolean': {
 				allPossibleOptions[option.name] = [true, false];
 				break;
 			}
-			case ApplicationCommandOptionType.User: {
+			case 'User': {
 				allPossibleOptions[option.name] = [
 					{
 						user: {
@@ -82,9 +81,9 @@ export async function generateCommandInputs(
 				];
 				break;
 			}
-			case ApplicationCommandOptionType.Channel:
-			case ApplicationCommandOptionType.Role:
-			case ApplicationCommandOptionType.Mentionable:
+			case 'Channel':
+			case 'Role':
+			case 'Mentionable':
 				// results.push({ ...currentPath, [option.name]: `Any ${option.type}` });
 				break;
 		}

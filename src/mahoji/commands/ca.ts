@@ -1,5 +1,4 @@
 import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { buildCombatAchievementsResult } from '@/lib/combat_achievements/caUtils.js';
@@ -25,12 +24,12 @@ export const caCommand: OSBMahojiCommand = {
 	description: 'Combat Achievements',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'view',
 			description: 'View your Combat Achievements progress.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'What boss do you want to view?',
 					autocomplete: async (value: string) => {
@@ -41,7 +40,7 @@ export const caCommand: OSBMahojiCommand = {
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'type',
 					description: 'What do you want to view?',
 					choices: viewTypes.map(i => ({ name: i, value: i })),
@@ -50,7 +49,7 @@ export const caCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'claim',
 			description: 'Claim your completed Combat Achievements.',
 			options: []

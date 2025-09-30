@@ -1,5 +1,4 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import Createables from '@/lib/data/createables.js';
@@ -12,7 +11,7 @@ export const createCommand: OSBMahojiCommand = {
 	description: 'Allows you to create items, like godswords or spirit shields - and pack barrows armor sets.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'item',
 			description: 'The item you want to create/revert.',
 			required: true,
@@ -26,7 +25,7 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The amount you want to create.',
 			required: false,
@@ -34,7 +33,7 @@ export const createCommand: OSBMahojiCommand = {
 			max_value: 1_000_000_000
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'showall',
 			description: 'Show all creatable items.',
 			required: false

@@ -1,5 +1,4 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { PerkTier } from '@/lib/constants.js';
@@ -51,7 +50,7 @@ export const killCommand: OSBMahojiCommand = {
 	description: 'Simulate killing monsters.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The monster you want to simulate killing.',
 			required: true,
@@ -65,20 +64,20 @@ export const killCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to simulate.',
 			required: true,
 			min_value: 1
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'catacombs',
 			description: 'Killing in catacombs?',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'master',
 			description: 'On slayer task from a master?',
 			required: false,

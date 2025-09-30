@@ -1,5 +1,5 @@
 import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
+import { AttachmentBuilder } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { finishables } from '@/lib/finishables.js';
@@ -12,7 +12,7 @@ export const finishCommand: OSBMahojiCommand = {
 	description: 'Simulate finishing a CL.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'input',
 			description: 'The CL/thing you want to finish. (e.g. corp, pets, raids)',
 			required: true,
@@ -23,7 +23,7 @@ export const finishCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'tertiaries',
 			description: 'Whether or not to include Tertiaries (e.g. capes)',
 			required: false

@@ -1,23 +1,22 @@
 import { Events } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
-import { addToGPTaxBalance, mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export const payCommand: OSBMahojiCommand = {
 	name: 'pay',
 	description: 'Send GP to another user.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.User,
+			type: 'User',
 			name: 'user',
 			description: 'The user you want to send the GP too.',
 			required: true
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'amount',
 			description: 'The amount you want to send. (e.g. 100k, 1m, 2.5b, 5*100m)',
 			required: true
@@ -75,7 +74,7 @@ export const payCommand: OSBMahojiCommand = {
 		});
 
 		globalClient.emit(Events.EconomyLog, `${user.mention} paid ${amount} GP to ${recipient.mention}.`);
-		addToGPTaxBalance(user, amount);
+		await ClientSettings.addToGPTaxBalance(user, amount);
 
 		return `You sent ${amount.toLocaleString()} GP to ${recipient}.`;
 	}

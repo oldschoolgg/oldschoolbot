@@ -4,7 +4,6 @@ import type { Giveaway } from '@prisma/client';
 import { Duration } from '@sapphire/time-utilities';
 import {
 	ActionRowBuilder,
-	ApplicationCommandOptionType,
 	AttachmentBuilder,
 	type BaseMessageOptions,
 	ButtonBuilder,
@@ -27,7 +26,6 @@ import { logError } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isModOrAdmin } from '@/lib/util.js';
-import { addToGPTaxBalance } from '@/mahoji/mahojiSettings.js';
 
 function makeGiveawayButtons(giveawayID: number): BaseMessageOptions['components'] {
 	return [
@@ -61,25 +59,25 @@ export const giveawayCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'start',
 			description: 'Start a giveaway.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'duration',
 					description: 'The duration of the giveaway (e.g. 1h, 1d).',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'items',
 					description: 'The items you want to giveaway.',
 					required: false
 				},
 				filterOption,
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'search',
 					description: 'A search query for items in your bank to giveaway.',
 					required: false
@@ -87,7 +85,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'list',
 			description: 'List giveaways active in this server.',
 			options: []
@@ -185,7 +183,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 				return err instanceof Error ? err.message : err;
 			}
 			if (bank.has('Coins')) {
-				addToGPTaxBalance(user, bank.amount('Coins'));
+				await ClientSettings.addToGPTaxBalance(user, bank.amount('Coins'));
 			}
 
 			try {

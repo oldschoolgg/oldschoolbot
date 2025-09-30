@@ -7,7 +7,7 @@ import {
 	toTitleCase,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { convertXPtoLVL } from 'oldschooljs';
 
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
@@ -830,7 +830,7 @@ async function masteryLb(interaction: MInteraction) {
 }
 
 const ironmanOnlyOption = {
-	type: ApplicationCommandOptionType.Boolean,
+	type: 'Boolean',
 	name: 'ironmen_only',
 	description: 'Only include ironmen.',
 	required: false
@@ -841,12 +841,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 	description: 'Simulate killing monsters.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'kc',
 			description: 'Check the kc leaderboard.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'monster',
 					description: 'The monster you want to check the leaderboard of.',
 					required: true,
@@ -860,22 +860,22 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'farming_contracts',
 			description: 'Check the farming contracts leaderboard.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'inferno',
 			description: 'Check the inferno leaderboard.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'sacrifice',
 			description: 'Check the sacrifice leaderboard.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'type',
 					description: 'The particular sacrifice leaderboard you want to check.',
 					required: true,
@@ -888,12 +888,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'minigames',
 			description: 'Check the minigames leaderboard.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'minigame',
 					description: 'The particular minigame leaderboard you want to check.',
 					required: true,
@@ -908,12 +908,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'hunter_catches',
 			description: 'Check the hunter catch leaderboard.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'creature',
 					description: 'The particular creature you want to check.',
 					required: true,
@@ -928,12 +928,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'agility_laps',
 			description: 'Check the agility laps leaderboard.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'course',
 					description: 'The particular creature you want to check.',
 					required: true,
@@ -948,18 +948,18 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'gp',
 			description: 'Check the GP leaderboard.',
 			options: [ironmanOnlyOption]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'skills',
 			description: 'Check the skills/xp/levels leaderboards.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'skill',
 					description: 'The skill you want to select.',
 					required: true,
@@ -969,7 +969,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'xp',
 					description: 'Show XP instead of levels.',
 					required: false
@@ -978,12 +978,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'opens',
 			description: 'Check the opening leaderboards.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'openable',
 					description: 'The openable you want to select.',
 					required: true,
@@ -1003,12 +1003,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'cl',
 			description: 'Check the collection log leaderboards.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'cl',
 					description: 'The cl you want to select.',
 					required: true,
@@ -1026,12 +1026,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'clues',
 			description: 'Check the clue leaderboards.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'clue',
 					description: 'The clue you want to select.',
 					required: true,
@@ -1041,12 +1041,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'movers',
 			description: 'Check the movers leaderboards.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'type',
 					description: 'The type of movers you want to check.',
 					required: true,
@@ -1055,12 +1055,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'global',
 			description: 'Check the global (OSB+BSO) leaderboards.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'type',
 					description: 'The global leaderboard type you want to check.',
 					required: true,
@@ -1069,13 +1069,13 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'combat_achievements',
 			description: 'Check the combat achievements leaderboards.',
 			options: []
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'mastery',
 			description: 'Check the mastery leaderboard.',
 			options: []

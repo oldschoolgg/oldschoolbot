@@ -1,5 +1,3 @@
-import { ApplicationCommandOptionType } from 'discord.js';
-
 import { dataPoints, statsCommand } from '@/mahoji/lib/abstracted_commands/statCommand.js';
 
 export const dataCommand: OSBMahojiCommand = {
@@ -10,7 +8,7 @@ export const dataCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The data you want to see.',
 			autocomplete: async (value: string) => {
