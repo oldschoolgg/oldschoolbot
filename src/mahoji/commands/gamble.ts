@@ -1,9 +1,9 @@
 import { randArrItem } from '@oldschoolgg/rng';
-import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
+import type { MahojiUserOption } from '@/lib/discord/commandOptions.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { capeGambleCommand, capeGambleStatsCommand } from '@/mahoji/lib/abstracted_commands/capegamble.js';
 import { diceCommand } from '@/mahoji/lib/abstracted_commands/diceCommand.js';

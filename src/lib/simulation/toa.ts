@@ -7,7 +7,6 @@ import {
 	exponentialPercentScale,
 	formatDuration,
 	increaseNumByPercent,
-	mentionCommand,
 	objectEntries,
 	reduceNumByPercent,
 	round,
@@ -25,6 +24,7 @@ import { clamp } from 'remeda';
 
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { degradeItem } from '@/lib/degradeableItems.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { setupParty } from '@/lib/party.js';
@@ -218,7 +218,7 @@ const toaRequirements: {
 		name: 'Blowpipe',
 		doesMeet: ({ user, quantity }) => {
 			const blowpipeData = user.blowpipe;
-			const cmdMention = mentionCommand(globalClient, 'minion', 'blowpipe');
+			const cmdMention = mentionCommand('minion', 'blowpipe');
 			if (!user.owns('Toxic blowpipe')) {
 				return 'Needs Toxic blowpipe (with darts and scales equipped) in bank';
 			}
@@ -345,7 +345,6 @@ const toaRequirements: {
 			const bfCharges = BLOOD_FURY_CHARGES_PER_RAID * quantity;
 			if (user.gear.melee.hasEquipped('Amulet of blood fury') && user.user.blood_fury_charges < bfCharges) {
 				return `You need at least ${bfCharges} Blood fury charges to use it, otherwise it has to be unequipped: ${mentionCommand(
-					globalClient,
 					'minion',
 					'charge'
 				)}`;
@@ -354,7 +353,6 @@ const toaRequirements: {
 			const tumCharges = TUMEKEN_SHADOW_PER_RAID * quantity;
 			if (user.gear.mage.hasEquipped("Tumeken's shadow") && user.user.tum_shadow_charges < tumCharges) {
 				return `You need at least ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
-					globalClient,
 					'minion',
 					'charge'
 				)}`;
@@ -1550,12 +1548,7 @@ async function toaCheckCommand(user: MUser) {
 		return `🔴 You aren't able to join a Tombs of Amascut raid, address these issues first: ${result[1]}`;
 	}
 
-	return `✅ You are ready to do the Tombs of Amascut! Start a raid: ${mentionCommand(
-		globalClient,
-		'raid',
-		'toa',
-		'start'
-	)}`;
+	return `✅ You are ready to do the Tombs of Amascut! Start a raid: ${mentionCommand('raid', 'toa', 'start')}`;
 }
 
 function calculateBoostString(user: MUser) {

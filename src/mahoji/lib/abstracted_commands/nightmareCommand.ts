@@ -1,8 +1,9 @@
-import { formatDuration, mentionCommand, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, Items, resolveItems, ZAM_HASTA_CRUSH } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
 import { degradeItem } from '@/lib/degradeableItems.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
@@ -99,13 +100,11 @@ function perUserCost(
 	if (isPhosani) {
 		if (hasShadow && user.user.tum_shadow_charges < tumCharges) {
 			return `You need at least ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
-				globalClient,
 				'minion',
 				'charge'
 			)}`;
 		} else if (hasSang && user.user.sang_charges < sangCharges) {
 			return `You need at least ${sangCharges} Sanguinesti staff charges to use it, otherwise it has to be unequipped: ${mentionCommand(
-				globalClient,
 				'minion',
 				'charge'
 			)}`;

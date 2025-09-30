@@ -1,8 +1,9 @@
-import { type CommandOptions, channelIsSendable } from '@oldschoolgg/toolkit';
+import { channelIsSendable } from '@oldschoolgg/toolkit';
 import type { NewUser } from '@prisma/client';
-import { type APIInteractionGuildMember, ButtonInteraction, type GuildMember, type User } from 'discord.js';
+import { type APIInteractionGuildMember, ButtonInteraction, type GuildMember } from 'discord.js';
 import { isEmpty } from 'remeda';
 
+import type { CommandOptions } from '@/lib/discord/commandOptions.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';
 import { handleInteractionError } from '@/lib/util/interactionReply.js';
 import { logError } from '@/lib/util/logError.js';
@@ -21,40 +22,6 @@ export async function getNewUser(id: string): Promise<NewUser> {
 		});
 	}
 	return value;
-}
-
-async function runMahojiCommand({
-	channelID,
-	userID,
-	guildID,
-	commandName,
-	options,
-	user,
-	interaction
-}: {
-	interaction: MInteraction;
-	commandName: string;
-	options: Record<string, unknown>;
-	channelID: string;
-	userID: string;
-	guildID: string | undefined | null;
-	user: User | MUser;
-	member: APIInteractionGuildMember | GuildMember | null;
-}) {
-	const mahojiCommand = Array.from(globalClient.mahojiClient.commands.values()).find(c => c.name === commandName);
-	if (!mahojiCommand) {
-		throw new Error(`No mahoji command found for ${commandName}`);
-	}
-
-	return mahojiCommand.run({
-		userID,
-		guildID: guildID ? guildID : undefined,
-		channelID,
-		options,
-		user: globalClient.users.cache.get(user.id)!,
-		member: guildID ? globalClient.guilds.cache.get(guildID)?.members.cache.get(user.id) : undefined,
-		interaction: interaction
-	});
 }
 
 interface RunCommandArgs {
@@ -80,7 +47,6 @@ export async function runCommand(options: RunCommandArgs): Promise<null | Comman
 		channelID,
 		guildID,
 		user,
-		member,
 		continueDeltaMillis,
 		ephemeral
 	} = options;
@@ -127,15 +93,14 @@ export async function runCommand(options: RunCommandArgs): Promise<null | Comman
 
 		await interaction.defer({ ephemeral });
 
-		const result = await runMahojiCommand({
-			options: args,
-			commandName,
-			guildID,
-			channelID,
+		const result = await command.run({
 			userID: user.id,
-			member,
+			guildID: guildID ? guildID : undefined,
+			channelID,
+			options: args,
 			user,
-			interaction
+			member: guildID ? globalClient.guilds.cache.get(guildID)?.members.cache.get(user.id) : undefined,
+			interaction: interaction
 		});
 		if (result && !interaction.replied) {
 			await interaction.reply(

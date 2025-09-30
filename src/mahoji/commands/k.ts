@@ -1,4 +1,4 @@
-import { formatDuration, reduceNumByPercent, returnStringOrFile, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
 
 import { PVM_METHODS, type PvMMethod } from '@/lib/constants.js';
@@ -113,7 +113,7 @@ export const minionKCommand: OSBMahojiCommand = {
 	}>) => {
 		const user = await mUserFetch(userID);
 		if (options.show_info) {
-			return returnStringOrFile(await monsterInfo(user, options.name));
+			return interaction.returnStringOrFile(await monsterInfo(user, options.name));
 		}
 		return minionKillCommand(
 			user,

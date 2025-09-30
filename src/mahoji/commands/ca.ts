@@ -1,4 +1,4 @@
-import { calcWhatPercent, mentionCommand, objectEntries } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
@@ -11,6 +11,7 @@ import {
 	caToPlayerString,
 	nextCATier
 } from '@/lib/combat_achievements/combatAchievements.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
 
 const viewTypes = ['all', 'incomplete', 'complete'] as const;
@@ -76,11 +77,9 @@ export const caCommand: OSBMahojiCommand = {
 		} (${calcWhatPercent(completedTaskIDs.size, allCombatAchievementTasks.length).toFixed(
 			2
 		)}%) tasks for ${currentPoints} points. ${nextCATier(currentPoints)}.\r\nUse ${mentionCommand(
-			globalClient,
 			'ca',
 			'claim'
 		)} to claim tasks (for tasks that don't automatically claim), and ${mentionCommand(
-			globalClient,
 			'ca',
 			'view'
 		)} to view your specific tasks.`;

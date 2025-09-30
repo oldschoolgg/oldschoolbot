@@ -1,6 +1,7 @@
 import { randInt } from '@oldschoolgg/rng';
-import type { MahojiUserOption } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
+
+import type { MahojiUserOption } from '@/lib/discord/commandOptions.js';
 
 export const monkeyCommand: OSBMahojiCommand = {
 	name: 'monkey',
@@ -85,18 +86,38 @@ export const monkeyCommand: OSBMahojiCommand = {
 		// });
 		// const limit = options.limit ?? 10;
 
-		// function asdf() {
-		// 	return `**${user.username}** rolled a random number from 1 to ${limit}...\n\n**${cryptoRng
-		// 		.randInt(1, limit)
-		// 		.toString()}**`;
-		// }
-		// return interaction.makePaginatedMessage({
-		// 	ephemeral: true,
-		// 	pages: [
-		// 		() => ({ embeds: [new EmbedBuilder().setTitle(asdf()).setDescription(asdf())] }),
-		// 		() => ({ embeds: [new EmbedBuilder().setTitle(asdf()).setDescription(asdf())] })
-		// 	]
-		// });
-		return `https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`;
+		return interaction.makePaginatedMessage({
+			ephemeral: true,
+			pages: [
+				() => ({
+					embeds: [
+						new EmbedBuilder()
+							.setTitle(`Page 1`)
+							.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+					]
+				}),
+				() => ({
+					embeds: [
+						new EmbedBuilder()
+							.setTitle(`Page 2`)
+							.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+					]
+				}),
+				() => ({
+					embeds: [
+						new EmbedBuilder()
+							.setTitle(`Page 3`)
+							.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+					]
+				}),
+				() => ({
+					embeds: [
+						new EmbedBuilder()
+							.setTitle(`Page 4`)
+							.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+					]
+				})
+			]
+		});
 	}
 };

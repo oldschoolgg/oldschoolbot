@@ -1,12 +1,4 @@
-import {
-	type CommandOption,
-	evalMathExpression,
-	formatDuration,
-	makeComponents,
-	returnStringOrFile,
-	sumArr,
-	uniqueArr
-} from '@oldschoolgg/toolkit';
+import { evalMathExpression, formatDuration, makeComponents, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import type { GEListing, GETransaction } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
@@ -392,7 +384,7 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 				]
 			};
 
-			return returnStringOrFile(geResult);
+			return interaction.returnStringOrFile(geResult);
 		}
 
 		if (options.view) {

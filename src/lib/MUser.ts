@@ -1,13 +1,5 @@
 import { percentChance } from '@oldschoolgg/rng';
-import {
-	calcWhatPercent,
-	cleanUsername,
-	Emoji,
-	mentionCommand,
-	sumArr,
-	UserError,
-	uniqueArr
-} from '@oldschoolgg/toolkit';
+import { calcWhatPercent, cleanUsername, Emoji, sumArr, UserError, uniqueArr } from '@oldschoolgg/toolkit';
 import type { GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { escapeMarkdown, userMention } from 'discord.js';
 import {
@@ -34,6 +26,7 @@ import { BitField, MAX_LEVEL, projectiles } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
 import { allPetIDs, avasDevices } from '@/lib/data/CollectionsExport.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
 import type { GearSetup, UserFullGearSetup } from '@/lib/gear/types.js';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
 import { marketPriceOfBank } from '@/lib/marketPrices.js';
@@ -250,6 +243,10 @@ export class MUserClass {
 
 	get mention() {
 		return userMention(this.id);
+	}
+
+	get username() {
+		return this.rawUsername;
 	}
 
 	get rawUsername() {
@@ -565,7 +562,7 @@ GROUP BY data->>'ci';`);
 				hasCharges: false,
 				fullUserString: `${failureReasons.join(', ')}
 
-Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
+Charge your items using ${mentionCommand('minion', 'charge')}.`
 			};
 		}
 		return { hasCharges: true };

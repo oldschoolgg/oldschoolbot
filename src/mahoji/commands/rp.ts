@@ -1,13 +1,5 @@
 import { randArrItem } from '@oldschoolgg/rng';
-import {
-	dateFm,
-	isValidDiscordSnowflake,
-	type MahojiUserOption,
-	Stopwatch,
-	sumArr,
-	Time,
-	toTitleCase
-} from '@oldschoolgg/toolkit';
+import { dateFm, isValidDiscordSnowflake, Stopwatch, sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { UserEventType, xp_gains_skill_enum } from '@prisma/client';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Duration } from '@sapphire/time-utilities';
@@ -16,6 +8,7 @@ import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
+import type { MahojiUserOption } from '@/lib/discord/commandOptions.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { marketPricemap } from '@/lib/marketPrices.js';

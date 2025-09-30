@@ -5,9 +5,7 @@ import {
 	Emoji,
 	formatOrdinal,
 	isValidDiscordSnowflake,
-	type MahojiUserOption,
 	md5sum,
-	mentionCommand,
 	noOp,
 	notEmpty,
 	stringMatches,
@@ -22,6 +20,8 @@ import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { clImageGenerator } from '@/lib/collectionLogTask.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
+import type { MahojiUserOption } from '@/lib/discord/commandOptions.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { getUsername, getUsernameSync } from '@/lib/util.js';
@@ -719,7 +719,6 @@ export const bingoCommand: OSBMahojiCommand = {
 - You can only have 1 Bingo active at a time.
 - Ironmen will be able to enter, for free. However, they cannot win rewards.
 - Note: You need to add tiles yourself, using our predefined tiles AND/OR your own custom tiles. You can add tiles using ${mentionCommand(
-				globalClient,
 				'bingo',
 				'manage_bingo',
 				'add_tile'

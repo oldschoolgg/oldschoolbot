@@ -1,5 +1,4 @@
 import {
-	allAbstractCommands,
 	channelIsSendable,
 	formatDuration,
 	hasBanMemberPerms,
@@ -36,6 +35,7 @@ import { emojiServers } from '@/lib/util/cachedUserIDs.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
+import { allCommands } from '@/mahoji/commands/allCommands.js';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '@/mahoji/guildSettings.js';
 import { itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { mahojiUsersSettingsFetch, patronMsg } from '@/mahoji/mahojiSettings.js';
@@ -529,9 +529,7 @@ async function handleCommandEnable(
 	if (!(await hasBanMemberPerms(user.id, guild)))
 		return "You need to be 'Ban Member' permissions to use this command.";
 	const settings = await mahojiGuildSettingsFetch(guild);
-	const command = allAbstractCommands(globalClient.mahojiClient).find(
-		i => i.name.toLowerCase() === commandName.toLowerCase()
-	);
+	const command = allCommands.find(i => i.name.toLowerCase() === commandName.toLowerCase());
 	if (!command) return "That's not a valid command.";
 
 	if (choice === 'enable') {
@@ -761,7 +759,7 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'The command you want to enable/disable.',
 							required: true,
 							autocomplete: async value => {
-								return allAbstractCommands(globalClient.mahojiClient)
+								return allCommands
 									.map(i => ({ name: i.name, value: i.name }))
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
 							}

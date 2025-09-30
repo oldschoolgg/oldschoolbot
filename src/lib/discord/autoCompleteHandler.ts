@@ -1,4 +1,3 @@
-import type { CommandOption, ICommand } from '@oldschoolgg/toolkit';
 import {
 	type APIApplicationCommandOptionChoice,
 	ApplicationCommandOptionType,
@@ -8,6 +7,7 @@ import {
 	type User
 } from 'discord.js';
 
+import type { ICommand } from '@/lib/discord/commandOptions.js';
 import { allCommands } from '@/mahoji/commands/allCommands.js';
 
 async function handleAutocomplete(

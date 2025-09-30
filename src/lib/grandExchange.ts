@@ -666,7 +666,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			.setLabel('Disable These DMs')
 			.setStyle(ButtonStyle.Secondary);
 
-		const buyerDJSUser = await globalClient.fetchUser(buyerListing.user_id).catch(noOp);
+		const buyerDJSUser = await globalClient.users.fetch(buyerListing.user_id).catch(noOp);
 		if (buyerDJSUser && !buyerUser.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
 			let str = `You bought ${quantityToBuy.toLocaleString()}x ${itemName} for ${toKMB(
 				pricePerItemAfterTax
@@ -703,7 +703,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			await buyerDJSUser.send({ content: str, components: makeComponents(components) }).catch(noOp);
 		}
 
-		const sellerDJSUser = await globalClient.fetchUser(sellerListing.user_id).catch(noOp);
+		const sellerDJSUser = await globalClient.users.fetch(sellerListing.user_id).catch(noOp);
 		if (sellerDJSUser && !sellerUser.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
 			let str = `You sold ${quantityToBuy.toLocaleString()}x ${itemName} for ${toKMB(
 				pricePerItemAfterTax

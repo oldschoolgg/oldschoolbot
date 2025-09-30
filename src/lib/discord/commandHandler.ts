@@ -1,6 +1,7 @@
-import { convertAPIOptionsToCommandOptions, SpecialResponse } from '@oldschoolgg/toolkit';
+import { SpecialResponse } from '@oldschoolgg/toolkit';
 import { type ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.js';
 
+import { convertAPIOptionsToCommandOptions } from '@/lib/discord/commandOptions.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';
 import { allCommands } from '@/mahoji/commands/allCommands.js';
 import { postCommand } from '@/mahoji/lib/postCommand.js';
@@ -49,7 +50,7 @@ export async function commandHandler(rawInteraction: ChatInputCommandInteraction
 		const response = await command.run({
 			interaction,
 			options,
-			user: interaction.user,
+			user,
 			member: interaction.member,
 			channelID: interaction.channelId,
 			guildID: interaction.guild?.id,

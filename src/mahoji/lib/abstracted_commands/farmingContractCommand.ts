@@ -1,7 +1,8 @@
-import { makeComponents, roughMergeMahojiResponse, toTitleCase } from '@oldschoolgg/toolkit';
+import { makeComponents, toTitleCase } from '@oldschoolgg/toolkit';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
+import { roughMergeMahojiResponse } from '@/lib/discord/utils.js';
 import { Farming, plants } from '@/lib/skilling/skills/farming/index.js';
 import { getPlantToGrow } from '@/lib/skilling/skills/farming/utils/calcFarmingContracts.js';
 import { getFarmingInfoFromUser } from '@/lib/skilling/skills/farming/utils/getFarmingInfo.js';

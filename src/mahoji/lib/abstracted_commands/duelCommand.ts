@@ -3,7 +3,6 @@ import {
 	channelIsSendable,
 	Emoji,
 	Events,
-	type MahojiUserOption,
 	noOp,
 	sleep,
 	Time

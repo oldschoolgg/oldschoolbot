@@ -1,5 +1,5 @@
 import { randArrItem } from '@oldschoolgg/rng';
-import { formatOrdinal, type MahojiUserOption, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
+import { formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
@@ -8,6 +8,7 @@ import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import { BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import { diaries } from '@/lib/diaries.js';
+import type { MahojiUserOption } from '@/lib/discord/commandOptions.js';
 import { calculateMastery } from '@/lib/mastery.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { blowpipeCommand, blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';

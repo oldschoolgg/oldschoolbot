@@ -43,7 +43,7 @@ async function onMax(user: MUser) {
 
 	globalClient.emit(Events.ServerNotification, str);
 	sendToChannelID(globalConfig.supportServerID, { content: str }).catch(noOp);
-	const kUser = await globalClient.fetchUser(user.id);
+	const kUser = await globalClient.users.fetch(user.id);
 	const clientSettings = await mahojiClientSettingsFetch({ maxing_message: true });
 	kUser.send(clientSettings.maxing_message).catch(noOp);
 }

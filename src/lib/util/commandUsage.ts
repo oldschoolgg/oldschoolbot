@@ -1,5 +1,7 @@
-import { type CommandOptions, isObject, type MahojiUserOption } from '@oldschoolgg/toolkit';
+import { isObject } from '@oldschoolgg/toolkit';
 import type { command_name_enum, Prisma } from '@prisma/client';
+
+import type { CommandOptions, MahojiUserOption } from '@/lib/discord/commandOptions.js';
 
 function isMahojiUserOption(data: any): data is MahojiUserOption {
 	return 'user' in data && 'id' in data.user;

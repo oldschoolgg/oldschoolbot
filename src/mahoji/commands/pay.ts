@@ -1,8 +1,9 @@
-import { Events, type MahojiUserOption } from '@oldschoolgg/toolkit';
+import { Events } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import type { MahojiUserOption } from '@/lib/discord/commandOptions.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
 import { addToGPTaxBalance, mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 

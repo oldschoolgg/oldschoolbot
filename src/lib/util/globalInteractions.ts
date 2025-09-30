@@ -1,12 +1,4 @@
-import {
-	cleanUsername,
-	formatDuration,
-	mentionCommand,
-	removeFromArr,
-	stringMatches,
-	Time,
-	uniqueArr
-} from '@oldschoolgg/toolkit';
+import { cleanUsername, formatDuration, removeFromArr, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import type { Giveaway } from '@prisma/client';
 import { RateLimitManager } from '@sapphire/ratelimits';
 import type { ButtonInteraction } from 'discord.js';
@@ -15,6 +7,7 @@ import { Bank, type ItemBank } from 'oldschooljs';
 import { giveawayCache } from '@/lib/cache.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
 import { InteractionID } from '@/lib/InteractionID.js';
 import { runCommand } from '@/lib/settings/settings.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';
@@ -191,7 +184,7 @@ async function handlePinnedTripRepeat(user: MUser, id: string, interaction: Butt
 
 async function handleGEButton(user: MUser, id: string, interaction: ButtonInteraction) {
 	if (id === 'ge_cancel_dms') {
-		const mention = mentionCommand(globalClient, 'config', 'user', 'toggle');
+		const mention = mentionCommand('config', 'user', 'toggle');
 		if (user.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
 			return interaction.reply({
 				content: `You already disabled Grand Exchange DM's, you can re-enable them using ${mention}.`,

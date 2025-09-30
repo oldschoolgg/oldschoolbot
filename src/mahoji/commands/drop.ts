@@ -1,4 +1,4 @@
-import { ellipsize, returnStringOrFile } from '@oldschoolgg/toolkit';
+import { ellipsize } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Items } from 'oldschooljs';
 
@@ -82,6 +82,6 @@ export const dropCommand: OSBMahojiCommand = {
 		await user.removeItemsFromBank(bank);
 		updateBankSetting('dropped_items', bank);
 
-		return returnStringOrFile(`Dropped ${bank}.`);
+		return interaction.returnStringOrFile(`Dropped ${bank}.`);
 	}
 };

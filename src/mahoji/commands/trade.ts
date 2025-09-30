@@ -1,8 +1,10 @@
-import { discrimName, Events, type MahojiUserOption, mentionCommand } from '@oldschoolgg/toolkit';
+import { discrimName, Events } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import type { MahojiUserOption } from '@/lib/discord/commandOptions.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
@@ -168,11 +170,11 @@ Both parties must click confirm to make the trade.`,
 			files.push({ attachment: Buffer.from(receivedFull), name: 'items_received.txt' });
 		}
 
-		const content = `${discrimName(senderAPIUser)} sold ${formatBankForDisplay(itemsSent)} to ${discrimName(
+		const content = `${senderAPIUser.username} sold ${formatBankForDisplay(itemsSent)} to ${discrimName(
 			recipientAPIUser
 		)} in return for ${formatBankForDisplay(itemsReceived)}.
 
-  You can now buy/sell items in the Grand Exchange: ${mentionCommand(globalClient, 'ge')}`;
+  You can now buy/sell items in the Grand Exchange: ${mentionCommand('ge')}`;
 
 		return files.length > 0 ? { content, files } : content;
 	}

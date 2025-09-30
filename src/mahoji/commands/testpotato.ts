@@ -1,5 +1,5 @@
 import { randArrItem, randInt } from '@oldschoolgg/rng';
-import { mentionCommand, noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { type Prisma, xp_gains_skill_enum } from '@prisma/client';
 import { ApplicationCommandOptionType, MessageFlags, type User } from 'discord.js';
 import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
@@ -11,6 +11,7 @@ import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '@/lib/data/cox
 import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '@/lib/data/tob.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
 import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import potions from '@/lib/minions/data/potions.js';
@@ -802,7 +803,6 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 							collectionLogBank: {}
 						});
 						return `Your QP, and completed quests, have been reset. You can set your QP to a certain number using ${mentionCommand(
-							globalClient,
 							'testpotato',
 							'set'
 						)}.`;

@@ -1,4 +1,4 @@
-import { convertAPIOptionsToCommandOptions, deepMerge } from '@oldschoolgg/toolkit';
+import { deepMerge } from '@oldschoolgg/toolkit';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -14,6 +14,7 @@ import {
 	Routes
 } from 'discord.js';
 
+import { convertAPIOptionsToCommandOptions } from '@/lib/discord/commandOptions.js';
 import {
 	type CompatibleResponse,
 	PaginatedMessage,
@@ -267,7 +268,7 @@ export class MInteraction {
 							.filter(i => !confirms.has(i))
 							.map(i => this.client.users.cache.get(i)?.username ?? 'Unknown User');
 						this.reply({
-							content: `${confirms.size}/${users.length} confirmed. Waiting for ${unconfirmedUsernames.join(', ')}...`,
+							content: `${content}\n\n${confirms.size}/${users.length} confirmed. Waiting for ${unconfirmedUsernames.join(', ')}...`,
 							components: [confirmRow]
 						});
 					}

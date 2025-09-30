@@ -4,7 +4,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 import PromiseQueue from 'p-queue';
 import { shuffle } from 'remeda';
-import { expect, test, vi } from 'vitest';
+import { test } from 'vitest';
 
 import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings.js';
 import { allCommands } from '../../src/mahoji/commands/allCommands.js';

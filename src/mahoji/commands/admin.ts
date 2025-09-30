@@ -1,13 +1,10 @@
 import { randArrItem } from '@oldschoolgg/rng';
 import {
-	allAbstractCommands,
 	calcPerHour,
 	calcWhatPercent,
 	cleanString,
 	dateFm,
 	formatDuration,
-	type ICommand,
-	type MahojiUserOption,
 	noOp,
 	notEmpty,
 	sleep,
@@ -38,7 +35,7 @@ import {
 	globalConfig,
 	META_CONSTANTS
 } from '@/lib/constants.js';
-import { convertCommandOptionToAPIOption } from '@/lib/discord/commandOptions.js';
+import { convertCommandOptionToAPIOption, type ICommand } from '@/lib/discord/commandOptions.js';
 import { economyLog } from '@/lib/economyLogs.js';
 import type { GearSetup } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
@@ -50,6 +47,7 @@ import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/uti
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
+import { allCommands } from '@/mahoji/commands/allCommands.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 import { syncCustomPrices } from '@/mahoji/lib/events.js';
 import { itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
@@ -539,7 +537,7 @@ export const adminCommand: OSBMahojiCommand = {
 					required: false,
 					autocomplete: async (value: string) => {
 						const disabledCommands = Array.from(DISABLED_COMMANDS.values());
-						return allAbstractCommands(globalClient.mahojiClient)
+						return allCommands
 							.filter(i => !disabledCommands.includes(i.name))
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.name, value: i.name }));
@@ -552,7 +550,7 @@ export const adminCommand: OSBMahojiCommand = {
 					required: false,
 					autocomplete: async () => {
 						const disabledCommands = Array.from(DISABLED_COMMANDS.values());
-						return allAbstractCommands(globalClient.mahojiClient)
+						return allCommands
 							.filter(i => disabledCommands.includes(i.name))
 							.map(i => ({ name: i.name, value: i.name }));
 					}
@@ -761,9 +759,7 @@ export const adminCommand: OSBMahojiCommand = {
 				select: { disabled_commands: true }
 			}))!.disabled_commands;
 
-			const command = allAbstractCommands(globalClient.mahojiClient).find(c =>
-				stringMatches(c.name, disable ?? enable ?? '-')
-			);
+			const command = allCommands.find(c => stringMatches(c.name, disable ?? enable ?? '-'));
 			if (!command) return "That's not a valid command.";
 
 			if (disable) {
@@ -909,16 +905,17 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		}
 
 		if (options.sync_commands) {
+			const totalCommands = allCommands;
+
 			if (!globalConfig.isProduction) {
 				await bulkUpdateCommands({
-					commands: Array.from(globalClient.mahojiClient.commands.values()),
+					commands: allCommands,
 					guildID: globalConfig.supportServerID
 				});
 				return 'Done.';
 			}
 
 			const global = Boolean(globalConfig.isProduction);
-			const totalCommands = Array.from(globalClient.mahojiClient.commands.values());
 			const globalCommands = totalCommands.filter(i => !i.guildID);
 			const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
 			if (global) {

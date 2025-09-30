@@ -1,4 +1,4 @@
-import { reduceNumByPercent, returnStringOrFile } from '@oldschoolgg/toolkit';
+import { reduceNumByPercent } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
@@ -271,7 +271,7 @@ export const sellCommand: OSBMahojiCommand = {
 			prisma.botItemSell.createMany({ data: botItemSellData })
 		]);
 
-		return returnStringOrFile(
+		return interaction.returnStringOrFile(
 			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**${
 				user.isIronman ? ' (General store price)' : ` (${taxRatePercent}% below market price)`
 			}.`
