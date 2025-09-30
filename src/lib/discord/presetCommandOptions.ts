@@ -8,7 +8,6 @@ import { GearSetupTypes } from '@/lib/gear/types.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import { Gear, type GlobalPreset, globalPresets } from '@/lib/structures/Gear.js';
-import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export const filterOption: CommandOption = {
 	type: ApplicationCommandOptionType.String,
@@ -103,9 +102,7 @@ export const ownedItemOption = (filter?: (item: Item) => boolean): CommandOption
 	description: 'The item you want to pick.',
 	required: false,
 	autocomplete: async (value, user) => {
-		const mUser = await mahojiUsersSettingsFetch(user.id, { bank: true });
-		const bank = new Bank(mUser.bank as ItemBank);
-		let res = bank.items().filter(i => i[0].name.toLowerCase().includes(value.toLowerCase()));
+		let res = user.bank.items().filter(i => i[0].name.toLowerCase().includes(value.toLowerCase()));
 		if (filter) res = res.filter(i => filter(i[0]));
 		return res.map(i => ({ name: `${i[0].name}`, value: i[0].name.toString() }));
 	}

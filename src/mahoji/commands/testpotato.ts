@@ -1,7 +1,7 @@
 import { randArrItem, randInt } from '@oldschoolgg/rng';
 import { noOp, stringMatches, uniqueArr } from '@oldschoolgg/toolkit';
 import { type Prisma, xp_gains_skill_enum } from '@prisma/client';
-import { ApplicationCommandOptionType, MessageFlags, type User } from 'discord.js';
+import { ApplicationCommandOptionType, MessageFlags } from 'discord.js';
 import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
 
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
@@ -33,7 +33,6 @@ import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.j
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { allUsableItems } from '@/mahoji/lib/abstracted_commands/useCommand.js';
 import { BingoManager } from '@/mahoji/lib/bingo/BingoManager.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 import { testBotKvStore } from '@/testing/TestBotStore.js';
 
 export function getMaxUserValues() {
@@ -490,7 +489,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							name: 'start_bingo',
 							description: 'Make your bingo start now.',
 							required: true,
-							autocomplete: async (value: string, user: User) => {
+							autocomplete: async (value: string, user: MUser) => {
 								const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
 								return bingos
 									.map(i => new BingoManager(i))
@@ -734,7 +733,7 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 				if (options.wipe) {
 					const { thing } = options.wipe;
 					if (thing === 'kc') {
-						await userStatsUpdate(user.id, {
+						await user.statsUpdate({
 							monster_scores: {}
 						});
 						return 'Reset all your KCs.';
@@ -931,16 +930,12 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 					);
 					if (!monster) return 'Invalid monster';
 					const stats = await user.fetchStats({ monster_scores: true });
-					await userStatsUpdate(
-						user.id,
-						{
-							monster_scores: {
-								...(stats.monster_scores as Record<string, unknown>),
-								[monster.id]: options.setmonsterkc?.kc ?? 1
-							}
-						},
-						{}
-					);
+					await user.statsUpdate({
+						monster_scores: {
+							...(stats.monster_scores as Record<string, unknown>),
+							[monster.id]: options.setmonsterkc?.kc ?? 1
+						}
+					});
 					return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;
 				}
 

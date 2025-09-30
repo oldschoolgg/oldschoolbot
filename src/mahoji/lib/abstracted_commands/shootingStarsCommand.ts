@@ -10,8 +10,7 @@ import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTim
 import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
 import type { Ore } from '@/lib/skilling/types.js';
 import type { ActivityTaskData, ShootingStarsOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength, patronMaxTripBonus } from '@/lib/util/calcMaxTripLength.js';
+import { patronMaxTripBonus } from '@/lib/util/calcMaxTripLength.js';
 
 interface Star extends Ore {
 	size: number;
@@ -215,7 +214,7 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 			goldSilverBoost: false,
 			miningLvl: miningLevel,
 			passedDuration: duration,
-			maxTripLength: calcMaxTripLength(user, 'ShootingStars'),
+			maxTripLength: user.calcMaxTripLength('ShootingStars'),
 			hasKaramjaMedium: false
 		});
 		duration += timeToMine;
@@ -235,7 +234,7 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 		if (star.petChance && roll((star.petChance - skills.mining * 25) / newQuantity)) {
 			loot.add('Rock golem');
 		}
-		if (duration >= calcMaxTripLength(user, 'Mining')) {
+		if (duration >= user.calcMaxTripLength('Mining')) {
 			break;
 		}
 	}
@@ -243,9 +242,9 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 	// Add all stardust
 	loot.add('Stardust', dustReceived);
 
-	await addSubTaskToActivityTask<ShootingStarsOptions>({
+	await ActivityManager.startTrip<ShootingStarsOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration,
 		lootItems: loot.toJSON(),
 		usersWith,

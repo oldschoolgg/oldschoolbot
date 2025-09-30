@@ -5,6 +5,7 @@ import { convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';
 import { postCommand } from '@/lib/discord/postCommand.js';
 import { preCommand } from '@/lib/discord/preCommand.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';
+import { handleInteractionError } from '@/lib/util/interactionReply.js';
 import { allCommands } from '@/mahoji/commands/allCommands.js';
 
 export async function commandHandler(rawInteraction: ChatInputCommandInteraction) {
@@ -27,7 +28,6 @@ export async function commandHandler(rawInteraction: ChatInputCommandInteraction
 
 	const user = await mUserFetch(interaction.user.id);
 
-	let error: Error | null = null;
 	let inhibited = false;
 	let runPostCommand = true;
 	try {
@@ -63,16 +63,11 @@ export async function commandHandler(rawInteraction: ChatInputCommandInteraction
 
 		await interaction.reply(response);
 	} catch (err) {
-		if (!(err instanceof Error)) console.error('Received an error that isnt an Error.');
-		error = err as Error;
-		if (error) {
-			return { error };
-		}
+		await handleInteractionError(err, interaction);
 	} finally {
 		if (runPostCommand) {
 			await postCommand({
 				command,
-				error,
 				inhibited,
 				interaction,
 				continueDeltaMillis: null,

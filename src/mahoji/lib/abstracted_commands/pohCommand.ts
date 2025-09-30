@@ -5,7 +5,6 @@ import { pohImageGenerator } from '@/lib/canvas/pohImage.js';
 import { BitField } from '@/lib/constants.js';
 import { GroupedPohObjects, getPOHObject, itemsNotRefundable, PoHObjects } from '@/lib/poh/index.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const pohWallkits = [
 	{
@@ -113,7 +112,7 @@ export async function pohBuildCommand(interaction: MInteraction, user: MUser, na
 		}
 		await interaction.confirmation(str);
 		await user.removeItemsFromBank(obj.itemCost);
-		updateBankSetting('construction_cost_bank', obj.itemCost);
+		await ClientSettings.updateBankSetting('construction_cost_bank', obj.itemCost);
 	}
 
 	let refunded: Bank | null = null;

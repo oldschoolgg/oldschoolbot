@@ -35,7 +35,7 @@ import Mining from '@/lib/skilling/skills/mining.js';
 import Prayer from '@/lib/skilling/skills/prayer.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
-import Thieving from '@/lib/skilling/skills/thieving/index.js';
+import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import { genericUsables, usableUnlocks } from '@/mahoji/lib/abstracted_commands/useCommand.js';
 import { serializeSnapshotItem, Util } from './scriptUtil.js';

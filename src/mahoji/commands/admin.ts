@@ -39,18 +39,15 @@ import { convertCommandOptionToAPIOption, type ICommand, itemOption } from '@/li
 import { economyLog } from '@/lib/economyLogs.js';
 import type { GearSetup } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
-import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { sorts } from '@/lib/sorts.js';
 import { memoryAnalysis } from '@/lib/util/cachedUserIDs.js';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 import { allCommands } from '@/mahoji/commands/allCommands.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 import { syncCustomPrices } from '@/mahoji/lib/events.js';
-import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
@@ -713,11 +710,8 @@ export const adminCommand: OSBMahojiCommand = {
 			if (!badge) return 'Invalid badge.';
 			const [badgeName, badgeID] = badge;
 
-			const userToUpdateBadges = await mahojiUsersSettingsFetch(options.badges.user.user.id, {
-				badges: true,
-				id: true
-			});
-			let newBadges = [...userToUpdateBadges.badges];
+			const userToUpdateBadges = await mUserFetch(options.badges.user.user.id);
+			let newBadges = [...userToUpdateBadges.user.badges];
 
 			if (action === 'add') {
 				if (newBadges.includes(badgeID)) return "Already has this badge, so can't add.";
@@ -727,7 +721,7 @@ export const adminCommand: OSBMahojiCommand = {
 				newBadges = newBadges.filter(i => i !== badgeID);
 			}
 
-			await mahojiUserSettingsUpdate(userToUpdateBadges.id, {
+			await userToUpdateBadges.update({
 				badges: uniqueArr(newBadges)
 			});
 
@@ -737,11 +731,11 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 
 		if (options.bypass_age) {
-			const input = await mahojiUsersSettingsFetch(options.bypass_age.user.user.id, { bitfield: true, id: true });
-			if (input.bitfield.includes(BitField.BypassAgeRestriction)) {
+			const userToBypassAge = await mUserFetch(options.bypass_age.user.user.id);
+			if (userToBypassAge.bitfield.includes(BitField.BypassAgeRestriction)) {
 				return 'This user is already bypassed.';
 			}
-			await mahojiUserSettingsUpdate(input.id, {
+			await userToBypassAge.update({
 				bitfield: {
 					push: BitField.BypassAgeRestriction
 				}
@@ -802,10 +796,10 @@ export const adminCommand: OSBMahojiCommand = {
 			await interaction.confirmation(
 				`Are you sure you want to set the price of \`${item.name}\`(ID: ${item.id}) to \`${price.toLocaleString()}\`?`
 			);
-			const settings = await mahojiClientSettingsFetch({ custom_prices: true });
+			const settings = await ClientSettings.fetch({ custom_prices: true });
 			const current = settings.custom_prices as ItemBank;
 			const newPrices = { ...current, [item.id]: price };
-			await mahojiClientSettingsUpdate({
+			await ClientSettings.update({
 				custom_prices: newPrices
 			});
 			await syncCustomPrices();
@@ -950,7 +944,7 @@ ${guildCommands.length} Guild commands`;
 		if (options.view) {
 			const thing = viewableThings.find(i => i.name === options.view?.thing);
 			if (!thing) return 'Invalid';
-			const clientSettings = await mahojiClientSettingsFetch();
+			const clientSettings = await ClientSettings.fetch();
 			const res = await thing.run(clientSettings);
 			if (!(res instanceof Bank)) return res;
 			const image = await makeBankImage({

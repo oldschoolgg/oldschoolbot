@@ -1,6 +1,6 @@
 import { percentChance } from '@oldschoolgg/rng';
-import { calcWhatPercent, cleanUsername, Emoji, sumArr, UserError, uniqueArr } from '@oldschoolgg/toolkit';
-import type { GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
+import { calcWhatPercent, cleanUsername, Emoji, isObject, sumArr, UserError, uniqueArr } from '@oldschoolgg/toolkit';
+import type { activity_type_enum, GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { escapeMarkdown, userMention } from 'discord.js';
 import {
 	addItemToBank,
@@ -44,15 +44,16 @@ import { defaultGear, Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import type { XPBank } from '@/lib/structures/XPBank.js';
 import type { SkillRequirements, Skills } from '@/lib/types/index.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
 import { logError } from '@/lib/util/logError.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
 import { type TransactItemsArgs, transactItemsFromBank } from '@/lib/util/transactItemsFromBank.js';
+import type { JsonKeys } from '@/lib/util.js';
 import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
-import { fetchUserStats, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {
@@ -361,13 +362,9 @@ GROUP BY data->>'ci';`);
 	async incrementKC(monsterID: number, amountToAdd = 1) {
 		const stats = await this.fetchStats({ monster_scores: true });
 		const newKCs = new Bank(stats.monster_scores as ItemBank).add(monsterID, amountToAdd);
-		await userStatsUpdate(
-			this.id,
-			{
-				monster_scores: newKCs.toJSON()
-			},
-			{}
-		);
+		await this.statsUpdate({
+			monster_scores: newKCs.toJSON()
+		});
 		return { newKC: newKCs.amount(monsterID) };
 	}
 
@@ -524,13 +521,9 @@ GROUP BY data->>'ci';`);
 
 	async incrementCreatureScore(creatureID: number, amountToAdd = 1) {
 		const stats = await this.fetchStats({ creature_scores: true });
-		await userStatsUpdate(
-			this.id,
-			{
-				creature_scores: addItemToBank(stats.creature_scores as ItemBank, creatureID, amountToAdd)
-			},
-			{}
-		);
+		await this.statsUpdate({
+			creature_scores: addItemToBank(stats.creature_scores as ItemBank, creatureID, amountToAdd)
+		});
 	}
 
 	get blowpipe() {
@@ -756,7 +749,28 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	}
 
 	async fetchStats<T extends Prisma.UserStatsSelect>(selectKeys: T): Promise<SelectedUserStats<T>> {
-		return fetchUserStats(this.id, selectKeys);
+		const keysToSelect = Object.keys(selectKeys).length === 0 ? { user_id: true } : selectKeys;
+		let result = await prisma.userStats.findFirst({
+			where: {
+				user_id: BigInt(this.id)
+			},
+			select: keysToSelect
+		});
+
+		if (!result) {
+			result = await prisma.userStats.upsert({
+				where: {
+					user_id: BigInt(this.id)
+				},
+				create: {
+					user_id: BigInt(this.id)
+				},
+				update: {},
+				select: keysToSelect
+			});
+		}
+
+		return result as unknown as SelectedUserStats<T>;
 	}
 
 	get logName() {
@@ -1024,6 +1038,63 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			bank,
 			value: marketPriceOfBank(bank)
 		};
+	}
+
+	hasGracefulEquipped() {
+		for (const gear of Object.values(this.gear)) {
+			if (
+				gear.hasEquipped(
+					[
+						'Graceful hood',
+						'Graceful top',
+						'Graceful legs',
+						'Graceful boots',
+						'Graceful gloves',
+						'Graceful cape'
+					],
+					true
+				)
+			) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	async statsUpdate(data: Omit<Prisma.UserStatsUpdateInput, 'user_id'>) {
+		const id = BigInt(this.id);
+
+		const result = await prisma.userStats.update({
+			data,
+			where: {
+				user_id: id
+			}
+		});
+		return result;
+	}
+
+	async statsBankUpdate(key: JsonKeys<UserStats>, bank: Bank) {
+		if (!key) throw new Error('No key provided to userStatsBankUpdate');
+		const stats = await this.fetchStats({ [key]: true });
+		const currentItemBank = stats[key] as ItemBank;
+		if (!isObject(currentItemBank)) {
+			throw new Error(`Key ${key} is not an object.`);
+		}
+		await this.statsUpdate({
+			[key]: bank.clone().add(currentItemBank).toJSON()
+		});
+	}
+
+	async updateGPTrackSetting(setting: 'gp_dice' | 'gp_luckypick' | 'gp_slots', amount: number) {
+		this.statsUpdate({
+			[setting]: {
+				increment: amount
+			}
+		});
+	}
+
+	calcMaxTripLength(activity: activity_type_enum) {
+		return calcMaxTripLength(this, activity);
 	}
 }
 declare global {

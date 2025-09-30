@@ -3,18 +3,15 @@ import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { TitheFarmActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { skillingPetDropRate } from '@/lib/util.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const titheFarmTask: MinionTask = {
 	type: 'TitheFarm',
-	async run(data: TitheFarmActivityTaskOptions) {
-		const { userID, channelID } = data;
+	async run(data: TitheFarmActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelID } = data;
 		const baseHarvest = 85;
 		const lootStr: string[] = [];
 
-		const user = await mUserFetch(userID);
 		const userStats = await user.fetchStats({ tithe_farm_points: true, tithe_farms_completed: true });
 
 		const farmingLvl = user.skillsAsLevels.farming;
@@ -24,18 +21,14 @@ export const titheFarmTask: MinionTask = {
 		const determineHarvest = baseHarvest + Math.min(15, titheFarmsCompleted);
 		const determinePoints = determineHarvest - 74;
 
-		await userStatsUpdate(
-			user.id,
-			{
-				tithe_farms_completed: {
-					increment: 1
-				},
-				tithe_farm_points: {
-					increment: determinePoints
-				}
+		await user.statsUpdate({
+			tithe_farms_completed: {
+				increment: 1
 			},
-			{}
-		);
+			tithe_farm_points: {
+				increment: determinePoints
+			}
+		});
 
 		let fruit = '';
 		let fruitXp = 0;

@@ -7,10 +7,8 @@ import { rewardsGuardianTable } from '@/lib/simulation/rewardsGuardian.js';
 import { bloodEssence } from '@/lib/skilling/functions/calcsRunecrafting.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import type { GuardiansOfTheRiftActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { calcMaxRCQuantity, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
+import { calcMaxRCQuantity } from '@/mahoji/mahojiSettings.js';
 
 const catalyticRunesArray: string[] = [
 	'Mind rune',
@@ -34,10 +32,8 @@ const combinationalRunesArray: string[] = [
 
 export const guardiansOfTheRiftTask: MinionTask = {
 	type: 'GuardiansOfTheRift',
-	async run(data: GuardiansOfTheRiftActivityTaskOptions) {
-		const { channelID, userID, quantity, duration, minedFragments, barrierAndGuardian, rolls, combinationRunes } =
-			data;
-		const user = await mUserFetch(userID);
+	async run(data: GuardiansOfTheRiftActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, duration, minedFragments, barrierAndGuardian, rolls, combinationRunes } = data;
 		const previousScore = await user.fetchMinigameScore('guardians_of_the_rift');
 		const { newScore } = await user.incrementMinigameScore('guardians_of_the_rift', quantity);
 		const kcForPet = randInt(previousScore, newScore);
@@ -126,15 +122,11 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		}
 		rewardsGuardianLoot.add(rewardsGuardianTable.roll(rewardsQty));
 
-		await userStatsUpdate(
-			user.id,
-			{
-				gotr_rift_searches: {
-					increment: rewardsQty
-				}
-			},
-			{}
-		);
+		await user.statsUpdate({
+			gotr_rift_searches: {
+				increment: rewardsQty
+			}
+		});
 
 		const totalLoot = new Bank();
 		totalLoot.add(rewardsGuardianLoot);
@@ -154,7 +146,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			previousCL
 		});
 
-		let str = `<@${userID}>, ${
+		let str = `<@${user.id}>, ${
 			user.minionName
 		} finished ${quantity}x Guardians Of The Rift runs and looted the Rewards Guardian ${rewardsQty}x times, also received: ${runesLoot}${
 			setBonus - 1 > 0
@@ -173,7 +165,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			);
 		}
 
-		updateBankSetting('gotr_loot', totalLoot);
+		await ClientSettings.updateBankSetting('gotr_loot', totalLoot);
 		await trackLoot({
 			id: 'guardians_of_the_rift',
 			type: 'Minigame',

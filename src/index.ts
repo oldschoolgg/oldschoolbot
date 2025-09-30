@@ -1,7 +1,6 @@
 import './lib/safeglobals.js';
 import './lib/globals.js';
 import './lib/MUser.js';
-import './lib/ActivityManager.js';
 
 import { Events } from '@oldschoolgg/toolkit';
 import { init } from '@sentry/node';

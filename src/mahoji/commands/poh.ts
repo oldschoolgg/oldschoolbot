@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, type User } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import { ownedItemOption } from '@/lib/discord/index.js';
 import { PoHObjects } from '@/lib/poh/index.js';
@@ -79,7 +79,7 @@ export const pohCommand: OSBMahojiCommand = {
 					name: 'name',
 					description: 'The object you want to destroy.',
 					required: true,
-					autocomplete: async (value: string, user: User) => {
+					autocomplete: async (value: string, user: MUser) => {
 						const poh = await getPOH(user.id);
 						return PoHObjects.filter(obj => poh[obj.slot] === obj.id)
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))

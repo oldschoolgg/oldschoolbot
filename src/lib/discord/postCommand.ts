@@ -16,7 +16,6 @@ export async function postCommand({
 }: {
 	interaction: MInteraction;
 	command: OSBMahojiCommand;
-	error: Error | string | null;
 	args: CommandOptions;
 	isContinue: boolean;
 	inhibited: boolean;

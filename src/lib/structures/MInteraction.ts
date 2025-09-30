@@ -1,10 +1,12 @@
-import { deepMerge } from '@oldschoolgg/toolkit';
+import { debounce, deepMerge, Time } from '@oldschoolgg/toolkit';
+import { TimerManager } from '@sapphire/timer-manager';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	type ButtonInteraction,
 	ButtonStyle,
 	type CommandInteraction,
+	ComponentType,
 	DiscordAPIError,
 	type InteractionResponse,
 	InteractionResponseType,
@@ -14,27 +16,29 @@ import {
 	Routes
 } from 'discord.js';
 
+import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { partyLockCache } from '@/lib/cache.js';
+import { SILENT_ERROR } from '@/lib/constants.js';
 import { convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';
 import {
 	type CompatibleResponse,
 	PaginatedMessage,
 	type PaginatedMessageOptions
 } from '@/lib/structures/PaginatedMessage.js';
+import { CACHED_ACTIVE_USER_IDS } from '@/lib/util/cachedUserIDs.js';
+import { getUsername } from '@/lib/util.js';
 
 const wasDeferred = new Set();
 
-// interface MakePartyOptions {
-// 	maxSize: number;
-// 	minSize: number;
-// 	leader: string;
-// 	message: string;
-// 	ironmanAllowed: boolean;
-// 	usersAllowed?: string[];
-// 	customDenier?(user: MUser): Promise<[false] | [true, string]>;
-// }
-
-// const partyLockCache = new Set<string>();
-// setInterval(() => partyLockCache.clear(), Time.Minute * 20);
+interface MakePartyOptions {
+	maxSize: number;
+	minSize: number;
+	leader: MUser;
+	message: string;
+	ironmanAllowed: boolean;
+	usersAllowed?: string[];
+	customDenier?(user: MUser): Promise<[false] | [true, string]>;
+}
 
 export class MInteraction {
 	public interaction: CommandInteraction | ButtonInteraction;
@@ -309,177 +313,168 @@ export class MInteraction {
 		return string;
 	}
 
-	// public async party(options: MakePartyOptions & { message: string }): Promise<string[]> {
-	// 	const usersWhoConfirmed: string[] = [options.leader];
-	// 	let deleted = false;
-	// 	let massStarted = false;
-	// 	let partyCancelled = false;
+	public async makeParty(options: MakePartyOptions & { message: string }): Promise<MUser[]> {
+		const usersWhoConfirmed: string[] = [options.leader.id];
+		let massStarted = false;
+		let partyCancelled = false;
 
-	// 	const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
-	// 		new ButtonBuilder().setCustomId('PARTY_JOIN').setLabel('Join').setStyle(ButtonStyle.Primary),
-	// 		new ButtonBuilder().setCustomId('PARTY_LEAVE').setLabel('Leave').setStyle(ButtonStyle.Secondary),
-	// 		new ButtonBuilder().setCustomId('PARTY_CANCEL').setLabel('Cancel').setStyle(ButtonStyle.Danger),
-	// 		new ButtonBuilder().setCustomId('PARTY_START').setLabel('Start').setStyle(ButtonStyle.Success)
-	// 	);
+		const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+			new ButtonBuilder().setCustomId('PARTY_JOIN').setLabel('Join').setStyle(ButtonStyle.Primary),
+			new ButtonBuilder().setCustomId('PARTY_LEAVE').setLabel('Leave').setStyle(ButtonStyle.Secondary),
+			new ButtonBuilder().setCustomId('PARTY_CANCEL').setLabel('Cancel').setStyle(ButtonStyle.Danger),
+			new ButtonBuilder().setCustomId('PARTY_START').setLabel('Start').setStyle(ButtonStyle.Success)
+		);
 
-	// 	const getMessageContent = async () => ({
-	// 		content: `${options.message}\n\n**Users Joined:** ${(
-	// 			await Promise.all(usersWhoConfirmed.map(u => getUsername(u)))
-	// 		).join(
-	// 			', '
-	// 		)}\n\nThis party will automatically depart in 5 minutes, or if the leader clicks the start (start early) or stop button.`,
-	// 		components: [row],
-	// 		allowedMentions: { users: [] as string[] }
-	// 	});
+		const getMessageContent = async () => ({
+			content: `${options.message}\n\n**Users Joined:** ${(
+				await Promise.all(usersWhoConfirmed.map(u => getUsername(u)))
+			).join(
+				', '
+			)}\n\nThis party will automatically depart in 5 minutes, or if the leader clicks the start (start early) or stop button.`,
+			components: [row],
+			allowedMentions: { users: [] as string[] }
+		});
 
-	// 	await this.defer({ ephemeral: false });
-	// 	await this.reply(await getMessageContent());
+		await this.defer({ ephemeral: false });
+		await this.reply(await getMessageContent());
 
-	// 	const message = this.interactionResponse!;
-	// 	const updateUsersIn = debounce(async () => {
-	// 		if (deleted) return;
-	// 		await this.reply(await getMessageContent());
-	// 	}, 500);
+		const message = this.interactionResponse!;
+		const updateUsersIn = debounce(async () => {
+			console.log('updateUsersIn');
+			await this.reply(await getMessageContent());
+		}, 500);
 
-	// 	const removeUser = (userID: string) => {
-	// 		if (userID === options.leader) return;
-	// 		const idx = usersWhoConfirmed.indexOf(userID);
-	// 		if (idx !== -1) {
-	// 			usersWhoConfirmed.splice(idx, 1);
-	// 			updateUsersIn();
-	// 		}
-	// 	};
+		const removeUser = (userID: string) => {
+			if (userID === options.leader.id) return;
+			const idx = usersWhoConfirmed.indexOf(userID);
+			if (idx !== -1) {
+				usersWhoConfirmed.splice(idx, 1);
+				updateUsersIn();
+			}
+		};
 
-	// 	const silentAck = (bi: ButtonInteraction) =>
-	// 		this.client.rest.post(Routes.interactionCallback(bi.id, bi.token), {
-	// 			body: { type: 7 /* InteractionResponseType.DeferredMessageUpdate */ }
-	// 		});
+		const silentAck = (bi: ButtonInteraction) =>
+			this.client.rest.post(Routes.interactionCallback(bi.id, bi.token), {
+				body: { type: InteractionResponseType.DeferredMessageUpdate }
+			});
 
-	// 	const startTrip = async (resolve: (v: MUser[]) => void, reject: (e: Error) => void) => {
-	// 		if (massStarted) return;
-	// 		massStarted = true;
-	// 		try {
-	// 			// remove buttons to prevent further clicks
-	// 			await this.reply({ content: (await getMessageContent()).content, components: [] });
-	// 			// delete if possible
-	// 			await message.delete().catch(() => {});
-	// 		} catch {}
-	// 		if (!partyCancelled && usersWhoConfirmed.length < options.minSize) {
-	// 			reject(new Error('SILENT_ERROR'));
-	// 			return;
-	// 		}
-	// 		const members: string[] = [];
-	// 		for (const id of usersWhoConfirmed) members.push(id);
-	// 		resolve(members);
-	// 	};
+		const startTrip = async (resolve: (v: MUser[]) => void, reject: (e: Error) => void) => {
+			console.log('startTrip');
+			if (massStarted) return;
+			massStarted = true;
+			await this.reply({ content: (await getMessageContent()).content, components: [] });
+			if (!partyCancelled && usersWhoConfirmed.length < options.minSize) {
+				reject(new Error('SILENT_ERROR'));
+				return;
+			}
+			const members: MUser[] = [];
+			for (const id of usersWhoConfirmed) members.push(await mUserFetch(id));
+			resolve(members);
+		};
 
-	// 	return await new Promise<MUser[]>((resolve, reject) => {
-	// 		const collector = message.createMessageComponentCollector({
-	// 			time: Time.Minute * 5,
-	// 			componentType: ComponentType.Button
-	// 		});
+		return new Promise<MUser[]>((resolve, reject) => {
+			const collector = message.createMessageComponentCollector({
+				time: Time.Minute * 5,
+				componentType: ComponentType.Button
+			});
 
-	// 		collector.on('collect', async bi => {
-	// 			// if (BLACKLISTED_USERS.has(bi.user.id)) return;
-	// 			// CACHED_ACTIVE_USER_IDS.add(bi.user.id);
+			collector.on('collect', async bi => {
+				if (BLACKLISTED_USERS.has(bi.user.id)) return;
+				CACHED_ACTIVE_USER_IDS.add(bi.user.id);
 
-	// 			const user = await mUserFetch(bi.user.id);
-	// 			if (
-	// 				(!options.ironmanAllowed && user.user.minion_ironman) ||
-	// 				bi.user.bot ||
-	// 				user.minionIsBusy ||
-	// 				!user.user.minion_hasBought
-	// 			) {
-	// 				await bi.reply({
-	// 					content: `You cannot mass if you are busy${!options.ironmanAllowed ? ', an ironman' : ''}, or have no minion.`,
-	// 					flags: MessageFlags.Ephemeral
-	// 				});
-	// 				return;
-	// 			}
+				const user = await mUserFetch(bi.user.id);
+				if (
+					(!options.ironmanAllowed && user.isIronman) ||
+					bi.user.bot ||
+					user.minionIsBusy ||
+					!user.hasMinion
+				) {
+					await bi.reply({
+						content: `You cannot mass if you are busy${!options.ironmanAllowed ? ', an ironman' : ''}, or have no minion.`,
+						flags: MessageFlags.Ephemeral
+					});
+					return;
+				}
 
-	// 			if (options.usersAllowed && !options.usersAllowed.includes(user.id)) {
-	// 				await bi.reply({
-	// 					content: 'You are not allowed to join this mass.',
-	// 					flags: MessageFlags.Ephemeral
-	// 				});
-	// 				return;
-	// 			}
+				if (options.usersAllowed && !options.usersAllowed.includes(user.id)) {
+					await bi.reply({
+						content: 'You are not allowed to join this mass.',
+						flags: MessageFlags.Ephemeral
+					});
+					return;
+				}
 
-	// 			const id = bi.customId as 'PARTY_JOIN' | 'PARTY_LEAVE' | 'PARTY_CANCEL' | 'PARTY_START';
+				const id = bi.customId as 'PARTY_JOIN' | 'PARTY_LEAVE' | 'PARTY_CANCEL' | 'PARTY_START';
 
-	// 			if (id === 'PARTY_JOIN') {
-	// 				if (options.customDenier) {
-	// 					const [denied, reason] = await options.customDenier(user);
-	// 					if (denied) {
-	// 						await bi.reply({
-	// 							content: `You couldn't join this mass, for this reason: ${reason}`,
-	// 							flags: MessageFlags.Ephemeral
-	// 						});
-	// 						return;
-	// 					}
-	// 				}
-	// 				if (usersWhoConfirmed.includes(bi.user.id)) {
-	// 					await bi.reply({ content: 'You are already in this mass.', flags: MessageFlags.Ephemeral });
-	// 					return;
-	// 				}
-	// 				if (partyLockCache.has(bi.user.id)) {
-	// 					await bi.reply({ content: 'You cannot join this mass.', flags: MessageFlags.Ephemeral });
-	// 					return;
-	// 				}
-	// 				usersWhoConfirmed.push(bi.user.id);
-	// 				partyLockCache.add(bi.user.id);
-	// 				await silentAck(bi);
-	// 				updateUsersIn();
-	// 				if (usersWhoConfirmed.length >= options.maxSize) collector.stop('everyoneJoin');
-	// 				return;
-	// 			}
+				if (id === 'PARTY_JOIN') {
+					if (options.customDenier) {
+						const [denied, reason] = await options.customDenier(user);
+						if (denied) {
+							await bi.reply({
+								content: `You couldn't join this mass, for this reason: ${reason}`,
+								flags: MessageFlags.Ephemeral
+							});
+							return;
+						}
+					}
+					if (usersWhoConfirmed.includes(bi.user.id)) {
+						await bi.reply({ content: 'You are already in this mass.', flags: MessageFlags.Ephemeral });
+						return;
+					}
+					if (partyLockCache.has(bi.user.id)) {
+						await bi.reply({ content: 'You cannot join this mass.', flags: MessageFlags.Ephemeral });
+						return;
+					}
+					usersWhoConfirmed.push(bi.user.id);
+					partyLockCache.add(bi.user.id);
+					await silentAck(bi);
+					updateUsersIn();
+					if (usersWhoConfirmed.length >= options.maxSize) collector.stop('everyoneJoin');
+					return;
+				}
 
-	// 			if (id === 'PARTY_LEAVE') {
-	// 				if (!usersWhoConfirmed.includes(bi.user.id) || bi.user.id === leaderUser.id) {
-	// 					await bi.reply({ content: 'You cannot leave this mass.', flags: MessageFlags.Ephemeral });
-	// 					return;
-	// 				}
-	// 				partyLockCache.delete(bi.user.id);
-	// 				removeUser(bi.user.id);
-	// 				await silentAck(bi);
-	// 				return;
-	// 			}
+				if (id === 'PARTY_LEAVE') {
+					if (!usersWhoConfirmed.includes(bi.user.id) || bi.user.id === options.leader.id) {
+						await bi.reply({ content: 'You cannot leave this mass.', flags: MessageFlags.Ephemeral });
+						return;
+					}
+					partyLockCache.delete(bi.user.id);
+					removeUser(bi.user.id);
+					await silentAck(bi);
+					return;
+				}
 
-	// 			if (id === 'PARTY_CANCEL') {
-	// 				if (bi.user.id !== leaderUser.id) {
-	// 					await bi.reply({ content: 'You cannot cancel this mass.', flags: MessageFlags.Ephemeral });
-	// 					return;
-	// 				}
-	// 				partyCancelled = true;
-	// 				await silentAck(bi);
-	// 				collector.stop('partyCreatorEnd');
-	// 				deleted = true;
-	// 				await message.delete().catch(() => {});
-	// 				reject(new UserError(`The leader (${options.leader.usernameOrMention}) cancelled this mass!`));
-	// 				return;
-	// 			}
+				if (id === 'PARTY_CANCEL') {
+					if (bi.user.id !== options.leader.id) {
+						await bi.reply({ content: 'You cannot cancel this mass.', flags: MessageFlags.Ephemeral });
+						return;
+					}
+					partyCancelled = true;
+					await silentAck(bi);
+					collector.stop('partyCreatorEnd');
+					this.reply({ content: 'The party was cancelled.', components: [] });
+					reject(SILENT_ERROR);
+					return;
+				}
 
-	// 			if (id === 'PARTY_START') {
-	// 				if (bi.user.id !== leaderUser.id) {
-	// 					await bi.reply({ content: 'You cannot start this mass.', flags: MessageFlags.Ephemeral });
-	// 					return;
-	// 				}
-	// 				await silentAck(bi);
-	// 				collector.stop('partyCreatorEnd');
-	// 				await startTrip(resolve, reject);
-	// 			}
-	// 		});
+				if (id === 'PARTY_START') {
+					if (bi.user.id !== options.leader.id) {
+						await bi.reply({ content: 'You cannot start this party.', flags: MessageFlags.Ephemeral });
+						return;
+					}
+					await silentAck(bi);
+					collector.stop('partyCreatorEnd');
+					await startTrip(resolve, reject);
+				}
+			});
 
-	// 		collector.once('end', async () => {
-	// 			deleted = true;
-	// 			try {
-	// 				await message.delete().catch(() => {});
-	// 			} catch {}
-	// 			for (const uid of usersWhoConfirmed) partyLockCache.delete(uid);
-	// 			TimerManager.setTimeout(() => void startTrip(resolve, reject), 250);
-	// 		});
-	// 	});
-	// }
+			collector.once('end', async () => {
+				for (const uid of usersWhoConfirmed) partyLockCache.delete(uid);
+				if (massStarted || partyCancelled) return;
+				TimerManager.setTimeout(() => void startTrip(resolve, reject), 250);
+			});
+		});
+	}
 }
 
 export type MMember = typeof MInteraction.prototype.member;

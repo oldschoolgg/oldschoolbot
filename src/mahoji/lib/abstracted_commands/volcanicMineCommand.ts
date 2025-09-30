@@ -2,8 +2,6 @@ import { formatDuration, objectEntries, stringMatches, Time } from '@oldschoolgg
 import { Bank } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
 
 const skillReqs = {
@@ -103,7 +101,7 @@ export async function volcanicMineCommand(user: MUser, channelID: string, gameQu
 			.filter(f => f)
 			.join(', ')}`;
 	}
-	const maxGamesUserCanDo = Math.floor(calcMaxTripLength(user) / VolcanicMineGameTime);
+	const maxGamesUserCanDo = Math.floor(user.calcMaxTripLength('VolcanicMine') / VolcanicMineGameTime);
 	if (!gameQuantity || gameQuantity > maxGamesUserCanDo) gameQuantity = maxGamesUserCanDo;
 	const userMiningLevel = skills.mining;
 	const userPrayerLevel = skills.prayer;
@@ -163,9 +161,9 @@ export async function volcanicMineCommand(user: MUser, channelID: string, gameQu
 		boosts.length > 0 ? `\n**Boosts**\n${boosts.join('\n')}` : ''
 	}\n**Supply Usage:** ${suppliesUsage}`;
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity: gameQuantity,
 		duration,
 		type: 'VolcanicMine'

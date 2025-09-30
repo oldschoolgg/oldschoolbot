@@ -4,9 +4,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
 import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const craftCommand: OSBMahojiCommand = {
 	name: 'craft',
@@ -78,7 +75,7 @@ export const craftCommand: OSBMahojiCommand = {
 			timeToCraftSingleItem /= 3.25;
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Crafting');
+		const maxTripLength = user.calcMaxTripLength('Crafting');
 
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timeToCraftSingleItem);
@@ -106,12 +103,12 @@ export const craftCommand: OSBMahojiCommand = {
 
 		await user.removeItemsFromBank(itemsNeeded);
 
-		updateBankSetting('crafting_cost', itemsNeeded);
+		await ClientSettings.updateBankSetting('crafting_cost', itemsNeeded);
 
-		await addSubTaskToActivityTask<CraftingActivityTaskOptions>({
+		await ActivityManager.startTrip<CraftingActivityTaskOptions>({
 			craftableID: craftable.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			quantity,
 			duration,
 			type: 'Crafting'

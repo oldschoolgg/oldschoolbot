@@ -72,12 +72,23 @@ export const monkeyCommand: OSBMahojiCommand = {
 		if (ephemeral && users.length > 1) {
 			return 'You cannot have multiple people confirm on an ephemeral message.';
 		}
-		await interaction.confirmation({
-			content: `This is a normal confirmation. Users who must confirm: ${users.map(i => `<@${i}>`).join(', ')}`,
-			users,
-			// @ts-expect-error ddd
-			ephemeral
-		});
+		// await interaction.confirmation({
+		// 	content: `This is a normal confirmation. Users who must confirm: ${users.map(i => `<@${i}>`).join(', ')}`,
+		// 	users,
+		// 	// @ts-expect-error ddd
+		// 	ephemeral
+		// });
+
+		if (users.length === 1) {
+			const party = await interaction.makeParty({
+				maxSize: 5,
+				minSize: 1,
+				message: `Join the party!`,
+				leader: user,
+				ironmanAllowed: true
+			});
+			return `The party has now started with the following users: ${party.map(i => i.username).join(', ')}`;
+		}
 
 		return interaction.makePaginatedMessage({
 			ephemeral: true,

@@ -5,7 +5,6 @@ import { Bank, Items } from 'oldschooljs';
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
 import { petMessage } from '@/lib/util/displayCluesAndPets.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export async function capeGambleStatsCommand(user: MUser) {
 	const stats = await user.fetchStats({
@@ -84,19 +83,11 @@ export async function capeGambleCommand(user: MUser, type: string, interaction: 
 	await user.sync();
 	if (user.bank.amount(item.id) < 1) return `You have no ${item.name}'s to gamble!`;
 
-	const newStats = await userStatsUpdate(
-		user.id,
-		{
-			[key]: {
-				increment: 1
-			}
-		},
-		{
-			infernal_cape_sacrifices: true,
-			firecapes_sacrificed: true,
-			quivers_sacrificed: true
+	const newStats = await user.statsUpdate({
+		[key]: {
+			increment: 1
 		}
-	);
+	});
 	const newSacrificedCount = newStats[key];
 
 	const { chance } = src;

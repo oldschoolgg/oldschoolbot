@@ -9,7 +9,6 @@ import pets from '@/lib/data/pets.js';
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 import dailyRoll from '@/lib/simulation/dailyTable.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { updateClientGPTrackSetting, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export async function isUsersDailyReady(
 	user: MUser
@@ -98,7 +97,7 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	}
 
 	if (coinsToGive) {
-		updateClientGPTrackSetting('gp_daily', coinsToGive);
+		ClientSettings.updateClientGPTrackSetting('gp_daily', coinsToGive);
 	}
 
 	const { itemsAdded, previousCL } = await user.transactItems({
@@ -125,13 +124,9 @@ export async function dailyCommand(interaction: MInteraction | null, channelID: 
 		)}.`;
 	}
 
-	await userStatsUpdate(
-		user.id,
-		{
-			last_daily_timestamp: Date.now()
-		},
-		{}
-	);
+	await user.statsUpdate({
+		last_daily_timestamp: Date.now()
+	});
 
 	const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
 

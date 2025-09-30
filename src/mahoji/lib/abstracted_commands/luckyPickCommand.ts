@@ -13,7 +13,7 @@ import { Bank, toKMB } from 'oldschooljs';
 import { SILENT_ERROR } from '@/lib/constants.js';
 import { silentButtonAck } from '@/lib/discord/utils.js';
 import { logError } from '@/lib/util/logError.js';
-import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '@/mahoji/mahojiSettings.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export async function luckyPickCommand(user: MUser, luckypickamount: string, interaction: MInteraction) {
 	const amount = mahojiParseNumber({ input: luckypickamount, min: 1_000_000, max: 3_000_000_000 });
@@ -149,8 +149,8 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 		if (amountReceived > 0) {
 			await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
 		}
-		await updateClientGPTrackSetting('gp_luckypick', amountReceived - amount);
-		await updateGPTrackSetting('gp_luckypick', amountReceived - amount, user);
+		await ClientSettings.updateClientGPTrackSetting('gp_luckypick', amountReceived - amount);
+		await user.updateGPTrackSetting('gp_luckypick', amountReceived - amount);
 		await sentMessage.edit({ components: getCurrentButtons({ showTrueNames: true }) }).catch(noOp);
 		return amountReceived === 0
 			? `${user} picked the wrong button and lost ${toKMB(amount)}!`

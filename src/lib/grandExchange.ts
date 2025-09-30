@@ -20,7 +20,6 @@ import { BitField, globalConfig, PerkTier } from '@/lib/constants.js';
 import { marketPricemap } from '@/lib/marketPrices.js';
 import { type RobochimpUser, roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/tableBank.js';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
 import { assert, logError } from '@/lib/util/logError.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 
@@ -252,7 +251,7 @@ class GrandExchangeSingleton {
 				.join(', ')}`,
 			allowedMentions: globalConfig.isProduction ? { users: idsToNotify } : undefined
 		}).catch(noOp);
-		await mahojiClientSettingsUpdate({
+		await ClientSettings.update({
 			grand_exchange_is_locked: true
 		});
 		this.locked = true;
@@ -904,7 +903,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 	}
 
 	async fetchData() {
-		const settings = await mahojiClientSettingsFetch({
+		const settings = await ClientSettings.fetch({
 			grand_exchange_is_locked: true,
 			grand_exchange_tax_bank: true,
 			grand_exchange_total_tax: true
@@ -992,7 +991,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 
 	async totalReset() {
 		if (globalConfig.isProduction) throw new Error("You can't reset the GE in production.");
-		await mahojiClientSettingsUpdate({
+		await ClientSettings.update({
 			grand_exchange_is_locked: false,
 			grand_exchange_tax_bank: 0,
 			grand_exchange_total_tax: 0

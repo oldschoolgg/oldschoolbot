@@ -20,11 +20,8 @@ import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '@/lib/simulation/baGamble.js';
 import { maxOtherStats } from '@/lib/structures/Gear.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const BarbBuyables = [
 	{
@@ -112,14 +109,10 @@ export async function barbAssaultLevelCommand(user: MUser) {
 		if (points < level.cost) {
 			return `You don't have enough points to upgrade to level ${level.level}. You need ${level.cost} points.`;
 		}
-		await userStatsUpdate(
-			user.id,
-			{
-				honour_level: { increment: 1 },
-				honour_points: { decrement: level.cost }
-			},
-			{}
-		);
+		await user.statsUpdate({
+			honour_level: { increment: 1 },
+			honour_points: { decrement: level.cost }
+		});
 
 		return `You've spent ${level.cost} Honour points to level up to Honour level ${level.level}!`;
 	}
@@ -149,15 +142,11 @@ export async function barbAssaultBuyCommand(interaction: MInteraction, user: MUs
 	await interaction.confirmation(
 		`Are you sure you want to buy ${quantity.toLocaleString()}x ${item.name}, for ${(cost * quantity).toLocaleString()} honour points?`
 	);
-	await userStatsUpdate(
-		user.id,
-		{
-			honour_points: {
-				decrement: cost * quantity
-			}
-		},
-		{}
-	);
+	await user.statsUpdate({
+		honour_points: {
+			decrement: cost * quantity
+		}
+	});
 
 	await user.addItemsToBank({ items: new Bank().add(item.id, quantity), collectionLog: true });
 
@@ -177,24 +166,17 @@ export async function barbAssaultGambleCommand(interaction: MInteraction, user: 
 	await interaction.confirmation(
 		`Are you sure you want to do ${quantity.toLocaleString()}x ${name} gamble, using ${(cost * quantity).toLocaleString()} honour points?`
 	);
-	const newStats = await userStatsUpdate(
-		user.id,
-		{
-			honour_points: {
-				decrement: cost * quantity
-			},
-			high_gambles:
-				name === 'High'
-					? {
-							increment: quantity
-						}
-					: undefined
+	const newStats = await user.statsUpdate({
+		honour_points: {
+			decrement: cost * quantity
 		},
-		{
-			honour_points: true,
-			high_gambles: true
-		}
-	);
+		high_gambles:
+			name === 'High'
+				? {
+						increment: quantity
+					}
+				: undefined
+	});
 	const loot = new Bank().add(table.roll(quantity));
 	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 	let str = `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`;
@@ -256,7 +238,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 	boosts.push(`${kcPercentBoost.toFixed(2)}% for average KC`);
 	waveTime = reduceNumByPercent(waveTime, kcPercentBoost);
 
-	let quantity = Math.floor(calcMaxTripLength(user, 'BarbarianAssault') / waveTime);
+	let quantity = Math.floor(user.calcMaxTripLength('BarbarianAssault') / waveTime);
 
 	// 10% speed boost for Venator bow
 	const venatorBowChargesPerWave = 50;
@@ -273,7 +255,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 		waveTime = reduceNumByPercent(waveTime, 10);
 	}
 
-	quantity = Math.floor(calcMaxTripLength(user, 'BarbarianAssault') / waveTime);
+	quantity = Math.floor(user.calcMaxTripLength('BarbarianAssault') / waveTime);
 
 	const duration = quantity * waveTime;
 
@@ -286,9 +268,9 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 	)} - the total trip will take ${formatDuration(duration)}.`;
 
 	str += `\n\n**Boosts:** ${boosts.join(', ')}.${venBowMsg}`;
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'BarbarianAssault',

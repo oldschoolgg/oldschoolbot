@@ -2,7 +2,6 @@ import { percentChance, randArrItem, randInt, randomVariation, roll } from '@old
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
-	channelIsSendable,
 	Emoji,
 	exponentialPercentScale,
 	formatDuration,
@@ -27,18 +26,14 @@ import { degradeItem } from '@/lib/degradeableItems.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { trackLoot } from '@/lib/lootTrack.js';
-import { setupParty } from '@/lib/party.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { getToaKCs } from '@/lib/simulation/toaUtils.js';
 import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
 import type { MakePartyOptions, Skills } from '@/lib/types/index.js';
 import type { TOAOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { assert } from '@/lib/util/logError.js';
 import { bankToStrShortNames, formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { mahojiParseNumber, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 const teamSizeScale: Record<number, number> = {
 	1: 1.0,
@@ -1096,6 +1091,7 @@ async function checkTOATeam(users: MUser[], raidLevel: number, quantity: number)
 }
 
 export async function toaStartCommand(
+	interaction: MInteraction,
 	user: MUser,
 	solo: boolean,
 	channelID: string,
@@ -1146,11 +1142,9 @@ export async function toaStartCommand(
 		}
 	};
 
-	const channel = globalClient.channels.cache.get(channelID);
-	if (!channelIsSendable(channel)) return 'No channel found.';
 	let usersWhoConfirmed = [];
 	try {
-		usersWhoConfirmed = solo ? [user] : await setupParty(channel, user, partyOptions);
+		usersWhoConfirmed = solo ? [user] : await interaction.makeParty(partyOptions);
 	} catch (err: any) {
 		return {
 			content: typeof err === 'string' ? err : 'Your mass failed to start.',
@@ -1180,7 +1174,7 @@ export async function toaStartCommand(
 		raidLevel,
 		quantity: 1
 	})[0].duration;
-	const maxTripLength = Math.max(...users.map(i => calcMaxTripLength(i, 'TombsOfAmascut')));
+	const maxTripLength = Math.max(...users.map(i => i.calcMaxTripLength('TombsOfAmascut')));
 	const maxQuantity = clamp(Math.floor(maxTripLength / baseDuration), { min: 1, max: 5 });
 	const quantity = clamp(quantityInput ?? maxQuantity, { min: 1, max: maxQuantity });
 
@@ -1237,7 +1231,7 @@ export async function toaStartCommand(
 					user: u
 				});
 			}
-			await userStatsBankUpdate(u, 'toa_cost', realCost);
+			await u.statsBankUpdate('toa_cost', realCost);
 			const effectiveCost = realCost.clone();
 			totalCost.add(effectiveCost);
 
@@ -1257,7 +1251,7 @@ export async function toaStartCommand(
 		})
 	);
 
-	updateBankSetting('toa_cost', totalCost);
+	await ClientSettings.updateBankSetting('toa_cost', totalCost);
 	await trackLoot({
 		totalCost,
 		id: 'tombs_of_amascut',
@@ -1279,9 +1273,9 @@ export async function toaStartCommand(
 		userArr.push(thisQtyArr);
 	}
 
-	await addSubTaskToActivityTask<TOAOptions>({
+	await ActivityManager.startTrip<TOAOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration: realDuration,
 		type: 'TombsOfAmascut',
 		leader: user.id,

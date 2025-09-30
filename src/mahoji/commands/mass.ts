@@ -1,15 +1,13 @@
-import { channelIsSendable, formatDuration, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import type { GearSetupType } from '@prisma/client';
-import { ApplicationCommandOptionType, type TextChannel } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
 import hasEnoughFoodForMonster from '@/lib/minions/functions/hasEnoughFoodForMonster.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
-import { setupParty } from '@/lib/party.js';
 import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
 import findMonster from '@/lib/util/findMonster.js';
 import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
@@ -70,8 +68,6 @@ export const massCommand: OSBMahojiCommand = {
 		await interaction.defer();
 
 		if (user.user.minion_ironman) return 'Ironmen cannot do masses.';
-		const channel = globalClient.channels.cache.get(channelID);
-		if (!channel || !channelIsSendable(channel)) return 'Invalid channel.';
 		const monster = findMonster(options.monster);
 		if (!monster) return "That monster doesn't exist!";
 		if (!monster.groupKillable) return "This monster can't be killed in groups!";
@@ -81,7 +77,7 @@ export const massCommand: OSBMahojiCommand = {
 
 		let users: MUser[] = [];
 		try {
-			users = await setupParty(channel as TextChannel, user, {
+			users = await interaction.makeParty({
 				leader: user,
 				minSize: 2,
 				maxSize: 10,
@@ -151,10 +147,10 @@ export const massCommand: OSBMahojiCommand = {
 			}
 		}
 
-		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>({
+		await ActivityManager.startTrip<GroupMonsterActivityTaskOptions>({
 			mi: monster.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			q: quantity,
 			duration,
 			type: 'GroupMonsterKilling',

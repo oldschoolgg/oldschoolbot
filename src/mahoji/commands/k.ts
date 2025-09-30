@@ -6,7 +6,6 @@ import { Eatables } from '@/lib/data/eatables.js';
 import { autocompleteMonsters, wikiMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
 import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import findMonster from '@/lib/util/findMonster.js';
 import { minionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/minionKill.js';
 
@@ -166,8 +165,8 @@ async function monsterInfo(user: MUser, name: string): Promise<string | Interact
 			hpString = `${noFoodBoost}% boost for no food`;
 		}
 	}
-	const maxCanKillSlay = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / reduceNumByPercent(timeToFinish, 15));
-	const maxCanKill = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / timeToFinish);
+	const maxCanKillSlay = Math.floor(user.calcMaxTripLength('MonsterKilling') / reduceNumByPercent(timeToFinish, 15));
+	const maxCanKill = Math.floor(user.calcMaxTripLength('MonsterKilling') / timeToFinish);
 
 	const { QP } = user;
 
@@ -200,7 +199,7 @@ async function monsterInfo(user: MUser, name: string): Promise<string | Interact
 
 	str.push(
 		`Maximum trip length: ${formatDuration(
-			calcMaxTripLength(user, 'MonsterKilling')
+			user.calcMaxTripLength('MonsterKilling')
 		)}.\nNormal kill time: ${formatDuration(
 			monster.timeToFinish
 		)}. You can kill up to ${maxCanKill} per trip (${formatDuration(timeToFinish)} per kill).`

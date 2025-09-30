@@ -4,9 +4,6 @@ import { Bank } from 'oldschooljs';
 
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const mixCommand: OSBMahojiCommand = {
 	name: 'mix',
@@ -93,7 +90,7 @@ export const mixCommand: OSBMahojiCommand = {
 			} gp for each item so they don't have to go.`;
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Herblore');
+		const maxTripLength = user.calcMaxTripLength('Herblore');
 		let quantity = optionQuantity;
 		const maxCanDo = user.bankWithGP.fits(baseCost);
 		const maxCanMix = Math.floor(maxTripLength / timeToMixSingleItem);
@@ -122,12 +119,12 @@ export const mixCommand: OSBMahojiCommand = {
 
 		await user.removeItemsFromBank(finalCost);
 
-		updateBankSetting('herblore_cost_bank', finalCost);
+		await ClientSettings.updateBankSetting('herblore_cost_bank', finalCost);
 
-		await addSubTaskToActivityTask<HerbloreActivityTaskOptions>({
+		await ActivityManager.startTrip<HerbloreActivityTaskOptions>({
 			mixableID: mixableItem.item.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			zahur: Boolean(zahur),
 			wesley: Boolean(wesley),
 			quantity,

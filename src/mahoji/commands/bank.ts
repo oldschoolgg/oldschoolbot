@@ -5,7 +5,7 @@ import type { Bank } from 'oldschooljs';
 import type { BankFlag } from '@/lib/canvas/bankImage.js';
 import { bankFlags } from '@/lib/canvas/bankImage.js';
 import { PerkTier } from '@/lib/constants.js';
-import { filterOption, itemOption } from '@/lib/discord/presetCommandOptions.js';
+import { filterOption, itemOption } from '@/lib/discord/index.js';
 import type { Flags } from '@/lib/minions/types.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
 import { BankSortMethods } from '@/lib/sorts.js';

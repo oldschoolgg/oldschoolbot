@@ -10,7 +10,6 @@ import { ChargeBank } from '@/lib/structures/Bank.js';
 import { KCBank } from '@/lib/structures/KCBank.js';
 import { XPBank } from '@/lib/structures/XPBank.js';
 import type { JsonKeys } from '@/lib/util.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export class UpdateBank {
 	// Things removed
@@ -122,7 +121,7 @@ export class UpdateBank {
 			}
 		}
 
-		await userStatsUpdate(user.id, userStatsUpdates);
+		await user.statsUpdate(userStatsUpdates);
 
 		const userUpdates: Prisma.UserUpdateInput = this.userUpdates;
 

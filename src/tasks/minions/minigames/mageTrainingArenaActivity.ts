@@ -3,15 +3,13 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const pizazzPointsPerHour = 100;
 
 export const mageTrainingTask: MinionTask = {
 	type: 'MageTrainingArena',
-	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
-		const { channelID, quantity, duration, userID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
+		const { channelID, quantity, duration } = data;
 
 		await user.incrementMinigameScore('magic_training_arena', quantity);
 
@@ -26,7 +24,7 @@ export const mageTrainingTask: MinionTask = {
 		});
 		const pizazzPoints = Math.floor((pizazzPointsPerHour / (Time.Minute * 60)) * duration);
 		await prisma.newUser.update({
-			where: { id: userID },
+			where: { id: user.id },
 			data: {
 				pizazz_points: {
 					increment: pizazzPoints
@@ -34,7 +32,7 @@ export const mageTrainingTask: MinionTask = {
 			}
 		});
 		const totalPizazzPoints = await prisma.newUser.findUnique({
-			where: { id: userID },
+			where: { id: user.id },
 			select: {
 				pizazz_points: true
 			}

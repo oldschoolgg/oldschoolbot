@@ -185,7 +185,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 				return err instanceof Error ? err.message : err;
 			}
 			if (bank.has('Coins')) {
-				addToGPTaxBalance(user.id, bank.amount('Coins'));
+				addToGPTaxBalance(user, bank.amount('Coins'));
 			}
 
 			try {

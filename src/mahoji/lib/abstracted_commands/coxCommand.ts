@@ -1,5 +1,5 @@
 import { randomVariation } from '@oldschoolgg/rng';
-import { calcWhatPercent, channelIsSendable, Emoji, formatDuration, sumArr } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, Emoji, formatDuration, sumArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import {
@@ -17,12 +17,8 @@ import {
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { degradeItem } from '@/lib/degradeableItems.js';
 import { trackLoot } from '@/lib/lootTrack.js';
-import { setupParty } from '@/lib/party.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { RaidsOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export async function coxBoostsCommand(user: MUser) {
@@ -129,6 +125,7 @@ Check \`/raid cox itemboosts\` for more information on Item boosts.`;
 }
 
 export async function coxCommand(
+	interaction: MInteraction,
 	channelID: string,
 	user: MUser,
 	type: 'solo' | 'mass' | 'fakemass',
@@ -200,7 +197,6 @@ export async function coxCommand(
 			return [false];
 		}
 	};
-	const channel = globalClient.channels.cache.get(channelID.toString());
 
 	let users: MUser[] = [];
 	let isFakeMass = false;
@@ -210,8 +206,7 @@ export async function coxCommand(
 		users = new Array(fakeUsers).fill(user);
 		isFakeMass = true;
 	} else if (type === 'mass') {
-		if (!channelIsSendable(channel)) return 'No channel found.';
-		users = (await setupParty(channel, user, partyOptions)).filter(u => !u.minionIsBusy);
+		users = (await interaction.makeParty(partyOptions)).filter(u => !u.minionIsBusy);
 	} else {
 		users = [user];
 	}
@@ -222,7 +217,7 @@ export async function coxCommand(
 		reductions,
 		degradeables
 	} = await calcCoxDuration(users, isChallengeMode);
-	const maxTripLength = calcMaxTripLength(user, 'Raids');
+	const maxTripLength = user.calcMaxTripLength('Raids');
 	const maxCanDo = Math.max(Math.floor(maxTripLength / raidDuration), 1);
 	const quantity = _quantity && _quantity * raidDuration <= maxTripLength ? _quantity : maxCanDo;
 
@@ -273,7 +268,7 @@ export async function coxCommand(
 		})
 	]);
 
-	updateBankSetting('cox_cost', totalCost);
+	await ClientSettings.updateBankSetting('cox_cost', totalCost);
 
 	await trackLoot({
 		id: minigameID,
@@ -286,9 +281,9 @@ export async function coxCommand(
 		}))
 	});
 
-	await addSubTaskToActivityTask<RaidsOptions>({
+	await ActivityManager.startTrip<RaidsOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration,
 		type: 'Raids',
 		leader: user.id,

@@ -3,8 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import TitheFarmBuyables from '@/lib/data/buyables/titheFarmBuyables.js';
 import type { TitheFarmActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { userHasGracefulEquipped, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 async function determineDuration(user: MUser): Promise<[number, string[]]> {
 	let baseTime = Time.Second * 1500;
@@ -21,7 +19,7 @@ async function determineDuration(user: MUser): Promise<[number, string[]]> {
 		: boostStr.push('');
 
 	// Reduce time if user has graceful equipped
-	if (userHasGracefulEquipped(user)) {
+	if (user.hasGracefulEquipped()) {
 		nonGracefulTimeAddition = 0;
 		boostStr.push('10% from graceful outfit');
 	}
@@ -42,10 +40,10 @@ export async function titheFarmCommand(user: MUser, channelID: string) {
 
 	const [duration, boostStr] = await determineDuration(user);
 
-	await addSubTaskToActivityTask<TitheFarmActivityTaskOptions>({
+	await ActivityManager.startTrip<TitheFarmActivityTaskOptions>({
 		minigameID: 'tithe_farm',
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity: 1,
 		duration,
 		type: 'TitheFarm'
@@ -86,15 +84,11 @@ export async function titheFarmShopCommand(
 	const purchaseMsg = `${loot} for ${cost} Tithe Farm points`;
 
 	await interaction.confirmation(`${user}, please confirm that you want to purchase ${purchaseMsg}.`);
-	await userStatsUpdate(
-		user.id,
-		{
-			tithe_farm_points: {
-				decrement: cost
-			}
-		},
-		{}
-	);
+	await user.statsUpdate({
+		tithe_farm_points: {
+			decrement: cost
+		}
+	});
 
 	await user.transactItems({
 		collectionLog: true,

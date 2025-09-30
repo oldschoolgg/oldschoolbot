@@ -6,7 +6,6 @@ import PromiseQueue from 'p-queue';
 import { shuffle } from 'remeda';
 import { test } from 'vitest';
 
-import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings.js';
 import { allCommands } from '../../src/mahoji/commands/allCommands.js';
 import { getMaxUserValues } from '../../src/mahoji/commands/testpotato.js';
 import { allUsableItems } from '../../src/mahoji/lib/abstracted_commands/useCommand.js';
@@ -115,7 +114,7 @@ test(
 		}
 		await mockClient();
 
-		await mahojiClientSettingsFetch({ construction_cost_bank: true });
+		await ClientSettings.fetch({ construction_cost_bank: true });
 
 		const ignoredCommands = [
 			'bank',

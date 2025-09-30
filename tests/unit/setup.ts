@@ -1,5 +1,4 @@
-import '../../src/lib/data/itemAliases.js';
-import '../../src/lib/ActivityManager.js';
+import '../../src/lib/safeglobals.js';
 
 import { MUserStats } from '../../src/lib/structures/MUserStats.js';
 

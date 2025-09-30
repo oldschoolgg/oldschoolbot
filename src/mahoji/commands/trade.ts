@@ -153,10 +153,10 @@ Both parties must click confirm to make the trade.`,
 			`${senderUser.mention} sold ${itemsSent} to ${recipientUser.mention} for ${itemsReceived}.`
 		);
 		if (itemsReceived.has('Coins')) {
-			await addToGPTaxBalance(recipientUser.id, itemsReceived.amount('Coins'));
+			await addToGPTaxBalance(recipientUser, itemsReceived.amount('Coins'));
 		}
 		if (itemsSent.has('Coins')) {
-			await addToGPTaxBalance(senderUser.id, itemsSent.amount('Coins'));
+			await addToGPTaxBalance(senderUser, itemsSent.amount('Coins'));
 		}
 
 		const sentFull = itemsSent.toStringFull();

@@ -9,10 +9,7 @@ import { difficulties, rewardTokens, trekBankBoosts } from '@/lib/minions/data/t
 import type { AddXpParams } from '@/lib/minions/types.js';
 import type { GearRequirement } from '@/lib/structures/Gear.js';
 import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { readableStatName } from '@/lib/util/smallUtils.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function trekCommand(user: MUser, channelID: string, difficulty: string, quantity: number | undefined) {
 	const tier = difficulties.find(item => stringMatches(item.difficulty, difficulty));
@@ -83,7 +80,7 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 		}
 	}
 
-	if (!userHasGracefulEquipped(user)) {
+	if (!user.hasGracefulEquipped()) {
 		boosts.push('-15% for not having graceful equipped anywhere');
 		tripTime *= 1.15;
 	}
@@ -108,7 +105,7 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 		tripTime *= flailBoost;
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'Trekking');
+	const maxTripLength = user.calcMaxTripLength('Trekking');
 	const maxTrips = Math.floor(maxTripLength / tripTime);
 	if (quantity === undefined || quantity === null) {
 		quantity = maxTrips;
@@ -118,13 +115,13 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 
 	const duration = quantity * tripTime;
 
-	await addSubTaskToActivityTask<TempleTrekkingActivityTaskOptions>({
+	await ActivityManager.startTrip<TempleTrekkingActivityTaskOptions>({
 		difficulty,
 		quantity,
 		userID: user.id,
 		duration,
 		type: 'Trekking',
-		channelID: channelID.toString(),
+		channelID,
 		minigameID: 'temple_trekking'
 	});
 

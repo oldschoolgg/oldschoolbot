@@ -5,7 +5,6 @@ import { Items } from 'oldschooljs';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { filterOption } from '@/lib/discord/index.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const dropCommand: OSBMahojiCommand = {
 	name: 'drop',
@@ -80,7 +79,7 @@ export const dropCommand: OSBMahojiCommand = {
 		}
 
 		await user.removeItemsFromBank(bank);
-		updateBankSetting('dropped_items', bank);
+		await ClientSettings.updateBankSetting('dropped_items', bank);
 
 		return interaction.returnStringOrFile(`Dropped ${bank}.`);
 	}

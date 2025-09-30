@@ -1,13 +1,10 @@
 import { formatDuration, round, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, type User } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import Constructables from '@/lib/skilling/skills/construction/constructables.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { ConstructionActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const ds2Requirements: Skills = {
 	magic: 75,
@@ -45,7 +42,7 @@ export const buildCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The object you want to build.',
 			required: true,
-			autocomplete: async (value: string, user: User) => {
+			autocomplete: async (value: string, user: MUser) => {
 				const mUser = await mUserFetch(user.id);
 				const conLevel = mUser.skillLevel('construction');
 				return Constructables.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
@@ -98,7 +95,7 @@ export const buildCommand: OSBMahojiCommand = {
 		const userBank = user.bank;
 		const planksHas = userBank.amount(plank);
 
-		const maxTripLength = calcMaxTripLength(user, 'Construction');
+		const maxTripLength = user.calcMaxTripLength('Construction');
 
 		let { quantity } = options;
 		if (!quantity) {
@@ -128,12 +125,12 @@ export const buildCommand: OSBMahojiCommand = {
 
 		await user.transactItems({ itemsToRemove: cost });
 
-		updateBankSetting('construction_cost_bank', cost);
+		await ClientSettings.updateBankSetting('construction_cost_bank', cost);
 
-		await addSubTaskToActivityTask<ConstructionActivityTaskOptions>({
+		await ActivityManager.startTrip<ConstructionActivityTaskOptions>({
 			objectID: object.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			quantity,
 			duration,
 			type: 'Construction'

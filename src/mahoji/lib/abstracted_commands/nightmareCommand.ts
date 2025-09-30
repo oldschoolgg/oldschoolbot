@@ -11,10 +11,8 @@ import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { NightmareActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
 import { getNightmareGearStats } from '@/lib/util/getNightmareGearStats.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 async function soloMessage(user: MUser, duration: number, quantity: number, isPhosani: boolean) {
@@ -292,7 +290,7 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 		}
 	}
 
-	await updateBankSetting('nightmare_cost', totalCost);
+	await ClientSettings.updateBankSetting('nightmare_cost', totalCost);
 	await trackLoot({
 		id: 'nightmare',
 		totalCost,
@@ -306,9 +304,9 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 		]
 	});
 
-	await addSubTaskToActivityTask<NightmareActivityTaskOptions>({
+	await ActivityManager.startTrip<NightmareActivityTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'Nightmare',

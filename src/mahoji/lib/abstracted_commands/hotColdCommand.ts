@@ -1,8 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 import { LootTable, resolveItems, toKMB } from 'oldschooljs';
 
-import { mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
-import { mahojiParseNumber, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export const flowerTable = new LootTable()
 	.add('Red flowers', 1, 150)
@@ -69,16 +68,12 @@ ${explanation}`
 				increment: amountWon
 			}
 		});
-		await userStatsUpdate(
-			user.id,
-			{
-				gp_hotcold: {
-					increment: amountWon
-				}
-			},
-			{}
-		);
-		await mahojiClientSettingsUpdate({
+		await user.statsUpdate({
+			gp_hotcold: {
+				increment: amountWon
+			}
+		});
+		await ClientSettings.update({
 			gp_hotcold: {
 				decrement: amountWon
 			}
@@ -99,7 +94,7 @@ ${explanation}`
 	const arrToCheck = choice === 'hot' ? hot : cold;
 	const playerDidWin = flower.name !== 'Mixed flowers' && arrToCheck.includes(flower.id);
 	const key = playerDidWin ? 'increment' : 'decrement';
-	await mahojiClientSettingsUpdate({
+	await ClientSettings.update({
 		gp_hotcold: {
 			[key]: amount
 		}
@@ -112,27 +107,19 @@ ${explanation}`
 				increment: amount * 2
 			}
 		});
-		await userStatsUpdate(
-			user.id,
-			{
-				gp_hotcold: {
-					increment: amount
-				}
-			},
-			{}
-		);
+		await user.statsUpdate({
+			gp_hotcold: {
+				increment: amount
+			}
+		});
 		embed.setDescription(`You **won** ${toKMB(amountWon)}!`).setColor(6_875_960);
 		return response;
 	}
-	await userStatsUpdate(
-		user.id,
-		{
-			gp_hotcold: {
-				decrement: amount
-			}
-		},
-		{}
-	);
+	await user.statsUpdate({
+		gp_hotcold: {
+			decrement: amount
+		}
+	});
 
 	embed.setDescription(`You lost ${toKMB(amount)}.`).setColor(15_417_396);
 	return response;

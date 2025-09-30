@@ -3,7 +3,7 @@ import { channelIsSendable, chunk, noOp, SimpleTable, sleep } from '@oldschoolgg
 import { ActionRowBuilder, type BaseMessageOptions, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Bank, toKMB } from 'oldschooljs';
 
-import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '@/mahoji/mahojiSettings.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 interface Button {
 	name: string;
@@ -153,8 +153,8 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 	sentMessage?.delete().catch(noOp);
 
 	await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived), collectionLog: false });
-	await updateClientGPTrackSetting('gp_slots', amountReceived - amount);
-	await updateGPTrackSetting('gp_slots', amountReceived - amount, user);
+	await ClientSettings.updateClientGPTrackSetting('gp_slots', amountReceived - amount);
+	await user.updateGPTrackSetting('gp_slots', amountReceived - amount);
 
 	return { content: finishContent, components: getCurrentButtons({ columnsToHide: [] }) };
 }

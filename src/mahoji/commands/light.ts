@@ -4,8 +4,6 @@ import { Bank } from 'oldschooljs';
 
 import Firemaking from '@/lib/skilling/skills/firemaking.js';
 import type { FiremakingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export const lightCommand: OSBMahojiCommand = {
 	name: 'light',
@@ -52,7 +50,7 @@ export const lightCommand: OSBMahojiCommand = {
 		// All logs take 2.4s to light, add on quarter of a second to account for banking/etc.
 		const timeToLightSingleLog = Time.Second * 2.4 + Time.Second / 4;
 
-		const maxTripLength = calcMaxTripLength(user, 'Firemaking');
+		const maxTripLength = user.calcMaxTripLength('Firemaking');
 
 		const amountOfLogsOwned = user.bank.amount(log.inputLogs);
 
@@ -77,10 +75,10 @@ export const lightCommand: OSBMahojiCommand = {
 
 		await user.transactItems({ itemsToRemove: cost });
 
-		await addSubTaskToActivityTask<FiremakingActivityTaskOptions>({
+		await ActivityManager.startTrip<FiremakingActivityTaskOptions>({
 			burnableID: log.inputLogs,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			quantity,
 			duration,
 			type: 'Firemaking'

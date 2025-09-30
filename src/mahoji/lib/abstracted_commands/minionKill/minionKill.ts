@@ -8,11 +8,8 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import findMonster from '@/lib/util/findMonster.js';
 import { generateDailyPeakIntervals } from '@/lib/util/peaks.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { newMinionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/newMinionKill.js';
 import { nexCommand } from '@/mahoji/lib/abstracted_commands/nexCommand.js';
 import { nightmareCommand } from '@/mahoji/lib/abstracted_commands/nightmareCommand.js';
@@ -88,7 +85,7 @@ export async function minionKillCommand(
 		isTryingToUseWildy: wilderness ?? false,
 		monsterKC: kcForBonus,
 		inputPVMMethod: method,
-		maxTripLength: calcMaxTripLength(user, 'MonsterKilling'),
+		maxTripLength: user.calcMaxTripLength('MonsterKilling'),
 		pkEvasionExperience: stats.pk_evasion_exp,
 		poh: await getPOH(user.id),
 		inputQuantity,
@@ -119,7 +116,7 @@ export async function minionKillCommand(
 	}
 
 	if (result.updateBank.itemCostBank.length > 0) {
-		await updateBankSetting('economyStats_PVMCost', result.updateBank.itemCostBank);
+		await ClientSettings.updateBankSetting('economyStats_PVMCost', result.updateBank.itemCostBank);
 		await trackLoot({
 			id: monster.name,
 			totalCost: result.updateBank.itemCostBank,
@@ -135,7 +132,7 @@ export async function minionKillCommand(
 	}
 
 	const { bob, usingCannon, cannonMulti, chinning, died, pkEncounters, hasWildySupplies } = result.currentTaskOptions;
-	await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
+	await ActivityManager.startTrip<MonsterActivityTaskOptions>({
 		mi: monster.id,
 		userID: user.id,
 		channelID,

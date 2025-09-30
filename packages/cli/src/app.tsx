@@ -35,8 +35,8 @@ const stages: Stage[] = [
 			[
 				['Rendering commands file', 'renderCommandsFile.ts'],
 				['Rendering monsters file', 'monstersJson.ts'],
-				['Rendering creatables file', 'creatables.ts'],
-				['Rendering skilling data files', 'dataFiles.ts']
+				['Rendering creatables file', 'creatables.ts']
+				// ['Rendering skilling data files', 'dataFiles.ts']
 			].map(script => ({
 				cmd: `pnpm tsx --tsconfig scripts/tsconfig.json scripts/${script[1]}`,
 				desc: script[0]
@@ -76,6 +76,7 @@ function runSingleCommand(cmd: string): Promise<void> {
 
 		p.stdout.on('data', d => {
 			stdout += d.toString();
+			console.log(d.toString());
 		});
 		p.stderr.on('data', d => {
 			stderr += d.toString();

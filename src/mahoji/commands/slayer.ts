@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, type User } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
 import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
@@ -16,7 +16,6 @@ import {
 	slayerStatusCommand,
 	slayerUnblockCommand
 } from '@/mahoji/lib/abstracted_commands/slayerTaskCommand.js';
-import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export const slayerCommand: OSBMahojiCommand = {
 	name: 'slayer',
@@ -100,12 +99,9 @@ export const slayerCommand: OSBMahojiCommand = {
 							name: 'unlockable',
 							description: 'Unlockable to purchase',
 							required: true,
-							autocomplete: async (value: string, user: User) => {
-								const { slayer_unlocks: myUnlocks } = await mahojiUsersSettingsFetch(user.id, {
-									slayer_unlocks: true
-								});
+							autocomplete: async (value: string, user: MUser) => {
 								const slayerUnlocks = SlayerRewardsShop.filter(
-									r => !r.item && !myUnlocks.includes(r.id)
+									r => !r.item && !user.user.slayer_unlocks.includes(r.id)
 								);
 								return slayerUnlocks
 									.filter(r =>
@@ -134,12 +130,11 @@ export const slayerCommand: OSBMahojiCommand = {
 							name: 'assignment',
 							description: 'Assignment to unblock',
 							required: true,
-							autocomplete: async (value: string, user: User) => {
-								const blockList = await mahojiUsersSettingsFetch(user.id, { slayer_blocked_ids: true });
-								if (blockList.slayer_blocked_ids.length === 0) {
+							autocomplete: async (value: string, user: MUser) => {
+								if (user.user.slayer_blocked_ids.length === 0) {
 									return [{ name: "You don't have any monsters blocked", value: '' }];
 								}
-								const blockedMonsters = blockList.slayer_blocked_ids.map(
+								const blockedMonsters = user.user.slayer_blocked_ids.map(
 									mId => Monsters.find(m => m.id === mId)!
 								);
 								return blockedMonsters
@@ -219,13 +214,12 @@ export const slayerCommand: OSBMahojiCommand = {
 							name: 'unlockable',
 							description: 'Slayer unlock to disable',
 							required: true,
-							autocomplete: async (value: string, user: User) => {
-								const mahojiUser = await mahojiUsersSettingsFetch(user.id, { slayer_unlocks: true });
+							autocomplete: async (value: string, user: MUser) => {
 								return SlayerRewardsShop.filter(
 									r =>
 										!r.item &&
 										r.canBeRemoved &&
-										mahojiUser.slayer_unlocks.includes(r.id) &&
+										user.user.slayer_unlocks.includes(r.id) &&
 										(!value
 											? true
 											: r.name.toLowerCase().includes(value) ||

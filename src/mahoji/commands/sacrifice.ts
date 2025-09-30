@@ -6,14 +6,12 @@ import { filterOption } from '@/lib/discord/index.js';
 import { cats } from '@/lib/growablePets.js';
 import minionIcons from '@/lib/minions/data/minionIcons.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
-import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 async function trackSacBank(user: MUser, bank: Bank) {
 	await Promise.all([
-		updateBankSetting('economyStats_sacrificedBank', bank),
-		userStatsBankUpdate(user, 'sacrificed_bank', bank)
+		await ClientSettings.updateBankSetting('economyStats_sacrificedBank', bank),
+		user.statsBankUpdate('sacrificed_bank', bank)
 	]);
 	const stats = await user.fetchStats({ sacrificed_bank: true });
 	return new Bank(stats.sacrificed_bank as ItemBank);

@@ -5,8 +5,6 @@ import { Bank } from 'oldschooljs';
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
 import { lmsSimCommand } from '@/lib/minions/functions/lmsSimCommand.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { getUsersLMSStats } from '@/tasks/minions/minigames/lmsActivity.js';
 
 export async function lmsCommand(
@@ -83,13 +81,13 @@ export async function lmsCommand(
 		return 'Your minion must not be busy to do an LMS trip';
 	}
 	const durationPerGame = Time.Minute * 5.5;
-	const quantity = Math.floor(calcMaxTripLength(user, 'LastManStanding') / durationPerGame);
+	const quantity = Math.floor(user.calcMaxTripLength('LastManStanding') / durationPerGame);
 	const duration = randomVariation(quantity * durationPerGame, 5);
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'lms',
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration,
 		type: 'LastManStanding',
 		quantity

@@ -4,9 +4,6 @@ import { Bank, Items } from 'oldschooljs';
 
 import { Plank } from '@/lib/skilling/skills/construction/constructables.js';
 import type { MahoganyHomesActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 interface IContract {
 	name: string;
@@ -161,7 +158,7 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 	const [quantity, itemsNeeded, xp, duration, points] = calcTrip(
 		tierData,
 		kc,
-		calcMaxTripLength(user, 'MahoganyHomes'),
+		user.calcMaxTripLength('MahoganyHomes'),
 		hasSack
 	);
 
@@ -170,11 +167,11 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 	}
 	await user.removeItemsFromBank(itemsNeeded);
 
-	updateBankSetting('construction_cost_bank', itemsNeeded);
+	await ClientSettings.updateBankSetting('construction_cost_bank', itemsNeeded);
 
-	await addSubTaskToActivityTask<MahoganyHomesActivityTaskOptions>({
+	await ActivityManager.startTrip<MahoganyHomesActivityTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		type: 'MahoganyHomes',
 		minigameID: 'mahogany_homes',
 		quantity,

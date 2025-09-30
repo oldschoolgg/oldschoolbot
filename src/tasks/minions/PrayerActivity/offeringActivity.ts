@@ -3,7 +3,6 @@ import { ItemGroups } from 'oldschooljs';
 
 import Prayer from '@/lib/skilling/skills/prayer.js';
 import type { OfferingActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export function zealOutfitBoost(user: MUser) {
 	let zealOutfitAmount = 0;
@@ -20,9 +19,9 @@ export function zealOutfitBoost(user: MUser) {
 
 export const offeringTask: MinionTask = {
 	type: 'Offering',
-	async run(data: OfferingActivityTaskOptions) {
-		const { boneID, quantity, userID, channelID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: OfferingActivityTaskOptions, { user, handleTripFinish }) {
+		const { boneID, quantity, channelID } = data;
+
 		const { zealOutfitAmount, zealOutfitChance } = zealOutfitBoost(user);
 
 		const bone = Prayer.Bones.find(bone => bone.inputId === boneID);

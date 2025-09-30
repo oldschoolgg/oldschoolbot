@@ -8,8 +8,6 @@ import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import { filterOption } from '@/lib/discord/index.js';
 import { NestBoxesTable } from '@/lib/simulation/misc.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 /**
  * - Hardcoded prices
@@ -255,18 +253,14 @@ export const sellCommand: OSBMahojiCommand = {
 		});
 
 		await Promise.all([
-			updateClientGPTrackSetting('gp_sell', totalPrice),
-			updateBankSetting('sold_items_bank', bankToSell),
-			userStatsBankUpdate(user, 'items_sold_bank', bankToSell),
-			userStatsUpdate(
-				user.id,
-				{
-					sell_gp: {
-						increment: totalPrice
-					}
-				},
-				{}
-			),
+			ClientSettings.updateClientGPTrackSetting('gp_sell', totalPrice),
+			ClientSettings.updateBankSetting('sold_items_bank', bankToSell),
+			user.statsBankUpdate('items_sold_bank', bankToSell),
+			user.statsUpdate({
+				sell_gp: {
+					increment: totalPrice
+				}
+			}),
 			prisma.botItemSell.createMany({ data: botItemSellData })
 		]);
 

@@ -6,7 +6,6 @@ import { Items, itemID, resolveItems } from 'oldschooljs';
 import { determineWoodcuttingTime } from '@/lib/skilling/functions/determineWoodcuttingTime.js';
 import Woodcutting, { type TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 
 const axes = [
 	{
@@ -223,10 +222,10 @@ export const chopCommand: OSBMahojiCommand = {
 		const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
 		const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
-		await addSubTaskToActivityTask<WoodcuttingActivityTaskOptions>({
+		await ActivityManager.startTrip<WoodcuttingActivityTaskOptions>({
 			logID: log.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			quantity: newQuantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			powerchopping: powerchop === true ? true : undefined,

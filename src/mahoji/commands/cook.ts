@@ -7,8 +7,6 @@ import Cooking, { Cookables } from '@/lib/skilling/skills/cooking/cooking.js';
 import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
 import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
 import type { CookingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { cutLeapingFishCommand } from '@/mahoji/lib/abstracted_commands/cutLeapingFishCommand.js';
 import { forestersRationCommand } from '@/mahoji/lib/abstracted_commands/forestersRationCommand.js';
 
@@ -111,7 +109,7 @@ export const cookCommand: OSBMahojiCommand = {
 		const userBank = user.bank;
 		const inputCost = new Bank(cookable.inputCookables);
 
-		const maxTripLength = calcMaxTripLength(user, 'Cooking');
+		const maxTripLength = user.calcMaxTripLength('Cooking');
 
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timeToCookSingleCookable);
@@ -137,10 +135,10 @@ export const cookCommand: OSBMahojiCommand = {
 
 		await user.removeItemsFromBank(totalCost);
 
-		await addSubTaskToActivityTask<CookingActivityTaskOptions>({
+		await ActivityManager.startTrip<CookingActivityTaskOptions>({
 			cookableID: cookable.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			quantity,
 			duration,
 			type: 'Cooking'

@@ -4,11 +4,7 @@ import { Bank, itemID, resolveItems } from 'oldschooljs';
 
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { SmeltingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export const smeltingCommand: OSBMahojiCommand = {
 	name: 'smelt',
@@ -100,13 +96,13 @@ export const smeltingCommand: OSBMahojiCommand = {
 				boosts.push('60% for coal bag');
 				timeToSmithSingleBar *= 0.625;
 			}
-			if (!userHasGracefulEquipped(user)) {
+			if (!user.hasGracefulEquipped()) {
 				timeToSmithSingleBar *= 1.075;
 				boosts.push('-7.5% penalty for not having graceful equipped.');
 			}
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Smithing');
+		const maxTripLength = user.calcMaxTripLength('Smithing');
 
 		// If no quantity provided, set it to the max.
 		if (!quantity) {
@@ -148,12 +144,12 @@ export const smeltingCommand: OSBMahojiCommand = {
 		}
 
 		await user.transactItems({ itemsToRemove: cost });
-		updateBankSetting('smithing_cost', cost);
+		await ClientSettings.updateBankSetting('smithing_cost', cost);
 
-		await addSubTaskToActivityTask<SmeltingActivityTaskOptions>({
+		await ActivityManager.startTrip<SmeltingActivityTaskOptions>({
 			barID: bar.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			quantity,
 			blastf: blast_furnace,
 			duration,

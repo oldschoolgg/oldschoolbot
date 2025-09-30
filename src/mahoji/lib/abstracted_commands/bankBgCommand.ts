@@ -4,7 +4,6 @@ import { Bank, resolveItems, toKMB } from 'oldschooljs';
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import { BitField } from '@/lib/constants.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function bankBgCommand(interaction: MInteraction, user: MUser, name: string) {
 	const bankImages = bankImageTask.backgroundImages;
@@ -132,7 +131,7 @@ export async function bankBgCommand(interaction: MInteraction, user: MUser, name
 		bankBackground: selectedImage.id
 	});
 
-	updateBankSetting('economyStats_bankBgCostBank', economyCost);
+	await ClientSettings.updateBankSetting('economyStats_bankBgCostBank', economyCost);
 
 	return `Your bank background is now **${selectedImage.name}**!`;
 }

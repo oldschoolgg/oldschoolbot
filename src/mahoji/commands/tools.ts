@@ -964,7 +964,7 @@ export const toolsCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		interaction,
 		guildID
 	}: CommandRunOptions<{
@@ -1010,24 +1010,23 @@ export const toolsCommand: OSBMahojiCommand = {
 		};
 	}>) => {
 		await interaction.defer();
-		const mahojiUser = await mUserFetch(userID);
 
 		if (options.patron) {
 			const { patron } = options;
 			if (patron.clue_gains) {
-				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return clueGains(patron.clue_gains.time, patron.clue_gains.tier, Boolean(patron.clue_gains.ironman));
 			}
 			if (patron.kc_gains) {
-				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return kcGains(patron.kc_gains.time, patron.kc_gains.monster, Boolean(patron.kc_gains.ironman));
 			}
 			if (patron.xp_gains) {
-				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill, patron.xp_gains.ironman);
 			}
 			if (patron.drystreak) {
-				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return dryStreakCommand(
 					patron.drystreak.source,
 					patron.drystreak.item,
@@ -1035,12 +1034,12 @@ export const toolsCommand: OSBMahojiCommand = {
 				);
 			}
 			if (patron.mostdrops) {
-				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return mostDrops(mahojiUser, patron.mostdrops.item, String(patron.mostdrops.filter));
+				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				return mostDrops(user, patron.mostdrops.item, String(patron.mostdrops.filter));
 			}
 			if (patron.sacrificed_bank) {
-				if (mahojiUser.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
-				const sacBank = await mahojiUser.fetchStats({ sacrificed_bank: true });
+				if (user.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
+				const sacBank = await user.fetchStats({ sacrificed_bank: true });
 				const image = await makeBankImage({
 					bank: new Bank(sacBank.sacrificed_bank as ItemBank),
 					title: 'Your Sacrificed Items'
@@ -1050,8 +1049,8 @@ export const toolsCommand: OSBMahojiCommand = {
 				};
 			}
 			if (patron.cl_bank) {
-				if (mahojiUser.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
-				const clBank = mahojiUser.cl;
+				if (user.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
+				const clBank = user.cl;
 				if (patron.cl_bank.format === 'json') {
 					const json = JSON.stringify(clBank);
 					return {
@@ -1067,12 +1066,12 @@ export const toolsCommand: OSBMahojiCommand = {
 				};
 			}
 			if (patron.minion_stats) {
-				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return minionStats(mahojiUser.user);
+				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				return minionStats(user.user);
 			}
 			if (patron.activity_export) {
-				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
-				const promise = activityExport(mahojiUser.user);
+				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				const promise = activityExport(user.user);
 				await interaction.confirmation(
 					'I will send a file containing ALL of your activities, intended for advanced users who want to use the data. Anyone in this channel will be able to see and download the file, are you sure you want to do this?'
 				);
@@ -1083,7 +1082,7 @@ export const toolsCommand: OSBMahojiCommand = {
 		if (options.user) {
 			if (options.user.mypets) {
 				const b = new Bank();
-				for (const [pet, qty] of Object.entries(mahojiUser.user.pets as ItemBank)) {
+				for (const [pet, qty] of Object.entries(user.user.pets as ItemBank)) {
 					const petObj = pets.find(i => i.id === Number(pet));
 					if (!petObj) continue;
 					b.add(petObj.name, qty);
@@ -1098,22 +1097,18 @@ export const toolsCommand: OSBMahojiCommand = {
 
 		if (options.stash_units) {
 			if (options.stash_units.view) {
-				return stashUnitViewCommand(
-					mahojiUser,
-					options.stash_units.view.unit,
-					options.stash_units.view.not_filled
-				);
+				return stashUnitViewCommand(user, options.stash_units.view.unit, options.stash_units.view.not_filled);
 			}
-			if (options.stash_units.build_all) return stashUnitBuildAllCommand(mahojiUser);
-			if (options.stash_units.fill_all) return stashUnitFillAllCommand(mahojiUser, mahojiUser.user);
+			if (options.stash_units.build_all) return stashUnitBuildAllCommand(user);
+			if (options.stash_units.fill_all) return stashUnitFillAllCommand(user);
 			if (options.stash_units.unfill) {
-				return stashUnitUnfillCommand(mahojiUser, options.stash_units.unfill.unit);
+				return stashUnitUnfillCommand(user, options.stash_units.unfill.unit);
 			}
 		}
 		if (options.user?.temp_cl) {
 			if (options.user.temp_cl.reset === true) {
 				await interaction.confirmation('Are you sure you want to reset your temporary CL?');
-				await mahojiUser.update({
+				await user.update({
 					temp_cl: {},
 					last_temp_cl_reset: new Date()
 				});
@@ -1121,7 +1116,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			}
 			const lastReset = await prisma.user.findUnique({
 				where: {
-					id: mahojiUser.id
+					id: user.id
 				},
 				select: {
 					last_temp_cl_reset: true

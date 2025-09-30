@@ -24,10 +24,7 @@ import { QuestID } from '@/lib/minions/data/quests.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { ColoTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 function combinedChance(percentages: number[]): number {
 	const failureProbabilities = percentages.map(p => (100 - p) / 100);
@@ -641,8 +638,8 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	}
 	messages.push(`Removed ${realCost}`);
 
-	await updateBankSetting('colo_cost', realCost);
-	await userStatsBankUpdate(user, 'colo_cost', realCost);
+	await ClientSettings.updateBankSetting('colo_cost', realCost);
+	await user.statsBankUpdate('colo_cost', realCost);
 	await trackLoot({
 		totalCost: realCost,
 		id: 'colo',
@@ -666,7 +663,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		messages.push(degradeResults);
 	}
 
-	await addSubTaskToActivityTask<ColoTaskOptions>({
+	await ActivityManager.startTrip<ColoTaskOptions>({
 		userID: user.id,
 		channelID,
 		duration: res.realDuration,

@@ -65,7 +65,6 @@ export async function runCommand(options: RunCommandArgs): Promise<null | Comman
 		return null;
 	}
 
-	const error: Error | null = null;
 	let inhibited = false;
 	try {
 		const inhibitedReason = await preCommand({
@@ -117,7 +116,6 @@ export async function runCommand(options: RunCommandArgs): Promise<null | Comman
 			await postCommand({
 				command,
 				args,
-				error,
 				isContinue: isContinue ?? false,
 				inhibited,
 				continueDeltaMillis,

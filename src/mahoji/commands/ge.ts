@@ -1,7 +1,7 @@
 import { evalMathExpression, formatDuration, makeComponents, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
 import type { GEListing, GETransaction } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
+import { Items, toKMB } from 'oldschooljs';
 
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { PerkTier } from '@/lib/constants.js';
@@ -11,7 +11,6 @@ import { marketPricemap } from '@/lib/marketPrices.js';
 import { createChart } from '@/lib/util/chart.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
-import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export type GEListingWithTransactions = GEListing & {
 	buyTransactions: GETransaction[];
@@ -127,11 +126,8 @@ export const geCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					description: 'The item you want to sell.',
 					required: true,
-					autocomplete: async (value, { id }) => {
-						const raw = await mahojiUsersSettingsFetch(id, { bank: true });
-						const bank = new Bank(raw.bank as ItemBank);
-
-						return bank
+					autocomplete: async (value, user) => {
+						return user.bank
 							.items()
 							.filter(i => i[0].tradeable_on_ge)
 							.filter(i => (!value ? true : i[0].name.toLowerCase().includes(value.toLowerCase())))

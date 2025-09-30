@@ -1,6 +1,6 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { AutoFarmFilterEnum, type CropUpgradeType } from '@prisma/client';
-import { ApplicationCommandOptionType, type User } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import TitheFarmBuyables from '@/lib/data/buyables/titheFarmBuyables.js';
 import { superCompostables } from '@/lib/data/filterables.js';
@@ -42,7 +42,7 @@ export const farmingCommand: OSBMahojiCommand = {
 					name: 'plant_name',
 					description: 'The plant you want to plant.',
 					required: true,
-					autocomplete: async (value: string, user: User) => {
+					autocomplete: async (value: string, user: MUser) => {
 						const mUser = await mUserFetch(user.id);
 						const farmingLevel = mUser.skillLevel('farming');
 						return Farming.Plants.filter(i => farmingLevel >= i.level)

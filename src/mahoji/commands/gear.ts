@@ -16,7 +16,6 @@ import {
 	gearUnequipCommand,
 	gearViewCommand
 } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
-import { getMahojiBank, mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 const gearValidationChecks = new Set();
 
@@ -111,9 +110,8 @@ export const gearCommand: OSBMahojiCommand = {
 					description: 'Equip a pet.',
 					required: false,
 					autocomplete: async (value, user) => {
-						const bank = getMahojiBank(await mahojiUsersSettingsFetch(user.id, { bank: true }));
 						return allPetIDs
-							.filter(i => bank.has(i))
+							.filter(i => user.bank.has(i))
 							.map(i => Items.itemNameFromId(i)!)
 							.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i, value: i }));

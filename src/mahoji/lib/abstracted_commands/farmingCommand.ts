@@ -7,10 +7,6 @@ import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { Plant } from '@/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userHasGracefulEquipped, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number): string | null {
 	if (plant.needsChopForHarvest && plant.treeWoodcuttingLevel && wcLevel < plant.treeWoodcuttingLevel) {
@@ -66,7 +62,7 @@ export async function harvestCommand({
 	// 1.5 mins per patch --> ex: 10 patches = 15 mins
 	let duration = patch.lastQuantity * (timePerPatchTravel + timePerPatchHarvest);
 
-	if (userHasGracefulEquipped(user)) {
+	if (user.hasGracefulEquipped()) {
 		boostStr.push('10% time for Graceful');
 		duration *= 0.9;
 	}
@@ -76,7 +72,7 @@ export async function harvestCommand({
 		duration *= 0.9;
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'Farming');
+	const maxTripLength = user.calcMaxTripLength('Farming');
 
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
@@ -97,7 +93,7 @@ It'll take around ${formatDuration(duration)} to finish.
 
 ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 
-	await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
+	await ActivityManager.startTrip<FarmingActivityTaskOptions>({
 		plantsName: patch.lastPlanted,
 		patchType: patches[patch.patchName],
 		userID: user.id,
@@ -178,7 +174,7 @@ export async function farmingPlantCommand({
 		return 'There are no available patches to you.';
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'Farming');
+	const maxTripLength = user.calcMaxTripLength('Farming');
 
 	// If no quantity provided, set it to the max PATCHES available.
 	const maxCanDo = Math.floor(maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest));
@@ -202,7 +198,7 @@ export async function farmingPlantCommand({
 	}
 
 	// Reduce time if user has graceful equipped
-	if (userHasGracefulEquipped(user)) {
+	if (user.hasGracefulEquipped()) {
 		boostStr.push('10% time for Graceful');
 		duration *= 0.9;
 	}
@@ -262,7 +258,7 @@ export async function farmingPlantCommand({
 	if (!user.owns(cost)) return `You don't own ${cost}.`;
 	await user.transactItems({ itemsToRemove: cost });
 
-	updateBankSetting('farming_cost_bank', cost);
+	await ClientSettings.updateBankSetting('farming_cost_bank', cost);
 	// If user does not have something already planted, just plant the new seeds.
 	if (!patchType.patchPlanted) {
 		infoStr.unshift(`${user.minionName} is now planting ${quantity}x ${plant.name}.`);
@@ -291,13 +287,13 @@ export async function farmingPlantCommand({
 		}
 	});
 
-	await userStatsBankUpdate(user, 'farming_plant_cost_bank', cost);
+	await user.statsBankUpdate('farming_plant_cost_bank', cost);
 
-	await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
+	await ActivityManager.startTrip<FarmingActivityTaskOptions>({
 		plantsName: plant.name,
 		patchType: patches[plant.seedType],
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		upgradeType,
 		payment: didPay,

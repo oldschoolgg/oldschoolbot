@@ -6,9 +6,6 @@ import { Bank, Monsters } from 'oldschooljs';
 import { TokkulShopItems } from '@/lib/data/buyables/tokkulBuyables.js';
 import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { TokkulShopOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const { TzTokJad } = Monsters;
 
@@ -110,7 +107,7 @@ export const tksCommand: OSBMahojiCommand = {
 
 		// User bank, maxTripLength, quantity given
 		const { bank } = user;
-		const maxTripLength = calcMaxTripLength(user, activity_type_enum.TokkulShop);
+		const maxTripLength = user.calcMaxTripLength(activity_type_enum.TokkulShop);
 		const quantity = options.buy?.quantity ?? options.sell?.quantity ?? 1;
 		const cost = new Bank();
 		const loot = new Bank();
@@ -180,12 +177,12 @@ export const tksCommand: OSBMahojiCommand = {
 
 		// Remove the cost, and update bank settings
 		await user.transactItems({ itemsToRemove: cost });
-		await updateBankSetting('tks_cost', cost);
+		await ClientSettings.updateBankSetting('tks_cost', cost);
 
 		// Tokkul shop activity
-		await addSubTaskToActivityTask<TokkulShopOptions>({
+		await ActivityManager.startTrip<TokkulShopOptions>({
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			quantity: loot.items()[0][1],
 			type: 'TokkulShop',
 			duration,

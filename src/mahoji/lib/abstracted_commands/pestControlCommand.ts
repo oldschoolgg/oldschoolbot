@@ -3,10 +3,7 @@ import { Bank, Items } from 'oldschooljs';
 
 import { userhasDiaryTier, WesternProv } from '@/lib/diaries.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { hasSkillReqs, isValidSkill } from '@/lib/util/smallUtils.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const itemBoosts = [
 	[Items.resolveFullItems(['Abyssal whip', 'Abyssal tentacle']), 12],
@@ -165,15 +162,11 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 		}
 		await user.transactItems({ itemsToRemove: new Bank().add(buyable.inputItem.id) });
 	}
-	await userStatsUpdate(
-		user.id,
-		{
-			pest_control_points: {
-				decrement: cost
-			}
-		},
-		{}
-	);
+	await user.statsUpdate({
+		pest_control_points: {
+			decrement: cost
+		}
+	});
 	const loot = new Bank().add(item.id);
 	await user.transactItems({ itemsToAdd: loot, collectionLog: true });
 
@@ -187,7 +180,7 @@ export async function pestControlStartCommand(user: MUser, channelID: string) {
 	}
 
 	let gameLength = Time.Minute * 2.8;
-	const maxLength = calcMaxTripLength(user, 'PestControl');
+	const maxLength = user.calcMaxTripLength('PestControl');
 	const gear = user.gear.melee;
 
 	const boosts = [];
@@ -205,9 +198,9 @@ export async function pestControlStartCommand(user: MUser, channelID: string) {
 
 	const duration = quantity * gameLength;
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration,
 		type: 'PestControl',
 		quantity,
@@ -250,15 +243,11 @@ export async function pestControlXPCommand(interaction: MInteraction, user: MUse
 	await interaction.confirmation(
 		`Are you sure you want to spend ${amount} points on ${xpPerPoint * amount} ${toTitleCase(skillName)} XP?`
 	);
-	await userStatsUpdate(
-		user.id,
-		{
-			pest_control_points: {
-				decrement: amount
-			}
-		},
-		{}
-	);
+	await user.statsUpdate({
+		pest_control_points: {
+			decrement: amount
+		}
+	});
 	const xpRes = await user.addXP({
 		skillName,
 		amount: xpPerPoint * amount,

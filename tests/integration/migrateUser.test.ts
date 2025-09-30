@@ -44,7 +44,6 @@ import type { Skills } from '../../src/lib/types/index.js';
 import { gearEquipMultiImpl } from '../../src/lib/util/equipMulti.js';
 import { migrateUser } from '../../src/lib/util/migrateUser.js';
 import { tradePlayerItems } from '../../src/lib/util/tradePlayerItems.js';
-import { updateBankSetting } from '../../src/lib/util/updateBankSetting.js';
 import { isGroupActivity } from '../../src/lib/util.js';
 import { pinTripCommand } from '../../src/mahoji/commands/config.js';
 import { geCommand } from '../../src/mahoji/commands/ge.js';
@@ -55,7 +54,6 @@ import {
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand
 } from '../../src/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
-import { updateClientGPTrackSetting, userStatsUpdate } from '../../src/mahoji/mahojiSettings.js';
 import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity.js';
 import type { TestUser } from './util.js';
 import { createTestUser, mockClient, mockedId } from './util.js';
@@ -901,18 +899,14 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'User stats',
 		cmd: async user => {
-			await userStatsUpdate(
-				user.id,
-				{
-					tithe_farms_completed: {
-						increment: 1
-					},
-					tithe_farm_points: {
-						increment: 666
-					}
+			await user.statsUpdate({
+				tithe_farms_completed: {
+					increment: 1
 				},
-				{}
-			);
+				tithe_farm_points: {
+					increment: 666
+				}
+			});
 		}
 	},
 	{
@@ -936,18 +930,14 @@ const allTableCommands: TestCommand[] = [
 
 			const stats = await user.fetchStats({ items_sold_bank: true });
 			await Promise.all([
-				updateClientGPTrackSetting('gp_sell', totalPrice),
-				updateBankSetting('sold_items_bank', bankToSell),
-				userStatsUpdate(
-					user.id,
-					{
-						items_sold_bank: new Bank(stats.items_sold_bank as ItemBank).add(bankToSell).toJSON(),
-						sell_gp: {
-							increment: totalPrice
-						}
-					},
-					{}
-				),
+				ClientSettings.updateClientGPTrackSetting('gp_sell', totalPrice),
+				ClientSettings.updateBankSetting('sold_items_bank', bankToSell),
+				user.statsUpdate({
+					items_sold_bank: new Bank(stats.items_sold_bank as ItemBank).add(bankToSell).toJSON(),
+					sell_gp: {
+						increment: totalPrice
+					}
+				}),
 				global.prisma!.botItemSell.createMany({ data: botItemSellData })
 			]);
 		}
@@ -965,7 +955,7 @@ const allTableCommands: TestCommand[] = [
 		name: 'Stash Units',
 		cmd: async user => {
 			await stashUnitBuildAllCommand(user);
-			await stashUnitFillAllCommand(user, user.user);
+			await stashUnitFillAllCommand(user);
 		}
 	},
 	{

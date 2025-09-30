@@ -2,7 +2,6 @@ import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { degradeableItems } from '@/lib/degradeableItems.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export async function degradeableItemsCommand(
@@ -60,7 +59,7 @@ ${degradeableItems
 	await user.update({
 		[item.settingsKey]: newCharges
 	});
-	await updateBankSetting('degraded_items_cost', cost);
+	await ClientSettings.updateBankSetting('degraded_items_cost', cost);
 
 	return `You added **${cost}** to your ${item.item.name}, it now has ${newCharges} charges.`;
 }

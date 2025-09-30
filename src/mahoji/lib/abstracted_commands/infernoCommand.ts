@@ -12,8 +12,6 @@ import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import { PercentCounter } from '@/lib/structures/PercentCounter.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { InfernoOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const minimumRangeItems = Items.resolveFullItems([
 	'Amulet of fury',
@@ -468,9 +466,9 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 		};
 	}
 
-	await addSubTaskToActivityTask<InfernoOptions>({
+	await ActivityManager.startTrip<InfernoOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration: realDuration,
 		type: 'Inferno',
 		zukDeathChance: zukDeathChance.value,
@@ -482,7 +480,7 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 		cost: realCost.toJSON()
 	});
 
-	updateBankSetting('inferno_cost', realCost);
+	await ClientSettings.updateBankSetting('inferno_cost', realCost);
 
 	return {
 		content: `

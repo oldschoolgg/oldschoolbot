@@ -15,7 +15,6 @@ import {
 } from '@/lib/slayer/slayerUtil.js';
 import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
 import { logError } from '@/lib/util/logError.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 function getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
 	if (assignedTask) {
@@ -152,7 +151,7 @@ export async function slayerNewTaskCommand({
 				quantity_remaining: 0
 			}
 		});
-		await userStatsUpdate(user.id, { [taskStreakKey]: 0 }, {});
+		await user.statsUpdate({ [taskStreakKey]: 0 });
 
 		const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
 		const commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);

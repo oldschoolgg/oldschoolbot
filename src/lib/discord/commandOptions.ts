@@ -92,7 +92,7 @@ export type CommandOption = {
 			choices?: { name: string; value: string }[];
 			autocomplete?: (
 				value: string,
-				user: User,
+				user: MUser,
 				member?: GuildMember
 			) => Promise<APIApplicationCommandOptionChoice[]>;
 	  }
@@ -101,7 +101,7 @@ export type CommandOption = {
 			choices?: { name: string; value: number }[];
 			autocomplete?: (
 				value: number,
-				user: User,
+				user: MUser,
 				member?: GuildMember
 			) => Promise<APIApplicationCommandOptionChoice[]>;
 			min_value?: number;

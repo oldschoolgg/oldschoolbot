@@ -6,15 +6,12 @@ import type { GiantsFoundryBank } from '@/lib/giantsFoundry.js';
 import { encodeGiantWeapons, generateRandomGiantWeapon, giantWeaponName } from '@/lib/giantsFoundry.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import type { GiantsFoundryActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const giantsFoundryTask: MinionTask = {
 	type: 'GiantsFoundry',
-	async run(data: GiantsFoundryActivityTaskOptions) {
-		const { quantity, userID, channelID, duration, metalScore } = data;
-		const user = await mUserFetch(userID);
+	async run(data: GiantsFoundryActivityTaskOptions, { user, handleTripFinish }) {
+		const { quantity, channelID, duration, metalScore } = data;
+
 		const userSmithingLevel = user.skillsAsLevels.smithing;
 		const boosts = [];
 		let avgMouldBonus = 37.667;
@@ -54,16 +51,12 @@ export const giantsFoundryTask: MinionTask = {
 			duration
 		});
 
-		await userStatsUpdate(
-			user.id,
-			{
-				foundry_reputation: {
-					increment: reputationReceived
-				},
-				gf_weapons_made: newWeapons
+		await user.statsUpdate({
+			foundry_reputation: {
+				increment: reputationReceived
 			},
-			{}
-		);
+			gf_weapons_made: newWeapons
+		});
 
 		await user.incrementMinigameScore('giants_foundry', quantity);
 
@@ -81,7 +74,7 @@ export const giantsFoundryTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		updateBankSetting('gf_loot', loot);
+		await ClientSettings.updateBankSetting('gf_loot', loot);
 		await trackLoot({
 			id: 'giants_foundry',
 			type: 'Minigame',
@@ -97,7 +90,7 @@ export const giantsFoundryTask: MinionTask = {
 				}
 			]
 		});
-		await userStatsBankUpdate(user, 'gf_loot', loot);
+		await user.statsBankUpdate('gf_loot', loot);
 
 		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
 	}

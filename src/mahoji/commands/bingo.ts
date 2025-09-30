@@ -14,7 +14,7 @@ import {
 	uniqueArr
 } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import { ApplicationCommandOptionType, bold, type User, userMention } from 'discord.js';
+import { ApplicationCommandOptionType, bold, userMention } from 'discord.js';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
@@ -30,7 +30,7 @@ import type { StoredBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { generateTileName, getAllTileItems, isGlobalTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';
 
-const bingoAutocomplete = async (value: string, user: User) => {
+const bingoAutocomplete = async (value: string, user: MUser) => {
 	const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
 	return bingos
 		.map(i => new BingoManager(i))
@@ -267,7 +267,7 @@ export const bingoCommand: OSBMahojiCommand = {
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
-					autocomplete: async (value: string, _: User, member) => {
+					autocomplete: async (value: string, _: MUser, member) => {
 						if (!member || !member.guild) return [];
 						const bingos = await prisma.bingo.findMany({
 							where: {
@@ -326,7 +326,7 @@ export const bingoCommand: OSBMahojiCommand = {
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
-					autocomplete: async (value: string, user: User) => {
+					autocomplete: async (value: string, user: MUser) => {
 						const bingos = await prisma.bingo.findMany({
 							where: {
 								OR: [
@@ -440,7 +440,7 @@ export const bingoCommand: OSBMahojiCommand = {
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
-					autocomplete: async (value: string, user: User) => {
+					autocomplete: async (value: string, user: MUser) => {
 						const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
 						return bingos
 							.map(i => new BingoManager(i))
@@ -474,7 +474,7 @@ export const bingoCommand: OSBMahojiCommand = {
 					name: 'remove_tile',
 					description: 'Remove a tile from your bingo.',
 					required: false,
-					autocomplete: async (value: string, user: User) => {
+					autocomplete: async (value: string, user: MUser) => {
 						const bingos = await prisma.bingo.findMany({
 							where: {
 								OR: [
@@ -533,7 +533,7 @@ export const bingoCommand: OSBMahojiCommand = {
 					name: 'bingo',
 					description: 'The bingo to check your items of.',
 					required: true,
-					autocomplete: async (value: string, user: User) => {
+					autocomplete: async (value: string, user: MUser) => {
 						const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
 						return bingos
 							.map(i => new BingoManager(i))

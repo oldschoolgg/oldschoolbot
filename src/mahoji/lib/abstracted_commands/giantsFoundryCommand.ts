@@ -5,10 +5,6 @@ import { type GiantsFoundryBank, TOTAL_GIANT_WEAPONS } from '@/lib/giantsFoundry
 import { trackLoot } from '@/lib/lootTrack.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { GiantsFoundryActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const giantsFoundryAlloys = [
 	{
@@ -189,7 +185,7 @@ export async function giantsFoundryStartCommand(
 	const boosts = [];
 	timePerSection *= (100 - setBonus) / 100;
 	boosts.push(`${setBonus}% faster for Smiths' Uniform item/items`);
-	const maxTripLength = calcMaxTripLength(user, 'GiantsFoundry');
+	const maxTripLength = user.calcMaxTripLength('GiantsFoundry');
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / (alloy.sections * timePerSection));
 	}
@@ -209,7 +205,7 @@ export async function giantsFoundryStartCommand(
 	}
 
 	await user.removeItemsFromBank(totalCost);
-	updateBankSetting('gf_cost', totalCost);
+	await ClientSettings.updateBankSetting('gf_cost', totalCost);
 	await trackLoot({
 		id: 'giants_foundry',
 		type: 'Minigame',
@@ -222,14 +218,14 @@ export async function giantsFoundryStartCommand(
 			}
 		]
 	});
-	await userStatsBankUpdate(user, 'gf_cost', totalCost);
+	await user.statsBankUpdate('gf_cost', totalCost);
 
-	await addSubTaskToActivityTask<GiantsFoundryActivityTaskOptions>({
+	await ActivityManager.startTrip<GiantsFoundryActivityTaskOptions>({
 		quantity,
 		userID: user.id,
 		duration,
 		type: 'GiantsFoundry',
-		channelID: channelID.toString(),
+		channelID,
 		minigameID: 'giants_foundry',
 		alloyID: alloy.id,
 		metalScore: alloy.metalScore
@@ -282,15 +278,11 @@ export async function giantsFoundryShopCommand(
 		itemsToAdd: new Bank(shopItem.output).multiply(quantity)
 	});
 
-	const { foundry_reputation: newRep } = await userStatsUpdate(
-		user.id,
-		{
-			foundry_reputation: {
-				decrement: cost
-			}
-		},
-		{ foundry_reputation: true }
-	);
+	const { foundry_reputation: newRep } = await user.statsUpdate({
+		foundry_reputation: {
+			decrement: cost
+		}
+	});
 
 	return `You successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.cost * quantity).toLocaleString()} Foundry Reputation.\nYou now have ${newRep} Foundry Reputation left.`;
 }

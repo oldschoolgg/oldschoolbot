@@ -211,6 +211,7 @@ export const raidCommand: OSBMahojiCommand = {
 
 		if (cox?.start) {
 			return coxCommand(
+				interaction,
 				channelID,
 				user,
 				cox.start.type,
@@ -221,6 +222,7 @@ export const raidCommand: OSBMahojiCommand = {
 		}
 		if (tob?.start) {
 			return tobStartCommand(
+				interaction,
 				user,
 				channelID,
 				Boolean(tob.start.hard_mode),
@@ -232,6 +234,7 @@ export const raidCommand: OSBMahojiCommand = {
 
 		if (options.toa?.start) {
 			return toaStartCommand(
+				interaction,
 				user,
 				Boolean(options.toa.start.solo),
 				channelID,

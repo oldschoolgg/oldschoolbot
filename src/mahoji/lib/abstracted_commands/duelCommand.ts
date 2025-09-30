@@ -11,7 +11,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
-import { mahojiParseNumber, updateClientGPTrackSetting, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 async function checkBal(user: MUser, amount: number) {
 	return user.GP >= amount;
@@ -109,26 +109,21 @@ export async function duelCommand(
 		const winningAmount = amount * 2;
 		const tax = winningAmount - Math.floor(winningAmount * taxRate);
 		const dividedAmount = tax / 1_000_000;
-		await updateClientGPTrackSetting('economyStats_duelTaxBank', Math.floor(Math.round(dividedAmount * 100) / 100));
+		await ClientSettings.updateClientGPTrackSetting(
+			'economyStats_duelTaxBank',
+			Math.floor(Math.round(dividedAmount * 100) / 100)
+		);
 
-		await userStatsUpdate(
-			winner.id,
-			{
-				duel_wins: {
-					increment: 1
-				}
-			},
-			{}
-		);
-		await userStatsUpdate(
-			loser.id,
-			{
-				duel_losses: {
-					increment: 1
-				}
-			},
-			{}
-		);
+		await winner.statsUpdate({
+			duel_wins: {
+				increment: 1
+			}
+		});
+		await loser.statsUpdate({
+			duel_losses: {
+				increment: 1
+			}
+		});
 
 		const loot = new Bank().add('Coins', winningAmount - tax);
 		await winner.addItemsToBank({ items: loot, collectionLog: false });

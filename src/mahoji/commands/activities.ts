@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, type User } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import { ownedItemOption } from '@/lib/discord/index.js';
 import { Planks } from '@/lib/minions/data/planks.js';
@@ -171,10 +171,9 @@ export const activitiesCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					name: 'name',
 					description: 'The name of the quest (optional).',
-					autocomplete: async (_value: string, user: User) => {
-						const mUser = await mUserFetch(user.id);
+					autocomplete: async (_value: string, user: MUser) => {
 						let list = quests
-							.filter(i => !mUser.user.finished_quest_ids.includes(i.id))
+							.filter(i => !user.user.finished_quest_ids.includes(i.id))
 							.map(i => ({ name: i.name, value: i.name }));
 						if (list.length === 0) {
 							list = quests.map(i => ({ name: `${i.name} (completed)`, value: i.name }));

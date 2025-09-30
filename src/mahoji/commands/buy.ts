@@ -8,11 +8,10 @@ import { quests } from '@/lib/minions/data/quests.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { buyFossilIslandNotes } from '@/mahoji/lib/abstracted_commands/buyFossilIslandNotes.js';
 import { buyingTripCommand } from '@/mahoji/lib/abstracted_commands/buyingTripCommand.js';
 import { buyKitten } from '@/mahoji/lib/abstracted_commands/buyKitten.js';
-import { mahojiParseNumber, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 const allBuyablesAutocomplete = [
 	...Buyables.map(b => ({ name: b.name })),
@@ -172,9 +171,9 @@ export const buyCommand: OSBMahojiCommand = {
 
 		const currentStats = await user.fetchStats({ buy_cost_bank: true, buy_loot_bank: true });
 		await Promise.all([
-			updateBankSetting('buy_cost_bank', totalCost),
-			updateBankSetting('buy_loot_bank', outItems),
-			userStatsUpdate(user.id, {
+			await ClientSettings.updateBankSetting('buy_cost_bank', totalCost),
+			await ClientSettings.updateBankSetting('buy_loot_bank', outItems),
+			user.statsUpdate({
 				buy_cost_bank: totalCost
 					.clone()
 					.add(currentStats.buy_cost_bank as ItemBank)

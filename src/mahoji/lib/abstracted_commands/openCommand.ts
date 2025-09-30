@@ -9,7 +9,7 @@ import type { UnifiedOpenable } from '@/lib/openables.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting } from '@/mahoji/mahojiSettings.js';
+import { addToOpenablesScores, patronMsg } from '@/mahoji/mahojiSettings.js';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -136,7 +136,7 @@ async function finalizeOpening({
 	});
 
 	if (loot.has('Coins')) {
-		await updateClientGPTrackSetting('gp_open', loot.amount('Coins'));
+		await ClientSettings.updateClientGPTrackSetting('gp_open', loot.amount('Coins'));
 	}
 
 	const openedStr = openables

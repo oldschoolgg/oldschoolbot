@@ -8,7 +8,6 @@ import { logError } from '@/lib/util/logError.js';
 
 export const fishingTask: MinionTask = {
 	type: 'Fishing',
-	isNew: true,
 	async run(data: FishingActivityTaskOptions, { handleTripFinish, user }) {
 		const { fishID, quantity, channelID } = data;
 		const fish = Fishing.Fishes.find(fish => fish.id === fishID)!;

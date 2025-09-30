@@ -2,9 +2,7 @@ import { formatDuration, sumArr, Time } from '@oldschoolgg/toolkit';
 
 import { MAX_GLOBAL_QP, MAX_QP, quests } from '@/lib/minions/data/quests.js';
 import type { ActivityTaskOptionsWithNoChanges, SpecificQuestOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function questCommand(user: MUser, channelID: string, name?: string) {
 	if (!user.hasMinion) {
@@ -56,7 +54,7 @@ export async function questCommand(user: MUser, channelID: string, name?: string
 
 		const duration = quest.calcTime(user);
 
-		await addSubTaskToActivityTask<SpecificQuestOptions>({
+		await ActivityManager.startTrip<SpecificQuestOptions>({
 			type: 'SpecificQuest',
 			duration,
 			userID: user.id,
@@ -86,12 +84,12 @@ export async function questCommand(user: MUser, channelID: string, name?: string
 
 	let duration = Time.Minute * 30;
 
-	if (userHasGracefulEquipped(user)) {
+	if (user.hasGracefulEquipped()) {
 		duration *= 0.9;
 		boosts.push('10% for Graceful');
 	}
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithNoChanges>({
 		type: 'Questing',
 		duration,
 		userID: user.id,

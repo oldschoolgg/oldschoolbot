@@ -13,8 +13,6 @@ import Mining from '@/lib/skilling/skills/mining.js';
 import type { Ore } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { motherlodeMineCommand } from '@/mahoji/lib/abstracted_commands/motherlodeMineCommand.js';
 
@@ -239,16 +237,16 @@ export const mineCommand: OSBMahojiCommand = {
 		const res = determineMiningTrip({
 			gearBank: user.gearBank,
 			ore,
-			maxTripLength: calcMaxTripLength(user, 'Mining'),
+			maxTripLength: user.calcMaxTripLength('Mining'),
 			isPowermining: !!powermine,
 			quantityInput: quantity,
 			hasKaramjaMedium
 		});
 
-		await addSubTaskToActivityTask<MiningActivityTaskOptions>({
+		await ActivityManager.startTrip<MiningActivityTaskOptions>({
 			oreID: ore.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			quantity: res.quantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			powermine: res.isPowermining,

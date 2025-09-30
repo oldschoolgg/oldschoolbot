@@ -16,8 +16,7 @@ import {
 	type Guild,
 	type HexColorString,
 	inlineCode,
-	resolveColor,
-	type User
+	resolveColor
 } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
@@ -38,7 +37,7 @@ import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { allCommands } from '@/mahoji/commands/allCommands.js';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '@/mahoji/guildSettings.js';
-import { mahojiUsersSettingsFetch, patronMsg } from '@/mahoji/mahojiSettings.js';
+import { patronMsg } from '@/mahoji/mahojiSettings.js';
 
 interface UserConfigToggle {
 	name: string;
@@ -554,10 +553,9 @@ async function handleCommandEnable(
 }
 
 async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'list' | 'help', option?: string) {
-	const settings = await mahojiUsersSettingsFetch(user.id, { combat_options: true });
 	if (!command || (command && command === 'list')) {
 		// List enabled combat options:
-		const cbOpts = settings.combat_options.map(o => CombatOptionsArray.find(coa => coa?.id === o)?.name);
+		const cbOpts = user.user.combat_options.map(o => CombatOptionsArray.find(coa => coa?.id === o)?.name);
 		return `Your current combat options are:\n${cbOpts.join('\n')}\n\nTry: \`/config user combat_options help\``;
 	}
 
@@ -572,7 +570,7 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 	);
 	if (!newcbopt) return 'Cannot find matching option. Try: `/config user combat_options help`';
 
-	const currentStatus = settings.combat_options.includes(newcbopt.id);
+	const currentStatus = user.user.combat_options.includes(newcbopt.id);
 
 	const nextBool = command !== 'remove';
 
@@ -580,29 +578,30 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 		return `"${newcbopt.name}" is already ${currentStatus ? 'enabled' : 'disabled'} for you.`;
 	}
 
+	let combatOptions = [...user.user.combat_options];
 	// If enabling Ice Barrage, make sure burst isn't also enabled:
 	if (
 		nextBool &&
 		newcbopt.id === CombatOptionsEnum.AlwaysIceBarrage &&
-		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBurst)
+		combatOptions.includes(CombatOptionsEnum.AlwaysIceBurst)
 	) {
-		settings.combat_options = removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBurst);
+		combatOptions = removeFromArr(combatOptions, CombatOptionsEnum.AlwaysIceBurst);
 	}
 	// If enabling Ice Burst, make sure barrage isn't also enabled:
 	if (
 		nextBool &&
 		newcbopt.id === CombatOptionsEnum.AlwaysIceBurst &&
-		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBarrage)
+		combatOptions.includes(CombatOptionsEnum.AlwaysIceBarrage)
 	) {
-		settings.combat_options = removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBarrage);
+		combatOptions = removeFromArr(combatOptions, CombatOptionsEnum.AlwaysIceBarrage);
 	}
-	if (nextBool && !settings.combat_options.includes(newcbopt.id)) {
+	if (nextBool && !combatOptions.includes(newcbopt.id)) {
 		await user.update({
-			combat_options: [...settings.combat_options, newcbopt.id]
+			combat_options: [...combatOptions, newcbopt.id]
 		});
-	} else if (!nextBool && settings.combat_options.includes(newcbopt.id)) {
+	} else if (!nextBool && combatOptions.includes(newcbopt.id)) {
 		await user.update({
-			combat_options: removeFromArr(settings.combat_options, newcbopt.id)
+			combat_options: removeFromArr(combatOptions, newcbopt.id)
 		});
 	} else {
 		return 'Error processing command. This should never happen, please report bug.';
@@ -959,11 +958,10 @@ export const configCommand: OSBMahojiCommand = {
 							name: 'remove',
 							description: 'Remove an item from your favorite birdhouse seeds.',
 							required: false,
-							autocomplete: async (value: string, user: User) => {
-								const mUser = await mahojiUsersSettingsFetch(user.id, { favorite_bh_seeds: true });
+							autocomplete: async (value: string, user: MUser) => {
 								return birdhouseSeeds
 									.filter(i => {
-										if (!mUser.favorite_bh_seeds.includes(i.item.id)) return false;
+										if (!user.user.favorite_bh_seeds.includes(i.item.id)) return false;
 										return !value ? true : stringMatches(i.item.name, value);
 									})
 									.map(i => ({
@@ -1004,10 +1002,9 @@ export const configCommand: OSBMahojiCommand = {
 							name: 'remove',
 							description: 'Remove an item from your favorite food.',
 							required: false,
-							autocomplete: async (value: string, user: User) => {
-								const mUser = await mahojiUsersSettingsFetch(user.id, { favorite_food: true });
+							autocomplete: async (value: string, user: MUser) => {
 								return Eatables.filter(i => {
-									if (!mUser.favorite_food.includes(i.id)) return false;
+									if (!user.user.favorite_food.includes(i.id)) return false;
 									return !value ? true : i.name.toLowerCase().includes(value.toLowerCase());
 								}).map(i => ({
 									name: `${i.name}`,

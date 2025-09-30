@@ -33,7 +33,6 @@ import {
 	tearsOfGuthixIronmanReqs,
 	tearsOfGuthixSkillReqs
 } from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
-import { updateClientGPTrackSetting, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 const collectors = new Map<string, MessageCollector>();
 
@@ -69,7 +68,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
 				const GP = loot.amount(EItem.COINS);
 				if (typeof GP === 'number') {
-					await updateClientGPTrackSetting('gp_pvm', GP);
+					await ClientSettings.updateClientGPTrackSetting('gp_pvm', GP);
 				}
 			}
 			return {};
@@ -82,7 +81,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (imp && imp.bank.length > 0) {
 				const many = imp.bank.length > 1;
 				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
-				await userStatsBankUpdate(user, 'passive_implings_bank', imp.bank);
+				await user.statsBankUpdate('passive_implings_bank', imp.bank);
 				return {
 					itemsToAddWithCL: imp.bank
 				};

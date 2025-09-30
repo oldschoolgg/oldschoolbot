@@ -6,14 +6,11 @@ import { darkAltarCommand } from '@/lib/minions/functions/darkAltarCommand.js';
 import { sinsOfTheFatherSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import type { RunecraftActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { ouraniaAltarStartCommand } from '@/mahoji/lib/abstracted_commands/ouraniaAltarCommand.js';
 import { tiaraRunecraftCommand } from '@/mahoji/lib/abstracted_commands/tiaraRunecraftCommand.js';
-import { calcMaxRCQuantity, userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
+import { calcMaxRCQuantity } from '@/mahoji/mahojiSettings.js';
 
 const runeTypes = [
 	{ item: Items.getOrThrow('Warped extract'), runes: new Set(['air', 'mind', 'water', 'earth', 'fire', 'body']) },
@@ -147,7 +144,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		let { tripLength } = runeObj;
 		const boosts = [];
-		if (userHasGracefulEquipped(user)) {
+		if (user.hasGracefulEquipped()) {
 			tripLength -= tripLength * 0.1;
 			boosts.push('10% for Graceful');
 		}
@@ -185,7 +182,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			boosts.push('3% for Runecraft cape');
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Runecraft');
+		const maxTripLength = user.calcMaxTripLength('Runecraft');
 		const maxCanDo = Math.floor(maxTripLength / tripLength) * inventorySize;
 
 		// If no quantity provided, set it to the max.
@@ -327,12 +324,12 @@ export const runecraftCommand: OSBMahojiCommand = {
 		if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
 
 		await user.removeItemsFromBank(totalCost);
-		updateBankSetting('runecraft_cost', totalCost);
+		await ClientSettings.updateBankSetting('runecraft_cost', totalCost);
 
-		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>({
+		await ActivityManager.startTrip<RunecraftActivityTaskOptions>({
 			runeID: runeObj.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			essenceQuantity: quantity,
 			useStaminas: usestams,
 			daeyaltEssence: daeyalt_essence,

@@ -10,11 +10,9 @@ import { BitField, MAX_CLUES_DROPPED } from '@/lib/constants.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { getPOHObject } from '@/lib/poh/index.js';
 import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
-import { addToOpenablesScores, getMahojiBank, mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
+import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
 
 export const clueTierBoosts: Record<
 	ClueTier['name'],
@@ -239,9 +237,8 @@ export const clueCommand: OSBMahojiCommand = {
 			description: 'The clue you want to do.',
 			required: true,
 			autocomplete: async (value, user) => {
-				const bank = getMahojiBank(await mahojiUsersSettingsFetch(user.id, { bank: true }));
 				return ClueTiers.map(i => ({
-					name: `${i.name} (${bank.amount(i.scrollID)}x Owned)`,
+					name: `${i.name} (${user.bank.amount(i.scrollID)}x Owned)`,
 					value: i.name
 				})).filter(i => !value || i.value.toLowerCase().includes(value));
 			}
@@ -265,11 +262,10 @@ export const clueCommand: OSBMahojiCommand = {
 					.flat()
 					.map(id => Items.get(id))
 					.filter(notEmpty);
-				const bank = getMahojiBank(await mahojiUsersSettingsFetch(user.id, { bank: true }));
-				const hasClueImps = allClueImps.filter(imp => bank.has(imp.id));
+				const hasClueImps = allClueImps.filter(imp => user.bank.has(imp.id));
 				return hasClueImps
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-					.map(i => ({ name: `${i.name} (${bank.amount(i.id)}x Owned)`, value: i.name }));
+					.map(i => ({ name: `${i.name} (${user.bank.amount(i.id)}x Owned)`, value: i.name }));
 			}
 		}
 	],
@@ -285,7 +281,7 @@ export const clueCommand: OSBMahojiCommand = {
 		);
 		if (!clueTier) return 'Invalid clue tier.';
 
-		const maxTripLength = calcMaxTripLength(user, 'ClueCompletion');
+		const maxTripLength = user.calcMaxTripLength('ClueCompletion');
 
 		const clueImpling = options.implings
 			? Items.get(/^[0-9]+$/.test(options.implings) ? Number(options.implings) : options.implings)
@@ -431,12 +427,12 @@ export const clueCommand: OSBMahojiCommand = {
 			)}, try a lower quantity. The highest amount you can do for ${clueTier.name} is ${maxCanDo}.`;
 		}
 
-		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
+		await ActivityManager.startTrip<ClueActivityTaskOptions>({
 			ci: clueTier.id,
 			implingID: clueImpling ? clueImpling.id : undefined,
 			implingClues: clueImpling ? implingClues : undefined,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			q: quantity,
 			iQty: options.quantity,
 			duration,

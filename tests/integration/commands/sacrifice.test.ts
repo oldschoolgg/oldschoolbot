@@ -2,7 +2,6 @@ import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { mahojiClientSettingsFetch } from '../../../src/lib/util/clientSettings.js';
 import { sacrificeCommand } from '../../../src/mahoji/commands/sacrifice.js';
 import { createTestUser, mockClient } from '../util.js';
 
@@ -37,7 +36,7 @@ describe('Sacrifice Command', async () => {
 			new Bank().add('Coal', 20).add('Trout', 2).toString()
 		);
 		expect(user.user.sacrificedValue).toEqual(BigInt(3180));
-		const clientSettings = await mahojiClientSettingsFetch({ economyStats_sacrificedBank: true });
+		const clientSettings = await ClientSettings.fetch({ economyStats_sacrificedBank: true });
 		expect(
 			new Bank(clientSettings.economyStats_sacrificedBank as ItemBank).equals(
 				new Bank().add('Coal', 20).add('Trout', 2)
@@ -56,7 +55,7 @@ describe('Sacrifice Command', async () => {
 		).toBe(true);
 		expect(user.user.sacrificedValue).toEqual(BigInt(3437));
 
-		const clientSettings2 = await mahojiClientSettingsFetch({ economyStats_sacrificedBank: true });
+		const clientSettings2 = await ClientSettings.fetch({ economyStats_sacrificedBank: true });
 		expect(
 			new Bank(clientSettings2.economyStats_sacrificedBank as ItemBank).equals(
 				new Bank().add('Coal', 20).add('Trout', 3).add('Cake')

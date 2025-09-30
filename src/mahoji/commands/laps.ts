@@ -5,9 +5,6 @@ import { Bank } from 'oldschooljs';
 import { quests } from '@/lib/minions/data/quests.js';
 import { courses } from '@/lib/skilling/skills/agility.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 
 const unlimitedFireRuneProviders = [
@@ -136,7 +133,7 @@ export const lapsCommand: OSBMahojiCommand = {
 			}
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Agility');
+		const maxTripLength = user.calcMaxTripLength('Agility');
 
 		// If no quantity provided, set it to the max.
 		const timePerLap = course.lapTime * Time.Second;
@@ -166,10 +163,10 @@ export const lapsCommand: OSBMahojiCommand = {
 
 			await user.removeItemsFromBank(alchResult.bankToRemove);
 			response += `\n\nYour minion is alching ${alchResult.maxCasts}x ${alchResult.itemToAlch.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
-			updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
+			await ClientSettings.updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
 		}
 
-		await addSubTaskToActivityTask<AgilityActivityTaskOptions>({
+		await ActivityManager.startTrip<AgilityActivityTaskOptions>({
 			courseID: course.id,
 			userID: user.id,
 			channelID,

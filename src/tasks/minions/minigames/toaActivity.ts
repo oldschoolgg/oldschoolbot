@@ -14,10 +14,7 @@ import {
 } from '@/lib/simulation/toa.js';
 import { normalizeTOAUsers } from '@/lib/simulation/toaUtils.js';
 import type { TOAOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { assert } from '@/lib/util/logError.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const purpleButNotAnnounced = resolveItems([
 	"Elidinis' ward",
@@ -37,7 +34,7 @@ interface RaidResultUser {
 
 export const toaTask: MinionTask = {
 	type: 'TombsOfAmascut',
-	async run(data: TOAOptions) {
+	async run(data: TOAOptions, { handleTripFinish }) {
 		const { channelID, raidLevel, duration, leader, quantity, wipedRoom: _wipedRoom } = data;
 		const detailedUsers = normalizeTOAUsers(data);
 		const wipedRooms = Array.isArray(_wipedRoom) ? _wipedRoom : [_wipedRoom];
@@ -51,15 +48,11 @@ export const toaTask: MinionTask = {
 		// Increment all users attempts
 		await Promise.all(
 			allUsers.map(i =>
-				userStatsUpdate(
-					i.id,
-					{
-						toa_attempts: {
-							increment: quantity
-						}
-					},
-					{}
-				)
+				i.statsUpdate({
+					toa_attempts: {
+						increment: quantity
+					}
+				})
 			)
 		);
 		if (wipedRooms.every(i => i !== null)) {
@@ -132,15 +125,11 @@ export const toaTask: MinionTask = {
 
 		for (const [userID, userData] of raidResults.entries()) {
 			const { points, deaths, mUser: user } = userData;
-			await userStatsUpdate(
-				user.id,
-				{
-					total_toa_points: {
-						increment: points
-					}
-				},
-				{}
-			);
+			await user.statsUpdate({
+				total_toa_points: {
+					increment: points
+				}
+			});
 
 			// If the user already has these in their bank they cannot get another
 			for (const itemID of [...toaPetTransmogItems, ...toaOrnamentKits.map(i => i[0].id)]) {
@@ -159,7 +148,7 @@ export const toaTask: MinionTask = {
 			itemsAddedTeamLoot.add(userID, itemsAdded);
 
 			const currentStats = await user.fetchStats({ toa_raid_levels_bank: true, toa_loot: true });
-			await userStatsUpdate(user.id, {
+			await user.statsUpdate({
 				toa_raid_levels_bank: new Bank()
 					.add(currentStats.toa_raid_levels_bank as ItemBank)
 					.add(raidLevel, quantity)
@@ -213,7 +202,7 @@ export const toaTask: MinionTask = {
 			resultMessage += `\n\n${messages.join('\n')}`;
 		}
 
-		updateBankSetting('toa_loot', totalLoot.totalLoot());
+		await ClientSettings.updateBankSetting('toa_loot', totalLoot.totalLoot());
 		await trackLoot({
 			totalLoot: totalLoot.totalLoot(),
 			id: 'tombs_of_amascut',
