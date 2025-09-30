@@ -1,5 +1,6 @@
 import { randInt, roll } from '@oldschoolgg/rng';
 import { Emoji, Events } from '@oldschoolgg/toolkit';
+import type { CropUpgradeType } from '@prisma/client';
 import { Bank, itemID, Monsters } from 'oldschooljs';
 
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
@@ -58,7 +59,7 @@ interface PlantingOnlyOptions {
 	user: MUser;
 	plant: FarmingPlant;
 	quantity: number;
-	upgradeType: Farming.PlantUpgradeType | null;
+	upgradeType: CropUpgradeType | null;
 	payment: FarmingActivityTaskOptions['payment'];
 	duration: number;
 	compostXp: number;
@@ -81,7 +82,7 @@ interface HarvestLootResult {
 	cropYield: number;
 }
 
-function getCompostXp(upgradeType: Farming.PlantUpgradeType | null): number {
+function getCompostXp(upgradeType: CropUpgradeType | null): number {
 	if (upgradeType === 'compost') return 18;
 	if (upgradeType === 'supercompost') return 26;
 	if (upgradeType === 'ultracompost') return 36;
@@ -122,7 +123,7 @@ function calculateEquipmentModifiers(user: MUser): { baseBonus: number; bonusXpM
 	return { baseBonus, bonusXpMultiplier };
 }
 
-function calculatePatchSurvivalModifiers(patchType: PatchTypes.PatchData): PatchSurvivalModifiers {
+function calculatePatchSurvivalModifiers(patchType: PatchTypes.IPatchData): PatchSurvivalModifiers {
 	let lives = 3;
 	let chanceOfDeathReduction = 1;
 
@@ -203,7 +204,7 @@ async function handlePlantingOnlyStep(options: PlantingOnlyOptions): Promise<Far
 		lastQuantity: quantity,
 		lastUpgradeType: upgradeType,
 		lastPayment: payment ?? false,
-		pid: plantingPid.value
+		pid: plantingPid.value ?? undefined
 	};
 
 	await user.update({
@@ -235,7 +236,7 @@ async function handlePlantingOnlyStep(options: PlantingOnlyOptions): Promise<Far
 
 function calculateAlivePlants(
 	plantToHarvest: FarmingPlant,
-	patchType: PatchTypes.PatchData,
+	patchType: PatchTypes.IPatchData,
 	survivalModifiers: PatchSurvivalModifiers
 ): number {
 	let quantityDead = 0;
@@ -255,7 +256,7 @@ function calculateAlivePlants(
 async function calculateHarvestLoot(options: {
 	user: MUser;
 	plantToHarvest: FarmingPlant;
-	patchType: PatchTypes.PatchData;
+	patchType: PatchTypes.IPatchData;
 	quantity: number;
 	alivePlants: number;
 	baseBonus: number;
@@ -467,6 +468,10 @@ export async function executeFarmingStep({
 }: ExecuteFarmingStepOptions): Promise<FarmingStepResult | null> {
 	const { plantsName, patchType, quantity, upgradeType, payment, planting, currentDate } = data;
 
+	if (!patchType) {
+		throw new Error('Missing patch data for farming step');
+	}
+
 	const plant = Farming.Plants.find(plantItem => plantItem.name === plantsName)!;
 	assert(Boolean(plant));
 
@@ -670,7 +675,7 @@ export async function executeFarmingStep({
 			lastQuantity: quantity,
 			lastUpgradeType: upgradeType ?? null,
 			lastPayment: payment ?? false,
-			pid: plantingPid.value
+			pid: plantingPid.value ?? undefined
 		};
 	}
 
