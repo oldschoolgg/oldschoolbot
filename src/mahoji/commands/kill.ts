@@ -87,10 +87,9 @@ export const killCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		interaction
 	}: CommandRunOptions<{ name: string; quantity: number; catacombs: boolean; master: string }>) => {
-		const user = await mUserFetch(userID);
 		await interaction.defer();
 		if (!ALL_VALID_KILLABLE_MONSTERS.some(i => i.name.toLowerCase() === options.name.toLowerCase())) {
 			return `That's not a valid monster to simulate killing.`;

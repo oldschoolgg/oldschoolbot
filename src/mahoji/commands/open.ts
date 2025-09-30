@@ -65,12 +65,12 @@ export const openCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
-		userID,
+		user,
 		options,
 		interaction
 	}: CommandRunOptions<{ name?: string; quantity?: number; open_until?: string; result_quantity?: number }>) => {
 		if (interaction) await interaction.defer();
-		const user = await mUserFetch(userID);
+
 		if (!options.name) {
 			return `You have... ${truncateString(
 				user.bank.filter(item => allOpenablesIDs.has(item.id)).toString(),

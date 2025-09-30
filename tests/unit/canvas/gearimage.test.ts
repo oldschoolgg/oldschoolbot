@@ -125,7 +125,8 @@ describe('Gear Images', async () => {
 				plant: Farming.Plants.find(p => p.name === 'Yew tree'),
 				matchingPlantedCrop: {
 					ready: true
-				} as any
+				} as any,
+				farmingInfo: {} as any
 			}
 		});
 		await writeFile(path.join(baseSnapshotPath, 'gear-farming-contract.png'), gearImage);

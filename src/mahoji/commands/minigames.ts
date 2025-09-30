@@ -1063,7 +1063,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 	run: async ({
 		interaction,
 		options,
-		userID,
+		user,
 		channelID
 	}: CommandRunOptions<{
 		barb_assault?: {
@@ -1145,8 +1145,6 @@ export const minigamesCommand: OSBMahojiCommand = {
 			};
 		};
 	}>) => {
-		const user = await mUserFetch(userID);
-
 		/**
 		 *
 		 * Barbarian Assault

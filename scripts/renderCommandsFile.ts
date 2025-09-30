@@ -5,7 +5,6 @@ import { md5sum, Stopwatch, stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { DateTime } from 'luxon';
 
-import type { AbstractCommand } from '@/lib/discord/commandOptions.js';
 import { allCommands } from '@/mahoji/commands/allCommands.js';
 import { BOT_TYPE } from '../src/lib/constants.js';
 import { tearDownScript } from './scriptUtil.js';
@@ -13,14 +12,14 @@ import { tearDownScript } from './scriptUtil.js';
 async function renderCommands() {
 	return allCommands
 		.filter(c => {
-			const has = typeof c.attributes?.description === 'string' && c.attributes.description.length > 1;
+			const has = typeof c.description === 'string' && c.description.length > 1;
 			if (!has) {
 				console.log(`Command ${c.name} has no description/attributes.`);
 			}
 			return has;
 		})
 		.filter(i => !['admin', 'testpotato'].includes(i.name))
-		.map((cmd: AbstractCommand) => {
+		.map(cmd => {
 			const mahojiCommand = allCommands.find(i => stringMatches(i.name, cmd.name));
 			if (!mahojiCommand) {
 				throw new Error(`Could not find mahoji command for ${cmd.name}`);
@@ -37,7 +36,7 @@ async function renderCommands() {
 			subOptions.sort((a, b) => a.localeCompare(b));
 			return {
 				name: cmd.name,
-				desc: cmd.attributes?.description,
+				desc: cmd?.description,
 				examples: cmd.attributes?.examples?.sort((a, b) => a.localeCompare(b)),
 				flags: cmd.attributes?.categoryFlags?.sort((a, b) => a.localeCompare(b)),
 				subOptions

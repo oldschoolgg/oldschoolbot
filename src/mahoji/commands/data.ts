@@ -25,8 +25,7 @@ export const dataCommand: OSBMahojiCommand = {
 			required: true
 		}
 	],
-	run: async ({ interaction, options, userID }: CommandRunOptions<{ name: string }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ interaction, options, user }: CommandRunOptions<{ name: string }>) => {
 		await interaction.defer();
 		return statsCommand(user, options.name);
 	}

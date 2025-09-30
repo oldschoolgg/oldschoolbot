@@ -469,7 +469,7 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 			});
 		}
 		case 'AUTO_FARMING_CONTRACT': {
-			const response = await autoContract(await mUserFetch(user.id), options.channelID, user.id);
+			const response = await autoContract(user, options.channelID);
 			if (response) {
 				return mInteraction.reply(response);
 			}

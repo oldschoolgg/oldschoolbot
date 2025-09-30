@@ -27,12 +27,6 @@ vi.mock('../../src/lib/util/webhook', async () => {
 	};
 });
 
-// @ts-expect-error mock
-globalClient.fetchUser = async (id: string | bigint) => ({
-	id: typeof id === 'string' ? id : String(id),
-	send: async () => {}
-});
-
 const __prismaClient = new PrismaClient();
 __prismaClient.$queryRawUnsafe('CREATE EXTENSION IF NOT EXISTS intarray;').then(noOp).catch(noOp);
 

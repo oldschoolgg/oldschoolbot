@@ -47,8 +47,7 @@ export const cookCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		let { quantity, name } = options;
 
 		const barbarianFish = LeapingFish.find(

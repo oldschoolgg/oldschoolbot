@@ -40,8 +40,7 @@ export const fletchCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const fletchable = Fletching.Fletchables.find(item => stringMatches(item.name, options.name));
 
 		if (!fletchable) return 'That is not a valid fletchable item.';

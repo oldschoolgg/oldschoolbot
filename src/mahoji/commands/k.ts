@@ -99,7 +99,7 @@ export const minionKCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		channelID,
 		interaction
 	}: CommandRunOptions<{
@@ -111,7 +111,6 @@ export const minionKCommand: OSBMahojiCommand = {
 		solo?: boolean;
 		onTask?: boolean;
 	}>) => {
-		const user = await mUserFetch(userID);
 		if (options.show_info) {
 			return interaction.returnStringOrFile(await monsterInfo(user, options.name));
 		}

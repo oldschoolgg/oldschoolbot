@@ -106,7 +106,7 @@ export const giftCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		interaction
 	}: CommandRunOptions<{
 		list?: {};
@@ -117,7 +117,6 @@ export const giftCommand: OSBMahojiCommand = {
 		send?: { gift: string; user: MahojiUserOption };
 		open?: { gift: string };
 	}>) => {
-		const user = await mUserFetch(userID);
 		if (user.isIronman) {
 			return 'Ironmen cannot use this command.';
 		}
@@ -235,7 +234,7 @@ ${items}`
 			if (!options.send.gift) {
 				return 'You must provide a gift box to send.';
 			}
-			if (!options.send.user || options.send.user.user.id === userID || options.send.user.user.bot) {
+			if (!options.send.user || options.send.user.user.id === user.id || options.send.user.user.bot) {
 				return 'You must provide a valid user to send the gift box to.';
 			}
 			const recipient = await mUserFetch(options.send.user.user.id);

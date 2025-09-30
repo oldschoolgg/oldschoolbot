@@ -60,10 +60,9 @@ export const huntCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; hunter_potion?: boolean; stamina_potions?: boolean }>) => {
-		const user = await mUserFetch(userID);
 		const userBank = user.bank;
 		const userQP = user.QP;
 		const boosts = [];

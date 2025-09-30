@@ -165,8 +165,3 @@ export interface AbstractCommandAttributes {
 	requiresMinion?: boolean;
 	description: string;
 }
-
-export interface AbstractCommand {
-	name: string;
-	attributes?: AbstractCommandAttributes;
-}

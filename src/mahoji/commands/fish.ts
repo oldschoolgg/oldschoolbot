@@ -46,13 +46,12 @@ export const fishCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; flakes?: boolean }>) => {
 		const fish = Fishing.Fishes.find(fish => stringSearch(fish.name, options.name));
 		if (!fish) return 'Thats not a valid fish to catch.';
 
-		const user = await mUserFetch(userID);
 		if (user.skillsAsLevels.fishing < fish.level) {
 			return `${user.minionName} needs ${fish.level} Fishing to fish ${fish.name}.`;
 		}

@@ -1,5 +1,5 @@
 import { type RNGProvider, SeedableRNG } from '@oldschoolgg/rng';
-import { type CommandOption, randomSnowflake, Stopwatch, sumArr, Time } from '@oldschoolgg/toolkit';
+import { randomSnowflake, Stopwatch, sumArr, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 import PromiseQueue from 'p-queue';

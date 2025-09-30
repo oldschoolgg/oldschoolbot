@@ -1,5 +1,5 @@
 import { randArrItem, randInt } from '@oldschoolgg/rng';
-import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { noOp, stringMatches, uniqueArr } from '@oldschoolgg/toolkit';
 import { type Prisma, xp_gains_skill_enum } from '@prisma/client';
 import { ApplicationCommandOptionType, MessageFlags, type User } from 'discord.js';
 import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
@@ -19,13 +19,6 @@ import { MAX_QP, quests } from '@/lib/minions/data/quests.js';
 import { allOpenables } from '@/lib/openables.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
-import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
-import {
-	farmingPatchNames,
-	getFarmingKeyFromName,
-	userGrowingProgressStr
-} from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
-import { getFarmingInfo } from '@/lib/skilling/skills/farming/utils/getFarmingInfo.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
@@ -462,20 +455,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'forcegrow',
-					description: 'Force a plant to grow.',
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'patch_name',
-							description: 'The patches you want to harvest.',
-							required: true,
-							choices: farmingPatchNames.map(i => ({ name: i, value: i }))
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
 					name: 'set',
 					description: 'Set something',
 					options: [
@@ -582,7 +561,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 				spawn?: { preset?: string; collectionlog?: boolean; item?: string; items?: string };
 				setmonsterkc?: { monster: string; kc: string };
 				irontoggle?: {};
-				forcegrow?: { patch_name: FarmingPatchName };
 				wipe?: { thing: (typeof thingsToWipe)[number] };
 				set?: { qp?: number; all_ca_tasks?: boolean };
 				get_code?: {};
@@ -965,25 +943,8 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 					);
 					return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;
 				}
-				if (options.forcegrow) {
-					const farmingDetails = await getFarmingInfo(userID);
-					const thisPlant = farmingDetails.patchesDetailed.find(
-						p => p.plant?.seedType === options.forcegrow?.patch_name
-					);
-					if (!thisPlant || !thisPlant.plant) return 'You have nothing planted there.';
-					const rawPlant = farmingDetails.patches[thisPlant.plant.seedType];
-
-					await user.update({
-						[getFarmingKeyFromName(thisPlant.plant.seedType)]: {
-							...rawPlant,
-							plantTime: Date.now() - Time.Month
-						}
-					});
-					return userGrowingProgressStr((await getFarmingInfo(userID)).patchesDetailed);
-				}
 
 				if (options.setslayertask) {
-					const user = await mUserFetch(userID);
 					const usersTask = await getUsersCurrentSlayerInfo(user.id);
 
 					const { monster, master } = options.setslayertask;

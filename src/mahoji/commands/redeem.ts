@@ -18,8 +18,7 @@ export const redeemCommand: OSBMahojiCommand = {
 			required: true
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{ code: string }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user }: CommandRunOptions<{ code: string }>) => {
 		const code = await roboChimpClient.storeCode.findFirst({
 			where: {
 				code: options.code
@@ -68,7 +67,7 @@ export const redeemCommand: OSBMahojiCommand = {
 				'bit' in product
 					? roboChimpClient.user.update({
 							where: {
-								id: BigInt(userID)
+								id: BigInt(user.id)
 							},
 							data: {
 								store_bitfield: {

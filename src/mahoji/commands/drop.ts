@@ -31,12 +31,12 @@ export const dropCommand: OSBMahojiCommand = {
 	run: async ({
 		interaction,
 		options,
-		userID
+		user
 	}: CommandRunOptions<{ items: string; filter?: string; search?: string }>) => {
 		if (!options.filter && !options.items && !options.search) {
 			return "You didn't provide any items, filter or search.";
 		}
-		const user = await mUserFetch(userID);
+
 		const bank = parseBank({
 			inputStr: options.items,
 			inputBank: user.bank,

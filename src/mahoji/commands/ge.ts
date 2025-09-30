@@ -226,7 +226,7 @@ export const geCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		interaction
 	}: CommandRunOptions<{
 		buy?: {
@@ -250,7 +250,6 @@ export const geCommand: OSBMahojiCommand = {
 		view?: { item?: string };
 	}>) => {
 		await interaction.defer();
-		const user = await mUserFetch(userID);
 
 		if (options.price) {
 			const data = marketPricemap.get(Number(options.price.item));
@@ -270,7 +269,7 @@ This price is a guide only, calculated from average sale prices, it may not be a
 			const totalGPYourSales = await prisma.gETransaction.aggregate({
 				where: {
 					sell_listing: {
-						user_id: userID
+						user_id: user.id
 					}
 				},
 				_sum: {
@@ -282,12 +281,12 @@ This price is a guide only, calculated from average sale prices, it may not be a
 					OR: [
 						{
 							sell_listing: {
-								user_id: userID
+								user_id: user.id
 							}
 						},
 						{
 							buy_listing: {
-								user_id: userID
+								user_id: user.id
 							}
 						}
 					]
@@ -313,7 +312,7 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 		if (options.my_listings) {
 			const activeListings = await prisma.gEListing.findMany({
 				where: {
-					user_id: userID,
+					user_id: user.id,
 					quantity_remaining: {
 						gt: 0
 					},
@@ -330,7 +329,7 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 			});
 			const recentInactiveListings = await prisma.gEListing.findMany({
 				where: {
-					user_id: userID,
+					user_id: user.id,
 					OR: [
 						{
 							fulfilled_at: {

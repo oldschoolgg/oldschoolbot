@@ -180,7 +180,7 @@ export const gearCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		interaction,
-		userID
+		user
 	}: CommandRunOptions<{
 		equip?: {
 			gear_setup: GearSetupType;
@@ -196,8 +196,7 @@ export const gearCommand: OSBMahojiCommand = {
 		view?: { setup: string; text_format?: boolean };
 		swap?: { setup_one: GearSetupType; setup_two: GearSetupType };
 	}>) => {
-		const user = await mUserFetch(userID);
-		if ((options.equip || options.unequip) && !gearValidationChecks.has(userID)) {
+		if ((options.equip || options.unequip) && !gearValidationChecks.has(user.id)) {
 			const { itemsUnequippedAndRefunded } = await user.validateEquippedGear();
 			if (itemsUnequippedAndRefunded.length > 0) {
 				return `You had some items equipped that you didn't have the requirements to use, so they were unequipped and refunded to your bank: ${itemsUnequippedAndRefunded}`;

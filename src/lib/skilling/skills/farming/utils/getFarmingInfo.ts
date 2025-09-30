@@ -6,18 +6,17 @@ import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmi
 import { farmingPatchNames, findPlant } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { IPatchData, IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
 import { assert } from '@/lib/util/logError.js';
-import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 const farmingKeys: (keyof User)[] = farmingPatchNames.map(i => `farmingPatches_${i}` as const);
 
-export function getFarmingInfoFromUser(user: User) {
+export function getFarmingInfoFromUser(user: MUser) {
 	const patches: Record<FarmingPatchName, IPatchData> = {} as Record<FarmingPatchName, IPatchData>;
 	const patchesDetailed: IPatchDataDetailed[] = [];
 
 	const now = Date.now();
 
 	for (const key of farmingKeys) {
-		const patch: IPatchData = (user[key] as IPatchData | null) ?? Farming.defaultPatches;
+		const patch: IPatchData = (user.user[key] as IPatchData | null) ?? Farming.defaultPatches;
 		const patchName: FarmingPatchName = key.replace('farmingPatches_', '') as FarmingPatchName;
 		assert(farmingPatchNames.includes(patchName));
 		patches[patchName] = patch;
@@ -61,11 +60,4 @@ export function getFarmingInfoFromUser(user: User) {
 		patches,
 		patchesDetailed
 	};
-}
-
-export async function getFarmingInfo(userID: string) {
-	const keys: Partial<Record<keyof User, true>> = {};
-	for (const key of farmingKeys) keys[key] = true;
-	const userData = await mahojiUsersSettingsFetch(userID, keys);
-	return getFarmingInfoFromUser(userData as User);
 }

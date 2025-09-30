@@ -294,7 +294,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		interaction
 	}: CommandRunOptions<{
 		equip?: { gear_setup: GearSetupType; preset: string };
@@ -303,7 +303,6 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 		delete?: { preset: string };
 		view?: { preset: string };
 	}>) => {
-		const user = await mUserFetch(userID);
 		if (options.create) {
 			return createOrEditGearSetup(
 				user,
@@ -328,7 +327,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 		}
 		if (options.delete) {
 			const preset = await prisma.gearPreset.findFirst({
-				where: { user_id: userID, name: options.delete.preset }
+				where: { user_id: user.id, name: options.delete.preset }
 			});
 			if (!preset) {
 				return "You don't have a gear preset with that name.";
@@ -337,7 +336,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 			await prisma.gearPreset.delete({
 				where: {
 					user_id_name: {
-						user_id: userID,
+						user_id: user.id,
 						name: preset.name
 					}
 				}
@@ -361,7 +360,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 		if (options.view) {
 			const preset =
 				(await prisma.gearPreset.findFirst({
-					where: { user_id: userID.toString(), name: options.view.preset }
+					where: { user_id: user.id, name: options.view.preset }
 				})) || globalPresets.find(i => stringMatches(i.name, options.view?.preset ?? ''));
 			if (!preset) return "You don't have a preset with that name.";
 			const image = await user.generateGearImage({ gearSetup: new Gear(preset) });

@@ -83,11 +83,10 @@ export const sellCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
-		userID,
+		user,
 		options,
 		interaction
 	}: CommandRunOptions<{ items: string; filter?: string; search?: string }>) => {
-		const user = await mUserFetch(userID);
 		const bankToSell = parseBank({
 			inputBank: user.bank,
 			inputStr: options.items,

@@ -66,9 +66,9 @@ export const massCommand: OSBMahojiCommand = {
 			}
 		}
 	],
-	run: async ({ interaction, options, userID, channelID }: CommandRunOptions<{ monster: string }>) => {
+	run: async ({ interaction, options, user, channelID }: CommandRunOptions<{ monster: string }>) => {
 		await interaction.defer();
-		const user = await mUserFetch(userID);
+
 		if (user.user.minion_ironman) return 'Ironmen cannot do masses.';
 		const channel = globalClient.channels.cache.get(channelID);
 		if (!channel || !channelIsSendable(channel)) return 'Invalid channel.';

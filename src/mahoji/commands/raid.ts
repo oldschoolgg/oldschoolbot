@@ -175,7 +175,7 @@ export const raidCommand: OSBMahojiCommand = {
 	run: async ({
 		interaction,
 		options,
-		userID,
+		user,
 		channelID
 	}: CommandRunOptions<{
 		cox?: {
@@ -199,7 +199,7 @@ export const raidCommand: OSBMahojiCommand = {
 		};
 	}>) => {
 		if (interaction) await interaction.defer();
-		const user = await mUserFetch(userID);
+
 		const { cox, tob } = options;
 		if (cox?.stats) return coxStatsCommand(user);
 		if (cox?.itemboosts) return coxBoostsCommand(user);

@@ -195,7 +195,7 @@ export const simulateCommand: OSBMahojiCommand = {
 	run: async ({
 		interaction,
 		options,
-		userID
+		user
 	}: CommandRunOptions<{
 		cox?: {
 			quantity: number;
@@ -209,7 +209,6 @@ export const simulateCommand: OSBMahojiCommand = {
 		colosseum?: {};
 	}>) => {
 		await interaction.defer();
-		const user = await mUserFetch(userID.toString());
 		if (options.colosseum) {
 			return simulateColosseumRuns();
 		}

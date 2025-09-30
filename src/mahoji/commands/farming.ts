@@ -183,7 +183,7 @@ export const farmingCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
-		userID,
+		user,
 		options,
 		interaction,
 		channelID
@@ -200,15 +200,14 @@ export const farmingCommand: OSBMahojiCommand = {
 		contract?: { input?: ContractOption };
 	}>) => {
 		await interaction.defer();
-		const klasaUser = await mUserFetch(userID);
-		const { patchesDetailed } = Farming.getFarmingInfoFromUser(klasaUser.user);
+		const { patchesDetailed } = Farming.getFarmingInfoFromUser(user);
 
 		if (options.auto_farm) {
-			return autoFarm(klasaUser, patchesDetailed, channelID);
+			return autoFarm(user, patchesDetailed, channelID);
 		}
 		if (options.always_pay) {
-			const isEnabled = klasaUser.user.minion_defaultPay;
-			await klasaUser.update({
+			const isEnabled = user.user.minion_defaultPay;
+			await user.update({
 				minion_defaultPay: !isEnabled
 			});
 			return `'Always pay farmers' is now ${!isEnabled ? 'enabled' : 'disabled'}.`;
@@ -216,7 +215,7 @@ export const farmingCommand: OSBMahojiCommand = {
 		if (options.default_compost) {
 			const tier = CompostTiers.find(i => stringMatches(i.name, options.default_compost?.compost));
 			if (!tier) return 'Invalid tier.';
-			await klasaUser.update({
+			await user.update({
 				minion_defaultCompostToUse: tier.name
 			});
 			return `You will now use ${tier.item.name} by default.`;
@@ -228,7 +227,7 @@ export const farmingCommand: OSBMahojiCommand = {
 			if (!autoFarmFilterString) return 'Invalid auto farm filter.';
 			const autoFarmFilter = autoFarmFilterString as AutoFarmFilterEnum;
 
-			await klasaUser.update({
+			await user.update({
 				auto_farm_filter: autoFarmFilter
 			});
 
@@ -236,7 +235,7 @@ export const farmingCommand: OSBMahojiCommand = {
 		}
 		if (options.plant) {
 			return farmingPlantCommand({
-				userID: klasaUser.id,
+				userID: user.id,
 				plantName: options.plant.plant_name,
 				quantity: options.plant.quantity ?? null,
 				autoFarmed: false,
@@ -246,27 +245,22 @@ export const farmingCommand: OSBMahojiCommand = {
 		}
 		if (options.harvest) {
 			return harvestCommand({
-				user: klasaUser,
+				user: user,
 				seedType: options.harvest.patch_name,
 				channelID
 			});
 		}
 		if (options.tithe_farm) {
 			if (options.tithe_farm.buy_reward) {
-				return titheFarmShopCommand(interaction, klasaUser, options.tithe_farm.buy_reward);
+				return titheFarmShopCommand(interaction, user, options.tithe_farm.buy_reward);
 			}
-			return titheFarmCommand(klasaUser, channelID);
+			return titheFarmCommand(user, channelID);
 		}
 		if (options.compost_bin) {
-			return compostBinCommand(
-				interaction,
-				klasaUser,
-				options.compost_bin.plant_name,
-				options.compost_bin.quantity
-			);
+			return compostBinCommand(interaction, user, options.compost_bin.plant_name, options.compost_bin.quantity);
 		}
 		if (options.contract) {
-			return farmingContractCommand(userID, options.contract.input);
+			return farmingContractCommand(user, options.contract.input);
 		}
 
 		return Farming.userGrowingProgressStr(patchesDetailed);

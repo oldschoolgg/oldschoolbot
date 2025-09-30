@@ -80,13 +80,7 @@ export const offerCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		channelID,
-		interaction
-	}: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelID, interaction }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const userBank = user.bank;
 
 		await interaction.defer();

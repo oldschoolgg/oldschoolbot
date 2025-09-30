@@ -188,10 +188,9 @@ export const mineCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; powermine?: boolean }>) => {
-		const user = await mUserFetch(userID);
 		const { quantity, powermine } = options;
 
 		const motherlodeMine =
@@ -248,7 +247,7 @@ export const mineCommand: OSBMahojiCommand = {
 
 		await addSubTaskToActivityTask<MiningActivityTaskOptions>({
 			oreID: ore.id,
-			userID: userID.toString(),
+			userID: user.id,
 			channelID: channelID.toString(),
 			quantity: res.quantity,
 			iQty: options.quantity ? options.quantity : undefined,

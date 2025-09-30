@@ -58,7 +58,7 @@ export const caCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		interaction
 	}: CommandRunOptions<{
 		claim?: {};
@@ -68,7 +68,7 @@ export const caCommand: OSBMahojiCommand = {
 		};
 	}>) => {
 		await interaction.defer();
-		const user = await mUserFetch(userID);
+
 		const completedTaskIDs = new Set(user.user.completed_ca_task_ids);
 
 		const currentPoints = user.caPoints();

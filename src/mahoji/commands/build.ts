@@ -7,7 +7,6 @@ import type { Skills } from '@/lib/types/index.js';
 import type { ConstructionActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const ds2Requirements: Skills = {
@@ -65,15 +64,14 @@ export const buildCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const object = Constructables.find(
 			object =>
 				stringMatches(object.id.toString(), options.name) ||
 				stringMatches(object.name, options.name) ||
 				stringMatches(object.name.split(' ')[0], options.name)
 		);
-		const [hasDs2Requirements, ds2Reason] = hasSkillReqs(user, ds2Requirements);
+		const hasDs2Requirements = user.hasSkillReqs(ds2Requirements);
 
 		if (!object) return 'Thats not a valid object to build.';
 
@@ -86,7 +84,7 @@ export const buildCommand: OSBMahojiCommand = {
 				return `${user.minionName} needs 205 Quest Points to build a ${object.name}.`;
 			}
 			if (!hasDs2Requirements) {
-				return `In order to build a ${object.name}, you need: ${ds2Reason}.`;
+				return `In order to build a ${object.name}, you need to have completed the Dragon Slayer II quest, and have the prerequisite stats.`;
 			}
 			if (!user.hasEquippedOrInBank('Mythical cape')) {
 				return `${user.minionName} needs to own a Mythical cape to build a ${object.name}.`;

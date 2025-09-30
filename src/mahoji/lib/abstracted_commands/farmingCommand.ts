@@ -42,7 +42,7 @@ export async function harvestCommand({
 			', '
 		)}. *Don't include numbers, this command harvests all crops available of the specified patch type.*`;
 	}
-	const { patchesDetailed, patches } = await Farming.getFarmingInfoFromUser(user.user);
+	const { patchesDetailed, patches } = await Farming.getFarmingInfoFromUser(user);
 	const patch = patchesDetailed.find(i => i.patchName === seedType)!;
 	if (patch.ready === null) return 'You have nothing planted in those patches.';
 
@@ -157,7 +157,7 @@ export async function farmingPlantCommand({
 		return `${user.minionName} needs ${plant.level} Farming to plant ${plant.name}.`;
 	}
 
-	const { patchesDetailed, patches } = await Farming.getFarmingInfo(user.id);
+	const { patchesDetailed, patches } = user.farmingInfo();
 	const patchType = patchesDetailed.find(i => i.patchName === plant.seedType)!;
 
 	const timePerPatchTravel = Time.Second * plant.timePerPatchTravel;

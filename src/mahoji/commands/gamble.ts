@@ -171,7 +171,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		options,
 		interaction,
 		guildID,
-		userID
+		user
 	}: CommandRunOptions<{
 		item?: { item?: string; autoconfirm?: boolean };
 		dice?: { amount?: string };
@@ -181,8 +181,6 @@ export const gambleCommand: OSBMahojiCommand = {
 		hot_cold?: { choice?: 'hot' | 'cold'; amount?: string };
 		give_random_item?: { user: MahojiUserOption };
 	}>) => {
-		const user = await mUserFetch(userID);
-
 		if (options.item) {
 			if (options.item.item) {
 				return capeGambleCommand(user, options.item.item, interaction, options.item.autoconfirm);

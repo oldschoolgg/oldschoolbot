@@ -411,7 +411,7 @@ export const minionCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
-		userID,
+		user,
 		options,
 		interaction,
 		channelID
@@ -438,7 +438,6 @@ export const minionCommand: OSBMahojiCommand = {
 		peak?: {};
 		mastery?: {};
 	}>) => {
-		const user = await mUserFetch(userID);
 		const perkTier = user.perkTier();
 
 		if (options.info) return (await getUserInfo(user)).everythingString;
@@ -460,7 +459,7 @@ export const minionCommand: OSBMahojiCommand = {
 		}
 		if (options.cracker) {
 			return crackerCommand({
-				ownerID: userID.toString(),
+				ownerID: user.id,
 				otherPersonID: options.cracker.user.user.id,
 				interaction,
 				otherPersonAPIUser: options.cracker.user.user

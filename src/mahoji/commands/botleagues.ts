@@ -78,7 +78,7 @@ export const botLeaguesCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		interaction
 	}: CommandRunOptions<{
 		help?: {};
@@ -86,7 +86,6 @@ export const botLeaguesCommand: OSBMahojiCommand = {
 		leaderboard?: {};
 		buy_reward?: { item: string };
 	}>) => {
-		const user = await mUserFetch(userID.toString());
 		const roboChimpUser = await roboChimpUserFetch(user.id);
 
 		if (options.claim_trophy) {

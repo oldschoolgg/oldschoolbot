@@ -501,7 +501,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		channelID,
-		userID,
+		user,
 		interaction
 	}: CommandRunOptions<{
 		plank_make?: { action: string; type: string; quantity?: number };
@@ -537,7 +537,6 @@ export const activitiesCommand: OSBMahojiCommand = {
 			activity: string;
 		};
 	}>) => {
-		const user = await mUserFetch(userID);
 		// Minion can be busy
 		if (options.decant) {
 			return decantCommand(user, options.decant.potion_name, options.decant.dose);

@@ -1147,7 +1147,7 @@ LIMIT 20;
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		guildID,
 		channelID,
 		interaction
@@ -1177,7 +1177,6 @@ LIMIT 20;
 			icon_pack?: { name?: string };
 		};
 	}>) => {
-		const user = await mUserFetch(userID);
 		const guild = guildID ? (globalClient.guilds.cache.get(guildID.toString()) ?? null) : null;
 		if (options.server) {
 			if (options.server.channel) {

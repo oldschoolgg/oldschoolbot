@@ -39,9 +39,7 @@ export const craftCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
-
+	run: async ({ options, user, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		let { quantity } = options;
 
 		if (options.name.toLowerCase().includes('zenyte') && quantity === null) quantity = 1;

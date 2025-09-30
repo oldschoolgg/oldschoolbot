@@ -71,11 +71,10 @@ export const sacrificeCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
-		userID,
+		user,
 		options,
 		interaction
 	}: CommandRunOptions<{ items?: string; filter?: string; search?: string }>) => {
-		const user = await mUserFetch(userID);
 		const currentIcon = user.user.minion_icon;
 		const sacVal = Number(user.user.sacrificedValue);
 		const { sacrificed_bank: sacrificedBank } = await user.fetchStats({ sacrificed_bank: true });

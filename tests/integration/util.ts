@@ -108,16 +108,6 @@ export function mockMessage({ userId }: { userId: string }) {
 	};
 }
 
-const commandRunOptions = (userId: string): Omit<CommandRunOptions, 'options'> => ({
-	userID: userId,
-	guildID: '342983479501389826',
-	member: {} as any,
-	user: { id: userId } as any,
-	channelID: TEST_CHANNEL_ID,
-	interaction: mockInteraction({ userId }),
-	client: {} as any
-});
-
 export class TestUser extends MUserClass {
 	public client!: TestClient;
 
@@ -254,16 +244,20 @@ export class TestUser extends MUserClass {
 	}
 
 	async runCommand(command: OSBMahojiCommand, options: object = {}, syncAfter = false) {
-		const cmdOpts = commandRunOptions(this.id);
+		const mockedInt = mockInteraction({ userId: this.user.id });
 		const result = await command.run({
-			...cmdOpts,
-			user: { createdAt: new Date(), id: this.id } as DJSUser,
+			userID: this.user.id,
+			guildID: '342983479501389826',
+			member: {} as any,
+			channelID: TEST_CHANNEL_ID,
+			interaction: mockedInt,
+			user: this,
 			options
 		});
 		if (syncAfter) {
 			await this.sync();
 		}
-		return result ?? (cmdOpts.interaction as any).__response__;
+		return result ?? (mockedInt as any).__response__;
 	}
 
 	async bankAmountMatch(itemName: string, amount: number) {

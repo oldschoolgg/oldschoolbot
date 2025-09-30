@@ -774,16 +774,23 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		return Boolean(this.user.minion_hasBought);
 	}
 
+	farmingInfo() {
+		return getFarmingInfoFromUser(this);
+	}
+
 	farmingContract(): DetailedFarmingContract {
 		const currentFarmingContract = this.user.minion_farmingContract as FarmingContract | null;
 		const plant = !currentFarmingContract
 			? undefined
 			: Farming.Plants.find(i => i.name === currentFarmingContract?.plantToGrow);
-		const detailed = getFarmingInfoFromUser(this.user);
+		const farmingInfo = getFarmingInfoFromUser(this);
 		return {
 			contract: currentFarmingContract ?? Farming.defaultFarmingContract,
 			plant,
-			matchingPlantedCrop: plant ? detailed.patchesDetailed.find(i => i.plant && i.plant === plant) : undefined
+			matchingPlantedCrop: plant
+				? farmingInfo.patchesDetailed.find(i => i.plant && i.plant === plant)
+				: undefined,
+			farmingInfo
 		};
 	}
 

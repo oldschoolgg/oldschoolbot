@@ -86,8 +86,7 @@ export const claimCommand: OSBMahojiCommand = {
 			}
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{ name: string }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user }: CommandRunOptions<{ name: string }>) => {
 		const claimable = claimables.find(i => stringMatches(i.name, options.name));
 		if (!claimable) {
 			const reclaimableData = await getReclaimableItemsOfUser(user);

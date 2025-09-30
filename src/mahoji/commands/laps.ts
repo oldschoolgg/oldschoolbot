@@ -105,11 +105,9 @@ export const lapsCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; alch?: boolean }>) => {
-		const user = await mUserFetch(userID);
-
 		const course = courses.find(
 			course =>
 				stringMatches(course.id.toString(), options.name) ||

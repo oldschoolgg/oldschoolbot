@@ -109,7 +109,7 @@ export const pohCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		interaction
 	}: CommandRunOptions<{
 		view?: { build_mode?: boolean };
@@ -119,7 +119,6 @@ export const pohCommand: OSBMahojiCommand = {
 		mount_item?: { name: string };
 		items?: { name: string };
 	}>) => {
-		const user = await mUserFetch(userID);
 		if (!user.hasMinion) return "You don't own a minion yet, so you have no PoH!";
 		if (options.view) {
 			return makePOHImage(user, options.view.build_mode);

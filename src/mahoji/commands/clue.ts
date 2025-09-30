@@ -275,10 +275,9 @@ export const clueCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		channelID
 	}: CommandRunOptions<{ tier: string; quantity?: number; implings?: string }>) => {
-		const user = await mUserFetch(userID);
 		let { quantity } = options;
 
 		const clueTier = ClueTiers.find(

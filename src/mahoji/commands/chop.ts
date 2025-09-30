@@ -113,7 +113,7 @@ export const chopCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		channelID
 	}: CommandRunOptions<{
 		name: string;
@@ -122,7 +122,6 @@ export const chopCommand: OSBMahojiCommand = {
 		forestry_events?: boolean;
 		twitchers_gloves?: TwitcherGloves;
 	}>) => {
-		const user = await mUserFetch(userID);
 		const log = Woodcutting.Logs.find(
 			log =>
 				stringMatches(log.name, options.name) ||

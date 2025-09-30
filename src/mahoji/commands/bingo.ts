@@ -547,6 +547,7 @@ export const bingoCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
+		user,
 		userID,
 		options,
 		interaction
@@ -583,8 +584,6 @@ export const bingoCommand: OSBMahojiCommand = {
 			bingo: string;
 		};
 	}>) => {
-		const user = await mUserFetch(userID);
-
 		if (options.items) {
 			const bingoID = Number(options.items.bingo);
 			if (Number.isNaN(bingoID)) {

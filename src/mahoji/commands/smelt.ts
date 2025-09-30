@@ -46,12 +46,12 @@ export const smeltingCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
-		userID,
+		user,
 		options,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; blast_furnace?: boolean }>) => {
 		let { name, quantity, blast_furnace } = options;
-		const user = await mUserFetch(userID);
+
 		if (blast_furnace === undefined) blast_furnace = false;
 		const boosts = [];
 
@@ -70,7 +70,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			return `Thats not a valid bar to smelt. Valid bars are ${Smithing.Bars.map(bar => bar.name).join(', ')}.`;
 		}
 
-		if (user.skillLevel('smithing') < bar.level) {
+		if (user.skillsAsLevels.smithing < bar.level) {
 			return `${user.minionName} needs ${bar.level} Smithing to smelt ${bar.name}s.`;
 		}
 

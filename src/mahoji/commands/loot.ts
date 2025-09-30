@@ -55,15 +55,14 @@ export const lootCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		interaction
 	}: CommandRunOptions<{ view?: { name: string }; reset?: { name: string } }>) => {
-		const user = await mUserFetch(userID);
 		const name = options.view?.name ?? options.reset?.name ?? '';
 		if (user.perkTier() < PerkTier.Four) {
 			const res = await prisma.lootTrack.count({
 				where: {
-					user_id: BigInt(userID)
+					user_id: BigInt(user.id)
 				}
 			});
 			return `You need to be a Tier 3 Patron to use this feature. You have ${res}x loot trackers stored currently.`;
@@ -73,7 +72,7 @@ export const lootCommand: OSBMahojiCommand = {
 			.findFirst({
 				where: {
 					id: name,
-					user_id: BigInt(userID)
+					user_id: BigInt(user.id)
 				}
 			})
 			.catch(() => null);

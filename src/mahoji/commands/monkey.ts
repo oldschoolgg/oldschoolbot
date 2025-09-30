@@ -80,11 +80,6 @@ export const monkeyCommand: OSBMahojiCommand = {
 			// @ts-expect-error ddd
 			ephemeral
 		});
-		// await interaction.confirmation({
-		// 	content: 'Are you sure you want to roll a number?',
-		// 	users: ['425134194436341760', user.id]
-		// });
-		// const limit = options.limit ?? 10;
 
 		return interaction.makePaginatedMessage({
 			ephemeral: true,

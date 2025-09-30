@@ -95,7 +95,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		guildID,
 		interaction,
 		channelID,
@@ -104,7 +104,6 @@ export const giveawayCommand: OSBMahojiCommand = {
 		start?: { duration: string; items?: string; filter?: string; search?: string };
 		list?: {};
 	}>) => {
-		const user = await mUserFetch(userID);
 		if (user.isIronman) return 'You cannot do giveaways!';
 		const channel = globalClient.channels.cache.get(channelID.toString());
 		if (!channelIsSendable(channel)) return 'Invalid channel.';
