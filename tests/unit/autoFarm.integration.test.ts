@@ -608,4 +608,3 @@ describe('autoFarm tree clearing fees', () => {
 		);
 	});
 });
-
