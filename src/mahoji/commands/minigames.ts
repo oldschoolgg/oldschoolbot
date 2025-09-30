@@ -1086,7 +1086,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'item_to_fletch',
 							description: 'Item to fletch during minigame.',
 							required: true,
-							choices: ValeTotemsDecorations.map(i => ({ name: i.item.name, value: i.item.name }))
+							autocomplete: async (value: string) => {
+								return ValeTotemsDecorations.filter(i =>
+									!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
+								).map(i => ({ name: i.item.name, value: i.item.name }));
+							}
 						},
 						{
 							type: ApplicationCommandOptionType.Boolean,
