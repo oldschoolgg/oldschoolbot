@@ -11,7 +11,7 @@ import {
 import { Bank, toKMB } from 'oldschooljs';
 
 import { SILENT_ERROR } from '@/lib/constants.js';
-import { silentButtonAck } from '@/lib/util/handleMahojiConfirmation.js';
+import { silentButtonAck } from '@/lib/discord/utils.js';
 import { logError } from '@/lib/util/logError.js';
 import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '@/mahoji/mahojiSettings.js';
 

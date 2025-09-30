@@ -242,6 +242,9 @@ class GrandExchangeSingleton {
 
 	async lockGE(reason: string) {
 		if (this.locked) return;
+		if (process.env.TEST) {
+			throw new Error(`G.E locked: ${reason}`);
+		}
 		const idsToNotify = globalConfig.adminUserIDs;
 		await sendToChannelID(globalConfig.moderatorLogsChannels, {
 			content: `The Grand Exchange has encountered an error and has been locked. Reason: ${reason}. ${idsToNotify

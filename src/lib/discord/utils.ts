@@ -1,8 +1,15 @@
-import type { BaseMessageOptions, InteractionReplyOptions } from 'discord.js';
+import {
+	type BaseMessageOptions,
+	type ButtonInteraction,
+	type InteractionReplyOptions,
+	InteractionResponseType,
+	Routes
+} from 'discord.js';
 
 import { allCommands } from '@/mahoji/commands/allCommands.js';
 
 export function mentionCommand(name: string, subCommand?: string, subSubCommand?: string) {
+	if (process.env.TEST) return '';
 	const command = allCommands.find(i => i.name === name);
 	if (!command) {
 		throw new Error(`Command ${name} not found`);
@@ -52,4 +59,12 @@ export function roughMergeMahojiResponse(
 	newResponse.content = newContent.join('\n\n');
 
 	return newResponse;
+}
+
+export async function silentButtonAck(interaction: ButtonInteraction) {
+	return globalClient.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
+		body: {
+			type: InteractionResponseType.DeferredMessageUpdate
+		}
+	});
 }

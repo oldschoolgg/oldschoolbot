@@ -39,7 +39,6 @@ import { getUsersPerkTier } from '@/lib/perkTiers.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
-import { getFarmingInfoFromUser } from '@/lib/skilling/skills/farming/utils/getFarmingInfo.js';
 import type { DetailedFarmingContract, FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
@@ -775,7 +774,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	}
 
 	farmingInfo() {
-		return getFarmingInfoFromUser(this);
+		return Farming.getFarmingInfoFromUser(this);
 	}
 
 	farmingContract(): DetailedFarmingContract {
@@ -783,7 +782,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		const plant = !currentFarmingContract
 			? undefined
 			: Farming.Plants.find(i => i.name === currentFarmingContract?.plantToGrow);
-		const farmingInfo = getFarmingInfoFromUser(this);
+		const farmingInfo = Farming.getFarmingInfoFromUser(this);
 		return {
 			contract: currentFarmingContract ?? Farming.defaultFarmingContract,
 			plant,

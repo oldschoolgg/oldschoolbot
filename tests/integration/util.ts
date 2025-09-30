@@ -19,8 +19,8 @@ import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironman
 
 export const TEST_CHANNEL_ID = '1111111111111111';
 
-export function mockDjsUser({ userId }: { userId: string }) {
-	return {
+function mockDjsUser({ userId }: { userId: string }) {
+	const mocked = {
 		id: userId,
 		username: 'TestUser',
 		discriminator: '0001',
@@ -28,8 +28,11 @@ export function mockDjsUser({ userId }: { userId: string }) {
 		system: false,
 		mfaEnabled: false,
 		avatarURL: () => 'https://example.com/avatar.png',
-		toString: () => '<@123456789>'
+		toString: () => '<@123456789>',
+		send: vi.fn(() => Promise.resolve())
 	} as any as DJSUser;
+	globalClient.users.cache.set(userId, mocked);
+	return mocked;
 }
 
 class MockInteraction {
@@ -53,6 +56,26 @@ class MockInteraction {
 	};
 	constructor(userId: string) {
 		this.user.id = userId;
+	}
+
+	async confirmation() {
+		return Promise.resolve();
+	}
+
+	async makePaginatedMessage() {
+		return Promise.resolve();
+	}
+
+	async makeParty() {
+		return Promise.resolve();
+	}
+
+	async defer() {
+		return Promise.resolve();
+	}
+
+	async returnStringOrFile() {
+		return Promise.resolve();
 	}
 }
 

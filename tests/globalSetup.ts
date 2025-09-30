@@ -17,10 +17,6 @@ vi.mock('@oldschoolgg/toolkit', async () => {
 				customId: randArrItem(Object.values(InteractionID.Slayer)),
 				...mockInteraction({ userId: message.author.id })
 			});
-		}),
-		mentionCommand: vi.fn().mockReturnValue('true'),
-		makePaginatedMessage: vi.fn(() => {
-			return Promise.resolve();
 		})
 	};
 });
@@ -41,7 +37,8 @@ global.globalClient = {
 		}
 	},
 	users: {
-		cache: new Collection()
+		cache: new Collection(),
+		fetch: async (id: string) => Promise.resolve(globalClient.users.cache.get(id))
 	},
 	channels: {
 		cache: new Collection().set(TEST_CHANNEL_ID, mockChannel({ userId: '123' }))

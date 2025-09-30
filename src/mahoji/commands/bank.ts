@@ -1,4 +1,4 @@
-import { channelIsSendable, chunk, Emoji } from '@oldschoolgg/toolkit';
+import { chunk, Emoji } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, codeBlock, EmbedBuilder } from 'discord.js';
 import type { Bank } from 'oldschooljs';
 
@@ -102,7 +102,6 @@ export const bankCommand: OSBMahojiCommand = {
 	run: async ({
 		user,
 		options,
-		channelID,
 		interaction
 	}: CommandRunOptions<{
 		page?: number;
@@ -174,8 +173,6 @@ export const bankCommand: OSBMahojiCommand = {
 					]
 				});
 			}
-			const channel = globalClient.channels.cache.get(channelID.toString());
-			if (!channelIsSendable(channel)) return 'Failed to send paginated bank message, sorry.';
 
 			return interaction.makePaginatedMessage({ pages });
 		}

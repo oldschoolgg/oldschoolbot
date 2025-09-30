@@ -2,7 +2,6 @@ import '../globalSetup.js';
 import '../../src/lib/globals.js';
 import '../../src/lib/util/transactItemsFromBank.js';
 import '../../src/lib/ActivityManager.js';
-import './mocks.js';
 
 import { noOp } from '@oldschoolgg/toolkit';
 import { PrismaClient } from '@prisma/client';

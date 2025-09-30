@@ -1108,8 +1108,14 @@ async function runTestCommand(user: TestUser, command: TestCommand) {
 	}
 }
 async function runAllTestCommandsOnUser(user: TestUser) {
+	console.log(`runAllTestCommandsOnUser: ${user.id}`);
 	for (const command of allTableCommands) {
-		await runTestCommand(user, command);
+		try {
+			await runTestCommand(user, command);
+		} catch (err) {
+			console.error(`Error running command ${command.name} on user ${user.id}`, err);
+			process.exit(1);
+		}
 	}
 	return user;
 }
