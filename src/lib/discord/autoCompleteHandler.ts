@@ -7,7 +7,7 @@ import {
 	type User
 } from 'discord.js';
 
-import type { ICommand } from '@/lib/discord/commandOptions.js';
+import type { ICommand } from '@/lib/discord/index.js';
 import { allCommands } from '@/mahoji/commands/allCommands.js';
 
 async function handleAutocomplete(

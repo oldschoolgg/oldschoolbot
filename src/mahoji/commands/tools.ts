@@ -9,6 +9,7 @@ import { BitField, PerkTier } from '@/lib/constants.js';
 import { allCLItemsFiltered, allDroppedItems } from '@/lib/data/Collections.js';
 import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
+import { itemOption, monsterOption, skillOption } from '@/lib/discord/index.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
@@ -24,7 +25,6 @@ import {
 	stashUnitUnfillCommand,
 	stashUnitViewCommand
 } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
-import { itemOption, monsterOption, skillOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { patronMsg } from '@/mahoji/mahojiSettings.js';
 
 function isRaidsActivity(data: any): data is RaidsOptions {

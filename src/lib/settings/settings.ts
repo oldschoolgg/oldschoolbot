@@ -3,13 +3,13 @@ import type { NewUser } from '@prisma/client';
 import { type APIInteractionGuildMember, ButtonInteraction, type GuildMember } from 'discord.js';
 import { isEmpty } from 'remeda';
 
-import type { CommandOptions } from '@/lib/discord/commandOptions.js';
+import type { CommandOptions } from '@/lib/discord/index.js';
+import { postCommand } from '@/lib/discord/postCommand.js';
+import { preCommand } from '@/lib/discord/preCommand.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';
 import { handleInteractionError } from '@/lib/util/interactionReply.js';
 import { logError } from '@/lib/util/logError.js';
 import { allCommands } from '@/mahoji/commands/allCommands.js';
-import { postCommand } from '@/mahoji/lib/postCommand.js';
-import { preCommand } from '@/mahoji/lib/preCommand.js';
 
 export async function getNewUser(id: string): Promise<NewUser> {
 	const value = await prisma.newUser.findUnique({ where: { id } });

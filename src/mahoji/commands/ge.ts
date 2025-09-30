@@ -5,12 +5,12 @@ import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { PerkTier } from '@/lib/constants.js';
+import { itemOption, tradeableItemArr } from '@/lib/discord/index.js';
 import { createGECancelButton, GrandExchange } from '@/lib/grandExchange.js';
 import { marketPricemap } from '@/lib/marketPrices.js';
 import { createChart } from '@/lib/util/chart.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
-import { itemOption, tradeableItemArr } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export type GEListingWithTransactions = GEListing & {

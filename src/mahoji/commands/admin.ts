@@ -35,7 +35,7 @@ import {
 	globalConfig,
 	META_CONSTANTS
 } from '@/lib/constants.js';
-import { convertCommandOptionToAPIOption, type ICommand } from '@/lib/discord/commandOptions.js';
+import { convertCommandOptionToAPIOption, type ICommand, itemOption } from '@/lib/discord/index.js';
 import { economyLog } from '@/lib/economyLogs.js';
 import type { GearSetup } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
@@ -50,7 +50,6 @@ import { sendToChannelID } from '@/lib/util/webhook.js';
 import { allCommands } from '@/mahoji/commands/allCommands.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 import { syncCustomPrices } from '@/mahoji/lib/events.js';
-import { itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export const gifs = [

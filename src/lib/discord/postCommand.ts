@@ -2,7 +2,7 @@ import { TimerManager } from '@sapphire/timer-manager';
 
 import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
 import { busyImmuneCommands, shouldTrackCommand } from '@/lib/constants.js';
-import type { CommandOptions } from '@/lib/discord/commandOptions.js';
+import type { CommandOptions } from '@/lib/discord/index.js';
 import { makeCommandUsage } from '@/lib/util/commandUsage.js';
 import { logError } from '@/lib/util/logError.js';
 

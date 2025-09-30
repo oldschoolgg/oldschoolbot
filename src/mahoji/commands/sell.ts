@@ -5,10 +5,10 @@ import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
+import { filterOption } from '@/lib/discord/index.js';
 import { NestBoxesTable } from '@/lib/simulation/misc.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 /**

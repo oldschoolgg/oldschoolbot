@@ -2,7 +2,7 @@ import { isGuildChannel, stringMatches } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
 
 import type { PvMMethod } from '@/lib/constants.js';
-import type { CommandOptions } from '@/lib/discord/commandOptions.js';
+import type { CommandOptions } from '@/lib/discord/index.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { runCommand } from '@/lib/settings/settings.js';
 import { AutoslayOptionsEnum, autoslayModes } from '@/lib/slayer/constants.js';

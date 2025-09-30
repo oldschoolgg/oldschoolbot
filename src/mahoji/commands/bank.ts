@@ -5,12 +5,12 @@ import type { Bank } from 'oldschooljs';
 import type { BankFlag } from '@/lib/canvas/bankImage.js';
 import { bankFlags } from '@/lib/canvas/bankImage.js';
 import { PerkTier } from '@/lib/constants.js';
+import { filterOption, itemOption } from '@/lib/discord/presetCommandOptions.js';
 import type { Flags } from '@/lib/minions/types.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
 import { BankSortMethods } from '@/lib/sorts.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { filterOption, itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 
 const bankFormats = ['json', 'text_paged', 'text_full'] as const;
 const bankItemsPerPage = 10;

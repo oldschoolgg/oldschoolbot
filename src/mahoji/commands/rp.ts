@@ -8,6 +8,7 @@ import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
+import { gearSetupOption } from '@/lib/discord/index.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { marketPricemap } from '@/lib/marketPrices.js';
@@ -28,7 +29,6 @@ import { gifs } from '@/mahoji/commands/admin.js';
 import { getUserInfo } from '@/mahoji/commands/minion.js';
 import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
 import { cancelUsersListings } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
-import { gearSetupOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 
 const itemFilters = [
 	{

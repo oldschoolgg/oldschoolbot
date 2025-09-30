@@ -14,7 +14,7 @@ import {
 	Routes
 } from 'discord.js';
 
-import { convertAPIOptionsToCommandOptions } from '@/lib/discord/commandOptions.js';
+import { convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';
 import {
 	type CompatibleResponse,
 	PaginatedMessage,

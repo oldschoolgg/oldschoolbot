@@ -7,7 +7,7 @@ import * as dotenv from 'dotenv';
 import { convertLVLtoXP, resolveItems } from 'oldschooljs';
 import { z } from 'zod';
 
-import type { CommandOptions } from '@/lib/discord/commandOptions.js';
+import type { CommandOptions } from '@/lib/discord/index.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 
 export { PerkTier };

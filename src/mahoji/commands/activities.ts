@@ -1,5 +1,6 @@
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 
+import { ownedItemOption } from '@/lib/discord/index.js';
 import { Planks } from '@/lib/minions/data/planks.js';
 import Potions from '@/lib/minions/data/potions.js';
 import { quests } from '@/lib/minions/data/quests.js';
@@ -33,7 +34,6 @@ import { scatterCommand } from '@/mahoji/lib/abstracted_commands/scatterCommand.
 import { underwaterAgilityThievingCommand } from '@/mahoji/lib/abstracted_commands/underwaterCommand.js';
 import { warriorsGuildCommand } from '@/mahoji/lib/abstracted_commands/warriorsGuildCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
-import { ownedItemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 
 export const activitiesCommand: OSBMahojiCommand = {
 	name: 'activities',

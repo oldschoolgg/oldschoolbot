@@ -4,6 +4,7 @@ import { Items } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { allPetIDs } from '@/lib/data/CollectionsExport.js';
+import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '@/lib/discord/index.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
 import { GearSetupTypes } from '@/lib/gear/types.js';
 import { equipPet } from '@/lib/minions/functions/equipPet.js';
@@ -15,12 +16,6 @@ import {
 	gearUnequipCommand,
 	gearViewCommand
 } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
-import {
-	equippedItemOption,
-	gearPresetOption,
-	gearSetupOption,
-	ownedItemOption
-} from '@/mahoji/lib/mahojiCommandOptions.js';
 import { getMahojiBank, mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 const gearValidationChecks = new Set();

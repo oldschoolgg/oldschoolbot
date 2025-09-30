@@ -2,12 +2,12 @@ import { Emoji, Events, truncateString } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type Item, type ItemBank, resolveItems, toKMB } from 'oldschooljs';
 
+import { filterOption } from '@/lib/discord/index.js';
 import { cats } from '@/lib/growablePets.js';
 import minionIcons from '@/lib/minions/data/minionIcons.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
-import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 async function trackSacBank(user: MUser, bank: Bank) {

@@ -8,6 +8,7 @@ import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import { BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import { diaries } from '@/lib/diaries.js';
+import { skillOption } from '@/lib/discord/index.js';
 import { calculateMastery } from '@/lib/mastery.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { blowpipeCommand, blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
@@ -36,7 +37,6 @@ import { ironmanCommand } from '@/mahoji/lib/abstracted_commands/ironmanCommand.
 import { Lampables, lampCommand } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
 import { minionBuyCommand } from '@/mahoji/lib/abstracted_commands/minionBuyCommand.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
-import { skillOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { patronMsg } from '@/mahoji/mahojiSettings.js';
 
 const patMessages = [

@@ -3,9 +3,9 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Items } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { filterOption } from '@/lib/discord/index.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 
 export const dropCommand: OSBMahojiCommand = {
 	name: 'drop',

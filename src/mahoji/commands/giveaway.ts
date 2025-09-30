@@ -19,6 +19,7 @@ import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
 import { giveawayCache } from '@/lib/cache.js';
 import { patronFeatures } from '@/lib/constants.js';
+import { filterOption } from '@/lib/discord/index.js';
 import { marketPriceOfBank } from '@/lib/marketPrices.js';
 import { generateGiveawayContent } from '@/lib/util/giveaway.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
@@ -26,7 +27,6 @@ import { logError } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isModOrAdmin } from '@/lib/util.js';
-import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { addToGPTaxBalance } from '@/mahoji/mahojiSettings.js';
 
 function makeGiveawayButtons(giveawayID: number): BaseMessageOptions['components'] {

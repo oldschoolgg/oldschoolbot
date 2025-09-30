@@ -1,11 +1,11 @@
 import { SpecialResponse } from '@oldschoolgg/toolkit';
 import { type ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.js';
 
-import { convertAPIOptionsToCommandOptions } from '@/lib/discord/commandOptions.js';
+import { convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';
+import { postCommand } from '@/lib/discord/postCommand.js';
+import { preCommand } from '@/lib/discord/preCommand.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';
 import { allCommands } from '@/mahoji/commands/allCommands.js';
-import { postCommand } from '@/mahoji/lib/postCommand.js';
-import { preCommand } from '@/mahoji/lib/preCommand.js';
 
 export async function commandHandler(rawInteraction: ChatInputCommandInteraction) {
 	const interaction = new MInteraction({ interaction: rawInteraction });

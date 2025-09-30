@@ -26,6 +26,7 @@ import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BitField, globalConfig, ParsedCustomEmojiWithGroups, PerkTier } from '@/lib/constants.js';
 import { DynamicButtons } from '@/lib/DynamicButtons.js';
 import { Eatables } from '@/lib/data/eatables.js';
+import { itemOption } from '@/lib/discord/index.js';
 import { CombatOptionsArray, CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
@@ -37,7 +38,6 @@ import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { allCommands } from '@/mahoji/commands/allCommands.js';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '@/mahoji/guildSettings.js';
-import { itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { mahojiUsersSettingsFetch, patronMsg } from '@/mahoji/mahojiSettings.js';
 
 interface UserConfigToggle {
