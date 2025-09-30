@@ -1,36 +1,40 @@
-import { nodeCrypto, Random } from 'random-js';
+import { randomBytes, randomInt } from 'node:crypto';
 
 import type { RNGProvider } from '../types.js';
 
 export class NodeCryptoRNG implements RNGProvider {
-	private readonly engine: Random = new Random(nodeCrypto);
-
 	roll(max: number): boolean {
-		return this.engine.bool(1 / max);
+		return this.randInt(1, max) === 1;
 	}
 
 	randInt(min: number, max: number): number {
-		return this.engine.integer(min, max);
+		return randomInt(min, max + 1);
 	}
 
 	randFloat(min: number, max: number): number {
-		return this.engine.real(min, max, true);
+		return min + (max - min) * this.rand();
 	}
 
 	rand(): number {
-		return this.engine.real(0, 1, false);
+		const buf = randomBytes(6); // 48 bits
+		const int = buf.readUIntBE(0, 6);
+		return int / 0x1000000000000;
 	}
 
 	shuffle<T>(array: T[]): T[] {
-		if (array.length === 0) return [] as T[];
-		return this.engine.shuffle([...array]);
+		const arr = [...array];
+		for (let i = arr.length - 1; i > 0; i--) {
+			const j = this.randInt(0, i);
+			[arr[i], arr[j]] = [arr[j], arr[i]];
+		}
+		return arr;
 	}
 
 	pick<T>(array: T[]): T {
-		return this.engine.pick(array);
+		return array[this.randInt(0, array.length - 1)];
 	}
 
 	percentChance(percent: number): boolean {
-		return this.engine.bool(percent / 100);
+		return this.rand() < percent / 100;
 	}
 }
