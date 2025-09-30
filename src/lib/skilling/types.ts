@@ -248,7 +248,9 @@ export interface Plant {
 	herbXp?: number;
 	herbLvl?: number;
 	outputLogs?: number;
+	outputLogsQuantity?: number;
 	outputRoots?: number;
+	logDepletionChance?: number;
 	treeWoodcuttingLevel?: number;
 	fixedOutputAmount?: number;
 	variableYield?: boolean;

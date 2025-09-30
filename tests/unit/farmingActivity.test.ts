@@ -23,6 +23,7 @@ const redwoodPlant = {
 	herbLvl: undefined,
 	inputItems: new Bank(),
 	outputLogs: 100,
+	outputLogsQuantity: 100,
 	outputRoots: undefined,
 	givesLogs: true,
 	givesCrops: false,

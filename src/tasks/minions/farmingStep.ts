@@ -1,6 +1,6 @@
 import { randInt, roll } from '@oldschoolgg/rng';
 import { Emoji, Events } from '@oldschoolgg/toolkit';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, itemID, Monsters } from 'oldschooljs';
 
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
@@ -359,13 +359,34 @@ export async function executeFarmingStep({
 		}
 	}
 	if (plantToHarvest.givesLogs && chopped) {
-		const { outputLogs, woodcuttingXp: woodcuttingXpPerLog } = plantToHarvest;
-		if (typeof outputLogs !== 'number' || typeof woodcuttingXpPerLog !== 'number') {
-			throw new Error('Invalid woodcutting data for plant');
+		const logItemID = typeof plantToHarvest.outputLogs === 'number' ? plantToHarvest.outputLogs : itemID('Logs');
+		const xpPerLog = typeof plantToHarvest.woodcuttingXp === 'number' ? plantToHarvest.woodcuttingXp : null;
+		const logsPerTreeCap =
+			typeof plantToHarvest.outputLogsQuantity === 'number' ? plantToHarvest.outputLogsQuantity : null;
+		const depletionChance =
+			typeof plantToHarvest.logDepletionChance === 'number' ? plantToHarvest.logDepletionChance : 1 / 8;
+
+		if (xpPerLog && logsPerTreeCap && logsPerTreeCap > 0) {
+			let totalLogs = 0;
+			const cappedLogsPerTree = Math.max(1, logsPerTreeCap);
+
+			for (let treeIndex = 0; treeIndex < alivePlants; treeIndex++) {
+				let logsFromTree = 0;
+				while (logsFromTree < cappedLogsPerTree) {
+					logsFromTree += 1;
+					if (Math.random() < depletionChance) {
+						break;
+					}
+				}
+				totalLogs += logsFromTree;
+			}
+
+			if (totalLogs > 0) {
+				woodcuttingXp = totalLogs * xpPerLog;
+				loot.add(logItemID, totalLogs);
+				wcBool = true;
+			}
 		}
-		woodcuttingXp = outputLogs * woodcuttingXpPerLog;
-		loot.add('Logs', woodcuttingXp / woodcuttingXpPerLog);
-		wcBool = true;
 	}
 
 	bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);

@@ -43,7 +43,7 @@ export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number
 		case 'flower':
 		case 'herb':
 		case 'tree':
-		case 'fruit':
+		case 'fruit_tree':
 		case 'hardwood':
 		case 'belladonna':
 		case 'calquat':
