@@ -33,15 +33,14 @@ interface BuildSummaryResult {
 	extraInfoLines: string[];
 }
 
+const compostLabels: Record<CropUpgradeType, string> = {
+	compost: 'Compost',
+	supercompost: 'Supercompost',
+	ultracompost: 'Ultracompost'
+};
+
 function formatCompostLabel(upgradeType: CropUpgradeType, quantity: number): string {
-	const label =
-		upgradeType === 'compost'
-			? 'Compost'
-			: upgradeType === 'supercompost'
-				? 'Supercompost'
-				: upgradeType === 'ultracompost'
-					? 'Ultracompost'
-					: upgradeType;
+	const label = compostLabels[upgradeType] ?? upgradeType;
 	return `${quantity.toLocaleString()}x ${label}`;
 }
 
