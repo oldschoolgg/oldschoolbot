@@ -407,8 +407,9 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 		bank.remove('Coins', GP);
 	}
 
+	console.log({ id });
 	const [user] = await prisma.$transaction([
-		global.prisma!.user.upsert({
+		prisma.user.upsert({
 			create: {
 				id,
 				...userData,
@@ -424,7 +425,7 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 				id
 			}
 		}),
-		global.prisma!.userStats.upsert({
+		prisma.userStats.upsert({
 			create: {
 				user_id: BigInt(id)
 			},
@@ -433,7 +434,7 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 				user_id: BigInt(id)
 			}
 		}),
-		global.prisma!.minigame.upsert({
+		prisma.minigame.upsert({
 			create: {
 				user_id: id
 			},

@@ -915,6 +915,8 @@ const allTableCommands: TestCommand[] = [
 				},
 				{}
 			);
+
+			console.log(await prisma.userStats.findUnique({ where: { user_id: BigInt(user.id) } }));
 		}
 	},
 	{
@@ -1232,12 +1234,25 @@ test('test preventing a double (clobber) robochimp migration (two bot-migration)
 
 	// Create source user, and populate data:
 	const sourceUser = await buildBaseUser(sourceUserId);
+	const stats = await prisma.userStats.findFirstOrThrow({
+		where: { user_id: BigInt(sourceUser.id) }
+	});
+	console.log({ stats });
 	const srcHistory = await runRandomTestCommandsOnUser(sourceUser, 5, true);
-
+	expect(
+		await prisma.userStats.count({
+			where: { user_id: BigInt(sourceUser.id) }
+		})
+	).toEqual(1);
 	const sourceData = new UserData(sourceUser);
 	await sourceData.sync();
 
 	const migrateResult = await migrateUser(sourceUser.id, destUserId);
+	expect(
+		await prisma.userStats.count({
+			where: { user_id: BigInt(destUserId) }
+		})
+	).toEqual(1);
 	expect(migrateResult).toEqual(true);
 
 	const destData = new UserData(destUserId);
@@ -1246,10 +1261,18 @@ test('test preventing a double (clobber) robochimp migration (two bot-migration)
 	const compareResult = sourceData.equals(destData);
 	logResult(compareResult, sourceData, destData, srcHistory, []);
 	expect(compareResult.result).toBe(true);
-
+	expect(
+		await prisma.userStats.count({
+			where: { user_id: BigInt(destUserId) }
+		})
+	).toEqual(1);
 	// Now the actual test, everything above has to happen first...
 	await runAllTestCommandsOnUser(sourceUser);
-
+	expect(
+		await prisma.userStats.count({
+			where: { user_id: BigInt(destUserId) }
+		})
+	).toEqual(1);
 	const newSourceData = new UserData(sourceUser);
 	await newSourceData.sync();
 

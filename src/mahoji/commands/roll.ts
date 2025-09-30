@@ -1,5 +1,5 @@
 import { cryptoRng } from '@oldschoolgg/rng';
-import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 export const rollCommand: OSBMahojiCommand = {
 	name: 'roll',
@@ -14,24 +14,10 @@ export const rollCommand: OSBMahojiCommand = {
 			max_value: 1_000_000_000
 		}
 	],
-	run: async ({ options, user, interaction }: CommandRunOptions<{ limit?: number }>) => {
-		await interaction.confirmation({
-			content: 'Are you sure you want to roll a number?',
-			users: ['425134194436341760', user.id]
-		});
+	run: async ({ options, user }: CommandRunOptions<{ limit?: number }>) => {
 		const limit = options.limit ?? 10;
-
-		function asdf() {
-			return `**${user.username}** rolled a random number from 1 to ${limit}...\n\n**${cryptoRng
-				.randInt(1, limit)
-				.toString()}**`;
-		}
-		return interaction.makePaginatedMessage({
-			ephemeral: true,
-			pages: [
-				() => ({ embeds: [new EmbedBuilder().setTitle(asdf()).setDescription(asdf())] }),
-				() => ({ embeds: [new EmbedBuilder().setTitle(asdf()).setDescription(asdf())] })
-			]
-		});
+		return `**${user.username}** rolled a random number from 1 to ${limit}...\n\n**${cryptoRng
+			.randInt(1, limit)
+			.toString()}**`;
 	}
 };
