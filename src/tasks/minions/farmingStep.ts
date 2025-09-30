@@ -99,6 +99,7 @@ function calculateEquipmentModifiers(user: MUser): {
 	let baseBonus = 1;
 	let bonusXpMultiplier = 0;
 	let farmersPiecesCheck = 0;
+	let farmersBonusPercent = 0;
 	const boosts: string[] = [];
 
 	if (user.hasEquippedOrInBank('Magic secateurs')) {
@@ -111,23 +112,36 @@ function calculateEquipmentModifiers(user: MUser): {
 		boosts.push('Farming cape: +5% crop yield');
 	}
 
+	const addFarmersBonus = (bonus: number, countPiece = true) => {
+		bonusXpMultiplier += bonus;
+		farmersBonusPercent += bonus * 100;
+		if (countPiece) {
+			farmersPiecesCheck += 1;
+		}
+	};
+
 	if (user.hasEquippedOrInBank("Farmer's strawhat")) {
-		bonusXpMultiplier += 0.004;
-		farmersPiecesCheck++;
+		addFarmersBonus(0.004);
 	}
 	if (user.hasEquippedOrInBank("Farmer's jacket") || user.hasEquippedOrInBank("Farmer's shirt")) {
-		bonusXpMultiplier += 0.008;
-		farmersPiecesCheck++;
+		addFarmersBonus(0.008);
 	}
 	if (user.hasEquippedOrInBank("Farmer's boro trousers")) {
-		bonusXpMultiplier += 0.006;
-		farmersPiecesCheck++;
+		addFarmersBonus(0.006);
 	}
 	if (user.hasEquippedOrInBank("Farmer's boots")) {
-		bonusXpMultiplier += 0.002;
-		farmersPiecesCheck++;
+		addFarmersBonus(0.002);
 	}
-	if (farmersPiecesCheck === 4) bonusXpMultiplier += 0.005;
+	if (farmersPiecesCheck === 4) {
+		addFarmersBonus(0.005, false);
+	}
+
+	if (farmersBonusPercent > 0) {
+		const formattedBonus = Number.isInteger(farmersBonusPercent)
+			? farmersBonusPercent.toString()
+			: farmersBonusPercent.toFixed(1).replace(/\.0$/, '');
+		boosts.push(`Farmer's outfit: +${formattedBonus}% bonus XP`);
+	}
 
 	return { baseBonus, bonusXpMultiplier, boosts };
 }
