@@ -237,9 +237,9 @@ importers:
 
   packages/rng:
     dependencies:
-      random-js:
-        specifier: 2.1.0
-        version: 2.1.0
+      pure-rand:
+        specifier: ^6.1.0
+        version: 6.1.0
 
   packages/spritesheet:
     dependencies:
@@ -3944,9 +3944,6 @@ packages:
 
   radix3@1.1.2:
     resolution: {integrity: sha512-b484I/7b8rDEdSDKckSSBA8knMpcdsXudlE/LNL639wFoHKwLbEkQFZHWEYwDC0wa0FKUcCY+GAF73Z7wxNVFA==}
-
-  random-js@2.1.0:
-    resolution: {integrity: sha512-CRUyWmnzmZBA7RZSVGq0xMqmgCyPPxbiKNLFA5ud7KenojVX2s7Gv+V7eB52beKTPGxWRnVZ7D/tCIgYJJ8vNQ==}
 
   react-reconciler@0.29.2:
     resolution: {integrity: sha512-zZQqIiYgDCTP/f1N/mAR10nJGrPD2ZR+jDSEsKWJHYC7Cm2wodlwbR3upZRdC3cjIjSlTLNVyO7Iu0Yy7t2AYg==}
@@ -9229,8 +9226,6 @@ snapshots:
   quick-lru@5.1.1: {}
 
   radix3@1.1.2: {}
-
-  random-js@2.1.0: {}
 
   react-reconciler@0.29.2(react@18.3.1):
     dependencies:

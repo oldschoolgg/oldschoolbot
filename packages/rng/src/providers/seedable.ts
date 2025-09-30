@@ -1,40 +1,46 @@
-import { MersenneTwister19937, nodeCrypto, Random } from 'random-js';
+import * as prand from 'pure-rand';
 
 import type { RNGProvider } from '../types.js';
 
 export class SeedableRNG implements RNGProvider {
-	private readonly engine: Random;
+	private rng: prand.RandomGenerator;
 
-	constructor(seed?: number) {
-		this.engine = seed ? new Random(MersenneTwister19937.seed(seed)) : new Random(nodeCrypto);
-	}
-
-	roll(max: number): boolean {
-		return this.engine.bool(1 / max);
-	}
-
-	randInt(min: number, max: number): number {
-		return this.engine.integer(min, max);
-	}
-
-	randFloat(min: number, max: number): number {
-		return this.engine.real(min, max, true);
+	constructor(seed: number) {
+		this.rng = prand.xoroshiro128plus(seed);
 	}
 
 	rand(): number {
-		return this.engine.real(0, 1, false);
+		const g1 = prand.unsafeUniformIntDistribution(0, (1 << 26) - 1, this.rng);
+		const g2 = prand.unsafeUniformIntDistribution(0, (1 << 27) - 1, this.rng);
+		return (g1 * 2 ** 27 + g2) * 2 ** -53;
+	}
+
+	randInt(min: number, max: number): number {
+		return prand.unsafeUniformIntDistribution(min, max, this.rng);
+	}
+
+	randFloat(min: number, max: number): number {
+		return min + (max - min) * this.rand();
+	}
+
+	roll(max: number): boolean {
+		return this.randInt(1, max) === 1;
 	}
 
 	shuffle<T>(array: T[]): T[] {
-		if (array.length === 0) return [] as T[];
-		return this.engine.shuffle([...array]);
+		const arr = [...array];
+		for (let i = arr.length - 1; i > 0; i--) {
+			const j = this.randInt(0, i);
+			[arr[i], arr[j]] = [arr[j], arr[i]];
+		}
+		return arr;
 	}
 
 	pick<T>(array: T[]): T {
-		return this.engine.pick(array);
+		return array[this.randInt(0, array.length - 1)];
 	}
 
 	percentChance(percent: number): boolean {
-		return this.engine.bool(percent / 100);
+		return this.rand() < percent / 100;
 	}
 }
