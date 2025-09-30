@@ -141,7 +141,7 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 	}
 
 	const { item, cost } = buyable;
-	const { pest_control_points: balance } = await user.fetchStats({ pest_control_points: true });
+	const { pest_control_points: balance } = await user.fetchStats();
 	if (balance < cost) {
 		return `You don't have enough Void knight commendation points to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`;
 	}
@@ -236,7 +236,7 @@ export async function pestControlXPCommand(interaction: MInteraction, user: MUse
 	}
 	const xpPerPoint = Math.floor(Math.pow(level, 2) / 600) * xpMultiplier[skillName as keyof typeof xpMultiplier];
 
-	const { pest_control_points: balance } = await user.fetchStats({ pest_control_points: true });
+	const { pest_control_points: balance } = await user.fetchStats();
 	if (balance < amount) {
 		return `You cannot afford this, because you have only ${balance} points.`;
 	}
@@ -261,10 +261,7 @@ ${xpRes}`;
 }
 
 export async function pestControlStatsCommand(user: MUser) {
-	const [kc, stats] = await Promise.all([
-		user.fetchMinigameScore('pest_control'),
-		user.fetchStats({ pest_control_points: true })
-	]);
+	const [kc, stats] = await Promise.all([user.fetchMinigameScore('pest_control'), user.fetchStats()]);
 	return `You have ${stats.pest_control_points} Void knight commendation points.
 You have completed ${kc} games of Pest Control.`;
 }

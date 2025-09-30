@@ -194,7 +194,7 @@ const mentionCommands: MentionCommand[] = [
 			if (items.length === 0) return msg.reply('No results for that item.');
 
 			const gettedItem = items[0];
-			const { sacrificed_bank: sacrificedBank } = await user.fetchStats({ sacrificed_bank: true });
+			const { sacrificed_bank: sacrificedBank } = await user.fetchStats();
 
 			let str = `Found ${items.length} items:\n${items
 				.slice(0, 5)
@@ -252,7 +252,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['cd'],
 		description: 'Shows your cooldowns.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			const stats = await user.fetchStats({ last_daily_timestamp: true, last_tears_of_guthix_timestamp: true });
+			const stats = await user.fetchStats();
 			return msg.reply({
 				content: cooldownTimers
 					.map(cd => {

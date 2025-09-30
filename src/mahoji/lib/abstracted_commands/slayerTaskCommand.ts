@@ -51,7 +51,7 @@ export async function slayerListBlocksCommand(mahojiUser: MUser) {
 export async function slayerStatusCommand(mahojiUser: MUser) {
 	const { currentTask, assignedTask, slayerMaster } = await getUsersCurrentSlayerInfo(mahojiUser.id);
 	const { slayer_points: slayerPoints } = mahojiUser.user;
-	const slayer_streaks = await mahojiUser.fetchStats({ slayer_task_streak: true, slayer_wildy_task_streak: true });
+	const slayer_streaks = await mahojiUser.fetchStats();
 
 	return (
 		`${

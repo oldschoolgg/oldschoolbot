@@ -108,7 +108,7 @@ export async function fightCavesCommand(user: MUser, channelID: string): Command
 
 	let [duration, debugStr] = await determineDuration(user);
 
-	const { fight_caves_attempts: attempts } = await user.fetchStats({ fight_caves_attempts: true });
+	const { fight_caves_attempts: attempts } = await user.fetchStats();
 
 	const jadKC = await user.getKC(Monsters.TzTokJad.id);
 	const zukKC = await user.fetchMinigameScore('inferno');

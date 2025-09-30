@@ -84,10 +84,7 @@ export async function coxBoostsCommand(user: MUser) {
 }
 
 export async function coxStatsCommand(user: MUser) {
-	const [minigameScores, stats] = await Promise.all([
-		user.fetchMinigames(),
-		user.fetchStats({ total_cox_points: true })
-	]);
+	const [minigameScores, stats] = await Promise.all([user.fetchMinigames(), user.fetchStats()]);
 	let totalUniques = 0;
 	const { cl } = user;
 	for (const item of coxUniques) {

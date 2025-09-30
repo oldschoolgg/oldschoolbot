@@ -179,10 +179,7 @@ export async function handleTripFinish(
 	if (perkTier > PerkTier.One) {
 		components.push(...buildClueButtons(loot, perkTier, user));
 
-		const { last_tears_of_guthix_timestamp, last_daily_timestamp } = await user.fetchStats({
-			last_tears_of_guthix_timestamp: true,
-			last_daily_timestamp: true
-		});
+		const { last_tears_of_guthix_timestamp, last_daily_timestamp } = await user.fetchStats();
 
 		// Tears of Guthix start button if ready
 		if (!user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) {

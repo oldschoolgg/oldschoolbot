@@ -7,9 +7,9 @@ import type { GearBank } from '@/lib/structures/GearBank.js';
 import { type Peak, peakFactor } from '@/lib/util/peaks.js';
 
 export async function increaseWildEvasionXp(user: MUser, duration: number) {
-	const oldPkXp: { pk_evasion_exp: number } = await user.fetchStats({ pk_evasion_exp: true });
+	const oldPkXp: { pk_evasion_exp: number } = await user.fetchStats();
 	const newPkXp = Math.floor(Math.min(1_000_000_000, oldPkXp.pk_evasion_exp + duration));
-	user.statsUpdate({ pk_evasion_exp: newPkXp });
+	await user.statsUpdate({ pk_evasion_exp: newPkXp });
 }
 export function calcWildyPKChance(
 	currentPeak: Peak,

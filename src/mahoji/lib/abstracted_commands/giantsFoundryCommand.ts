@@ -132,7 +132,7 @@ export const giantsFoundryBuyables: { name: string; output: Bank; cost: number; 
 
 export async function giantsFoundryStatsCommand(user: MUser) {
 	const weaponsCreated = await user.fetchMinigameScore('giants_foundry');
-	const stats = await user.fetchStats({ gf_weapons_made: true, foundry_reputation: true });
+	const stats = await user.fetchStats();
 	const weaponsMade = stats.gf_weapons_made as GiantsFoundryBank;
 	return `**Giants' Foundry Stats:**
 
@@ -242,7 +242,7 @@ export async function giantsFoundryShopCommand(
 	item: string | undefined,
 	quantity = 1
 ) {
-	const { foundry_reputation: currentUserReputation } = await user.fetchStats({ foundry_reputation: true });
+	const { foundry_reputation: currentUserReputation } = await user.fetchStats();
 	if (!item) {
 		return `You currently have ${currentUserReputation.toLocaleString()} Foundry Reputation.`;
 	}

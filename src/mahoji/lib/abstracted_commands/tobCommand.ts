@@ -247,7 +247,7 @@ async function checkTOBTeam(users: MUser[], isHardMode: boolean, solo: boolean, 
 export async function tobStatsCommand(user: MUser) {
 	const [minigameScores, { tob_attempts: attempts, tob_hard_attempts: hardAttempts }] = await Promise.all([
 		user.fetchMinigames(),
-		user.fetchStats({ tob_attempts: true, tob_hard_attempts: true })
+		user.fetchStats()
 	]);
 	const hardKC = minigameScores.tob_hard;
 	const kc = minigameScores.tob;
@@ -342,7 +342,7 @@ export async function tobStartCommand(
 		users.map(async u => {
 			const [minigameScores, { tob_attempts, tob_hard_attempts }] = await Promise.all([
 				u.fetchMinigames(),
-				u.fetchStats({ tob_attempts: true, tob_hard_attempts: true })
+				u.fetchStats()
 			]);
 			return {
 				user: u,

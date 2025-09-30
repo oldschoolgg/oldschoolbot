@@ -929,7 +929,7 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 						stringMatches(m.name, options.setmonsterkc?.monster ?? '')
 					);
 					if (!monster) return 'Invalid monster';
-					const stats = await user.fetchStats({ monster_scores: true });
+					const stats = await user.fetchStats();
 					await user.statsUpdate({
 						monster_scores: {
 							...(stats.monster_scores as Record<string, unknown>),

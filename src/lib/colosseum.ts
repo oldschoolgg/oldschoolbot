@@ -551,7 +551,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	const venatorBowCharges = calculateVenCharges();
 
 	const res = startColosseumRun({
-		kcBank: new ColosseumWaveBank((await user.fetchStats({ colo_kc_bank: true })).colo_kc_bank as ItemBank),
+		kcBank: new ColosseumWaveBank((await user.fetchStats()).colo_kc_bank as ItemBank),
 		hasScythe,
 		hasTBow,
 		hasVenBow,

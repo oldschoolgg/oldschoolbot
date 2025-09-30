@@ -12,7 +12,7 @@ async function trackSacBank(user: MUser, bank: Bank) {
 		await ClientSettings.updateBankSetting('economyStats_sacrificedBank', bank),
 		user.statsBankUpdate('sacrificed_bank', bank)
 	]);
-	const stats = await user.fetchStats({ sacrificed_bank: true });
+	const stats = await user.fetchStats();
 	return new Bank(stats.sacrificed_bank as ItemBank);
 }
 
@@ -74,7 +74,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{ items?: string; filter?: string; search?: string }>) => {
 		const currentIcon = user.user.minion_icon;
 		const sacVal = Number(user.user.sacrificedValue);
-		const { sacrificed_bank: sacrificedBank } = await user.fetchStats({ sacrificed_bank: true });
+		const { sacrificed_bank: sacrificedBank } = await user.fetchStats();
 		const sacUniqVal = sacrificedBank !== null ? Object.keys(sacrificedBank).length : 0;
 
 		// Show user sacrifice stats if no options are given for /sacrifice

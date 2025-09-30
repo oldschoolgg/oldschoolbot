@@ -9,7 +9,7 @@ export const barbAssaultTask: MinionTask = {
 	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
 		const { channelID, quantity } = data;
 
-		const { honour_level: currentHonourLevel } = await user.fetchStats({ honour_level: true });
+		const { honour_level: currentHonourLevel } = await user.fetchStats();
 
 		let basePoints = 35;
 

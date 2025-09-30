@@ -42,6 +42,7 @@ import type { BankSortMethod } from '@/lib/sorts.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { defaultGear, Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { XPBank } from '@/lib/structures/XPBank.js';
 import type { SkillRequirements, Skills } from '@/lib/types/index.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
@@ -276,12 +277,12 @@ export class MUserClass {
 	}
 
 	async getKC(monsterID: number) {
-		const stats = await this.fetchStats({ monster_scores: true });
+		const stats = await this.fetchStats();
 		return (stats.monster_scores as ItemBank)[monsterID] ?? 0;
 	}
 
 	async getAllKCs() {
-		const stats = await this.fetchStats({ monster_scores: true });
+		const stats = await this.fetchStats();
 		const rawKCs = stats.monster_scores as ItemBank;
 		return new Proxy(rawKCs, {
 			get(target, monsterNameOrId: string) {
@@ -299,7 +300,7 @@ export class MUserClass {
 	}
 
 	async fetchMonsterScores() {
-		const stats = await this.fetchStats({ monster_scores: true });
+		const stats = await this.fetchStats();
 		return stats.monster_scores as ItemBank;
 	}
 
@@ -333,7 +334,7 @@ GROUP BY data->>'ci';`);
 			if (!item) continue;
 			casketsCompleted.add(item.id, res.qty);
 		}
-		const stats = await this.fetchStats({ openable_scores: true });
+		const stats = await this.fetchStats();
 		const opens = new Bank(stats.openable_scores as ItemBank);
 
 		// Actual clues are only ones that you have: received in your cl, completed in trips, and opened.
@@ -360,7 +361,7 @@ GROUP BY data->>'ci';`);
 	}
 
 	async incrementKC(monsterID: number, amountToAdd = 1) {
-		const stats = await this.fetchStats({ monster_scores: true });
+		const stats = await this.fetchStats();
 		const newKCs = new Bank(stats.monster_scores as ItemBank).add(monsterID, amountToAdd);
 		await this.statsUpdate({
 			monster_scores: newKCs.toJSON()
@@ -520,7 +521,7 @@ GROUP BY data->>'ci';`);
 	}
 
 	async incrementCreatureScore(creatureID: number, amountToAdd = 1) {
-		const stats = await this.fetchStats({ creature_scores: true });
+		const stats = await this.fetchStats();
 		await this.statsUpdate({
 			creature_scores: addItemToBank(stats.creature_scores as ItemBank, creatureID, amountToAdd)
 		});
@@ -698,7 +699,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	}
 
 	async getCreatureScore(creatureID: number) {
-		const stats = await this.fetchStats({ creature_scores: true });
+		const stats = await this.fetchStats();
 		return (stats.creature_scores as ItemBank)[creatureID] ?? 0;
 	}
 
@@ -748,13 +749,11 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		this.updateProperties();
 	}
 
-	async fetchStats<T extends Prisma.UserStatsSelect>(selectKeys: T): Promise<SelectedUserStats<T>> {
-		const keysToSelect = Object.keys(selectKeys).length === 0 ? { user_id: true } : selectKeys;
+	async fetchStats() {
 		let result = await prisma.userStats.findFirst({
 			where: {
 				user_id: BigInt(this.id)
-			},
-			select: keysToSelect
+			}
 		});
 
 		if (!result) {
@@ -765,12 +764,15 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 				create: {
 					user_id: BigInt(this.id)
 				},
-				update: {},
-				select: keysToSelect
+				update: {}
 			});
 		}
 
-		return result as unknown as SelectedUserStats<T>;
+		return result;
+	}
+
+	async fetchMStats() {
+		return new MUserStats(await this.fetchStats());
 	}
 
 	get logName() {
@@ -1075,7 +1077,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 
 	async statsBankUpdate(key: JsonKeys<UserStats>, bank: Bank) {
 		if (!key) throw new Error('No key provided to userStatsBankUpdate');
-		const stats = await this.fetchStats({ [key]: true });
+		const stats = await this.fetchStats();
 		const currentItemBank = stats[key] as ItemBank;
 		if (!isObject(currentItemBank)) {
 			throw new Error(`Key ${key} is not an object.`);

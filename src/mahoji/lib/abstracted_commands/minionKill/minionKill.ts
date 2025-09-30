@@ -66,7 +66,7 @@ export async function minionKillCommand(
 
 	if (slayerInfo.assignedTask === null && onTask) return 'You are no longer on a slayer task for this monster!';
 
-	const stats: { pk_evasion_exp: number } = await user.fetchStats({ pk_evasion_exp: true });
+	const stats: { pk_evasion_exp: number } = await user.fetchStats();
 
 	const royalTitansGroupIDs = [Monsters.Branda.id, Monsters.Eldric.id, Monsters.RoyalTitans.id];
 

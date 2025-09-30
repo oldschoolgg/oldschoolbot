@@ -24,7 +24,7 @@ export const giantsFoundryTask: MinionTask = {
 		let weaponName = '';
 		let highestQuality = 0;
 		let highestQualitySword = '';
-		const currentStats = await user.fetchStats({ gf_weapons_made: true });
+		const currentStats = await user.fetchStats();
 		const newWeapons = clone(currentStats.gf_weapons_made) as GiantsFoundryBank;
 
 		for (let i = 0; i < quantity; i++) {

@@ -8,7 +8,7 @@ import { DiaryID } from '@/lib/minions/types.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import Skillcapes from '@/lib/skilling/skillcapes.js';
 import Agility from '@/lib/skilling/skills/agility.js';
-import { MUserStats } from '@/lib/structures/MUserStats.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { Skills } from '@/lib/types/index.js';
 import { formatList, formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
 
@@ -137,7 +137,7 @@ export async function userhasDiaryTier(
 	tier: [DiaryID, DiaryTierName] | DiaryTier
 ): Promise<[boolean, string, Diary]> {
 	const result = userhasDiaryTierSync(user, tier, {
-		stats: await MUserStats.fromID(user.id),
+		stats: await user.fetchMStats(),
 		minigameScores: await user.fetchMinigames()
 	});
 	return [result.hasDiary, result.reasons, result.diaryGroup];
@@ -1144,7 +1144,7 @@ export const diaries = Object.values(diariesObject);
 
 export async function userhasDiaryIDTier(user: MUser, diaryID: DiaryID, tier: DiaryTierName) {
 	return userhasDiaryTierSync(user, [diaryID, tier], {
-		stats: await MUserStats.fromID(user.id),
+		stats: await user.fetchMStats(),
 		minigameScores: await user.fetchMinigames()
 	});
 }

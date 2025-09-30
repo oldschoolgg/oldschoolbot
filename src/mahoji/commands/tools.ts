@@ -1039,7 +1039,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			}
 			if (patron.sacrificed_bank) {
 				if (user.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
-				const sacBank = await user.fetchStats({ sacrificed_bank: true });
+				const sacBank = await user.fetchStats();
 				const image = await makeBankImage({
 					bank: new Bank(sacBank.sacrificed_bank as ItemBank),
 					title: 'Your Sacrificed Items'

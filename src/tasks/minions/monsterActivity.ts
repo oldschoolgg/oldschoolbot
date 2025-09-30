@@ -14,7 +14,7 @@ import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { type CurrentSlayerInfo, calculateSlayerPoints, getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { type KCBank, safelyMakeKCBank } from '@/lib/structures/KCBank.js';
-import { MUserStats } from '@/lib/structures/MUserStats.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { ashSanctifierEffect } from '@/lib/util/ashSanctifier.js';
@@ -443,7 +443,7 @@ export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
 	async run(data: MonsterActivityTaskOptions, { user, handleTripFinish }) {
 		const { duration } = data;
-		const stats = await MUserStats.fromID(data.userID);
+		const stats = await user.fetchMStats();
 		const minigameScores = await user.fetchMinigames();
 		const slayerInfo = await getUsersCurrentSlayerInfo(user.id);
 		const monster = killableMonsters.find(mon => mon.id === data.mi)!;

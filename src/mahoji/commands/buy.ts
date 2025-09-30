@@ -6,7 +6,6 @@ import Buyables from '@/lib/data/buyables/buyables.js';
 import { tripBuyables } from '@/lib/data/buyables/tripBuyables.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import { Minigames } from '@/lib/settings/minigames.js';
-import { MUserStats } from '@/lib/structures/MUserStats.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { buyFossilIslandNotes } from '@/mahoji/lib/abstracted_commands/buyFossilIslandNotes.js';
 import { buyingTripCommand } from '@/mahoji/lib/abstracted_commands/buyingTripCommand.js';
@@ -87,7 +86,7 @@ export const buyCommand: OSBMahojiCommand = {
 
 		if (buyable.customReq) {
 			await interaction.defer();
-			const [hasCustomReq, reason] = await buyable.customReq(user, await MUserStats.fromID(user.id));
+			const [hasCustomReq, reason] = await buyable.customReq(user, await user.fetchMStats());
 			if (!hasCustomReq) {
 				return reason!;
 			}
@@ -169,7 +168,7 @@ export const buyCommand: OSBMahojiCommand = {
 		let costBankExcludingGP: Bank | undefined = totalCost.clone().remove('Coins', totalCost.amount('Coins'));
 		if (costBankExcludingGP.length === 0) costBankExcludingGP = undefined;
 
-		const currentStats = await user.fetchStats({ buy_cost_bank: true, buy_loot_bank: true });
+		const currentStats = await user.fetchStats();
 		await Promise.all([
 			await ClientSettings.updateBankSetting('buy_cost_bank', totalCost),
 			await ClientSettings.updateBankSetting('buy_loot_bank', outItems),

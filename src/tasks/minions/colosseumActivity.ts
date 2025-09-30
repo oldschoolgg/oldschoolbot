@@ -27,7 +27,7 @@ export const colosseumTask: MinionTask = {
 		for (let i = 0; i < (diedAt ? diedAt - 1 : 12); i++) {
 			newKCs.add(i + 1);
 		}
-		const stats = await user.fetchStats({ colo_kc_bank: true, colo_max_glory: true });
+		const stats = await user.fetchStats();
 		for (const [key, value] of Object.entries(stats.colo_kc_bank as ItemBank))
 			newKCs.add(Number.parseInt(key), value);
 		await user.statsUpdate({ colo_kc_bank: newKCs._bank });

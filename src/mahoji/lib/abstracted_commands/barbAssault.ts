@@ -96,7 +96,7 @@ export const GambleTiers = [
 ];
 
 export async function barbAssaultLevelCommand(user: MUser) {
-	const stats = await user.fetchStats({ honour_level: true, honour_points: true });
+	const stats = await user.fetchStats();
 	const currentLevel = stats.honour_level;
 	if (currentLevel === 5) {
 		return "You've already reached the highest possible Honour level.";
@@ -134,7 +134,7 @@ export async function barbAssaultBuyCommand(interaction: MInteraction, user: MUs
 	}
 
 	const { item, cost } = buyable;
-	const stats = await user.fetchStats({ honour_points: true });
+	const stats = await user.fetchStats();
 	const balance = stats.honour_points;
 	if (balance < cost * quantity) {
 		return `You don't have enough Honour Points to buy ${quantity.toLocaleString()}x ${item.name}. You need ${(cost * quantity).toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
@@ -158,7 +158,7 @@ export async function barbAssaultGambleCommand(interaction: MInteraction, user: 
 	if (!buyable) {
 		return 'You can gamble your points for the Low, Medium and High tiers. For example, `/minigames gamble low`.';
 	}
-	const { honour_points: balance } = await user.fetchStats({ honour_points: true });
+	const { honour_points: balance } = await user.fetchStats();
 	const { cost, name, table } = buyable;
 	if (balance < cost * quantity) {
 		return `You don't have enough Honour Points to do ${quantity.toLocaleString()}x ${name} gamble. You need ${(cost * quantity).toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
@@ -226,7 +226,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 		boosts.push(`${strengthPercent}% for ${user.usernameOrMention}'s melee gear`);
 	}
 	// Up to 30% speed boost for honour level
-	const stats = await user.fetchStats({ honour_level: true });
+	const stats = await user.fetchStats();
 	const totalLevelPercent = stats.honour_level * 6;
 	boosts.push(`${totalLevelPercent}% for honour level`);
 	waveTime = reduceNumByPercent(waveTime, totalLevelPercent);
@@ -281,7 +281,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 }
 
 export async function barbAssaultStatsCommand(user: MUser) {
-	const stats = await user.fetchStats({ honour_level: true, honour_points: true, high_gambles: true });
+	const stats = await user.fetchStats();
 	return `**Honour Points:** ${stats.honour_points}
 **Honour Level:** ${stats.honour_level}
 **High Gambles:** ${stats.high_gambles}`;

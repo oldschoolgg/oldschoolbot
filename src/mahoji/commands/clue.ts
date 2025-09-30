@@ -296,7 +296,7 @@ export const clueCommand: OSBMahojiCommand = {
 
 		const boosts = [];
 
-		const stats = await user.fetchStats({ openable_scores: true });
+		const stats = await user.fetchStats();
 		const currentClueScore = (stats.openable_scores as ItemBank)[clueTier.id] ?? 1;
 		let timePerClue = clueTier.timeToFinish;
 		const learningReductionPercent = Math.min(

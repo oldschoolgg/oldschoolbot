@@ -96,7 +96,7 @@ export class UpdateBank {
 		let userStatsUpdates: Prisma.UserStatsUpdateInput = {};
 		// KC
 		if (this.kcBank.length() > 0) {
-			const currentScores = (await user.fetchStats({ monster_scores: true })).monster_scores as ItemBank;
+			const currentScores = (await user.fetchStats()).monster_scores as ItemBank;
 			for (const [monster, kc] of this.kcBank.entries()) {
 				currentScores[monster] = (currentScores[monster] ?? 0) + kc;
 			}

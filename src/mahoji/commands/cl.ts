@@ -3,7 +3,6 @@ import { toTitleCase } from '@oldschoolgg/toolkit';
 import type { CollectionLogType } from '@/lib/collectionLogTask.js';
 import { CollectionLogFlags, clImageGenerator, collectionLogTypes } from '@/lib/collectionLogTask.js';
 import { allCollectionLogs } from '@/lib/data/Collections.js';
-import { MUserStats } from '@/lib/structures/MUserStats.js';
 
 export const collectionLogCommand: OSBMahojiCommand = {
 	name: 'cl',
@@ -92,7 +91,7 @@ export const collectionLogCommand: OSBMahojiCommand = {
 			type: options.type ?? 'collection',
 			flags,
 			collection: options.name,
-			stats: await MUserStats.fromID(user.id)
+			stats: await user.fetchMStats()
 		});
 		return result;
 	}

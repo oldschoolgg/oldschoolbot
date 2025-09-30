@@ -7,11 +7,7 @@ import { mentionCommand } from '@/lib/discord/utils.js';
 import { petMessage } from '@/lib/util/displayCluesAndPets.js';
 
 export async function capeGambleStatsCommand(user: MUser) {
-	const stats = await user.fetchStats({
-		firecapes_sacrificed: true,
-		infernal_cape_sacrifices: true,
-		quivers_sacrificed: true
-	});
+	const stats = await user.fetchStats();
 
 	return `You can gamble Fire capes, Infernal capes and Quivers like this: ${mentionCommand('gamble', 'item')}.
 

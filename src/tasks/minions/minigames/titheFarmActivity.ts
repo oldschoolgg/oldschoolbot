@@ -12,7 +12,7 @@ export const titheFarmTask: MinionTask = {
 		const baseHarvest = 85;
 		const lootStr: string[] = [];
 
-		const userStats = await user.fetchStats({ tithe_farm_points: true, tithe_farms_completed: true });
+		const userStats = await user.fetchStats();
 
 		const farmingLvl = user.skillsAsLevels.farming;
 		const titheFarmsCompleted = userStats.tithe_farms_completed;

@@ -11,7 +11,7 @@ async function determineDuration(user: MUser): Promise<[number, string[]]> {
 	const boostStr = [];
 
 	// Reduce time based on tithe farm completions
-	const { tithe_farms_completed: titheFarmsCompleted } = await user.fetchStats({ tithe_farms_completed: true });
+	const { tithe_farms_completed: titheFarmsCompleted } = await user.fetchStats();
 	const percentIncreaseFromCompletions = Math.floor(Math.min(50, titheFarmsCompleted) / 2) / 100;
 	baseTime = Math.floor(baseTime * (1 - percentIncreaseFromCompletions));
 	Math.floor(percentIncreaseFromCompletions * 100) > 0
@@ -75,7 +75,7 @@ export async function titheFarmShopCommand(
 	const loot = new Bank(buyable.outputItems).multiply(quantity);
 	const cost = buyable.titheFarmPoints * quantity;
 
-	const { tithe_farm_points: titheFarmPoints } = await user.fetchStats({ tithe_farm_points: true });
+	const { tithe_farm_points: titheFarmPoints } = await user.fetchStats();
 
 	if (titheFarmPoints < cost) {
 		return `You need ${cost} Tithe Farm points to make this purchase.`;

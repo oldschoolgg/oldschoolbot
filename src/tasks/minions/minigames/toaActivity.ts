@@ -147,7 +147,7 @@ export const toaTask: MinionTask = {
 
 			itemsAddedTeamLoot.add(userID, itemsAdded);
 
-			const currentStats = await user.fetchStats({ toa_raid_levels_bank: true, toa_loot: true });
+			const currentStats = await user.fetchStats();
 			await user.statsUpdate({
 				toa_raid_levels_bank: new Bank()
 					.add(currentStats.toa_raid_levels_bank as ItemBank)

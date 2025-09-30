@@ -1166,7 +1166,7 @@ export async function toaStartCommand(
 		users.map(async i => ({
 			user: i,
 			minigameScores: await i.fetchMinigames(),
-			toaAttempts: (await i.fetchStats({ toa_attempts: true })).toa_attempts
+			toaAttempts: (await i.fetchStats()).toa_attempts
 		}))
 	);
 	const baseDuration = createTOATeam({
@@ -1583,12 +1583,7 @@ function calculateBoostString(user: MUser) {
 
 export async function toaHelpCommand(user: MUser, channelID: string) {
 	const gearStats = calculateUserGearPercents(user.gear, 300);
-	const stats = await user.fetchStats({
-		total_toa_points: true,
-		total_toa_duration_minutes: true,
-		toa_attempts: true,
-		toa_raid_levels_bank: true
-	});
+	const stats = await user.fetchStats();
 	const { entryKC, normalKC, expertKC, totalKC } = getToaKCs(stats.toa_raid_levels_bank);
 
 	let totalUniques = 0;

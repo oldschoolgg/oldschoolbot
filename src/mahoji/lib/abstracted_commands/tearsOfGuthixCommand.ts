@@ -48,7 +48,7 @@ function getTearsOfGuthixMissingSkillMessage(user: MUser): string | null {
 
 export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
-	const currentStats = await user.fetchStats({ last_tears_of_guthix_timestamp: true });
+	const currentStats = await user.fetchStats();
 	const lastPlayedDate = Number(currentStats.last_tears_of_guthix_timestamp);
 	const nextReset = getNextUTCReset(lastPlayedDate, TEARS_OF_GUTHIX_CD);
 

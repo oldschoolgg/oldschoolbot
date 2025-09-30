@@ -13,7 +13,7 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 export async function isUsersDailyReady(
 	user: MUser
 ): Promise<{ isReady: true } | { isReady: false; durationUntilReady: number }> {
-	const stats = await user.fetchStats({ last_daily_timestamp: true });
+	const stats = await user.fetchStats();
 	const currentDate = Date.now();
 	const lastVoteDate = Number(stats.last_daily_timestamp);
 	const difference = currentDate - lastVoteDate;
