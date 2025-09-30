@@ -28,6 +28,57 @@ interface PlannedAutoFarmStep {
 	boosts: string[];
 }
 
+interface BuildSummaryResult {
+	summaryLine: string;
+	extraInfoLines: string[];
+}
+
+function formatCompostLabel(upgradeType: CropUpgradeType, quantity: number): string {
+	const label =
+		upgradeType === 'compost'
+			? 'Compost'
+			: upgradeType === 'supercompost'
+				? 'Supercompost'
+				: upgradeType === 'ultracompost'
+					? 'Ultracompost'
+					: upgradeType;
+	return `${quantity.toLocaleString()}x ${label}`;
+}
+
+function shouldHideInfoLine(line: string): boolean {
+	const normalized = line.toLowerCase();
+	return (
+		normalized.startsWith('you are treating your patches with') ||
+		normalized.startsWith('you are paying a nearby farmer') ||
+		normalized.startsWith('you may need to pay a nearby farmer')
+	);
+}
+
+function buildSummaryForStep(index: number, step: PlannedAutoFarmStep): BuildSummaryResult {
+	const detailParts: string[] = [];
+	if (step.upgradeType) {
+		detailParts.push(formatCompostLabel(step.upgradeType, step.quantity));
+	}
+	if (step.didPay && step.plant.protectionPayment) {
+		const paymentCost = step.plant.protectionPayment.clone().multiply(step.quantity);
+		detailParts.push(`${paymentCost}`);
+	}
+	if (step.treeChopFee > 0) {
+		detailParts.push(`Up to ${step.treeChopFee.toLocaleString()} GP to remove previous trees`);
+	}
+
+	let summaryLine = `${index + 1}. ${step.friendlyName}: ${step.quantity.toLocaleString()}x ${step.plant.name}`;
+	if (detailParts.length > 0) {
+		summaryLine += ` (${detailParts.join(' + ')})`;
+	}
+
+	const extraInfoLines = step.info
+		.filter(infoLine => !shouldHideInfoLine(infoLine))
+		.map(infoLine => `${step.friendlyName}: ${infoLine}`);
+
+	return { summaryLine, extraInfoLines };
+}
+
 export async function autoFarm(
 	user: MUser,
 	patchesDetailed: IPatchDataDetailed[],
@@ -64,7 +115,6 @@ export async function autoFarm(
 	const compostTier = (user.user.minion_defaultCompostToUse as CropUpgradeType) ?? 'compost';
 	const plannedSteps: PlannedAutoFarmStep[] = [];
 	const usedPatches = new Set<FarmingPatchName>();
-	const summaryLines: string[] = [];
 	let totalDuration = 0;
 	const totalCost = new Bank();
 	const remainingBank = baseBank.clone();
@@ -151,7 +201,6 @@ export async function autoFarm(
 			boosts: boostStr
 		});
 		usedPatches.add(patchDetailed.patchName);
-		summaryLines.push(`${plannedSteps.length}. ${patchDetailed.friendlyName}: ${quantity}x ${plant.name}`);
 	}
 
 	if (plannedSteps.length === 0) {
@@ -210,13 +259,23 @@ export async function autoFarm(
 	});
 
 	const uniqueBoosts = [...new Set(plannedSteps.flatMap(step => step.boosts))];
-	const infoDetails = plannedSteps.flatMap(step => step.info.map(line => `${step.friendlyName}: ${line}`));
+	const summaryLines: string[] = [];
+	const infoDetails: string[] = [];
 
-	let response = `${user.minionName} is now auto farming the following patches:\n${summaryLines.join('\n')}\nIt'll take around ${formatDuration(totalDuration)} to finish.`;
+	plannedSteps.forEach((step, index) => {
+		const { summaryLine, extraInfoLines } = buildSummaryForStep(index, step);
+		summaryLines.push(summaryLine);
+		infoDetails.push(...extraInfoLines);
+	});
+
+	let response = `${user}, your minion is now taking around ${formatDuration(totalDuration)} to auto farm the following patches:\n${summaryLines.join('\n')}`;
 
 	if (infoDetails.length > 0) {
-		response += `\n\n${infoDetails.join('\n')}`;
+		response += `
+
+${infoDetails.join('\n')}`;
 	}
+
 	if (uniqueBoosts.length > 0) {
 		response += `\n\n**Boosts**: ${uniqueBoosts.join(', ')}`;
 	}
