@@ -106,31 +106,30 @@ export const lapsCommand: OSBMahojiCommand = {
 		let alchResult: AlchResult | null = null;
 		const infoMessages: string[] = [];
 		const preferences = getZeroTimeActivityPreferences(user);
-		const failureMessages: string[] = [];
 
 		for (const preference of preferences) {
 			const label = preference.role === 'primary' ? 'Primary' : 'Fallback';
 
 			if (preference.type === 'alch' && course.name === 'Ape Atoll Agility Course') {
-				failureMessages.push(`${label} alching is unavailable on this course.`);
+				infoMessages.push(`${label} alching is unavailable on this course.`);
 				continue;
 			}
 
 			const attemptOptions: AttemptZeroTimeActivityOptions =
 				preference.type === 'alch'
 					? {
-							user,
-							duration,
-							preference: preference as ZeroTimeActivityPreference & { type: 'alch' },
-							variant: 'agility',
-							itemsPerHour: AGILITY_ALCHES_PER_HOUR
-						}
+						user,
+						duration,
+						preference: preference as ZeroTimeActivityPreference & { type: 'alch' },
+						variant: 'agility',
+						itemsPerHour: AGILITY_ALCHES_PER_HOUR
+					  }
 					: {
-							user,
-							duration,
-							preference: preference as ZeroTimeActivityPreference & { type: 'fletch' },
-							itemsPerHour: AGILITY_FLETCH_ITEMS_PER_HOUR
-						};
+						user,
+						duration,
+						preference: preference as ZeroTimeActivityPreference & { type: 'fletch' },
+						itemsPerHour: AGILITY_FLETCH_ITEMS_PER_HOUR
+					  };
 
 			const attempt = attemptZeroTimeActivity(attemptOptions);
 
@@ -144,7 +143,7 @@ export const lapsCommand: OSBMahojiCommand = {
 			}
 
 			if (attempt.message) {
-				failureMessages.push(`${label} ${preference.type}: ${attempt.message}`);
+				infoMessages.push(`${label} ${preference.type}: ${attempt.message}`);
 			}
 		}
 
@@ -168,12 +167,9 @@ export const lapsCommand: OSBMahojiCommand = {
 			updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
 		}
 
-		if (failureMessages.length > 0) {
-			infoMessages.push(...failureMessages);
-		}
-
 		if (infoMessages.length > 0) {
-			response += `\n\n${infoMessages.join('\n')}`;
+			response += `\n\n${infoMessages.join('
+')}`;
 		}
 
 		const zeroTimePreferenceRole = fletchResult?.preference.role ?? alchResult?.preference.role ?? null;
