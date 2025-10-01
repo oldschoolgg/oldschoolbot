@@ -7,30 +7,23 @@ import { userhasDiaryTier } from '@/lib/diaries.js';
 import { DiaryID } from '@/lib/minions/types.js';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { FightCavesActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { fightCavesCost } from '@/mahoji/lib/abstracted_commands/fightCavesCommand.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const TokkulID = itemID('Tokkul');
 
 export const fightCavesTask: MinionTask = {
 	type: 'FightCaves',
-	async run(data: FightCavesActivityTaskOptions) {
-		const { userID, channelID, jadDeathChance, preJadDeathTime, duration, fakeDuration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: FightCavesActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelID, jadDeathChance, preJadDeathTime, duration, fakeDuration } = data;
 
 		const tokkulReward = randInt(2000, 6000);
 		const diedToJad = percentChance(jadDeathChance);
 
-		const { fight_caves_attempts: newFightCavesAttempts } = await userStatsUpdate(
-			user.id,
-			{
-				fight_caves_attempts: {
-					increment: 1
-				}
-			},
-			{ fight_caves_attempts: true }
-		);
+		const { fight_caves_attempts: newFightCavesAttempts } = await user.statsUpdate({
+			fight_caves_attempts: {
+				increment: 1
+			}
+		});
 
 		const attemptsStr = `You have tried Fight caves ${newFightCavesAttempts}x times`;
 
@@ -153,15 +146,11 @@ export const fightCavesTask: MinionTask = {
 
 		let msg = `${rangeXP}. ${hpXP}.`;
 		if (isOnTask) {
-			const { slayer_task_streak: currentStreak } = await userStatsUpdate(
-				user.id,
-				{
-					slayer_task_streak: {
-						increment: 1
-					}
-				},
-				{ slayer_task_streak: true }
-			);
+			const { slayer_task_streak: currentStreak } = await user.statsUpdate({
+				slayer_task_streak: {
+					increment: 1
+				}
+			});
 
 			// 25,250 for Jad + 11,760 for waves.
 			const slayerXP = 37_010;

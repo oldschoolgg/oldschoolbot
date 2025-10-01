@@ -1,4 +1,6 @@
 {
+	"bso/Miscellaneous/Events.md": ["TastyPumPum"],
+	"getting-started/BSO.mdx": ["TastyPumPum", "Magnaboy"],
 	"index.mdx": ["TastyPumPum", "Magnaboy", "luna"],
 	"osb/Buyables/buyable-items-and-shop-pricing-mechanics.mdx": ["TastyPumPum"],
 	"osb/Buyables/buyables.md": ["TastyPumPum"],
@@ -42,7 +44,6 @@
 	"osb/GettingStarted/bank-background.md": ["DayV", "Magnaboy"],
 	"getting-started/FAQ.md": ["DayV", "Magnaboy"],
 	"bso/Minigames/turaels-trials.md": ["TastyPumPum"],
-	"bso/Miscellaneous/Events.md": ["TastyPumPum"],
 	"bso/changelog.mdx": ["TastyPumPum", "Magnaboy"],
 	"getting-started/changelog.mdx": ["TastyPumPum", "Magnaboy", "alexandermenteer"],
 	"osb/Miscellaneous/achievement-diaries.md": ["TastyPumPum"],

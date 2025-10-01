@@ -5,16 +5,15 @@ import { describe, expect, test } from 'vitest';
 import { runRolesTask } from '../../src/lib/rolesTask.js';
 import type { MinigameName } from '../../src/lib/settings/minigames.js';
 import { Minigames } from '../../src/lib/settings/minigames.js';
-import { userStatsBankUpdate } from '../../src/mahoji/mahojiSettings.js';
 import { createTestUser, mockedId } from './util.js';
 
 describe.skip('Roles Task', async () => {
 	test('Should not throw', async () => {
 		const user = await createTestUser();
-		await userStatsBankUpdate(user, 'sacrificed_bank', new Bank().add('Coal', 10_000));
+		await user.statsBankUpdate('sacrificed_bank', new Bank().add('Coal', 10_000));
 		const ironUser = await createTestUser();
 		await ironUser.update({ minion_ironman: true, sacrificedValue: 1_000_000 });
-		await userStatsBankUpdate(ironUser, 'sacrificed_bank', new Bank().add('Coal', 10_000));
+		await ironUser.statsBankUpdate('sacrificed_bank', new Bank().add('Coal', 10_000));
 
 		// Create minigame scores:
 		const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');

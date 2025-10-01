@@ -3,8 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
 import type { CreateForestersRationsActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export async function forestersRationCommand({
 	user,
@@ -29,7 +27,7 @@ export async function forestersRationCommand({
 	}
 
 	const rationCookTime = Time.Second * 1.9;
-	const maxTripLength = calcMaxTripLength(user, 'Cooking');
+	const maxTripLength = user.calcMaxTripLength('Cooking');
 
 	if (!quantity) quantity = Math.floor(maxTripLength / rationCookTime);
 
@@ -61,9 +59,9 @@ export async function forestersRationCommand({
 	}
 	await user.removeItemsFromBank(finalCost);
 
-	await addSubTaskToActivityTask<CreateForestersRationsActivityTaskOptions>({
+	await ActivityManager.startTrip<CreateForestersRationsActivityTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		rationName: forestryFood.name,
 		quantity,
 		duration,

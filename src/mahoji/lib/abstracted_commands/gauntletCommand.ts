@@ -3,8 +3,6 @@ import { calcWhatPercent, formatDuration, reduceNumByPercent, Time, toTitleCase 
 
 import { BitField } from '@/lib/constants.js';
 import type { GauntletOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 const baseRequirements = {
@@ -120,7 +118,7 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 	// Add a 5% variance to account for randomness of gauntlet
 	const gauntletLength = randomVariation(baseLength, 5);
 
-	const maxTripLength = calcMaxTripLength(user, 'Gauntlet');
+	const maxTripLength = user.calcMaxTripLength('Gauntlet');
 
 	const quantity = Math.floor(maxTripLength / gauntletLength);
 	const duration = quantity * gauntletLength;
@@ -133,9 +131,9 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 		)}.`;
 	}
 
-	await addSubTaskToActivityTask<GauntletOptions>({
+	await ActivityManager.startTrip<GauntletOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'Gauntlet',

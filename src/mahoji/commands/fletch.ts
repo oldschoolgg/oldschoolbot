@@ -1,13 +1,10 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 
 import { Fletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import Fletching from '@/lib/skilling/skills/fletching/index.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import type { FletchingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export const fletchCommand: OSBMahojiCommand = {
 	name: 'fletch',
@@ -19,7 +16,7 @@ export const fletchCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The item you want to Fletch.',
 			required: true,
@@ -33,15 +30,14 @@ export const fletchCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to fletch (optional).',
 			required: false,
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const fletchable = Fletching.Fletchables.find(item => stringMatches(item.name, options.name));
 
 		if (!fletchable) return 'That is not a valid fletchable item.';
@@ -74,7 +70,7 @@ export const fletchCommand: OSBMahojiCommand = {
 			timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6;
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Fletching');
+		const maxTripLength = user.calcMaxTripLength('Fletching');
 		let { quantity } = options;
 
 		if (!quantity) {
@@ -101,10 +97,10 @@ export const fletchCommand: OSBMahojiCommand = {
 
 		await user.removeItemsFromBank(itemsNeeded);
 
-		await addSubTaskToActivityTask<FletchingActivityTaskOptions>({
+		await ActivityManager.startTrip<FletchingActivityTaskOptions>({
 			fletchableName: fletchable.name,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			quantity,
 			duration,
 			type: 'Fletching'

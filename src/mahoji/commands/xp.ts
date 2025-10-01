@@ -1,4 +1,3 @@
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Hiscores, type SkillsScore } from 'oldschooljs/hiscores';
 
 import { statsEmbed } from '@/lib/util/statsEmbed.js';
@@ -11,13 +10,13 @@ export const xpCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'rsn',
 			description: 'The runescape username to check',
 			required: true
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'to_99',
 			description: 'Only show xp remaining until level 99.',
 			required: false

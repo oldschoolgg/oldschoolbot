@@ -4,7 +4,6 @@ import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minio
 
 export const brewingTask: MinionTask = {
 	type: 'TroubleBrewing',
-	isNew: true,
 	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
 		const { channelID, quantity } = data;
 		await user.incrementMinigameScore('trouble_brewing', quantity);

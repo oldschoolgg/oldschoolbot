@@ -1,5 +1,4 @@
 import {
-	allAbstractCommands,
 	channelIsSendable,
 	formatDuration,
 	hasBanMemberPerms,
@@ -10,17 +9,7 @@ import {
 	uniqueArr
 } from '@oldschoolgg/toolkit';
 import type { activity_type_enum } from '@prisma/client';
-import {
-	ApplicationCommandOptionType,
-	bold,
-	type ChatInputCommandInteraction,
-	EmbedBuilder,
-	type Guild,
-	type HexColorString,
-	inlineCode,
-	resolveColor,
-	type User
-} from 'discord.js';
+import { bold, EmbedBuilder, type Guild, type HexColorString, inlineCode, resolveColor } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
@@ -28,28 +17,29 @@ import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BitField, globalConfig, ParsedCustomEmojiWithGroups, PerkTier } from '@/lib/constants.js';
 import { DynamicButtons } from '@/lib/DynamicButtons.js';
 import { Eatables } from '@/lib/data/eatables.js';
+import { itemOption } from '@/lib/discord/index.js';
 import { CombatOptionsArray, CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerUtil.js';
 import { BankSortMethods } from '@/lib/sorts.js';
 import { emojiServers } from '@/lib/util/cachedUserIDs.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
+import { allCommands } from '@/mahoji/commands/allCommands.js';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '@/mahoji/guildSettings.js';
-import { itemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
-import { mahojiUsersSettingsFetch, patronMsg } from '@/mahoji/mahojiSettings.js';
+import { patronMsg } from '@/mahoji/mahojiSettings.js';
 
 interface UserConfigToggle {
 	name: string;
 	bit: BitField;
 	canToggle?: (
 		user: MUser,
-		interaction?: ChatInputCommandInteraction
+		interaction?: MInteraction
 	) => Promise<{ result: false; message: string } | { result: true; message?: string }>;
 }
+
 const toggles: UserConfigToggle[] = [
 	{
 		name: 'Disable Random Events',
@@ -108,7 +98,7 @@ const toggles: UserConfigToggle[] = [
 				];
 				const channel = globalClient.channels.cache.get(interaction.channelId);
 				if (!channelIsSendable(channel)) return { result: false, message: 'Could not find channel.' };
-				await deferInteraction(interaction);
+				await interaction.defer();
 				const buttons = new DynamicButtons({
 					channel: channel,
 					usersWhoCanInteract: [user.id],
@@ -171,7 +161,7 @@ const toggles: UserConfigToggle[] = [
 	}
 ];
 
-async function handleToggle(user: MUser, name: string, interaction?: ChatInputCommandInteraction) {
+async function handleToggle(user: MUser, name: string, interaction?: MInteraction) {
 	const toggle = toggles.find(i => stringMatches(i.name, name));
 	if (!toggle) return 'Invalid toggle name.';
 	let messageExtra = '';
@@ -530,9 +520,7 @@ async function handleCommandEnable(
 	if (!(await hasBanMemberPerms(user.id, guild)))
 		return "You need to be 'Ban Member' permissions to use this command.";
 	const settings = await mahojiGuildSettingsFetch(guild);
-	const command = allAbstractCommands(globalClient.mahojiClient).find(
-		i => i.name.toLowerCase() === commandName.toLowerCase()
-	);
+	const command = allCommands.find(i => i.name.toLowerCase() === commandName.toLowerCase());
 	if (!command) return "That's not a valid command.";
 
 	if (choice === 'enable') {
@@ -557,10 +545,9 @@ async function handleCommandEnable(
 }
 
 async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'list' | 'help', option?: string) {
-	const settings = await mahojiUsersSettingsFetch(user.id, { combat_options: true });
 	if (!command || (command && command === 'list')) {
 		// List enabled combat options:
-		const cbOpts = settings.combat_options.map(o => CombatOptionsArray.find(coa => coa?.id === o)?.name);
+		const cbOpts = user.user.combat_options.map(o => CombatOptionsArray.find(coa => coa?.id === o)?.name);
 		return `Your current combat options are:\n${cbOpts.join('\n')}\n\nTry: \`/config user combat_options help\``;
 	}
 
@@ -575,7 +562,7 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 	);
 	if (!newcbopt) return 'Cannot find matching option. Try: `/config user combat_options help`';
 
-	const currentStatus = settings.combat_options.includes(newcbopt.id);
+	const currentStatus = user.user.combat_options.includes(newcbopt.id);
 
 	const nextBool = command !== 'remove';
 
@@ -583,29 +570,30 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 		return `"${newcbopt.name}" is already ${currentStatus ? 'enabled' : 'disabled'} for you.`;
 	}
 
+	let combatOptions = [...user.user.combat_options];
 	// If enabling Ice Barrage, make sure burst isn't also enabled:
 	if (
 		nextBool &&
 		newcbopt.id === CombatOptionsEnum.AlwaysIceBarrage &&
-		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBurst)
+		combatOptions.includes(CombatOptionsEnum.AlwaysIceBurst)
 	) {
-		settings.combat_options = removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBurst);
+		combatOptions = removeFromArr(combatOptions, CombatOptionsEnum.AlwaysIceBurst);
 	}
 	// If enabling Ice Burst, make sure barrage isn't also enabled:
 	if (
 		nextBool &&
 		newcbopt.id === CombatOptionsEnum.AlwaysIceBurst &&
-		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBarrage)
+		combatOptions.includes(CombatOptionsEnum.AlwaysIceBarrage)
 	) {
-		settings.combat_options = removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBarrage);
+		combatOptions = removeFromArr(combatOptions, CombatOptionsEnum.AlwaysIceBarrage);
 	}
-	if (nextBool && !settings.combat_options.includes(newcbopt.id)) {
+	if (nextBool && !combatOptions.includes(newcbopt.id)) {
 		await user.update({
-			combat_options: [...settings.combat_options, newcbopt.id]
+			combat_options: [...combatOptions, newcbopt.id]
 		});
-	} else if (!nextBool && settings.combat_options.includes(newcbopt.id)) {
+	} else if (!nextBool && combatOptions.includes(newcbopt.id)) {
 		await user.update({
-			combat_options: removeFromArr(settings.combat_options, newcbopt.id)
+			combat_options: removeFromArr(combatOptions, newcbopt.id)
 		});
 	} else {
 		return 'Error processing command. This should never happen, please report bug.';
@@ -713,17 +701,17 @@ export const configCommand: OSBMahojiCommand = {
 	description: 'Commands configuring settings and options.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'server',
 			description: 'Change settings for your server.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'channel',
 					description: 'Enable or disable commands in this channel.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'choice',
 							description: 'Enable or disable commands for this channel.',
 							required: true,
@@ -735,12 +723,12 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'pet_messages',
 					description: 'Enable or disable Pet Messages in this server.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'choice',
 							description: 'Enable or disable Pet Messages for this server.',
 							required: true,
@@ -752,23 +740,23 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'command',
 					description: 'Enable or disable a command in your server.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'command',
 							description: 'The command you want to enable/disable.',
 							required: true,
 							autocomplete: async value => {
-								return allAbstractCommands(globalClient.mahojiClient)
+								return allCommands
 									.map(i => ({ name: i.name, value: i.name }))
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'choice',
 							description: 'Whether you want to enable or disable this command.',
 							required: true,
@@ -782,17 +770,17 @@ export const configCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'user',
 			description: 'Change settings for your account.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'toggle',
 					description: 'Toggle different settings on and off.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'name',
 							description: 'The setting you want to toggle on/off.',
 							required: true,
@@ -820,12 +808,12 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'combat_options',
 					description: 'Change combat options.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'action',
 							description: 'The action you want to perform.',
 							required: true,
@@ -837,7 +825,7 @@ export const configCommand: OSBMahojiCommand = {
 							]
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'input',
 							description: 'The option you want to add/remove.',
 							required: false,
@@ -850,12 +838,12 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'set_rsn',
 					description: 'Set your RuneScape username in the bot.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'username',
 							description: 'Your RuneScape username.',
 							required: true
@@ -863,12 +851,12 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'bg_color',
 					description: 'Set a custom color for transparent bank backgrounds.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'color',
 							description: 'The color in hex format.',
 							required: false
@@ -876,31 +864,31 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'bank_sort',
 					description: 'Change the way your bank is sorted.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'sort_method',
 							description: 'The way items in your bank should be sorted.',
 							required: false,
 							choices: BankSortMethods.map(i => ({ name: i, value: i }))
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'add_weightings',
 							description: "Add custom weightings for extra bank sorting (e.g. '1 trout, 5 coal')",
 							required: false
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'remove_weightings',
 							description: "Remove weightings for extra bank sorting (e.g. '1 trout, 5 coal')",
 							required: false
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'reset_weightings',
 							description: "Type 'reset' to confirm you want to delete ALL of your bank weightings.",
 							required: false
@@ -908,7 +896,7 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'favorite_alchs',
 					description: 'Manage your favorite alchables.',
 					options: [
@@ -925,13 +913,13 @@ export const configCommand: OSBMahojiCommand = {
 							required: false
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'add_many',
 							description: 'Add many to your favorite alchables at once.',
 							required: false
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'reset',
 							description: 'Reset all of your favorite alchs',
 							required: false
@@ -939,12 +927,12 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'favorite_bh_seeds',
 					description: 'Manage your favorite birdhouse seeds.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'add',
 							description: 'Add an item to your favorite birdhouse seeds.',
 							required: false,
@@ -958,15 +946,14 @@ export const configCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'remove',
 							description: 'Remove an item from your favorite birdhouse seeds.',
 							required: false,
-							autocomplete: async (value: string, user: User) => {
-								const mUser = await mahojiUsersSettingsFetch(user.id, { favorite_bh_seeds: true });
+							autocomplete: async (value: string, user: MUser) => {
 								return birdhouseSeeds
 									.filter(i => {
-										if (!mUser.favorite_bh_seeds.includes(i.item.id)) return false;
+										if (!user.user.favorite_bh_seeds.includes(i.item.id)) return false;
 										return !value ? true : stringMatches(i.item.name, value);
 									})
 									.map(i => ({
@@ -976,7 +963,7 @@ export const configCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'reset',
 							description: 'Reset all of your favorite birdhouse seeds.',
 							required: false
@@ -984,12 +971,12 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'favorite_food',
 					description: 'Manage your favorite food.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'add',
 							description: 'Add an item to your favorite food.',
 							required: false,
@@ -1003,14 +990,13 @@ export const configCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'remove',
 							description: 'Remove an item from your favorite food.',
 							required: false,
-							autocomplete: async (value: string, user: User) => {
-								const mUser = await mahojiUsersSettingsFetch(user.id, { favorite_food: true });
+							autocomplete: async (value: string, user: MUser) => {
 								return Eatables.filter(i => {
-									if (!mUser.favorite_food.includes(i.id)) return false;
+									if (!user.user.favorite_food.includes(i.id)) return false;
 									return !value ? true : i.name.toLowerCase().includes(value.toLowerCase());
 								}).map(i => ({
 									name: `${i.name}`,
@@ -1019,7 +1005,7 @@ export const configCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'reset',
 							description: 'Reset all of your favorite foods',
 							required: false
@@ -1027,7 +1013,7 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'favorite_items',
 					description: 'Manage your favorite items.',
 					options: [
@@ -1044,7 +1030,7 @@ export const configCommand: OSBMahojiCommand = {
 							required: false
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'reset',
 							description: 'Reset all of your favorite items',
 							required: false
@@ -1052,19 +1038,19 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'slayer',
 					description: 'Manage your Slayer options',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'master',
 							description: 'Choose default slayer master',
 							required: false,
 							choices: slayerMasterChoices
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'autoslay',
 							description: 'Set default autoslay mode',
 							required: false,
@@ -1073,12 +1059,12 @@ export const configCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'pin_trip',
 					description: 'Pin a trip so you can easily repeat it whenever you want.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'trip',
 							description: 'The trip you want to pin.',
 							required: false,
@@ -1102,19 +1088,19 @@ LIMIT 20;
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							required: false,
 							name: 'emoji',
 							description: 'Pick an emoji for the button (optional).'
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							required: false,
 							name: 'custom_name',
 							description: 'Custom name for the button (optional).'
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'unpin_trip',
 							description: 'The trip you want to unpin.',
 							required: false,
@@ -1129,12 +1115,12 @@ LIMIT 20;
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'icon_pack',
 					description: 'Change your icon pack',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'name',
 							description: 'The icon pack you want to use.',
 							required: true,
@@ -1150,7 +1136,7 @@ LIMIT 20;
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		guildID,
 		channelID,
 		interaction
@@ -1180,7 +1166,6 @@ LIMIT 20;
 			icon_pack?: { name?: string };
 		};
 	}>) => {
-		const user = await mUserFetch(userID);
 		const guild = guildID ? (globalClient.guilds.cache.get(guildID.toString()) ?? null) : null;
 		if (options.server) {
 			if (options.server.channel) {
