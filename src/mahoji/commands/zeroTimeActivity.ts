@@ -9,7 +9,6 @@ import {
 	attemptZeroTimeActivity,
 	formatZeroTimePreference,
 	getZeroTimeActivityPreferences,
-	type ZeroTimeActivityPreference,
 	type ZeroTimeActivityType
 } from '../../lib/util/zeroTimeActivity';
 
@@ -65,9 +64,11 @@ function getAutocompleteOptions(value: string) {
 
 function parseAlchItemInput(
 	user: MUser,
-	itemInput: string | null,
-	context: 'primary' | 'fallback'
-): { itemID: number | null; error?: string } {
+	itemInput: string | null
+): {
+	itemID: number | null;
+	error?: string;
+} {
 	if (!itemInput || itemInput.length === 0) {
 		return { itemID: null };
 	}
@@ -263,7 +264,7 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 
 			let primaryItemID: number | null = null;
 			if (primaryType === 'alch') {
-				const { itemID, error } = parseAlchItemInput(user, rawPrimaryItem ?? null, 'primary');
+				const { itemID, error } = parseAlchItemInput(user, rawPrimaryItem ?? null);
 				if (error) {
 					return error;
 				}
@@ -288,7 +289,7 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 				fallbackType = fallbackInput as ZeroTimeActivityType;
 
 				if (fallbackType === 'alch') {
-					const { itemID, error } = parseAlchItemInput(user, rawFallbackItem ?? null, 'fallback');
+					const { itemID, error } = parseAlchItemInput(user, rawFallbackItem ?? null);
 					if (error) {
 						return error;
 					}
