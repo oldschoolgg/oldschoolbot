@@ -753,4 +753,3 @@ export function minionStatus(user: MUser) {
 		}
 	}
 }
-

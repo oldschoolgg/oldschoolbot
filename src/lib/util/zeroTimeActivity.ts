@@ -29,21 +29,21 @@ export type ZeroTimePreferenceList = ZeroTimeActivityPreference[];
 
 export type ZeroTimeActivityResult =
 	| {
-		  type: 'alch';
-		  preference: ZeroTimeActivityPreference;
-		  item: Item;
-		  quantity: number;
-		  bankToRemove: Bank;
-		  bankToAdd: Bank;
-		  timePerAction: number;
+			type: 'alch';
+			preference: ZeroTimeActivityPreference;
+			item: Item;
+			quantity: number;
+			bankToRemove: Bank;
+			bankToAdd: Bank;
+			timePerAction: number;
 	  }
 	| {
-		  type: 'fletch';
-		  preference: ZeroTimeActivityPreference;
-		  fletchable: Fletchable;
-		  quantity: number;
-		  itemsToRemove: Bank;
-		  timePerAction: number;
+			type: 'fletch';
+			preference: ZeroTimeActivityPreference;
+			fletchable: Fletchable;
+			quantity: number;
+			itemsToRemove: Bank;
+			timePerAction: number;
 	  };
 
 export interface ZeroTimeActivityResponse {
@@ -147,15 +147,15 @@ function calculateAlching(options: AttemptZeroTimeAlchOptions): ZeroTimeActivity
 	if (!itemToAlch) {
 		return preference.itemID
 			? {
-				  result: null,
-				  message:
-					  'Your zero-time alching item is not valid or no longer available. Update your configuration or add favourite alchs.'
-			  }
+					result: null,
+					message:
+						'Your zero-time alching item is not valid or no longer available. Update your configuration or add favourite alchs.'
+				}
 			: {
-				  result: null,
-				  message:
-					  'No suitable item found for zero-time alching. Add favourite alchs or configure a specific item.'
-			  };
+					result: null,
+					message:
+						'No suitable item found for zero-time alching. Add favourite alchs or configure a specific item.'
+				};
 	}
 
 	const bank = user.bank;

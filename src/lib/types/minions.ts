@@ -1,4 +1,3 @@
-import type { ZeroTimePreferenceRole } from '@/lib/util/zeroTimeActivity.js';
 import type { CropUpgradeType } from '@prisma/client';
 import type { ItemBank } from 'oldschooljs';
 
@@ -661,6 +660,3 @@ export type ActivityTaskData =
 	| CutLeapingFishActivityTaskOptions
 	| CreateForestersRationsActivityTaskOptions
 	| ColoTaskOptions;
-
-
-

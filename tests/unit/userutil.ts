@@ -47,7 +47,7 @@ export interface MockUserArgs {
 const mockUser = (overrides?: MockUserArgs): User => {
 	const gearMelee = filterGearSetup(overrides?.meleeGear);
 	const cl = new Bank().add(overrides?.cl ?? {});
-	const r = {
+	const _r = {
 		cl,
 		gear_fashion: new Gear().raw() as Prisma.JsonValue,
 		gear_mage: new Gear().raw() as Prisma.JsonValue,
@@ -96,10 +96,12 @@ const mockUser = (overrides?: MockUserArgs): User => {
 	\tzero_time_activity_fallback_item: overrides?.zero_time_activity_fallback_item ?? null,
 		favorite_alchables: overrides?.favorite_alchables ?? [],
 		slayer_unlocks: overrides?.slayer_unlocks ?? []
-	} as unknown as User;
-
-	return r;
 };
+as;
+unknown as User;
+
+return r;
+}
 
 export const mockMUser = (overrides?: MockUserArgs) => {
 	const user = new MUserClass(mockUser(overrides));
@@ -153,4 +155,3 @@ export function serializeSnapshotItem(item: any) {
 	}
 	return result;
 }
-

@@ -3,14 +3,12 @@ import { ApplicationCommandOptionType, bold } from 'discord.js';
 
 import { quests } from '@/lib/minions/data/quests.js';
 import { courses } from '@/lib/skilling/skills/agility.js';
-import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import {
+	type AttemptZeroTimeActivityOptions,
 	attemptZeroTimeActivity,
 	getZeroTimeActivityPreferences,
-	type AttemptZeroTimeActivityOptions,
 	type ZeroTimeActivityResult
 } from '@/lib/util/zeroTimeActivity.js';
 import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
@@ -153,15 +151,15 @@ export const lapsCommand: OSBMahojiCommand = {
 		}
 if (fletchResult) {
 			await user.removeItemsFromBank(fletchResult.itemsToRemove);
-			const setsText = fletchResult.fletchable.outputMultiple ? ' sets of' : '';
-			const prefix =
+			const _setsText = fletchResult.fletchable.outputMultiple ? ' sets of' : '';
+			const _prefix =
 				fletchResult.preference.role === 'fallback' ? 'Using fallback preference, your minion is' : 'Your minion is';
 			response += \n\n fletching   while training. Removed  from your bank.;
 		}
 
 		if (alchResult) {
 			await user.removeItemsFromBank(alchResult.bankToRemove);
-			const prefix =
+			const _prefix =
 				alchResult.preference.role === 'fallback' ? 'Using fallback preference, your minion is' : 'Your minion is';
 			response += \n\n alching x  while training. Removed  from your bank.;
 			updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
@@ -176,7 +174,7 @@ if (fletchResult) {
 		}
 		}
 
-		await addSubTaskToActivityTask<AgilityActivityTaskOptions>({
+		await addSubTaskToActivityTask<_AgilityActivityTaskOptions>({
 			courseID: course.id,
 			userID: user.id,
 			channelID,
@@ -184,19 +182,10 @@ if (fletchResult) {
 			duration,
 			type: 'Agility',
 			alch: alchResult ? { itemID: alchResult.item.id, quantity: alchResult.quantity } : undefined,
-			fletch: fletchResult ? { id: fletchResult.fletchable.id, qty: fletchResult.quantity } : undefined
-		});
+			_fletch: fletchResult ? { id: fletchResult.fletchable.id, qty: fletchResult.quantity } : undefined
+		}
+)
 
-		return response;
-	}
-};
-
-
-
-
-
-
-
-
-
-
+return response;
+}
+}
