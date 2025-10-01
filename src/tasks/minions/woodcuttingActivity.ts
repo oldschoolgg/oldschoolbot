@@ -10,10 +10,8 @@ import { ForestryEvents, LeafTable } from '@/lib/skilling/skills/woodcutting/for
 import Woodcutting, { type TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { rollForMoonKeyHalf } from '@/lib/util/minionUtils.js';
 import { skillingPetDropRate } from '@/lib/util.js';
-import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 async function handleForestry({ user, duration, loot }: { user: MUser; duration: number; loot: Bank }) {
 	const eventCounts: { [key: number]: number } = {};
@@ -122,7 +120,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 	for (const [event, count] of objectEntries(eventCounts)) {
 		if (event && count && count > 0) {
 			totalEvents += count;
-			await userStatsBankUpdate(user, 'forestry_event_completions_bank', new Bank().add(Number(event), count));
+			await user.statsBankUpdate('forestry_event_completions_bank', new Bank().add(Number(event), count));
 		}
 	}
 
@@ -170,9 +168,9 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 
 export const woodcuttingTask: MinionTask = {
 	type: 'Woodcutting',
-	async run(data: WoodcuttingActivityTaskOptions) {
-		const { logID, quantity, userID, channelID, duration, powerchopping, forestry, twitchers } = data;
-		const user = await mUserFetch(userID);
+	async run(data: WoodcuttingActivityTaskOptions, { user, handleTripFinish }) {
+		const { logID, quantity, channelID, duration, powerchopping, forestry, twitchers } = data;
+
 		const userWcLevel = user.skillsAsLevels.woodcutting;
 		const log = Woodcutting.Logs.find(i => i.id === logID)!;
 		const forestersRations = user.bank.amount("Forester's ration");

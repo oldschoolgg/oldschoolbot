@@ -6,7 +6,7 @@ import { Bank, Items, Monsters } from 'oldschooljs';
 import { diaries, userhasDiaryTier, userhasDiaryTierSync } from '@/lib/diaries.js';
 import type { DiaryTier } from '@/lib/minions/types.js';
 import { Minigames } from '@/lib/settings/minigames.js';
-import { MUserStats } from '@/lib/structures/MUserStats.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 const lampRewards = {
@@ -29,7 +29,7 @@ export async function achievementDiaryCommand(user: MUser, diaryName: string) {
 	const diary = diaries.find(
 		d => stringMatches(d.name, diaryName) || d.alias?.some(a => stringMatches(a, diaryName))
 	);
-	const stats = await MUserStats.fromID(user.id);
+	const stats = await user.fetchMStats();
 
 	if (!diary) {
 		let str = 'Your Achievement Diaries\n\n';

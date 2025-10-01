@@ -1,11 +1,8 @@
 import { formatDuration, stringSearch } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { ItemGroups, Monsters } from 'oldschooljs';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export const fishCommand: OSBMahojiCommand = {
 	name: 'fish',
@@ -17,7 +14,7 @@ export const fishCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to fish.',
 			required: true,
@@ -31,14 +28,14 @@ export const fishCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to fish (optional).',
 			required: false,
 			min_value: 1
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'flakes',
 			description: 'Use spirit flakes?',
 			required: false
@@ -46,13 +43,12 @@ export const fishCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; flakes?: boolean }>) => {
 		const fish = Fishing.Fishes.find(fish => stringSearch(fish.name, options.name));
 		if (!fish) return 'Thats not a valid fish to catch.';
 
-		const user = await mUserFetch(userID);
 		if (user.skillsAsLevels.fishing < fish.level) {
 			return `${user.minionName} needs ${fish.level} Fishing to fish ${fish.name}.`;
 		}
@@ -79,7 +75,7 @@ export const fishCommand: OSBMahojiCommand = {
 			return 'You need to own the Angler Outfit to fish for Minnows.';
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Fishing');
+		const maxTripLength = user.calcMaxTripLength('Fishing');
 
 		const res = Fishing.util.calcFishingTripStart({
 			gearBank: user.gearBank,
@@ -101,7 +97,7 @@ export const fishCommand: OSBMahojiCommand = {
 			});
 		}
 
-		await addSubTaskToActivityTask<FishingActivityTaskOptions>({
+		await ActivityManager.startTrip<FishingActivityTaskOptions>({
 			fishID: fish.id,
 			userID: user.id,
 			channelID,

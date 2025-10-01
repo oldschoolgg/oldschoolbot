@@ -5,15 +5,13 @@ import { Bank, EItem } from 'oldschooljs';
 import { bloodEssence, raimentBonus } from '@/lib/skilling/functions/calcsRunecrafting.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import type { RunecraftActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 import { calcMaxRCQuantity } from '@/mahoji/mahojiSettings.js';
 
 export const runecraftTask: MinionTask = {
 	type: 'Runecraft',
-	async run(data: RunecraftActivityTaskOptions) {
-		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, daeyaltEssence, useExtracts } = data;
-		const user = await mUserFetch(userID);
+	async run(data: RunecraftActivityTaskOptions, { user, handleTripFinish }) {
+		const { runeID, essenceQuantity, channelID, imbueCasts, duration, daeyaltEssence, useExtracts } = data;
 
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
 

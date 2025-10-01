@@ -2,13 +2,11 @@ import { Bank } from 'oldschooljs';
 
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import type { TiaraRunecraftActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const tiaraRunecraftTask: MinionTask = {
 	type: 'TiaraRunecraft',
-	async run(data: TiaraRunecraftActivityTaskOptions) {
-		const { tiaraID, tiaraQuantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: TiaraRunecraftActivityTaskOptions, { user, handleTripFinish }) {
+		const { tiaraID, tiaraQuantity, channelID, duration } = data;
 
 		const tiara = Runecraft.Tiaras.find(_tiara => _tiara.id === tiaraID)!;
 

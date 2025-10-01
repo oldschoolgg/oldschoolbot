@@ -3,10 +3,6 @@ import { Bank, EItem } from 'oldschooljs';
 
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import type { OuraniaAltarOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 const gracefulPenalty = 20;
 
@@ -44,7 +40,7 @@ export async function ouraniaAltarStartCommand({
 
 	if (inventorySize > 28) boosts.push(`+${inventorySize - 28} inv spaces from pouches`);
 
-	if (!userHasGracefulEquipped(user) || !spellbookSwap) {
+	if (!user.hasGracefulEquipped() || !spellbookSwap) {
 		boosts.push(`${gracefulPenalty}% slower for no Graceful`);
 		timePerTrip = increaseNumByPercent(timePerTrip, gracefulPenalty);
 	}
@@ -63,7 +59,7 @@ export async function ouraniaAltarStartCommand({
 		timePerTrip *= 0.98;
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'OuraniaAltar');
+	const maxTripLength = user.calcMaxTripLength('OuraniaAltar');
 	const maxCanDo = Math.floor(maxTripLength / timePerTrip) * inventorySize;
 
 	// If no quantity provided, set it to the max.
@@ -117,14 +113,14 @@ export async function ouraniaAltarStartCommand({
 	if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
 
 	await user.removeItemsFromBank(totalCost);
-	updateBankSetting('runecraft_cost', totalCost);
+	await ClientSettings.updateBankSetting('runecraft_cost', totalCost);
 
-	await addSubTaskToActivityTask<OuraniaAltarOptions>({
+	await ActivityManager.startTrip<OuraniaAltarOptions>({
 		quantity,
 		userID: user.id,
 		duration,
 		type: 'OuraniaAltar',
-		channelID: channelID.toString(),
+		channelID,
 		stamina,
 		daeyalt
 	});

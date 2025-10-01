@@ -1,14 +1,11 @@
 import { channelIsSendable } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
-
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 
 export const pollCommand: OSBMahojiCommand = {
 	name: 'poll',
 	description: 'Create a reaction poll.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'question',
 			description: 'The poll question.',
 			required: true
@@ -17,7 +14,7 @@ export const pollCommand: OSBMahojiCommand = {
 	run: async ({ interaction, options, user, channelID }: CommandRunOptions<{ question: string }>) => {
 		const channel = globalClient.channels.cache.get(channelID.toString());
 		if (!channelIsSendable(channel)) return { ephemeral: true, content: 'Invalid channel.' };
-		await deferInteraction(interaction, true);
+		await interaction.defer({ ephemeral: false });
 		try {
 			const message = await channel.send({
 				content: `**Poll from ${user.username}:** ${options.question}`,

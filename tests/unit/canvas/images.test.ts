@@ -2,7 +2,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import deepEqual from 'fast-deep-equal';
 import { describe, test } from 'vitest';
 
-import { type ChartOptions, createApexChartConfig, createChart } from '../../src/lib/util/chart.js';
+import { type ChartOptions, createApexChartConfig, createChart } from '../../../src/lib/util/chart.js';
 
 describe('Images', async () => {
 	test('Charts', async () => {
@@ -39,7 +39,6 @@ describe('Images', async () => {
 				if (existingConfigRaw) {
 					const existingConfig = JSON.parse(existingConfigRaw);
 					if (deepEqual(existingConfig, config)) {
-						console.log(`Skipping ${chartType} ${format} chart, no changes.`);
 						continue;
 					}
 				}

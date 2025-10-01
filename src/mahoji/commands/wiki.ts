@@ -1,11 +1,9 @@
-import { ApplicationCommandOptionType } from 'discord.js';
-
 export const wikiCommand: OSBMahojiCommand = {
 	name: 'wiki',
 	description: 'Search the official OSRS wiki.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'query',
 			description: 'Your search query.',
 			required: true,

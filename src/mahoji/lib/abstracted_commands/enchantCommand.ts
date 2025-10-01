@@ -3,10 +3,7 @@ import { Items } from 'oldschooljs';
 
 import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
 import type { EnchantingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function enchantCommand(user: MUser, channelID: string, name: string, quantity?: number) {
 	const enchantable = Enchantables.find(
@@ -26,7 +23,7 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 
 	const userBank = user.bank;
 
-	const maxTripLength = calcMaxTripLength(user, 'Enchanting');
+	const maxTripLength = user.calcMaxTripLength('Enchanting');
 
 	const timeToEnchantTen = 3 * Time.Second * 0.6 + Time.Second / 4;
 
@@ -56,12 +53,12 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 	}
 	await user.transactItems({ itemsToRemove: cost });
 
-	updateBankSetting('magic_cost_bank', cost);
+	await ClientSettings.updateBankSetting('magic_cost_bank', cost);
 
-	await addSubTaskToActivityTask<EnchantingActivityTaskOptions>({
+	await ActivityManager.startTrip<EnchantingActivityTaskOptions>({
 		itemID: enchantable.id,
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'Enchanting'

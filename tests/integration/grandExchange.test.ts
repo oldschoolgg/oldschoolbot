@@ -1,4 +1,4 @@
-import { randArrItem, randInt, shuffleArr } from '@oldschoolgg/rng';
+import { randArrItem, shuffleArr } from '@oldschoolgg/rng';
 import { calcPercentOfNum, Time } from '@oldschoolgg/toolkit';
 import { Bank, resolveItems } from 'oldschooljs';
 import PQueue from 'p-queue';
@@ -39,12 +39,9 @@ describe('Grand Exchange', async () => {
 	test(
 		'Fuzz',
 		{
-			timeout: Time.Minute * 10
+			timeout: Time.Minute * 2
 		},
 		async () => {
-			// biome-ignore lint/suspicious/noSelfCompare: <explanation>
-			assert(randInt(1, 100_000) !== randInt(1, 100_000));
-
 			await GrandExchange.totalReset();
 			await GrandExchange.init();
 

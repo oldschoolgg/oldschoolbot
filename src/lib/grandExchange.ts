@@ -20,7 +20,6 @@ import { BitField, globalConfig, PerkTier } from '@/lib/constants.js';
 import { marketPricemap } from '@/lib/marketPrices.js';
 import { type RobochimpUser, roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/tableBank.js';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
 import { assert, logError } from '@/lib/util/logError.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 
@@ -242,6 +241,9 @@ class GrandExchangeSingleton {
 
 	async lockGE(reason: string) {
 		if (this.locked) return;
+		if (process.env.TEST) {
+			throw new Error(`G.E locked: ${reason}`);
+		}
 		const idsToNotify = globalConfig.adminUserIDs;
 		await sendToChannelID(globalConfig.moderatorLogsChannels, {
 			content: `The Grand Exchange has encountered an error and has been locked. Reason: ${reason}. ${idsToNotify
@@ -249,7 +251,7 @@ class GrandExchangeSingleton {
 				.join(', ')}`,
 			allowedMentions: globalConfig.isProduction ? { users: idsToNotify } : undefined
 		}).catch(noOp);
-		await mahojiClientSettingsUpdate({
+		await ClientSettings.update({
 			grand_exchange_is_locked: true
 		});
 		this.locked = true;
@@ -666,7 +668,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			.setLabel('Disable These DMs')
 			.setStyle(ButtonStyle.Secondary);
 
-		const buyerDJSUser = await globalClient.fetchUser(buyerListing.user_id).catch(noOp);
+		const buyerDJSUser = await globalClient.users.fetch(buyerListing.user_id).catch(noOp);
 		if (buyerDJSUser && !buyerUser.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
 			let str = `You bought ${quantityToBuy.toLocaleString()}x ${itemName} for ${toKMB(
 				pricePerItemAfterTax
@@ -703,7 +705,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			await buyerDJSUser.send({ content: str, components: makeComponents(components) }).catch(noOp);
 		}
 
-		const sellerDJSUser = await globalClient.fetchUser(sellerListing.user_id).catch(noOp);
+		const sellerDJSUser = await globalClient.users.fetch(sellerListing.user_id).catch(noOp);
 		if (sellerDJSUser && !sellerUser.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
 			let str = `You sold ${quantityToBuy.toLocaleString()}x ${itemName} for ${toKMB(
 				pricePerItemAfterTax
@@ -901,7 +903,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 	}
 
 	async fetchData() {
-		const settings = await mahojiClientSettingsFetch({
+		const settings = await ClientSettings.fetch({
 			grand_exchange_is_locked: true,
 			grand_exchange_tax_bank: true,
 			grand_exchange_total_tax: true
@@ -989,7 +991,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 
 	async totalReset() {
 		if (globalConfig.isProduction) throw new Error("You can't reset the GE in production.");
-		await mahojiClientSettingsUpdate({
+		await ClientSettings.update({
 			grand_exchange_is_locked: false,
 			grand_exchange_tax_bank: 0,
 			grand_exchange_total_tax: 0

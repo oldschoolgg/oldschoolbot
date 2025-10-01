@@ -1,10 +1,8 @@
 import { chunk, stringMatches } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
 import { leagueBuyables } from '@/lib/data/leaguesBuyables.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { getUsername } from '@/lib/util.js';
 import { doMenu } from '@/mahoji/commands/leaderboard.js';
 
@@ -44,27 +42,27 @@ export const botLeaguesCommand: OSBMahojiCommand = {
 	description: 'Compete in the OSB/BSO Leagues.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'help',
 			description: 'Shows help and information about leagues.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'claim_trophy',
 			description: 'Claim your leagues trophys.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'leaderboard',
 			description: 'The leagues leaderboard.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'buy_reward',
 			description: 'Buy a reward with your leagues points.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'item',
 					description: 'The item to buy.',
 					required: true,
@@ -79,8 +77,7 @@ export const botLeaguesCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
-		channelID,
+		user,
 		interaction
 	}: CommandRunOptions<{
 		help?: {};
@@ -88,7 +85,6 @@ export const botLeaguesCommand: OSBMahojiCommand = {
 		leaderboard?: {};
 		buy_reward?: { item: string };
 	}>) => {
-		const user = await mUserFetch(userID.toString());
 		const roboChimpUser = await roboChimpUserFetch(user.id);
 
 		if (options.claim_trophy) {
@@ -159,11 +155,9 @@ ${leaguesTrophiesBuyables
 				},
 				take: 100
 			});
-			await deferInteraction(interaction);
+			await interaction.defer();
 			doMenu(
 				interaction,
-				user,
-				channelID,
 				await Promise.all(
 					chunk(result, 10).map(async subList =>
 						(

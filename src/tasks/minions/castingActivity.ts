@@ -1,12 +1,10 @@
 import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import type { CastingActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const castingTask: MinionTask = {
 	type: 'Casting',
-	async run(data: CastingActivityTaskOptions) {
-		const { spellID, quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: CastingActivityTaskOptions, { user, handleTripFinish }) {
+		const { spellID, quantity, channelID, duration } = data;
 
 		const spell = Castables.find(i => i.id === spellID)!;
 

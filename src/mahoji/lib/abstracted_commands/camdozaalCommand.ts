@@ -7,8 +7,6 @@ import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import Mining from '@/lib/skilling/skills/mining.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 async function miningCommand(user: MUser, channelID: string, quantity: number | undefined) {
 	let miningLevel = user.skillsAsLevels.mining;
@@ -56,16 +54,16 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
 		powermining: powermine,
 		goldSilverBoost,
 		miningLvl: miningLevel,
-		maxTripLength: calcMaxTripLength(user, 'CamdozaalMining'),
+		maxTripLength: user.calcMaxTripLength('CamdozaalMining'),
 		hasKaramjaMedium: false
 	});
 
 	const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
 	const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity: newQuantity,
 		iQty: quantity ? quantity : undefined,
 		duration,
@@ -92,7 +90,7 @@ async function smithingCommand(user: MUser, channelID: string, quantity: number 
 		return 'You need at least level 14 Smithing to smith in the Ruins of Camdozaal.';
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'CamdozaalSmithing');
+	const maxTripLength = user.calcMaxTripLength('CamdozaalSmithing');
 	const timePerSmith = 3.5 * Time.Second;
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerSmith);
@@ -118,9 +116,9 @@ async function smithingCommand(user: MUser, channelID: string, quantity: number 
 
 	await user.removeItemsFromBank(new Bank().add('Barronite deposit', quantity));
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'CamdozaalSmithing'
@@ -137,7 +135,7 @@ async function fishingCommand(user: MUser, channelID: string, quantity: number |
 	}
 	const inputQuantity = quantity;
 
-	const maxTripLength = calcMaxTripLength(user, 'CamdozaalFishing');
+	const maxTripLength = user.calcMaxTripLength('CamdozaalFishing');
 	const camdozaalfish = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw guppy')!;
 	const timePerFish = camdozaalfish.timePerFish * Time.Second;
 
@@ -154,9 +152,9 @@ async function fishingCommand(user: MUser, channelID: string, quantity: number |
 		)}.`;
 	}
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		iQty: inputQuantity,
 		duration,
