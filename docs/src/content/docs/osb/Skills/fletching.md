@@ -17,8 +17,8 @@ You can train Fletching with the [[/fletch]] command. To see all the items you c
 
 ### Zero-time Fletching
 
-Configure zero-time fletching with [[/zero_time_activity]], then run Agility laps or the Hallowed Sepulchre to craft ammunition in the background. The [Zero-time Activities guide](/osb/miscellaneous/zero-time-activities) lists every supported item, setup step, and hourly rate.
+Configure zero-time fletching with [[/zero_time_activity set primary_type\:fletch primary_item\:"Rune dart"]], then run Agility laps or the Hallowed Sepulchre to craft ammunition in the background. The [Zero-time Activities guide](/osb/miscellaneous/zero-time-activities) lists every supported item, setup step, and hourly rate.
 
-- Example setup: [[/zero_time_activity type\:fletch item\:"Rune dart"]]
-- Zero-time alching is configured the same way with `type:alch`, and leaving the item blank lets the bot choose from your favourite alchs at the start of each trip.
+- Add a fallback alch with [[/zero_time_activity set primary_type\:fletch primary_item\:"Rune dart" fallback_type\:alch]] so the bot keeps working even when you run out of supplies.
+- Leaving the `primary_item` blank on an alch setup keeps using your favourite alchs automatically.
 
