@@ -107,7 +107,7 @@ Patch counts depend on your quest points, Farming level, and quest progression. 
 | Flower | 4 | +1 once you unlock Canifis or Prifddinas flower patches, +1 @ 45 Farming (Farming Guild), +1 after *Children of the Sun* |
 | Hardwood | 0 | +3 @ 3 QP (Fossil Island), +1 after *Children of the Sun* |
 | Vine | 12 | Always available in the Hosidius vinery |
-| Bush | 3 | +1 @ 3 QP (Etceteria), +1 @ 45 Farming (Farming Guild low), +1 after *Children of the Sun* |
+| Bush | 3 | +1 @ 3 QP (Etceteria), +1 @ 45 Farming (Farming Guild low) |
 | Hops | 4 | No additional unlocks |
 | Mushroom | 0 | +1 @ 1 QP (Canifis) |
 | Belladonna | 1 | +1 after *Children of the Sun* |

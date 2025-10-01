@@ -1,10 +1,12 @@
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
+import { BitField } from '@/lib/constants.js';
 import { skillEmoji } from '@/lib/data/emojis.js';
 import type { FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeAutoContractButton } from '@/lib/util/interactions.js';
+import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { executeFarmingStep, type FarmingStepAttachment, type FarmingStepSummary } from './farmingStep.js';
 
 interface HandleCombinedAutoFarmOptions {
@@ -251,9 +253,17 @@ export async function handleCombinedAutoFarm({ user, taskData }: HandleCombinedA
 	}
 
 	const loot = totalLoot.length > 0 ? totalLoot : null;
-	const shouldAddContractButton =
-		summaries.some(summary => summary.contractCompleted) && (loot?.has('Seed pack') ?? false);
-	const extraComponents = shouldAddContractButton ? [makeAutoContractButton()] : undefined;
+	let extraComponents: ReturnType<typeof makeAutoContractButton>[] | undefined;
+	const completedContract = summaries.some(summary => summary.contractCompleted) && (loot?.has('Seed pack') ?? false);
+	if (completedContract) {
+		const autoContractDisabled = user.bitfield.includes(BitField.DisableAutoFarmContractButton);
+		if (!autoContractDisabled) {
+			const canAutoContractNow = await canRunAutoContract(user);
+			if (!canAutoContractNow) {
+				extraComponents = [makeAutoContractButton()];
+			}
+		}
+	}
 
 	await handleTripFinish(user, taskData.channelID, message, undefined, taskData, loot, undefined, extraComponents);
 }
