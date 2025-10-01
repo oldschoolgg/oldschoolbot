@@ -7,8 +7,12 @@ import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import {
+	attemptZeroTimeActivity,
+	getZeroTimeActivitySettings,
+	type ZeroTimeActivityResult
+} from '@/lib/util/zeroTimeActivity.js';
 import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
-import { attemptZeroTimeActivity, getZeroTimeActivitySettings, type ZeroTimeActivityResult } from '@/lib/util/zeroTimeActivity.js';
 
 const AGILITY_FLETCH_ITEMS_PER_HOUR = 15_000;
 const AGILITY_ALCHES_PER_HOUR = Time.Hour / timePerAlchAgility;

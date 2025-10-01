@@ -1,10 +1,9 @@
-
 import { Bank, Items } from 'oldschooljs';
 
 import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
+import { calculateBryophytaRuneSavings } from '@/lib/util/bryophytaRuneSavings.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { updateClientGPTrackSetting } from '@/mahoji/mahojiSettings.js';
-import { calculateBryophytaRuneSavings } from '@/lib/util/bryophytaRuneSavings.js';
 
 export const alchingTask: MinionTask = {
 	type: 'Alching',

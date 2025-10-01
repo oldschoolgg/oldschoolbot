@@ -2,12 +2,12 @@ import type { Prisma, User } from '@prisma/client';
 import { Bank, convertLVLtoXP, Items, LootTable } from 'oldschooljs';
 import { isFunction, isObjectType } from 'remeda';
 
+import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import type { ZeroTimeActivityType } from '@/lib/util/zeroTimeActivity.js';
 import type { BitField } from '../../src/lib/constants.js';
 import type { GearSetup } from '../../src/lib/gear/types.js';
 import { MUserClass } from '../../src/lib/MUser.js';
 import { constructGearSetup, Gear, type PartialGearSetup } from '../../src/lib/structures/Gear.js';
-import type { ZeroTimeActivityType } from '@/lib/util/zeroTimeActivity.js';
-import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 
 function filterGearSetup(gear: undefined | null | GearSetup | PartialGearSetup): GearSetup | undefined {
 	const filteredGear = !gear

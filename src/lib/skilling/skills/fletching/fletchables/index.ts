@@ -1,3 +1,5 @@
+import { Items } from 'oldschooljs';
+
 import type { Fletchable } from '@/lib/skilling/types.js';
 import Arrows from './arrows.js';
 import Bolts from './bolts.js';
@@ -11,7 +13,6 @@ import { AmethystBroadBolts, BroadArrows, BroadBolts, Slayer } from './slayer.js
 import TippedBolts from './tippedBolts.js';
 import TippedDragonBolts from './tippedDragonBolts.js';
 import Tips from './tips.js';
-import { Items } from 'oldschooljs';
 
 export const Fletchables: Fletchable[] = [
 	...Bows,

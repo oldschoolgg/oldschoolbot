@@ -4,13 +4,10 @@ import { roll } from './rng';
 
 const bryophytasStaffId = itemID("Bryophyta's staff");
 
-export function calculateBryophytaRuneSavings({
-	user,
-	quantity
-}: {
-	user: MUser;
-	quantity: number;
-}): { savedRunes: number; savedBank: Bank | null } {
+export function calculateBryophytaRuneSavings({ user, quantity }: { user: MUser; quantity: number }): {
+	savedRunes: number;
+	savedBank: Bank | null;
+} {
 	if (quantity <= 0 || !user.hasEquipped(bryophytasStaffId)) {
 		return { savedRunes: 0, savedBank: null };
 	}

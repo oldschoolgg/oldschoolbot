@@ -1,5 +1,5 @@
-import { Time } from 'e';
-import { Bank, Items, convertLVLtoXP } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { zeroTimeFletchables } from '../../src/lib/skilling/skills/fletching/fletchables';

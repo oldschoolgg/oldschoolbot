@@ -7,8 +7,8 @@ import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { unlimitedFireRuneProviders } from '@/lib/util/unlimitedFireRuneProviders.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 // 5 tick action
 export const timePerAlch = Time.Second * 3;

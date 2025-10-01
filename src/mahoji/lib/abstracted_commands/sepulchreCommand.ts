@@ -1,15 +1,18 @@
 import { formatDuration, reduceNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 
 import { sepulchreBoosts, sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
-
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
-
 import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
-import { attemptZeroTimeActivity, getZeroTimeActivitySettings, getZeroTimeFletchTime, type ZeroTimeActivityResult } from '@/lib/util/zeroTimeActivity.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import {
+	attemptZeroTimeActivity,
+	getZeroTimeActivitySettings,
+	getZeroTimeFletchTime,
+	type ZeroTimeActivityResult
+} from '@/lib/util/zeroTimeActivity.js';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 const SEPULCHRE_ALCHES_PER_HOUR = 1000;
 

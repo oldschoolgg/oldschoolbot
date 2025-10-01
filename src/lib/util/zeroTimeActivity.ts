@@ -1,5 +1,5 @@
+import { Time } from '@oldschoolgg/toolkit';
 import type { zero_time_activity_type_enum } from '@prisma/client';
-import { Time } from 'e';
 import { Bank, type Item, Items } from 'oldschooljs';
 
 import { timePerAlch, timePerAlchAgility } from '../../mahoji/lib/abstracted_commands/alchCommand';
