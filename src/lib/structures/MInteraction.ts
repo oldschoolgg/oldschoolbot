@@ -294,6 +294,7 @@ export class MInteraction {
 	}
 
 	public async makeParty(options: MakePartyOptions & { message: string }): Promise<MUser[]> {
+		if (process.env.TEST) return [options.leader];
 		const timeout = Time.Minute * 5;
 		const usersWhoConfirmed: string[] = [options.leader.id];
 		let massStarted = false;

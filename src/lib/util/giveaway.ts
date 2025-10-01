@@ -13,7 +13,7 @@ async function refundGiveaway(creator: MUser, loot: Bank) {
 	});
 	const user = await globalClient.users.fetch(creator.id);
 	debugLog('Refunding a giveaway.', { type: 'GIVEAWAY_REFUND', user_id: creator.id, loot: loot.toJSON() });
-	user.send(`Your giveaway failed to finish, you were refunded the items: ${loot}.`).catch(noOp);
+	await user.send(`Your giveaway failed to finish, you were refunded the items: ${loot}.`).catch(noOp);
 }
 
 async function getGiveawayMessage(giveaway: Giveaway) {
