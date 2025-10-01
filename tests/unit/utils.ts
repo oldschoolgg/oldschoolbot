@@ -20,21 +20,24 @@ export function makeGearBank({ bank, skillsAsLevels }: { bank?: Bank; skillsAsLe
 	const skillsAsXP: SkillsRequired = {} as SkillsRequired;
 	for (const skill of SkillsArray) {
 		if (skillsAsLevels) {
-			skillsAsXP[skill] = convertLVLtoXP(skillsAsLevels[skill as keyof Skills] ?? 1);
+			const lvl = skillsAsLevels[skill as keyof Skills] ?? 1;
+			if (lvl < 1 || lvl > 99) {
+				throw new Error(`Invalid level ${lvl} for skill ${skill}`);
+			}
+			skillsAsXP[skill] = convertLVLtoXP(lvl);
 		} else {
 			skillsAsXP[skill] = MAX_XP;
 		}
 	}
-	return new GearBank({
+	const gb = new GearBank({
 		gear: makeFullGear(),
 		bank: bank ?? new Bank(),
 		chargeBank: new ChargeBank(),
 		skillsAsXP,
 		minionName: 'Minion'
 	});
+	return gb;
 }
-
-export const mockUserMap = new Map<string, MUser>();
 
 export const defaultSkillsAsXPObj: SkillsRequired = {} as SkillsRequired;
 for (const skill of SkillsArray) {

@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import '../../src/lib/safeglobals.js';
 
 import { MUserStats } from '../../src/lib/structures/MUserStats.js';
@@ -98,3 +99,7 @@ MUserStats.fromID = async (id: string) => {
 		quivers_sacrificed: 0
 	});
 };
+
+vi.mock('../../src/lib/postgres.js', { spy: true });
+
+vi.mock('../../src/lib/workers/index.js', { spy: true });

@@ -6,7 +6,9 @@ import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/util
 import { assert } from '@/lib/util/logError.js';
 
 export function createCanvas(width: number, height: number) {
-	return new RawCanvas(width, height);
+	const canvas = new RawCanvas(width, height);
+	canvas.gpu = false;
+	return canvas;
 }
 
 export type Canvas = ReturnType<typeof createCanvas>;
