@@ -1,21 +1,19 @@
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { Events, formatOrdinal, noOp, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { type User, UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
-import { Time, noOp } from 'e';
 import { convertXPtoLVL, toKMB } from 'oldschooljs';
 
-import { LEVEL_99_XP, MAX_LEVEL, MAX_TOTAL_LEVEL, MAX_XP, globalConfig } from './constants';
-import { skillEmoji } from './data/emojis';
-import type { AddXpParams } from './minions/types';
-import { sql } from './postgres';
-import Skills from './skilling/skills';
-import { mahojiClientSettingsFetch } from './util/clientSettings';
-import { insertUserEvent } from './util/userEvents';
-import { sendToChannelID } from './util/webhook';
+import { globalConfig, MAX_LEVEL, MAX_LEVEL_XP, MAX_TOTAL_LEVEL, MAX_XP } from '@/lib/constants.js';
+import { skillEmoji } from '@/lib/data/emojis.js';
+import type { AddXpParams } from '@/lib/minions/types.js';
+import { sql } from '@/lib/postgres.js';
+import { Skills } from '@/lib/skilling/skills/index.js';
+import { mahojiClientSettingsFetch } from '@/lib/util/clientSettings.js';
+import { insertUserEvent } from '@/lib/util/userEvents.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
 
 const skillsVals = Object.values(Skills);
-const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${LEVEL_99_XP}`).join(' AND ');
+const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${MAX_LEVEL_XP}`).join(' AND ');
 const makeQuery = (ironman: boolean) => `SELECT count(id)::int
 FROM users
 WHERE ${maxFilter}
@@ -121,7 +119,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			{
 				count: string;
 			}[]
-		>(`SELECT COUNT(*)::int FROM users WHERE "skills.${params.skillName}" >= ${LEVEL_99_XP};`);
+		>(`SELECT COUNT(*)::int FROM users WHERE "skills.${params.skillName}" >= ${MAX_LEVEL_XP};`);
 
 		let str = `${skill.emoji} **${user.badgedUsername}'s** minion, ${
 			user.minionName
@@ -135,7 +133,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 					count: string;
 				}[]
 			>(
-				`SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${LEVEL_99_XP};`
+				`SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${MAX_LEVEL_XP};`
 			);
 			str += ` They are the ${formatOrdinal(Number.parseInt(ironmenWith.count) + 1)} Ironman to get 99.`;
 		}

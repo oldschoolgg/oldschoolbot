@@ -1,13 +1,12 @@
-import '../globalSetup';
-import '../../src/lib/globals';
-import '../../src/lib/util/transactItemsFromBank';
-import '../../src/lib/ActivityManager';
-import './mocks';
+import '../globalSetup.js';
+import '../../src/lib/globals.js';
+import '../../src/lib/util/transactItemsFromBank.js';
+import '../../src/lib/ActivityManager.js';
+import './mocks.js';
 
-import { beforeEach, vi } from 'vitest';
-
+import { noOp } from '@oldschoolgg/toolkit';
 import { PrismaClient } from '@prisma/client';
-import { noOp } from 'e';
+import { beforeEach, vi } from 'vitest';
 
 if (!roboChimpClient) {
 	throw new Error('Robochimp client not found.');
@@ -28,7 +27,7 @@ vi.mock('../../src/lib/util/webhook', async () => {
 	};
 });
 
-// @ts-ignore mock
+// @ts-expect-error mock
 globalClient.fetchUser = async (id: string | bigint) => ({
 	id: typeof id === 'string' ? id : String(id),
 	send: async () => {}

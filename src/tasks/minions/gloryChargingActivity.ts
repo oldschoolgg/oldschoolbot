@@ -1,10 +1,10 @@
-import { Events } from '@oldschoolgg/toolkit/constants';
+import { roll } from '@oldschoolgg/rng';
+import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { roll } from '../../lib/util/rng';
-import { gloriesInventorySize } from '../../mahoji/lib/abstracted_commands/chargeGloriesCommand';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { gloriesInventorySize } from '@/mahoji/lib/abstracted_commands/chargeGloriesCommand.js';
 
 export const gloryChargingTask: MinionTask = {
 	type: 'GloryCharging',
@@ -48,8 +48,7 @@ export const gloryChargingTask: MinionTask = {
 			);
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

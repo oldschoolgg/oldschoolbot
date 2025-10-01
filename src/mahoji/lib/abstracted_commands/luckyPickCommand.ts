@@ -1,4 +1,5 @@
-import { awaitMessageComponentInteraction, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
+import { roll, shuffleArr } from '@oldschoolgg/rng';
+import { awaitMessageComponentInteraction, channelIsSendable, chunk, noOp, Time } from '@oldschoolgg/toolkit';
 import {
 	ActionRowBuilder,
 	type BaseMessageOptions,
@@ -8,14 +9,13 @@ import {
 	type CacheType,
 	type ChatInputCommandInteraction
 } from 'discord.js';
-import { Time, chunk, noOp, roll, shuffleArr } from 'e';
 import { Bank, toKMB } from 'oldschooljs';
 
-import { SILENT_ERROR } from '../../../lib/constants';
-import { handleMahojiConfirmation, silentButtonAck } from '../../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../../lib/util/interactionReply';
-import { logError } from '../../../lib/util/logError';
-import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '../../mahojiSettings';
+import { SILENT_ERROR } from '@/lib/constants.js';
+import { handleMahojiConfirmation, silentButtonAck } from '@/lib/util/handleMahojiConfirmation.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { logError } from '@/lib/util/logError.js';
+import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '@/mahoji/mahojiSettings.js';
 
 export async function luckyPickCommand(user: MUser, luckypickamount: string, interaction: ChatInputCommandInteraction) {
 	const amount = mahojiParseNumber({ input: luckypickamount, min: 1_000_000, max: 3_000_000_000 });
@@ -147,11 +147,7 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 		components: getCurrentButtons({ showTrueNames: false })
 	});
 
-	const finalize = async ({
-		button
-	}: {
-		button: ButtonInstance;
-	}) => {
+	const finalize = async ({ button }: { button: ButtonInstance }) => {
 		const amountReceived = Math.floor(button.mod(amount));
 		if (amountReceived > 0) {
 			await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
@@ -202,7 +198,7 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 			logError(err);
 			return 'Error.';
 		}
-	} catch (err) {
+	} catch (_err) {
 		return cancel();
 	}
 }

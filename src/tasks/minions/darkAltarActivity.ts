@@ -1,13 +1,12 @@
-import { increaseNumByPercent, roll } from 'e';
+import { roll } from '@oldschoolgg/rng';
+import { Events, increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { darkAltarRunes } from '../../lib/minions/functions/darkAltarCommand';
-import { bloodEssence, raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { DarkAltarOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { darkAltarRunes } from '@/lib/minions/functions/darkAltarCommand.js';
+import { bloodEssence, raimentBonus } from '@/lib/skilling/functions/calcsRunecrafting.js';
+import type { DarkAltarOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 export const darkAltarTask: MinionTask = {
 	type: 'DarkAltar',
@@ -19,19 +18,19 @@ export const darkAltarTask: MinionTask = {
 
 		const [xpRes1, xpRes2, xpRes3] = await Promise.all([
 			user.addXP({
-				skillName: SkillsEnum.Runecraft,
+				skillName: 'runecraft',
 				amount: quantity * runeData.xp,
 				duration,
 				source: 'DarkAltar'
 			}),
 			user.addXP({
-				skillName: SkillsEnum.Crafting,
+				skillName: 'crafting',
 				amount: quantity * 1.7,
 				duration,
 				source: 'DarkAltar'
 			}),
 			user.addXP({
-				skillName: SkillsEnum.Mining,
+				skillName: 'mining',
 				amount: quantity * 2.7,
 				duration,
 				source: 'DarkAltar'
@@ -61,7 +60,7 @@ export const darkAltarTask: MinionTask = {
 		}
 
 		const loot = new Bank().add(runeData.item.id, runeQuantity);
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, runeData.petChance);
+		const { petDropRate } = skillingPetDropRate(user, 'runecraft', runeData.petChance);
 		for (let i = 0; i < quantity; i++) {
 			if (roll(petDropRate)) {
 				loot.add('Rift guardian');
@@ -88,13 +87,12 @@ export const darkAltarTask: MinionTask = {
 				`**${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a Rift guardian while crafting ${runeData.item.name}s at level ${user.skillLevel(
-					SkillsEnum.Runecraft
+					'runecraft'
 				)} Runecrafting!`
 			);
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

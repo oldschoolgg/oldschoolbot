@@ -1,9 +1,8 @@
 import { ItemGroups, Monsters } from 'oldschooljs';
 
-import { SkillsEnum } from '../skilling/types';
-import { Requirements } from '../structures/Requirements';
-import { isCertainMonsterTrip } from './caUtils';
-import type { CombatAchievement } from './combatAchievements';
+import { isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
 
 export const mediumCombatAchievements: CombatAchievement[] = [
 	{
@@ -130,8 +129,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
-				isCertainMonsterTrip(Monsters.CrazyArchaeologist.id)(data) &&
-				user.getAttackStyles().includes(SkillsEnum.Magic)
+				isCertainMonsterTrip(Monsters.CrazyArchaeologist.id)(data) && user.getAttackStyles().includes('magic')
 		}
 	},
 	{
@@ -202,7 +200,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 1,
 			hasChance: (data, user) =>
 				isCertainMonsterTrip(Monsters.DerangedArchaeologist.id)(data) &&
-				user.getAttackStyles().includes(SkillsEnum.Magic)
+				user.getAttackStyles().includes('magic')
 		}
 	},
 	{
@@ -300,8 +298,8 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 				const wep = user.gear.melee.equippedWeapon();
 				return (
 					isCertainMonsterTrip(Monsters.KingBlackDragon.id)(data) &&
-					!user.getAttackStyles().includes(SkillsEnum.Magic) &&
-					!user.getAttackStyles().includes(SkillsEnum.Ranged) &&
+					!user.getAttackStyles().includes('magic') &&
+					!user.getAttackStyles().includes('ranged') &&
 					wep !== null &&
 					Boolean(wep.equipment) &&
 					Boolean(wep.equipment?.attack_stab ?? -1 > 0)

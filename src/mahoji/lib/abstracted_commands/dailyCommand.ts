@@ -1,18 +1,16 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { type CommandResponse, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/util';
+import { roll, shuffleArr } from '@oldschoolgg/rng';
+import { channelIsSendable, Emoji, formatDuration, isWeekend, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
-import { Time, roll, shuffleArr, uniqueArr } from 'e';
 import type { ItemBank } from 'oldschooljs';
 
-import { DynamicButtons } from '../../../lib/DynamicButtons';
-import { globalConfig } from '../../../lib/constants';
-import pets from '../../../lib/data/pets';
-import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
-import dailyRoll from '../../../lib/simulation/dailyTable';
-import { deferInteraction } from '../../../lib/util/interactionReply';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
+import { globalConfig } from '@/lib/constants.js';
+import { DynamicButtons } from '@/lib/DynamicButtons.js';
+import pets from '@/lib/data/pets.js';
+import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
+import dailyRoll from '@/lib/simulation/dailyTable.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { updateClientGPTrackSetting, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export async function isUsersDailyReady(
 	user: MUser
@@ -104,8 +102,7 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 		updateClientGPTrackSetting('gp_daily', coinsToGive);
 	}
 
-	const { itemsAdded, previousCL } = await transactItems({
-		userID: user.id,
+	const { itemsAdded, previousCL } = await user.transactItems({
 		collectionLog: true,
 		itemsToAdd: loot
 	});

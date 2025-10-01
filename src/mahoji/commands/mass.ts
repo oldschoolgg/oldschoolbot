@@ -1,20 +1,19 @@
-import { type CommandRunOptions, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { channelIsSendable, formatDuration, Time } from '@oldschoolgg/toolkit';
+import type { GearSetupType } from '@prisma/client';
 import { ApplicationCommandOptionType, type TextChannel } from 'discord.js';
-import { Time, objectKeys } from 'e';
 
-import killableMonsters from '../../lib/minions/data/killableMonsters';
-import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
-import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
-import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
-import type { KillableMonster } from '../../lib/minions/types';
-import { setupParty } from '../../lib/party';
-import type { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import calcDurQty from '../../lib/util/calcMassDurationQuantity';
-import findMonster from '../../lib/util/findMonster';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { hasMonsterRequirements } from '../mahojiSettings';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
+import hasEnoughFoodForMonster from '@/lib/minions/functions/hasEnoughFoodForMonster.js';
+import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { setupParty } from '@/lib/party.js';
+import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
+import findMonster from '@/lib/util/findMonster.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 	// Check if every user has the requirements for this monster.
@@ -148,7 +147,7 @@ export const massCommand: OSBMahojiCommand = {
 					totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity,
 					healPerAction: Math.ceil(healAmountNeeded / quantity),
 					activityName: monster.name,
-					attackStylesUsed: objectKeys(monster.minimumGearRequirements ?? {})
+					attackStylesUsed: Object.keys(monster.minimumGearRequirements ?? {}) as GearSetupType[]
 				});
 			}
 		}

@@ -1,5 +1,13 @@
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
+import { SeedableRNG } from '@oldschoolgg/rng';
+import {
+	calcWhatPercent,
+	isObject,
+	notEmpty,
+	removeFromArr,
+	stringMatches,
+	sumArr,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	ChambersOfXeric,
@@ -14,25 +22,9 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
-import type { ClueTier } from '../clues/clueTiers';
-import { ClueTiers } from '../clues/clueTiers';
-import killableMonsters, { NightmareMonster } from '../minions/data/killableMonsters';
-import { sepulchreFloors } from '../minions/data/sepulchre';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import {
-	EasyEncounterLoot,
-	HardEncounterLoot,
-	MediumEncounterLoot,
-	rewardTokens
-} from '../minions/data/templeTrekking';
-import type { MinigameName } from '../settings/minigames';
-import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc';
-import { allFarmingItems } from '../skilling/skills/farming';
-import { SkillsEnum } from '../skilling/types';
-import { MUserStats } from '../structures/MUserStats';
-import { shuffleRandom } from '../util/smallUtils';
-import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport';
-import {
-	NexCL,
 	abyssalSireCL,
 	aerialFishingCL,
 	alchemicalHydraCL,
@@ -75,6 +67,7 @@ import {
 	demonicGorillaCL,
 	diariesCL,
 	dukeSucellusCL,
+	type FormatProgressFunction,
 	fightCavesCL,
 	fishingTrawlerCL,
 	forestryCL,
@@ -89,6 +82,9 @@ import {
 	guardiansOfTheRiftCL,
 	hallowedSepulchreCL,
 	hesporiCL,
+	type ICollection,
+	type ILeftListStatus,
+	type IToReturnCollection,
 	implingsCL,
 	kalphiteQueenCL,
 	kingBlackDragonCL,
@@ -103,6 +99,7 @@ import {
 	motherlodeMineCL,
 	muspahCL,
 	myNotesCL,
+	NexCL,
 	oborCL,
 	pestControlCL,
 	questCL,
@@ -121,13 +118,13 @@ import {
 	spiritAnglerOutfit,
 	templeTrekkingCL,
 	temporossCL,
+	theatreOfBLoodCL,
 	theGauntletCL,
 	theInfernoCL,
 	theLeviathanCL,
 	theNightmareCL,
-	theWhispererCL,
-	theatreOfBLoodCL,
 	thermonuclearSmokeDevilCL,
+	theWhispererCL,
 	titheFarmCL,
 	tormentedDemonCL,
 	troubleBrewingCL,
@@ -140,9 +137,22 @@ import {
 	wintertodtCL,
 	zalcanoCL,
 	zulrahCL
-} from './CollectionsExport';
-import Createables from './createables';
-import { leagueBuyables } from './leaguesBuyables';
+} from '@/lib/data/CollectionsExport.js';
+import Createables from '@/lib/data/createables.js';
+import { leagueBuyables } from '@/lib/data/leaguesBuyables.js';
+import killableMonsters, { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
+import { sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
+import {
+	EasyEncounterLoot,
+	HardEncounterLoot,
+	MediumEncounterLoot,
+	rewardTokens
+} from '@/lib/minions/data/templeTrekking.js';
+import type { MinigameName } from '@/lib/settings/minigames.js';
+import { NexNonUniqueTable, NexUniqueTable } from '@/lib/simulation/misc.js';
+import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
 
 function kcProg(mon: Monster): FormatProgressFunction {
 	return ({ stats }) => `${stats.kcBank[mon.id] ?? 0} KC`;
@@ -152,7 +162,7 @@ function mgProg(minigameName: MinigameName): FormatProgressFunction {
 	return ({ minigames }) => `${minigames[minigameName]} Completions`;
 }
 
-function skillProg(skillName: SkillsEnum): FormatProgressFunction {
+function skillProg(skillName: SkillNameType): FormatProgressFunction {
 	return ({ user }) => `Level ${user.skillLevel(skillName)} ${skillName}`;
 }
 
@@ -975,7 +985,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			Forestry: {
 				alias: ['forestry', 'forest', 'for'],
-				fmtProg: skillProg(SkillsEnum.Woodcutting),
+				fmtProg: skillProg('woodcutting'),
 				allItems: forestryCL,
 				items: forestryCL
 			},
@@ -1051,7 +1061,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['rooftop', 'laps', 'agility', 'agil'],
 				items: rooftopAgilityCL,
 				isActivity: true,
-				fmtProg: skillProg(SkillsEnum.Agility)
+				fmtProg: skillProg('agility')
 			},
 			'Shayzien Armour': {
 				items: shayzienArmourCL
@@ -1064,7 +1074,7 @@ export const allCollectionLogs: ICollection = {
 			Slayer: {
 				alias: ['slay'],
 				items: slayerCL,
-				fmtProg: skillProg(SkillsEnum.Slayer)
+				fmtProg: skillProg('slayer')
 			},
 			TzHaar: {
 				kcActivity: {
@@ -1116,7 +1126,7 @@ export const allCollectionLogs: ICollection = {
 			Farming: {
 				counts: false,
 				items: allFarmingItems,
-				fmtProg: skillProg(SkillsEnum.Farming)
+				fmtProg: skillProg('farming')
 			},
 			Implings: {
 				counts: false,
@@ -1125,7 +1135,7 @@ export const allCollectionLogs: ICollection = {
 			Graceful: {
 				counts: false,
 				items: gracefulCL,
-				fmtProg: skillProg(SkillsEnum.Agility)
+				fmtProg: skillProg('agility')
 			},
 			'God Wars Dungeon': {
 				counts: false,
@@ -1279,10 +1289,8 @@ export function calcCLDetails(user: MUser | Bank) {
 	const clItems = (user instanceof Bank ? user : user.cl).filter(i => allCLItemsFiltered.includes(i.id));
 	const debugBank = new Bank(clItems);
 	const owned = clItems.filter(i => allCLItemsFiltered.includes(i.id));
-	const notOwned = shuffleRandom(
-		Number(user instanceof Bank ? '1' : user.id),
-		allCLItemsFiltered.filter(i => !clItems.has(i))
-	).slice(0, 10);
+	const seededRng = new SeedableRNG(Number(user instanceof Bank ? '1' : user.id));
+	const notOwned: number[] = seededRng.shuffle(allCLItemsFiltered.filter(i => !clItems.has(i))).slice(0, 10);
 	return {
 		percent: calcWhatPercent(owned.length, allCLItemsFiltered.length),
 		notOwned,

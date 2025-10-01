@@ -1,22 +1,21 @@
-import type { CommandRunOptions, OSBMahojiCommand } from '@oldschoolgg/toolkit/util';
+import { cryptoRng } from '@oldschoolgg/rng';
+import { uniqueArr } from '@oldschoolgg/toolkit';
 import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import type { User as DJSUser } from 'discord.js';
-import { objectKeys, randInt, shuffleArr, uniqueArr } from 'e';
-import { Bank, type EMonster, Items, Monsters, convertLVLtoXP } from 'oldschooljs';
-import { integer, nodeCrypto } from 'random-js';
+import { Bank, convertLVLtoXP, type EMonster, type ItemBank, Items, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
 
-import { MUserClass } from '../../src/lib/MUser';
-import { type PvMMethod, globalConfig } from '../../src/lib/constants';
-import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types';
-import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
-import { Gear } from '../../src/lib/structures/Gear';
-import type { ItemBank, SkillsRequired } from '../../src/lib/types';
-import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
-import { minionKCommand } from '../../src/mahoji/commands/k';
-import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
-import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
+import { globalConfig, type PvMMethod } from '../../src/lib/constants.js';
+import { MUserClass } from '../../src/lib/MUser.js';
+import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types.js';
+import { slayerMasters } from '../../src/lib/slayer/slayerMasters.js';
+import { Gear } from '../../src/lib/structures/Gear.js';
+import type { SkillsRequired } from '../../src/lib/types/index.js';
+import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions.js';
+import { minionKCommand } from '../../src/mahoji/commands/k.js';
+import { giveMaxStats } from '../../src/mahoji/commands/testpotato.js';
+import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand.js';
 
 export const TEST_CHANNEL_ID = '1111111111111111';
 
@@ -224,13 +223,18 @@ export class TestUser extends MUserClass {
 
 	async kill(
 		monster: EMonster,
-		{ quantity, method, shouldFail = false }: { method?: PvMMethod; shouldFail?: boolean; quantity?: number } = {}
+		{
+			quantity,
+			method,
+			shouldFail = false,
+			wilderness = false
+		}: { method?: PvMMethod; shouldFail?: boolean; quantity?: number; wilderness?: boolean } = {}
 	) {
 		const previousBank = this.bank.clone();
 		const currentXP = clone(this.skillsAsXP);
 		const commandResult = await this.runCommand(
 			minionKCommand,
-			{ name: Monsters.get(monster)!.name, method, quantity },
+			{ name: Monsters.get(monster)!.name, method, quantity, wilderness },
 			true
 		);
 		if (shouldFail) {
@@ -242,7 +246,7 @@ export class TestUser extends MUserClass {
 		const newXP = clone(this.skillsAsXP);
 		const xpGained: SkillsRequired = {} as SkillsRequired;
 		for (const skill of SkillsArray) xpGained[skill] = 0;
-		for (const skill of objectKeys(newXP)) {
+		for (const skill of Object.keys(newXP) as SkillNameType[]) {
 			xpGained[skill as SkillNameType] = newXP[skill] - currentXP[skill];
 		}
 
@@ -291,9 +295,9 @@ export class TestUser extends MUserClass {
 
 	randomBankSubset() {
 		const bank = new Bank();
-		const items = shuffleArr(this.bankWithGP.items()).slice(0, randInt(0, this.bankWithGP.length));
+		const items = cryptoRng.shuffle(this.bankWithGP.items()).slice(0, cryptoRng.randInt(0, this.bankWithGP.length));
 		for (const [item] of items) {
-			bank.add(item, randInt(1, this.bankWithGP.amount(item.id)));
+			bank.add(item, cryptoRng.randInt(1, this.bankWithGP.amount(item.id)));
 		}
 		return bank;
 	}
@@ -301,12 +305,13 @@ export class TestUser extends MUserClass {
 
 const idsUsed = new Set<string>();
 
-export function unMockedCyptoRand(min: number, max: number) {
-	return integer(min, max)(nodeCrypto);
-}
-
 export function mockedId() {
-	return unMockedCyptoRand(1, 5_000_000_000_000).toString();
+	const id = cryptoRng.randInt(1, 5_000_000_000_000).toString();
+	if (idsUsed.has(id)) {
+		throw new Error(`ID ${id} has already been used`);
+	}
+	idsUsed.add(id);
+	return id;
 }
 
 export async function mockUser(
@@ -315,6 +320,7 @@ export async function mockUser(
 		rangeLevel: number;
 		mageGear: number[];
 		mageLevel: number;
+		wildyGear: number[];
 		meleeGear: number[];
 		slayerLevel: number;
 		venatorBowCharges: number;
@@ -342,6 +348,12 @@ export async function mockUser(
 			meleeGear.equip(Items.getOrThrow(item));
 		}
 	}
+	const wildyGear = new Gear();
+	if (options.wildyGear) {
+		for (const item of options.wildyGear) {
+			wildyGear.equip(Items.getOrThrow(item));
+		}
+	}
 
 	const user = await createTestUser(options.bank, {
 		skills_ranged: options.rangeLevel ? convertLVLtoXP(options.rangeLevel) : undefined,
@@ -366,10 +378,6 @@ export async function mockUser(
 
 export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
 	const id = userData?.id ?? mockedId();
-	if (idsUsed.has(id)) {
-		throw new Error(`ID ${id} has already been used`);
-	}
-	idsUsed.add(id);
 
 	const bank = _bank ? _bank.clone() : null;
 	let GP = userData.GP ? Number(userData.GP) : undefined;

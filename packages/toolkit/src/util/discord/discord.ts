@@ -1,3 +1,4 @@
+import type { RNGProvider } from '@oldschoolgg/rng';
 import {
 	ApplicationCommandOptionType,
 	type ButtonBuilder,
@@ -14,11 +15,10 @@ import {
 	type SelectMenuInteraction
 } from 'discord.js';
 
-import { chunk, randArrItem, shuffleArr } from '../array';
-import { randInt } from '../chanceTemporary';
-import { stripEmojis } from '../misc';
-import type { MahojiClient } from './MahojiClient/Mahoji';
-import type { CommandOption } from './MahojiClient/mahojiTypes';
+import { chunk } from '../array.js';
+import { stripEmojis } from '../misc.js';
+import type { MahojiClient } from './MahojiClient/Mahoji.js';
+import type { CommandOption } from './MahojiClient/mahojiTypes.js';
 
 const discordEpoch = 1_420_070_400_000;
 
@@ -110,7 +110,10 @@ export function awaitMessageComponentInteraction({
 
 type CommandInput = Record<string, any>;
 
-export async function generateCommandInputs(options: readonly CommandOption[]): Promise<CommandInput[]> {
+export async function generateCommandInputs(
+	rng: RNGProvider,
+	options: readonly CommandOption[]
+): Promise<CommandInput[]> {
 	const results: CommandInput[] = [];
 	const allPossibleOptions: Record<string, any[]> = {};
 
@@ -123,7 +126,7 @@ export async function generateCommandInputs(options: readonly CommandOption[]): 
 			case ApplicationCommandOptionType.SubcommandGroup:
 			case ApplicationCommandOptionType.Subcommand:
 				if (option.options) {
-					const subOptionsResults = await generateCommandInputs(option.options);
+					const subOptionsResults = await generateCommandInputs(rng, option.options);
 					results.push(...subOptionsResults.map(input => ({ [option.name]: input })));
 				}
 				break;
@@ -134,9 +137,9 @@ export async function generateCommandInputs(options: readonly CommandOption[]): 
 						{ id: randomSnowflake() } as any,
 						{} as any
 					);
-					allPossibleOptions[option.name] = shuffleArr(autoCompleteResults.map(c => c.value)).slice(0, 10);
+					allPossibleOptions[option.name] = rng.shuffle(autoCompleteResults.map(c => c.value)).slice(0, 10);
 				} else if (option.choices) {
-					allPossibleOptions[option.name] = shuffleArr(option.choices.map(c => c.value)).slice(0, 10);
+					allPossibleOptions[option.name] = rng.shuffle(option.choices.map(c => c.value)).slice(0, 10);
 				} else if (['guild_id', 'message_id'].includes(option.name)) {
 					allPossibleOptions[option.name] = ['157797566833098752'];
 				} else {
@@ -146,15 +149,15 @@ export async function generateCommandInputs(options: readonly CommandOption[]): 
 			case ApplicationCommandOptionType.Integer:
 			case ApplicationCommandOptionType.Number:
 				if (option.choices) {
-					allPossibleOptions[option.name] = shuffleArr(option.choices.map(c => c.value)).slice(0, 10);
+					allPossibleOptions[option.name] = rng.shuffle(option.choices.map(c => c.value)).slice(0, 10);
 				} else {
-					let value = randInt(1, 10);
+					let value = rng.randInt(1, 10);
 					if (option.min_value && option.max_value) {
-						value = randInt(option.min_value, option.max_value);
+						value = rng.randInt(option.min_value, option.max_value);
 					}
 					allPossibleOptions[option.name] = [
 						option.min_value ?? 0,
-						randInt(option.min_value ?? 0, value),
+						rng.randInt(option.min_value ?? 0, value),
 						value
 					];
 				}
@@ -189,7 +192,7 @@ export async function generateCommandInputs(options: readonly CommandOption[]): 
 	for (let i = 0; i < longestOptions; i++) {
 		const obj: Record<string, any> = {};
 		for (const [key, val] of Object.entries(allPossibleOptions)) {
-			obj[key] = val[i] ?? randArrItem(val);
+			obj[key] = val[i] ?? (val.length > 0 && rng.pick(val));
 		}
 		results.push(obj);
 	}

@@ -1,13 +1,11 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import Firemaking from '../../lib/skilling/skills/firemaking';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { FiremakingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import Firemaking from '@/lib/skilling/skills/firemaking.js';
+import type { FiremakingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export const lightCommand: OSBMahojiCommand = {
 	name: 'light',
@@ -48,7 +46,7 @@ export const lightCommand: OSBMahojiCommand = {
 
 		if (!log) return "That's not a valid log to light.";
 
-		if (user.skillLevel(SkillsEnum.Firemaking) < log.level) {
+		if (user.skillsAsLevels.firemaking < log.level) {
 			return `${user.minionName} needs ${log.level} Firemaking to light ${log.name}.`;
 		}
 
@@ -78,7 +76,7 @@ export const lightCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 
 		await addSubTaskToActivityTask<FiremakingActivityTaskOptions>({
 			burnableID: log.inputLogs,

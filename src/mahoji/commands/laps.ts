@@ -1,19 +1,14 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, bold } from 'discord.js';
 
-import {
-	type ZeroTimeActivityResult,
-	attemptZeroTimeActivity,
-	getZeroTimeActivitySettings
-} from '@/lib/util/zeroTimeActivity';
-import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand';
-import { quests } from '../../lib/minions/data/quests';
-import { courses } from '../../lib/skilling/skills/agility';
-import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { quests } from '@/lib/minions/data/quests.js';
+import { courses } from '@/lib/skilling/skills/agility.js';
+import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
+import { attemptZeroTimeActivity, getZeroTimeActivitySettings, type ZeroTimeActivityResult } from '@/lib/util/zeroTimeActivity.js';
 
 const AGILITY_FLETCH_ITEMS_PER_HOUR = 15_000;
 const AGILITY_ALCHES_PER_HOUR = Time.Hour / timePerAlchAgility;

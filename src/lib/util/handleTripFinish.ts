@@ -1,28 +1,19 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { channelIsSendable, makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { channelIsSendable, makeComponents, Stopwatch, Time } from '@oldschoolgg/toolkit';
 import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { Bank, EItem } from 'oldschooljs';
 
-import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
-import {
-	tearsOfGuthixIronmanReqs,
-	tearsOfGuthixSkillReqs
-} from '../../mahoji/lib/abstracted_commands/tearsOfGuthixCommand';
-import { updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
-import { ClueTiers } from '../clues/clueTiers';
-import { buildClueButtons } from '../clues/clueUtils';
-import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
-import { BitField, PerkTier } from '../constants';
-import { handleGrowablePetGrowth } from '../growablePets';
-import { handlePassiveImplings } from '../implings';
-import { triggerRandomEvent } from '../randomEvents';
-import { calculateBirdhouseDetails } from '../skilling/skills/hunter/birdhouses';
-import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
-import type { ActivityTaskData } from '../types/minions';
-import { displayCluesAndPets } from './displayCluesAndPets';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { buildClueButtons } from '@/lib/clues/clueUtils.js';
+import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
+import { BitField, PerkTier } from '@/lib/constants.js';
+import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
+import { handlePassiveImplings } from '@/lib/implings.js';
+import { triggerRandomEvent } from '@/lib/randomEvents.js';
+import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
+import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import type { ActivityTaskData } from '@/lib/types/minions.js';
+import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
@@ -33,9 +24,16 @@ import {
 	makeOpenSeedPackButton,
 	makeRepeatTripButton,
 	makeTearsOfGuthixButton
-} from './interactions';
-import { hasSkillReqs } from './smallUtils';
-import { sendToChannelID } from './webhook';
+} from '@/lib/util/interactions.js';
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
+import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
+import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
+import {
+	tearsOfGuthixIronmanReqs,
+	tearsOfGuthixSkillReqs
+} from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
+import { updateClientGPTrackSetting, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 const collectors = new Map<string, MessageCollector>();
 

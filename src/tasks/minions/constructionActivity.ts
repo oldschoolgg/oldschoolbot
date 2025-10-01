@@ -1,9 +1,8 @@
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 
-import { Construction } from '@/lib/skilling/skills/construction';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { Construction } from '@/lib/skilling/skills/construction/index.js';
+import type { ConstructionActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const constructionTask: MinionTask = {
 	type: 'Construction',
@@ -18,7 +17,7 @@ export const constructionTask: MinionTask = {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xpReceived);
 		}
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Construction,
+			skillName: 'construction',
 			amount: xpReceived + bonusXP,
 			duration
 		});

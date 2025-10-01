@@ -1,7 +1,7 @@
 import { type Bank, ItemGroups, resolveItems } from 'oldschooljs';
 
-import { skillingPetsCL } from '../../../lib/data/CollectionsExport';
-import type { GlobalBingoTile } from './bingoUtil';
+import { skillingPetsCL } from '@/lib/data/CollectionsExport.js';
+import type { GlobalBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 
 const otherSpiritShieldParts = resolveItems(['Blessed spirit shield', 'Holy elixir', 'Spirit shield']);
 const allSpiritShieldSets = [

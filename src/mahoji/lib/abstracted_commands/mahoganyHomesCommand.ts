@@ -1,14 +1,12 @@
-import { type CommandResponse, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Time, calcPercentOfNum, calcWhatPercent, randArrItem, randInt, roll } from 'e';
-import { Bank } from 'oldschooljs';
+import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import { calcPercentOfNum, calcWhatPercent, formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, Items } from 'oldschooljs';
 
-import { Plank } from '../../../lib/skilling/skills/construction/constructables';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { Plank } from '@/lib/skilling/skills/construction/constructables.js';
+import type { MahoganyHomesActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 interface IContract {
 	name: string;
@@ -97,14 +95,14 @@ function calcTrip(
 }
 
 export const mahoganyHomesBuyables = [
-	{ item: getOSItem('Builders supply crate'), cost: 25 },
-	{ item: getOSItem("Amy's saw"), cost: 500 },
-	{ item: getOSItem('Plank sack'), cost: 350 },
-	{ item: getOSItem('Hosidius blueprints'), cost: 2000 },
-	{ item: getOSItem("Carpenter's helmet"), cost: 400 },
-	{ item: getOSItem("Carpenter's shirt"), cost: 800 },
-	{ item: getOSItem("Carpenter's trousers"), cost: 600 },
-	{ item: getOSItem("Carpenter's boots"), cost: 200 }
+	{ item: Items.getOrThrow('Builders supply crate'), cost: 25 },
+	{ item: Items.getOrThrow("Amy's saw"), cost: 500 },
+	{ item: Items.getOrThrow('Plank sack'), cost: 350 },
+	{ item: Items.getOrThrow('Hosidius blueprints'), cost: 2000 },
+	{ item: Items.getOrThrow("Carpenter's helmet"), cost: 400 },
+	{ item: Items.getOrThrow("Carpenter's shirt"), cost: 800 },
+	{ item: Items.getOrThrow("Carpenter's trousers"), cost: 600 },
+	{ item: Items.getOrThrow("Carpenter's boots"), cost: 200 }
 ];
 
 export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?: number) {
@@ -132,7 +130,7 @@ export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?
 		}
 	});
 	const loot = new Bank().add(item.id, quantity);
-	await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
+	await user.transactItems({ itemsToAdd: loot, collectionLog: true });
 
 	return `Successfully purchased ${loot} for ${cost * quantity} Carpenter Points.`;
 }
@@ -145,7 +143,7 @@ export async function mahoganyHomesPointsCommand(user: MUser) {
 export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, tier?: number): CommandResponse {
 	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
 
-	const conLevel = user.skillLevel(SkillsEnum.Construction);
+	const conLevel = user.skillsAsLevels.construction;
 	const kc = await user.fetchMinigameScore('mahogany_homes');
 
 	let tierData = contractTiers.find(contractTier => conLevel >= contractTier.level)!;

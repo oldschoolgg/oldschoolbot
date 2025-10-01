@@ -1,11 +1,10 @@
-import { percentChance } from 'e';
+import { percentChance } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 
-import Prayer from '../../../lib/skilling/skills/prayer';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { BuryingActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { zealOutfitBoost } from './offeringActivity';
+import Prayer from '@/lib/skilling/skills/prayer.js';
+import type { BuryingActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { zealOutfitBoost } from '@/tasks/minions/PrayerActivity/offeringActivity.js';
 
 export const buryingTask: MinionTask = {
 	type: 'Burying',
@@ -32,8 +31,8 @@ export const buryingTask: MinionTask = {
 		const XPMod = 1;
 		const xpReceived = newQuantity * bone.xp * XPMod;
 
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived, duration: data.duration });
-		await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived, source: 'BuryingBones' });
+		const xpRes = await user.addXP({ skillName: 'prayer', amount: xpReceived, duration: data.duration });
+		await user.addXP({ skillName: 'prayer', amount: xpReceived, source: 'BuryingBones' });
 
 		let str = `${user}, ${user.minionName} finished burying ${quantity} ${bone.name}, ${xpRes}.`;
 
@@ -45,8 +44,7 @@ export const buryingTask: MinionTask = {
 			user.hasEquipped(['Iron dagger', 'Bronze arrow', 'Iron med helm'], true) &&
 			!user.hasEquippedOrInBank(['Clue hunter garb'])
 		) {
-			await transactItems({
-				userID,
+			await user.transactItems({
 				itemsToAdd: new Bank({ 'Clue hunter garb': 1, 'Clue hunter trousers': 1 }),
 				collectionLog: true
 			});

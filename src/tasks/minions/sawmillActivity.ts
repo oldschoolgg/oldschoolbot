@@ -1,8 +1,7 @@
 import { Bank } from 'oldschooljs';
 
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { SawmillActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import type { SawmillActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const sawmillTask: MinionTask = {
 	type: 'Sawmill',
@@ -18,7 +17,7 @@ export const sawmillTask: MinionTask = {
 
 		if (
 			user.hasEquipped(['Iron dagger', 'Bronze arrow', 'Iron med helm']) &&
-			user.getAttackStyles().includes(SkillsEnum.Strength) &&
+			user.getAttackStyles().includes('strength') &&
 			!user.hasEquippedOrInBank(['Helm of raedwald'])
 		) {
 			loot.add('Helm of raedwald');
@@ -26,8 +25,7 @@ export const sawmillTask: MinionTask = {
 				"\n\nWhile on the way to the sawmill, a helmet falls out of a tree onto the ground infront of you... **You've found the Helm of Raedwald!**";
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

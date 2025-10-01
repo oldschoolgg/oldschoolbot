@@ -1,21 +1,13 @@
-import { randArrItem } from 'e';
-import itemID from '../util/itemID';
-import Bank from './Bank';
-import Items from './Items';
+import { randArrItem, randFloat, randInt, reduceNumByPercent, roll } from '../util/smallUtils.js';
+import { Bank } from './Bank.js';
+import { Items } from './Items.js';
 
-export function reduceNumByPercent(value: number, percent: number): number {
-	if (percent <= 0) return value;
-	return value - value * (percent / 100);
-}
-export function randInt(min: number, max: number): number {
-	return Math.floor(Math.random() * (max - min + 1) + min);
-}
-export function randFloat(min: number, max: number): number {
-	return Math.random() * (max - min) + min;
-}
-
-export function roll(upperLimit: number): boolean {
-	return randInt(1, upperLimit) === 1;
+export function itemTupleToTable(items: [string, number | [number, number]][]): LootTable {
+	const table = new LootTable();
+	for (const [item, quantity] of items) {
+		table.every(item, quantity ?? 1);
+	}
+	return table;
 }
 
 export interface LootTableOptions {
@@ -87,7 +79,7 @@ export default class LootTable {
 	}
 
 	private resolveName(name: string): number {
-		return itemID(name);
+		return Items.getId(name);
 	}
 
 	private addToAllItems(items: number | number[] | LootTable | LootTableItem | LootTableItem[]): void {

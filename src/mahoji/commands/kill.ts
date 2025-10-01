@@ -1,16 +1,15 @@
-import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters';
-
-import { PerkTier } from '../../lib/constants';
-import { simulatedKillables } from '../../lib/simulation/simulatedKillables';
-import { slayerMasterChoices } from '../../lib/slayer/constants';
-import { slayerMasters } from '../../lib/slayer/slayerMasters';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { Workers } from '../../lib/workers';
+import { PerkTier } from '@/lib/constants.js';
+import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import { simulatedKillables } from '@/lib/simulation/simulatedKillables.js';
+import { slayerMasterChoices } from '@/lib/slayer/constants.js';
+import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { Workers } from '@/lib/workers/index.js';
 
 function determineKillLimit(user: MUser) {
 	const perkTier = user.perkTier();

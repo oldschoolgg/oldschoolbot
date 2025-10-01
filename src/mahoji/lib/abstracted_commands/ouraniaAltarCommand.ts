@@ -1,14 +1,12 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, increaseNumByPercent } from 'e';
+import { formatDuration, increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
-import Runecraft from '../../../lib/skilling/skills/runecraft';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { OuraniaAltarOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import type { OuraniaAltarOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 const gracefulPenalty = 20;
 
@@ -33,13 +31,13 @@ export async function ouraniaAltarStartCommand({
 	const numEssenceOwned = bank.amount('Pure essence');
 	const daeyaltEssenceOwned = bank.amount('Daeyalt essence');
 	const boosts = [];
-	const mageLvl = user.skillLevel(SkillsEnum.Magic);
+	const mageLvl = user.skillsAsLevels.magic;
 	const spellbookSwap = mageLvl > 95;
 
 	let inventorySize = 28;
 	// For each pouch the user has, increase their inventory size.
 	for (const pouch of Runecraft.pouches) {
-		if (user.skillLevel(SkillsEnum.Runecraft) < pouch.level) continue;
+		if (user.skillsAsLevels.runecraft < pouch.level) continue;
 		if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
 		if (bank.has(pouch.id) && pouch.id === EItem.COLOSSAL_POUCH) break;
 	}

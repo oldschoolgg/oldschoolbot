@@ -1,11 +1,11 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, randFloat, reduceNumByPercent } from 'e';
+import { randFloat } from '@oldschoolgg/rng';
+import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import type { UnderwaterAgilityThievingTrainingSkill } from '../../../lib/skilling/skills/agility';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import type { UnderwaterAgilityThievingTaskOptions } from './../../../lib/types/minions';
+import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
+import type { UnderwaterAgilityThievingTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export async function underwaterAgilityThievingCommand(
 	channelID: string,

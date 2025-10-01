@@ -4,7 +4,7 @@ export const PreactThemeSelect = () => {
 	const storageKey = 'starlight-theme';
 	const parseTheme = (theme: unknown) => (theme === 'auto' || theme === 'dark' || theme === 'light' ? theme : 'auto');
 
-	const loadTheme = () => parseTheme(typeof localStorage !== 'undefined' && localStorage.getItem(storageKey));
+	const loadTheme = () => parseTheme(localStorage?.getItem(storageKey));
 
 	const storeTheme = (theme: string) => {
 		if (typeof localStorage !== 'undefined') {
@@ -45,7 +45,7 @@ export const PreactThemeSelect = () => {
 		return () => {
 			matchMedia('(prefers-color-scheme: light)').removeEventListener('change', preferredSchemeChangeListener);
 		};
-	}, []);
+	}, [loadTheme, onThemeChange]);
 
 	return (
 		<button

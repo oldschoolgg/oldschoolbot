@@ -1,16 +1,15 @@
-import { type CommandOptions, isGuildChannel } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { type CommandOptions, isGuildChannel, stringMatches } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
-import type { PvMMethod } from '@/lib/constants';
+import type { PvMMethod } from '@/lib/constants.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { runCommand } from '@/lib/settings/settings.js';
+import { AutoslayOptionsEnum, autoslayModes } from '@/lib/slayer/constants.js';
+import { getCommonTaskName, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '@/lib/slayer/slayerUtil.js';
+import { interactionReply } from '@/lib/util/interactionReply.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import killableMonsters from '../../../lib/minions/data/killableMonsters';
-import { runCommand } from '../../../lib/settings/settings';
-import { AutoslayOptionsEnum, autoslayModes } from '../../../lib/slayer/constants';
-import { SlayerMasterEnum, getCommonTaskName, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { interactionReply } from '../../../lib/util/interactionReply';
-import { slayerNewTaskCommand } from './slayerTaskCommand';
+import { slayerNewTaskCommand } from '@/mahoji/lib/abstracted_commands/slayerTaskCommand.js';
 
 interface AutoslayLink {
 	monsterID: number;

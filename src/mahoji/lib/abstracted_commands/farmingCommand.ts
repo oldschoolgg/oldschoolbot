@@ -1,23 +1,18 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import type { CropUpgradeType } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { superCompostables } from '../../../lib/data/filterables';
-import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { calcNumOfPatches } from '../../../lib/skilling/functions/calcsFarming';
-import { getFarmingInfo, getFarmingInfoFromUser } from '../../../lib/skilling/functions/getFarmingInfo';
-import Farming from '../../../lib/skilling/skills/farming';
-import type { Plant } from '../../../lib/skilling/types';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { FarmingActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { farmingPatchNames, findPlant, isPatchName } from '../../../lib/util/farmingHelpers';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped, userStatsBankUpdate } from '../../mahojiSettings';
+import { superCompostables } from '@/lib/data/filterables.js';
+import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import type { Plant } from '@/lib/skilling/types.js';
+import type { FarmingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { userHasGracefulEquipped, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number): string | null {
 	if (plant.needsChopForHarvest && plant.treeWoodcuttingLevel && wcLevel < plant.treeWoodcuttingLevel) {
@@ -42,14 +37,14 @@ export async function harvestCommand({
 		return 'Your minion must not be busy to use this command.';
 	}
 	const { GP } = user;
-	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
-	const currentDate = new Date().getTime();
-	if (!isPatchName(seedType)) {
-		return `That is not a valid patch type! The available patches are: ${farmingPatchNames.join(
+	const currentWoodcuttingLevel = user.skillsAsLevels.woodcutting;
+	const currentDate = Date.now();
+	if (!Farming.isPatchName(seedType)) {
+		return `That is not a valid patch type! The available patches are: ${Farming.farmingPatchNames.join(
 			', '
 		)}. *Don't include numbers, this command harvests all crops available of the specified patch type.*`;
 	}
-	const { patchesDetailed, patches } = await getFarmingInfoFromUser(user.user);
+	const { patchesDetailed, patches } = await Farming.getFarmingInfoFromUser(user.user);
 	const patch = patchesDetailed.find(i => i.patchName === seedType)!;
 	if (patch.ready === null) return 'You have nothing planted in those patches.';
 
@@ -58,7 +53,7 @@ export async function harvestCommand({
 	const boostStr = [];
 
 	const storeHarvestablePlant = patch.lastPlanted;
-	const plant = findPlant(patch.lastPlanted)!;
+	const plant = Farming.findPlant(patch.lastPlanted)!;
 
 	if (!patch.ready) {
 		return `Please come back when your crops have finished growing in ${formatDuration(patch.readyIn!)}!`;
@@ -144,13 +139,13 @@ export async function farmingPlantCommand({
 	const alwaysPay = user.user.minion_defaultPay;
 	const questPoints = user.QP;
 	const { GP } = user;
-	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
-	const currentDate = new Date().getTime();
+	const currentWoodcuttingLevel = user.skillsAsLevels.woodcutting;
+	const currentDate = Date.now();
 
 	const infoStr: string[] = [];
 	const boostStr: string[] = [];
 
-	const plant = findPlant(plantName);
+	const plant = Farming.findPlant(plantName);
 
 	if (!plant) {
 		return `That's not a valid seed to plant. Valid seeds are ${Farming.Plants.map(plants => plants.name).join(
@@ -160,18 +155,18 @@ export async function farmingPlantCommand({
 
 	const wantsToPay = (pay || alwaysPay) && plant.canPayFarmer;
 
-	if (user.skillLevel(SkillsEnum.Farming) < plant.level) {
+	if (user.skillsAsLevels.farming < plant.level) {
 		return `${user.minionName} needs ${plant.level} Farming to plant ${plant.name}.`;
 	}
 
-	const { patchesDetailed, patches } = await getFarmingInfo(user.id);
+	const { patchesDetailed, patches } = await Farming.getFarmingInfo(user.id);
 	const patchType = patchesDetailed.find(i => i.patchName === plant.seedType)!;
 
 	const timePerPatchTravel = Time.Second * plant.timePerPatchTravel;
 	const timePerPatchHarvest = Time.Second * plant.timePerHarvest;
 	const timePerPatchPlant = Time.Second * 5;
 
-	const planted = findPlant(patchType.lastPlanted);
+	const planted = Farming.findPlant(patchType.lastPlanted);
 
 	if (patchType.ready === false) {
 		return `Please come back when your crops have finished growing in ${formatDuration(patchType.readyIn!)}!`;
@@ -180,7 +175,7 @@ export async function farmingPlantCommand({
 	const treeStr = !planted ? null : treeCheck(planted, currentWoodcuttingLevel, GP, patchType.lastQuantity);
 	if (treeStr) return treeStr;
 
-	const [numOfPatches] = calcNumOfPatches(plant, user, questPoints);
+	const [numOfPatches] = Farming.calcNumOfPatches(plant, user, questPoints);
 	if (numOfPatches === 0) {
 		return 'There are no available patches to you.';
 	}
@@ -267,7 +262,7 @@ export async function farmingPlantCommand({
 	}
 
 	if (!user.owns(cost)) return `You don't own ${cost}.`;
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 
 	updateBankSetting('farming_cost_bank', cost);
 	// If user does not have something already planted, just plant the new seeds.
@@ -347,7 +342,7 @@ export async function compostBinCommand(
 		`${user}, please confirm that you want to compost ${cost} into ${loot}.`
 	);
 
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 	await user.addItemsToBank({ items: loot });
 
 	return `You composted ${cost} into ${loot}.`;

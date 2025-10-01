@@ -1,15 +1,14 @@
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, round, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
-import { Time, round } from 'e';
 import { Bank } from 'oldschooljs';
 
-import Constructables from '../../lib/skilling/skills/construction/constructables';
-import type { Skills } from '../../lib/types';
-import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { hasSkillReqs } from '../../lib/util/smallUtils';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import Constructables from '@/lib/skilling/skills/construction/constructables.js';
+import type { Skills } from '@/lib/types/index.js';
+import type { ConstructionActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const ds2Requirements: Skills = {
 	magic: 75,
@@ -129,7 +128,7 @@ export const buildCommand: OSBMahojiCommand = {
 		cost.add('Coins', gpNeeded);
 		if (!user.owns(cost)) return `You don't own: ${cost}.`;
 
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 
 		updateBankSetting('construction_cost_bank', cost);
 

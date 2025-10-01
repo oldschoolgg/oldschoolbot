@@ -1,9 +1,8 @@
 import { Bank } from 'oldschooljs';
 
-import ForestryRations from '../../lib/skilling/skills/cooking/forestersRations';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { CreateForestersRationsActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
+import type { CreateForestersRationsActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const CreateForestersRationsTask: MinionTask = {
 	type: 'CreateForestersRations',
@@ -19,15 +18,14 @@ export const CreateForestersRationsTask: MinionTask = {
 		const xpPerAction = 51.1;
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Cooking,
+			skillName: 'cooking',
 			amount: xpPerAction * quantity,
 			duration
 		});
 
 		const str = `${user}, ${user.minionName} finished creating ${quantity}x ${ration.name}. ${xpRes}\n\n You received: ${rationBank}.`;
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: rationBank
 		});

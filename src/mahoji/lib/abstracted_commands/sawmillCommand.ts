@@ -1,13 +1,13 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Time, clamp } from 'e';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, toKMB } from 'oldschooljs';
+import { clamp } from 'remeda';
 
-import { Planks } from '../../../lib/minions/data/planks';
-import type { SawmillActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+import { Planks } from '@/lib/minions/data/planks.js';
+import type { SawmillActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function sawmillCommand(
 	user: MUser,
@@ -44,7 +44,7 @@ export async function sawmillCommand(
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerPlank);
 	}
-	quantity = clamp(quantity, 1, 100_000);
+	quantity = clamp(quantity, { min: 1, max: 100_000 });
 
 	const inputItemOwned = user.bank.amount(plank.inputItem);
 	if (inputItemOwned < quantity) {
@@ -73,7 +73,7 @@ export async function sawmillCommand(
 	}
 
 	const costBank = new Bank().add('Coins', plank?.gpCost * quantity).add(plank?.inputItem, quantity);
-	await transactItems({ userID: user.id, itemsToRemove: costBank });
+	await user.transactItems({ itemsToRemove: costBank });
 
 	await updateBankSetting('construction_cost_bank', new Bank().add('Coins', plank?.gpCost * quantity));
 

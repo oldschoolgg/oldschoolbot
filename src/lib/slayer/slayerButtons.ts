@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
-import { InteractionID } from '../InteractionID.js';
+import { InteractionID } from '@/lib/InteractionID.js';
 
 export const slayerActionButtons = [
 	new ActionRowBuilder<ButtonBuilder>().addComponents([

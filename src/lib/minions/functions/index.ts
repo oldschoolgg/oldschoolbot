@@ -1,23 +1,16 @@
-import { randomVariation } from '@oldschoolgg/toolkit/util';
+import { randomVariation } from '@oldschoolgg/rng';
 import type { User } from '@prisma/client';
 import { type Monster, Monsters, NIGHTMARES_HP } from 'oldschooljs';
 import { GearStat, type OffenceGearStat } from 'oldschooljs/gear';
 
-import type { PvMMethod } from '@/lib/constants';
-import type { PrimaryGearSetupType } from '@/lib/gear/types';
-import { SkillsEnum } from '../../skilling/types';
-import { XPBank } from '../../structures/XPBank';
-import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
-import killableMonsters from '../data/killableMonsters';
-import type { AddMonsterXpParams, KillableMonster } from '../types';
+import type { PvMMethod } from '@/lib/constants.js';
+import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
+import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '@/lib/minions/data/combatConstants.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import type { AddMonsterXpParams, KillableMonster } from '@/lib/minions/types.js';
+import { XPBank } from '@/lib/structures/XPBank.js';
 
-export const attackStylesArr = [
-	SkillsEnum.Attack,
-	SkillsEnum.Strength,
-	SkillsEnum.Defence,
-	SkillsEnum.Magic,
-	SkillsEnum.Ranged
-] as const;
+export const attackStylesArr = ['attack', 'strength', 'defence', 'magic', 'ranged'] as const;
 export type AttackStyles = (typeof attackStylesArr)[number];
 
 const miscHpMap: Record<number, number> = {
@@ -54,17 +47,17 @@ export function resolveAttackStyles({
 	if (
 		boostMethod &&
 		(boostMethod.includes('barrage') || boostMethod.includes('burst')) &&
-		!attackStyles.includes(SkillsEnum.Magic)
+		!attackStyles.includes('magic')
 	) {
-		if (attackStyles.includes(SkillsEnum.Defence)) {
-			attackStyles = [SkillsEnum.Magic, SkillsEnum.Defence];
+		if (attackStyles.includes('defence')) {
+			attackStyles = ['magic', 'defence'];
 		} else {
-			attackStyles = [SkillsEnum.Magic];
+			attackStyles = ['magic'];
 		}
 	}
 
-	if (attackStyles.includes(SkillsEnum.Magic) && attackStyles.includes(SkillsEnum.Ranged)) {
-		attackStyles = [SkillsEnum.Magic];
+	if (attackStyles.includes('magic') && attackStyles.includes('ranged')) {
+		attackStyles = ['magic'];
 	}
 	return attackStyles;
 }
@@ -101,7 +94,7 @@ export function addMonsterXPRaw(params: {
 	// Remove superiors from the regular count to be added separately.
 	let normalQty = 0;
 	let superiorQty = 0;
-	let osjsSuperior: Monster | undefined = undefined;
+	let osjsSuperior: Monster | undefined;
 	if (params.isOnTask && params.superiorCount && maybeMonster?.superior) {
 		osjsSuperior = maybeMonster.superior;
 		if (osjsSuperior?.data?.hitpoints && osjsSuperior?.data?.slayerXP) {
@@ -199,8 +192,8 @@ const gearStyleMap = { melee: GearStat.AttackCrush, mage: GearStat.AttackMagic, 
 
 export function getAttackStylesContext(styles: AttackStyles | User['attack_style']) {
 	let primaryStyle: PrimaryGearSetupType = 'melee';
-	if (styles.includes(SkillsEnum.Magic)) primaryStyle = 'mage';
-	else if (styles.includes(SkillsEnum.Ranged)) primaryStyle = 'range';
+	if (styles.includes('magic')) primaryStyle = 'mage';
+	else if (styles.includes('ranged')) primaryStyle = 'range';
 	const relevantGearStat: OffenceGearStat = gearStyleMap[primaryStyle];
 	return {
 		primaryStyle,

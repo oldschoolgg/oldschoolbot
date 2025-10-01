@@ -1,11 +1,9 @@
-import { Bank } from 'oldschooljs';
-import { LootTable } from 'oldschooljs';
+import { roll } from '@oldschoolgg/rng';
+import { Bank, LootTable } from 'oldschooljs';
 
-import { roll } from '@/lib/util/rng';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import type { GnomeRestaurantActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const tipTable = new LootTable()
 	.oneIn(210, 'Gnome scarf')
@@ -77,13 +75,12 @@ export const gnomeResTask: MinionTask = {
 			loot.add(tipTable.roll());
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Cooking,
+			skillName: 'cooking',
 			amount: totalXP,
 			duration
 		});

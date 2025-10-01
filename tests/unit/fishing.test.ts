@@ -1,9 +1,8 @@
-import { Bank } from 'oldschooljs';
+import { Bank, EItem, itemID } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { EItem, itemID } from 'oldschooljs';
-import { calcFishingTripStart } from '../../src/lib/skilling/skills/fishing/fishingTripStart';
-import { makeGearBank } from './utils';
+import { calcFishingTripStart } from '../../src/lib/skilling/skills/fishing/fishingTripStart.js';
+import { makeGearBank } from './utils.js';
 
 describe('calcFishingTripStart', () => {
 	test('returns error when wanting to use flakes but none are present and does not reserve bait', () => {

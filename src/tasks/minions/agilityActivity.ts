@@ -1,20 +1,19 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { Time, increaseNumByPercent, percentChance, randInt, roll } from 'e';
-import { Bank, type ItemBank, Items, addItemToBank } from 'oldschooljs';
+import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+import { Emoji, Events, increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { addItemToBank, Bank, type ItemBank, Items } from 'oldschooljs';
 
-import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
-import Agility from '../../lib/skilling/skills/agility';
-import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import { calculateBryophytaRuneSavings } from '../../lib/util/bryophytaRuneSavings';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { logError } from '../../lib/util/logError';
-import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import Agility from '@/lib/skilling/skills/agility.js';
+import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { logError } from '@/lib/util/logError.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { updateClientGPTrackSetting, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
+import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
+import { calculateBryophytaRuneSavings } from '@/lib/util/bryophytaRuneSavings.js';
 
 function chanceOfFailingAgilityPyramid(user: MUser) {
-	const lvl = user.skillLevel(SkillsEnum.Agility);
+	const lvl = user.skillsAsLevels.agility;
 	if (lvl < 40) return 95;
 	if (lvl < 50) return 30;
 	if (lvl < 60) return 20;
@@ -28,7 +27,7 @@ export const agilityTask: MinionTask = {
 		const { courseID, quantity, userID, channelID, duration, alch, fletch } = data;
 		const loot = new Bank();
 		const user = await mUserFetch(userID);
-		const currentLevel = user.skillLevel(SkillsEnum.Agility);
+		const currentLevel = user.skillsAsLevels.agility;
 
 		const course = Agility.Courses.find(course => course.id === courseID);
 
@@ -48,7 +47,7 @@ export const agilityTask: MinionTask = {
 				}
 			} else {
 				for (let t = 0; t < quantity; t++) {
-					if (randInt(1, 100) > (100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)) {
+					if (randInt(1, 100) > (100 * user.skillsAsLevels.agility) / (course.level + 5)) {
 						lapsFailed += 1;
 					}
 				}
@@ -66,7 +65,7 @@ export const agilityTask: MinionTask = {
 		const xpReceived =
 			(quantity - lapsFailed / 2) * (typeof course.xp === 'number' ? course.xp : course.xp(currentLevel));
 		let xpRes = await user.addXP({
-			skillName: SkillsEnum.Agility,
+			skillName: 'agility',
 			amount: xpReceived,
 			duration
 		});
@@ -81,7 +80,7 @@ export const agilityTask: MinionTask = {
 			for (let i = 0; i < markChance; i++) {
 				if (roll(2)) totalMarks++;
 			}
-			if (course.id !== 5 && user.skillLevel(SkillsEnum.Agility) >= course.level + 20) {
+			if (course.id !== 5 && user.skillsAsLevels.agility >= course.level + 20) {
 				totalMarks = Math.ceil(totalMarks / 5);
 			}
 			const [hasArdyElite] = await userhasDiaryTier(user, ArdougneDiary.elite);
@@ -147,7 +146,7 @@ export const agilityTask: MinionTask = {
 			loot.add(fletchable.id, quantityToGive);
 
 			fletchXpRes = await user.addXP({
-				skillName: SkillsEnum.Fletching,
+				skillName: 'fletching',
 				amount: fletchQuantity * fletchable.xp,
 				duration
 			});
@@ -168,7 +167,7 @@ export const agilityTask: MinionTask = {
 				loot.add(savedBank);
 			}
 			xpRes += ` ${await user.addXP({
-				skillName: SkillsEnum.Magic,
+				skillName: 'magic',
 				amount: alch.quantity * 65,
 				duration
 			})}`;
@@ -193,7 +192,7 @@ export const agilityTask: MinionTask = {
 		// Roll for pet
 		const { petDropRate } = skillingPetDropRate(
 			user,
-			SkillsEnum.Agility,
+			'agility',
 			typeof course.petChance === 'number' ? course.petChance : course.petChance(currentLevel)
 		);
 		if (roll(petDropRate / quantity)) {
@@ -204,8 +203,7 @@ export const agilityTask: MinionTask = {
 			);
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

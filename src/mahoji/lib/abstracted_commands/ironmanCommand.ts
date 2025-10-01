@@ -1,12 +1,12 @@
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
+import { mentionCommand } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import type { ItemBank } from 'oldschooljs';
 
-import { BitField, DELETED_USER_ID } from '../../../lib/constants';
-import { roboChimpUserFetch } from '../../../lib/roboChimp';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { assert } from '../../../lib/util/logError';
+import { BitField, DELETED_USER_ID } from '@/lib/constants.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { assert } from '@/lib/util/logError.js';
 
 export async function ironmanCommand(
 	user: MUser,

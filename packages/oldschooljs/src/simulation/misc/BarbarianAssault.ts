@@ -1,4 +1,4 @@
-import LootTable from '../../structures/LootTable';
+import LootTable from '@/structures/LootTable.js';
 
 export const LowGambleTable = new LootTable()
 	.add('Harralander', [15, 25])

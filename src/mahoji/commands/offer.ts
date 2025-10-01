@@ -1,33 +1,30 @@
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { type CommandRunOptions, formatDuration, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit/util';
+import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import { Events, formatDuration, formatOrdinal, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
-import { Time, randArrItem, randInt, roll } from 'e';
-import { Bank, ItemGroups, resolveItems } from 'oldschooljs';
+import { Bank, ItemGroups, Items, resolveItems } from 'oldschooljs';
 
-import { Offerables } from '../../lib/data/offerData';
-import { birdsNestID, treeSeedsNest } from '../../lib/simulation/birdsNest';
-import Prayer from '../../lib/skilling/skills/prayer';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { OfferingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import getOSItem from '../../lib/util/getOSItem';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { userStatsBankUpdate, userStatsUpdate } from '../mahojiSettings';
+import { Offerables } from '@/lib/data/offerData.js';
+import { birdsNestID, treeSeedsNest } from '@/lib/simulation/birdsNest.js';
+import Prayer from '@/lib/skilling/skills/prayer.js';
+import type { OfferingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const specialBones = [
 	{
-		item: getOSItem('Long bone'),
+		item: Items.getOrThrow('Long bone'),
 		xp: 4500
 	},
 	{
-		item: getOSItem('Curved bone'),
+		item: Items.getOrThrow('Curved bone'),
 		xp: 6750
 	}
 ];
 
-const eggs = ['Red bird egg', 'Green bird egg', 'Blue bird egg'].map(getOSItem);
+const eggs = Items.resolveFullItems(['Red bird egg', 'Green bird egg', 'Blue bird egg']);
 
 const offerables = new Set(
 	[...Offerables, ...specialBones.map(i => i.item), ...eggs, ...Prayer.Bones]
@@ -172,7 +169,7 @@ export const offerCommand: OSBMahojiCommand = {
 			}
 
 			const xpStr = await user.addXP({
-				skillName: SkillsEnum.Prayer,
+				skillName: 'prayer',
 				amount: quantity * 100
 			});
 
@@ -204,7 +201,7 @@ export const offerCommand: OSBMahojiCommand = {
 			if (user.QP < 8) {
 				return 'You need at least 8 QP to offer long/curved bones for XP.';
 			}
-			if (user.skillLevel(SkillsEnum.Construction) < 30) {
+			if (user.skillsAsLevels.construction < 30) {
 				return 'You need at least level 30 Construction to offer long/curved bones for XP.';
 			}
 			const amountHas = userBank.amount(specialBone.item.id);
@@ -215,7 +212,7 @@ export const offerCommand: OSBMahojiCommand = {
 			const xp = quantity * specialBone.xp;
 			await Promise.all([
 				user.addXP({
-					skillName: SkillsEnum.Construction,
+					skillName: 'construction',
 					amount: xp
 				}),
 				user.removeItemsFromBank(new Bank().add(specialBone.item.id, quantity))
@@ -235,7 +232,7 @@ export const offerCommand: OSBMahojiCommand = {
 			return "That's not a valid bone to offer.";
 		}
 
-		if (user.skillLevel(SkillsEnum.Prayer) < bone.level) {
+		if (user.skillsAsLevels.prayer < bone.level) {
 			return `${user.minionName} needs ${bone.level} Prayer to offer ${bone.name}.`;
 		}
 

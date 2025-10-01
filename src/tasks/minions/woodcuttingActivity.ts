@@ -1,32 +1,30 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { perTimeUnitChance } from '@oldschoolgg/toolkit/util';
-import { Time, objectEntries, percentChance, randInt } from 'e';
+import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+import { Emoji, Events, objectEntries, perTimeUnitChance, Time } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
-import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
-import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
-import { eggNest } from '../../lib/simulation/birdsNest';
-import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
-import { ForestryEvents, LeafTable } from '../../lib/skilling/skills/woodcutting/forestry';
-import Woodcutting, { type TwitcherGloves } from '../../lib/skilling/skills/woodcutting/woodcutting';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { rollForMoonKeyHalf } from '../../lib/util/minionUtils';
-import { roll } from '../../lib/util/rng';
-import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { MediumSeedPackTable } from '@/lib/data/seedPackTables.js';
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import { eggNest } from '@/lib/simulation/birdsNest.js';
+import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
+import { ForestryEvents, LeafTable } from '@/lib/skilling/skills/woodcutting/forestry.js';
+import Woodcutting, { type TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
+import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { rollForMoonKeyHalf } from '@/lib/util/minionUtils.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 async function handleForestry({ user, duration, loot }: { user: MUser; duration: number; loot: Bank }) {
 	const eventCounts: { [key: number]: number } = {};
-	const eventXP = {} as { [key in SkillsEnum]: number };
+	const eventXP = {} as { [key in SkillNameType]: number };
 	ForestryEvents.forEach(event => {
 		eventCounts[event.id] = 0;
 		eventXP[event.uniqueXP] = 0;
 	});
 
 	let strForestry = '';
-	const userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
+	const userWcLevel = user.skillsAsLevels.woodcutting;
 
 	perTimeUnitChance(duration, 8, Time.Minute, async () => {
 		const eventIndex = randInt(0, ForestryEvents.length - 1);
@@ -48,7 +46,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 				loot.add(LeafTable.roll());
 				eventCounts[event.id]++;
 				eventXP[event.uniqueXP] += eventInteraction * (user.skillLevel(event.uniqueXP) * 0.6);
-				eventXP[SkillsEnum.Woodcutting] += eventInteraction * (userWcLevel * 1.95) * 2;
+				eventXP.woodcutting += eventInteraction * (userWcLevel * 1.95) * 2;
 				break;
 			case 3: // Flowering Bush
 				eventRounds = randInt(5, 7); // bush pairs spawned
@@ -74,8 +72,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 				}
 				eventCounts[event.id]++;
 				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * 0.3 * eventInteraction;
-				eventXP[SkillsEnum.Woodcutting] +=
-					eventInteraction * (userWcLevel * 0.6) + userWcLevel * 3.8 * eventRounds;
+				eventXP.woodcutting += eventInteraction * (userWcLevel * 0.6) + userWcLevel * 3.8 * eventRounds;
 				break;
 			case 6: // Friendly Ent
 				eventInteraction = randInt(40, 60); // ents pruned
@@ -83,7 +80,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 				loot.add(eggNest.roll());
 				eventCounts[event.id]++;
 				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * 0.2 * eventInteraction;
-				eventXP[SkillsEnum.Woodcutting] += eventInteraction * (userWcLevel * 0.55);
+				eventXP.woodcutting += eventInteraction * (userWcLevel * 0.55);
 				break;
 			case 7: // Poachers
 				eventInteraction = randInt(12, 15); // traps disarmed
@@ -92,7 +89,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 				}
 				eventCounts[event.id]++;
 				eventXP[event.uniqueXP] += eventInteraction * (user.skillLevel(event.uniqueXP) / 2);
-				eventXP[SkillsEnum.Woodcutting] += eventInteraction * (userWcLevel * 1.35);
+				eventXP.woodcutting += eventInteraction * (userWcLevel * 1.35);
 				break;
 			case 8: // Enchantment Ritual
 				eventInteraction = randInt(6, 8); // ritual circles
@@ -114,7 +111,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 				}
 				eventCounts[event.id]++;
 				eventXP[event.uniqueXP] += eventInteraction * (user.skillLevel(event.uniqueXP) / 2);
-				eventXP[SkillsEnum.Woodcutting] += eventInteraction * (userWcLevel * 1.1);
+				eventXP.woodcutting += eventInteraction * (userWcLevel * 1.1);
 				break;
 		}
 		// Give user Anima-infused bark per event
@@ -176,7 +173,7 @@ export const woodcuttingTask: MinionTask = {
 	async run(data: WoodcuttingActivityTaskOptions) {
 		const { logID, quantity, userID, channelID, duration, powerchopping, forestry, twitchers } = data;
 		const user = await mUserFetch(userID);
-		const userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
+		const userWcLevel = user.skillsAsLevels.woodcutting;
 		const log = Woodcutting.Logs.find(i => i.id === logID)!;
 		const forestersRations = user.bank.amount("Forester's ration");
 		const wcCapeNestBoost =
@@ -233,7 +230,7 @@ export const woodcuttingTask: MinionTask = {
 
 		// Give the user xp
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Woodcutting,
+			skillName: 'woodcutting',
 			amount: Math.ceil(xpReceived),
 			duration
 		});
@@ -277,7 +274,7 @@ export const woodcuttingTask: MinionTask = {
 		if (log.clueScrollChance) {
 			addSkillingClueToLoot(
 				user,
-				SkillsEnum.Woodcutting,
+				'woodcutting',
 				quantity,
 				log.clueScrollChance,
 				loot,
@@ -317,7 +314,7 @@ export const woodcuttingTask: MinionTask = {
 
 		// Roll for pet
 		if (log.petChance) {
-			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Woodcutting, log.petChance);
+			const { petDropRate } = skillingPetDropRate(user, 'woodcutting', log.petChance);
 			if (roll(petDropRate / quantity)) {
 				loot.add('Beaver');
 				globalClient.emit(
@@ -347,8 +344,7 @@ export const woodcuttingTask: MinionTask = {
 		}`;
 
 		// Update cl, give loot, and remove items used
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot,
 			itemsToRemove

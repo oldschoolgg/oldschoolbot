@@ -1,22 +1,26 @@
-import { roughMergeMahojiResponse } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import { makeComponents, roughMergeMahojiResponse, toTitleCase } from '@oldschoolgg/toolkit';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 
-import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage';
-import { defaultFarmingContract } from '../../../lib/minions/farming';
+import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
+import { Farming, plants } from '@/lib/skilling/skills/farming/index.js';
+import { getPlantToGrow } from '@/lib/skilling/skills/farming/utils/calcFarmingContracts.js';
+import { getFarmingInfoFromUser } from '@/lib/skilling/skills/farming/utils/getFarmingInfo.js';
 import type {
 	ContractOption,
 	FarmingContract,
 	FarmingContractDifficultyLevel
-} from '../../../lib/minions/farming/types';
-import { getPlantToGrow } from '../../../lib/skilling/functions/calcFarmingContracts';
-import { getFarmingInfoFromUser } from '../../../lib/skilling/functions/getFarmingInfo';
-import { plants } from '../../../lib/skilling/skills/farming';
-import { findPlant } from '../../../lib/util/farmingHelpers';
-import { makeEasierFarmingContractButton } from '../../../lib/util/smallUtils';
-import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
-import { farmingPlantCommand, harvestCommand } from './farmingCommand';
-import { abstractedOpenCommand } from './openCommand';
+} from '@/lib/skilling/skills/farming/utils/types.js';
+import { farmingPlantCommand, harvestCommand } from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
+import { abstractedOpenCommand } from '@/mahoji/lib/abstracted_commands/openCommand.js';
+import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
+
+function makeEasierFarmingContractButton() {
+	return new ButtonBuilder()
+		.setCustomId('FARMING_CONTRACT_EASIER')
+		.setLabel('Ask for easier Contract')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('977410792754413668');
+}
 
 async function janeImage(content: string) {
 	const image = await newChatHeadImage({ content, head: 'jane' });
@@ -37,8 +41,8 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 	const user = await mUserFetch(userID);
 	const farmingLevel = user.skillsAsLevels.farming;
 	const currentContract: FarmingContract =
-		(user.user.minion_farmingContract as FarmingContract | null) ?? defaultFarmingContract;
-	const plant = currentContract.hasContract ? findPlant(currentContract.plantToGrow) : null;
+		(user.user.minion_farmingContract as FarmingContract | null) ?? Farming.defaultFarmingContract;
+	const plant = currentContract.hasContract ? Farming.findPlant(currentContract.plantToGrow) : null;
 
 	if (!input) {
 		if (!currentContract.hasContract) {
@@ -183,7 +187,7 @@ function bestFarmingContractUserCanDo(user: MUser) {
 export async function autoContract(user: MUser, channelID: string, userID: string): CommandResponse {
 	const farmingDetails = getFarmingInfoFromUser(user.user);
 	const contract = user.farmingContract();
-	const plant = contract?.contract ? findPlant(contract?.contract.plantToGrow) : null;
+	const plant = contract?.contract ? Farming.findPlant(contract?.contract.plantToGrow) : null;
 	const patch = farmingDetails.patchesDetailed.find(p => p.plant === plant);
 	const bestContractTierCanDo = bestFarmingContractUserCanDo(user);
 
@@ -197,7 +201,7 @@ export async function autoContract(user: MUser, channelID: string, userID: strin
 	if (!contract || !contract.contract) {
 		const contractResult = await farmingContractCommand(userID, bestContractTierCanDo);
 		const newUser = await mahojiUsersSettingsFetch(userID, { minion_farmingContract: true });
-		const newContract = (newUser.minion_farmingContract ?? defaultFarmingContract) as FarmingContract;
+		const newContract = (newUser.minion_farmingContract ?? Farming.defaultFarmingContract) as FarmingContract;
 		if (!newContract.hasContract || !newContract.plantToGrow) return contractResult;
 		return farmingPlantCommand({
 			userID: user.id,

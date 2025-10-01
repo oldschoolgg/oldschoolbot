@@ -1,15 +1,13 @@
-import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { UserError } from '@oldschoolgg/toolkit/structures';
+import { debounce, makeComponents, noOp, Time, UserError } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector } from 'discord.js';
-import { Time, debounce, noOp } from 'e';
 
-import { BLACKLISTED_USERS } from './blacklists';
-import { SILENT_ERROR } from './constants';
-import type { MakePartyOptions } from './types';
-import { getUsername } from './util';
-import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
+import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { SILENT_ERROR } from '@/lib/constants.js';
+import type { MakePartyOptions } from '@/lib/types/index.js';
+import { CACHED_ACTIVE_USER_IDS } from '@/lib/util/cachedUserIDs.js';
+import { getUsername } from '@/lib/util.js';
 
 const partyLockCache = new Set<string>();
 TimerManager.setInterval(() => {

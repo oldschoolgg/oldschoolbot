@@ -1,24 +1,22 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import { roll } from '@oldschoolgg/rng';
+import { Emoji, makeComponents, stripNonAlphanumeric, toTitleCase } from '@oldschoolgg/toolkit';
 import { type BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
-import { roll, stripNonAlphanumeric } from 'e';
 
-import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { BitField } from '@/lib/constants.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { minionBuyButton } from '@/lib/sharedComponents.js';
+import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
 	makeBirdHouseTripButton,
 	makeClaimDailyButton
-} from '@/lib/util/interactions';
-import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { BitField } from '../../../lib/constants';
-import { roboChimpUserFetch } from '../../../lib/roboChimp';
-import { minionBuyButton } from '../../../lib/sharedComponents';
-import { minionStatus } from '../../../lib/util/minionStatus';
-import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
-import { isUsersDailyReady } from './dailyCommand';
-import { canRunAutoContract } from './farmingContractCommand';
+} from '@/lib/util/interactions.js';
+import { minionStatus } from '@/lib/util/minionStatus.js';
+import { makeRepeatTripButtons } from '@/lib/util/repeatStoredTrip.js';
+import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
+import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 
 async function fetchFavoriteGearPresets(userID: string) {
 	const pinnedPresets = await prisma.gearPreset.findMany({

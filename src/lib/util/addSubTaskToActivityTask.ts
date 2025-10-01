@@ -1,8 +1,8 @@
-import { UserError } from '@oldschoolgg/toolkit/structures';
+import { UserError } from '@oldschoolgg/toolkit';
 
-import type { ActivityTaskData, ActivityTaskOptions } from '../types/minions';
-import { isGroupActivity } from '../util';
-import { logError } from './logError';
+import type { ActivityTaskData, ActivityTaskOptions } from '@/lib/types/minions.js';
+import { logError } from '@/lib/util/logError.js';
+import { isGroupActivity } from '@/lib/util.js';
 
 export default async function addSubTaskToActivityTask<T extends ActivityTaskData>(
 	taskToAdd: Omit<T, 'finishDate' | 'id'>

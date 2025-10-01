@@ -1,13 +1,12 @@
-import { roll } from 'e';
+import { roll } from '@oldschoolgg/rng';
+import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
-import Mining from '../../lib/skilling/skills/mining';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { MotherlodeMiningActivityTaskOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import Mining from '@/lib/skilling/skills/mining.js';
+import type { MotherlodeMiningActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 export const motherlodeMiningTask: MinionTask = {
 	type: 'MotherlodeMining',
@@ -42,7 +41,7 @@ export const motherlodeMiningTask: MinionTask = {
 			}
 		}
 
-		const currentLevel = user.skillLevel(SkillsEnum.Mining);
+		const currentLevel = user.skillsAsLevels.mining;
 
 		const loot = new Bank();
 
@@ -91,7 +90,7 @@ export const motherlodeMiningTask: MinionTask = {
 		xpReceived += cleaningXP;
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Mining,
+			skillName: 'mining',
 			amount: xpReceived,
 			duration,
 			source: 'MotherlodeMine'
@@ -99,7 +98,7 @@ export const motherlodeMiningTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished mining ${quantity} Pay-dirt. ${xpRes}`;
 
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, motherlode.petChance!);
+		const { petDropRate } = skillingPetDropRate(user, 'mining', motherlode.petChance!);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Rock golem');
 			globalClient.emit(
@@ -113,8 +112,7 @@ export const motherlodeMiningTask: MinionTask = {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

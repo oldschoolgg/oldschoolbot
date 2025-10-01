@@ -1,14 +1,12 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import Herblore from '../../lib/skilling/skills/herblore/herblore';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { HerbloreActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
+import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const mixCommand: OSBMahojiCommand = {
 	name: 'mix',
@@ -64,7 +62,7 @@ export const mixCommand: OSBMahojiCommand = {
 		);
 		if (!mixableItem) return 'That is not a valid mixable item.';
 
-		if (user.skillLevel(SkillsEnum.Herblore) < mixableItem.level) {
+		if (user.skillsAsLevels.herblore < mixableItem.level) {
 			return `${user.minionName} needs ${mixableItem.level} Herblore to make ${mixableItem.item.name}.`;
 		}
 

@@ -1,14 +1,14 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { Time, clamp } from 'e';
-import { Bank, type Item, Items, SkillsEnum, toKMB } from 'oldschooljs';
+import { Bank, type Item, Items, toKMB } from 'oldschooljs';
+import { clamp } from 'remeda';
 
-import { unlimitedFireRuneProviders } from '@/lib/util/unlimitedFireRuneProviders';
-import type { AlchingActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { unlimitedFireRuneProviders } from '@/lib/util/unlimitedFireRuneProviders.js';
 
 // 5 tick action
 export const timePerAlch = Time.Second * 3;
@@ -30,7 +30,7 @@ export async function alchCommand(
 	if (!osItem) return 'Invalid item.';
 	if (!osItem.highalch || !osItem.tradeable) return 'This item cannot be alched.';
 
-	if (user.skillLevel(SkillsEnum.Magic) < 55) {
+	if (user.skillsAsLevels.magic < 55) {
 		return 'You need level 55 Magic to cast High Alchemy';
 	}
 
@@ -41,7 +41,7 @@ export async function alchCommand(
 	if (!quantity) {
 		quantity = maxCasts;
 	}
-	quantity = clamp(quantity, 1, maxCasts);
+	quantity = clamp(quantity, { min: 1, max: maxCasts });
 
 	if (quantity * timePerAlch > maxTripLength) {
 		return `The max number of alchs you can do is ${maxCasts}!`;

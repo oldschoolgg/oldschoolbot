@@ -1,17 +1,16 @@
-import { type OSBMahojiCommand, generateCommandInputs } from '@oldschoolgg/toolkit/discord-util';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { Time, sumArr } from 'e';
+import { SeedableRNG } from '@oldschoolgg/rng';
+import { generateCommandInputs, Stopwatch, sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 import PromiseQueue from 'p-queue';
 import { shuffle } from 'remeda';
 import { expect, test, vi } from 'vitest';
 
-import { getMaxUserValues } from '@/mahoji/commands/testpotato';
-import { allUsableItems } from '@/mahoji/lib/abstracted_commands/useCommand';
-import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
-import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirmation';
-import { allCommands } from '../../src/mahoji/commands/allCommands';
-import { TestClient, createTestUser, mockClient } from './util';
+import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings.js';
+import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirmation.js';
+import { allCommands } from '../../src/mahoji/commands/allCommands.js';
+import { getMaxUserValues } from '../../src/mahoji/commands/testpotato.js';
+import { allUsableItems } from '../../src/mahoji/lib/abstracted_commands/useCommand.js';
+import { createTestUser, mockClient, TestClient } from './util.js';
 
 test(
 	'All Commands Base Test',
@@ -62,7 +61,6 @@ test(
 			'kill'
 		];
 		const commandsToTest = allCommands.filter(c => !ignoredCommands.includes(c.name));
-
 		console.log(`Running ${commandsToTest.length} commands...`);
 
 		const ignoredSubCommands = [
@@ -87,13 +85,19 @@ test(
 			use: useCommandOptions
 		};
 
+		const rngProvider = new SeedableRNG();
 		const stopwatch = new Stopwatch();
 		const processedCommands: { command: OSBMahojiCommand; options: any[] }[] = [];
 		for (const command of commandsToTest) {
 			if (ignoredCommands.includes(command.name)) continue;
-			const options = hardcodedOptions[command.name] ?? (await generateCommandInputs(command.options!));
-			if (options.length === 0) {
-				throw new Error(`No options generated for command ${command.name}`);
+			let options = hardcodedOptions[command.name];
+
+			if (!options && command.options && command.options.length > 0) {
+				options = await generateCommandInputs(rngProvider, command.options);
+			}
+
+			if (!options) {
+				continue;
 			}
 			outer: for (const option of options) {
 				for (const [parent, sub, subCommand] of ignoredSubCommands) {

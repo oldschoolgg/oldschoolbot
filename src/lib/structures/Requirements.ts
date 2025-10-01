@@ -1,21 +1,21 @@
-import type { Minigame, PlayerOwnedHouse, activity_type_enum } from '@prisma/client';
-import { calcWhatPercent, objectEntries } from 'e';
-import type { Bank } from 'oldschooljs';
+import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
+import type { activity_type_enum, Minigame, PlayerOwnedHouse } from '@prisma/client';
+import { type Bank, Items } from 'oldschooljs';
 
-import type { ParsedUnit } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
-import { getParsedStashUnits } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
-import type { ClueTier } from '../clues/clueTiers';
-import type { BitField } from '../constants';
-import { BOT_TYPE, BitFieldData } from '../constants';
-import { diaries, userhasDiaryTierSync } from '../diaries';
-import { effectiveMonsters } from '../minions/data/killableMonsters';
-import type { ClueBank, DiaryID, DiaryTierName } from '../minions/types';
-import type { RobochimpUser } from '../roboChimp';
-import { type MinigameName, minigameColumnToNameMap } from '../settings/minigames';
-import Agility from '../skilling/skills/agility';
-import type { Skills } from '../types';
-import { formatList, itemNameFromID } from '../util/smallUtils';
-import { MUserStats } from './MUserStats';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import type { BitField } from '@/lib/constants.js';
+import { BitFieldData, BOT_TYPE } from '@/lib/constants.js';
+import { diaries, userhasDiaryTierSync } from '@/lib/diaries.js';
+import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import type { ClueBank, DiaryID, DiaryTierName } from '@/lib/minions/types.js';
+import type { RobochimpUser } from '@/lib/roboChimp.js';
+import { type MinigameName, minigameColumnToNameMap } from '@/lib/settings/minigames.js';
+import Agility from '@/lib/skilling/skills/agility.js';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
+import type { Skills } from '@/lib/types/index.js';
+import { formatList } from '@/lib/util/smallUtils.js';
+import type { ParsedUnit } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
+import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
 export interface RequirementFailure {
 	reason: string;
@@ -59,6 +59,10 @@ export class Requirements {
 		return this.requirements.length;
 	}
 
+	toJSON() {
+		return this.requirements;
+	}
+
 	formatRequirement(req: Requirement): (string | string[])[] {
 		const requirementParts: (string | string[])[] = [];
 		if ('skillRequirements' in req) {
@@ -73,7 +77,7 @@ export class Requirements {
 			requirementParts.push(
 				`Items Must Be in CL: ${
 					Array.isArray(req.clRequirement)
-						? formatList(req.clRequirement.map(itemNameFromID))
+						? formatList(req.clRequirement.map(i => Items.itemNameFromId(i)))
 						: req.clRequirement.toString()
 				}`
 			);
@@ -206,7 +210,9 @@ export class Requirements {
 		if ('clRequirement' in requirement) {
 			if (!user.cl.has(requirement.clRequirement)) {
 				const missingItems = Array.isArray(requirement.clRequirement)
-					? formatList(requirement.clRequirement.filter(i => !user.cl.has(i)).map(itemNameFromID))
+					? formatList(
+							requirement.clRequirement.filter(i => !user.cl.has(i)).map(i => Items.itemNameFromId(i))
+						)
 					: requirement.clRequirement.clone().remove(user.cl);
 				results.push({
 					reason: `You need ${missingItems} in your CL.`

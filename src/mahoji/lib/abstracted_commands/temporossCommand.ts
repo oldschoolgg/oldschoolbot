@@ -1,9 +1,8 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
-import type { TemporossActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import type { TemporossActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export async function temporossCommand(user: MUser, channelID: string, quantity: number | undefined) {
 	const fLevel = user.skillLevel('fishing');

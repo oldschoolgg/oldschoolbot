@@ -1,7 +1,6 @@
-import { Castables } from '../../lib/skilling/skills/magic/castables';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { CastingActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { Castables } from '@/lib/skilling/skills/magic/castables.js';
+import type { CastingActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const castingTask: MinionTask = {
 	type: 'Casting',
@@ -13,7 +12,7 @@ export const castingTask: MinionTask = {
 
 		const xpReceived = quantity * spell.xp;
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Magic,
+			skillName: 'magic',
 			amount: xpReceived,
 			duration
 		});
@@ -24,7 +23,7 @@ export const castingTask: MinionTask = {
 			craftXpReceived = spell.craftXp * quantity;
 
 			craftXpRes = await user.addXP({
-				skillName: SkillsEnum.Crafting,
+				skillName: 'crafting',
 				amount: craftXpReceived,
 				duration
 			});
@@ -36,7 +35,7 @@ export const castingTask: MinionTask = {
 			prayerXpReceived = spell.prayerXp * quantity;
 
 			prayerXpRes = await user.addXP({
-				skillName: SkillsEnum.Prayer,
+				skillName: 'prayer',
 				amount: prayerXpReceived,
 				duration
 			});
@@ -44,8 +43,7 @@ export const castingTask: MinionTask = {
 
 		const loot = spell.output?.clone().multiply(quantity);
 		if (loot) {
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});

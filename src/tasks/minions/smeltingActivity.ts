@@ -1,10 +1,9 @@
-import { percentChance } from 'e';
+import { percentChance } from '@oldschoolgg/rng';
 import { Bank, itemID } from 'oldschooljs';
 
-import Smithing from '../../lib/skilling/skills/smithing';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import Smithing from '@/lib/skilling/skills/smithing/index.js';
+import type { SmeltingActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const smeltingTask: MinionTask = {
 	type: 'Smelting',
@@ -33,7 +32,7 @@ export const smeltingTask: MinionTask = {
 		}
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Smithing,
+			skillName: 'smithing',
 			amount: xpReceived,
 			duration
 		});
@@ -48,8 +47,7 @@ export const smeltingTask: MinionTask = {
 			[bar.id]: quantity
 		});
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

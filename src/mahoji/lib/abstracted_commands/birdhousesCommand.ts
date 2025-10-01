@@ -1,13 +1,13 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import { time } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses';
-import birdhouses, { birdhouseSeeds } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
-import type { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../../mahojiSettings';
+import birdhouses, { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
+import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
+import type { BirdhouseActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function birdhouseCheckCommand(user: MUser) {
 	const details = calculateBirdhouseDetails(user);
@@ -20,7 +20,7 @@ export async function birdhouseCheckCommand(user: MUser) {
 
 export async function birdhouseHarvestCommand(user: MUser, channelID: string, inputBirdhouseName: string | undefined) {
 	const userBank = user.bank;
-	const currentDate = new Date().getTime();
+	const currentDate = Date.now();
 	const infoStr: string[] = [];
 	const boostStr: string[] = [];
 
@@ -108,7 +108,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 	if (!user.owns(removeBank)) return `You don't own: ${removeBank}.`;
 
 	await updateBankSetting('farming_cost_bank', removeBank);
-	await transactItems({ userID: user.id, itemsToRemove: removeBank });
+	await user.transactItems({ itemsToRemove: removeBank });
 
 	// If user does not have something already placed, just place the new birdhouses.
 	if (!existingBirdhouse.raw.birdhousePlaced) {

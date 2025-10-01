@@ -1,15 +1,13 @@
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
-import { formatSkillRequirements } from '@/lib/util/smallUtils';
-import { pohImageGenerator } from '../../../lib/canvas/pohImage';
-import { BitField } from '../../../lib/constants';
-import { GroupedPohObjects, PoHObjects, getPOHObject, itemsNotRefundable } from '../../../lib/poh';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { pohImageGenerator } from '@/lib/canvas/pohImage.js';
+import { BitField } from '@/lib/constants.js';
+import { GroupedPohObjects, getPOHObject, itemsNotRefundable, PoHObjects } from '@/lib/poh/index.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const pohWallkits = [
 	{
@@ -87,7 +85,7 @@ export async function pohBuildCommand(interaction: ChatInputCommandInteraction, 
 		return "That's not a valid thing to build in your PoH.";
 	}
 
-	const level = user.skillLevel(SkillsEnum.Construction);
+	const level = user.skillsAsLevels.construction;
 	if (typeof obj.level === 'number') {
 		if (level < obj.level) {
 			return `You need level ${obj.level} Construction to build a ${obj.name} in your house.`;
@@ -162,7 +160,7 @@ export async function pohMountItemCommand(user: MUser, name: string) {
 		return 'You need to build a mount for the item first.';
 	}
 
-	const item = getOSItem(name);
+	const item = Items.getOrThrow(name);
 	if (['Magic stone', 'Coins'].includes(item.name)) {
 		return "You can't mount this item.";
 	}

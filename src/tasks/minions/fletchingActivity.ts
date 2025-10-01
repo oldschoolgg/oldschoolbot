@@ -1,9 +1,8 @@
 import { Bank } from 'oldschooljs';
 
-import Fletching from '../../lib/skilling/skills/fletching';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { FletchingActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import Fletching from '@/lib/skilling/skills/fletching/index.js';
+import type { FletchingActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const fletchingTask: MinionTask = {
 	type: 'Fletching',
@@ -14,7 +13,7 @@ export const fletchingTask: MinionTask = {
 		const fletchableItem = Fletching.Fletchables.find(fletchable => fletchable.name === fletchableName)!;
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Fletching,
+			skillName: 'fletching',
 			amount: quantity * fletchableItem.xp,
 			duration
 		});
@@ -25,7 +24,7 @@ export const fletchingTask: MinionTask = {
 			craftXpReceived = fletchableItem.craftingXp * quantity;
 
 			craftXpRes = await user.addXP({
-				skillName: SkillsEnum.Crafting,
+				skillName: 'crafting',
 				amount: craftXpReceived,
 				duration
 			});
@@ -38,8 +37,7 @@ export const fletchingTask: MinionTask = {
 		const quantityToGive = fletchableItem.outputMultiple ? quantity * fletchableItem.outputMultiple : quantity;
 
 		const loot = new Bank({ [fletchableItem.id]: quantityToGive });
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

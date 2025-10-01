@@ -1,24 +1,24 @@
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { randInt } from '@oldschoolgg/rng';
+import { notEmpty, removeFromArr, stringMatches } from '@oldschoolgg/toolkit';
 import { type ChatInputCommandInteraction, MessageFlags } from 'discord.js';
-import { notEmpty, randInt, removeFromArr } from 'e';
 import { EItem, Monsters } from 'oldschooljs';
 
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { slayerActionButtons } from '@/lib/slayer/slayerButtons.js';
-import killableMonsters from '../../../lib/minions/data/killableMonsters';
-import { slayerMasters } from '../../../lib/slayer/slayerMasters';
-import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
+import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
+import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 import {
 	assignNewSlayerTask,
 	calcMaxBlockedTasks,
 	getCommonTaskName,
 	getUsersCurrentSlayerInfo,
 	userCanUseMaster
-} from '../../../lib/slayer/slayerUtil';
-import type { AssignableSlayerTask } from '../../../lib/slayer/types';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { interactionReply } from '../../../lib/util/interactionReply';
-import { logError } from '../../../lib/util/logError';
-import { userStatsUpdate } from '../../mahojiSettings';
+} from '@/lib/slayer/slayerUtil.js';
+import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { interactionReply } from '@/lib/util/interactionReply.js';
+import { logError } from '@/lib/util/logError.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 function getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
 	if (assignedTask) {

@@ -1,17 +1,15 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
-import Smithing from '../../lib/skilling/skills/smithing';
-import smithables from '../../lib/skilling/skills/smithing/smithables';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { SmithingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { pluraliseItemName } from '../../lib/util/smallUtils';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import Smithing from '@/lib/skilling/skills/smithing/index.js';
+import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
+import type { SmithingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { pluraliseItemName } from '@/lib/util/smallUtils.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const smithCommand: OSBMahojiCommand = {
 	name: 'smith',
@@ -53,7 +51,7 @@ export const smithCommand: OSBMahojiCommand = {
 
 		if (!smithedItem) return 'That is not a valid item to smith.';
 
-		if (user.skillLevel(SkillsEnum.Smithing) < smithedItem.level) {
+		if (user.skillsAsLevels.smithing < smithedItem.level) {
 			return `${user.minionName} needs ${smithedItem.level} Smithing to smith ${pluraliseItemName(
 				smithedItem.name
 			)}.`;
@@ -132,7 +130,7 @@ export const smithCommand: OSBMahojiCommand = {
 			} you can smith is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`;
 		}
 
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 		updateBankSetting('smithing_cost', cost);
 
 		await addSubTaskToActivityTask<SmithingActivityTaskOptions>({

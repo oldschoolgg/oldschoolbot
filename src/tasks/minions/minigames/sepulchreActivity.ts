@@ -1,16 +1,14 @@
-import { Bank, GrandHallowedCoffin, Items } from 'oldschooljs';
-import type { Item } from 'oldschooljs';
+import { roll } from '@oldschoolgg/rng';
+import { Bank, GrandHallowedCoffin, Items, type Item } from 'oldschooljs';
 
-import { trackLoot } from '../../../lib/lootTrack';
-import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
-import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
-import { calculateBryophytaRuneSavings } from '../../../lib/util/bryophytaRuneSavings';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { roll } from '../../../lib/util/rng';
-import { updateClientGPTrackSetting } from '../../../mahoji/mahojiSettings';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { openCoffin, sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
+import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
+import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { updateClientGPTrackSetting } from '@/mahoji/mahojiSettings.js';
+import { calculateBryophytaRuneSavings } from '@/lib/util/bryophytaRuneSavings.js';
 
 export const sepulchreTask: MinionTask = {
 	type: 'Sepulchre',
@@ -52,7 +50,7 @@ export const sepulchreTask: MinionTask = {
 		let alchItem: Item | null = null;
 		let alchXpRes = '';
 
-		let fletchable: (typeof zeroTimeFletchables)[number] | undefined = undefined;
+		let fletchable: (typeof zeroTimeFletchables)[number] | undefined;
 
 		let savedRunesFromAlching = 0;
 		if (alch && alch.quantity > 0) {
@@ -79,7 +77,7 @@ export const sepulchreTask: MinionTask = {
 			}
 
 			alchXpRes = await user.addXP({
-				skillName: SkillsEnum.Magic,
+				skillName: 'magic',
 				amount: alchQuantity * 65,
 				duration
 			});
@@ -101,27 +99,26 @@ export const sepulchreTask: MinionTask = {
 			fletchXpReceived = fletchQuantity * fletchable.xp;
 
 			fletchXpRes = await user.addXP({
-				skillName: SkillsEnum.Fletching,
+				skillName: 'fletching',
 				amount: fletchXpReceived,
 				duration
 			});
 			fletchingLoot.add(fletchable.id, quantityToGive);
 		}
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Agility,
+			skillName: 'agility',
 			amount: agilityXP,
 			duration
 		});
 
 		const thievingXpRes = await user.addXP({
-			skillName: SkillsEnum.Thieving,
+			skillName: 'thieving',
 			amount: thievingXP,
 			duration
 		});
@@ -157,8 +154,7 @@ export const sepulchreTask: MinionTask = {
 
 		// Handle fletching loot separately after generating the main loot image
 		if (fletchable && fletch) {
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: fletchingLoot
 			});

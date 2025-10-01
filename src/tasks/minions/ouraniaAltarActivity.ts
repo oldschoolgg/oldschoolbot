@@ -1,26 +1,25 @@
-import { percentChance, roll } from 'e';
+import { percentChance, roll } from '@oldschoolgg/rng';
+import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
-import { trackLoot } from '../../lib/lootTrack';
-import { raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
-import Runecraft, { ouraniaAltarTables } from '../../lib/skilling/skills/runecraft';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { OuraniaAltarOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { raimentBonus } from '@/lib/skilling/functions/calcsRunecrafting.js';
+import Runecraft, { ouraniaAltarTables } from '@/lib/skilling/skills/runecraft.js';
+import type { OuraniaAltarOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 const ouraniaAltarTask: MinionTask = {
 	type: 'OuraniaAltar',
 	async run(data: OuraniaAltarOptions) {
 		const { quantity, userID, channelID, duration, daeyalt } = data;
 		const user = await mUserFetch(userID);
-		const lvl = user.skillLevel(SkillsEnum.Runecraft);
+		const lvl = user.skillsAsLevels.runecraft;
 		const loot = new Bank();
 		const [hasArdyMedium] = await userhasDiaryTier(user, ArdougneDiary.medium);
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, 1_487_213);
+		const { petDropRate } = skillingPetDropRate(user, 'runecraft', 1_487_213);
 		const selectedLootTable = ouraniaAltarTables[Math.min(Math.floor(lvl / 10), 10)];
 		let totalXp = 0;
 
@@ -59,7 +58,7 @@ const ouraniaAltarTask: MinionTask = {
 		}
 
 		const xpRes = `\n${await user.addXP({
-			skillName: SkillsEnum.Runecraft,
+			skillName: 'runecraft',
 			amount: totalXp,
 			duration,
 			source: 'OuraniaAltar'
@@ -77,13 +76,12 @@ const ouraniaAltarTask: MinionTask = {
 				`**${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a Rift guardian while runecrafting at the Ourania Altar at level ${user.skillLevel(
-					SkillsEnum.Runecraft
+					'runecraft'
 				)} Runecrafting!`
 			);
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

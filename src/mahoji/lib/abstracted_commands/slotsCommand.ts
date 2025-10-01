@@ -1,5 +1,5 @@
-import { type CommandResponse, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
+import { randInt, shuffleArr } from '@oldschoolgg/rng';
+import { channelIsSendable, chunk, noOp, SimpleTable, sleep } from '@oldschoolgg/toolkit';
 import {
 	ActionRowBuilder,
 	type BaseMessageOptions,
@@ -7,12 +7,11 @@ import {
 	ButtonStyle,
 	type ChatInputCommandInteraction
 } from 'discord.js';
-import { chunk, noOp, randInt, shuffleArr, sleep } from 'e';
 import { Bank, toKMB } from 'oldschooljs';
 
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../../lib/util/interactionReply';
-import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '@/mahoji/mahojiSettings.js';
 
 interface Button {
 	name: string;

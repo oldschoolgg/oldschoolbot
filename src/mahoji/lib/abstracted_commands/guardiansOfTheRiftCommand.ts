@@ -1,17 +1,16 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
+import { randomVariation } from '@oldschoolgg/rng';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID } from 'oldschooljs';
 
-import { trackLoot } from '../../../lib/lootTrack';
-import { pickaxes, varrockArmours } from '../../../lib/skilling/functions/miningBoosts';
-import Runecraft from '../../../lib/skilling/skills/runecraft';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { GuardiansOfTheRiftActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { determineRunes } from '../../../lib/util/determineRunes';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { pickaxes, varrockArmours } from '@/lib/skilling/functions/miningBoosts.js';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import type { GuardiansOfTheRiftActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { determineRunes } from '@/lib/util/determineRunes.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function guardiansOfTheRiftStartCommand(
 	user: MUser,
@@ -40,7 +39,7 @@ export async function guardiansOfTheRiftStartCommand(
 	let inventorySize = 28;
 	// For each pouch the user has, increase their inventory size.
 	for (const pouch of Runecraft.pouches) {
-		if (user.skillLevel(SkillsEnum.Runecraft) < pouch.level) continue;
+		if (user.skillsAsLevels.runecraft < pouch.level) continue;
 		if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
 		if (bank.has(pouch.id) && pouch.id === itemID('Colossal pouch')) break;
 	}
@@ -78,7 +77,7 @@ export async function guardiansOfTheRiftStartCommand(
 		break;
 	}
 
-	if (user.skillLevel(SkillsEnum.Mining) >= 99 && user.hasEquippedOrInBank('Mining cape')) {
+	if (user.skillsAsLevels.mining >= 99 && user.hasEquippedOrInBank('Mining cape')) {
 		boosts.push('**5%** chance to mine an extra essence/fragment using Mining cape');
 		minedFragments *= 1.05;
 	}
@@ -103,14 +102,10 @@ export async function guardiansOfTheRiftStartCommand(
 		rolls -= 1;
 	}
 
-	if (
-		user.skillLevel(SkillsEnum.Runecraft) >= 99 &&
-		user.hasEquippedOrInBank('Runecraft cape') &&
-		inventorySize > 28
-	) {
+	if (user.skillsAsLevels.runecraft >= 99 && user.hasEquippedOrInBank('Runecraft cape') && inventorySize > 28) {
 		barrierAndGuardian += 2;
 		boosts.push('Extra 2 Barriers/Guardians fixed for Runecraft cape');
-	} else if (user.skillLevel(SkillsEnum.Magic) >= 67) {
+	} else if (user.skillsAsLevels.magic >= 67) {
 		const NPCContactRuneCost = determineRunes(
 			user,
 			new Bank({ 'Astral rune': 1, 'Cosmic rune': 1, 'Air rune': 2 }).clone().multiply(quantity)
@@ -145,7 +140,7 @@ export async function guardiansOfTheRiftStartCommand(
 				.clone()
 				.multiply(quantity * 5)
 		);
-		if (user.skillLevel(SkillsEnum.Magic) < 82 || !bank.has(magicImbueRuneCost)) {
+		if (user.skillsAsLevels.magic < 82 || !bank.has(magicImbueRuneCost)) {
 			return `You need enough Magic Imbue runes and 82 Magic. You don't have enough runes and or Magic lvl. You need ${magicImbueRuneCost}`;
 		}
 		removeRunesAndNecks.add(magicImbueRuneCost);

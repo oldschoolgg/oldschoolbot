@@ -1,16 +1,15 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Monsters } from 'oldschooljs';
 
-import TokkulShopItems from '../../lib/data/buyables/tokkulBuyables';
-import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
-import type { TokkulShopOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { TokkulShopItems } from '@/lib/data/buyables/tokkulBuyables.js';
+import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import type { TokkulShopOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const { TzTokJad } = Monsters;
 
@@ -182,7 +181,7 @@ export const tksCommand: OSBMahojiCommand = {
 		);
 
 		// Remove the cost, and update bank settings
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 		await updateBankSetting('tks_cost', cost);
 
 		// Tokkul shop activity

@@ -1,14 +1,13 @@
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { randInt } from 'e';
+import { randInt } from '@oldschoolgg/rng';
+import { Events } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, Misc } from 'oldschooljs';
 
-import { KourendKebosDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import { UpdateBank } from '../../../lib/structures/UpdateBank';
-import type { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
-import { ashSanctifierEffect } from '../../../lib/util/ashSanctifier';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import type { ZalcanoActivityTaskOptions } from '@/lib/types/minions.js';
+import { ashSanctifierEffect } from '@/lib/util/ashSanctifier.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const zalcanoTask: MinionTask = {
 	type: 'Zalcano',
@@ -38,19 +37,15 @@ export const zalcanoTask: MinionTask = {
 		const xpRes: string[] = [];
 		xpRes.push(
 			await user.addXP({
-				skillName: SkillsEnum.Mining,
+				skillName: 'mining',
 				amount: miningXP,
 				duration,
 				source: 'Zalcano'
 			})
 		);
 
-		xpRes.push(
-			await user.addXP({ skillName: SkillsEnum.Smithing, amount: smithingXP, duration, source: 'Zalcano' })
-		);
-		xpRes.push(
-			await user.addXP({ skillName: SkillsEnum.Runecraft, amount: runecraftXP, duration, source: 'Zalcano' })
-		);
+		xpRes.push(await user.addXP({ skillName: 'smithing', amount: smithingXP, duration, source: 'Zalcano' }));
+		xpRes.push(await user.addXP({ skillName: 'runecraft', amount: runecraftXP, duration, source: 'Zalcano' }));
 
 		let str = `${user}, ${
 			user.minionName
@@ -82,8 +77,7 @@ export const zalcanoTask: MinionTask = {
 			);
 		}
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: updateBank.itemLootBank
 		});

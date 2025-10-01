@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
-import { type Canvas, type Image, loadImage } from 'skia-canvas';
-import { createCanvas } from './canvasUtil';
+import { type Canvas, type CanvasRenderingContext2D, type Image, loadImage } from 'skia-canvas';
+
+import { createCanvas } from '@/lib/canvas/canvasUtil.js';
 
 export interface SpriteData {
 	x: number;
@@ -19,8 +20,6 @@ export interface DrawSpriteOptions {
 	rotation?: number;
 	alpha?: number;
 }
-
-export type CanvasContext = CanvasRenderingContext2D;
 
 export class CanvasSpritesheet {
 	private readonly spriteData: Map<string, [number, number, number, number]>;
@@ -62,7 +61,7 @@ export class CanvasSpritesheet {
 	}
 
 	drawSprite(
-		ctx: CanvasContext,
+		ctx: CanvasRenderingContext2D,
 		spriteId: string | number,
 		dx: number,
 		dy: number,
@@ -132,7 +131,7 @@ export class CanvasSpritesheet {
 	}
 
 	drawSpriteRaw(
-		ctx: CanvasContext,
+		ctx: CanvasRenderingContext2D,
 		spriteId: string | number,
 		sx?: number,
 		sy?: number,

@@ -1,12 +1,11 @@
-import { Table, stringMatches } from '@oldschoolgg/toolkit/util';
+import { removeFromArr, stringMatches, Table } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { removeFromArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '../../../lib/constants';
-import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { logError } from '../../../lib/util/logError';
+import { BitField } from '@/lib/constants.js';
+import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { logError } from '@/lib/util/logError.js';
 
 const slayerPurchaseError =
 	'An error occurred trying to make this purchase. Please try again or contact #help-and-support if the issue persists.';

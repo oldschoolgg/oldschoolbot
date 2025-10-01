@@ -1,10 +1,9 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 
-import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export async function myNotesCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) {

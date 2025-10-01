@@ -1,5 +1,5 @@
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { objectValues, randInt } from 'e';
+import { percentChance, randInt } from '@oldschoolgg/rng';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, ItemGroups, Items } from 'oldschooljs';
 
 import {
@@ -7,11 +7,10 @@ import {
 	HardEncounterLoot,
 	MediumEncounterLoot,
 	rewardTokens
-} from '../../../lib/minions/data/templeTrekking';
-import type { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { percentChance } from '../../../lib/util/rng';
+} from '@/lib/minions/data/templeTrekking.js';
+import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 	let lowestCountPiece = 0;
@@ -20,7 +19,7 @@ function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 	for (const piece of ItemGroups.templeTrekkingOutfit) {
 		let amount = bank.amount(piece);
 
-		for (const setup of objectValues(user.gear)) {
+		for (const setup of Object.values(user.gear)) {
 			const thisItemEquipped = Object.values(setup).find(setup => setup?.item === piece);
 			if (thisItemEquipped) amount += thisItemEquipped.quantity;
 		}
@@ -81,8 +80,7 @@ export const templeTrekkingTask: MinionTask = {
 			loot.add(rewardToken.id);
 		}
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

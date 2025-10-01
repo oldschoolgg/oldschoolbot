@@ -1,13 +1,12 @@
-import { Events } from '@oldschoolgg/toolkit/constants';
-import type { CommandRunOptions, MahojiUserOption, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
+import { Events, type MahojiUserOption } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { tradePlayerItems } from '../../lib/util/tradePlayerItems';
-import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings';
+import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
+import { addToGPTaxBalance, mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export const payCommand: OSBMahojiCommand = {
 	name: 'pay',

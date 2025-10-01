@@ -1,19 +1,21 @@
-import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { AutoFarmFilterEnum, type CropUpgradeType } from '@prisma/client';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
 
-import TitheFarmBuyables from '../../lib/data/buyables/titheFarmBuyables';
-import { superCompostables } from '../../lib/data/filterables';
-import type { ContractOption } from '../../lib/minions/farming/types';
-import { ContractOptions } from '../../lib/minions/farming/types';
-import { autoFarm } from '../../lib/minions/functions/autoFarm';
-import { getFarmingInfoFromUser } from '../../lib/skilling/functions/getFarmingInfo';
-import Farming, { CompostTiers } from '../../lib/skilling/skills/farming';
-import { farmingPatchNames, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { compostBinCommand, farmingPlantCommand, harvestCommand } from '../lib/abstracted_commands/farmingCommand';
-import { farmingContractCommand } from '../lib/abstracted_commands/farmingContractCommand';
-import { titheFarmCommand, titheFarmShopCommand } from '../lib/abstracted_commands/titheFarmCommand';
+import TitheFarmBuyables from '@/lib/data/buyables/titheFarmBuyables.js';
+import { superCompostables } from '@/lib/data/filterables.js';
+import { autoFarm } from '@/lib/minions/functions/autoFarm.js';
+import { CompostTiers, Farming } from '@/lib/skilling/skills/farming/index.js';
+import type { ContractOption } from '@/lib/skilling/skills/farming/utils/types.js';
+import { ContractOptions } from '@/lib/skilling/skills/farming/utils/types.js';
+import { deferInteraction } from '@/lib/util/interactionReply.js';
+import {
+	compostBinCommand,
+	farmingPlantCommand,
+	harvestCommand
+} from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
+import { farmingContractCommand } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
+import { titheFarmCommand, titheFarmShopCommand } from '@/mahoji/lib/abstracted_commands/titheFarmCommand.js';
 
 const autoFarmFilterTexts: Record<AutoFarmFilterEnum, string> = {
 	AllFarm: 'All crops will be farmed with the highest available seed',
@@ -116,7 +118,7 @@ export const farmingCommand: OSBMahojiCommand = {
 					name: 'patch_name',
 					description: 'The patches you want to harvest.',
 					required: true,
-					choices: farmingPatchNames.map(i => ({ name: i, value: i }))
+					choices: Farming.farmingPatchNames.map(i => ({ name: i, value: i }))
 				}
 			]
 		},
@@ -200,7 +202,7 @@ export const farmingCommand: OSBMahojiCommand = {
 	}>) => {
 		await deferInteraction(interaction);
 		const klasaUser = await mUserFetch(userID);
-		const { patchesDetailed } = getFarmingInfoFromUser(klasaUser.user);
+		const { patchesDetailed } = Farming.getFarmingInfoFromUser(klasaUser.user);
 
 		if (options.auto_farm) {
 			return autoFarm(klasaUser, patchesDetailed, channelID);
@@ -268,6 +270,6 @@ export const farmingCommand: OSBMahojiCommand = {
 			return farmingContractCommand(userID, options.contract.input);
 		}
 
-		return userGrowingProgressStr(patchesDetailed);
+		return Farming.userGrowingProgressStr(patchesDetailed);
 	}
 };

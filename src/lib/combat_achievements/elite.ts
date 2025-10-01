@@ -1,18 +1,17 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Time } from '@oldschoolgg/toolkit';
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { SkillsEnum } from '../skilling/types';
-import { Requirements } from '../structures/Requirements';
+import { anyoneDiedInTOARaid, isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
 	ActivityTaskData,
 	GauntletOptions,
 	MonsterActivityTaskOptions,
 	NightmareActivityTaskOptions,
 	TOAOptions
-} from '../types/minions';
-import { crossbows } from '../util/archery';
-import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils';
-import type { CombatAchievement } from './combatAchievements';
+} from '@/lib/types/minions.js';
+import { crossbows } from '@/lib/util/archery.js';
 
 export const eliteCombatAchievements: CombatAchievement[] = [
 	{
@@ -310,7 +309,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 				const styles = user.getAttackStyles();
 				return (
 					isCertainMonsterTrip(Monsters.CommanderZilyana.id)(data) &&
-					([SkillsEnum.Ranged, SkillsEnum.Magic] as const).every(styl => !styles.includes(styl))
+					(['ranged', 'magic'] as const).every(styl => !styles.includes(styl))
 				);
 			}
 		}

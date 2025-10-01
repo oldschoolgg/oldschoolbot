@@ -1,13 +1,12 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Time, clamp } from 'e';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, resolveItems, toKMB } from 'oldschooljs';
+import { clamp } from 'remeda';
 
-import { Planks } from '../../../lib/minions/data/planks';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ButlerActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { Planks } from '@/lib/minions/data/planks.js';
+import type { ButlerActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const unlimitedEarthRuneProviders = resolveItems([
 	'Staff of earth',
@@ -42,7 +41,7 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 		return `Thats not a valid plank to make. Valid planks are **${Planks.map(plank => plank.name).join(', ')}**.`;
 	}
 
-	const level = user.skillLevel(SkillsEnum.Construction);
+	const level = user.skillsAsLevels.construction;
 	if (level < 50) {
 		return 'You need level 50 Construction to use the demon butler.';
 	}
@@ -54,7 +53,7 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerPlank);
 	}
-	quantity = clamp(quantity, 1, 100_000);
+	quantity = clamp(quantity, { min: 1, max: 100_000 });
 
 	const inputItemOwned = user.bank.amount(plank.inputItem);
 	if (inputItemOwned < quantity) {

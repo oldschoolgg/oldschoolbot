@@ -1,10 +1,9 @@
+import { randArrItem } from '@oldschoolgg/rng';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { randArrItem } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
-import { fossilIslandNotesCL } from '../../../lib/data/CollectionsExport';
-import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { fossilIslandNotesCL } from '@/lib/data/CollectionsExport.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 
 export async function buyFossilIslandNotes(user: MUser, interaction: ChatInputCommandInteraction, quantity: number) {
 	const cost = new Bank().add('Numulite', 300).multiply(quantity);
@@ -29,13 +28,13 @@ export async function buyFossilIslandNotes(user: MUser, interaction: ChatInputCo
 		const filteredPages = fossilIslandNotesCL.filter(page => !tempClWithNewUniques.has(page));
 		const outPage =
 			filteredPages.length === 0
-				? getOSItem(randArrItem(fossilIslandNotesCL))
-				: getOSItem(randArrItem(filteredPages));
+				? Items.getOrThrow(randArrItem(fossilIslandNotesCL))
+				: Items.getOrThrow(randArrItem(filteredPages));
 		tempClWithNewUniques.add(outPage);
 		loot.add(outPage);
 	}
 
-	await transactItems({ userID: user.id, itemsToRemove: cost, itemsToAdd: loot, collectionLog: true });
+	await user.transactItems({ itemsToRemove: cost, itemsToAdd: loot, collectionLog: true });
 
 	return `You purchased ${loot}.`;
 }

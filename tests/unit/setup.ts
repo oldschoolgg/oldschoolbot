@@ -1,6 +1,7 @@
-import '../../src/lib/data/itemAliases';
-import '../../src/lib/ActivityManager';
-import { MUserStats } from '../../src/lib/structures/MUserStats';
+import '../../src/lib/data/itemAliases.js';
+import '../../src/lib/ActivityManager.js';
+
+import { MUserStats } from '../../src/lib/structures/MUserStats.js';
 
 MUserStats.fromID = async (id: string) => {
 	return new MUserStats({

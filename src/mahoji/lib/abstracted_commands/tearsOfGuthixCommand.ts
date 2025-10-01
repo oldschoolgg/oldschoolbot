@@ -1,22 +1,20 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { dateFm, formatDuration, getNextUTCReset } from '@oldschoolgg/toolkit/util';
-import { Time, notEmpty, objectEntries } from 'e';
+import { dateFm, Emoji, formatDuration, getNextUTCReset, notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
 
-import { TEARS_OF_GUTHIX_CD } from '@/lib/events';
+import { TEARS_OF_GUTHIX_CD } from '@/lib/events.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
 export const tearsOfGuthixSkillReqs = {
-	[SkillsEnum.Firemaking]: 49,
-	[SkillsEnum.Crafting]: 20,
-	[SkillsEnum.Mining]: 20
+	firemaking: 49,
+	crafting: 20,
+	mining: 20
 };
 export const tearsOfGuthixIronmanReqs = {
-	[SkillsEnum.Smithing]: 49,
-	[SkillsEnum.Thieving]: 36,
-	[SkillsEnum.Slayer]: 35
+	smithing: 49,
+	thieving: 36,
+	slayer: 35
 };
 
 function getTearsOfGuthixMissingIronmanMessage(user: MUser): string | null {
@@ -24,8 +22,8 @@ function getTearsOfGuthixMissingIronmanMessage(user: MUser): string | null {
 
 	const skills = user.skillsAsLevels;
 	let skillsMatch = 0;
-	for (const [skill, level] of Object.entries(tearsOfGuthixIronmanReqs)) {
-		if (skills[skill as SkillsEnum] >= level) skillsMatch++;
+	for (const [skill, level] of Object.entries(tearsOfGuthixIronmanReqs) as [SkillNameType, number][]) {
+		if (skills[skill] >= level) skillsMatch++;
 	}
 
 	if (skillsMatch === 0) {

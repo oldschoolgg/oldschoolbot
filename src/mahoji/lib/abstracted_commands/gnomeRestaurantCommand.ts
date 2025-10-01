@@ -1,15 +1,14 @@
-import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
-import { Time, calcWhatPercent, randInt, reduceNumByPercent } from 'e';
-import { Bank, SkillsEnum } from 'oldschooljs';
+import { randInt, randomVariation } from '@oldschoolgg/rng';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { Bank } from 'oldschooljs';
 
-import { getPOHObject } from '../../../lib/poh';
-
-import type { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
-import { getPOH } from './pohCommand';
+import { getPOHObject } from '@/lib/poh/index.js';
+import type { GnomeRestaurantActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
+import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 	let deliveryLength = Time.Minute * 7;
@@ -35,7 +34,7 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 		boosts.push('25% for Graceful');
 	}
 
-	if (user.skillLevel(SkillsEnum.Magic) >= 66) {
+	if (user.skillsAsLevels.magic >= 66) {
 		deliveryLength = reduceNumByPercent(deliveryLength, 25);
 		boosts.push('25% for 66 Magic (teleports)');
 	}
@@ -86,7 +85,7 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 	const quantity = Math.floor(calcMaxTripLength(user, 'GnomeRestaurant') / deliveryLength);
 	const duration = randomVariation(deliveryLength * quantity, 5);
 
-	if (user.skillLevel(SkillsEnum.Magic) >= 66) {
+	if (user.skillsAsLevels.magic >= 66) {
 		itemsToRemove.add('Law rune', Math.max(1, Math.floor(randInt(1, quantity * 1.5) / 2)));
 	}
 

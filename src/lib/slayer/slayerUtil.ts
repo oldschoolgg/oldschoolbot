@@ -1,21 +1,19 @@
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { notEmpty, objectKeys, randFloat, randInt } from 'e';
+import { randFloat, randInt, roll } from '@oldschoolgg/rng';
+import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
-import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
-import { CombatAchievements } from '../combat_achievements/combatAchievements';
-import type { PvMMethod } from '../constants';
-import { CombatOptionsEnum } from '../minions/data/combatConstants';
-import type { KillableMonster } from '../minions/types';
-import { getNewUser } from '../settings/settings';
-import { SkillsEnum } from '../skilling/types';
-import { logError } from '../util/logError';
-import { roll } from '../util/rng';
-import { autoslayModes } from './constants';
-import { slayerMasters } from './slayerMasters';
-import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks';
-import { bossTasks, wildernessBossTasks } from './tasks/bossTasks';
-import type { AssignableSlayerTask, SlayerMaster } from './types';
+import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
+import type { PvMMethod } from '@/lib/constants.js';
+import { LumbridgeDraynorDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import { getNewUser } from '@/lib/settings/settings.js';
+import { autoslayModes } from '@/lib/slayer/constants.js';
+import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
+import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { bossTasks, wildernessBossTasks } from '@/lib/slayer/tasks/bossTasks.js';
+import type { AssignableSlayerTask, SlayerMaster } from '@/lib/slayer/types.js';
+import { logError } from '@/lib/util/logError.js';
 
 export const wildySlayerOnlyMonsters = [
 	Monsters.DustDevil,
@@ -135,7 +133,7 @@ function weightedPick(filteredTasks: AssignableSlayerTask[]) {
 export function userCanUseMaster(user: MUser, master: SlayerMaster) {
 	return (
 		user.QP >= (master.questPoints ?? 0) &&
-		user.skillLevel(SkillsEnum.Slayer) >= (master.slayerLvl ?? 0) &&
+		user.skillsAsLevels.slayer >= (master.slayerLvl ?? 0) &&
 		user.combatLevel >= (master.combatLvl ?? 0)
 	);
 }
@@ -148,7 +146,7 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 	if (task.combatLevel && task.combatLevel > user.combatLevel) return false;
 	if (task.questPoints && task.questPoints > user.QP) return false;
 	if (task.requiredQuests?.find(quest => !user.user.finished_quest_ids.includes(quest))) return false;
-	if (task.slayerLevel && task.slayerLevel > user.skillLevel(SkillsEnum.Slayer)) return false;
+	if (task.slayerLevel && task.slayerLevel > user.skillsAsLevels.slayer) return false;
 	if (task.levelRequirements && !user.hasSkillReqs(task.levelRequirements)) return false;
 	const myBlockList = user.user.slayer_blocked_ids ?? [];
 	if (myBlockList.includes(task.monster.id)) return false;
@@ -231,7 +229,7 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 
 	let maxQuantity = assignedTask?.amount[1];
 	if (bossTask && _user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss)) {
-		for (const tier of objectKeys(CombatAchievements)) {
+		for (const tier of Object.keys(CombatAchievements) as (keyof typeof CombatAchievements)[]) {
 			if (_user.hasCompletedCATier(tier)) {
 				maxQuantity += 5;
 			}

@@ -1,18 +1,15 @@
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit/util';
-import { calcPercentOfNum, calcWhatPercent } from 'e';
-import { Bank, type ItemBank, Monsters, itemID } from 'oldschooljs';
+import { calcPercentOfNum, calcWhatPercent, Events, formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
+import { Bank, type ItemBank, itemID, Monsters } from 'oldschooljs';
 
-import { countUsersWithItemInCl } from '@/lib/rawSql';
-import chatHeadImage from '../../../lib/canvas/chatHeadImage';
-import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
-import { DiaryID } from '../../../lib/minions/types';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import type { InfernoOptions } from '../../../lib/types/minions';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
+import { diariesObject, userhasDiaryTier } from '@/lib/diaries.js';
+import { DiaryID } from '@/lib/minions/types.js';
+import { countUsersWithItemInCl } from '@/lib/rawSql.js';
+import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import type { InfernoOptions } from '@/lib/types/minions.js';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const infernoTask: MinionTask = {
 	type: 'Inferno',
@@ -52,7 +49,7 @@ export const infernoTask: MinionTask = {
 
 		xpBonuses.push(
 			await user.addXP({
-				skillName: SkillsEnum.Ranged,
+				skillName: 'ranged',
 				amount: calcPercentOfNum(percentMadeItThrough, 80_000),
 				duration,
 				minimal: true
@@ -60,7 +57,7 @@ export const infernoTask: MinionTask = {
 		);
 		xpBonuses.push(
 			await user.addXP({
-				skillName: SkillsEnum.Hitpoints,
+				skillName: 'hitpoints',
 				amount: calcPercentOfNum(percentMadeItThrough, 35_000),
 				duration,
 				minimal: true
@@ -68,7 +65,7 @@ export const infernoTask: MinionTask = {
 		);
 		xpBonuses.push(
 			await user.addXP({
-				skillName: SkillsEnum.Magic,
+				skillName: 'magic',
 				amount: calcPercentOfNum(percentMadeItThrough, 25_000),
 				duration,
 				minimal: true
@@ -77,7 +74,7 @@ export const infernoTask: MinionTask = {
 		if (isOnTask) {
 			xpBonuses.push(
 				await user.addXP({
-					skillName: SkillsEnum.Slayer,
+					skillName: 'slayer',
 					amount: deathTime === null ? 125_000 : calcPercentOfNum(percentMadeItThrough, 25_000),
 					duration
 				})

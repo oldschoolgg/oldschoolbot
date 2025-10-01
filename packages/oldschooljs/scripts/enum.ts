@@ -1,7 +1,8 @@
 import { writeFileSync } from 'node:fs';
 
-import { SkillsArray } from '../../../src/lib/skilling/types';
-import { type Item, Items, Monsters } from '../src';
+import type { Item } from '@/meta/item.js';
+import { Monsters } from '@/simulation/monsters/index.js';
+import Items from '@/structures/Items.js';
 
 export function safeItemName(itemName: string) {
 	let key = itemName;
@@ -15,7 +16,7 @@ export function safeItemName(itemName: string) {
 const startsWithNumber = (str: string): boolean => /^[0-9]/.test(str);
 
 async function main() {
-	const spritesheetJSON = await fetch(
+	const spritesheetJSON: any = await fetch(
 		'https://raw.githubusercontent.com/oldschoolgg/oldschoolbot/refs/heads/master/src/lib/resources/spritesheets/items-spritesheet.json'
 	).then(res => res.json());
 	const osbItems = new Set(Object.keys(spritesheetJSON).map(stringID => Number(stringID)));
@@ -60,14 +61,17 @@ async function main() {
 
 		eItemStr += `\n\t${codeKey} = ${value},`;
 		const _item = Items.get(value)!;
-
 		if (
 			_item.equipable &&
 			_item.equipment?.slot &&
 			(_item.tradeable_on_ge ||
-				['black mask', 'slayer', 'collection', ...SkillsArray.map(n => `${n} `)].some(_str =>
-					_item.name.toLowerCase().includes(_str)
-				))
+				[
+					'black mask',
+					'slayer',
+					'collection'
+					// TODO
+					// ...Object.values(SkillsEnum).map(n => `${n.toLowerCase()} `)
+				].some(_str => _item.name.toLowerCase().includes(_str)))
 		) {
 			eGearStr += `\n\t${codeKey} = ${value},`;
 		}

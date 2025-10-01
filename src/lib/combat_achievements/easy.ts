@@ -1,11 +1,9 @@
-import { ItemGroups, Monsters, resolveItems } from 'oldschooljs';
+import { ItemGroups, Items, Monsters, resolveItems } from 'oldschooljs';
 
-import { warmGear } from '../data/filterables';
-import { SkillsEnum } from '../skilling/types';
-import { Requirements } from '../structures/Requirements';
-import getOSItem from '../util/getOSItem';
-import { isCertainMonsterTrip } from './caUtils';
-import type { CombatAchievement } from './combatAchievements';
+import { isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
+import { warmGear } from '@/lib/data/filterables.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
 
 export const easyCombatAchievements: CombatAchievement[] = [
 	{
@@ -41,7 +39,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
-				isCertainMonsterTrip(Monsters.Barrows.id)(data) && user.getAttackStyles().includes(SkillsEnum.Magic)
+				isCertainMonsterTrip(Monsters.Barrows.id)(data) && user.getAttackStyles().includes('magic')
 		}
 	},
 	{
@@ -97,7 +95,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		rng: {
 			hasChance: (data, user) =>
 				isCertainMonsterTrip(Monsters.Bryophyta.id)(data) &&
-				user.gear[user.attackClass()].allItems(false).every(i => getOSItem(i).members !== true),
+				user.gear[user.attackClass()].allItems(false).every(i => Items.getOrThrow(i).members !== true),
 			chancePerKill: 1
 		}
 	},
@@ -278,7 +276,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		rng: {
 			hasChance: (data, user) =>
 				isCertainMonsterTrip(Monsters.Obor.id)(data) &&
-				user.gear[user.attackClass()].allItems(false).every(i => getOSItem(i).members !== true),
+				user.gear[user.attackClass()].allItems(false).every(i => Items.getOrThrow(i).members !== true),
 			chancePerKill: 1
 		}
 	},

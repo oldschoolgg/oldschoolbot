@@ -1,11 +1,10 @@
-import { Bank } from 'oldschooljs';
 
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { AlchingActivityTaskOptions } from '../../lib/types/minions';
-import { calculateBryophytaRuneSavings } from '../../lib/util/bryophytaRuneSavings';
-import getOSItem from '../../lib/util/getOSItem';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { updateClientGPTrackSetting } from '../../mahoji/mahojiSettings';
+import { Bank, Items } from 'oldschooljs';
+
+import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { updateClientGPTrackSetting } from '@/mahoji/mahojiSettings.js';
+import { calculateBryophytaRuneSavings } from '@/lib/util/bryophytaRuneSavings.js';
 
 export const alchingTask: MinionTask = {
 	type: 'Alching',
@@ -14,7 +13,7 @@ export const alchingTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const loot = new Bank({ Coins: alchValue });
 
-		const item = getOSItem(itemID);
+		const item = Items.getOrThrow(itemID);
 
 		// If bryophyta's staff is equipped when starting the alch activity
 		// calculate how many runes have been saved
@@ -27,7 +26,7 @@ export const alchingTask: MinionTask = {
 
 		const xpReceived = quantity * 65;
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Magic,
+			skillName: 'magic',
 			amount: xpReceived,
 			duration
 		});

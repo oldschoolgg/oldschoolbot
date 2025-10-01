@@ -1,10 +1,10 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { mahojiClientSettingsFetch } from '../../../src/lib/util/clientSettings';
-import { sacrificeCommand } from '../../../src/mahoji/commands/sacrifice';
-import { createTestUser, mockClient } from '../util';
+import { mahojiClientSettingsFetch } from '../../../src/lib/util/clientSettings.js';
+import { sacrificeCommand } from '../../../src/mahoji/commands/sacrifice.js';
+import { createTestUser, mockClient } from '../util.js';
 
 describe('Sacrifice Command', async () => {
 	await mockClient();

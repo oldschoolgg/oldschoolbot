@@ -1,4 +1,4 @@
-import type { MahojiClient } from '@oldschoolgg/toolkit/discord-util';
+import type { MahojiClient } from '@oldschoolgg/toolkit';
 import { Client, type User } from 'discord.js';
 
 export class OldSchoolBotClient extends Client<true> {

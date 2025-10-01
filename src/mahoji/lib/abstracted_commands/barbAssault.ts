@@ -1,55 +1,63 @@
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { formatDuration, formatOrdinal, randomVariation, stringMatches } from '@oldschoolgg/toolkit/util';
+import { randomVariation, roll } from '@oldschoolgg/rng';
+import {
+	calcWhatPercent,
+	Events,
+	formatDuration,
+	formatOrdinal,
+	makeComponents,
+	reduceNumByPercent,
+	round,
+	stringMatches,
+	Time
+} from '@oldschoolgg/toolkit';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { Time, calcWhatPercent, clamp, reduceNumByPercent, roll, round } from 'e';
-import { Bank, itemID } from 'oldschooljs';
+import { Bank, Items, itemID } from 'oldschooljs';
+import { clamp } from 'remeda';
 
-import { countUsersWithItemInCl } from '@/lib/rawSql';
-import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets';
-import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { degradeItem } from '../../../lib/degradeableItems';
-import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
-import { maxOtherStats } from '../../../lib/structures/Gear';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { userStatsUpdate } from '../../mahojiSettings';
+import { buildClueButtons } from '@/lib/clues/clueUtils.js';
+import { degradeItem } from '@/lib/degradeableItems.js';
+import { countUsersWithItemInCl } from '@/lib/rawSql.js';
+import { HighGambleTable, LowGambleTable, MediumGambleTable } from '@/lib/simulation/baGamble.js';
+import { maxOtherStats } from '@/lib/structures/Gear.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const BarbBuyables = [
 	{
-		item: getOSItem('Fighter hat'),
+		item: Items.getOrThrow('Fighter hat'),
 		cost: 275 * 4
 	},
 	{
-		item: getOSItem('Ranger hat'),
+		item: Items.getOrThrow('Ranger hat'),
 		cost: 275 * 4
 	},
 	{
-		item: getOSItem('Healer hat'),
+		item: Items.getOrThrow('Healer hat'),
 		cost: 275 * 4
 	},
 	{
-		item: getOSItem('Runner hat'),
+		item: Items.getOrThrow('Runner hat'),
 		cost: 275 * 4
 	},
 	{
-		item: getOSItem('Fighter torso'),
+		item: Items.getOrThrow('Fighter torso'),
 		cost: 375 * 4
 	},
 	{
-		item: getOSItem('Penance skirt'),
+		item: Items.getOrThrow('Penance skirt'),
 		cost: 375 * 4
 	},
 	{
-		item: getOSItem('Runner boots'),
+		item: Items.getOrThrow('Runner boots'),
 		cost: 100 * 4
 	},
 	{
-		item: getOSItem('Penance gloves'),
+		item: Items.getOrThrow('Penance gloves'),
 		cost: 150 * 4
 	}
 ];
@@ -256,7 +264,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 
 	// Up to 10%, at 200 kc, speed boost for team average kc
 	const kc = await user.fetchMinigameScore('barb_assault');
-	const kcPercent = clamp(calcWhatPercent(kc, 200), 1, 100);
+	const kcPercent = clamp(calcWhatPercent(kc, 200), { min: 1, max: 100 });
 	const kcPercentBoost = kcPercent / 10;
 	boosts.push(`${kcPercentBoost.toFixed(2)}% for average KC`);
 	waveTime = reduceNumByPercent(waveTime, kcPercentBoost);
@@ -269,7 +277,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 	let venBowMsg = '';
 	if (user.gear.range.hasEquipped('Venator Bow') && user.user.venator_bow_charges >= totalVenChargesUsed) {
 		await degradeItem({
-			item: getOSItem('Venator Bow'),
+			item: Items.getOrThrow('Venator Bow'),
 			chargesToDegrade: totalVenChargesUsed,
 			user
 		});

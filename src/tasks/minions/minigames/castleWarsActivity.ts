@@ -1,8 +1,8 @@
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 const ticketTable = new SimpleTable<number>().add(1, 4).add(2, 4).add(3, 1);
 
@@ -18,8 +18,7 @@ export const castleWarsTask: MinionTask = {
 		for (let i = 0; i < quantity; i++) {
 			loot.add('Castle wars ticket', ticketTable.rollOrThrow());
 		}
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

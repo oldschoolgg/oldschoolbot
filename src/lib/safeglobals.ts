@@ -1,2 +1,2 @@
-import './data/itemAliases';
-import './util/logger';
+import './data/itemAliases.js';
+import './util/logger.js';

@@ -1,17 +1,17 @@
-import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
-import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
-import { Bank, Items, SkillsEnum } from 'oldschooljs';
+import { randomVariation } from '@oldschoolgg/rng';
+import { formatDuration, increaseNumByPercent, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { Bank, Items } from 'oldschooljs';
 
-import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
-import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
-import { Fishing } from '../../../lib/skilling/skills/fishing/fishing';
-import Mining from '../../../lib/skilling/skills/mining';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
+import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import Mining from '@/lib/skilling/skills/mining.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 async function miningCommand(user: MUser, channelID: string, quantity: number | undefined) {
-	let miningLevel = user.skillLevel(SkillsEnum.Mining);
+	let miningLevel = user.skillsAsLevels.mining;
 	if (miningLevel < 14) {
 		return 'You need at least level 14 Mining to mine in the Ruins of Camdozaal.';
 	}
@@ -88,7 +88,7 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
 }
 
 async function smithingCommand(user: MUser, channelID: string, quantity: number | undefined) {
-	if (user.skillLevel(SkillsEnum.Smithing) < 14) {
+	if (user.skillsAsLevels.smithing < 14) {
 		return 'You need at least level 14 Smithing to smith in the Ruins of Camdozaal.';
 	}
 
@@ -132,7 +132,7 @@ async function smithingCommand(user: MUser, channelID: string, quantity: number 
 }
 
 async function fishingCommand(user: MUser, channelID: string, quantity: number | undefined) {
-	if (user.skillLevel(SkillsEnum.Fishing) < 7) {
+	if (user.skillsAsLevels.fishing < 7) {
 		return 'You need at least level 7 Fishing to fish in the Ruins of Camdozaal.';
 	}
 	const inputQuantity = quantity;

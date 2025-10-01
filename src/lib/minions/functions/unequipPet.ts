@@ -1,6 +1,6 @@
 import { Bank, Items } from 'oldschooljs';
 
-import { logError } from '../../util/logError';
+import { logError } from '@/lib/util/logError.js';
 
 export async function unequipPet(user: MUser) {
 	const equippedPet = user.user.minion_equippedPet;
@@ -10,7 +10,7 @@ export async function unequipPet(user: MUser) {
 
 	try {
 		await user.addItemsToBank({ items: loot, collectionLog: false });
-	} catch (e) {
+	} catch (_e) {
 		logError(new Error('Failed to add pet to bank'), {
 			user_id: user.id,
 			pet_to_unequip: equippedPet.toString()

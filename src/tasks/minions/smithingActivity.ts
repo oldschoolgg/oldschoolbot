@@ -1,9 +1,8 @@
 import { Bank } from 'oldschooljs';
 
-import Smithing from '../../lib/skilling/skills/smithing';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { SmithingActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import Smithing from '@/lib/skilling/skills/smithing/index.js';
+import type { SmithingActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const smithingTask: MinionTask = {
 	type: 'Smithing',
@@ -15,7 +14,7 @@ export const smithingTask: MinionTask = {
 
 		const xpReceived = quantity * smithedItem.xp;
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Smithing,
+			skillName: 'smithing',
 			amount: xpReceived,
 			duration
 		});
@@ -26,8 +25,7 @@ export const smithingTask: MinionTask = {
 
 		const str = `${user}, ${user.minionName} finished smithing, you received ${loot}. ${xpRes}`;
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

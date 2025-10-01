@@ -1,8 +1,7 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { LootTable, itemID } from 'oldschooljs';
+import { Emoji } from '@oldschoolgg/toolkit';
+import { itemID, LootTable } from 'oldschooljs';
 
-import type { Ore } from '../types';
-import { SkillsEnum } from '../types';
+import { defineSkill, type Ore } from '@/lib/skilling/types.js';
 
 const GemRockTable = new LootTable()
 	.add('Uncut opal', 1, 60)
@@ -311,7 +310,7 @@ export const prospectorItemsArr = Object.entries(prospectorItems).map(([itemID, 
 	boostPercent: bonus
 }));
 
-const Mining = {
+const Mining = defineSkill({
 	aliases: ['mining'],
 	Ores: ores,
 	MotherlodeMine,
@@ -319,10 +318,10 @@ const Mining = {
 	GemRockTable,
 	GraniteRockTable,
 	SandstoneRockTable,
-	id: SkillsEnum.Mining,
+	id: 'mining',
 	emoji: Emoji.Mining,
 	prospectorItems,
 	name: 'Mining'
-};
+});
 
 export default Mining;

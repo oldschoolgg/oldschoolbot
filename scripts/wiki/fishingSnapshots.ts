@@ -1,15 +1,11 @@
-import { Table, calcPerHour } from '@oldschoolgg/toolkit';
-import { Time } from 'e';
-import { type Bank, EItem, Items, convertLVLtoXP } from 'oldschooljs';
+import { SeedableRNG } from '@oldschoolgg/rng';
+import { calcPerHour, Table, Time } from '@oldschoolgg/toolkit';
+import { type Bank, convertLVLtoXP, EItem, Items } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
-
-applyStaticDefine();
 
 import '../../src/lib/safeglobals.js';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
-import { SeedableRNG } from '@/lib/util/rng.js';
-import { applyStaticDefine } from '../../meta.js';
 import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
 import type { Fish } from '../../src/lib/skilling/types.js';
 import { FloatBank } from '../../src/lib/structures/Bank.js';

@@ -1,14 +1,13 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { calcPercentOfNum } from 'e';
+import { roll } from '@oldschoolgg/rng';
+import { calcPercentOfNum, Emoji, Events } from '@oldschoolgg/toolkit';
 import { LootTable } from 'oldschooljs';
 
-import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot';
-import { Fishing } from '@/lib/skilling/skills/fishing/fishing';
-import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions';
-import { skillingPetDropRate } from '@/lib/util';
-import { handleTripFinish } from '@/lib/util/handleTripFinish';
-import { makeBankImage } from '@/lib/util/makeBankImage';
-import { roll } from '@/lib/util/rng';
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 const guppy = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw guppy')!;
 const cavefish = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw cavefish')!;
@@ -88,8 +87,7 @@ export const camdozaalFishingTask: MinionTask = {
 		}
 
 		// Give the user the items from the trip
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

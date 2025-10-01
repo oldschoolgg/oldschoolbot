@@ -1,11 +1,9 @@
 import { writeFileSync } from 'node:fs';
-import fetch from 'node-fetch';
-
-import { Monsters } from '../src';
-import type { MonsterAttackType, MonsterAttribute, MonsterData, MonsterSlayerMaster } from '../src/meta/monsterData';
-
 import { omitBy } from 'remeda';
 import * as wtf from 'wtf_wikipedia';
+
+import type { MonsterAttackType, MonsterAttribute, MonsterData, MonsterSlayerMaster } from '@/meta/monsterData.js';
+import { Monsters } from '@/simulation/monsters/index.js';
 
 const monsterMap: { [key: string]: MonsterData } = {};
 
@@ -134,7 +132,7 @@ const transformData = (data: any): MonsterData => {
 		isSlayerMonster: !!slaylvl,
 		slayerLevelRequired: slaylvl,
 		slayerXP: slayxp,
-		assignableSlayerMasters: assignedby?.split(',').map(master => master.trim().toLowerCase())
+		assignableSlayerMasters: assignedby?.split(',').map((master: string) => master.trim().toLowerCase())
 	};
 };
 
@@ -156,7 +154,7 @@ export default async function prepareMonsters(): Promise<void> {
 	const monIDs = new Set(Monsters.map(mon => mon.id));
 
 	for (const mon of Object.values(allMonsters).filter(mon => monIDs.has(mon.id))) {
-		// @ts-ignore ignore
+		// @ts-expect-error ignore
 		mon.drops = undefined;
 
 		const newMonster: MonsterData = {
@@ -229,7 +227,7 @@ export default async function prepareMonsters(): Promise<void> {
 			.flat(100)
 			.filter(s => s && Boolean(s.name) && (Boolean(s.examine) || Boolean(s.examine1)))
 			.map(s =>
-				omitBy(s, (value, key) =>
+				omitBy(s, (_value, key) =>
 					['version', 'image', 'release', 'examine', 'update'].some(str => key.startsWith(str))
 				)
 			);
@@ -269,7 +267,7 @@ export default async function prepareMonsters(): Promise<void> {
 		.replace(/\]"/g, ']')
 		.replace(/\\"/g, '"');
 
-	writeFileSync('./src/data/monsters_data.json', `${lintedJSON}\n`);
+	writeFileSync('./src/assets/monsters_data.json', `${lintedJSON}\n`);
 
 	console.log('Prepared Monsters. Check any new monsters quickly to see that the data looks okay.');
 }

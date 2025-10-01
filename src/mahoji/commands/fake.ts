@@ -1,6 +1,5 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
+import { randInt } from '@oldschoolgg/rng';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { randInt } from 'e';
 
 import {
 	type CanvasContext,
@@ -8,7 +7,7 @@ import {
 	createCanvas,
 	loadAndCacheLocalImage,
 	measureTextWidth
-} from '../../lib/canvas/canvasUtil';
+} from '@/lib/canvas/canvasUtil.js';
 
 const bg = loadAndCacheLocalImage('./src/lib/resources/images/tob-bg.png');
 

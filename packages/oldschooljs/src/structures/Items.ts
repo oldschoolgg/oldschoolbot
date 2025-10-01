@@ -1,11 +1,16 @@
 import deepMerge from 'deepmerge';
 
-import _items from '../data/items/item_data.json' with { type: 'json' };
-import type { Item, ItemID } from '../meta/types';
-import { cleanString } from '../util/cleanString';
-import { Collection } from './Collection';
+import _items from '../assets/item_data.json' with { type: 'json' };
 
-const items = _items as Record<string, Item>;
+const items = _items as any as Record<string, Item>;
+
+import type { Item } from '@/meta/item.js';
+import { Collection } from './Collection.js';
+
+function cleanString(str: string): string {
+	return str.replace(/\s/g, '').toUpperCase();
+}
+
 export const itemNameMap: Map<string, number> = new Map();
 
 type ItemResolvable = number | string;
@@ -17,6 +22,22 @@ export const CLUE_SCROLLS = [
 	// Clue scrolls
 	2677, 2801, 2722, 12_073, 19_835, 23_182
 ];
+
+type ResolvableItem = number | string;
+export type ArrayItemsResolvable = (ResolvableItem | ResolvableItem[])[];
+export type ArrayItemsResolved = (number | number[])[];
+export type ArrayItemsResolvedNames = (string | string[])[];
+export type SortableItem = string | { name: string } | SortableItem[];
+
+const collator = new Intl.Collator(undefined, { sensitivity: 'base', numeric: true });
+const key = (x: SortableItem): string =>
+	Array.isArray(x) ? (x.length ? key(x[0]!) : '') : typeof x === 'string' ? x : x.name;
+
+function sortAlpha(arr: SortableItem[]): SortableItem[] {
+	const sorted = [...arr].map(v => (Array.isArray(v) ? sortAlpha(v) : v));
+	sorted.sort((a, b) => collator.compare(key(a), key(b)));
+	return sorted;
+}
 
 export const CLUE_SCROLL_NAMES: string[] = [
 	'Clue scroll (beginner)',
@@ -48,8 +69,9 @@ export const USELESS_ITEMS = [
 	23_814, 23_815, 23_816, 23_817
 ];
 
-class Items extends Collection<ItemID, Item> {
-	public get(item: ItemResolvable): Item | undefined {
+class ItemsSingleton extends Collection<number, Item> {
+	sortAlpha = sortAlpha;
+	public override get(item: ItemResolvable): Item | undefined {
 		const id = this.resolveID(item);
 		if (typeof id === 'undefined') return undefined;
 		return super.get(id);
@@ -63,7 +85,7 @@ class Items extends Collection<ItemID, Item> {
 		this.set(item.id, deepMerge(item, data));
 	}
 
-	private resolveID(input: ItemResolvable): ItemID | undefined {
+	private resolveID(input: ItemResolvable): number | undefined {
 		if (typeof input === 'number') {
 			return input;
 		}
@@ -77,6 +99,12 @@ class Items extends Collection<ItemID, Item> {
 
 	public itemNameFromId(itemID: number): string | undefined {
 		return super.get(itemID)?.name;
+	}
+
+	getId(_itemResolvable: ItemResolvable): number {
+		const id = this.resolveID(_itemResolvable);
+		if (typeof id === 'undefined') throw new Error(`No item found for ${_itemResolvable}`);
+		return id;
 	}
 
 	public getItem(itemName: string | number | undefined): Item | null {
@@ -93,24 +121,123 @@ class Items extends Collection<ItemID, Item> {
 		}
 		return this.get(identifier) ?? null;
 	}
+
 	public getOrThrow(itemName: string | number | undefined): Item {
 		const item = this.getItem(itemName);
 		if (!item) throw new Error(`Item ${itemName} not found.`);
 		return item;
 	}
+
+	public resolveItems(_itemArray: string | number | (string | number)[]): number[] {
+		const itemArray = Array.isArray(_itemArray) ? _itemArray : [_itemArray];
+		const newArray: number[] = [];
+
+		for (const item of itemArray) {
+			if (typeof item === 'number') {
+				newArray.push(item);
+			} else {
+				const osItem = this.get(item);
+				if (!osItem) {
+					throw new Error(`No item found for: ${item}.`);
+				}
+				newArray.push(osItem.id);
+			}
+		}
+
+		return newArray;
+	}
+
+	public resolveFullItems(_itemArray: string | number | (string | number)[]): Item[] {
+		return this.resolveItems(_itemArray).map(id => this.getOrThrow(id));
+	}
+
+	public deepResolveItems(itemArray: ArrayItemsResolvable): ArrayItemsResolved {
+		const newArray: ArrayItemsResolved = [];
+
+		for (const item of itemArray) {
+			if (Array.isArray(item)) {
+				const test = this.resolveItems(item);
+				newArray.push(test);
+			} else {
+				const osItem = this.getOrThrow(item);
+				newArray.push(osItem.id);
+			}
+		}
+
+		return newArray;
+	}
+
+	public deepResolveNames(
+		itemArray: ArrayItemsResolvable,
+		options?: { sort?: 'alphabetical' }
+	): ArrayItemsResolvedNames {
+		const newArray: ArrayItemsResolvedNames = [];
+
+		const sortFn = options?.sort === 'alphabetical' ? (a: string, b: string) => a.localeCompare(b) : () => 0;
+
+		for (const item of itemArray) {
+			if (Array.isArray(item)) {
+				newArray.push(item.map(i => this.getOrThrow(i).name).sort(sortFn));
+			} else {
+				const osItem = this.getOrThrow(item);
+				newArray.push(osItem.name);
+			}
+		}
+
+		return newArray.sort((a, b) => sortFn(typeof a === 'string' ? a : a[0], typeof b === 'string' ? b : b[0]));
+	}
 }
 
-const itemsExport = new Items();
+export const Items = new ItemsSingleton();
 
 for (const [id, item] of Object.entries(items)) {
 	const numID = Number.parseInt(id);
 
 	if (USELESS_ITEMS.includes(numID)) continue;
-	itemsExport.set(numID, item);
+	Items.set(numID, item);
+
 	const cleanName = cleanString(item.name);
 	if (!itemNameMap.has(cleanName)) {
 		itemNameMap.set(cleanName, numID);
 	}
 }
 
-export default itemsExport;
+export function resolveItems(_itemArray: string | number | (string | number)[]): number[] {
+	const itemArray = Array.isArray(_itemArray) ? _itemArray : [_itemArray];
+	const newArray: number[] = [];
+
+	for (const item of itemArray) {
+		if (typeof item === 'number') {
+			newArray.push(item);
+		} else {
+			const osItem = Items.get(item);
+			if (!osItem) {
+				throw new Error(`No item found for: ${item}.`);
+			}
+			newArray.push(osItem.id);
+		}
+	}
+
+	return newArray;
+}
+
+export function deepResolveItems(itemArray: ArrayItemsResolvable): ArrayItemsResolved {
+	const newArray: ArrayItemsResolved = [];
+
+	for (const item of itemArray) {
+		if (typeof item === 'number') {
+			newArray.push(item);
+		} else if (Array.isArray(item)) {
+			const test = Items.resolveItems(item);
+			newArray.push(test);
+		} else {
+			const osItem = Items.get(item);
+			if (!osItem) {
+				throw new Error(`No item found for: ${item}.`);
+			}
+			newArray.push(osItem.id);
+		}
+	}
+
+	return newArray;
+}

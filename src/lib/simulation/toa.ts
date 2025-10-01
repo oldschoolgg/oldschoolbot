@@ -1,53 +1,44 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { type CommandResponse, channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { exponentialPercentScale } from '@oldschoolgg/toolkit/math';
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
-import { type Minigame, XpGainSource } from '@prisma/client';
-import { bold } from 'discord.js';
+import { percentChance, randArrItem, randInt, randomVariation, roll } from '@oldschoolgg/rng';
 import {
-	Time,
 	calcPercentOfNum,
 	calcWhatPercent,
-	clamp,
+	channelIsSendable,
+	Emoji,
+	exponentialPercentScale,
+	formatDuration,
 	increaseNumByPercent,
+	mentionCommand,
 	objectEntries,
-	percentChance,
-	randArrItem,
-	randInt,
 	reduceNumByPercent,
-	roll,
 	round,
+	SimpleTable,
 	scaleNumber,
 	sumArr,
+	Time,
 	uniqueArr
-} from 'e';
-import { Bank, LootTable, itemID, randomVariation, resolveItems } from 'oldschooljs';
+} from '@oldschoolgg/toolkit';
+import { type Minigame, XpGainSource } from '@prisma/client';
+import { bold } from 'discord.js';
+import { Bank, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
+import { clamp } from 'remeda';
 
-import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
-import { getSimilarItems } from '../data/similarItems';
-import { degradeItem } from '../degradeableItems';
-import type { UserFullGearSetup } from '../gear/types';
-import { trackLoot } from '../lootTrack';
-import { setupParty } from '../party';
-import { SkillsEnum } from '../skilling/types';
-import { Gear, constructGearSetup } from '../structures/Gear';
-import type { MakePartyOptions, Skills } from '../types';
-import type { TOAOptions } from '../types/minions';
-import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../util/calcMaxTripLength';
-import getOSItem from '../util/getOSItem';
-import { assert } from '../util/logError';
-import {
-	bankToStrShortNames,
-	formatList,
-	formatSkillRequirements,
-	getToaKCs,
-	itemNameFromID
-} from '../util/smallUtils';
-import { updateBankSetting } from '../util/updateBankSetting';
-import { TeamLoot } from './TeamLoot';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { degradeItem } from '@/lib/degradeableItems.js';
+import type { UserFullGearSetup } from '@/lib/gear/types.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { setupParty } from '@/lib/party.js';
+import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
+import { getToaKCs } from '@/lib/simulation/toaUtils.js';
+import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
+import type { MakePartyOptions, Skills } from '@/lib/types/index.js';
+import type { TOAOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { assert } from '@/lib/util/logError.js';
+import { bankToStrShortNames, formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import { mahojiParseNumber, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 const teamSizeScale: Record<number, number> = {
 	1: 1.0,
@@ -210,7 +201,7 @@ const MELEE_REQUIRED_WEAPONS = resolveItems(['Zamorakian hasta', 'Ghrazi rapier'
 const MELEE_REQUIRED_ARMOR = resolveItems(['Fire cape', 'Infernal cape']);
 const BP_DARTS_NEEDED = 150;
 const BOW_ARROWS_NEEDED = 150;
-const ALLOWED_DARTS = ['Adamant dart', 'Rune dart', 'Amethyst dart', 'Dragon dart'].map(getOSItem);
+const ALLOWED_DARTS = ['Adamant dart', 'Rune dart', 'Amethyst dart', 'Dragon dart'].map(n => Items.getOrThrow(n));
 const BLOOD_FURY_CHARGES_PER_RAID = 150;
 const TUMEKEN_SHADOW_PER_RAID = 150;
 const toaRequirements: {
@@ -258,7 +249,10 @@ const toaRequirements: {
 			}
 
 			if (!user.gear.range.hasEquipped(REQUIRED_RANGE_WEAPONS, false)) {
-				return `Must have one of these equipped: ${formatList(REQUIRED_RANGE_WEAPONS.map(itemNameFromID), 'or')}`;
+				return `Must have one of these equipped: ${formatList(
+					REQUIRED_RANGE_WEAPONS.map(i => Items.itemNameFromId(i)),
+					'or'
+				)}`;
 			}
 
 			const rangeAmmo = user.gear.range.ammo;
@@ -270,7 +264,10 @@ const toaRequirements: {
 				}
 
 				if (!REQUIRED_ARROWS.includes(rangeAmmo.item)) {
-					return `Need one of these arrows equipped: ${formatList(REQUIRED_ARROWS.map(itemNameFromID), 'or')}`;
+					return `Need one of these arrows equipped: ${formatList(
+						REQUIRED_ARROWS.map(i => Items.itemNameFromId(i)),
+						'or'
+					)}`;
 				}
 			}
 
@@ -278,7 +275,7 @@ const toaRequirements: {
 		},
 		desc: () =>
 			`decent range gear (BiS is ${maxRangeGear.toString()}), at least ${BOW_ARROWS_NEEDED}x arrows equipped, and one of these bows: ${formatList(
-				REQUIRED_RANGE_WEAPONS.map(itemNameFromID),
+				REQUIRED_RANGE_WEAPONS.map(i => Items.itemNameFromId(i)),
 				'or'
 			)}`
 	},
@@ -291,21 +288,27 @@ const toaRequirements: {
 
 			if (!user.gear.melee.hasEquipped(MELEE_REQUIRED_WEAPONS, false)) {
 				return `Need one of these weapons in your melee setup: ${formatList(
-					MELEE_REQUIRED_WEAPONS.map(itemNameFromID),
+					MELEE_REQUIRED_WEAPONS.map(i => Items.itemNameFromId(i)),
 					'or'
 				)}`;
 			}
 			if (!user.gear.melee.hasEquipped(MELEE_REQUIRED_ARMOR, false)) {
-				return `Need one of these in your melee setup: ${formatList(MELEE_REQUIRED_ARMOR.map(itemNameFromID), 'or')}`;
+				return `Need one of these in your melee setup: ${formatList(
+					MELEE_REQUIRED_ARMOR.map(i => Items.itemNameFromId(i)),
+					'or'
+				)}`;
 			}
 
 			return true;
 		},
 		desc: () =>
 			`decent melee gear (BiS is ${maxMeleeLessThan300Gear.toString()}, switched to a Osmumten fang if the raid level is over 300), and one of these weapons: ${formatList(
-				MELEE_REQUIRED_WEAPONS.map(itemNameFromID),
+				MELEE_REQUIRED_WEAPONS.map(i => Items.itemNameFromId(i)),
 				'or'
-			)}, and one of these armor pieces: ${formatList(MELEE_REQUIRED_ARMOR.map(itemNameFromID), 'or')}`
+			)}, and one of these armor pieces: ${formatList(
+				MELEE_REQUIRED_ARMOR.map(i => Items.itemNameFromId(i)),
+				'or'
+			)}`
 	},
 	{
 		name: 'Mage gear',
@@ -414,10 +417,8 @@ export function calculateXPFromRaid({
 	totalMeleeXPPerRaid = calcPercentOfNum(percentOfPossiblePoints, totalMeleeXPPerRaid);
 
 	let meleeStyles = user.getAttackStyles();
-	const isTrainingMelee = meleeStyles.some(style =>
-		[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].includes(style)
-	);
-	if (!isTrainingMelee) meleeStyles = [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
+	const isTrainingMelee = meleeStyles.some(style => ['attack', 'strength', 'defence'].includes(style));
+	if (!isTrainingMelee) meleeStyles = ['attack', 'strength', 'defence'];
 	const xpPerStyle = Math.floor(totalMeleeXPPerRaid / meleeStyles.length);
 	const promises: Promise<string>[] = [];
 
@@ -442,7 +443,7 @@ export function calculateXPFromRaid({
 
 	promises.push(
 		user.addXP({
-			skillName: SkillsEnum.Magic,
+			skillName: 'magic',
 			amount: mageXP,
 			duration: realDuration,
 			source: XpGainSource.TombsOfAmascut,
@@ -453,7 +454,7 @@ export function calculateXPFromRaid({
 	totalCombatXP += mageXP;
 	promises.push(
 		user.addXP({
-			skillName: SkillsEnum.Ranged,
+			skillName: 'ranged',
 			amount: mageXP,
 			duration: realDuration,
 			source: XpGainSource.TombsOfAmascut,
@@ -463,7 +464,7 @@ export function calculateXPFromRaid({
 
 	promises.push(
 		user.addXP({
-			skillName: SkillsEnum.Hitpoints,
+			skillName: 'hitpoints',
 			amount: Math.floor(totalCombatXP / 4),
 			duration: realDuration,
 			minimal: true,
@@ -475,19 +476,19 @@ export function calculateXPFromRaid({
 
 const untradeables = [
 	{
-		item: getOSItem('Thread of elidinis'),
+		item: Items.getOrThrow('Thread of elidinis'),
 		dropRate: 10
 	},
 	{
-		item: getOSItem('Eye of the corruptor'),
+		item: Items.getOrThrow('Eye of the corruptor'),
 		dropRate: 60
 	},
 	{
-		item: getOSItem('Jewel of the sun'),
+		item: Items.getOrThrow('Jewel of the sun'),
 		dropRate: 60
 	},
 	{
-		item: getOSItem('Breach of the scarab'),
+		item: Items.getOrThrow('Breach of the scarab'),
 		dropRate: 60
 	}
 ];
@@ -579,7 +580,7 @@ function nonUniqueLoot({ points }: { points: number }) {
 
 	for (let i = 0; i < 3; i++) {
 		const [item, divisor] = randArrItem(nonUniqueTable);
-		loot.add(getOSItem(item).id, divisor === null ? 1 : Math.ceil(points / divisor));
+		loot.add(Items.getOrThrow(item).id, divisor === null ? 1 : Math.ceil(points / divisor));
 	}
 
 	return loot;
@@ -594,9 +595,9 @@ interface TOALootUser {
 }
 
 export const toaOrnamentKits = [
-	[getOSItem('Cursed phalanx'), 500],
-	[getOSItem('Menaphite ornament kit'), 425],
-	[getOSItem('Masori crafting kit'), 350]
+	[Items.getOrThrow('Cursed phalanx'), 500],
+	[Items.getOrThrow('Menaphite ornament kit'), 425],
+	[Items.getOrThrow('Masori crafting kit'), 350]
 ] as const;
 
 export const toaPetTransmogItems = resolveItems([
@@ -672,7 +673,7 @@ export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLe
 			}
 			messages.push(
 				`You all received a ${formatList(
-					specialItemsReceived.map(itemNameFromID)
+					specialItemsReceived.map(i => Items.itemNameFromId(i))
 				)} for completing the raid without any deaths!`
 			);
 		}
@@ -771,7 +772,7 @@ function calcDeathChance(totalAttempts: number, raidLevel: RaidLevel, tobAndCoxK
 
 	const tobCoxKCDivided = Math.floor(tobAndCoxKC / 250);
 	if (tobAndCoxKC > 0) {
-		totalAttempts += clamp(tobCoxKCDivided, 0, 2);
+		totalAttempts += clamp(tobCoxKCDivided, { min: 0, max: 2 });
 	}
 
 	const match = map.find(i => totalAttempts <= i.attemptsMax)! ?? map[map.length - 1];
@@ -790,9 +791,9 @@ function calcDeathChance(totalAttempts: number, raidLevel: RaidLevel, tobAndCoxK
 		deathChance = reduceNumByPercent(deathChance, scaleNumber(totalAttempts, 100, 250, 0, 50));
 	}
 	if (minChance) {
-		deathChance = clamp(deathChance, minChance, 99);
+		deathChance = clamp(deathChance, { min: minChance, max: 99 });
 	}
-	deathChance = clamp(deathChance, 5, 99);
+	deathChance = clamp(deathChance, { min: 5, max: 99 });
 
 	deathChance = Math.round(randomVariation(deathChance, 0.5));
 
@@ -814,9 +815,9 @@ function calculateTotalEffectiveness({
 }) {
 	const percents = [];
 
-	percents.push(clamp(calcWhatPercent(totalKC, 20), 0, 100));
-	percents.push(clamp(calcWhatPercent(totalAttempts, 20), 0, 100));
-	const skillsThatMatter = [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic, SkillsEnum.Ranged];
+	percents.push(clamp(calcWhatPercent(totalKC, 20), { min: 0, max: 100 }));
+	percents.push(clamp(calcWhatPercent(totalAttempts, 20), { min: 0, max: 100 }));
+	const skillsThatMatter = ['attack', 'strength', 'magic', 'ranged'];
 	const totalSkills = objectEntries(skillsAsLevels)
 		.filter(i => skillsThatMatter.includes(i[0]))
 		.reduce((prev, curr) => prev + curr[1]!, 0);
@@ -870,7 +871,7 @@ function calculatePointsAndDeaths(
 	points += calcPercentOfNum(harshEffectivenessScale, tenPercent);
 
 	points = Math.floor(points);
-	points = clamp(points, 1, 64_000);
+	points = clamp(points, { min: 1, max: 64_000 });
 
 	return {
 		points,
@@ -1182,8 +1183,8 @@ export async function toaStartCommand(
 		quantity: 1
 	})[0].duration;
 	const maxTripLength = Math.max(...users.map(i => calcMaxTripLength(i, 'TombsOfAmascut')));
-	const maxQuantity = clamp(Math.floor(maxTripLength / baseDuration), 1, 5);
-	const quantity = clamp(quantityInput ?? maxQuantity, 1, maxQuantity);
+	const maxQuantity = clamp(Math.floor(maxTripLength / baseDuration), { min: 1, max: 5 });
+	const quantity = clamp(quantityInput ?? maxQuantity, { min: 1, max: maxQuantity });
 
 	const toaSimResults = createTOATeam({
 		team: toaSimUsers,
@@ -1219,21 +1220,21 @@ export async function toaStartCommand(
 			const { realCost } = await u.specialRemoveItems(cost.clone().add(blowpipeCost));
 			if (u.gear.melee.hasEquipped('Serpentine helm')) {
 				await degradeItem({
-					item: getOSItem('Serpentine helm'),
+					item: Items.getOrThrow('Serpentine helm'),
 					chargesToDegrade: calcSerpHelmCharges(quantity, fakeDuration),
 					user: u
 				});
 			}
 			if (u.gear.melee.hasEquipped('Amulet of blood fury')) {
 				await degradeItem({
-					item: getOSItem('Amulet of blood fury'),
+					item: Items.getOrThrow('Amulet of blood fury'),
 					chargesToDegrade: BLOOD_FURY_CHARGES_PER_RAID * quantity,
 					user: u
 				});
 			}
 			if (u.gear.mage.hasEquipped("Tumeken's shadow")) {
 				await degradeItem({
-					item: getOSItem("Tumeken's shadow"),
+					item: Items.getOrThrow("Tumeken's shadow"),
 					chargesToDegrade: TUMEKEN_SHADOW_PER_RAID * quantity,
 					user: u
 				});
@@ -1417,7 +1418,7 @@ function createTOATeam({
 		userPercentChange += gearPercentBoost;
 
 		// Reduce time for KC
-		const kcPercent = clamp(calcWhatPercent(u.totalAttempts, maxScaling), 1, 100);
+		const kcPercent = clamp(calcWhatPercent(u.totalAttempts, maxScaling), { min: 1, max: 100 });
 		const kcPercentBoost = calcPerc(kcPercent, speedReductionForKC);
 		userPercentChange += kcPercentBoost;
 
@@ -1561,7 +1562,7 @@ function calculateBoostString(user: MUser) {
 	let str = '**Boosts**\n';
 	const hasMiscBoosts = miscBoosts.map(([name, , gearSetup]) => ({
 		has: gearSetup !== null ? user.gear[gearSetup].hasEquipped(name) : user.hasEquippedOrInBank(name),
-		item: getOSItem(name)
+		item: Items.getOrThrow(name)
 	}));
 	const hasEveryMisc = hasMiscBoosts.every(i => i.has);
 	const hasNoMisc = hasMiscBoosts.every(i => !i.has);
@@ -1573,7 +1574,7 @@ function calculateBoostString(user: MUser) {
 
 	const hasSpecWepBoosts = primarySpecWeaponBoosts.map(([name], index) => ({
 		has: user.hasEquippedOrInBank(name),
-		item: getOSItem(name),
+		item: Items.getOrThrow(name),
 		index
 	}));
 
@@ -1588,7 +1589,7 @@ function calculateBoostString(user: MUser) {
 			'or'
 		)})`;
 	} else if (!hasBestSpec) {
-		str += ` (Missing ${getOSItem(primarySpecWeaponBoosts[0][0]).name})`;
+		str += ` (Missing ${Items.getOrThrow(primarySpecWeaponBoosts[0][0]).name})`;
 	}
 	return str;
 }

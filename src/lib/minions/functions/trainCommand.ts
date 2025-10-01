@@ -1,28 +1,20 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
-import { uniqueArr } from 'e';
-import { SkillsEnum } from 'oldschooljs';
+import { toTitleCase, uniqueArr } from '@oldschoolgg/toolkit';
 
-import type { AttackStyles } from '.';
-import { formatList } from '../../util/smallUtils';
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import { formatList } from '@/lib/util/smallUtils.js';
 
-const validStyles: AttackStyles[] = [
-	SkillsEnum.Attack,
-	SkillsEnum.Strength,
-	SkillsEnum.Defence,
-	SkillsEnum.Ranged,
-	SkillsEnum.Magic
-];
+const validStyles: AttackStyles[] = ['attack', 'strength', 'defence', 'ranged', 'magic'];
 
 function isValidAttackStyle(str: string): str is AttackStyles {
 	return (validStyles as string[]).includes(str);
 }
 
 const invalidCombinations: [AttackStyles, AttackStyles][] = [
-	[SkillsEnum.Attack, SkillsEnum.Magic],
-	[SkillsEnum.Strength, SkillsEnum.Magic],
-	[SkillsEnum.Attack, SkillsEnum.Ranged],
-	[SkillsEnum.Strength, SkillsEnum.Ranged],
-	[SkillsEnum.Magic, SkillsEnum.Ranged]
+	['attack', 'magic'],
+	['strength', 'magic'],
+	['attack', 'ranged'],
+	['strength', 'ranged'],
+	['magic', 'ranged']
 ];
 
 export const allPossibleStyles: string[] = uniqueArr([
@@ -60,7 +52,7 @@ export async function trainCommand(user: MUser, _styles: string | undefined) {
 	}
 	const styles: AttackStyles[] =
 		_styles === 'shared'
-			? [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence]
+			? ['attack', 'strength', 'defence']
 			: isValidAttackStyle(_styles)
 				? [_styles]
 				: parsed.filter(isValidAttackStyle);

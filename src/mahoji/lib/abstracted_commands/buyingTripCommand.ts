@@ -1,15 +1,14 @@
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
-import type { TripBuyable } from '@/lib/data/buyables/tripBuyables';
-import { calculateShopBuyCost } from '@/lib/util/calculateShopBuyCost';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import type { BuyActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import type { TripBuyable } from '@/lib/data/buyables/tripBuyables.js';
+import type { BuyActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { calculateShopBuyCost } from '@/lib/util/calculateShopBuyCost.js';
+import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function buyingTripCommand(
 	user: MUser,
@@ -58,7 +57,7 @@ export async function buyingTripCommand(
 		`Buying ${quantity}x ${itemDisplayName} will cost ${totalCost.toLocaleString()} GP (avg ${averageCost.toLocaleString()} ea) and take ${formatDuration(duration)}. Please confirm.`
 	);
 
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 	await updateBankSetting('buy_cost_bank', cost);
 
 	await addSubTaskToActivityTask<BuyActivityTaskOptions>({

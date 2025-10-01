@@ -1,5 +1,5 @@
-import LootTable from '../../structures/LootTable';
-import { itemID } from '../../util';
+import { EItem } from '@/EItem.js';
+import LootTable from '@/structures/LootTable.js';
 import {
 	BlessingTable,
 	FirelighterTable,
@@ -7,7 +7,7 @@ import {
 	GiveHalfKeyTable,
 	PrayerPageTable,
 	TeleportScrollTable
-} from './General';
+} from './General.js';
 
 export const Elite3rdageTable = new LootTable()
 	.add('3rd age range coif')
@@ -149,4 +149,4 @@ export const EliteStandardTable = new LootTable()
 
 export const EliteClueTable = new LootTable().add(EliteStandardTable, 1, 24).add(EliteRareTable, 1, 1);
 export const EliteCasket = new LootTable().add(EliteClueTable, [4, 6]).tertiary(5, 'Clue scroll (master)');
-EliteCasket.allItems.push(itemID('Clue scroll (master)'));
+EliteCasket.allItems.push(EItem.CLUE_SCROLL_MASTER);

@@ -1,4 +1,5 @@
-import { Time, randInt, roll } from 'e';
+import { randInt, roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable, resolveItems } from 'oldschooljs';
 
 const LowTierCoffin = new LootTable()

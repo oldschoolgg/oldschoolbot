@@ -10,8 +10,7 @@ export const brewingTask: MinionTask = {
 		await user.incrementMinigameScore('trouble_brewing', quantity);
 		const loot = new Bank().add('Pieces of eight', quantity * 100);
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

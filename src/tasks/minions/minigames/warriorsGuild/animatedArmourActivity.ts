@@ -1,9 +1,9 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import type { AnimatedArmourActivityTaskOptions } from '@/lib/types/minions';
-import { handleTripFinish } from '@/lib/util/handleTripFinish';
-import { Armours } from '../../../../mahoji/lib/abstracted_commands/warriorsGuildCommand';
+import type { AnimatedArmourActivityTaskOptions } from '@/lib/types/minions.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { Armours } from '@/mahoji/lib/abstracted_commands/warriorsGuildCommand.js';
 
 export const animatedArmorTask: MinionTask = {
 	type: 'AnimatedArmour',
@@ -25,8 +25,7 @@ export const animatedArmorTask: MinionTask = {
 			messages.push(`${Emoji.CombatAchievements} 100% extra Tokens received for easy CA tier`);
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

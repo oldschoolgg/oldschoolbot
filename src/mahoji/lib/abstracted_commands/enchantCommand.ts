@@ -1,14 +1,12 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
-import { Enchantables } from '../../../lib/skilling/skills/magic/enchantables';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { EnchantingActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { determineRunes } from '../../../lib/util/determineRunes';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
+import type { EnchantingActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { determineRunes } from '@/lib/util/determineRunes.js';
+import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function enchantCommand(user: MUser, channelID: string, name: string, quantity?: number) {
 	const enchantable = Enchantables.find(
@@ -22,7 +20,7 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 		return 'That is not a valid item to enchant.';
 	}
 
-	if (user.skillLevel(SkillsEnum.Magic) < enchantable.level) {
+	if (user.skillsAsLevels.magic < enchantable.level) {
 		return `${user.minionName} needs ${enchantable.level} Magic to enchant ${enchantable.name}.`;
 	}
 
@@ -56,7 +54,7 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 			enchantable.input
 		}, you're missing **${cost.clone().remove(userBank)}**.`;
 	}
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 
 	updateBankSetting('magic_cost_bank', cost);
 

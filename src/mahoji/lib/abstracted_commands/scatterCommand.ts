@@ -1,12 +1,10 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import Prayer from '../../../lib/skilling/skills/prayer';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ScatteringActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import Prayer from '@/lib/skilling/skills/prayer.js';
+import type { ScatteringActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export async function scatterCommand(user: MUser, channelID: string, ashName: string, quantity?: number) {
 	const speedMod = 1;
@@ -19,7 +17,7 @@ export async function scatterCommand(user: MUser, channelID: string, ashName: st
 		return "That's not a valid ash to scatter.";
 	}
 
-	if (user.skillLevel(SkillsEnum.Prayer) < ash.level) {
+	if (user.skillsAsLevels.prayer < ash.level) {
 		return `${user.minionName} needs ${ash.level} Prayer to scatter ${ash.name}.`;
 	}
 
@@ -49,7 +47,7 @@ export async function scatterCommand(user: MUser, channelID: string, ashName: st
 		)}.`;
 	}
 
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 
 	await addSubTaskToActivityTask<ScatteringActivityTaskOptions>({
 		ashID: ash.inputId,
