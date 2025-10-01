@@ -11,7 +11,6 @@ describe('Payment conflicts', async () => {
 	const payerCount = 20;
 	const iterations = 20;
 	const addChance = 3;
-	const repeats = 1;
 
 	const bigBank = new Bank().add('Cannonball', 4).add('Bones', 10_000);
 
@@ -19,7 +18,6 @@ describe('Payment conflicts', async () => {
 		'GE Simulation (Payee)',
 		{
 			timeout: Time.Minute * 2,
-			repeats
 		},
 		async () => {
 			await mockClient();
@@ -38,20 +36,15 @@ describe('Payment conflicts', async () => {
 
 			const promisePay = async () => {
 				const payer = randArrItem(payers);
-				return new Promise<void>(async resolve => {
-					const amount = randInt(100_000, 1_000_000);
-					await payer.runCommand(payCommand, {
-						user: mockUserOption(payeeTarget.id),
-						amount: amount.toString()
-					});
-					resolve();
+				const amount = randInt(100_000, 1_000_000);
+				await payer.runCommand(payCommand, {
+					user: mockUserOption(payeeTarget.id),
+					amount: amount.toString()
 				});
 			};
+
 			const promiseAdd = async () => {
-				return new Promise<void>(async resolve => {
-					await userPayee.addItemsToBank({ items: new Bank().add('Cannonball', 100) });
-					resolve();
-				});
+				await userPayee.addItemsToBank({ items: new Bank().add('Cannonball', 100) });
 			};
 
 			const promises: Promise<void>[] = [];

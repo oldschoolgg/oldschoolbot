@@ -1141,10 +1141,3 @@ export const diariesObject = {
 	WildernessDiary
 } as const;
 export const diaries = Object.values(diariesObject);
-
-export async function userhasDiaryIDTier(user: MUser, diaryID: DiaryID, tier: DiaryTierName) {
-	return userhasDiaryTierSync(user, [diaryID, tier], {
-		stats: await user.fetchMStats(),
-		minigameScores: await user.fetchMinigames()
-	});
-}

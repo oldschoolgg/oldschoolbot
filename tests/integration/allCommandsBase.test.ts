@@ -138,7 +138,8 @@ test(
 
 			'simulate',
 			'leagues',
-			'kill'
+			'kill',
+			'monkey'
 		];
 		const commandsToTest = allCommands.filter(c => !ignoredCommands.includes(c.name));
 		console.log(`Running ${commandsToTest.length} commands...`);

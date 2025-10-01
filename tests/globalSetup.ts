@@ -45,13 +45,3 @@ global.globalClient = {
 	},
 	busyCounterCache: new Map<string, number>()
 } as any;
-
-vi.mock('../src/lib/workers/index.ts', async () => {
-	return {
-		Workers: {
-			casketOpen: () => Promise.resolve(),
-			kill: () => Promise.resolve(),
-			finish: () => Promise.resolve()
-		}
-	};
-});

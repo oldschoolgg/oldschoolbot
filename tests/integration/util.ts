@@ -461,6 +461,7 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 		})
 	]);
 
+	mockDjsUser({ userId: user.id });
 	return new TestUser(user);
 }
 

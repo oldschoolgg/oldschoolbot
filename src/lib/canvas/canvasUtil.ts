@@ -1,7 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import {
 	type CanvasRenderingContext2D as CanvasContext,
-	FontLibrary,
 	Image,
 	loadImage,
 	Canvas as RawCanvas
@@ -11,9 +10,6 @@ import type { IconPackID } from '@/lib/canvas/iconPacks.js';
 import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
 import { assert } from '@/lib/util/logError.js';
 
-export function registerFont(fontFamily: string, fontPath: string) {
-	FontLibrary.use(fontFamily, fontPath);
-}
 export function createCanvas(width: number, height: number) {
 	return new RawCanvas(width, height);
 }
@@ -24,11 +20,6 @@ export const CanvasImage = Image;
 export type CanvasImage = Image;
 
 export type { CanvasContext };
-
-export function fillTextXTimesInCtx(ctx: CanvasContext, text: string, x: number, y: number) {
-	const textPath = ctx.outlineText(text);
-	ctx.fill(textPath.offset(x, y));
-}
 
 export function drawImageWithOutline(
 	ctx: CanvasContext,
@@ -172,6 +163,7 @@ export function measureTextWidth(ctx: CanvasContext, text: string) {
 const localImageCache = new Map<string, Image>();
 
 export async function loadAndCacheLocalImage(path: string) {
+	console.log(`Loading img`);
 	const cached = localImageCache.get(path);
 	if (cached) return cached;
 	const buff = await readFile(path);

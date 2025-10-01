@@ -49,8 +49,7 @@ export const payCommand: OSBMahojiCommand = {
 
 		if (amount > 500_000_000) {
 			await interaction.confirmation(
-				`Are you sure you want to pay ${options.user.user.username}#${options.user.user.discriminator} (ID: ${
-					recipient.id
+				`Are you sure you want to pay ${recipient.username} (ID: ${recipient.id
 				}) ${amount.toLocaleString()}?`
 			);
 		}

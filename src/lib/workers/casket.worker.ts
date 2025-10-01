@@ -9,9 +9,7 @@ import type { CasketWorkerArgs } from '@/lib/workers/index.js';
 if (global.prisma) {
 	throw new Error('Prisma is loaded in the casket worker!');
 }
-if (Math.abs(1) === 1) {
-	throw new Error(`Casket worker loaded`);
-}
+
 export default async ({ clueTierID, quantity }: CasketWorkerArgs): Promise<[ItemBank, string]> => {
 	const clueTier = ClueTiers.find(tier => tier.id === clueTierID)!;
 	const loot = clueTier.table.roll(quantity);
@@ -26,9 +24,8 @@ export default async ({ clueTierID, quantity }: CasketWorkerArgs): Promise<[Item
 		}
 	}
 
-	const opened = `Loot from ${quantity} ${clueTier.name} Casket${quantity > 1 ? 's' : ''}${
-		mimicNumber > 0 ? ` and ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
-	}`;
+	const opened = `Loot from ${quantity} ${clueTier.name} Casket${quantity > 1 ? 's' : ''}${mimicNumber > 0 ? ` and ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
+		}`;
 
 	return [loot.toJSON(), opened];
 };

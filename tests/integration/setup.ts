@@ -16,7 +16,6 @@ vi.mock('../../src/lib/util/webhook', async () => {
 	return {
 		...actual,
 		sendToChannelID: vi.fn(() => {
-			// console.log('sendToChannelID called with args:', args);
 			return Promise.resolve();
 		})
 	};
