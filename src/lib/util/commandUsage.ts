@@ -55,6 +55,10 @@ function getCommandArgs(
 	return compressMahojiArgs(args) as Prisma.InputJsonObject;
 }
 
+const commandNameOverrides: Record<string, command_name_enum> = {
+	zero_time_activity: 'ZeroTimeActivity' as command_name_enum
+};
+
 export function makeCommandUsage({
 	userID,
 	channelID,
@@ -74,9 +78,11 @@ export function makeCommandUsage({
 	inhibited: boolean;
 	continueDeltaMillis: number | null;
 }): Prisma.CommandUsageCreateInput {
+	const normalizedCommandName = commandNameOverrides[commandName] ?? (commandName as command_name_enum);
+
 	return {
 		user_id: BigInt(userID),
-		command_name: commandName as command_name_enum,
+		command_name: normalizedCommandName,
 		args: getCommandArgs(commandName, args),
 		channel_id: BigInt(channelID),
 		guild_id: guildID ? BigInt(guildID) : null,

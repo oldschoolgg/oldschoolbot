@@ -482,6 +482,7 @@ enum XpGainSource {
   GuardiansOfTheRift
   BuryingBones
   ScatteringAshes
+  ZeroTimeActivity
   Zalcano
   Wintertodt
   FishingTrawler
@@ -882,6 +883,7 @@ enum activity_type_enum {
   Sepulchre
   Plunder
   FishingTrawler
+  ZeroTimeActivity
   Zalcano
   Farming
   Construction
@@ -1432,5 +1434,6 @@ enum command_name_enum {
   xp
   xpgains
   xpto99
+  zerotimeactivity
   zalcano
 }
