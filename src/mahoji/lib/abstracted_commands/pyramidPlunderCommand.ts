@@ -2,9 +2,6 @@ import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
 import { plunderBoosts, plunderRooms } from '@/lib/minions/data/plunder.js';
 import type { PlunderActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function pyramidPlunderCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
@@ -21,7 +18,7 @@ export async function pyramidPlunderCommand(user: MUser, channelID: string) {
 
 	const boosts = [];
 
-	if (!userHasGracefulEquipped(user)) {
+	if (!user.hasGracefulEquipped()) {
 		plunderTime *= 1.075;
 		boosts.push('-7.5% time penalty for not having graceful equipped');
 	}
@@ -42,16 +39,16 @@ export async function pyramidPlunderCommand(user: MUser, channelID: string) {
 			plunderTime = reduceNumByPercent(plunderTime, percent);
 		}
 	}
-	const maxQuantity = Math.floor(calcMaxTripLength(user, 'Plunder') / plunderTime);
+	const maxQuantity = Math.floor(user.calcMaxTripLength('Plunder') / plunderTime);
 	const tripLength = maxQuantity * plunderTime;
 
-	await addSubTaskToActivityTask<PlunderActivityTaskOptions>({
+	await ActivityManager.startTrip<PlunderActivityTaskOptions>({
 		rooms: completableRooms.map(room => room.number),
 		quantity: maxQuantity,
 		userID: user.id,
 		duration: tripLength,
 		type: 'Plunder',
-		channelID: channelID.toString(),
+		channelID,
 		minigameID: 'pyramid_plunder'
 	});
 

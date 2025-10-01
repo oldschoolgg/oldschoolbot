@@ -5,15 +5,14 @@ import { Bank, LootTable } from 'oldschooljs';
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
 import Mining from '@/lib/skilling/skills/mining.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export const camdozaalMiningTask: MinionTask = {
 	type: 'CamdozaalMining',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { quantity, channelID, duration } = data;
+
 		const camdozaalMine = Mining.CamdozaalMine;
 		const currentLevel = user.skillsAsLevels.mining;
 

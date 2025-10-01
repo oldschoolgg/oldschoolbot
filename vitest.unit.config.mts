@@ -8,25 +8,12 @@ export default defineConfig({
 		setupFiles: 'tests/unit/setup.ts',
 		resolveSnapshotPath: (testPath, extension) =>
 			join(join(dirname(testPath), 'snapshots'), `${basename(testPath)}${extension}`),
-		slowTestThreshold: 0,
 		isolate: false,
-		pool: 'forks',
+		pool: 'threads',
 		poolOptions: {
-			forks: {
-				maxForks: 5,
-				minForks: 5,
-				execArgv: ['--disable-warning=ExperimentalWarning']
+			threads: {
+				singleThread: true
 			}
-		},
-		coverage: {
-			provider: 'v8',
-			include: [
-				'src/lib/util/parseStringBank.ts',
-				'src/lib/structures/Gear.ts',
-				'src/lib/structures/GearBank.ts',
-				'src/lib/canvas/**/*.ts'
-			],
-			reporter: ['text']
 		}
 	},
 	resolve: {

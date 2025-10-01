@@ -1,12 +1,11 @@
 import { randArrItem } from '@oldschoolgg/rng';
-import { ApplicationCommandOptionType } from 'discord.js';
 
 export const askCommand: OSBMahojiCommand = {
 	name: 'ask',
 	description: 'Ask a yes/no question to the bot and receive an answer.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'question',
 			description: 'The question you want to ask.',
 			required: true

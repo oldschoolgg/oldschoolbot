@@ -69,7 +69,7 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 		});
 	}
 
-	if (!user.user.minion_hasBought) {
+	if (!user.hasMinion) {
 		return {
 			content:
 				"You haven't bought a minion yet! Click the button below to buy a minion and start playing the bot.",

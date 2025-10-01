@@ -5,7 +5,6 @@ import { LootTable } from 'oldschooljs';
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
@@ -35,9 +34,9 @@ function generateFishTable(currentFishLevel: number): LootTable {
 
 export const camdozaalFishingTask: MinionTask = {
 	type: 'CamdozaalFishing',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { userID, channelID, quantity, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { channelID, quantity, duration } = data;
+
 		const currentFishLevel = user.skillsAsLevels.fishing;
 
 		const camdozaalFishTable = generateFishTable(currentFishLevel);

@@ -3,14 +3,13 @@ import { Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { gloriesInventorySize } from '@/mahoji/lib/abstracted_commands/chargeGloriesCommand.js';
 
 export const gloryChargingTask: MinionTask = {
 	type: 'GloryCharging',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { quantity, userID, channelID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { quantity, channelID } = data;
+
 		let deaths = 0;
 		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {

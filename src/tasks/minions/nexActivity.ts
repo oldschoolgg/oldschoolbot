@@ -8,13 +8,11 @@ import type { NexContext } from '@/lib/simulation/nex.js';
 import { handleNexKills, purpleNexItems } from '@/lib/simulation/nex.js';
 import type { NexTaskOptions } from '@/lib/types/minions.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const nexTask: MinionTask = {
 	type: 'Nex',
-	async run(data: NexTaskOptions) {
+	async run(data: NexTaskOptions, { handleTripFinish }) {
 		const { quantity, channelID, users, wipedKill, duration, teamDetails } = data;
 		const realUsers = teamDetails.filter(u => !u[3]);
 		const allMention = realUsers.map(t => userMention(t[0])).join(' ');
@@ -72,7 +70,7 @@ export const nexTask: MinionTask = {
 				}))
 		});
 
-		await updateBankSetting('nex_loot', loot.totalLoot());
+		await ClientSettings.updateBankSetting('nex_loot', loot.totalLoot());
 
 		return handleTripFinish(
 			allMUsers[0],

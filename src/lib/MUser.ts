@@ -1,14 +1,6 @@
 import { percentChance } from '@oldschoolgg/rng';
-import {
-	calcWhatPercent,
-	cleanUsername,
-	Emoji,
-	mentionCommand,
-	sumArr,
-	UserError,
-	uniqueArr
-} from '@oldschoolgg/toolkit';
-import type { GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
+import { calcWhatPercent, cleanUsername, Emoji, isObject, sumArr, UserError, uniqueArr } from '@oldschoolgg/toolkit';
+import type { activity_type_enum, GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { escapeMarkdown, userMention } from 'discord.js';
 import {
 	addItemToBank,
@@ -21,11 +13,9 @@ import {
 	Items,
 	resolveItems
 } from 'oldschooljs';
-import { pick } from 'remeda';
 
 import { addXP } from '@/lib/addXP.js';
 import { userIsBusy } from '@/lib/busyCounterCache.js';
-import { partialUserCache } from '@/lib/cache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -34,6 +24,7 @@ import { BitField, MAX_LEVEL, projectiles } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
 import { allPetIDs, avasDevices } from '@/lib/data/CollectionsExport.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
 import type { GearSetup, UserFullGearSetup } from '@/lib/gear/types.js';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
 import { marketPriceOfBank } from '@/lib/marketPrices.js';
@@ -46,22 +37,24 @@ import { getUsersPerkTier } from '@/lib/perkTiers.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
-import { getFarmingInfoFromUser } from '@/lib/skilling/skills/farming/utils/getFarmingInfo.js';
 import type { DetailedFarmingContract, FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { defaultGear, Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { XPBank } from '@/lib/structures/XPBank.js';
 import type { SkillRequirements, Skills } from '@/lib/types/index.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
 import { logError } from '@/lib/util/logError.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
 import { type TransactItemsArgs, transactItemsFromBank } from '@/lib/util/transactItemsFromBank.js';
+import type { JsonKeys } from '@/lib/util.js';
 import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
-import { fetchUserStats, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
+import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {
@@ -251,6 +244,10 @@ export class MUserClass {
 		return userMention(this.id);
 	}
 
+	get username() {
+		return this.rawUsername;
+	}
+
 	get rawUsername() {
 		return cleanUsername(this.user.username ?? globalClient.users.cache.get(this.id)?.username ?? 'Unknown');
 	}
@@ -280,12 +277,12 @@ export class MUserClass {
 	}
 
 	async getKC(monsterID: number) {
-		const stats = await this.fetchStats({ monster_scores: true });
+		const stats = await this.fetchStats();
 		return (stats.monster_scores as ItemBank)[monsterID] ?? 0;
 	}
 
 	async getAllKCs() {
-		const stats = await this.fetchStats({ monster_scores: true });
+		const stats = await this.fetchStats();
 		const rawKCs = stats.monster_scores as ItemBank;
 		return new Proxy(rawKCs, {
 			get(target, monsterNameOrId: string) {
@@ -303,7 +300,7 @@ export class MUserClass {
 	}
 
 	async fetchMonsterScores() {
-		const stats = await this.fetchStats({ monster_scores: true });
+		const stats = await this.fetchStats();
 		return stats.monster_scores as ItemBank;
 	}
 
@@ -337,7 +334,7 @@ GROUP BY data->>'ci';`);
 			if (!item) continue;
 			casketsCompleted.add(item.id, res.qty);
 		}
-		const stats = await this.fetchStats({ openable_scores: true });
+		const stats = await this.fetchStats();
 		const opens = new Bank(stats.openable_scores as ItemBank);
 
 		// Actual clues are only ones that you have: received in your cl, completed in trips, and opened.
@@ -364,15 +361,11 @@ GROUP BY data->>'ci';`);
 	}
 
 	async incrementKC(monsterID: number, amountToAdd = 1) {
-		const stats = await this.fetchStats({ monster_scores: true });
+		const stats = await this.fetchStats();
 		const newKCs = new Bank(stats.monster_scores as ItemBank).add(monsterID, amountToAdd);
-		await userStatsUpdate(
-			this.id,
-			{
-				monster_scores: newKCs.toJSON()
-			},
-			{}
-		);
+		await this.statsUpdate({
+			monster_scores: newKCs.toJSON()
+		});
 		return { newKC: newKCs.amount(monsterID) };
 	}
 
@@ -528,14 +521,10 @@ GROUP BY data->>'ci';`);
 	}
 
 	async incrementCreatureScore(creatureID: number, amountToAdd = 1) {
-		const stats = await this.fetchStats({ creature_scores: true });
-		await userStatsUpdate(
-			this.id,
-			{
-				creature_scores: addItemToBank(stats.creature_scores as ItemBank, creatureID, amountToAdd)
-			},
-			{}
-		);
+		const stats = await this.fetchStats();
+		await this.statsUpdate({
+			creature_scores: addItemToBank(stats.creature_scores as ItemBank, creatureID, amountToAdd)
+		});
 	}
 
 	get blowpipe() {
@@ -564,7 +553,7 @@ GROUP BY data->>'ci';`);
 				hasCharges: false,
 				fullUserString: `${failureReasons.join(', ')}
 
-Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
+Charge your items using ${mentionCommand('minion', 'charge')}.`
 			};
 		}
 		return { hasCharges: true };
@@ -710,7 +699,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 
 	async getCreatureScore(creatureID: number) {
-		const stats = await this.fetchStats({ creature_scores: true });
+		const stats = await this.fetchStats();
 		return (stats.creature_scores as ItemBank)[creatureID] ?? 0;
 	}
 
@@ -760,8 +749,30 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		this.updateProperties();
 	}
 
-	async fetchStats<T extends Prisma.UserStatsSelect>(selectKeys: T): Promise<SelectedUserStats<T>> {
-		return fetchUserStats(this.id, selectKeys);
+	async fetchStats() {
+		let result = await prisma.userStats.findFirst({
+			where: {
+				user_id: BigInt(this.id)
+			}
+		});
+
+		if (!result) {
+			result = await prisma.userStats.upsert({
+				where: {
+					user_id: BigInt(this.id)
+				},
+				create: {
+					user_id: BigInt(this.id)
+				},
+				update: {}
+			});
+		}
+
+		return result;
+	}
+
+	async fetchMStats() {
+		return new MUserStats(await this.fetchStats());
 	}
 
 	get logName() {
@@ -776,16 +787,23 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		return Boolean(this.user.minion_hasBought);
 	}
 
+	farmingInfo() {
+		return Farming.getFarmingInfoFromUser(this);
+	}
+
 	farmingContract(): DetailedFarmingContract {
 		const currentFarmingContract = this.user.minion_farmingContract as FarmingContract | null;
 		const plant = !currentFarmingContract
 			? undefined
 			: Farming.Plants.find(i => i.name === currentFarmingContract?.plantToGrow);
-		const detailed = getFarmingInfoFromUser(this.user);
+		const farmingInfo = Farming.getFarmingInfoFromUser(this);
 		return {
 			contract: currentFarmingContract ?? Farming.defaultFarmingContract,
 			plant,
-			matchingPlantedCrop: plant ? detailed.patchesDetailed.find(i => i.plant && i.plant === plant) : undefined
+			matchingPlantedCrop: plant
+				? farmingInfo.patchesDetailed.find(i => i.plant && i.plant === plant)
+				: undefined,
+			farmingInfo
 		};
 	}
 
@@ -905,7 +923,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		}
 		gear[slot] = null;
 
-		const actualItem = Items.get(equippedInSlot.item);
+		const actualItem = Items.getOrThrow(equippedInSlot.item);
 		const refundBank = new Bank();
 		if (actualItem) {
 			refundBank.add(actualItem.id, equippedInSlot.quantity);
@@ -926,6 +944,11 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		);
 
 		return { refundBank };
+	}
+
+	async fetchStashUnits() {
+		const units = await getParsedStashUnits(this.id);
+		return units;
 	}
 
 	async validateEquippedGear() {
@@ -1018,6 +1041,63 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			value: marketPriceOfBank(bank)
 		};
 	}
+
+	hasGracefulEquipped() {
+		for (const gear of Object.values(this.gear)) {
+			if (
+				gear.hasEquipped(
+					[
+						'Graceful hood',
+						'Graceful top',
+						'Graceful legs',
+						'Graceful boots',
+						'Graceful gloves',
+						'Graceful cape'
+					],
+					true
+				)
+			) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	async statsUpdate(data: Omit<Prisma.UserStatsUpdateInput, 'user_id'>) {
+		const id = BigInt(this.id);
+
+		const result = await prisma.userStats.update({
+			data,
+			where: {
+				user_id: id
+			}
+		});
+		return result;
+	}
+
+	async statsBankUpdate(key: JsonKeys<UserStats>, bank: Bank) {
+		if (!key) throw new Error('No key provided to userStatsBankUpdate');
+		const stats = await this.fetchStats();
+		const currentItemBank = stats[key] as ItemBank;
+		if (!isObject(currentItemBank)) {
+			throw new Error(`Key ${key} is not an object.`);
+		}
+		await this.statsUpdate({
+			[key]: bank.clone().add(currentItemBank).toJSON()
+		});
+	}
+
+	async updateGPTrackSetting(setting: 'gp_dice' | 'gp_luckypick' | 'gp_slots', amount: number) {
+		this.statsUpdate({
+			[setting]: {
+				increment: amount
+			}
+		});
+	}
+
+	calcMaxTripLength(activity: activity_type_enum) {
+		return calcMaxTripLength(this, activity);
+	}
 }
 declare global {
 	export type MUser = MUserClass;
@@ -1042,7 +1122,6 @@ async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateInput) {
 	if (!user) {
 		return srcMUserFetch(userID, {});
 	}
-	partialUserCache.set(userID, pick(user, ['bitfield', 'minion_hasBought', 'badges']));
 	return new MUserClass(user);
 }
 

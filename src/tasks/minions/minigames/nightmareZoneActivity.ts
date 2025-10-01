@@ -1,12 +1,10 @@
 import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
 import type { NightmareZoneActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const nightmareZoneTask: MinionTask = {
 	type: 'NightmareZone',
-	async run(data: NightmareZoneActivityTaskOptions) {
-		const { quantity, userID, channelID, duration, strategy } = data;
-		const user = await mUserFetch(userID);
+	async run(data: NightmareZoneActivityTaskOptions, { user, handleTripFinish }) {
+		const { quantity, channelID, duration, strategy } = data;
 
 		const attackStyles = resolveAttackStyles({
 			attackStyles: user.getAttackStyles()

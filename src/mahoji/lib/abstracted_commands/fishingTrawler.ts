@@ -1,8 +1,6 @@
 import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export async function fishingTrawlerCommand(user: MUser, channelID: string) {
 	if (user.skillLevel('fishing') < 15) {
@@ -16,12 +14,12 @@ export async function fishingTrawlerCommand(user: MUser, channelID: string) {
 	const boost = Math.min(100, calcWhatPercent(tripsDone, 50)) / 10;
 	tripLength = reduceNumByPercent(tripLength, boost);
 
-	const quantity = Math.floor(calcMaxTripLength(user, 'FishingTrawler') / tripLength);
+	const quantity = Math.floor(user.calcMaxTripLength('FishingTrawler') / tripLength);
 	const duration = quantity * tripLength;
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		type: 'FishingTrawler',
 		minigameID: 'fishing_trawler',
 		quantity,

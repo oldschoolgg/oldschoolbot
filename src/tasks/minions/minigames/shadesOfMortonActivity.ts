@@ -3,14 +3,12 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { MorytaniaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { ShadesOfMortonOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
 
 export const shadesOfMortonTask: MinionTask = {
 	type: 'ShadesOfMorton',
-	async run(data: ShadesOfMortonOptions) {
-		const { channelID, quantity, userID, logID, shadeID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ShadesOfMortonOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, logID, shadeID, duration } = data;
 
 		await user.incrementMinigameScore('shades_of_morton', quantity);
 

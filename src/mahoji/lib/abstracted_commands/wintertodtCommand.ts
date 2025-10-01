@@ -5,9 +5,6 @@ import { Eatables } from '@/lib/data/eatables.js';
 import { warmGear } from '@/lib/data/filterables.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function wintertodtCommand(user: MUser, channelID: string, quantity?: number) {
 	const fmLevel = user.skillsAsLevels.firemaking;
@@ -43,7 +40,7 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 	healAmountNeeded -= warmGearAmount * 15;
 	durationPerTodt = reduceNumByPercent(durationPerTodt, 5 * warmGearAmount);
 
-	const maxTripLength = calcMaxTripLength(user, 'Wintertodt');
+	const maxTripLength = user.calcMaxTripLength('Wintertodt');
 	if (!quantity) quantity = Math.floor(maxTripLength / durationPerTodt);
 	quantity = Math.max(1, quantity);
 	const duration = durationPerTodt * quantity;
@@ -88,7 +85,7 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 		await user.removeItemsFromBank(cost);
 
 		// Track this food cost in Economy Stats
-		await updateBankSetting('economyStats_wintertodtCost', cost);
+		await ClientSettings.updateBankSetting('economyStats_wintertodtCost', cost);
 
 		// Track items lost
 		await trackLoot({
@@ -107,10 +104,10 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 		break;
 	}
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'wintertodt',
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'Wintertodt'

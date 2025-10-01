@@ -1,6 +1,5 @@
 import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Items, itemID } from 'oldschooljs';
 
 import { userhasDiaryTier } from '@/lib/diaries.js';
@@ -13,8 +12,6 @@ import Mining from '@/lib/skilling/skills/mining.js';
 import type { Ore } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { motherlodeMineCommand } from '@/mahoji/lib/abstracted_commands/motherlodeMineCommand.js';
 
@@ -159,7 +156,7 @@ export const mineCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to mine.',
 			required: true,
@@ -173,14 +170,14 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to mine (optional).',
 			required: false,
 			min_value: 1
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'powermine',
 			description: 'Set this to true to powermine. Higher xp/hour, No loot (default false, optional).',
 			required: false
@@ -188,10 +185,9 @@ export const mineCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; powermine?: boolean }>) => {
-		const user = await mUserFetch(userID);
 		const { quantity, powermine } = options;
 
 		const motherlodeMine =
@@ -240,16 +236,16 @@ export const mineCommand: OSBMahojiCommand = {
 		const res = determineMiningTrip({
 			gearBank: user.gearBank,
 			ore,
-			maxTripLength: calcMaxTripLength(user, 'Mining'),
+			maxTripLength: user.calcMaxTripLength('Mining'),
 			isPowermining: !!powermine,
 			quantityInput: quantity,
 			hasKaramjaMedium
 		});
 
-		await addSubTaskToActivityTask<MiningActivityTaskOptions>({
+		await ActivityManager.startTrip<MiningActivityTaskOptions>({
 			oreID: ore.id,
-			userID: userID.toString(),
-			channelID: channelID.toString(),
+			userID: user.id,
+			channelID,
 			quantity: res.quantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			powermine: res.isPowermining,

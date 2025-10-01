@@ -109,17 +109,6 @@ class GeImageGeneratorSingleton {
 		} else {
 			ctx.fillStyle = OSRSCanvas.COLORS.ORANGE;
 		}
-		// if (listing.quantity_remaining > 0) {
-		// 	progressWidth = Math.floor(
-		// 		(maxWidth * (listing.total_quantity - listing.quantity_remaining)) / listing.total_quantity
-		// 	);
-		// 	if (progressWidth === maxWidth) {
-		// 		ctx.fillStyle = OSRSCanvas.COLORS.DARK_GREEN;
-		// 	}
-		// } else {
-		// 	ctx.fillStyle = OSRSCanvas.COLORS.DARK_RED;
-		// 	progressWidth = maxWidth;
-		// }
 
 		ctx.fillRect(0, 0, progressWidth, progressShadowImage.height);
 		ctx.drawImage(progressShadowImage, 0, 0, progressShadowImage.width, progressShadowImage.height);

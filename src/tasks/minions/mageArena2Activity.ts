@@ -2,13 +2,11 @@ import { percentChance, randArrItem } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const mageArenaTwoTask: MinionTask = {
 	type: 'MageArena2',
-	async run(data: ActivityTaskOptionsWithNoChanges) {
-		const { userID, channelID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
+		const { channelID } = data;
 
 		let str = '';
 		let loot: Bank | undefined;

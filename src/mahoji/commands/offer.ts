@@ -1,17 +1,12 @@
 import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { Events, formatDuration, formatOrdinal, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Bank, ItemGroups, Items, resolveItems } from 'oldschooljs';
 
 import { Offerables } from '@/lib/data/offerData.js';
 import { birdsNestID, treeSeedsNest } from '@/lib/simulation/birdsNest.js';
 import Prayer from '@/lib/skilling/skills/prayer.js';
 import type { OfferingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const specialBones = [
 	{
@@ -56,11 +51,11 @@ export const offerCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to offer.',
 			required: true,
-			autocomplete: async (value: string, user: User) => {
+			autocomplete: async (value: string, user: MUser) => {
 				const botUser = await mUserFetch(user.id);
 
 				return botUser.bank
@@ -74,23 +69,17 @@ export const offerCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to offer (optional).',
 			required: false,
 			min_value: 1
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		channelID,
-		interaction
-	}: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelID, interaction }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const userBank = user.bank;
 
-		await deferInteraction(interaction);
+		await interaction.defer();
 		let { quantity } = options;
 		const whichOfferable = Offerables.find(
 			item =>
@@ -114,15 +103,11 @@ export const offerCommand: OSBMahojiCommand = {
 				itemsToRemove: new Bank().add(whichOfferable.itemID, quantity)
 			});
 			if (whichOfferable.economyCounter) {
-				const newStats = await userStatsUpdate(
-					user.id,
-					{
-						[whichOfferable.economyCounter]: {
-							increment: quantity
-						}
-					},
-					{ slayer_chewed_offered: true, slayer_unsired_offered: true }
-				); // Notify uniques
+				const newStats = await user.statsUpdate({
+					[whichOfferable.economyCounter]: {
+						increment: quantity
+					}
+				}); // Notify uniques
 				if (whichOfferable.uniques) {
 					const current = newStats[whichOfferable.economyCounter];
 					notifyUniques(
@@ -178,7 +163,7 @@ export const offerCommand: OSBMahojiCommand = {
 				itemsToAdd: loot,
 				itemsToRemove: cost
 			});
-			await userStatsBankUpdate(user, 'bird_eggs_offered_bank', cost);
+			await user.statsBankUpdate('bird_eggs_offered_bank', cost);
 
 			notifyUniques(user, egg.name, ItemGroups.evilChickenOutfit, loot, quantity);
 
@@ -241,7 +226,7 @@ export const offerCommand: OSBMahojiCommand = {
 		const amountOfThisBone = userBank.amount(bone.inputId);
 		if (!amountOfThisBone) return `You have no ${bone.name}.`;
 
-		const maxTripLength = calcMaxTripLength(user, 'Offering');
+		const maxTripLength = user.calcMaxTripLength('Offering');
 
 		// If no quantity provided, set it to the max.
 		if (!quantity) {
@@ -265,10 +250,10 @@ export const offerCommand: OSBMahojiCommand = {
 
 		await user.removeItemsFromBank(new Bank().add(bone.inputId, quantity));
 
-		await addSubTaskToActivityTask<OfferingActivityTaskOptions>({
+		await ActivityManager.startTrip<OfferingActivityTaskOptions>({
 			boneID: bone.inputId,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			quantity,
 			duration,
 			type: 'Offering'

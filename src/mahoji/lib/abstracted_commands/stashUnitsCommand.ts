@@ -1,12 +1,11 @@
 import { partition, stringMatches } from '@oldschoolgg/toolkit';
-import type { StashUnit, User } from '@prisma/client';
+import type { StashUnit } from '@prisma/client';
 import { Bank, ItemGroups, Items } from 'oldschooljs';
 
 import type { IStashUnit, StashUnitTier } from '@/lib/clues/stashUnits.js';
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { assert } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { getMahojiBank } from '@/mahoji/mahojiSettings.js';
 
 const NAILS_PER_STASH_UNIT = 10;
 
@@ -45,11 +44,11 @@ export interface ParsedUnit {
 	tier: StashUnitTier;
 }
 export async function stashUnitViewCommand(
-	user: User,
+	user: MUser,
 	stashID: string | undefined,
 	notBuilt: boolean | undefined
 ): CommandResponse {
-	const parsedUnits = await getParsedStashUnits(user.id);
+	const parsedUnits = await user.fetchStashUnits();
 	if (stashID) {
 		const unit = parsedUnits.find(i => stringMatches(i.unit.id.toString(), stashID));
 		if (!unit || !unit.builtUnit) return "You don't have this unit built.";
@@ -85,7 +84,7 @@ Contains: ${unit.builtUnit.items_contained.map(i => Items.itemNameFromId(i)).joi
 }
 
 export async function stashUnitBuildAllCommand(user: MUser) {
-	const parsedUnits = await getParsedStashUnits(user.id);
+	const parsedUnits = await user.fetchStashUnits();
 	const notBuilt = parsedUnits.filter(i => i.builtUnit === undefined);
 	if (notBuilt.length === 0) return 'You have already built all STASH units.';
 	const stats = user.skillsAsLevels;
@@ -131,12 +130,12 @@ export async function stashUnitBuildAllCommand(user: MUser) {
 	return `You created ${toBuild.length} STASH units, using ${costBank}.`;
 }
 
-export async function stashUnitFillAllCommand(user: MUser, mahojiUser: User): CommandResponse {
-	const parsedUnits = await getParsedStashUnits(user.id);
+export async function stashUnitFillAllCommand(user: MUser): CommandResponse {
+	const parsedUnits = await user.fetchStashUnits();
 	const notBuiltAndNotFilled = parsedUnits.filter(i => i.builtUnit !== undefined && !i.isFull);
 	if (notBuiltAndNotFilled.length === 0) return 'There are no STASH units left that you can fill.';
 
-	const checkBank = getMahojiBank(mahojiUser);
+	const checkBank = user.bank.clone();
 	const costBank = new Bank();
 
 	const toFill: (ParsedUnit & { itemsToFillWith: Bank })[] = [];
@@ -187,7 +186,7 @@ export async function stashUnitFillAllCommand(user: MUser, mahojiUser: User): Co
 }
 
 export async function stashUnitUnfillCommand(user: MUser, unitID: string) {
-	const parsedUnits = await getParsedStashUnits(user.id);
+	const parsedUnits = await user.fetchStashUnits();
 	const unit = parsedUnits.find(i => stringMatches(i.unit.id.toString(), unitID));
 	if (!unit || !unit.builtUnit) return 'Invald unit.';
 	const containedItems = unit.builtUnit.items_contained;

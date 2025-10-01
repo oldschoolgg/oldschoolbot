@@ -6,14 +6,13 @@ import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { ZalcanoActivityTaskOptions } from '@/lib/types/minions.js';
 import { ashSanctifierEffect } from '@/lib/util/ashSanctifier.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const zalcanoTask: MinionTask = {
 	type: 'Zalcano',
-	async run(data: ZalcanoActivityTaskOptions) {
-		const { channelID, quantity, duration, userID, performance, isMVP } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ZalcanoActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, duration, performance, isMVP } = data;
+
 		const { newKC } = await user.incrementKC(EMonster.ZALCANO, quantity);
 		const [hasKourendHard] = await userhasDiaryTier(user, KourendKebosDiary.hard);
 		const [hasKourendElite] = await userhasDiaryTier(user, KourendKebosDiary.elite);
