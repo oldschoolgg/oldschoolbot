@@ -119,18 +119,18 @@ export const lapsCommand: OSBMahojiCommand = {
 			const attemptOptions: AttemptZeroTimeActivityOptions =
 				preference.type === 'alch'
 					? {
-						user,
-						duration,
-						preference: preference as ZeroTimeActivityPreference & { type: 'alch' },
-						variant: 'agility',
-						itemsPerHour: AGILITY_ALCHES_PER_HOUR
-					  }
+							user,
+							duration,
+							preference: preference as ZeroTimeActivityPreference & { type: 'alch' },
+							variant: 'agility',
+							itemsPerHour: AGILITY_ALCHES_PER_HOUR
+						}
 					: {
-						user,
-						duration,
-						preference: preference as ZeroTimeActivityPreference & { type: 'fletch' },
-						itemsPerHour: AGILITY_FLETCH_ITEMS_PER_HOUR
-					  };
+							user,
+							duration,
+							preference: preference as ZeroTimeActivityPreference & { type: 'fletch' },
+							itemsPerHour: AGILITY_FLETCH_ITEMS_PER_HOUR
+						};
 
 			const attempt = attemptZeroTimeActivity(attemptOptions);
 

@@ -7,10 +7,10 @@ import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import {
+	type AttemptZeroTimeActivityOptions,
 	attemptZeroTimeActivity,
 	getZeroTimeActivityPreferences,
 	getZeroTimeFletchTime,
-	type AttemptZeroTimeActivityOptions,
 	type ZeroTimeActivityPreference,
 	type ZeroTimeActivityResult
 } from '@/lib/util/zeroTimeActivity.js';
@@ -83,20 +83,20 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 		const attemptOptions: AttemptZeroTimeActivityOptions =
 			preference.type === 'alch'
 				? {
-					user,
-					duration: tripLength,
-					preference: preference as ZeroTimeActivityPreference & { type: 'alch' },
-					variant: 'default',
-					itemsPerHour: SEPULCHRE_ALCHES_PER_HOUR
-				  }
+						user,
+						duration: tripLength,
+						preference: preference as ZeroTimeActivityPreference & { type: 'alch' },
+						variant: 'default',
+						itemsPerHour: SEPULCHRE_ALCHES_PER_HOUR
+					}
 				: {
-					user,
-					duration: tripLength,
-					preference: preference as ZeroTimeActivityPreference & { type: 'fletch' },
-					...(resolveFletchItemsPerHour(preference)
-						? { itemsPerHour: resolveFletchItemsPerHour(preference) }
-						: {})
-				  };
+						user,
+						duration: tripLength,
+						preference: preference as ZeroTimeActivityPreference & { type: 'fletch' },
+						...(resolveFletchItemsPerHour(preference)
+							? { itemsPerHour: resolveFletchItemsPerHour(preference) }
+							: {})
+					};
 
 		const attempt = attemptZeroTimeActivity(attemptOptions);
 
