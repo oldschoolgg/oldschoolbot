@@ -32,7 +32,7 @@ async function renderCommands() {
 			subOptions.sort((a, b) => a.localeCompare(b));
 			return {
 				name: cmd.name,
-				desc: cmd?.description,
+				desc: cmd.description,
 				examples: cmd.attributes?.examples?.sort((a, b) => a.localeCompare(b)),
 				flags: cmd.attributes?.categoryFlags?.sort((a, b) => a.localeCompare(b)),
 				subOptions

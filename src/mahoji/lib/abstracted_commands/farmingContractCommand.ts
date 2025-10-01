@@ -185,7 +185,7 @@ function bestFarmingContractUserCanDo(user: MUser) {
 
 export async function autoContract(user: MUser, channelID: string): CommandResponse {
 	const contract = user.farmingContract();
-	const plant = contract?.contract ? Farming.findPlant(contract?.contract.plantToGrow) : null;
+	const plant = contract.contract ? Farming.findPlant(contract.contract.plantToGrow) : null;
 	const patch = contract.farmingInfo.patchesDetailed.find(p => p.plant === plant);
 	const bestContractTierCanDo = bestFarmingContractUserCanDo(user);
 
@@ -196,7 +196,7 @@ export async function autoContract(user: MUser, channelID: string): CommandRespo
 	}
 
 	// If they have no contract, get them a contract, recurse.
-	if (!contract || !contract.contract) {
+	if (!contract.contract) {
 		const contractResult = await farmingContractCommand(user, bestContractTierCanDo);
 		await user.update({ minion_farmingContract: true });
 		const newContract = (user.user.minion_farmingContract ?? Farming.defaultFarmingContract) as FarmingContract;

@@ -1,4 +1,4 @@
-import { SeedableRNG } from '@oldschoolgg/rng';
+import { MathRNG } from '@oldschoolgg/rng';
 import { calcPerHour, Table, Time } from '@oldschoolgg/toolkit';
 import { type Bank, convertLVLtoXP, EItem, Items } from 'oldschooljs';
 import { uniqueBy } from 'remeda';
@@ -10,6 +10,7 @@ import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
 import type { Fish } from '../../src/lib/skilling/types.js';
 import { FloatBank } from '../../src/lib/structures/Bank.js';
 import { makeGearBank } from '../../tests/unit/utils.js';
+import { tearDownScript } from '../scriptUtil.js';
 import { handleMarkdownEmbed } from './wikiScriptUtil.js';
 
 function bankToPerHour(bank: Bank, duration: number): FloatBank {
@@ -40,7 +41,7 @@ function makeFishingGearBank({ fishingLevel }: { fishingLevel: number }) {
 	return gearBank;
 }
 
-export function renderFishingXpHrTable() {
+function renderFishingXpHrTable() {
 	const results: {
 		xpHr: number;
 		hasPearlRod: boolean;
@@ -52,14 +53,16 @@ export function renderFishingXpHrTable() {
 	for (const level of [1, 10, 40, 70, 80, 90, 99]) {
 		for (const fish of Fishing.Fishes) {
 			for (const hasPearlRod of [true, false]) {
+				const isBarbFishing = ['Barbarian fishing'].includes(fish.name);
 				if (fish.level > level) continue;
-				if (!fish.bait && hasPearlRod) continue;
+				if ((!fish.bait || isBarbFishing) && hasPearlRod) continue;
 				if (fish.id === EItem.RAW_SHRIMPS && level > 1) continue;
 				if (
 					[EItem.RAW_ANCHOVIES, EItem.RAW_MACKEREL, EItem.RAW_HERRING, EItem.RAW_SARDINE].includes(fish.id) &&
 					level > 40
 				)
 					continue;
+
 				const gearBank = makeFishingGearBank({ fishingLevel: level });
 
 				if (level >= 71) {
@@ -71,7 +74,7 @@ export function renderFishingXpHrTable() {
 					gearBank.bank.add('Pearl fly fishing rod');
 				}
 
-				const tripLengthHours = 1000;
+				const tripLengthHours = 3000;
 
 				const trip = Fishing.util.calcFishingTripStart({
 					gearBank,
@@ -87,9 +90,9 @@ export function renderFishingXpHrTable() {
 					gearBank,
 					duration: trip.duration,
 					flakesQuantity: trip.flakesBeingUsed,
-					rng: new SeedableRNG(1)
+					rng: MathRNG
 				});
-				result.updateBank.itemLootBank.remove('Heron', 1000);
+				result.updateBank.itemLootBank.remove('Heron', result.updateBank.itemLootBank.amount('Heron'));
 
 				for (const clueTier of ClueTiers) {
 					result.updateBank.itemLootBank.remove(
@@ -99,7 +102,10 @@ export function renderFishingXpHrTable() {
 				}
 
 				if (fish.bigFish) {
-					result.updateBank.itemLootBank.remove(fish.bigFish, 1000);
+					result.updateBank.itemLootBank.remove(
+						fish.bigFish,
+						result.updateBank.itemLootBank.amount(fish.bigFish)
+					);
 				}
 
 				const xp = result.updateBank.xpBank.amount('fishing');
@@ -112,9 +118,7 @@ export function renderFishingXpHrTable() {
 					hasPearlRod,
 					fish,
 					level,
-					itemsPerHour: ['Barbarian fishing'].includes(fish.name)
-						? null
-						: bankToPerHour(result.updateBank.itemLootBank, trip.duration)
+					itemsPerHour: isBarbFishing ? null : bankToPerHour(result.updateBank.itemLootBank, trip.duration)
 				});
 			}
 		}
@@ -142,8 +146,5 @@ export function renderFishingXpHrTable() {
 	handleMarkdownEmbed('fishingxphr', 'osb/Skills/fishing.mdx', table.toString());
 }
 
-function main() {
-	renderFishingXpHrTable();
-}
-
-main();
+renderFishingXpHrTable();
+tearDownScript();

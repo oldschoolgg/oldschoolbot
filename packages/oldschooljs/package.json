@@ -28,7 +28,6 @@
 	},
 	"devDependencies": {
 		"deep-object-diff": "^1.1.9",
-		"fast-glob": "^3.3.3",
 		"wtf_wikipedia": "^10.3.2"
 	}
 }
