@@ -203,9 +203,9 @@ export class MInteraction {
 		message:
 			| string
 			| ({ content: string; timeout?: number } & (
-				| { ephemeral?: false; users?: string[] }
-				| { ephemeral?: boolean; users?: undefined }
-			))
+					| { ephemeral?: false; users?: string[] }
+					| { ephemeral?: boolean; users?: undefined }
+			  ))
 	) {
 		if (process.env.TEST) return;
 		const content = typeof message === 'string' ? message : message.content;

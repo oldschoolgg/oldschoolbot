@@ -1,10 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import {
-	type CanvasRenderingContext2D as CanvasContext,
-	Image,
-	loadImage,
-	Canvas as RawCanvas
-} from 'skia-canvas';
+import { type CanvasRenderingContext2D as CanvasContext, Image, loadImage, Canvas as RawCanvas } from 'skia-canvas';
 
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
 import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
@@ -163,7 +158,6 @@ export function measureTextWidth(ctx: CanvasContext, text: string) {
 const localImageCache = new Map<string, Image>();
 
 export async function loadAndCacheLocalImage(path: string) {
-	console.log(`Loading img`);
 	const cached = localImageCache.get(path);
 	if (cached) return cached;
 	const buff = await readFile(path);

@@ -17,7 +17,7 @@ describe('Payment conflicts', async () => {
 	test(
 		'GE Simulation (Payee)',
 		{
-			timeout: Time.Minute * 2,
+			timeout: Time.Minute * 2
 		},
 		async () => {
 			await mockClient();

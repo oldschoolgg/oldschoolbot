@@ -24,8 +24,9 @@ export default async ({ clueTierID, quantity }: CasketWorkerArgs): Promise<[Item
 		}
 	}
 
-	const opened = `Loot from ${quantity} ${clueTier.name} Casket${quantity > 1 ? 's' : ''}${mimicNumber > 0 ? ` and ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
-		}`;
+	const opened = `Loot from ${quantity} ${clueTier.name} Casket${quantity > 1 ? 's' : ''}${
+		mimicNumber > 0 ? ` and ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
+	}`;
 
 	return [loot.toJSON(), opened];
 };
