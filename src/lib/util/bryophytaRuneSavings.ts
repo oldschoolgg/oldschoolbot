@@ -1,6 +1,5 @@
+import { roll } from '@oldschoolgg/rng';
 import { Bank, itemID } from 'oldschooljs';
-
-import { roll } from './rng';
 
 const bryophytasStaffId = itemID("Bryophyta's staff");
 
