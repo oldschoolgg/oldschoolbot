@@ -27,8 +27,8 @@ For max efficiency spam quantity 1 trips when close to leveling up.
 
 Read the [Zero-time Activities guide](/osb/miscellaneous/zero-time-activities) for complete setup instructions before you start running laps.
 
-- [[/zero_time_activity type\:alch]] performs roughly 277 High Alchemy casts per hour while you train Agility. Leaving the item blank lets the bot choose from your favourite alchs at the start of every trip.
-- [[/zero_time_activity type\:fletch item\:"Rune dart"]] converts stackable ammunition at up to ~15,000 items per hour during rooftop laps.
+- [[/zero_time_activity set primary_type\:alch]] performs roughly 277 High Alchemy casts per hour while you train Agility. Leaving primary_item blank lets the bot choose from your favourite alchs at the start of every trip.
+- [[/zero_time_activity set primary_type\:fletch primary_item\:"Rune dart"]] converts stackable ammunition at up to ~15,000 items per hour during rooftop laps; add a fallback preference to keep fletching when alching isn't possible.
 
 Once configured, simply send [[/laps]] commands—zero-time actions happen automatically alongside your runs. Remember that the Ape Atoll course blocks alching because of the greegree requirement, although zero-time fletching still works there.
 
@@ -61,3 +61,4 @@ When completing laps of the Ape Atoll agility course you can earn a [monkey back
 - [Hallowed Sepulchre](/osb/activities/hallowed-sepulchre)
 - [Brimhaven Agility Arena](/osb/activities/brimhaven-agility-arena)
 - [Underwater Agility](../thieving/underwater-training.md)
+

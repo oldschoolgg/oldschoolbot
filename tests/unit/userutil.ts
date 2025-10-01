@@ -36,9 +36,11 @@ export interface MockUserArgs {
 	GP?: number;
 	bitfield?: BitField[];
 	id?: string;
-	zero_time_activity_type?: ZeroTimeActivityType | null;
-	zero_time_activity_item?: number | null;
 	favorite_alchables?: number[];
+	zero_time_activity_primary_type?: ZeroTimeActivityType | null;
+	zero_time_activity_primary_item?: number | null;
+	zero_time_activity_fallback_type?: ZeroTimeActivityType | null;
+	zero_time_activity_fallback_item?: number | null;
 	slayer_unlocks?: SlayerTaskUnlocksEnum[];
 }
 
@@ -88,8 +90,10 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		id: overrides?.id ?? '',
 		monsterScores: {},
 		badges: [],
-		zero_time_activity_type: overrides?.zero_time_activity_type ?? null,
-		zero_time_activity_item: overrides?.zero_time_activity_item ?? null,
+	\tzero_time_activity_primary_type: overrides?.zero_time_activity_primary_type ?? null,
+	\tzero_time_activity_primary_item: overrides?.zero_time_activity_primary_item ?? null,
+	\tzero_time_activity_fallback_type: overrides?.zero_time_activity_fallback_type ?? null,
+	\tzero_time_activity_fallback_item: overrides?.zero_time_activity_fallback_item ?? null,
 		favorite_alchables: overrides?.favorite_alchables ?? [],
 		slayer_unlocks: overrides?.slayer_unlocks ?? []
 	} as unknown as User;
@@ -149,3 +153,4 @@ export function serializeSnapshotItem(item: any) {
 	}
 	return result;
 }
+

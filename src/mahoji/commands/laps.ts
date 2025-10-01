@@ -9,7 +9,8 @@ import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import {
 	attemptZeroTimeActivity,
-	getZeroTimeActivitySettings,
+	getZeroTimeActivityPreferences,
+	type AttemptZeroTimeActivityOptions,
 	type ZeroTimeActivityResult
 } from '@/lib/util/zeroTimeActivity.js';
 import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
@@ -106,48 +107,73 @@ export const lapsCommand: OSBMahojiCommand = {
 		let fletchResult: FletchResult | null = null;
 		let alchResult: AlchResult | null = null;
 		const zeroTimeMessages: string[] = [];
+		const preferences = getZeroTimeActivityPreferences(user);
+				const failureMessages: string[] = [];
 
-		const zeroTimeSettings = getZeroTimeActivitySettings(user);
+		for (const preference of preferences) {
+			if (preference.type === 'alch' && course.name === 'Ape Atoll Agility Course') {
+				failureMessages.push(
+					 alching is unavailable on this course.
+				);
+				continue;
+			}
 
-		if (zeroTimeSettings?.type === 'fletch') {
-			const zeroTime = attemptZeroTimeActivity({
-				type: 'fletch',
-				user,
-				duration,
-				itemsPerHour: AGILITY_FLETCH_ITEMS_PER_HOUR
-			});
+			const attemptOptions: AttemptZeroTimeActivityOptions =
+				preference.type === 'alch'
+					? {
+						user,
+						duration,
+						preference: preference as ZeroTimeActivityPreference & { type: 'alch' },
+						variant: 'agility',
+						itemsPerHour: AGILITY_ALCHES_PER_HOUR
+					  }
+					: {
+						user,
+						duration,
+						preference: preference as ZeroTimeActivityPreference & { type: 'fletch' },
+						itemsPerHour: AGILITY_FLETCH_ITEMS_PER_HOUR
+					  };
 
-			if (zeroTime.result?.type === 'fletch') {
-				fletchResult = zeroTime.result;
-				await user.removeItemsFromBank(fletchResult.itemsToRemove);
-				const setsText = fletchResult.fletchable.outputMultiple ? ' sets of' : '';
-				response += `\n\nYour minion is fletching ${fletchResult.quantity}${setsText} ${fletchResult.fletchable.name} while training. Removed ${fletchResult.itemsToRemove} from your bank.`;
-			} else if (zeroTime.message) {
-				zeroTimeMessages.push(zeroTime.message);
+			const attempt = attemptZeroTimeActivity(attemptOptions);
+
+			if (attempt.result) {
+				if (attempt.result.type === 'fletch') {
+					fletchResult = attempt.result;
+				} else {
+					alchResult = attempt.result;
+				}
+				break;
+			}
+
+			if (attempt.message) {
+				failureMessages.push(
+					 : 
+				);
 			}
 		}
-
-		if (course.name !== 'Ape Atoll Agility Course' && zeroTimeSettings?.type === 'alch') {
-			const zeroTime = attemptZeroTimeActivity({
-				type: 'alch',
-				user,
-				duration,
-				variant: 'agility',
-				itemsPerHour: AGILITY_ALCHES_PER_HOUR
-			});
-
-			if (zeroTime.result?.type === 'alch') {
-				alchResult = zeroTime.result;
-				await user.removeItemsFromBank(alchResult.bankToRemove);
-				response += `\n\nYour minion is alching ${alchResult.quantity}x ${alchResult.item.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
-				updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
-			} else if (zeroTime.message) {
-				zeroTimeMessages.push(zeroTime.message);
-			}
+if (fletchResult) {
+			await user.removeItemsFromBank(fletchResult.itemsToRemove);
+			const setsText = fletchResult.fletchable.outputMultiple ? ' sets of' : '';
+			const prefix =
+				fletchResult.preference.role === 'fallback' ? 'Using fallback preference, your minion is' : 'Your minion is';
+			response += \n\n fletching   while training. Removed  from your bank.;
 		}
 
-		if (!fletchResult && !alchResult && zeroTimeMessages.length > 0) {
-			response += `\n\n${zeroTimeMessages.join('\n')}`;
+		if (alchResult) {
+			await user.removeItemsFromBank(alchResult.bankToRemove);
+			const prefix =
+				alchResult.preference.role === 'fallback' ? 'Using fallback preference, your minion is' : 'Your minion is';
+			response += \n\n alching x  while training. Removed  from your bank.;
+			updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
+		}
+
+		if (failureMessages.length > 0) {
+			zeroTimeMessages.push(...failureMessages);
+		}
+
+		if (zeroTimeMessages.length > 0) {
+			response += \n\n;
+		}
 		}
 
 		await addSubTaskToActivityTask<AgilityActivityTaskOptions>({
@@ -164,3 +190,13 @@ export const lapsCommand: OSBMahojiCommand = {
 		return response;
 	}
 };
+
+
+
+
+
+
+
+
+
+

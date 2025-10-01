@@ -326,8 +326,10 @@ model User {
   favorite_alchables         Int[]                         @default([])
   favorite_food              Int[]                         @default([])
   favorite_bh_seeds          Int[]                         @default([])
-  zero_time_activity_type    zero_time_activity_type_enum?
-  zero_time_activity_item    Int?
+  zero_time_activity_primary_type  zero_time_activity_type_enum?
+  zero_time_activity_primary_item  Int?
+  zero_time_activity_fallback_type zero_time_activity_type_enum?
+  zero_time_activity_fallback_item Int?
   minion_defaultPay          Boolean                       @default(false) @map("minion.defaultPay")
   minion_icon                String?                       @map("minion.icon")
   minion_name                String?                       @map("minion.name")
@@ -1434,6 +1436,10 @@ enum command_name_enum {
   xp
   xpgains
   xpto99
-  zerotimeactivity
+  ZeroTimeActivity
   zalcano
 }
+
+
+
+

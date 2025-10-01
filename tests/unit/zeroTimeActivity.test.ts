@@ -3,7 +3,11 @@ import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { zeroTimeFletchables } from '../../src/lib/skilling/skills/fletching/fletchables';
-import { attemptZeroTimeActivity, getZeroTimeFletchTime } from '../../src/lib/util/zeroTimeActivity';
+import {
+	attemptZeroTimeActivity,
+	getZeroTimeFletchTime,
+	type ZeroTimeActivityPreference
+} from '../../src/lib/util/zeroTimeActivity';
 import { timePerAlch } from '../../src/mahoji/lib/abstracted_commands/alchCommand';
 import { mockMUser } from './userutil';
 
@@ -13,15 +17,14 @@ describe('attemptZeroTimeActivity', () => {
 		const duration = timePerAlch * 50;
 		const user = mockMUser({
 			bank: new Bank().add('Nature rune', 200).add('Fire rune', 500).add(item.id, 200),
-			skills_magic: convertLVLtoXP(70),
-			zero_time_activity_type: 'alch',
-			zero_time_activity_item: item.id
+			skills_magic: convertLVLtoXP(70)
 		});
 
+		const preference: ZeroTimeActivityPreference = { role: 'primary', type: 'alch', itemID: item.id };
 		const response = attemptZeroTimeActivity({
-			type: 'alch',
 			user,
 			duration,
+			preference,
 			variant: 'default'
 		});
 
@@ -45,15 +48,14 @@ describe('attemptZeroTimeActivity', () => {
 				.add('Nature rune', ratePerHour * 2)
 				.add('Fire rune', ratePerHour * 10)
 				.add(item.id, ratePerHour * 2),
-			skills_magic: convertLVLtoXP(70),
-			zero_time_activity_type: 'alch',
-			zero_time_activity_item: item.id
+			skills_magic: convertLVLtoXP(70)
 		});
 
+		const preference: ZeroTimeActivityPreference = { role: 'primary', type: 'alch', itemID: item.id };
 		const response = attemptZeroTimeActivity({
-			type: 'alch',
 			user,
 			duration,
+			preference,
 			variant: 'default',
 			itemsPerHour: ratePerHour
 		});
@@ -69,15 +71,14 @@ describe('attemptZeroTimeActivity', () => {
 		const item = Items.getOrThrow('Yew longbow');
 		const user = mockMUser({
 			bank: new Bank().add(item.id, 10),
-			skills_magic: convertLVLtoXP(70),
-			zero_time_activity_type: 'alch',
-			zero_time_activity_item: item.id
+			skills_magic: convertLVLtoXP(70)
 		});
 
+		const preference: ZeroTimeActivityPreference = { role: 'primary', type: 'alch', itemID: item.id };
 		const response = attemptZeroTimeActivity({
-			type: 'alch',
 			user,
 			duration: timePerAlch * 10,
+			preference,
 			variant: 'default'
 		});
 
@@ -93,15 +94,14 @@ describe('attemptZeroTimeActivity', () => {
 		const duration = Time.Second * 40;
 		const user = mockMUser({
 			bank: new Bank().add('Steel dart tip', 200).add('Feather', 200),
-			skills_fletching: convertLVLtoXP(70),
-			zero_time_activity_type: 'fletch',
-			zero_time_activity_item: fletchable.id
+			skills_fletching: convertLVLtoXP(70)
 		});
 
+		const preference: ZeroTimeActivityPreference = { role: 'primary', type: 'fletch', itemID: fletchable.id };
 		const response = attemptZeroTimeActivity({
-			type: 'fletch',
 			user,
-			duration
+			duration,
+			preference
 		});
 
 		expect(response.message).toBeUndefined();
@@ -134,15 +134,14 @@ describe('attemptZeroTimeActivity', () => {
 
 			const baseUser = mockMUser({
 				bank: new Bank().add('Steel dart tip', defaultSets * 2).add('Feather', defaultSets * 2),
-				skills_fletching: convertLVLtoXP(70),
-				zero_time_activity_type: 'fletch',
-				zero_time_activity_item: fletchable.id
+				skills_fletching: convertLVLtoXP(70)
 			});
+			const preference: ZeroTimeActivityPreference = { role: 'primary', type: 'fletch', itemID: fletchable.id };
 
 			const baseResponse = attemptZeroTimeActivity({
-				type: 'fletch',
 				user: baseUser,
-				duration
+				duration,
+				preference
 			});
 
 			expect(baseResponse.result?.type).toBe('fletch');
@@ -155,15 +154,13 @@ describe('attemptZeroTimeActivity', () => {
 
 			const overrideUser = mockMUser({
 				bank: new Bank().add('Steel dart tip', defaultSets * 2).add('Feather', defaultSets * 2),
-				skills_fletching: convertLVLtoXP(70),
-				zero_time_activity_type: 'fletch',
-				zero_time_activity_item: fletchable.id
+				skills_fletching: convertLVLtoXP(70)
 			});
 
 			const overrideResponse = attemptZeroTimeActivity({
-				type: 'fletch',
 				user: overrideUser,
 				duration,
+				preference,
 				itemsPerHour
 			});
 
@@ -199,15 +196,14 @@ describe('attemptZeroTimeActivity', () => {
 
 		const user = mockMUser({
 			bank: new Bank().add('Broad arrowheads', 10).add('Headless arrow', 10),
-			skills_fletching: convertLVLtoXP(70),
-			zero_time_activity_type: 'fletch',
-			zero_time_activity_item: fletchable.id
+			skills_fletching: convertLVLtoXP(70)
 		});
 
+		const preference: ZeroTimeActivityPreference = { role: 'primary', type: 'fletch', itemID: fletchable.id };
 		const response = attemptZeroTimeActivity({
-			type: 'fletch',
 			user,
-			duration: Time.Second * 10
+			duration: Time.Second * 10,
+			preference
 		});
 
 		expect(response.result).toBeNull();

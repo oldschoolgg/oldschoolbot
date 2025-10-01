@@ -38,3 +38,4 @@ Only one zero-time activity can run per trip. Switching between alching and flet
 - **Hallowed Sepulchre:** configure the action before [[/minigames sepulchre start]]. Zero-time alching and fletching both operate floor by floor without slowing your runs.
 
 Refer back to the [Agility guide](/osb/skills/agility) and [Hallowed Sepulchre guide](/osb/activities/hallowed-sepulchre) for activity-specific advice, boost information, and strategies.
+

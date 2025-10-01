@@ -21,3 +21,4 @@ Configure zero-time fletching with [[/zero_time_activity]], then run Agility lap
 
 - Example setup: [[/zero_time_activity type\:fletch item\:"Rune dart"]]
 - Zero-time alching is configured the same way with `type:alch`, and leaving the item blank lets the bot choose from your favourite alchs at the start of each trip.
+

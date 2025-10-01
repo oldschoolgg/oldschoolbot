@@ -17,27 +17,33 @@ import { hasSlayerUnlock } from '../slayer/slayerUtil';
 import { unlimitedFireRuneProviders } from './unlimitedFireRuneProviders';
 
 export type ZeroTimeActivityType = zero_time_activity_type_enum;
+export type ZeroTimePreferenceRole = 'primary' | 'fallback';
 
-export interface ZeroTimeActivitySettings {
+export interface ZeroTimeActivityPreference {
+	role: ZeroTimePreferenceRole;
 	type: ZeroTimeActivityType;
 	itemID: number | null;
 }
 
+export type ZeroTimePreferenceList = ZeroTimeActivityPreference[];
+
 export type ZeroTimeActivityResult =
 	| {
-			type: 'alch';
-			item: Item;
-			quantity: number;
-			bankToRemove: Bank;
-			bankToAdd: Bank;
-			timePerAction: number;
+		  type: 'alch';
+		  preference: ZeroTimeActivityPreference;
+		  item: Item;
+		  quantity: number;
+		  bankToRemove: Bank;
+		  bankToAdd: Bank;
+		  timePerAction: number;
 	  }
 	| {
-			type: 'fletch';
-			fletchable: Fletchable;
-			quantity: number;
-			itemsToRemove: Bank;
-			timePerAction: number;
+		  type: 'fletch';
+		  preference: ZeroTimeActivityPreference;
+		  fletchable: Fletchable;
+		  quantity: number;
+		  itemsToRemove: Bank;
+		  timePerAction: number;
 	  };
 
 export interface ZeroTimeActivityResponse {
@@ -48,44 +54,61 @@ export interface ZeroTimeActivityResponse {
 interface BaseAttemptZeroTimeActivityOptions {
 	user: MUser;
 	duration: number;
+	preference: ZeroTimeActivityPreference;
 	quantityOverride?: number;
 	itemsPerHour?: number;
 }
 
-type AttemptZeroTimeActivityOptions =
-	| (BaseAttemptZeroTimeActivityOptions & {
-			type: 'alch';
-			variant?: 'agility' | 'default';
-	  })
-	| (BaseAttemptZeroTimeActivityOptions & { type: 'fletch' });
-
-export function getZeroTimeActivitySettings(user: MUser): ZeroTimeActivitySettings | null {
-	const type = user.user.zero_time_activity_type;
-	if (!type) {
-		return null;
-	}
-	return {
-		type,
-		itemID: user.user.zero_time_activity_item ?? null
-	};
+export interface AttemptZeroTimeAlchOptions extends BaseAttemptZeroTimeActivityOptions {
+	preference: ZeroTimeActivityPreference & { type: 'alch' };
+	variant?: 'agility' | 'default';
 }
 
-function resolveConfiguredAlchItem(settings: ZeroTimeActivitySettings | null): Item | null {
-	if (!settings?.itemID) {
+export interface AttemptZeroTimeFletchOptions extends BaseAttemptZeroTimeActivityOptions {
+	preference: ZeroTimeActivityPreference & { type: 'fletch' };
+}
+
+export type AttemptZeroTimeActivityOptions = AttemptZeroTimeAlchOptions | AttemptZeroTimeFletchOptions;
+
+export function getZeroTimeActivityPreferences(user: MUser): ZeroTimePreferenceList {
+	const preferences: ZeroTimePreferenceList = [];
+	const { user: raw } = user;
+
+	if (raw.zero_time_activity_primary_type) {
+		preferences.push({
+			role: 'primary',
+			type: raw.zero_time_activity_primary_type,
+			itemID: raw.zero_time_activity_primary_item ?? null
+		});
+	}
+
+	if (raw.zero_time_activity_fallback_type) {
+		preferences.push({
+			role: 'fallback',
+			type: raw.zero_time_activity_fallback_type,
+			itemID: raw.zero_time_activity_fallback_item ?? null
+		});
+	}
+
+	return preferences;
+}
+
+function resolveConfiguredAlchItem(preference: ZeroTimeActivityPreference): Item | null {
+	if (!preference.itemID) {
 		return null;
 	}
-	const item = Items.get(settings.itemID);
+	const item = Items.get(preference.itemID);
 	if (!item || !item.highalch || !item.tradeable) {
 		return null;
 	}
 	return item;
 }
 
-function resolveZeroTimeFletchable(settings: ZeroTimeActivitySettings | null): Fletchable | null {
-	if (!settings?.itemID) {
+function resolveZeroTimeFletchable(preference: ZeroTimeActivityPreference): Fletchable | null {
+	if (!preference.itemID) {
 		return null;
 	}
-	return zeroTimeFletchables.find(item => item.id === settings.itemID) ?? null;
+	return zeroTimeFletchables.find(item => item.id === preference.itemID) ?? null;
 }
 
 export function getZeroTimeFletchTime(fletchable: Fletchable): number | null {
@@ -104,18 +127,15 @@ export function getZeroTimeFletchTime(fletchable: Fletchable): number | null {
 	return null;
 }
 
-function calculateAlching(
-	options: Extract<AttemptZeroTimeActivityOptions, { type: 'alch' }>,
-	settings: ZeroTimeActivitySettings | null
-): ZeroTimeActivityResponse {
-	const { user, duration, itemsPerHour, quantityOverride } = options;
+function calculateAlching(options: AttemptZeroTimeAlchOptions): ZeroTimeActivityResponse {
+	const { user, duration, itemsPerHour, quantityOverride, preference } = options;
 	const variant = options.variant ?? 'default';
 
 	if (user.skillLevel('magic') < 55) {
-		return { result: null, message: 'You need level 55 Magic to perform zero time alching.' };
+		return { result: null, message: 'You need level 55 Magic to perform zero-time alching.' };
 	}
 
-	const itemFromSettings = resolveConfiguredAlchItem(settings);
+	const itemFromSettings = resolveConfiguredAlchItem(preference);
 	const durationPerCast = variant === 'agility' ? timePerAlchAgility : timePerAlch;
 
 	let itemToAlch: Item | null = itemFromSettings;
@@ -125,13 +145,17 @@ function calculateAlching(
 	}
 
 	if (!itemToAlch) {
-		return settings?.type === 'alch'
+		return preference.itemID
 			? {
-					result: null,
-					message:
-						'No suitable item found for zero time alching. Update your configuration or add favorite alchs.'
-				}
-			: { result: null };
+				  result: null,
+				  message:
+					  'Your zero-time alching item is not valid or no longer available. Update your configuration or add favourite alchs.'
+			  }
+			: {
+				  result: null,
+				  message:
+					  'No suitable item found for zero-time alching. Add favourite alchs or configure a specific item.'
+			  };
 	}
 
 	const bank = user.bank;
@@ -200,6 +224,7 @@ function calculateAlching(
 	return {
 		result: {
 			type: 'alch',
+			preference,
 			item: itemToAlch,
 			quantity: maxCasts,
 			bankToRemove,
@@ -209,21 +234,23 @@ function calculateAlching(
 	};
 }
 
-function calculateFletching(
-	options: Extract<AttemptZeroTimeActivityOptions, { type: 'fletch' }>,
-	settings: ZeroTimeActivitySettings | null
-): ZeroTimeActivityResponse {
-	const { user, duration, itemsPerHour, quantityOverride } = options;
-	const fletchable = resolveZeroTimeFletchable(settings);
+function calculateFletching(options: AttemptZeroTimeFletchOptions): ZeroTimeActivityResponse {
+	const { user, duration, itemsPerHour, quantityOverride, preference } = options;
+
+	if (!preference.itemID) {
+		return {
+			result: null,
+			message: 'You must configure a zero-time fletching item before this preference can be used.'
+		};
+	}
+
+	const fletchable = resolveZeroTimeFletchable(preference);
 	if (!fletchable) {
-		if (settings?.type === 'fletch') {
-			return {
-				result: null,
-				message:
-					'Your zero time fletching item is not set or is no longer valid. Use /zero_time_activity to configure it.'
-			};
-		}
-		return { result: null };
+		return {
+			result: null,
+			message:
+				'Your zero-time fletching item is not set or is no longer valid. Use /zero_time_activity to configure it.'
+		};
 	}
 
 	if (user.skillLevel('fletching') < fletchable.level) {
@@ -297,6 +324,7 @@ function calculateFletching(
 	return {
 		result: {
 			type: 'fletch',
+			preference,
 			fletchable,
 			quantity,
 			itemsToRemove: itemsNeeded,
@@ -306,14 +334,9 @@ function calculateFletching(
 }
 
 export function attemptZeroTimeActivity(options: AttemptZeroTimeActivityOptions): ZeroTimeActivityResponse {
-	const settings = getZeroTimeActivitySettings(options.user);
-	if (!settings || settings.type !== options.type) {
-		return { result: null };
+	if (options.preference.type === 'alch') {
+		return calculateAlching(options);
 	}
 
-	if (options.type === 'alch') {
-		return calculateAlching(options, settings);
-	}
-
-	return calculateFletching(options, settings);
+	return calculateFletching(options);
 }

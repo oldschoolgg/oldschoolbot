@@ -179,3 +179,6 @@ export const sepulchreTask: MinionTask = {
 		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
 	}
 };
+
+
+

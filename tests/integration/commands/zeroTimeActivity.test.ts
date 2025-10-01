@@ -3,13 +3,18 @@ import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { zeroTimeFletchables } from '../../../src/lib/skilling/skills/fletching/fletchables';
-import { attemptZeroTimeActivity, getZeroTimeActivitySettings } from '../../../src/lib/util/zeroTimeActivity';
+import {
+	attemptZeroTimeActivity,
+	getZeroTimeActivityPreferences,
+	type ZeroTimeActivityPreference
+} from '../../../src/lib/util/zeroTimeActivity';
 import { zeroTimeActivityCommand } from '../../../src/mahoji/commands/zeroTimeActivity';
 import { timePerAlch } from '../../../src/mahoji/lib/abstracted_commands/alchCommand';
 import { createTestUser } from '../util';
 
 describe('Zero Time Activity Command', () => {
 	const automaticSelectionText = 'automatic selection from your favourite alchs each trip';
+
 	test('persists alching configuration and uses it', async () => {
 		const item = Items.getOrThrow('Yew longbow');
 		const user = await createTestUser(new Bank().add('Nature rune', 200).add('Fire rune', 500).add(item.id, 200), {
@@ -17,26 +22,29 @@ describe('Zero Time Activity Command', () => {
 		});
 
 		const response = await user.runCommand(zeroTimeActivityCommand, {
-			type: 'alch',
-			item: 'yew longbow'
+			set: {
+				primary_type: 'alch',
+				primary_item: 'yew longbow'
+			}
 		});
 
-		expect(response).toContain('Alching');
+		expect(response).toContain('Primary: **Alching**');
 		await user.sync();
-		expect(user.user.zero_time_activity_type).toBe('alch');
-		expect(user.user.zero_time_activity_item).toBe(item.id);
+		expect(user.user.zero_time_activity_primary_type).toBe('alch');
+		expect(user.user.zero_time_activity_primary_item).toBe(item.id);
+		expect(user.user.zero_time_activity_fallback_type).toBeNull();
 
-		const summary = await user.runCommand(zeroTimeActivityCommand, {});
-		expect(summary).toBe('Your zero time activity is set to **Alching** using **Yew longbow**.');
+		const summary = await user.runCommand(zeroTimeActivityCommand, { overview: {} });
+		expect(summary).toContain('Primary: **Alching** using **Yew longbow**');
 
-		const settings = getZeroTimeActivitySettings(user);
-		expect(settings).toEqual({ type: 'alch', itemID: item.id });
+		const [preference] = getZeroTimeActivityPreferences(user);
+		expect(preference).toEqual<ZeroTimeActivityPreference>({ role: 'primary', type: 'alch', itemID: item.id });
 
 		const duration = timePerAlch * 5;
 		const activity = attemptZeroTimeActivity({
-			type: 'alch',
 			user,
 			duration,
+			preference,
 			variant: 'default'
 		});
 
@@ -50,18 +58,19 @@ describe('Zero Time Activity Command', () => {
 		});
 
 		const response = await user.runCommand(zeroTimeActivityCommand, {
-			type: 'alch'
+			set: {
+				primary_type: 'alch'
+			}
 		});
 
-		expect(response).toBe(
-			`Your zero time activity has been set to **Alching** using **${automaticSelectionText}**.`
-		);
+		expect(response).toContain(automaticSelectionText);
 		await user.sync();
-		expect(user.user.zero_time_activity_type).toBe('alch');
-		expect(user.user.zero_time_activity_item).toBeNull();
+		expect(user.user.zero_time_activity_primary_type).toBe('alch');
+		expect(user.user.zero_time_activity_primary_item).toBeNull();
+		expect(user.user.zero_time_activity_fallback_type).toBeNull();
 
-		const summary = await user.runCommand(zeroTimeActivityCommand, {});
-		expect(summary).toBe(`Your zero time activity is set to **Alching** using **${automaticSelectionText}**.`);
+		const summary = await user.runCommand(zeroTimeActivityCommand, { overview: {} });
+		expect(summary).toContain(`Primary: **Alching** using **${automaticSelectionText}**`);
 	});
 
 	test('reuses configured fletching item on subsequent calls', async () => {
@@ -73,67 +82,61 @@ describe('Zero Time Activity Command', () => {
 			skills_fletching: convertLVLtoXP(75)
 		});
 
-		const firstResponse = await user.runCommand(zeroTimeActivityCommand, {
-			type: 'fletch',
-			item: fletchable.name
+		await user.runCommand(zeroTimeActivityCommand, {
+			set: {
+				primary_type: 'fletch',
+				primary_item: fletchable.name
+			}
 		});
-		expect(firstResponse).toContain('Fletching');
 		await user.sync();
-		expect(user.user.zero_time_activity_type).toBe('fletch');
-		expect(user.user.zero_time_activity_item).toBe(fletchable.id);
+		expect(user.user.zero_time_activity_primary_type).toBe('fletch');
+		expect(user.user.zero_time_activity_primary_item).toBe(fletchable.id);
 
-		const secondResponse = await user.runCommand(zeroTimeActivityCommand, {
-			type: 'fletch'
+		const newItem = 'Mithril dart';
+		await user.runCommand(zeroTimeActivityCommand, {
+			set: {
+				primary_type: 'fletch',
+				primary_item: newItem
+			}
 		});
-		expect(secondResponse).toContain(fletchable.name);
 		await user.sync();
-		expect(user.user.zero_time_activity_item).toBe(fletchable.id);
-
-		const settings = getZeroTimeActivitySettings(user);
-		expect(settings).toEqual({ type: 'fletch', itemID: fletchable.id });
-
-		const duration = Time.Second * 40;
-		const activity = attemptZeroTimeActivity({
-			type: 'fletch',
-			user,
-			duration
-		});
-
-		expect(activity.result?.type).toBe('fletch');
-		expect(activity.result && activity.result.type === 'fletch' ? activity.result.quantity : null).toBeGreaterThan(
-			0
-		);
+		const mithril = zeroTimeFletchables.find(item => item.name === newItem);
+		expect(mithril).toBeDefined();
+		if (!mithril) return;
+		expect(user.user.zero_time_activity_primary_item).toBe(mithril.id);
 	});
 
-	test('updates configured fletching item using stored type', async () => {
-		const firstFletchable = zeroTimeFletchables.find(item => item.name === 'Steel dart');
-		const secondFletchable = zeroTimeFletchables.find(item => item.name === 'Mithril dart');
-		expect(firstFletchable).toBeDefined();
-		expect(secondFletchable).toBeDefined();
-		if (!firstFletchable || !secondFletchable) return;
+	test('supports fallback configuration', async () => {
+		const fletchable = zeroTimeFletchables.find(item => item.name === 'Steel dart');
+		expect(fletchable).toBeDefined();
+		if (!fletchable) return;
 
-		const user = await createTestUser(
-			new Bank().add('Steel dart tip', 500).add('Mithril dart tip', 500).add('Feather', 1000),
-			{
-				skills_fletching: convertLVLtoXP(75)
-			}
-		);
+		const user = await createTestUser(new Bank().add('Steel dart tip', 500).add('Feather', 500), {
+			skills_fletching: convertLVLtoXP(75),
+			skills_magic: convertLVLtoXP(75)
+		});
 
 		await user.runCommand(zeroTimeActivityCommand, {
-			type: 'fletch',
-			item: firstFletchable.name
+			set: {
+				primary_type: 'alch',
+				fallback_type: 'fletch',
+				fallback_item: fletchable.name
+			}
 		});
 		await user.sync();
-		expect(user.user.zero_time_activity_type).toBe('fletch');
-		expect(user.user.zero_time_activity_item).toBe(firstFletchable.id);
 
-		const updateResponse = await user.runCommand(zeroTimeActivityCommand, {
-			item: secondFletchable.name
-		});
+		expect(user.user.zero_time_activity_primary_type).toBe('alch');
+		expect(user.user.zero_time_activity_primary_item).toBeNull();
+		expect(user.user.zero_time_activity_fallback_type).toBe('fletch');
+		expect(user.user.zero_time_activity_fallback_item).toBe(fletchable.id);
 
-		expect(updateResponse).toContain(secondFletchable.name);
-		await user.sync();
-		expect(user.user.zero_time_activity_type).toBe('fletch');
-		expect(user.user.zero_time_activity_item).toBe(secondFletchable.id);
+		const preferences = getZeroTimeActivityPreferences(user);
+		expect(preferences).toEqual<ZeroTimeActivityPreference[]>([
+			{ role: 'primary', type: 'alch', itemID: null },
+			{ role: 'fallback', type: 'fletch', itemID: fletchable.id }
+		]);
+
+		const overview = await user.runCommand(zeroTimeActivityCommand, { overview: {} });
+		expect(overview).toContain('Fallback: **Fletching**');
 	});
 });

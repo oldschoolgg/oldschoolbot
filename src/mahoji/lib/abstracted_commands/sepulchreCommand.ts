@@ -8,13 +8,31 @@ import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import {
 	attemptZeroTimeActivity,
-	getZeroTimeActivitySettings,
+	getZeroTimeActivityPreferences,
 	getZeroTimeFletchTime,
+	type AttemptZeroTimeActivityOptions,
+	type ZeroTimeActivityPreference,
 	type ZeroTimeActivityResult
 } from '@/lib/util/zeroTimeActivity.js';
 import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 const SEPULCHRE_ALCHES_PER_HOUR = 1000;
+
+function resolveFletchItemsPerHour(preference: ZeroTimeActivityPreference) {
+	if (!preference.itemID) {
+		return undefined;
+	}
+	const configuredFletchable = zeroTimeFletchables.find(item => item.id === preference.itemID);
+	if (!configuredFletchable) {
+		return undefined;
+	}
+	const timePerItem = getZeroTimeFletchTime(configuredFletchable);
+	if (!timePerItem) {
+		return undefined;
+	}
+	const outputMultiple = configuredFletchable.outputMultiple ?? 1;
+	return (Time.Hour / timePerItem) * outputMultiple;
+}
 
 export async function sepulchreCommand(user: MUser, channelID: string) {
 	const skills = user.skillsAsLevels;
@@ -59,46 +77,55 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 	let alchResult: AlchResult | null = null;
 	const zeroTimeMessages: string[] = [];
 
-	const zeroTimeSettings = getZeroTimeActivitySettings(user);
+	const preferences = getZeroTimeActivityPreferences(user);
+	const failureMessages: string[] = [];
 
-	if (zeroTimeSettings?.type === 'fletch') {
-		const configuredFletchable = zeroTimeFletchables.find(item => item.id === zeroTimeSettings.itemID);
-		let itemsPerHour: number | undefined;
-		if (configuredFletchable) {
-			const timePerItem = getZeroTimeFletchTime(configuredFletchable);
-			if (timePerItem) {
-				const outputMultiple = configuredFletchable.outputMultiple ?? 1;
-				itemsPerHour = (Time.Hour / timePerItem) * outputMultiple;
+	for (const preference of preferences) {
+		const attemptOptions: AttemptZeroTimeActivityOptions =
+			preference.type === 'alch'
+				? {
+					user,
+					duration: tripLength,
+					preference: preference as ZeroTimeActivityPreference & { type: 'alch' },
+					variant: 'default',
+					itemsPerHour: SEPULCHRE_ALCHES_PER_HOUR
+				  }
+				: {
+					user,
+					duration: tripLength,
+					preference: preference as ZeroTimeActivityPreference & { type: 'fletch' },
+					itemsPerHour: resolveFletchItemsPerHour(preference)
+				  };
+
+		const attempt = attemptZeroTimeActivity(attemptOptions);
+
+		if (attempt.result) {
+			if (attempt.result.type === 'fletch') {
+				fletchResult = attempt.result;
+			} else {
+				alchResult = attempt.result;
 			}
+			break;
 		}
 
-		const zeroTime = attemptZeroTimeActivity({
-			type: 'fletch',
-			user,
-			duration: tripLength,
-			...(itemsPerHour ? { itemsPerHour } : {})
-		});
-		if (zeroTime.result?.type === 'fletch') {
-			fletchResult = zeroTime.result;
-			await user.removeItemsFromBank(fletchResult.itemsToRemove);
-		} else if (zeroTime.message) {
-			zeroTimeMessages.push(zeroTime.message);
+		if (attempt.message) {
+			failureMessages.push(
+				`${preference.role === 'primary' ? 'Primary' : 'Fallback'} ${preference.type}: ${attempt.message}`
+			);
 		}
-	} else if (zeroTimeSettings?.type === 'alch') {
-		const zeroTime = attemptZeroTimeActivity({
-			type: 'alch',
-			user,
-			duration: tripLength,
-			itemsPerHour: SEPULCHRE_ALCHES_PER_HOUR,
-			variant: 'default'
-		});
-		if (zeroTime.result?.type === 'alch') {
-			alchResult = zeroTime.result;
-			await user.removeItemsFromBank(alchResult.bankToRemove);
-			updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
-		} else if (zeroTime.message) {
-			zeroTimeMessages.push(zeroTime.message);
-		}
+	}
+
+	if (fletchResult) {
+		await user.removeItemsFromBank(fletchResult.itemsToRemove);
+	}
+
+	if (alchResult) {
+		await user.removeItemsFromBank(alchResult.bankToRemove);
+		updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
+	}
+
+	if (failureMessages.length > 0) {
+		zeroTimeMessages.push(...failureMessages);
 	}
 
 	await addSubTaskToActivityTask<SepulchreActivityTaskOptions>({
@@ -121,12 +148,14 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 
 	if (fletchResult) {
 		const setsText = fletchResult.fletchable.outputMultiple ? ' sets of' : '';
-		str += `\nYou are also now Fletching ${fletchResult.quantity}${setsText} ${fletchResult.fletchable.name}. Removed ${fletchResult.itemsToRemove} from your bank.`;
+		const fallbackNote = fletchResult.preference.role === 'fallback' ? ' (fallback preference)' : '';
+		str += `\nYou are also now Fletching ${fletchResult.quantity}${setsText} ${fletchResult.fletchable.name}${fallbackNote}. Removed ${fletchResult.itemsToRemove} from your bank.`;
 	}
 	if (alchResult) {
-		str += `\nYou are also now alching ${alchResult.quantity}x ${alchResult.item.name} while clearing the Sepulchre. Removed ${alchResult.bankToRemove} from your bank.`;
+		const fallbackNote = alchResult.preference.role === 'fallback' ? ' (fallback preference)' : '';
+		str += `\nYou are also now alching ${alchResult.quantity}x ${alchResult.item.name}${fallbackNote} while clearing the Sepulchre. Removed ${alchResult.bankToRemove} from your bank.`;
 	}
-	if (!fletchResult && !alchResult && zeroTimeMessages.length > 0) {
+	if (zeroTimeMessages.length > 0) {
 		str += `\n${zeroTimeMessages.join('\n')}`;
 	}
 
@@ -136,3 +165,12 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 
 	return str;
 }
+
+
+
+
+
+
+
+
+
