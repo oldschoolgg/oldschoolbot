@@ -106,7 +106,7 @@ export async function valeTotemsStartCommand(
 		}
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'ValeTotems');
+	const maxTripLength = calcMaxTripLength(user);
 
 	if (!userHasGracefulEquipped(user)) {
 		timePerLap += NO_GRACEFUL_PENALTY;
@@ -156,7 +156,7 @@ export async function valeTotemsStartCommand(
 		messages.push(`+${formatDuration(NO_BANK_SHORTCUT_PENALTY)} for shield fletching`);
 	}
 
-	const limits = [Math.floor(logsOwned / logCostLap), Math.floor(maxTripLength / timePerLap) * logCostLap];
+	const limits = [Math.floor(logsOwned / logCostLap), Math.floor(maxTripLength / timePerLap)];
 
 	if (stringItem) {
 		limits.push(Math.floor(userBank.amount(stringItem.id) / STRINGS_PER_LAP));
