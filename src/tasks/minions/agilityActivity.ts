@@ -24,7 +24,7 @@ function chanceOfFailingAgilityPyramid(user: MUser) {
 export const agilityTask: MinionTask = {
 	type: 'Agility',
 	async run(data: AgilityActivityTaskOptions) {
-		const { courseID, quantity, userID, channelID, duration, alch, fletch } = data;
+		const { courseID, quantity, userID, channelID, duration, alch, fletch, zeroTimePreferenceRole } = data;
 		const loot = new Bank();
 		const user = await mUserFetch(userID);
 		const currentLevel = user.skillsAsLevels.agility;
@@ -131,6 +131,7 @@ export const agilityTask: MinionTask = {
 
 		let fletchable: (typeof zeroTimeFletchables)[number] | undefined;
 		let fletchQuantity = 0;
+		let alchItemNameForSummary: string | null = null;
 		let fletchXpRes = '';
 
 		if (fletch && fletch.qty > 0) {
@@ -156,6 +157,7 @@ export const agilityTask: MinionTask = {
 		let savedRunesFromAlching = 0;
 		if (alch) {
 			const alchedItem = Items.getOrThrow(alch.itemID);
+			alchItemNameForSummary = alchedItem.name;
 			const alchGP = alchedItem.highalch! * alch.quantity;
 			loot.add('Coins', alchGP);
 			const { savedRunes, savedBank } = calculateBryophytaRuneSavings({
@@ -183,10 +185,15 @@ export const agilityTask: MinionTask = {
 		if (savedRunesFromAlching > 0) {
 			str += `\nYour Bryophyta's staff saved you ${savedRunesFromAlching} Nature runes.`;
 		}
+		if (alch && alchItemNameForSummary) {
+			const fallbackNote = zeroTimePreferenceRole === 'fallback' ? ' (fallback preference)' : '';
+			str += `\nYou also alched ${alch.quantity}x ${alchItemNameForSummary}${fallbackNote}.`;
+		}
 
 		if (fletchable && fletch && fletchQuantity > 0) {
 			const setsText = fletchable.outputMultiple ? ' sets of' : '';
-			str += `\nYou also fletched ${fletchQuantity}${setsText} ${fletchable.name}.`;
+			const fallbackNote = zeroTimePreferenceRole === 'fallback' ? ' (fallback preference)' : '';
+			str += `\nYou also fletched ${fletchQuantity}${setsText} ${fletchable.name}${fallbackNote}.`;
 		}
 
 		// Roll for pet

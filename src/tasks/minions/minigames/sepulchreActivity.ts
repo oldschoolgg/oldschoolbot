@@ -13,7 +13,7 @@ import { updateClientGPTrackSetting } from '@/mahoji/mahojiSettings.js';
 export const sepulchreTask: MinionTask = {
 	type: 'Sepulchre',
 	async run(data: SepulchreActivityTaskOptions) {
-		const { channelID, quantity, floors, userID, duration, fletch, alch } = data;
+		const { channelID, quantity, floors, userID, duration, fletch, alch, zeroTimePreferenceRole } = data;
 		const user = await mUserFetch(userID);
 		await user.incrementMinigameScore('sepulchre', quantity);
 

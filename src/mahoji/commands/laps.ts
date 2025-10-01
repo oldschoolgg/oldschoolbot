@@ -3,12 +3,15 @@ import { ApplicationCommandOptionType, bold } from 'discord.js';
 
 import { quests } from '@/lib/minions/data/quests.js';
 import { courses } from '@/lib/skilling/skills/agility.js';
+import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import {
 	type AttemptZeroTimeActivityOptions,
 	attemptZeroTimeActivity,
 	getZeroTimeActivityPreferences,
+	type ZeroTimeActivityPreference,
 	type ZeroTimeActivityResult
 } from '@/lib/util/zeroTimeActivity.js';
 import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
@@ -68,7 +71,6 @@ export const lapsCommand: OSBMahojiCommand = {
 			return `You need at least ${course.qpRequired} Quest Points to do this course.`;
 		}
 
-		// Check for quest requirements
 		if (course.requiredQuests) {
 			const incompleteQuest = course.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
 			if (incompleteQuest) {
@@ -79,8 +81,6 @@ export const lapsCommand: OSBMahojiCommand = {
 		}
 
 		const maxTripLength = calcMaxTripLength(user, 'Agility');
-
-		// If no quantity provided, set it to the max.
 		const timePerLap = course.lapTime * Time.Second;
 		let { quantity } = options;
 		if (!quantity) {
@@ -104,15 +104,15 @@ export const lapsCommand: OSBMahojiCommand = {
 		type AlchResult = Extract<ZeroTimeActivityResult, { type: 'alch' }>;
 		let fletchResult: FletchResult | null = null;
 		let alchResult: AlchResult | null = null;
-		const zeroTimeMessages: string[] = [];
+		const infoMessages: string[] = [];
 		const preferences = getZeroTimeActivityPreferences(user);
-				const failureMessages: string[] = [];
+		const failureMessages: string[] = [];
 
 		for (const preference of preferences) {
+			const label = preference.role === 'primary' ? 'Primary' : 'Fallback';
+
 			if (preference.type === 'alch' && course.name === 'Ape Atoll Agility Course') {
-				failureMessages.push(
-					 alching is unavailable on this course.
-				);
+				failureMessages.push(`${label} alching is unavailable on this course.`);
 				continue;
 			}
 
@@ -144,37 +144,41 @@ export const lapsCommand: OSBMahojiCommand = {
 			}
 
 			if (attempt.message) {
-				failureMessages.push(
-					 : 
-				);
+				failureMessages.push(`${label} ${preference.type}: ${attempt.message}`);
 			}
 		}
-if (fletchResult) {
+
+		if (fletchResult) {
 			await user.removeItemsFromBank(fletchResult.itemsToRemove);
-			const _setsText = fletchResult.fletchable.outputMultiple ? ' sets of' : '';
-			const _prefix =
-				fletchResult.preference.role === 'fallback' ? 'Using fallback preference, your minion is' : 'Your minion is';
-			response += \n\n fletching   while training. Removed  from your bank.;
+			const setsText = fletchResult.fletchable.outputMultiple ? ' sets of' : '';
+			const prefix =
+				fletchResult.preference.role === 'fallback'
+					? 'Using fallback preference, your minion is'
+					: 'Your minion is';
+			response += `\n\n${prefix} fletching ${fletchResult.quantity}${setsText} ${fletchResult.fletchable.name} while training. Removed ${fletchResult.itemsToRemove} from your bank.`;
 		}
 
 		if (alchResult) {
 			await user.removeItemsFromBank(alchResult.bankToRemove);
-			const _prefix =
-				alchResult.preference.role === 'fallback' ? 'Using fallback preference, your minion is' : 'Your minion is';
-			response += \n\n alching x  while training. Removed  from your bank.;
+			const prefix =
+				alchResult.preference.role === 'fallback'
+					? 'Using fallback preference, your minion is'
+					: 'Your minion is';
+			response += `\n\n${prefix} alching ${alchResult.quantity}x ${alchResult.item.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
 			updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
 		}
 
 		if (failureMessages.length > 0) {
-			zeroTimeMessages.push(...failureMessages);
+			infoMessages.push(...failureMessages);
 		}
 
-		if (zeroTimeMessages.length > 0) {
-			response += \n\n;
-		}
+		if (infoMessages.length > 0) {
+			response += `\n\n${infoMessages.join('\n')}`;
 		}
 
-		await addSubTaskToActivityTask<_AgilityActivityTaskOptions>({
+		const zeroTimePreferenceRole = fletchResult?.preference.role ?? alchResult?.preference.role ?? null;
+
+		await addSubTaskToActivityTask<AgilityActivityTaskOptions>({
 			courseID: course.id,
 			userID: user.id,
 			channelID,
@@ -182,10 +186,10 @@ if (fletchResult) {
 			duration,
 			type: 'Agility',
 			alch: alchResult ? { itemID: alchResult.item.id, quantity: alchResult.quantity } : undefined,
-			_fletch: fletchResult ? { id: fletchResult.fletchable.id, qty: fletchResult.quantity } : undefined
-		}
-)
+			fletch: fletchResult ? { id: fletchResult.fletchable.id, qty: fletchResult.quantity } : undefined,
+			zeroTimePreferenceRole
+		});
 
-return response;
-}
-}
+		return response;
+	}
+};

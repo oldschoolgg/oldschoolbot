@@ -7,10 +7,10 @@ import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import {
-	type AttemptZeroTimeActivityOptions,
 	attemptZeroTimeActivity,
 	getZeroTimeActivityPreferences,
 	getZeroTimeFletchTime,
+	type AttemptZeroTimeActivityOptions,
 	type ZeroTimeActivityPreference,
 	type ZeroTimeActivityResult
 } from '@/lib/util/zeroTimeActivity.js';
@@ -49,11 +49,9 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 		return 'You need Graceful equipped in any setup to do the Hallowed Sepulchre.';
 	}
 
-	// Base data
 	const completableFloors = sepulchreFloors.filter(f => agilityLevel >= f.agilityLevel);
 	let lapLength = sumArr(completableFloors.map(f => f.time));
 
-	// Boosts
 	const percentReduced = Math.min(
 		Math.floor((await user.fetchMinigameScore('sepulchre')) / (Time.Hour / lapLength)),
 		10
@@ -76,26 +74,29 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 	let fletchResult: FletchResult | null = null;
 	let alchResult: AlchResult | null = null;
 	const zeroTimeMessages: string[] = [];
-
 	const preferences = getZeroTimeActivityPreferences(user);
 	const failureMessages: string[] = [];
 
 	for (const preference of preferences) {
+		const label = preference.role === 'primary' ? 'Primary' : 'Fallback';
+
 		const attemptOptions: AttemptZeroTimeActivityOptions =
 			preference.type === 'alch'
 				? {
-						user,
-						duration: tripLength,
-						preference: preference as ZeroTimeActivityPreference & { type: 'alch' },
-						variant: 'default',
-						itemsPerHour: SEPULCHRE_ALCHES_PER_HOUR
-					}
+					user,
+					duration: tripLength,
+					preference: preference as ZeroTimeActivityPreference & { type: 'alch' },
+					variant: 'default',
+					itemsPerHour: SEPULCHRE_ALCHES_PER_HOUR
+				  }
 				: {
-						user,
-						duration: tripLength,
-						preference: preference as ZeroTimeActivityPreference & { type: 'fletch' },
-						itemsPerHour: resolveFletchItemsPerHour(preference)
-					};
+					user,
+					duration: tripLength,
+					preference: preference as ZeroTimeActivityPreference & { type: 'fletch' },
+					...(resolveFletchItemsPerHour(preference)
+						? { itemsPerHour: resolveFletchItemsPerHour(preference) }
+						: {})
+				  };
 
 		const attempt = attemptZeroTimeActivity(attemptOptions);
 
@@ -109,9 +110,7 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 		}
 
 		if (attempt.message) {
-			failureMessages.push(
-				`${preference.role === 'primary' ? 'Primary' : 'Fallback'} ${preference.type}: ${attempt.message}`
-			);
+			failureMessages.push(`${label} ${preference.type}: ${attempt.message}`);
 		}
 	}
 
@@ -128,6 +127,8 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 		zeroTimeMessages.push(...failureMessages);
 	}
 
+	const zeroTimePreferenceRole = fletchResult?.preference.role ?? alchResult?.preference.role ?? null;
+
 	await addSubTaskToActivityTask<SepulchreActivityTaskOptions>({
 		floors: completableFloors.map(f => f.number),
 		quantity: maxLaps,
@@ -137,7 +138,8 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 		channelID: channelID.toString(),
 		minigameID: 'sepulchre',
 		fletch: fletchResult ? { id: fletchResult.fletchable.id, qty: fletchResult.quantity } : undefined,
-		alch: alchResult ? { itemID: alchResult.item.id, quantity: alchResult.quantity } : undefined
+		alch: alchResult ? { itemID: alchResult.item.id, quantity: alchResult.quantity } : undefined,
+		zeroTimePreferenceRole
 	});
 
 	let str = `${user.minionName} is now doing ${maxLaps} laps of the Sepulchre, in each lap they are doing floors ${
