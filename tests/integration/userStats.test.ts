@@ -1,3 +1,4 @@
+import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { createTestUser, mockClient } from './util.js';
@@ -5,25 +6,25 @@ import { createTestUser, mockClient } from './util.js';
 describe('User Stats', async () => {
 	await mockClient();
 
-	test('Should return nothing', async () => {
+	test('Stats Update', async () => {
 		const user = await createTestUser();
-		const userID = user.id;
 
-		expect(await user.fetchStats()).toEqual({ user_id: BigInt(userID) });
-		const result = await user.statsUpdate({
+		expect((await user.fetchStats()).ash_sanctifier_prayer_xp).toEqual(0n);
+		await user.statsUpdate({
 			ash_sanctifier_prayer_xp: {
 				increment: 100
 			}
 		});
-		expect(result).toEqual({ user_id: BigInt(userID) });
-		const result2 = await user.statsUpdate({
-			ash_sanctifier_prayer_xp: {
-				increment: 100
-			}
-		});
-		expect(result2).toEqual({ user_id: BigInt(userID) });
-		const stats = await user.fetchStats();
-		expect(stats.ash_sanctifier_prayer_xp).toEqual(BigInt(200));
-		expect(Object.keys(stats).length).toEqual(1);
+		expect((await user.fetchStats()).ash_sanctifier_prayer_xp).toEqual(100n);
+	});
+
+	test('Stats Bank Update', async () => {
+		const user = await createTestUser();
+		const b = new Bank().add('Coins', 100).freeze();
+		await expect(user.fetchStats()).resolves.toMatchObject({ sacrificed_bank: {} });
+		await user.statsBankUpdate('sacrificed_bank', b);
+		await expect(user.fetchStats()).resolves.toMatchObject({ sacrificed_bank: b.toJSON() });
+		const mStats = await user.fetchMStats();
+		expect(mStats.sacrificedBank.equals(b)).toEqual(true);
 	});
 });

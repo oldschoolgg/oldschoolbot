@@ -1175,12 +1175,11 @@ for (const id of ItemGroups.teamCapes) {
 
 for (const buyable of Buyables) {
 	if (buyable.itemCost instanceof Bank) {
-		buyable.itemCost.freeze()
+		buyable.itemCost.freeze();
 	}
 	if (buyable.outputItems instanceof Bank) {
-		buyable.outputItems.freeze()
+		buyable.outputItems.freeze();
 	}
 }
-
 
 export default Buyables;

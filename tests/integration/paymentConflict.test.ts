@@ -5,7 +5,7 @@ import { describe, expect, test } from 'vitest';
 
 import { payCommand } from '../../src/mahoji/commands/pay.js';
 import type { TestUser } from './util.js';
-import { createTestUser, mockClient } from './util.js';
+import { createTestUser, mockClient, mockUserOption } from './util.js';
 
 describe('Payment conflicts', async () => {
 	const payerCount = 20;
@@ -18,7 +18,7 @@ describe('Payment conflicts', async () => {
 	test(
 		'GE Simulation (Payee)',
 		{
-			timeout: Time.Minute * 5,
+			timeout: Time.Minute * 2,
 			repeats
 		},
 		async () => {
@@ -40,7 +40,10 @@ describe('Payment conflicts', async () => {
 				const payer = randArrItem(payers);
 				return new Promise<void>(async resolve => {
 					const amount = randInt(100_000, 1_000_000);
-					await payer.runCommand(payCommand, { user: { user: payeeTarget }, amount: amount.toString() });
+					await payer.runCommand(payCommand, {
+						user: mockUserOption(payeeTarget.id),
+						amount: amount.toString()
+					});
 					resolve();
 				});
 			};
@@ -92,10 +95,14 @@ describe('Payment conflicts', async () => {
 			const payeeTarget = await globalClient.users.fetch(payee.id);
 			return new Promise<void>(async resolve => {
 				const amount = randInt(100_000, 1_000_000);
-				await userPayer.runCommand(payCommand, { user: { user: payeeTarget }, amount: amount.toString() });
+				await userPayer.runCommand(payCommand, {
+					user: mockUserOption(payeeTarget.id),
+					amount: amount.toString()
+				});
 				resolve();
 			});
 		};
+
 		const promiseAdd = async () => {
 			return new Promise<void>(async resolve => {
 				await userPayer.addItemsToBank({ items: new Bank().add('Cannonball', 100) });

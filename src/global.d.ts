@@ -9,6 +9,7 @@ declare global {
 	type MInteraction = import('@/lib/structures/MInteraction.js').MInteraction;
 	type CompatibleResponse = import('@/lib/structures/PaginatedMessage.js').CompatibleResponse;
 	type MahojiUserOption = import('@/lib/discord/commandOptions.js').MahojiUserOption;
+	type RNGProvider = import('@oldschoolgg/rng').RNGProvider;
 	interface CommandRunOptions<T extends CommandOptions = {}> {
 		interaction: MInteraction;
 		options: T;
@@ -17,6 +18,7 @@ declare global {
 		channelID: string;
 		guildID?: string;
 		userID: string;
+		rng: RNGProvider;
 	}
 
 	type CommandResponse = Promise<null | string | InteractionReplyOptions | SpecialResponse>;

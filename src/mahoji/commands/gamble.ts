@@ -169,7 +169,8 @@ export const gambleCommand: OSBMahojiCommand = {
 		options,
 		interaction,
 		guildID,
-		user
+		user,
+		rng
 	}: CommandRunOptions<{
 		item?: { item?: string; autoconfirm?: boolean };
 		dice?: { amount?: string };
@@ -199,7 +200,7 @@ export const gambleCommand: OSBMahojiCommand = {
 			if (user.bitfield.includes(BitField.SelfGamblingLocked) && options.dice.amount) {
 				return 'You have gambling disabled and cannot gamble!';
 			}
-			return diceCommand(user, interaction, options.dice.amount);
+			return diceCommand(rng, user, interaction, options.dice.amount);
 		}
 
 		// Block GP Gambling from users with the BitField set:

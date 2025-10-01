@@ -1,5 +1,5 @@
 import { type RNGProvider, SeedableRNG } from '@oldschoolgg/rng';
-import { randomSnowflake, Stopwatch, sumArr, Time } from '@oldschoolgg/toolkit';
+import { Stopwatch, sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 import PromiseQueue from 'p-queue';
 import { shuffle } from 'remeda';
@@ -8,11 +8,12 @@ import { test } from 'vitest';
 import { allCommands } from '../../src/mahoji/commands/allCommands.js';
 import { getMaxUserValues } from '../../src/mahoji/commands/testpotato.js';
 import { allUsableItems } from '../../src/mahoji/lib/abstracted_commands/useCommand.js';
-import { createTestUser, mockClient, TestClient } from './util.js';
+import { createTestUser, mockClient, mockDjsUser, mockedId, mockUser, mockUserOption, TestClient } from './util.js';
 
 type CommandInput = Record<string, any>;
 
 export async function generateCommandInputs(
+	mockedUser: MUser,
 	rng: RNGProvider,
 	options: readonly CommandOption[]
 ): Promise<CommandInput[]> {
@@ -28,17 +29,13 @@ export async function generateCommandInputs(
 			case 'SubcommandGroup':
 			case 'Subcommand':
 				if (option.options) {
-					const subOptionsResults = await generateCommandInputs(rng, option.options);
+					const subOptionsResults = await generateCommandInputs(mockedUser, rng, option.options);
 					results.push(...subOptionsResults.map(input => ({ [option.name]: input })));
 				}
 				break;
 			case 'String':
 				if ('autocomplete' in option && option.autocomplete) {
-					const autoCompleteResults = await option.autocomplete(
-						'',
-						{ id: randomSnowflake() } as any,
-						{} as any
-					);
+					const autoCompleteResults = await option.autocomplete('', mockedUser, {} as any);
 					allPossibleOptions[option.name] = rng.shuffle(autoCompleteResults.map(c => c.value)).slice(0, 10);
 				} else if (option.choices) {
 					allPossibleOptions[option.name] = rng.shuffle(option.choices.map(c => c.value)).slice(0, 10);
@@ -69,16 +66,11 @@ export async function generateCommandInputs(
 				break;
 			}
 			case 'User': {
-				allPossibleOptions[option.name] = [
-					{
-						user: {
-							id: '425134194436341760',
-							username: 'username',
-							bot: false
-						},
-						member: undefined
-					}
-				];
+				const opt: MahojiUserOption = mockUserOption();
+				const optWithoutMember: MahojiUserOption = {
+					user: mockDjsUser({ userId: mockedId() })
+				};
+				allPossibleOptions[option.name] = [opt, optWithoutMember];
 				break;
 			}
 			case 'Channel':
@@ -104,7 +96,7 @@ export async function generateCommandInputs(
 test(
 	'All Commands Base Test',
 	{
-		timeout: Time.Minute * 10
+		timeout: Time.Minute * 2
 	},
 	async () => {
 		const bankWithAllItems = new Bank();
@@ -169,6 +161,8 @@ test(
 			});
 		}
 
+		const mockedUser: MUser = await mockUser();
+
 		const hardcodedOptions: Record<string, Record<string, any>[]> = {
 			use: useCommandOptions
 		};
@@ -181,7 +175,7 @@ test(
 			let options = hardcodedOptions[command.name];
 
 			if (!options && command.options && command.options.length > 0) {
-				options = await generateCommandInputs(rngProvider, command.options);
+				options = await generateCommandInputs(mockedUser, rngProvider, command.options);
 			}
 
 			if (!options) {

@@ -84,22 +84,17 @@ export const tksCommand: OSBMahojiCommand = {
 		buy?: { name?: string; quantity?: number };
 		sell?: { name?: string; quantity?: number };
 	}>) => {
-		// Get user ID
-		const user = await mUserFetch(userID.toString());
+		const user = await mUserFetch(userID);
 
-		// If user is busy don't let them go on a trip
 		if (user.minionIsBusy) return `${user.minionName} is currently busy and cannot go to the Tzhaar shops.`;
 
-		// Get user Karamja Diary completion status, item being bought, jad kc, and ironman status
 		const [hasKaramjaDiary] = await userhasDiaryTier(user, KaramjaDiary.easy);
 		const item = TokkulShopItems.find(i => stringMatches(i.name, options.buy?.name ?? options.sell?.name ?? ''));
 		const hasKilledJad: boolean = (await user.getKC(TzTokJad.id)) >= 1;
 		const isIronman = !!user.user.minion_ironman;
 
-		// If the user is buying an invalid item
 		if (!item) return "That's not a valid item.";
 
-		// If the user is trying to buy an item that is only in Mor Ul Rek and hasn't killed Jad
 		if (item.requireFireCape && !hasKilledJad) {
 			return `You are not worthy JalYt. Before you can buy/sell ${item.name}, you need to have defeated the mighty TzTok-Jad!`;
 		}
@@ -158,13 +153,11 @@ export const tksCommand: OSBMahojiCommand = {
 		if (duration > maxTripLength) {
 			return `This trip is too long. You need to ${action} less at a time, to fit your max trip length of ${formatDuration(
 				maxTripLength
-			)}. ${
-				maxCanTransact
-					? `The max ${item.name.toLowerCase()}s you can ${
-							action === 'buy' ? 'buy' : 'sell'
-						} is ${maxCanTransact}`
-					: ''
-			}`;
+			)}. ${maxCanTransact
+				? `The max ${item.name.toLowerCase()}s you can ${action === 'buy' ? 'buy' : 'sell'
+				} is ${maxCanTransact}`
+				: ''
+				}`;
 		}
 
 		// Confirmation the user has to accept before trip is sent
@@ -189,10 +182,9 @@ export const tksCommand: OSBMahojiCommand = {
 		});
 
 		// Trip start message
-		return `${user.minionName} is now ${action}ing ${action === 'buy' ? loot : cost} ${
-			action === 'buy' ? 'from' : 'to'
-		} the Tzhaar Shops, in return for ${action === 'buy' ? cost : loot}. The trip will take ${formatDuration(
-			duration
-		)}.`;
+		return `${user.minionName} is now ${action}ing ${action === 'buy' ? loot : cost} ${action === 'buy' ? 'from' : 'to'
+			} the Tzhaar Shops, in return for ${action === 'buy' ? cost : loot}. The trip will take ${formatDuration(
+				duration
+			)}.`;
 	}
 };

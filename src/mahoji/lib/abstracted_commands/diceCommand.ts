@@ -1,11 +1,10 @@
-import { cryptoRng } from '@oldschoolgg/rng';
 import { Bank, toKMB } from 'oldschooljs';
 
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
-export async function diceCommand(user: MUser, interaction: MInteraction, diceamount?: string) {
+export async function diceCommand(rng: RNGProvider, user: MUser, interaction: MInteraction, diceamount?: string) {
 	await interaction.defer();
-	const roll = cryptoRng.randInt(1, 100);
+	const roll = rng.randInt(1, 100);
 	const amount = mahojiParseNumber({ input: diceamount, min: 1, max: 500_000_000_000 });
 
 	if (!diceamount) {

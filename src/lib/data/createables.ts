@@ -2516,9 +2516,9 @@ const Createables: Createable[] = [
 					requiredItems.map(item =>
 						Array.isArray(item)
 							? formatList(
-								item.map(i => Items.itemNameFromId(i)),
-								'OR'
-							)
+									item.map(i => Items.itemNameFromId(i)),
+									'OR'
+								)
 							: Items.itemNameFromId(item)
 					)
 				)}.`;

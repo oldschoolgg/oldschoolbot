@@ -1,3 +1,4 @@
+import { cryptoRng } from '@oldschoolgg/rng';
 import { SpecialResponse } from '@oldschoolgg/toolkit';
 import { type ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.js';
 
@@ -54,7 +55,8 @@ export async function commandHandler(rawInteraction: ChatInputCommandInteraction
 			member: interaction.member,
 			channelID: interaction.channelId,
 			guildID: interaction.guild?.id,
-			userID: interaction.user.id
+			userID: interaction.user.id,
+			rng: cryptoRng
 		});
 		if (response === null) return;
 		if (response === SpecialResponse.PaginatedMessageResponse) {

@@ -1,3 +1,4 @@
+import { cryptoRng } from '@oldschoolgg/rng';
 import { channelIsSendable } from '@oldschoolgg/toolkit';
 import type { NewUser } from '@prisma/client';
 import { type APIInteractionGuildMember, ButtonInteraction, type GuildMember } from 'discord.js';
@@ -99,7 +100,8 @@ export async function runCommand(options: RunCommandArgs): Promise<null | Comman
 			options: args,
 			user,
 			member: guildID ? globalClient.guilds.cache.get(guildID)?.members.cache.get(user.id) : undefined,
-			interaction: interaction
+			interaction: interaction,
+			rng: cryptoRng
 		});
 		if (result && !interaction.replied) {
 			await interaction.reply(

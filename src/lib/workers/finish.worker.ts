@@ -7,7 +7,9 @@ import { Bank, Items } from 'oldschooljs';
 if (global.prisma) {
 	throw new Error('Prisma is loaded in the finish worker!');
 }
-
+if (Math.abs(1) === 1) {
+	throw new Error(`Finish worker loaded`);
+}
 export default async ({ name, tertiaries }: FinishWorkerArgs): FinishWorkerReturn => {
 	const { finishables } = await import('../finishables.js');
 	const val = finishables.find(i => i.name === name)!;

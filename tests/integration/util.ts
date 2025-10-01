@@ -1,7 +1,7 @@
-import { cryptoRng } from '@oldschoolgg/rng';
+import { cryptoRng, MathRNG } from '@oldschoolgg/rng';
 import { uniqueArr } from '@oldschoolgg/toolkit';
 import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
-import type { User as DJSUser } from 'discord.js';
+import type { User as DJSUser, GuildMember } from 'discord.js';
 import { Bank, convertLVLtoXP, type EMonster, type ItemBank, Items, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
@@ -19,7 +19,7 @@ import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironman
 
 export const TEST_CHANNEL_ID = '1111111111111111';
 
-function mockDjsUser({ userId }: { userId: string }) {
+export function mockDjsUser({ userId }: { userId: string }) {
 	const mocked = {
 		id: userId,
 		username: 'TestUser',
@@ -33,6 +33,26 @@ function mockDjsUser({ userId }: { userId: string }) {
 	} as any as DJSUser;
 	globalClient.users.cache.set(userId, mocked);
 	return mocked;
+}
+export function mockDjsMember({ userId }: { userId: string }) {
+	return {
+		user: mockDjsUser({ userId }),
+		displayName: 'TestUser',
+		roles: {
+			cache: new Map()
+		},
+		permissionsIn: () => ({
+			has: () => true
+		})
+	} as any as GuildMember;
+}
+
+export function mockUserOption(userId?: string): MahojiUserOption {
+	userId ??= mockedId();
+	return {
+		user: mockDjsUser({ userId }),
+		member: mockDjsMember({ userId })
+	};
 }
 
 class MockInteraction {
@@ -267,11 +287,12 @@ export class TestUser extends MUserClass {
 		const result = await command.run({
 			userID: this.user.id,
 			guildID: '342983479501389826',
-			member: {} as any,
+			member: mockDjsMember({ userId: this.user.id }),
 			channelID: TEST_CHANNEL_ID,
 			interaction: mockedInt,
 			user: this,
-			options
+			options,
+			rng: MathRNG
 		});
 		if (syncAfter) {
 			await this.sync();
@@ -340,7 +361,7 @@ export async function mockUser(
 		bank: Bank;
 		QP: number;
 		maxed: boolean;
-	}>
+	}> = {}
 ) {
 	const rangeGear = new Gear();
 	if (options.rangeGear) {

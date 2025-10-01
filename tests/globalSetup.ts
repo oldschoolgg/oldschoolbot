@@ -46,6 +46,12 @@ global.globalClient = {
 	busyCounterCache: new Map<string, number>()
 } as any;
 
-if (!process.env.TEST) {
-	throw new Error('This file should only be imported in tests.');
-}
+vi.mock('../src/lib/workers/index.ts', async () => {
+	return {
+		Workers: {
+			casketOpen: () => Promise.resolve(),
+			kill: () => Promise.resolve(),
+			finish: () => Promise.resolve()
+		}
+	};
+});

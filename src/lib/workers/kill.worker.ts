@@ -11,6 +11,9 @@ import type { KillWorkerArgs, KillWorkerReturn } from '@/lib/workers/index.js';
 if (global.prisma) {
 	throw new Error('Prisma is loaded in the kill worker!');
 }
+if (Math.abs(1) === 1) {
+	throw new Error(`Kill worker loaded`);
+}
 
 export default async ({
 	quantity,

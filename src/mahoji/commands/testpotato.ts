@@ -571,7 +571,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
 				}
-				const user = await mUserFetch(userID.toString());
+				const user = await mUserFetch(userID);
 				if (options.events) {
 					const events = await prisma.userEvent.findMany({
 						where: {

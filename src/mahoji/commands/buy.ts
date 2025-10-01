@@ -47,7 +47,7 @@ export const buyCommand: OSBMahojiCommand = {
 		interaction,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: string }>) => {
-		const user = await mUserFetch(userID.toString());
+		const user = await mUserFetch(userID);
 		const { name } = options;
 		let quantity: number | null = mahojiParseNumber({ input: options.quantity, min: 1 });
 
