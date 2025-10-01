@@ -82,6 +82,7 @@ interface HarvestLootResult {
 	harvestXp: number;
 	herbloreXp: number;
 	cropYield: number;
+	rakeXp: number;
 }
 
 function getCompostXp(upgradeType: CropUpgradeType | null): number {
@@ -300,6 +301,7 @@ async function calculateHarvestLoot(options: {
 	let harvestXp = 0;
 	let herbloreXp = 0;
 	let cropYield = 0;
+	let rakeXp = 0;
 
 	const shouldCleanHerb =
 		plantToHarvest.herbXp !== undefined &&
@@ -307,7 +309,7 @@ async function calculateHarvestLoot(options: {
 		user.skillsAsLevels.herblore >= plantToHarvest.herbLvl!;
 
 	if (!plantToHarvest.givesCrops) {
-		return { loot, harvestXp, herbloreXp, cropYield };
+		return { loot, harvestXp, herbloreXp, cropYield, rakeXp };
 	}
 
 	let cropToHarvest = plantToHarvest.outputCrop;
@@ -352,7 +354,9 @@ async function calculateHarvestLoot(options: {
 
 	loot.add(cropToHarvest, cropYield);
 	if (quantity > patchType.lastQuantity) {
-		loot.add('Weeds', quantity - patchType.lastQuantity);
+		const additionalPatches = quantity - patchType.lastQuantity;
+		loot.add('Weeds', additionalPatches * 3);
+		rakeXp += additionalPatches * 12;
 	}
 
 	if (shouldCleanHerb && plantToHarvest.herbXp) {
@@ -369,7 +373,7 @@ async function calculateHarvestLoot(options: {
 		harvestXp = cropYield * plantToHarvest.harvestXp;
 	}
 
-	return { loot, harvestXp, herbloreXp, cropYield };
+	return { loot, harvestXp, herbloreXp, cropYield, rakeXp };
 }
 
 interface TreeRemovalResult {
@@ -479,6 +483,15 @@ function calculateWoodcuttingOutcome(options: {
 	}
 
 	const woodcuttingLoot = new Bank().add(logItemID, totalLogs);
+	if (plantToHarvest.outputRoots) {
+		let totalRoots = 0;
+		for (let treeIndex = 0; treeIndex < alivePlants; treeIndex++) {
+			totalRoots += randInt(1, 4);
+		}
+		if (totalRoots > 0) {
+			woodcuttingLoot.add(plantToHarvest.outputRoots, totalRoots);
+		}
+	}
 	const woodcuttingXp = totalLogs * xpPerLog;
 
 	return { woodcuttingXp, woodcuttingLoot, woodcuttingOccurred: true };
@@ -562,7 +575,7 @@ export async function executeFarmingStep({
 	if (!harvestLootResult) {
 		return null;
 	}
-	let { loot, harvestXp, herbloreXp } = harvestLootResult;
+	let { loot, harvestXp, herbloreXp, rakeXp } = harvestLootResult;
 
 	const treeRemovalResult = await handleTreeRemoval({
 		user,
@@ -585,8 +598,6 @@ export async function executeFarmingStep({
 		loot.add(woodcuttingOutcome.woodcuttingLoot);
 	}
 	const woodcuttingXp = woodcuttingOutcome.woodcuttingXp;
-
-	const rakeXp = 0;
 	const bonusXP = Math.floor((plantXp + harvestXp + checkHealthXp + rakeXp) * bonusXpMultiplier);
 	const farmingXPAmount = Math.floor(plantXp + harvestXp + checkHealthXp + rakeXp + bonusXP);
 	const woodcuttingXPAmount = Math.floor(woodcuttingXp);
@@ -615,8 +626,20 @@ export async function executeFarmingStep({
 	}
 
 	const infoStr: string[] = [];
+	const xpBreakdownParts = [
+		`${plantXp.toLocaleString()} XP for planting`,
+		`${harvestXp.toLocaleString()} XP for harvesting`,
+		`${checkHealthXp.toLocaleString()} XP for checking health`
+	];
+	if (rakeXp > 0) {
+		xpBreakdownParts.push(`${rakeXp.toLocaleString()} XP from raking new patches`);
+	}
+	const xpBreakdown =
+		xpBreakdownParts.length > 1
+			? xpBreakdownParts.join(', ').replace(/, ([^,]*)$/, ', and $1')
+			: xpBreakdownParts[0];
 	infoStr.push(
-		`${plantingStr}harvesting ${patchType.lastQuantity}x ${plantToHarvest.name}.${payStr}\n\nYou received ${plantXp.toLocaleString()} XP for planting, ${harvestXp.toLocaleString()} XP for harvesting, and ${checkHealthXp.toLocaleString()} XP for checking health. In total: ${xpRes}. ${
+		`${plantingStr}harvesting ${patchType.lastQuantity}x ${plantToHarvest.name}.${payStr}\n\nYou received ${xpBreakdown}. In total: ${xpRes}. ${
 			woodcuttingOutcome.woodcuttingOccurred ? wcXP : ''
 		}`
 	);

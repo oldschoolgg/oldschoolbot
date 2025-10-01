@@ -1,4 +1,4 @@
-import { Bank } from 'oldschooljs';
+import { Bank, itemID } from 'oldschooljs';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { MUser } from '../../src/lib/MUser.js';
@@ -24,7 +24,7 @@ const redwoodPlant = {
 	inputItems: new Bank(),
 	outputLogs: 100,
 	outputLogsQuantity: 100,
-	outputRoots: undefined,
+	outputRoots: itemID('Magic roots'),
 	givesLogs: true,
 	givesCrops: false,
 	fixedOutput: false,
@@ -45,9 +45,47 @@ const redwoodPlant = {
 	canCompostandPay: false
 } as const;
 
+const herbPlant = {
+	id: 2,
+	name: 'Test herb',
+	aliases: ['test herb'],
+	seedType: 'herb',
+	plantXp: 20,
+	checkXp: 0,
+	harvestXp: 15,
+	herbXp: undefined,
+	herbLvl: undefined,
+	inputItems: new Bank(),
+	outputCrop: itemID('Guam leaf'),
+	givesLogs: false,
+	givesCrops: true,
+	fixedOutput: true,
+	fixedOutputAmount: 3,
+	variableYield: false,
+	numOfStages: 3,
+	chanceOfDeath: 0,
+	chance1: 0,
+	chance99: 0,
+	treeWoodcuttingLevel: undefined,
+	needsChopForHarvest: false,
+	petChance: 1000,
+	growthTime: 0,
+	timePerPatchTravel: 0,
+	timePerHarvest: 0,
+	woodcuttingXp: undefined,
+	canPayFarmer: true,
+	canCompostPatch: true,
+	canCompostandPay: false
+} as const;
+
+vi.mock('@oldschoolgg/rng', () => ({
+	randInt: vi.fn().mockReturnValue(2),
+	roll: vi.fn().mockReturnValue(false)
+}));
+
 vi.mock('@/lib/skilling/skills/farming/index.js', () => ({
 	Farming: {
-		Plants: [redwoodPlant],
+		Plants: [redwoodPlant, herbPlant],
 		calcVariableYield: calcVariableYieldMock
 	}
 }));
@@ -156,9 +194,18 @@ vi.mock('@/lib/util.js', () => ({
 }));
 
 let farmingTask: typeof import('../../src/tasks/minions/farmingActivity.js')['farmingTask'];
+let executeFarmingStep: typeof import('../../src/tasks/minions/farmingStep.js')['executeFarmingStep'];
+let randIntMock: any;
+let rollMock: any;
 
 beforeAll(async () => {
-	farmingTask = (await import('../../src/tasks/minions/farmingActivity.js')).farmingTask;
+	const farmingActivityModule = await import('../../src/tasks/minions/farmingActivity.js');
+	farmingTask = farmingActivityModule.farmingTask;
+	const farmingStepModule = await import('../../src/tasks/minions/farmingStep.js');
+	executeFarmingStep = farmingStepModule.executeFarmingStep;
+	const rngModule = await import('@oldschoolgg/rng');
+	randIntMock = rngModule.randInt as any;
+	rollMock = rngModule.roll as any;
 });
 
 describe('farmingActivity tree clearing fees', () => {
@@ -287,6 +334,24 @@ describe('farmingActivity tree clearing fees', () => {
 		addSubTaskMock.mockClear();
 		updateBankSettingMock.mockClear();
 		userStatsBankUpdateMock.mockClear();
+		if (randIntMock) {
+			randIntMock.mockReset();
+			randIntMock.mockReturnValue(2);
+		}
+		if (rollMock) {
+			rollMock.mockReset();
+			rollMock.mockReturnValue(false);
+		}
+		userStub.skillsAsLevels.woodcutting = 1 as any;
+		userStub.skillLevel = vi.fn((skill: string) => {
+			if (skill === 'farming') {
+				return 99;
+			}
+			if (skill === 'woodcutting') {
+				return 1;
+			}
+			return 1;
+		});
 	});
 
 	it('does not charge coins when planned trees died before harvest', async () => {
@@ -378,5 +443,92 @@ describe('farmingActivity tree clearing fees', () => {
 		expect(handleTripFinishMock).not.toHaveBeenCalled();
 
 		randomSpy.mockRestore();
+	});
+
+	it('awards roots when chopping farming trees', async () => {
+		userStub.skillsAsLevels.woodcutting = 99 as any;
+		userStub.skillLevel = vi.fn((skill: string) => {
+			if (skill === 'farming') {
+				return 99;
+			}
+			if (skill === 'woodcutting') {
+				return 99;
+			}
+			return 1;
+		});
+		const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.99);
+		randIntMock.mockReturnValue(3);
+
+		const data: FarmingActivityTaskOptions = {
+			type: 'Farming',
+			plantsName: 'Redwood tree',
+			patchType: {
+				lastPlanted: 'Redwood tree',
+				patchPlanted: true,
+				plantTime: Date.now() - 1,
+				lastQuantity: 1,
+				lastUpgradeType: null,
+				lastPayment: false
+			} as any,
+			quantity: 1,
+			upgradeType: null,
+			payment: false,
+			treeChopFeePaid: 0,
+			treeChopFeePlanned: 2000,
+			planting: true,
+			duration: 60_000,
+			currentDate: Date.now(),
+			id: 1,
+			finishDate: Date.now() + 60_000,
+			userID: '1',
+			channelID: '123',
+			autoFarmed: true
+		};
+
+		if ('isNew' in farmingTask) {
+			await farmingTask.run(data, { user: userStub, handleTripFinish: handleTripFinishMock });
+		} else {
+			await farmingTask.run(data);
+		}
+
+		const lootArg = handleTripFinishMock.mock.calls[0]?.[5] as Bank | null;
+		expect(lootArg?.amount('Magic roots')).toBe(3);
+
+		randomSpy.mockRestore();
+	});
+
+	it('awards weeds and rake XP when unlocking extra patches mid-run', async () => {
+		const data: FarmingActivityTaskOptions = {
+			type: 'Farming',
+			plantsName: 'Test herb',
+			patchType: {
+				lastPlanted: 'Test herb',
+				patchPlanted: true,
+				plantTime: Date.now() - 1,
+				lastQuantity: 1,
+				lastUpgradeType: null,
+				lastPayment: false
+			} as any,
+			quantity: 2,
+			upgradeType: null,
+			payment: false,
+			treeChopFeePaid: 0,
+			treeChopFeePlanned: 0,
+			planting: true,
+			duration: 60_000,
+			currentDate: Date.now(),
+			id: 1,
+			finishDate: Date.now() + 60_000,
+			userID: '1',
+			channelID: '123',
+			autoFarmed: true
+		};
+
+		const result = await executeFarmingStep({ user: userStub, channelID: '123', data });
+
+		expect(result).not.toBeNull();
+		const nonNullResult = result!;
+		expect(nonNullResult.loot?.amount('Weeds')).toBe(3);
+		expect(nonNullResult.summary?.xp.rake).toBe(12);
 	});
 });
