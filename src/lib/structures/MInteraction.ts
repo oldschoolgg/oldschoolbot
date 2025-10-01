@@ -1,4 +1,4 @@
-import { debounce, deepMerge, Time } from '@oldschoolgg/toolkit';
+import { debounce, deepMerge, formatDuration, Time } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 import {
 	ActionRowBuilder,
@@ -203,9 +203,9 @@ export class MInteraction {
 		message:
 			| string
 			| ({ content: string; timeout?: number } & (
-					| { ephemeral?: false; users?: string[] }
-					| { ephemeral?: boolean; users?: undefined }
-			  ))
+				| { ephemeral?: false; users?: string[] }
+				| { ephemeral?: boolean; users?: undefined }
+			))
 	) {
 		if (process.env.TEST) return;
 		const content = typeof message === 'string' ? message : message.content;
@@ -315,6 +315,7 @@ export class MInteraction {
 	}
 
 	public async makeParty(options: MakePartyOptions & { message: string }): Promise<MUser[]> {
+		const timeout = Time.Minute * 5;
 		const usersWhoConfirmed: string[] = [options.leader.id];
 		let massStarted = false;
 		let partyCancelled = false;
@@ -331,7 +332,7 @@ export class MInteraction {
 				await Promise.all(usersWhoConfirmed.map(u => getUsername(u)))
 			).join(
 				', '
-			)}\n\nThis party will automatically depart in 5 minutes, or if the leader clicks the start (start early) or stop button.`,
+			)}\n\nThis party will automatically depart in ${formatDuration(timeout)}, or if the leader clicks the start (start early) or stop button.`,
 			components: [row],
 			allowedMentions: { users: [] as string[] }
 		});
@@ -373,9 +374,15 @@ export class MInteraction {
 			resolve(members);
 		};
 
+		function checkParty(): string | null {
+			if (usersWhoConfirmed.length < options.minSize) return `You need atleast ${options.minSize} players.`;
+			if (usersWhoConfirmed.length > options.maxSize) return `You need atleast ${options.minSize} players.`;
+			return null;
+		}
+
 		return new Promise<MUser[]>((resolve, reject) => {
 			const collector = message.createMessageComponentCollector({
-				time: Time.Minute * 5,
+				time: timeout,
 				componentType: ComponentType.Button
 			});
 
@@ -454,13 +461,18 @@ export class MInteraction {
 					await silentAck(bi);
 					collector.stop('partyCreatorEnd');
 					this.reply({ content: 'The party was cancelled.', components: [] });
-					reject(SILENT_ERROR);
+					reject(new Error(SILENT_ERROR));
 					return;
 				}
 
 				if (id === 'PARTY_START') {
 					if (bi.user.id !== options.leader.id) {
 						await bi.reply({ content: 'You cannot start this party.', flags: MessageFlags.Ephemeral });
+						return;
+					}
+					const error = checkParty();
+					if (error) {
+						await bi.reply({ content: error, flags: MessageFlags.Ephemeral });
 						return;
 					}
 					await silentAck(bi);
