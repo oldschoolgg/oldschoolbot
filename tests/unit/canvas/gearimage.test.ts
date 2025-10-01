@@ -4,6 +4,7 @@ import { EItem } from 'oldschooljs';
 import { EGear } from 'oldschooljs/EGear';
 import { describe, test } from 'vitest';
 
+import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
@@ -22,6 +23,7 @@ const COXMaxMeleeGear = constructGearSetup({
 });
 
 describe('Gear Images', async () => {
+	await bankImageTask.ready;
 	const gear = COXMaxMeleeGear.clone();
 	gear.equip(EGear.DRAGON_ARROW, 100);
 
