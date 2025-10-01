@@ -176,7 +176,7 @@ export class TestUser extends MUserClass {
 	}
 
 	async openedBankMatch(bankToMatch: Bank) {
-		const stats = await this.fetchStats({ openable_scores: true });
+		const stats = await this.fetchStats();
 		const currentBank = new Bank(stats.openable_scores as ItemBank);
 		if (!currentBank.equals(bankToMatch)) {
 			throw new Error(`Expected opened bank to match, difference: ${currentBank.difference(bankToMatch)}`);
@@ -295,7 +295,7 @@ export class TestUser extends MUserClass {
 
 	async statsMatch(key: keyof UserStats, value: any) {
 		await this.sync();
-		const stats = await this.fetchStats({ [key]: true });
+		const stats = await this.fetchStats();
 		if (stats[key] !== value) {
 			throw new Error(`Expected ${key} to be ${value} but got ${stats[key]}`);
 		}

@@ -9,7 +9,7 @@ describe('User Stats', async () => {
 		const user = await createTestUser();
 		const userID = user.id;
 
-		expect(await user.fetchStats({})).toEqual({ user_id: BigInt(userID) });
+		expect(await user.fetchStats()).toEqual({ user_id: BigInt(userID) });
 		const result = await user.statsUpdate({
 			ash_sanctifier_prayer_xp: {
 				increment: 100
@@ -22,7 +22,7 @@ describe('User Stats', async () => {
 			}
 		});
 		expect(result2).toEqual({ user_id: BigInt(userID) });
-		const stats = await user.fetchStats({ ash_sanctifier_prayer_xp: true });
+		const stats = await user.fetchStats();
 		expect(stats.ash_sanctifier_prayer_xp).toEqual(BigInt(200));
 		expect(Object.keys(stats).length).toEqual(1);
 	});

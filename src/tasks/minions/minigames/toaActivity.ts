@@ -5,14 +5,8 @@ import { Bank, type ItemBank, ItemGroups, resolveItems } from 'oldschooljs';
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
-import {
-	calcTOALoot,
-	calculateXPFromRaid,
-	type RaidLevel,
-	toaOrnamentKits,
-	toaPetTransmogItems
-} from '@/lib/simulation/toa.js';
-import { normalizeTOAUsers } from '@/lib/simulation/toaUtils.js';
+import { calcTOALoot, calculateXPFromRaid, toaOrnamentKits, toaPetTransmogItems } from '@/lib/simulation/toa.js';
+import { normalizeTOAUsers, type RaidLevel } from '@/lib/simulation/toaUtils.js';
 import type { TOAOptions } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
 

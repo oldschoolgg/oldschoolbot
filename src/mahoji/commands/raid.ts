@@ -1,4 +1,5 @@
-import { mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '@/lib/simulation/toa.js';
+import { toaHelpCommand, toaStartCommand } from '@/lib/simulation/toa.js';
+import { mileStoneBaseDeathChances } from '@/lib/simulation/toaUtils.js';
 import { coxBoostsCommand, coxCommand, coxStatsCommand } from '@/mahoji/lib/abstracted_commands/coxCommand.js';
 import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '@/mahoji/lib/abstracted_commands/tobCommand.js';
 

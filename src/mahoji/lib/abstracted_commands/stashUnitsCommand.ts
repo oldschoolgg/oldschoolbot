@@ -135,7 +135,7 @@ export async function stashUnitFillAllCommand(user: MUser): CommandResponse {
 	const notBuiltAndNotFilled = parsedUnits.filter(i => i.builtUnit !== undefined && !i.isFull);
 	if (notBuiltAndNotFilled.length === 0) return 'There are no STASH units left that you can fill.';
 
-	const checkBank = user.bank;
+	const checkBank = user.bank.clone();
 	const costBank = new Bank();
 
 	const toFill: (ParsedUnit & { itemsToFillWith: Bank })[] = [];

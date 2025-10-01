@@ -2516,9 +2516,9 @@ const Createables: Createable[] = [
 					requiredItems.map(item =>
 						Array.isArray(item)
 							? formatList(
-									item.map(i => Items.itemNameFromId(i)),
-									'OR'
-								)
+								item.map(i => Items.itemNameFromId(i)),
+								'OR'
+							)
 							: Items.itemNameFromId(item)
 					)
 				)}.`;
@@ -2716,5 +2716,16 @@ const Createables: Createable[] = [
 	...forestryCreatables,
 	...camdozaalItems
 ];
+
+for (const createable of Createables) {
+	if (createable.inputItems instanceof Bank) {
+		createable.inputItems.freeze();
+	} else {
+		Object.freeze(createable.inputItems);
+	}
+	if (createable.outputItems instanceof Bank) {
+		createable.outputItems.freeze();
+	}
+}
 
 export default Createables;

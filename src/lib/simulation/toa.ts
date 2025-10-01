@@ -27,7 +27,7 @@ import { mentionCommand } from '@/lib/discord/utils.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
-import { getToaKCs } from '@/lib/simulation/toaUtils.js';
+import { getToaKCs, mileStoneBaseDeathChances, type RaidLevel } from '@/lib/simulation/toaUtils.js';
 import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
 import type { MakePartyOptions, Skills } from '@/lib/types/index.js';
 import type { TOAOptions } from '@/lib/types/minions.js';
@@ -710,21 +710,6 @@ const TOARooms = [
 		timeWeighting: 2
 	}
 ] as const;
-
-export const mileStoneBaseDeathChances = [
-	{ level: 600, chance: 97, minChance: 97 },
-	{ level: 500, chance: 85, minChance: 93 },
-	{ level: 450, chance: 48.5, minChance: null },
-	{ level: 400, chance: 36, minChance: null },
-	{ level: 350, chance: 25.5, minChance: null },
-	{ level: 300, chance: 23, minChance: null },
-	{ level: 200, chance: 15, minChance: null },
-	{ level: 150, chance: 13, minChance: null },
-	{ level: 100, chance: 10, minChance: null },
-	{ level: 1, chance: 5, minChance: null }
-] as const;
-
-export type RaidLevel = (typeof mileStoneBaseDeathChances)[number]['level'];
 
 function calcDeathChance(totalAttempts: number, raidLevel: RaidLevel, tobAndCoxKC: number) {
 	const obj = mileStoneBaseDeathChances.find(i => i.level === raidLevel)!;

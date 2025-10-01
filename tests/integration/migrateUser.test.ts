@@ -928,7 +928,7 @@ const allTableCommands: TestCommand[] = [
 				user_id: user.id
 			});
 
-			const stats = await user.fetchStats({ items_sold_bank: true });
+			const stats = await user.fetchStats();
 			await Promise.all([
 				ClientSettings.updateClientGPTrackSetting('gp_sell', totalPrice),
 				ClientSettings.updateBankSetting('sold_items_bank', bankToSell),
