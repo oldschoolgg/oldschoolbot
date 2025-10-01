@@ -6,13 +6,13 @@ Zero-time activities let your minion cast High Alchemy or fletch stackable ammun
 
 ## Configuring `/zero_time_activity`
 
-1. Choose your background action with [[/zero_time_activity type\:alch]] or [[/zero_time_activity type\:fletch]].
-2. If you select `fletch`, provide the exact item with [[/zero_time_activity type\:fletch item\:"Rune dart"]] (autocomplete suggests every supported choice).
-3. For `alch`, leave the item blank to let the bot automatically pick from your favourite alchs each trip, or specify a particular item such as [[/zero_time_activity type\:alch item\:"Yew longbow"]].
-4. Update your favourite alch list with [[/config user favorite_alchs add\:Rune platebody]] so automatic selection has options to choose from.
-5. Use [[/zero_time_activity clear\:true]] to remove the configuration.
+- Use [[/zero_time_activity]] (or [[/zero_time_activity overview]]) to see your saved preferences, readiness, and any blockers.
+- Configure your primary preference with [[/zero_time_activity set primary_type\:alch]] or [[/zero_time_activity set primary_type\:fletch primary_item\:"Rune dart"]]. Autocomplete now lists every valid fletchable alongside the required level and Slayer unlocks.
+- Add a fallback with [[/zero_time_activity set primary_type\:alch fallback_type\:fletch fallback_item\:"Rune dart"]] so trips automatically swap to the next viable option if the primary setup is unavailable.
+- Keep `Alch (automatic favourites)` stocked by adding favourite alchs via [[/config user favorite_alchs add\:Rune platebody]].
+- Remove everything with [[/zero_time_activity clear]].
 
-Only one zero-time activity can run per trip. Switching between alching and fletching requires re-running `/zero_time_activity`. The necessary runes or fletching materials are removed from your bank when the trip starts, and zero-time actions never extend the duration of the main activity.
+Only one zero-time action runs per trip, but the fallback preference means you rarely waste a lap. Supplies are withdrawn when the trip begins, and any automatic switch highlights the reason (for example, “Primary alch: You're missing resources… Falling back to Fletch Rune dart.”).
 
 ## Zero-time Alching
 
