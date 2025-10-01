@@ -353,7 +353,8 @@ export class MInteraction {
 
 		function checkParty(): string | null {
 			if (usersWhoConfirmed.length < options.minSize) return `You need atleast ${options.minSize} players.`;
-			if (usersWhoConfirmed.length > options.maxSize) return `You need atleast ${options.minSize} players.`;
+			if (usersWhoConfirmed.length > options.maxSize)
+				return `You cannot have more than ${options.minSize} players.`;
 			return null;
 		}
 

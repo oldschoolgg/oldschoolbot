@@ -268,7 +268,7 @@ export async function giantsFoundryShopCommand(
 	}
 
 	await interaction.confirmation(
-		`Are you sure you want to spent **${cost.toLocaleString()}** Foundry Reputation to buy **${quantity.toLocaleString()}x ${
+		`Are you sure you want to spend **${cost.toLocaleString()}** Foundry Reputation to buy **${quantity.toLocaleString()}x ${
 			shopItem.name
 		}**?`
 	);

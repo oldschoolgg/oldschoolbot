@@ -284,7 +284,7 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 	}
 	if (1 > 2 && timeSinceMessage > timeLimit) {
 		return interaction.reply({
-			content: `<@${userID}>, this button is too old, you can no longer use it. You can only only use buttons that are up to ${formatDuration(
+			content: `<@${userID}>, this button is too old, you can no longer use it. You can only use buttons that are up to ${formatDuration(
 				timeLimit
 			)} old, up to 300 hours for patrons.`,
 			ephemeral: true
