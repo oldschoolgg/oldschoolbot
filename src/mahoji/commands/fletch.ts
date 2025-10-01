@@ -5,6 +5,7 @@ import Fletching from '@/lib/skilling/skills/fletching/index.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import type { FletchingActivityTaskOptions } from '@/lib/types/minions.js';
+import { itemID } from 'oldschooljs';
 
 export const fletchCommand: OSBMahojiCommand = {
 	name: 'fletch',
@@ -63,11 +64,14 @@ export const fletchCommand: OSBMahojiCommand = {
 		}
 
 		const userBank = user.bank;
+		const hasFletchingKnife = user.hasEquippedOrInBank(itemID('Fletching knife'));
 
 		// Get the base time to fletch the item then add on quarter of a second per item to account for banking/etc.
 		let timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6 + Time.Second / 4;
 		if (fletchable.tickRate < 1) {
 			timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6;
+		} else if (fletchable.tickRate > 1 && fletchable.fletchingKnifeBoost && hasFletchingKnife) {
+			timeToFletchSingleItem = (fletchable.tickRate - 1) * Time.Second * 0.6 + Time.Second / 4;
 		}
 
 		const maxTripLength = user.calcMaxTripLength('Fletching');
@@ -108,6 +112,8 @@ export const fletchCommand: OSBMahojiCommand = {
 
 		return `${user.minionName} is now Fletching ${quantity}${sets} ${
 			fletchable.name
-		}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`;
+		}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.${
+			hasFletchingKnife ? "\n\n**Bonus**\n**Fletching knife:** -1 tick per item" : ""
+		}`;
 	}
 };
