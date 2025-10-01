@@ -1,7 +1,7 @@
 import { randArrItem, randInt } from '@oldschoolgg/rng';
 import { noOp, stringMatches, uniqueArr } from '@oldschoolgg/toolkit';
 import { type Prisma, xp_gains_skill_enum } from '@prisma/client';
-import { MessageFlags } from 'discord.js';
+import { EmbedBuilder, MessageFlags } from 'discord.js';
 import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
 
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
@@ -27,7 +27,6 @@ import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import { logError } from '@/lib/util/logError.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
-import { userEventToStr } from '@/lib/util/userEvents.js';
 import { fetchBingosThatUserIsInvolvedIn } from '@/mahoji/commands/bingo.js';
 import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
@@ -243,6 +242,36 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 			name: 'testpotato',
 			description: 'Commands for making testing easier and faster.',
 			options: [
+				{
+					type: 'Subcommand',
+					name: 'party',
+					description: 'Test party'
+				},
+				{
+					type: 'Subcommand',
+					name: 'confirmation',
+					description: 'Test confirmations',
+					options: [
+						{
+							type: 'Boolean',
+							name: 'ephemeral',
+							description: 'Only you can see the response (default false)',
+							required: false
+						},
+						{
+							type: 'User',
+							name: 'other_person',
+							description: 'Other person who must confirm too (optional',
+							required: false
+						},
+						{
+							type: 'User',
+							name: 'another_person',
+							description: 'Another person who must confirm too (optional',
+							required: false
+						}
+					]
+				},
 				{
 					type: 'Subcommand',
 					name: 'wipe',
@@ -539,18 +568,19 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 							max_value: 1000
 						}
 					]
-				},
-				{
-					type: 'Subcommand',
-					name: 'events',
-					description: 'See events',
-					options: []
 				}
 			],
 			run: async ({
 				options,
-				userID
+				user,
+				interaction
 			}: CommandRunOptions<{
+				confirmation?: {
+					ephemeral?: boolean;
+					other_person?: MahojiUserOption;
+					another_person?: MahojiUserOption;
+				};
+				party?: {};
 				max?: {};
 				bitfield?: { add?: string; remove?: string };
 				gear?: { thing: string };
@@ -565,24 +595,71 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 				get_code?: {};
 				bingo_tools?: { start_bingo: string };
 				setslayertask?: { master: string; monster: string; quantity: number };
-				events?: {};
 			}>) => {
 				if (globalConfig.isProduction) {
-					logError('Test command ran in production', { userID: userID.toString() });
+					logError('Test command ran in production', { userID: user.id });
 					return 'This will never happen...';
 				}
-				const user = await mUserFetch(userID);
-				if (options.events) {
-					const events = await prisma.userEvent.findMany({
-						where: {
-							user_id: user.id
-						},
-						orderBy: {
-							date: 'desc'
-						}
+
+				if (options.party) {
+					const party = await interaction.makeParty({
+						maxSize: 5,
+						minSize: 2,
+						message: `Join the party!`,
+						leader: user,
+						ironmanAllowed: true
 					});
-					return events.map(userEventToStr).join('\n');
+					return `The party has now started with the following users: ${party.map(i => i.username).join(', ')}`;
 				}
+				if (options.confirmation) {
+					const ephemeral = options.confirmation.ephemeral ?? false;
+					const users = [user.id];
+					if (options.confirmation.other_person) users.push(options.confirmation.other_person.user.id);
+					if (options.confirmation.another_person) users.push(options.confirmation.another_person.user.id);
+					if (ephemeral && users.length > 1) {
+						return 'You cannot have multiple people confirm on an ephemeral message.';
+					}
+					await interaction.confirmation({
+						content: `This is a normal confirmation. Users who must confirm: ${users.map(i => `<@${i}>`).join(', ')}`,
+						users,
+						// @ts-expect-error ddd
+						ephemeral
+					});
+					return interaction.makePaginatedMessage({
+						ephemeral: true,
+						pages: [
+							() => ({
+								embeds: [
+									new EmbedBuilder()
+										.setTitle(`Page 1`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+								]
+							}),
+							() => ({
+								embeds: [
+									new EmbedBuilder()
+										.setTitle(`Page 2`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+								]
+							}),
+							() => ({
+								embeds: [
+									new EmbedBuilder()
+										.setTitle(`Page 3`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+								]
+							}),
+							() => ({
+								embeds: [
+									new EmbedBuilder()
+										.setTitle(`Page 4`)
+										.setImage(`https://cdn.oldschool.gg/monkey/${randInt(1, 39)}.webp`)
+								]
+							})
+						]
+					});
+				}
+
 				if (options.bitfield) {
 					const bitInput = options.bitfield.add ?? options.bitfield.remove;
 					const bitEntry = Object.entries(BitFieldData).find(i => i[0] === bitInput);

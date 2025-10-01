@@ -54,7 +54,6 @@ import { mineCommand } from '@/mahoji/commands/mine.js';
 import { minigamesCommand } from '@/mahoji/commands/minigames.js';
 import { minionCommand } from '@/mahoji/commands/minion.js';
 import { mixCommand } from '@/mahoji/commands/mix.js';
-import { monkeyCommand } from '@/mahoji/commands/monkey.js';
 import { offerCommand } from '@/mahoji/commands/offer.js';
 import { openCommand } from '@/mahoji/commands/open.js';
 import { patreonCommand } from '@/mahoji/commands/patreon.js';
@@ -166,8 +165,7 @@ export const allCommands: OSBMahojiCommand[] = [
 	collectionLogCommand,
 	gearPresetsCommand,
 	statsCommand,
-	xpCommand,
-	monkeyCommand
+	xpCommand
 ];
 
 if (!globalConfig.isProduction && testPotatoCommand) {

@@ -7,7 +7,6 @@ import {
 	ButtonStyle,
 	type CommandInteraction,
 	ComponentType,
-	DiscordAPIError,
 	type InteractionResponse,
 	InteractionResponseType,
 	type Message,
@@ -138,7 +137,6 @@ export class MInteraction {
 		this.ephemeral = ephemeral ?? this.ephemeral;
 		if (wasDeferred.size > 1000) wasDeferred.clear();
 		if (!this.deferred && !wasDeferred.has(this.id)) {
-			this.log('Deferring interaction');
 			this.deferred = true;
 			wasDeferred.add(this.id);
 			try {
@@ -148,8 +146,6 @@ export class MInteraction {
 			} catch (err) {
 				this.handleError(err);
 			}
-		} else {
-			this.log('Already deferred');
 		}
 	}
 
@@ -157,11 +153,8 @@ export class MInteraction {
 		_response: string | CompatibleResponse
 	): Promise<InteractionResponse<boolean> | Message<boolean> | null> {
 		if (this.replied) {
-			// method = 'followUp';
-			// i = this.interaction.followUp(response);
 			throw new Error('Attempted to follow up (reply to an interaction which has already been replied to)');
 		}
-		// let method: 'followUp' | 'editReply' | 'reply';
 
 		const response: CompatibleResponse = typeof _response === 'string' ? { content: _response } : _response;
 
@@ -174,26 +167,14 @@ export class MInteraction {
 
 		try {
 			if (this.deferred) {
-				// method = 'editReply';
-				this.log(`editReply ${response.content?.slice(0, 50)}`);
 				this.interactionResponse = await this.interaction.editReply(response);
 			} else {
-				// method = 'reply';
-				this.log(`reply ${response.content?.slice(0, 50)}`);
 				this.interactionResponse = await this.interaction.reply(response);
 			}
 		} catch (e: any) {
 			console.error(`Error MInteraction`, e);
-			if (e instanceof DiscordAPIError && e.code !== 10_008) {
-				// 10_008 is unknown message, e.g. if someone deletes the message before it's replied to.
-				// logErrorForInteraction(e, interaction, { method, response: JSON.stringify(response).slice(0, 50) });
-			}
 		}
 		return this.interactionResponse;
-	}
-
-	log(message: string) {
-		console.log(`[MInteraction] ${message.replaceAll('\n', ' 	\n')}`);
 	}
 
 	/**
@@ -203,9 +184,9 @@ export class MInteraction {
 		message:
 			| string
 			| ({ content: string; timeout?: number } & (
-				| { ephemeral?: false; users?: string[] }
-				| { ephemeral?: boolean; users?: undefined }
-			))
+					| { ephemeral?: false; users?: string[] }
+					| { ephemeral?: boolean; users?: undefined }
+			  ))
 	) {
 		if (process.env.TEST) return;
 		const content = typeof message === 'string' ? message : message.content;
@@ -237,7 +218,6 @@ export class MInteraction {
 							type: InteractionResponseType.DeferredMessageUpdate
 						}
 					});
-				this.log(`[2] collect`);
 				if (!users.includes(buttonInteraction.user.id)) {
 					buttonInteraction.reply({
 						flags: MessageFlags.Ephemeral,
@@ -247,7 +227,6 @@ export class MInteraction {
 				}
 
 				if (buttonInteraction.customId === 'CANCEL') {
-					this.log(`Cancelling`);
 					// If they cancel, we remove the button component, which means we can't reply to the button interaction.
 					this.reply({ content: `The confirmation was cancelled.`, components: [] });
 					collector.stop();
@@ -342,7 +321,6 @@ export class MInteraction {
 
 		const message = this.interactionResponse!;
 		const updateUsersIn = debounce(async () => {
-			console.log('updateUsersIn');
 			await this.reply(await getMessageContent());
 		}, 500);
 
@@ -361,7 +339,6 @@ export class MInteraction {
 			});
 
 		const startTrip = async (resolve: (v: MUser[]) => void, reject: (e: Error) => void) => {
-			console.log('startTrip');
 			if (massStarted) return;
 			massStarted = true;
 			await this.reply({ content: (await getMessageContent()).content, components: [] });
