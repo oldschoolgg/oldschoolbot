@@ -47,83 +47,83 @@ export type ZeroTimeActivityResult =
 	  };
 
 export interface ZeroTimeActivityResponse {
-        result: ZeroTimeActivityResult | null;
-        message?: string;
+	result: ZeroTimeActivityResult | null;
+	message?: string;
 }
 
 interface BaseAttemptZeroTimeActivityOptions {
-        user: MUser;
-        duration: number;
-        preference: ZeroTimeActivityPreference;
-        quantityOverride?: number;
-        itemsPerHour?: number;
+	user: MUser;
+	duration: number;
+	preference: ZeroTimeActivityPreference;
+	quantityOverride?: number;
+	itemsPerHour?: number;
 }
 
 export interface AttemptZeroTimeAlchOptions extends BaseAttemptZeroTimeActivityOptions {
-        preference: ZeroTimeActivityPreference & { type: 'alch' };
-        variant?: 'agility' | 'default';
+	preference: ZeroTimeActivityPreference & { type: 'alch' };
+	variant?: 'agility' | 'default';
 }
 
 export interface AttemptZeroTimeFletchOptions extends BaseAttemptZeroTimeActivityOptions {
-        preference: ZeroTimeActivityPreference & { type: 'fletch' };
+	preference: ZeroTimeActivityPreference & { type: 'fletch' };
 }
 
 type ItemsPerHourResolver = number | ((preference: ZeroTimeActivityPreference) => number | undefined);
 
 interface AttemptZeroTimeContextBase {
-        disabledReason?: string;
-        itemsPerHour?: ItemsPerHourResolver;
+	disabledReason?: string;
+	itemsPerHour?: ItemsPerHourResolver;
 }
 
 export interface AttemptZeroTimeAlchContext extends AttemptZeroTimeContextBase {
-        variant?: 'agility' | 'default';
+	variant?: 'agility' | 'default';
 }
 
 export type AttemptZeroTimeFletchContext = AttemptZeroTimeContextBase;
 
 export interface AttemptZeroTimeActivityOptions {
-        user: MUser;
-        duration: number;
-        preferences: ZeroTimePreferenceList;
-        quantityOverride?: number;
-        alch?: AttemptZeroTimeAlchContext;
-        fletch?: AttemptZeroTimeFletchContext;
+	user: MUser;
+	duration: number;
+	preferences: ZeroTimePreferenceList;
+	quantityOverride?: number;
+	alch?: AttemptZeroTimeAlchContext;
+	fletch?: AttemptZeroTimeFletchContext;
 }
 
 export interface AttemptZeroTimeActivityFailure {
-        preference: ZeroTimeActivityPreference;
-        message?: string;
+	preference: ZeroTimeActivityPreference;
+	message?: string;
 }
 
 export interface AttemptZeroTimeActivityOutcome {
-        result: ZeroTimeActivityResult | null;
-        failures: AttemptZeroTimeActivityFailure[];
+	result: ZeroTimeActivityResult | null;
+	failures: AttemptZeroTimeActivityFailure[];
 }
 
 export function getZeroTimePreferenceLabel(preference: ZeroTimeActivityPreference): string {
-        const roleLabel = preference.role === 'primary' ? 'Primary' : 'Fallback';
-        const typeLabel = preference.type === 'alch' ? 'alch' : 'fletch';
-        return `${roleLabel} ${typeLabel}`;
+	const roleLabel = preference.role === 'primary' ? 'Primary' : 'Fallback';
+	const typeLabel = preference.type === 'alch' ? 'alch' : 'fletch';
+	return `${roleLabel} ${typeLabel}`;
 }
 
 export function describeZeroTimePreference(preference: ZeroTimeActivityPreference): string {
-        if (preference.type === 'alch') {
-                if (!preference.itemID) {
-                        return 'Alch (automatic favourites)';
-                }
-                const item = Items.get(preference.itemID);
-                const itemName = item?.name ?? 'unknown item';
-                return `Alch ${itemName}`;
-        }
+	if (preference.type === 'alch') {
+		if (!preference.itemID) {
+			return 'Alch (automatic favourites)';
+		}
+		const item = Items.get(preference.itemID);
+		const itemName = item?.name ?? 'unknown item';
+		return `Alch ${itemName}`;
+	}
 
-        const item = preference.itemID ? Items.get(preference.itemID) : null;
-        const itemName = item?.name ?? 'unspecified fletchable';
-        return `Fletch ${itemName}`;
+	const item = preference.itemID ? Items.get(preference.itemID) : null;
+	const itemName = item?.name ?? 'unspecified fletchable';
+	return `Fletch ${itemName}`;
 }
 
 export function formatZeroTimePreference(preference: ZeroTimeActivityPreference): string {
-        const roleLabel = preference.role === 'primary' ? 'Primary' : 'Fallback';
-        return `${roleLabel}: ${describeZeroTimePreference(preference)}`;
+	const roleLabel = preference.role === 'primary' ? 'Primary' : 'Fallback';
+	return `${roleLabel}: ${describeZeroTimePreference(preference)}`;
 }
 
 export function getZeroTimeActivityPreferences(user: MUser): ZeroTimePreferenceList {
@@ -390,74 +390,74 @@ function calculateFletching(options: AttemptZeroTimeFletchOptions): ZeroTimeActi
 }
 
 function attemptZeroTimePreference(
-        options: AttemptZeroTimeAlchOptions | AttemptZeroTimeFletchOptions
+	options: AttemptZeroTimeAlchOptions | AttemptZeroTimeFletchOptions
 ): ZeroTimeActivityResponse {
-        if (options.preference.type === 'alch') {
-                return calculateAlching(options);
-        }
+	if (options.preference.type === 'alch') {
+		return calculateAlching(options);
+	}
 
-        return calculateFletching(options);
+	return calculateFletching(options);
 }
 
 export function attemptZeroTimeActivity(options: AttemptZeroTimeActivityOptions): AttemptZeroTimeActivityOutcome {
-        const failures: AttemptZeroTimeActivityFailure[] = [];
+	const failures: AttemptZeroTimeActivityFailure[] = [];
 
-        const resolveItemsPerHour = (
-                resolver: ItemsPerHourResolver | undefined,
-                preference: ZeroTimeActivityPreference
-        ): number | undefined => {
-                if (typeof resolver === 'function') {
-                        return resolver(preference);
-                }
-                return resolver;
-        };
+	const resolveItemsPerHour = (
+		resolver: ItemsPerHourResolver | undefined,
+		preference: ZeroTimeActivityPreference
+	): number | undefined => {
+		if (typeof resolver === 'function') {
+			return resolver(preference);
+		}
+		return resolver;
+	};
 
-        for (const preference of options.preferences) {
-                if (preference.type === 'alch') {
-                        if (options.alch?.disabledReason) {
-                                failures.push({ preference, message: options.alch.disabledReason });
-                                continue;
-                        }
-                        const attempt = attemptZeroTimePreference({
-                                user: options.user,
-                                duration: options.duration,
-                                preference: preference as ZeroTimeActivityPreference & { type: 'alch' },
-                                quantityOverride: options.quantityOverride,
-                                itemsPerHour: resolveItemsPerHour(options.alch?.itemsPerHour, preference),
-                                variant: options.alch?.variant
-                        });
+	for (const preference of options.preferences) {
+		if (preference.type === 'alch') {
+			if (options.alch?.disabledReason) {
+				failures.push({ preference, message: options.alch.disabledReason });
+				continue;
+			}
+			const attempt = attemptZeroTimePreference({
+				user: options.user,
+				duration: options.duration,
+				preference: preference as ZeroTimeActivityPreference & { type: 'alch' },
+				quantityOverride: options.quantityOverride,
+				itemsPerHour: resolveItemsPerHour(options.alch?.itemsPerHour, preference),
+				variant: options.alch?.variant
+			});
 
-                        if (attempt.result) {
-                                return { result: attempt.result, failures };
-                        }
+			if (attempt.result) {
+				return { result: attempt.result, failures };
+			}
 
-                        if (attempt.message) {
-                                failures.push({ preference, message: attempt.message });
-                        }
-                        continue;
-                }
+			if (attempt.message) {
+				failures.push({ preference, message: attempt.message });
+			}
+			continue;
+		}
 
-                if (options.fletch?.disabledReason) {
-                        failures.push({ preference, message: options.fletch.disabledReason });
-                        continue;
-                }
+		if (options.fletch?.disabledReason) {
+			failures.push({ preference, message: options.fletch.disabledReason });
+			continue;
+		}
 
-                const attempt = attemptZeroTimePreference({
-                        user: options.user,
-                        duration: options.duration,
-                        preference: preference as ZeroTimeActivityPreference & { type: 'fletch' },
-                        quantityOverride: options.quantityOverride,
-                        itemsPerHour: resolveItemsPerHour(options.fletch?.itemsPerHour, preference)
-                });
+		const attempt = attemptZeroTimePreference({
+			user: options.user,
+			duration: options.duration,
+			preference: preference as ZeroTimeActivityPreference & { type: 'fletch' },
+			quantityOverride: options.quantityOverride,
+			itemsPerHour: resolveItemsPerHour(options.fletch?.itemsPerHour, preference)
+		});
 
-                if (attempt.result) {
-                        return { result: attempt.result, failures };
-                }
+		if (attempt.result) {
+			return { result: attempt.result, failures };
+		}
 
-                if (attempt.message) {
-                        failures.push({ preference, message: attempt.message });
-                }
-        }
+		if (attempt.message) {
+			failures.push({ preference, message: attempt.message });
+		}
+	}
 
-        return { result: null, failures };
+	return { result: null, failures };
 }

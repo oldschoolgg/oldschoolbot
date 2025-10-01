@@ -3,16 +3,16 @@ import { describe, expect, test } from 'vitest';
 
 import { zeroTimeFletchables } from '../../../src/lib/skilling/skills/fletching/fletchables';
 import {
-        attemptZeroTimeActivity,
-        getZeroTimeActivityPreferences,
-        type ZeroTimeActivityPreference
+	attemptZeroTimeActivity,
+	getZeroTimeActivityPreferences,
+	type ZeroTimeActivityPreference
 } from '../../../src/lib/util/zeroTimeActivity';
 import { zeroTimeActivityCommand } from '../../../src/mahoji/commands/zeroTimeActivity';
 import { timePerAlch } from '../../../src/mahoji/lib/abstracted_commands/alchCommand';
 import { createTestUser } from '../util';
 
 describe('Zero Time Activity Command', () => {
-        const automaticSelectionText = 'Primary: Alch (automatic favourites)';
+	const automaticSelectionText = 'Primary: Alch (automatic favourites)';
 
 	test('persists alching configuration and uses it', async () => {
 		const item = Items.getOrThrow('Yew longbow');
@@ -27,29 +27,29 @@ describe('Zero Time Activity Command', () => {
 			}
 		});
 
-                expect(response).toContain('Primary: Alch Yew longbow');
+		expect(response).toContain('Primary: Alch Yew longbow');
 		await user.sync();
 		expect(user.user.zero_time_activity_primary_type).toBe('alch');
 		expect(user.user.zero_time_activity_primary_item).toBe(item.id);
 		expect(user.user.zero_time_activity_fallback_type).toBeNull();
 
-                const summary = await user.runCommand(zeroTimeActivityCommand, { overview: {} });
-                expect(summary).toContain('Primary: Alch Yew longbow');
+		const summary = await user.runCommand(zeroTimeActivityCommand, { overview: {} });
+		expect(summary).toContain('Primary: Alch Yew longbow');
 
 		const [preference] = getZeroTimeActivityPreferences(user);
 		expect(preference).toEqual<ZeroTimeActivityPreference>({ role: 'primary', type: 'alch', itemID: item.id });
 
 		const duration = timePerAlch * 5;
-                const activity = attemptZeroTimeActivity({
-                        user,
-                        duration,
-                        preferences: [preference],
-                        alch: { variant: 'default' }
-                });
+		const activity = attemptZeroTimeActivity({
+			user,
+			duration,
+			preferences: [preference],
+			alch: { variant: 'default' }
+		});
 
-                expect(activity.failures).toHaveLength(0);
-                expect(activity.result?.type).toBe('alch');
-                expect(activity.result && activity.result.type === 'alch' ? activity.result.quantity : null).toBe(5);
+		expect(activity.failures).toHaveLength(0);
+		expect(activity.result?.type).toBe('alch');
+		expect(activity.result && activity.result.type === 'alch' ? activity.result.quantity : null).toBe(5);
 	});
 
 	test('allows automatic alch selection', async () => {
@@ -63,14 +63,14 @@ describe('Zero Time Activity Command', () => {
 			}
 		});
 
-                expect(response).toContain(automaticSelectionText);
+		expect(response).toContain(automaticSelectionText);
 		await user.sync();
 		expect(user.user.zero_time_activity_primary_type).toBe('alch');
 		expect(user.user.zero_time_activity_primary_item).toBeNull();
 		expect(user.user.zero_time_activity_fallback_type).toBeNull();
 
-                const summary = await user.runCommand(zeroTimeActivityCommand, { overview: {} });
-                expect(summary).toContain(automaticSelectionText);
+		const summary = await user.runCommand(zeroTimeActivityCommand, { overview: {} });
+		expect(summary).toContain(automaticSelectionText);
 	});
 
 	test('reuses configured fletching item on subsequent calls', async () => {
@@ -136,7 +136,7 @@ describe('Zero Time Activity Command', () => {
 			{ role: 'fallback', type: 'fletch', itemID: fletchable.id }
 		]);
 
-                const overview = await user.runCommand(zeroTimeActivityCommand, { overview: {} });
-                expect(overview).toContain('Fallback: Fletch Steel dart');
+		const overview = await user.runCommand(zeroTimeActivityCommand, { overview: {} });
+		expect(overview).toContain('Fallback: Fletch Steel dart');
 	});
 });

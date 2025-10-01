@@ -6,47 +6,47 @@ import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletcha
 import { SlayerRewardsShop, type SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import {
-        attemptZeroTimeActivity,
-        formatZeroTimePreference,
-        getZeroTimeActivityPreferences,
-        type ZeroTimeActivityPreference,
-        type ZeroTimeActivityType
+	attemptZeroTimeActivity,
+	formatZeroTimePreference,
+	getZeroTimeActivityPreferences,
+	type ZeroTimeActivityPreference,
+	type ZeroTimeActivityType
 } from '../../lib/util/zeroTimeActivity';
 
 const zeroTimeTypes: ZeroTimeActivityType[] = ['alch', 'fletch'];
 
 const slayerUnlockName = new Map<SlayerTaskUnlocksEnum, string>(
-        SlayerRewardsShop.map(unlock => [unlock.id, unlock.name])
+	SlayerRewardsShop.map(unlock => [unlock.id, unlock.name])
 );
 
 function describeFletchableRequirements(fletchable: (typeof zeroTimeFletchables)[number]): string {
-        const parts: string[] = [`${fletchable.level} Fletching`];
+	const parts: string[] = [`${fletchable.level} Fletching`];
 
-        if (fletchable.requiredSlayerUnlocks?.length) {
-                const unlockNames = fletchable.requiredSlayerUnlocks
-                        .map(unlock => slayerUnlockName.get(unlock))
-                        .filter((name): name is string => Boolean(name));
-                if (unlockNames.length > 0) {
-                        parts.push(`${unlockNames.join(', ')} unlock`);
-                }
-        }
+	if (fletchable.requiredSlayerUnlocks?.length) {
+		const unlockNames = fletchable.requiredSlayerUnlocks
+			.map(unlock => slayerUnlockName.get(unlock))
+			.filter((name): name is string => Boolean(name));
+		if (unlockNames.length > 0) {
+			parts.push(`${unlockNames.join(', ')} unlock`);
+		}
+	}
 
-        return parts.join(' · ');
+	return parts.join(' · ');
 }
 
 function getAutocompleteOptions(value: string) {
-        const trimmedValue = value.trim();
-        const search = trimmedValue.toLowerCase();
-        const curatedOptions = zeroTimeFletchables
-                .filter(fletchable =>
-                        search.length === 0
+	const trimmedValue = value.trim();
+	const search = trimmedValue.toLowerCase();
+	const curatedOptions = zeroTimeFletchables
+		.filter(fletchable =>
+			search.length === 0
 				? true
 				: fletchable.name.toLowerCase().includes(search) || fletchable.id.toString() === search
 		)
-                .map(fletchable => ({
-                        name: `${fletchable.name} (${describeFletchableRequirements(fletchable)})`,
-                        value: fletchable.id.toString()
-                }));
+		.map(fletchable => ({
+			name: `${fletchable.name} (${describeFletchableRequirements(fletchable)})`,
+			value: fletchable.id.toString()
+		}));
 
 	const results: { name: string; value: string }[] = [];
 	if (trimmedValue.length > 0 && !curatedOptions.some(option => option.value === trimmedValue)) {
@@ -64,15 +64,15 @@ function getAutocompleteOptions(value: string) {
 }
 
 function parseAlchItemInput(
-        user: MUser,
-        itemInput: string | null,
-        context: 'primary' | 'fallback'
+	user: MUser,
+	itemInput: string | null,
+	context: 'primary' | 'fallback'
 ): { itemID: number | null; error?: string } {
-        if (!itemInput || itemInput.length === 0) {
-                return { itemID: null };
-        }
+	if (!itemInput || itemInput.length === 0) {
+		return { itemID: null };
+	}
 
-        const osItem = Items.get(itemInput);
+	const osItem = Items.get(itemInput);
 	if (!osItem) {
 		return { itemID: null, error: 'That is not a valid item to alch.' };
 	}
@@ -133,30 +133,30 @@ function buildOverview(user: MUser): string {
 	}
 
 	const lines: string[] = [];
-        for (const preference of preferences) {
-                const label = formatZeroTimePreference(preference);
+	for (const preference of preferences) {
+		const label = formatZeroTimePreference(preference);
 
-                const outcome = attemptZeroTimeActivity({
-                        user,
-                        duration: Time.Minute,
-                        preferences: [preference],
-                        quantityOverride: 1,
-                        alch: { variant: 'default' },
-                        fletch: {}
-                });
+		const outcome = attemptZeroTimeActivity({
+			user,
+			duration: Time.Minute,
+			preferences: [preference],
+			quantityOverride: 1,
+			alch: { variant: 'default' },
+			fletch: {}
+		});
 
-                if (outcome.result) {
-                        lines.push(`${label} -- Ready`);
-                        continue;
-                }
+		if (outcome.result) {
+			lines.push(`${label} -- Ready`);
+			continue;
+		}
 
-                const failure = outcome.failures[0];
-                if (failure?.message) {
-                        lines.push(`${label} -- ${failure.message}`);
-                } else {
-                        lines.push(`${label} -- Not currently available.`);
-                }
-        }
+		const failure = outcome.failures[0];
+		if (failure?.message) {
+			lines.push(`${label} -- ${failure.message}`);
+		} else {
+			lines.push(`${label} -- Not currently available.`);
+		}
+	}
 
 	return lines.join('\n');
 }
@@ -194,7 +194,10 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 					name: 'fallback_type',
 					description: 'Optional fallback zero-time activity type.',
 					required: false,
-					choices: [{ name: 'none', value: 'none' }, ...zeroTimeTypes.map(type => ({ name: type, value: type }))]
+					choices: [
+						{ name: 'none', value: 'none' },
+						...zeroTimeTypes.map(type => ({ name: type, value: type }))
+					]
 				},
 				{
 					type: ApplicationCommandOptionType.String,
@@ -211,7 +214,10 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 			description: 'Clear your zero-time activity preferences.'
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{
+	run: async ({
+		options,
+		userID
+	}: CommandRunOptions<{
 		overview?: Record<string, never>;
 		set?: {
 			primary_type: string;
@@ -220,16 +226,16 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 			fallback_item?: string | null;
 		};
 		clear?: Record<string, never>;
-        }>) => {
-                const user = await mUserFetch(userID);
+	}>) => {
+		const user = await mUserFetch(userID);
 
-                if (!options.overview && !options.set && !options.clear) {
-                        return buildOverview(user);
-                }
+		if (!options.overview && !options.set && !options.clear) {
+			return buildOverview(user);
+		}
 
-                if (options.overview) {
-                        return buildOverview(user);
-                }
+		if (options.overview) {
+			return buildOverview(user);
+		}
 
 		if (options.clear) {
 			await user.update({
@@ -279,10 +285,10 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 					return `Invalid fallback type. Valid options: ${zeroTimeTypes.join(', ')} or 'none'.`;
 				}
 
-                                fallbackType = fallbackInput as ZeroTimeActivityType;
+				fallbackType = fallbackInput as ZeroTimeActivityType;
 
-                                if (fallbackType === 'alch') {
-                                        const { itemID, error } = parseAlchItemInput(user, rawFallbackItem ?? null, 'fallback');
+				if (fallbackType === 'alch') {
+					const { itemID, error } = parseAlchItemInput(user, rawFallbackItem ?? null, 'fallback');
 					if (error) {
 						return error;
 					}
@@ -296,23 +302,23 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 				}
 			}
 
-                        if (fallbackType && fallbackType === primaryType && fallbackItemID === primaryItemID) {
-                                return 'Your fallback preference must be different from your primary preference.';
-                        }
+			if (fallbackType && fallbackType === primaryType && fallbackItemID === primaryItemID) {
+				return 'Your fallback preference must be different from your primary preference.';
+			}
 
-                        await user.update({
-                                zero_time_activity_primary_type: primaryType,
-                                zero_time_activity_primary_item: primaryItemID,
-                                zero_time_activity_fallback_type: fallbackType,
-                                zero_time_activity_fallback_item: fallbackItemID
-                        });
+			await user.update({
+				zero_time_activity_primary_type: primaryType,
+				zero_time_activity_primary_item: primaryItemID,
+				zero_time_activity_fallback_type: fallbackType,
+				zero_time_activity_fallback_item: fallbackItemID
+			});
 
-                        const refreshedUser = await mUserFetch(userID);
-                        const summaryLines = getZeroTimeActivityPreferences(refreshedUser).map(formatZeroTimePreference);
+			const refreshedUser = await mUserFetch(userID);
+			const summaryLines = getZeroTimeActivityPreferences(refreshedUser).map(formatZeroTimePreference);
 
-                        return `Saved your zero-time preferences.\n${summaryLines.join('\n')}`;
-                }
+			return `Saved your zero-time preferences.\n${summaryLines.join('\n')}`;
+		}
 
-                return 'Invalid zero-time activity command usage.';
-        }
+		return 'Invalid zero-time activity command usage.';
+	}
 };

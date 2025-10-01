@@ -47,7 +47,7 @@ export interface MockUserArgs {
 const mockUser = (overrides?: MockUserArgs): User => {
 	const gearMelee = filterGearSetup(overrides?.meleeGear);
 	const cl = new Bank().add(overrides?.cl ?? {});
-	const _r = {
+	const r = {
 		cl,
 		gear_fashion: new Gear().raw() as Prisma.JsonValue,
 		gear_mage: new Gear().raw() as Prisma.JsonValue,
@@ -90,18 +90,16 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		id: overrides?.id ?? '',
 		monsterScores: {},
 		badges: [],
-	\tzero_time_activity_primary_type: overrides?.zero_time_activity_primary_type ?? null,
-	\tzero_time_activity_primary_item: overrides?.zero_time_activity_primary_item ?? null,
-	\tzero_time_activity_fallback_type: overrides?.zero_time_activity_fallback_type ?? null,
-	\tzero_time_activity_fallback_item: overrides?.zero_time_activity_fallback_item ?? null,
+		zero_time_activity_primary_type: overrides?.zero_time_activity_primary_type ?? null,
+		zero_time_activity_primary_item: overrides?.zero_time_activity_primary_item ?? null,
+		zero_time_activity_fallback_type: overrides?.zero_time_activity_fallback_type ?? null,
+		zero_time_activity_fallback_item: overrides?.zero_time_activity_fallback_item ?? null,
 		favorite_alchables: overrides?.favorite_alchables ?? [],
 		slayer_unlocks: overrides?.slayer_unlocks ?? []
-};
-as;
-unknown as User;
+	} as unknown as User;
 
-return r;
-}
+	return r;
+};
 
 export const mockMUser = (overrides?: MockUserArgs) => {
 	const user = new MUserClass(mockUser(overrides));

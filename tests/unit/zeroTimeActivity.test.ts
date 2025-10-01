@@ -4,9 +4,9 @@ import { describe, expect, test } from 'vitest';
 
 import { zeroTimeFletchables } from '../../src/lib/skilling/skills/fletching/fletchables';
 import {
-        attemptZeroTimeActivity,
-        getZeroTimeFletchTime,
-        type ZeroTimeActivityPreference
+	attemptZeroTimeActivity,
+	getZeroTimeFletchTime,
+	type ZeroTimeActivityPreference
 } from '../../src/lib/util/zeroTimeActivity';
 import { timePerAlch } from '../../src/mahoji/lib/abstracted_commands/alchCommand';
 import { mockMUser } from './userutil';
@@ -21,16 +21,16 @@ describe('attemptZeroTimeActivity', () => {
 		});
 
 		const preference: ZeroTimeActivityPreference = { role: 'primary', type: 'alch', itemID: item.id };
-                const response = attemptZeroTimeActivity({
-                        user,
-                        duration,
-                        preferences: [preference],
-                        alch: { variant: 'default' }
-                });
+		const response = attemptZeroTimeActivity({
+			user,
+			duration,
+			preferences: [preference],
+			alch: { variant: 'default' }
+		});
 
-                expect(response.failures).toHaveLength(0);
-                expect(response.result?.type).toBe('alch');
-                if (!response.result || response.result.type !== 'alch') return;
+		expect(response.failures).toHaveLength(0);
+		expect(response.result?.type).toBe('alch');
+		if (!response.result || response.result.type !== 'alch') return;
 
 		expect(response.result.quantity).toBe(50);
 		const expectedRemove = new Bank().add('Nature rune', 50).add('Fire rune', 250).add(item.id, 50);
@@ -52,12 +52,12 @@ describe('attemptZeroTimeActivity', () => {
 		});
 
 		const preference: ZeroTimeActivityPreference = { role: 'primary', type: 'alch', itemID: item.id };
-                const response = attemptZeroTimeActivity({
-                        user,
-                        duration,
-                        preferences: [preference],
-                        alch: { variant: 'default', itemsPerHour: ratePerHour }
-                });
+		const response = attemptZeroTimeActivity({
+			user,
+			duration,
+			preferences: [preference],
+			alch: { variant: 'default', itemsPerHour: ratePerHour }
+		});
 
 		expect(response.result?.type).toBe('alch');
 		if (!response.result || response.result.type !== 'alch') return;
@@ -74,15 +74,15 @@ describe('attemptZeroTimeActivity', () => {
 		});
 
 		const preference: ZeroTimeActivityPreference = { role: 'primary', type: 'alch', itemID: item.id };
-                const response = attemptZeroTimeActivity({
-                        user,
-                        duration: timePerAlch * 10,
-                        preferences: [preference],
-                        alch: { variant: 'default' }
-                });
+		const response = attemptZeroTimeActivity({
+			user,
+			duration: timePerAlch * 10,
+			preferences: [preference],
+			alch: { variant: 'default' }
+		});
 
-                expect(response.result).toBeNull();
-                expect(response.failures[0]?.message).toBe("You're missing resources to alch Yew longbow.");
+		expect(response.result).toBeNull();
+		expect(response.failures[0]?.message).toBe("You're missing resources to alch Yew longbow.");
 	});
 
 	test('fletching success', () => {
@@ -97,15 +97,15 @@ describe('attemptZeroTimeActivity', () => {
 		});
 
 		const preference: ZeroTimeActivityPreference = { role: 'primary', type: 'fletch', itemID: fletchable.id };
-                const response = attemptZeroTimeActivity({
-                        user,
-                        duration,
-                        preferences: [preference]
-                });
+		const response = attemptZeroTimeActivity({
+			user,
+			duration,
+			preferences: [preference]
+		});
 
-                expect(response.failures).toHaveLength(0);
-                expect(response.result?.type).toBe('fletch');
-                if (!response.result || response.result.type !== 'fletch') return;
+		expect(response.failures).toHaveLength(0);
+		expect(response.result?.type).toBe('fletch');
+		if (!response.result || response.result.type !== 'fletch') return;
 
 		expect(response.result.quantity).toBe(200);
 		const expectedRemove = fletchable.inputItems.clone().multiply(200);
@@ -137,14 +137,14 @@ describe('attemptZeroTimeActivity', () => {
 			});
 			const preference: ZeroTimeActivityPreference = { role: 'primary', type: 'fletch', itemID: fletchable.id };
 
-                        const baseResponse = attemptZeroTimeActivity({
-                                user: baseUser,
-                                duration,
-                                preferences: [preference]
-                        });
+			const baseResponse = attemptZeroTimeActivity({
+				user: baseUser,
+				duration,
+				preferences: [preference]
+			});
 
-                        expect(baseResponse.failures).toHaveLength(0);
-                        expect(baseResponse.result?.type).toBe('fletch');
+			expect(baseResponse.failures).toHaveLength(0);
+			expect(baseResponse.result?.type).toBe('fletch');
 			if (!baseResponse.result || baseResponse.result.type !== 'fletch') return;
 
 			expect(baseResponse.result.quantity).toBe(defaultSets);
@@ -157,15 +157,15 @@ describe('attemptZeroTimeActivity', () => {
 				skills_fletching: convertLVLtoXP(70)
 			});
 
-                        const overrideResponse = attemptZeroTimeActivity({
-                                user: overrideUser,
-                                duration,
-                                preferences: [preference],
-                                fletch: { itemsPerHour }
-                        });
+			const overrideResponse = attemptZeroTimeActivity({
+				user: overrideUser,
+				duration,
+				preferences: [preference],
+				fletch: { itemsPerHour }
+			});
 
-                        expect(overrideResponse.failures).toHaveLength(0);
-                        expect(overrideResponse.result?.type).toBe('fletch');
+			expect(overrideResponse.failures).toHaveLength(0);
+			expect(overrideResponse.result?.type).toBe('fletch');
 			if (!overrideResponse.result || overrideResponse.result.type !== 'fletch') return;
 
 			expect(overrideResponse.result.quantity).toBe(baseResponse.result.quantity);
@@ -201,15 +201,15 @@ describe('attemptZeroTimeActivity', () => {
 		});
 
 		const preference: ZeroTimeActivityPreference = { role: 'primary', type: 'fletch', itemID: fletchable.id };
-                const response = attemptZeroTimeActivity({
-                        user,
-                        duration: Time.Second * 10,
-                        preferences: [preference]
-                });
+		const response = attemptZeroTimeActivity({
+			user,
+			duration: Time.Second * 10,
+			preferences: [preference]
+		});
 
-                expect(response.result).toBeNull();
-                expect(response.failures[0]?.message).toBe(
-                        "You don't have the required Slayer unlocks to fletch Broad arrows."
-                );
+		expect(response.result).toBeNull();
+		expect(response.failures[0]?.message).toBe(
+			"You don't have the required Slayer unlocks to fletch Broad arrows."
+		);
 	});
 });

@@ -8,11 +8,11 @@ import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import {
-        attemptZeroTimeActivity,
-        describeZeroTimePreference,
-        getZeroTimeActivityPreferences,
-        getZeroTimePreferenceLabel,
-        type ZeroTimeActivityResult
+	attemptZeroTimeActivity,
+	describeZeroTimePreference,
+	getZeroTimeActivityPreferences,
+	getZeroTimePreferenceLabel,
+	type ZeroTimeActivityResult
 } from '@/lib/util/zeroTimeActivity.js';
 import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 
@@ -105,79 +105,72 @@ export const lapsCommand: OSBMahojiCommand = {
 		let fletchResult: FletchResult | null = null;
 		let alchResult: AlchResult | null = null;
 		const infoMessages: string[] = [];
-                const preferences = getZeroTimeActivityPreferences(user);
+		const preferences = getZeroTimeActivityPreferences(user);
 
-                if (preferences.length > 0) {
-                        const alchDisabledReason =
-                                course.name === 'Ape Atoll Agility Course'
-                                        ? 'Alching is unavailable on this course because your minion must hold a greegree.'
-                                        : undefined;
+		if (preferences.length > 0) {
+			const alchDisabledReason =
+				course.name === 'Ape Atoll Agility Course'
+					? 'Alching is unavailable on this course because your minion must hold a greegree.'
+					: undefined;
 
-                        const outcome = attemptZeroTimeActivity({
-                                user,
-                                duration,
-                                preferences,
-                                alch: {
-                                        variant: 'agility',
-                                        itemsPerHour: AGILITY_ALCHES_PER_HOUR,
-                                        ...(alchDisabledReason ? { disabledReason: alchDisabledReason } : {})
-                                },
-                                fletch: { itemsPerHour: AGILITY_FLETCH_ITEMS_PER_HOUR }
-                        });
+			const outcome = attemptZeroTimeActivity({
+				user,
+				duration,
+				preferences,
+				alch: {
+					variant: 'agility',
+					itemsPerHour: AGILITY_ALCHES_PER_HOUR,
+					...(alchDisabledReason ? { disabledReason: alchDisabledReason } : {})
+				},
+				fletch: { itemsPerHour: AGILITY_FLETCH_ITEMS_PER_HOUR }
+			});
 
-                        if (outcome.result?.type === 'fletch') {
-                                fletchResult = outcome.result;
-                        } else if (outcome.result?.type === 'alch') {
-                                alchResult = outcome.result;
-                        }
+			if (outcome.result?.type === 'fletch') {
+				fletchResult = outcome.result;
+			} else if (outcome.result?.type === 'alch') {
+				alchResult = outcome.result;
+			}
 
-                        const formattedFailures = outcome.failures
-                                .filter(failure => failure.message)
-                                .map(
-                                        failure =>
-                                                `${getZeroTimePreferenceLabel(failure.preference)}: ${failure.message}`
-                                );
+			const formattedFailures = outcome.failures
+				.filter(failure => failure.message)
+				.map(failure => `${getZeroTimePreferenceLabel(failure.preference)}: ${failure.message}`);
 
-                        if (outcome.result) {
-                                if (outcome.result.preference.role === 'fallback') {
-                                        const fallbackDescription = describeZeroTimePreference(
-                                                outcome.result.preference
-                                        );
-                                        const prefix = formattedFailures.length > 0 ? `${formattedFailures.join(' ')} ` : '';
-                                        infoMessages.push(
-                                                `${prefix}Falling back to ${fallbackDescription}.`.trim()
-                                        );
-                                }
-                        } else if (formattedFailures.length > 0) {
-                                infoMessages.push(...formattedFailures);
-                        }
-                }
+			if (outcome.result) {
+				if (outcome.result.preference.role === 'fallback') {
+					const fallbackDescription = describeZeroTimePreference(outcome.result.preference);
+					const prefix = formattedFailures.length > 0 ? `${formattedFailures.join(' ')} ` : '';
+					infoMessages.push(`${prefix}Falling back to ${fallbackDescription}.`.trim());
+				}
+			} else if (formattedFailures.length > 0) {
+				infoMessages.push(...formattedFailures);
+			}
+		}
 
 		if (fletchResult) {
 			await user.removeItemsFromBank(fletchResult.itemsToRemove);
 			const setsText = fletchResult.fletchable.outputMultiple ? ' sets of' : '';
-                        const prefix =
-                                fletchResult.preference.role === 'fallback'
-                                        ? 'Using fallback preference, your minion is'
-                                        : 'Your minion is';
+			const prefix =
+				fletchResult.preference.role === 'fallback'
+					? 'Using fallback preference, your minion is'
+					: 'Your minion is';
 			response += `\n\n${prefix} fletching ${fletchResult.quantity}${setsText} ${fletchResult.fletchable.name} while training. Removed ${fletchResult.itemsToRemove} from your bank.`;
 		}
 
 		if (alchResult) {
 			await user.removeItemsFromBank(alchResult.bankToRemove);
-                        const prefix =
-                                alchResult.preference.role === 'fallback'
-                                        ? 'Using fallback preference, your minion is'
-                                        : 'Your minion is';
+			const prefix =
+				alchResult.preference.role === 'fallback'
+					? 'Using fallback preference, your minion is'
+					: 'Your minion is';
 			response += `\n\n${prefix} alching ${alchResult.quantity}x ${alchResult.item.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
 			updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
 		}
 
-                if (infoMessages.length > 0) {
-                        response += `\n\n${infoMessages.join('\n')}`;
-                }
+		if (infoMessages.length > 0) {
+			response += `\n\n${infoMessages.join('\n')}`;
+		}
 
-                const zeroTimePreferenceRole = fletchResult?.preference.role ?? alchResult?.preference.role ?? null;
+		const zeroTimePreferenceRole = fletchResult?.preference.role ?? alchResult?.preference.role ?? null;
 
 		await addSubTaskToActivityTask<AgilityActivityTaskOptions>({
 			courseID: course.id,
