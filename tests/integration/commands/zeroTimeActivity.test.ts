@@ -52,6 +52,24 @@ describe('Zero Time Activity Command', () => {
 		expect(activity.result && activity.result.type === 'alch' ? activity.result.quantity : null).toBe(5);
 	});
 
+	test('accepts numeric autocomplete values for alching', async () => {
+		const item = Items.getOrThrow('Yew longbow');
+		const user = await createTestUser(new Bank().add('Nature rune', 200).add('Fire rune', 500).add(item.id, 200), {
+			skills_magic: convertLVLtoXP(75)
+		});
+
+		const response = await user.runCommand(zeroTimeActivityCommand, {
+			set: {
+				primary_type: 'alch',
+				primary_item: item.id.toString()
+			}
+		});
+
+		expect(response).toContain('Primary: Alch Yew longbow');
+		await user.sync();
+		expect(user.user.zero_time_activity_primary_item).toBe(item.id);
+	});
+
 	test('allows automatic alch selection', async () => {
 		const user = await createTestUser(new Bank().add('Nature rune', 200).add('Fire rune', 500), {
 			skills_magic: convertLVLtoXP(75)
