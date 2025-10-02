@@ -136,7 +136,7 @@ const offeringsTable = (forestryKit: boolean) => {
 		.add('Magic roots', [2, 3], 2)
 		.add('Willow roots', [3, 4], 1)
 		.add('Maple roots', [3, 4], 1);
-		
+
 	if (forestryKit) table.add('Anima-infused bark', [70, 90], 5);
 
 	clueTiers.forEach(([tier, rate]) => {
