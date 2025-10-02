@@ -63,7 +63,7 @@ export const sepulchreTask: MinionTask = {
 			const alchGP = alchItem.highalch * alchQuantity;
 			if (alchGP > 0) {
 				loot.add('Coins', alchGP);
-				ClientSettings.updateClientGPTrackSetting('gp_alch', alchGP);
+				await ClientSettings.updateClientGPTrackSetting('gp_alch', alchGP);
 			}
 
 			const { savedRunes, savedBank } = calculateBryophytaRuneSavings({
