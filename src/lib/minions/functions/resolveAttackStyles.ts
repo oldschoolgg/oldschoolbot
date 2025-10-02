@@ -1,12 +1,6 @@
-import type { User } from '@prisma/client';
-import { GearStat, type OffenceGearStat } from 'oldschooljs/gear';
-
 import type { PvMMethod } from '@/lib/constants.js';
-import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
+import { type AttackStyles, attackStylesArr } from '@/lib/minions/functions/index.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
-
-export const attackStylesArr = ['attack', 'strength', 'defence', 'magic', 'ranged'] as const;
-export type AttackStyles = (typeof attackStylesArr)[number];
 
 interface ResolveAttackStylesParams {
 	boostMethod?: PvMMethod[] | readonly PvMMethod[];
@@ -50,17 +44,4 @@ export function resolveAttackStyles({
 		attackStyles = ['magic'];
 	}
 	return attackStyles;
-}
-
-const gearStyleMap = { melee: GearStat.AttackCrush, mage: GearStat.AttackMagic, range: GearStat.AttackRanged } as const;
-
-export function getAttackStylesContext(styles: AttackStyles | User['attack_style']) {
-	let primaryStyle: PrimaryGearSetupType = 'melee';
-	if (styles.includes('magic')) primaryStyle = 'mage';
-	else if (styles.includes('ranged')) primaryStyle = 'range';
-	const relevantGearStat: OffenceGearStat = gearStyleMap[primaryStyle];
-	return {
-		primaryStyle,
-		relevantGearStat
-	};
 }
