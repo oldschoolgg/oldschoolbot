@@ -59,11 +59,14 @@ export const agilityTask: MinionTask = {
 		});
 		const xpReceived =
 			(quantity - lapsFailed / 2) * (typeof course.xp === 'number' ? course.xp : course.xp(currentLevel));
-		let xpRes = await user.addXP({
-			skillName: 'agility',
-			amount: xpReceived,
-			duration
-		});
+		const xpMessages: string[] = [];
+		xpMessages.push(
+			await user.addXP({
+				skillName: 'agility',
+				amount: xpReceived,
+				duration
+			})
+		);
 
 		// Calculate marks of grace
 		let totalMarks = 0;
@@ -123,7 +126,6 @@ export const agilityTask: MinionTask = {
 		let fletchable: (typeof zeroTimeFletchables)[number] | undefined;
 		let fletchQuantity = 0;
 		let alchItemNameForSummary: string | null = null;
-		let fletchXpRes = '';
 
 		if (fletch && fletch.qty > 0) {
 			fletchable = zeroTimeFletchables.find(item => item.id === fletch.id);
@@ -137,12 +139,12 @@ export const agilityTask: MinionTask = {
 				: fletchQuantity;
 			loot.add(fletchable.id, quantityToGive);
 
-			fletchXpRes = await user.addXP({
+			const fletchXpRes = await user.addXP({
 				skillName: 'fletching',
 				amount: fletchQuantity * fletchable.xp,
 				duration
 			});
-			xpRes += ` ${fletchXpRes}`;
+			xpMessages.push(fletchXpRes);
 		}
 
 		let savedRunesFromAlching = 0;
@@ -159,11 +161,12 @@ export const agilityTask: MinionTask = {
 			if (savedBank) {
 				loot.add(savedBank);
 			}
-			xpRes += ` ${await user.addXP({
+			const magicXpRes = await user.addXP({
 				skillName: 'magic',
 				amount: alch.quantity * 65,
 				duration
-			})}`;
+			});
+			xpMessages.push(magicXpRes);
 			await ClientSettings.updateClientGPTrackSetting('gp_alch', alchGP);
 		}
 
@@ -171,7 +174,7 @@ export const agilityTask: MinionTask = {
 			course.name
 		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}${
 			diaryBonus ? ' (25% bonus Marks for Ardougne Elite diary)' : ''
-		}.\n${xpRes}${monkeyStr}`;
+		}.\n${xpMessages.join(' ')}${monkeyStr}`;
 
 		if (savedRunesFromAlching > 0) {
 			str += `\nYour Bryophyta's staff saved you ${savedRunesFromAlching} Nature runes.`;
