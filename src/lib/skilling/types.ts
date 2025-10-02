@@ -176,6 +176,7 @@ export interface Fletchable {
 	outputMultiple?: number;
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 	craftingXp?: number;
+	fletchingKnifeBoost?: boolean;
 }
 
 export interface Mixable {
