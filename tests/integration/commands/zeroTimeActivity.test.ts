@@ -157,4 +157,46 @@ describe('Zero Time Activity Command', () => {
 		const overview = await user.runCommand(zeroTimeActivityCommand, { overview: {} });
 		expect(overview).toContain('Fallback: Fletch Steel dart');
 	});
+
+	test('preserves fallback configuration when editing primary preference', async () => {
+		const fletchable = zeroTimeFletchables.find(item => item.name === 'Steel dart');
+		expect(fletchable).toBeDefined();
+		if (!fletchable) return;
+
+		const alchItem = Items.getOrThrow('Yew longbow');
+		const user = await createTestUser(
+			new Bank().add('Nature rune', 200).add('Fire rune', 500).add(alchItem.id, 200),
+			{
+				skills_magic: convertLVLtoXP(75),
+				skills_fletching: convertLVLtoXP(75)
+			}
+		);
+
+		await user.runCommand(zeroTimeActivityCommand, {
+			set: {
+				primary_type: 'alch',
+				fallback_type: 'fletch',
+				fallback_item: fletchable.name
+			}
+		});
+		await user.sync();
+
+		expect(user.user.zero_time_activity_primary_type).toBe('alch');
+		expect(user.user.zero_time_activity_primary_item).toBeNull();
+		expect(user.user.zero_time_activity_fallback_type).toBe('fletch');
+		expect(user.user.zero_time_activity_fallback_item).toBe(fletchable.id);
+
+		await user.runCommand(zeroTimeActivityCommand, {
+			set: {
+				primary_type: 'alch',
+				primary_item: alchItem.name
+			}
+		});
+		await user.sync();
+
+		expect(user.user.zero_time_activity_primary_type).toBe('alch');
+		expect(user.user.zero_time_activity_primary_item).toBe(alchItem.id);
+		expect(user.user.zero_time_activity_fallback_type).toBe('fletch');
+		expect(user.user.zero_time_activity_fallback_item).toBe(fletchable.id);
+	});
 });
