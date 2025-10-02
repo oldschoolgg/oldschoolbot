@@ -3,18 +3,36 @@ import { bold } from 'discord.js';
 
 import { quests } from '@/lib/minions/data/quests.js';
 import { courses } from '@/lib/skilling/skills/agility.js';
+import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
 import {
 	attemptZeroTimeActivity,
 	describeZeroTimePreference,
 	getZeroTimeActivityPreferences,
+	getZeroTimeFletchTime,
 	getZeroTimePreferenceLabel,
+	type ZeroTimeActivityPreference,
 	type ZeroTimeActivityResult
 } from '@/lib/util/zeroTimeActivity.js';
 import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 
-const AGILITY_FLETCH_ITEMS_PER_HOUR = 15_000;
 const AGILITY_ALCHES_PER_HOUR = Time.Hour / timePerAlchAgility;
+
+function resolveAgilityFletchItemsPerHour(preference: ZeroTimeActivityPreference) {
+	if (!preference.itemID) {
+		return undefined;
+	}
+	const configuredFletchable = zeroTimeFletchables.find(item => item.id === preference.itemID);
+	if (!configuredFletchable) {
+		return undefined;
+	}
+	const timePerItem = getZeroTimeFletchTime(configuredFletchable);
+	if (!timePerItem) {
+		return undefined;
+	}
+	const outputMultiple = configuredFletchable.outputMultiple ?? 1;
+	return (Time.Hour / timePerItem) * outputMultiple;
+}
 
 export const lapsCommand: OSBMahojiCommand = {
 	name: 'laps',
@@ -121,7 +139,7 @@ export const lapsCommand: OSBMahojiCommand = {
 					itemsPerHour: AGILITY_ALCHES_PER_HOUR,
 					...(alchDisabledReason ? { disabledReason: alchDisabledReason } : {})
 				},
-				fletch: { itemsPerHour: AGILITY_FLETCH_ITEMS_PER_HOUR }
+				fletch: { itemsPerHour: preference => resolveAgilityFletchItemsPerHour(preference) }
 			});
 
 			if (outcome.result?.type === 'fletch') {
