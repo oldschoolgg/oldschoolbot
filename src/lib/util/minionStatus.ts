@@ -80,6 +80,7 @@ import type {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '@/lib/types/minions.js';
+import { formatZeroTimeFletchingStatus } from '@/lib/util/formatZeroTimeFletchingStatus.js';
 import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
@@ -136,8 +137,7 @@ export function minionStatus(user: MUser) {
 			if (data.fletch) {
 				const fletchable = zeroTimeFletchables.find(item => item.id === data.fletch!.id);
 				if (fletchable) {
-					const setsText = fletchable.outputMultiple ? ' sets of' : '';
-					zeroTimeParts.push(`They are also fletching ${data.fletch!.qty}${setsText} ${fletchable.name}.`);
+					zeroTimeParts.push(formatZeroTimeFletchingStatus(data.fletch!.qty, fletchable));
 				}
 			}
 
@@ -413,7 +413,7 @@ export function minionStatus(user: MUser) {
 			const parts: string[] = [];
 
 			if (fletchable) {
-				parts.push(`They are also fletching ${data.fletch!.qty}x ${fletchable.name}.`);
+				parts.push(formatZeroTimeFletchingStatus(data.fletch!.qty, fletchable));
 			}
 
 			if (data.alch) {

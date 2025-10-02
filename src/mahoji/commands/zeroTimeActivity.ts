@@ -403,9 +403,12 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 
 			const existingPrimaryType = user.user.zero_time_activity_primary_type;
 			const existingPrimaryItem = user.user.zero_time_activity_primary_item;
+			const existingFallbackType = user.user.zero_time_activity_fallback_type as ZeroTimeActivityType | null;
+			const existingFallbackItem = user.user.zero_time_activity_fallback_item;
 			const primaryTypeWasProvided = typeof rawPrimaryType === 'string';
 			const primaryItemWasProvided = rawPrimaryItem !== undefined;
-
+			const fallbackTypeWasProvided = typeof rawFallbackType === 'string';
+			const fallbackItemWasProvided = rawFallbackItem !== undefined;
 			let primaryTypeToUse: ZeroTimeActivityType | null = null;
 			if (primaryTypeWasProvided && rawPrimaryType) {
 				const normalised = rawPrimaryType.toLowerCase();
@@ -471,14 +474,19 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 				}
 			}
 
+			const existingFallbackItemForComparison = existingFallbackItem ?? null;
+			let fallbackTypeForComparison: ZeroTimeActivityType | null = existingFallbackType ?? null;
+			let fallbackItemForComparison: number | null = existingFallbackItemForComparison;
 			let fallbackTypeToSave: ZeroTimeActivityType | null | undefined;
 			let fallbackItemIDToSave: number | null | undefined;
 
-			if (typeof rawFallbackType === 'string') {
-				const fallbackInput = rawFallbackType.toLowerCase();
+			if (fallbackTypeWasProvided) {
+				const fallbackInput = rawFallbackType!.toLowerCase();
 				if (fallbackInput === 'none') {
 					fallbackTypeToSave = null;
 					fallbackItemIDToSave = null;
+					fallbackTypeForComparison = null;
+					fallbackItemForComparison = null;
 				} else {
 					if (!zeroTimeTypes.includes(fallbackInput as ZeroTimeActivityType)) {
 						return `Invalid fallback type. Valid options: ${zeroTimeTypes.join(', ')} or 'none'.`;
@@ -504,19 +512,55 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 					}
 
 					fallbackTypeToSave = fallbackType;
+					fallbackTypeForComparison = fallbackType;
+					fallbackItemForComparison = fallbackItemIDToSave ?? null;
 				}
 			}
+
+			if (!fallbackTypeWasProvided && fallbackItemWasProvided) {
+				const fallbackTypeToUse = fallbackTypeForComparison;
+				if (!fallbackTypeToUse) {
+					return 'Set a fallback type before configuring the fallback preference.';
+				}
+
+				if (fallbackTypeToUse === 'alch') {
+					const { itemID, error } = parseAlchItemInput(user, rawFallbackItem ?? null);
+					if (error) {
+						return error;
+					}
+					fallbackItemIDToSave = itemID;
+				} else {
+					const { itemID, error } = parseFletchableInput(user, rawFallbackItem ?? null, 'Fallback fletching');
+					if (error) {
+						return error;
+					}
+					fallbackItemIDToSave = itemID;
+				}
+
+				fallbackItemForComparison = fallbackItemIDToSave ?? null;
+			}
+
+			const fallbackTypeForDuplicateCheck =
+				fallbackTypeToSave !== undefined ? fallbackTypeToSave : fallbackTypeForComparison;
+			const fallbackItemForDuplicateCheck =
+				fallbackItemIDToSave !== undefined ? (fallbackItemIDToSave ?? null) : fallbackItemForComparison;
+
 			if (
-				fallbackTypeToSave &&
-				fallbackTypeToSave === primaryTypeForComparison &&
-				fallbackItemIDToSave === primaryItemForComparison
+				fallbackTypeForDuplicateCheck &&
+				fallbackTypeForDuplicateCheck === primaryTypeForComparison &&
+				fallbackItemForDuplicateCheck === primaryItemForComparison
 			) {
 				return 'Your fallback preference must be different from your primary preference.';
 			}
 
 			if (fallbackTypeToSave !== undefined) {
 				updateData.zero_time_activity_fallback_type = fallbackTypeToSave;
+				fallbackTypeForComparison = fallbackTypeToSave;
+			}
+
+			if (fallbackItemIDToSave !== undefined) {
 				updateData.zero_time_activity_fallback_item = fallbackItemIDToSave ?? null;
+				fallbackItemForComparison = fallbackItemIDToSave ?? null;
 			}
 
 			if (Object.keys(updateData).length === 0) {

@@ -179,11 +179,41 @@ describe('Zero Time Activity Command', () => {
 		expect(overview).toContain('Fallback: Fletch Steel dart');
 	});
 
+	test('allows editing fallback item without re-supplying the type', async () => {
+		const initialItem = Items.getOrThrow('Yew longbow');
+		const newItem = Items.getOrThrow('Magic longbow');
+		const user = await createTestUser(
+			new Bank().add('Nature rune', 500).add('Fire rune', 1500).add(initialItem.id, 200).add(newItem.id, 200),
+			{
+				skills_magic: convertLVLtoXP(75)
+			}
+		);
+
+		await user.runCommand(zeroTimeActivityCommand, {
+			set: {
+				primary_type: 'alch',
+				fallback_type: 'alch',
+				fallback_item: initialItem.name
+			}
+		});
+		await user.sync();
+
+		const response = await user.runCommand(zeroTimeActivityCommand, {
+			set: {
+				fallback_item: newItem.name
+			}
+		});
+
+		expect(response).toContain(`Fallback: Alch ${newItem.name}`);
+		await user.sync();
+		expect(user.user.zero_time_activity_fallback_type).toBe('alch');
+		expect(user.user.zero_time_activity_fallback_item).toBe(newItem.id);
+	});
+
 	test('allows editing fallback without resubmitting the primary type', async () => {
 		const fletchable = zeroTimeFletchables.find(item => item.name === 'Steel dart');
 		expect(fletchable).toBeDefined();
 		if (!fletchable) return;
-
 		const user = await createTestUser(new Bank().add('Nature rune', 200).add('Fire rune', 500), {
 			skills_magic: convertLVLtoXP(75),
 			skills_fletching: convertLVLtoXP(75)
