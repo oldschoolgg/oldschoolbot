@@ -36,8 +36,8 @@ describe('laps command', () => {
 			quantity: 1
 		});
 
-		expect(response).toContain('Primary:');
-		expect(response).toContain('Fallback:');
-		expect(response).toMatch(/Primary: [^\n]+\nFallback:/);
+		expect(response).toContain('Primary alch:');
+		expect(response).toContain('Fallback fletch:');
+		expect(response).toMatch(/Primary alch: [^\n]+\nFallback fletch:/);
 	});
 });
