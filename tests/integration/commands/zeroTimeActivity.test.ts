@@ -1,15 +1,15 @@
 import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { zeroTimeFletchables } from '../../../src/lib/skilling/skills/fletching/fletchables';
+import { zeroTimeFletchables } from '../../../src/lib/skilling/skills/fletching/fletchables/index.js';
 import {
 	attemptZeroTimeActivity,
 	getZeroTimeActivityPreferences,
 	type ZeroTimeActivityPreference
-} from '../../../src/lib/util/zeroTimeActivity';
-import { zeroTimeActivityCommand } from '../../../src/mahoji/commands/zeroTimeActivity';
-import { timePerAlch } from '../../../src/mahoji/lib/abstracted_commands/alchCommand';
-import { createTestUser } from '../util';
+} from '../../../src/lib/util/zeroTimeActivity.js';
+import { zeroTimeActivityCommand } from '../../../src/mahoji/commands/zeroTimeActivity.js';
+import { timePerAlch } from '../../../src/mahoji/lib/abstracted_commands/alchCommand.js';
+import { createTestUser } from '../util.js';
 
 describe('Zero Time Activity Command', () => {
 	const automaticSelectionText = 'Primary: Alch (automatic favourites)';

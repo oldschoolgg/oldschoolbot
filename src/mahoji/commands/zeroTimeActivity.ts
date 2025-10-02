@@ -1,16 +1,15 @@
 import { stringMatches, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Items } from 'oldschooljs';
 
-import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables';
-import { SlayerRewardsShop, type SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
-import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
+import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables/index.js';
+import { SlayerRewardsShop, type SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks.js';
+import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil.js';
 import {
 	attemptZeroTimeActivity,
 	formatZeroTimePreference,
 	getZeroTimeActivityPreferences,
 	type ZeroTimeActivityType
-} from '../../lib/util/zeroTimeActivity';
+} from '../../lib/util/zeroTimeActivity.js';
 
 const zeroTimeTypes: ZeroTimeActivityType[] = ['alch', 'fletch'];
 
@@ -30,7 +29,7 @@ function describeFletchableRequirements(fletchable: (typeof zeroTimeFletchables)
 		}
 	}
 
-	return parts.join(' · ');
+	return parts.join(' -> ');
 }
 
 function getAutocompleteOptions(value: string) {
@@ -167,31 +166,31 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 	description: 'Configure your preferred zero-time activities.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'overview',
 			description: 'View your zero-time activity configuration.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'set',
 			description: 'Set your primary zero-time activity and optional fallback.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'primary_type',
 					description: 'Your primary zero-time activity type.',
 					required: true,
 					choices: zeroTimeTypes.map(type => ({ name: type, value: type }))
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'primary_item',
 					description: 'Optional item for the primary activity.',
 					required: false,
-					autocomplete: async (value: string) => getAutocompleteOptions(value)
+					autocomplete: async (value: string, _user: MUser) => getAutocompleteOptions(value)
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'fallback_type',
 					description: 'Optional fallback zero-time activity type.',
 					required: false,
@@ -201,16 +200,16 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'fallback_item',
 					description: 'Optional item for the fallback activity.',
 					required: false,
-					autocomplete: async (value: string) => getAutocompleteOptions(value)
+					autocomplete: async (value: string, _user: MUser) => getAutocompleteOptions(value)
 				}
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'clear',
 			description: 'Clear your zero-time activity preferences.'
 		}

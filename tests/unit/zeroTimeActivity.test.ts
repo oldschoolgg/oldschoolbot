@@ -2,14 +2,14 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { zeroTimeFletchables } from '../../src/lib/skilling/skills/fletching/fletchables';
+import { zeroTimeFletchables } from '../../src/lib/skilling/skills/fletching/fletchables/index.js';
 import {
 	attemptZeroTimeActivity,
 	getZeroTimeFletchTime,
 	type ZeroTimeActivityPreference
-} from '../../src/lib/util/zeroTimeActivity';
-import { timePerAlch } from '../../src/mahoji/lib/abstracted_commands/alchCommand';
-import { mockMUser } from './userutil';
+} from '../../src/lib/util/zeroTimeActivity.js';
+import { timePerAlch } from '../../src/mahoji/lib/abstracted_commands/alchCommand.js';
+import { mockMUser } from './userutil.js';
 
 describe('attemptZeroTimeActivity', () => {
 	test('alching success', () => {

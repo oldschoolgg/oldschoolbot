@@ -47,7 +47,7 @@ export const lapsCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
+	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const user = await mUserFetch(userID);
 
 		const course = courses.find(
@@ -152,7 +152,9 @@ export const lapsCommand: OSBMahojiCommand = {
 				fletchResult.preference.role === 'fallback'
 					? 'Using fallback preference, your minion is'
 					: 'Your minion is';
-			response += `\n\n${prefix} fletching ${fletchResult.quantity}${setsText} ${fletchResult.fletchable.name} while training. Removed ${fletchResult.itemsToRemove} from your bank.`;
+			response += `
+
+${prefix} fletching ${fletchResult.quantity}${setsText} ${fletchResult.fletchable.name} while training. Removed ${fletchResult.itemsToRemove} from your bank.`;
 		}
 
 		if (alchResult) {
@@ -162,12 +164,16 @@ export const lapsCommand: OSBMahojiCommand = {
 				alchResult.preference.role === 'fallback'
 					? 'Using fallback preference, your minion is'
 					: 'Your minion is';
-			response += `\n\n${prefix} alching ${alchResult.quantity}x ${alchResult.item.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
+			response += `
+
+${prefix} alching ${alchResult.quantity}x ${alchResult.item.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
 			await ClientSettings.updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
 		}
 
 		if (infoMessages.length > 0) {
-			response += `\n\n${infoMessages.join('')}`;
+			response += `
+
+${infoMessages.join('')}`;
 		}
 
 		const zeroTimePreferenceRole = fletchResult?.preference.role ?? alchResult?.preference.role ?? null;
@@ -177,6 +183,7 @@ export const lapsCommand: OSBMahojiCommand = {
 			userID: user.id,
 			quantity,
 			duration,
+			channelID,
 			type: 'Agility',
 			alch: alchResult ? { itemID: alchResult.item.id, quantity: alchResult.quantity } : undefined,
 			fletch: fletchResult ? { id: fletchResult.fletchable.id, qty: fletchResult.quantity } : undefined,

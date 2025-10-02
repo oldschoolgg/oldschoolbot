@@ -2,19 +2,19 @@ import { Time } from '@oldschoolgg/toolkit';
 import type { zero_time_activity_type_enum } from '@prisma/client';
 import { Bank, type Item, Items } from 'oldschooljs';
 
-import { timePerAlch, timePerAlchAgility } from '../../mahoji/lib/abstracted_commands/alchCommand';
-import { zeroTimeFletchables } from '../skilling/skills/fletching/fletchables';
-import Arrows from '../skilling/skills/fletching/fletchables/arrows';
-import Bolts from '../skilling/skills/fletching/fletchables/bolts';
-import Darts from '../skilling/skills/fletching/fletchables/darts';
-import Javelins from '../skilling/skills/fletching/fletchables/javelins';
-import { AmethystBroadBolts, BroadArrows, BroadBolts } from '../skilling/skills/fletching/fletchables/slayer';
-import TippedBolts from '../skilling/skills/fletching/fletchables/tippedBolts';
-import TippedDragonBolts from '../skilling/skills/fletching/fletchables/tippedDragonBolts';
-import type { Fletchable } from '../skilling/types';
-import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
-import { hasSlayerUnlock } from '../slayer/slayerUtil';
-import { unlimitedFireRuneProviders } from './unlimitedFireRuneProviders';
+import { timePerAlch, timePerAlchAgility } from '../../mahoji/lib/abstracted_commands/alchCommand.js';
+import Arrows from '../skilling/skills/fletching/fletchables/arrows.js';
+import Bolts from '../skilling/skills/fletching/fletchables/bolts.js';
+import Darts from '../skilling/skills/fletching/fletchables/darts.js';
+import { zeroTimeFletchables } from '../skilling/skills/fletching/fletchables/index.js';
+import Javelins from '../skilling/skills/fletching/fletchables/javelins.js';
+import { AmethystBroadBolts, BroadArrows, BroadBolts } from '../skilling/skills/fletching/fletchables/slayer.js';
+import TippedBolts from '../skilling/skills/fletching/fletchables/tippedBolts.js';
+import TippedDragonBolts from '../skilling/skills/fletching/fletchables/tippedDragonBolts.js';
+import type { Fletchable } from '../skilling/types.js';
+import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks.js';
+import { hasSlayerUnlock } from '../slayer/slayerUtil.js';
+import { unlimitedFireRuneProviders } from './unlimitedFireRuneProviders.js';
 
 export type ZeroTimeActivityType = zero_time_activity_type_enum;
 export type ZeroTimePreferenceRole = 'primary' | 'fallback';
@@ -393,10 +393,10 @@ function attemptZeroTimePreference(
 	options: AttemptZeroTimeAlchOptions | AttemptZeroTimeFletchOptions
 ): ZeroTimeActivityResponse {
 	if (options.preference.type === 'alch') {
-		return calculateAlching(options);
+		return calculateAlching(options as AttemptZeroTimeAlchOptions);
 	}
 
-	return calculateFletching(options);
+	return calculateFletching(options as AttemptZeroTimeFletchOptions);
 }
 
 export function attemptZeroTimeActivity(options: AttemptZeroTimeActivityOptions): AttemptZeroTimeActivityOutcome {

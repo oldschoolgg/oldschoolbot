@@ -10,6 +10,7 @@ import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { BirdhouseData } from '@/lib/skilling/skills/hunter/defaultBirdHouseTrap.js';
 import type { TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { Peak } from '@/lib/util/peaks.js';
+import type { ZeroTimePreferenceRole } from '@/lib/util/zeroTimeActivity.js';
 
 export interface ActivityTaskOptions {
 	userID: string;
@@ -126,6 +127,7 @@ export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
 		id: number;
 		qty: number;
 	} | null;
+	zeroTimePreferenceRole?: ZeroTimePreferenceRole | null;
 }
 
 export interface CookingActivityTaskOptions extends ActivityTaskOptions {
@@ -416,6 +418,7 @@ export interface SepulchreActivityTaskOptions extends MinigameActivityTaskOption
 		itemID: number;
 		quantity: number;
 	} | null;
+	zeroTimePreferenceRole?: ZeroTimePreferenceRole | null;
 }
 
 export interface PlunderActivityTaskOptions extends MinigameActivityTaskOptions {
