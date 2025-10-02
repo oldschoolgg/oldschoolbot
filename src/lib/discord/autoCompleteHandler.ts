@@ -6,7 +6,7 @@ import {
 	type GuildMember
 } from 'discord.js';
 
-import type { ICommand } from '@/lib/discord/index.js';
+import type { AutocompleteContext, CommandOption, ICommand } from '@/lib/discord/index.js';
 import { allCommands } from '@/mahoji/commands/allCommands.js';
 
 async function handleAutocomplete(
@@ -14,7 +14,8 @@ async function handleAutocomplete(
 	command: ICommand | undefined,
 	autocompleteData: CommandInteractionOption[],
 	member: GuildMember | undefined,
-	option?: CommandOption
+	option?: CommandOption,
+	contextOptions?: CommandInteractionOption[]
 ): Promise<APIApplicationCommandOptionChoice[]> {
 	if (!command || !autocompleteData) return [];
 	const data = autocompleteData.find(i => 'focused' in i && i.focused === true) ?? autocompleteData[0];
@@ -25,20 +26,27 @@ async function handleAutocomplete(
 		if (!subCommand || !data.options || !data.options[0] || subCommand.type !== 'Subcommand') {
 			return [];
 		}
-		const option = data.options[0].options?.find(t => (t as any).focused);
-		if (!option) return [];
-		const subSubCommand = subCommand.options?.find(o => o.name === option.name);
-		return handleAutocomplete(user, command, [option], member, subSubCommand);
+		const optionBeingFocused = data.options[0].options?.find(t => (t as any).focused);
+		if (!optionBeingFocused) return [];
+		const subSubCommand = subCommand.options?.find(o => o.name === optionBeingFocused.name);
+		return handleAutocomplete(
+			user,
+			command,
+			data.options[0].options ?? [],
+			member,
+			subSubCommand,
+			data.options[0].options ?? []
+		);
 	}
 	if (data.type === ApplicationCommandOptionType.Subcommand) {
 		if (!data.options || !data.options[0]) return [];
 		const subCommand = command.options.find(c => c.name === data.name);
 		if (subCommand?.type !== 'Subcommand') return [];
-		const option = data.options.find(o => ('focused' in o ? Boolean(o.focused) : false)) ?? data.options[0];
-		const subOption = subCommand.options?.find(c => c.name === option.name);
+		const focusedOption = data.options.find(o => ('focused' in o ? Boolean(o.focused) : false)) ?? data.options[0];
+		const subOption = subCommand.options?.find(c => c.name === focusedOption.name);
 		if (!subOption) return [];
 
-		return handleAutocomplete(user, command, [option], member, subOption);
+		return handleAutocomplete(user, command, data.options, member, subOption, data.options);
 	}
 
 	const optionBeingAutocompleted = option ?? command.options.find(o => o.name === data.name);
@@ -48,7 +56,17 @@ async function handleAutocomplete(
 		'autocomplete' in optionBeingAutocompleted &&
 		optionBeingAutocompleted.autocomplete !== undefined
 	) {
-		const autocompleteResult = await optionBeingAutocompleted.autocomplete(data.value as never, user);
+		const context: AutocompleteContext = {
+			options: contextOptions ?? autocompleteData,
+			focusedOption: data,
+			option: optionBeingAutocompleted
+		};
+		const autocompleteResult = await optionBeingAutocompleted.autocomplete(
+			data.value as never,
+			user,
+			member,
+			context
+		);
 		return autocompleteResult.slice(0, 25).map(i => ({
 			name: i.name,
 			value: i.value.toString()
