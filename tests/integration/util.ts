@@ -11,7 +11,7 @@ import { MUserClass } from '../../src/lib/MUser.js';
 import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types.js';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters.js';
 import { Gear } from '../../src/lib/structures/Gear.js';
-import type { SkillsRequired } from '../../src/lib/types/index.js';
+import type { MakePartyOptions, SkillsRequired } from '../../src/lib/types/index.js';
 import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions.js';
 import { minionKCommand } from '../../src/mahoji/commands/k.js';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato.js';
@@ -86,8 +86,8 @@ class MockInteraction {
 		return Promise.resolve();
 	}
 
-	async makeParty() {
-		return Promise.resolve();
+	async makeParty(options: MakePartyOptions) {
+		return [options.leader];
 	}
 
 	async defer() {

@@ -169,6 +169,9 @@ function resolveZeroTimeFletchable(preference: ZeroTimeActivityPreference): Flet
 
 export function getZeroTimeFletchTime(fletchable: Fletchable): number | null {
 	const mapping: { types: (Fletchable | Fletchable[])[]; time: number }[] = [
+		// 0.2s -> 18,000 items/hour and 0.36s -> 10,000 items/hour. These values roughly
+		// match the in-game tick speeds for each family of zero-time fletchables and keep
+		// the throughput expectations consistent between the different groups.
 		{ types: [Darts, Bolts, BroadBolts], time: Time.Second * 0.2 },
 		{
 			types: [Arrows, BroadArrows, Javelins, TippedBolts, TippedDragonBolts, AmethystBroadBolts],
