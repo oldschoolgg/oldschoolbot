@@ -85,6 +85,44 @@ describe('attemptZeroTimeActivity', () => {
 		expect(response.failures[0]?.message).toBe("You're missing resources to alch Yew longbow.");
 	});
 
+	test('alching failure when missing only nature runes', () => {
+		const item = Items.getOrThrow('Yew longbow');
+		const user = mockMUser({
+			bank: new Bank().add(item.id, 10).add('Fire rune', 500),
+			skills_magic: convertLVLtoXP(70)
+		});
+
+		const preference: ZeroTimeActivityPreference = { role: 'primary', type: 'alch', itemID: item.id };
+		const response = attemptZeroTimeActivity({
+			user,
+			duration: timePerAlch * 10,
+			preferences: [preference],
+			alch: { variant: 'default' }
+		});
+
+		expect(response.result).toBeNull();
+		expect(response.failures[0]?.message).toBe("You're missing resources to alch Yew longbow.");
+	});
+
+	test('alching failure when missing only fire runes', () => {
+		const item = Items.getOrThrow('Yew longbow');
+		const user = mockMUser({
+			bank: new Bank().add(item.id, 10).add('Nature rune', 10),
+			skills_magic: convertLVLtoXP(70)
+		});
+
+		const preference: ZeroTimeActivityPreference = { role: 'primary', type: 'alch', itemID: item.id };
+		const response = attemptZeroTimeActivity({
+			user,
+			duration: timePerAlch * 10,
+			preferences: [preference],
+			alch: { variant: 'default' }
+		});
+
+		expect(response.result).toBeNull();
+		expect(response.failures[0]?.message).toBe("You're missing resources to alch Yew longbow.");
+	});
+
 	test('fletching success', () => {
 		const fletchable = zeroTimeFletchables.find(item => item.name === 'Steel dart');
 		expect(fletchable).toBeDefined();
