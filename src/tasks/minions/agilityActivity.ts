@@ -24,6 +24,7 @@ export const agilityTask: MinionTask = {
 	type: 'Agility',
 	async run(data: AgilityActivityTaskOptions) {
 		const { courseID, quantity, userID, channelID, duration, alch, fletch, zeroTimePreferenceRole } = data;
+		const user = await mUserFetch(userID);
 		const loot = new Bank();
 		const currentLevel = user.skillsAsLevels.agility;
 

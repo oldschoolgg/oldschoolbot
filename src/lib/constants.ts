@@ -447,5 +447,6 @@ export const DEPRECATED_ACTIVITY_TYPES: activity_type_enum[] = [
 	activity_type_enum.HalloweenEvent,
 	activity_type_enum.BlastFurnace, // During the slash command migration this moved to under the smelting activity
 	activity_type_enum.Revenants, // This is now under monsterActivity
-	activity_type_enum.KourendFavour // Kourend favor activity was removed
+	activity_type_enum.KourendFavour, // Kourend favor activity was removed
+	activity_type_enum.ZeroTimeActivity // Handled immediately, no minion task needed
 ];
