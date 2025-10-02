@@ -20,7 +20,7 @@ describe('laps command', () => {
 			skills_fletching: convertLVLtoXP(75)
 		});
 
-		await user.update({ minion_hasBought: true, minion_hasMinion: true });
+		await user.update({ minion_hasBought: true });
 
 		await user.runCommand(zeroTimeActivityCommand, {
 			set: {
