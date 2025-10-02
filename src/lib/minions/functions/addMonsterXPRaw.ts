@@ -10,7 +10,6 @@ import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import { resolveAttackStyles } from '@/lib/minions/functions/resolveAttackStyles.js';
 import { XPBank } from '@/lib/structures/XPBank.js';
 
-
 export interface AddMonsterXpParams {
 	monsterID: number;
 	quantity: number;
