@@ -22,6 +22,8 @@ interface AlchableAutocompleteItem {
 	highAlchValue: number;
 }
 
+export const favouriteAlchsAutocompleteValue = 'favourite_alchs';
+
 const alchableAutocompleteItems: AlchableAutocompleteItem[] = Items.filter(
 	item => Boolean(item.highalch) && Boolean(item.tradeable)
 ).map(item => ({
@@ -86,6 +88,10 @@ function getAlchAutocompleteOptions(value: string) {
 	const search = trimmedValue.toLowerCase();
 	const curatedOptions: AlchableAutocompleteItem[] = [];
 
+	const results: { name: string; value: string }[] = [
+		{ name: 'Favourite Alchs', value: favouriteAlchsAutocompleteValue }
+	];
+
 	for (const item of alchableAutocompleteItems) {
 		if (search.length === 0 || item.nameLower.includes(search) || item.id.toString() === search) {
 			curatedOptions.push(item);
@@ -96,8 +102,11 @@ function getAlchAutocompleteOptions(value: string) {
 		}
 	}
 
-	const results: { name: string; value: string }[] = [];
-	if (trimmedValue.length > 0 && !curatedOptions.some(option => option.id.toString() === trimmedValue)) {
+	if (
+		trimmedValue.length > 0 &&
+		trimmedValue !== favouriteAlchsAutocompleteValue &&
+		!curatedOptions.some(option => option.id.toString() === trimmedValue)
+	) {
 		results.push({ name: `Use "${trimmedValue}"`, value: trimmedValue });
 	}
 
@@ -190,6 +199,9 @@ function parseAlchItemInput(
 	}
 
 	const trimmedInput = itemInput.trim();
+	if (trimmedInput === favouriteAlchsAutocompleteValue) {
+		return { itemID: null };
+	}
 	if (trimmedInput.length === 0) {
 		return { itemID: null };
 	}
@@ -410,8 +422,8 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 				primaryItemID = itemID;
 			}
 
-			let fallbackTypeToSave: ZeroTimeActivityType | null | undefined = undefined;
-			let fallbackItemIDToSave: number | null | undefined = undefined;
+			let fallbackTypeToSave: ZeroTimeActivityType | null | undefined;
+			let fallbackItemIDToSave: number | null | undefined;
 
 			if (typeof rawFallbackType === 'string') {
 				const fallbackInput = rawFallbackType.toLowerCase();

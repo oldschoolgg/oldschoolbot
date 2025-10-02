@@ -7,7 +7,10 @@ import {
 	getZeroTimeActivityPreferences,
 	type ZeroTimeActivityPreference
 } from '../../../src/lib/util/zeroTimeActivity.js';
-import { zeroTimeActivityCommand } from '../../../src/mahoji/commands/zeroTimeActivity.js';
+import {
+	favouriteAlchsAutocompleteValue,
+	zeroTimeActivityCommand
+} from '../../../src/mahoji/commands/zeroTimeActivity.js';
 import { timePerAlch } from '../../../src/mahoji/lib/abstracted_commands/alchCommand.js';
 import { createTestUser } from '../util.js';
 
@@ -89,6 +92,24 @@ describe('Zero Time Activity Command', () => {
 
 		const summary = await user.runCommand(zeroTimeActivityCommand, { overview: {} });
 		expect(summary).toContain(automaticSelectionText);
+	});
+
+	test('allows selecting favourite alchs from autocomplete', async () => {
+		const user = await createTestUser(new Bank().add('Nature rune', 200).add('Fire rune', 500), {
+			skills_magic: convertLVLtoXP(75)
+		});
+
+		const response = await user.runCommand(zeroTimeActivityCommand, {
+			set: {
+				primary_type: 'alch',
+				primary_item: favouriteAlchsAutocompleteValue
+			}
+		});
+
+		expect(response).toContain(automaticSelectionText);
+		await user.sync();
+		expect(user.user.zero_time_activity_primary_type).toBe('alch');
+		expect(user.user.zero_time_activity_primary_item).toBeNull();
 	});
 
 	test('reuses configured fletching item on subsequent calls', async () => {
