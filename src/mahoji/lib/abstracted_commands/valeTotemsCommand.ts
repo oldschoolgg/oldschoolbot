@@ -59,7 +59,7 @@ export async function valeTotemsStartCommand(
 	}
 
 	if (fletchingLvl < decoration.level) {
-		return `${user.minionName} need ${decoration.level} Fletching to fletch ${decoration.item.name}.`;
+		return `${user.minionName} needs ${decoration.level} Fletching to fletch ${decoration.item.name}.`;
 	}
 
 	let staminaPotItem: Item | undefined;
@@ -351,7 +351,7 @@ export async function valeTotemsBuyCommand(
 		itemsToAdd: new Bank(shopItem.output).multiply(quantity)
 	});
 
-	return `${user.minionName} successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.valeResearchPoints * quantity).toLocaleString()} Vale Research points.\n${user.minionName} now have ${newPoints} Vale Research points left.`;
+	return `${user.minionName} successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.valeResearchPoints * quantity).toLocaleString()} Vale Research points.\n${user.minionName} now has ${newPoints} Vale Research points left.`;
 }
 
 export async function valeTotemsSellCommand(

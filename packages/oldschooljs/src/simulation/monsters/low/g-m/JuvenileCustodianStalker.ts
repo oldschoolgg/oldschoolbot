@@ -36,5 +36,5 @@ export default new SimpleMonster({
 	id: 14702,
 	name: 'Juvenile custodian stalker',
 	table: JuvenileCustodianStalkerTable,
-	aliases: ['juvenille stalker', 'juvy stalk', 'juvenile custodian stalker']
+	aliases: ['juvenile stalker', 'juvy stalk', 'juvenile custodian stalker']
 });
