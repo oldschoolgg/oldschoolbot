@@ -1,5 +1,5 @@
-import { spoiler } from '@discordjs/builders';
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { spoiler } from 'discord.js';
 import { Bank, Items, resolveItems } from 'oldschooljs';
 
 import { dwarvenOutfit } from '@/lib/data/CollectionsExport.js';

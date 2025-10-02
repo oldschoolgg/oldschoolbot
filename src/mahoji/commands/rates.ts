@@ -16,9 +16,9 @@ import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 import { stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
 import { calculateTuraelsTrialsInput, TuraelsTrialsMethods } from '@/lib/bso/turaelsTrials.js';
 
-import { bold } from '@discordjs/builders';
 import { calcPerHour, formatDuration, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 import type { InteractionReplyOptions } from 'discord.js';
+import { bold } from 'discord.js';
 import { Bank, convertBankToPerHourStats, Items, itemID, toKMB } from 'oldschooljs';
 import { unique } from 'remeda';
 

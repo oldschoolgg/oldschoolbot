@@ -1,9 +1,9 @@
 import type { IMaterialBank, MaterialType } from '@/lib/bso/skills/invention/index.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
-import { userMention } from '@discordjs/builders';
 import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
+import { userMention } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items, resolveItems, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 

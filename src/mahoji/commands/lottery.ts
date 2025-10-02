@@ -1,8 +1,8 @@
 import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
 import { Herb } from '@/lib/bso/skills/invention/groups/Herb.js';
 
-import { userMention } from '@discordjs/builders';
 import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
+import { userMention } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import { ores, secondaries, seeds } from '@/lib/data/filterables.js';

@@ -24,7 +24,6 @@ import {
 
 import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
-import { bold, time } from '@discordjs/builders';
 import { percentChance, randInt } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
@@ -40,6 +39,7 @@ import {
 } from '@oldschoolgg/toolkit';
 import { type Tame, tame_growth } from '@prisma/client';
 import { toTitleCase } from '@sapphire/utilities';
+import { bold, time } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
 import { type Canvas, loadImage } from 'skia-canvas';
 

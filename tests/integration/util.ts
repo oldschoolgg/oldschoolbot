@@ -29,7 +29,8 @@ export function mockDjsUser({ userId }: { userId: string }) {
 		mfaEnabled: false,
 		avatarURL: () => 'https://example.com/avatar.png',
 		toString: () => '<@123456789>',
-		send: vi.fn(() => Promise.resolve())
+		send: vi.fn(() => Promise.resolve()),
+		createdAt: new Date()
 	} as any as DJSUser;
 	globalClient.users.cache.set(userId, mocked);
 	return mocked;
