@@ -4,12 +4,15 @@ import LootTable from '@/structures/LootTable.js';
 import { SimpleMonster } from '@/structures/Monster.js';
 
 const DerangedArchaeologistTable = new LootTable()
-	.every('Bones')
+        .every('Bones')
 
-	/* Weapons and armour */
-	.add("Black d'hide body", 1, 6)
-	.add('Rune sword', 1, 4)
-	.add('Rune 2h sword', 1, 3)
+        /* Unique */
+        .add('Steel ring', 1, 3)
+
+        /* Weapons and armour */
+        .add("Black d'hide body", 1, 6)
+        .add('Rune sword', 1, 4)
+        .add('Rune 2h sword', 1, 3)
 
 	/* Runes and ammunition */
 	.add('Water rune', 100, 6)
@@ -21,14 +24,14 @@ const DerangedArchaeologistTable = new LootTable()
 	/* Seeds */
 	.add(TreeHerbSeedTable, 1, 1)
 
-	/* Materials */
-	.add('Grimy dwarf weed', 4, 8)
-	.add('White berries', 10, 7)
-	.add('Black dragonhide', 8, 6)
-	.add('Gold ore', 10, 6)
-	.add('Onyx bolt tips', 6, 6)
-	.add('Runite limbs', 1, 5)
-	.add('Uncut diamond', 5, 5)
+        /* Materials */
+        .add('Grimy dwarf weed', 4, 8)
+        .add('White berries', 10, 7)
+        .add('Black dragonhide', 8, 5)
+        .add('Gold ore', 10, 6)
+        .add('Onyx bolt tips', 6, 6)
+        .add('Runite limbs', 1, 5)
+        .add('Uncut diamond', 5, 5)
 
 	/* Consumables */
 	.add('Prayer potion(3)', 1, 8)
@@ -40,17 +43,18 @@ const DerangedArchaeologistTable = new LootTable()
 	.add('Crystal key', 1, 7)
 	.add('Long bone', 1, 2)
 
-	/* Subtables */
-	.add(RareDropTable, 1, 6)
-	.add(GemTable, 1, 6)
+        /* Subtables */
+        .add(RareDropTable, 1, 6)
+        .add(GemTable, 1, 6)
 
-	/* Tertiary */
-	.tertiary(2, 'Numulite', [5, 32])
-	.tertiary(15, 'Unidentified large fossil')
-	.tertiary(29, 'Unidentified small fossil')
-	.tertiary(58, 'Unidentified medium fossil')
-	.tertiary(200, 'Clue scroll (elite)')
-	.tertiary(292, 'Unidentified rare fossil');
+        /* Tertiary */
+        .tertiary(175 / 108, 'Numulite', [5, 32])
+        .tertiary(350 / 12, 'Unidentified small fossil')
+        .tertiary(700 / 12, 'Unidentified medium fossil')
+        .tertiary(65, 'Brimstone key')
+        .tertiary(875 / 12, 'Unidentified large fossil')
+        .tertiary(200, 'Clue scroll (elite)')
+        .tertiary(3500 / 12, 'Unidentified rare fossil');
 
 export default new SimpleMonster({
 	id: 7806,
