@@ -8,7 +8,6 @@ import { Bank, Items } from 'oldschooljs';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { ClueTable } from '@/lib/simulation/sharedTables.js';
 import type { FishingContestOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export function calculateFishingContestXP({ fishingLevel, fishSizeCM }: { fishSizeCM: number; fishingLevel: number }) {
 	let fishingXP = (fishSizeCM + 100) * (170 + Math.min(100, fishingLevel) / 5);
@@ -19,9 +18,8 @@ export function calculateFishingContestXP({ fishingLevel, fishSizeCM }: { fishSi
 
 export const fishingContestTask: MinionTask = {
 	type: 'FishingContest',
-	async run(data: FishingContestOptions) {
-		const { channelID, quantity, userID, location, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: FishingContestOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, location, duration } = data;
 
 		const { newScore } = await user.incrementMinigameScore('fishing_contest', 1);
 		const fishLocation = fishingLocations.find(i => i.id === location)!;

@@ -2,9 +2,8 @@ import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { getAllUserTames, TameSpeciesID } from '@/lib/bso/tames.js';
 
-import { userMention } from '@discordjs/builders';
-import { randArrItem, roll } from '@oldschoolgg/rng';
-import { Emoji, formatDuration, reduceNumByPercent, stringMatches, Table, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import { randArrItem } from '@oldschoolgg/rng';
+import { Emoji, formatDuration, reduceNumByPercent, stringMatches, Table, Time } from '@oldschoolgg/toolkit';
 import type { User } from '@prisma/client';
 import { Bank, type Item, Items, LootTable, resolveItems } from 'oldschooljs';
 
@@ -12,8 +11,6 @@ import Grimy from '@/lib/skilling/skills/herblore/mixables/grimy.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { BathhouseTaskOptions } from '@/lib/types/minions.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 export const bathhouseTierNames = ['Warm', 'Hot', 'Fiery'] as const;
@@ -447,66 +444,4 @@ export function baxBathSim() {
 	}
 
 	return table.toString();
-}
-
-export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
-	const { userID, channelID, quantity, duration } = data;
-	const user = await mUserFetch(userID);
-	const { cl } = user;
-	const { loot, herbXP, firemakingXP, tier, speciesServed, gaveExtraTips } = calculateBathouseResult(data);
-	await user.incrementMinigameScore('bax_baths', quantity);
-
-	const uniques = resolveItems(['Inferno adze', 'Flame gloves', 'Ring of fire']);
-	let uniqueChance = Math.floor(50 * tier.uniqueMultiplier);
-	const uniquesNotReceived = uniques.filter(i => !cl.has(i));
-	if (uniquesNotReceived.length === 0) uniqueChance *= 1.5;
-	const uniquesCanReceive = uniquesNotReceived.length === 0 ? uniques : uniquesNotReceived;
-	const petChance = Math.floor(1000 * tier.uniqueMultiplier);
-	for (let i = 0; i < quantity; i++) {
-		if (roll(uniqueChance)) {
-			loot.add(randArrItem(uniquesCanReceive));
-		}
-		if (roll(petChance)) {
-			loot.add('Phoenix eggling');
-		}
-	}
-
-	const { previousCL, itemsAdded } = await user.transactItems({
-		collectionLog: true,
-		itemsToAdd: loot
-	});
-
-	let xpStr = await user.addXP({ skillName: 'herblore', amount: herbXP, duration });
-	xpStr += '\n';
-	xpStr += await user.addXP({
-		skillName: 'firemaking',
-		amount: firemakingXP,
-		duration
-	});
-
-	const uniqSpecies = uniqueArr(speciesServed);
-	await ClientSettings.updateBankSetting('bb_loot', loot);
-
-	const bankImage = await makeBankImage({
-		bank: itemsAdded,
-		title: 'Baxtorian Bathhouses Loot',
-		user,
-		previousCL
-	});
-
-	return handleTripFinish(
-		user,
-		channelID,
-		`${userMention(userID)}, ${user.minionName} finished running ${quantity}x ${tier.name} baths for ${
-			uniqSpecies.length
-		} species (${uniqSpecies.map(i => i.name).join(', ')}) at the Baxtorian Bathhouses.${
-			gaveExtraTips
-				? `\nYou got extra tips from ${gaveExtraTips.name} for using their preferred water mixture.`
-				: ''
-		}
-${xpStr}`,
-		bankImage.file.attachment,
-		data,
-		loot
-	);
 }

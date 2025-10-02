@@ -12,7 +12,6 @@ import { addMonsterXP } from '@/lib/minions/functions/index.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
 import { getNexGearStats } from '@/lib/util/getNexGearStats.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 interface NexUser {
@@ -24,7 +23,7 @@ interface NexUser {
 
 export const nexTask: MinionTask = {
 	type: 'Nex',
-	async run(data: BossActivityTaskOptions) {
+	async run(data: BossActivityTaskOptions, { handleTripFinish }) {
 		const { channelID, userID, users, quantity, duration } = data;
 		const teamsLoot = new TeamLoot([]);
 		const kcAmounts: { [key: string]: number } = {};

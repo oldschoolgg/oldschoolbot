@@ -159,9 +159,7 @@ describe('BSO PVM', async () => {
 		expect(newMats.amount('metallic')).toBeLessThan(previousMats.amount('metallic'));
 		expect(newMats.amount('plated')).toBeLessThan(previousMats.amount('plated'));
 		expect(newMats.amount('organic')).toBeLessThan(previousMats.amount('organic'));
-		const userTannerStats = new Bank(
-			(await user.fetchStats({ portable_tanner_bank: true })).portable_tanner_bank as ItemBank
-		);
+		const userTannerStats = new Bank((await user.fetchStats()).portable_tanner_bank as ItemBank);
 		expect(
 			userTannerStats.amount('Green dragon leather'),
 			`User stats should reflect the tanned leathers (got ${leatherGained}x leather from the trip)`

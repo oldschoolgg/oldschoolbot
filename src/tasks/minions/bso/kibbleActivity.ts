@@ -3,13 +3,11 @@ import { kibbles } from '@/lib/bso/kibble.js';
 import { Bank } from 'oldschooljs';
 
 import type { KibbleOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const kibbleTask: MinionTask = {
 	type: 'KibbleMaking',
-	async run(data: KibbleOptions) {
-		const { quantity, channelID, userID, kibbleType, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: KibbleOptions, { user, handleTripFinish }) {
+		const { quantity, channelID, kibbleType, duration } = data;
 
 		const kibble = kibbles.find(k => k.type === kibbleType)!;
 		const loot = new Bank().add(kibble.item.id, quantity);

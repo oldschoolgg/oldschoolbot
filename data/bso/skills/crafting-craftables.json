@@ -1,1956 +1,1947 @@
 [
-    {
-        "name": "Air battlestaff",
-        "id": 1397,
-        "level": 66,
-        "xp": 137.5,
-        "input_items": {
-            "573": 1,
-            "1391": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Amethyst arrowtips",
-        "id": 21350,
-        "level": 85,
-        "xp": 60,
-        "input_items": {
-            "21347": 1
-        },
-        "tick_rate": 2,
-        "output_multiple": 15
-    },
-    {
-        "name": "Amethyst bolt tips",
-        "id": 21338,
-        "level": 83,
-        "xp": 60,
-        "input_items": {
-            "21347": 1
-        },
-        "tick_rate": 2,
-        "output_multiple": 15
-    },
-    {
-        "name": "Amethyst dart tip",
-        "id": 25853,
-        "level": 89,
-        "xp": 60,
-        "input_items": {
-            "21347": 1
-        },
-        "tick_rate": 2,
-        "output_multiple": 8
-    },
-    {
-        "name": "Amethyst javelin heads",
-        "id": 21352,
-        "level": 87,
-        "xp": 60,
-        "input_items": {
-            "21347": 1
-        },
-        "tick_rate": 2,
-        "output_multiple": 5
-    },
-    {
-        "name": "Amulet of rancour",
-        "id": 29801,
-        "level": 86,
-        "xp": 500,
-        "input_items": {
-            "19553": 1,
-            "29799": 1
-        },
-        "tick_rate": 0
-    },
-    {
-        "name": "Ball of wool",
-        "id": 1759,
-        "level": 1,
-        "xp": 2.5,
-        "input_items": {
-            "1737": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Beer glass",
-        "id": 1919,
-        "level": 1,
-        "xp": 17.5,
-        "input_items": {
-            "1775": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Bird house",
-        "id": 21512,
-        "level": 5,
-        "xp": 15,
-        "input_items": {
-            "1511": 1,
-            "8792": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Black d'hide body",
-        "id": 2503,
-        "level": 84,
-        "xp": 258,
-        "input_items": {
-            "2509": 3
-        },
-        "tick_rate": 3.5
-    },
-    {
-        "name": "Black d'hide chaps",
-        "id": 2497,
-        "level": 82,
-        "xp": 172,
-        "input_items": {
-            "2509": 2
-        },
-        "tick_rate": 3.5
-    },
-    {
-        "name": "Black d'hide shield",
-        "id": 22284,
-        "level": 83,
-        "xp": 172,
-        "input_items": {
-            "2509": 2,
-            "4824": 15,
-            "22266": 1
-        },
-        "tick_rate": 5
-    },
-    {
-        "name": "Black d'hide vambraces",
-        "id": 2491,
-        "level": 79,
-        "xp": 86,
-        "input_items": {
-            "2509": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Black dragon leather",
-        "id": 2509,
-        "level": 1,
-        "xp": 0,
-        "input_items": {
-            "995": 20,
-            "1747": 1
-        },
-        "tick_rate": 1,
-        "bank_chest": true
-    },
-    {
-        "name": "Blue d'hide body",
-        "id": 2499,
-        "level": 71,
-        "xp": 210,
-        "input_items": {
-            "2505": 3
-        },
-        "tick_rate": 3.5
-    },
-    {
-        "name": "Blue d'hide chaps",
-        "id": 2493,
-        "level": 68,
-        "xp": 140,
-        "input_items": {
-            "2505": 2
-        },
-        "tick_rate": 3.5
-    },
-    {
-        "name": "Blue d'hide shield",
-        "id": 22278,
-        "level": 69,
-        "xp": 140,
-        "input_items": {
-            "2505": 2,
-            "4822": 15,
-            "22260": 1
-        },
-        "tick_rate": 5
-    },
-    {
-        "name": "Blue d'hide vambraces",
-        "id": 2487,
-        "level": 66,
-        "xp": 70,
-        "input_items": {
-            "2505": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Blue dragon leather",
-        "id": 2505,
-        "level": 1,
-        "xp": 0,
-        "input_items": {
-            "995": 20,
-            "1751": 1
-        },
-        "tick_rate": 1,
-        "bank_chest": true
-    },
-    {
-        "name": "Bow string",
-        "id": 1777,
-        "level": 10,
-        "xp": 15,
-        "input_items": {
-            "1779": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Carapace boots",
-        "id": 71523,
-        "level": 31,
-        "xp": 12,
-        "input_items": {
-            "71522": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Carapace gloves",
-        "id": 71524,
-        "level": 30,
-        "xp": 12,
-        "input_items": {
-            "71522": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Carapace helm",
-        "id": 71525,
-        "level": 33,
-        "xp": 24,
-        "input_items": {
-            "71522": 2
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Carapace legs",
-        "id": 71526,
-        "level": 34,
-        "xp": 24,
-        "input_items": {
-            "71522": 2
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Carapace shield",
-        "id": 71527,
-        "level": 36,
-        "xp": 36,
-        "input_items": {
-            "71522": 3
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Carapace torso",
-        "id": 71528,
-        "level": 35,
-        "xp": 36,
-        "input_items": {
-            "71522": 3
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Clockwork",
-        "id": 8792,
-        "level": 8,
-        "xp": 15,
-        "input_items": {
-            "2353": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Coif",
-        "id": 1169,
-        "level": 38,
-        "xp": 37,
-        "input_items": {
-            "1741": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Crab claw",
-        "id": 7537,
-        "level": 15,
-        "xp": 32.5,
-        "input_items": {
-            "7536": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Crab helmet",
-        "id": 7539,
-        "level": 15,
-        "xp": 32.5,
-        "input_items": {
-            "7538": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Crossbow string",
-        "id": 9438,
-        "level": 10,
-        "xp": 15,
-        "input_items": {
-            "9436": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Diamond",
-        "id": 1601,
-        "level": 43,
-        "xp": 107.5,
-        "input_items": {
-            "1617": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Diamond amulet",
-        "id": 1700,
-        "level": 1,
-        "xp": 4,
-        "input_items": {
-            "1681": 1,
-            "1759": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Diamond amulet (u)",
-        "id": 1681,
-        "level": 70,
-        "xp": 100,
-        "input_items": {
-            "1601": 1,
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Diamond bracelet",
-        "id": 11092,
-        "level": 58,
-        "xp": 95,
-        "input_items": {
-            "1601": 1,
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Diamond necklace",
-        "id": 1662,
-        "level": 56,
-        "xp": 90,
-        "input_items": {
-            "1601": 1,
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Diamond ring",
-        "id": 1643,
-        "level": 43,
-        "xp": 85,
-        "input_items": {
-            "1601": 1,
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Dragon necklace",
-        "id": 1664,
-        "level": 72,
-        "xp": 105,
-        "input_items": {
-            "1615": 1,
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Dragonstone",
-        "id": 1615,
-        "level": 55,
-        "xp": 137.5,
-        "input_items": {
-            "1631": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Dragonstone amulet",
-        "id": 1702,
-        "level": 1,
-        "xp": 4,
-        "input_items": {
-            "1683": 1,
-            "1759": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Dragonstone amulet (u)",
-        "id": 1683,
-        "level": 80,
-        "xp": 150,
-        "input_items": {
-            "1615": 1,
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Dragonstone bracelet",
-        "id": 11115,
-        "level": 74,
-        "xp": 110,
-        "input_items": {
-            "1615": 1,
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Dragonstone ring",
-        "id": 1645,
-        "level": 55,
-        "xp": 100,
-        "input_items": {
-            "1615": 1,
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Drift net",
-        "id": 21652,
-        "level": 26,
-        "xp": 55,
-        "input_items": {
-            "5931": 2
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Earth battlestaff",
-        "id": 1399,
-        "level": 58,
-        "xp": 112.5,
-        "input_items": {
-            "575": 1,
-            "1391": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Elder bird house",
-        "id": 50042,
-        "level": 99,
-        "xp": 95,
-        "input_items": {
-            "8792": 1,
-            "50017": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Emerald",
-        "id": 1605,
-        "level": 27,
-        "xp": 67.5,
-        "input_items": {
-            "1621": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Emerald amulet",
-        "id": 1696,
-        "level": 1,
-        "xp": 4,
-        "input_items": {
-            "1677": 1,
-            "1759": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Emerald amulet (u)",
-        "id": 1677,
-        "level": 31,
-        "xp": 70,
-        "input_items": {
-            "1605": 1,
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Emerald bracelet",
-        "id": 11076,
-        "level": 30,
-        "xp": 65,
-        "input_items": {
-            "1605": 1,
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Emerald necklace",
-        "id": 1658,
-        "level": 29,
-        "xp": 60,
-        "input_items": {
-            "1605": 1,
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Emerald ring",
-        "id": 1639,
-        "level": 27,
-        "xp": 55,
-        "input_items": {
-            "1605": 1,
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Empty candle lantern",
-        "id": 4527,
-        "level": 4,
-        "xp": 19,
-        "input_items": {
-            "1775": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Empty light orb",
-        "id": 10980,
-        "level": 87,
-        "xp": 70,
-        "input_items": {
-            "1775": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Empty oil lamp",
-        "id": 4525,
-        "level": 12,
-        "xp": 25,
-        "input_items": {
-            "1775": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Fire battlestaff",
-        "id": 1393,
-        "level": 62,
-        "xp": 125,
-        "input_items": {
-            "569": 1,
-            "1391": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Fishbowl",
-        "id": 6668,
-        "level": 42,
-        "xp": 42.5,
-        "input_items": {
-            "1775": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Gold amulet",
-        "id": 1692,
-        "level": 1,
-        "xp": 4,
-        "input_items": {
-            "1673": 1,
-            "1759": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Gold amulet (u)",
-        "id": 1673,
-        "level": 8,
-        "xp": 30,
-        "input_items": {
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Gold bracelet",
-        "id": 11069,
-        "level": 7,
-        "xp": 25,
-        "input_items": {
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Gold necklace",
-        "id": 1654,
-        "level": 6,
-        "xp": 20,
-        "input_items": {
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Gold ring",
-        "id": 1635,
-        "level": 5,
-        "xp": 15,
-        "input_items": {
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Green d'hide body",
-        "id": 1135,
-        "level": 63,
-        "xp": 186,
-        "input_items": {
-            "1745": 3
-        },
-        "tick_rate": 3.5
-    },
-    {
-        "name": "Green d'hide chaps",
-        "id": 1099,
-        "level": 60,
-        "xp": 124,
-        "input_items": {
-            "1745": 2
-        },
-        "tick_rate": 3.5
-    },
-    {
-        "name": "Green d'hide shield",
-        "id": 22275,
-        "level": 62,
-        "xp": 124,
-        "input_items": {
-            "1539": 15,
-            "1745": 2,
-            "22257": 1
-        },
-        "tick_rate": 5
-    },
-    {
-        "name": "Green d'hide vambraces",
-        "id": 1065,
-        "level": 57,
-        "xp": 62,
-        "input_items": {
-            "1745": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Green dragon leather",
-        "id": 1745,
-        "level": 1,
-        "xp": 0,
-        "input_items": {
-            "995": 20,
-            "1753": 1
-        },
-        "tick_rate": 1,
-        "bank_chest": true
-    },
-    {
-        "name": "Hard leather",
-        "id": 1743,
-        "level": 1,
-        "xp": 0,
-        "input_items": {
-            "995": 3,
-            "1739": 1
-        },
-        "tick_rate": 1,
-        "bank_chest": true
-    },
-    {
-        "name": "Hardleather body",
-        "id": 1131,
-        "level": 28,
-        "xp": 35,
-        "input_items": {
-            "1743": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Hardleather shield",
-        "id": 22269,
-        "level": 41,
-        "xp": 70,
-        "input_items": {
-            "1743": 2,
-            "4819": 15,
-            "22251": 1
-        },
-        "tick_rate": 5
-    },
-    {
-        "name": "Heat res. vial",
-        "id": 50025,
-        "level": 105,
-        "xp": 80,
-        "input_items": {
-            "1775": 1,
-            "50028": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Hueycoatl hide body",
-        "id": 30076,
-        "level": 78,
-        "xp": 285,
-        "input_items": {
-            "30085": 3
-        },
-        "tick_rate": 3.5
-    },
-    {
-        "name": "Hueycoatl hide chaps",
-        "id": 30079,
-        "level": 77,
-        "xp": 190,
-        "input_items": {
-            "30085": 2
-        },
-        "tick_rate": 3.5
-    },
-    {
-        "name": "Hueycoatl hide coif",
-        "id": 30073,
-        "level": 76,
-        "xp": 190,
-        "input_items": {
-            "30085": 2
-        },
-        "tick_rate": 3.5
-    },
-    {
-        "name": "Hueycoatl hide vambraces",
-        "id": 30082,
-        "level": 76,
-        "xp": 95,
-        "input_items": {
-            "30085": 1
-        },
-        "tick_rate": 3.5
-    },
-    {
-        "name": "Infernal slayer helmet",
-        "id": 48323,
-        "level": 110,
-        "xp": 15210,
-        "input_items": {
-            "6573": 10,
-            "11865": 1,
-            "48321": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Jade",
-        "id": 1611,
-        "level": 13,
-        "xp": 20,
-        "input_items": {
-            "1627": 1
-        },
-        "tick_rate": 2,
-        "crush_chance": [
-            0.005779655612244898,
-            0.39453125
-        ]
-    },
-    {
-        "name": "Jade amulet",
-        "id": 21111,
-        "level": 1,
-        "xp": 4,
-        "input_items": {
-            "1759": 1,
-            "21102": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Jade amulet (u)",
-        "id": 21102,
-        "level": 34,
-        "xp": 74,
-        "input_items": {
-            "1611": 1,
-            "2355": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Jade bracelet",
-        "id": 21120,
-        "level": 29,
-        "xp": 60,
-        "input_items": {
-            "1611": 1,
-            "2355": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Jade necklace",
-        "id": 21093,
-        "level": 25,
-        "xp": 54,
-        "input_items": {
-            "1611": 1,
-            "2355": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Jade ring",
-        "id": 21084,
-        "level": 13,
-        "xp": 32,
-        "input_items": {
-            "1611": 1,
-            "2355": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Lantern lens",
-        "id": 4542,
-        "level": 49,
-        "xp": 55,
-        "input_items": {
-            "1775": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Leather",
-        "id": 1741,
-        "level": 1,
-        "xp": 0,
-        "input_items": {
-            "995": 1,
-            "1739": 1
-        },
-        "tick_rate": 1,
-        "bank_chest": true
-    },
-    {
-        "name": "Leather body",
-        "id": 1129,
-        "level": 14,
-        "xp": 25,
-        "input_items": {
-            "1741": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Leather boots",
-        "id": 1061,
-        "level": 7,
-        "xp": 16.2,
-        "input_items": {
-            "1741": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Leather chaps",
-        "id": 1095,
-        "level": 18,
-        "xp": 27,
-        "input_items": {
-            "1741": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Leather cowl",
-        "id": 1167,
-        "level": 9,
-        "xp": 18.5,
-        "input_items": {
-            "1741": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Leather gloves",
-        "id": 1059,
-        "level": 1,
-        "xp": 13.8,
-        "input_items": {
-            "1741": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Leather vambraces",
-        "id": 1063,
-        "level": 11,
-        "xp": 22,
-        "input_items": {
-            "1741": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Magic bird house",
-        "id": 22201,
-        "level": 75,
-        "xp": 50,
-        "input_items": {
-            "1513": 1,
-            "8792": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Mahogany bird house",
-        "id": 22195,
-        "level": 50,
-        "xp": 40,
-        "input_items": {
-            "6332": 1,
-            "8792": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Maple bird house",
-        "id": 22192,
-        "level": 45,
-        "xp": 35,
-        "input_items": {
-            "1517": 1,
-            "8792": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Master farmer boots",
-        "id": 50016,
-        "level": 110,
-        "xp": 9210,
-        "input_items": {
-            "50011": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Master farmer gloves",
-        "id": 50015,
-        "level": 110,
-        "xp": 9210,
-        "input_items": {
-            "50011": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Master farmer hat",
-        "id": 50012,
-        "level": 110,
-        "xp": 9210,
-        "input_items": {
-            "50011": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Master farmer jacket",
-        "id": 50013,
-        "level": 110,
-        "xp": 19210,
-        "input_items": {
-            "50011": 3
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Master farmer pants",
-        "id": 50014,
-        "level": 110,
-        "xp": 12210,
-        "input_items": {
-            "50011": 2
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Molten glass",
-        "id": 1775,
-        "level": 1,
-        "xp": 20,
-        "input_items": {
-            "1781": 1,
-            "1783": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Neitiznot shield",
-        "id": 10826,
-        "level": 1,
-        "xp": 34,
-        "input_items": {
-            "4819": 1,
-            "10810": 2
-        },
-        "tick_rate": 3,
-        "qp_required": 4,
-        "wc_lvl": 56
-    },
-    {
-        "name": "Oak bird house",
-        "id": 21515,
-        "level": 15,
-        "xp": 20,
-        "input_items": {
-            "1521": 1,
-            "8792": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Obsidian javelin heads",
-        "id": 70424,
-        "level": 99,
-        "xp": 160,
-        "input_items": {
-            "52650": 1
-        },
-        "tick_rate": 2,
-        "output_multiple": 10
-    },
-    {
-        "name": "Onyx",
-        "id": 6573,
-        "level": 67,
-        "xp": 167.5,
-        "input_items": {
-            "6571": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Onyx amulet",
-        "id": 6581,
-        "level": 1,
-        "xp": 4,
-        "input_items": {
-            "1759": 1,
-            "6579": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Onyx amulet (u)",
-        "id": 6579,
-        "level": 90,
-        "xp": 165,
-        "input_items": {
-            "2357": 1,
-            "6573": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Onyx bracelet",
-        "id": 11130,
-        "level": 84,
-        "xp": 125,
-        "input_items": {
-            "2357": 1,
-            "6573": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Onyx necklace",
-        "id": 6577,
-        "level": 82,
-        "xp": 120,
-        "input_items": {
-            "2357": 1,
-            "6573": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Onyx ring",
-        "id": 6575,
-        "level": 67,
-        "xp": 115,
-        "input_items": {
-            "2357": 1,
-            "6573": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Opal",
-        "id": 1609,
-        "level": 1,
-        "xp": 15,
-        "input_items": {
-            "1625": 1
-        },
-        "tick_rate": 2,
-        "crush_chance": [
-            0.004862882653061225,
-            0.50390625
-        ]
-    },
-    {
-        "name": "Opal amulet",
-        "id": 21108,
-        "level": 1,
-        "xp": 4,
-        "input_items": {
-            "1759": 1,
-            "21099": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Opal amulet (u)",
-        "id": 21099,
-        "level": 27,
-        "xp": 59,
-        "input_items": {
-            "1609": 1,
-            "2355": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Opal bracelet",
-        "id": 21117,
-        "level": 22,
-        "xp": 45,
-        "input_items": {
-            "1609": 1,
-            "2355": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Opal necklace",
-        "id": 21090,
-        "level": 16,
-        "xp": 35,
-        "input_items": {
-            "1609": 1,
-            "2355": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Opal ring",
-        "id": 21081,
-        "level": 1,
-        "xp": 10,
-        "input_items": {
-            "1609": 1,
-            "2355": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Red d'hide body",
-        "id": 2501,
-        "level": 77,
-        "xp": 234,
-        "input_items": {
-            "2507": 3
-        },
-        "tick_rate": 3.5
-    },
-    {
-        "name": "Red d'hide chaps",
-        "id": 2495,
-        "level": 75,
-        "xp": 156,
-        "input_items": {
-            "2507": 2
-        },
-        "tick_rate": 3.5
-    },
-    {
-        "name": "Red d'hide shield",
-        "id": 22281,
-        "level": 76,
-        "xp": 156,
-        "input_items": {
-            "2507": 2,
-            "4823": 15,
-            "22263": 1
-        },
-        "tick_rate": 5
-    },
-    {
-        "name": "Red d'hide vambraces",
-        "id": 2489,
-        "level": 73,
-        "xp": 78,
-        "input_items": {
-            "2507": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Red dragon leather",
-        "id": 2507,
-        "level": 1,
-        "xp": 0,
-        "input_items": {
-            "995": 20,
-            "1749": 1
-        },
-        "tick_rate": 1,
-        "bank_chest": true
-    },
-    {
-        "name": "Red topaz",
-        "id": 1613,
-        "level": 16,
-        "xp": 25,
-        "input_items": {
-            "1629": 1
-        },
-        "tick_rate": 2,
-        "crush_chance": [
-            0.005978954081632653,
-            0.35546875
-        ]
-    },
-    {
-        "name": "Redwood bird house",
-        "id": 22204,
-        "level": 90,
-        "xp": 55,
-        "input_items": {
-            "8792": 1,
-            "19669": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Royal dragon leather",
-        "id": 50087,
-        "level": 1,
-        "xp": 0,
-        "input_items": {
-            "995": 2000,
-            "50086": 1
-        },
-        "tick_rate": 1,
-        "bank_chest": true
-    },
-    {
-        "name": "Royal dragonhide body",
-        "id": 50090,
-        "level": 93,
-        "xp": 564,
-        "input_items": {
-            "50087": 3
-        },
-        "tick_rate": 3.5
-    },
-    {
-        "name": "Royal dragonhide boots",
-        "id": 50092,
-        "level": 87,
-        "xp": 188,
-        "input_items": {
-            "50087": 1
-        },
-        "tick_rate": 3.5
-    },
-    {
-        "name": "Royal dragonhide chaps",
-        "id": 50091,
-        "level": 89,
-        "xp": 376,
-        "input_items": {
-            "50087": 2
-        },
-        "tick_rate": 3.5
-    },
-    {
-        "name": "Royal dragonhide coif",
-        "id": 50089,
-        "level": 91,
-        "xp": 376,
-        "input_items": {
-            "50087": 2
-        },
-        "tick_rate": 3.5
-    },
-    {
-        "name": "Royal dragonhide vambraces",
-        "id": 50093,
-        "level": 87,
-        "xp": 376,
-        "input_items": {
-            "50087": 2
-        },
-        "tick_rate": 3.5
-    },
-    {
-        "name": "Ruby",
-        "id": 1603,
-        "level": 34,
-        "xp": 85,
-        "input_items": {
-            "1619": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Ruby amulet",
-        "id": 1698,
-        "level": 1,
-        "xp": 4,
-        "input_items": {
-            "1679": 1,
-            "1759": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Ruby amulet (u)",
-        "id": 1679,
-        "level": 50,
-        "xp": 85,
-        "input_items": {
-            "1603": 1,
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Ruby bracelet",
-        "id": 11085,
-        "level": 42,
-        "xp": 80,
-        "input_items": {
-            "1603": 1,
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Ruby necklace",
-        "id": 1660,
-        "level": 40,
-        "xp": 75,
-        "input_items": {
-            "1603": 1,
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Ruby ring",
-        "id": 1641,
-        "level": 34,
-        "xp": 70,
-        "input_items": {
-            "1603": 1,
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Sapphire",
-        "id": 1607,
-        "level": 20,
-        "xp": 50,
-        "input_items": {
-            "1623": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Sapphire amulet",
-        "id": 1694,
-        "level": 1,
-        "xp": 4,
-        "input_items": {
-            "1675": 1,
-            "1759": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Sapphire amulet (u)",
-        "id": 1675,
-        "level": 24,
-        "xp": 65,
-        "input_items": {
-            "1607": 1,
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Sapphire bracelet",
-        "id": 11072,
-        "level": 23,
-        "xp": 60,
-        "input_items": {
-            "1607": 1,
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Sapphire necklace",
-        "id": 1656,
-        "level": 22,
-        "xp": 55,
-        "input_items": {
-            "1607": 1,
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Sapphire ring",
-        "id": 1637,
-        "level": 20,
-        "xp": 40,
-        "input_items": {
-            "1607": 1,
-            "2357": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Serpentine helm (uncharged)",
-        "id": 12929,
-        "level": 52,
-        "xp": 120,
-        "input_items": {
-            "12927": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Silver sickle",
-        "id": 2961,
-        "level": 18,
-        "xp": 50,
-        "input_items": {
-            "2355": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Snakeskin bandana",
-        "id": 6326,
-        "level": 48,
-        "xp": 45,
-        "input_items": {
-            "6289": 5
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Snakeskin body",
-        "id": 6322,
-        "level": 53,
-        "xp": 55,
-        "input_items": {
-            "6289": 15
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Snakeskin boots",
-        "id": 6328,
-        "level": 45,
-        "xp": 30,
-        "input_items": {
-            "6289": 6
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Snakeskin chaps",
-        "id": 6324,
-        "level": 51,
-        "xp": 50,
-        "input_items": {
-            "6289": 12
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Snakeskin shield",
-        "id": 22272,
-        "level": 56,
-        "xp": 100,
-        "input_items": {
-            "4820": 15,
-            "6289": 2,
-            "22254": 1
-        },
-        "tick_rate": 5
-    },
-    {
-        "name": "Snakeskin vambraces",
-        "id": 6330,
-        "level": 47,
-        "xp": 35,
-        "input_items": {
-            "6289": 8
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Splitbark body",
-        "id": 3387,
-        "level": 60,
-        "xp": 248,
-        "input_items": {
-            "3239": 4,
-            "3470": 4
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Splitbark boots",
-        "id": 3393,
-        "level": 60,
-        "xp": 62,
-        "input_items": {
-            "3239": 1,
-            "3470": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Splitbark gauntlets",
-        "id": 3391,
-        "level": 60,
-        "xp": 62,
-        "input_items": {
-            "3239": 1,
-            "3470": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Splitbark helm",
-        "id": 3385,
-        "level": 61,
-        "xp": 124,
-        "input_items": {
-            "3239": 2,
-            "3470": 2
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Splitbark legs",
-        "id": 3389,
-        "level": 60,
-        "xp": 186,
-        "input_items": {
-            "3239": 3,
-            "3470": 3
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Strung rabbit foot",
-        "id": 10132,
-        "level": 37,
-        "xp": 4,
-        "input_items": {
-            "1759": 1,
-            "10134": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Studded body",
-        "id": 1133,
-        "level": 41,
-        "xp": 40,
-        "input_items": {
-            "1129": 1,
-            "2370": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Studded chaps",
-        "id": 1097,
-        "level": 44,
-        "xp": 42,
-        "input_items": {
-            "1095": 1,
-            "2370": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Teak bird house",
-        "id": 21521,
-        "level": 35,
-        "xp": 30,
-        "input_items": {
-            "6333": 1,
-            "8792": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Tiara",
-        "id": 5525,
-        "level": 23,
-        "xp": 52.5,
-        "input_items": {
-            "2355": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Topaz amulet",
-        "id": 21114,
-        "level": 1,
-        "xp": 4,
-        "input_items": {
-            "1759": 1,
-            "21105": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Topaz amulet (u)",
-        "id": 21105,
-        "level": 45,
-        "xp": 84,
-        "input_items": {
-            "1613": 1,
-            "2355": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Topaz bracelet",
-        "id": 21123,
-        "level": 18,
-        "xp": 75,
-        "input_items": {
-            "1613": 1,
-            "2355": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Topaz necklace",
-        "id": 21096,
-        "level": 32,
-        "xp": 70,
-        "input_items": {
-            "1613": 1,
-            "2355": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Topaz ring",
-        "id": 21087,
-        "level": 16,
-        "xp": 35,
-        "input_items": {
-            "1613": 1,
-            "2355": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Toxic staff (uncharged)",
-        "id": 12902,
-        "level": 59,
-        "xp": 0,
-        "input_items": {
-            "11791": 1,
-            "12932": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Unblessed symbol",
-        "id": 1716,
-        "level": 16,
-        "xp": 4,
-        "input_items": {
-            "1714": 1,
-            "1759": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Uncharged toxic trident",
-        "id": 12900,
-        "level": 59,
-        "xp": 0,
-        "input_items": {
-            "11908": 1,
-            "12932": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Unpowered orb",
-        "id": 567,
-        "level": 46,
-        "xp": 52.5,
-        "input_items": {
-            "1775": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Unpowered symbol",
-        "id": 1722,
-        "level": 17,
-        "xp": 4,
-        "input_items": {
-            "1720": 1,
-            "1759": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Unstrung emblem",
-        "id": 1720,
-        "level": 17,
-        "xp": 50,
-        "input_items": {
-            "2355": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Unstrung symbol",
-        "id": 1714,
-        "level": 16,
-        "xp": 50,
-        "input_items": {
-            "2355": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Vial",
-        "id": 229,
-        "level": 33,
-        "xp": 35,
-        "input_items": {
-            "1775": 1
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Water battlestaff",
-        "id": 1395,
-        "level": 54,
-        "xp": 100,
-        "input_items": {
-            "571": 1,
-            "1391": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Willow bird house",
-        "id": 21518,
-        "level": 25,
-        "xp": 25,
-        "input_items": {
-            "1519": 1,
-            "8792": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Xerician hat",
-        "id": 13385,
-        "level": 14,
-        "xp": 66,
-        "input_items": {
-            "13383": 3
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Xerician robe",
-        "id": 13389,
-        "level": 17,
-        "xp": 88,
-        "input_items": {
-            "13383": 4
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Xerician top",
-        "id": 13387,
-        "level": 22,
-        "xp": 110,
-        "input_items": {
-            "13383": 5
-        },
-        "tick_rate": 3
-    },
-    {
-        "name": "Yew bird house",
-        "id": 22198,
-        "level": 60,
-        "xp": 45,
-        "input_items": {
-            "1515": 1,
-            "8792": 1
-        },
-        "tick_rate": 2
-    },
-    {
-        "name": "Zenyte",
-        "id": 19493,
-        "level": 89,
-        "xp": 200,
-        "input_items": {
-            "19496": 1
-        },
-        "tick_rate": 2,
-        "cant_be_doubled": true
-    },
-    {
-        "name": "Zenyte amulet",
-        "id": 19541,
-        "level": 1,
-        "xp": 4,
-        "input_items": {
-            "1759": 1,
-            "19501": 1
-        },
-        "tick_rate": 2,
-        "cant_be_doubled": true
-    },
-    {
-        "name": "Zenyte amulet (u)",
-        "id": 19501,
-        "level": 98,
-        "xp": 200,
-        "input_items": {
-            "2357": 1,
-            "19493": 1
-        },
-        "tick_rate": 3,
-        "cant_be_doubled": true
-    },
-    {
-        "name": "Zenyte bracelet",
-        "id": 19532,
-        "level": 95,
-        "xp": 180,
-        "input_items": {
-            "2357": 1,
-            "19493": 1
-        },
-        "tick_rate": 3,
-        "cant_be_doubled": true
-    },
-    {
-        "name": "Zenyte necklace",
-        "id": 19535,
-        "level": 92,
-        "xp": 165,
-        "input_items": {
-            "2357": 1,
-            "19493": 1
-        },
-        "tick_rate": 3,
-        "cant_be_doubled": true
-    },
-    {
-        "name": "Zenyte ring",
-        "id": 19538,
-        "level": 89,
-        "xp": 150,
-        "input_items": {
-            "2357": 1,
-            "19493": 1
-        },
-        "tick_rate": 3,
-        "cant_be_doubled": true
-    }
+	{
+		"name": "Air battlestaff",
+		"id": 1397,
+		"level": 66,
+		"xp": 137.5,
+		"input_items": {
+			"573": 1,
+			"1391": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Amethyst arrowtips",
+		"id": 21350,
+		"level": 85,
+		"xp": 60,
+		"input_items": {
+			"21347": 1
+		},
+		"tick_rate": 2,
+		"output_multiple": 15
+	},
+	{
+		"name": "Amethyst bolt tips",
+		"id": 21338,
+		"level": 83,
+		"xp": 60,
+		"input_items": {
+			"21347": 1
+		},
+		"tick_rate": 2,
+		"output_multiple": 15
+	},
+	{
+		"name": "Amethyst dart tip",
+		"id": 25853,
+		"level": 89,
+		"xp": 60,
+		"input_items": {
+			"21347": 1
+		},
+		"tick_rate": 2,
+		"output_multiple": 8
+	},
+	{
+		"name": "Amethyst javelin heads",
+		"id": 21352,
+		"level": 87,
+		"xp": 60,
+		"input_items": {
+			"21347": 1
+		},
+		"tick_rate": 2,
+		"output_multiple": 5
+	},
+	{
+		"name": "Amulet of rancour",
+		"id": 29801,
+		"level": 86,
+		"xp": 500,
+		"input_items": {
+			"19553": 1,
+			"29799": 1
+		},
+		"tick_rate": 0
+	},
+	{
+		"name": "Ball of wool",
+		"id": 1759,
+		"level": 1,
+		"xp": 2.5,
+		"input_items": {
+			"1737": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Beer glass",
+		"id": 1919,
+		"level": 1,
+		"xp": 17.5,
+		"input_items": {
+			"1775": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Bird house",
+		"id": 21512,
+		"level": 5,
+		"xp": 15,
+		"input_items": {
+			"1511": 1,
+			"8792": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Black d'hide body",
+		"id": 2503,
+		"level": 84,
+		"xp": 258,
+		"input_items": {
+			"2509": 3
+		},
+		"tick_rate": 3.5
+	},
+	{
+		"name": "Black d'hide chaps",
+		"id": 2497,
+		"level": 82,
+		"xp": 172,
+		"input_items": {
+			"2509": 2
+		},
+		"tick_rate": 3.5
+	},
+	{
+		"name": "Black d'hide shield",
+		"id": 22284,
+		"level": 83,
+		"xp": 172,
+		"input_items": {
+			"2509": 2,
+			"4824": 15,
+			"22266": 1
+		},
+		"tick_rate": 5
+	},
+	{
+		"name": "Black d'hide vambraces",
+		"id": 2491,
+		"level": 79,
+		"xp": 86,
+		"input_items": {
+			"2509": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Black dragon leather",
+		"id": 2509,
+		"level": 1,
+		"xp": 0,
+		"input_items": {
+			"995": 20,
+			"1747": 1
+		},
+		"tick_rate": 1,
+		"bank_chest": true
+	},
+	{
+		"name": "Blue d'hide body",
+		"id": 2499,
+		"level": 71,
+		"xp": 210,
+		"input_items": {
+			"2505": 3
+		},
+		"tick_rate": 3.5
+	},
+	{
+		"name": "Blue d'hide chaps",
+		"id": 2493,
+		"level": 68,
+		"xp": 140,
+		"input_items": {
+			"2505": 2
+		},
+		"tick_rate": 3.5
+	},
+	{
+		"name": "Blue d'hide shield",
+		"id": 22278,
+		"level": 69,
+		"xp": 140,
+		"input_items": {
+			"2505": 2,
+			"4822": 15,
+			"22260": 1
+		},
+		"tick_rate": 5
+	},
+	{
+		"name": "Blue d'hide vambraces",
+		"id": 2487,
+		"level": 66,
+		"xp": 70,
+		"input_items": {
+			"2505": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Blue dragon leather",
+		"id": 2505,
+		"level": 1,
+		"xp": 0,
+		"input_items": {
+			"995": 20,
+			"1751": 1
+		},
+		"tick_rate": 1,
+		"bank_chest": true
+	},
+	{
+		"name": "Bow string",
+		"id": 1777,
+		"level": 10,
+		"xp": 15,
+		"input_items": {
+			"1779": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Carapace boots",
+		"id": 71523,
+		"level": 31,
+		"xp": 12,
+		"input_items": {
+			"71522": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Carapace gloves",
+		"id": 71524,
+		"level": 30,
+		"xp": 12,
+		"input_items": {
+			"71522": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Carapace helm",
+		"id": 71525,
+		"level": 33,
+		"xp": 24,
+		"input_items": {
+			"71522": 2
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Carapace legs",
+		"id": 71526,
+		"level": 34,
+		"xp": 24,
+		"input_items": {
+			"71522": 2
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Carapace shield",
+		"id": 71527,
+		"level": 36,
+		"xp": 36,
+		"input_items": {
+			"71522": 3
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Carapace torso",
+		"id": 71528,
+		"level": 35,
+		"xp": 36,
+		"input_items": {
+			"71522": 3
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Clockwork",
+		"id": 8792,
+		"level": 8,
+		"xp": 15,
+		"input_items": {
+			"2353": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Coif",
+		"id": 1169,
+		"level": 38,
+		"xp": 37,
+		"input_items": {
+			"1741": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Crab claw",
+		"id": 7537,
+		"level": 15,
+		"xp": 32.5,
+		"input_items": {
+			"7536": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Crab helmet",
+		"id": 7539,
+		"level": 15,
+		"xp": 32.5,
+		"input_items": {
+			"7538": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Crossbow string",
+		"id": 9438,
+		"level": 10,
+		"xp": 15,
+		"input_items": {
+			"9436": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Diamond",
+		"id": 1601,
+		"level": 43,
+		"xp": 107.5,
+		"input_items": {
+			"1617": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Diamond amulet",
+		"id": 1700,
+		"level": 1,
+		"xp": 4,
+		"input_items": {
+			"1681": 1,
+			"1759": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Diamond amulet (u)",
+		"id": 1681,
+		"level": 70,
+		"xp": 100,
+		"input_items": {
+			"1601": 1,
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Diamond bracelet",
+		"id": 11092,
+		"level": 58,
+		"xp": 95,
+		"input_items": {
+			"1601": 1,
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Diamond necklace",
+		"id": 1662,
+		"level": 56,
+		"xp": 90,
+		"input_items": {
+			"1601": 1,
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Diamond ring",
+		"id": 1643,
+		"level": 43,
+		"xp": 85,
+		"input_items": {
+			"1601": 1,
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Dragon necklace",
+		"id": 1664,
+		"level": 72,
+		"xp": 105,
+		"input_items": {
+			"1615": 1,
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Dragonstone",
+		"id": 1615,
+		"level": 55,
+		"xp": 137.5,
+		"input_items": {
+			"1631": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Dragonstone amulet",
+		"id": 1702,
+		"level": 1,
+		"xp": 4,
+		"input_items": {
+			"1683": 1,
+			"1759": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Dragonstone amulet (u)",
+		"id": 1683,
+		"level": 80,
+		"xp": 150,
+		"input_items": {
+			"1615": 1,
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Dragonstone bracelet",
+		"id": 11115,
+		"level": 74,
+		"xp": 110,
+		"input_items": {
+			"1615": 1,
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Dragonstone ring",
+		"id": 1645,
+		"level": 55,
+		"xp": 100,
+		"input_items": {
+			"1615": 1,
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Drift net",
+		"id": 21652,
+		"level": 26,
+		"xp": 55,
+		"input_items": {
+			"5931": 2
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Earth battlestaff",
+		"id": 1399,
+		"level": 58,
+		"xp": 112.5,
+		"input_items": {
+			"575": 1,
+			"1391": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Elder bird house",
+		"id": 50042,
+		"level": 99,
+		"xp": 95,
+		"input_items": {
+			"8792": 1,
+			"50017": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Emerald",
+		"id": 1605,
+		"level": 27,
+		"xp": 67.5,
+		"input_items": {
+			"1621": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Emerald amulet",
+		"id": 1696,
+		"level": 1,
+		"xp": 4,
+		"input_items": {
+			"1677": 1,
+			"1759": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Emerald amulet (u)",
+		"id": 1677,
+		"level": 31,
+		"xp": 70,
+		"input_items": {
+			"1605": 1,
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Emerald bracelet",
+		"id": 11076,
+		"level": 30,
+		"xp": 65,
+		"input_items": {
+			"1605": 1,
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Emerald necklace",
+		"id": 1658,
+		"level": 29,
+		"xp": 60,
+		"input_items": {
+			"1605": 1,
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Emerald ring",
+		"id": 1639,
+		"level": 27,
+		"xp": 55,
+		"input_items": {
+			"1605": 1,
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Empty candle lantern",
+		"id": 4527,
+		"level": 4,
+		"xp": 19,
+		"input_items": {
+			"1775": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Empty light orb",
+		"id": 10980,
+		"level": 87,
+		"xp": 70,
+		"input_items": {
+			"1775": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Empty oil lamp",
+		"id": 4525,
+		"level": 12,
+		"xp": 25,
+		"input_items": {
+			"1775": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Fire battlestaff",
+		"id": 1393,
+		"level": 62,
+		"xp": 125,
+		"input_items": {
+			"569": 1,
+			"1391": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Fishbowl",
+		"id": 6668,
+		"level": 42,
+		"xp": 42.5,
+		"input_items": {
+			"1775": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Gold amulet",
+		"id": 1692,
+		"level": 1,
+		"xp": 4,
+		"input_items": {
+			"1673": 1,
+			"1759": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Gold amulet (u)",
+		"id": 1673,
+		"level": 8,
+		"xp": 30,
+		"input_items": {
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Gold bracelet",
+		"id": 11069,
+		"level": 7,
+		"xp": 25,
+		"input_items": {
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Gold necklace",
+		"id": 1654,
+		"level": 6,
+		"xp": 20,
+		"input_items": {
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Gold ring",
+		"id": 1635,
+		"level": 5,
+		"xp": 15,
+		"input_items": {
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Green d'hide body",
+		"id": 1135,
+		"level": 63,
+		"xp": 186,
+		"input_items": {
+			"1745": 3
+		},
+		"tick_rate": 3.5
+	},
+	{
+		"name": "Green d'hide chaps",
+		"id": 1099,
+		"level": 60,
+		"xp": 124,
+		"input_items": {
+			"1745": 2
+		},
+		"tick_rate": 3.5
+	},
+	{
+		"name": "Green d'hide shield",
+		"id": 22275,
+		"level": 62,
+		"xp": 124,
+		"input_items": {
+			"1539": 15,
+			"1745": 2,
+			"22257": 1
+		},
+		"tick_rate": 5
+	},
+	{
+		"name": "Green d'hide vambraces",
+		"id": 1065,
+		"level": 57,
+		"xp": 62,
+		"input_items": {
+			"1745": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Green dragon leather",
+		"id": 1745,
+		"level": 1,
+		"xp": 0,
+		"input_items": {
+			"995": 20,
+			"1753": 1
+		},
+		"tick_rate": 1,
+		"bank_chest": true
+	},
+	{
+		"name": "Hard leather",
+		"id": 1743,
+		"level": 1,
+		"xp": 0,
+		"input_items": {
+			"995": 3,
+			"1739": 1
+		},
+		"tick_rate": 1,
+		"bank_chest": true
+	},
+	{
+		"name": "Hardleather body",
+		"id": 1131,
+		"level": 28,
+		"xp": 35,
+		"input_items": {
+			"1743": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Hardleather shield",
+		"id": 22269,
+		"level": 41,
+		"xp": 70,
+		"input_items": {
+			"1743": 2,
+			"4819": 15,
+			"22251": 1
+		},
+		"tick_rate": 5
+	},
+	{
+		"name": "Heat res. vial",
+		"id": 50025,
+		"level": 105,
+		"xp": 80,
+		"input_items": {
+			"1775": 1,
+			"50028": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Hueycoatl hide body",
+		"id": 30076,
+		"level": 78,
+		"xp": 285,
+		"input_items": {
+			"30085": 3
+		},
+		"tick_rate": 3.5
+	},
+	{
+		"name": "Hueycoatl hide chaps",
+		"id": 30079,
+		"level": 77,
+		"xp": 190,
+		"input_items": {
+			"30085": 2
+		},
+		"tick_rate": 3.5
+	},
+	{
+		"name": "Hueycoatl hide coif",
+		"id": 30073,
+		"level": 76,
+		"xp": 190,
+		"input_items": {
+			"30085": 2
+		},
+		"tick_rate": 3.5
+	},
+	{
+		"name": "Hueycoatl hide vambraces",
+		"id": 30082,
+		"level": 76,
+		"xp": 95,
+		"input_items": {
+			"30085": 1
+		},
+		"tick_rate": 3.5
+	},
+	{
+		"name": "Infernal slayer helmet",
+		"id": 48323,
+		"level": 110,
+		"xp": 15210,
+		"input_items": {
+			"6573": 10,
+			"11865": 1,
+			"48321": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Jade",
+		"id": 1611,
+		"level": 13,
+		"xp": 20,
+		"input_items": {
+			"1627": 1
+		},
+		"tick_rate": 2,
+		"crush_chance": [0.005779655612244898, 0.39453125]
+	},
+	{
+		"name": "Jade amulet",
+		"id": 21111,
+		"level": 1,
+		"xp": 4,
+		"input_items": {
+			"1759": 1,
+			"21102": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Jade amulet (u)",
+		"id": 21102,
+		"level": 34,
+		"xp": 74,
+		"input_items": {
+			"1611": 1,
+			"2355": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Jade bracelet",
+		"id": 21120,
+		"level": 29,
+		"xp": 60,
+		"input_items": {
+			"1611": 1,
+			"2355": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Jade necklace",
+		"id": 21093,
+		"level": 25,
+		"xp": 54,
+		"input_items": {
+			"1611": 1,
+			"2355": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Jade ring",
+		"id": 21084,
+		"level": 13,
+		"xp": 32,
+		"input_items": {
+			"1611": 1,
+			"2355": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Lantern lens",
+		"id": 4542,
+		"level": 49,
+		"xp": 55,
+		"input_items": {
+			"1775": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Leather",
+		"id": 1741,
+		"level": 1,
+		"xp": 0,
+		"input_items": {
+			"995": 1,
+			"1739": 1
+		},
+		"tick_rate": 1,
+		"bank_chest": true
+	},
+	{
+		"name": "Leather body",
+		"id": 1129,
+		"level": 14,
+		"xp": 25,
+		"input_items": {
+			"1741": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Leather boots",
+		"id": 1061,
+		"level": 7,
+		"xp": 16.2,
+		"input_items": {
+			"1741": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Leather chaps",
+		"id": 1095,
+		"level": 18,
+		"xp": 27,
+		"input_items": {
+			"1741": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Leather cowl",
+		"id": 1167,
+		"level": 9,
+		"xp": 18.5,
+		"input_items": {
+			"1741": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Leather gloves",
+		"id": 1059,
+		"level": 1,
+		"xp": 13.8,
+		"input_items": {
+			"1741": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Leather vambraces",
+		"id": 1063,
+		"level": 11,
+		"xp": 22,
+		"input_items": {
+			"1741": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Magic bird house",
+		"id": 22201,
+		"level": 75,
+		"xp": 50,
+		"input_items": {
+			"1513": 1,
+			"8792": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Mahogany bird house",
+		"id": 22195,
+		"level": 50,
+		"xp": 40,
+		"input_items": {
+			"6332": 1,
+			"8792": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Maple bird house",
+		"id": 22192,
+		"level": 45,
+		"xp": 35,
+		"input_items": {
+			"1517": 1,
+			"8792": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Master farmer boots",
+		"id": 50016,
+		"level": 110,
+		"xp": 9210,
+		"input_items": {
+			"50011": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Master farmer gloves",
+		"id": 50015,
+		"level": 110,
+		"xp": 9210,
+		"input_items": {
+			"50011": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Master farmer hat",
+		"id": 50012,
+		"level": 110,
+		"xp": 9210,
+		"input_items": {
+			"50011": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Master farmer jacket",
+		"id": 50013,
+		"level": 110,
+		"xp": 19210,
+		"input_items": {
+			"50011": 3
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Master farmer pants",
+		"id": 50014,
+		"level": 110,
+		"xp": 12210,
+		"input_items": {
+			"50011": 2
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Molten glass",
+		"id": 1775,
+		"level": 1,
+		"xp": 20,
+		"input_items": {
+			"1781": 1,
+			"1783": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Neitiznot shield",
+		"id": 10826,
+		"level": 1,
+		"xp": 34,
+		"input_items": {
+			"4819": 1,
+			"10810": 2
+		},
+		"tick_rate": 3,
+		"qp_required": 4,
+		"wc_lvl": 56
+	},
+	{
+		"name": "Oak bird house",
+		"id": 21515,
+		"level": 15,
+		"xp": 20,
+		"input_items": {
+			"1521": 1,
+			"8792": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Obsidian javelin heads",
+		"id": 70424,
+		"level": 99,
+		"xp": 160,
+		"input_items": {
+			"52650": 1
+		},
+		"tick_rate": 2,
+		"output_multiple": 10
+	},
+	{
+		"name": "Onyx",
+		"id": 6573,
+		"level": 67,
+		"xp": 167.5,
+		"input_items": {
+			"6571": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Onyx amulet",
+		"id": 6581,
+		"level": 1,
+		"xp": 4,
+		"input_items": {
+			"1759": 1,
+			"6579": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Onyx amulet (u)",
+		"id": 6579,
+		"level": 90,
+		"xp": 165,
+		"input_items": {
+			"2357": 1,
+			"6573": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Onyx bracelet",
+		"id": 11130,
+		"level": 84,
+		"xp": 125,
+		"input_items": {
+			"2357": 1,
+			"6573": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Onyx necklace",
+		"id": 6577,
+		"level": 82,
+		"xp": 120,
+		"input_items": {
+			"2357": 1,
+			"6573": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Onyx ring",
+		"id": 6575,
+		"level": 67,
+		"xp": 115,
+		"input_items": {
+			"2357": 1,
+			"6573": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Opal",
+		"id": 1609,
+		"level": 1,
+		"xp": 15,
+		"input_items": {
+			"1625": 1
+		},
+		"tick_rate": 2,
+		"crush_chance": [0.004862882653061225, 0.50390625]
+	},
+	{
+		"name": "Opal amulet",
+		"id": 21108,
+		"level": 1,
+		"xp": 4,
+		"input_items": {
+			"1759": 1,
+			"21099": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Opal amulet (u)",
+		"id": 21099,
+		"level": 27,
+		"xp": 59,
+		"input_items": {
+			"1609": 1,
+			"2355": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Opal bracelet",
+		"id": 21117,
+		"level": 22,
+		"xp": 45,
+		"input_items": {
+			"1609": 1,
+			"2355": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Opal necklace",
+		"id": 21090,
+		"level": 16,
+		"xp": 35,
+		"input_items": {
+			"1609": 1,
+			"2355": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Opal ring",
+		"id": 21081,
+		"level": 1,
+		"xp": 10,
+		"input_items": {
+			"1609": 1,
+			"2355": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Red d'hide body",
+		"id": 2501,
+		"level": 77,
+		"xp": 234,
+		"input_items": {
+			"2507": 3
+		},
+		"tick_rate": 3.5
+	},
+	{
+		"name": "Red d'hide chaps",
+		"id": 2495,
+		"level": 75,
+		"xp": 156,
+		"input_items": {
+			"2507": 2
+		},
+		"tick_rate": 3.5
+	},
+	{
+		"name": "Red d'hide shield",
+		"id": 22281,
+		"level": 76,
+		"xp": 156,
+		"input_items": {
+			"2507": 2,
+			"4823": 15,
+			"22263": 1
+		},
+		"tick_rate": 5
+	},
+	{
+		"name": "Red d'hide vambraces",
+		"id": 2489,
+		"level": 73,
+		"xp": 78,
+		"input_items": {
+			"2507": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Red dragon leather",
+		"id": 2507,
+		"level": 1,
+		"xp": 0,
+		"input_items": {
+			"995": 20,
+			"1749": 1
+		},
+		"tick_rate": 1,
+		"bank_chest": true
+	},
+	{
+		"name": "Red topaz",
+		"id": 1613,
+		"level": 16,
+		"xp": 25,
+		"input_items": {
+			"1629": 1
+		},
+		"tick_rate": 2,
+		"crush_chance": [0.005978954081632653, 0.35546875]
+	},
+	{
+		"name": "Redwood bird house",
+		"id": 22204,
+		"level": 90,
+		"xp": 55,
+		"input_items": {
+			"8792": 1,
+			"19669": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Royal dragon leather",
+		"id": 50087,
+		"level": 1,
+		"xp": 0,
+		"input_items": {
+			"995": 2000,
+			"50086": 1
+		},
+		"tick_rate": 1,
+		"bank_chest": true
+	},
+	{
+		"name": "Royal dragonhide body",
+		"id": 50090,
+		"level": 93,
+		"xp": 564,
+		"input_items": {
+			"50087": 3
+		},
+		"tick_rate": 3.5
+	},
+	{
+		"name": "Royal dragonhide boots",
+		"id": 50092,
+		"level": 87,
+		"xp": 188,
+		"input_items": {
+			"50087": 1
+		},
+		"tick_rate": 3.5
+	},
+	{
+		"name": "Royal dragonhide chaps",
+		"id": 50091,
+		"level": 89,
+		"xp": 376,
+		"input_items": {
+			"50087": 2
+		},
+		"tick_rate": 3.5
+	},
+	{
+		"name": "Royal dragonhide coif",
+		"id": 50089,
+		"level": 91,
+		"xp": 376,
+		"input_items": {
+			"50087": 2
+		},
+		"tick_rate": 3.5
+	},
+	{
+		"name": "Royal dragonhide vambraces",
+		"id": 50093,
+		"level": 87,
+		"xp": 376,
+		"input_items": {
+			"50087": 2
+		},
+		"tick_rate": 3.5
+	},
+	{
+		"name": "Ruby",
+		"id": 1603,
+		"level": 34,
+		"xp": 85,
+		"input_items": {
+			"1619": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Ruby amulet",
+		"id": 1698,
+		"level": 1,
+		"xp": 4,
+		"input_items": {
+			"1679": 1,
+			"1759": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Ruby amulet (u)",
+		"id": 1679,
+		"level": 50,
+		"xp": 85,
+		"input_items": {
+			"1603": 1,
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Ruby bracelet",
+		"id": 11085,
+		"level": 42,
+		"xp": 80,
+		"input_items": {
+			"1603": 1,
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Ruby necklace",
+		"id": 1660,
+		"level": 40,
+		"xp": 75,
+		"input_items": {
+			"1603": 1,
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Ruby ring",
+		"id": 1641,
+		"level": 34,
+		"xp": 70,
+		"input_items": {
+			"1603": 1,
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Sapphire",
+		"id": 1607,
+		"level": 20,
+		"xp": 50,
+		"input_items": {
+			"1623": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Sapphire amulet",
+		"id": 1694,
+		"level": 1,
+		"xp": 4,
+		"input_items": {
+			"1675": 1,
+			"1759": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Sapphire amulet (u)",
+		"id": 1675,
+		"level": 24,
+		"xp": 65,
+		"input_items": {
+			"1607": 1,
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Sapphire bracelet",
+		"id": 11072,
+		"level": 23,
+		"xp": 60,
+		"input_items": {
+			"1607": 1,
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Sapphire necklace",
+		"id": 1656,
+		"level": 22,
+		"xp": 55,
+		"input_items": {
+			"1607": 1,
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Sapphire ring",
+		"id": 1637,
+		"level": 20,
+		"xp": 40,
+		"input_items": {
+			"1607": 1,
+			"2357": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Serpentine helm (uncharged)",
+		"id": 12929,
+		"level": 52,
+		"xp": 120,
+		"input_items": {
+			"12927": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Silver sickle",
+		"id": 2961,
+		"level": 18,
+		"xp": 50,
+		"input_items": {
+			"2355": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Snakeskin bandana",
+		"id": 6326,
+		"level": 48,
+		"xp": 45,
+		"input_items": {
+			"6289": 5
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Snakeskin body",
+		"id": 6322,
+		"level": 53,
+		"xp": 55,
+		"input_items": {
+			"6289": 15
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Snakeskin boots",
+		"id": 6328,
+		"level": 45,
+		"xp": 30,
+		"input_items": {
+			"6289": 6
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Snakeskin chaps",
+		"id": 6324,
+		"level": 51,
+		"xp": 50,
+		"input_items": {
+			"6289": 12
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Snakeskin shield",
+		"id": 22272,
+		"level": 56,
+		"xp": 100,
+		"input_items": {
+			"4820": 15,
+			"6289": 2,
+			"22254": 1
+		},
+		"tick_rate": 5
+	},
+	{
+		"name": "Snakeskin vambraces",
+		"id": 6330,
+		"level": 47,
+		"xp": 35,
+		"input_items": {
+			"6289": 8
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Splitbark body",
+		"id": 3387,
+		"level": 60,
+		"xp": 248,
+		"input_items": {
+			"3239": 4,
+			"3470": 4
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Splitbark boots",
+		"id": 3393,
+		"level": 60,
+		"xp": 62,
+		"input_items": {
+			"3239": 1,
+			"3470": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Splitbark gauntlets",
+		"id": 3391,
+		"level": 60,
+		"xp": 62,
+		"input_items": {
+			"3239": 1,
+			"3470": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Splitbark helm",
+		"id": 3385,
+		"level": 61,
+		"xp": 124,
+		"input_items": {
+			"3239": 2,
+			"3470": 2
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Splitbark legs",
+		"id": 3389,
+		"level": 60,
+		"xp": 186,
+		"input_items": {
+			"3239": 3,
+			"3470": 3
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Strung rabbit foot",
+		"id": 10132,
+		"level": 37,
+		"xp": 4,
+		"input_items": {
+			"1759": 1,
+			"10134": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Studded body",
+		"id": 1133,
+		"level": 41,
+		"xp": 40,
+		"input_items": {
+			"1129": 1,
+			"2370": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Studded chaps",
+		"id": 1097,
+		"level": 44,
+		"xp": 42,
+		"input_items": {
+			"1095": 1,
+			"2370": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Teak bird house",
+		"id": 21521,
+		"level": 35,
+		"xp": 30,
+		"input_items": {
+			"6333": 1,
+			"8792": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Tiara",
+		"id": 5525,
+		"level": 23,
+		"xp": 52.5,
+		"input_items": {
+			"2355": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Topaz amulet",
+		"id": 21114,
+		"level": 1,
+		"xp": 4,
+		"input_items": {
+			"1759": 1,
+			"21105": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Topaz amulet (u)",
+		"id": 21105,
+		"level": 45,
+		"xp": 84,
+		"input_items": {
+			"1613": 1,
+			"2355": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Topaz bracelet",
+		"id": 21123,
+		"level": 18,
+		"xp": 75,
+		"input_items": {
+			"1613": 1,
+			"2355": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Topaz necklace",
+		"id": 21096,
+		"level": 32,
+		"xp": 70,
+		"input_items": {
+			"1613": 1,
+			"2355": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Topaz ring",
+		"id": 21087,
+		"level": 16,
+		"xp": 35,
+		"input_items": {
+			"1613": 1,
+			"2355": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Toxic staff (uncharged)",
+		"id": 12902,
+		"level": 59,
+		"xp": 0,
+		"input_items": {
+			"11791": 1,
+			"12932": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Unblessed symbol",
+		"id": 1716,
+		"level": 16,
+		"xp": 4,
+		"input_items": {
+			"1714": 1,
+			"1759": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Uncharged toxic trident",
+		"id": 12900,
+		"level": 59,
+		"xp": 0,
+		"input_items": {
+			"11908": 1,
+			"12932": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Unpowered orb",
+		"id": 567,
+		"level": 46,
+		"xp": 52.5,
+		"input_items": {
+			"1775": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Unpowered symbol",
+		"id": 1722,
+		"level": 17,
+		"xp": 4,
+		"input_items": {
+			"1720": 1,
+			"1759": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Unstrung emblem",
+		"id": 1720,
+		"level": 17,
+		"xp": 50,
+		"input_items": {
+			"2355": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Unstrung symbol",
+		"id": 1714,
+		"level": 16,
+		"xp": 50,
+		"input_items": {
+			"2355": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Vial",
+		"id": 229,
+		"level": 33,
+		"xp": 35,
+		"input_items": {
+			"1775": 1
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Water battlestaff",
+		"id": 1395,
+		"level": 54,
+		"xp": 100,
+		"input_items": {
+			"571": 1,
+			"1391": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Willow bird house",
+		"id": 21518,
+		"level": 25,
+		"xp": 25,
+		"input_items": {
+			"1519": 1,
+			"8792": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Xerician hat",
+		"id": 13385,
+		"level": 14,
+		"xp": 66,
+		"input_items": {
+			"13383": 3
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Xerician robe",
+		"id": 13389,
+		"level": 17,
+		"xp": 88,
+		"input_items": {
+			"13383": 4
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Xerician top",
+		"id": 13387,
+		"level": 22,
+		"xp": 110,
+		"input_items": {
+			"13383": 5
+		},
+		"tick_rate": 3
+	},
+	{
+		"name": "Yew bird house",
+		"id": 22198,
+		"level": 60,
+		"xp": 45,
+		"input_items": {
+			"1515": 1,
+			"8792": 1
+		},
+		"tick_rate": 2
+	},
+	{
+		"name": "Zenyte",
+		"id": 19493,
+		"level": 89,
+		"xp": 200,
+		"input_items": {
+			"19496": 1
+		},
+		"tick_rate": 2,
+		"cant_be_doubled": true
+	},
+	{
+		"name": "Zenyte amulet",
+		"id": 19541,
+		"level": 1,
+		"xp": 4,
+		"input_items": {
+			"1759": 1,
+			"19501": 1
+		},
+		"tick_rate": 2,
+		"cant_be_doubled": true
+	},
+	{
+		"name": "Zenyte amulet (u)",
+		"id": 19501,
+		"level": 98,
+		"xp": 200,
+		"input_items": {
+			"2357": 1,
+			"19493": 1
+		},
+		"tick_rate": 3,
+		"cant_be_doubled": true
+	},
+	{
+		"name": "Zenyte bracelet",
+		"id": 19532,
+		"level": 95,
+		"xp": 180,
+		"input_items": {
+			"2357": 1,
+			"19493": 1
+		},
+		"tick_rate": 3,
+		"cant_be_doubled": true
+	},
+	{
+		"name": "Zenyte necklace",
+		"id": 19535,
+		"level": 92,
+		"xp": 165,
+		"input_items": {
+			"2357": 1,
+			"19493": 1
+		},
+		"tick_rate": 3,
+		"cant_be_doubled": true
+	},
+	{
+		"name": "Zenyte ring",
+		"id": 19538,
+		"level": 89,
+		"xp": 150,
+		"input_items": {
+			"2357": 1,
+			"19493": 1
+		},
+		"tick_rate": 3,
+		"cant_be_doubled": true
+	}
 ]

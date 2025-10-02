@@ -6,7 +6,6 @@ import { Bank, LootTable } from 'oldschooljs';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { ExoticSeedsTable } from '@/lib/simulation/sharedTables.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 const PrayerPageTable = new LootTable()
 	.add('Saradomin page 1')
@@ -49,9 +48,8 @@ const OuraniaTipTable = new LootTable().tertiary(9, BaseTable);
 
 export const odsTask: MinionTask = {
 	type: 'OuraniaDeliveryService',
-	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
-		const { channelID, quantity, duration, userID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
+		const { channelID, quantity, duration } = data;
 
 		await user.incrementMinigameScore('ourania_delivery_service', quantity);
 

@@ -1,267 +1,245 @@
 [
-    {
-        "id": 7,
-        "qp": 1,
-        "name": "At First Light",
-        "skill_reqs": {
-            "hunter": 46,
-            "herblore": 30,
-            "construction": 27
-        },
-        "combat_level_req": 75,
-        "qp_req": 2,
-        "prerequisites_quests": [
-            3
-        ],
-        "skills_rewards": {
-            "hunter": 4500,
-            "construction": 800,
-            "herblore": 500
-        }
-    },
-    {
-        "id": 3,
-        "qp": 1,
-        "name": "Children of the Sun"
-    },
-    {
-        "id": 10,
-        "qp": 2,
-        "name": "Death on the Isle",
-        "skills_rewards": {
-            "thieving": 10000,
-            "agility": 7500,
-            "crafting": 5000
-        },
-        "combat_level_req": 40,
-        "prerequisites_quests": [
-            3
-        ],
-        "skill_reqs": {
-            "thieving": 34,
-            "agility": 32
-        },
-        "rewards": {
-            "29912": 1,
-            "29920": 1
-        }
-    },
-    {
-        "id": 4,
-        "qp": 2,
-        "name": "Defender of Varrock",
-        "skill_reqs": {
-            "smithing": 55,
-            "hunter": 52
-        },
-        "combat_level_req": 65,
-        "qp_req": 20,
-        "rewards": {
-            "28820": 1
-        },
-        "skills_rewards": {
-            "smithing": 15000,
-            "hunter": 15000
-        }
-    },
-    {
-        "id": 1,
-        "qp": 5,
-        "name": "Desert Treasure II - The Fallen Empire",
-        "skill_reqs": {
-            "firemaking": 75,
-            "magic": 75,
-            "thieving": 70,
-            "herblore": 62,
-            "runecraft": 60,
-            "construction": 60
-        },
-        "combat_level_req": 110,
-        "qp_req": 150,
-        "rewards": {
-            "28327": 1,
-            "28409": 3
-        }
-    },
-    {
-        "id": 12,
-        "qp": 1,
-        "name": "Ethically Acquired Antiquities",
-        "skills_rewards": {
-            "thieving": 6000
-        },
-        "skill_reqs": {
-            "thieving": 25
-        },
-        "combat_level_req": 40,
-        "prerequisites_quests": [
-            3
-        ]
-    },
-    {
-        "id": 11,
-        "qp": 1,
-        "name": "Meat And Greet",
-        "skills_rewards": {
-            "cooking": 8000
-        },
-        "combat_level_req": 40,
-        "prerequisites_quests": [
-            3
-        ]
-    },
-    {
-        "id": 6,
-        "qp": 2,
-        "name": "Perilous Moons",
-        "skill_reqs": {
-            "slayer": 48,
-            "hunter": 20,
-            "fishing": 20,
-            "runecraft": 20,
-            "construction": 10
-        },
-        "combat_level_req": 75,
-        "prerequisites_quests": [
-            3,
-            8
-        ],
-        "skills_rewards": {
-            "slayer": 40000,
-            "runecraft": 5000,
-            "hunter": 5000,
-            "fishing": 5000
-        }
-    },
-    {
-        "id": 14,
-        "qp": 2,
-        "name": "The Curse of Arrav",
-        "prerequisites_quests": [
-            4
-        ],
-        "qp_req": 180,
-        "skill_reqs": {
-            "mining": 64,
-            "ranged": 62,
-            "thieving": 62,
-            "agility": 61,
-            "strength": 58,
-            "slayer": 37
-        },
-        "skills_rewards": {
-            "mining": 40000,
-            "thieving": 40000,
-            "agility": 40000
-        }
-    },
-    {
-        "id": 9,
-        "qp": 2,
-        "name": "The Heart of Darkness",
-        "skills_rewards": {
-            "mining": 8000,
-            "thieving": 8000,
-            "slayer": 8000,
-            "agility": 8000
-        },
-        "combat_level_req": 40,
-        "prerequisites_quests": [
-            8
-        ],
-        "skill_reqs": {
-            "mining": 55,
-            "thieving": 48,
-            "slayer": 48,
-            "agility": 46
-        }
-    },
-    {
-        "id": 2,
-        "qp": 2,
-        "name": "The Path of Glouphrie",
-        "skill_reqs": {
-            "strength": 60,
-            "slayer": 56,
-            "thieving": 56,
-            "ranged": 47,
-            "agility": 45
-        },
-        "ironman_skill_reqs": {
-            "fletching": 59,
-            "smithing": 59
-        },
-        "combat_level_req": 50,
-        "qp_req": 10,
-        "rewards": {
-            "28587": 1,
-            "28588": 1,
-            "28589": 1,
-            "28590": 1
-        }
-    },
-    {
-        "id": 5,
-        "qp": 1,
-        "name": "The Ribbiting Tale of a Lily Pad Labour Dispute",
-        "skill_reqs": {
-            "woodcutting": 15
-        },
-        "prerequisites_quests": [
-            3
-        ],
-        "skills_rewards": {
-            "woodcutting": 2000
-        }
-    },
-    {
-        "id": 8,
-        "qp": 1,
-        "name": "Twilight's Promise",
-        "skills_rewards": {
-            "thieving": 3000
-        },
-        "combat_level_req": 40,
-        "prerequisites_quests": [
-            3
-        ]
-    },
-    {
-        "id": 13,
-        "qp": 5,
-        "name": "While Guthix Sleeps",
-        "combat_level_req": 95,
-        "prerequisites_quests": [
-            4,
-            2
-        ],
-        "qp_req": 180,
-        "skill_reqs": {
-            "thieving": 72,
-            "magic": 67,
-            "agility": 66,
-            "farming": 65,
-            "herblore": 65,
-            "hunter": 62
-        },
-        "rewards": {
-            "453": 100,
-            "554": 100,
-            "560": 100,
-            "1513": 100,
-            "29560": 1,
-            "29562": 1,
-            "29564": 1,
-            "29566": 1,
-            "29568": 1,
-            "29570": 1,
-            "29596": 1
-        },
-        "skills_rewards": {
-            "thieving": 80000,
-            "farming": 75000,
-            "herblore": 75000,
-            "hunter": 50000
-        }
-    }
+	{
+		"id": 7,
+		"qp": 1,
+		"name": "At First Light",
+		"skill_reqs": {
+			"hunter": 46,
+			"herblore": 30,
+			"construction": 27
+		},
+		"combat_level_req": 75,
+		"qp_req": 2,
+		"prerequisites_quests": [3],
+		"skills_rewards": {
+			"hunter": 4500,
+			"construction": 800,
+			"herblore": 500
+		}
+	},
+	{
+		"id": 3,
+		"qp": 1,
+		"name": "Children of the Sun"
+	},
+	{
+		"id": 10,
+		"qp": 2,
+		"name": "Death on the Isle",
+		"skills_rewards": {
+			"thieving": 10000,
+			"agility": 7500,
+			"crafting": 5000
+		},
+		"combat_level_req": 40,
+		"prerequisites_quests": [3],
+		"skill_reqs": {
+			"thieving": 34,
+			"agility": 32
+		},
+		"rewards": {
+			"29912": 1,
+			"29920": 1
+		}
+	},
+	{
+		"id": 4,
+		"qp": 2,
+		"name": "Defender of Varrock",
+		"skill_reqs": {
+			"smithing": 55,
+			"hunter": 52
+		},
+		"combat_level_req": 65,
+		"qp_req": 20,
+		"rewards": {
+			"28820": 1
+		},
+		"skills_rewards": {
+			"smithing": 15000,
+			"hunter": 15000
+		}
+	},
+	{
+		"id": 1,
+		"qp": 5,
+		"name": "Desert Treasure II - The Fallen Empire",
+		"skill_reqs": {
+			"firemaking": 75,
+			"magic": 75,
+			"thieving": 70,
+			"herblore": 62,
+			"runecraft": 60,
+			"construction": 60
+		},
+		"combat_level_req": 110,
+		"qp_req": 150,
+		"rewards": {
+			"28327": 1,
+			"28409": 3
+		}
+	},
+	{
+		"id": 12,
+		"qp": 1,
+		"name": "Ethically Acquired Antiquities",
+		"skills_rewards": {
+			"thieving": 6000
+		},
+		"skill_reqs": {
+			"thieving": 25
+		},
+		"combat_level_req": 40,
+		"prerequisites_quests": [3]
+	},
+	{
+		"id": 11,
+		"qp": 1,
+		"name": "Meat And Greet",
+		"skills_rewards": {
+			"cooking": 8000
+		},
+		"combat_level_req": 40,
+		"prerequisites_quests": [3]
+	},
+	{
+		"id": 6,
+		"qp": 2,
+		"name": "Perilous Moons",
+		"skill_reqs": {
+			"slayer": 48,
+			"hunter": 20,
+			"fishing": 20,
+			"runecraft": 20,
+			"construction": 10
+		},
+		"combat_level_req": 75,
+		"prerequisites_quests": [3, 8],
+		"skills_rewards": {
+			"slayer": 40000,
+			"runecraft": 5000,
+			"hunter": 5000,
+			"fishing": 5000
+		}
+	},
+	{
+		"id": 14,
+		"qp": 2,
+		"name": "The Curse of Arrav",
+		"prerequisites_quests": [4],
+		"qp_req": 180,
+		"skill_reqs": {
+			"mining": 64,
+			"ranged": 62,
+			"thieving": 62,
+			"agility": 61,
+			"strength": 58,
+			"slayer": 37
+		},
+		"skills_rewards": {
+			"mining": 40000,
+			"thieving": 40000,
+			"agility": 40000
+		}
+	},
+	{
+		"id": 9,
+		"qp": 2,
+		"name": "The Heart of Darkness",
+		"skills_rewards": {
+			"mining": 8000,
+			"thieving": 8000,
+			"slayer": 8000,
+			"agility": 8000
+		},
+		"combat_level_req": 40,
+		"prerequisites_quests": [8],
+		"skill_reqs": {
+			"mining": 55,
+			"thieving": 48,
+			"slayer": 48,
+			"agility": 46
+		}
+	},
+	{
+		"id": 2,
+		"qp": 2,
+		"name": "The Path of Glouphrie",
+		"skill_reqs": {
+			"strength": 60,
+			"slayer": 56,
+			"thieving": 56,
+			"ranged": 47,
+			"agility": 45
+		},
+		"ironman_skill_reqs": {
+			"fletching": 59,
+			"smithing": 59
+		},
+		"combat_level_req": 50,
+		"qp_req": 10,
+		"rewards": {
+			"28587": 1,
+			"28588": 1,
+			"28589": 1,
+			"28590": 1
+		}
+	},
+	{
+		"id": 5,
+		"qp": 1,
+		"name": "The Ribbiting Tale of a Lily Pad Labour Dispute",
+		"skill_reqs": {
+			"woodcutting": 15
+		},
+		"prerequisites_quests": [3],
+		"skills_rewards": {
+			"woodcutting": 2000
+		}
+	},
+	{
+		"id": 8,
+		"qp": 1,
+		"name": "Twilight's Promise",
+		"skills_rewards": {
+			"thieving": 3000
+		},
+		"combat_level_req": 40,
+		"prerequisites_quests": [3]
+	},
+	{
+		"id": 13,
+		"qp": 5,
+		"name": "While Guthix Sleeps",
+		"combat_level_req": 95,
+		"prerequisites_quests": [4, 2],
+		"qp_req": 180,
+		"skill_reqs": {
+			"thieving": 72,
+			"magic": 67,
+			"agility": 66,
+			"farming": 65,
+			"herblore": 65,
+			"hunter": 62
+		},
+		"rewards": {
+			"453": 100,
+			"554": 100,
+			"560": 100,
+			"1513": 100,
+			"29560": 1,
+			"29562": 1,
+			"29564": 1,
+			"29566": 1,
+			"29568": 1,
+			"29570": 1,
+			"29596": 1
+		},
+		"skills_rewards": {
+			"thieving": 80000,
+			"farming": 75000,
+			"herblore": 75000,
+			"hunter": 50000
+		}
+	}
 ]

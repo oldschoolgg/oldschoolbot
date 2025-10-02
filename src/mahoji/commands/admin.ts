@@ -36,7 +36,6 @@ import { memoryAnalysis } from '@/lib/util/cachedUserIDs.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
-import { allCommands } from '@/mahoji/commands/allCommands.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 import { syncCustomPrices } from '@/mahoji/lib/events.js';
 
@@ -524,7 +523,7 @@ export const adminCommand: OSBMahojiCommand = {
 					required: false,
 					autocomplete: async (value: string) => {
 						const disabledCommands = Array.from(DISABLED_COMMANDS.values());
-						return allCommands
+						return globalClient.allCommands
 							.filter(i => !disabledCommands.includes(i.name))
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.name, value: i.name }));
@@ -537,7 +536,7 @@ export const adminCommand: OSBMahojiCommand = {
 					required: false,
 					autocomplete: async () => {
 						const disabledCommands = Array.from(DISABLED_COMMANDS.values());
-						return allCommands
+						return globalClient.allCommands
 							.filter(i => disabledCommands.includes(i.name))
 							.map(i => ({ name: i.name, value: i.name }));
 					}
@@ -743,7 +742,7 @@ export const adminCommand: OSBMahojiCommand = {
 				select: { disabled_commands: true }
 			}))!.disabled_commands;
 
-			const command = allCommands.find(c => stringMatches(c.name, disable ?? enable ?? '-'));
+			const command = globalClient.allCommands.find(c => stringMatches(c.name, disable ?? enable ?? '-'));
 			if (!command) return "That's not a valid command.";
 
 			if (disable) {
@@ -889,11 +888,11 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		}
 
 		if (options.sync_commands) {
-			const totalCommands = allCommands;
+			const totalCommands = globalClient.allCommands;
 
 			if (!globalConfig.isProduction) {
 				await bulkUpdateCommands({
-					commands: allCommands,
+					commands: globalClient.allCommands,
 					guildID: globalConfig.supportServerID
 				});
 				return 'Done.';

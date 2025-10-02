@@ -5,14 +5,12 @@ import { Naxxus } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
 import { addMonsterXP } from '@/lib/minions/functions/index.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const naxxusTask: MinionTask = {
 	type: 'Naxxus',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { channelID, userID, quantity, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { channelID, quantity, duration } = data;
 
 		const loot = rollNaxxusLoot(quantity, user.cl);
 

@@ -6,13 +6,11 @@ import { Bank } from 'oldschooljs';
 
 import { divinersOutfit } from '@/lib/data/CollectionsExport.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const guthixianCacheTask: MinionTask = {
 	type: 'GuthixianCache',
-	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
-		const { userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
+		const { channelID, duration } = data;
 
 		const xp = user.skillLevel('divination') * user.skillLevel('divination') * 2.5;
 		const xpRes = await user.addXP({

@@ -15,10 +15,6 @@ import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables } from '@/lib/openables.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
-import { assert } from '@/lib/util/logError.js';
-
-assert(Items.get('Lil lamb')!.id === 9619);
-console.log(Items.get(9619)!.name);
 
 describe('Sanity', () => {
 	test('calculateMaximumTameFeedingLevelGain', () => {
@@ -47,6 +43,8 @@ describe('Sanity', () => {
 	});
 
 	test('misc', () => {
+		expect(Items.itemNameFromId(323424)).toEqual('Ivy');
+		expect(Items.getOrThrow('Ivy').id).toEqual(323424);
 		expect(itemID('Phoenix')).toEqual(20_693);
 		expect(itemID('Kalphite princess')).toEqual(12_647);
 		expect(itemID('Green phoenix')).toEqual(24_483);

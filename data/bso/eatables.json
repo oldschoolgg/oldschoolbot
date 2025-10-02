@@ -1,284 +1,284 @@
 [
-    {
-        "name": "Anchovies",
-        "id": 319,
-        "heal_amount": 1,
-        "raw": null
-    },
-    {
-        "name": "Anchovy pizza",
-        "id": 2297,
-        "heal_amount": 18,
-        "raw": null
-    },
-    {
-        "name": "Anglerfish",
-        "id": 13441,
-        "raw": 13439,
-        "pvm_boost": 4
-    },
-    {
-        "name": "Bass",
-        "id": 365,
-        "heal_amount": 13,
-        "raw": 363
-    },
-    {
-        "name": "Blighted anglerfish",
-        "id": 24592,
-        "raw": null,
-        "pvm_boost": 4,
-        "wildy_only": true
-    },
-    {
-        "name": "Blighted karambwan",
-        "id": 24595,
-        "heal_amount": 18,
-        "raw": null,
-        "wildy_only": true
-    },
-    {
-        "name": "Blighted manta ray",
-        "id": 24589,
-        "heal_amount": 22,
-        "raw": null,
-        "pvm_boost": 3,
-        "wildy_only": true
-    },
-    {
-        "name": "Bread",
-        "id": 2309,
-        "heal_amount": 5,
-        "raw": null
-    },
-    {
-        "name": "Cake",
-        "id": 1891,
-        "heal_amount": 12,
-        "raw": null
-    },
-    {
-        "name": "Chilli potato",
-        "id": 7054,
-        "heal_amount": 14,
-        "raw": null
-    },
-    {
-        "name": "Chocolate cake",
-        "id": 1897,
-        "heal_amount": 15,
-        "raw": null
-    },
-    {
-        "name": "Cod",
-        "id": 339,
-        "heal_amount": 7,
-        "raw": 341
-    },
-    {
-        "name": "Cooked chicken",
-        "id": 2140,
-        "heal_amount": 3,
-        "raw": null
-    },
-    {
-        "name": "Cooked karambwan",
-        "id": 3144,
-        "heal_amount": 18,
-        "raw": 3142
-    },
-    {
-        "name": "Cooked meat",
-        "id": 2142,
-        "heal_amount": 3,
-        "raw": null
-    },
-    {
-        "name": "Curry",
-        "id": 2011,
-        "heal_amount": 19,
-        "raw": null
-    },
-    {
-        "name": "Dark crab",
-        "id": 11936,
-        "heal_amount": 22,
-        "raw": 11934,
-        "pvm_boost": 3
-    },
-    {
-        "name": "Egg potato",
-        "id": 7056,
-        "heal_amount": 16,
-        "raw": null
-    },
-    {
-        "name": "Herring",
-        "id": 347,
-        "heal_amount": 5,
-        "raw": 345
-    },
-    {
-        "name": "Jug of wine",
-        "id": 1993,
-        "heal_amount": 11,
-        "raw": null,
-        "pvm_boost": -10
-    },
-    {
-        "name": "Lobster",
-        "id": 379,
-        "heal_amount": 12,
-        "raw": 377
-    },
-    {
-        "name": "Mackerel",
-        "id": 355,
-        "heal_amount": 6,
-        "raw": 353
-    },
-    {
-        "name": "Manta ray",
-        "id": 391,
-        "heal_amount": 22,
-        "raw": 389,
-        "pvm_boost": 3
-    },
-    {
-        "name": "Meat pizza",
-        "id": 2293,
-        "heal_amount": 16,
-        "raw": null
-    },
-    {
-        "name": "Monkfish",
-        "id": 7946,
-        "heal_amount": 16,
-        "raw": 7944,
-        "pvm_boost": 1
-    },
-    {
-        "name": "Mushroom potato",
-        "id": 7058,
-        "heal_amount": 20,
-        "raw": null
-    },
-    {
-        "name": "Pike",
-        "id": 351,
-        "heal_amount": 8,
-        "raw": 349
-    },
-    {
-        "name": "Pineapple pizza",
-        "id": 2301,
-        "heal_amount": 22,
-        "raw": null
-    },
-    {
-        "name": "Plain pizza",
-        "id": 2289,
-        "heal_amount": 14,
-        "raw": null
-    },
-    {
-        "name": "Potato with butter",
-        "id": 6703,
-        "heal_amount": 14,
-        "raw": null
-    },
-    {
-        "name": "Potato with cheese",
-        "id": 6705,
-        "heal_amount": 16,
-        "raw": null
-    },
-    {
-        "name": "Raw yeti meat",
-        "id": 71576,
-        "heal_amount": 26,
-        "raw": 71576,
-        "pvm_boost": 8
-    },
-    {
-        "name": "Rocktail",
-        "id": 50002,
-        "heal_amount": 26,
-        "raw": 50001,
-        "pvm_boost": 7
-    },
-    {
-        "name": "Salmon",
-        "id": 329,
-        "heal_amount": 9,
-        "raw": 331
-    },
-    {
-        "name": "Sardine",
-        "id": 325,
-        "heal_amount": 4,
-        "raw": 327
-    },
-    {
-        "name": "Sea turtle",
-        "id": 397,
-        "heal_amount": 21,
-        "raw": 395,
-        "pvm_boost": 2
-    },
-    {
-        "name": "Shark",
-        "id": 385,
-        "heal_amount": 20,
-        "raw": 383,
-        "pvm_boost": 2
-    },
-    {
-        "name": "Shrimps",
-        "id": 315,
-        "heal_amount": 3,
-        "raw": null
-    },
-    {
-        "name": "Stew",
-        "id": 2003,
-        "heal_amount": 11,
-        "raw": null
-    },
-    {
-        "name": "Summer pie",
-        "id": 7218,
-        "heal_amount": 22,
-        "raw": null
-    },
-    {
-        "name": "Swordfish",
-        "id": 373,
-        "heal_amount": 14,
-        "raw": 371
-    },
-    {
-        "name": "Trout",
-        "id": 333,
-        "heal_amount": 7,
-        "raw": 335
-    },
-    {
-        "name": "Tuna",
-        "id": 361,
-        "heal_amount": 10,
-        "raw": 359
-    },
-    {
-        "name": "Tuna potato",
-        "id": 7060,
-        "heal_amount": 22,
-        "raw": null
-    },
-    {
-        "name": "Ugthanki kebab",
-        "id": 1883,
-        "heal_amount": 19,
-        "raw": null
-    }
+	{
+		"name": "Anchovies",
+		"id": 319,
+		"heal_amount": 1,
+		"raw": null
+	},
+	{
+		"name": "Anchovy pizza",
+		"id": 2297,
+		"heal_amount": 18,
+		"raw": null
+	},
+	{
+		"name": "Anglerfish",
+		"id": 13441,
+		"raw": 13439,
+		"pvm_boost": 4
+	},
+	{
+		"name": "Bass",
+		"id": 365,
+		"heal_amount": 13,
+		"raw": 363
+	},
+	{
+		"name": "Blighted anglerfish",
+		"id": 24592,
+		"raw": null,
+		"pvm_boost": 4,
+		"wildy_only": true
+	},
+	{
+		"name": "Blighted karambwan",
+		"id": 24595,
+		"heal_amount": 18,
+		"raw": null,
+		"wildy_only": true
+	},
+	{
+		"name": "Blighted manta ray",
+		"id": 24589,
+		"heal_amount": 22,
+		"raw": null,
+		"pvm_boost": 3,
+		"wildy_only": true
+	},
+	{
+		"name": "Bread",
+		"id": 2309,
+		"heal_amount": 5,
+		"raw": null
+	},
+	{
+		"name": "Cake",
+		"id": 1891,
+		"heal_amount": 12,
+		"raw": null
+	},
+	{
+		"name": "Chilli potato",
+		"id": 7054,
+		"heal_amount": 14,
+		"raw": null
+	},
+	{
+		"name": "Chocolate cake",
+		"id": 1897,
+		"heal_amount": 15,
+		"raw": null
+	},
+	{
+		"name": "Cod",
+		"id": 339,
+		"heal_amount": 7,
+		"raw": 341
+	},
+	{
+		"name": "Cooked chicken",
+		"id": 2140,
+		"heal_amount": 3,
+		"raw": null
+	},
+	{
+		"name": "Cooked karambwan",
+		"id": 3144,
+		"heal_amount": 18,
+		"raw": 3142
+	},
+	{
+		"name": "Cooked meat",
+		"id": 2142,
+		"heal_amount": 3,
+		"raw": null
+	},
+	{
+		"name": "Curry",
+		"id": 2011,
+		"heal_amount": 19,
+		"raw": null
+	},
+	{
+		"name": "Dark crab",
+		"id": 11936,
+		"heal_amount": 22,
+		"raw": 11934,
+		"pvm_boost": 3
+	},
+	{
+		"name": "Egg potato",
+		"id": 7056,
+		"heal_amount": 16,
+		"raw": null
+	},
+	{
+		"name": "Herring",
+		"id": 347,
+		"heal_amount": 5,
+		"raw": 345
+	},
+	{
+		"name": "Jug of wine",
+		"id": 1993,
+		"heal_amount": 11,
+		"raw": null,
+		"pvm_boost": -10
+	},
+	{
+		"name": "Lobster",
+		"id": 379,
+		"heal_amount": 12,
+		"raw": 377
+	},
+	{
+		"name": "Mackerel",
+		"id": 355,
+		"heal_amount": 6,
+		"raw": 353
+	},
+	{
+		"name": "Manta ray",
+		"id": 391,
+		"heal_amount": 22,
+		"raw": 389,
+		"pvm_boost": 3
+	},
+	{
+		"name": "Meat pizza",
+		"id": 2293,
+		"heal_amount": 16,
+		"raw": null
+	},
+	{
+		"name": "Monkfish",
+		"id": 7946,
+		"heal_amount": 16,
+		"raw": 7944,
+		"pvm_boost": 1
+	},
+	{
+		"name": "Mushroom potato",
+		"id": 7058,
+		"heal_amount": 20,
+		"raw": null
+	},
+	{
+		"name": "Pike",
+		"id": 351,
+		"heal_amount": 8,
+		"raw": 349
+	},
+	{
+		"name": "Pineapple pizza",
+		"id": 2301,
+		"heal_amount": 22,
+		"raw": null
+	},
+	{
+		"name": "Plain pizza",
+		"id": 2289,
+		"heal_amount": 14,
+		"raw": null
+	},
+	{
+		"name": "Potato with butter",
+		"id": 6703,
+		"heal_amount": 14,
+		"raw": null
+	},
+	{
+		"name": "Potato with cheese",
+		"id": 6705,
+		"heal_amount": 16,
+		"raw": null
+	},
+	{
+		"name": "Raw yeti meat",
+		"id": 71576,
+		"heal_amount": 26,
+		"raw": 71576,
+		"pvm_boost": 8
+	},
+	{
+		"name": "Rocktail",
+		"id": 50002,
+		"heal_amount": 26,
+		"raw": 50001,
+		"pvm_boost": 7
+	},
+	{
+		"name": "Salmon",
+		"id": 329,
+		"heal_amount": 9,
+		"raw": 331
+	},
+	{
+		"name": "Sardine",
+		"id": 325,
+		"heal_amount": 4,
+		"raw": 327
+	},
+	{
+		"name": "Sea turtle",
+		"id": 397,
+		"heal_amount": 21,
+		"raw": 395,
+		"pvm_boost": 2
+	},
+	{
+		"name": "Shark",
+		"id": 385,
+		"heal_amount": 20,
+		"raw": 383,
+		"pvm_boost": 2
+	},
+	{
+		"name": "Shrimps",
+		"id": 315,
+		"heal_amount": 3,
+		"raw": null
+	},
+	{
+		"name": "Stew",
+		"id": 2003,
+		"heal_amount": 11,
+		"raw": null
+	},
+	{
+		"name": "Summer pie",
+		"id": 7218,
+		"heal_amount": 22,
+		"raw": null
+	},
+	{
+		"name": "Swordfish",
+		"id": 373,
+		"heal_amount": 14,
+		"raw": 371
+	},
+	{
+		"name": "Trout",
+		"id": 333,
+		"heal_amount": 7,
+		"raw": 335
+	},
+	{
+		"name": "Tuna",
+		"id": 361,
+		"heal_amount": 10,
+		"raw": 359
+	},
+	{
+		"name": "Tuna potato",
+		"id": 7060,
+		"heal_amount": 22,
+		"raw": null
+	},
+	{
+		"name": "Ugthanki kebab",
+		"id": 1883,
+		"heal_amount": 19,
+		"raw": null
+	}
 ]

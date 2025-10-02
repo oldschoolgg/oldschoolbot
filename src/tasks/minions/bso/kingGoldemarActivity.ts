@@ -10,7 +10,6 @@ import { addMonsterXP } from '@/lib/minions/functions/index.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { calcDwwhChance } from '@/lib/structures/Boss.js';
 import type { NewBossOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 const methodsOfDeath = [
 	'Beheaded',
@@ -25,7 +24,7 @@ const methodsOfDeath = [
 
 export const kingGoldemarTask: MinionTask = {
 	type: 'KingGoldemar',
-	async run(data: NewBossOptions) {
+	async run(data: NewBossOptions, { handleTripFinish }) {
 		const { channelID, users: idArr, duration, bossUsers } = data;
 		const deaths: MUser[] = [];
 		const users: MUser[] = await Promise.all(idArr.map(i => mUserFetch(i)));

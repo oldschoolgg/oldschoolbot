@@ -5,7 +5,7 @@ import path from 'node:path';
 import { Bank } from 'oldschooljs';
 import { omit } from 'remeda';
 
-import { ALL_OBTAINABLE_ITEMS } from '@/lib/allObtainableItems.js';
+// import { ALL_OBTAINABLE_ITEMS } from '@/lib/allObtainableItems.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
@@ -57,7 +57,6 @@ writeSkillingJson(
 	'woodcutting-logs.json',
 	Woodcutting.Logs.slice()
 		.sort((a, b) => a.name.localeCompare(b.name))
-		.filter(i => i.name !== 'Ivy')
 		.map(serializeSnapshotItem)
 );
 
@@ -274,9 +273,9 @@ writeRootJson(
 	serializeSnapshotItem(quests.sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem))
 );
 
-writeRootJson(
-	'all-obtainable-items.json',
-	serializeSnapshotItem(Util.ItemArr(Array.from(ALL_OBTAINABLE_ITEMS)).map(serializeSnapshotItem))
-);
+// writeRootJson(
+// 	'all-obtainable-items.json',
+// 	serializeSnapshotItem(Util.ItemArr(Array.from(ALL_OBTAINABLE_ITEMS)).map(serializeSnapshotItem))
+// );
 
 tearDownScript();

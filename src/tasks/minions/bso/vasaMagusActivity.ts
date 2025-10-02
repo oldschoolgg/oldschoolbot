@@ -13,7 +13,6 @@ import { VasaMagus, VasaMagusLootTable } from '@/lib/minions/data/killableMonste
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
 import { addMonsterXP } from '@/lib/minions/functions/index.js';
 import type { NewBossOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 const vasaBosses = [
@@ -35,9 +34,8 @@ const vasaBosses = [
 
 export const vasaTask: MinionTask = {
 	type: 'VasaMagus',
-	async run(data: NewBossOptions) {
-		const { channelID, userID, duration, quantity } = data;
-		const user = await mUserFetch(userID);
+	async run(data: NewBossOptions, { user, handleTripFinish }) {
+		const { channelID, duration, quantity } = data;
 
 		await user.incrementKC(VasaMagus.id, quantity);
 

@@ -6,11 +6,9 @@ import {
 	Routes
 } from 'discord.js';
 
-import { allCommands } from '@/mahoji/commands/allCommands.js';
-
 export function mentionCommand(name: string, subCommand?: string, subSubCommand?: string) {
 	if (process.env.TEST) return '';
-	const command = allCommands.find(i => i.name === name);
+	const command = globalClient.allCommands.find(i => i.name === name);
 	if (!command) {
 		throw new Error(`Command ${name} not found`);
 	}

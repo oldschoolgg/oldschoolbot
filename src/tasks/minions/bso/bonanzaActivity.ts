@@ -10,7 +10,6 @@ import { MAX_LEVEL } from '@/lib/constants.js';
 import { spectatorClothes } from '@/lib/data/CollectionsExport.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 function calcXP(user: MUser, duration: number, skill: SkillNameType) {
 	return calcPercentOfNum(calcWhatPercent(user.skillLevel(skill), MAX_LEVEL), duration / 80);
@@ -20,9 +19,8 @@ const tameMessages = ["ate a member of the audience who wasn't watching", 'ate a
 
 export const bonanzaTask: MinionTask = {
 	type: 'BalthazarsBigBonanza',
-	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
-		const { channelID, quantity, duration, userID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
+		const { channelID, quantity, duration } = data;
 		const tames = await getAllUserTames(user.id);
 		const incrementResult = await user.incrementMinigameScore('balthazars_big_bonanza', quantity);
 		const xpStrs = await Promise.all([

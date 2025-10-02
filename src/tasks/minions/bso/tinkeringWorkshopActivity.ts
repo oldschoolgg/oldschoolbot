@@ -6,7 +6,6 @@ import { Bank, type ItemBank } from 'oldschooljs';
 import { inventorOutfit } from '@/lib/data/CollectionsExport.js';
 import { ClueTable } from '@/lib/simulation/sharedTables.js';
 import type { TinkeringWorkshopOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 function tinkerLoot(user: MUser, quantity: number) {
 	const loot = new Bank();
@@ -27,9 +26,8 @@ function tinkerLoot(user: MUser, quantity: number) {
 
 export const twTask: MinionTask = {
 	type: 'TinkeringWorkshop',
-	async run(data: TinkeringWorkshopOptions) {
-		const { channelID, quantity, duration, userID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: TinkeringWorkshopOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, duration } = data;
 
 		await user.incrementMinigameScore('tinkering_workshop', quantity);
 

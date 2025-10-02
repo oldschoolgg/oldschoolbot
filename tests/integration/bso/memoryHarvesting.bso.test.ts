@@ -76,7 +76,7 @@ describe('Divination', async () => {
 		expect(activity.e).toEqual(itemID('Pale energy'));
 		expect(activity.wb).toEqual(false);
 		expect(activity.t).toEqual(1);
-		const stats = await user.fetchStats({ divination_loot: true });
+		const stats = await user.fetchStats();
 		const divinationLoot = new Bank(stats.divination_loot as ItemBank);
 		expect(divinationLoot.amount('Pale energy')).toEqual(960);
 		expect(user.bank.amount('Pale energy')).toEqual(960);

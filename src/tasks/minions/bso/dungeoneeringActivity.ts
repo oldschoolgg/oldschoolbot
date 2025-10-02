@@ -12,7 +12,6 @@ import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
 
 import type { DungeoneeringOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export function calculateDungeoneeringResult({
 	floor,
@@ -89,9 +88,8 @@ export function calculateDungeoneeringResult({
 
 export const dungeoneeringTask: MinionTask = {
 	type: 'Dungeoneering',
-	async run(data: DungeoneeringOptions) {
-		const { channelID, duration, userID, floor, quantity, users } = data;
-		const user = await mUserFetch(userID);
+	async run(data: DungeoneeringOptions, { user, handleTripFinish }) {
+		const { channelID, duration, floor, quantity, users } = data;
 
 		let str = `<:dungeoneering:828683755198873623> ${user}, your party finished ${quantity}x Floor ${floor} dungeons.\n\n`;
 

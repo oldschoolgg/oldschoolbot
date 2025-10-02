@@ -5,13 +5,11 @@ import { calcPercentOfNum, calcWhatPercent } from '@oldschoolgg/toolkit';
 
 import { KandarinDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const barbAssaultTask: MinionTask = {
 	type: 'BarbarianAssault',
-	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
-		const { channelID, quantity, userID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
+		const { channelID, quantity, duration } = data;
 		const { honour_level: currentHonourLevel } = await user.fetchStats();
 
 		let basePoints = 35;

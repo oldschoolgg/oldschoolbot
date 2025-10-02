@@ -3,13 +3,11 @@ import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import { Bank } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const scTask: MinionTask = {
 	type: 'StealingCreation',
-	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
-		const { channelID, quantity, duration, userID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
+		const { channelID, quantity, duration } = data;
 
 		const { newScore } = await user.incrementMinigameScore('stealing_creation', quantity);
 

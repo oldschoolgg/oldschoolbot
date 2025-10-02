@@ -4,6 +4,7 @@ import { Bank, type Item, Items, type Monster, Monsters, resolveItems } from 'ol
 
 import { BitField, MAX_XP } from '@/lib/constants.js';
 import { doaCL } from '@/lib/data/CollectionsExport.js';
+import { allSlayerTasks } from '@/lib/slayer/tasks/index.js';
 import type { Skills } from '@/lib/types/index.js';
 
 export function hasUnlockedAtlantis(user: MUser) {
@@ -102,4 +103,13 @@ export function getMonster(str: string): Monster {
 
 export function calcTotalLevel(skills: Skills) {
 	return sumArr(Object.values(skills));
+}
+
+export function getAllAlternateMonsters(options: { monster: Monster }): Monster[];
+export function getAllAlternateMonsters(options: { monsterId: number }): number[];
+export function getAllAlternateMonsters(options: { monster: Monster } | { monsterId: number }) {
+	const useMonster = 'monster' in options;
+	const monsterId = useMonster ? options.monster.id : options.monsterId;
+	const monsters = allSlayerTasks.map(task => (task.monsters.includes(monsterId) ? task.monsters : [])).flat(2);
+	return useMonster ? Monsters.filter(m => monsters.includes(m.id)).map(m => m) : monsters;
 }

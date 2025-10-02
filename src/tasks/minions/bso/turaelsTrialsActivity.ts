@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 
 import { XPBank } from '@/lib/structures/XPBank.js';
 import type { TuraelsTrialsOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export function calculateTuraelsTrialsResult({
 	quantity,
@@ -40,9 +39,8 @@ export function calculateTuraelsTrialsResult({
 
 export const turaelsTrialsTask: MinionTask = {
 	type: 'TuraelsTrials',
-	async run(data: TuraelsTrialsOptions) {
-		const { q: quantity, channelID, userID, duration, m: method } = data;
-		const user = await mUserFetch(userID);
+	async run(data: TuraelsTrialsOptions, { user, handleTripFinish }) {
+		const { q: quantity, channelID, duration, m: method } = data;
 
 		const result = calculateTuraelsTrialsResult({ quantity, method, duration });
 

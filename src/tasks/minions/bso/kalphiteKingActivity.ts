@@ -13,7 +13,6 @@ import { addMonsterXP } from '@/lib/minions/functions/index.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 interface KalphiteKingUser {
@@ -25,7 +24,7 @@ interface KalphiteKingUser {
 
 export const kalphiteKingTask: MinionTask = {
 	type: 'KalphiteKing',
-	async run(data: BossActivityTaskOptions) {
+	async run(data: BossActivityTaskOptions, { handleTripFinish }) {
 		const { channelID, userID, users, quantity, duration } = data;
 		const teamsLoot = new TeamLoot([]);
 		const kcAmounts: { [key: string]: number } = {};

@@ -5,7 +5,6 @@ import { Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import type { MonkeyRumbleOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 const rewardTable = new LootTable().add('Monkey egg').add('Monkey dye').add('Big banana');
 const baseTable = new LootTable().tertiary(25, 'Monkey crate');
@@ -18,9 +17,8 @@ const gotUniqueMessages = [
 
 export const mrTask: MinionTask = {
 	type: 'MonkeyRumble',
-	async run(data: MonkeyRumbleOptions) {
-		const { channelID, quantity, userID, monkeys, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: MonkeyRumbleOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, monkeys, duration } = data;
 
 		await user.incrementMinigameScore('monkey_rumble', quantity);
 

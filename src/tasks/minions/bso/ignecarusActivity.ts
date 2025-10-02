@@ -16,14 +16,13 @@ import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { BossUser } from '@/lib/structures/Boss.js';
 import type { NewBossOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 
 const methodsOfDeath = ['Burnt to death', 'Eaten', 'Crushed', 'Incinerated'];
 
 export const ignecarusTask: MinionTask = {
 	type: 'Ignecarus',
-	async run(data: NewBossOptions) {
+	async run(data: NewBossOptions, { handleTripFinish }) {
 		const { channelID, users: idArr, duration, bossUsers: _bossUsers, quantity, userID } = data;
 		const wrongFoodDeaths: MUser[] = [];
 		const deaths: Record<string, { user: MUser; qty: number }> = {};

@@ -2,7 +2,7 @@ import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
 import { Bank, convertLVLtoXP } from 'oldschooljs';
 
-import { MAX_XP } from '@/lib/constants.js';
+import { MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
 import type { Skills, SkillsRequired } from '@/lib/types/index.js';
 import { GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types.js';
 import { SkillsArray } from '../../src/lib/skilling/types.js';
@@ -23,7 +23,7 @@ export function makeGearBank({ bank, skillsAsLevels }: { bank?: Bank; skillsAsLe
 	for (const skill of SkillsArray) {
 		if (skillsAsLevels) {
 			const lvl = skillsAsLevels[skill as keyof Skills] ?? 1;
-			if (lvl < 1 || lvl > 99) {
+			if (lvl < 1 || lvl > MAX_LEVEL) {
 				throw new Error(`Invalid level ${lvl} for skill ${skill}`);
 			}
 			skillsAsXP[skill] = convertLVLtoXP(lvl);

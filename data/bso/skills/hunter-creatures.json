@@ -1,446 +1,446 @@
 [
-    {
-        "name": "Barb-tailed kebbit",
-        "id": 15,
-        "level": 33,
-        "hunter_xp": 168,
-        "hunt_technique": "deadfall trapping",
-        "catch_time": 20,
-        "slope": 1.2,
-        "intercept": 17
-    },
-    {
-        "name": "Black chinchompa",
-        "id": 9,
-        "level": 73,
-        "hunter_xp": 315,
-        "hunt_technique": "box trapping",
-        "multi_traps": true,
-        "wildy": true,
-        "prayer_lvl": 43,
-        "catch_time": 28,
-        "qp_required": 2,
-        "slope": 1.22,
-        "intercept": -31.33
-    },
-    {
-        "name": "Black salamander",
-        "id": 26,
-        "level": 67,
-        "hunter_xp": 319.2,
-        "hunt_technique": "net trapping",
-        "multi_traps": true,
-        "wildy": true,
-        "prayer_lvl": 43,
-        "catch_time": 48,
-        "slope": 1.2,
-        "intercept": -5
-    },
-    {
-        "name": "Black warlock",
-        "id": 13,
-        "level": 45,
-        "hunter_xp": 54,
-        "items_consumed": {
-            "10012": 1
-        },
-        "hunt_technique": "butterfly netting",
-        "catch_time": 5,
-        "slope": 1.35,
-        "intercept": 35
-    },
-    {
-        "name": "Carnivorous chinchompa",
-        "id": 8,
-        "level": 63,
-        "hunter_xp": 265,
-        "hunt_technique": "box trapping",
-        "multi_traps": true,
-        "catch_time": 28,
-        "qp_required": 2,
-        "slope": 1.22,
-        "intercept": -31.33
-    },
-    {
-        "name": "Cerulean twitch",
-        "id": 4,
-        "level": 11,
-        "hunter_xp": 64.5,
-        "hunt_technique": "bird snaring",
-        "multi_traps": true,
-        "catch_time": 15,
-        "slope": 0.85,
-        "intercept": 10
-    },
-    {
-        "name": "Chimpchompa",
-        "id": 63204,
-        "level": 99,
-        "hunter_xp": 300,
-        "hunt_technique": "box trapping",
-        "multi_traps": true,
-        "wildy": false,
-        "prayer_lvl": 43,
-        "catch_time": 200,
-        "qp_required": 2,
-        "slope": 1.22,
-        "intercept": -31.33
-    },
-    {
-        "name": "Chinchompa",
-        "id": 7,
-        "level": 53,
-        "hunter_xp": 198.4,
-        "hunt_technique": "box trapping",
-        "multi_traps": true,
-        "catch_time": 30,
-        "qp_required": 2,
-        "slope": 1.03479,
-        "intercept": 1.69495
-    },
-    {
-        "name": "Common kebbit",
-        "id": 32,
-        "level": 3,
-        "hunter_xp": 36,
-        "hunt_technique": "tracking",
-        "catch_time": 34,
-        "slope": 0,
-        "intercept": 99
-    },
-    {
-        "name": "Copper longtail",
-        "id": 3,
-        "level": 9,
-        "hunter_xp": 61.2,
-        "hunt_technique": "bird snaring",
-        "multi_traps": true,
-        "catch_time": 12,
-        "slope": 0.9,
-        "intercept": 12
-    },
-    {
-        "name": "Crimson swift",
-        "id": 1,
-        "level": 1,
-        "hunter_xp": 34,
-        "hunt_technique": "bird snaring",
-        "multi_traps": true,
-        "catch_time": 10,
-        "slope": 1,
-        "intercept": 20
-    },
-    {
-        "name": "Crystal impling",
-        "id": 42,
-        "level": 80,
-        "hunter_xp": 280,
-        "hunt_technique": "butterfly netting",
-        "catch_time": 180,
-        "slope": 0,
-        "intercept": 0
-    },
-    {
-        "name": "Dark kebbit",
-        "id": 20,
-        "level": 57,
-        "hunter_xp": 132,
-        "hunt_technique": "hawking",
-        "catch_time": 4.8,
-        "slope": 1,
-        "intercept": 10
-    },
-    {
-        "name": "Dashing kebbit",
-        "id": 21,
-        "level": 69,
-        "hunter_xp": 156,
-        "hunt_technique": "hawking",
-        "catch_time": 6,
-        "slope": 1,
-        "intercept": 10
-    },
-    {
-        "name": "Desert devil",
-        "id": 34,
-        "level": 13,
-        "hunter_xp": 66,
-        "hunt_technique": "tracking",
-        "catch_time": 32,
-        "slope": 0,
-        "intercept": 99
-    },
-    {
-        "name": "Eastern ferret",
-        "id": 91938,
-        "level": 96,
-        "hunter_xp": 2100,
-        "qp_required": 600,
-        "hunt_technique": "tracking",
-        "catch_time": 350,
-        "slope": 0,
-        "intercept": 99
-    },
-    {
-        "name": "Feldip weasel",
-        "id": 33,
-        "level": 7,
-        "hunter_xp": 48,
-        "hunt_technique": "tracking",
-        "catch_time": 38,
-        "slope": 0,
-        "intercept": 99
-    },
-    {
-        "name": "Golden warbler",
-        "id": 2,
-        "level": 5,
-        "hunter_xp": 47,
-        "hunt_technique": "bird snaring",
-        "multi_traps": true,
-        "catch_time": 11,
-        "slope": 0.95,
-        "intercept": 15
-    },
-    {
-        "name": "Herbiboar",
-        "id": 36,
-        "level": 80,
-        "hunter_xp": 1950,
-        "qp_required": 3,
-        "hunt_technique": "tracking",
-        "herblore_lvl": 31,
-        "catch_time": 91,
-        "slope": 0,
-        "intercept": 99
-    },
-    {
-        "name": "Horned graahk",
-        "id": 28,
-        "level": 41,
-        "hunter_xp": 240,
-        "hunt_technique": "pitfall trapping",
-        "multi_traps": true,
-        "catch_time": 50,
-        "slope": 0.7,
-        "intercept": 15
-    },
-    {
-        "name": "Imp",
-        "id": 22,
-        "level": 71,
-        "hunter_xp": 450,
-        "items_consumed": {
-            "10025": 1
-        },
-        "hunt_technique": "magic box trapping",
-        "multi_traps": true,
-        "catch_time": 120,
-        "slope": 0.5,
-        "intercept": 40
-    },
-    {
-        "name": "Maniacal monkey",
-        "id": 18,
-        "level": 60,
-        "hunter_xp": 1000,
-        "items_consumed": {
-            "1963": 1
-        },
-        "hunt_technique": "deadfall trapping",
-        "catch_time": 33,
-        "qp_required": 175,
-        "slope": 0.8,
-        "intercept": 20
-    },
-    {
-        "name": "Orange salamander",
-        "id": 24,
-        "level": 47,
-        "hunter_xp": 224,
-        "hunt_technique": "net trapping",
-        "multi_traps": true,
-        "catch_time": 35,
-        "slope": 1.2,
-        "intercept": 5
-    },
-    {
-        "name": "Polar kebbit",
-        "id": 31,
-        "level": 1,
-        "hunter_xp": 30,
-        "hunt_technique": "tracking",
-        "catch_time": 30,
-        "slope": 0,
-        "intercept": 99
-    },
-    {
-        "name": "Prickly kebbit",
-        "id": 16,
-        "level": 37,
-        "hunter_xp": 204,
-        "hunt_technique": "deadfall trapping",
-        "catch_time": 17,
-        "slope": 1.3,
-        "intercept": 10
-    },
-    {
-        "name": "Razor-backed kebbit",
-        "id": 35,
-        "level": 49,
-        "hunter_xp": 348.5,
-        "hunt_technique": "tracking",
-        "catch_time": 47,
-        "slope": 0,
-        "intercept": 99
-    },
-    {
-        "name": "Red salamander",
-        "id": 25,
-        "level": 59,
-        "hunter_xp": 272,
-        "hunt_technique": "net trapping",
-        "multi_traps": true,
-        "catch_time": 40,
-        "slope": 0.9,
-        "intercept": 25
-    },
-    {
-        "name": "Ruby harvest",
-        "id": 10,
-        "level": 15,
-        "hunter_xp": 24,
-        "items_consumed": {
-            "10012": 1
-        },
-        "hunt_technique": "butterfly netting",
-        "catch_time": 4.8,
-        "slope": 1.3,
-        "intercept": 35
-    },
-    {
-        "name": "Sabre-toothed kebbit",
-        "id": 17,
-        "level": 51,
-        "hunter_xp": 200,
-        "hunt_technique": "deadfall trapping",
-        "catch_time": 25,
-        "slope": 1.6,
-        "intercept": -3
-    },
-    {
-        "name": "Sabre-toothed kyatt",
-        "id": 29,
-        "level": 55,
-        "hunter_xp": 300,
-        "hunt_technique": "pitfall trapping",
-        "multi_traps": true,
-        "catch_time": 45,
-        "slope": 0.5,
-        "intercept": 15
-    },
-    {
-        "name": "Sand Gecko",
-        "id": 3251,
-        "level": 120,
-        "hunter_xp": 2100,
-        "qp_required": 3,
-        "hunt_technique": "tracking",
-        "catch_time": 91,
-        "slope": 0,
-        "intercept": 99
-    },
-    {
-        "name": "Sapphire glacialis",
-        "id": 11,
-        "level": 25,
-        "hunter_xp": 34,
-        "items_consumed": {
-            "10012": 1
-        },
-        "hunt_technique": "butterfly netting",
-        "catch_time": 5.8,
-        "slope": 1.2,
-        "intercept": 40
-    },
-    {
-        "name": "Snowy knight",
-        "id": 12,
-        "level": 35,
-        "hunter_xp": 44,
-        "items_consumed": {
-            "10012": 1
-        },
-        "hunt_technique": "butterfly netting",
-        "catch_time": 6,
-        "slope": 1.35,
-        "intercept": 30
-    },
-    {
-        "name": "Spined larupia",
-        "id": 27,
-        "level": 31,
-        "hunter_xp": 180,
-        "hunt_technique": "pitfall trapping",
-        "multi_traps": true,
-        "catch_time": 35,
-        "slope": 0.4,
-        "intercept": 15
-    },
-    {
-        "name": "Spotted kebbit",
-        "id": 19,
-        "level": 43,
-        "hunter_xp": 104,
-        "hunt_technique": "hawking",
-        "catch_time": 4,
-        "slope": 1,
-        "intercept": 10
-    },
-    {
-        "name": "Swamp lizard",
-        "id": 23,
-        "level": 29,
-        "hunter_xp": 152,
-        "hunt_technique": "net trapping",
-        "multi_traps": true,
-        "catch_time": 26,
-        "slope": 1,
-        "intercept": 15
-    },
-    {
-        "name": "Tropical wagtail",
-        "id": 5,
-        "level": 19,
-        "hunter_xp": 95.2,
-        "hunt_technique": "bird snaring",
-        "multi_traps": true,
-        "catch_time": 17,
-        "slope": 0.85,
-        "intercept": 5
-    },
-    {
-        "name": "White rabbit",
-        "id": 30,
-        "level": 27,
-        "hunter_xp": 144,
-        "items_consumed": {
-            "50117": 1
-        },
-        "hunt_technique": "rabbit snaring",
-        "multi_traps": true,
-        "catch_time": 40,
-        "slope": 1.2,
-        "intercept": 34
-    },
-    {
-        "name": "Wild kebbit",
-        "id": 14,
-        "level": 23,
-        "hunter_xp": 128,
-        "hunt_technique": "deadfall trapping",
-        "catch_time": 17,
-        "slope": 1,
-        "intercept": 15
-    }
+	{
+		"name": "Barb-tailed kebbit",
+		"id": 15,
+		"level": 33,
+		"hunter_xp": 168,
+		"hunt_technique": "deadfall trapping",
+		"catch_time": 20,
+		"slope": 1.2,
+		"intercept": 17
+	},
+	{
+		"name": "Black chinchompa",
+		"id": 9,
+		"level": 73,
+		"hunter_xp": 315,
+		"hunt_technique": "box trapping",
+		"multi_traps": true,
+		"wildy": true,
+		"prayer_lvl": 43,
+		"catch_time": 28,
+		"qp_required": 2,
+		"slope": 1.22,
+		"intercept": -31.33
+	},
+	{
+		"name": "Black salamander",
+		"id": 26,
+		"level": 67,
+		"hunter_xp": 319.2,
+		"hunt_technique": "net trapping",
+		"multi_traps": true,
+		"wildy": true,
+		"prayer_lvl": 43,
+		"catch_time": 48,
+		"slope": 1.2,
+		"intercept": -5
+	},
+	{
+		"name": "Black warlock",
+		"id": 13,
+		"level": 45,
+		"hunter_xp": 54,
+		"items_consumed": {
+			"10012": 1
+		},
+		"hunt_technique": "butterfly netting",
+		"catch_time": 5,
+		"slope": 1.35,
+		"intercept": 35
+	},
+	{
+		"name": "Carnivorous chinchompa",
+		"id": 8,
+		"level": 63,
+		"hunter_xp": 265,
+		"hunt_technique": "box trapping",
+		"multi_traps": true,
+		"catch_time": 28,
+		"qp_required": 2,
+		"slope": 1.22,
+		"intercept": -31.33
+	},
+	{
+		"name": "Cerulean twitch",
+		"id": 4,
+		"level": 11,
+		"hunter_xp": 64.5,
+		"hunt_technique": "bird snaring",
+		"multi_traps": true,
+		"catch_time": 15,
+		"slope": 0.85,
+		"intercept": 10
+	},
+	{
+		"name": "Chimpchompa",
+		"id": 63204,
+		"level": 99,
+		"hunter_xp": 300,
+		"hunt_technique": "box trapping",
+		"multi_traps": true,
+		"wildy": false,
+		"prayer_lvl": 43,
+		"catch_time": 200,
+		"qp_required": 2,
+		"slope": 1.22,
+		"intercept": -31.33
+	},
+	{
+		"name": "Chinchompa",
+		"id": 7,
+		"level": 53,
+		"hunter_xp": 198.4,
+		"hunt_technique": "box trapping",
+		"multi_traps": true,
+		"catch_time": 30,
+		"qp_required": 2,
+		"slope": 1.03479,
+		"intercept": 1.69495
+	},
+	{
+		"name": "Common kebbit",
+		"id": 32,
+		"level": 3,
+		"hunter_xp": 36,
+		"hunt_technique": "tracking",
+		"catch_time": 34,
+		"slope": 0,
+		"intercept": 99
+	},
+	{
+		"name": "Copper longtail",
+		"id": 3,
+		"level": 9,
+		"hunter_xp": 61.2,
+		"hunt_technique": "bird snaring",
+		"multi_traps": true,
+		"catch_time": 12,
+		"slope": 0.9,
+		"intercept": 12
+	},
+	{
+		"name": "Crimson swift",
+		"id": 1,
+		"level": 1,
+		"hunter_xp": 34,
+		"hunt_technique": "bird snaring",
+		"multi_traps": true,
+		"catch_time": 10,
+		"slope": 1,
+		"intercept": 20
+	},
+	{
+		"name": "Crystal impling",
+		"id": 42,
+		"level": 80,
+		"hunter_xp": 280,
+		"hunt_technique": "butterfly netting",
+		"catch_time": 180,
+		"slope": 0,
+		"intercept": 0
+	},
+	{
+		"name": "Dark kebbit",
+		"id": 20,
+		"level": 57,
+		"hunter_xp": 132,
+		"hunt_technique": "hawking",
+		"catch_time": 4.8,
+		"slope": 1,
+		"intercept": 10
+	},
+	{
+		"name": "Dashing kebbit",
+		"id": 21,
+		"level": 69,
+		"hunter_xp": 156,
+		"hunt_technique": "hawking",
+		"catch_time": 6,
+		"slope": 1,
+		"intercept": 10
+	},
+	{
+		"name": "Desert devil",
+		"id": 34,
+		"level": 13,
+		"hunter_xp": 66,
+		"hunt_technique": "tracking",
+		"catch_time": 32,
+		"slope": 0,
+		"intercept": 99
+	},
+	{
+		"name": "Eastern ferret",
+		"id": 91938,
+		"level": 96,
+		"hunter_xp": 2100,
+		"qp_required": 600,
+		"hunt_technique": "tracking",
+		"catch_time": 350,
+		"slope": 0,
+		"intercept": 99
+	},
+	{
+		"name": "Feldip weasel",
+		"id": 33,
+		"level": 7,
+		"hunter_xp": 48,
+		"hunt_technique": "tracking",
+		"catch_time": 38,
+		"slope": 0,
+		"intercept": 99
+	},
+	{
+		"name": "Golden warbler",
+		"id": 2,
+		"level": 5,
+		"hunter_xp": 47,
+		"hunt_technique": "bird snaring",
+		"multi_traps": true,
+		"catch_time": 11,
+		"slope": 0.95,
+		"intercept": 15
+	},
+	{
+		"name": "Herbiboar",
+		"id": 36,
+		"level": 80,
+		"hunter_xp": 1950,
+		"qp_required": 3,
+		"hunt_technique": "tracking",
+		"herblore_lvl": 31,
+		"catch_time": 91,
+		"slope": 0,
+		"intercept": 99
+	},
+	{
+		"name": "Horned graahk",
+		"id": 28,
+		"level": 41,
+		"hunter_xp": 240,
+		"hunt_technique": "pitfall trapping",
+		"multi_traps": true,
+		"catch_time": 50,
+		"slope": 0.7,
+		"intercept": 15
+	},
+	{
+		"name": "Imp",
+		"id": 22,
+		"level": 71,
+		"hunter_xp": 450,
+		"items_consumed": {
+			"10025": 1
+		},
+		"hunt_technique": "magic box trapping",
+		"multi_traps": true,
+		"catch_time": 120,
+		"slope": 0.5,
+		"intercept": 40
+	},
+	{
+		"name": "Maniacal monkey",
+		"id": 18,
+		"level": 60,
+		"hunter_xp": 1000,
+		"items_consumed": {
+			"1963": 1
+		},
+		"hunt_technique": "deadfall trapping",
+		"catch_time": 33,
+		"qp_required": 175,
+		"slope": 0.8,
+		"intercept": 20
+	},
+	{
+		"name": "Orange salamander",
+		"id": 24,
+		"level": 47,
+		"hunter_xp": 224,
+		"hunt_technique": "net trapping",
+		"multi_traps": true,
+		"catch_time": 35,
+		"slope": 1.2,
+		"intercept": 5
+	},
+	{
+		"name": "Polar kebbit",
+		"id": 31,
+		"level": 1,
+		"hunter_xp": 30,
+		"hunt_technique": "tracking",
+		"catch_time": 30,
+		"slope": 0,
+		"intercept": 99
+	},
+	{
+		"name": "Prickly kebbit",
+		"id": 16,
+		"level": 37,
+		"hunter_xp": 204,
+		"hunt_technique": "deadfall trapping",
+		"catch_time": 17,
+		"slope": 1.3,
+		"intercept": 10
+	},
+	{
+		"name": "Razor-backed kebbit",
+		"id": 35,
+		"level": 49,
+		"hunter_xp": 348.5,
+		"hunt_technique": "tracking",
+		"catch_time": 47,
+		"slope": 0,
+		"intercept": 99
+	},
+	{
+		"name": "Red salamander",
+		"id": 25,
+		"level": 59,
+		"hunter_xp": 272,
+		"hunt_technique": "net trapping",
+		"multi_traps": true,
+		"catch_time": 40,
+		"slope": 0.9,
+		"intercept": 25
+	},
+	{
+		"name": "Ruby harvest",
+		"id": 10,
+		"level": 15,
+		"hunter_xp": 24,
+		"items_consumed": {
+			"10012": 1
+		},
+		"hunt_technique": "butterfly netting",
+		"catch_time": 4.8,
+		"slope": 1.3,
+		"intercept": 35
+	},
+	{
+		"name": "Sabre-toothed kebbit",
+		"id": 17,
+		"level": 51,
+		"hunter_xp": 200,
+		"hunt_technique": "deadfall trapping",
+		"catch_time": 25,
+		"slope": 1.6,
+		"intercept": -3
+	},
+	{
+		"name": "Sabre-toothed kyatt",
+		"id": 29,
+		"level": 55,
+		"hunter_xp": 300,
+		"hunt_technique": "pitfall trapping",
+		"multi_traps": true,
+		"catch_time": 45,
+		"slope": 0.5,
+		"intercept": 15
+	},
+	{
+		"name": "Sand Gecko",
+		"id": 3251,
+		"level": 120,
+		"hunter_xp": 2100,
+		"qp_required": 3,
+		"hunt_technique": "tracking",
+		"catch_time": 91,
+		"slope": 0,
+		"intercept": 99
+	},
+	{
+		"name": "Sapphire glacialis",
+		"id": 11,
+		"level": 25,
+		"hunter_xp": 34,
+		"items_consumed": {
+			"10012": 1
+		},
+		"hunt_technique": "butterfly netting",
+		"catch_time": 5.8,
+		"slope": 1.2,
+		"intercept": 40
+	},
+	{
+		"name": "Snowy knight",
+		"id": 12,
+		"level": 35,
+		"hunter_xp": 44,
+		"items_consumed": {
+			"10012": 1
+		},
+		"hunt_technique": "butterfly netting",
+		"catch_time": 6,
+		"slope": 1.35,
+		"intercept": 30
+	},
+	{
+		"name": "Spined larupia",
+		"id": 27,
+		"level": 31,
+		"hunter_xp": 180,
+		"hunt_technique": "pitfall trapping",
+		"multi_traps": true,
+		"catch_time": 35,
+		"slope": 0.4,
+		"intercept": 15
+	},
+	{
+		"name": "Spotted kebbit",
+		"id": 19,
+		"level": 43,
+		"hunter_xp": 104,
+		"hunt_technique": "hawking",
+		"catch_time": 4,
+		"slope": 1,
+		"intercept": 10
+	},
+	{
+		"name": "Swamp lizard",
+		"id": 23,
+		"level": 29,
+		"hunter_xp": 152,
+		"hunt_technique": "net trapping",
+		"multi_traps": true,
+		"catch_time": 26,
+		"slope": 1,
+		"intercept": 15
+	},
+	{
+		"name": "Tropical wagtail",
+		"id": 5,
+		"level": 19,
+		"hunter_xp": 95.2,
+		"hunt_technique": "bird snaring",
+		"multi_traps": true,
+		"catch_time": 17,
+		"slope": 0.85,
+		"intercept": 5
+	},
+	{
+		"name": "White rabbit",
+		"id": 30,
+		"level": 27,
+		"hunter_xp": 144,
+		"items_consumed": {
+			"50117": 1
+		},
+		"hunt_technique": "rabbit snaring",
+		"multi_traps": true,
+		"catch_time": 40,
+		"slope": 1.2,
+		"intercept": 34
+	},
+	{
+		"name": "Wild kebbit",
+		"id": 14,
+		"level": 23,
+		"hunter_xp": 128,
+		"hunt_technique": "deadfall trapping",
+		"catch_time": 17,
+		"slope": 1,
+		"intercept": 15
+	}
 ]

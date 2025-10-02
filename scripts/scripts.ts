@@ -5,13 +5,9 @@ import { execSync } from 'node:child_process';
 
 import { sonicBoom } from '@/lib/util/logger.js';
 import { renderBsoItemsFile } from './bsoData.js';
-import { renderCreatablesFile } from './creatables.js';
-import { createMonstersJson } from './monstersJson.js';
 import { renderCommandsFile } from './renderCommandsFile.js';
 
 function scriptsMain() {
-	createMonstersJson();
-	renderCreatablesFile();
 	renderCommandsFile();
 
 	renderBsoItemsFile();

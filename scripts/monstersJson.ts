@@ -7,8 +7,9 @@ import { Bank, Items, type LootTable } from 'oldschooljs';
 
 import { BOT_TYPE } from '@/lib/constants.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { tearDownScript } from './scriptUtil.js';
 
-export function createMonstersJson() {
+function createMonstersJson() {
 	const stopwatch = new Stopwatch();
 	const monstersJsonFile = [];
 
@@ -71,3 +72,6 @@ export function createMonstersJson() {
 	);
 	stopwatch.check('Finished monsters file.');
 }
+
+createMonstersJson();
+tearDownScript();

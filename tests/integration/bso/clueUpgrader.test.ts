@@ -30,9 +30,7 @@ describe('Clue Uprader', async () => {
 
 			expect(newMats.amount('metallic')).toBeLessThan(previousMats.amount('metallic'));
 			expect(newMats.amount('treasured')).toBeLessThan(previousMats.amount('treasured'));
-			const clueUpgraderStats = new Bank(
-				(await user.fetchStats({ clue_upgrader_bank: true })).clue_upgrader_bank as ItemBank
-			);
+			const clueUpgraderStats = new Bank((await user.fetchStats()).clue_upgrader_bank as ItemBank);
 			expect(clueUpgraderStats.length).toBe(1);
 
 			await client.sync();

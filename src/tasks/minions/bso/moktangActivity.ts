@@ -16,14 +16,12 @@ import {
 } from '@/lib/simulation/sharedTables.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { MoktangTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const moktangTask: MinionTask = {
 	type: 'Moktang',
-	async run(data: MoktangTaskOptions) {
-		const { userID, qty } = data;
-		const user = await mUserFetch(userID);
+	async run(data: MoktangTaskOptions, { user, handleTripFinish }) {
+		const { qty } = data;
 
 		await user.incrementKC(MOKTANG_ID, qty);
 

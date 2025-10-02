@@ -14270,6 +14270,12 @@ setCustomItem(73414, 'Veteran staff (5 year)', 'Staff of fire', {
 	}
 });
 
+setCustomItem(323_424, 'Ivy', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
 export const discontinuedItems = resolveItems([
 	'Turkey',
 	'Raw turkey',
