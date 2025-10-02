@@ -1,6 +1,7 @@
 import type { CropUpgradeType } from '@prisma/client';
 
 import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
+import type { getFarmingInfoFromUser } from '@/lib/skilling/skills/farming/utils/getFarmingInfo.js';
 import type { Plant } from '@/lib/skilling/types.js';
 
 export interface IPatchData {
@@ -42,4 +43,5 @@ export type DetailedFarmingContract = {
 	contract: FarmingContract;
 	plant: Plant | undefined;
 	matchingPlantedCrop: IPatchDataDetailed | undefined;
+	farmingInfo: ReturnType<typeof getFarmingInfoFromUser>;
 };

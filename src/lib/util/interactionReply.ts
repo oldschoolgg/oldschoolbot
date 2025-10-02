@@ -1,67 +1,10 @@
 import { UserError } from '@oldschoolgg/toolkit';
-import {
-	type ButtonInteraction,
-	type ChatInputCommandInteraction,
-	DiscordAPIError,
-	type Interaction,
-	type InteractionReplyOptions,
-	type InteractionResponse,
-	type Message,
-	MessageFlags,
-	type RepliableInteraction,
-	type StringSelectMenuInteraction
-} from 'discord.js';
+import { DiscordAPIError } from 'discord.js';
 
 import { SILENT_ERROR } from '@/lib/constants.js';
-import { logErrorForInteraction } from '@/lib/util/logError.js';
+import { logError } from '@/lib/util/logError.js';
 
-export async function interactionReply(interaction: RepliableInteraction, response: string | InteractionReplyOptions) {
-	let i: Promise<InteractionResponse> | Promise<Message> | undefined;
-	let method = '';
-
-	if (interaction.replied) {
-		method = 'followUp';
-		i = interaction.followUp(response);
-	} else if (interaction.deferred) {
-		method = 'editReply';
-		// @ts-expect-error
-		i = interaction.editReply(response);
-	} else {
-		method = 'reply';
-		i = interaction.reply(response);
-	}
-	try {
-		const result = await i;
-		return result;
-	} catch (e: any) {
-		if (e instanceof DiscordAPIError && e.code !== 10_008) {
-			// 10_008 is unknown message, e.g. if someone deletes the message before it's replied to.
-			logErrorForInteraction(e, interaction, { method, response: JSON.stringify(response).slice(0, 50) });
-		}
-		return undefined;
-	}
-}
-
-const wasDeferred = new Set();
-
-export async function deferInteraction(
-	interaction: ButtonInteraction | ChatInputCommandInteraction | StringSelectMenuInteraction,
-	ephemeral = false
-) {
-	if (wasDeferred.size > 1000) wasDeferred.clear();
-	if (!interaction.deferred && !wasDeferred.has(interaction.id)) {
-		wasDeferred.add(interaction.id);
-		try {
-			const options: { flags?: number } = {};
-			if (ephemeral) options.flags = MessageFlags.Ephemeral;
-			await interaction.deferReply(options);
-		} catch (err) {
-			logErrorForInteraction(err, interaction);
-		}
-	}
-}
-
-export async function handleInteractionError(err: unknown, interaction: Interaction) {
+export async function handleInteractionError(err: unknown, interaction: MInteraction) {
 	// For silent errors, just return and do nothing. Users could see an error.
 	if (err instanceof Error && err.message === SILENT_ERROR) return;
 
@@ -73,8 +16,12 @@ export async function handleInteractionError(err: unknown, interaction: Interact
 	// If this isn't a UserError, its something we need to just log and know about to fix it.
 	// Or if its not repliable, we should never be erroring here.
 	if (!(err instanceof UserError) || !interaction.isRepliable()) {
-		return logErrorForInteraction(err, interaction);
+		const context: Record<string, any> = {
+			...interaction.getDebugInfo()
+		};
+
+		return logError(err, context);
 	}
 
-	await interactionReply(interaction, err.message);
+	return interaction.reply({ content: err.message });
 }

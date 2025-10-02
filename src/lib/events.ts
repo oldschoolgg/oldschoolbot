@@ -1,14 +1,5 @@
 import { roll } from '@oldschoolgg/rng';
-import {
-	channelIsSendable,
-	dateFm,
-	Emoji,
-	getNextUTCReset,
-	isFunction,
-	mentionCommand,
-	Time,
-	UserError
-} from '@oldschoolgg/toolkit';
+import { channelIsSendable, dateFm, Emoji, getNextUTCReset, isFunction, Time, UserError } from '@oldschoolgg/toolkit';
 import { command_name_enum } from '@prisma/client';
 import { type BaseMessageOptions, bold, EmbedBuilder, type Message, type TextChannel } from 'discord.js';
 import { LRUCache } from 'lru-cache';
@@ -17,6 +8,7 @@ import { type ItemBank, Items, toKMB } from 'oldschooljs';
 import { lastRoboChimpSyncCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
 import { Channel, globalConfig } from '@/lib/constants.js';
 import pets from '@/lib/data/pets.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
 import { roboChimpSyncData } from '@/lib/roboChimp.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { logError } from '@/lib/util/logError.js';
@@ -202,7 +194,7 @@ const mentionCommands: MentionCommand[] = [
 			if (items.length === 0) return msg.reply('No results for that item.');
 
 			const gettedItem = items[0];
-			const { sacrificed_bank: sacrificedBank } = await user.fetchStats({ sacrificed_bank: true });
+			const { sacrificed_bank: sacrificedBank } = await user.fetchStats();
 
 			let str = `Found ${items.length} items:\n${items
 				.slice(0, 5)
@@ -260,7 +252,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['cd'],
 		description: 'Shows your cooldowns.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			const stats = await user.fetchStats({ last_daily_timestamp: true, last_tears_of_guthix_timestamp: true });
+			const stats = await user.fetchStats();
 			return msg.reply({
 				content: cooldownTimers
 					.map(cd => {
@@ -272,14 +264,7 @@ const mentionCommands: MentionCommand[] = [
 							const durationRemaining = dateFm(new Date(nextReset));
 							return `${cd.name}: ${durationRemaining}`;
 						}
-						return bold(
-							`${cd.name}: Ready ${mentionCommand(
-								globalClient,
-								cd.command[0],
-								cd.command[1],
-								cd.command[2]
-							)}`
-						);
+						return bold(`${cd.name}: Ready ${mentionCommand(cd.command[0], cd.command[1], cd.command[2])}`);
 					})
 					.join('\n'),
 				components

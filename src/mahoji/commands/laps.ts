@@ -1,20 +1,11 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, bold } from 'discord.js';
+import { bold } from 'discord.js';
 
 import { quests } from '@/lib/minions/data/quests.js';
 import { courses } from '@/lib/skilling/skills/agility.js';
-import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import {
-	type AttemptZeroTimeActivityOptions,
-	attemptZeroTimeActivity,
-	getZeroTimeActivityPreferences,
-	type ZeroTimeActivityPreference,
-	type ZeroTimeActivityResult
-} from '@/lib/util/zeroTimeActivity.js';
 import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
+import { attemptZeroTimeActivity, getZeroTimeActivityPreferences, type AttemptZeroTimeActivityOptions, type ZeroTimeActivityPreference, type ZeroTimeActivityResult } from '@/lib/util/zeroTimeActivity.js';
+import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
 
 const AGILITY_FLETCH_ITEMS_PER_HOUR = 15_000;
 const AGILITY_ALCHES_PER_HOUR = Time.Hour / timePerAlchAgility;
@@ -29,7 +20,7 @@ export const lapsCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The course you want to do laps on.',
 			required: true,
@@ -43,14 +34,14 @@ export const lapsCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity of laps you want to do (optional).',
 			required: false,
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
+	run: async ({ options, userID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const user = await mUserFetch(userID);
 
 		const course = courses.find(
@@ -80,7 +71,9 @@ export const lapsCommand: OSBMahojiCommand = {
 			}
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Agility');
+		const maxTripLength = user.calcMaxTripLength('Agility');
+
+		// If no quantity provided, set it to the max.
 		const timePerLap = course.lapTime * Time.Second;
 		let { quantity } = options;
 		if (!quantity) {
@@ -159,25 +152,25 @@ export const lapsCommand: OSBMahojiCommand = {
 
 		if (alchResult) {
 			await user.removeItemsFromBank(alchResult.bankToRemove);
+			
 			const prefix =
 				alchResult.preference.role === 'fallback'
 					? 'Using fallback preference, your minion is'
 					: 'Your minion is';
 			response += `\n\n${prefix} alching ${alchResult.quantity}x ${alchResult.item.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
-			updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
+			await ClientSettings.updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
 		}
 
 		if (infoMessages.length > 0) {
-			response += `\n\n${infoMessages.join('
-')}`;
+			response += `\n\n${infoMessages.join('')}`;
 		}
 
 		const zeroTimePreferenceRole = fletchResult?.preference.role ?? alchResult?.preference.role ?? null;
 
-		await addSubTaskToActivityTask<AgilityActivityTaskOptions>({
+
+		await ActivityManager.startTrip<AgilityActivityTaskOptions>({
 			courseID: course.id,
 			userID: user.id,
-			channelID,
 			quantity,
 			duration,
 			type: 'Agility',

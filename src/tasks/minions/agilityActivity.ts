@@ -10,7 +10,6 @@ import { calculateBryophytaRuneSavings } from '@/lib/util/bryophytaRuneSavings.j
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { logError } from '@/lib/util/logError.js';
 import { skillingPetDropRate } from '@/lib/util.js';
-import { updateClientGPTrackSetting, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 function chanceOfFailingAgilityPyramid(user: MUser) {
 	const lvl = user.skillsAsLevels.agility;
@@ -26,7 +25,6 @@ export const agilityTask: MinionTask = {
 	async run(data: AgilityActivityTaskOptions) {
 		const { courseID, quantity, userID, channelID, duration, alch, fletch, zeroTimePreferenceRole } = data;
 		const loot = new Bank();
-		const user = await mUserFetch(userID);
 		const currentLevel = user.skillsAsLevels.agility;
 
 		const course = Agility.Courses.find(course => course.id === courseID);
@@ -54,14 +52,10 @@ export const agilityTask: MinionTask = {
 			}
 		}
 
-		const stats = await user.fetchStats({ laps_scores: true });
-		const { laps_scores: newLapScores } = await userStatsUpdate(
-			user.id,
-			{
-				laps_scores: addItemToBank(stats.laps_scores as ItemBank, course.id, quantity - lapsFailed)
-			},
-			{ laps_scores: true }
-		);
+		const stats = await user.fetchStats();
+		const { laps_scores: newLapScores } = await user.statsUpdate({
+			laps_scores: addItemToBank(stats.laps_scores as ItemBank, course.id, quantity - lapsFailed)
+		});
 		const xpReceived =
 			(quantity - lapsFailed / 2) * (typeof course.xp === 'number' ? course.xp : course.xp(currentLevel));
 		let xpRes = await user.addXP({
@@ -107,15 +101,11 @@ export const agilityTask: MinionTask = {
 		}
 		if (course.name === 'Agility Pyramid') {
 			loot.add('Coins', 10_000 * (quantity - lapsFailed));
-			await userStatsUpdate(
-				user.id,
-				{
-					gp_from_agil_pyramid: {
-						increment: loot.amount('Coins')
-					}
-				},
-				{}
-			);
+			await user.statsUpdate({
+				gp_from_agil_pyramid: {
+					increment: loot.amount('Coins')
+				}
+			});
 		}
 		let monkeyStr = '';
 		if (course.name === 'Ape Atoll Agility Course') {
@@ -173,7 +163,7 @@ export const agilityTask: MinionTask = {
 				amount: alch.quantity * 65,
 				duration
 			})}`;
-			updateClientGPTrackSetting('gp_alch', alchGP);
+			await ClientSettings.updateClientGPTrackSetting('gp_alch', alchGP);
 		}
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${

@@ -17,7 +17,6 @@ import { NexNonUniqueTable, NexUniqueTable } from '@/lib/simulation/misc.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import type { Skills } from '@/lib/types/index.js';
 import { arrows, bolts, bows, crossbows } from '@/lib/util/archery.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 const minStats: Skills = {
@@ -195,7 +194,7 @@ export function handleNexKills({ quantity, team }: NexContext) {
 }
 
 export async function calculateNexDetails({ team }: { team: MUser[] }) {
-	let maxTripLength = Math.max(...team.map(u => calcMaxTripLength(u)));
+	let maxTripLength = Math.max(...team.map(u => u.calcMaxTripLength('Nex')));
 	let lengthPerKill = Time.Minute * 35;
 	const resultTeam: TeamMember[] = [];
 

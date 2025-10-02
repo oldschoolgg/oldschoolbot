@@ -1,6 +1,5 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import type { CropUpgradeType } from '@prisma/client';
-import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { superCompostables } from '@/lib/data/filterables.js';
@@ -8,11 +7,6 @@ import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { Plant } from '@/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userHasGracefulEquipped, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number): string | null {
 	if (plant.needsChopForHarvest && plant.treeWoodcuttingLevel && wcLevel < plant.treeWoodcuttingLevel) {
@@ -44,7 +38,7 @@ export async function harvestCommand({
 			', '
 		)}. *Don't include numbers, this command harvests all crops available of the specified patch type.*`;
 	}
-	const { patchesDetailed, patches } = await Farming.getFarmingInfoFromUser(user.user);
+	const { patchesDetailed, patches } = await Farming.getFarmingInfoFromUser(user);
 	const patch = patchesDetailed.find(i => i.patchName === seedType)!;
 	if (patch.ready === null) return 'You have nothing planted in those patches.';
 
@@ -68,7 +62,7 @@ export async function harvestCommand({
 	// 1.5 mins per patch --> ex: 10 patches = 15 mins
 	let duration = patch.lastQuantity * (timePerPatchTravel + timePerPatchHarvest);
 
-	if (userHasGracefulEquipped(user)) {
+	if (user.hasGracefulEquipped()) {
 		boostStr.push('10% time for Graceful');
 		duration *= 0.9;
 	}
@@ -78,7 +72,7 @@ export async function harvestCommand({
 		duration *= 0.9;
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'Farming');
+	const maxTripLength = user.calcMaxTripLength('Farming');
 
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
@@ -99,7 +93,7 @@ It'll take around ${formatDuration(duration)} to finish.
 
 ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 
-	await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
+	await ActivityManager.startTrip<FarmingActivityTaskOptions>({
 		plantsName: patch.lastPlanted,
 		patchType: patches[patch.patchName],
 		userID: user.id,
@@ -159,7 +153,7 @@ export async function farmingPlantCommand({
 		return `${user.minionName} needs ${plant.level} Farming to plant ${plant.name}.`;
 	}
 
-	const { patchesDetailed, patches } = await Farming.getFarmingInfo(user.id);
+	const { patchesDetailed, patches } = user.farmingInfo();
 	const patchType = patchesDetailed.find(i => i.patchName === plant.seedType)!;
 
 	const timePerPatchTravel = Time.Second * plant.timePerPatchTravel;
@@ -180,7 +174,7 @@ export async function farmingPlantCommand({
 		return 'There are no available patches to you.';
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'Farming');
+	const maxTripLength = user.calcMaxTripLength('Farming');
 
 	// If no quantity provided, set it to the max PATCHES available.
 	const maxCanDo = Math.floor(maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest));
@@ -204,7 +198,7 @@ export async function farmingPlantCommand({
 	}
 
 	// Reduce time if user has graceful equipped
-	if (userHasGracefulEquipped(user)) {
+	if (user.hasGracefulEquipped()) {
 		boostStr.push('10% time for Graceful');
 		duration *= 0.9;
 	}
@@ -264,7 +258,7 @@ export async function farmingPlantCommand({
 	if (!user.owns(cost)) return `You don't own ${cost}.`;
 	await user.transactItems({ itemsToRemove: cost });
 
-	updateBankSetting('farming_cost_bank', cost);
+	await ClientSettings.updateBankSetting('farming_cost_bank', cost);
 	// If user does not have something already planted, just plant the new seeds.
 	if (!patchType.patchPlanted) {
 		infoStr.unshift(`${user.minionName} is now planting ${quantity}x ${plant.name}.`);
@@ -293,13 +287,13 @@ export async function farmingPlantCommand({
 		}
 	});
 
-	await userStatsBankUpdate(user, 'farming_plant_cost_bank', cost);
+	await user.statsBankUpdate('farming_plant_cost_bank', cost);
 
-	await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
+	await ActivityManager.startTrip<FarmingActivityTaskOptions>({
 		plantsName: plant.name,
 		patchType: patches[plant.seedType],
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		upgradeType,
 		payment: didPay,
@@ -318,7 +312,7 @@ ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 }
 
 export async function compostBinCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	user: MUser,
 	cropToCompost: string,
 	quantity: number | undefined
@@ -337,10 +331,7 @@ export async function compostBinCommand(
 
 	if (quantity === 0) return `You have no ${superCompostableCrop} to compost!`;
 
-	await handleMahojiConfirmation(
-		interaction,
-		`${user}, please confirm that you want to compost ${cost} into ${loot}.`
-	);
+	await interaction.confirmation(`${user}, please confirm that you want to compost ${cost} into ${loot}.`);
 
 	await user.transactItems({ itemsToRemove: cost });
 	await user.addItemsToBank({ items: loot });

@@ -6,9 +6,8 @@ import { openCoffin, sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
 import { calculateBryophytaRuneSavings } from '@/lib/util/bryophytaRuneSavings.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { updateClientGPTrackSetting } from '@/mahoji/mahojiSettings.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const sepulchreTask: MinionTask = {
 	type: 'Sepulchre',
@@ -64,7 +63,7 @@ export const sepulchreTask: MinionTask = {
 			const alchGP = alchItem.highalch * alchQuantity;
 			if (alchGP > 0) {
 				loot.add('Coins', alchGP);
-				updateClientGPTrackSetting('gp_alch', alchGP);
+				ClientSettings.updateClientGPTrackSetting('gp_alch', alchGP);
 			}
 
 			const { savedRunes, savedBank } = calculateBryophytaRuneSavings({
@@ -176,6 +175,6 @@ export const sepulchreTask: MinionTask = {
 			str += `\nYour Bryophyta's staff saved you ${savedRunesFromAlching} Nature runes.`;
 		}
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
+		return handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
 	}
 };

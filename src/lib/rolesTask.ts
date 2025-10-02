@@ -1,4 +1,4 @@
-import { noOp, notEmpty, returnStringOrFile, Stopwatch, uniqueArr } from '@oldschoolgg/toolkit';
+import { noOp, notEmpty, Stopwatch, uniqueArr } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
 import { convertXPtoLVL, type ItemBank } from 'oldschooljs';
 import PQueue from 'p-queue';
@@ -463,13 +463,11 @@ WHERE badges && ${badgeIDs}
 			}
 		}
 
-		return returnStringOrFile(
-			`Roles
+		return `Roles
 ${results.map(r => `${getUsernameSync(r.userID)} got ${roleNames.get(r.roleID)} because ${r.reason}`).join('\n')}
 
 Debug Messages:
-${debugMessages.join('\n')}`
-		);
+${debugMessages.join('\n')}`;
 	}
 
 	return 'Dry run';

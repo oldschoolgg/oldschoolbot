@@ -1,10 +1,8 @@
 import { removeFromArr, stringMatches, Table } from '@oldschoolgg/toolkit';
-import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
 import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { logError } from '@/lib/util/logError.js';
 
 const slayerPurchaseError =
@@ -21,7 +19,7 @@ export async function slayerShopBuyCommand({
 	buyable: string;
 	quantity?: number;
 	disable?: boolean;
-	interaction?: ChatInputCommandInteraction;
+	interaction?: MInteraction;
 }) {
 	const user = await mUserFetch(userID);
 	const buyableObj = SlayerRewardsShop.find(
@@ -91,8 +89,7 @@ export async function slayerShopBuyCommand({
 			return `You don't have ${buyableObj.name} unlocked.`;
 		}
 		if (interaction) {
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`Are you sure you want disable ${buyableObj.name}? You will have to pay ${buyableObj.slayerPointCost} to unlock it again.`
 			);
 		}

@@ -1,15 +1,11 @@
-import type { MahojiClient } from '@oldschoolgg/toolkit';
-import { Client, type User } from 'discord.js';
+import { Client } from 'discord.js';
+
+import { allCommands } from '@/mahoji/commands/allCommands.js';
 
 export class OldSchoolBotClient extends Client<true> {
 	public busyCounterCache = new Map<string, number>();
-	public mahojiClient!: MahojiClient;
 	public isShuttingDown = false;
+	public allCommands: OSBMahojiCommand[] = allCommands;
 
 	_badgeCache: Map<string, string> = new Map();
-
-	async fetchUser(id: string | bigint): Promise<User> {
-		const user = await this.users.fetch(typeof id === 'string' ? id : id.toString());
-		return user;
-	}
 }

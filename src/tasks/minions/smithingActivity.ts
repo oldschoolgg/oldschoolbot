@@ -2,13 +2,11 @@ import { Bank } from 'oldschooljs';
 
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { SmithingActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const smithingTask: MinionTask = {
 	type: 'Smithing',
-	async run(data: SmithingActivityTaskOptions) {
-		const { smithedBarID, quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: SmithingActivityTaskOptions, { user, handleTripFinish }) {
+		const { smithedBarID, quantity, channelID, duration } = data;
 
 		const smithedItem = Smithing.SmithableItems.find(item => item.id === smithedBarID)!;
 

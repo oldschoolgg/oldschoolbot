@@ -2,14 +2,11 @@ import { Bank, Items } from 'oldschooljs';
 
 import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
 import { calculateBryophytaRuneSavings } from '@/lib/util/bryophytaRuneSavings.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { updateClientGPTrackSetting } from '@/mahoji/mahojiSettings.js';
 
 export const alchingTask: MinionTask = {
 	type: 'Alching',
-	async run(data: AlchingActivityTaskOptions) {
-		const { itemID, quantity, channelID, alchValue, userID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: AlchingActivityTaskOptions, { user, handleTripFinish }) {
+		const { itemID, quantity, channelID, alchValue, duration } = data;
 		const loot = new Bank({ Coins: alchValue });
 
 		const item = Items.getOrThrow(itemID);
@@ -21,7 +18,7 @@ export const alchingTask: MinionTask = {
 			loot.add(savedBank);
 		}
 		await user.addItemsToBank({ items: loot });
-		updateClientGPTrackSetting('gp_alch', alchValue);
+		await ClientSettings.updateClientGPTrackSetting('gp_alch', alchValue);
 
 		const xpReceived = quantity * 65;
 		const xpRes = await user.addXP({

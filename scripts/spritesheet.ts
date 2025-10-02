@@ -7,9 +7,9 @@ import '../src/lib/safeglobals.js';
 import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
 import sharp from 'sharp';
 
+import { ALL_OBTAINABLE_ITEMS } from '@/lib/allObtainableItems.js';
 import bsoItemsJson from '../data/bso/bso_items.json' with { type: 'json' };
 import bsoMonstersJson from '../data/bso/monsters.json' with { type: 'json' };
-import { ALL_OBTAINABLE_ITEMS } from '../src/lib/allObtainableItems.js';
 import { BOT_TYPE } from '../src/lib/constants.js';
 import Buyables from '../src/lib/data/buyables/buyables.js';
 import { allCLItems } from '../src/lib/data/Collections.js';

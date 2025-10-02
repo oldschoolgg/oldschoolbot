@@ -105,7 +105,7 @@
 	},
 	{
 		"main_item": "Armadyl chestplate",
-		"similar_items": ["Armadyl chestplate", "Armadyl chestplate", "Masori body", "Masori body (f)"]
+		"similar_items": ["Armadyl chestplate", "Masori body", "Masori body (f)"]
 	},
 	{
 		"main_item": "Armadyl crossbow",
@@ -277,16 +277,7 @@
 	},
 	{
 		"main_item": "Bow of faerdhinen (c)",
-		"similar_items": [
-			"Bow of faerdhinen (c)",
-			"Bow of faerdhinen (c)",
-			"Bow of faerdhinen (c)",
-			"Bow of faerdhinen (c)",
-			"Bow of faerdhinen (c)",
-			"Bow of faerdhinen (c)",
-			"Bow of faerdhinen (c)",
-			"Bow of faerdhinen (c)"
-		]
+		"similar_items": ["Bow of faerdhinen (c)"]
 	},
 	{
 		"main_item": "Bronze axe",
@@ -298,7 +289,6 @@
 			"3rd age felling axe",
 			"Adamant felling axe",
 			"Black felling axe",
-			"Bronze felling axe",
 			"Bronze felling axe",
 			"Crystal felling axe",
 			"Dragon felling axe",
@@ -507,7 +497,6 @@
 			"Brimhaven graceful boots",
 			"Dark graceful boots",
 			"Graceful boots",
-			"Graceful boots",
 			"Hosidius graceful boots",
 			"Kourend graceful boots",
 			"Lovakengj graceful boots",
@@ -526,7 +515,6 @@
 			"Brimhaven graceful cape",
 			"Dark graceful cape",
 			"Graceful cape",
-			"Graceful cape",
 			"Hosidius graceful cape",
 			"Kourend graceful cape",
 			"Lovakengj graceful cape",
@@ -544,7 +532,6 @@
 			"Brimhaven graceful gloves",
 			"Dark graceful gloves",
 			"Graceful gloves",
-			"Graceful gloves",
 			"Hosidius graceful gloves",
 			"Kourend graceful gloves",
 			"Lovakengj graceful gloves",
@@ -560,7 +547,6 @@
 			"Arceuus graceful hood",
 			"Brimhaven graceful hood",
 			"Dark graceful hood",
-			"Graceful hood",
 			"Graceful hood",
 			"Hosidius graceful hood",
 			"Kourend graceful hood",
@@ -578,7 +564,6 @@
 			"Brimhaven graceful legs",
 			"Dark graceful legs",
 			"Graceful legs",
-			"Graceful legs",
 			"Hosidius graceful legs",
 			"Kourend graceful legs",
 			"Lovakengj graceful legs",
@@ -594,7 +579,6 @@
 			"Arceuus graceful top",
 			"Brimhaven graceful top",
 			"Dark graceful top",
-			"Graceful top",
 			"Graceful top",
 			"Hosidius graceful top",
 			"Kourend graceful top",
@@ -956,7 +940,6 @@
 			"Purple slayer helmet",
 			"Red slayer helmet",
 			"Slayer helmet",
-			"Slayer helmet",
 			"Turquoise slayer helmet",
 			"Twisted slayer helmet",
 			"Tzkal slayer helmet",
@@ -973,7 +956,6 @@
 			"Hydra slayer helmet (i)",
 			"Purple slayer helmet (i)",
 			"Red slayer helmet (i)",
-			"Slayer helmet (i)",
 			"Slayer helmet (i)",
 			"Turquoise slayer helmet (i)",
 			"Twisted slayer helmet (i)",

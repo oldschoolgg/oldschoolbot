@@ -1,5 +1,3 @@
-import { ApplicationCommandOptionType } from 'discord.js';
-
 import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '@/lib/canvas/canvasUtil.js';
 
 const bg = loadAndCacheLocalImage('./src/lib/resources/images/pm-bg.png');
@@ -9,13 +7,13 @@ export const fakepmCommand: OSBMahojiCommand = {
 	description: 'Generate fake images of PMs.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'username',
 			description: 'The username to put on the image.',
 			required: true
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'message',
 			description: 'The message.',
 			required: true

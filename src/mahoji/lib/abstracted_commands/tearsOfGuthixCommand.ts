@@ -3,7 +3,6 @@ import { dateFm, Emoji, formatDuration, getNextUTCReset, notEmpty, objectEntries
 import { TEARS_OF_GUTHIX_CD } from '@/lib/events.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 export const tearsOfGuthixSkillReqs = {
@@ -49,7 +48,7 @@ function getTearsOfGuthixMissingSkillMessage(user: MUser): string | null {
 
 export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
-	const currentStats = await user.fetchStats({ last_tears_of_guthix_timestamp: true });
+	const currentStats = await user.fetchStats();
 	const lastPlayedDate = Number(currentStats.last_tears_of_guthix_timestamp);
 	const nextReset = getNextUTCReset(lastPlayedDate, TEARS_OF_GUTHIX_CD);
 
@@ -75,10 +74,10 @@ export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 
 	const duration = Math.min(Time.Minute * 2 + Time.Second * 0.6 * userQP, Time.Minute * 30);
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'tears_of_guthix',
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity: 1,
 		duration,
 		type: 'TearsOfGuthix'

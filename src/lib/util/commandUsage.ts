@@ -1,5 +1,7 @@
-import { type CommandOptions, isObject, type MahojiUserOption } from '@oldschoolgg/toolkit';
+import { isObject } from '@oldschoolgg/toolkit';
 import type { command_name_enum, Prisma } from '@prisma/client';
+
+import type { CommandOptions, MahojiUserOption } from '@/lib/discord/index.js';
 
 function isMahojiUserOption(data: any): data is MahojiUserOption {
 	return 'user' in data && 'id' in data.user;
@@ -61,21 +63,19 @@ const commandNameOverrides: Record<string, command_name_enum> = {
 
 export function makeCommandUsage({
 	userID,
-	channelID,
-	guildID,
 	commandName,
 	args,
 	isContinue,
 	inhibited,
-	continueDeltaMillis
+	continueDeltaMillis,
+	interaction
 }: {
 	userID: string | bigint;
-	channelID: string | bigint;
-	guildID?: string | bigint | null;
 	commandName: string;
 	args: CommandOptions;
 	isContinue: null | boolean;
 	inhibited: boolean;
+	interaction: MInteraction;
 	continueDeltaMillis: number | null;
 }): Prisma.CommandUsageCreateInput {
 	const normalizedCommandName = commandNameOverrides[commandName] ?? (commandName as command_name_enum);
@@ -84,8 +84,8 @@ export function makeCommandUsage({
 		user_id: BigInt(userID),
 		command_name: normalizedCommandName,
 		args: getCommandArgs(commandName, args),
-		channel_id: BigInt(channelID),
-		guild_id: guildID ? BigInt(guildID) : null,
+		channel_id: BigInt(interaction.channelId),
+		guild_id: interaction.guildId ? BigInt(interaction.guildId) : null,
 		is_continue: isContinue ?? undefined,
 		inhibited,
 		continue_delta_millis: continueDeltaMillis

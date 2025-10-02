@@ -4,8 +4,6 @@ import { sepulchreBoosts, sepulchreFloors } from '@/lib/minions/data/sepulchre.j
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import {
 	type AttemptZeroTimeActivityOptions,
 	attemptZeroTimeActivity,
@@ -14,7 +12,6 @@ import {
 	type ZeroTimeActivityPreference,
 	type ZeroTimeActivityResult
 } from '@/lib/util/zeroTimeActivity.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 const SEPULCHRE_ALCHES_PER_HOUR = 1000;
 
@@ -45,7 +42,7 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 	if (thievingLevel < 66) {
 		return 'You need at least level 66 Thieving to do the Hallowed Sepulchre.';
 	}
-	if (!userHasGracefulEquipped(user)) {
+	if (!user.hasGracefulEquipped()) {
 		return 'You need Graceful equipped in any setup to do the Hallowed Sepulchre.';
 	}
 
@@ -66,7 +63,7 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 		}
 	}
 
-	const maxLaps = Math.floor(calcMaxTripLength(user, 'Sepulchre') / lapLength);
+	const maxLaps = Math.floor(user.calcMaxTripLength('Sepulchre') / lapLength);
 	const tripLength = maxLaps * lapLength;
 
 	type FletchResult = Extract<ZeroTimeActivityResult, { type: 'fletch' }>;
@@ -120,7 +117,7 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 
 	if (alchResult) {
 		await user.removeItemsFromBank(alchResult.bankToRemove);
-		updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
+		await ClientSettings.updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
 	}
 
 	if (failureMessages.length > 0) {
@@ -135,7 +132,7 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 		userID: user.id,
 		duration: tripLength,
 		type: 'Sepulchre',
-		channelID: channelID.toString(),
+		channelID,
 		minigameID: 'sepulchre',
 		fletch: fletchResult ? { id: fletchResult.fletchable.id, qty: fletchResult.quantity } : undefined,
 		alch: alchResult ? { itemID: alchResult.item.id, quantity: alchResult.quantity } : undefined,

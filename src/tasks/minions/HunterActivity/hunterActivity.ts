@@ -11,9 +11,7 @@ import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
 import { logError } from '@/lib/util/logError.js';
 import { PeakTier } from '@/lib/util/peaks.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { skillingPetDropRate } from '@/lib/util.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 const riskDeathNumbers = [
 	{
@@ -32,7 +30,6 @@ const riskDeathNumbers = [
 
 export const hunterTask: MinionTask = {
 	type: 'Hunter',
-	isNew: true,
 	async run(data: HunterActivityTaskOptions, { user, handleTripFinish }) {
 		const { creatureID, quantity, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } = data;
 		const userBank = user.bank;
@@ -54,7 +51,7 @@ export const hunterTask: MinionTask = {
 		const crystalImpling = creature.name === 'Crystal impling';
 
 		let graceful = false;
-		if (userHasGracefulEquipped(user)) {
+		if (user.hasGracefulEquipped()) {
 			graceful = true;
 		}
 
@@ -198,7 +195,7 @@ export const hunterTask: MinionTask = {
 			);
 		}
 
-		updateBankSetting('hunter_loot', loot);
+		await ClientSettings.updateBankSetting('hunter_loot', loot);
 		await trackLoot({
 			id: creature.name,
 			changeType: 'loot',
