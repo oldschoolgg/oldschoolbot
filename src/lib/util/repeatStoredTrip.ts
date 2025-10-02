@@ -86,7 +86,8 @@ const taskCanBeRepeated = (activity: Activity, user: MUser) => {
 			activity_type_enum.TokkulShop,
 			activity_type_enum.Birdhouse,
 			activity_type_enum.StrongholdOfSecurity,
-			activity_type_enum.CombatRing
+			activity_type_enum.CombatRing,
+			activity_type_enum.ZeroTimeActivity
 		] as activity_type_enum[]
 	).includes(activity.type);
 };
@@ -480,6 +481,10 @@ const tripHandlers = {
 				solo: data.users.length === 1
 			};
 		}
+	},
+	[activity_type_enum.ZeroTimeActivity]: {
+		commandName: 'zero_time_activity',
+		args: () => ({ overview: {} })
 	},
 	[activity_type_enum.Zalcano]: {
 		commandName: 'k',
