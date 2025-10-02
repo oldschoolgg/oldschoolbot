@@ -397,6 +397,7 @@ export async function mockUser(
 		gear_mage: options.mageGear ? (mageGear.raw() as Prisma.InputJsonValue) : undefined,
 		gear_melee: options.meleeGear ? (meleeGear.raw() as Prisma.InputJsonValue) : undefined,
 		gear_range: options.rangeGear ? (rangeGear.raw() as Prisma.InputJsonValue) : undefined,
+		gear_wildy: options.wildyGear ? (wildyGear.raw() as Prisma.InputJsonValue) : undefined,
 		venator_bow_charges: options.venatorBowCharges,
 		QP: options.QP
 	});
@@ -431,7 +432,8 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 				id,
 				...userData,
 				bank: bank?.toJSON(),
-				GP: GP ?? undefined
+				GP: GP ?? undefined,
+				minion_hasBought: true
 			},
 			update: {
 				...userData,
@@ -475,7 +477,6 @@ export class TestClient {
 
 	async mockUser(...args: Parameters<typeof mockUser>) {
 		const user = await mockUser(...args);
-		user.client = this;
 		return user;
 	}
 

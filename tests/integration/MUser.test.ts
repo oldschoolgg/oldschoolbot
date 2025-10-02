@@ -1,7 +1,9 @@
+import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
+
 import { randArrItem, randInt } from '@oldschoolgg/rng';
 import { objectEntries, Time } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
-import { Bank, convertLVLtoXP } from 'oldschooljs';
+import { Bank, convertLVLtoXP, convertXPtoLVL } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
@@ -86,18 +88,19 @@ describe('MUser', () => {
 		const user = await createTestUser();
 		expect(user.skillsAsLevels.agility).toEqual(1);
 		const result = await user.addXP({ skillName: 'agility', amount: 1000 });
-		expect(user.skillsAsLevels.agility).toEqual(9);
-		expect(result).toEqual(`You received 1,000 <:agility:630911040355565568> XP.
-**Congratulations! Your Agility level is now 9** 🎉`);
+		expect(user.skillsAsLevels.agility).toEqual(20);
+		const xpMultiplied = 1000 * GLOBAL_BSO_XP_MULTIPLIER;
+		expect(result).toEqual(`You received ${xpMultiplied.toLocaleString()} <:agility:630911040355565568> XP.
+**Congratulations! Your Agility level is now 20** 🎉`);
 		const xpAdded = await global.prisma!.xPGain.findMany({
 			where: {
 				user_id: BigInt(user.id),
 				skill: 'agility',
-				xp: 1000
+				xp: xpMultiplied
 			}
 		});
 		expect(xpAdded.length).toEqual(1);
-		expect(xpAdded[0].xp).toEqual(1000);
+		expect(xpAdded[0].xp).toEqual(xpMultiplied);
 	});
 
 	test('skillsAsLevels/skillsAsXP', async () => {
@@ -110,13 +113,16 @@ describe('MUser', () => {
 			const expectedVal = key === 'hitpoints' ? convertLVLtoXP(10) : convertLVLtoXP(1);
 			expect(val).toEqual(expectedVal);
 		}
-		await user.addXP({ skillName: 'agility', amount: convertLVLtoXP(50) });
-		await user.addXP({ skillName: 'attack', amount: convertLVLtoXP(50) });
 
-		expect(user.skillsAsLevels.agility).toEqual(50);
-		expect(user.skillsAsLevels.attack).toEqual(50);
-		expect(user.skillsAsXP.agility).toEqual(convertLVLtoXP(50));
-		expect(user.skillsAsXP.attack).toEqual(convertLVLtoXP(50));
+		const xpToAdd = convertLVLtoXP(50);
+		const expectedLevel = convertXPtoLVL(xpToAdd * GLOBAL_BSO_XP_MULTIPLIER);
+		await user.addXP({ skillName: 'agility', amount: convertLVLtoXP(50) });
+		await user.addXP({ skillName: 'attack', amount: convertLVLtoXP(expectedLevel) });
+
+		expect(user.skillsAsLevels.agility).toEqual(expectedLevel);
+		expect(user.skillsAsLevels.attack).toEqual(expectedLevel);
+		expect(user.skillsAsXP.agility).toEqual(convertLVLtoXP(expectedLevel));
+		expect(user.skillsAsXP.attack).toEqual(convertLVLtoXP(expectedLevel));
 	});
 
 	test('addItemsToCollectionLog', async () => {

@@ -20,7 +20,7 @@ import type { Gear } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { NewBossOptions } from '@/lib/types/minions.js';
 import type { ClientBankKey } from '@/lib/util/clientSettings.js';
-import { formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 export const gpCostPerKill = (user: MUser) =>
 	user.gear.melee.hasEquipped(['Ring of charos', 'Ring of charos(a)'], false) ? 5_000_000 : 10_000_000;
@@ -326,7 +326,7 @@ export class BossInstance {
 		if (user.minionIsBusy) {
 			return [true, 'minion is busy'];
 		}
-		if (!hasSkillReqs(user, this.skillRequirements)[0]) {
+		if (!user.hasSkillReqs(this.skillRequirements)) {
 			return [true, "doesn't meet skill requirements"];
 		}
 		if (this.quantity) {

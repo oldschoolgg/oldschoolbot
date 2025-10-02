@@ -192,7 +192,6 @@ describe('BSO PVM', async () => {
 	it('should do a vasa trip', async () => {
 		const user = await client.mockUser({
 			bank: new Bank().add('Elder rune', 5000).add('Saradomin brew(4)', 1000).add('Super restore(4)', 1000),
-			rangeLevel: 99,
 			QP: 300,
 			maxed: true,
 			mageGear: vasaBISGear.allItems(false)
@@ -224,6 +223,7 @@ describe('BSO PVM', async () => {
 			meleeGear: resolveItems([...gorajanWarriorOutfit, 'Dwarven blessing']),
 			wildyGear: resolveItems(['Ranged master cape', 'Hellfire bow', ...gorajanArcherOutfit])
 		});
+		expect(user.gear.wildy.hasEquipped('Hellfire bow')).toBe(true);
 		await user.runCommand(gearCommand, {
 			equip: {
 				gear_setup: 'wildy',
