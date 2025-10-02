@@ -147,7 +147,7 @@ export interface MahojiUserOption {
 }
 
 export interface AutocompleteContext {
-	options: CommandInteractionOption[];
+	options: readonly CommandInteractionOption[];
 	focusedOption: CommandInteractionOption;
 	option?: CommandOption;
 }

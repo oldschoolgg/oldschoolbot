@@ -12,10 +12,10 @@ import { allCommands } from '@/mahoji/commands/allCommands.js';
 async function handleAutocomplete(
 	user: MUser,
 	command: ICommand | undefined,
-	autocompleteData: CommandInteractionOption[],
+	autocompleteData: readonly CommandInteractionOption[],
 	member: GuildMember | undefined,
 	option?: CommandOption,
-	contextOptions?: CommandInteractionOption[]
+	contextOptions?: readonly CommandInteractionOption[]
 ): Promise<APIApplicationCommandOptionChoice[]> {
 	if (!command || !autocompleteData) return [];
 	const data = autocompleteData.find(i => 'focused' in i && i.focused === true) ?? autocompleteData[0];
@@ -82,7 +82,7 @@ export async function autoCompleteHandler(interaction: AutocompleteInteraction) 
 	const choices = await handleAutocomplete(
 		user,
 		command,
-		(interaction.options as any).data as CommandInteractionOption[],
+		(interaction.options as any).data as readonly CommandInteractionOption[],
 		member
 	);
 	await interaction.respond(choices);

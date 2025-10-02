@@ -23,7 +23,7 @@ interface AlchableAutocompleteItem {
 }
 
 const alchableAutocompleteItems: AlchableAutocompleteItem[] = Items.filter(
-	item => Boolean(item.highalch) && item.tradeable
+	item => Boolean(item.highalch) && Boolean(item.tradeable)
 ).map(item => ({
 	id: item.id,
 	name: item.name,
