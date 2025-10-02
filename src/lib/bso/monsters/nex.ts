@@ -1,3 +1,5 @@
+import { makeKillTable } from '@/lib/bso/monsters/setCustomMonster.js';
+
 import { Time } from '@oldschoolgg/toolkit';
 import { Items, itemID, LootTable, RareDropTable } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
@@ -12,7 +14,6 @@ import {
 	virtusOutfit
 } from '@/lib/data/CollectionsExport.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
-import { makeKillTable } from '@/lib/util/setCustomMonster.js';
 
 export const nexBrokenArmorDetails = [
 	[Items.getOrThrow('Armadylean components'), brokenPernixOutfit, pernixOutfit],

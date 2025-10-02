@@ -2,10 +2,20 @@ import { cookingCL, craftingCL, creatablesCL, herbloreCL } from '@/lib/bso/bsoCl
 import { OSB_VIRTUS_IDS } from '@/lib/bso/bsoConstants.js';
 import { divinationEnergies, portents } from '@/lib/bso/divination.js';
 import { discontinuedDyes, dyedItems } from '@/lib/bso/dyedItems.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { ElderClueTable } from '@/lib/bso/elderClue.js';
 import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
 import { keyCrates } from '@/lib/bso/keyCrates.js';
 import { kibbleCL } from '@/lib/bso/kibble.js';
+import { AkumuLootTable } from '@/lib/bso/monsters/bosses/Akumu.js';
+import { Ignecarus } from '@/lib/bso/monsters/bosses/Ignecarus.js';
+import { KalphiteKingMonster, kalphiteKingLootTable } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
+import { KingGoldemar } from '@/lib/bso/monsters/bosses/KingGoldemar.js';
+import { MoktangLootTable } from '@/lib/bso/monsters/bosses/Moktang.js';
+import { Naxxus, NaxxusLootTableFinishable } from '@/lib/bso/monsters/bosses/Naxxus.js';
+import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
+import { VenatrixLootTable } from '@/lib/bso/monsters/bosses/Venatrix.js';
+import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 import { NexMonster, nexLootTable } from '@/lib/bso/monsters/nex.js';
 import { PaintBoxTable } from '@/lib/bso/paintColors.js';
 import { pumpkinHeadUniqueTable } from '@/lib/bso/pumpkinHead.js';
@@ -199,18 +209,6 @@ import {
 } from '@/lib/data/CollectionsExport.js';
 import { growablePetsCL } from '@/lib/growablePets.js';
 import { implingsCL } from '@/lib/implings.js';
-import { AkumuLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Akumu.js';
-import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
-import {
-	KalphiteKingMonster,
-	kalphiteKingLootTable
-} from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
-import KingGoldemar from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';
-import { MOKTANG_ID, MoktangLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
-import { Naxxus, NaxxusLootTableFinishable } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
-import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus.js';
-import { VenatrixLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Venatrix.js';
-import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import killableMonsters, { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
 import {
@@ -689,7 +687,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['mt', 'moktang'],
 				items: moktangCL,
 				allItems: MoktangLootTable.allItems,
-				fmtProg: kcProg(MOKTANG_ID)
+				fmtProg: kcProg(EBSOMonster.MOKTANG)
 			},
 			Wintertodt: {
 				alias: ['todt', 'wintertodt', 'wt'],

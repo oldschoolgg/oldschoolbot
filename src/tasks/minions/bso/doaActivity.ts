@@ -9,7 +9,7 @@ import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { doaCL, doaMetamorphPets } from '@/lib/data/CollectionsExport.js';
 import { trackLoot } from '@/lib/lootTrack.js';
-import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
+import { resolveAttackStyles } from '@/lib/minions/functions/resolveAttackStyles.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import type { DOAOptions } from '@/lib/types/minions.js';
 

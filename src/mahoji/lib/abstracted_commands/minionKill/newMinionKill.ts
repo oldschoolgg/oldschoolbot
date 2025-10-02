@@ -1,4 +1,4 @@
-import { YETI_ID } from '@/lib/bso/bsoConstants.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import type { InventionID } from '@/lib/bso/skills/invention/inventions.js';
 
 import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
@@ -12,12 +12,8 @@ import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { checkRangeGearWeapon } from '@/lib/gear/functions/checkRangeGearWeapon.js';
 import type { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
-import {
-	type AttackStyles,
-	attackStylesArr,
-	getAttackStylesContext,
-	resolveAttackStyles
-} from '@/lib/minions/functions/index.js';
+import { type AttackStyles, attackStylesArr, getAttackStylesContext } from '@/lib/minions/functions/index.js';
+import { resolveAttackStyles } from '@/lib/minions/functions/resolveAttackStyles.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { type CurrentSlayerInfo, determineCombatBoosts, wildySlayerOnlyMonsters } from '@/lib/slayer/slayerUtil.js';
@@ -169,7 +165,7 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 			})
 		: null;
 
-	if (!args.bitfield.includes(BitField.HasUnlockedYeti) && monster.id === YETI_ID) {
+	if (!args.bitfield.includes(BitField.HasUnlockedYeti) && monster.id === EBSOMonster.YETI) {
 		args.inputQuantity = 1;
 	}
 

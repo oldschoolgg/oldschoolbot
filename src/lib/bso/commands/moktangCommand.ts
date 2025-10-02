@@ -6,7 +6,6 @@ import { dwarvenOutfit } from '@/lib/data/CollectionsExport.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { PercentCounter } from '@/lib/structures/PercentCounter.js';
 import type { MoktangTaskOptions } from '@/lib/types/minions.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 const requiredPickaxes = resolveItems(['Crystal pickaxe', 'Volcanic pickaxe', 'Dwarven pickaxe', 'Dragon pickaxe']);
 
@@ -32,7 +31,7 @@ export async function moktangCommand(user: MUser, channelID: string, inputQuanti
 	);
 	timeToKill.add(user.hasEquipped('Mining master cape'), -5, 'Mining mastery');
 
-	const maxCanDo = Math.floor(calcMaxTripLength(user, 'Moktang') / timeToKill.value);
+	const maxCanDo = Math.floor(user.calcMaxTripLength('Moktang') / timeToKill.value);
 	const quantity = Math.max(1, Math.min(totemsOwned, maxCanDo, inputQuantity ?? maxCanDo));
 	const duration = timeToKill.value * quantity;
 

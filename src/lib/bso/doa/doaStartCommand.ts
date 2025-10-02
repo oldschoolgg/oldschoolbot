@@ -14,7 +14,6 @@ import { degradeItem } from '@/lib/degradeableItems.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { DOAOptions } from '@/lib/types/minions.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { bankToStrShortNames } from '@/lib/util/smallUtils.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
@@ -94,7 +93,7 @@ export async function doaStartCommand(
 		quantity: 1,
 		challengeMode
 	}).fakeDuration;
-	const maxTripLength = Math.max(...users.map(i => calcMaxTripLength(i, 'DepthsOfAtlantis')));
+	const maxTripLength = Math.max(...users.map(i => i.calcMaxTripLength('DepthsOfAtlantis')));
 	const maxQuantity = clamp(Math.floor(maxTripLength / baseDuration), { min: 1, max: 5 });
 	const quantity = clamp(quantityInput ?? maxQuantity, { min: 1, max: maxQuantity });
 

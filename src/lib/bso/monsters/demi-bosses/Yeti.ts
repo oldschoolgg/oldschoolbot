@@ -1,11 +1,11 @@
-import { YETI_ID } from '@/lib/bso/bsoConstants.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
 
 import { Time } from '@oldschoolgg/toolkit';
 import { GemTable, HerbDropTable, LootTable, Monsters, UncommonSeedDropTable } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { BitField } from '@/lib/constants.js';
-import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/CustomMonster.js';
 
 const DeadTable = new LootTable().add('Iron med helm').add('Bones').add('Skull').add('Bronze sword');
 
@@ -52,7 +52,7 @@ export const YetiLootTable = new LootTable()
 
 export const Yeti: CustomMonster = {
 	isCustom: true,
-	id: YETI_ID,
+	id: EBSOMonster.YETI,
 	name: 'Yeti',
 	aliases: ['yeti'],
 	timeToFinish: Time.Minute * 30,

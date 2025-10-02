@@ -7,7 +7,6 @@ import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import type { ItemBank } from 'oldschooljs';
 
 import type { TinkeringWorkshopOptions } from '@/lib/types/minions.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export async function tinkeringWorkshopCommand(user: MUser, material: MaterialType, channelID: string) {
 	if (!materialTypes.includes(material)) {
@@ -16,7 +15,7 @@ export async function tinkeringWorkshopCommand(user: MUser, material: MaterialTy
 	if (user.minionIsBusy) return 'Your minion is busy.';
 
 	const gameTime = Time.Minute * 12.5;
-	const quantity = Math.floor(calcMaxTripLength(user, 'TinkeringWorkshop') / gameTime);
+	const quantity = Math.floor(user.calcMaxTripLength('TinkeringWorkshop') / gameTime);
 	const duration = randomVariation(quantity * gameTime, 5);
 
 	const MATERIAL_QTY_PER_PROJECT = 100;

@@ -1,9 +1,11 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
+
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID, LootTable, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { BitField } from '@/lib/constants.js';
-import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/CustomMonster.js';
 import { addStatsOfItemsTogether } from '@/lib/structures/Gear.js';
 
 export const VenatrixLootTable = new LootTable()
@@ -22,7 +24,7 @@ export const VenatrixLootTable = new LootTable()
 
 export const Venatrix: CustomMonster = {
 	isCustom: true,
-	id: 93_183,
+	id: EBSOMonster.VENATRIX,
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Venatrix',
 	aliases: ['venatrix'],
@@ -80,6 +82,6 @@ export const Venatrix: CustomMonster = {
 	],
 	requiredBitfield: BitField.HasUnlockedVenatrix,
 	kcRequirements: {
-		Celestara: 1
+		[EBSOMonster.CELESTARA]: 1
 	}
 };

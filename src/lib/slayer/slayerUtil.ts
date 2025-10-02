@@ -1,3 +1,6 @@
+import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
+import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
+
 import { randFloat, randInt, roll } from '@oldschoolgg/rng';
 import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, type Monster, Monsters, resolveItems } from 'oldschooljs';
@@ -6,7 +9,6 @@ import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements
 import { BitField, type PvMMethod } from '@/lib/constants.js';
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
-import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { getNewUser } from '@/lib/settings/settings.js';
 import { autoslayModes } from '@/lib/slayer/constants.js';
@@ -312,7 +314,7 @@ export async function calcMaxBlockedTasks(user: MUser) {
 	return blocks;
 }
 
-export function getCommonTaskName(task: Monster) {
+export function getCommonTaskName(task: Monster | CustomMonster) {
 	let commonName = task.name;
 	switch (task.id) {
 		case Monsters.KalphiteWorker.id:

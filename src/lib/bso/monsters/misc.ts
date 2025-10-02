@@ -1,14 +1,10 @@
+import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
+
 import { Time } from '@oldschoolgg/toolkit';
 import { GemTable, LootTable, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { LowSeedPackTable } from '@/lib/data/seedPackTables.js';
-import { Akumu } from '@/lib/minions/data/killableMonsters/custom/bosses/Akumu.js';
-import { Venatrix } from '@/lib/minions/data/killableMonsters/custom/bosses/Venatrix.js';
-import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/CustomMonster.js';
-import { SuperiorTormentedDemon } from '@/lib/minions/data/killableMonsters/custom/TormentedDemon.js';
-import { VladimirDrakan } from '@/lib/minions/data/killableMonsters/custom/VladimirDrakan.js';
-import { Yeti } from '@/lib/minions/data/killableMonsters/custom/Yeti.js';
 import { BattlestaffTable, runeAlchablesTable, StoneSpiritTable } from '@/lib/simulation/sharedTables.js';
 
 export const CockroachSoldier: CustomMonster = {
@@ -65,14 +61,4 @@ export const EliteBlackKnight: CustomMonster = {
 	baseMonster: Monsters.BlackDemon,
 	hp: 560,
 	itemsRequired: resolveItems(['Dark Temple key'])
-};
-
-export const MiscCustomMonsters = {
-	SuperiorTormentedDemon,
-	CockroachSoldier,
-	EliteBlackKnight,
-	Yeti,
-	VladimirDrakan,
-	Akumu,
-	Venatrix
 };

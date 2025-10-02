@@ -1,4 +1,22 @@
-import { GemTable, LootTable, RareTable, TreeHerbSeedTable, WyvernHerbTable } from 'oldschooljs';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
+
+import { Time } from '@oldschoolgg/toolkit';
+import {
+	deepResolveItems,
+	GearStat,
+	GemTable,
+	itemID,
+	LootTable,
+	MonsterAttribute,
+	Monsters,
+	RareTable,
+	resolveItems,
+	TreeHerbSeedTable,
+	WyvernHerbTable
+} from 'oldschooljs';
+
+// import { itemContractItemsSet } from '@/mahoji/commands/ic.js';
 
 const petTrollTable = new LootTable().add('Ori', 1, 1).add('Abyssal head', 1, 9);
 
@@ -72,7 +90,7 @@ const regularTable = new LootTable()
 	.add(GemTable, 2)
 	.add(RareTable, 2);
 
-export const AbyssalDragonLootTable = new LootTable()
+const AbyssalDragonLootTable = new LootTable()
 	.every('Abyssal dragon bones', 2)
 	.every(regularTable, 4)
 
@@ -84,3 +102,63 @@ export const AbyssalDragonLootTable = new LootTable()
 	.tertiary(1024, 'Dragon hunter lance')
 	.tertiary(100, 'Lump of crystal')
 	.tertiary(140, 'Clue scroll (grandmaster)');
+
+// console.log(
+// 	new Set(AbyssalDragonLootTable.allItems.filter(i => !itemContractItemsSet.has(i)).map(i => Items.itemNameFromId(i)))
+// );
+export const Malygos: CustomMonster = {
+	isCustom: true,
+	id: EBSOMonster.MALYGOS,
+	name: 'Malygos',
+	aliases: ['abyssal dragon', 'abyss drag', 'mally', 'maly', 'malygos'],
+	timeToFinish: Time.Minute * 30,
+	table: AbyssalDragonLootTable,
+	wildy: true,
+	difficultyRating: 9,
+	qpRequired: 999,
+	healAmountNeeded: 20 * 25,
+	attackStyleToUse: GearStat.AttackSlash,
+	attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
+	minimumGearRequirements: {
+		melee: {
+			[GearStat.AttackStab]: 100,
+			[GearStat.DefenceStab]: 150,
+			[GearStat.DefenceSlash]: 150,
+			[GearStat.DefenceMagic]: -20,
+			[GearStat.DefenceRanged]: 150
+		}
+	},
+	itemInBankBoosts: [
+		{
+			[itemID('Saradomin godsword')]: 5
+		},
+		{
+			[itemID('Dragon warhammer')]: 5
+		},
+		{
+			[itemID('Bandos godsword')]: 5
+		},
+		{
+			[itemID('Axe of the high sungod')]: 10
+		}
+	],
+	itemsRequired: deepResolveItems([['Anti-dragon shield', 'Abyssal cape']]),
+	groupKillable: true,
+	respawnTime: Time.Second * 20,
+	levelRequirements: {
+		prayer: 99,
+		attack: 99,
+		strength: 105,
+		defence: 99
+	},
+	pohBoosts: {
+		pool: {
+			'Ancient rejuvenation pool': 10
+		}
+	},
+	uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori', 'Dragon hunter lance']),
+	notifyDrops: resolveItems(['Abyssal cape', 'Ori']),
+	baseMonster: Monsters.Vorkath,
+	customMonsterData: { attributes: [MonsterAttribute.Dragon, MonsterAttribute.Fiery] },
+	canBePked: true
+};

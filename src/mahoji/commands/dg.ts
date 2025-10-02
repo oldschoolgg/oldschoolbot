@@ -15,7 +15,6 @@ import { formatDuration, formatOrdinal, reduceNumByPercent, stringMatches, Time 
 
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { DungeoneeringOptions } from '@/lib/types/minions.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 // Max people in a party:
@@ -44,7 +43,7 @@ async function startCommand(
 	}
 
 	const dungeonLength = Time.Minute * 5 * (floorToDo / 2);
-	let quantity = Math.floor(calcMaxTripLength(user, 'Dungeoneering') / dungeonLength);
+	let quantity = Math.floor(user.calcMaxTripLength('Dungeoneering') / dungeonLength);
 	let duration = quantity * dungeonLength;
 
 	const message = `${user.usernameOrMention} has created a Dungeoneering party! Use the buttons below to join/leave.
@@ -137,7 +136,7 @@ async function startCommand(
 
 	// Calculate new number of floors will be done now that it is about to start
 	const perFloor = duration / quantity;
-	quantity = Math.floor(calcMaxTripLength(user, 'Dungeoneering') / perFloor);
+	quantity = Math.floor(user.calcMaxTripLength('Dungeoneering') / perFloor);
 	duration = quantity * perFloor;
 
 	let str = `${partyOptions.leader.usernameOrMention}'s dungeoneering party (${users

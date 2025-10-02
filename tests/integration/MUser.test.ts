@@ -115,14 +115,15 @@ describe('MUser', () => {
 		}
 
 		const xpToAdd = convertLVLtoXP(50);
-		const expectedLevel = convertXPtoLVL(xpToAdd * GLOBAL_BSO_XP_MULTIPLIER);
-		await user.addXP({ skillName: 'agility', amount: convertLVLtoXP(50) });
-		await user.addXP({ skillName: 'attack', amount: convertLVLtoXP(expectedLevel) });
+		const expectedXP = xpToAdd * GLOBAL_BSO_XP_MULTIPLIER;
+		const expectedLevel = convertXPtoLVL(expectedXP);
+		await user.addXP({ skillName: 'agility', amount: xpToAdd });
+		await user.addXP({ skillName: 'attack', amount: xpToAdd });
 
 		expect(user.skillsAsLevels.agility).toEqual(expectedLevel);
 		expect(user.skillsAsLevels.attack).toEqual(expectedLevel);
-		expect(user.skillsAsXP.agility).toEqual(convertLVLtoXP(expectedLevel));
-		expect(user.skillsAsXP.attack).toEqual(convertLVLtoXP(expectedLevel));
+		expect(user.skillsAsXP.agility).toEqual(expectedXP);
+		expect(user.skillsAsXP.attack).toEqual(expectedXP);
 	});
 
 	test('addItemsToCollectionLog', async () => {

@@ -1,3 +1,4 @@
+import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 
 import { randArrItem, roll, shuffleArr } from '@oldschoolgg/rng';
@@ -8,7 +9,6 @@ import { Bank, Items, LootTable, Monsters } from 'oldschooljs';
 import { globalConfig } from '@/lib/constants.js';
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 import Createables from '@/lib/data/createables.js';
-import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters.js';
 import killableMonsters from '../minions/data/killableMonsters/index.js';
 import { sendToChannelID } from '../util/webhook.js';
 import { LampTable } from '../xpLamps.js';

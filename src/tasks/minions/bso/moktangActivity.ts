@@ -1,4 +1,6 @@
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import { MoktangLootTable } from '@/lib/bso/monsters/bosses/Moktang.js';
 
 import { randInt } from '@oldschoolgg/rng';
 import { calcPerHour, Events, formatOrdinal } from '@oldschoolgg/toolkit';
@@ -6,7 +8,6 @@ import { userMention } from 'discord.js';
 import { Bank, Items, increaseBankQuantitesByPercent, resolveItems } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
-import { MOKTANG_ID, MoktangLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
 import {
 	FletchingTipsTable,
 	HighTierStoneSpiritTable,
@@ -23,7 +24,7 @@ export const moktangTask: MinionTask = {
 	async run(data: MoktangTaskOptions, { user, handleTripFinish }) {
 		const { qty } = data;
 
-		await user.incrementKC(MOKTANG_ID, qty);
+		await user.incrementKC(EBSOMonster.MOKTANG, qty);
 
 		const loot = new Bank();
 
@@ -80,7 +81,7 @@ export const moktangTask: MinionTask = {
 			previousCL: res.previousCL
 		});
 
-		const newKC = await user.getKC(MOKTANG_ID);
+		const newKC = await user.getKC(EBSOMonster.MOKTANG);
 		for (const item of resolveItems(['Igne gear frame', 'Mini moktang'])) {
 			if (loot.has(item)) {
 				globalClient.emit(

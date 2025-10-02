@@ -1,4 +1,6 @@
 import { calcTotalLevel } from '@/lib/bso/bsoUtil.js';
+import { QueenBlackDragon } from '@/lib/bso/monsters/demi-bosses/QueenBlackDragon.js';
+import { SuperiorTormentedDemon } from '@/lib/bso/monsters/demi-bosses/TormentedDemon.js';
 
 import { sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
@@ -29,8 +31,6 @@ import {
 	WildernessDiary
 } from '@/lib/diaries.js';
 import { implings } from '@/lib/implings.js';
-import { QueenBlackDragon } from '@/lib/minions/data/killableMonsters/custom/demiBosses.js';
-import { SuperiorTormentedDemon } from '@/lib/minions/data/killableMonsters/custom/TormentedDemon.js';
 import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
 import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
 import { ashes } from '@/lib/skilling/skills/prayer.js';

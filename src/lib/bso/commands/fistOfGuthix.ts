@@ -2,13 +2,12 @@ import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export async function fistOfGuthixCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) return 'Your minion is busy.';
 
 	const gameTime = Time.Minute * 7.5;
-	const quantity = Math.floor(calcMaxTripLength(user, 'FistOfGuthix') / gameTime);
+	const quantity = Math.floor(user.calcMaxTripLength('FistOfGuthix') / gameTime);
 	const duration = randomVariation(quantity * gameTime, 5);
 
 	const str = `${

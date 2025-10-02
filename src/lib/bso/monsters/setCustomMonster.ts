@@ -14,7 +14,7 @@ export function makeKillTable(table: LootTable) {
 	};
 }
 
-export default function setCustomMonster(
+export function setCustomMonster(
 	id: number,
 	name: string,
 	table: LootTable,
@@ -25,12 +25,14 @@ export default function setCustomMonster(
 		console.error(`Tried to set custom monster, but one already existed with the same ID: ${id}`);
 	}
 
-	Monsters.set(id, {
+	const monster: Monster = {
 		...baseItem,
 		...newItemData,
 		name,
 		id,
 		kill: makeKillTable(table).kill,
 		allItems: table.allItems
-	});
+	};
+	Monsters.set(id, monster);
+	return monster;
 }

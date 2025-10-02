@@ -1,4 +1,4 @@
-import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
+import { resolveAttackStyles } from '@/lib/minions/functions/resolveAttackStyles.js';
 import type { NightmareZoneActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const nightmareZoneTask: MinionTask = {

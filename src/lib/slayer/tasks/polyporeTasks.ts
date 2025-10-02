@@ -1,11 +1,10 @@
-import { getMonster } from '@/lib/bso/bsoUtil.js';
+import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 
-import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
 
 export const polyporeTasks: AssignableSlayerTask[] = [
 	{
-		monster: getMonster('Fungal Rodent'),
+		monster: BSOMonsters.FungalRodent,
 		amount: [60, 120],
 		weight: 6,
 		monsters: [BSOMonsters.FungalRodent.id],
@@ -13,7 +12,7 @@ export const polyporeTasks: AssignableSlayerTask[] = [
 		unlocked: false
 	},
 	{
-		monster: getMonster('Infested axe'),
+		monster: BSOMonsters.InfestedAxe,
 		amount: [60, 120],
 		weight: 6,
 		monsters: [BSOMonsters.InfestedAxe.id],
@@ -21,7 +20,7 @@ export const polyporeTasks: AssignableSlayerTask[] = [
 		unlocked: false
 	},
 	{
-		monster: getMonster('Grifolaroo'),
+		monster: BSOMonsters.Grifolaroo,
 		amount: [60, 100],
 		weight: 6,
 		monsters: [BSOMonsters.Grifolaroo.id],
@@ -29,7 +28,7 @@ export const polyporeTasks: AssignableSlayerTask[] = [
 		unlocked: false
 	},
 	{
-		monster: getMonster('Grifolapine'),
+		monster: BSOMonsters.Grifolapine,
 		amount: [60, 80],
 		weight: 6,
 		monsters: [BSOMonsters.Grifolapine.id],
@@ -37,7 +36,7 @@ export const polyporeTasks: AssignableSlayerTask[] = [
 		unlocked: false
 	},
 	{
-		monster: getMonster('Ganodermic Runt'),
+		monster: BSOMonsters.GanodermicRunt,
 		amount: [30, 55],
 		weight: 6,
 		monsters: [BSOMonsters.GanodermicRunt.id],
@@ -45,7 +44,7 @@ export const polyporeTasks: AssignableSlayerTask[] = [
 		unlocked: false
 	},
 	{
-		monster: getMonster('Ganodermic Beast'),
+		monster: BSOMonsters.GanodermicBeast,
 		amount: [20, 49],
 		weight: 6,
 		monsters: [BSOMonsters.GanodermicBeast.id],

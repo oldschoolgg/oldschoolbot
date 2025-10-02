@@ -1,4 +1,5 @@
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { type MidPVMEffectArgs, oriEffect, rollForBSOThings } from '@/lib/bso/pvmEffects.js';
 
@@ -10,10 +11,10 @@ import { clone } from 'remeda';
 import type { BitField } from '@/lib/constants.js';
 import { userhasDiaryTierSync } from '@/lib/diaries.js';
 import { trackLoot } from '@/lib/lootTrack.js';
-import { KOSCHEI_ID } from '@/lib/minions/data/killableMonsters/custom/bosses/Koschei.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { addMonsterXPRaw } from '@/lib/minions/functions/addMonsterXPRaw.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
-import { type AttackStyles, addMonsterXPRaw } from '@/lib/minions/functions/index.js';
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import { DiaryID, type KillableMonster } from '@/lib/minions/types.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { type CurrentSlayerInfo, calculateSlayerPoints, getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
@@ -533,7 +534,7 @@ export const monsterTask: MinionTask = {
 		const minigameScores = await user.fetchMinigames();
 		const slayerInfo = await getUsersCurrentSlayerInfo(user.id);
 
-		if (data.mi === KOSCHEI_ID) {
+		if (data.mi === EBSOMonster.KOSCHEI) {
 			sendToChannelID(data.channelID, {
 				content: `${user}, ${user.minionName} failed to defeat Koschei the deathless.`
 			});

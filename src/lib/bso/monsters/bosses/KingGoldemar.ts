@@ -1,8 +1,8 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import { setCustomMonster } from '@/lib/bso/monsters/setCustomMonster.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 
 import { LootTable, Monsters } from 'oldschooljs';
-
-import setCustomMonster from '@/lib/util/setCustomMonster.js';
 
 const dwarvenArmorTable = new LootTable()
 	.add('Dwarven full helm')
@@ -41,12 +41,10 @@ export const KingGoldemarLootTable = new LootTable()
 	.tertiary(20, MysteryBoxes)
 	.tertiary(25, 'Blacksmith crate');
 
-setCustomMonster(696_969, 'King Goldemar', KingGoldemarLootTable, Monsters.GeneralGraardor, {
-	id: 696_969,
+setCustomMonster(EBSOMonster.KING_GOLDEMAR, 'King Goldemar', KingGoldemarLootTable, Monsters.GeneralGraardor, {
+	id: EBSOMonster.KING_GOLDEMAR,
 	name: 'King Goldemar',
 	aliases: ['king goldemar', 'dwarf king', 'goldemar', 'kg']
 });
 
-const KingGoldemar = Monsters.find(mon => mon.name === 'King Goldemar')!;
-
-export default KingGoldemar;
+export const KingGoldemar = Monsters.find(mon => mon.name === 'King Goldemar')!;

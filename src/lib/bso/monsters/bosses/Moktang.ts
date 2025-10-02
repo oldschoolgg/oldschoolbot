@@ -11,7 +11,6 @@ import {
 	StoneSpiritTable
 } from '@/lib/simulation/sharedTables.js';
 
-export const MOKTANG_ID = 391_241;
 const BarTable = new LootTable()
 	.add('Bronze bar', 10)
 	.add('Iron bar', 10)

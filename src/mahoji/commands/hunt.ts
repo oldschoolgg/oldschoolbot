@@ -12,7 +12,6 @@ import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import { type Creature, HunterTechniqueEnum } from '@/lib/skilling/types.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { generateDailyPeakIntervals, type Peak } from '@/lib/util/peaks.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 
@@ -335,7 +334,7 @@ export const huntCommand: OSBMahojiCommand = {
 
 		const crystalImpling = creature.name === 'Crystal impling';
 
-		const maxTripLength = calcMaxTripLength(user, 'Hunter');
+		const maxTripLength = user.calcMaxTripLength('Hunter');
 		const elligibleForQuickTrap =
 			creature.huntTechnique === HunterTechniqueEnum.BoxTrapping && user.owns('Quick trap');
 		const elligibleForWebshooter = user.owns('Webshooter') && !crystalImpling;

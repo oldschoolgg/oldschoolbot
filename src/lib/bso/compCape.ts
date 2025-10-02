@@ -2,6 +2,7 @@ import { cookingCL, craftingCL, creatablesCL, herbloreCL, smithingCL } from '@/l
 import { divinationEnergies } from '@/lib/bso/divination.js';
 import { kibbleCL } from '@/lib/bso/kibble.js';
 import { allLeagueTasks, leagueTasks } from '@/lib/bso/leagues/leagues.js';
+import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 import { dungBuyables } from '@/lib/bso/skills/dungoneering/dungData.js';
 import { inventionCL } from '@/lib/bso/skills/invention/inventions.js';
 import { slayerMasksHelmsCL } from '@/lib/bso/slayerMaskHelms.js';
@@ -150,7 +151,6 @@ import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { diaries, diariesObject } from '@/lib/diaries.js';
 import { growablePetsCL } from '@/lib/growablePets.js';
 import { implingsCL } from '@/lib/implings.js';
-import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import { type DiaryID, type DiaryTierName, diaryTiers } from '@/lib/minions/types.js';
 import { getPOHObject, PoHObjects } from '@/lib/poh/index.js';
 import Skillcapes from '@/lib/skilling/skillcapes.js';

@@ -1,9 +1,10 @@
+import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
+
 import { stringMatches } from '@oldschoolgg/toolkit';
 import type { activity_type_enum, Minigame, PlayerOwnedHouse, Tame, User, UserStats } from '@prisma/client';
 import { Bank, type ItemBank, type Monster } from 'oldschooljs';
 
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
-import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/CustomMonster.js';
 import Grimy from '@/lib/skilling/skills/herblore/mixables/grimy.js';
 import Potions from '@/lib/skilling/skills/herblore/mixables/potions.js';
 import unfinishedPotions from '@/lib/skilling/skills/herblore/mixables/unfinishedPotions.js';

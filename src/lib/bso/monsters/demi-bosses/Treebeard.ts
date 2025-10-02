@@ -1,10 +1,14 @@
-import { LootTable } from 'oldschooljs';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
+
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, GearStat, LootTable, Monsters } from 'oldschooljs';
 
 import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '@/lib/data/seedPackTables.js';
 
-export const TanglerootTable = new LootTable().add(20_661).add(24_555).add(24_557).add(24_559).add(24_561).add(24_563);
+const TanglerootTable = new LootTable().add(20_661).add(24_555).add(24_557).add(24_559).add(24_561).add(24_563);
 
-export const GrimyHerbTable = new LootTable()
+const GrimyHerbTable = new LootTable()
 	.add('Grimy guam leaf', [20, 50])
 	.add('Grimy marrentill', [20, 50])
 	.add('Grimy tarromin', [20, 20])
@@ -57,7 +61,7 @@ const LogTable = new LootTable().add('Yew logs', [20, 50]).add('Magic logs', [10
 
 const DeadLumberjackTable = new LootTable().every('Lumberjack hat').every('Bones').every('Skull').every('Iron axe');
 
-export const TreebeardLootTable = new LootTable()
+const TreebeardLootTable = new LootTable()
 	.tertiary(1200, TanglerootTable)
 	.tertiary(800, 'Ivy seed')
 	.tertiary(150, 'Clue scroll (master)')
@@ -74,3 +78,41 @@ export const TreebeardLootTable = new LootTable()
 	.add(HerbSecondaries, [1, 7])
 	.add(GrimyHerbTable, [1, 3])
 	.add(LogTable, [10, 20]);
+
+export const Treebeard: CustomMonster = {
+	isCustom: true,
+	id: EBSOMonster.TREEBEARD,
+	name: 'Treebeard',
+	aliases: ['treebeard', 'tree'],
+	timeToFinish: Time.Minute * 10,
+	table: TreebeardLootTable,
+	emoji: '',
+	wildy: true,
+	difficultyRating: 9,
+	qpRequired: 100,
+	healAmountNeeded: 20 * 30,
+	attackStyleToUse: GearStat.AttackMagic,
+	attackStylesUsed: [GearStat.AttackMagic],
+	respawnTime: Time.Second * 40,
+	minimumGearRequirements: {
+		mage: {
+			[GearStat.AttackMagic]: 30 + 10 + 10 + 6 + 6 + 22 + 6
+		}
+	},
+	levelRequirements: {
+		magic: 105,
+		slayer: 101
+	},
+	pohBoosts: {
+		pool: {
+			'Ancient rejuvenation pool': 10
+		}
+	},
+	baseMonster: Monsters.Hespori,
+	itemInBankBoosts: [
+		new Bank({
+			'Axe of the high sungod': 10
+		}).toJSON()
+	],
+	canBePked: true
+};

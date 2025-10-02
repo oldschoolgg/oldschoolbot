@@ -1,3 +1,5 @@
+import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
+
 import { objectEntries, Time } from '@oldschoolgg/toolkit';
 import type { Tame, TameActivity } from '@prisma/client';
 import {
@@ -16,7 +18,6 @@ import {
 import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning.js';
 import Bars from '@/lib/skilling/skills/smithing/smeltables.js';
 import type { handleFinish } from '@/tasks/tames/tameTasks.js';
-import { customDemiBosses } from '../minions/data/killableMonsters/custom/demiBosses.js';
 import killableMonsters, { NightmareMonster } from '../minions/data/killableMonsters/index.js';
 import { Planks } from '../minions/data/planks.js';
 import type { KillableMonster } from '../minions/types.js';
@@ -353,23 +354,23 @@ export const tameKillableMonsters: TameKillableMonster[] = [
 
 const overrides = [
 	{
-		id: customDemiBosses.Nihiliz.id,
+		id: BSOMonsters.Nihiliz.id,
 		minArmorTier: Items.getOrThrow('Justiciar igne armor')
 	},
 	{
-		id: customDemiBosses.Treebeard.id,
+		id: BSOMonsters.Treebeard.id,
 		minArmorTier: Items.getOrThrow('Justiciar igne armor')
 	},
 	{
-		id: customDemiBosses.QueenBlackDragon.id,
+		id: BSOMonsters.QueenBlackDragon.id,
 		minArmorTier: Items.getOrThrow('Justiciar igne armor')
 	},
 	{
-		id: customDemiBosses.SeaKraken.id,
+		id: BSOMonsters.SeaKraken.id,
 		minArmorTier: Items.getOrThrow('Justiciar igne armor')
 	},
 	{
-		id: customDemiBosses.Malygos.id,
+		id: BSOMonsters.Malygos.id,
 		minArmorTier: Items.getOrThrow('Justiciar igne armor')
 	},
 	{

@@ -1,3 +1,5 @@
+import { NAXXUS_HP, Naxxus } from '@/lib/bso/monsters/bosses/Naxxus.js';
+
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -12,10 +14,8 @@ import type { GearStats } from 'oldschooljs/gear';
 
 import { checkUserCanUseDegradeableItem, degradeablePvmBoostItems, degradeItem } from '@/lib/degradeableItems.js';
 import { trackLoot } from '@/lib/lootTrack.js';
-import { NAXXUS_HP, Naxxus } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 const bisMageGear = new Gear({
@@ -185,7 +185,7 @@ export async function naxxusCommand(
 		}
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'Naxxus');
+	const maxTripLength = user.calcMaxTripLength('Naxxus');
 	// If no quantity provided, set it to the max.
 	if (quantity === undefined) {
 		quantity = Math.max(1, Math.floor(maxTripLength / effectiveTime));

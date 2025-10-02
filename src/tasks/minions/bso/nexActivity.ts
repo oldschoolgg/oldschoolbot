@@ -8,7 +8,6 @@ import { Bank } from 'oldschooljs';
 import { nexCL, nexUniqueDrops } from '@/lib/data/CollectionsExport.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
-import { addMonsterXP } from '@/lib/minions/functions/index.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
 import { getNexGearStats } from '@/lib/util/getNexGearStats.js';
@@ -93,7 +92,7 @@ export const nexTask: MinionTask = {
 			if (!user) continue;
 			let xpStr = '';
 			if (kcAmounts[user.id]) {
-				xpStr = await addMonsterXP(user, {
+				xpStr = await user.addMonsterXP({
 					monsterID: NexMonster.id,
 					quantity: Math.ceil(quantity / users.length),
 					duration,

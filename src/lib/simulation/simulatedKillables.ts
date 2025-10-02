@@ -1,5 +1,8 @@
 import { chanceOfDOAUnique, pickUniqueToGiveUser } from '@/lib/bso/depthsOfAtlantis.js';
 import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';
+import { KalphiteKingMonster, kalphiteKingLootTable } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
+import { KingGoldemarLootTable } from '@/lib/bso/monsters/bosses/KingGoldemar.js';
+import { MoktangLootTable } from '@/lib/bso/monsters/bosses/Moktang.js';
 import { NEX_UNIQUE_DROPRATE, nexLootTable } from '@/lib/bso/monsters/nex.js';
 
 import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
@@ -7,12 +10,6 @@ import { SimpleTable } from '@oldschoolgg/toolkit';
 import { Bank, Misc } from 'oldschooljs';
 
 import { nexUniqueDrops } from '@/lib/data/CollectionsExport.js';
-import {
-	KalphiteKingMonster,
-	kalphiteKingLootTable
-} from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
-import { KingGoldemarLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';
-import { MoktangLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
 import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
 import { zygomiteFarmingSource } from '@/lib/skilling/skills/farming/zygomites.js';
 import { calcDwwhChance } from '@/lib/structures/Boss.js';

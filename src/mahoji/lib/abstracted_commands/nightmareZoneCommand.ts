@@ -12,7 +12,7 @@ import { Bank, Items } from 'oldschooljs';
 import type { NMZStrategy } from '@/lib/constants.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { MAX_QP } from '@/lib/minions/data/quests.js';
-import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
+import { resolveAttackStyles } from '@/lib/minions/functions/resolveAttackStyles.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { NightmareZoneActivityTaskOptions } from '@/lib/types/minions.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';

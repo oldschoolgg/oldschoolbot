@@ -31,7 +31,6 @@ import { clamp } from 'remeda';
 import Skillcapes from '@/lib/skilling/skillcapes.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { DisassembleTaskOptions } from '@/lib/types/minions.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 const MASTER_CAPE_JUNK_REDUCTION = 5;
 
@@ -190,7 +189,7 @@ export async function handleDisassembly({
 
 	// The time it takes to disassemble 1 of this item.
 	let timePer = Time.Second * 0.33;
-	const maxTripLength = calcMaxTripLength(user, 'Disassembling');
+	const maxTripLength = user.calcMaxTripLength('Disassembling');
 
 	const messages: string[] = [];
 	if (bank.has('Dwarven toolkit')) {

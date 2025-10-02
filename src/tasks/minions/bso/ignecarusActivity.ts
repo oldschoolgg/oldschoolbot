@@ -1,17 +1,12 @@
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
+import { Ignecarus, IgnecarusLootTable, IgnecarusNotifyDrops } from '@/lib/bso/monsters/bosses/Ignecarus.js';
 
 import { percentChance, shuffleArr } from '@oldschoolgg/rng';
 import { Emoji, sumArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
-import {
-	Ignecarus,
-	IgnecarusLootTable,
-	IgnecarusNotifyDrops
-} from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
-import { addMonsterXP } from '@/lib/minions/functions/index.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { BossUser } from '@/lib/structures/Boss.js';
@@ -98,7 +93,7 @@ export const ignecarusTask: MinionTask = {
 			}
 			teamLoot.add(user.id, loot);
 			totalLoot.add(loot);
-			await addMonsterXP(user, {
+			await user.addMonsterXP({
 				monsterID: Ignecarus.id,
 				quantity,
 				duration,

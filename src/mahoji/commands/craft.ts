@@ -6,7 +6,6 @@ import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
 import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning.js';
 import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export const craftCommand: OSBMahojiCommand = {
 	name: 'craft',
@@ -69,7 +68,7 @@ export const craftCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${craftable.level} Crafting to craft ${craftable.name}.`;
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Crafting');
+		const maxTripLength = user.calcMaxTripLength('Crafting');
 		const boosts: string[] = [];
 		const userBank = user.bankWithGP;
 

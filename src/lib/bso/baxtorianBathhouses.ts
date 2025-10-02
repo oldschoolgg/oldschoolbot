@@ -10,7 +10,6 @@ import { Bank, type Item, Items, LootTable, resolveItems } from 'oldschooljs';
 import Grimy from '@/lib/skilling/skills/herblore/mixables/grimy.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { BathhouseTaskOptions } from '@/lib/types/minions.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 export const bathhouseTierNames = ['Warm', 'Hot', 'Fiery'] as const;
@@ -278,7 +277,7 @@ export async function baxtorianBathhousesStartCommand({
 		return 'Your minion is busy.';
 	}
 	const userBank = user.bank;
-	const maxTripLength = calcMaxTripLength(user, 'BaxtorianBathhouses');
+	const maxTripLength = user.calcMaxTripLength('BaxtorianBathhouses');
 	const quantity = Math.floor(maxTripLength / durationPerBaxBath);
 	const duration = quantity * durationPerBaxBath;
 	const bathHouseTier = bathHouseTiers.find(i => stringMatches(i.name, tier)) ?? bathHouseTiers[0];

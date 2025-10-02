@@ -8,7 +8,7 @@ import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { tobMetamorphPets } from '@/lib/data/CollectionsExport.js';
 import { TOBRooms, TOBUniques } from '@/lib/data/tob.js';
 import { trackLoot } from '@/lib/lootTrack.js';
-import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
+import { resolveAttackStyles } from '@/lib/minions/functions/resolveAttackStyles.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { TheatreOfBlood } from '@/lib/simulation/tob.js';
 import type { TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';

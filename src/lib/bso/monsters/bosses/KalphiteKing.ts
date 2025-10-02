@@ -1,3 +1,6 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import { makeKillTable, setCustomMonster } from '@/lib/bso/monsters/setCustomMonster.js';
+
 import { Time } from '@oldschoolgg/toolkit';
 import { LootTable, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
@@ -7,7 +10,6 @@ import type { KillableMonster } from '@/lib/minions/types.js';
 import { SeedTable } from '@/lib/simulation/seedTable.js';
 import { GrimyHerbTable } from '@/lib/simulation/sharedTables.js';
 import { decideLoot } from '@/lib/util/LootDecider.js';
-import setCustomMonster, { makeKillTable } from '@/lib/util/setCustomMonster.js';
 
 export const kalphiteKingLootTable = new LootTable()
 	.tertiary(18, 'Clue scroll (grandmaster)')
@@ -71,8 +73,8 @@ export const KalphiteKingMonster: KillableMonster = {
 	}
 };
 
-setCustomMonster(KalphiteKingMonster.id, 'Kalphite King', kalphiteKingLootTable, Monsters.GeneralGraardor, {
-	id: KalphiteKingMonster.id,
+setCustomMonster(EBSOMonster.KALPHITE_KING, 'Kalphite King', kalphiteKingLootTable, Monsters.GeneralGraardor, {
+	id: EBSOMonster.KALPHITE_KING,
 	name: 'Kalphite King',
 	aliases: ['kk', 'kalphite king']
 });

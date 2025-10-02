@@ -1,8 +1,10 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
+
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID, LootTable, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/CustomMonster.js';
 import { addStatsOfItemsTogether, Gear } from '@/lib/structures/Gear.js';
 
 const solisMinGear = new Gear();
@@ -30,7 +32,7 @@ celesMinGear.equip('Soulreaper axe');
 
 export const Solis: CustomMonster = {
 	isCustom: true,
-	id: 129_124,
+	id: EBSOMonster.SOLIS,
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Solis',
 	aliases: ['solis'],
@@ -102,7 +104,7 @@ export const Solis: CustomMonster = {
 
 export const Celestara: CustomMonster = {
 	isCustom: true,
-	id: 129_125,
+	id: EBSOMonster.CELESTARA,
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Celestara',
 	aliases: ['celestara'],

@@ -150,7 +150,7 @@
 			}
 		],
 		"kc_requirements": {
-			"solis": 1
+			"129124": 1
 		}
 	},
 	{
@@ -4774,7 +4774,6 @@
 		"name": "Malygos",
 		"time_to_finish": 1800000,
 		"table": {},
-		"emoji": "",
 		"wildy": true,
 		"difficulty_rating": 9,
 		"qp_required": 999,
@@ -5716,15 +5715,14 @@
 			"attack": 99,
 			"strength": 105,
 			"magic": 105,
-			"defence": 99
+			"defence": 150
 		},
 		"poh_boosts": {
 			"pool": {
 				"ancient_rejuvenation_pool": 15
 			}
 		},
-		"tame_cant_kill": true,
-		"required_bitfield": 7
+		"tame_cant_kill": true
 	},
 	{
 		"id": 9118,
@@ -9892,7 +9890,7 @@
 		],
 		"required_bitfield": 229,
 		"kc_requirements": {
-			"celestara": 1
+			"129125": 1
 		}
 	},
 	{

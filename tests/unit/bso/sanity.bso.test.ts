@@ -1,4 +1,8 @@
 import { itemsToDelete } from '@/lib/bso/deletedItems.js';
+import { Ignecarus } from '@/lib/bso/monsters/bosses/Ignecarus.js';
+import { KalphiteKingMonster } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
+import { KingGoldemar } from '@/lib/bso/monsters/bosses/KingGoldemar.js';
+import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
 import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/bsoOpenables.js';
 import { calculateMaximumTameFeedingLevelGain } from '@/lib/bso/tameUtil.js';
 
@@ -7,10 +11,6 @@ import { EquipmentSlot, Items, itemID, Monsters, resolveItems } from 'oldschoolj
 import { describe, expect, test } from 'vitest';
 
 import { allPetIDs } from '@/lib/data/CollectionsExport.js';
-import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
-import { KalphiteKingMonster } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
-import KingGoldemar from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';
-import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables } from '@/lib/openables.js';
 import { Gear } from '@/lib/structures/Gear.js';

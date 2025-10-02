@@ -1,12 +1,11 @@
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
+import { KingGoldemar, KingGoldemarLootTable } from '@/lib/bso/monsters/bosses/KingGoldemar.js';
 
 import { percentChance, randArrItem, roll } from '@oldschoolgg/rng';
 import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
-import KingGoldemar, { KingGoldemarLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';
-import { addMonsterXP } from '@/lib/minions/functions/index.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { calcDwwhChance } from '@/lib/structures/Boss.js';
 import type { NewBossOptions } from '@/lib/types/minions.js';
@@ -102,7 +101,7 @@ export const kingGoldemarTask: MinionTask = {
 				loot.multiply(2);
 			}
 			totalLoot.add(loot);
-			await addMonsterXP(user, {
+			await user.addMonsterXP({
 				monsterID: KingGoldemar.id,
 				quantity: 1,
 				duration,

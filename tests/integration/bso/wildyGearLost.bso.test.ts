@@ -26,20 +26,22 @@ test('calculateGearLostOnDeathWilderness', async () => {
 		gear_wildy: gear.raw() as any
 	});
 
-	// @ts-expect-error
-	await monsterTask.run({
-		type: 'MonsterKilling',
-		mi: Monsters.Venenatis.id,
-		q: 10,
-		died: true,
-		pkEncounters: 3,
-		hasWildySupplies: true,
-		userID: user.id,
-		duration: Time.Hour,
-		id: 123,
-		finishDate: Date.now(),
-		channelID: ''
-	} as MonsterActivityTaskOptions);
+	await monsterTask.run(
+		{
+			type: 'MonsterKilling',
+			mi: Monsters.Venenatis.id,
+			q: 10,
+			died: true,
+			pkEncounters: 3,
+			hasWildySupplies: true,
+			userID: user.id,
+			duration: Time.Hour,
+			id: 123,
+			finishDate: Date.now(),
+			channelID: ''
+		} as MonsterActivityTaskOptions,
+		{ user, handleTripFinish: async () => {} }
+	);
 
 	await user.sync();
 	expect(user.gear.wildy.toString()).toEqual("Abyssal cape, Inquisitor's plateskirt, Ignis ring");

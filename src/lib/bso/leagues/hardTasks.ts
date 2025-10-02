@@ -4,8 +4,10 @@ import { fistOfGuthixBuyables } from '@/lib/bso/buyables/fistOfGuthixBuyables.js
 import { stealingCreationBuyables } from '@/lib/bso/buyables/stealingCreationBuyables.js';
 import { divinationEnergies } from '@/lib/bso/divination.js';
 import { dyedItems } from '@/lib/bso/dyedItems.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { leaguesHasCatches, leaguesHasKC, type Task } from '@/lib/bso/leagues/leaguesUtils.js';
 import { calculateChargedItems, calculateTiarasMade } from '@/lib/bso/leagues/stats.js';
+import { Naxxus } from '@/lib/bso/monsters/bosses/Naxxus.js';
 import { NexMonster } from '@/lib/bso/monsters/nex.js';
 import { Inventions } from '@/lib/bso/skills/invention/inventions.js';
 
@@ -42,8 +44,6 @@ import {
 	WildernessDiary
 } from '@/lib/diaries.js';
 import { implings } from '@/lib/implings.js';
-import { MOKTANG_ID } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
-import { Naxxus } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
 import { allThirdAgeItems } from '@/lib/simulation/sharedTables.js';
 import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
 import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
@@ -1062,7 +1062,7 @@ export const hardTasks: Task[] = [
 		id: 2140,
 		name: 'Kill Moktang',
 		has: async args => {
-			return leaguesHasKC(args, { id: MOKTANG_ID }, 1);
+			return leaguesHasKC(args, { id: EBSOMonster.MOKTANG }, 1);
 		}
 	},
 	{

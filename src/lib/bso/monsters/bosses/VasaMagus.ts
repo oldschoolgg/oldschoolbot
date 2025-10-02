@@ -1,8 +1,8 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import { setCustomMonster } from '@/lib/bso/monsters/setCustomMonster.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 
 import { LootTable, Monsters, RareDropTable } from 'oldschooljs';
-
-import setCustomMonster from '@/lib/util/setCustomMonster.js';
 
 export const VasaMagusLootTable = new LootTable()
 	.add('Rune pickaxe', [1, 9])
@@ -23,10 +23,14 @@ export const VasaMagusLootTable = new LootTable()
 	.tertiary(350, 'Tattered robes of Vasa')
 	.tertiary(9, 'Magical artifact');
 
-setCustomMonster(294_819, 'Vasa Magus', VasaMagusLootTable, Monsters.GeneralGraardor, {
-	id: 294_819,
-	name: 'Vasa Magus',
-	aliases: ['vm', 'vasa', 'vasa magus']
-});
-
-export const VasaMagus = Monsters.find(mon => mon.name === 'Vasa Magus')!;
+export const VasaMagus = setCustomMonster(
+	EBSOMonster.VASA_MAGUS,
+	'Vasa Magus',
+	VasaMagusLootTable,
+	Monsters.GeneralGraardor,
+	{
+		id: EBSOMonster.VASA_MAGUS,
+		name: 'Vasa Magus',
+		aliases: ['vm', 'vasa', 'vasa magus']
+	}
+);

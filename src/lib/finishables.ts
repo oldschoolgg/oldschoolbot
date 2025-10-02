@@ -1,5 +1,8 @@
+import { KalphiteKingMonster, kalphiteKingLootTable } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
+import { MoktangLootTable } from '@/lib/bso/monsters/bosses/Moktang.js';
+import { Naxxus, rollNaxxusLoot } from '@/lib/bso/monsters/bosses/Naxxus.js';
+import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 import { NEX_UNIQUE_DROPRATE, NexMonster } from '@/lib/bso/monsters/nex.js';
-import { rollNaxxusLoot } from '@/lib/bso/naxxus/rollNaxxusLoot.js';
 
 import { randArrItem, roll } from '@oldschoolgg/rng';
 import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
@@ -47,13 +50,6 @@ import {
 	wintertodtCL
 } from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
-import {
-	KalphiteKingMonster,
-	kalphiteKingLootTable
-} from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
-import { MoktangLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/Moktang.js';
-import { Naxxus } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
-import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { openShadeChest } from '@/lib/shadesKeys.js';
 import { birdsNestID, treeSeedsNest } from '@/lib/simulation/birdsNest.js';

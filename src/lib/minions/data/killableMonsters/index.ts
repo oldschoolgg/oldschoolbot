@@ -1,8 +1,5 @@
-import {
-	bsoAutocompleteMonsters,
-	bsoEffectiveMonsters,
-	bsoKillableMonsters
-} from '@/lib/bso/monsters/bsoKillableMonsters.js';
+import { bsoKillableMonsters } from '@/lib/bso/monsters/bsoKillableMonsters.js';
+import { bsoAutocompleteMonsters, bsoEffectiveMonsters } from '@/lib/bso/monsters/bsoMonstersMisc.js';
 
 import { stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, deepResolveItems, EMonster, itemID, Monsters, NIGHTMARES_HP, resolveItems } from 'oldschooljs';

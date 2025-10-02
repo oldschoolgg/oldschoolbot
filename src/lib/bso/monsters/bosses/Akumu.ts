@@ -1,10 +1,11 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID, LootTable, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/CustomMonster.js';
 import { UncutGemTable } from '@/lib/simulation/sharedTables.js';
 
 export const AkumuLootTable = new LootTable()
@@ -24,7 +25,7 @@ export const AkumuLootTable = new LootTable()
 
 export const Akumu: CustomMonster = {
 	isCustom: true,
-	id: 93_135,
+	id: EBSOMonster.AKUMU,
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Akumu',
 	aliases: ['akumu'],
@@ -81,6 +82,6 @@ export const Akumu: CustomMonster = {
 		}
 	],
 	kcRequirements: {
-		Solis: 1
+		[EBSOMonster.SOLIS]: 1
 	}
 };

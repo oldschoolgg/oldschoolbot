@@ -1,10 +1,11 @@
+import type { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+
 import type { GearSetupType, XpGainSource } from '@prisma/client';
 import type { ArrayItemsResolved, Bank, Item, ItemBank, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
 import type { OffenceGearStat } from 'oldschooljs/gear';
 
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import type { BitField } from '@/lib/constants.js';
-import type { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import type { QuestID } from '@/lib/minions/data/quests.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { POHBoosts } from '@/lib/poh/index.js';
@@ -117,7 +118,7 @@ export interface KillableMonster {
 	tameCantKill?: true;
 	customRequirement?: (user: MUser) => Promise<string | null>;
 	setupsUsed?: GearSetupType[];
-	kcRequirements?: Partial<Record<keyof typeof BSOMonsters, number>>;
+	kcRequirements?: Partial<Record<EBSOMonster, number>>;
 }
 /*
  * Monsters will have an array of Consumables
@@ -144,19 +145,6 @@ export interface AddXpParams {
 	artificial?: boolean;
 	source?: XpGainSource;
 	masterCapeBoost?: boolean;
-}
-
-export interface AddMonsterXpParams {
-	monsterID: number;
-	quantity: number;
-	duration: number;
-	isOnTask: boolean;
-	taskQuantity: number | null;
-	minimal?: boolean;
-	usingCannon?: boolean;
-	cannonMulti?: boolean;
-	burstOrBarrage?: number;
-	superiorCount?: number;
 }
 
 export interface BlowpipeData {

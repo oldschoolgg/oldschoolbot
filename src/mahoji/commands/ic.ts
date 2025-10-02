@@ -1,5 +1,9 @@
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
 import { DragonTable } from '@/lib/bso/grandmasterClue.js';
+import { Ignecarus } from '@/lib/bso/monsters/bosses/Ignecarus.js';
+import { kalphiteKingLootTable } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
+import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
+import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 import { nexLootTable } from '@/lib/bso/monsters/nex.js';
 import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/bsoOpenables.js';
 import { MysteryBoxes, PMBTable } from '@/lib/bso/openables/tables.js';
@@ -11,11 +15,6 @@ import { Bank, type ItemBank, Items, itemID, LootTable, resolveItems } from 'old
 
 import { BitField } from '@/lib/constants.js';
 import { itemContractResetTime } from '@/lib/MUser.js';
-import { AbyssalDragonLootTable } from '@/lib/minions/data/killableMonsters/custom/AbyssalDragon.js';
-import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
-import { kalphiteKingLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
-import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus.js';
-import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import { allThirdAgeItems, runeAlchablesTable } from '@/lib/simulation/sharedTables.js';
 import type { MInteraction } from '@/lib/structures/MInteraction.js';
 import { LampTable } from '@/lib/xpLamps.js';
@@ -38,10 +37,10 @@ const contractTable = new LootTable()
 			.add('Clue scroll (grandmaster)', 1, 2)
 	);
 
-const itemContractItemsSet = new Set([
+export const itemContractItemsSet = new Set([
 	...combinedTmbUmbEmbTables,
 	...kalphiteKingLootTable.allItems.filter(i => i !== itemID('Baby kalphite king')),
-	...AbyssalDragonLootTable.allItems,
+	// ...AbyssalDragonLootTable.allItems,
 	...VasaMagus.allItems,
 	...Ignecarus.allItems.filter(i => i !== itemID('Dragon egg')),
 	...nexLootTable.allItems,

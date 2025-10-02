@@ -1,9 +1,10 @@
+import { Ignecarus } from '@/lib/bso/monsters/bosses/Ignecarus.js';
+
 import { channelIsSendable, formatDuration, Time } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { dwarvenOutfit } from '@/lib/data/CollectionsExport.js';
-import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
 import { BossInstance } from '@/lib/structures/Boss.js';
 import { Gear } from '@/lib/structures/Gear.js';
 

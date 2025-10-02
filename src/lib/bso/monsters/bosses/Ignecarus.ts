@@ -1,7 +1,9 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import { setCustomMonster } from '@/lib/bso/monsters/setCustomMonster.js';
+
 import { LootTable, Monsters, resolveItems } from 'oldschooljs';
 
 import { runeAlchablesTable } from '@/lib/simulation/sharedTables.js';
-import setCustomMonster from '@/lib/util/setCustomMonster.js';
 
 const barTable = new LootTable()
 	.add('Steel bar', 500, 2)
@@ -35,8 +37,8 @@ export const IgnecarusLootTable = new LootTable()
 
 export const IgnecarusNotifyDrops = resolveItems(['Ignis ring', 'Ignecarus dragonclaw', 'Dragon egg']);
 
-setCustomMonster(69_420, 'Ignecarus', IgnecarusLootTable, Monsters.GeneralGraardor, {
-	id: 69_420,
+setCustomMonster(EBSOMonster.IGNECARUS, 'Ignecarus', IgnecarusLootTable, Monsters.GeneralGraardor, {
+	id: EBSOMonster.IGNECARUS,
 	name: 'Ignecarus',
 	aliases: ['ig', 'igne', 'ignecarus']
 });

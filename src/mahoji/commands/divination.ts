@@ -13,7 +13,6 @@ import { Bank } from 'oldschooljs';
 
 import { mentionCommand } from '@/lib/discord/index.js';
 import type { MemoryHarvestOptions } from '@/lib/types/minions.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { assert } from '@/lib/util/logError.js';
 import { memoryHarvestResult, totalTimePerRound } from '@/tasks/minions/bso/memoryHarvestActivity.js';
 
@@ -251,7 +250,7 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 			}
 			const boosts: string[] = [];
 
-			let maxTripLength = calcMaxTripLength(user, 'MemoryHarvest');
+			let maxTripLength = user.calcMaxTripLength('MemoryHarvest');
 
 			if (user.hasEquipped('Jar of memories')) {
 				maxTripLength += Time.Minute * 7;

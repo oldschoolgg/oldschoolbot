@@ -1,4 +1,4 @@
-import { KING_GOLDEMAR_GUARD_ID } from '@/lib/bso/bsoConstants.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 
 import { LootTable, Monsters } from 'oldschooljs';
 
@@ -30,7 +30,7 @@ export const bsoStealables: Stealable[] = [
 		xp: 95.4,
 		aliases: ['royal dwarven guard'],
 		table: new LootTable().every('Coins', [985, 1485]).tertiary(100_000, 'Kebab'),
-		id: KING_GOLDEMAR_GUARD_ID,
+		id: EBSOMonster.KING_GOLDEMAR_GUARD,
 		stunTime: 5,
 		stunDamage: 9,
 		slope: 0.488_13,

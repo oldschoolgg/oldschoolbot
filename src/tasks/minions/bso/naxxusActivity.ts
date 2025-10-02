@@ -1,9 +1,7 @@
-import { rollNaxxusLoot } from '@/lib/bso/naxxus/rollNaxxusLoot.js';
+import { Naxxus, rollNaxxusLoot } from '@/lib/bso/monsters/bosses/Naxxus.js';
 
 import { trackLoot } from '@/lib/lootTrack.js';
-import { Naxxus } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
-import { addMonsterXP } from '@/lib/minions/functions/index.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
@@ -14,7 +12,7 @@ export const naxxusTask: MinionTask = {
 
 		const loot = rollNaxxusLoot(quantity, user.cl);
 
-		const xpStr = await addMonsterXP(user, {
+		const xpStr = await user.addMonsterXP({
 			monsterID: Naxxus.id,
 			quantity,
 			duration,

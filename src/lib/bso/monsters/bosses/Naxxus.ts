@@ -1,9 +1,40 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import { makeKillTable, setCustomMonster } from '@/lib/bso/monsters/setCustomMonster.js';
+
+import { roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
-import { LootTable, Monsters, resolveItems } from 'oldschooljs';
+import { Bank, LootTable, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import type { KillableMonster } from '@/lib/minions/types.js';
-import setCustomMonster, { makeKillTable } from '@/lib/util/setCustomMonster.js';
+export function rollNaxxusLoot(quantity = 1, cl?: Bank) {
+	const loot = new Bank();
+	loot.add(NaxxusLootTable.roll(quantity));
+
+	// Handle uniques => Don't give duplicates until log full
+	const uniqueChance = 150;
+	// Add new uniques to a dummy CL to support multiple uniques per trip.
+	const tempClWithNewUniques = cl ? cl.clone() : new Bank();
+	for (let i = 0; i < quantity; i++) {
+		if (roll(uniqueChance)) {
+			const uniques = [
+				{ name: 'Dark crystal', weight: 2 },
+				{ name: 'Abyssal gem', weight: 3 },
+				{ name: 'Tattered tome', weight: 2 },
+				{ name: 'Spellbound ring', weight: 3 }
+			];
+
+			const filteredUniques = uniques.filter(u => !tempClWithNewUniques.has(u.name));
+			const uniqueTable = filteredUniques.length === 0 ? uniques : filteredUniques;
+			const lootTable = new LootTable();
+			uniqueTable.map(u => lootTable.add(u.name, 1, u.weight));
+
+			const unique = lootTable.roll();
+			tempClWithNewUniques.add(unique);
+			loot.add(unique);
+		}
+	}
+	return loot;
+}
 
 const runes = new LootTable()
 	.add('Air rune', [5000, 15_000])
@@ -79,8 +110,8 @@ export const NaxxusLootTableFinishable = NaxxusLootTable.clone()
 
 export const NAXXUS_HP = 3900;
 
-export const Naxxus: KillableMonster = {
-	id: 294_820,
+export const Naxxus = {
+	id: EBSOMonster.NAXXUS,
 	name: 'Naxxus',
 	aliases: ['nax', 'naxx', 'naxus', 'naxxus'],
 	timeToFinish: Time.Minute * 30,
@@ -113,8 +144,8 @@ export const Naxxus: KillableMonster = {
 	}
 };
 
-setCustomMonster(Naxxus.id, 'Naxxus', NaxxusLootTableFinishable, Monsters.GeneralGraardor, {
-	id: Naxxus.id,
+setCustomMonster(EBSOMonster.NAXXUS, 'Naxxus', NaxxusLootTableFinishable, Monsters.GeneralGraardor, {
+	id: EBSOMonster.NAXXUS,
 	name: 'Naxxus',
 	aliases: ['naxxus', 'naxx']
 });

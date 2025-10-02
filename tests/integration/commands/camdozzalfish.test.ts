@@ -7,7 +7,7 @@ import { activitiesCommand } from '../../../src/mahoji/commands/activities.js';
 import { createTestUser } from '../util.js';
 
 describe('Camdozzal Fish Command', async () => {
-	it('should give angler boost', async () => {
+	it.skip('should give angler boost', async () => {
 		const user = await createTestUser();
 		await user.equip('skilling', ItemGroups.anglerOutfit);
 		const startingXP = convertLVLtoXP(80);

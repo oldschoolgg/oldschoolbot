@@ -6,7 +6,6 @@ import { Bank, Items } from 'oldschooljs';
 import { type Eatable, Eatables } from '@/lib/data/eatables.js';
 import { getRealHealAmount } from '@/lib/minions/functions/getUserFoodFromBank.js';
 import type { KibbleOptions } from '@/lib/types/minions.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export const kibbleCommand: OSBMahojiCommand = {
 	name: 'kibble',
@@ -90,10 +89,10 @@ export const kibbleCommand: OSBMahojiCommand = {
 			timePer = Math.floor(timePer / 2);
 		}
 		const duration = timePer * options.quantity;
-		const maxTripLength = calcMaxTripLength(user, 'KibbleMaking');
-		if (duration > calcMaxTripLength(user, 'KibbleMaking')) {
+		const maxTripLength = user.calcMaxTripLength('KibbleMaking');
+		if (duration > user.calcMaxTripLength('KibbleMaking')) {
 			return `The maximum amount of ${kibble.item.name} you can create in ${formatDuration(
-				calcMaxTripLength(user, 'KibbleMaking')
+				user.calcMaxTripLength('KibbleMaking')
 			)} is ${Math.floor(maxTripLength / timePer)}.`;
 		}
 

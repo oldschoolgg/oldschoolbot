@@ -1,6 +1,8 @@
 import { calcTotalLevel } from '@/lib/bso/bsoUtil.js';
 import { leaguesHasCatches, leaguesHasKC, type Task } from '@/lib/bso/leagues/leaguesUtils.js';
 import { calculateTiarasMade } from '@/lib/bso/leagues/stats.js';
+import { Naxxus } from '@/lib/bso/monsters/bosses/Naxxus.js';
+import { SunMoonMonsters } from '@/lib/bso/monsters/SunMoon.js';
 import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
 import { TameSpeciesID, tameFeedableItems } from '@/lib/bso/tames.js';
 
@@ -38,8 +40,6 @@ import {
 	WildernessDiary
 } from '@/lib/diaries.js';
 import { implings } from '@/lib/implings.js';
-import { Naxxus } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
-import { SunMoonMonsters } from '@/lib/minions/data/killableMonsters/custom/SunMoon.js';
 import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
 import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
 import { ashes } from '@/lib/skilling/skills/prayer.js';

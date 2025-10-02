@@ -1,13 +1,15 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
+
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable, Monsters, RareDropTable } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/CustomMonster.js';
 import { GrimyHerbTable, lowRuneHighAdamantTable, runeAlchablesTable } from '@/lib/simulation/sharedTables.js';
 
 export const SuperiorTormentedDemon: CustomMonster = {
 	isCustom: true,
-	id: 941_944,
+	id: EBSOMonster.SUPERIOR_TORMENTED_DEMON,
 	name: 'Superior Tormented Demon',
 	aliases: ['superior tormented demon', 'std'],
 	timeToFinish: Time.Minute * 17,

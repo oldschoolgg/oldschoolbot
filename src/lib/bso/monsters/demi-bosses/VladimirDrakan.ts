@@ -1,5 +1,7 @@
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
 
 import { randomVariation, roll, shuffleArr } from '@oldschoolgg/rng';
 import { Time, uniqueArr } from '@oldschoolgg/toolkit';
@@ -7,7 +9,6 @@ import { Bank, LootTable, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { vladDrakanCL } from '@/lib/data/CollectionsExport.js';
-import type { CustomMonster } from '@/lib/minions/data/killableMonsters/custom/CustomMonster.js';
 import { runeWeaponTable } from '@/lib/simulation/sharedTables.js';
 
 const JewelleryTable = new LootTable()
@@ -55,7 +56,7 @@ const table = new LootTable()
 
 export const VladimirDrakan: CustomMonster = {
 	isCustom: true,
-	id: 291_242,
+	id: EBSOMonster.VLADIMIR_DRAKAN,
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Vladimir Drakan',
 	aliases: ['vladimir drakan', 'vd'],

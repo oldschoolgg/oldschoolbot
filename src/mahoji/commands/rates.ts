@@ -36,7 +36,6 @@ import { HunterTechniqueEnum } from '@/lib/skilling/types.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { BathhouseTaskOptions } from '@/lib/types/minions.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { PeakTier } from '@/lib/util/peaks.js';
 import { calculateHunterInput } from '@/mahoji/commands/hunt.js';
 import { calculateMiningInput } from '@/mahoji/commands/mine.js';
@@ -724,7 +723,7 @@ ${zygomiteFarmingSource
 			for (const floor of [1, 2, 3, 4, 5, 6, 7]) {
 				for (const hasPortent of [true, false]) {
 					const dungeonLength = Time.Minute * 5 * (floor / 2);
-					const quantity = Math.floor(calcMaxTripLength(user, 'Dungeoneering') / dungeonLength);
+					const quantity = Math.floor(user.calcMaxTripLength('Dungeoneering') / dungeonLength);
 					const duration = quantity * dungeonLength;
 					const dungeoneeringLevel = 120;
 					const goraShardChance = calcGorajanShardChance({

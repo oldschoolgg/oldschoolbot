@@ -1,6 +1,7 @@
+import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
+
 import { type Item, Items, type Monster, Monsters } from 'oldschooljs';
 
-import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
 import { allSlayerTasks } from '@/lib/slayer/tasks/index.js';
 

@@ -1,6 +1,10 @@
-import { clAdjustedDroprate, getMonster } from '@/lib/bso/bsoUtil.js';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+import { VasaMagus, VasaMagusLootTable } from '@/lib/bso/monsters/bosses/VasaMagus.js';
+import { Malygos } from '@/lib/bso/monsters/demi-bosses/Malygos.js';
+import { SeaKraken } from '@/lib/bso/monsters/demi-bosses/SeaKraken.js';
+import { Treebeard } from '@/lib/bso/monsters/demi-bosses/Treebeard.js';
 
 import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { objectEntries } from '@oldschoolgg/toolkit';
@@ -9,9 +13,7 @@ import { Bank, Items, Monsters, resolveItems } from 'oldschooljs';
 import { kittens } from '@/lib/growablePets.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { bossKillables } from '@/lib/minions/data/killableMonsters/bosses/index.js';
-import { VasaMagus, VasaMagusLootTable } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
-import { addMonsterXP } from '@/lib/minions/functions/index.js';
 import type { NewBossOptions } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
@@ -26,9 +28,9 @@ const vasaBosses = [
 	Monsters.Kraken,
 	Monsters.Sarachnis,
 	Monsters.ThermonuclearSmokeDevil,
-	getMonster('Malygos'),
-	getMonster('Treebeard'),
-	getMonster('Sea Kraken'),
+	Malygos,
+	Treebeard,
+	SeaKraken,
 	...bossKillables.map(b => b.id).map(id => Monsters.get(id)!)
 ];
 
@@ -55,7 +57,11 @@ export const vasaTask: MinionTask = {
 			const mon = randArrItem(vasaBosses);
 			const qty = randInt(1, 3);
 			lootOf[mon.name] = (lootOf[mon.name] ?? 0) + qty;
-			loot.add(mon.kill(qty, {}));
+			if ('table' in mon) {
+				loot.add(mon.table.roll(qty));
+			} else if ('kill' in mon && mon.kill) {
+				loot.add(mon.kill(qty, {}));
+			}
 		}
 
 		let resultStr = `${user}, ${
@@ -79,7 +85,7 @@ export const vasaTask: MinionTask = {
 			)} jumped in the way to save you! Strangely, it didn't hurt them at all.**\n`;
 		}
 
-		const xpRes = await addMonsterXP(user, {
+		const xpRes = await user.addMonsterXP({
 			monsterID: VasaMagus.id,
 			quantity,
 			duration,

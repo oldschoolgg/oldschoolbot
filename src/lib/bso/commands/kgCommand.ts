@@ -1,8 +1,9 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+
 import { channelIsSendable, formatDuration, Time } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Bank, toKMB } from 'oldschooljs';
 
-import KingGoldemar from '@/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar.js';
 import { BossInstance, gpCostPerKill } from '@/lib/structures/Boss.js';
 import { Gear } from '@/lib/structures/Gear.js';
 
@@ -20,7 +21,7 @@ export async function kgCommand(
 	const instance = new BossInstance({
 		interaction,
 		leader: user,
-		id: KingGoldemar.id,
+		id: EBSOMonster.KING_GOLDEMAR,
 		baseDuration: Time.Minute * 120,
 		skillRequirements: {
 			attack: 105,

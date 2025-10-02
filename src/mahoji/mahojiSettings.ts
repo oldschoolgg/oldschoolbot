@@ -1,3 +1,5 @@
+import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
+
 import { evalMathExpression, notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
 import type { GearSetupType } from '@prisma/client';
 import { bold } from 'discord.js';
@@ -6,7 +8,6 @@ import { GearStat } from 'oldschooljs/gear';
 
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { userhasDiaryTier } from '@/lib/diaries.js';
-import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import type { Consumable, KillableMonster } from '@/lib/minions/types.js';
 import type { Rune } from '@/lib/skilling/skills/runecraft.js';

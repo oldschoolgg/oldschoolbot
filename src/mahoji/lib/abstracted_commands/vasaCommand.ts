@@ -1,9 +1,10 @@
+import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
+
 import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, sumArr, Time } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, type InteractionReplyOptions, type TextChannel } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus.js';
 import { BossInstance } from '@/lib/structures/Boss.js';
 import { Gear } from '@/lib/structures/Gear.js';
 

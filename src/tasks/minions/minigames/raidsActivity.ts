@@ -11,7 +11,7 @@ import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '@/lib/data/CollectionsExport.js';
 import { createTeam } from '@/lib/data/cox.js';
 import { trackLoot } from '@/lib/lootTrack.js';
-import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
+import { resolveAttackStyles } from '@/lib/minions/functions/resolveAttackStyles.js';
 import type { RaidsOptions } from '@/lib/types/minions.js';
 
 interface RaidResultUser {

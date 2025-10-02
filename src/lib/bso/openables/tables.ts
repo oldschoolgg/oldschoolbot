@@ -1,7 +1,6 @@
 import { LootTable, TreeHerbSeedTable } from 'oldschooljs';
 
 import { allPetsCL } from '@/lib/data/CollectionsExport.js';
-import { FishTable } from '@/lib/minions/data/killableMonsters/custom/SeaKraken.js';
 import { RuneTable } from '@/lib/simulation/seedTable.js';
 import { ExoticSeedsTable } from '@/lib/simulation/sharedTables.js';
 import { LampTable } from '@/lib/xpLamps.js';
@@ -82,7 +81,6 @@ const baseTGBTable = new LootTable()
 	.add('Clue scroll (elite)', [4, 9], 2)
 	.add('Clue scroll (master)', [2, 5], 2)
 	.add('Manta ray', [100, 600], 2)
-	.add(FishTable, [1, 15])
 	.add(TreeHerbSeedTable, [1, 15])
 	.add('Prayer potion(4)', [5, 40])
 	.add('Saradomin brew(4)', [5, 40])
