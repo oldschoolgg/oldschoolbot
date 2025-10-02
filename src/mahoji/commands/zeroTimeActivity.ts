@@ -189,7 +189,14 @@ function parseAlchItemInput(
 		return { itemID: null };
 	}
 
-	const osItem = Items.get(itemInput);
+	const trimmedInput = itemInput.trim();
+	if (trimmedInput.length === 0) {
+		return { itemID: null };
+	}
+	const numericID = Number(trimmedInput);
+	const lookupValue = Number.isInteger(numericID) && numericID.toString() === trimmedInput ? numericID : trimmedInput;
+
+	const osItem = Items.get(lookupValue);
 	if (!osItem) {
 		return { itemID: null, error: 'That is not a valid item to alch.' };
 	}

@@ -173,7 +173,7 @@ ${prefix} alching ${alchResult.quantity}x ${alchResult.item.name} while training
 		if (infoMessages.length > 0) {
 			response += `
 
-${infoMessages.join('')}`;
+${infoMessages.join('\n')}`;
 		}
 
 		const zeroTimePreferenceRole = fletchResult?.preference.role ?? alchResult?.preference.role ?? null;
