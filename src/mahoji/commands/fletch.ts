@@ -113,7 +113,7 @@ export const fletchCommand: OSBMahojiCommand = {
 		return `${user.minionName} is now Fletching ${quantity}${sets} ${
 			fletchable.name
 		}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.${
-			hasFletchingKnife ? '\n\n**Bonus**\n**Fletching knife:** -1 tick per item' : ''
+			hasFletchingKnife ? '\n\n**Fletching knife bonus:** -1 tick per item' : ''
 		}`;
 	}
 };

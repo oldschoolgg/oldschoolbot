@@ -375,7 +375,7 @@ export const quests: Quest[] = [
 			construction: 3000
 		},
 		calcTime: (user: MUser) => {
-			let duration = Time.Minute * 12;
+			let duration = Time.Minute * 18;
 			if (user.combatLevel < 65) {
 				duration += Time.Minute * 3;
 			}

@@ -121,22 +121,23 @@ const dirtyArrowTableLevel90Plus = new LootTable()
 	.add('Dragon arrowtips', 1, 23);
 
 export const preRollTable = new LootTable()
-	.add('Bow string spool', [3, 6], 5)
-	.add('Fletching knife', [3, 6], 3)
-	.add('Greenman mask', [3, 6], 2);
+	.add('Bow string spool', 1, 5)
+	.add('Fletching knife', 1, 3)
+	.add('Greenman mask', 1, 2);
 
-const offeringsTable = () => {
+const offeringsTable = (forestryKit: boolean) => {
 	const table = new LootTable()
 		.add('Dirty arrowtips', [26, 32], 16)
 		.add('Ent branch', 1, 13)
 		.add('Bale of flax', [5, 6], 10)
 		.add('Blessed bone shards', [70, 90], 7)
-		.add('Anima-infused bark', [70, 90], 5)
 		.add('Feather', [400, 500], 3)
 		.add('Yew roots', [3, 4], 2)
 		.add('Magic roots', [2, 3], 2)
 		.add('Willow roots', [3, 4], 1)
 		.add('Maple roots', [3, 4], 1);
+		
+	if (forestryKit) table.add('Anima-infused bark', [70, 90], 5);
 
 	clueTiers.forEach(([tier, rate]) => {
 		table.tertiary(rate, createClueNest(tier));
@@ -145,11 +146,11 @@ const offeringsTable = () => {
 	return table;
 };
 
-export function rummageOfferings(fletchLvl: number): Bank {
+export function rummageOfferings(fletchLvl: number, forestryKit: boolean): Bank {
 	const loot = new Bank();
 	const lootTable = new LootTable();
 
-	lootTable.add(offeringsTable());
+	lootTable.add(offeringsTable(forestryKit));
 
 	const lootByLevel: [number, [LootTable, number]][] = [
 		[50, [OfferingsSeedTableLevelUnder50, 1]],

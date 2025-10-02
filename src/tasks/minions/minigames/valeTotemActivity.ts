@@ -27,6 +27,7 @@ export const valeTotemsTask: MinionTask = {
 		});
 
 		const fletchingLvl = user.skillLevel('fletching');
+		const hasForestryKit = user.hasEquippedOrInBank('Forestry kit');
 
 		const loot = new Bank();
 		for (let i = 0; i < rewards; i++) {
@@ -34,7 +35,7 @@ export const valeTotemsTask: MinionTask = {
 				loot.add(preRollTable.roll());
 				continue;
 			}
-			loot.add(rummageOfferings(fletchingLvl));
+			loot.add(rummageOfferings(fletchingLvl, hasForestryKit));
 		}
 
 		// Dirty arrowtips and it's logic
@@ -44,7 +45,7 @@ export const valeTotemsTask: MinionTask = {
 
 		if (hasDirtyArrowtips) {
 			dirtyArrowTipCount = loot.amount(DIRTY_ARROWTIPS_ID);
-			loot.remove(DIRTY_ARROWTIPS_ID);
+			loot.remove(DIRTY_ARROWTIPS_ID, dirtyArrowTipCount);
 			for (let i = 0; i < dirtyArrowTipCount; i++) {
 				loot.add(cleanDirtyArrows(fletchingLvl));
 			}

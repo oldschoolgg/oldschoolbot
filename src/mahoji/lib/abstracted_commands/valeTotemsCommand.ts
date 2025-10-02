@@ -325,12 +325,12 @@ export async function valeTotemsBuyCommand(
 
 	const cost = quantity * shopItem.valeResearchPoints;
 	if (cost > currentResearchPoints) {
-		return `You don't have enough Vale Research points to buy ${quantity.toLocaleString()}x ${shopItem.name} (${
+		return `${user.minionName} doesn't have enough Vale Research points to buy **${quantity.toLocaleString()}x ${shopItem.name}** (${
 			shopItem.valeResearchPoints
-		} Vale Research points each).\nYou have ${currentResearchPoints} Vale Research points.\n${
+		} Vale Research points each). ${user.minionName} currently has **${currentResearchPoints}** Vale Research points.${
 			currentResearchPoints < shopItem.valeResearchPoints
-				? "You don't have enough Vale Research points for any of this item."
-				: `You only have enough for ${Math.floor(currentResearchPoints / shopItem.valeResearchPoints).toLocaleString()}`
+				? `\n\n${user.minionName} doesn't have enough Vale Research points for any of this item.`
+				: `\n\n${user.minionName} only has enough points for **${Math.floor(currentResearchPoints / shopItem.valeResearchPoints).toLocaleString()}x ${shopItem.name}**`
 		}`;
 	}
 
@@ -410,5 +410,5 @@ export async function valeTotemsSellCommand(
 		itemsToRemove: shopItem.output.multiply(quantity)
 	});
 
-	return `${user.minionName} successfully sold **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.valeResearchPoints * quantity).toLocaleString()} Vale Research points.\nYou now have ${newPoints} Vale Research points.`;
+	return `${user.minionName} successfully sold **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.valeResearchPoints * quantity).toLocaleString()} Vale Research points.\n${user.minionName} now has ${newPoints} Vale Research points.`;
 }
