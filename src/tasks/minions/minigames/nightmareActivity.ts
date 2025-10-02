@@ -5,7 +5,6 @@ import { BitField } from '@/lib/constants.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
-import { addMonsterXP } from '@/lib/minions/functions/index.js';
 import type { NightmareActivityTaskOptions } from '@/lib/types/minions.js';
 import { getNightmareGearStats } from '@/lib/util/getNightmareGearStats.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -45,7 +44,7 @@ export const nightmareTask: MinionTask = {
 			}
 		}
 
-		const xpRes = await addMonsterXP(user, {
+		const xpRes = await user.addMonsterXP({
 			monsterID: EMonster.NIGHTMARE,
 			quantity: Math.ceil(quantity / team.length),
 			duration,

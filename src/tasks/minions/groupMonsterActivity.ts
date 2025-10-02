@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
-import { addMonsterXP } from '@/lib/minions/functions/index.js';
 import isImportantItemForMonster from '@/lib/minions/functions/isImportantItemForMonster.js';
 import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 
@@ -33,7 +32,7 @@ export const groupoMonsterTask: MinionTask = {
 		for (const [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await mUserFetch(userID).catch(noOp);
 			if (!user) continue;
-			await addMonsterXP(user, {
+			await user.addMonsterXP({
 				monsterID,
 				quantity: Math.ceil(quantity / users.length),
 				duration,

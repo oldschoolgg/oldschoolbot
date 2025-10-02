@@ -30,6 +30,7 @@ import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
 import { marketPriceOfBank } from '@/lib/marketPrices.js';
 import backgroundImages from '@/lib/minions/data/bankBackgrounds.js';
 import type { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
+import { type AddMonsterXpParams, addMonsterXPRaw } from '@/lib/minions/functions/addMonsterXPRaw.js';
 import { blowpipeDarts, validateBlowpipeData } from '@/lib/minions/functions/blowpipeCommand.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import type { AddXpParams, BlowpipeData, ClueBank } from '@/lib/minions/types.js';
@@ -1097,6 +1098,12 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 
 	calcMaxTripLength(activity: activity_type_enum) {
 		return calcMaxTripLength(this, activity);
+	}
+
+	async addMonsterXP(params: AddMonsterXpParams) {
+		const res = addMonsterXPRaw({ ...params, attackStyles: this.getAttackStyles() });
+		const result = await this.addXPBank(res);
+		return `**XP Gains:** ${result}`;
 	}
 }
 declare global {
