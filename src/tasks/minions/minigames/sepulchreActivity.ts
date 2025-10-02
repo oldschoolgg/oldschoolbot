@@ -6,8 +6,8 @@ import { openCoffin, sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
 import { calculateBryophytaRuneSavings } from '@/lib/util/bryophytaRuneSavings.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const sepulchreTask: MinionTask = {
 	type: 'Sepulchre',

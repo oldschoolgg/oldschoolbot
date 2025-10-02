@@ -3,9 +3,15 @@ import { bold } from 'discord.js';
 
 import { quests } from '@/lib/minions/data/quests.js';
 import { courses } from '@/lib/skilling/skills/agility.js';
-import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
-import { attemptZeroTimeActivity, describeZeroTimePreference, getZeroTimeActivityPreferences, getZeroTimePreferenceLabel, type ZeroTimeActivityResult } from '@/lib/util/zeroTimeActivity.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
+import {
+	attemptZeroTimeActivity,
+	describeZeroTimePreference,
+	getZeroTimeActivityPreferences,
+	getZeroTimePreferenceLabel,
+	type ZeroTimeActivityResult
+} from '@/lib/util/zeroTimeActivity.js';
+import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 
 const AGILITY_FLETCH_ITEMS_PER_HOUR = 15_000;
 const AGILITY_ALCHES_PER_HOUR = Time.Hour / timePerAlchAgility;
@@ -151,7 +157,7 @@ export const lapsCommand: OSBMahojiCommand = {
 
 		if (alchResult) {
 			await user.removeItemsFromBank(alchResult.bankToRemove);
-			
+
 			const prefix =
 				alchResult.preference.role === 'fallback'
 					? 'Using fallback preference, your minion is'
@@ -165,7 +171,6 @@ export const lapsCommand: OSBMahojiCommand = {
 		}
 
 		const zeroTimePreferenceRole = fletchResult?.preference.role ?? alchResult?.preference.role ?? null;
-
 
 		await ActivityManager.startTrip<AgilityActivityTaskOptions>({
 			courseID: course.id,
