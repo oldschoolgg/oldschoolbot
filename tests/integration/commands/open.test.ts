@@ -2,13 +2,12 @@ import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { openCommand } from '../../../src/mahoji/commands/open.js';
-import { randomMock } from '../setup.js';
-import { createTestUser, mockClient } from '../util.js';
+import { createTestUser, mockClient, mockMathRandom } from '../util.js';
 
 describe('Open Command', async () => {
 	await mockClient();
 	test('Open with no quantity', async () => {
-		randomMock();
+		mockMathRandom(0.1);
 		const user = await createTestUser();
 		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 100) });
 		const result = await user.runCommand(openCommand, { name: 'reward casket (beginner)' });
@@ -27,7 +26,7 @@ describe('Open Command', async () => {
 	});
 
 	test('Open with quantity', async () => {
-		randomMock();
+		mockMathRandom(0.1);
 		const user = await createTestUser();
 		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 100) });
 		await user.runCommand(openCommand, { name: 'reward casket (beginner)', quantity: 10 });

@@ -8,7 +8,6 @@ import type { KillableMonster } from '@/lib/minions/types.js';
 import type { ChargeBank } from '@/lib/structures/Bank.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { assert } from '@/lib/util/logError.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export interface DegradeableItem {
 	item: Item;
@@ -390,7 +389,7 @@ export async function degradeItem({
 		});
 		const itemsDeleted = new Bank().add(item.id);
 
-		updateBankSetting('degraded_items_cost', itemsDeleted);
+		await ClientSettings.updateBankSetting('degraded_items_cost', itemsDeleted);
 
 		if (hasEquipped) {
 			// Get the users equipped item.

@@ -1,13 +1,9 @@
 import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { getUsersLMSStats } from '@/tasks/minions/minigames/lmsActivity.js';
 
 export async function lmsCommand(
@@ -18,7 +14,7 @@ export async function lmsCommand(
 	},
 	user: MUser,
 	channelID: string,
-	interaction: ChatInputCommandInteraction
+	interaction: MInteraction
 ) {
 	const stats = await getUsersLMSStats(user);
 
@@ -47,7 +43,7 @@ export async function lmsCommand(
 			return `You are not worthy! You need to have won at least ${itemToBuy.wins} games to buy the ${itemToBuy.item.name}.`;
 		}
 		const loot = new Bank().add(itemToBuy.item.id, quantity * (itemToBuy.quantity ?? 1));
-		await handleMahojiConfirmation(interaction, `Are you sure you want to spend ${cost} points on buying ${loot}?`);
+		await interaction.confirmation(`Are you sure you want to spend ${cost} points on buying ${loot}?`);
 		if (!cost) {
 			await user.transactItems({
 				collectionLog: true,
@@ -76,13 +72,13 @@ export async function lmsCommand(
 		return 'Your minion must not be busy to do an LMS trip';
 	}
 	const durationPerGame = Time.Minute * 5.5;
-	const quantity = Math.floor(calcMaxTripLength(user, 'LastManStanding') / durationPerGame);
+	const quantity = Math.floor(user.calcMaxTripLength('LastManStanding') / durationPerGame);
 	const duration = randomVariation(quantity * durationPerGame, 5);
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'lms',
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration,
 		type: 'LastManStanding',
 		quantity

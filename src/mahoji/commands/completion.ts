@@ -1,6 +1,6 @@
 import { generateAllCompCapeTasksList } from '@/lib/bso/compCape.js';
 
-import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
+import { AttachmentBuilder } from 'discord.js';
 
 export const completionCommand: OSBMahojiCommand = {
 	name: 'completion',
@@ -10,13 +10,13 @@ export const completionCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'view_all_tasks',
 			description: 'View all tasks.',
 			options: []
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'check',
 			description: 'Check your progress.',
 			options: []

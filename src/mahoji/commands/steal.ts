@@ -1,18 +1,14 @@
 import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, bold, type User } from 'discord.js';
+import { bold } from 'discord.js';
 
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
-import type { Stealable } from '@/lib/skilling/skills/thieving/stealables.js';
-import { stealables } from '@/lib/skilling/skills/thieving/stealables.js';
+import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
+import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/stealables.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { logError } from '@/lib/util/logError.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { rogueOutfitPercentBonus, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 import { calcLootXPPickpocketing } from '@/tasks/minions/pickpocketActivity.js';
 
 export const stealCommand: OSBMahojiCommand = {
@@ -25,14 +21,13 @@ export const stealCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The object you try to steal from.',
 			required: true,
-			autocomplete: async (value: string, user: User) => {
-				const mUser = await mUserFetch(user.id);
-				const conLevel = mUser.skillLevel('thieving');
-				return stealables
+			autocomplete: async (value: string, user: MUser) => {
+				const conLevel = user.skillLevel('thieving');
+				return Thieving.stealables
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.filter(c => c.level <= conLevel)
 					.map(i => ({
@@ -42,16 +37,14 @@ export const stealCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity (defaults to max).',
 			required: false,
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
-
+	run: async ({ options, user, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const stealable: Stealable | undefined = stealables.find(
 			obj =>
 				stringMatches(obj.name, options.name) ||
@@ -118,7 +111,7 @@ export const stealCommand: OSBMahojiCommand = {
 			boosts.push('50% boost for Wilvus');
 		}
 
-		const maxTripLength = (stealable.name === 'Wealthy Citizen' ? 2 : 1) * calcMaxTripLength(user, 'Pickpocket');
+		const maxTripLength = (stealable.name === 'Wealthy Citizen' ? 2 : 1) * user.calcMaxTripLength('Pickpocket');
 
 		let { quantity } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / timeToTheft);
@@ -167,8 +160,10 @@ export const stealCommand: OSBMahojiCommand = {
 				boosts.push('+10% chance of success from Thieving cape');
 			}
 
-			if (rogueOutfitPercentBonus(user) > 0) {
-				boosts.push(`${rogueOutfitPercentBonus(user)}% chance of x2 loot due to rogue outfit equipped`);
+			if (Thieving.rogueOutfitPercentBonus(user) > 0) {
+				boosts.push(
+					`${Thieving.rogueOutfitPercentBonus(user)}% chance of x2 loot due to rogue outfit equipped`
+				);
 			}
 
 			const { foodRemoved } = await removeFoodFromUser({
@@ -180,8 +175,8 @@ export const stealCommand: OSBMahojiCommand = {
 			});
 
 			await Promise.all([
-				userStatsBankUpdate(user.id, 'steal_loot_bank', foodRemoved),
-				updateBankSetting('economyStats_thievingCost', foodRemoved)
+				user.statsBankUpdate('steal_loot_bank', foodRemoved),
+				await ClientSettings.updateBankSetting('economyStats_thievingCost', foodRemoved)
 			]);
 			str += ` Removed ${foodRemoved}.`;
 		} else {
@@ -190,10 +185,10 @@ export const stealCommand: OSBMahojiCommand = {
 			xpReceived = successfulQuantity * stealable.xp;
 		}
 
-		await addSubTaskToActivityTask<PickpocketActivityTaskOptions>({
+		await ActivityManager.startTrip<PickpocketActivityTaskOptions>({
 			monsterID: stealable.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			quantity,
 			duration,
 			type: 'Pickpocket',

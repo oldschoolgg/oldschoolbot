@@ -1,14 +1,12 @@
 import { getPaintedItemImage } from '@/lib/bso/paintColors.js';
 
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
 import { canvasToBuffer } from '@/lib/canvas/canvasUtil.js';
 import { renderPaintGrid } from '@/lib/canvas/renderPaintGrid.js';
 import { paintColors } from '@/lib/customItems/paintCans.js';
+import { ownedItemOption } from '@/lib/discord/presetCommandOptions.js';
 import { itemEffectImageCache } from '@/lib/util/customItemEffects.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { ownedItemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 
 export const paintCommand: OSBMahojiCommand = {
 	name: 'paint',
@@ -19,7 +17,7 @@ export const paintCommand: OSBMahojiCommand = {
 			required: true
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'paint',
 			description: 'The paint you want to use. Leave blank to preview all paints.',
 			required: false,
@@ -68,8 +66,9 @@ export const paintCommand: OSBMahojiCommand = {
 			};
 		}
 
-		await handleMahojiConfirmation(interaction, {
-			files: [{ attachment: imageBuffer, name: 'paint-preview.png' }],
+		await interaction.confirmation({
+			// TODO
+			// files: [{ attachment: imageBuffer, name: 'paint-preview.png' }],
 			content:
 				'Are you sure you want to paint this item? This will consume the paint can, and it will apply to all items of this type in your bank. The paint does not transfer if the items are traded, and stays with your account only.'
 		});

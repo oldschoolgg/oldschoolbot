@@ -1,20 +1,18 @@
 import { roll } from '@oldschoolgg/rng';
-import type { AbstractCommand, CommandOptions } from '@oldschoolgg/toolkit';
-import type { InteractionReplyOptions, TextChannel, User } from 'discord.js';
+import type { InteractionReplyOptions } from 'discord.js';
 
-import { modifyBusyCounter, userIsBusy } from '@/lib/busyCounterCache.js';
+import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
 import { busyImmuneCommands } from '@/lib/constants.js';
+import type { CommandOptions } from '@/lib/discord/commandOptions.js';
+import { runInhibitors } from '@/lib/discord/inhibitors.js';
 import { gearValidationChecks } from '@/mahoji/commands/gear.js';
-import { runInhibitors } from '@/mahoji/lib/inhibitors.js';
 
 interface PreCommandOptions {
-	apiUser: User | null;
-	abstractCommand: AbstractCommand;
-	userID: string;
-	guildID?: string | bigint | null;
-	channelID: string | bigint;
+	command: OSBMahojiCommand;
+	user: MUser;
 	bypassInhibitors: boolean;
 	options: CommandOptions;
+	interaction: MInteraction;
 }
 
 type PrecommandReturn = Promise<
@@ -27,11 +25,10 @@ type PrecommandReturn = Promise<
 >;
 
 export async function preCommand({
-	abstractCommand,
-	userID,
-	guildID,
-	channelID,
-	bypassInhibitors
+	command,
+	interaction,
+	bypassInhibitors,
+	user
 }: PreCommandOptions): PrecommandReturn {
 	if (globalClient.isShuttingDown) {
 		return {
@@ -40,12 +37,11 @@ export async function preCommand({
 		};
 	}
 
-	if (userIsBusy(userID) && !bypassInhibitors && !busyImmuneCommands.includes(abstractCommand.name)) {
+	if (user.isBusy && !bypassInhibitors && !busyImmuneCommands.includes(command.name)) {
 		return { reason: { content: 'You cannot use a command right now.' }, dontRunPostCommand: true };
 	}
 
-	if (!gearValidationChecks.has(userID) && roll(3)) {
-		const user = await mUserFetch(userID);
+	if (!gearValidationChecks.has(user.id) && roll(3)) {
 		const { itemsUnequippedAndRefunded } = await user.validateEquippedGear();
 		if (itemsUnequippedAndRefunded.length > 0) {
 			return {
@@ -56,18 +52,14 @@ export async function preCommand({
 		}
 	}
 
-	if (!busyImmuneCommands.includes(abstractCommand.name)) modifyBusyCounter(userID, 1);
-
-	const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) : null;
-	const member = guild?.members.cache.get(userID);
-	const channel = globalClient.channels.cache.get(channelID.toString()) as TextChannel;
+	if (!busyImmuneCommands.includes(command.name)) modifyBusyCounter(user.id, 1);
 
 	const inhibitResult = runInhibitors({
-		userID,
-		guild: guild ?? null,
-		member: member ?? null,
-		command: abstractCommand,
-		channel: channel ?? null,
+		user,
+		guild: interaction.guild ?? null,
+		member: interaction.member ?? null,
+		command,
+		channel: interaction.channel ?? null,
 		bypassInhibitors
 	});
 

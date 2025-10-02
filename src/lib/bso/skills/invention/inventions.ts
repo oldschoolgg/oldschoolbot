@@ -9,7 +9,6 @@ import { clamp } from 'remeda';
 
 import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
 import { logError } from '@/lib/util/logError.js';
 
 const InventionFlags = ['equipped', 'bank'] as const;
@@ -565,8 +564,8 @@ export async function transactMaterialsFromUser({
 	}
 
 	if (addToGlobalInventionCostBank && remove) {
-		const current = await mahojiClientSettingsFetch({ invention_materials_cost: true });
-		await mahojiClientSettingsUpdate({
+		const current = await ClientSettings.fetch({ invention_materials_cost: true });
+		await ClientSettings.update({
 			invention_materials_cost: new MaterialBank(current.invention_materials_cost as IMaterialBank).add(remove)
 				.bank
 		});

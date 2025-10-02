@@ -7,9 +7,7 @@ import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import type { ItemBank } from 'oldschooljs';
 
 import type { TinkeringWorkshopOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export async function tinkeringWorkshopCommand(user: MUser, material: MaterialType, channelID: string) {
 	if (!materialTypes.includes(material)) {
@@ -29,8 +27,8 @@ export async function tinkeringWorkshopCommand(user: MUser, material: MaterialTy
 		return `You don't have enough materials to workshop with this material, you need: ${materialCost}.`;
 	}
 	await transactMaterialsFromUser({ user, remove: materialCost });
-	const stats = await user.fetchStats({ tworkshop_material_cost_bank: true });
-	await userStatsUpdate(user.id, {
+	const stats = await user.fetchStats();
+	await user.statsUpdate({
 		tworkshop_material_cost_bank: new MaterialBank(stats.tworkshop_material_cost_bank as ItemBank).add(materialCost)
 			.bank
 	});
@@ -41,7 +39,7 @@ export async function tinkeringWorkshopCommand(user: MUser, material: MaterialTy
 		duration
 	)}. Removed ${materialCost}.`;
 
-	await addSubTaskToActivityTask<TinkeringWorkshopOptions>({
+	await ActivityManager.startTrip<TinkeringWorkshopOptions>({
 		userID: user.id,
 		channelID,
 		quantity,

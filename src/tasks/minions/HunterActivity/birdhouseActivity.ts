@@ -18,7 +18,6 @@ const clues = [
 
 export const birdHouseTask: MinionTask = {
 	type: 'Birdhouse',
-	isNew: true,
 	async run(data: BirdhouseActivityTaskOptions, { user, handleTripFinish }) {
 		const { birdhouseName, birdhouseData, channelID, duration, placing, gotCraft, currentDate } = data;
 

@@ -1,8 +1,9 @@
-import { formatDuration, mentionCommand, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, Items, resolveItems, ZAM_HASTA_CRUSH } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
 import { degradeItem } from '@/lib/degradeableItems.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
@@ -10,10 +11,8 @@ import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { NightmareActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
 import { getNightmareGearStats } from '@/lib/util/getNightmareGearStats.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 async function soloMessage(user: MUser, duration: number, quantity: number, isPhosani: boolean) {
@@ -54,7 +53,7 @@ const sangChargesPerKc = 60;
 
 async function checkReqs(user: MUser, monster: KillableMonster, isPhosani: boolean): Promise<string | undefined> {
 	// Check the user has the requirements to kill The Nightmare
-	if (!user.user.minion_hasBought) {
+	if (!user.hasMinion) {
 		return `${user.usernameOrMention} doesn't have a minion, so they can't fight the nightmare!`;
 	}
 
@@ -99,13 +98,11 @@ function perUserCost(
 	if (isPhosani) {
 		if (hasShadow && user.user.tum_shadow_charges < tumCharges) {
 			return `You need at least ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
-				globalClient,
 				'minion',
 				'charge'
 			)}`;
 		} else if (hasSang && user.user.sang_charges < sangCharges) {
 			return `You need at least ${sangCharges} Sanguinesti staff charges to use it, otherwise it has to be unequipped: ${mentionCommand(
-				globalClient,
 				'minion',
 				'charge'
 			)}`;
@@ -297,7 +294,7 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 		}
 	}
 
-	await updateBankSetting('nightmare_cost', totalCost);
+	await ClientSettings.updateBankSetting('nightmare_cost', totalCost);
 	await trackLoot({
 		id: 'nightmare',
 		totalCost,
@@ -311,9 +308,9 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 		]
 	});
 
-	await addSubTaskToActivityTask<NightmareActivityTaskOptions>({
+	await ActivityManager.startTrip<NightmareActivityTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'Nightmare',

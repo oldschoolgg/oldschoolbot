@@ -9,7 +9,6 @@ import {
 	GeneralBank,
 	type GeneralBankType,
 	increaseNumByPercent,
-	mentionCommand,
 	objectEntries,
 	reduceNumByPercent,
 	sumArr,
@@ -21,17 +20,14 @@ import { clamp } from 'remeda';
 
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { ColoTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 function combinedChance(percentages: number[]): number {
 	const failureProbabilities = percentages.map(p => (100 - p) / 100);
@@ -519,7 +515,6 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
 		return `You need to complete the "Children of the Sun" quest before you can enter the Colosseum. Send your minion to do the quest using: ${mentionCommand(
-			globalClient,
 			'activities',
 			'quest'
 		)}.`;
@@ -624,9 +619,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 	const voidCharges = 35;
 
 	// Get trip time and calculate max attempts the user can do per trip
-	const kcBank: ColosseumWaveBank = new ColosseumWaveBank(
-		(await user.fetchStats({ colo_kc_bank: true })).colo_kc_bank as ItemBank
-	);
+	const kcBank: ColosseumWaveBank = new ColosseumWaveBank((await user.fetchStats()).colo_kc_bank as ItemBank);
 	const waveDuration = colosseumWaveTime({
 		kcBank,
 		hasScythe,
@@ -641,7 +634,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		hasBHook
 	});
 	const oneColoTripTime = waveDuration * 12;
-	const maxUserTripTime = calcMaxTripLength(user, 'MonsterKilling');
+	const maxUserTripTime = user.calcMaxTripLength('MonsterKilling');
 	const maxColoQty = Math.max(1, Math.floor(maxUserTripTime / oneColoTripTime));
 	if (!quantity || quantity > maxColoQty) {
 		quantity = maxColoQty;
@@ -794,8 +787,8 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 	}
 
 	// update user stats
-	await updateBankSetting('colo_cost', realCost);
-	await userStatsBankUpdate(user, 'colo_cost', realCost);
+	await ClientSettings.updateBankSetting('colo_cost', realCost);
+	await user.statsBankUpdate('colo_cost', realCost);
 	await trackLoot({
 		totalCost: realCost,
 		id: 'colo',
@@ -832,7 +825,7 @@ export async function colosseumCommand(user: MUser, channelID: string, quantity:
 		totalVoidStaffCharges += result.voidCharges;
 	}
 
-	await addSubTaskToActivityTask<ColoTaskOptions>({
+	await ActivityManager.startTrip<ColoTaskOptions>({
 		userID: user.id,
 		channelID,
 		duration: totalDuration,

@@ -4,9 +4,6 @@ import { Bank, Items } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const OuraniaBuyables = [
 	{
@@ -63,38 +60,36 @@ export async function odsBuyCommand(user: MUser, name: string, qty: number): Com
 	return `Successfully purchased ${qty.toLocaleString()}x ${item.name} for ${cost.toLocaleString()} Ourania Tokens.`;
 }
 
-export async function odsStartCommand(klasaUser: MUser, channelID: string) {
-	if (klasaUser.minionIsBusy) {
+export async function odsStartCommand(user: MUser, channelID: string) {
+	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
 	const boosts = [];
 
 	let waveTime = randomVariation(Time.Minute * 4, 10);
 
-	if (klasaUser.hasEquipped('Runecraft master cape')) {
+	if (user.hasEquipped('Runecraft master cape')) {
 		waveTime /= 2;
 		boosts.push(`${Emoji.RunecraftMasterCape} 2x faster`);
 	}
 
-	if (klasaUser.hasEquipped('Kuro')) {
+	if (user.hasEquipped('Kuro')) {
 		waveTime = reduceNumByPercent(waveTime, 5);
 		boosts.push(`${Emoji.Kuro} 5% faster with Kuro's help`);
 	}
 
-	const quantity = Math.floor(calcMaxTripLength(klasaUser, 'OuraniaDeliveryService') / waveTime);
+	const quantity = Math.floor(user.calcMaxTripLength('OuraniaDeliveryService') / waveTime);
 	const duration = quantity * waveTime;
 	const essenceRequired = quantity * randInt(235, 265);
 	const cost = new Bank().add('Pure essence', essenceRequired);
-	if (!klasaUser.owns(cost)) {
+	if (!user.owns(cost)) {
 		return "You don't have enough Pure Essence to do Ourania Deliveries.";
 	}
 
-	await klasaUser.removeItemsFromBank(cost);
-	updateBankSetting('ods_cost', cost);
+	await user.removeItemsFromBank(cost);
+	await ClientSettings.updateBankSetting('ods_cost', cost);
 
-	let str = `${
-		klasaUser.minionName
-	} is now off to do ${quantity} deliveries. The total trip will take ${formatDuration(
+	let str = `${user.minionName} is now off to do ${quantity} deliveries. The total trip will take ${formatDuration(
 		duration
 	)}. Removed ${cost} from your bank.`;
 
@@ -109,14 +104,14 @@ export async function odsStartCommand(klasaUser: MUser, channelID: string) {
 		type: 'Monster',
 		users: [
 			{
-				id: klasaUser.id,
+				id: user.id,
 				cost
 			}
 		]
 	});
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
-		userID: klasaUser.id,
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
+		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
 		duration,

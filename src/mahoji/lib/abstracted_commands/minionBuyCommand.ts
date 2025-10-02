@@ -1,11 +1,11 @@
 import { isAtleastThisOld, Time } from '@oldschoolgg/toolkit';
-import { ComponentType, type User } from 'discord.js';
+import { ComponentType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { mahojiInformationalButtons } from '@/lib/sharedComponents.js';
 
-export async function minionBuyCommand(apiUser: User, user: MUser, ironman: boolean): CommandResponse {
-	if (user.user.minion_hasBought) return 'You already have a minion!';
+export async function minionBuyCommand(user: MUser, ironman: boolean): CommandResponse {
+	if (user.hasMinion) return 'You already have a minion!';
 
 	await user.update({
 		minion_hasBought: true,
@@ -13,6 +13,7 @@ export async function minionBuyCommand(apiUser: User, user: MUser, ironman: bool
 		minion_ironman: Boolean(ironman)
 	});
 
+	const apiUser = await globalClient.users.fetch(user.id);
 	const starter = isAtleastThisOld(apiUser.createdAt, Time.Year * 2)
 		? new Bank({
 				Shark: 300,

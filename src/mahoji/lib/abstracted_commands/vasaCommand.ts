@@ -21,11 +21,13 @@ export const vasaBISGear = new Gear({
 });
 
 export async function vasaCommand(
+	interaction: MInteraction,
 	user: MUser,
 	channelID: string,
 	quantity?: number
 ): Promise<string | InteractionReplyOptions> {
 	const instance = new BossInstance({
+		interaction,
 		leader: user,
 		id: VasaMagus.id,
 		baseDuration: Time.Minute * 15,

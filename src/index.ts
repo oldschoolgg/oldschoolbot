@@ -1,28 +1,22 @@
 import './lib/safeglobals.js';
 import './lib/globals.js';
 import './lib/MUser.js';
-import './lib/ActivityManager.js';
 
-import { convertMahojiCommandToAbstractCommand, Events, isObject, MahojiClient } from '@oldschoolgg/toolkit';
+import { Events } from '@oldschoolgg/toolkit';
 import { init } from '@sentry/node';
 import { GatewayIntentBits, Options, Partials, type TextChannel } from 'discord.js';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { Channel, gitHash, globalConfig } from '@/lib/constants.js';
+import { interactionHandler } from '@/lib/discord/interactionHandler.js';
 import { economyLog } from '@/lib/economyLogs.js';
 import { onMessage } from '@/lib/events.js';
-import { modalInteractionHook } from '@/lib/modals.js';
 import { preStartup } from '@/lib/preStartup.js';
 import { OldSchoolBotClient } from '@/lib/structures/OldSchoolBotClient.js';
 import { CACHED_ACTIVE_USER_IDS } from '@/lib/util/cachedUserIDs.js';
-import { interactionHook } from '@/lib/util/globalInteractions.js';
-import { handleInteractionError, interactionReply } from '@/lib/util/interactionReply.js';
 import { logError } from '@/lib/util/logError.js';
-import { allCommands } from '@/mahoji/commands/allCommands.js';
 import { onStartup } from '@/mahoji/lib/events.js';
 import { exitCleanup } from '@/mahoji/lib/exitHandler.js';
-import { postCommand } from '@/mahoji/lib/postCommand.js';
-import { preCommand } from '@/mahoji/lib/preCommand.js';
 
 if (globalConfig.sentryDSN) {
 	init({
@@ -93,114 +87,17 @@ const client = new OldSchoolBotClient({
 	}
 });
 
-export const mahojiClient = new MahojiClient({
-	applicationID: globalConfig.clientID,
-	commands: allCommands,
-	handlers: {
-		preCommand: async ({ command, interaction, options }) => {
-			const result = await preCommand({
-				abstractCommand: convertMahojiCommandToAbstractCommand(command),
-				userID: interaction.user.id,
-				guildID: interaction.guildId,
-				channelID: interaction.channelId,
-				bypassInhibitors: false,
-				apiUser: interaction.user,
-				options
-			});
-			return result;
-		},
-		postCommand: ({ command, interaction, error, inhibited, options }) =>
-			postCommand({
-				abstractCommand: convertMahojiCommandToAbstractCommand(command),
-				userID: interaction.user.id,
-				guildID: interaction.guildId,
-				channelID: interaction.channelId,
-				args: options,
-				error,
-				isContinue: false,
-				inhibited,
-				continueDeltaMillis: null
-			})
-	}
-});
-
 declare global {
 	var globalClient: OldSchoolBotClient;
 }
 
-client.mahojiClient = mahojiClient;
 global.globalClient = client;
 client.on('messageCreate', msg => {
 	onMessage(msg);
 });
 client.on('error', console.error);
 
-const usernameInsertedCache = new Set<string>();
-
-client.on('interactionCreate', async interaction => {
-	if (globalClient.isShuttingDown) {
-		if (interaction.isRepliable()) {
-			await interactionReply(interaction, {
-				content:
-					'The bot is currently shutting down for maintenance/updates, please try again in a couple minutes! Thank you <3',
-				ephemeral: true
-			});
-		}
-		return;
-	}
-
-	if (!usernameInsertedCache.has(interaction.user.id)) {
-		usernameInsertedCache.add(interaction.user.id);
-		await prisma.user
-			.upsert({
-				where: {
-					id: interaction.user.id
-				},
-				create: {
-					id: interaction.user.id,
-					last_command_date: new Date(),
-					username: interaction.user.username
-				},
-				update: {
-					last_command_date: new Date(),
-					username: interaction.user.username
-				},
-				select: {
-					id: true
-				}
-			})
-			.catch(console.error);
-	}
-
-	if (
-		BLACKLISTED_USERS.has(interaction.user.id) ||
-		(interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId))
-	) {
-		if (interaction.isRepliable()) {
-			await interactionReply(interaction, {
-				content: 'You are blacklisted.',
-				ephemeral: true
-			});
-		}
-		return;
-	}
-
-	try {
-		await interactionHook(interaction);
-		if (interaction.isModalSubmit()) {
-			await modalInteractionHook(interaction);
-			return;
-		}
-
-		const result = await mahojiClient.parseInteraction(interaction);
-		if (result === null) return;
-		if (isObject(result) && 'error' in result) {
-			await handleInteractionError(result.error, interaction);
-		}
-	} catch (err) {
-		await handleInteractionError(err, interaction);
-	}
-});
+client.on('interactionCreate', interactionHandler);
 
 client.on(Events.ServerNotification, (message: string) => {
 	const channel = globalClient.channels.cache.get(Channel.Notifications);

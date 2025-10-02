@@ -1,5 +1,4 @@
 import { Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { premiumPatronTime } from '@/lib/premiumPatronTime.js';
@@ -25,7 +24,7 @@ export const testerShopCommand: OSBMahojiCommand = {
 	description: 'Buy things using your testing points.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The item to buy.',
 			required: true,
@@ -35,7 +34,7 @@ export const testerShopCommand: OSBMahojiCommand = {
 			}))
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity (defaults to 1).',
 			required: false,

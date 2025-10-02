@@ -4,9 +4,6 @@ import { Bank } from 'oldschooljs';
 import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { CollectingOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 
@@ -28,7 +25,7 @@ export async function collectCommand(
 		return 'Only Tames can collect this.';
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'Collecting');
+	const maxTripLength = user.calcMaxTripLength('Collecting');
 	if (collectable.qpRequired && user.QP < collectable.qpRequired) {
 		return `You need ${collectable.qpRequired} QP to collect ${collectable.item.name}.`;
 	}
@@ -83,13 +80,13 @@ export async function collectCommand(
 		}
 		await user.transactItems({ itemsToRemove: cost });
 
-		await updateBankSetting('collecting_cost', cost);
+		await ClientSettings.updateBankSetting('collecting_cost', cost);
 	}
 
-	await addSubTaskToActivityTask<CollectingOptions>({
+	await ActivityManager.startTrip<CollectingOptions>({
 		collectableID: collectable.item.id,
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		noStaminas: no_stams,

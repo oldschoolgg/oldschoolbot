@@ -1,337 +1,337 @@
 [
-	{
-		"item": "Adamant arrow",
-		"quantity": 350,
-		"cost": 1
-	},
-	{
-		"item": "Ancient halo",
-		"cost": 450
-	},
-	{
-		"item": "Annakarl teleport",
-		"quantity": 2,
-		"cost": 1
-	},
-	{
-		"item": "Armadyl halo",
-		"cost": 450
-	},
-	{
-		"item": "Bandos halo",
-		"cost": 450
-	},
-	{
-		"item": "Blighted ancient ice sack",
-		"quantity": 30,
-		"cost": 1
-	},
-	{
-		"item": "Blighted anglerfish",
-		"quantity": 15,
-		"cost": 1
-	},
-	{
-		"item": "Blighted entangle sack",
-		"quantity": 70,
-		"cost": 1
-	},
-	{
-		"item": "Blighted karambwan",
-		"quantity": 12,
-		"cost": 1
-	},
-	{
-		"item": "Blighted manta ray",
-		"quantity": 15,
-		"cost": 1
-	},
-	{
-		"item": "Blighted super restore(4)",
-		"quantity": 4,
-		"cost": 1
-	},
-	{
-		"item": "Blighted teleport spell sack",
-		"quantity": 50,
-		"cost": 1
-	},
-	{
-		"item": "Blighted vengeance sack",
-		"quantity": 50,
-		"cost": 1
-	},
-	{
-		"item": "Blue dark bow paint",
-		"cost": 25
-	},
-	{
-		"item": "Bolt rack",
-		"quantity": 200,
-		"cost": 1
-	},
-	{
-		"item": "Brassica halo",
-		"cost": 450
-	},
-	{
-		"item": "Carrallanger teleport",
-		"quantity": 2,
-		"cost": 1
-	},
-	{
-		"item": "Climbing boots",
-		"quantity": 20,
-		"cost": 1
-	},
-	{
-		"item": "Clue box",
-		"cost": 5
-	},
-	{
-		"item": "Crystal weapon seed",
-		"cost": 12
-	},
-	{
-		"item": "Dareeyak teleport",
-		"quantity": 2,
-		"cost": 1
-	},
-	{
-		"item": "Deadman's cape",
-		"cost": 160
-	},
-	{
-		"item": "Deadman's chest",
-		"cost": 160
-	},
-	{
-		"item": "Deadman's legs",
-		"cost": 160
-	},
-	{
-		"item": "Decorative emblem",
-		"cost": 100
-	},
-	{
-		"item": "Dragon pickaxe upgrade kit",
-		"cost": 14
-	},
-	{
-		"item": "Dragonstone bolts (e)",
-		"quantity": 20,
-		"cost": 3
-	},
-	{
-		"item": "Frozen whip mix",
-		"cost": 25
-	},
-	{
-		"item": "Ghorrock teleport",
-		"quantity": 2,
-		"cost": 1
-	},
-	{
-		"item": {
-			"id": 24868,
-			"name": "Golden armadyl special attack",
-			"incomplete": true,
-			"cost": 1,
-			"lowalch": 0,
-			"highalch": 0,
-			"price": 0
-		},
-		"cost": 75,
-		"only_cl": true
-	},
-	{
-		"item": {
-			"id": 24869,
-			"name": "Golden bandos special attack",
-			"incomplete": true,
-			"cost": 1,
-			"lowalch": 0,
-			"highalch": 0,
-			"price": 0
-		},
-		"cost": 75,
-		"only_cl": true
-	},
-	{
-		"item": {
-			"id": 24870,
-			"name": "Golden saradomin special attack",
-			"incomplete": true,
-			"cost": 1,
-			"lowalch": 0,
-			"highalch": 0,
-			"price": 0
-		},
-		"cost": 75,
-		"only_cl": true
-	},
-	{
-		"item": {
-			"id": 24871,
-			"name": "Golden zamorak special attack",
-			"incomplete": true,
-			"cost": 1,
-			"lowalch": 0,
-			"highalch": 0,
-			"price": 0
-		},
-		"cost": 75,
-		"only_cl": true
-	},
-	{
-		"item": "Granite clamp",
-		"cost": 25
-	},
-	{
-		"item": "Green dark bow paint",
-		"cost": 25
-	},
-	{
-		"item": "Guthixian icon",
-		"cost": 500
-	},
-	{
-		"item": "Kharyrll teleport",
-		"quantity": 2,
-		"cost": 1
-	},
-	{
-		"item": "Lassar teleport",
-		"quantity": 2,
-		"cost": 1
-	},
-	{
-		"item": "Lava staff upgrade kit",
-		"cost": 13
-	},
-	{
-		"item": "Looting bag",
-		"cost": 1
-	},
-	{
-		"item": "Looting bag note",
-		"cost": 1
-	},
-	{
-		"item": "Magic shortbow scroll",
-		"cost": 5
-	},
-	{
-		"item": "Ornate maul handle",
-		"cost": 15
-	},
-	{
-		"item": "Paddewwa teleport",
-		"quantity": 2,
-		"cost": 1
-	},
-	{
-		"item": "Ring of wealth scroll",
-		"cost": 5
-	},
-	{
-		"item": "Rune arrow",
-		"quantity": 300,
-		"cost": 3
-	},
-	{
-		"item": "Rune pouch",
-		"cost": 75
-	},
-	{
-		"item": "Rune pouch note",
-		"cost": 75
-	},
-	{
-		"item": "Saradomin's tear",
-		"cost": 150
-	},
-	{
-		"item": "Senntisten teleport",
-		"quantity": 2,
-		"cost": 1
-	},
-	{
-		"item": "Seren halo",
-		"cost": 450
-	},
-	{
-		"item": "Steam staff upgrade kit",
-		"cost": 13
-	},
-	{
-		"item": "Swift blade",
-		"cost": 350
-	},
-	{
-		"item": "Target teleport",
-		"cost": 1
-	},
-	{
-		"item": "Target teleport scroll",
-		"cost": 250
-	},
-	{
-		"item": "Trouver parchment",
-		"cost": 18
-	},
-	{
-		"item": "Vesta's longsword (inactive)",
-		"cost": 300
-	},
-	{
-		"item": "Victor's cape (1)",
-		"cost": null,
-		"wins": 1
-	},
-	{
-		"item": "Victor's cape (10)",
-		"cost": null,
-		"wins": 10
-	},
-	{
-		"item": "Victor's cape (100)",
-		"cost": null,
-		"wins": 100
-	},
-	{
-		"item": "Victor's cape (1000)",
-		"cost": null,
-		"wins": 1000
-	},
-	{
-		"item": "Victor's cape (50)",
-		"cost": null,
-		"wins": 50
-	},
-	{
-		"item": "Victor's cape (500)",
-		"cost": null,
-		"wins": 500
-	},
-	{
-		"item": "Volcanic whip mix",
-		"cost": 25
-	},
-	{
-		"item": "Ward upgrade kit",
-		"cost": 20
-	},
-	{
-		"item": "White dark bow paint",
-		"cost": 25
-	},
-	{
-		"item": "Wilderness crabs teleport",
-		"cost": 1
-	},
-	{
-		"item": "Yellow dark bow paint",
-		"cost": 25
-	}
+    {
+        "item": "Adamant arrow",
+        "quantity": 350,
+        "cost": 1
+    },
+    {
+        "item": "Ancient halo",
+        "cost": 450
+    },
+    {
+        "item": "Annakarl teleport",
+        "quantity": 2,
+        "cost": 1
+    },
+    {
+        "item": "Armadyl halo",
+        "cost": 450
+    },
+    {
+        "item": "Bandos halo",
+        "cost": 450
+    },
+    {
+        "item": "Blighted ancient ice sack",
+        "quantity": 30,
+        "cost": 1
+    },
+    {
+        "item": "Blighted anglerfish",
+        "quantity": 15,
+        "cost": 1
+    },
+    {
+        "item": "Blighted entangle sack",
+        "quantity": 70,
+        "cost": 1
+    },
+    {
+        "item": "Blighted karambwan",
+        "quantity": 12,
+        "cost": 1
+    },
+    {
+        "item": "Blighted manta ray",
+        "quantity": 15,
+        "cost": 1
+    },
+    {
+        "item": "Blighted super restore(4)",
+        "quantity": 4,
+        "cost": 1
+    },
+    {
+        "item": "Blighted teleport spell sack",
+        "quantity": 50,
+        "cost": 1
+    },
+    {
+        "item": "Blighted vengeance sack",
+        "quantity": 50,
+        "cost": 1
+    },
+    {
+        "item": "Blue dark bow paint",
+        "cost": 25
+    },
+    {
+        "item": "Bolt rack",
+        "quantity": 200,
+        "cost": 1
+    },
+    {
+        "item": "Brassica halo",
+        "cost": 450
+    },
+    {
+        "item": "Carrallanger teleport",
+        "quantity": 2,
+        "cost": 1
+    },
+    {
+        "item": "Climbing boots",
+        "quantity": 20,
+        "cost": 1
+    },
+    {
+        "item": "Clue box",
+        "cost": 5
+    },
+    {
+        "item": "Crystal weapon seed",
+        "cost": 12
+    },
+    {
+        "item": "Dareeyak teleport",
+        "quantity": 2,
+        "cost": 1
+    },
+    {
+        "item": "Deadman's cape",
+        "cost": 160
+    },
+    {
+        "item": "Deadman's chest",
+        "cost": 160
+    },
+    {
+        "item": "Deadman's legs",
+        "cost": 160
+    },
+    {
+        "item": "Decorative emblem",
+        "cost": 100
+    },
+    {
+        "item": "Dragon pickaxe upgrade kit",
+        "cost": 14
+    },
+    {
+        "item": "Dragonstone bolts (e)",
+        "quantity": 20,
+        "cost": 3
+    },
+    {
+        "item": "Frozen whip mix",
+        "cost": 25
+    },
+    {
+        "item": "Ghorrock teleport",
+        "quantity": 2,
+        "cost": 1
+    },
+    {
+        "item": {
+            "id": 24868,
+            "name": "Golden armadyl special attack",
+            "incomplete": true,
+            "cost": 1,
+            "lowalch": 0,
+            "highalch": 0,
+            "price": 0
+        },
+        "cost": 75,
+        "only_cl": true
+    },
+    {
+        "item": {
+            "id": 24869,
+            "name": "Golden bandos special attack",
+            "incomplete": true,
+            "cost": 1,
+            "lowalch": 0,
+            "highalch": 0,
+            "price": 0
+        },
+        "cost": 75,
+        "only_cl": true
+    },
+    {
+        "item": {
+            "id": 24870,
+            "name": "Golden saradomin special attack",
+            "incomplete": true,
+            "cost": 1,
+            "lowalch": 0,
+            "highalch": 0,
+            "price": 0
+        },
+        "cost": 75,
+        "only_cl": true
+    },
+    {
+        "item": {
+            "id": 24871,
+            "name": "Golden zamorak special attack",
+            "incomplete": true,
+            "cost": 1,
+            "lowalch": 0,
+            "highalch": 0,
+            "price": 0
+        },
+        "cost": 75,
+        "only_cl": true
+    },
+    {
+        "item": "Granite clamp",
+        "cost": 25
+    },
+    {
+        "item": "Green dark bow paint",
+        "cost": 25
+    },
+    {
+        "item": "Guthixian icon",
+        "cost": 500
+    },
+    {
+        "item": "Kharyrll teleport",
+        "quantity": 2,
+        "cost": 1
+    },
+    {
+        "item": "Lassar teleport",
+        "quantity": 2,
+        "cost": 1
+    },
+    {
+        "item": "Lava staff upgrade kit",
+        "cost": 13
+    },
+    {
+        "item": "Looting bag",
+        "cost": 1
+    },
+    {
+        "item": "Looting bag note",
+        "cost": 1
+    },
+    {
+        "item": "Magic shortbow scroll",
+        "cost": 5
+    },
+    {
+        "item": "Ornate maul handle",
+        "cost": 15
+    },
+    {
+        "item": "Paddewwa teleport",
+        "quantity": 2,
+        "cost": 1
+    },
+    {
+        "item": "Ring of wealth scroll",
+        "cost": 5
+    },
+    {
+        "item": "Rune arrow",
+        "quantity": 300,
+        "cost": 3
+    },
+    {
+        "item": "Rune pouch",
+        "cost": 75
+    },
+    {
+        "item": "Rune pouch note",
+        "cost": 75
+    },
+    {
+        "item": "Saradomin's tear",
+        "cost": 150
+    },
+    {
+        "item": "Senntisten teleport",
+        "quantity": 2,
+        "cost": 1
+    },
+    {
+        "item": "Seren halo",
+        "cost": 450
+    },
+    {
+        "item": "Steam staff upgrade kit",
+        "cost": 13
+    },
+    {
+        "item": "Swift blade",
+        "cost": 350
+    },
+    {
+        "item": "Target teleport",
+        "cost": 1
+    },
+    {
+        "item": "Target teleport scroll",
+        "cost": 250
+    },
+    {
+        "item": "Trouver parchment",
+        "cost": 18
+    },
+    {
+        "item": "Vesta's longsword (inactive)",
+        "cost": 300
+    },
+    {
+        "item": "Victor's cape (1)",
+        "cost": null,
+        "wins": 1
+    },
+    {
+        "item": "Victor's cape (10)",
+        "cost": null,
+        "wins": 10
+    },
+    {
+        "item": "Victor's cape (100)",
+        "cost": null,
+        "wins": 100
+    },
+    {
+        "item": "Victor's cape (1000)",
+        "cost": null,
+        "wins": 1000
+    },
+    {
+        "item": "Victor's cape (50)",
+        "cost": null,
+        "wins": 50
+    },
+    {
+        "item": "Victor's cape (500)",
+        "cost": null,
+        "wins": 500
+    },
+    {
+        "item": "Volcanic whip mix",
+        "cost": 25
+    },
+    {
+        "item": "Ward upgrade kit",
+        "cost": 20
+    },
+    {
+        "item": "White dark bow paint",
+        "cost": 25
+    },
+    {
+        "item": "Wilderness crabs teleport",
+        "cost": 1
+    },
+    {
+        "item": "Yellow dark bow paint",
+        "cost": 25
+    }
 ]

@@ -100,7 +100,7 @@ export async function handleNewCLItems({
 					getKC: (id: number) => user.getKC(id),
 					user,
 					minigames: await user.fetchMinigames(),
-					stats: await MUserStats.fromID(user.id)
+					stats: await user.fetchMStats()
 				})}!`
 			: '';
 

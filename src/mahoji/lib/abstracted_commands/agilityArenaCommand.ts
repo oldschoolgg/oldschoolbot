@@ -4,9 +4,6 @@ import { Bank, Items } from 'oldschooljs';
 import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
 import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 const plainGraceful = new Bank({
 	'Graceful hood': 1,
@@ -61,7 +58,7 @@ export async function agilityArenaCommand(
 	channelID: string,
 	quantity: number | undefined
 ): CommandResponse {
-	const userMaxTrip = calcMaxTripLength(user, 'AgilityArena');
+	const userMaxTrip = user.calcMaxTripLength('AgilityArena');
 	const maxQuantity = userMaxTrip / Time.Minute;
 
 	if (!quantity || quantity * Time.Minute > userMaxTrip) {
@@ -70,7 +67,7 @@ export async function agilityArenaCommand(
 
 	const duration = quantity * Time.Minute;
 
-	if (!userHasGracefulEquipped(user)) {
+	if (!user.hasGracefulEquipped()) {
 		return mahojiChatHead({
 			content: 'Ahoy there! You need full Graceful equipped to do the Brimhaven Agility Arena!',
 			head: 'izzy'
@@ -84,9 +81,9 @@ export async function agilityArenaCommand(
 		boosts.push('10% extra tickets for Karamja Elite diary');
 	}
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration,
 		type: 'AgilityArena',
 		quantity,

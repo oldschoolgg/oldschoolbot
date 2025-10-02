@@ -1,19 +1,15 @@
 import { formatDuration, stringMatches, Time, toTitleCase } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items, itemID } from 'oldschooljs';
 
 import { darkAltarCommand } from '@/lib/minions/functions/darkAltarCommand.js';
 import { sinsOfTheFatherSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import type { RunecraftActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { ouraniaAltarStartCommand } from '@/mahoji/lib/abstracted_commands/ouraniaAltarCommand.js';
 import { tiaraRunecraftCommand } from '@/mahoji/lib/abstracted_commands/tiaraRunecraftCommand.js';
-import { calcMaxRCQuantity, userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
+import { calcMaxRCQuantity } from '@/mahoji/mahojiSettings.js';
 
 const runeTypes = [
 	{ item: Items.getOrThrow('Warped extract'), runes: new Set(['air', 'mind', 'water', 'earth', 'fire', 'body']) },
@@ -36,7 +32,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'rune',
 			description: 'The Rune/Tiara you want to craft.',
 			required: true,
@@ -56,7 +52,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The amount of runes/tiaras you want to craft.',
 			required: false,
@@ -64,19 +60,19 @@ export const runecraftCommand: OSBMahojiCommand = {
 			max_value: 1_000_000_000
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'usestams',
 			description: 'Set this to false to not use stamina potions (default true)',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'daeyalt_essence',
 			description: 'Set this to true to use daeyalt essence (default false)',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'extracts',
 			description: 'Set this to true to use extracts (default false)',
 			required: false
@@ -93,7 +89,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		daeyalt_essence?: boolean;
 		extracts?: boolean;
 	}>) => {
-		const user = await mUserFetch(userID.toString());
+		const user = await mUserFetch(userID);
 		let { rune, quantity, usestams, daeyalt_essence, extracts } = options;
 
 		rune = rune.toLowerCase().replace('rune', '').trim();
@@ -147,7 +143,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		let { tripLength } = runeObj;
 		const boosts = [];
-		if (userHasGracefulEquipped(user)) {
+		if (user.hasGracefulEquipped()) {
 			tripLength -= tripLength * 0.1;
 			boosts.push('10% for Graceful');
 		}
@@ -185,7 +181,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			boosts.push('3% for Runecraft cape');
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Runecraft');
+		const maxTripLength = user.calcMaxTripLength('Runecraft');
 		const maxCanDo = Math.floor(maxTripLength / tripLength) * inventorySize;
 
 		// If no quantity provided, set it to the max.
@@ -327,12 +323,12 @@ export const runecraftCommand: OSBMahojiCommand = {
 		if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
 
 		await user.removeItemsFromBank(totalCost);
-		updateBankSetting('runecraft_cost', totalCost);
+		await ClientSettings.updateBankSetting('runecraft_cost', totalCost);
 
-		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>({
+		await ActivityManager.startTrip<RunecraftActivityTaskOptions>({
 			runeID: runeObj.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			essenceQuantity: quantity,
 			useStaminas: usestams,
 			daeyaltEssence: daeyalt_essence,

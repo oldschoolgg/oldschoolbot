@@ -6,13 +6,12 @@ import { Bank } from 'oldschooljs';
 
 import { MAX_QP } from '@/lib/minions/data/quests.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const questingTask: MinionTask = {
 	type: 'Questing',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { userID, channelID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { channelID } = data;
+
 		const currentQP = user.QP;
 
 		// This assumes you do quests in order of scaling difficulty, ~115 hours for max qp

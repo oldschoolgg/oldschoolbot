@@ -1,12 +1,10 @@
 import { defaultMegaDuckLocation, type MegaDuckLocation } from '@/lib/bso/megaDuck.js';
 
 import { Events, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '@/lib/canvas/canvasUtil.js';
 import { globalConfig } from '@/lib/constants.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { getUsernameSync } from '@/lib/util.js';
 import { mahojiGuildSettingsUpdate } from '@/mahoji/guildSettings.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
@@ -123,14 +121,14 @@ export const megaDuckCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'move',
 			description: 'Move megaduck in a direction.',
 			required: false,
 			choices: directions.map(i => ({ name: i, value: i }))
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'reset',
 			description: 'Reset megaduck back to falador? (admin only)',
 			required: false
@@ -175,8 +173,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 			(globalConfig.adminUserIDs.includes(userID.toString()) && guild.id.toString() === '342983479501389826') ||
 			(options.reset && member && member.permissions.has('Administrator'))
 		) {
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				'Are you sure you want to reset your megaduck back to Falador Park? This will reset all data, and where its been, and who has contributed steps.'
 			);
 			await mahojiGuildSettingsUpdate(guild, {

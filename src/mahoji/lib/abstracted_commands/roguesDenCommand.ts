@@ -2,9 +2,6 @@ import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function roguesDenCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
@@ -26,13 +23,13 @@ export async function roguesDenCommand(user: MUser, channelID: string) {
 
 	baseTime = reduceNumByPercent(baseTime, skillPercentage);
 
-	let quantity = Math.floor(calcMaxTripLength(user, 'RoguesDenMaze') / baseTime);
+	let quantity = Math.floor(user.calcMaxTripLength('RoguesDenMaze') / baseTime);
 
 	if (user.hasEquippedOrInBank('Stamina potion(4)')) {
 		baseTime = reduceNumByPercent(baseTime, 50);
 
 		const potionsInBank = user.bank.amount('Stamina potion(4)');
-		const maxPossibleLaps = Math.floor(calcMaxTripLength(user, 'RoguesDenMaze') / baseTime);
+		const maxPossibleLaps = Math.floor(user.calcMaxTripLength('RoguesDenMaze') / baseTime);
 
 		// do as many laps as possible with the current stamina potion supply
 		quantity = Math.min(potionsInBank * 4, maxPossibleLaps);
@@ -45,12 +42,12 @@ export async function roguesDenCommand(user: MUser, channelID: string) {
 
 	if (staminasToRemove.length > 0) {
 		await user.removeItemsFromBank(staminasToRemove);
-		await updateBankSetting('rogues_den_cost', staminasToRemove);
+		await ClientSettings.updateBankSetting('rogues_den_cost', staminasToRemove);
 	}
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		minigameID: 'rogues_den',

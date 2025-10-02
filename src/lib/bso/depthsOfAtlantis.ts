@@ -4,7 +4,6 @@ import {
 	formatDuration,
 	formatOrdinal,
 	increaseNumByPercent,
-	mentionCommand,
 	reduceNumByPercent,
 	Time
 } from '@oldschoolgg/toolkit';
@@ -14,6 +13,7 @@ import { clamp } from 'remeda';
 
 import { calcSetupPercent } from '@/lib/data/cox.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { mentionCommand } from '@/lib/discord/index.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import type { Skills } from '@/lib/types/index.js';
 import { Gear } from '../structures/Gear.js';
@@ -218,7 +218,6 @@ const requirements: {
 			const tumCharges = TUMEKEN_SHADOW_PER_RAID * quantity;
 			if (user.gear.mage.hasEquipped("Tumeken's shadow") && user.user.tum_shadow_charges < tumCharges) {
 				return `You need atleast ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
-					globalClient,
 					'minion',
 					'charge'
 				)}`;
@@ -226,7 +225,6 @@ const requirements: {
 			const voidStaffCharges = VOID_STAFF_CHARGES_PER_RAID * quantity;
 			if (user.gear.mage.hasEquipped('Void staff') && user.user.void_staff_charges < voidStaffCharges) {
 				return `You need atleast ${voidStaffCharges} Void staff charges to use it, otherwise it has to be unequipped: ${mentionCommand(
-					globalClient,
 					'minion',
 					'charge'
 				)}`;
@@ -550,7 +548,7 @@ export async function checkDOAUser({
 
 	const kc = await user.fetchMinigameScore(challengeMode ? 'depths_of_atlantis_cm' : 'depths_of_atlantis');
 
-	const userStats = await user.fetchStats({ doa_attempts: true, doa_room_attempts_bank: true });
+	const userStats = await user.fetchStats();
 
 	const kcBank = userStats.doa_room_attempts_bank as ItemBank;
 	const roomKCs = {
@@ -747,24 +745,13 @@ export async function doaCheckCommand(user: MUser) {
 		return `🔴 You aren't able to join a Depths of Atlantis raid, address these issues first: ${result}`;
 	}
 
-	return `✅ You are ready to do the Depths of Atlantis! Start a raid: ${mentionCommand(
-		globalClient,
-		'raid',
-		'doa',
-		'start'
-	)}`;
+	return `✅ You are ready to do the Depths of Atlantis! Start a raid: ${mentionCommand('raid', 'doa', 'start')}`;
 }
 const uniques = resolveItems(['Oceanic relic', 'Aquifer aegis', 'Shark jaw']);
 
 export async function doaHelpCommand(user: MUser) {
 	const gearStats = calculateUserGearPercents(user.gear);
-	const stats = await user.fetchStats({
-		doa_attempts: true,
-		doa_cost: true,
-		doa_loot: true,
-		doa_room_attempts_bank: true,
-		doa_total_minutes_raided: true
-	});
+	const stats = await user.fetchStats();
 
 	let totalUniques = 0;
 	for (const item of uniques) {

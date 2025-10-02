@@ -12,7 +12,6 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const trawlerTask: MinionTask = {
 	type: 'FishingTrawler',
-	isNew: true,
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
 		const { channelID, quantity } = data;
 		await user.incrementMinigameScore('fishing_trawler', quantity);

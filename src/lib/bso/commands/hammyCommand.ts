@@ -1,9 +1,6 @@
 import { randArrItem, roll } from '@oldschoolgg/rng';
 import { Emoji } from '@oldschoolgg/toolkit';
-import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
-
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 
 // roll(chanceToDouble) to decide if the item doubles
 const chanceToDouble = 100;
@@ -42,12 +39,11 @@ const hammyDoubleMessages = [
 	"Hammy takes your {item} while you aren't looking and runs to the casino. He comes back rich and hands you an extra {item} for your trouble."
 ];
 
-export async function feedHammyCommand(interaction: ChatInputCommandInteraction, user: MUser, itemName: string) {
+export async function feedHammyCommand(interaction: MInteraction, user: MUser, itemName: string) {
 	const firstItem = Items.get(itemName);
 	if (!firstItem) return "That's not a valid item.";
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`${user}, are you sure you want to give ${firstItem.name} to Hammy? You probably won't get it back.`
 	);
 

@@ -1,1576 +1,1582 @@
 [
-	{
-		"name": "Adamant arrow",
-		"id": 890,
-		"level": 60,
-		"xp": 10,
-		"input_items": {
-			"43": 1,
-			"53": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Adamant bolts",
-		"id": 9143,
-		"level": 61,
-		"xp": 7,
-		"input_items": {
-			"314": 1,
-			"9380": 1
-		},
-		"tick_rate": 0.08
-	},
-	{
-		"name": "Adamant crossbow",
-		"id": 9183,
-		"level": 61,
-		"xp": 41,
-		"input_items": {
-			"9438": 1,
-			"9463": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Adamant crossbow (u)",
-		"id": 9463,
-		"level": 61,
-		"xp": 82,
-		"input_items": {
-			"9429": 1,
-			"9450": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Adamant dart",
-		"id": 810,
-		"level": 67,
-		"xp": 15,
-		"input_items": {
-			"314": 1,
-			"823": 1
-		},
-		"tick_rate": 0.08
-	},
-	{
-		"name": "Adamant javelin",
-		"id": 829,
-		"level": 62,
-		"xp": 10,
-		"input_items": {
-			"19578": 1,
-			"19584": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Amethyst arrow",
-		"id": 21326,
-		"level": 82,
-		"xp": 13.5,
-		"input_items": {
-			"53": 1,
-			"21350": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Amethyst broad bolts",
-		"id": 21316,
-		"level": 76,
-		"xp": 10.6,
-		"input_items": {
-			"11875": 1,
-			"21338": 1
-		},
-		"tick_rate": 0.13,
-		"required_slayer_unlocks": ["Broader fletching"]
-	},
-	{
-		"name": "Amethyst dart",
-		"id": 25849,
-		"level": 90,
-		"xp": 21,
-		"input_items": {
-			"314": 1,
-			"25853": 1
-		},
-		"tick_rate": 0.08
-	},
-	{
-		"name": "Amethyst javelin",
-		"id": 21318,
-		"level": 84,
-		"xp": 13.5,
-		"input_items": {
-			"19584": 1,
-			"21352": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Arrow shaft",
-		"id": 52,
-		"level": 1,
-		"xp": 5,
-		"input_items": {
-			"1511": 1
-		},
-		"tick_rate": 2,
-		"output_multiple": 15
-	},
-	{
-		"name": "Battlestaff",
-		"id": 1391,
-		"level": 40,
-		"xp": 80,
-		"input_items": {
-			"22935": 1
-		},
-		"tick_rate": 4
-	},
-	{
-		"name": "Blurite crossbow",
-		"id": 9176,
-		"level": 24,
-		"xp": 16,
-		"input_items": {
-			"9438": 1,
-			"9456": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Blurite crossbow (u)",
-		"id": 9456,
-		"level": 24,
-		"xp": 32,
-		"input_items": {
-			"9422": 1,
-			"9442": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Broad arrows",
-		"id": 4160,
-		"level": 52,
-		"xp": 10,
-		"input_items": {
-			"53": 1,
-			"11874": 1
-		},
-		"tick_rate": 0.13,
-		"required_slayer_unlocks": ["Broader fletching"]
-	},
-	{
-		"name": "Broad bolts",
-		"id": 11875,
-		"level": 55,
-		"xp": 3,
-		"input_items": {
-			"314": 1,
-			"11876": 1
-		},
-		"tick_rate": 0.08,
-		"required_slayer_unlocks": ["Broader fletching"]
-	},
-	{
-		"name": "Bronze arrow",
-		"id": 882,
-		"level": 1,
-		"xp": 1.3,
-		"input_items": {
-			"39": 1,
-			"53": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Bronze bolts",
-		"id": 877,
-		"level": 9,
-		"xp": 0.5,
-		"input_items": {
-			"314": 1,
-			"9375": 1
-		},
-		"tick_rate": 0.08
-	},
-	{
-		"name": "Bronze crossbow",
-		"id": 9174,
-		"level": 9,
-		"xp": 6,
-		"input_items": {
-			"9438": 1,
-			"9454": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Bronze crossbow (u)",
-		"id": 9454,
-		"level": 9,
-		"xp": 12,
-		"input_items": {
-			"9420": 1,
-			"9440": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Bronze dart",
-		"id": 806,
-		"level": 10,
-		"xp": 1.8,
-		"input_items": {
-			"314": 1,
-			"819": 1
-		},
-		"tick_rate": 0.08
-	},
-	{
-		"name": "Bronze javelin",
-		"id": 825,
-		"level": 3,
-		"xp": 1,
-		"input_items": {
-			"19570": 1,
-			"19584": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Diamond bolt tips",
-		"id": 9192,
-		"level": 65,
-		"xp": 7,
-		"input_items": {
-			"1601": 1
-		},
-		"tick_rate": 5,
-		"output_multiple": 12
-	},
-	{
-		"name": "Diamond bolts",
-		"id": 9340,
-		"level": 65,
-		"xp": 7,
-		"input_items": {
-			"9143": 1,
-			"9192": 1
-		},
-		"tick_rate": 0.2
-	},
-	{
-		"name": "Diamond dragon bolts",
-		"id": 21969,
-		"level": 84,
-		"xp": 7,
-		"input_items": {
-			"9192": 1,
-			"21905": 1
-		},
-		"tick_rate": 0.2
-	},
-	{
-		"name": "Dragon arrow",
-		"id": 11212,
-		"level": 90,
-		"xp": 15,
-		"input_items": {
-			"53": 1,
-			"11237": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Dragon bolts",
-		"id": 21905,
-		"level": 84,
-		"xp": 12,
-		"input_items": {
-			"314": 1,
-			"21930": 1
-		},
-		"tick_rate": 0.08
-	},
-	{
-		"name": "Dragon crossbow",
-		"id": 21902,
-		"level": 78,
-		"xp": 70,
-		"input_items": {
-			"9438": 1,
-			"21921": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Dragon crossbow (u)",
-		"id": 21921,
-		"level": 78,
-		"xp": 135,
-		"input_items": {
-			"21918": 1,
-			"21952": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Dragon dart",
-		"id": 11230,
-		"level": 95,
-		"xp": 25,
-		"input_items": {
-			"314": 1,
-			"11232": 1
-		},
-		"tick_rate": 0.08
-	},
-	{
-		"name": "Dragon javelin",
-		"id": 19484,
-		"level": 92,
-		"xp": 15,
-		"input_items": {
-			"19582": 1,
-			"19584": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Dragonstone bolt tips",
-		"id": 9193,
-		"level": 71,
-		"xp": 8.2,
-		"input_items": {
-			"1615": 1
-		},
-		"tick_rate": 5,
-		"output_multiple": 12
-	},
-	{
-		"name": "Dragonstone bolts",
-		"id": 9341,
-		"level": 71,
-		"xp": 8.2,
-		"input_items": {
-			"9144": 1,
-			"9193": 1
-		},
-		"tick_rate": 0.2
-	},
-	{
-		"name": "Dragonstone dragon bolts",
-		"id": 21971,
-		"level": 84,
-		"xp": 8.2,
-		"input_items": {
-			"9193": 1,
-			"21905": 1
-		},
-		"tick_rate": 0.2
-	},
-	{
-		"name": "Elder arrow shaft",
-		"id": 52,
-		"level": 105,
-		"xp": 100,
-		"input_items": {
-			"50017": 1
-		},
-		"tick_rate": 2,
-		"output_multiple": 300
-	},
-	{
-		"name": "Elder bow",
-		"id": 50020,
-		"level": 105,
-		"xp": 391.5,
-		"input_items": {
-			"1777": 1,
-			"50019": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Elder bow(u)",
-		"id": 50019,
-		"level": 105,
-		"xp": 391.5,
-		"input_items": {
-			"50017": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Emerald bolt tips",
-		"id": 9190,
-		"level": 58,
-		"xp": 5.5,
-		"input_items": {
-			"1605": 1
-		},
-		"tick_rate": 5,
-		"output_multiple": 12
-	},
-	{
-		"name": "Emerald bolts",
-		"id": 9338,
-		"level": 58,
-		"xp": 5.5,
-		"input_items": {
-			"9142": 1,
-			"9190": 1
-		},
-		"tick_rate": 0.2
-	},
-	{
-		"name": "Emerald dragon bolts",
-		"id": 21965,
-		"level": 84,
-		"xp": 5.5,
-		"input_items": {
-			"9190": 1,
-			"21905": 1
-		},
-		"tick_rate": 0.2
-	},
-	{
-		"name": "Flighted ogre arrow",
-		"id": 2865,
-		"level": 5,
-		"xp": 9,
-		"input_items": {
-			"314": 4,
-			"2864": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Headless arrow",
-		"id": 53,
-		"level": 1,
-		"xp": 1,
-		"input_items": {
-			"52": 1,
-			"314": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Heavy ballista",
-		"id": 19481,
-		"level": 72,
-		"xp": 1,
-		"input_items": {
-			"19607": 1,
-			"19610": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Hellfire arrow",
-		"id": 48219,
-		"level": 110,
-		"xp": 750,
-		"output_multiple": 5,
-		"input_items": {
-			"53": 1,
-			"48207": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Hellfire bow",
-		"id": 48220,
-		"level": 110,
-		"xp": 250000,
-		"input_items": {
-			"2832": 1,
-			"13233": 3,
-			"20997": 1,
-			"48208": 1,
-			"48209": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Incomplete heavy ballista",
-		"id": 19598,
-		"level": 47,
-		"xp": 1,
-		"input_items": {
-			"19589": 1,
-			"19592": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Incomplete light ballista",
-		"id": 19595,
-		"level": 47,
-		"xp": 1,
-		"input_items": {
-			"19586": 1,
-			"19592": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Iron arrow",
-		"id": 884,
-		"level": 15,
-		"xp": 2.5,
-		"input_items": {
-			"40": 1,
-			"53": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Iron bolts",
-		"id": 9140,
-		"level": 39,
-		"xp": 1.5,
-		"input_items": {
-			"314": 1,
-			"9377": 1
-		},
-		"tick_rate": 0.08
-	},
-	{
-		"name": "Iron crossbow",
-		"id": 9177,
-		"level": 39,
-		"xp": 22,
-		"input_items": {
-			"9438": 1,
-			"9457": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Iron crossbow (u)",
-		"id": 9457,
-		"level": 39,
-		"xp": 44,
-		"input_items": {
-			"9423": 1,
-			"9444": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Iron dart",
-		"id": 807,
-		"level": 22,
-		"xp": 3.8,
-		"input_items": {
-			"314": 1,
-			"820": 1
-		},
-		"tick_rate": 0.08
-	},
-	{
-		"name": "Iron javelin",
-		"id": 826,
-		"level": 17,
-		"xp": 2,
-		"input_items": {
-			"19572": 1,
-			"19584": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Jade bolt tips",
-		"id": 9187,
-		"level": 26,
-		"xp": 2.4,
-		"input_items": {
-			"1611": 1
-		},
-		"tick_rate": 5,
-		"output_multiple": 12
-	},
-	{
-		"name": "Jade dragon bolts",
-		"id": 21957,
-		"level": 84,
-		"xp": 2.4,
-		"input_items": {
-			"9187": 1,
-			"21905": 1
-		},
-		"tick_rate": 0.2
-	},
-	{
-		"name": "Javelin shaft",
-		"id": 19584,
-		"level": 3,
-		"xp": 5,
-		"input_items": {
-			"1511": 1
-		},
-		"tick_rate": 2,
-		"output_multiple": 15
-	},
-	{
-		"name": "Light ballista",
-		"id": 19478,
-		"level": 72,
-		"xp": 1,
-		"input_items": {
-			"19604": 1,
-			"19610": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Longbow",
-		"id": 839,
-		"level": 10,
-		"xp": 10,
-		"input_items": {
-			"48": 1,
-			"1777": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Longbow (u)",
-		"id": 48,
-		"level": 10,
-		"xp": 10,
-		"input_items": {
-			"1511": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Magic arrow shaft",
-		"id": 52,
-		"level": 75,
-		"xp": 30,
-		"input_items": {
-			"1513": 1
-		},
-		"tick_rate": 2,
-		"output_multiple": 90
-	},
-	{
-		"name": "Magic longbow",
-		"id": 859,
-		"level": 85,
-		"xp": 91.5,
-		"input_items": {
-			"70": 1,
-			"1777": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Magic longbow (u)",
-		"id": 70,
-		"level": 85,
-		"xp": 91.5,
-		"input_items": {
-			"1513": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Magic shield",
-		"id": 22263,
-		"level": 87,
-		"xp": 183,
-		"input_items": {
-			"1513": 2
-		},
-		"tick_rate": 7
-	},
-	{
-		"name": "Magic shortbow",
-		"id": 861,
-		"level": 80,
-		"xp": 83.3,
-		"input_items": {
-			"72": 1,
-			"1777": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Magic shortbow (u)",
-		"id": 72,
-		"level": 80,
-		"xp": 83.3,
-		"input_items": {
-			"1513": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Magic stock",
-		"id": 21952,
-		"level": 78,
-		"xp": 70,
-		"input_items": {
-			"1513": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Mahogany stock",
-		"id": 9450,
-		"level": 61,
-		"xp": 41,
-		"input_items": {
-			"6332": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Maple arrow shaft",
-		"id": 52,
-		"level": 45,
-		"xp": 20,
-		"input_items": {
-			"1517": 1
-		},
-		"tick_rate": 2,
-		"output_multiple": 60
-	},
-	{
-		"name": "Maple longbow",
-		"id": 851,
-		"level": 55,
-		"xp": 58.2,
-		"input_items": {
-			"62": 1,
-			"1777": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Maple longbow (u)",
-		"id": 62,
-		"level": 55,
-		"xp": 58.3,
-		"input_items": {
-			"1517": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Maple shield",
-		"id": 22257,
-		"level": 57,
-		"xp": 116.5,
-		"input_items": {
-			"1517": 2
-		},
-		"tick_rate": 7
-	},
-	{
-		"name": "Maple shortbow",
-		"id": 853,
-		"level": 50,
-		"xp": 50,
-		"input_items": {
-			"64": 1,
-			"1777": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Maple shortbow (u)",
-		"id": 64,
-		"level": 50,
-		"xp": 50,
-		"input_items": {
-			"1517": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Maple stock",
-		"id": 9448,
-		"level": 54,
-		"xp": 32,
-		"input_items": {
-			"1517": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Mithril arrow",
-		"id": 888,
-		"level": 45,
-		"xp": 7.5,
-		"input_items": {
-			"42": 1,
-			"53": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Mithril bolts",
-		"id": 9142,
-		"level": 54,
-		"xp": 5,
-		"input_items": {
-			"314": 1,
-			"9379": 1
-		},
-		"tick_rate": 0.08
-	},
-	{
-		"name": "Mithril crossbow",
-		"id": 9181,
-		"level": 54,
-		"xp": 32,
-		"input_items": {
-			"9438": 1,
-			"9461": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Mithril crossbow (u)",
-		"id": 9461,
-		"level": 54,
-		"xp": 64,
-		"input_items": {
-			"9427": 1,
-			"9448": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Mithril dart",
-		"id": 809,
-		"level": 52,
-		"xp": 11.2,
-		"input_items": {
-			"314": 1,
-			"822": 1
-		},
-		"tick_rate": 0.08
-	},
-	{
-		"name": "Mithril javelin",
-		"id": 828,
-		"level": 47,
-		"xp": 8,
-		"input_items": {
-			"19576": 1,
-			"19584": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Oak arrow shaft",
-		"id": 52,
-		"level": 15,
-		"xp": 10,
-		"input_items": {
-			"1521": 1
-		},
-		"tick_rate": 2,
-		"output_multiple": 30
-	},
-	{
-		"name": "Oak longbow",
-		"id": 845,
-		"level": 25,
-		"xp": 25,
-		"input_items": {
-			"56": 1,
-			"1777": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Oak longbow (u)",
-		"id": 56,
-		"level": 25,
-		"xp": 25,
-		"input_items": {
-			"1521": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Oak shield",
-		"id": 22251,
-		"level": 27,
-		"xp": 50,
-		"input_items": {
-			"1521": 2
-		},
-		"tick_rate": 7
-	},
-	{
-		"name": "Oak shortbow",
-		"id": 843,
-		"level": 20,
-		"xp": 16.5,
-		"input_items": {
-			"54": 1,
-			"1777": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Oak shortbow (u)",
-		"id": 54,
-		"level": 20,
-		"xp": 16.5,
-		"input_items": {
-			"1521": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Oak stock",
-		"id": 9442,
-		"level": 24,
-		"xp": 16,
-		"input_items": {
-			"1521": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Obsidian javelin",
-		"id": 70423,
-		"level": 99,
-		"xp": 55,
-		"input_items": {
-			"19584": 1,
-			"70424": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Ogre arrow",
-		"id": 2866,
-		"level": 5,
-		"xp": 6,
-		"input_items": {
-			"2861": 1,
-			"2865": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Ogre arrow shaft",
-		"id": 2864,
-		"level": 5,
-		"xp": 7.2,
-		"input_items": {
-			"2862": 1
-		},
-		"tick_rate": 2,
-		"output_multiple": 15
-	},
-	{
-		"name": "Onyx bolt tips",
-		"id": 9194,
-		"level": 73,
-		"xp": 9.4,
-		"input_items": {
-			"6573": 1
-		},
-		"tick_rate": 5,
-		"output_multiple": 12
-	},
-	{
-		"name": "Onyx bolts",
-		"id": 9342,
-		"level": 73,
-		"xp": 9.4,
-		"input_items": {
-			"9144": 1,
-			"9194": 1
-		},
-		"tick_rate": 0.2
-	},
-	{
-		"name": "Onyx dragon bolts",
-		"id": 21973,
-		"level": 84,
-		"xp": 9.4,
-		"input_items": {
-			"9194": 1,
-			"21905": 1
-		},
-		"tick_rate": 0.2
-	},
-	{
-		"name": "Opal bolt tips",
-		"id": 45,
-		"level": 11,
-		"xp": 1.5,
-		"input_items": {
-			"1609": 1
-		},
-		"tick_rate": 5,
-		"output_multiple": 12
-	},
-	{
-		"name": "Opal bolts",
-		"id": 879,
-		"level": 11,
-		"xp": 1.6,
-		"input_items": {
-			"45": 1,
-			"877": 1
-		},
-		"tick_rate": 0.2
-	},
-	{
-		"name": "Opal dragon bolts",
-		"id": 21955,
-		"level": 84,
-		"xp": 1.6,
-		"input_items": {
-			"45": 1,
-			"21905": 1
-		},
-		"tick_rate": 0.2
-	},
-	{
-		"name": "Pearl bolt tips",
-		"id": 46,
-		"level": 41,
-		"xp": 3.2,
-		"input_items": {
-			"413": 1
-		},
-		"tick_rate": 5,
-		"output_multiple": 24
-	},
-	{
-		"name": "Pearl bolts",
-		"id": 880,
-		"level": 41,
-		"xp": 3.2,
-		"input_items": {
-			"46": 1,
-			"9140": 1
-		},
-		"tick_rate": 0.2
-	},
-	{
-		"name": "Pearl dragon bolts",
-		"id": 21959,
-		"level": 84,
-		"xp": 3.2,
-		"input_items": {
-			"46": 1,
-			"21905": 1
-		},
-		"tick_rate": 0.2
-	},
-	{
-		"name": "Redwood arrow shaft",
-		"id": 52,
-		"level": 90,
-		"xp": 35,
-		"input_items": {
-			"19669": 1
-		},
-		"tick_rate": 2,
-		"output_multiple": 105
-	},
-	{
-		"name": "Redwood shield",
-		"id": 22266,
-		"level": 92,
-		"xp": 216,
-		"input_items": {
-			"19669": 2
-		},
-		"tick_rate": 7
-	},
-	{
-		"name": "Ruby bolt tips",
-		"id": 9191,
-		"level": 63,
-		"xp": 6.3,
-		"input_items": {
-			"1603": 1
-		},
-		"tick_rate": 5,
-		"output_multiple": 12
-	},
-	{
-		"name": "Ruby bolts",
-		"id": 9339,
-		"level": 63,
-		"xp": 6.3,
-		"input_items": {
-			"9143": 1,
-			"9191": 1
-		},
-		"tick_rate": 0.2
-	},
-	{
-		"name": "Ruby dragon bolts",
-		"id": 21967,
-		"level": 84,
-		"xp": 6.3,
-		"input_items": {
-			"9191": 1,
-			"21905": 1
-		},
-		"tick_rate": 0.2
-	},
-	{
-		"name": "Rune arrow",
-		"id": 892,
-		"level": 75,
-		"xp": 12.5,
-		"input_items": {
-			"44": 1,
-			"53": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Rune crossbow",
-		"id": 9185,
-		"level": 69,
-		"xp": 50,
-		"input_items": {
-			"9438": 1,
-			"9465": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Rune dart",
-		"id": 811,
-		"level": 81,
-		"xp": 18.8,
-		"input_items": {
-			"314": 1,
-			"824": 1
-		},
-		"tick_rate": 0.08
-	},
-	{
-		"name": "Rune javelin",
-		"id": 830,
-		"level": 77,
-		"xp": 12.4,
-		"input_items": {
-			"19580": 1,
-			"19584": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Runite bolts",
-		"id": 9144,
-		"level": 69,
-		"xp": 10,
-		"input_items": {
-			"314": 1,
-			"9381": 1
-		},
-		"tick_rate": 0.08
-	},
-	{
-		"name": "Runite crossbow (u)",
-		"id": 9465,
-		"level": 69,
-		"xp": 100,
-		"input_items": {
-			"9431": 1,
-			"9452": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Sapphire bolt tips",
-		"id": 9189,
-		"level": 56,
-		"xp": 4.7,
-		"input_items": {
-			"1607": 1
-		},
-		"tick_rate": 5,
-		"output_multiple": 12
-	},
-	{
-		"name": "Sapphire bolts",
-		"id": 9337,
-		"level": 56,
-		"xp": 4.7,
-		"input_items": {
-			"9142": 1,
-			"9189": 1
-		},
-		"tick_rate": 0.2
-	},
-	{
-		"name": "Sapphire dragon bolts",
-		"id": 21963,
-		"level": 84,
-		"xp": 4.7,
-		"input_items": {
-			"9189": 1,
-			"21905": 1
-		},
-		"tick_rate": 0.2
-	},
-	{
-		"name": "Shortbow",
-		"id": 841,
-		"level": 5,
-		"xp": 5,
-		"input_items": {
-			"50": 1,
-			"1777": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Shortbow (u)",
-		"id": 50,
-		"level": 5,
-		"xp": 5,
-		"input_items": {
-			"1511": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Silver bolts",
-		"id": 9145,
-		"level": 43,
-		"xp": 2.5,
-		"input_items": {
-			"314": 1,
-			"9382": 1
-		},
-		"tick_rate": 0.08
-	},
-	{
-		"name": "Steel arrow",
-		"id": 886,
-		"level": 30,
-		"xp": 5,
-		"input_items": {
-			"41": 1,
-			"53": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Steel bolts",
-		"id": 9141,
-		"level": 46,
-		"xp": 3.5,
-		"input_items": {
-			"314": 1,
-			"9378": 1
-		},
-		"tick_rate": 0.08
-	},
-	{
-		"name": "Steel crossbow",
-		"id": 9179,
-		"level": 46,
-		"xp": 27,
-		"input_items": {
-			"9438": 1,
-			"9459": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Steel crossbow (u)",
-		"id": 9459,
-		"level": 46,
-		"xp": 54,
-		"input_items": {
-			"9425": 1,
-			"9446": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Steel dart",
-		"id": 808,
-		"level": 37,
-		"xp": 7.5,
-		"input_items": {
-			"314": 1,
-			"821": 1
-		},
-		"tick_rate": 0.08
-	},
-	{
-		"name": "Steel javelin",
-		"id": 827,
-		"level": 32,
-		"xp": 5,
-		"input_items": {
-			"19574": 1,
-			"19584": 1
-		},
-		"tick_rate": 0.13
-	},
-	{
-		"name": "Teak stock",
-		"id": 9446,
-		"level": 46,
-		"xp": 27,
-		"input_items": {
-			"6333": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Topaz bolt tips",
-		"id": 9188,
-		"level": 48,
-		"xp": 3.9,
-		"input_items": {
-			"1613": 1
-		},
-		"tick_rate": 5,
-		"output_multiple": 12
-	},
-	{
-		"name": "Topaz bolts",
-		"id": 9336,
-		"level": 48,
-		"xp": 4,
-		"input_items": {
-			"9141": 1,
-			"9188": 1
-		},
-		"tick_rate": 0.2
-	},
-	{
-		"name": "Topaz dragon bolts",
-		"id": 21961,
-		"level": 84,
-		"xp": 4,
-		"input_items": {
-			"9188": 1,
-			"21905": 1
-		},
-		"tick_rate": 0.2
-	},
-	{
-		"name": "Toxic blowpipe (empty)",
-		"id": 12924,
-		"level": 78,
-		"xp": 120,
-		"input_items": {
-			"12922": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Unstrung heavy ballista",
-		"id": 19607,
-		"level": 72,
-		"xp": 1,
-		"input_items": {
-			"19598": 1,
-			"19601": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Unstrung light ballista",
-		"id": 19604,
-		"level": 72,
-		"xp": 1,
-		"input_items": {
-			"19595": 1,
-			"19601": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Willow arrow shaft",
-		"id": 52,
-		"level": 30,
-		"xp": 15,
-		"input_items": {
-			"1519": 1
-		},
-		"tick_rate": 2,
-		"output_multiple": 45
-	},
-	{
-		"name": "Willow longbow",
-		"id": 847,
-		"level": 40,
-		"xp": 41.5,
-		"input_items": {
-			"58": 1,
-			"1777": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Willow longbow (u)",
-		"id": 58,
-		"level": 40,
-		"xp": 41.5,
-		"input_items": {
-			"1519": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Willow shield",
-		"id": 22254,
-		"level": 42,
-		"xp": 83,
-		"input_items": {
-			"1519": 2
-		},
-		"tick_rate": 7
-	},
-	{
-		"name": "Willow shortbow",
-		"id": 849,
-		"level": 35,
-		"xp": 33.3,
-		"input_items": {
-			"60": 1,
-			"1777": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Willow shortbow (u)",
-		"id": 60,
-		"level": 35,
-		"xp": 33.3,
-		"input_items": {
-			"1519": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Willow stock",
-		"id": 9444,
-		"level": 39,
-		"xp": 22,
-		"input_items": {
-			"1519": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Wolfbone arrowtips",
-		"id": 2861,
-		"level": 5,
-		"xp": 2.5,
-		"input_items": {
-			"2859": 1
-		},
-		"tick_rate": 0.13,
-		"output_multiple": 4,
-		"crafting_xp": 2.5
-	},
-	{
-		"name": "Wooden stock",
-		"id": 9440,
-		"level": 9,
-		"xp": 6,
-		"input_items": {
-			"1511": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Yew arrow shaft",
-		"id": 52,
-		"level": 60,
-		"xp": 25,
-		"input_items": {
-			"1515": 1
-		},
-		"tick_rate": 2,
-		"output_multiple": 75
-	},
-	{
-		"name": "Yew longbow",
-		"id": 855,
-		"level": 70,
-		"xp": 75,
-		"input_items": {
-			"66": 1,
-			"1777": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Yew longbow (u)",
-		"id": 66,
-		"level": 70,
-		"xp": 75,
-		"input_items": {
-			"1515": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Yew shield",
-		"id": 22260,
-		"level": 72,
-		"xp": 150,
-		"input_items": {
-			"1515": 2
-		},
-		"tick_rate": 7
-	},
-	{
-		"name": "Yew shortbow",
-		"id": 857,
-		"level": 65,
-		"xp": 67.5,
-		"input_items": {
-			"68": 1,
-			"1777": 1
-		},
-		"tick_rate": 2
-	},
-	{
-		"name": "Yew shortbow (u)",
-		"id": 68,
-		"level": 65,
-		"xp": 67.5,
-		"input_items": {
-			"1515": 1
-		},
-		"tick_rate": 3
-	},
-	{
-		"name": "Yew stock",
-		"id": 9452,
-		"level": 69,
-		"xp": 50,
-		"input_items": {
-			"1515": 1
-		},
-		"tick_rate": 3
-	}
+    {
+        "name": "Adamant arrow",
+        "id": 890,
+        "level": 60,
+        "xp": 10,
+        "input_items": {
+            "43": 1,
+            "53": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Adamant bolts",
+        "id": 9143,
+        "level": 61,
+        "xp": 7,
+        "input_items": {
+            "314": 1,
+            "9380": 1
+        },
+        "tick_rate": 0.08
+    },
+    {
+        "name": "Adamant crossbow",
+        "id": 9183,
+        "level": 61,
+        "xp": 41,
+        "input_items": {
+            "9438": 1,
+            "9463": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Adamant crossbow (u)",
+        "id": 9463,
+        "level": 61,
+        "xp": 82,
+        "input_items": {
+            "9429": 1,
+            "9450": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Adamant dart",
+        "id": 810,
+        "level": 67,
+        "xp": 15,
+        "input_items": {
+            "314": 1,
+            "823": 1
+        },
+        "tick_rate": 0.08
+    },
+    {
+        "name": "Adamant javelin",
+        "id": 829,
+        "level": 62,
+        "xp": 10,
+        "input_items": {
+            "19578": 1,
+            "19584": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Amethyst arrow",
+        "id": 21326,
+        "level": 82,
+        "xp": 13.5,
+        "input_items": {
+            "53": 1,
+            "21350": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Amethyst broad bolts",
+        "id": 21316,
+        "level": 76,
+        "xp": 10.6,
+        "input_items": {
+            "11875": 1,
+            "21338": 1
+        },
+        "tick_rate": 0.13,
+        "required_slayer_unlocks": [
+            "Broader fletching"
+        ]
+    },
+    {
+        "name": "Amethyst dart",
+        "id": 25849,
+        "level": 90,
+        "xp": 21,
+        "input_items": {
+            "314": 1,
+            "25853": 1
+        },
+        "tick_rate": 0.08
+    },
+    {
+        "name": "Amethyst javelin",
+        "id": 21318,
+        "level": 84,
+        "xp": 13.5,
+        "input_items": {
+            "19584": 1,
+            "21352": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Arrow shaft",
+        "id": 52,
+        "level": 1,
+        "xp": 5,
+        "input_items": {
+            "1511": 1
+        },
+        "tick_rate": 2,
+        "output_multiple": 15
+    },
+    {
+        "name": "Battlestaff",
+        "id": 1391,
+        "level": 40,
+        "xp": 80,
+        "input_items": {
+            "22935": 1
+        },
+        "tick_rate": 4
+    },
+    {
+        "name": "Blurite crossbow",
+        "id": 9176,
+        "level": 24,
+        "xp": 16,
+        "input_items": {
+            "9438": 1,
+            "9456": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Blurite crossbow (u)",
+        "id": 9456,
+        "level": 24,
+        "xp": 32,
+        "input_items": {
+            "9422": 1,
+            "9442": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Broad arrows",
+        "id": 4160,
+        "level": 52,
+        "xp": 10,
+        "input_items": {
+            "53": 1,
+            "11874": 1
+        },
+        "tick_rate": 0.13,
+        "required_slayer_unlocks": [
+            "Broader fletching"
+        ]
+    },
+    {
+        "name": "Broad bolts",
+        "id": 11875,
+        "level": 55,
+        "xp": 3,
+        "input_items": {
+            "314": 1,
+            "11876": 1
+        },
+        "tick_rate": 0.08,
+        "required_slayer_unlocks": [
+            "Broader fletching"
+        ]
+    },
+    {
+        "name": "Bronze arrow",
+        "id": 882,
+        "level": 1,
+        "xp": 1.3,
+        "input_items": {
+            "39": 1,
+            "53": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Bronze bolts",
+        "id": 877,
+        "level": 9,
+        "xp": 0.5,
+        "input_items": {
+            "314": 1,
+            "9375": 1
+        },
+        "tick_rate": 0.08
+    },
+    {
+        "name": "Bronze crossbow",
+        "id": 9174,
+        "level": 9,
+        "xp": 6,
+        "input_items": {
+            "9438": 1,
+            "9454": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Bronze crossbow (u)",
+        "id": 9454,
+        "level": 9,
+        "xp": 12,
+        "input_items": {
+            "9420": 1,
+            "9440": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Bronze dart",
+        "id": 806,
+        "level": 10,
+        "xp": 1.8,
+        "input_items": {
+            "314": 1,
+            "819": 1
+        },
+        "tick_rate": 0.08
+    },
+    {
+        "name": "Bronze javelin",
+        "id": 825,
+        "level": 3,
+        "xp": 1,
+        "input_items": {
+            "19570": 1,
+            "19584": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Diamond bolt tips",
+        "id": 9192,
+        "level": 65,
+        "xp": 7,
+        "input_items": {
+            "1601": 1
+        },
+        "tick_rate": 5,
+        "output_multiple": 12
+    },
+    {
+        "name": "Diamond bolts",
+        "id": 9340,
+        "level": 65,
+        "xp": 7,
+        "input_items": {
+            "9143": 1,
+            "9192": 1
+        },
+        "tick_rate": 0.2
+    },
+    {
+        "name": "Diamond dragon bolts",
+        "id": 21969,
+        "level": 84,
+        "xp": 7,
+        "input_items": {
+            "9192": 1,
+            "21905": 1
+        },
+        "tick_rate": 0.2
+    },
+    {
+        "name": "Dragon arrow",
+        "id": 11212,
+        "level": 90,
+        "xp": 15,
+        "input_items": {
+            "53": 1,
+            "11237": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Dragon bolts",
+        "id": 21905,
+        "level": 84,
+        "xp": 12,
+        "input_items": {
+            "314": 1,
+            "21930": 1
+        },
+        "tick_rate": 0.08
+    },
+    {
+        "name": "Dragon crossbow",
+        "id": 21902,
+        "level": 78,
+        "xp": 70,
+        "input_items": {
+            "9438": 1,
+            "21921": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Dragon crossbow (u)",
+        "id": 21921,
+        "level": 78,
+        "xp": 135,
+        "input_items": {
+            "21918": 1,
+            "21952": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Dragon dart",
+        "id": 11230,
+        "level": 95,
+        "xp": 25,
+        "input_items": {
+            "314": 1,
+            "11232": 1
+        },
+        "tick_rate": 0.08
+    },
+    {
+        "name": "Dragon javelin",
+        "id": 19484,
+        "level": 92,
+        "xp": 15,
+        "input_items": {
+            "19582": 1,
+            "19584": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Dragonstone bolt tips",
+        "id": 9193,
+        "level": 71,
+        "xp": 8.2,
+        "input_items": {
+            "1615": 1
+        },
+        "tick_rate": 5,
+        "output_multiple": 12
+    },
+    {
+        "name": "Dragonstone bolts",
+        "id": 9341,
+        "level": 71,
+        "xp": 8.2,
+        "input_items": {
+            "9144": 1,
+            "9193": 1
+        },
+        "tick_rate": 0.2
+    },
+    {
+        "name": "Dragonstone dragon bolts",
+        "id": 21971,
+        "level": 84,
+        "xp": 8.2,
+        "input_items": {
+            "9193": 1,
+            "21905": 1
+        },
+        "tick_rate": 0.2
+    },
+    {
+        "name": "Elder arrow shaft",
+        "id": 52,
+        "level": 105,
+        "xp": 100,
+        "input_items": {
+            "50017": 1
+        },
+        "tick_rate": 2,
+        "output_multiple": 300
+    },
+    {
+        "name": "Elder bow",
+        "id": 50020,
+        "level": 105,
+        "xp": 391.5,
+        "input_items": {
+            "1777": 1,
+            "50019": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Elder bow(u)",
+        "id": 50019,
+        "level": 105,
+        "xp": 391.5,
+        "input_items": {
+            "50017": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Emerald bolt tips",
+        "id": 9190,
+        "level": 58,
+        "xp": 5.5,
+        "input_items": {
+            "1605": 1
+        },
+        "tick_rate": 5,
+        "output_multiple": 12
+    },
+    {
+        "name": "Emerald bolts",
+        "id": 9338,
+        "level": 58,
+        "xp": 5.5,
+        "input_items": {
+            "9142": 1,
+            "9190": 1
+        },
+        "tick_rate": 0.2
+    },
+    {
+        "name": "Emerald dragon bolts",
+        "id": 21965,
+        "level": 84,
+        "xp": 5.5,
+        "input_items": {
+            "9190": 1,
+            "21905": 1
+        },
+        "tick_rate": 0.2
+    },
+    {
+        "name": "Flighted ogre arrow",
+        "id": 2865,
+        "level": 5,
+        "xp": 9,
+        "input_items": {
+            "314": 4,
+            "2864": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Headless arrow",
+        "id": 53,
+        "level": 1,
+        "xp": 1,
+        "input_items": {
+            "52": 1,
+            "314": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Heavy ballista",
+        "id": 19481,
+        "level": 72,
+        "xp": 1,
+        "input_items": {
+            "19607": 1,
+            "19610": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Hellfire arrow",
+        "id": 48219,
+        "level": 110,
+        "xp": 750,
+        "output_multiple": 5,
+        "input_items": {
+            "53": 1,
+            "48207": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Hellfire bow",
+        "id": 48220,
+        "level": 110,
+        "xp": 250000,
+        "input_items": {
+            "2832": 1,
+            "13233": 3,
+            "20997": 1,
+            "48208": 1,
+            "48209": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Incomplete heavy ballista",
+        "id": 19598,
+        "level": 47,
+        "xp": 1,
+        "input_items": {
+            "19589": 1,
+            "19592": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Incomplete light ballista",
+        "id": 19595,
+        "level": 47,
+        "xp": 1,
+        "input_items": {
+            "19586": 1,
+            "19592": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Iron arrow",
+        "id": 884,
+        "level": 15,
+        "xp": 2.5,
+        "input_items": {
+            "40": 1,
+            "53": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Iron bolts",
+        "id": 9140,
+        "level": 39,
+        "xp": 1.5,
+        "input_items": {
+            "314": 1,
+            "9377": 1
+        },
+        "tick_rate": 0.08
+    },
+    {
+        "name": "Iron crossbow",
+        "id": 9177,
+        "level": 39,
+        "xp": 22,
+        "input_items": {
+            "9438": 1,
+            "9457": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Iron crossbow (u)",
+        "id": 9457,
+        "level": 39,
+        "xp": 44,
+        "input_items": {
+            "9423": 1,
+            "9444": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Iron dart",
+        "id": 807,
+        "level": 22,
+        "xp": 3.8,
+        "input_items": {
+            "314": 1,
+            "820": 1
+        },
+        "tick_rate": 0.08
+    },
+    {
+        "name": "Iron javelin",
+        "id": 826,
+        "level": 17,
+        "xp": 2,
+        "input_items": {
+            "19572": 1,
+            "19584": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Jade bolt tips",
+        "id": 9187,
+        "level": 26,
+        "xp": 2.4,
+        "input_items": {
+            "1611": 1
+        },
+        "tick_rate": 5,
+        "output_multiple": 12
+    },
+    {
+        "name": "Jade dragon bolts",
+        "id": 21957,
+        "level": 84,
+        "xp": 2.4,
+        "input_items": {
+            "9187": 1,
+            "21905": 1
+        },
+        "tick_rate": 0.2
+    },
+    {
+        "name": "Javelin shaft",
+        "id": 19584,
+        "level": 3,
+        "xp": 5,
+        "input_items": {
+            "1511": 1
+        },
+        "tick_rate": 2,
+        "output_multiple": 15
+    },
+    {
+        "name": "Light ballista",
+        "id": 19478,
+        "level": 72,
+        "xp": 1,
+        "input_items": {
+            "19604": 1,
+            "19610": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Longbow",
+        "id": 839,
+        "level": 10,
+        "xp": 10,
+        "input_items": {
+            "48": 1,
+            "1777": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Longbow (u)",
+        "id": 48,
+        "level": 10,
+        "xp": 10,
+        "input_items": {
+            "1511": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Magic arrow shaft",
+        "id": 52,
+        "level": 75,
+        "xp": 30,
+        "input_items": {
+            "1513": 1
+        },
+        "tick_rate": 2,
+        "output_multiple": 90
+    },
+    {
+        "name": "Magic longbow",
+        "id": 859,
+        "level": 85,
+        "xp": 91.5,
+        "input_items": {
+            "70": 1,
+            "1777": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Magic longbow (u)",
+        "id": 70,
+        "level": 85,
+        "xp": 91.5,
+        "input_items": {
+            "1513": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Magic shield",
+        "id": 22263,
+        "level": 87,
+        "xp": 183,
+        "input_items": {
+            "1513": 2
+        },
+        "tick_rate": 7
+    },
+    {
+        "name": "Magic shortbow",
+        "id": 861,
+        "level": 80,
+        "xp": 83.3,
+        "input_items": {
+            "72": 1,
+            "1777": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Magic shortbow (u)",
+        "id": 72,
+        "level": 80,
+        "xp": 83.3,
+        "input_items": {
+            "1513": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Magic stock",
+        "id": 21952,
+        "level": 78,
+        "xp": 70,
+        "input_items": {
+            "1513": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Mahogany stock",
+        "id": 9450,
+        "level": 61,
+        "xp": 41,
+        "input_items": {
+            "6332": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Maple arrow shaft",
+        "id": 52,
+        "level": 45,
+        "xp": 20,
+        "input_items": {
+            "1517": 1
+        },
+        "tick_rate": 2,
+        "output_multiple": 60
+    },
+    {
+        "name": "Maple longbow",
+        "id": 851,
+        "level": 55,
+        "xp": 58.2,
+        "input_items": {
+            "62": 1,
+            "1777": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Maple longbow (u)",
+        "id": 62,
+        "level": 55,
+        "xp": 58.3,
+        "input_items": {
+            "1517": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Maple shield",
+        "id": 22257,
+        "level": 57,
+        "xp": 116.5,
+        "input_items": {
+            "1517": 2
+        },
+        "tick_rate": 7
+    },
+    {
+        "name": "Maple shortbow",
+        "id": 853,
+        "level": 50,
+        "xp": 50,
+        "input_items": {
+            "64": 1,
+            "1777": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Maple shortbow (u)",
+        "id": 64,
+        "level": 50,
+        "xp": 50,
+        "input_items": {
+            "1517": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Maple stock",
+        "id": 9448,
+        "level": 54,
+        "xp": 32,
+        "input_items": {
+            "1517": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Mithril arrow",
+        "id": 888,
+        "level": 45,
+        "xp": 7.5,
+        "input_items": {
+            "42": 1,
+            "53": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Mithril bolts",
+        "id": 9142,
+        "level": 54,
+        "xp": 5,
+        "input_items": {
+            "314": 1,
+            "9379": 1
+        },
+        "tick_rate": 0.08
+    },
+    {
+        "name": "Mithril crossbow",
+        "id": 9181,
+        "level": 54,
+        "xp": 32,
+        "input_items": {
+            "9438": 1,
+            "9461": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Mithril crossbow (u)",
+        "id": 9461,
+        "level": 54,
+        "xp": 64,
+        "input_items": {
+            "9427": 1,
+            "9448": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Mithril dart",
+        "id": 809,
+        "level": 52,
+        "xp": 11.2,
+        "input_items": {
+            "314": 1,
+            "822": 1
+        },
+        "tick_rate": 0.08
+    },
+    {
+        "name": "Mithril javelin",
+        "id": 828,
+        "level": 47,
+        "xp": 8,
+        "input_items": {
+            "19576": 1,
+            "19584": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Oak arrow shaft",
+        "id": 52,
+        "level": 15,
+        "xp": 10,
+        "input_items": {
+            "1521": 1
+        },
+        "tick_rate": 2,
+        "output_multiple": 30
+    },
+    {
+        "name": "Oak longbow",
+        "id": 845,
+        "level": 25,
+        "xp": 25,
+        "input_items": {
+            "56": 1,
+            "1777": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Oak longbow (u)",
+        "id": 56,
+        "level": 25,
+        "xp": 25,
+        "input_items": {
+            "1521": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Oak shield",
+        "id": 22251,
+        "level": 27,
+        "xp": 50,
+        "input_items": {
+            "1521": 2
+        },
+        "tick_rate": 7
+    },
+    {
+        "name": "Oak shortbow",
+        "id": 843,
+        "level": 20,
+        "xp": 16.5,
+        "input_items": {
+            "54": 1,
+            "1777": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Oak shortbow (u)",
+        "id": 54,
+        "level": 20,
+        "xp": 16.5,
+        "input_items": {
+            "1521": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Oak stock",
+        "id": 9442,
+        "level": 24,
+        "xp": 16,
+        "input_items": {
+            "1521": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Obsidian javelin",
+        "id": 70423,
+        "level": 99,
+        "xp": 55,
+        "input_items": {
+            "19584": 1,
+            "70424": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Ogre arrow",
+        "id": 2866,
+        "level": 5,
+        "xp": 6,
+        "input_items": {
+            "2861": 1,
+            "2865": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Ogre arrow shaft",
+        "id": 2864,
+        "level": 5,
+        "xp": 7.2,
+        "input_items": {
+            "2862": 1
+        },
+        "tick_rate": 2,
+        "output_multiple": 15
+    },
+    {
+        "name": "Onyx bolt tips",
+        "id": 9194,
+        "level": 73,
+        "xp": 9.4,
+        "input_items": {
+            "6573": 1
+        },
+        "tick_rate": 5,
+        "output_multiple": 12
+    },
+    {
+        "name": "Onyx bolts",
+        "id": 9342,
+        "level": 73,
+        "xp": 9.4,
+        "input_items": {
+            "9144": 1,
+            "9194": 1
+        },
+        "tick_rate": 0.2
+    },
+    {
+        "name": "Onyx dragon bolts",
+        "id": 21973,
+        "level": 84,
+        "xp": 9.4,
+        "input_items": {
+            "9194": 1,
+            "21905": 1
+        },
+        "tick_rate": 0.2
+    },
+    {
+        "name": "Opal bolt tips",
+        "id": 45,
+        "level": 11,
+        "xp": 1.5,
+        "input_items": {
+            "1609": 1
+        },
+        "tick_rate": 5,
+        "output_multiple": 12
+    },
+    {
+        "name": "Opal bolts",
+        "id": 879,
+        "level": 11,
+        "xp": 1.6,
+        "input_items": {
+            "45": 1,
+            "877": 1
+        },
+        "tick_rate": 0.2
+    },
+    {
+        "name": "Opal dragon bolts",
+        "id": 21955,
+        "level": 84,
+        "xp": 1.6,
+        "input_items": {
+            "45": 1,
+            "21905": 1
+        },
+        "tick_rate": 0.2
+    },
+    {
+        "name": "Pearl bolt tips",
+        "id": 46,
+        "level": 41,
+        "xp": 3.2,
+        "input_items": {
+            "413": 1
+        },
+        "tick_rate": 5,
+        "output_multiple": 24
+    },
+    {
+        "name": "Pearl bolts",
+        "id": 880,
+        "level": 41,
+        "xp": 3.2,
+        "input_items": {
+            "46": 1,
+            "9140": 1
+        },
+        "tick_rate": 0.2
+    },
+    {
+        "name": "Pearl dragon bolts",
+        "id": 21959,
+        "level": 84,
+        "xp": 3.2,
+        "input_items": {
+            "46": 1,
+            "21905": 1
+        },
+        "tick_rate": 0.2
+    },
+    {
+        "name": "Redwood arrow shaft",
+        "id": 52,
+        "level": 90,
+        "xp": 35,
+        "input_items": {
+            "19669": 1
+        },
+        "tick_rate": 2,
+        "output_multiple": 105
+    },
+    {
+        "name": "Redwood shield",
+        "id": 22266,
+        "level": 92,
+        "xp": 216,
+        "input_items": {
+            "19669": 2
+        },
+        "tick_rate": 7
+    },
+    {
+        "name": "Ruby bolt tips",
+        "id": 9191,
+        "level": 63,
+        "xp": 6.3,
+        "input_items": {
+            "1603": 1
+        },
+        "tick_rate": 5,
+        "output_multiple": 12
+    },
+    {
+        "name": "Ruby bolts",
+        "id": 9339,
+        "level": 63,
+        "xp": 6.3,
+        "input_items": {
+            "9143": 1,
+            "9191": 1
+        },
+        "tick_rate": 0.2
+    },
+    {
+        "name": "Ruby dragon bolts",
+        "id": 21967,
+        "level": 84,
+        "xp": 6.3,
+        "input_items": {
+            "9191": 1,
+            "21905": 1
+        },
+        "tick_rate": 0.2
+    },
+    {
+        "name": "Rune arrow",
+        "id": 892,
+        "level": 75,
+        "xp": 12.5,
+        "input_items": {
+            "44": 1,
+            "53": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Rune crossbow",
+        "id": 9185,
+        "level": 69,
+        "xp": 50,
+        "input_items": {
+            "9438": 1,
+            "9465": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Rune dart",
+        "id": 811,
+        "level": 81,
+        "xp": 18.8,
+        "input_items": {
+            "314": 1,
+            "824": 1
+        },
+        "tick_rate": 0.08
+    },
+    {
+        "name": "Rune javelin",
+        "id": 830,
+        "level": 77,
+        "xp": 12.4,
+        "input_items": {
+            "19580": 1,
+            "19584": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Runite bolts",
+        "id": 9144,
+        "level": 69,
+        "xp": 10,
+        "input_items": {
+            "314": 1,
+            "9381": 1
+        },
+        "tick_rate": 0.08
+    },
+    {
+        "name": "Runite crossbow (u)",
+        "id": 9465,
+        "level": 69,
+        "xp": 100,
+        "input_items": {
+            "9431": 1,
+            "9452": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Sapphire bolt tips",
+        "id": 9189,
+        "level": 56,
+        "xp": 4.7,
+        "input_items": {
+            "1607": 1
+        },
+        "tick_rate": 5,
+        "output_multiple": 12
+    },
+    {
+        "name": "Sapphire bolts",
+        "id": 9337,
+        "level": 56,
+        "xp": 4.7,
+        "input_items": {
+            "9142": 1,
+            "9189": 1
+        },
+        "tick_rate": 0.2
+    },
+    {
+        "name": "Sapphire dragon bolts",
+        "id": 21963,
+        "level": 84,
+        "xp": 4.7,
+        "input_items": {
+            "9189": 1,
+            "21905": 1
+        },
+        "tick_rate": 0.2
+    },
+    {
+        "name": "Shortbow",
+        "id": 841,
+        "level": 5,
+        "xp": 5,
+        "input_items": {
+            "50": 1,
+            "1777": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Shortbow (u)",
+        "id": 50,
+        "level": 5,
+        "xp": 5,
+        "input_items": {
+            "1511": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Silver bolts",
+        "id": 9145,
+        "level": 43,
+        "xp": 2.5,
+        "input_items": {
+            "314": 1,
+            "9382": 1
+        },
+        "tick_rate": 0.08
+    },
+    {
+        "name": "Steel arrow",
+        "id": 886,
+        "level": 30,
+        "xp": 5,
+        "input_items": {
+            "41": 1,
+            "53": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Steel bolts",
+        "id": 9141,
+        "level": 46,
+        "xp": 3.5,
+        "input_items": {
+            "314": 1,
+            "9378": 1
+        },
+        "tick_rate": 0.08
+    },
+    {
+        "name": "Steel crossbow",
+        "id": 9179,
+        "level": 46,
+        "xp": 27,
+        "input_items": {
+            "9438": 1,
+            "9459": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Steel crossbow (u)",
+        "id": 9459,
+        "level": 46,
+        "xp": 54,
+        "input_items": {
+            "9425": 1,
+            "9446": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Steel dart",
+        "id": 808,
+        "level": 37,
+        "xp": 7.5,
+        "input_items": {
+            "314": 1,
+            "821": 1
+        },
+        "tick_rate": 0.08
+    },
+    {
+        "name": "Steel javelin",
+        "id": 827,
+        "level": 32,
+        "xp": 5,
+        "input_items": {
+            "19574": 1,
+            "19584": 1
+        },
+        "tick_rate": 0.13
+    },
+    {
+        "name": "Teak stock",
+        "id": 9446,
+        "level": 46,
+        "xp": 27,
+        "input_items": {
+            "6333": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Topaz bolt tips",
+        "id": 9188,
+        "level": 48,
+        "xp": 3.9,
+        "input_items": {
+            "1613": 1
+        },
+        "tick_rate": 5,
+        "output_multiple": 12
+    },
+    {
+        "name": "Topaz bolts",
+        "id": 9336,
+        "level": 48,
+        "xp": 4,
+        "input_items": {
+            "9141": 1,
+            "9188": 1
+        },
+        "tick_rate": 0.2
+    },
+    {
+        "name": "Topaz dragon bolts",
+        "id": 21961,
+        "level": 84,
+        "xp": 4,
+        "input_items": {
+            "9188": 1,
+            "21905": 1
+        },
+        "tick_rate": 0.2
+    },
+    {
+        "name": "Toxic blowpipe (empty)",
+        "id": 12924,
+        "level": 78,
+        "xp": 120,
+        "input_items": {
+            "12922": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Unstrung heavy ballista",
+        "id": 19607,
+        "level": 72,
+        "xp": 1,
+        "input_items": {
+            "19598": 1,
+            "19601": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Unstrung light ballista",
+        "id": 19604,
+        "level": 72,
+        "xp": 1,
+        "input_items": {
+            "19595": 1,
+            "19601": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Willow arrow shaft",
+        "id": 52,
+        "level": 30,
+        "xp": 15,
+        "input_items": {
+            "1519": 1
+        },
+        "tick_rate": 2,
+        "output_multiple": 45
+    },
+    {
+        "name": "Willow longbow",
+        "id": 847,
+        "level": 40,
+        "xp": 41.5,
+        "input_items": {
+            "58": 1,
+            "1777": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Willow longbow (u)",
+        "id": 58,
+        "level": 40,
+        "xp": 41.5,
+        "input_items": {
+            "1519": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Willow shield",
+        "id": 22254,
+        "level": 42,
+        "xp": 83,
+        "input_items": {
+            "1519": 2
+        },
+        "tick_rate": 7
+    },
+    {
+        "name": "Willow shortbow",
+        "id": 849,
+        "level": 35,
+        "xp": 33.3,
+        "input_items": {
+            "60": 1,
+            "1777": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Willow shortbow (u)",
+        "id": 60,
+        "level": 35,
+        "xp": 33.3,
+        "input_items": {
+            "1519": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Willow stock",
+        "id": 9444,
+        "level": 39,
+        "xp": 22,
+        "input_items": {
+            "1519": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Wolfbone arrowtips",
+        "id": 2861,
+        "level": 5,
+        "xp": 2.5,
+        "input_items": {
+            "2859": 1
+        },
+        "tick_rate": 0.13,
+        "output_multiple": 4,
+        "crafting_xp": 2.5
+    },
+    {
+        "name": "Wooden stock",
+        "id": 9440,
+        "level": 9,
+        "xp": 6,
+        "input_items": {
+            "1511": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Yew arrow shaft",
+        "id": 52,
+        "level": 60,
+        "xp": 25,
+        "input_items": {
+            "1515": 1
+        },
+        "tick_rate": 2,
+        "output_multiple": 75
+    },
+    {
+        "name": "Yew longbow",
+        "id": 855,
+        "level": 70,
+        "xp": 75,
+        "input_items": {
+            "66": 1,
+            "1777": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Yew longbow (u)",
+        "id": 66,
+        "level": 70,
+        "xp": 75,
+        "input_items": {
+            "1515": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Yew shield",
+        "id": 22260,
+        "level": 72,
+        "xp": 150,
+        "input_items": {
+            "1515": 2
+        },
+        "tick_rate": 7
+    },
+    {
+        "name": "Yew shortbow",
+        "id": 857,
+        "level": 65,
+        "xp": 67.5,
+        "input_items": {
+            "68": 1,
+            "1777": 1
+        },
+        "tick_rate": 2
+    },
+    {
+        "name": "Yew shortbow (u)",
+        "id": 68,
+        "level": 65,
+        "xp": 67.5,
+        "input_items": {
+            "1515": 1
+        },
+        "tick_rate": 3
+    },
+    {
+        "name": "Yew stock",
+        "id": 9452,
+        "level": 69,
+        "xp": 50,
+        "input_items": {
+            "1515": 1
+        },
+        "tick_rate": 3
+    }
 ]

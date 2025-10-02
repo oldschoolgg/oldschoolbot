@@ -3,10 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import type { TiaraRunecraftActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function tiaraRunecraftCommand({
 	user,
@@ -39,7 +35,7 @@ export async function tiaraRunecraftCommand({
 	let { tripLength } = tiaraObj;
 
 	const boosts = [];
-	if (userHasGracefulEquipped(user)) {
+	if (user.hasGracefulEquipped()) {
 		tripLength -= tripLength * 0.1;
 		boosts.push('10% for Graceful');
 	}
@@ -55,7 +51,7 @@ export async function tiaraRunecraftCommand({
 	const makeTiaraTime = Time.Second * 0.6;
 	const adjTripTime = tripLength + TIARAS_PER_INVENTORY * makeTiaraTime;
 	const maxCanDoOwned = numTiaraOwned < numTalismansOwned ? numTiaraOwned : numTalismansOwned;
-	const maxTripLength = calcMaxTripLength(user, 'Runecraft');
+	const maxTripLength = user.calcMaxTripLength('Runecraft');
 	const maxCanDo = Math.floor(maxTripLength / adjTripTime) * TIARAS_PER_INVENTORY;
 
 	if (!quantity) {
@@ -92,12 +88,12 @@ export async function tiaraRunecraftCommand({
 	totalCost.add('Tiara', quantity);
 
 	await user.removeItemsFromBank(totalCost);
-	updateBankSetting('runecraft_cost', totalCost);
+	await ClientSettings.updateBankSetting('runecraft_cost', totalCost);
 
-	await addSubTaskToActivityTask<TiaraRunecraftActivityTaskOptions>({
+	await ActivityManager.startTrip<TiaraRunecraftActivityTaskOptions>({
 		tiaraID: tiaraObj.id,
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		tiaraQuantity: quantity,
 		duration,
 		type: 'TiaraRunecraft'

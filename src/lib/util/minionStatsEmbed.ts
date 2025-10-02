@@ -35,20 +35,7 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 		).toLocaleString()} (${toKMB(skillXP)})`;
 	};
 
-	const userStats = await user.fetchStats({
-		openable_scores: true,
-		fight_caves_attempts: true,
-		firecapes_sacrificed: true,
-		dice_losses: true,
-		dice_wins: true,
-		duel_losses: true,
-		duel_wins: true,
-		tithe_farms_completed: true,
-		laps_scores: true,
-		monster_scores: true,
-		creature_scores: true,
-		high_gambles: true
-	});
+	const userStats = await user.fetchStats();
 
 	const minigameScores = (await user.fetchMinigameScores())
 		.filter(i => i.score > 0)

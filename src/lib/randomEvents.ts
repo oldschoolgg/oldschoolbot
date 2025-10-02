@@ -5,7 +5,6 @@ import { LRUCache } from 'lru-cache';
 import { Bank, ItemGroups, LootTable } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
-import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 interface RandomEvent {
 	id: number;
@@ -211,7 +210,7 @@ export async function triggerRandomEvent(user: MUser, type: activity_type_enum, 
 		loot.add('Balloon cat');
 		messages.push('Found a cute Balloon cat!');
 	}
-	await userStatsBankUpdate(user, 'random_event_completions_bank', new Bank().add(event.id));
+	await user.statsBankUpdate('random_event_completions_bank', new Bank().add(event.id));
 	messages.push(`Did ${event.name} random event and got ${loot}`);
 	return {
 		itemsToAddWithCL: loot

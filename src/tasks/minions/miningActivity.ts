@@ -16,9 +16,7 @@ import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { Ore } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { skillingPetDropRate } from '@/lib/util.js';
-import { mahojiUsersSettingsFetch, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export function calculateMiningResult({
 	ore,
@@ -251,14 +249,12 @@ export function calculateMiningResult({
 
 export const miningTask: MinionTask = {
 	type: 'Mining',
-	async run(data: MiningActivityTaskOptions) {
-		const { oreID, userID, channelID, duration, powermine } = data;
+	async run(data: MiningActivityTaskOptions, { user, handleTripFinish }) {
+		const { oreID, channelID, duration, powermine } = data;
 		const { quantity } = data;
 		const minutes = Math.round(duration / Time.Minute);
-		const user = await mUserFetch(userID);
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 
-		const sd = await mahojiUsersSettingsFetch(user.id, { disabled_inventions: true });
 		const spiritOre = stoneSpirits.find(t => t.ore.id === ore.id);
 		const amountOfSpiritsToUse =
 			spiritOre !== undefined ? Math.min(quantity, user.bank.amount(spiritOre.spirit.id)) : 0;
@@ -288,7 +284,7 @@ export const miningTask: MinionTask = {
 			quantity,
 			hasMiningMasterCape,
 			ore,
-			disabledInventions: sd.disabled_inventions,
+			disabledInventions: user.user.disabled_inventions,
 			gearBank: user.gearBank,
 			amountOfSpiritsToUse,
 			spiritOre,
@@ -319,16 +315,16 @@ export const miningTask: MinionTask = {
 		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. ${xpRes}`;
 
 		if (barsFromKlikBank.length > 0) {
-			await userStatsBankUpdate(user.id, 'bars_from_klik_bank', barsFromKlikBank);
+			await user.statsBankUpdate('bars_from_klik_bank', barsFromKlikBank);
 		}
 		if (oresFromSpiritsBank.length > 0) {
-			await userStatsBankUpdate(user.id, 'ores_from_spirits_bank', oresFromSpiritsBank);
+			await user.statsBankUpdate('ores_from_spirits_bank', oresFromSpiritsBank);
 		}
 		if (barsFromAdzeBank.length > 0) {
-			await userStatsBankUpdate(user.id, 'bars_from_adze_bank', barsFromAdzeBank);
+			await user.statsBankUpdate('bars_from_adze_bank', barsFromAdzeBank);
 		}
 		if (spiritualMiningPortentXP > 0) {
-			await userStatsUpdate(user.id, {
+			await user.statsUpdate({
 				xp_from_mining_portent: {
 					increment: spiritualMiningPortentXP
 				}

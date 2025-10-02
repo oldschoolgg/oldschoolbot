@@ -5,6 +5,7 @@ import path from 'node:path';
 import { Bank } from 'oldschooljs';
 import { omit } from 'remeda';
 
+import { ALL_OBTAINABLE_ITEMS } from '@/lib/allObtainableItems.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
@@ -35,10 +36,10 @@ import Mining from '@/lib/skilling/skills/mining.js';
 import Prayer from '@/lib/skilling/skills/prayer.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
-import Thieving from '@/lib/skilling/skills/thieving/index.js';
+import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import { genericUsables, usableUnlocks } from '@/mahoji/lib/abstracted_commands/useCommand.js';
-import { serializeSnapshotItem, Util } from './scriptUtil.js';
+import { serializeSnapshotItem, tearDownScript, Util } from './scriptUtil.js';
 
 const rootDir = path.join('data', BOT_TYPE.toLowerCase());
 
@@ -56,6 +57,7 @@ writeSkillingJson(
 	'woodcutting-logs.json',
 	Woodcutting.Logs.slice()
 		.sort((a, b) => a.name.localeCompare(b.name))
+		.filter(i => i.name !== 'Ivy')
 		.map(serializeSnapshotItem)
 );
 
@@ -271,3 +273,10 @@ writeRootJson(
 	'quests.json',
 	serializeSnapshotItem(quests.sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem))
 );
+
+writeRootJson(
+	'all-obtainable-items.json',
+	serializeSnapshotItem(Util.ItemArr(Array.from(ALL_OBTAINABLE_ITEMS)).map(serializeSnapshotItem))
+);
+
+tearDownScript();

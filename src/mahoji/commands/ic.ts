@@ -6,7 +6,7 @@ import { MysteryBoxes, PMBTable } from '@/lib/bso/openables/tables.js';
 
 import { randArrItem, roll } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, formatOrdinal, makeComponents } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Bank, type ItemBank, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
@@ -17,10 +17,8 @@ import { kalphiteKingLootTable } from '@/lib/minions/data/killableMonsters/custo
 import { VasaMagus } from '@/lib/minions/data/killableMonsters/custom/bosses/VasaMagus.js';
 import { BSOMonsters } from '@/lib/minions/data/killableMonsters/custom/customMonsters.js';
 import { allThirdAgeItems, runeAlchablesTable } from '@/lib/simulation/sharedTables.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
+import type { MInteraction } from '@/lib/structures/MInteraction.js';
 import { LampTable } from '@/lib/xpLamps.js';
-import { updateClientGPTrackSetting, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 const contractTable = new LootTable()
 	.every('Coins', [1_000_000, 3_500_000])
@@ -118,7 +116,7 @@ ${!currentItem ? `**Next Contract:** ${nextContractIsReady ? 'Ready now.' : form
 	};
 }
 
-async function skip(interaction: ChatInputCommandInteraction, user: MUser) {
+async function skip(interaction: MInteraction, user: MUser) {
 	const { currentItem, differenceFromLastContract, streak, canSkip } = getItemContractDetails(user);
 	if (!currentItem) return "You don't have a contract to skip.";
 	if (canSkip) {
@@ -129,8 +127,7 @@ async function skip(interaction: ChatInputCommandInteraction, user: MUser) {
 		)}.`;
 	}
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to skip your item contract? You won't be able to get another contract for ${formatDuration(
 			itemContractResetTime / 2
 		)}.`
@@ -149,7 +146,7 @@ async function skip(interaction: ChatInputCommandInteraction, user: MUser) {
 	)}.`;
 }
 
-export async function handInContract(interaction: ChatInputCommandInteraction | null, user: MUser): Promise<string> {
+export async function handInContract(interaction: MInteraction, user: MUser): Promise<string> {
 	const { nextContractIsReady, durationRemaining, currentItem, owns, streak, totalContracts } =
 		getItemContractDetails(user);
 
@@ -171,12 +168,9 @@ export async function handInContract(interaction: ChatInputCommandInteraction | 
 	const cost = new Bank().add(currentItem.id);
 	const newStreak = streak + 1;
 
-	if (interaction) {
-		await handleMahojiConfirmation(
-			interaction,
-			`Are you sure you want to hand in ${cost} for your ${formatOrdinal(newStreak)} Item Contract?`
-		);
-	}
+	await interaction.confirmation(
+		`Are you sure you want to hand in ${cost} for your ${formatOrdinal(newStreak)} Item Contract?`
+	);
 
 	const loot = new Bank().add(contractTable.roll());
 	let gotBonus = '';
@@ -202,7 +196,7 @@ export async function handInContract(interaction: ChatInputCommandInteraction | 
 		charges: 1
 	});
 	if (didCharge) {
-		await userStatsBankUpdate(user.id, 'loot_from_lucky_portent', loot);
+		await user.statsBankUpdate('loot_from_lucky_portent', loot);
 		loot.multiply(2);
 	}
 
@@ -225,11 +219,11 @@ export async function handInContract(interaction: ChatInputCommandInteraction | 
 	await user.addItemsToBank({ items: loot, collectionLog: false });
 
 	await Promise.all([
-		updateBankSetting('item_contract_cost', cost),
-		updateBankSetting('item_contract_loot', loot),
-		updateClientGPTrackSetting('gp_ic', loot.amount('Coins')),
-		userStatsBankUpdate(user.id, 'ic_cost_bank', cost),
-		userStatsBankUpdate(user.id, 'ic_loot_bank', loot)
+		ClientSettings.updateBankSetting('item_contract_cost', cost),
+		ClientSettings.updateBankSetting('item_contract_loot', loot),
+		ClientSettings.updateClientGPTrackSetting('gp_ic', loot.amount('Coins')),
+		user.statsBankUpdate('ic_cost_bank', cost),
+		user.statsBankUpdate('ic_loot_bank', loot)
 	]);
 
 	let res = `You handed in a ${currentItem.name} and received ${loot}. You've completed ${
@@ -252,17 +246,17 @@ export const icCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'info',
 			description: 'View stats and info on your Item Contracts.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'send',
 			description: 'Hand in your contract and receive a new one.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'skip',
 			description: 'Skip your current contract.'
 		}

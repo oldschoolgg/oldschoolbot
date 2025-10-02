@@ -2,7 +2,6 @@ import { monkeyTiers } from '@/lib/bso/minigames/monkey-rumble/monkeyRumble.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
 import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, ECreature, type ItemBank, itemID } from 'oldschooljs';
 
 import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
@@ -13,12 +12,9 @@ import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import { type Creature, HunterTechniqueEnum } from '@/lib/skilling/types.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { generateDailyPeakIntervals, type Peak } from '@/lib/util/peaks.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export function calculateHunterInput({
 	skillsAsLevels,
@@ -287,7 +283,7 @@ export const huntCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The creature you want to hunt.',
 			required: true,
@@ -301,20 +297,20 @@ export const huntCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to hunt (optional).',
 			required: false,
 			min_value: 1
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'hunter_potion',
 			description: 'Do you want to use Hunter potions for this trip?',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'stamina_potions',
 			description: 'Use stam potions for Herbiboar?',
 			required: false
@@ -322,10 +318,13 @@ export const huntCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; hunter_potion?: boolean; stamina_potions?: boolean }>) => {
-		const user = await mUserFetch(userID);
+		if (options.stamina_potions === undefined) {
+			options.stamina_potions = true;
+		}
+
 		const creature = Hunter.Creatures.find(creature =>
 			creature.aliases.some(
 				alias => stringMatches(alias, options.name) || stringMatches(alias.split(' ')[0], options.name)
@@ -344,13 +343,13 @@ export const huntCommand: OSBMahojiCommand = {
 		const hunterInputArgs: Parameters<typeof calculateHunterInput>['0'] = {
 			creature,
 			hasHunterMasterCape: user.hasEquippedOrInBank('Hunter master cape'),
-			hasGraceful: userHasGracefulEquipped(user),
+			hasGraceful: user.hasGracefulEquipped(),
 			maxTripLength,
 			quantityInput: options.quantity,
 			skillsAsLevels: user.skillsAsLevels,
 			isUsingHunterPotion: options.hunter_potion ?? false,
 			shouldUseStaminaPotions: options.stamina_potions ?? true,
-			creatureScores: (await user.fetchStats({ creature_scores: true })).creature_scores as ItemBank,
+			creatureScores: (await user.fetchStats()).creature_scores as ItemBank,
 			allGear: user.gear,
 			QP: user.QP,
 			bank: user.bank,
@@ -401,7 +400,7 @@ export const huntCommand: OSBMahojiCommand = {
 			result;
 
 		await user.removeItemsFromBank(totalCost);
-		await updateBankSetting('hunter_cost', totalCost);
+		await ClientSettings.updateBankSetting('hunter_cost', totalCost);
 		await trackLoot({
 			id: creature.name,
 			totalCost,
@@ -414,7 +413,8 @@ export const huntCommand: OSBMahojiCommand = {
 				}
 			]
 		});
-		await addSubTaskToActivityTask<HunterActivityTaskOptions>({
+
+		await ActivityManager.startTrip<HunterActivityTaskOptions>({
 			creatureID: creature.id,
 			userID: user.id,
 			channelID,

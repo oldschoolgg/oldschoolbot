@@ -1,7 +1,6 @@
 import { formatDuration, getInterval, Time } from '@oldschoolgg/toolkit';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 
 export const getGuthixianCacheInterval = () => getInterval(24);
 
@@ -36,7 +35,7 @@ export async function joinGuthixianCache(user: MUser, channelID: string) {
 		return `You already participated in the current Guthixian Cache, try again at: ${currentInterval.nextResetStr}`;
 	}
 
-	const task = await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	const task = await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
 		channelID,
 		quantity: 1,

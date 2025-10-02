@@ -3,12 +3,9 @@ import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '@/lib/bs
 import { randArrItem, roll } from '@oldschoolgg/rng';
 import { Events, formatDuration, gaussianRandom, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { tame_growth } from '@prisma/client';
-import { ApplicationCommandOptionType, type ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
 import { globalConfig } from '@/lib/constants.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 function makeTameNickname(species: Species) {
 	switch (species.id) {
@@ -109,7 +106,7 @@ async function view(user: MUser) {
 	)} until it hatches. You put it in ${formatDuration(diff)} ago.${masterString}`;
 }
 
-async function fuelCommand(interaction: ChatInputCommandInteraction, user: MUser) {
+async function fuelCommand(interaction: MInteraction, user: MUser) {
 	const nursery = user.user.nursery as Nursery;
 	if (!nursery) {
 		return "You don't have a nursery.";
@@ -122,12 +119,11 @@ async function fuelCommand(interaction: ChatInputCommandInteraction, user: MUser
 		return `You need ${cost} to fuel your nursery.`;
 	}
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to use ${cost} to fuel your nursery? You need to provide fuel once per egg.`
 	);
 	await user.removeItemsFromBank(cost);
-	updateBankSetting('construction_cost_bank', cost);
+	await ClientSettings.updateBankSetting('construction_cost_bank', cost);
 	const newNursery: NonNullable<Nursery> = {
 		...nursery,
 		hasFuel: true
@@ -151,7 +147,7 @@ async function buildCommand(user: MUser) {
 		return `You need ${cost} to build a nursery.`;
 	}
 	await user.removeItemsFromBank(cost);
-	updateBankSetting('construction_cost_bank', cost);
+	await ClientSettings.updateBankSetting('construction_cost_bank', cost);
 	const newNursery: Nursery = {
 		egg: null,
 		eggsHatched: 0,
@@ -168,7 +164,7 @@ async function buildCommand(user: MUser) {
 	}`;
 }
 
-async function addCommand(interaction: ChatInputCommandInteraction, user: MUser, itemName: string) {
+async function addCommand(interaction: MInteraction, user: MUser, itemName: string) {
 	const nursery = user.user.nursery as Nursery | null;
 	if (!nursery) {
 		return "You don't have a nursery built yet, so you can't add an egg to it.";
@@ -190,7 +186,7 @@ async function addCommand(interaction: ChatInputCommandInteraction, user: MUser,
 		return "That's not an valid egg, or you don't own it.";
 	}
 
-	await handleMahojiConfirmation(interaction, `Are you sure you want to add '${item.name}' to your nursery?`);
+	await interaction.confirmation(`Are you sure you want to add '${item.name}' to your nursery?`);
 
 	await user.removeItemsFromBank(new Bank().add(specie.egg.id));
 
@@ -214,22 +210,22 @@ export const nurseryCommand: OSBMahojiCommand = {
 	description: 'Manage your tame nursery.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'build',
 			description: "Build your nursery, if you don't have one."
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'fuel',
 			description: 'Add fuel to your nursery.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'add_egg',
 			description: 'Add an egg to your nursery.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'item',
 					description: 'The egg you want to add to your nursery.',
 					choices: tameSpecies.map(i => i.egg).map(i => ({ name: i.name, value: i.name }))
@@ -237,7 +233,7 @@ export const nurseryCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'check',
 			description: 'Check your nursery, and to see if your egg has hatched.'
 		}

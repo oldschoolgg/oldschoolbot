@@ -10,7 +10,6 @@ import { skillingPetDropRate } from '@/lib/util.js';
 
 export const aerialFishingTask: MinionTask = {
 	type: 'AerialFishing',
-	isNew: true,
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
 		const { quantity, channelID } = data;
 		const currentHuntLevel = user.skillsAsLevels.hunter;

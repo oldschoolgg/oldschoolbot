@@ -8,13 +8,11 @@ import { Bank, itemID } from 'oldschooljs';
 
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { SmeltingActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const smeltingTask: MinionTask = {
 	type: 'Smelting',
-	async run(data: SmeltingActivityTaskOptions) {
-		let { barID, quantity, userID, channelID, duration, blastf } = data;
-		const user = await mUserFetch(userID);
+	async run(data: SmeltingActivityTaskOptions, { user, handleTripFinish }) {
+		let { barID, quantity, channelID, duration, blastf } = data;
 
 		const bar = Smithing.Bars.find(bar => bar.id === barID)!;
 

@@ -17,7 +17,6 @@ import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { BossUser } from '@/lib/structures/Boss.js';
 import type { NewBossOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 
 const methodsOfDeath = ['Burnt to death', 'Eaten', 'Crushed', 'Incinerated'];
@@ -123,7 +122,7 @@ export const ignecarusTask: MinionTask = {
 				}
 			});
 		}
-		updateBankSetting('ignecarus_loot', totalLoot);
+		await ClientSettings.updateBankSetting('ignecarus_loot', totalLoot);
 
 		// Show deaths in the result
 		if (Object.values(deaths).length > 0) {

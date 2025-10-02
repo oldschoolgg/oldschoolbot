@@ -15,12 +15,9 @@ import { getFarmingKeyFromName } from '@/lib/skilling/skills/farming/utils/farmi
 import type { FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { Plant } from '@/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { assert } from '@/lib/util/logError.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 import { skillingPetDropRate } from '@/lib/util.js';
-import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 const plopperBoostPercent = 100;
 
@@ -60,21 +57,19 @@ async function farmingLootBoosts(
 
 export const farmingTask: MinionTask = {
 	type: 'Farming',
-	async run(data: FarmingActivityTaskOptions) {
+	async run(data: FarmingActivityTaskOptions, { user, handleTripFinish }) {
 		const {
 			plantsName,
 			patchType,
 			quantity,
 			upgradeType,
 			payment,
-			userID,
 			channelID,
 			planting,
 			currentDate,
 			pid,
 			duration
 		} = data;
-		const user = await mUserFetch(userID);
 		const currentFarmingLevel = Math.min(99, user.skillsAsLevels.farming);
 		const currentWoodcuttingLevel = Math.min(99, user.skillsAsLevels.woodcutting);
 		let baseBonus = 1;
@@ -185,7 +180,7 @@ export const farmingTask: MinionTask = {
 				str += `\n\nYou received: ${loot}.`;
 			}
 
-			updateBankSetting('farming_loot_bank', loot);
+			await ClientSettings.updateBankSetting('farming_loot_bank', loot);
 			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
@@ -290,7 +285,7 @@ export const farmingTask: MinionTask = {
 					const uncleanedHerbLoot = new Bank().add(plantToHarvest.outputCrop, cropYield);
 					await user.addItemsToCollectionLog(uncleanedHerbLoot);
 					const cleanedHerbLoot = new Bank().add(plantToHarvest.cleanHerbCrop, cropYield);
-					await userStatsBankUpdate(user, 'herbs_cleaned_while_farming_bank', cleanedHerbLoot);
+					await user.statsBankUpdate('herbs_cleaned_while_farming_bank', cleanedHerbLoot);
 				}
 
 				if (plantToHarvest.name === 'Limpwurt') {
@@ -571,12 +566,12 @@ export const farmingTask: MinionTask = {
 				infoStr.push(`\nYou received: ${loot}.`);
 			}
 
-			updateBankSetting('farming_loot_bank', loot);
+			ClientSettings.updateBankSetting('farming_loot_bank', loot);
 			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});
-			await userStatsBankUpdate(user, 'farming_harvest_loot_bank', loot);
+			await user.statsBankUpdate('farming_harvest_loot_bank', loot);
 			if (pid) {
 				await prisma.farmedCrop.update({
 					where: {
@@ -590,7 +585,7 @@ export const farmingTask: MinionTask = {
 
 			const seedPackCount = loot.amount('Seed pack');
 
-			const hasFive = Farming.getFarmingInfoFromUser(user.user).patches.spirit.lastQuantity >= 5;
+			const hasFive = Farming.getFarmingInfoFromUser(user).patches.spirit.lastQuantity >= 5;
 			if (hasFive && !user.bitfield.includes(BitField.GrewFiveSpiritTrees)) {
 				await user.update({
 					bitfield: {

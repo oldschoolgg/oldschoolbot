@@ -3,8 +3,6 @@ import { channelIsSendable, noOp, Time } from '@oldschoolgg/toolkit';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ComponentType } from 'discord.js';
 import murmurhash from 'murmurhash';
 
-import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
-
 export async function buttonUserPicker({
 	channelID,
 	str,
@@ -45,9 +43,9 @@ export async function buttonUserPicker({
 
 		collector.on('collect', async i => {
 			const { id } = i.user;
-			const mUser = await mahojiUsersSettingsFetch(id, { minion_ironman: true });
+			const mUser = await mUserFetch(id);
 			const isCreator = id === creator;
-			const notAllowed = !ironmenAllowed && mUser.minion_ironman;
+			const notAllowed = !ironmenAllowed && mUser.isIronman;
 			if (notAllowed && !isCreator) {
 				i.reply({ ephemeral: true, content: "You aren't allowed to participate.." });
 				return;

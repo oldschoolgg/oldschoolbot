@@ -8,7 +8,6 @@ import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import type { Mixable } from '@/lib/skilling/types.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 function BSOApplyExtraQuantity(user: MUser, quantity: number, mixableItem: Mixable, messages: string[]) {
 	const isMixingPotion = mixableItem.xp !== 0 && !mixableItem.wesley && !mixableItem.zahur;
@@ -44,9 +43,8 @@ function BSOHerbetRoll(user: MUser, duration: number, mixableItem: Mixable, loot
 
 export const herbloreTask: MinionTask = {
 	type: 'Herblore',
-	async run(data: HerbloreActivityTaskOptions) {
-		let { mixableID, quantity, zahur, wesley, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: HerbloreActivityTaskOptions, { user, handleTripFinish }) {
+		let { mixableID, quantity, zahur, wesley, channelID, duration } = data;
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.item.id === mixableID)!;
 		const messages: string[] = [];
 		quantity = BSOApplyExtraQuantity(user, quantity, mixableItem, messages);

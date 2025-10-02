@@ -3,7 +3,6 @@ import { compCapeCategories, compCapeTrimmedRequirements } from '@/lib/bso/compC
 import { calcWhatPercent } from '@oldschoolgg/toolkit';
 
 import { Requirements } from '@/lib/structures/Requirements.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export async function calculateCompCapeProgress(user: MUser) {
 	let finalStr = '';
@@ -44,7 +43,7 @@ export async function calculateCompCapeProgress(user: MUser) {
 		2
 	)}%)`;
 
-	await userStatsUpdate(user.id, {
+	await user.statsUpdate({
 		comp_cape_percent: totalPercentTrimmed,
 		untrimmed_comp_cape_percent: totalPercentUntrimmed
 	});

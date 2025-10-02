@@ -1,5 +1,5 @@
 import { getUsersFishingContestDetails } from '@/lib/bso/fishingContest.js';
-import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '@/lib/bso/tameUtil.js';
+import { shortTameTripDesc, tameLastFinishedActivity } from '@/lib/bso/tameUtil.js';
 
 import { roll } from '@oldschoolgg/rng';
 import { Emoji, makeComponents, stripNonAlphanumeric, toTitleCase } from '@oldschoolgg/toolkit';
@@ -70,7 +70,7 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 		});
 	}
 
-	if (!user.user.minion_hasBought) {
+	if (!user.hasMinion) {
 		return {
 			content:
 				"You haven't bought a minion yet! Click the button below to buy a minion and start playing the bot.",
@@ -168,7 +168,7 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 
 	const perkTier = user.perkTier();
 	if (perkTier >= PerkTier.Two) {
-		const { tame, species, activity } = await getUsersTame(user);
+		const { tame, species, activity } = await user.getTame();
 		if (tame && !activity) {
 			const lastTameAct = await tameLastFinishedActivity(user);
 			if (lastTameAct) {

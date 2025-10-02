@@ -3,8 +3,6 @@ import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 export async function driftNetCommand(
 	channelID: string,
@@ -13,7 +11,7 @@ export async function driftNetCommand(
 	noStams: boolean | undefined
 ) {
 	const userBank = user.bank;
-	const maxTripLength = calcMaxTripLength(user, 'DriftNet');
+	const maxTripLength = user.calcMaxTripLength('DriftNet');
 
 	if (!minutes) {
 		minutes = Math.floor(maxTripLength / Time.Minute);
@@ -78,9 +76,9 @@ export async function driftNetCommand(
 		return `You need ${quantity}x Drift net for the whole trip, try a lower trip length or make/buy more Drift net.`;
 	}
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'DriftNet'

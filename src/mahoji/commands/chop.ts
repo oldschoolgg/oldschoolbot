@@ -3,13 +3,11 @@ import { InventionID, inventionItemBoost } from '@/lib/bso/skills/invention/inve
 
 import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Items, itemID, resolveItems } from 'oldschooljs';
 
 import { determineWoodcuttingTime } from '@/lib/skilling/functions/determineWoodcuttingTime.js';
 import Woodcutting, { type TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 
 const axes = [
 	{
@@ -79,7 +77,7 @@ export const chopCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The tree you want to chop.',
 			required: true,
@@ -93,26 +91,26 @@ export const chopCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity of logs you want to chop (optional).',
 			required: false,
 			min_value: 1
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'powerchop',
 			description: 'Set this to true to powerchop. Higher xp/hour, No loot (default false, optional).',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'forestry_events',
 			description: 'Set this to true to participate in forestry events. (default false, optional).',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'twitchers_gloves',
 			description: "Change the settings of your Twitcher's gloves. (default egg, optional)",
 			required: false,
@@ -121,7 +119,7 @@ export const chopCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		channelID
 	}: CommandRunOptions<{
 		name: string;
@@ -130,7 +128,6 @@ export const chopCommand: OSBMahojiCommand = {
 		forestry_events?: boolean;
 		twitchers_gloves?: TwitcherGloves;
 	}>) => {
-		const user = await mUserFetch(userID);
 		const log = Woodcutting.Logs.find(
 			log =>
 				stringMatches(log.name, options.name) ||
@@ -283,10 +280,10 @@ export const chopCommand: OSBMahojiCommand = {
 		const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
 		const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
-		await addSubTaskToActivityTask<WoodcuttingActivityTaskOptions>({
+		await ActivityManager.startTrip<WoodcuttingActivityTaskOptions>({
 			logID: log.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			quantity: newQuantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			powerchopping: powerchop === true ? true : undefined,

@@ -12,9 +12,6 @@ import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { TheatreOfBlood } from '@/lib/simulation/tob.js';
 import type { TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 async function handleTobXP(user: MUser, isHm: boolean) {
 	let hitpointsXP = 13_000;
@@ -57,7 +54,7 @@ async function handleTobXP(user: MUser, isHm: boolean) {
 
 export const tobTask: MinionTask = {
 	type: 'TheatreOfBlood',
-	async run(data: TheatreOfBloodTaskOptions) {
+	async run(data: TheatreOfBloodTaskOptions, { handleTripFinish }) {
 		const {
 			channelID,
 			users,
@@ -121,7 +118,7 @@ export const tobTask: MinionTask = {
 			if (!chincannonUser) {
 				await Promise.all(
 					allUsers.map(user => {
-						return userStatsBankUpdate(user.id, 'tob_loot', new Bank(result.loot[user.id]));
+						return user.statsBankUpdate('tob_loot', new Bank(result.loot[user.id]));
 					})
 				);
 			}
@@ -180,7 +177,7 @@ export const tobTask: MinionTask = {
 
 		if (chincannonUser) {
 			await Promise.all(
-				allUsers.map(u => userStatsBankUpdate(u.id, 'chincannon_destroyed_loot_bank', teamsLoot.get(u.id)))
+				allUsers.map(u => u.statsBankUpdate('chincannon_destroyed_loot_bank', teamsLoot.get(u.id)))
 			);
 		} else {
 			// Give everyone their loot:
@@ -192,7 +189,7 @@ export const tobTask: MinionTask = {
 			await Promise.all(
 				allUsers.map(u => {
 					const key = hardMode ? 'tob_hard_attempts' : 'tob_attempts';
-					return userStatsUpdate(u.id, {
+					return u.statsUpdate({
 						[key]: {
 							increment: earnedAttempts
 						}
@@ -206,11 +203,11 @@ export const tobTask: MinionTask = {
 		}
 		if (wipeCount > 0) {
 			// Update economy stats:
-			await updateBankSetting('tob_cost', globalTobCost);
+			await ClientSettings.updateBankSetting('tob_cost', globalTobCost);
 		}
 
 		const effectiveTotalLoot = chincannonUser ? new Bank() : totalLoot;
-		await updateBankSetting('tob_loot', effectiveTotalLoot);
+		await ClientSettings.updateBankSetting('tob_loot', effectiveTotalLoot);
 		await trackLoot({
 			totalLoot: effectiveTotalLoot,
 			id: minigameID,

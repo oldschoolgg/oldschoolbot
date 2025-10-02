@@ -9,17 +9,13 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
 import Firemaking from '@/lib/skilling/skills/firemaking.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const wintertodtTask: MinionTask = {
 	type: 'Wintertodt',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { userID, channelID, quantity, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { channelID, quantity, duration } = data;
 		const hasMasterCape = user.hasEquippedOrInBank('Firemaking master cape');
-
 		const { newScore } = await user.incrementMinigameScore('wintertodt', quantity);
 		const loot = new Bank();
 
@@ -47,7 +43,7 @@ export const wintertodtTask: MinionTask = {
 		}
 
 		// Track loot in Economy Stats
-		await updateBankSetting('economyStats_wintertodtLoot', loot);
+		await ClientSettings.updateBankSetting('economyStats_wintertodtLoot', loot);
 
 		if (loot.has('Phoenix')) {
 			globalClient.emit(

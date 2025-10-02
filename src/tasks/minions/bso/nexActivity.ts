@@ -14,7 +14,6 @@ import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
 import { getNexGearStats } from '@/lib/util/getNexGearStats.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 interface NexUser {
 	id: string;
@@ -131,7 +130,7 @@ export const nexTask: MinionTask = {
 			});
 		}
 
-		updateBankSetting('nex_loot', totalLoot);
+		await ClientSettings.updateBankSetting('nex_loot', totalLoot);
 		await trackLoot({
 			duration,
 			totalLoot,

@@ -5,7 +5,6 @@ import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import type { Skills } from '@/lib/types/index.js';
 import { assert } from '@/lib/util/logError.js';
 import { isValidSkill } from '@/lib/util/smallUtils.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 interface IXPLamp {
 	itemID: number;
@@ -327,13 +326,13 @@ export async function lampCommand(user: MUser, itemToUse: string, skill: string,
 
 	const amount = skillsToReceive[skill]!;
 	assert(typeof amount === 'number' && amount > 0);
-	const stats = await user.fetchStats({ lamped_xp: true });
+	const stats = await user.fetchStats();
 	const newLampedXp = {
 		...(stats.lamped_xp as ItemBank)
 	};
 	if (!newLampedXp[skill]) newLampedXp[skill] = amount;
 	else newLampedXp[skill] += amount;
-	userStatsUpdate(user.id, {
+	await user.statsUpdate({
 		lamped_xp: newLampedXp
 	});
 

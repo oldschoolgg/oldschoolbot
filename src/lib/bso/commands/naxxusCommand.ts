@@ -15,9 +15,7 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { NAXXUS_HP, Naxxus } from '@/lib/minions/data/killableMonsters/custom/bosses/Naxxus.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 const bisMageGear = new Gear({
@@ -254,7 +252,7 @@ export async function naxxusCommand(
 		]
 	});
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
@@ -262,7 +260,7 @@ export async function naxxusCommand(
 		type: 'Naxxus'
 	});
 
-	updateBankSetting('naxxus_cost', foodBank);
+	await ClientSettings.updateBankSetting('naxxus_cost', foodBank);
 
 	const embed = new EmbedBuilder()
 		.setDescription(

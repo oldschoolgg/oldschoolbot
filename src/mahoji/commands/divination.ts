@@ -8,14 +8,12 @@ import {
 } from '@/lib/bso/divination.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
-import { formatDuration, increaseNumByPercent, mentionCommand, removeFromArr, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { formatDuration, increaseNumByPercent, removeFromArr, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
+import { mentionCommand } from '@/lib/discord/index.js';
 import type { MemoryHarvestOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { assert } from '@/lib/util/logError.js';
 import { memoryHarvestResult, totalTimePerRound } from '@/tasks/minions/bso/memoryHarvestActivity.js';
 
@@ -24,19 +22,19 @@ export const divinationCommand: OSBMahojiCommand = {
 	description: 'The divination skill.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'harvest_memories',
 			description: 'Harvest memories to gain XP.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'energy',
 					description: 'The type of memory.',
 					choices: divinationEnergies.map(e => ({ name: `${e.type} (Level ${e.level})`, value: e.type })),
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'type',
 					description: 'The method of harvesting (default: convert to xp)',
 					required: false,
@@ -56,19 +54,19 @@ export const divinationCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'no_potion',
 					description: 'Dont use divination potions'
 				}
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'portent',
 			description: 'View a portent.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'view',
 					description: 'The portent to view.',
 					choices: [
@@ -80,19 +78,19 @@ export const divinationCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'charge_portent',
 			description: 'Charge a portent.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'portent',
 					description: 'The portent to charge.',
 					choices: portents.map(p => ({ name: p.item.name, value: p.item.name })),
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity of portents to consume for charges.',
 					min_value: 1,
@@ -101,12 +99,12 @@ export const divinationCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'toggle_portent',
 			description: 'Toggle a portent on/off.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'portent',
 					description: 'The portent to toggle.',
 					choices: portents.map(p => ({ name: p.item.name, value: p.item.name })),
@@ -163,8 +161,7 @@ export const divinationCommand: OSBMahojiCommand = {
 			assert(options.charge_portent.quantity > 0);
 			const chargesToGet = options.charge_portent.quantity * portent.chargesPerPortent;
 			if (options.charge_portent.quantity > 1) {
-				await handleMahojiConfirmation(
-					interaction,
+				await interaction.confirmation(
 					`Are you sure you want to consume ${cost} for ${chargesToGet}x charges?`
 				);
 			}
@@ -206,7 +203,6 @@ export const divinationCommand: OSBMahojiCommand = {
 				}
 
 				str += `\n\nYou can get more charges by buying/creating a portent item, then using it with ${mentionCommand(
-					globalClient,
 					'divination',
 					'charge_portent'
 				)}.`;
@@ -330,7 +326,7 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 				await user.removeItemsFromBank(potionBank);
 			}
 
-			await addSubTaskToActivityTask<MemoryHarvestOptions>({
+			await ActivityManager.startTrip<MemoryHarvestOptions>({
 				userID: user.id,
 				channelID,
 				duration,

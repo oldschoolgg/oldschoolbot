@@ -2,13 +2,12 @@ import { Bank } from 'oldschooljs';
 
 import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
 import type { CreateForestersRationsActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const CreateForestersRationsTask: MinionTask = {
 	type: 'CreateForestersRations',
-	async run(data: CreateForestersRationsActivityTaskOptions) {
-		const { rationName, userID, channelID, quantity, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: CreateForestersRationsActivityTaskOptions, { user, handleTripFinish }) {
+		const { rationName, channelID, quantity, duration } = data;
+
 		const ration = ForestryRations.find(ration => ration.name === rationName)!;
 		const rationsCreated = ration.rationsAmount * quantity;
 

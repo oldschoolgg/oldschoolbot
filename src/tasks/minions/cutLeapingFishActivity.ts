@@ -4,13 +4,12 @@ import { clamp } from 'remeda';
 
 import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
 import type { CutLeapingFishActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const cutLeapingFishTask: MinionTask = {
 	type: 'CutLeapingFish',
-	async run(data: CutLeapingFishActivityTaskOptions) {
-		const { fishID, userID, channelID, quantity, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: CutLeapingFishActivityTaskOptions, { user, handleTripFinish }) {
+		const { fishID, channelID, quantity, duration } = data;
+
 		const barbarianFish = LeapingFish.find(LeapingFish => LeapingFish.item.id === fishID)!;
 
 		const currentLevel = user.skillsAsLevels.cooking;

@@ -3,8 +3,6 @@ import {
 	dateFm,
 	Emoji,
 	formatDuration,
-	mentionCommand,
-	PerkTier,
 	removeFromArr,
 	stringMatches,
 	Time,
@@ -12,28 +10,27 @@ import {
 } from '@oldschoolgg/toolkit';
 import type { Giveaway } from '@prisma/client';
 import { RateLimitManager } from '@sapphire/ratelimits';
-import type { ButtonInteraction, Interaction } from 'discord.js';
+import type { ButtonInteraction } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
 import { giveawayCache } from '@/lib/cache.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
-import { BitField } from '@/lib/constants.js';
+import { BitField, PerkTier } from '@/lib/constants.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
 import { InteractionID } from '@/lib/InteractionID.js';
 import { itemContractResetTime } from '@/lib/MUser.js';
 import { runCommand } from '@/lib/settings/settings.js';
+import { MInteraction } from '@/lib/structures/MInteraction.js';
 import { updateGiveawayMessage } from '@/lib/util/giveaway.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { interactionReply } from '@/lib/util/interactionReply.js';
+import { handleInteractionError } from '@/lib/util/interactionReply.js';
 import { isValidGlobalInteraction } from '@/lib/util/interactions.js';
-import { logErrorForInteraction } from '@/lib/util/logError.js';
 import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
 import { getItemContractDetails, handInContract } from '@/mahoji/commands/ic.js';
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 import { autoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { shootingStarsCommand, starCache } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
-import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 import { repeatTameTrip } from '@/tasks/tames/tameTasks.js';
 
 const buttonRatelimiter = new RateLimitManager(Time.Second * 2, 1);
@@ -65,11 +62,11 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 		if (giveaway) giveawayCache.set(giveawayID, giveaway);
 	}
 	if (!giveaway) {
-		return interactionReply(interaction, { content: 'Invalid giveaway.', ephemeral: true });
+		return interaction.reply({ content: 'Invalid giveaway.', ephemeral: true });
 	}
 	if (split[1] === 'REPEAT') {
 		if (user.id !== giveaway.user_id) {
-			return interactionReply(interaction, {
+			return interaction.reply({
 				content: "You cannot repeat other peoples' giveaways.",
 				ephemeral: true
 			});
@@ -96,25 +93,25 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 	}
 
 	if (giveaway.finish_date.getTime() < Date.now() || giveaway.completed) {
-		return interactionReply(interaction, { content: 'This giveaway has finished.', ephemeral: true });
+		return interaction.reply({ content: 'This giveaway has finished.', ephemeral: true });
 	}
 
 	const action = split[1] === 'ENTER' ? 'ENTER' : 'LEAVE';
 
 	if (user.isIronman) {
-		return interactionReply(interaction, {
+		return interaction.reply({
 			content: 'You are an ironman, you cannot enter giveaways.',
 			ephemeral: true
 		});
 	}
 
 	if (user.id === giveaway.user_id) {
-		return interactionReply(interaction, { content: 'You cannot join your own giveaway.', ephemeral: true });
+		return interaction.reply({ content: 'You cannot join your own giveaway.', ephemeral: true });
 	}
 
 	if (action === 'ENTER') {
 		if (giveaway.users_entered.includes(user.id)) {
-			return interactionReply(interaction, {
+			return interaction.reply({
 				content: 'You are already entered in this giveaway.',
 				ephemeral: true
 			});
@@ -130,10 +127,10 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 			}
 		});
 		updateGiveawayMessage(giveaway);
-		return interactionReply(interaction, { content: 'You are now entered in this giveaway.', ephemeral: true });
+		return interaction.reply({ content: 'You are now entered in this giveaway.', ephemeral: true });
 	}
 	if (!giveaway.users_entered.includes(user.id)) {
-		return interactionReply(interaction, {
+		return interaction.reply({
 			content: "You aren't entered in this giveaway, so you can't leave it.",
 			ephemeral: true
 		});
@@ -147,24 +144,24 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 		}
 	});
 	updateGiveawayMessage(giveaway);
-	return interactionReply(interaction, { content: 'You left the giveaway.', ephemeral: true });
+	return interaction.reply({ content: 'You left the giveaway.', ephemeral: true });
 }
 
 async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
 	if (user.minionIsBusy) {
-		return interactionReply(interaction, { content: 'Your minion is busy.', ephemeral: true });
+		return interaction.reply({ content: 'Your minion is busy.', ephemeral: true });
 	}
 	const trips = await fetchRepeatTrips(interaction.user.id);
 	if (trips.length === 0) {
-		return interactionReply(interaction, { content: "Couldn't find a trip to repeat.", ephemeral: true });
+		return interaction.reply({ content: "Couldn't find a trip to repeat.", ephemeral: true });
 	}
 	const id = interaction.customId;
 	const split = id.split('_');
 	const matchingActivity = trips.find(i => i.type === split[2]);
 	if (!matchingActivity) {
-		return repeatTrip(interaction, trips[0]);
+		return repeatTrip(user, interaction, trips[0]);
 	}
-	return repeatTrip(interaction, matchingActivity);
+	return repeatTrip(user, interaction, matchingActivity);
 }
 
 function icDonateValidation(user: MUser, donator: MUser) {
@@ -200,38 +197,38 @@ function icDonateValidation(user: MUser, donator: MUser) {
 async function donateICHandler(interaction: ButtonInteraction) {
 	const userID = interaction.customId.split('_')[2];
 	if (!userID) {
-		return interactionReply(interaction, { content: 'Invalid user.', ephemeral: true });
+		return interaction.reply({ content: 'Invalid user.', ephemeral: true });
 	}
 
 	const user = await mUserFetch(userID);
 	const donator = await mUserFetch(interaction.user.id);
 
 	const errorStr = icDonateValidation(user, donator);
-	if (typeof errorStr === 'string') return interactionReply(interaction, { content: errorStr, ephemeral: true });
+	if (typeof errorStr === 'string') return interaction.reply({ content: errorStr, ephemeral: true });
 
-	await handleMahojiConfirmation(
-		interaction,
-		`${donator}, are you sure you want to give ${errorStr.cost} to ${
+	const mConfirmation = new MInteraction({ interaction });
+	await mConfirmation.confirmation({
+		content: `${donator}, are you sure you want to give ${errorStr.cost} to ${
 			user.badgedUsername
 		}? You own ${donator.bank.amount(errorStr.details.currentItem!.id)} of this item.`,
-		[donator.id]
-	);
+		users: [donator.id]
+	});
 
 	await user.sync();
 	await donator.sync();
 
 	const secondaryErrorStr = icDonateValidation(user, donator);
-	if (typeof secondaryErrorStr === 'string') return interactionReply(interaction, { content: secondaryErrorStr });
+	if (typeof secondaryErrorStr === 'string') return interaction.reply({ content: secondaryErrorStr });
 	const { cost } = secondaryErrorStr;
 
 	try {
 		modifyBusyCounter(donator.id, 1);
 		await tradePlayerItems(donator, user, cost);
-		await userStatsBankUpdate(donator.id, 'ic_donations_given_bank', cost);
-		await userStatsBankUpdate(user.id, 'ic_donations_received_bank', cost);
-		const handInResult = await handInContract(null, user);
+		await donator.statsBankUpdate('ic_donations_given_bank', cost);
+		await user.statsBankUpdate('ic_donations_received_bank', cost);
+		const handInResult = await handInContract(new MInteraction({ interaction }), user);
 		const nextIcDetails = getItemContractDetails(user);
-		return interactionReply(interaction, {
+		return interaction.reply({
 			content: `${donator} donated ${cost} for ${user}'s Item Contract!
 
 ${user.mention} ${handInResult}
@@ -242,7 +239,7 @@ ${Emoji.ItemContract} Your next contract is: ${nextIcDetails.currentItem?.name} 
 			}
 		});
 	} catch (err) {
-		logErrorForInteraction(err, interaction);
+		handleInteractionError(err, new MInteraction({ interaction }));
 	} finally {
 		modifyBusyCounter(donator.id, -1);
 	}
@@ -254,7 +251,7 @@ async function handleGearPresetEquip(user: MUser, id: string, interaction: Butto
 	const presets = await prisma.gearPreset.findMany({ where: { user_id: user.id } });
 	const matchingPreset = presets.find(p => stringMatches(p.name, presetName));
 	if (!matchingPreset) {
-		return interactionReply(interaction, { content: "You don't have a preset with this name.", ephemeral: true });
+		return interaction.reply({ content: "You don't have a preset with this name.", ephemeral: true });
 	}
 	await runCommand({
 		commandName: 'gearpresets',
@@ -273,19 +270,19 @@ async function handlePinnedTripRepeat(user: MUser, id: string, interaction: Butt
 	if (!pinnedTripID) return;
 	const trip = await prisma.pinnedTrip.findFirst({ where: { user_id: user.id, id: pinnedTripID } });
 	if (!trip) {
-		return interactionReply(interaction, {
+		return interaction.reply({
 			content: "You don't have a pinned trip with this ID, and you cannot repeat trips of other users.",
 			ephemeral: true
 		});
 	}
-	await repeatTrip(interaction, { data: trip.data, type: trip.activity_type });
+	await repeatTrip(user, interaction, { data: trip.data, type: trip.activity_type });
 }
 
 async function handleGEButton(user: MUser, id: string, interaction: ButtonInteraction) {
 	if (id === 'ge_cancel_dms') {
-		const mention = mentionCommand(globalClient, 'config', 'user', 'toggle');
+		const mention = mentionCommand('config', 'user', 'toggle');
 		if (user.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
-			return interactionReply(interaction, {
+			return interaction.reply({
 				content: `You already disabled Grand Exchange DM's, you can re-enable them using ${mention}.`,
 				ephemeral: true
 			});
@@ -295,7 +292,7 @@ async function handleGEButton(user: MUser, id: string, interaction: ButtonIntera
 				push: BitField.DisableGrandExchangeDMs
 			}
 		});
-		return interactionReply(interaction, {
+		return interaction.reply({
 			content: `You have disabled Grand Exchange DM's, and won't receive anymore DM's, you can re-enable them using ${mention}.`,
 			ephemeral: true
 		});
@@ -314,24 +311,24 @@ async function handleGEButton(user: MUser, id: string, interaction: ButtonIntera
 			}
 		});
 		if (!listing) {
-			return interactionReply(interaction, {
+			return interaction.reply({
 				content: 'You cannot cancel this listing, it is either already cancelled, fulfilled or not yours.',
 				ephemeral: true
 			});
 		}
 		const response = await cancelGEListingCommand(user, listing.userfacing_id);
-		return interactionReply(interaction, { content: response, ephemeral: true });
+		return interaction.reply({ content: response, ephemeral: true });
 	}
 }
 
-export async function interactionHook(interaction: Interaction) {
-	if (!interaction.isButton()) return;
+export async function globalButtonInteractionHandler(interaction: ButtonInteraction) {
+	const mInteraction = new MInteraction({ interaction });
 	const ignoredInteractionIDs = ['CONFIRM', 'CANCEL', 'PARTY_JOIN', ...Object.values(InteractionID.PaginatedMessage)];
 	if (ignoredInteractionIDs.includes(interaction.customId)) return;
 	if (['DYN_', 'LP_'].some(s => interaction.customId.startsWith(s))) return;
 
 	if (globalClient.isShuttingDown) {
-		return interactionReply(interaction, {
+		return interaction.reply({
 			content: 'The bot is currently rebooting, please try again in a couple minutes.',
 			ephemeral: true
 		});
@@ -342,7 +339,7 @@ export async function interactionHook(interaction: Interaction) {
 
 	const ratelimit = buttonRatelimiter.acquire(userID);
 	if (ratelimit.limited) {
-		return interactionReply(interaction, {
+		return interaction.reply({
 			content: `You're on cooldown from clicking buttons, please wait: ${formatDuration(ratelimit.remainingTime, true)}.`,
 			ephemeral: true
 		});
@@ -361,7 +358,7 @@ export async function interactionHook(interaction: Interaction) {
 
 	if (!isValidGlobalInteraction(id)) return;
 	if (user.isBusy) {
-		return interactionReply(interaction, { content: 'You cannot use a command right now.', ephemeral: true });
+		return interaction.reply({ content: 'You cannot use a command right now.', ephemeral: true });
 	}
 
 	const options = {
@@ -383,8 +380,8 @@ export async function interactionHook(interaction: Interaction) {
 		);
 	}
 	if (1 > 2 && timeSinceMessage > timeLimit) {
-		return interactionReply(interaction, {
-			content: `<@${userID}>, this button is too old, you can no longer use it. You can only only use buttons that are up to ${formatDuration(
+		return interaction.reply({
+			content: `<@${userID}>, this button is too old, you can no longer use it. You can only use buttons that are up to ${formatDuration(
 				timeLimit
 			)} old, up to 300 hours for patrons.`,
 			ephemeral: true
@@ -469,7 +466,7 @@ export async function interactionHook(interaction: Interaction) {
 
 	if (id === 'DO_FISHING_CONTEST') {
 		if (user.perkTier() < PerkTier.Four) {
-			return interactionReply(interaction, {
+			return interaction.reply({
 				content: 'You need to be a Tier 3 patron to use this button.',
 				ephemeral: true
 			});
@@ -513,7 +510,7 @@ export async function interactionHook(interaction: Interaction) {
 	}
 
 	if (user.minionIsBusy) {
-		return interactionReply(interaction, { content: `${user.minionName} is busy.`, ephemeral: true });
+		return interaction.reply({ content: `${user.minionName} is busy.`, ephemeral: true });
 	}
 
 	switch (id) {
@@ -614,9 +611,9 @@ export async function interactionHook(interaction: Interaction) {
 			});
 		}
 		case 'AUTO_FARMING_CONTRACT': {
-			const response = await autoContract(await mUserFetch(user.id), options.channelID, user.id);
+			const response = await autoContract(user, options.channelID);
 			if (response) {
-				return interactionReply(interaction, response);
+				return mInteraction.reply(response);
 			}
 			return;
 		}
@@ -655,9 +652,9 @@ export async function interactionHook(interaction: Interaction) {
 			starCache.delete(user.id);
 			if (star && star.expiry > Date.now()) {
 				const str = await shootingStarsCommand(interaction.channelId, user, star);
-				return interactionReply(interaction, str);
+				return interaction.reply(str);
 			}
-			return interactionReply(interaction, {
+			return interaction.reply({
 				content: `${
 					star && star.expiry < Date.now()
 						? 'The Crashed Star has expired!'

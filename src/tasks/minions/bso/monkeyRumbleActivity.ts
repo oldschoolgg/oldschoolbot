@@ -6,7 +6,6 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import type { MonkeyRumbleOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const rewardTable = new LootTable().add('Monkey egg').add('Monkey dye').add('Big banana');
 const baseTable = new LootTable().tertiary(25, 'Monkey crate');
@@ -79,7 +78,7 @@ export const mrTask: MinionTask = {
 		}
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
-		updateBankSetting('mr_loot', loot);
+		await ClientSettings.updateBankSetting('mr_loot', loot);
 
 		const rumbleTokensPerHour = `${Math.round((tokens / (duration / Time.Minute)) * 60).toLocaleString()}`;
 		const fightsPerHour = `${Math.round((quantity / (duration / Time.Minute)) * 60).toLocaleString()}`;

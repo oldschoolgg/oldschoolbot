@@ -6,14 +6,13 @@ import { calcPercentOfNum, calcWhatPercent } from '@oldschoolgg/toolkit';
 import { KandarinDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const barbAssaultTask: MinionTask = {
 	type: 'BarbarianAssault',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
 		const { channelID, quantity, userID, duration } = data;
 		const user = await mUserFetch(userID);
-		const { honour_level: currentHonourLevel } = await user.fetchStats({ honour_level: true });
+		const { honour_level: currentHonourLevel } = await user.fetchStats();
 
 		let basePoints = 35;
 
@@ -39,15 +38,11 @@ export const barbAssaultTask: MinionTask = {
 		}
 
 		await user.incrementMinigameScore('barb_assault', quantity);
-		await userStatsUpdate(
-			user.id,
-			{
-				honour_points: {
-					increment: totalPoints
-				}
-			},
-			{}
-		);
+		await user.statsUpdate({
+			honour_points: {
+				increment: totalPoints
+			}
+		});
 
 		resultStr = `${user.mention}, ${user.minionName} finished doing ${quantity} waves of Barbarian Assault, you received ${totalPoints} Honour Points.
 ${resultStr}`;

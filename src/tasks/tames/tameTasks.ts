@@ -19,7 +19,6 @@ import {
 	ButtonBuilder,
 	type ButtonInteraction,
 	ButtonStyle,
-	type ChatInputCommandInteraction,
 	type GuildMember,
 	userMention
 } from 'discord.js';
@@ -426,7 +425,7 @@ export async function repeatTameTrip({
 	guildID: string | null;
 	user: MUser;
 	member: APIInteractionGuildMember | GuildMember | null;
-	interaction: ButtonInteraction | ChatInputCommandInteraction;
+	interaction: ButtonInteraction;
 	continueDeltaMillis: number | null;
 }) {
 	const activity = await tameLastFinishedActivity(user);

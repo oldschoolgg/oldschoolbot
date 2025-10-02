@@ -4,7 +4,6 @@ import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
 
 import { formatDuration, stringMatches, Table, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { MAX_XP } from '@/lib/constants.js';
@@ -112,7 +111,7 @@ export const dropRatesCommand: OSBMahojiCommand = {
 	description: 'Check the droprate of something.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'thing',
 			description: 'The thing you want to check.',
 			required: true,

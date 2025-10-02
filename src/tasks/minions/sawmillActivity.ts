@@ -5,13 +5,11 @@ import { Bank } from 'oldschooljs';
 
 import { Planks } from '@/lib/minions/data/planks.js';
 import type { SawmillActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const sawmillTask: MinionTask = {
 	type: 'Sawmill',
-	async run(data: SawmillActivityTaskOptions) {
-		const { userID, channelID, plankID, plankQuantity } = data;
-		const user = await mUserFetch(userID);
+	async run(data: SawmillActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelID, plankID, plankQuantity } = data;
 		const plank = Planks.find(i => i.outputItem === plankID)!;
 		const loot = new Bank({
 			[plankID]: plankQuantity

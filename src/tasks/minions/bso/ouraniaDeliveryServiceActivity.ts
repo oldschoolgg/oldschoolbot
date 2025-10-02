@@ -7,7 +7,6 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { ExoticSeedsTable } from '@/lib/simulation/sharedTables.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const PrayerPageTable = new LootTable()
 	.add('Saradomin page 1')
@@ -86,7 +85,7 @@ export const odsTask: MinionTask = {
 				loot.multiply(2);
 			}
 			await user.addItemsToBank({ items: loot, collectionLog: true });
-			updateBankSetting('ods_loot', loot);
+			await ClientSettings.updateBankSetting('ods_loot', loot);
 			await trackLoot({
 				duration,
 				totalLoot: loot,

@@ -12,9 +12,6 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import type { DOAOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 async function handleDOAXP(user: MUser, qty: number, isCm: boolean) {
 	let rangeXP = 10_000 * qty;
@@ -54,7 +51,7 @@ interface RaidResultUser {
 
 export const doaTask: MinionTask = {
 	type: 'DepthsOfAtlantis',
-	async run(data: DOAOptions) {
+	async run(data: DOAOptions, { handleTripFinish }) {
 		const { channelID, cm, duration, leader, quantity, users, raids } = data;
 		const isSolo = users.length === 1;
 		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
@@ -73,18 +70,14 @@ export const doaTask: MinionTask = {
 		// Increment all users attempts
 		await Promise.all(
 			allUsers.map(async u => {
-				const stats = await u.fetchStats({ doa_room_attempts_bank: true });
+				const stats = await u.fetchStats();
 				const currentKCBank = new Bank(stats.doa_room_attempts_bank as ItemBank);
-				userStatsUpdate(
-					u.id,
-					{
-						doa_room_attempts_bank: currentKCBank.add(newRoomAttempts).toJSON(),
-						doa_attempts: {
-							increment: quantity
-						}
-					},
-					{}
-				);
+				u.statsUpdate({
+					doa_room_attempts_bank: currentKCBank.add(newRoomAttempts).toJSON(),
+					doa_attempts: {
+						increment: quantity
+					}
+				});
 			})
 		);
 
@@ -180,17 +173,13 @@ export const doaTask: MinionTask = {
 					collectionLog: true
 				});
 
-				const stats = await user.fetchStats({ doa_loot: true });
-				await userStatsUpdate(
-					user.id,
-					{
-						doa_total_minutes_raided: {
-							increment: Math.floor(duration / Time.Minute)
-						},
-						doa_loot: new Bank(stats.doa_loot as ItemBank).add(totalLoot.get(userID)).toJSON()
+				const stats = await user.fetchStats();
+				await user.statsUpdate({
+					doa_total_minutes_raided: {
+						increment: Math.floor(duration / Time.Minute)
 					},
-					{}
-				);
+					doa_loot: new Bank(stats.doa_loot as ItemBank).add(totalLoot.get(userID)).toJSON()
+				});
 
 				const items = itemsAdded.items();
 
@@ -227,7 +216,7 @@ export const doaTask: MinionTask = {
 			resultMessage += `\n\n${messages.join('\n')}`;
 		}
 
-		await updateBankSetting('doa_loot', totalLoot.totalLoot());
+		await ClientSettings.updateBankSetting('doa_loot', totalLoot.totalLoot());
 		await trackLoot({
 			totalLoot: totalLoot.totalLoot(),
 			id: 'depths_of_atlantis',

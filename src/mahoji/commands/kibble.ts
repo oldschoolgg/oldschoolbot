@@ -1,15 +1,12 @@
 import { kibbles } from '@/lib/bso/kibble.js';
 
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
 import { type Eatable, Eatables } from '@/lib/data/eatables.js';
 import { getRealHealAmount } from '@/lib/minions/functions/getUserFoodFromBank.js';
 import type { KibbleOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const kibbleCommand: OSBMahojiCommand = {
 	name: 'kibble',
@@ -21,14 +18,14 @@ export const kibbleCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'kibble',
 			description: 'The kibble you want to make.',
 			required: true,
 			choices: kibbles.map(i => i.item.name).map(i => ({ name: i, value: i }))
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to make.',
 			required: true,
@@ -105,9 +102,9 @@ export const kibbleCommand: OSBMahojiCommand = {
 		}
 
 		await user.removeItemsFromBank(cost);
-		updateBankSetting('kibble_cost', cost);
+		await ClientSettings.updateBankSetting('kibble_cost', cost);
 
-		await addSubTaskToActivityTask<KibbleOptions>({
+		await ActivityManager.startTrip<KibbleOptions>({
 			userID: user.id,
 			channelID: channelID.toString(),
 			quantity: options.quantity,

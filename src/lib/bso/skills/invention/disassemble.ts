@@ -31,7 +31,6 @@ import { clamp } from 'remeda';
 import Skillcapes from '@/lib/skilling/skillcapes.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { DisassembleTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 
 const MASTER_CAPE_JUNK_REDUCTION = 5;
@@ -388,7 +387,7 @@ export async function disassembleCommand({
 	}
 	await user.removeItemsFromBank(result.cost);
 
-	await addSubTaskToActivityTask<DisassembleTaskOptions>({
+	await ActivityManager.startTrip<DisassembleTaskOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		duration: result.duration,

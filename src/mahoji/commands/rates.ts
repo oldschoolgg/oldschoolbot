@@ -17,15 +17,8 @@ import { stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
 import { calculateTuraelsTrialsInput, TuraelsTrialsMethods } from '@/lib/bso/turaelsTrials.js';
 
 import { bold } from '@discordjs/builders';
-import {
-	calcPerHour,
-	formatDuration,
-	increaseNumByPercent,
-	returnStringOrFile,
-	sumArr,
-	Time
-} from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
+import { calcPerHour, formatDuration, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
+import type { InteractionReplyOptions } from 'discord.js';
 import { Bank, convertBankToPerHourStats, Items, itemID, toKMB } from 'oldschooljs';
 import { unique } from 'remeda';
 
@@ -44,7 +37,6 @@ import { Gear } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { BathhouseTaskOptions } from '@/lib/types/minions.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { PeakTier } from '@/lib/util/peaks.js';
 import { calculateHunterInput } from '@/mahoji/commands/hunt.js';
 import { calculateMiningInput } from '@/mahoji/commands/mine.js';
@@ -61,12 +53,12 @@ export const ratesCommand: OSBMahojiCommand = {
 	description: 'Check rates of various skills/activities.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'minigames',
 			description: 'Check minigames rates.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'baxtorian_bathhouses',
 					description: 'baxtorian bathhouses',
 					options: []
@@ -74,12 +66,12 @@ export const ratesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'tames',
 			description: 'Check tames rates.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'eagle',
 					description: 'Eagle tame.',
 					options: []
@@ -87,42 +79,42 @@ export const ratesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'xphr',
 			description: 'Check XP/hr rates.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'divination_memory_harvesting',
 					description: 'Divination.',
 					options: []
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'agility',
 					description: 'agility.',
 					options: []
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'dungeoneering',
 					description: 'Dungeoneering.',
 					options: []
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'mining',
 					description: 'Mining.',
 					options: []
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'hunter',
 					description: 'XP/hr rates for Hunter.',
 					options: []
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'turaels_trials',
 					description: 'XP/hr rates for TT.',
 					options: []
@@ -130,12 +122,12 @@ export const ratesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'misc',
 			description: 'Miscelleanous rates.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'zygomite_seeds',
 					description: 'Check zygomite seeds.'
 				}
@@ -144,7 +136,7 @@ export const ratesCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		interaction
 	}: CommandRunOptions<{
 		xphr?: {
@@ -159,8 +151,7 @@ export const ratesCommand: OSBMahojiCommand = {
 		misc?: { zygomite_seeds?: {} };
 		minigames?: { baxtorian_bathhouses?: {} };
 	}>) => {
-		await deferInteraction(interaction);
-		const user = await mUserFetch(userID);
+		await interaction.defer();
 
 		if (options.minigames?.baxtorian_bathhouses) {
 			const results = [];
@@ -200,7 +191,7 @@ export const ratesCommand: OSBMahojiCommand = {
 				);
 			}
 			return {
-				...(returnStringOrFile(tableArr.join('\n')) as InteractionReplyOptions)
+				...(interaction.returnStringOrFile(tableArr.join('\n')) as InteractionReplyOptions)
 			};
 		}
 		if (options.misc?.zygomite_seeds) {
@@ -272,7 +263,7 @@ ${zygomiteFarmingSource
 
 			return {
 				content: 'Assumes abyssal jibwings (e) and divine ring',
-				...(returnStringOrFile(results) as InteractionReplyOptions)
+				...(interaction.returnStringOrFile(results) as InteractionReplyOptions)
 			};
 		}
 
@@ -404,7 +395,7 @@ ${zygomiteFarmingSource
 				}
 			}
 			return {
-				...(returnStringOrFile(results) as InteractionReplyOptions),
+				...(interaction.returnStringOrFile(results) as InteractionReplyOptions),
 				content: 'Assumes: Hunter master cape, level 120 Hunter, full Graceful, Sandy pet equipped.'
 			};
 		}
@@ -460,7 +451,7 @@ ${zygomiteFarmingSource
 			}
 
 			return {
-				...(returnStringOrFile(results) as InteractionReplyOptions),
+				...(interaction.returnStringOrFile(results) as InteractionReplyOptions),
 				content: 'Assumes: Slayer master cape (8% boost to slayer xp)'
 			};
 		}
@@ -579,7 +570,7 @@ ${zygomiteFarmingSource
 				}
 			}
 			return {
-				...(returnStringOrFile(results) as InteractionReplyOptions),
+				...(interaction.returnStringOrFile(results) as InteractionReplyOptions),
 				content:
 					'Assumes: Mining master cape, full Prospector, Glory, Varrock armour 4, 120 mining, Volcanic pickaxe.'
 			};
@@ -675,7 +666,7 @@ ${zygomiteFarmingSource
 				}
 			}
 
-			return returnStringOrFile(results);
+			return interaction.returnStringOrFile(results);
 		}
 
 		if (options.xphr?.agility) {
@@ -725,7 +716,7 @@ ${zygomiteFarmingSource
 					}
 				}
 			}
-			return returnStringOrFile(results);
+			return interaction.returnStringOrFile(results);
 		}
 
 		if (options.xphr?.dungeoneering) {
@@ -765,7 +756,7 @@ ${zygomiteFarmingSource
 				}
 			}
 			return {
-				...(returnStringOrFile(results) as InteractionReplyOptions),
+				...(interaction.returnStringOrFile(results) as InteractionReplyOptions),
 				content: 'Assumes: 120 Dungeoneering, Ring of luck, master cape (For gora shard chance)'
 			};
 		}

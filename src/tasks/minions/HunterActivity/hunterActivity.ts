@@ -29,9 +29,7 @@ import type { Skills } from '@/lib/types/index.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
 import { logError } from '@/lib/util/logError.js';
 import { PeakTier } from '@/lib/util/peaks.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { skillingPetDropRate } from '@/lib/util.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 const riskDeathNumbers = [
 	{
@@ -285,7 +283,6 @@ export function calculateHunterResult({
 
 export const hunterTask: MinionTask = {
 	type: 'Hunter',
-	isNew: true,
 	async run(data: HunterActivityTaskOptions, { handleTripFinish, user }) {
 		const {
 			creatureID,
@@ -306,7 +303,7 @@ export const hunterTask: MinionTask = {
 		const crystalImpling = creature.name === 'Crystal impling';
 
 		let graceful = false;
-		if (userHasGracefulEquipped(user)) {
+		if (user.hasGracefulEquipped()) {
 			graceful = true;
 		}
 
@@ -339,7 +336,7 @@ export const hunterTask: MinionTask = {
 				bank: user.bank,
 				quantity,
 				duration,
-				creatureScores: (await user.fetchStats({ creature_scores: true })).creature_scores as ItemBank,
+				creatureScores: (await user.fetchStats()).creature_scores as ItemBank,
 				allGear: user.gear,
 				collectionLog: user.cl,
 				hasHunterMasterCape: user.hasEquippedOrInBank('Hunter master cape'),
@@ -358,7 +355,7 @@ export const hunterTask: MinionTask = {
 			itemsToRemove: totalCost
 		});
 
-		await updateBankSetting('hunter_loot', loot);
+		await ClientSettings.updateBankSetting('hunter_loot', loot);
 		await trackLoot({
 			id: creature.name,
 			changeType: 'loot',

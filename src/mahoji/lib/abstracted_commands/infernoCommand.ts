@@ -15,8 +15,6 @@ import type { Gear } from '@/lib/structures/Gear.js';
 import { PercentCounter } from '@/lib/structures/PercentCounter.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { InfernoOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const minimumRangeItems = Items.resolveFullItems([
 	'Amulet of fury',
@@ -169,7 +167,7 @@ async function infernoRun({
 	const preZukDeathChance = new PercentCounter(basePreZukDeathChance(attempts), 'percent');
 	const emergedZukDeathChance = new PercentCounter(baseEmergedZukDeathChance(emergedAttempts), 'percent');
 
-	const { sacrificed_bank: sacrificedBank } = await user.fetchStats({ sacrificed_bank: true });
+	const { sacrificed_bank: sacrificedBank } = await user.fetchStats();
 
 	if (!(sacrificedBank as ItemBank)[itemID('Fire cape')]) {
 		return 'To do the Inferno, you must have sacrificed a fire cape.';
@@ -560,10 +558,7 @@ async function infernoRun({
 }
 
 export async function infernoStatsCommand(user: MUser): CommandResponse {
-	const [minigames, { inferno_attempts: attempts }] = await Promise.all([
-		user.fetchMinigames(),
-		user.fetchStats({ inferno_attempts: true })
-	]);
+	const [minigames, { inferno_attempts: attempts }] = await Promise.all([user.fetchMinigames(), user.fetchStats()]);
 
 	const zukKC = minigames.inferno;
 	const emergedAttempts = user.user.emerged_inferno_attempts;
@@ -610,7 +605,7 @@ export async function infernoStartCommand(user: MUser, channelID: string, emerge
 	const usersRangeStats = user.gear.range.stats;
 	const [zukKC, { inferno_attempts: attempts }] = await Promise.all([
 		await user.fetchMinigameScore('inferno'),
-		user.fetchStats({ inferno_attempts: true })
+		user.fetchStats()
 	]);
 
 	const res = await infernoRun({
@@ -665,9 +660,9 @@ export async function infernoStartCommand(user: MUser, channelID: string, emerge
 		};
 	}
 
-	await addSubTaskToActivityTask<InfernoOptions>({
+	await ActivityManager.startTrip<InfernoOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration: realDuration,
 		type: 'Inferno',
 		zukDeathChance: zukDeathChance.value,
@@ -682,7 +677,7 @@ export async function infernoStartCommand(user: MUser, channelID: string, emerge
 		diedEmergedZuk
 	});
 
-	updateBankSetting('inferno_cost', realCost);
+	await ClientSettings.updateBankSetting('inferno_cost', realCost);
 	const emergedZukDeathMsg = emerged
 		? `**Emerged Zuk Death Chance:** ${emergedZukDeathChance.value.toFixed(
 				1

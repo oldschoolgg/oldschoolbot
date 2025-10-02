@@ -6,14 +6,13 @@ import { Bank, toKMB } from 'oldschooljs';
 
 import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export const agilityArenaTask: MinionTask = {
 	type: 'AgilityArena',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { channelID, duration, userID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { channelID, duration } = data;
+
 		const currentLevel = user.skillsAsLevels.agility;
 		const [hasKaramjaMed] = await userhasDiaryTier(user, KaramjaDiary.medium);
 		const xpPerTicket = hasKaramjaMed ? 379.5 : 345;

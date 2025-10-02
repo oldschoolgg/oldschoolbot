@@ -6,9 +6,7 @@ import { dwarvenOutfit } from '@/lib/data/CollectionsExport.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { PercentCounter } from '@/lib/structures/PercentCounter.js';
 import type { MoktangTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const requiredPickaxes = resolveItems(['Crystal pickaxe', 'Volcanic pickaxe', 'Dwarven pickaxe', 'Dragon pickaxe']);
 
@@ -53,7 +51,7 @@ export async function moktangCommand(user: MUser, channelID: string, inputQuanti
 	}
 
 	await user.removeItemsFromBank(cost);
-	await updateBankSetting('moktang_cost', cost);
+	await ClientSettings.updateBankSetting('moktang_cost', cost);
 	await trackLoot({
 		changeType: 'cost',
 		totalCost: cost,
@@ -67,7 +65,7 @@ export async function moktangCommand(user: MUser, channelID: string, inputQuanti
 		]
 	});
 
-	await addSubTaskToActivityTask<MoktangTaskOptions>({
+	await ActivityManager.startTrip<MoktangTaskOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		qty: quantity,

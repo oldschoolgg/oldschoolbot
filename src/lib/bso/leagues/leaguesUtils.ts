@@ -17,6 +17,7 @@ export interface HasFunctionArgs {
 	cl: Bank;
 	bank: Bank;
 	user: MUser;
+	mahojiUser: User;
 	lapScores: ItemBank;
 	skillsLevels: Required<Skills>;
 	skillsXP: Required<Skills>;
@@ -30,7 +31,6 @@ export interface HasFunctionArgs {
 	minigames: Minigame;
 	opens: Bank;
 	disassembledItems: Bank;
-	mahojiUser: User;
 	tames: Tame[];
 	sacrificedBank: Bank;
 	slayerStats: Awaited<ReturnType<typeof getSlayerTaskStats>>;

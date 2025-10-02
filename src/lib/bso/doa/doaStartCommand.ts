@@ -6,22 +6,20 @@ import {
 	createDOATeam
 } from '@/lib/bso/depthsOfAtlantis.js';
 
-import { channelIsSendable, Emoji, formatDuration, Time } from '@oldschoolgg/toolkit';
+import { Emoji, formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { degradeItem } from '@/lib/degradeableItems.js';
 import { trackLoot } from '@/lib/lootTrack.js';
-import { setupParty } from '@/lib/party.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { DOAOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { bankToStrShortNames } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { mahojiParseNumber, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export async function doaStartCommand(
+	interaction: MInteraction,
 	user: MUser,
 	challengeMode: boolean,
 	solo: boolean,
@@ -70,12 +68,9 @@ export async function doaStartCommand(
 		}
 	};
 
-	const channel = globalClient.channels.cache.get(channelID);
-	if (!channelIsSendable(channel)) return 'No channel found.';
-
 	let usersWhoConfirmed = [];
 	try {
-		usersWhoConfirmed = solo ? [user] : await setupParty(channel, user, partyOptions);
+		usersWhoConfirmed = solo ? [user] : await interaction.makeParty(partyOptions);
 	} catch (err: any) {
 		return {
 			content: typeof err === 'string' ? err : 'Your mass failed to start.',
@@ -144,7 +139,7 @@ export async function doaStartCommand(
 			} else {
 				throw new Error('No staff equipped');
 			}
-			await userStatsBankUpdate(u.id, 'doa_cost', realCost);
+			await u.statsBankUpdate('doa_cost', realCost);
 			const effectiveCost = realCost.clone();
 			totalCost.add(effectiveCost);
 
@@ -162,7 +157,7 @@ export async function doaStartCommand(
 		})
 	);
 
-	await updateBankSetting('doa_cost', totalCost);
+	await ClientSettings.updateBankSetting('doa_cost', totalCost);
 	await trackLoot({
 		totalCost,
 		id: 'depths_of_atlantis',
@@ -174,7 +169,7 @@ export async function doaStartCommand(
 			duration: createdDOATeam.realDuration
 		}))
 	});
-	await addSubTaskToActivityTask<DOAOptions>({
+	await ActivityManager.startTrip<DOAOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		duration: createdDOATeam.realDuration,

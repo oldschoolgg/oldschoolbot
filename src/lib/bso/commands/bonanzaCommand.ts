@@ -2,7 +2,6 @@ import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 
 export async function bonanzaCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) return 'Your minion is busy.';
@@ -19,7 +18,7 @@ export async function bonanzaCommand(user: MUser, channelID: string) {
 		user.minionName
 	} is now off to participate in Balthazar's Big Bonanza! The total trip will take ${formatDuration(duration)}.`;
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
 		channelID,
 		quantity: 1,

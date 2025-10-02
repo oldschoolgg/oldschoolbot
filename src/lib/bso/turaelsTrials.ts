@@ -4,9 +4,6 @@ import { Bank } from 'oldschooljs';
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import type { TuraelsTrialsOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { trackClientBankStats, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const TuraelsTrialsMethods = ['melee', 'mage', 'range'] as const;
 export type TuraelsTrialsMethod = (typeof TuraelsTrialsMethods)[number];
@@ -84,7 +81,7 @@ export async function turaelsTrialsStartCommand(user: MUser, channelID: string, 
 	const messages: string[] = [];
 
 	const isUsingBloodFury = user.hasEquipped('Amulet of blood fury');
-	let maxTripLength = calcMaxTripLength(user, 'TuraelsTrials');
+	let maxTripLength = user.calcMaxTripLength('TuraelsTrials');
 	if (isUsingBloodFury) {
 		maxTripLength = increaseNumByPercent(maxTripLength, 20);
 		messages.push('+20% Trip length for Blood fury');
@@ -107,12 +104,12 @@ export async function turaelsTrialsStartCommand(user: MUser, channelID: string, 
 
 	const degradeResults = await degradeChargeBank(user, chargeBank);
 	await user.removeItemsFromBank(cost);
-	await trackClientBankStats('turaels_trials_cost_bank', cost);
-	await userStatsBankUpdate(user.id, 'turaels_trials_cost_bank', cost);
+	await ClientSettings.updateBankSetting('turaels_trials_cost_bank', cost);
+	await user.statsBankUpdate('turaels_trials_cost_bank', cost);
 	messages.push(degradeResults);
 	messages.push(`Removed ${cost}`);
 
-	const task = await addSubTaskToActivityTask<TuraelsTrialsOptions>({
+	const task = await ActivityManager.startTrip<TuraelsTrialsOptions>({
 		userID: user.id,
 		channelID,
 		q: quantity,

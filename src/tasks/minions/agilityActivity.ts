@@ -13,10 +13,8 @@ import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Agility from '@/lib/skilling/skills/agility.js';
 import type { Course } from '@/lib/skilling/types.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { logError } from '@/lib/util/logError.js';
 import { skillingPetDropRate } from '@/lib/util.js';
-import { updateClientGPTrackSetting, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 function chanceOfFailingAgilityPyramid(lvl: number) {
 	if (lvl < 40) return 95;
@@ -154,10 +152,9 @@ export function calculateAgilityResult({
 
 export const agilityTask: MinionTask = {
 	type: 'Agility',
-	async run(data: AgilityActivityTaskOptions) {
-		const { courseID, quantity, userID, channelID, duration, alch } = data;
+	async run(data: AgilityActivityTaskOptions, { user, handleTripFinish }) {
+		const { courseID, quantity, channelID, duration, alch } = data;
 		const minutes = Math.round(duration / Time.Minute);
-		const user = await mUserFetch(userID);
 		const currentLevel = user.skillsAsLevels.agility;
 
 		const course = Agility.Courses.find(course => course.id === courseID);
@@ -189,36 +186,19 @@ export const agilityTask: MinionTask = {
 			hasAgilityPortent: portentResult.didCharge
 		});
 
-		const stats = await user.fetchStats({ laps_scores: true });
-		const { laps_scores: newLapScores } = await userStatsUpdate(
-			user.id,
-			{
-				laps_scores: addItemToBank(stats.laps_scores as ItemBank, course.id, successfulLaps),
-				xp_from_graceful_portent: {
-					increment: portentXP
-				}
-			},
-			{ laps_scores: true }
-		);
+		const stats = await user.fetchStats();
+		const { laps_scores: newLapScores } = await user.statsUpdate({
+			laps_scores: addItemToBank(stats.laps_scores as ItemBank, course.id, successfulLaps),
+			xp_from_graceful_portent: {
+				increment: portentXP
+			}
+		});
 
 		let xpRes = await user.addXP({
 			skillName: 'agility',
 			amount: xpReceived,
 			duration
 		});
-
-		// Agility pyramid gp tracking
-		if (course.name === 'Agility Pyramid') {
-			await userStatsUpdate(
-				user.id,
-				{
-					gp_from_agil_pyramid: {
-						increment: loot.amount('Coins')
-					}
-				},
-				{}
-			);
-		}
 
 		// Roll for monkey backpacks
 		if (course.name === 'Ape Atoll Agility Course') {
@@ -241,7 +221,7 @@ export const agilityTask: MinionTask = {
 				amount: alch.quantity * 65,
 				duration
 			})}`;
-			await updateClientGPTrackSetting('gp_alch', alchGP);
+			await ClientSettings.updateClientGPTrackSetting('gp_alch', alchGP);
 		}
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${course.name} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}.\n${xpRes}`;

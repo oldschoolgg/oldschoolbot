@@ -1,4 +1,4 @@
-import { SeedableRNG } from '@oldschoolgg/rng';
+import { MathRNG } from '@oldschoolgg/rng';
 import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs';
 
@@ -8,7 +8,6 @@ import { logError } from '@/lib/util/logError.js';
 
 export const fishingTask: MinionTask = {
 	type: 'Fishing',
-	isNew: true,
 	async run(data: FishingActivityTaskOptions, { handleTripFinish, user }) {
 		const { fishID, quantity, channelID } = data;
 		const fish = Fishing.Fishes.find(fish => fish.id === fishID)!;
@@ -19,8 +18,8 @@ export const fishingTask: MinionTask = {
 			quantity,
 			flakesQuantity: data.flakesQuantity,
 			gearBank: user.gearBank,
-			rng: new SeedableRNG(),
-			collectionLog: user.cl
+			collectionLog: user.cl,
+			rng: MathRNG
 		});
 
 		const resultOrError = await result.updateBank.transact(user);

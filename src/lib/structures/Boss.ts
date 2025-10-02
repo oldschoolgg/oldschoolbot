@@ -16,14 +16,11 @@ import type { GearStats } from 'oldschooljs/gear';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
-import { setupParty } from '@/lib/party.js';
 import type { Gear } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { NewBossOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import type { ClientBankKey } from '@/lib/util/clientSettings.js';
 import { formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
-import { type ClientBankKey, updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const gpCostPerKill = (user: MUser) =>
 	user.gear.melee.hasEquipped(['Ring of charos', 'Ring of charos(a)'], false) ? 5_000_000 : 10_000_000;
@@ -115,6 +112,7 @@ function calcSetupPercent(
 }
 
 export interface BossOptions {
+	interaction: MInteraction;
 	maxSize?: number;
 	id: number;
 	baseDuration: number;
@@ -166,6 +164,7 @@ export interface BossUser {
 }
 
 export class BossInstance {
+	interaction: MInteraction;
 	id: number;
 	baseDuration: number;
 	skillRequirements: Skills;
@@ -206,6 +205,7 @@ export class BossInstance {
 	allowedMentions?: BaseMessageOptions['allowedMentions'];
 
 	constructor(options: BossOptions) {
+		this.interaction = options.interaction;
 		this.baseDuration = options.baseDuration;
 		this.skillRequirements = options.skillRequirements;
 		this.itemBoosts = options.itemBoosts;
@@ -267,7 +267,7 @@ export class BossInstance {
 		const baseQty = this.tempQty;
 		// Calculate max kill qty
 		let tempQty = 1;
-		const maxTripLength = this.leader ? calcMaxTripLength(this.leader, this.activity) : Time.Hour;
+		const maxTripLength = this.leader ? this.leader.calcMaxTripLength(this.activity) : Time.Hour;
 		tempQty = Math.max(tempQty, Math.floor(maxTripLength / duration));
 		// If this boss doesn't allow more than 1KC at time, limit to 1
 		if (
@@ -285,7 +285,7 @@ export class BossInstance {
 		this.users =
 			this.solo && this.leader
 				? [this.leader]
-				: await setupParty(this.channel, this.leader, {
+				: await this.interaction.makeParty({
 						ironmanAllowed: true,
 						minSize: this.minSize,
 						maxSize: this.maxSize,
@@ -293,9 +293,9 @@ export class BossInstance {
 						customDenier: async (user: MUser) => {
 							return this.checkUser(user);
 						},
-						message: this.massText,
-						massTimeout: this.automaticStartTime,
-						allowedMentions: this.allowedMentions
+						message: this.massText
+						// massTimeout: this.automaticStartTime,
+						// allowedMentions: this.allowedMentions
 					});
 
 		this.tempQty = this.quantity;
@@ -474,7 +474,7 @@ export class BossInstance {
 			}
 		}
 		if (this.settingsKeys) {
-			updateBankSetting(this.settingsKeys[0], totalCost);
+			ClientSettings.updateBankSetting(this.settingsKeys[0], totalCost);
 		}
 
 		const monster = effectiveMonsters.find(m => m.id === this.id);
@@ -493,7 +493,7 @@ export class BossInstance {
 			});
 		}
 
-		await addSubTaskToActivityTask<NewBossOptions>({
+		await ActivityManager.startTrip<NewBossOptions>({
 			userID: this.users![0].id,
 			channelID: this.channel.id,
 			quantity: this.quantity!,

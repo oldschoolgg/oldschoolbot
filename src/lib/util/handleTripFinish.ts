@@ -7,7 +7,7 @@ import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
 import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
-import { channelIsSendable, makeComponents, mentionCommand, notEmpty, Stopwatch, Time } from '@oldschoolgg/toolkit';
+import { channelIsSendable, makeComponents, notEmpty, Stopwatch, Time } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { bold } from 'discord.js';
@@ -18,6 +18,7 @@ import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
+import { mentionCommand } from '@/lib/discord/index.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
@@ -40,12 +41,10 @@ import {
 } from '@/lib/util/interactions.js';
 import { logError } from '@/lib/util/logError.js';
 import { hasSkillReqs, perHourChance } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 import { alching } from '@/mahoji/commands/laps.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
-import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const collectors = new Map<string, MessageCollector>();
 
@@ -71,7 +70,6 @@ type TripEffectReturn = {
 
 export interface TripFinishEffect {
 	name: string;
-	// biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
 	fn: (options: TripFinishEffectOptions) => Promise<TripEffectReturn | undefined | void>;
 }
 
@@ -82,7 +80,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
 				const GP = loot.amount(EItem.COINS);
 				if (typeof GP === 'number') {
-					await updateClientGPTrackSetting('gp_pvm', GP);
+					await ClientSettings.updateClientGPTrackSetting('gp_pvm', GP);
 				}
 			}
 			return {};
@@ -94,7 +92,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			const imp = await handlePassiveImplings(user, data, messages);
 			if (imp && imp.bank.length > 0) {
 				messages.push(`Caught ${imp.bank}`);
-				await userStatsBankUpdate(user, 'passive_implings_bank', imp.bank);
+				await user.statsBankUpdate('passive_implings_bank', imp.bank);
 				return {
 					itemsToAddWithCL: imp.bank
 				};
@@ -130,8 +128,8 @@ const tripFinishEffects: TripFinishEffect[] = [
 				messages.push(`<:mysterybox:680783258488799277> **You received 2x loot and ${otherLoot}.**`);
 
 				await Promise.all([
-					userStatsBankUpdate(user.id, 'doubled_loot_bank', bonusLoot),
-					updateBankSetting('trip_doubling_loot', bonusLoot)
+					await user.statsBankUpdate('doubled_loot_bank', bonusLoot),
+					await ClientSettings.updateBankSetting('trip_doubling_loot', bonusLoot)
 				]);
 				return {
 					itemsToAddWithCL: bonusLoot
@@ -153,7 +151,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 							bonusLoot.add(PekyTable.roll());
 						}
 					}
-					userStatsBankUpdate(user.id, 'peky_loot_bank', bonusLoot);
+					await user.statsBankUpdate('peky_loot_bank', bonusLoot);
 					messages.push(
 						`<:peky:787028037031559168> Peky flew off and got you some seeds during this trip: ${bonusLoot}.`
 					);
@@ -164,7 +162,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					for (let i = 0; i < rolls; i++) {
 						bonusLoot.add(RuneTable.roll());
 					}
-					userStatsBankUpdate(user.id, 'obis_loot_bank', bonusLoot);
+					await user.statsBankUpdate('obis_loot_bank', bonusLoot);
 					messages.push(
 						`<:obis:787028036792614974> Obis did some runecrafting during this trip and got you: ${bonusLoot}.`
 					);
@@ -175,7 +173,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					for (let i = 0; i < rolls; i++) {
 						bonusLoot.add(WoodTable.roll());
 					}
-					userStatsBankUpdate(user.id, 'brock_loot_bank', bonusLoot);
+					await user.statsBankUpdate('brock_loot_bank', bonusLoot);
 					messages.push(
 						`<:brock:787310793183854594> Brock did some woodcutting during this trip and got you: ${bonusLoot}.`
 					);
@@ -186,7 +184,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					for (let i = 0; i < rolls; i++) {
 						bonusLoot.add(WilvusTable.roll());
 					}
-					userStatsBankUpdate(user.id, 'wilvus_loot_bank', bonusLoot);
+					await user.statsBankUpdate('wilvus_loot_bank', bonusLoot);
 					messages.push(
 						`<:wilvus:787320791011164201> Wilvus did some pickpocketing during this trip and got you: ${bonusLoot}.`
 					);
@@ -198,7 +196,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 							bonusLoot.add(MysteryBoxes.roll());
 						}
 					}
-					userStatsBankUpdate(user.id, 'smokey_loot_bank', bonusLoot);
+					await user.statsBankUpdate('smokey_loot_bank', bonusLoot);
 					if (bonusLoot.length > 0) {
 						messages.push(
 							`<:smokey:787333617037869139> Smokey did some walking around while you were on your trip and found you ${bonusLoot}.`
@@ -210,7 +208,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					for (let i = 0; i < minutes / 2; i++) {
 						bonusLoot.add(DougTable.roll());
 					}
-					userStatsBankUpdate(user.id, 'doug_loot_bank', bonusLoot);
+					await user.statsBankUpdate('doug_loot_bank', bonusLoot);
 					messages.push(`Doug did some mining while you were on your trip and got you: ${bonusLoot}.`);
 					break;
 				}
@@ -218,7 +216,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					for (let i = 0; i < minutes; i++) {
 						bonusLoot.add('Banana', randInt(1, 3));
 					}
-					userStatsBankUpdate(user.id, 'harry_loot_bank', bonusLoot);
+					await user.statsBankUpdate('harry_loot_bank', bonusLoot);
 					messages.push(`<:harry:749945071104819292>: ${bonusLoot}.`);
 					break;
 				}
@@ -251,8 +249,8 @@ const tripFinishEffects: TripFinishEffect[] = [
 				}
 
 				await Promise.all([
-					updateBankSetting('magic_cost_bank', alchResult.bankToRemove),
-					updateClientGPTrackSetting('gp_alch', alchResult.bankToAdd.amount('Coins'))
+					ClientSettings.updateBankSetting('magic_cost_bank', alchResult.bankToRemove),
+					ClientSettings.updateClientGPTrackSetting('gp_alch', alchResult.bankToAdd.amount('Coins'))
 				]);
 				messages.push(
 					`<:Voidling:886284972380545034> ${alchResult.maxCasts}x ${
@@ -288,7 +286,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 						data.duration,
 						user.skillLevel('agility')
 					);
-					await userStatsUpdate(user.id, {
+					await user.statsUpdate({
 						silverhawk_boots_passive_xp: {
 							increment: xpToReceive
 						}
@@ -395,7 +393,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					user.minionName
 				} arrives at the snowy area north of rellekka, finding a giant, monstrous Yeti. At his feet, lay a slain animal. The Yeti looks at ${
 					user.minionName
-				}, and prepares to attack. Use ${mentionCommand(globalClient, 'k')} to fight the yeti!.`;
+				}, and prepares to attack. Use ${mentionCommand('k')} to fight the yeti!.`;
 				messages.push(bold(message));
 			}
 		}
@@ -542,10 +540,7 @@ export async function handleTripFinish(
 	if (perkTier > PerkTier.One) {
 		components.push(...buildClueButtons(loot, perkTier, user));
 
-		const { last_tears_of_guthix_timestamp, last_daily_timestamp } = await user.fetchStats({
-			last_tears_of_guthix_timestamp: true,
-			last_daily_timestamp: true
-		});
+		const { last_tears_of_guthix_timestamp, last_daily_timestamp } = await user.fetchStats();
 
 		// Tears of Guthix start button if ready
 		if (!user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) {

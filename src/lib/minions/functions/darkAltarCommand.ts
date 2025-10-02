@@ -5,11 +5,7 @@ import { Bank, Items } from 'oldschooljs';
 
 import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { DarkAltarOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export const darkAltarRunes = {
 	soul: {
@@ -74,7 +70,7 @@ export async function darkAltarCommand({
 		timePerRune = reduceNumByPercent(timePerRune, mediumDiaryBoost);
 	}
 
-	if (!userHasGracefulEquipped(user)) {
+	if (!user.hasGracefulEquipped()) {
 		boosts.push(`${gracefulPenalty}% slower for no Graceful`);
 		timePerRune = increaseNumByPercent(timePerRune, gracefulPenalty);
 	}
@@ -84,7 +80,7 @@ export async function darkAltarCommand({
 		timePerRune = increaseNumByPercent(timePerRune, agilityPenalty);
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'DarkAltar');
+	const maxTripLength = user.calcMaxTripLength('DarkAltar');
 	// Calculate Abyssal amulet boost:
 	if (user.hasEquippedOrInBank(['Abyssal amulet'])) {
 		const abyssalAmuletBoost = inventionBoosts.abyssalAmulet.boosts.find(b =>
@@ -118,12 +114,12 @@ export async function darkAltarCommand({
 
 	if (totalCost.length > 0) {
 		await user.removeItemsFromBank(totalCost);
-		updateBankSetting('runecraft_cost', totalCost);
+		await ClientSettings.updateBankSetting('runecraft_cost', totalCost);
 	}
 
-	await addSubTaskToActivityTask<DarkAltarOptions>({
+	await ActivityManager.startTrip<DarkAltarOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'DarkAltar',

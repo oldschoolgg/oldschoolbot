@@ -11,8 +11,6 @@ import { calcPercentOfNum, Emoji, increaseNumByPercent } from '@oldschoolgg/tool
 import { Bank } from 'oldschooljs';
 
 import type { MemoryHarvestOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 const SECONDS_TO_HARVEST = 60;
 const SECONDS_TO_CONVERT = 1;
@@ -181,9 +179,8 @@ export function memoryHarvestResult({
 
 export const memoryHarvestTask: MinionTask = {
 	type: 'MemoryHarvest',
-	async run(data: MemoryHarvestOptions) {
+	async run(data: MemoryHarvestOptions, { user, handleTripFinish }) {
 		const {
-			userID,
 			channelID,
 			duration,
 			e: energyItemID,
@@ -193,7 +190,6 @@ export const memoryHarvestTask: MinionTask = {
 			dp: isUsingDivinationPotion,
 			r: rounds
 		} = data;
-		const user = await mUserFetch(userID);
 		const energy = divinationEnergies.find(t => t.item.id === energyItemID)!;
 		const hasBoon = energy.boonBitfield !== null ? user.bitfield.includes(energy.boonBitfield) : false;
 		let didGetGuthixianBoost = false;
@@ -247,7 +243,7 @@ export const memoryHarvestTask: MinionTask = {
 		}. ${xpRes}.`;
 
 		if (loot.length > 0) {
-			await userStatsBankUpdate(user.id, 'divination_loot', loot);
+			await user.statsBankUpdate('divination_loot', loot);
 			await user.addItemsToBank({
 				items: loot,
 				collectionLog: true

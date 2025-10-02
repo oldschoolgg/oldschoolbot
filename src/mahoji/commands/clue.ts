@@ -2,7 +2,6 @@ import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
 
 import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, increaseNumByPercent, isWeekend, notEmpty, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
@@ -10,14 +9,11 @@ import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
 import { clueHunterOutfit } from '@/lib/data/CollectionsExport.js';
 import { getPOHObject } from '@/lib/poh/index.js';
 import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
-import { getMahojiBank, mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export async function calcClueScores(user: MUser) {
 	const { actualCluesBank } = await user.calcActualClues();
-	const stats = await user.fetchStats({ openable_scores: true });
+	const stats = await user.fetchStats();
 	const openableBank = new Bank(stats.openable_scores as ItemBank);
 	return openableBank
 		.items()
@@ -87,20 +83,19 @@ export const clueCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'tier',
 			description: 'The clue you want to do.',
 			required: true,
 			autocomplete: async (_, user) => {
-				const bank = getMahojiBank(await mahojiUsersSettingsFetch(user.id, { bank: true }));
 				return ClueTiers.map(i => ({
-					name: `${i.name} (${bank.amount(i.scrollID)}x Owned)`,
+					name: `${i.name} (${user.bank.amount(i.scrollID)}x Owned)`,
 					value: i.name as string
 				})).concat([{ name: 'Elder (Info)', value: 'Elder (Info)' }]);
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to do.',
 			required: false,
@@ -151,7 +146,7 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 			}
 		}
 
-		let maxTripLength = calcMaxTripLength(user, 'ClueCompletion');
+		let maxTripLength = user.calcMaxTripLength('ClueCompletion');
 
 		const boosts = [];
 
@@ -161,7 +156,7 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 			boosts.push(`${boostPercent}% longer trip length for Clue bag`);
 		}
 
-		const stats = await user.fetchStats({ openable_scores: true });
+		const stats = await user.fetchStats();
 
 		let [timeToFinish, percentReduced] = reducedClueTime(
 			clueTier,
@@ -398,10 +393,10 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 		);
 		duration += (randomAddedDuration * duration) / 100;
 
-		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
+		await ActivityManager.startTrip<ClueActivityTaskOptions>({
 			ci: clueTier.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			q: quantity,
 			iQty: options.quantity,
 			duration,

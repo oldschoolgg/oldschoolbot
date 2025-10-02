@@ -16,9 +16,6 @@ import { Bank } from 'oldschooljs';
 
 import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
 import type { MonkeyRumbleOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function monkeyRumbleStatsCommand(user: MUser) {
 	const tier = monkeyTiers.find(t => t.id === monkeyTierOfUser(user))!;
@@ -72,7 +69,7 @@ export async function monkeyRumbleCommand(user: MUser, channelID: string): Comma
 		fightDuration = reduceNumByPercent(fightDuration, 17);
 		boosts.push('17% faster fights for gorilla rumble greegree');
 	}
-	const quantity = Math.floor(calcMaxTripLength(user, 'MonkeyRumble') / fightDuration);
+	const quantity = Math.floor(user.calcMaxTripLength('MonkeyRumble') / fightDuration);
 	let duration = quantity * fightDuration;
 
 	let chanceOfSpecial = Math.floor(125 * (6 - monkeyTierOfUser(user) / 2));
@@ -110,9 +107,9 @@ export async function monkeyRumbleCommand(user: MUser, channelID: string): Comma
 	}
 	const cost = new Bank().add(eatable.item.id, foodRequired);
 	await user.removeItemsFromBank(cost);
-	updateBankSetting('mr_cost', cost);
+	await ClientSettings.updateBankSetting('mr_cost', cost);
 
-	await addSubTaskToActivityTask<MonkeyRumbleOptions>({
+	await ActivityManager.startTrip<MonkeyRumbleOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,

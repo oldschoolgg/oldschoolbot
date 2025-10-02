@@ -188,7 +188,7 @@ for (const clueTier of ClueTiers) {
 				message += `${mimicNumber ? ' ' : ''}${extraClueRolls} extra rolls`;
 			}
 
-			const stats = await user.fetchStats({ openable_scores: true });
+			const stats = await user.fetchStats();
 			const nthCasket = ((stats.openable_scores as ItemBank)[clueTier.id] ?? 0) + quantity;
 
 			let gotMilestoneReward = false;

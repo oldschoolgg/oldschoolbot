@@ -122,8 +122,9 @@ export const tickers: {
 					}
 				}
 			});
-			for (const user of users) {
-				if (user.bitfield.includes(BitField.DisabledFarmingReminders)) continue;
+			for (const partialUser of users) {
+				if (partialUser.bitfield.includes(BitField.DisabledFarmingReminders)) continue;
+				const user = await mUserFetch(partialUser.id);
 				const { patches } = await Farming.getFarmingInfoFromUser(user);
 				for (const patchType of Farming.farmingPatchNames) {
 					const patch = patches[patchType];
@@ -143,7 +144,7 @@ export const tickers: {
 					if (!planted) continue;
 					if (difference < planted.growthTime * Time.Minute) continue;
 					if (patch.wasReminded) continue;
-					await mahojiUserSettingsUpdate(user.id, {
+					await user.update({
 						[Farming.getFarmingKeyFromName(patchType)]: { ...patch, wasReminded: true }
 					});
 

@@ -7,7 +7,6 @@ import { addMonsterXP } from '@/lib/minions/functions/index.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const naxxusTask: MinionTask = {
 	type: 'Naxxus',
@@ -36,7 +35,7 @@ export const naxxusTask: MinionTask = {
 			notifyDrops: Naxxus.notifyDrops
 		});
 
-		updateBankSetting('naxxus_loot', loot);
+		await ClientSettings.updateBankSetting('naxxus_loot', loot);
 		await trackLoot({
 			duration,
 			totalLoot: loot,

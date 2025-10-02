@@ -12,9 +12,8 @@ import type { MUserClass } from '@/lib/MUser.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { KCBank } from '@/lib/structures/KCBank.js';
 import { XPBank } from '@/lib/structures/XPBank.js';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '@/lib/util/clientSettings.js';
+import type { ClientBankKey } from '@/lib/util/clientSettings.js';
 import type { JsonKeys } from '@/lib/util.js';
-import { type ClientBankKey, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export class UpdateBank {
 	// Things removed
@@ -124,7 +123,7 @@ export class UpdateBank {
 		let userStatsUpdates: Prisma.UserStatsUpdateInput = {};
 		// KC
 		if (this.kcBank.length() > 0) {
-			const currentScores = (await user.fetchStats({ monster_scores: true })).monster_scores as ItemBank;
+			const currentScores = (await user.fetchStats()).monster_scores as ItemBank;
 			for (const [monster, kc] of this.kcBank.entries()) {
 				currentScores[monster] = (currentScores[monster] ?? 0) + kc;
 			}
@@ -149,7 +148,7 @@ export class UpdateBank {
 			}
 		}
 
-		await userStatsUpdate(user.id, userStatsUpdates);
+		await user.statsUpdate(userStatsUpdates);
 
 		const userUpdates: Prisma.UserUpdateInput = this.userUpdates;
 
@@ -179,12 +178,12 @@ export class UpdateBank {
 				(acc, key) => ({ ...acc, [key]: true }),
 				{} as Record<string, boolean>
 			);
-			const currentStats = await mahojiClientSettingsFetch(keysToSelect);
+			const currentStats = await ClientSettings.fetch(keysToSelect);
 			for (const [key, value] of objectEntries(this.clientStatsBankUpdates)) {
 				const newValue = new Bank((currentStats[key] ?? {}) as ItemBank).add(value);
 				clientUpdates[key] = newValue.toJSON();
 			}
-			await mahojiClientSettingsUpdate(clientUpdates);
+			await ClientSettings.update(clientUpdates);
 		}
 
 		await user.sync();

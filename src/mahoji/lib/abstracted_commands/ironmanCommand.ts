@@ -1,14 +1,12 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import type { ChatInputCommandInteraction } from 'discord.js';
 import type { ItemBank } from 'oldschooljs';
 
 import { BitField, DELETED_USER_ID } from '@/lib/constants.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { assert } from '@/lib/util/logError.js';
 
-export async function ironmanCommand(user: MUser, interaction: ChatInputCommandInteraction | null) {
+export async function ironmanCommand(user: MUser, interaction: MInteraction | null) {
 	if (user.minionIsBusy) return 'Your minion is busy.';
 	if (user.isIronman) {
 		return 'You are already an ironman.';
@@ -56,15 +54,13 @@ export async function ironmanCommand(user: MUser, interaction: ChatInputCommandI
 	// Return early if no active listings.
 	if (activeListings.length !== 0) {
 		return `You can't become an ironman because you have active Grand Exchange listings. Cancel them and try again: ${mentionCommand(
-			globalClient,
 			'ge',
 			'cancel'
 		)}`;
 	}
 
 	if (interaction) {
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			`Are you sure you want to start over and play as an ironman?
 :warning: **Read the following text before confirming. This is your only warning. ** :warning:
 The following things will be COMPLETELY reset/wiped from your account, with no chance of being recovered: Your entire bank, collection log, GP/Coins, QP/Quest Points, Clue Scores, Monster Scores, all XP. If you type \`confirm\`, they will all be wiped.

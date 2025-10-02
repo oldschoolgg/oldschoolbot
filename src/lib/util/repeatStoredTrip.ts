@@ -83,7 +83,6 @@ import type {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '@/lib/types/minions.js';
-import { interactionReply } from '@/lib/util/interactionReply.js';
 import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
 
 export const taskCanBeRepeated = (activity: Activity) => {
@@ -963,11 +962,12 @@ export async function makeRepeatTripButtons(user: MUser) {
 }
 
 export async function repeatTrip(
+	user: MUser,
 	interaction: ButtonInteraction,
 	data: { data: Prisma.JsonValue; type: activity_type_enum }
 ) {
 	if (!data || !data.data || !data.type) {
-		return interactionReply(interaction, { content: "Couldn't find any trip to repeat.", ephemeral: true });
+		return interaction.reply({ content: "Couldn't find any trip to repeat.", ephemeral: true });
 	}
 	const handler = tripHandlers[data.type];
 
@@ -979,7 +979,7 @@ export async function repeatTrip(
 		guildID: interaction.guildId,
 		member: interaction.member,
 		channelID: interaction.channelId,
-		user: interaction.user,
+		user,
 		continueDeltaMillis: interaction.createdAt.getTime() - interaction.message.createdTimestamp
 	});
 }

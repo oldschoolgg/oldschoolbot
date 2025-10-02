@@ -11,7 +11,6 @@ import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { calcDwwhChance } from '@/lib/structures/Boss.js';
 import type { NewBossOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const methodsOfDeath = [
 	'Beheaded',
@@ -116,7 +115,7 @@ export const kingGoldemarTask: MinionTask = {
 
 			resultStr += `\n${user} received ${loot}.`;
 		}
-		updateBankSetting('kg_loot', totalLoot);
+		await ClientSettings.updateBankSetting('kg_loot', totalLoot);
 
 		await trackLoot({
 			duration,

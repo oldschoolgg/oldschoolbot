@@ -1,21 +1,14 @@
 import { readFile } from 'node:fs/promises';
-import {
-	type CanvasRenderingContext2D as CanvasContext,
-	FontLibrary,
-	Image,
-	loadImage,
-	Canvas as RawCanvas
-} from 'skia-canvas';
+import { type CanvasRenderingContext2D as CanvasContext, Image, loadImage, Canvas as RawCanvas } from 'skia-canvas';
 
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
 import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
 import { assert } from '@/lib/util/logError.js';
 
-export function registerFont(fontFamily: string, fontPath: string) {
-	FontLibrary.use(fontFamily, fontPath);
-}
 export function createCanvas(width: number, height: number) {
-	return new RawCanvas(width, height);
+	const canvas = new RawCanvas(width, height);
+	canvas.gpu = false;
+	return canvas;
 }
 
 export type Canvas = ReturnType<typeof createCanvas>;
@@ -23,11 +16,6 @@ export const CanvasImage = Image;
 export type CanvasImage = Image;
 
 export type { CanvasContext };
-
-export function fillTextXTimesInCtx(ctx: CanvasContext, text: string, x: number, y: number) {
-	const textPath = ctx.outlineText(text);
-	ctx.fill(textPath.offset(x, y));
-}
 
 export function drawImageWithOutline(
 	ctx: CanvasContext,

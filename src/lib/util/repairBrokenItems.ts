@@ -6,7 +6,6 @@ import { type ItemBank, Items } from 'oldschooljs';
 import { clone } from 'remeda';
 
 import { type GearSetup, GearSetupTypes } from '@/lib/gear/types.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 type GearX = Required<Record<`gear_${GearSetupType}`, GearSetup | null>>;
 type Changes = {
@@ -31,7 +30,7 @@ export async function repairBrokenItemsFromUser(mUser: MUser) {
 		bank: user.bank as ItemBank,
 		collectionLogBank: user.collectionLogBank as ItemBank,
 		temp_cl: user.temp_cl as ItemBank,
-		sacrificedBank: (await mUser.fetchStats({ sacrificed_bank: true })).sacrificed_bank as ItemBank,
+		sacrificedBank: (await mUser.fetchStats()).sacrificed_bank as ItemBank,
 		favoriteItems: user.favoriteItems,
 		tames: userTames.map(t => ({
 			id: t.id,
@@ -163,13 +162,9 @@ New User: ${JSON.stringify(mUser.user)}
 			debugLog(
 				`${mUser.logName} repair bank sacrifice bank changes: ${JSON.stringify(deepObjectDiff(currentValues.sacrificedBank, newValues.sacrificedBank))}`
 			);
-			await userStatsUpdate(
-				mUser.id,
-				{
-					sacrificed_bank: newValues.sacrificedBank
-				},
-				{}
-			);
+			await mUser.statsUpdate({
+				sacrificed_bank: newValues.sacrificedBank
+			});
 		}
 
 		return `You had ${

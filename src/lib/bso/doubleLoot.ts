@@ -2,7 +2,6 @@ import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import type { TextChannel } from 'discord.js';
 
 import { Channel } from '@/lib/constants.js';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../util/clientSettings.js';
 
 export let DOUBLE_LOOT_FINISH_TIME_CACHE = 0;
 
@@ -11,7 +10,7 @@ export function isDoubleLootActive(duration = 0) {
 }
 
 export async function addToDoubleLootTimer(amount: number, reason: string) {
-	const clientSettings = await mahojiClientSettingsFetch({
+	const clientSettings = await ClientSettings.fetch({
 		double_loot_finish_time: true
 	});
 	let current = Number(clientSettings.double_loot_finish_time);
@@ -19,7 +18,7 @@ export async function addToDoubleLootTimer(amount: number, reason: string) {
 		current = Date.now();
 	}
 	const newDoubleLootTimer = current + amount;
-	await mahojiClientSettingsUpdate({
+	await ClientSettings.update({
 		double_loot_finish_time: newDoubleLootTimer
 	});
 	DOUBLE_LOOT_FINISH_TIME_CACHE = newDoubleLootTimer;
@@ -49,7 +48,7 @@ export async function addPatronLootTime(_tier: number, user: MUser | null) {
 }
 
 export async function syncDoubleLoot() {
-	const clientSettings = await mahojiClientSettingsFetch({
+	const clientSettings = await ClientSettings.fetch({
 		double_loot_finish_time: true
 	});
 	DOUBLE_LOOT_FINISH_TIME_CACHE = Number(clientSettings.double_loot_finish_time);

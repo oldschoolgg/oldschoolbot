@@ -11,22 +11,11 @@ import {
 	numberOfGorajanOutfitsEquipped
 } from '@/lib/bso/skills/dungoneering/dungDbFunctions.js';
 
-import {
-	channelIsSendable,
-	formatDuration,
-	formatOrdinal,
-	reduceNumByPercent,
-	stringMatches,
-	Time
-} from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { formatDuration, formatOrdinal, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 
-import { setupParty } from '@/lib/party.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { DungeoneeringOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 // Max people in a party:
@@ -35,7 +24,13 @@ const maxTeamSize = 20;
 const maxBoostSize = 5;
 const boostPerPlayer = 5;
 
-async function startCommand(channelID: string, user: MUser, floor: string | undefined, solo: boolean | undefined) {
+async function startCommand(
+	interaction: MInteraction,
+	channelID: string,
+	user: MUser,
+	floor: string | undefined,
+	solo: boolean | undefined
+) {
 	const isSolo = Boolean(solo);
 
 	const floorToDo = floor ? Number(floor) : calcMaxFloorUserCanDo(user);
@@ -90,11 +85,9 @@ async function startCommand(channelID: string, user: MUser, floor: string | unde
 		return `You can't start a Dungeoneering party for Floor ${floorToDo} because ${leaderCheck[1]}`;
 	}
 
-	const channel = globalClient.channels.cache.get(channelID.toString());
-	if (!channelIsSendable(channel)) return 'No channel found.';
 	let users: MUser[] = [];
 	if (!isSolo) {
-		const usersWhoConfirmed = await setupParty(channel, user, partyOptions);
+		const usersWhoConfirmed = await interaction.makeParty(partyOptions);
 		users = usersWhoConfirmed.filter(u => !u.minionIsBusy);
 	} else {
 		users = [user];
@@ -157,7 +150,7 @@ async function startCommand(channelID: string, user: MUser, floor: string | unde
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 	}
 
-	await addSubTaskToActivityTask<DungeoneeringOptions>({
+	await ActivityManager.startTrip<DungeoneeringOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
@@ -210,12 +203,12 @@ export const dgCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'start',
 			description: 'Start a Dungeoneering trip.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'floor',
 					description: 'The floor you want to do. (Optional, defaults to max)',
 					autocomplete: async (_, user) => {
@@ -227,7 +220,7 @@ export const dgCommand: OSBMahojiCommand = {
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'solo',
 					description: 'Do you want to solo? (Optional)',
 					required: false
@@ -235,17 +228,17 @@ export const dgCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'stats',
 			description: 'See your Dungeoneering stats.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'buy',
 			description: 'Buy rewards with your Dungeoneering tokens.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'item',
 					description: 'The item you want to buy.',
 					autocomplete: async value => {
@@ -256,7 +249,7 @@ export const dgCommand: OSBMahojiCommand = {
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity you wish to buy.',
 					required: false,
@@ -267,7 +260,7 @@ export const dgCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		channelID,
 		interaction
 	}: CommandRunOptions<{
@@ -275,9 +268,8 @@ export const dgCommand: OSBMahojiCommand = {
 		buy?: { item?: string; quantity?: number };
 		stats?: {};
 	}>) => {
-		if (interaction) await deferInteraction(interaction);
-		const user = await mUserFetch(userID);
-		if (options.start) return startCommand(channelID, user, options.start.floor, options.start.solo);
+		if (interaction) await interaction.defer();
+		if (options.start) return startCommand(interaction, channelID, user, options.start.floor, options.start.solo);
 		if (options.buy) return buyCommand(user, options.buy.item, options.buy.quantity);
 		let str = `<:dungeoneeringToken:829004684685606912> **Dungeoneering Tokens:** ${user.user.dungeoneering_tokens.toLocaleString()}
 **Max floor:** ${calcMaxFloorUserCanDo(user)}`;

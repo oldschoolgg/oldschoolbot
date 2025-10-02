@@ -1,19 +1,11 @@
-import {
-	type Species,
-	seaMonkeySpells,
-	type TameTaskOptions,
-	TameType,
-	tameKillableMonsters,
-	tameSpecies
-} from '@/lib/bso/tames.js';
+import { seaMonkeySpells, type TameTaskOptions, TameType, tameKillableMonsters, tameSpecies } from '@/lib/bso/tames.js';
 
 import { formatDuration, round } from '@oldschoolgg/toolkit';
-import { type Tame, type TameActivity, tame_growth, type User } from '@prisma/client';
+import { type Tame, type TameActivity, tame_growth } from '@prisma/client';
 import { type ItemBank, Items } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
-import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export async function tameLastFinishedActivity(user: MUser) {
 	const tameID = user.user.selected_tame;
@@ -108,35 +100,6 @@ export function tameGetLevel(tame: Tame, type: 'combat' | 'gatherer' | 'support'
 		case 'artisan':
 			return round(tame.max_artisan_level / growth, 2);
 	}
-}
-
-export async function getUsersTame(
-	user: MUser | User | string
-): Promise<
-	{ tame: null; activity: null; species: null } | { tame: Tame; species: Species; activity: TameActivity | null }
-> {
-	const userID = typeof user === 'string' ? user : user.id;
-	const selectedTame = (
-		await mahojiUsersSettingsFetch(userID, {
-			selected_tame: true
-		})
-	).selected_tame;
-	if (!selectedTame) {
-		return {
-			tame: null,
-			activity: null,
-			species: null
-		};
-	}
-	const tame = await prisma.tame.findFirst({ where: { id: selectedTame } });
-	if (!tame) {
-		throw new Error('No tame found for selected tame.');
-	}
-	const activity = await prisma.tameActivity.findFirst({
-		where: { user_id: userID, tame_id: tame.id, completed: false }
-	});
-	const species = tameSpecies.find(i => i.id === tame.species_id)!;
-	return { tame, activity, species };
 }
 
 export function getTameStatus(tameActivity: TameActivity | null) {

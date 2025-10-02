@@ -11,12 +11,10 @@ import { Bank, type Item, Items, LootTable, resolveItems } from 'oldschooljs';
 import Grimy from '@/lib/skilling/skills/herblore/mixables/grimy.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { BathhouseTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const bathhouseTierNames = ['Warm', 'Hot', 'Fiery'] as const;
 export type BathhouseTierName = (typeof bathhouseTierNames)[number];
@@ -356,10 +354,10 @@ export async function baxtorianBathhousesStartCommand({
 	if (!user.owns(cost)) {
 		return `You don't have enough supplies to do a trip, for ${quantity}x ${bathHouseTier.name} baths, you need: ${cost}.`;
 	}
-	await updateBankSetting('bb_cost', cost);
+	await ClientSettings.updateBankSetting('bb_cost', cost);
 	await user.removeItemsFromBank(cost);
 
-	await addSubTaskToActivityTask<BathhouseTaskOptions>({
+	await ActivityManager.startTrip<BathhouseTaskOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
@@ -487,7 +485,7 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 	});
 
 	const uniqSpecies = uniqueArr(speciesServed);
-	await updateBankSetting('bb_loot', loot);
+	await ClientSettings.updateBankSetting('bb_loot', loot);
 
 	const bankImage = await makeBankImage({
 		bank: itemsAdded,

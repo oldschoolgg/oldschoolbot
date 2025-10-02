@@ -15,13 +15,11 @@ import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { researchCommand } from '@/lib/bso/skills/invention/research.js';
 
 import { calcPerHour, reduceNumByPercent, stringMatches, Table, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
-import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { ownedMaterialOption } from '@/lib/discord/index.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { ownedMaterialOption } from '@/mahoji/lib/mahojiCommandOptions.js';
-import { mahojiParseNumber, mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export const inventionCommand: OSBMahojiCommand = {
 	name: 'invention',
@@ -30,11 +28,11 @@ export const inventionCommand: OSBMahojiCommand = {
 		{
 			name: 'disassemble',
 			description: 'Disassemble items into materials.',
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			options: [
 				{
 					name: 'name',
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					description: 'The item you want to disassemble.',
 					required: true,
 					autocomplete: async (value, { id }) => {
@@ -57,7 +55,7 @@ export const inventionCommand: OSBMahojiCommand = {
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'quantity',
 					description: 'The quantity you want to disassemble.',
 					required: false
@@ -67,17 +65,17 @@ export const inventionCommand: OSBMahojiCommand = {
 		{
 			name: 'research',
 			description: 'Use your materials to research possible inventions.',
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			options: [
 				{
 					...ownedMaterialOption,
 					name: 'material',
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					description: 'The type of materials you want to research with.'
 				},
 				{
 					name: 'quantity',
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					description: 'The amount of materials you want to use (Optional).',
 					required: false,
 					min_value: 1
@@ -87,11 +85,11 @@ export const inventionCommand: OSBMahojiCommand = {
 		{
 			name: 'invent',
 			description: 'Use your materials to invent an item.',
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			options: [
 				{
 					name: 'name',
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					description: 'The item you want to invent.',
 					required: true,
 					autocomplete: async value => {
@@ -108,10 +106,10 @@ export const inventionCommand: OSBMahojiCommand = {
 		{
 			name: 'tools',
 			description: 'Various other tools and commands.',
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'command',
 					description: 'The command/tool you want to run.',
 					required: true,
@@ -143,10 +141,10 @@ export const inventionCommand: OSBMahojiCommand = {
 		{
 			name: 'details',
 			description: 'See details and information on an Invention.',
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'invention',
 					description: 'The invention you want to check.',
 					required: true,
@@ -163,15 +161,15 @@ export const inventionCommand: OSBMahojiCommand = {
 		{
 			name: 'materials',
 			description: 'See the materials you own.',
-			type: ApplicationCommandOptionType.Subcommand
+			type: 'Subcommand'
 		},
 		{
 			name: 'group',
 			description: 'See details about a group.',
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'group',
 					description: 'The group you want to check.',
 					required: true,
@@ -245,21 +243,16 @@ export const inventionCommand: OSBMahojiCommand = {
 			};
 		}
 
-		// Defer Interaction for all DB-related functions:
-		await deferInteraction(interaction);
+		await interaction.defer();
 		if (options.tools) {
 			switch (options.tools.command) {
 				case 'items_disassembled': {
-					const a = await mahojiUsersSettingsFetch(user.id, {
-						disassembled_items_bank: true
-					});
-
 					return {
 						content: "These are all the items you've ever disassembled.",
 						files: [
 							(
 								await makeBankImage({
-									bank: new Bank(a.disassembled_items_bank as ItemBank),
+									bank: new Bank(user.user.disassembled_items_bank as ItemBank),
 									user,
 									title: 'Items Disassembled'
 								})
@@ -268,13 +261,9 @@ export const inventionCommand: OSBMahojiCommand = {
 					};
 				}
 				case 'materials_researched': {
-					const a = await mahojiUsersSettingsFetch(user.id, {
-						researched_materials_bank: true
-					});
-
 					return {
 						content: `These are all the materials you've used to researched: ${new MaterialBank(
-							a.researched_materials_bank as IMaterialBank
+							user.user.researched_materials_bank as IMaterialBank
 						)}.`
 					};
 				}

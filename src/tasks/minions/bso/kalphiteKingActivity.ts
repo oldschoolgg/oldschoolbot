@@ -15,7 +15,6 @@ import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 interface KalphiteKingUser {
 	id: string;
@@ -164,7 +163,7 @@ export const kalphiteKingTask: MinionTask = {
 			});
 		}
 
-		updateBankSetting('kk_loot', totalLoot);
+		await ClientSettings.updateBankSetting('kk_loot', totalLoot);
 
 		await trackLoot({
 			duration,

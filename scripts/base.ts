@@ -1,2 +1,1 @@
-import '../src/lib/customItems/customItems.js';
-import '../src/lib/data/itemAliases.js';
+import '../src/lib/safeglobals.js';

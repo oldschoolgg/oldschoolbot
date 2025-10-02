@@ -224,7 +224,7 @@ import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
 import { fletchingCL } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
-import { MUserStats } from '@/lib/structures/MUserStats.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
 
 function kcProg(mon: Monster | number): FormatProgressFunction {
 	return ({ stats }) => `${stats.kcBank[typeof mon === 'number' ? mon : mon.id] ?? 0} KC`;
@@ -2199,7 +2199,7 @@ export async function getCollection(options: {
 		logType = 'tame';
 	}
 
-	const userStats = await MUserStats.fromID(user.id);
+	const userStats = await user.fetchMStats();
 	const userCheckBank = getBank(user, logType, userStats);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
 

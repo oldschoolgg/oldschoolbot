@@ -1,5 +1,3 @@
-import { ApplicationCommandOptionType } from 'discord.js';
-
 import { PVM_METHODS, type PvMMethod } from '@/lib/constants.js';
 import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { minionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/minionKill.js';
@@ -28,7 +26,7 @@ export const minionKCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to kill.',
 			required: true,
@@ -57,27 +55,27 @@ export const minionKCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The amount you want to kill.',
 			required: false,
 			min_value: 0
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'method',
 			description: 'If you want to cannon/barrage/burst.',
 			required: false,
 			choices: PVM_METHODS.map(i => ({ name: i, value: i }))
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'wilderness',
 			description: 'If you want to kill the monster in the wilderness.',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'solo',
 			description: 'Solo (if its a group boss)',
 			required: false
@@ -85,7 +83,7 @@ export const minionKCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		channelID,
 		interaction
 	}: CommandRunOptions<{
@@ -96,8 +94,6 @@ export const minionKCommand: OSBMahojiCommand = {
 		solo?: boolean;
 		onTask?: boolean;
 	}>) => {
-		const user = await mUserFetch(userID);
-
 		return minionKillCommand(
 			user,
 			interaction,

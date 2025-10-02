@@ -1,16 +1,7 @@
 import { calcBossFood } from '@/lib/bso/calcBossFood.js';
 import { getKalphiteKingGearStats } from '@/lib/bso/getKalphiteKingGearStats.js';
 
-import {
-	channelIsSendable,
-	formatDuration,
-	increaseNumByPercent,
-	isWeekend,
-	reduceNumByPercent,
-	round,
-	Time
-} from '@oldschoolgg/toolkit';
-import type { ChatInputCommandInteraction } from 'discord.js';
+import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { gorajanWarriorOutfit, torvaOutfit } from '@/lib/data/CollectionsExport.js';
@@ -18,14 +9,10 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { KalphiteKingMonster } from '@/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
-import { setupParty } from '@/lib/party.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): Promise<string | undefined> {
@@ -63,13 +50,13 @@ const minimumSoloGear = new Gear({
 });
 
 export async function kkCommand(
-	interaction: ChatInputCommandInteraction | null,
+	interaction: MInteraction,
 	user: MUser,
 	channelID: string,
 	inputName: string,
 	inputQuantity: number | undefined
 ) {
-	if (interaction) await deferInteraction(interaction);
+	await interaction.defer();
 	const failureRes = await checkReqs([user], KalphiteKingMonster, 2);
 	if (failureRes) return failureRes;
 
@@ -112,11 +99,9 @@ export async function kkCommand(
 		}
 	};
 
-	const channel = globalClient.channels.cache.get(channelID.toString());
-	if (!channelIsSendable(channel)) return 'No channel found.';
 	let users: MUser[] = [];
 	if (type === 'mass') {
-		const usersWhoConfirmed = await setupParty(channel, user, partyOptions);
+		const usersWhoConfirmed = await interaction?.makeParty(partyOptions);
 		users = usersWhoConfirmed.filter(u => !u.minionIsBusy);
 	} else {
 		users = [user];
@@ -318,7 +303,7 @@ export async function kkCommand(
 		}))
 	});
 
-	await addSubTaskToActivityTask<BossActivityTaskOptions>({
+	await ActivityManager.startTrip<BossActivityTaskOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
@@ -327,7 +312,7 @@ export async function kkCommand(
 		users: users.map(u => u.id)
 	});
 
-	updateBankSetting('kk_cost', totalCost);
+	await ClientSettings.updateBankSetting('kk_cost', totalCost);
 
 	let str = `${partyOptions.leader.usernameOrMention}'s party (${users
 		.map(u => u.usernameOrMention)

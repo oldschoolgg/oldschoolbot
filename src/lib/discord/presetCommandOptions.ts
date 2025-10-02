@@ -1,9 +1,8 @@
-import { type IMaterialBank, materialTypes } from '@/lib/bso/skills/invention/index.js';
-import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
+import { materialTypes } from '@/lib/bso/skills/invention/index.js';
 
-import { type CommandOption, stringSearch, toTitleCase, truncateString, uniqueArr } from '@oldschoolgg/toolkit';
+import { stringSearch, toTitleCase, truncateString, uniqueArr } from '@oldschoolgg/toolkit';
 import type { GearPreset } from '@prisma/client';
-import { type APIApplicationCommandOptionChoice, ApplicationCommandOptionType, type User } from 'discord.js';
+import type { APIApplicationCommandOptionChoice } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import { baseFilters, filterableTypes } from '@/lib/data/filterables.js';
@@ -11,10 +10,9 @@ import { GearSetupTypes } from '@/lib/gear/types.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import { Gear, type GlobalPreset, globalPresets } from '@/lib/structures/Gear.js';
-import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export const filterOption: CommandOption = {
-	type: ApplicationCommandOptionType.String,
+	type: 'String',
 	name: 'filter',
 	description: 'The filter you want to use.',
 	required: false,
@@ -35,7 +33,7 @@ export const tradeableItemArr = itemArr.filter(i => i.tradeable_on_ge);
 export const allEquippableItems = Items.array().filter(i => i.equipable && i.equipment?.slot);
 
 export const itemOption = (filter?: (item: Item) => boolean): CommandOption => ({
-	type: ApplicationCommandOptionType.String,
+	type: 'String',
 	name: 'item',
 	description: 'The item you want to pick.',
 	required: false,
@@ -47,7 +45,7 @@ export const itemOption = (filter?: (item: Item) => boolean): CommandOption => (
 });
 
 export const monsterOption: CommandOption = {
-	type: ApplicationCommandOptionType.String,
+	type: 'String',
 	name: 'monster',
 	description: 'The monster you want to pick.',
 	required: true,
@@ -59,7 +57,7 @@ export const monsterOption: CommandOption = {
 };
 
 export const skillOption: CommandOption = {
-	type: ApplicationCommandOptionType.String,
+	type: 'String',
 	name: 'skill',
 	description: 'The skill you want to select.',
 	required: false,
@@ -72,7 +70,7 @@ export const skillOption: CommandOption = {
 };
 
 export const gearSetupOption: CommandOption = {
-	type: ApplicationCommandOptionType.String,
+	type: 'String',
 	name: 'gear_setup',
 	description: 'The gear setup want to select.',
 	required: false,
@@ -80,7 +78,7 @@ export const gearSetupOption: CommandOption = {
 };
 
 export const equippedItemOption = (): CommandOption => ({
-	type: ApplicationCommandOptionType.String,
+	type: 'String',
 	name: 'item',
 	description: 'The item you want to pick.',
 	required: false,
@@ -106,21 +104,19 @@ export const equippedItemOption = (): CommandOption => ({
 });
 
 export const ownedItemOption = (filter?: (item: Item) => boolean): CommandOption => ({
-	type: ApplicationCommandOptionType.String,
+	type: 'String',
 	name: 'item',
 	description: 'The item you want to pick.',
 	required: false,
 	autocomplete: async (value, user) => {
-		const mUser = await mahojiUsersSettingsFetch(user.id, { bank: true });
-		const bank = new Bank(mUser.bank as ItemBank);
-		let res = bank.items().filter(i => i[0].name.toLowerCase().includes(value.toLowerCase()));
+		let res = user.bank.items().filter(i => i[0].name.toLowerCase().includes(value.toLowerCase()));
 		if (filter) res = res.filter(i => filter(i[0]));
 		return res.map(i => ({ name: `${i[0].name}`, value: i[0].name.toString() }));
 	}
 });
 
 export const gearPresetOption: CommandOption = {
-	type: ApplicationCommandOptionType.String,
+	type: 'String',
 	name: 'gear_preset',
 	description: 'The gear preset you want to select.',
 	required: false,
@@ -164,12 +160,11 @@ export const gearPresetOption: CommandOption = {
 
 export const ownedMaterialOption = {
 	name: 'material',
-	type: ApplicationCommandOptionType.String,
+	type: 'String',
 	description: 'The type of materials you want to research with.',
 	required: true,
-	autocomplete: async (value: string, user: User) => {
-		const mahojiUser = await mahojiUsersSettingsFetch(user.id, { materials_owned: true });
-		const bank = new MaterialBank(mahojiUser.materials_owned as IMaterialBank);
+	autocomplete: async (value: string, user: MUser) => {
+		const bank = user.materialsOwned();
 		return materialTypes
 			.filter(i => (!value ? true : i.includes(value.toLowerCase())))
 			.sort((a, b) => {

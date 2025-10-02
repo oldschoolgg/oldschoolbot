@@ -329,7 +329,7 @@ const skillingRequirements = new Requirements()
 	.add({
 		name: 'Grow 5 Spirit trees',
 		has: ({ user }) => {
-			const info = Farming.getFarmingInfoFromUser(user.user);
+			const info = Farming.getFarmingInfoFromUser(user);
 			const hasFive = info.patches.spirit.lastQuantity >= 5;
 			return hasFive || user.bitfield.includes(BitField.GrewFiveSpiritTrees);
 		}

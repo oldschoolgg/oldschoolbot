@@ -114,8 +114,8 @@ function calcSuppliesUsedForSmithing(itemsSmithed: Bank) {
 }
 
 export async function leaguesCheckUser(userID: string) {
-	const mahojiUser = await mUserFetch(userID);
-	const roboChimpUser = await mahojiUser.fetchRobochimpUser();
+	const user = await mUserFetch(userID);
+	const roboChimpUser = await user.fetchRobochimpUser();
 	const [
 		conStats,
 		poh,
@@ -138,28 +138,28 @@ export async function leaguesCheckUser(userID: string) {
 		stashUnits,
 		fletchedItems
 	] = await Promise.all([
-		personalConstructionStats(mahojiUser),
+		personalConstructionStats(user),
 		getPOH(userID),
 		getAllUserTames(userID),
 		getSlayerTaskStats(userID),
-		getActivityCounts(mahojiUser.user),
-		mahojiUser.fetchMinigames(),
+		getActivityCounts(user.user),
+		user.fetchMinigames(),
 		prisma.slayerTask.count({ where: { user_id: userID } }),
-		personalAlchingStats(mahojiUser),
-		personalHerbloreStatsWithoutZahur(mahojiUser.user),
-		personalMiningStats(mahojiUser),
-		personalFiremakingStats(mahojiUser),
-		personalSmithingStats(mahojiUser),
-		personalSpellCastStats(mahojiUser),
-		personalCollectingStats(mahojiUser),
-		personalWoodcuttingStats(mahojiUser),
-		mahojiUser.calcActualClues(),
+		personalAlchingStats(user),
+		personalHerbloreStatsWithoutZahur(user.user),
+		personalMiningStats(user),
+		personalFiremakingStats(user),
+		personalSmithingStats(user),
+		personalSpellCastStats(user),
+		personalCollectingStats(user),
+		personalWoodcuttingStats(user),
+		user.calcActualClues(),
 		calcLeaguesRanking(roboChimpUser),
-		personalSmeltingStats(mahojiUser),
+		personalSmeltingStats(user),
 		getParsedStashUnits(userID),
-		calculateAllFletchedItems(mahojiUser)
+		calculateAllFletchedItems(user)
 	]);
-	const clPercent = calcCLDetails(mahojiUser).percent;
+	const clPercent = calcCLDetails(user).percent;
 	const herbloreStats = betterHerbloreStats(_herbloreStats);
 	const smithingSuppliesUsed = calcSuppliesUsedForSmithing(smithingStats);
 
@@ -170,19 +170,19 @@ export async function leaguesCheckUser(userID: string) {
 	});
 
 	const args: HasFunctionArgs = {
-		cl: mahojiUser.cl,
-		bank: mahojiUser.bank,
-		user: mahojiUser,
-		mahojiUser: mahojiUser.user,
-		skillsLevels: mahojiUser.skillsAsLevels,
-		skillsXP: mahojiUser.skillsAsXP,
+		cl: user.cl,
+		bank: user.bank,
+		user: user,
+		mahojiUser: user.user,
+		skillsLevels: user.skillsAsLevels,
+		skillsXP: user.skillsAsXP,
 		poh,
-		gear: mahojiUser.gear,
-		allItemsOwned: mahojiUser.allItemsOwned,
+		gear: user.gear,
+		allItemsOwned: user.allItemsOwned,
 		monsterScores: userStats.monster_scores as ItemBank,
 		creatureScores: userStats.creature_scores as ItemBank,
 		opens: new Bank(userStats.openable_scores as ItemBank),
-		disassembledItems: new Bank(mahojiUser.user.disassembled_items_bank as ItemBank),
+		disassembledItems: new Bank(user.user.disassembled_items_bank as ItemBank),
 		tames,
 		sacrificedBank: new Bank(userStats.sacrificed_bank as ItemBank),
 		slayerStats,
@@ -279,16 +279,15 @@ const unlockables: {
 	}
 ];
 
-export async function leaguesClaimCommand(userID: string, finishedTaskIDs: number[]) {
-	const mahojiUser = await mUserFetch(userID);
-	const roboChimpUser = await mahojiUser.fetchRobochimpUser();
+export async function leaguesClaimCommand(user: MUser, finishedTaskIDs: number[]) {
+	const roboChimpUser = await user.fetchRobochimpUser();
 
 	const newlyFinishedTasks = finishedTaskIDs.filter(i => !roboChimpUser.leagues_completed_tasks_ids.includes(i));
 
 	const unlockMessages: string[] = [];
 	for (const unl of unlockables) {
-		if (roboChimpUser.leagues_points_total >= unl.points && !unl.hasUnlockedAlready(mahojiUser)) {
-			const result = await unl.onUnlock(mahojiUser);
+		if (roboChimpUser.leagues_points_total >= unl.points && !unl.hasUnlockedAlready(user)) {
+			const result = await unl.onUnlock(user);
 			unlockMessages.push(result);
 		}
 	}
@@ -309,7 +308,7 @@ export async function leaguesClaimCommand(userID: string, finishedTaskIDs: numbe
 
 	const newUser = await roboChimpClient.user.update({
 		where: {
-			id: BigInt(userID)
+			id: BigInt(user.id)
 		},
 		data: {
 			leagues_completed_tasks_ids: {

@@ -11,7 +11,6 @@ import {
 	rewardTokens
 } from '@/lib/minions/data/templeTrekking.js';
 import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
@@ -38,9 +37,8 @@ function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 export const templeTrekkingTask: MinionTask = {
 	type: 'Trekking',
 
-	async run(data: TempleTrekkingActivityTaskOptions) {
-		const { channelID, quantity, userID, difficulty, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: TempleTrekkingActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, difficulty, duration } = data;
 		await user.incrementMinigameScore('temple_trekking', quantity);
 		const userBank = user.bank.clone();
 		const loot = new Bank();

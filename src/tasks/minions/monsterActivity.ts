@@ -20,13 +20,12 @@ import { type CurrentSlayerInfo, calculateSlayerPoints, getUsersCurrentSlayerInf
 import type { SlayerMaster } from '@/lib/slayer/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { type KCBank, safelyMakeKCBank } from '@/lib/structures/KCBank.js';
-import { MUserStats } from '@/lib/structures/MUserStats.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { ashSanctifierEffect } from '@/lib/util/ashSanctifier.js';
 import calculateGearLostOnDeathWilderness from '@/lib/util/calculateGearLostOnDeathWilderness.js';
 import { increaseWildEvasionXp } from '@/lib/util/calcWildyPkChance.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { logError } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
@@ -528,10 +527,9 @@ export function doMonsterTrip(data: newOptions) {
 
 export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
-	async run(data: MonsterActivityTaskOptions) {
+	async run(data: MonsterActivityTaskOptions, { user, handleTripFinish }) {
 		const { duration } = data;
-		const user = await mUserFetch(data.userID);
-		const stats = await MUserStats.fromID(data.userID);
+		const stats = await user.fetchMStats();
 		const minigameScores = await user.fetchMinigames();
 		const slayerInfo = await getUsersCurrentSlayerInfo(user.id);
 

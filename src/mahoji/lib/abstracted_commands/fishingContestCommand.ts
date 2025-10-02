@@ -11,8 +11,6 @@ import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import type { FishingContestOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function fishingContestStartCommand(user: MUser, channelID: string, loc: string | undefined) {
 	const currentFishType = getCurrentFishType();
@@ -75,9 +73,9 @@ export async function fishingContestStartCommand(user: MUser, channelID: string,
 		return `You need ${cost} to bait fish at ${fishingLocation.name}.`;
 	}
 	await user.removeItemsFromBank(cost);
-	await updateBankSetting('fc_cost', cost);
+	await ClientSettings.updateBankSetting('fc_cost', cost);
 
-	await addSubTaskToActivityTask<FishingContestOptions>({
+	await ActivityManager.startTrip<FishingContestOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,

@@ -10,21 +10,16 @@ import {
 	round,
 	Time
 } from '@oldschoolgg/toolkit';
-import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { gorajanArcherOutfit, pernixOutfit } from '@/lib/data/CollectionsExport.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
-import { setupParty } from '@/lib/party.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
 import { getNexGearStats } from '@/lib/util/getNexGearStats.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): Promise<string | undefined> {
@@ -59,13 +54,13 @@ async function checkReqs(users: MUser[], monster: KillableMonster, quantity: num
 }
 
 export async function nexCommand(
-	interaction: ChatInputCommandInteraction | null,
+	interaction: MInteraction,
 	user: MUser,
 	channelID: string,
 	inputName: string,
 	inputQuantity: number | undefined
 ) {
-	if (interaction) await deferInteraction(interaction);
+	await interaction.defer();
 	const userBank = user.bank;
 	if (!userBank.has('Frozen key')) {
 		return `${user.minionName} attempts to enter the Ancient Prison to fight Nex, but finds a giant frozen, metal door blocking their way.`;
@@ -120,7 +115,7 @@ export async function nexCommand(
 	if (!channelIsSendable(channel)) return 'No channel found.';
 	let users: MUser[] = [];
 	if (type === 'mass') {
-		const usersWhoConfirmed = await setupParty(channel, user, partyOptions);
+		const usersWhoConfirmed = await interaction.makeParty(partyOptions);
 		users = usersWhoConfirmed.filter(u => !u.minionIsBusy);
 	} else {
 		users = [user];
@@ -298,16 +293,16 @@ export async function nexCommand(
 
 	foodString += `${foodRemoved.join(', ')}.`;
 
-	await addSubTaskToActivityTask<BossActivityTaskOptions>({
+	await ActivityManager.startTrip<BossActivityTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'Nex',
 		users: users.map(u => u.id)
 	});
 
-	updateBankSetting('nex_cost', totalCost);
+	await ClientSettings.updateBankSetting('nex_cost', totalCost);
 
 	let str =
 		type === 'solo'

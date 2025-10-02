@@ -148,7 +148,7 @@ describe('UpdateBank', { repeats: 5 }, async () => {
 		secondUpdateBank.userStatsBankUpdates.buy_cost_bank = new Bank().add('Trout', 50).add('Shark', 50);
 		await secondUpdateBank.transact(user);
 
-		const res = new Bank((await user.fetchStats({ buy_cost_bank: true })).buy_cost_bank as ItemBank);
+		const res = new Bank((await user.fetchStats()).buy_cost_bank as ItemBank);
 		expect(res.equals(new Bank().add('Trout', 100).add('Shark', 50))).toBeTruthy();
 		expect(Number(stats.ash_sanctifier_prayer_xp)).toBe(123);
 		expect(Number(stats.gp_luckypick)).toBe(100);

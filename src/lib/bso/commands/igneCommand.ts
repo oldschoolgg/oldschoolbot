@@ -1,26 +1,26 @@
 import { channelIsSendable, formatDuration, Time } from '@oldschoolgg/toolkit';
-import { type ChatInputCommandInteraction, EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
+import { EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { dwarvenOutfit } from '@/lib/data/CollectionsExport.js';
 import { Ignecarus } from '@/lib/minions/data/killableMonsters/custom/bosses/Ignecarus.js';
 import { BossInstance } from '@/lib/structures/Boss.js';
 import { Gear } from '@/lib/structures/Gear.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 
 export async function igneCommand(
-	interaction: ChatInputCommandInteraction | null,
+	interaction: MInteraction,
 	user: MUser,
 	channelID: string,
 	inputName: string,
 	quantity: number | undefined
 ): Promise<string | InteractionReplyOptions> {
-	if (interaction) await deferInteraction(interaction);
+	if (interaction) await interaction.defer();
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return 'Invalid channel.';
 	const type = inputName.toLowerCase().includes('mass') ? 'mass' : 'solo';
 
 	const instance = new BossInstance({
+		interaction,
 		leader: user,
 		id: Ignecarus.id,
 		baseDuration: Time.Minute * 25,

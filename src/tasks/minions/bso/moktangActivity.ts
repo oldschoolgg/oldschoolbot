@@ -18,7 +18,6 @@ import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { MoktangTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const moktangTask: MinionTask = {
 	type: 'Moktang',
@@ -51,7 +50,7 @@ export const moktangTask: MinionTask = {
 		}
 
 		const res = await user.addItemsToBank({ items: loot, collectionLog: true });
-		await updateBankSetting('moktang_loot', loot);
+		await ClientSettings.updateBankSetting('moktang_loot', loot);
 		await trackLoot({
 			duration: data.duration,
 			totalLoot: loot,

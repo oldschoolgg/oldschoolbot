@@ -8,7 +8,6 @@ import { Bank, Items, LootTable, Monsters } from 'oldschooljs';
 import { globalConfig } from '@/lib/constants.js';
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 import Createables from '@/lib/data/createables.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters.js';
 import killableMonsters from '../minions/data/killableMonsters/index.js';
 import { sendToChannelID } from '../util/webhook.js';
@@ -256,15 +255,11 @@ export async function boxSpawnHandler(msg: Message) {
 	const winner = await item(msg);
 	if (!winner) return;
 	const winnerUser = await mUserFetch(winner.id);
-	const newStats = await userStatsUpdate(
-		winnerUser.id,
-		{
-			main_server_challenges_won: {
-				increment: 1
-			}
-		},
-		{ main_server_challenges_won: true }
-	);
+	const newStats = await winnerUser.statsUpdate({
+		main_server_challenges_won: {
+			increment: 1
+		}
+	});
 	const wonStr = `This is your ${formatOrdinal(newStats.main_server_challenges_won)} challenge win!`;
 	const loot = roll(20) ? LampTable.roll() : MysteryBoxes.roll();
 

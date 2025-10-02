@@ -2,9 +2,6 @@ import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 
 import type { ShadesOfMortonOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 type Remains = 'Loar' | 'Phrin' | 'Riyl' | 'Fiyr' | 'Asyn' | 'Urium';
 
@@ -252,7 +249,7 @@ const coffins = ['Bronze coffin', 'Steel coffin', 'Black coffin', 'Silver coffin
 
 export async function shadesOfMortonStartCommand(user: MUser, channelID: string, logStr: string, shadeStr: string) {
 	const messages: string[] = [];
-	let totalTime = calcMaxTripLength(user, 'ShadesOfMorton');
+	let totalTime = user.calcMaxTripLength('ShadesOfMorton');
 	for (let i = coffins.length - 1; i >= 0; i--) {
 		const coffin = coffins[i];
 		if (user.hasEquipped(coffin)) {
@@ -294,9 +291,9 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 	if (!user.owns(cost)) return `You don't own: ${cost}.`;
 
 	await user.removeItemsFromBank(cost);
-	await userStatsBankUpdate(user, 'shades_of_morton_cost_bank', cost);
+	await user.statsBankUpdate('shades_of_morton_cost_bank', cost);
 
-	await addSubTaskToActivityTask<ShadesOfMortonOptions>({
+	await ActivityManager.startTrip<ShadesOfMortonOptions>({
 		userID: user.id,
 		channelID,
 		quantity,

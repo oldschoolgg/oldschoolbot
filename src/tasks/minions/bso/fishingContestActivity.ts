@@ -9,7 +9,6 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { ClueTable } from '@/lib/simulation/sharedTables.js';
 import type { FishingContestOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export function calculateFishingContestXP({ fishingLevel, fishSizeCM }: { fishSizeCM: number; fishingLevel: number }) {
 	let fishingXP = (fishSizeCM + 100) * (170 + Math.min(100, fishingLevel) / 5);
@@ -95,7 +94,7 @@ export const fishingContestTask: MinionTask = {
 			duration
 		});
 
-		await updateBankSetting('fc_loot', loot);
+		await ClientSettings.updateBankSetting('fc_loot', loot);
 
 		await trackLoot({
 			totalLoot: loot,

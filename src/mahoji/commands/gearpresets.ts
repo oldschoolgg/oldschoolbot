@@ -1,8 +1,8 @@
-import { type CommandOption, cleanString, stringMatches } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { cleanString, stringMatches } from '@oldschoolgg/toolkit';
 import { EquipmentSlot, Items } from 'oldschooljs';
 
 import { ParsedCustomEmojiWithGroups } from '@/lib/constants.js';
+import { allEquippableItems, gearPresetOption, gearSetupOption } from '@/lib/discord/index.js';
 import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
 import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
 import { GearSetupTypes } from '@/lib/gear/types.js';
@@ -10,7 +10,6 @@ import { Gear, globalPresets } from '@/lib/structures/Gear.js';
 import { emojiServers } from '@/lib/util/cachedUserIDs.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { gearEquipCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
-import { allEquippableItems, gearPresetOption, gearSetupOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 
 function maxPresets(user: MUser) {
 	return user.perkTier() * 2 + 4;
@@ -138,7 +137,7 @@ export async function createOrEditGearSetup(
 
 function makeSlotOption(slot: EquipmentSlot): CommandOption {
 	return {
-		type: ApplicationCommandOptionType.String,
+		type: 'String',
 		name: slot,
 		description: `The item you want to put in the ${slot} slot in this gear setup.`,
 		required: false,
@@ -165,7 +164,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 	description: 'Manage, equip, unequip your gear presets.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'view',
 			description: 'View your gear setups.',
 			options: [
@@ -177,7 +176,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'equip',
 			description: 'Equip an item or preset to one of your gear setups.',
 			options: [
@@ -193,12 +192,12 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'create',
 			description: 'Create a new gear preset.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					required: true,
 					description: 'The name to give this preset.'
@@ -211,13 +210,13 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 				},
 				...Object.values(EquipmentSlot).map(makeSlotOption),
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					required: false,
 					name: 'emoji',
 					description: 'Pick an emoji for the preset.'
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					required: false,
 					name: 'pinned_setup',
 					description: 'Pick a setup to pin this setup too.',
@@ -226,12 +225,12 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'edit',
 			description: 'Edit an existing gear preset.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'gear_preset',
 					description: 'The gear preset you want to select.',
 					required: true,
@@ -251,13 +250,13 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 				},
 				...Object.values(EquipmentSlot).map(makeSlotOption),
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					required: false,
 					name: 'emoji',
 					description: 'Pick an emoji for the preset.'
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					required: false,
 					name: 'pinned_setup',
 					description: 'Pick a setup to pin this setup too.',
@@ -266,12 +265,12 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'delete',
 			description: 'Delete an existing gear preset.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'preset',
 					description: 'The gear preset you want to delete.',
 					required: false,
@@ -294,7 +293,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		interaction
 	}: CommandRunOptions<{
 		equip?: { gear_setup: GearSetupType; preset: string };
@@ -303,7 +302,6 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 		delete?: { preset: string };
 		view?: { preset: string };
 	}>) => {
-		const user = await mUserFetch(userID);
 		if (options.create) {
 			return createOrEditGearSetup(
 				user,
@@ -328,7 +326,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 		}
 		if (options.delete) {
 			const preset = await prisma.gearPreset.findFirst({
-				where: { user_id: userID, name: options.delete.preset }
+				where: { user_id: user.id, name: options.delete.preset }
 			});
 			if (!preset) {
 				return "You don't have a gear preset with that name.";
@@ -337,7 +335,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 			await prisma.gearPreset.delete({
 				where: {
 					user_id_name: {
-						user_id: userID,
+						user_id: user.id,
 						name: preset.name
 					}
 				}
@@ -361,7 +359,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 		if (options.view) {
 			const preset =
 				(await prisma.gearPreset.findFirst({
-					where: { user_id: userID.toString(), name: options.view.preset }
+					where: { user_id: user.id, name: options.view.preset }
 				})) || globalPresets.find(i => stringMatches(i.name, options.view?.preset ?? ''));
 			if (!preset) return "You don't have a preset with that name.";
 			const image = await user.generateGearImage({ gearSetup: new Gear(preset) });

@@ -3,7 +3,6 @@ import { itemID } from 'oldschooljs';
 
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export async function handleDTD(monster: KillableMonster, user: MUser) {
 	const rangeSetup = { ...user.gear.range.raw() };
@@ -48,7 +47,7 @@ export async function handleDTD(monster: KillableMonster, user: MUser) {
 			return `You throw your dart but gets stuck in Venatrix's web.`;
 		}
 
-		await userStatsUpdate(user.id, {
+		await user.statsUpdate({
 			death_touched_darts_used: {
 				increment: 1
 			}

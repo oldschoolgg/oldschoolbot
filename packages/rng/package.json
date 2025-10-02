@@ -9,9 +9,10 @@
 		}
 	},
 	"scripts": {
-		"build": "tsdown"
+		"build": "tsdown",
+		"test": "pnpm tsc -p src --noEmit && vitest run --coverage"
 	},
 	"dependencies": {
-		"random-js": "2.1.0"
+		"pure-rand": "^6.1.0"
 	}
 }

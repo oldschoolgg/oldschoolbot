@@ -1,7 +1,6 @@
 import { Bank, LootTable } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 // Barronite deposit loot table
@@ -18,9 +17,8 @@ const barroniteDepositLootTable = new LootTable()
 
 export const camdozaalSmithingTask: MinionTask = {
 	type: 'CamdozaalSmithing',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { quantity, channelID, duration } = data;
 
 		// Count loot received during trip
 		const loot = new Bank();

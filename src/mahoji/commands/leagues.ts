@@ -7,11 +7,9 @@ import {
 } from '@/lib/bso/leagues/leagues.js';
 
 import { calcWhatPercent, formatDuration, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 
 import { PerkTier } from '@/lib/constants.js';
 import { getUsersPerkTier } from '@/lib/perkTiers.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 
 export const bsoLeaguesCommand: OSBMahojiCommand = {
@@ -19,17 +17,17 @@ export const bsoLeaguesCommand: OSBMahojiCommand = {
 	description: 'Manage your Leagues progress.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'check',
 			description: 'Check your current progress.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'view_task',
 			description: 'View/search a specific task.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'task',
 					description: 'Search for the task name.',
 					required: true,
@@ -42,17 +40,17 @@ export const bsoLeaguesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'claim',
 			description: 'Claim the points from your completed tasks.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'view_all_tasks',
 			description: 'View all tasks.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'exclude_finished',
 					description: 'Exclude tasks you have finished?'
 				}
@@ -62,24 +60,23 @@ export const bsoLeaguesCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		interaction,
-		userID
+		user
 	}: CommandRunOptions<{
 		check?: {};
 		view_task?: { task: string };
 		claim?: {};
 		view_all_tasks?: { exclude_finished?: boolean };
 	}>) => {
-		await deferInteraction(interaction);
-		const user = await mUserFetch(userID);
+		await interaction.defer();
 		const cooldown = Cooldowns.get(
-			userID.toString(),
+			user.id,
 			'leagues',
 			getUsersPerkTier(user) >= PerkTier.Two ? Time.Second * 5 : Time.Second * 30
 		);
 		if (cooldown) {
 			return `This command is on cooldown, you can use it again in ${formatDuration(cooldown)}.`;
 		}
-		const { content, finished } = await leaguesCheckUser(userID.toString());
+		const { content, finished } = await leaguesCheckUser(user.id);
 		if (options.check) {
 			return content;
 		}
@@ -104,7 +101,7 @@ ${percentCompleted.toFixed(2)}% of users have finished this task, ${
 			}`;
 		}
 		if (options.claim) {
-			return leaguesClaimCommand(userID, finished);
+			return leaguesClaimCommand(user, finished);
 		}
 		if (options.view_all_tasks) {
 			return generateLeaguesTasksTextFile(finished, options.view_all_tasks.exclude_finished);

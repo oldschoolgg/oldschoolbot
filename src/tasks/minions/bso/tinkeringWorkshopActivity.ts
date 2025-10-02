@@ -7,7 +7,6 @@ import { inventorOutfit } from '@/lib/data/CollectionsExport.js';
 import { ClueTable } from '@/lib/simulation/sharedTables.js';
 import type { TinkeringWorkshopOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 function tinkerLoot(user: MUser, quantity: number) {
 	const loot = new Bank();
@@ -47,8 +46,8 @@ export const twTask: MinionTask = {
 
 		const xpStr = await user.addXP({ amount: xp, skillName: 'invention', duration });
 
-		const oldStats = await user.fetchStats({ tinker_workshop_mats_bank: true });
-		await userStatsUpdate(user.id, {
+		const oldStats = await user.fetchStats();
+		await user.statsUpdate({
 			tinker_workshop_mats_bank: new MaterialBank(oldStats.tinker_workshop_mats_bank as ItemBank).add(
 				data.material,
 				quantity

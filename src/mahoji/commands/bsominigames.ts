@@ -24,37 +24,35 @@ import type { MaterialType } from '@/lib/bso/skills/invention/index.js';
 import { type TuraelsTrialsMethod, TuraelsTrialsMethods, turaelsTrialsStartCommand } from '@/lib/bso/turaelsTrials.js';
 
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Bank, type ItemBank, Items } from 'oldschooljs';
+import { Items } from 'oldschooljs';
 
+import { ownedMaterialOption } from '@/lib/discord/index.js';
 import {
 	fishingContestStartCommand,
 	fishingContestStatsCommand
 } from '@/mahoji/lib/abstracted_commands/fishingContestCommand.js';
-import { ownedMaterialOption } from '@/mahoji/lib/mahojiCommandOptions.js';
-import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
 export const bsoMinigamesCommand: OSBMahojiCommand = {
 	name: 'bsominigames',
 	description: 'Send your minion to do various bso minigames.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'baxtorian_bathhouses',
 			description: 'The Baxtorian Bathhouses minigame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'help',
 					description: 'Show some helpful information about the minigame.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a Baxtorian Bathhouses minigame trip.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'tier',
 							description: 'The tier of bath you want to run.',
 							required: true,
@@ -66,7 +64,7 @@ export const bsoMinigamesCommand: OSBMahojiCommand = {
 							}))
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'heating',
 							description: 'The heating you want to use to heat the boilers.',
 							required: true,
@@ -76,7 +74,7 @@ export const bsoMinigamesCommand: OSBMahojiCommand = {
 							}))
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'water_mixture',
 							description: 'The herbs you want to use for your water mixture.',
 							required: true,
@@ -90,44 +88,44 @@ export const bsoMinigamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'monkey_rumble',
 			description: 'The Monkey Rumble minigame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a Monkey Rumble trip.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'stats',
 					description: 'Check your Monkey Rumble stats.'
 				}
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'ourania_delivery_service',
 			description: 'The Ourania Delivery Service (ODS) minigame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a ODS trip.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'stats',
 					description: 'Check your ODS stats.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'buy',
 					description: 'Buy a reward with ODS reward points.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'name',
 							description: 'The thing you want to buy.',
 							required: true,
@@ -138,7 +136,7 @@ export const bsoMinigamesCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'The quantity you want to buy (default 1).',
 							min_value: 1
@@ -148,17 +146,17 @@ export const bsoMinigamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'fishing_contest',
 			description: 'The Fishing Contest minigame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'fish',
 					description: 'Start a Fishing Contest trip.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'location',
 							description: 'The location you want to fish at.',
 							choices: fishingLocations.map(i => ({ name: i.name, value: i.name }))
@@ -166,49 +164,49 @@ export const bsoMinigamesCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'stats_info',
 					description: 'Check your Fishing Contest stats, and current info.'
 				}
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'fist_of_guthix',
 			description: 'The Fist of Guthix minigame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a Fist of Guthix trip.'
 				}
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'stealing_creation',
 			description: 'The Stealing Creation minigame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a Stealing Creation trip.'
 				}
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'tinkering_workshop',
 			description: 'The tinkering workshop minigame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a tinkering workshop trip.',
 					options: [
 						{
 							...ownedMaterialOption,
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'material',
 							description: 'The material you want to use to tinker with.'
 						}
@@ -217,12 +215,12 @@ export const bsoMinigamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'balthazars_big_bonanza',
 			description: 'The balthazars big bonanza minigame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a balthazars big bonanza trip.',
 					options: []
@@ -230,31 +228,28 @@ export const bsoMinigamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'divine_dominion',
 			description: 'The Divine Dominion minigame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'check',
 					description: 'Check your Divine Dominion stats.',
 					options: []
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'sacrifice_god_item',
 					description: 'Sacrifice godly items.',
 					options: [
 						{
 							name: 'item',
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							description: 'The godly item to sacrifice.',
 							required: true,
-							autocomplete: async (value: string, { id }) => {
-								const raw = await mahojiUsersSettingsFetch(id, { bank: true });
-								const bank = new Bank(raw.bank as ItemBank);
-
-								return bank
+							autocomplete: async (value: string, user: MUser) => {
+								return user.bank
 									.items()
 									.filter(i => allGodlyItems.includes(i[0].id))
 									.filter(i =>
@@ -264,7 +259,7 @@ export const bsoMinigamesCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'The quantity you want to sacrifice (default 1).',
 							min_value: 1,
@@ -275,18 +270,18 @@ export const bsoMinigamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'guthixian_cache',
 			description: 'The Guthixian cache divination minigame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'join',
 					description: 'Join the current guthixian cache, if one is open.',
 					options: []
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'stats',
 					description: 'View your guthixian cache stats and boosts.',
 					options: []
@@ -294,17 +289,17 @@ export const bsoMinigamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'turaels_trials',
 			description: 'The Turaels Trials minigame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'method',
 							description: 'The attack method to use.',
 							choices: TuraelsTrialsMethods.map(method => ({ name: method, value: method })),

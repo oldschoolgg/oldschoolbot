@@ -15,7 +15,6 @@ import { addMonsterXP } from '@/lib/minions/functions/index.js';
 import type { NewBossOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const vasaBosses = [
 	Monsters.AbyssalSire,
@@ -121,7 +120,7 @@ export const vasaTask: MinionTask = {
 			notifyDrops: resolveItems(['Magus scroll', 'Voidling', 'Tattered robes of Vasa'])
 		});
 
-		updateBankSetting('vasa_loot', loot);
+		await ClientSettings.updateBankSetting('vasa_loot', loot);
 
 		handleTripFinish(user, channelID, resultStr, image.file.attachment, data, itemsAdded);
 	}

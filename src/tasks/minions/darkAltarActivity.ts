@@ -5,14 +5,12 @@ import { Bank } from 'oldschooljs';
 import { darkAltarRunes } from '@/lib/minions/functions/darkAltarCommand.js';
 import { bloodEssence, raimentBonus } from '@/lib/skilling/functions/calcsRunecrafting.js';
 import type { DarkAltarOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export const darkAltarTask: MinionTask = {
 	type: 'DarkAltar',
-	async run(data: DarkAltarOptions) {
-		const { quantity, userID, channelID, duration, hasElite, rune, useExtracts } = data;
-		const user = await mUserFetch(userID);
+	async run(data: DarkAltarOptions, { user, handleTripFinish }) {
+		const { quantity, channelID, duration, hasElite, rune, useExtracts } = data;
 
 		const runeData = darkAltarRunes[rune];
 

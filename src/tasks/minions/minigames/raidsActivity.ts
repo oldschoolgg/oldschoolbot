@@ -13,9 +13,6 @@ import { createTeam } from '@/lib/data/cox.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
 import type { RaidsOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 interface RaidResultUser {
 	personalPoints: number;
@@ -76,7 +73,7 @@ async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
 
 export const raidsTask: MinionTask = {
 	type: 'Raids',
-	async run(data: RaidsOptions) {
+	async run(data: RaidsOptions, { handleTripFinish }) {
 		const { channelID, users, challengeMode, duration, leader, quantity: _quantity, cc } = data;
 		const quantity = _quantity ?? 1;
 		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
@@ -171,22 +168,18 @@ export const raidsTask: MinionTask = {
 			const [xpResult, { itemsAdded }] = await Promise.all([
 				handleCoxXP(user, quantity, challengeMode),
 				cc
-					? userStatsBankUpdate(user.id, 'chincannon_destroyed_loot_bank', loot).then(() => ({
+					? user.statsBankUpdate('chincannon_destroyed_loot_bank', loot).then(() => ({
 							itemsAdded: new Bank()
 						}))
 					: user.transactItems({
 							itemsToAdd: loot,
 							collectionLog: true
 						}),
-				userStatsUpdate(
-					user.id,
-					{
-						total_cox_points: {
-							increment: personalPoints
-						}
-					},
-					{}
-				)
+				user.statsUpdate({
+					total_cox_points: {
+						increment: personalPoints
+					}
+				})
 			]);
 
 			totalLoot.add(itemsAdded);
@@ -215,7 +208,8 @@ export const raidsTask: MinionTask = {
 		}
 
 		const effectiveTotalLoot = cc ? new Bank() : totalLoot;
-		updateBankSetting('cox_loot', effectiveTotalLoot);
+		await ClientSettings.updateBankSetting('cox_loot', effectiveTotalLoot);
+
 		await trackLoot({
 			totalLoot: effectiveTotalLoot,
 			id: minigameID,

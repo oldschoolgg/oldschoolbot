@@ -9,15 +9,14 @@ import { Bank, LootTable } from 'oldschooljs';
 import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Mining from '@/lib/skilling/skills/mining.js';
 import type { MotherlodeMiningActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 export const motherlodeMiningTask: MinionTask = {
 	type: 'MotherlodeMining',
-	async run(data: MotherlodeMiningActivityTaskOptions) {
-		const { userID, channelID, duration } = data;
+	async run(data: MotherlodeMiningActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelID, duration } = data;
 		const { quantity } = data;
-		const user = await mUserFetch(userID);
+
 		const motherlode = Mining.MotherlodeMine;
 
 		let xpReceived = quantity * Mining.MotherlodeMine.xp;

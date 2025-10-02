@@ -17,7 +17,6 @@ import {
 	getMainTameLevel,
 	getTameSpecies,
 	getTameStatus,
-	getUsersTame,
 	tameGrowthLevel,
 	tameHasBeenFed,
 	tameName
@@ -34,7 +33,6 @@ import {
 	formatDuration,
 	increaseNumByPercent,
 	isWeekend,
-	mentionCommand,
 	notEmpty,
 	reduceNumByPercent,
 	stringMatches,
@@ -42,7 +40,6 @@ import {
 } from '@oldschoolgg/toolkit';
 import { type Tame, tame_growth } from '@prisma/client';
 import { toTitleCase } from '@sapphire/utilities';
-import { ApplicationCommandOptionType, type ChatInputCommandInteraction, type User } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
 import { type Canvas, loadImage } from 'skia-canvas';
 
@@ -52,7 +49,6 @@ import {
 	type CanvasImage,
 	canvasToBuffer,
 	createCanvas,
-	fillTextXTimesInCtx,
 	getClippedRegion
 } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
@@ -60,6 +56,7 @@ import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
 import { badges, PerkTier } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { mentionCommand } from '@/lib/discord/index.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { Planks } from '@/lib/minions/data/planks.js';
 import getUserFoodFromBank from '@/lib/minions/functions/getUserFoodFromBank.js';
@@ -67,19 +64,17 @@ import { getUsersPerkTier } from '@/lib/perkTiers.js';
 import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning.js';
 import Bars from '@/lib/skilling/skills/smithing/smeltables.js';
 import { patronMaxTripBonus } from '@/lib/util/calcMaxTripLength.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { assert } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { getItemCostFromConsumables } from '@/mahoji/lib/abstracted_commands/minionKill/handleConsumables.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
 import { arbitraryTameActivities } from '@/tasks/tames/tameTasks.js';
 
 const tameImageSize = 96;
 
-async function tameAutocomplete(value: string, user: User) {
+async function tameAutocomplete(value: string, user: MUser) {
 	const tames = await prisma.tame.findMany({
 		where: {
 			user_id: user.id
@@ -335,7 +330,10 @@ async function initSprites() {
 	};
 }
 initSprites();
-
+function fillTextXTimesInCtx(ctx: CanvasContext, text: string, x: number, y: number) {
+	const textPath = ctx.outlineText(text);
+	ctx.fill(textPath.offset(x, y));
+}
 function drawText(ctx: CanvasContext, text: string, x: number, y: number) {
 	const baseFill = ctx.fillStyle;
 	ctx.fillStyle = '#000000';
@@ -375,7 +373,7 @@ export async function tameImage(user: MUser): CommandResponse {
 		return "You don't have any tames.";
 	}
 
-	const { tame, activity } = await getUsersTame(user);
+	const { tame, activity } = await user.getTame();
 
 	const {
 		sprite,
@@ -645,7 +643,7 @@ export async function removeRawFood({
 		}
 	});
 
-	updateBankSetting('economyStats_PVMCost', itemCost);
+	await ClientSettings.updateBankSetting('economyStats_PVMCost', itemCost);
 
 	return {
 		success: true,
@@ -659,7 +657,7 @@ async function setNameCommand(user: MUser, name: string) {
 	if (!name || name.length < 2 || name.length > 30 || ['\n', '`', '@', '<', ':'].some(char => name.includes(char))) {
 		return "That's not a valid name for your tame.";
 	}
-	const { tame } = await getUsersTame(user);
+	const { tame } = await user.getTame();
 	if (!tame) {
 		return 'You have no selected tame to set a nickname for, select one first.';
 	}
@@ -677,7 +675,7 @@ async function setNameCommand(user: MUser, name: string) {
 }
 
 async function cancelCommand(user: MUser) {
-	const { tame, activity } = await getUsersTame(user);
+	const { tame, activity } = await user.getTame();
 	if (!tame) {
 		return 'You have no selected tame.';
 	}
@@ -695,7 +693,7 @@ async function cancelCommand(user: MUser) {
 	return "You cancelled your tames' task.";
 }
 
-async function mergeCommand(user: MUser, interaction: ChatInputCommandInteraction, tameID: number) {
+async function mergeCommand(user: MUser, interaction: MInteraction, tameID: number) {
 	const requirements = {
 		magic: 110,
 		runecraft: 110,
@@ -718,7 +716,7 @@ async function mergeCommand(user: MUser, interaction: ChatInputCommandInteractio
 		return "The tame you're merging has gear equipped, unequip that gear first.";
 	}
 
-	const { tame, activity, species } = await getUsersTame(user);
+	const { tame, activity, species } = await user.getTame();
 	if (activity) return 'Your tame is busy. Wait for it to be free to do this.';
 	if (!tame || !species) return "You don't have a selected tame. Select your tame first.";
 	if (tame.id === toSelect.id) return `You can't merge ${tameName(tame)} with itself!`;
@@ -747,8 +745,7 @@ async function mergeCommand(user: MUser, interaction: ChatInputCommandInteractio
 				: tame!.species_variant
 	};
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to merge **${toSelect}** (Tame ${toSelect.id}) into **${tameName(
 			tame!
 		)}** (Tame ${tame!.id})?\n\n${tameName(
@@ -757,7 +754,7 @@ async function mergeCommand(user: MUser, interaction: ChatInputCommandInteractio
 	);
 
 	await user.removeItemsFromBank(mergingCost);
-	updateBankSetting('tame_merging_cost', mergingCost);
+	await ClientSettings.updateBankSetting('tame_merging_cost', mergingCost);
 
 	// Set the merged tame activities to the tame that is consuming it
 	await prisma.tameActivity.updateMany({
@@ -793,8 +790,8 @@ async function mergeCommand(user: MUser, interaction: ChatInputCommandInteractio
 	return `${tameName(tame)} consumed ${toSelect} and all its attributes.`;
 }
 
-async function feedCommand(interaction: ChatInputCommandInteraction, user: MUser, str: string) {
-	const { tame, species } = await getUsersTame(user);
+async function feedCommand(interaction: MInteraction, user: MUser, str: string) {
+	const { tame, species } = await user.getTame();
 	if (!tame) {
 		return 'You have no selected tame.';
 	}
@@ -849,8 +846,7 @@ async function feedCommand(interaction: ChatInputCommandInteraction, user: MUser
 		}
 
 		const levelRange = [0, levelsCanGain];
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			`Are you sure you want to feed the egg to your tame? You cannot get the egg back, and you cannot feed this tame an egg more than once.
 
 Your tame will gain between (inclusively) ${levelRange[0]} and ${levelRange[1]} levels from the egg.`
@@ -890,8 +886,7 @@ Your tame will gain between (inclusively) ${levelRange[0]} and ${levelRange[1]} 
 		const similarItems = getSimilarItems(item.id);
 		if (similarItems.some(si => bankToAdd.has(si))) {
 			if (!tameSpeciesCanBeFedThis.includes(species!.id)) {
-				await handleMahojiConfirmation(
-					interaction,
+				await interaction.confirmation(
 					`Feeding a '${item.name}' to your tame won't give it a perk, are you sure you want to?`
 				);
 			}
@@ -899,8 +894,7 @@ Your tame will gain between (inclusively) ${levelRange[0]} and ${levelRange[1]} 
 		}
 	}
 	const specialStr = specialStrArr.length === 0 ? '' : `\n\n${specialStrArr.join(', ')}`;
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to feed \`${bankToAdd}\` to ${tameName(
 			tame
 		)}? You **cannot** get these items back after they're eaten by your tame.${specialStr}
@@ -943,7 +937,7 @@ Note: Some items must be equipped to your tame, not fed. Check that you are feed
 }
 
 async function killCommand(user: MUser, channelID: string, str: string) {
-	const { tame, activity, species } = await getUsersTame(user);
+	const { tame, activity, species } = await user.getTame();
 	if (!tame || !species) {
 		return 'You have no selected tame.';
 	}
@@ -1107,7 +1101,7 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 }
 
 async function collectCommand(user: MUser, channelID: string, str: string) {
-	const { tame, activity } = await getUsersTame(user);
+	const { tame, activity } = await user.getTame();
 	if (!tame) {
 		return 'You have no selected tame.';
 	}
@@ -1218,7 +1212,7 @@ async function monkeyMagicHandler(
 	if (!spellOptions.spell.itemIDs.includes(spellOptions.itemID)) {
 		throw new Error(`Invalid item ID for spell ${spellOptions.spell.name}: ${spellOptions.itemID}`);
 	}
-	const { tame, activity } = await getUsersTame(user);
+	const { tame, activity } = await user.getTame();
 	if (!tame) {
 		return 'You have no selected tame.';
 	}
@@ -1307,7 +1301,7 @@ async function monkeyMagicHandler(
 			total_cost: new Bank(tame.total_cost as ItemBank).add(finalCost).toJSON()
 		}
 	});
-	await updateBankSetting('economyStats_PVMCost', finalCost);
+	await ClientSettings.updateBankSetting('economyStats_PVMCost', finalCost);
 
 	const duration = Math.floor(quantity * speed);
 
@@ -1376,7 +1370,7 @@ async function superGlassCommand(user: MUser, channelID: string) {
 async function superheatItemCommand(user: MUser, channelID: string, itemName: string) {
 	const item = Bars.find(i => Items.getOrThrow(i.id).name === itemName);
 
-	const { tame, activity } = await getUsersTame(user);
+	const { tame, activity } = await user.getTame();
 	if (!tame) return `You don't have a tame selected.`;
 	if (activity) return `${tame} is already on a trip.`;
 	const hasKlik = tameHasBeenFed(tame, itemID('Klik'));
@@ -1443,7 +1437,7 @@ async function selectCommand(user: MUser, tameID: number) {
 	if (!toSelect) {
 		return "Couldn't find a tame to select.";
 	}
-	const { activity } = await getUsersTame(user);
+	const { activity } = await user.getTame();
 	if (activity) {
 		return "You can't select a different tame, because your current one is busy.";
 	}
@@ -1530,7 +1524,7 @@ async function viewCommand(user: MUser, tameID: number): CommandResponse {
 }
 
 async function statusCommand(user: MUser) {
-	const { tame, activity } = await getUsersTame(user);
+	const { tame, activity } = await user.getTame();
 	if (!tame) {
 		return 'You have no tame selected.';
 	}
@@ -1538,7 +1532,7 @@ async function statusCommand(user: MUser) {
 }
 
 async function tameEquipCommand(user: MUser, itemName: string) {
-	const { tame, activity } = await getUsersTame(user);
+	const { tame, activity } = await user.getTame();
 	if (!tame) return "You don't have a tame selected.";
 	if (activity) {
 		return "You can't equip something to your tame, because it is busy.";
@@ -1577,7 +1571,7 @@ async function tameEquipCommand(user: MUser, itemName: string) {
 }
 
 async function tameUnequipCommand(user: MUser, itemName: string) {
-	const { tame, activity } = await getUsersTame(user);
+	const { tame, activity } = await user.getTame();
 	if (!tame) return "You don't have a tame selected.";
 	if (activity) {
 		return "You can't unequip something to your tame, because it is busy.";
@@ -1684,7 +1678,6 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 	}
 	if (tame.species.id !== TameSpeciesID.Eagle) {
 		return `Only Eagle tames can do clue scrolls, switch to a different tame: ${mentionCommand(
-			globalClient,
 			'tames',
 			'select'
 		)}.`;
@@ -1730,7 +1723,7 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 
 	await user.removeItemsFromBank(cost);
 	await tame.addToStatsBank('total_cost', cost);
-	await updateBankSetting('economyStats_PVMCost', cost);
+	await ClientSettings.updateBankSetting('economyStats_PVMCost', cost);
 	if (costSavedByDemonicJibwings) {
 		await tame.addToStatsBank('demonic_jibwings_saved_cost', costSavedByDemonicJibwings);
 	}
@@ -1798,22 +1791,22 @@ export const tamesCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'status',
 			description: 'Check the status of your selected tame.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'list',
 			description: 'List your tames.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'set_name',
 			description: 'Change your tames name.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'The name you want to use.',
 					required: true
@@ -1821,17 +1814,17 @@ export const tamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'cancel',
 			description: 'Cancel your tames trip.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'merge',
 			description: 'Merge a tame into your selected tame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'tame',
 					description: 'The tame you want to merge.',
 					required: true,
@@ -1840,12 +1833,12 @@ export const tamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'feed',
 			description: 'Feed your selected tame items.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'items',
 					description: 'The items you want to feed.',
 					required: true
@@ -1853,12 +1846,12 @@ export const tamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'kill',
 			description: 'Send your selected tame to kill things.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'The thing you want to kill.',
 					required: true,
@@ -1876,12 +1869,12 @@ export const tamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'collect',
 			description: 'Send your selected tame to collect things.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'The thing you want to collect.',
 					required: true,
@@ -1894,12 +1887,12 @@ export const tamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'select',
 			description: 'Select a tame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'tame',
 					description: 'The tame you want to select.',
 					required: true,
@@ -1908,12 +1901,12 @@ export const tamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'view',
 			description: 'View a tame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'tame',
 					description: 'The tame you want to view.',
 					required: true,
@@ -1922,12 +1915,12 @@ export const tamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'equip',
 			description: 'Equip an tame to your selected tame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'item',
 					description: 'The item you want to equip.',
 					required: true,
@@ -1940,18 +1933,17 @@ export const tamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'unequip',
 			description: 'Unequip an item from your selected tame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'item',
 					description: 'The item you want to unequip.',
 					required: true,
 					autocomplete: async (_, user) => {
-						const klasaUser = await mUserFetch(user.id);
-						const { tame } = await getUsersTame(klasaUser);
+						const { tame } = await user.getTame();
 						return tameEquipSlots
 							.map(i => tame?.[i])
 							.filter(notEmpty)
@@ -1963,12 +1955,12 @@ export const tamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'cast',
 			description: 'Make your monkey do some magic!',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'tan',
 					description: 'The leather you want your monkey to tan.',
 					required: false,
@@ -1979,28 +1971,28 @@ export const tamesCommand: OSBMahojiCommand = {
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'spin_flax',
 					description: 'Create flax.',
 					required: false,
 					choices: [{ name: 'Flax', value: 'flax' }]
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'plank_make',
 					description: 'The plank you want to make.',
 					required: false,
 					choices: Planks.map(t => ({ name: t.name, value: t.name }))
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'superglass_make',
 					description: 'Create glass.',
 					required: false,
 					choices: [{ name: 'Molten glass', value: 'molten glass' }]
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'superheat_item',
 					description: 'Superheat ore into bars',
 					required: false,
@@ -2009,12 +2001,12 @@ export const tamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'activity',
 			description: 'Send your tame to do other activities.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'The activity to do.',
 					required: true,
@@ -2027,12 +2019,12 @@ export const tamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'clue',
 			description: 'Send your eagle tame to do some clue scrolls.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'clue',
 					description: 'The clue tier to do.',
 					required: true,
@@ -2048,12 +2040,12 @@ export const tamesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'set_custom_image',
 			description: 'Set a custom image for your tame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'image',
 					description: 'The image to pick.',
 					required: true,
@@ -2096,7 +2088,7 @@ export const tamesCommand: OSBMahojiCommand = {
 			if (!tameActivity) {
 				return 'Invalid activity.';
 			}
-			const { tame, activity, species } = await getUsersTame(user);
+			const { tame, activity, species } = await user.getTame();
 			if (activity) {
 				return `${tameName(tame)} is busy.`;
 			}
@@ -2105,7 +2097,6 @@ export const tamesCommand: OSBMahojiCommand = {
 			}
 			if (!tameActivity.allowedTames.includes(tame.species_id)) {
 				return `Your selected tame species cannot do this activity, switch to a different tame: ${mentionCommand(
-					globalClient,
 					'tames',
 					'select'
 				)}.`;
@@ -2146,7 +2137,7 @@ export const tamesCommand: OSBMahojiCommand = {
 
 			// Handle resetting the custom image:
 			if (options.set_custom_image?.image.toLowerCase() === 'none') {
-				const { tame } = await getUsersTame(user);
+				const { tame } = await user.getTame();
 				if (tame === null) {
 					return "You don't have a tame selected, select the tame who's icon should be reset.";
 				}
@@ -2166,7 +2157,7 @@ export const tamesCommand: OSBMahojiCommand = {
 			if (!replacement) {
 				return 'Invalid image.';
 			}
-			const { tame } = await getUsersTame(user);
+			const { tame } = await user.getTame();
 			if (tame === null) {
 				return "You don't have a tame selected, select the tame you want to give this icon.";
 			}

@@ -3,29 +3,21 @@ import { Herb } from '@/lib/bso/skills/invention/groups/Herb.js';
 
 import { userMention } from '@discordjs/builders';
 import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import { ores, secondaries, seeds } from '@/lib/data/filterables.js';
-import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
+import { filterOption } from '@/lib/discord/index.js';
 import Firemaking from '@/lib/skilling/skills/firemaking.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
-import { mahojiClientSettingsFetch } from '@/lib/util/clientSettings.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { assert } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
-import { mahojiUsersSettingsFetch } from '@/mahoji/mahojiSettings.js';
 
-async function addToLotteryBank(userID: string, bankToAdd: Bank) {
-	const currentUserSettings = await mahojiUsersSettingsFetch(userID, {
-		lottery_input: true
-	});
-	const current = currentUserSettings.lottery_input as ItemBank;
+async function addToLotteryBank(user: MUser, bankToAdd: Bank) {
+	const current = user.user.lottery_input as ItemBank;
 	const newBank = new Bank(current).add(bankToAdd);
 
-	const res = await mahojiUserSettingsUpdate(userID, {
+	const res = await user.update({
 		lottery_input: newBank.toJSON()
 	});
 	return res;
@@ -196,7 +188,7 @@ for (const [item, qty] of specialPricesBeforeMultiplying.items()) {
 }
 
 export async function isLotteryActive(): Promise<boolean> {
-	const result = await mahojiClientSettingsFetch({ lottery_is_active: true });
+	const result = await ClientSettings.fetch({ lottery_is_active: true });
 	return result.lottery_is_active;
 }
 
@@ -255,12 +247,12 @@ export const lotteryCommand: OSBMahojiCommand = {
 	description: 'Win big!',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'buy_tickets',
 			description: 'Deposit items into the lottery to receive tickets.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The number of tickets to buy',
 					required: true
@@ -268,19 +260,19 @@ export const lotteryCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'deposit_items',
 			description: 'Deposit items into the lottery to receive tickets.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'items',
 					description: 'The items you want to put in.',
 					required: false
 				},
 				filterOption,
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'search',
 					description: 'A search query for items in your bank to put in.',
 					required: false
@@ -288,12 +280,12 @@ export const lotteryCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'info',
 			description: 'View the lottery loot/stats/info.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'prices',
 			description: 'View the custom prices.'
 		}
@@ -334,8 +326,7 @@ export const lotteryCommand: OSBMahojiCommand = {
 
 			if (!user.owns(bankToSell)) return 'You do not have enough GP to buy these tickets.';
 
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`${user.mention}, are you sure you want to add ${bankToSell} to the bank lottery - you'll receive **${amountOfTickets} bank lottery tickets**.
 
 **WARNING:** ${infoStr}`
@@ -345,7 +336,7 @@ export const lotteryCommand: OSBMahojiCommand = {
 			if (!user.owns(bankToSell)) return "You don't have enough GP to buy these tickets.";
 			await user.removeItemsFromBank(bankToSell);
 
-			await addToLotteryBank(user.id, bankToSell);
+			await addToLotteryBank(user, bankToSell);
 
 			return `You put ${bankToSell} to the bank lottery, and received ${amountOfTickets}x bank lottery tickets.`;
 		}
@@ -399,8 +390,7 @@ export const lotteryCommand: OSBMahojiCommand = {
 				);
 			}
 
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`${
 					user.mention
 				}, are you sure you want to add ${bankToSell} to the bank lottery - you'll receive **${amountOfTickets} bank lottery tickets**. ${perItemTickets.join(
@@ -414,7 +404,7 @@ export const lotteryCommand: OSBMahojiCommand = {
 			if (!user.owns(bankToSell)) return 'You do not own these items.';
 			await user.removeItemsFromBank(bankToSell);
 
-			await addToLotteryBank(user.id, bankToSell);
+			await addToLotteryBank(user, bankToSell);
 
 			return `You put ${bankToSell} to the bank lottery, and received ${amountOfTickets}x bank lottery tickets.`;
 		}

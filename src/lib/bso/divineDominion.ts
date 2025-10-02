@@ -2,8 +2,6 @@ import { roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, Monsters, resolveItems } from 'oldschooljs';
 
-import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
-
 export const gods = [
 	{
 		name: 'Zamorak',
@@ -253,7 +251,7 @@ export async function divineDominionSacrificeCommand(user: MUser, itemStr: strin
 
 	await user.transactItems({ itemsToRemove: cost });
 	await user.addToGodFavour([god.name], duration * quantity);
-	await userStatsBankUpdate(user.id, 'god_items_sacrificed_bank', cost);
+	await user.statsBankUpdate('god_items_sacrificed_bank', cost);
 
 	let response = `You sacrificed ${cost} to ${god.name}.
 

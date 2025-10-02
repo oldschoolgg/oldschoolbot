@@ -6,6 +6,7 @@ import { onMinionActivityFinish } from '@/lib/events.js';
 import { sql } from '@/lib/postgres.js';
 import { allTasks } from '@/lib/Task.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
+import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { logError } from '@/lib/util/logError.js';
 import { isGroupActivity } from '@/lib/util.js';
@@ -16,6 +17,10 @@ class SActivityManager {
 	async cancelActivity(userID: string) {
 		await prisma.activity.deleteMany({ where: { user_id: BigInt(userID), completed: false } });
 		this.minionActivityCacheDelete(userID);
+	}
+
+	async startTrip<T extends ActivityTaskData>(tripData: Omit<T, 'finishDate' | 'id'>) {
+		return addSubTaskToActivityTask(tripData);
 	}
 
 	convertStoredActivityToFlatActivity(activity: Activity): ActivityTaskData {
@@ -67,11 +72,7 @@ class SActivityManager {
 
 		modifyBusyCounter(activity.userID, 1);
 		try {
-			if ('isNew' in task) {
-				await task.run(activity, { user: await mUserFetch(activity.userID), handleTripFinish });
-			} else {
-				await task.run(activity);
-			}
+			await task.run(activity, { user: await mUserFetch(activity.userID), handleTripFinish });
 		} catch (err) {
 			logError(err);
 		} finally {

@@ -13,7 +13,6 @@ import { Bank, toKMB } from 'oldschooljs';
 
 import type { DungeoneeringOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export function calculateDungeoneeringResult({
 	floor,
@@ -134,7 +133,7 @@ export const dungeoneeringTask: MinionTask = {
 			}
 
 			if (portentXP > 0) {
-				await userStatsUpdate(user.id, {
+				await user.statsUpdate({
 					xp_from_dungeon_portent: {
 						increment: portentXP
 					}
