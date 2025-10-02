@@ -410,42 +410,62 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 				primaryItemID = itemID;
 			}
 
-			let fallbackType: ZeroTimeActivityType | null = null;
-			let fallbackItemID: number | null = null;
+			let fallbackTypeToSave: ZeroTimeActivityType | null | undefined = undefined;
+			let fallbackItemIDToSave: number | null | undefined = undefined;
 
-			if (rawFallbackType && rawFallbackType.toLowerCase() !== 'none') {
+			if (typeof rawFallbackType === 'string') {
 				const fallbackInput = rawFallbackType.toLowerCase();
-				if (!zeroTimeTypes.includes(fallbackInput as ZeroTimeActivityType)) {
-					return `Invalid fallback type. Valid options: ${zeroTimeTypes.join(', ')} or 'none'.`;
-				}
-
-				fallbackType = fallbackInput as ZeroTimeActivityType;
-
-				if (fallbackType === 'alch') {
-					const { itemID, error } = parseAlchItemInput(user, rawFallbackItem ?? null);
-					if (error) {
-						return error;
-					}
-					fallbackItemID = itemID;
+				if (fallbackInput === 'none') {
+					fallbackTypeToSave = null;
+					fallbackItemIDToSave = null;
 				} else {
-					const { itemID, error } = parseFletchableInput(user, rawFallbackItem ?? null, 'Fallback fletching');
-					if (error) {
-						return error;
+					if (!zeroTimeTypes.includes(fallbackInput as ZeroTimeActivityType)) {
+						return `Invalid fallback type. Valid options: ${zeroTimeTypes.join(', ')} or 'none'.`;
 					}
-					fallbackItemID = itemID;
+
+					const fallbackType = fallbackInput as ZeroTimeActivityType;
+					if (fallbackType === 'alch') {
+						const { itemID, error } = parseAlchItemInput(user, rawFallbackItem ?? null);
+						if (error) {
+							return error;
+						}
+						fallbackItemIDToSave = itemID;
+					} else {
+						const { itemID, error } = parseFletchableInput(
+							user,
+							rawFallbackItem ?? null,
+							'Fallback fletching'
+						);
+						if (error) {
+							return error;
+						}
+						fallbackItemIDToSave = itemID;
+					}
+
+					fallbackTypeToSave = fallbackType;
 				}
 			}
 
-			if (fallbackType && fallbackType === primaryType && fallbackItemID === primaryItemID) {
+			if (fallbackTypeToSave && fallbackTypeToSave === primaryType && fallbackItemIDToSave === primaryItemID) {
 				return 'Your fallback preference must be different from your primary preference.';
 			}
 
-			await user.update({
+			const updateData: {
+				zero_time_activity_primary_type: ZeroTimeActivityType;
+				zero_time_activity_primary_item: number | null;
+				zero_time_activity_fallback_type?: ZeroTimeActivityType | null;
+				zero_time_activity_fallback_item?: number | null;
+			} = {
 				zero_time_activity_primary_type: primaryType,
-				zero_time_activity_primary_item: primaryItemID,
-				zero_time_activity_fallback_type: fallbackType,
-				zero_time_activity_fallback_item: fallbackItemID
-			});
+				zero_time_activity_primary_item: primaryItemID
+			};
+
+			if (fallbackTypeToSave !== undefined) {
+				updateData.zero_time_activity_fallback_type = fallbackTypeToSave;
+				updateData.zero_time_activity_fallback_item = fallbackItemIDToSave ?? null;
+			}
+
+			await user.update(updateData);
 
 			const refreshedUser = await mUserFetch(userID);
 			const summaryLines = getZeroTimeActivityPreferences(refreshedUser).map(formatZeroTimePreference);
