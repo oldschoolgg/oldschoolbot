@@ -373,7 +373,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		globalClient.emit(
 			Events.ServerNotification,
 			bold(
-				`🎉 ${skill.emoji}**${user.badgedUsername}'s** minion, ${user.minionName}, just achieved the maximum possible total XP!`
+				`🎉 ${skill.emoji}** ${user.badgedUsername}'s** minion, ${user.minionName}, just achieved the maximum possible total XP!`
 			)
 		);
 		await insertUserEvent({ userID: user.id, type: UserEventType.MaxTotalXP });
