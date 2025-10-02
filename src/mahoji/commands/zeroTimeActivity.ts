@@ -555,12 +555,10 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 
 			if (fallbackTypeToSave !== undefined) {
 				updateData.zero_time_activity_fallback_type = fallbackTypeToSave;
-				fallbackTypeForComparison = fallbackTypeToSave;
 			}
 
 			if (fallbackItemIDToSave !== undefined) {
 				updateData.zero_time_activity_fallback_item = fallbackItemIDToSave ?? null;
-				fallbackItemForComparison = fallbackItemIDToSave ?? null;
 			}
 
 			if (Object.keys(updateData).length === 0) {
