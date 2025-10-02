@@ -315,7 +315,7 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 					type: 'String',
 					name: 'primary_type',
 					description: 'Your primary zero-time activity type.',
-					required: true,
+					required: false,
 					choices: zeroTimeTypes.map(type => ({ name: type, value: type }))
 				},
 				{
@@ -366,7 +366,7 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		overview?: Record<string, never>;
 		set?: {
-			primary_type: string;
+			primary_type: string | null;
 			primary_item?: string | null;
 			fallback_type?: string | null;
 			fallback_item?: string | null;
@@ -401,25 +401,74 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 				fallback_item: rawFallbackItem
 			} = options.set;
 
-			const primaryTypeInput = rawPrimaryType.toLowerCase();
-			if (!zeroTimeTypes.includes(primaryTypeInput as ZeroTimeActivityType)) {
-				return `Invalid primary type. Valid options: ${zeroTimeTypes.join(', ')}.`;
-			}
-			const primaryType = primaryTypeInput as ZeroTimeActivityType;
+			const existingPrimaryType = user.user.zero_time_activity_primary_type;
+			const existingPrimaryItem = user.user.zero_time_activity_primary_item;
+			const primaryTypeWasProvided = typeof rawPrimaryType === 'string';
+			const primaryItemWasProvided = rawPrimaryItem !== undefined;
 
-			let primaryItemID: number | null = null;
-			if (primaryType === 'alch') {
-				const { itemID, error } = parseAlchItemInput(user, rawPrimaryItem ?? null);
-				if (error) {
-					return error;
+			let primaryTypeToUse: ZeroTimeActivityType | null = null;
+			if (primaryTypeWasProvided && rawPrimaryType) {
+				const normalised = rawPrimaryType.toLowerCase();
+				if (!zeroTimeTypes.includes(normalised as ZeroTimeActivityType)) {
+					return `Invalid primary type. Valid options: ${zeroTimeTypes.join(', ')}.`;
 				}
-				primaryItemID = itemID;
-			} else {
-				const { itemID, error } = parseFletchableInput(user, rawPrimaryItem ?? null, 'Primary fletching');
-				if (error) {
-					return error;
+				primaryTypeToUse = normalised as ZeroTimeActivityType;
+			} else if (existingPrimaryType) {
+				primaryTypeToUse = existingPrimaryType;
+			}
+
+			const shouldUpdatePrimary = primaryTypeWasProvided || primaryItemWasProvided;
+			let primaryItemIDToSave: number | null | undefined;
+			let primaryTypeForComparison: ZeroTimeActivityType | null = existingPrimaryType ?? null;
+			let primaryItemForComparison: number | null = existingPrimaryItem ?? null;
+
+			const updateData: {
+				zero_time_activity_primary_type?: ZeroTimeActivityType | null;
+				zero_time_activity_primary_item?: number | null;
+				zero_time_activity_fallback_type?: ZeroTimeActivityType | null;
+				zero_time_activity_fallback_item?: number | null;
+			} = {};
+
+			if (shouldUpdatePrimary) {
+				if (!primaryTypeToUse) {
+					return 'Set a primary type before configuring the primary preference.';
 				}
-				primaryItemID = itemID;
+
+				if (primaryItemWasProvided) {
+					if (primaryTypeToUse === 'alch') {
+						const { itemID, error } = parseAlchItemInput(user, rawPrimaryItem ?? null);
+						if (error) {
+							return error;
+						}
+						primaryItemIDToSave = itemID;
+					} else {
+						const { itemID, error } = parseFletchableInput(
+							user,
+							rawPrimaryItem ?? null,
+							'Primary fletching'
+						);
+						if (error) {
+							return error;
+						}
+						primaryItemIDToSave = itemID;
+					}
+				} else if (primaryTypeWasProvided && primaryTypeToUse !== existingPrimaryType) {
+					if (primaryTypeToUse === 'fletch') {
+						const { error } = parseFletchableInput(user, null, 'Primary fletching');
+						return error ?? 'Primary fletching requires a fletching item.';
+					}
+					primaryItemIDToSave = null;
+				}
+
+				if (primaryTypeWasProvided) {
+					updateData.zero_time_activity_primary_type = primaryTypeToUse;
+					primaryTypeForComparison = primaryTypeToUse;
+				}
+
+				if (primaryItemWasProvided || primaryItemIDToSave !== undefined) {
+					updateData.zero_time_activity_primary_item = primaryItemIDToSave ?? null;
+					primaryItemForComparison = primaryItemIDToSave ?? null;
+				}
 			}
 
 			let fallbackTypeToSave: ZeroTimeActivityType | null | undefined;
@@ -457,24 +506,21 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 					fallbackTypeToSave = fallbackType;
 				}
 			}
-
-			if (fallbackTypeToSave && fallbackTypeToSave === primaryType && fallbackItemIDToSave === primaryItemID) {
+			if (
+				fallbackTypeToSave &&
+				fallbackTypeToSave === primaryTypeForComparison &&
+				fallbackItemIDToSave === primaryItemForComparison
+			) {
 				return 'Your fallback preference must be different from your primary preference.';
 			}
-
-			const updateData: {
-				zero_time_activity_primary_type: ZeroTimeActivityType;
-				zero_time_activity_primary_item: number | null;
-				zero_time_activity_fallback_type?: ZeroTimeActivityType | null;
-				zero_time_activity_fallback_item?: number | null;
-			} = {
-				zero_time_activity_primary_type: primaryType,
-				zero_time_activity_primary_item: primaryItemID
-			};
 
 			if (fallbackTypeToSave !== undefined) {
 				updateData.zero_time_activity_fallback_type = fallbackTypeToSave;
 				updateData.zero_time_activity_fallback_item = fallbackItemIDToSave ?? null;
+			}
+
+			if (Object.keys(updateData).length === 0) {
+				return 'You did not specify any changes to your zero-time activity preferences.';
 			}
 
 			await user.update(updateData);

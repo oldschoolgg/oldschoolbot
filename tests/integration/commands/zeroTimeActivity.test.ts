@@ -179,6 +179,38 @@ describe('Zero Time Activity Command', () => {
 		expect(overview).toContain('Fallback: Fletch Steel dart');
 	});
 
+	test('allows editing fallback without resubmitting the primary type', async () => {
+		const fletchable = zeroTimeFletchables.find(item => item.name === 'Steel dart');
+		expect(fletchable).toBeDefined();
+		if (!fletchable) return;
+
+		const user = await createTestUser(new Bank().add('Nature rune', 200).add('Fire rune', 500), {
+			skills_magic: convertLVLtoXP(75),
+			skills_fletching: convertLVLtoXP(75)
+		});
+
+		await user.runCommand(zeroTimeActivityCommand, {
+			set: {
+				primary_type: 'alch'
+			}
+		});
+		await user.sync();
+
+		const response = await user.runCommand(zeroTimeActivityCommand, {
+			set: {
+				fallback_type: 'fletch',
+				fallback_item: fletchable.name
+			}
+		});
+
+		expect(response).toContain('Fallback: Fletch Steel dart');
+		await user.sync();
+
+		expect(user.user.zero_time_activity_primary_type).toBe('alch');
+		expect(user.user.zero_time_activity_fallback_type).toBe('fletch');
+		expect(user.user.zero_time_activity_fallback_item).toBe(fletchable.id);
+	});
+
 	test('preserves fallback configuration when editing primary preference', async () => {
 		const fletchable = zeroTimeFletchables.find(item => item.name === 'Steel dart');
 		expect(fletchable).toBeDefined();
