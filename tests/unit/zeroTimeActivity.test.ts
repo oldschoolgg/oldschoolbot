@@ -24,11 +24,11 @@ describe('attemptZeroTimeActivity', () => {
 		const response = attemptZeroTimeActivity({
 			user,
 			duration,
-			preference,
-			variant: 'default'
+			preferences: [preference],
+			alch: { variant: 'default' }
 		});
 
-		expect(response.message).toBeUndefined();
+		expect(response.failures).toHaveLength(0);
 		expect(response.result?.type).toBe('alch');
 		if (!response.result || response.result.type !== 'alch') return;
 
@@ -55,9 +55,8 @@ describe('attemptZeroTimeActivity', () => {
 		const response = attemptZeroTimeActivity({
 			user,
 			duration,
-			preference,
-			variant: 'default',
-			itemsPerHour: ratePerHour
+			preferences: [preference],
+			alch: { variant: 'default', itemsPerHour: ratePerHour }
 		});
 
 		expect(response.result?.type).toBe('alch');
@@ -78,12 +77,12 @@ describe('attemptZeroTimeActivity', () => {
 		const response = attemptZeroTimeActivity({
 			user,
 			duration: timePerAlch * 10,
-			preference,
-			variant: 'default'
+			preferences: [preference],
+			alch: { variant: 'default' }
 		});
 
 		expect(response.result).toBeNull();
-		expect(response.message).toBe("You're missing resources to alch Yew longbow.");
+		expect(response.failures[0]?.message).toBe("You're missing resources to alch Yew longbow.");
 	});
 
 	test('fletching success', () => {
@@ -101,10 +100,10 @@ describe('attemptZeroTimeActivity', () => {
 		const response = attemptZeroTimeActivity({
 			user,
 			duration,
-			preference
+			preferences: [preference]
 		});
 
-		expect(response.message).toBeUndefined();
+		expect(response.failures).toHaveLength(0);
 		expect(response.result?.type).toBe('fletch');
 		if (!response.result || response.result.type !== 'fletch') return;
 
@@ -141,9 +140,10 @@ describe('attemptZeroTimeActivity', () => {
 			const baseResponse = attemptZeroTimeActivity({
 				user: baseUser,
 				duration,
-				preference
+				preferences: [preference]
 			});
 
+			expect(baseResponse.failures).toHaveLength(0);
 			expect(baseResponse.result?.type).toBe('fletch');
 			if (!baseResponse.result || baseResponse.result.type !== 'fletch') return;
 
@@ -160,10 +160,11 @@ describe('attemptZeroTimeActivity', () => {
 			const overrideResponse = attemptZeroTimeActivity({
 				user: overrideUser,
 				duration,
-				preference,
-				itemsPerHour
+				preferences: [preference],
+				fletch: { itemsPerHour }
 			});
 
+			expect(overrideResponse.failures).toHaveLength(0);
 			expect(overrideResponse.result?.type).toBe('fletch');
 			if (!overrideResponse.result || overrideResponse.result.type !== 'fletch') return;
 
@@ -203,10 +204,12 @@ describe('attemptZeroTimeActivity', () => {
 		const response = attemptZeroTimeActivity({
 			user,
 			duration: Time.Second * 10,
-			preference
+			preferences: [preference]
 		});
 
 		expect(response.result).toBeNull();
-		expect(response.message).toBe("You don't have the required Slayer unlocks to fletch Broad arrows.");
+		expect(response.failures[0]?.message).toBe(
+			"You don't have the required Slayer unlocks to fletch Broad arrows."
+		);
 	});
 });

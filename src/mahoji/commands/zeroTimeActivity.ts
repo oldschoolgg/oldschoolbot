@@ -3,22 +3,34 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Items } from 'oldschooljs';
 
 import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables';
-import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
+import { SlayerRewardsShop, type SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import {
 	attemptZeroTimeActivity,
+	formatZeroTimePreference,
 	getZeroTimeActivityPreferences,
-	type AttemptZeroTimeActivityOptions,
-	type ZeroTimeActivityPreference,
 	type ZeroTimeActivityType
 } from '../../lib/util/zeroTimeActivity';
 
 const zeroTimeTypes: ZeroTimeActivityType[] = ['alch', 'fletch'];
 
-function formatPreference(preference: ZeroTimeActivityPreference, user: MUser): string {
-	const base = preference.type === 'alch' ? 'Alching' : 'Fletching';
-	const itemName = preference.itemID ? Items.get(preference.itemID)?.name ?? 'unknown item' : 'automatic selection';
-	return `${preference.role === 'primary' ? 'Primary' : 'Fallback'}: **${base}** using **${itemName}**`;
+const slayerUnlockName = new Map<SlayerTaskUnlocksEnum, string>(
+	SlayerRewardsShop.map(unlock => [unlock.id, unlock.name])
+);
+
+function describeFletchableRequirements(fletchable: (typeof zeroTimeFletchables)[number]): string {
+	const parts: string[] = [`${fletchable.level} Fletching`];
+
+	if (fletchable.requiredSlayerUnlocks?.length) {
+		const unlockNames = fletchable.requiredSlayerUnlocks
+			.map(unlock => slayerUnlockName.get(unlock))
+			.filter((name): name is string => Boolean(name));
+		if (unlockNames.length > 0) {
+			parts.push(`${unlockNames.join(', ')} unlock`);
+		}
+	}
+
+	return parts.join(' Â· ');
 }
 
 function getAutocompleteOptions(value: string) {
@@ -31,7 +43,7 @@ function getAutocompleteOptions(value: string) {
 				: fletchable.name.toLowerCase().includes(search) || fletchable.id.toString() === search
 		)
 		.map(fletchable => ({
-			name: fletchable.name,
+			name: `${fletchable.name} (${describeFletchableRequirements(fletchable)})`,
 			value: fletchable.id.toString()
 		}));
 
@@ -50,7 +62,13 @@ function getAutocompleteOptions(value: string) {
 	return results;
 }
 
-function parseAlchItemInput(user: MUser, itemInput: string | null, context: 'primary' | 'fallback'): { itemID: number | null; error?: string } {
+function parseAlchItemInput(
+	user: MUser,
+	itemInput: string | null
+): {
+	itemID: number | null;
+	error?: string;
+} {
 	if (!itemInput || itemInput.length === 0) {
 		return { itemID: null };
 	}
@@ -117,31 +135,27 @@ function buildOverview(user: MUser): string {
 
 	const lines: string[] = [];
 	for (const preference of preferences) {
-		const label = formatPreference(preference, user);
+		const label = formatZeroTimePreference(preference);
 
-		const attemptOptions: AttemptZeroTimeActivityOptions =
-			preference.type === 'alch'
-				? {
-					user,
-					duration: Time.Minute,
-					preference: preference as ZeroTimeActivityPreference & { type: 'alch' },
-					quantityOverride: 1,
-					variant: 'default'
-				  }
-				: {
-					user,
-					duration: Time.Minute,
-					preference: preference as ZeroTimeActivityPreference & { type: 'fletch' },
-					quantityOverride: 1
-				  };
+		const outcome = attemptZeroTimeActivity({
+			user,
+			duration: Time.Minute,
+			preferences: [preference],
+			quantityOverride: 1,
+			alch: { variant: 'default' },
+			fletch: {}
+		});
 
-		const viability = attemptZeroTimeActivity(attemptOptions);
-		if (viability.result) {
-			lines.push(`${label} — Ready`);
-		} else if (viability.message) {
-			lines.push(`${label} — ${viability.message}`);
+		if (outcome.result) {
+			lines.push(`${label} -- Ready`);
+			continue;
+		}
+
+		const failure = outcome.failures[0];
+		if (failure?.message) {
+			lines.push(`${label} -- ${failure.message}`);
 		} else {
-			lines.push(`${label} — Not currently available.`);
+			lines.push(`${label} -- Not currently available.`);
 		}
 	}
 
@@ -181,7 +195,10 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 					name: 'fallback_type',
 					description: 'Optional fallback zero-time activity type.',
 					required: false,
-					choices: [{ name: 'none', value: 'none' }, ...zeroTimeTypes.map(type => ({ name: type, value: type }))]
+					choices: [
+						{ name: 'none', value: 'none' },
+						...zeroTimeTypes.map(type => ({ name: type, value: type }))
+					]
 				},
 				{
 					type: ApplicationCommandOptionType.String,
@@ -198,7 +215,10 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 			description: 'Clear your zero-time activity preferences.'
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{
+	run: async ({
+		options,
+		userID
+	}: CommandRunOptions<{
 		overview?: Record<string, never>;
 		set?: {
 			primary_type: string;
@@ -209,6 +229,10 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 		clear?: Record<string, never>;
 	}>) => {
 		const user = await mUserFetch(userID);
+
+		if (!options.overview && !options.set && !options.clear) {
+			return buildOverview(user);
+		}
 
 		if (options.overview) {
 			return buildOverview(user);
@@ -240,7 +264,7 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 
 			let primaryItemID: number | null = null;
 			if (primaryType === 'alch') {
-				const { itemID, error } = parseAlchItemInput(user, rawPrimaryItem ?? null, 'primary');
+				const { itemID, error } = parseAlchItemInput(user, rawPrimaryItem ?? null);
 				if (error) {
 					return error;
 				}
@@ -262,14 +286,10 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 					return `Invalid fallback type. Valid options: ${zeroTimeTypes.join(', ')} or 'none'.`;
 				}
 
-				if (fallbackInput === primaryType) {
-					return 'Your fallback type must be different from your primary type.';
-				}
-
 				fallbackType = fallbackInput as ZeroTimeActivityType;
 
 				if (fallbackType === 'alch') {
-					const { itemID, error } = parseAlchItemInput(user, rawFallbackItem ?? null, 'fallback');
+					const { itemID, error } = parseAlchItemInput(user, rawFallbackItem ?? null);
 					if (error) {
 						return error;
 					}
@@ -283,6 +303,10 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 				}
 			}
 
+			if (fallbackType && fallbackType === primaryType && fallbackItemID === primaryItemID) {
+				return 'Your fallback preference must be different from your primary preference.';
+			}
+
 			await user.update({
 				zero_time_activity_primary_type: primaryType,
 				zero_time_activity_primary_item: primaryItemID,
@@ -291,11 +315,9 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 			});
 
 			const refreshedUser = await mUserFetch(userID);
-			const summary = getZeroTimeActivityPreferences(refreshedUser)
-				.map(preference => formatPreference(preference, refreshedUser))
-				.join('\n');
+			const summaryLines = getZeroTimeActivityPreferences(refreshedUser).map(formatZeroTimePreference);
 
-			return `Your zero-time preferences have been updated.\n${summary}`;
+			return `Saved your zero-time preferences.\n${summaryLines.join('\n')}`;
 		}
 
 		return 'Invalid zero-time activity command usage.';

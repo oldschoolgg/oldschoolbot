@@ -138,6 +138,7 @@ export const sepulchreTask: MinionTask = {
 			]
 		});
 
+		const fallbackNote = zeroTimePreferenceRole === 'fallback' ? ' (fallback preference)' : '';
 		let str = `${user}, ${user.minionName} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${
 			floors[0]
 		}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpRes}\n${thievingXpRes}${
@@ -160,14 +161,14 @@ export const sepulchreTask: MinionTask = {
 
 			if (fletchable.outputMultiple) {
 				const fletchableName = `${fletchable.name}s`;
-				str += `\nYou also fletched ${fletchQuantity} sets of ${fletchableName} and received ${fletchingLoot}. ${fletchXpRes}.`;
+				str += `\nYou also fletched ${fletchQuantity} sets of ${fletchableName}${fallbackNote} and received ${fletchingLoot}. ${fletchXpRes}.`;
 			} else {
-				str += `\nYou also fletched ${fletchQuantity} ${fletchable.name} and received ${fletchXpRes}.`;
+				str += `\nYou also fletched ${fletchQuantity} ${fletchable.name}${fallbackNote} and received ${fletchXpRes}.`;
 			}
 		}
 
 		if (alchItem && alchQuantity > 0) {
-			str += `\nYou also alched ${alchQuantity}x ${alchItem.name}.`;
+			str += `\nYou also alched ${alchQuantity}x ${alchItem.name}${fallbackNote}.`;
 			if (savedRunesFromAlching > 0) {
 				str += ` Your Bryophyta's staff saved you ${savedRunesFromAlching} Nature runes.`;
 			}

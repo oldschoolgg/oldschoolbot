@@ -12,7 +12,7 @@ import { timePerAlch } from '../../../src/mahoji/lib/abstracted_commands/alchCom
 import { createTestUser } from '../util';
 
 describe('Zero Time Activity Command', () => {
-	const automaticSelectionText = 'automatic selection from your favourite alchs each trip';
+	const automaticSelectionText = 'Primary: Alch (automatic favourites)';
 
 	test('persists alching configuration and uses it', async () => {
 		const item = Items.getOrThrow('Yew longbow');
@@ -27,14 +27,14 @@ describe('Zero Time Activity Command', () => {
 			}
 		});
 
-		expect(response).toContain('Primary: **Alching**');
+		expect(response).toContain('Primary: Alch Yew longbow');
 		await user.sync();
 		expect(user.user.zero_time_activity_primary_type).toBe('alch');
 		expect(user.user.zero_time_activity_primary_item).toBe(item.id);
 		expect(user.user.zero_time_activity_fallback_type).toBeNull();
 
 		const summary = await user.runCommand(zeroTimeActivityCommand, { overview: {} });
-		expect(summary).toContain('Primary: **Alching** using **Yew longbow**');
+		expect(summary).toContain('Primary: Alch Yew longbow');
 
 		const [preference] = getZeroTimeActivityPreferences(user);
 		expect(preference).toEqual<ZeroTimeActivityPreference>({ role: 'primary', type: 'alch', itemID: item.id });
@@ -43,10 +43,11 @@ describe('Zero Time Activity Command', () => {
 		const activity = attemptZeroTimeActivity({
 			user,
 			duration,
-			preference,
-			variant: 'default'
+			preferences: [preference],
+			alch: { variant: 'default' }
 		});
 
+		expect(activity.failures).toHaveLength(0);
 		expect(activity.result?.type).toBe('alch');
 		expect(activity.result && activity.result.type === 'alch' ? activity.result.quantity : null).toBe(5);
 	});
@@ -69,7 +70,7 @@ describe('Zero Time Activity Command', () => {
 		expect(user.user.zero_time_activity_fallback_type).toBeNull();
 
 		const summary = await user.runCommand(zeroTimeActivityCommand, { overview: {} });
-		expect(summary).toContain(`Primary: **Alching** using **${automaticSelectionText}**`);
+		expect(summary).toContain(automaticSelectionText);
 	});
 
 	test('reuses configured fletching item on subsequent calls', async () => {
@@ -136,6 +137,6 @@ describe('Zero Time Activity Command', () => {
 		]);
 
 		const overview = await user.runCommand(zeroTimeActivityCommand, { overview: {} });
-		expect(overview).toContain('Fallback: **Fletching**');
+		expect(overview).toContain('Fallback: Fletch Steel dart');
 	});
 });

@@ -4,7 +4,7 @@ import { bold } from 'discord.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import { courses } from '@/lib/skilling/skills/agility.js';
 import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
-import { attemptZeroTimeActivity, getZeroTimeActivityPreferences, type AttemptZeroTimeActivityOptions, type ZeroTimeActivityPreference, type ZeroTimeActivityResult } from '@/lib/util/zeroTimeActivity.js';
+import { attemptZeroTimeActivity, describeZeroTimePreference, getZeroTimeActivityPreferences, getZeroTimePreferenceLabel, type ZeroTimeActivityResult } from '@/lib/util/zeroTimeActivity.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
 
 const AGILITY_FLETCH_ITEMS_PER_HOUR = 15_000;
@@ -100,43 +100,42 @@ export const lapsCommand: OSBMahojiCommand = {
 		const infoMessages: string[] = [];
 		const preferences = getZeroTimeActivityPreferences(user);
 
-		for (const preference of preferences) {
-			const label = preference.role === 'primary' ? 'Primary' : 'Fallback';
+		if (preferences.length > 0) {
+			const alchDisabledReason =
+				course.name === 'Ape Atoll Agility Course'
+					? 'Alching is unavailable on this course because your minion must hold a greegree.'
+					: undefined;
 
-			if (preference.type === 'alch' && course.name === 'Ape Atoll Agility Course') {
-				infoMessages.push(`${label} alching is unavailable on this course.`);
-				continue;
+			const outcome = attemptZeroTimeActivity({
+				user,
+				duration,
+				preferences,
+				alch: {
+					variant: 'agility',
+					itemsPerHour: AGILITY_ALCHES_PER_HOUR,
+					...(alchDisabledReason ? { disabledReason: alchDisabledReason } : {})
+				},
+				fletch: { itemsPerHour: AGILITY_FLETCH_ITEMS_PER_HOUR }
+			});
+
+			if (outcome.result?.type === 'fletch') {
+				fletchResult = outcome.result;
+			} else if (outcome.result?.type === 'alch') {
+				alchResult = outcome.result;
 			}
 
-			const attemptOptions: AttemptZeroTimeActivityOptions =
-				preference.type === 'alch'
-					? {
-						user,
-						duration,
-						preference: preference as ZeroTimeActivityPreference & { type: 'alch' },
-						variant: 'agility',
-						itemsPerHour: AGILITY_ALCHES_PER_HOUR
-					  }
-					: {
-						user,
-						duration,
-						preference: preference as ZeroTimeActivityPreference & { type: 'fletch' },
-						itemsPerHour: AGILITY_FLETCH_ITEMS_PER_HOUR
-					  };
+			const formattedFailures = outcome.failures
+				.filter(failure => failure.message)
+				.map(failure => `${getZeroTimePreferenceLabel(failure.preference)}: ${failure.message}`);
 
-			const attempt = attemptZeroTimeActivity(attemptOptions);
-
-			if (attempt.result) {
-				if (attempt.result.type === 'fletch') {
-					fletchResult = attempt.result;
-				} else {
-					alchResult = attempt.result;
+			if (outcome.result) {
+				if (outcome.result.preference.role === 'fallback') {
+					const fallbackDescription = describeZeroTimePreference(outcome.result.preference);
+					const prefix = formattedFailures.length > 0 ? `${formattedFailures.join(' ')} ` : '';
+					infoMessages.push(`${prefix}Falling back to ${fallbackDescription}.`.trim());
 				}
-				break;
-			}
-
-			if (attempt.message) {
-				infoMessages.push(`${label} ${preference.type}: ${attempt.message}`);
+			} else if (formattedFailures.length > 0) {
+				infoMessages.push(...formattedFailures);
 			}
 		}
 
