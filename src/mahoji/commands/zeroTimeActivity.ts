@@ -1,6 +1,8 @@
 import { stringMatches, Time } from '@oldschoolgg/toolkit';
+import type { CommandInteractionOption, GuildMember } from 'discord.js';
 import { Items } from 'oldschooljs';
 
+import type { AutocompleteContext } from '../../lib/discord/commandOptions.js';
 import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables/index.js';
 import { SlayerRewardsShop, type SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks.js';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil.js';
@@ -12,6 +14,24 @@ import {
 } from '../../lib/util/zeroTimeActivity.js';
 
 const zeroTimeTypes: ZeroTimeActivityType[] = ['alch', 'fletch'];
+
+interface AlchableAutocompleteItem {
+	id: number;
+	name: string;
+	nameLower: string;
+	highAlchValue: number;
+}
+
+const alchableAutocompleteItems: AlchableAutocompleteItem[] = Items.filter(
+	item => Boolean(item.highalch) && item.tradeable
+).map(item => ({
+	id: item.id,
+	name: item.name,
+	nameLower: item.name.toLowerCase(),
+	highAlchValue: item.highalch ?? 0
+}));
+
+alchableAutocompleteItems.sort((a, b) => a.name.localeCompare(b.name));
 
 const slayerUnlockName = new Map<SlayerTaskUnlocksEnum, string>(
 	SlayerRewardsShop.map(unlock => [unlock.id, unlock.name])
@@ -32,7 +52,7 @@ function describeFletchableRequirements(fletchable: (typeof zeroTimeFletchables)
 	return parts.join(' -> ');
 }
 
-function getAutocompleteOptions(value: string) {
+function getFletchAutocompleteOptions(value: string) {
 	const trimmedValue = value.trim();
 	const search = trimmedValue.toLowerCase();
 	const curatedOptions = zeroTimeFletchables
@@ -59,6 +79,103 @@ function getAutocompleteOptions(value: string) {
 	}
 
 	return results;
+}
+
+function getAlchAutocompleteOptions(value: string) {
+	const trimmedValue = value.trim();
+	const search = trimmedValue.toLowerCase();
+	const curatedOptions: AlchableAutocompleteItem[] = [];
+
+	for (const item of alchableAutocompleteItems) {
+		if (search.length === 0 || item.nameLower.includes(search) || item.id.toString() === search) {
+			curatedOptions.push(item);
+		}
+
+		if (curatedOptions.length >= 25) {
+			break;
+		}
+	}
+
+	const results: { name: string; value: string }[] = [];
+	if (trimmedValue.length > 0 && !curatedOptions.some(option => option.id.toString() === trimmedValue)) {
+		results.push({ name: `Use "${trimmedValue}"`, value: trimmedValue });
+	}
+
+	for (const option of curatedOptions) {
+		if (results.length >= 25) {
+			break;
+		}
+		const formattedAlchValue = option.highAlchValue.toLocaleString();
+		results.push({
+			name: `${option.name} (High alch: ${formattedAlchValue} gp)`,
+			value: option.id.toString()
+		});
+	}
+
+	return results;
+}
+
+function getStringOptionValue(option: CommandInteractionOption | undefined): string | null {
+	if (!option) {
+		return null;
+	}
+	const rawValue = (option as CommandInteractionOption & { value?: unknown }).value;
+	return typeof rawValue === 'string' ? rawValue : null;
+}
+
+function getSelectedActivityTypeFromContext(context: AutocompleteContext | undefined): ZeroTimeActivityType | null {
+	if (!context) {
+		return null;
+	}
+	const focusedName = context.focusedOption.name;
+	let typeOptionName: 'primary_type' | 'fallback_type' | null = null;
+
+	if (focusedName === 'primary_item') {
+		typeOptionName = 'primary_type';
+	} else if (focusedName === 'fallback_item') {
+		typeOptionName = 'fallback_type';
+	}
+
+	if (!typeOptionName) {
+		return null;
+	}
+
+	const typeOption = context.options.find(option => option.name === typeOptionName);
+	const rawType = getStringOptionValue(typeOption);
+	if (!rawType) {
+		return null;
+	}
+
+	const normalised = rawType.toLowerCase();
+	if (!zeroTimeTypes.includes(normalised as ZeroTimeActivityType)) {
+		return null;
+	}
+
+	return normalised as ZeroTimeActivityType;
+}
+
+function fallbackTypeIsNone(context: AutocompleteContext | undefined): boolean {
+	if (!context || context.focusedOption.name !== 'fallback_item') {
+		return false;
+	}
+
+	const fallbackTypeOption = context.options.find(option => option.name === 'fallback_type');
+	const rawValue = getStringOptionValue(fallbackTypeOption);
+	return rawValue !== null && rawValue.toLowerCase() === 'none';
+}
+
+function getAutocompleteOptions(value: string, context?: AutocompleteContext) {
+	if (fallbackTypeIsNone(context)) {
+		return [];
+	}
+
+	const selectedType = getSelectedActivityTypeFromContext(context);
+
+	if (selectedType === 'alch') {
+		return getAlchAutocompleteOptions(value);
+	}
+
+	return getFletchAutocompleteOptions(value);
 }
 
 function parseAlchItemInput(
@@ -187,7 +304,12 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 					name: 'primary_item',
 					description: 'Optional item for the primary activity.',
 					required: false,
-					autocomplete: async (value: string, _user: MUser) => getAutocompleteOptions(value)
+					autocomplete: async (
+						value: string,
+						_user: MUser,
+						_member: GuildMember | undefined,
+						context?: AutocompleteContext
+					) => getAutocompleteOptions(value, context)
 				},
 				{
 					type: 'String',
@@ -204,7 +326,12 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 					name: 'fallback_item',
 					description: 'Optional item for the fallback activity.',
 					required: false,
-					autocomplete: async (value: string, _user: MUser) => getAutocompleteOptions(value)
+					autocomplete: async (
+						value: string,
+						_user: MUser,
+						_member: GuildMember | undefined,
+						context?: AutocompleteContext
+					) => getAutocompleteOptions(value, context)
 				}
 			]
 		},
