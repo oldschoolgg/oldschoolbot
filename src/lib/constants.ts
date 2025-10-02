@@ -18,13 +18,13 @@ const isProduction = process.env.NODE_ENV === 'production';
 const GENERAL_CHANNEL_ID =
 	BOT_TYPE === 'OSB'
 		? isProduction
-			? '346304390858145792'
-			: '1154056119019393035'
+			? '1422332076526403736'
+			: '1422332076526403736'
 		: isProduction
-			? '792691343284764693'
-			: '1154056119019393035';
-const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
-const TEST_SERVER_LOG_CHANNEL = '1042760447830536212';
+			? '1422332076526403736'
+			: '1422332076526403736';
+const OLDSCHOOLGG_TESTING_SERVER_ID = '788825318563512371';
+const TEST_SERVER_LOG_CHANNEL = '1422303556400189620';
 export const DELETED_USER_ID = '111111111111111111';
 
 interface ChannelConfig {
@@ -38,22 +38,22 @@ interface ChannelConfig {
 }
 
 const OSBChannelConfig: ChannelConfig = {
-	ServerGeneral: '342983479501389826',
-	Notifications: '469523207691436042',
-	GrandExchange: '682996313209831435',
-	EconomyLogs: '802029843712573510',
-	HelpAndSupport: '668073484731154462',
-	BotLogs: '1051725977320964197',
+	ServerGeneral: '1422332076526403736',
+	Notifications: '1422332145627828284',
+	GrandExchange: '1422332192842842132',
+	EconomyLogs: '1422332237545738312',
+	HelpAndSupport: '1422332276888305745',
+	BotLogs: '1422303556400189620',
 	GeneralChannel: GENERAL_CHANNEL_ID
 };
 
 const BSOChannelConfig: ChannelConfig = {
-	ServerGeneral: '342983479501389826',
-	Notifications: '1042760447830536212',
-	GrandExchange: '738780181946171493',
-	EconomyLogs: '802029843712573510',
-	HelpAndSupport: '970752140324790384',
-	BotLogs: '1051725977320964197',
+	ServerGeneral: '1422333741988315390',
+	Notifications: '1422333785130930309',
+	GrandExchange: '1422333820723662908',
+	EconomyLogs: '1422333864608792660',
+	HelpAndSupport: '1422333909504491645',
+	BotLogs: '1422333960096186429',
 	GeneralChannel: GENERAL_CHANNEL_ID
 };
 
@@ -373,7 +373,7 @@ const globalConfigSchema = z.object({
 	isProduction: z.boolean(),
 	timeZone: z.literal('UTC'),
 	sentryDSN: z.string().url().optional(),
-	adminUserIDs: z.array(z.string()).default(['157797566833098752', '425134194436341760']),
+	adminUserIDs: z.array(z.string()).default(['161903641630998528', '425134194436341760']),
 	maxingMessage: z.string().default('Congratulations on maxing!'),
 	moderatorLogsChannels: z.string().default(''),
 	supportServerID: z.string()

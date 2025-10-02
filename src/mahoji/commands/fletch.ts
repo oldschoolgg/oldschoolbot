@@ -1,11 +1,11 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { itemID } from 'oldschooljs';
 
 import { Fletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import Fletching from '@/lib/skilling/skills/fletching/index.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import type { FletchingActivityTaskOptions } from '@/lib/types/minions.js';
-import { itemID } from 'oldschooljs';
 
 export const fletchCommand: OSBMahojiCommand = {
 	name: 'fletch',
@@ -113,7 +113,7 @@ export const fletchCommand: OSBMahojiCommand = {
 		return `${user.minionName} is now Fletching ${quantity}${sets} ${
 			fletchable.name
 		}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.${
-			hasFletchingKnife ? "\n\n**Bonus**\n**Fletching knife:** -1 tick per item" : ""
+			hasFletchingKnife ? '\n\n**Bonus**\n**Fletching knife:** -1 tick per item' : ''
 		}`;
 	}
 };

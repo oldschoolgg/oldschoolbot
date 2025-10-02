@@ -1,14 +1,11 @@
-import { formatDuration, mentionCommand, stringMatches, Time } from '@oldschoolgg/toolkit';
-import type { ChatInputCommandInteraction } from 'discord.js';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, itemID } from 'oldschooljs';
 
 import { ValeTotemsBuyables, ValeTotemsSellables } from '@/lib/data/buyables/valeTotemsBuyables.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import type { ValeTotemsActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { userHasGracefulEquipped, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 interface TotemDecoration {
 	log: Item;
@@ -32,7 +29,6 @@ export async function valeTotemsStartCommand(
 
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
 		return `${user.minionName} needs to complete the "Children of the Sun" quest before ${user.minionName} can start Vale Totems minigame. Send ${user.minionName} to do the quest using: ${mentionCommand(
-			globalClient,
 			'activities',
 			'quest'
 		)}.`;
@@ -57,7 +53,7 @@ export async function valeTotemsStartCommand(
 	const logCostLap = decoration.logAmount;
 	const logsOwned = userBank.amount(logType);
 
-	// Question: Allow already prepared decorations or no (for more xp)?
+	// Question: Allow already prepared decorations or no (for less xp)?
 	if (logsOwned < decoration.logAmount) {
 		return `${user.minionName} doesn't own: ${logCostLap}x ${logType.name}.`;
 	}
@@ -108,7 +104,7 @@ export async function valeTotemsStartCommand(
 
 	const maxTripLength = calcMaxTripLength(user);
 
-	if (!userHasGracefulEquipped(user)) {
+	if (!user.hasGracefulEquipped()) {
 		timePerLap += NO_GRACEFUL_PENALTY;
 	} else {
 		messages.push(`-${formatDuration(NO_GRACEFUL_PENALTY)} for having Graceful equipped`);
@@ -189,7 +185,7 @@ export async function valeTotemsStartCommand(
 	await user.removeItemsFromBank(cost);
 	//await userStatsBankUpdate(user, 'vale_totems_cost_bank', cost); removed cause no idea if needed
 
-	await addSubTaskToActivityTask<ValeTotemsActivityTaskOptions>({
+	await ActivityManager.startTrip<ValeTotemsActivityTaskOptions>({
 		type: 'ValeTotems',
 		offerings: totalOfferings,
 		fletchXp: fletchingXp,
@@ -301,20 +297,19 @@ export const ValeTotemsDecorations: TotemDecoration[] = groups.flatMap(({ log, i
 );
 
 export async function valeTotemsBuyCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	user: MUser,
 	item: string | undefined,
 	quantity = 1
 ) {
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
 		return `${user.minionName} needs to complete the "Children of the Sun" quest before ${user.minionName} can access Vale Research Exchange. Send ${user.minionName} to do the quest using: ${mentionCommand(
-			globalClient,
 			'activities',
 			'quest'
 		)}.`;
 	}
 
-	const { vale_research_points: currentResearchPoints } = await user.fetchStats({ vale_research_points: true });
+	const { vale_research_points: currentResearchPoints } = await user.fetchStats();
 	if (!item) {
 		return `You currently have ${currentResearchPoints.toLocaleString()} Vale Research points.`;
 	}
@@ -339,40 +334,34 @@ export async function valeTotemsBuyCommand(
 		}`;
 	}
 
-	await handleMahojiConfirmation(
-		interaction,
-		`Are you sure you want to spent **${cost.toLocaleString()}** Vale Research points to buy **${quantity.toLocaleString()}x ${
+	await interaction.confirmation(
+		`Are you sure you want to spend **${cost.toLocaleString()}** Vale Research points to buy **${quantity.toLocaleString()}x ${
 			shopItem.name
 		}**?`
 	);
+
+	const { vale_research_points: newPoints } = await user.statsUpdate({
+		vale_research_points: {
+			decrement: cost
+		}
+	});
 
 	await user.transactItems({
 		collectionLog: true,
 		itemsToAdd: new Bank(shopItem.output).multiply(quantity)
 	});
 
-	const { vale_research_points: newPoints } = await userStatsUpdate(
-		user.id,
-		{
-			vale_research_points: {
-				decrement: cost
-			}
-		},
-		{ vale_research_points: true }
-	);
-
 	return `${user.minionName} successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.valeResearchPoints * quantity).toLocaleString()} Vale Research points.\n${user.minionName} now have ${newPoints} Vale Research points left.`;
 }
 
 export async function valeTotemsSellCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	user: MUser,
 	item: string | undefined,
 	quantity = 1
 ) {
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
 		return `${user.minionName} needs to complete the "Children of the Sun" quest before ${user.minionName} can access Vale Research Exchange. Send ${user.minionName} to do the quest using: ${mentionCommand(
-			globalClient,
 			'activities',
 			'quest'
 		)}.`;
@@ -407,23 +396,19 @@ export async function valeTotemsSellCommand(
 
 	const gain = quantity * shopItem.valeResearchPoints;
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to sell **${quantity.toLocaleString()}x ${shopItem.name}** for **${gain.toLocaleString()}** Vale Research points?`
 	);
+
+	const { vale_research_points: newPoints } = await user.statsUpdate({
+		vale_research_points: {
+			increment: gain
+		}
+	});
+
 	await user.transactItems({
 		itemsToRemove: shopItem.output.multiply(quantity)
 	});
-
-	const { vale_research_points: newPoints } = await userStatsUpdate(
-		user.id,
-		{
-			vale_research_points: {
-				increment: gain
-			}
-		},
-		{ vale_research_points: true }
-	);
 
 	return `${user.minionName} successfully sold **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.valeResearchPoints * quantity).toLocaleString()} Vale Research points.\nYou now have ${newPoints} Vale Research points.`;
 }

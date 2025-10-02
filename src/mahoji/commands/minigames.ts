@@ -1070,17 +1070,17 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'vale_totems',
 			description: 'Vale Totems fletching minigame.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'start',
 					description: 'Start a trip.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'item_to_fletch',
 							description: 'Item to fletch during minigame.',
 							required: true,
@@ -1091,7 +1091,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'stamina_pot',
 							description: 'Whether to use Stamina Potion for trip.',
 							required: false
@@ -1099,12 +1099,12 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'buy',
 					description: 'Buy Vale Totem minigame reward.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'item',
 							description: 'Item to buy using research points.',
 							required: true,
@@ -1115,7 +1115,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'Quantity.',
 							required: false,
@@ -1124,12 +1124,12 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'sell',
 					description: 'Sell Vale Totem minigame reward.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'item',
 							description: 'Item to sell using research points.',
 							required: true,
@@ -1140,7 +1140,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'Quantity.',
 							required: false,

@@ -4,34 +4,27 @@ import { Bank } from 'oldschooljs';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { cleanDirtyArrows, preRollTable, rummageOfferings } from '@/lib/minions/data/valeTotems.js';
 import type { ValeTotemsActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const valeTotemsTask: MinionTask = {
 	type: 'ValeTotems',
-	async run(data: ValeTotemsActivityTaskOptions) {
-		const { channelID, quantity, userID, duration, offerings, fletchXp } = data;
+	async run(data: ValeTotemsActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, duration, offerings, fletchXp } = data;
 		const TOTEMS_PER_LAP = 8;
 
-		const user = await mUserFetch(userID);
 		await user.incrementMinigameScore('vale_totems', quantity * TOTEMS_PER_LAP);
 
-		const userStats = await user.fetchStats({ vale_offerings: true, vale_research_points: true });
+		const userStats = await user.fetchStats();
 		const totalOfferings = offerings + userStats.vale_offerings;
 		const rewards = Math.floor(totalOfferings / 100);
 		const remainder = totalOfferings % 100;
 
-		await userStatsUpdate(
-			user.id,
-			{
-				vale_research_points: {
-					increment: rewards
-				},
-				vale_offerings: remainder
+		await user.statsUpdate({
+			vale_research_points: {
+				increment: rewards
 			},
-			{}
-		);
+			vale_offerings: remainder
+		});
 
 		const fletchingLvl = user.skillLevel('fletching');
 
