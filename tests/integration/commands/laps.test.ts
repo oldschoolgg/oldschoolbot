@@ -70,13 +70,14 @@ describe('laps command', () => {
 
 		expect(response.toLowerCase()).not.toContain('fallback');
 
+		let lastCall: Parameters<(typeof handleTripFinishModule)['handleTripFinish']> | undefined;
 		try {
 			await user.runActivity();
+			lastCall = handleTripFinishSpy.mock.calls.at(-1);
 		} finally {
 			handleTripFinishSpy.mockRestore();
 		}
 
-		const lastCall = handleTripFinishSpy.mock.calls.at(-1);
 		expect(lastCall).toBeDefined();
 		const messageArg = lastCall?.[2];
 		const content = typeof messageArg === 'string' ? messageArg : (messageArg?.content ?? '');
