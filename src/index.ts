@@ -134,7 +134,8 @@ client.once('ready', async () => {
 	installGracefulShutdown({
 		rest: globalClient.rest,
 		clientId: globalConfig.clientID,
-		supportGuildId: globalConfig.supportServerID
+		supportGuildId: globalConfig.supportServerID,
+		isProduction: globalConfig.isProduction
 	});
 
 	await onStartup();
