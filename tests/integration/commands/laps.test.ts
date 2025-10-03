@@ -1,5 +1,5 @@
 import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, type Mock, test } from 'vitest';
 
 import { zeroTimeFletchables } from '../../../src/lib/skilling/skills/fletching/fletchables/index.js';
 import { lapsCommand } from '../../../src/mahoji/commands/laps.js';
@@ -61,7 +61,8 @@ describe('laps command', () => {
 		});
 
 		const channel = globalClient.channels.cache.get(TEST_CHANNEL_ID)!;
-		channel.send.mockClear();
+		const send = (channel as any).send as Mock;
+		send.mockClear();
 
 		const response = await user.runCommand(lapsCommand, {
 			name: 'Gnome Stronghold Agility Course',
@@ -72,7 +73,7 @@ describe('laps command', () => {
 
 		await user.runActivity();
 
-		const lastCall = channel.send.mock.calls.at(-1);
+		const lastCall = send.mock.calls.at(-1);
 		expect(lastCall).toBeDefined();
 		const content: string = lastCall?.[0].content ?? '';
 		expect(content.toLowerCase()).not.toContain('fallback preference');
