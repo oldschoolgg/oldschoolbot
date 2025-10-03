@@ -1,4 +1,4 @@
-import { Items } from "@/structures/Items.js";
+import { Items } from '@/structures/Items.js';
 
 const unobtainableGauntletGear = Items.resolveItems([
 	'Corrupted helm (perfected)',
@@ -22,7 +22,6 @@ const unobtainableGauntletGear = Items.resolveItems([
 	'Corrupted staff (basic)',
 	'Corrupted halberd (basic)',
 
-
 	'Crystal helm (perfected)',
 	'Crystal body (perfected)',
 	'Crystal legs (perfected)',
@@ -42,7 +41,7 @@ const unobtainableGauntletGear = Items.resolveItems([
 	'Crystal legs (basic)',
 	'Crystal bow (basic)',
 	'Crystal staff (basic)',
-	'Crystal halberd (basic)',
+	'Crystal halberd (basic)'
 ]);
 
 const unobtainableEmirsArenaGear = [
@@ -126,7 +125,7 @@ const unobtainableEmirsArenaGear = [
 	26733, // Saika's veil
 	26734, // Saika's veil (l)
 	26735, // Saika's shroud
-	26736, // Saika's shroud (l)
+	26736 // Saika's shroud (l)
 ];
 
 const unobtainableLeaguesItems = Items.resolveItems([
@@ -136,17 +135,17 @@ const unobtainableLeaguesItems = Items.resolveItems([
 	'Emperor ring',
 	"Devil's element",
 	"Nature's reprisal",
-	"Gloves of the damned",
-	"Crystal blessing",
-	"Sunlight spear",
-	"Sunlit bracers",
-	"Thunder khopesh",
+	'Gloves of the damned',
+	'Crystal blessing',
+	'Sunlight spear',
+	'Sunlit bracers',
+	'Thunder khopesh',
 	'Thousand-dragon ward',
 	'Crystal dagger (perfected)',
 	"Nature's reprisal (uncharged)",
 	"Corrupted tumeken's shadow",
-	"Corrupted voidwaker",
-	"Corrupted dragon claws",
+	'Corrupted voidwaker',
+	'Corrupted dragon claws',
 	'Corrupted armadyl godsword',
 	'Corrupted twisted bow',
 	'Corrupted scythe of vitur',
@@ -219,7 +218,7 @@ const unobtainableBountyHunterGear = Items.resolveItems([
 	27986, // Corrupted morrigan's leather chaps (bh)(inactive)
 	27989, // Corrupted zuriel's hood (bh)(inactive)
 	27992, // Corrupted zuriel's robe top (bh)(inactive)
-	27995, // Corrupted zuriel's robe bottom (bh)(inactive)
+	27995 // Corrupted zuriel's robe bottom (bh)(inactive)
 ]);
 
 const unobtainableDeadmanModeItems = [
@@ -239,7 +238,284 @@ const unobtainableDeadmanModeItems = [
 	22647, // Zuriel's staff
 	22650, // Zuriel's hood
 	22653, // Zuriel's robe top
-	22656, // Zuriel's robe bottom
+	22656 // Zuriel's robe bottom
 ];
 
-export const allUnobtainableGear = [...unobtainableGauntletGear, ...unobtainableEmirsArenaGear, ...unobtainableLeaguesItems, ...unobtainableBountyHunterGear, ...unobtainableDeadmanModeItems];
+export const unobtainableLockedItems = [
+	24133, // Infernal max cape (l)
+	24134, // Fire max cape (l)
+	24135, // Assembler max cape (l)
+	24136, // Bronze defender (l)
+	24137, // Iron defender (l)
+	24138, // Steel defender (l)
+	24139, // Black defender (l)
+	24140, // Mithril defender (l)
+	24141, // Adamant defender (l)
+	24142, // Rune defender (l)
+	24143, // Dragon defender (l)
+	24157, // Decorative sword (l)
+	24158, // Decorative armour (l)
+	24159, // Decorative armour (l)
+	24160, // Decorative helm (l)
+	24161, // Decorative shield (l)
+	24162, // Decorative armour (l)
+	24163, // Decorative armour (l)
+	24164, // Decorative armour (l)
+	24165, // Decorative armour (l)
+	24166, // Decorative armour (l)
+	24167, // Decorative armour (l)
+	24168, // Decorative armour (l)
+	24169, // Saradomin halo (l)
+	24170, // Zamorak halo (l)
+	24171, // Guthix halo (l)
+	24172, // Healer hat (l)
+	24173, // Fighter hat (l)
+	24174, // Ranger hat (l)
+	24175, // Fighter torso (l)
+	24176, // Penance skirt (l)
+	24177, // Void knight top (l)
+	24178, // Elite void top (l)
+	24179, // Void knight robe (l)
+	24180, // Elite void robe (l)
+	24181, // Void knight mace (l)
+	24182, // Void knight gloves (l)
+	24183, // Void mage helm (l)
+	24184, // Void ranger helm (l)
+	24185, // Void melee helm (l)
+	24186, // Avernic defender (l)
+	24194, // Armadyl halo (l)
+	24197, // Bandos halo (l)
+	24200, // Seren halo (l)
+	24203, // Ancient halo (l)
+	24206, // Brassica halo (l)
+	24222, // Ava's assembler (l)
+	24223, // Fire cape (l)
+	24224, // Infernal cape (l)
+	24232, // Imbued saradomin max cape (l)
+	24233, // Imbued zamorak max cape (l)
+	24234, // Imbued guthix max cape (l)
+	24248, // Imbued saradomin cape (l)
+	24249, // Imbued guthix cape (l)
+	24250, // Imbued zamorak cape (l)
+	24416, // Rune pouch (l)
+	24533, // Runner hat (l)
+	25173, // Decorative boots (l)
+	25176, // Decorative full helm (l)
+	25643, // Barronite mace (l)
+	26722, // Centurion cuirass (l)
+	26724, // Wristbands of the arena (l)
+	26728, // Wristbands of the arena (il)
+	26732, // Saika's hood (l)
+	26734, // Saika's veil (l)
+	26736, // Saika's shroud (l)
+	26738, // Koriff's headband (l)
+	26740, // Koriff's cowl (l)
+	26742, // Koriff's coif (l)
+	26744, // Maoma's med helm (l)
+	26746, // Maoma's full helm (l)
+	26748, // Maoma's great helm (l)
+	26750, // Calamity chest (l)
+	26752, // Superior calamity chest (l)
+	26754, // Elite calamity chest (l)
+	26756, // Calamity breeches (l)
+	26758, // Superior calamity breeches (l)
+	26760, // Elite calamity breeches (l)
+	27000, // Void knight top (l)(or)
+	27001, // Void knight robe (l)(or)
+	27002, // Void knight gloves (l)(or)
+	27003, // Elite void top (l)(or)
+	27004, // Elite void robe (l)(or)
+	27005, // Void mage helm (l)(or)
+	27006, // Void ranger helm (l)(or)
+	27007, // Void melee helm (l)(or)
+	27008, // Dragon defender (l)(t)
+	27009, // Rune defender (l)(t)
+	27365, // Masori assembler max cape (l)
+	27376, // Masori assembler (l)
+	27509, // Divine rune pouch (l)
+	27551, // Ghommal's avernic defender 5 (l)
+	27553, // Ghommal's avernic defender 6 (l)
+	27626, // Ancient sceptre (l)
+	28069, // Fighter torso (l)(or)
+	28473, // Blood ancient sceptre (l)
+	28474, // Ice ancient sceptre (l)
+	28475, // Smoke ancient sceptre (l)
+	28476, // Shadow ancient sceptre (l)
+	28906, // Dizana's max cape (l)
+	28957 // Blessed dizana's quiver (l)
+];
+
+export const unobtainableLMSItems = [
+	20389, // Dragon arrow
+	20390, // Shark
+	20393, // Prayer potion(4)
+	20394, // Prayer potion(3)
+	20395, // Prayer potion(2)
+	20396, // Prayer potion(1)
+	20397, // Spear
+	20405, // Abyssal whip
+	20406, // Dragon scimitar
+	20407, // Dragon dagger
+	20408, // Dark bow
+	20422, // Rune platelegs
+	20423, // Black d'hide body
+	20424, // Black d'hide chaps
+	20425, // Mystic robe top
+	20426, // Mystic robe bottom
+	20431, // Ancient staff
+	20548, // Super energy(4)
+	20549, // Super energy(3)
+	20550, // Super energy(2)
+	20551, // Super energy(1)
+	20557, // Granite maul
+	20576, // 3rd age robe top
+	20577, // 3rd age robe
+	20578, // Climbing boots
+	20581, // Mithril gloves
+	20582, // Adamant gloves
+	20585, // Amulet of power
+	20586, // Amulet of glory
+	20587, // Rope
+	20593, // Armadyl godsword
+	20598, // Ahrim's robetop
+	20599, // Ahrim's robeskirt
+	20784, // Dragon claws
+	21205, // Elder maul
+	23533, // Cooked karambwan
+	23543, // Super combat potion(4)
+	23545, // Super combat potion(3)
+	23547, // Super combat potion(2)
+	23549, // Super combat potion(1)
+	23551, // Ranging potion(4)
+	23553, // Ranging potion(3)
+	23555, // Ranging potion(2)
+	23557, // Ranging potion(1)
+	23559, // Sanfew serum(4)
+	23561, // Sanfew serum(3)
+	23563, // Sanfew serum(2)
+	23565, // Sanfew serum(1)
+	23567, // Super restore(4)
+	23569, // Super restore(3)
+	23571, // Super restore(2)
+	23573, // Super restore(1)
+	23575, // Saradomin brew(4)
+	23577, // Saradomin brew(3)
+	23579, // Saradomin brew(2)
+	23581, // Saradomin brew(1)
+	23583, // Stamina potion(4)
+	23585, // Stamina potion(3)
+	23587, // Stamina potion(2)
+	23589, // Stamina potion(1)
+	23591, // Helm of neitiznot
+	23593, // Barrows gloves
+	23595, // Berserker ring
+	23597, // Dragon defender
+	23599, // Spirit shield
+	23601, // Rune crossbow
+	23603, // Imbued guthix cape
+	23605, // Imbued zamorak cape
+	23607, // Imbued saradomin cape
+	23611, // Armadyl crossbow
+	23613, // Staff of the dead
+	23615, // Vesta's longsword
+	23617, // Zuriel's staff
+	23619, // Morrigan's javelin
+	23620, // Statius's warhammer
+	23622, // Infernal cape
+	23624, // Seers ring (i)
+	23626, // Kodai wand
+	23628, // Ghrazi rapier
+	23630, // Heavy ballista
+	23632, // Karil's leathertop
+	23633, // Dharok's platelegs
+	23634, // Torag's platelegs
+	23635, // Verac's plateskirt
+	23636, // Verac's helm
+	23637, // Torag's helm
+	23638, // Guthan's helm
+	23639, // Dharok's helm
+	23640, // Amulet of fury
+	23642, // Blessed spirit shield
+	23644, // Eternal boots
+	23646, // Bandos tassets
+	23648, // Dragon javelin
+	23649, // Diamond bolts (e)
+	23650, // Rune pouch
+	23652, // Mage's book
+	23653, // Ahrim's staff
+	23654, // Occult necklace
+	24534, // Mithril seeds
+	25515, // Dharok's platebody
+	25516, // Dharok's greataxe
+	25517, // Volatile nightmare staff
+	25518, // Ancestral hat
+	27157, // Dragon knife
+	27158, // Mystic robe top (dark)
+	27159, // Mystic robe bottom (dark)
+	27160, // Mystic robe top (light)
+	27161, // Mystic robe bottom (light)
+	27162, // Wizard boots
+	27163, // Guthix halo
+	27164, // Zamorak halo
+	27165, // Saradomin halo
+	27166, // Ghostly hood
+	27167, // Ghostly robe
+	27168, // Ghostly robe
+	27169, // Berserker helm
+	27170, // Infinity boots
+	27171, // Tormented bracelet
+	27172, // Necklace of anguish
+	27173, // Amulet of torture
+	27174, // Elder chaos top
+	27175, // Elder chaos robe
+	27176, // Elder chaos hood
+	27177, // Fremennik kilt
+	27178, // Spiked manacles
+	27179, // Rangers' tunic
+	27180, // Guthix chaps
+	27181, // Zamorak chaps
+	27182, // Saradomin chaps
+	27183, // 3rd age mage hat
+	27184, // Ancient godsword
+	27185, // Rune defender
+	27186, // Zaryte crossbow
+	27188, // Light ballista
+	27189, // Verac's flail
+	27190, // Verac's brassard
+	27191, // Unholy book
+	27192, // Opal dragon bolts (e)
+	27193, // Ancestral robe top
+	27194, // Ancestral robe bottom
+	27195, // Inquisitor's great helm
+	27196, // Inquisitor's hauberk
+	27197, // Inquisitor's plateskirt
+	27198, // Inquisitor's mace
+	27199, // 3rd age range top
+	27200, // 3rd age range legs
+	27201, // 3rd age range coif
+	27869, // Voidwaker
+	27870, // Lightbearer
+	29840, // Eclipse moon chestplate
+	29841, // Eclipse moon tassets
+	29842, // Eclipse moon helm
+	29843, // Blue moon chestplate
+	29844, // Blue moon tassets
+	29845, // Blue moon helm
+	29846, // Blood moon chestplate
+	29847, // Blood moon tassets
+	29848, // Blood moon helm
+	29849, // Blue moon spear
+	29850, // Dual macuahuitl
+	29851, // Eclipse atlatl
+	29852 // Atlatl dart
+];
+
+export const allUnobtainableGear = [
+	...unobtainableGauntletGear,
+	...unobtainableEmirsArenaGear,
+	...unobtainableLeaguesItems,
+	...unobtainableBountyHunterGear,
+	...unobtainableDeadmanModeItems,
+	...unobtainableLockedItems,
+	...unobtainableLMSItems
+];
