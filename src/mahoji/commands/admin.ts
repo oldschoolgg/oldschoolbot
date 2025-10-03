@@ -940,31 +940,29 @@ ${guildCommands.length} Guild commands`;
 		}
 
 		if (options.desync_commands) {
-			const adminCommands = allCommands.filter(cmd => cmd.name === 'admin');
-
-			if (!globalConfig.isProduction) {
-				await bulkUpdateCommands({
-					commands: adminCommands,
-					guildID: globalConfig.supportServerID
-				});
-				await bulkUpdateCommands({
-					commands: [],
-					guildID: null
-				});
-
-				return 'Desynced commands locally, kept only the /admin command.';
+			// Only allow in the support server
+			if (guildID.toString() !== globalConfig.supportServerID) {
+				return 'This subcommand can only be used in the support server.';
 			}
 
-			await bulkUpdateCommands({
-				commands: [],
-				guildID: null
-			});
+			// Keep only the admin toolset (adjust names if needed)
+			const adminCommands = allCommands.filter(cmd => cmd.name === 'admin' || cmd.name === 'rp');
+
+			// Always overwrite the current guild with just the admin commands
 			await bulkUpdateCommands({
 				commands: adminCommands,
 				guildID: guildID.toString()
 			});
 
-			return 'Desynced commands globally, kept only the /admin command.';
+			// In non-prod you’ve historically kept global empty — keep that behavior
+			if (!globalConfig.isProduction) {
+				await bulkUpdateCommands({
+					commands: [],
+					guildID: null
+				});
+			}
+
+			return `Desynced commands in this guild; kept ${adminCommands.map(c => `/${c.name}`).join(', ') || '/admin'}.`;
 		}
 
 		if (options.view) {
