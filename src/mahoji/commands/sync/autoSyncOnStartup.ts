@@ -1,6 +1,5 @@
 import { type REST, Routes } from 'discord.js';
 
-import { logError } from '@/lib/util/logError.js';
 import { buildPayloadsFromAllCommands } from '@/mahoji/commands/sync/buildPayloads.js';
 
 export async function autoSyncOnStartup({
@@ -22,9 +21,7 @@ export async function autoSyncOnStartup({
 		});
 		console.log('Synced support guild application commands on startup.');
 	} catch (error) {
-		logError(error, {
-			action: 'sync support guild application commands on startup'
-		});
+		console.error('Failed to sync support guild application commands on startup:', error);
 	}
 
 	if (isProduction) {
@@ -34,9 +31,7 @@ export async function autoSyncOnStartup({
 			});
 			console.log('Synced global application commands on startup.');
 		} catch (error) {
-			logError(error, {
-				action: 'sync global application commands on startup'
-			});
+			console.error('Failed to sync global application commands on startup:', error);
 		}
 	} else {
 		try {
@@ -45,9 +40,7 @@ export async function autoSyncOnStartup({
 			});
 			console.log('Cleared global application commands on startup (non-production).');
 		} catch (error) {
-			logError(error, {
-				action: 'clear global application commands on startup (non-production)'
-			});
+			console.error('Failed to clear global application commands on startup (non-production):', error);
 		}
 	}
 }
