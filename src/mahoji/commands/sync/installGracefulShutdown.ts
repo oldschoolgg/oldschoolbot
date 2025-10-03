@@ -39,9 +39,9 @@ export function installGracefulShutdown({
 		process.exit(0);
 	};
 
-	(['SIGINT', 'SIGTERM'] as const).forEach(signal =>
+	(['SIGINT', 'SIGTERM'] as const).forEach(signal => {
 		process.on(signal, () => {
 			void handler();
-		})
-	);
+		});
+	});
 }
