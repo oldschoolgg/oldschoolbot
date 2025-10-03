@@ -14,18 +14,19 @@ import {
 } from '@oldschoolgg/toolkit';
 import { type ClientStorage, economy_transaction_type } from '@prisma/client';
 import {
-AttachmentBuilder,
-type InteractionReplyOptions,
-type RESTPostAPIApplicationCommandsJSONBody,
-Routes,
-type Snowflake
+	ApplicationCommandType,
+	AttachmentBuilder,
+	type InteractionReplyOptions,
+	type RESTPostAPIApplicationGuildCommandsJSONBody,
+	Routes,
+	type Snowflake
 } from 'discord.js';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '@/lib/blacklists.js';
 import { DISABLED_COMMANDS } from '@/lib/cache.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
-import { itemOption } from '@/lib/discord/index.js';
+import { convertCommandOptionToAPIOption, type ICommand, itemOption } from '@/lib/discord/index.js';
 import { economyLog } from '@/lib/economyLogs.js';
 import type { GearSetup } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
@@ -37,30 +38,36 @@ import { parseBank } from '@/lib/util/parseStringBank.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 import { allCommands } from '@/mahoji/commands/allCommands.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
-import { buildPayloadsFromAllCommands } from '@/mahoji/commands/sync/buildPayloads.js';
 import { syncCustomPrices } from '@/mahoji/lib/events.js';
 
 export const gifs = [
-        'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
-        'https://gfycat.com/serenegleamingfruitbat',
-        'https://tenor.com/view/monkey-monito-mask-gif-23036908'
+	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
+	'https://gfycat.com/serenegleamingfruitbat',
+	'https://tenor.com/view/monkey-monito-mask-gif-23036908'
 ];
 
-async function bulkUpdateCommands({
-        body,
-        guildID
-}: {
-        body: RESTPostAPIApplicationCommandsJSONBody[];
-        guildID: Snowflake | null;
-}) {
-        const route =
-                guildID === null
-                        ? Routes.applicationCommands(globalClient.user.id)
-                        : Routes.applicationGuildCommands(globalClient.user.id, guildID);
+function convertCommandToAPICommand(
+	cmd: ICommand
+): RESTPostAPIApplicationGuildCommandsJSONBody & { description: string } {
+	return {
+		type: ApplicationCommandType.ChatInput,
+		name: cmd.name,
+		description: cmd.description,
+		options: cmd.options.map(convertCommandOptionToAPIOption)
+	};
+}
 
-        return globalClient.rest.put(route, {
-                body
-        });
+async function bulkUpdateCommands({ commands, guildID }: { commands: ICommand[]; guildID: Snowflake | null }) {
+	const apiCommands = commands.map(convertCommandToAPICommand);
+
+	const route =
+		guildID === null
+			? Routes.applicationCommands(globalClient.user.id)
+			: Routes.applicationGuildCommands(globalClient.user.id, guildID);
+
+	return globalClient.rest.put(route, {
+		body: apiCommands
+	});
 }
 
 async function allEquippedPets() {
@@ -881,41 +888,49 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			return randArrItem(gifs);
 		}
 
-                if (options.sync_commands) {
-                        const totalCommands = allCommands;
-                        const { globalPayload, supportGuildPayload } = buildPayloadsFromAllCommands({
-                                isProduction: globalConfig.isProduction
-                        });
+		if (options.sync_commands) {
+			const totalCommands = allCommands;
 
-                        if (!globalConfig.isProduction) {
-                                await bulkUpdateCommands({
-                                        body: supportGuildPayload,
-                                        guildID: globalConfig.supportServerID
-                                });
-                                await bulkUpdateCommands({
-                                        body: [],
-                                        guildID: null
-                                });
-                                return 'Done.';
-                        }
+			if (!globalConfig.isProduction) {
+				await bulkUpdateCommands({
+					commands: allCommands,
+					guildID: globalConfig.supportServerID
+				});
+				return 'Done.';
+			}
 
-                        await bulkUpdateCommands({
-                                body: globalPayload,
-                                guildID: null
-                        });
-                        await bulkUpdateCommands({
-                                body: supportGuildPayload,
-                                guildID: guildID.toString()
-                        });
+			const global = Boolean(globalConfig.isProduction);
+			const globalCommands = totalCommands.filter(i => !i.guildID);
+			const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
+			if (global) {
+				await bulkUpdateCommands({
+					commands: globalCommands,
+					guildID: null
+				});
+				await bulkUpdateCommands({
+					commands: guildCommands,
+					guildID: guildID.toString()
+				});
+			} else {
+				await bulkUpdateCommands({
+					commands: totalCommands,
+					guildID: guildID.toString()
+				});
+			}
 
-                        const globalCommands = totalCommands.filter(i => !i.guildID);
-                        const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
+			// If not in production, remove all global commands.
+			if (!globalConfig.isProduction) {
+				await bulkUpdateCommands({
+					commands: [],
+					guildID: null
+				});
+			}
 
-                        return `Synced commands globally.
+			return `Synced commands ${global ? 'globally' : 'locally'}.
 ${totalCommands.length} Total commands
 ${globalCommands.length} Global commands
 ${guildCommands.length} Guild commands`;
-                }
+		}
 
 		if (options.view) {
 			const thing = viewableThings.find(i => i.name === options.view?.thing);

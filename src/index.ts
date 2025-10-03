@@ -15,8 +15,6 @@ import { preStartup } from '@/lib/preStartup.js';
 import { OldSchoolBotClient } from '@/lib/structures/OldSchoolBotClient.js';
 import { CACHED_ACTIVE_USER_IDS } from '@/lib/util/cachedUserIDs.js';
 import { logError } from '@/lib/util/logError.js';
-import { autoSyncOnStartup } from '@/mahoji/commands/sync/autoSyncOnStartup.js';
-import { installGracefulShutdown } from '@/mahoji/commands/sync/installGracefulShutdown.js';
 import { onStartup } from '@/mahoji/lib/events.js';
 import { exitCleanup } from '@/mahoji/lib/exitHandler.js';
 
@@ -119,26 +117,7 @@ client.on('guildCreate', guild => {
 });
 
 client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
-client.once('ready', async () => {
-        try {
-                await autoSyncOnStartup({
-                        rest: globalClient.rest,
-                        clientId: globalConfig.clientID,
-                        supportGuildId: globalConfig.supportServerID,
-                        isProduction: globalConfig.isProduction
-                });
-        } catch (error) {
-                console.error('Failed to auto-sync application commands on startup:', error);
-        }
-
-        installGracefulShutdown({
-                rest: globalClient.rest,
-                clientId: globalConfig.clientID,
-                supportGuildId: globalConfig.supportServerID
-        });
-
-        await onStartup();
-});
+client.once('ready', () => onStartup());
 
 async function main() {
 	console.log('Starting up...');
