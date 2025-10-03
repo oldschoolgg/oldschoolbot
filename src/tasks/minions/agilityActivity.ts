@@ -1,10 +1,14 @@
 import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import { Emoji, Events, increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { XpGainSource } from '@prisma/client';
 import { addItemToBank, Bank, type ItemBank, Items } from 'oldschooljs';
 
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Agility from '@/lib/skilling/skills/agility.js';
+import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
+import { calculateBryophytaRuneSavings } from '@/lib/util/bryophytaRuneSavings.js';
+import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { logError } from '@/lib/util/logError.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
@@ -19,8 +23,9 @@ function chanceOfFailingAgilityPyramid(user: MUser) {
 
 export const agilityTask: MinionTask = {
 	type: 'Agility',
-	async run(data: AgilityActivityTaskOptions, { handleTripFinish, user }) {
-		const { courseID, quantity, channelID, duration, alch } = data;
+	async run(data: AgilityActivityTaskOptions) {
+		const { courseID, quantity, userID, channelID, duration, alch, fletch, zeroTimePreferenceRole } = data;
+		const user = await mUserFetch(userID);
 		const loot = new Bank();
 		const currentLevel = user.skillsAsLevels.agility;
 
@@ -55,11 +60,14 @@ export const agilityTask: MinionTask = {
 		});
 		const xpReceived =
 			(quantity - lapsFailed / 2) * (typeof course.xp === 'number' ? course.xp : course.xp(currentLevel));
-		let xpRes = await user.addXP({
-			skillName: 'agility',
-			amount: xpReceived,
-			duration
-		});
+		const xpMessages: string[] = [];
+		xpMessages.push(
+			await user.addXP({
+				skillName: 'agility',
+				amount: xpReceived,
+				duration
+			})
+		);
 
 		// Calculate marks of grace
 		let totalMarks = 0;
@@ -116,23 +124,74 @@ export const agilityTask: MinionTask = {
 			}
 		}
 
+		let fletchable: (typeof zeroTimeFletchables)[number] | undefined;
+		let fletchQuantity = 0;
+		let alchItemNameForSummary: string | null = null;
+
+		if (fletch && fletch.qty > 0) {
+			fletchable = zeroTimeFletchables.find(item => item.id === fletch.id);
+			if (!fletchable) {
+				throw new Error(`Fletchable id ${fletch.id} not found for agility laps.`);
+			}
+
+			fletchQuantity = fletch.qty;
+			const quantityToGive = fletchable.outputMultiple
+				? fletchQuantity * fletchable.outputMultiple
+				: fletchQuantity;
+			loot.add(fletchable.id, quantityToGive);
+
+			const fletchXpRes = await user.addXP({
+				skillName: 'fletching',
+				amount: fletchQuantity * fletchable.xp,
+				duration,
+				source: XpGainSource.ZeroTimeActivity
+			});
+			xpMessages.push(fletchXpRes);
+		}
+
+		let savedRunesFromAlching = 0;
 		if (alch) {
 			const alchedItem = Items.getOrThrow(alch.itemID);
+			alchItemNameForSummary = alchedItem.name;
 			const alchGP = alchedItem.highalch! * alch.quantity;
 			loot.add('Coins', alchGP);
-			xpRes += ` ${await user.addXP({
+			const { savedRunes, savedBank } = calculateBryophytaRuneSavings({
+				user,
+				quantity: alch.quantity
+			});
+			savedRunesFromAlching = savedRunes;
+			if (savedBank) {
+				loot.add(savedBank);
+			}
+			const magicXpRes = await user.addXP({
 				skillName: 'magic',
 				amount: alch.quantity * 65,
-				duration
-			})}`;
+				duration,
+				source: XpGainSource.ZeroTimeActivity
+			});
+			xpMessages.push(magicXpRes);
 			await ClientSettings.updateClientGPTrackSetting('gp_alch', alchGP);
 		}
 
-		const str = `${user}, ${user.minionName} finished ${quantity} ${
+		let str = `${user}, ${user.minionName} finished ${quantity} ${
 			course.name
 		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}${
 			diaryBonus ? ' (25% bonus Marks for Ardougne Elite diary)' : ''
-		}.\n${xpRes}${monkeyStr}`;
+		}.\n${xpMessages.join(' ')}${monkeyStr}`;
+
+		if (savedRunesFromAlching > 0) {
+			str += `\nYour Bryophyta's staff saved you ${savedRunesFromAlching} Nature runes.`;
+		}
+		if (alch && alchItemNameForSummary) {
+			const fallbackNote = zeroTimePreferenceRole === 'fallback' ? ' (fallback preference)' : '';
+			str += `\nYou also alched ${alch.quantity}x ${alchItemNameForSummary}${fallbackNote}.`;
+		}
+
+		if (fletchable && fletch && fletchQuantity > 0) {
+			const setsText = fletchable.outputMultiple ? ' sets of' : '';
+			const fallbackNote = zeroTimePreferenceRole === 'fallback' ? ' (fallback preference)' : '';
+			str += `\nYou also fletched ${fletchQuantity}${setsText} ${fletchable.name}${fallbackNote}.`;
+		}
 
 		// Roll for pet
 		const { petDropRate } = skillingPetDropRate(

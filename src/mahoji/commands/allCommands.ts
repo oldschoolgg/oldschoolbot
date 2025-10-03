@@ -82,6 +82,7 @@ import { triviaCommand } from '@/mahoji/commands/trivia.js';
 import { mahojiUseCommand } from '@/mahoji/commands/use.js';
 import { wikiCommand } from '@/mahoji/commands/wiki.js';
 import { xpCommand } from '@/mahoji/commands/xp.js';
+import { zeroTimeActivityCommand } from '@/mahoji/commands/zeroTimeActivity.js';
 
 export const allCommands: OSBMahojiCommand[] = [
 	adminCommand,
@@ -165,7 +166,8 @@ export const allCommands: OSBMahojiCommand[] = [
 	collectionLogCommand,
 	gearPresetsCommand,
 	statsCommand,
-	xpCommand
+	xpCommand,
+	zeroTimeActivityCommand
 ];
 
 if (!globalConfig.isProduction && testPotatoCommand) {

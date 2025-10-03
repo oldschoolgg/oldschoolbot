@@ -1,5 +1,5 @@
 import { isObject } from '@oldschoolgg/toolkit';
-import type { command_name_enum, Prisma } from '@prisma/client';
+import { command_name_enum, Prisma } from '@prisma/client';
 
 import type { CommandOptions, MahojiUserOption } from '@/lib/discord/index.js';
 
@@ -57,6 +57,10 @@ function getCommandArgs(
 	return compressMahojiArgs(args) as Prisma.InputJsonObject;
 }
 
+const commandNameOverrides: Record<string, command_name_enum> = {
+	zero_time_activity: command_name_enum.zerotimeactivity
+};
+
 export function makeCommandUsage({
 	userID,
 	commandName,
@@ -74,9 +78,11 @@ export function makeCommandUsage({
 	interaction: MInteraction;
 	continueDeltaMillis: number | null;
 }): Prisma.CommandUsageCreateInput {
+	const normalizedCommandName = commandNameOverrides[commandName] ?? (commandName as command_name_enum);
+
 	return {
 		user_id: BigInt(userID),
-		command_name: commandName as command_name_enum,
+		command_name: normalizedCommandName,
 		args: getCommandArgs(commandName, args),
 		channel_id: BigInt(interaction.channelId),
 		guild_id: interaction.guildId ? BigInt(interaction.guildId) : null,
