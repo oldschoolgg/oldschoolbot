@@ -128,7 +128,7 @@ client.once('ready', async () => {
 			isProduction: globalConfig.isProduction
 		});
 	} catch (error) {
-		logError(error, { message: 'Failed to auto-sync application commands on startup' });
+		logError('Failed to auto-sync application commands on startup:', error);
 	}
 
 	installGracefulShutdown({
