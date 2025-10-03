@@ -445,6 +445,12 @@ export const adminCommand: OSBMahojiCommand = {
 		},
 		{
 			type: 'Subcommand',
+			name: 'desync_commands',
+			description: 'Desync commands except /admin',
+			options: []
+		},
+		{
+			type: 'Subcommand',
 			name: 'item_stats',
 			description: 'item stats',
 			options: [{ ...itemOption(), required: true }]
@@ -655,6 +661,7 @@ export const adminCommand: OSBMahojiCommand = {
 		reboot?: {};
 		shut_down?: {};
 		sync_commands?: {};
+		desync_commands?: {};
 		item_stats?: { item: string };
 		sync_blacklist?: {};
 		cancel_task?: { user: MahojiUserOption };
@@ -930,6 +937,34 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 ${totalCommands.length} Total commands
 ${globalCommands.length} Global commands
 ${guildCommands.length} Guild commands`;
+		}
+
+		if (options.desync_commands) {
+			const adminCommands = allCommands.filter(cmd => cmd.name === 'admin');
+
+			if (!globalConfig.isProduction) {
+				await bulkUpdateCommands({
+					commands: adminCommands,
+					guildID: globalConfig.supportServerID
+				});
+				await bulkUpdateCommands({
+					commands: [],
+					guildID: null
+				});
+
+				return 'Desynced commands locally, kept only the /admin command.';
+			}
+
+			await bulkUpdateCommands({
+				commands: [],
+				guildID: null
+			});
+			await bulkUpdateCommands({
+				commands: adminCommands,
+				guildID: guildID.toString()
+			});
+
+			return 'Desynced commands globally, kept only the /admin command.';
 		}
 
 		if (options.view) {
