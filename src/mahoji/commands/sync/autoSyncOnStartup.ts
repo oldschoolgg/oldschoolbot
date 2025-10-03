@@ -1,34 +1,34 @@
-import { type REST, Routes } from 'discord.js';
+import { REST, Routes } from 'discord.js';
 
 import { buildPayloadsFromAllCommands } from '@/mahoji/commands/sync/buildPayloads.js';
 
 export async function autoSyncOnStartup({
-	rest,
-	clientId,
-	supportGuildId,
-	isProduction
+        rest,
+        clientId,
+        supportGuildId,
+        isProduction
 }: {
-	rest: REST;
-	clientId: string;
-	supportGuildId: string;
-	isProduction: boolean;
+        rest: REST;
+        clientId: string;
+        supportGuildId: string;
+        isProduction: boolean;
 }) {
-	const { globalPayload, supportGuildPayload } = buildPayloadsFromAllCommands({ isProduction });
+        const { globalPayload, supportGuildPayload } = buildPayloadsFromAllCommands({ isProduction });
 
-	await rest.put(Routes.applicationGuildCommands(clientId, supportGuildId), {
-		body: supportGuildPayload
-	});
-	console.log('Synced support guild application commands on startup.');
+        await rest.put(Routes.applicationGuildCommands(clientId, supportGuildId), {
+                body: supportGuildPayload
+        });
+        console.log('Synced support guild application commands on startup.');
 
-	if (isProduction) {
-		await rest.put(Routes.applicationCommands(clientId), {
-			body: globalPayload
-		});
-		console.log('Synced global application commands on startup.');
-	} else {
-		await rest.put(Routes.applicationCommands(clientId), {
-			body: []
-		});
-		console.log('Cleared global application commands on startup (non-production).');
-	}
+        if (isProduction) {
+                await rest.put(Routes.applicationCommands(clientId), {
+                        body: globalPayload
+                });
+                console.log('Synced global application commands on startup.');
+        } else {
+                await rest.put(Routes.applicationCommands(clientId), {
+                        body: []
+                });
+                console.log('Cleared global application commands on startup (non-production).');
+        }
 }
