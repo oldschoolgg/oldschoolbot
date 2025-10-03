@@ -39,19 +39,6 @@ export function installGracefulShutdown({
 		process.exit(0);
 	};
 
-	void import('exit-hook')
-		.then(({ asyncExitHook }) =>
-			asyncExitHook(
-				async () => {
-					await clearGuildCommands();
-				},
-				{ wait: 2000 }
-			)
-		)
-		.catch(error => {
-			console.error('Failed to register graceful shutdown exit hook:', error);
-		});
-
 	(['SIGINT', 'SIGTERM'] as const).forEach(signal => {
 		process.on(signal, () => {
 			void handler();
