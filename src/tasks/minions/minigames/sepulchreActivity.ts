@@ -1,4 +1,5 @@
 import { roll } from '@oldschoolgg/rng';
+import { XpGainSource } from '@prisma/client';
 import { Bank, GrandHallowedCoffin, type Item, Items } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
@@ -78,7 +79,8 @@ export const sepulchreTask: MinionTask = {
 			alchXpRes = await user.addXP({
 				skillName: 'magic',
 				amount: alchQuantity * 65,
-				duration
+				duration,
+				source: XpGainSource.ZeroTimeActivity
 			});
 		}
 
@@ -100,7 +102,8 @@ export const sepulchreTask: MinionTask = {
 			fletchXpRes = await user.addXP({
 				skillName: 'fletching',
 				amount: fletchXpReceived,
-				duration
+				duration,
+				source: XpGainSource.ZeroTimeActivity
 			});
 			fletchingLoot.add(fletchable.id, quantityToGive);
 		}

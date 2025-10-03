@@ -1,5 +1,5 @@
 import { isObject } from '@oldschoolgg/toolkit';
-import type { command_name_enum, Prisma } from '@prisma/client';
+import { command_name_enum, Prisma } from '@prisma/client';
 
 import type { CommandOptions, MahojiUserOption } from '@/lib/discord/index.js';
 
@@ -58,7 +58,7 @@ function getCommandArgs(
 }
 
 const commandNameOverrides: Record<string, command_name_enum> = {
-	zero_time_activity: 'ZeroTimeActivity' as command_name_enum
+	zero_time_activity: command_name_enum.zerotimeactivity
 };
 
 export function makeCommandUsage({

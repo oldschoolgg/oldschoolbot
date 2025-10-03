@@ -1,5 +1,6 @@
 import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import { Emoji, Events, increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { XpGainSource } from '@prisma/client';
 import { addItemToBank, Bank, type ItemBank, Items } from 'oldschooljs';
 
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
@@ -142,7 +143,8 @@ export const agilityTask: MinionTask = {
 			const fletchXpRes = await user.addXP({
 				skillName: 'fletching',
 				amount: fletchQuantity * fletchable.xp,
-				duration
+				duration,
+				source: XpGainSource.ZeroTimeActivity
 			});
 			xpMessages.push(fletchXpRes);
 		}
@@ -164,7 +166,8 @@ export const agilityTask: MinionTask = {
 			const magicXpRes = await user.addXP({
 				skillName: 'magic',
 				amount: alch.quantity * 65,
-				duration
+				duration,
+				source: XpGainSource.ZeroTimeActivity
 			});
 			xpMessages.push(magicXpRes);
 			await ClientSettings.updateClientGPTrackSetting('gp_alch', alchGP);

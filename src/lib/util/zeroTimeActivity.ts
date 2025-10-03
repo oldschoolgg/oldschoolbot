@@ -149,6 +149,22 @@ export function getZeroTimeActivityPreferences(user: MUser): ZeroTimePreferenceL
 	return preferences;
 }
 
+export function resolveConfiguredFletchItemsPerHour(preference: ZeroTimeActivityPreference): number | undefined {
+	if (!preference.itemID) {
+		return undefined;
+	}
+	const configuredFletchable = zeroTimeFletchables.find(item => item.id === preference.itemID);
+	if (!configuredFletchable) {
+		return undefined;
+	}
+	const timePerItem = getZeroTimeFletchTime(configuredFletchable);
+	if (!timePerItem) {
+		return undefined;
+	}
+	const outputMultiple = configuredFletchable.outputMultiple ?? 1;
+	return (Time.Hour / timePerItem) * outputMultiple;
+}
+
 function resolveConfiguredAlchItem(preference: ZeroTimeActivityPreference): Item | null {
 	if (!preference.itemID) {
 		return null;
