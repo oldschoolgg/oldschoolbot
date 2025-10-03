@@ -1,50 +1,18 @@
 import { type REST, Routes } from 'discord.js';
 
-interface GracefulShutdownOptions {
+let isInstalled = false;
+
+export function installGracefulShutdown({
+	rest,
+	clientId,
+	supportGuildId,
+	isProduction
+}: {
 	rest: REST;
 	clientId: string;
 	supportGuildId: string;
 	isProduction: boolean;
-}
-
-let isInstalled = false;
-let hasClearedCommands = false;
-
-async function clearSupportGuildCommands({ rest, clientId, supportGuildId }: GracefulShutdownOptions) {
-	try {
-		await rest.put(Routes.applicationGuildCommands(clientId, supportGuildId), {
-			body: []
-		});
-		console.log('Cleared support guild application commands on shutdown.');
-	} catch (error) {
-		console.error('Failed to clear guild commands on shutdown:', error);
-	}
-}
-
-async function clearGlobalCommands({ rest, clientId, isProduction }: GracefulShutdownOptions) {
-	if (isProduction) {
-		return;
-	}
-	try {
-		await rest.put(Routes.applicationCommands(clientId), {
-			body: []
-		});
-		console.log('Cleared global application commands on shutdown (non-production).');
-	} catch (error) {
-		console.error('Failed to clear global application commands on shutdown (non-production):', error);
-	}
-}
-
-export async function clearApplicationCommands(options: GracefulShutdownOptions) {
-	if (hasClearedCommands) {
-		return;
-	}
-	hasClearedCommands = true;
-	await clearSupportGuildCommands(options);
-	await clearGlobalCommands(options);
-}
-
-export function installGracefulShutdown(options: GracefulShutdownOptions) {
+}) {
 	if (isInstalled) {
 		return;
 	}
@@ -52,13 +20,39 @@ export function installGracefulShutdown(options: GracefulShutdownOptions) {
 
 	let handlingSignal = false;
 
+	const clearGuildCommands = async () => {
+		try {
+			await rest.put(Routes.applicationGuildCommands(clientId, supportGuildId), {
+				body: []
+			});
+			console.log('Cleared support guild application commands on shutdown.');
+		} catch (error) {
+			console.error('Failed to clear guild commands on shutdown:', error);
+		}
+	};
+
+	const clearGlobalCommands = async () => {
+		if (isProduction) {
+			return;
+		}
+		try {
+			await rest.put(Routes.applicationCommands(clientId), {
+				body: []
+			});
+			console.log('Cleared global application commands on shutdown (non-production).');
+		} catch (error) {
+			console.error('Failed to clear global application commands on shutdown (non-production):', error);
+		}
+	};
+
 	const handler = async () => {
 		if (handlingSignal) {
 			return;
 		}
 		handlingSignal = true;
 
-		await clearApplicationCommands(options);
+		await clearGuildCommands();
+		await clearGlobalCommands();
 		process.exit(0);
 	};
 
@@ -66,7 +60,8 @@ export function installGracefulShutdown(options: GracefulShutdownOptions) {
 		.then(({ asyncExitHook }) =>
 			asyncExitHook(
 				async () => {
-					await clearApplicationCommands(options);
+					await clearGuildCommands();
+					await clearGlobalCommands();
 				},
 				{ wait: 2000 }
 			)
