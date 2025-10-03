@@ -51,7 +51,6 @@ const DerangedArchaeologistTable = new LootTable()
 	.tertiary(175 / 108, 'Numulite', [5, 32])
 	.tertiary(350 / 12, 'Unidentified small fossil')
 	.tertiary(700 / 12, 'Unidentified medium fossil')
-	.tertiary(65, 'Brimstone key')
 	.tertiary(875 / 12, 'Unidentified large fossil')
 	.tertiary(200, 'Clue scroll (elite)')
 	.tertiary(3500 / 12, 'Unidentified rare fossil');
