@@ -19,6 +19,16 @@ import { unlimitedFireRuneProviders } from './unlimitedFireRuneProviders.js';
 export type ZeroTimeActivityType = zero_time_activity_type_enum;
 export type ZeroTimePreferenceRole = 'primary' | 'fallback';
 
+export function getEffectivePreferenceRole(
+	preferenceRole: ZeroTimePreferenceRole,
+	hasPrimaryPreference: boolean
+): ZeroTimePreferenceRole {
+	if (preferenceRole === 'fallback' && hasPrimaryPreference) {
+		return 'fallback';
+	}
+	return 'primary';
+}
+
 export interface ZeroTimeActivityPreference {
 	role: ZeroTimePreferenceRole;
 	type: ZeroTimeActivityType;
@@ -150,10 +160,7 @@ export function getZeroTimeActivityPreferences(user: MUser): ZeroTimePreferenceL
 }
 
 export function resolveConfiguredFletchItemsPerHour(preference: ZeroTimeActivityPreference): number | undefined {
-	if (!preference.itemID) {
-		return undefined;
-	}
-	const configuredFletchable = zeroTimeFletchables.find(item => item.id === preference.itemID);
+	const configuredFletchable = resolveZeroTimeFletchable(preference);
 	if (!configuredFletchable) {
 		return undefined;
 	}

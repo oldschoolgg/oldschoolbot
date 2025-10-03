@@ -6,6 +6,7 @@ import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import {
 	attemptZeroTimeActivity,
 	describeZeroTimePreference,
+	getEffectivePreferenceRole,
 	getZeroTimeActivityPreferences,
 	getZeroTimePreferenceLabel,
 	resolveConfiguredFletchItemsPerHour,
@@ -75,9 +76,7 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 		}
 
 		const actualPreferenceRole: ZeroTimePreferenceRole | null = outcome.result
-			? outcome.result.preference.role === 'fallback' && hasPrimaryPreference
-				? 'fallback'
-				: 'primary'
+			? getEffectivePreferenceRole(outcome.result.preference.role, hasPrimaryPreference)
 			: null;
 
 		const formattedFailures = outcome.failures
