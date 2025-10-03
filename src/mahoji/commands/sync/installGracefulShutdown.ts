@@ -1,7 +1,4 @@
-import { ApplicationCommandType, type REST, Routes } from 'discord.js';
-
-import { convertCommandOptionToAPIOption } from '@/lib/discord/commandOptions.js';
-import { adminCommand } from '@/mahoji/commands/admin.js';
+import { type REST, Routes } from 'discord.js';
 
 interface GracefulShutdownOptions {
 	rest: REST;
@@ -15,16 +12,10 @@ let hasClearedCommands = false;
 
 async function clearSupportGuildCommands({ rest, clientId, supportGuildId }: GracefulShutdownOptions) {
 	try {
-		const adminCommandPayload = {
-			type: ApplicationCommandType.ChatInput,
-			name: adminCommand.name,
-			description: adminCommand.description,
-			options: adminCommand.options.map(convertCommandOptionToAPIOption)
-		};
 		await rest.put(Routes.applicationGuildCommands(clientId, supportGuildId), {
-			body: [adminCommandPayload]
+			body: []
 		});
-		console.log('Cleared support guild application commands except /admin on shutdown.');
+		console.log('Cleared support guild application commands on shutdown.');
 	} catch (error) {
 		console.error('Failed to clear guild commands on shutdown:', error);
 	}
