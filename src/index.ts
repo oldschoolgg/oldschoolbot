@@ -120,24 +120,24 @@ client.on('guildCreate', guild => {
 
 client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
 client.once('ready', async () => {
-        try {
-                await autoSyncOnStartup({
-                        rest: globalClient.rest,
-                        clientId: globalConfig.clientID,
-                        supportGuildId: globalConfig.supportServerID,
-                        isProduction: globalConfig.isProduction
-                });
-        } catch (error) {
-                console.error('Failed to auto-sync application commands on startup:', error);
-        }
+	try {
+		await autoSyncOnStartup({
+			rest: globalClient.rest,
+			clientId: globalConfig.clientID,
+			supportGuildId: globalConfig.supportServerID,
+			isProduction: globalConfig.isProduction
+		});
+	} catch (error) {
+		console.error('Failed to auto-sync application commands on startup:', error);
+	}
 
-        installGracefulShutdown({
-                rest: globalClient.rest,
-                clientId: globalConfig.clientID,
-                supportGuildId: globalConfig.supportServerID
-        });
+	installGracefulShutdown({
+		rest: globalClient.rest,
+		clientId: globalConfig.clientID,
+		supportGuildId: globalConfig.supportServerID
+	});
 
-        await onStartup();
+	await onStartup();
 });
 
 async function main() {
