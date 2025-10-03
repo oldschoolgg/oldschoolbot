@@ -7,6 +7,7 @@ import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
 import {
 	attemptZeroTimeActivity,
 	describeZeroTimePreference,
+	getEffectivePreferenceRole,
 	getZeroTimeActivityPreferences,
 	getZeroTimePreferenceLabel,
 	resolveConfiguredFletchItemsPerHour,
@@ -134,9 +135,7 @@ export const lapsCommand: OSBMahojiCommand = {
 			}
 
 			const actualPreferenceRole: ZeroTimePreferenceRole | null = outcome.result
-				? outcome.result.preference.role === 'fallback' && hasPrimaryPreference
-					? 'fallback'
-					: 'primary'
+				? getEffectivePreferenceRole(outcome.result.preference.role, hasPrimaryPreference)
 				: null;
 
 			const formattedFailures = outcome.failures
