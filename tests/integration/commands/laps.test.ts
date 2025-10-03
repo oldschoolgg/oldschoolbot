@@ -1,10 +1,11 @@
 import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
-import { describe, expect, type Mock, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 
 import { zeroTimeFletchables } from '../../../src/lib/skilling/skills/fletching/fletchables/index.js';
+import * as handleTripFinishModule from '../../../src/lib/util/handleTripFinish.js';
 import { lapsCommand } from '../../../src/mahoji/commands/laps.js';
 import { zeroTimeActivityCommand } from '../../../src/mahoji/commands/zeroTimeActivity.js';
-import { createTestUser, TEST_CHANNEL_ID } from '../util.js';
+import { createTestUser } from '../util.js';
 
 describe('laps command', () => {
 	test('formats zero-time info messages on separate lines', async () => {
@@ -60,9 +61,7 @@ describe('laps command', () => {
 			}
 		});
 
-		const channel = globalClient.channels.cache.get(TEST_CHANNEL_ID)!;
-		const send = (channel as any).send as Mock;
-		send.mockClear();
+		const handleTripFinishSpy = vi.spyOn(handleTripFinishModule, 'handleTripFinish');
 
 		const response = await user.runCommand(lapsCommand, {
 			name: 'Gnome Stronghold Agility Course',
@@ -71,11 +70,16 @@ describe('laps command', () => {
 
 		expect(response.toLowerCase()).not.toContain('fallback');
 
-		await user.runActivity();
+		try {
+			await user.runActivity();
+		} finally {
+			handleTripFinishSpy.mockRestore();
+		}
 
-		const lastCall = send.mock.calls.at(-1);
+		const lastCall = handleTripFinishSpy.mock.calls.at(-1);
 		expect(lastCall).toBeDefined();
-		const content: string = lastCall?.[0].content ?? '';
+		const messageArg = lastCall?.[2];
+		const content = typeof messageArg === 'string' ? messageArg : (messageArg?.content ?? '');
 		expect(content.toLowerCase()).not.toContain('fallback preference');
 		expect(content.toLowerCase()).not.toContain('fallback');
 	});
