@@ -8,7 +8,6 @@ import type { CommandOptions } from '@/lib/discord/commandOptions.js';
 import { postCommand } from '@/lib/discord/postCommand.js';
 import { preCommand } from '@/lib/discord/preCommand.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';
-import { allCommands } from '@/mahoji/commands/allCommands.js';
 
 export async function getNewUser(id: string): Promise<NewUser> {
 	const value = await prisma.newUser.findUnique({ where: { id } });
@@ -54,7 +53,7 @@ export async function runCommand(options: RunCommandArgs): Promise<null | Comman
 			? new MInteraction({ interaction: options.interaction })
 			: options.interaction;
 	const channel = globalClient.channels.cache.get(channelID);
-	const command = allCommands.find(c => c.name === commandName);
+	const command = globalClient.allCommands.find(c => c.name === commandName);
 	if (!command || !channelIsSendable(channel)) {
 		await interaction.reply({
 			content:

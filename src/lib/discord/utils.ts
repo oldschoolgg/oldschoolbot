@@ -10,11 +10,10 @@ import {
 
 import { globalConfig } from '@/lib/constants.js';
 import { convertCommandOptionToAPIOption, type ICommand } from '@/lib/discord/commandOptions.js';
-import { allCommands } from '@/mahoji/commands/allCommands.js';
 
 export function mentionCommand(name: string, subCommand?: string, subSubCommand?: string) {
 	if (process.env.TEST) return '';
-	const command = allCommands.find(i => i.name === name);
+	const command = globalClient.allCommands.find(i => i.name === name);
 	if (!command) {
 		throw new Error(`Command ${name} not found`);
 	}
@@ -95,8 +94,8 @@ export async function bulkUpdateCommands() {
 	}
 
 	// Sync commands globally
-	const globalCommands = allCommands.filter(i => !i.guildID);
-	const guildCommands = allCommands.filter(i => Boolean(i.guildID));
+	const globalCommands = globalClient.allCommands.filter(i => !i.guildID);
+	const guildCommands = globalClient.allCommands.filter(i => Boolean(i.guildID));
 
 	return Promise.all([
 		globalClient.rest.put(Routes.applicationCommands(globalClient.user.id), { body: globalCommands }),
