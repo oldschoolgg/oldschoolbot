@@ -148,7 +148,7 @@ export async function handleTripFinish(
 		if (res?.itemsToRemove) itemsToRemove.add(res.itemsToRemove);
 		stopwatch.stop();
 		if (stopwatch.duration > 500) {
-			debugLog(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
+			Logging.logDebug(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
 		}
 	}
 	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {

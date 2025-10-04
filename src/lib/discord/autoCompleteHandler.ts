@@ -7,7 +7,6 @@ import {
 } from 'discord.js';
 
 import type { ICommand } from '@/lib/discord/index.js';
-import { allCommands } from '@/mahoji/commands/allCommands.js';
 
 async function handleAutocomplete(
 	user: MUser,
@@ -59,7 +58,7 @@ async function handleAutocomplete(
 
 export async function autoCompleteHandler(interaction: AutocompleteInteraction) {
 	const member: GuildMember | undefined = interaction.inCachedGuild() ? interaction.member : undefined;
-	const command = allCommands.find(c => c.name === interaction.commandName);
+	const command = globalClient.allCommands.find(c => c.name === interaction.commandName);
 	const user = await mUserFetch(interaction.user.id);
 	const choices = await handleAutocomplete(
 		user,

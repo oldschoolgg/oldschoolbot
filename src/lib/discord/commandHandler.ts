@@ -6,12 +6,10 @@ import { convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';
 import { postCommand } from '@/lib/discord/postCommand.js';
 import { preCommand } from '@/lib/discord/preCommand.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';
-import { handleInteractionError } from '@/lib/util/interactionReply.js';
-import { allCommands } from '@/mahoji/commands/allCommands.js';
 
 export async function commandHandler(rawInteraction: ChatInputCommandInteraction) {
 	const interaction = new MInteraction({ interaction: rawInteraction });
-	const command = allCommands.find(c => c.name === interaction.commandName)!;
+	const command = globalClient.allCommands.find(c => c.name === interaction.commandName)!;
 	const options = convertAPIOptionsToCommandOptions(rawInteraction.options.data, rawInteraction.options.resolved);
 
 	// Permissions
@@ -65,7 +63,11 @@ export async function commandHandler(rawInteraction: ChatInputCommandInteraction
 
 		await interaction.reply(response);
 	} catch (err) {
-		await handleInteractionError(err, interaction);
+		Logging.logError({
+			err: err as Error,
+			interaction,
+			context: { command: command.name, options: JSON.stringify(options) }
+		});
 	} finally {
 		if (runPostCommand) {
 			await postCommand({

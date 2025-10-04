@@ -239,6 +239,10 @@ export async function generateGearImage({
 	petID?: number | null;
 	gearTemplate?: number;
 } & BaseCanvasArgs) {
+	if (!bankImageTask.ready) {
+		await bankImageTask.init();
+		bankImageTask.ready = true;
+	}
 	const {
 		sprite,
 		uniqueSprite,

@@ -1,4 +1,3 @@
-import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import { Emoji, Events, objectEntries, perTimeUnitChance, Time } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
 
@@ -13,67 +12,77 @@ import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
 import { rollForMoonKeyHalf } from '@/lib/util/minionUtils.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
-async function handleForestry({ user, duration, loot }: { user: MUser; duration: number; loot: Bank }) {
+async function handleForestry({
+	user,
+	duration,
+	loot,
+	rng
+}: {
+	user: MUser;
+	duration: number;
+	loot: Bank;
+	rng: RNGProvider;
+}) {
 	const eventCounts: { [key: number]: number } = {};
 	const eventXP = {} as { [key in SkillNameType]: number };
-	ForestryEvents.forEach(event => {
-		eventCounts[event.id] = 0;
-		eventXP[event.uniqueXP] = 0;
-	});
+	for (const ev of ForestryEvents) {
+		eventCounts[ev.id] = 0;
+		eventXP[ev.uniqueXP] = 0;
+	}
 
 	let strForestry = '';
 	const userWcLevel = user.skillsAsLevels.woodcutting;
 
 	perTimeUnitChance(duration, 8, Time.Minute, async () => {
-		const eventIndex = randInt(0, ForestryEvents.length - 1);
+		const eventIndex = rng.randInt(0, ForestryEvents.length - 1);
 		const event = ForestryEvents[eventIndex];
 		let eventRounds = 0;
 		let eventInteraction = 0;
 
 		switch (event.id) {
 			case 1: // Rising Roots
-				eventRounds = randInt(5, 7); // anima-infused roots spawned
+				eventRounds = rng.randInt(5, 7); // anima-infused roots spawned
 				for (let i = 0; i < eventRounds; i++) {
-					eventInteraction += randInt(5, 6); // anima-infused roots chopped
+					eventInteraction += rng.randInt(5, 6); // anima-infused roots chopped
 				}
 				eventCounts[event.id]++;
 				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * 1.4 * eventInteraction;
 				break;
 			case 2: // Struggling Sapling
-				eventInteraction = randInt(12, 15); // mulch added to sapling
+				eventInteraction = rng.randInt(12, 15); // mulch added to sapling
 				loot.add(LeafTable.roll());
 				eventCounts[event.id]++;
 				eventXP[event.uniqueXP] += eventInteraction * (user.skillLevel(event.uniqueXP) * 0.6);
 				eventXP.woodcutting += eventInteraction * (userWcLevel * 1.95) * 2;
 				break;
 			case 3: // Flowering Bush
-				eventRounds = randInt(5, 7); // bush pairs spawned
+				eventRounds = rng.randInt(5, 7); // bush pairs spawned
 				for (let i = 0; i < eventRounds; i++) {
-					eventInteraction += randInt(12, 20); // bushes pollinated
+					eventInteraction += rng.randInt(12, 20); // bushes pollinated
 				}
-				loot.add('Strange fruit', randInt(4, 8)).add(MediumSeedPackTable.roll());
+				loot.add('Strange fruit', rng.randInt(4, 8)).add(MediumSeedPackTable.roll());
 				eventCounts[event.id]++;
 				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * 0.25 * eventInteraction * 3;
 				break;
 			case 4: // Woodcutting Leprechaun
-				eventInteraction = randInt(6, 8); // rainbows entered
+				eventInteraction = rng.randInt(6, 8); // rainbows entered
 				eventCounts[event.id]++;
 				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * 2 * eventInteraction;
 				break;
 			case 5: // Beehive
-				eventRounds = randInt(5, 7); // beehives spawned
+				eventRounds = rng.randInt(5, 7); // beehives spawned
 				for (let i = 0; i < eventRounds; i++) {
-					if (percentChance(66)) {
+					if (rng.percentChance(66)) {
 						loot.add('Sturdy beehive parts');
 					}
-					eventInteraction += randInt(5, 10); // repairs per beehive
+					eventInteraction += rng.randInt(5, 10); // repairs per beehive
 				}
 				eventCounts[event.id]++;
 				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * 0.3 * eventInteraction;
 				eventXP.woodcutting += eventInteraction * (userWcLevel * 0.6) + userWcLevel * 3.8 * eventRounds;
 				break;
 			case 6: // Friendly Ent
-				eventInteraction = randInt(40, 60); // ents pruned
+				eventInteraction = rng.randInt(40, 60); // ents pruned
 				loot.add(LeafTable.roll());
 				loot.add(eggNest.roll());
 				eventCounts[event.id]++;
@@ -81,8 +90,8 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 				eventXP.woodcutting += eventInteraction * (userWcLevel * 0.55);
 				break;
 			case 7: // Poachers
-				eventInteraction = randInt(12, 15); // traps disarmed
-				if (roll(30)) {
+				eventInteraction = rng.randInt(12, 15); // traps disarmed
+				if (rng.roll(30)) {
 					loot.add('Fox whistle');
 				}
 				eventCounts[event.id]++;
@@ -90,20 +99,20 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 				eventXP.woodcutting += eventInteraction * (userWcLevel * 1.35);
 				break;
 			case 8: // Enchantment Ritual
-				eventInteraction = randInt(6, 8); // ritual circles
-				if (roll(30)) {
+				eventInteraction = rng.randInt(6, 8); // ritual circles
+				if (rng.roll(30)) {
 					loot.add('Petal garland');
 				}
 				eventCounts[event.id]++;
 				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * eventInteraction * 5.5;
 				break;
 			case 9: // Pheasant Control
-				eventInteraction = randInt(15, 45); // eggs delivered
+				eventInteraction = rng.randInt(15, 45); // eggs delivered
 				for (let i = 0; i < eventInteraction; i++) {
-					if (percentChance(50)) {
+					if (rng.percentChance(50)) {
 						loot.add('Pheasant tail feathers');
 					}
-					if (roll(900)) {
+					if (rng.roll(900)) {
 						loot.add('Golden pheasant egg');
 					}
 				}
@@ -113,7 +122,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 				break;
 		}
 		// Give user Anima-infused bark per event
-		loot.add('Anima-infused bark', randInt(250, 500));
+		loot.add('Anima-infused bark', rng.randInt(250, 500));
 	});
 
 	let totalEvents = 0;
@@ -168,7 +177,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 
 export const woodcuttingTask: MinionTask = {
 	type: 'Woodcutting',
-	async run(data: WoodcuttingActivityTaskOptions, { user, handleTripFinish }) {
+	async run(data: WoodcuttingActivityTaskOptions, { user, handleTripFinish, rng }) {
 		const { logID, quantity, channelID, duration, powerchopping, forestry, twitchers } = data;
 
 		const userWcLevel = user.skillsAsLevels.woodcutting;
@@ -195,7 +204,7 @@ export const woodcuttingTask: MinionTask = {
 		if (user.gear.skilling.hasEquipped('Bronze felling axe')) {
 			for (let i = 0; i < quantity && i < forestersRations; i++) {
 				rationUsed++;
-				if (percentChance(20)) {
+				if (rng.percentChance(20)) {
 					lostLogs++;
 				}
 			}
@@ -245,7 +254,7 @@ export const woodcuttingTask: MinionTask = {
 		// Add leaves
 		if (log.leaf && user.hasEquippedOrInBank('Forestry kit')) {
 			for (let i = 0; i < quantity; i++) {
-				if (percentChance(25)) {
+				if (rng.percentChance(25)) {
 					loot.add(log.leaf, 1);
 				}
 			}
@@ -255,7 +264,7 @@ export const woodcuttingTask: MinionTask = {
 		if (forestry && priffUnlocked && [EItem.TEAK_LOGS, EItem.MAHOGANY_LOGS].includes(log.id)) {
 			// 1/40 chance of receiving a crystal shard
 			for (let i = 0; i < quantity; i++) {
-				if (roll(40)) loot.add('Crystal shard', 1);
+				if (rng.roll(40)) loot.add('Crystal shard', 1);
 			}
 		}
 
@@ -307,13 +316,13 @@ export const woodcuttingTask: MinionTask = {
 
 		// Forestry events
 		if (forestry) {
-			str += await handleForestry({ user, duration, loot });
+			str += await handleForestry({ user, duration, loot, rng });
 		}
 
 		// Roll for pet
 		if (log.petChance) {
 			const { petDropRate } = skillingPetDropRate(user, 'woodcutting', log.petChance);
-			if (roll(petDropRate / quantity)) {
+			if (rng.roll(petDropRate / quantity)) {
 				loot.add('Beaver');
 				globalClient.emit(
 					Events.ServerNotification,

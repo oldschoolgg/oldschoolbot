@@ -4,12 +4,12 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { md5sum, Stopwatch, stringMatches } from '@oldschoolgg/toolkit';
 import { DateTime } from 'luxon';
 
-import { allCommands } from '@/mahoji/commands/allCommands.js';
+import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
 import { BOT_TYPE } from '../src/lib/constants.js';
 import { tearDownScript } from './scriptUtil.js';
 
 async function renderCommands() {
-	return allCommands
+	return allCommandsDONTIMPORT
 		.filter(c => {
 			const has = typeof c.description === 'string' && c.description.length > 1;
 			if (!has) {
@@ -19,7 +19,7 @@ async function renderCommands() {
 		})
 		.filter(i => !['admin', 'testpotato'].includes(i.name))
 		.map(cmd => {
-			const mahojiCommand = allCommands.find(i => stringMatches(i.name, cmd.name));
+			const mahojiCommand = allCommandsDONTIMPORT.find(i => stringMatches(i.name, cmd.name));
 			if (!mahojiCommand) {
 				throw new Error(`Could not find mahoji command for ${cmd.name}`);
 			}

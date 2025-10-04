@@ -9,7 +9,6 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { calcLootXPHunting, generateHerbiTable } from '@/lib/skilling/functions/calcsHunter.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
-import { logError } from '@/lib/util/logError.js';
 import { PeakTier } from '@/lib/util/peaks.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
@@ -44,7 +43,7 @@ export const hunterTask: MinionTask = {
 		const creature = Hunter.Creatures.find(c => c.id === creatureID);
 
 		if (!creature) {
-			logError(`Invalid creature ID provided: ${creatureID}`);
+			Logging.logError(`Invalid creature ID provided: ${creatureID}`);
 			return;
 		}
 

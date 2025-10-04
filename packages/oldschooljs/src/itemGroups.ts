@@ -1,3 +1,4 @@
+import { allUnobtainableGear } from '@/item-groups/unobtainable.js';
 import { EItem } from './EItem.js';
 
 export const stoles = [
@@ -191,6 +192,8 @@ export const nails = [
 ];
 
 export const virtusOutfit = [EItem.VIRTUS_MASK, EItem.VIRTUS_ROBE_TOP, EItem.VIRTUS_ROBE_BOTTOM];
+
+export { allUnobtainableGear };
 
 export * from './item-groups/boss-cl.js';
 export * from './item-groups/outfits.js';

@@ -1,4 +1,5 @@
 import { randInt } from '@oldschoolgg/rng';
+import type { Image } from 'skia-canvas';
 
 import {
 	type CanvasContext,
@@ -8,7 +9,7 @@ import {
 	measureTextWidth
 } from '@/lib/canvas/canvasUtil.js';
 
-const bg = loadAndCacheLocalImage('./src/lib/resources/images/tob-bg.png');
+let bg: Image | null = null;
 
 const randomMessages = ['omfgggggg', '!#@$@#$@##@$', 'adfsjklfadkjsl;l', 'l00000l wtf'];
 
@@ -189,8 +190,10 @@ export const fakeCommand: OSBMahojiCommand = {
 		ctx.font = '16px OSRSFont';
 		ctx.fillStyle = '#000000';
 
-		const image = await bg;
-		ctx.drawImage(image, 0, 0, image.width, image.height);
+		if (!bg) {
+			bg = await loadAndCacheLocalImage('./src/lib/resources/images/tob-bg.png');
+		}
+		ctx.drawImage(bg, 0, 0, bg.width, bg.height);
 		for (const [names, fn] of thingMap) {
 			if (names.has(options.type.toLowerCase())) {
 				fn(ctx, options.username);

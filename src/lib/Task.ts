@@ -196,6 +196,7 @@ export const allTasks: MinionTask[] = [
 type MinionTaskRunOptions = {
 	user: MUser;
 	handleTripFinish: typeof handleTripFinish;
+	rng: RNGProvider;
 };
 
 type IMinionTask = {

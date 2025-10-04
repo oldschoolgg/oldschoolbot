@@ -4,10 +4,11 @@ import { type GenerateResult, SpriteSheetGenerator } from '@oldschoolgg/spritesh
 import { isFunction, Stopwatch, uniqueArr } from '@oldschoolgg/toolkit';
 import '../src/lib/safeglobals.js';
 
-import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
+import { Bank, GearStat, type ItemBank, Items, resolveItems } from 'oldschooljs';
 import sharp from 'sharp';
 
 import { ALL_OBTAINABLE_ITEMS } from '@/lib/allObtainableItems.js';
+import { findBestGearSetups } from '@/lib/gear/functions/findBestGearSetups.js';
 import bsoItemsJson from '../data/bso/bso_items.json' with { type: 'json' };
 import bsoMonstersJson from '../data/bso/monsters.json' with { type: 'json' };
 import { BOT_TYPE } from '../src/lib/constants.js';
@@ -86,6 +87,26 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 		return true;
 	})
 ]);
+
+const bisGearItems = new Set<number>();
+
+for (const stat of Object.values(GearStat)) {
+	const gearSetups = findBestGearSetups({ stat, ignoreUnobtainable: true, limit: 10 });
+	for (const setup of gearSetups) {
+		for (const id of setup.allItems(false)) {
+			const item = Items.get(id);
+			if (!item) continue;
+			if ([' (75)', ' (100)', ' (50)', ' (25)', ' (0)', ' (l)'].some(t => item.wiki_name?.includes(t))) continue;
+			bisGearItems.add(item.id);
+		}
+	}
+}
+
+const bisGearMissing = Array.from(bisGearItems).filter(i => !itemsMustBeInSpritesheet.includes(i));
+itemsMustBeInSpritesheet.push(...bisGearMissing);
+console.log(
+	`	Adding ${bisGearMissing.length} items to spritesheet for BiS gear: ${bisGearMissing.map(i => Items.itemNameFromId(i)).join(', ')}`
+);
 
 const getPngFiles = async (dir: string): Promise<string[]> => {
 	const files = await fs.readdir(dir);

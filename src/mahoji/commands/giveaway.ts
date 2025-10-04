@@ -22,7 +22,6 @@ import { filterOption } from '@/lib/discord/index.js';
 import { marketPriceOfBank } from '@/lib/marketPrices.js';
 import { generateGiveawayContent } from '@/lib/util/giveaway.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
-import { logError } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isModOrAdmin } from '@/lib/util.js';
@@ -203,7 +202,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 				});
 				giveawayCache.set(giveaway.id, giveaway);
 			} catch (err: any) {
-				logError(err, {
+				Logging.logError(err, {
 					user_id: user.id,
 					giveaway: bank.toString()
 				});

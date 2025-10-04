@@ -1,6 +1,6 @@
 {
-	"hash": "ffc2066cf2c6c0561775ef80d00082a7",
-	"date": "2025-10-02T14:53:37.664Z",
+	"hash": "3e2ca1bb1ddbc0329ad4685d0fec3606",
+	"date": "2025-10-03T21:42:36.761Z",
 	"data": [
 		{
 			"name": "activities",
@@ -210,7 +210,7 @@
 		{
 			"name": "gear",
 			"desc": "Manage, equip, unequip your gear.",
-			"subOptions": ["equip", "pet", "stats", "swap", "unequip", "view"]
+			"subOptions": ["best_in_slot", "equip", "pet", "stats", "swap", "unequip", "view"]
 		},
 		{
 			"name": "gearpresets",
@@ -356,7 +356,6 @@
 				"tears_of_guthix",
 				"temple_trek",
 				"trouble_brewing",
-				"vale_totems",
 				"volcanic_mine"
 			]
 		},
