@@ -35,3 +35,18 @@ export function getToaKCs(toaRaidLevelsBank: Prisma.JsonValue) {
 	}
 	return { entryKC, normalKC, expertKC, totalKC: entryKC + normalKC + expertKC };
 }
+
+export const mileStoneBaseDeathChances = [
+	{ level: 600, chance: 97, minChance: 97 },
+	{ level: 500, chance: 85, minChance: 93 },
+	{ level: 450, chance: 48.5, minChance: null },
+	{ level: 400, chance: 36, minChance: null },
+	{ level: 350, chance: 25.5, minChance: null },
+	{ level: 300, chance: 23, minChance: null },
+	{ level: 200, chance: 15, minChance: null },
+	{ level: 150, chance: 13, minChance: null },
+	{ level: 100, chance: 10, minChance: null },
+	{ level: 1, chance: 5, minChance: null }
+] as const;
+
+export type RaidLevel = (typeof mileStoneBaseDeathChances)[number]['level'];

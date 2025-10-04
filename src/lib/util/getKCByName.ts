@@ -25,7 +25,7 @@ export async function getKCByName(user: MUser, kcName: string): Promise<[string,
 		return [creature.name, await user.getCreatureScore(creature.id)];
 	}
 
-	const stats = await user.fetchStats({ slayer_superior_count: true, tithe_farms_completed: true });
+	const stats = await user.fetchStats();
 	const special: [string[], number][] = [
 		[['superior', 'superiors', 'superior slayer monster'], stats.slayer_superior_count],
 		[['tithe farm', 'Tithe farm', 'tithefarm', 'tithe'], stats.tithe_farms_completed]

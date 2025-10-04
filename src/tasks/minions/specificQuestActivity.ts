@@ -3,13 +3,12 @@ import { bold } from 'discord.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { SpecificQuestOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const specificQuestTask: MinionTask = {
 	type: 'SpecificQuest',
-	async run(data: SpecificQuestOptions) {
-		const { userID, channelID, questID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: SpecificQuestOptions, { user, handleTripFinish }) {
+		const { channelID, questID } = data;
+
 		const quest = quests.find(quest => quest.id === questID)!;
 
 		let completionMessage = `${user}, ${user.minionName} finished ${bold(quest.name)}.`;

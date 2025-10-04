@@ -2,7 +2,6 @@ import { percentChance } from '@oldschoolgg/rng';
 import { Bank, LootTable } from 'oldschooljs';
 
 import type { UnderwaterAgilityThievingTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 // Bonus loot from clams and chests, TODO: check wiki in future for more accurate rates
 const clamChestTable = new LootTable()
@@ -14,9 +13,9 @@ const clamChestTable = new LootTable()
 
 export const underwaterAgilityThievingTask: MinionTask = {
 	type: 'UnderwaterAgilityThieving',
-	async run(data: UnderwaterAgilityThievingTaskOptions) {
-		const { quantity, userID, channelID, duration, trainingSkill } = data;
-		const user = await mUserFetch(userID);
+	async run(data: UnderwaterAgilityThievingTaskOptions, { user, handleTripFinish }) {
+		const { quantity, channelID, duration, trainingSkill } = data;
+
 		const currentThievingLevel = user.skillsAsLevels.thieving;
 		const currentAgilityLevel = user.skillsAsLevels.agility;
 

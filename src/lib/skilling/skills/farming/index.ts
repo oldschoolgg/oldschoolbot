@@ -19,7 +19,7 @@ import {
 	isPatchName,
 	userGrowingProgressStr
 } from './utils/farmingHelpers.js';
-import { getFarmingInfo, getFarmingInfoFromUser } from './utils/getFarmingInfo.js';
+import { getFarmingInfoFromUser } from './utils/getFarmingInfo.js';
 import * as PatchTypes from './utils/types.js';
 
 export const plants: Plant[] = [
@@ -92,6 +92,5 @@ export const Farming = defineSkill({
 	openSeedPack,
 	farmingPatchNames,
 	getFarmingInfoFromUser,
-	getFarmingInfo,
 	isPatchName
 });

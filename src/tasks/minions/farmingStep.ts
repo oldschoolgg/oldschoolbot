@@ -11,9 +11,7 @@ import { getFarmingKeyFromName } from '@/lib/skilling/skills/farming/utils/farmi
 import type { FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { skillingPetDropRate } from '@/lib/util.js';
-import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 export type FarmingStepAttachment = Awaited<ReturnType<typeof chatHeadImage>>;
 
@@ -213,7 +211,7 @@ async function handlePlantingOnlyStep(options: PlantingOnlyOptions): Promise<Far
 		message += `\n\nYou received: ${loot}.`;
 	}
 
-	updateBankSetting('farming_loot_bank', loot);
+	await ClientSettings.updateBankSetting('farming_loot_bank', loot);
 	await user.transactItems({
 		collectionLog: true,
 		itemsToAdd: loot
@@ -364,7 +362,7 @@ async function calculateHarvestLoot(options: {
 		const uncleanedHerbLoot = new Bank().add(plantToHarvest.outputCrop, cropYield);
 		await user.addItemsToCollectionLog(uncleanedHerbLoot);
 		const cleanedHerbLoot = new Bank().add(plantToHarvest.cleanHerbCrop, cropYield);
-		await userStatsBankUpdate(user, 'herbs_cleaned_while_farming_bank', cleanedHerbLoot);
+		await user.statsBankUpdate('herbs_cleaned_while_farming_bank', cleanedHerbLoot);
 	}
 
 	if (plantToHarvest.name === 'Limpwurt') {
@@ -790,12 +788,12 @@ export async function executeFarmingStep({
 		contractCompleted: janeMessage
 	};
 
-	await updateBankSetting('farming_loot_bank', loot);
+	await ClientSettings.updateBankSetting('farming_loot_bank', loot);
 	await user.transactItems({
 		collectionLog: true,
 		itemsToAdd: loot
 	});
-	await userStatsBankUpdate(user, 'farming_harvest_loot_bank', loot);
+	await user.statsBankUpdate('farming_harvest_loot_bank', loot);
 	if (harvestedPid) {
 		await prisma.farmedCrop.update({
 			where: {

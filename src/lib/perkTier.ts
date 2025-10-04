@@ -19,7 +19,6 @@ export const roboChimpCache = new Map<string, CachedRoboChimpUser>();
 
 export async function populateRoboChimpCache() {
 	if (!globalConfig.isProduction) {
-		console.log('Skipping populating robochimp cache because not production');
 		return;
 	}
 	const users = await roboChimpClient.user.findMany({

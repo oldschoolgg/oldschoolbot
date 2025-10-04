@@ -24,7 +24,7 @@ WHERE perk_tier > 0;`)
 	for (const id of [...users.map(i => i.user_id), ...perkTierUsers.map(i => i.id)]) {
 		CACHED_ACTIVE_USER_IDS.add(id);
 	}
-	debugLog(`${CACHED_ACTIVE_USER_IDS.size} cached active user IDs`);
+	Logging.logDebug(`${CACHED_ACTIVE_USER_IDS.size} cached active user IDs`);
 };
 
 export function memoryAnalysis() {

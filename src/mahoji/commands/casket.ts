@@ -1,9 +1,7 @@
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { PerkTier } from '@/lib/constants.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { Workers } from '@/lib/workers/index.js';
 
@@ -24,14 +22,14 @@ export const casketCommand: OSBMahojiCommand = {
 	description: 'Simulate opening lots of clues caskets.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The casket you want to open.',
 			required: true,
 			choices: ClueTiers.map(i => ({ name: i.name, value: i.name }))
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to open.',
 			required: true,
@@ -40,8 +38,8 @@ export const casketCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
-		await deferInteraction(interaction);
-		const user = await mUserFetch(userID.toString());
+		await interaction.defer();
+		const user = await mUserFetch(userID);
 		const limit = determineLimit(user);
 		if (options.quantity > limit) {
 			return `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 100,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`;
@@ -53,7 +51,7 @@ export const casketCommand: OSBMahojiCommand = {
 			return `Not a valid clue tier. The valid tiers are: ${ClueTiers.map(_tier => _tier.name).join(', ')}`;
 		}
 
-		await deferInteraction(interaction);
+		await interaction.defer();
 
 		const [_loot, title] = await Workers.casketOpen({ quantity: options.quantity, clueTierID: clueTier.id });
 		const loot = new Bank(_loot);

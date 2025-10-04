@@ -1,21 +1,19 @@
 import { Bank } from 'oldschooljs';
 
 import type { TokkulShopOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const tokkulShopTask: MinionTask = {
 	type: 'TokkulShop',
-	async run(data: TokkulShopOptions) {
-		const { userID, channelID, itemID, quantity } = data;
-		const user = await mUserFetch(userID);
+	async run(data: TokkulShopOptions, { user, handleTripFinish }) {
+		const { channelID, itemID, quantity } = data;
+
 		const loot = new Bank().add(itemID, quantity);
 		await user.transactItems({
 			itemsToAdd: loot,
 			collectionLog: false
 		});
 
-		await updateBankSetting('tks_loot', loot);
+		await ClientSettings.updateBankSetting('tks_loot', loot);
 		handleTripFinish(
 			user,
 			channelID,

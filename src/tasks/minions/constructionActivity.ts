@@ -2,13 +2,12 @@ import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 
 import { Construction } from '@/lib/skilling/skills/construction/index.js';
 import type { ConstructionActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const constructionTask: MinionTask = {
 	type: 'Construction',
-	async run(data: ConstructionActivityTaskOptions) {
-		const { objectID, quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ConstructionActivityTaskOptions, { user, handleTripFinish }) {
+		const { objectID, quantity, channelID, duration } = data;
+
 		const object = Construction.constructables.find(object => object.id === objectID)!;
 		const xpReceived = quantity * object.xp;
 		let bonusXP = 0;

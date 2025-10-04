@@ -7,7 +7,6 @@ import { calcNumOfPatches } from '@/lib/skilling/skills/farming/utils/calcsFarmi
 import { findPlant } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { Plant } from '@/lib/skilling/types.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export interface PrepareFarmingStepOptions {
 	user: MUser;
@@ -173,7 +172,7 @@ export async function prepareFarmingStep({
 		duration = quantityToDo * (timePerPatchTravel + timePerPatchPlant);
 	}
 
-	if (userHasGracefulEquipped(user)) {
+	if (user.hasGracefulEquipped()) {
 		boostStr.push('10% time for Graceful');
 		duration *= 0.9;
 	}

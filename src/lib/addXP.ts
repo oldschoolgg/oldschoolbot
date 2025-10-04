@@ -8,7 +8,6 @@ import { skillEmoji } from '@/lib/data/emojis.js';
 import type { AddXpParams } from '@/lib/minions/types.js';
 import { sql } from '@/lib/postgres.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
-import { mahojiClientSettingsFetch } from '@/lib/util/clientSettings.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 
@@ -43,8 +42,8 @@ async function onMax(user: MUser) {
 
 	globalClient.emit(Events.ServerNotification, str);
 	sendToChannelID(globalConfig.supportServerID, { content: str }).catch(noOp);
-	const kUser = await globalClient.fetchUser(user.id);
-	const clientSettings = await mahojiClientSettingsFetch({ maxing_message: true });
+	const kUser = await globalClient.users.fetch(user.id);
+	const clientSettings = await ClientSettings.fetch({ maxing_message: true });
 	kUser.send(clientSettings.maxing_message).catch(noOp);
 }
 

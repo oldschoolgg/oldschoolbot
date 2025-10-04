@@ -11,11 +11,10 @@ import type { ClueBank, DiaryID, DiaryTierName } from '@/lib/minions/types.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
 import { type MinigameName, minigameColumnToNameMap } from '@/lib/settings/minigames.js';
 import Agility from '@/lib/skilling/skills/agility.js';
-import { MUserStats } from '@/lib/structures/MUserStats.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { Skills } from '@/lib/types/index.js';
 import { formatList } from '@/lib/util/smallUtils.js';
 import type { ParsedUnit } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
-import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
 export interface RequirementFailure {
 	reason: string;
@@ -362,8 +361,8 @@ export class Requirements {
 
 	static async fetchRequiredData(user: MUser) {
 		const minigames = await user.fetchMinigames();
-		const stashUnits = await getParsedStashUnits(user.id);
-		const stats = await MUserStats.fromID(user.id);
+		const stashUnits = await user.fetchStashUnits();
+		const stats = await user.fetchMStats();
 		const roboChimpUser = await user.fetchRobochimpUser();
 		const clueCounts =
 			BOT_TYPE === 'OSB' ? stats.clueScoresFromOpenables() : (await user.calcActualClues()).clueCounts;

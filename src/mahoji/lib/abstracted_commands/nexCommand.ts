@@ -1,27 +1,18 @@
 import { calcPerHour, formatDuration } from '@oldschoolgg/toolkit';
-import { ChannelType, type ChatInputCommandInteraction, type TextChannel, userMention } from 'discord.js';
+import { ChannelType, userMention } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
-import { setupParty } from '@/lib/party.js';
 import { calculateNexDetails, checkNexUser } from '@/lib/simulation/nex.js';
 import type { NexTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
-export async function nexCommand(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	solo: boolean | undefined
-) {
+export async function nexCommand(interaction: MInteraction, user: MUser, channelID: string, solo: boolean | undefined) {
 	const ownerCheck = checkNexUser(user);
 	if (ownerCheck[1]) {
 		return `You can't start a Nex mass: ${ownerCheck[1]}`;
 	}
 
-	await deferInteraction(interaction);
+	await interaction.defer();
 
 	let mahojiUsers: MUser[] = [];
 
@@ -33,7 +24,7 @@ export async function nexCommand(
 
 		let usersWhoConfirmed: MUser[] = [];
 		try {
-			usersWhoConfirmed = await setupParty(channel as TextChannel, user, {
+			usersWhoConfirmed = await interaction.makeParty({
 				minSize: 1,
 				maxSize: 10,
 				leader: user,
@@ -89,7 +80,7 @@ export async function nexCommand(
 	for (const u of removeResult) totalCost.add(u.cost);
 
 	await Promise.all([
-		await updateBankSetting('nex_cost', totalCost),
+		await ClientSettings.updateBankSetting('nex_cost', totalCost),
 		await trackLoot({
 			totalCost,
 			id: 'nex',
@@ -102,9 +93,9 @@ export async function nexCommand(
 		})
 	]);
 
-	await addSubTaskToActivityTask<NexTaskOptions>({
+	await ActivityManager.startTrip<NexTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration: details.duration,
 		type: 'Nex',
 		leader: user.id,

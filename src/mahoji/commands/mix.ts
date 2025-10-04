@@ -1,12 +1,8 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const mixCommand: OSBMahojiCommand = {
 	name: 'mix',
@@ -18,7 +14,7 @@ export const mixCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The potion you want to mix.',
 			required: true,
@@ -32,20 +28,20 @@ export const mixCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to mix (optional).',
 			required: false,
 			min_value: 1
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'wesley',
 			description: 'If available, pay Wesley to crush items. (optional).',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'zahur',
 			description: 'If available, pay Zahur to clean herbs. (optional).',
 			required: false
@@ -53,10 +49,9 @@ export const mixCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; wesley?: boolean; zahur?: boolean }>) => {
-		const user = await mUserFetch(userID);
 		const mixableItem = Herblore.Mixables.find(
 			i => stringMatches(i.item.name, options.name) || i.aliases.some(alias => stringMatches(alias, options.name))
 		);
@@ -94,7 +89,7 @@ export const mixCommand: OSBMahojiCommand = {
 			} gp for each item so they don't have to go.`;
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Herblore');
+		const maxTripLength = user.calcMaxTripLength('Herblore');
 		let quantity = optionQuantity;
 		const maxCanDo = user.bankWithGP.fits(baseCost);
 		const maxCanMix = Math.floor(maxTripLength / timeToMixSingleItem);
@@ -123,12 +118,12 @@ export const mixCommand: OSBMahojiCommand = {
 
 		await user.removeItemsFromBank(finalCost);
 
-		updateBankSetting('herblore_cost_bank', finalCost);
+		await ClientSettings.updateBankSetting('herblore_cost_bank', finalCost);
 
-		await addSubTaskToActivityTask<HerbloreActivityTaskOptions>({
+		await ActivityManager.startTrip<HerbloreActivityTaskOptions>({
 			mixableID: mixableItem.item.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			zahur: Boolean(zahur),
 			wesley: Boolean(wesley),
 			quantity,

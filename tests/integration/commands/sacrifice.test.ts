@@ -2,7 +2,6 @@ import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { mahojiClientSettingsFetch } from '../../../src/lib/util/clientSettings.js';
 import { sacrificeCommand } from '../../../src/mahoji/commands/sacrifice.js';
 import { createTestUser, mockClient } from '../util.js';
 
@@ -31,13 +30,13 @@ describe('Sacrifice Command', async () => {
 		expect(result).toEqual(
 			'You sacrificed 10x Coal, 1x Trout, with a value of 1,590gp (1.6k). Your total amount sacrificed is now: 3,180. '
 		);
-		const stats = await user.fetchStats({ sacrificed_bank: true });
+		const stats = await user.fetchStats();
 		expect(user.bank.toString()).toBe(new Bank().toString());
 		expect(new Bank(stats.sacrificed_bank as ItemBank).toString()).toEqual(
 			new Bank().add('Coal', 20).add('Trout', 2).toString()
 		);
 		expect(user.user.sacrificedValue).toEqual(BigInt(3180));
-		const clientSettings = await mahojiClientSettingsFetch({ economyStats_sacrificedBank: true });
+		const clientSettings = await ClientSettings.fetch({ economyStats_sacrificedBank: true });
 		expect(
 			new Bank(clientSettings.economyStats_sacrificedBank as ItemBank).equals(
 				new Bank().add('Coal', 20).add('Trout', 2)
@@ -50,13 +49,13 @@ describe('Sacrifice Command', async () => {
 		);
 		await user.sync();
 		expect(user.bank.toString()).toBe(new Bank().toString());
-		const stats2 = await user.fetchStats({ sacrificed_bank: true });
+		const stats2 = await user.fetchStats();
 		expect(
 			new Bank(stats2.sacrificed_bank as ItemBank).equals(new Bank().add('Coal', 20).add('Trout', 3).add('Cake'))
 		).toBe(true);
 		expect(user.user.sacrificedValue).toEqual(BigInt(3437));
 
-		const clientSettings2 = await mahojiClientSettingsFetch({ economyStats_sacrificedBank: true });
+		const clientSettings2 = await ClientSettings.fetch({ economyStats_sacrificedBank: true });
 		expect(
 			new Bank(clientSettings2.economyStats_sacrificedBank as ItemBank).equals(
 				new Bank().add('Coal', 20).add('Trout', 3).add('Cake')

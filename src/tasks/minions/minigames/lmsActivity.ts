@@ -93,7 +93,6 @@ export function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnT
 
 export const lmsTask: MinionTask = {
 	type: 'LastManStanding',
-	isNew: true,
 	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
 		const { channelID, quantity, duration } = data;
 		await user.incrementMinigameScore('lms', quantity);

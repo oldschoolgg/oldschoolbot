@@ -5,9 +5,7 @@ import {
 	Emoji,
 	formatOrdinal,
 	isValidDiscordSnowflake,
-	type MahojiUserOption,
 	md5sum,
-	mentionCommand,
 	noOp,
 	notEmpty,
 	stringMatches,
@@ -16,19 +14,13 @@ import {
 	uniqueArr
 } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import {
-	ApplicationCommandOptionType,
-	bold,
-	type ChatInputCommandInteraction,
-	type User,
-	userMention
-} from 'discord.js';
+import { bold, userMention } from 'discord.js';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { clImageGenerator } from '@/lib/collectionLogTask.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { getUsername, getUsernameSync } from '@/lib/util.js';
@@ -38,7 +30,7 @@ import type { StoredBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { generateTileName, getAllTileItems, isGlobalTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';
 
-const bingoAutocomplete = async (value: string, user: User) => {
+const bingoAutocomplete = async (value: string, user: MUser) => {
 	const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
 	return bingos
 		.map(i => new BingoManager(i))
@@ -81,18 +73,11 @@ export async function fetchBingosThatUserIsInvolvedIn(userID: string) {
 	return bingos;
 }
 
-async function bingoTeamLeaderboard(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	bingo: BingoManager
-): CommandResponse {
+async function bingoTeamLeaderboard(interaction: MInteraction, bingo: BingoManager): CommandResponse {
 	const { teams } = await bingo.fetchAllParticipants();
 
 	doMenu(
 		interaction,
-		user,
-		channelID,
 		chunk(teams, 10).map((subList, i) =>
 			subList
 				.map(
@@ -112,7 +97,7 @@ async function bingoTeamLeaderboard(
 }
 
 async function makeTeamCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	bingo: BingoManager,
 	creatorUser: MUser,
 	options: MakeTeamOptions
@@ -134,13 +119,12 @@ async function makeTeamCommand(
 	if (allUsers.length !== bingo.teamSize) return `Your team must have only ${bingo.teamSize} users, no more or less.`;
 	if (allUsers.some(u => BLACKLISTED_USERS.has(u.id))) return 'You cannot have blacklisted users on your team.';
 
-	await handleMahojiConfirmation(
-		interaction,
-		`${allUsers.map(i => userMention(i.id)).join(', ')} - Do you want to join a bingo team with eachother? All ${
+	await interaction.confirmation({
+		content: `${allUsers.map(i => userMention(i.id)).join(', ')} - Do you want to join a bingo team with eachother? All ${
 			bingo.teamSize
 		} users need to confirm. ${bold(`You will be charged ${toKMB(bingo.ticketPrice)}`)}`,
-		allUsers.map(i => i.id)
-	);
+		users: allUsers.map(i => i.id)
+	});
 
 	for (const user of allUsers) {
 		const teamWithUser = await bingo.findTeamWithUser(user.id);
@@ -185,7 +169,7 @@ async function makeTeamCommand(
 	return "Successfully created a bingo team! Have fun. You can leave the team before the bingo starts if you'd like, but doing so will delete the team, causing all users to have to join or make a new team.";
 }
 
-async function leaveTeamCommand(interaction: ChatInputCommandInteraction, bingo: BingoManager) {
+async function leaveTeamCommand(interaction: MInteraction, bingo: BingoManager) {
 	if (bingo.isActive()) return "You can't leave a bingo team after bingo has started.";
 	if (bingo.wasFinalized) {
 		return "You can't leave a bingo team after bingo has ended.";
@@ -194,8 +178,7 @@ async function leaveTeamCommand(interaction: ChatInputCommandInteraction, bingo:
 	const team = await bingo.findTeamWithUser(interaction.user.id);
 	if (!team) return "You're not in a team for this bingo.";
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		'Are you sure you want to leave your team? Doing so will delete/disband the team, and all of you will need to join a new team.'
 	);
 
@@ -275,16 +258,16 @@ export const bingoCommand: OSBMahojiCommand = {
 	description: 'Bingo!',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'make_team',
 			description: 'Make your own bingo team, with other players.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
-					autocomplete: async (value: string, _: User, member) => {
+					autocomplete: async (value: string, _: MUser, member) => {
 						if (!member || !member.guild) return [];
 						const bingos = await prisma.bingo.findMany({
 							where: {
@@ -308,25 +291,25 @@ export const bingoCommand: OSBMahojiCommand = {
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'second_user',
 					description: 'The second user.',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'third_user',
 					description: 'The third user.',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'fourth_user',
 					description: 'The fourth user.',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'fifth_user',
 					description: 'The fifth user.',
 					required: false
@@ -334,16 +317,16 @@ export const bingoCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'leave_team',
 			description: 'Leave your bingo team.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
-					autocomplete: async (value: string, user: User) => {
+					autocomplete: async (value: string, user: MUser) => {
 						const bingos = await prisma.bingo.findMany({
 							where: {
 								OR: [
@@ -366,12 +349,12 @@ export const bingoCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'view',
 			description: 'View bingo info.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
@@ -380,12 +363,12 @@ export const bingoCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'leaderboard',
 			description: 'View the bingo leaderboard.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'bingo',
 					description: 'The bingo to check the leaderboard of.',
 					required: true,
@@ -394,18 +377,18 @@ export const bingoCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'create_bingo',
 			description: 'Create a bingo.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'title',
 					description: 'The title of the bingo.',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'duration_days',
 					description: 'The duration of the bingo in days.',
 					required: true,
@@ -413,20 +396,20 @@ export const bingoCommand: OSBMahojiCommand = {
 					max_value: 31
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'start_date_unix_seconds',
 					description: 'The start date in unix seconds.',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'ticket_price',
 					description: 'The ticket price.',
 					required: true,
 					min_value: 1
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'team_size',
 					description: 'The team size.',
 					required: true,
@@ -434,13 +417,13 @@ export const bingoCommand: OSBMahojiCommand = {
 					max_value: 5
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'notifications_channel_id',
 					description: 'The channel to send notifications to.',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'organizers',
 					description: 'The organizers (user IDs separated by comma).',
 					required: true
@@ -448,16 +431,16 @@ export const bingoCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'manage_bingo',
 			description: 'Manage your bingo.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
-					autocomplete: async (value: string, user: User) => {
+					autocomplete: async (value: string, user: MUser) => {
 						const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
 						return bingos
 							.map(i => new BingoManager(i))
@@ -467,7 +450,7 @@ export const bingoCommand: OSBMahojiCommand = {
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'add_tile',
 					description: 'Add a tile to your bingo.',
 					required: false,
@@ -481,17 +464,17 @@ export const bingoCommand: OSBMahojiCommand = {
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'csv_dump',
 					description: 'Dump a csv file with all the bingo results.',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'remove_tile',
 					description: 'Remove a tile from your bingo.',
 					required: false,
-					autocomplete: async (value: string, user: User) => {
+					autocomplete: async (value: string, user: MUser) => {
 						const bingos = await prisma.bingo.findMany({
 							where: {
 								OR: [
@@ -520,20 +503,20 @@ export const bingoCommand: OSBMahojiCommand = {
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'finalize',
 					description: 'Finalize/end the bingo.',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'add_extra_gp',
 					description: 'Add extra gp to the prize.',
 					required: false,
 					min_value: 1_000_000
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'trophy_handout',
 					description: 'Hand out trophies.',
 					required: false
@@ -541,16 +524,16 @@ export const bingoCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'items',
 			description: 'View your progress/items.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'bingo',
 					description: 'The bingo to check your items of.',
 					required: true,
-					autocomplete: async (value: string, user: User) => {
+					autocomplete: async (value: string, user: MUser) => {
 						const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
 						return bingos
 							.map(i => new BingoManager(i))
@@ -563,10 +546,10 @@ export const bingoCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
+		user,
 		userID,
 		options,
-		interaction,
-		channelID
+		interaction
 	}: CommandRunOptions<{
 		items?: {
 			bingo: string;
@@ -600,8 +583,6 @@ export const bingoCommand: OSBMahojiCommand = {
 			bingo: string;
 		};
 	}>) => {
-		const user = await mUserFetch(userID);
-
 		if (options.items) {
 			const bingoID = Number(options.items.bingo);
 			if (Number.isNaN(bingoID)) {
@@ -669,7 +650,7 @@ export const bingoCommand: OSBMahojiCommand = {
 		if (options.leaderboard) {
 			const bingo = await getBingoFromUserInput(options.leaderboard.bingo);
 			if (!bingo) return 'Invalid bingo.';
-			return bingoTeamLeaderboard(interaction, user, channelID, new BingoManager(bingo));
+			return bingoTeamLeaderboard(interaction, new BingoManager(bingo));
 		}
 
 		if (options.create_bingo) {
@@ -736,7 +717,6 @@ export const bingoCommand: OSBMahojiCommand = {
 - You can only have 1 Bingo active at a time.
 - Ironmen will be able to enter, for free. However, they cannot win rewards.
 - Note: You need to add tiles yourself, using our predefined tiles AND/OR your own custom tiles. You can add tiles using ${mentionCommand(
-				globalClient,
 				'bingo',
 				'manage_bingo',
 				'add_tile'
@@ -757,14 +737,14 @@ ${Emoji.Warning} **You will pay a ${toKMB(fee)} GP fee to create this bingo, you
 			}
 `;
 
-			await handleMahojiConfirmation(interaction, disclaimer);
+			await interaction.confirmation(disclaimer);
 
 			await user.removeItemsFromBank(new Bank().add('Coins', fee));
 			await prisma.bingo.create({
 				data: createOptions
 			});
 
-			debugLog('Created bingo', createOptions);
+			Logging.logDebug('Created bingo', createOptions);
 
 			return 'Created your Bingo succesfully!';
 		}
@@ -788,8 +768,7 @@ ${Emoji.Warning} **You will pay a ${toKMB(fee)} GP fee to create this bingo, you
 					return 'This bingo was already finalized.';
 				}
 				const loot = new Bank().add('Coins', await bingo.countTotalGPInPrizePool());
-				await handleMahojiConfirmation(
-					interaction,
+				await interaction.confirmation(
 					`Are you sure you want to end the Bingo? ${bold('This cannot be undone.')}
 
 The creator of the bingo (${userMention(
@@ -894,10 +873,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 					return 'Invalid tile to remove.';
 				}
 
-				await handleMahojiConfirmation(
-					interaction,
-					`Are you sure you want to remove this tile?\n\n${tileName}`
-				);
+				await interaction.confirmation(`Are you sure you want to remove this tile?\n\n${tileName}`);
 				await prisma.bingo.update({
 					where: {
 						id: bingo.id
@@ -921,8 +897,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 					return `You need at least ${cost} to add that much GP to the prize pool.`;
 				}
 
-				await handleMahojiConfirmation(
-					interaction,
+				await interaction.confirmation(
 					`Are you sure you want to add ${cost} to the prize pool? You cannot undo this.`
 				);
 
@@ -937,7 +912,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 						}
 					}
 				});
-				debugLog('Added extra gp to bingo', { bingoID: bingo.id, amount });
+				Logging.logDebug('Added extra gp to bingo', { bingoID: bingo.id, amount });
 
 				return `Added ${cost} to the prize pool.`;
 			}

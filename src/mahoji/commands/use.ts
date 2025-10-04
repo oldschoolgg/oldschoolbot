@@ -1,5 +1,5 @@
+import { ownedItemOption } from '@/lib/discord/index.js';
 import { allUsableItems, useCommand } from '@/mahoji/lib/abstracted_commands/useCommand.js';
-import { ownedItemOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 
 export const mahojiUseCommand: OSBMahojiCommand = {
 	name: 'use',
@@ -21,8 +21,7 @@ export const mahojiUseCommand: OSBMahojiCommand = {
 			description: 'Optional second item to use the first one on.'
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{ item: string; secondary_item?: string }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user }: CommandRunOptions<{ item: string; secondary_item?: string }>) => {
 		return useCommand(user, options.item, options.secondary_item);
 	}
 };

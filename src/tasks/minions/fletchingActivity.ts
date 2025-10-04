@@ -2,13 +2,11 @@ import { Bank } from 'oldschooljs';
 
 import Fletching from '@/lib/skilling/skills/fletching/index.js';
 import type { FletchingActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const fletchingTask: MinionTask = {
 	type: 'Fletching',
-	async run(data: FletchingActivityTaskOptions) {
-		const { fletchableName, quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: FletchingActivityTaskOptions, { user, handleTripFinish }) {
+		const { fletchableName, quantity, channelID, duration } = data;
 
 		const fletchableItem = Fletching.Fletchables.find(fletchable => fletchable.name === fletchableName)!;
 

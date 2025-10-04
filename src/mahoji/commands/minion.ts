@@ -1,6 +1,6 @@
 import { randArrItem } from '@oldschoolgg/rng';
-import { formatOrdinal, type MahojiUserOption, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, bold } from 'discord.js';
+import { formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
+import { bold } from 'discord.js';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
@@ -8,6 +8,7 @@ import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import { BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '@/lib/constants.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import { diaries } from '@/lib/diaries.js';
+import { skillOption } from '@/lib/discord/index.js';
 import { calculateMastery } from '@/lib/mastery.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { blowpipeCommand, blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
@@ -21,7 +22,6 @@ import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { getPeakTimesString } from '@/lib/util/peaks.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
@@ -37,7 +37,6 @@ import { ironmanCommand } from '@/mahoji/lib/abstracted_commands/ironmanCommand.
 import { Lampables, lampCommand } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
 import { minionBuyCommand } from '@/mahoji/lib/abstracted_commands/minionBuyCommand.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
-import { skillOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { patronMsg } from '@/mahoji/mahojiSettings.js';
 
 const patMessages = [
@@ -112,12 +111,12 @@ export const minionCommand: OSBMahojiCommand = {
 	description: 'Manage and control your minion.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'buy',
 			description: 'Buy a minion so you can start playing the bot!',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'ironman',
 					description: 'Do you want to be an ironman?',
 					required: false
@@ -125,17 +124,17 @@ export const minionCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'status',
 			description: 'View the status of your minion.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'cracker',
 			description: 'Use a Christmas Cracker on someone.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'user',
 					description: 'The user you want to use the cracker on.',
 					required: true
@@ -143,24 +142,24 @@ export const minionCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'stats',
 			description: 'Check the stats of your minion.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'achievementdiary',
 			description: 'Manage your achievement diary.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'diary',
 					description: 'The achievement diary name.',
 					required: false,
 					choices: diaries.map(i => ({ name: i.name, value: i.name }))
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'claim',
 					description: 'Claim your rewards?',
 					required: false
@@ -168,12 +167,12 @@ export const minionCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'bankbg',
 			description: 'Change your bank background.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'The name of the bank background you want.',
 					autocomplete: async (value, user) => {
@@ -197,12 +196,12 @@ export const minionCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'lamp',
 			description: 'Use lamps to claim XP.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'item',
 					description: 'The item you want to use.',
 					autocomplete: async (value, user) => {
@@ -232,7 +231,7 @@ export const minionCommand: OSBMahojiCommand = {
 					description: 'The skill you want to use the item on.'
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'You quantity you want to use.',
 					required: false,
@@ -242,17 +241,17 @@ export const minionCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'cancel',
 			description: 'Cancel your current trip.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'set_icon',
 			description: 'Set the icon for your minion.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'icon',
 					description: 'The icon you want to pick.',
 					required: true
@@ -260,12 +259,12 @@ export const minionCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'set_name',
 			description: 'Set the name of your minion.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'The name you want to pick.',
 					required: true
@@ -273,7 +272,7 @@ export const minionCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'level',
 			description: 'Check your level/XP in a skill.',
 			options: [
@@ -284,12 +283,12 @@ export const minionCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'kc',
 			description: 'Check your KC.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'The monster/thing you want to check your KC of.',
 					required: true,
@@ -302,12 +301,12 @@ export const minionCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'ironman',
 			description: 'Become an ironman, or de-iron.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'permanent',
 					description: 'Do you want to become a permanent ironman?',
 					required: false
@@ -315,19 +314,19 @@ export const minionCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'charge',
 			description: 'Charge an item.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'item',
 					description: 'The item you want to charge',
 					required: false,
 					choices: degradeableItems.map(i => ({ name: i.item.name, value: i.item.name }))
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'amount',
 					description: 'The amount you want to charge',
 					required: false
@@ -335,17 +334,17 @@ export const minionCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'daily',
 			description: 'Claim some daily free GP.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'train',
 			description: 'Select what combat style you want to train.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'style',
 					description: 'The attack style you want to train with',
 					required: true,
@@ -354,29 +353,29 @@ export const minionCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'pat',
 			description: 'Pat your minion on the head!'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'blowpipe',
 			description: 'Charge and uncharge your blowpipe.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'remove_darts',
 					description: 'Remove all darts from your blowpipe',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'uncharge',
 					description: 'Remove all darts and scales from your blowpipe',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'add',
 					description: 'Add darts or scales to your blowpipe',
 					required: false,
@@ -386,7 +385,7 @@ export const minionCommand: OSBMahojiCommand = {
 					}))
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity of darts/scales to add',
 					required: false,
@@ -395,17 +394,17 @@ export const minionCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'info',
 			description: 'View general information about your account and minion.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'peak',
 			description: 'View Peak time activity for the Wilderness.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'mastery',
 			description: 'View your minions mastery.'
 		}
@@ -413,8 +412,7 @@ export const minionCommand: OSBMahojiCommand = {
 	run: async ({
 		userID,
 		options,
-		interaction,
-		channelID
+		interaction
 	}: CommandRunOptions<{
 		stats?: { stat?: string };
 		achievementdiary?: { diary?: string; claim?: boolean };
@@ -460,7 +458,7 @@ export const minionCommand: OSBMahojiCommand = {
 		}
 		if (options.cracker) {
 			return crackerCommand({
-				ownerID: userID.toString(),
+				ownerID: user.id,
 				otherPersonID: options.cracker.user.user.id,
 				interaction,
 				otherPersonAPIUser: options.cracker.user.user
@@ -479,7 +477,7 @@ export const minionCommand: OSBMahojiCommand = {
 			const res = FormattedCustomEmoji.exec(options.set_icon.icon);
 			if (!res || !res[0]) return "That's not a valid emoji.";
 
-			await handleMahojiConfirmation(interaction, 'Icons cannot be inappropriate or NSFW. Do you understand?');
+			await interaction.confirmation('Icons cannot be inappropriate or NSFW. Do you understand?');
 			await user.update({
 				minion_icon: res[0]
 			});
@@ -522,7 +520,7 @@ export const minionCommand: OSBMahojiCommand = {
 			return degradeableItemsCommand(interaction, user, options.charge.item, options.charge.amount);
 		}
 		if (options.daily) {
-			return dailyCommand(interaction, channelID, user);
+			return dailyCommand(interaction, user);
 		}
 		if (options.train) return trainCommand(user, options.train.style);
 		if (options.pat) return randomPatMessage(user.minionName);

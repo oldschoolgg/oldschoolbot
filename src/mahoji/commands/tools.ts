@@ -1,6 +1,6 @@
 import { asyncGzip, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import type { Activity, User } from '@prisma/client';
-import { ApplicationCommandOptionType, ChannelType, EmbedBuilder } from 'discord.js';
+import { ChannelType, EmbedBuilder } from 'discord.js';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -9,25 +9,22 @@ import { BitField, PerkTier } from '@/lib/constants.js';
 import { allCLItemsFiltered, allDroppedItems } from '@/lib/data/Collections.js';
 import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
+import { itemOption, monsterOption, skillOption } from '@/lib/discord/index.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseStaticTimeInterval, staticTimeIntervals } from '@/lib/util/smallUtils.js';
 import { getUsername, isGroupActivity } from '@/lib/util.js';
 import {
-	getParsedStashUnits,
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand,
 	stashUnitUnfillCommand,
 	stashUnitViewCommand
 } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
-import { itemOption, monsterOption, skillOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 import { patronMsg } from '@/mahoji/mahojiSettings.js';
 
 function isRaidsActivity(data: any): data is RaidsOptions {
@@ -712,22 +709,22 @@ export const toolsCommand: OSBMahojiCommand = {
 		{
 			name: 'patron',
 			description: 'Tools that only patrons can use.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'clue_gains',
 					description: "Show's who has the highest clue scroll completions for a given time period.",
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'time',
 							description: 'The time period.',
 							required: true,
 							choices: staticTimeIntervals.map(i => ({ name: i, value: i }))
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'tier',
 							description: 'The tier of clue scroll.',
 							required: false,
@@ -738,7 +735,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'ironman',
 							description: 'Only check ironmen accounts.',
 							required: false
@@ -746,12 +743,12 @@ export const toolsCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'kc_gains',
 					description: "Show's who has the highest KC gains for a given time period.",
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'time',
 							description: 'The time period.',
 							required: true,
@@ -759,7 +756,7 @@ export const toolsCommand: OSBMahojiCommand = {
 						},
 						monsterOption,
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'ironman',
 							description: 'Only check ironmen accounts.',
 							required: false
@@ -767,12 +764,12 @@ export const toolsCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'xp_gains',
 					description: "Show's who has the highest XP gains for a given time period.",
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'time',
 							description: 'The time period.',
 							required: true,
@@ -780,7 +777,7 @@ export const toolsCommand: OSBMahojiCommand = {
 						},
 						skillOption,
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'ironman',
 							description: 'Only check ironmen accounts.',
 							required: false
@@ -788,12 +785,12 @@ export const toolsCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'drystreak',
 					description: "Show's the biggest drystreaks for certain drops from a certain monster.",
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'source',
 							description: 'The source of the item – a monster, minigame, clue, etc.',
 							required: true,
@@ -811,7 +808,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'ironman',
 							description: 'Only check ironmen accounts.',
 							required: false
@@ -819,7 +816,7 @@ export const toolsCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'mostdrops',
 					description:
 						"Show's which players have received the most drops of an item, based on their collection log.",
@@ -829,7 +826,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'filter',
 							description: 'Filter by account type.',
 							required: false,
@@ -838,17 +835,17 @@ export const toolsCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'sacrificed_bank',
 					description: 'Shows an image containing all your sacrificed items.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'cl_bank',
 					description: 'Shows a bank image containing all items in your collection log.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'format',
 							description: 'Bank Image or Json format?',
 							required: false,
@@ -857,12 +854,12 @@ export const toolsCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'minion_stats',
 					description: 'Shows statistics about your minion.'
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'activity_export',
 					description: 'Export all your activities (For advanced users).'
 				}
@@ -871,21 +868,21 @@ export const toolsCommand: OSBMahojiCommand = {
 		{
 			name: 'user',
 			description: 'Various tools for yourself.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'mypets',
 					description: 'See the chat pets you have.',
 					options: []
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'temp_cl',
 					description: 'Manage and view your temporary CL.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'reset',
 							description: 'Reset your temporary CL.',
 							required: false
@@ -893,7 +890,7 @@ export const toolsCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'checkmasses',
 					description: 'Check the masses going on in the server.'
 				}
@@ -902,15 +899,15 @@ export const toolsCommand: OSBMahojiCommand = {
 		{
 			name: 'stash_units',
 			description: 'Build and fill your treasure trails S.T.A.S.H units.',
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'view',
 					description: 'View your STASH units.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'unit',
 							description: 'The specific unit you want to view (optional).',
 							required: false,
@@ -921,7 +918,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: 'Boolean',
 							name: 'not_filled',
 							description: 'View all STASH units that you have not filled/built.',
 							required: false
@@ -929,29 +926,30 @@ export const toolsCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'build_all',
 					description: 'Automatically build all the STASH units that you can.',
 					options: []
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'fill_all',
 					description: 'Automatically fill all the STASH units that you can.',
 					options: []
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'unfill',
 					description: 'Remove the items from a specific stash.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'unit',
 							description: 'The specific unit you want to unfill.',
 							required: true,
 							autocomplete: async (value, user) => {
-								return (await getParsedStashUnits(user.id))
+								const mUser = await mUserFetch(user.id);
+								return (await mUser.fetchStashUnits())
 									.filter(i => i.builtUnit !== undefined && i.builtUnit.items_contained.length > 0)
 									.filter(i =>
 										!value ? true : i.unit.desc.toLowerCase().includes(value.toLowerCase())
@@ -966,7 +964,7 @@ export const toolsCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		interaction,
 		guildID
 	}: CommandRunOptions<{
@@ -1011,25 +1009,24 @@ export const toolsCommand: OSBMahojiCommand = {
 			unfill?: { unit: string };
 		};
 	}>) => {
-		await deferInteraction(interaction);
-		const mahojiUser = await mUserFetch(userID);
+		await interaction.defer();
 
 		if (options.patron) {
 			const { patron } = options;
 			if (patron.clue_gains) {
-				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return clueGains(patron.clue_gains.time, patron.clue_gains.tier, Boolean(patron.clue_gains.ironman));
 			}
 			if (patron.kc_gains) {
-				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return kcGains(patron.kc_gains.time, patron.kc_gains.monster, Boolean(patron.kc_gains.ironman));
 			}
 			if (patron.xp_gains) {
-				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill, patron.xp_gains.ironman);
 			}
 			if (patron.drystreak) {
-				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return dryStreakCommand(
 					patron.drystreak.source,
 					patron.drystreak.item,
@@ -1037,12 +1034,12 @@ export const toolsCommand: OSBMahojiCommand = {
 				);
 			}
 			if (patron.mostdrops) {
-				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return mostDrops(mahojiUser, patron.mostdrops.item, String(patron.mostdrops.filter));
+				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				return mostDrops(user, patron.mostdrops.item, String(patron.mostdrops.filter));
 			}
 			if (patron.sacrificed_bank) {
-				if (mahojiUser.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
-				const sacBank = await mahojiUser.fetchStats({ sacrificed_bank: true });
+				if (user.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
+				const sacBank = await user.fetchStats();
 				const image = await makeBankImage({
 					bank: new Bank(sacBank.sacrificed_bank as ItemBank),
 					title: 'Your Sacrificed Items'
@@ -1052,8 +1049,8 @@ export const toolsCommand: OSBMahojiCommand = {
 				};
 			}
 			if (patron.cl_bank) {
-				if (mahojiUser.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
-				const clBank = mahojiUser.cl;
+				if (user.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
+				const clBank = user.cl;
 				if (patron.cl_bank.format === 'json') {
 					const json = JSON.stringify(clBank);
 					return {
@@ -1069,14 +1066,13 @@ export const toolsCommand: OSBMahojiCommand = {
 				};
 			}
 			if (patron.minion_stats) {
-				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return minionStats(mahojiUser.user);
+				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				return minionStats(user.user);
 			}
 			if (patron.activity_export) {
-				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
-				const promise = activityExport(mahojiUser.user);
-				await handleMahojiConfirmation(
-					interaction,
+				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+				const promise = activityExport(user.user);
+				await interaction.confirmation(
 					'I will send a file containing ALL of your activities, intended for advanced users who want to use the data. Anyone in this channel will be able to see and download the file, are you sure you want to do this?'
 				);
 				const result = await promise;
@@ -1086,7 +1082,7 @@ export const toolsCommand: OSBMahojiCommand = {
 		if (options.user) {
 			if (options.user.mypets) {
 				const b = new Bank();
-				for (const [pet, qty] of Object.entries(mahojiUser.user.pets as ItemBank)) {
+				for (const [pet, qty] of Object.entries(user.user.pets as ItemBank)) {
 					const petObj = pets.find(i => i.id === Number(pet));
 					if (!petObj) continue;
 					b.add(petObj.name, qty);
@@ -1101,22 +1097,18 @@ export const toolsCommand: OSBMahojiCommand = {
 
 		if (options.stash_units) {
 			if (options.stash_units.view) {
-				return stashUnitViewCommand(
-					mahojiUser.user,
-					options.stash_units.view.unit,
-					options.stash_units.view.not_filled
-				);
+				return stashUnitViewCommand(user, options.stash_units.view.unit, options.stash_units.view.not_filled);
 			}
-			if (options.stash_units.build_all) return stashUnitBuildAllCommand(mahojiUser);
-			if (options.stash_units.fill_all) return stashUnitFillAllCommand(mahojiUser, mahojiUser.user);
+			if (options.stash_units.build_all) return stashUnitBuildAllCommand(user);
+			if (options.stash_units.fill_all) return stashUnitFillAllCommand(user);
 			if (options.stash_units.unfill) {
-				return stashUnitUnfillCommand(mahojiUser, options.stash_units.unfill.unit);
+				return stashUnitUnfillCommand(user, options.stash_units.unfill.unit);
 			}
 		}
 		if (options.user?.temp_cl) {
 			if (options.user.temp_cl.reset === true) {
-				await handleMahojiConfirmation(interaction, 'Are you sure you want to reset your temporary CL?');
-				await mahojiUser.update({
+				await interaction.confirmation('Are you sure you want to reset your temporary CL?');
+				await user.update({
 					temp_cl: {},
 					last_temp_cl_reset: new Date()
 				});
@@ -1124,7 +1116,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			}
 			const lastReset = await prisma.user.findUnique({
 				where: {
-					id: mahojiUser.id
+					id: user.id
 				},
 				select: {
 					last_temp_cl_reset: true

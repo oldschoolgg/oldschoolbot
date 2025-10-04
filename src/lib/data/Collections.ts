@@ -152,7 +152,7 @@ import type { MinigameName } from '@/lib/settings/minigames.js';
 import { NexNonUniqueTable, NexUniqueTable } from '@/lib/simulation/misc.js';
 import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
-import { MUserStats } from '@/lib/structures/MUserStats.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
 
 function kcProg(mon: Monster): FormatProgressFunction {
 	return ({ stats }) => `${stats.kcBank[mon.id] ?? 0} KC`;
@@ -1024,7 +1024,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['revs'],
 				kcActivity: {
 					Default: async user => {
-						const stats = await user.fetchStats({ monster_scores: true });
+						const stats = await user.fetchStats();
 						return sumArr(
 							[
 								Monsters.RevenantImp.id,
@@ -1431,7 +1431,7 @@ export async function getCollection(options: {
 	const allItems = Boolean(flags.all);
 	if (logType === undefined) logType = 'collection';
 
-	const userStats = await MUserStats.fromID(user.id);
+	const userStats = await user.fetchMStats();
 	const userCheckBank = getBank(user, logType, userStats);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
 

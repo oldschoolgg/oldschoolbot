@@ -1,19 +1,27 @@
-import type { AbstractCommandAttributes, CommandOptions, ICommand, MahojiClient } from '@oldschoolgg/toolkit';
-import type { BaseInteraction, ChatInputCommandInteraction, InteractionReplyOptions, User } from 'discord.js';
+import type { SpecialResponse } from '@oldschoolgg/toolkit';
+import type { InteractionReplyOptions } from 'discord.js';
+
+import type { AbstractCommandAttributes, ICommand } from '@/lib/discord/commandOptions.ts';
+import type { MMember } from '@/lib/structures/MInteraction.js';
 
 declare global {
+	type CommandOption = import('@/lib/discord/commandOptions.js').CommandOption;
+	type MInteraction = import('@/lib/structures/MInteraction.js').MInteraction;
+	type CompatibleResponse = import('@/lib/structures/PaginatedMessage.js').CompatibleResponse;
+	type MahojiUserOption = import('@/lib/discord/commandOptions.js').MahojiUserOption;
+	type RNGProvider = import('@oldschoolgg/rng').RNGProvider;
 	interface CommandRunOptions<T extends CommandOptions = {}> {
-		interaction: ChatInputCommandInteraction;
+		interaction: MInteraction;
 		options: T;
-		client: MahojiClient;
-		user: User;
-		member?: BaseInteraction['member'];
+		user: MUser;
+		member?: MMember;
 		channelID: string;
 		guildID?: string;
 		userID: string;
+		rng: RNGProvider;
 	}
 
-	type CommandResponse = Promise<null | string | InteractionReplyOptions>;
+	type CommandResponse = Promise<null | string | InteractionReplyOptions | SpecialResponse>;
 
 	type MUser = import('./lib/MUser.js').MUser;
 

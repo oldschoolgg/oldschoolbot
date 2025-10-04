@@ -2,12 +2,10 @@ import { percentChance, randArrItem, randInt, randomVariation, roll } from '@old
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
-	channelIsSendable,
 	Emoji,
 	exponentialPercentScale,
 	formatDuration,
 	increaseNumByPercent,
-	mentionCommand,
 	objectEntries,
 	reduceNumByPercent,
 	round,
@@ -25,20 +23,17 @@ import { clamp } from 'remeda';
 
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { degradeItem } from '@/lib/degradeableItems.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import { trackLoot } from '@/lib/lootTrack.js';
-import { setupParty } from '@/lib/party.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
-import { getToaKCs } from '@/lib/simulation/toaUtils.js';
+import { getToaKCs, mileStoneBaseDeathChances, type RaidLevel } from '@/lib/simulation/toaUtils.js';
 import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
 import type { MakePartyOptions, Skills } from '@/lib/types/index.js';
 import type { TOAOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { assert } from '@/lib/util/logError.js';
 import { bankToStrShortNames, formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { mahojiParseNumber, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 const teamSizeScale: Record<number, number> = {
 	1: 1.0,
@@ -218,7 +213,7 @@ const toaRequirements: {
 		name: 'Blowpipe',
 		doesMeet: ({ user, quantity }) => {
 			const blowpipeData = user.blowpipe;
-			const cmdMention = mentionCommand(globalClient, 'minion', 'blowpipe');
+			const cmdMention = mentionCommand('minion', 'blowpipe');
 			if (!user.owns('Toxic blowpipe')) {
 				return 'Needs Toxic blowpipe (with darts and scales equipped) in bank';
 			}
@@ -345,7 +340,6 @@ const toaRequirements: {
 			const bfCharges = BLOOD_FURY_CHARGES_PER_RAID * quantity;
 			if (user.gear.melee.hasEquipped('Amulet of blood fury') && user.user.blood_fury_charges < bfCharges) {
 				return `You need at least ${bfCharges} Blood fury charges to use it, otherwise it has to be unequipped: ${mentionCommand(
-					globalClient,
 					'minion',
 					'charge'
 				)}`;
@@ -354,7 +348,6 @@ const toaRequirements: {
 			const tumCharges = TUMEKEN_SHADOW_PER_RAID * quantity;
 			if (user.gear.mage.hasEquipped("Tumeken's shadow") && user.user.tum_shadow_charges < tumCharges) {
 				return `You need at least ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
-					globalClient,
 					'minion',
 					'charge'
 				)}`;
@@ -717,21 +710,6 @@ const TOARooms = [
 		timeWeighting: 2
 	}
 ] as const;
-
-export const mileStoneBaseDeathChances = [
-	{ level: 600, chance: 97, minChance: 97 },
-	{ level: 500, chance: 85, minChance: 93 },
-	{ level: 450, chance: 48.5, minChance: null },
-	{ level: 400, chance: 36, minChance: null },
-	{ level: 350, chance: 25.5, minChance: null },
-	{ level: 300, chance: 23, minChance: null },
-	{ level: 200, chance: 15, minChance: null },
-	{ level: 150, chance: 13, minChance: null },
-	{ level: 100, chance: 10, minChance: null },
-	{ level: 1, chance: 5, minChance: null }
-] as const;
-
-export type RaidLevel = (typeof mileStoneBaseDeathChances)[number]['level'];
 
 function calcDeathChance(totalAttempts: number, raidLevel: RaidLevel, tobAndCoxKC: number) {
 	const obj = mileStoneBaseDeathChances.find(i => i.level === raidLevel)!;
@@ -1098,6 +1076,7 @@ async function checkTOATeam(users: MUser[], raidLevel: number, quantity: number)
 }
 
 export async function toaStartCommand(
+	interaction: MInteraction,
 	user: MUser,
 	solo: boolean,
 	channelID: string,
@@ -1148,11 +1127,9 @@ export async function toaStartCommand(
 		}
 	};
 
-	const channel = globalClient.channels.cache.get(channelID);
-	if (!channelIsSendable(channel)) return 'No channel found.';
 	let usersWhoConfirmed = [];
 	try {
-		usersWhoConfirmed = solo ? [user] : await setupParty(channel, user, partyOptions);
+		usersWhoConfirmed = solo ? [user] : await interaction.makeParty(partyOptions);
 	} catch (err: any) {
 		return {
 			content: typeof err === 'string' ? err : 'Your mass failed to start.',
@@ -1174,7 +1151,7 @@ export async function toaStartCommand(
 		users.map(async i => ({
 			user: i,
 			minigameScores: await i.fetchMinigames(),
-			toaAttempts: (await i.fetchStats({ toa_attempts: true })).toa_attempts
+			toaAttempts: (await i.fetchStats()).toa_attempts
 		}))
 	);
 	const baseDuration = createTOATeam({
@@ -1182,7 +1159,7 @@ export async function toaStartCommand(
 		raidLevel,
 		quantity: 1
 	})[0].duration;
-	const maxTripLength = Math.max(...users.map(i => calcMaxTripLength(i, 'TombsOfAmascut')));
+	const maxTripLength = Math.max(...users.map(i => i.calcMaxTripLength('TombsOfAmascut')));
 	const maxQuantity = clamp(Math.floor(maxTripLength / baseDuration), { min: 1, max: 5 });
 	const quantity = clamp(quantityInput ?? maxQuantity, { min: 1, max: maxQuantity });
 
@@ -1239,7 +1216,7 @@ export async function toaStartCommand(
 					user: u
 				});
 			}
-			await userStatsBankUpdate(u, 'toa_cost', realCost);
+			await u.statsBankUpdate('toa_cost', realCost);
 			const effectiveCost = realCost.clone();
 			totalCost.add(effectiveCost);
 
@@ -1259,7 +1236,7 @@ export async function toaStartCommand(
 		})
 	);
 
-	updateBankSetting('toa_cost', totalCost);
+	await ClientSettings.updateBankSetting('toa_cost', totalCost);
 	await trackLoot({
 		totalCost,
 		id: 'tombs_of_amascut',
@@ -1281,9 +1258,9 @@ export async function toaStartCommand(
 		userArr.push(thisQtyArr);
 	}
 
-	await addSubTaskToActivityTask<TOAOptions>({
+	await ActivityManager.startTrip<TOAOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration: realDuration,
 		type: 'TombsOfAmascut',
 		leader: user.id,
@@ -1550,12 +1527,7 @@ async function toaCheckCommand(user: MUser) {
 		return `🔴 You aren't able to join a Tombs of Amascut raid, address these issues first: ${result[1]}`;
 	}
 
-	return `✅ You are ready to do the Tombs of Amascut! Start a raid: ${mentionCommand(
-		globalClient,
-		'raid',
-		'toa',
-		'start'
-	)}`;
+	return `✅ You are ready to do the Tombs of Amascut! Start a raid: ${mentionCommand('raid', 'toa', 'start')}`;
 }
 
 function calculateBoostString(user: MUser) {
@@ -1596,12 +1568,7 @@ function calculateBoostString(user: MUser) {
 
 export async function toaHelpCommand(user: MUser, channelID: string) {
 	const gearStats = calculateUserGearPercents(user.gear, 300);
-	const stats = await user.fetchStats({
-		total_toa_points: true,
-		total_toa_duration_minutes: true,
-		toa_attempts: true,
-		toa_raid_levels_bank: true
-	});
+	const stats = await user.fetchStats();
 	const { entryKC, normalKC, expertKC, totalKC } = getToaKCs(stats.toa_raid_levels_bank);
 
 	let totalUniques = 0;

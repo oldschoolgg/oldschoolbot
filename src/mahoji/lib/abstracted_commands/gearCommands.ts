@@ -1,6 +1,5 @@
 import { PerkTier, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import type { GearPreset } from '@prisma/client';
-import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
@@ -14,7 +13,6 @@ import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js'
 import { defaultGear, Gear, globalPresets } from '@/lib/structures/Gear.js';
 import calculateGearLostOnDeathWilderness from '@/lib/util/calculateGearLostOnDeathWilderness.js';
 import { gearEquipMultiImpl } from '@/lib/util/equipMulti.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { assert } from '@/lib/util/logError.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
@@ -172,7 +170,7 @@ async function gearEquipMultiCommand(user: MUser, setup: string, items: string) 
 }
 
 export async function gearEquipCommand(args: {
-	interaction: ChatInputCommandInteraction;
+	interaction: MInteraction;
 	userID: string;
 	setup: string;
 	item: string | undefined;
@@ -386,7 +384,7 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 }
 
 export async function gearSwapCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	user: MUser,
 	first: GearSetupType,
 	second: GearSetupType
@@ -395,8 +393,7 @@ export async function gearSwapCommand(
 		return 'Invalid gear setups. You must provide two unique gear setups to switch gear between.';
 	}
 	if (first === 'wildy' || second === 'wildy') {
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			'Are you sure you want to swap your gear with a wilderness setup? You can lose items on your wilderness setup!'
 		);
 	}

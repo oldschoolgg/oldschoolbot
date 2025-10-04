@@ -29,7 +29,6 @@ const fishBonusLoot = [
 
 export const driftNetTask: MinionTask = {
 	type: 'DriftNet',
-	isNew: true,
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
 		const { quantity, channelID, duration } = data;
 		const currentHuntLevel = user.skillsAsLevels.hunter;

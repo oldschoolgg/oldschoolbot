@@ -1,16 +1,12 @@
-import { reduceNumByPercent, returnStringOrFile } from '@oldschoolgg/toolkit';
+import { reduceNumByPercent } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
+import { filterOption } from '@/lib/discord/index.js';
 import { NestBoxesTable } from '@/lib/simulation/misc.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
-import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 /**
  * - Hardcoded prices
@@ -70,25 +66,24 @@ export const sellCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'items',
 			description: 'The items you want to sell (e.g. 1 trout, 5 coal',
 			required: false
 		},
 		filterOption,
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'search',
 			description: 'A search query for items in your bank to sell.',
 			required: false
 		}
 	],
 	run: async ({
-		userID,
+		user,
 		options,
 		interaction
 	}: CommandRunOptions<{ items: string; filter?: string; search?: string }>) => {
-		const user = await mUserFetch(userID);
 		const bankToSell = parseBank({
 			inputBank: user.bank,
 			inputStr: options.items,
@@ -145,10 +140,7 @@ export const sellCommand: OSBMahojiCommand = {
 				loot.add('Abyssal pearls', bankToSell.amount('Abyssal green dye') * 50);
 			}
 
-			await handleMahojiConfirmation(
-				interaction,
-				`${user}, please confirm you want to sell ${abbyBank} for **${loot}**.`
-			);
+			await interaction.confirmation(`${user}, please confirm you want to sell ${abbyBank} for **${loot}**.`);
 
 			await user.transactItems({
 				collectionLog: false,
@@ -188,10 +180,7 @@ export const sellCommand: OSBMahojiCommand = {
 				loot.add('Anima-infused bark', bankToSell.amount('Sturdy beehive parts') * 25);
 			}
 
-			await handleMahojiConfirmation(
-				interaction,
-				`${user}, please confirm you want to sell ${forestryBank} for **${loot}**.`
-			);
+			await interaction.confirmation(`${user}, please confirm you want to sell ${forestryBank} for **${loot}**.`);
 
 			await user.transactItems({
 				collectionLog: false,
@@ -208,10 +197,7 @@ export const sellCommand: OSBMahojiCommand = {
 
 			loot.add('Molch pearl', tenchBank.amount('Golden tench') * 100);
 
-			await handleMahojiConfirmation(
-				interaction,
-				`${user}, please confirm you want to sell ${tenchBank} for **${loot}**.`
-			);
+			await interaction.confirmation(`${user}, please confirm you want to sell ${tenchBank} for **${loot}**.`);
 
 			await user.transactItems({ itemsToRemove: tenchBank, itemsToAdd: loot });
 			return `You exchanged ${tenchBank} and received: ${loot}.`;
@@ -249,8 +235,7 @@ export const sellCommand: OSBMahojiCommand = {
 			});
 		}
 
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			`${user}, please confirm you want to sell ${bankToSell} for **${totalPrice.toLocaleString()}** (${toKMB(
 				totalPrice
 			)}).`
@@ -267,22 +252,18 @@ export const sellCommand: OSBMahojiCommand = {
 		});
 
 		await Promise.all([
-			updateClientGPTrackSetting('gp_sell', totalPrice),
-			updateBankSetting('sold_items_bank', bankToSell),
-			userStatsBankUpdate(user, 'items_sold_bank', bankToSell),
-			userStatsUpdate(
-				user.id,
-				{
-					sell_gp: {
-						increment: totalPrice
-					}
-				},
-				{}
-			),
+			ClientSettings.updateClientGPTrackSetting('gp_sell', totalPrice),
+			ClientSettings.updateBankSetting('sold_items_bank', bankToSell),
+			user.statsBankUpdate('items_sold_bank', bankToSell),
+			user.statsUpdate({
+				sell_gp: {
+					increment: totalPrice
+				}
+			}),
 			prisma.botItemSell.createMany({ data: botItemSellData })
 		]);
 
-		return returnStringOrFile(
+		return interaction.returnStringOrFile(
 			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**${
 				user.isIronman ? ' (General store price)' : ` (${taxRatePercent}% below market price)`
 			}.`

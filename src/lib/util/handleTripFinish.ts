@@ -33,7 +33,6 @@ import {
 	tearsOfGuthixIronmanReqs,
 	tearsOfGuthixSkillReqs
 } from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
-import { updateClientGPTrackSetting, userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 const collectors = new Map<string, MessageCollector>();
 
@@ -69,7 +68,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
 				const GP = loot.amount(EItem.COINS);
 				if (typeof GP === 'number') {
-					await updateClientGPTrackSetting('gp_pvm', GP);
+					await ClientSettings.updateClientGPTrackSetting('gp_pvm', GP);
 				}
 			}
 			return {};
@@ -82,7 +81,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (imp && imp.bank.length > 0) {
 				const many = imp.bank.length > 1;
 				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
-				await userStatsBankUpdate(user, 'passive_implings_bank', imp.bank);
+				await user.statsBankUpdate('passive_implings_bank', imp.bank);
 				return {
 					itemsToAddWithCL: imp.bank
 				};
@@ -149,7 +148,7 @@ export async function handleTripFinish(
 		if (res?.itemsToRemove) itemsToRemove.add(res.itemsToRemove);
 		stopwatch.stop();
 		if (stopwatch.duration > 500) {
-			debugLog(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
+			Logging.logDebug(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
 		}
 	}
 	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
@@ -180,10 +179,7 @@ export async function handleTripFinish(
 	if (perkTier > PerkTier.One) {
 		components.push(...buildClueButtons(loot, perkTier, user));
 
-		const { last_tears_of_guthix_timestamp, last_daily_timestamp } = await user.fetchStats({
-			last_tears_of_guthix_timestamp: true,
-			last_daily_timestamp: true
-		});
+		const { last_tears_of_guthix_timestamp, last_daily_timestamp } = await user.fetchStats();
 
 		// Tears of Guthix start button if ready
 		if (!user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) {

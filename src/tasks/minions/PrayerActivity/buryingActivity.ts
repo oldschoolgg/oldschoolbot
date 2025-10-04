@@ -3,14 +3,13 @@ import { Bank } from 'oldschooljs';
 
 import Prayer from '@/lib/skilling/skills/prayer.js';
 import type { BuryingActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { zealOutfitBoost } from '@/tasks/minions/PrayerActivity/offeringActivity.js';
 
 export const buryingTask: MinionTask = {
 	type: 'Burying',
-	async run(data: BuryingActivityTaskOptions) {
-		const { boneID, quantity, userID, channelID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: BuryingActivityTaskOptions, { user, handleTripFinish }) {
+		const { boneID, quantity, channelID } = data;
+
 		const { zealOutfitAmount, zealOutfitChance } = zealOutfitBoost(user);
 
 		const bone = Prayer.Bones.find(bone => bone.inputId === boneID);
