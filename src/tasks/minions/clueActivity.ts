@@ -1,10 +1,11 @@
+import { incrementUserCounter } from '@/lib/bso/userCounter.js';
+
 import { randInt, roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
-import { incrementUserCounter } from '@/mahoji/lib/userCounter.js';
 
 const possibleFound = new LootTable()
 	.add('Reward casket (beginner)')

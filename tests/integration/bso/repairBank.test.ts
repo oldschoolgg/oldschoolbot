@@ -1,10 +1,11 @@
+import { repairBrokenItemsFromUser } from '@/lib/bso/repairBrokenItems.js';
+
 import type { Prisma } from '@prisma/client';
 import { Bank, EquipmentSlot, resolveItems } from 'oldschooljs';
 import { clone } from 'remeda';
 import { expect, test } from 'vitest';
 
 import { TOBMaxMeleeGear } from '@/lib/data/tob.js';
-import { repairBrokenItemsFromUser } from '@/lib/util/repairBrokenItems.js';
 import { createTestUser, mockClient } from '../util.js';
 
 test('Repair Bank', async () => {

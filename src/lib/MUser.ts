@@ -1,6 +1,7 @@
 import { calculateCompCapeProgress } from '@/lib/bso/calculateCompCapeProgress.js';
 import type { GodFavourBank, GodName } from '@/lib/bso/divineDominion.js';
 import { mysteriousStepData, mysteriousTrailTracks } from '@/lib/bso/mysteryTrail.js';
+import { repairBrokenItemsFromUser } from '@/lib/bso/repairBrokenItems.js';
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { type Species, tameSpecies } from '@/lib/bso/tames.js';
@@ -81,7 +82,6 @@ import { findGroupOfUser } from '@/lib/util/findGroupOfUser.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
 import { logError } from '@/lib/util/logError.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
-import { repairBrokenItemsFromUser } from '@/lib/util/repairBrokenItems.js';
 import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
 import { type TransactItemsArgs, transactItemsFromBank } from '@/lib/util/transactItemsFromBank.js';
 import type { JsonKeys } from '@/lib/util.js';

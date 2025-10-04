@@ -1,6 +1,7 @@
 import { addToDoubleLootTimer } from '@/lib/bso/doubleLoot.js';
 import { keyCrates } from '@/lib/bso/keyCrates.js';
 import { MysteryBoxes, spookyTable } from '@/lib/bso/openables/tables.js';
+import { repairBrokenItemsFromUser } from '@/lib/bso/repairBrokenItems.js';
 
 import { randArrItem, randInt, roll, shuffleArr } from '@oldschoolgg/rng';
 import { asyncGzip, Emoji, formatDuration, PerkTier, stringMatches, Time } from '@oldschoolgg/toolkit';
@@ -34,7 +35,6 @@ import { Skills } from '@/lib/skilling/skills/index.js';
 import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
 import { findGroupOfUser } from '@/lib/util/findGroupOfUser.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { repairBrokenItemsFromUser } from '@/lib/util/repairBrokenItems.js';
 import { parseStaticTimeInterval, staticTimeIntervals } from '@/lib/util/smallUtils.js';
 import { getUsername, isGroupActivity } from '@/lib/util.js';
 import { LampTable } from '@/lib/xpLamps.js';

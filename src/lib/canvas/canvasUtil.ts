@@ -146,13 +146,6 @@ export function getClippedRegion(image: Image | Canvas, x: number, y: number, wi
 	return canvas;
 }
 
-export function drawCircle(ctx: CanvasContext, x: number, y: number, radius: number, fill = 'rgba(255,0,0,0.5)') {
-	ctx.beginPath();
-	ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
-	ctx.fillStyle = fill;
-	ctx.fill();
-}
-
 export async function canvasToBuffer(canvas: Canvas): Promise<Buffer> {
 	return canvas.png;
 }

@@ -1,4 +1,5 @@
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
+import { getNexGearStats } from '@/lib/bso/getNexGearStats.js';
 import { NEX_UNIQUE_DROPRATE, NexMonster } from '@/lib/bso/monsters/nex.js';
 
 import { percentChance, randArrItem, roll } from '@oldschoolgg/rng';
@@ -10,7 +11,6 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
-import { getNexGearStats } from '@/lib/util/getNexGearStats.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 interface NexUser {

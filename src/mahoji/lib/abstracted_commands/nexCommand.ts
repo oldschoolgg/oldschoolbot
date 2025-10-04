@@ -1,4 +1,5 @@
 import { calcBossFood } from '@/lib/bso/calcBossFood.js';
+import { getNexGearStats } from '@/lib/bso/getNexGearStats.js';
 import { NexMonster } from '@/lib/bso/monsters/nex.js';
 
 import {
@@ -19,7 +20,6 @@ import type { KillableMonster } from '@/lib/minions/types.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
 import type { BossActivityTaskOptions } from '@/lib/types/minions.js';
 import calcDurQty from '@/lib/util/calcMassDurationQuantity.js';
-import { getNexGearStats } from '@/lib/util/getNexGearStats.js';
 import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): Promise<string | undefined> {
