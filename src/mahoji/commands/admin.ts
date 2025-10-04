@@ -413,6 +413,12 @@ export const adminCommand: OSBMahojiCommand = {
 		},
 		{
 			type: 'Subcommand',
+			name: 'desync_commands',
+			description: 'Desync commands except /admin',
+			options: []
+		},
+		{
+			type: 'Subcommand',
 			name: 'item_stats',
 			description: 'item stats',
 			options: [{ ...itemOption(), required: true }]
@@ -623,6 +629,7 @@ export const adminCommand: OSBMahojiCommand = {
 		reboot?: {};
 		shut_down?: {};
 		sync_commands?: {};
+		desync_commands?: {};
 		item_stats?: { item: string };
 		sync_blacklist?: {};
 		cancel_task?: { user: MahojiUserOption };
@@ -859,6 +866,32 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		if (options.sync_commands) {
 			await bulkUpdateCommands();
 			return 'Done.';
+		}
+
+		if (options.desync_commands) {
+			// Only allow in the support server
+			if (guildID.toString() !== globalConfig.supportServerID) {
+				return 'This subcommand can only be used in the support server.';
+			}
+
+			// Keep only the admin toolset (adjust names if needed)
+			const adminCommands = allCommands.filter(cmd => cmd.name === 'admin' || cmd.name === 'rp');
+
+			// Always overwrite the current guild with just the admin commands
+			await bulkUpdateCommands({
+				commands: adminCommands,
+				guildID: guildID.toString()
+			});
+
+			// In non-prod you’ve historically kept global empty — keep that behavior
+			if (!globalConfig.isProduction) {
+				await bulkUpdateCommands({
+					commands: [],
+					guildID: null
+				});
+			}
+
+			return `Desynced commands in this guild; kept ${adminCommands.map(c => `/${c.name}`).join(', ') || '/admin'}.`;
 		}
 
 		if (options.view) {
