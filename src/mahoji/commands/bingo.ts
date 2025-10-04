@@ -744,7 +744,7 @@ ${Emoji.Warning} **You will pay a ${toKMB(fee)} GP fee to create this bingo, you
 				data: createOptions
 			});
 
-			debugLog('Created bingo', createOptions);
+			Logging.logDebug('Created bingo', createOptions);
 
 			return 'Created your Bingo succesfully!';
 		}
@@ -912,7 +912,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 						}
 					}
 				});
-				debugLog('Added extra gp to bingo', { bingoID: bingo.id, amount });
+				Logging.logDebug('Added extra gp to bingo', { bingoID: bingo.id, amount });
 
 				return `Added ${cost} to the prize pool.`;
 			}

@@ -14,7 +14,6 @@ import { onMessage } from '@/lib/events.js';
 import { preStartup } from '@/lib/preStartup.js';
 import { OldSchoolBotClient } from '@/lib/structures/OldSchoolBotClient.js';
 import { CACHED_ACTIVE_USER_IDS } from '@/lib/util/cachedUserIDs.js';
-import { logError } from '@/lib/util/logError.js';
 import { onStartup } from '@/mahoji/lib/events.js';
 import { exitCleanup } from '@/mahoji/lib/exitHandler.js';
 
@@ -116,7 +115,7 @@ client.on('guildCreate', guild => {
 	}
 });
 
-client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
+client.on('shardError', err => Logging.logDebug('Shard Error', { error: err.message }));
 client.once('ready', () => onStartup());
 
 async function main() {
@@ -139,12 +138,12 @@ async function main() {
 
 process.on('uncaughtException', err => {
 	console.error(err);
-	logError(err);
+	Logging.logError(err);
 });
 
 process.on('unhandledRejection', err => {
 	console.error(err);
-	logError(err);
+	Logging.logError(err as Error);
 });
 
 main();

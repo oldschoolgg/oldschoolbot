@@ -9,7 +9,6 @@ import { allTasks } from '@/lib/Task.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { logError } from '@/lib/util/logError.js';
 import { isGroupActivity } from '@/lib/util.js';
 
 class SActivityManager {
@@ -61,13 +60,13 @@ class SActivityManager {
 		const activity = this.convertStoredActivityToFlatActivity(_activity);
 
 		if (_activity.completed) {
-			logError(new Error('Tried to complete an already completed task.'));
+			Logging.logError(new Error('Tried to complete an already completed task.'));
 			return;
 		}
 
 		const task = allTasks.find(i => i.type === activity.type)!;
 		if (!task) {
-			logError(new Error('Missing task'));
+			Logging.logError(new Error('Missing task'));
 			return;
 		}
 
@@ -75,7 +74,7 @@ class SActivityManager {
 		try {
 			await task.run(activity, { user: await mUserFetch(activity.userID), handleTripFinish, rng: cryptoRng });
 		} catch (err) {
-			logError(err);
+			Logging.logError(err as Error);
 		} finally {
 			modifyBusyCounter(activity.userID, -1);
 			this.minionActivityCacheDelete(activity.userID);

@@ -825,7 +825,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 			return 'Turning off...';
 		}
 		if (options.shut_down) {
-			debugLog('SHUTTING DOWN');
+			Logging.logDebug('SHUTTING DOWN');
 			globalClient.isShuttingDown = true;
 			const timer = globalConfig.isProduction ? Time.Second * 30 : Time.Second * 5;
 			await interaction.reply({

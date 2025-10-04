@@ -13,7 +13,6 @@ import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { checkUserCanUseDegradeableItem } from '@/lib/degradeableItems.js';
 import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
-import { logError } from '@/lib/util/logError.js';
 import { formatList } from '@/lib/util/smallUtils.js';
 
 const bareMinStats: Skills = {
@@ -141,7 +140,7 @@ export async function createTeam(
 
 		points = Math.floor(randomVariation(points, 5));
 		if (points < 1 || points > 60_000) {
-			logError(`${u.usernameOrMention} had ${points} points in a team of ${users.length}.`);
+			Logging.logError(`${u.usernameOrMention} had ${points} points in a team of ${users.length}.`);
 			points = 10_000;
 		}
 
