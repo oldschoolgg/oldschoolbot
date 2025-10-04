@@ -5,6 +5,7 @@ import { vi } from 'vitest';
 import '../src/lib/safeglobals.js';
 
 import { InteractionID } from '@/lib/InteractionID.js';
+import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
 import { mockChannel, mockInteraction, TEST_CHANNEL_ID } from './integration/util.js';
 
 vi.mock('@oldschoolgg/toolkit', async () => {
@@ -43,5 +44,6 @@ global.globalClient = {
 	channels: {
 		cache: new Collection().set(TEST_CHANNEL_ID, mockChannel({ userId: '123' }))
 	},
-	busyCounterCache: new Map<string, number>()
+	busyCounterCache: new Map<string, number>(),
+	allCommands: allCommandsDONTIMPORT
 } as any;
