@@ -10,8 +10,6 @@ import type { Plant } from '@/lib/skilling/types.js';
 import type { AutoFarmStepData, FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 import { prepareFarmingStep } from './farmingTripHelpers.js';
 
 interface PlannedAutoFarmStep {
@@ -210,8 +208,8 @@ export async function autoFarm(
 		return `You don't own ${totalCost}.`;
 	}
 	await user.transactItems({ itemsToRemove: totalCost });
-	updateBankSetting('farming_cost_bank', totalCost);
-	await userStatsBankUpdate(user, 'farming_plant_cost_bank', totalCost);
+	await ClientSettings.updateBankSetting('farming_cost_bank', totalCost);
+	await user.statsBankUpdate('farming_plant_cost_bank', totalCost);
 
 	const autoFarmPlan: AutoFarmStepData[] = [];
 	const planningStartTime = Date.now();
