@@ -23,7 +23,6 @@ import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';
 import { Gear } from '@/lib/structures/Gear.js';
-import { logError } from '@/lib/util/logError.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
 import { fetchBingosThatUserIsInvolvedIn } from '@/mahoji/commands/bingo.js';
 import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.js';
@@ -585,7 +584,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 				setslayertask?: { master: string; monster: string; quantity: number };
 			}>) => {
 				if (globalConfig.isProduction) {
-					logError('Test command ran in production', { userID: user.id });
+					Logging.logError('Test command ran in production', { userID: user.id });
 					return 'This will never happen...';
 				}
 

@@ -505,7 +505,8 @@ ${zygomiteFarmingSource
 											misc: secondaryGearSetup
 										},
 										bank: new Bank(),
-										hasEquipped: () => true
+										hasEquipped: () => true,
+										hasEquippedOrInBank: () => true
 									} as any as GearBank;
 
 									const result = calculateMiningInput({

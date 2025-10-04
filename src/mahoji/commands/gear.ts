@@ -4,13 +4,14 @@ import { GearStat } from 'oldschooljs/gear';
 import { loadImage } from 'skia-canvas';
 
 import { canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil.js';
+import { BOT_TYPE } from '@/lib/constants.js';
 import { allPetIDs } from '@/lib/data/CollectionsExport.js';
 import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '@/lib/discord/index.js';
+import { findBestGearSetups } from '@/lib/gear/functions/findBestGearSetups.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
 import { GearSetupTypes } from '@/lib/gear/types.js';
 import { equipPet } from '@/lib/minions/functions/equipPet.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
-import { findBestGearSetups } from '@/lib/util/findBISGear.js';
 import {
 	gearEquipCommand,
 	gearStatsCommand,
@@ -206,13 +207,15 @@ export const gearCommand: OSBMahojiCommand = {
 		swap?: { setup_one: GearSetupType; setup_two: GearSetupType };
 		best_in_slot?: { stat: GearStat };
 	}>) => {
+		await interaction.defer();
 		if (options.best_in_slot?.stat) {
-			const res = findBestGearSetups(options.best_in_slot.stat);
-			const totalCanvas = createCanvas(5 * 175, 240);
+			const res = findBestGearSetups({ stat: options.best_in_slot.stat, ignoreUnobtainable: BOT_TYPE === 'OSB' });
+			const totalCanvas = createCanvas(900, 480 * 5);
 			const ctx = totalCanvas.getContext('2d');
 			for (let i = 0; i < 5; i++) {
-				const gearImage = await user.generateGearImage({ gearSetup: res[i] });
-				ctx.drawImage(await loadImage(gearImage), i * 175, 0);
+				const gearImageBuffer = await user.generateGearImage({ gearSetup: res[i] });
+				const gearImage = await loadImage(gearImageBuffer);
+				ctx.drawImage(gearImage, 0, i * gearImage.height);
 			}
 			return {
 				content: `These are the best in slot items for ${options.best_in_slot.stat}.

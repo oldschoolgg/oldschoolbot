@@ -100,13 +100,12 @@ export function getUsernameSync(_id: string | bigint) {
 }
 
 export async function runTimedLoggedFn<T>(name: string, fn: () => Promise<T>, threshholdToLog = 100): Promise<T> {
-	const logger = globalConfig.isProduction ? debugLog : console.log;
 	const stopwatch = new Stopwatch();
 	stopwatch.start();
 	const result = await fn();
 	stopwatch.stop();
 	if (!globalConfig.isProduction || stopwatch.duration > threshholdToLog) {
-		logger(`Took ${stopwatch} to do ${name}`);
+		Logging.logDebug(`Took ${stopwatch} to do ${name}`);
 	}
 	return result;
 }

@@ -15,7 +15,6 @@ import { mentionCommand } from '@/lib/discord/utils.js';
 import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from '@/lib/MUser.js';
 import { roboChimpSyncData } from '@/lib/roboChimp.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
-import { logError } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { PATRON_DOUBLE_LOOT_COOLDOWN } from '@/mahoji/commands/tools.js';
@@ -288,7 +287,7 @@ export async function onMessage(msg: Message) {
 		} catch (err) {
 			if (typeof err === 'string') return msg.reply(err);
 			if (err instanceof UserError) return msg.reply(err.message);
-			logError(err);
+			Logging.logError(err as Error);
 		}
 		return;
 	}
@@ -310,6 +309,6 @@ export async function onMinionActivityFinish(activity: ActivityTaskData) {
 			await roboChimpSyncData(await mUserFetch(activity.userID));
 		}
 	} catch (err) {
-		logError(err, { activity: JSON.stringify(activity) });
+		Logging.logError(err as Error, { activity: JSON.stringify(activity) });
 	}
 }

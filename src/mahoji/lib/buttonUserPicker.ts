@@ -1,7 +1,12 @@
 import { shuffleArr } from '@oldschoolgg/rng';
 import { channelIsSendable, noOp, Time } from '@oldschoolgg/toolkit';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ComponentType } from 'discord.js';
-import murmurhash from 'murmurhash';
+
+function simpleHash(str: string): number {
+	let h = 0;
+	for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) | 0;
+	return h >>> 0;
+}
 
 export async function buttonUserPicker({
 	channelID,
@@ -24,10 +29,10 @@ export async function buttonUserPicker({
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 
-	const correctCustomID = murmurhash(answers[0]).toString();
+	const correctCustomID = simpleHash(answers[0]).toString();
 
 	const buttons = answers.map(i =>
-		new ButtonBuilder().setLabel(i).setStyle(ButtonStyle.Secondary).setCustomId(murmurhash(i).toString())
+		new ButtonBuilder().setLabel(i).setStyle(ButtonStyle.Secondary).setCustomId(simpleHash(i).toString())
 	);
 
 	const confirmMessage = await channel.send({

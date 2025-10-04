@@ -62,7 +62,7 @@ export const testerShopCommand: OSBMahojiCommand = {
 			}
 		});
 
-		debugLog(`Tester shop: ${user.id} bought ${quantity}x ${item.name} for ${cost} points.`);
+		Logging.logDebug(`Tester shop: ${user.id} bought ${quantity}x ${item.name} for ${cost} points.`);
 		switch (item.name) {
 			case 'Tester gift box': {
 				const loot = new Bank().add('Tester gift box', quantity);

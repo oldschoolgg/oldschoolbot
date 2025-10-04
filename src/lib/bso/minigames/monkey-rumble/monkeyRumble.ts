@@ -5,7 +5,7 @@ import { type Item, Items } from 'oldschooljs';
 import { loadImage } from 'skia-canvas';
 
 import { type CanvasImage, canvasToBuffer, createCanvas, printWrappedText } from '@/lib/canvas/canvasUtil.js';
-import { textBoxFile } from '@/lib/canvas/chatHeadImage.js';
+import { getTextbox } from '@/lib/canvas/chatHeadImage.js';
 
 interface MonkeyTier {
 	id: number;
@@ -183,7 +183,7 @@ export async function monkeyHeadImage({ monkey, content }: { monkey: Monkey; con
 	const canvas = createCanvas(519, 142);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
-	const bg = await textBoxFile;
+	const bg = await getTextbox();
 	const headImage = await loadImage(await [...normalHeads, ...specialHeads].find(h => h[1] === monkey.head)![0]);
 	ctx.font = '16px RuneScape Quill 8';
 	ctx.drawImage(bg, 0, 0);

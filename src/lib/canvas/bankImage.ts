@@ -231,11 +231,7 @@ class BankImageTask {
 	public _bgSpriteData: CanvasImage = new CanvasImage();
 	public bgSpriteList: Record<string, IBgSprite> = {};
 	public treeImage!: CanvasImage;
-	public ready!: Promise<void>;
-
-	public constructor() {
-		this.ready = this.init();
-	}
+	public ready: boolean = false;
 
 	async init() {
 		const colors: Record<BGSpriteName, string> = {
@@ -408,6 +404,10 @@ class BankImageTask {
 			mahojiFlags?: BankFlag[];
 		} & BaseCanvasArgs
 	): Promise<BankImageResult> {
+		if (!this.ready) {
+			await this.init();
+			this.ready = true;
+		}
 		let { user, collectionLog, title = '', showValue = true } = opts;
 		const bank = opts.bank.clone();
 		const flags = new Map(Object.entries(opts.flags ?? {}));

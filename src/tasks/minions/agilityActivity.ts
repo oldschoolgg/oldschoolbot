@@ -13,7 +13,6 @@ import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Agility from '@/lib/skilling/skills/agility.js';
 import type { Course } from '@/lib/skilling/types.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
-import { logError } from '@/lib/util/logError.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 function chanceOfFailingAgilityPyramid(lvl: number) {
@@ -157,12 +156,7 @@ export const agilityTask: MinionTask = {
 		const minutes = Math.round(duration / Time.Minute);
 		const currentLevel = user.skillsAsLevels.agility;
 
-		const course = Agility.Courses.find(course => course.id === courseID);
-
-		if (!course) {
-			logError(`Invalid course ID provided: ${courseID}`);
-			return;
-		}
+		const course = Agility.Courses.find(course => course.id === courseID)!;
 
 		const [hasArdyElite] = await userhasDiaryTier(user, ArdougneDiary.elite);
 		const hasDiaryBonus = hasArdyElite && course.name === 'Ardougne Rooftop Course';

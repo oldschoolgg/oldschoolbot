@@ -12,5 +12,5 @@ export async function forcefullyUnequipItem(user: MUser, item: Item) {
 			[item.equipment!.slot]: null
 		}
 	});
-	debugLog(`Forcefully unequipped ${item.name} from ${user.id}.`);
+	Logging.logDebug(`Forcefully unequipped ${item.name} from ${user.id}.`);
 }

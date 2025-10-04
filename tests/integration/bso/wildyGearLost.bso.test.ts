@@ -1,3 +1,4 @@
+import { MathRNG } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
 import { expect, test } from 'vitest';
@@ -40,7 +41,7 @@ test('calculateGearLostOnDeathWilderness', async () => {
 			finishDate: Date.now(),
 			channelID: ''
 		} as MonsterActivityTaskOptions,
-		{ user, handleTripFinish: async () => {} }
+		{ user, handleTripFinish: async () => {}, rng: MathRNG }
 	);
 
 	await user.sync();

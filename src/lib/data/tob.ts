@@ -13,7 +13,6 @@ import {
 } from '@/lib/data/CollectionsExport.js';
 import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
-import { logError } from '@/lib/util/logError.js';
 
 interface TOBRoom {
 	name: string;
@@ -515,7 +514,7 @@ export function createTOBRaid({
 	if (!wipedRoom) deathDuration = null;
 
 	if (wipedRoom !== null && (!TOBRooms.includes(wipedRoom) || [-1].includes(TOBRooms.indexOf(wipedRoom)))) {
-		logError(new Error('Had non-existant wiped room for tob'), {
+		Logging.logError(new Error('Had non-existant wiped room for tob'), {
 			room: JSON.stringify(wipedRoom),
 			team: JSON.stringify(parsedTeam)
 		});

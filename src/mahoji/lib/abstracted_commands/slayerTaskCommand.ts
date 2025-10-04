@@ -12,7 +12,6 @@ import {
 	userCanUseMaster
 } from '@/lib/slayer/slayerUtil.js';
 import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
-import { logError } from '@/lib/util/logError.js';
 
 function getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
 	if (assignedTask) {
@@ -311,7 +310,7 @@ export async function slayerSkipTaskCommand({
 		}
 		await interaction.reply(resultMessage);
 	} catch (e) {
-		logError(e, {
+		Logging.logError(e as Error, {
 			user_id: user.id.toString(),
 			command: 'slayerSkipTaskCommand',
 			current_task_id: currentTask.id.toString(),
@@ -346,7 +345,11 @@ export async function slayerUnblockCommand(mahojiUser: MUser, monsterName: strin
 		});
 		return `**${getCommonTaskName(monsterToUnblock)}** has been unblocked`;
 	} catch (e) {
-		logError(e, { user_id: mahojiUser.id.toString(), command: 'slayerUnblockCommand', assignment: monsterName });
+		Logging.logError(e as Error, {
+			user_id: mahojiUser.id.toString(),
+			command: 'slayerUnblockCommand',
+			assignment: monsterName
+		});
 		return 'An error occurred while trying to remove task. Please try again, or ask #help-and-support if the issue persists.';
 	}
 }

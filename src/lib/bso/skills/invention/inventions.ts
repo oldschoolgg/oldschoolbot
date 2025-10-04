@@ -9,7 +9,6 @@ import { clamp } from 'remeda';
 
 import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
-import { logError } from '@/lib/util/logError.js';
 
 const InventionFlags = ['equipped', 'bank'] as const;
 type InventionFlag = (typeof InventionFlags)[number];
@@ -725,7 +724,7 @@ export async function inventionItemBoost({
 		});
 		return { success: true, materialCost, messages: messages.join(', ') };
 	} catch (err) {
-		logError(err, { user_id: user.id });
+		Logging.logError(err as Error, { user_id: user.id });
 		return { success: false };
 	}
 }

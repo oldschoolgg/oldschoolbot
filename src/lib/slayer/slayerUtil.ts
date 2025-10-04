@@ -16,7 +16,6 @@ import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { bossTasks, wildernessBossTasks } from '@/lib/slayer/tasks/bossTasks.js';
 import type { AssignableSlayerTask, SlayerMaster } from '@/lib/slayer/types.js';
-import { logError } from '@/lib/util/logError.js';
 
 export const wildySlayerOnlyMonsters = [
 	Monsters.DustDevil,
@@ -394,7 +393,7 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 	const assignedTask = slayerMaster?.tasks.find(m => m.monster.id === currentTask.monster_id);
 
 	if (!assignedTask || !slayerMaster) {
-		logError(
+		Logging.logError(
 			`Could not find task or slayer master for user ${id} task ${currentTask.monster_id} master ${currentTask.slayer_master_id}`,
 			{ userID: id }
 		);

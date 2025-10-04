@@ -132,7 +132,7 @@ export async function repairBrokenItemsFromUser(mUser: MUser) {
 		}
 
 		if (Object.values(changes).length > 0) {
-			debugLog(`${mUser.logName} repair bank:
+			Logging.logDebug(`${mUser.logName} repair bank:
 Broken Items: ${brokenBank.join(', ')}
 Changes: ${JSON.stringify(changes, null, '	')}
 Previous User: ${JSON.stringify(previousUser)}
@@ -141,7 +141,7 @@ Previous User: ${JSON.stringify(previousUser)}
 			await mUser.update(changes);
 			await mUser.sync();
 
-			debugLog(`${mUser.logName} repair bank:
+			Logging.logDebug(`${mUser.logName} repair bank:
 New User: ${JSON.stringify(mUser.user)}
 `);
 		}
@@ -159,7 +159,7 @@ New User: ${JSON.stringify(mUser.user)}
 		}
 
 		if (!deepEqual(currentValues.sacrificedBank, newValues.sacrificedBank)) {
-			debugLog(
+			Logging.logDebug(
 				`${mUser.logName} repair bank sacrifice bank changes: ${JSON.stringify(deepObjectDiff(currentValues.sacrificedBank, newValues.sacrificedBank))}`
 			);
 			await mUser.statsUpdate({

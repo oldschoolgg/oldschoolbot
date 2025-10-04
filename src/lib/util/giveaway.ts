@@ -4,7 +4,6 @@ import { type MessageEditOptions, time, userMention } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { sql } from '@/lib/postgres.js';
-import { logError } from '@/lib/util/logError.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 
 async function refundGiveaway(creator: MUser, loot: Bank) {
@@ -12,7 +11,7 @@ async function refundGiveaway(creator: MUser, loot: Bank) {
 		itemsToAdd: loot
 	});
 	const user = await globalClient.users.fetch(creator.id);
-	debugLog('Refunding a giveaway.', { type: 'GIVEAWAY_REFUND', user_id: creator.id, loot: loot.toJSON() });
+	Logging.logDebug('Refunding a giveaway.', { type: 'GIVEAWAY_REFUND', user_id: creator.id, loot: loot.toJSON() });
 	await user.send(`Your giveaway failed to finish, you were refunded the items: ${loot}.`).catch(noOp);
 }
 
@@ -72,7 +71,7 @@ export const updateGiveawayMessage = debounce(async (_giveaway: Giveaway) => {
 }, Time.Second);
 
 export async function handleGiveawayCompletion(_giveaway: Giveaway) {
-	debugLog('Completing a giveaway.', { type: 'GIVEAWAY_COMPLETE', giveaway_id: _giveaway.id });
+	Logging.logDebug('Completing a giveaway.', { type: 'GIVEAWAY_COMPLETE', giveaway_id: _giveaway.id });
 	if (_giveaway.completed) {
 		throw new Error('Tried to complete an already completed giveaway.');
 	}
@@ -125,6 +124,6 @@ They received these items: ${loot}`;
 			content: str
 		});
 	} catch (err) {
-		logError(err);
+		Logging.logError(err as Error);
 	}
 }

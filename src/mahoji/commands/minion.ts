@@ -461,7 +461,7 @@ export const minionCommand: OSBMahojiCommand = {
 		const perkTier = user.perkTier();
 
 		if (options.info) return (await getUserInfo(user)).everythingString;
-		if (options.status) return minionStatusCommand(user, channelID.toString());
+		if (options.status) return minionStatusCommand(user, channelID);
 
 		if (options.stats) {
 			return { embeds: [await minionStatsEmbed(user)] };
@@ -542,7 +542,7 @@ export const minionCommand: OSBMahojiCommand = {
 			return degradeableItemsCommand(interaction, user, options.charge.item, options.charge.amount);
 		}
 		if (options.daily) {
-			return dailyCommand(interaction, channelID, user);
+			return dailyCommand(interaction, user);
 		}
 		if (options.train) return trainCommand(user, options.train.style);
 		if (options.pat) return randomPatMessage(user.minionName);

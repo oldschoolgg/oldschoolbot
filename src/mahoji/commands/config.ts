@@ -1,7 +1,6 @@
 import { Inventions } from '@/lib/bso/skills/invention/inventions.js';
 
 import {
-	channelIsSendable,
 	formatDuration,
 	hasBanMemberPerms,
 	miniID,
@@ -18,7 +17,6 @@ import { clamp } from 'remeda';
 import { gearImages } from '@/lib/canvas/gearImageData.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BitField, ParsedCustomEmojiWithGroups, PerkTier } from '@/lib/constants.js';
-import { DynamicButtons } from '@/lib/DynamicButtons.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { itemOption } from '@/lib/discord/index.js';
 import { CombatOptionsArray, CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
@@ -26,6 +24,7 @@ import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.j
 import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerUtil.js';
 import { BankSortMethods } from '@/lib/sorts.js';
+import { DynamicButtons } from '@/lib/structures/DynamicButtons.js';
 import { emojiServers } from '@/lib/util/cachedUserIDs.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
@@ -102,13 +101,10 @@ const toggles: UserConfigToggle[] = [
 					{ display: '6 months', duration: Time.Month * 6 },
 					{ display: '1 year', duration: Time.Year }
 				];
-				const channel = globalClient.channels.cache.get(interaction.channelId);
-				if (!channelIsSendable(channel)) return { result: false, message: 'Could not find channel.' };
 				await interaction.defer();
 				const buttons = new DynamicButtons({
-					channel: channel,
-					usersWhoCanInteract: [user.id],
-					deleteAfterConfirm: true
+					interaction,
+					usersWhoCanInteract: [user.id]
 				});
 				for (const dur of durations) {
 					buttons.add({

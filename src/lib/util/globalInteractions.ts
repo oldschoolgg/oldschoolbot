@@ -23,7 +23,6 @@ import { itemContractResetTime } from '@/lib/MUser.js';
 import { runCommand } from '@/lib/settings/settings.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';
 import { updateGiveawayMessage } from '@/lib/util/giveaway.js';
-import { handleInteractionError } from '@/lib/util/interactionReply.js';
 import { isValidGlobalInteraction } from '@/lib/util/interactions.js';
 import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
@@ -239,7 +238,7 @@ ${Emoji.ItemContract} Your next contract is: ${nextIcDetails.currentItem?.name} 
 			}
 		});
 	} catch (err) {
-		handleInteractionError(err, new MInteraction({ interaction }));
+		Logging.logError({ err: err as Error, interaction: new MInteraction({ interaction }) });
 	} finally {
 		modifyBusyCounter(donator.id, -1);
 	}
@@ -373,7 +372,7 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 	const timeSinceMessage = Date.now() - new Date(interaction.message.createdTimestamp).getTime();
 	const timeLimit = reactionTimeLimit(user.perkTier());
 	if (timeSinceMessage > Time.Day) {
-		debugLog(
+		Logging.logDebug(
 			`${user.id} clicked Diff[${formatDuration(timeSinceMessage)}] Button[${id}] Message[${
 				interaction.message.id
 			}]`

@@ -39,7 +39,6 @@ import {
 	makeRepeatTripButton,
 	makeTearsOfGuthixButton
 } from '@/lib/util/interactions.js';
-import { logError } from '@/lib/util/logError.js';
 import { hasSkillReqs, perHourChance } from '@/lib/util/smallUtils.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 import { alching } from '@/mahoji/commands/laps.js';
@@ -385,7 +384,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 						try {
 							await user.removeItemsFromBank(new Bank().add(item));
 						} catch (err) {
-							logError(err);
+							Logging.logError(err as Error);
 						}
 					}
 				}
@@ -510,7 +509,7 @@ export async function handleTripFinish(
 		if (res?.itemsToRemove) itemsToRemove.add(res.itemsToRemove);
 		stopwatch.stop();
 		if (stopwatch.duration > 500) {
-			debugLog(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
+			Logging.logDebug(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
 		}
 	}
 

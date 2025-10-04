@@ -27,7 +27,6 @@ import type { Creature } from '@/lib/skilling/types.js';
 import type { Gear } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
-import { logError } from '@/lib/util/logError.js';
 import { PeakTier } from '@/lib/util/peaks.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
@@ -296,7 +295,7 @@ export const hunterTask: MinionTask = {
 		const creature = Hunter.Creatures.find(c => c.id === creatureID);
 
 		if (!creature) {
-			logError(`Invalid creature ID provided: ${creatureID}`);
+			Logging.logError(`Invalid creature ID provided: ${creatureID}`);
 			return;
 		}
 

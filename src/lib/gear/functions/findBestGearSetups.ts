@@ -1,38 +1,46 @@
-import { allDyedItems } from '@/lib/bso/dyedItems.js';
-
-import { EquipmentSlot, Items } from 'oldschooljs';
+import { EquipmentSlot, ItemGroups, Items } from 'oldschooljs';
 import type { GearStat } from 'oldschooljs/gear';
 
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { allEquippableItems } from '@/lib/discord/presetCommandOptions.js';
 import { Gear } from '@/lib/structures/Gear.js';
 
-export function findBestGearSetups(stat: GearStat): Gear[] {
+export function findBestGearSetups({
+	stat,
+	ignoreUnobtainable,
+	limit = 5
+}: {
+	stat: GearStat;
+	ignoreUnobtainable: boolean;
+	limit?: number;
+}): Gear[] {
 	const finalSetups: Gear[] = [];
 
 	const usedItems = new Set<string>();
 
 	function findItem(slots: EquipmentSlot[]) {
-		return allEquippableItems
-			.filter(
-				i =>
-					i.equipment?.[stat] !== undefined &&
-					i.equipment[stat] > 0 &&
-					!allDyedItems.includes(i.id) &&
-					!usedItems.has(i.name)
-			)
+		const foundItem = allEquippableItems
+			.filter(i => i.equipment?.[stat] !== undefined && i.equipment[stat] > 0 && !usedItems.has(i.name))
 			.sort((a, b) => b.equipment![stat] - a.equipment![stat])
 			.find(i => {
 				if (!slots.includes(i.equipment!.slot)) return false;
 				if (usedItems.has(i.name)) return false;
-				for (const item of getSimilarItems(i.id)) {
-					usedItems.add(Items.itemNameFromId(item)!);
+				if (ignoreUnobtainable && ItemGroups.allUnobtainableGear.includes(i.id)) {
+					return false;
 				}
 				return true;
 			})!;
+
+		if (foundItem) {
+			for (const item of getSimilarItems(foundItem.id)) {
+				usedItems.add(Items.itemNameFromId(item)!);
+			}
+		}
+
+		return foundItem;
 	}
 
-	for (let i = 0; i < 5; i++) {
+	for (let i = 0; i < limit; i++) {
 		const gear = new Gear();
 		for (const slot of [
 			EquipmentSlot.Ammo,

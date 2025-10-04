@@ -4,7 +4,6 @@ import { Bank, type ItemBank } from 'oldschooljs';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
 import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
 import { filterLootReplace } from '@/lib/slayer/slayerUtil.js';
-import { logError } from '@/lib/util/logError.js';
 import { userQueueFn } from '@/lib/util/userQueues.js';
 import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager.js';
 
@@ -37,7 +36,7 @@ export async function transactItemsFromBank({
 			const errObj = new Error(
 				`${settings.usernameOrMention} doesn't have enough coins! They need ${gpToRemove} GP, but only have ${settings.GP} GP.`
 			);
-			logError(errObj, undefined, {
+			Logging.logError(errObj, {
 				userID: settings.id,
 				previousGP: settings.GP.toString(),
 				gpToRemove: gpToRemove.toString(),
@@ -90,7 +89,7 @@ export async function transactItemsFromBank({
 						.clone()
 						.remove(currentBank)}`
 				);
-				logError(errObj, undefined, {
+				Logging.logError(errObj, {
 					userID: settings.id,
 					previousGP: settings.GP.toString(),
 					gpToRemove: gpToRemove.toString(),

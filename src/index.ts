@@ -5,6 +5,7 @@ import './lib/MUser.js';
 import { Events } from '@oldschoolgg/toolkit';
 import { init } from '@sentry/node';
 import { GatewayIntentBits, Options, Partials, type TextChannel } from 'discord.js';
+import exitHook from 'exit-hook';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { Channel, gitHash, globalConfig } from '@/lib/constants.js';
@@ -14,9 +15,10 @@ import { onMessage } from '@/lib/events.js';
 import { preStartup } from '@/lib/preStartup.js';
 import { OldSchoolBotClient } from '@/lib/structures/OldSchoolBotClient.js';
 import { CACHED_ACTIVE_USER_IDS } from '@/lib/util/cachedUserIDs.js';
-import { logError } from '@/lib/util/logError.js';
 import { onStartup } from '@/mahoji/lib/events.js';
 import { exitCleanup } from '@/mahoji/lib/exitHandler.js';
+
+exitHook(exitCleanup);
 
 if (globalConfig.sentryDSN) {
 	init({
@@ -116,21 +118,15 @@ client.on('guildCreate', guild => {
 	}
 });
 
-client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
+client.on('shardError', err => Logging.logDebug('Shard Error', { error: err.message }));
 client.once('ready', () => onStartup());
 
 async function main() {
-	console.log('Starting up...');
-	await Promise.all([
-		preStartup(),
-		import('exit-hook').then(({ asyncExitHook }) =>
-			asyncExitHook(exitCleanup, {
-				wait: 2000
-			})
-		),
-		client.login(globalConfig.botToken)
-	]);
-	console.log(`Logged in as ${globalClient.user.username}`);
+	Logging.logDebug(`Starting up after ${process.uptime()}s`);
+
+	await Promise.all([preStartup(), client.login(globalConfig.botToken)]);
+
+	Logging.logDebug(`Logged in as ${globalClient.user.username} after ${process.uptime()}s`);
 
 	// if (process.env.NODE_ENV !== 'production' && Boolean(process.env.TEST_BOT_SERVER)) {
 	// 	import('@/testing/testServer.js').then(_mod => _mod.startTestBotServer());
@@ -139,12 +135,12 @@ async function main() {
 
 process.on('uncaughtException', err => {
 	console.error(err);
-	logError(err);
+	Logging.logError(err);
 });
 
 process.on('unhandledRejection', err => {
 	console.error(err);
-	logError(err);
+	Logging.logError(err as Error);
 });
 
 main();

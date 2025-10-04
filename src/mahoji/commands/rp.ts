@@ -19,7 +19,6 @@ import { premiumPatronTime } from '@/lib/premiumPatronTime.js';
 import { runRolesTask } from '@/lib/rolesTask.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
-import { logError } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { migrateUser } from '@/lib/util/migrateUser.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
@@ -611,7 +610,7 @@ Date: ${dateFm(date)}`;
 						const result = await action.run();
 						return result;
 					} catch (err) {
-						logError(err);
+						Logging.logError(err as Error);
 						return 'An error occurred.';
 					}
 				}

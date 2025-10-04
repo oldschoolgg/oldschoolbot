@@ -7,7 +7,6 @@ import { Items } from 'oldschooljs';
 import { globalConfig } from '@/lib/constants.js';
 import { BossInstance, type BossOptions, type BossUser } from '../structures/Boss.js';
 import type { NewBossOptions } from '../types/minions.js';
-import { logError } from '../util/logError.js';
 
 interface BossEvent {
 	id: number;
@@ -117,6 +116,6 @@ export async function startBossEvent({ boss, id }: { boss: BossEvent; id?: BossE
 			}
 		});
 	} catch (err: unknown) {
-		logError(err);
+		Logging.logError(err as Error);
 	}
 }

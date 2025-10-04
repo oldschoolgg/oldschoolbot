@@ -1,59 +1,57 @@
 import path from 'node:path';
 import { AttachmentBuilder } from 'discord.js';
+import type { Image } from 'skia-canvas';
 
 import { createCanvas, loadAndCacheLocalImage, printWrappedText } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 
-export const textBoxFile = loadAndCacheLocalImage('./src/lib/resources/images/textbox.png');
+type HeadKey =
+	| 'mejJal'
+	| 'jane'
+	| 'santa'
+	| 'izzy'
+	| 'alry'
+	| 'ketKeh'
+	| 'gertrude'
+	| 'antiSanta'
+	| 'bunny'
+	| 'minimus'
+	| 'partyPete'
+	| 'mysteriousFigure'
+	| 'rudolph'
+	| 'pumpkin'
+	| 'marimbo'
+	| 'spookling'
+	| 'magnaboy'
+	| 'wurMuTheMonkey';
 
-function loadChImg(fileName: string) {
-	const basePath = './src/lib/resources/images/chat_heads/';
-	return loadAndCacheLocalImage(path.join(basePath, fileName));
-}
+const basePath = './src/lib/resources/images';
+const chatBase = `${basePath}/chat_heads`;
 
-const mejJalChatHead = loadChImg('mejJal.png');
-const janeChatHead = loadChImg('jane.png');
-const santaChatHead = loadChImg('santa.png');
-const izzyChatHead = loadChImg('izzy.png');
-const alryTheAnglerChatHead = loadChImg('alryTheAngler.png');
-const ketKehChatHead = loadChImg('ketKeh.png');
-const gertrudeChatHead = loadChImg('gertrude.png');
-const antiSantaChatHead = loadChImg('antisanta.png');
-const bunnyChatHead = loadChImg('bunny.png');
-const minimusHead = loadChImg('minimus.png');
-const pumpkinHead = loadChImg('pumpkin.png');
-const spookling = loadChImg('spookling.png');
-const monkeyChildChatHead = loadChImg('monkeychild.png');
-const magnaboyChatHead = loadChImg('magnaboy.png');
-const marimboChatHead = loadChImg('marimbo.png');
-const partyPeteHead = loadChImg('partyPete.png');
-const mysteriousFigureHead = loadChImg('mysteriousFigure.png');
-const rudolphChatHead = loadChImg('rudolph.png');
-
-const chatHeads = {
-	mejJal: mejJalChatHead,
-	jane: janeChatHead,
-	santa: santaChatHead,
-	izzy: izzyChatHead,
-	alry: alryTheAnglerChatHead,
-	ketKeh: ketKehChatHead,
-	gertrude: gertrudeChatHead,
-	antiSanta: antiSantaChatHead,
-	bunny: bunnyChatHead,
-	minimus: minimusHead,
+const chatHeadPaths: Record<HeadKey, string> = {
+	mejJal: 'mejJal.png',
+	jane: 'jane.png',
+	santa: 'santa.png',
+	izzy: 'izzy.png',
+	alry: 'alryTheAngler.png',
+	ketKeh: 'ketKeh.png',
+	gertrude: 'gertrude.png',
+	antiSanta: 'antisanta.png',
+	bunny: 'bunny.png',
+	minimus: 'minimus.png',
 
 	// BSO
-	partyPete: partyPeteHead,
-	mysteriousFigure: mysteriousFigureHead,
-	rudolph: rudolphChatHead,
-	pumpkin: pumpkinHead,
-	marimbo: marimboChatHead,
-	spookling: spookling,
-	magnaboy: magnaboyChatHead,
-	wurMuTheMonkey: monkeyChildChatHead
+	partyPete: 'partyPete.png',
+	mysteriousFigure: 'mysteriousFigure.png',
+	rudolph: 'rudolph.png',
+	pumpkin: 'pumpkin.png',
+	marimbo: 'marimbo.png',
+	spookling: 'spookling.png',
+	magnaboy: 'magnaboy.png',
+	wurMuTheMonkey: 'monkeychild.png'
 };
 
-const names: Record<keyof typeof chatHeads, string> = {
+const names: Record<HeadKey, string> = {
 	mejJal: 'TzHaar-Mej-Jal',
 	jane: 'Guildmaster Jane',
 	santa: 'Santa',
@@ -76,20 +74,36 @@ const names: Record<keyof typeof chatHeads, string> = {
 	wurMuTheMonkey: 'Wur Mu the Monkey'
 };
 
-export async function newChatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {
+const imagePromiseCache = new Map<string, Promise<Image>>();
+
+const loadOnce = (absPath: string): Promise<any> => {
+	let p = imagePromiseCache.get(absPath);
+	if (!p) {
+		p = loadAndCacheLocalImage(absPath);
+		imagePromiseCache.set(absPath, p);
+	}
+	return p;
+};
+
+export const getTextbox = () => loadOnce(path.join(basePath, 'textbox.png'));
+const getChatHead = (key: HeadKey) => loadOnce(path.join(chatBase, chatHeadPaths[key]));
+
+export async function newChatHeadImage({ content, head }: { content: string; head: HeadKey }) {
 	const canvas = createCanvas(519, 142);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
-	const headImage = await chatHeads[head];
-	const bg = await textBoxFile;
+
+	const [bg, headImage] = await Promise.all([getTextbox(), getChatHead(head)]);
 
 	ctx.drawImage(bg, 0, 0);
 	ctx.drawImage(headImage, 28, bg.height / 2 - headImage.height / 2);
 	ctx.font = '16px RuneScape Quill 8';
 
 	ctx.fillStyle = '#810303';
-	const nameWidth = Math.floor(ctx.measureText(names[head]).width);
-	ctx.fillText(names[head], Math.floor(307 - nameWidth / 2), 36);
+	const name = names[head];
+	const nameWidth = Math.floor(ctx.measureText(name).width);
+	ctx.fillText(name, Math.floor(307 - nameWidth / 2), 36);
+
 	ctx.fillStyle = '#000';
 	printWrappedText(ctx, content, 307, 58, 361);
 
@@ -108,14 +122,12 @@ export async function newChatHeadImage({ content, head }: { content: string; hea
 	return scaledCanvas.toBuffer();
 }
 
-export default async function chatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {
+export default async function chatHeadImage({ content, head }: { content: string; head: HeadKey }) {
 	const image = await newChatHeadImage({ content, head });
 	return new AttachmentBuilder(image);
 }
 
-export async function mahojiChatHead({ content, head }: { content: string; head: keyof typeof chatHeads }) {
+export async function mahojiChatHead({ content, head }: { content: string; head: HeadKey }) {
 	const image = await newChatHeadImage({ content, head });
-	return {
-		files: [{ attachment: image, name: 'image.jpg' }]
-	};
+	return { files: [{ attachment: image, name: 'image.jpg' }] };
 }

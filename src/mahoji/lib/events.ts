@@ -7,6 +7,7 @@ import { startBlacklistSyncing } from '@/lib/blacklists.js';
 import { usernameWithBadgesCache } from '@/lib/cache.js';
 import { badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { initCrons } from '@/lib/crons.js';
+import { bulkUpdateCommands } from '@/lib/discord/utils.js';
 import { initTickers } from '@/lib/tickers.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 import { logWrapFn } from '@/lib/util.js';
@@ -62,6 +63,9 @@ export const onStartup = logWrapFn('onStartup', async () => {
 		sendToChannelID(Channel.GeneralChannel, {
 			content: `I have just turned on!\n\n${META_CONSTANTS.RENDERED_STR}`
 		}).catch(console.error);
+	} else {
+		// In development, always sync commands on startup.
+		await bulkUpdateCommands();
 	}
 
 	globalClient.application.commands.fetch({

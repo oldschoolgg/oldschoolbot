@@ -14,7 +14,6 @@ import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js'
 import { courses } from '@/lib/skilling/skills/agility.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import type { Skills } from '@/lib/types/index.js';
-import { logError } from '@/lib/util/logError.js';
 
 export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	const { QP } = user;
@@ -160,7 +159,7 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 		const [id, score] = monsterScores[0];
 		const res = effectiveMonsters.find(c => c.id === Number.parseInt(id, 10))!;
 		if (!res) {
-			logError(`No monster found with id ${id} for stats embed`);
+			Logging.logError(`No monster found with id ${id} for stats embed`);
 		} else {
 			otherStats.push([`${res.name} KC`, score]);
 		}

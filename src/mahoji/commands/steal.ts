@@ -8,7 +8,6 @@ import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/stealables.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
-import { logError } from '@/lib/util/logError.js';
 import { calcLootXPPickpocketing } from '@/tasks/minions/pickpocketActivity.js';
 
 export const stealCommand: OSBMahojiCommand = {
@@ -93,7 +92,7 @@ export const stealCommand: OSBMahojiCommand = {
 			stealable.type === 'pickpockable' ? (stealable.customTickRate ?? 2) * 600 : stealable.respawnTime;
 
 		if (!timeToTheft) {
-			logError(new Error('respawnTime missing from stealable object.'), {
+			Logging.logError(new Error('respawnTime missing from stealable object.'), {
 				userID: user.id,
 				stealable: stealable.name
 			});
