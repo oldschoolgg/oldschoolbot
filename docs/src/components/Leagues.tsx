@@ -3,6 +3,53 @@ import { useEffect, useState } from 'preact/hooks';
 
 import { toTitleCase } from '../docs-util.js';
 
+function TextTooltip({ text, tooltip }: { text: string; tooltip: string }) {
+	const [show, setShow] = useState(false);
+
+	return (
+		<button
+			type="button"
+			style={{
+				cursor: 'help',
+				position: 'relative',
+				background: 'none',
+				border: 'none',
+				padding: 0,
+				textDecoration: tooltip ? 'underline dotted' : 'none',
+				textAlign: 'left',
+				display: 'inline',
+				verticalAlign: 'middle'
+			}}
+			onClick={() => setShow(s => !s)}
+			onMouseEnter={() => setShow(true)}
+			onMouseLeave={() => setShow(false)}
+			tabIndex={0}
+			aria-label="Show details"
+		>
+			{text}
+			{show && (
+				<span
+					style={{
+						position: 'absolute',
+						left: 0,
+						top: '1.8em',
+						background: '#222',
+						color: '#fff',
+						padding: '4px 8px',
+						borderRadius: '4px',
+						whiteSpace: 'nowrap',
+						zIndex: 100,
+						boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+						pointerEvents: 'none'
+					}}
+				>
+					{tooltip}
+				</span>
+			)}
+		</button>
+	);
+}
+
 const tiers = Object.keys(combatAchievements).map(t => t.toLowerCase());
 const allTasksFlat = Object.values(combatAchievements).flatMap((tier: any) =>
 	tier.tasks.map((t: any) => ({ ...t, tier: tier.name.toLowerCase() }))
@@ -119,7 +166,7 @@ export function Leagues() {
 					Completed {data.completed_ca_task_ids.length}/{allTasksFlat.length} tasks
 				</p>
 			) : null}
-			<table>
+			<table className="ca-table">
 				<thead>
 					<tr>
 						<th>Name</th>
@@ -135,7 +182,9 @@ export function Leagues() {
 							className={data?.completed_ca_task_ids.includes(task.id) ? 'ca-complete' : undefined}
 						>
 							<td>{task.name}</td>
-							<td>{task.desc}</td>
+							<td>
+								{task.details ? <TextTooltip text={task.desc} tooltip={task.details} /> : task.desc}
+							</td>
 							<td>{task.rng?.chancePerKill > 1 ? `1 / ${task.rng?.chancePerKill}` : undefined}</td>
 							<td>{toTitleCase(task.tier)}</td>
 						</tr>

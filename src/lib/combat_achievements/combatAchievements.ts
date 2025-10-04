@@ -43,6 +43,7 @@ export type CombatAchievement = {
 	type: CAType;
 	monster: string;
 	desc: string;
+	details?: string;
 	activityType?: activity_type_enum;
 } & (
 	| { requirements: Requirements }

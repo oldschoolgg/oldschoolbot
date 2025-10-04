@@ -35,6 +35,7 @@
 				"type": "restriction",
 				"monster": "Barrows",
 				"desc": "Kill any Barrows Brother using only magical damage.",
+				"details": "Must be training Magic.",
 				"rng": {
 					"chance_per_kill": 1
 				}

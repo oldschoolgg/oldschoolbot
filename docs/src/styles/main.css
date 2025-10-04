@@ -671,3 +671,7 @@ sl-sidebar-state-persist > ul > li:nth-child(3) > details > summary > svg {
 	background: #223326 !important;
 	color: #b8ffcc !important;
 }
+
+.ca-table td {
+	vertical-align: top;
+}
