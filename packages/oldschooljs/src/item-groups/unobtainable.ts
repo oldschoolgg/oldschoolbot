@@ -510,6 +510,105 @@ export const unobtainableLMSItems = [
 	29852 // Atlatl dart
 ];
 
+const unobtainableBarrowsGear = [
+	4856, // Ahrim's hood 100
+	4859, // Ahrim's hood 25
+	4858, // Ahrim's hood 50
+	4857, // Ahrim's hood 75
+	4874, // Ahrim's robeskirt 100
+	4877, // Ahrim's robeskirt 25
+	4876, // Ahrim's robeskirt 50
+	4875, // Ahrim's robeskirt 75
+	4868, // Ahrim's robetop 100
+	4871, // Ahrim's robetop 25
+	4870, // Ahrim's robetop 50
+	4869, // Ahrim's robetop 75
+	4862, // Ahrim's staff 100
+	4865, // Ahrim's staff 25
+	4864, // Ahrim's staff 50
+	4863, // Ahrim's staff 75
+	4886, // Dharok's greataxe 100
+	4889, // Dharok's greataxe 25
+	4888, // Dharok's greataxe 50
+	4887, // Dharok's greataxe 75
+	4880, // Dharok's helm 100
+	4883, // Dharok's helm 25
+	4882, // Dharok's helm 50
+	4881, // Dharok's helm 75
+	4892, // Dharok's platebody 100
+	4895, // Dharok's platebody 25
+	4894, // Dharok's platebody 50
+	4893, // Dharok's platebody 75
+	4898, // Dharok's platelegs 100
+	4901, // Dharok's platelegs 25
+	4900, // Dharok's platelegs 50
+	4899, // Dharok's platelegs 75
+	30519, // Echo ahrim's hood 100
+	30537, // Echo ahrim's hood 25
+	30531, // Echo ahrim's hood 50
+	30525, // Echo ahrim's hood 75
+	30523, // Echo ahrim's robeskirt 100
+	30541, // Echo ahrim's robeskirt 25
+	30535, // Echo ahrim's robeskirt 50
+	30529, // Echo ahrim's robeskirt 75
+	30521, // Echo ahrim's robetop 100
+	30539, // Echo ahrim's robetop 25
+	30533, // Echo ahrim's robetop 50
+	30527, // Echo ahrim's robetop 75
+	30570, // Echo ahrim's staff 100
+	30573, // Echo ahrim's staff 25
+	30572, // Echo ahrim's staff 50
+	30571, // Echo ahrim's staff 75
+	4922, // Guthan's chainskirt 100
+	4925, // Guthan's chainskirt 25
+	4924, // Guthan's chainskirt 50
+	4923, // Guthan's chainskirt 75
+	4904, // Guthan's helm 100
+	4907, // Guthan's helm 25
+	4906, // Guthan's helm 50
+	4905, // Guthan's helm 75
+	4916, // Guthan's platebody 100
+	4919, // Guthan's platebody 25
+	4918, // Guthan's platebody 50
+	4917, // Guthan's platebody 75
+	4910, // Guthan's warspear 100
+	4913, // Guthan's warspear 25
+	4912, // Guthan's warspear 50
+	4911, // Guthan's warspear 75
+	4928, // Karil's coif 100
+	4931, // Karil's coif 25
+	4930, // Karil's coif 50
+	4929, // Karil's coif 75
+	4934, // Karil's crossbow 100
+	4937, // Karil's crossbow 25
+	4936, // Karil's crossbow 50
+	4935, // Karil's crossbow 75
+	4946, // Karil's leatherskirt 100
+	4949, // Karil's leatherskirt 25
+	4948, // Karil's leatherskirt 50
+	4947, // Karil's leatherskirt 75
+	4940, // Karil's leathertop 100
+	4943, // Karil's leathertop 25
+	4942, // Karil's leathertop 50
+	4941, // Karil's leathertop 75
+	4988, // Verac's brassard 100
+	4991, // Verac's brassard 25
+	4990, // Verac's brassard 50
+	4989, // Verac's brassard 75
+	4982, // Verac's flail 100
+	4985, // Verac's flail 25
+	4984, // Verac's flail 50
+	4983, // Verac's flail 75
+	4976, // Verac's helm 100
+	4979, // Verac's helm 25
+	4978, // Verac's helm 50
+	4977, // Verac's helm 75
+	4994, // Verac's plateskirt 100
+	4997, // Verac's plateskirt 25
+	4996, // Verac's plateskirt 50
+	4995 // Verac's plateskirt 75
+];
+
 export const allUnobtainableGear = [
 	...unobtainableGauntletGear,
 	...unobtainableEmirsArenaGear,
@@ -517,5 +616,6 @@ export const allUnobtainableGear = [
 	...unobtainableBountyHunterGear,
 	...unobtainableDeadmanModeItems,
 	...unobtainableLockedItems,
-	...unobtainableLMSItems
+	...unobtainableLMSItems,
+	...unobtainableBarrowsGear
 ];
