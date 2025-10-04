@@ -1,3 +1,4 @@
+import { cryptoRng } from '@oldschoolgg/rng';
 import type { Activity, activity_type_enum, Prisma } from '@prisma/client';
 
 import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
@@ -72,7 +73,7 @@ class SActivityManager {
 
 		modifyBusyCounter(activity.userID, 1);
 		try {
-			await task.run(activity, { user: await mUserFetch(activity.userID), handleTripFinish });
+			await task.run(activity, { user: await mUserFetch(activity.userID), handleTripFinish, rng: cryptoRng });
 		} catch (err) {
 			logError(err);
 		} finally {
