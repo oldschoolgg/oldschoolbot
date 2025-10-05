@@ -22,3 +22,4 @@ export const partyLockCache = new Set<string>();
 TimerManager.setInterval(() => partyLockCache.clear(), Time.Minute * 20);
 
 export const DISABLED_COMMANDS = new Set<string>();
+export const CACHED_ACTIVE_USER_IDS = new Set();
