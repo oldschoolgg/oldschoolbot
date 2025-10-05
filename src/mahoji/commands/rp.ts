@@ -14,7 +14,6 @@ import { GrandExchange } from '@/lib/grandExchange.js';
 import { marketPricemap } from '@/lib/marketPrices.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
-import { sql } from '@/lib/postgres.js';
 import { premiumPatronTime } from '@/lib/premiumPatronTime.js';
 import { runRolesTask } from '@/lib/rolesTask.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
@@ -89,7 +88,7 @@ const actions = [
 				{
 					name: 'pgjs activity select',
 					run: async () => {
-						await sql`
+						await prisma.$queryRaw`
 							SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;
 						`;
 					}
@@ -119,7 +118,7 @@ const actions = [
 				{
 					name: 'pgjs user select',
 					run: async () => {
-						await sql`
+						await prisma.$queryRaw`
 							SELECT * FROM users WHERE id = '157797566833098752';
 						`;
 					}

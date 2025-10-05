@@ -606,7 +606,25 @@ const unobtainableBarrowsGear = [
 	4994, // Verac's plateskirt 100
 	4997, // Verac's plateskirt 25
 	4996, // Verac's plateskirt 50
-	4995 // Verac's plateskirt 75
+	4995, // Verac's plateskirt 75
+	...Items.resolveItems([
+		"Torag's hammers 100",
+		"Torag's hammers 25",
+		"Torag's hammers 50",
+		"Torag's hammers 75",
+		"Torag's helm 100",
+		"Torag's helm 25",
+		"Torag's helm 50",
+		"Torag's helm 75",
+		"Torag's platebody 100",
+		"Torag's platebody 25",
+		"Torag's platebody 50",
+		"Torag's platebody 75",
+		"Torag's platelegs 100",
+		"Torag's platelegs 25",
+		"Torag's platelegs 50",
+		"Torag's platelegs 75"
+	])
 ];
 
 export const allUnobtainableGear = [
