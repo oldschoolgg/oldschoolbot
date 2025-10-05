@@ -14,7 +14,6 @@ import { GrandExchange } from '@/lib/grandExchange.js';
 import { marketPricemap } from '@/lib/marketPrices.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
-import { sql } from '@/lib/postgres.js';
 import { premiumPatronTime } from '@/lib/premiumPatronTime.js';
 import { runRolesTask } from '@/lib/rolesTask.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
@@ -89,7 +88,7 @@ const actions = [
 				{
 					name: 'pgjs activity select',
 					run: async () => {
-						await sql`
+						await prisma.$queryRaw`
 							SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;
 						`;
 					}
@@ -119,7 +118,7 @@ const actions = [
 				{
 					name: 'pgjs user select',
 					run: async () => {
-						await sql`
+						await prisma.$queryRaw`
 							SELECT * FROM users WHERE id = '157797566833098752';
 						`;
 					}
@@ -593,9 +592,8 @@ Date: ${dateFm(date)}`;
 				date
 			});
 			await sendToChannelID(Channel.BotLogs, {
-				content: `${adminUser.logName} created userevent for ${targetUser.logName}: ${type} ${dateFm(date)} ${
-					skill ?? ''
-				}`
+				content: `${adminUser.logName} created userevent for ${targetUser.logName}: ${type} ${dateFm(date)} ${skill ?? ''
+					}`
 			});
 			return `Done: ${confirmationStr.replace('Please confirm:', '')}`;
 		}
@@ -674,8 +672,7 @@ Date: ${dateFm(date)}`;
 				return 'No gear slot specified.';
 			}
 			await interaction.confirmation(
-				`Unequip ${gearSlot} gear from ${targetUser.usernameOrMention}?${
-					warningMsgs.length > 0 ? warningMsgs.join('\n') : ''
+				`Unequip ${gearSlot} gear from ${targetUser.usernameOrMention}?${warningMsgs.length > 0 ? warningMsgs.join('\n') : ''
 				}`
 			);
 			const slotsToUnequip = gearSlot === 'all' ? allGearSlots : [gearSlot];
@@ -722,8 +719,7 @@ Date: ${dateFm(date)}`;
 				);
 			}
 			await interaction.confirmation(
-				`Are you sure you want to ${actionMsg} ${items.toString().slice(0, 500)} from ${
-					userToStealFrom.usernameOrMention
+				`Are you sure you want to ${actionMsg} ${items.toString().slice(0, 500)} from ${userToStealFrom.usernameOrMention
 				}?`
 			);
 			let missing = new Bank();
@@ -735,9 +731,8 @@ Date: ${dateFm(date)}`;
 			}
 
 			await sendToChannelID(Channel.BotLogs, {
-				content: `${adminUser.logName} ${actionMsgPast} \`${items.toString().slice(0, 500)}\` from ${
-					userToStealFrom.logName
-				} for ${options.player.steal_items.reason ?? 'No reason'}`,
+				content: `${adminUser.logName} ${actionMsgPast} \`${items.toString().slice(0, 500)}\` from ${userToStealFrom.logName
+					} for ${options.player.steal_items.reason ?? 'No reason'}`,
 				files: [{ attachment: Buffer.from(items.toString()), name: 'items.txt' }]
 			});
 
@@ -778,9 +773,8 @@ Date: ${dateFm(date)}`;
 			const result = await migrateUser(sourceUser, destUser);
 			if (result === true) {
 				await sendToChannelID(Channel.BotLogs, {
-					content: `${adminUser.logName} migrated ${sourceUser.logName} to ${destUser.logName}${
-						reason ? `, for ${reason}` : ''
-					}`
+					content: `${adminUser.logName} migrated ${sourceUser.logName} to ${destUser.logName}${reason ? `, for ${reason}` : ''
+						}`
 				});
 				return 'Done';
 			}
@@ -859,11 +853,9 @@ Date: ${dateFm(date)}`;
 				totalsRcvd.add(row.recipient_id, 'Coins', sentValueLast100);
 
 				// Add report row:
-				report += `${row.date.toLocaleString('en-us')}\t${row.guild_id}\t${row.sender_id}\t${
-					row.recipient_id
-				}\t${row.sender}\t${
-					row.recipient
-				}\t${sentBank}\t${recvBank}\t${sentValueGuide}\t${recvValueGuide}\t${sentValueLast100}\t${recvValueLast100}\n`;
+				report += `${row.date.toLocaleString('en-us')}\t${row.guild_id}\t${row.sender_id}\t${row.recipient_id
+					}\t${row.sender}\t${row.recipient
+					}\t${sentBank}\t${recvBank}\t${sentValueGuide}\t${recvValueGuide}\t${sentValueLast100}\t${recvValueLast100}\n`;
 			}
 			report += '\n\n';
 			report += 'User ID\tTotal Sent\tTotal Received\n';

@@ -1,7 +1,6 @@
 import { Items } from 'oldschooljs';
 
 import { globalConfig } from '@/lib/constants.js';
-import { sql } from '@/lib/postgres.js';
 import { adminPingLog } from '@/lib/util.js';
 
 const startupScripts: { sql: string; ignoreErrors?: true }[] = [];
@@ -176,10 +175,10 @@ if (globalConfig.isProduction) {
 }
 
 export async function runStartupScripts() {
-	await sql.begin(sql => startupScripts.map(query => sql.unsafe(query.sql)));
+	await prisma.$transaction(startupScripts.map(query => prisma.$executeRawUnsafe(query.sql)));
 
-	const usersWithFractionalItemQuantities =
-		await sql`SELECT u.id AS user_id, item.key AS item_id, item.value::numeric AS quantity
+	const usersWithFractionalItemQuantities: any =
+		await prisma.$queryRaw`SELECT u.id AS user_id, item.key AS item_id, item.value::numeric AS quantity
 FROM users u
 CROSS JOIN LATERAL jsonb_each_text(u.bank::jsonb) AS item
 WHERE u.bank::text LIKE '%.%'

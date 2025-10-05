@@ -6,7 +6,6 @@ import { convertXPtoLVL, toKMB } from 'oldschooljs';
 import { globalConfig, MAX_LEVEL, MAX_LEVEL_XP, MAX_TOTAL_LEVEL, MAX_XP } from '@/lib/constants.js';
 import { skillEmoji } from '@/lib/data/emojis.js';
 import type { AddXpParams } from '@/lib/minions/types.js';
-import { sql } from '@/lib/postgres.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
@@ -34,11 +33,9 @@ async function howManyMaxed() {
 async function onMax(user: MUser) {
 	const { normies, irons } = await howManyMaxed();
 
-	const str = `🎉 ${
-		user.badgedUsername
-	}'s minion just achieved level 99 in every skill, they are the **${formatOrdinal(normies)}** minion to be maxed${
-		user.isIronman ? `, and the **${formatOrdinal(irons)}** ironman to max.` : '.'
-	} 🎉`;
+	const str = `🎉 ${user.badgedUsername
+		}'s minion just achieved level 99 in every skill, they are the **${formatOrdinal(normies)}** minion to be maxed${user.isIronman ? `, and the **${formatOrdinal(irons)}** ironman to max.` : '.'
+		} 🎉`;
 
 	globalClient.emit(Events.ServerNotification, str);
 	sendToChannelID(globalConfig.supportServerID, { content: str }).catch(noOp);
@@ -97,8 +94,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			if (currentXP < XPMilestone && newXP >= XPMilestone) {
 				globalClient.emit(
 					Events.ServerNotification,
-					`${skill.emoji} **${user.badgedUsername}'s** minion, ${
-						user.minionName
+					`${skill.emoji} **${user.badgedUsername}'s** minion, ${user.minionName
 					}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(params.skillName)}!`
 				);
 				break;
@@ -120,11 +116,10 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			}[]
 		>(`SELECT COUNT(*)::int FROM users WHERE "skills.${params.skillName}" >= ${MAX_LEVEL_XP};`);
 
-		let str = `${skill.emoji} **${user.badgedUsername}'s** minion, ${
-			user.minionName
-		}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
-			Number.parseInt(usersWith.count) + 1
-		)} to get 99 ${skillNameCased}.`;
+		let str = `${skill.emoji} **${user.badgedUsername}'s** minion, ${user.minionName
+			}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
+				Number.parseInt(usersWith.count) + 1
+			)} to get 99 ${skillNameCased}.`;
 
 		if (user.isIronman) {
 			const [ironmenWith] = await prisma.$queryRawUnsafe<
@@ -139,7 +134,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		globalClient.emit(Events.ServerNotification, str);
 	}
 
-	await sql.unsafe(`UPDATE users SET "skills.${params.skillName}" = ${Math.floor(newXP)} WHERE id = '${user.id}';`);
+	await prisma.$queryRawUnsafe(`UPDATE users SET "skills.${params.skillName}" = ${Math.floor(newXP)} WHERE id = '${user.id}';`);
 	(user.user as User)[`skills_${params.skillName}`] = BigInt(Math.floor(newXP));
 	user.updateProperties();
 
