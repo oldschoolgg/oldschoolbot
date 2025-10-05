@@ -150,7 +150,8 @@ test(
 			['minion', 'daily'],
 			['gamble', 'luckypick'],
 			['gamble', 'duel'],
-			['config', 'toggle']
+			['config', 'toggle'],
+			['gear', 'best_in_slot']
 		];
 
 		const useCommandOptions: Record<string, any>[] = [];
