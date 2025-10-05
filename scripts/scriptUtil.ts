@@ -8,7 +8,6 @@ import { Bank, Items, LootTable } from 'oldschooljs';
 import { isFunction, isObjectType, toSnakeCase } from 'remeda';
 
 import { crons } from '@/lib/crons.js';
-import { sql } from '@/lib/postgres.js';
 import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 import { sonicBoom } from '@/lib/util/logger.js';
 
@@ -41,7 +40,6 @@ export async function runTimedLoggedFn(name: string, fn: () => unknown) {
 }
 
 export async function tearDownScript() {
-	await sql.end();
 	TimerManager.destroy();
 	sonicBoom.destroy();
 	for (const cron of crons) cron.stop();

@@ -71,9 +71,6 @@ importers:
       piscina:
         specifier: ^5.1.3
         version: 5.1.3
-      postgres:
-        specifier: ^3.4.7
-        version: 3.4.7
       remeda:
         specifier: ^2.23.0
         version: 2.23.0
@@ -3859,10 +3856,6 @@ packages:
   postgres-interval@1.2.0:
     resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
     engines: {node: '>=0.10.0'}
-
-  postgres@3.4.7:
-    resolution: {integrity: sha512-Jtc2612XINuBjIl/QTWsV5UvE8UHuNblcO3vVADSrKsrc6RqGX6lOW1cEo3CM2v0XG4Nat8nI+YM7/f26VxXLw==}
-    engines: {node: '>=12'}
 
   preact-render-to-string@6.6.1:
     resolution: {integrity: sha512-IIMfXRjmbSP9QmG18WJLQa4Z4yx3J0VC9QN5q9z2XYlWSzFlJ+bSm/AyLyyV/YFwjof1OXFX2Mz6Ao60LXudJg==}
@@ -9135,8 +9128,6 @@ snapshots:
   postgres-interval@1.2.0:
     dependencies:
       xtend: 4.0.2
-
-  postgres@3.4.7: {}
 
   preact-render-to-string@6.6.1(preact@10.26.9):
     dependencies:
