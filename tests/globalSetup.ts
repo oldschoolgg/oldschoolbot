@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 import '../src/lib/safeglobals.js';
 
 import { InteractionID } from '@/lib/InteractionID.js';
-import { allCommands } from '@/mahoji/commands/allCommands.js';
+import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
 import { mockChannel, mockInteraction, TEST_CHANNEL_ID } from './integration/util.js';
 
 vi.mock('@oldschoolgg/toolkit', async () => {
@@ -16,17 +16,27 @@ vi.mock('@oldschoolgg/toolkit', async () => {
 		awaitMessageComponentInteraction: vi.fn().mockImplementation(({ message }: { message: Message }) => {
 			return Promise.resolve({
 				customId: randArrItem(Object.values(InteractionID.Slayer)),
-				...mockInteraction({ userId: message.author.id })
+				...mockInteraction({ user: { id: message.author.id } as any })
 			});
 		})
 	};
 });
 
 global.globalClient = {
-	allCommands,
 	isReady: () => true,
 	emit: () => true,
 	guilds: { cache: new Collection() },
+	mahojiClient: {
+		commands: {
+			values: () =>
+				['test'].map(n => ({
+					name: n,
+					description: 'test description',
+					attributes: { description: 'test description' },
+					options: [{ name: 'claim' }]
+				}))
+		}
+	},
 	users: {
 		cache: new Collection(),
 		fetch: async (id: string) => Promise.resolve(globalClient.users.cache.get(id))
@@ -34,5 +44,6 @@ global.globalClient = {
 	channels: {
 		cache: new Collection().set(TEST_CHANNEL_ID, mockChannel({ userId: '123' }))
 	},
-	busyCounterCache: new Map<string, number>()
+	busyCounterCache: new Map<string, number>(),
+	allCommands: allCommandsDONTIMPORT
 } as any;

@@ -72,11 +72,14 @@ class MockInteraction {
 	async reply(res: any) {
 		this.__response__ = res;
 	}
+
+	mUser: MUser;
 	user = {
 		id: '123456789'
 	};
-	constructor(userId: string) {
-		this.user.id = userId;
+	constructor({ user }: { user: MUser }) {
+		this.mUser = user;
+		this.user.id = user.id;
 	}
 
 	async confirmation() {
@@ -100,8 +103,8 @@ class MockInteraction {
 	}
 }
 
-export function mockInteraction({ userId }: { userId: string }) {
-	return new MockInteraction(userId) as any;
+export function mockInteraction({ user }: { user: MUser }): MInteraction {
+	return new MockInteraction({ user }) as any as MInteraction;
 }
 
 export function mockChannel({ userId }: { userId: string }) {
@@ -284,7 +287,7 @@ export class TestUser extends MUserClass {
 
 	async runCommand(command: OSBMahojiCommand, options: object = {}, syncAfter = false) {
 		await this.sync();
-		const mockedInt = mockInteraction({ userId: this.user.id });
+		const mockedInt = mockInteraction({ user: this });
 		const result = await command.run({
 			userID: this.user.id,
 			guildID: '342983479501389826',
