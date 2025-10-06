@@ -1,4 +1,5 @@
 import { execSync } from 'node:child_process';
+import { existsSync, mkdirSync } from 'node:fs';
 import { isMainThread } from 'node:worker_threads';
 import { PGlite } from '@electric-sql/pglite';
 import { rewriteSqlToIdempotent } from '@oldschoolgg/toolkit';
@@ -19,6 +20,9 @@ async function getAdapter(type: typeof BOT_TYPE | 'robochimp'): Promise<PrismaPg
 		return new PrismaPg({ connectionString: process.env.DATABASE_URL });
 	}
 
+	if (!existsSync('./.db')) {
+		mkdirSync('./.db');
+	}
 	const dataDir = `./.db/${type.toLowerCase()}${process.env.TEST ? '-test' : ''}`;
 	const pgLiteClient = new PGlite({ dataDir });
 	const createDbSQL = execSync(
@@ -55,8 +59,8 @@ async function makeRobochimpPrismaClient(): Promise<RobochimpPrismaClient> {
 }
 
 export async function createDb() {
-	global.prisma = global.prisma || makePrismaClient();
-	global.roboChimpClient = global.roboChimpClient || makeRobochimpPrismaClient();
+	global.prisma = global.prisma || (await makePrismaClient());
+	global.roboChimpClient = global.roboChimpClient || (await makeRobochimpPrismaClient());
 	console.log('Connected to the database.');
 	return { prisma: global.prisma, roboChimpClient: global.roboChimpClient };
 }
