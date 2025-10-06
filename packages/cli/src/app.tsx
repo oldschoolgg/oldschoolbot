@@ -24,7 +24,7 @@ const stages: Stage[] = [
 		name: 'Stage 1',
 		commands: [
 			{ cmd: 'pnpm install', desc: 'Installing dependencies...' },
-			{ cmd: 'prisma db push', desc: 'Pushing Prisma schema...' },
+			// { cmd: 'prisma db push', desc: 'Pushing Prisma schema...' },
 			{ cmd: 'pnpm generate:robochimp', desc: 'Generating RoboChimp...' },
 			{ cmd: 'pnpm build:packages', desc: 'Building packages...' }
 		]

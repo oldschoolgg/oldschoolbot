@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearchPostgres", "driverAdapters"]
+  previewFeatures = ["fullTextSearchPostgres"]
   output          = "../node_modules/@prisma/robochimp"
 }
 

@@ -109,7 +109,7 @@ export function sleep(ms: number) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-export function noOp() { }
+export function noOp() {}
 
 /**
  * Shows what percentage a value is of a total value, for example calculating what percentage of 20 is 5? (25%)

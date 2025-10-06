@@ -21,9 +21,12 @@ async function getAdapter(type: typeof BOT_TYPE | 'robochimp'): Promise<PrismaPg
 
 	const dataDir = `./.db/${type.toLowerCase()}${process.env.TEST ? '-test' : ''}`;
 	const pgLiteClient = new PGlite({ dataDir });
-	const createDbSQL = execSync(`prisma migrate diff --from-empty --to-schema-datamodel ./prisma/${type === 'robochimp' ? 'robochimp' : 'schema'}.prisma --script`, {
-		encoding: 'utf-8'
-	});
+	const createDbSQL = execSync(
+		`prisma migrate diff --from-empty --to-schema-datamodel ./prisma/${type === 'robochimp' ? 'robochimp' : 'schema'}.prisma --script`,
+		{
+			encoding: 'utf-8'
+		}
+	);
 	await pgLiteClient.exec(rewriteSqlToIdempotent(createDbSQL));
 	return new PrismaPGlite(pgLiteClient) as any as PrismaPg;
 }

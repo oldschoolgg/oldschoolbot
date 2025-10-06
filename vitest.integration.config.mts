@@ -19,9 +19,9 @@ export default defineConfig({
 		maxWorkers: 4,
 		poolOptions: {
 			forks: {
-				maxForks: 1,
+				maxForks: 1
 			}
-		},
+		}
 		// poolOptions: {
 		// 	threads: {
 		// 		singleThread: true,
@@ -30,7 +30,6 @@ export default defineConfig({
 		// 	}
 		// },
 		// maxWorkers: 1,
-
 	},
 	resolve: {
 		alias: {

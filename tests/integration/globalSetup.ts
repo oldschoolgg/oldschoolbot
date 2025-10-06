@@ -7,6 +7,6 @@ export async function setup() {
 	for (const dir of ['./.db/osb-test', './.db/robochimp-test', './.db/bso-test']) {
 		try {
 			rmSync(dir, { recursive: true });
-		} catch { }
+		} catch {}
 	}
 }

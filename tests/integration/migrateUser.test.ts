@@ -29,7 +29,7 @@ import {
 } from '@prisma/client';
 import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
 import { clone } from 'remeda';
-import { beforeAll, expect, test, vi } from 'vitest';
+import { beforeAll, expect, test } from 'vitest';
 
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { defaultGear, Gear } from '@/lib/structures/Gear.js';
