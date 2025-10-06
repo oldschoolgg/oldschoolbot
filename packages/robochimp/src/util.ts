@@ -1,13 +1,8 @@
 import { PerkTier } from '@oldschoolgg/toolkit';
-import { type MessageCreateOptions, WebhookClient } from 'discord.js';
+import { WebhookClient } from 'discord.js';
 
 import type { User } from '../prisma/generated/robochimp/index.js';
 import { globalConfig } from './constants.js';
-
-export async function fetchSupportServer() {
-	const guild = await djsClient.guilds.fetch(globalConfig.supportServerID);
-	return guild;
-}
 
 export enum Bits {
 	Admin = 1,
@@ -60,10 +55,11 @@ export async function fetchUser(userID: bigint | string) {
 }
 
 export const CHANNELS = {
+	BLACKLIST_LOGS: '782459317218967602',
 	MODERATORS_OTHER: '830145040495411210',
-	MODERATORS: '655880227469131777'
+	MODERATORS: '655880227469131777',
+	TESTING_AWARDS: '1195579189714243685'
 };
-export const CONFUSED_MONKEY_GIF = 'https://i.imgur.com/uZwog84.gif';
 
 enum PatronTierID {
 	One = '4608201',
@@ -91,16 +87,6 @@ export const tiers: PatronTier[] = [
 ];
 
 export const allPatronBits = tiers.map(t => t.bit);
-
-export async function sendToChannelID(channelID: string, content: string | MessageCreateOptions) {
-	if (!globalConfig.isProduction) return;
-	const channel = djsClient.channels.cache.get(channelID);
-	if (!channel || !channel.isTextBased() || channel.partial || !('send' in channel)) {
-		console.error('Invalid channel');
-		return;
-	}
-	await channel.send(content);
-}
 
 export async function findGroupOfUser(user: User) {
 	if (!user.user_group_id) return [user.id.toString()];

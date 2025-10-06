@@ -1,12 +1,14 @@
 {
-	"name": "robochimp",
+	"name": "@oldschoolgg/robochimp",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
 	"scripts": {
-		"build": "pnpm wipedist && pnpm gen && pnpm build:tsc",
+		"build": "pnpm gen && tsx esbuild.mts",
 		"build:tsc": "tsc -p src",
-		"wipedist": "rimraf \"dist/\"",
 		"start": "tsx ./src/index.ts",
 		"test": "concurrently --timings --raw --kill-others-on-fail \"tsc -p src\" \"pnpm test:unit\"",
-		"dev": "pnpm wipedist && pnpm fetch-schema && pnpm build:tsc && pnpm test",
+		"dev": "pnpm fetch-schema && pnpm build:tsc && pnpm test",
 		"gen": "concurrently \"npx prisma generate --schema prisma/bso_schema.prisma\" \"npx prisma generate --schema prisma/osb_schema.prisma\" \"npx prisma generate --schema prisma/robochimp_schema.prisma\"",
 		"fetch-schema": "tsx ./scripts/fetchSchema.ts",
 		"dbpush": "npx prisma db push --schema=./prisma/robochimp_schema.prisma",
@@ -15,8 +17,8 @@
 	"dependencies": {
 		"@fastify/cors": "^10.0.1",
 		"@octokit/graphql": "^8.1.1",
-		"@oldschoolgg/toolkit": "workspace:*",
 		"@prisma/client": "^6.10.1",
+		"@oldschoolgg/toolkit": "workspace:*",
 		"@sapphire/discord-utilities": "^2.12.0",
 		"dotenv": "^16.4.5",
 		"fastify": "^5.1.0",
@@ -26,8 +28,6 @@
 		"zod": "^3.25.67"
 	},
 	"devDependencies": {
-		"prisma": "^6.10.1",
-		"rimraf": "^5.0.7"
-	},
-	"packageManager": "pnpm@9.14.2+sha512.6e2baf77d06b9362294152c851c4f278ede37ab1eba3a55fda317a4a17b209f4dbb973fb250a77abc463a341fcb1f17f17cfa24091c4eb319cda0d9b84278387"
+		"prisma": "^6.10.1"
+	}
 }

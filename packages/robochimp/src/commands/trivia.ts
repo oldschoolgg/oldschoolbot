@@ -1,6 +1,3 @@
-import type { CommandRunOptions, ICommand } from '@oldschoolgg/toolkit/discord-util';
-import { ApplicationCommandOptionType } from 'discord.js';
-
 import type { TriviaQuestion } from '../../prisma/generated/robochimp/index.js';
 import { Bits, fetchUser } from '../util.js';
 
@@ -31,23 +28,23 @@ async function triviaSearch(query: string) {
 	return questions;
 }
 
-export const triviaCommand: ICommand = {
+export const triviaCommand: RoboChimpCommand = {
 	name: 'trivia',
 	description: 'Manage trivia commands.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'add',
 			description: 'Add a trivia question',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'question',
 					description: 'The trivia question.',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'answers',
 					description: 'The answers, separated by comma.',
 					required: true
@@ -55,12 +52,12 @@ export const triviaCommand: ICommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'remove',
 			description: 'Remove a trivia question',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'id',
 					description: 'The id of the question you want to remove.',
 					required: true
@@ -68,12 +65,12 @@ export const triviaCommand: ICommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'search',
 			description: 'Search trivia questions.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'query',
 					description: 'Your search query.',
 					required: true,

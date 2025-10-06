@@ -1,25 +1,20 @@
-import type { CommandRunOptions, ICommand } from '@oldschoolgg/toolkit/discord-util';
-import { ApplicationCommandOptionType } from 'discord.js';
-
-import { Bits, fetchUser } from '../util.js';
-
-export const tagCommand: ICommand = {
+export const tagCommand: RoboChimpCommand = {
 	name: 'tag',
 	description: 'Tag command.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'add',
 			description: 'Add a tag',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'The name.',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'content',
 					description: 'The content of the tag.',
 					required: true
@@ -27,12 +22,12 @@ export const tagCommand: ICommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'remove',
 			description: 'Remove a tag',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'id',
 					description: 'The tag to remove.',
 					required: true,
@@ -50,19 +45,18 @@ export const tagCommand: ICommand = {
 	],
 	run: async ({
 		options,
-		userID
+		user
 	}: CommandRunOptions<{
 		add?: { name: string; content: string };
 		remove?: { id: string };
 	}>) => {
-		const dbUser = await fetchUser(userID);
-		if (!dbUser.bits.includes(Bits.Mod)) return 'Ook.';
+		if (!user.isMod()) return 'Ook.';
 		if (options.add) {
 			await roboChimpClient.tag.create({
 				data: {
 					name: options.add.name,
 					content: options.add.content,
-					user_id: dbUser.id
+					user_id: user.id
 				}
 			});
 			return 'Done.';

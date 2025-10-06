@@ -1,13 +1,13 @@
-import { type Message, type MessageContextMenuCommandInteraction, codeBlock, userMention } from 'discord.js';
+import { codeBlock, type Message, type MessageContextMenuCommandInteraction } from 'discord.js';
 
-import { TEST_SERVER_ID, globalConfig } from '../constants.js';
-import { Bits, CONFUSED_MONKEY_GIF, fetchUser, sendToChannelID } from '../util.js';
-import { getInfoStrOfUser } from './messageCommands.js';
+import { globalConfig, TEST_SERVER_ID } from '@/constants.js';
+import { getInfoStrOfUser } from '@/lib/messageCommands.js';
+import { Bits, CHANNELS } from '@/util.js';
 
 interface MessageCtxCommand {
 	name: string;
 	guildID: string;
-	run: (interaction: MessageContextMenuCommandInteraction, message: Message | undefined) => void;
+	run: (options: { interaction: MessageContextMenuCommandInteraction, message: Message | undefined; user: RUser; }) => void;
 }
 
 interface Award {
@@ -30,13 +30,12 @@ export const messageCtxCommands: MessageCtxCommand[] = [
 	{
 		name: 'Check User Info',
 		guildID: globalConfig.supportServerID,
-		run: async (interaction: MessageContextMenuCommandInteraction) => {
-			const commandUser = await fetchUser(interaction.user.id);
+		run: async ({ interaction, user }) => {
 			const userToCheck = interaction.targetMessage.author.id;
 
-			if (!commandUser.bits.includes(Bits.Mod) && commandUser.id.toString() !== userToCheck) {
+			if (!user.isMod() && user.id.toString() !== userToCheck) {
 				return interaction.reply({
-					content: CONFUSED_MONKEY_GIF,
+					content: "You can't do that.",
 					ephemeral: true
 				});
 			}
@@ -52,37 +51,29 @@ export const messageCtxCommands: MessageCtxCommand[] = [
 		(award): MessageCtxCommand => ({
 			name: `Award ${award.name} pts`,
 			guildID: TEST_SERVER_ID,
-			run: async (interaction, message) => {
-				const contributor = await fetchUser(interaction.user.id);
+			run: async ({ interaction, message, user }) => {
 
 				// Must be trusted
-				if (!contributor.bits.includes(Bits.Trusted)) {
+				if (!user.bits.includes(Bits.Trusted)) {
 					return interaction.reply({
-						content: CONFUSED_MONKEY_GIF,
+						content: "You can't do that.",
 						ephemeral: true
 					});
 				}
 
-				const tester = await fetchUser(interaction.targetMessage.author.id);
-				await roboChimpClient.user.update({
-					where: {
-						id: tester.id
+				const tester = await globalClient.fetchUser(interaction.targetMessage.author.id);
+				await tester.update({
+					testing_points: {
+						increment: award.points
 					},
-					data: {
-						testing_points: {
-							increment: award.points
-						},
-						testing_points_balance: {
-							increment: award.points
-						}
+					testing_points_balance: {
+						increment: award.points
 					}
 				});
 
-				sendToChannelID(
-					'1195579189714243685',
-					`${interaction.targetMessage.author} was awarded points by ${userMention(
-						contributor.id.toString()
-					)} for this message\n${codeBlock(message?.content ?? 'No message content')}`
+				globalClient.sendToChannelID(
+					CHANNELS.TESTING_AWARDS,
+					`${interaction.targetMessage.author} was awarded points by ${user.mention} for this message\n${codeBlock(message?.content ?? 'No message content')}`
 				);
 
 				return interaction.reply({

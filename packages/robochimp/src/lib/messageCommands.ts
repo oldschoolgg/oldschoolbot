@@ -1,8 +1,7 @@
-import { isValidDiscordSnowflake } from '@oldschoolgg/toolkit/discord-util';
-import { notEmpty } from '@oldschoolgg/toolkit/util';
+import { isValidDiscordSnowflake, notEmpty } from '@oldschoolgg/toolkit';
 import { type Message, time, userMention } from 'discord.js';
 
-import { Bits, bitsDescriptions, fetchSupportServer, fetchUser, findGroupOfUser, tiers } from '../util.js';
+import { type Bits, bitsDescriptions } from '../util.js';
 
 const messageCommands = [
 	{
@@ -34,21 +33,20 @@ export async function getInfoStrOfUser(target: string) {
 		return 'Invalid user ID.';
 	}
 	const [djsUser, member] = await Promise.all([
-		djsClient.users.fetch(target).catch(() => null),
-		fetchSupportServer()
+		globalClient.users.fetch(target).catch(() => null),
+		globalClient
+			.fetchSupportServer()
 			.then(s => s.members.fetch(target))
 			.catch(() => null)
 	]);
-	const roboChimpUser = await fetchUser(target);
-	const linkedAccounts = await findGroupOfUser(roboChimpUser);
-	let tier = roboChimpUser.perk_tier
-		? `Tier ${tiers.find(t => t.perkTier === roboChimpUser.perk_tier)!.number}`
-		: 'None';
+	const roboChimpUser = await globalClient.fetchUser(target);
+	const linkedAccounts = await roboChimpUser.findGroup();
+	let tier = `Tier ${roboChimpUser.perkTier?.number ?? 'None'}`;
 
-	if (roboChimpUser.patreon_id) {
+	if (roboChimpUser.patreonId) {
 		tier += ' Patreon';
 	}
-	if (roboChimpUser.github_id) {
+	if (roboChimpUser.githubId) {
 		tier += ' Github';
 	}
 
@@ -86,9 +84,9 @@ export async function getInfoStrOfUser(target: string) {
 			value: !member
 				? 'Unknown'
 				: member.roles.cache
-						.filter(i => i.id !== member.roles.guild.id)
-						.map(r => r.name)
-						.join(', ')
+					.filter(i => i.id !== member.roles.guild.id)
+					.map(r => r.name)
+					.join(', ')
 		},
 		{
 			name: 'Blacklisted',
@@ -96,27 +94,15 @@ export async function getInfoStrOfUser(target: string) {
 		}
 	];
 
-	const globalMastery =
-		roboChimpUser.osb_mastery !== null && roboChimpUser.bso_mastery !== null
-			? ((roboChimpUser.bso_mastery + roboChimpUser.osb_mastery) / 2).toFixed(1)
-			: null;
-	if (globalMastery) {
-		result.push({
-			name: 'Global OSBSO Mastery%',
-			value: `${globalMastery}%`
-		});
-	}
+	result.push({
+		name: 'Global OSBSO Mastery%',
+		value: `${roboChimpUser.globalMastery().toFixed(2)}%`
+	});
 
-	const globalCLPercent =
-		roboChimpUser.osb_cl_percent !== null && roboChimpUser.bso_cl_percent !== null
-			? ((roboChimpUser.osb_cl_percent + roboChimpUser.bso_cl_percent) / 2).toFixed(1)
-			: null;
-	if (globalCLPercent) {
-		result.push({
-			name: 'Global OSBSO CL%',
-			value: `${globalCLPercent}%`
-		});
-	}
+	result.push({
+		name: 'Global OSBSO CL%',
+		value: `${roboChimpUser.globalCLPercent().toFixed(1)}%`
+	});
 
 	return `${djsUser?.username} (${djsUser?.id})
 ${result.map(r => `**${r.name}:** ${r.value}`).join('\n')}`;
@@ -144,8 +130,8 @@ export async function handleCommands(message: Message) {
 	const possibleID = message.content.replace('.', '');
 
 	if (message.guild && possibleID && isValidDiscordSnowflake(possibleID)) {
-		const commandRunner = await fetchUser(message.author.id);
-		if (!commandRunner.bits.includes(Bits.Mod) && message.author.id !== possibleID) {
+		const commandRunner = await globalClient.fetchUser(message.author.id);
+		if (!commandRunner.isMod() && message.author.id !== possibleID) {
 			return message.reply({
 				content: 'You can only check your own information.',
 				allowedMentions: {

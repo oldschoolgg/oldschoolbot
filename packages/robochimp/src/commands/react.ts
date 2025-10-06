@@ -1,20 +1,16 @@
-import type { ICommand } from '@oldschoolgg/toolkit/discord-util';
 import { FormattedCustomEmojiWithGroups, TwemojiRegex } from '@sapphire/discord-utilities';
-import { ApplicationCommandOptionType } from 'discord.js';
 
-import { fetchUser } from '../util.js';
-
-export const reactCommand: ICommand = {
+export const reactCommand: RoboChimpCommand = {
 	name: 'react',
 	description: 'Manage your mention reaction.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'add',
 			description: 'Add an emoji thats reacted when you are pinged.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'emoji',
 					description: 'The emoji, must be SFW, in the OSB server, or a built-in emoji.',
 					required: true
@@ -22,7 +18,7 @@ export const reactCommand: ICommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'remove',
 			description: 'Remove your emoji reaction.',
 			options: []
@@ -30,13 +26,12 @@ export const reactCommand: ICommand = {
 	],
 	run: async ({
 		options,
-		userID
+		user
 	}: CommandRunOptions<{
 		add?: { emoji: string };
 		remove?: {};
 	}>) => {
-		const dbUser = await fetchUser(userID);
-		if (dbUser.leagues_points_total < 30_000) {
+		if (user.leaguesPointsTotal < 30_000) {
 			return 'You are not worthy. You need atleast 30,000 League Points to be able to have a reaction.';
 		}
 		if (options.add) {
@@ -56,25 +51,15 @@ export const reactCommand: ICommand = {
 				return 'Invalid emoji.';
 			}
 
-			await roboChimpClient.user.update({
-				where: {
-					id: BigInt(userID)
-				},
-				data: {
-					react_emoji_id: validatedEmojiID
-				}
+			await user.update({
+				react_emoji_id: validatedEmojiID
 			});
 
 			return "Done. If your reaction emoji isn't working, try changing it to a new one that RoboChimp can view, or a built-in emoji.";
 		}
 		if (options.remove) {
-			await roboChimpClient.user.update({
-				where: {
-					id: BigInt(userID)
-				},
-				data: {
-					react_emoji_id: null
-				}
+			await user.update({
+				react_emoji_id: null
 			});
 			return 'Removed your reaction emoji.';
 		}

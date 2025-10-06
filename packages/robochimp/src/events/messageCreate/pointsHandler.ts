@@ -1,8 +1,7 @@
+import { cryptoRng } from '@oldschoolgg/rng';
 import { InteractionType, type Message } from 'discord.js';
 
-import { TEST_SERVER_ID } from '../../constants.js';
-import { roll } from '../../lib/rng.js';
-import { fetchUser, sendToChannelID } from '../../util.js';
+import { TEST_SERVER_ID } from '@/constants.js';
 
 const testerRoles = [
 	{
@@ -83,13 +82,13 @@ export async function pointsHandler(msg: Message) {
 					}
 				}
 			});
-			if (roll(5)) {
+			if (cryptoRng.roll(5)) {
 				const userMember = await msg.guild.members.fetch(msg.interactionMetadata.user.id);
-				const u = await fetchUser(msg.interactionMetadata.user.id);
+				const u = await globalClient.fetchUser(msg.interactionMetadata.user.id);
 				for (const role of testerRoles) {
-					if (!userMember.roles.cache.has(role.id) && u.testing_points >= role.points) {
+					if (!userMember.roles.cache.has(role.id) && u.testingPoints >= role.points) {
 						await userMember.roles.add(role.id);
-						await sendToChannelID(
+						await globalClient.sendToChannelID(
 							msg.channel.id,
 							`${userMember}, you have been awarded the ${role.name} role! Thank you for testing.`
 						);

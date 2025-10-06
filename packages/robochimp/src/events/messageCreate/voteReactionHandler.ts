@@ -1,6 +1,6 @@
 import type { Message } from 'discord.js';
 
-import { globalConfig } from '../../constants.js';
+import { globalConfig } from '@/constants.js';
 
 export async function voteReactionHandler(msg: Message) {
 	if (msg.guild?.id !== globalConfig.supportServerID) return;

@@ -1,12 +1,10 @@
 import type { Interaction } from 'discord.js';
 
-import { fetchSupportServer } from './util.js';
-
-export async function handleInteraction(interaction: Interaction) {
+export async function handleButtonInteraction(interaction: Interaction) {
 	if (!interaction.isButton()) return;
 	const id = interaction.customId;
 
-	const member = (await fetchSupportServer()).members.cache.get(interaction.user.id);
+	const member = (await globalClient.fetchSupportServer()).members.cache.get(interaction.user.id);
 	if (!member) return;
 
 	if (id.includes('roles.')) {

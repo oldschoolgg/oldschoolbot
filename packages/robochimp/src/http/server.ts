@@ -1,6 +1,6 @@
 import { constants } from 'node:http2';
 import cors from '@fastify/cors';
-import { isValidDiscordSnowflake } from '@oldschoolgg/toolkit/discord-util';
+import { isValidDiscordSnowflake } from '@oldschoolgg/toolkit';
 import fastify from 'fastify';
 
 import { globalConfig } from '../constants.js';
@@ -113,7 +113,7 @@ export async function startServer() {
 			}
 
 			if (!isValidDiscordSnowflake(userID)) {
-				const djsUser = djsClient.users.cache.find(u => u.username === userID);
+				const djsUser = globalClient.users.cache.find(u => u.username === userID);
 				if (djsUser) {
 					userID = djsUser.id;
 				} else {

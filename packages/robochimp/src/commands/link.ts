@@ -1,11 +1,8 @@
-import type { CommandRunOptions, ICommand, MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
-import { ApplicationCommandOptionType, MessageFlags, userMention } from 'discord.js';
-
-import { Bits, fetchUser } from '../util.js';
+import { MessageFlags, userMention } from 'discord.js';
 
 async function rawLinkAccount(firstUserID: string, secondUserID: string) {
-	const firstUser = await fetchUser(firstUserID);
-	const secondUser = await fetchUser(secondUserID);
+	const firstUser = await globalClient.fetchUser(firstUserID);
+	const secondUser = await globalClient.fetchUser(secondUserID);
 
 	if (!firstUser || !secondUser) {
 		return 'Invalid user.';
@@ -15,8 +12,8 @@ async function rawLinkAccount(firstUserID: string, secondUserID: string) {
 		return 'Cannot link the same user.';
 	}
 
-	if (firstUser.user_group_id !== null && secondUser.user_group_id !== null) {
-		if (firstUser.user_group_id !== secondUser.user_group_id) {
+	if (firstUser.userGroupId !== null && secondUser.userGroupId !== null) {
+		if (firstUser.userGroupId !== secondUser.userGroupId) {
 			return 'Both users are already linked to different groups.';
 		} else {
 			return 'Both users are already linked to the same group.';
@@ -24,8 +21,8 @@ async function rawLinkAccount(firstUserID: string, secondUserID: string) {
 	}
 
 	const groupID: string =
-		firstUser.user_group_id ??
-		secondUser.user_group_id ??
+		firstUser.userGroupId ??
+		secondUser.userGroupId ??
 		(await roboChimpClient.userGroup.create({ data: {} })).id;
 
 	await roboChimpClient.user.updateMany({
@@ -48,18 +45,18 @@ async function rawLinkAccount(firstUserID: string, secondUserID: string) {
 	return `Successfully linked ${userMention(firstUser.id.toString())} and ${userMention(secondUser.id.toString())} to the same group. There are now ${inGroup.length} alts in the group.`;
 }
 
-export const linkCommand: ICommand = {
+export const linkCommand: RoboChimpCommand = {
 	name: 'link',
 	description: 'Link alt accounts.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.User,
+			type: 'User',
 			name: 'first_user',
 			description: 'The first account to connect.',
 			required: true
 		},
 		{
-			type: ApplicationCommandOptionType.User,
+			type: 'User',
 			name: 'second_user',
 			description: 'The second account to connect.',
 			required: true
@@ -67,13 +64,12 @@ export const linkCommand: ICommand = {
 	],
 	run: async ({
 		options,
-		userID
+		user
 	}: CommandRunOptions<{
 		first_user: MahojiUserOption;
 		second_user: MahojiUserOption;
 	}>) => {
-		const dbUser = await fetchUser(userID);
-		if (!dbUser.bits.includes(Bits.Mod)) return { content: 'Ook OOK OOK', flags: MessageFlags.Ephemeral };
+		if (!user.isMod()) return { content: 'Ook OOK OOK', flags: MessageFlags.Ephemeral };
 		return rawLinkAccount(options.first_user.user.id, options.second_user.user.id);
 	}
 };

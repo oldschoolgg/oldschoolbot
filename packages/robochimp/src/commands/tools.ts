@@ -1,29 +1,26 @@
-import type { CommandRunOptions, ICommand, MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
-import { ApplicationCommandOptionType } from 'discord.js';
-
 import { globalConfig } from '../constants.js';
 import { patreonTask } from '../lib/patreon.js';
 import { detectMischief } from '../mischiefDetection.js';
-import { Bits, CHANNELS, fetchUser, patronLogWebhook } from '../util.js';
+import { CHANNELS, patronLogWebhook } from '../util.js';
 
-export const toolsCommand: ICommand = {
+export const toolsCommand: RoboChimpCommand = {
 	name: 'tools',
 	description: 'RoboChimp tools.',
 	guildID: globalConfig.supportServerID,
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'setgithubid',
 			description: 'Set someones github ID',
 			options: [
 				{
-					type: ApplicationCommandOptionType.User,
+					type: 'User',
 					name: 'user',
 					description: 'The user',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'github_username',
 					description: 'The github username (leave blank to reset)',
 					required: false
@@ -31,25 +28,26 @@ export const toolsCommand: ICommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'detect_mischief',
 			description: 'Mischief!'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'patreon_sync',
 			description: 'Patreon sync'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'debug_patreon',
 			description: 'debug_patreon'
 		}
 	] as const,
 	run: async ({
 		options,
-		userID,
-		interaction
+		user,
+		interaction,
+		client
 	}: CommandRunOptions<{
 		setgithubid?: { user: MahojiUserOption; github_username?: string };
 		cl_lb?: {};
@@ -57,9 +55,8 @@ export const toolsCommand: ICommand = {
 		patreon_sync?: {};
 		debug_patreon?: {};
 	}>) => {
-		await interaction.deferReply();
-		const user = await fetchUser(userID);
-		if (!user.bits.includes(Bits.Mod)) return 'Ook';
+		await interaction.defer();
+		if (!user.isMod()) return 'Ook';
 
 		if (options.debug_patreon) {
 			const res = await patreonTask.fetchPatrons();
@@ -87,18 +84,11 @@ export const toolsCommand: ICommand = {
 		}
 
 		if (options.setgithubid) {
-			const user = await fetchUser(BigInt(options.setgithubid.user.user.id));
+			const githubSetUser = await client.fetchUser((options.setgithubid.user.user.id));
 			const { github_username } = options.setgithubid;
 
 			if (!github_username) {
-				await roboChimpClient.user.update({
-					where: {
-						id: user.id
-					},
-					data: {
-						github_id: null
-					}
-				});
+				await githubSetUser.update({ github_id: null });
 				return `Reset ${options.setgithubid.user.user.username}'s github ID.`;
 			}
 			const res = (await fetch(`https://api.github.com/users/${encodeURIComponent(github_username)}`)
@@ -119,17 +109,12 @@ export const toolsCommand: ICommand = {
 			if (alreadyHasName > 0) {
 				return `Someone (${alreadyHasName}) already has this Github account connected.`;
 			}
-			await roboChimpClient.user.update({
-				where: {
-					id: user.id
-				},
-				data: {
-					github_id: num
-				}
-			});
+
+			await githubSetUser.update({
+				github_id: num
+			})
 			await patreonTask.syncGithub();
-			const newUser = await fetchUser(user.id);
-			return `Set ${options.setgithubid.user.user.username}'s github ID to ${newUser.github_id}, and synced their patron tier to: ${newUser.perk_tier}.`;
+			return `Set ${options.setgithubid.user.user.username}'s github ID to ${githubSetUser.githubId}, and synced their patron tier to: ${githubSetUser.perkTier}.`;
 		}
 
 		if (options.patreon_sync) {
@@ -139,8 +124,6 @@ export const toolsCommand: ICommand = {
 			}
 			return 'Done.';
 		}
-
-		if (!user.bits.includes(Bits.Admin)) return 'Ook';
 
 		return 'Invalid command.';
 	}

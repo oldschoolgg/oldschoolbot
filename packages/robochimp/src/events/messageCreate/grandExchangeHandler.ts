@@ -1,4 +1,4 @@
-import { noOp } from '@oldschoolgg/toolkit/util';
+import { noOp } from '@oldschoolgg/toolkit';
 import type { Message } from 'discord.js';
 
 const words = [

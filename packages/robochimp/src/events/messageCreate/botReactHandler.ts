@@ -1,7 +1,5 @@
 import type { Message } from 'discord.js';
 
-import { globalConfig } from '../../constants.js';
-import { fetchUser } from '../../util.js';
 
 function generateRankMessage(rank: number) {
 	if (rank === 1) return 'Rank 1 👑🥇';
@@ -13,10 +11,10 @@ function generateRankMessage(rank: number) {
 }
 
 export async function botReactHandler(msg: Message) {
-	if (msg.content === `<@${globalConfig.appID}>`) {
-		const u = await fetchUser(msg.author.id);
+	if (msg.content === `<@${globalClient.applicationId}>`) {
+		const u = await globalClient.fetchUser(msg.author.id);
 		if (!u) return;
-		const combinedCLPercent = ((u.osb_cl_percent ?? 0) + (u.bso_cl_percent ?? 0)) / 2;
+		const combinedCLPercent = ((u.osbClPercent ?? 0) + (u.bsoClPercent ?? 0)) / 2;
 		const clPercentRank = (
 			await roboChimpClient.$queryRaw<{ count: number }[]>`SELECT COUNT(*)
 FROM public.user
@@ -24,11 +22,11 @@ WHERE ((osb_cl_percent + bso_cl_percent) / 2) >= ${combinedCLPercent};`
 		)[0].count;
 
 		msg.reply(`${msg.author.username}
-**OSB Total Level:** ${u.osb_total_level ?? 'Unknown'}
-**BSO Total Level:** ${u.bso_total_level ?? 'Unknown'}
+**OSB Total Level:** ${u.osbTotalLevel ?? 'Unknown'}
+**BSO Total Level:** ${u.bsoTotalLevel ?? 'Unknown'}
 
-**OSB CL %:** ${u.osb_cl_percent ?? 'Unknown'}
-**BSO CL %:** ${u.bso_cl_percent ?? 'Unknown'}
+**OSB CL %:** ${u.osbClPercent ?? 'Unknown'}
+**BSO CL %:** ${u.bsoClPercent ?? 'Unknown'}
 
 **Combined CL%:** ${combinedCLPercent.toFixed(2)} (${generateRankMessage(clPercentRank)})`);
 		return;

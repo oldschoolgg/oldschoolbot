@@ -1,32 +1,25 @@
-import type { CommandRunOptions, ICommand } from '@oldschoolgg/toolkit/discord-util';
 import {
 	type APIButtonComponentWithCustomId,
 	type APIRole,
-	ApplicationCommandOptionType,
 	ButtonStyle,
 	ComponentType,
 	MessageFlags,
 	PermissionsBitField
 } from 'discord.js';
 
-import { MASS_HOSTER_ROLE_ID, globalConfig } from '../constants.js';
-import { Bits, fetchUser, sendToChannelID } from '../util.js';
+import { globalConfig, MASS_HOSTER_ROLE_ID } from '../constants.js';
 
-function logRole(str: string) {
-	return sendToChannelID('665678499578904596', str);
-}
-
-export const pingableRolesCommand: ICommand = {
+export const pingableRolesCommand: RoboChimpCommand = {
 	name: 'pingableroles',
 	description: 'Oook ook ook!.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'add',
 			description: 'Add a pingable role.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Role,
+					type: 'Role',
 					name: 'role',
 					description: 'The role.',
 					required: true
@@ -34,12 +27,12 @@ export const pingableRolesCommand: ICommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'remove',
 			description: 'Remove a pingable role.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Role,
+					type: 'Role',
 					name: 'role',
 					description: 'The role.',
 					required: true
@@ -47,12 +40,12 @@ export const pingableRolesCommand: ICommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'ping',
 			description: 'Ping a role.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'role',
 					description: 'The role.',
 					required: true,
@@ -68,7 +61,6 @@ export const pingableRolesCommand: ICommand = {
 	],
 	run: async ({
 		options,
-		userID,
 		user,
 		guildID,
 		channelID,
@@ -78,7 +70,6 @@ export const pingableRolesCommand: ICommand = {
 		remove?: { role: APIRole };
 		ping?: { role: string };
 	}>) => {
-		const dbUser = await fetchUser(userID);
 		if (options.ping) {
 			if (!member) return 'No member found.';
 
@@ -108,10 +99,10 @@ export const pingableRolesCommand: ICommand = {
 					type: ComponentType.Button
 				}
 			];
-			const channel = djsClient.channels.cache.get(channelID.toString());
+			const channel = globalClient.channels.cache.get(channelID.toString());
 			if (!channel || !channel.isTextBased()) return 'Invalid channel.';
 
-			sendToChannelID(channel.id, {
+			globalClient.sendToChannelID(channel.id, {
 				content: `<@&${role.role_id.toString()}> - you were pinged by ${user.username}!`,
 				allowedMentions: {
 					roles: [role.role_id.toString()]
@@ -130,7 +121,7 @@ export const pingableRolesCommand: ICommand = {
 			};
 		}
 
-		if (!dbUser.bits.includes(Bits.Mod)) return { content: 'Ook OOK OOK', flags: MessageFlags.Ephemeral };
+		if (!user.isMod()) return { content: 'Ook OOK OOK', flags: MessageFlags.Ephemeral };
 		const inputRole = options.add?.role ?? options.remove?.role;
 		if (!inputRole) return 'Invalid role.';
 		const perms = new PermissionsBitField(BigInt(inputRole.permissions));
@@ -150,7 +141,6 @@ export const pingableRolesCommand: ICommand = {
 					name: inputRole.name
 				}
 			});
-			logRole(`${inputRole.name} was added as a pingable role by ${user.username}.`);
 			return `Added ${inputRole.name} as a pingable role.`;
 		}
 		if (options.remove) {
@@ -160,7 +150,6 @@ export const pingableRolesCommand: ICommand = {
 					role_id: id
 				}
 			});
-			logRole(`${inputRole.name} was removed as a pingable role by ${user.username}.`);
 			return `Removed ${inputRole.name} as a pingable role.`;
 		}
 
