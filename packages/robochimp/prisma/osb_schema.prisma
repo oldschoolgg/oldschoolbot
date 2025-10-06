@@ -1,6 +1,7 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../node_modules/@prisma/osb"
+  provider   = "prisma-client-js"
+  engineType = "client"
+  output     = "../node_modules/@prisma/osb"
 }
 
 datasource db {

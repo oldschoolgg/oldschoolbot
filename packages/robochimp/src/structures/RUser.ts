@@ -34,11 +34,11 @@ export class RUser {
 	}
 
 	public isMod() {
-		return this.bits.includes(Bits.Mod);
+		return [Bits.Admin, Bits.Mod].some(_bit => this.bits.includes(_bit));
 	}
 
 	public isTrusted() {
-		return this.bits.includes(Bits.Trusted);
+		return [Bits.Admin, Bits.Mod, Bits.Trusted].some(_bit => this.bits.includes(_bit));
 	}
 
 	get testingPoints() {

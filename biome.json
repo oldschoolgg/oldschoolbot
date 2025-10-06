@@ -7,23 +7,11 @@
 					"level": "on",
 					"options": {
 						"groups": [
-							[
-								"@bso/**",
-								"@/lib/bso/**"
-							],
+							["@bso/**", "@/lib/bso/**"],
 							":BLANK_LINE:",
-							[
-								":URL:",
-								":BUN:",
-								":NODE:",
-								":PACKAGE:",
-								":PACKAGE_WITH_PROTOCOL:"
-							],
+							[":URL:", ":BUN:", ":NODE:", ":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:"],
 							":BLANK_LINE:",
-							[
-								":ALIAS:",
-								":PATH:"
-							]
+							[":ALIAS:", ":PATH:"]
 						]
 					}
 				}

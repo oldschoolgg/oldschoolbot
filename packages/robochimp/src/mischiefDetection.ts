@@ -1,7 +1,9 @@
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-export class ArrayTracker {
+import type { BSOPrismaClient, OSBPrismaClient } from '@/lib/prisma.js';
+
+class ArrayTracker {
 	private counts: Record<string, string[]> = {};
 
 	add(id: string, item: string) {
@@ -48,7 +50,7 @@ export async function detectMischief(botType: 'osb' | 'bso') {
 			}
 		})
 	).map(i => i.id.toString());
-	const prismaClient = botType === 'osb' ? osbClient : bsoClient;
+	const prismaClient: OSBPrismaClient | BSOPrismaClient = botType === 'osb' ? osbClient : bsoClient;
 
 	/**
 	 * Most Active
@@ -126,8 +128,7 @@ GROUP BY user_id`;
 	 */
 	async function tradeGivers() {
 		const netValueSent: Record<string, number> = {};
-		// @ts-expect-error asdf
-		const transactions = await prismaClient.economyTransaction.findMany({
+		const transactions = await (prismaClient.economyTransaction as OSBPrismaClient['economyTransaction']).findMany({
 			where: {
 				date: {
 					gte: new Date(Date.now() - Time.Day * 7 * 2)

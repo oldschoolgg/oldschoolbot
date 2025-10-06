@@ -6,7 +6,6 @@ import { CHANNELS, patronLogWebhook } from '../util.js';
 export const toolsCommand: RoboChimpCommand = {
 	name: 'tools',
 	description: 'RoboChimp tools.',
-	guildID: globalConfig.supportServerID,
 	options: [
 		{
 			type: 'Subcommand',
@@ -50,7 +49,6 @@ export const toolsCommand: RoboChimpCommand = {
 		client
 	}: CommandRunOptions<{
 		setgithubid?: { user: MahojiUserOption; github_username?: string };
-		cl_lb?: {};
 		detect_mischief?: {};
 		patreon_sync?: {};
 		debug_patreon?: {};

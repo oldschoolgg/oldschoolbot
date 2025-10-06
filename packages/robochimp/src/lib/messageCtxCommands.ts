@@ -1,4 +1,4 @@
-import { codeBlock, type Message, type MessageContextMenuCommandInteraction } from 'discord.js';
+import { codeBlock, type Message, type MessageContextMenuCommandInteraction, MessageFlags } from 'discord.js';
 
 import { globalConfig, TEST_SERVER_ID } from '@/constants.js';
 import { getInfoStrOfUser } from '@/lib/messageCommands.js';
@@ -40,14 +40,14 @@ export const messageCtxCommands: MessageCtxCommand[] = [
 			if (!user.isMod() && user.id.toString() !== userToCheck) {
 				return interaction.reply({
 					content: "You can't do that.",
-					ephemeral: true
+					flags: MessageFlags.Ephemeral
 				});
 			}
 
 			const result = await getInfoStrOfUser(userToCheck);
 			return interaction.reply({
 				content: result,
-				ephemeral: true
+				flags: MessageFlags.Ephemeral
 			});
 		}
 	},
@@ -60,7 +60,7 @@ export const messageCtxCommands: MessageCtxCommand[] = [
 				if (!user.bits.includes(Bits.Trusted)) {
 					return interaction.reply({
 						content: "You can't do that.",
-						ephemeral: true
+						flags: MessageFlags.Ephemeral
 					});
 				}
 
@@ -81,7 +81,7 @@ export const messageCtxCommands: MessageCtxCommand[] = [
 
 				return interaction.reply({
 					content: 'Done.',
-					ephemeral: true
+					flags: MessageFlags.Ephemeral
 				});
 			}
 		})

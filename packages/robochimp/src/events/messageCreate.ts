@@ -1,5 +1,6 @@
 import type { Message } from 'discord.js';
 
+import { tagHandler } from '@/events/messageCreate/tagHandler.js';
 import { handleCommands } from '../lib/messageCommands.js';
 import { botReactHandler } from './messageCreate/botReactHandler.js';
 import { grandExchangeHandler } from './messageCreate/grandExchangeHandler.js';
@@ -13,7 +14,8 @@ const messageHandlers: ((msg: Message) => Promise<unknown>)[] = [
 	botReactHandler,
 	grandExchangeHandler,
 	voteReactionHandler,
-	userReactsHandler
+	userReactsHandler,
+	tagHandler
 ];
 
 export async function handleMessageCreate(msg: Message) {

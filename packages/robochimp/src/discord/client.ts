@@ -52,5 +52,8 @@ globalClient.on('messageCreate', handleMessageCreate);
 globalClient.on('interactionCreate', interactionHandler);
 
 globalClient.on('ready', async () => {
+	for (const g of globalClient.guilds.cache.values()) {
+		console.log(`RoboChimp in guild: ${g.name} (${g.id}), ${g.memberCount} members`);
+	}
 	await bulkUpdateCommands();
 });
