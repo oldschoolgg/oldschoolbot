@@ -69,7 +69,8 @@ export const blacklistCommand: RoboChimpCommand = {
 					reason: options.add.reason
 				}
 			});
-			globalClient.sendToChannelID(CHANNELS.BLACKLIST_LOGS,
+			globalClient.sendToChannelID(
+				CHANNELS.BLACKLIST_LOGS,
 				`${inputUser.user.username}[${inputUser.user.id}] was blacklisted by ${user.username}, reason: \`${options.add.reason}\`.`
 			);
 			return `Blacklisted ${inputUser.user.username}[${inputUser.user.id}], for \`${options.add.reason}\``;
@@ -81,7 +82,10 @@ export const blacklistCommand: RoboChimpCommand = {
 					id
 				}
 			});
-			globalClient.sendToChannelID(CHANNELS.BLACKLIST_LOGS, `${inputUser.user.username}[${inputUser.user.id}] was unblacklisted by ${user.username}.`);
+			globalClient.sendToChannelID(
+				CHANNELS.BLACKLIST_LOGS,
+				`${inputUser.user.username}[${inputUser.user.id}] was unblacklisted by ${user.username}.`
+			);
 			return `Unblacklisted ${inputUser.user.username}[${inputUser.user.id}].`;
 		}
 		return 'Invalid command.';

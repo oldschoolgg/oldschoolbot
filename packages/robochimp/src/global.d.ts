@@ -26,5 +26,4 @@ declare global {
 	}
 
 	type CommandResponse = Promise<null | string | InteractionReplyOptions | SpecialResponse>;
-
 }

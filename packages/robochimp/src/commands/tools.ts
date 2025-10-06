@@ -84,7 +84,7 @@ export const toolsCommand: RoboChimpCommand = {
 		}
 
 		if (options.setgithubid) {
-			const githubSetUser = await client.fetchUser((options.setgithubid.user.user.id));
+			const githubSetUser = await client.fetchUser(options.setgithubid.user.user.id);
 			const { github_username } = options.setgithubid;
 
 			if (!github_username) {
@@ -112,7 +112,7 @@ export const toolsCommand: RoboChimpCommand = {
 
 			await githubSetUser.update({
 				github_id: num
-			})
+			});
 			await patreonTask.syncGithub();
 			return `Set ${options.setgithubid.user.user.username}'s github ID to ${githubSetUser.githubId}, and synced their patron tier to: ${githubSetUser.perkTier}.`;
 		}

@@ -6,7 +6,6 @@ import {
 	type GuildMember
 } from 'discord.js';
 
-
 async function handleAutocomplete(
 	user: RUser,
 	command: RoboChimpCommand | undefined,

@@ -1,6 +1,5 @@
 import type { Message } from 'discord.js';
 
-
 function generateRankMessage(rank: number) {
 	if (rank === 1) return 'Rank 1 👑🥇';
 	if (rank === 2) return 'Rank 2 🏆🥈';

@@ -1,13 +1,6 @@
 import { type BuildOptions, build } from 'esbuild';
 
-const external = [
-	'@prisma/client',
-	'discord.js',
-	'@prisma/robochimp',
-	'dotenv',
-	'node:*',
-	'prisma/generated/*'
-];
+const external = ['@prisma/client', 'discord.js', '@prisma/robochimp', 'dotenv', 'node:*', 'prisma/generated/*'];
 
 const baseBuildOptions: BuildOptions = {
 	bundle: true,

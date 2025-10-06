@@ -3,6 +3,7 @@ import cors from '@fastify/cors';
 import { isValidDiscordSnowflake } from '@oldschoolgg/toolkit';
 import fastify from 'fastify';
 
+import { RUser } from '@/structures/RUser.js';
 import { globalConfig } from '../constants.js';
 import { type GithubSponsorsWebhookData, verifyGithubSecret } from '../lib/githubSponsor.js';
 import { parseStrToTier, patreonTask, verifyPatreonSecret } from '../lib/patreon.js';
@@ -74,7 +75,7 @@ export async function startServer() {
 					const tier = parseStrToTier(data.sponsorship.tier.name);
 					if (!tier) return;
 					if (user) {
-						await patreonTask.changeTier(user, tier);
+						await patreonTask.changeTier(new RUser(user), tier);
 					}
 					break;
 				}
@@ -83,7 +84,7 @@ export async function startServer() {
 					const to = parseStrToTier(data.sponsorship.tier.name);
 					if (!to) return;
 					if (user) {
-						await patreonTask.changeTier(user, to);
+						await patreonTask.changeTier(new RUser(user), to);
 					}
 					break;
 				}
@@ -91,7 +92,7 @@ export async function startServer() {
 					const tier = parseStrToTier(data.sponsorship.tier.name);
 					if (!tier) return;
 					if (user) {
-						await patreonTask.removePerks(user, 'Cancelled');
+						await patreonTask.removePerks(new RUser(user), 'Cancelled');
 					}
 					break;
 				}

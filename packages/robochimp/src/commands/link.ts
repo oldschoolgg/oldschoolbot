@@ -21,9 +21,7 @@ async function rawLinkAccount(firstUserID: string, secondUserID: string) {
 	}
 
 	const groupID: string =
-		firstUser.userGroupId ??
-		secondUser.userGroupId ??
-		(await roboChimpClient.userGroup.create({ data: {} })).id;
+		firstUser.userGroupId ?? secondUser.userGroupId ?? (await roboChimpClient.userGroup.create({ data: {} })).id;
 
 	await roboChimpClient.user.updateMany({
 		where: {

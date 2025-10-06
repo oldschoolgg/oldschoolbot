@@ -1,5 +1,4 @@
-import type { TriviaQuestion } from '../../prisma/generated/robochimp/index.js';
-import { Bits, fetchUser } from '../util.js';
+import type { TriviaQuestion } from '@prisma/robochimp';
 
 function triviaQuestionToStr(q: TriviaQuestion) {
 	return `**ID:** ${q.id}
@@ -84,14 +83,13 @@ export const triviaCommand: RoboChimpCommand = {
 	],
 	run: async ({
 		options,
-		userID
+		user
 	}: CommandRunOptions<{
 		add?: { question: string; answers: string };
 		remove?: { id: number };
 		search?: { query: string };
 	}>) => {
-		const dbUser = await fetchUser(userID);
-		if (!dbUser.bits.includes(Bits.Trusted)) return 'Ook.';
+		if (!user.isTrusted()) return 'Ook.';
 		if (options.add) {
 			const { question, answers } = options.add;
 			if (!question.endsWith('?')) return "That question doesn't end with a question mark.";

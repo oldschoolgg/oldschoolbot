@@ -1,10 +1,8 @@
 import { createHmac } from 'node:crypto';
-import { PerkTier } from '@oldschoolgg/toolkit';
-import { Time, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
+import { notEmpty, PerkTier, Time, uniqueArr } from '@oldschoolgg/toolkit';
 
-import type { User } from '../../prisma/generated/robochimp/index.js';
 import { globalConfig } from '../constants.js';
-import { Bits, type PatronTier, allPatronBits, fetchUser, findGroupOfUser, patronLogWebhook, tiers } from '../util.js';
+import { allPatronBits, Bits, type PatronTier, patronLogWebhook, tiers } from '../util.js';
 import type { OSBPrismaClient } from './prisma.js';
 
 function updateBitfield({ bits, patronBit }: { bits: number[]; patronBit: number }) {
@@ -198,23 +196,21 @@ class PatreonTask {
 	public enabled = globalConfig.isProduction;
 
 	async validatePerks(userID: bigint, shouldHave: PatronTier): Promise<string | null> {
-		const user = await roboChimpClient.user.findFirst({
-			where: { id: userID }
-		});
+		const user = await globalClient.fetchUser(userID);
 		if (!user) return null;
-		if (user.perk_tier !== shouldHave.perkTier) {
+		if (user.perkTierRaw !== shouldHave.perkTier) {
 			await this.changeTier(user, shouldHave);
 			return `Failed validation, wrong tier, changing to ${shouldHave} for ${userID}`;
 		}
 		return null;
 	}
 
-	async changeTier(user: User, shouldHave: PatronTier | PerkTier) {
+	async changeTier(user: RUser, shouldHave: PatronTier | PerkTier) {
 		const tier = typeof shouldHave === 'number' ? tiers.find(t => t.perkTier === shouldHave) : shouldHave;
 		if (!tier) {
 			throw new Error(`Invalid tier: ${shouldHave}`);
 		}
-		const userGroup = await findGroupOfUser(user);
+		const userGroup = await user.findGroup();
 
 		const allUsers = await roboChimpClient.user.findMany({
 			where: {
@@ -243,15 +239,15 @@ class PatreonTask {
 
 		await onTierChange({
 			newTier: tier.perkTier,
-			oldTier: user.perk_tier,
+			oldTier: user.perkTierRaw,
 			discordIDs: userGroup,
 			isFirstTimePatron: allUsers.every(u => !u.bits.includes(Bits.HasEverBeenPatron))
 		});
 	}
 
-	async removePerks(user: User, _reason: string) {
+	async removePerks(user: RUser, _reason: string) {
 		console.log(`Removing perks from ${user.id} because ${_reason}`);
-		const userGroup = await findGroupOfUser(user);
+		const userGroup = await user.findGroup();
 
 		const allUsers = await roboChimpClient.user.findMany({
 			where: {
@@ -284,7 +280,7 @@ class PatreonTask {
 
 		await onTierChange({
 			newTier: 0,
-			oldTier: user.perk_tier,
+			oldTier: user.perkTierRaw,
 			discordIDs: userGroup,
 			isFirstTimePatron: false
 		});
@@ -456,12 +452,12 @@ AND u1.id <> u2.id
 			}
 
 			// Only find the user if they don't already have the relevant perk tier.
-			const user = await fetchUser(patron.discordID);
+			const user = await globalClient.fetchUser(patron.discordID);
 			if (!user) continue;
 
 			const userIdentifier = `R[${user.id}]D[${patron.discordID}]P[${patron.patreonID}]`;
 
-			if (user.patreon_id !== patron.patreonID) {
+			if (user.patreonId !== patron.patreonID) {
 				await roboChimpClient.user.update({
 					where: {
 						id: BigInt(patron.discordID)
@@ -481,14 +477,14 @@ AND u1.id <> u2.id
 				Date.now() - new Date(patron.lastChargeDate).getTime() > Time.Day * 33 &&
 				patron.patronStatus !== 'active_patron'
 			) {
-				if (user.perk_tier < PerkTier.Two) continue;
-				const str = `${userIdentifier} hasn't paid in over 1 month, so removing perks (T${user.perk_tier + 1}).`;
+				if (user.perkTierRaw < PerkTier.Two) continue;
+				const str = `${userIdentifier} hasn't paid in over 1 month, so removing perks (T${user.perkTierRaw + 1}).`;
 				await this.removePerks(user, str);
 				continue;
 			}
 
 			// They already have the correct tier, so continue.
-			if (user.bits.includes(tierTheyShouldHave.bit) && user.perk_tier === tierTheyShouldHave.perkTier) {
+			if (user.bits.includes(tierTheyShouldHave.bit) && user.perkTierRaw === tierTheyShouldHave.perkTier) {
 				continue;
 			}
 

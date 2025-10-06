@@ -1,3 +1,4 @@
+import { BlacklistedEntityType } from '@prisma/robochimp';
 import type { Interaction } from 'discord.js';
 
 import { globalConfig } from '@/constants.js';
@@ -6,7 +7,6 @@ import { commandHandler } from '@/discord/commandHandler.js';
 import { handleButtonInteraction } from '@/discord/handleButtonInteraction.js';
 import { messageCtxCommands } from '@/lib/messageCtxCommands.js';
 import { MInteraction } from '@/structures/MInteraction.js';
-import { BlacklistedEntityType } from '../../prisma/generated/robochimp/index.js';
 
 enum HandlerResponseType {
 	Responded,
@@ -46,9 +46,9 @@ const interactionHandlers: InteractionHandler[] = [
 						},
 						interaction.guildId
 							? {
-								type: BlacklistedEntityType.guild,
-								id: BigInt(interaction.guildId)
-							}
+									type: BlacklistedEntityType.guild,
+									id: BigInt(interaction.guildId)
+								}
 							: null
 					].filter(i => i !== null)
 				}
@@ -103,7 +103,11 @@ export async function interactionHandler(rawInteraction: Interaction) {
 			const message = await rawInteraction.channel?.messages
 				.fetch(rawInteraction.targetId)
 				.catch(() => undefined);
-			return command.run({ interaction: rawInteraction, message, user: await globalClient.fetchUser(rawInteraction.user.id) });
+			return command.run({
+				interaction: rawInteraction,
+				message,
+				user: await globalClient.fetchUser(rawInteraction.user.id)
+			});
 		}
 	} catch (err) {
 		console.error(err);

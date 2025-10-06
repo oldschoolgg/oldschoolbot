@@ -4,6 +4,7 @@
  * The schema may not be in sync with the currently deployed OSB/BSO versions.
  */
 const REPLACEMENT_ANCHOR = `provider = "prisma-client-js"`;
+
 import { execSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
 import path from 'node:path';

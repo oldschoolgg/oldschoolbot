@@ -84,9 +84,9 @@ export async function getInfoStrOfUser(target: string) {
 			value: !member
 				? 'Unknown'
 				: member.roles.cache
-					.filter(i => i.id !== member.roles.guild.id)
-					.map(r => r.name)
-					.join(', ')
+						.filter(i => i.id !== member.roles.guild.id)
+						.map(r => r.name)
+						.join(', ')
 		},
 		{
 			name: 'Blacklisted',

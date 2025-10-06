@@ -1,7 +1,6 @@
 import { PerkTier } from '@oldschoolgg/toolkit';
 import { WebhookClient } from 'discord.js';
 
-import type { User } from '../prisma/generated/robochimp/index.js';
 import { globalConfig } from './constants.js';
 
 export enum Bits {
@@ -41,19 +40,6 @@ export const bitsDescriptions: BitDescriptions = {
 	[Bits.HasEverBeenPatron]: { description: 'Has been a patron before' }
 };
 
-export async function fetchUser(userID: bigint | string) {
-	const result = await roboChimpClient.user.upsert({
-		where: {
-			id: BigInt(userID)
-		},
-		create: {
-			id: BigInt(userID)
-		},
-		update: {}
-	});
-	return result;
-}
-
 export const CHANNELS = {
 	BLACKLIST_LOGS: '782459317218967602',
 	MODERATORS_OTHER: '830145040495411210',
@@ -87,17 +73,6 @@ export const tiers: PatronTier[] = [
 ];
 
 export const allPatronBits = tiers.map(t => t.bit);
-
-export async function findGroupOfUser(user: User) {
-	if (!user.user_group_id) return [user.id.toString()];
-	const group = await roboChimpClient.user.findMany({
-		where: {
-			user_group_id: user.user_group_id
-		}
-	});
-	if (!group) return [user.id.toString()];
-	return group.map(u => u.id.toString());
-}
 
 export const patronLogWebhook = globalConfig.isProduction
 	? new WebhookClient({ url: globalConfig.patronLogWebhookURL })

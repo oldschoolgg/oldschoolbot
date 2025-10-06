@@ -24,7 +24,6 @@ export class RoboChimpClientClass extends Client<boolean> {
 		return new RUser(user);
 	}
 
-
 	async sendToChannelID(channelID: string, content: string | MessageCreateOptions) {
 		if (!globalConfig.isProduction) return;
 		const channel = globalClient.channels.cache.get(channelID);
@@ -39,7 +38,6 @@ export class RoboChimpClientClass extends Client<boolean> {
 		const guild = await globalClient.guilds.fetch(globalConfig.supportServerID);
 		return guild;
 	}
-
 }
 
 global.globalClient = new RoboChimpClientClass({

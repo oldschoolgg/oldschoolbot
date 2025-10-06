@@ -7,7 +7,11 @@ import { Bits, CHANNELS } from '@/util.js';
 interface MessageCtxCommand {
 	name: string;
 	guildID: string;
-	run: (options: { interaction: MessageContextMenuCommandInteraction, message: Message | undefined; user: RUser; }) => void;
+	run: (options: {
+		interaction: MessageContextMenuCommandInteraction;
+		message: Message | undefined;
+		user: RUser;
+	}) => void;
 }
 
 interface Award {
@@ -52,7 +56,6 @@ export const messageCtxCommands: MessageCtxCommand[] = [
 			name: `Award ${award.name} pts`,
 			guildID: TEST_SERVER_ID,
 			run: async ({ interaction, message, user }) => {
-
 				// Must be trusted
 				if (!user.bits.includes(Bits.Trusted)) {
 					return interaction.reply({

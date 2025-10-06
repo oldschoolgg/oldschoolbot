@@ -1,6 +1,6 @@
-import { PrismaClient as BSOPrismaClient } from '../../prisma/generated/bso/index.js';
-import { PrismaClient as OSBPrismaClient } from '../../prisma/generated/osb/index.js';
-import { PrismaClient as RobochimpPrismaClient } from '../../prisma/generated/robochimp/index.js';
+import { PrismaClient as BSOPrismaClient } from '@prisma/bso';
+import { PrismaClient as OSBPrismaClient } from '@prisma/osb';
+import { PrismaClient as RobochimpPrismaClient } from '@prisma/robochimp';
 
 declare global {
 	var roboChimpClient: RobochimpPrismaClient;

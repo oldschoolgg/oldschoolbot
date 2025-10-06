@@ -4,7 +4,6 @@ import { type ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.j
 import { convertAPIOptionsToCommandOptions } from '@/discord/commandOptions.js';
 import { MInteraction } from '@/structures/MInteraction.js';
 
-
 export async function commandHandler(rawInteraction: ChatInputCommandInteraction) {
 	const interaction = new MInteraction({ interaction: rawInteraction });
 	const command = globalClient.allCommands.find(c => c.name === interaction.commandName)!;

@@ -126,7 +126,7 @@ GROUP BY user_id`;
 	 */
 	async function tradeGivers() {
 		const netValueSent: Record<string, number> = {};
-		// @ts-ignore asdf
+		// @ts-expect-error asdf
 		const transactions = await prismaClient.economyTransaction.findMany({
 			where: {
 				date: {

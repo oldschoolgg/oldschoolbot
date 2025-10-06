@@ -109,11 +109,11 @@ export type CommandOption = {
 	description: string;
 	required?: boolean;
 } & (
-		| {
+	| {
 			type: 'Subcommand' | 'SubcommandGroup';
 			options?: CommandOption[];
-		}
-		| {
+	  }
+	| {
 			type: 'String';
 			choices?: { name: string; value: string }[];
 			autocomplete?: (
@@ -121,8 +121,8 @@ export type CommandOption = {
 				user: RUser,
 				member?: GuildMember
 			) => Promise<APIApplicationCommandOptionChoice[]>;
-		}
-		| {
+	  }
+	| {
 			type: 'Integer' | 'Number';
 			choices?: { name: string; value: number }[];
 			autocomplete?: (
@@ -132,11 +132,11 @@ export type CommandOption = {
 			) => Promise<APIApplicationCommandOptionChoice[]>;
 			min_value?: number;
 			max_value?: number;
-		}
-		| {
+	  }
+	| {
 			type: 'Boolean' | 'User' | 'Channel' | 'Role' | 'Mentionable';
-		}
-	);
+	  }
+);
 
 export interface MahojiUserOption {
 	user: User;

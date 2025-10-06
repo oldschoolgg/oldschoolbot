@@ -1,7 +1,7 @@
+import type { Prisma, User } from '@prisma/robochimp';
 import { userMention } from 'discord.js';
 
-import { Bits, findGroupOfUser, type PatronTier, tiers } from '@/util.js';
-import type { Prisma, User } from '../../prisma/generated/robochimp/index.js';
+import { Bits, type PatronTier, tiers } from '@/util.js';
 
 export class RUser {
 	private _user: User;
@@ -25,6 +25,9 @@ export class RUser {
 		return this._user.github_id;
 	}
 
+	get perkTierRaw() {
+		return this._user.perk_tier ?? 0;
+	}
 	get perkTier(): PatronTier | null {
 		const tier = tiers.find(t => t.perkTier === this._user.perk_tier);
 		return tier ?? null;
@@ -32,6 +35,10 @@ export class RUser {
 
 	public isMod() {
 		return this.bits.includes(Bits.Mod);
+	}
+
+	public isTrusted() {
+		return this.bits.includes(Bits.Trusted);
 	}
 
 	get testingPoints() {
@@ -51,7 +58,14 @@ export class RUser {
 	}
 
 	async findGroup() {
-		return findGroupOfUser(this._user);
+		if (!this._user.user_group_id) return [this._user.id.toString()];
+		const group = await roboChimpClient.user.findMany({
+			where: {
+				user_group_id: this._user.user_group_id
+			}
+		});
+		if (!group) return [this._user.id.toString()];
+		return group.map(u => u.id.toString());
 	}
 
 	async update(data: Prisma.UserUncheckedUpdateInput) {
