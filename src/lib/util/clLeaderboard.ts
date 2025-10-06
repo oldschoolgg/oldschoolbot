@@ -51,7 +51,6 @@ ${SQL.GROUP_BY_U_ID}
 ORDER BY qty DESC
 LIMIT ${resultLimit};
 `;
-			console.log(query);
 			return prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(query);
 		})
 	]);
