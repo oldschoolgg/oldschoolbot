@@ -14,6 +14,7 @@ export class RUser {
 	get bits(): Bits[] {
 		return this._user.bits;
 	}
+
 	get username() {
 		return globalClient.users.cache.get(this._user.id.toString())?.username ?? this._user.id.toString();
 	}
@@ -21,6 +22,7 @@ export class RUser {
 	get leaguesPointsTotal() {
 		return this._user.leagues_points_total;
 	}
+
 	get githubId() {
 		return this._user.github_id;
 	}
@@ -28,6 +30,7 @@ export class RUser {
 	get perkTierRaw() {
 		return this._user.perk_tier ?? 0;
 	}
+
 	get perkTier(): PatronTier | null {
 		const tier = tiers.find(t => t.perkTier === this._user.perk_tier);
 		return tier ?? null;
@@ -84,7 +87,7 @@ export class RUser {
 	}
 
 	get osbClPercent() {
-		return this._user.osb_cl_percent;
+		return this._user.osb_cl_percent ?? 0;
 	}
 
 	get bsoTotalLevel() {
@@ -92,22 +95,22 @@ export class RUser {
 	}
 
 	get bsoClPercent() {
-		return this._user.bso_cl_percent;
+		return this._user.bso_cl_percent ?? 0;
+	}
+
+	get osbMastery() {
+		return this._user.osb_mastery ?? 0;
+	}
+
+	get bsoMastery() {
+		return this._user.bso_mastery ?? 0;
 	}
 
 	globalMastery(): number {
-		const globalMastery =
-			this._user.osb_mastery !== null && this._user.bso_mastery !== null
-				? (this._user.bso_mastery + this._user.osb_mastery) / 2
-				: 0;
-		return globalMastery;
+		return (this.osbMastery + this.bsoMastery) / 2;
 	}
 
 	globalCLPercent(): number {
-		const globalCLPercent =
-			this._user.osb_cl_percent !== null && this._user.bso_cl_percent !== null
-				? (this._user.osb_cl_percent + this._user.bso_cl_percent) / 2
-				: 0;
-		return globalCLPercent;
+		return (this.osbClPercent + this.bsoClPercent) / 2;
 	}
 }
