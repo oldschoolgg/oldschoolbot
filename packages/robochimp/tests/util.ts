@@ -1,9 +1,19 @@
 import { cryptoRng } from '@oldschoolgg/rng';
-import type { User } from '@prisma/robochimp';
+import type { Prisma, User } from '@prisma/robochimp';
 
 import { RUser } from '../src/structures/RUser.js';
 
-export async function mockUser(): Promise<RUser> {
+class TestRUser extends RUser {
+	override async update(data: Prisma.UserUncheckedUpdateInput): Promise<this> {
+		for (const [key, value] of Object.entries(data)) {
+			// @ts-expect-error
+			this._user[key] = value;
+		}
+		return this;
+	}
+}
+
+export function mockUser(): RUser {
 	const id = BigInt(cryptoRng.randInt(1, 1_000_000));
 	const rawUser: User = {
 		id,
@@ -37,7 +47,6 @@ export async function mockUser(): Promise<RUser> {
 		premium_balance_tier: null,
 		premium_balance_expiry_date: null
 	};
-	await roboChimpClient.user.create({ data: rawUser });
-	const user = new RUser(rawUser);
+	const user = new TestRUser(rawUser);
 	return user;
 }

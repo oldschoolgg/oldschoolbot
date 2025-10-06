@@ -96,7 +96,7 @@ export const toolsCommand: RoboChimpCommand = {
 				return 'Could not find user in github API. Is the username written properly?';
 			}
 			const num = Number.parseInt(res.id);
-			if (!num || Number.isNaN(num)) {
+			if (!num) {
 				return 'Invalid id';
 			}
 			const alreadyHasName = await roboChimpClient.user.count({

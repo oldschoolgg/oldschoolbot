@@ -8,7 +8,7 @@ import { mockUser } from './util.js';
 
 describe('RUser', async () => {
 	test('isMod', async () => {
-		const user = await mockUser();
+		const user = mockUser();
 		expect(user.isMod()).toBe(false);
 		await user.update({ bits: [Bits.Mod] });
 		expect(user.isMod()).toBe(true);
@@ -19,7 +19,7 @@ describe('RUser', async () => {
 	});
 
 	test('perkTier', async () => {
-		const user = await mockUser();
+		const user = mockUser();
 		expect(typeof user.id).toBe('bigint');
 		expect(user.perkTierRaw).toBe(0);
 		expect(user.perkTier).toBe(null);
@@ -32,7 +32,7 @@ describe('RUser', async () => {
 	});
 
 	test('globalMastery', async () => {
-		const user = await mockUser();
+		const user = mockUser();
 		expect(user.globalMastery()).toBe(0);
 		await user.update({ osb_mastery: 100 });
 		expect(user.globalMastery()).toBe(50);
@@ -41,7 +41,7 @@ describe('RUser', async () => {
 	});
 
 	test('globalCLPercent', async () => {
-		const user = await mockUser();
+		const user = mockUser();
 		expect(user.globalCLPercent()).toBe(0);
 		await user.update({ osb_cl_percent: 100 });
 		expect(user.globalCLPercent()).toBe(50);

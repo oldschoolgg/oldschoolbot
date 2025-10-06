@@ -227,7 +227,7 @@ class PatreonTask {
 						id: u.id
 					},
 					data: {
-						bits: updateBitfield({ bits: u?.bits, patronBit: tier.bit }),
+						bits: updateBitfield({ bits: u.bits, patronBit: tier.bit }),
 						perk_tier: tier.perkTier
 					},
 					select: {
