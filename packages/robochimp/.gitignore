@@ -1,4 +1,0 @@
-dist
-.env
-node_modules
-prisma/generated

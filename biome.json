@@ -39,8 +39,7 @@
 			"!**/icon_cache",
 			"!**/.astro",
 			"!**/.yarn",
-			"!**/.pnpm-store",
-			"!**/generated"
+			"!**/.pnpm-store"
 		]
 	},
 	"vcs": {
