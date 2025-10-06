@@ -45,3 +45,5 @@ wiki.xml
 */coverage
 
 test-bot-store-*.json
+
+.db

@@ -1177,14 +1177,6 @@ async function buildBaseUser(userId: string) {
 	return user;
 }
 
-vi.doMock('../../src/lib/util', async () => {
-	const actual: any = await vi.importActual('../../src/lib/util');
-	return {
-		...actual,
-		channelIsSendable: () => false
-	};
-});
-
 const logResult = (
 	result: { result: boolean; errors: string[] },
 	sourceData: UserData,

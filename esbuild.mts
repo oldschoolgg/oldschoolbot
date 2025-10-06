@@ -12,7 +12,9 @@ const external = [
 	'micromatch',
 	'node-cron',
 	'piscina',
-	'node:*'
+	'node:*',
+	'pglite-prisma-adapter',
+	'@electric-sql/pglite'
 ];
 
 const baseBuildOptions: BuildOptions = {
