@@ -1,9 +1,7 @@
-import { randArrItem } from 'e';
-
-import type { BankItem, IntKeyBank, Item, ItemBank } from '../meta/types';
-import itemID from '../util/itemID';
-import { toKMB } from '../util/smallUtils';
-import Items from './Items';
+import type { Item } from '@/meta/item.js';
+import { randArrItem } from '@/util/smallUtils.js';
+import { toKMB } from '../util/smallUtils.js';
+import { Items } from './Items.js';
 
 const frozenErrorStr = 'Tried to mutate a frozen Bank.';
 
@@ -27,7 +25,7 @@ function sanitizeItemBank(mutSource: ItemBank) {
 	}
 }
 
-export default class Bank {
+export class Bank {
 	private map: Map<number, number>;
 	public frozen = false;
 
@@ -35,6 +33,14 @@ export default class Bank {
 		const mutSource = { ...source };
 		sanitizeItemBank(mutSource);
 		return new Bank(mutSource);
+	}
+
+	static fromNameBank(nameBank: Record<string, number>): Bank {
+		const bank = new Bank();
+		for (const [name, qty] of Object.entries(nameBank)) {
+			bank.add(name, qty);
+		}
+		return bank;
 	}
 
 	constructor(initialBank?: IntKeyBank | ItemBank | Bank) {
@@ -52,7 +58,7 @@ export default class Bank {
 
 	private resolveItemID(item: ItemResolvable): number {
 		if (typeof item === 'number') return item;
-		if (typeof item === 'string') return itemID(item);
+		if (typeof item === 'string') return Items.getId(item);
 		return item.id;
 	}
 
@@ -139,7 +145,7 @@ export default class Bank {
 		// Bank.add('Twisted bow');
 		// Bank.add('Twisted bow', 5);
 		if (typeof item === 'string') {
-			return this.addItem(itemID(item), quantity);
+			return this.addItem(Items.getId(item), quantity);
 		}
 
 		if (item instanceof Bank) {
@@ -179,7 +185,7 @@ export default class Bank {
 		// Bank.remove('Twisted bow');
 		// Bank.remove('Twisted bow', 5);
 		if (typeof item === 'string') {
-			return this.removeItem(itemID(item), quantity);
+			return this.removeItem(Items.getId(item), quantity);
 		}
 
 		// Bank.remove(123);
@@ -310,9 +316,13 @@ export default class Bank {
 	}
 
 	public equals(otherBank: Bank): boolean {
-		if (this.length !== otherBank.length) return false;
+		if (this.length !== otherBank.length) {
+			return false;
+		}
 		for (const [item, quantity] of this.items()) {
-			if (otherBank.amount(item.id) !== quantity) return false;
+			if (otherBank.amount(item.id) !== quantity) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -352,4 +362,19 @@ export default class Bank {
 		}
 		return namedBank;
 	}
+}
+
+export interface IntKeyBank {
+	[key: number]: number;
+}
+export interface ItemBank {
+	[key: string]: number;
+}
+
+export interface LootBank {
+	[key: string]: Bank;
+}
+export interface BankItem {
+	id: number;
+	qty: number;
 }

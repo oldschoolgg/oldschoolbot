@@ -1,7 +1,7 @@
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { WintertodtCrate } from './wintertodt';
+import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
 
 export const winterTodtPointsTable = new SimpleTable<number>()
 	.add(420)

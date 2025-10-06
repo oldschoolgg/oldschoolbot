@@ -1,9 +1,6 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Hiscores, type SkillsScore } from 'oldschooljs';
+import { Hiscores, type SkillsScore } from 'oldschooljs/hiscores';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { statsEmbed } from '../../lib/util/statsEmbed';
+import { statsEmbed } from '@/lib/util/statsEmbed.js';
 
 export const xpCommand: OSBMahojiCommand = {
 	name: 'xp',
@@ -13,13 +10,13 @@ export const xpCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'rsn',
 			description: 'The runescape username to check',
 			required: true
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'to_99',
 			description: 'Only show xp remaining until level 99.',
 			required: false

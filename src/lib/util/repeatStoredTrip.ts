@@ -1,15 +1,17 @@
-import { type Activity, type Prisma, activity_type_enum } from '@prisma/client';
+import { Time } from '@oldschoolgg/toolkit';
+import { type Activity, activity_type_enum, type Prisma } from '@prisma/client';
 import { ButtonBuilder, type ButtonInteraction, ButtonStyle } from 'discord.js';
-import { Time } from 'e';
 import { Items } from 'oldschooljs';
 
-import { ClueTiers } from '../clues/clueTiers';
-import type { PvMMethod } from '../constants';
-import { SlayerActivityConstants } from '../minions/data/combatConstants';
-import { autocompleteMonsters } from '../minions/data/killableMonsters';
-import { runCommand } from '../settings/settings';
-import { courses } from '../skilling/skills/agility';
-import Hunter from '../skilling/skills/hunter/hunter';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import type { PvMMethod } from '@/lib/constants.js';
+import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
+import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
+import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import { runCommand } from '@/lib/settings/settings.js';
+import { courses } from '@/lib/skilling/skills/agility.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import type {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
@@ -17,6 +19,7 @@ import type {
 	AnimatedArmourActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	ButlerActivityTaskOptions,
+	BuyActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CollectingOptions,
@@ -43,6 +46,7 @@ import type {
 	MotherlodeMiningActivityTaskOptions,
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
+	NightmareZoneActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	OuraniaAltarOptions,
 	PickpocketActivityTaskOptions,
@@ -55,16 +59,15 @@ import type {
 	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
-	TOAOptions,
 	TempleTrekkingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
+	TOAOptions,
+	UnderwaterAgilityThievingTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
-} from '../types/minions';
-import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
-import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
-import { interactionReply } from './interactionReply';
+} from '@/lib/types/minions.js';
+import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
 
 const taskCanBeRepeated = (activity: Activity, user: MUser) => {
 	if (activity.type === activity_type_enum.ClueCompletion) {
@@ -125,6 +128,19 @@ const tripHandlers = {
 	[activity_type_enum.TokkulShop]: {
 		commandName: 'm',
 		args: () => ({})
+	},
+	[activity_type_enum.Buy]: {
+		commandName: 'buy',
+		args: (data: BuyActivityTaskOptions) => {
+			const tripBuyable = findTripBuyable(data.itemID, data.quantity);
+			return {
+				name: tripBuyable?.displayName ?? Items.itemNameFromId(data.itemID),
+				quantity:
+					tripBuyable?.quantity && tripBuyable.quantity > 0
+						? data.quantity / tripBuyable.quantity
+						: data.quantity
+			};
+		}
 	},
 	[activity_type_enum.ShootingStars]: {
 		commandName: 'm',
@@ -276,7 +292,10 @@ const tripHandlers = {
 	},
 	[activity_type_enum.DarkAltar]: {
 		commandName: 'runecraft',
-		args: (data: DarkAltarOptions) => ({ rune: `${data.rune} rune (zeah)` })
+		args: (data: DarkAltarOptions) => ({
+			rune: `${data.rune} rune (zeah)`,
+			extracts: data.useExtracts
+		})
 	},
 	[activity_type_enum.OuraniaAltar]: {
 		commandName: 'runecraft',
@@ -332,11 +351,14 @@ const tripHandlers = {
 	},
 	[activity_type_enum.Fishing]: {
 		commandName: 'fish',
-		args: (data: FishingActivityTaskOptions) => ({
-			name: data.fishID,
-			quantity: data.iQty,
-			flakes: data.flakesQuantity !== undefined
-		})
+		args: (data: FishingActivityTaskOptions) => {
+			const fish = Fishing.Fishes.find(f => f.id === (data.fishID as number));
+			return {
+				name: fish ? fish.name : Items.itemNameFromId(data.fishID),
+				quantity: data.iQty,
+				flakes: data.flakesQuantity !== undefined
+			};
+		}
 	},
 	[activity_type_enum.FishingTrawler]: {
 		commandName: 'minigames',
@@ -739,11 +761,12 @@ export async function makeRepeatTripButtons(user: MUser) {
 }
 
 export async function repeatTrip(
+	user: MUser,
 	interaction: ButtonInteraction,
 	data: { data: Prisma.JsonValue; type: activity_type_enum }
 ) {
 	if (!data || !data.data || !data.type) {
-		return interactionReply(interaction, { content: "Couldn't find any trip to repeat.", ephemeral: true });
+		return interaction.reply({ content: "Couldn't find any trip to repeat.", ephemeral: true });
 	}
 	const handler = tripHandlers[data.type];
 	return runCommand({
@@ -754,7 +777,7 @@ export async function repeatTrip(
 		guildID: interaction.guildId,
 		member: interaction.member,
 		channelID: interaction.channelId,
-		user: interaction.user,
+		user,
 		continueDeltaMillis: interaction.createdAt.getTime() - interaction.message.createdTimestamp
 	});
 }

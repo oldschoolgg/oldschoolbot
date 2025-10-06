@@ -1,10 +1,10 @@
-import LootTable from '../../../structures/LootTable';
-import SimpleMonster from '../../../structures/SimpleMonster';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleMonster } from '@/structures/Monster.js';
 
 const TheHueycoatlTable = new LootTable()
 	.every('Big bones')
 	.tertiary(50, 'Clue scroll (hard)')
-	.tertiary(150, 'Tooth half of key (moon key)')
+	.tertiary(75, 'Tooth half of key (moon key)')
 	.tertiary(400 * 3, 'Huberte')
 
 	.oneIn(

@@ -1,23 +1,24 @@
+import { randArrItem } from '@oldschoolgg/rng';
 import { Collection, type Message } from 'discord.js';
-import { randArrItem } from 'e';
 import { vi } from 'vitest';
 
-import '../src/lib/safeglobals';
-import { InteractionID } from '@/lib/InteractionID';
-import { TEST_CHANNEL_ID, mockChannel, mockInteraction } from './integration/util';
+import '../src/lib/safeglobals.js';
 
-vi.mock('@oldschoolgg/toolkit/discord-util', async () => {
-	const actualToolkit = await vi.importActual('@oldschoolgg/toolkit/discord-util');
+import { InteractionID } from '@/lib/InteractionID.js';
+import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
+import { mockChannel, mockInteraction, TEST_CHANNEL_ID } from './integration/util.js';
+
+vi.mock('@oldschoolgg/toolkit', async () => {
+	const actualToolkit = await vi.importActual('@oldschoolgg/toolkit');
 	return {
 		...actualToolkit,
 		channelIsSendable: vi.fn().mockReturnValue(true),
 		awaitMessageComponentInteraction: vi.fn().mockImplementation(({ message }: { message: Message }) => {
 			return Promise.resolve({
 				customId: randArrItem(Object.values(InteractionID.Slayer)),
-				...mockInteraction({ userId: message.author.id })
+				...mockInteraction({ user: { id: message.author.id } as any })
 			});
-		}),
-		mentionCommand: vi.fn().mockReturnValue('true')
+		})
 	};
 });
 
@@ -37,14 +38,12 @@ global.globalClient = {
 		}
 	},
 	users: {
-		cache: new Collection()
+		cache: new Collection(),
+		fetch: async (id: string) => Promise.resolve(globalClient.users.cache.get(id))
 	},
 	channels: {
 		cache: new Collection().set(TEST_CHANNEL_ID, mockChannel({ userId: '123' }))
 	},
-	busyCounterCache: new Map<string, number>()
+	busyCounterCache: new Map<string, number>(),
+	allCommands: allCommandsDONTIMPORT
 } as any;
-
-if (!process.env.TEST) {
-	throw new Error('This file should only be imported in tests.');
-}

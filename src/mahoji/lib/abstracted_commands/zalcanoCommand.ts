@@ -1,14 +1,11 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, calcWhatPercent, percentChance, reduceNumByPercent } from 'e';
+import { percentChance } from '@oldschoolgg/rng';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { EMonster } from 'oldschooljs';
 
+import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
+import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
+import type { ZalcanoActivityTaskOptions } from '@/lib/types/minions.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import { soteSkillRequirements } from '../../../lib/skilling/functions/questRequirements';
-import type { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 function calcPerformance(kcLearned: number, skillPercentage: number) {
 	let basePerformance = 50;
@@ -45,7 +42,7 @@ export async function zalcanoCommand(user: MUser, channelID: string, quantity?: 
 	baseTime = reduceNumByPercent(baseTime, skillPercentage / 40);
 	boosts.push(`${skillPercentage / 40}% boost for levels`);
 
-	if (!userHasGracefulEquipped(user)) {
+	if (!user.hasGracefulEquipped()) {
 		baseTime *= 1.15;
 		boosts.push('-15% time penalty for not having graceful equipped');
 	}
@@ -55,7 +52,7 @@ export async function zalcanoCommand(user: MUser, channelID: string, quantity?: 
 	else if (kc > 50) healAmountNeeded = 3 * 12;
 	else if (kc > 20) healAmountNeeded = 5 * 12;
 
-	const maxTripLength = calcMaxTripLength(user, 'Zalcano');
+	const maxTripLength = user.calcMaxTripLength('Zalcano');
 	if (!quantity) quantity = Math.floor(maxTripLength / baseTime);
 	quantity = Math.max(1, quantity);
 	const duration = quantity * baseTime;
@@ -76,9 +73,9 @@ export async function zalcanoCommand(user: MUser, channelID: string, quantity?: 
 		attackStylesUsed: []
 	});
 
-	await addSubTaskToActivityTask<ZalcanoActivityTaskOptions>({
+	await ActivityManager.startTrip<ZalcanoActivityTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'Zalcano',

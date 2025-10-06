@@ -1,2 +1,4 @@
-import './data/itemAliases';
-import './util/logger';
+import './data/itemAliases.js';
+import './util/logger.js';
+import '../lib/util/clientSettings.js';
+import '../lib/ActivityManager.js';

@@ -1,0 +1,938 @@
+[
+	{
+		"name": "Ardougne",
+		"id": 1,
+		"easy": {
+			"name": "Easy",
+			"items": ["Ardougne cloak 1"],
+			"skill_reqs": {
+				"thieving": 5
+			},
+			"minigame_reqs": {
+				"fishing_trawler": 1
+			},
+			"qp": 10
+		},
+		"medium": {
+			"name": "Medium",
+			"items": ["Ardougne cloak 2"],
+			"skill_reqs": {
+				"agility": 39,
+				"attack": 50,
+				"crafting": 49,
+				"farming": 31,
+				"firemaking": 50,
+				"magic": 51,
+				"strength": 38,
+				"thieving": 38,
+				"ranged": 21
+			},
+			"minigame_reqs": {
+				"fishing_trawler": 1
+			},
+			"qp": 23,
+			"collection_log_reqs": ["Iban's staff"]
+		},
+		"hard": {
+			"name": "Hard",
+			"items": ["Ardougne cloak 3"],
+			"skill_reqs": {
+				"agility": 56,
+				"construction": 50,
+				"cooking": 53,
+				"crafting": 50,
+				"farming": 70,
+				"fishing": 53,
+				"fletching": 5,
+				"herblore": 45,
+				"hunter": 59,
+				"magic": 66,
+				"mining": 52,
+				"prayer": 42,
+				"ranged": 60,
+				"runecraft": 65,
+				"smithing": 68,
+				"strength": 50,
+				"thieving": 72,
+				"woodcutting": 50
+			},
+			"qp": 107,
+			"collection_log_reqs": ["Coconut", "Death rune", "Dragon sq shield", "Mithril platebody", "Red salamander"]
+		},
+		"elite": {
+			"name": "Elite",
+			"items": ["Ardougne cloak 4"],
+			"skill_reqs": {
+				"agility": 90,
+				"cooking": 91,
+				"crafting": 35,
+				"farming": 85,
+				"firemaking": 50,
+				"fishing": 81,
+				"fletching": 69,
+				"herblore": 10,
+				"magic": 94,
+				"ranged": 40,
+				"smithing": 91,
+				"thieving": 82
+			},
+			"qp": 107,
+			"collection_log_reqs": ["Grimy torstol", "Raw manta ray", "Rune crossbow"],
+			"laps_reqs": {
+				"ardougne_rooftop_course": 1
+			}
+		}
+	},
+	{
+		"name": "Desert",
+		"id": 2,
+		"easy": {
+			"name": "Easy",
+			"items": ["Desert amulet 1"],
+			"skill_reqs": {
+				"hunter": 5,
+				"thieving": 21
+			},
+			"qp": 10,
+			"collection_log_reqs": ["Yellow feather"],
+			"minigame_reqs": {
+				"pyramid_plunder": 1
+			}
+		},
+		"medium": {
+			"name": "Medium",
+			"items": ["Desert amulet 2"],
+			"skill_reqs": {
+				"ranged": 37,
+				"crafting": 50,
+				"firemaking": 45,
+				"prayer": 43,
+				"magic": 39,
+				"mining": 37,
+				"agility": 30,
+				"slayer": 22,
+				"hunter": 47,
+				"thieving": 37,
+				"herblore": 36,
+				"woodcutting": 35,
+				"construction": 20
+			},
+			"qp": 22,
+			"collection_log_reqs": ["Orange salamander", "Teak logs"]
+		},
+		"hard": {
+			"name": "Hard",
+			"items": ["Desert amulet 3"],
+			"skill_reqs": {
+				"fletching": 10,
+				"ranged": 40,
+				"herblore": 31,
+				"mining": 60,
+				"woodcutting": 55,
+				"agility": 70,
+				"magic": 68,
+				"thieving": 65,
+				"slayer": 65,
+				"crafting": 61,
+				"attack": 50,
+				"defence": 40,
+				"firemaking": 60,
+				"smithing": 68
+			},
+			"laps_reqs": {
+				"pollnivneach_rooftop_course": 1
+			},
+			"monster_scores": {
+				"dust_devil": 1
+			},
+			"collection_log_reqs": ["Mithril platebody"]
+		},
+		"elite": {
+			"name": "Elite",
+			"items": ["Desert amulet 4"],
+			"skill_reqs": {
+				"agility": 15,
+				"herblore": 10,
+				"firemaking": 50,
+				"ranged": 40,
+				"smithing": 20,
+				"construction": 78,
+				"cooking": 85,
+				"fletching": 95,
+				"magic": 94,
+				"prayer": 85,
+				"thieving": 91
+			},
+			"collection_log_reqs": ["Dragon dart", "Kq head"]
+		}
+	},
+	{
+		"name": "Falador",
+		"id": 3,
+		"easy": {
+			"name": "Easy",
+			"items": ["Falador shield 1"],
+			"skill_reqs": {
+				"agility": 5,
+				"construction": 16,
+				"mining": 10,
+				"smithing": 13
+			}
+		},
+		"medium": {
+			"name": "Medium",
+			"items": ["Falador shield 2"],
+			"skill_reqs": {
+				"agility": 42,
+				"cooking": 20,
+				"crafting": 40,
+				"defence": 20,
+				"farming": 23,
+				"firemaking": 49,
+				"magic": 37,
+				"mining": 40,
+				"prayer": 10,
+				"ranged": 19,
+				"slayer": 32,
+				"strength": 37,
+				"thieving": 40,
+				"woodcutting": 30
+			},
+			"qp": 12,
+			"collection_log_reqs": ["Crystal key", "Gold ore", "Willow logs"]
+		},
+		"hard": {
+			"name": "Hard",
+			"items": ["Falador shield 3"],
+			"skill_reqs": {
+				"agility": 59,
+				"attack": 65,
+				"strength": 65,
+				"cooking": 53,
+				"crafting": 31,
+				"defence": 50,
+				"farming": 45,
+				"firemaking": 30,
+				"fishing": 53,
+				"herblore": 52,
+				"mining": 60,
+				"prayer": 70,
+				"runecraft": 56,
+				"slayer": 72,
+				"thieving": 58,
+				"woodcutting": 71
+			},
+			"qp": 32,
+			"collection_log_reqs": ["Mind rune", "Prospector helmet"],
+			"monster_scores": {
+				"skeletal_wyvern": 1,
+				"blue_dragon": 1
+			},
+			"laps_reqs": {
+				"falador_rooftop_course": 1
+			}
+		},
+		"elite": {
+			"name": "Elite",
+			"items": ["Falador shield 4"],
+			"skill_reqs": {
+				"agility": 80,
+				"farming": 91,
+				"herblore": 81,
+				"mining": 17,
+				"runecraft": 88,
+				"thieving": 13,
+				"woodcutting": 75
+			},
+			"collection_log_reqs": ["Air rune", "Saradomin brew(3)"]
+		}
+	},
+	{
+		"name": "Fremennik",
+		"id": 4,
+		"easy": {
+			"name": "Easy",
+			"items": ["Fremennik sea boots 1"],
+			"skill_reqs": {
+				"crafting": 23,
+				"firemaking": 15,
+				"hunter": 11,
+				"mining": 20,
+				"smithing": 20,
+				"thieving": 5,
+				"woodcutting": 15
+			},
+			"collection_log_reqs": ["Blue feather", "Oak logs"]
+		},
+		"medium": {
+			"name": "Medium",
+			"items": ["Fremennik sea boots 2"],
+			"skill_reqs": {
+				"agility": 35,
+				"construction": 37,
+				"defence": 30,
+				"hunter": 35,
+				"mining": 40,
+				"slayer": 47,
+				"smithing": 50,
+				"thieving": 42
+			},
+			"collection_log_reqs": ["Coal", "Gold ore", "Snowy knight"]
+		},
+		"hard": {
+			"name": "Hard",
+			"items": ["Fremennik sea boots 3"],
+			"skill_reqs": {
+				"agility": 32,
+				"construction": 20,
+				"crafting": 61,
+				"defence": 40,
+				"firemaking": 49,
+				"fletching": 25,
+				"herblore": 66,
+				"hunter": 55,
+				"magic": 72,
+				"mining": 70,
+				"smithing": 60,
+				"thieving": 75,
+				"woodcutting": 56
+			},
+			"collection_log_reqs": ["Adamantite ore", "Tatty kyatt fur"],
+			"qp": 50
+		},
+		"elite": {
+			"name": "Elite",
+			"items": ["Fremennik sea boots 4"],
+			"skill_reqs": {
+				"agility": 80,
+				"crafting": 80,
+				"hitpoints": 70,
+				"ranged": 70,
+				"runecraft": 82,
+				"slayer": 83,
+				"strength": 70
+			},
+			"monster_scores": {
+				"dagannoth_rex": 1,
+				"dagannoth_prime": 1,
+				"dagannoth_supreme": 1,
+				"general_graardor": 1,
+				"kree'arra": 1,
+				"commander_zilyana": 1,
+				"k'ril_tsutsaroth": 1,
+				"spiritual_mage": 1
+			},
+			"collection_log_reqs": ["Astral rune", "Dragonstone amulet"],
+			"qp": 50
+		}
+	},
+	{
+		"name": "Kandarin",
+		"id": 5,
+		"easy": {
+			"name": "Easy",
+			"items": ["Kandarin headgear 1"],
+			"skill_reqs": {
+				"agility": 20,
+				"farming": 13,
+				"fishing": 16
+			},
+			"collection_log_reqs": ["Mackerel"]
+		},
+		"medium": {
+			"name": "Medium",
+			"items": ["Kandarin headgear 2"],
+			"skill_reqs": {
+				"agility": 36,
+				"cooking": 43,
+				"farming": 26,
+				"fishing": 46,
+				"fletching": 50,
+				"herblore": 48,
+				"magic": 45,
+				"mining": 30,
+				"ranged": 40,
+				"strength": 22,
+				"thieving": 47
+			},
+			"collection_log_reqs": ["Bass", "Coal", "Limpwurt root", "Maple shortbow"],
+			"monster_scores": {
+				"fire_giant": 1
+			},
+			"minigame_reqs": {
+				"barb_assault": 1
+			}
+		},
+		"hard": {
+			"name": "Hard",
+			"items": ["Kandarin headgear 3"],
+			"skill_reqs": {
+				"agility": 60,
+				"construction": 50,
+				"crafting": 10,
+				"defence": 70,
+				"firemaking": 65,
+				"fishing": 70,
+				"fletching": 70,
+				"prayer": 70,
+				"magic": 56,
+				"smithing": 75,
+				"strength": 50,
+				"thieving": 53,
+				"woodcutting": 60
+			},
+			"collection_log_reqs": ["Leaping sturgeon", "Yew longbow"],
+			"laps_reqs": {
+				"seers'_village_rooftop_course": 1
+			},
+			"monster_scores": {
+				"mithril_dragon": 1
+			}
+		},
+		"elite": {
+			"name": "Elite",
+			"items": ["Kandarin headgear 4"],
+			"skill_reqs": {
+				"agility": 60,
+				"cooking": 80,
+				"crafting": 85,
+				"farming": 79,
+				"firemaking": 85,
+				"fishing": 76,
+				"herblore": 86,
+				"magic": 87,
+				"smithing": 90
+			},
+			"collection_log_reqs": ["Grimy dwarf weed", "Shark"]
+		}
+	},
+	{
+		"name": "Karamja",
+		"id": 6,
+		"easy": {
+			"name": "Easy",
+			"items": ["Karamja gloves 1"],
+			"skill_reqs": {
+				"agility": 15,
+				"mining": 40
+			},
+			"collection_log_reqs": ["Gold ore"],
+			"monster_scores": {
+				"jogre": 1
+			}
+		},
+		"medium": {
+			"name": "Medium",
+			"items": ["Karamja gloves 2"],
+			"skill_reqs": {
+				"agility": 12,
+				"cooking": 16,
+				"farming": 27,
+				"fishing": 65,
+				"hunter": 41,
+				"mining": 40,
+				"woodcutting": 50
+			},
+			"collection_log_reqs": ["Agility arena ticket", "Raw karambwan", "Teak logs"]
+		},
+		"hard": {
+			"name": "Hard",
+			"items": ["Karamja gloves 3"],
+			"skill_reqs": {
+				"agility": 53,
+				"cooking": 53,
+				"magic": 59,
+				"mining": 52,
+				"ranged": 42,
+				"runecraft": 44,
+				"slayer": 50,
+				"smithing": 40,
+				"strength": 50,
+				"thieving": 50,
+				"woodcutting": 34
+			},
+			"collection_log_reqs": ["Cooked karambwan", "Nature rune"],
+			"monster_scores": {
+				"steel_dragon": 1
+			}
+		},
+		"elite": {
+			"name": "Elite",
+			"items": ["Karamja gloves 4"],
+			"skill_reqs": {
+				"farming": 72,
+				"herblore": 87,
+				"runecraft": 91
+			},
+			"collection_log_reqs": ["Anti-venom(4)", "Calquat fruit", "Coconut", "Fire cape", "Nature rune"]
+		}
+	},
+	{
+		"name": "Kourend & Kebos",
+		"id": 7,
+		"easy": {
+			"name": "Easy",
+			"items": ["Rada's blessing 1"],
+			"skill_reqs": {
+				"construction": 25,
+				"fishing": 20,
+				"herblore": 12,
+				"mining": 15,
+				"thieving": 25
+			},
+			"collection_log_reqs": ["Iron ore", "Raw trout", "Strength potion(3)"]
+		},
+		"medium": {
+			"name": "Medium",
+			"items": ["Rada's blessing 2"],
+			"skill_reqs": {
+				"agility": 49,
+				"crafting": 30,
+				"farming": 45,
+				"firemaking": 50,
+				"fishing": 43,
+				"hunter": 53,
+				"mining": 42,
+				"woodcutting": 50
+			},
+			"minigame_reqs": {
+				"wintertodt": 1
+			},
+			"collection_log_reqs": ["Chinchompa"]
+		},
+		"hard": {
+			"name": "Hard",
+			"items": ["Rada's blessing 3", "Ash sanctifier"],
+			"skill_reqs": {
+				"farming": 74,
+				"magic": 66,
+				"mining": 65,
+				"slayer": 62,
+				"smithing": 70,
+				"thieving": 49,
+				"woodcutting": 60
+			},
+			"collection_log_reqs": ["Adamantite bar"],
+			"monster_scores": {
+				"wyrm": 1,
+				"lizardman_shaman": 1
+			}
+		},
+		"elite": {
+			"name": "Elite",
+			"items": ["Rada's blessing 4"],
+			"skill_reqs": {
+				"cooking": 84,
+				"crafting": 38,
+				"farming": 85,
+				"fishing": 82,
+				"fletching": 40,
+				"magic": 90,
+				"mining": 38,
+				"runecraft": 77,
+				"slayer": 95,
+				"woodcutting": 90
+			},
+			"collection_log_reqs": ["Blood rune", "Dark totem", "Raw anglerfish", "Redwood logs"],
+			"monster_scores": {
+				"hydra": 1
+			},
+			"minigame_reqs": {
+				"raids": 1
+			}
+		}
+	},
+	{
+		"name": "Lumbridge & Draynor",
+		"id": 8,
+		"easy": {
+			"name": "Easy",
+			"items": ["Explorer's ring 1"],
+			"skill_reqs": {
+				"agility": 10,
+				"firemaking": 15,
+				"fishing": 15,
+				"mining": 15,
+				"runecraft": 5,
+				"slayer": 7,
+				"woodcutting": 15
+			},
+			"laps_reqs": {
+				"draynor_village_rooftop_course": 1
+			},
+			"collection_log_reqs": ["Iron ore", "Oak logs", "Raw anchovies", "Water rune"]
+		},
+		"medium": {
+			"name": "Medium",
+			"items": ["Explorer's ring 2"],
+			"skill_reqs": {
+				"agility": 20,
+				"crafting": 38,
+				"fishing": 30,
+				"hunter": 50,
+				"magic": 31,
+				"ranged": 50,
+				"runecraft": 23,
+				"strength": 19,
+				"thieving": 38,
+				"woodcutting": 36
+			},
+			"laps_reqs": {
+				"al_kharid_rooftop_course": 1
+			},
+			"collection_log_reqs": ["Coif", "Raw salmon", "Willow logs"]
+		},
+		"hard": {
+			"name": "Hard",
+			"items": ["Explorer's ring 3"],
+			"skill_reqs": {
+				"agility": 46,
+				"crafting": 70,
+				"farming": 63,
+				"firemaking": 65,
+				"magic": 60,
+				"prayer": 52,
+				"runecraft": 59,
+				"woodcutting": 57
+			},
+			"collection_log_reqs": ["Amulet of power", "Barrows gloves", "Cosmic rune"]
+		},
+		"elite": {
+			"name": "Elite",
+			"items": ["Explorer's ring 4"],
+			"skill_reqs": {
+				"agility": 70,
+				"ranged": 70,
+				"runecraft": 76,
+				"smithing": 88,
+				"strength": 70,
+				"thieving": 78,
+				"woodcutting": 75
+			},
+			"collection_log_reqs": ["Adamant platebody", "Magic logs", "Water rune"],
+			"qp": 321
+		}
+	},
+	{
+		"name": "Morytania",
+		"id": 9,
+		"easy": {
+			"name": "Easy",
+			"items": ["Morytania legs 1"],
+			"skill_reqs": {
+				"cooking": 12,
+				"crafting": 15,
+				"farming": 23,
+				"slayer": 15
+			},
+			"monster_scores": {
+				"banshee": 1,
+				"ghoul": 1,
+				"werewolf": 1
+			}
+		},
+		"medium": {
+			"name": "Medium",
+			"items": ["Morytania legs 2"],
+			"skill_reqs": {
+				"agility": 42,
+				"cooking": 40,
+				"fishing": 50,
+				"herblore": 22,
+				"hunter": 29,
+				"slayer": 42,
+				"smithing": 50,
+				"woodcutting": 45
+			},
+			"collection_log_reqs": [10149, 2],
+			"laps_reqs": {
+				"canifis_rooftop_course": 1
+			}
+		},
+		"hard": {
+			"name": "Hard",
+			"items": ["Morytania legs 3"],
+			"skill_reqs": {
+				"agility": 71,
+				"construction": 50,
+				"defence": 70,
+				"farming": 53,
+				"firemaking": 50,
+				"magic": 66,
+				"mining": 55,
+				"prayer": 70,
+				"slayer": 58,
+				"woodcutting": 50,
+				"smithing": 50,
+				"thieving": 42
+			},
+			"collection_log_reqs": ["Mahogany logs", "Mithril ore", "Mushroom", "Watermelon"],
+			"monster_scores": {
+				"cave_horror": 1
+			}
+		},
+		"elite": {
+			"name": "Elite",
+			"items": ["Morytania legs 4"],
+			"skill_reqs": {
+				"attack": 70,
+				"crafting": 84,
+				"defence": 70,
+				"firemaking": 80,
+				"fishing": 96,
+				"magic": 83,
+				"ranged": 70,
+				"slayer": 85,
+				"strength": 76
+			},
+			"collection_log_reqs": ["Black d'hide body", "Raw shark"],
+			"monster_scores": {
+				"abyssal_demon": 1
+			}
+		}
+	},
+	{
+		"name": "Varrock",
+		"id": 10,
+		"easy": {
+			"name": "Easy",
+			"items": ["Varrock armour 1"],
+			"skill_reqs": {
+				"agility": 13,
+				"crafting": 8,
+				"fishing": 20,
+				"mining": 15,
+				"runecraft": 9,
+				"thieving": 5
+			},
+			"collection_log_reqs": ["Earth rune", "Iron ore", "Logs", "Plank", "Raw trout"]
+		},
+		"medium": {
+			"name": "Medium",
+			"items": ["Varrock armour 2"],
+			"skill_reqs": {
+				"agility": 30,
+				"crafting": 36,
+				"farming": 30,
+				"firemaking": 40,
+				"herblore": 10,
+				"magic": 25,
+				"thieving": 25
+			},
+			"collection_log_reqs": ["Mahogany plank", "Strength potion(3)"],
+			"laps_reqs": {
+				"varrock_rooftop_course": 1
+			},
+			"qp": 32
+		},
+		"hard": {
+			"name": "Hard",
+			"items": ["Varrock armour 3"],
+			"skill_reqs": {
+				"agility": 51,
+				"construction": 50,
+				"farming": 68,
+				"firemaking": 60,
+				"hunter": 66,
+				"magic": 54,
+				"prayer": 52,
+				"ranged": 40,
+				"thieving": 53,
+				"woodcutting": 60
+			},
+			"collection_log_reqs": ["Yew logs", "Yew roots"],
+			"qp": 44
+		},
+		"elite": {
+			"name": "Elite",
+			"items": ["Varrock armour 4"],
+			"skill_reqs": {
+				"cooking": 95,
+				"fletching": 81,
+				"herblore": 90,
+				"magic": 86,
+				"runecraft": 78,
+				"smithing": 89
+			},
+			"collection_log_reqs": ["Earth rune", "Mahogany plank", "Rune dart", "Super combat potion(4)"]
+		}
+	},
+	{
+		"name": "Western Provinces",
+		"id": 0,
+		"easy": {
+			"name": "Easy",
+			"items": ["Western banner 1"],
+			"skill_reqs": {
+				"fletching": 20,
+				"hunter": 9,
+				"mining": 15,
+				"ranged": 30
+			},
+			"minigame_reqs": {
+				"big_chompy_bird_hunting": 30
+			},
+			"collection_log_reqs": ["Iron ore", "Oak shortbow", "Orange feather"],
+			"laps_reqs": {
+				"gnome_stronghold_agility_course": 1
+			},
+			"qp": 10
+		},
+		"medium": {
+			"name": "Medium",
+			"items": ["Western banner 2"],
+			"skill_reqs": {
+				"agility": 37,
+				"cooking": 42,
+				"firemaking": 35,
+				"fishing": 46,
+				"fletching": 5,
+				"hunter": 31,
+				"mining": 40,
+				"ranged": 30,
+				"woodcutting": 35
+			},
+			"collection_log_reqs": ["Gold ore", "Raw bass", "Teak logs"],
+			"minigame_reqs": {
+				"big_chompy_bird_hunting": 125,
+				"gnome_restaurant": 1
+			},
+			"qp": 44
+		},
+		"hard": {
+			"name": "Hard",
+			"items": ["Western banner 3"],
+			"skill_reqs": {
+				"agility": 56,
+				"construction": 65,
+				"cooking": 70,
+				"farming": 68,
+				"firemaking": 50,
+				"fishing": 62,
+				"fletching": 5,
+				"hunter": 69,
+				"ranged": 70,
+				"magic": 64,
+				"mining": 70,
+				"thieving": 75,
+				"woodcutting": 50
+			},
+			"collection_log_reqs": ["Adamantite ore", "Dashing kebbit fur", "Mahogany logs", "Raw monkfish"],
+			"laps_reqs": {
+				"ape_atoll_agility_course": 1
+			},
+			"minigame_reqs": {
+				"big_chompy_bird_hunting": 300
+			},
+			"qp": 92,
+			"monster_scores": {
+				"zulrah": 1
+			}
+		},
+		"elite": {
+			"name": "Elite",
+			"items": ["Western banner 4"],
+			"skill_reqs": {
+				"agility": 85,
+				"attack": 42,
+				"defence": 42,
+				"farming": 75,
+				"fletching": 85,
+				"hitpoints": 42,
+				"magic": 42,
+				"prayer": 22,
+				"ranged": 42,
+				"slayer": 93,
+				"strength": 42,
+				"thieving": 85
+			},
+			"collection_log_reqs": ["Magic longbow", "Void knight gloves", "Void knight robe", "Void knight top"],
+			"monster_scores": {
+				"thermonuclear_smoke_devil": 1
+			},
+			"minigame_reqs": {
+				"big_chompy_bird_hunting": 1000
+			}
+		}
+	},
+	{
+		"name": "Wilderness",
+		"id": 11,
+		"easy": {
+			"name": "Easy",
+			"items": ["Wilderness sword 1"],
+			"skill_reqs": {
+				"agility": 15,
+				"magic": 21,
+				"mining": 15
+			},
+			"collection_log_reqs": ["Iron ore", "Red spiders' eggs"],
+			"monster_scores": {
+				"mammoth": 1,
+				"earth_warrior": 1
+			}
+		},
+		"medium": {
+			"name": "Medium",
+			"items": ["Wilderness sword 2"],
+			"skill_reqs": {
+				"agility": 60,
+				"strength": 60,
+				"magic": 60,
+				"mining": 55,
+				"slayer": 50,
+				"smithing": 50,
+				"woodcutting": 61
+			},
+			"collection_log_reqs": ["Mithril ore", "Yew logs"],
+			"monster_scores": {
+				"green_dragon": 1,
+				"ankou": 1,
+				"bloodveld": 1
+			}
+		},
+		"hard": {
+			"name": "Hard",
+			"items": ["Wilderness sword 3"],
+			"skill_reqs": {
+				"agility": 64,
+				"fishing": 53,
+				"hunter": 67,
+				"magic": 66,
+				"slayer": 68,
+				"smithing": 75
+			},
+			"collection_log_reqs": ["Adamant scimitar", "Black salamander"],
+			"monster_scores": {
+				"chaos_elemental": 1,
+				"crazy_archaeologist": 1,
+				"chaos_fanatic": 1,
+				"scorpia": 1,
+				"spiritual_warrior": 1
+			}
+		},
+		"elite": {
+			"name": "Elite",
+			"items": ["Wilderness sword 4"],
+			"skill_reqs": {
+				"agility": 60,
+				"cooking": 90,
+				"firemaking": 75,
+				"fishing": 85,
+				"magic": 96,
+				"mining": 85,
+				"slayer": 83,
+				"smithing": 90,
+				"strength": 60,
+				"thieving": 84,
+				"woodcutting": 75
+			},
+			"collection_log_reqs": ["Dark crab", "Magic logs", "Raw dark crab", "Rune scimitar"],
+			"monster_scores": {
+				"callisto": 1,
+				"venenatis": 1,
+				"vet'ion": 1
+			}
+		}
+	}
+]

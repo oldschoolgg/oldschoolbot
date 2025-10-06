@@ -1,6 +1,5 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-
-import getOSItem from '../util/getOSItem';
+import { Emoji } from '@oldschoolgg/toolkit';
+import { Items } from 'oldschooljs';
 
 const xpEmoji = Emoji.XP;
 const gpEmoji = Emoji.GP;
@@ -614,7 +613,7 @@ const pets: Pet[] = [
 ];
 
 for (const pet of pets) {
-	getOSItem(pet.name);
+	Items.getOrThrow(pet.name);
 }
 
 export default pets;

@@ -1,11 +1,8 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { WildernessDiary, userhasDiaryTier } from '../../../lib/diaries';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 export const gloriesInventorySize = 26;
 const gloriesInventoryTime = Time.Minute * 2.2;
@@ -25,7 +22,7 @@ export async function chargeGloriesCommand(user: MUser, channelID: string, quant
 		invDuration /= 3;
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'GloryCharging');
+	const maxTripLength = user.calcMaxTripLength('GloryCharging');
 
 	const max = Math.min(amountHas / gloriesInventorySize, Math.floor(maxTripLength / invDuration));
 	if (!quantity) {
@@ -47,9 +44,9 @@ export async function chargeGloriesCommand(user: MUser, channelID: string, quant
 		return `You don't have enough ${quantityGlories}x Amulet of glory.`;
 	}
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'GloryCharging'

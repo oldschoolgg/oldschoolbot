@@ -1,6 +1,5 @@
-import reducedTimeForGroup from '../minions/functions/reducedTimeForGroup';
-import type { KillableMonster } from '../minions/types';
-import { calcMaxTripLength } from './calcMaxTripLength';
+import reducedTimeForGroup from '@/lib/minions/functions/reducedTimeForGroup.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 export default async function calcDurQty(
 	users: MUser[],
@@ -18,7 +17,7 @@ export default async function calcDurQty(
 		perKillTime = Math.min(max, perKillTime);
 	}
 
-	const maxQty = Math.floor(calcMaxTripLength(users[0], 'GroupMonsterKilling') / perKillTime);
+	const maxQty = Math.floor(users[0].calcMaxTripLength('GroupMonsterKilling') / perKillTime);
 	if (!quantity) quantity = maxQty;
 	if (quantity > maxQty) {
 		return `The max amount of ${monster.name} this party can kill per trip is ${maxQty}.`;

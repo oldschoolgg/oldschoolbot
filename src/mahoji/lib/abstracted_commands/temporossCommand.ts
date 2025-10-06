@@ -1,9 +1,6 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 
-import type { TemporossActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import type { TemporossActivityTaskOptions } from '@/lib/types/minions.js';
 
 export async function temporossCommand(user: MUser, channelID: string, quantity: number | undefined) {
 	const fLevel = user.skillLevel('fishing');
@@ -44,7 +41,7 @@ export async function temporossCommand(user: MUser, channelID: string, quantity:
 		durationPerRoss = reduceNumByPercent(durationPerRoss, 10);
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'Tempoross');
+	const maxTripLength = user.calcMaxTripLength('Tempoross');
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / durationPerRoss);
 	}
@@ -59,10 +56,10 @@ export async function temporossCommand(user: MUser, channelID: string, quantity:
 		)}.`;
 	}
 
-	await addSubTaskToActivityTask<TemporossActivityTaskOptions>({
+	await ActivityManager.startTrip<TemporossActivityTaskOptions>({
 		minigameID: 'tempoross',
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'Tempoross',

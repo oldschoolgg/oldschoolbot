@@ -1,14 +1,12 @@
 import { CollectionLog } from '@oldschoolgg/collectionlog';
-import { type CommandRunOptions, dateFm, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { dateFm, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { BSO_MAX_TOTAL_LEVEL, BitField, Channel } from '../../lib/constants';
-import { calcCLDetails } from '../../lib/data/Collections';
-import { getReclaimableItemsOfUser } from '../../lib/reclaimableItems';
-import { roboChimpUserFetch } from '../../lib/roboChimp';
-import { sendToChannelID } from '../../lib/util/webhook';
+import { BitField, BSO_MAX_TOTAL_LEVEL, Channel } from '@/lib/constants.js';
+import { calcCLDetails } from '@/lib/data/Collections.js';
+import { getReclaimableItemsOfUser } from '@/lib/reclaimableItems.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
 
 const claimables = [
 	{
@@ -68,7 +66,7 @@ export const claimCommand: OSBMahojiCommand = {
 	description: 'Claim prizes, rewards and other things.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to claim.',
 			required: true,
@@ -87,8 +85,7 @@ export const claimCommand: OSBMahojiCommand = {
 			}
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{ name: string }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user }: CommandRunOptions<{ name: string }>) => {
 		const claimable = claimables.find(i => stringMatches(i.name, options.name));
 		if (!claimable) {
 			const reclaimableData = await getReclaimableItemsOfUser(user);

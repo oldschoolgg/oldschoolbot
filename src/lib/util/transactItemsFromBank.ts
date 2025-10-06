@@ -1,14 +1,12 @@
 import type { Prisma } from '@prisma/client';
-import { Bank } from 'oldschooljs';
+import { Bank, type ItemBank } from 'oldschooljs';
 
-import { findBingosWithUserParticipating } from '../../mahoji/lib/bingo/BingoManager';
-import { mahojiUserSettingsUpdate } from '../MUser';
-import { deduplicateClueScrolls } from '../clues/clueUtils';
-import { handleNewCLItems } from '../handleNewCLItems';
-import { filterLootReplace } from '../slayer/slayerUtil';
-import type { ItemBank } from '../types';
-import { logError } from './logError';
-import { userQueueFn } from './userQueues';
+import { deduplicateClueScrolls } from '@/lib/clues/clueUtils.js';
+import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
+import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
+import { filterLootReplace } from '@/lib/slayer/slayerUtil.js';
+import { userQueueFn } from '@/lib/util/userQueues.js';
+import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager.js';
 
 export interface TransactItemsArgs {
 	userID: string;
@@ -21,12 +19,7 @@ export interface TransactItemsArgs {
 	otherUpdates?: Prisma.UserUpdateArgs['data'];
 }
 
-declare global {
-	var transactItems: typeof transactItemsFromBank;
-}
-
-global.transactItems = transactItemsFromBank;
-async function transactItemsFromBank({
+export async function transactItemsFromBank({
 	userID,
 	collectionLog = false,
 	filterLoot = true,
@@ -44,7 +37,7 @@ async function transactItemsFromBank({
 			const errObj = new Error(
 				`${settings.usernameOrMention} doesn't have enough coins! They need ${gpToRemove} GP, but only have ${settings.GP} GP.`
 			);
-			logError(errObj, undefined, {
+			Logging.logError(errObj, {
 				userID: settings.id,
 				previousGP: settings.GP.toString(),
 				gpToRemove: gpToRemove.toString(),
@@ -66,7 +59,7 @@ async function transactItemsFromBank({
 			clUpdates = collectionLog ? settings.calculateAddItemsToCLUpdates({ items: clLoot, dontAddToTempCL }) : {};
 		}
 
-		let gpUpdate: { increment: number } | undefined = undefined;
+		let gpUpdate: { increment: number } | undefined;
 		if (itemsToAdd) {
 			const coinsInLoot = itemsToAdd.amount('Coins');
 			if (coinsInLoot > 0) {
@@ -97,7 +90,7 @@ async function transactItemsFromBank({
 						.clone()
 						.remove(currentBank)}`
 				);
-				logError(errObj, undefined, {
+				Logging.logError(errObj, {
 					userID: settings.id,
 					previousGP: settings.GP.toString(),
 					gpToRemove: gpToRemove.toString(),

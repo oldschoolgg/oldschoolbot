@@ -1,18 +1,17 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { SkillsEnum } from '../skilling/types';
-import { Requirements } from '../structures/Requirements';
+import { anyoneDiedInTOARaid, isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
 	ActivityTaskData,
 	GauntletOptions,
 	MonsterActivityTaskOptions,
 	NightmareActivityTaskOptions,
 	TOAOptions
-} from '../types/minions';
-import { crossbows } from '../util/archery';
-import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils';
-import type { CombatAchievement } from './combatAchievements';
+} from '@/lib/types/minions.js';
+import { crossbows } from '@/lib/util/archery.js';
 
 export const eliteCombatAchievements: CombatAchievement[] = [
 	{
@@ -310,7 +309,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 				const styles = user.getAttackStyles();
 				return (
 					isCertainMonsterTrip(Monsters.CommanderZilyana.id)(data) &&
-					([SkillsEnum.Ranged, SkillsEnum.Magic] as const).every(styl => !styles.includes(styl))
+					(['ranged', 'magic'] as const).every(styl => !styles.includes(styl))
 				);
 			}
 		}
@@ -1771,6 +1770,20 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 150,
 			hasChance: isCertainMonsterTrip(Monsters.Amoxliatl.id)
+		}
+	},
+	{
+		id: 1154,
+		name: 'No time to pray',
+		type: 'restriction',
+		monster: 'Royal Titans',
+		desc: 'Kill the Royal Titans without losing any prayer points.',
+		rng: {
+			chancePerKill: 20,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Branda.id)(data) ||
+				isCertainMonsterTrip(Monsters.Eldric.id)(data) ||
+				isCertainMonsterTrip(Monsters.RoyalTitans.id)(data)
 		}
 	}
 ];

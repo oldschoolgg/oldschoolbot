@@ -1,9 +1,8 @@
-import { itemID, resolveItems } from 'oldschooljs';
+import { Items, itemID, resolveItems } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { getSimilarItems } from '../../src/lib/data/similarItems';
-import { Gear } from '../../src/lib/structures/Gear';
-import { itemNameFromID } from '../../src/lib/util/smallUtils';
+import { getSimilarItems } from '../../src/lib/data/similarItems.js';
+import { Gear } from '../../src/lib/structures/Gear.js';
 
 describe('Gear', () => {
 	const testGear = new Gear({
@@ -128,22 +127,22 @@ describe('Gear', () => {
 	] as const) {
 		for (const simItem of resolveItems(similarItems as unknown as string[])) {
 			const gear = new Gear({
-				[slot]: itemNameFromID(simItem)
+				[slot]: Items.itemNameFromId(simItem)
 			});
 			const is = gear.hasEquipped(itemID(baseItem));
 			if (!is) {
-				throw new Error(`${baseItem} didn't match ${itemNameFromID(simItem)}`);
+				throw new Error(`${baseItem} didn't match ${Items.itemNameFromId(simItem)}`);
 			}
 			expect(is).toEqual(true);
 		}
 		for (const unSimItem of resolveItems((unsimilarItems as unknown as string[]) ?? [])) {
 			const gear = new Gear({
-				[slot]: itemNameFromID(unSimItem)
+				[slot]: Items.itemNameFromId(unSimItem)
 			});
 
 			const is = gear.hasEquipped(itemID(baseItem));
 			if (is) {
-				throw new Error(`${baseItem} matched ${itemNameFromID(unSimItem)}`);
+				throw new Error(`${baseItem} matched ${Items.itemNameFromId(unSimItem)}`);
 			}
 			expect(is).toEqual(false);
 		}

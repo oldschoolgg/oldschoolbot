@@ -1,9 +1,6 @@
-import type { ChatInputCommandInteraction } from 'discord.js';
+import type { NexTaskOptions, RaidsOptions } from '@/lib/types/minions.js';
 
-import type { NexTaskOptions, RaidsOptions } from '../../../lib/types/minions';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-
-export async function cancelTaskCommand(user: MUser, interaction?: ChatInputCommandInteraction): Promise<string> {
+export async function cancelTaskCommand(user: MUser, interaction?: MInteraction): Promise<string> {
 	const currentTask = ActivityManager.getActivityOfUser(user.id);
 
 	const mName = user.minionName;
@@ -39,8 +36,7 @@ export async function cancelTaskCommand(user: MUser, interaction?: ChatInputComm
 	}
 
 	if (interaction) {
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			`${mName} is currently doing a ${currentTask.type} trip.
 Please confirm if you want to call your minion back from their trip.
 They'll **drop** all their current **loot and supplies** to get back as fast as they can, so you won't receive any loot from this trip if you cancel it, and you will lose any supplies you spent to start this trip, if any.`

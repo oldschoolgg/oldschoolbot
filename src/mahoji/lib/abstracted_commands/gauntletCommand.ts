@@ -1,12 +1,9 @@
-import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
-import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
+import { randomVariation } from '@oldschoolgg/rng';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time, toTitleCase } from '@oldschoolgg/toolkit';
 
+import { BitField } from '@/lib/constants.js';
+import type { GauntletOptions } from '@/lib/types/minions.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { BitField } from '../../../lib/constants';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { GauntletOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 const baseRequirements = {
 	cooking: 70,
@@ -19,7 +16,7 @@ const baseRequirements = {
 	herblore: 70,
 	construction: 70,
 	hunter: 70,
-	prayer: 77
+	prayer: 70
 };
 
 const standardRequirements = {
@@ -47,7 +44,7 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 	}
 	const readableName = `${toTitleCase(type)} Gauntlet`;
 	const requiredSkills = type === 'corrupted' ? corruptedRequirements : standardRequirements;
-	const prayLevel = user.skillLevel(SkillsEnum.Prayer);
+	const prayLevel = user.skillsAsLevels.prayer;
 
 	if (!user.hasSkillReqs(requiredSkills)) {
 		return `You don't have the required stats to do the ${readableName}, you need: ${formatSkillRequirements(
@@ -96,17 +93,23 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 		boosts.push(`${scoreBoost}% boost for ${type === 'corrupted' ? 'Corrupted ' : ''}Hunllef KC`);
 	}
 
-	if (user.bitfield.includes(BitField.HasArcaneScroll)) {
+	if (prayLevel >= 77 && user.bitfield.includes(BitField.HasArcaneScroll)) {
 		boosts.push('5% for Augury');
 		baseLength = reduceNumByPercent(baseLength, 5);
+	} else if (user.bitfield.includes(BitField.HasMysticVigourScroll)) {
+		boosts.push('3% for Mystic Vigour');
+		baseLength = reduceNumByPercent(baseLength, 3);
 	} else if (prayLevel >= 45) {
 		boosts.push('2% for Mystic Might');
 		baseLength = reduceNumByPercent(baseLength, 2);
 	}
 
-	if (user.bitfield.includes(BitField.HasDexScroll)) {
+	if (prayLevel >= 74 && user.bitfield.includes(BitField.HasDexScroll)) {
 		boosts.push('5% for Rigour');
 		baseLength = reduceNumByPercent(baseLength, 5);
+	} else if (user.bitfield.includes(BitField.HasDeadeyeScroll)) {
+		boosts.push('3% for Deadeye');
+		baseLength = reduceNumByPercent(baseLength, 3);
 	} else if (prayLevel >= 44) {
 		boosts.push('2% for Eagle Eye');
 		baseLength = reduceNumByPercent(baseLength, 2);
@@ -115,7 +118,7 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 	// Add a 5% variance to account for randomness of gauntlet
 	const gauntletLength = randomVariation(baseLength, 5);
 
-	const maxTripLength = calcMaxTripLength(user, 'Gauntlet');
+	const maxTripLength = user.calcMaxTripLength('Gauntlet');
 
 	const quantity = Math.floor(maxTripLength / gauntletLength);
 	const duration = quantity * gauntletLength;
@@ -128,9 +131,9 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 		)}.`;
 	}
 
-	await addSubTaskToActivityTask<GauntletOptions>({
+	await ActivityManager.startTrip<GauntletOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'Gauntlet',

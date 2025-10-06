@@ -1,20 +1,13 @@
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
-import Cooking, { Cookables } from '../../lib/skilling/skills/cooking/cooking';
-import ForestryRations from '../../lib/skilling/skills/cooking/forestersRations';
-import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish';
-import type { CookingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { cutLeapingFishCommand } from '../lib/abstracted_commands/cutLeapingFishCommand';
-import { forestersRationCommand } from '../lib/abstracted_commands/forestersRationCommand';
+import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import Cooking, { Cookables } from '@/lib/skilling/skills/cooking/cooking.js';
+import ForestryRations from '@/lib/skilling/skills/cooking/forestersRations.js';
+import { LeapingFish } from '@/lib/skilling/skills/cooking/leapingFish.js';
+import type { CookingActivityTaskOptions } from '@/lib/types/minions.js';
+import { cutLeapingFishCommand } from '@/mahoji/lib/abstracted_commands/cutLeapingFishCommand.js';
+import { forestersRationCommand } from '@/mahoji/lib/abstracted_commands/forestersRationCommand.js';
 
 export const cookCommand: OSBMahojiCommand = {
 	name: 'cook',
@@ -26,7 +19,7 @@ export const cookCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to cook.',
 			required: true,
@@ -44,15 +37,14 @@ export const cookCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to cook (optional).',
 			required: false,
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		let { quantity, name } = options;
 
 		const barbarianFish = LeapingFish.find(
@@ -116,7 +108,7 @@ export const cookCommand: OSBMahojiCommand = {
 		const userBank = user.bank;
 		const inputCost = new Bank(cookable.inputCookables);
 
-		const maxTripLength = calcMaxTripLength(user, 'Cooking');
+		const maxTripLength = user.calcMaxTripLength('Cooking');
 
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timeToCookSingleCookable);
@@ -142,10 +134,10 @@ export const cookCommand: OSBMahojiCommand = {
 
 		await user.removeItemsFromBank(totalCost);
 
-		await addSubTaskToActivityTask<CookingActivityTaskOptions>({
+		await ActivityManager.startTrip<CookingActivityTaskOptions>({
 			cookableID: cookable.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			quantity,
 			duration,
 			type: 'Cooking'

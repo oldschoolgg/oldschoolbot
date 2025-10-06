@@ -1,24 +1,18 @@
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit/util';
-import { calcPercentOfNum, calcWhatPercent } from 'e';
-import { Bank, type ItemBank, Monsters, itemID } from 'oldschooljs';
+import { calcPercentOfNum, calcWhatPercent, Events, formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
+import { Bank, type ItemBank, itemID, Monsters } from 'oldschooljs';
 
-import { countUsersWithItemInCl } from '@/lib/rawSql';
-import chatHeadImage from '../../../lib/canvas/chatHeadImage';
-import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
-import { DiaryID } from '../../../lib/minions/types';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import type { InfernoOptions } from '../../../lib/types/minions';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
+import { diariesObject, userhasDiaryTier } from '@/lib/diaries.js';
+import { DiaryID } from '@/lib/minions/types.js';
+import { countUsersWithItemInCl } from '@/lib/rawSql.js';
+import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import type { InfernoOptions } from '@/lib/types/minions.js';
 
 export const infernoTask: MinionTask = {
 	type: 'Inferno',
-	async run(data: InfernoOptions) {
-		const { userID, channelID, diedZuk, diedPreZuk, duration, deathTime, fakeDuration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: InfernoOptions, { user, handleTripFinish }) {
+		const { channelID, diedZuk, diedPreZuk, duration, deathTime, fakeDuration } = data;
+
 		const score = await user.fetchMinigameScore('inferno');
 
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
@@ -32,15 +26,11 @@ export const infernoTask: MinionTask = {
 		const unusedItems = new Bank();
 		const cost = new Bank(data.cost);
 
-		const { inferno_attempts: newInfernoAttempts } = await userStatsUpdate(
-			user.id,
-			{
-				inferno_attempts: {
-					increment: 1
-				}
-			},
-			{ inferno_attempts: true }
-		);
+		const { inferno_attempts: newInfernoAttempts } = await user.statsUpdate({
+			inferno_attempts: {
+				increment: 1
+			}
+		});
 
 		const percentMadeItThrough = deathTime === null ? 100 : calcWhatPercent(deathTime, fakeDuration);
 
@@ -52,7 +42,7 @@ export const infernoTask: MinionTask = {
 
 		xpBonuses.push(
 			await user.addXP({
-				skillName: SkillsEnum.Ranged,
+				skillName: 'ranged',
 				amount: calcPercentOfNum(percentMadeItThrough, 80_000),
 				duration,
 				minimal: true
@@ -60,7 +50,7 @@ export const infernoTask: MinionTask = {
 		);
 		xpBonuses.push(
 			await user.addXP({
-				skillName: SkillsEnum.Hitpoints,
+				skillName: 'hitpoints',
 				amount: calcPercentOfNum(percentMadeItThrough, 35_000),
 				duration,
 				minimal: true
@@ -68,7 +58,7 @@ export const infernoTask: MinionTask = {
 		);
 		xpBonuses.push(
 			await user.addXP({
-				skillName: SkillsEnum.Magic,
+				skillName: 'magic',
 				amount: calcPercentOfNum(percentMadeItThrough, 25_000),
 				duration,
 				minimal: true
@@ -77,7 +67,7 @@ export const infernoTask: MinionTask = {
 		if (isOnTask) {
 			xpBonuses.push(
 				await user.addXP({
-					skillName: SkillsEnum.Slayer,
+					skillName: 'slayer',
 					amount: deathTime === null ? 125_000 : calcPercentOfNum(percentMadeItThrough, 25_000),
 					duration
 				})
@@ -119,15 +109,11 @@ export const infernoTask: MinionTask = {
 		}
 
 		if (isOnTask && !deathTime) {
-			const newUserStats = await userStatsUpdate(
-				user.id,
-				{
-					slayer_task_streak: {
-						increment: 1
-					}
-				},
-				{ slayer_task_streak: true }
-			);
+			const newUserStats = await user.statsUpdate({
+				slayer_task_streak: {
+					increment: 1
+				}
+			});
 
 			const currentStreak = newUserStats.slayer_task_streak;
 			const points = await calculateSlayerPoints(
@@ -157,10 +143,10 @@ export const infernoTask: MinionTask = {
 		if (unusedItems.length > 0) {
 			await user.addItemsToBank({ items: unusedItems, collectionLog: false });
 
-			const currentData = await mahojiClientSettingsFetch({ inferno_cost: true });
+			const currentData = await ClientSettings.fetch({ inferno_cost: true });
 			const current = new Bank(currentData.inferno_cost as ItemBank);
 			const newBank = current.remove(unusedItems);
-			await mahojiClientSettingsUpdate({
+			await ClientSettings.update({
 				inferno_cost: newBank.toJSON()
 			});
 		}

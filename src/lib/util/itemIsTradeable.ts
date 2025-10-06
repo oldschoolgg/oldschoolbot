@@ -1,8 +1,7 @@
-import { Bank, EItem, resolveItems } from 'oldschooljs';
+import { Bank, EItem, Items, resolveItems } from 'oldschooljs';
 
-import { leaguesCreatables } from '../data/creatables/leagueCreatables';
-import { leagueBuyables } from '../data/leaguesBuyables';
-import getOSItem from './getOSItem';
+import { leaguesCreatables } from '@/lib/data/creatables/leagueCreatables.js';
+import { leagueBuyables } from '@/lib/data/leaguesBuyables.js';
 
 const specialUntradeables = resolveItems([
 	'Coins',
@@ -25,7 +24,7 @@ const specialTradeables = resolveItems([
 ]);
 
 export default function itemIsTradeable(itemID: number | string, allowCoins = false) {
-	const osItem = getOSItem(itemID);
+	const osItem = Items.getOrThrow(itemID);
 	if (allowCoins && osItem.id === EItem.COINS) return true;
 
 	if (specialTradeables.includes(osItem.id)) return true;

@@ -1,39 +1,30 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import {
-	type CommandRunOptions,
-	type OSBMahojiCommand,
-	channelIsSendable,
-	makeComponents
-} from '@oldschoolgg/toolkit/discord-util';
+import { randInt } from '@oldschoolgg/rng';
+import { channelIsSendable, chunk, Emoji, makeComponents, Time } from '@oldschoolgg/toolkit';
 import type { Giveaway } from '@prisma/client';
 import { Duration } from '@sapphire/time-utilities';
 import {
 	ActionRowBuilder,
-	ApplicationCommandOptionType,
 	AttachmentBuilder,
 	type BaseMessageOptions,
 	ButtonBuilder,
 	ButtonStyle,
 	ChannelType,
 	EmbedBuilder,
+	MessageFlags,
 	messageLink,
 	time
 } from 'discord.js';
-import { Time, randInt } from 'e';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
-import { giveawayCache } from '../../lib/cache.js';
-import { patronFeatures } from '../../lib/constants';
-import { marketPriceOfBank } from '../../lib/marketPrices';
-import { isModOrAdmin } from '../../lib/util.js';
-import { generateGiveawayContent } from '../../lib/util/giveaway';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { logError } from '../../lib/util/logError';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { filterOption } from '../lib/mahojiCommandOptions';
-import { addToGPTaxBalance } from '../mahojiSettings';
+import { giveawayCache } from '@/lib/cache.js';
+import { patronFeatures } from '@/lib/constants.js';
+import { filterOption } from '@/lib/discord/index.js';
+import { marketPriceOfBank } from '@/lib/marketPrices.js';
+import { generateGiveawayContent } from '@/lib/util/giveaway.js';
+import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
+import { isModOrAdmin } from '@/lib/util.js';
 
 function makeGiveawayButtons(giveawayID: number): BaseMessageOptions['components'] {
 	return [
@@ -67,25 +58,25 @@ export const giveawayCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'start',
 			description: 'Start a giveaway.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'duration',
 					description: 'The duration of the giveaway (e.g. 1h, 1d).',
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'items',
 					description: 'The items you want to giveaway.',
 					required: false
 				},
 				filterOption,
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'search',
 					description: 'A search query for items in your bank to giveaway.',
 					required: false
@@ -93,7 +84,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'list',
 			description: 'List giveaways active in this server.',
 			options: []
@@ -101,7 +92,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		guildID,
 		interaction,
 		channelID,
@@ -110,7 +101,6 @@ export const giveawayCommand: OSBMahojiCommand = {
 		start?: { duration: string; items?: string; filter?: string; search?: string };
 		list?: {};
 	}>) => {
-		const user = await mUserFetch(userID);
 		if (user.isIronman) return 'You cannot do giveaways!';
 		const channel = globalClient.channels.cache.get(channelID.toString());
 		if (!channelIsSendable(channel)) return 'Invalid channel.';
@@ -149,8 +139,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 			}
 
 			if (interaction) {
-				await handleMahojiConfirmation(
-					interaction,
+				await interaction.confirmation(
 					`Are you sure you want to do a giveaway with these items? You cannot cancel the giveaway or retrieve the items back afterwards: ${bank}`
 				);
 			}
@@ -193,7 +182,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 				return err instanceof Error ? err.message : err;
 			}
 			if (bank.has('Coins')) {
-				addToGPTaxBalance(user.id, bank.amount('Coins'));
+				await ClientSettings.addToGPTaxBalance(user, bank.amount('Coins'));
 			}
 
 			try {
@@ -213,7 +202,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 				});
 				giveawayCache.set(giveaway.id, giveaway);
 			} catch (err: any) {
-				logError(err, {
+				Logging.logError(err, {
 					user_id: user.id,
 					giveaway: bank.toString()
 				});
@@ -251,7 +240,10 @@ export const giveawayCommand: OSBMahojiCommand = {
 			});
 
 			if (giveaways.length === 0) {
-				return 'There are no active giveaways in this server.';
+				return {
+					content: 'There are no active giveaways in this server.',
+					flags: MessageFlags.Ephemeral
+				};
 			}
 
 			function getEmoji(giveaway: Giveaway) {
@@ -261,27 +253,21 @@ export const giveawayCommand: OSBMahojiCommand = {
 				return Emoji.RedX;
 			}
 
-			return {
-				embeds: [
-					new EmbedBuilder().setDescription(
-						giveaways
-							.map(
-								g =>
-									`${
-										user.perkTier() >= patronFeatures.ShowEnteredInGiveawayList.tier
-											? `${getEmoji(g)} `
-											: ''
-									}[${toKMB(marketPriceOfBank(new Bank(g.loot as ItemBank)))} giveaway ending ${time(
-										g.finish_date,
-										'R'
-									)}](${messageLink(g.channel_id, g.message_id)})`
-							)
-							.slice(0, 30)
-							.join('\n')
-					)
-				],
-				ephemeral: true
-			};
+			const lines = giveaways.map(
+				(g: Giveaway) =>
+					`${
+						user.perkTier() >= patronFeatures.ShowEnteredInGiveawayList.tier ? `${getEmoji(g)} ` : ''
+					}[${toKMB(marketPriceOfBank(new Bank(g.loot as ItemBank)))} giveaway ending ${time(
+						g.finish_date,
+						'R'
+					)}](${messageLink(g.channel_id, g.message_id)})`
+			);
+
+			const pages = chunk(lines, 10).map(chunkLines => ({
+				embeds: [new EmbedBuilder().setDescription(chunkLines.join('\n'))]
+			}));
+
+			await interaction.makePaginatedMessage({ pages, ephemeral: true });
 		}
 	}
 };

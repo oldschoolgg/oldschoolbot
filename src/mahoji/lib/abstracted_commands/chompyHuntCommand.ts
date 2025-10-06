@@ -1,13 +1,10 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time, percentChance } from 'e';
+import { percentChance } from '@oldschoolgg/rng';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { avasDevices, chompyHats } from '../../../lib/data/CollectionsExport';
-import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
-
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { avasDevices, chompyHats } from '@/lib/data/CollectionsExport.js';
+import { userhasDiaryTier, WesternProv } from '@/lib/diaries.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 const diaryBoosts = [
 	[WesternProv.elite, 100],
@@ -42,7 +39,7 @@ export async function chompyHuntCommand(user: MUser, channelID: string) {
 		return 'You need an Ogre bow equipped in your range outfit, and Ogre arrows to hunt Chompy birds!';
 	}
 
-	const tripLength = calcMaxTripLength(user, 'BigChompyBirdHunting');
+	const tripLength = user.calcMaxTripLength('BigChompyBirdHunting');
 
 	const boosts = [];
 	let quantity = Math.floor((baseChompyPerHour / Time.Hour) * tripLength);
@@ -75,9 +72,9 @@ export async function chompyHuntCommand(user: MUser, channelID: string) {
 		return `You cannot hunt chompy birds. ${err.message}`;
 	}
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration: tripLength,
 		type: 'BigChompyBirdHunting',
 		quantity,

@@ -1,17 +1,14 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 
-import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 export async function myNotesCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
 	const oneSkeleton = 5 * Time.Second;
-	const maxTripLength = calcMaxTripLength(user, 'MyNotes');
+	const maxTripLength = user.calcMaxTripLength('MyNotes');
 	const quantity = Math.floor(maxTripLength / oneSkeleton);
 	const duration = quantity * oneSkeleton;
 
@@ -23,9 +20,9 @@ export async function myNotesCommand(user: MUser, channelID: string) {
 		attackStylesUsed: []
 	});
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration,
 		type: 'MyNotes',
 		quantity

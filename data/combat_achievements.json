@@ -291,11 +291,41 @@
 				"type": "kill_count",
 				"monster": "Scurrius",
 				"desc": "Kill Scurrius once."
+			},
+			{
+				"id": 36,
+				"name": "Elemental Company",
+				"type": "restriction",
+				"monster": "Royal Titans",
+				"desc": "Kill the Royal Titans without attacking any elementals.",
+				"rng": {
+					"chancePerKill": 5
+				}
+			},
+			{
+				"id": 37,
+				"name": "Let them fight",
+				"type": "restriction",
+				"monster": "Royal Titans",
+				"desc": "Kill the Royal Titans while having the Royal Titans kill a total of 10 elementals.",
+				"rng": {
+					"chancePerKill": 5
+				}
+			},
+			{
+				"id": 38,
+				"name": "One by one",
+				"type": "restriction",
+				"monster": "Royal Titans",
+				"desc": "Kill one Titan at a time, without attacking the other.",
+				"rng": {
+					"chancePerKill": 5
+				}
 			}
 		],
 		"name": "Easy",
 		"taskPoints": 1,
-		"rewardThreshold": 35
+		"rewardThreshold": 38
 	},
 	"medium": {
 		"tasks": [
@@ -694,11 +724,35 @@
 				"desc": "Kill Amoxliatl once.",
 				"type": "kill_count",
 				"monster": "Amoxliatl"
+			},
+			{
+				"id": 148,
+				"name": "It takes too long",
+				"type": "mechanical",
+				"monster": "Royal Titans",
+				"desc": "Kill both Royal Titans while they are charging up their area attack. Both titans must die during the same charging phase.",
+				"rng": {
+					"chancePerKill": 10
+				}
+			},
+			{
+				"id": 149,
+				"name": "Royal Titan Adept",
+				"type": "kill_count",
+				"monster": "Royal Titans",
+				"desc": "Kill the Royal Titans 25 times."
+			},
+			{
+				"id": 150,
+				"name": "Royal Titan Champion",
+				"type": "kill_count",
+				"monster": "Royal Titans",
+				"desc": "Kill the Royal Titans 10 times."
 			}
 		],
 		"name": "Medium",
 		"taskPoints": 2,
-		"rewardThreshold": 129
+		"rewardThreshold": 138
 	},
 	"hard": {
 		"tasks": [
@@ -1318,11 +1372,51 @@
 				"rng": {
 					"chancePerKill": 70
 				}
+			},
+			{
+				"id": 271,
+				"name": "I need room",
+				"type": "restriction",
+				"monster": "Royal Titans",
+				"desc": "Kill the Royal Titans while extinguishing all fires and melting all icicles before they dissipate naturally.",
+				"rng": {
+					"chancePerKill": 10
+				}
+			},
+			{
+				"id": 272,
+				"name": "Perfect Royal Titans",
+				"type": "perfection",
+				"monster": "Royal Titans",
+				"desc": "Kill the Royal Titans without getting hit by any avoidable damage. This includes: Melee attacks, Explosions from the ice or fire elemental, Icicle or fire spawn damage, and Ice or fire pulse attacks.",
+				"rng": {
+					"chancePerKill": 15
+				}
+			},
+			{
+				"id": 273,
+				"name": "Titan Killer",
+				"type": "stamina",
+				"monster": "Royal Titans",
+				"desc": "Kill the Royal Titans 15 times without anyone leaving the instance. If a player joins the fight, the current streak will be reset to 0. If a player leaves the fight, the task will be failed and a new instance will need to be created.",
+				"rng": {
+					"chancePerKill": 15
+				}
+			},
+			{
+				"id": 274,
+				"name": "Royal Titan Speed-Runner",
+				"type": "speed",
+				"monster": "Royal Titans",
+				"desc": "Kill the Royal Titans in less than 1:30 minutes.",
+				"rng": {
+					"chancePerKill": 15
+				}
 			}
 		],
 		"name": "Hard",
 		"taskPoints": 3,
-		"rewardThreshold": 342
+		"rewardThreshold": 363
 	},
 	"elite": {
 		"tasks": [
@@ -2624,7 +2718,7 @@
 			{
 				"id": 1147,
 				"name": "Duke Sucellus Speed-Trialist",
-				"desc": "Kill Duke Sucellus in less than 1:45 minutes without a slayer task.",
+				"desc": "Kill Duke Sucellus in less than 1:00 minutes without a slayer task.",
 				"type": "speed",
 				"monster": "Duke Sucellus",
 				"rng": {
@@ -2684,11 +2778,21 @@
 				"rng": {
 					"chancePerKill": 150
 				}
+			},
+			{
+				"id": 1154,
+				"name": "No time to pray",
+				"type": "restriction",
+				"monster": "Royal Titans",
+				"desc": "Kill the Royal Titans without losing any prayer points.",
+				"rng": {
+					"chancePerKill": 20
+				}
 			}
 		],
 		"name": "Elite",
 		"taskPoints": 4,
-		"rewardThreshold": 930
+		"rewardThreshold": 955
 	},
 	"master": {
 		"tasks": [
@@ -3281,7 +3385,7 @@
 			{
 				"id": 2061,
 				"name": "Phosani's Speedchaser",
-				"desc": "Defeat Phosani's Nightmare within 9 minutes.",
+				"desc": "Defeat Phosani's Nightmare within 7 minutes and 30 seconds.",
 				"type": "speed",
 				"monster": "Phosani's Nightmare",
 				"rng": {
@@ -4142,11 +4246,11 @@
 			{
 				"id": 2153,
 				"name": "Duke Sucellus Speed-Chaser",
-				"desc": "Kill Duke Sucellus in less than 1:35 minutes without a slayer task.",
+				"desc": "Kill Duke Sucellus in less than 50 seconds without a slayer task.",
 				"type": "speed",
 				"monster": "Duke Sucellus",
 				"rng": {
-					"chancePerKill": 40
+					"chancePerKill": 30
 				}
 			},
 			{
@@ -4189,7 +4293,7 @@
 		],
 		"name": "Master",
 		"taskPoints": 5,
-		"rewardThreshold": 1695
+		"rewardThreshold": 1720
 	},
 	"grandmaster": {
 		"tasks": [
@@ -4478,7 +4582,7 @@
 			{
 				"id": 3030,
 				"name": "Phosani's Speedrunner",
-				"desc": "Defeat Phosani's Nightmare within 7:30 minutes.",
+				"desc": "Defeat Phosani's Nightmare within 6 minutes.",
 				"type": "speed",
 				"monster": "Phosani's Nightmare",
 				"rng": {
@@ -5213,11 +5317,11 @@
 			{
 				"id": 3108,
 				"name": "Duke Sucellus Speed-Runner",
-				"desc": "Kill Duke Sucellus in less than 1:25 minutes without a slayer task.",
+				"desc": "Kill Duke Sucellus in less than 40 seconds without a slayer task.",
 				"type": "speed",
 				"monster": "Duke Sucellus",
 				"rng": {
-					"chancePerKill": 150
+					"chancePerKill": 100
 				}
 			},
 			{
@@ -5243,6 +5347,6 @@
 		],
 		"name": "Grandmaster",
 		"taskPoints": 6,
-		"rewardThreshold": 2343
+		"rewardThreshold": 2368
 	}
 }

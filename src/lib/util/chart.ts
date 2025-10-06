@@ -1,5 +1,4 @@
-import { deepMerge, getWrappedArrayItem } from '@oldschoolgg/toolkit/util';
-import fetch from 'node-fetch';
+import { deepMerge, getWrappedArrayItem } from '@oldschoolgg/toolkit';
 
 const colors = [
 	'#fd7f6f',
@@ -41,7 +40,7 @@ async function renderChart(url: string) {
 		headers: { 'Content-Type': 'application/json' }
 	});
 
-	return response.buffer();
+	return Buffer.from(await response.arrayBuffer());
 }
 
 export interface ChartOptions {

@@ -1,20 +1,14 @@
-import '../globalSetup';
-import '../../src/lib/globals';
-import '../../src/lib/util/transactItemsFromBank';
-import '../../src/lib/ActivityManager';
-import './mocks';
+import '../globalSetup.js';
+import '../../src/lib/globals.js';
+import '../../src/lib/util/transactItemsFromBank.js';
+import '../../src/lib/ActivityManager.js';
 
-import { beforeEach, vi } from 'vitest';
-
+import { noOp } from '@oldschoolgg/toolkit';
 import { PrismaClient } from '@prisma/client';
-import { noOp } from 'e';
+import { beforeEach, vi } from 'vitest';
 
 if (!roboChimpClient) {
 	throw new Error('Robochimp client not found.');
-}
-
-export function randomMock(random = 0.1) {
-	Math.random = () => random;
 }
 
 vi.mock('../../src/lib/util/webhook', async () => {
@@ -22,16 +16,9 @@ vi.mock('../../src/lib/util/webhook', async () => {
 	return {
 		...actual,
 		sendToChannelID: vi.fn(() => {
-			// console.log('sendToChannelID called with args:', args);
 			return Promise.resolve();
 		})
 	};
-});
-
-// @ts-ignore mock
-globalClient.fetchUser = async (id: string | bigint) => ({
-	id: typeof id === 'string' ? id : String(id),
-	send: async () => {}
 });
 
 const __prismaClient = new PrismaClient();

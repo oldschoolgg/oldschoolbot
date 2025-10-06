@@ -1,21 +1,20 @@
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-// @ts-expect-error
-import Spritesmith from 'spritesmith';
-import '../src/lib/safeglobals';
+import { type GenerateResult, SpriteSheetGenerator } from '@oldschoolgg/spritesheet';
+import { isFunction, Stopwatch, uniqueArr } from '@oldschoolgg/toolkit';
+import '../src/lib/safeglobals.js';
+
+import { Bank, GearStat, type ItemBank, Items, resolveItems } from 'oldschooljs';
 import sharp from 'sharp';
 
-import { isFunction, uniqueArr } from 'e';
-import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
-import { ALL_OBTAINABLE_ITEMS } from '../src/lib/allObtainableItems';
-import { BOT_TYPE } from '../src/lib/constants';
-import { allCLItems } from '../src/lib/data/Collections';
-import Buyables from '../src/lib/data/buyables/buyables';
-import Createables from '../src/lib/data/createables';
-
-import bsoItemsJson from '../data/bso/bso_items.json';
-import bsoMonstersJson from '../data/bso/monsters.json';
+import { ALL_OBTAINABLE_ITEMS } from '@/lib/allObtainableItems.js';
+import { findBestGearSetups } from '@/lib/gear/functions/findBestGearSetups.js';
+import bsoItemsJson from '../data/bso/bso_items.json' with { type: 'json' };
+import bsoMonstersJson from '../data/bso/monsters.json' with { type: 'json' };
+import { BOT_TYPE } from '../src/lib/constants.js';
+import Buyables from '../src/lib/data/buyables/buyables.js';
+import { allCLItems } from '../src/lib/data/Collections.js';
+import Createables from '../src/lib/data/createables.js';
 
 const SPRITESHEETS_DIR = './src/lib/resources/spritesheets';
 const stopwatch = new Stopwatch();
@@ -88,37 +87,48 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 	})
 ]);
 
+const bisGearItems = new Set<number>();
+
+for (const stat of Object.values(GearStat)) {
+	const gearSetups = findBestGearSetups({ stat, ignoreUnobtainable: true, limit: 10 });
+	for (const setup of gearSetups) {
+		for (const id of setup.allItems(false)) {
+			const item = Items.get(id);
+			if (!item) continue;
+			if ([' (75)', ' (100)', ' (50)', ' (25)', ' (0)', ' (l)'].some(t => item.wiki_name?.includes(t))) continue;
+			bisGearItems.add(item.id);
+		}
+	}
+}
+
+const bisGearMissing = Array.from(bisGearItems).filter(i => !itemsMustBeInSpritesheet.includes(i));
+itemsMustBeInSpritesheet.push(...bisGearMissing);
+console.log(
+	`	Adding ${bisGearMissing.length} items to spritesheet for BiS gear: ${bisGearMissing.map(i => Items.itemNameFromId(i)).join(', ')}`
+);
+
 const getPngFiles = async (dir: string): Promise<string[]> => {
 	const files = await fs.readdir(dir);
 	return files.filter(file => path.extname(file).toLowerCase() === '.png').map(file => path.join(dir, file));
 };
 
-const createSpriteSheet = (files: string[], outputPath: string): Promise<Spritesmith.Result> => {
-	return new Promise((resolve, reject) => {
-		Spritesmith.run({ src: files }, async (err: any, result: any) => {
-			if (err) return reject(err);
+const createSpriteSheet = async (files: string[], outputPath: string) => {
+	const result = await SpriteSheetGenerator.generate({ images: files });
 
-			const compressedBuff = await sharp(result.image as any)
-				.png({
-					compressionLevel: 9
-				})
-				.toBuffer();
-			try {
-				await fs.writeFile(outputPath, compressedBuff);
-				resolve(result);
-			} catch (writeError) {
-				reject(writeError);
-			}
-		});
-	});
+	const compressedBuff = await sharp(result.imageBuffer)
+		.png({
+			compressionLevel: 9
+		})
+		.toBuffer();
+	await fs.writeFile(outputPath, compressedBuff);
+	return result;
 };
 
-const generateJsonData = (result: Spritesmith.Result): Record<string, any> => {
-	stopwatch.check('Generating spritesheet.json');
-	const jsonData: Record<string, any> = {};
-	for (const [filePath, data] of Object.entries(result.coordinates) as any[]) {
-		const fileName = path.basename(filePath, '.png');
-		jsonData[fileName] = [data.x, data.y, data.width, data.height];
+const generateJsonData = (result: GenerateResult) => {
+	stopwatch.check('Generating spritesheet json');
+	const jsonData: Record<string, [number, number, number, number]> = {};
+	for (const [id, data] of Object.entries(result.positions)) {
+		jsonData[id] = [data.x, data.y, data.width, data.height];
 	}
 	return jsonData;
 };

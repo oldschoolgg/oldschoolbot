@@ -1,21 +1,20 @@
-import type { Minigame, PlayerOwnedHouse, activity_type_enum } from '@prisma/client';
-import { calcWhatPercent, objectEntries } from 'e';
-import type { Bank } from 'oldschooljs';
+import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
+import type { activity_type_enum, Minigame, PlayerOwnedHouse } from '@prisma/client';
+import { type Bank, Items } from 'oldschooljs';
 
-import type { ParsedUnit } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
-import { getParsedStashUnits } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
-import type { ClueTier } from '../clues/clueTiers';
-import type { BitField } from '../constants';
-import { BOT_TYPE, BitFieldData } from '../constants';
-import { diaries, userhasDiaryTierSync } from '../diaries';
-import { effectiveMonsters } from '../minions/data/killableMonsters';
-import type { ClueBank, DiaryID, DiaryTierName } from '../minions/types';
-import type { RobochimpUser } from '../roboChimp';
-import { type MinigameName, minigameColumnToNameMap } from '../settings/minigames';
-import Agility from '../skilling/skills/agility';
-import type { Skills } from '../types';
-import { formatList, itemNameFromID } from '../util/smallUtils';
-import { MUserStats } from './MUserStats';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import type { BitField } from '@/lib/constants.js';
+import { BitFieldData, BOT_TYPE } from '@/lib/constants.js';
+import { diaries, userhasDiaryTierSync } from '@/lib/diaries.js';
+import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import type { ClueBank, DiaryID, DiaryTierName } from '@/lib/minions/types.js';
+import type { RobochimpUser } from '@/lib/roboChimp.js';
+import { type MinigameName, minigameColumnToNameMap } from '@/lib/settings/minigames.js';
+import Agility from '@/lib/skilling/skills/agility.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
+import type { Skills } from '@/lib/types/index.js';
+import { formatList } from '@/lib/util/smallUtils.js';
+import type { ParsedUnit } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
 export interface RequirementFailure {
 	reason: string;
@@ -41,7 +40,7 @@ type Requirement = {
 	| { name: string; has: ManualHasFunction }
 	| { skillRequirements: Partial<Skills> }
 	| { clRequirement: Bank | number[] }
-	| { kcRequirement: Record<number, number> }
+	| { kcRequirement: Record<string, number | number[]> }
 	| { qpRequirement: number }
 	| { lapsRequirement: Record<number, number> }
 	| { sacrificedItemsRequirement: Bank }
@@ -59,6 +58,10 @@ export class Requirements {
 		return this.requirements.length;
 	}
 
+	toJSON() {
+		return this.requirements;
+	}
+
 	formatRequirement(req: Requirement): (string | string[])[] {
 		const requirementParts: (string | string[])[] = [];
 		if ('skillRequirements' in req) {
@@ -73,20 +76,30 @@ export class Requirements {
 			requirementParts.push(
 				`Items Must Be in CL: ${
 					Array.isArray(req.clRequirement)
-						? formatList(req.clRequirement.map(itemNameFromID))
+						? formatList(req.clRequirement.map(i => Items.itemNameFromId(i)))
 						: req.clRequirement.toString()
 				}`
 			);
 		}
 
 		if ('kcRequirement' in req) {
-			requirementParts.push(
-				`Kill Count Requirement: ${formatList(
-					Object.entries(req.kcRequirement).map(
-						([k, v]) => `${v}x ${effectiveMonsters.find(i => i.id === Number(k))?.name} KC`
-					)
-				)}`
-			);
+			const requirementStrings = Object.entries(req.kcRequirement).map(([key, value]) => {
+				if (typeof value === 'number') {
+					const monster = effectiveMonsters.find(i => i.id === Number(key));
+					return `${value}x ${monster?.name ?? 'Unknown'} KC`;
+				}
+
+				// checks combined KC if multiple IDs
+				else if (Array.isArray(value)) {
+					const groupName = key;
+					const requiredKC = value[0];
+					return `${requiredKC}x ${groupName} KC`;
+				}
+
+				return '';
+			});
+
+			requirementParts.push(`Kill Count Requirement: ${formatList(requirementStrings)}`);
 		}
 
 		if ('qpRequirement' in req) {
@@ -196,7 +209,9 @@ export class Requirements {
 		if ('clRequirement' in requirement) {
 			if (!user.cl.has(requirement.clRequirement)) {
 				const missingItems = Array.isArray(requirement.clRequirement)
-					? formatList(requirement.clRequirement.filter(i => !user.cl.has(i)).map(itemNameFromID))
+					? formatList(
+							requirement.clRequirement.filter(i => !user.cl.has(i)).map(i => Items.itemNameFromId(i))
+						)
 					: requirement.clRequirement.clone().remove(user.cl);
 				results.push({
 					reason: `You need ${missingItems} in your CL.`
@@ -206,17 +221,38 @@ export class Requirements {
 
 		if ('kcRequirement' in requirement) {
 			const kcs = stats.monsterScores;
-			const missingMonsterNames = [];
-			for (const [id, amount] of Object.entries(requirement.kcRequirement)) {
-				if (!kcs[id] || kcs[id] < amount) {
-					missingMonsterNames.push(
-						`${amount}x ${effectiveMonsters.find(m => m.id === Number.parseInt(id))?.name ?? id}`
-					);
+			const missingRequirements: string[] = [];
+
+			for (const [key, value] of Object.entries(requirement.kcRequirement)) {
+				// Case 1: Handle the original, SINGLE monster KC check
+				if (typeof value === 'number') {
+					const monsterID = Number(key);
+					const requiredKC = value;
+					const userKC = kcs[monsterID] ?? 0; // Safely get user's KC, or 0
+
+					if (userKC < requiredKC) {
+						const monster = effectiveMonsters.find(m => m.id === monsterID);
+						missingRequirements.push(`${requiredKC}x ${monster?.name ?? `ID ${monsterID}`}`);
+					}
+				}
+
+				// Case 2: Handle our new, COMBINED KC check
+				else if (Array.isArray(value)) {
+					const groupName = key;
+					const [requiredKC, ...monsterIDs] = value;
+
+					// sum the KC for all monsters in the group
+					const totalKC = monsterIDs.reduce((sum, id) => sum + (kcs[id] ?? 0), 0);
+
+					if (totalKC < requiredKC) {
+						missingRequirements.push(`${requiredKC}x ${groupName}`);
+					}
 				}
 			}
-			if (missingMonsterNames.length > 0) {
+
+			if (missingRequirements.length > 0) {
 				results.push({
-					reason: `You need the following KC's: ${formatList(missingMonsterNames)}.`
+					reason: `You need the following KC's: ${formatList(missingRequirements)}.`
 				});
 			}
 		}
@@ -325,8 +361,8 @@ export class Requirements {
 
 	static async fetchRequiredData(user: MUser) {
 		const minigames = await user.fetchMinigames();
-		const stashUnits = await getParsedStashUnits(user.id);
-		const stats = await MUserStats.fromID(user.id);
+		const stashUnits = await user.fetchStashUnits();
+		const stats = await user.fetchMStats();
 		const roboChimpUser = await user.fetchRobochimpUser();
 		const clueCounts =
 			BOT_TYPE === 'OSB' ? stats.clueScoresFromOpenables() : (await user.calcActualClues()).clueCounts;

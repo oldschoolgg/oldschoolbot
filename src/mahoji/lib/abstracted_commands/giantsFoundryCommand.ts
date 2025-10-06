@@ -1,19 +1,10 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { Time, calcWhatPercent } from 'e';
+import { calcWhatPercent, formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { TOTAL_GIANT_WEAPONS } from '../../../lib/giantsFoundry';
-import { trackLoot } from '../../../lib/lootTrack';
-import Smithing from '../../../lib/skilling/skills/smithing';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsBankUpdate, userStatsUpdate } from '../../mahojiSettings';
-import type { GiantsFoundryBank } from './../../../lib/giantsFoundry';
+import { type GiantsFoundryBank, TOTAL_GIANT_WEAPONS } from '@/lib/giantsFoundry.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import Smithing from '@/lib/skilling/skills/smithing/index.js';
+import type { GiantsFoundryActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const giantsFoundryAlloys = [
 	{
@@ -141,7 +132,7 @@ export const giantsFoundryBuyables: { name: string; output: Bank; cost: number; 
 
 export async function giantsFoundryStatsCommand(user: MUser) {
 	const weaponsCreated = await user.fetchMinigameScore('giants_foundry');
-	const stats = await user.fetchStats({ gf_weapons_made: true, foundry_reputation: true });
+	const stats = await user.fetchStats();
 	const weaponsMade = stats.gf_weapons_made as GiantsFoundryBank;
 	return `**Giants' Foundry Stats:**
 
@@ -162,7 +153,7 @@ export async function giantsFoundryStartCommand(
 	channelID: string
 ) {
 	let timePerSection = Time.Minute * 0.84;
-	const userSmithingLevel = user.skillLevel(SkillsEnum.Smithing);
+	const userSmithingLevel = user.skillsAsLevels.smithing;
 
 	const alloy = giantsFoundryAlloys.find(i => stringMatches(i.name, name));
 
@@ -194,7 +185,7 @@ export async function giantsFoundryStartCommand(
 	const boosts = [];
 	timePerSection *= (100 - setBonus) / 100;
 	boosts.push(`${setBonus}% faster for Smiths' Uniform item/items`);
-	const maxTripLength = calcMaxTripLength(user, 'GiantsFoundry');
+	const maxTripLength = user.calcMaxTripLength('GiantsFoundry');
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / (alloy.sections * timePerSection));
 	}
@@ -214,7 +205,7 @@ export async function giantsFoundryStartCommand(
 	}
 
 	await user.removeItemsFromBank(totalCost);
-	updateBankSetting('gf_cost', totalCost);
+	await ClientSettings.updateBankSetting('gf_cost', totalCost);
 	await trackLoot({
 		id: 'giants_foundry',
 		type: 'Minigame',
@@ -227,14 +218,14 @@ export async function giantsFoundryStartCommand(
 			}
 		]
 	});
-	await userStatsBankUpdate(user, 'gf_cost', totalCost);
+	await user.statsBankUpdate('gf_cost', totalCost);
 
-	await addSubTaskToActivityTask<GiantsFoundryActivityTaskOptions>({
+	await ActivityManager.startTrip<GiantsFoundryActivityTaskOptions>({
 		quantity,
 		userID: user.id,
 		duration,
 		type: 'GiantsFoundry',
-		channelID: channelID.toString(),
+		channelID,
 		minigameID: 'giants_foundry',
 		alloyID: alloy.id,
 		metalScore: alloy.metalScore
@@ -246,12 +237,12 @@ export async function giantsFoundryStartCommand(
 }
 
 export async function giantsFoundryShopCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	user: MUser,
 	item: string | undefined,
 	quantity = 1
 ) {
-	const { foundry_reputation: currentUserReputation } = await user.fetchStats({ foundry_reputation: true });
+	const { foundry_reputation: currentUserReputation } = await user.fetchStats();
 	if (!item) {
 		return `You currently have ${currentUserReputation.toLocaleString()} Foundry Reputation.`;
 	}
@@ -276,28 +267,22 @@ export async function giantsFoundryShopCommand(
 		}`;
 	}
 
-	await handleMahojiConfirmation(
-		interaction,
-		`Are you sure you want to spent **${cost.toLocaleString()}** Foundry Reputation to buy **${quantity.toLocaleString()}x ${
+	await interaction.confirmation(
+		`Are you sure you want to spend **${cost.toLocaleString()}** Foundry Reputation to buy **${quantity.toLocaleString()}x ${
 			shopItem.name
 		}**?`
 	);
 
-	await transactItems({
-		userID: user.id,
+	await user.transactItems({
 		collectionLog: true,
 		itemsToAdd: new Bank(shopItem.output).multiply(quantity)
 	});
 
-	const { foundry_reputation: newRep } = await userStatsUpdate(
-		user.id,
-		{
-			foundry_reputation: {
-				decrement: cost
-			}
-		},
-		{ foundry_reputation: true }
-	);
+	const { foundry_reputation: newRep } = await user.statsUpdate({
+		foundry_reputation: {
+			decrement: cost
+		}
+	});
 
 	return `You successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.cost * quantity).toLocaleString()} Foundry Reputation.\nYou now have ${newRep} Foundry Reputation left.`;
 }

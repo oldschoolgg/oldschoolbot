@@ -1,13 +1,11 @@
 import { Bank } from 'oldschooljs';
 
-import type { ButlerActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import type { ButlerActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const butlerTask: MinionTask = {
 	type: 'Butler',
-	async run(data: ButlerActivityTaskOptions) {
-		const { userID, channelID, plankID, plankQuantity } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ButlerActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelID, plankID, plankQuantity } = data;
 
 		const loot = new Bank({
 			[plankID]: plankQuantity

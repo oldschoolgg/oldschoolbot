@@ -1,12 +1,10 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { Time, randFloat, randInt, roll } from 'e';
+import { randFloat, randInt, roll } from '@oldschoolgg/rng';
+import { Emoji, Events, Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { VolcanicMineGameTime } from '../../mahoji/lib/abstracted_commands/volcanicMineCommand';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { VolcanicMineGameTime } from '@/mahoji/lib/abstracted_commands/volcanicMineCommand.js';
 
 const fossilTable = new LootTable()
 	.add('Unidentified small fossil', 1, 10)
@@ -18,11 +16,10 @@ const fragmentTable = new LootTable({ limit: 175 }).add(numuliteTable, 1, 45).ad
 
 export const vmTask: MinionTask = {
 	type: 'VolcanicMine',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { quantity, channelID, duration } = data;
 		const userSkillingGear = user.gear.skilling;
-		const userMiningLevel = user.skillLevel(SkillsEnum.Mining);
+		const userMiningLevel = user.skillsAsLevels.mining;
 		let boost = 1;
 		// Activity boosts
 		if (userMiningLevel >= 71 && userSkillingGear.hasEquipped('Crystal pickaxe')) {
@@ -43,7 +40,7 @@ export const vmTask: MinionTask = {
 			userMiningLevel * ((VolcanicMineGameTime * quantity) / Time.Minute) * 10 * boost * randFloat(1.02, 1.08)
 		);
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Mining,
+			skillName: 'mining',
 			amount: xpReceived,
 			duration
 		});
@@ -70,7 +67,7 @@ export const vmTask: MinionTask = {
 
 		const fragmentRolls = randInt(38, 40) * quantity;
 		const loot = new Bank().add(fragmentTable.roll(fragmentRolls));
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, 60_000);
+		const { petDropRate } = skillingPetDropRate(user, 'mining', 60_000);
 		// Iterate over the fragments received
 		for (let i = 0; i < fragmentRolls; i++) {
 			// Roll for pet --- Average 40 fragments per game at 60K chance per fragment
@@ -90,8 +87,7 @@ export const vmTask: MinionTask = {
 			);
 		}
 
-		const { itemsAdded } = await transactItems({
-			userID: user.id,
+		const { itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

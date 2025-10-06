@@ -1,44 +1,39 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType, type User } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
-import { SlayerRewardsShop } from '../../lib/slayer/slayerUnlocks';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { autoSlayCommand } from '../lib/abstracted_commands/autoSlayCommand';
+import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
+import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
+import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
 import {
 	slayerShopBuyCommand,
 	slayerShopListMyUnlocks,
 	slayerShopListRewards
-} from '../lib/abstracted_commands/slayerShopCommand';
+} from '@/mahoji/lib/abstracted_commands/slayerShopCommand.js';
 import {
 	slayerListBlocksCommand,
 	slayerNewTaskCommand,
 	slayerSkipTaskCommand,
 	slayerStatusCommand,
 	slayerUnblockCommand
-} from '../lib/abstracted_commands/slayerTaskCommand';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+} from '@/mahoji/lib/abstracted_commands/slayerTaskCommand.js';
 
 export const slayerCommand: OSBMahojiCommand = {
 	name: 'slayer',
 	description: 'Slayer skill commands',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'autoslay',
 			description: 'Send your minion to slay your current task.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'mode',
 					description: 'Which autoslay mode do you want?',
 					required: false,
 					choices: autoslayChoices
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'save',
 					description: 'Save your choice as default',
 					required: false
@@ -46,19 +41,19 @@ export const slayerCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'new_task',
 			description: 'Send your minion to slay your current task.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'master',
 					description: 'Which Slayer master do you want a task from?',
 					required: false,
 					choices: slayerMasterChoices
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'save',
 					description: 'Save your choice as default',
 					required: false
@@ -66,12 +61,12 @@ export const slayerCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'manage',
 			description: 'Manage your current Slayer task.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'command',
 					description: 'Skip your current task',
 					required: true,
@@ -80,7 +75,7 @@ export const slayerCommand: OSBMahojiCommand = {
 					})
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'new',
 					description: 'Get a new task (if applicable)',
 					required: false
@@ -88,27 +83,24 @@ export const slayerCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: 'SubcommandGroup',
 			name: 'rewards',
 			description: 'Spend your Slayer rewards points.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'unlock',
 					description: 'Unlock tasks, extensions, cosmetics, etc',
 					required: false,
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'unlockable',
 							description: 'Unlockable to purchase',
 							required: true,
-							autocomplete: async (value: string, user: User) => {
-								const { slayer_unlocks: myUnlocks } = await mahojiUsersSettingsFetch(user.id, {
-									slayer_unlocks: true
-								});
+							autocomplete: async (value: string, user: MUser) => {
 								const slayerUnlocks = SlayerRewardsShop.filter(
-									r => !r.item && !myUnlocks.includes(r.id)
+									r => !r.item && !user.user.slayer_unlocks.includes(r.id)
 								);
 								return slayerUnlocks
 									.filter(r =>
@@ -127,22 +119,21 @@ export const slayerCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'unblock',
 					description: 'Unblock a task',
 					required: false,
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'assignment',
 							description: 'Assignment to unblock',
 							required: true,
-							autocomplete: async (value: string, user: User) => {
-								const blockList = await mahojiUsersSettingsFetch(user.id, { slayer_blocked_ids: true });
-								if (blockList.slayer_blocked_ids.length === 0) {
+							autocomplete: async (value: string, user: MUser) => {
+								if (user.user.slayer_blocked_ids.length === 0) {
 									return [{ name: "You don't have any monsters blocked", value: '' }];
 								}
-								const blockedMonsters = blockList.slayer_blocked_ids.map(
+								const blockedMonsters = user.user.slayer_blocked_ids.map(
 									mId => Monsters.find(m => m.id === mId)!
 								);
 								return blockedMonsters
@@ -155,13 +146,13 @@ export const slayerCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'buy',
 					description: 'Purchase something with points',
 					required: false,
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'item',
 							description: 'Item to purchase',
 							required: true,
@@ -181,7 +172,7 @@ export const slayerCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: 'Integer',
 							name: 'quantity',
 							description: 'The quantity to purchase, if applicable.',
 							required: false
@@ -189,19 +180,19 @@ export const slayerCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'my_unlocks',
 					description: 'Show purchased unlocks',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'show_all_rewards',
 					description: 'Show all rewards',
 					required: false,
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'type',
 							description: 'What type of rewards to show?',
 							required: false,
@@ -212,23 +203,22 @@ export const slayerCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
+					type: 'Subcommand',
 					name: 'disable',
 					description: 'Disable unlocks, extensions, etc. They will need to be repurchased.',
 					required: false,
 					options: [
 						{
-							type: ApplicationCommandOptionType.String,
+							type: 'String',
 							name: 'unlockable',
 							description: 'Slayer unlock to disable',
 							required: true,
-							autocomplete: async (value: string, user: User) => {
-								const mahojiUser = await mahojiUsersSettingsFetch(user.id, { slayer_unlocks: true });
+							autocomplete: async (value: string, user: MUser) => {
 								return SlayerRewardsShop.filter(
 									r =>
 										!r.item &&
 										r.canBeRemoved &&
-										mahojiUser.slayer_unlocks.includes(r.id) &&
+										user.user.slayer_unlocks.includes(r.id) &&
 										(!value
 											? true
 											: r.name.toLowerCase().includes(value) ||
@@ -245,7 +235,7 @@ export const slayerCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'status',
 			description: 'Shows status of current slayer task'
 		}
@@ -274,9 +264,9 @@ export const slayerCommand: OSBMahojiCommand = {
 	}>) => {
 		const mahojiUser = await mUserFetch(userID);
 
-		await deferInteraction(interaction);
+		await interaction.defer();
 		if (options.autoslay) {
-			autoSlayCommand({
+			await autoSlayCommand({
 				mahojiUser,
 				channelID,
 				modeOverride: options.autoslay.mode,
@@ -286,10 +276,9 @@ export const slayerCommand: OSBMahojiCommand = {
 			return null;
 		}
 		if (options.new_task) {
-			slayerNewTaskCommand({
+			await slayerNewTaskCommand({
 				userID: mahojiUser.id,
 				interaction,
-				channelID,
 				slayerMasterOverride: options.new_task.master,
 				saveDefaultSlayerMaster: Boolean(options.new_task.save),
 				showButtons: true
@@ -301,12 +290,11 @@ export const slayerCommand: OSBMahojiCommand = {
 				return slayerListBlocksCommand(mahojiUser);
 			}
 			if (options.manage.command === 'skip' || options.manage.command === 'block') {
-				slayerSkipTaskCommand({
+				await slayerSkipTaskCommand({
 					userID: mahojiUser.id,
 					block: options.manage.command === 'block',
 					newTask: Boolean(options.manage.new),
-					interaction,
-					channelID
+					interaction
 				});
 				return null;
 			}

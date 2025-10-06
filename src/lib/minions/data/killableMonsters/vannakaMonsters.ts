@@ -1,8 +1,8 @@
-import { Time } from 'e';
-import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, deepResolveItems, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import type { KillableMonster } from '../../types';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 export const vannakaMonsters: KillableMonster[] = [
 	{
@@ -962,7 +962,12 @@ export const vannakaMonsters: KillableMonster[] = [
 		itemCost: { itemCost: new Bank().add('Mossy key', 1), qtyPerKill: 1 },
 		healAmountNeeded: 20 * 8,
 		attackStyleToUse: GearStat.AttackRanged,
-		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic],
+		itemInBankBoosts: [
+			{
+				[itemID('Giantsoul amulet')]: 20
+			}
+		]
 	},
 	{
 		id: Monsters.MountainTroll.id,

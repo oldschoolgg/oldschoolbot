@@ -1,14 +1,14 @@
-import Artio from './Artio';
-import Callisto from './Callisto';
-import Calvarion from './Calvarion';
-import ChaosElemental from './ChaosElemental';
-import ChaosFanatic from './ChaosFanatic';
-import CrazyArchaeologist from './CrazyArchaeologist';
-import KingBlackDragon from './KingBlackDragon';
-import Scorpia from './Scorpia';
-import Spindel from './Spindel';
-import Venenatis from './Venenatis';
-import Vetion from './Vetion';
+import Artio from './Artio.js';
+import Callisto from './Callisto.js';
+import Calvarion from './Calvarion.js';
+import ChaosElemental from './ChaosElemental.js';
+import ChaosFanatic from './ChaosFanatic.js';
+import CrazyArchaeologist from './CrazyArchaeologist.js';
+import KingBlackDragon from './KingBlackDragon.js';
+import Scorpia from './Scorpia.js';
+import Spindel from './Spindel.js';
+import Venenatis from './Venenatis.js';
+import Vetion from './Vetion.js';
 
 export const allWildyBosses = {
 	Callisto,

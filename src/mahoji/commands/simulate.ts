@@ -1,14 +1,11 @@
-import { type CommandResponse, type CommandRunOptions, PerkTier, formatDuration } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { randInt, roll } from 'e';
-import { Bank, ChambersOfXeric, averageBank, toKMB } from 'oldschooljs';
+import { randInt, roll } from '@oldschoolgg/rng';
+import { formatDuration, PerkTier } from '@oldschoolgg/toolkit';
+import { averageBank, Bank, ChambersOfXeric, toKMB } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { ColosseumWaveBank, startColosseumRun } from '../../lib/colosseum';
-import pets from '../../lib/data/pets';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { assert } from '../../lib/util/logError';
-import { makeBankImage } from '../../lib/util/makeBankImage';
+import { ColosseumWaveBank, startColosseumRun } from '@/lib/colosseum.js';
+import pets from '@/lib/data/pets.js';
+import { assert } from '@/lib/util/logError.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 function determineCoxLimit(user: MUser) {
 	const perkTier = user.perkTier();
@@ -139,19 +136,19 @@ export const simulateCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'cox',
 			description: 'Simulate Chambers of Xeric.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The amount of raids to simulate.',
 					min_value: 1,
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'points',
 					description: 'How many points to have (default 25k).',
 					min_value: 1,
@@ -159,14 +156,14 @@ export const simulateCommand: OSBMahojiCommand = {
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'team_size',
 					description: 'The size of your team (default 4).',
 					min_value: 1,
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'challenge_mode',
 					description: 'Challenge mode raids? (default false)',
 					required: false
@@ -174,12 +171,12 @@ export const simulateCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'petroll',
 			description: 'Simulate rolls at every pet at once.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The amount of rolls.',
 					min_value: 1,
@@ -189,7 +186,7 @@ export const simulateCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'colosseum',
 			description: 'Simulate colosseum.'
 		}
@@ -197,7 +194,7 @@ export const simulateCommand: OSBMahojiCommand = {
 	run: async ({
 		interaction,
 		options,
-		userID
+		user
 	}: CommandRunOptions<{
 		cox?: {
 			quantity: number;
@@ -210,8 +207,7 @@ export const simulateCommand: OSBMahojiCommand = {
 		};
 		colosseum?: {};
 	}>) => {
-		await deferInteraction(interaction);
-		const user = await mUserFetch(userID.toString());
+		await interaction.defer();
 		if (options.colosseum) {
 			return simulateColosseumRuns();
 		}

@@ -1,10 +1,7 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, resolveItems } from 'oldschooljs';
 
-import type { ActivityTaskOptionsWithQuantity, AnimatedArmourActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import type { ActivityTaskOptionsWithQuantity, AnimatedArmourActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const Armours = [
 	{
@@ -34,7 +31,7 @@ export const Armours = [
 ];
 
 async function tokensCommand(user: MUser, channelID: string, quantity: number | undefined) {
-	const maxTripLength = calcMaxTripLength(user, 'AnimatedArmour');
+	const maxTripLength = user.calcMaxTripLength('AnimatedArmour');
 	const userBank = user.bank;
 
 	const armorSet = Armours.find(set => userBank.has(set.items));
@@ -58,10 +55,10 @@ async function tokensCommand(user: MUser, channelID: string, quantity: number | 
 		)}.`;
 	}
 
-	await addSubTaskToActivityTask<AnimatedArmourActivityTaskOptions>({
+	await ActivityManager.startTrip<AnimatedArmourActivityTaskOptions>({
 		armourID: armorSet.name,
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'AnimatedArmour'
@@ -77,7 +74,7 @@ async function tokensCommand(user: MUser, channelID: string, quantity: number | 
 async function cyclopsCommand(user: MUser, channelID: string, quantity: number | undefined) {
 	const userBank = user.bank;
 	const hasAttackCape = user.gear.melee.hasEquipped('Attack cape');
-	const maxTripLength = calcMaxTripLength(user, 'Cyclops');
+	const maxTripLength = user.calcMaxTripLength('Cyclops');
 	// Check if either 100 warrior guild tokens or attack cape (similar items in future)
 	const amountTokens = userBank.amount('Warrior guild token');
 	if (!hasAttackCape && amountTokens < 100) {
@@ -111,9 +108,9 @@ async function cyclopsCommand(user: MUser, channelID: string, quantity: number |
 		)}x Warrior guild tokens to kill ${quantity}x cyclopes.`;
 	}
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'Cyclops'
