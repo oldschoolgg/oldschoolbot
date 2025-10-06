@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "pnpm gen && tsx esbuild.mts",
-		"start": "tsx ./src/index.ts",
+		"start": "pnpm build && node ./dist/index.js",
 		"test": "tsc -p src && pnpm test:unit",
 		"test:unit": "vitest run --config vitest.unit.config.mts",
 		"dev": "pnpm fetch-schema && pnpm build && pnpm test",
