@@ -14,7 +14,8 @@ const external = [
 	'piscina',
 	'node:*',
 	'pglite-prisma-adapter',
-	'@electric-sql/pglite'
+	'@electric-sql/pglite',
+	'pg'
 ];
 
 const baseBuildOptions: BuildOptions = {

@@ -11,7 +11,13 @@ import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { isGroupActivity } from '@/lib/util.js';
 
 class SActivityManager {
+	public didInit = false;
 	private minionActivityCache: Map<string, ActivityTaskData> = new Map();
+
+	async init() {
+		if (this.didInit) return;
+		this.didInit = true;
+	}
 
 	async cancelActivity(userID: string) {
 		await prisma.activity.deleteMany({ where: { user_id: BigInt(userID), completed: false } });
