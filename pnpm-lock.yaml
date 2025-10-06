@@ -29,10 +29,10 @@ importers:
         specifier: workspace:*
         version: link:packages/toolkit
       '@prisma/adapter-pg':
-        specifier: ^6.15.0
+        specifier: ^6.16.3
         version: 6.16.3
       '@prisma/client':
-        specifier: ^6.15.0
+        specifier: ^6.16.3
         version: 6.16.3(prisma@6.16.3(magicast@0.3.5)(typescript@5.9.2))(typescript@5.9.2)
       '@sapphire/ratelimits':
         specifier: ^2.4.9
@@ -138,7 +138,7 @@ importers:
         specifier: ^3.6.2
         version: 3.6.2
       prisma:
-        specifier: ^6.15.0
+        specifier: ^6.16.3
         version: 6.16.3(magicast@0.3.5)(typescript@5.9.2)
       sharp:
         specifier: 0.34.4
