@@ -76,7 +76,7 @@ export const dropCommand: OSBMahojiCommand = {
 		if (doubleCheckItems.length > 0) {
 			await interaction.confirmation(
 				`${user}, some of the items you are dropping are on your **favorites** or look valuable, are you *really* sure you want to drop them?\n**${doubleCheckItems
-					.map(Items.itemNameFromId)
+					.map(i => Items.itemNameFromId(i))
 					.join(', ')}**\n\nDropping: ${ellipsize(bank.toString(), 1000)}`
 			);
 		}

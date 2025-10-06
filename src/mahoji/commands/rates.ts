@@ -506,7 +506,8 @@ ${zygomiteFarmingSource
 										},
 										bank: new Bank(),
 										hasEquipped: () => true,
-										hasEquippedOrInBank: () => true
+										hasEquippedOrInBank: () => true,
+										skillAsLevels: { mining: miningLevel, smithing: 120 }
 									} as any as GearBank;
 
 									const result = calculateMiningInput({

@@ -137,7 +137,9 @@ test(
 
 			'simulate',
 			'leagues',
-			'kill'
+			'kill',
+			'mass',
+			'dg'
 		];
 		const commandsToTest = globalClient.allCommands.filter(c => !ignoredCommands.includes(c.name));
 		console.log(`Running ${commandsToTest.length} commands...`);

@@ -80,7 +80,7 @@ export function calculateMiningInput({
 	if (ore.requiredPickaxes) {
 		if (!ore.requiredPickaxes.some(pickaxe => gearBank.hasEquipped(pickaxe))) {
 			return `You need to be using one of these pickaxes to be able to mine ${ore.name}: ${ore.requiredPickaxes
-				.map(Items.itemNameFromId)
+				.map(i => Items.itemNameFromId(i))
 				.join(', ')}.`;
 		}
 	}
