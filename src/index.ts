@@ -1,6 +1,5 @@
-import './lib/constants.js';
 import './lib/safeglobals.js';
-
+import './lib/globals.js';
 import './lib/MUser.js';
 import './lib/discord/client.js';
 
