@@ -109,7 +109,7 @@ export function sleep(ms: number) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-export function noOp() {}
+export function noOp() { }
 
 /**
  * Shows what percentage a value is of a total value, for example calculating what percentage of 20 is 5? (25%)
@@ -184,4 +184,33 @@ export function scaleNumber(num: number, inMin: number, inMax: number, outMin: n
 
 export function stripNonAlphanumeric(str: string) {
 	return str.replace(/[^a-zA-Z0-9]/g, '');
+}
+
+export function rewriteSqlToIdempotent(sql: string): string {
+	const rules: [RegExp, string | ((...a: any[]) => string)][] = [
+		[/\bCREATE\s+TABLE\s+("?[\w]+"?)/gi, 'CREATE TABLE IF NOT EXISTS $1'],
+		[/\bCREATE\s+UNIQUE\s+INDEX\s+("?[\w]+"?)/gi, 'CREATE UNIQUE INDEX IF NOT EXISTS $1'],
+		[/\bCREATE\s+INDEX\s+("?[\w]+"?)/gi, 'CREATE INDEX IF NOT EXISTS $1'],
+		[/\bCREATE\s+SCHEMA\s+("?[\w]+"?)/gi, 'CREATE SCHEMA IF NOT EXISTS $1'],
+		[/\bCREATE\s+VIEW\s+("?[\w]+"?)/gi, 'CREATE OR REPLACE VIEW $1'],
+		[
+			/\bCREATE\s+TYPE\s+("?[\w]+"?)\s+AS\s+ENUM\s*\(([^;]+)\);/gi,
+			(_m, name, values) =>
+				`DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = ${name.replace(/"/g, "'")}) THEN
+        CREATE TYPE ${name} AS ENUM (${values.trim()});
+    END IF;
+END $$;`
+		],
+		[
+			/\bALTER\s+TABLE\s+("?[\w]+"?)\s+ADD\s+CONSTRAINT\s+("?[\w]+"?)([^;]*);/gi,
+			(_m, table, constraint, rest) =>
+				`ALTER TABLE ${table} DROP CONSTRAINT IF EXISTS ${constraint};
+ALTER TABLE ${table} ADD CONSTRAINT ${constraint}${rest.trim()};`
+		]
+	];
+	for (const [r, sub] of rules) {
+		sql = typeof sub === 'string' ? sql.replace(r, sub) : sql.replace(r, (...a) => sub(...a));
+	}
+	return sql;
 }
