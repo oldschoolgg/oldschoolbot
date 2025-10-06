@@ -16,31 +16,14 @@ function convertCommandToAPICommand(
 }
 
 export async function bulkUpdateCommands() {
-	console.log(`Starting bulk command update of ${globalClient.allCommands.length} commands`);
-	// if (!globalConfig.isProduction) {
-	// 	console.log(`Not in production, clearing global commands for ${globalConfig.appID}`);
-	// 	await globalClient.rest.put(Routes.applicationCommands(globalConfig.appID), {
-	// 		body: [
-	// 		]
-	// 	});
-	// 	await globalClient.rest.put(Routes.applicationCommands(globalConfig.appID), {
-	// 		body: [
-	// 		]
-	// 	});
-	// 	console.log('Cleared global commands');
-	// }
-
 	const chatInputCommands = globalClient.allCommands
 		.map(convertCommandToAPICommand)
 		.map(_cmd => ({ ..._cmd, type: ApplicationCommandType.ChatInput }));
-	console.log(
-		`Pushing ${chatInputCommands.length} commands to ${globalConfig.appID} - ${globalConfig.supportServerID}`
-	);
+
 	await globalClient.rest.put(Routes.applicationGuildCommands(globalConfig.appID, globalConfig.supportServerID), {
 		body: [
 			...chatInputCommands,
 			...messageCtxCommands.map(_cmd => ({ name: _cmd.name, type: ApplicationCommandType.Message }))
 		]
 	});
-	console.log(`Synced ${chatInputCommands.length} commands to the support server`);
 }

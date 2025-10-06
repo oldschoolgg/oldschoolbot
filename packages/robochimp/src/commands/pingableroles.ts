@@ -99,13 +99,13 @@ export const pingableRolesCommand: RoboChimpCommand = {
 					type: ComponentType.Button
 				}
 			];
-			const channel = globalClient.channels.cache.get(channelID.toString());
+			const channel = globalClient.channels.cache.get(channelID);
 			if (!channel || !channel.isTextBased()) return 'Invalid channel.';
 
 			globalClient.sendToChannelID(channel.id, {
-				content: `<@&${role.role_id.toString()}> - you were pinged by ${user.username}!`,
+				content: `<@&${role.role_id}> - you were pinged by ${user.username}!`,
 				allowedMentions: {
-					roles: [role.role_id.toString()]
+					roles: [role.role_id]
 				},
 				components: [
 					{

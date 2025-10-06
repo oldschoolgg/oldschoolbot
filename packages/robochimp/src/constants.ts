@@ -1,10 +1,13 @@
+import path from 'node:path';
+import * as dotenv from 'dotenv';
 import { z } from 'zod';
-import 'dotenv/config';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const REAL_SUPPORT_SERVER_ID = '342983479501389826';
 export const TEST_SERVER_ID = '940758552425955348';
 export const MASS_HOSTER_ROLE_ID = '734055552933429280';
+
+dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 
 const globalConfigSchema = z.object({
 	httpPort: z.coerce.number().int(),
