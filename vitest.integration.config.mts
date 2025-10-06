@@ -5,31 +5,16 @@ export default defineConfig({
 	test: {
 		name: 'Old School Bot - Integration',
 		include: ['tests/integration/**/*.test.ts'],
-		setupFiles: ['tests/integration/setup.ts'],
-		globalSetup: 'tests/integration/globalSetup.ts',
-		// coverage: {
-		// 	provider: 'v8',
-		// 	reporter: 'text',
-		// 	include: ['src/mahoji/lib/abstracted_commands/minionKill/*.ts', 'src/lib/structures/*.ts']
-		// },
-		reporters: ['hanging-process'],
-		testTimeout: 260_000,
-		// pool: 'forks',
-		pool: 'forks',
+		setupFiles: 'tests/integration/setup.ts',
+		coverage: {
+			provider: 'v8',
+			reporter: 'text',
+			include: ['src/mahoji/lib/abstracted_commands/minionKill/*.ts', 'src/lib/structures/*.ts']
+		},
+		testTimeout: 60_000,
+		maxConcurrency: 10,
 		maxWorkers: 4,
-		poolOptions: {
-			forks: {
-				maxForks: 1
-			}
-		}
-		// poolOptions: {
-		// 	threads: {
-		// 		singleThread: true,
-		// 		maxThreads: 1,
-		// 		minThreads: 1,
-		// 	}
-		// },
-		// maxWorkers: 1,
+		minWorkers: 4
 	},
 	resolve: {
 		alias: {

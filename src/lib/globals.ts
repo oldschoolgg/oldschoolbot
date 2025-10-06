@@ -10,14 +10,11 @@ import { PrismaPGlite } from 'pglite-prisma-adapter';
 
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 
-declare global {
-	var prisma: PrismaClient;
-	var roboChimpClient: RobochimpPrismaClient;
-}
-
-async function getAdapter(type: typeof BOT_TYPE | 'robochimp'): Promise<PrismaPg> {
+async function getAdapter(
+	type: typeof BOT_TYPE | 'robochimp'
+): Promise<{ adapter: PrismaPg; pgLiteClient: PGlite | null }> {
 	if (globalConfig.isProduction) {
-		return new PrismaPg({ connectionString: process.env.DATABASE_URL });
+		return { adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }), pgLiteClient: null };
 	}
 
 	if (!existsSync('./.db')) {
@@ -32,35 +29,57 @@ async function getAdapter(type: typeof BOT_TYPE | 'robochimp'): Promise<PrismaPg
 		}
 	);
 	await pgLiteClient.exec(rewriteSqlToIdempotent(createDbSQL));
-	return new PrismaPGlite(pgLiteClient) as any as PrismaPg;
+	const adapter = new PrismaPGlite(pgLiteClient) as any as PrismaPg;
+	return { adapter, pgLiteClient };
 }
 
-async function makePrismaClient(): Promise<PrismaClient> {
+interface BotDB {
+	prismaClient: PrismaClient;
+	adapter: PrismaPg;
+	pgLiteClient: PGlite | null;
+}
+async function makePrismaClient(): Promise<BotDB> {
 	if (!globalConfig.isProduction && !process.env.TEST) console.log('Making prisma client...');
 	if (!isMainThread && !process.env.TEST) {
 		throw new Error('Prisma client should only be created on the main thread.');
 	}
 
-	return new PrismaClient({
+	const { adapter, pgLiteClient } = await getAdapter(BOT_TYPE);
+
+	const prismaClient = new PrismaClient({
 		log: ['warn', 'error'],
-		adapter: await getAdapter(BOT_TYPE)
+		adapter
 	});
+	return { prismaClient, adapter, pgLiteClient };
 }
 
-async function makeRobochimpPrismaClient(): Promise<RobochimpPrismaClient> {
+interface RoboChimpDB {
+	prismaClient: RobochimpPrismaClient;
+	adapter: PrismaPg;
+	pgLiteClient: PGlite | null;
+}
+async function makeRobochimpPrismaClient(): Promise<RoboChimpDB> {
 	if (!globalConfig.isProduction && !process.env.TEST) console.log('Making robochimp client...');
 	if (!isMainThread && !process.env.TEST) {
 		throw new Error('Robochimp client should only be created on the main thread.');
 	}
-	return new RobochimpPrismaClient({
+
+	const { adapter, pgLiteClient } = await getAdapter('robochimp');
+	const prismaClient = new RobochimpPrismaClient({
 		log: ['warn', 'error'],
-		adapter: await getAdapter('robochimp')
+		adapter
 	});
+	return { prismaClient, adapter, pgLiteClient };
 }
 
 export async function createDb() {
-	global.prisma = global.prisma || (await makePrismaClient());
-	global.roboChimpClient = global.roboChimpClient || (await makeRobochimpPrismaClient());
+	global.prisma = global.prisma || (await makePrismaClient()).prismaClient;
+	global.roboChimpClient = global.roboChimpClient || (await makeRobochimpPrismaClient()).prismaClient;
 	console.log('Connected to the database.');
 	return { prisma: global.prisma, roboChimpClient: global.roboChimpClient };
+}
+
+declare global {
+	var prisma: PrismaClient;
+	var roboChimpClient: RobochimpPrismaClient;
 }
