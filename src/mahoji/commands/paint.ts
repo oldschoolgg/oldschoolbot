@@ -1,12 +1,12 @@
+import { itemEffectImageCache } from '@/lib/bso/canvas/customItemEffects.js';
+import { renderPaintGrid } from '@/lib/bso/canvas/renderPaintGrid.js';
 import { getPaintedItemImage } from '@/lib/bso/paintColors.js';
 
 import { Bank, Items } from 'oldschooljs';
 
 import { canvasToBuffer } from '@/lib/canvas/canvasUtil.js';
-import { renderPaintGrid } from '@/lib/canvas/renderPaintGrid.js';
 import { paintColors } from '@/lib/customItems/paintCans.js';
 import { ownedItemOption } from '@/lib/discord/presetCommandOptions.js';
-import { itemEffectImageCache } from '@/lib/util/customItemEffects.js';
 
 export const paintCommand: OSBMahojiCommand = {
 	name: 'paint',

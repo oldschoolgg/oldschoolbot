@@ -1,5 +1,6 @@
+import { spawnLampIsReady } from '@/lib/bso/commands/spawnBoxLampCommand.js';
 import { getUsersFishingContestDetails } from '@/lib/bso/fishingContest.js';
-import { shortTameTripDesc, tameLastFinishedActivity } from '@/lib/bso/tameUtil.js';
+import { shortTameTripDesc, tameLastFinishedActivity } from '@/lib/bso/tames/tameUtil.js';
 
 import { roll } from '@oldschoolgg/rng';
 import { Emoji, makeComponents, stripNonAlphanumeric, toTitleCase } from '@oldschoolgg/toolkit';
@@ -14,7 +15,6 @@ import { makeAutoContractButton, makeAutoSlayButton, makeBirdHouseTripButton } f
 import { minionStatus } from '@/lib/util/minionStatus.js';
 import { makeRepeatTripButtons } from '@/lib/util/repeatStoredTrip.js';
 import { getItemContractDetails } from '@/mahoji/commands/ic.js';
-import { spawnLampIsReady } from '@/mahoji/commands/tools.js';
 import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 

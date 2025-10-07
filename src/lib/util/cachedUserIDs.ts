@@ -7,7 +7,6 @@ import { globalConfig } from '@/lib/constants.js';
 import { runTimedLoggedFn } from '@/lib/util.js';
 
 CACHED_ACTIVE_USER_IDS.add(globalConfig.clientID);
-for (const id of globalConfig.adminUserIDs) CACHED_ACTIVE_USER_IDS.add(id);
 
 export const syncActiveUserIDs = async () => {
 	const users = await prisma.$queryRawUnsafe<

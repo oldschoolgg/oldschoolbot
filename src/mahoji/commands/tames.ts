@@ -11,7 +11,8 @@ import {
 	tameFeedableItems,
 	tameKillableMonsters,
 	tameSpecies
-} from '@/lib/bso/tames.js';
+} from '@/lib/bso/tames/tames.js';
+import { arbitraryTameActivities } from '@/lib/bso/tames/tameTasks.js';
 import {
 	calculateMaximumTameFeedingLevelGain,
 	getMainTameLevel,
@@ -20,7 +21,7 @@ import {
 	tameGrowthLevel,
 	tameHasBeenFed,
 	tameName
-} from '@/lib/bso/tameUtil.js';
+} from '@/lib/bso/tames/tameUtil.js';
 
 import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
@@ -70,7 +71,6 @@ import { parseStringBank } from '@/lib/util/parseStringBank.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { getItemCostFromConsumables } from '@/mahoji/lib/abstracted_commands/minionKill/handleConsumables.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
-import { arbitraryTameActivities } from '@/tasks/tames/tameTasks.js';
 
 const tameImageSize = 96;
 

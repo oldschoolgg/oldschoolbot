@@ -10,7 +10,7 @@ import {
 	calculateDartsFletchedFromScratch,
 	totalLampedXP
 } from '@/lib/bso/leagues/stats.js';
-import { getAllUserTames } from '@/lib/bso/tames.js';
+import { getAllUserTames } from '@/lib/bso/tames/tames.js';
 
 import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
 import { activity_type_enum, type User } from '@prisma/client';

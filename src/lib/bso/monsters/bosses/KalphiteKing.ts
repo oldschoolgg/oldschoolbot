@@ -1,6 +1,8 @@
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { makeKillTable, setCustomMonster } from '@/lib/bso/monsters/setCustomMonster.js';
 import { decideLoot } from '@/lib/bso/structures/LootDecider.js';
+import { SeedTable } from '@/lib/bso/tables/seedTable.js';
+import { GrimyHerbTable } from '@/lib/bso/tables/sharedTables.js';
 
 import { Time } from '@oldschoolgg/toolkit';
 import { LootTable, Monsters, resolveItems } from 'oldschooljs';
@@ -8,8 +10,6 @@ import { GearStat } from 'oldschooljs/gear';
 
 import { kalphiteKingCL } from '@/lib/data/CollectionsExport.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
-import { SeedTable } from '@/lib/simulation/seedTable.js';
-import { GrimyHerbTable } from '@/lib/simulation/sharedTables.js';
 
 export const kalphiteKingLootTable = new LootTable()
 	.tertiary(18, 'Clue scroll (grandmaster)')

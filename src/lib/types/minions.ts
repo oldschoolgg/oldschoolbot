@@ -2,6 +2,7 @@ import type { BathhouseTierName } from '@/lib/bso/baxtorianBathhouses.js';
 import type { Kibble } from '@/lib/bso/kibble.js';
 import type { Monkey } from '@/lib/bso/minigames/monkey-rumble/monkeyRumble.js';
 import type { IMaterialBank, MaterialType } from '@/lib/bso/skills/invention/index.js';
+import type { BossUser } from '@/lib/bso/structures/Boss.js';
 import type { TuraelsTrialsMethod } from '@/lib/bso/turaelsTrials.js';
 
 import type { CropUpgradeType } from '@prisma/client';
@@ -15,7 +16,6 @@ import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skil
 import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { BirdhouseData } from '@/lib/skilling/skills/hunter/defaultBirdHouseTrap.js';
 import type { TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
-import type { BossUser } from '@/lib/structures/Boss.js';
 import type { Peak } from '@/lib/util/peaks.js';
 
 export interface ActivityTaskOptions {

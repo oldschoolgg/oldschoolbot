@@ -1,6 +1,7 @@
+import { SeedTable } from '@/lib/bso/tables/seedTable.js';
+
 import { LootTable, resolveItems } from 'oldschooljs';
 
-import { SeedTable } from '@/lib/simulation/seedTable.js';
 import { GemRockTable } from '@/lib/skilling/skills/mining.js';
 
 export const allThirdAgeItems = resolveItems([

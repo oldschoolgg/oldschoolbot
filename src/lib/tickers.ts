@@ -1,3 +1,6 @@
+import { MTame } from '@/lib/bso/structures/MTame.js';
+import { runTameTask } from '@/lib/bso/tames/tameTasks.js';
+
 import {
 	awaitMessageComponentInteraction,
 	cleanUsername,
@@ -19,11 +22,9 @@ import { fetchUsersWithoutUsernames } from '@/lib/rawSql.js';
 import { runCommand } from '@/lib/settings/settings.js';
 import { informationalButtons } from '@/lib/sharedComponents.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
-import { MTame } from '@/lib/structures/MTame.js';
 import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { getSupportGuild } from '@/lib/util.js';
-import { runTameTask } from '@/tasks/tames/tameTasks.js';
 
 let lastMessageID: string | null = null;
 const supportEmbed = new EmbedBuilder()

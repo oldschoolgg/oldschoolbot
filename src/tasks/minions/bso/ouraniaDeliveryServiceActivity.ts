@@ -1,10 +1,10 @@
 import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
+import { ExoticSeedsTable } from '@/lib/bso/tables/sharedTables.js';
 
 import { randFloat } from '@oldschoolgg/rng';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
-import { ExoticSeedsTable } from '@/lib/simulation/sharedTables.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 const PrayerPageTable = new LootTable()

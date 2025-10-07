@@ -1,3 +1,5 @@
+import type { MTame } from '@/lib/bso/structures/MTame.js';
+
 import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
 import type { activity_type_enum, Minigame, PlayerOwnedHouse } from '@prisma/client';
 import { type Bank, Items } from 'oldschooljs';
@@ -10,7 +12,6 @@ import type { ClueBank, DiaryID, DiaryTierName } from '@/lib/minions/types.js';
 import type { RobochimpUser } from '@/lib/roboChimp.js';
 import { type MinigameName, minigameColumnToNameMap } from '@/lib/settings/minigames.js';
 import Agility from '@/lib/skilling/skills/agility.js';
-import type { MTame } from '@/lib/structures/MTame.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { Skills } from '@/lib/types/index.js';
 import { formatList } from '@/lib/util/smallUtils.js';

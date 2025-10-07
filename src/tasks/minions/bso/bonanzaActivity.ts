@@ -1,5 +1,5 @@
-import { getAllUserTames, TameSpeciesID } from '@/lib/bso/tames.js';
-import { tameName } from '@/lib/bso/tameUtil.js';
+import { getAllUserTames, TameSpeciesID } from '@/lib/bso/tames/tames.js';
+import { tameName } from '@/lib/bso/tames/tameUtil.js';
 
 import { randArrItem, randInt, roll, shuffleArr } from '@oldschoolgg/rng';
 import { calcPercentOfNum, calcWhatPercent } from '@oldschoolgg/toolkit';

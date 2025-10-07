@@ -1,11 +1,11 @@
 import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
+import { BattlestaffTable, runeAlchablesTable, StoneSpiritTable } from '@/lib/bso/tables/sharedTables.js';
 
 import { Time } from '@oldschoolgg/toolkit';
 import { GemTable, LootTable, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { LowSeedPackTable } from '@/lib/data/seedPackTables.js';
-import { BattlestaffTable, runeAlchablesTable, StoneSpiritTable } from '@/lib/simulation/sharedTables.js';
 
 export const CockroachSoldier: CustomMonster = {
 	isCustom: true,

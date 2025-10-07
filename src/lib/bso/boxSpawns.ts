@@ -11,7 +11,7 @@ import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 import Createables from '@/lib/data/createables.js';
 import killableMonsters from '../minions/data/killableMonsters/index.js';
 import { sendToChannelID } from '../util/webhook.js';
-import { LampTable } from '../xpLamps.js';
+import { LampTable } from './xpLamps.js';
 
 const triviaChallenge: Challenge = async (msg: Message): Promise<User | null> => {
 	if (!msg.channel.isSendable()) return null;

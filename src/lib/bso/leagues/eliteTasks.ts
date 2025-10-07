@@ -4,7 +4,7 @@ import { calculateTiarasMade } from '@/lib/bso/leagues/stats.js';
 import { Naxxus } from '@/lib/bso/monsters/bosses/Naxxus.js';
 import { SunMoonMonsters } from '@/lib/bso/monsters/SunMoon.js';
 import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
-import { TameSpeciesID, tameFeedableItems } from '@/lib/bso/tames.js';
+import { TameSpeciesID, tameFeedableItems } from '@/lib/bso/tames/tames.js';
 
 import { sumArr } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';

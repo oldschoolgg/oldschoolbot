@@ -1,6 +1,13 @@
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { MoktangLootTable } from '@/lib/bso/monsters/bosses/Moktang.js';
+import {
+	FletchingTipsTable,
+	HighTierStoneSpiritTable,
+	lowRuneHighAdamantTable,
+	runeWeaponTable,
+	StoneSpiritTable
+} from '@/lib/bso/tables/sharedTables.js';
 
 import { randInt } from '@oldschoolgg/rng';
 import { calcPerHour, Events, formatOrdinal } from '@oldschoolgg/toolkit';
@@ -8,13 +15,6 @@ import { userMention } from 'discord.js';
 import { Bank, Items, increaseBankQuantitesByPercent, resolveItems } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
-import {
-	FletchingTipsTable,
-	HighTierStoneSpiritTable,
-	lowRuneHighAdamantTable,
-	runeWeaponTable,
-	StoneSpiritTable
-} from '@/lib/simulation/sharedTables.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { MoktangTaskOptions } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';

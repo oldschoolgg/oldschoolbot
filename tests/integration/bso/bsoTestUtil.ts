@@ -1,6 +1,6 @@
 import { materialTypes } from '@/lib/bso/skills/invention/index.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
-import { TameSpeciesID } from '@/lib/bso/tames.js';
+import { TameSpeciesID } from '@/lib/bso/tames/tames.js';
 
 import { tame_growth } from '@prisma/client';
 import { type EMonster, Monsters } from 'oldschooljs';

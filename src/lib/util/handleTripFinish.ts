@@ -5,6 +5,8 @@ import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
 import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
+import { RuneTable, WilvusTable, WoodTable } from '@/lib/bso/tables/seedTable.js';
+import { DougTable, PekyTable } from '@/lib/bso/tables/sharedTables.js';
 
 import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { channelIsSendable, makeComponents, notEmpty, Stopwatch, Time } from '@oldschoolgg/toolkit';
@@ -22,8 +24,6 @@ import { mentionCommand } from '@/lib/discord/index.js';
 import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
-import { RuneTable, WilvusTable, WoodTable } from '@/lib/simulation/seedTable.js';
-import { DougTable, PekyTable } from '@/lib/simulation/sharedTables.js';
 import { calculateZygomiteLoot } from '@/lib/skilling/skills/farming/zygomites.js';
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';

@@ -1,10 +1,10 @@
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import { BossInstance, gpCostPerKill } from '@/lib/bso/structures/Boss.js';
 
 import { channelIsSendable, formatDuration, Time } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Bank, toKMB } from 'oldschooljs';
 
-import { BossInstance, gpCostPerKill } from '@/lib/structures/Boss.js';
 import { Gear } from '@/lib/structures/Gear.js';
 
 export async function kgCommand(

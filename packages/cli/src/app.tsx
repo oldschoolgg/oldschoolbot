@@ -79,7 +79,6 @@ function runSingleCommand(cmd: string): Promise<void> {
 
 		p.stdout.on('data', d => {
 			stdout += d.toString();
-			console.log(d.toString());
 		});
 		p.stderr.on('data', d => {
 			stderr += d.toString();

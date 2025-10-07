@@ -3,6 +3,7 @@ import { kgCommand } from '@/lib/bso/commands/kgCommand.js';
 import { kkCommand } from '@/lib/bso/commands/kkCommand.js';
 import { moktangCommand } from '@/lib/bso/commands/moktangCommand.js';
 import { naxxusCommand } from '@/lib/bso/commands/naxxusCommand.js';
+import { vasaCommand } from '@/lib/bso/commands/vasaCommand.js';
 import { handleDTD } from '@/lib/bso/handleDTD.js';
 
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
@@ -23,7 +24,6 @@ import { nexCommand } from '@/mahoji/lib/abstracted_commands/nexCommand.js';
 import { nightmareCommand } from '@/mahoji/lib/abstracted_commands/nightmareCommand.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { temporossCommand } from '@/mahoji/lib/abstracted_commands/temporossCommand.js';
-import { vasaCommand } from '@/mahoji/lib/abstracted_commands/vasaCommand.js';
 import { wintertodtCommand } from '@/mahoji/lib/abstracted_commands/wintertodtCommand.js';
 import { zalcanoCommand } from '@/mahoji/lib/abstracted_commands/zalcanoCommand.js';
 import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';

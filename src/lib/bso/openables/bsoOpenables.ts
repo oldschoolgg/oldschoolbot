@@ -1,3 +1,11 @@
+import {
+	ChimplingImpling,
+	EternalImpling,
+	InfernalImpling,
+	MysteryImpling,
+	ShrimplingImpling
+} from '@/lib/bso/customImplings.js';
+import { baseHolidayItems } from '@/lib/bso/holidayItems.js';
 import { cantBeDropped } from '@/lib/bso/openables/openablesUtil.js';
 import {
 	BeachMysteryBoxTable,
@@ -21,14 +29,6 @@ import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID, LootTable } from 'oldschooljs';
 
 import { cmbClothes } from '@/lib/data/CollectionsExport.js';
-import { baseHolidayItems } from '@/lib/data/holidayItems.js';
-import {
-	ChimplingImpling,
-	EternalImpling,
-	InfernalImpling,
-	MysteryImpling,
-	ShrimplingImpling
-} from '@/lib/simulation/customImplings.js';
 import type { UnifiedOpenable } from '../../openables.js';
 import { clAdjustedDroprate } from '../bsoUtil.js';
 import { divinationEnergies } from '../divination.js';

@@ -1,4 +1,6 @@
+import { allHolidayItems, PartyhatTable } from '@/lib/bso/holidayItems.js';
 import { stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
+import { LampTable } from '@/lib/bso/xpLamps.js';
 
 import type { Minigame } from '@prisma/client';
 import { Bank, type Item, ItemGroups, Items, resolveItems } from 'oldschooljs';
@@ -12,12 +14,10 @@ import {
 	gracefulLegs,
 	gracefulTops
 } from '@/lib/data/gracefulVariants.js';
-import { allHolidayItems, PartyhatTable } from '@/lib/data/holidayItems.js';
 import { growablePets } from '@/lib/growablePets.js';
 import type { MinigameScore } from '@/lib/settings/minigames.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import { assert } from '@/lib/util/logError.js';
-import { LampTable } from '@/lib/xpLamps.js';
 
 export interface IToReturnCollection {
 	category: string;

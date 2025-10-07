@@ -1,4 +1,10 @@
-import { seaMonkeySpells, type TameTaskOptions, TameType, tameKillableMonsters, tameSpecies } from '@/lib/bso/tames.js';
+import {
+	seaMonkeySpells,
+	type TameTaskOptions,
+	TameType,
+	tameKillableMonsters,
+	tameSpecies
+} from '@/lib/bso/tames/tames.js';
 
 import { formatDuration, round } from '@oldschoolgg/toolkit';
 import { type Tame, type TameActivity, tame_growth } from '@prisma/client';

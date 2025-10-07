@@ -1,3 +1,4 @@
+import { itemContractResetTime } from '@/lib/bso/bsoConstants.js';
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
 import { DragonTable } from '@/lib/bso/grandmasterClue.js';
 import { Ignecarus } from '@/lib/bso/monsters/bosses/Ignecarus.js';
@@ -7,6 +8,8 @@ import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 import { nexLootTable } from '@/lib/bso/monsters/nex.js';
 import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/bsoOpenables.js';
 import { MysteryBoxes, PMBTable } from '@/lib/bso/openables/tables.js';
+import { allThirdAgeItems, runeAlchablesTable } from '@/lib/bso/tables/sharedTables.js';
+import { LampTable } from '@/lib/bso/xpLamps.js';
 
 import { randArrItem, roll } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, formatOrdinal, makeComponents } from '@oldschoolgg/toolkit';
@@ -14,10 +17,7 @@ import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Bank, type ItemBank, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
-import { itemContractResetTime } from '@/lib/MUser.js';
-import { allThirdAgeItems, runeAlchablesTable } from '@/lib/simulation/sharedTables.js';
 import type { MInteraction } from '@/lib/structures/MInteraction.js';
-import { LampTable } from '@/lib/xpLamps.js';
 
 const contractTable = new LootTable()
 	.every('Coins', [1_000_000, 3_500_000])

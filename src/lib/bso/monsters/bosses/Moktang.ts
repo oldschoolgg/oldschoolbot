@@ -1,7 +1,4 @@
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
-
-import { LootTable } from 'oldschooljs';
-
 import {
 	ClueTable,
 	FletchingTipsTable,
@@ -9,7 +6,9 @@ import {
 	lowRuneHighAdamantTable,
 	runeWeaponTable,
 	StoneSpiritTable
-} from '@/lib/simulation/sharedTables.js';
+} from '@/lib/bso/tables/sharedTables.js';
+
+import { LootTable } from 'oldschooljs';
 
 const BarTable = new LootTable()
 	.add('Bronze bar', 10)

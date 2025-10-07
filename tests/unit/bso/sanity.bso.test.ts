@@ -4,7 +4,7 @@ import { KalphiteKingMonster } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
 import { KingGoldemar } from '@/lib/bso/monsters/bosses/KingGoldemar.js';
 import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
 import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/bsoOpenables.js';
-import { calculateMaximumTameFeedingLevelGain } from '@/lib/bso/tameUtil.js';
+import { calculateMaximumTameFeedingLevelGain } from '@/lib/bso/tames/tameUtil.js';
 
 import { type Tame, tame_growth } from '@prisma/client';
 import { EquipmentSlot, Items, itemID, Monsters, resolveItems } from 'oldschooljs';

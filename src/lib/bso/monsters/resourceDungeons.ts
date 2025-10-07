@@ -1,11 +1,11 @@
 import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
+import { GrimyHerbTable, lowRuneHighAdamantTable, runeWeaponTable } from '@/lib/bso/tables/sharedTables.js';
 
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID, itemTupleToTable, LootTable, Monsters, RareDropTable, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
 import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '@/lib/data/seedPackTables.js';
-import { GrimyHerbTable, lowRuneHighAdamantTable, runeWeaponTable } from '@/lib/simulation/sharedTables.js';
 
 function neemCost(extraCost?: Bank) {
 	const cost = new Bank().add('Neem oil', 1);

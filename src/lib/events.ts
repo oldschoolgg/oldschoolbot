@@ -1,4 +1,5 @@
 import { boxSpawnHandler } from '@/lib/bso/boxSpawns.js';
+import { giveBoxResetTime, itemContractResetTime } from '@/lib/bso/bsoConstants.js';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from '@/lib/bso/guthixianCache.js';
 import { allIronmanMbTables, allMbTables } from '@/lib/bso/openables/bsoOpenables.js';
@@ -12,7 +13,7 @@ import { lastRoboChimpSyncCache } from '@/lib/cache.js';
 import { globalConfig } from '@/lib/constants.js';
 import { customItems } from '@/lib/customItems/util.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
-import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from '@/lib/MUser.js';
+import { spawnLampResetTime } from '@/lib/MUser.js';
 import { roboChimpSyncData } from '@/lib/roboChimp.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';

@@ -4,6 +4,7 @@ import { KalphiteKingMonster, kalphiteKingLootTable } from '@/lib/bso/monsters/b
 import { KingGoldemarLootTable } from '@/lib/bso/monsters/bosses/KingGoldemar.js';
 import { MoktangLootTable } from '@/lib/bso/monsters/bosses/Moktang.js';
 import { NEX_UNIQUE_DROPRATE, nexLootTable } from '@/lib/bso/monsters/nex.js';
+import { calcDwwhChance } from '@/lib/bso/structures/Boss.js';
 
 import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { SimpleTable } from '@oldschoolgg/toolkit';
@@ -12,7 +13,6 @@ import { Bank, Misc } from 'oldschooljs';
 import { nexUniqueDrops } from '@/lib/data/CollectionsExport.js';
 import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
 import { zygomiteFarmingSource } from '@/lib/skilling/skills/farming/zygomites.js';
-import { calcDwwhChance } from '@/lib/structures/Boss.js';
 
 export const winterTodtPointsTable = new SimpleTable<number>()
 	.add(420)

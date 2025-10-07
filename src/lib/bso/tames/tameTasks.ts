@@ -1,4 +1,5 @@
 import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
+import type { MTame } from '@/lib/bso/structures/MTame.js';
 import {
 	type ArbitraryTameActivity,
 	seaMonkeySpells,
@@ -6,8 +7,8 @@ import {
 	type TameTaskOptions,
 	TameType,
 	tameKillableMonsters
-} from '@/lib/bso/tames.js';
-import { tameLastFinishedActivity } from '@/lib/bso/tameUtil.js';
+} from '@/lib/bso/tames/tames.js';
+import { tameLastFinishedActivity } from '@/lib/bso/tames/tameUtil.js';
 
 import { percentChance, randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { calcPerHour, formatDuration, increaseNumByPercent, isFunction, Time } from '@oldschoolgg/toolkit';
@@ -33,7 +34,6 @@ import { allOpenables } from '@/lib/openables.js';
 import { runCommand } from '@/lib/settings/settings.js';
 import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
 import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
-import type { MTame } from '@/lib/structures/MTame.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';

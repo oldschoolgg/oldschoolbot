@@ -1,4 +1,7 @@
+import { handleSpecialCoxLoot } from '@/lib/bso/handleSpecialCoxLoot.js';
 import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
+import type { MTame } from '@/lib/bso/structures/MTame.js';
+import type { handleFinish } from '@/lib/bso/tames/tameTasks.js';
 
 import { objectEntries, Time } from '@oldschoolgg/toolkit';
 import type { Tame, TameActivity } from '@prisma/client';
@@ -15,16 +18,13 @@ import {
 	TheatreOfBlood
 } from 'oldschooljs';
 
+import killableMonsters, { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
+import { Planks } from '@/lib/minions/data/planks.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
 import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning.js';
 import Bars from '@/lib/skilling/skills/smithing/smeltables.js';
-import type { handleFinish } from '@/tasks/tames/tameTasks.js';
-import killableMonsters, { NightmareMonster } from '../minions/data/killableMonsters/index.js';
-import { Planks } from '../minions/data/planks.js';
-import type { KillableMonster } from '../minions/types.js';
-import type { MTame } from '../structures/MTame.js';
-import { assert } from '../util/logError.js';
-import { calculateSimpleMonsterDeathChance } from '../util/smallUtils.js';
-import { handleSpecialCoxLoot } from './handleSpecialCoxLoot.js';
+import { assert } from '@/lib/util/logError.js';
+import { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
 
 export enum TameSpeciesID {
 	Igne = 1,

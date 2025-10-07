@@ -5,11 +5,13 @@ import { stealingCreationBuyables } from '@/lib/bso/buyables/stealingCreationBuy
 import { divinationEnergies } from '@/lib/bso/divination.js';
 import { dyedItems } from '@/lib/bso/dyedItems.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import { PartyhatTable } from '@/lib/bso/holidayItems.js';
 import { leaguesHasCatches, leaguesHasKC, type Task } from '@/lib/bso/leagues/leaguesUtils.js';
 import { calculateChargedItems, calculateTiarasMade } from '@/lib/bso/leagues/stats.js';
 import { Naxxus } from '@/lib/bso/monsters/bosses/Naxxus.js';
 import { NexMonster } from '@/lib/bso/monsters/nex.js';
 import { Inventions } from '@/lib/bso/skills/invention/inventions.js';
+import { allThirdAgeItems } from '@/lib/bso/tables/sharedTables.js';
 
 import { notEmpty, sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
@@ -27,7 +29,6 @@ import {
 	torvaOutfit,
 	virtusOutfit
 } from '@/lib/data/CollectionsExport.js';
-import { PartyhatTable } from '@/lib/data/holidayItems.js';
 import {
 	ArdougneDiary,
 	DesertDiary,
@@ -44,7 +45,6 @@ import {
 	WildernessDiary
 } from '@/lib/diaries.js';
 import { implings } from '@/lib/implings.js';
-import { allThirdAgeItems } from '@/lib/simulation/sharedTables.js';
 import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
 import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
 import { ashes } from '@/lib/skilling/skills/prayer.js';

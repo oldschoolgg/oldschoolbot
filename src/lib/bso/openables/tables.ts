@@ -1,9 +1,10 @@
+import { RuneTable } from '@/lib/bso/tables/seedTable.js';
+import { ExoticSeedsTable } from '@/lib/bso/tables/sharedTables.js';
+import { LampTable } from '@/lib/bso/xpLamps.js';
+
 import { LootTable, TreeHerbSeedTable } from 'oldschooljs';
 
 import { allPetsCL } from '@/lib/data/CollectionsExport.js';
-import { RuneTable } from '@/lib/simulation/seedTable.js';
-import { ExoticSeedsTable } from '@/lib/simulation/sharedTables.js';
-import { LampTable } from '@/lib/xpLamps.js';
 
 const MR_E_DROPRATE_FROM_PMB = 200;
 

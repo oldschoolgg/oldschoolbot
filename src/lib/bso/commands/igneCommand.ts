@@ -1,11 +1,11 @@
 import { Ignecarus } from '@/lib/bso/monsters/bosses/Ignecarus.js';
+import { BossInstance } from '@/lib/bso/structures/Boss.js';
 
 import { channelIsSendable, formatDuration, Time } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { dwarvenOutfit } from '@/lib/data/CollectionsExport.js';
-import { BossInstance } from '@/lib/structures/Boss.js';
 import { Gear } from '@/lib/structures/Gear.js';
 
 export async function igneCommand(

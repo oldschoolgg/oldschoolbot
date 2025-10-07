@@ -6,7 +6,7 @@ import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 import { dungBuyables } from '@/lib/bso/skills/dungoneering/dungData.js';
 import { inventionCL } from '@/lib/bso/skills/invention/inventions.js';
 import { slayerMasksHelmsCL } from '@/lib/bso/slayerMaskHelms.js';
-import { TameSpeciesID, tameFeedableItems } from '@/lib/bso/tames.js';
+import { TameSpeciesID, tameFeedableItems } from '@/lib/bso/tames/tames.js';
 
 import { calcWhatPercent, objectEntries, sumArr, toTitleCase } from '@oldschoolgg/toolkit';
 import { tame_growth, type UserStats } from '@prisma/client';

@@ -7,6 +7,7 @@ import {
 	baxtorianBathhousesStartCommand
 } from '@/lib/bso/baxtorianBathhouses.js';
 import { bonanzaCommand } from '@/lib/bso/commands/bonanzaCommand.js';
+import { fishingContestStartCommand, fishingContestStatsCommand } from '@/lib/bso/commands/fishingContestCommand.js';
 import { fistOfGuthixCommand } from '@/lib/bso/commands/fistOfGuthix.js';
 import { monkeyRumbleCommand, monkeyRumbleStatsCommand } from '@/lib/bso/commands/monkeyRumbleCommand.js';
 import { stealingCreationCommand } from '@/lib/bso/commands/stealingCreation.js';
@@ -27,10 +28,6 @@ import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { ownedMaterialOption } from '@/lib/discord/index.js';
-import {
-	fishingContestStartCommand,
-	fishingContestStatsCommand
-} from '@/mahoji/lib/abstracted_commands/fishingContestCommand.js';
 
 export const bsoMinigamesCommand: OSBMahojiCommand = {
 	name: 'bsominigames',

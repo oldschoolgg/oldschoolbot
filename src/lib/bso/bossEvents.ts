@@ -5,8 +5,8 @@ import { EmbedBuilder, type TextChannel } from 'discord.js';
 import { Items } from 'oldschooljs';
 
 import { globalConfig } from '@/lib/constants.js';
-import { BossInstance, type BossOptions, type BossUser } from '../structures/Boss.js';
 import type { NewBossOptions } from '../types/minions.js';
+import { BossInstance, type BossOptions, type BossUser } from './structures/Boss.js';
 
 interface BossEvent {
 	id: number;

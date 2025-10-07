@@ -1,9 +1,8 @@
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { setCustomMonster } from '@/lib/bso/monsters/setCustomMonster.js';
+import { runeAlchablesTable } from '@/lib/bso/tables/sharedTables.js';
 
 import { LootTable, Monsters, resolveItems } from 'oldschooljs';
-
-import { runeAlchablesTable } from '@/lib/simulation/sharedTables.js';
 
 const barTable = new LootTable()
 	.add('Steel bar', 500, 2)

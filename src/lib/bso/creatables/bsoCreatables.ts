@@ -7,8 +7,8 @@ import { dyedItems } from '@/lib/bso/dyedItems.js';
 import { expertCapesSource } from '@/lib/bso/expertCapes.js';
 import { nexBrokenArmorDetails } from '@/lib/bso/monsters/nex.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
-import { tameCreatables } from '@/lib/bso/tameCreatables.js';
-import { seaMonkeyStaves } from '@/lib/bso/tames.js';
+import { tameCreatables } from '@/lib/bso/tames/tameCreatables.js';
+import { seaMonkeyStaves } from '@/lib/bso/tames/tames.js';
 
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID, resolveItems } from 'oldschooljs';

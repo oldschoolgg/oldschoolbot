@@ -1,5 +1,6 @@
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { Ignecarus, IgnecarusLootTable, IgnecarusNotifyDrops } from '@/lib/bso/monsters/bosses/Ignecarus.js';
+import type { BossUser } from '@/lib/bso/structures/Boss.js';
 
 import { percentChance, shuffleArr } from '@oldschoolgg/rng';
 import { Emoji, sumArr } from '@oldschoolgg/toolkit';
@@ -9,7 +10,6 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
-import type { BossUser } from '@/lib/structures/Boss.js';
 import type { NewBossOptions } from '@/lib/types/minions.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 

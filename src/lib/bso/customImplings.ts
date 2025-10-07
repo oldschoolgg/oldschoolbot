@@ -1,7 +1,7 @@
-import { LootTable, Openables, SimpleOpenable } from 'oldschooljs';
+import { RuneTable } from '@/lib/bso/tables/seedTable.js';
+import { BattlestaffTable, StaffOrbTable } from '@/lib/bso/tables/sharedTables.js';
 
-import { RuneTable } from '@/lib/simulation/seedTable.js';
-import { BattlestaffTable, StaffOrbTable } from '@/lib/simulation/sharedTables.js';
+import { LootTable, Openables, SimpleOpenable } from 'oldschooljs';
 
 export const InfernalImpling = new SimpleOpenable({
 	id: 50_043,

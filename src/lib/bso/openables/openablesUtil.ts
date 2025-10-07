@@ -1,4 +1,5 @@
 import { OSB_VIRTUS_IDS } from '@/lib/bso/bsoConstants.js';
+import { baseHolidayItems, PartyhatTable } from '@/lib/bso/holidayItems.js';
 import {
 	BeachMysteryBoxTable,
 	BirthdayPackTable,
@@ -18,7 +19,6 @@ import {
 	theatreOfBloodHardUniques,
 	theatreOfBloodNormalUniques
 } from '@/lib/data/CollectionsExport.js';
-import { baseHolidayItems, PartyhatTable } from '@/lib/data/holidayItems.js';
 import { allTrophyItems } from '@/lib/data/itemAliases.js';
 
 export const cantBeDropped = resolveItems([

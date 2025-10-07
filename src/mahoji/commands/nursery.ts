@@ -1,4 +1,4 @@
-import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '@/lib/bso/tames.js';
+import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '@/lib/bso/tames/tames.js';
 
 import { randArrItem, roll } from '@oldschoolgg/rng';
 import { Events, formatDuration, gaussianRandom, reduceNumByPercent } from '@oldschoolgg/toolkit';

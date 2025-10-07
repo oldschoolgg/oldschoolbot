@@ -83,3 +83,6 @@ compCapeCreatableBank.add('Achievement diary cape (t)');
 compCapeCreatableBank.add('Music cape (t)');
 
 compCapeCreatableBank.freeze();
+
+export const itemContractResetTime = Time.Hour * 7.8;
+export const giveBoxResetTime = Time.Hour * 23.5;

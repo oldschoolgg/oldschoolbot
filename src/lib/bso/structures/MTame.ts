@@ -1,4 +1,4 @@
-import { type Species, TameSpeciesID, tameFeedableItems, tameSpecies } from '@/lib/bso/tames.js';
+import { type Species, TameSpeciesID, tameFeedableItems, tameSpecies } from '@/lib/bso/tames/tames.js';
 
 import { roll } from '@oldschoolgg/rng';
 import { round, Time } from '@oldschoolgg/toolkit';

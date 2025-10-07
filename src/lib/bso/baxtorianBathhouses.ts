@@ -1,6 +1,6 @@
 import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
-import { getAllUserTames, TameSpeciesID } from '@/lib/bso/tames.js';
+import { getAllUserTames, TameSpeciesID } from '@/lib/bso/tames/tames.js';
 
 import { randArrItem } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, reduceNumByPercent, stringMatches, Table, Time } from '@oldschoolgg/toolkit';

@@ -1,5 +1,6 @@
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { KingGoldemar, KingGoldemarLootTable } from '@/lib/bso/monsters/bosses/KingGoldemar.js';
+import { calcDwwhChance } from '@/lib/bso/structures/Boss.js';
 
 import { percentChance, randArrItem, roll } from '@oldschoolgg/rng';
 import { Emoji, Events } from '@oldschoolgg/toolkit';
@@ -7,7 +8,6 @@ import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
-import { calcDwwhChance } from '@/lib/structures/Boss.js';
 import type { NewBossOptions } from '@/lib/types/minions.js';
 
 const methodsOfDeath = [

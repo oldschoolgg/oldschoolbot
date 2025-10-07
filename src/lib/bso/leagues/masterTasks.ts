@@ -1,9 +1,10 @@
 import { calcTotalLevel } from '@/lib/bso/bsoUtil.js';
+import { MysteryImpling } from '@/lib/bso/customImplings.js';
 import { dungBuyables } from '@/lib/bso/skills/dungoneering/dungData.js';
 import { Inventions } from '@/lib/bso/skills/invention/inventions.js';
 import { bsoDwarvenSmithables } from '@/lib/bso/skills/smithing/dwarven.js';
 import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
-import { getTameSpecies } from '@/lib/bso/tameUtil.js';
+import { getTameSpecies } from '@/lib/bso/tames/tameUtil.js';
 
 import { sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, LuckyImpling, resolveItems } from 'oldschooljs';
@@ -22,7 +23,6 @@ import {
 	naxxusCL
 } from '@/lib/data/CollectionsExport.js';
 import { implings } from '@/lib/implings.js';
-import { MysteryImpling } from '@/lib/simulation/customImplings.js';
 import { ashes } from '@/lib/skilling/skills/prayer.js';
 import { slayerUnlockableRewards } from '@/lib/slayer/slayerUnlocks.js';
 import type { Task } from './leaguesUtils.js';

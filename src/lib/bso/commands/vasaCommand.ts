@@ -1,11 +1,11 @@
 import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
+import { BossInstance } from '@/lib/bso/structures/Boss.js';
 
 import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, sumArr, Time } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, type InteractionReplyOptions, type TextChannel } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { BossInstance } from '@/lib/structures/Boss.js';
 import { Gear } from '@/lib/structures/Gear.js';
 
 export const vasaBISGear = new Gear({

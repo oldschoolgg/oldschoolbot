@@ -21,7 +21,7 @@ import { PaintBoxTable } from '@/lib/bso/paintColors.js';
 import { pumpkinHeadUniqueTable } from '@/lib/bso/pumpkinHead.js';
 import { inventionCL } from '@/lib/bso/skills/invention/inventions.js';
 import { slayerMasksHelmsCL } from '@/lib/bso/slayerMaskHelms.js';
-import { getAllIgneTameKCs, tameKillableMonsters } from '@/lib/bso/tames.js';
+import { getAllIgneTameKCs, tameKillableMonsters } from '@/lib/bso/tames/tames.js';
 
 import { SeedableRNG } from '@oldschoolgg/rng';
 import {

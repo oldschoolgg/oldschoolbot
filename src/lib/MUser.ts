@@ -4,7 +4,8 @@ import { mysteriousStepData, mysteriousTrailTracks } from '@/lib/bso/mysteryTrai
 import { repairBrokenItemsFromUser } from '@/lib/bso/repairBrokenItems.js';
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
-import { type Species, tameSpecies } from '@/lib/bso/tames.js';
+import { MTame } from '@/lib/bso/structures/MTame.js';
+import { type Species, tameSpecies } from '@/lib/bso/tames/tames.js';
 
 import { percentChance, randArrItem, SeedableRNG } from '@oldschoolgg/rng';
 import {
@@ -72,7 +73,6 @@ import type { BankSortMethod } from '@/lib/sorts.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { defaultGear, Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
-import { MTame } from '@/lib/structures/MTame.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { XPBank } from '@/lib/structures/XPBank.js';
 import type { SkillRequirements, Skills } from '@/lib/types/index.js';
@@ -1369,6 +1369,5 @@ export const spawnLampResetTime = (user: MUser) => {
 
 	return cooldown - Time.Minute * 15;
 };
-export const itemContractResetTime = Time.Hour * 7.8;
-export const giveBoxResetTime = Time.Hour * 23.5;
+
 global.GlobalMUserClass = MUserClass;
