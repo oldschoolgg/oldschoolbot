@@ -3,11 +3,9 @@
 	"compilerOptions": {
 		"rootDir": "./",
 		"outDir": "../dist",
-		"incremental": false,
 		"paths": {
 			"@/*": ["./*"]
-		},
-		"noEmit": false
+		}
 	},
 	"include": ["."]
 }
