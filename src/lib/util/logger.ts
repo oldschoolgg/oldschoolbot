@@ -24,7 +24,6 @@ interface LogContext {
 }
 
 function logDebug(str: string, context: LogContext = {}) {
-	if (process.env.TEST) return;
 	const o = { ...context, m: str, t: new Date().toISOString() };
 	if (!globalConfig.isProduction) {
 		console.log(str);
