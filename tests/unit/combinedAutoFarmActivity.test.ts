@@ -1,5 +1,5 @@
 import { Bank } from 'oldschooljs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { BitField } from '../../src/lib/constants.js';
 import type { FarmingActivityTaskOptions } from '../../src/lib/types/minions.js';
@@ -33,6 +33,14 @@ describe('handleCombinedAutoFarm auto contract button behaviour', () => {
 		handleTripFinishMock.mockReset();
 		makeAutoContractButtonMock.mockReset().mockReturnValue('AUTO_BUTTON');
 		canRunAutoContractMock.mockReset();
+		vi.stubGlobal('prisma', {
+			farmedCrop: {
+				create: vi.fn().mockResolvedValue({ id: 123 })
+			}
+		});
+		vi.stubGlobal('ClientSettings', {
+			updateBankSetting: vi.fn().mockResolvedValue(undefined)
+		});
 
 		executeFarmingStepMock.mockResolvedValue({
 			message: 'finished step',
@@ -59,10 +67,20 @@ describe('handleCombinedAutoFarm auto contract button behaviour', () => {
 			bitfield: [] as number[],
 			minionName: 'AutoFarmer',
 			hasEquippedOrInBank: vi.fn().mockReturnValue(false),
+			skillsAsLevels: {
+				farming: 99,
+				woodcutting: 99,
+				herblore: 99
+			},
+			addXP: vi.fn().mockResolvedValue(''),
+			transactItems: vi.fn().mockResolvedValue(undefined),
+			update: vi.fn().mockResolvedValue(undefined),
+			statsBankUpdate: vi.fn().mockResolvedValue(undefined),
+			farmingContract: vi.fn().mockReturnValue({ contract: null }),
 			toString() {
 				return 'AutoFarmer';
 			}
-		};
+		} as MUserStub;
 
 		taskData = {
 			type: 'Farming',
@@ -95,6 +113,10 @@ describe('handleCombinedAutoFarm auto contract button behaviour', () => {
 				}
 			]
 		} as FarmingActivityTaskOptions;
+	});
+
+	afterEach(() => {
+		vi.unstubAllGlobals();
 	});
 
 	it('relies on handleTripFinish when auto contract is available', async () => {
@@ -134,5 +156,16 @@ type MUserStub = {
 	id: string;
 	bitfield: number[];
 	minionName: string;
+	hasEquippedOrInBank: ReturnType<typeof vi.fn>;
+	skillsAsLevels: {
+		farming: number;
+		woodcutting: number;
+		herblore: number;
+	};
+	addXP: ReturnType<typeof vi.fn>;
+	transactItems: ReturnType<typeof vi.fn>;
+	update: ReturnType<typeof vi.fn>;
+	statsBankUpdate: ReturnType<typeof vi.fn>;
+	farmingContract: ReturnType<typeof vi.fn>;
 	toString(): string;
 };

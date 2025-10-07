@@ -1,7 +1,20 @@
 import { Time } from '@oldschoolgg/toolkit';
 import type { CropUpgradeType } from '@prisma/client';
 import { Bank, convertLVLtoXP } from 'oldschooljs';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+vi.mock('@/lib/skilling/skills/farming/utils/farmingHelpers.js', async () => {
+	return vi.importActual<typeof import('@/lib/skilling/skills/farming/utils/farmingHelpers.js')>(
+		'@/lib/skilling/skills/farming/utils/farmingHelpers.js'
+	);
+});
+
+vi.mock('../../src/lib/skilling/skills/farming/utils/getFarmingInfo.ts', () => ({
+	getFarmingInfoFromUser: vi.fn(() => ({
+		patches: {},
+		patchesDetailed: []
+	}))
+}));
 
 import { prepareFarmingStep } from '../../src/lib/minions/functions/farmingTripHelpers.js';
 import { Farming } from '../../src/lib/skilling/skills/farming/index.js';

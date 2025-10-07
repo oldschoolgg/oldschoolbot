@@ -88,7 +88,8 @@ vi.mock('@/lib/skilling/skills/farming/index.js', () => ({
 		Plants: [redwoodPlant, herbPlant],
 		calcVariableYield: calcVariableYieldMock
 	},
-	allFarmingItems: []
+	allFarmingItems: [],
+	farmingPatchNames: []
 }));
 
 vi.mock('@/lib/util/handleTripFinish.js', () => ({
@@ -162,9 +163,15 @@ vi.mock('../../src/lib/util.ts', () => ({
 	skillingPetDropRate: vi.fn().mockReturnValue({ petDropRate: Number.POSITIVE_INFINITY })
 }));
 
-vi.mock('@/lib/skilling/skills/farming/utils/calcsFarming.js', () => ({
-	calcVariableYield: calcVariableYieldMock
-}));
+vi.mock('@/lib/skilling/skills/farming/utils/calcsFarming.js', async () => {
+	const actual = await vi.importActual<typeof import('@/lib/skilling/skills/farming/utils/calcsFarming.js')>(
+		'@/lib/skilling/skills/farming/utils/calcsFarming.js'
+	);
+	return {
+		...actual,
+		calcVariableYield: calcVariableYieldMock
+	};
+});
 
 vi.mock('@/lib/canvas/chatHeadImage.js', () => ({
 	default: vi.fn().mockResolvedValue('image')
