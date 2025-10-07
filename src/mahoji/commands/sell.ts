@@ -165,7 +165,7 @@ export const sellCommand: OSBMahojiCommand = {
 			}
 
 			await user.transactItems({
-				collectionLog: false,
+				collectionLog: true,
 				itemsToAdd: loot,
 				itemsToRemove: seedsBank
 			});
