@@ -9,7 +9,7 @@ const handleTripFinishMock = vi.fn();
 const makeAutoContractButtonMock = vi.fn().mockReturnValue('AUTO_BUTTON');
 const canRunAutoContractMock = vi.fn();
 
-vi.mock('../../src/tasks/minions/farmingStep.js', () => ({
+vi.mock('@/tasks/minions/farmingStep.js', () => ({
 	__esModule: true,
 	executeFarmingStep: executeFarmingStepMock
 }));
@@ -128,6 +128,7 @@ describe('handleCombinedAutoFarm auto contract button behaviour', () => {
 
 		await handleCombinedAutoFarm({ user: user as any, taskData });
 
+		expect(executeFarmingStepMock).toHaveBeenCalledTimes(1);
 		expect(handleTripFinishMock).toHaveBeenCalledTimes(1);
 		const extraComponents = handleTripFinishMock.mock.calls[0]?.[7];
 		expect(extraComponents).toBeUndefined();
