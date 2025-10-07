@@ -5,7 +5,7 @@ import Spinner from 'ink-spinner';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 
-type Command = { cmd: string | string[]; desc: string };
+type Command = { cmd: string | string[]; desc: string; condition?: boolean };
 type CommandGroup = Command | Command[];
 
 type Stage = {
@@ -14,17 +14,20 @@ type Stage = {
 };
 
 type Timings = Record<string, number>;
+type Skips = Record<string, true>;
 
 const ALL_PACKAGE_NAMES: string[] = readdirSync('packages').filter(
 	name => !['test-dashboard', 'robochimp', 'cli'].includes(name)
 );
+
+const isUsingRealPostgres = process.env.USE_REAL_PG === '1';
 
 const stages: Stage[] = [
 	{
 		name: 'Stage 1',
 		commands: [
 			{ cmd: 'pnpm install', desc: 'Installing dependencies...' },
-			{ cmd: 'prisma db push', desc: 'Pushing Prisma schema...' },
+			{ cmd: 'prisma db push', desc: 'Pushing Prisma schema...', condition: isUsingRealPostgres },
 			{ cmd: 'pnpm generate:robochimp', desc: 'Generating RoboChimp...' },
 			{ cmd: 'pnpm build:packages', desc: 'Building packages...' }
 		]
@@ -82,16 +85,18 @@ function runSingleCommand(cmd: string): Promise<void> {
 		});
 
 		p.on('close', code => {
-			if (code === 0) {
-				resolve();
-			} else {
-				reject(new Error(`Command failed: ${cmd}\n\nSTDOUT:\n${stdout}\n\nSTDERR:\n${stderr}`));
-			}
+			if (code === 0) resolve();
+			else reject(new Error(`Command failed: ${cmd}\n\nSTDOUT:\n${stdout}\n\nSTDERR:\n${stderr}`));
 		});
 	});
 }
 
-function run(c: Command, timings: Timings) {
+function run(c: Command, timings: Timings, skipped: Skips) {
+	if (c.condition === false) {
+		skipped[c.desc] = true;
+		if (timings[c.desc] === undefined) timings[c.desc] = 0;
+		return Promise.resolve();
+	}
 	const start = performance.now();
 	if (Array.isArray(c.cmd)) {
 		return Promise.all(c.cmd.map(cmd => runSingleCommand(cmd))).then(() => {
@@ -103,12 +108,16 @@ function run(c: Command, timings: Timings) {
 	});
 }
 
+const secs = (ms?: number) => (typeof ms === 'number' ? (ms / 1000).toFixed(1) : null);
+
 export const Root: React.FC = () => {
 	const [stageIndex, setStageIndex] = useState(0);
 	const [cmdIndex, setCmdIndex] = useState(0);
 	const [status, setStatus] = useState<'running' | 'done' | 'error'>('running');
 	const [error, setError] = useState<string | null>(null);
 	const [timings, setTimings] = useState<Timings>({});
+	const [skipped, setSkipped] = useState<Skips>({});
+	const [stageTimings, setStageTimings] = useState<Record<string, number>>({});
 	const [_tick, setTick] = useState(0);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies:-
@@ -118,16 +127,17 @@ export const Root: React.FC = () => {
 			try {
 				for (let i = 0; i < stages.length; i++) {
 					setStageIndex(i);
+					const stageStart = performance.now();
 					for (let j = 0; j < stages[i]!.commands.length; j++) {
 						setCmdIndex(j);
 						const cmdGroup = stages[i]!.commands[j]!;
-						if (Array.isArray(cmdGroup)) {
-							await Promise.all(cmdGroup.map(c => run(c, timings)));
-						} else {
-							await run(cmdGroup, timings);
-						}
+						if (Array.isArray(cmdGroup)) await Promise.all(cmdGroup.map(c => run(c, timings, skipped)));
+						else await run(cmdGroup, timings, skipped);
 						setTimings(t => ({ ...t, ...timings }));
+						setSkipped(s => ({ ...s, ...skipped }));
 					}
+					const stageElapsed = performance.now() - stageStart;
+					setStageTimings(st => ({ ...st, [stages[i]!.name]: stageElapsed }));
 				}
 				setStatus('done');
 			} catch (err) {
@@ -139,50 +149,63 @@ export const Root: React.FC = () => {
 		})();
 	}, []);
 
+	const renderStage = (s: Stage, i: number) => {
+		const isCurrent = i === stageIndex && status === 'running';
+		const isDone = stageTimings[s.name] !== undefined || (status === 'done' && i < stageIndex);
+		const headerIcon = isCurrent ? '▶' : isDone ? '✔' : ' ';
+		const stageSecs = secs(stageTimings[s.name]);
+
+		return (
+			<Box key={s.name} flexDirection="column">
+				<Text color={isDone ? 'green' : isCurrent ? 'yellow' : undefined}>
+					{headerIcon} {s.name} {isDone && stageSecs ? `(${stageSecs}s)` : ''}
+				</Text>
+
+				{s.commands.map((c, j) => {
+					const active = i === stageIndex && j === cmdIndex && status === 'running';
+					const finished = i < stageIndex || (i === stageIndex && j < cmdIndex) || status === 'done';
+					const cmds = Array.isArray(c) ? c : [c];
+
+					return (
+						<Box key={`${s.name}-${j}`} flexDirection="column" marginLeft={4}>
+							{cmds.map(inner => {
+								const isSkipped = !!skipped[inner.desc];
+								const elapsed = timings[inner.desc];
+								const t = secs(elapsed);
+
+								return (
+									<Box key={inner.cmd.toString()}>
+										{isSkipped && <Text color="gray">{inner.desc} (skipped)</Text>}
+										{!isSkipped && active && !finished && (
+											<Text color="yellow">
+												<Spinner type="dots" /> {inner.desc}
+											</Text>
+										)}
+										{!isSkipped && finished && (
+											<Text color="green">
+												✔ {inner.desc}
+												{t ? ` (${t}s)` : ''}
+											</Text>
+										)}
+										{!isSkipped && !active && !finished && <Text>{inner.desc}</Text>}
+									</Box>
+								);
+							})}
+						</Box>
+					);
+				})}
+			</Box>
+		);
+	};
+
 	return (
 		<Box flexDirection="column">
 			<Text>Old School Bot</Text>
-			{stages.map((s, i) => {
-				const isCurrentStage = i === stageIndex;
-				return (
-					<Box key={s.name} flexDirection="column" marginLeft={2} display={!isCurrentStage ? 'none' : 'flex'}>
-						<Text>
-							{isCurrentStage ? '▶' : ' '} {s.name}
-						</Text>
-						{s.commands.map((c, j) => {
-							const active = i === stageIndex && j === cmdIndex && status === 'running';
-							const finished = i < stageIndex || (i === stageIndex && j < cmdIndex) || status === 'done';
 
-							const cmds = Array.isArray(c) ? c : [c];
+			{status === 'running'
+				? renderStage(stages[stageIndex]!, stageIndex)
+				: stages.map((s, i) => renderStage(s, i))}
 
-							return (
-								<Box key={j} flexDirection="column" marginLeft={2}>
-									{cmds.map(inner => {
-										const elapsed = timings[inner.desc];
-										const secs = elapsed ? (elapsed / 1000).toFixed(1) : null;
-
-										return (
-											<Box key={inner.cmd.toString()}>
-												{active && !finished && (
-													<Text color="yellow">
-														<Spinner type="dots" /> {inner.desc}
-													</Text>
-												)}
-												{finished && (
-													<Text color="green">
-														✔ Finished {inner.desc} in {secs}s
-													</Text>
-												)}
-												{!active && !finished && <Text> {inner.desc}</Text>}
-											</Box>
-										);
-									})}
-								</Box>
-							);
-						})}
-					</Box>
-				);
-			})}
 			{status === 'done' && <Text color="green">✅ All done</Text>}
 			{status === 'error' && (
 				<Box flexDirection="column">

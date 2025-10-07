@@ -3,7 +3,6 @@ import type { Giveaway } from '@prisma/client';
 import { type MessageEditOptions, time, userMention } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { sql } from '@/lib/postgres.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 
 async function refundGiveaway(creator: MUser, loot: Bank) {
@@ -35,7 +34,7 @@ There are ${usersEntered.length} users entered in this giveaway.`;
 
 async function pickRandomGiveawayWinner(giveaway: Giveaway): Promise<MUser | null> {
 	if (giveaway.users_entered.length === 0) return null;
-	const result: { id: string }[] = await sql`WITH giveaway_users AS (
+	const result: { id: string }[] = await prisma.$queryRaw`WITH giveaway_users AS (
   SELECT unnest(users_entered) AS user_id
   FROM giveaway
   WHERE id = ${giveaway.id}

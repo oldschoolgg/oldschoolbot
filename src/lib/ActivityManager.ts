@@ -4,7 +4,6 @@ import type { Activity, activity_type_enum, Prisma } from '@prisma/client';
 import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
 import { globalConfig } from '@/lib/constants.js';
 import { onMinionActivityFinish } from '@/lib/events.js';
-import { sql } from '@/lib/postgres.js';
 import { allTasks } from '@/lib/Task.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
@@ -84,8 +83,8 @@ class SActivityManager {
 
 	async processPendingActivities() {
 		const activities: Activity[] = globalConfig.isProduction
-			? await sql`SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;`
-			: await sql`SELECT * FROM activity WHERE completed = false;`;
+			? await prisma.$queryRaw`SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;`
+			: await prisma.$queryRaw`SELECT * FROM activity WHERE completed = false;`;
 
 		if (activities.length > 0) {
 			await prisma.activity.updateMany({
