@@ -1,6 +1,6 @@
 import { Items } from '@/structures/Items.js';
 
-const unobtainableGauntletGear = Items.resolveItems([
+const unobtainableGauntletGear: number[] = Items.resolveItems([
 	'Corrupted helm (perfected)',
 	'Corrupted body (perfected)',
 	'Corrupted legs (perfected)',
@@ -44,7 +44,7 @@ const unobtainableGauntletGear = Items.resolveItems([
 	'Crystal halberd (basic)'
 ]);
 
-const unobtainableEmirsArenaGear = [
+const unobtainableEmirsArenaGear: number[] = [
 	26674, // Slayer helmet (i)
 	26675, // Black slayer helmet (i)
 	26676, // Green slayer helmet (i)
@@ -128,7 +128,7 @@ const unobtainableEmirsArenaGear = [
 	26736 // Saika's shroud (l)
 ];
 
-const unobtainableLeaguesItems = Items.resolveItems([
+const unobtainableLeaguesItems: number[] = Items.resolveItems([
 	'Amulet of the monarchs',
 	'The dogsword',
 	'Drygore blowpipe',
@@ -154,7 +154,7 @@ const unobtainableLeaguesItems = Items.resolveItems([
 	'Corrupted volatile nightmare staff'
 ]);
 
-const unobtainableBountyHunterGear = Items.resolveItems([
+const unobtainableBountyHunterGear: number[] = Items.resolveItems([
 	27831, // Vesta's chainbody (bh)
 	27832, // Vesta's plateskirt (bh)
 	27833, // Statius's full helm (bh)
@@ -221,7 +221,7 @@ const unobtainableBountyHunterGear = Items.resolveItems([
 	27995 // Corrupted zuriel's robe bottom (bh)(inactive)
 ]);
 
-const unobtainableDeadmanModeItems = [
+const unobtainableDeadmanModeItems: number[] = [
 	22616, // Vesta's chainbody
 	22619, // Vesta's plateskirt
 	22610, // Vesta's spear
@@ -241,7 +241,7 @@ const unobtainableDeadmanModeItems = [
 	22656 // Zuriel's robe bottom
 ];
 
-export const unobtainableLockedItems = [
+export const unobtainableLockedItems: number[] = [
 	24133, // Infernal max cape (l)
 	24134, // Fire max cape (l)
 	24135, // Assembler max cape (l)
@@ -345,7 +345,7 @@ export const unobtainableLockedItems = [
 	28957 // Blessed dizana's quiver (l)
 ];
 
-export const unobtainableLMSItems = [
+export const unobtainableLMSItems: number[] = [
 	20389, // Dragon arrow
 	20390, // Shark
 	20393, // Prayer potion(4)
@@ -510,7 +510,7 @@ export const unobtainableLMSItems = [
 	29852 // Atlatl dart
 ];
 
-const unobtainableBarrowsGear = [
+const unobtainableBarrowsGear: number[] = [
 	4856, // Ahrim's hood 100
 	4859, // Ahrim's hood 25
 	4858, // Ahrim's hood 50
@@ -627,7 +627,7 @@ const unobtainableBarrowsGear = [
 	])
 ];
 
-export const allUnobtainableGear = [
+export const allUnobtainableGear: number[] = [
 	...unobtainableGauntletGear,
 	...unobtainableEmirsArenaGear,
 	...unobtainableLeaguesItems,
