@@ -875,7 +875,9 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			}
 
 			// Keep only the admin toolset (adjust names if needed)
-			const adminCommands = allCommands.filter(cmd => cmd.name === 'admin' || cmd.name === 'rp');
+			const adminCommands = globalClient.allCommands.filter(
+				command => command.name === 'admin' || command.name === 'rp'
+			);
 
 			// Always overwrite the current guild with just the admin commands
 			await bulkUpdateCommands({
@@ -891,7 +893,9 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 				});
 			}
 
-			return `Desynced commands in this guild; kept ${adminCommands.map(c => `/${c.name}`).join(', ') || '/admin'}.`;
+			return `Desynced commands in this guild; kept ${
+				adminCommands.map(command => `/${command.name}`).join(', ') || '/admin'
+			}.`;
 		}
 
 		if (options.view) {
