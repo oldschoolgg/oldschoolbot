@@ -77,7 +77,7 @@
 		"isSlayerMonster": true,
 		"slayerLevelRequired": 60,
 		"slayerXP": 90,
-		"assignableSlayerMasters": ["vannaka", "chaeldar", "konar", "nieve", "duradel"]
+		"assignableSlayerMasters": ["vannaka", "chaeldar", "nieve", "duradel"]
 	},
 	"8": {
 		"members": true,
@@ -14797,7 +14797,7 @@
 		"isSlayerMonster": true,
 		"slayerLevelRequired": 1,
 		"slayerXP": 735,
-		"assignableSlayerMasters": ["vannaka", "chaeldar", "nieve", "duradel"]
+		"assignableSlayerMasters": ["vannaka", "chaeldar", "konar", "nieve", "duradel"]
 	},
 	"12720": {
 		"members": true,
@@ -15275,6 +15275,6 @@
 		"isSlayerMonster": true,
 		"slayerLevelRequired": 1,
 		"slayerXP": 735,
-		"assignableSlayerMasters": ["vannaka", "chaeldar", "nieve", "duradel"]
+		"assignableSlayerMasters": ["vannaka", "chaeldar", "konar", "nieve", "duradel"]
 	}
 }
