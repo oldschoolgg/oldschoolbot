@@ -4,7 +4,7 @@ import {
 	type ButtonInteraction,
 	type InteractionReplyOptions,
 	InteractionResponseType,
-	REST,
+	type REST,
 	type RESTPostAPIApplicationGuildCommandsJSONBody,
 	Routes
 } from 'discord.js';
