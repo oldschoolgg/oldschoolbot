@@ -104,19 +104,18 @@ export async function bulkUpdateCommands(options: BulkUpdateCommandOptions = {})
 	const commandsToSync = commands ?? globalClient.allCommands;
 	const mapToApiCommands = (cmds: ICommand[]) => cmds.map(convertCommandToAPICommand);
 
-        if (guildID !== undefined) {
-                const filteredCommands =
-                        guildID === null ? commandsToSync.filter(i => !i.guildID) : commandsToSync;
-                const route =
-                        guildID === null
-                                ? Routes.applicationCommands(resolvedApplicationID)
-                                : Routes.applicationGuildCommands(resolvedApplicationID, guildID);
-                return rest.put(route, { body: mapToApiCommands(filteredCommands) });
-        }
+	if (guildID !== undefined) {
+		const filteredCommands = guildID === null ? commandsToSync.filter(i => !i.guildID) : commandsToSync;
+		const route =
+			guildID === null
+				? Routes.applicationCommands(resolvedApplicationID)
+				: Routes.applicationGuildCommands(resolvedApplicationID, guildID);
+		return rest.put(route, { body: mapToApiCommands(filteredCommands) });
+	}
 
-        // Sync commands just to the testing server when not in production
-        if (!globalConfig.isProduction) {
-                const route = Routes.applicationGuildCommands(resolvedApplicationID, globalConfig.supportServerID);
+	// Sync commands just to the testing server when not in production
+	if (!globalConfig.isProduction) {
+		const route = Routes.applicationGuildCommands(resolvedApplicationID, globalConfig.supportServerID);
 		return rest.put(route, {
 			body: mapToApiCommands(commandsToSync)
 		});
