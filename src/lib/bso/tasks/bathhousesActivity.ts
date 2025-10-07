@@ -1,4 +1,4 @@
-import { calculateBathouseResult } from '@/lib/bso/baxtorianBathhouses.js';
+import { calculateBathouseResult } from '@/lib/bso/minigames/baxtorianBathhouses.js';
 
 import { randArrItem, roll } from '@oldschoolgg/rng';
 import { uniqueArr } from '@oldschoolgg/toolkit';

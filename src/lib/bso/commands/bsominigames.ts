@@ -1,3 +1,9 @@
+import { bonanzaCommand } from '@/lib/bso/commands/bonanzaCommand.js';
+import { fishingContestStartCommand, fishingContestStatsCommand } from '@/lib/bso/commands/fishingContestCommand.js';
+import { fistOfGuthixCommand } from '@/lib/bso/commands/fistOfGuthix.js';
+import { monkeyRumbleCommand, monkeyRumbleStatsCommand } from '@/lib/bso/commands/monkeyRumbleCommand.js';
+import { stealingCreationCommand } from '@/lib/bso/commands/stealingCreation.js';
+import { tinkeringWorkshopCommand } from '@/lib/bso/commands/tinkeringWorkshopCommand.js';
 import {
 	BathhouseOres,
 	BathwaterMixtures,
@@ -5,13 +11,7 @@ import {
 	baxBathHelpStr,
 	baxBathSim,
 	baxtorianBathhousesStartCommand
-} from '@/lib/bso/baxtorianBathhouses.js';
-import { bonanzaCommand } from '@/lib/bso/commands/bonanzaCommand.js';
-import { fishingContestStartCommand, fishingContestStatsCommand } from '@/lib/bso/commands/fishingContestCommand.js';
-import { fistOfGuthixCommand } from '@/lib/bso/commands/fistOfGuthix.js';
-import { monkeyRumbleCommand, monkeyRumbleStatsCommand } from '@/lib/bso/commands/monkeyRumbleCommand.js';
-import { stealingCreationCommand } from '@/lib/bso/commands/stealingCreation.js';
-import { tinkeringWorkshopCommand } from '@/lib/bso/commands/tinkeringWorkshopCommand.js';
+} from '@/lib/bso/minigames/baxtorianBathhouses.js';
 import {
 	allGodlyItems,
 	divineDominionCheck,

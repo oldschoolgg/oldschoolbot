@@ -1,5 +1,5 @@
-import type { BathhouseTierName } from '@/lib/bso/baxtorianBathhouses.js';
 import type { Kibble } from '@/lib/bso/kibble.js';
+import type { BathhouseTierName } from '@/lib/bso/minigames/baxtorianBathhouses.js';
 import type { Monkey } from '@/lib/bso/minigames/monkey-rumble/monkeyRumble.js';
 import type { TuraelsTrialsMethod } from '@/lib/bso/minigames/turaelsTrials.js';
 import type { IMaterialBank, MaterialType } from '@/lib/bso/skills/invention/index.js';

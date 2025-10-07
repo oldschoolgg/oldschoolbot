@@ -1,12 +1,12 @@
+import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
+import { determineTameClueResult } from '@/lib/bso/commands/tames.js';
 import {
 	BathhouseOres,
 	BathwaterMixtures,
 	bathHouseTiers,
 	calculateBathouseResult,
 	durationPerBaxBath
-} from '@/lib/bso/baxtorianBathhouses.js';
-import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
-import { determineTameClueResult } from '@/lib/bso/commands/tames.js';
+} from '@/lib/bso/minigames/baxtorianBathhouses.js';
 import { calculateTuraelsTrialsInput, TuraelsTrialsMethods } from '@/lib/bso/minigames/turaelsTrials.js';
 import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '@/lib/bso/skills/divination.js';
 import {

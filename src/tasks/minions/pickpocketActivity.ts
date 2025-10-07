@@ -1,6 +1,6 @@
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
-import { clueUpgraderEffect } from '@/lib/bso/inventionEffects.js';
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divination.js';
+import { clueUpgraderEffect } from '@/lib/bso/skills/invention/effects/clueUpgraderEffect.js';
 import { forcefullyUnequipItem } from '@/lib/bso/util/forcefullyUnequipItem.js';
 
 import { percentChance, randInt, roll } from '@oldschoolgg/rng';

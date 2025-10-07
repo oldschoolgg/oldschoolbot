@@ -1,4 +1,4 @@
-import { portableTannerEffect } from '@/lib/bso/inventionEffects.js';
+import { portableTannerEffect } from '@/lib/bso/skills/invention/effects/portableTannerEffect.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
 import { Time } from '@oldschoolgg/toolkit';
