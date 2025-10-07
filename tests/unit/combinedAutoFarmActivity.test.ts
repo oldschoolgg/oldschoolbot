@@ -12,13 +12,13 @@ const canRunAutoContractMock = vi.fn();
 vi.mock('../../src/tasks/minions/farmingStep.js', () => ({
 	executeFarmingStep: executeFarmingStepMock
 }));
-vi.mock('../../src/lib/util/handleTripFinish.js', () => ({
+vi.mock('@/lib/util/handleTripFinish.js', () => ({
 	handleTripFinish: handleTripFinishMock
 }));
-vi.mock('../../src/lib/util/interactions.js', () => ({
+vi.mock('@/lib/util/interactions.js', () => ({
 	makeAutoContractButton: makeAutoContractButtonMock
 }));
-vi.mock('../../src/mahoji/lib/abstracted_commands/farmingContractCommand.js', () => ({
+vi.mock('@/mahoji/lib/abstracted_commands/farmingContractCommand.js', () => ({
 	canRunAutoContract: canRunAutoContractMock
 }));
 
