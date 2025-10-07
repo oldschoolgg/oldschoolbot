@@ -247,7 +247,7 @@ LIMIT 10;
 	return lbMsg('Unique Sacrifice');
 }
 
-async function minigamesLb(interaction: ChatInputCommandInteraction, user: MUser, name: string, ironmanOnly: boolean) {
+async function minigamesLb(interaction: MInteraction, name: string, ironmanOnly: boolean) {
 	const minigame = Minigames.find(m => stringMatches(m.name, name) || m.aliases.some(a => stringMatches(a, name)));
 	if (!minigame) {
 		return `That's not a valid minigame. Valid minigames are: ${Minigames.map(m => m.name).join(', ')}.`;
@@ -294,7 +294,6 @@ async function minigamesLb(interaction: ChatInputCommandInteraction, user: MUser
 
 	return doMenuWrapper({
 		ironmanOnly,
-		user,
 		interaction,
 		users: res.map(u => ({ id: u.user_id, score: u[minigame.column] })),
 		title: `${minigame.name} Leaderboard`
@@ -1142,7 +1141,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			return sacrificeLb(interaction, sacrifice.type, Boolean(sacrifice.ironmen_only));
 		}
 		if (minigames) {
-			return minigamesLb(interaction, user, minigames.minigame, Boolean(minigames.ironmen_only));
+			return minigamesLb(interaction, minigames.minigame, Boolean(minigames.ironmen_only));
 		}
 		if (hunter_catches) {
 			return creaturesLb(interaction, hunter_catches.creature);
