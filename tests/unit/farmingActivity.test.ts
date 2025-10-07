@@ -87,7 +87,8 @@ vi.mock('@/lib/skilling/skills/farming/index.js', () => ({
 	Farming: {
 		Plants: [redwoodPlant, herbPlant],
 		calcVariableYield: calcVariableYieldMock
-	}
+	},
+	allFarmingItems: []
 }));
 
 vi.mock('@/lib/util/handleTripFinish.js', () => ({

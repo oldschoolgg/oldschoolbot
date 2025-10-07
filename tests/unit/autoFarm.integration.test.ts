@@ -166,6 +166,7 @@ function createAutoFarmStub({
 		addItemsToCollectionLog: vi.fn().mockResolvedValue(undefined),
 		hasEquippedOrInBank: vi.fn().mockReturnValue(false),
 		hasEquipped: vi.fn().mockReturnValue(false),
+		hasGracefulEquipped: vi.fn().mockReturnValue(false),
 		farmingContract: vi.fn().mockReturnValue({
 			contract: {
 				plantsContract: null,
