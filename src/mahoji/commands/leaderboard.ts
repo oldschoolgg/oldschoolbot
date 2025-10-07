@@ -247,12 +247,7 @@ LIMIT 10;
 	return lbMsg('Unique Sacrifice');
 }
 
-async function minigamesLb(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	name: string,
-	ironmanOnly: boolean
-) {
+async function minigamesLb(interaction: ChatInputCommandInteraction, user: MUser, name: string, ironmanOnly: boolean) {
 	const minigame = Minigames.find(m => stringMatches(m.name, name) || m.aliases.some(a => stringMatches(a, name)));
 	if (!minigame) {
 		return `That's not a valid minigame. Valid minigames are: ${Minigames.map(m => m.name).join(', ')}.`;
