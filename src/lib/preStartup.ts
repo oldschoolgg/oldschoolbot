@@ -34,12 +34,13 @@ async function syncCollectionLogSlotTable() {
 export const preStartup = logWrapFn('PreStartup', async () => {
 	await GeImageGenerator.init();
 
+	await prisma.clientStorage.upsert({
+		where: { id: globalConfig.clientID },
+		create: { id: globalConfig.clientID },
+		update: {}
+	});
+
 	await Promise.all([
-		prisma.clientStorage.upsert({
-			where: { id: globalConfig.clientID },
-			create: { id: globalConfig.clientID },
-			update: {}
-		}),
 		syncActiveUserIDs(),
 		ActivityManager.syncActivityCache(),
 		runStartupScripts(),

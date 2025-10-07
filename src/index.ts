@@ -1,5 +1,4 @@
 import './lib/safeglobals.js';
-import './lib/globals.js';
 import './lib/MUser.js';
 import './lib/discord/client.js';
 
@@ -7,6 +6,7 @@ import { init } from '@sentry/node';
 import exitHook from 'exit-hook';
 
 import { gitHash, globalConfig } from '@/lib/constants.js';
+import { createDb } from '@/lib/globals.js';
 import { preStartup } from '@/lib/preStartup.js';
 import { exitCleanup } from '@/mahoji/lib/exitHandler.js';
 
@@ -22,6 +22,7 @@ if (globalConfig.sentryDSN) {
 }
 
 async function main() {
+	await createDb();
 	Logging.logDebug(`Starting up after ${process.uptime()}s`);
 	await Promise.all([preStartup(), globalClient.login(globalConfig.botToken)]);
 	Logging.logDebug(`Logged in as ${globalClient.user.username} after ${process.uptime()}s`);

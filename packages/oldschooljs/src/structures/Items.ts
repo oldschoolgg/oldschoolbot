@@ -1,8 +1,10 @@
+import fs from 'node:fs';
 import deepMerge from 'deepmerge';
 
-import _items from '../assets/item_data.json' with { type: 'json' };
-
-const items = _items as any as Record<string, Item>;
+const items = JSON.parse(fs.readFileSync(new URL('../assets/item_data.json', import.meta.url), 'utf8')) as Record<
+	string,
+	Item
+>;
 
 import type { Item } from '@/meta/item.js';
 import { Collection } from './Collection.js';

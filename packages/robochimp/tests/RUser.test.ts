@@ -1,5 +1,3 @@
-import '../src/lib/prisma.js';
-
 import { PerkTier } from '@oldschoolgg/toolkit';
 import { describe, expect, test } from 'vitest';
 
