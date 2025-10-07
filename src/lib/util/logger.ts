@@ -8,15 +8,9 @@ import { DiscordAPIError } from 'discord.js';
 
 import { BOT_TYPE_LOWERCASE, globalConfig } from '@/lib/constants.js';
 
-const today = new Date();
-const year = today.getFullYear();
-const month = (today.getMonth() + 1).toString().padStart(2, '0');
-const day = today.getDate().toString().padStart(2, '0');
-const formattedDate = `${year}-${month}-${day}`;
-
 const LOG_FILE_NAME = globalConfig.isProduction
 	? `../logs/${BOT_TYPE_LOWERCASE}.debug.log`
-	: `./logs/${formattedDate}-${today.getHours()}-${today.getMinutes()}-debug-logs.log`;
+	: `./logs/${BOT_TYPE_LOWERCASE}.debug.log`;
 
 export const sonicBoom = new SonicBoom({
 	fd: LOG_FILE_NAME,
