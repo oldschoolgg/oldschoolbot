@@ -6,6 +6,7 @@ import {
 	durationPerBaxBath
 } from '@/lib/bso/baxtorianBathhouses.js';
 import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
+import { determineTameClueResult } from '@/lib/bso/commands/tames.js';
 import { calculateTuraelsTrialsInput, TuraelsTrialsMethods } from '@/lib/bso/minigames/turaelsTrials.js';
 import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '@/lib/bso/skills/divination.js';
 import {
@@ -13,6 +14,11 @@ import {
 	calcMaxFloorUserCanDo,
 	numberOfGorajanOutfitsEquipped
 } from '@/lib/bso/skills/dungoneering/dungDbFunctions.js';
+import {
+	mutatedSourceItems,
+	zygomiteFarmingSource,
+	zygomiteSeedMutChance
+} from '@/lib/bso/skills/farming/zygomites.js';
 import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 import { stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
 
@@ -24,11 +30,6 @@ import { unique } from 'remeda';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import Agility from '@/lib/skilling/skills/agility.js';
-import {
-	mutatedSourceItems,
-	zygomiteFarmingSource,
-	zygomiteSeedMutChance
-} from '@/lib/skilling/skills/farming/zygomites.js';
 import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import Mining from '@/lib/skilling/skills/mining.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
@@ -39,7 +40,6 @@ import type { BathhouseTaskOptions } from '@/lib/types/minions.js';
 import { PeakTier } from '@/lib/util/peaks.js';
 import { calculateHunterInput } from '@/mahoji/commands/hunt.js';
 import { calculateMiningInput } from '@/mahoji/commands/mine.js';
-import { determineTameClueResult } from '@/mahoji/commands/tames.js';
 import { calculateAgilityResult } from '@/tasks/minions/agilityActivity.js';
 import { calculateDungeoneeringResult } from '@/tasks/minions/bso/dungeoneeringActivity.js';
 import { memoryHarvestResult, totalTimePerRound } from '@/tasks/minions/bso/memoryHarvestActivity.js';

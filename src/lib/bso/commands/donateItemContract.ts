@@ -1,4 +1,5 @@
 import { itemContractResetTime } from '@/lib/bso/bsoConstants.js';
+import { getItemContractDetails, handInContract } from '@/lib/bso/commands/ic.js';
 
 import { dateFm, Emoji } from '@oldschoolgg/toolkit';
 import type { ButtonInteraction } from 'discord.js';
@@ -8,7 +9,6 @@ import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
 import { BitField } from '@/lib/constants.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
-import { getItemContractDetails, handInContract } from '@/mahoji/commands/ic.js';
 
 function icDonateValidation(user: MUser, donator: MUser) {
 	if (user.isIronman) {

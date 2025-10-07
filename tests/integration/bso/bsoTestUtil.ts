@@ -1,3 +1,4 @@
+import { tamesCommand } from '@/lib/bso/commands/tames.js';
 import { materialTypes } from '@/lib/bso/skills/invention/index.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { MTame } from '@/lib/bso/structures/MTame.js';
@@ -13,7 +14,6 @@ import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import type { SkillsRequired } from '@/lib/types/index.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { stealCommand } from '@/mahoji/commands/steal.js';
-import { tamesCommand } from '@/mahoji/commands/tames.js';
 import type { TestUser } from '../util.js';
 
 export const BSOTestUtil = {

@@ -1,3 +1,4 @@
+import { getItemContractDetails } from '@/lib/bso/commands/ic.js';
 import { spawnLampIsReady } from '@/lib/bso/commands/spawnBoxLampCommand.js';
 import { getUsersFishingContestDetails } from '@/lib/bso/minigames/fishingContest.js';
 import { shortTameTripDesc, tameLastFinishedActivity } from '@/lib/bso/tames/tameUtil.js';
@@ -14,7 +15,6 @@ import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhous
 import { makeAutoContractButton, makeAutoSlayButton, makeBirdHouseTripButton } from '@/lib/util/interactions.js';
 import { minionStatus } from '@/lib/util/minionStatus.js';
 import { makeRepeatTripButtons } from '@/lib/util/repeatStoredTrip.js';
-import { getItemContractDetails } from '@/mahoji/commands/ic.js';
 import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 
