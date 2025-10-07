@@ -2,7 +2,15 @@ import { calcTotalLevel } from '@/lib/bso/bsoUtil.js';
 import { circusBuyables } from '@/lib/bso/buyables/circusBuyables.js';
 import { fistOfGuthixBuyables } from '@/lib/bso/buyables/fistOfGuthixBuyables.js';
 import { stealingCreationBuyables } from '@/lib/bso/buyables/stealingCreationBuyables.js';
-import { divinationEnergies } from '@/lib/bso/divination.js';
+import {
+	brokenPernixOutfit,
+	brokenTorvaOutfit,
+	brokenVirtusOutfit,
+	customPetsCL,
+	pernixOutfit,
+	torvaOutfit,
+	virtusOutfit
+} from '@/lib/bso/collection-log/main.js';
 import { dyedItems } from '@/lib/bso/dyedItems.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { PartyhatTable } from '@/lib/bso/holidayItems.js';
@@ -10,25 +18,14 @@ import { leaguesHasCatches, leaguesHasKC, type Task } from '@/lib/bso/leagues/le
 import { calculateChargedItems, calculateTiarasMade } from '@/lib/bso/leagues/stats.js';
 import { Naxxus } from '@/lib/bso/monsters/bosses/Naxxus.js';
 import { NexMonster } from '@/lib/bso/monsters/nex.js';
+import { divinationEnergies } from '@/lib/bso/skills/divination.js';
 import { Inventions } from '@/lib/bso/skills/invention/inventions.js';
 import { allThirdAgeItems } from '@/lib/bso/tables/sharedTables.js';
 
 import { notEmpty, sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
 
-import {
-	allGildedItems,
-	brokenPernixOutfit,
-	brokenTorvaOutfit,
-	brokenVirtusOutfit,
-	customPetsCL,
-	masterCapesCL,
-	monkeyBackpacksCL,
-	pernixOutfit,
-	skillingPetsCL,
-	torvaOutfit,
-	virtusOutfit
-} from '@/lib/data/CollectionsExport.js';
+import { allGildedItems, masterCapesCL, monkeyBackpacksCL, skillingPetsCL } from '@/lib/data/CollectionsExport.js';
 import {
 	ArdougneDiary,
 	DesertDiary,

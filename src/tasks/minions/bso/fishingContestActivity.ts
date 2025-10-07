@@ -1,4 +1,4 @@
-import { catchFishAtLocation, fishingLocations } from '@/lib/bso/fishingContest.js';
+import { catchFishAtLocation, fishingLocations } from '@/lib/bso/minigames/fishingContest.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { ClueTable } from '@/lib/bso/tables/sharedTables.js';
 

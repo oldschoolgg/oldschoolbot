@@ -1,4 +1,4 @@
-import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divination.js';
 
 import { randInt } from '@oldschoolgg/rng';
 import { increaseNumByPercent } from '@oldschoolgg/toolkit';

@@ -1,6 +1,6 @@
-import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divination.js';
 import {
 	calcMaxFloorUserCanDo,
 	calcUserGorajanShardChance,

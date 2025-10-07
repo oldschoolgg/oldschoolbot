@@ -1,5 +1,5 @@
-import { gods } from '@/lib/bso/divineDominion.js';
-import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
+import { gods } from '@/lib/bso/minigames/divineDominion.js';
+import { slayerMaskHelms } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 
 import { notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
 import { deepResolveItems, Items } from 'oldschooljs';

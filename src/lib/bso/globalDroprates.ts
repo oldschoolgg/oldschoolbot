@@ -1,6 +1,6 @@
-import { Items } from 'oldschooljs';
+import { doaMetamorphPets } from '@/lib/bso/collection-log/main.js';
 
-import { doaMetamorphPets } from '../data/CollectionsExport.js';
+import { Items } from 'oldschooljs';
 
 export const globalDroprates = {
 	doug: {

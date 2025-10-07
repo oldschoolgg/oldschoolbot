@@ -1,3 +1,9 @@
+import {
+	gorajanArcherOutfit,
+	gorajanOccultOutfit,
+	gorajanWarriorOutfit,
+	pernixOutfit
+} from '@/lib/bso/collection-log/main.js';
 import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 
 import { randFloat, randInt, randomVariation } from '@oldschoolgg/rng';
@@ -5,12 +11,6 @@ import { calcPercentOfNum, calcWhatPercent, reduceNumByPercent, round, Time } fr
 import { Bank, Items, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
-import {
-	gorajanArcherOutfit,
-	gorajanOccultOutfit,
-	gorajanWarriorOutfit,
-	pernixOutfit
-} from '@/lib/data/CollectionsExport.js';
 import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
 

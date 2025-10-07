@@ -1,11 +1,11 @@
-import { Ignecarus } from '@/lib/bso/monsters/bosses/Ignecarus.js';
+import { dwarvenOutfit } from '@/lib/bso/collection-log/main.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { BossInstance } from '@/lib/bso/structures/Boss.js';
 
-import { channelIsSendable, formatDuration, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { dwarvenOutfit } from '@/lib/data/CollectionsExport.js';
 import { Gear } from '@/lib/structures/Gear.js';
 
 export async function igneCommand(
@@ -16,14 +16,12 @@ export async function igneCommand(
 	quantity: number | undefined
 ): Promise<string | InteractionReplyOptions> {
 	if (interaction) await interaction.defer();
-	const channel = globalClient.channels.cache.get(channelID.toString());
-	if (!channelIsSendable(channel)) return 'Invalid channel.';
 	const type = inputName.toLowerCase().includes('mass') ? 'mass' : 'solo';
 
 	const instance = new BossInstance({
 		interaction,
 		leader: user,
-		id: Ignecarus.id,
+		id: EBSOMonster.IGNECARUS,
 		baseDuration: Time.Minute * 25,
 		skillRequirements: {
 			slayer: 110
@@ -53,7 +51,7 @@ export async function igneCommand(
 		gearSetup: 'melee',
 		itemCost: async data => {
 			const userBank = data.user.bank;
-			const kc = await data.user.getKC(Ignecarus.id);
+			const kc = await data.user.getKC(EBSOMonster.IGNECARUS);
 
 			let brewsNeeded = Math.max(1, 10 - Math.max(1, Math.ceil((kc + 1) / 30))) + 2;
 			if (data.solo) {
@@ -75,7 +73,7 @@ export async function igneCommand(
 		ignoreStats: ['attack_ranged', 'attack_magic'],
 		food: () => new Bank(),
 		settingsKeys: ['ignecarus_cost', 'ignecarus_loot'],
-		channel,
+		channelId: channelID,
 		activity: 'Ignecarus',
 		massText: `${user.usernameOrMention} is assembling a team to fight Ignecarus! Use the buttons below to join/leave.`,
 		minSize: 1,

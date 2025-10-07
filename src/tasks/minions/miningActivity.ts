@@ -1,7 +1,7 @@
 import { GLOBAL_BSO_XP_MULTIPLIER, MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
-import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divination.js';
 import { InventionID } from '@/lib/bso/skills/invention/inventions.js';
 import { type StoneSpirit, stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
 

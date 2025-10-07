@@ -1,3 +1,4 @@
+import { nexUniqueDrops } from '@/lib/bso/collection-log/main.js';
 import { chanceOfDOAUnique, pickUniqueToGiveUser } from '@/lib/bso/depthsOfAtlantis.js';
 import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';
 import { KalphiteKingMonster, kalphiteKingLootTable } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
@@ -10,7 +11,6 @@ import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { SimpleTable } from '@oldschoolgg/toolkit';
 import { Bank, Misc } from 'oldschooljs';
 
-import { nexUniqueDrops } from '@/lib/data/CollectionsExport.js';
 import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
 import { zygomiteFarmingSource } from '@/lib/skilling/skills/farming/zygomites.js';
 

@@ -1,5 +1,5 @@
 import { calcTotalLevel } from '@/lib/bso/bsoUtil.js';
-import { divinationEnergies } from '@/lib/bso/divination.js';
+import { customPetsCL } from '@/lib/bso/collection-log/main.js';
 import {
 	leaguesHasCatches,
 	leaguesHasKC,
@@ -7,11 +7,12 @@ import {
 	type Task
 } from '@/lib/bso/leagues/leaguesUtils.js';
 import { calculateTiarasMade, calculateTotalMahoganyHomesPoints } from '@/lib/bso/leagues/stats.js';
+import { divinationEnergies } from '@/lib/bso/skills/divination.js';
 
 import { notEmpty, sumArr } from '@oldschoolgg/toolkit';
 import { type ItemBank, Monsters, resolveItems } from 'oldschooljs';
 
-import { barrowsChestCL, customPetsCL } from '@/lib/data/CollectionsExport.js';
+import { barrowsChestCL } from '@/lib/data/CollectionsExport.js';
 import {
 	ArdougneDiary,
 	DesertDiary,

@@ -5,7 +5,7 @@ import {
 	calculateTiarasMade,
 	calculateXPSources
 } from '@/lib/bso/leagues/stats.js';
-import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
+import { slayerMaskHelms } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 
 import { Emoji, formatDuration, PerkTier, stringMatches, sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import type { activity_type_enum, UserStats } from '@prisma/client';

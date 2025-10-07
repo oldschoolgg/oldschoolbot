@@ -1,3 +1,4 @@
+import { doaMetamorphPets } from '@/lib/bso/collection-log/main.js';
 import {
 	calcDOAInput,
 	chanceOfDOAUnique,
@@ -15,7 +16,6 @@ import { formatDuration, reduceNumByPercent, sumArr } from '@oldschoolgg/toolkit
 import { averageBank, Bank, resolveItems } from 'oldschooljs';
 
 import { globalConfig } from '@/lib/constants.js';
-import { doaMetamorphPets } from '@/lib/data/CollectionsExport.js';
 import { degradeableItems } from '@/lib/degradeableItems.js';
 import { toaHelpCommand, toaStartCommand } from '@/lib/simulation/toa.js';
 import { mileStoneBaseDeathChances } from '@/lib/simulation/toaUtils.js';

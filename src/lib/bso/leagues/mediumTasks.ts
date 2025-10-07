@@ -1,4 +1,6 @@
 import { calcTotalLevel } from '@/lib/bso/bsoUtil.js';
+import { customPetsCL, treeBeardCL } from '@/lib/bso/collection-log/main.js';
+import { inventorOutfit } from '@/lib/bso/collection-log/minigames.js';
 import { QueenBlackDragon } from '@/lib/bso/monsters/demi-bosses/QueenBlackDragon.js';
 import { SuperiorTormentedDemon } from '@/lib/bso/monsters/demi-bosses/TormentedDemon.js';
 import { LampTable } from '@/lib/bso/xpLamps.js';
@@ -7,15 +9,7 @@ import { sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
-import {
-	barrowsChestCL,
-	chambersOfXericCL,
-	customPetsCL,
-	cyclopsCL,
-	inventorOutfit,
-	theatreOfBLoodCL,
-	treeBeardCL
-} from '@/lib/data/CollectionsExport.js';
+import { barrowsChestCL, chambersOfXericCL, cyclopsCL, theatreOfBLoodCL } from '@/lib/data/CollectionsExport.js';
 import {
 	ArdougneDiary,
 	DesertDiary,

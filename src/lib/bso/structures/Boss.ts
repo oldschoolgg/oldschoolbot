@@ -10,7 +10,7 @@ import {
 	Time
 } from '@oldschoolgg/toolkit';
 import type { GearSetupType } from '@prisma/client';
-import { AttachmentBuilder, type BaseMessageOptions, type TextChannel } from 'discord.js';
+import { AttachmentBuilder, type BaseMessageOptions } from 'discord.js';
 import { Bank } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
@@ -127,7 +127,7 @@ export interface BossOptions {
 	ignoreStats?: (keyof GearStats)[];
 	food: Bank | ((user: MUser) => Bank);
 	settingsKeys?: [ClientBankKey, ClientBankKey];
-	channel: TextChannel;
+	channelId: string;
 	activity: 'VasaMagus' | 'KingGoldemar' | 'Ignecarus' | 'BossEvent';
 	massText: string;
 	leader: MUser;
@@ -184,7 +184,7 @@ export class BossInstance {
 	allowMoreThan1Group = false;
 	totalPercent = -1;
 	settingsKeys?: [ClientBankKey, ClientBankKey];
-	channel: TextChannel;
+	channelId: string;
 	activity: 'VasaMagus' | 'KingGoldemar' | 'Ignecarus' | 'BossEvent';
 	massText: string;
 	users: MUser[] | null = null;
@@ -218,7 +218,7 @@ export class BossInstance {
 		this.id = options.id;
 		this.food = options.food;
 		this.settingsKeys = options.settingsKeys;
-		this.channel = options.channel;
+		this.channelId = options.channelId;
 		this.activity = options.activity;
 		this.leader = options.leader;
 		this.minSize = options.minSize;
@@ -495,7 +495,7 @@ export class BossInstance {
 
 		await ActivityManager.startTrip<NewBossOptions>({
 			userID: this.users![0].id,
-			channelID: this.channel.id,
+			channelID: this.channelId,
 			quantity: this.quantity!,
 			duration: this.duration,
 			type: this.activity,

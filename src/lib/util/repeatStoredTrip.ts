@@ -1,5 +1,5 @@
-import { divinationEnergies, memoryHarvestTypes } from '@/lib/bso/divination.js';
 import { kibbles } from '@/lib/bso/kibble.js';
+import { divinationEnergies, memoryHarvestTypes } from '@/lib/bso/skills/divination.js';
 
 import { Time } from '@oldschoolgg/toolkit';
 import { type Activity, activity_type_enum, type Prisma } from '@prisma/client';

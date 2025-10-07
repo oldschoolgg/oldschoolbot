@@ -3,7 +3,7 @@ import {
 	type DivinationEnergy,
 	divinationEnergies,
 	MemoryHarvestType
-} from '@/lib/bso/divination.js';
+} from '@/lib/bso/skills/divination.js';
 import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 
 import { roll } from '@oldschoolgg/rng';

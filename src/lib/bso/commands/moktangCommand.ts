@@ -1,8 +1,9 @@
+import { dwarvenOutfit } from '@/lib/bso/collection-log/main.js';
+
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { spoiler } from 'discord.js';
 import { Bank, Items, resolveItems } from 'oldschooljs';
 
-import { dwarvenOutfit } from '@/lib/data/CollectionsExport.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { PercentCounter } from '@/lib/structures/PercentCounter.js';
 import type { MoktangTaskOptions } from '@/lib/types/minions.js';

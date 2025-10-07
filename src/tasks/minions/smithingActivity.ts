@@ -1,8 +1,8 @@
 import { BlacksmithOutfit } from '@/lib/bso/bsoConstants.js';
+import { dwarvenOutfit } from '@/lib/bso/collection-log/main.js';
 
 import { Bank } from 'oldschooljs';
 
-import { dwarvenOutfit } from '@/lib/data/CollectionsExport.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { SmithingActivityTaskOptions } from '@/lib/types/minions.js';
 import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager.js';

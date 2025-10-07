@@ -1,11 +1,13 @@
-import { cookingCL, craftingCL, creatablesCL, herbloreCL, smithingCL } from '@/lib/bso/bsoCl.js';
-import { divinationEnergies } from '@/lib/bso/divination.js';
+import { abyssalDragonCL, allDOAPets, customPetsCL, doaCL, dungeoneeringCL, ignecarusCL, kalphiteKingCL, kingGoldemarCL, moktangCL, naxxusCL, nexCL, nihilizCL, polyporeDungeonCL, queenBlackDragonCL, seaKrakenCL, treeBeardCL, vasaMagusCL } from '@/lib/bso/collection-log/main.js';
+import { balthazarsBigBonanzaCL, baxtorianBathhousesCL, fishingContestCL, fistOfGuthixCL, monkeyRumbleCL, odsCL, stealingCreationCL, tinkeringWorshopCL } from '@/lib/bso/collection-log/minigames.js';
+import { cookingCL, craftingCL, creatablesCL, herbloreCL, smithingCL } from '@/lib/bso/collection-log/special.js';
 import { kibbleCL } from '@/lib/bso/kibble.js';
 import { allLeagueTasks, leagueTasks } from '@/lib/bso/leagues/leagues.js';
 import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
+import { divinationEnergies } from '@/lib/bso/skills/divination.js';
 import { dungBuyables } from '@/lib/bso/skills/dungoneering/dungData.js';
 import { inventionCL } from '@/lib/bso/skills/invention/inventions.js';
-import { slayerMasksHelmsCL } from '@/lib/bso/slayerMaskHelms.js';
+import { slayerMasksHelmsCL } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 import { TameSpeciesID, tameFeedableItems } from '@/lib/bso/tames/tames.js';
 
 import { calcWhatPercent, objectEntries, sumArr, toTitleCase } from '@oldschoolgg/toolkit';
@@ -15,16 +17,12 @@ import { Bank, type ItemBank, ItemGroups, Items, itemID, resolveItems } from 'ol
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BitField } from '@/lib/constants.js';
 import {
-	abyssalDragonCL,
 	abyssalSireCL,
 	aerialFishingCL,
 	alchemicalHydraCL,
-	allDOAPets,
 	allPetsCL,
-	balthazarsBigBonanzaCL,
 	barbarianAssaultCL,
 	barrowsChestCL,
-	baxtorianBathhousesCL,
 	brimhavenAgilityArenaCL,
 	bryophytaCL,
 	callistoCL,
@@ -56,19 +54,14 @@ import {
 	corporealBeastCL,
 	crazyArchaeologistCL,
 	creatureCreationCL,
-	customPetsCL,
 	cyclopsCL,
 	dagannothKingsCL,
 	dailyCL,
 	demonicGorillaCL,
 	diariesCL,
-	doaCL,
-	dungeoneeringCL,
 	emergedZukInfernoCL,
 	expertCapesCL,
-	fishingContestCL,
 	fishingTrawlerCL,
-	fistOfGuthixCL,
 	fossilIslandNotesCL,
 	generalGraardorCL,
 	giantMoleCL,
@@ -81,11 +74,8 @@ import {
 	hallowedSepulchreCL,
 	hesporiCL,
 	holidayCL,
-	ignecarusCL,
-	kalphiteKingCL,
 	kalphiteQueenCL,
 	kingBlackDragonCL,
-	kingGoldemarCL,
 	krakenCL,
 	kreeArraCL,
 	krilTsutsarothCL,
@@ -94,19 +84,11 @@ import {
 	magicTrainingArenaCL,
 	mahoganyHomesCL,
 	miscellaneousCL,
-	moktangCL,
 	monkeyBackpacksCL,
-	monkeyRumbleCL,
 	motherlodeMineCL,
 	muspahCL,
-	naxxusCL,
-	nexCL,
-	nihilizCL,
 	oborCL,
-	odsCL,
 	pestControlCL,
-	polyporeDungeonCL,
-	queenBlackDragonCL,
 	questCL,
 	randomEventsCL,
 	revenantsCL,
@@ -114,7 +96,6 @@ import {
 	rooftopAgilityCL,
 	sarachnisCL,
 	scorpiaCL,
-	seaKrakenCL,
 	shadesOfMorttonCL,
 	shayzienArmourCL,
 	shootingStarsCL,
@@ -123,7 +104,6 @@ import {
 	skotizoCL,
 	slayerCL,
 	soulWarsCL,
-	stealingCreationCL,
 	templeTrekkingCL,
 	temporossCL,
 	theatreOfBLoodCL,
@@ -131,14 +111,11 @@ import {
 	theInfernoCL,
 	theNightmareCL,
 	thermonuclearSmokeDevilCL,
-	tinkeringWorshopCL,
 	titheFarmCL,
 	tobMetamorphPets,
 	tormentedDemonCL,
-	treeBeardCL,
 	troubleBrewingCL,
 	tzHaarCL,
-	vasaMagusCL,
 	venenatisCL,
 	vetionCL,
 	volcanicMineCL,

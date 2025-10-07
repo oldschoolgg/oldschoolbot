@@ -1,6 +1,6 @@
 import { bossEvents } from '@/lib/bso/bossEvents.js';
-import { divinationEnergies, memoryHarvestTypes } from '@/lib/bso/divination.js';
-import { fishingLocations } from '@/lib/bso/fishingContest.js';
+import { fishingLocations } from '@/lib/bso/minigames/fishingContest.js';
+import { divinationEnergies, memoryHarvestTypes } from '@/lib/bso/skills/divination.js';
 
 import { randomVariation } from '@oldschoolgg/rng';
 import {

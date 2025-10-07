@@ -1,7 +1,7 @@
 import { boxSpawnHandler } from '@/lib/bso/boxSpawns.js';
 import { giveBoxResetTime, itemContractResetTime } from '@/lib/bso/bsoConstants.js';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
-import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from '@/lib/bso/guthixianCache.js';
+import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from '@/lib/bso/minigames/guthixianCache.js';
 import { allIronmanMbTables, allMbTables } from '@/lib/bso/openables/bsoOpenables.js';
 
 import { channelIsSendable, dateFm, Emoji, getNextUTCReset, isFunction, Time, UserError } from '@oldschoolgg/toolkit';

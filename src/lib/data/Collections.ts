@@ -1,6 +1,8 @@
-import { cookingCL, craftingCL, creatablesCL, herbloreCL } from '@/lib/bso/bsoCl.js';
 import { OSB_VIRTUS_IDS } from '@/lib/bso/bsoConstants.js';
-import { divinationEnergies, portents } from '@/lib/bso/divination.js';
+import { allChristmasEvent2024Items } from '@/lib/bso/collection-log/holiday.js';
+import { abyssalDragonCL, akumuCL, araxxorCL, customPetsCL, discontinuedCustomPetsCL, divineDominionCL, divinersOutfit, doaCL, dungeoneeringCL, ignecarusCL, kalphiteKingCL, kingGoldemarCL, moktangCL, naxxusCL, nexCL, nihilizCL, polyporeDungeonCL, queenBlackDragonCL, seaKrakenCL, spectatorClothes, superiorTormentedDemonCL, tameGearCL, treeBeardCL, vasaMagusCL, venatrixCL, vladDrakanCL } from '@/lib/bso/collection-log/main.js';
+import { balthazarsBigBonanzaCL, baxtorianBathhousesCL, fishingContestCL, fistOfGuthixCL, monkeyRumbleCL, odsCL, stealingCreationCL, tinkeringWorshopCL } from '@/lib/bso/collection-log/minigames.js';
+import { cookingCL, craftingCL, creatablesCL, herbloreCL } from '@/lib/bso/collection-log/special.js';
 import { discontinuedDyes, dyedItems } from '@/lib/bso/dyedItems.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { ElderClueTable } from '@/lib/bso/elderClue.js';
@@ -19,8 +21,9 @@ import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 import { NexMonster, nexLootTable } from '@/lib/bso/monsters/nex.js';
 import { PaintBoxTable } from '@/lib/bso/paintColors.js';
 import { pumpkinHeadUniqueTable } from '@/lib/bso/pumpkinHead.js';
+import { divinationEnergies, portents } from '@/lib/bso/skills/divination.js';
 import { inventionCL } from '@/lib/bso/skills/invention/inventions.js';
-import { slayerMasksHelmsCL } from '@/lib/bso/slayerMaskHelms.js';
+import { slayerMasksHelmsCL } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 import { getAllIgneTameKCs, tameKillableMonsters } from '@/lib/bso/tames/tames.js';
 
 import { SeedableRNG } from '@oldschoolgg/rng';
@@ -53,19 +56,13 @@ import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { CollectionLogType } from '@/lib/collectionLogTask.js';
 import {
-	abyssalDragonCL,
 	abyssalSireCL,
 	aerialFishingCL,
-	akumuCL,
 	alchemicalHydraCL,
-	allChristmasEventItems,
 	allPetsCL,
 	amoxliatlCL,
-	araxxorCL,
-	balthazarsBigBonanzaCL,
 	barbarianAssaultCL,
 	barrowsChestCL,
-	baxtorianBathhousesCL,
 	brimhavenAgilityArenaCL,
 	bryophytaCL,
 	callistoCL,
@@ -99,24 +96,17 @@ import {
 	crackerCL,
 	crazyArchaeologistCL,
 	creatureCreationCL,
-	customPetsCL,
 	cyclopsCL,
 	dagannothKingsCL,
 	dailyCL,
 	demonicGorillaCL,
 	diariesCL,
-	discontinuedCustomPetsCL,
-	divinersOutfit,
-	doaCL,
 	dukeSucellusCL,
-	dungeoneeringCL,
 	emergedZukInfernoCL,
 	expertCapesCL,
 	type FormatProgressFunction,
 	fightCavesCL,
-	fishingContestCL,
 	fishingTrawlerCL,
-	fistOfGuthixCL,
 	forestryCL,
 	fossilIslandNotesCL,
 	generalGraardorCL,
@@ -132,11 +122,8 @@ import {
 	type ICollection,
 	type ILeftListStatus,
 	type IToReturnCollection,
-	ignecarusCL,
-	kalphiteKingCL,
 	kalphiteQueenCL,
 	kingBlackDragonCL,
-	kingGoldemarCL,
 	krakenCL,
 	kreeArraCL,
 	krilTsutsarothCL,
@@ -146,20 +133,12 @@ import {
 	mahoganyHomesCL,
 	masterCapesCL,
 	miscellaneousCL,
-	moktangCL,
 	monkeyBackpacksCL,
-	monkeyRumbleCL,
 	motherlodeMineCL,
 	muspahCL,
 	myNotesCL,
-	naxxusCL,
-	nexCL,
-	nihilizCL,
 	oborCL,
-	odsCL,
 	pestControlCL,
-	polyporeDungeonCL,
-	queenBlackDragonCL,
 	questCL,
 	randomEventsCL,
 	revenantsCL,
@@ -167,7 +146,6 @@ import {
 	rooftopAgilityCL,
 	sarachnisCL,
 	scorpiaCL,
-	seaKrakenCL,
 	shadesOfMorttonCL,
 	shayzienArmourCL,
 	shootingStarsCL,
@@ -176,10 +154,7 @@ import {
 	skotizoCL,
 	slayerCL,
 	soulWarsCL,
-	spectatorClothes,
 	spiritAnglerOutfit,
-	stealingCreationCL,
-	superiorTormentedDemonCL,
 	templeTrekkingCL,
 	temporossCL,
 	theatreOfBLoodCL,
@@ -189,18 +164,13 @@ import {
 	theNightmareCL,
 	thermonuclearSmokeDevilCL,
 	theWhispererCL,
-	tinkeringWorshopCL,
 	titheFarmCL,
 	tormentedDemonCL,
-	treeBeardCL,
 	troubleBrewingCL,
 	tzHaarCL,
 	vardorvisCL,
-	vasaMagusCL,
-	venatrixCL,
 	venenatisCL,
 	vetionCL,
-	vladDrakanCL,
 	volcanicMineCL,
 	vorkathCL,
 	wintertodtCL,
@@ -1592,54 +1562,11 @@ export const allCollectionLogs: ICollection = {
 				counts: false
 			},
 			'Tame Gear': {
-				items: resolveItems([
-					'Dragon igne armor',
-					'Barrows igne armor',
-					'Volcanic igne armor',
-					'Justiciar igne armor',
-					'Drygore igne armor',
-					'Dwarven igne armor',
-					'Gorajan igne armor',
-					'Runite igne claws',
-					'Dragon igne claws',
-					'Barrows igne claws',
-					'Volcanic igne claws',
-					'Drygore igne claws',
-					'Dwarven igne claws',
-					'Gorajan igne claws',
-					'Seamonkey staff (t1)',
-					'Seamonkey staff (t2)',
-					'Seamonkey staff (t3)',
-					'Impling locator',
-					'Divine ring',
-					'Abyssal jibwings (e)',
-					'Demonic jibwings (e)',
-					'3rd age jibwings (e)',
-					'Abyssal jibwings',
-					'Demonic jibwings',
-					'3rd age jibwings'
-				])
+				items: tameGearCL
 			},
 			'Divine Dominion': {
 				alias: ['dd', 'divine dominion'],
-				items: resolveItems([
-					'Zamorak egg',
-					'Baby zamorak hawk',
-					'Juvenile zamorak hawk',
-					'Zamorak hawk',
-					'Warpriest of Zamorak set',
-					'Guthix egg',
-					'Baby guthix raptor',
-					'Juvenile guthix raptor',
-					'Guthix raptor',
-					'Saradomin egg',
-					'Baby saradomin owl',
-					'Juvenile saradomin owl',
-					'Saradomin owl',
-					'Warpriest of Saradomin set',
-					'Warpriest of Bandos set',
-					'Warpriest of Armadyl set'
-				])
+				items: divineDominionCL
 			}
 		}
 	},
@@ -1903,7 +1830,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Christmas 2024': {
 				alias: ['xmas 2024', 'christmas 2024'],
-				items: allChristmasEventItems.filter(i => i !== itemID('Snowflake amulet')),
+				items: allChristmasEvent2024Items.filter(i => i !== itemID('Snowflake amulet')),
 				counts: false
 			},
 			'BSO Birthday 2022': {

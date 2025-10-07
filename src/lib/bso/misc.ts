@@ -1,6 +1,7 @@
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/bso/collection-log/main.js';
+
 import { GearStat, type OffenceGearStat } from 'oldschooljs/gear';
 
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/data/CollectionsExport.js';
 import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
 
 export const gorajanBoosts = [

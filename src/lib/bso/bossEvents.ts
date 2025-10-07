@@ -1,7 +1,7 @@
 import { getPHeadDescriptor } from '@/lib/bso/pumpkinHead.js';
 
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import { EmbedBuilder, type TextChannel } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { Items } from 'oldschooljs';
 
 import { globalConfig } from '@/lib/constants.js';
@@ -88,10 +88,9 @@ export async function startBossEvent({ boss, id }: { boss: BossEvent; id?: BossE
 	if (await bossActiveIsActiveOrSoonActive(id)) {
 		throw new Error('There is already a boss event activity going on.');
 	}
-	const channel = globalClient.channels.cache.get(bossEventChannelID) as TextChannel;
 	const instance = new BossInstance({
 		...boss.bossOptions,
-		channel,
+		channelId: bossEventChannelID,
 		massText: `<@&896845245873025067> Pumpkinhead the Pumpkinheaded ${getPHeadDescriptor()} ${getPHeadDescriptor()} Horror has spawned! Who will fight him?!`,
 		allowedMentions: { roles: ['896845245873025067'] },
 		quantity: 1,
@@ -99,7 +98,9 @@ export async function startBossEvent({ boss, id }: { boss: BossEvent; id?: BossE
 	});
 	try {
 		const { bossUsers } = await instance.start();
-		const embed = new EmbedBuilder()
+
+		// @ts-expect-error
+		const _embed = new EmbedBuilder()
 			.setDescription(
 				`A group of ${bossUsers.length} users is off to fight ${
 					boss.name
@@ -108,13 +109,13 @@ export async function startBossEvent({ boss, id }: { boss: BossEvent; id?: BossE
 			.setImage('https://cdn.discordapp.com/attachments/357422607982919680/896527691849826374/PHEAD.png')
 			.setColor('#ff9500');
 
-		return channel.send({
-			embeds: [embed],
-			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.',
-			allowedMentions: {
-				roles: ['896845245873025067']
-			}
-		});
+		// return channel.send({
+		// 	embeds: [embed],
+		// 	content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.',
+		// 	allowedMentions: {
+		// 		roles: ['896845245873025067']
+		// 	}
+		// });
 	} catch (err: unknown) {
 		Logging.logError(err as Error);
 	}

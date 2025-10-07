@@ -1,19 +1,7 @@
 import { calcTotalLevel } from '@/lib/bso/bsoUtil.js';
-import { leaguesHasCatches, leaguesHasKC, type Task } from '@/lib/bso/leagues/leaguesUtils.js';
-import { calculateTiarasMade } from '@/lib/bso/leagues/stats.js';
-import { Naxxus } from '@/lib/bso/monsters/bosses/Naxxus.js';
-import { SunMoonMonsters } from '@/lib/bso/monsters/SunMoon.js';
-import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
-import { TameSpeciesID, tameFeedableItems } from '@/lib/bso/tames/tames.js';
-
-import { sumArr } from '@oldschoolgg/toolkit';
-import { Bank, EMonster, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
-
 import {
 	abyssalDragonCL,
-	all3rdAgeItems,
 	customPetsCL,
-	gracefulCL,
 	ignecarusCL,
 	kalphiteKingCL,
 	kingGoldemarCL,
@@ -21,9 +9,19 @@ import {
 	queenBlackDragonCL,
 	seaKrakenCL,
 	spectatorClothes,
-	troubleBrewingCL,
 	vasaMagusCL
-} from '@/lib/data/CollectionsExport.js';
+} from '@/lib/bso/collection-log/main.js';
+import { leaguesHasCatches, leaguesHasKC, type Task } from '@/lib/bso/leagues/leaguesUtils.js';
+import { calculateTiarasMade } from '@/lib/bso/leagues/stats.js';
+import { Naxxus } from '@/lib/bso/monsters/bosses/Naxxus.js';
+import { SunMoonMonsters } from '@/lib/bso/monsters/SunMoon.js';
+import { slayerMaskHelms } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
+import { TameSpeciesID, tameFeedableItems } from '@/lib/bso/tames/tames.js';
+
+import { sumArr } from '@oldschoolgg/toolkit';
+import { Bank, EMonster, type ItemBank, Monsters, Openables, resolveItems } from 'oldschooljs';
+
+import { all3rdAgeItems, gracefulCL, troubleBrewingCL } from '@/lib/data/CollectionsExport.js';
 import {
 	ArdougneDiary,
 	DesertDiary,

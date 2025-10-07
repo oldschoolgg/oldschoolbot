@@ -1,7 +1,7 @@
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { BossInstance, gpCostPerKill } from '@/lib/bso/structures/Boss.js';
 
-import { channelIsSendable, formatDuration, Time } from '@oldschoolgg/toolkit';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Bank, toKMB } from 'oldschooljs';
 
@@ -15,8 +15,6 @@ export async function kgCommand(
 	quantity: number | undefined
 ): Promise<string | InteractionReplyOptions> {
 	if (interaction) await interaction.defer();
-	const channel = globalClient.channels.cache.get(channelID.toString());
-	if (!channelIsSendable(channel)) return 'Invalid channel.';
 	const type = inputName.toLowerCase().includes('mass') ? 'mass' : 'solo';
 	const instance = new BossInstance({
 		interaction,
@@ -62,7 +60,7 @@ export async function kgCommand(
 		ignoreStats: ['attack_ranged', 'attack_magic'],
 		food: () => new Bank(),
 		settingsKeys: ['kg_cost', 'kg_loot'],
-		channel,
+		channelId: channelID,
 		activity: 'KingGoldemar',
 		massText: `${user.usernameOrMention} is assembling a team to fight King Goldemar! Use the buttons below to join/leave.`,
 		minSize: 1,

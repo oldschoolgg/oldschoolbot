@@ -1,4 +1,4 @@
-import { divinationEnergies } from '@/lib/bso/divination.js';
+import { divinationEnergies } from '@/lib/bso/skills/divination.js';
 
 import { itemID } from 'oldschooljs';
 

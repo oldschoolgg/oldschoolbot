@@ -6,7 +6,8 @@ import {
 	durationPerBaxBath
 } from '@/lib/bso/baxtorianBathhouses.js';
 import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
-import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '@/lib/bso/divination.js';
+import { calculateTuraelsTrialsInput, TuraelsTrialsMethods } from '@/lib/bso/minigames/turaelsTrials.js';
+import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '@/lib/bso/skills/divination.js';
 import {
 	calcGorajanShardChance,
 	calcMaxFloorUserCanDo,
@@ -14,7 +15,6 @@ import {
 } from '@/lib/bso/skills/dungoneering/dungDbFunctions.js';
 import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 import { stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
-import { calculateTuraelsTrialsInput, TuraelsTrialsMethods } from '@/lib/bso/turaelsTrials.js';
 
 import { calcPerHour, formatDuration, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 import type { InteractionReplyOptions } from 'discord.js';

@@ -1,7 +1,7 @@
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { calcBabyYagaHouseDroprate, clAdjustedDroprate, herbertDroprate } from '@/lib/bso/bsoUtil.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
-import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
+import { slayerMaskHelms } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 
 import { formatDuration, stringMatches, Table, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';

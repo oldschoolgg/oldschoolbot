@@ -1,8 +1,7 @@
+import { brokenTorvaOutfit, torvaOutfit } from '@/lib/bso/collection-log/main.js';
 import type { DisassemblySourceGroup } from '@/lib/bso/skills/invention/index.js';
 
 import { Items } from 'oldschooljs';
-
-import { brokenTorvaOutfit, torvaOutfit } from '@/lib/data/CollectionsExport.js';
 
 const i = Items.getOrThrow.bind(Items);
 

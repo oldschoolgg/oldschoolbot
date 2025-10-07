@@ -1,9 +1,9 @@
 import { tearsOfGuthixIronmanReqs, tearsOfGuthixSkillReqs } from '@/lib/bso/commands/tearsOfGuthixCommand.js';
-import { chargePortentIfHasCharges, getAllPortentCharges, PortentID } from '@/lib/bso/divination.js';
-import { gods } from '@/lib/bso/divineDominion.js';
 import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
+import { gods } from '@/lib/bso/minigames/divineDominion.js';
 import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
+import { chargePortentIfHasCharges, getAllPortentCharges, PortentID } from '@/lib/bso/skills/divination.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 import { RuneTable, WilvusTable, WoodTable } from '@/lib/bso/tables/seedTable.js';
 import { DougTable, PekyTable } from '@/lib/bso/tables/sharedTables.js';

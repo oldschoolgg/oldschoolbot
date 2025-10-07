@@ -1,9 +1,9 @@
-import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { BossInstance } from '@/lib/bso/structures/Boss.js';
 
 import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, sumArr, Time } from '@oldschoolgg/toolkit';
-import { EmbedBuilder, type InteractionReplyOptions, type TextChannel } from 'discord.js';
+import { EmbedBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { Gear } from '@/lib/structures/Gear.js';
@@ -30,7 +30,7 @@ export async function vasaCommand(
 	const instance = new BossInstance({
 		interaction,
 		leader: user,
-		id: VasaMagus.id,
+		id: EBSOMonster.VASA_MAGUS,
 		baseDuration: Time.Minute * 15,
 		skillRequirements: {
 			magic: 110
@@ -64,7 +64,7 @@ export async function vasaCommand(
 		ignoreStats: ['attack_ranged', 'attack_crush', 'attack_slash', 'attack_stab'],
 		food: () => new Bank(),
 		settingsKeys: ['vasa_cost', 'vasa_loot'],
-		channel: globalClient.channels.cache.get(channelID.toString())! as TextChannel,
+		channelId: channelID,
 		activity: 'VasaMagus',
 		massText: `${user.usernameOrMention} is assembling a team to fight Vasa Magus! Use the buttons below to join/leave.`,
 		minSize: 1,

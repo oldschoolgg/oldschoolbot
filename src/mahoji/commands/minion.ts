@@ -1,4 +1,5 @@
 import { feedHammyCommand } from '@/lib/bso/commands/hammyCommand.js';
+import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 
 import { randArrItem } from '@oldschoolgg/rng';
 import { formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
@@ -23,7 +24,6 @@ import { Minigames } from '@/lib/settings/minigames.js';
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
-import { findGroupOfUser } from '@/lib/util/findGroupOfUser.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { getPeakTimesString } from '@/lib/util/peaks.js';

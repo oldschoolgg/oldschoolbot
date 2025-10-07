@@ -4,7 +4,7 @@ import {
 	getTopDailyFishingCatch,
 	getUsersFishingContestDetails,
 	getValidLocationsForFishType
-} from '@/lib/bso/fishingContest.js';
+} from '@/lib/bso/minigames/fishingContest.js';
 
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';

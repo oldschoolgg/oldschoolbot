@@ -1,4 +1,4 @@
-import { basePortentCost, calcAtomicEnergy, divinationEnergies, portents } from '@/lib/bso/divination.js';
+import { basePortentCost, calcAtomicEnergy, divinationEnergies, portents } from '@/lib/bso/skills/divination.js';
 
 import { Bank } from 'oldschooljs';
 

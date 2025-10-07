@@ -1,11 +1,12 @@
-import { calculateCompCapeProgress } from '@/lib/bso/calculateCompCapeProgress.js';
-import type { GodFavourBank, GodName } from '@/lib/bso/divineDominion.js';
+import type { GodFavourBank, GodName } from '@/lib/bso/minigames/divineDominion.js';
 import { mysteriousStepData, mysteriousTrailTracks } from '@/lib/bso/mysteryTrail.js';
-import { repairBrokenItemsFromUser } from '@/lib/bso/repairBrokenItems.js';
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { MTame } from '@/lib/bso/structures/MTame.js';
 import { type Species, tameSpecies } from '@/lib/bso/tames/tames.js';
+import { calculateCompCapeProgress } from '@/lib/bso/util/calculateCompCapeProgress.js';
+import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
+import { repairBrokenItemsFromUser } from '@/lib/bso/util/repairBrokenItems.js';
 
 import { percentChance, randArrItem, SeedableRNG } from '@oldschoolgg/rng';
 import {
@@ -78,7 +79,6 @@ import type { XPBank } from '@/lib/structures/XPBank.js';
 import type { SkillRequirements, Skills } from '@/lib/types/index.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
-import { findGroupOfUser } from '@/lib/util/findGroupOfUser.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';

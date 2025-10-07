@@ -1,3 +1,4 @@
+import { kalphiteKingCL } from '@/lib/bso/collection-log/main.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { makeKillTable, setCustomMonster } from '@/lib/bso/monsters/setCustomMonster.js';
 import { decideLoot } from '@/lib/bso/structures/LootDecider.js';
@@ -8,7 +9,6 @@ import { Time } from '@oldschoolgg/toolkit';
 import { LootTable, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { kalphiteKingCL } from '@/lib/data/CollectionsExport.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 
 export const kalphiteKingLootTable = new LootTable()

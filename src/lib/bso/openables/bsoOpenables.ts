@@ -31,9 +31,9 @@ import { Bank, Items, itemID, LootTable } from 'oldschooljs';
 import { cmbClothes } from '@/lib/data/CollectionsExport.js';
 import type { UnifiedOpenable } from '../../openables.js';
 import { clAdjustedDroprate } from '../bsoUtil.js';
-import { divinationEnergies } from '../divination.js';
 import { keyCrates } from '../keyCrates.js';
 import { PaintBoxTable } from '../paintColors.js';
+import { divinationEnergies } from '../skills/divination.js';
 
 const MR_E_DROPRATE_FROM_UMB_AND_TMB = 5000;
 const MR_E_DROPRATE_FROM_EMB = 500;

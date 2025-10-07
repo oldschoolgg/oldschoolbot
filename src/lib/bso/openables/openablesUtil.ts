@@ -1,4 +1,5 @@
 import { OSB_VIRTUS_IDS } from '@/lib/bso/bsoConstants.js';
+import { customBossesDropsThatCantBeDroppedInMBs } from '@/lib/bso/collection-log/main.js';
 import { baseHolidayItems, PartyhatTable } from '@/lib/bso/holidayItems.js';
 import {
 	BeachMysteryBoxTable,
@@ -15,7 +16,6 @@ import {
 	allPetIDs,
 	chambersOfXericCL,
 	cmbClothes,
-	customBossesDropsThatCantBeDroppedInMBs,
 	theatreOfBloodHardUniques,
 	theatreOfBloodNormalUniques
 } from '@/lib/data/CollectionsExport.js';

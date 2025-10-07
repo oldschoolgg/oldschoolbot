@@ -1,7 +1,7 @@
 import { BSOItemGroups } from '@/lib/bso/bsoItemGroups.js';
-import { gods } from '@/lib/bso/divineDominion.js';
 import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
 import { PartyhatTable } from '@/lib/bso/holidayItems.js';
+import { gods } from '@/lib/bso/minigames/divineDominion.js';
 import { monkeyEatables } from '@/lib/bso/minigames/monkey-rumble/monkeyRumble.js';
 import { tmbTable, umbTable } from '@/lib/bso/openables/bsoOpenables.js';
 import { DisassemblySourceGroups } from '@/lib/bso/skills/invention/groups/index.js';

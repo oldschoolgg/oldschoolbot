@@ -5,7 +5,7 @@ import {
 	MemoryHarvestType,
 	memoryHarvestTypes,
 	portents
-} from '@/lib/bso/divination.js';
+} from '@/lib/bso/skills/divination.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
 import { formatDuration, increaseNumByPercent, removeFromArr, Time } from '@oldschoolgg/toolkit';

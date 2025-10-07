@@ -1,5 +1,5 @@
 import { spawnLampIsReady } from '@/lib/bso/commands/spawnBoxLampCommand.js';
-import { getUsersFishingContestDetails } from '@/lib/bso/fishingContest.js';
+import { getUsersFishingContestDetails } from '@/lib/bso/minigames/fishingContest.js';
 import { shortTameTripDesc, tameLastFinishedActivity } from '@/lib/bso/tames/tameUtil.js';
 
 import { roll } from '@oldschoolgg/rng';

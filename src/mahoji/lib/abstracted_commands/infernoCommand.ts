@@ -1,3 +1,4 @@
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/bso/collection-log/main.js';
 import { determineProjectileTypeFromGear } from '@/lib/bso/gear/util.js';
 
 import { percentChance, randInt, randomVariation, roll } from '@oldschoolgg/rng';
@@ -6,7 +7,6 @@ import { Bank, type ItemBank, Items, itemID, Monsters, resolveItems } from 'olds
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
 import { BitField, projectiles } from '@/lib/constants.js';
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/data/CollectionsExport.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import type { BlowpipeData } from '@/lib/minions/types.js';

@@ -1,11 +1,11 @@
 import { calcBossFood } from '@/lib/bso/calcBossFood.js';
-import { getKalphiteKingGearStats } from '@/lib/bso/getKalphiteKingGearStats.js';
+import { gorajanWarriorOutfit, torvaOutfit } from '@/lib/bso/collection-log/main.js';
 import { KalphiteKingMonster } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
+import { getKalphiteKingGearStats } from '@/lib/bso/util/getKalphiteKingGearStats.js';
 
 import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { gorajanWarriorOutfit, torvaOutfit } from '@/lib/data/CollectionsExport.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
 import type { KillableMonster } from '@/lib/minions/types.js';

@@ -1,9 +1,3 @@
-import { makeKillTable } from '@/lib/bso/monsters/setCustomMonster.js';
-
-import { Time } from '@oldschoolgg/toolkit';
-import { Items, itemID, LootTable, RareDropTable } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
-
 import {
 	brokenPernixOutfit,
 	brokenTorvaOutfit,
@@ -12,7 +6,13 @@ import {
 	pernixOutfit,
 	torvaOutfit,
 	virtusOutfit
-} from '@/lib/data/CollectionsExport.js';
+} from '@/lib/bso/collection-log/main.js';
+import { makeKillTable } from '@/lib/bso/monsters/setCustomMonster.js';
+
+import { Time } from '@oldschoolgg/toolkit';
+import { Items, itemID, LootTable, RareDropTable } from 'oldschooljs';
+import { GearStat } from 'oldschooljs/gear';
+
 import type { KillableMonster } from '@/lib/minions/types.js';
 
 export const nexBrokenArmorDetails = [

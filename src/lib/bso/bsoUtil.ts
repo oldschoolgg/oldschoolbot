@@ -1,9 +1,10 @@
+import { doaCL } from '@/lib/bso/collection-log/main.js';
+
 import { CollectionLog } from '@oldschoolgg/collectionlog';
 import { sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 
 import { BitField, MAX_XP } from '@/lib/constants.js';
-import { doaCL } from '@/lib/data/CollectionsExport.js';
 import type { Skills } from '@/lib/types/index.js';
 
 export function hasUnlockedAtlantis(user: MUser) {

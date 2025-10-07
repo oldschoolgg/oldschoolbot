@@ -1,10 +1,10 @@
+import { inventorOutfit } from '@/lib/bso/collection-log/minigames.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { ClueTable } from '@/lib/bso/tables/sharedTables.js';
 
 import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { inventorOutfit } from '@/lib/data/CollectionsExport.js';
 import type { TinkeringWorkshopOptions } from '@/lib/types/minions.js';
 
 function tinkerLoot(user: MUser, quantity: number) {

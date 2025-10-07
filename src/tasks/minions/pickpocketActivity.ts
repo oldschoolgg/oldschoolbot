@@ -1,6 +1,7 @@
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
-import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
 import { clueUpgraderEffect } from '@/lib/bso/inventionEffects.js';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divination.js';
+import { forcefullyUnequipItem } from '@/lib/bso/util/forcefullyUnequipItem.js';
 
 import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
@@ -11,7 +12,6 @@ import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/stealables.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
-import { forcefullyUnequipItem } from '@/lib/util/forcefullyUnequipItem.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { perHourChance } from '@/lib/util/smallUtils.js';
 import { skillingPetDropRate } from '@/lib/util.js';

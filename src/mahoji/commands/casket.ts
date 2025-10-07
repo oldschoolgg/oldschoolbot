@@ -3,9 +3,18 @@ import { Bank, toKMB } from 'oldschooljs';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { PerkTier } from '@/lib/constants.js';
 import { marketPriceOfBank } from '@/lib/marketPrices.js';
-import { calcDropRatesFromBankWithoutUniques } from '@/lib/util/calcDropRatesFromBank.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { Workers } from '@/lib/workers/index.js';
+
+function calcDropRatesFromBankWithoutUniques(bank: Bank, iterations: number) {
+	const results = [];
+	for (const [item, qty] of bank.items().sort((a, b) => a[1] - b[1])) {
+		const rate = Math.round(iterations / qty);
+		if (rate < 2) continue;
+		results.push(`${qty}x ${item.name} (1 in ${rate})`);
+	}
+	return results;
+}
 
 function determineLimit(user: MUser) {
 	const perkTier = user.perkTier();

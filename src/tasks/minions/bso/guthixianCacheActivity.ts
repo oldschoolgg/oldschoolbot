@@ -1,10 +1,10 @@
-import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
+import { divinersOutfit } from '@/lib/bso/collection-log/main.js';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divination.js';
 
 import { percentChance, roll } from '@oldschoolgg/rng';
 import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { divinersOutfit } from '@/lib/data/CollectionsExport.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export const guthixianCacheTask: MinionTask = {

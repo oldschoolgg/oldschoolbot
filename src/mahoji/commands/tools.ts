@@ -2,7 +2,8 @@ import { giveBox, spawnBoxCommand, spawnLampCommand } from '@/lib/bso/commands/s
 import { addToDoubleLootTimer } from '@/lib/bso/doubleLoot.js';
 import { keyCrates } from '@/lib/bso/keyCrates.js';
 import { spookyTable } from '@/lib/bso/openables/tables.js';
-import { repairBrokenItemsFromUser } from '@/lib/bso/repairBrokenItems.js';
+import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
+import { repairBrokenItemsFromUser } from '@/lib/bso/util/repairBrokenItems.js';
 
 import { asyncGzip, formatDuration, PerkTier, stringMatches, Time } from '@oldschoolgg/toolkit';
 import type { Activity, User } from '@prisma/client';
@@ -22,7 +23,6 @@ import type { MinigameName } from '@/lib/settings/minigames.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import type { NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
-import { findGroupOfUser } from '@/lib/util/findGroupOfUser.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseStaticTimeInterval, staticTimeIntervals } from '@/lib/util/smallUtils.js';
 import { getUsername, isGroupActivity } from '@/lib/util.js';

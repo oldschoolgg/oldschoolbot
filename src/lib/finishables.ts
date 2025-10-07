@@ -1,3 +1,4 @@
+import { kalphiteKingCL, moktangCL, naxxusCL, nexCL, nexUniqueDrops } from '@/lib/bso/collection-log/main.js';
 import { KalphiteKingMonster, kalphiteKingLootTable } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
 import { MoktangLootTable } from '@/lib/bso/monsters/bosses/Moktang.js';
 import { Naxxus, rollNaxxusLoot } from '@/lib/bso/monsters/bosses/Naxxus.js';
@@ -35,11 +36,6 @@ import {
 	cluesHardCL,
 	cluesMasterCL,
 	cluesMediumCL,
-	kalphiteKingCL,
-	moktangCL,
-	naxxusCL,
-	nexCL,
-	nexUniqueDrops,
 	temporossCL,
 	theatreOfBloodCapes,
 	theatreOfBloodHardUniques,

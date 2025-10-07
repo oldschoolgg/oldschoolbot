@@ -1,6 +1,6 @@
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { bonecrusherEffect, clueUpgraderEffect, portableTannerEffect } from '@/lib/bso/inventionEffects.js';
-import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
+import { slayerMaskHelms } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 
 import { roll } from '@oldschoolgg/rng';
 import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';

@@ -1,6 +1,7 @@
 import { giveBoxResetTime } from '@/lib/bso/bsoConstants.js';
 import { buttonUserPicker } from '@/lib/bso/buttonUserPicker.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
+import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 import { LampTable } from '@/lib/bso/xpLamps.js';
 
 import { randArrItem, randInt, roll, shuffleArr } from '@oldschoolgg/rng';
@@ -9,7 +10,6 @@ import { userMention } from 'discord.js';
 import { Bank, convertLVLtoXP, itemID } from 'oldschooljs';
 
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
-import { findGroupOfUser } from '@/lib/util/findGroupOfUser.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 
 export const spawnLampResetTime = (user: MUser) => {

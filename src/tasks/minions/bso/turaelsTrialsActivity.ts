@@ -1,4 +1,4 @@
-import type { TuraelsTrialsMethod } from '@/lib/bso/turaelsTrials.js';
+import type { TuraelsTrialsMethod } from '@/lib/bso/minigames/turaelsTrials.js';
 
 import { Bank } from 'oldschooljs';
 

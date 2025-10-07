@@ -1,3 +1,4 @@
+import { spectatorClothes } from '@/lib/bso/collection-log/main.js';
 import { getAllUserTames, TameSpeciesID } from '@/lib/bso/tames/tames.js';
 import { tameName } from '@/lib/bso/tames/tameUtil.js';
 
@@ -7,7 +8,6 @@ import { Bank } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import { MAX_LEVEL } from '@/lib/constants.js';
-import { spectatorClothes } from '@/lib/data/CollectionsExport.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 

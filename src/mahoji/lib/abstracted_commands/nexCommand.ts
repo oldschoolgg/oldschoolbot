@@ -1,6 +1,7 @@
 import { calcBossFood } from '@/lib/bso/calcBossFood.js';
-import { getNexGearStats } from '@/lib/bso/getNexGearStats.js';
+import { gorajanArcherOutfit, pernixOutfit } from '@/lib/bso/collection-log/main.js';
 import { NexMonster } from '@/lib/bso/monsters/nex.js';
+import { getNexGearStats } from '@/lib/bso/util/getNexGearStats.js';
 
 import {
 	channelIsSendable,
@@ -13,7 +14,6 @@ import {
 } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { gorajanArcherOutfit, pernixOutfit } from '@/lib/data/CollectionsExport.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
 import type { KillableMonster } from '@/lib/minions/types.js';

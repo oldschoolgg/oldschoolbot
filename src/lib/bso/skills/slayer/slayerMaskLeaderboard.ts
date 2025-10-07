@@ -1,4 +1,4 @@
-import { slayerMaskHelms } from '@/lib/bso/slayerMaskHelms.js';
+import { slayerMaskHelms } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 
 import { Bank, type ItemBank } from 'oldschooljs';
 

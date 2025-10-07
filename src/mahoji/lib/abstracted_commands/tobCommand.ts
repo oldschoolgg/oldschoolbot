@@ -1,3 +1,4 @@
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/bso/collection-log/main.js';
 import {
 	canAffordInventionBoost,
 	InventionID,
@@ -9,7 +10,6 @@ import { randomVariation } from '@oldschoolgg/rng';
 import { calcWhatPercent, Emoji, formatDuration } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID, TOBRooms } from 'oldschooljs';
 
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/data/CollectionsExport.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import {
 	baseTOBUniques,

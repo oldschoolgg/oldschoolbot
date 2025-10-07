@@ -1,5 +1,5 @@
 import { syncDoubleLoot } from '@/lib/bso/doubleLoot.js';
-import { syncSlayerMaskLeaderboardCache } from '@/lib/bso/slayerMaskLeaderboard.js';
+import { syncSlayerMaskLeaderboardCache } from '@/lib/bso/skills/slayer/slayerMaskLeaderboard.js';
 
 import type { ItemBank } from 'oldschooljs';
 

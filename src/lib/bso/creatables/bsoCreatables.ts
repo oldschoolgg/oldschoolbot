@@ -1,5 +1,7 @@
+import { brokenPernixOutfit, brokenTorvaOutfit, brokenVirtusOutfit } from '@/lib/bso/collection-log/main.js';
 import { divinationCreatables } from '@/lib/bso/creatables/divinationCreatables.js';
 import { ghostCreatables } from '@/lib/bso/creatables/ghostweaveCreatables.js';
+import { moktangCreatables } from '@/lib/bso/creatables/moktangCreatables.js';
 import { bsoShadesOfMortonCreatables } from '@/lib/bso/creatables/shadesOfMorton.js';
 import { slayerMaskCreatables } from '@/lib/bso/creatables/slayerMasks.js';
 import { sunMoonCreatables } from '@/lib/bso/creatables/sunMoonCreatables.js';
@@ -13,8 +15,6 @@ import { seaMonkeyStaves } from '@/lib/bso/tames/tames.js';
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Items, itemID, resolveItems } from 'oldschooljs';
 
-import { brokenPernixOutfit, brokenTorvaOutfit, brokenVirtusOutfit } from '@/lib/data/CollectionsExport.js';
-import { moktangCreatables } from '@/lib/data/creatables/moktangCreatables.js';
 import type { Createable } from '@/lib/data/createables.js';
 import Skillcapes from '@/lib/skilling/skillcapes.js';
 import Prayer from '@/lib/skilling/skills/prayer.js';

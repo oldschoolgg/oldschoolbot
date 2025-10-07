@@ -1,5 +1,4 @@
 import { itemContractResetTime } from '@/lib/bso/bsoConstants.js';
-import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
 import { DragonTable } from '@/lib/bso/grandmasterClue.js';
 import { Ignecarus } from '@/lib/bso/monsters/bosses/Ignecarus.js';
 import { kalphiteKingLootTable } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
@@ -8,6 +7,7 @@ import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 import { nexLootTable } from '@/lib/bso/monsters/nex.js';
 import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/bsoOpenables.js';
 import { MysteryBoxes, PMBTable } from '@/lib/bso/openables/tables.js';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divination.js';
 import { allThirdAgeItems, runeAlchablesTable } from '@/lib/bso/tables/sharedTables.js';
 import { LampTable } from '@/lib/bso/xpLamps.js';
 

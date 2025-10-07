@@ -1,7 +1,7 @@
-import { divinationEnergies } from '@/lib/bso/divination.js';
 import { addToDoubleLootTimer } from '@/lib/bso/doubleLoot.js';
 import { allDyes, dyedItems } from '@/lib/bso/dyedItems.js';
 import { mysteriousStepData } from '@/lib/bso/mysteryTrail.js';
+import { divinationEnergies } from '@/lib/bso/skills/divination.js';
 
 import { randArrItem, randInt } from '@oldschoolgg/rng';
 import { notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';

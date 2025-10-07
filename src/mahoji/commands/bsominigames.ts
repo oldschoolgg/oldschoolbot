@@ -12,17 +12,25 @@ import { fistOfGuthixCommand } from '@/lib/bso/commands/fistOfGuthix.js';
 import { monkeyRumbleCommand, monkeyRumbleStatsCommand } from '@/lib/bso/commands/monkeyRumbleCommand.js';
 import { stealingCreationCommand } from '@/lib/bso/commands/stealingCreation.js';
 import { tinkeringWorkshopCommand } from '@/lib/bso/commands/tinkeringWorkshopCommand.js';
-import { allGodlyItems, divineDominionCheck, divineDominionSacrificeCommand } from '@/lib/bso/divineDominion.js';
-import { fishingLocations } from '@/lib/bso/fishingContest.js';
-import { joinGuthixianCache } from '@/lib/bso/guthixianCache.js';
+import {
+	allGodlyItems,
+	divineDominionCheck,
+	divineDominionSacrificeCommand
+} from '@/lib/bso/minigames/divineDominion.js';
+import { fishingLocations } from '@/lib/bso/minigames/fishingContest.js';
+import { joinGuthixianCache } from '@/lib/bso/minigames/guthixianCache.js';
 import {
 	OuraniaBuyables,
 	odsBuyCommand,
 	odsStartCommand,
 	odsStatsCommand
 } from '@/lib/bso/minigames/ods/odsCommand.js';
+import {
+	type TuraelsTrialsMethod,
+	TuraelsTrialsMethods,
+	turaelsTrialsStartCommand
+} from '@/lib/bso/minigames/turaelsTrials.js';
 import type { MaterialType } from '@/lib/bso/skills/invention/index.js';
-import { type TuraelsTrialsMethod, TuraelsTrialsMethods, turaelsTrialsStartCommand } from '@/lib/bso/turaelsTrials.js';
 
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';

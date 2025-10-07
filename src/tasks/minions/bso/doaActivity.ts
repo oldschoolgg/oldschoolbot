@@ -1,3 +1,4 @@
+import { doaCL, doaMetamorphPets } from '@/lib/bso/collection-log/main.js';
 import { chanceOfDOAUnique, DOARooms, pickUniqueToGiveUser } from '@/lib/bso/depthsOfAtlantis.js';
 import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
@@ -7,7 +8,6 @@ import { Emoji, Events, formatOrdinal, reduceNumByPercent, Time, uniqueArr } fro
 import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
-import { doaCL, doaMetamorphPets } from '@/lib/data/CollectionsExport.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { resolveAttackStyles } from '@/lib/minions/functions/resolveAttackStyles.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';

@@ -1,4 +1,5 @@
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { vladDrakanCL } from '@/lib/bso/collection-log/main.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
@@ -8,8 +9,6 @@ import { randomVariation, roll, shuffleArr } from '@oldschoolgg/rng';
 import { Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, LootTable, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
-
-import { vladDrakanCL } from '@/lib/data/CollectionsExport.js';
 
 const JewelleryTable = new LootTable()
 	.add(new LootTable().add('Onyx ring').add('Onyx necklace').add('Onyx bracelet').add('Onyx amulet'))

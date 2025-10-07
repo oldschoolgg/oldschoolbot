@@ -1,7 +1,7 @@
 import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
-import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divination.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
 import { randInt, roll } from '@oldschoolgg/rng';

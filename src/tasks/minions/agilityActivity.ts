@@ -1,8 +1,8 @@
 import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
-import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/divination.js';
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divination.js';
 import { calcUserGorajanShardChance } from '@/lib/bso/skills/dungoneering/dungDbFunctions.js';
 
 import { percentChance, randInt, randomVariation, roll } from '@oldschoolgg/rng';

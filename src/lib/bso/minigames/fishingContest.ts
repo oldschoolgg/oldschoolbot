@@ -11,8 +11,8 @@ import {
 	MorytaniaDiary,
 	userhasDiaryTier,
 	WildernessDiary
-} from '../diaries.js';
-import { ISODateString } from '../util.js';
+} from '../../diaries.js';
+import { ISODateString } from '../../util.js';
 
 const warmVerbs = ['freshwater', 'waterborn', 'silver'];
 const coldVerbs = ['pacific', 'long-finned', 'spotted'];
