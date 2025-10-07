@@ -250,7 +250,6 @@ LIMIT 10;
 async function minigamesLb(
 	interaction: ChatInputCommandInteraction,
 	user: MUser,
-	channelID: string,
 	name: string,
 	ironmanOnly: boolean
 ) {
@@ -1148,7 +1147,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			return sacrificeLb(interaction, sacrifice.type, Boolean(sacrifice.ironmen_only));
 		}
 		if (minigames) {
-			return minigamesLb(interaction, user, channelID, minigames.minigame, Boolean(minigames.ironmen_only));
+			return minigamesLb(interaction, user, minigames.minigame, Boolean(minigames.ironmen_only));
 		}
 		if (hunter_catches) {
 			return creaturesLb(interaction, hunter_catches.creature);
