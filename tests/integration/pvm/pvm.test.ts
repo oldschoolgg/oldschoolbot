@@ -18,6 +18,10 @@ describe('PVM', async () => {
 		expect(res).toContain('now killing');
 		await user.runActivity();
 		expect(await user.getKC(EMonster.MAN)).toBeGreaterThan(1);
+		const clRows = await prisma.cLUserItem.findMany({
+			where: { user_id: user.id }
+		});
+		expect(clRows.length).toBeGreaterThan(0);
 	});
 
 	it('Should remove food', async () => {
