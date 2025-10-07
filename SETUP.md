@@ -58,6 +58,8 @@ This assumes you are using VSCode as your IDE. If you have errors or issues, you
 
 `pnpm monorepo:test`: Run this if you want to either monorepo (oldschooljs or toolkit).
 
+`pnpm sync:commands`: Run this to sync all slash commands to Discord.
+
 #### VSCode settings (Optional)
 
 1. In VSCode, press CTRL+SHIFT+P, search "Open User Settings JSON"
