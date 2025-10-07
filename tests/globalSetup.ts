@@ -16,7 +16,7 @@ vi.mock('@oldschoolgg/toolkit', async () => {
 		awaitMessageComponentInteraction: vi.fn().mockImplementation(({ message }: { message: Message }) => {
 			return Promise.resolve({
 				customId: randArrItem(Object.values(InteractionID.Slayer)),
-				...mockInteraction({ userId: message.author.id })
+				...mockInteraction({ user: { id: message.author.id } as any })
 			});
 		})
 	};

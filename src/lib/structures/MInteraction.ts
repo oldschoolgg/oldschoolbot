@@ -16,7 +16,7 @@ import {
 } from 'discord.js';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
-import { partyLockCache } from '@/lib/cache.js';
+import { CACHED_ACTIVE_USER_IDS, partyLockCache } from '@/lib/cache.js';
 import { SILENT_ERROR } from '@/lib/constants.js';
 import { convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';
 import {
@@ -24,7 +24,6 @@ import {
 	PaginatedMessage,
 	type PaginatedMessageOptions
 } from '@/lib/structures/PaginatedMessage.js';
-import { CACHED_ACTIVE_USER_IDS } from '@/lib/util/cachedUserIDs.js';
 import { getUsername } from '@/lib/util.js';
 
 const wasDeferred = new Set();

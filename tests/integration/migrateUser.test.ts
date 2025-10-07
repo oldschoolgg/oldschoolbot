@@ -29,7 +29,7 @@ import {
 } from '@prisma/client';
 import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
 import { clone } from 'remeda';
-import { beforeAll, expect, test, vi } from 'vitest';
+import { beforeAll, expect, test } from 'vitest';
 
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { defaultGear, Gear } from '@/lib/structures/Gear.js';
@@ -1176,14 +1176,6 @@ async function buildBaseUser(userId: string) {
 	const user = await createTestUser(startBank, userData);
 	return user;
 }
-
-vi.doMock('../../src/lib/util', async () => {
-	const actual: any = await vi.importActual('../../src/lib/util');
-	return {
-		...actual,
-		channelIsSendable: () => false
-	};
-});
 
 const logResult = (
 	result: { result: boolean; errors: string[] },

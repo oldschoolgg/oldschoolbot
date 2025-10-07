@@ -19,6 +19,7 @@ import { userIsBusy } from '@/lib/busyCounterCache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { updateUserCl } from '@/lib/collection-log/databaseCl.js';
 import { type CATier, CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField, MAX_LEVEL, projectiles } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
@@ -1099,6 +1100,10 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		const res = addMonsterXPRaw({ ...params, attackStyles: this.getAttackStyles() });
 		const result = await this.addXPBank(res);
 		return `**XP Gains:** ${result}`;
+	}
+
+	async updateCL() {
+		await updateUserCl(this.id);
 	}
 }
 declare global {
