@@ -1,6 +1,8 @@
 import { describe, expect, it, test } from 'vitest';
 
-import { addItemToBank, Bank, EItem, type ItemBank, Items } from '../src/index.js';
+import { EItem } from '@/EItem.js';
+import { Bank, type ItemBank } from '@/structures/Bank.js';
+import { Items } from '@/structures/Items.js';
 
 describe('Bank', () => {
 	test('convert string bank to number bank', () => {
@@ -61,28 +63,6 @@ describe('Bank', () => {
 
 		sourceBank.remove(bankToRemove);
 		expect(sourceBank.equals(expectedBank)).toBeTruthy();
-	});
-
-	test('add item to bank', () => {
-		expect.assertions(2);
-		const bank = {
-			45: 9,
-			87: 1
-		};
-
-		const expected = {
-			45: 9,
-			69: 420,
-			87: 1
-		};
-
-		const expectedInc = {
-			45: 9,
-			87: 2
-		};
-
-		expect(addItemToBank(bank, 69, 420)).toEqual(expected);
-		expect(addItemToBank(bank, 87)).toEqual(expectedInc);
 	});
 
 	test('add bank to bank', () => {
