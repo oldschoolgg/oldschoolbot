@@ -1,3 +1,5 @@
+import { determineTameClueResult } from '@/lib/bso/commands/tames.js';
+
 import { writeFileSync } from 'node:fs';
 import { calcPerHour, Time } from '@oldschoolgg/toolkit';
 import { itemID } from 'oldschooljs';
@@ -5,7 +7,6 @@ import { groupBy } from 'remeda';
 import { test } from 'vitest';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
-import { determineTameClueResult } from '@/mahoji/commands/tames.js';
 
 test('Tame Clues', () => {
 	const rawResults = [];

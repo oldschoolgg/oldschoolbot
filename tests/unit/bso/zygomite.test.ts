@@ -1,7 +1,7 @@
+import { calculateZygomiteLoot, mutatedSourceItems } from '@/lib/bso/skills/farming/zygomites.js';
+
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
-
-import { calculateZygomiteLoot, mutatedSourceItems } from '@/lib/skilling/skills/farming/zygomites.js';
 
 describe('Zygomites', () => {
 	const userBank = new Bank();

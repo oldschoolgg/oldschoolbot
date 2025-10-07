@@ -35,25 +35,25 @@ export function addStatsOfItemsTogether(items: number[], statWhitelist = Object.
 
 // https://oldschool.runescape.wiki/w/Armour/Highest_bonuses
 export const maxDefenceStats: { [key in DefenceGearStat]: number } = {
-	[GearStat.DefenceCrush]: 505,
-	[GearStat.DefenceMagic]: 238,
-	[GearStat.DefenceRanged]: 542,
-	[GearStat.DefenceSlash]: 521,
-	[GearStat.DefenceStab]: 519
+	[GearStat.DefenceCrush]: 789,
+	[GearStat.DefenceMagic]: 480,
+	[GearStat.DefenceRanged]: 681,
+	[GearStat.DefenceSlash]: 637,
+	[GearStat.DefenceStab]: 640
 };
 
 export const maxOffenceStats: { [key in OffenceGearStat]: number } = {
-	[GearStat.AttackCrush]: 214,
-	[GearStat.AttackMagic]: 177,
-	[GearStat.AttackRanged]: 246,
-	[GearStat.AttackSlash]: 182,
-	[GearStat.AttackStab]: 177
+	[GearStat.AttackCrush]: 359,
+	[GearStat.AttackMagic]: 537,
+	[GearStat.AttackRanged]: 436,
+	[GearStat.AttackSlash]: 300,
+	[GearStat.AttackStab]: 364
 };
 
 export const maxOtherStats: { [key in OtherGearStat]: number } = {
-	[GearStat.MeleeStrength]: 204,
+	[GearStat.MeleeStrength]: 243,
 	[GearStat.RangedStrength]: 172,
-	[GearStat.MagicDamage]: 38,
+	[GearStat.MagicDamage]: 62,
 	[GearStat.Prayer]: 66
 };
 

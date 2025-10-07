@@ -1,6 +1,7 @@
 import { Ignecarus } from '@/lib/bso/monsters/bosses/Ignecarus.js';
 import { KalphiteKingMonster } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
 import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
+import { polyporeTasks } from '@/lib/bso/skills/slayer/polyporeTasks.js';
 
 import { Monsters } from 'oldschooljs';
 
@@ -8,7 +9,6 @@ import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { bossTasks } from '@/lib/slayer/tasks/bossTasks.js';
-import { polyporeTasks } from '@/lib/slayer/tasks/polyporeTasks.js';
 import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
 
 export const nieveTasks: AssignableSlayerTask[] = [

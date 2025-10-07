@@ -1,5 +1,6 @@
 import { bathhouseTask } from '@/lib/bso/tasks/bathhousesActivity.js';
 import { bonanzaTask } from '@/lib/bso/tasks/bonanzaActivity.js';
+import { bossEventTask } from '@/lib/bso/tasks/bossEventActivity.js';
 import { disassemblingTask } from '@/lib/bso/tasks/disassemblingActivity.js';
 import { doaTask } from '@/lib/bso/tasks/doaActivity.js';
 import { dungeoneeringTask } from '@/lib/bso/tasks/dungeoneeringActivity.js';
@@ -28,7 +29,6 @@ import { DEPRECATED_ACTIVITY_TYPES } from '@/lib/constants.js';
 import type { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { agilityTask } from '@/tasks/minions/agilityActivity.js';
 import { alchingTask } from '@/tasks/minions/alchingActivity.js';
-import { bossEventTask } from '@/tasks/minions/bossEventActivity.js';
 import { butlerTask } from '@/tasks/minions/butlerActivity.js';
 import { buyTask } from '@/tasks/minions/buyActivity.js';
 import { camdozaalFishingTask } from '@/tasks/minions/camdozaalActivity/camdozaalFishingActivity.js';
