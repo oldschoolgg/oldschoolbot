@@ -1,8 +1,8 @@
-import './lib/prisma.js';
 import './discord/client.js';
 
 import { globalConfig } from './constants.js';
 import { startServer } from './http/server.js';
+import { initPrismaClients } from './lib/prisma.js';
 
 process.on('uncaughtException', err => {
 	console.error(err);
@@ -13,6 +13,7 @@ process.on('unhandledRejection', err => {
 });
 
 async function main() {
+	await initPrismaClients();
 	await startServer();
 	await globalClient.login(globalConfig.botToken);
 
