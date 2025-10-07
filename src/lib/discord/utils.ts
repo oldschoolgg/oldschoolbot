@@ -4,6 +4,7 @@ import {
 	type ButtonInteraction,
 	type InteractionReplyOptions,
 	InteractionResponseType,
+	REST,
 	type RESTPostAPIApplicationGuildCommandsJSONBody,
 	Routes
 } from 'discord.js';
@@ -83,23 +84,49 @@ function convertCommandToAPICommand(
 	};
 }
 
-export async function bulkUpdateCommands() {
-	// Sync commands just to the testing server
+export interface BulkUpdateCommandOptions {
+	commands?: ICommand[];
+	guildID?: string | null;
+	rest?: REST;
+	applicationID?: string;
+}
+
+export async function bulkUpdateCommands(options: BulkUpdateCommandOptions = {}) {
+	const { commands, guildID, rest = globalClient.rest, applicationID } = options;
+
+	const resolvedApplicationID =
+		applicationID ?? globalClient.application?.id ?? globalClient.user?.id ?? globalConfig.clientID;
+
+	if (!resolvedApplicationID) {
+		throw new Error('Unable to determine an application ID to sync commands.');
+	}
+
+	const commandsToSync = commands ?? globalClient.allCommands;
+	const mapToApiCommands = (cmds: ICommand[]) => cmds.map(convertCommandToAPICommand);
+
+	if (guildID !== undefined) {
+		const route =
+			guildID === null
+				? Routes.applicationCommands(resolvedApplicationID)
+				: Routes.applicationGuildCommands(resolvedApplicationID, guildID);
+		return rest.put(route, { body: mapToApiCommands(commandsToSync) });
+	}
+
+	// Sync commands just to the testing server when not in production
 	if (!globalConfig.isProduction) {
-		const body = globalClient.allCommands.map(convertCommandToAPICommand);
-		const route = Routes.applicationGuildCommands(globalClient.user.id, globalConfig.supportServerID);
-		return globalClient.rest.put(route, {
-			body
+		const route = Routes.applicationGuildCommands(resolvedApplicationID, globalConfig.supportServerID);
+		return rest.put(route, {
+			body: mapToApiCommands(commandsToSync)
 		});
 	}
 
 	// Sync commands globally
-	const globalCommands = globalClient.allCommands.filter(i => !i.guildID);
-	const guildCommands = globalClient.allCommands.filter(i => Boolean(i.guildID));
+	const globalCommands = mapToApiCommands(commandsToSync.filter(i => !i.guildID));
+	const guildCommands = mapToApiCommands(commandsToSync.filter(i => Boolean(i.guildID)));
 
 	return Promise.all([
-		globalClient.rest.put(Routes.applicationCommands(globalClient.user.id), { body: globalCommands }),
-		globalClient.rest.put(Routes.applicationGuildCommands(globalClient.user.id, globalConfig.supportServerID), {
+		rest.put(Routes.applicationCommands(resolvedApplicationID), { body: globalCommands }),
+		rest.put(Routes.applicationGuildCommands(resolvedApplicationID, globalConfig.supportServerID), {
 			body: guildCommands
 		})
 	]);
