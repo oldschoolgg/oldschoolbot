@@ -7,6 +7,7 @@ import {
 	portents
 } from '@/lib/bso/skills/divination.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
+import { memoryHarvestResult, totalTimePerRound } from '@/lib/bso/tasks/memoryHarvestActivity.js';
 
 import { formatDuration, increaseNumByPercent, removeFromArr, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
@@ -14,7 +15,6 @@ import { Bank } from 'oldschooljs';
 import { mentionCommand } from '@/lib/discord/index.js';
 import type { MemoryHarvestOptions } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
-import { memoryHarvestResult, totalTimePerRound } from '@/tasks/minions/bso/memoryHarvestActivity.js';
 
 export const divinationCommand: OSBMahojiCommand = {
 	name: 'divination',

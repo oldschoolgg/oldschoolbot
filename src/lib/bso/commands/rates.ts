@@ -21,6 +21,9 @@ import {
 } from '@/lib/bso/skills/farming/zygomites.js';
 import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 import { stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
+import { calculateDungeoneeringResult } from '@/lib/bso/tasks/dungeoneeringActivity.js';
+import { memoryHarvestResult, totalTimePerRound } from '@/lib/bso/tasks/memoryHarvestActivity.js';
+import { calculateTuraelsTrialsResult } from '@/lib/bso/tasks/turaelsTrialsActivity.js';
 
 import { calcPerHour, formatDuration, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 import type { InteractionReplyOptions } from 'discord.js';
@@ -41,9 +44,6 @@ import { PeakTier } from '@/lib/util/peaks.js';
 import { calculateHunterInput } from '@/mahoji/commands/hunt.js';
 import { calculateMiningInput } from '@/mahoji/commands/mine.js';
 import { calculateAgilityResult } from '@/tasks/minions/agilityActivity.js';
-import { calculateDungeoneeringResult } from '@/tasks/minions/bso/dungeoneeringActivity.js';
-import { memoryHarvestResult, totalTimePerRound } from '@/tasks/minions/bso/memoryHarvestActivity.js';
-import { calculateTuraelsTrialsResult } from '@/tasks/minions/bso/turaelsTrialsActivity.js';
 import { calculateHunterResult } from '@/tasks/minions/HunterActivity/hunterActivity.js';
 import { calculateMiningResult } from '@/tasks/minions/miningActivity.js';
 
