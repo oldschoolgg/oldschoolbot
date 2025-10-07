@@ -1,4 +1,4 @@
-import { resolveItems } from "oldschooljs";
+import { resolveItems } from 'oldschooljs';
 
 export const inventorOutfit = resolveItems([
 	"Inventors' helmet",

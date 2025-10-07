@@ -1,14 +1,15 @@
-import { divinationEnergies } from '@/lib/bso/divination.js';
+import '../src/lib/safeglobals.js';
+
 import { leagueTasks } from '@/lib/bso/leagues/leagues.js';
+import { divinationEnergies } from '@/lib/bso/skills/divination.js';
 import { DisassemblySourceGroups } from '@/lib/bso/skills/invention/groups/index.js';
 import { Inventions } from '@/lib/bso/skills/invention/inventions.js';
-
-import { customItems } from '@/lib/customItems/util.js';
-import '../src/lib/safeglobals.js';
 
 import { writeFileSync } from 'node:fs';
 import { Items } from 'oldschooljs';
 import { omit } from 'remeda';
+
+import { customItems } from '@/lib/customItems/util.js';
 
 export function renderBsoItemsFile() {
 	writeFileSync(

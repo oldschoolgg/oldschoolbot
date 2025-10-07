@@ -1,3 +1,5 @@
+import { gorajanArcherOutfit, gorajanWarriorOutfit } from '@/lib/bso/collection-log/main.js';
+import { vasaBISGear } from '@/lib/bso/commands/vasaCommand.js';
 import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
 import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 
@@ -5,11 +7,9 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, type ItemBank, itemID, resolveItems } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
-import { gorajanArcherOutfit, gorajanWarriorOutfit } from '@/lib/data/CollectionsExport.js';
 import { CombatCannonItemBank } from '@/lib/minions/data/combatConstants.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import { gearCommand } from '@/mahoji/commands/gear.js';
-import { vasaBISGear } from '@/mahoji/lib/abstracted_commands/vasaCommand.js';
 import { BSOTestUtil } from '../bso/bsoTestUtil.js';
 import { mockClient } from '../util.js';
 

@@ -1,6 +1,8 @@
 import { materialTypes } from '@/lib/bso/skills/invention/index.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
+import { MTame } from '@/lib/bso/structures/MTame.js';
 import { TameSpeciesID } from '@/lib/bso/tames/tames.js';
+import { runTameTask } from '@/lib/bso/tames/tameTasks.js';
 
 import { tame_growth } from '@prisma/client';
 import { type EMonster, Monsters } from 'oldschooljs';
@@ -8,12 +10,10 @@ import { clone } from 'remeda';
 import { expect } from 'vitest';
 
 import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
-import { MTame } from '@/lib/structures/MTame.js';
 import type { SkillsRequired } from '@/lib/types/index.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { stealCommand } from '@/mahoji/commands/steal.js';
 import { tamesCommand } from '@/mahoji/commands/tames.js';
-import { runTameTask } from '@/tasks/tames/tameTasks.js';
 import type { TestUser } from '../util.js';
 
 export const BSOTestUtil = {

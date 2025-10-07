@@ -1,8 +1,9 @@
+import { gorajanWarriorOutfit } from '@/lib/bso/collection-log/main.js';
+
 import { formatDuration, reduceNumByPercent } from '@oldschoolgg/toolkit';
 import { EMonster } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
-import { gorajanWarriorOutfit } from '@/lib/data/CollectionsExport.js';
 import { mockClient } from '../util.js';
 
 describe('Gorajan', async () => {

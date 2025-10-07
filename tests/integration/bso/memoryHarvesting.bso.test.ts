@@ -1,10 +1,11 @@
+import { MemoryHarvestType } from '@/lib/bso/skills/divination.js';
+
 import { Bank, type ItemBank, itemID } from 'oldschooljs';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 
-import { MemoryHarvestType } from '../../../src/lib/bso/divination.js';
-import { Gear } from '../../../src/lib/structures/Gear.js';
-import type { MemoryHarvestOptions } from '../../../src/lib/types/minions.js';
-import { divinationCommand } from '../../../src/mahoji/commands/divination.js';
+import { Gear } from '@/lib/structures/Gear.js';
+import type { MemoryHarvestOptions } from '@/lib/types/minions.js';
+import { divinationCommand } from '@/mahoji/commands/divination.js';
 import { createTestUser, mockClient } from '../util.js';
 
 describe('Divination', async () => {

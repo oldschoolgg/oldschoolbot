@@ -408,7 +408,6 @@ export const araxxorCL = resolveItems([
 	'Coagulated venom'
 ]);
 
-
 export const divineDominionCL = Items.resolveItems([
 	'Zamorak egg',
 	'Baby zamorak hawk',

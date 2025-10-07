@@ -1,4 +1,4 @@
-import { repairBrokenItemsFromUser } from '@/lib/bso/repairBrokenItems.js';
+import { repairBrokenItemsFromUser } from '@/lib/bso/util/repairBrokenItems.js';
 
 import type { Prisma } from '@prisma/client';
 import { Bank, EquipmentSlot, resolveItems } from 'oldschooljs';

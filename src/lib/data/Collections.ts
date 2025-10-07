@@ -1,7 +1,43 @@
 import { OSB_VIRTUS_IDS } from '@/lib/bso/bsoConstants.js';
 import { allChristmasEvent2024Items } from '@/lib/bso/collection-log/holiday.js';
-import { abyssalDragonCL, akumuCL, araxxorCL, customPetsCL, discontinuedCustomPetsCL, divineDominionCL, divinersOutfit, doaCL, dungeoneeringCL, ignecarusCL, kalphiteKingCL, kingGoldemarCL, moktangCL, naxxusCL, nexCL, nihilizCL, polyporeDungeonCL, queenBlackDragonCL, seaKrakenCL, spectatorClothes, superiorTormentedDemonCL, tameGearCL, treeBeardCL, vasaMagusCL, venatrixCL, vladDrakanCL } from '@/lib/bso/collection-log/main.js';
-import { balthazarsBigBonanzaCL, baxtorianBathhousesCL, fishingContestCL, fistOfGuthixCL, monkeyRumbleCL, odsCL, stealingCreationCL, tinkeringWorshopCL } from '@/lib/bso/collection-log/minigames.js';
+import {
+	abyssalDragonCL,
+	akumuCL,
+	araxxorCL,
+	customPetsCL,
+	discontinuedCustomPetsCL,
+	divineDominionCL,
+	divinersOutfit,
+	doaCL,
+	dungeoneeringCL,
+	ignecarusCL,
+	kalphiteKingCL,
+	kingGoldemarCL,
+	moktangCL,
+	naxxusCL,
+	nexCL,
+	nihilizCL,
+	polyporeDungeonCL,
+	queenBlackDragonCL,
+	seaKrakenCL,
+	spectatorClothes,
+	superiorTormentedDemonCL,
+	tameGearCL,
+	treeBeardCL,
+	vasaMagusCL,
+	venatrixCL,
+	vladDrakanCL
+} from '@/lib/bso/collection-log/main.js';
+import {
+	balthazarsBigBonanzaCL,
+	baxtorianBathhousesCL,
+	fishingContestCL,
+	fistOfGuthixCL,
+	monkeyRumbleCL,
+	odsCL,
+	stealingCreationCL,
+	tinkeringWorshopCL
+} from '@/lib/bso/collection-log/minigames.js';
 import { cookingCL, craftingCL, creatablesCL, herbloreCL } from '@/lib/bso/collection-log/special.js';
 import { discontinuedDyes, dyedItems } from '@/lib/bso/dyedItems.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';

@@ -1,5 +1,32 @@
-import { abyssalDragonCL, allDOAPets, customPetsCL, doaCL, dungeoneeringCL, ignecarusCL, kalphiteKingCL, kingGoldemarCL, moktangCL, naxxusCL, nexCL, nihilizCL, polyporeDungeonCL, queenBlackDragonCL, seaKrakenCL, treeBeardCL, vasaMagusCL } from '@/lib/bso/collection-log/main.js';
-import { balthazarsBigBonanzaCL, baxtorianBathhousesCL, fishingContestCL, fistOfGuthixCL, monkeyRumbleCL, odsCL, stealingCreationCL, tinkeringWorshopCL } from '@/lib/bso/collection-log/minigames.js';
+import {
+	abyssalDragonCL,
+	allDOAPets,
+	customPetsCL,
+	doaCL,
+	dungeoneeringCL,
+	ignecarusCL,
+	kalphiteKingCL,
+	kingGoldemarCL,
+	moktangCL,
+	naxxusCL,
+	nexCL,
+	nihilizCL,
+	polyporeDungeonCL,
+	queenBlackDragonCL,
+	seaKrakenCL,
+	treeBeardCL,
+	vasaMagusCL
+} from '@/lib/bso/collection-log/main.js';
+import {
+	balthazarsBigBonanzaCL,
+	baxtorianBathhousesCL,
+	fishingContestCL,
+	fistOfGuthixCL,
+	monkeyRumbleCL,
+	odsCL,
+	stealingCreationCL,
+	tinkeringWorshopCL
+} from '@/lib/bso/collection-log/minigames.js';
 import { cookingCL, craftingCL, creatablesCL, herbloreCL, smithingCL } from '@/lib/bso/collection-log/special.js';
 import { kibbleCL } from '@/lib/bso/kibble.js';
 import { allLeagueTasks, leagueTasks } from '@/lib/bso/leagues/leagues.js';
