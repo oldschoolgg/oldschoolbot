@@ -9,7 +9,7 @@ const handleTripFinishMock = vi.fn();
 const makeAutoContractButtonMock = vi.fn().mockReturnValue('AUTO_BUTTON');
 const canRunAutoContractMock = vi.fn();
 
-vi.mock('@/tasks/minions/farmingStep.js', () => ({
+vi.mock('../../src/tasks/minions/farmingStep.js', () => ({
 	__esModule: true,
 	executeFarmingStep: executeFarmingStepMock
 }));
