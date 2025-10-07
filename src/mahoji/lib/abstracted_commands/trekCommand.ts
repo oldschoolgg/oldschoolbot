@@ -1,22 +1,15 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { objectEntries, randInt, reduceNumByPercent } from 'e';
+import { percentChance, randInt } from '@oldschoolgg/rng';
+import { formatDuration, objectEntries, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
-
-import type { GearRequirement } from '@/lib/structures/Gear';
 import { GearStat } from 'oldschooljs/gear';
-import TrekShopItems, { TrekExperience } from '../../../lib/data/buyables/trekBuyables';
-import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { difficulties, rewardTokens, trekBankBoosts } from '../../../lib/minions/data/templeTrekking';
-import type { AddXpParams } from '../../../lib/minions/types';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { percentChance } from '../../../lib/util/rng';
-import { readableStatName } from '../../../lib/util/smallUtils';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+
+import TrekShopItems, { TrekExperience } from '@/lib/data/buyables/trekBuyables.js';
+import { MorytaniaDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import { difficulties, rewardTokens, trekBankBoosts } from '@/lib/minions/data/templeTrekking.js';
+import type { AddXpParams } from '@/lib/minions/types.js';
+import type { GearRequirement } from '@/lib/structures/Gear.js';
+import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
+import { readableStatName } from '@/lib/util/smallUtils.js';
 
 export async function trekCommand(user: MUser, channelID: string, difficulty: string, quantity: number | undefined) {
 	const tier = difficulties.find(item => stringMatches(item.difficulty, difficulty));
@@ -87,7 +80,7 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 		}
 	}
 
-	if (!userHasGracefulEquipped(user)) {
+	if (!user.hasGracefulEquipped()) {
 		boosts.push('-15% for not having graceful equipped anywhere');
 		tripTime *= 1.15;
 	}
@@ -112,7 +105,7 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 		tripTime *= flailBoost;
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'Trekking');
+	const maxTripLength = user.calcMaxTripLength('Trekking');
 	const maxTrips = Math.floor(maxTripLength / tripTime);
 	if (quantity === undefined || quantity === null) {
 		quantity = maxTrips;
@@ -122,13 +115,13 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 
 	const duration = quantity * tripTime;
 
-	await addSubTaskToActivityTask<TempleTrekkingActivityTaskOptions>({
+	await ActivityManager.startTrip<TempleTrekkingActivityTaskOptions>({
 		difficulty,
 		quantity,
 		userID: user.id,
 		duration,
 		type: 'Trekking',
-		channelID: channelID.toString(),
+		channelID,
 		minigameID: 'temple_trekking'
 	});
 
@@ -148,7 +141,7 @@ export async function trekShop(
 	reward: string,
 	difficulty: string,
 	quantity: number | undefined,
-	interaction: ChatInputCommandInteraction
+	interaction: MInteraction
 ) {
 	const userBank = user.bank;
 	const specifiedItem = TrekShopItems.find(
@@ -178,43 +171,43 @@ export async function trekShop(
 	const inItems = new Bank();
 	const outXP: AddXpParams[] = [
 		{
-			skillName: SkillsEnum.Agility,
+			skillName: 'agility',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'
 		},
 		{
-			skillName: SkillsEnum.Thieving,
+			skillName: 'thieving',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'
 		},
 		{
-			skillName: SkillsEnum.Slayer,
+			skillName: 'slayer',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'
 		},
 		{
-			skillName: SkillsEnum.Firemaking,
+			skillName: 'firemaking',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'
 		},
 		{
-			skillName: SkillsEnum.Fishing,
+			skillName: 'fishing',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'
 		},
 		{
-			skillName: SkillsEnum.Woodcutting,
+			skillName: 'woodcutting',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'
 		},
 		{
-			skillName: SkillsEnum.Mining,
+			skillName: 'mining',
 			amount: 0,
 			minimal: true,
 			source: 'TempleTrekking'
@@ -257,8 +250,7 @@ export async function trekShop(
 		return "You don't have enough reward tokens for that.";
 	}
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`${user}, please confirm that you want to use ${quantity} ${difficulty} reward tokens to buy sets of ${specifiedItem.name}.`
 	);
 

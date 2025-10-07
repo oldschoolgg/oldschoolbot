@@ -1,23 +1,29 @@
-import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { getInterval } from '@oldschoolgg/toolkit/util';
+import {
+	calcPercentOfNum,
+	getInterval,
+	makeComponents,
+	miniID,
+	noOp,
+	sumArr,
+	Time,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import { type GEListing, GEListingType, type GETransaction } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
-import { Time, calcPercentOfNum, clamp, noOp, sumArr, uniqueArr } from 'e';
 import { LRUCache } from 'lru-cache';
-import { Bank, type Item, type ItemBank, toKMB } from 'oldschooljs';
+import { Bank, type Item, type ItemBank, Items, toKMB } from 'oldschooljs';
 import PQueue from 'p-queue';
+import { clamp } from 'remeda';
 
-import { BLACKLISTED_USERS } from './blacklists';
-import { BitField, PerkTier, globalConfig } from './constants';
-import { marketPricemap } from './marketPrices';
-import type { RobochimpUser } from './roboChimp';
-import { roboChimpUserFetch } from './roboChimp';
-import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
-import getOSItem, { getItem } from './util/getOSItem';
-import { assert, logError } from './util/logError';
-import { generateGrandExchangeID, itemNameFromID } from './util/smallUtils';
-import { sendToChannelID } from './util/webhook';
+import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { BitField, globalConfig, PerkTier } from '@/lib/constants.js';
+import { marketPricemap } from '@/lib/marketPrices.js';
+import { type RobochimpUser, roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/tableBank.js';
+import { assert } from '@/lib/util/logError.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
+
+export const generateGrandExchangeID = () => miniID(6).toLowerCase();
 
 interface CreateListingArgs {
 	user: MUser;
@@ -49,7 +55,7 @@ function sanityCheckListing(listing: GEListing) {
 	if (listing.quantity_remaining !== 0 && listing.fulfilled_at) {
 		throw new Error(`Listing ${listing.id} has quantity remaining but is fulfilled.`);
 	}
-	const item = getItem(listing.item_id);
+	const item = Items.getItem(listing.item_id);
 	if (!item) {
 		throw new Error(`Listing ${listing.id} has invalid item ID ${listing.item_id}.`);
 	}
@@ -96,7 +102,10 @@ export function createGECancelButton(listing: GEListing) {
 	const button = new ButtonBuilder()
 		.setCustomId(`ge_cancel_${listing.userfacing_id}`)
 		.setLabel(
-			`Cancel ${listing.type} ${toKMB(listing.total_quantity)} ${itemNameFromID(listing.item_id)}`.slice(0, 79)
+			`Cancel ${listing.type} ${toKMB(listing.total_quantity)} ${Items.itemNameFromId(listing.item_id)}`.slice(
+				0,
+				79
+			)
 		)
 		.setStyle(ButtonStyle.Secondary);
 
@@ -104,7 +113,7 @@ export function createGECancelButton(listing: GEListing) {
 }
 
 class GrandExchangeSingleton {
-	public queue = new PQueue({ concurrency: 1 });
+	public queue: PQueue = new PQueue({ concurrency: 1 });
 	public locked = false;
 	public isTicking = false;
 	public ready = false;
@@ -112,7 +121,7 @@ class GrandExchangeSingleton {
 
 	log(message: string, context?: any) {
 		if (this.loggingEnabled) {
-			debugLog(message, context);
+			Logging.logDebug(message, context);
 		}
 	}
 
@@ -217,7 +226,7 @@ class GrandExchangeSingleton {
 		const rate = this.config.tax.rate();
 		let amount = calcPercentOfNum(rate, pricePerItem);
 		amount = Math.floor(amount);
-		amount = clamp(amount, 0, this.config.tax.cap());
+		amount = clamp(amount, { min: 0, max: this.config.tax.cap() });
 		validateNumber(amount);
 
 		const newPrice = pricePerItem - amount;
@@ -232,6 +241,9 @@ class GrandExchangeSingleton {
 
 	async lockGE(reason: string) {
 		if (this.locked) return;
+		if (process.env.TEST) {
+			throw new Error(`G.E locked: ${reason}`);
+		}
 		const idsToNotify = globalConfig.adminUserIDs;
 		await sendToChannelID(globalConfig.moderatorLogsChannels, {
 			content: `The Grand Exchange has encountered an error and has been locked. Reason: ${reason}. ${idsToNotify
@@ -239,7 +251,7 @@ class GrandExchangeSingleton {
 				.join(', ')}`,
 			allowedMentions: globalConfig.isProduction ? { users: idsToNotify } : undefined
 		}).catch(noOp);
-		await mahojiClientSettingsUpdate({
+		await ClientSettings.update({
 			grand_exchange_is_locked: true
 		});
 		this.locked = true;
@@ -265,7 +277,7 @@ class GrandExchangeSingleton {
 			}
 		});
 
-		const item = getOSItem(geListing.item_id);
+		const item = Items.getOrThrow(geListing.item_id);
 		const buyLimit = this.getItemBuyLimit(item);
 		const totalSold = sumArr(allActiveListingsInTimePeriod.map(listing => listing.quantity_bought));
 		const remainingItemsCanBuy = Math.max(0, buyLimit - totalSold);
@@ -295,7 +307,7 @@ class GrandExchangeSingleton {
 			return { error: 'The Grand Exchange is temporarily closed! Sorry, please try again later.' };
 		}
 		if (user.isIronman) return { error: "You're an ironman." };
-		const item = getItem(itemName);
+		const item = Items.getItem(itemName);
 		if (!item || !item.tradeable_on_ge || ['Coins'].includes(item.name)) {
 			return { error: 'Invalid item.' };
 		}
@@ -396,35 +408,38 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		quantity,
 		type
 	}: CreateListingArgs): Promise<{ error: string } | { createdListing: GEListing; error: null }> {
-		return this.queue.add(async () => {
-			const result = await this.preCreateListing({ user, itemName, price, quantity, type });
-			if ('error' in result) return result;
+		return this.queue.add(
+			async () => {
+				const result = await this.preCreateListing({ user, itemName, price, quantity, type });
+				if ('error' in result) return result;
 
-			await user.removeItemsFromBank(result.cost);
+				await user.removeItemsFromBank(result.cost);
 
-			const [listing] = await prisma.$transaction([
-				prisma.gEListing.create({
-					data: {
-						user_id: user.id,
-						item_id: result.item.id,
-						asking_price_per_item: price,
-						total_quantity: quantity,
-						type,
-						quantity_remaining: quantity,
-						userfacing_id: generateGrandExchangeID()
-					}
-				}),
-				...makeTransactFromTableBankQueries({ bankToAdd: result.cost })
-			]);
+				const [listing] = await prisma.$transaction([
+					prisma.gEListing.create({
+						data: {
+							user_id: user.id,
+							item_id: result.item.id,
+							asking_price_per_item: price,
+							total_quantity: quantity,
+							type,
+							quantity_remaining: quantity,
+							userfacing_id: generateGrandExchangeID()
+						}
+					}),
+					...makeTransactFromTableBankQueries({ bankToAdd: result.cost })
+				]);
 
-			sanityCheckListing(listing);
-			this.log(`${user.id} created ${type} listing, removing ${result.cost}, adding it to the g.e bank.`);
+				sanityCheckListing(listing);
+				this.log(`${user.id} created ${type} listing, removing ${result.cost}, adding it to the g.e bank.`);
 
-			return {
-				createdListing: listing,
-				error: null
-			};
-		});
+				return {
+					createdListing: listing,
+					error: null
+				};
+			},
+			{ throwOnTimeout: true }
+		);
 	}
 
 	private async createTransaction(
@@ -556,7 +571,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		if (!geBank.has(bankGEShouldHave)) {
 			const missingItems = bankGEShouldHave.clone().remove(geBank);
 			const str = `The GE did not have enough items to cover this transaction! We tried to remove ${bankGEShouldHave} missing: ${missingItems}. ${debug}`;
-			logError(str, logContext);
+			Logging.logError(str, logContext);
 			this.log(str, logContext);
 			throw new Error(str);
 		}
@@ -646,14 +661,14 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			neverUpdateHistory: true
 		});
 
-		const itemName = itemNameFromID(buyerListing.item_id)!;
+		const itemName = Items.itemNameFromId(buyerListing.item_id)!;
 
 		const disableDMsButton = new ButtonBuilder()
 			.setCustomId('ge_cancel_dms')
 			.setLabel('Disable These DMs')
 			.setStyle(ButtonStyle.Secondary);
 
-		const buyerDJSUser = await globalClient.fetchUser(buyerListing.user_id).catch(noOp);
+		const buyerDJSUser = await globalClient.users.fetch(buyerListing.user_id).catch(noOp);
 		if (buyerDJSUser && !buyerUser.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
 			let str = `You bought ${quantityToBuy.toLocaleString()}x ${itemName} for ${toKMB(
 				pricePerItemAfterTax
@@ -690,7 +705,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			await buyerDJSUser.send({ content: str, components: makeComponents(components) }).catch(noOp);
 		}
 
-		const sellerDJSUser = await globalClient.fetchUser(sellerListing.user_id).catch(noOp);
+		const sellerDJSUser = await globalClient.users.fetch(sellerListing.user_id).catch(noOp);
 		if (sellerDJSUser && !sellerUser.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
 			let str = `You sold ${quantityToBuy.toLocaleString()}x ${itemName} for ${toKMB(
 				pricePerItemAfterTax
@@ -876,8 +891,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 				try {
 					await this._tick();
 				} catch (err: any) {
-					logError(err.message);
-					debugLog(err.message);
+					Logging.logError(err.message);
 					reject(err);
 				} finally {
 					this.isTicking = false;
@@ -888,7 +902,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 	}
 
 	async fetchData() {
-		const settings = await mahojiClientSettingsFetch({
+		const settings = await ClientSettings.fetch({
 			grand_exchange_is_locked: true,
 			grand_exchange_tax_bank: true,
 			grand_exchange_total_tax: true
@@ -964,8 +978,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 				await this.createTransaction(buyListing, matchingSellListing, remainingItemsCanBuy);
 			} catch (err: any) {
 				await this.lockGE(err.message);
-				logError(err);
-				debugLog(err);
+				Logging.logError(err);
 				break;
 			}
 
@@ -976,7 +989,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 
 	async totalReset() {
 		if (globalConfig.isProduction) throw new Error("You can't reset the GE in production.");
-		await mahojiClientSettingsUpdate({
+		await ClientSettings.update({
 			grand_exchange_is_locked: false,
 			grand_exchange_tax_bank: 0,
 			grand_exchange_total_tax: 0

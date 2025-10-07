@@ -1,8 +1,4 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
-
-import { bankCommand } from './bank';
+import { bankCommand } from '@/mahoji/commands/bank.js';
 
 const bankFormats = ['json', 'text_paged', 'text_full'] as const;
 type BankFormat = (typeof bankFormats)[number];
@@ -12,13 +8,13 @@ export const bsCommand: OSBMahojiCommand = {
 	description: 'Search your minions bank.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'search',
 			description: 'Search for item names in your bank.',
 			required: true
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'format',
 			description: 'The format to return your bank in.',
 			required: false,

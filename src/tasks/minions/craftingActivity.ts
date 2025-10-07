@@ -1,17 +1,15 @@
+import { randFloat } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 
-import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { randFloat } from '../../lib/util/rng';
+import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
+import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const craftingTask: MinionTask = {
 	type: 'Crafting',
-	async run(data: CraftingActivityTaskOptions) {
-		const { craftableID, quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
-		const currentLevel = user.skillLevel(SkillsEnum.Crafting);
+	async run(data: CraftingActivityTaskOptions, { user, handleTripFinish }) {
+		const { craftableID, quantity, channelID, duration } = data;
+
+		const currentLevel = user.skillsAsLevels.crafting;
 		const item = Craftables.find(craft => craft.id === craftableID)!;
 
 		let xpReceived = quantity * item.xp;
@@ -35,12 +33,11 @@ export const craftingTask: MinionTask = {
 		}
 		loot.add(item.id, quantityToGive - crushed);
 
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Crafting, amount: xpReceived, duration });
+		const xpRes = await user.addXP({ skillName: 'crafting', amount: xpReceived, duration });
 
 		const str = `${user}, ${user.minionName} finished crafting ${quantity}${sets} ${item.name}, and received ${loot}. ${xpRes}`;
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

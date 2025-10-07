@@ -1,11 +1,11 @@
+import { randFloat, roll } from '@oldschoolgg/rng';
 import type { Prisma } from '@prisma/client';
-import { randFloat, roll } from 'e';
 import { Bank, itemID } from 'oldschooljs';
 
-import birdhouses from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
-import type { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
-import type { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
-import { sendToChannelID } from '../../../lib/util/webhook';
+import birdhouses from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
+import type { BirdhouseData } from '@/lib/skilling/skills/hunter/defaultBirdHouseTrap.js';
+import type { BirdhouseActivityTaskOptions } from '@/lib/types/minions.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
 
 const clues = [
 	[itemID('Clue scroll(elite)'), 1 / 10],
@@ -16,7 +16,6 @@ const clues = [
 
 export const birdHouseTask: MinionTask = {
 	type: 'Birdhouse',
-	isNew: true,
 	async run(data: BirdhouseActivityTaskOptions, { user, handleTripFinish }) {
 		const { birdhouseName, birdhouseData, channelID, duration, placing, gotCraft, currentDate } = data;
 
@@ -96,8 +95,7 @@ export const birdHouseTask: MinionTask = {
 					loot.add(birdhouseToCollect.normalNestTable.roll());
 				}
 			}
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				itemsToAdd: loot
 			});

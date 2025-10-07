@@ -1,8 +1,8 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { Bank, Monsters, itemID, resolveItems } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import type { KillableMonster } from '../../types';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 export const konarMonsters: KillableMonster[] = [
 	{

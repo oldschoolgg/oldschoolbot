@@ -1,13 +1,8 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Bank, SkillsEnum } from 'oldschooljs';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank } from 'oldschooljs';
 
-import Runecraft from '../../../lib/skilling/skills/runecraft';
-import type { TiaraRunecraftActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+import Runecraft from '@/lib/skilling/skills/runecraft.js';
+import type { TiaraRunecraftActivityTaskOptions } from '@/lib/types/minions.js';
 
 export async function tiaraRunecraftCommand({
 	user,
@@ -40,15 +35,15 @@ export async function tiaraRunecraftCommand({
 	let { tripLength } = tiaraObj;
 
 	const boosts = [];
-	if (userHasGracefulEquipped(user)) {
+	if (user.hasGracefulEquipped()) {
 		tripLength -= tripLength * 0.1;
 		boosts.push('10% for Graceful');
 	}
 
-	if (user.skillLevel(SkillsEnum.Agility) >= 90) {
+	if (user.skillsAsLevels.agility >= 90) {
 		tripLength *= 0.9;
 		boosts.push('10% for 90+ Agility');
-	} else if (user.skillLevel(SkillsEnum.Agility) >= 60) {
+	} else if (user.skillsAsLevels.agility >= 60) {
 		tripLength *= 0.95;
 		boosts.push('5% for 60+ Agility');
 	}
@@ -56,7 +51,7 @@ export async function tiaraRunecraftCommand({
 	const makeTiaraTime = Time.Second * 0.6;
 	const adjTripTime = tripLength + TIARAS_PER_INVENTORY * makeTiaraTime;
 	const maxCanDoOwned = numTiaraOwned < numTalismansOwned ? numTiaraOwned : numTalismansOwned;
-	const maxTripLength = calcMaxTripLength(user, 'Runecraft');
+	const maxTripLength = user.calcMaxTripLength('Runecraft');
 	const maxCanDo = Math.floor(maxTripLength / adjTripTime) * TIARAS_PER_INVENTORY;
 
 	if (!quantity) {
@@ -93,12 +88,12 @@ export async function tiaraRunecraftCommand({
 	totalCost.add('Tiara', quantity);
 
 	await user.removeItemsFromBank(totalCost);
-	updateBankSetting('runecraft_cost', totalCost);
+	await ClientSettings.updateBankSetting('runecraft_cost', totalCost);
 
-	await addSubTaskToActivityTask<TiaraRunecraftActivityTaskOptions>({
+	await ActivityManager.startTrip<TiaraRunecraftActivityTaskOptions>({
 		tiaraID: tiaraObj.id,
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		tiaraQuantity: quantity,
 		duration,
 		type: 'TiaraRunecraft'

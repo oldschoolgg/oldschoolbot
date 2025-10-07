@@ -1,9 +1,9 @@
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { Requirements } from '../structures/Requirements';
-import type { TOAOptions } from '../types/minions';
-import { isCertainMonsterTrip } from './caUtils';
-import type { CombatAchievement } from './combatAchievements';
+import { isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
+import type { TOAOptions } from '@/lib/types/minions.js';
 
 export const hardCombatAchievements: CombatAchievement[] = [
 	{

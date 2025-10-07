@@ -1,13 +1,11 @@
 import { Bank } from 'oldschooljs';
 
-import type { ActivityTaskOptionsWithNoChanges } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export const combatRingTask: MinionTask = {
 	type: 'CombatRing',
-	async run(data: ActivityTaskOptionsWithNoChanges) {
-		const { channelID, userID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
+		const { channelID } = data;
 
 		const loot = new Bank({
 			'Shayzien boots (1)': 1,
@@ -37,8 +35,7 @@ export const combatRingTask: MinionTask = {
 			'Shayzien body (5)': 1
 		});
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

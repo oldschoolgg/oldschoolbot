@@ -1,32 +1,27 @@
-import { increaseNumByPercent, randInt } from 'e';
+import { randInt } from '@oldschoolgg/rng';
+import { increaseNumByPercent } from '@oldschoolgg/toolkit';
 
-import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../../lib/diaries';
-import type { SkillsEnum } from '../../../lib/skilling/types';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { LumbridgeDraynorDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 export const togTask: MinionTask = {
 	type: 'TearsOfGuthix',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { channelID, duration } = data;
+
 		await user.incrementMinigameScore('tears_of_guthix', 1);
-		await userStatsUpdate(
-			user.id,
-			{
-				last_tears_of_guthix_timestamp: new Date().getTime()
-			},
-			{}
-		);
+		await user.statsUpdate({
+			last_tears_of_guthix_timestamp: Date.now()
+		});
 
 		// Find lowest level skill
 		let lowestXp = Object.values(user.skillsAsXP)[0];
-		let lowestSkill = Object.keys(user.skillsAsXP)[0] as SkillsEnum;
+		let lowestSkill = Object.keys(user.skillsAsXP)[0] as SkillNameType;
 		Object.entries(user.skillsAsXP).forEach(([skill, xp]) => {
 			if (xp < lowestXp) {
 				lowestXp = xp;
-				lowestSkill = skill as SkillsEnum;
+				lowestSkill = skill as SkillNameType;
 			}
 		});
 

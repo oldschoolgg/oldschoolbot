@@ -1,9 +1,9 @@
 import { Bank, itemID, resolveItems } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
-import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../../src/lib/data/cox';
-import { raidCommand } from '../../../src/mahoji/commands/raid';
-import { mockClient, mockUser } from '../util';
+import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear } from '../../../src/lib/data/cox.js';
+import { raidCommand } from '../../../src/mahoji/commands/raid.js';
+import { mockClient, mockUser } from '../util.js';
 
 test('CoX ', async () => {
 	await mockClient();

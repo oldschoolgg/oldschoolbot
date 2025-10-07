@@ -1,23 +1,20 @@
-import { type CommandResponse, PerkTier, stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { PerkTier, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import type { GearPreset } from '@prisma/client';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { objectValues } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { generateGearImage } from '../../../lib/canvas/generateGearImage';
-import { PATRON_ONLY_GEAR_SETUP } from '../../../lib/constants';
-import { getSimilarItems } from '../../../lib/data/similarItems';
-import { isValidGearSetup } from '../../../lib/gear/functions/isValidGearSetup';
-import type { GearSetup, GearSetupType } from '../../../lib/gear/types';
-import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestGearFromBank';
-import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
-import { Gear, defaultGear, globalPresets } from '../../../lib/structures/Gear';
-import calculateGearLostOnDeathWilderness from '../../../lib/util/calculateGearLostOnDeathWilderness';
-import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { assert } from '../../../lib/util/logError';
-import { formatSkillRequirements } from '../../../lib/util/smallUtils';
+import { generateGearImage } from '@/lib/canvas/generateGearImage.js';
+import { PATRON_ONLY_GEAR_SETUP } from '@/lib/constants.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
+import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
+import getUserBestGearFromBank from '@/lib/minions/functions/getUserBestGearFromBank.js';
+import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
+import { defaultGear, Gear, globalPresets } from '@/lib/structures/Gear.js';
+import calculateGearLostOnDeathWilderness from '@/lib/util/calculateGearLostOnDeathWilderness.js';
+import { gearEquipMultiImpl } from '@/lib/util/equipMulti.js';
+import { assert } from '@/lib/util/logError.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
 	if (user.minionIsBusy) {
@@ -55,7 +52,7 @@ async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName
 	}
 
 	const userBankWithEquippedItems = user.bank.clone();
-	for (const e of objectValues(user.gear[gearSetup].raw())) {
+	for (const e of Object.values(user.gear[gearSetup].raw())) {
 		if (e) userBankWithEquippedItems.add(e.item, Math.max(e.quantity, 1));
 	}
 
@@ -149,8 +146,7 @@ async function gearEquipMultiCommand(user: MUser, setup: string, items: string) 
 	await user.update({
 		[dbKey]: equippedGear
 	});
-	await transactItems({
-		userID: user.id,
+	await user.transactItems({
 		filterLoot: false,
 		itemsToRemove: equipBank,
 		itemsToAdd: unequipBank
@@ -174,7 +170,7 @@ async function gearEquipMultiCommand(user: MUser, setup: string, items: string) 
 }
 
 export async function gearEquipCommand(args: {
-	interaction: ChatInputCommandInteraction;
+	interaction: MInteraction;
 	userID: string;
 	setup: string;
 	item: string | undefined;
@@ -272,14 +268,12 @@ async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipment
 		return 'Invalid gear stat.';
 	}
 
-	const { gearToEquip, toRemoveFromBank, toRemoveFromGear } = getUserBestGearFromBank(
-		user.bank,
-		user.gear[gearSetup],
+	const { gearToEquip, toRemoveFromBank, toRemoveFromGear } = getUserBestGearFromBank({
+		gearBank: user.gearBank,
+		gearStat: equipmentType as GearStat,
 		gearSetup,
-		user.skillsAsXP,
-		equipmentType as GearStat,
-		null
-	);
+		extra: null
+	});
 
 	if (Object.keys(toRemoveFromBank).length === 0) {
 		return "Couldn't find anything to equip.";
@@ -390,7 +384,7 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 }
 
 export async function gearSwapCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	user: MUser,
 	first: GearSetupType,
 	second: GearSetupType
@@ -399,8 +393,7 @@ export async function gearSwapCommand(
 		return 'Invalid gear setups. You must provide two unique gear setups to switch gear between.';
 	}
 	if (first === 'wildy' || second === 'wildy') {
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			'Are you sure you want to swap your gear with a wilderness setup? You can lose items on your wilderness setup!'
 		);
 	}

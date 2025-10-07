@@ -1,28 +1,19 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { channelIsSendable, makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { channelIsSendable, makeComponents, Stopwatch, Time } from '@oldschoolgg/toolkit';
 import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { Bank, EItem } from 'oldschooljs';
 
-import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
-import {
-	tearsOfGuthixIronmanReqs,
-	tearsOfGuthixSkillReqs
-} from '../../mahoji/lib/abstracted_commands/tearsOfGuthixCommand';
-import { updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
-import { ClueTiers } from '../clues/clueTiers';
-import { buildClueButtons } from '../clues/clueUtils';
-import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
-import { BitField, PerkTier } from '../constants';
-import { handleGrowablePetGrowth } from '../growablePets';
-import { handlePassiveImplings } from '../implings';
-import { triggerRandomEvent } from '../randomEvents';
-import { calculateBirdhouseDetails } from '../skilling/skills/hunter/birdhouses';
-import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
-import type { ActivityTaskData } from '../types/minions';
-import { displayCluesAndPets } from './displayCluesAndPets';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { buildClueButtons } from '@/lib/clues/clueUtils.js';
+import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
+import { BitField, PerkTier } from '@/lib/constants.js';
+import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
+import { handlePassiveImplings } from '@/lib/implings.js';
+import { triggerRandomEvent } from '@/lib/randomEvents.js';
+import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
+import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import type { ActivityTaskData } from '@/lib/types/minions.js';
+import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
@@ -33,9 +24,15 @@ import {
 	makeOpenSeedPackButton,
 	makeRepeatTripButton,
 	makeTearsOfGuthixButton
-} from './interactions';
-import { hasSkillReqs } from './smallUtils';
-import { sendToChannelID } from './webhook';
+} from '@/lib/util/interactions.js';
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
+import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
+import { handleTriggerShootingStar } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
+import {
+	tearsOfGuthixIronmanReqs,
+	tearsOfGuthixSkillReqs
+} from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
 
 const collectors = new Map<string, MessageCollector>();
 
@@ -71,7 +68,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
 				const GP = loot.amount(EItem.COINS);
 				if (typeof GP === 'number') {
-					await updateClientGPTrackSetting('gp_pvm', GP);
+					await ClientSettings.updateClientGPTrackSetting('gp_pvm', GP);
 				}
 			}
 			return {};
@@ -84,7 +81,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (imp && imp.bank.length > 0) {
 				const many = imp.bank.length > 1;
 				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
-				await userStatsBankUpdate(user, 'passive_implings_bank', imp.bank);
+				await user.statsBankUpdate('passive_implings_bank', imp.bank);
 				return {
 					itemsToAddWithCL: imp.bank
 				};
@@ -151,7 +148,7 @@ export async function handleTripFinish(
 		if (res?.itemsToRemove) itemsToRemove.add(res.itemsToRemove);
 		stopwatch.stop();
 		if (stopwatch.duration > 500) {
-			debugLog(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
+			Logging.logDebug(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
 		}
 	}
 	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
@@ -182,10 +179,7 @@ export async function handleTripFinish(
 	if (perkTier > PerkTier.One) {
 		components.push(...buildClueButtons(loot, perkTier, user));
 
-		const { last_tears_of_guthix_timestamp, last_daily_timestamp } = await user.fetchStats({
-			last_tears_of_guthix_timestamp: true,
-			last_daily_timestamp: true
-		});
+		const { last_tears_of_guthix_timestamp, last_daily_timestamp } = await user.fetchStats();
 
 		// Tears of Guthix start button if ready
 		if (!user.bitfield.includes(BitField.DisableTearsOfGuthixButton)) {

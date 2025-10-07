@@ -1,13 +1,11 @@
-import { Time, randFloat, roll, shuffleArr, sumArr } from 'e';
-
-import type { ItemBank, LootBank } from '../../meta/types';
-import Bank from '../../structures/Bank';
-import LootTable from '../../structures/LootTable';
-import Minigame from '../../structures/Minigame';
-import SimpleTable from '../../structures/SimpleTable';
-import { resolveNameBank } from '../../util/bank';
-import itemID from '../../util/itemID';
-import { JSONClone } from '../../util/util';
+import { EItem } from '@/EItem.js';
+import { Bank, type ItemBank, type LootBank } from '@/structures/Bank.js';
+import LootTable from '@/structures/LootTable.js';
+import Minigame from '@/structures/Minigame.js';
+import SimpleTable from '@/structures/SimpleTable.js';
+import { resolveNameBank } from '@/util/bank.js';
+import { randFloat, roll, shuffleArr, sumArr, Time } from '@/util/smallUtils.js';
+import { JSONClone } from '@/util/util.js';
 
 export interface TeamMember {
 	id: string;
@@ -191,7 +189,7 @@ export class ChambersOfXericClass extends Minigame {
 		};
 
 		if (roll(12)) {
-			loot[itemID('Clue scroll (elite)')] = 1;
+			loot[EItem.CLUE_SCROLL_ELITE] = 1;
 		}
 
 		return loot;

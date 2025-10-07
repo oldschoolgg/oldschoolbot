@@ -1,9 +1,9 @@
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import type { Monster } from 'oldschooljs';
 
-import { effectiveMonsters } from '../minions/data/killableMonsters';
-import { Minigames } from '../settings/minigames';
-import creatures from '../skilling/skills/hunter/creatures';
+import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import { Minigames } from '@/lib/settings/minigames.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 
 export async function getKCByName(user: MUser, kcName: string): Promise<[string, number] | [null, 0]> {
 	const mon = effectiveMonsters.find(
@@ -20,12 +20,12 @@ export async function getKCByName(user: MUser, kcName: string): Promise<[string,
 		return [minigame.name, await user.fetchMinigameScore(minigame.column)];
 	}
 
-	const creature = creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
+	const creature = Hunter.Creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
 	if (creature) {
 		return [creature.name, await user.getCreatureScore(creature.id)];
 	}
 
-	const stats = await user.fetchStats({ slayer_superior_count: true, tithe_farms_completed: true });
+	const stats = await user.fetchStats();
 	const special: [string[], number][] = [
 		[['superior', 'superiors', 'superior slayer monster'], stats.slayer_superior_count],
 		[['tithe farm', 'Tithe farm', 'tithefarm', 'tithe'], stats.tithe_farms_completed]

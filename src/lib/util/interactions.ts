@@ -1,6 +1,7 @@
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 
-import type { ClueTier } from '../clues/clueTiers';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import { InteractionID } from '@/lib/InteractionID.js';
 
 export function makeOpenCasketButton(tier: ClueTier) {
 	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
@@ -92,7 +93,6 @@ const globalInteractionActions = [
 	'DO_BIRDHOUSE_RUN',
 	'CLAIM_DAILY',
 	'CHECK_PATCHES',
-	'AUTO_SLAY',
 	'CANCEL_TRIP',
 	'AUTO_FARM',
 	'AUTO_FARMING_CONTRACT',
@@ -103,7 +103,17 @@ const globalInteractionActions = [
 	'NEW_SLAYER_TASK',
 	'DO_SHOOTING_STAR',
 	'CHECK_TOA',
-	'START_TOG'
+	'START_TOG',
+
+	// Slayer
+	InteractionID.Slayer.AutoSlay,
+	InteractionID.Slayer.AutoSlaySaved,
+	InteractionID.Slayer.AutoSlayDefault,
+	InteractionID.Slayer.AutoSlayEHP,
+	InteractionID.Slayer.AutoSlayBoss,
+	InteractionID.Slayer.SkipTask,
+	InteractionID.Slayer.CancelTask,
+	InteractionID.Slayer.BlockTask
 ] as const;
 
 type GlobalInteractionAction = (typeof globalInteractionActions)[number];

@@ -1,17 +1,14 @@
-import { increaseNumByPercent } from 'e';
+import { increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ShadesOfMortonOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { shades, shadesLogs } from '../../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
+import { MorytaniaDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import type { ShadesOfMortonOptions } from '@/lib/types/minions.js';
+import { shades, shadesLogs } from '@/mahoji/lib/abstracted_commands/shadesOfMortonCommand.js';
 
 export const shadesOfMortonTask: MinionTask = {
 	type: 'ShadesOfMorton',
-	async run(data: ShadesOfMortonOptions) {
-		const { channelID, quantity, userID, logID, shadeID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ShadesOfMortonOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, logID, shadeID, duration } = data;
 
 		await user.incrementMinigameScore('shades_of_morton', quantity);
 
@@ -39,7 +36,7 @@ export const shadesOfMortonTask: MinionTask = {
 
 		const messages: string[] = [];
 
-		const { itemsAdded } = await transactItems({ userID: user.id, collectionLog: true, itemsToAdd: loot });
+		const { itemsAdded } = await user.transactItems({ collectionLog: true, itemsToAdd: loot });
 
 		let firemakingXP = quantity * log.fmXP;
 		if ((await userhasDiaryTier(user, MorytaniaDiary.elite))[0]) {
@@ -48,7 +45,7 @@ export const shadesOfMortonTask: MinionTask = {
 		}
 
 		let xpStr = await user.addXP({
-			skillName: SkillsEnum.Firemaking,
+			skillName: 'firemaking',
 			amount: firemakingXP,
 			duration,
 			source: 'ShadesOfMorton'
@@ -63,7 +60,7 @@ export const shadesOfMortonTask: MinionTask = {
 
 		xpStr += ', ';
 		xpStr += await user.addXP({
-			skillName: SkillsEnum.Prayer,
+			skillName: 'prayer',
 			amount: quantity * prayerXP,
 			duration,
 			source: 'ShadesOfMorton'

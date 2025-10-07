@@ -1,14 +1,8 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import Firemaking from '../../lib/skilling/skills/firemaking';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { FiremakingActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import Firemaking from '@/lib/skilling/skills/firemaking.js';
+import type { FiremakingActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const lightCommand: OSBMahojiCommand = {
 	name: 'light',
@@ -20,7 +14,7 @@ export const lightCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The logs you want to burn.',
 			required: true,
@@ -34,29 +28,28 @@ export const lightCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to burn (optional).',
 			required: false,
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const log = Firemaking.Burnables.find(
 			log => stringMatches(log.name, options.name) || stringMatches(log.name.split(' ')[0], options.name)
 		);
 
 		if (!log) return "That's not a valid log to light.";
 
-		if (user.skillLevel(SkillsEnum.Firemaking) < log.level) {
+		if (user.skillsAsLevels.firemaking < log.level) {
 			return `${user.minionName} needs ${log.level} Firemaking to light ${log.name}.`;
 		}
 
 		// All logs take 2.4s to light, add on quarter of a second to account for banking/etc.
 		const timeToLightSingleLog = Time.Second * 2.4 + Time.Second / 4;
 
-		const maxTripLength = calcMaxTripLength(user, 'Firemaking');
+		const maxTripLength = user.calcMaxTripLength('Firemaking');
 
 		const amountOfLogsOwned = user.bank.amount(log.inputLogs);
 
@@ -79,12 +72,12 @@ export const lightCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await user.transactItems({ itemsToRemove: cost });
 
-		await addSubTaskToActivityTask<FiremakingActivityTaskOptions>({
+		await ActivityManager.startTrip<FiremakingActivityTaskOptions>({
 			burnableID: log.inputLogs,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			quantity,
 			duration,
 			type: 'Firemaking'

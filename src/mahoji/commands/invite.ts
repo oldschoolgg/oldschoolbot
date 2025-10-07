@@ -1,5 +1,3 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-
 export const inviteCommand: OSBMahojiCommand = {
 	name: 'invite',
 	description: 'Shows the invite link for the bot.',

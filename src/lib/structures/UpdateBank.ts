@@ -1,17 +1,15 @@
-import { objHasAnyPropInCommon } from '@oldschoolgg/toolkit/util';
+import { objectEntries, objHasAnyPropInCommon } from '@oldschoolgg/toolkit';
 import type { GearSetupType, Prisma, UserStats } from '@prisma/client';
-import { objectEntries } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, type ItemBank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 
-import { userStatsUpdate } from '../../mahoji/mahojiSettings';
-import type { MUserClass } from '../MUser';
-import { degradeChargeBank } from '../degradeableItems';
-import type { GearSetup } from '../gear/types';
-import type { ItemBank } from '../types';
-import type { JsonKeys } from '../util';
-import { ChargeBank, XPBank } from './Bank';
-import { KCBank } from './KCBank';
+import { degradeChargeBank } from '@/lib/degradeableItems.js';
+import type { GearSetup } from '@/lib/gear/types.js';
+import type { MUserClass } from '@/lib/MUser.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
+import { KCBank } from '@/lib/structures/KCBank.js';
+import { XPBank } from '@/lib/structures/XPBank.js';
+import type { JsonKeys } from '@/lib/util.js';
 
 export class UpdateBank {
 	// Things removed
@@ -98,7 +96,7 @@ export class UpdateBank {
 		let userStatsUpdates: Prisma.UserStatsUpdateInput = {};
 		// KC
 		if (this.kcBank.length() > 0) {
-			const currentScores = (await user.fetchStats({ monster_scores: true })).monster_scores as ItemBank;
+			const currentScores = (await user.fetchStats()).monster_scores as ItemBank;
 			for (const [monster, kc] of this.kcBank.entries()) {
 				currentScores[monster] = (currentScores[monster] ?? 0) + kc;
 			}
@@ -123,7 +121,7 @@ export class UpdateBank {
 			}
 		}
 
-		await userStatsUpdate(user.id, userStatsUpdates);
+		await user.statsUpdate(userStatsUpdates);
 
 		const userUpdates: Prisma.UserUpdateInput = this.userUpdates;
 

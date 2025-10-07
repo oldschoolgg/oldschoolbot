@@ -1,8 +1,7 @@
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
+import { roll } from '@oldschoolgg/rng';
+import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 
-import { roll } from '@/lib/util/rng';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 function calcPoints() {
 	let base = 42.5;
@@ -22,9 +21,8 @@ function calcPoints() {
 
 export const soulWarsTask: MinionTask = {
 	type: 'SoulWars',
-	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
-		const { channelID, quantity, userID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
+		const { channelID, quantity } = data;
 
 		let points = 0;
 		for (let i = 0; i < quantity; i++) {

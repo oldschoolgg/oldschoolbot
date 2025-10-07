@@ -1,6 +1,6 @@
-import { EMPTY_BIRD_NEST_ID } from '../../constants';
-import LootTable from '../../structures/LootTable';
-import SimpleOpenable from '../../structures/SimpleOpenable';
+import { EMPTY_BIRD_NEST_ID } from '@/constants.js';
+import LootTable from '@/structures/LootTable.js';
+import { SimpleOpenable } from '@/structures/SimpleOpenable.js';
 
 const NestBoxRingTable = new LootTable()
 	// source: https://oldschool.runescape.wiki/w/Bird_nest

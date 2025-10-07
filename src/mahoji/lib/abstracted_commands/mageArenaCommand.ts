@@ -1,14 +1,12 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
-import { Bank, SkillsEnum } from 'oldschooljs';
+import { randomVariation } from '@oldschoolgg/rng';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
+import { Bank } from 'oldschooljs';
 
-import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
+import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export async function mageArenaCommand(user: MUser, channelID: string) {
-	if (user.skillLevel(SkillsEnum.Magic) < 60) {
+	if (user.skillsAsLevels.magic < 60) {
 		return 'You need level 60 Magic to do the Mage Arena.';
 	}
 	const duration = randomVariation(Time.Minute * 10, 5);
@@ -36,11 +34,11 @@ export async function mageArenaCommand(user: MUser, channelID: string) {
 
 	await user.removeItemsFromBank(itemsNeeded);
 
-	updateBankSetting('mage_arena_cost', totalCost);
+	await ClientSettings.updateBankSetting('mage_arena_cost', totalCost);
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration,
 		type: 'MageArena'
 	});

@@ -1,8 +1,8 @@
 import { Bank } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
-import { minionKCommand } from '../../src/mahoji/commands/k';
-import { createTestUser, mockClient } from './util';
+import { minionKCommand } from '../../src/mahoji/commands/k.js';
+import { createTestUser, mockClient } from './util.js';
 
 test('Killing Men', async () => {
 	await mockClient();

@@ -3,21 +3,19 @@ import { Markdown, Tab, Tabs, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 import { omit } from 'remeda';
 
-applyStaticDefine();
+import '../src/lib/safeglobals.js';
 
-import '../src/lib/safeglobals';
-import { applyStaticDefine } from '../meta';
-import { ClueTiers } from '../src/lib/clues/clueTiers';
-import { CombatAchievements } from '../src/lib/combat_achievements/combatAchievements';
-import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear, itemBoosts } from '../src/lib/data/cox';
-import { wikiMonsters } from '../src/lib/minions/data/killableMonsters';
-import { quests } from '../src/lib/minions/data/quests';
-import { sorts } from '../src/lib/sorts';
-import { clueGlobalBoosts, clueTierBoosts } from '../src/mahoji/commands/clue';
-import { execAsync, runTimedLoggedFn } from './scriptUtil';
-import { renderTripBuyables } from './wiki/tripBuyables';
-import { updateAuthors } from './wiki/updateAuthors';
-import { handleMarkdownEmbed } from './wiki/wikiScriptUtil';
+import { wikiMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import { ClueTiers } from '../src/lib/clues/clueTiers.js';
+import { CombatAchievements } from '../src/lib/combat_achievements/combatAchievements.js';
+import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear, itemBoosts } from '../src/lib/data/cox.js';
+import { quests } from '../src/lib/minions/data/quests.js';
+import { sorts } from '../src/lib/sorts.js';
+import { clueGlobalBoosts, clueTierBoosts } from '../src/mahoji/commands/clue.js';
+import { execAsync, runTimedLoggedFn } from './scriptUtil.js';
+import { renderTripBuyables } from './wiki/tripBuyables.js';
+import { updateAuthors } from './wiki/updateAuthors.js';
+import { handleMarkdownEmbed } from './wiki/wikiScriptUtil.js';
 
 function escapeItemName(str: string) {
 	return str.replace(/\[/g, '\\[').replace(/\]/g, '\\]');
@@ -39,7 +37,7 @@ function renderMonstersMarkdown() {
 			);
 			md.addLine(`- You can send your minion to kill this monster using: [[/k name:${monster.name}]]`);
 			md.addLine(`- You can check your KC using: [[/minion kc name:${monster.name}]]`);
-			md.addLine(`- You can check the KC leaderboard using: [[/lb kc monster\:${monster.name}]]`);
+			md.addLine(`- You can check the KC leaderboard using: [[/lb kc monster:${monster.name}]]`);
 			md.addLine(`- You can check your collection log using: [[/cl name\\:${monster.name}]]`);
 			md.addLine(`- You can check the collection log leaderboard using: [[/lb cl cl:${monster.name}]]`);
 

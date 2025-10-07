@@ -1,15 +1,13 @@
+import { roll } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 
-import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { roll } from '../../lib/util/rng';
-import { wealthInventorySize } from '../../mahoji/lib/abstracted_commands/chargeWealthCommand';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { wealthInventorySize } from '@/mahoji/lib/abstracted_commands/chargeWealthCommand.js';
 
 export const wealthChargeTask: MinionTask = {
 	type: 'WealthCharging',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { quantity, userID, channelID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { quantity, channelID } = data;
 		let deaths = 0;
 		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
@@ -33,8 +31,7 @@ export const wealthChargeTask: MinionTask = {
 			str += ` They died ${deaths}x times, causing the loss of ${wealthInventorySize * deaths} rings of wealth.`;
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

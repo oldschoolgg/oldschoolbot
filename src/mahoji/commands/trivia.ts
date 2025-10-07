@@ -1,10 +1,9 @@
-import type { CommandRunOptions, MahojiUserOption, OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { ApplicationCommandOptionType, type TextChannel, userMention } from 'discord.js';
-import { shuffleArr, uniqueArr } from 'e';
+import { shuffleArr } from '@oldschoolgg/rng';
+import { uniqueArr } from '@oldschoolgg/toolkit';
+import { userMention } from 'discord.js';
 
-import { DynamicButtons } from '../../lib/DynamicButtons';
-import { getRandomTriviaQuestions } from '../../lib/roboChimp';
-import { deferInteraction } from '../../lib/util/interactionReply';
+import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
+import { DynamicButtons } from '@/lib/structures/DynamicButtons.js';
 
 export const triviaCommand: OSBMahojiCommand = {
 	name: 'trivia',
@@ -14,7 +13,7 @@ export const triviaCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.User,
+			type: 'User',
 			name: 'duel',
 			description: 'A user to duel in answering the question fastest.',
 			required: false
@@ -23,22 +22,19 @@ export const triviaCommand: OSBMahojiCommand = {
 	run: async ({
 		interaction,
 		userID,
-		channelID,
 		options
 	}: CommandRunOptions<{
 		duel?: MahojiUserOption;
 	}>) => {
-		await deferInteraction(interaction);
+		await interaction.defer();
 		const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
-		const channel = globalClient.channels.cache.get(channelID.toString());
 		const users = [userID.toString()];
 		if (options.duel) users.push(options.duel.user.id);
 
 		let correctUser: string | null = null;
 		const buttons = new DynamicButtons({
-			channel: channel as TextChannel,
-			usersWhoCanInteract: users,
-			deleteAfterConfirm: true
+			interaction,
+			usersWhoCanInteract: users
 		});
 		for (const q of uniqueArr(shuffleArr([question, ...fakeQuestions].map(i => i.answers[0])))) {
 			buttons.add({

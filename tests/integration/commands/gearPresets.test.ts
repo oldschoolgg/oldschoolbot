@@ -1,17 +1,8 @@
-import { randInt } from 'e';
 import { EItem, itemID } from 'oldschooljs';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test } from 'vitest';
 
-import { gearPresetsCommand } from '../../../src/mahoji/commands/gearpresets';
-import { createTestUser } from '../util';
-
-vi.mock('../../../src/lib/util', async () => {
-	const actual: any = await vi.importActual('../../../src/lib/util');
-	return {
-		...actual,
-		cryptoRand: (min: number, max: number) => randInt(min, max)
-	};
-});
+import { gearPresetsCommand } from '../../../src/mahoji/commands/gearpresets.js';
+import { createTestUser } from '../util.js';
 
 describe('Gear Presets Command', async () => {
 	const user = await createTestUser();

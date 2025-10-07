@@ -1,22 +1,19 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { dateFm, formatDuration, getNextUTCReset } from '@oldschoolgg/toolkit/util';
-import { Time, notEmpty, objectEntries } from 'e';
+import { dateFm, Emoji, formatDuration, getNextUTCReset, notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
 
-import { tears_of_guthix_cd } from '@/lib/events';
+import { TEARS_OF_GUTHIX_CD } from '@/lib/events.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
 export const tearsOfGuthixSkillReqs = {
-	[SkillsEnum.Firemaking]: 49,
-	[SkillsEnum.Crafting]: 20,
-	[SkillsEnum.Mining]: 20
+	firemaking: 49,
+	crafting: 20,
+	mining: 20
 };
 export const tearsOfGuthixIronmanReqs = {
-	[SkillsEnum.Smithing]: 49,
-	[SkillsEnum.Thieving]: 36,
-	[SkillsEnum.Slayer]: 35
+	smithing: 49,
+	thieving: 36,
+	slayer: 35
 };
 
 function getTearsOfGuthixMissingIronmanMessage(user: MUser): string | null {
@@ -24,8 +21,8 @@ function getTearsOfGuthixMissingIronmanMessage(user: MUser): string | null {
 
 	const skills = user.skillsAsLevels;
 	let skillsMatch = 0;
-	for (const [skill, level] of Object.entries(tearsOfGuthixIronmanReqs)) {
-		if (skills[skill as SkillsEnum] >= level) skillsMatch++;
+	for (const [skill, level] of Object.entries(tearsOfGuthixIronmanReqs) as [SkillNameType, number][]) {
+		if (skills[skill] >= level) skillsMatch++;
 	}
 
 	if (skillsMatch === 0) {
@@ -51,9 +48,9 @@ function getTearsOfGuthixMissingSkillMessage(user: MUser): string | null {
 
 export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
-	const currentStats = await user.fetchStats({ last_tears_of_guthix_timestamp: true });
+	const currentStats = await user.fetchStats();
 	const lastPlayedDate = Number(currentStats.last_tears_of_guthix_timestamp);
-	const nextReset = getNextUTCReset(lastPlayedDate, tears_of_guthix_cd);
+	const nextReset = getNextUTCReset(lastPlayedDate, TEARS_OF_GUTHIX_CD);
 
 	// If they have already claimed a ToG in the past 7days
 	if (Date.now() < nextReset) {
@@ -77,10 +74,10 @@ export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 
 	const duration = Math.min(Time.Minute * 2 + Time.Second * 0.6 * userQP, Time.Minute * 30);
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'tears_of_guthix',
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity: 1,
 		duration,
 		type: 'TearsOfGuthix'

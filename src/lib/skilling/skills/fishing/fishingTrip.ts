@@ -1,14 +1,14 @@
-import { calcPercentOfNum } from 'e';
+import type { RNGProvider } from '@oldschoolgg/rng';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs';
 import { match } from 'ts-pattern';
 
-import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot';
-import type { GearBank } from '@/lib/structures/GearBank';
-import { UpdateBank } from '@/lib/structures/UpdateBank';
-import { skillingPetDropRate } from '@/lib/util';
-import type { RNGProvider } from '@/lib/util/rng';
-import type { Fish } from '../../types';
-import { calcAnglerBoostPercent, calcMinnowQuantityRange, calcRadasBlessingBoost } from './fishingUtil';
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import type { Fish } from '@/lib/skilling/types.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import { skillingPetDropRate } from '@/lib/util.js';
+import { calcAnglerBoostPercent, calcMinnowQuantityRange, calcRadasBlessingBoost } from './fishingUtil.js';
 
 export function calcFishingTripResult({
 	fish,
@@ -17,7 +17,14 @@ export function calcFishingTripResult({
 	flakesQuantity,
 	gearBank,
 	rng
-}: { fish: Fish; quantity: number; duration: number; flakesQuantity?: number; gearBank: GearBank; rng: RNGProvider }) {
+}: {
+	fish: Fish;
+	quantity: number;
+	duration: number;
+	flakesQuantity?: number;
+	gearBank: GearBank;
+	rng: RNGProvider;
+}) {
 	const updateBank = new UpdateBank();
 	const boosts: string[] = [];
 

@@ -1,12 +1,9 @@
-import { formatDuration, randomVariation, toTitleCase } from '@oldschoolgg/toolkit/util';
-import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
+import { randomVariation } from '@oldschoolgg/rng';
+import { calcWhatPercent, formatDuration, reduceNumByPercent, Time, toTitleCase } from '@oldschoolgg/toolkit';
 
+import { BitField } from '@/lib/constants.js';
+import type { GauntletOptions } from '@/lib/types/minions.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { BitField } from '../../../lib/constants';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { GauntletOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 const baseRequirements = {
 	cooking: 70,
@@ -47,7 +44,7 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 	}
 	const readableName = `${toTitleCase(type)} Gauntlet`;
 	const requiredSkills = type === 'corrupted' ? corruptedRequirements : standardRequirements;
-	const prayLevel = user.skillLevel(SkillsEnum.Prayer);
+	const prayLevel = user.skillsAsLevels.prayer;
 
 	if (!user.hasSkillReqs(requiredSkills)) {
 		return `You don't have the required stats to do the ${readableName}, you need: ${formatSkillRequirements(
@@ -121,7 +118,7 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 	// Add a 5% variance to account for randomness of gauntlet
 	const gauntletLength = randomVariation(baseLength, 5);
 
-	const maxTripLength = calcMaxTripLength(user, 'Gauntlet');
+	const maxTripLength = user.calcMaxTripLength('Gauntlet');
 
 	const quantity = Math.floor(maxTripLength / gauntletLength);
 	const duration = quantity * gauntletLength;
@@ -134,9 +131,9 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 		)}.`;
 	}
 
-	await addSubTaskToActivityTask<GauntletOptions>({
+	await ActivityManager.startTrip<GauntletOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'Gauntlet',

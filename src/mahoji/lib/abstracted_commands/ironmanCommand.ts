@@ -1,26 +1,19 @@
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
 import type { Prisma } from '@prisma/client';
-import type { ChatInputCommandInteraction } from 'discord.js';
 import type { ItemBank } from 'oldschooljs';
 
-import { BitField, DELETED_USER_ID } from '../../../lib/constants';
-import { roboChimpUserFetch } from '../../../lib/roboChimp';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { assert } from '../../../lib/util/logError';
+import { BitField, DELETED_USER_ID } from '@/lib/constants.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { assert } from '@/lib/util/logError.js';
 
-export async function ironmanCommand(
-	user: MUser,
-	interaction: ChatInputCommandInteraction | null,
-	permanent?: boolean
-) {
+export async function ironmanCommand(user: MUser, interaction: MInteraction | null, permanent?: boolean) {
 	if (user.minionIsBusy) return 'Your minion is busy.';
 	if (user.isIronman) {
 		const isPerm = user.bitfield.includes(BitField.PermanentIronman);
 		if (isPerm) return "You're a **permanent** ironman and you cannot de-iron.";
 		if (permanent) {
 			if (interaction) {
-				await handleMahojiConfirmation(
-					interaction,
+				await interaction.confirmation(
 					'Would you like to change your ironman to a *permanent* iron? The only thing in your account that will change, is that you will no longer be able to de-iron. This is *permanent* and cannot be reversed.'
 				);
 			}
@@ -32,8 +25,7 @@ export async function ironmanCommand(
 			return 'You are now a **permanent** Ironman, Enjoy!';
 		}
 		if (interaction) {
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				'Would you like to stop being an ironman? You will keep all your items and stats but you will have to start over if you want to play as an ironman again.'
 			);
 		}
@@ -85,15 +77,13 @@ export async function ironmanCommand(
 	// Return early if no active listings.
 	if (activeListings.length !== 0) {
 		return `You can't become an ironman because you have active Grand Exchange listings. Cancel them and try again: ${mentionCommand(
-			globalClient,
 			'ge',
 			'cancel'
 		)}`;
 	}
 
 	if (interaction) {
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			`Are you sure you want to start over and play as an ironman?
 
 :warning: **Read the following text before confirming. This is your only warning. ** :warning:

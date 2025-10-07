@@ -1,15 +1,12 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit/discord-util';
-import { generateHexColorForCashStack } from '@oldschoolgg/toolkit/runescape';
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
-import { calcWhatPercent, objectEntries } from 'e';
-import { type Bank, Items, Util } from 'oldschooljs';
+import { calcWhatPercent, generateHexColorForCashStack, objectEntries, toTitleCase } from '@oldschoolgg/toolkit';
+import { type Bank, Items, toKMB } from 'oldschooljs';
 
-import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
-import type { CollectionStatus, IToReturnCollection } from '../lib/data/CollectionsExport';
-import { OSRSCanvas } from './canvas/OSRSCanvas';
-import { bankImageTask } from './canvas/bankImage';
-import type { IBgSprite } from './canvas/canvasUtil';
-import type { MUserStats } from './structures/MUserStats';
+import { bankImageTask } from '@/lib/canvas/bankImage.js';
+import type { IBgSprite } from '@/lib/canvas/canvasUtil.js';
+import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
+import { allCollectionLogs, getCollection, getTotalCl } from '@/lib/data/Collections.js';
+import type { CollectionStatus, IToReturnCollection } from '@/lib/data/CollectionsExport.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
 
 export const collectionLogTypes = [
 	{ name: 'collection', description: 'Normal Collection Log' },
@@ -102,6 +99,10 @@ class CollectionLogTask {
 		collectionLog?: IToReturnCollection;
 		minigameScoresOverride?: Awaited<ReturnType<MUser['fetchMinigameScores']>> | null;
 	}): Promise<CommandResponse> {
+		if (!bankImageTask.ready) {
+			await bankImageTask.init();
+			bankImageTask.ready = true;
+		}
 		const { sprite } = bankImageTask.getBgAndSprite({
 			bankBackgroundId: options.user.user.bankBackground,
 			farmingContract: options.user.farmingContract()
@@ -112,7 +113,7 @@ class CollectionLogTask {
 		}
 		const { collection, type, user, flags } = options;
 
-		let collectionLog: IToReturnCollection | undefined | false = undefined;
+		let collectionLog: IToReturnCollection | undefined | false;
 
 		if (options.collectionLog) {
 			collectionLog = options.collectionLog;
@@ -380,7 +381,7 @@ class CollectionLogTask {
 		ctx.restore();
 
 		ctx.save();
-		const value = Util.toKMB(totalPrice);
+		const value = toKMB(totalPrice);
 		canvas.drawText({
 			text: value,
 			x: canvas.width - 15 - canvas.measureTextWidth(value),
@@ -450,7 +451,7 @@ class CollectionLogTask {
 		}
 
 		return {
-			files: [{ attachment: await canvas.toScaledOutput(2), name: `${type}_log_${new Date().valueOf()}.png` }]
+			files: [{ attachment: await canvas.toScaledOutput(2), name: `${type}_log_${Date.now()}.png` }]
 		};
 	}
 

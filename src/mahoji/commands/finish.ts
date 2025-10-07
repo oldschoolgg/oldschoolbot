@@ -1,21 +1,18 @@
-import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
-import { notEmpty } from 'e';
+import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
+import { AttachmentBuilder } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { finishables } from '../../lib/finishables';
-import { sorts } from '../../lib/sorts';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { Workers } from '../../lib/workers';
+import { finishables } from '@/lib/finishables.js';
+import { sorts } from '@/lib/sorts.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { Workers } from '@/lib/workers/index.js';
 
 export const finishCommand: OSBMahojiCommand = {
 	name: 'finish',
 	description: 'Simulate finishing a CL.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'input',
 			description: 'The CL/thing you want to finish. (e.g. corp, pets, raids)',
 			required: true,
@@ -26,14 +23,14 @@ export const finishCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'tertiaries',
 			description: 'Whether or not to include Tertiaries (e.g. capes)',
 			required: false
 		}
 	],
 	run: async ({ interaction, options }: CommandRunOptions<{ input: string; tertiaries?: boolean }>) => {
-		await deferInteraction(interaction);
+		await interaction.defer();
 		const { input: finishable, tertiaries } = options;
 		const val = finishables.find(
 			i => stringMatches(i.name, finishable) || i.aliases?.some(alias => stringMatches(alias, finishable))

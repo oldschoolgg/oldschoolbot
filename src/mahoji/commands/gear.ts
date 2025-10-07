@@ -1,23 +1,24 @@
-import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
+import { loadImage } from 'skia-canvas';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { allPetIDs } from '../../lib/data/CollectionsExport';
-import type { GearSetupType } from '../../lib/gear/types';
-import { GearSetupTypes } from '../../lib/gear/types';
-import { equipPet } from '../../lib/minions/functions/equipPet';
-import { unequipPet } from '../../lib/minions/functions/unequipPet';
+import { canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil.js';
+import { BOT_TYPE } from '@/lib/constants.js';
+import { allPetIDs } from '@/lib/data/CollectionsExport.js';
+import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '@/lib/discord/index.js';
+import { findBestGearSetups } from '@/lib/gear/functions/findBestGearSetups.js';
+import type { GearSetupType } from '@/lib/gear/types.js';
+import { GearSetupTypes } from '@/lib/gear/types.js';
+import { equipPet } from '@/lib/minions/functions/equipPet.js';
+import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
 import {
 	gearEquipCommand,
 	gearStatsCommand,
 	gearSwapCommand,
 	gearUnequipCommand,
 	gearViewCommand
-} from '../lib/abstracted_commands/gearCommands';
-import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '../lib/mahojiCommandOptions';
-import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
+} from '@/mahoji/lib/abstracted_commands/gearCommands.js';
 
 const gearValidationChecks = new Set();
 
@@ -26,7 +27,7 @@ export const gearCommand: OSBMahojiCommand = {
 	description: 'Manage, equip, unequip your gear.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'equip',
 			description: 'Equip an item or preset to one of your gear setups.',
 			options: [
@@ -35,7 +36,7 @@ export const gearCommand: OSBMahojiCommand = {
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'items',
 					description: 'A list of equippable items to equip.'
 				},
@@ -50,14 +51,14 @@ export const gearCommand: OSBMahojiCommand = {
 					name: 'preset'
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: 'Integer',
 					name: 'quantity',
 					description: 'The quantity you want to equip (optional).',
 					required: false,
 					min_value: 1
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'auto',
 					description: 'Automatically equip the best gear you have for a certain style.',
 					required: false,
@@ -66,7 +67,7 @@ export const gearCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'unequip',
 			description: 'Unequip an item from one of your gear setups.',
 			options: [
@@ -81,7 +82,7 @@ export const gearCommand: OSBMahojiCommand = {
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'all',
 					description: 'Unequip everything in this setup?',
 					required: false
@@ -89,12 +90,12 @@ export const gearCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'stats',
 			description: 'Check the gear stats of a list of items, regardless if you own them or not.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'gear_setup',
 					description: 'A list of equippable items to check the stats of.',
 					required: true
@@ -102,26 +103,25 @@ export const gearCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'pet',
 			description: 'Equip or unequip a pet.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'equip',
 					description: 'Equip a pet.',
 					required: false,
 					autocomplete: async (value, user) => {
-						const bank = getMahojiBank(await mahojiUsersSettingsFetch(user.id, { bank: true }));
 						return allPetIDs
-							.filter(i => bank.has(i))
+							.filter(i => user.bank.has(i))
 							.map(i => Items.itemNameFromId(i)!)
 							.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i, value: i }));
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'unequip',
 					description: 'Unequip your pet.',
 					required: false
@@ -129,12 +129,12 @@ export const gearCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'view',
 			description: 'View your gear.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'setup',
 					description: 'The setup you want to view.',
 					required: true,
@@ -144,7 +144,7 @@ export const gearCommand: OSBMahojiCommand = {
 					}))
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'text_format',
 					description: 'Do you want to see your gear in plaintext?',
 					required: false
@@ -152,23 +152,37 @@ export const gearCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'swap',
 			description: 'Swap gear from one setup to another.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'setup_one',
 					description: 'The setup you want to switch.',
 					required: true,
 					choices: GearSetupTypes.map(i => ({ name: toTitleCase(i), value: i }))
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'setup_two',
 					description: 'The setup you want to switch.',
 					required: true,
 					choices: GearSetupTypes.map(i => ({ name: toTitleCase(i), value: i }))
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'best_in_slot',
+			description: 'View the best in slot items for a particular stat.',
+			options: [
+				{
+					type: 'String',
+					name: 'stat',
+					description: 'The stat to view the BiS items for.',
+					required: true,
+					choices: Object.values(GearStat).map(k => ({ name: k, value: k }))
 				}
 			]
 		}
@@ -176,7 +190,7 @@ export const gearCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		interaction,
-		userID
+		user
 	}: CommandRunOptions<{
 		equip?: {
 			gear_setup: GearSetupType;
@@ -191,9 +205,34 @@ export const gearCommand: OSBMahojiCommand = {
 		pet?: { equip?: string; unequip?: string };
 		view?: { setup: string; text_format?: boolean };
 		swap?: { setup_one: GearSetupType; setup_two: GearSetupType };
+		best_in_slot?: { stat: GearStat };
 	}>) => {
-		const user = await mUserFetch(userID);
-		if ((options.equip || options.unequip) && !gearValidationChecks.has(userID)) {
+		await interaction.defer();
+		if (options.best_in_slot?.stat) {
+			const res = findBestGearSetups({ stat: options.best_in_slot.stat, ignoreUnobtainable: BOT_TYPE === 'OSB' });
+			const totalCanvas = createCanvas(900, 480 * 5);
+			const ctx = totalCanvas.getContext('2d');
+			for (let i = 0; i < 5; i++) {
+				const gearImageBuffer = await user.generateGearImage({ gearSetup: res[i] });
+				const gearImage = await loadImage(gearImageBuffer);
+				ctx.drawImage(gearImage, 0, i * gearImage.height);
+			}
+			return {
+				content: `These are the best in slot items for ${options.best_in_slot.stat}.
+
+${res
+	.slice(0, 10)
+	.map(
+		(setup, idx) =>
+			`${idx + 1}. ${setup.toString()} has ${setup.getStats()[options.best_in_slot!.stat]} ${
+				options.best_in_slot!.stat
+			}`
+	)
+	.join('\n')}`,
+				files: [await canvasToBuffer(totalCanvas)]
+			};
+		}
+		if ((options.equip || options.unequip) && !gearValidationChecks.has(user.id)) {
 			const { itemsUnequippedAndRefunded } = await user.validateEquippedGear();
 			if (itemsUnequippedAndRefunded.length > 0) {
 				return `You had some items equipped that you didn't have the requirements to use, so they were unequipped and refunded to your bank: ${itemsUnequippedAndRefunded}`;
