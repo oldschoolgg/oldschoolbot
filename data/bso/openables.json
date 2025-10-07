@@ -5542,7 +5542,6 @@
 		"name": "Tradeables Mystery box",
 		"id": 6199,
 		"opened_item": "Tradeable Mystery Box",
-		"emoji": "<:mysterybox:680783258488799277>",
 		"all_items": [],
 		"is_mystery_box": true,
 		"smokey_applies": true

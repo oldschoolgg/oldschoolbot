@@ -1,11 +1,10 @@
+import type { ResearchTaskOptions } from '@/lib/bso/bsoTypes.js';
 import { type MaterialType, materialTypes } from '@/lib/bso/skills/invention/index.js';
 import { type Invention, Inventions, transactMaterialsFromUser } from '@/lib/bso/skills/invention/inventions.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { clamp } from 'remeda';
-
-import type { ResearchTaskOptions } from '@/lib/types/minions.js';
 
 export function inventionsCanUnlockFromResearch(user: MUser, researchedMaterial: MaterialType): Invention[] {
 	const inventionLevel = user.skillsAsLevels.invention;

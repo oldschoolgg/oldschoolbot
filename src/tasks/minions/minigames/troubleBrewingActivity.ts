@@ -1,5 +1,3 @@
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
-
 import { Bank } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
@@ -11,7 +9,7 @@ export const brewingTask: MinionTask = {
 		await user.incrementMinigameScore('trouble_brewing', quantity);
 		const loot = new Bank().add('Pieces of eight', quantity * 100);
 
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 		if (flappyRes.shouldGiveBoost) loot.multiply(2);
 
 		await user.transactItems({

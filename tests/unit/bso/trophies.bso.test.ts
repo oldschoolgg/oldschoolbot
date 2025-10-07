@@ -1,4 +1,4 @@
-import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/bsoOpenables.js';
+import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/mysteryBoxes.js';
 
 import { Items } from 'oldschooljs';
 import { expect, test } from 'vitest';

@@ -1,3 +1,4 @@
+import type { FishingContestOptions } from '@/lib/bso/bsoTypes.js';
 import {
 	fishingLocations,
 	getCurrentFishType,
@@ -10,7 +11,6 @@ import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
-import type { FishingContestOptions } from '@/lib/types/minions.js';
 
 export async function fishingContestStartCommand(user: MUser, channelID: string, loc: string | undefined) {
 	const currentFishType = getCurrentFishType();

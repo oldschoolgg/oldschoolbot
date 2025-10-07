@@ -1,5 +1,3 @@
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
-
 import { roll } from '@oldschoolgg/rng';
 import { Bank, GrandHallowedCoffin } from 'oldschooljs';
 
@@ -71,7 +69,7 @@ export const sepulchreTask: MinionTask = {
 			fletchingLoot.add(fletchable.id, quantityToGive);
 		}
 
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}

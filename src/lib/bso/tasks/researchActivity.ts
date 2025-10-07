@@ -1,22 +1,20 @@
+import type { ResearchTaskOptions } from '@/lib/bso/bsoTypes.js';
 import type { Invention } from '@/lib/bso/skills/invention/inventions.js';
 import { inventionsCanUnlockFromResearch } from '@/lib/bso/skills/invention/research.js';
 
-import { roll, shuffleArr } from '@oldschoolgg/rng';
 import { bold, userMention } from 'discord.js';
-
-import type { ResearchTaskOptions } from '@/lib/types/minions.js';
 
 export const researchActivityTask: MinionTask = {
 	type: 'Research',
-	async run(data: ResearchTaskOptions, { user, handleTripFinish }) {
+	async run(data: ResearchTaskOptions, { user, handleTripFinish, rng }) {
 		const { material, quantity } = data;
 
 		const inventionToTryUnlock: Invention | null =
-			shuffleArr(inventionsCanUnlockFromResearch(user, data.material))[0] ?? null;
+			rng.shuffle(inventionsCanUnlockFromResearch(user, data.material))[0] ?? null;
 		let unlockedBlueprint: Invention | null = null;
 
 		for (let i = 0; i < quantity; i++) {
-			if (!roll(1000)) continue;
+			if (!rng.roll(1000)) continue;
 			unlockedBlueprint = inventionToTryUnlock;
 		}
 

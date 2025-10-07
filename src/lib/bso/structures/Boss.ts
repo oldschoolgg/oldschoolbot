@@ -1,3 +1,5 @@
+import type { NewBossOptions } from '@/lib/bso/bsoTypes.js';
+
 import { randFloat } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
@@ -18,7 +20,6 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import type { Gear } from '@/lib/structures/Gear.js';
 import type { Skills } from '@/lib/types/index.js';
-import type { NewBossOptions } from '@/lib/types/minions.js';
 import type { ClientBankKey } from '@/lib/util/clientSettings.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 

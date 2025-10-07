@@ -1,3 +1,4 @@
+import type { NewBossOptions } from '@/lib/bso/bsoTypes.js';
 import { getPHeadDescriptor } from '@/lib/bso/pumpkinHead.js';
 
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
@@ -5,7 +6,6 @@ import { EmbedBuilder } from 'discord.js';
 import { Items } from 'oldschooljs';
 
 import { globalConfig } from '@/lib/constants.js';
-import type { NewBossOptions } from '../types/minions.js';
 import { BossInstance, type BossOptions, type BossUser } from './structures/Boss.js';
 
 interface BossEvent {

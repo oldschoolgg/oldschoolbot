@@ -1,5 +1,3 @@
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
-
 import { roll } from '@oldschoolgg/rng';
 import { Bank, LootTable } from 'oldschooljs';
 
@@ -74,7 +72,7 @@ export const gnomeResTask: MinionTask = {
 			loot.add(tipTable.roll());
 		}
 
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}

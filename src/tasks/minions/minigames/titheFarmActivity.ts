@@ -1,5 +1,3 @@
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
-
 import { roll } from '@oldschoolgg/rng';
 import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
@@ -23,7 +21,7 @@ export const titheFarmTask: MinionTask = {
 		const determineHarvest = baseHarvest + Math.min(15, titheFarmsCompleted);
 		let determinePoints = determineHarvest - 74;
 
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 		if (flappyRes.shouldGiveBoost) {
 			determinePoints *= 2;
 		}

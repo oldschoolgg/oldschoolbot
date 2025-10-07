@@ -1,3 +1,4 @@
+import type { DOAOptions } from '@/lib/bso/bsoTypes.js';
 import { doaCL, doaMetamorphPets } from '@/lib/bso/collection-log/main.js';
 import { chanceOfDOAUnique, DOARooms, pickUniqueToGiveUser } from '@/lib/bso/depthsOfAtlantis.js';
 import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';
@@ -11,7 +12,6 @@ import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { resolveAttackStyles } from '@/lib/minions/functions/resolveAttackStyles.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
-import type { DOAOptions } from '@/lib/types/minions.js';
 
 async function handleDOAXP(user: MUser, qty: number, isCm: boolean) {
 	let rangeXP = 10_000 * qty;

@@ -9,7 +9,6 @@ import {
 import { calcWhatPercent, formatDuration, Time } from '@oldschoolgg/toolkit';
 
 import { PerkTier } from '@/lib/constants.js';
-import { getUsersPerkTier } from '@/lib/perkTiers.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 
 export const bsoLeaguesCommand: OSBMahojiCommand = {
@@ -71,7 +70,7 @@ export const bsoLeaguesCommand: OSBMahojiCommand = {
 		const cooldown = Cooldowns.get(
 			user.id,
 			'leagues',
-			getUsersPerkTier(user) >= PerkTier.Two ? Time.Second * 5 : Time.Second * 30
+			user.perkTier() >= PerkTier.Two ? Time.Second * 5 : Time.Second * 30
 		);
 		if (cooldown) {
 			return `This command is on cooldown, you can use it again in ${formatDuration(cooldown)}.`;

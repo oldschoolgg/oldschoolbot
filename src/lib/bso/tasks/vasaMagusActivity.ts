@@ -1,3 +1,4 @@
+import type { NewBossOptions } from '@/lib/bso/bsoTypes.js';
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { globalDroprates } from '@/lib/bso/globalDroprates.js';
@@ -6,7 +7,6 @@ import { Malygos } from '@/lib/bso/monsters/demi-bosses/Malygos.js';
 import { SeaKraken } from '@/lib/bso/monsters/demi-bosses/SeaKraken.js';
 import { Treebeard } from '@/lib/bso/monsters/demi-bosses/Treebeard.js';
 
-import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { objectEntries } from '@oldschoolgg/toolkit';
 import { Bank, Items, Monsters, resolveItems } from 'oldschooljs';
 
@@ -14,7 +14,6 @@ import { kittens } from '@/lib/growablePets.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { bossKillables } from '@/lib/minions/data/killableMonsters/bosses/index.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
-import type { NewBossOptions } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 const vasaBosses = [
@@ -36,7 +35,7 @@ const vasaBosses = [
 
 export const vasaTask: MinionTask = {
 	type: 'VasaMagus',
-	async run(data: NewBossOptions, { user, handleTripFinish }) {
+	async run(data: NewBossOptions, { user, handleTripFinish, rng }) {
 		const { channelID, duration, quantity } = data;
 
 		await user.incrementKC(VasaMagus.id, quantity);
@@ -53,9 +52,9 @@ export const vasaTask: MinionTask = {
 		);
 		for (let i = 0; i < quantity; i++) {
 			loot.add(VasaMagusLootTable.roll());
-			if (roll(petDroprate)) loot.add('Voidling');
-			const mon = randArrItem(vasaBosses);
-			const qty = randInt(1, 3);
+			if (rng.roll(petDroprate)) loot.add('Voidling');
+			const mon = rng.pick(vasaBosses);
+			const qty = rng.randInt(1, 3);
 			lootOf[mon.name] = (lootOf[mon.name] ?? 0) + qty;
 			if ('table' in mon) {
 				loot.add(mon.table.roll(qty));
@@ -75,7 +74,7 @@ export const vasaTask: MinionTask = {
 		}
 
 		const pet = user.user.minion_equippedPet;
-		if (pet && kittens.includes(pet) && roll(1)) {
+		if (pet && kittens.includes(pet) && rng.roll(1)) {
 			await user.update({
 				minion_equippedPet: Items.getOrThrow('Magic kitten').id
 			});

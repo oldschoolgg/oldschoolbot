@@ -1,6 +1,7 @@
 import type { GodFavourBank, GodName } from '@/lib/bso/minigames/divineDominion.js';
 import { mysteriousStepData, mysteriousTrailTracks } from '@/lib/bso/mysteryTrail.js';
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
+import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { MTame } from '@/lib/bso/structures/MTame.js';
 import { type Species, tameSpecies } from '@/lib/bso/tames/tames.js';
@@ -1322,6 +1323,10 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		});
 		const species = tameSpecies.find(i => i.id === tame.species_id)!;
 		return { tame, activity, species };
+	}
+
+	async hasFlappy(duration: number) {
+		return userHasFlappy({ user: this, duration });
 	}
 }
 declare global {

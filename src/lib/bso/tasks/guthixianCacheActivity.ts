@@ -1,7 +1,6 @@
 import { divinersOutfit } from '@/lib/bso/collection-log/main.js';
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divination.js';
 
-import { percentChance, roll } from '@oldschoolgg/rng';
 import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -9,7 +8,7 @@ import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minio
 
 export const guthixianCacheTask: MinionTask = {
 	type: 'GuthixianCache',
-	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
+	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish, rng }) {
 		const { channelID, duration } = data;
 
 		const xp = user.skillLevel('divination') * user.skillLevel('divination') * 2.5;
@@ -21,7 +20,7 @@ export const guthixianCacheTask: MinionTask = {
 		});
 
 		const loot = new Bank();
-		if (percentChance(40)) {
+		if (rng.percentChance(40)) {
 			const unownedPiece = divinersOutfit.find(piece => !user.allItemsOwned.has(piece));
 			if (unownedPiece) {
 				loot.add(unownedPiece);
@@ -31,7 +30,7 @@ export const guthixianCacheTask: MinionTask = {
 		let str = `${user}, ${user.minionName} finished completing the Guthixian Cache. ${xpRes}`;
 
 		let amountOfBoostsReceived = 1;
-		if (user.hasEquippedOrInBank('Divination master cape') && roll(4)) {
+		if (user.hasEquippedOrInBank('Divination master cape') && rng.roll(4)) {
 			amountOfBoostsReceived++;
 			str += ' You received an extra boost from your Divination master cape.';
 		}

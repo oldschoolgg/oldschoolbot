@@ -1,4 +1,4 @@
-import { donateICHandler } from '@/lib/bso/commands/donateItemContract.js';
+import { ItemContracts } from '@/lib/bso/itemContracts.js';
 import { repeatTameTrip } from '@/lib/bso/tames/tameTasks.js';
 
 import { cleanUsername, formatDuration, removeFromArr, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
@@ -257,7 +257,7 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
 
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
-	if (id.includes('DONATE_IC')) return donateICHandler(interaction);
+	if (id.includes('DONATE_IC')) return ItemContracts.donateICHandler(interaction);
 	if (id.startsWith('GPE_')) return handleGearPresetEquip(user, id, interaction);
 	if (id.startsWith('PTR_')) return handlePinnedTripRepeat(user, id, interaction);
 

@@ -1,6 +1,6 @@
 import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
 import { dyedItems } from '@/lib/bso/dyedItems.js';
-import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/bsoOpenables.js';
+import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/mysteryBoxes.js';
 
 import { uniqueArr } from '@oldschoolgg/toolkit';
 import { expect, test } from 'vitest';

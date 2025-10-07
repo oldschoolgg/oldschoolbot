@@ -1,5 +1,3 @@
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
-
 import { Bank } from 'oldschooljs';
 
 import { lootRoom, plunderRooms } from '@/lib/minions/data/plunder.js';
@@ -29,7 +27,7 @@ export const plunderTask: MinionTask = {
 			}
 		}
 
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}

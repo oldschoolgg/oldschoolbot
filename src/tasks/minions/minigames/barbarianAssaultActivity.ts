@@ -1,5 +1,3 @@
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
-
 import { randInt } from '@oldschoolgg/rng';
 import { calcPercentOfNum, calcWhatPercent } from '@oldschoolgg/toolkit';
 
@@ -29,7 +27,7 @@ export const barbAssaultTask: MinionTask = {
 		}
 		let totalPoints = Math.floor(pts * quantity);
 
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 
 		if (flappyRes.shouldGiveBoost) {
 			totalPoints *= 2;

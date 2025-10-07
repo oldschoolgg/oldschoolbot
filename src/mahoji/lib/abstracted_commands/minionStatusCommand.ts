@@ -1,5 +1,5 @@
-import { getItemContractDetails } from '@/lib/bso/commands/ic.js';
 import { spawnLampIsReady } from '@/lib/bso/commands/spawnBoxLampCommand.js';
+import { ItemContracts } from '@/lib/bso/itemContracts.js';
 import { getUsersFishingContestDetails } from '@/lib/bso/minigames/fishingContest.js';
 import { shortTameTripDesc, tameLastFinishedActivity } from '@/lib/bso/tames/tameUtil.js';
 
@@ -194,7 +194,7 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 		);
 	}
 
-	const icDetails = getItemContractDetails(user);
+	const icDetails = ItemContracts.getItemContractDetails(user);
 	if (perkTier >= PerkTier.Two && icDetails.currentItem && icDetails.owns) {
 		buttons.push(
 			new ButtonBuilder()

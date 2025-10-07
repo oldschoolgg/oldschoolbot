@@ -1,4 +1,16 @@
 import { bossEvents } from '@/lib/bso/bossEvents.js';
+import type {
+	DisassembleTaskOptions,
+	DOAOptions,
+	DungeoneeringOptions,
+	FishingContestOptions,
+	MemoryHarvestOptions,
+	MoktangTaskOptions,
+	MonkeyRumbleOptions,
+	NewBossOptions,
+	ResearchTaskOptions,
+	TinkeringWorkshopOptions
+} from '@/lib/bso/bsoTypes.js';
 import { fishingLocations } from '@/lib/bso/minigames/fishingContest.js';
 import { divinationEnergies, memoryHarvestTypes } from '@/lib/bso/skills/divination.js';
 
@@ -56,15 +68,11 @@ import type {
 	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
-	DisassembleTaskOptions,
-	DOAOptions,
-	DungeoneeringOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FightCavesActivityTaskOptions,
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
-	FishingContestOptions,
 	FletchingActivityTaskOptions,
 	GauntletOptions,
 	GroupMonsterActivityTaskOptions,
@@ -72,20 +80,15 @@ import type {
 	HunterActivityTaskOptions,
 	InfernoOptions,
 	KourendFavourActivityTaskOptions,
-	MemoryHarvestOptions,
 	MinigameActivityTaskOptionsWithNoChanges,
 	MiningActivityTaskOptions,
-	MoktangTaskOptions,
-	MonkeyRumbleOptions,
 	MonsterActivityTaskOptions,
 	MotherlodeMiningActivityTaskOptions,
-	NewBossOptions,
 	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
 	PlunderActivityTaskOptions,
 	RaidsOptions,
-	ResearchTaskOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
@@ -96,7 +99,6 @@ import type {
 	SpecificQuestOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
-	TinkeringWorkshopOptions,
 	TOAOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions

@@ -1,3 +1,4 @@
+import type { MoktangTaskOptions } from '@/lib/bso/bsoTypes.js';
 import { dwarvenOutfit } from '@/lib/bso/collection-log/main.js';
 
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
@@ -6,7 +7,6 @@ import { Bank, Items, resolveItems } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import { PercentCounter } from '@/lib/structures/PercentCounter.js';
-import type { MoktangTaskOptions } from '@/lib/types/minions.js';
 
 const requiredPickaxes = resolveItems(['Crystal pickaxe', 'Volcanic pickaxe', 'Dwarven pickaxe', 'Dragon pickaxe']);
 

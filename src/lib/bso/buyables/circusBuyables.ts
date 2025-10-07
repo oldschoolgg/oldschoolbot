@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import type { Buyable } from '../../data/buyables/buyables.js';
+import type { Buyable } from '@/lib/data/buyables/buyables.js';
 
 export const circusBuyables: Buyable[] = [
 	{

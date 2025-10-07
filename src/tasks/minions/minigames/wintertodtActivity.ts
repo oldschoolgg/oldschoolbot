@@ -1,5 +1,4 @@
 import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 
 import { randInt, roll } from '@oldschoolgg/rng';
 import { calcPerHour, Emoji, Events, Time } from '@oldschoolgg/toolkit';
@@ -110,7 +109,7 @@ export const wintertodtTask: MinionTask = {
 			duration: data.duration,
 			source: 'Wintertodt'
 		})}`;
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}

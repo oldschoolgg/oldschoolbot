@@ -1,3 +1,4 @@
+import type { MonkeyRumbleOptions } from '@/lib/bso/bsoTypes.js';
 import {
 	fightingMessages,
 	getMonkeyPhrase,
@@ -15,7 +16,6 @@ import { Emoji, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/to
 import { Bank } from 'oldschooljs';
 
 import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
-import type { MonkeyRumbleOptions } from '@/lib/types/minions.js';
 
 export async function monkeyRumbleStatsCommand(user: MUser) {
 	const tier = monkeyTiers.find(t => t.id === monkeyTierOfUser(user))!;

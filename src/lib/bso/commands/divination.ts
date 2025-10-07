@@ -1,3 +1,4 @@
+import type { MemoryHarvestOptions } from '@/lib/bso/bsoTypes.js';
 import {
 	basePortentCost,
 	divinationEnergies,
@@ -13,7 +14,6 @@ import { formatDuration, increaseNumByPercent, removeFromArr, Time } from '@olds
 import { Bank } from 'oldschooljs';
 
 import { mentionCommand } from '@/lib/discord/index.js';
-import type { MemoryHarvestOptions } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
 
 export const divinationCommand: OSBMahojiCommand = {

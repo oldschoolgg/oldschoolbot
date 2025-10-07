@@ -55,6 +55,7 @@ import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
 import { VenatrixLootTable } from '@/lib/bso/monsters/bosses/Venatrix.js';
 import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 import { NexMonster, nexLootTable } from '@/lib/bso/monsters/nex.js';
+import { cmbClothes } from '@/lib/bso/openables/cmb.js';
 import { PaintBoxTable } from '@/lib/bso/paintColors.js';
 import { pumpkinHeadUniqueTable } from '@/lib/bso/pumpkinHead.js';
 import { divinationEnergies, portents } from '@/lib/bso/skills/divination.js';
@@ -125,7 +126,6 @@ import {
 	cluesMasterRareCL,
 	cluesMediumCL,
 	cluesSharedCL,
-	cmbClothes,
 	colossalWyrmAgilityCL,
 	commanderZilyanaCL,
 	corporealBeastCL,

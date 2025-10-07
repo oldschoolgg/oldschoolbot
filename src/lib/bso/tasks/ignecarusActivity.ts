@@ -1,8 +1,8 @@
+import type { NewBossOptions } from '@/lib/bso/bsoTypes.js';
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { Ignecarus, IgnecarusLootTable, IgnecarusNotifyDrops } from '@/lib/bso/monsters/bosses/Ignecarus.js';
 import type { BossUser } from '@/lib/bso/structures/Boss.js';
 
-import { percentChance, shuffleArr } from '@oldschoolgg/rng';
 import { Emoji, sumArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -10,14 +10,13 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
-import type { NewBossOptions } from '@/lib/types/minions.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 
 const methodsOfDeath = ['Burnt to death', 'Eaten', 'Crushed', 'Incinerated'];
 
 export const ignecarusTask: MinionTask = {
 	type: 'Ignecarus',
-	async run(data: NewBossOptions, { handleTripFinish }) {
+	async run(data: NewBossOptions, { handleTripFinish, rng }) {
 		const { channelID, users: idArr, duration, bossUsers: _bossUsers, quantity, userID } = data;
 		const wrongFoodDeaths: MUser[] = [];
 		const deaths: Record<string, { user: MUser; qty: number }> = {};
@@ -39,7 +38,7 @@ export const ignecarusTask: MinionTask = {
 					wrongFoodDeaths.push(user);
 					dead = true;
 				}
-				if (dead || percentChance(deathChance)) {
+				if (dead || rng.percentChance(deathChance)) {
 					if (deaths[user.id]) deaths[user.id].qty++;
 					else deaths[user.id] = { qty: 1, user };
 				}
@@ -125,7 +124,8 @@ export const ignecarusTask: MinionTask = {
 					`${u.user.toString()}${u.qty > 1 ? ` x${u.qty}` : ''} (${
 						wrongFoodDeaths.includes(u.user)
 							? 'Had no food'
-							: shuffleArr([...methodsOfDeath])
+							: rng
+									.shuffle([...methodsOfDeath])
 									.slice(0, u.qty)
 									.join(', ')
 					})`

@@ -1,3 +1,4 @@
+import type { MemoryHarvestOptions } from '@/lib/bso/bsoTypes.js';
 import { divinationCommand } from '@/lib/bso/commands/divination.js';
 import { MemoryHarvestType } from '@/lib/bso/skills/divination.js';
 
@@ -5,7 +6,6 @@ import { Bank, type ItemBank, itemID } from 'oldschooljs';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 
 import { Gear } from '@/lib/structures/Gear.js';
-import type { MemoryHarvestOptions } from '@/lib/types/minions.js';
 import { createTestUser, mockClient } from '../util.js';
 
 describe('Divination', async () => {

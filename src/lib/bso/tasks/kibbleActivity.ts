@@ -1,8 +1,7 @@
+import type { KibbleOptions } from '@/lib/bso/bsoTypes.js';
 import { kibbles } from '@/lib/bso/kibble.js';
 
 import { Bank } from 'oldschooljs';
-
-import type { KibbleOptions } from '@/lib/types/minions.js';
 
 export const kibbleTask: MinionTask = {
 	type: 'KibbleMaking',

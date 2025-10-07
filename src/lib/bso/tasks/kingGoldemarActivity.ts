@@ -1,14 +1,13 @@
+import type { NewBossOptions } from '@/lib/bso/bsoTypes.js';
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { KingGoldemar, KingGoldemarLootTable } from '@/lib/bso/monsters/bosses/KingGoldemar.js';
 import { calcDwwhChance } from '@/lib/bso/structures/Boss.js';
 
-import { percentChance, randArrItem, roll } from '@oldschoolgg/rng';
 import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
-import type { NewBossOptions } from '@/lib/types/minions.js';
 
 const methodsOfDeath = [
 	'Beheaded',
@@ -23,7 +22,7 @@ const methodsOfDeath = [
 
 export const kingGoldemarTask: MinionTask = {
 	type: 'KingGoldemar',
-	async run(data: NewBossOptions, { handleTripFinish }) {
+	async run(data: NewBossOptions, { handleTripFinish, rng }) {
 		const { channelID, users: idArr, duration, bossUsers } = data;
 		const deaths: MUser[] = [];
 		const users: MUser[] = await Promise.all(idArr.map(i => mUserFetch(i)));
@@ -33,7 +32,7 @@ export const kingGoldemarTask: MinionTask = {
 		const dwwhTable: MUser[] = [];
 
 		for (const { user, deathChance } of bossUsers) {
-			if (percentChance(deathChance)) {
+			if (rng.percentChance(deathChance)) {
 				deaths.push(getUser(user));
 			} else {
 				dwwhTable.push(getUser(user));
@@ -69,8 +68,8 @@ export const kingGoldemarTask: MinionTask = {
 			users.some(u => u.gear.melee.hasEquipped('Ring of luck'))
 		);
 
-		const gotDWWH = roll(dwwhChance);
-		const dwwhRecipient = gotDWWH ? randArrItem(dwwhTable) : null;
+		const gotDWWH = rng.roll(dwwhChance);
+		const dwwhRecipient = gotDWWH ? rng.pick(dwwhTable) : null;
 
 		const killStr =
 			gotDWWH && dwwhRecipient
@@ -131,9 +130,7 @@ export const kingGoldemarTask: MinionTask = {
 
 		// Show deaths in the result
 		if (deaths.length > 0) {
-			resultStr += `\n\n**Died in battle**: ${deaths.map(
-				u => `${u.toString()}(${randArrItem(methodsOfDeath)})`
-			)}.`;
+			resultStr += `\n\n**Died in battle**: ${deaths.map(u => `${u.toString()}(${rng.pick(methodsOfDeath)})`)}.`;
 		}
 
 		if (!solo) {

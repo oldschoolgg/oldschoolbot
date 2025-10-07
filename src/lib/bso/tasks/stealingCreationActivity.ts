@@ -1,5 +1,3 @@
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
-
 import { Bank } from 'oldschooljs';
 
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
@@ -13,7 +11,7 @@ export const scTask: MinionTask = {
 
 		const loot = new Bank().add('Stealing creation token', quantity * 5);
 
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 		if (flappyRes.shouldGiveBoost) loot.multiply(2);
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });

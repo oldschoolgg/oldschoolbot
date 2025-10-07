@@ -1,27 +1,28 @@
 import { OSB_VIRTUS_IDS } from '@/lib/bso/bsoConstants.js';
 import { customBossesDropsThatCantBeDroppedInMBs } from '@/lib/bso/collection-log/main.js';
 import { baseHolidayItems, PartyhatTable } from '@/lib/bso/holidayItems.js';
+import { cmbClothes } from '@/lib/bso/openables/cmb.js';
+import { PMBTable } from '@/lib/bso/openables/pmb.js';
 import {
 	BeachMysteryBoxTable,
 	BirthdayPackTable,
 	GamblersBagTable,
 	IndependenceBoxTable,
-	PMBTable,
 	RoyalMysteryBoxTable
 } from '@/lib/bso/openables/tables.js';
 
-import { ItemGroups, resolveItems } from 'oldschooljs';
+import { ItemGroups, Items, resolveItems } from 'oldschooljs';
 
+import { customItems } from '@/lib/customItems/util.js';
 import {
 	allPetIDs,
 	chambersOfXericCL,
-	cmbClothes,
 	theatreOfBloodHardUniques,
 	theatreOfBloodNormalUniques
 } from '@/lib/data/CollectionsExport.js';
 import { allTrophyItems } from '@/lib/data/itemAliases.js';
 
-export const cantBeDropped = resolveItems([
+export const mysteryBoxBlacklist = resolveItems([
 	'Abyssal pouch',
 	'Dwarven crate',
 	'Halloween mask set',
@@ -400,5 +401,8 @@ export const cantBeDropped = resolveItems([
 	'Trailblazer reloaded mithril trophy',
 	'Trailblazer reloaded steel trophy',
 	'Trailblazer reloaded iron trophy',
-	'Trailblazer reloaded bronze trophy'
+	'Trailblazer reloaded bronze trophy',
+	...customItems.filter(
+		i => (i >= 40_000 && i <= 50_000) || Items.getOrThrow(i).customItemData?.cantDropFromMysteryBoxes === true
+	)
 ]);

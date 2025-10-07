@@ -1,3 +1,4 @@
+import type { KibbleOptions } from '@/lib/bso/bsoTypes.js';
 import { kibbles } from '@/lib/bso/kibble.js';
 
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
@@ -5,7 +6,6 @@ import { Bank, Items } from 'oldschooljs';
 
 import { type Eatable, Eatables } from '@/lib/data/eatables.js';
 import { getRealHealAmount } from '@/lib/minions/functions/getUserFoodFromBank.js';
-import type { KibbleOptions } from '@/lib/types/minions.js';
 
 export const kibbleCommand: OSBMahojiCommand = {
 	name: 'kibble',

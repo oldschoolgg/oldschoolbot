@@ -1,4 +1,5 @@
 import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
+import type { BathhouseTaskOptions } from '@/lib/bso/bsoTypes.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { getAllUserTames, TameSpeciesID } from '@/lib/bso/tames/tames.js';
 
@@ -9,7 +10,6 @@ import { Bank, type Item, Items, LootTable, resolveItems } from 'oldschooljs';
 
 import Grimy from '@/lib/skilling/skills/herblore/mixables/grimy.js';
 import type { Skills } from '@/lib/types/index.js';
-import type { BathhouseTaskOptions } from '@/lib/types/minions.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 export const bathhouseTierNames = ['Warm', 'Hot', 'Fiery'] as const;

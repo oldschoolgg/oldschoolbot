@@ -3,7 +3,6 @@ import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { KalphiteKingMonster } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
 import { getKalphiteKingGearStats } from '@/lib/bso/util/getKalphiteKingGearStats.js';
 
-import { percentChance } from '@oldschoolgg/rng';
 import { calcWhatPercent, Emoji, noOp, SimpleTable } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -23,7 +22,7 @@ interface KalphiteKingUser {
 
 export const kalphiteKingTask: MinionTask = {
 	type: 'KalphiteKing',
-	async run(data: BossActivityTaskOptions, { handleTripFinish }) {
+	async run(data: BossActivityTaskOptions, { handleTripFinish, rng }) {
 		const { channelID, userID, users, quantity, duration } = data;
 		const teamsLoot = new TeamLoot([]);
 		const kcAmounts: { [key: string]: number } = {};
@@ -55,7 +54,7 @@ export const kalphiteKingTask: MinionTask = {
 					teamFailed = true;
 				}
 
-				if (teamFailed || percentChance(user.chanceOfDeath)) {
+				if (teamFailed || rng.percentChance(user.chanceOfDeath)) {
 					deaths[user.id] = deaths[user.id] ? deaths[user.id] + 1 : 1;
 					// Mark user as dead this kill:
 					deathsThisKill[user.id] = 1;

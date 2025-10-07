@@ -1,3 +1,4 @@
+import type { MemoryHarvestOptions } from '@/lib/bso/bsoTypes.js';
 import {
 	calcEnergyPerMemory,
 	type DivinationEnergy,
@@ -9,8 +10,6 @@ import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 import { roll } from '@oldschoolgg/rng';
 import { calcPercentOfNum, Emoji, increaseNumByPercent } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
-
-import type { MemoryHarvestOptions } from '@/lib/types/minions.js';
 
 const SECONDS_TO_HARVEST = 60;
 const SECONDS_TO_CONVERT = 1;

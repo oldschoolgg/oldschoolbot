@@ -1,3 +1,4 @@
+import type { FishingContestOptions } from '@/lib/bso/bsoTypes.js';
 import { catchFishAtLocation, fishingLocations } from '@/lib/bso/minigames/fishingContest.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { ClueTable } from '@/lib/bso/tables/sharedTables.js';
@@ -7,7 +8,6 @@ import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
-import type { FishingContestOptions } from '@/lib/types/minions.js';
 
 export function calculateFishingContestXP({ fishingLevel, fishSizeCM }: { fishSizeCM: number; fishingLevel: number }) {
 	let fishingXP = (fishSizeCM + 100) * (170 + Math.min(100, fishingLevel) / 5);

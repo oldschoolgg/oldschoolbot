@@ -1,9 +1,10 @@
+import type { TuraelsTrialsOptions } from '@/lib/bso/bsoTypes.js';
+
 import { formatDuration, increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
-import type { TuraelsTrialsOptions } from '@/lib/types/minions.js';
 
 export const TuraelsTrialsMethods = ['melee', 'mage', 'range'] as const;
 export type TuraelsTrialsMethod = (typeof TuraelsTrialsMethods)[number];

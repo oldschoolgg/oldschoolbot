@@ -1,5 +1,3 @@
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
-
 import { percentChance, randInt } from '@oldschoolgg/rng';
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, ItemGroups, Items } from 'oldschooljs';
@@ -80,7 +78,7 @@ export const templeTrekkingTask: MinionTask = {
 			loot.add(rewardToken.id);
 		}
 
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}

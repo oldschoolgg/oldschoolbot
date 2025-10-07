@@ -1,4 +1,5 @@
 import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
+import type { BathhouseTaskOptions } from '@/lib/bso/bsoTypes.js';
 import { determineTameClueResult } from '@/lib/bso/commands/tames.js';
 import {
 	BathhouseOres,
@@ -39,7 +40,6 @@ import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import { HunterTechniqueEnum } from '@/lib/skilling/types.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
-import type { BathhouseTaskOptions } from '@/lib/types/minions.js';
 import { PeakTier } from '@/lib/util/peaks.js';
 import { calculateHunterInput } from '@/mahoji/commands/hunt.js';
 import { calculateMiningInput } from '@/mahoji/commands/mine.js';

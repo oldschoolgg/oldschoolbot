@@ -1,3 +1,4 @@
+import type { DOAOptions } from '@/lib/bso/bsoTypes.js';
 import {
 	calcDOAInput,
 	calculateUserGearPercents,
@@ -13,7 +14,6 @@ import { clamp } from 'remeda';
 import { degradeItem } from '@/lib/degradeableItems.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import type { MakePartyOptions } from '@/lib/types/index.js';
-import type { DOAOptions } from '@/lib/types/minions.js';
 import { bankToStrShortNames } from '@/lib/util/smallUtils.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 

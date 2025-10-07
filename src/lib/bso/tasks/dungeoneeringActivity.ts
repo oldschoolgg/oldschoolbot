@@ -1,3 +1,4 @@
+import type { DungeoneeringOptions } from '@/lib/bso/bsoTypes.js';
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
 import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divination.js';
@@ -10,8 +11,6 @@ import {
 import { randomVariation, roll } from '@oldschoolgg/rng';
 import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
-
-import type { DungeoneeringOptions } from '@/lib/types/minions.js';
 
 export function calculateDungeoneeringResult({
 	floor,

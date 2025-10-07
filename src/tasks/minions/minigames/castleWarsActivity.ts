@@ -1,5 +1,3 @@
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
-
 import { SimpleTable } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -20,7 +18,7 @@ export const castleWarsTask: MinionTask = {
 		}
 		const boosts = [];
 
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 			boosts.push(flappyRes.userMsg);

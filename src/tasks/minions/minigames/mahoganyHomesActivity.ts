@@ -1,5 +1,3 @@
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
-
 import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 
 import { calcConBonusXP } from '@/lib/skilling/skills/construction/calcConBonusXP.js';
@@ -22,7 +20,7 @@ export const mahoganyHomesTask: MinionTask = {
 			duration,
 			source: 'MahoganyHomes'
 		});
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 		if (flappyRes.shouldGiveBoost) {
 			points *= 2;
 		}

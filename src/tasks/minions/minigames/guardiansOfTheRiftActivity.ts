@@ -1,5 +1,3 @@
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
-
 import { randArrItem, randInt } from '@oldschoolgg/rng';
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, EItem } from 'oldschooljs';
@@ -120,7 +118,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		for (let i = 0; i < quantity; i++) {
 			rewardsQty += randInt(rolls - 1, rolls);
 		}
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 		if (flappyRes.shouldGiveBoost) rewardsQty *= 2;
 		rewardsGuardianLoot.add(rewardsGuardianTable.roll(rewardsQty));
 

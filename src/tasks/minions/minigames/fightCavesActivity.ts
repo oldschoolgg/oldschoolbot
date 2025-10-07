@@ -1,5 +1,3 @@
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
-
 import { percentChance, randInt } from '@oldschoolgg/rng';
 import { calcPercentOfNum, calcWhatPercent, Emoji, Events, formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank, itemID, Monsters } from 'oldschooljs';
@@ -138,7 +136,7 @@ export const fightCavesTask: MinionTask = {
 			);
 		}
 
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}

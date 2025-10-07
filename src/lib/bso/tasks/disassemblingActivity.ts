@@ -1,16 +1,14 @@
+import type { DisassembleTaskOptions } from '@/lib/bso/bsoTypes.js';
 import { inventionBoosts, transactMaterialsFromUser } from '@/lib/bso/skills/invention/inventions.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
-import { roll } from '@oldschoolgg/rng';
 import { Emoji, Time } from '@oldschoolgg/toolkit';
 import { userMention } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
-import type { DisassembleTaskOptions } from '@/lib/types/minions.js';
-
 export const disassemblingTask: MinionTask = {
 	type: 'Disassembling',
-	async run(data: DisassembleTaskOptions, { user, handleTripFinish }) {
+	async run(data: DisassembleTaskOptions, { user, handleTripFinish, rng }) {
 		const { qty } = data;
 		const item = Items.getOrThrow(data.i);
 
@@ -54,7 +52,7 @@ ${xpStr}`;
 		const chancePerMinute = cogsworthChancePerHour * 60;
 		const prizeLoot = new Bank();
 		for (let i = 0; i < minutes; i++) {
-			if (roll(chancePerMinute)) {
+			if (rng.roll(chancePerMinute)) {
 				loot.add('Cogsworth');
 			}
 		}

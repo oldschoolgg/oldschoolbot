@@ -1,4 +1,3 @@
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import { ExoticSeedsTable } from '@/lib/bso/tables/sharedTables.js';
 
 import { randFloat } from '@oldschoolgg/rng';
@@ -56,7 +55,7 @@ export const odsTask: MinionTask = {
 		const level = user.skillLevel('magic');
 		let tokens = Math.floor((quantity / 2) * 3.235 * (level / 25 + 1));
 
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 
 		if (flappyRes.shouldGiveBoost) tokens *= 2;
 		await user.update({

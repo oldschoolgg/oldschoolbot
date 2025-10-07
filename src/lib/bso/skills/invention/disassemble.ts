@@ -1,3 +1,4 @@
+import type { DisassembleTaskOptions } from '@/lib/bso/bsoTypes.js';
 import { DisassemblyGroupMap, DisassemblySourceGroups } from '@/lib/bso/skills/invention/groups/index.js';
 import {
 	allItemsThatCanBeDisassembledIDs,
@@ -30,7 +31,6 @@ import { clamp } from 'remeda';
 
 import Skillcapes from '@/lib/skilling/skillcapes.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
-import type { DisassembleTaskOptions } from '@/lib/types/minions.js';
 
 const MASTER_CAPE_JUNK_REDUCTION = 5;
 

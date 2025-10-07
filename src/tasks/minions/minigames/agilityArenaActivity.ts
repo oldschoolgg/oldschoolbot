@@ -1,5 +1,3 @@
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
-
 import { randomVariation, roll } from '@oldschoolgg/rng';
 import { calcWhatPercent, Emoji, Events, formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import { Bank, toKMB } from 'oldschooljs';
@@ -36,7 +34,7 @@ export const agilityArenaTask: MinionTask = {
 
 		ticketsReceived += bonusTickets;
 
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 
 		if (flappyRes.shouldGiveBoost) {
 			ticketsReceived *= 2;

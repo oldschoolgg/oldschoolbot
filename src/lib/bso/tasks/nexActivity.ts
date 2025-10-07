@@ -3,7 +3,6 @@ import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { NEX_UNIQUE_DROPRATE, NexMonster } from '@/lib/bso/monsters/nex.js';
 import { getNexGearStats } from '@/lib/bso/util/getNexGearStats.js';
 
-import { percentChance, randArrItem, roll } from '@oldschoolgg/rng';
 import { calcWhatPercent, Emoji, noOp, SimpleTable } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
@@ -22,7 +21,7 @@ interface NexUser {
 
 export const nexTask: MinionTask = {
 	type: 'Nex',
-	async run(data: BossActivityTaskOptions, { handleTripFinish }) {
+	async run(data: BossActivityTaskOptions, { handleTripFinish, rng }) {
 		const { channelID, userID, users, quantity, duration } = data;
 		const teamsLoot = new TeamLoot([]);
 		const kcAmounts: { [key: string]: number } = {};
@@ -54,7 +53,7 @@ export const nexTask: MinionTask = {
 					teamFailed = true;
 				}
 
-				if (teamFailed || percentChance(user.chanceOfDeath)) {
+				if (teamFailed || rng.percentChance(user.chanceOfDeath)) {
 					deaths[user.id] = deaths[user.id] ? deaths[user.id] + 1 : 1;
 					// Mark user as dead this kill:
 					deathsThisKill[user.id] = 1;
@@ -66,8 +65,8 @@ export const nexTask: MinionTask = {
 
 			const loot = new Bank();
 			loot.add(NexMonster.table.kill(1, {}));
-			if (roll(NEX_UNIQUE_DROPRATE(users.length))) {
-				loot.add(randArrItem(nexUniqueDrops), 1);
+			if (rng.roll(NEX_UNIQUE_DROPRATE(users.length))) {
+				loot.add(rng.pick(nexUniqueDrops), 1);
 			}
 			if (isDoubleLootActive(duration)) {
 				loot.multiply(2);

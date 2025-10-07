@@ -1,3 +1,4 @@
+import type { DungeoneeringOptions } from '@/lib/bso/bsoTypes.js';
 import {
 	determineDgLevelForFloor,
 	dungBuyables,
@@ -14,7 +15,6 @@ import {
 import { formatDuration, formatOrdinal, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 
 import type { MakePartyOptions } from '@/lib/types/index.js';
-import type { DungeoneeringOptions } from '@/lib/types/minions.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
 // Max people in a party:

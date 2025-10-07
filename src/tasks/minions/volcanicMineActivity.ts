@@ -1,5 +1,3 @@
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
-
 import { randFloat, randInt, roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
@@ -57,7 +55,7 @@ export const vmTask: MinionTask = {
 		const currentUserPoints = user.user.volcanic_mine_points;
 		let pointsReceived = Math.round(xpReceived / 5.5);
 
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 
 		if (flappyRes.shouldGiveBoost) {
 			pointsReceived *= 2;

@@ -31,6 +31,7 @@ import { cookingCL, craftingCL, creatablesCL, herbloreCL, smithingCL } from '@/l
 import { kibbleCL } from '@/lib/bso/kibble.js';
 import { allLeagueTasks, leagueTasks } from '@/lib/bso/leagues/leagues.js';
 import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
+import { cmbClothes } from '@/lib/bso/openables/cmb.js';
 import { divinationEnergies } from '@/lib/bso/skills/divination.js';
 import { dungBuyables } from '@/lib/bso/skills/dungoneering/dungData.js';
 import { inventionCL } from '@/lib/bso/skills/invention/inventions.js';
@@ -76,7 +77,6 @@ import {
 	cluesMediumCL,
 	cluesRaresCL,
 	cluesSharedCL,
-	cmbClothes,
 	commanderZilyanaCL,
 	corporealBeastCL,
 	crazyArchaeologistCL,

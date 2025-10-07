@@ -1,3 +1,4 @@
+import type { MoktangTaskOptions } from '@/lib/bso/bsoTypes.js';
 import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
 import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { MoktangLootTable } from '@/lib/bso/monsters/bosses/Moktang.js';
@@ -16,7 +17,6 @@ import { Bank, Items, increaseBankQuantitesByPercent, resolveItems } from 'oldsc
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
-import type { MoktangTaskOptions } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const moktangTask: MinionTask = {

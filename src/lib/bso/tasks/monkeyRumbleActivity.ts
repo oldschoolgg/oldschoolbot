@@ -1,10 +1,8 @@
+import type { MonkeyRumbleOptions } from '@/lib/bso/bsoTypes.js';
 import { monkeyHeadImage, monkeyTierOfUser } from '@/lib/bso/minigames/monkey-rumble/monkeyRumble.js';
 
-import { randArrItem, roll } from '@oldschoolgg/rng';
 import { Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
-
-import type { MonkeyRumbleOptions } from '@/lib/types/minions.js';
 
 const rewardTable = new LootTable().add('Monkey egg').add('Monkey dye').add('Big banana');
 const baseTable = new LootTable().tertiary(25, 'Monkey crate');
@@ -17,7 +15,7 @@ const gotUniqueMessages = [
 
 export const mrTask: MinionTask = {
 	type: 'MonkeyRumble',
-	async run(data: MonkeyRumbleOptions, { user, handleTripFinish }) {
+	async run(data: MonkeyRumbleOptions, { user, handleTripFinish, rng }) {
 		const { channelID, quantity, monkeys, duration } = data;
 
 		await user.incrementMinigameScore('monkey_rumble', quantity);
@@ -58,7 +56,7 @@ export const mrTask: MinionTask = {
 		const specialMonkeys = monkeys.filter(m => m.special);
 		for (const monkey of specialMonkeys) {
 			const unique = rewardTable.roll();
-			if (roll(4) && monkeyTier === 5) {
+			if (rng.roll(4) && monkeyTier === 5) {
 				loot.add('Marimbo statue');
 			}
 			files.push(
@@ -66,7 +64,7 @@ export const mrTask: MinionTask = {
 					monkey,
 					content: unique.has('Monkey egg')
 						? 'You are strong warrior. Take this monkey egg, raise him well and take care of him or I find you and crush you.'
-						: randArrItem(gotUniqueMessages)
+						: rng.pick(gotUniqueMessages)
 				})
 			);
 			loot.add(unique);

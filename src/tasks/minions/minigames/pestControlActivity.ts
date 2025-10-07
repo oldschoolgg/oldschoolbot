@@ -1,5 +1,3 @@
-import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
-
 import { Time } from '@oldschoolgg/toolkit';
 import { toKMB } from 'oldschooljs';
 
@@ -14,7 +12,7 @@ export const pestControlTask: MinionTask = {
 		const { boatType, pointsPerGame, bonusPointsPerGame } = getBoatType(user, user.combatLevel);
 
 		let points = pointsPerGame * quantity;
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 		if (flappyRes.shouldGiveBoost) {
 			points *= 2;
 		}

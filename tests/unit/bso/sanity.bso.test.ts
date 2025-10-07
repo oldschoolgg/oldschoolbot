@@ -3,13 +3,15 @@ import { Ignecarus } from '@/lib/bso/monsters/bosses/Ignecarus.js';
 import { KalphiteKingMonster } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
 import { KingGoldemar } from '@/lib/bso/monsters/bosses/KingGoldemar.js';
 import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
-import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/bsoOpenables.js';
+import { mysteryBoxBlacklist } from '@/lib/bso/openables/mysteryBoxBlacklist.js';
+import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/mysteryBoxes.js';
 import { calculateMaximumTameFeedingLevelGain } from '@/lib/bso/tames/tameUtil.js';
 
 import { type Tame, tame_growth } from '@prisma/client';
 import { EquipmentSlot, Items, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
+import { customItems } from '@/lib/customItems/util.js';
 import { allPetIDs } from '@/lib/data/CollectionsExport.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables } from '@/lib/openables.js';
@@ -111,6 +113,21 @@ describe('Sanity', () => {
 				if (openable.name === name || openable.id === itemID(name) || openable.openedItem.id === itemID(name)) {
 					throw new Error(`${name} shouldnt be openable`);
 				}
+			}
+		}
+	});
+
+	test('mystery box blacklist', () => {
+		for (const i of customItems) {
+			if (Items.getOrThrow(i).customItemData?.cantDropFromMysteryBoxes && !mysteryBoxBlacklist.includes(i)) {
+				throw new Error(
+					`${i} is a custom item that can't be dropped from mystery boxes but isn't in the blacklist!`
+				);
+			}
+			if (i >= 40_000 && i <= 50_000 && !mysteryBoxBlacklist.includes(i)) {
+				throw new Error(
+					`${i} is a custom item in the 40000-50000 range but isn't in the mystery box blacklist!`
+				);
 			}
 		}
 	});

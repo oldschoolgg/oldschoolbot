@@ -1,5 +1,5 @@
-import { combinedTmbUmbEmbTables, embTable, tmbTable, umbTable } from '@/lib/bso/openables/bsoOpenables.js';
-import { PMBTable } from '@/lib/bso/openables/tables.js';
+import { combinedTmbUmbEmbTables, embTable, tmbTable, umbTable } from '@/lib/bso/openables/mysteryBoxes.js';
+import { PMBTable } from '@/lib/bso/openables/pmb.js';
 
 import { ItemGroups, Items, itemID, resolveItems } from 'oldschooljs';
 import { expect, test } from 'vitest';

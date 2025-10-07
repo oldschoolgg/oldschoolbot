@@ -1,3 +1,5 @@
+import type { DOAStoredRaid } from '@/lib/bso/bsoTypes.js';
+
 import { percentChance, randArrItem, randInt } from '@oldschoolgg/rng';
 import {
 	calcPercentOfNum,
@@ -17,7 +19,6 @@ import { mentionCommand } from '@/lib/discord/index.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';
 import type { Skills } from '@/lib/types/index.js';
 import { Gear } from '../structures/Gear.js';
-import type { DOAStoredRaid } from '../types/minions.js';
 import { formatSkillRequirements } from '../util/smallUtils.js';
 
 const { floor } = Math;

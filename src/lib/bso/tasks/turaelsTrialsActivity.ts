@@ -1,9 +1,9 @@
+import type { TuraelsTrialsOptions } from '@/lib/bso/bsoTypes.js';
 import type { TuraelsTrialsMethod } from '@/lib/bso/minigames/turaelsTrials.js';
 
 import { Bank } from 'oldschooljs';
 
 import { XPBank } from '@/lib/structures/XPBank.js';
-import type { TuraelsTrialsOptions } from '@/lib/types/minions.js';
 
 export function calculateTuraelsTrialsResult({
 	quantity,

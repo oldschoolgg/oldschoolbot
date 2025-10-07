@@ -4,6 +4,7 @@ import { clamp } from 'remeda';
 import { describe, expect, test } from 'vitest';
 
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { SkillsArray } from '@/lib/skilling/types.js';
 import Buyables from '../../src/lib/data/buyables/buyables.js';
 import { marketPriceOfBank } from '../../src/lib/marketPrices.js';
 import { allOpenables } from '../../src/lib/openables.js';
@@ -98,5 +99,12 @@ describe('Sanity', () => {
 
 		const monsterIDs = killableMonsters.map(m => m.id);
 		expect(uniqueArr(monsterIDs)).toEqual(monsterIDs);
+	});
+
+	test('skills', () => {
+		expect(SkillsArray).toContain('farming');
+		expect(SkillsArray).toContain('dungeoneering');
+		expect(SkillsArray).toContain('divination');
+		expect(SkillsArray.length).toEqual(uniqueArr(SkillsArray).length);
 	});
 });
