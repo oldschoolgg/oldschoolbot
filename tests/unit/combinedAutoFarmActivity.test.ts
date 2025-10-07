@@ -1,5 +1,5 @@
 import { Bank } from 'oldschooljs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { BitField } from '../../src/lib/constants.js';
 import type { FarmingActivityTaskOptions } from '../../src/lib/types/minions.js';
@@ -9,16 +9,20 @@ const handleTripFinishMock = vi.fn();
 const makeAutoContractButtonMock = vi.fn().mockReturnValue('AUTO_BUTTON');
 const canRunAutoContractMock = vi.fn();
 
-vi.mock('../../src/tasks/minions/farmingStep.js', () => ({
+vi.mock('@/tasks/minions/farmingStep.js', () => ({
+	__esModule: true,
 	executeFarmingStep: executeFarmingStepMock
 }));
-vi.mock('../../src/lib/util/handleTripFinish.js', () => ({
+vi.mock('@/lib/util/handleTripFinish.js', () => ({
+	__esModule: true,
 	handleTripFinish: handleTripFinishMock
 }));
-vi.mock('../../src/lib/util/interactions.js', () => ({
+vi.mock('@/lib/util/interactions.js', () => ({
+	__esModule: true,
 	makeAutoContractButton: makeAutoContractButtonMock
 }));
-vi.mock('../../src/mahoji/lib/abstracted_commands/farmingContractCommand.js', () => ({
+vi.mock('@/mahoji/lib/abstracted_commands/farmingContractCommand.js', () => ({
+	__esModule: true,
 	canRunAutoContract: canRunAutoContractMock
 }));
 
@@ -33,6 +37,14 @@ describe('handleCombinedAutoFarm auto contract button behaviour', () => {
 		handleTripFinishMock.mockReset();
 		makeAutoContractButtonMock.mockReset().mockReturnValue('AUTO_BUTTON');
 		canRunAutoContractMock.mockReset();
+		vi.stubGlobal('prisma', {
+			farmedCrop: {
+				create: vi.fn().mockResolvedValue({ id: 123 })
+			}
+		});
+		vi.stubGlobal('ClientSettings', {
+			updateBankSetting: vi.fn().mockResolvedValue(undefined)
+		});
 
 		executeFarmingStepMock.mockResolvedValue({
 			message: 'finished step',
@@ -58,10 +70,21 @@ describe('handleCombinedAutoFarm auto contract button behaviour', () => {
 			id: '1',
 			bitfield: [] as number[],
 			minionName: 'AutoFarmer',
+			hasEquippedOrInBank: vi.fn().mockReturnValue(false),
+			skillsAsLevels: {
+				farming: 99,
+				woodcutting: 99,
+				herblore: 99
+			},
+			addXP: vi.fn().mockResolvedValue(''),
+			transactItems: vi.fn().mockResolvedValue(undefined),
+			update: vi.fn().mockResolvedValue(undefined),
+			statsBankUpdate: vi.fn().mockResolvedValue(undefined),
+			farmingContract: vi.fn().mockReturnValue({ contract: null }),
 			toString() {
 				return 'AutoFarmer';
 			}
-		};
+		} as MUserStub;
 
 		taskData = {
 			type: 'Farming',
@@ -96,11 +119,16 @@ describe('handleCombinedAutoFarm auto contract button behaviour', () => {
 		} as FarmingActivityTaskOptions;
 	});
 
+	afterEach(() => {
+		vi.unstubAllGlobals();
+	});
+
 	it('relies on handleTripFinish when auto contract is available', async () => {
 		canRunAutoContractMock.mockResolvedValue(true);
 
 		await handleCombinedAutoFarm({ user: user as any, taskData });
 
+		expect(executeFarmingStepMock).toHaveBeenCalledTimes(1);
 		expect(handleTripFinishMock).toHaveBeenCalledTimes(1);
 		const extraComponents = handleTripFinishMock.mock.calls[0]?.[7];
 		expect(extraComponents).toBeUndefined();
@@ -133,5 +161,16 @@ type MUserStub = {
 	id: string;
 	bitfield: number[];
 	minionName: string;
+	hasEquippedOrInBank: ReturnType<typeof vi.fn>;
+	skillsAsLevels: {
+		farming: number;
+		woodcutting: number;
+		herblore: number;
+	};
+	addXP: ReturnType<typeof vi.fn>;
+	transactItems: ReturnType<typeof vi.fn>;
+	update: ReturnType<typeof vi.fn>;
+	statsBankUpdate: ReturnType<typeof vi.fn>;
+	farmingContract: ReturnType<typeof vi.fn>;
 	toString(): string;
 };

@@ -1,10 +1,11 @@
 import { AutoFarmFilterEnum } from '@prisma/client';
 import { Bank } from 'oldschooljs';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { MUser } from '../../src/lib/MUser.js';
 import { autoFarm } from '../../src/lib/minions/functions/autoFarm.js';
 import { Farming } from '../../src/lib/skilling/skills/farming/index.js';
+import * as farmingCalcs from '../../src/lib/skilling/skills/farming/utils/calcsFarming.js';
 import type { FarmingPatchName } from '../../src/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { IPatchData, IPatchDataDetailed } from '../../src/lib/skilling/skills/farming/utils/types.js';
 import type { Plant } from '../../src/lib/skilling/types.js';
@@ -17,6 +18,12 @@ const { addSubTaskMock, mockedCalcMaxTripLength } = vi.hoisted(() => {
 		mockedCalcMaxTripLength: calcMaxTripLengthMock
 	};
 });
+const actualCalcNumOfPatchesRef: { current: typeof farmingCalcs.calcNumOfPatches | null } = {
+	current: farmingCalcs.calcNumOfPatches
+};
+const calcNumOfPatchesSpyRef: {
+	current: ReturnType<typeof vi.spyOn<typeof farmingCalcs, 'calcNumOfPatches'>> | null;
+} = { current: null };
 
 vi.mock('../../src/lib/util/updateBankSetting.js', () => ({
 	updateBankSetting: vi.fn()
@@ -31,6 +38,18 @@ vi.mock('../../src/lib/util/addSubTaskToActivityTask.js', () => ({
 vi.mock('../../src/lib/util/calcMaxTripLength.js', () => ({
 	calcMaxTripLength: mockedCalcMaxTripLength
 }));
+
+beforeAll(() => {
+	const actual = farmingCalcs.calcNumOfPatches;
+	actualCalcNumOfPatchesRef.current = actual;
+	calcNumOfPatchesSpyRef.current = vi
+		.spyOn(farmingCalcs, 'calcNumOfPatches')
+		.mockImplementation((...args) => actual(...args));
+});
+
+afterAll(() => {
+	calcNumOfPatchesSpyRef.current?.mockRestore();
+});
 
 interface AutoFarmStubOptions {
 	gp: number;
@@ -166,6 +185,7 @@ function createAutoFarmStub({
 		addItemsToCollectionLog: vi.fn().mockResolvedValue(undefined),
 		hasEquippedOrInBank: vi.fn().mockReturnValue(false),
 		hasEquipped: vi.fn().mockReturnValue(false),
+		hasGracefulEquipped: vi.fn().mockReturnValue(false),
 		farmingContract: vi.fn().mockReturnValue({
 			contract: {
 				plantsContract: null,
@@ -176,10 +196,27 @@ function createAutoFarmStub({
 		}),
 		fetchMinigames: vi.fn().mockResolvedValue({}),
 		fetchStats: vi.fn().mockResolvedValue({}),
+		fetchMStats: vi.fn().mockResolvedValue({
+			lapsScores: new Proxy<Record<string, number>>(
+				{},
+				{
+					get: (_target, prop) => (typeof prop === 'string' ? Number.MAX_SAFE_INTEGER : undefined),
+					has: () => true
+				}
+			),
+			monsterScores: new Proxy<Record<string, number>>(
+				{},
+				{
+					get: (_target, prop) => (typeof prop === 'string' ? Number.MAX_SAFE_INTEGER : undefined),
+					has: () => true
+				}
+			)
+		}),
 		perkTier: vi.fn().mockReturnValue(0),
 		hasSkillReqs: vi.fn().mockReturnValue([true, null]),
 		getAttackStyles: vi.fn().mockReturnValue([]),
-		update: vi.fn().mockResolvedValue(undefined)
+		update: vi.fn().mockResolvedValue(undefined),
+		statsBankUpdate: vi.fn().mockResolvedValue(undefined)
 	} as any;
 	return user as MUser;
 }
@@ -209,11 +246,22 @@ describe('autoFarm tree clearing fees', () => {
 				create: vi.fn().mockResolvedValue({ id: 123 })
 			}
 		} as any;
+		globalThis.ClientSettings = {
+			updateBankSetting: vi.fn().mockResolvedValue(undefined)
+		} as any;
 	});
 
 	afterEach(() => {
 		// @ts-expect-error intentional cleanup
 		globalThis.prisma = undefined;
+		// @ts-expect-error intentional cleanup
+		globalThis.ClientSettings = undefined;
+		const actualFn = actualCalcNumOfPatchesRef.current;
+		const spy = calcNumOfPatchesSpyRef.current;
+		if (actualFn && spy) {
+			spy.mockImplementation((...args) => actualFn(...args));
+			spy.mockClear();
+		}
 	});
 
 	it('reserves the tree clearing fee during auto farm planning', async () => {
@@ -246,16 +294,41 @@ describe('autoFarm tree clearing fees', () => {
 			}
 		};
 
-		const response = await autoFarm(user, patchesDetailed, patches as Record<FarmingPatchName, IPatchData>, '123');
+		const actualFn = actualCalcNumOfPatchesRef.current;
+		const spy = calcNumOfPatchesSpyRef.current;
+		if (!actualFn || !spy) {
+			throw new Error('Expected calcNumOfPatches to be available');
+		}
+		const restoreCalcNumOfPatches = () => {
+			spy.mockImplementation((...args) => actualFn(...args));
+		};
 
-		expect(response).toContain('auto farm the following patches:');
-		expect(response).toContain('1. Redwood patch: 1x Redwood tree (Up to 2,000 GP to remove previous trees)');
-		expect(response).not.toContain('You may need to pay a nearby farmer');
-		expect(user.user.GP).toBe(5000);
-		expect(addSubTaskMock).toHaveBeenCalled();
-		const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
-		expect(firstCallArgs?.treeChopFeePaid).toBe(0);
-		expect(firstCallArgs?.treeChopFeePlanned).toBe(2000);
+		try {
+			spy.mockImplementation((plant, userParam, qp) => {
+				if (plant.seedType === 'tree') {
+					return [1];
+				}
+				return actualFn(plant, userParam, qp);
+			});
+
+			const response = await autoFarm(
+				user,
+				patchesDetailed,
+				patches as Record<FarmingPatchName, IPatchData>,
+				'123'
+			);
+
+			expect(response).toContain('auto farm the following patches:');
+			expect(response).toContain('1. Redwood patch: 1x Redwood tree (Up to 2,000 GP to remove previous trees)');
+			expect(response).not.toContain('You may need to pay a nearby farmer');
+			expect(user.user.GP).toBe(5000);
+			expect(addSubTaskMock).toHaveBeenCalled();
+			const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
+			expect(firstCallArgs?.treeChopFeePaid).toBe(0);
+			expect(firstCallArgs?.treeChopFeePlanned).toBe(2000);
+		} finally {
+			restoreCalcNumOfPatches();
+		}
 	});
 
 	it('skips planning when combined planting and clearing coins are insufficient', async () => {
@@ -326,7 +399,7 @@ describe('autoFarm tree clearing fees', () => {
 			gp: 1000,
 			farmingLevel: 99,
 			woodcuttingLevel: 1,
-			bank: new Bank({ 'Yew seed': 10 }),
+			bank: new Bank({ 'Yew seed': 1 }),
 			autoFarmFilter: AutoFarmFilterEnum.AllFarm
 		});
 
@@ -359,16 +432,41 @@ describe('autoFarm tree clearing fees', () => {
 			}
 		};
 
-		const response = await autoFarm(user, patchesDetailed, patches as Record<FarmingPatchName, IPatchData>, '123');
+		const actualFn = actualCalcNumOfPatchesRef.current;
+		const spy = calcNumOfPatchesSpyRef.current;
+		if (!actualFn || !spy) {
+			throw new Error('Expected calcNumOfPatches to be available');
+		}
+		const restoreCalcNumOfPatches = () => {
+			spy.mockImplementation((...args) => actualFn(...args));
+		};
 
-		expect(response).toContain('auto farm the following patches:');
-		expect(response).toContain('1. Tree patch: 1x Yew tree (Up to 200 GP to remove previous trees)');
-		expect(user.user.GP).toBe(1000);
-		expect(addSubTaskMock).toHaveBeenCalled();
-		const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
-		expect(firstCallArgs?.plantsName).toBe(yewPlant.name);
-		expect(firstCallArgs?.treeChopFeePaid).toBe(0);
-		expect(firstCallArgs?.treeChopFeePlanned).toBe(200);
+		try {
+			spy.mockImplementation((plant, userParam, qp) => {
+				if (plant.seedType === 'tree') {
+					return [1];
+				}
+				return actualFn(plant, userParam, qp);
+			});
+
+			const response = await autoFarm(
+				user,
+				patchesDetailed,
+				patches as Record<FarmingPatchName, IPatchData>,
+				'123'
+			);
+
+			expect(response).toContain('auto farm the following patches:');
+			expect(response).toContain('1. Tree patch: 1x Yew tree (Up to 200 GP to remove previous trees)');
+			expect(user.user.GP).toBe(1000);
+			expect(addSubTaskMock).toHaveBeenCalled();
+			const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
+			expect(firstCallArgs?.plantsName).toBe(yewPlant.name);
+			expect(firstCallArgs?.treeChopFeePaid).toBe(0);
+			expect(firstCallArgs?.treeChopFeePlanned).toBe(200);
+		} finally {
+			restoreCalcNumOfPatches();
+		}
 	});
 
 	it('skips crops that would exceed the combined duration but continues planning smaller ones', async () => {
@@ -467,30 +565,55 @@ describe('autoFarm tree clearing fees', () => {
 			}
 		};
 
-		const response = await autoFarm(user, patchesDetailed, patches as Record<FarmingPatchName, IPatchData>, '123');
-
-		expect(response).toContain('Celastrus patch');
-		expect(response).toContain('1. Celastrus patch: 1x Celastrus tree');
-		expect(response).not.toContain('Tree patch');
-		expect(response).toContain('Mushroom patch');
-		expect(response).toContain('2. Mushroom patch: 1x Mushroom');
-		expect(response).toContain('were skipped because the total trip length would exceed the maximum');
-		expect(addSubTaskMock).toHaveBeenCalled();
-		const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
-		expect(firstCallArgs?.plantsName).toBe(celastrusPlant.name);
-		expect(firstCallArgs?.autoFarmCombined).toBe(true);
-		const plan = firstCallArgs?.autoFarmPlan as AutoFarmStepData[] | undefined;
-		expect(plan).toBeDefined();
-		if (!plan) {
-			throw new Error('Expected autoFarmPlan to be defined');
+		const actualFn = actualCalcNumOfPatchesRef.current;
+		const spy = calcNumOfPatchesSpyRef.current;
+		if (!actualFn || !spy) {
+			throw new Error('Expected calcNumOfPatches to be available');
 		}
-		expect(plan).toHaveLength(2);
-		expect(plan.map((step: AutoFarmStepData) => step.plantsName)).toStrictEqual([
-			celastrusPlant.name,
-			mushroomPlant.name
-		]);
-		const expectedDuration = plan.reduce((acc: number, step: AutoFarmStepData) => acc + step.duration, 0);
-		expect(firstCallArgs?.duration).toBe(expectedDuration);
+		const restoreCalcNumOfPatches = () => {
+			spy.mockImplementation((...args) => actualFn(...args));
+		};
+
+		try {
+			spy.mockImplementation((plant, userParam, qp) => {
+				if (plant.seedType === 'tree') {
+					return [1];
+				}
+				return actualFn(plant, userParam, qp);
+			});
+
+			const response = await autoFarm(
+				user,
+				patchesDetailed,
+				patches as Record<FarmingPatchName, IPatchData>,
+				'123'
+			);
+
+			expect(response).toContain('Celastrus patch');
+			expect(response).toContain('1. Celastrus patch: 1x Celastrus tree');
+			expect(response).not.toContain('Tree patch');
+			expect(response).toContain('Mushroom patch');
+			expect(response).toContain('2. Mushroom patch: 1x Mushroom');
+			expect(response).toContain('were skipped because the total trip length would exceed the maximum');
+			expect(addSubTaskMock).toHaveBeenCalled();
+			const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
+			expect(firstCallArgs?.plantsName).toBe(celastrusPlant.name);
+			expect(firstCallArgs?.autoFarmCombined).toBe(true);
+			const plan = firstCallArgs?.autoFarmPlan as AutoFarmStepData[] | undefined;
+			expect(plan).toBeDefined();
+			if (!plan) {
+				throw new Error('Expected autoFarmPlan to be defined');
+			}
+			expect(plan).toHaveLength(2);
+			expect(plan.map((step: AutoFarmStepData) => step.plantsName)).toStrictEqual([
+				celastrusPlant.name,
+				mushroomPlant.name
+			]);
+			const expectedDuration = plan.reduce((acc: number, step: AutoFarmStepData) => acc + step.duration, 0);
+			expect(firstCallArgs?.duration).toBe(expectedDuration);
+		} finally {
+			restoreCalcNumOfPatches();
+		}
 	});
 
 	it('continues planning additional steps while staying within the max trip length', async () => {
@@ -505,7 +628,7 @@ describe('autoFarm tree clearing fees', () => {
 			gp: 10_000,
 			farmingLevel: 99,
 			woodcuttingLevel: 99,
-			bank: new Bank({ 'Redwood tree seed': 4, 'Magic seed': 10 }),
+			bank: new Bank({ 'Redwood tree seed': 4, 'Magic seed': 1 }),
 			autoFarmFilter: AutoFarmFilterEnum.AllFarm
 		});
 
@@ -554,32 +677,57 @@ describe('autoFarm tree clearing fees', () => {
 			}
 		};
 
-		const response = await autoFarm(user, patchesDetailed, patches as Record<FarmingPatchName, IPatchData>, '123');
-
-		expect(response).toContain('Redwood patch');
-		expect(response).toContain('1. Redwood patch: 1x Redwood tree');
-		expect(response).not.toContain('Up to 2,000 GP to remove previous trees');
-		expect(response).toContain('Tree patch');
-		expect(response).toContain('2. Tree patch: 1x Magic tree');
-		expect(response).not.toContain('were skipped because the total trip length would exceed the maximum');
-		expect(addSubTaskMock).toHaveBeenCalled();
-		const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
-		expect(firstCallArgs?.autoFarmCombined).toBe(true);
-		const plan = firstCallArgs?.autoFarmPlan as AutoFarmStepData[] | undefined;
-		expect(plan).toBeDefined();
-		if (!plan) {
-			throw new Error('Expected autoFarmPlan to be defined');
+		const actualFn = actualCalcNumOfPatchesRef.current;
+		const spy = calcNumOfPatchesSpyRef.current;
+		if (!actualFn || !spy) {
+			throw new Error('Expected calcNumOfPatches to be available');
 		}
-		expect(plan).toHaveLength(2);
-		expect(plan.map((step: AutoFarmStepData) => step.plantsName)).toStrictEqual([
-			redwoodPlant.name,
-			magicPlant.name
-		]);
-		const redwoodStep = plan.find((step: AutoFarmStepData) => step.plantsName === redwoodPlant.name);
-		expect(redwoodStep?.treeChopFeePlanned).toBe(0);
-		expect(redwoodStep?.treeChopFeePaid).toBe(0);
-		const expectedDuration = plan.reduce((acc: number, step: AutoFarmStepData) => acc + step.duration, 0);
-		expect(firstCallArgs?.duration).toBe(expectedDuration);
+		const restoreCalcNumOfPatches = () => {
+			spy.mockImplementation((...args) => actualFn(...args));
+		};
+
+		try {
+			spy.mockImplementation((plant, userParam, qp) => {
+				if (plant.seedType === 'tree') {
+					return [1];
+				}
+				return actualFn(plant, userParam, qp);
+			});
+
+			const response = await autoFarm(
+				user,
+				patchesDetailed,
+				patches as Record<FarmingPatchName, IPatchData>,
+				'123'
+			);
+
+			expect(response).toContain('Redwood patch');
+			expect(response).toContain('1. Redwood patch: 1x Redwood tree');
+			expect(response).not.toContain('Up to 2,000 GP to remove previous trees');
+			expect(response).toContain('Tree patch');
+			expect(response).toContain('2. Tree patch: 1x Magic tree');
+			expect(response).not.toContain('were skipped because the total trip length would exceed the maximum');
+			expect(addSubTaskMock).toHaveBeenCalled();
+			const firstCallArgs = addSubTaskMock.mock.calls[0]?.[0];
+			expect(firstCallArgs?.autoFarmCombined).toBe(true);
+			const plan = firstCallArgs?.autoFarmPlan as AutoFarmStepData[] | undefined;
+			expect(plan).toBeDefined();
+			if (!plan) {
+				throw new Error('Expected autoFarmPlan to be defined');
+			}
+			expect(plan).toHaveLength(2);
+			expect(plan.map((step: AutoFarmStepData) => step.plantsName)).toStrictEqual([
+				redwoodPlant.name,
+				magicPlant.name
+			]);
+			const redwoodStep = plan.find((step: AutoFarmStepData) => step.plantsName === redwoodPlant.name);
+			expect(redwoodStep?.treeChopFeePlanned).toBe(0);
+			expect(redwoodStep?.treeChopFeePaid).toBe(0);
+			const expectedDuration = plan.reduce((acc: number, step: AutoFarmStepData) => acc + step.duration, 0);
+			expect(firstCallArgs?.duration).toBe(expectedDuration);
+		} finally {
+			restoreCalcNumOfPatches();
+		}
 	});
 
 	it('returns the first prepare error when no steps can be planned', async () => {
