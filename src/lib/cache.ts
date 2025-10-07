@@ -18,7 +18,8 @@ export const giveawayCache = new LRUCache<number, Giveaway>({
 export const usernameWithBadgesCache = new Map<string, string>();
 export const lastRoboChimpSyncCache = new Map<string, number>();
 
-export const partyLockCache = new Set<string>();
+export const partyLockCache: Set<string> = new Set();
 TimerManager.setInterval(() => partyLockCache.clear(), Time.Minute * 20);
 
-export const DISABLED_COMMANDS = new Set<string>();
+export const DISABLED_COMMANDS: Set<string> = new Set();
+export const CACHED_ACTIVE_USER_IDS: Set<string> = new Set();

@@ -83,7 +83,7 @@ import { mahojiUseCommand } from '@/mahoji/commands/use.js';
 import { wikiCommand } from '@/mahoji/commands/wiki.js';
 import { xpCommand } from '@/mahoji/commands/xp.js';
 
-export const allCommands: OSBMahojiCommand[] = [
+export const allCommandsDONTIMPORT: OSBMahojiCommand[] = [
 	adminCommand,
 	askCommand,
 	botLeaguesCommand,
@@ -169,11 +169,11 @@ export const allCommands: OSBMahojiCommand[] = [
 ];
 
 if (!globalConfig.isProduction && testPotatoCommand) {
-	allCommands.push(testPotatoCommand);
+	allCommandsDONTIMPORT.push(testPotatoCommand);
 }
 
 const names = new Set<string>();
-for (const cmd of allCommands) {
+for (const cmd of allCommandsDONTIMPORT) {
 	if (names.has(cmd.name)) {
 		throw new Error(`Duplicate command name: ${cmd.name}`);
 	}

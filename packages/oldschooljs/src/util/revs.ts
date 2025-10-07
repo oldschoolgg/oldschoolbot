@@ -1,12 +1,32 @@
 import type { Bank } from '@/structures/Bank.js';
 import LootTable from '@/structures/LootTable.js';
-import type { MonsterKillOptions } from '@/structures/Monster.js';
+import type { CustomKillLogic, MonsterKillOptions } from '@/structures/Monster.js';
 import { randInt, roll } from './smallUtils.js';
 
-type CustomKillLogic = (options: MonsterKillOptions, currentLoot: Bank) => void;
+type RevTableKey =
+	| 'uniqueTable'
+	| 'ancientEmblem'
+	| 'ancientTotem'
+	| 'ancientCrystal'
+	| 'ancientStatuette'
+	| 'topThree'
+	| 'seeds';
+
+const pairs: [RevTableKey, string][] = [
+	['ancientEmblem', 'Ancient emblem'],
+	['ancientTotem', 'Ancient totem'],
+	['ancientCrystal', 'Ancient crystal'],
+	['ancientStatuette', 'Ancient statuette'],
+	['topThree', 'Ancient medallion'],
+	['topThree', 'Ancient effigy'],
+	['topThree', 'Ancient relic']
+];
+
+type RevTableItem = readonly [number, number];
+export type RevTable = Record<RevTableKey, RevTableItem>;
 
 export function makeRevTable(table: RevTable): CustomKillLogic {
-	return (options: MonsterKillOptions, currentLoot: Bank) => {
+	const cb: CustomKillLogic = (options: MonsterKillOptions, currentLoot: Bank): void => {
 		const index = options.onSlayerTask ? 1 : 0;
 		if (roll(table.uniqueTable[index])) {
 			currentLoot.add(revsUniqueTable.roll());
@@ -23,34 +43,15 @@ export function makeRevTable(table: RevTable): CustomKillLogic {
 			return;
 		}
 
-		for (const [key, itemName] of [
-			['ancientEmblem', 'Ancient emblem'],
-			['ancientTotem', 'Ancient totem'],
-			['ancientCrystal', 'Ancient crystal'],
-			['ancientStatuette', 'Ancient statuette'],
-			['topThree', 'Ancient medallion'],
-			['topThree', 'Ancient effigy'],
-			['topThree', 'Ancient relic']
-		] as const) {
+		for (const [key, itemName] of pairs) {
 			if (roll(table[key][index])) {
 				currentLoot.add(itemName);
 				return;
 			}
 		}
 	};
+	return cb;
 }
-
-export interface RevTable {
-	uniqueTable: RevTableItem;
-	ancientEmblem: RevTableItem;
-	ancientTotem: RevTableItem;
-	ancientCrystal: RevTableItem;
-	ancientStatuette: RevTableItem;
-	topThree: RevTableItem;
-	seeds: RevTableItem;
-}
-
-type RevTableItem = [number, number];
 
 export const revsUniqueTable = new LootTable()
 	.add('Amulet of avarice', 1, 2)

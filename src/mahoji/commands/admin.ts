@@ -13,20 +13,13 @@ import {
 	uniqueArr
 } from '@oldschoolgg/toolkit';
 import { type ClientStorage, economy_transaction_type } from '@prisma/client';
-import {
-	ApplicationCommandType,
-	AttachmentBuilder,
-	type InteractionReplyOptions,
-	type RESTPostAPIApplicationGuildCommandsJSONBody,
-	Routes,
-	type Snowflake
-} from 'discord.js';
+import { AttachmentBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '@/lib/blacklists.js';
 import { DISABLED_COMMANDS } from '@/lib/cache.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
-import { convertCommandOptionToAPIOption, type ICommand, itemOption } from '@/lib/discord/index.js';
+import { bulkUpdateCommands, itemOption } from '@/lib/discord/index.js';
 import { economyLog } from '@/lib/economyLogs.js';
 import type { GearSetup } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
@@ -36,7 +29,6 @@ import { memoryAnalysis } from '@/lib/util/cachedUserIDs.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
-import { allCommands } from '@/mahoji/commands/allCommands.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 import { syncCustomPrices } from '@/mahoji/lib/events.js';
 
@@ -45,30 +37,6 @@ export const gifs = [
 	'https://gfycat.com/serenegleamingfruitbat',
 	'https://tenor.com/view/monkey-monito-mask-gif-23036908'
 ];
-
-function convertCommandToAPICommand(
-	cmd: ICommand
-): RESTPostAPIApplicationGuildCommandsJSONBody & { description: string } {
-	return {
-		type: ApplicationCommandType.ChatInput,
-		name: cmd.name,
-		description: cmd.description,
-		options: cmd.options.map(convertCommandOptionToAPIOption)
-	};
-}
-
-async function bulkUpdateCommands({ commands, guildID }: { commands: ICommand[]; guildID: Snowflake | null }) {
-	const apiCommands = commands.map(convertCommandToAPICommand);
-
-	const route =
-		guildID === null
-			? Routes.applicationCommands(globalClient.user.id)
-			: Routes.applicationGuildCommands(globalClient.user.id, guildID);
-
-	return globalClient.rest.put(route, {
-		body: apiCommands
-	});
-}
 
 async function allEquippedPets() {
 	const pets = await prisma.$queryRawUnsafe<
@@ -530,7 +498,7 @@ export const adminCommand: OSBMahojiCommand = {
 					required: false,
 					autocomplete: async (value: string) => {
 						const disabledCommands = Array.from(DISABLED_COMMANDS.values());
-						return allCommands
+						return globalClient.allCommands
 							.filter(i => !disabledCommands.includes(i.name))
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.name, value: i.name }));
@@ -543,7 +511,7 @@ export const adminCommand: OSBMahojiCommand = {
 					required: false,
 					autocomplete: async () => {
 						const disabledCommands = Array.from(DISABLED_COMMANDS.values());
-						return allCommands
+						return globalClient.allCommands
 							.filter(i => disabledCommands.includes(i.name))
 							.map(i => ({ name: i.name, value: i.name }));
 					}
@@ -750,7 +718,7 @@ export const adminCommand: OSBMahojiCommand = {
 				select: { disabled_commands: true }
 			}))!.disabled_commands;
 
-			const command = allCommands.find(c => stringMatches(c.name, disable ?? enable ?? '-'));
+			const command = globalClient.allCommands.find(c => stringMatches(c.name, disable ?? enable ?? '-'));
 			if (!command) return "That's not a valid command.";
 
 			if (disable) {
@@ -863,7 +831,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 			return 'Turning off...';
 		}
 		if (options.shut_down) {
-			debugLog('SHUTTING DOWN');
+			Logging.logDebug('SHUTTING DOWN');
 			globalClient.isShuttingDown = true;
 			const timer = globalConfig.isProduction ? Time.Second * 30 : Time.Second * 5;
 			await interaction.reply({
@@ -896,47 +864,8 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		}
 
 		if (options.sync_commands) {
-			const totalCommands = allCommands;
-
-			if (!globalConfig.isProduction) {
-				await bulkUpdateCommands({
-					commands: allCommands,
-					guildID: globalConfig.supportServerID
-				});
-				return 'Done.';
-			}
-
-			const global = Boolean(globalConfig.isProduction);
-			const globalCommands = totalCommands.filter(i => !i.guildID);
-			const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
-			if (global) {
-				await bulkUpdateCommands({
-					commands: globalCommands,
-					guildID: null
-				});
-				await bulkUpdateCommands({
-					commands: guildCommands,
-					guildID: guildID.toString()
-				});
-			} else {
-				await bulkUpdateCommands({
-					commands: totalCommands,
-					guildID: guildID.toString()
-				});
-			}
-
-			// If not in production, remove all global commands.
-			if (!globalConfig.isProduction) {
-				await bulkUpdateCommands({
-					commands: [],
-					guildID: null
-				});
-			}
-
-			return `Synced commands ${global ? 'globally' : 'locally'}.
-${totalCommands.length} Total commands
-${globalCommands.length} Global commands
-${guildCommands.length} Guild commands`;
+			await bulkUpdateCommands();
+			return 'Done.';
 		}
 
 		if (options.desync_commands) {

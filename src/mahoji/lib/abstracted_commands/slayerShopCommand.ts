@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
 import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
-import { logError } from '@/lib/util/logError.js';
 
 const slayerPurchaseError =
 	'An error occurred trying to make this purchase. Please try again or contact #help-and-support if the issue persists.';
@@ -41,7 +40,7 @@ export async function slayerShopBuyCommand({
 				await user.addItemsToBank({ items: new Bank().add(buyableObj.item, qty), collectionLog: true });
 				return `You bought ${qty}x ${buyableObj.name}.`;
 			} catch (e) {
-				logError(e, {
+				Logging.logError(e as Error, {
 					user_id: user.id,
 					slayer_buyable: buyable,
 					slayer_buyable_id: String(buyableObj.id),
@@ -77,7 +76,7 @@ export async function slayerShopBuyCommand({
 				}
 				return `You successfully unlocked ${buyableObj.name}. Remaining slayer points: ${newUser.slayer_points}`;
 			} catch (e) {
-				logError(e, { user_id: user.id, slayer_unlock: buyable });
+				Logging.logError(e as Error, { user_id: user.id, slayer_unlock: buyable });
 				return slayerPurchaseError;
 			}
 		} else {

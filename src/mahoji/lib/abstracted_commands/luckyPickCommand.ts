@@ -12,7 +12,6 @@ import { Bank, toKMB } from 'oldschooljs';
 
 import { SILENT_ERROR } from '@/lib/constants.js';
 import { silentButtonAck } from '@/lib/discord/utils.js';
-import { logError } from '@/lib/util/logError.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 export async function luckyPickCommand(user: MUser, luckypickamount: string, interaction: MInteraction) {
@@ -192,7 +191,7 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 				components: getCurrentButtons({ showTrueNames: true })
 			};
 		} catch (err) {
-			logError(err);
+			Logging.logError(err as Error);
 			return 'Error.';
 		}
 	} catch (_err) {

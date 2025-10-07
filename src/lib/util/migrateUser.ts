@@ -1,6 +1,5 @@
 import { UserError } from '@oldschoolgg/toolkit';
 
-import { logError } from '@/lib/util/logError.js';
 import { cancelUsersListings } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
 
 export async function migrateUser(_source: string | MUser, _dest: string | MUser): Promise<string | true> {
@@ -176,7 +175,7 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	try {
 		await prisma.$transaction(transactions);
 	} catch (err: any) {
-		logError(err);
+		Logging.logError(err);
 		throw new UserError('Error migrating user. Sorry about that!');
 	}
 
@@ -205,7 +204,7 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 			await roboChimpClient.$transaction(robochimpTx);
 		} catch (err: any) {
 			err.message += ' - User already migrated! Robochimp migration failed!';
-			logError(err);
+			Logging.logError(err);
 			throw new UserError('Robochimp migration failed, but minion data migrated already!');
 		}
 	}

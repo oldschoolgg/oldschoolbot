@@ -19,6 +19,7 @@ import { userIsBusy } from '@/lib/busyCounterCache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { updateUserCl } from '@/lib/collection-log/databaseCl.js';
 import { type CATier, CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField, MAX_LEVEL, projectiles } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
@@ -49,7 +50,6 @@ import type { SkillRequirements, Skills } from '@/lib/types/index.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
-import { logError } from '@/lib/util/logError.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
 import { type TransactItemsArgs, transactItemsFromBank } from '@/lib/util/transactItemsFromBank.js';
@@ -68,16 +68,10 @@ export async function mahojiUserSettingsUpdate(user: string | bigint, data: Pris
 
 		return { newUser };
 	} catch (err) {
-		logError(
-			err,
-			{
-				user_id: user.toString()
-			},
-			{
-				user_id: user.toString(),
-				updated_data: JSON.stringify(data)
-			}
-		);
+		Logging.logError(err as Error, {
+			user_id: user.toString(),
+			updated_data: JSON.stringify(data)
+		});
 		throw err;
 	}
 }
@@ -940,7 +934,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			});
 		}
 
-		debugLog(
+		Logging.logDebug(
 			`ForceUnequip User[${this.id}] in ${setup} slot[${slot}] ${JSON.stringify(equippedInSlot)}: ${reason}`
 		);
 
@@ -1104,6 +1098,10 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		const res = addMonsterXPRaw({ ...params, attackStyles: this.getAttackStyles() });
 		const result = await this.addXPBank(res);
 		return `**XP Gains:** ${result}`;
+	}
+
+	async updateCL() {
+		await updateUserCl(this.id);
 	}
 }
 declare global {
