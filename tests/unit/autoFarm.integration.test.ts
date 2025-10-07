@@ -177,10 +177,12 @@ function createAutoFarmStub({
 		}),
 		fetchMinigames: vi.fn().mockResolvedValue({}),
 		fetchStats: vi.fn().mockResolvedValue({}),
+		fetchMStats: vi.fn().mockResolvedValue({}),
 		perkTier: vi.fn().mockReturnValue(0),
 		hasSkillReqs: vi.fn().mockReturnValue([true, null]),
 		getAttackStyles: vi.fn().mockReturnValue([]),
-		update: vi.fn().mockResolvedValue(undefined)
+		update: vi.fn().mockResolvedValue(undefined),
+		statsBankUpdate: vi.fn().mockResolvedValue(undefined)
 	} as any;
 	return user as MUser;
 }

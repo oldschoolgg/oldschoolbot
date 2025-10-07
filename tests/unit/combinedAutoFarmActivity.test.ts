@@ -58,6 +58,7 @@ describe('handleCombinedAutoFarm auto contract button behaviour', () => {
 			id: '1',
 			bitfield: [] as number[],
 			minionName: 'AutoFarmer',
+			hasEquippedOrInBank: vi.fn().mockReturnValue(false),
 			toString() {
 				return 'AutoFarmer';
 			}

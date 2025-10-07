@@ -22,7 +22,7 @@ const redwoodPlant = {
 	herbXp: undefined,
 	herbLvl: undefined,
 	inputItems: new Bank(),
-	outputLogs: 100,
+	outputLogs: itemID('Redwood logs'),
 	outputLogsQuantity: 100,
 	outputRoots: itemID('Magic roots'),
 	givesLogs: true,
@@ -289,7 +289,8 @@ describe('farmingActivity tree clearing fees', () => {
 		addItemsToCollectionLog: vi.fn().mockResolvedValue(undefined),
 		addItemsToBankCollectionLog: vi.fn().mockResolvedValue(undefined),
 		incrementKC: vi.fn().mockResolvedValue(undefined),
-		addXPNoNotify: vi.fn().mockResolvedValue(undefined)
+		addXPNoNotify: vi.fn().mockResolvedValue(undefined),
+		statsBankUpdate: userStatsBankUpdateMock
 	} as unknown as MUser;
 
 	beforeEach(() => {
@@ -326,6 +327,9 @@ describe('farmingActivity tree clearing fees', () => {
 			emit: vi.fn(),
 			channels: { cache: new Map() },
 			user: null
+		});
+		vi.stubGlobal('ClientSettings', {
+			updateBankSetting: updateBankSettingMock
 		});
 		userGP = 5_000;
 		removeItemsFromBankMock.mockClear();
