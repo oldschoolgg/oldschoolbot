@@ -15,7 +15,8 @@ const external = [
 	'node:*',
 	'pglite-prisma-adapter',
 	'@electric-sql/pglite',
-	'pg'
+	'pg',
+	'oldschooljs'
 ];
 
 const baseBuildOptions: BuildOptions = {
