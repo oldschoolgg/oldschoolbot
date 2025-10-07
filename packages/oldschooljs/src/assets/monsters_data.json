@@ -77,7 +77,7 @@
 		"isSlayerMonster": true,
 		"slayerLevelRequired": 60,
 		"slayerXP": 90,
-		"assignableSlayerMasters": ["vannaka", "chaeldar", "nieve", "duradel"]
+		"assignableSlayerMasters": ["vannaka", "chaeldar", "konar", "nieve", "duradel"]
 	},
 	"8": {
 		"members": true,
