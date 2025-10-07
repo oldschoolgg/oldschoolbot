@@ -10,15 +10,19 @@ const makeAutoContractButtonMock = vi.fn().mockReturnValue('AUTO_BUTTON');
 const canRunAutoContractMock = vi.fn();
 
 vi.mock('../../src/tasks/minions/farmingStep.js', () => ({
+	__esModule: true,
 	executeFarmingStep: executeFarmingStepMock
 }));
 vi.mock('@/lib/util/handleTripFinish.js', () => ({
+	__esModule: true,
 	handleTripFinish: handleTripFinishMock
 }));
 vi.mock('@/lib/util/interactions.js', () => ({
+	__esModule: true,
 	makeAutoContractButton: makeAutoContractButtonMock
 }));
 vi.mock('@/mahoji/lib/abstracted_commands/farmingContractCommand.js', () => ({
+	__esModule: true,
 	canRunAutoContract: canRunAutoContractMock
 }));
 
