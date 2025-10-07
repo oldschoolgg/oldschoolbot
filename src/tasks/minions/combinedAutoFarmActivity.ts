@@ -7,7 +7,11 @@ import type { FarmingActivityTaskOptions } from '@/lib/types/minions.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeAutoContractButton } from '@/lib/util/interactions.js';
 import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
-import { executeFarmingStep, type FarmingStepAttachment, type FarmingStepSummary } from './farmingStep.js';
+import {
+	executeFarmingStep,
+	type FarmingStepAttachment,
+	type FarmingStepSummary
+} from '@/tasks/minions/farmingStep.js';
 
 interface HandleCombinedAutoFarmOptions {
 	user: MUser;
