@@ -104,7 +104,7 @@ describe('Ironman Command', () => {
 		const userBeingReset = await mUserFetch(userId);
 		await userBeingReset.addItemsToBank({
 			items: new Bank().add('Dragon scimitar').add('Twisted bow').add('Coins', 1_000_000_000),
-			collectionLog: true,
+			collectionLog: true
 		});
 		expect(userBeingReset.cl.length).toEqual(3);
 		expect(await global.prisma!.cLUserItem.count({ where: { user_id: userId } })).toEqual(3);
