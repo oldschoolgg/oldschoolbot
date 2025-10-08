@@ -17,6 +17,10 @@ import { turaelMonsters } from '@/lib/minions/data/killableMonsters/turaelMonste
 import { vannakaMonsters } from '@/lib/minions/data/killableMonsters/vannakaMonsters.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 
+// Use a negative sentinel so the synthetic Dagannoth Kings (tribrid) entry doesn't
+// collide with any future OldSchoolJS monster IDs.
+export const DagannothKingsTribridID = -30_001;
+
 const killableMonsters: KillableMonster[] = [
 	...bossKillables,
 	...chaeldarMonsters,
@@ -187,6 +191,79 @@ const killableMonsters: KillableMonster[] = [
 		healAmountNeeded: 100,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackRanged]
+	},
+	{
+		id: DagannothKingsTribridID,
+		name: 'Dagannoth Kings (tribrid)',
+		aliases: ['dagannoth kings (tribrid)', 'dagannoth kings tribrid', 'dagnnoth kings (tribrid)', 'dks tribrid'],
+		timeToFinish: Time.Minute * 1.9 * 3 * 0.95,
+		table: {
+			kill(quantity: number, options) {
+				const loot = new Bank();
+				loot.add(Monsters.DagannothSupreme.kill(quantity, options));
+				loot.add(Monsters.DagannothRex.kill(quantity, options));
+				loot.add(Monsters.DagannothPrime.kill(quantity, options));
+				return loot;
+			}
+		},
+		emoji: '<:Dagannoth:324127377305976852>',
+		wildy: false,
+
+		difficultyRating: 6,
+		itemsRequired: deepResolveItems([
+			"Guthan's platebody",
+			"Guthan's chainskirt",
+			"Guthan's helm",
+			"Guthan's warspear",
+			['Armadyl chestplate', "Karil's leathertop"],
+			['Armadyl chainskirt', "Karil's leatherskirt"],
+			['Torva platebody', 'Bandos chestplate', "Torag's platebody"],
+			['Torva platelegs', 'Bandos tassets', "Torag's platelegs"]
+		]),
+		notifyDrops: resolveItems(['Pet dagannoth supreme', 'Pet dagannoth rex', 'Pet dagannoth prime']),
+		qpRequired: 0,
+		itemInBankBoosts: [
+			{
+				[itemID('Armadyl chestplate')]: 2,
+				[itemID('Masori body (f)')]: 4
+			},
+			{
+				[itemID('Armadyl chainskirt')]: 2,
+				[itemID('Masori chaps (f)')]: 4
+			},
+			{
+				[itemID('Twisted bow')]: 6
+			},
+			{
+				[itemID("Iban's staff")]: 3,
+				[itemID('Warped sceptre (uncharged)')]: 4,
+				[itemID('Harmonised nightmare staff')]: 5
+			},
+			{
+				[itemID('Occult necklace')]: 5
+			},
+			{
+				[itemID('Bandos chestplate')]: 2,
+				[itemID('Torva platebody')]: 2
+			},
+			{
+				[itemID('Bandos tassets')]: 2,
+				[itemID('Torva platelegs')]: 2
+			},
+			{
+				[itemID('Saradomin godsword')]: 4,
+				[itemID('Dragon claws')]: 6
+			}
+		],
+		levelRequirements: {
+			prayer: 43
+		},
+		healAmountNeeded: 300,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
+		defaultAttackStyles: ['attack', 'magic', 'ranged'],
+		customMonsterHP: 765,
+		combatXpMultiplier: 1.3
 	},
 	{
 		id: Monsters.Man.id,
