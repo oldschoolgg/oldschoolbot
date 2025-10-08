@@ -13,7 +13,8 @@ const external = [
 	'fastify',
 	'fastify-raw-body',
 	'@fastify/cors',
-	'@prisma/adapter-pg'
+	'@prisma/adapter-pg',
+	'oldschooljs'
 ];
 
 const baseBuildOptions: BuildOptions = {
