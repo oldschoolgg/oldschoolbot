@@ -13,7 +13,8 @@ const external = [
 	'fastify',
 	'fastify-raw-body',
 	'@fastify/cors',
-	'@prisma/adapter-pg'
+	'@prisma/adapter-pg',
+	'oldschooljs'
 ];
 
 const baseBuildOptions: BuildOptions = {
@@ -29,7 +30,7 @@ const baseBuildOptions: BuildOptions = {
 	target: 'node24.8.0',
 	external,
 	sourcemap: 'inline',
-	minify: true,
+	minify: false,
 	metafile: true
 };
 
