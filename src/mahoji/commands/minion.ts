@@ -1,6 +1,6 @@
 import { randArrItem } from '@oldschoolgg/rng';
-import { formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
+import { formatOrdinal, notEmpty, roboChimpCLRankQuery, stringMatches } from '@oldschoolgg/toolkit';
+import { AttachmentBuilder, bold } from 'discord.js';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
@@ -21,7 +21,7 @@ import { Minigames } from '@/lib/settings/minigames.js';
 import creatures from '@/lib/skilling/skills/hunter/creatures/index.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
-import { getKCByName } from '@/lib/util/getKCByName.js';
+import { getAllKillCounts, getKCByName } from '@/lib/util/getKCByName.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { getPeakTimesString } from '@/lib/util/peaks.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
@@ -293,10 +293,26 @@ export const minionCommand: OSBMahojiCommand = {
 					description: 'The monster/thing you want to check your KC of.',
 					required: true,
 					autocomplete: async (value: string) => {
-						return [...effectiveMonsters, ...Minigames, ...creatures]
+						const results = [...effectiveMonsters, ...Minigames, ...creatures]
 							.filter(i => (!value ? true : i.aliases.some(alias => alias.includes(value.toLowerCase()))))
 							.map(i => ({ name: i.name, value: i.name }));
+						const allOption = {
+							name: 'All killcounts (export to text file)',
+							value: 'all'
+						};
+						return [allOption, ...results].slice(0, 25);
 					}
+				},
+				{
+					type: 'String',
+					name: 'sort',
+					description: 'How to sort the exported KC list when using the all option.',
+					required: false,
+					choices: [
+						{ name: 'Alphabetical (A → Z)', value: 'alphabetical' },
+						{ name: 'Highest KC first', value: 'highest' },
+						{ name: 'Lowest KC first', value: 'lowest' }
+					]
 				}
 			]
 		},
@@ -423,7 +439,7 @@ export const minionCommand: OSBMahojiCommand = {
 		set_icon?: { icon: string };
 		set_name?: { name: string };
 		level?: { skill: string };
-		kc?: { name: string };
+		kc?: { name: string; sort?: 'alphabetical' | 'highest' | 'lowest' };
 		buy?: { ironman?: boolean };
 		ironman?: { permanent?: boolean };
 		charge?: { item?: string; amount?: number };
@@ -507,6 +523,45 @@ export const minionCommand: OSBMahojiCommand = {
 		}
 
 		if (options.kc) {
+			if (stringMatches(options.kc.name, 'all')) {
+				const sort = options.kc.sort ?? 'alphabetical';
+				const sortDescriptions = {
+					alphabetical: 'alphabetically (A → Z)',
+					highest: 'by highest KC',
+					lowest: 'by lowest KC'
+				} as const;
+				const allKillCounts = await getAllKillCounts(user);
+				const sortedKillCounts = [...allKillCounts].sort((a, b) => {
+					if (sort === 'alphabetical') {
+						return a.name.localeCompare(b.name);
+					}
+					if (sort === 'highest') {
+						return b.amount - a.amount || a.name.localeCompare(b.name);
+					}
+					return a.amount - b.amount || a.name.localeCompare(b.name);
+				});
+
+				const lines = [
+					`Killcount export for ${user.rawUsername}`,
+					`Total entries: ${sortedKillCounts.length}`,
+					`Sorted ${sortDescriptions[sort]}`,
+					''
+				];
+				for (const entry of sortedKillCounts) {
+					const label = entry.type === 'Monster' ? entry.name : `${entry.name} [${entry.type}]`;
+					lines.push(`${label}: ${entry.amount.toLocaleString()}`);
+				}
+
+				const attachment = new AttachmentBuilder(Buffer.from(lines.join('\n')), {
+					name: `minion-kc-${user.id}.txt`
+				});
+
+				return {
+					content: `Exported ${sortedKillCounts.length.toLocaleString()} killcounts sorted ${sortDescriptions[sort]}.`,
+					files: [attachment]
+				};
+			}
+
 			const [kcName, kcAmount] = await getKCByName(user, options.kc.name);
 			if (!kcName) {
 				return "That's not a valid monster, minigame or hunting creature.";
