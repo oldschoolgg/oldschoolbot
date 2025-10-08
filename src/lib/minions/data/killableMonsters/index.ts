@@ -264,7 +264,7 @@ const killableMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
 		defaultAttackStyles: ['attack', 'magic', 'ranged'],
 		customMonsterHP: 765,
-		combatXpMultiplier: (1.3 * 2) / 3 // 1.3x for Rex and Supreme, 1x for Prime, averaged out
+		combatXpMultiplier: 1.2 // 1.3x for Rex and Supreme, 1x for Prime, averaged out
 	},
 	{
 		id: Monsters.Man.id,
