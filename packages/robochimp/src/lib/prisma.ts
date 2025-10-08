@@ -37,7 +37,6 @@ async function getAdapter(type: 'osb' | 'bso' | 'robochimp'): Promise<PrismaPg> 
 }
 
 export async function initPrismaClients() {
-	console.log('Initializing database clients');
 	global.roboChimpClient =
 		global.roboChimpClient ??
 		new RobochimpPrismaClient({
