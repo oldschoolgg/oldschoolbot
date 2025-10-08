@@ -196,13 +196,15 @@ const killableMonsters: KillableMonster[] = [
 		id: DagannothKingsTribridID,
 		name: 'Dagannoth Kings (tribrid)',
 		aliases: ['dagannoth kings (tribrid)', 'dagannoth kings tribrid', 'dagnnoth kings (tribrid)', 'dks tribrid'],
-		timeToFinish: Time.Minute * 1.9 * 3 * 0.95,
+		timeToFinish: Time.Minute * 1.9 * 3 * 0.95, // 3x the time but 5% faster for tribrid
 		table: {
 			kill(quantity: number, options) {
 				const loot = new Bank();
-				loot.add(Monsters.DagannothSupreme.kill(quantity, options));
-				loot.add(Monsters.DagannothRex.kill(quantity, options));
-				loot.add(Monsters.DagannothPrime.kill(quantity, options));
+				for (let i = 0; i < quantity; i++) {
+					loot.add(Monsters.DagannothSupreme.kill(1, options));
+					loot.add(Monsters.DagannothRex.kill(1, options));
+					loot.add(Monsters.DagannothPrime.kill(1, options));
+				}
 				return loot;
 			}
 		},
@@ -259,11 +261,10 @@ const killableMonsters: KillableMonster[] = [
 			prayer: 43
 		},
 		healAmountNeeded: 300,
-		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
 		defaultAttackStyles: ['attack', 'magic', 'ranged'],
 		customMonsterHP: 765,
-		combatXpMultiplier: 1.3
+		combatXpMultiplier: (1.3 * 2) / 3 // 1.3x for Rex and Supreme, 1x for Prime, averaged out
 	},
 	{
 		id: Monsters.Man.id,

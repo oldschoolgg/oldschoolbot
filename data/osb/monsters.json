@@ -1,6 +1,6 @@
 {
-	"hash": "5c30cde39a793c978853119e8724e527",
-	"date": "2025-09-19T05:35:44.280Z",
+	"hash": "d7056ffb90f13bbbe79c396b376b5b85",
+	"date": "2025-10-08T19:16:33.399Z",
 	"data": [
 		{
 			"id": 2,
@@ -1367,6 +1367,63 @@
 			"items_required": [],
 			"qp_required": 2,
 			"item_in_bank_boosts": [],
+			"can_barrage": false,
+			"can_chin": false,
+			"can_cannon": false,
+			"cannon_multi": false
+		},
+		{
+			"id": -30001,
+			"name": "Dagannoth Kings (tribrid)",
+			"base_kill_time_ms": 324900,
+			"is_wildy": false,
+			"is_slayer_only": false,
+			"can_be_pked": false,
+			"is_wildy_multi": false,
+			"items_required": [
+				"Guthan's platebody",
+				"Guthan's chainskirt",
+				"Guthan's helm",
+				"Guthan's warspear",
+				["Armadyl chestplate", "Karil's leathertop"],
+				["Armadyl chainskirt", "Karil's leatherskirt"],
+				["Torva platebody", "Bandos chestplate", "Torag's platebody"],
+				["Torva platelegs", "Bandos tassets", "Torag's platelegs"]
+			],
+			"qp_required": 0,
+			"item_in_bank_boosts": [
+				{
+					"Armadyl chestplate": 2,
+					"Masori body (f)": 4
+				},
+				{
+					"Armadyl chainskirt": 2,
+					"Masori chaps (f)": 4
+				},
+				{
+					"Twisted bow": 6
+				},
+				{
+					"Harmonised nightmare staff": 5,
+					"Iban's staff": 3,
+					"Warped sceptre (uncharged)": 4
+				},
+				{
+					"Occult necklace": 5
+				},
+				{
+					"Bandos chestplate": 2,
+					"Torva platebody": 2
+				},
+				{
+					"Bandos tassets": 2,
+					"Torva platelegs": 2
+				},
+				{
+					"Dragon claws": 6,
+					"Saradomin godsword": 4
+				}
+			],
 			"can_barrage": false,
 			"can_chin": false,
 			"can_cannon": false,
