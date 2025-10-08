@@ -226,35 +226,35 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Armadyl chestplate')]: 2/3,
-				[itemID('Masori body (f)')]: 4/3
+				[itemID('Armadyl chestplate')]: 2 / 3,
+				[itemID('Masori body (f)')]: 4 / 3
 			},
 			{
-				[itemID('Armadyl chainskirt')]: 2/3,
-				[itemID('Masori chaps (f)')]: 4/3
+				[itemID('Armadyl chainskirt')]: 2 / 3,
+				[itemID('Masori chaps (f)')]: 4 / 3
 			},
 			{
-				[itemID('Twisted bow')]: 6/3
+				[itemID('Twisted bow')]: 6 / 3
 			},
 			{
-				[itemID("Iban's staff")]: 3/3,
-				[itemID('Warped sceptre (uncharged)')]: 4/3,
-				[itemID('Harmonised nightmare staff')]: 5/3
+				[itemID("Iban's staff")]: 3 / 3,
+				[itemID('Warped sceptre (uncharged)')]: 4 / 3,
+				[itemID('Harmonised nightmare staff')]: 5 / 3
 			},
 			{
-				[itemID('Occult necklace')]: 5/3
+				[itemID('Occult necklace')]: 5 / 3
 			},
 			{
-				[itemID('Bandos chestplate')]: 2/3,
-				[itemID('Torva platebody')]: 2/3
+				[itemID('Bandos chestplate')]: 2 / 3,
+				[itemID('Torva platebody')]: 2 / 3
 			},
 			{
-				[itemID('Bandos tassets')]: 2/3,
-				[itemID('Torva platelegs')]: 2/3
+				[itemID('Bandos tassets')]: 2 / 3,
+				[itemID('Torva platelegs')]: 2 / 3
 			},
 			{
-				[itemID('Saradomin godsword')]: 4/3,
-				[itemID('Dragon claws')]: 6/3
+				[itemID('Saradomin godsword')]: 4 / 3,
+				[itemID('Dragon claws')]: 6 / 3
 			}
 		],
 		levelRequirements: {
