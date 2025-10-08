@@ -2467,7 +2467,7 @@
 		"attack_styles_used": ["attack_slash", "attack_magic", "attack_ranged"],
 		"default_attack_styles": ["attack", "magic", "ranged"],
 		"custom_monster_hp": 765,
-		"combat_xp_multiplier": 0.8666666666666667
+		"combat_xp_multiplier": 1.2
 	},
 	{
 		"id": 2266,
