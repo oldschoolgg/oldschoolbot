@@ -1,5 +1,5 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import type { ItemBank, Monster } from 'oldschooljs';
+import type { ItemBank } from 'oldschooljs';
 
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { Minigames } from '@/lib/settings/minigames.js';
@@ -10,7 +10,7 @@ export async function getKCByName(user: MUser, kcName: string): Promise<[string,
 		mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName))
 	);
 	if (mon) {
-		return [mon.name, await user.getKC((mon as unknown as Monster).id)];
+		return [mon.name, await user.getKC(mon.id)];
 	}
 
 	const minigame = Minigames.find(
@@ -51,7 +51,7 @@ export async function getAllKillCounts(user: MUser): Promise<AllKillCountEntry[]
 	const result: AllKillCountEntry[] = [];
 
 	for (const monster of effectiveMonsters) {
-		const monsterID = (monster as unknown as Monster).id;
+		const monsterID = monster.id;
 		result.push({
 			name: monster.name,
 			amount: monsterScores[monsterID] ?? 0,

@@ -1,5 +1,5 @@
 import { randArrItem } from '@oldschoolgg/rng';
-import { formatOrdinal, notEmpty, roboChimpCLRankQuery, stringMatches } from '@oldschoolgg/toolkit';
+import { formatOrdinal, notEmpty, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder, bold } from 'discord.js';
 import { convertLVLtoXP, Items } from 'oldschooljs';
 
@@ -523,7 +523,7 @@ export const minionCommand: OSBMahojiCommand = {
 		}
 
 		if (options.kc) {
-			if (stringMatches(options.kc.name, 'all')) {
+			if (options.kc.name?.toLowerCase() === 'all') {
 				const sort = options.kc.sort ?? 'alphabetical';
 				const sortDescriptions = {
 					alphabetical: 'alphabetically (A → Z)',
