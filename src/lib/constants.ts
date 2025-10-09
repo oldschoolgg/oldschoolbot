@@ -373,7 +373,7 @@ const globalConfigSchema = z.object({
 	isProduction: z.boolean(),
 	timeZone: z.literal('UTC'),
 	sentryDSN: z.string().url().optional(),
-	adminUserIDs: z.array(z.string()).default(['157797566833098752', '425134194436341760', '794368001856110594']),
+	adminUserIDs: z.array(z.string()).default(['157797566833098752', '425134194436341760']),
 	maxingMessage: z.string().default('Congratulations on maxing!'),
 	moderatorLogsChannels: z.string().default(''),
 	supportServerID: z.string()
