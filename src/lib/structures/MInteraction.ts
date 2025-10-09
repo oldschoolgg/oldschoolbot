@@ -165,7 +165,7 @@ export class MInteraction {
 		}
 
 		try {
-			if (this.deferred && this.replied) {
+			if (this.deferred) {
 				this.interactionResponse = await this.interaction.editReply(response);
 			} else {
 				this.interactionResponse = await this.interaction.reply(response);
