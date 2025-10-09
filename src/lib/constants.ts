@@ -373,6 +373,7 @@ const globalConfigSchema = z.object({
 	isProduction: z.boolean(),
 	timeZone: z.literal('UTC'),
 	sentryDSN: z.string().url().optional(),
+	botOwnerID: z.string().optional(),
 	adminUserIDs: z.array(z.string()).default(['157797566833098752', '425134194436341760']),
 	maxingMessage: z.string().default('Congratulations on maxing!'),
 	moderatorLogsChannels: z.string().default(''),
@@ -394,10 +395,15 @@ export const globalConfig = globalConfigSchema.parse({
 	isProduction,
 	timeZone: process.env.TZ,
 	sentryDSN: process.env.SENTRY_DSN,
+	botOwnerID: process.env.BOT_OWNER_ID,
 
 	moderatorLogsChannels: isProduction ? '830145040495411210' : GENERAL_CHANNEL_ID,
 	supportServerID: isProduction ? '342983479501389826' : OLDSCHOOLGG_TESTING_SERVER_ID
 });
+
+if (globalConfig.botOwnerID && !globalConfig.adminUserIDs.includes(globalConfig.botOwnerID)) {
+	globalConfig.adminUserIDs.push(globalConfig.botOwnerID);
+}
 
 if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction) {
 	throw new Error('The NODE_ENV and isProduction variables must match');
