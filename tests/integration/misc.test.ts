@@ -56,4 +56,26 @@ describe('Integration Misc', () => {
 			expect(res.users[i].qty).toBeLessThanOrEqual(res.users[i - 1].qty);
 		}
 	});
+
+	test('CL Leaderboard handles users with multiple badges', async () => {
+		const [firstBadge, secondBadge] = await Promise.all([
+			global.prisma!.badges.create({ data: { text: 'Test Badge 1' } }),
+			global.prisma!.badges.create({ data: { text: 'Test Badge 2' } })
+		]);
+		const user = await createTestUser(undefined, { badges: [firstBadge.id, secondBadge.id] });
+		const bank = new Bank();
+		bank.add(chambersOfXericCL[0]);
+		bank.add(chambersOfXericCL[1]);
+		await user.addItemsToBank({ items: bank, collectionLog: true });
+
+		const leaderboard = await fetchCLLeaderboard({
+			ironmenOnly: false,
+			items: chambersOfXericCL,
+			resultLimit: 5,
+			clName: 'overall'
+		});
+
+		const entry = leaderboard.users.find(i => i.id === user.id);
+		expect(entry?.qty).toBe(2);
+	});
 });
