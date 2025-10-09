@@ -91,6 +91,11 @@ export class MInteraction {
 		return null;
 	}
 
+	public get customId() {
+		if (this.interaction.isButton()) return this.interaction.customId;
+		return null;
+	}
+
 	public get user() {
 		return this.interaction.user;
 	}
@@ -171,7 +176,14 @@ export class MInteraction {
 				this.interactionResponse = await this.interaction.reply(response);
 			}
 		} catch (e: any) {
-			console.error(`Error MInteraction`, e);
+			console.error(`MInteraction reply error:
+Command: ${this.commandName}
+Custom ID: ${this.customId}
+Response: ${JSON.stringify(response).slice(0, 1000)}
+Replied: ${this.replied}
+Deferred: ${this.deferred}
+Ephemeral: ${this.ephemeral}
+Error: ${e.message}`);
 		}
 		return this.interactionResponse;
 	}
@@ -183,9 +195,9 @@ export class MInteraction {
 		message:
 			| string
 			| ({ content: string; timeout?: number } & (
-					| { ephemeral?: false; users?: string[] }
-					| { ephemeral?: boolean; users?: undefined }
-			  ))
+				| { ephemeral?: false; users?: string[] }
+				| { ephemeral?: boolean; users?: undefined }
+			))
 	) {
 		if (process.env.TEST) return;
 		const content = typeof message === 'string' ? message : message.content;
