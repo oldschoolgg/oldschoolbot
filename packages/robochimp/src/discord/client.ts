@@ -36,6 +36,9 @@ export class RoboChimpClientClass extends Client<boolean> {
 
 	async fetchSupportServer() {
 		const guild = await globalClient.guilds.fetch(globalConfig.supportServerID);
+		if (!guild) {
+			throw new Error(`fetchSupportServer did not return support server`);
+		}
 		return guild;
 	}
 }

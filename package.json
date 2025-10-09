@@ -10,6 +10,7 @@
 		"watch:tsc": "tsc -w -p src",
 		"start": "pnpm watch",
 		"lint": "tsx --tsconfig scripts/tsconfig.json scripts/lint.ts",
+		"clean": "npx tsx scripts/clean.ts",
 		"============SCRIPTS": "============",
 		"spritesheet": "tsx --tsconfig scripts/tsconfig.json ./scripts/spritesheet.ts && pnpm lint",
 		"data": "tsx --tsconfig scripts/tsconfig.json ./scripts/monster_table.ts && pnpm lint",
@@ -89,7 +90,8 @@
 		"overrides": {
 			"@prisma/driver-adapter-utils": "6.15.0",
 			"sharp": "0.34.4",
-			"dotenv": "16.5.0"
+			"dotenv": "16.5.0",
+			"tsdown>rolldown": "1.0.0-beta.42"
 		}
 	},
 	"packageManager": "pnpm@10.17.0+sha512.fce8a3dd29a4ed2ec566fb53efbb04d8c44a0f05bc6f24a73046910fb9c3ce7afa35a0980500668fa3573345bd644644fa98338fa168235c80f4aa17aa17fbef"

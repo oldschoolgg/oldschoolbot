@@ -1,5 +1,5 @@
 import { SpecialResponse } from '@oldschoolgg/toolkit';
-import { type ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.js';
+import { type ChatInputCommandInteraction, type GuildMember, PermissionFlagsBits } from 'discord.js';
 
 import { convertAPIOptionsToCommandOptions } from '@/discord/commandOptions.js';
 import { MInteraction } from '@/structures/MInteraction.js';
@@ -23,13 +23,16 @@ export async function commandHandler(rawInteraction: ChatInputCommandInteraction
 	}
 
 	const user = await globalClient.fetchUser(interaction.user.id);
+	const member: GuildMember | null = rawInteraction.guild
+		? await rawInteraction.guild.members.fetch(interaction.user.id)
+		: null;
 
 	try {
 		const response = await command.run({
 			interaction,
 			options,
 			user,
-			member: interaction.member,
+			member,
 			channelID: interaction.channelId,
 			guildID: interaction.guild?.id,
 			userID: interaction.user.id,
