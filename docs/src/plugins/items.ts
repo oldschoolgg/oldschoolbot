@@ -83,7 +83,7 @@ ${author?.avatar ? `<img class="contributor_avatar" src="${author.avatar}" />` :
 						([id, name]) =>
 							name.toLowerCase() === itemName.toLowerCase() || id.toLowerCase() === itemName.toLowerCase()
 					);
-					const osbItem = Items.get(itemName) ?? Items.get(Number(itemName));
+					const osbItem = Items.getItem(itemName) ?? Items.get(Number(itemName));
 					if (bsoItem) {
 						imageURL = `https://raw.githubusercontent.com/oldschoolgg/oldschoolbot/refs/heads/master/src/lib/resources/images/bso_icons/${bsoItem[0]}.png`;
 					} else if (osbItem) {

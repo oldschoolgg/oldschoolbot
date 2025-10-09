@@ -55,7 +55,7 @@ const expectedIDTuple = [
 // Check that items have the ID that we expect them to have, and not some random other version of that item.
 function checkItems(): void {
 	for (const [itemName, itemID] of expectedIDTuple) {
-		const item = Items.get(itemName);
+		const item = Items.getItem(itemName);
 		if (!item) {
 			throw new Error(`*ERROR*: ${itemName} doesnt exist?`);
 		}
