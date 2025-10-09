@@ -8,6 +8,7 @@ overrides:
   '@prisma/driver-adapter-utils': 6.15.0
   sharp: 0.34.4
   dotenv: 16.5.0
+  tsdown>rolldown: 1.0.0-beta.42
 
 importers:
 
