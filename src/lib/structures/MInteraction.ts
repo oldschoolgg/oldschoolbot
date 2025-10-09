@@ -195,9 +195,9 @@ Error: ${e.message}`);
 		message:
 			| string
 			| ({ content: string; timeout?: number } & (
-				| { ephemeral?: false; users?: string[] }
-				| { ephemeral?: boolean; users?: undefined }
-			))
+					| { ephemeral?: false; users?: string[] }
+					| { ephemeral?: boolean; users?: undefined }
+			  ))
 	) {
 		if (process.env.TEST) return;
 		const content = typeof message === 'string' ? message : message.content;
@@ -222,13 +222,7 @@ Error: ${e.message}`);
 		return new Promise<void>((resolve, reject) => {
 			const collector = this.interactionResponse!.createMessageComponentCollector({ time: timeout });
 
-			collector.on('collect', buttonInteraction => {
-				const silentAck = () =>
-					this.client.rest.post(Routes.interactionCallback(buttonInteraction.id, buttonInteraction.token), {
-						body: {
-							type: InteractionResponseType.DeferredMessageUpdate
-						}
-					});
+			collector.on('collect', async buttonInteraction => {
 				if (!users.includes(buttonInteraction.user.id)) {
 					buttonInteraction.reply({
 						flags: MessageFlags.Ephemeral,
@@ -238,9 +232,9 @@ Error: ${e.message}`);
 				}
 
 				if (buttonInteraction.customId === 'CANCEL') {
-					// If they cancel, we remove the button component, which means we can't reply to the button interaction.
-					this.reply({ content: `The confirmation was cancelled.`, components: [] });
-					collector.stop();
+					await buttonInteraction.deferUpdate().catch(() => null);
+					await this.reply({ content: `The confirmation was cancelled.`, components: [] });
+					collector.stop('cancelled');
 					reject(new Error('SILENT_ERROR'));
 					return;
 				}
@@ -253,16 +247,17 @@ Error: ${e.message}`);
 				confirms.add(buttonInteraction.user.id);
 
 				if (buttonInteraction.customId === 'CONFIRM') {
-					silentAck();
+					await buttonInteraction.deferUpdate().catch(() => null);
 					// All users have confirmed
 					if (confirms.size === users.length) {
-						collector.stop();
+						await this.reply({ content: `${content}\n\nAll users confirmed.`, components: [] });
+						collector.stop('confirmed');
 						resolve();
 					} else {
 						const unconfirmedUsernames = users
 							.filter(i => !confirms.has(i))
 							.map(i => this.client.users.cache.get(i)?.username ?? 'Unknown User');
-						this.reply({
+						await this.reply({
 							content: `${content}\n\n${confirms.size}/${users.length} confirmed. Waiting for ${unconfirmedUsernames.join(', ')}...`,
 							components: [confirmRow]
 						});
@@ -270,7 +265,10 @@ Error: ${e.message}`);
 				}
 			});
 
-			collector.on('end', collected => {
+			collector.on('end', (collected, reason) => {
+				if (reason === 'cancelled' || reason === 'confirmed') {
+					return;
+				}
 				if (collected.size !== users.length) {
 					this.reply({ content: `You ran out of time to confirm.`, components: [] });
 					reject(new Error('SILENT_ERROR'));
