@@ -10,6 +10,7 @@
 		"watch:tsc": "tsc -w -p src",
 		"start": "pnpm watch",
 		"lint": "tsx --tsconfig scripts/tsconfig.json scripts/lint.ts",
+		"clean": "npx tsx scripts/clean.ts",
 		"============SCRIPTS": "============",
 		"spritesheet": "tsx --tsconfig scripts/tsconfig.json ./scripts/spritesheet.ts && pnpm lint",
 		"data": "tsx --tsconfig scripts/tsconfig.json ./scripts/monster_table.ts && pnpm lint",
