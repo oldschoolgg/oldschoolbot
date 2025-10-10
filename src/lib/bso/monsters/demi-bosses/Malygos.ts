@@ -16,8 +16,6 @@ import {
 	WyvernHerbTable
 } from 'oldschooljs';
 
-// import { itemContractItemsSet } from '@/mahoji/commands/ic.js';
-
 const petTrollTable = new LootTable().add('Ori', 1, 1).add('Abyssal head', 1, 9);
 
 const clueTable = new LootTable()
@@ -103,9 +101,6 @@ const AbyssalDragonLootTable = new LootTable()
 	.tertiary(100, 'Lump of crystal')
 	.tertiary(140, 'Clue scroll (grandmaster)');
 
-// console.log(
-// 	new Set(AbyssalDragonLootTable.allItems.filter(i => !itemContractItemsSet.has(i)).map(i => Items.itemNameFromId(i)))
-// );
 export const Malygos: CustomMonster = {
 	isCustom: true,
 	id: EBSOMonster.MALYGOS,
