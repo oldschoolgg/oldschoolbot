@@ -3,7 +3,6 @@ import { Bank, EItem, type Item, Items } from 'oldschooljs';
 import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
 import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { percentChance, randInt } from '@/lib/util/rng.js';
 import { checkDegradeableItemCharges, degradeItem } from '../../lib/degradeableItems.js';
 
