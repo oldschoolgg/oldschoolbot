@@ -1,4 +1,4 @@
-import type { Interaction } from 'discord.js';
+import { type Interaction, MessageFlags } from 'discord.js';
 
 export async function handleButtonInteraction(interaction: Interaction) {
 	if (!interaction.isButton()) return;
@@ -18,26 +18,35 @@ export async function handleButtonInteraction(interaction: Interaction) {
 
 		if (id.includes('add')) {
 			if (member.roles.cache.has(pingableRole.role_id)) {
-				return interaction.reply({ content: 'You already have this role.', ephemeral: true });
+				return interaction.reply({ content: 'You already have this role.', flags: MessageFlags.Ephemeral });
 			}
 			try {
 				await member.roles.add(pingableRole.role_id);
-				return interaction.reply({ content: `Gave you the \`${pingableRole.name}\` role.`, ephemeral: true });
+				return interaction.reply({
+					content: `Gave you the \`${pingableRole.name}\` role.`,
+					flags: MessageFlags.Ephemeral
+				});
 			} catch {
-				return interaction.reply({ content: 'An error occured trying to give you the role.', ephemeral: true });
+				return interaction.reply({
+					content: 'An error occured trying to give you the role.',
+					flags: MessageFlags.Ephemeral
+				});
 			}
 		} else {
 			if (!member.roles.cache.has(pingableRole.role_id)) {
-				return interaction.reply({ content: "You don't have this role.", ephemeral: true });
+				return interaction.reply({ content: "You don't have this role.", flags: MessageFlags.Ephemeral });
 			}
 			try {
 				await member.roles.remove(pingableRole.role_id);
 				return interaction.reply({
 					content: `Removed the \`${pingableRole.name}\` role from you.`,
-					ephemeral: true
+					flags: MessageFlags.Ephemeral
 				});
 			} catch {
-				return interaction.reply({ content: 'An error occured trying to remove the role.', ephemeral: true });
+				return interaction.reply({
+					content: 'An error occured trying to remove the role.',
+					flags: MessageFlags.Ephemeral
+				});
 			}
 		}
 	}
