@@ -1,9 +1,9 @@
+import * as rngModule from '@oldschoolgg/rng';
 import { Items } from 'oldschooljs';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 
 import * as degradeableItemsModule from '@/lib/degradeableItems.js';
 import { bloodEssence } from '@/lib/skilling/functions/calcsRunecrafting.js';
-import * as rngModule from '@/lib/util/rng.js';
 
 type FakeMUser = {
 	user: Record<string, number>;
