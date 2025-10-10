@@ -15,7 +15,7 @@ async function getAdapter(
 	const shouldUseRealPostgres = globalConfig.isProduction || process.env.USE_REAL_PG === '1';
 	if (shouldUseRealPostgres) {
 		const connectionString = type === 'robochimp' ? process.env.ROBOCHIMP_DATABASE_URL : process.env.DATABASE_URL;
-		Logging.logDebug(`Using Real Postgres for ${type} database: ${connectionString}`);
+		Logging.logDebug(`Using Real Postgres for ${type} database`);
 		return { adapter: new PrismaPg({ connectionString }), pgLiteClient: null };
 	}
 
