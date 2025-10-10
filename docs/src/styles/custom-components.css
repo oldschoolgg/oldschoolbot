@@ -1,0 +1,156 @@
+.discord_channel {
+	font-size: 16px;
+	font-weight: 500;
+	background: #35373c;
+	width: max-content;
+	padding: 3px 10px;
+	font-size: 13.4px;
+	color: #81868f !important;
+	display: flex;
+	align-items: center;
+	border-radius: 4px;
+	text-decoration: none;
+
+	&:hover {
+		color: rgb(192, 192, 192) !important;
+		cursor: pointer;
+		background: rgb(50, 50, 55);
+	}
+}
+
+.osrs_item {
+	background-color: var(--secondary-bg-color);
+	color: var(--secondary-text-color);
+	width: max-content;
+	display: flex;
+	border-radius: 10px;
+	align-items: center;
+	justify-content: center;
+	align-content: center;
+	padding: 3px 9px;
+	font-size: 13px;
+	gap: 5px;
+	font-weight: bold;
+}
+
+.osrs_item_name,
+.osrs_item_image,
+.osrs_item_name a {
+	margin: 0 !important;
+	text-decoration: none !important;
+}
+
+.discord_command_copy {
+	background-color: #4e538f;
+	width: auto;
+	display: inline-flex;
+	align-items: center;
+	vertical-align: middle;
+	justify-content: center;
+	align-content: center;
+	padding: 0px 5px;
+	font-size: 13px;
+	color: white;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: background 0.2s;
+	margin: 0 2px;
+	white-space: nowrap;
+}
+
+.discord_command_copy:hover {
+	background: #6a6fcf;
+}
+
+.discord_command_copy.copied {
+	background: #3cb371;
+}
+
+.osrs_item,
+.discord_command_copy {
+	display: inline-flex;
+	align-items: center;
+	vertical-align: middle;
+	margin-top: 0px !important;
+	margin-left: 3px;
+	margin-right: 3px;
+}
+
+.osrs_item_image {
+	display: inline !important;
+	max-height: 21px;
+	vertical-align: middle;
+}
+
+.osrs_item_image_full {
+	max-height: unset;
+}
+
+.osrs_item_name,
+.discord_command_copy {
+	font-size: 0.9em;
+	text-align: center;
+	white-space: nowrap;
+}
+
+.contributor {
+	width: max-content;
+	border-radius: 8px;
+	color: var(--sl-color-text-accent);
+	font-weight: bold;
+	padding: 1px 9px;
+	font-size: 25px;
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	justify-content: center;
+	justify-items: center;
+
+	background: #ff803c14;
+	color: #ff7f3c;
+	padding: 5px 9px;
+}
+
+.contributor .contributor_name {
+	margin-top: 0;
+	font-weight: 500;
+}
+
+.contributor_avatar {
+	height: 29px !important;
+	border-radius: 64px;
+	margin-right: 3px;
+}
+
+.contributor_small {
+	display: inline-flex;
+	width: max-content;
+	border-radius: 10px;
+	align-items: center;
+	justify-content: center;
+	align-content: center;
+	padding: 3px 9px;
+	padding-left: 1px;
+	font-size: 13px;
+	gap: 5px;
+	font-weight: bold;
+	align-items: center;
+	vertical-align: middle;
+	margin-top: 0px !important;
+	margin-left: 3px;
+	margin-right: 3px;
+	margin: 0 !important;
+	position: relative;
+
+	background: #ff803c14;
+	color: #ff7f3c;
+
+	.contributor_avatar {
+		height: 20px !important;
+	}
+}
+
+.ca-complete {
+	background: #e6f7e6 !important;
+	color: #225c22 !important;
+}

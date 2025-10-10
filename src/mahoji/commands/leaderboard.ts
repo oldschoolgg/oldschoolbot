@@ -41,7 +41,7 @@ async function bulkGetUsernames(userIDs: string[]) {
 	await Promise.all(uniqueArr(userIDs).map(id => getUsername(id)));
 }
 
-export function getPos(page: number, record: number) {
+function getPos(page: number, record: number) {
 	return `${page * LB_PAGE_SIZE + 1 + record}. `;
 }
 
@@ -52,12 +52,20 @@ export async function doMenu(interaction: MInteraction, pages: string[] | AsyncP
 	}
 
 	return interaction.makePaginatedMessage({
-		pages: pages.map(p => {
+		pages: pages.map((p, i) => {
 			if (isFunction(p)) {
-				return async () => ({ embeds: [new EmbedBuilder().setTitle(title).setDescription(await p())] });
+				return async currentIndex => ({
+					embeds: [
+						new EmbedBuilder()
+							.setTitle(`${title} (Page ${currentIndex + 1}/${pages.length})`)
+							.setDescription(await p())
+					]
+				});
 			}
 
-			return { embeds: [new EmbedBuilder().setTitle(title).setDescription(p)] };
+			return {
+				embeds: [new EmbedBuilder().setTitle(`${title} (Page ${i + 1}/${pages.length})`).setDescription(p)]
+			};
 		})
 	});
 }
@@ -73,15 +81,14 @@ async function doMenuWrapper({
 	users: { id: string; score: number; full_name?: string }[];
 	title: string;
 	interaction: MInteraction;
-	// user: MUser;
 	formatter?: (val: number) => string;
 }) {
-	await bulkGetUsernames(users.map(u => u.id).slice(0, 100));
 	const chunked = chunk(users, LB_PAGE_SIZE);
 	const pages: (() => Promise<CompatibleResponse>)[] = [];
 	for (let c = 0; c < chunked.length; c++) {
 		const makePage = async () => {
 			const chnk = chunked[c];
+			await bulkGetUsernames(chnk.map(u => u.id));
 			const unwaited = chnk.map(
 				async (user, i) =>
 					`${getPos(c, i)}**${user.full_name ?? (await getUsername(user.id))}:** ${formatter ? formatter(user.score) : user.score.toLocaleString()}`
@@ -96,12 +103,18 @@ async function doMenuWrapper({
 	}
 
 	return interaction.makePaginatedMessage({
-		pages: pages.map(p => {
+		pages: pages.map((p, i) => {
 			if (isFunction(p)) {
 				return p;
 			}
 
-			return { embeds: [new EmbedBuilder().setTitle(lbMsg(title, ironmanOnly).content).setDescription(p)] };
+			return {
+				embeds: [
+					new EmbedBuilder()
+						.setTitle(`${lbMsg(title, ironmanOnly).content} (Page ${i + 1}/${pages.length})`)
+						.setDescription(p)
+				]
+			};
 		})
 	});
 }
@@ -529,8 +542,6 @@ async function skillsLb(interaction: MInteraction, inputSkill: string, type: 'xp
 		});
 	}
 
-	await bulkGetUsernames(overallUsers.map(u => u.id).slice(0, 100));
-
 	if (inputSkill === 'overall') {
 		return doMenu(
 			interaction,
@@ -582,11 +593,7 @@ LIMIT 50;`
 		)
 	).map(res => ({ ...res, score: Number(res.score) }));
 
-	await bulkGetUsernames(users.map(u => u.id).slice(0, 100));
-
-	const title = `${clueTier.name} Clue Leaderboard${ironmanOnly ? ' (Ironmen Only)' : ''}`;
-
-	return doMenu(
+ return doMenu(
 		interaction,
 		chunk(users, LB_PAGE_SIZE).map((subList, i) =>
 			subList
