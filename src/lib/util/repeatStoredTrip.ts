@@ -973,7 +973,7 @@ export async function repeatTrip(
 	}
 	const handler = tripHandlers[data.type];
 
-	return runCommand({
+	const result = await runCommand({
 		commandName: handler.commandName,
 		isContinue: true,
 		args: handler.args(data.data as any),
@@ -984,4 +984,5 @@ export async function repeatTrip(
 		user,
 		continueDeltaMillis: interaction.createdAt.getTime() - interaction.message.createdTimestamp
 	});
+	return result;
 }

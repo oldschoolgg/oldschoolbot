@@ -7,6 +7,7 @@ import { customPrices } from '@/lib/customItems/util.js';
 import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import { filterOption } from '@/lib/discord/index.js';
 import { NestBoxesTable } from '@/lib/simulation/misc.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 
 /**
@@ -151,6 +152,30 @@ export const sellCommand: OSBMahojiCommand = {
 				itemsToRemove: abbyBank
 			});
 			return `You exchanged ${abbyBank} and received: ${loot}.`;
+		}
+
+		if (bankToSell.has('Spirit seed')) {
+			const quantity = bankToSell.amount('Spirit seed');
+			const seedsBank = new Bank().add('Spirit seed', quantity);
+
+			await interaction.confirmation(
+				`${user}, please confirm you want to trade ${seedsBank} for Tier 5 seed pack loot.`
+			);
+
+			const loot = new Bank();
+			for (let i = 0; i < quantity; i++) {
+				loot.add(Farming.openSeedPack(5));
+			}
+
+			await user.transactItems({
+				collectionLog: true,
+				itemsToAdd: loot,
+				itemsToRemove: seedsBank
+			});
+
+			await user.addItemsToCollectionLog(new Bank().add('Seed pack', quantity));
+
+			return `You exchanged ${seedsBank} and received: ${loot}.`;
 		}
 
 		if (

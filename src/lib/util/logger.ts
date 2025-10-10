@@ -70,7 +70,6 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 	if (interaction) {
 		metaInfo.interaction = interaction.getDebugInfo();
 	}
-	console.error(err);
 	console.error(
 		JSON.stringify({
 			type: 'ERROR',

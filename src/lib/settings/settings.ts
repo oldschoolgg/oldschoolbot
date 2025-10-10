@@ -97,7 +97,7 @@ export async function runCommand(options: RunCommandArgs): Promise<null | Comman
 			options: args,
 			user,
 			member: guildID ? globalClient.guilds.cache.get(guildID)?.members.cache.get(user.id) : undefined,
-			interaction: interaction,
+			interaction,
 			rng: cryptoRng
 		});
 		if (result && !interaction.replied) {

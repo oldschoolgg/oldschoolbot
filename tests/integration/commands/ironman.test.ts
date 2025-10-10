@@ -127,8 +127,15 @@ describe('Ironman Command', () => {
 	test('Should reset everything', async () => {
 		const userId = mockedId();
 		const { testBingo } = await createUserWithEverything(userId);
+		const userBeingReset = await mUserFetch(userId);
+		await userBeingReset.addItemsToBank({
+			items: new Bank().add('Dragon scimitar').add('Twisted bow').add('Coins', 1_000_000_000),
+			collectionLog: true
+		});
+		expect(userBeingReset.cl.length).toEqual(3);
+		expect(await global.prisma!.cLUserItem.count({ where: { user_id: userId } })).toEqual(3);
 
-		const result = await ironmanCommand(await mUserFetch(userId), null);
+		const result = await ironmanCommand(userBeingReset, null);
 		expect(result).toEqual('You are now an ironman.');
 		const user = await mUserFetch(userId);
 		expect(user.GP).toEqual(0);
@@ -149,9 +156,12 @@ describe('Ironman Command', () => {
 		expect(await prisma.stashUnit.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
 		expect(await prisma.historicalData.count({ where: { user_id: userId } })).toEqual(0);
 		expect(await prisma.userStats.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
+		expect(await global.prisma!.cLUserItem.count({ where: { user_id: userId } })).toEqual(0);
+
 		expect(await prisma.fishingContestCatch.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
 		expect(await prisma.tameActivity.count({ where: { user_id: userId } })).toEqual(0);
 		expect(await prisma.tame.count({ where: { user_id: userId } })).toEqual(0);
+
 		const userStats = await prisma.userStats.findFirst({ where: { user_id: BigInt(userId) } });
 		expect(userStats?.cl_array).toEqual(undefined);
 		expect(userStats?.cl_array_length).toEqual(undefined);
