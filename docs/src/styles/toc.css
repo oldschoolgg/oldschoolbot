@@ -1,0 +1,19 @@
+starlight-toc > nav > ul a[aria-current="true"] {
+	font-weight: bold;
+	filter: contrast(1);
+}
+
+starlight-toc > nav > ul a {
+	color: var(--sl-color-text);
+	filter: contrast(0.3);
+}
+
+starlight-toc > nav > ul {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+starlight-toc > nav > ul > li > a > span {
+	font-size: 0.875rem;
+}
