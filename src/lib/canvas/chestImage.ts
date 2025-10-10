@@ -104,6 +104,10 @@ async function drawSingleChestCanvas(
 	entry: ChestLootEntry,
 	type: (typeof chestLootTypes)[number]
 ): Promise<{ canvas: OSRSCanvas; isPurple: boolean }> {
+	if (!bankImageTask.ready) {
+		await bankImageTask.init();
+		bankImageTask.ready = true;
+	}
 	const { previousCL, loot, user, customTexts } = entry;
 	const { sprite } = bankImageTask.getBgAndSprite({ bankBackgroundId: user.user.bankBackground });
 

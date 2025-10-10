@@ -1,7 +1,7 @@
 import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
-import { type AbstractCommand, type CommandOptions, dateFm, Emoji, PerkTier } from '@oldschoolgg/toolkit';
+import { dateFm, Emoji, PerkTier } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import * as dotenv from 'dotenv';
 import { convertLVLtoXP, resolveItems } from 'oldschooljs';
@@ -153,7 +153,8 @@ export enum BitField {
 	DisableDailyButton = 44,
 
 	HasDeadeyeScroll = 45,
-	HasMysticVigourScroll = 46
+	HasMysticVigourScroll = 46,
+	AllowPublicAPIDataRetrieval = 47
 }
 
 interface BitFieldData {
@@ -267,6 +268,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
+	[BitField.AllowPublicAPIDataRetrieval]: {
+		name: 'Allow Public API Data Retrieval',
+		protected: false,
+		userConfigurable: true
+	},
 
 	[BitField.HasDeadeyeScroll]: { name: 'Deadeye Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasMysticVigourScroll]: { name: 'Mystic Vigour Scroll Used', protected: false, userConfigurable: false }
@@ -356,19 +362,6 @@ export const projectiles = {
 	}
 } as const;
 export type ProjectileType = keyof typeof projectiles;
-
-const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
-export function shouldTrackCommand(command: AbstractCommand, args: CommandOptions) {
-	if (!Array.isArray(args)) return true;
-	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
-		if (command.name === name && typeof args[0] === 'string' && subs.includes(args[0])) {
-			return false;
-		}
-	}
-	return true;
-}
-
-export const DISABLED_COMMANDS = new Set<string>();
 
 export const NMZ_STRATEGY = ['experience', 'points'] as const;
 export type NMZStrategy = (typeof NMZ_STRATEGY)[number];

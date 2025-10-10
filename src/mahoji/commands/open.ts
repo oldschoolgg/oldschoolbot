@@ -1,8 +1,6 @@
 import { truncateString } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
 
 import { allOpenables, allOpenablesIDs } from '@/lib/openables.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import {
 	abstractedOpenCommand,
 	abstractedOpenUntilCommand,
@@ -14,7 +12,7 @@ export const openCommand: OSBMahojiCommand = {
 	description: 'Open an item (caskets, keys, boxes, etc).',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to open.',
 			required: false,
@@ -36,7 +34,7 @@ export const openCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to open (defaults to one).',
 			required: false,
@@ -44,7 +42,7 @@ export const openCommand: OSBMahojiCommand = {
 			max_value: 100_000
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'open_until',
 			description: 'Keep opening items until you get this item.',
 			required: false,
@@ -57,7 +55,7 @@ export const openCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'result_quantity',
 			description: 'The number of the target item you want to obtain before stopping.',
 			required: false,
@@ -66,12 +64,12 @@ export const openCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
-		userID,
+		user,
 		options,
 		interaction
 	}: CommandRunOptions<{ name?: string; quantity?: number; open_until?: string; result_quantity?: number }>) => {
-		if (interaction) await deferInteraction(interaction);
-		const user = await mUserFetch(userID);
+		if (interaction) await interaction.defer();
+
 		if (!options.name) {
 			return `You have... ${truncateString(
 				user.bank.filter(item => allOpenablesIDs.has(item.id)).toString(),

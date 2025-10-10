@@ -1,41 +1,53 @@
-import '../globalSetup.js';
-import '../../src/lib/globals.js';
-import '../../src/lib/util/transactItemsFromBank.js';
-import '../../src/lib/ActivityManager.js';
-import './mocks.js';
+import '../../src/lib/safeglobals.js';
 
-import { noOp } from '@oldschoolgg/toolkit';
-import { PrismaClient } from '@prisma/client';
-import { beforeEach, vi } from 'vitest';
+import { Collection } from 'discord.js';
+import { vi } from 'vitest';
 
-if (!roboChimpClient) {
-	throw new Error('Robochimp client not found.');
-}
+import { createDb } from '@/lib/globals.js';
+import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
+import { mockChannel, TEST_CHANNEL_ID } from './util.js';
 
-export function randomMock(random = 0.1) {
-	Math.random = () => random;
-}
+global.globalClient = {
+	isReady: () => true,
+	emit: () => true,
+	guilds: { cache: new Collection() },
+	users: {
+		cache: new Collection(),
+		fetch: async (id: string) => Promise.resolve(globalClient.users.cache.get(id))
+	},
+	channels: {
+		cache: new Collection().set(TEST_CHANNEL_ID, mockChannel({ userId: '123' }))
+	},
+	busyCounterCache: new Map<string, number>(),
+	allCommands: allCommandsDONTIMPORT
+} as any;
+
+await createDb();
+
+vi.mock('@oldschoolgg/toolkit', async () => {
+	const actualToolkit = await vi.importActual('@oldschoolgg/toolkit');
+	return {
+		...actualToolkit,
+		channelIsSendable: vi.fn().mockReturnValue(true)
+		// awaitMessageComponentInteraction: vi.fn().mockImplementation(({ message }: { message: Message }) => {
+		// 	return Promise.resolve({
+		// 		customId: randArrItem(Object.values(InteractionID.Slayer)),
+		// 		...mockInteraction({ user: { id: message.author.id } as any })
+		// 	});
+		// })
+	};
+});
 
 vi.mock('../../src/lib/util/webhook', async () => {
 	const actual: any = await vi.importActual('../../src/lib/util/webhook');
 	return {
 		...actual,
 		sendToChannelID: vi.fn(() => {
-			// console.log('sendToChannelID called with args:', args);
 			return Promise.resolve();
 		})
 	};
 });
 
-// @ts-expect-error mock
-globalClient.fetchUser = async (id: string | bigint) => ({
-	id: typeof id === 'string' ? id : String(id),
-	send: async () => {}
-});
-
-const __prismaClient = new PrismaClient();
-__prismaClient.$queryRawUnsafe('CREATE EXTENSION IF NOT EXISTS intarray;').then(noOp).catch(noOp);
-
-beforeEach(async () => {
-	global.prisma = __prismaClient;
-});
+try {
+	await prisma.$queryRawUnsafe(`CREATE EXTENSION IF NOT EXISTS "intarray";`);
+} catch (_err) {}

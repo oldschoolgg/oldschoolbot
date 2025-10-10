@@ -1,7 +1,7 @@
-import { cryptoRng } from '@oldschoolgg/rng';
+import { cryptoRng, MathRNG } from '@oldschoolgg/rng';
 import { uniqueArr } from '@oldschoolgg/toolkit';
 import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
-import type { User as DJSUser } from 'discord.js';
+import type { User as DJSUser, GuildMember } from 'discord.js';
 import { Bank, convertLVLtoXP, type EMonster, type ItemBank, Items, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
@@ -20,7 +20,7 @@ import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironman
 export const TEST_CHANNEL_ID = '1111111111111111';
 
 export function mockDjsUser({ userId }: { userId: string }) {
-	return {
+	const mocked = {
 		id: userId,
 		username: 'TestUser',
 		discriminator: '0001',
@@ -28,8 +28,31 @@ export function mockDjsUser({ userId }: { userId: string }) {
 		system: false,
 		mfaEnabled: false,
 		avatarURL: () => 'https://example.com/avatar.png',
-		toString: () => '<@123456789>'
+		toString: () => '<@123456789>',
+		send: vi.fn(() => Promise.resolve())
 	} as any as DJSUser;
+	globalClient.users.cache.set(userId, mocked);
+	return mocked;
+}
+export function mockDjsMember({ userId }: { userId: string }) {
+	return {
+		user: mockDjsUser({ userId }),
+		displayName: 'TestUser',
+		roles: {
+			cache: new Map()
+		},
+		permissionsIn: () => ({
+			has: () => true
+		})
+	} as any as GuildMember;
+}
+
+export function mockUserOption(userId?: string): MahojiUserOption {
+	userId ??= mockedId();
+	return {
+		user: mockDjsUser({ userId }),
+		member: mockDjsMember({ userId })
+	};
 }
 
 class MockInteraction {
@@ -48,16 +71,39 @@ class MockInteraction {
 	async reply(res: any) {
 		this.__response__ = res;
 	}
+
+	mUser: MUser;
 	user = {
 		id: '123456789'
 	};
-	constructor(userId: string) {
-		this.user.id = userId;
+	constructor({ user }: { user: MUser }) {
+		this.mUser = user;
+		this.user.id = user.id;
+	}
+
+	async confirmation() {
+		return Promise.resolve();
+	}
+
+	async makePaginatedMessage() {
+		return Promise.resolve();
+	}
+
+	async makeParty() {
+		return Promise.resolve();
+	}
+
+	async defer() {
+		return Promise.resolve();
+	}
+
+	async returnStringOrFile() {
+		return Promise.resolve();
 	}
 }
 
-export function mockInteraction({ userId }: { userId: string }) {
-	return new MockInteraction(userId) as any;
+export function mockInteraction({ user }: { user: MUser }): MInteraction {
+	return new MockInteraction({ user }) as any as MInteraction;
 }
 
 export function mockChannel({ userId }: { userId: string }) {
@@ -69,7 +115,6 @@ export function mockChannel({ userId }: { userId: string }) {
 			has: () => true
 		}),
 		send: vi.fn(() => {
-			// console.log('TestChannel send called with args:', args);
 			return Promise.resolve(mockMessage({ userId }));
 		})
 	} as any;
@@ -81,42 +126,28 @@ export function mockMessage({ userId }: { userId: string }) {
 		author: mockDjsUser({ userId }),
 		channel: TestChannel,
 		send: vi.fn(() => {
-			// console.log('TestMessage send called with args:', args);
 			return Promise.resolve({
 				id: '123456789',
 				channel: TestChannel
 			});
 		}),
 		reply: vi.fn(() => {
-			// console.log('TestMessage reply called with args:', args);
 			return Promise.resolve({
 				id: '123456789',
 				channel: TestChannel
 			});
 		}),
 		edit: vi.fn(() => {
-			// console.log('TestMessage edit called with args:', args);
 			return Promise.resolve({
 				id: '123456789',
 				channel: TestChannel
 			});
 		}),
 		delete: vi.fn(() => {
-			// console.log('TestMessage delete called');
 			return Promise.resolve();
 		})
 	};
 }
-
-const commandRunOptions = (userId: string): Omit<CommandRunOptions, 'options'> => ({
-	userID: userId,
-	guildID: '342983479501389826',
-	member: {} as any,
-	user: { id: userId } as any,
-	channelID: TEST_CHANNEL_ID,
-	interaction: mockInteraction({ userId }),
-	client: {} as any
-});
 
 export class TestUser extends MUserClass {
 	public client!: TestClient;
@@ -168,7 +199,7 @@ export class TestUser extends MUserClass {
 	}
 
 	async openedBankMatch(bankToMatch: Bank) {
-		const stats = await this.fetchStats({ openable_scores: true });
+		const stats = await this.fetchStats();
 		const currentBank = new Bank(stats.openable_scores as ItemBank);
 		if (!currentBank.equals(bankToMatch)) {
 			throw new Error(`Expected opened bank to match, difference: ${currentBank.difference(bankToMatch)}`);
@@ -254,16 +285,22 @@ export class TestUser extends MUserClass {
 	}
 
 	async runCommand(command: OSBMahojiCommand, options: object = {}, syncAfter = false) {
-		const cmdOpts = commandRunOptions(this.id);
+		await this.sync();
+		const mockedInt = mockInteraction({ user: this });
 		const result = await command.run({
-			...cmdOpts,
-			user: { createdAt: new Date(), id: this.id } as DJSUser,
-			options
+			userID: this.user.id,
+			guildID: '342983479501389826',
+			member: mockDjsMember({ userId: this.user.id }),
+			channelID: TEST_CHANNEL_ID,
+			interaction: mockedInt,
+			user: this,
+			options,
+			rng: MathRNG
 		});
 		if (syncAfter) {
 			await this.sync();
 		}
-		return result ?? (cmdOpts.interaction as any).__response__;
+		return result ?? (mockedInt as any).__response__;
 	}
 
 	async bankAmountMatch(itemName: string, amount: number) {
@@ -282,7 +319,7 @@ export class TestUser extends MUserClass {
 
 	async statsMatch(key: keyof UserStats, value: any) {
 		await this.sync();
-		const stats = await this.fetchStats({ [key]: true });
+		const stats = await this.fetchStats();
 		if (stats[key] !== value) {
 			throw new Error(`Expected ${key} to be ${value} but got ${stats[key]}`);
 		}
@@ -327,7 +364,7 @@ export async function mockUser(
 		bank: Bank;
 		QP: number;
 		maxed: boolean;
-	}>
+	}> = {}
 ) {
 	const rangeGear = new Gear();
 	if (options.rangeGear) {
@@ -391,7 +428,7 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 	}
 
 	const [user] = await prisma.$transaction([
-		global.prisma!.user.upsert({
+		prisma.user.upsert({
 			create: {
 				id,
 				...userData,
@@ -407,7 +444,7 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 				id
 			}
 		}),
-		global.prisma!.userStats.upsert({
+		prisma.userStats.upsert({
 			create: {
 				user_id: BigInt(id)
 			},
@@ -416,7 +453,7 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 				user_id: BigInt(id)
 			}
 		}),
-		global.prisma!.minigame.upsert({
+		prisma.minigame.upsert({
 			create: {
 				user_id: id
 			},
@@ -427,6 +464,7 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 		})
 	]);
 
+	mockDjsUser({ userId: user.id });
 	return new TestUser(user);
 }
 

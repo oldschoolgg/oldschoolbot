@@ -5,6 +5,7 @@ import { vi } from 'vitest';
 import '../src/lib/safeglobals.js';
 
 import { InteractionID } from '@/lib/InteractionID.js';
+import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
 import { mockChannel, mockInteraction, TEST_CHANNEL_ID } from './integration/util.js';
 
 vi.mock('@oldschoolgg/toolkit', async () => {
@@ -15,12 +16,8 @@ vi.mock('@oldschoolgg/toolkit', async () => {
 		awaitMessageComponentInteraction: vi.fn().mockImplementation(({ message }: { message: Message }) => {
 			return Promise.resolve({
 				customId: randArrItem(Object.values(InteractionID.Slayer)),
-				...mockInteraction({ userId: message.author.id })
+				...mockInteraction({ user: { id: message.author.id } as any })
 			});
-		}),
-		mentionCommand: vi.fn().mockReturnValue('true'),
-		makePaginatedMessage: vi.fn(() => {
-			return Promise.resolve();
 		})
 	};
 });
@@ -41,14 +38,12 @@ global.globalClient = {
 		}
 	},
 	users: {
-		cache: new Collection()
+		cache: new Collection(),
+		fetch: async (id: string) => Promise.resolve(globalClient.users.cache.get(id))
 	},
 	channels: {
 		cache: new Collection().set(TEST_CHANNEL_ID, mockChannel({ userId: '123' }))
 	},
-	busyCounterCache: new Map<string, number>()
+	busyCounterCache: new Map<string, number>(),
+	allCommands: allCommandsDONTIMPORT
 } as any;
-
-if (!process.env.TEST) {
-	throw new Error('This file should only be imported in tests.');
-}

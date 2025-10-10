@@ -7,15 +7,13 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { raimentBonus } from '@/lib/skilling/functions/calcsRunecrafting.js';
 import Runecraft, { ouraniaAltarTables } from '@/lib/skilling/skills/runecraft.js';
 import type { OuraniaAltarOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 const ouraniaAltarTask: MinionTask = {
 	type: 'OuraniaAltar',
-	async run(data: OuraniaAltarOptions) {
-		const { quantity, userID, channelID, duration, daeyalt } = data;
-		const user = await mUserFetch(userID);
+	async run(data: OuraniaAltarOptions, { user, handleTripFinish }) {
+		const { quantity, channelID, duration, daeyalt } = data;
+
 		const lvl = user.skillsAsLevels.runecraft;
 		const loot = new Bank();
 		const [hasArdyMedium] = await userhasDiaryTier(user, ArdougneDiary.medium);
@@ -86,7 +84,7 @@ const ouraniaAltarTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		updateBankSetting('ourania_loot', loot);
+		await ClientSettings.updateBankSetting('ourania_loot', loot);
 		await trackLoot({
 			id: 'ourania_altar',
 			type: 'Skilling',

@@ -1,12 +1,9 @@
-import { ellipsize, returnStringOrFile } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ellipsize } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
+import { filterOption } from '@/lib/discord/index.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { filterOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 
 export const dropCommand: OSBMahojiCommand = {
 	name: 'drop',
@@ -16,14 +13,14 @@ export const dropCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'items',
 			description: 'The item you want to drop.',
 			required: false
 		},
 		filterOption,
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'search',
 			description: 'A search query for items in your bank to drop.',
 			required: false
@@ -32,12 +29,12 @@ export const dropCommand: OSBMahojiCommand = {
 	run: async ({
 		interaction,
 		options,
-		userID
+		user
 	}: CommandRunOptions<{ items: string; filter?: string; search?: string }>) => {
 		if (!options.filter && !options.items && !options.search) {
 			return "You didn't provide any items, filter or search.";
 		}
-		const user = await mUserFetch(userID);
+
 		const bank = parseBank({
 			inputStr: options.items,
 			inputBank: user.bank,
@@ -66,25 +63,23 @@ export const dropCommand: OSBMahojiCommand = {
 		].flat(1);
 		const doubleCheckItems = itemsToDoubleCheck.filter(f => bank.has(f));
 
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			`${user}, are you sure you want to drop ${ellipsize(
 				bank.toString(),
 				1800
 			)}? This is irreversible, and you will lose the items permanently.`
 		);
 		if (doubleCheckItems.length > 0) {
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`${user}, some of the items you are dropping are on your **favorites** or look valuable, are you *really* sure you want to drop them?\n**${doubleCheckItems
-					.map(Items.itemNameFromId)
+					.map(i => Items.itemNameFromId(i))
 					.join(', ')}**\n\nDropping: ${ellipsize(bank.toString(), 1000)}`
 			);
 		}
 
 		await user.removeItemsFromBank(bank);
-		updateBankSetting('dropped_items', bank);
+		await ClientSettings.updateBankSetting('dropped_items', bank);
 
-		return returnStringOrFile(`Dropped ${bank}.`);
+		return interaction.returnStringOrFile(`Dropped ${bank}.`);
 	}
 };

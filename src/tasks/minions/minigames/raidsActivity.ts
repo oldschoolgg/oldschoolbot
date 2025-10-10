@@ -8,9 +8,6 @@ import { coxCMUniques, coxUniques, createTeam } from '@/lib/data/cox.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
 import type { RaidsOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 interface RaidResultUser {
 	personalPoints: number;
@@ -69,7 +66,7 @@ async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
 
 export const raidsTask: MinionTask = {
 	type: 'Raids',
-	async run(data: RaidsOptions) {
+	async run(data: RaidsOptions, { handleTripFinish }) {
 		const {
 			channelID,
 			users,
@@ -216,15 +213,11 @@ export const raidsTask: MinionTask = {
 					itemsToAdd: loot,
 					collectionLog: true
 				}),
-				userStatsUpdate(
-					user.id,
-					{
-						total_cox_points: {
-							increment: personalPoints
-						}
-					},
-					{}
-				)
+				user.statsUpdate({
+					total_cox_points: {
+						increment: personalPoints
+					}
+				})
 			]);
 
 			totalLoot.add(itemsAdded);
@@ -253,7 +246,7 @@ export const raidsTask: MinionTask = {
 			}${deathChance.toFixed(0)}%) ${xpResult}`;
 		}
 
-		updateBankSetting('cox_loot', totalLoot);
+		await ClientSettings.updateBankSetting('cox_loot', totalLoot);
 		await trackLoot({
 			totalLoot,
 			id: minigameID,

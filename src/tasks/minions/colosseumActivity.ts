@@ -6,19 +6,15 @@ import { refundChargeBank } from '@/lib/degradeableItems.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import type { ColoTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userStatsBankUpdate, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 const sunfireItems = resolveItems(['Sunfire fanatic helm', 'Sunfire fanatic cuirass', 'Sunfire fanatic chausses']);
 
 export const colosseumTask: MinionTask = {
 	type: 'Colosseum',
-	async run(data: ColoTaskOptions) {
+	async run(data: ColoTaskOptions, { user, handleTripFinish }) {
 		const {
 			channelID,
-			userID,
 			loot: possibleLoot,
 			diedAt,
 			maxGlory,
@@ -26,16 +22,15 @@ export const colosseumTask: MinionTask = {
 			venatorBowCharges,
 			bloodFuryCharges
 		} = data;
-		const user = await mUserFetch(userID);
 
 		const newKCs = new ColosseumWaveBank();
 		for (let i = 0; i < (diedAt ? diedAt - 1 : 12); i++) {
 			newKCs.add(i + 1);
 		}
-		const stats = await user.fetchStats({ colo_kc_bank: true, colo_max_glory: true });
+		const stats = await user.fetchStats();
 		for (const [key, value] of Object.entries(stats.colo_kc_bank as ItemBank))
 			newKCs.add(Number.parseInt(key), value);
-		await userStatsUpdate(user.id, { colo_kc_bank: newKCs._bank });
+		await user.statsUpdate({ colo_kc_bank: newKCs._bank });
 		const newKCsStr = `${newKCs
 			.entries()
 			.map(([kc, amount]) => `Wave ${kc}: ${amount} KC`)
@@ -95,8 +90,8 @@ export const colosseumTask: MinionTask = {
 
 		const { previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		await updateBankSetting('colo_loot', loot);
-		await userStatsBankUpdate(user, 'colo_loot', loot);
+		await ClientSettings.updateBankSetting('colo_loot', loot);
+		await user.statsBankUpdate('colo_loot', loot);
 		await trackLoot({
 			totalLoot: loot,
 			id: 'colo',
@@ -116,7 +111,7 @@ export const colosseumTask: MinionTask = {
 		let str = `${user}, you completed the Colosseum! You received: ${loot}. ${newWaveKcStr}`;
 
 		if (!stats.colo_max_glory || maxGlory > stats.colo_max_glory) {
-			await userStatsUpdate(user.id, { colo_max_glory: maxGlory });
+			user.statsUpdate({ colo_max_glory: maxGlory });
 			str += ` Your new max glory is ${maxGlory}!`;
 		}
 

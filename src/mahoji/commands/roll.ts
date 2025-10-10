@@ -1,12 +1,9 @@
-import { cryptoRng } from '@oldschoolgg/rng';
-import { ApplicationCommandOptionType } from 'discord.js';
-
 export const rollCommand: OSBMahojiCommand = {
 	name: 'roll',
 	description: 'Roll a random number from 1, up to a limit.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'limit',
 			description: 'The upper limit of the roll. Defaults to 10.',
 			required: false,
@@ -14,9 +11,9 @@ export const rollCommand: OSBMahojiCommand = {
 			max_value: 1_000_000_000
 		}
 	],
-	run: async ({ options, user }: CommandRunOptions<{ limit?: number }>) => {
+	run: async ({ options, user, rng }: CommandRunOptions<{ limit?: number }>) => {
 		const limit = options.limit ?? 10;
-		return `**${user.username}** rolled a random number from 1 to ${limit}...\n\n**${cryptoRng
+		return `**${user.username}** rolled a random number from 1 to ${limit}...\n\n**${rng
 			.randInt(1, limit)
 			.toString()}**`;
 	}

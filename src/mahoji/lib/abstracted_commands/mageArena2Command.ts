@@ -4,8 +4,6 @@ import { Bank } from 'oldschooljs';
 
 import removeFoodFromUser from '@/lib/minions/functions/removeFoodFromUser.js';
 import type { ActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function mageArena2Command(user: MUser, channelID: string) {
 	if (user.skillsAsLevels.magic < 75) {
@@ -41,11 +39,11 @@ export async function mageArena2Command(user: MUser, channelID: string) {
 
 	const totalCost = itemsNeeded.clone().add(foodRemoved);
 
-	await updateBankSetting('mage_arena_cost', totalCost);
+	await ClientSettings.updateBankSetting('mage_arena_cost', totalCost);
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration,
 		type: 'MageArena2'
 	});

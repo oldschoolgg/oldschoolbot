@@ -194,18 +194,13 @@ export const allTasks: MinionTask[] = [
 type MinionTaskRunOptions = {
 	user: MUser;
 	handleTripFinish: typeof handleTripFinish;
+	rng: RNGProvider;
 };
 
-type IMinionTask =
-	| {
-			type: activity_type_enum;
-			run: (data: any) => Promise<void>;
-	  }
-	| {
-			type: activity_type_enum;
-			isNew: true;
-			run: (data: any, options: MinionTaskRunOptions) => Promise<void>;
-	  };
+type IMinionTask = {
+	type: activity_type_enum;
+	run: (data: any, options: MinionTaskRunOptions) => Promise<void>;
+};
 declare global {
 	export type MinionTask = IMinionTask;
 }

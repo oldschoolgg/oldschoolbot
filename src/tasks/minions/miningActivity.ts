@@ -9,7 +9,6 @@ import type { Ore } from '@/lib/skilling/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { rollForMoonKeyHalf } from '@/lib/util/minionUtils.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
@@ -140,10 +139,10 @@ export function determineMiningResult({
 
 export const miningTask: MinionTask = {
 	type: 'Mining',
-	async run(data: MiningActivityTaskOptions) {
-		const { oreID, userID, channelID, duration, powermine } = data;
+	async run(data: MiningActivityTaskOptions, { user, handleTripFinish }) {
+		const { oreID, channelID, duration, powermine } = data;
 		const { quantity } = data;
-		const user = await mUserFetch(userID);
+
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 		const { updateBank, bonusXP } = determineMiningResult({
 			ore,

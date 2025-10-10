@@ -1,7 +1,6 @@
 import { Bank, LootTable } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 const ancientPageTable = new LootTable()
@@ -39,9 +38,8 @@ const skeletonTable = new LootTable({ limit: 202 })
 
 export const myNotesTask: MinionTask = {
 	type: 'MyNotes',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { channelID, userID, quantity } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { channelID, quantity } = data;
 
 		const loot = new Bank(skeletonTable.roll(quantity));
 

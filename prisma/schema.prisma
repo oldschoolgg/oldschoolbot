@@ -1,5 +1,7 @@
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
+  runtime    = "nodejs"
+  engineType = "client"
 }
 
 datasource db {
@@ -431,6 +433,8 @@ model User {
   cl_array Int[] @default([])
 
   gear_template Int? @db.SmallInt
+
+  CLUserItem CLUserItem[]
 
   @@index([id, last_command_date])
   @@map("users")
@@ -1149,13 +1153,38 @@ model Badges {
   @@map("badges")
 }
 
-model CollectionLogSlot {
-  group_name String
-  item_id    Int
+model CLCategory {
+  name        String           @id
+  total_items Int
+  items       CLCategoryItem[]
+  counts      Boolean
 
-  @@id([group_name, item_id])
-  @@unique([group_name, item_id])
-  @@map("collection_log_slot")
+  @@map("categories")
+}
+
+model CLCategoryItem {
+  category_name String
+  item_id       Int
+
+  category CLCategory @relation(fields: [category_name], references: [name], onDelete: Cascade)
+
+  @@id([category_name, item_id])
+  @@unique([category_name, item_id])
+  @@index([item_id])
+  @@map("category_items")
+}
+
+model CLUserItem {
+  user_id  String
+  item_id  Int
+  quantity Int    @default(1)
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@id([user_id, item_id])
+  @@unique([user_id, item_id])
+  @@index([item_id])
+  @@map("user_items")
 }
 
 enum command_name_enum {

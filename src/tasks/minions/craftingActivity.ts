@@ -3,13 +3,12 @@ import { Bank } from 'oldschooljs';
 
 import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
 import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const craftingTask: MinionTask = {
 	type: 'Crafting',
-	async run(data: CraftingActivityTaskOptions) {
-		const { craftableID, quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: CraftingActivityTaskOptions, { user, handleTripFinish }) {
+		const { craftableID, quantity, channelID, duration } = data;
+
 		const currentLevel = user.skillsAsLevels.crafting;
 		const item = Craftables.find(craft => craft.id === craftableID)!;
 

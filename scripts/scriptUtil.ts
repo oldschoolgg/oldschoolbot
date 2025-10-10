@@ -4,11 +4,10 @@ import { type ExecOptions, exec as execNonPromise } from 'node:child_process';
 import { promisify } from 'node:util';
 import { Stopwatch } from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
-import { Bank, type ItemBank, Items, LootTable } from 'oldschooljs';
+import { Bank, Items, LootTable } from 'oldschooljs';
 import { isFunction, isObjectType, toSnakeCase } from 'remeda';
 
 import { crons } from '@/lib/crons.js';
-import { sql } from '@/lib/postgres.js';
 import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 import { sonicBoom } from '@/lib/util/logger.js';
 
@@ -40,18 +39,7 @@ export async function runTimedLoggedFn(name: string, fn: () => unknown) {
 	console.log(`${name} completed in ${stopwatch.toString()}`);
 }
 
-export function getItemNamesFromBank(bank: Bank | ItemBank): string[] {
-	if (bank instanceof Bank) {
-		return bank
-			.items()
-			.map(i => i[0].name)
-			.sort((a, b) => a.localeCompare(b));
-	}
-	return getItemNamesFromBank(new Bank(bank));
-}
-
 export async function tearDownScript() {
-	await sql.end();
 	TimerManager.destroy();
 	sonicBoom.destroy();
 	for (const cron of crons) cron.stop();

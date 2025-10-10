@@ -7,7 +7,6 @@ import {
 	sumArr,
 	Time
 } from '@oldschoolgg/toolkit';
-import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
 import type { NMZStrategy } from '@/lib/constants.js';
@@ -16,11 +15,7 @@ import { MAX_QP } from '@/lib/minions/data/quests.js';
 import { resolveAttackStyles } from '@/lib/minions/functions/index.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { NightmareZoneActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const itemBoosts = [
 	// Special weapons
@@ -359,7 +354,7 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 		}
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'NightmareZone');
+	const maxTripLength = user.calcMaxTripLength('NightmareZone');
 	const quantity = Math.floor(maxTripLength / timePerMonster);
 	const duration = quantity * timePerMonster;
 	// Consume GP (and prayer potion if experience setup)
@@ -378,7 +373,7 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 	}
 
 	await user.removeItemsFromBank(totalCost);
-	updateBankSetting('nmz_cost', totalCost);
+	await ClientSettings.updateBankSetting('nmz_cost', totalCost);
 	await trackLoot({
 		id: 'nmz',
 		type: 'Minigame',
@@ -392,12 +387,12 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 		]
 	});
 
-	await addSubTaskToActivityTask<NightmareZoneActivityTaskOptions>({
+	await ActivityManager.startTrip<NightmareZoneActivityTaskOptions>({
 		quantity,
 		userID: user.id,
 		duration,
 		type: 'NightmareZone',
-		channelID: channelID.toString(),
+		channelID,
 		minigameID: 'nmz',
 		strategy
 	});
@@ -410,7 +405,7 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 }
 
 export async function nightmareZoneShopCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	user: MUser,
 	item: string | undefined,
 	quantity = 1
@@ -446,8 +441,7 @@ export async function nightmareZoneShopCommand(
 	}
 
 	const loot = new Bank(shopItem.output).multiply(quantity);
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to spend **${cost.toLocaleString()}** Nightmare Zone points to buy **${loot}**?`
 	);
 

@@ -1,8 +1,5 @@
-import { ApplicationCommandOptionType } from 'discord.js';
-
 import { PerkTier } from '@/lib/constants.js';
 import { getAllTrackedLootForUser, getDetailsOfSingleTrackedLoot } from '@/lib/lootTrack.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 
 export const lootCommand: OSBMahojiCommand = {
 	name: 'loot',
@@ -12,12 +9,12 @@ export const lootCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'view',
 			description: 'View your tracked loot for a certain thing.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'The thing you want to view.',
 					required: true,
@@ -33,12 +30,12 @@ export const lootCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'reset',
 			description: 'Reset one of your loot trackers.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'The thing you want to reset.',
 					required: true,
@@ -56,15 +53,14 @@ export const lootCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		interaction
 	}: CommandRunOptions<{ view?: { name: string }; reset?: { name: string } }>) => {
-		const user = await mUserFetch(userID);
 		const name = options.view?.name ?? options.reset?.name ?? '';
 		if (user.perkTier() < PerkTier.Four) {
 			const res = await prisma.lootTrack.count({
 				where: {
-					user_id: BigInt(userID)
+					user_id: BigInt(user.id)
 				}
 			});
 			return `You need to be a Tier 3 Patron to use this feature. You have ${res}x loot trackers stored currently.`;
@@ -74,7 +70,7 @@ export const lootCommand: OSBMahojiCommand = {
 			.findFirst({
 				where: {
 					id: name,
-					user_id: BigInt(userID)
+					user_id: BigInt(user.id)
 				}
 			})
 			.catch(() => null);
@@ -86,7 +82,7 @@ export const lootCommand: OSBMahojiCommand = {
 			return getDetailsOfSingleTrackedLoot(user, trackedLoot);
 		}
 		if (options.reset) {
-			await handleMahojiConfirmation(interaction, 'Are you sure you want to reset this loot tracker?');
+			await interaction.confirmation('Are you sure you want to reset this loot tracker?');
 			await prisma.lootTrack.delete({
 				where: {
 					id: trackedLoot.id

@@ -48,12 +48,18 @@ for (const item of Smithing.SmithableItems) ALL_OBTAINABLE_ITEMS.add(item.id);
 for (const item of Smithing.BlastableBars) ALL_OBTAINABLE_ITEMS.add(item.id);
 for (const item of Buyables) {
 	totalBankToAdd.add(isFunction(item.outputItems) ? undefined : item.outputItems);
-	const buyable = Items.getOrThrow(item.name);
+	const buyable = Items.get(item.name);
 	if (buyable) totalBankToAdd.add(buyable);
 }
 for (const item of allFarmingItems) ALL_OBTAINABLE_ITEMS.add(item);
-for (const item of Createables) totalBankToAdd.add(item.outputItems);
-for (const item of armorAndItemPacks) totalBankToAdd.add(item.outputItems);
+for (const item of Createables) {
+	if (isFunction(item.outputItems)) continue;
+	totalBankToAdd.add(item.outputItems);
+}
+for (const item of armorAndItemPacks) {
+	if (isFunction(item.outputItems)) continue;
+	totalBankToAdd.add(item.outputItems);
+}
 for (const item of Hunter.Creatures) {
 	for (const i of item.table.allItems) ALL_OBTAINABLE_ITEMS.add(i);
 }
@@ -154,23 +160,3 @@ for (const castable of Castables) {
 }
 
 for (const i of totalBankToAdd.items()) ALL_OBTAINABLE_ITEMS.add(i[0].id);
-
-// writeFileSync(
-// 	'not_in_list_but_owned.txt',
-// 	ids
-// 		.filter(i => !ALL_OBTAINABLE_ITEMS.has(i))
-// 		.map(Items.getOrThrow)
-// 		.filter(i => i.tradeable)
-// 		.map(i => i.name)
-// 		.join('\n')
-// );
-
-// writeFileSync(
-// 	'in_list_but_not_owned.txt',
-// 	Array.from(ALL_OBTAINABLE_ITEMS.values())
-// 		.filter(i => !ids.includes(i))
-// 		.map(Items.getOrThrow)
-// 		.filter(i => i.tradeable)
-// 		.map(i => i.name)
-// 		.join('\n')
-// );

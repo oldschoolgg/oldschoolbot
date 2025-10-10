@@ -3,7 +3,6 @@ import { Emoji, Events, Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 import { VolcanicMineGameTime } from '@/mahoji/lib/abstracted_commands/volcanicMineCommand.js';
 
@@ -17,9 +16,8 @@ const fragmentTable = new LootTable({ limit: 175 }).add(numuliteTable, 1, 45).ad
 
 export const vmTask: MinionTask = {
 	type: 'VolcanicMine',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { quantity, channelID, duration } = data;
 		const userSkillingGear = user.gear.skilling;
 		const userMiningLevel = user.skillsAsLevels.mining;
 		let boost = 1;

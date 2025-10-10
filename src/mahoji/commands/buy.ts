@@ -1,20 +1,16 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, bold } from 'discord.js';
+import { bold } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import Buyables from '@/lib/data/buyables/buyables.js';
 import { tripBuyables } from '@/lib/data/buyables/tripBuyables.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import { Minigames } from '@/lib/settings/minigames.js';
-import { MUserStats } from '@/lib/structures/MUserStats.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { buyFossilIslandNotes } from '@/mahoji/lib/abstracted_commands/buyFossilIslandNotes.js';
 import { buyingTripCommand } from '@/mahoji/lib/abstracted_commands/buyingTripCommand.js';
 import { buyKitten } from '@/mahoji/lib/abstracted_commands/buyKitten.js';
-import { mahojiParseNumber, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 const allBuyablesAutocomplete = [
 	...Buyables.map(b => ({ name: b.name })),
@@ -28,7 +24,7 @@ export const buyCommand: OSBMahojiCommand = {
 	description: 'Allows you to purchase items.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The item you want to buy.',
 			required: true,
@@ -39,7 +35,7 @@ export const buyCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'quantity',
 			description: 'The quantity you want to buy (optional).',
 			required: false
@@ -51,7 +47,7 @@ export const buyCommand: OSBMahojiCommand = {
 		interaction,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: string }>) => {
-		const user = await mUserFetch(userID.toString());
+		const user = await mUserFetch(userID);
 		const { name } = options;
 		let quantity: number | null = mahojiParseNumber({ input: options.quantity, min: 1 });
 
@@ -89,8 +85,8 @@ export const buyCommand: OSBMahojiCommand = {
 		}
 
 		if (buyable.customReq) {
-			await deferInteraction(interaction);
-			const [hasCustomReq, reason] = await buyable.customReq(user, await MUserStats.fromID(user.id));
+			await interaction.defer();
+			const [hasCustomReq, reason] = await buyable.customReq(user, await user.fetchMStats());
 			if (!hasCustomReq) {
 				return reason!;
 			}
@@ -159,8 +155,7 @@ export const buyCommand: OSBMahojiCommand = {
 
 		const outItems = singleOutput.clone().multiply(quantity);
 
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			`${user}, please confirm that you want to buy **${outItems}** for: ${totalCost}.`
 		);
 
@@ -173,11 +168,11 @@ export const buyCommand: OSBMahojiCommand = {
 		let costBankExcludingGP: Bank | undefined = totalCost.clone().remove('Coins', totalCost.amount('Coins'));
 		if (costBankExcludingGP.length === 0) costBankExcludingGP = undefined;
 
-		const currentStats = await user.fetchStats({ buy_cost_bank: true, buy_loot_bank: true });
+		const currentStats = await user.fetchStats();
 		await Promise.all([
-			updateBankSetting('buy_cost_bank', totalCost),
-			updateBankSetting('buy_loot_bank', outItems),
-			userStatsUpdate(user.id, {
+			await ClientSettings.updateBankSetting('buy_cost_bank', totalCost),
+			await ClientSettings.updateBankSetting('buy_loot_bank', outItems),
+			user.statsUpdate({
 				buy_cost_bank: totalCost
 					.clone()
 					.add(currentStats.buy_cost_bank as ItemBank)

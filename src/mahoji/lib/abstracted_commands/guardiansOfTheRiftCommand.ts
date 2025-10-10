@@ -6,11 +6,7 @@ import { trackLoot } from '@/lib/lootTrack.js';
 import { pickaxes, varrockArmours } from '@/lib/skilling/functions/miningBoosts.js';
 import Runecraft from '@/lib/skilling/skills/runecraft.js';
 import type { GuardiansOfTheRiftActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function guardiansOfTheRiftStartCommand(
 	user: MUser,
@@ -23,7 +19,7 @@ export async function guardiansOfTheRiftStartCommand(
 	}
 
 	const timePerGame = Time.Minute * 10;
-	const maxTripLength = calcMaxTripLength(user, 'GuardiansOfTheRift');
+	const maxTripLength = user.calcMaxTripLength('GuardiansOfTheRift');
 	const quantity = Math.floor(maxTripLength / timePerGame);
 	const duration = quantity * timePerGame;
 	// Being reduced with ticks
@@ -91,7 +87,7 @@ export async function guardiansOfTheRiftStartCommand(
 		);
 	}
 
-	if (userHasGracefulEquipped(user)) {
+	if (user.hasGracefulEquipped()) {
 		boosts.push('Extra 2 Barriers/Guardians fixed for Full Graceful equipped');
 		barrierAndGuardian += 2;
 	}
@@ -154,7 +150,7 @@ export async function guardiansOfTheRiftStartCommand(
 		rolls += 2;
 		boosts.push('Extra 2 rolls for Combination runecrafting');
 		await user.removeItemsFromBank(removeRunesAndNecks);
-		updateBankSetting('gotr_cost', removeRunesAndNecks);
+		await ClientSettings.updateBankSetting('gotr_cost', removeRunesAndNecks);
 		await trackLoot({
 			id: 'guardians_of_the_rift',
 			type: 'Minigame',
@@ -174,12 +170,12 @@ export async function guardiansOfTheRiftStartCommand(
 	barrierAndGuardian = Math.round(randomVariation(barrierAndGuardian, 10));
 	rolls = Math.max(rolls, 1);
 
-	await addSubTaskToActivityTask<GuardiansOfTheRiftActivityTaskOptions>({
+	await ActivityManager.startTrip<GuardiansOfTheRiftActivityTaskOptions>({
 		quantity,
 		userID: user.id,
 		duration,
 		type: 'GuardiansOfTheRift',
-		channelID: channelID.toString(),
+		channelID,
 		minigameID: 'guardians_of_the_rift',
 		minedFragments,
 		barrierAndGuardian,

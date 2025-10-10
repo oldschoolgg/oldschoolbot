@@ -120,7 +120,7 @@ for (const clueTier of ClueTiers) {
 				mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
 			}`;
 
-			const stats = await user.fetchStats({ openable_scores: true });
+			const stats = await user.fetchStats();
 			const nthCasket = ((stats.openable_scores as ItemBank)[clueTier.id] ?? 0) + quantity;
 
 			let gotMilestoneReward = false;

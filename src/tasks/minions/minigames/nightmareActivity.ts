@@ -5,22 +5,19 @@ import { BitField } from '@/lib/constants.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import announceLoot from '@/lib/minions/functions/announceLoot.js';
-import { addMonsterXP } from '@/lib/minions/functions/index.js';
 import type { NightmareActivityTaskOptions } from '@/lib/types/minions.js';
 import { getNightmareGearStats } from '@/lib/util/getNightmareGearStats.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 const RawNightmare = Misc.Nightmare;
 
 export const nightmareTask: MinionTask = {
 	type: 'Nightmare',
-	async run(data: NightmareActivityTaskOptions) {
-		const { channelID, quantity, duration, isPhosani = false, userID, method } = data;
+	async run(data: NightmareActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, duration, isPhosani = false, method } = data;
 
 		const monsterID = isPhosani ? EMonster.PHOSANI_NIGHTMARE : NightmareMonster.id;
 		const monsterName = isPhosani ? "Phosani's Nightmare" : 'Nightmare';
-		const user = await mUserFetch(userID);
 		const team = method === 'solo' ? [user.id] : [user.id, '1', '2', '3'];
 
 		const [userStats] = await getNightmareGearStats(user, team, isPhosani);
@@ -47,7 +44,7 @@ export const nightmareTask: MinionTask = {
 			}
 		}
 
-		const xpRes = await addMonsterXP(user, {
+		const xpRes = await user.addMonsterXP({
 			monsterID: EMonster.NIGHTMARE,
 			quantity: Math.ceil(quantity / team.length),
 			duration,

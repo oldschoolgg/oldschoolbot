@@ -8,7 +8,6 @@ export const BLACKLISTED_GUILDS = new Set<string>();
 
 export async function syncBlacklists() {
 	if (!globalConfig.isProduction) {
-		console.log('Skipping blacklist sync because not production');
 		return;
 	}
 	const blacklistedEntities = await roboChimpClient.blacklistedEntity.findMany();

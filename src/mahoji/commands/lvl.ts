@@ -1,10 +1,9 @@
-import { ApplicationCommandOptionType } from 'discord.js';
 import { convertLVLtoXP, convertXPtoLVL } from 'oldschooljs';
 import { Hiscores } from 'oldschooljs/hiscores';
 
 import { MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
+import { skillOption } from '@/lib/discord/index.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
-import { skillOption } from '@/mahoji/lib/mahojiCommandOptions.js';
 
 const xpLeft = (xp: number) => {
 	const level = convertXPtoLVL(xp, MAX_LEVEL);
@@ -20,7 +19,7 @@ export const lvlCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'rsn',
 			description: 'The runescape username to check',
 			required: true

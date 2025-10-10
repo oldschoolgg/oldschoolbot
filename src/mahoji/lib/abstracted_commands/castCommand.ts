@@ -2,11 +2,7 @@ import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldsch
 
 import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import type { CastingActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function castCommand(channelID: string, user: MUser, name: string, quantity: number | undefined) {
 	const spell = Castables.find(spell => stringMatches(spell.id.toString(), name) || stringMatches(spell.name, name));
@@ -37,7 +33,7 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 
 	if (spell.travelTime) {
 		let { travelTime } = spell;
-		if (userHasGracefulEquipped(user)) {
+		if (user.hasGracefulEquipped()) {
 			travelTime = reduceNumByPercent(travelTime, 20); // 20% boost for having graceful
 			boosts.push('20% for Graceful outfit');
 		} else {
@@ -69,7 +65,7 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 		castTimeMilliSeconds += travelTime / 27; // One trip holds 27 casts, scale it down
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'Casting');
+	const maxTripLength = user.calcMaxTripLength('Casting');
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / castTimeMilliSeconds);
@@ -106,12 +102,12 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 	}
 
 	await user.removeItemsFromBank(cost);
-	await updateBankSetting('magic_cost_bank', cost);
+	await ClientSettings.updateBankSetting('magic_cost_bank', cost);
 
-	await addSubTaskToActivityTask<CastingActivityTaskOptions>({
+	await ActivityManager.startTrip<CastingActivityTaskOptions>({
 		spellID: spell.id,
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'Casting'

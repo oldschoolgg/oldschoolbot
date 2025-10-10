@@ -56,7 +56,7 @@ export async function handleNewCLItems({
 	const previousCLDetails = calcCLDetails(previousCL);
 	const previousCLRank = previousCLDetails.percent >= 80 ? await calculateOwnCLRanking(user.id) : null;
 
-	await roboChimpSyncData(user, newCL);
+	await Promise.all([roboChimpSyncData(user, newCL), user.updateCL()]);
 	const newCLRank = previousCLDetails.percent >= 80 ? await calculateOwnCLRanking(user.id) : null;
 
 	const newCLDetails = calcCLDetails(newCL);
@@ -99,7 +99,7 @@ export async function handleNewCLItems({
 					getKC: (id: number) => user.getKC(id),
 					user,
 					minigames: await user.fetchMinigames(),
-					stats: await MUserStats.fromID(user.id)
+					stats: await user.fetchMStats()
 				})}!`
 			: '';
 

@@ -3,14 +3,13 @@ import { Bank } from 'oldschooljs';
 
 import { lootRoom, plunderRooms } from '@/lib/minions/data/plunder.js';
 import type { PlunderActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const plunderTask: MinionTask = {
 	type: 'Plunder',
-	async run(data: PlunderActivityTaskOptions) {
-		const { channelID, quantity, rooms, userID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: PlunderActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, rooms } = data;
+
 		await user.incrementMinigameScore('pyramid_plunder', quantity);
 		const allRooms = plunderRooms.filter(room => rooms.includes(room.number));
 		const completedRooms = [

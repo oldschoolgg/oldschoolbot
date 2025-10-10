@@ -7,7 +7,6 @@ import {
 	GeneralBank,
 	type GeneralBankType,
 	increaseNumByPercent,
-	mentionCommand,
 	objectEntries,
 	reduceNumByPercent,
 	sumArr,
@@ -18,16 +17,14 @@ import { Bank, type EquipmentSlot, type ItemBank, Items, LootTable, resolveItems
 import { clamp } from 'remeda';
 
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { QuestID } from '@/lib/minions/data/quests.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { ColoTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 function combinedChance(percentages: number[]): number {
 	const failureProbabilities = percentages.map(p => (100 - p) / 100);
@@ -467,7 +464,6 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 
 	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
 		return `You need to complete the "Children of the Sun" quest before you can enter the Colosseum. Send your minion to do the quest using: ${mentionCommand(
-			globalClient,
 			'activities',
 			'quest'
 		)}.`;
@@ -555,7 +551,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	const venatorBowCharges = calculateVenCharges();
 
 	const res = startColosseumRun({
-		kcBank: new ColosseumWaveBank((await user.fetchStats({ colo_kc_bank: true })).colo_kc_bank as ItemBank),
+		kcBank: new ColosseumWaveBank((await user.fetchStats()).colo_kc_bank as ItemBank),
 		hasScythe,
 		hasTBow,
 		hasVenBow,
@@ -642,8 +638,8 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	}
 	messages.push(`Removed ${realCost}`);
 
-	await updateBankSetting('colo_cost', realCost);
-	await userStatsBankUpdate(user, 'colo_cost', realCost);
+	await ClientSettings.updateBankSetting('colo_cost', realCost);
+	await user.statsBankUpdate('colo_cost', realCost);
 	await trackLoot({
 		totalCost: realCost,
 		id: 'colo',
@@ -667,7 +663,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		messages.push(degradeResults);
 	}
 
-	await addSubTaskToActivityTask<ColoTaskOptions>({
+	await ActivityManager.startTrip<ColoTaskOptions>({
 		userID: user.id,
 		channelID,
 		duration: res.realDuration,

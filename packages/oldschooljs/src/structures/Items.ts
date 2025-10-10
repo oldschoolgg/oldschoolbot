@@ -1,8 +1,10 @@
+import fs from 'node:fs';
 import deepMerge from 'deepmerge';
 
-import _items from '../assets/item_data.json' with { type: 'json' };
-
-const items = _items as any as Record<string, Item>;
+const items = JSON.parse(fs.readFileSync(new URL('../assets/item_data.json', import.meta.url), 'utf8')) as Record<
+	string,
+	Item
+>;
 
 import type { Item } from '@/meta/item.js';
 import { Collection } from './Collection.js';
@@ -169,20 +171,23 @@ class ItemsSingleton extends Collection<number, Item> {
 
 	public deepResolveNames(
 		itemArray: ArrayItemsResolvable,
-		options?: { sort?: 'alphabetical' }
+		options?: { sort?: 'alphabetical'; removeDuplicates?: boolean }
 	): ArrayItemsResolvedNames {
-		const newArray: ArrayItemsResolvedNames = [];
+		let newArray: ArrayItemsResolvedNames = [];
 
 		const sortFn = options?.sort === 'alphabetical' ? (a: string, b: string) => a.localeCompare(b) : () => 0;
 
 		for (const item of itemArray) {
 			if (Array.isArray(item)) {
-				newArray.push(item.map(i => this.getOrThrow(i).name).sort(sortFn));
+				let subArr = item.map(i => this.getOrThrow(i).name).sort(sortFn);
+				if (options?.removeDuplicates) subArr = [...new Set(subArr)];
+				newArray.push(subArr);
 			} else {
 				const osItem = this.getOrThrow(item);
 				newArray.push(osItem.name);
 			}
 		}
+		if (!options?.removeDuplicates) newArray = [...new Set(newArray)];
 
 		return newArray.sort((a, b) => sortFn(typeof a === 'string' ? a : a[0], typeof b === 'string' ? b : b[0]));
 	}
