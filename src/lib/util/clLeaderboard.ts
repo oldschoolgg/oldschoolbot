@@ -31,23 +31,20 @@ export async function fetchMultipleCLLeaderboards(
 
 	const results = await prisma.$transaction([
 		...parsedLeaderboards.map(({ items, userEventMap, ironmenOnly, resultLimit }) => {
+			const SQL_ITEMS = `ARRAY[${items.map(i => `${i}`).join(', ')}]`;
 			const userIds = Array.from(userEventMap.keys());
 			const userIdsList = userIds.length > 0 ? userIds.map(i => `'${i}'`).join(', ') : 'NULL';
 
 			const query = `
-SELECT u.id,
-       COUNT(*)::int AS qty,
-       TRIM(COALESCE(string_agg(b.text, ' '), '') || ' ' || COALESCE(username, 'Unknown')) AS full_name
-FROM users u
-${SQL.LEFT_JOIN_BADGES}
-JOIN LATERAL (
-  SELECT 1
-  FROM UNNEST(u.cl_array) AS val
-  WHERE val = ANY(ARRAY[${items.join(', ')}])
-) t ON TRUE
-${ironmenOnly ? 'WHERE "u"."minion.ironman" = true' : ''}
-${userIds.length > 0 ? `OR u.id IN (${userIdsList})` : ''}
-${SQL.GROUP_BY_U_ID}
+SELECT id, qty, full_name
+FROM (
+    	SELECT u.id, CARDINALITY(cl_array & ${SQL_ITEMS}) AS qty, ${SQL.SELECT_FULL_NAME}
+    	FROM users u
+		${SQL.LEFT_JOIN_BADGES}
+    	WHERE (cl_array && ${SQL_ITEMS}
+		${ironmenOnly ? 'AND "u"."minion.ironman" = true' : ''}) ${userIds.length > 0 ? `OR u.id IN (${userIdsList})` : ''}
+		${SQL.GROUP_BY_U_ID}
+	) AS subquery
 ORDER BY qty DESC
 LIMIT ${resultLimit};
 `;
