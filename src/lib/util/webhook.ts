@@ -1,5 +1,4 @@
-import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { splitMessage } from '@oldschoolgg/toolkit/string-util';
+import { channelIsSendable, splitMessage } from '@oldschoolgg/toolkit';
 import {
 	type AttachmentBuilder,
 	type BaseMessageOptions,
@@ -11,7 +10,6 @@ import {
 } from 'discord.js';
 
 import { globalConfig } from '@/lib/constants.js';
-import { logError } from './logError.js';
 
 async function resolveChannel(channelID: string): Promise<WebhookClient | Message['channel'] | undefined> {
 	const channel = globalClient.channels.cache.get(channelID);
@@ -91,7 +89,7 @@ export async function sendToChannelID(
 				await deleteWebhook(channelID);
 				await sendToChannelID(channelID, data);
 			} else {
-				logError(error, {
+				Logging.logError(error, {
 					content: data.content ?? 'None',
 					channelID
 				});
@@ -117,7 +115,7 @@ async function sendToChannelOrWebhook(channel: WebhookClient | Message['channel'
 		// Moves files + components to the final message.
 		const split = splitMessage(input.content, { maxLength });
 		if (split.length > 4) {
-			logError(new Error(`Tried to send ${split.length} messages.`), undefined, {
+			Logging.logError(new Error(`Tried to send ${split.length} messages.`), {
 				content: `${split[0].substring(0, 120)}...`
 			});
 			return;

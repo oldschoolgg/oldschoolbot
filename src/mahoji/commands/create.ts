@@ -1,21 +1,17 @@
-import { stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import Createables from '@/lib/data/createables.js';
-import type { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { userStatsBankUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const createCommand: OSBMahojiCommand = {
 	name: 'create',
 	description: 'Allows you to create items, like godswords or spirit shields - and pack barrows armor sets.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'item',
 			description: 'The item you want to create/revert.',
 			required: true,
@@ -29,7 +25,7 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The amount you want to create.',
 			required: false,
@@ -37,7 +33,7 @@ export const createCommand: OSBMahojiCommand = {
 			max_value: 1_000_000_000
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'showall',
 			description: 'Show all creatable items.',
 			required: false
@@ -46,10 +42,8 @@ export const createCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		interaction,
-		userID
+		user
 	}: CommandRunOptions<{ item: string; quantity?: number; showall?: boolean }>) => {
-		const user = await mUserFetch(userID);
-
 		const itemName = options.item?.toLowerCase();
 		let { quantity } = options;
 		if (options.showall) {
@@ -75,8 +69,8 @@ export const createCommand: OSBMahojiCommand = {
 		}
 
 		if (createableItem.requiredSkills) {
-			for (const [skillName, lvl] of Object.entries(createableItem.requiredSkills)) {
-				if (user.skillLevel(skillName as SkillsEnum) < lvl) {
+			for (const [skillName, lvl] of Object.entries(createableItem.requiredSkills) as [SkillNameType, number][]) {
+				if (user.skillsAsLevels[skillName] < lvl) {
 					return `You need ${lvl} ${skillName} to ${action} this item.`;
 				}
 			}
@@ -153,7 +147,7 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		}
 
-		await handleMahojiConfirmation(interaction, str);
+		await interaction.confirmation(str);
 
 		// Ensure they have the required items to create the item.
 		if (!user.owns(inItems)) {
@@ -183,10 +177,10 @@ export const createCommand: OSBMahojiCommand = {
 			itemsToRemove: inItems
 		});
 
-		await updateBankSetting('create_cost', inItems);
-		await updateBankSetting('create_loot', outItems);
-		await userStatsBankUpdate(user, 'create_cost_bank', inItems);
-		await userStatsBankUpdate(user, 'create_loot_bank', outItems);
+		await ClientSettings.updateBankSetting('create_cost', inItems);
+		await ClientSettings.updateBankSetting('create_loot', outItems);
+		await user.statsBankUpdate('create_cost_bank', inItems);
+		await user.statsBankUpdate('create_loot_bank', outItems);
 
 		if (action === 'revert') {
 			return `You reverted ${inItems} into ${outItems}.${extraMessage}`;

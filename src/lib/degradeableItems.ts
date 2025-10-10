@@ -1,11 +1,10 @@
+import { percentChance } from '@oldschoolgg/rng';
 import { Bank, type Item, Items, itemID, type Monster } from 'oldschooljs';
 
 import type { GearSetupType, PrimaryGearSetupType } from '@/lib/gear/types.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
 import type { ChargeBank } from '@/lib/structures/Bank.js';
 import { assert } from '@/lib/util/logError.js';
-import { percentChance } from '@/lib/util/rng.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import type { KillableMonster } from './minions/types.js';
 
 export interface DegradeableItem {
 	item: Item;
@@ -368,7 +367,7 @@ export async function degradeItem({
 		});
 		const itemsDeleted = new Bank().add(item.id);
 
-		updateBankSetting('degraded_items_cost', itemsDeleted);
+		await ClientSettings.updateBankSetting('degraded_items_cost', itemsDeleted);
 
 		if (hasEquipped) {
 			// Get the users equipped item.

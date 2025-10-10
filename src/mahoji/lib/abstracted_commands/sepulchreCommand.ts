@@ -1,5 +1,4 @@
-import { reduceNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
+import { formatDuration, reduceNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 
 import { sepulchreBoosts, sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
@@ -15,9 +14,6 @@ import type { Fletchable } from '@/lib/skilling/types.js';
 import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function sepulchreCommand(user: MUser, channelID: string, fletching?: number) {
 	const skills = user.skillsAsLevels;
@@ -30,7 +26,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 	if (thievingLevel < 66) {
 		return 'You need at least level 66 Thieving to do the Hallowed Sepulchre.';
 	}
-	if (!userHasGracefulEquipped(user)) {
+	if (!user.hasGracefulEquipped()) {
 		return 'You need Graceful equipped in any setup to do the Hallowed Sepulchre.';
 	}
 
@@ -53,7 +49,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		}
 	}
 
-	const maxLaps = Math.floor(calcMaxTripLength(user, 'Sepulchre') / lapLength);
+	const maxLaps = Math.floor(user.calcMaxTripLength('Sepulchre') / lapLength);
 	const tripLength = maxLaps * lapLength;
 
 	let fletchable: Fletchable | undefined;
@@ -113,13 +109,13 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		await user.removeItemsFromBank(itemsNeeded);
 	}
 
-	await addSubTaskToActivityTask<SepulchreActivityTaskOptions>({
+	await ActivityManager.startTrip<SepulchreActivityTaskOptions>({
 		floors: completableFloors.map(f => f.number),
 		quantity: maxLaps,
 		userID: user.id,
 		duration: tripLength,
 		type: 'Sepulchre',
-		channelID: channelID.toString(),
+		channelID,
 		minigameID: 'sepulchre',
 		fletch: fletchable ? { id: fletchable.id, qty: fletchingQuantity } : undefined
 	});

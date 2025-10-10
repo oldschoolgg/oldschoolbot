@@ -9,9 +9,9 @@ import { checkDegradeableItemCharges, degradeItem } from '../../lib/degradeableI
 
 export const herbloreTask: MinionTask = {
 	type: 'Herblore',
-	async run(data: HerbloreActivityTaskOptions) {
-		const { mixableID, quantity, zahur, wesley, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: HerbloreActivityTaskOptions, { user, handleTripFinish }) {
+		const { mixableID, quantity, zahur, wesley, channelID, duration } = data;
+
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.item.id === mixableID)!;
 		const xpReceived = zahur && mixableItem.zahur ? 0 : quantity * mixableItem.xp;
 		let outputQuantity = mixableItem.outputMultiple ? quantity * mixableItem.outputMultiple : quantity;

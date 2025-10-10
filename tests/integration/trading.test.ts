@@ -1,4 +1,4 @@
-import { randArrItem, shuffleArr } from '@oldschoolgg/toolkit';
+import { randArrItem, shuffleArr } from '@oldschoolgg/rng';
 import { Bank } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
@@ -46,7 +46,7 @@ test('Trade consistency', async () => {
 						user: other
 					}
 				},
-				interaction: mockInteraction({ userId: user.id })
+				interaction: mockInteraction({ user })
 			};
 
 			switch (method) {

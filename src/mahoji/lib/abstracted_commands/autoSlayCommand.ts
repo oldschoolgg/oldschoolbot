@@ -1,16 +1,13 @@
-import { type CommandOptions, isGuildChannel } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import type { ChatInputCommandInteraction } from 'discord.js';
+import { isGuildChannel, stringMatches } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
 
 import type { PvMMethod } from '@/lib/constants.js';
+import type { CommandOptions } from '@/lib/discord/commandOptions.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { runCommand } from '@/lib/settings/settings.js';
 import { AutoslayOptionsEnum, autoslayModes } from '@/lib/slayer/constants.js';
 import { getCommonTaskName, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '@/lib/slayer/slayerUtil.js';
-import { interactionReply } from '@/lib/util/interactionReply.js';
-import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import { slayerNewTaskCommand } from './slayerTaskCommand.js';
+import { slayerNewTaskCommand } from '@/mahoji/lib/abstracted_commands/slayerTaskCommand.js';
 
 interface AutoslayLink {
 	monsterID: number;
@@ -404,7 +401,7 @@ export async function autoSlayCommand({
 	channelID: string;
 	modeOverride?: string;
 	saveMode?: boolean;
-	interaction: ChatInputCommandInteraction;
+	interaction: MInteraction;
 }) {
 	const user = await mUserFetch(mahojiUser.id);
 	const autoslayOptions = user.user.slayer_autoslay_options;
@@ -481,7 +478,7 @@ export async function autoSlayCommand({
 		const ehpKillable = killableMonsters.find(m => m.id === ehpMonster?.efficientMonster);
 
 		// If we don't have the requirements for the efficient monster, revert to default monster
-		if (ehpKillable?.levelRequirements !== undefined && !hasSkillReqs(user, ehpKillable.levelRequirements)[0]) {
+		if (ehpKillable?.levelRequirements !== undefined && !user.hasSkillReqs(ehpKillable.levelRequirements)) {
 			runCommand({
 				commandName: 'k',
 				args: {
@@ -544,7 +541,7 @@ export async function autoSlayCommand({
 		for (const m of allMonsters) {
 			if (
 				(m.difficultyRating ?? 0) > maxDiff &&
-				(m.levelRequirements === undefined || hasSkillReqs(user, m.levelRequirements))
+				(m.levelRequirements === undefined || user.hasSkillReqs(m.levelRequirements))
 			) {
 				if (m.qpRequired === undefined || m.qpRequired <= myQPs) {
 					maxDiff = m.difficultyRating ?? 0;
@@ -562,11 +559,10 @@ export async function autoSlayCommand({
 			});
 			return;
 		}
-		interactionReply(interaction, {
+		return interaction.reply({
 			content: "Can't find any monsters you have the requirements to kill!",
 			ephemeral: true
 		});
-		return;
 	}
 	await runCommand({
 		commandName: 'k',

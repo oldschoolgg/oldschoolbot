@@ -1,9 +1,8 @@
+import type { FinishWorkerArgs, FinishWorkerReturn } from '@/lib/workers/index.js';
 import '../data/itemAliases.js';
 
 import { removeFromArr } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
-
-import type { FinishWorkerArgs, FinishWorkerReturn } from './index.js';
 
 if (global.prisma) {
 	throw new Error('Prisma is loaded in the finish worker!');

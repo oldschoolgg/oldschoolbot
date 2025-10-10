@@ -10,7 +10,7 @@ import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC.js';
 import { removeFoodFromUserRaw } from '@/lib/minions/functions/removeFoodFromUser.js';
 import { calcWildyPKChance } from '@/lib/util/calcWildyPkChance.js';
 import { type Peak, PeakTier } from '@/lib/util/peaks.js';
-import type { BoostArgs, BoostResult } from './speedBoosts.js';
+import type { BoostArgs, BoostResult } from '@/mahoji/lib/abstracted_commands/minionKill/speedBoosts.js';
 
 const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)) + 1);
 

@@ -1,5 +1,5 @@
-import { notEmpty, randArrItem, roll } from '@oldschoolgg/toolkit';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { randArrItem, roll } from '@oldschoolgg/rng';
+import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	BeginnerCasket,
@@ -39,14 +39,14 @@ import {
 	wintertodtCL
 } from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
-import killableMonsters from './minions/data/killableMonsters/index.js';
-import { openShadeChest } from './shadesKeys.js';
-import { birdsNestID, treeSeedsNest } from './simulation/birdsNest.js';
-import { gauntlet } from './simulation/gauntlet.js';
-import { handleNexKills } from './simulation/nex.js';
-import { getTemporossLoot } from './simulation/tempoross.js';
-import { TheatreOfBlood } from './simulation/tob.js';
-import { WintertodtCrate } from './simulation/wintertodt.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { openShadeChest } from '@/lib/shadesKeys.js';
+import { birdsNestID, treeSeedsNest } from '@/lib/simulation/birdsNest.js';
+import { gauntlet } from '@/lib/simulation/gauntlet.js';
+import { handleNexKills } from '@/lib/simulation/nex.js';
+import { getTemporossLoot } from '@/lib/simulation/tempoross.js';
+import { TheatreOfBlood } from '@/lib/simulation/tob.js';
+import { WintertodtCrate } from '@/lib/simulation/wintertodt.js';
 
 interface KillArgs {
 	accumulatedLoot: Bank;

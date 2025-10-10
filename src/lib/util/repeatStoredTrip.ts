@@ -1,4 +1,4 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
+import { Time } from '@oldschoolgg/toolkit';
 import { type Activity, activity_type_enum, type Prisma } from '@prisma/client';
 import { ButtonBuilder, type ButtonInteraction, ButtonStyle } from 'discord.js';
 import { Items } from 'oldschooljs';
@@ -46,6 +46,7 @@ import type {
 	MotherlodeMiningActivityTaskOptions,
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
+	NightmareZoneActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	OuraniaAltarOptions,
 	PickpocketActivityTaskOptions,
@@ -62,12 +63,11 @@ import type {
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
 	TOAOptions,
+	UnderwaterAgilityThievingTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '@/lib/types/minions.js';
 import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
-import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions.js';
-import { interactionReply } from './interactionReply.js';
 
 const taskCanBeRepeated = (activity: Activity, user: MUser) => {
 	if (activity.type === activity_type_enum.ClueCompletion) {
@@ -761,14 +761,15 @@ export async function makeRepeatTripButtons(user: MUser) {
 }
 
 export async function repeatTrip(
+	user: MUser,
 	interaction: ButtonInteraction,
 	data: { data: Prisma.JsonValue; type: activity_type_enum }
 ) {
 	if (!data || !data.data || !data.type) {
-		return interactionReply(interaction, { content: "Couldn't find any trip to repeat.", ephemeral: true });
+		return interaction.reply({ content: "Couldn't find any trip to repeat.", ephemeral: true });
 	}
 	const handler = tripHandlers[data.type];
-	return runCommand({
+	const result = await runCommand({
 		commandName: handler.commandName,
 		isContinue: true,
 		args: handler.args(data.data as any),
@@ -776,7 +777,8 @@ export async function repeatTrip(
 		guildID: interaction.guildId,
 		member: interaction.member,
 		channelID: interaction.channelId,
-		user: interaction.user,
+		user,
 		continueDeltaMillis: interaction.createdAt.getTime() - interaction.message.createdTimestamp
 	});
+	return result;
 }

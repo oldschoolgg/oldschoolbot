@@ -1,9 +1,6 @@
-import { sumArr, Time } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { formatDuration, PerkTier } from '@oldschoolgg/toolkit/util';
+import { Emoji, formatDuration, PerkTier, stringMatches, sumArr, Time } from '@oldschoolgg/toolkit';
 import type { activity_type_enum, UserStats } from '@prisma/client';
-import { Bank, type ItemBank, Items, Monsters, SkillsEnum, TOBRooms, toKMB } from 'oldschooljs';
+import { Bank, type ItemBank, Items, Monsters, TOBRooms, toKMB } from 'oldschooljs';
 import type { SkillsScore } from 'oldschooljs/hiscores';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -17,6 +14,7 @@ import { RawSQL } from '@/lib/rawSql.js';
 import Agility from '@/lib/skilling/skills/agility.js';
 import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import { ForestryEvents } from '@/lib/skilling/skills/woodcutting/forestry.js';
+import { SkillsArray } from '@/lib/skilling/types.js';
 import { getSlayerTaskStats } from '@/lib/slayer/slayerUtil.js';
 import { sorts } from '@/lib/sorts.js';
 import type { InfernoOptions } from '@/lib/types/minions.js';
@@ -569,7 +567,7 @@ GROUP BY 1;`;
 		run: async () => {
 			const result = (
 				await Promise.all(
-					Object.values(SkillsEnum).map(
+					SkillsArray.map(
 						skillName =>
 							prisma.$queryRawUnsafe(`SELECT '${skillName}' as skill_name, COUNT(id)::int AS qty
 FROM users

@@ -1,4 +1,4 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { spoiler, userMention } from 'discord.js';
 import { Bank } from 'oldschooljs';
 

@@ -1,13 +1,9 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { type Item, Items, itemID } from 'oldschooljs';
 
 import type { Skills } from '@/lib/types/index.js';
 import type { PuroPuroActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import { userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 interface PuroImpling {
 	name: string;
@@ -57,7 +53,7 @@ export async function puroPuroStartCommand(
 	implingTier: number | undefined
 ) {
 	const timePerGame = Time.Minute * 10;
-	const maxTripLength = calcMaxTripLength(user, 'PuroPuro');
+	const maxTripLength = user.calcMaxTripLength('PuroPuro');
 	const quantity = Math.floor(maxTripLength / timePerGame);
 	const duration = quantity * timePerGame;
 	const skills = user.skillsAsLevels;
@@ -90,14 +86,14 @@ export async function puroPuroStartCommand(
 		}
 	}
 
-	await addSubTaskToActivityTask<PuroPuroActivityTaskOptions>({
+	await ActivityManager.startTrip<PuroPuroActivityTaskOptions>({
 		implingTier: impToHunt.tier ?? null,
 		quantity,
 		userID: user.id,
 		duration,
 		darkLure,
 		type: 'PuroPuro',
-		channelID: channelID.toString(),
+		channelID,
 		minigameID: 'puro_puro'
 	});
 
@@ -105,7 +101,7 @@ export async function puroPuroStartCommand(
 		duration
 	)} to finish.`;
 
-	if (!userHasGracefulEquipped(user) && impToHunt.name !== 'Dragon Implings')
+	if (!user.hasGracefulEquipped() && impToHunt.name !== 'Dragon Implings')
 		str += '\n20% less implings due to having no Graceful equipped.';
 
 	if (!impToHunt.spell) {

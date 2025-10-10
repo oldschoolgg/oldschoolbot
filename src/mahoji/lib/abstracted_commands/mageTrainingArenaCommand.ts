@@ -1,13 +1,9 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items, LootTable } from 'oldschooljs';
 
 import { getNewUser } from '@/lib/settings/settings.js';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 import { pizazzPointsPerHour } from '@/tasks/minions/minigames/mageTrainingArenaActivity.js';
 
 const RuneTable = new LootTable()
@@ -118,7 +114,7 @@ export async function mageTrainingArenaStartCommand(user: MUser, channelID: stri
 	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
 
 	const roomDuration = Time.Minute * 14;
-	const quantity = Math.floor(calcMaxTripLength(user, 'MageTrainingArena') / roomDuration);
+	const quantity = Math.floor(user.calcMaxTripLength('MageTrainingArena') / roomDuration);
 	const duration = quantity * roomDuration;
 
 	const cost = determineRunes(user, new Bank().add(RuneTable.roll())).multiply(quantity);
@@ -129,11 +125,11 @@ export async function mageTrainingArenaStartCommand(user: MUser, channelID: stri
 
 	await user.transactItems({ itemsToRemove: cost });
 
-	await updateBankSetting('mta_cost', cost);
+	await ClientSettings.updateBankSetting('mta_cost', cost);
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration,
 		type: 'MageTrainingArena',
 		quantity,

@@ -1,6 +1,4 @@
 import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
-import { mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { buildCombatAchievementsResult } from '@/lib/combat_achievements/caUtils.js';
@@ -12,8 +10,8 @@ import {
 	caToPlayerString,
 	nextCATier
 } from '@/lib/combat_achievements/combatAchievements.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 
 const viewTypes = ['all', 'incomplete', 'complete'] as const;
 
@@ -26,12 +24,12 @@ export const caCommand: OSBMahojiCommand = {
 	description: 'Combat Achievements',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'view',
 			description: 'View your Combat Achievements progress.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'name',
 					description: 'What boss do you want to view?',
 					autocomplete: async (value: string) => {
@@ -42,7 +40,7 @@ export const caCommand: OSBMahojiCommand = {
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'type',
 					description: 'What do you want to view?',
 					choices: viewTypes.map(i => ({ name: i, value: i })),
@@ -51,7 +49,7 @@ export const caCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'claim',
 			description: 'Claim your completed Combat Achievements.',
 			options: []
@@ -59,7 +57,7 @@ export const caCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		interaction
 	}: CommandRunOptions<{
 		claim?: {};
@@ -68,8 +66,8 @@ export const caCommand: OSBMahojiCommand = {
 			type?: CAViewType;
 		};
 	}>) => {
-		await deferInteraction(interaction);
-		const user = await mUserFetch(userID);
+		await interaction.defer();
+
 		const completedTaskIDs = new Set(user.user.completed_ca_task_ids);
 
 		const currentPoints = user.caPoints();
@@ -78,11 +76,9 @@ export const caCommand: OSBMahojiCommand = {
 		} (${calcWhatPercent(completedTaskIDs.size, allCombatAchievementTasks.length).toFixed(
 			2
 		)}%) tasks for ${currentPoints} points. ${nextCATier(currentPoints)}.\r\nUse ${mentionCommand(
-			globalClient,
 			'ca',
 			'claim'
 		)} to claim tasks (for tasks that don't automatically claim), and ${mentionCommand(
-			globalClient,
 			'ca',
 			'view'
 		)} to view your specific tasks.`;

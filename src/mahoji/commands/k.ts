@@ -1,14 +1,11 @@
-import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
+import { formatDuration, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import type { InteractionReplyOptions } from 'discord.js';
 
 import { PVM_METHODS, type PvMMethod } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { autocompleteMonsters, wikiMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
 import reducedTimeFromKC from '@/lib/minions/functions/reducedTimeFromKC.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import findMonster from '@/lib/util/findMonster.js';
 import { minionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/minionKill.js';
 
@@ -38,7 +35,7 @@ export const minionKCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to kill.',
 			required: true,
@@ -67,33 +64,33 @@ export const minionKCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The amount you want to kill.',
 			required: false,
 			min_value: 0
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'method',
 			description: 'If you want to cannon/barrage/burst.',
 			required: false,
 			choices: PVM_METHODS.map(i => ({ name: i, value: i }))
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'show_info',
 			description: 'Show information on this monster.',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'wilderness',
 			description: 'If you want to kill the monster in the wilderness.',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'solo',
 			description: 'Solo (if its a group boss)',
 			required: false
@@ -101,7 +98,7 @@ export const minionKCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		channelID,
 		interaction
 	}: CommandRunOptions<{
@@ -113,9 +110,8 @@ export const minionKCommand: OSBMahojiCommand = {
 		solo?: boolean;
 		onTask?: boolean;
 	}>) => {
-		const user = await mUserFetch(userID);
 		if (options.show_info) {
-			return returnStringOrFile(await monsterInfo(user, options.name));
+			return interaction.returnStringOrFile(await monsterInfo(user, options.name));
 		}
 		return minionKillCommand(
 			user,
@@ -169,8 +165,8 @@ async function monsterInfo(user: MUser, name: string): Promise<string | Interact
 			hpString = `${noFoodBoost}% boost for no food`;
 		}
 	}
-	const maxCanKillSlay = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / reduceNumByPercent(timeToFinish, 15));
-	const maxCanKill = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / timeToFinish);
+	const maxCanKillSlay = Math.floor(user.calcMaxTripLength('MonsterKilling') / reduceNumByPercent(timeToFinish, 15));
+	const maxCanKill = Math.floor(user.calcMaxTripLength('MonsterKilling') / timeToFinish);
 
 	const { QP } = user;
 
@@ -203,7 +199,7 @@ async function monsterInfo(user: MUser, name: string): Promise<string | Interact
 
 	str.push(
 		`Maximum trip length: ${formatDuration(
-			calcMaxTripLength(user, 'MonsterKilling')
+			user.calcMaxTripLength('MonsterKilling')
 		)}.\nNormal kill time: ${formatDuration(
 			monster.timeToFinish
 		)}. You can kill up to ${maxCanKill} per trip (${formatDuration(timeToFinish)} per kill).`

@@ -1,4 +1,4 @@
-import { randFloat, roll } from '@oldschoolgg/toolkit';
+import { randFloat, roll } from '@oldschoolgg/rng';
 import type { Prisma } from '@prisma/client';
 import { Bank, itemID } from 'oldschooljs';
 
@@ -16,7 +16,6 @@ const clues = [
 
 export const birdHouseTask: MinionTask = {
 	type: 'Birdhouse',
-	isNew: true,
 	async run(data: BirdhouseActivityTaskOptions, { user, handleTripFinish }) {
 		const { birdhouseName, birdhouseData, channelID, duration, placing, gotCraft, currentDate } = data;
 

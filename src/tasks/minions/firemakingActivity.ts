@@ -1,13 +1,10 @@
 import Firemaking from '@/lib/skilling/skills/firemaking.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { FiremakingActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const firemakingTask: MinionTask = {
 	type: 'Firemaking',
-	async run(data: FiremakingActivityTaskOptions) {
-		const { burnableID, quantity, userID, channelID } = data;
-		const user = await mUserFetch(userID);
+	async run(data: FiremakingActivityTaskOptions, { user, handleTripFinish }) {
+		const { burnableID, quantity, channelID } = data;
 
 		const burnable = Firemaking.Burnables.find(Burn => Burn.inputLogs === burnableID)!;
 
@@ -36,7 +33,7 @@ export const firemakingTask: MinionTask = {
 		}
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Firemaking,
+			skillName: 'firemaking',
 			amount: xpReceived,
 			duration: data.duration
 		});

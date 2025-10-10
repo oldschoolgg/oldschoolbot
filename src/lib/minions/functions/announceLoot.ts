@@ -1,4 +1,4 @@
-import { Events } from '@oldschoolgg/toolkit/constants';
+import { Events } from '@oldschoolgg/toolkit';
 import type { ArrayItemsResolved, Bank } from 'oldschooljs';
 
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';

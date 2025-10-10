@@ -1,14 +1,12 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
+import { MathRNG } from '@oldschoolgg/rng';
+import { Emoji, Events } from '@oldschoolgg/toolkit';
 import { EItem } from 'oldschooljs';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
-import { logError } from '@/lib/util/logError.js';
-import { SeedableRNG } from '@/lib/util/rng.js';
 
 export const fishingTask: MinionTask = {
 	type: 'Fishing',
-	isNew: true,
 	async run(data: FishingActivityTaskOptions, { handleTripFinish, user }) {
 		const { fishID, quantity, channelID } = data;
 		const fish = Fishing.Fishes.find(fish => fish.id === fishID)!;
@@ -19,13 +17,13 @@ export const fishingTask: MinionTask = {
 			quantity,
 			flakesQuantity: data.flakesQuantity,
 			gearBank: user.gearBank,
-			rng: new SeedableRNG()
+			rng: MathRNG
 		});
 
 		const resultOrError = await result.updateBank.transact(user);
 		if (typeof resultOrError === 'string') {
 			const err = new Error(`Fishing trip update bank failed: ${resultOrError}`);
-			logError(err, {
+			Logging.logError(err, {
 				userID: user.id,
 				fishID,
 				quantity

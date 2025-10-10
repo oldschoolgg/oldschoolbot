@@ -1,12 +1,17 @@
+import fs from 'node:fs';
 import deepMerge from 'deepmerge';
 
-import _items from '../assets/item_data.json' with { type: 'json' };
-
-const items = _items as any as Record<string, Item>;
+const items = JSON.parse(fs.readFileSync(new URL('../assets/item_data.json', import.meta.url), 'utf8')) as Record<
+	string,
+	Item
+>;
 
 import type { Item } from '@/meta/item.js';
-import { cleanString } from '../util/cleanString.js';
 import { Collection } from './Collection.js';
+
+function cleanString(str: string): string {
+	return str.replace(/\s/g, '').toUpperCase();
+}
 
 export const itemNameMap: Map<string, number> = new Map();
 
@@ -23,6 +28,18 @@ export const CLUE_SCROLLS = [
 type ResolvableItem = number | string;
 export type ArrayItemsResolvable = (ResolvableItem | ResolvableItem[])[];
 export type ArrayItemsResolved = (number | number[])[];
+export type ArrayItemsResolvedNames = (string | string[])[];
+export type SortableItem = string | { name: string } | SortableItem[];
+
+const collator = new Intl.Collator(undefined, { sensitivity: 'base', numeric: true });
+const key = (x: SortableItem): string =>
+	Array.isArray(x) ? (x.length ? key(x[0]!) : '') : typeof x === 'string' ? x : x.name;
+
+function sortAlpha(arr: SortableItem[]): SortableItem[] {
+	const sorted = [...arr].map(v => (Array.isArray(v) ? sortAlpha(v) : v));
+	sorted.sort((a, b) => collator.compare(key(a), key(b)));
+	return sorted;
+}
 
 export const CLUE_SCROLL_NAMES: string[] = [
 	'Clue scroll (beginner)',
@@ -54,7 +71,8 @@ export const USELESS_ITEMS = [
 	23_814, 23_815, 23_816, 23_817
 ];
 
-class Items extends Collection<number, Item> {
+class ItemsSingleton extends Collection<number, Item> {
+	sortAlpha = sortAlpha;
 	public override get(item: ItemResolvable): Item | undefined {
 		const id = this.resolveID(item);
 		if (typeof id === 'undefined') return undefined;
@@ -83,6 +101,12 @@ class Items extends Collection<number, Item> {
 
 	public itemNameFromId(itemID: number): string | undefined {
 		return super.get(itemID)?.name;
+	}
+
+	getId(_itemResolvable: ItemResolvable): number {
+		const id = this.resolveID(_itemResolvable);
+		if (typeof id === 'undefined') throw new Error(`No item found for ${_itemResolvable}`);
+		return id;
 	}
 
 	public getItem(itemName: string | number | undefined): Item | null {
@@ -133,39 +157,55 @@ class Items extends Collection<number, Item> {
 		const newArray: ArrayItemsResolved = [];
 
 		for (const item of itemArray) {
-			if (typeof item === 'number') {
-				newArray.push(item);
-			} else if (Array.isArray(item)) {
+			if (Array.isArray(item)) {
 				const test = this.resolveItems(item);
 				newArray.push(test);
 			} else {
-				const osItem = this.get(item);
-				if (!osItem) {
-					throw new Error(`No item found for: ${item}.`);
-				}
+				const osItem = this.getOrThrow(item);
 				newArray.push(osItem.id);
 			}
 		}
 
 		return newArray;
 	}
+
+	public deepResolveNames(
+		itemArray: ArrayItemsResolvable,
+		options?: { sort?: 'alphabetical'; removeDuplicates?: boolean }
+	): ArrayItemsResolvedNames {
+		let newArray: ArrayItemsResolvedNames = [];
+
+		const sortFn = options?.sort === 'alphabetical' ? (a: string, b: string) => a.localeCompare(b) : () => 0;
+
+		for (const item of itemArray) {
+			if (Array.isArray(item)) {
+				let subArr = item.map(i => this.getOrThrow(i).name).sort(sortFn);
+				if (options?.removeDuplicates) subArr = [...new Set(subArr)];
+				newArray.push(subArr);
+			} else {
+				const osItem = this.getOrThrow(item);
+				newArray.push(osItem.name);
+			}
+		}
+		if (!options?.removeDuplicates) newArray = [...new Set(newArray)];
+
+		return newArray.sort((a, b) => sortFn(typeof a === 'string' ? a : a[0], typeof b === 'string' ? b : b[0]));
+	}
 }
 
-const itemsExport = new Items();
+export const Items = new ItemsSingleton();
 
 for (const [id, item] of Object.entries(items)) {
 	const numID = Number.parseInt(id);
 
 	if (USELESS_ITEMS.includes(numID)) continue;
-	itemsExport.set(numID, item);
+	Items.set(numID, item);
 
 	const cleanName = cleanString(item.name);
 	if (!itemNameMap.has(cleanName)) {
 		itemNameMap.set(cleanName, numID);
 	}
 }
-
-export default itemsExport;
 
 export function resolveItems(_itemArray: string | number | (string | number)[]): number[] {
 	const itemArray = Array.isArray(_itemArray) ? _itemArray : [_itemArray];
@@ -175,7 +215,7 @@ export function resolveItems(_itemArray: string | number | (string | number)[]):
 		if (typeof item === 'number') {
 			newArray.push(item);
 		} else {
-			const osItem = itemsExport.get(item);
+			const osItem = Items.get(item);
 			if (!osItem) {
 				throw new Error(`No item found for: ${item}.`);
 			}
@@ -193,10 +233,10 @@ export function deepResolveItems(itemArray: ArrayItemsResolvable): ArrayItemsRes
 		if (typeof item === 'number') {
 			newArray.push(item);
 		} else if (Array.isArray(item)) {
-			const test = itemsExport.resolveItems(item);
+			const test = Items.resolveItems(item);
 			newArray.push(test);
 		} else {
-			const osItem = itemsExport.get(item);
+			const osItem = Items.get(item);
 			if (!osItem) {
 				throw new Error(`No item found for: ${item}.`);
 			}

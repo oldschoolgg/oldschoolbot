@@ -1,32 +1,27 @@
-import { increaseNumByPercent, randInt } from '@oldschoolgg/toolkit';
+import { randInt } from '@oldschoolgg/rng';
+import { increaseNumByPercent } from '@oldschoolgg/toolkit';
 
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '@/lib/diaries.js';
-import type { SkillsEnum } from '@/lib/skilling/types.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export const togTask: MinionTask = {
 	type: 'TearsOfGuthix',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { channelID, duration } = data;
+
 		await user.incrementMinigameScore('tears_of_guthix', 1);
-		await userStatsUpdate(
-			user.id,
-			{
-				last_tears_of_guthix_timestamp: Date.now()
-			},
-			{}
-		);
+		await user.statsUpdate({
+			last_tears_of_guthix_timestamp: Date.now()
+		});
 
 		// Find lowest level skill
 		let lowestXp = Object.values(user.skillsAsXP)[0];
-		let lowestSkill = Object.keys(user.skillsAsXP)[0] as SkillsEnum;
+		let lowestSkill = Object.keys(user.skillsAsXP)[0] as SkillNameType;
 		Object.entries(user.skillsAsXP).forEach(([skill, xp]) => {
 			if (xp < lowestXp) {
 				lowestXp = xp;
-				lowestSkill = skill as SkillsEnum;
+				lowestSkill = skill as SkillNameType;
 			}
 		});
 

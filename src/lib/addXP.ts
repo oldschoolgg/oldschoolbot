@@ -1,18 +1,14 @@
-import { noOp, Time } from '@oldschoolgg/toolkit';
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit/util';
+import { Events, formatOrdinal, noOp, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { type User, UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
 import { convertXPtoLVL, toKMB } from 'oldschooljs';
 
+import { globalConfig, MAX_LEVEL, MAX_LEVEL_XP, MAX_TOTAL_LEVEL, MAX_XP } from '@/lib/constants.js';
 import { skillEmoji } from '@/lib/data/emojis.js';
+import type { AddXpParams } from '@/lib/minions/types.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
-import { mahojiClientSettingsFetch } from '@/lib/util/clientSettings.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
-import { globalConfig, MAX_LEVEL, MAX_LEVEL_XP, MAX_TOTAL_LEVEL, MAX_XP } from './constants.js';
-import type { AddXpParams } from './minions/types.js';
-import { sql } from './postgres.js';
 
 const skillsVals = Object.values(Skills);
 const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${MAX_LEVEL_XP}`).join(' AND ');
@@ -45,8 +41,8 @@ async function onMax(user: MUser) {
 
 	globalClient.emit(Events.ServerNotification, str);
 	sendToChannelID(globalConfig.supportServerID, { content: str }).catch(noOp);
-	const kUser = await globalClient.fetchUser(user.id);
-	const clientSettings = await mahojiClientSettingsFetch({ maxing_message: true });
+	const kUser = await globalClient.users.fetch(user.id);
+	const clientSettings = await ClientSettings.fetch({ maxing_message: true });
 	kUser.send(clientSettings.maxing_message).catch(noOp);
 }
 
@@ -142,7 +138,9 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		globalClient.emit(Events.ServerNotification, str);
 	}
 
-	await sql.unsafe(`UPDATE users SET "skills.${params.skillName}" = ${Math.floor(newXP)} WHERE id = '${user.id}';`);
+	await prisma.$queryRawUnsafe(
+		`UPDATE users SET "skills.${params.skillName}" = ${Math.floor(newXP)} WHERE id = '${user.id}';`
+	);
 	(user.user as User)[`skills_${params.skillName}`] = BigInt(Math.floor(newXP));
 	user.updateProperties();
 

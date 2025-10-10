@@ -1,4 +1,4 @@
-import { execAsync } from './scriptUtil.js';
+import { execAsync, tearDownScript } from './scriptUtil.js';
 
 async function lintScript() {
 	await Promise.all([
@@ -6,6 +6,7 @@ async function lintScript() {
 		execAsync('prettier --use-tabs --write "**/*.{yaml,yml,css,html}"'),
 		execAsync('prisma format --schema ./prisma/robochimp.prisma && prisma format --schema ./prisma/schema.prisma')
 	]);
+	tearDownScript();
 }
 
 lintScript();

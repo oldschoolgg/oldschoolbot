@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 5
     strategy:
       matrix:
-        node_version: [20, 24]
+        node_version: [24]
         os: [ubuntu-latest]
     steps:
       - name: Checkout Project

@@ -3,15 +3,12 @@ import { Bank } from 'oldschooljs';
 import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import calcBurntCookables from '@/lib/skilling/functions/calcBurntCookables.js';
 import Cooking from '@/lib/skilling/skills/cooking/cooking.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { CookingActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 
 export const cookingTask: MinionTask = {
 	type: 'Cooking',
-	async run(data: CookingActivityTaskOptions) {
-		const { cookableID, quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: CookingActivityTaskOptions, { user, handleTripFinish }) {
+		const { cookableID, quantity, channelID, duration } = data;
 
 		const cookable = Cooking.Cookables.find(cookable => cookable.id === cookableID)!;
 
@@ -30,12 +27,12 @@ export const cookingTask: MinionTask = {
 			stopBurningLvl = cookable.stopBurnAt;
 		}
 
-		burnedAmount = calcBurntCookables(quantity, stopBurningLvl, user.skillLevel(SkillsEnum.Cooking));
+		burnedAmount = calcBurntCookables(quantity, stopBurningLvl, user.skillsAsLevels.cooking);
 
 		const xpReceived = (quantity - burnedAmount) * cookable.xp;
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Cooking,
+			skillName: 'cooking',
 			amount: xpReceived,
 			duration
 		});

@@ -1,7 +1,7 @@
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { Stopwatch, stringMatches } from '@oldschoolgg/toolkit';
 
 import { SQL } from '@/lib/rawSql.js';
-import { userEventsToMap } from './userEvents.js';
+import { userEventsToMap } from '@/lib/util/userEvents.js';
 
 export async function fetchMultipleCLLeaderboards(
 	leaderboards: {
@@ -95,6 +95,9 @@ export async function fetchCLLeaderboard({
 	method?: 'cl_array';
 	clName: string;
 }) {
+	const sw = new Stopwatch();
 	const result = await fetchMultipleCLLeaderboards([{ ironmenOnly, items, resultLimit, clName }]);
+	sw.stop();
+	Logging.logDebug(`Took ${sw} to fetchCLLeaderboard for ${clName}`);
 	return result[0];
 }

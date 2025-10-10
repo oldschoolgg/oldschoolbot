@@ -1,5 +1,5 @@
-import { notEmpty, randFloat, randInt } from '@oldschoolgg/toolkit';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { randFloat, randInt, roll } from '@oldschoolgg/rng';
+import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
@@ -8,14 +8,11 @@ import { LumbridgeDraynorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { getNewUser } from '@/lib/settings/settings.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
-import { logError } from '@/lib/util/logError.js';
-import { roll } from '@/lib/util/rng.js';
-import { autoslayModes } from './constants.js';
-import { slayerMasters } from './slayerMasters.js';
-import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks.js';
-import { bossTasks, wildernessBossTasks } from './tasks/bossTasks.js';
-import type { AssignableSlayerTask, SlayerMaster } from './types.js';
+import { autoslayModes } from '@/lib/slayer/constants.js';
+import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
+import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { bossTasks, wildernessBossTasks } from '@/lib/slayer/tasks/bossTasks.js';
+import type { AssignableSlayerTask, SlayerMaster } from '@/lib/slayer/types.js';
 
 export const wildySlayerOnlyMonsters = [
 	Monsters.DustDevil,
@@ -135,7 +132,7 @@ function weightedPick(filteredTasks: AssignableSlayerTask[]) {
 export function userCanUseMaster(user: MUser, master: SlayerMaster) {
 	return (
 		user.QP >= (master.questPoints ?? 0) &&
-		user.skillLevel(SkillsEnum.Slayer) >= (master.slayerLvl ?? 0) &&
+		user.skillsAsLevels.slayer >= (master.slayerLvl ?? 0) &&
 		user.combatLevel >= (master.combatLvl ?? 0)
 	);
 }
@@ -148,7 +145,7 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 	if (task.combatLevel && task.combatLevel > user.combatLevel) return false;
 	if (task.questPoints && task.questPoints > user.QP) return false;
 	if (task.requiredQuests?.find(quest => !user.user.finished_quest_ids.includes(quest))) return false;
-	if (task.slayerLevel && task.slayerLevel > user.skillLevel(SkillsEnum.Slayer)) return false;
+	if (task.slayerLevel && task.slayerLevel > user.skillsAsLevels.slayer) return false;
 	if (task.levelRequirements && !user.hasSkillReqs(task.levelRequirements)) return false;
 	const myBlockList = user.user.slayer_blocked_ids ?? [];
 	if (myBlockList.includes(task.monster.id)) return false;
@@ -351,7 +348,7 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 	const assignedTask = slayerMaster?.tasks.find(m => m.monster.id === currentTask.monster_id);
 
 	if (!assignedTask || !slayerMaster) {
-		logError(
+		Logging.logError(
 			`Could not find task or slayer master for user ${id} task ${currentTask.monster_id} master ${currentTask.slayer_master_id}`,
 			{ userID: id }
 		);

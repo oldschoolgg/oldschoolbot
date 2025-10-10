@@ -1,7 +1,5 @@
-import { notEmpty, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
-import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
+import { makeComponents, notEmpty, stringMatches, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
+import type { ButtonBuilder } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -10,9 +8,8 @@ import { BitField, MAX_CLUES_DROPPED, PerkTier } from '@/lib/constants.js';
 import type { UnifiedOpenable } from '@/lib/openables.js';
 import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
 import { displayCluesAndPets } from '@/lib/util/displayCluesAndPets.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting } from '@/mahoji/mahojiSettings.js';
+import { addToOpenablesScores, patronMsg } from '@/mahoji/mahojiSettings.js';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -25,7 +22,7 @@ export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2
 	});
 
 export async function abstractedOpenUntilCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	userID: string,
 	name: string,
 	openUntilItem: string,
@@ -64,8 +61,7 @@ export async function abstractedOpenUntilCommand(
 	const clueStack = sumArr(ClueTiers.map(t => user.bank.amount(t.scrollID)));
 
 	if (targetClue && clueStack >= MAX_CLUES_DROPPED) {
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			`You're trying to open until you receive a ${openUntil.name}, but you already have ${MAX_CLUES_DROPPED} clues banked, which is the maximum. You won't be able to receive more. Are you sure you want to continue?`
 		);
 	}
@@ -140,7 +136,7 @@ async function finalizeOpening({
 	});
 
 	if (loot.has('Coins')) {
-		await updateClientGPTrackSetting('gp_open', loot.amount('Coins'));
+		await ClientSettings.updateClientGPTrackSetting('gp_open', loot.amount('Coins'));
 	}
 
 	const openedStr = openables
@@ -169,7 +165,7 @@ ${messages.join(', ')}`.trim(),
 }
 
 export async function abstractedOpenCommand(
-	interaction: ChatInputCommandInteraction | null,
+	interaction: MInteraction | null,
 	userID: string,
 	_names: string[],
 	_quantity: number | 'auto' = 1
@@ -187,7 +183,7 @@ export async function abstractedOpenCommand(
 	if (names.includes('all')) {
 		if (openables.length === 0) return 'You have no openable items.';
 		if (user.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
-		if (interaction) await handleMahojiConfirmation(interaction, 'Are you sure you want to open ALL your items?');
+		if (interaction) await interaction.confirmation('Are you sure you want to open ALL your items?');
 	}
 
 	if (openables.length === 0) return "That's not a valid item.";

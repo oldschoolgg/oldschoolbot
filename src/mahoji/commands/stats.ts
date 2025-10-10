@@ -1,5 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ACCOUNT_TYPES, type AccountType, Hiscores } from 'oldschooljs/hiscores';
 
 import { statsEmbed } from '@/lib/util/statsEmbed.js';
@@ -20,20 +19,20 @@ export const statsCommand: OSBMahojiCommand = {
 	description: 'Check the stats of a OSRS account.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'username',
 			description: 'The RuneScape username of the account.',
 			required: true
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'type',
 			description: 'The type of account (normal, ironman, HCIM, DMM, leagues, etc).',
 			choices: accountTypeOptions,
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'virtual',
 			description: 'Show virtual stats? (Up to level 120)',
 			required: false

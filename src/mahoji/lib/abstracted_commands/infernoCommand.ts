@@ -1,6 +1,5 @@
-import { calcPercentOfNum, percentChance, randInt, roll, sumArr, Time } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { formatDuration, randomVariation } from '@oldschoolgg/toolkit/util';
+import { percentChance, randInt, randomVariation, roll } from '@oldschoolgg/rng';
+import { calcPercentOfNum, Emoji, formatDuration, sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items, itemID, Monsters } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
@@ -13,8 +12,6 @@ import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import { PercentCounter } from '@/lib/structures/PercentCounter.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { InfernoOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const minimumRangeItems = Items.resolveFullItems([
 	'Amulet of fury',
@@ -140,7 +137,7 @@ async function infernoRun({
 	const zukDeathChance = new PercentCounter(baseZukDeathChance(attempts), 'percent');
 	const preZukDeathChance = new PercentCounter(basePreZukDeathChance(attempts), 'percent');
 
-	const { sacrificed_bank: sacrificedBank } = await user.fetchStats({ sacrificed_bank: true });
+	const { sacrificed_bank: sacrificedBank } = await user.fetchStats();
 
 	if (!(sacrificedBank as ItemBank)[itemID('Fire cape')]) {
 		return 'To do the Inferno, you must have sacrificed a fire cape.';
@@ -380,7 +377,7 @@ async function infernoRun({
 export async function infernoStatsCommand(user: MUser): CommandResponse {
 	const [zukKC, { inferno_attempts: attempts }] = await Promise.all([
 		user.fetchMinigameScore('inferno'),
-		user.fetchStats({ inferno_attempts: true })
+		user.fetchStats()
 	]);
 
 	let str = 'You have never attempted the Inferno, I recommend you stay that way.';
@@ -418,7 +415,7 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 	const usersRangeStats = user.gear.range.stats;
 	const [zukKC, { inferno_attempts: attempts }] = await Promise.all([
 		await user.fetchMinigameScore('inferno'),
-		user.fetchStats({ inferno_attempts: true })
+		user.fetchStats()
 	]);
 
 	const res = await infernoRun({
@@ -469,9 +466,9 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 		};
 	}
 
-	await addSubTaskToActivityTask<InfernoOptions>({
+	await ActivityManager.startTrip<InfernoOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration: realDuration,
 		type: 'Inferno',
 		zukDeathChance: zukDeathChance.value,
@@ -483,7 +480,7 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 		cost: realCost.toJSON()
 	});
 
-	updateBankSetting('inferno_cost', realCost);
+	await ClientSettings.updateBankSetting('inferno_cost', realCost);
 
 	return {
 		content: `

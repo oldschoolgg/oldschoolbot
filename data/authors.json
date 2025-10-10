@@ -1,4 +1,7 @@
 {
+	"getting-started/BSO.mdx": ["Magnaboy", "TastyPumPum"],
+	"osb/clues.mdx": ["TastyPumPum", "DayV", "Magnaboy"],
+	"bso/Miscellaneous/Events.md": ["TastyPumPum"],
 	"index.mdx": ["TastyPumPum", "Magnaboy", "luna"],
 	"osb/Buyables/buyable-items-and-shop-pricing-mechanics.mdx": ["TastyPumPum"],
 	"osb/Buyables/buyables.md": ["TastyPumPum"],
@@ -31,7 +34,6 @@
 	"osb/GettingStarted/combat-skills.md": ["DayV", "Magnaboy"],
 	"osb/GettingStarted/gear.md": ["DayV", "Magnaboy"],
 	"osb/GettingStarted/grand-exchange.md": ["DayV", "Magnaboy"],
-	"osb/clues.mdx": ["DayV", "Magnaboy"],
 	"osb/combat-achievements.mdx": ["DayV", "Magnaboy", "Jonesey", "Keres"],
 	"osb/Skills/fletching.md": ["TastyPumPum", "Magnaboy"],
 	"osb/Skills/runecrafting.md": ["TastyPumPum", "DayV", "Magnaboy"],
@@ -42,7 +44,6 @@
 	"osb/GettingStarted/bank-background.md": ["DayV", "Magnaboy"],
 	"getting-started/FAQ.md": ["DayV", "Magnaboy"],
 	"bso/Minigames/turaels-trials.md": ["TastyPumPum"],
-	"bso/Miscellaneous/Events.md": ["TastyPumPum"],
 	"bso/changelog.mdx": ["TastyPumPum", "Magnaboy"],
 	"getting-started/changelog.mdx": ["TastyPumPum", "Magnaboy", "alexandermenteer"],
 	"osb/Miscellaneous/achievement-diaries.md": ["TastyPumPum"],

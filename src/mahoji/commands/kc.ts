@@ -1,5 +1,4 @@
-import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { type BossRecords, bossNameMap, Hiscores, mappedBossNames } from 'oldschooljs/hiscores';
 
 export const kcCommand: OSBMahojiCommand = {
@@ -10,13 +9,13 @@ export const kcCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'rsn',
 			description: 'The runescape username to check',
 			required: true
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'boss',
 			description: 'The boss you want to check',
 			required: true,

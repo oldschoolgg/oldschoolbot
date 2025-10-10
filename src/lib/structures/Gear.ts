@@ -33,13 +33,6 @@ export function addStatsOfItemsTogether(items: number[], statWhitelist = Object.
 	return base;
 }
 
-export function hasGracefulEquipped(setup: Gear) {
-	return setup.hasEquipped(
-		['Graceful hood', 'Graceful top', 'Graceful legs', 'Graceful boots', 'Graceful gloves', 'Graceful cape'],
-		true
-	);
-}
-
 // https://oldschool.runescape.wiki/w/Armour/Highest_bonuses
 export const maxDefenceStats: { [key in DefenceGearStat]: number } = {
 	[GearStat.DefenceCrush]: 505,

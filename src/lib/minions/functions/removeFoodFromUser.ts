@@ -1,13 +1,10 @@
-import { objectEntries, reduceNumByPercent } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { UserError } from '@oldschoolgg/toolkit/structures';
+import { Emoji, objectEntries, reduceNumByPercent, UserError } from '@oldschoolgg/toolkit';
 import { type Bank, itemID } from 'oldschooljs';
 
 import { Eatables } from '@/lib/data/eatables.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
+import getUserFoodFromBank from '@/lib/minions/functions/getUserFoodFromBank.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import getUserFoodFromBank from './getUserFoodFromBank.js';
 
 export function removeFoodFromUserRaw({
 	totalHealingNeeded,
@@ -107,7 +104,7 @@ export default async function removeFoodFromUser({
 		);
 	} else {
 		await user.transactItems({ itemsToRemove: result.foodToRemove });
-		await updateBankSetting('economyStats_PVMCost', result.foodToRemove);
+		await ClientSettings.updateBankSetting('economyStats_PVMCost', result.foodToRemove);
 		return {
 			foodRemoved: result.foodToRemove,
 			reductions: result.reductions,

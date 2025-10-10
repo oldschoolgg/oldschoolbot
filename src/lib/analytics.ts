@@ -1,7 +1,6 @@
 import { ActivityGroup, globalConfig } from '@/lib/constants.js';
 import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { taskGroupFromActivity } from '@/lib/util/taskGroupFromActivity.js';
-import { sql } from './postgres.js';
 
 async function calculateMinionTaskCounts() {
 	const minionTaskCounts: Record<ActivityGroup, number> = {
@@ -38,7 +37,7 @@ export async function analyticsTick() {
 		total_sacrificed_value: bigint;
 		ironman_count: bigint;
 		total_gp: bigint;
-	}[] = await sql`
+	}[] = await prisma.$queryRaw`
 SELECT
     COUNT(*) FILTER (WHERE "minion.hasBought" = true) AS has_bought_count,
     SUM("sacrificedValue")::bigint AS total_sacrificed_value,

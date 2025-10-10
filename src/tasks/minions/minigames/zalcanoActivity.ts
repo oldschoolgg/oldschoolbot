@@ -1,20 +1,18 @@
-import { Events } from '@oldschoolgg/toolkit/constants';
+import { randInt } from '@oldschoolgg/rng';
+import { Events } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, Misc } from 'oldschooljs';
 
 import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { ZalcanoActivityTaskOptions } from '@/lib/types/minions.js';
 import { ashSanctifierEffect } from '@/lib/util/ashSanctifier.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { randInt } from '@/lib/util/rng.js';
 
 export const zalcanoTask: MinionTask = {
 	type: 'Zalcano',
-	async run(data: ZalcanoActivityTaskOptions) {
-		const { channelID, quantity, duration, userID, performance, isMVP } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ZalcanoActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, duration, performance, isMVP } = data;
+
 		const { newKC } = await user.incrementKC(EMonster.ZALCANO, quantity);
 		const [hasKourendHard] = await userhasDiaryTier(user, KourendKebosDiary.hard);
 		const [hasKourendElite] = await userhasDiaryTier(user, KourendKebosDiary.elite);
@@ -38,19 +36,15 @@ export const zalcanoTask: MinionTask = {
 		const xpRes: string[] = [];
 		xpRes.push(
 			await user.addXP({
-				skillName: SkillsEnum.Mining,
+				skillName: 'mining',
 				amount: miningXP,
 				duration,
 				source: 'Zalcano'
 			})
 		);
 
-		xpRes.push(
-			await user.addXP({ skillName: SkillsEnum.Smithing, amount: smithingXP, duration, source: 'Zalcano' })
-		);
-		xpRes.push(
-			await user.addXP({ skillName: SkillsEnum.Runecraft, amount: runecraftXP, duration, source: 'Zalcano' })
-		);
+		xpRes.push(await user.addXP({ skillName: 'smithing', amount: smithingXP, duration, source: 'Zalcano' }));
+		xpRes.push(await user.addXP({ skillName: 'runecraft', amount: runecraftXP, duration, source: 'Zalcano' }));
 
 		let str = `${user}, ${
 			user.minionName

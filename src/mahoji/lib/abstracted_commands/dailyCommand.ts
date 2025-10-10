@@ -1,23 +1,18 @@
-import { roll, shuffleArr, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
+import { roll, shuffleArr } from '@oldschoolgg/rng';
+import { Emoji, formatDuration, isWeekend, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import type { ItemBank } from 'oldschooljs';
 
 import { globalConfig } from '@/lib/constants.js';
-import { DynamicButtons } from '@/lib/DynamicButtons.js';
 import pets from '@/lib/data/pets.js';
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 import dailyRoll from '@/lib/simulation/dailyTable.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
+import { DynamicButtons } from '@/lib/structures/DynamicButtons.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { updateClientGPTrackSetting, userStatsUpdate } from '@/mahoji/mahojiSettings.js';
 
 export async function isUsersDailyReady(
 	user: MUser
 ): Promise<{ isReady: true } | { isReady: false; durationUntilReady: number }> {
-	const stats = await user.fetchStats({ last_daily_timestamp: true });
+	const stats = await user.fetchStats();
 	const currentDate = Date.now();
 	const lastVoteDate = Number(stats.last_daily_timestamp);
 	const difference = currentDate - lastVoteDate;
@@ -50,7 +45,7 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 		bonuses.push(Emoji.OSBot);
 	}
 
-	if (user.user.minion_hasBought) {
+	if (user.hasMinion) {
 		coinsToGive /= 1.5;
 	}
 
@@ -101,7 +96,7 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	}
 
 	if (coinsToGive) {
-		updateClientGPTrackSetting('gp_daily', coinsToGive);
+		ClientSettings.updateClientGPTrackSetting('gp_daily', coinsToGive);
 	}
 
 	const { itemsAdded, previousCL } = await user.transactItems({
@@ -117,14 +112,8 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	return { content: `${dmStr}\nYou received ${loot}`, files: [image.file] };
 }
 
-export async function dailyCommand(
-	interaction: ChatInputCommandInteraction | null,
-	channelID: string,
-	user: MUser
-): CommandResponse {
-	if (interaction) await deferInteraction(interaction);
-	const channel = globalClient.channels.cache.get(channelID.toString());
-	if (!channelIsSendable(channel)) return 'Invalid channel.';
+export async function dailyCommand(interaction: MInteraction, user: MUser): CommandResponse {
+	if (interaction) await interaction.defer();
 	const check = await isUsersDailyReady(user);
 	if (!check.isReady) {
 		return `**${Emoji.Diango} Diango says...** You can claim your next daily in ${formatDuration(
@@ -132,21 +121,16 @@ export async function dailyCommand(
 		)}.`;
 	}
 
-	await userStatsUpdate(
-		user.id,
-		{
-			last_daily_timestamp: Date.now()
-		},
-		{}
-	);
+	await user.statsUpdate({
+		last_daily_timestamp: Date.now()
+	});
 
 	const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
 
 	let correctUser: string | null = null;
 	const buttons = new DynamicButtons({
-		channel: channel as TextChannel,
-		usersWhoCanInteract: [user.id],
-		deleteAfterConfirm: true
+		interaction,
+		usersWhoCanInteract: [user.id]
 	});
 	const allAnswers = uniqueArr(shuffleArr([question, ...fakeQuestions].map(q => q.answers[0])));
 	for (const answer of allAnswers) {

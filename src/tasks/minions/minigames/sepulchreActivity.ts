@@ -1,19 +1,17 @@
+import { roll } from '@oldschoolgg/rng';
 import { Bank, GrandHallowedCoffin } from 'oldschooljs';
 
 import { trackLoot } from '@/lib/lootTrack.js';
 import { openCoffin, sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
-import { SkillsEnum } from '@/lib/skilling/types.js';
 import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { roll } from '@/lib/util/rng.js';
 
 export const sepulchreTask: MinionTask = {
 	type: 'Sepulchre',
-	async run(data: SepulchreActivityTaskOptions) {
-		const { channelID, quantity, floors, userID, duration, fletch } = data;
-		const user = await mUserFetch(userID);
+	async run(data: SepulchreActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, floors, duration, fletch } = data;
+
 		await user.incrementMinigameScore('sepulchre', quantity);
 
 		const completedFloors = sepulchreFloors.filter(fl => floors.includes(fl.number));
@@ -64,7 +62,7 @@ export const sepulchreTask: MinionTask = {
 			fletchXpReceived = fletchQuantity * fletchable.xp;
 
 			fletchXpRes = await user.addXP({
-				skillName: SkillsEnum.Fletching,
+				skillName: 'fletching',
 				amount: fletchXpReceived,
 				duration
 			});
@@ -77,13 +75,13 @@ export const sepulchreTask: MinionTask = {
 		});
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Agility,
+			skillName: 'agility',
 			amount: agilityXP,
 			duration
 		});
 
 		const thievingXpRes = await user.addXP({
-			skillName: SkillsEnum.Thieving,
+			skillName: 'thieving',
 			amount: thievingXP,
 			duration
 		});

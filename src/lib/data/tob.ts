@@ -1,12 +1,10 @@
+import { randFloat, randInt, randomVariation } from '@oldschoolgg/rng';
 import { calcPercentOfNum, calcWhatPercent, reduceNumByPercent, round, Time } from '@oldschoolgg/toolkit';
-import { randomVariation } from '@oldschoolgg/toolkit/util';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
 import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import { constructGearSetup, Gear } from '@/lib/structures/Gear.js';
-import { logError } from '@/lib/util/logError.js';
-import { randFloat, randInt } from '@/lib/util/rng.js';
 
 interface TOBRoom {
 	name: string;
@@ -527,7 +525,7 @@ export function createTOBRaid({
 	if (!wipedRoom) deathDuration = null;
 
 	if (wipedRoom !== null && (!TOBRooms.includes(wipedRoom) || [-1].includes(TOBRooms.indexOf(wipedRoom)))) {
-		logError(new Error('Had non-existant wiped room for tob'), {
+		Logging.logError(new Error('Had non-existant wiped room for tob'), {
 			room: JSON.stringify(wipedRoom),
 			team: JSON.stringify(parsedTeam)
 		});

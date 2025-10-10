@@ -2,15 +2,15 @@ import { objectEntries } from '@oldschoolgg/toolkit';
 import type { Minigame } from '@prisma/client';
 import { Items, Monsters, resolveItems } from 'oldschooljs';
 
+import { MAX_QP } from '@/lib/minions/data/quests.js';
+import type { DiaryTier, DiaryTierName } from '@/lib/minions/types.js';
+import { DiaryID } from '@/lib/minions/types.js';
+import { Minigames } from '@/lib/settings/minigames.js';
 import Skillcapes from '@/lib/skilling/skillcapes.js';
 import Agility from '@/lib/skilling/skills/agility.js';
-import { MUserStats } from '@/lib/structures/MUserStats.js';
-import { formatList, formatSkillRequirements, hasSkillReqs, itemNameFromID } from '@/lib/util/smallUtils.js';
-import { MAX_QP } from './minions/data/quests.js';
-import type { DiaryTier, DiaryTierName } from './minions/types.js';
-import { DiaryID } from './minions/types.js';
-import { Minigames } from './settings/minigames.js';
-import type { Skills } from './types/index.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
+import type { Skills } from '@/lib/types/index.js';
+import { formatList, formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
 
 interface Diary {
 	name: string;
@@ -51,7 +51,12 @@ export function userhasDiaryTierSync(
 		const unownedItems = tier.ownedItems.filter(i => !bank.has(i));
 		if (unownedItems.length > 0) {
 			canDo = false;
-			reasons.push(`You don't own ${formatList(unownedItems.map(itemNameFromID), 'or')}`);
+			reasons.push(
+				`You don't own ${formatList(
+					unownedItems.map(i => Items.itemNameFromId(i)),
+					'or'
+				)}`
+			);
 		}
 	}
 
@@ -60,7 +65,10 @@ export function userhasDiaryTierSync(
 		if (unownedItems.length > 0) {
 			canDo = false;
 			reasons.push(
-				`You don't have **${formatList(unownedItems.map(itemNameFromID), 'or')}** in your collection log`
+				`You don't have **${formatList(
+					unownedItems.map(i => Items.itemNameFromId(i)),
+					'or'
+				)}** in your collection log`
 			);
 		}
 	}
@@ -129,7 +137,7 @@ export async function userhasDiaryTier(
 	tier: [DiaryID, DiaryTierName] | DiaryTier
 ): Promise<[boolean, string, Diary]> {
 	const result = userhasDiaryTierSync(user, tier, {
-		stats: await MUserStats.fromID(user.id),
+		stats: await user.fetchMStats(),
 		minigameScores: await user.fetchMinigames()
 	});
 	return [result.hasDiary, result.reasons, result.diaryGroup];
@@ -1133,10 +1141,3 @@ export const diariesObject = {
 	WildernessDiary
 } as const;
 export const diaries = Object.values(diariesObject);
-
-export async function userhasDiaryIDTier(user: MUser, diaryID: DiaryID, tier: DiaryTierName) {
-	return userhasDiaryTierSync(user, [diaryID, tier], {
-		stats: await MUserStats.fromID(user.id),
-		minigameScores: await user.fetchMinigames()
-	});
-}

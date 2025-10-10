@@ -1,15 +1,9 @@
-import { round, Time } from '@oldschoolgg/toolkit';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType, type User } from 'discord.js';
+import { formatDuration, round, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import Constructables from '@/lib/skilling/skills/construction/constructables.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { ConstructionActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
-import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 const ds2Requirements: Skills = {
 	magic: 75,
@@ -43,11 +37,11 @@ export const buildCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The object you want to build.',
 			required: true,
-			autocomplete: async (value: string, user: User) => {
+			autocomplete: async (value: string, user: MUser) => {
 				const mUser = await mUserFetch(user.id);
 				const conLevel = mUser.skillLevel('construction');
 				return Constructables.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
@@ -59,22 +53,21 @@ export const buildCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to build (defaults to max).',
 			required: false,
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const object = Constructables.find(
 			object =>
 				stringMatches(object.id.toString(), options.name) ||
 				stringMatches(object.name, options.name) ||
 				stringMatches(object.name.split(' ')[0], options.name)
 		);
-		const [hasDs2Requirements, ds2Reason] = hasSkillReqs(user, ds2Requirements);
+		const hasDs2Requirements = user.hasSkillReqs(ds2Requirements);
 
 		if (!object) return 'Thats not a valid object to build.';
 
@@ -87,7 +80,7 @@ export const buildCommand: OSBMahojiCommand = {
 				return `${user.minionName} needs 205 Quest Points to build a ${object.name}.`;
 			}
 			if (!hasDs2Requirements) {
-				return `In order to build a ${object.name}, you need: ${ds2Reason}.`;
+				return `In order to build a ${object.name}, you need to have completed the Dragon Slayer II quest, and have the prerequisite stats.`;
 			}
 			if (!user.hasEquippedOrInBank('Mythical cape')) {
 				return `${user.minionName} needs to own a Mythical cape to build a ${object.name}.`;
@@ -101,7 +94,7 @@ export const buildCommand: OSBMahojiCommand = {
 		const userBank = user.bank;
 		const planksHas = userBank.amount(plank);
 
-		const maxTripLength = calcMaxTripLength(user, 'Construction');
+		const maxTripLength = user.calcMaxTripLength('Construction');
 
 		let { quantity } = options;
 		if (!quantity) {
@@ -131,12 +124,12 @@ export const buildCommand: OSBMahojiCommand = {
 
 		await user.transactItems({ itemsToRemove: cost });
 
-		updateBankSetting('construction_cost_bank', cost);
+		await ClientSettings.updateBankSetting('construction_cost_bank', cost);
 
-		await addSubTaskToActivityTask<ConstructionActivityTaskOptions>({
+		await ActivityManager.startTrip<ConstructionActivityTaskOptions>({
 			objectID: object.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			quantity,
 			duration,
 			type: 'Construction'

@@ -1,22 +1,19 @@
-import { isFunction, roll, Time } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { UserError } from '@oldschoolgg/toolkit/structures';
-import { dateFm, getNextUTCReset } from '@oldschoolgg/toolkit/util';
+import { roll } from '@oldschoolgg/rng';
+import { channelIsSendable, dateFm, Emoji, getNextUTCReset, isFunction, Time, UserError } from '@oldschoolgg/toolkit';
 import { command_name_enum } from '@prisma/client';
 import { type BaseMessageOptions, bold, EmbedBuilder, type Message, type TextChannel } from 'discord.js';
 import { LRUCache } from 'lru-cache';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
+import { lastRoboChimpSyncCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
+import { Channel, globalConfig } from '@/lib/constants.js';
 import pets from '@/lib/data/pets.js';
-import { logError } from '@/lib/util/logError.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
+import { roboChimpSyncData } from '@/lib/roboChimp.js';
+import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
-import { lastRoboChimpSyncCache, untrustedGuildSettingsCache } from './cache.js';
-import { Channel, globalConfig } from './constants.js';
-import { roboChimpSyncData } from './roboChimp.js';
-import type { ActivityTaskData } from './types/minions.js';
 
 const rareRolesSrc: [string, number, string][] = [
 	['670211706907000842', 250, 'Bronze'],
@@ -196,7 +193,7 @@ const mentionCommands: MentionCommand[] = [
 			if (items.length === 0) return msg.reply('No results for that item.');
 
 			const gettedItem = items[0];
-			const { sacrificed_bank: sacrificedBank } = await user.fetchStats({ sacrificed_bank: true });
+			const { sacrificed_bank: sacrificedBank } = await user.fetchStats();
 
 			let str = `Found ${items.length} items:\n${items
 				.slice(0, 5)
@@ -254,7 +251,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['cd'],
 		description: 'Shows your cooldowns.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			const stats = await user.fetchStats({ last_daily_timestamp: true, last_tears_of_guthix_timestamp: true });
+			const stats = await user.fetchStats();
 			return msg.reply({
 				content: cooldownTimers
 					.map(cd => {
@@ -266,14 +263,7 @@ const mentionCommands: MentionCommand[] = [
 							const durationRemaining = dateFm(new Date(nextReset));
 							return `${cd.name}: ${durationRemaining}`;
 						}
-						return bold(
-							`${cd.name}: Ready ${mentionCommand(
-								globalClient,
-								cd.command[0],
-								cd.command[1],
-								cd.command[2]
-							)}`
-						);
+						return bold(`${cd.name}: Ready ${mentionCommand(cd.command[0], cd.command[1], cd.command[2])}`);
 					})
 					.join('\n'),
 				components
@@ -325,7 +315,7 @@ export async function onMessage(msg: Message) {
 		} catch (err) {
 			if (typeof err === 'string') return msg.reply(err);
 			if (err instanceof UserError) return msg.reply(err.message);
-			logError(err);
+			Logging.logError(err as Error);
 		}
 		return;
 	}
@@ -347,6 +337,6 @@ export async function onMinionActivityFinish(activity: ActivityTaskData) {
 			await roboChimpSyncData(await mUserFetch(activity.userID));
 		}
 	} catch (err) {
-		logError(err, { activity: JSON.stringify(activity) });
+		Logging.logError(err as Error, { activity: JSON.stringify(activity) });
 	}
 }

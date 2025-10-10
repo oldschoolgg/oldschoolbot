@@ -1,6 +1,4 @@
-import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
-import { generateHexColorForCashStack } from '@oldschoolgg/toolkit/runescape';
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
+import { calcWhatPercent, generateHexColorForCashStack, objectEntries, toTitleCase } from '@oldschoolgg/toolkit';
 import { type Bank, Items, toKMB } from 'oldschooljs';
 
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
@@ -101,6 +99,10 @@ class CollectionLogTask {
 		collectionLog?: IToReturnCollection;
 		minigameScoresOverride?: Awaited<ReturnType<MUser['fetchMinigameScores']>> | null;
 	}): Promise<CommandResponse> {
+		if (!bankImageTask.ready) {
+			await bankImageTask.init();
+			bankImageTask.ready = true;
+		}
 		const { sprite } = bankImageTask.getBgAndSprite({
 			bankBackgroundId: options.user.user.bankBackground,
 			farmingContract: options.user.farmingContract()

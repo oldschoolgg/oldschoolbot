@@ -1,13 +1,10 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import { time } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import birdhouses, { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
 import type { BirdhouseActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
-import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '@/mahoji/mahojiSettings.js';
 
 export async function birdhouseCheckCommand(user: MUser) {
 	const details = calculateBirdhouseDetails(user);
@@ -56,7 +53,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 	let duration: number = birdhouseToPlant.runTime;
 
 	// Reduce time if user has graceful equipped
-	if (userHasGracefulEquipped(user)) {
+	if (user.hasGracefulEquipped()) {
 		boostStr.push('10% time for Graceful');
 		duration *= 0.9;
 	}
@@ -75,8 +72,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 
 	let canPay = false;
 
-	const mUser = await mahojiUsersSettingsFetch(user.id, { favorite_bh_seeds: true });
-	const favourites = mUser.favorite_bh_seeds;
+	const favourites = user.user.favorite_bh_seeds;
 	if (favourites.length > 0) {
 		for (const fav of favourites) {
 			const seed = birdhouseSeeds.find(s => s.item.id === fav);
@@ -107,7 +103,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 	}
 	if (!user.owns(removeBank)) return `You don't own: ${removeBank}.`;
 
-	await updateBankSetting('farming_cost_bank', removeBank);
+	await ClientSettings.updateBankSetting('farming_cost_bank', removeBank);
 	await user.transactItems({ itemsToRemove: removeBank });
 
 	// If user does not have something already placed, just place the new birdhouses.
@@ -119,11 +115,11 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 		);
 	}
 
-	await addSubTaskToActivityTask<BirdhouseActivityTaskOptions>({
+	await ActivityManager.startTrip<BirdhouseActivityTaskOptions>({
 		birdhouseName: birdhouseToPlant.name,
 		birdhouseData: existingBirdhouse.raw,
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration,
 		placing: true,
 		gotCraft,

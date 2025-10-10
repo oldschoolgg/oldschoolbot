@@ -1,5 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { PerkTier } from '@/lib/constants.js';
@@ -7,7 +6,6 @@ import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.
 import { simulatedKillables } from '@/lib/simulation/simulatedKillables.js';
 import { slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
-import { deferInteraction } from '@/lib/util/interactionReply.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { Workers } from '@/lib/workers/index.js';
 
@@ -52,7 +50,7 @@ export const killCommand: OSBMahojiCommand = {
 	description: 'Simulate killing monsters.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The monster you want to simulate killing.',
 			required: true,
@@ -66,20 +64,20 @@ export const killCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to simulate.',
 			required: true,
 			min_value: 1
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'catacombs',
 			description: 'Killing in catacombs?',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'master',
 			description: 'On slayer task from a master?',
 			required: false,
@@ -88,11 +86,10 @@ export const killCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		interaction
 	}: CommandRunOptions<{ name: string; quantity: number; catacombs: boolean; master: string }>) => {
-		const user = await mUserFetch(userID);
-		await deferInteraction(interaction);
+		await interaction.defer();
 		if (!ALL_VALID_KILLABLE_MONSTERS.some(i => i.name.toLowerCase() === options.name.toLowerCase())) {
 			return `That's not a valid monster to simulate killing.`;
 		}

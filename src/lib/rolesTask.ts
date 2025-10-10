@@ -1,6 +1,4 @@
-import { noOp, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
-import { returnStringOrFile } from '@oldschoolgg/toolkit/discord-util';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { noOp, notEmpty, Stopwatch, uniqueArr } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
 import { convertXPtoLVL, type ItemBank } from 'oldschooljs';
 import PQueue from 'p-queue';
@@ -10,13 +8,12 @@ import z from 'zod';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BadgesEnum, globalConfig, MAX_LEVEL, Roles } from '@/lib/constants.js';
 import { getCollectionItems } from '@/lib/data/Collections.js';
+import { loggedRawPrismaQuery } from '@/lib/rawSql.js';
 import { Minigames } from '@/lib/settings/minigames.js';
+import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import { fetchMultipleCLLeaderboards } from '@/lib/util/clLeaderboard.js';
-import { logError } from '@/lib/util/logError.js';
-import { loggedRawPrismaQuery } from './rawSql.js';
-import { TeamLoot } from './simulation/TeamLoot.js';
-import { getUsernameSync } from './util.js';
+import { getUsernameSync } from '@/lib/util.js';
 
 const RoleResultSchema = z.object({
 	roleID: z.string().min(17).max(19),
@@ -378,14 +375,14 @@ export async function runRolesTask(dryRun: boolean): Promise<CommandResponse> {
 				const [validResults, invalidResults] = partition(res, i => RoleResultSchema.safeParse(i).success);
 				results.push(...validResults);
 				if (invalidResults.length > 0) {
-					logError(`[RolesTask] Invalid results for ${name}: ${JSON.stringify(invalidResults)}`);
+					Logging.logError(`[RolesTask] Invalid results for ${name}: ${JSON.stringify(invalidResults)}`);
 					debugMessages.push(`The ${name} roles had invalid results.`);
 				}
 			} catch (err) {
 				debugMessages.push(`The ${name} roles errored.`);
-				logError(`[RolesTask] Error in ${name}: ${err}`);
+				Logging.logError(`[RolesTask] Error in ${name}: ${err}`);
 			} finally {
-				debugLog(`[RolesTask] Ran ${name} in ${stopwatch.stop()}`);
+				Logging.logDebug(`[RolesTask] Ran ${name} in ${stopwatch.stop()}`);
 			}
 		});
 	}
@@ -465,13 +462,11 @@ WHERE badges && ${badgeIDs}
 			}
 		}
 
-		return returnStringOrFile(
-			`Roles
+		return `Roles
 ${results.map(r => `${getUsernameSync(r.userID)} got ${roleNames.get(r.roleID)} because ${r.reason}`).join('\n')}
 
 Debug Messages:
-${debugMessages.join('\n')}`
-		);
+${debugMessages.join('\n')}`;
 	}
 
 	return 'Dry run';

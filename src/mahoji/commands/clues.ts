@@ -1,5 +1,5 @@
-import { toTitleCase } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
+import { toTitleCase } from '@oldschoolgg/toolkit';
+import { EmbedBuilder } from 'discord.js';
 import { Hiscores } from 'oldschooljs/hiscores';
 
 export const cluesCommand: OSBMahojiCommand = {
@@ -10,7 +10,7 @@ export const cluesCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'rsn',
 			description: 'Your runescape username.',
 			required: true

@@ -8,14 +8,6 @@ export function getWrappedArrayItem<T>(array: T[], index: number): T {
 }
 
 /**
- * Picks a random item from an array.
- * @param array The array to pick from.
- */
-export function randArrItem<T>(array: readonly T[]): T {
-	return array[Math.floor(Math.random() * array.length)];
-}
-
-/**
  * Splits up an array into chunks
  * @param array The array to chunk up
  * @param chunkSize The size of each individual chunk
@@ -45,20 +37,6 @@ export function uniqueArr<T>(arr: readonly T[]): T[] {
  */
 export function sumArr(arr: readonly number[]) {
 	return arr.reduce((a, b) => a + b, 0);
-}
-
-/**
- * Returns a shuffled copy of an array.
- *
- * @param array The array to shuffle.
- */
-export function shuffleArr<T>(array: readonly T[]): T[] {
-	const copy = [...array];
-	for (let i = copy.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[copy[i], copy[j]] = [copy[j], copy[i]];
-	}
-	return copy;
 }
 
 /**

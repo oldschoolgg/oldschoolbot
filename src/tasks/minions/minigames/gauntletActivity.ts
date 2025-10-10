@@ -1,17 +1,14 @@
-import { calcWhatPercent, percentChance } from '@oldschoolgg/toolkit';
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { formatOrdinal } from '@oldschoolgg/toolkit/util';
+import { percentChance } from '@oldschoolgg/rng';
+import { calcWhatPercent, Events, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import type { MinigameName } from '@/lib/settings/minigames.js';
 import { gauntlet } from '@/lib/simulation/gauntlet.js';
 import type { GauntletOptions } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export const gauntletTask: MinionTask = {
 	type: 'Gauntlet',
-	isNew: true,
 	async run(data: GauntletOptions, { user, handleTripFinish }) {
 		const { channelID, quantity, corrupted } = data;
 		const key: MinigameName = corrupted ? 'corrupted_gauntlet' : 'gauntlet';
@@ -63,7 +60,7 @@ export const gauntletTask: MinionTask = {
 			);
 		}
 
-		updateBankSetting('gauntlet_loot', loot);
+		await ClientSettings.updateBankSetting('gauntlet_loot', loot);
 
 		const image = await makeBankImage({
 			bank: loot,

@@ -1,22 +1,16 @@
-import { Time } from '@oldschoolgg/toolkit/datetime';
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction } from 'discord.js';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
 import type { TripBuyable } from '@/lib/data/buyables/tripBuyables.js';
 import type { BuyActivityTaskOptions } from '@/lib/types/minions.js';
-import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
-import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { calculateShopBuyCost } from '@/lib/util/calculateShopBuyCost.js';
-import { handleMahojiConfirmation } from '@/lib/util/handleMahojiConfirmation.js';
-import { updateBankSetting } from '@/lib/util/updateBankSetting.js';
 
 export async function buyingTripCommand(
 	user: MUser,
 	channelID: string,
 	buyable: TripBuyable,
 	quantity: number | null,
-	interaction: ChatInputCommandInteraction
+	interaction: MInteraction
 ) {
 	let quantityPerHour = buyable.quantityPerHour!;
 
@@ -30,7 +24,7 @@ export async function buyingTripCommand(
 	const itemQuantity = buyable.quantity ?? 1;
 	const gpCost = buyable.gpCost ?? 0;
 
-	const maxTripLength = calcMaxTripLength(user, 'Buy');
+	const maxTripLength = user.calcMaxTripLength('Buy');
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerItem);
 	}
@@ -53,20 +47,19 @@ export async function buyingTripCommand(
 		return `You need ${cost} to buy ${quantity}x ${itemDisplayName}.`;
 	}
 
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Buying ${quantity}x ${itemDisplayName} will cost ${totalCost.toLocaleString()} GP (avg ${averageCost.toLocaleString()} ea) and take ${formatDuration(duration)}. Please confirm.`
 	);
 
 	await user.transactItems({ itemsToRemove: cost });
-	await updateBankSetting('buy_cost_bank', cost);
+	await ClientSettings.updateBankSetting('buy_cost_bank', cost);
 
-	await addSubTaskToActivityTask<BuyActivityTaskOptions>({
+	await ActivityManager.startTrip<BuyActivityTaskOptions>({
 		type: 'Buy',
 		itemID: osItem.id,
 		quantity: quantity * itemQuantity, // total item count
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration,
 		totalCost
 	});

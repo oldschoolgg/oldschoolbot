@@ -1,9 +1,9 @@
-import { notEmpty } from '@oldschoolgg/toolkit/util';
+import { notEmpty } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
 import { assert } from '@/lib/util/logError.js';
-import { flowerTable } from './hotColdCommand.js';
+import { flowerTable } from '@/mahoji/lib/abstracted_commands/hotColdCommand.js';
 
 interface Usable {
 	items: Item[];
@@ -16,7 +16,7 @@ interface UsableUnlock {
 	bitfield: BitField;
 	resultMessage: string;
 }
-const usableUnlocks: UsableUnlock[] = [
+export const usableUnlocks: UsableUnlock[] = [
 	{
 		item: Items.getOrThrow('Torn prayer scroll'),
 		bitfield: BitField.HasTornPrayerScroll,
@@ -101,7 +101,7 @@ for (const usableUnlock of usableUnlocks) {
 	});
 }
 
-const genericUsables: {
+export const genericUsables: {
 	items: [Item, Item] | [Item];
 	cost: Bank;
 	loot: Bank | (() => Bank) | null;
