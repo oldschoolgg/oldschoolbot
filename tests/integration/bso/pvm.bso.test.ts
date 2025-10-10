@@ -10,8 +10,8 @@ import { describe, expect, it } from 'vitest';
 import { CombatCannonItemBank } from '@/lib/minions/data/combatConstants.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import { gearCommand } from '@/mahoji/commands/gear.js';
-import { BSOTestUtil } from '../bso/bsoTestUtil.js';
 import { mockClient } from '../util.js';
+import { BSOTestUtil } from './bsoTestUtil.js';
 
 describe('BSO PVM', async () => {
 	const client = await mockClient();
