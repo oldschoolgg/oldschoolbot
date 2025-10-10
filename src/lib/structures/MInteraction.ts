@@ -45,6 +45,9 @@ export class MInteraction {
 	public id: string;
 	public ephemeral: boolean;
 	public interactionResponse: InteractionResponse | Message | null = null;
+	public isPaginated = false;
+	public isParty = false;
+	public isConfirmation = false;
 
 	constructor({ interaction }: { interaction: CommandInteraction | ButtonInteraction }) {
 		this.interaction = interaction;
@@ -64,7 +67,14 @@ export class MInteraction {
 			interaction_created_at: this.createdTimestamp,
 			current_timestamp: Date.now(),
 			difference_ms: Date.now() - this.createdTimestamp,
-			was_deferred: this.isRepliable() ? this.deferred : 'N/A'
+			was_deferred: this.isRepliable() ? this.deferred : 'N/A',
+			custom_id: this.customId,
+			command_name: this.commandName,
+			ephemeral: this.ephemeral,
+			replied: this.replied,
+			is_party: this.isParty,
+			is_confirmation: this.isConfirmation,
+			is_paginated: this.isPaginated
 		};
 		if (this.interaction.isChatInputCommand()) {
 			context.options = JSON.stringify(
@@ -127,14 +137,9 @@ export class MInteraction {
 		return this.interaction.guild;
 	}
 
-	private handleError(err: unknown) {
-		console.error('Interaction error:', err);
-	}
-
 	makePaginatedMessage(options: PaginatedMessageOptions) {
-		return new PaginatedMessage({ interaction: this, ...options, onError: console.error }).run([
-			this.interaction.user.id
-		]);
+		this.isPaginated = true;
+		return new PaginatedMessage({ interaction: this, ...options }).run([this.interaction.user.id]);
 	}
 
 	async defer({ ephemeral }: { ephemeral?: boolean } = {}) {
@@ -148,7 +153,10 @@ export class MInteraction {
 				if (this.ephemeral) options.flags = MessageFlags.Ephemeral;
 				await this.interaction.deferReply(options);
 			} catch (err) {
-				this.handleError(err);
+				Logging.logError(err as Error, {
+					action: 'DEFER',
+					...this.getDebugInfo()
+				});
 			}
 		}
 	}
@@ -175,15 +183,17 @@ export class MInteraction {
 			} else {
 				this.interactionResponse = await this.interaction.reply(response);
 			}
-		} catch (e: any) {
-			console.error(`MInteraction reply error:
-Command: ${this.commandName}
-Custom ID: ${this.customId}
-Response: ${JSON.stringify(response).slice(0, 1000)}
-Replied: ${this.replied}
-Deferred: ${this.deferred}
-Ephemeral: ${this.ephemeral}
-Error: ${e.message}`);
+		} catch (err) {
+			Logging.logError(err as Error, {
+				action: `REPLY (${this.deferred ? 'editReply' : 'reply'})`,
+				...this.getDebugInfo(),
+				command: this.commandName,
+				custom_id: this.customId,
+				response: JSON.stringify(response).slice(0, 1000),
+				replied: this.replied,
+				deferred: this.deferred,
+				ephemeral: this.ephemeral
+			});
 		}
 		return this.interactionResponse;
 	}
@@ -195,10 +205,11 @@ Error: ${e.message}`);
 		message:
 			| string
 			| ({ content: string; timeout?: number } & (
-				| { ephemeral?: false; users?: string[] }
-				| { ephemeral?: boolean; users?: undefined }
-			))
+					| { ephemeral?: false; users?: string[] }
+					| { ephemeral?: boolean; users?: undefined }
+			  ))
 	) {
+		this.isConfirmation = true;
 		if (process.env.TEST) return;
 		const content = typeof message === 'string' ? message : message.content;
 		this.ephemeral = typeof message !== 'string' ? (message.ephemeral ?? this.ephemeral) : this.ephemeral;
@@ -305,6 +316,7 @@ Error: ${e.message}`);
 	}
 
 	public async makeParty(options: MakePartyOptions & { message: string }): Promise<MUser[]> {
+		this.isParty = true;
 		if (process.env.TEST) return [options.leader];
 		const timeout = Time.Minute * 5;
 		const usersWhoConfirmed: string[] = [options.leader.id];

@@ -79,17 +79,11 @@ class BasePaginatedMessage {
 	public index = 0;
 	public pages!: PaginatedPages;
 	public totalPages: number;
-	public onError: (error: Error, interaction?: ButtonInteraction) => void;
 
-	constructor(
-		pages: PaginatedPages,
-		startingPage: number | undefined,
-		onError: (err: Error, itx?: ButtonInteraction) => void
-	) {
+	constructor(pages: PaginatedPages, startingPage: number | undefined) {
 		this.pages = pages;
 		this.index = startingPage ?? 0;
 		this.totalPages = Array.isArray(pages) ? pages.length : pages.numPages;
-		this.onError = onError;
 	}
 
 	async render(): Promise<CompatibleResponse> {
@@ -138,13 +132,11 @@ export class PaginatedMessage extends BasePaginatedMessage {
 		interaction,
 		pages,
 		startingPage,
-		onError,
 		ephemeral
 	}: {
 		interaction: MInteraction;
-		onError: (err: Error, itx?: ButtonInteraction) => void;
 	} & PaginatedMessageOptions) {
-		super(pages, startingPage, onError);
+		super(pages, startingPage);
 		this.interaction = interaction;
 		this.ephemeral = ephemeral ?? false;
 	}
@@ -182,11 +174,7 @@ export class PaginatedMessage extends BasePaginatedMessage {
 					action.run({ paginatedMessage: this });
 
 					if (previousIndex !== this.index) {
-						try {
-							await this.interaction.reply(await this.render());
-						} catch (err) {
-							this.onError(err as Error, this.interaction as any);
-						}
+						await this.interaction.reply(await this.render());
 						return;
 					}
 				}
