@@ -1,3 +1,4 @@
+import * as rngModule from '@oldschoolgg/rng';
 import { Bank, Items } from 'oldschooljs';
 import type { Mock } from 'vitest';
 import { afterEach, describe, expect, test, vi } from 'vitest';
@@ -5,7 +6,6 @@ import { afterEach, describe, expect, test, vi } from 'vitest';
 import * as degradeableItemsModule from '../../src/lib/degradeableItems.js';
 import type { HerbloreActivityTaskOptions } from '../../src/lib/types/minions.js';
 import * as handleTripFinishModule from '../../src/lib/util/handleTripFinish.js';
-import * as rngModule from '../../src/lib/util/rng.js';
 import { herbloreTask } from '../../src/tasks/minions/herbloreActivity.js';
 import { mockMUser } from './userutil.js';
 
