@@ -1,4 +1,8 @@
-import { allLeagueTasks } from '@/lib/bso/leagues/leagues.js';
+import { bsoChallengeLeaderboard } from '@/lib/bso/leaderboards/boxSpawnsLb.js';
+import { bsoCompletionistLb } from '@/lib/bso/leaderboards/completionistLb.js';
+import { bsoItemContractDonationGivenLb, bsoItemContractLb } from '@/lib/bso/leaderboards/itemContractsLb.js';
+import { bsoLeaguesLeaderboard } from '@/lib/bso/leaderboards/leaguesLb.js';
+import { bsoTamesHatchedLb } from '@/lib/bso/leaderboards/tamesHatchedLb.js';
 
 import {
 	calcWhatPercent,
@@ -9,7 +13,6 @@ import {
 	toTitleCase,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { Prisma, type UserStats } from '@prisma/client';
 import { EmbedBuilder } from 'discord.js';
 import { convertXPtoLVL } from 'oldschooljs';
 
@@ -29,13 +32,12 @@ import { fetchCLLeaderboard, fetchTameCLLeaderboard } from '@/lib/util/clLeaderb
 import { userEventsToMap } from '@/lib/util/userEvents.js';
 import { getUsername, getUsernameSync } from '@/lib/util.js';
 
-const LB_PAGE_SIZE = 10;
+export const LB_PAGE_SIZE = 10;
 
 function lbMsg(str: string, ironmanOnly?: boolean) {
 	return {
-		content: `Showing you the ${str} leaderboard, click the buttons to change pages.${
-			ironmanOnly ? ' Showing only ironmen.' : ''
-		}`,
+		content: `Showing you the ${str} leaderboard, click the buttons to change pages.${ironmanOnly ? ' Showing only ironmen.' : ''
+			}`,
 		ephemeral: true
 	};
 }
@@ -44,7 +46,7 @@ async function bulkGetUsernames(userIDs: string[]) {
 	await Promise.all(uniqueArr(userIDs).map(id => getUsername(id)));
 }
 
-function getPos(page: number, record: number) {
+export function getPos(page: number, record: number) {
 	return `${page * LB_PAGE_SIZE + 1 + record}. `;
 }
 
@@ -73,7 +75,7 @@ export async function doMenu(interaction: MInteraction, pages: string[] | AsyncP
 	});
 }
 
-async function doMenuWrapper({
+export async function doMenuWrapper({
 	users,
 	title,
 	ironmanOnly,
@@ -127,7 +129,7 @@ async function kcLb(interaction: MInteraction, name: string, ironmanOnly: boolea
 	if (!monster) return "That's not a valid monster!";
 	const list = tame
 		? await prisma.$queryRawUnsafe<{ id: string; score: number }[]>(
-				`SELECT ta.user_id::text AS id, SUM((ta.data->>'quantity')::int) AS score
+			`SELECT ta.user_id::text AS id, SUM((ta.data->>'quantity')::int) AS score
                   FROM tame_activity ta
                   ${ironmanOnly ? 'INNER JOIN users u ON u.id = ta.user_id' : ''}
                  WHERE ta.completed = true
@@ -137,16 +139,16 @@ async function kcLb(interaction: MInteraction, name: string, ironmanOnly: boolea
                  GROUP BY ta.user_id
                  ORDER BY score DESC
                  LIMIT 2000;`
-			)
+		)
 		: await prisma.$queryRawUnsafe<{ id: string; score: number }[]>(
-				`SELECT user_id::text AS id, CAST("monster_scores"->>'${monster.id}' AS INTEGER) as score
+			`SELECT user_id::text AS id, CAST("monster_scores"->>'${monster.id}' AS INTEGER) as score
                  FROM user_stats
                 ${ironmanOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
                  WHERE CAST("monster_scores"->>'${monster.id}' AS INTEGER) > 5
                  ${ironmanOnly ? ' AND "users"."minion.ironman" = true ' : ''}
                  ORDER BY score DESC
                  LIMIT 2000;`
-			);
+		);
 
 	const prefixParts: string[] = [];
 	if (tame) prefixParts.push('Tame');
@@ -200,33 +202,6 @@ LIMIT 10;`);
 	return `**Inferno Records**\n\n${res
 		.map((e, i) => `${i + 1}. **${getUsernameSync(e.user_id)}:** ${formatDuration(e.duration)}`)
 		.join('\n')}`;
-}
-
-// Leaderboard for BSO general boxSpawn.ts event
-async function bsoChallenge(interaction: MInteraction) {
-	const challengeCount: { id: string; challengescore: number }[] = await prisma.$queryRawUnsafe(
-		`SELECT u.user_id::text AS id, u.challengescore
-		FROM (
-			SELECT COALESCE(main_server_challenges_won, 0) AS challengescore, user_id
-			FROM user_stats
-		) AS u
-		ORDER BY u.challengescore DESC
-		LIMIT 100;`
-	);
-
-	doMenu(
-		interaction,
-		chunk(challengeCount, LB_PAGE_SIZE).map((subList, i) =>
-			subList
-				.map(
-					({ id, challengescore }, j) =>
-						`${getPos(i, j)}**${getUsernameSync(id)}:** ${challengescore.toLocaleString()} Challenges`
-				)
-				.join('\n')
-		),
-		'Top Challenges Won Leaderboard'
-	);
-	return lbMsg('Top Challenges Won');
 }
 
 async function sacrificeLb(interaction: MInteraction, type: 'value' | 'unique', ironmanOnly: boolean) {
@@ -442,8 +417,8 @@ async function openLb(interaction: MInteraction, name: string, ironmanOnly: bool
 	const openable = !name
 		? undefined
 		: allOpenables.find(
-				item => stringMatches(item.name, name) || item.name.toLowerCase().includes(name.toLowerCase())
-			);
+			item => stringMatches(item.name, name) || item.name.toLowerCase().includes(name.toLowerCase())
+		);
 	if (openable) {
 		entityID = openable.id;
 		key = 'openable_scores';
@@ -488,29 +463,6 @@ async function gpLb(interaction: MInteraction, ironmanOnly: boolean) {
 		users,
 		title: 'GP Leaderboard',
 		formatter: val => `${val.toLocaleString()} GP`
-	});
-}
-
-async function tamesHatchedLb(interaction: MInteraction, ironmanOnly: boolean) {
-	const query = Prisma.sql`
-               SELECT id, CAST(nursery->>'eggsHatched' AS INTEGER) as count
-               FROM users
-               WHERE nursery IS NOT NULL
-                 AND CAST(nursery->>'eggsHatched' AS INTEGER) > 0
-                 ${ironmanOnly ? Prisma.sql`AND "minion.ironman" = true` : Prisma.empty}
-               ORDER BY count DESC
-               LIMIT 50;
-       `;
-	const users = (await prisma.$queryRaw<{ id: string; count: number }[]>(query)).map(res => ({
-		...res,
-		score: res.count
-	}));
-
-	return doMenuWrapper({
-		ironmanOnly,
-		interaction,
-		users,
-		title: 'Tames Hatched Leaderboard'
 	});
 }
 
@@ -696,75 +648,6 @@ LIMIT 50;`
 	);
 }
 
-async function itemContractLb(interaction: MInteraction, ironmanOnly?: boolean) {
-	const results = await prisma.user.findMany({
-		select: {
-			id: true,
-			item_contract_streak: true
-		},
-		where: {
-			item_contract_streak: {
-				gte: 5
-			},
-			minion_ironman: ironmanOnly ? true : undefined
-		},
-		orderBy: {
-			item_contract_streak: 'desc'
-		},
-		take: 10
-	});
-
-	doMenu(
-		interaction,
-		chunk(results, 10).map(subList =>
-			subList
-				.map(({ id, item_contract_streak }) => `**${getUsernameSync(id)}:** ${item_contract_streak}`)
-				.join('\n')
-		),
-		'Item Contract Streak Leaderboard'
-	);
-	return lbMsg('Item Contract Streak');
-}
-
-async function itemContractDonationGivenLb(interaction: MInteraction, total: boolean) {
-	const stats = await prisma.userStats.findMany({
-		where: { NOT: { ic_donations_given_bank: {} } },
-		select: {
-			user_id: true,
-			ic_donations_given_bank: true
-		}
-	});
-
-	const donations = stats
-		.map(s => {
-			const donation_bank = s.ic_donations_given_bank as Record<string, number>;
-			const total_donations = total
-				? Object.values(donation_bank).reduce((acc, qty) => acc + qty, 0)
-				: Object.keys(donation_bank).length;
-
-			return {
-				id: s.user_id,
-				total_donations
-			};
-		})
-		.filter(d => d.total_donations > 0);
-
-	doMenu(
-		interaction,
-		chunk(donations.sort((a, b) => b.total_donations - a.total_donations).slice(0, 10), 10).map(subList =>
-			subList
-				.map(
-					({ id, total_donations }) =>
-						`**${getUsernameSync(id)}:** ${total_donations.toLocaleString()} donations`
-				)
-				.join('\n')
-		),
-		`${total === true ? 'Total' : 'Unique'} IC Donations Leaderboard`
-	);
-
-	return lbMsg(`${total === true ? 'Total' : 'Unique'} IC Donations Leaderboard`);
-}
-
 const globalLbTypes = ['xp', 'cl', 'mastery'] as const;
 type GlobalLbType = (typeof globalLbTypes)[number];
 async function globalLb(interaction: MInteraction, type: GlobalLbType) {
@@ -848,122 +731,6 @@ LIMIT 20;`;
 	);
 }
 
-async function leaguesPointsLeaderboard(interaction: MInteraction) {
-	const result = await roboChimpClient.user.findMany({
-		where: {
-			leagues_points_total: {
-				gt: 0
-			}
-		},
-		orderBy: {
-			leagues_points_total: 'desc'
-		},
-		take: 100
-	});
-	doMenu(
-		interaction,
-		chunk(result, 10).map(subList =>
-			subList
-				.map(
-					({ id, leagues_points_total }) =>
-						`**${getUsernameSync(id)}:** ${leagues_points_total.toLocaleString()} Pts`
-				)
-				.join('\n')
-		),
-		'Leagues Points Leaderboard'
-	);
-	return lbMsg('Leagues Points');
-}
-
-async function leastCompletedLeagueTasksLb() {
-	const taskCounts = await roboChimpClient.$queryRaw<
-		{ task_id: number; qty: number }[]
-	>`SELECT task_id, count(*)::int AS qty
-FROM (
-   SELECT unnest(leagues_completed_tasks_ids) AS task_id
-   FROM public.user
-   ) sub
-GROUP BY 1
-ORDER BY 2 ASC;`;
-	const taskObj: Record<number, number> = {};
-	for (const task of allLeagueTasks) {
-		taskObj[task.id] = 0;
-	}
-	for (const task of taskCounts) {
-		taskObj[task.task_id] = task.qty;
-	}
-
-	return `**Least Commonly Completed Tasks:**
-${Object.entries(taskObj)
-	.sort((a, b) => a[1] - b[1])
-	.slice(0, 10)
-	.map(task => {
-		const taskObj = allLeagueTasks.find(t => t.id === Number.parseInt(task[0]))!;
-		return `${taskObj.name}: ${task[1]} users completed`;
-	})
-	.join('\n')}
-
-**Most Commonly Completed Tasks:**
-${Object.entries(taskObj)
-	.sort((a, b) => b[1] - a[1])
-	.slice(0, 10)
-	.map((task, index) => {
-		const taskObj = allLeagueTasks.find(t => t.id === Number.parseInt(task[0]))!;
-		return `${index + 1}. ${taskObj.name}`;
-	})
-	.join('\n')}`;
-}
-
-async function compLeaderboard(interaction: MInteraction, untrimmed: boolean, ironmanOnly: boolean) {
-	const key: keyof UserStats = untrimmed ? 'untrimmed_comp_cape_percent' : 'comp_cape_percent';
-	const list = await prisma.$queryRawUnsafe<{ id: string; percent: number }[]>(
-		`SELECT user_id::text AS id, ${key} AS percent
-		 FROM user_stats
-		${ironmanOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
-		 WHERE ${key} IS NOT NULL
-		 ${ironmanOnly ? ' AND "users"."minion.ironman" = true ' : ''}
-		 ORDER BY ${key} DESC
-		 LIMIT 100;`
-	);
-
-	doMenu(
-		interaction,
-		chunk(list, 10).map(subList =>
-			subList
-				.map(
-					({ id, percent }) =>
-						`**${getUsernameSync(id)}:** ${percent.toFixed(2)}% ${untrimmed ? 'Untrimmed' : 'Trimmed'}`
-				)
-				.join('\n')
-		),
-		'Completionist Leaderboard'
-	);
-	return lbMsg('Completionist Leaderboard');
-}
-
-async function leaguesLeaderboard(interaction: MInteraction, type: 'points' | 'tasks' | 'hardest_tasks') {
-	if (type === 'points') return leaguesPointsLeaderboard(interaction);
-	if (type === 'hardest_tasks') return leastCompletedLeagueTasksLb();
-	const result: { id: number; tasks_completed: number }[] =
-		await roboChimpClient.$queryRaw`SELECT id::text, COALESCE(cardinality(leagues_completed_tasks_ids), 0) AS tasks_completed
-										  FROM public.user
-										  ORDER BY tasks_completed DESC
-										  LIMIT 100;`;
-	doMenu(
-		interaction,
-		chunk(result, 10).map(subList =>
-			subList
-				.map(
-					({ id, tasks_completed }) =>
-						`**${getUsernameSync(id.toString())}:** ${tasks_completed.toLocaleString()} Tasks`
-				)
-				.join('\n')
-		),
-		'Leagues Tasks Leaderboard'
-	);
-	return lbMsg('Leagues Tasks');
-}
-
 const gainersTypes = ['overall', 'top_250'] as const;
 type GainersType = (typeof gainersTypes)[number];
 async function gainersLB(interaction: MInteraction, type: GainersType) {
@@ -1035,8 +802,7 @@ LIMIT 10;
 					({ user_id, cl_completion_count, cl_global_rank, count_increase, rank_difference }, j) =>
 						`${getPos(i, j)}**${getUsernameSync(
 							user_id
-						)}:** Gained ${count_increase} CL slots, from ${cl_completion_count} to ${
-							cl_completion_count + count_increase
+						)}:** Gained ${count_increase} CL slots, from ${cl_completion_count} to ${cl_completion_count + count_increase
 						}, and their global rank went from ${cl_global_rank - rank_difference} to ${cl_global_rank}`
 				)
 				.join('\n')
@@ -1274,8 +1040,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 								!value
 									? true
 									: [i.name, ...i.aliases].some(str =>
-											str.toLowerCase().includes(value.toLowerCase())
-										)
+										str.toLowerCase().includes(value.toLowerCase())
+									)
 							)
 							.map(i => ({ name: i.name, value: i.name }));
 					}
@@ -1454,7 +1220,6 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			kc,
 			farming_contracts,
 			inferno,
-			challenges,
 			sacrifice,
 			minigames,
 			hunter_catches,
@@ -1462,25 +1227,24 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			gp,
 			skills,
 			cl,
-
-			tames_hatched,
-			item_contract_streak,
-			total_ic_donation_given,
-			unique_ic_donation_given,
-			leagues,
 			clues,
 			movers,
 			global,
 			completion,
 			combat_achievements,
-			mastery
+			mastery,
+			tames_hatched,
+			item_contract_streak,
+			total_ic_donation_given,
+			unique_ic_donation_given,
+			leagues,
+			challenges,
 		} = options;
 		if (kc) return kcLb(interaction, kc.monster, Boolean(kc.ironmen_only), Boolean(kc.tame));
 		if (farming_contracts) {
 			return farmingContractLb(interaction, Boolean(farming_contracts.ironmen_only));
 		}
 		if (inferno) return infernoLb();
-		if (challenges) return bsoChallenge(interaction);
 		if (sacrifice) return sacrificeLb(interaction, sacrifice.type, Boolean(sacrifice.ironmen_only));
 		if (minigames) return minigamesLb(interaction, minigames.minigame);
 		if (hunter_catches) return creaturesLb(interaction, hunter_catches.creature);
@@ -1491,20 +1255,23 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		}
 		if (opens) return openLb(interaction, opens.openable, Boolean(opens.ironmen_only));
 		if (cl) return clLb(interaction, cl.cl, Boolean(cl.ironmen_only), Boolean(cl.tames));
-		if (item_contract_streak) return itemContractLb(interaction, item_contract_streak.ironmen_only);
-		if (total_ic_donation_given) return itemContractDonationGivenLb(interaction, true);
-		if (unique_ic_donation_given) return itemContractDonationGivenLb(interaction, false);
-		if (tames_hatched) return tamesHatchedLb(interaction, Boolean(tames_hatched.ironmen_only));
-		if (leagues) return leaguesLeaderboard(interaction, leagues.type);
-
 		if (clues) return cluesLb(interaction, clues.clue, Boolean(clues.ironmen_only));
 		if (movers) return gainersLB(interaction, movers.type);
 		if (global) return globalLb(interaction, global.type);
-		if (completion)
-			return compLeaderboard(interaction, Boolean(completion.untrimmed), Boolean(completion.ironmen_only));
-
 		if (combat_achievements) return caLb(interaction);
 		if (mastery) return masteryLb(interaction);
+
+		// BSO Leaderboards
+		if (completion) {
+			return bsoCompletionistLb(interaction, Boolean(completion.untrimmed), Boolean(completion.ironmen_only));
+		}
+		if (tames_hatched) return bsoTamesHatchedLb(interaction, Boolean(tames_hatched.ironmen_only));
+		if (item_contract_streak) return bsoItemContractLb(interaction, item_contract_streak.ironmen_only);
+		if (total_ic_donation_given) return bsoItemContractDonationGivenLb(interaction, true);
+		if (unique_ic_donation_given) return bsoItemContractDonationGivenLb(interaction, false);
+		if (leagues) return bsoLeaguesLeaderboard(interaction, leagues.type);
+		if (challenges) return bsoChallengeLeaderboard(interaction);
+
 		return 'Invalid input.';
 	}
 };
