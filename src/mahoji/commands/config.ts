@@ -153,6 +153,10 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Disable Minion Daily Button',
 		bit: BitField.DisableDailyButton
+	},
+	{
+		name: 'Allow Public API Data Retrieval',
+		bit: BitField.AllowPublicAPIDataRetrieval
 	}
 ];
 

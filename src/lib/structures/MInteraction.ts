@@ -26,8 +26,6 @@ import {
 } from '@/lib/structures/PaginatedMessage.js';
 import { getUsername } from '@/lib/util.js';
 
-const wasDeferred = new Set();
-
 interface MakePartyOptions {
 	maxSize: number;
 	minSize: number;
@@ -40,18 +38,25 @@ interface MakePartyOptions {
 
 export class MInteraction {
 	public interaction: CommandInteraction | ButtonInteraction;
-	public deferred: boolean;
-	public replied: boolean;
 	public id: string;
 	public ephemeral: boolean;
 	public interactionResponse: InteractionResponse | Message | null = null;
+	public isPaginated = false;
+	public isParty = false;
+	public isConfirmation = false;
 
 	constructor({ interaction }: { interaction: CommandInteraction | ButtonInteraction }) {
 		this.interaction = interaction;
 		this.id = interaction.id;
-		this.replied = interaction.replied;
-		this.deferred = interaction.deferred;
 		this.ephemeral = interaction.ephemeral ?? false;
+	}
+
+	get replied() {
+		return this.interaction.replied;
+	}
+
+	get deferred() {
+		return this.interaction.deferred;
 	}
 
 	public getDebugInfo() {
@@ -64,7 +69,14 @@ export class MInteraction {
 			interaction_created_at: this.createdTimestamp,
 			current_timestamp: Date.now(),
 			difference_ms: Date.now() - this.createdTimestamp,
-			was_deferred: this.isRepliable() ? this.deferred : 'N/A'
+			was_deferred: this.deferred,
+			custom_id: this.customId,
+			command_name: this.commandName,
+			ephemeral: this.ephemeral,
+			replied: this.replied,
+			is_party: this.isParty,
+			is_confirmation: this.isConfirmation,
+			is_paginated: this.isPaginated
 		};
 		if (this.interaction.isChatInputCommand()) {
 			context.options = JSON.stringify(
@@ -127,28 +139,23 @@ export class MInteraction {
 		return this.interaction.guild;
 	}
 
-	private handleError(err: unknown) {
-		console.error('Interaction error:', err);
-	}
-
 	makePaginatedMessage(options: PaginatedMessageOptions) {
-		return new PaginatedMessage({ interaction: this, ...options, onError: console.error }).run([
-			this.interaction.user.id
-		]);
+		this.isPaginated = true;
+		return new PaginatedMessage({ interaction: this, ...options }).run([this.interaction.user.id]);
 	}
 
 	async defer({ ephemeral }: { ephemeral?: boolean } = {}) {
 		this.ephemeral = ephemeral ?? this.ephemeral;
-		if (wasDeferred.size > 1000) wasDeferred.clear();
-		if (!this.deferred && !wasDeferred.has(this.id)) {
-			this.deferred = true;
-			wasDeferred.add(this.id);
+		if (!this.deferred) {
 			try {
 				const options: { flags?: number } = {};
 				if (this.ephemeral) options.flags = MessageFlags.Ephemeral;
 				await this.interaction.deferReply(options);
 			} catch (err) {
-				this.handleError(err);
+				Logging.logError(err as Error, {
+					action: 'DEFER',
+					...this.getDebugInfo()
+				});
 			}
 		}
 	}
@@ -156,10 +163,6 @@ export class MInteraction {
 	async reply(
 		_response: string | CompatibleResponse
 	): Promise<InteractionResponse<boolean> | Message<boolean> | null> {
-		if (this.replied) {
-			throw new Error('Attempted to follow up (reply to an interaction which has already been replied to)');
-		}
-
 		const response: CompatibleResponse = typeof _response === 'string' ? { content: _response } : _response;
 
 		if (!('content' in response)) {
@@ -170,20 +173,22 @@ export class MInteraction {
 		}
 
 		try {
-			if (this.deferred) {
+			if (this.replied || this.deferred) {
 				this.interactionResponse = await this.interaction.editReply(response);
 			} else {
 				this.interactionResponse = await this.interaction.reply(response);
 			}
-		} catch (e: any) {
-			console.error(`MInteraction reply error:
-Command: ${this.commandName}
-Custom ID: ${this.customId}
-Response: ${JSON.stringify(response).slice(0, 1000)}
-Replied: ${this.replied}
-Deferred: ${this.deferred}
-Ephemeral: ${this.ephemeral}
-Error: ${e.message}`);
+		} catch (err) {
+			Logging.logError(err as Error, {
+				action: `REPLY (${this.deferred ? 'editReply' : 'reply'})`,
+				...this.getDebugInfo(),
+				command: this.commandName,
+				custom_id: this.customId,
+				response: JSON.stringify(response).slice(0, 1000),
+				replied: this.replied,
+				deferred: this.deferred,
+				ephemeral: this.ephemeral
+			});
 		}
 		return this.interactionResponse;
 	}
@@ -199,6 +204,7 @@ Error: ${e.message}`);
 					| { ephemeral?: boolean; users?: undefined }
 			  ))
 	) {
+		this.isConfirmation = true;
 		if (process.env.TEST) return;
 		const content = typeof message === 'string' ? message : message.content;
 		this.ephemeral = typeof message !== 'string' ? (message.ephemeral ?? this.ephemeral) : this.ephemeral;
@@ -305,6 +311,7 @@ Error: ${e.message}`);
 	}
 
 	public async makeParty(options: MakePartyOptions & { message: string }): Promise<MUser[]> {
+		this.isParty = true;
 		if (process.env.TEST) return [options.leader];
 		const timeout = Time.Minute * 5;
 		const usersWhoConfirmed: string[] = [options.leader.id];
