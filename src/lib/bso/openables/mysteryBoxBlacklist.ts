@@ -402,6 +402,7 @@ export const mysteryBoxBlacklist = resolveItems([
 	'Trailblazer reloaded steel trophy',
 	'Trailblazer reloaded iron trophy',
 	'Trailblazer reloaded bronze trophy',
+	'Seed pack',
 	...customItems.filter(
 		i => (i >= 40_000 && i <= 50_000) || Items.getOrThrow(i).customItemData?.cantDropFromMysteryBoxes === true
 	)
