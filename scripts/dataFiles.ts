@@ -39,6 +39,7 @@ import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
 import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import { genericUsables, usableUnlocks } from '@/mahoji/lib/abstracted_commands/useCommand.js';
+import { renderBsoItemsFile } from './bsoData.js';
 import { serializeSnapshotItem, tearDownScript, Util } from './scriptUtil.js';
 
 const rootDir = path.join('data', BOT_TYPE.toLowerCase());
@@ -277,5 +278,7 @@ writeRootJson(
 // 	'all-obtainable-items.json',
 // 	serializeSnapshotItem(Util.ItemArr(Array.from(ALL_OBTAINABLE_ITEMS)).map(serializeSnapshotItem))
 // );
+
+renderBsoItemsFile();
 
 tearDownScript();

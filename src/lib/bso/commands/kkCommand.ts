@@ -101,7 +101,7 @@ export async function kkCommand(
 
 	let users: MUser[] = [];
 	if (type === 'mass') {
-		const usersWhoConfirmed = await interaction?.makeParty(partyOptions);
+		const usersWhoConfirmed = await interaction.makeParty(partyOptions);
 		users = usersWhoConfirmed.filter(u => !u.minionIsBusy);
 	} else {
 		users = [user];
