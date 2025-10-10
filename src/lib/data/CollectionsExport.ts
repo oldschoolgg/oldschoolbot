@@ -179,6 +179,7 @@ export const muspahCL = resolveItems([
 	'Ancient essence'
 ]);
 export const crazyArchaeologistCL = resolveItems(['Odium shard 2', 'Malediction shard 2', 'Fedora']);
+export const derangedArchaeologistCL = resolveItems(['Steel ring']);
 export const dagannothKingsCL = resolveItems([
 	'Pet dagannoth prime',
 	'Pet dagannoth supreme',
