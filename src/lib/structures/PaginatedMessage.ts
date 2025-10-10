@@ -67,7 +67,9 @@ const controlButtons: {
 
 export type CompatibleResponse = { content?: string; ephemeral?: boolean } & Omit<InteractionReplyOptions, 'flags'>;
 
-export type PaginatedMessagePage = CompatibleResponse | (() => Promise<CompatibleResponse> | CompatibleResponse);
+export type PaginatedMessagePage =
+	| CompatibleResponse
+	| ((currentIndex: number) => Promise<CompatibleResponse> | CompatibleResponse);
 export type PaginatedPages =
 	| {
 			numPages: number;
@@ -92,7 +94,7 @@ class BasePaginatedMessage {
 				? await this.pages.generate({ currentPage: this.index })
 				: this.pages[this.index];
 
-			const _page = isFunction(rawPage) ? await rawPage() : rawPage;
+			const _page = isFunction(rawPage) ? await rawPage(this.index) : rawPage;
 			return {
 				..._page,
 				components:
