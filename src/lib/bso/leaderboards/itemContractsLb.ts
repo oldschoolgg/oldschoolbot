@@ -1,7 +1,7 @@
-import { chunk } from "remeda";
+import { chunk } from 'remeda';
 
-import { getUsernameSync } from "@/lib/util.js";
-import { doMenu } from "@/mahoji/commands/leaderboard.js";
+import { getUsernameSync } from '@/lib/util.js';
+import { doMenu } from '@/mahoji/commands/leaderboard.js';
 
 export async function bsoItemContractLb(interaction: MInteraction, ironmanOnly?: boolean) {
 	const results = await prisma.user.findMany({

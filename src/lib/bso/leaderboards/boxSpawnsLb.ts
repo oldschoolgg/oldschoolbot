@@ -1,7 +1,7 @@
-import { chunk } from "remeda";
+import { chunk } from 'remeda';
 
-import { getUsernameSync } from "@/lib/util.js";
-import { doMenu, getPos, LB_PAGE_SIZE } from "@/mahoji/commands/leaderboard.js";
+import { getUsernameSync } from '@/lib/util.js';
+import { doMenu, getPos, LB_PAGE_SIZE } from '@/mahoji/commands/leaderboard.js';
 
 export async function bsoChallengeLeaderboard(interaction: MInteraction) {
 	const challengeCount: { id: string; challengescore: number }[] = await prisma.$queryRawUnsafe(

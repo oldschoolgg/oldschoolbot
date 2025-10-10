@@ -1,6 +1,6 @@
-import { Prisma } from "@prisma/client";
+import { Prisma } from '@prisma/client';
 
-import { doMenuWrapper } from "@/mahoji/commands/leaderboard.js";
+import { doMenuWrapper } from '@/mahoji/commands/leaderboard.js';
 
 export async function bsoTamesHatchedLb(interaction: MInteraction, ironmanOnly: boolean) {
 	const query = Prisma.sql`
