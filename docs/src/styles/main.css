@@ -298,3 +298,9 @@ ol + ol li blockquote {
 	background: #223326 !important;
 	color: #b8ffcc !important;
 }
+
+starlight-tabs {
+	[role="tablist"] {
+		text-transform: capitalize;
+	}
+}
