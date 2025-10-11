@@ -440,7 +440,8 @@ export const konarTasks: AssignableSlayerTask[] = [
 		weight: 2,
 		monsters: [Monsters.Amoxliatl.id, Monsters.FrostNagua.id, Monsters.SulphurNagua.id],
 		slayerLevel: 48,
-		unlocked: true
+		unlocked: true,
+		requiredQuests: [QuestID.TheHeartOfDarkness]
 	},
 	{
 		monster: Monsters.WarpedTerrorbird,
