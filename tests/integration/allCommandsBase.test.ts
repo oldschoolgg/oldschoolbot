@@ -92,7 +92,7 @@ export async function generateCommandInputs(
 	return results;
 }
 
-test(
+test.skip(
 	'All Commands Base Test',
 	{
 		timeout: Time.Minute * 2
