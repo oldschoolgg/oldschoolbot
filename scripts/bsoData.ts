@@ -143,5 +143,20 @@ export function renderBsoItemsFile() {
 		'utf-8'
 	);
 
+	writeFileSync(
+		'data/bso/custom-items.json',
+		JSON.stringify(
+			customItems
+				.map(id => Items.get(id)!)
+				.sort((a, b) => a.name.localeCompare(b.name))
+				.map(item => {
+					return omit(item, ['wiki_name']);
+				}),
+			null,
+			4
+		),
+		'utf-8'
+	);
+
 	tameCluesData();
 }
