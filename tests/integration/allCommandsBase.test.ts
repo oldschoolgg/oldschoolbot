@@ -139,7 +139,8 @@ test(
 			'leagues',
 			'kill',
 			'mass',
-			'dg'
+			'dg',
+			'gear'
 		];
 		const commandsToTest = globalClient.allCommands.filter(c => !ignoredCommands.includes(c.name));
 		console.log(`Running ${commandsToTest.length} commands...`);
