@@ -1048,7 +1048,8 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	}
 
 	async fetchRobochimpUser() {
-		return roboChimpUserFetch(this.id);
+		const robochimpUser = await roboChimpUserFetch(this.id);
+		return robochimpUser;
 	}
 
 	async forceUnequip(setup: GearSetupType, slot: EquipmentSlot, reason: string) {
