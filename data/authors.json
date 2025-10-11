@@ -1,4 +1,8 @@
 {
+    "osb/Skills/mining.mdx": [
+        "TastyPumPum",
+        "Magnaboy"
+    ],
     "bso/CustomItems/capes.md": [
         "TastyPumPum",
         "Magnaboy"
@@ -15,22 +19,34 @@
     "osb/Miscellaneous/music-cape.md": [
         "TastyPumPum"
     ],
+    "osb/Raids/cox.mdx": [
+        "TastyPumPum",
+        "Magnaboy"
+    ],
     "osb/Skills/fishing.mdx": [
         "TastyPumPum",
         "Magnaboy"
-    ],
-    "osb/Skills/mining.mdx": [
-        "TastyPumPum",
-        "Magnaboy"
-    ],
-    "getting-started/BSO.mdx": [
-        "Magnaboy",
-        "TastyPumPum"
     ],
     "osb/clues.mdx": [
         "TastyPumPum",
         "DayV",
         "Magnaboy"
+    ],
+    "osb/monsters.mdx": [
+        "TastyPumPum",
+        "Magnaboy",
+        "DayV",
+        "Keres"
+    ],
+    "osb/quests.mdx": [
+        "TastyPumPum",
+        "Magnaboy",
+        "DayV",
+        "Keres"
+    ],
+    "getting-started/BSO.mdx": [
+        "Magnaboy",
+        "TastyPumPum"
     ],
     "bso/Miscellaneous/Events.md": [
         "TastyPumPum"
@@ -48,16 +64,6 @@
     "osb/Skills/smithing/README.md": [
         "TastyPumPum",
         "Magnaboy"
-    ],
-    "osb/monsters.mdx": [
-        "Magnaboy",
-        "DayV",
-        "Keres"
-    ],
-    "osb/quests.mdx": [
-        "Magnaboy",
-        "DayV",
-        "Keres"
     ],
     "osb/Miscellaneous/champions-challenge.md": [
         "DayV",
