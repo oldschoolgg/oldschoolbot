@@ -50,7 +50,7 @@ There are 4 expert capes that you can buy once you have bought all required mast
 
 ## Master Quest Cape
 
-The Master Quest cape can be purchased with [[/buy name:Master quest cape]] for 1b gp once you have at least 5000 quest points. Owning this cape is required in order to buy a Completionist cape.
+The Master Quest cape can be purchased with [[/buy name\:Master quest cape]] for 1b gp once you have at least 5000 quest points. Owning this cape is required in order to buy a Completionist cape.
 
 ## Completionist Capes
 
