@@ -1,0 +1,28 @@
+---
+export interface Props {
+    name: string;
+}
+const { name } = Astro.props;
+import bsoItems from "../../../data/bso/bso_items.json";
+import { Items } from "oldschooljs";
+const bsoItem = Object.entries(bsoItems).find((entry) => entry[1] === name);
+const osbItem = Items.get(name)?.id;
+let itemId: number;
+let isBso = false;
+if (bsoItem) {
+    itemId = parseInt(bsoItem[0]);
+    isBso = true;
+} else if (osbItem) {
+    itemId = osbItem;
+} else {
+    throw new Error(`Item not found: ${name}`);
+}
+const imgUrl = isBso
+    ? `https://raw.githubusercontent.com/oldschoolgg/oldschoolbot/refs/heads/master/src/lib/resources/images/bso_icons/${itemId}.png`
+    : `https://cdn.oldschool.gg/icons/items/${itemId}.png`;
+---
+
+<span class="osrs_item">
+    <img class="osrs_item_image" src={imgUrl} alt={name} />
+    <span class="osrs_item_name">{name}</span>
+</span>
