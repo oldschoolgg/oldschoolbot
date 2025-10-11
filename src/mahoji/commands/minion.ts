@@ -430,7 +430,8 @@ export const minionCommand: OSBMahojiCommand = {
 	run: async ({
 		user,
 		options,
-		interaction
+		interaction,
+		channelID
 	}: CommandRunOptions<{
 		stats?: { stat?: string };
 		achievementdiary?: { diary?: string; claim?: boolean };

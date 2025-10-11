@@ -434,10 +434,6 @@ declare module 'oldschooljs' {
 	}
 }
 
-export interface CustomItemData {
-	cantBeSacrificed?: true;
-}
-
 for (const id of ItemGroups.teamCapes) {
 	Items.modifyItem(id, {
 		price: 100

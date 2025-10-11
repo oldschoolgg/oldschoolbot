@@ -595,13 +595,6 @@ export interface TokkulShopOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
-export interface BuyActivityTaskOptions extends ActivityTaskOptions {
-	type: 'Buy';
-	itemID: number;
-	quantity: number;
-	totalCost: number;
-}
-
 export interface UnderwaterAgilityThievingTaskOptions extends ActivityTaskOptions {
 	type: 'UnderwaterAgilityThieving';
 	trainingSkill: UnderwaterAgilityThievingTrainingSkill;
@@ -718,5 +711,4 @@ export type ActivityTaskData =
 	| CutLeapingFishActivityTaskOptions
 	| CreateForestersRationsActivityTaskOptions
 	| ColoTaskOptions
-	| BuyActivityTaskOptions
 	| BSOActivityTaskData;

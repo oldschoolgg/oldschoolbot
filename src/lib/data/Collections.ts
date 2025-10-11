@@ -173,7 +173,6 @@ import {
 	motherlodeMineCL,
 	muspahCL,
 	myNotesCL,
-	NexCL,
 	oborCL,
 	pestControlCL,
 	questCL,
