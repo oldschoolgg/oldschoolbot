@@ -65,7 +65,7 @@ const controlButtons: {
 	}
 ];
 
-export type CompatibleResponse = { content?: string; ephemeral?: boolean } & Omit<InteractionReplyOptions, 'flags'>;
+export type CompatibleResponse = { content?: string; ephemeral?: boolean } & InteractionReplyOptions;
 
 export type PaginatedMessagePage =
 	| CompatibleResponse
