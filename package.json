@@ -21,7 +21,7 @@
 		"build": "pnpm build:packages && concurrently --raw \"tsx esbuild.mts\" \"pnpm test:types\"",
 		"gen": "concurrently --raw \"prisma generate --no-hints\" \"pnpm generate:robochimp\" && echo \"Generated Prisma Client\"",
 		"============TESTING": "============",
-		"test": "pnpm concurrent \"pnpm test:lint\" \"pnpm test:unit\" \"pnpm test:types\"",
+		"test": "pnpm concurrent \"pnpm test:lint\" \"pnpm test:types\" && pnpm test:unit",
 		"test:types": "concurrently \"tsc --noEmit -p tests/unit\" \"tsc --noEmit -p tests/integration\" \"tsc --noEmit -p src\" \"tsc --noEmit -p scripts\"",
 		"test:lint": "biome check --diagnostic-level=error",
 		"test:unit": "vitest run --config vitest.unit.config.mts",
