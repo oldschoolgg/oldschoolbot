@@ -1,7 +1,5 @@
 import { Prisma } from '@prisma/client';
-
-import type { ItemBank } from './types';
-import { logError } from './util/logError';
+import type { ItemBank } from 'oldschooljs';
 
 const u = Prisma.UserScalarFieldEnum;
 
@@ -46,6 +44,8 @@ SET ${u.cl_array} = (
     SELECT (ARRAY(SELECT jsonb_object_keys("${u.collectionLogBank}")::int))
 )
 WHERE ${u.id} = '${userID}';`,
+	sumOfAllCLItems: (clItems: number[]) =>
+		`NULLIF(${clItems.map(i => `COALESCE(("collectionLogBank"->>'${i}')::int, 0)`).join(' + ')}, 0)`,
 	...RawBSOSQL
 };
 
@@ -54,7 +54,7 @@ export async function loggedRawPrismaQuery<T>(query: string): Promise<T | null> 
 		const result = await prisma.$queryRawUnsafe<T>(query);
 		return result;
 	} catch (err) {
-		logError(err, { query: query.slice(0, 100) });
+		Logging.logError(err as Error, { query: query.slice(0, 100) });
 	}
 
 	return null;

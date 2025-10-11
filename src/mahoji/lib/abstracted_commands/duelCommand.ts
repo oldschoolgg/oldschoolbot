@@ -1,17 +1,18 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
 import {
-	type MahojiUserOption,
 	awaitMessageComponentInteraction,
-	channelIsSendable
-} from '@oldschoolgg/toolkit/discord-util';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
-import { Time, noOp, sleep } from 'e';
-import { Bank, Util } from 'oldschooljs';
+	channelIsSendable,
+	Emoji,
+	Events,
+	noOp,
+	sleep,
+	Time
+} from '@oldschoolgg/toolkit';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { Bank, toKMB } from 'oldschooljs';
 
-import { MUserClass } from '../../../lib/MUser';
-import { BLACKLISTED_USERS } from '../../../lib/blacklists';
-import { deferInteraction } from '../../../lib/util/interactionReply';
-import { mahojiParseNumber, userStatsUpdate } from '../../mahojiSettings';
+import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { MUserClass } from '@/lib/MUser.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 async function checkBal(user: MUser, amount: number) {
 	return user.GP >= amount;
@@ -19,12 +20,12 @@ async function checkBal(user: MUser, amount: number) {
 
 export async function duelCommand(
 	user: MUser,
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	duelUser: MUser,
 	targetAPIUser: MahojiUserOption,
 	duelAmount?: string
 ) {
-	await deferInteraction(interaction);
+	await interaction.defer();
 
 	const duelSourceUser = user;
 	const duelTargetUser = duelUser;
@@ -55,7 +56,7 @@ export async function duelCommand(
 	const channel = globalClient.channels.cache.get(interaction.channelId);
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	const duelMessage = await channel.send({
-		content: `${duelTargetUser}, do you accept the duel for ${Util.toKMB(amount)} GP?`,
+		content: `${duelTargetUser}, do you accept the duel for ${toKMB(amount)} GP?`,
 		components: [
 			new ActionRowBuilder<ButtonBuilder>().addComponents([
 				new ButtonBuilder({
@@ -108,24 +109,16 @@ export async function duelCommand(
 
 		const winningAmount = amount * 2;
 
-		await userStatsUpdate(
-			winner.id,
-			{
-				duel_wins: {
-					increment: 1
-				}
-			},
-			{}
-		);
-		await userStatsUpdate(
-			loser.id,
-			{
-				duel_losses: {
-					increment: 1
-				}
-			},
-			{}
-		);
+		await winner.statsUpdate({
+			duel_wins: {
+				increment: 1
+			}
+		});
+		await loser.statsUpdate({
+			duel_losses: {
+				increment: 1
+			}
+		});
 
 		await winner.addItemsToBank({ items: new Bank().add('Coins', winningAmount), collectionLog: false });
 		await prisma.economyTransaction.create({
@@ -141,7 +134,7 @@ export async function duelCommand(
 		if (amount >= 1_000_000_000) {
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.MoneyBag} **${winner.badgedUsername}** just won a **${Util.toKMB(
+				`${Emoji.MoneyBag} **${winner.badgedUsername}** just won a **${toKMB(
 					winningAmount
 				)}** GP duel against ${loser.badgedUsername}.`
 			);
@@ -153,7 +146,7 @@ export async function duelCommand(
 		);
 
 		duelMessage.edit(
-			`Congratulations ${winner.usernameOrMention}! You won ${Util.toKMB(winningAmount)}, and paid 0 tax.`
+			`Congratulations ${winner.usernameOrMention}! You won ${toKMB(winningAmount)}, and paid 0 tax.`
 		);
 
 		return `Duel finished, ${winner} won.`;
@@ -177,7 +170,7 @@ export async function duelCommand(
 		if (selection.customId === 'CONFIRM') {
 			return await confirm(amount);
 		}
-	} catch (err) {
+	} catch (_err) {
 		return cancel();
 	}
 	return cancel();

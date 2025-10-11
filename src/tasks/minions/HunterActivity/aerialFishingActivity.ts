@@ -1,17 +1,15 @@
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { calcPercentOfNum, randInt } from 'e';
+import { randInt, roll } from '@oldschoolgg/rng';
+import { calcPercentOfNum, Emoji, Events } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { roll } from '@/lib/util/rng';
-import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
-import { Fishing } from '../../../lib/skilling/skills/fishing/fishing';
-import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { skillingPetDropRate } from '../../../lib/util';
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import aerialFishingCreatures from '@/lib/skilling/skills/hunter/aerialFishing.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 export const aerialFishingTask: MinionTask = {
 	type: 'AerialFishing',
-	isNew: true,
 	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
 		const { quantity, channelID } = data;
 		const currentHuntLevel = user.skillsAsLevels.hunter;
@@ -142,8 +140,7 @@ export const aerialFishingTask: MinionTask = {
 			);
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

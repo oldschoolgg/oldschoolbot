@@ -1,38 +1,10 @@
+import type { Emoji } from '@oldschoolgg/toolkit';
 import type { Bank, Item, ItemBank, LootTable } from 'oldschooljs';
 
-import type { QuestID } from '../minions/data/quests';
-import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
-import type { Skills } from '../types';
-import type { FarmingPatchName } from '../util/farmingHelpers';
-
-export enum SkillsEnum {
-	Agility = 'agility',
-	Cooking = 'cooking',
-	Fishing = 'fishing',
-	Mining = 'mining',
-	Smithing = 'smithing',
-	Woodcutting = 'woodcutting',
-	Firemaking = 'firemaking',
-	Runecraft = 'runecraft',
-	Crafting = 'crafting',
-	Prayer = 'prayer',
-	Fletching = 'fletching',
-	Farming = 'farming',
-	Herblore = 'herblore',
-	Thieving = 'thieving',
-	Hunter = 'hunter',
-	Construction = 'construction',
-	Magic = 'magic',
-	Attack = 'attack',
-	Strength = 'strength',
-	Defence = 'defence',
-	Ranged = 'ranged',
-	Hitpoints = 'hitpoints',
-	Dungeoneering = 'dungeoneering',
-	Slayer = 'slayer',
-	Invention = 'invention',
-	Divination = 'divination'
-}
+import type { QuestID } from '@/lib/minions/data/quests.js';
+import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
+import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import type { Skills } from '@/lib/types/index.js';
 
 export const SkillsArray = [
 	'agility',
@@ -64,13 +36,6 @@ export const SkillsArray = [
 ] as const;
 
 export type SkillNameType = (typeof SkillsArray)[number];
-for (const skill of SkillsArray) {
-	const matching = Object.keys(SkillsEnum).find(key => key.toLowerCase() === skill);
-	if (!matching) throw new Error(`Missing skill enum for ${skill}`);
-}
-if (SkillsArray.length !== Object.keys(SkillsEnum).length) {
-	throw new Error('Not all skills have been added to the SkillsArray.');
-}
 
 export interface Ore {
 	level: number;
@@ -206,9 +171,9 @@ export interface Craftable {
 	crushChance?: number[];
 	bankChest?: boolean;
 	outputMultiple?: number;
-	otherSkillRequirements?: Partial<Skills>;
 	qpRequired?: number;
 	wcLvl?: number;
+	otherSkillRequirements?: Partial<Skills>;
 	cantBeDoubled?: boolean;
 }
 
@@ -239,12 +204,6 @@ export interface Mixable {
 	defaultQuantity?: number;
 }
 
-export interface CutLeapingFish {
-	item: Item;
-	aliases: string[];
-	tickRate: number;
-}
-
 export interface Bone {
 	level: number;
 	xp: number;
@@ -260,16 +219,26 @@ export interface Ash {
 }
 
 export type LevelRequirements = Partial<{
-	[key in SkillsEnum]: number;
+	[key in SkillNameType]: number;
 }>;
 
-export interface Skill {
-	aliases: string[];
-	id: SkillsEnum;
-	emoji: string;
-	name: string;
-}
+type Loose<T> = {
+	[K in keyof T]: T[K];
+} & {
+	[key: string]: unknown;
+};
 
+export type BaseSkill = {
+	aliases: string[];
+	id: SkillNameType;
+	emoji: Emoji | string;
+	name: string;
+};
+
+export type Skill = Loose<BaseSkill>;
+export function defineSkill<T extends BaseSkill>(s: T): T {
+	return s;
+}
 export interface Plankable {
 	name: string;
 	inputItem: number;

@@ -1,7 +1,6 @@
-import { EquipmentSlot } from 'oldschooljs';
+import { EquipmentSlot, Items } from 'oldschooljs';
 
-import getOSItem from '../util/getOSItem';
-import { setCustomItem } from './util';
+import { setCustomItem } from '@/lib/customItems/util.js';
 
 // 2x faster chopping and wintertodt
 setCustomItem(472, 'Dwarven greataxe', 'Dragon pickaxe', {}, 1_000_000);
@@ -24,7 +23,7 @@ setCustomItem(
 	'Dragon warhammer',
 	{
 		equipment: {
-			...getOSItem('Dragon warhammer').equipment!,
+			...Items.getOrThrow('Dragon warhammer').equipment!,
 			requirements: {
 				strength: 99
 			}

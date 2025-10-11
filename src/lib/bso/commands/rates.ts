@@ -1,0 +1,766 @@
+import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
+import type { BathhouseTaskOptions } from '@/lib/bso/bsoTypes.js';
+import { determineTameClueResult } from '@/lib/bso/commands/tames.js';
+import {
+	BathhouseOres,
+	BathwaterMixtures,
+	bathHouseTiers,
+	calculateBathouseResult,
+	durationPerBaxBath
+} from '@/lib/bso/minigames/baxtorianBathhouses.js';
+import { calculateTuraelsTrialsInput, TuraelsTrialsMethods } from '@/lib/bso/minigames/turaelsTrials.js';
+import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '@/lib/bso/skills/divination.js';
+import {
+	calcGorajanShardChance,
+	calcMaxFloorUserCanDo,
+	numberOfGorajanOutfitsEquipped
+} from '@/lib/bso/skills/dungoneering/dungDbFunctions.js';
+import {
+	mutatedSourceItems,
+	zygomiteFarmingSource,
+	zygomiteSeedMutChance
+} from '@/lib/bso/skills/farming/zygomites.js';
+import { inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
+import { stoneSpirits } from '@/lib/bso/skills/mining/stoneSpirits.js';
+import { calculateDungeoneeringResult } from '@/lib/bso/tasks/dungeoneeringActivity.js';
+import { memoryHarvestResult, totalTimePerRound } from '@/lib/bso/tasks/memoryHarvestActivity.js';
+import { calculateTuraelsTrialsResult } from '@/lib/bso/tasks/turaelsTrialsActivity.js';
+
+import { calcPerHour, formatDuration, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
+import type { InteractionReplyOptions } from 'discord.js';
+import { bold } from 'discord.js';
+import { Bank, convertBankToPerHourStats, Items, itemID, toKMB } from 'oldschooljs';
+import { unique } from 'remeda';
+
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import Agility from '@/lib/skilling/skills/agility.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
+import Mining from '@/lib/skilling/skills/mining.js';
+import Smithing from '@/lib/skilling/skills/smithing/index.js';
+import { HunterTechniqueEnum } from '@/lib/skilling/types.js';
+import { Gear } from '@/lib/structures/Gear.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import { PeakTier } from '@/lib/util/peaks.js';
+import { calculateHunterInput } from '@/mahoji/commands/hunt.js';
+import { calculateMiningInput } from '@/mahoji/commands/mine.js';
+import { calculateAgilityResult } from '@/tasks/minions/agilityActivity.js';
+import { calculateHunterResult } from '@/tasks/minions/HunterActivity/hunterActivity.js';
+import { calculateMiningResult } from '@/tasks/minions/miningActivity.js';
+
+export const ratesCommand: OSBMahojiCommand = {
+	name: 'rates',
+	description: 'Check rates of various skills/activities.',
+	options: [
+		{
+			type: 'SubcommandGroup',
+			name: 'minigames',
+			description: 'Check minigames rates.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'baxtorian_bathhouses',
+					description: 'baxtorian bathhouses',
+					options: []
+				}
+			]
+		},
+		{
+			type: 'SubcommandGroup',
+			name: 'tames',
+			description: 'Check tames rates.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'eagle',
+					description: 'Eagle tame.',
+					options: []
+				}
+			]
+		},
+		{
+			type: 'SubcommandGroup',
+			name: 'xphr',
+			description: 'Check XP/hr rates.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'divination_memory_harvesting',
+					description: 'Divination.',
+					options: []
+				},
+				{
+					type: 'Subcommand',
+					name: 'agility',
+					description: 'agility.',
+					options: []
+				},
+				{
+					type: 'Subcommand',
+					name: 'dungeoneering',
+					description: 'Dungeoneering.',
+					options: []
+				},
+				{
+					type: 'Subcommand',
+					name: 'mining',
+					description: 'Mining.',
+					options: []
+				},
+				{
+					type: 'Subcommand',
+					name: 'hunter',
+					description: 'XP/hr rates for Hunter.',
+					options: []
+				},
+				{
+					type: 'Subcommand',
+					name: 'turaels_trials',
+					description: 'XP/hr rates for TT.',
+					options: []
+				}
+			]
+		},
+		{
+			type: 'SubcommandGroup',
+			name: 'misc',
+			description: 'Miscelleanous rates.',
+			options: [
+				{
+					type: 'Subcommand',
+					name: 'zygomite_seeds',
+					description: 'Check zygomite seeds.'
+				}
+			]
+		}
+	],
+	run: async ({
+		options,
+		user,
+		interaction
+	}: CommandRunOptions<{
+		xphr?: {
+			divination_memory_harvesting?: {};
+			agility?: {};
+			dungeoneering?: {};
+			mining?: {};
+			hunter?: {};
+			turaels_trials?: {};
+		};
+		tames?: { eagle?: {} };
+		misc?: { zygomite_seeds?: {} };
+		minigames?: { baxtorian_bathhouses?: {} };
+	}>) => {
+		await interaction.defer();
+
+		if (options.minigames?.baxtorian_bathhouses) {
+			const results = [];
+			for (const tier of bathHouseTiers) {
+				for (const ore of BathhouseOres) {
+					for (const mixture of BathwaterMixtures) {
+						results.push({
+							...calculateBathouseResult({
+								mixture: mixture.name,
+								ore: ore.item.id,
+								tier: tier.name,
+								minigameID: 'bax_baths',
+								quantity: 4
+							} as BathhouseTaskOptions),
+							tier,
+							ore,
+							mixture
+						});
+					}
+				}
+			}
+
+			results.sort(
+				(a, b) => b.firemakingXP * GLOBAL_BSO_XP_MULTIPLIER - a.firemakingXP * GLOBAL_BSO_XP_MULTIPLIER
+			);
+			const tableArr = [['Combo', 'FM XP/hr', 'Herb XP/hr'].join('\t')];
+			for (const { tier, ore, mixture, firemakingXP, herbXP } of results) {
+				const duration = durationPerBaxBath * 4;
+				const totalFiremakingXP = firemakingXP * GLOBAL_BSO_XP_MULTIPLIER;
+				const totalHerbloreXP = herbXP * GLOBAL_BSO_XP_MULTIPLIER;
+				tableArr.push(
+					[
+						`${tier.name} ${ore.item.name} ${mixture.name}`,
+						toKMB(calcPerHour(totalFiremakingXP, duration)),
+						toKMB(calcPerHour(totalHerbloreXP, duration))
+					].join('\t')
+				);
+			}
+			return {
+				...(interaction.returnStringOrFile(tableArr.join('\n')) as InteractionReplyOptions)
+			};
+		}
+		if (options.misc?.zygomite_seeds) {
+			const mutationChancePerMinute = 1 / zygomiteSeedMutChance;
+
+			const validZygomiteList = unique(mutatedSourceItems.map(m => m.zygomite));
+			// Returns an array containing [totalWeight, totalWeightedChance] for each Zygomite
+			const survivalChanceData = validZygomiteList.map(z =>
+				mutatedSourceItems
+					.filter(m => m.zygomite === z)
+					.reduce(
+						(acc: [number, number, string], m) => {
+							acc[0] += m.weight;
+							acc[1] += m.weight * (1 / m.surivalChance);
+							acc[2] = m.zygomite;
+							return acc;
+						},
+						[0, 0, '']
+					)
+			);
+			const survivalChancePerMutation =
+				sumArr(survivalChanceData.map(d => d[1] / d[0])) / validZygomiteList.length;
+			const avgSurvivalChance = 1 / survivalChancePerMutation;
+
+			const chancePerMinuteBoth = mutationChancePerMinute * survivalChancePerMutation;
+			const averageMinutesToGetBoth = 1 / chancePerMinuteBoth;
+			const averageHoursToGetBoth = averageMinutesToGetBoth / 60;
+			return `For every minute in any trip, a random, valid seed from your bank has a 1 in ${zygomiteSeedMutChance} chance of mutating, and then that mutated seed has a 1 in ${avgSurvivalChance.toFixed(
+				2
+			)} (weighted average) chance of surviving. ${averageHoursToGetBoth.toFixed(1)} hours on average to get a zygomite seed.
+
+${zygomiteFarmingSource
+	.map(
+		z =>
+			`${bold(z.seedItem.name)} evolves from: ${
+				!z.mutatedFromItems
+					? 'No items'
+					: mutatedSourceItems
+							.filter(msi => msi.zygomite === z.name)
+							.map(i => i.item.name)
+							.join(', ')
+			}, drops these items: ${!z.lootTable ? 'Nothing' : z.lootTable.allItems.map(i => Items.itemNameFromId(i)).join(', ')}.`
+	)
+	.join('\n\n')}`;
+		}
+		if (options.tames?.eagle) {
+			let results = `${['Support Level', 'Clue Tier', 'Clues/hr', 'Kibble/hr', 'GMC/Hr'].join('\t')}\n`;
+			for (const tameLevel of [50, 60, 70, 75, 80, 85, 90, 95, 100]) {
+				for (const clueTier of ClueTiers) {
+					const res = determineTameClueResult({
+						tameGrowthLevel: 3,
+						clueTier,
+						extraTripLength: Time.Hour * 10,
+						supportLevel: tameLevel,
+						equippedArmor: itemID('Abyssal jibwings (e)'),
+						equippedPrimary: itemID('Divine ring')
+					});
+
+					results += [
+						tameLevel,
+						clueTier.name,
+						calcPerHour(res.quantity, res.duration).toLocaleString(),
+						calcPerHour(res.cost.amount('Extraordinary kibble'), res.duration).toLocaleString(),
+						calcPerHour(res.cost.amount('Clue scroll (grandmaster)'), res.duration).toLocaleString()
+					].join('\t');
+					results += '\n';
+				}
+			}
+
+			return {
+				content: 'Assumes abyssal jibwings (e) and divine ring',
+				...(interaction.returnStringOrFile(results) as InteractionReplyOptions)
+			};
+		}
+
+		if (options.xphr?.hunter) {
+			let results = `${[
+				'Creature',
+				'XP/Hr',
+				'Portent',
+				'Quick Trap',
+				'Max Learning',
+				'Stam&Hunt Pots',
+				'Successful qty/hr',
+				'QuantityHunted'
+			].join('\t')}\n`;
+
+			for (const creature of Hunter.Creatures) {
+				for (const hasPortent of [true, false]) {
+					for (const _hasQuickTrap of [true, false]) {
+						for (const usingStamAndHunterPotions of [true, false]) {
+							for (const hasMaxLearning of [true, false]) {
+								const hasQuickTrap =
+									_hasQuickTrap && creature.huntTechnique === HunterTechniqueEnum.BoxTrapping;
+								if (creature.huntTechnique !== HunterTechniqueEnum.BoxTrapping && _hasQuickTrap) {
+									continue;
+								}
+								const duration = Time.Hour * 5;
+								const skillsAsLevels = {
+									...user.skillsAsLevels,
+									hunter: 120,
+									fishing: 120,
+									agility: 120,
+									mining: 120,
+									woodcutting: 120,
+									prayer: 120,
+									herblore: 120
+								};
+
+								const creatureScores = hasMaxLearning ? { [creature.id]: 100_000_000 } : {};
+
+								const gear = new Gear();
+								gear.equip('Beginner rumble greegree');
+								gear.equip('Masori body (f)');
+								gear.equip('Masori chaps (f)');
+								gear.equip('Dragon boots');
+								gear.equip('Fire cape');
+
+								const bank = new Bank()
+									.add('Hunter potion(4)', 1000)
+									.add('Simple kibble', 100_000)
+									.add('Delicious kibble', 100_000)
+									.add('Stamina potion(4)', 1000)
+									.add('Eastern ferret', 10_000)
+									.add('Saradomin brew(4)', 1000)
+									.add('Super restore(4)', 1000)
+									.add('Banana', 100_000)
+									.add('Magic box', 50_000)
+									.add('Butterfly jar', 10_000);
+
+								const fullSetup = {
+									wildy: gear
+								} as any;
+
+								const inputResult = calculateHunterInput({
+									creatureScores,
+									creature,
+									skillsAsLevels,
+									isUsingHunterPotion: usingStamAndHunterPotions,
+									shouldUseStaminaPotions: usingStamAndHunterPotions,
+									bank,
+									quantityInput: undefined,
+									allGear: fullSetup,
+									hasHunterMasterCape: true,
+									maxTripLength: duration,
+									isUsingQuickTrap: hasQuickTrap,
+									quickTrapMessages: '',
+									QP: 5000,
+									hasGraceful: true,
+									isUsingWebshooter: hasQuickTrap,
+									webshooterMessages: '',
+									user
+								});
+
+								if (typeof inputResult === 'string') {
+									console.log(inputResult);
+									continue;
+								}
+								const result = calculateHunterResult({
+									creature,
+									allItemsOwned: new Bank(),
+									skillsAsLevels,
+									usingHuntPotion: usingStamAndHunterPotions,
+									usingStaminaPotion: true,
+									bank,
+									quantity: inputResult.quantity,
+									duration,
+									creatureScores,
+									allGear: user.gear,
+									collectionLog: new Bank(),
+									equippedPet: itemID('Sandy'),
+									skillsAsXP: skillsAsLevels,
+									hasHunterMasterCape: true,
+									wildyPeakTier: PeakTier.Low,
+									isUsingArcaneHarvester: false,
+									arcaneHarvesterMessages: undefined,
+									portentResult: hasPortent
+										? { didCharge: true, portent: { charges_remaining: 1000 } as any }
+										: { didCharge: false },
+									invincible: true,
+									noRandomness: true,
+									graceful: true,
+									experienceScore: 10
+								});
+								results += [
+									creature.name,
+									Math.floor(
+										calcPerHour(result.totalHunterXP * GLOBAL_BSO_XP_MULTIPLIER, duration)
+									).toLocaleString(),
+									hasPortent ? 'Has Portent' : 'No Portent',
+									hasQuickTrap ? 'Has QT/WS' : 'No QT/WS',
+									hasMaxLearning ? 'Max Learning' : 'No Max Learning',
+									usingStamAndHunterPotions ? 'Has Pots' : 'No Pots',
+									calcPerHour(result.successfulQuantity, duration).toLocaleString(),
+									inputResult.quantity
+								].join('\t');
+								results += '\n';
+							}
+						}
+					}
+				}
+			}
+			return {
+				...(interaction.returnStringOrFile(results) as InteractionReplyOptions),
+				content: 'Assumes: Hunter master cape, level 120 Hunter, full Graceful, Sandy pet equipped.'
+			};
+		}
+
+		if (options.xphr?.turaels_trials) {
+			let results = `${[
+				'Method',
+				'Slayer XP/Hr',
+				'Melee XP/Hr',
+				'Range XP/Hr',
+				'Mage XP/Hr',
+				'Loot/hr',
+				'Cost/hr'
+			].join('\t')}\n`;
+			const maxTripLength = Time.Hour;
+
+			for (const method of TuraelsTrialsMethods) {
+				const input = calculateTuraelsTrialsInput({ maxTripLength, method, isUsingBloodFury: true });
+				const result = calculateTuraelsTrialsResult({
+					quantity: input.quantity,
+					method,
+					duration: maxTripLength
+				});
+				const { duration } = input;
+				if (input.chargeBank.amount('scythe_of_vitur_charges') !== 0) {
+					input.cost.add('Scythe of vitur', input.chargeBank.amount('scythe_of_vitur_charges'));
+				}
+				if (input.chargeBank.amount('blood_fury_charges') !== 0) {
+					input.cost.add('Scythe of vitur', input.chargeBank.amount('blood_fury_charges'));
+				}
+				if (input.hpHealingNeeded !== 0) {
+					input.cost.add('Rocktail', Math.ceil(input.hpHealingNeeded / 26));
+				}
+
+				let slayerXP = result.xpBank.amount('slayer') * GLOBAL_BSO_XP_MULTIPLIER;
+				slayerXP = increaseNumByPercent(slayerXP, 8);
+				results += [
+					method,
+					Math.floor(calcPerHour(slayerXP, duration)).toLocaleString(),
+					Math.floor(
+						calcPerHour(result.xpBank.amount('attack') * GLOBAL_BSO_XP_MULTIPLIER, duration)
+					).toLocaleString(),
+					Math.floor(
+						calcPerHour(result.xpBank.amount('ranged') * GLOBAL_BSO_XP_MULTIPLIER, duration)
+					).toLocaleString(),
+					Math.floor(
+						calcPerHour(result.xpBank.amount('magic') * GLOBAL_BSO_XP_MULTIPLIER, duration)
+					).toLocaleString(),
+					convertBankToPerHourStats(result.loot, duration).join(', '),
+					convertBankToPerHourStats(input.cost, duration).join(', ')
+				].join('\t');
+				results += '\n';
+			}
+
+			return {
+				...(interaction.returnStringOrFile(results) as InteractionReplyOptions),
+				content: 'Assumes: Slayer master cape (8% boost to slayer xp)'
+			};
+		}
+
+		if (options.xphr?.mining) {
+			let results = `${[
+				'Ore',
+				'XP/Hr',
+				'Powermining',
+				'Portent',
+				'S. Inferno Adze',
+				'Volcanic Pickaxe',
+				'Smithing XP',
+				'Loot',
+				'Cost'
+			].join('\t')}\n`;
+			const duration = Number(Time.Hour);
+			for (const ore of Mining.Ores) {
+				for (const isPowerminingInput of [true, false]) {
+					for (const shouldTryUseSpirits of [true, false]) {
+						for (const shouldUsePortent of [true, false]) {
+							for (const usingAdze of [true, false]) {
+								for (const hasOffhandVolcPick of [true, false]) {
+									if (shouldUsePortent && !shouldTryUseSpirits) continue;
+
+									const smeltedOre = Smithing.Bars.find(
+										o =>
+											o.inputOres.has(ore.id) &&
+											o.inputOres.items().filter(i => i[0].name !== 'Coal').length === 1
+									);
+									if (usingAdze && (!smeltedOre || isPowerminingInput)) continue;
+
+									const miningLevel = 120;
+									const fakeGear = user.gear.skilling.clone();
+									fakeGear.equip('Volcanic pickaxe');
+									fakeGear.equip('Varrock armour 4');
+									fakeGear.equip('Mining master cape');
+									fakeGear.equip('Amulet of glory');
+									fakeGear.equip('Prospector helmet');
+									fakeGear.equip('Prospector jacket');
+									fakeGear.equip('Prospector legs');
+									fakeGear.equip('Prospector boots');
+
+									const secondaryGearSetup = fakeGear.clone();
+									if (usingAdze) {
+										secondaryGearSetup.equip('Superior inferno adze');
+									}
+
+									const fullSetup = {
+										gear: {
+											skilling: fakeGear,
+											misc: secondaryGearSetup
+										},
+										bank: new Bank(),
+										hasEquipped: () => true,
+										hasEquippedOrInBank: () => true,
+										skillAsLevels: { mining: miningLevel, smithing: 120 }
+									} as any as GearBank;
+
+									const result = calculateMiningInput({
+										nameInput: ore.name,
+										quantityInput: undefined,
+										isPowermining: isPowerminingInput,
+										gearBank: fullSetup,
+										hasSOTFQuest: true,
+										qp: 500,
+										miningLevel,
+										craftingLevel: 120,
+										strengthLevel: 120,
+										maxTripLength: duration,
+										hasKaramjaMedium: true,
+										hasDT2Quest: true
+									});
+									if (typeof result === 'string') continue;
+									const spiritOre = stoneSpirits.find(t => t.ore.id === ore.id);
+									const amountOfSpiritsToUse =
+										spiritOre !== undefined && shouldTryUseSpirits
+											? Math.min(result.newQuantity, 100_000)
+											: 0;
+
+									if (shouldTryUseSpirits && !spiritOre) continue;
+									const { totalMiningXPToAdd, smithingXPFromAdze, loot, totalCost } =
+										calculateMiningResult({
+											duration,
+											isPowermining: result.isPowermining,
+											isUsingObsidianPickaxe: hasOffhandVolcPick,
+											quantity: result.newQuantity,
+											hasMiningMasterCape: true,
+											ore,
+											disabledInventions: [],
+											amountOfSpiritsToUse,
+											spiritOre,
+											portentResult: !shouldUsePortent
+												? { didCharge: false }
+												: ({ didCharge: true, portent: { charges_remaining: 1000 } } as any),
+											collectionLog: new Bank(),
+											gearBank: fullSetup
+										});
+
+									results += [
+										ore.name,
+										Math.floor(
+											calcPerHour(totalMiningXPToAdd * GLOBAL_BSO_XP_MULTIPLIER, duration)
+										).toLocaleString(),
+										result.isPowermining ? 'Powermining' : 'NOT Powermining',
+										shouldUsePortent ? 'Has Portent' : 'No Portent',
+										usingAdze ? 'Has Adze' : 'No Adze',
+										hasOffhandVolcPick ? 'Has Volc Pick' : 'No Volc Pick',
+										calcPerHour(smithingXPFromAdze * GLOBAL_BSO_XP_MULTIPLIER, duration),
+										convertBankToPerHourStats(loot, duration).join(', '),
+										convertBankToPerHourStats(totalCost, duration).join(', ')
+									].join('\t');
+									results += '\n';
+								}
+							}
+						}
+					}
+				}
+			}
+			return {
+				...(interaction.returnStringOrFile(results) as InteractionReplyOptions),
+				content:
+					'Assumes: Mining master cape, full Prospector, Glory, Varrock armour 4, 120 mining, Volcanic pickaxe.'
+			};
+		}
+
+		if (options.xphr?.divination_memory_harvesting) {
+			let results = `${[
+				'Type',
+				'Method',
+				'Wisp-buster',
+				'Cache Boost',
+				'Divine Hand',
+				'Divination Potion',
+				'Boon',
+				'Pet Time (Hours)',
+				'XP/Hr',
+				'Memories/HR',
+				'GMC/hr',
+				'MC/hr',
+				'EnergyLoot/hr',
+				'EnergyCost/hr',
+				'Energy per memory',
+				'Hours for Boon',
+				'Atomic energy/hr'
+			].join('\t')}\n`;
+			for (const energy of divinationEnergies) {
+				for (const harvestMethod of memoryHarvestTypes) {
+					for (const hasCacheBoost of [true, false]) {
+						for (const hasPotAndBoon of [true, false]) {
+							for (const hasWispBuster of [true, false]) {
+								for (const hasDivineHand of [true, false]) {
+									if (hasDivineHand && hasWispBuster) continue;
+									const duration = Time.Hour;
+									const totalSeconds = Math.round(duration / Time.Second);
+									const rounds = Math.floor(totalSeconds / totalTimePerRound);
+									const res = memoryHarvestResult({
+										duration,
+										energy,
+										hasBoon: hasPotAndBoon,
+										harvestMethod: harvestMethod.id,
+										hasGuthixianBoost: hasCacheBoost,
+										hasDivineHand,
+										hasWispBuster,
+										isUsingDivinationPotion: hasPotAndBoon,
+										hasMasterCape: false,
+										rounds
+									});
+
+									const energyReceived = res.loot.amount(energy.item.id);
+									const energyPerHour = calcPerHour(energyReceived, Time.Hour);
+
+									const nextEnergy = divinationEnergies[divinationEnergies.indexOf(energy) + 1];
+									let timeToGetBoon = 0;
+									if (
+										nextEnergy?.boonEnergyCost &&
+										energyPerHour > 0 &&
+										res.loot.has(energy.item.id)
+									) {
+										timeToGetBoon = nextEnergy.boonEnergyCost / energyPerHour;
+									}
+
+									const atomicEnergyPerHour =
+										energyReceived === 0
+											? '0'
+											: calcPerHour(energyReceived * calcAtomicEnergy(energy), duration).toFixed(
+													1
+												);
+
+									results += [
+										energy.type,
+										harvestMethod.name,
+										hasWispBuster ? 'Has Wisp-buster' : 'No Wisp-buster',
+										hasCacheBoost ? 'Has Cache Boost' : 'No Cache Boost',
+										hasDivineHand ? 'Has Divine Hand' : 'No Divine Hand',
+										hasPotAndBoon ? 'Has Pot' : 'No Pot',
+										hasPotAndBoon ? 'Has Boon' : 'No Boon',
+										res.avgPetTime / Time.Hour,
+										res.totalDivinationXP * GLOBAL_BSO_XP_MULTIPLIER,
+										calcPerHour(res.totalMemoriesHarvested, Time.Hour),
+										calcPerHour(res.loot.amount('Clue scroll (grandmaster)'), Time.Hour),
+										calcPerHour(res.loot.amount('Clue scroll (master)'), Time.Hour),
+										energyPerHour,
+										calcPerHour(res.cost.amount(energy.item.id), Time.Hour),
+										res.energyPerMemory,
+										timeToGetBoon,
+										atomicEnergyPerHour
+									].join('\t');
+									results += '\n';
+								}
+							}
+						}
+					}
+				}
+			}
+
+			return interaction.returnStringOrFile(results);
+		}
+
+		if (options.xphr?.agility) {
+			let results = `${[
+				'Course',
+				'XP/Hr',
+				'Marks/hr',
+				'Agility Level',
+				'Silver Hawk Boots',
+				'Portent',
+				'Harry'
+			].join('\t')}\n`;
+			for (const course of Agility.Courses) {
+				for (const usingSilverHawks of [true, false]) {
+					for (const usingHarry of [true, false]) {
+						for (const usingPortent of [true, false]) {
+							let timePerLap = course.lapTime * Time.Second;
+							if (usingSilverHawks) {
+								timePerLap = Math.floor(
+									timePerLap / inventionBoosts.silverHawks.agilityBoostMultiplier
+								);
+							}
+							const quantity = Math.floor(Time.Hour / timePerLap);
+							const duration = quantity * timePerLap;
+							const agilityLevel = 120;
+							const result = calculateAgilityResult({
+								quantity,
+								course,
+								agilityLevel,
+								duration,
+								hasDiaryBonus: true,
+								usingHarry,
+								hasAgilityPortent: usingPortent
+							});
+							const xpHr = calcPerHour(result.xpReceived * GLOBAL_BSO_XP_MULTIPLIER, duration);
+							results += [
+								course.name,
+								Math.round(xpHr),
+								calcPerHour(result.loot.amount('Mark of grace'), duration).toFixed(1),
+								agilityLevel,
+								usingSilverHawks ? 'Yes' : 'No',
+								usingPortent ? 'Yes' : 'No',
+								usingHarry ? 'Yes' : 'No'
+							].join('\t');
+							results += '\n';
+						}
+					}
+				}
+			}
+			return interaction.returnStringOrFile(results);
+		}
+
+		if (options.xphr?.dungeoneering) {
+			let results = `${['Floor', 'XP/Hr', 'Dung. Level', 'Tokens/hr', 'Portent', 'G. Shard Time'].join('\t')}\n`;
+			for (const floor of [1, 2, 3, 4, 5, 6, 7]) {
+				for (const hasPortent of [true, false]) {
+					const dungeonLength = Time.Minute * 5 * (floor / 2);
+					const quantity = Math.floor(user.calcMaxTripLength('Dungeoneering') / dungeonLength);
+					const duration = quantity * dungeonLength;
+					const dungeoneeringLevel = 120;
+					const goraShardChance = calcGorajanShardChance({
+						dungLevel: dungeoneeringLevel,
+						hasMasterCape: user.hasEquipped('Dungeoneering master cape'),
+						hasRingOfLuck: user.hasEquipped('Ring of luck')
+					});
+					const result = calculateDungeoneeringResult({
+						floor,
+						quantity,
+						duration,
+						dungeoneeringLevel,
+						gorajanShardChance: goraShardChance.chance,
+						maxFloorUserCanDo: calcMaxFloorUserCanDo(user),
+						hasScrollOfMystery: true,
+						gorajanEquipped: numberOfGorajanOutfitsEquipped(user),
+						hasDungeonPortent: hasPortent
+					});
+					const xpHr = calcPerHour(result.xp * GLOBAL_BSO_XP_MULTIPLIER, duration);
+					results += [
+						floor,
+						Math.round(xpHr),
+						dungeoneeringLevel,
+						calcPerHour(result.tokens, duration),
+						hasPortent ? 'Has Portent' : 'No Portent',
+						floor >= 5 ? `${formatDuration(result.goraShardChanceX * duration)}` : 'N/A'
+					].join('\t');
+					results += '\n';
+				}
+			}
+			return {
+				...(interaction.returnStringOrFile(results) as InteractionReplyOptions),
+				content: 'Assumes: 120 Dungeoneering, Ring of luck, master cape (For gora shard chance)'
+			};
+		}
+		return 'No option selected.';
+	}
+};

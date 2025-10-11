@@ -1,35 +1,32 @@
-import { TSVWriter } from '@oldschoolgg/toolkit/structures';
-import { calcPerHour } from '@oldschoolgg/toolkit/util';
+import { calcPerHour, Time, TSVWriter } from '@oldschoolgg/toolkit';
 import type { PlayerOwnedHouse } from '@prisma/client';
-import { Time } from 'e';
-import { Bank, Items, SkillsEnum, convertBankToPerHourStats, itemID, resolveItems, toKMB } from 'oldschooljs';
+import { Bank, convertBankToPerHourStats, Items, itemID, resolveItems, toKMB } from 'oldschooljs';
 import { omit } from 'remeda';
 
-applyStaticDefine();
+import '../src/lib/safeglobals.js';
 
-import '../src/lib/safeglobals';
-import { applyStaticDefine } from '../meta';
-import { type BitField, PVM_METHODS } from '../src/lib/constants';
-import { degradeableItems } from '../src/lib/degradeableItems';
-import { maxMage, maxMelee, maxRange } from '../src/lib/depthsOfAtlantis';
-import { materialTypes } from '../src/lib/invention';
-import { MaterialBank } from '../src/lib/invention/MaterialBank';
-import { SlayerActivityConstants } from '../src/lib/minions/data/combatConstants';
-import killableMonsters from '../src/lib/minions/data/killableMonsters';
-import type { AttackStyles } from '../src/lib/minions/functions';
-import { SkillsArray } from '../src/lib/skilling/types';
-import { slayerMasters } from '../src/lib/slayer/slayerMasters';
-import { SlayerRewardsShop, type SlayerTaskUnlocksEnum } from '../src/lib/slayer/slayerUnlocks';
-import { ChargeBank } from '../src/lib/structures/Bank';
-import { Gear } from '../src/lib/structures/Gear';
-import { GearBank } from '../src/lib/structures/GearBank';
-import { KCBank } from '../src/lib/structures/KCBank';
-import { MUserStats } from '../src/lib/structures/MUserStats';
+import { maxMage, maxMelee, maxRange } from '@/lib/bso/depthsOfAtlantis.js';
+import { materialTypes } from '@/lib/bso/skills/invention/index.js';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
+
+import { type BitField, PVM_METHODS } from '@/lib/constants.js';
+import { degradeableItems } from '@/lib/degradeableItems.js';
+import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import { SkillsArray } from '@/lib/skilling/types.js';
+import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
+import { SlayerRewardsShop, type SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
+import { Gear } from '@/lib/structures/Gear.js';
+import { GearBank } from '@/lib/structures/GearBank.js';
+import { KCBank } from '@/lib/structures/KCBank.js';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
 import {
 	type MinionKillReturn,
 	newMinionKillCommand
-} from '../src/mahoji/lib/abstracted_commands/minionKill/newMinionKill';
-import { doMonsterTrip } from '../src/tasks/minions/monsterActivity';
+} from '@/mahoji/lib/abstracted_commands/minionKill/newMinionKill.js';
+import { doMonsterTrip } from '@/tasks/minions/monsterActivity.js';
 
 const MAX_TRIP_LENGTH = Time.Hour * 600;
 const skills = ['attack', 'strength', 'defence', 'magic', 'ranged', 'hitpoints', 'slayer'];
@@ -47,11 +44,11 @@ const results: { tripResult: ReturnType<typeof doMonsterTrip>; commandResult: Mi
 const userStats = new MUserStats({ sacrificed_bank: {} } as any);
 
 const attackStyleSets: AttackStyles[][] = [
-	[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence],
-	[SkillsEnum.Ranged],
-	[SkillsEnum.Magic],
-	[SkillsEnum.Ranged, SkillsEnum.Defence],
-	[SkillsEnum.Magic, SkillsEnum.Defence]
+	['attack', 'strength', 'defence'],
+	['ranged'],
+	['magic'],
+	['ranged', 'defence'],
+	['magic', 'defence']
 ];
 
 const skillsAsXP: any = {};
@@ -97,7 +94,6 @@ for (const monster of killableMonsters) {
 		chargeBank,
 		gear,
 		bank,
-		skillsAsLevels,
 		materials,
 		pet: itemID('Ori'),
 		skillsAsXP,

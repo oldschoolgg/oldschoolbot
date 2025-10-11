@@ -1,9 +1,10 @@
-import { ItemGroups, itemID, resolveItems } from 'oldschooljs';
+import { combinedTmbUmbEmbTables, embTable, tmbTable, umbTable } from '@/lib/bso/openables/mysteryBoxes.js';
+import { PMBTable } from '@/lib/bso/openables/pmb.js';
+
+import { ItemGroups, Items, itemID, resolveItems } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
-import { itemNameFromID } from '@/lib/util';
-import { PMBTable, combinedTmbUmbEmbTables, embTable, tmbTable, umbTable } from '../../../src/lib/bsoOpenables';
-import { growablePets } from '../../../src/lib/growablePets';
+import { growablePets } from '@/lib/growablePets.js';
 
 test("Items that shouldn't be dropped in mystery boxes", () => {
 	const shouldntBeIn = resolveItems([
@@ -44,7 +45,7 @@ test("Items that shouldn't be dropped in mystery boxes", () => {
 	]);
 	for (const i of shouldntBeIn) {
 		if (combinedTmbUmbEmbTables.includes(i)) {
-			throw new Error(`${itemNameFromID(i)} is in the mystery box tables, but it shouldn't be.`);
+			throw new Error(`${Items.itemNameFromId(i)} is in the mystery box tables, but it shouldn't be.`);
 		}
 	}
 });
@@ -68,24 +69,44 @@ test('exclude certain openables from mystery boxes', () => {
 		'White partyhat',
 		'Corgi',
 		'Beach ball',
+		'Invention cape',
 		'Glass of bubbly',
 		'Sparkler',
+		'BSO Blurple paint can',
 		'Liber tea',
+		'Cogsworth',
 		'Party music box',
 		'6 sided die',
 		'Huge lamp',
 		'Ancient hilt',
+		'Supply crate (s1)',
+		'Axe of the high sungod',
+		'Solervus cape',
 		'Nihil horn',
+		'Superior bonecrusher',
 		'Zaryte vambraces',
+		'OSB Jumper',
+		'Mecha rod',
 		'Ancient godsword',
+		'Beach mystery box',
 		'Seed pack',
+		'Spooky box',
+		'Tester Gift box',
+		'Independence box',
+		'Royal mystery box',
+		'Halloween cracker',
 		27_499,
+		'Christmas box',
 		27_828,
 		'Paint box',
 		'Ruby Red paint can',
 		'Scurry',
+		'Veteran cape (1 year)',
+		'Zombie cow plushie',
 		'Trailblazer reloaded dragon trophy',
 		'Trailblazer reloaded rune trophy',
+		'Veteran cape (4 year)',
+		'Birthday crate (s2)',
 		'Trailblazer reloaded adamant trophy',
 		'Trailblazer reloaded mithril trophy',
 		'Trailblazer reloaded steel trophy',
@@ -94,14 +115,12 @@ test('exclude certain openables from mystery boxes', () => {
 	]);
 	for (const i of shouldntBeIn) {
 		if (combinedTmbUmbEmbTables.includes(i)) {
-			console.error('wtf');
-			throw new Error(`Item ${itemNameFromID(i)} shouldn't be in Mystery Boxes, but is.`);
+			throw new Error(`Item ${Items.itemNameFromId(i)} shouldn't be in Mystery Boxes, but is.`);
 		}
 	}
 	for (const i of shouldBeIn) {
 		if (!combinedTmbUmbEmbTables.includes(i)) {
-			console.error('wtf');
-			throw new Error(`Item ${itemNameFromID(i)} should be in Mystery Boxes, but isn't.`);
+			throw new Error(`Item ${Items.itemNameFromId(i)} should be in Mystery Boxes, but isn't.`);
 		}
 	}
 	expect(shouldBeIn.every(ss => combinedTmbUmbEmbTables.includes(ss))).toEqual(true);

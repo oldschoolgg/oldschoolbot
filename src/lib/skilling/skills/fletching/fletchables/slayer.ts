@@ -1,7 +1,7 @@
 import { Bank, itemID } from 'oldschooljs';
 
-import { SlayerTaskUnlocksEnum } from '../../../../slayer/slayerUnlocks';
-import type { Fletchable } from '../../../types';
+import type { Fletchable } from '@/lib/skilling/types.js';
+import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 
 const Slayer: Fletchable[] = [
 	{
@@ -91,4 +91,4 @@ const BroadArrows = get(itemID('Broad arrows'));
 const BroadBolts = get(itemID('Broad bolts'));
 const AmethystBroadBolts = get(itemID('Amethyst broad bolts'));
 
-export { Slayer, BroadArrows, BroadBolts, AmethystBroadBolts };
+export { AmethystBroadBolts, BroadArrows, BroadBolts, Slayer };

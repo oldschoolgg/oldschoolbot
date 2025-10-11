@@ -1,76 +1,93 @@
-import { PerkTier } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { seedShuffle } from '@oldschoolgg/toolkit/rng';
-import { UserError } from '@oldschoolgg/toolkit/structures';
-import type { GearSetupType, Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
-import { escapeMarkdown, userMention } from 'discord.js';
-import { Time, calcWhatPercent, notEmpty, objectValues, percentChance, randArrItem, sumArr, uniqueArr } from 'e';
+import type { GodFavourBank, GodName } from '@/lib/bso/minigames/divineDominion.js';
+import { mysteriousStepData, mysteriousTrailTracks } from '@/lib/bso/mysteryTrail.js';
+import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
+import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
+import { MTame } from '@/lib/bso/structures/MTame.js';
+import { type Species, tameSpecies } from '@/lib/bso/tames/tames.js';
+import { calculateCompCapeProgress } from '@/lib/bso/util/calculateCompCapeProgress.js';
+import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
+import { repairBrokenItemsFromUser } from '@/lib/bso/util/repairBrokenItems.js';
+
+import { percentChance, randArrItem, SeedableRNG } from '@oldschoolgg/rng';
 import {
+	calcWhatPercent,
+	cleanUsername,
+	Emoji,
+	isObject,
+	notEmpty,
+	PerkTier,
+	sumArr,
+	Time,
+	UserError,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
+import type {
+	activity_type_enum,
+	GearSetupType,
+	Prisma,
+	Tame,
+	TameActivity,
+	User,
+	UserStats,
+	xp_gains_skill_enum
+} from '@prisma/client';
+import { escapeMarkdown, userMention } from 'discord.js';
+import {
+	addItemToBank,
 	Bank,
+	convertXPtoLVL,
 	EMonster,
 	EquipmentSlot,
 	type Item,
 	type ItemBank,
 	Items,
-	addItemToBank,
-	convertXPtoLVL,
 	itemID,
 	resolveItems
 } from 'oldschooljs';
-import { pick } from 'remeda';
 
-import { timePerAlch, timePerAlchAgility } from '../mahoji/lib/abstracted_commands/alchCommand';
-import { getParsedStashUnits } from '../mahoji/lib/abstracted_commands/stashUnitsCommand';
-import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
-import { addXP } from './addXP';
-import { calculateCompCapeProgress } from './bso/calculateCompCapeProgress';
-import type { GodFavourBank, GodName } from './bso/divineDominion';
-import { userIsBusy } from './busyCounterCache';
-import { partialUserCache } from './cache';
-import { generateAllGearImage, generateGearImage } from './canvas/generateGearImage';
-import type { IconPackID } from './canvas/iconPacks';
-import { ClueTiers } from './clues/clueTiers';
-import { type CATier, CombatAchievements } from './combat_achievements/combatAchievements';
-import { BitField, MAX_LEVEL, projectiles } from './constants';
-import { bossCLItems } from './data/Collections';
-import { allPetIDs, avasDevices } from './data/CollectionsExport';
-import { degradeableItems } from './degradeableItems';
-import { type GearSetup, type UserFullGearSetup, defaultGear } from './gear';
-import { handleNewCLItems } from './handleNewCLItems';
-import type { IMaterialBank } from './invention';
-import { MaterialBank } from './invention/MaterialBank';
-import { marketPriceOfBank } from './marketPrices';
-import backgroundImages from './minions/data/bankBackgrounds';
-import type { CombatOptionsEnum } from './minions/data/combatConstants';
-import { defaultFarmingContract } from './minions/farming';
-import type { DetailedFarmingContract, FarmingContract } from './minions/farming/types';
-import type { AttackStyles } from './minions/functions';
-import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
-import type { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
-import { mysteriousStepData, mysteriousTrailTracks } from './mysteryTrail';
-import { getUsersPerkTier } from './perkTiers';
-import { roboChimpUserFetch } from './roboChimp';
-import type { MinigameName, MinigameScore } from './settings/minigames';
-import { Minigames } from './settings/minigames';
-import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
-import Farming from './skilling/skills/farming';
-import { SkillsEnum } from './skilling/types';
-import type { BankSortMethod } from './sorts';
-import { ChargeBank, type XPBank } from './structures/Banks';
-import { Gear } from './structures/Gear';
-import { GearBank } from './structures/GearBank';
-import { MTame } from './structures/MTame';
-import type { Skills } from './types';
-import type { SkillRequirements } from './types';
-import { determineRunes } from './util/determineRunes';
-import { findGroupOfUser } from './util/findGroupOfUser';
-import { getKCByName } from './util/getKCByName';
-import { logError } from './util/logError';
-import { makeBadgeString } from './util/makeBadgeString';
-import { repairBrokenItemsFromUser } from './util/repairBrokenItems';
-import { hasSkillReqsRaw, itemNameFromID } from './util/smallUtils';
-import type { TransactItemsArgs } from './util/transactItemsFromBank';
+import { addXP } from '@/lib/addXP.js';
+import { userIsBusy } from '@/lib/busyCounterCache.js';
+import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
+import type { IconPackID } from '@/lib/canvas/iconPacks.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { updateUserCl } from '@/lib/collection-log/databaseCl.js';
+import { type CATier, CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
+import { BitField, MAX_LEVEL, projectiles } from '@/lib/constants.js';
+import { bossCLItems } from '@/lib/data/Collections.js';
+import { allPetIDs, avasDevices } from '@/lib/data/CollectionsExport.js';
+import { degradeableItems } from '@/lib/degradeableItems.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
+import type { GearSetup, UserFullGearSetup } from '@/lib/gear/types.js';
+import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
+import { marketPriceOfBank } from '@/lib/marketPrices.js';
+import backgroundImages from '@/lib/minions/data/bankBackgrounds.js';
+import type { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
+import { type AddMonsterXpParams, addMonsterXPRaw } from '@/lib/minions/functions/addMonsterXPRaw.js';
+import { blowpipeDarts, validateBlowpipeData } from '@/lib/minions/functions/blowpipeCommand.js';
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import type { AddXpParams, BlowpipeData, ClueBank } from '@/lib/minions/types.js';
+import { getUsersPerkTier } from '@/lib/perkTiers.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import type { DetailedFarmingContract, FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
+import type { BankSortMethod } from '@/lib/sorts.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
+import { defaultGear, Gear } from '@/lib/structures/Gear.js';
+import { GearBank } from '@/lib/structures/GearBank.js';
+import { MUserStats } from '@/lib/structures/MUserStats.js';
+import type { XPBank } from '@/lib/structures/XPBank.js';
+import type { SkillRequirements, Skills } from '@/lib/types/index.js';
+import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
+import { determineRunes } from '@/lib/util/determineRunes.js';
+import { getKCByName } from '@/lib/util/getKCByName.js';
+import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
+import { hasSkillReqsRaw } from '@/lib/util/smallUtils.js';
+import { type TransactItemsArgs, transactItemsFromBank } from '@/lib/util/transactItemsFromBank.js';
+import type { JsonKeys } from '@/lib/util.js';
+import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
+import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {
@@ -83,16 +100,10 @@ export async function mahojiUserSettingsUpdate(user: string | bigint, data: Pris
 
 		return { newUser };
 	} catch (err) {
-		logError(
-			err,
-			{
-				user_id: user.toString()
-			},
-			{
-				user_id: user.toString(),
-				updated_data: JSON.stringify(data)
-			}
-		);
+		Logging.logError(err as Error, {
+			user_id: user.toString(),
+			updated_data: JSON.stringify(data)
+		});
 		throw err;
 	}
 }
@@ -169,7 +180,6 @@ export class MUserClass {
 		return new GearBank({
 			gear: this.gear,
 			bank: this.bank,
-			skillsAsLevels: this.skillsAsLevels,
 			chargeBank: this.ownedChargeBank(),
 			materials: this.ownedMaterials(),
 			pet: this.user.minion_equippedPet,
@@ -266,6 +276,10 @@ export class MUserClass {
 		return userMention(this.id);
 	}
 
+	get username() {
+		return this.rawUsername;
+	}
+
 	get rawUsername() {
 		return cleanUsername(this.user.username ?? globalClient.users.cache.get(this.id)?.username ?? 'Unknown');
 	}
@@ -295,12 +309,12 @@ export class MUserClass {
 	}
 
 	async getKC(monsterID: number) {
-		const stats = await this.fetchStats({ monster_scores: true });
+		const stats = await this.fetchStats();
 		return (stats.monster_scores as ItemBank)[monsterID] ?? 0;
 	}
 
 	async getAllKCs() {
-		const stats = await this.fetchStats({ monster_scores: true });
+		const stats = await this.fetchStats();
 		const rawKCs = stats.monster_scores as ItemBank;
 		return new Proxy(rawKCs, {
 			get(target, monsterNameOrId: string) {
@@ -318,21 +332,21 @@ export class MUserClass {
 	}
 
 	async fetchMonsterScores() {
-		const stats = await this.fetchStats({ monster_scores: true });
+		const stats = await this.fetchStats();
 		return stats.monster_scores as ItemBank;
 	}
 
 	attackClass(): 'range' | 'mage' | 'melee' {
 		const styles = this.getAttackStyles();
-		if (styles.includes(SkillsEnum.Ranged)) return 'range';
-		if (styles.includes(SkillsEnum.Magic)) return 'mage';
+		if (styles.includes('ranged')) return 'range';
+		if (styles.includes('magic')) return 'mage';
 		return 'melee';
 	}
 
 	getAttackStyles(): AttackStyles[] {
 		const styles = this.user.attack_style;
 		if (styles.length === 0) {
-			return [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
+			return ['attack', 'strength', 'defence'];
 		}
 		return styles as AttackStyles[];
 	}
@@ -351,7 +365,7 @@ export class MUserClass {
 			const clueTier = ClueTiers.find(i => i.name.toLowerCase() === res.key.split('.')[1])!;
 			casketsCompleted.add(clueTier.id, res.value.toNumber());
 		}
-		const stats = await this.fetchStats({ openable_scores: true });
+		const stats = await this.fetchStats();
 		const opens = new Bank(stats.openable_scores as ItemBank);
 
 		// Actual clues are only ones that you have: received in your cl, completed in trips, and opened.
@@ -378,15 +392,11 @@ export class MUserClass {
 	}
 
 	async incrementKC(monsterID: number, amountToAdd = 1) {
-		const stats = await this.fetchStats({ monster_scores: true });
+		const stats = await this.fetchStats();
 		const newKCs = new Bank(stats.monster_scores as ItemBank).add(monsterID, amountToAdd);
-		await userStatsUpdate(
-			this.id,
-			{
-				monster_scores: newKCs.toJSON()
-			},
-			{}
-		);
+		await this.statsUpdate({
+			monster_scores: newKCs.toJSON()
+		});
 		return { newKC: newKCs.amount(monsterID) };
 	}
 
@@ -403,12 +413,11 @@ export class MUserClass {
 		dontAddToTempCL?: boolean;
 		neverUpdateHistory?: boolean;
 	}) {
-		const res = await transactItems({
+		const res = await this.transactItems({
 			collectionLog,
 			itemsToAdd: new Bank(items),
 			filterLoot,
 			dontAddToTempCL,
-			userID: this.id,
 			neverUpdateHistory
 		});
 		this.user = res.newUser;
@@ -417,8 +426,7 @@ export class MUserClass {
 	}
 
 	async removeItemsFromBank(bankToRemove: Bank) {
-		const res = await transactItems({
-			userID: this.id,
+		const res = await this.transactItems({
 			itemsToRemove: bankToRemove
 		});
 		this.user = res.newUser;
@@ -427,7 +435,7 @@ export class MUserClass {
 	}
 
 	async transactItems(options: Omit<TransactItemsArgs, 'userID'>) {
-		const res = await transactItems({ userID: this.user.id, ...options });
+		const res = await transactItemsFromBank({ userID: this.user.id, ...options });
 		this.user = res.newUser;
 		this.updateProperties();
 		return res;
@@ -460,7 +468,7 @@ export class MUserClass {
 			bank.add(this.user.minion_equippedPet);
 		}
 
-		for (const setup of objectValues(this.gear)) {
+		for (const setup of Object.values(this.gear)) {
 			bank.add(setup.toBank());
 		}
 
@@ -547,14 +555,10 @@ export class MUserClass {
 	}
 
 	async incrementCreatureScore(creatureID: number, amountToAdd = 1) {
-		const stats = await this.fetchStats({ creature_scores: true });
-		await userStatsUpdate(
-			this.id,
-			{
-				creature_scores: addItemToBank(stats.creature_scores as ItemBank, creatureID, amountToAdd)
-			},
-			{}
-		);
+		const stats = await this.fetchStats();
+		await this.statsUpdate({
+			creature_scores: addItemToBank(stats.creature_scores as ItemBank, creatureID, amountToAdd)
+		});
 	}
 
 	get blowpipe() {
@@ -583,7 +587,7 @@ export class MUserClass {
 				hasCharges: false,
 				fullUserString: `${failureReasons.join(', ')}
 
-Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
+Charge your items using ${mentionCommand('minion', 'charge')}.`
 			};
 		}
 		return { hasCharges: true };
@@ -697,7 +701,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			}
 			if (rawBlowpipeData.dartQuantity < dart[1]) {
 				throw new UserError(
-					`You don't have enough ${itemNameFromID(
+					`You don't have enough ${Items.itemNameFromId(
 						rawBlowpipeData.dartID
 					)}s in your Toxic blowpipe, you need ${dart[1]}, but you have only ${rawBlowpipeData.dartQuantity}.`
 				);
@@ -718,7 +722,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			if (!this.bankWithGP.has(bankRemove)) {
 				throw new UserError(`You don't own: ${bankRemove.clone().remove(this.bankWithGP)}.`);
 			}
-			await transactItems({ userID: this.id, itemsToRemove: bankRemove });
+			await this.transactItems({ itemsToRemove: bankRemove });
 		}
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
 		this.user = newUser;
@@ -729,7 +733,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 
 	async getCreatureScore(creatureID: number) {
-		const stats = await this.fetchStats({ creature_scores: true });
+		const stats = await this.fetchStats();
 		return (stats.creature_scores as ItemBank)[creatureID] ?? 0;
 	}
 
@@ -793,8 +797,30 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		this.updateProperties();
 	}
 
-	async fetchStats<T extends Prisma.UserStatsSelect>(selectKeys: T): Promise<SelectedUserStats<T>> {
-		return fetchUserStats(this.id, selectKeys);
+	async fetchStats() {
+		let result = await prisma.userStats.findFirst({
+			where: {
+				user_id: BigInt(this.id)
+			}
+		});
+
+		if (!result) {
+			result = await prisma.userStats.upsert({
+				where: {
+					user_id: BigInt(this.id)
+				},
+				create: {
+					user_id: BigInt(this.id)
+				},
+				update: {}
+			});
+		}
+
+		return result;
+	}
+
+	async fetchMStats() {
+		return new MUserStats(await this.fetchStats());
 	}
 
 	get logName() {
@@ -815,16 +841,23 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		return (Date.now() - createdAt.getTime()) / Time.Day;
 	}
 
+	farmingInfo() {
+		return Farming.getFarmingInfoFromUser(this);
+	}
+
 	farmingContract(): DetailedFarmingContract {
 		const currentFarmingContract = this.user.minion_farmingContract as FarmingContract | null;
 		const plant = !currentFarmingContract
 			? undefined
 			: Farming.Plants.find(i => i.name === currentFarmingContract?.plantToGrow);
-		const detailed = getFarmingInfoFromUser(this.user);
+		const farmingInfo = Farming.getFarmingInfoFromUser(this);
 		return {
-			contract: currentFarmingContract ?? defaultFarmingContract,
+			contract: currentFarmingContract ?? Farming.defaultFarmingContract,
 			plant,
-			matchingPlantedCrop: plant ? detailed.patchesDetailed.find(i => i.plant && i.plant === plant) : undefined
+			matchingPlantedCrop: plant
+				? farmingInfo.patchesDetailed.find(i => i.plant && i.plant === plant)
+				: undefined,
+			farmingInfo
 		};
 	}
 
@@ -835,7 +868,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 
 	async getGodFavour(): Promise<GodFavourBank> {
-		const { god_favour_bank: currentFavour } = await this.fetchStats({ god_favour_bank: true });
+		const { god_favour_bank: currentFavour } = await this.fetchStats();
 		if (!currentFavour) {
 			return {
 				Zamorak: 0,
@@ -862,15 +895,9 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			return currentFavour;
 		}
 
-		const res = await userStatsUpdate(
-			this.id,
-			{
-				god_favour_bank: newFavour
-			},
-			{
-				god_favour_bank: true
-			}
-		);
+		const res = await this.statsUpdate({
+			god_favour_bank: newFavour
+		});
 
 		return {
 			newFavourBank: res.god_favour_bank
@@ -892,10 +919,8 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		if (currentStepID === null) {
 			return { step: null, track: null };
 		}
-		const [trackID] = seedShuffle(
-			mysteriousTrailTracks.map(i => i.id),
-			this.id
-		);
+		const rng = new SeedableRNG(Number(this.id));
+		const [trackID] = rng.shuffle(mysteriousTrailTracks.map(i => i.id));
 		const track = mysteriousTrailTracks.find(i => i.id === trackID)!;
 		const step = track.steps[currentStepID - 1];
 		if (!step) {
@@ -1023,7 +1048,8 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 
 	async fetchRobochimpUser() {
-		return roboChimpUserFetch(this.id);
+		const robochimpUser = await roboChimpUserFetch(this.id);
+		return robochimpUser;
 	}
 
 	async forceUnequip(setup: GearSetupType, slot: EquipmentSlot, reason: string) {
@@ -1050,7 +1076,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			});
 		}
 
-		debugLog(
+		Logging.logDebug(
 			`ForceUnequip User[${this.id}] in ${setup} slot[${slot}] ${JSON.stringify(equippedInSlot)}: ${reason}`
 		);
 
@@ -1086,7 +1112,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			for (const slot of Object.values(EquipmentSlot)) {
 				const item = gearSetup[slot];
 				if (!item) continue;
-				const osItem = Items.getItem(item.item);
+				const osItem = Items.get(item.item);
 				if (!osItem) {
 					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Invalid item');
 					itemsUnequippedAndRefunded.add(refundBank);
@@ -1202,6 +1228,112 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	calculateCompCapeProgress() {
 		return calculateCompCapeProgress(this);
 	}
+	hasGracefulEquipped() {
+		for (const gear of Object.values(this.gear)) {
+			if (
+				gear.hasEquipped('Agility master cape') ||
+				gear.hasEquipped(
+					[
+						'Graceful hood',
+						'Graceful top',
+						'Graceful legs',
+						'Graceful boots',
+						'Graceful gloves',
+						'Graceful cape'
+					],
+					true
+				)
+			) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	async statsUpdate(data: Omit<Prisma.UserStatsUpdateInput, 'user_id'>) {
+		const id = BigInt(this.id);
+
+		const result = await prisma.userStats.update({
+			data,
+			where: {
+				user_id: id
+			}
+		});
+		return result;
+	}
+
+	async statsBankUpdate(key: JsonKeys<UserStats>, bank: Bank) {
+		if (!key) throw new Error('No key provided to userStatsBankUpdate');
+		const stats = await this.fetchStats();
+		const currentItemBank = stats[key] as ItemBank;
+		if (!isObject(currentItemBank)) {
+			throw new Error(`Key ${key} is not an object.`);
+		}
+		await this.statsUpdate({
+			[key]: bank.clone().add(currentItemBank).toJSON()
+		});
+	}
+
+	async updateGPTrackSetting(setting: 'gp_dice' | 'gp_luckypick' | 'gp_slots', amount: number) {
+		this.statsUpdate({
+			[setting]: {
+				increment: amount
+			}
+		});
+	}
+
+	calcMaxTripLength(activity: activity_type_enum) {
+		return calcMaxTripLength(this, activity);
+	}
+
+	async addMonsterXP(params: AddMonsterXpParams) {
+		const res = addMonsterXPRaw({ ...params, attackStyles: this.getAttackStyles() });
+		const result = await this.addXPBank(res);
+		return `**XP Gains:** ${result}`;
+	}
+
+	async updateCL() {
+		await updateUserCl(this.id);
+	}
+
+	/**
+	 * BSO Only
+	 */
+
+	async getTame(): Promise<
+		| {
+				tame: null;
+				activity: null;
+				species: null;
+		  }
+		| {
+				tame: Tame;
+				activity: TameActivity | null;
+				species: Species;
+		  }
+	> {
+		const selectedTame = this.user.selected_tame;
+		if (!selectedTame) {
+			return {
+				tame: null,
+				activity: null,
+				species: null
+			};
+		}
+		const tame = await prisma.tame.findFirst({ where: { id: selectedTame } });
+		if (!tame) {
+			throw new Error('No tame found for selected tame.');
+		}
+		const activity = await prisma.tameActivity.findFirst({
+			where: { user_id: this.id, tame_id: tame.id, completed: false }
+		});
+		const species = tameSpecies.find(i => i.id === tame.species_id)!;
+		return { tame, activity, species };
+	}
+
+	async hasFlappy(duration: number) {
+		return userHasFlappy({ user: this, duration });
+	}
 }
 declare global {
 	export type MUser = MUserClass;
@@ -1226,7 +1358,6 @@ async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateInput) {
 	if (!user) {
 		return srcMUserFetch(userID, {});
 	}
-	partialUserCache.set(userID, pick(user, ['bitfield', 'minion_hasBought', 'badges']));
 	return new MUserClass(user);
 }
 
@@ -1249,6 +1380,5 @@ export const spawnLampResetTime = (user: MUser) => {
 
 	return cooldown - Time.Minute * 15;
 };
-export const itemContractResetTime = Time.Hour * 7.8;
-export const giveBoxResetTime = Time.Hour * 23.5;
+
 global.GlobalMUserClass = MUserClass;

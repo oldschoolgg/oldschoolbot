@@ -1,17 +1,13 @@
 import { Bank } from 'oldschooljs';
 
-import { userHasFlappy } from '../../../lib/invention/inventions';
-import { lootRoom, plunderRooms } from '../../../lib/minions/data/plunder';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import type { PlunderActivityTaskOptions } from './../../../lib/types/minions';
+import { lootRoom, plunderRooms } from '@/lib/minions/data/plunder.js';
+import type { PlunderActivityTaskOptions } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const plunderTask: MinionTask = {
 	type: 'Plunder',
-	async run(data: PlunderActivityTaskOptions) {
-		const { channelID, quantity, rooms, userID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: PlunderActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, rooms, duration } = data;
 		await user.incrementMinigameScore('pyramid_plunder', quantity);
 		const allRooms = plunderRooms.filter(room => rooms.includes(room.number));
 		const completedRooms = [
@@ -31,17 +27,16 @@ export const plunderTask: MinionTask = {
 			}
 		}
 
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}
 
-		const { itemsAdded, previousCL } = await transactItems({
-			userID: user.id,
+		const { itemsAdded, previousCL } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: thievingXP, duration: data.duration });
+		const xpRes = await user.addXP({ skillName: 'thieving', amount: thievingXP, duration: data.duration });
 
 		const str = `${user}, ${user.minionName} finished doing the Pyramid Plunder ${quantity}x times. ${totalAmountUrns}x urns opened. ${xpRes}  ${flappyRes.userMsg}`;
 

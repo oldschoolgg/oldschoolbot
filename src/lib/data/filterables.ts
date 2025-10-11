@@ -1,4 +1,13 @@
-import { uniqueArr } from 'e';
+import { BSOItemGroups } from '@/lib/bso/bsoItemGroups.js';
+import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
+import { PartyhatTable } from '@/lib/bso/holidayItems.js';
+import { gods } from '@/lib/bso/minigames/divineDominion.js';
+import { monkeyEatables } from '@/lib/bso/minigames/monkey-rumble/monkeyRumble.js';
+import { tmbTable, umbTable } from '@/lib/bso/openables/mysteryBoxes.js';
+import { DisassemblySourceGroups } from '@/lib/bso/skills/invention/groups/index.js';
+import { type DisassembleFlag, disassembleFlagMaterials, materialTypes } from '@/lib/bso/skills/invention/index.js';
+
+import { uniqueArr } from '@oldschoolgg/toolkit';
 import {
 	BeginnerClueTable,
 	EasyClueTable,
@@ -6,27 +15,11 @@ import {
 	HardClueTable,
 	MasterClueTable,
 	MediumClueTable,
-	itemID,
 	resolveItems
 } from 'oldschooljs';
 
-import { Lampables } from '../../mahoji/lib/abstracted_commands/lampCommand';
-import { gods } from '../bso/divineDominion';
-import { tmbTable, umbTable } from '../bsoOpenables';
-import { customItems } from '../customItems/util';
-import { type DisassembleFlag, disassembleFlagMaterials, materialTypes } from '../invention';
-import { DisassemblySourceGroups } from '../invention/groups';
-import Potions from '../minions/data/potions';
-import { monkeyEatables } from '../monkeyRumble';
-import { allOpenables } from '../openables';
-import { GrandmasterClueTable } from '../simulation/grandmasterClue';
-import { gracefulItems } from '../skilling/skills/agility';
-import { Craftables } from '../skilling/skills/crafting/craftables';
-import { Fletchables } from '../skilling/skills/fletching/fletchables';
-import Grimy from '../skilling/skills/herblore/mixables/grimy';
-import PotionsMixable from '../skilling/skills/herblore/mixables/potions';
-import unfinishedPotions from '../skilling/skills/herblore/mixables/unfinishedPotions';
-import { allCollectionLogs } from './Collections';
+import { customItems } from '@/lib/customItems/util.js';
+import { allCollectionLogs } from '@/lib/data/Collections.js';
 import {
 	allClueItems,
 	allPetIDs,
@@ -40,15 +33,19 @@ import {
 	cluesMasterRareCL,
 	cluesMediumCL,
 	cluesSharedCL,
-	nexCL,
-	pernixOutfit,
 	temporossCL,
-	torvaOutfit,
-	virtusOutfit,
 	wintertodtCL
-} from './CollectionsExport';
-import { Eatables } from './eatables';
-import { PartyhatTable } from './holidayItems';
+} from '@/lib/data/CollectionsExport.js';
+import { Eatables } from '@/lib/data/eatables.js';
+import Potions from '@/lib/minions/data/potions.js';
+import { allOpenables } from '@/lib/openables.js';
+import { gracefulItems } from '@/lib/skilling/skills/agility.js';
+import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
+import { Fletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
+import Grimy from '@/lib/skilling/skills/herblore/mixables/grimy.js';
+import PotionsMixable from '@/lib/skilling/skills/herblore/mixables/potions.js';
+import unfinishedPotions from '@/lib/skilling/skills/herblore/mixables/unfinishedPotions.js';
+import { Lampables } from '@/mahoji/lib/abstracted_commands/lampCommand.js';
 
 export const superCompostables = [
 	'Pineapple',
@@ -184,8 +181,8 @@ export const ores = resolveItems([
 	'Lovakite ore',
 	'Adamantite ore',
 	'Runite ore',
-	'Dark animica',
-	'Dwarven ore'
+	'Dwarven ore',
+	'Dark animica'
 ]);
 
 const bars = resolveItems([
@@ -222,6 +219,7 @@ const smithingMisc = resolveItems([
 	'Arcane sigil',
 	'Spectral sigil',
 	'Elysian sigil',
+	'Divine sigil',
 	'Blessed Spirit Shield',
 	'Smouldering stone',
 	'Dragon metal lump',
@@ -285,7 +283,7 @@ const barrows = resolveItems([
 	'Bolt rack'
 ]);
 
-export const seedsFilter = resolveItems([
+export const seeds = resolveItems([
 	'Pineapple seed',
 	'Crystal acorn',
 	'Magic seed',
@@ -357,31 +355,23 @@ export const seedsFilter = resolveItems([
 	'Cabbage seed',
 	'Onion seed',
 	'Potato seed',
-	'Mysterious seed',
-	'Athelas seed',
-	'Avocado seed',
-	'Lychee seed',
-	'Mango seed',
-	'Korulsi seed',
-	'Grand crystal acorn'
+	...BSOItemGroups.bsoSeeds
 ]);
 
-const allPotions = Potions.flatMap(potion => potion.items);
-const potions = [...new Set(allPotions)];
+export const allPotions = Potions.flatMap(potion => potion.items);
+export const potions = [...new Set(allPotions)];
 
-const grimyHerbs = Grimy.flatMap(grimy => grimy.inputItems.itemIDs);
-const cleanHerbs = Grimy.flatMap(clean => clean.item.id);
-cleanHerbs.push(itemID('Athelas'));
+export const grimyHerbs = Grimy.flatMap(grimy => grimy.inputItems.itemIDs);
+export const cleanHerbs = [...Grimy.flatMap(clean => clean.item.id), ...BSOItemGroups.bsoHerbs];
 
-const herbs = [...new Set(grimyHerbs), ...new Set(cleanHerbs)];
+export const herbs = [...new Set(grimyHerbs), ...new Set(cleanHerbs)];
 
-const unfPots = unfinishedPotions.flatMap(unf => unf.item.id);
-const unfPotions = resolveItems(['Vial of water', ...new Set(unfPots)]);
+export const unfPots = unfinishedPotions.flatMap(unf => unf.item.id);
+export const unfPotions = resolveItems(['Vial of water', ...new Set(unfPots)]);
 
-const allSecondaries = PotionsMixable.flatMap(item => item.inputItems.itemIDs).filter(
+export const allSecondaries = PotionsMixable.flatMap(item => item.inputItems.itemIDs).filter(
 	item => !potions.includes(item) && !unfPotions.includes(item) && !herbs.includes(item)
 );
-
 export const secondaries = [...new Set(allSecondaries)];
 
 const herblore = resolveItems([...potions, ...herbs, ...unfPotions, ...secondaries]);
@@ -412,9 +402,7 @@ const bones = resolveItems([
 	'Wyrm bones',
 	'Wyvern bones',
 	'Zogre bones',
-	'Abyssal dragon bones',
-	'Royal dragon bones',
-	'Frost dragon bones'
+	...BSOItemGroups.bsoBones
 ]);
 
 const fletchingItemsSet = uniqueArr(Fletchables.flatMap(item => item.inputItems.itemIDs));
@@ -441,7 +429,7 @@ const skilling = resolveItems([
 	'Grapes',
 	'Feather',
 	...fletchingItemsSet,
-	...seedsFilter,
+	...seeds,
 	...bones,
 	...gems,
 	...bars,
@@ -494,17 +482,18 @@ const cluesAndCaskets = resolveItems([
 	'Clue scroll (hard)',
 	'Clue scroll (elite)',
 	'Clue scroll (master)',
-	'Clue scroll (grandmaster)',
-	'Clue scroll (elder)',
-	'Elder scroll piece',
 	'Reward casket (beginner)',
 	'Reward casket (easy)',
 	'Reward casket (medium)',
 	'Reward casket (hard)',
 	'Reward casket (elite)',
 	'Reward casket (master)',
+
+	'Clue scroll (grandmaster)',
+	'Clue scroll (elder)',
 	'Reward casket (grandmaster)',
-	'Reward casket (elder)'
+	'Reward casket (elder)',
+	'Elder scroll piece'
 ]);
 
 const godwars = resolveItems([
@@ -527,8 +516,6 @@ const godwars = resolveItems([
 	'Saradomin godsword (or)',
 	...godwarsGear
 ]);
-
-const nex = resolveItems(['Virtus book', 'Virtus wand', ...torvaOutfit, ...pernixOutfit, ...virtusOutfit, ...nexCL]);
 
 const dagannothkings = resolveItems([
 	'Berserker ring',
@@ -603,7 +590,6 @@ const corporealBeast = resolveItems([
 	'Spectral sigil',
 	'Arcane sigil',
 	'Elysian sigil',
-	'Divine sigil',
 	'Spirit shield',
 	'Holy elixir',
 	'Pet dark core',
@@ -799,11 +785,6 @@ export const baseFilters: Filterable[] = [
 		items: () => godwars
 	},
 	{
-		name: 'Nex',
-		aliases: ['nex'],
-		items: () => nex
-	},
-	{
 		name: 'Dagannoth kings',
 		aliases: ['dagannoth kings', 'dks', 'dk', 'dagannoth', 'kings'],
 		items: () => dagannothkings
@@ -838,7 +819,7 @@ export const baseFilters: Filterable[] = [
 		aliases: ['farming', 'farm', 'seeds'],
 		items: () => [
 			...resolveItems(['Compost', 'Supercompost', 'Ultracompost', 'Bottomless compost bucket ']),
-			...seedsFilter
+			...seeds
 		]
 	},
 	{
@@ -952,6 +933,26 @@ export const baseFilters: Filterable[] = [
 		items: () => [...new Set([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL])]
 	},
 	{
+		name: 'Lamps',
+		aliases: ['lamps'],
+		items: () => Lampables.flatMap(i => i.items)
+	},
+	{
+		name: 'Openables',
+		aliases: ['opens'],
+		items: () => allOpenables.map(i => i.id)
+	},
+	{
+		name: 'Favourite Alchs',
+		aliases: ['favourite alchs', 'favalchs'],
+		items: user => {
+			if (!user) return [];
+
+			return user.user.favorite_alchables;
+		}
+	},
+	// BSO
+	{
 		name: 'umb',
 		aliases: ['umb'],
 		items: () => umbTable
@@ -1015,25 +1016,6 @@ export const baseFilters: Filterable[] = [
 		name: 'Fruit',
 		aliases: ['fruit'],
 		items: () => monkeyEatables.map(i => i.item.id)
-	},
-	{
-		name: 'Lamps',
-		aliases: ['lamps'],
-		items: () => Lampables.flatMap(i => i.items)
-	},
-	{
-		name: 'Openables',
-		aliases: ['opens'],
-		items: () => allOpenables.map(i => i.id)
-	},
-	{
-		name: 'Favourite Alchs',
-		aliases: ['favourite alchs', 'favalchs'],
-		items: user => {
-			if (!user) return [];
-
-			return user.user.favorite_alchables;
-		}
 	}
 ];
 

@@ -1,14 +1,15 @@
+import { Ignecarus } from '@/lib/bso/monsters/bosses/Ignecarus.js';
+import { KalphiteKingMonster } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
+import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
+import { polyporeTasks } from '@/lib/bso/skills/slayer/polyporeTasks.js';
+
 import { Monsters } from 'oldschooljs';
 
-import killableMonsters from '../../minions/data/killableMonsters';
-import { Ignecarus } from '../../minions/data/killableMonsters/custom/bosses/Ignecarus';
-import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
-import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
-import { QuestID } from '../../minions/data/quests';
-import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
-import type { AssignableSlayerTask } from '../types';
-import { bossTasks } from './bossTasks';
-import { polyporeTasks } from './polyporeTasks';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { bossTasks } from '@/lib/slayer/tasks/bossTasks.js';
+import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
 
 export const nieveTasks: AssignableSlayerTask[] = [
 	{

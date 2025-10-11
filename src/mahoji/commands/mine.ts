@@ -1,21 +1,18 @@
-import { type CommandRunOptions, formatDuration, randomVariation, stringMatches } from '@oldschoolgg/toolkit';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
+import { randomVariation } from '@oldschoolgg/rng';
+import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches } from '@oldschoolgg/toolkit';
+import { Items } from 'oldschooljs';
 
+import { userhasDiaryTier } from '@/lib/diaries.js';
+import { QuestID } from '@/lib/minions/data/quests.js';
+import { DiaryID } from '@/lib/minions/types.js';
+import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';
+import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '@/lib/skilling/functions/miningBoosts.js';
+import { sinsOfTheFatherSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
+import Mining from '@/lib/skilling/skills/mining.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
-import { userhasDiaryTier } from '../../lib/diaries.js';
-import { QuestID } from '../../lib/minions/data/quests';
-import { DiaryID } from '../../lib/minions/types.js';
-import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
-import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../../lib/skilling/functions/miningBoosts';
-import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
-import Mining from '../../lib/skilling/skills/mining';
-import type { MiningActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { formatSkillRequirements, itemNameFromID } from '../../lib/util/smallUtils.js';
-import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand';
+import type { MiningActivityTaskOptions } from '@/lib/types/minions.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
+import { motherlodeMineCommand } from '@/mahoji/lib/abstracted_commands/motherlodeMineCommand.js';
 
 export function calculateMiningInput({
 	nameInput,
@@ -83,7 +80,7 @@ export function calculateMiningInput({
 	if (ore.requiredPickaxes) {
 		if (!ore.requiredPickaxes.some(pickaxe => gearBank.hasEquipped(pickaxe))) {
 			return `You need to be using one of these pickaxes to be able to mine ${ore.name}: ${ore.requiredPickaxes
-				.map(itemNameFromID)
+				.map(i => Items.itemNameFromId(i))
 				.join(', ')}.`;
 		}
 	}
@@ -113,7 +110,7 @@ export function calculateMiningInput({
 	// Default bronze pickaxe, last in the array
 	let currentPickaxe = pickaxes[pickaxes.length - 1];
 	messages.push(
-		`**${currentPickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(currentPickaxe.id)}`
+		`**${currentPickaxe.ticksBetweenRolls}** ticks between rolls for ${Items.itemNameFromId(currentPickaxe.id)}`
 	);
 
 	// For each pickaxe, if they have it, give them its' bonus and break.
@@ -121,7 +118,7 @@ export function calculateMiningInput({
 		if (!gearBank.hasEquipped([pickaxe.id]) || effectiveMiningLevel < pickaxe.miningLvl) continue;
 		currentPickaxe = pickaxe;
 		messages.pop();
-		messages.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(pickaxe.id)}`);
+		messages.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${Items.itemNameFromId(pickaxe.id)}`);
 		break;
 	}
 
@@ -131,7 +128,9 @@ export function calculateMiningInput({
 			if (!gearBank.hasEquipped(glove.id) || !glove.Percentages[ore.name]) continue;
 			glovesRate = glove.Percentages[ore.name];
 			if (glovesRate) {
-				messages.push(`Lowered rock depletion rate by **${glovesRate}%** for ${itemNameFromID(glove.id)}`);
+				messages.push(
+					`Lowered rock depletion rate by **${glovesRate}%** for ${Items.itemNameFromId(glove.id)}`
+				);
 				break;
 			}
 		}
@@ -142,7 +141,7 @@ export function calculateMiningInput({
 		if (!gearBank.hasEquippedOrInBank(armour.id) || !armour.Percentages[ore.name]) continue;
 		armourEffect = armour.Percentages[ore.name];
 		if (armourEffect) {
-			messages.push(`**${armourEffect}%** chance to mine an extra ore using ${itemNameFromID(armour.id)}`);
+			messages.push(`**${armourEffect}%** chance to mine an extra ore using ${Items.itemNameFromId(armour.id)}`);
 			break;
 		}
 	}
@@ -223,7 +222,7 @@ export const mineCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to mine.',
 			required: true,
@@ -237,14 +236,14 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to mine (optional).',
 			required: false,
 			min_value: 1
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'powermine',
 			description: 'Set this to true to powermine. Higher xp/hour, No loot (default false, optional).',
 			required: false
@@ -252,10 +251,9 @@ export const mineCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; powermine?: boolean }>) => {
-		const user = await mUserFetch(userID);
 		const { quantity, powermine } = options;
 
 		const motherlodeMine =
@@ -276,7 +274,7 @@ export const mineCommand: OSBMahojiCommand = {
 			miningLevel: user.skillLevel('mining'),
 			craftingLevel: user.skillLevel('crafting'),
 			strengthLevel: user.skillLevel('strength'),
-			maxTripLength: calcMaxTripLength(user, 'Mining'),
+			maxTripLength: user.calcMaxTripLength('Mining'),
 			hasKaramjaMedium: (await userhasDiaryTier(user, [DiaryID.Karamja, 'medium']))[0],
 			hasDT2Quest: user.user.finished_quest_ids.includes(QuestID.DesertTreasureII)
 		});
@@ -287,10 +285,10 @@ export const mineCommand: OSBMahojiCommand = {
 
 		const { isPowermining, fakeDurationMax, fakeDurationMin, messages, newQuantity, ore, duration } = result;
 
-		await addSubTaskToActivityTask<MiningActivityTaskOptions>({
+		await ActivityManager.startTrip<MiningActivityTaskOptions>({
 			oreID: ore.id,
-			userID: userID.toString(),
-			channelID: channelID.toString(),
+			userID: user.id,
+			channelID,
 			quantity: newQuantity,
 			powermine: isPowermining,
 			duration,

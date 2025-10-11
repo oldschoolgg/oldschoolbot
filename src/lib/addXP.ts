@@ -1,34 +1,28 @@
-import { Events } from '@oldschoolgg/toolkit/constants';
-import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit/util';
-import { type User, UserEventType } from '@prisma/client';
-import { bold } from 'discord.js';
-import { Time, increaseNumByPercent, noOp, notEmpty, objectValues } from 'e';
-import { type Item, convertLVLtoXP, convertXPtoLVL, resolveItems, toKMB } from 'oldschooljs';
-
-import { Channel, LEVEL_120_XP, MAX_LEVEL, MAX_TOTAL_LEVEL, MAX_XP, globalConfig } from './constants';
+import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
 import {
 	divinersOutfit,
 	gorajanArcherOutfit,
 	gorajanOccultOutfit,
-	gorajanWarriorOutfit,
-	inventorOutfit
-} from './data/CollectionsExport';
-import { skillEmoji } from './data/emojis';
-import { getSimilarItems } from './data/similarItems';
-import type { AddXpParams } from './minions/types';
+	gorajanWarriorOutfit
+} from '@/lib/bso/collection-log/main.js';
+import { inventorOutfit } from '@/lib/bso/collection-log/minigames.js';
 
-import { GLOBAL_BSO_XP_MULTIPLIER } from './bso/bsoConstants';
-import { sql } from './postgres';
-import Skillcapes from './skilling/skillcapes';
-import Skills from './skilling/skills';
-import { type SkillNameType, SkillsEnum } from './skilling/types';
-import getOSItem from './util/getOSItem';
-import { itemNameFromID } from './util/smallUtils';
-import { insertUserEvent } from './util/userEvents';
-import { sendToChannelID } from './util/webhook';
+import { Events, formatOrdinal, increaseNumByPercent, noOp, notEmpty, Time, toTitleCase } from '@oldschoolgg/toolkit';
+import { type User, UserEventType } from '@prisma/client';
+import { bold } from 'discord.js';
+import { convertLVLtoXP, convertXPtoLVL, type Item, Items, resolveItems, toKMB } from 'oldschooljs';
 
-const skillsVals = Object.values(Skills);
-const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${LEVEL_120_XP}`).join(' AND ');
+import { Channel, globalConfig, MAX_LEVEL, MAX_LEVEL_XP, MAX_TOTAL_LEVEL, MAX_XP } from '@/lib/constants.js';
+import { skillEmoji } from '@/lib/data/emojis.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import type { AddXpParams } from '@/lib/minions/types.js';
+import Skillcapes from '@/lib/skilling/skillcapes.js';
+import { Skills } from '@/lib/skilling/skills/index.js';
+import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
+import { insertUserEvent } from '@/lib/util/userEvents.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
+
+const maxFilter = SkillsArray.map(s => `"skills.${s}" >= ${MAX_LEVEL_XP}`).join(' AND ');
 const makeQuery = (ironman: boolean) => `SELECT count(id)::int
 FROM users
 WHERE ${maxFilter}
@@ -65,24 +59,24 @@ async function onMax(user: MUser) {
 interface StaticXPBoost {
 	item: Item;
 	boostPercent: number;
-	skill: SkillsEnum;
+	skill: SkillNameType;
 }
-const staticXPBoosts = new Map<SkillsEnum | SkillNameType, StaticXPBoost[]>().set(SkillsEnum.Firemaking, [
+const staticXPBoosts = new Map<SkillNameType, StaticXPBoost[]>().set('firemaking', [
 	{
-		item: getOSItem('Flame gloves'),
+		item: Items.getOrThrow('Flame gloves'),
 		boostPercent: 2.5,
-		skill: SkillsEnum.Firemaking
+		skill: 'firemaking'
 	},
 	{
-		item: getOSItem('Ring of fire'),
+		item: Items.getOrThrow('Ring of fire'),
 		boostPercent: 2.5,
-		skill: SkillsEnum.Firemaking
+		skill: 'firemaking'
 	}
 ]);
 
 const skillingOutfitBoosts = [
 	{
-		skill: SkillsEnum.Fletching,
+		skill: 'fletching',
 		outfit: resolveItems([
 			"Fletcher's gloves",
 			"Fletcher's boots",
@@ -94,13 +88,13 @@ const skillingOutfitBoosts = [
 		totalBoost: 3
 	},
 	{
-		skill: SkillsEnum.Invention,
+		skill: 'invention',
 		outfit: inventorOutfit,
 		individualBoost: 0.5,
 		totalBoost: 4
 	},
 	{
-		skill: SkillsEnum.Divination,
+		skill: 'divination',
 		outfit: divinersOutfit,
 		individualBoost: 0.5,
 		totalBoost: 4
@@ -113,7 +107,7 @@ const allMasterCapes = Skillcapes.map(i => i.masterCape)
 	.flat(Number.POSITIVE_INFINITY) as number[];
 
 function getEquippedCapes(user: MUser) {
-	return objectValues(user.gear)
+	return Object.values(user.gear)
 		.map(val => val.cape)
 		.filter(notEmpty)
 		.map(i => i.item);
@@ -129,8 +123,8 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	}
 
 	// Look for Mastery skill cape:
-	let matchingCapeID: number | undefined = undefined;
-	let masterCape: number | undefined = undefined;
+	let matchingCapeID: number | undefined;
+	let masterCape: number | undefined;
 	const skillCape = Skillcapes.find(cape => params.skillName === cape.skill)?.masterCape;
 
 	if (skillCape && (multiplier || params.masterCapeBoost)) {
@@ -155,15 +149,13 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	// Determine if boost should apply based on skill + equipped sets:
 	let gorajanBoost = false;
 	const gorajanMeleeBoost =
-		multiplier &&
-		[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].includes(params.skillName as SkillsEnum) &&
-		gorajanMeleeEquipped;
-	const gorajanRangeBoost = multiplier && params.skillName === SkillsEnum.Ranged && gorajanRangeEquipped;
-	const gorajanMageBoost = multiplier && params.skillName === SkillsEnum.Magic && gorajanMageEquipped;
+		multiplier && ['attack', 'strength', 'defence'].includes(params.skillName) && gorajanMeleeEquipped;
+	const gorajanRangeBoost = multiplier && params.skillName === 'ranged' && gorajanRangeEquipped;
+	const gorajanMageBoost = multiplier && params.skillName === 'magic' && gorajanMageEquipped;
 	// 2x HP if all 3 gorajan sets are equipped:
 	const gorajanHpBoost =
 		multiplier &&
-		params.skillName === SkillsEnum.Hitpoints &&
+		params.skillName === 'hitpoints' &&
 		gorajanMeleeEquipped &&
 		gorajanRangeEquipped &&
 		gorajanMageEquipped;
@@ -372,7 +364,9 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		return xpStr;
 	}
 
-	await sql.unsafe(`UPDATE users SET "skills.${params.skillName}" = ${Math.floor(newXP)} WHERE id = '${user.id}';`);
+	await prisma.$queryRawUnsafe(
+		`UPDATE users SET "skills.${params.skillName}" = ${Math.floor(newXP)} WHERE id = '${user.id}';`
+	);
 	(user.user as User)[`skills_${params.skillName}`] = BigInt(Math.floor(newXP));
 	user.updateProperties();
 
@@ -380,7 +374,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		globalClient.emit(
 			Events.ServerNotification,
 			bold(
-				`🎉 ${skill.emoji}**${user.badgedUsername}'s** minion, ${user.minionName}, just achieved the maximum possible total XP!`
+				`🎉 ${skill.emoji}** ${user.badgedUsername}'s** minion, ${user.minionName}, just achieved the maximum possible total XP!`
 			)
 		);
 		await insertUserEvent({ userID: user.id, type: UserEventType.MaxTotalXP });
@@ -392,7 +386,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			? `+${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]}`
 			: `You received ${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]} XP.`;
 		if (masterCape && !params.minimal) {
-			str += ` You received ${matchingCapeID ? '8' : '3'}% bonus XP for having a ${itemNameFromID(masterCape)}.`;
+			str += ` You received ${matchingCapeID ? '8' : '3'}% bonus XP for having a ${Items.itemNameFromId(masterCape)}.`;
 		}
 		if (gorajanBoost && !params.minimal) {
 			str += ' (2x boost from Gorajan armor)';

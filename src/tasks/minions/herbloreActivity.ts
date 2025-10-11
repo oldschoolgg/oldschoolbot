@@ -1,14 +1,13 @@
-import { Time, randInt, roll } from 'e';
-import { Bank, SkillsEnum } from 'oldschooljs';
+import { herbertDroprate } from '@/lib/bso/bsoUtil.js';
 
-import { herbertDroprate } from '../../lib/bso/bsoUtil';
-import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries';
-import Herblore from '../../lib/skilling/skills/herblore/herblore';
-import type { Mixable } from '../../lib/skilling/types';
-import type { HerbloreActivityTaskOptions } from '../../lib/types/minions';
-import getOSItem from '../../lib/util/getOSItem';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { percentChance } from '../../lib/util/rng';
+import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, EItem } from 'oldschooljs';
+
+import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
+import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
+import type { Mixable } from '@/lib/skilling/types.js';
+import type { HerbloreActivityTaskOptions } from '@/lib/types/minions.js';
 
 function BSOApplyExtraQuantity(user: MUser, quantity: number, mixableItem: Mixable, messages: string[]) {
 	const isMixingPotion = mixableItem.xp !== 0 && !mixableItem.wesley && !mixableItem.zahur;
@@ -44,9 +43,8 @@ function BSOHerbetRoll(user: MUser, duration: number, mixableItem: Mixable, loot
 
 export const herbloreTask: MinionTask = {
 	type: 'Herblore',
-	async run(data: HerbloreActivityTaskOptions) {
-		let { mixableID, quantity, zahur, wesley, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: HerbloreActivityTaskOptions, { user, handleTripFinish }) {
+		let { mixableID, quantity, zahur, wesley, channelID, duration } = data;
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.item.id === mixableID)!;
 		const messages: string[] = [];
 		quantity = BSOApplyExtraQuantity(user, quantity, mixableItem, messages);
@@ -54,9 +52,9 @@ export const herbloreTask: MinionTask = {
 		let outputQuantity = mixableItem.outputMultiple ? quantity * mixableItem.outputMultiple : quantity;
 
 		// Special case for Lava scale shard
-		if (mixableItem.item === getOSItem('Lava scale shard')) {
+		if (mixableItem.item.id === EItem.LAVA_SCALE_SHARD) {
 			const [hasWildyDiary] = await userhasDiaryTier(user, WildernessDiary.hard);
-			const currentHerbLevel = user.skillLevel(SkillsEnum.Herblore);
+			const currentHerbLevel = user.skillsAsLevels.herblore;
 			let scales = 0;
 			// Having 99 herblore gives a 98% chance to recieve the max amount of shards
 			const maxShardChance = currentHerbLevel >= 99 ? 98 : 0;
@@ -75,12 +73,12 @@ export const herbloreTask: MinionTask = {
 			outputQuantity = scales;
 		}
 
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Herblore, amount: xpReceived, duration });
+		const xpRes = await user.addXP({ skillName: 'herblore', amount: xpReceived, duration });
 		const loot = new Bank().add(mixableItem.item.id, outputQuantity);
 
 		BSOHerbetRoll(user, duration, mixableItem, loot, messages);
 
-		await transactItems({ userID: user.id, collectionLog: true, itemsToAdd: loot });
+		await user.transactItems({ collectionLog: true, itemsToAdd: loot });
 
 		handleTripFinish(
 			user,

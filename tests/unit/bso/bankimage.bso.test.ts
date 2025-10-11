@@ -3,7 +3,7 @@ import path from 'node:path';
 import { Bank } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
-import { bankImageTask } from '@/lib/canvas/bankImage';
+import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import { baseSnapshotPath } from '../../testConstants.js';
 
 describe('BSO Bank Images', async () => {

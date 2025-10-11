@@ -1,16 +1,15 @@
+import './base.js';
+
 import { readFileSync, writeFileSync } from 'node:fs';
-import { md5sum } from '@oldschoolgg/toolkit/node';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
-import { uniqueArr } from '@oldschoolgg/toolkit/util';
+import { md5sum, Stopwatch, uniqueArr } from '@oldschoolgg/toolkit';
 import { DateTime } from 'luxon';
 import { Bank, Items, type LootTable } from 'oldschooljs';
 
-import { applyStaticDefine } from '../meta.js';
-applyStaticDefine();
-import { BOT_TYPE } from '@/lib/constants';
-import killableMonsters from '@/lib/minions/data/killableMonsters';
+import { BOT_TYPE } from '@/lib/constants.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { tearDownScript } from './scriptUtil.js';
 
-export function createMonstersJson() {
+function createMonstersJson() {
 	const stopwatch = new Stopwatch();
 	const monstersJsonFile = [];
 
@@ -73,3 +72,6 @@ export function createMonstersJson() {
 	);
 	stopwatch.check('Finished monsters file.');
 }
+
+createMonstersJson();
+tearDownScript();

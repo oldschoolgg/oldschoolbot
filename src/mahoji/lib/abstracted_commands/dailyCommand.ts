@@ -1,28 +1,24 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { type CommandResponse, channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
-import { roll, shuffleArr, uniqueArr } from 'e';
+import { roll, shuffleArr } from '@oldschoolgg/rng';
+import { Emoji, formatDuration, isWeekend, Time, uniqueArr } from '@oldschoolgg/toolkit';
+import type { ItemBank } from 'oldschooljs';
 
-import { DynamicButtons } from '../../../lib/DynamicButtons';
-import { dailyResetTime } from '../../../lib/MUser';
-import { globalConfig } from '../../../lib/constants';
-import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
-import dailyRoll from '../../../lib/simulation/dailyTable';
-import { deferInteraction } from '../../../lib/util/interactionReply';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
+import { globalConfig } from '@/lib/constants.js';
+import pets from '@/lib/data/pets.js';
+import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
+import dailyRoll from '@/lib/simulation/dailyTable.js';
+import { DynamicButtons } from '@/lib/structures/DynamicButtons.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export async function isUsersDailyReady(
 	user: MUser
 ): Promise<{ isReady: true } | { isReady: false; durationUntilReady: number }> {
-	const stats = await user.fetchStats({ last_daily_timestamp: true });
+	const stats = await user.fetchStats();
 	const currentDate = Date.now();
 	const lastVoteDate = Number(stats.last_daily_timestamp);
 	const difference = currentDate - lastVoteDate;
 
-	if (difference < dailyResetTime) {
-		const duration = Date.now() - (lastVoteDate + dailyResetTime);
+	if (difference < Time.Hour * 12) {
+		const duration = Date.now() - (lastVoteDate + Time.Hour * 12);
 		return { isReady: false, durationUntilReady: duration };
 	}
 
@@ -33,7 +29,7 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	const guild = globalClient.guilds.cache.get(globalConfig.supportServerID);
 	const member = await guild?.members.fetch(user.id).catch(() => null);
 
-	const loot = dailyRoll(3, triviaCorrect);
+	const loot = dailyRoll(1, triviaCorrect);
 
 	const bonuses = [];
 
@@ -49,7 +45,7 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 		bonuses.push(Emoji.OSBot);
 	}
 
-	if (user.user.minion_hasBought) {
+	if (user.hasMinion) {
 		coinsToGive /= 1.5;
 	}
 
@@ -68,10 +64,7 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	}
 
 	if (!triviaCorrect) {
-		coinsToGive = 0;
-	} else if (coinsToGive <= 1_000_000_000) {
-		// Correct daily gives 10% more cash if the jackpot is not won
-		coinsToGive = Math.floor(coinsToGive * 1.1);
+		coinsToGive = Math.floor(coinsToGive * 0.4);
 	}
 
 	if (user.isIronman) {
@@ -87,19 +80,26 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 
 	let dmStr = `${bonuses.join('')} **${Emoji.Diango} Diango says..** That's ${correct}! ${reward}\n`;
 
-	const hasSkipper = user.usingPet('Skipper') || user.bank.amount('Skipper') > 0;
-	if (!user.isIronman && triviaCorrect && hasSkipper) {
-		coinsToGive = Math.floor(coinsToGive * 1.5);
-		dmStr +=
-			'\n<:skipper:755853421801766912> Skipper has negotiated with Diango and gotten you 50% extra GP from your daily!';
+	if (triviaCorrect && roll(13)) {
+		const pet = pets[Math.floor(Math.random() * pets.length)];
+		const userPets = {
+			...(user.user.pets as ItemBank)
+		};
+		if (!userPets[pet.id]) userPets[pet.id] = 1;
+		else userPets[pet.id]++;
+
+		await user.update({
+			pets: { ...userPets }
+		});
+
+		dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
 	}
 
 	if (coinsToGive) {
-		updateClientGPTrackSetting('gp_daily', coinsToGive);
+		ClientSettings.updateClientGPTrackSetting('gp_daily', coinsToGive);
 	}
 
-	const { itemsAdded, previousCL } = await transactItems({
-		userID: user.id,
+	const { itemsAdded, previousCL } = await user.transactItems({
 		collectionLog: true,
 		itemsToAdd: loot
 	});
@@ -112,14 +112,8 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	return { content: `${dmStr}\nYou received ${loot}`, files: [image.file] };
 }
 
-export async function dailyCommand(
-	interaction: ChatInputCommandInteraction | null,
-	channelID: string,
-	user: MUser
-): CommandResponse {
-	if (interaction) await deferInteraction(interaction);
-	const channel = globalClient.channels.cache.get(channelID.toString());
-	if (!channelIsSendable(channel)) return 'Invalid channel.';
+export async function dailyCommand(interaction: MInteraction, user: MUser): CommandResponse {
+	if (interaction) await interaction.defer();
 	const check = await isUsersDailyReady(user);
 	if (!check.isReady) {
 		return `**${Emoji.Diango} Diango says...** You can claim your next daily in ${formatDuration(
@@ -127,21 +121,16 @@ export async function dailyCommand(
 		)}.`;
 	}
 
-	await userStatsUpdate(
-		user.id,
-		{
-			last_daily_timestamp: Date.now()
-		},
-		{}
-	);
+	await user.statsUpdate({
+		last_daily_timestamp: Date.now()
+	});
 
 	const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
 
 	let correctUser: string | null = null;
 	const buttons = new DynamicButtons({
-		channel: channel as TextChannel,
-		usersWhoCanInteract: [user.id],
-		deleteAfterConfirm: true
+		interaction,
+		usersWhoCanInteract: [user.id]
 	});
 	const allAnswers = uniqueArr(shuffleArr([question, ...fakeQuestions].map(q => q.answers[0])));
 	for (const answer of allAnswers) {

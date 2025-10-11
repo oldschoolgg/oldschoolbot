@@ -3,7 +3,7 @@ import { describe, test } from 'vitest';
 
 import { clueCommand } from '../../../src/mahoji/commands/clue.js';
 import { openCommand } from '../../../src/mahoji/commands/open.js';
-import { mockClient } from '../util';
+import { mockClient } from '../util.js';
 
 describe('Actual Clues', async () => {
 	const client = await mockClient();

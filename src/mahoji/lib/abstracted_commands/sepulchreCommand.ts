@@ -1,23 +1,19 @@
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { Time, reduceNumByPercent, sumArr } from 'e';
+import { formatDuration, reduceNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 
-import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
-import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables';
-import Arrows from '../../../lib/skilling/skills/fletching/fletchables/arrows';
-import Bolts from '../../../lib/skilling/skills/fletching/fletchables/bolts';
-import Darts from '../../../lib/skilling/skills/fletching/fletchables/darts';
-import Javelins from '../../../lib/skilling/skills/fletching/fletchables/javelins';
-import { AmethystBroadBolts, BroadArrows, BroadBolts } from '../../../lib/skilling/skills/fletching/fletchables/slayer';
-import TippedBolts from '../../../lib/skilling/skills/fletching/fletchables/tippedBolts';
-import TippedDragonBolts from '../../../lib/skilling/skills/fletching/fletchables/tippedDragonBolts';
-import type { Fletchable } from '../../../lib/skilling/types';
-import type { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
-import { hasSlayerUnlock } from '../../../lib/slayer/slayerUtil';
-import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+import { sepulchreBoosts, sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
+import Arrows from '@/lib/skilling/skills/fletching/fletchables/arrows.js';
+import Bolts from '@/lib/skilling/skills/fletching/fletchables/bolts.js';
+import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
+import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
+import Javelins from '@/lib/skilling/skills/fletching/fletchables/javelins.js';
+import { AmethystBroadBolts, BroadArrows, BroadBolts } from '@/lib/skilling/skills/fletching/fletchables/slayer.js';
+import TippedBolts from '@/lib/skilling/skills/fletching/fletchables/tippedBolts.js';
+import TippedDragonBolts from '@/lib/skilling/skills/fletching/fletchables/tippedDragonBolts.js';
+import type { Fletchable } from '@/lib/skilling/types.js';
+import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
+import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
 
 export async function sepulchreCommand(user: MUser, channelID: string, fletching?: number) {
 	const skills = user.skillsAsLevels;
@@ -30,7 +26,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 	if (thievingLevel < 66) {
 		return 'You need at least level 66 Thieving to do the Hallowed Sepulchre.';
 	}
-	if (!userHasGracefulEquipped(user)) {
+	if (!user.hasGracefulEquipped()) {
 		return 'You need Graceful equipped in any setup to do the Hallowed Sepulchre.';
 	}
 
@@ -60,7 +56,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		}
 	}
 
-	const maxLaps = Math.floor(calcMaxTripLength(user, 'Sepulchre') / lapLength);
+	const maxLaps = Math.floor(user.calcMaxTripLength('Sepulchre') / lapLength);
 	const tripLength = maxLaps * lapLength;
 
 	let fletchable: Fletchable | undefined;
@@ -120,13 +116,13 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		await user.removeItemsFromBank(itemsNeeded);
 	}
 
-	await addSubTaskToActivityTask<SepulchreActivityTaskOptions>({
+	await ActivityManager.startTrip<SepulchreActivityTaskOptions>({
 		floors: completableFloors.map(f => f.number),
 		quantity: maxLaps,
 		userID: user.id,
 		duration: tripLength,
 		type: 'Sepulchre',
-		channelID: channelID.toString(),
+		channelID,
 		minigameID: 'sepulchre',
 		fletch: fletchable ? { id: fletchable.id, qty: fletchingQuantity } : undefined
 	});

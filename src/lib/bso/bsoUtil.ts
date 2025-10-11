@@ -1,8 +1,11 @@
+import { doaCL } from '@/lib/bso/collection-log/main.js';
+
 import { CollectionLog } from '@oldschoolgg/collectionlog';
+import { sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 
-import { BitField, MAX_XP } from '../constants';
-import { doaCL } from '../data/CollectionsExport';
+import { BitField, MAX_XP } from '@/lib/constants.js';
+import type { Skills } from '@/lib/types/index.js';
 
 export function hasUnlockedAtlantis(user: MUser) {
 	return doaCL.some(itemID => user.cl.has(itemID));
@@ -83,4 +86,12 @@ export function calcBabyYagaHouseDroprate(xpBeingReceived: number, cl: Bank) {
 	const amountInCl = cl.amount('Baby yaga house');
 	if (amountInCl > 1) rate *= amountInCl;
 	return Math.floor(rate);
+}
+
+export function moidLink(items: number[]) {
+	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
+}
+
+export function calcTotalLevel(skills: Skills) {
+	return sumArr(Object.values(skills));
 }

@@ -1,10 +1,8 @@
-import { calcPercentOfNum, calcWhatPercent, percentChance, randInt, roll } from 'e';
-
-import type { LootBank } from '../../meta/types';
-import Bank from '../../structures/Bank';
-import LootTable from '../../structures/LootTable';
-import SimpleTable from '../../structures/SimpleTable';
-import { resolveNameBank } from '../../util/bank';
+import { Bank, type LootBank } from '@/structures/Bank.js';
+import LootTable from '@/structures/LootTable.js';
+import SimpleTable from '@/structures/SimpleTable.js';
+import { resolveNameBank } from '@/util/bank.js';
+import { calcPercentOfNum, calcWhatPercent, percentChance, randInt, roll } from '@/util/smallUtils.js';
 
 export interface TeamMember {
 	id: string;

@@ -1,33 +1,28 @@
-import { type CommandRunOptions, formatDuration, isWeekend, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, clamp, increaseNumByPercent, notEmpty, randInt } from 'e';
-import { Bank, type Item, type ItemBank } from 'oldschooljs';
+import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
 
-import { type ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
-import { clueHunterOutfit } from '../../lib/data/CollectionsExport';
-import { getPOHObject } from '../../lib/poh';
-import type { ClueActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { checkElderClueRequirements } from '../../lib/util/elderClueRequirements';
-import getOSItem from '../../lib/util/getOSItem';
-import { getPOH } from '../lib/abstracted_commands/pohCommand';
+import { randInt } from '@oldschoolgg/rng';
+import { formatDuration, increaseNumByPercent, isWeekend, notEmpty, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
+import { clamp } from 'remeda';
 
-import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
+import { clueHunterOutfit } from '@/lib/data/CollectionsExport.js';
+import { getPOHObject } from '@/lib/poh/index.js';
+import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
+import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 
 export async function calcClueScores(user: MUser) {
 	const { actualCluesBank } = await user.calcActualClues();
-	const stats = await user.fetchStats({ openable_scores: true });
+	const stats = await user.fetchStats();
 	const openableBank = new Bank(stats.openable_scores as ItemBank);
 	return openableBank
 		.items()
 		.map(entry => {
-			const tier = ClueTiers.find(i => i.id === entry[0].id);
-			if (!tier) return;
+			const tier = ClueTiers.find(i => i.id === entry[0].id)!;
 			return {
 				tier,
-				casket: getOSItem(tier.id),
-				clueScroll: getOSItem(tier.scrollID),
+				casket: Items.getOrThrow(tier.id),
+				clueScroll: Items.getOrThrow(tier.scrollID),
 				opened: openableBank.amount(tier.id),
 				actualOpened: actualCluesBank.amount(tier.scrollID)
 			};
@@ -88,20 +83,19 @@ export const clueCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'tier',
 			description: 'The clue you want to do.',
 			required: true,
 			autocomplete: async (_, user) => {
-				const bank = getMahojiBank(await mahojiUsersSettingsFetch(user.id, { bank: true }));
 				return ClueTiers.map(i => ({
-					name: `${i.name} (${bank.amount(i.scrollID)}x Owned)`,
+					name: `${i.name} (${user.bank.amount(i.scrollID)}x Owned)`,
 					value: i.name as string
 				})).concat([{ name: 'Elder (Info)', value: 'Elder (Info)' }]);
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to do.',
 			required: false,
@@ -152,7 +146,7 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 			}
 		}
 
-		let maxTripLength = calcMaxTripLength(user, 'ClueCompletion');
+		let maxTripLength = user.calcMaxTripLength('ClueCompletion');
 
 		const boosts = [];
 
@@ -162,7 +156,7 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 			boosts.push(`${boostPercent}% longer trip length for Clue bag`);
 		}
 
-		const stats = await user.fetchStats({ openable_scores: true });
+		const stats = await user.fetchStats();
 
 		let [timeToFinish, percentReduced] = reducedClueTime(
 			clueTier,
@@ -231,124 +225,124 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 		const clueTierBoosts: Record<ClueTier['name'], ClueBoost[]> = {
 			Beginner: [
 				{
-					item: getOSItem('Ring of the elements'),
+					item: Items.getOrThrow('Ring of the elements'),
 					boost: '10% for Ring of the elements',
 					durationMultiplier: 0.9
 				}
 			],
 			Easy: [
 				{
-					item: getOSItem('Achievement diary cape'),
+					item: Items.getOrThrow('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
 					durationMultiplier: 0.9
 				},
 				{
-					item: getOSItem('Ring of the elements'),
+					item: Items.getOrThrow('Ring of the elements'),
 					boost: '6% for Ring of the elements',
 					durationMultiplier: 0.94
 				}
 			],
 			Medium: [
 				{
-					item: getOSItem('Ring of the elements'),
+					item: Items.getOrThrow('Ring of the elements'),
 					boost: '8% for Ring of the elements',
 					durationMultiplier: 0.92
 				}
 			],
 			Hard: [
 				{
-					item: getOSItem('Achievement diary cape'),
+					item: Items.getOrThrow('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
 					durationMultiplier: 0.9
 				},
 				{
-					item: getOSItem('Wilderness sword 3'),
+					item: Items.getOrThrow('Wilderness sword 3'),
 					boost: '8% for Wilderness sword 3',
 					durationMultiplier: 0.92
 				},
 				{
-					item: getOSItem('Royal seed pod'),
+					item: Items.getOrThrow('Royal seed pod'),
 					boost: '6% for Royal seed pod',
 					durationMultiplier: 0.94
 				},
 				{
-					item: getOSItem('Eternal teleport crystal'),
+					item: Items.getOrThrow('Eternal teleport crystal'),
 					boost: '4% for Eternal teleport crystal',
 					durationMultiplier: 0.96
 				},
 				{
-					item: getOSItem("Pharaoh's sceptre"),
+					item: Items.getOrThrow("Pharaoh's sceptre"),
 					boost: "4% for Pharaoh's sceptre",
 					durationMultiplier: 0.96
 				},
 				{
-					item: getOSItem('Toxic blowpipe'),
+					item: Items.getOrThrow('Toxic blowpipe'),
 					boost: '4% for Toxic blowpipe',
 					durationMultiplier: 0.96
 				}
 			],
 			Elite: [
 				{
-					item: getOSItem('Achievement diary cape'),
+					item: Items.getOrThrow('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
 					durationMultiplier: 0.9
 				},
 				{
-					item: getOSItem('Kandarin headgear 4'),
+					item: Items.getOrThrow('Kandarin headgear 4'),
 					boost: '7% for Kandarin headgear 4',
 					durationMultiplier: 0.93
 				},
 				{
-					item: getOSItem('Fremennik sea boots 4'),
+					item: Items.getOrThrow('Fremennik sea boots 4'),
 					boost: '3% for Fremennik sea boots 4',
 					durationMultiplier: 0.97
 				},
 				{
-					item: getOSItem("Pharaoh's sceptre"),
+					item: Items.getOrThrow("Pharaoh's sceptre"),
 					boost: "4% for Pharaoh's sceptre",
 					durationMultiplier: 0.96
 				},
 				{
-					item: getOSItem('Toxic blowpipe'),
+					item: Items.getOrThrow('Toxic blowpipe'),
 					boost: '4% for Toxic blowpipe',
 					durationMultiplier: 0.96
 				}
 			],
 			Master: [
 				{
-					item: getOSItem('Achievement diary cape'),
+					item: Items.getOrThrow('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
 					durationMultiplier: 0.9
 				},
 				{
-					item: getOSItem('Kandarin headgear 4'),
+					item: Items.getOrThrow('Kandarin headgear 4'),
 					boost: '6% for Kandarin headgear 4',
 					durationMultiplier: 0.94
 				},
 				{
-					item: getOSItem('Music cape'),
+					item: Items.getOrThrow('Music cape'),
 					boost: '5% for Music cape',
 					durationMultiplier: 0.95
 				},
 				{
-					item: getOSItem('Eternal teleport crystal'),
+					item: Items.getOrThrow('Eternal teleport crystal'),
 					boost: '3% for Eternal teleport crystal',
 					durationMultiplier: 0.97
 				},
 				{
-					item: getOSItem('Toxic blowpipe'),
+					item: Items.getOrThrow('Toxic blowpipe'),
 					boost: '2% for Toxic blowpipe',
 					durationMultiplier: 0.98
 				},
 				{
-					item: getOSItem('Dragon claws'),
+					item: Items.getOrThrow('Dragon claws'),
 					boost: '1% for Dragon claws',
 					durationMultiplier: 0.99
 				}
 			],
 			Grandmaster: [
 				{
-					item: getOSItem('Achievement diary cape'),
+					item: Items.getOrThrow('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
 					durationMultiplier: 0.9
 				}
@@ -368,7 +362,7 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 		if (!quantity) {
 			quantity = maxPerTrip;
 		}
-		quantity = clamp(quantity, 1, user.bank.amount(clueTier.scrollID));
+		quantity = clamp(quantity, { min: 1, max: user.bank.amount(clueTier.scrollID) });
 
 		if (quantity === 0) {
 			return `You don't have any ${clueTier.name} clue scrolls.`;
@@ -399,10 +393,10 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 		);
 		duration += (randomAddedDuration * duration) / 100;
 
-		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
+		await ActivityManager.startTrip<ClueActivityTaskOptions>({
 			ci: clueTier.id,
 			userID: user.id,
-			channelID: channelID.toString(),
+			channelID,
 			q: quantity,
 			iQty: options.quantity,
 			duration,

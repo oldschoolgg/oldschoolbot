@@ -1,15 +1,9 @@
-import { type CommandResponse, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, Items } from 'oldschooljs';
 
-import { mahojiChatHead } from '../../../lib/canvas/chatHeadImage';
-import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import getOSItem from '../../../lib/util/getOSItem';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
+import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 const plainGraceful = new Bank({
 	'Graceful hood': 1,
@@ -64,7 +58,7 @@ export async function agilityArenaCommand(
 	channelID: string,
 	quantity: number | undefined
 ): CommandResponse {
-	const userMaxTrip = calcMaxTripLength(user, 'AgilityArena');
+	const userMaxTrip = user.calcMaxTripLength('AgilityArena');
 	const maxQuantity = userMaxTrip / Time.Minute;
 
 	if (!quantity || quantity * Time.Minute > userMaxTrip) {
@@ -73,7 +67,7 @@ export async function agilityArenaCommand(
 
 	const duration = quantity * Time.Minute;
 
-	if (!userHasGracefulEquipped(user)) {
+	if (!user.hasGracefulEquipped()) {
 		return mahojiChatHead({
 			content: 'Ahoy there! You need full Graceful equipped to do the Brimhaven Agility Arena!',
 			head: 'izzy'
@@ -87,9 +81,9 @@ export async function agilityArenaCommand(
 		boosts.push('10% extra tickets for Karamja Elite diary');
 	}
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
+	await ActivityManager.startTrip<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration,
 		type: 'AgilityArena',
 		quantity,
@@ -148,7 +142,7 @@ export async function agilityArenaBuyCommand(user: MUser, input: string, qty = 1
 			itemsToAdd.add(buyable.output);
 			itemsToRemove.add(buyable.input).add('Brimhaven voucher', cost);
 		} else {
-			itemsToAdd.add(getOSItem(buyable.name), qty);
+			itemsToAdd.add(Items.getOrThrow(buyable.name), qty);
 			itemsToRemove.add('Brimhaven voucher', cost);
 		}
 		await user.transactItems({
@@ -176,9 +170,9 @@ export async function agilityArenaXPCommand(user: MUser, qty: number): CommandRe
 	const xpToGive = (hasKaramjaMed ? 379.5 : 345) * qty;
 
 	const str = `Redeemed ${qty}x Agility arena tickets for ${xpToGive.toLocaleString()} Agility XP. (${(xpToGive / qty).toFixed(2)} ea)`;
-	await transactItems({ userID: user.id, itemsToRemove: new Bank().add('Agility arena ticket', qty) });
+	await user.transactItems({ itemsToRemove: new Bank().add('Agility arena ticket', qty) });
 	await user.addXP({
-		skillName: SkillsEnum.Agility,
+		skillName: 'agility',
 		amount: xpToGive,
 		artificial: true
 	});

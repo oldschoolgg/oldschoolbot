@@ -1,8 +1,9 @@
 import { Bank, EMonster, type ItemBank } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
-import { ClueTiers } from '../../../src/lib/clues/clueTiers';
-import { mockClient } from '../util';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { mockClient } from '../util.js';
+import { BSOTestUtil } from './bsoTestUtil.js';
 
 describe('Clue Uprader', async () => {
 	const client = await mockClient();
@@ -14,10 +15,10 @@ describe('Clue Uprader', async () => {
 				bank: new Bank().add('Clue upgrader', 1),
 				maxed: true
 			});
-			await user.giveMaterials();
+			await BSOTestUtil.giveMaterials(user);
 			const previousMats = user.materialsOwned().clone();
 
-			const result = await user.pickpocket(EMonster.FEMALE_HAM_MEMBER);
+			const result = await BSOTestUtil.pickpocket(user, EMonster.FEMALE_HAM_MEMBER);
 			expect(result.commandResult).toContain('is now going to');
 			const newMats = user.materialsOwned().clone();
 
@@ -29,9 +30,7 @@ describe('Clue Uprader', async () => {
 
 			expect(newMats.amount('metallic')).toBeLessThan(previousMats.amount('metallic'));
 			expect(newMats.amount('treasured')).toBeLessThan(previousMats.amount('treasured'));
-			const clueUpgraderStats = new Bank(
-				(await user.fetchStats({ clue_upgrader_bank: true })).clue_upgrader_bank as ItemBank
-			);
+			const clueUpgraderStats = new Bank((await user.fetchStats()).clue_upgrader_bank as ItemBank);
 			expect(clueUpgraderStats.length).toBe(1);
 
 			await client.sync();
@@ -50,8 +49,6 @@ describe('Clue Uprader', async () => {
 			expect(mediumCluesReceived).toEqual(clueUpgraderStats.amount('Clue scroll (medium)'));
 			expect(mediumCluesReceived).toEqual(user.bank.amount('Clue scroll (medium)'));
 		},
-		{
-			retry: 1
-		}
+		{ retry: 1 }
 	);
 });

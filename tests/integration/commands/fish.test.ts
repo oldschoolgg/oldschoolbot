@@ -1,11 +1,11 @@
-import { increaseNumByPercent } from 'e';
-import { Bank, EItem, ItemGroups, convertLVLtoXP } from 'oldschooljs';
+import { increaseNumByPercent } from '@oldschoolgg/toolkit';
+import { Bank, convertLVLtoXP, EItem, ItemGroups } from 'oldschooljs';
 import { describe, expect, it } from 'vitest';
 
-import { MAX_LEVEL } from '@/lib/constants';
-import { fishCommand } from '../../../src/mahoji/commands/fish';
+import { MAX_LEVEL } from '../../../src/lib/constants.js';
+import { fishCommand } from '../../../src/mahoji/commands/fish.js';
 import { XP_MULTIPLIER } from '../../testConstants.js';
-import { createTestUser, mockClient } from '../util';
+import { createTestUser, mockClient } from '../util.js';
 
 describe('Fish Command', async () => {
 	const client = await mockClient();

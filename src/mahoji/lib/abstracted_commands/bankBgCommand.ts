@@ -1,15 +1,11 @@
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import type { ChatInputCommandInteraction } from 'discord.js';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, resolveItems, toKMB } from 'oldschooljs';
 
-import { bankImageTask } from '@/lib/canvas/bankImage';
-import { findGroupOfUser } from '@/lib/util/findGroupOfUser';
+import { bankImageTask } from '@/lib/canvas/bankImage.js';
+import { BitField } from '@/lib/constants.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import { BitField } from '../../../lib/constants';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
-export async function bankBgCommand(interaction: ChatInputCommandInteraction, user: MUser, name: string) {
+export async function bankBgCommand(interaction: MInteraction, user: MUser, name: string) {
 	const bankImages = bankImageTask.backgroundImages;
 	const selectedImage = bankImages.find(img => stringMatches(img.name, name));
 
@@ -21,9 +17,7 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 		return 'This is already your bank background.';
 	}
 
-	const owners = selectedImage.owners ?? [];
-	const allAccounts = await findGroupOfUser(user.id);
-	if (user.bitfield.includes(BitField.isModerator) || allAccounts.some(a => owners.includes(a))) {
+	if (user.bitfield.includes(BitField.isModerator)) {
 		await user.update({
 			bankBackground: selectedImage.id
 		});
@@ -120,7 +114,7 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 		str +=
 			" **Note:** You'll have to pay this cost again if you switch to another background and want this one again.";
 
-		await handleMahojiConfirmation(interaction, str);
+		await interaction.confirmation(str);
 
 		if (selectedImage.itemCost) {
 			economyCost.add(selectedImage.itemCost);
@@ -137,7 +131,7 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 		bankBackground: selectedImage.id
 	});
 
-	updateBankSetting('economyStats_bankBgCostBank', economyCost);
+	await ClientSettings.updateBankSetting('economyStats_bankBgCostBank', economyCost);
 
 	return `Your bank background is now **${selectedImage.name}**!`;
 }

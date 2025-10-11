@@ -1,10 +1,8 @@
-import { randInt } from 'e';
+import { randInt, roll } from '@oldschoolgg/rng';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { roll } from '@/lib/util/rng';
-import { SkillsEnum } from '../../skilling/types';
-import { skillingPetDropRate } from '../../util';
-import type { MUserClass } from './../../MUser';
+import type { MUserClass } from '@/lib/MUser.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 const Room1Table = new LootTable().add('Ivory Comb', 1, 3).add('Pottery scarab').add('Pottery statuette');
 
@@ -129,7 +127,7 @@ export const plunderBoosts = new Bank({
 export function lootRoom(user: MUserClass, room: number): [Bank, number] {
 	const loot = new Bank();
 	const roomObj = plunderRooms[room - 1];
-	const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Thieving, roomObj.rockyChance);
+	const { petDropRate } = skillingPetDropRate(user, 'thieving', roomObj.rockyChance);
 	if (roll(petDropRate)) {
 		loot.add('Rocky');
 	}

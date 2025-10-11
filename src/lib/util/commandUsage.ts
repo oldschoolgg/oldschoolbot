@@ -1,6 +1,7 @@
-import type { AbstractCommand, CommandOptions, MahojiUserOption } from '@oldschoolgg/toolkit/discord-util';
-import type { Prisma, command_name_enum } from '@prisma/client';
-import { isObject } from 'e';
+import { isObject } from '@oldschoolgg/toolkit';
+import type { command_name_enum, Prisma } from '@prisma/client';
+
+import type { CommandOptions, MahojiUserOption } from '@/lib/discord/index.js';
 
 function isMahojiUserOption(data: any): data is MahojiUserOption {
 	return 'user' in data && 'id' in data.user;
@@ -58,42 +59,29 @@ function getCommandArgs(
 
 export function makeCommandUsage({
 	userID,
-	channelID,
-	guildID,
 	commandName,
 	args,
 	isContinue,
 	inhibited,
-	continueDeltaMillis
+	continueDeltaMillis,
+	interaction
 }: {
 	userID: string | bigint;
-	channelID: string | bigint;
-	guildID?: string | bigint | null;
 	commandName: string;
 	args: CommandOptions;
 	isContinue: null | boolean;
 	inhibited: boolean;
+	interaction: MInteraction;
 	continueDeltaMillis: number | null;
 }): Prisma.CommandUsageCreateInput {
 	return {
 		user_id: BigInt(userID),
 		command_name: commandName as command_name_enum,
 		args: getCommandArgs(commandName, args),
-		channel_id: BigInt(channelID),
-		guild_id: guildID ? BigInt(guildID) : null,
+		channel_id: BigInt(interaction.channelId),
+		guild_id: interaction.guildId ? BigInt(interaction.guildId) : null,
 		is_continue: isContinue ?? undefined,
 		inhibited,
 		continue_delta_millis: continueDeltaMillis
 	};
-}
-
-const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
-export function shouldTrackCommand(command: AbstractCommand, args: CommandOptions) {
-	if (!Array.isArray(args)) return true;
-	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
-		if (command.name === name && typeof args[0] === 'string' && subs.includes(args[0])) {
-			return false;
-		}
-	}
-	return true;
 }

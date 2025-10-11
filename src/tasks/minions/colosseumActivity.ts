@@ -1,25 +1,21 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { randArrItem } from 'e';
+import { randArrItem } from '@oldschoolgg/rng';
+import { Emoji } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, resolveItems } from 'oldschooljs';
 
-import { ColosseumWaveBank, colosseumWaves } from '../../lib/colosseum';
-import { refundChargeBank } from '../../lib/degradeableItems';
-import { trackLoot } from '../../lib/lootTrack';
-import { ChargeBank } from '../../lib/structures/Bank';
-import type { ColoTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { ColosseumWaveBank, colosseumWaves } from '@/lib/colosseum.js';
+import { refundChargeBank } from '@/lib/degradeableItems.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
+import type { ColoTaskOptions } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 const sunfireItems = resolveItems(['Sunfire fanatic helm', 'Sunfire fanatic cuirass', 'Sunfire fanatic chausses']);
 
 export const colosseumTask: MinionTask = {
 	type: 'Colosseum',
-	async run(data: ColoTaskOptions) {
+	async run(data: ColoTaskOptions, { user, handleTripFinish }) {
 		const {
 			channelID,
-			userID,
 			loot: possibleLoot,
 			quantity,
 			diedAt,
@@ -29,7 +25,6 @@ export const colosseumTask: MinionTask = {
 			bloodFuryCharges,
 			voidStaffCharges
 		} = data;
-		const user = await mUserFetch(userID);
 
 		const deathCount = diedAt?.filter(value => value !== null).length || 0;
 		const successfulKills = quantity - deathCount;
@@ -41,13 +36,13 @@ export const colosseumTask: MinionTask = {
 			for (let j = 0; j < waves; j++) {
 				newKCs.add(j + 1);
 			}
-			const kcBank = await user.fetchStats({ colo_kc_bank: true });
+			const kcBank = await user.fetchStats();
 			for (const [key, value] of Object.entries(kcBank.colo_kc_bank as ItemBank))
 				newKCs.add(Number.parseInt(key), value);
-			await userStatsUpdate(user.id, { colo_kc_bank: newKCs._bank });
+			await user.statsUpdate({ colo_kc_bank: newKCs._bank });
 		}
 
-		const stats = await user.fetchStats({ colo_kc_bank: true, colo_max_glory: true });
+		const stats = await user.fetchStats();
 		const coloWaveKCs = stats.colo_kc_bank;
 		const newKCsStr = coloWaveKCs
 			? Object.entries(coloWaveKCs)
@@ -139,8 +134,8 @@ export const colosseumTask: MinionTask = {
 
 		const { previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		await updateBankSetting('colo_loot', loot);
-		await userStatsBankUpdate(user, 'colo_loot', loot);
+		await ClientSettings.updateBankSetting('colo_loot', loot);
+		await user.statsBankUpdate('colo_loot', loot);
 		await trackLoot({
 			totalLoot: loot,
 			id: 'colo',
@@ -159,7 +154,7 @@ export const colosseumTask: MinionTask = {
 
 		let gloryStr = null;
 		if (!stats.colo_max_glory || maxGlory > stats.colo_max_glory) {
-			await userStatsUpdate(user.id, { colo_max_glory: maxGlory });
+			await user.statsUpdate({ colo_max_glory: maxGlory });
 			gloryStr = `**Your new max glory is:** ${maxGlory}!`;
 		}
 

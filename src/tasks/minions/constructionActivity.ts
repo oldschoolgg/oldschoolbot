@@ -1,17 +1,17 @@
-import { calcPercentOfNum, roll } from 'e';
+import { calcBabyYagaHouseDroprate } from '@/lib/bso/bsoUtil.js';
+
+import { roll } from '@oldschoolgg/rng';
+import { calcPercentOfNum } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { calcBabyYagaHouseDroprate } from '@/lib/bso/bsoUtil';
-import { Construction } from '@/lib/skilling/skills/construction';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { Construction } from '@/lib/skilling/skills/construction/index.js';
+import type { ConstructionActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const constructionTask: MinionTask = {
 	type: 'Construction',
-	async run(data: ConstructionActivityTaskOptions) {
-		const { objectID, quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ConstructionActivityTaskOptions, { user, handleTripFinish }) {
+		const { objectID, quantity, channelID, duration } = data;
+
 		const object = Construction.constructables.find(object => object.id === objectID)!;
 		const xpReceived = quantity * object.xp;
 		let bonusXP = 0;
@@ -20,7 +20,7 @@ export const constructionTask: MinionTask = {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xpReceived);
 		}
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Construction,
+			skillName: 'construction',
 			amount: xpReceived + bonusXP,
 			duration
 		});

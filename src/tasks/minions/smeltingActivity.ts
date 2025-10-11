@@ -1,20 +1,18 @@
-import { Time, percentChance, roll } from 'e';
+import { BlacksmithOutfit, MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+
+import { percentChance, roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, itemID } from 'oldschooljs';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
-import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
-import { BlacksmithOutfit } from '../../lib/bsoOpenables';
-import { globalDroprates } from '../../lib/data/globalDroprates';
-import Smithing from '../../lib/skilling/skills/smithing';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import Smithing from '@/lib/skilling/skills/smithing/index.js';
+import type { SmeltingActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const smeltingTask: MinionTask = {
 	type: 'Smelting',
-	async run(data: SmeltingActivityTaskOptions) {
-		let { barID, quantity, userID, channelID, duration, blastf } = data;
-		const user = await mUserFetch(userID);
+	async run(data: SmeltingActivityTaskOptions, { user, handleTripFinish }) {
+		let { barID, quantity, channelID, duration, blastf } = data;
 
 		const bar = Smithing.Bars.find(bar => bar.id === barID)!;
 
@@ -40,7 +38,7 @@ export const smeltingTask: MinionTask = {
 		}
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Smithing,
+			skillName: 'smithing',
 			amount: xpReceived * (hasBS ? 1.1 : 1),
 			duration
 		});
@@ -83,8 +81,7 @@ export const smeltingTask: MinionTask = {
 			}
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

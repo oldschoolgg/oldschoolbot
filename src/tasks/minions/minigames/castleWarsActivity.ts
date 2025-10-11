@@ -1,18 +1,14 @@
-import { SimpleTable } from '@oldschoolgg/toolkit/structures';
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { userHasFlappy } from '../../../lib/invention/inventions';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 const ticketTable = new SimpleTable<number>().add(1, 4).add(2, 4).add(3, 1);
 
 export const castleWarsTask: MinionTask = {
 	type: 'CastleWars',
-	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
+	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
 		const { channelID, quantity, userID, duration } = data;
-
-		const user = await mUserFetch(userID);
 
 		await user.incrementMinigameScore('castle_wars', quantity);
 
@@ -22,14 +18,13 @@ export const castleWarsTask: MinionTask = {
 		}
 		const boosts = [];
 
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 			boosts.push(flappyRes.userMsg);
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

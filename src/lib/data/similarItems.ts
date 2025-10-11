@@ -1,8 +1,6 @@
-import { itemID, resolveItems } from 'oldschooljs';
+import { dyedItems } from '@/lib/bso/dyedItems.js';
 
-import { dyedItems } from '../dyedItems';
-import skillcapes from '../skilling/skillcapes';
-import getOSItem from '../util/getOSItem';
+import { Items, itemID, resolveItems } from 'oldschooljs';
 
 import {
 	gracefulCapes,
@@ -11,7 +9,8 @@ import {
 	gracefulHoods,
 	gracefulLegs,
 	gracefulTops
-} from './gracefulVariants';
+} from '@/lib/data/gracefulVariants.js';
+import skillcapes from '@/lib/skilling/skillcapes.js';
 
 const scytheChargedSimilar = ['Holy scythe of vitur', 'Sanguine scythe of vitur'];
 const scytheUnchargedSimilar = ['Holy scythe of vitur (uncharged)', 'Sanguine scythe of vitur (uncharged)'];
@@ -440,10 +439,10 @@ const source: [string, (string | number)[]][] = [
 
 // Build skill cape & master cape similar items. This also handles comp and comp(t) receiving all skillcape and master cape perks.
 for (const cape of skillcapes) {
-	const untrimmedCape = getOSItem(cape.untrimmed).name;
-	const trimmedCape = getOSItem(cape.trimmed).name;
-	const masterCape = getOSItem(cape.masterCape.id).name;
-	const expertCape = cape.expertCape ? getOSItem(cape.expertCape.id).name : null;
+	const untrimmedCape = Items.getOrThrow(cape.untrimmed).name;
+	const trimmedCape = Items.getOrThrow(cape.trimmed).name;
+	const masterCape = Items.getOrThrow(cape.masterCape.id).name;
+	const expertCape = cape.expertCape ? Items.getOrThrow(cape.expertCape.id).name : null;
 	const invertedMasterCape = cape.masterCapeInverted.name;
 
 	const skillCapeList = [

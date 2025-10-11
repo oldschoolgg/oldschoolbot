@@ -1,26 +1,18 @@
-import { type CommandRunOptions, truncateString } from '@oldschoolgg/toolkit';
-import { Emoji, Events } from '@oldschoolgg/toolkit/constants';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { roll } from 'e';
+import { Emoji, Events, truncateString } from '@oldschoolgg/toolkit';
 import { Bank, type Item, type ItemBank, resolveItems, toKMB } from 'oldschooljs';
 
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { cats } from '../../lib/growablePets';
-import minionIcons from '../../lib/minions/data/minionIcons';
-import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { filterOption } from '../lib/mahojiCommandOptions';
-import { userStatsBankUpdate } from '../mahojiSettings';
-import { sellPriceOfItem } from './sell';
+import { filterOption } from '@/lib/discord/index.js';
+import { cats } from '@/lib/growablePets.js';
+import minionIcons from '@/lib/minions/data/minionIcons.js';
+import { parseBank } from '@/lib/util/parseStringBank.js';
+import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
 
 async function trackSacBank(user: MUser, bank: Bank) {
 	await Promise.all([
-		updateBankSetting('economyStats_sacrificedBank', bank),
-		userStatsBankUpdate(user, 'sacrificed_bank', bank)
+		await ClientSettings.updateBankSetting('economyStats_sacrificedBank', bank),
+		user.statsBankUpdate('sacrificed_bank', bank)
 	]);
-	const stats = await user.fetchStats({ sacrificed_bank: true });
+	const stats = await user.fetchStats();
 	return new Bank(stats.sacrificed_bank as ItemBank);
 }
 
@@ -62,28 +54,27 @@ export const sacrificeCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'items',
 			description: 'The items you want to sacrifice.',
 			required: false
 		},
 		filterOption,
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'search',
 			description: 'A search query for items in your bank to sacrifice.',
 			required: false
 		}
 	],
 	run: async ({
-		userID,
+		user,
 		options,
 		interaction
 	}: CommandRunOptions<{ items?: string; filter?: string; search?: string }>) => {
-		const user = await mUserFetch(userID);
 		const currentIcon = user.user.minion_icon;
 		const sacVal = Number(user.user.sacrificedValue);
-		const { sacrificed_bank: sacrificedBank } = await user.fetchStats({ sacrificed_bank: true });
+		const { sacrificed_bank: sacrificedBank } = await user.fetchStats();
 		const sacUniqVal = sacrificedBank !== null ? Object.keys(sacrificedBank).length : 0;
 
 		// Show user sacrifice stats if no options are given for /sacrifice
@@ -96,7 +87,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			);
 		}
 
-		await deferInteraction(interaction);
+		await interaction.defer();
 
 		const bankToSac = parseBank({
 			inputStr: options.items,
@@ -113,11 +104,6 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			return `You don't own ${bankToSac}.`;
 		}
 
-		const cantSac = bankToSac.items().find(i => i[0].customItemData?.cantBeSacrificed);
-		if (cantSac) {
-			return `${cantSac[0].name} can't be sacrificed!`;
-		}
-
 		if (bankToSac.length === 0) {
 			return `No items were provided.\nYour current sacrificed value is: ${sacVal.toLocaleString()} (${toKMB(
 				sacVal
@@ -130,8 +116,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			const [item, quantity] = bankToSac.items()[0];
 			const deathRunes = quantity * 200;
 
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`${user.badgedUsername}.. are you sure you want to sacrifice your ${item.name}${
 					bankToSac.length > 1 ? 's' : ''
 				} for ${deathRunes} death runes? *Note: These are cute, fluffy little cats.*`
@@ -156,31 +141,15 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			}
 		}
 
-		await handleMahojiConfirmation(
-			interaction,
+		await interaction.confirmation(
 			`${user}, are you sure you want to sacrifice ${truncateString(bankToSac.toString(), 15000)}? This will add ${totalPrice.toLocaleString()} (${toKMB(
 				totalPrice
 			)}) to your sacrificed amount.`
 		);
 		await user.removeItemsFromBank(bankToSac);
 
-		if (totalPrice > 5_000_000_000) {
-			globalClient.emit(Events.ServerNotification, `${user.usernameOrMention} just sacrificed ${bankToSac}!`);
-		}
-		let str = '';
-		const hasSkipper = user.usingPet('Skipper') || user.owns('Skipper');
-		if (hasSkipper) {
-			totalPrice = Math.floor(totalPrice * 1.3);
-		}
-
-		let hammyCount = 0;
-		for (let i = 0; i < Math.floor(totalPrice / 51_530_000); i++) {
-			if (roll(140)) {
-				hammyCount++;
-			}
-		}
-		if (hammyCount) {
-			await user.addItemsToBank({ items: new Bank().add('Hammy', hammyCount), collectionLog: true });
+		if (totalPrice > 200_000_000) {
+			globalClient.emit(Events.ServerNotification, `${user.badgedUsername} just sacrificed ${bankToSac}!`);
 		}
 
 		await user.update({
@@ -192,6 +161,8 @@ export const sacrificeCommand: OSBMahojiCommand = {
 		const newValue = user.user.sacrificedValue;
 
 		await trackSacBank(user, bankToSac);
+
+		let str = '';
 
 		// Ignores notifying the user/server if the user is using a custom icon
 		if (!currentIcon || minionIcons.find(m => m.emoji === currentIcon)) {
@@ -209,19 +180,6 @@ export const sacrificeCommand: OSBMahojiCommand = {
 				}
 			}
 		}
-
-		if (hammyCount) {
-			str +=
-				'\n\n<:Hamstare:685036648089780234> A small hamster called Hammy has crawled into your bank and is now staring intensely into your eyes.';
-			if (hammyCount > 1) {
-				str += ` **(x${hammyCount})**`;
-			}
-		}
-		if (hasSkipper) {
-			str +=
-				'\n<:skipper:755853421801766912> Skipper has negotiated with the bank and gotten you +30% extra value from your sacrifice.';
-		}
-
 		return `You sacrificed ${bankToSac}, with a value of ${totalPrice.toLocaleString()}gp (${toKMB(
 			totalPrice
 		)}). Your total amount sacrificed is now: ${newValue.toLocaleString()}. ${str}`;

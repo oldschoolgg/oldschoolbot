@@ -1,0 +1,84 @@
+import { shuffleArr } from '@oldschoolgg/rng';
+import { channelIsSendable, noOp, Time } from '@oldschoolgg/toolkit';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ComponentType } from 'discord.js';
+
+function simpleHash(str: string): number {
+	let h = 0;
+	for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) | 0;
+	return h >>> 0;
+}
+
+export async function buttonUserPicker({
+	channelID,
+	str,
+	timer = Time.Second * 30,
+	ironmenAllowed,
+	answers,
+	creator,
+	creatorGetsTwoGuesses
+}: {
+	channelID: string;
+	str: string;
+	timer?: number;
+	ironmenAllowed: boolean;
+	initialUsers?: bigint[];
+	answers: string[];
+	creator: string;
+	creatorGetsTwoGuesses?: boolean;
+}) {
+	const channel = globalClient.channels.cache.get(channelID.toString());
+	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
+
+	const correctCustomID = simpleHash(answers[0]).toString();
+
+	const buttons = answers.map(i =>
+		new ButtonBuilder().setLabel(i).setStyle(ButtonStyle.Secondary).setCustomId(simpleHash(i).toString())
+	);
+
+	const confirmMessage = await channel.send({
+		content: str,
+		components: [new ActionRowBuilder<ButtonBuilder>().addComponents(shuffleArr(buttons))]
+	});
+	const guessed: string[] = [];
+
+	return new Promise<string | null>(async resolve => {
+		const collector = confirmMessage.createMessageComponentCollector<ComponentType.Button>({
+			time: timer
+		});
+
+		collector.on('collect', async i => {
+			const { id } = i.user;
+			const mUser = await mUserFetch(id);
+			const isCreator = id === creator;
+			const notAllowed = !ironmenAllowed && mUser.isIronman;
+			if (notAllowed && !isCreator) {
+				i.reply({ ephemeral: true, content: "You aren't allowed to participate.." });
+				return;
+			}
+			if (guessed.includes(id)) {
+				const amountTimesGuessed = guessed.filter(g => g.toString() === i.user.id).length;
+				if (
+					!creatorGetsTwoGuesses ||
+					i.user.id !== creator.toString() ||
+					(amountTimesGuessed >= 2 && isCreator && creatorGetsTwoGuesses)
+				) {
+					i.reply({ ephemeral: true, content: 'You already guessed wrong.' });
+					return;
+				}
+			}
+			if (i.customId === correctCustomID) {
+				resolve(id);
+				collector.stop();
+				i.reply({ ephemeral: true, content: 'You got it!' });
+			} else {
+				i.reply({ ephemeral: true, content: 'Wrong!' });
+				guessed.push(id);
+			}
+		});
+
+		collector.on('end', () => {
+			confirmMessage.delete().catch(noOp);
+			resolve(null);
+		});
+	});
+}

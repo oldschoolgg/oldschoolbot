@@ -1,12 +1,12 @@
-import '../../lib/customItems/customItems';
-import '../data/itemAliases';
+import '../../lib/customItems/customItems.js';
+import '../data/itemAliases.js';
 
-import { randInt, roll } from 'e';
-import { Bank, EliteMimicTable, MasterMimicTable } from 'oldschooljs';
+import { randInt, roll } from '@oldschoolgg/rng';
 import type { ItemBank } from 'oldschooljs';
+import { Bank, EliteMimicTable, MasterMimicTable } from 'oldschooljs';
 
-import type { CasketWorkerArgs } from '.';
-import { ClueTiers } from '../clues/clueTiers';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import type { CasketWorkerArgs } from '@/lib/workers/index.js';
 
 if (global.prisma) {
 	throw new Error('Prisma is loaded in the casket worker!');

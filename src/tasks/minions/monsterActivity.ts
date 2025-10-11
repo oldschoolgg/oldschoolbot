@@ -1,35 +1,35 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { calcPerHour } from '@oldschoolgg/toolkit/util';
-import { Time, calcWhatPercent, deepClone, percentChance, reduceNumByPercent, roll } from 'e';
-import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
+import { isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
+import { type MidPVMEffectArgs, oriEffect, rollForBSOThings } from '@/lib/bso/pvmEffects.js';
 
-import { logError } from '@/lib/util/logError';
-import { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils';
-import { type MidPVMEffectArgs, oriEffect, rollForBSOThings } from '../../lib/bso/pvmEffects';
-import { MysteryBoxes } from '../../lib/bsoOpenables';
-import type { BitField } from '../../lib/constants';
-import { userhasDiaryTierSync } from '../../lib/diaries';
-import { isDoubleLootActive } from '../../lib/doubleLoot';
-import { trackLoot } from '../../lib/lootTrack';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { KOSCHEI_ID } from '../../lib/minions/data/killableMonsters/custom/bosses/Koschei';
-import { type AttackStyles, addMonsterXPRaw } from '../../lib/minions/functions';
-import announceLoot from '../../lib/minions/functions/announceLoot';
-import { DiaryID, type KillableMonster } from '../../lib/minions/types';
-import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
-import { type CurrentSlayerInfo, calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
-import type { SlayerMaster } from '../../lib/slayer/types';
-import type { GearBank } from '../../lib/structures/GearBank';
-import { type KCBank, safelyMakeKCBank } from '../../lib/structures/KCBank';
-import { MUserStats } from '../../lib/structures/MUserStats';
-import { UpdateBank } from '../../lib/structures/UpdateBank';
-import type { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
-import { increaseWildEvasionXp } from '../../lib/util/calcWildyPkChance';
-import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { sendToChannelID } from '../../lib/util/webhook';
+import { percentChance, roll } from '@oldschoolgg/rng';
+import { calcPerHour, calcWhatPercent, Emoji, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { Bank, EMonster, type MonsterKillOptions, MonsterSlayerMaster, Monsters } from 'oldschooljs';
+import { clone } from 'remeda';
+
+import type { BitField } from '@/lib/constants.js';
+import { userhasDiaryTierSync } from '@/lib/diaries.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { addMonsterXPRaw } from '@/lib/minions/functions/addMonsterXPRaw.js';
+import announceLoot from '@/lib/minions/functions/announceLoot.js';
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import { DiaryID, type KillableMonster } from '@/lib/minions/types.js';
+import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { type CurrentSlayerInfo, calculateSlayerPoints, getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import type { SlayerMaster } from '@/lib/slayer/types.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import { type KCBank, safelyMakeKCBank } from '@/lib/structures/KCBank.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
+import { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import { ashSanctifierEffect } from '@/lib/util/ashSanctifier.js';
+import calculateGearLostOnDeathWilderness from '@/lib/util/calculateGearLostOnDeathWilderness.js';
+import { increaseWildEvasionXp } from '@/lib/util/calcWildyPkChance.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
 
 function handleSlayerTaskCompletion({
 	slayerContext,
@@ -250,7 +250,7 @@ export function doMonsterTrip(data: newOptions) {
 			// 1 in 20 to get smited without antiPKSupplies and 1 in 300 if the user has super restores
 			const hasPrayerLevel = gearBank.skillsAsLevels.prayer >= 25;
 			const protectItem = roll(hasWildySupplies ? 300 : 20) ? false : hasPrayerLevel;
-			const userGear = { ...deepClone(gearBank.gear.wildy.raw()) };
+			const userGear = { ...clone(gearBank.gear.wildy.raw()) };
 
 			const calc = calculateGearLostOnDeathWilderness({
 				gear: userGear,
@@ -527,14 +527,13 @@ export function doMonsterTrip(data: newOptions) {
 
 export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
-	async run(data: MonsterActivityTaskOptions) {
+	async run(data: MonsterActivityTaskOptions, { user, handleTripFinish }) {
 		const { duration } = data;
-		const user = await mUserFetch(data.userID);
-		const stats = await MUserStats.fromID(data.userID);
+		const stats = await user.fetchMStats();
 		const minigameScores = await user.fetchMinigames();
 		const slayerInfo = await getUsersCurrentSlayerInfo(user.id);
 
-		if (data.mi === KOSCHEI_ID) {
+		if (data.mi === EBSOMonster.KOSCHEI) {
 			sendToChannelID(data.channelID, {
 				content: `${user}, ${user.minionName} failed to defeat Koschei the deathless.`
 			});
@@ -611,18 +610,21 @@ export const monsterTask: MinionTask = {
 
 		const resultOrError = await updateBank.transact(user, { isInWilderness: data.isInWilderness });
 		if (typeof resultOrError === 'string') {
-			logError(new Error(`${user.logName} monster activity updateBank transact error: ${resultOrError}`), {
-				user_id: user.id,
-				monster_id: monster.id.toString(),
-				quantity: quantity.toString()
-			});
+			Logging.logError(
+				new Error(`${user.logName} monster activity updateBank transact error: ${resultOrError}`),
+				{
+					user_id: user.id,
+					monster_id: monster.id.toString(),
+					quantity: quantity.toString()
+				}
+			);
 			return;
 		}
 		const { itemTransactionResult, rawResults } = resultOrError;
 		messages.push(...rawResults.filter(r => typeof r === 'string'));
 		const str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name} (${calcPerHour(data.q, data.duration).toFixed(1)}/hr), you now have ${newKC} KC.`;
 
-		let image = undefined;
+		let image: Awaited<ReturnType<typeof makeBankImage>> | undefined;
 
 		if (itemTransactionResult && itemTransactionResult.itemsAdded.length > 0) {
 			announceLoot({

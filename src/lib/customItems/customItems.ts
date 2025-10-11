@@ -1,23 +1,22 @@
 // Base custom items are referenced elsewhere in the custom items files and must be loaded first
-import './baseCustomItems';
-import '../deletedItems';
-import './invention';
-import './customItemsFancy';
-import './farming';
-import './pets';
-import './fishing';
-import './nex';
-import './nonCustomChanges';
-import './baxBath';
-import './dwarven';
-import './moktang';
-import './leagues';
-import './paintCans';
+import './baseCustomItems.js';
+import '../bso/deletedItems.js';
+import './invention/index.js';
+import './customItemsFancy.js';
+import './farming.js';
+import './pets.js';
+import './fishing.js';
+import './nex.js';
+import './nonCustomChanges.js';
+import './baxBath.js';
+import './dwarven.js';
+import './moktang.js';
+import './leagues.js';
+import './paintCans.js';
 
 import { EquipmentSlot, type ItemRequirements, Items, resolveItems } from 'oldschooljs';
 
-import getOSItem from '../util/getOSItem';
-import { UN_EQUIPPABLE, customItems, maxedRequirements, setCustomItem } from './util';
+import { customItems, maxedRequirements, setCustomItem, UN_EQUIPPABLE } from './util.js';
 
 setCustomItem(1579, "Thieves' armband", 'Rune gloves', {}, 100_000);
 setCustomItem(
@@ -785,7 +784,7 @@ setCustomItem(
 			}
 		}
 	},
-	(getOSItem('Twisted bow').price! + getOSItem('Zaryte bow').price!) * 1.1
+	(Items.getOrThrow('Twisted bow').price! + Items.getOrThrow('Zaryte bow').price!) * 1.1
 );
 // ----------
 // MMMR
@@ -2912,7 +2911,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		},
 		equipment: {
-			...getOSItem('Dragon dagger').equipment!,
+			...Items.getOrThrow('Dragon dagger').equipment!,
 			slot: EquipmentSlot.Shield
 		}
 	},
@@ -6094,7 +6093,7 @@ setCustomItem(
 			isSuperUntradeable: true
 		},
 		equipment: {
-			...getOSItem('Heavy ballista').equipment!,
+			...Items.getOrThrow('Heavy ballista').equipment!,
 			requirements: {
 				strength: 120
 			}
@@ -14268,6 +14267,12 @@ setCustomItem(73414, 'Veteran staff (5 year)', 'Staff of fire', {
 	customItemData: {
 		cantDropFromMysteryBoxes: true,
 		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(323_424, 'Ivy', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
 	}
 });
 

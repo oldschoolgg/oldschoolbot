@@ -1,10 +1,8 @@
-import type { ItemBank } from 'oldschooljs';
+import { type ItemBank, Items } from 'oldschooljs';
 
-import { ActivityGroup, globalConfig } from '../lib/constants';
-import type { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
-import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
-import { sql } from './postgres.js';
-import { getItem } from './util/getOSItem';
+import { ActivityGroup, globalConfig } from '@/lib/constants.js';
+import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import { taskGroupFromActivity } from '@/lib/util/taskGroupFromActivity.js';
 
 async function calculateMinionTaskCounts() {
 	const minionTaskCounts: Record<ActivityGroup, number> = {
@@ -41,8 +39,8 @@ export async function analyticsTick() {
 		total_sacrificed_value: bigint;
 		ironman_count: bigint;
 		total_gp: bigint;
-	}[] = await sql`
-SELECT 
+	}[] = await prisma.$queryRaw`
+SELECT
     COUNT(*) FILTER (WHERE "minion.hasBought" = true) AS has_bought_count,
     SUM("sacrificedValue")::bigint AS total_sacrificed_value,
     COUNT(*) FILTER (WHERE "minion.ironman" = true) AS ironman_count,
@@ -50,11 +48,11 @@ SELECT
 FROM users;
 `;
 
-	const artifact = getItem('Magical artifact')!;
-	const statuette = getItem('Demon statuette')!;
+	const artifact = Items.getOrThrow('Magical artifact')!;
+	const statuette = Items.getOrThrow('Demon statuette')!;
 
 	const economyBank = (
-		(await sql`
+		(await prisma.$queryRaw`
 			SELECT
 				json_object_agg(itemID, itemQTY)::jsonb as banks
 			FROM (
@@ -65,7 +63,8 @@ FROM users;
 			 ) s;`) as { banks: ItemBank }[]
 	)[0].banks;
 
-	const coinsInGrandExchange: { quantity: bigint }[] = await sql`SELECT quantity FROM ge_bank WHERE item_id = 995;`;
+	const coinsInGrandExchange: { quantity: bigint }[] =
+		await prisma.$queryRaw`SELECT quantity FROM ge_bank WHERE item_id = 995;`;
 
 	const totalDemonStatuetteGp =
 		(economyBank[statuette.id] ?? 1) ? economyBank[statuette.id] * statuette.highalch! : 0;

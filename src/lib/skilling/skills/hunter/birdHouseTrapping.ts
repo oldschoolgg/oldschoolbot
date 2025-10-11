@@ -1,9 +1,7 @@
-import { Time } from 'e';
-import { Bank } from 'oldschooljs';
-import { LootTable } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, Items, LootTable } from 'oldschooljs';
 
-import { nestTable, strungRabbitFootNestTable } from '../../../simulation/birdsNest';
-import getOSItem from '../../../util/getOSItem';
+import { nestTable, strungRabbitFootNestTable } from '@/lib/simulation/birdsNest.js';
 
 export interface Birdhouse {
 	name: string;
@@ -203,143 +201,143 @@ const birdhouses: Birdhouse[] = [
 
 export const birdhouseSeeds = [
 	{
-		item: getOSItem('Hammerstone seed'),
+		item: Items.getOrThrow('Hammerstone seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Asgarnian seed'),
+		item: Items.getOrThrow('Asgarnian seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Barley seed'),
+		item: Items.getOrThrow('Barley seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Yanillian seed'),
+		item: Items.getOrThrow('Yanillian seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Krandorian seed'),
+		item: Items.getOrThrow('Krandorian seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Wildblood seed'),
+		item: Items.getOrThrow('Wildblood seed'),
 		amount: 5
 	},
 	{
-		item: getOSItem('Potato seed'),
+		item: Items.getOrThrow('Potato seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Onion seed'),
+		item: Items.getOrThrow('Onion seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Cabbage seed'),
+		item: Items.getOrThrow('Cabbage seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Tomato seed'),
+		item: Items.getOrThrow('Tomato seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Sweetcorn seed'),
+		item: Items.getOrThrow('Sweetcorn seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Strawberry seed'),
+		item: Items.getOrThrow('Strawberry seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Watermelon seed'),
+		item: Items.getOrThrow('Watermelon seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Marigold seed'),
+		item: Items.getOrThrow('Marigold seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Rosemary seed'),
+		item: Items.getOrThrow('Rosemary seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Nasturtium seed'),
+		item: Items.getOrThrow('Nasturtium seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Woad seed'),
+		item: Items.getOrThrow('Woad seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Limpwurt seed'),
+		item: Items.getOrThrow('Limpwurt seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Marrentill seed'),
+		item: Items.getOrThrow('Marrentill seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Guam seed'),
+		item: Items.getOrThrow('Guam seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Tarromin seed'),
+		item: Items.getOrThrow('Tarromin seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Harralander seed'),
+		item: Items.getOrThrow('Harralander seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Jute seed'),
+		item: Items.getOrThrow('Jute seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('White lily seed'),
+		item: Items.getOrThrow('White lily seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Snape grass seed'),
+		item: Items.getOrThrow('Snape grass seed'),
 		amount: 10
 	},
 	{
-		item: getOSItem('Irit seed'),
+		item: Items.getOrThrow('Irit seed'),
 		amount: 5
 	},
 	{
-		item: getOSItem('Dwarf weed seed'),
+		item: Items.getOrThrow('Dwarf weed seed'),
 		amount: 5
 	},
 	{
-		item: getOSItem('Kwuarm seed'),
+		item: Items.getOrThrow('Kwuarm seed'),
 		amount: 5
 	},
 	{
-		item: getOSItem('Cadantine seed'),
+		item: Items.getOrThrow('Cadantine seed'),
 		amount: 5
 	},
 	{
-		item: getOSItem('Lantadyme seed'),
+		item: Items.getOrThrow('Lantadyme seed'),
 		amount: 5
 	},
 	{
-		item: getOSItem('Avantoe seed'),
+		item: Items.getOrThrow('Avantoe seed'),
 		amount: 5
 	},
 	{
-		item: getOSItem('Toadflax seed'),
+		item: Items.getOrThrow('Toadflax seed'),
 		amount: 5
 	},
 	{
-		item: getOSItem('Ranarr seed'),
+		item: Items.getOrThrow('Ranarr seed'),
 		amount: 5
 	},
 	{
-		item: getOSItem('Snapdragon seed'),
+		item: Items.getOrThrow('Snapdragon seed'),
 		amount: 5
 	},
 	{
-		item: getOSItem('Torstol seed'),
+		item: Items.getOrThrow('Torstol seed'),
 		amount: 5
 	}
 ];

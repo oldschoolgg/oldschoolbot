@@ -1,21 +1,14 @@
-import { Time, randInt, reduceNumByPercent, roll } from 'e';
-import { Bank, SkillsEnum, itemID } from 'oldschooljs';
+import { randInt, roll } from '@oldschoolgg/rng';
+import { reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { Bank, itemID } from 'oldschooljs';
 
-import {
-	implings,
-	puroImpHighTierTable,
-	puroImpNormalTable,
-	puroImpSpellTable,
-	puroImplings
-} from '../../../lib/implings';
-import type { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { userHasGracefulEquipped, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
+import { implings, puroImpHighTierTable, puroImplings, puroImpNormalTable, puroImpSpellTable } from '@/lib/implings.js';
+import type { PuroPuroActivityTaskOptions } from '@/lib/types/minions.js';
 
 function hunt(minutes: number, user: MUser, min: number, max: number) {
 	let totalQty = 0;
 	for (let i = 0; i < minutes; i++) totalQty += randInt(min, max);
-	if (!userHasGracefulEquipped(user)) totalQty = Math.floor(reduceNumByPercent(totalQty, 20));
+	if (!user.hasGracefulEquipped()) totalQty = Math.floor(reduceNumByPercent(totalQty, 20));
 	return totalQty;
 }
 
@@ -23,16 +16,16 @@ const bryophytasStaffId = itemID("Bryophyta's staff");
 
 export const puroPuroTask: MinionTask = {
 	type: 'PuroPuro',
-	async run(data: PuroPuroActivityTaskOptions) {
-		const { channelID, userID, quantity, darkLure, implingTier } = data;
-		const user = await mUserFetch(userID);
+	async run(data: PuroPuroActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, darkLure, implingTier } = data;
+
 		await user.incrementMinigameScore('puro_puro', quantity);
 		const minutes = Math.floor(data.duration / Time.Minute);
 		const bank = new Bank();
 		const missed = new Bank();
 		const itemCost = new Bank();
 		let hunterXP = 0;
-		const hunterLevel = user.skillLevel(SkillsEnum.Hunter);
+		const hunterLevel = user.skillsAsLevels.hunter;
 		const allImpQty = hunt(minutes, user, 1, 3);
 		const highTierImpQty = hunt(minutes, user, 0.75, 1) * (darkLure ? 1.2 : 1);
 		const singleImpQty = hunt(minutes, user, 5, 6);
@@ -90,10 +83,10 @@ export const puroPuroTask: MinionTask = {
 				break;
 		}
 
-		let str = `<@${userID}>, ${user.minionName} finished hunting in Puro-Puro. `;
+		let str = `<@${user.id}>, ${user.minionName} finished hunting in Puro-Puro. `;
 
 		const xpStr = await user.addXP({
-			skillName: SkillsEnum.Hunter,
+			skillName: 'hunter',
 			amount: hunterXP,
 			duration: data.duration,
 			source: 'PuroPuro'
@@ -126,7 +119,7 @@ export const puroPuroTask: MinionTask = {
 			magicXP += spellsUsed * 60;
 
 			const magicXpStr = await user.addXP({
-				skillName: SkillsEnum.Magic,
+				skillName: 'magic',
 				amount: magicXP,
 				duration: data.duration,
 				source: 'PuroPuro'
@@ -154,14 +147,13 @@ export const puroPuroTask: MinionTask = {
 
 		if (missed.length > 0) str += `\nYou missed out on ${missed} due to your hunter level being too low.`;
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			itemsToAdd: bank,
 			collectionLog: true,
 			itemsToRemove: itemCost
 		});
 
-		userStatsBankUpdate(user, 'puropuro_implings_bank', bank);
+		await user.statsBankUpdate('puropuro_implings_bank', bank);
 
 		handleTripFinish(user, channelID, str, undefined, data, bank);
 	}

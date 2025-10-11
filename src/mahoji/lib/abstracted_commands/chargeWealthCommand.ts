@@ -1,11 +1,8 @@
-import { formatDuration } from '@oldschoolgg/toolkit/util';
-import { Time } from 'e';
+import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { WildernessDiary, userhasDiaryTier } from '../../../lib/diaries';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
 
 export const wealthInventorySize = 26;
 const wealthInventoryTime = Time.Minute * 2.2;
@@ -25,7 +22,7 @@ export async function chargeWealthCommand(user: MUser, channelID: string, quanti
 		invDuration /= 3;
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'WealthCharging');
+	const maxTripLength = user.calcMaxTripLength('WealthCharging');
 
 	const max = Math.min(amountHas / wealthInventorySize, Math.floor(maxTripLength / invDuration));
 	if (quantity === undefined) {
@@ -47,9 +44,9 @@ export async function chargeWealthCommand(user: MUser, channelID: string, quanti
 		return `You don't have enough Rings of wealth, ${quantityWealths} required.`;
 	}
 
-	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
+	await ActivityManager.startTrip<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'WealthCharging'

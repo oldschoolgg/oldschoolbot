@@ -1,5 +1,12 @@
+import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divination.js';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
+
+import { randInt, roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import { Time, randInt, roll } from 'e';
 import {
 	Bank,
 	ECreature,
@@ -10,26 +17,18 @@ import {
 	toKMB
 } from 'oldschooljs';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
-import { skillingPetDropRate } from '@/lib/util';
-import { PeakTier } from '@/lib/util/peaks';
-import { GLOBAL_BSO_XP_MULTIPLIER } from '../../../lib/bso/bsoConstants';
-import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';
-import { MAX_LEVEL } from '../../../lib/constants';
-import { globalDroprates } from '../../../lib/data/globalDroprates';
-import type { UserFullGearSetup } from '../../../lib/gear';
-import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
-import { InventionID, inventionBoosts, inventionItemBoost } from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/lootTrack';
-import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter';
-import Hunter from '../../../lib/skilling/skills/hunter/hunter';
-import { type Creature, SkillsEnum } from '../../../lib/skilling/types';
-import type { Gear } from '../../../lib/structures/Gear';
-import type { Skills } from '../../../lib/types';
-import type { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { logError } from '../../../lib/util/logError.js';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
+import { MAX_LEVEL } from '@/lib/constants.js';
+import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
+import type { UserFullGearSetup } from '@/lib/gear/types.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { calcLootXPHunting, generateHerbiTable } from '@/lib/skilling/functions/calcsHunter.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
+import type { Creature } from '@/lib/skilling/types.js';
+import type { Gear } from '@/lib/structures/Gear.js';
+import type { Skills } from '@/lib/types/index.js';
+import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
+import { PeakTier } from '@/lib/util/peaks.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 const riskDeathNumbers = [
 	{
@@ -168,7 +167,7 @@ export function calculateHunterResult({
 		babyChinChance =
 			creature.name === 'Chinchompa' ? 131_395 : creature.name === 'Carnivorous chinchompa' ? 98_373 : 82_758;
 	}
-	const { petDropRate } = skillingPetDropRate(skillsAsXP.hunter, SkillsEnum.Hunter, babyChinChance);
+	const { petDropRate } = skillingPetDropRate(skillsAsXP.hunter, 'hunter', babyChinChance);
 
 	let creatureTable = creature.table;
 	let totalHerbloreXP = 0;
@@ -283,7 +282,6 @@ export function calculateHunterResult({
 
 export const hunterTask: MinionTask = {
 	type: 'Hunter',
-	isNew: true,
 	async run(data: HunterActivityTaskOptions, { handleTripFinish, user }) {
 		const {
 			creatureID,
@@ -297,14 +295,14 @@ export const hunterTask: MinionTask = {
 		const creature = Hunter.Creatures.find(c => c.id === creatureID);
 
 		if (!creature) {
-			logError(`Invalid creature ID provided: ${creatureID}`);
+			Logging.logError(`Invalid creature ID provided: ${creatureID}`);
 			return;
 		}
 
 		const crystalImpling = creature.name === 'Crystal impling';
 
 		let graceful = false;
-		if (userHasGracefulEquipped(user)) {
+		if (user.hasGracefulEquipped()) {
 			graceful = true;
 		}
 
@@ -337,7 +335,7 @@ export const hunterTask: MinionTask = {
 				bank: user.bank,
 				quantity,
 				duration,
-				creatureScores: (await user.fetchStats({ creature_scores: true })).creature_scores as ItemBank,
+				creatureScores: (await user.fetchStats()).creature_scores as ItemBank,
 				allGear: user.gear,
 				collectionLog: user.cl,
 				hasHunterMasterCape: user.hasEquippedOrInBank('Hunter master cape'),
@@ -350,14 +348,13 @@ export const hunterTask: MinionTask = {
 				experienceScore
 			});
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot,
 			itemsToRemove: totalCost
 		});
 
-		await updateBankSetting('hunter_loot', loot);
+		await ClientSettings.updateBankSetting('hunter_loot', loot);
 		await trackLoot({
 			id: creature.name,
 			changeType: 'loot',
@@ -378,14 +375,14 @@ export const hunterTask: MinionTask = {
 
 		let xpStr = '';
 		xpStr += await user.addXP({
-			skillName: SkillsEnum.Hunter,
+			skillName: 'hunter',
 			amount: totalHunterXP,
 			duration
 		});
 
 		if (totalHerbloreXP > 0) {
 			xpStr = await user.addXP({
-				skillName: SkillsEnum.Herblore,
+				skillName: 'herblore',
 				amount: totalHerbloreXP,
 				duration
 			});
@@ -394,9 +391,7 @@ export const hunterTask: MinionTask = {
 		let str = `${user}, ${user.minionName} finished hunting ${creature.name}${
 			crystalImpling
 				? '.'
-				: ` ${quantity}x times, due to clever creatures you missed out on ${
-						quantity - successfulQuantity
-					}x catches. `
+				: ` ${quantity}x times, due to clever creatures you missed out on ${quantity - successfulQuantity}x catches. `
 		}${xpStr}`;
 
 		str += `\n\nYou received: ${loot}.`;

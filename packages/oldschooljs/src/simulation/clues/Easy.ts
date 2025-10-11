@@ -1,6 +1,6 @@
-import LootTable from '../../structures/LootTable';
-import { itemID } from '../../util';
-import { BlessingTable, FirelighterTable, PrayerPageTable, TeleportScrollTable } from './General';
+import { EItem } from '@/EItem.js';
+import LootTable from '@/structures/LootTable.js';
+import { BlessingTable, FirelighterTable, PrayerPageTable, TeleportScrollTable } from './General.js';
 
 export const EasyChefTable = new LootTable().add('Golden apron').add("Golden chef's hat");
 
@@ -185,4 +185,4 @@ export const EasyStandardTable = new LootTable()
 
 export const EasyClueTable = new LootTable().add(EasyStandardTable, 1, 11).add(EasyRareTable, 1, 1);
 export const EasyCasket = new LootTable().add(EasyClueTable, [2, 4]).tertiary(50, 'Clue scroll (master)');
-EasyCasket.allItems.push(itemID('Clue scroll (master)'));
+EasyCasket.allItems.push(EItem.CLUE_SCROLL_MASTER);

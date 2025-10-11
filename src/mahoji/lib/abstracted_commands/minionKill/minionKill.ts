@@ -1,41 +1,38 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
-import { Time } from 'e';
+import { igneCommand } from '@/lib/bso/commands/igneCommand.js';
+import { kgCommand } from '@/lib/bso/commands/kgCommand.js';
+import { kkCommand } from '@/lib/bso/commands/kkCommand.js';
+import { moktangCommand } from '@/lib/bso/commands/moktangCommand.js';
+import { naxxusCommand } from '@/lib/bso/commands/naxxusCommand.js';
+import { vasaCommand } from '@/lib/bso/commands/vasaCommand.js';
+import { handleDTD } from '@/lib/bso/handleDTD.js';
+
+import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import type { InteractionReplyOptions } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
-import type { PvMMethod } from '@/lib/constants';
-import { generateDailyPeakIntervals } from '@/lib/util/peaks';
-import { handleDTD } from '../../../../lib/bso/handleDTD';
-import { colosseumCommand } from '../../../../lib/colosseum';
-import { trackLoot } from '../../../../lib/lootTrack';
-import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
-import { getUsersCurrentSlayerInfo } from '../../../../lib/slayer/slayerUtil';
-import type { MonsterActivityTaskOptions } from '../../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../../lib/util/calcMaxTripLength';
-import findMonster from '../../../../lib/util/findMonster';
-import { updateBankSetting } from '../../../../lib/util/updateBankSetting';
-import { sendToChannelID } from '../../../../lib/util/webhook';
-import { hasMonsterRequirements } from '../../../mahojiSettings';
-import { igneCommand } from '../igneCommand';
-import { kgCommand } from '../kgCommand';
-import { kkCommand } from '../kkCommand';
-import { moktangCommand } from '../moktangCommand';
-import { naxxusCommand } from '../naxxusCommand';
-import { nexCommand } from '../nexCommand';
-import { nightmareCommand } from '../nightmareCommand';
-import { getPOH } from '../pohCommand';
-import { temporossCommand } from '../temporossCommand';
-import { vasaCommand } from '../vasaCommand';
-import { wintertodtCommand } from '../wintertodtCommand';
-import { zalcanoCommand } from '../zalcanoCommand';
-import { newMinionKillCommand } from './newMinionKill';
+import { colosseumCommand } from '@/lib/colosseum.js';
+import type { PvMMethod } from '@/lib/constants.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
+import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import findMonster from '@/lib/util/findMonster.js';
+import { generateDailyPeakIntervals } from '@/lib/util/peaks.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
+import { newMinionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/newMinionKill.js';
+import { nexCommand } from '@/mahoji/lib/abstracted_commands/nexCommand.js';
+import { nightmareCommand } from '@/mahoji/lib/abstracted_commands/nightmareCommand.js';
+import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
+import { temporossCommand } from '@/mahoji/lib/abstracted_commands/temporossCommand.js';
+import { wintertodtCommand } from '@/mahoji/lib/abstracted_commands/wintertodtCommand.js';
+import { zalcanoCommand } from '@/mahoji/lib/abstracted_commands/zalcanoCommand.js';
+import { hasMonsterRequirements } from '@/mahoji/mahojiSettings.js';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 
 export async function minionKillCommand(
 	user: MUser,
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	channelID: string,
 	name: string,
 	inputQuantity: number | undefined,
@@ -74,7 +71,7 @@ export async function minionKillCommand(
 	if (name.toLowerCase().includes('moktang')) return moktangCommand(user, channelID, inputQuantity);
 	if (name.toLowerCase().includes('naxxus')) return naxxusCommand(user, channelID, inputQuantity);
 	if (['vasa', 'vasa magus'].some(i => name.toLowerCase().includes(i))) {
-		return vasaCommand(user, channelID, inputQuantity);
+		return vasaCommand(interaction, user, channelID, inputQuantity);
 	}
 
 	let monster = findMonster(name);
@@ -97,7 +94,7 @@ export async function minionKillCommand(
 
 	if (slayerInfo.assignedTask === null && onTask) return 'You are no longer on a slayer task for this monster!';
 
-	const stats: { pk_evasion_exp: number } = await user.fetchStats({ pk_evasion_exp: true });
+	const stats: { pk_evasion_exp: number } = await user.fetchStats();
 
 	const royalTitansGroupIDs = [Monsters.Branda.id, Monsters.Eldric.id, Monsters.RoyalTitans.id];
 
@@ -116,7 +113,7 @@ export async function minionKillCommand(
 		isTryingToUseWildy: wilderness ?? false,
 		monsterKC: kcForBonus,
 		inputPVMMethod: method,
-		maxTripLength: calcMaxTripLength(user, 'MonsterKilling'),
+		maxTripLength: user.calcMaxTripLength('MonsterKilling'),
 		pkEvasionExperience: stats.pk_evasion_exp,
 		poh: await getPOH(user.id),
 		inputQuantity,
@@ -153,7 +150,7 @@ export async function minionKillCommand(
 	}
 
 	if (result.updateBank.itemCostBank.length > 0) {
-		await updateBankSetting('economyStats_PVMCost', result.updateBank.itemCostBank);
+		await ClientSettings.updateBankSetting('economyStats_PVMCost', result.updateBank.itemCostBank);
 		await trackLoot({
 			id: monster.name,
 			totalCost: result.updateBank.itemCostBank,
@@ -169,7 +166,7 @@ export async function minionKillCommand(
 	}
 
 	const { bob, usingCannon, cannonMulti, chinning, died, pkEncounters, hasWildySupplies } = result.currentTaskOptions;
-	await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
+	await ActivityManager.startTrip<MonsterActivityTaskOptions>({
 		mi: monster.id,
 		userID: user.id,
 		channelID,

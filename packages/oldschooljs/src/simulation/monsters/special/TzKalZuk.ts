@@ -1,8 +1,6 @@
-import { roll } from 'e';
-
-import type { MonsterKillOptions } from '../../../meta/types';
-import Bank from '../../../structures/Bank';
-import Monster from '../../../structures/Monster';
+import { Bank } from '@/structures/Bank.js';
+import { Monster, type MonsterKillOptions } from '@/structures/Monster.js';
+import { roll } from '@/util/smallUtils.js';
 
 export class TzKalZukClass extends Monster {
 	public kill(quantity = 1, options: MonsterKillOptions = {}): Bank {

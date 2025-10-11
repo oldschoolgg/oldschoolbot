@@ -26,7 +26,7 @@ export class Collection<K, V> extends Map<K, V> {
 		throw new Error('No item found');
 	}
 
-	array() {
+	array(): V[] {
 		return Array.from(this.values());
 	}
 
@@ -36,5 +36,6 @@ export class Collection<K, V> extends Map<K, V> {
 				return value;
 			}
 		}
+		return undefined;
 	}
 }

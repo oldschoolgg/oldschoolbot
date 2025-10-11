@@ -1,22 +1,18 @@
-import { cleanUsername } from '@oldschoolgg/toolkit/discord-util';
-import { Stopwatch } from '@oldschoolgg/toolkit/structures';
+import { cleanUsername, noOp, Stopwatch } from '@oldschoolgg/toolkit';
 import type { Prisma, User } from '@prisma/client';
-import { type Guild, bold, userMention } from 'discord.js';
-import { calcWhatPercent, noOp, objectEntries, sumArr } from 'e';
-import { type Bank, type Monster, Monsters, calcCombatLevel, convertXPtoLVL } from 'oldschooljs';
+import { type Guild, userMention } from 'discord.js';
+import { convertXPtoLVL } from 'oldschooljs';
 
-import type { MUserClass } from './MUser';
-import { usernameWithBadgesCache } from './cache';
-import { BitField, MAX_LEVEL, MAX_XP, globalConfig } from './constants';
-import type { SkillNameType, SkillsEnum } from './skilling/types';
-import type { GearBank } from './structures/GearBank';
-import type { Skills } from './types';
-import type { GroupMonsterActivityTaskOptions } from './types/minions';
-import { makeBadgeString } from './util/makeBadgeString';
-import { itemNameFromID } from './util/smallUtils';
-import { sendToChannelID } from './util/webhook.js';
+import { usernameWithBadgesCache } from '@/lib/cache.js';
+import { BitField, globalConfig, MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
+import type { MUserClass } from '@/lib/MUser.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
 
-// @ts-ignore ignore
+// @ts-expect-error ignore
 BigInt.prototype.toJSON = function () {
 	return this.toString();
 };
@@ -32,69 +28,9 @@ export function getSupportGuild(): Guild | null {
 	return guild;
 }
 
-export function calcTotalLevel(skills: Skills) {
-	return sumArr(Object.values(skills));
-}
-
-export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
-	for (const [skillName, level] of objectEntries(requirements)) {
-		if ((skillName as string) === 'combat') {
-			if (calcCombatLevel(skills as any, MAX_LEVEL) < level!) return false;
-		} else {
-			const xpHas = skills[skillName];
-			const levelHas = convertXPtoLVL(xpHas ?? 1, MAX_LEVEL);
-			if (levelHas < level!) return false;
-		}
-	}
-	return true;
-}
-
-export function getMonster(str: string): Monster {
-	const mon = Monsters.find(_m => _m.name === str);
-
-	if (!mon) {
-		throw new Error(`Invalid monster name given: ${str}`);
-	}
-	return mon;
-}
-
-export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: number[]) {
-	const result = [];
-	let uniquesReceived = 0;
-	for (const [item, qty] of bank.items().sort((a, b) => a[1] - b[1])) {
-		if (uniques.includes(item.id)) {
-			uniquesReceived += qty;
-		}
-		const rate = Math.round(iterations / qty);
-		if (rate < 2) continue;
-		let { name } = item;
-		if (uniques.includes(item.id)) name = bold(name);
-		result.push(`${qty}x ${name} (1 in ${rate})`);
-	}
-	result.push(
-		`\n**${uniquesReceived}x Uniques (1 in ${Math.round(iterations / uniquesReceived)} which is ${calcWhatPercent(
-			uniquesReceived,
-			iterations
-		)}%)**`
-	);
-	return result.join(', ');
-}
-
-export function convertPercentChance(percent: number) {
-	return (1 / (percent / 100)).toFixed(1);
-}
-
-export function ISODateString(date?: Date) {
-	return (date ?? new Date()).toISOString().slice(0, 10);
-}
-
-export function moidLink(items: number[]) {
-	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
-}
-
 export function skillingPetDropRate(
 	user: MUserClass | GearBank | number,
-	skill: SkillsEnum | SkillNameType,
+	skill: SkillNameType,
 	baseDropRate: number
 ): { petDropRate: number } {
 	const xp = typeof user === 'number' ? user : user.skillsAsXP[skill];
@@ -164,13 +100,12 @@ export function getUsernameSync(_id: string | bigint) {
 }
 
 export async function runTimedLoggedFn<T>(name: string, fn: () => Promise<T>, threshholdToLog = 100): Promise<T> {
-	const logger = globalConfig.isProduction ? debugLog : console.log;
 	const stopwatch = new Stopwatch();
 	stopwatch.start();
 	const result = await fn();
 	stopwatch.stop();
 	if (!globalConfig.isProduction || stopwatch.duration > threshholdToLog) {
-		logger(`Took ${stopwatch} to do ${name}`);
+		Logging.logDebug(`Took ${stopwatch} to do ${name}`);
 	}
 	return result;
 }
@@ -202,4 +137,6 @@ export async function adminPingLog(message: string) {
 	}).catch(noOp);
 }
 
-export { itemNameFromID };
+export function ISODateString(date?: Date) {
+	return (date ?? new Date()).toISOString().slice(0, 10);
+}

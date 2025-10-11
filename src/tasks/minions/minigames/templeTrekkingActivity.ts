@@ -1,19 +1,15 @@
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { objectValues, randInt } from 'e';
-import { Bank, ItemGroups } from 'oldschooljs';
+import { percentChance, randInt } from '@oldschoolgg/rng';
+import { stringMatches } from '@oldschoolgg/toolkit';
+import { Bank, ItemGroups, Items } from 'oldschooljs';
 
-import { userHasFlappy } from '../../../lib/invention/inventions';
 import {
 	EasyEncounterLoot,
 	HardEncounterLoot,
 	MediumEncounterLoot,
 	rewardTokens
-} from '../../../lib/minions/data/templeTrekking';
-import type { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
-import getOSItem from '../../../lib/util/getOSItem';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { percentChance } from '../../../lib/util/rng';
+} from '@/lib/minions/data/templeTrekking.js';
+import type { TempleTrekkingActivityTaskOptions } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 	let lowestCountPiece = 0;
@@ -22,7 +18,7 @@ function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 	for (const piece of ItemGroups.templeTrekkingOutfit) {
 		let amount = bank.amount(piece);
 
-		for (const setup of objectValues(user.gear)) {
+		for (const setup of Object.values(user.gear)) {
 			const thisItemEquipped = Object.values(setup).find(setup => setup?.item === piece);
 			if (thisItemEquipped) amount += thisItemEquipped.quantity;
 		}
@@ -39,18 +35,17 @@ function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 export const templeTrekkingTask: MinionTask = {
 	type: 'Trekking',
 
-	async run(data: TempleTrekkingActivityTaskOptions) {
-		const { channelID, quantity, userID, difficulty, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: TempleTrekkingActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelID, quantity, difficulty, duration } = data;
 		await user.incrementMinigameScore('temple_trekking', quantity);
 		const userBank = user.bank.clone();
 		const loot = new Bank();
 
 		const rewardToken = stringMatches(difficulty, 'hard')
-			? getOSItem(rewardTokens.hard)
+			? Items.getOrThrow(rewardTokens.hard)
 			: stringMatches(difficulty, 'medium')
-				? getOSItem(rewardTokens.medium)
-				: getOSItem(rewardTokens.easy);
+				? Items.getOrThrow(rewardTokens.medium)
+				: Items.getOrThrow(rewardTokens.easy);
 
 		let totalEncounters = 0;
 		for (let trip = 0; trip < quantity; trip++) {
@@ -83,13 +78,12 @@ export const templeTrekkingTask: MinionTask = {
 			loot.add(rewardToken.id);
 		}
 
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}
 
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

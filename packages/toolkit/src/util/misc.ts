@@ -1,6 +1,5 @@
 import { time } from 'discord.js';
-
-const emojiRegex = require('emoji-regex');
+import emojiRegex from 'emoji-regex';
 
 const rawEmojiRegex = emojiRegex();
 
@@ -111,3 +110,107 @@ export function sleep(ms: number) {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 export function noOp() {}
+
+/**
+ * Shows what percentage a value is of a total value, for example calculating what percentage of 20 is 5? (25%)
+ * @param partialValue The partial value of the total number, that you want to know what its percentage of the total is.
+ * @param totalValue The total value, that the partial value is a part of.
+ */
+export function calcWhatPercent(partialValue: number, totalValue: number): number {
+	return (100 * partialValue) / totalValue;
+}
+
+/**
+ * Calculates what a X% of a total number is, for example calculating what is 20% of 100
+ * @param percent The percentage (%) you want to calculate.
+ * @param valueToCalc The total number that you want to get the percentage of.
+ */
+export function calcPercentOfNum(percent: number, valueToCalc: number): number {
+	return (percent * valueToCalc) / 100;
+}
+
+/**
+ * Reduces a number by a percentage of itself.
+ * @param value, The number to be reduced.
+ * @param percent The percent you want the value to be reduced by.
+ */
+export function reduceNumByPercent(value: number, percent: number): number {
+	if (percent <= 0) return value;
+	return value - value * (percent / 100);
+}
+
+/**
+ * Increases a number by a percentage of itself.
+ * @param value, The number to be increased.
+ * @param percent The percent you want the value to be increased by.
+ */
+export function increaseNumByPercent(value: number, percent: number): number {
+	if (percent <= 0) return value;
+	return value + value * (percent / 100);
+}
+
+export function objectEntries<T extends Record<PropertyKey, unknown>>(obj: T) {
+	return Object.entries(obj) as [keyof T, T[keyof T]][];
+}
+
+/**
+ * Rounds a number to a given precision.
+ *
+ * @param value The number to be rounded.
+ * @param precision The precision of the rounding.
+ */
+export function round(value: number, precision = 1): number {
+	const multiplier = Math.pow(10, precision || 0);
+	return Math.round(value * multiplier) / multiplier;
+}
+
+export const debounce = <F extends (...args: any[]) => any>(fn: F, waitFor: number) => {
+	let timeout: ReturnType<typeof setTimeout> | null = null;
+
+	const debounced = (...args: Parameters<F>) => {
+		if (timeout !== null) {
+			clearTimeout(timeout);
+			timeout = null;
+		}
+		timeout = setTimeout(() => fn(...args), waitFor);
+	};
+
+	return debounced as (...args: Parameters<F>) => ReturnType<F>;
+};
+
+export function scaleNumber(num: number, inMin: number, inMax: number, outMin: number, outMax: number): number {
+	return ((num - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+}
+
+export function stripNonAlphanumeric(str: string) {
+	return str.replace(/[^a-zA-Z0-9]/g, '');
+}
+
+export function rewriteSqlToIdempotent(sql: string): string {
+	const rules: [RegExp, string | ((...a: any[]) => string)][] = [
+		[/\bCREATE\s+TABLE\s+("?[\w]+"?)/gi, 'CREATE TABLE IF NOT EXISTS $1'],
+		[/\bCREATE\s+UNIQUE\s+INDEX\s+("?[\w]+"?)/gi, 'CREATE UNIQUE INDEX IF NOT EXISTS $1'],
+		[/\bCREATE\s+INDEX\s+("?[\w]+"?)/gi, 'CREATE INDEX IF NOT EXISTS $1'],
+		[/\bCREATE\s+SCHEMA\s+("?[\w]+"?)/gi, 'CREATE SCHEMA IF NOT EXISTS $1'],
+		[/\bCREATE\s+VIEW\s+("?[\w]+"?)/gi, 'CREATE OR REPLACE VIEW $1'],
+		[
+			/\bCREATE\s+TYPE\s+("?[\w]+"?)\s+AS\s+ENUM\s*\(([^;]+)\);/gi,
+			(_m, name, values) =>
+				`DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = ${name.replace(/"/g, "'")}) THEN
+        CREATE TYPE ${name} AS ENUM (${values.trim()});
+    END IF;
+END $$;`
+		],
+		[
+			/\bALTER\s+TABLE\s+("?[\w]+"?)\s+ADD\s+CONSTRAINT\s+("?[\w]+"?)([^;]*);/gi,
+			(_m, table, constraint, rest) =>
+				`ALTER TABLE ${table} DROP CONSTRAINT IF EXISTS ${constraint};
+ALTER TABLE ${table} ADD CONSTRAINT ${constraint}${rest.trim()};`
+		]
+	];
+	for (const [r, sub] of rules) {
+		sql = typeof sub === 'string' ? sql.replace(r, sub) : sql.replace(r, (...a) => sub(...a));
+	}
+	return sql;
+}

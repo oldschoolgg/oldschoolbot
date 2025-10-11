@@ -1,16 +1,16 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
+import { Emoji } from '@oldschoolgg/toolkit';
 
 import { Castables } from '@/lib/skilling/skills/magic/castables.js';
 import { Enchantables } from '@/lib/skilling/skills/magic/enchantables.js';
-import { SkillsEnum } from '../../types';
+import { defineSkill } from '@/lib/skilling/types.js';
 
-const Magic = {
+const Magic = defineSkill({
 	aliases: ['mage', 'magic'],
-	id: SkillsEnum.Magic,
+	id: 'magic',
 	emoji: Emoji.Magic,
 	name: 'Magic',
-	Castables,
-	Enchantables
-};
+	Enchantables,
+	Castables
+});
 
 export default Magic;

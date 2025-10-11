@@ -1,27 +1,19 @@
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Time } from 'e';
-import { reduceNumByPercent } from 'e';
+import { monkeyTiers } from '@/lib/bso/minigames/monkey-rumble/monkeyRumble.js';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
+
+import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, ECreature, type ItemBank, itemID } from 'oldschooljs';
 
-import type { Skills } from '@/lib/types';
-import { type Peak, generateDailyPeakIntervals } from '@/lib/util/peaks';
+import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
+import type { UserFullGearSetup } from '@/lib/gear/types.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
+import { type Creature, HunterTechniqueEnum } from '@/lib/skilling/types.js';
+import type { Skills } from '@/lib/types/index.js';
+import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
+import { generateDailyPeakIntervals, type Peak } from '@/lib/util/peaks.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import type { UserFullGearSetup } from '../../lib/gear';
-import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
-import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
-import { trackLoot } from '../../lib/lootTrack';
-import { monkeyTiers } from '../../lib/monkeyRumble';
-import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
-import creatures from '../../lib/skilling/skills/hunter/creatures';
-import Hunter from '../../lib/skilling/skills/hunter/hunter';
-import { type Creature, HunterTechniqueEnum } from '../../lib/skilling/types';
-import type { HunterActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { userHasGracefulEquipped } from '../mahojiSettings';
 
 export function calculateHunterInput({
 	skillsAsLevels,
@@ -252,7 +244,7 @@ export function calculateHunterInput({
 	let wildyPeak = null;
 
 	if (creature.wildy) {
-		const date = new Date().getTime();
+		const date = Date.now();
 		const cachedPeakInterval: Peak[] = generateDailyPeakIntervals().peaks;
 		for (const peak of cachedPeakInterval) {
 			if (peak.startTime < date && peak.finishTime > date) {
@@ -290,34 +282,34 @@ export const huntCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The creature you want to hunt.',
 			required: true,
 			autocomplete: async (value: string) => {
-				return creatures
-					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-					.map(i => ({
-						name: i.name,
-						value: i.name
-					}));
+				return Hunter.Creatures.filter(i =>
+					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+				).map(i => ({
+					name: i.name,
+					value: i.name
+				}));
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to hunt (optional).',
 			required: false,
 			min_value: 1
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'hunter_potion',
 			description: 'Do you want to use Hunter potions for this trip?',
 			required: false
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'stamina_potions',
 			description: 'Use stam potions for Herbiboar?',
 			required: false
@@ -325,10 +317,13 @@ export const huntCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID,
+		user,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; hunter_potion?: boolean; stamina_potions?: boolean }>) => {
-		const user = await mUserFetch(userID);
+		if (options.stamina_potions === undefined) {
+			options.stamina_potions = true;
+		}
+
 		const creature = Hunter.Creatures.find(creature =>
 			creature.aliases.some(
 				alias => stringMatches(alias, options.name) || stringMatches(alias.split(' ')[0], options.name)
@@ -339,7 +334,7 @@ export const huntCommand: OSBMahojiCommand = {
 
 		const crystalImpling = creature.name === 'Crystal impling';
 
-		const maxTripLength = calcMaxTripLength(user, 'Hunter');
+		const maxTripLength = user.calcMaxTripLength('Hunter');
 		const elligibleForQuickTrap =
 			creature.huntTechnique === HunterTechniqueEnum.BoxTrapping && user.owns('Quick trap');
 		const elligibleForWebshooter = user.owns('Webshooter') && !crystalImpling;
@@ -347,13 +342,13 @@ export const huntCommand: OSBMahojiCommand = {
 		const hunterInputArgs: Parameters<typeof calculateHunterInput>['0'] = {
 			creature,
 			hasHunterMasterCape: user.hasEquippedOrInBank('Hunter master cape'),
-			hasGraceful: userHasGracefulEquipped(user),
+			hasGraceful: user.hasGracefulEquipped(),
 			maxTripLength,
 			quantityInput: options.quantity,
 			skillsAsLevels: user.skillsAsLevels,
 			isUsingHunterPotion: options.hunter_potion ?? false,
 			shouldUseStaminaPotions: options.stamina_potions ?? true,
-			creatureScores: (await user.fetchStats({ creature_scores: true })).creature_scores as ItemBank,
+			creatureScores: (await user.fetchStats()).creature_scores as ItemBank,
 			allGear: user.gear,
 			QP: user.QP,
 			bank: user.bank,
@@ -404,7 +399,7 @@ export const huntCommand: OSBMahojiCommand = {
 			result;
 
 		await user.removeItemsFromBank(totalCost);
-		await updateBankSetting('hunter_cost', totalCost);
+		await ClientSettings.updateBankSetting('hunter_cost', totalCost);
 		await trackLoot({
 			id: creature.name,
 			totalCost,
@@ -417,7 +412,8 @@ export const huntCommand: OSBMahojiCommand = {
 				}
 			]
 		});
-		await addSubTaskToActivityTask<HunterActivityTaskOptions>({
+
+		await ActivityManager.startTrip<HunterActivityTaskOptions>({
 			creatureID: creature.id,
 			userID: user.id,
 			channelID,

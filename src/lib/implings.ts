@@ -1,18 +1,19 @@
-import { activity_type_enum } from '@prisma/client';
-import { Time, objectEntries, reduceNumByPercent } from 'e';
-import { Bank, LootTable, Openables } from 'oldschooljs';
-
-import { BitField } from './constants';
-import { InventionID, inventionBoosts, inventionItemBoost } from './invention/inventions';
 import {
 	ChimplingImpling,
 	EternalImpling,
 	InfernalImpling,
 	MysteryImpling,
 	ShrimplingImpling
-} from './simulation/customImplings';
-import type { ActivityTaskData } from './types/minions';
-import activityInArea, { WorldLocations } from './util/activityInArea';
+} from '@/lib/bso/customImplings.js';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
+
+import { objectEntries, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
+import { activity_type_enum } from '@prisma/client';
+import { Bank, LootTable, Openables } from 'oldschooljs';
+
+import { BitField } from '@/lib/constants.js';
+import type { ActivityTaskData } from '@/lib/types/minions.js';
+import activityInArea, { WorldLocations } from '@/lib/util/activityInArea.js';
 
 const {
 	BabyImpling,

@@ -1,21 +1,26 @@
-import { resolveItems } from 'oldschooljs';
+import { type Item, Items, resolveItems } from 'oldschooljs';
 
-import { SkillsEnum } from '../skilling/types';
-import getOSItem from '../util/getOSItem';
+import type { SkillNameType } from '@/lib/skilling/types.js';
 
-export const expertCapesSource = [
+interface ExpertCapeSource {
+	cape: Item;
+	requiredItems: number[];
+	skills: SkillNameType[];
+}
+
+export const expertCapesSource: ExpertCapeSource[] = [
 	{
-		cape: getOSItem('Support cape'),
+		cape: Items.getOrThrow('Support cape'),
 		requiredItems: resolveItems([
 			'Agility master cape',
 			'Dungeoneering master cape',
 			'Thieving master cape',
 			'Slayer master cape'
 		]),
-		skills: [SkillsEnum.Slayer, SkillsEnum.Agility, SkillsEnum.Dungeoneering, SkillsEnum.Thieving]
+		skills: ['slayer', 'agility', 'dungeoneering', 'thieving']
 	},
 	{
-		cape: getOSItem("Gatherer's cape"),
+		cape: Items.getOrThrow("Gatherer's cape"),
 		requiredItems: resolveItems([
 			'Farming master cape',
 			'Fishing master cape',
@@ -24,17 +29,10 @@ export const expertCapesSource = [
 			'Woodcutting master cape',
 			'Divination master cape'
 		]),
-		skills: [
-			SkillsEnum.Farming,
-			SkillsEnum.Fishing,
-			SkillsEnum.Hunter,
-			SkillsEnum.Mining,
-			SkillsEnum.Woodcutting,
-			SkillsEnum.Divination
-		]
+		skills: ['farming', 'fishing', 'hunter', 'mining', 'woodcutting', 'divination']
 	},
 	{
-		cape: getOSItem("Combatant's cape"),
+		cape: Items.getOrThrow("Combatant's cape"),
 		requiredItems: resolveItems([
 			'Attack master cape',
 			'Hitpoints master cape',
@@ -44,18 +42,10 @@ export const expertCapesSource = [
 			'Ranged master cape',
 			'Strength master cape'
 		]),
-		skills: [
-			SkillsEnum.Attack,
-			SkillsEnum.Hitpoints,
-			SkillsEnum.Defence,
-			SkillsEnum.Magic,
-			SkillsEnum.Prayer,
-			SkillsEnum.Ranged,
-			SkillsEnum.Strength
-		]
+		skills: ['attack', 'hitpoints', 'defence', 'magic', 'prayer', 'ranged', 'strength']
 	},
 	{
-		cape: getOSItem("Artisan's cape"),
+		cape: Items.getOrThrow("Artisan's cape"),
 		requiredItems: resolveItems([
 			'Crafting master cape',
 			'Construction master cape',
@@ -66,15 +56,6 @@ export const expertCapesSource = [
 			'Runecraft master cape',
 			'Smithing master cape'
 		]),
-		skills: [
-			SkillsEnum.Crafting,
-			SkillsEnum.Construction,
-			SkillsEnum.Cooking,
-			SkillsEnum.Firemaking,
-			SkillsEnum.Fletching,
-			SkillsEnum.Herblore,
-			SkillsEnum.Runecraft,
-			SkillsEnum.Smithing
-		]
+		skills: ['crafting', 'construction', 'cooking', 'firemaking', 'fletching', 'herblore', 'runecraft', 'smithing']
 	}
 ];

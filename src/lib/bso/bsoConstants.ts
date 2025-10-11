@@ -1,8 +1,10 @@
-import { Time } from 'e';
-import { resolveItems } from 'oldschooljs';
+import { Time } from '@oldschoolgg/toolkit';
+import { activity_type_enum } from '@prisma/client';
+import { Bank, resolveItems } from 'oldschooljs';
+
+import Skillcapes from '@/lib/skilling/skillcapes.js';
 
 export const GLOBAL_BSO_XP_MULTIPLIER = 5;
-export const BSO_MAX_TOTAL_LEVEL = 3120;
 
 export const MIN_LENGTH_FOR_PET = Time.Minute * 5;
 
@@ -39,8 +41,6 @@ export const CHINCANNON_MESSAGES = [
 ];
 
 export const OSB_VIRTUS_IDS = [26_241, 26_243, 26_245];
-export const YETI_ID = 129_521;
-export const KING_GOLDEMAR_GUARD_ID = 30_913;
 
 export const masterFarmerOutfit = resolveItems([
 	'Master farmer hat',
@@ -56,3 +56,33 @@ export const bsoTackleBoxes = resolveItems([
 	'Standard tackle box',
 	'Basic tackle box'
 ]);
+
+export const BlacksmithOutfit = resolveItems([
+	'Blacksmith helmet',
+	'Blacksmith top',
+	'Blacksmith apron',
+	'Blacksmith gloves',
+	'Blacksmith boots'
+]);
+
+export const bsoDeprecatedActivities: activity_type_enum[] = [
+	activity_type_enum.BossEvent,
+	activity_type_enum.TrickOrTreat,
+	activity_type_enum.HalloweenMiniMinigame,
+	activity_type_enum.Mortimer,
+	activity_type_enum.BirthdayCollectIngredients,
+	activity_type_enum.SnoozeSpellActive
+];
+
+export const compCapeCreatableBank = new Bank();
+for (const cape of Skillcapes) {
+	compCapeCreatableBank.add(cape.masterCape.id);
+}
+compCapeCreatableBank.add('Master quest cape');
+compCapeCreatableBank.add('Achievement diary cape (t)');
+compCapeCreatableBank.add('Music cape (t)');
+
+compCapeCreatableBank.freeze();
+
+export const itemContractResetTime = Time.Hour * 7.8;
+export const giveBoxResetTime = Time.Hour * 23.5;

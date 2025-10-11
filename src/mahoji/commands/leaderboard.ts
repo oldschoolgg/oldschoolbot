@@ -1,43 +1,38 @@
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
+import { bsoChallengeLeaderboard } from '@/lib/bso/leaderboards/boxSpawnsLb.js';
+import { bsoCompletionistLb } from '@/lib/bso/leaderboards/completionistLb.js';
+import { bsoItemContractDonationGivenLb, bsoItemContractLb } from '@/lib/bso/leaderboards/itemContractsLb.js';
+import { bsoLeaguesLeaderboard } from '@/lib/bso/leaderboards/leaguesLb.js';
+import { bsoTamesHatchedLb } from '@/lib/bso/leaderboards/tamesHatchedLb.js';
+
 import {
-	type CommandRunOptions,
-	type OSBMahojiCommand,
-	channelIsSendable,
-	makePaginatedMessage
-} from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit/string-util';
-import type { UserStats } from '@prisma/client';
-import {
-	ApplicationCommandOptionType,
-	type ChatInputCommandInteraction,
-	EmbedBuilder,
-	type MessageEditOptions
-} from 'discord.js';
-import { calcWhatPercent, chunk, isFunction, uniqueArr } from 'e';
+	calcWhatPercent,
+	chunk,
+	formatDuration,
+	isFunction,
+	stringMatches,
+	toTitleCase,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
+import { EmbedBuilder } from 'discord.js';
 import { convertXPtoLVL } from 'oldschooljs';
 
-import { getUsername, getUsernameSync } from '@/lib/util';
-import { logError, logErrorForInteraction } from '@/lib/util/logError';
-import { Prisma } from '@prisma/client';
-import type { ClueTier } from '../../lib/clues/clueTiers';
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import { MAX_LEVEL, masteryKey } from '../../lib/constants';
-import { allClNames, getCollectionItems } from '../../lib/data/Collections';
-import { allLeagueTasks } from '../../lib/leagues/leagues';
-import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import { allOpenables } from '../../lib/openables';
-import { SQL } from '../../lib/rawSql.js';
-import { Minigames } from '../../lib/settings/minigames';
-import Skills from '../../lib/skilling/skills';
-import Agility from '../../lib/skilling/skills/agility';
-import Hunter from '../../lib/skilling/skills/hunter/hunter';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { fetchCLLeaderboard, fetchTameCLLeaderboard } from '../../lib/util/clLeaderboard';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { userEventsToMap } from '../../lib/util/userEvents';
-import { sendToChannelID } from '../../lib/util/webhook';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { MAX_LEVEL, masteryKey } from '@/lib/constants.js';
+import { allClNames, getCollectionItems } from '@/lib/data/Collections.js';
+import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import { allOpenables } from '@/lib/openables.js';
+import { SQL } from '@/lib/rawSql.js';
+import { Minigames } from '@/lib/settings/minigames.js';
+import Agility from '@/lib/skilling/skills/agility.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
+import { Skills } from '@/lib/skilling/skills/index.js';
+import { SkillsArray } from '@/lib/skilling/types.js';
+import { fetchCLLeaderboard, fetchTameCLLeaderboard } from '@/lib/util/clLeaderboard.js';
+import { userEventsToMap } from '@/lib/util/userEvents.js';
+import { getUsername, getUsernameSync } from '@/lib/util.js';
 
-const LB_PAGE_SIZE = 10;
+export const LB_PAGE_SIZE = 10;
 
 function lbMsg(str: string, ironmanOnly?: boolean) {
 	return {
@@ -56,62 +51,50 @@ export function getPos(page: number, record: number) {
 	return `${page * LB_PAGE_SIZE + 1 + record}. `;
 }
 
-export type AsyncPageString = () => Promise<string>;
-export async function doMenu(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	pages: string[] | AsyncPageString[],
-	title: string
-) {
+type AsyncPageString = () => Promise<string>;
+export async function doMenu(interaction: MInteraction, pages: string[] | AsyncPageString[], title: string) {
 	if (pages.length === 0) {
-		return sendToChannelID(interaction.channelId, { content: 'There are no users on this leaderboard.' });
+		return 'There are no users on this leaderboard.';
 	}
-	const channel = globalClient.channels.cache.get(channelID);
-	if (!channelIsSendable(channel)) return;
 
-	makePaginatedMessage(
-		channel,
-		pages.map(p => {
+	return interaction.makePaginatedMessage({
+		pages: pages.map((p, i) => {
 			if (isFunction(p)) {
-				return async () => ({ embeds: [new EmbedBuilder().setTitle(title).setDescription(await p())] });
+				return async currentIndex => ({
+					embeds: [
+						new EmbedBuilder()
+							.setTitle(`${title} (Page ${currentIndex + 1}/${pages.length})`)
+							.setDescription(await p())
+					]
+				});
 			}
 
-			return { embeds: [new EmbedBuilder().setTitle(title).setDescription(p)] };
-		}),
-		(err, itx) => {
-			if (itx) {
-				logErrorForInteraction(err, itx);
-			} else {
-				logError(err);
-			}
-		},
-		user.id
-	);
+			return {
+				embeds: [new EmbedBuilder().setTitle(`${title} (Page ${i + 1}/${pages.length})`).setDescription(p)]
+			};
+		})
+	});
 }
 
-async function doMenuWrapper({
-	user,
-	channelID,
+export async function doMenuWrapper({
 	users,
 	title,
 	ironmanOnly,
-	formatter
+	formatter,
+	interaction
 }: {
 	ironmanOnly: boolean;
 	users: { id: string; score: number; full_name?: string }[];
 	title: string;
-	interaction: ChatInputCommandInteraction;
-	user: MUser;
-	channelID: string;
+	interaction: MInteraction;
 	formatter?: (val: number) => string;
 }) {
-	await bulkGetUsernames(users.map(u => u.id).slice(0, 100));
 	const chunked = chunk(users, LB_PAGE_SIZE);
-	const pages: (() => Promise<MessageEditOptions>)[] = [];
+	const pages: (() => Promise<CompatibleResponse>)[] = [];
 	for (let c = 0; c < chunked.length; c++) {
 		const makePage = async () => {
 			const chnk = chunked[c];
+			await bulkGetUsernames(chnk.map(u => u.id));
 			const unwaited = chnk.map(
 				async (user, i) =>
 					`${getPos(c, i)}**${user.full_name ?? (await getUsername(user.id))}:** ${formatter ? formatter(user.score) : user.score.toLocaleString()}`
@@ -124,39 +107,25 @@ async function doMenuWrapper({
 	if (pages.length === 0) {
 		return 'There are no users on this leaderboard.';
 	}
-	const channel = globalClient.channels.cache.get(channelID);
-	if (!channelIsSendable(channel)) return 'Invalid channel.';
 
-	makePaginatedMessage(
-		channel,
-		pages.map(p => {
+	return interaction.makePaginatedMessage({
+		pages: pages.map((p, i) => {
 			if (isFunction(p)) {
 				return p;
 			}
 
-			return { embeds: [new EmbedBuilder().setTitle(title).setDescription(p)] };
-		}),
-		(err, itx) => {
-			if (itx) {
-				logErrorForInteraction(err, itx);
-			} else {
-				logError(err);
-			}
-		},
-		user.id
-	);
-
-	return lbMsg(title, ironmanOnly);
+			return {
+				embeds: [
+					new EmbedBuilder()
+						.setTitle(`${lbMsg(title, ironmanOnly).content} (Page ${i + 1}/${pages.length})`)
+						.setDescription(p)
+				]
+			};
+		})
+	});
 }
 
-async function kcLb(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	name: string,
-	ironmanOnly: boolean,
-	tame: boolean
-) {
+async function kcLb(interaction: MInteraction, name: string, ironmanOnly: boolean, tame: boolean) {
 	const monster = effectiveMonsters.find(mon => [mon.name, ...mon.aliases].some(alias => stringMatches(alias, name)));
 	if (!monster) return "That's not a valid monster!";
 	const list = tame
@@ -189,20 +158,13 @@ async function kcLb(
 
 	return doMenuWrapper({
 		ironmanOnly,
-		user,
 		interaction,
-		channelID,
 		users: list,
 		title: `${prefix}KC Leaderboard for ${monster.name}`
 	});
 }
 
-async function farmingContractLb(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	ironmanOnly: boolean
-) {
+async function farmingContractLb(interaction: MInteraction, ironmanOnly: boolean) {
 	const list = await prisma.$queryRawUnsafe<{ id: string; count: number }[]>(
 		`SELECT id, CAST("minion.farmingContract"->>'contractsCompleted' AS INTEGER) as count
 		 FROM users
@@ -212,10 +174,8 @@ async function farmingContractLb(
 		 LIMIT 2000;`
 	);
 
-	doMenu(
+	return doMenu(
 		interaction,
-		user,
-		channelID,
 		chunk(list, LB_PAGE_SIZE).map((subList, i) =>
 			subList
 				.map(({ id, count }, j) => {
@@ -225,7 +185,6 @@ async function farmingContractLb(
 		),
 		'Farming Contracts Leaderboard'
 	);
-	return lbMsg('Farming Contract');
 }
 
 async function infernoLb() {
@@ -245,42 +204,8 @@ LIMIT 10;`);
 		.map((e, i) => `${i + 1}. **${getUsernameSync(e.user_id)}:** ${formatDuration(e.duration)}`)
 		.join('\n')}`;
 }
-// Leaderboard for BSO general boxSpawn.ts event
-async function bsoChallenge(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
-	const challengeCount: { id: string; challengescore: number }[] = await prisma.$queryRawUnsafe(
-		`SELECT u.user_id::text AS id, u.challengescore
-		FROM (
-			SELECT COALESCE(main_server_challenges_won, 0) AS challengescore, user_id
-			FROM user_stats
-		) AS u
-		ORDER BY u.challengescore DESC
-		LIMIT 100;`
-	);
 
-	doMenu(
-		interaction,
-		user,
-		channelID,
-		chunk(challengeCount, LB_PAGE_SIZE).map((subList, i) =>
-			subList
-				.map(
-					({ id, challengescore }, j) =>
-						`${getPos(i, j)}**${getUsernameSync(id)}:** ${challengescore.toLocaleString()} Challenges`
-				)
-				.join('\n')
-		),
-		'Top Challenges Won Leaderboard'
-	);
-	return lbMsg('Top Challenges Won');
-}
-
-async function sacrificeLb(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	type: 'value' | 'unique',
-	ironmanOnly: boolean
-) {
+async function sacrificeLb(interaction: MInteraction, type: 'value' | 'unique', ironmanOnly: boolean) {
 	if (type === 'value') {
 		const list = (
 			await prisma.$queryRawUnsafe<{ id: string; full_name: string; amount: number }[]>(
@@ -300,10 +225,8 @@ LIMIT 400;`
 			)
 		).map((res: any) => ({ ...res, amount: Number.parseInt(res.sacrificedValue) }));
 
-		doMenu(
+		return doMenu(
 			interaction,
-			user,
-			channelID,
 			chunk(list, LB_PAGE_SIZE).map((subList, i) =>
 				subList
 					.map(
@@ -313,8 +236,6 @@ LIMIT 400;`
 			),
 			'Sacrifice Leaderboard'
 		);
-
-		return lbMsg('Most Value Sacrificed');
 	}
 
 	const mostUniques: { full_name: string; sacbanklength: number }[] = await prisma.$queryRawUnsafe(
@@ -345,10 +266,8 @@ ORDER BY
 LIMIT 10;
 `
 	);
-	doMenu(
+	return doMenu(
 		interaction,
-		user,
-		channelID,
 		chunk(mostUniques, LB_PAGE_SIZE).map((subList, i) =>
 			subList
 				.map(
@@ -359,10 +278,9 @@ LIMIT 10;
 		),
 		'Unique Sacrifice Leaderboard'
 	);
-	return lbMsg('Unique Sacrifice');
 }
 
-async function minigamesLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string, name: string) {
+async function minigamesLb(interaction: MInteraction, name: string) {
 	const minigame = Minigames.find(m => stringMatches(m.name, name) || m.aliases.some(a => stringMatches(a, name)));
 	if (!minigame) {
 		return `That's not a valid minigame. Valid minigames are: ${Minigames.map(m => m.name).join(', ')}.`;
@@ -376,10 +294,8 @@ async function minigamesLb(interaction: ChatInputCommandInteraction, user: MUser
 					   ORDER BY "tithe_farms_completed"
 					   DESC LIMIT 10;`
 		);
-		doMenu(
+		return doMenu(
 			interaction,
-			user,
-			channelID,
 			chunk(titheCompletions, LB_PAGE_SIZE).map((subList, i) =>
 				subList
 					.map(({ id, amount }, j) => `${getPos(i, j)}**${getUsernameSync(id)}:** ${amount.toLocaleString()}`)
@@ -387,7 +303,6 @@ async function minigamesLb(interaction: ChatInputCommandInteraction, user: MUser
 			),
 			'Tithe farm Leaderboard'
 		);
-		return lbMsg(`${minigame.name} Leaderboard`);
 	}
 	const res = await prisma.minigame.findMany({
 		where: {
@@ -403,22 +318,13 @@ async function minigamesLb(interaction: ChatInputCommandInteraction, user: MUser
 
 	return doMenuWrapper({
 		ironmanOnly: false,
-		user,
 		interaction,
-		channelID,
 		users: res.map(u => ({ id: u.user_id, score: u[minigame.column] })),
 		title: `${minigame.name} Leaderboard`
 	});
 }
 
-async function clLb(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	inputType: string,
-	ironmenOnly: boolean,
-	tames: boolean
-) {
+async function clLb(interaction: MInteraction, inputType: string, ironmenOnly: boolean, tames: boolean) {
 	const { resolvedCl, items } = getCollectionItems(inputType, false, false, true);
 	if (!items || items.length === 0) {
 		return "That's not a valid collection log category. Check /cl for all possible logs.";
@@ -429,8 +335,6 @@ async function clLb(
 		const tameLb = await fetchTameCLLeaderboard({ items, resultLimit: 200 });
 		doMenu(
 			interaction,
-			user,
-			channelID,
 			chunk(tameLb, LB_PAGE_SIZE).map((subList, i) =>
 				subList
 					.map(
@@ -449,21 +353,14 @@ async function clLb(
 
 	return doMenuWrapper({
 		ironmanOnly: ironmenOnly,
-		user,
 		interaction,
-		channelID,
 		users: users.map(u => ({ id: u.id, score: u.qty })),
 		title: `${inputType} Collection Log Leaderboard`,
 		formatter: val => `${val.toLocaleString()} (${calcWhatPercent(val, items.length).toFixed(1)}%)`
 	});
 }
 
-async function creaturesLb(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	creatureName: string
-) {
+async function creaturesLb(interaction: MInteraction, creatureName: string) {
 	const creature = Hunter.Creatures.find(creature =>
 		creature.aliases.some(
 			alias => stringMatches(alias, creatureName) || stringMatches(alias.split(' ')[0], creatureName)
@@ -476,10 +373,8 @@ async function creaturesLb(
 				   FROM user_stats WHERE "creature_scores"->>'${creature.id}' IS NOT NULL
 				   ORDER BY count DESC LIMIT 50;`;
 	const data: { id: string; count: number }[] = await prisma.$queryRawUnsafe(query);
-	doMenu(
+	return doMenu(
 		interaction,
-		user,
-		channelID,
 		chunk(data, LB_PAGE_SIZE).map((subList, i) =>
 			subList
 				.map(({ id, count }, j) => `${getPos(i, j)}**${getUsernameSync(id)}:** ${count.toLocaleString()}`)
@@ -487,10 +382,9 @@ async function creaturesLb(
 		),
 		`Catch Leaderboard for ${creature.name}`
 	);
-	return lbMsg(`${creature.name} Catch Leaderboard`);
 }
 
-async function lapsLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string, courseName: string) {
+async function lapsLb(interaction: MInteraction, courseName: string) {
 	const course = Agility.Courses.find(course => course.aliases.some(alias => stringMatches(alias, courseName)));
 
 	if (!course) return 'Thats not a valid agility course.';
@@ -501,10 +395,8 @@ async function lapsLb(interaction: ChatInputCommandInteraction, user: MUser, cha
 			 WHERE "laps_scores"->>'${course.id}' IS NOT NULL
 			 ORDER BY count DESC LIMIT 50;`
 	);
-	doMenu(
+	return doMenu(
 		interaction,
-		user,
-		channelID,
 		chunk(data, LB_PAGE_SIZE).map((subList, i) =>
 			subList
 				.map(({ id, count }, j) => `${getPos(i, j)}**${getUsernameSync(id)}:** ${count.toLocaleString()}`)
@@ -512,16 +404,9 @@ async function lapsLb(interaction: ChatInputCommandInteraction, user: MUser, cha
 		),
 		`${course.name} Laps Leaderboard`
 	);
-	return lbMsg(`${course.name} Laps`);
 }
 
-async function openLb(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	name: string,
-	ironmanOnly: boolean
-) {
+async function openLb(interaction: MInteraction, name: string, ironmanOnly: boolean) {
 	if (name) {
 		name = name.trim();
 	}
@@ -555,15 +440,13 @@ async function openLb(
 
 	return doMenuWrapper({
 		ironmanOnly,
-		user,
 		interaction,
-		channelID,
 		users: list.map(u => ({ id: u.id, score: u.qty })),
 		title: `${openableName} Opening Leaderboard`
 	});
 }
 
-async function gpLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string, ironmanOnly: boolean) {
+async function gpLb(interaction: MInteraction, ironmanOnly: boolean) {
 	const users = (
 		await prisma.$queryRawUnsafe<{ id: string; GP: number }[]>(
 			`SELECT "id", "GP"
@@ -577,53 +460,14 @@ async function gpLb(interaction: ChatInputCommandInteraction, user: MUser, chann
 
 	return doMenuWrapper({
 		ironmanOnly,
-		user,
 		interaction,
-		channelID,
 		users,
 		title: 'GP Leaderboard',
 		formatter: val => `${val.toLocaleString()} GP`
 	});
 }
 
-async function tamesHatchedLb(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	ironmanOnly: boolean
-) {
-	const query = Prisma.sql`
-               SELECT id, CAST(nursery->>'eggsHatched' AS INTEGER) as count
-               FROM users
-               WHERE nursery IS NOT NULL
-                 AND CAST(nursery->>'eggsHatched' AS INTEGER) > 0
-                 ${ironmanOnly ? Prisma.sql`AND "minion.ironman" = true` : Prisma.empty}
-               ORDER BY count DESC
-               LIMIT 50;
-       `;
-	const users = (await prisma.$queryRaw<{ id: string; count: number }[]>(query)).map(res => ({
-		...res,
-		score: res.count
-	}));
-
-	return doMenuWrapper({
-		ironmanOnly,
-		user,
-		interaction,
-		channelID,
-		users,
-		title: 'Tames Hatched Leaderboard'
-	});
-}
-
-async function skillsLb(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	inputSkill: string,
-	type: 'xp' | 'level',
-	ironmanOnly: boolean
-) {
+async function skillsLb(interaction: MInteraction, inputSkill: string, type: 'xp' | 'level', ironmanOnly: boolean) {
 	let res = [];
 	let overallUsers: {
 		id: string;
@@ -740,13 +584,9 @@ async function skillsLb(
 		});
 	}
 
-	await bulkGetUsernames(overallUsers.map(u => u.id).slice(0, 100));
-
 	if (inputSkill === 'overall') {
-		doMenu(
+		return doMenu(
 			interaction,
-			user,
-			channelID,
 			chunk(overallUsers, LB_PAGE_SIZE).map((subList, i) =>
 				subList
 					.map((obj, j) => {
@@ -758,13 +598,10 @@ async function skillsLb(
 			),
 			`Overall ${type} Leaderboard`
 		);
-		return lbMsg(`Overall ${type}`);
 	}
 
-	doMenu(
+	return doMenu(
 		interaction,
-		user,
-		channelID,
 		chunk(res, LB_PAGE_SIZE).map((subList, i) =>
 			subList
 				.map((obj, j) => {
@@ -780,16 +617,9 @@ async function skillsLb(
 		),
 		`${skill ? toTitleCase(skill.id) : 'Overall'} Leaderboard`
 	);
-	return lbMsg(`Overall ${skill?.name} ${type}`);
 }
 
-async function cluesLb(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	clueTierName: string,
-	ironmanOnly: boolean
-) {
+async function cluesLb(interaction: MInteraction, clueTierName: string, ironmanOnly: boolean) {
 	const clueTier = ClueTiers.find(i => stringMatches(i.name, clueTierName));
 	if (!clueTier) return "That's not a valid clue tier.";
 	const { id } = clueTier;
@@ -805,12 +635,8 @@ LIMIT 50;`
 		)
 	).map(res => ({ ...res, score: Number(res.score) }));
 
-	await bulkGetUsernames(users.map(u => u.id).slice(0, 100));
-
-	doMenu(
+	return doMenu(
 		interaction,
-		user,
-		channelID,
 		chunk(users, LB_PAGE_SIZE).map((subList, i) =>
 			subList
 				.map(
@@ -821,95 +647,11 @@ LIMIT 50;`
 		),
 		`${clueTier.name} Clue Leaderboard`
 	);
-	return lbMsg('Clue Leaderboard', ironmanOnly);
-}
-
-async function itemContractLb(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	ironmanOnly?: boolean
-) {
-	const results = await prisma.user.findMany({
-		select: {
-			id: true,
-			item_contract_streak: true
-		},
-		where: {
-			item_contract_streak: {
-				gte: 5
-			},
-			minion_ironman: ironmanOnly ? true : undefined
-		},
-		orderBy: {
-			item_contract_streak: 'desc'
-		},
-		take: 10
-	});
-
-	doMenu(
-		interaction,
-		user,
-		channelID,
-		chunk(results, 10).map(subList =>
-			subList
-				.map(({ id, item_contract_streak }) => `**${getUsernameSync(id)}:** ${item_contract_streak}`)
-				.join('\n')
-		),
-		'Item Contract Streak Leaderboard'
-	);
-	return lbMsg('Item Contract Streak');
-}
-
-async function itemContractDonationGivenLb(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	total: boolean
-) {
-	const stats = await prisma.userStats.findMany({
-		where: { NOT: { ic_donations_given_bank: {} } },
-		select: {
-			user_id: true,
-			ic_donations_given_bank: true
-		}
-	});
-
-	const donations = stats
-		.map(s => {
-			const donation_bank = s.ic_donations_given_bank as Record<string, number>;
-			const total_donations = total
-				? Object.values(donation_bank).reduce((acc, qty) => acc + qty, 0)
-				: Object.keys(donation_bank).length;
-
-			return {
-				id: s.user_id,
-				total_donations
-			};
-		})
-		.filter(d => d.total_donations > 0);
-
-	doMenu(
-		interaction,
-		user,
-		channelID,
-		chunk(donations.sort((a, b) => b.total_donations - a.total_donations).slice(0, 10), 10).map(subList =>
-			subList
-				.map(
-					({ id, total_donations }) =>
-						`**${getUsernameSync(id)}:** ${total_donations.toLocaleString()} donations`
-				)
-				.join('\n')
-		),
-		`${total === true ? 'Total' : 'Unique'} IC Donations Leaderboard`
-	);
-
-	return lbMsg(`${total === true ? 'Total' : 'Unique'} IC Donations Leaderboard`);
 }
 
 const globalLbTypes = ['xp', 'cl', 'mastery'] as const;
 type GlobalLbType = (typeof globalLbTypes)[number];
-async function globalLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string, type: GlobalLbType) {
+async function globalLb(interaction: MInteraction, type: GlobalLbType) {
 	if (type === 'xp') {
 		const result = await roboChimpClient.$queryRaw<
 			{
@@ -929,10 +671,8 @@ WHERE osb_total_xp IS NOT NULL AND bso_total_xp IS NOT NULL
 ORDER BY average_percentage DESC
 LIMIT 10;
 `;
-		doMenu(
+		return doMenu(
 			interaction,
-			user,
-			channelID,
 			chunk(result, LB_PAGE_SIZE).map((subList, i) =>
 				subList
 					.map(
@@ -945,7 +685,6 @@ LIMIT 10;
 			),
 			'Global (OSB+BSO) XP Leaderboard (% of the max XP)'
 		);
-		return lbMsg('Global (OSB+BSO) XP Leaderboard');
 	}
 
 	if (type === 'mastery') {
@@ -960,10 +699,8 @@ WHERE osb_mastery IS NOT NULL AND bso_mastery IS NOT NULL
 ORDER BY avg DESC
 LIMIT 10;
 `;
-		doMenu(
+		return doMenu(
 			interaction,
-			user,
-			channelID,
 			chunk(result, LB_PAGE_SIZE).map((subList, i) =>
 				subList
 					.map(({ id, avg }, j) => `${getPos(i, j)}**${getUsernameSync(id)}:** ${avg.toFixed(2)}%`)
@@ -971,7 +708,6 @@ LIMIT 10;
 			),
 			'Global (OSB+BSO) Mastery Leaderboard'
 		);
-		return lbMsg('Global Mastery Leaderboard');
 	}
 
 	const result = await roboChimpClient.$queryRaw<
@@ -982,10 +718,8 @@ WHERE osb_cl_percent IS NOT NULL AND bso_cl_percent IS NOT NULL
 ORDER BY total_cl_percent DESC
 LIMIT 20;`;
 
-	doMenu(
+	return doMenu(
 		interaction,
-		user,
-		channelID,
 		chunk(result, LB_PAGE_SIZE).map((subList, i) =>
 			subList
 				.map(
@@ -996,145 +730,11 @@ LIMIT 20;`;
 		),
 		'Global (OSB+BSO) CL Leaderboard'
 	);
-	return lbMsg('Global (OSB+BSO) CL Leaderboard');
-}
-
-async function leaguesPointsLeaderboard(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
-	const result = await roboChimpClient.user.findMany({
-		where: {
-			leagues_points_total: {
-				gt: 0
-			}
-		},
-		orderBy: {
-			leagues_points_total: 'desc'
-		},
-		take: 100
-	});
-	doMenu(
-		interaction,
-		user,
-		channelID,
-		chunk(result, 10).map(subList =>
-			subList
-				.map(
-					({ id, leagues_points_total }) =>
-						`**${getUsernameSync(id)}:** ${leagues_points_total.toLocaleString()} Pts`
-				)
-				.join('\n')
-		),
-		'Leagues Points Leaderboard'
-	);
-	return lbMsg('Leagues Points');
-}
-
-async function leastCompletedLeagueTasksLb() {
-	const taskCounts = await roboChimpClient.$queryRaw<
-		{ task_id: number; qty: number }[]
-	>`SELECT task_id, count(*)::int AS qty
-FROM (
-   SELECT unnest(leagues_completed_tasks_ids) AS task_id
-   FROM public.user
-   ) sub
-GROUP BY 1
-ORDER BY 2 ASC;`;
-	const taskObj: Record<number, number> = {};
-	for (const task of allLeagueTasks) {
-		taskObj[task.id] = 0;
-	}
-	for (const task of taskCounts) {
-		taskObj[task.task_id] = task.qty;
-	}
-
-	return `**Least Commonly Completed Tasks:**
-${Object.entries(taskObj)
-	.sort((a, b) => a[1] - b[1])
-	.slice(0, 10)
-	.map(task => {
-		const taskObj = allLeagueTasks.find(t => t.id === Number.parseInt(task[0]))!;
-		return `${taskObj.name}: ${task[1]} users completed`;
-	})
-	.join('\n')}
-
-**Most Commonly Completed Tasks:**
-${Object.entries(taskObj)
-	.sort((a, b) => b[1] - a[1])
-	.slice(0, 10)
-	.map((task, index) => {
-		const taskObj = allLeagueTasks.find(t => t.id === Number.parseInt(task[0]))!;
-		return `${index + 1}. ${taskObj.name}`;
-	})
-	.join('\n')}`;
-}
-
-async function compLeaderboard(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	untrimmed: boolean,
-	ironmanOnly: boolean,
-	channelID: string
-) {
-	const key: keyof UserStats = untrimmed ? 'untrimmed_comp_cape_percent' : 'comp_cape_percent';
-	const list = await prisma.$queryRawUnsafe<{ id: string; percent: number }[]>(
-		`SELECT user_id::text AS id, ${key} AS percent
-		 FROM user_stats
-		${ironmanOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
-		 WHERE ${key} IS NOT NULL
-		 ${ironmanOnly ? ' AND "users"."minion.ironman" = true ' : ''}
-		 ORDER BY ${key} DESC
-		 LIMIT 100;`
-	);
-
-	doMenu(
-		interaction,
-		user,
-		channelID,
-		chunk(list, 10).map(subList =>
-			subList
-				.map(
-					({ id, percent }) =>
-						`**${getUsernameSync(id)}:** ${percent.toFixed(2)}% ${untrimmed ? 'Untrimmed' : 'Trimmed'}`
-				)
-				.join('\n')
-		),
-		'Completionist Leaderboard'
-	);
-	return lbMsg('Completionist Leaderboard');
-}
-
-async function leaguesLeaderboard(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	type: 'points' | 'tasks' | 'hardest_tasks'
-) {
-	if (type === 'points') return leaguesPointsLeaderboard(interaction, user, channelID);
-	if (type === 'hardest_tasks') return leastCompletedLeagueTasksLb();
-	const result: { id: number; tasks_completed: number }[] =
-		await roboChimpClient.$queryRaw`SELECT id::text, COALESCE(cardinality(leagues_completed_tasks_ids), 0) AS tasks_completed
-										  FROM public.user
-										  ORDER BY tasks_completed DESC
-										  LIMIT 100;`;
-	doMenu(
-		interaction,
-		user,
-		channelID,
-		chunk(result, 10).map(subList =>
-			subList
-				.map(
-					({ id, tasks_completed }) =>
-						`**${getUsernameSync(id.toString())}:** ${tasks_completed.toLocaleString()} Tasks`
-				)
-				.join('\n')
-		),
-		'Leagues Tasks Leaderboard'
-	);
-	return lbMsg('Leagues Tasks');
 }
 
 const gainersTypes = ['overall', 'top_250'] as const;
 type GainersType = (typeof gainersTypes)[number];
-async function gainersLB(interaction: ChatInputCommandInteraction, user: MUser, channelID: string, type: GainersType) {
+async function gainersLB(interaction: MInteraction, type: GainersType) {
 	const result = await prisma.$queryRawUnsafe<
 		{
 			user_id: string;
@@ -1195,10 +795,8 @@ LIMIT 10;
 `
 	);
 
-	doMenu(
+	return doMenu(
 		interaction,
-		user,
-		channelID,
 		chunk(result, LB_PAGE_SIZE).map((subList, i) =>
 			subList
 				.map(
@@ -1213,10 +811,9 @@ LIMIT 10;
 		),
 		'Weekly Movers Leaderboard'
 	);
-	return lbMsg('Weekly Movers Leaderboard');
 }
 
-async function caLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
+async function caLb(interaction: MInteraction) {
 	const users = (
 		await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(
 			`SELECT id, CARDINALITY(completed_ca_task_ids) AS qty
@@ -1227,10 +824,8 @@ LIMIT 50;`
 		)
 	).map(res => ({ ...res, score: Number(res.qty) }));
 
-	doMenu(
+	return doMenu(
 		interaction,
-		user,
-		channelID,
 		chunk(users, LB_PAGE_SIZE).map((subList, i) =>
 			subList
 				.map(
@@ -1241,10 +836,9 @@ LIMIT 50;`
 		),
 		'Combat Achievements Leaderboard'
 	);
-	return lbMsg('Combat Achievements Leaderboard');
 }
 
-async function masteryLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
+async function masteryLb(interaction: MInteraction) {
 	const users = (
 		await roboChimpClient.user.findMany({
 			where: {
@@ -1265,16 +859,14 @@ async function masteryLb(interaction: ChatInputCommandInteraction, user: MUser, 
 	return doMenuWrapper({
 		interaction,
 		title: 'Mastery Leaderboard',
-		channelID,
 		ironmanOnly: false,
-		user,
 		users,
 		formatter: val => `${val.toFixed(3)}% mastery`
 	});
 }
 
 const ironmanOnlyOption = {
-	type: ApplicationCommandOptionType.Boolean,
+	type: 'Boolean',
 	name: 'ironmen_only',
 	description: 'Only include ironmen.',
 	required: false
@@ -1285,12 +877,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 	description: 'Simulate killing monsters.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'kc',
 			description: 'Check the kc leaderboard.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'monster',
 					description: 'The monster you want to check the leaderboard of.',
 					required: true,
@@ -1302,7 +894,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 				},
 				ironmanOnlyOption,
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'tame',
 					description: 'Show tame kill counts',
 					required: false
@@ -1310,27 +902,27 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'farming_contracts',
 			description: 'Check the farming contracts leaderboard.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'inferno',
 			description: 'Check the inferno leaderboard.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'challenges',
 			description: 'Check the BSO challenges won leaderboard.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'sacrifice',
 			description: 'Check the sacrifice leaderboard.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'type',
 					description: 'The particular sacrifice leaderboard you want to check.',
 					required: true,
@@ -1343,12 +935,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'minigames',
 			description: 'Check the minigames leaderboard.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'minigame',
 					description: 'The particular minigame leaderboard you want to check.',
 					required: true,
@@ -1363,12 +955,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'hunter_catches',
 			description: 'Check the hunter catch leaderboard.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'creature',
 					description: 'The particular creature you want to check.',
 					required: true,
@@ -1383,12 +975,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'agility_laps',
 			description: 'Check the agility laps leaderboard.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'course',
 					description: 'The particular creature you want to check.',
 					required: true,
@@ -1403,30 +995,30 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'gp',
 			description: 'Check the GP leaderboard.',
 			options: [ironmanOnlyOption]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'skills',
 			description: 'Check the skills/xp/levels leaderboards.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'skill',
 					description: 'The skill you want to select.',
 					required: true,
 					autocomplete: async (value: string) => {
 						return [
 							{ name: 'Overall', value: 'overall' },
-							...Object.values(SkillsEnum).map(i => ({ name: toTitleCase(i), value: i }))
+							...SkillsArray.map(i => ({ name: toTitleCase(i), value: i }))
 						].filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'xp',
 					description: 'Show XP instead of levels.',
 					required: false
@@ -1435,12 +1027,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'opens',
 			description: 'Check the opening leaderboards.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'openable',
 					description: 'The openable you want to select.',
 					required: true,
@@ -1460,12 +1052,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'cl',
 			description: 'Check the collection log leaderboards.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'cl',
 					description: 'The cl you want to select.',
 					required: true,
@@ -1481,7 +1073,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 				},
 				ironmanOnlyOption,
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'tames',
 					description: 'If you want to view the tame CL leaderboard.',
 					required: false
@@ -1489,34 +1081,34 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'item_contract_streak',
 			description: 'The item contract streak leaderboard.',
 			options: [ironmanOnlyOption]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'tames_hatched',
 			description: 'Check the leaderboard for most tames hatched.',
 			options: [ironmanOnlyOption]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'total_ic_donation_given',
 			description: 'Total item contract donations given leaderboard.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'unique_ic_donation_given',
 			description: 'Unique item contract donations given leaderboard.'
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'leagues',
 			description: 'Check the Leagues leaderboards.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'type',
 					description: 'The leagues lb you want to select.',
 					required: true,
@@ -1525,12 +1117,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'clues',
 			description: 'Check the clue leaderboards.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'clue',
 					description: 'The clue you want to select.',
 					required: true,
@@ -1540,12 +1132,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'movers',
 			description: 'Check the movers leaderboards.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'type',
 					description: 'The type of movers you want to check.',
 					required: true,
@@ -1554,12 +1146,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'global',
 			description: 'Check the global (OSB+BSO) leaderboards.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					type: 'String',
 					name: 'type',
 					description: 'The global leaderboard type you want to check.',
 					required: true,
@@ -1568,13 +1160,13 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'completion',
 			description: 'Check the completion leaderboard.',
 			options: [
 				ironmanOnlyOption,
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: 'Boolean',
 					name: 'untrimmed',
 					description: 'Show only untrimmed completion.',
 					required: false
@@ -1582,22 +1174,20 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'combat_achievements',
 			description: 'Check the combat achievements leaderboards.',
 			options: []
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: 'Subcommand',
 			name: 'mastery',
 			description: 'Check the mastery leaderboard.',
 			options: []
 		}
 	],
 	run: async ({
-		channelID,
 		options,
-		userID,
 		interaction
 	}: CommandRunOptions<{
 		kc?: { monster: string; ironmen_only?: boolean; tame?: boolean };
@@ -1626,14 +1216,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		combat_achievements?: {};
 		mastery?: {};
 	}>) => {
-		await deferInteraction(interaction);
-		const user = await mUserFetch(userID);
+		await interaction.defer();
 		const {
 			opens,
 			kc,
 			farming_contracts,
 			inferno,
-			challenges,
 			sacrifice,
 			minigames,
 			hunter_catches,
@@ -1641,64 +1229,51 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			gp,
 			skills,
 			cl,
-
-			tames_hatched,
-			item_contract_streak,
-			total_ic_donation_given,
-			unique_ic_donation_given,
-			leagues,
 			clues,
 			movers,
 			global,
 			completion,
 			combat_achievements,
-			mastery
+			mastery,
+			tames_hatched,
+			item_contract_streak,
+			total_ic_donation_given,
+			unique_ic_donation_given,
+			leagues,
+			challenges
 		} = options;
-		if (kc) return kcLb(interaction, user, channelID, kc.monster, Boolean(kc.ironmen_only), Boolean(kc.tame));
+		if (kc) return kcLb(interaction, kc.monster, Boolean(kc.ironmen_only), Boolean(kc.tame));
 		if (farming_contracts) {
-			return farmingContractLb(interaction, user, channelID, Boolean(farming_contracts.ironmen_only));
+			return farmingContractLb(interaction, Boolean(farming_contracts.ironmen_only));
 		}
 		if (inferno) return infernoLb();
-		if (challenges) return bsoChallenge(interaction, user, channelID);
-		if (sacrifice)
-			return sacrificeLb(interaction, user, channelID, sacrifice.type, Boolean(sacrifice.ironmen_only));
-		if (minigames) return minigamesLb(interaction, user, channelID, minigames.minigame);
-		if (hunter_catches) return creaturesLb(interaction, user, channelID, hunter_catches.creature);
-		if (agility_laps) return lapsLb(interaction, user, channelID, agility_laps.course);
-		if (gp) return gpLb(interaction, user, channelID, Boolean(gp.ironmen_only));
+		if (sacrifice) return sacrificeLb(interaction, sacrifice.type, Boolean(sacrifice.ironmen_only));
+		if (minigames) return minigamesLb(interaction, minigames.minigame);
+		if (hunter_catches) return creaturesLb(interaction, hunter_catches.creature);
+		if (agility_laps) return lapsLb(interaction, agility_laps.course);
+		if (gp) return gpLb(interaction, Boolean(gp.ironmen_only));
 		if (skills) {
-			return skillsLb(
-				interaction,
-				user,
-				channelID,
-				skills.skill,
-				skills.xp ? 'xp' : 'level',
-				Boolean(skills.ironmen_only)
-			);
+			return skillsLb(interaction, skills.skill, skills.xp ? 'xp' : 'level', Boolean(skills.ironmen_only));
 		}
-		if (opens) return openLb(interaction, user, channelID, opens.openable, Boolean(opens.ironmen_only));
-		if (cl) return clLb(interaction, user, channelID, cl.cl, Boolean(cl.ironmen_only), Boolean(cl.tames));
-		if (item_contract_streak)
-			return itemContractLb(interaction, user, channelID, item_contract_streak.ironmen_only);
-		if (total_ic_donation_given) return itemContractDonationGivenLb(interaction, user, channelID, true);
-		if (unique_ic_donation_given) return itemContractDonationGivenLb(interaction, user, channelID, false);
-		if (tames_hatched) return tamesHatchedLb(interaction, user, channelID, Boolean(tames_hatched.ironmen_only));
-		if (leagues) return leaguesLeaderboard(interaction, user, channelID, leagues.type);
+		if (opens) return openLb(interaction, opens.openable, Boolean(opens.ironmen_only));
+		if (cl) return clLb(interaction, cl.cl, Boolean(cl.ironmen_only), Boolean(cl.tames));
+		if (clues) return cluesLb(interaction, clues.clue, Boolean(clues.ironmen_only));
+		if (movers) return gainersLB(interaction, movers.type);
+		if (global) return globalLb(interaction, global.type);
+		if (combat_achievements) return caLb(interaction);
+		if (mastery) return masteryLb(interaction);
 
-		if (clues) return cluesLb(interaction, user, channelID, clues.clue, Boolean(clues.ironmen_only));
-		if (movers) return gainersLB(interaction, user, channelID, movers.type);
-		if (global) return globalLb(interaction, user, channelID, global.type);
-		if (completion)
-			return compLeaderboard(
-				interaction,
-				user,
-				Boolean(completion.untrimmed),
-				Boolean(completion.ironmen_only),
-				channelID
-			);
+		// BSO Leaderboards
+		if (completion) {
+			return bsoCompletionistLb(interaction, Boolean(completion.untrimmed), Boolean(completion.ironmen_only));
+		}
+		if (tames_hatched) return bsoTamesHatchedLb(interaction, Boolean(tames_hatched.ironmen_only));
+		if (item_contract_streak) return bsoItemContractLb(interaction, item_contract_streak.ironmen_only);
+		if (total_ic_donation_given) return bsoItemContractDonationGivenLb(interaction, true);
+		if (unique_ic_donation_given) return bsoItemContractDonationGivenLb(interaction, false);
+		if (leagues) return bsoLeaguesLeaderboard(interaction, leagues.type);
+		if (challenges) return bsoChallengeLeaderboard(interaction);
 
-		if (combat_achievements) return caLb(interaction, user, channelID);
-		if (mastery) return masteryLb(interaction, user, channelID);
 		return 'Invalid input.';
 	}
 };

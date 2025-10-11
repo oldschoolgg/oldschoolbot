@@ -1,13 +1,12 @@
+import { objectEntries } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
 import { ChannelType } from 'discord.js';
-import { objectEntries } from 'e';
 
-import { globalConfig } from '../constants';
-import { runTimedLoggedFn } from '../util';
+import { CACHED_ACTIVE_USER_IDS } from '@/lib/cache.js';
+import { globalConfig } from '@/lib/constants.js';
+import { runTimedLoggedFn } from '@/lib/util.js';
 
-export const CACHED_ACTIVE_USER_IDS = new Set();
 CACHED_ACTIVE_USER_IDS.add(globalConfig.clientID);
-for (const id of globalConfig.adminUserIDs) CACHED_ACTIVE_USER_IDS.add(id);
 
 export const syncActiveUserIDs = async () => {
 	const users = await prisma.$queryRawUnsafe<
@@ -25,7 +24,7 @@ WHERE perk_tier > 0;`)
 	for (const id of [...users.map(i => i.user_id), ...perkTierUsers.map(i => i.id)]) {
 		CACHED_ACTIVE_USER_IDS.add(id);
 	}
-	debugLog(`${CACHED_ACTIVE_USER_IDS.size} cached active user IDs`);
+	Logging.logDebug(`${CACHED_ACTIVE_USER_IDS.size} cached active user IDs`);
 };
 
 export function memoryAnalysis() {
@@ -103,19 +102,19 @@ export function cacheCleanup() {
 				if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildCategory) {
 					globalClient.channels.cache.delete(channel.id);
 				}
-				// @ts-ignore ignore
+				// @ts-expect-error ignore
 				channel.topic = undefined;
-				// @ts-ignore ignore
+				// @ts-expect-error ignore
 				channel.rateLimitPerUser = undefined;
-				// @ts-ignore ignore
+				// @ts-expect-error ignore
 				channel.nsfw = undefined;
-				// @ts-ignore ignore
+				// @ts-expect-error ignore
 				channel.parentId = undefined;
-				// @ts-ignore ignore
+				// @ts-expect-error ignore
 				channel.name = undefined;
-				// @ts-ignore ignore
+				// @ts-expect-error ignore
 				channel.lastMessageId = null;
-				// @ts-ignore ignore
+				// @ts-expect-error ignore
 				channel.lastPinTimestamp = null;
 				if ('permissionOverwrites' in channel) {
 					channel.permissionOverwrites.cache.clear();
@@ -144,21 +143,21 @@ export function cacheCleanup() {
 					}
 				}
 				for (const role of guild.roles.cache.values()) {
-					// @ts-ignore ignore
+					// @ts-expect-error ignore
 					role.managed = undefined;
-					// @ts-ignore ignore
+					// @ts-expect-error ignore
 					role.name = undefined;
-					// @ts-ignore ignore
+					// @ts-expect-error ignore
 					role.tags = undefined;
-					// @ts-ignore ignore
+					// @ts-expect-error ignore
 					role.icon = undefined;
-					// @ts-ignore ignore
+					// @ts-expect-error ignore
 					role.unicodeEmoji = undefined;
-					// @ts-ignore ignore
+					// @ts-expect-error ignore
 					role.rawPosition = undefined;
-					// @ts-ignore ignore
+					// @ts-expect-error ignore
 					role.color = undefined;
-					// @ts-ignore ignore
+					// @ts-expect-error ignore
 					role.hoist = undefined;
 				}
 			}

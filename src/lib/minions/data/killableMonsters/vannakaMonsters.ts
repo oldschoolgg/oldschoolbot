@@ -1,9 +1,10 @@
-import { Time } from 'e';
-import { Bank, Monsters, deepResolveItems, itemID, resolveItems } from 'oldschooljs';
+import { makeKillTable } from '@/lib/bso/monsters/setCustomMonster.js';
+
+import { Time } from '@oldschoolgg/toolkit';
+import { Bank, deepResolveItems, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
-import { makeKillTable } from '../../../util/setCustomMonster';
-import type { KillableMonster } from '../../types';
+import type { KillableMonster } from '@/lib/minions/types.js';
 
 export const vannakaMonsters: KillableMonster[] = [
 	{

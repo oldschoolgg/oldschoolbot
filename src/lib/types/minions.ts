@@ -1,21 +1,17 @@
+import type { BSOActivityTaskData } from '@/lib/bso/bsoTypes.js';
+
 import type { CropUpgradeType } from '@prisma/client';
 import type { ItemBank } from 'oldschooljs';
 
-import type { BathhouseTierName } from '../baxtorianBathhouses';
-import type { TuraelsTrialsMethod } from '../bso/turaelsTrials';
-import type { NMZStrategy } from '../constants';
-import type { Kibble } from '../data/kibble';
-import type { IMaterialBank, MaterialType } from '../invention';
-import type { SlayerActivityConstants } from '../minions/data/combatConstants';
-import type { IPatchData } from '../minions/farming/types';
-import type { AttackStyles } from '../minions/functions';
-import type { Monkey } from '../monkeyRumble';
-import type { MinigameName } from '../settings/minigames';
-import type { UnderwaterAgilityThievingTrainingSkill } from '../skilling/skills/agility';
-import type { TwitcherGloves } from '../skilling/skills/woodcutting/woodcutting';
-import type { BossUser } from '../structures/Boss';
-import type { Peak } from '../util/peaks';
-import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
+import type { NMZStrategy } from '@/lib/constants.js';
+import type { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import type { MinigameName } from '@/lib/settings/minigames.js';
+import type { UnderwaterAgilityThievingTrainingSkill } from '@/lib/skilling/skills/agility.js';
+import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
+import type { BirdhouseData } from '@/lib/skilling/skills/hunter/defaultBirdHouseTrap.js';
+import type { TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
+import type { Peak } from '@/lib/util/peaks.js';
 
 export interface ActivityTaskOptions {
 	userID: string;
@@ -24,19 +20,6 @@ export interface ActivityTaskOptions {
 	finishDate: number;
 	channelID: string;
 	cantBeDoubled?: boolean;
-}
-
-export interface KibbleOptions extends ActivityTaskOptions {
-	type: 'KibbleMaking';
-	quantity: number;
-	kibbleType: Kibble['type'];
-}
-
-export interface TuraelsTrialsOptions extends ActivityTaskOptions {
-	type: 'TuraelsTrials';
-	minigameID: MinigameName;
-	q: number;
-	m: TuraelsTrialsMethod;
 }
 
 export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
@@ -169,7 +152,7 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	usingCannon?: boolean;
 	cannonMulti?: boolean;
 	chinning?: boolean;
-	bob?: SlayerActivityConstants.IceBarrage | SlayerActivityConstants.IceBurst;
+	bob?: SlayerActivityConstants;
 	died?: boolean;
 	pkEncounters?: number;
 	hasWildySupplies?: boolean;
@@ -385,7 +368,7 @@ export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {
 	currentDate: number;
 }
 
-interface MinigameActivityTaskOptions extends ActivityTaskOptions {
+export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
 	minigameID: MinigameName;
 	quantity: number;
 }
@@ -434,19 +417,6 @@ export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
 	method: 'solo' | 'mass';
 	quantity: number;
 	isPhosani?: boolean;
-}
-
-interface StoredBossUser extends Omit<BossUser, 'user' | 'itemsToRemove'> {
-	user: string;
-	itemsToRemove: ItemBank;
-}
-
-export interface NewBossOptions extends ActivityTaskOptions {
-	type: 'VasaMagus' | 'Ignecarus' | 'KingGoldemar' | 'BossEvent';
-	users: string[];
-	quantity: number;
-	bossUsers: StoredBossUser[];
-	bossID: number;
 }
 
 export interface TemporossActivityTaskOptions extends MinigameActivityTaskOptions {
@@ -579,22 +549,6 @@ export interface TOAOptions extends ActivityTaskOptionsWithUsers {
 	cc?: string;
 }
 
-export interface DOAStoredRaid {
-	wipedRoom: number | null;
-	users: { deaths: number[] }[];
-}
-
-export interface DOAOptions extends ActivityTaskOptionsWithUsers {
-	type: 'DepthsOfAtlantis';
-	leader: string;
-	cm: boolean;
-	fakeDuration: number;
-	quantity: number;
-	raids: DOAStoredRaid[];
-	// id of user that used chincannon
-	cc?: string;
-}
-
 export interface NexTaskOptions extends ActivityTaskOptionsWithUsers {
 	type: 'Nex';
 	quantity: number;
@@ -620,24 +574,19 @@ export interface RaidsOptions extends ActivityTaskOptions {
 export interface VolcanicMineActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
-
-export interface MonkeyRumbleOptions extends MinigameActivityTaskOptions {
-	type: 'MonkeyRumble';
-	quantity: number;
-	monkeys: Monkey[];
-}
-
-export interface FishingContestOptions extends MinigameActivityTaskOptions {
-	type: 'FishingContest';
-	quantity: number;
-	location: number;
-}
 export interface TearsOfGuthixActivityTaskOptions extends MinigameActivityTaskOptions {}
 
 export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
 	type: 'KourendFavour';
 	favour: string;
 	quantity: number;
+}
+
+export interface BuyActivityTaskOptions extends ActivityTaskOptions {
+	type: 'Buy';
+	itemID: number;
+	quantity: number;
+	totalCost: number;
 }
 
 export interface TokkulShopOptions extends ActivityTaskOptions {
@@ -675,10 +624,6 @@ export interface GuardiansOfTheRiftActivityTaskOptions extends MinigameActivityT
 	combinationRunes: boolean;
 }
 
-export interface TinkeringWorkshopOptions extends MinigameActivityTaskOptions {
-	type: 'TinkeringWorkshop';
-	material: MaterialType;
-}
 export interface NightmareZoneActivityTaskOptions extends MinigameActivityTaskOptions {
 	type: 'NightmareZone';
 	strategy: NMZStrategy;
@@ -693,59 +638,6 @@ export interface ShadesOfMortonOptions extends MinigameActivityTaskOptions {
 export interface SpecificQuestOptions extends ActivityTaskOptions {
 	type: 'SpecificQuest';
 	questID: number;
-}
-
-export interface MoktangTaskOptions extends ActivityTaskOptions {
-	type: 'Moktang';
-	qty: number;
-}
-
-export interface DungeoneeringOptions extends ActivityTaskOptions {
-	type: 'Dungeoneering';
-	leader: string;
-	users: string[];
-	quantity: number;
-	floor: number;
-}
-
-export interface DisassembleTaskOptions extends ActivityTaskOptions {
-	type: 'Disassembling';
-	i: number;
-	qty: number;
-	mats: IMaterialBank;
-	xp: number;
-}
-
-export interface ResearchTaskOptions extends ActivityTaskOptions {
-	type: 'Research';
-	material: MaterialType;
-	quantity: number;
-}
-
-export interface BathhouseTaskOptions extends MinigameActivityTaskOptions {
-	type: 'BaxtorianBathhouses';
-	mixture: string;
-	ore: number;
-	tier: BathhouseTierName;
-}
-
-export interface MortimerOptions extends ActivityTaskOptions {
-	type: 'Mortimer';
-}
-
-export interface MemoryHarvestOptions extends ActivityTaskOptions {
-	type: 'MemoryHarvest';
-	e: number;
-	t: number;
-	wb: boolean;
-	dh: boolean;
-	dp: boolean;
-	r: number;
-}
-
-export interface SnoozeSpellActiveCastOptions extends ActivityTaskOptions {
-	type: 'SnoozeSpellActive';
-	hours: number;
 }
 
 export type ActivityTaskData =
@@ -813,23 +705,10 @@ export type ActivityTaskData =
 	| FightCavesActivityTaskOptions
 	| ActivityTaskOptionsWithQuantity
 	| MinigameActivityTaskOptionsWithNoChanges
-	| NewBossOptions
-	| TinkeringWorkshopOptions
 	| BossActivityTaskOptions
-	| MonkeyRumbleOptions
-	| MoktangTaskOptions
-	| KibbleOptions
-	| FishingContestOptions
-	| DungeoneeringOptions
-	| DOAOptions
-	| DisassembleTaskOptions
-	| BathhouseTaskOptions
-	| ResearchTaskOptions
 	| CutLeapingFishActivityTaskOptions
-	| MortimerOptions
-	| MemoryHarvestOptions
-	| TuraelsTrialsOptions
 	| CutLeapingFishActivityTaskOptions
 	| CreateForestersRationsActivityTaskOptions
 	| ColoTaskOptions
-	| SnoozeSpellActiveCastOptions;
+	| BuyActivityTaskOptions
+	| BSOActivityTaskData;

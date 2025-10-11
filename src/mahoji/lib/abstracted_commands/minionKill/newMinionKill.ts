@@ -1,37 +1,35 @@
-import { formatDuration, isWeekend } from '@oldschoolgg/toolkit/datetime';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import type { InventionID } from '@/lib/bso/skills/invention/inventions.js';
+
+import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent, Time } from '@oldschoolgg/toolkit';
 import type { PlayerOwnedHouse } from '@prisma/client';
-import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
-import { EItem, Items, Monsters, itemID } from 'oldschooljs';
+import { EItem, Items, itemID, Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import z from 'zod';
 
-import type { Peak } from '@/lib/util/peaks';
-import { calculateSimpleMonsterDeathChance, zodEnum } from '@/lib/util/smallUtils';
-import { YETI_ID } from '../../../../lib/bso/bsoConstants';
-import { BitField, type PvMMethod } from '../../../../lib/constants';
-import { getSimilarItems } from '../../../../lib/data/similarItems';
-import { checkRangeGearWeapon } from '../../../../lib/gear/functions/checkRangeGearWeapon';
-import type { InventionID } from '../../../../lib/invention/inventions';
-import type { CombatOptionsEnum } from '../../../../lib/minions/data/combatConstants';
-import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
+import { BitField, type PvMMethod } from '@/lib/constants.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { checkRangeGearWeapon } from '@/lib/gear/functions/checkRangeGearWeapon.js';
+import type { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
+import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
+import { type AttackStyles, attackStylesArr, getAttackStylesContext } from '@/lib/minions/functions/index.js';
+import { resolveAttackStyles } from '@/lib/minions/functions/resolveAttackStyles.js';
+import type { KillableMonster } from '@/lib/minions/types.js';
+import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { type CurrentSlayerInfo, determineCombatBoosts, wildySlayerOnlyMonsters } from '@/lib/slayer/slayerUtil.js';
+import type { GearBank } from '@/lib/structures/GearBank.js';
+import { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import type { Peak } from '@/lib/util/peaks.js';
+import { calculateSimpleMonsterDeathChance, zodEnum } from '@/lib/util/smallUtils.js';
+import { killsRemainingOnTask } from '@/mahoji/lib/abstracted_commands/minionKill/calcTaskMonstersRemaining.js';
 import {
-	type AttackStyles,
-	attackStylesArr,
-	getAttackStylesContext,
-	resolveAttackStyles
-} from '../../../../lib/minions/functions';
-import type { KillableMonster } from '../../../../lib/minions/types';
-import type { SlayerTaskUnlocksEnum } from '../../../../lib/slayer/slayerUnlocks';
+	type PostBoostEffect,
+	postBoostEffects
+} from '@/mahoji/lib/abstracted_commands/minionKill/postBoostEffects.js';
 import {
-	type CurrentSlayerInfo,
-	determineCombatBoosts,
-	wildySlayerOnlyMonsters
-} from '../../../../lib/slayer/slayerUtil';
-import type { GearBank } from '../../../../lib/structures/GearBank';
-import { UpdateBank } from '../../../../lib/structures/UpdateBank';
-import { killsRemainingOnTask } from './calcTaskMonstersRemaining';
-import { type PostBoostEffect, postBoostEffects } from './postBoostEffects';
-import { CombatMethodOptionsSchema, speedCalculations } from './timeAndSpeed';
+	CombatMethodOptionsSchema,
+	speedCalculations
+} from '@/mahoji/lib/abstracted_commands/minionKill/timeAndSpeed.js';
 
 const newMinionKillReturnSchema = z.object({
 	duration: z.number().int().positive(),
@@ -167,7 +165,7 @@ export function newMinionKillCommand(args: MinionKillOptions): string | MinionKi
 			})
 		: null;
 
-	if (!args.bitfield.includes(BitField.HasUnlockedYeti) && monster.id === YETI_ID) {
+	if (!args.bitfield.includes(BitField.HasUnlockedYeti) && monster.id === EBSOMonster.YETI) {
 		args.inputQuantity = 1;
 	}
 

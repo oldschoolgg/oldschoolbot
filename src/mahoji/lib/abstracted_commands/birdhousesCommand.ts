@@ -1,14 +1,10 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import { time } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { birdhouseLimit } from '@/lib/bso/bsoUtil';
-import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses';
-import birdhouses, { birdhouseSeeds } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
-import type { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../../mahojiSettings';
+import birdhouses, { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
+import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
+import type { BirdhouseActivityTaskOptions } from '@/lib/types/minions.js';
 
 export async function birdhouseCheckCommand(user: MUser) {
 	const details = calculateBirdhouseDetails(user);
@@ -21,11 +17,9 @@ export async function birdhouseCheckCommand(user: MUser) {
 
 export async function birdhouseHarvestCommand(user: MUser, channelID: string, inputBirdhouseName: string | undefined) {
 	const userBank = user.bank;
-	const currentDate = new Date().getTime();
+	const currentDate = Date.now();
 	const infoStr: string[] = [];
 	const boostStr: string[] = [];
-
-	const birdHouses = birdhouseLimit(user);
 
 	const existingBirdhouse = calculateBirdhouseDetails(user);
 	if (!existingBirdhouse.isReady && existingBirdhouse.raw.lastPlaced) return birdhouseCheckCommand(user);
@@ -59,13 +53,13 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 	let duration: number = birdhouseToPlant.runTime;
 
 	// Reduce time if user has graceful equipped
-	if (userHasGracefulEquipped(user)) {
+	if (user.hasGracefulEquipped()) {
 		boostStr.push('10% time for Graceful');
 		duration *= 0.9;
 	}
 	let gotCraft = false;
 	const removeBank = new Bank();
-	const premadeBankCost = birdhouseToPlant.houseItemReq.clone().multiply(birdHouses);
+	const premadeBankCost = birdhouseToPlant.houseItemReq.clone().multiply(4);
 	if (user.owns(premadeBankCost)) {
 		removeBank.add(premadeBankCost);
 	} else {
@@ -73,18 +67,17 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 			return `${user.minionName} needs ${birdhouseToPlant.craftLvl} Crafting to make ${birdhouseToPlant.name} during the run or write \`/activities birdhouse run --nocraft\`.`;
 		}
 		gotCraft = true;
-		removeBank.add(birdhouseToPlant.craftItemReq.clone().multiply(birdHouses));
+		removeBank.add(birdhouseToPlant.craftItemReq.clone().multiply(4));
 	}
 
 	let canPay = false;
 
-	const mUser = await mahojiUsersSettingsFetch(user.id, { favorite_bh_seeds: true });
-	const favourites = mUser.favorite_bh_seeds;
+	const favourites = user.user.favorite_bh_seeds;
 	if (favourites.length > 0) {
 		for (const fav of favourites) {
 			const seed = birdhouseSeeds.find(s => s.item.id === fav);
 			if (!seed) continue;
-			const seedCost = new Bank().add(seed.item, seed.amount * birdHouses);
+			const seedCost = new Bank().add(seed.item.id, seed.amount * 4);
 			if (userBank.has(seedCost)) {
 				infoStr.push(`You baited the birdhouses with ${seedCost}.`);
 				removeBank.add(seedCost);
@@ -110,23 +103,23 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 	}
 	if (!user.owns(removeBank)) return `You don't own: ${removeBank}.`;
 
-	await updateBankSetting('farming_cost_bank', removeBank);
-	await transactItems({ userID: user.id, itemsToRemove: removeBank });
+	await ClientSettings.updateBankSetting('farming_cost_bank', removeBank);
+	await user.transactItems({ itemsToRemove: removeBank });
 
 	// If user does not have something already placed, just place the new birdhouses.
 	if (!existingBirdhouse.raw.birdhousePlaced) {
-		infoStr.unshift(`${user.minionName} is now placing ${birdHouses}x ${birdhouseToPlant.name}.`);
+		infoStr.unshift(`${user.minionName} is now placing 4x ${birdhouseToPlant.name}.`);
 	} else {
 		infoStr.unshift(
-			`${user.minionName} is now collecting ${birdHouses}x ${existingBirdhouse.raw.lastPlaced}, and then placing ${birdHouses}x ${birdhouseToPlant.name}.`
+			`${user.minionName} is now collecting 4x ${existingBirdhouse.raw.lastPlaced}, and then placing 4x ${birdhouseToPlant.name}.`
 		);
 	}
 
-	await addSubTaskToActivityTask<BirdhouseActivityTaskOptions>({
+	await ActivityManager.startTrip<BirdhouseActivityTaskOptions>({
 		birdhouseName: birdhouseToPlant.name,
 		birdhouseData: existingBirdhouse.raw,
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration,
 		placing: true,
 		gotCraft,

@@ -1,20 +1,20 @@
-import { Time, percentChance, randInt, roll } from 'e';
-import { SkillsEnum, resolveItems } from 'oldschooljs';
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
+import { chargePortentIfHasCharges, PortentID } from '@/lib/bso/skills/divination.js';
+import { clueUpgraderEffect } from '@/lib/bso/skills/invention/effects/clueUpgraderEffect.js';
+import { forcefullyUnequipItem } from '@/lib/bso/util/forcefullyUnequipItem.js';
 
-import { skillingPetDropRate } from '@/lib/util';
-import { perHourChance } from '@/lib/util/rng';
-import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
-import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
-import { clueUpgraderEffect } from '../../lib/bso/inventionEffects';
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import { type Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
-import { UpdateBank } from '../../lib/structures/UpdateBank';
-import type { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { forcefullyUnequipItem } from '../../lib/util/forcefullyUnequipItem';
-import getOSItem from '../../lib/util/getOSItem';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../lib/util/makeBankImage';
-import { rogueOutfitPercentBonus, updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { percentChance, randInt, roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
+import { Items, resolveItems } from 'oldschooljs';
+
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { Thieving } from '@/lib/skilling/skills/thieving/index.js';
+import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/stealables.js';
+import { UpdateBank } from '@/lib/structures/UpdateBank.js';
+import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { perHourChance } from '@/lib/util/smallUtils.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 const notMultiplied = resolveItems([
 	'Blood shard',
@@ -65,14 +65,13 @@ export function calcLootXPPickpocketing(
 
 export const pickpocketTask: MinionTask = {
 	type: 'Pickpocket',
-	async run(data: PickpocketActivityTaskOptions) {
-		const { monsterID, quantity, successfulQuantity, userID, channelID, xpReceived, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: PickpocketActivityTaskOptions, { user, handleTripFinish }) {
+		const { monsterID, quantity, successfulQuantity, channelID, xpReceived, duration } = data;
 		const obj = stealables.find(_obj => _obj.id === monsterID)!;
 		let rogueOutfitBoostActivated = false;
 
 		const updateBank = new UpdateBank();
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Thieving, obj.petChance);
+		const { petDropRate } = skillingPetDropRate(user, 'thieving', obj.petChance);
 
 		if (obj.type === 'pickpockable') {
 			for (let i = 0; i < successfulQuantity; i++) {
@@ -82,7 +81,7 @@ export const pickpocketTask: MinionTask = {
 				// TODO: Remove Rocky from loot tables in oldschoolJS
 				if (lootItems.has('Rocky')) lootItems.remove('Rocky');
 
-				if (randInt(1, 100) <= rogueOutfitPercentBonus(user)) {
+				if (randInt(1, 100) <= Thieving.rogueOutfitPercentBonus(user)) {
 					rogueOutfitBoostActivated = true;
 					const doubledLoot = lootItems.multiply(2);
 					updateBank.itemLootBank.add(doubledLoot);
@@ -109,7 +108,7 @@ export const pickpocketTask: MinionTask = {
 			boosts.push('3x loot for Thieves armband');
 			updateBank.itemLootBank.multiply(3, notMultiplied);
 			await perHourChance(duration, 40, async () => {
-				await forcefullyUnequipItem(user, getOSItem("Thieves' armband"));
+				await forcefullyUnequipItem(user, Items.getOrThrow("Thieves' armband"));
 				boosts.push('Your thieves armband broke!');
 			});
 		} else {
@@ -123,7 +122,7 @@ export const pickpocketTask: MinionTask = {
 				const before = updateBank.itemLootBank.clone();
 				updateBank.itemLootBank.multiply(3, notMultiplied);
 				const after = updateBank.itemLootBank.clone();
-				await userStatsBankUpdate(user, 'loot_from_rogues_portent', after.difference(before));
+				await user.statsBankUpdate('loot_from_rogues_portent', after.difference(before));
 			}
 		}
 		clueUpgraderEffect({
@@ -145,13 +144,13 @@ export const pickpocketTask: MinionTask = {
 		}
 
 		if (updateBank.itemLootBank.has('Coins')) {
-			updateClientGPTrackSetting('gp_pickpocket', updateBank.itemLootBank.amount('Coins'));
+			ClientSettings.updateClientGPTrackSetting('gp_pickpocket', updateBank.itemLootBank.amount('Coins'));
 		}
 
 		updateBank.userStatsBankUpdates.steal_loot_bank = updateBank.itemLootBank;
 
 		const txResult = await updateBank.transactWithItemsOrThrow(user);
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: xpReceived, duration });
+		const xpRes = await user.addXP({ skillName: 'thieving', amount: xpReceived, duration });
 
 		let str = `${user}, ${user.minionName} finished ${
 			obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'

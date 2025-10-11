@@ -1,210 +1,210 @@
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { Time, calcWhatPercent, reduceNumByPercent, round, sumArr } from 'e';
-import { Bank } from 'oldschooljs';
+import {
+	calcWhatPercent,
+	formatDuration,
+	reduceNumByPercent,
+	round,
+	stringMatches,
+	sumArr,
+	Time
+} from '@oldschoolgg/toolkit';
+import { Bank, Items } from 'oldschooljs';
 
+import type { NMZStrategy } from '@/lib/constants.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { MAX_QP } from '@/lib/minions/data/quests.js';
+import { resolveAttackStyles } from '@/lib/minions/functions/resolveAttackStyles.js';
+import type { Skills } from '@/lib/types/index.js';
+import type { NightmareZoneActivityTaskOptions } from '@/lib/types/minions.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
-import type { NMZStrategy } from '../../../lib/constants';
-import { trackLoot } from '../../../lib/lootTrack';
-import { MAX_QP } from '../../../lib/minions/data/quests';
-import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { Skills } from '../../../lib/types';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import type { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
 
 const itemBoosts = [
 	// Special weapons
 	[
 		{
-			item: getOSItem('Dragon claws'),
+			item: Items.getOrThrow('Dragon claws'),
 			boost: 20
 		},
 		{
-			item: getOSItem('Granite maul'),
+			item: Items.getOrThrow('Granite maul'),
 			boost: 15
 		},
 		{
-			item: getOSItem('Dragon dagger(p++)'),
+			item: Items.getOrThrow('Dragon dagger(p++)'),
 			boost: 10
 		}
 	],
 	// Amulets
 	[
 		{
-			item: getOSItem('Amulet of torture'),
+			item: Items.getOrThrow('Amulet of torture'),
 			boost: 5
 		},
 		{
-			item: getOSItem('Amulet of fury'),
+			item: Items.getOrThrow('Amulet of fury'),
 			boost: 3
 		},
 		{
-			item: getOSItem('Berserker necklace'),
+			item: Items.getOrThrow('Berserker necklace'),
 			boost: 1
 		}
 	],
 	// Capes
 	[
 		{
-			item: getOSItem('Infernal cape'),
+			item: Items.getOrThrow('Infernal cape'),
 			boost: 5
 		},
 		{
-			item: getOSItem('Fire cape'),
+			item: Items.getOrThrow('Fire cape'),
 			boost: 3
 		}
 	],
 	// Gloves
 	[
 		{
-			item: getOSItem('Ferocious gloves'),
+			item: Items.getOrThrow('Ferocious gloves'),
 			boost: 5
 		},
 		{
-			item: getOSItem('Barrows gloves'),
+			item: Items.getOrThrow('Barrows gloves'),
 			boost: 3
 		}
 	],
 	// Boots
 	[
 		{
-			item: getOSItem('Primordial boots'),
+			item: Items.getOrThrow('Primordial boots'),
 			boost: 5
 		},
 		{
-			item: getOSItem('Dragon boots'),
+			item: Items.getOrThrow('Dragon boots'),
 			boost: 3
 		},
 		{
-			item: getOSItem('Guardian boots'),
+			item: Items.getOrThrow('Guardian boots'),
 			boost: 3
 		}
 	],
 	// Rings
 	[
 		{
-			item: getOSItem('Berserker ring (i)'),
+			item: Items.getOrThrow('Berserker ring (i)'),
 			boost: 5
 		},
 		{
-			item: getOSItem('Brimstone ring'),
+			item: Items.getOrThrow('Brimstone ring'),
 			boost: 3
 		},
 		{
-			item: getOSItem('Berserker ring'),
+			item: Items.getOrThrow('Berserker ring'),
 			boost: 1
 		}
 	]
 ];
 
 export const nightmareZoneImbueables = [
-	{ input: getOSItem('Black mask'), output: getOSItem('Black mask (i)'), points: 1_250_000 },
-	{ input: getOSItem('Slayer helmet'), output: getOSItem('Slayer helmet (i)'), points: 1_250_000 },
+	{ input: Items.getOrThrow('Black mask'), output: Items.getOrThrow('Black mask (i)'), points: 1_250_000 },
+	{ input: Items.getOrThrow('Slayer helmet'), output: Items.getOrThrow('Slayer helmet (i)'), points: 1_250_000 },
 	{
-		input: getOSItem('Turquoise slayer helmet'),
-		output: getOSItem('Turquoise slayer helmet (i)'),
+		input: Items.getOrThrow('Turquoise slayer helmet'),
+		output: Items.getOrThrow('Turquoise slayer helmet (i)'),
 		points: 1_250_000
 	},
 	{
-		input: getOSItem('Red slayer helmet'),
-		output: getOSItem('Red slayer helmet (i)'),
+		input: Items.getOrThrow('Red slayer helmet'),
+		output: Items.getOrThrow('Red slayer helmet (i)'),
 		points: 1_250_000
 	},
 	{
-		input: getOSItem('Green slayer helmet'),
-		output: getOSItem('Green slayer helmet (i)'),
+		input: Items.getOrThrow('Green slayer helmet'),
+		output: Items.getOrThrow('Green slayer helmet (i)'),
 		points: 1_250_000
 	},
 	{
-		input: getOSItem('Twisted slayer helmet'),
-		output: getOSItem('Twisted slayer helmet (i)'),
+		input: Items.getOrThrow('Twisted slayer helmet'),
+		output: Items.getOrThrow('Twisted slayer helmet (i)'),
 		points: 1_250_000
 	},
 	{
-		input: getOSItem('Black slayer helmet'),
-		output: getOSItem('Black slayer helmet (i)'),
+		input: Items.getOrThrow('Black slayer helmet'),
+		output: Items.getOrThrow('Black slayer helmet (i)'),
 		points: 1_250_000
 	},
 	{
-		input: getOSItem('Purple slayer helmet'),
-		output: getOSItem('Purple slayer helmet (i)'),
+		input: Items.getOrThrow('Purple slayer helmet'),
+		output: Items.getOrThrow('Purple slayer helmet (i)'),
 		points: 1_250_000
 	},
 	{
-		input: getOSItem('Hydra slayer helmet'),
-		output: getOSItem('Hydra slayer helmet (i)'),
+		input: Items.getOrThrow('Hydra slayer helmet'),
+		output: Items.getOrThrow('Hydra slayer helmet (i)'),
 		points: 1_250_000
 	},
 	{
-		input: getOSItem('Tztok slayer helmet'),
-		output: getOSItem('Tztok slayer helmet (i)'),
+		input: Items.getOrThrow('Tztok slayer helmet'),
+		output: Items.getOrThrow('Tztok slayer helmet (i)'),
 		points: 1_250_000
 	},
 	{
-		input: getOSItem('Vampyric slayer helmet'),
-		output: getOSItem('Vampyric slayer helmet (i)'),
+		input: Items.getOrThrow('Vampyric slayer helmet'),
+		output: Items.getOrThrow('Vampyric slayer helmet (i)'),
 		points: 1_250_000
 	},
 	{
-		input: getOSItem('Tzkal slayer helmet'),
-		output: getOSItem('Tzkal slayer helmet (i)'),
+		input: Items.getOrThrow('Tzkal slayer helmet'),
+		output: Items.getOrThrow('Tzkal slayer helmet (i)'),
 		points: 1_250_000
 	},
-	{ input: getOSItem('Salve amulet'), output: getOSItem('Salve amulet(i)'), points: 800_000 },
-	{ input: getOSItem('Salve amulet (e)'), output: getOSItem('Salve amulet(ei)'), points: 800_000 },
+	{ input: Items.getOrThrow('Salve amulet'), output: Items.getOrThrow('Salve amulet(i)'), points: 800_000 },
+	{ input: Items.getOrThrow('Salve amulet (e)'), output: Items.getOrThrow('Salve amulet(ei)'), points: 800_000 },
 	{
-		input: getOSItem('Ring of the gods'),
-		output: getOSItem('Ring of the gods (i)'),
+		input: Items.getOrThrow('Ring of the gods'),
+		output: Items.getOrThrow('Ring of the gods (i)'),
 		points: 650_000
 	},
 	{
-		input: getOSItem('Ring of suffering'),
-		output: getOSItem('Ring of suffering (i)'),
+		input: Items.getOrThrow('Ring of suffering'),
+		output: Items.getOrThrow('Ring of suffering (i)'),
 		points: 725_000
 	},
 	{
-		input: getOSItem('Ring of suffering (r)'),
-		output: getOSItem('Ring of suffering (ri)'),
+		input: Items.getOrThrow('Ring of suffering (r)'),
+		output: Items.getOrThrow('Ring of suffering (ri)'),
 		points: 725_000
 	},
 	{
-		input: getOSItem('Berserker ring'),
-		output: getOSItem('Berserker ring (i)'),
+		input: Items.getOrThrow('Berserker ring'),
+		output: Items.getOrThrow('Berserker ring (i)'),
 		points: 650_000
 	},
 	{
-		input: getOSItem('Warrior ring'),
-		output: getOSItem('Warrior ring (i)'),
+		input: Items.getOrThrow('Warrior ring'),
+		output: Items.getOrThrow('Warrior ring (i)'),
 		points: 650_000
 	},
 	{
-		input: getOSItem('Archers ring'),
-		output: getOSItem('Archers ring (i)'),
+		input: Items.getOrThrow('Archers ring'),
+		output: Items.getOrThrow('Archers ring (i)'),
 		points: 650_000
 	},
 	{
-		input: getOSItem('Seers ring'),
-		output: getOSItem('Seers ring (i)'),
+		input: Items.getOrThrow('Seers ring'),
+		output: Items.getOrThrow('Seers ring (i)'),
 		points: 650_000
 	},
 	{
-		input: getOSItem('Tyrannical ring'),
-		output: getOSItem('Tyrannical ring (i)'),
+		input: Items.getOrThrow('Tyrannical ring'),
+		output: Items.getOrThrow('Tyrannical ring (i)'),
 		points: 650_000
 	},
 	{
-		input: getOSItem('Treasonous ring'),
-		output: getOSItem('Treasonous ring (i)'),
+		input: Items.getOrThrow('Treasonous ring'),
+		output: Items.getOrThrow('Treasonous ring (i)'),
 		points: 650_000
 	},
 	{
-		input: getOSItem('Granite ring'),
-		output: getOSItem('Granite ring (i)'),
+		input: Items.getOrThrow('Granite ring'),
+		output: Items.getOrThrow('Granite ring (i)'),
 		points: 500_000
 	}
 ];
@@ -333,8 +333,8 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 	const attackStyles = resolveAttackStyles({
 		attackStyles: user.getAttackStyles()
 	});
-	const skillTotal = sumArr(attackStyles.map(s => user.skillLevel(s))) + user.skillLevel(SkillsEnum.Hitpoints);
-	if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
+	const skillTotal = sumArr(attackStyles.map(s => user.skillLevel(s))) + user.skillsAsLevels.hitpoints;
+	if (attackStyles.includes('ranged') || attackStyles.includes('magic')) {
 		return 'The Nightmare Zone minigame requires melee combat for efficiency, swap training style using `/minion train style:`';
 	}
 
@@ -354,7 +354,7 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 		}
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'NightmareZone');
+	const maxTripLength = user.calcMaxTripLength('NightmareZone');
 	const quantity = Math.floor(maxTripLength / timePerMonster);
 	const duration = quantity * timePerMonster;
 	// Consume GP (and prayer potion if experience setup)
@@ -373,7 +373,7 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 	}
 
 	await user.removeItemsFromBank(totalCost);
-	updateBankSetting('nmz_cost', totalCost);
+	await ClientSettings.updateBankSetting('nmz_cost', totalCost);
 	await trackLoot({
 		id: 'nmz',
 		type: 'Minigame',
@@ -387,12 +387,12 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 		]
 	});
 
-	await addSubTaskToActivityTask<NightmareZoneActivityTaskOptions>({
+	await ActivityManager.startTrip<NightmareZoneActivityTaskOptions>({
 		quantity,
 		userID: user.id,
 		duration,
 		type: 'NightmareZone',
-		channelID: channelID.toString(),
+		channelID,
 		minigameID: 'nmz',
 		strategy
 	});
@@ -405,7 +405,7 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 }
 
 export async function nightmareZoneShopCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	user: MUser,
 	item: string | undefined,
 	quantity = 1
@@ -441,13 +441,11 @@ export async function nightmareZoneShopCommand(
 	}
 
 	const loot = new Bank(shopItem.output).multiply(quantity);
-	await handleMahojiConfirmation(
-		interaction,
+	await interaction.confirmation(
 		`Are you sure you want to spend **${cost.toLocaleString()}** Nightmare Zone points to buy **${loot}**?`
 	);
 
-	await transactItems({
-		userID: user.id,
+	await user.transactItems({
 		collectionLog: true,
 		itemsToAdd: loot
 	});
@@ -489,8 +487,7 @@ export async function nightmareZoneImbueCommand(user: MUser, input = '') {
 	});
 	const cost = new Bank().add(item.input.id);
 	const loot = new Bank().add(item.output.id);
-	await transactItems({
-		userID: user.id,
+	await user.transactItems({
 		itemsToAdd: loot,
 		itemsToRemove: cost,
 		collectionLog: true

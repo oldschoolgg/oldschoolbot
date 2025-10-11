@@ -1,5 +1,78 @@
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
+import { OSB_VIRTUS_IDS } from '@/lib/bso/bsoConstants.js';
+import { allChristmasEvent2024Items } from '@/lib/bso/collection-log/holiday.js';
+import {
+	abyssalDragonCL,
+	akumuCL,
+	araxxorCL,
+	customPetsCL,
+	discontinuedCustomPetsCL,
+	divineDominionCL,
+	divinersOutfit,
+	doaCL,
+	dungeoneeringCL,
+	ignecarusCL,
+	kalphiteKingCL,
+	kingGoldemarCL,
+	moktangCL,
+	naxxusCL,
+	nexCL,
+	nihilizCL,
+	polyporeDungeonCL,
+	queenBlackDragonCL,
+	seaKrakenCL,
+	spectatorClothes,
+	superiorTormentedDemonCL,
+	tameGearCL,
+	treeBeardCL,
+	vasaMagusCL,
+	venatrixCL,
+	vladDrakanCL
+} from '@/lib/bso/collection-log/main.js';
+import {
+	balthazarsBigBonanzaCL,
+	baxtorianBathhousesCL,
+	fishingContestCL,
+	fistOfGuthixCL,
+	monkeyRumbleCL,
+	odsCL,
+	stealingCreationCL,
+	tinkeringWorshopCL
+} from '@/lib/bso/collection-log/minigames.js';
+import { cookingCL, craftingCL, creatablesCL, herbloreCL } from '@/lib/bso/collection-log/special.js';
+import { discontinuedDyes, dyedItems } from '@/lib/bso/dyedItems.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import { ElderClueTable } from '@/lib/bso/elderClue.js';
+import { GrandmasterClueTable } from '@/lib/bso/grandmasterClue.js';
+import { keyCrates } from '@/lib/bso/keyCrates.js';
+import { kibbleCL } from '@/lib/bso/kibble.js';
+import { AkumuLootTable } from '@/lib/bso/monsters/bosses/Akumu.js';
+import { Ignecarus } from '@/lib/bso/monsters/bosses/Ignecarus.js';
+import { KalphiteKingMonster, kalphiteKingLootTable } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
+import { KingGoldemar } from '@/lib/bso/monsters/bosses/KingGoldemar.js';
+import { MoktangLootTable } from '@/lib/bso/monsters/bosses/Moktang.js';
+import { Naxxus, NaxxusLootTableFinishable } from '@/lib/bso/monsters/bosses/Naxxus.js';
+import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
+import { VenatrixLootTable } from '@/lib/bso/monsters/bosses/Venatrix.js';
+import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
+import { NexMonster, nexLootTable } from '@/lib/bso/monsters/nex.js';
+import { cmbClothes } from '@/lib/bso/openables/cmb.js';
+import { PaintBoxTable } from '@/lib/bso/paintColors.js';
+import { pumpkinHeadUniqueTable } from '@/lib/bso/pumpkinHead.js';
+import { divinationEnergies, portents } from '@/lib/bso/skills/divination.js';
+import { inventionCL } from '@/lib/bso/skills/invention/inventions.js';
+import { slayerMasksHelmsCL } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
+import { getAllIgneTameKCs, tameKillableMonsters } from '@/lib/bso/tames/tames.js';
+
+import { SeedableRNG } from '@oldschoolgg/rng';
+import {
+	calcWhatPercent,
+	isObject,
+	notEmpty,
+	removeFromArr,
+	stringMatches,
+	sumArr,
+	uniqueArr
+} from '@oldschoolgg/toolkit';
 import {
 	Bank,
 	ChambersOfXeric,
@@ -9,74 +82,24 @@ import {
 	type Item,
 	type ItemBank,
 	ItemGroups,
+	Items,
+	itemID,
 	type Monster,
 	Monsters,
-	itemID,
 	resolveItems
 } from 'oldschooljs';
 
-import { OSB_VIRTUS_IDS } from '../bso/bsoConstants';
-import { divinationEnergies, portents } from '../bso/divination';
-import type { ClueTier } from '../clues/clueTiers';
-import { ClueTiers } from '../clues/clueTiers';
-import type { CollectionLogType } from '../collectionLogTask';
-import { discontinuedDyes, dyedItems } from '../dyedItems';
-import { growablePetsCL } from '../growablePets';
-import { implingsCL } from '../implings';
-import { inventionCL } from '../invention/inventions';
-import { keyCrates } from '../keyCrates';
-import killableMonsters, { NightmareMonster } from '../minions/data/killableMonsters';
-import { AkumuLootTable } from '../minions/data/killableMonsters/custom/bosses/Akumu';
-import { Ignecarus } from '../minions/data/killableMonsters/custom/bosses/Ignecarus';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import type { CollectionLogType } from '@/lib/collectionLogTask.js';
 import {
-	KalphiteKingMonster,
-	kalphiteKingLootTable
-} from '../minions/data/killableMonsters/custom/bosses/KalphiteKing';
-import KingGoldemar from '../minions/data/killableMonsters/custom/bosses/KingGoldemar';
-import { MOKTANG_ID, MoktangLootTable } from '../minions/data/killableMonsters/custom/bosses/Moktang';
-import { Naxxus, NaxxusLootTableFinishable } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
-import { VasaMagus } from '../minions/data/killableMonsters/custom/bosses/VasaMagus';
-import { VenatrixLootTable } from '../minions/data/killableMonsters/custom/bosses/Venatrix';
-import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
-import { sepulchreFloors } from '../minions/data/sepulchre';
-import {
-	EasyEncounterLoot,
-	HardEncounterLoot,
-	MediumEncounterLoot,
-	rewardTokens
-} from '../minions/data/templeTrekking';
-import { NexMonster, nexLootTable } from '../nex';
-import { PaintBoxTable } from '../paintColors';
-import type { MinigameName } from '../settings/minigames';
-import { ElderClueTable } from '../simulation/elderClue';
-import { GrandmasterClueTable } from '../simulation/grandmasterClue';
-import { pumpkinHeadUniqueTable } from '../simulation/pumpkinHead';
-import { cookingCL } from '../skilling/skills/cooking/cooking';
-import { craftingCL } from '../skilling/skills/crafting/craftables';
-import { allFarmingItems } from '../skilling/skills/farming';
-import { fletchingCL } from '../skilling/skills/fletching/fletchables';
-import { herbloreCL } from '../skilling/skills/herblore/mixables';
-import smithables from '../skilling/skills/smithing/smithables';
-import { SkillsEnum } from '../skilling/types';
-import { MUserStats } from '../structures/MUserStats';
-import { getAllIgneTameKCs, tameKillableMonsters } from '../tames';
-import getOSItem from '../util/getOSItem';
-import { shuffleRandom } from '../util/smallUtils';
-import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport';
-import {
-	abyssalDragonCL,
 	abyssalSireCL,
 	aerialFishingCL,
-	akumuCL,
 	alchemicalHydraCL,
-	allChristmasEventItems,
 	allPetsCL,
 	amoxliatlCL,
-	araxxorCL,
-	balthazarsBigBonanzaCL,
 	barbarianAssaultCL,
 	barrowsChestCL,
-	baxtorianBathhousesCL,
 	brimhavenAgilityArenaCL,
 	bryophytaCL,
 	callistoCL,
@@ -103,30 +126,23 @@ import {
 	cluesMasterRareCL,
 	cluesMediumCL,
 	cluesSharedCL,
-	cmbClothes,
 	colossalWyrmAgilityCL,
 	commanderZilyanaCL,
 	corporealBeastCL,
 	crackerCL,
 	crazyArchaeologistCL,
 	creatureCreationCL,
-	customPetsCL,
 	cyclopsCL,
 	dagannothKingsCL,
 	dailyCL,
 	demonicGorillaCL,
 	diariesCL,
-	discontinuedCustomPetsCL,
-	divinersOutfit,
-	doaCL,
 	dukeSucellusCL,
-	dungeoneeringCL,
 	emergedZukInfernoCL,
 	expertCapesCL,
+	type FormatProgressFunction,
 	fightCavesCL,
-	fishingContestCL,
 	fishingTrawlerCL,
-	fistOfGuthixCL,
 	forestryCL,
 	fossilIslandNotesCL,
 	generalGraardorCL,
@@ -139,11 +155,11 @@ import {
 	hallowedSepulchreCL,
 	hesporiCL,
 	holidayCL,
-	ignecarusCL,
-	kalphiteKingCL,
+	type ICollection,
+	type ILeftListStatus,
+	type IToReturnCollection,
 	kalphiteQueenCL,
 	kingBlackDragonCL,
-	kingGoldemarCL,
 	krakenCL,
 	kreeArraCL,
 	krilTsutsarothCL,
@@ -153,20 +169,12 @@ import {
 	mahoganyHomesCL,
 	masterCapesCL,
 	miscellaneousCL,
-	moktangCL,
 	monkeyBackpacksCL,
-	monkeyRumbleCL,
 	motherlodeMineCL,
 	muspahCL,
 	myNotesCL,
-	naxxusCL,
-	nexCL,
-	nihilizCL,
 	oborCL,
-	odsCL,
 	pestControlCL,
-	polyporeDungeonCL,
-	queenBlackDragonCL,
 	questCL,
 	randomEventsCL,
 	revenantsCL,
@@ -174,7 +182,6 @@ import {
 	rooftopAgilityCL,
 	sarachnisCL,
 	scorpiaCL,
-	seaKrakenCL,
 	shadesOfMorttonCL,
 	shayzienArmourCL,
 	shootingStarsCL,
@@ -183,40 +190,45 @@ import {
 	skotizoCL,
 	slayerCL,
 	soulWarsCL,
-	spectatorClothes,
 	spiritAnglerOutfit,
-	stealingCreationCL,
-	superiorTormentedDemonCL,
 	templeTrekkingCL,
 	temporossCL,
+	theatreOfBLoodCL,
 	theGauntletCL,
 	theInfernoCL,
 	theLeviathanCL,
 	theNightmareCL,
-	theWhispererCL,
-	theatreOfBLoodCL,
 	thermonuclearSmokeDevilCL,
-	tinkeringWorshopCL,
+	theWhispererCL,
 	titheFarmCL,
 	tormentedDemonCL,
-	treeBeardCL,
 	troubleBrewingCL,
 	tzHaarCL,
 	vardorvisCL,
-	vasaMagusCL,
-	venatrixCL,
 	venenatisCL,
 	vetionCL,
-	vladDrakanCL,
 	volcanicMineCL,
 	vorkathCL,
 	wintertodtCL,
 	zalcanoCL,
 	zulrahCL
-} from './CollectionsExport';
-import { creatablesCL } from './createables';
-import { kibbleCL } from './kibble';
-import { slayerMasksHelmsCL } from './slayerMaskHelms';
+} from '@/lib/data/CollectionsExport.js';
+import { growablePetsCL } from '@/lib/growablePets.js';
+import { implingsCL } from '@/lib/implings.js';
+import killableMonsters, { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
+import { sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
+import {
+	EasyEncounterLoot,
+	HardEncounterLoot,
+	MediumEncounterLoot,
+	rewardTokens
+} from '@/lib/minions/data/templeTrekking.js';
+import type { MinigameName } from '@/lib/settings/minigames.js';
+import { allFarmingItems } from '@/lib/skilling/skills/farming/index.js';
+import { fletchingCL } from '@/lib/skilling/skills/fletching/fletchables/index.js';
+import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
+import type { SkillNameType } from '@/lib/skilling/types.js';
+import type { MUserStats } from '@/lib/structures/MUserStats.js';
 
 function kcProg(mon: Monster | number): FormatProgressFunction {
 	return ({ stats }) => `${stats.kcBank[typeof mon === 'number' ? mon : mon.id] ?? 0} KC`;
@@ -226,7 +238,7 @@ function mgProg(minigameName: MinigameName): FormatProgressFunction {
 	return ({ minigames }) => `${minigames[minigameName]} Completions`;
 }
 
-function skillProg(skillName: SkillsEnum): FormatProgressFunction {
+function skillProg(skillName: SkillNameType): FormatProgressFunction {
 	return ({ user }) => `Level ${user.skillLevel(skillName)} ${skillName}`;
 }
 
@@ -681,7 +693,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['mt', 'moktang'],
 				items: moktangCL,
 				allItems: MoktangLootTable.allItems,
-				fmtProg: kcProg(MOKTANG_ID)
+				fmtProg: kcProg(EBSOMonster.MOKTANG)
 			},
 			Wintertodt: {
 				alias: ['todt', 'wintertodt', 'wt'],
@@ -897,12 +909,12 @@ export const allCollectionLogs: ICollection = {
 			Slayer: {
 				alias: ['slay'],
 				items: slayerCL,
-				fmtProg: skillProg(SkillsEnum.Slayer)
+				fmtProg: skillProg('slayer')
 			},
 			'Slayer Masks/Helms': {
 				alias: ['slayer Masks/Helms'],
 				items: slayerMasksHelmsCL,
-				fmtProg: skillProg(SkillsEnum.Slayer)
+				fmtProg: skillProg('slayer')
 			},
 			TzHaar: {
 				kcActivity: {
@@ -1354,7 +1366,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			Forestry: {
 				alias: ['forestry', 'forest', 'for'],
-				fmtProg: skillProg(SkillsEnum.Woodcutting),
+				fmtProg: skillProg('woodcutting'),
 				allItems: forestryCL,
 				items: forestryCL
 			},
@@ -1389,7 +1401,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['rooftop', 'laps', 'agility', 'agil'],
 				items: rooftopAgilityCL,
 				isActivity: true,
-				fmtProg: skillProg(SkillsEnum.Agility)
+				fmtProg: skillProg('agility')
 			},
 			'Shooting Stars': { items: shootingStarsCL },
 			'Skilling Pets': {
@@ -1399,32 +1411,32 @@ export const allCollectionLogs: ICollection = {
 			Dungeoneering: {
 				alias: ['dg', 'dung', 'dungeoneering'],
 				items: dungeoneeringCL,
-				fmtProg: skillProg(SkillsEnum.Dungeoneering)
+				fmtProg: skillProg('dungeoneering')
 			},
 			Farming: {
 				counts: false,
 				items: allFarmingItems,
-				fmtProg: skillProg(SkillsEnum.Farming)
+				fmtProg: skillProg('farming')
 			},
 			Cooking: {
 				counts: false,
 				items: cookingCL,
-				fmtProg: skillProg(SkillsEnum.Cooking)
+				fmtProg: skillProg('cooking')
 			},
 			Crafting: {
 				counts: false,
 				items: craftingCL,
-				fmtProg: skillProg(SkillsEnum.Crafting)
+				fmtProg: skillProg('crafting')
 			},
 			Herblore: {
 				counts: false,
 				items: herbloreCL,
-				fmtProg: skillProg(SkillsEnum.Herblore)
+				fmtProg: skillProg('herblore')
 			},
 			Smithing: {
 				counts: false,
 				items: smithables.map(i => i.id),
-				fmtProg: skillProg(SkillsEnum.Smithing)
+				fmtProg: skillProg('smithing')
 			},
 			Kibble: {
 				counts: false,
@@ -1433,12 +1445,12 @@ export const allCollectionLogs: ICollection = {
 			Graceful: {
 				counts: false,
 				items: gracefulCL,
-				fmtProg: skillProg(SkillsEnum.Agility)
+				fmtProg: skillProg('agility')
 			},
 			Fletching: {
 				counts: false,
 				items: fletchingCL,
-				fmtProg: skillProg(SkillsEnum.Fletching)
+				fmtProg: skillProg('fletching')
 			},
 			'Skilling Misc': {
 				items: skillingMiscCL
@@ -1446,7 +1458,7 @@ export const allCollectionLogs: ICollection = {
 			Invention: {
 				alias: ['inv'],
 				items: inventionCL,
-				fmtProg: skillProg(SkillsEnum.Invention)
+				fmtProg: skillProg('invention')
 			},
 			Divination: {
 				alias: ['div'],
@@ -1458,7 +1470,7 @@ export const allCollectionLogs: ICollection = {
 					'Jar of memories',
 					'Doopy'
 				]),
-				fmtProg: skillProg(SkillsEnum.Divination)
+				fmtProg: skillProg('divination')
 			}
 		}
 	},
@@ -1586,54 +1598,11 @@ export const allCollectionLogs: ICollection = {
 				counts: false
 			},
 			'Tame Gear': {
-				items: resolveItems([
-					'Dragon igne armor',
-					'Barrows igne armor',
-					'Volcanic igne armor',
-					'Justiciar igne armor',
-					'Drygore igne armor',
-					'Dwarven igne armor',
-					'Gorajan igne armor',
-					'Runite igne claws',
-					'Dragon igne claws',
-					'Barrows igne claws',
-					'Volcanic igne claws',
-					'Drygore igne claws',
-					'Dwarven igne claws',
-					'Gorajan igne claws',
-					'Seamonkey staff (t1)',
-					'Seamonkey staff (t2)',
-					'Seamonkey staff (t3)',
-					'Impling locator',
-					'Divine ring',
-					'Abyssal jibwings (e)',
-					'Demonic jibwings (e)',
-					'3rd age jibwings (e)',
-					'Abyssal jibwings',
-					'Demonic jibwings',
-					'3rd age jibwings'
-				])
+				items: tameGearCL
 			},
 			'Divine Dominion': {
 				alias: ['dd', 'divine dominion'],
-				items: resolveItems([
-					'Zamorak egg',
-					'Baby zamorak hawk',
-					'Juvenile zamorak hawk',
-					'Zamorak hawk',
-					'Warpriest of Zamorak set',
-					'Guthix egg',
-					'Baby guthix raptor',
-					'Juvenile guthix raptor',
-					'Guthix raptor',
-					'Saradomin egg',
-					'Baby saradomin owl',
-					'Juvenile saradomin owl',
-					'Saradomin owl',
-					'Warpriest of Saradomin set',
-					'Warpriest of Bandos set',
-					'Warpriest of Armadyl set'
-				])
+				items: divineDominionCL
 			}
 		}
 	},
@@ -1897,7 +1866,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Christmas 2024': {
 				alias: ['xmas 2024', 'christmas 2024'],
-				items: allChristmasEventItems.filter(i => i !== itemID('Snowflake amulet')),
+				items: allChristmasEvent2024Items.filter(i => i !== itemID('Snowflake amulet')),
 				counts: false
 			},
 			'BSO Birthday 2022': {
@@ -1977,7 +1946,7 @@ for (const crate of keyCrates) {
 	allCollectionLogs.Discontinued.activities[crate.item.name] = {
 		alias: [crate.item.name.toLowerCase()],
 		items: resolveItems([crate.item.id, crate.key.id, ...crate.table.allItems]).filter(
-			i => !getOSItem(i).customItemData?.isSecret
+			i => !Items.getOrThrow(i).customItemData?.isSecret
 		),
 		counts: false,
 		kcActivity: {
@@ -2034,10 +2003,8 @@ export function calcCLDetails(user: MUser | Bank) {
 	const clItems = (user instanceof Bank ? user : user.cl).filter(i => allCLItemsFiltered.includes(i.id));
 	const debugBank = new Bank(clItems);
 	const owned = clItems.filter(i => allCLItemsFiltered.includes(i.id));
-	const notOwned = shuffleRandom(
-		Number(user instanceof Bank ? '1' : user.id),
-		allCLItemsFiltered.filter(i => !clItems.has(i))
-	).slice(0, 10);
+	const seededRng = new SeedableRNG(Number(user instanceof Bank ? '1' : user.id));
+	const notOwned: number[] = seededRng.shuffle(allCLItemsFiltered.filter(i => !clItems.has(i))).slice(0, 10);
 	return {
 		percent: calcWhatPercent(owned.length, allCLItemsFiltered.length),
 		notOwned,
@@ -2094,7 +2061,7 @@ export function getBank(user: MUser, type: CLType, userStats: MUserStats | null)
 }
 
 export async function getTotalCl(user: MUser, logType: CLType, userStats: MUserStats | null) {
-	let result = undefined;
+	let result: [number, number];
 	try {
 		result = getUserClData(getBank(user, logType, userStats), allCLItemsFiltered);
 	} catch (_e) {
@@ -2193,7 +2160,7 @@ export async function getCollection(options: {
 		logType = 'tame';
 	}
 
-	const userStats = await MUserStats.fromID(user.id);
+	const userStats = await user.fetchMStats();
 	const userCheckBank = getBank(user, logType, userStats);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
 

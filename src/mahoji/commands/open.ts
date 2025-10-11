@@ -1,21 +1,19 @@
-import { type CommandRunOptions, truncateString } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { clamp } from 'e';
+import { truncateString } from '@oldschoolgg/toolkit';
+import { clamp } from 'remeda';
 
-import { allOpenables, allOpenablesIDs } from '../../lib/openables';
-import { deferInteraction } from '../../lib/util/interactionReply';
+import { allOpenables, allOpenablesIDs } from '@/lib/openables.js';
 import {
-	OpenUntilItems,
 	abstractedOpenCommand,
-	abstractedOpenUntilCommand
-} from '../lib/abstracted_commands/openCommand';
+	abstractedOpenUntilCommand,
+	OpenUntilItems
+} from '@/mahoji/lib/abstracted_commands/openCommand.js';
 
 export const openCommand: OSBMahojiCommand = {
 	name: 'open',
 	description: 'Open an item (caskets, keys, boxes, etc).',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to open.',
 			required: false,
@@ -37,7 +35,7 @@ export const openCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Integer,
+			type: 'Integer',
 			name: 'quantity',
 			description: 'The quantity you want to open (defaults to one).',
 			required: false,
@@ -45,7 +43,7 @@ export const openCommand: OSBMahojiCommand = {
 			max_value: 100_000
 		},
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'open_until',
 			description: 'Keep opening items until you get this item.',
 			required: false,
@@ -58,26 +56,25 @@ export const openCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Boolean,
+			type: 'Boolean',
 			name: 'disable_pets',
 			description: 'Disables octo & smokey when opening.',
 			required: false
 		}
 	],
 	run: async ({
-		userID,
+		user,
 		options,
 		interaction
 	}: CommandRunOptions<{ name?: string; quantity?: number; open_until?: string; disable_pets?: boolean }>) => {
-		if (interaction) await deferInteraction(interaction);
-		const user = await mUserFetch(userID);
+		if (interaction) await interaction.defer();
 		if (!options.name) {
 			return `You have... ${truncateString(
 				user.bank.filter(item => allOpenablesIDs.has(item.id)).toString(),
 				1950
 			)}.`;
 		}
-		options.quantity = clamp(options.quantity ?? 1, 1, 100_000_000);
+		options.quantity = clamp(options.quantity ?? 1, { min: 1, max: 100_000_000 });
 		if (options.open_until) {
 			return abstractedOpenUntilCommand(user.id, options.name, options.open_until, options.disable_pets);
 		}

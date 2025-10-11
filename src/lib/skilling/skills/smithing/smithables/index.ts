@@ -1,28 +1,11 @@
-import Adamant from './adamant';
-import Bronze from './bronze';
-import BSOSmithables from './bsoSmithables';
-import Dwarven from './dwarven';
-import Gold from './gold';
-import Gorajan from './gorajan';
-import Iron from './iron';
-import Mithril from './mithril';
-import Rune from './rune';
-import Silver from './silver';
-import Steel from './steel';
+import { bsoSmithables } from '@/lib/bso/skills/smithing/bsoSmithables.js';
 
-const smithables = [
-	...Bronze,
-	...Iron,
-	...Silver,
-	...Steel,
-	...Gold,
-	...Mithril,
-	...Adamant,
-	...Rune,
-	...Dwarven,
-	...Gorajan,
-	...BSOSmithables
-];
+import Adamant from './adamant.js';
+import Bronze from './bronze.js';
+import Gold from './gold.js';
+import Iron from './iron.js';
+import Mithril from './mithril.js';
+import Rune from './rune.js';
+import Steel from './steel.js';
 
-export default smithables;
-export const smithingCL = smithables.map(i => i.id);
+export default [...Adamant, ...Bronze, ...Gold, ...Iron, ...Mithril, ...Rune, ...Steel, ...bsoSmithables];

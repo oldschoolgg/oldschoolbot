@@ -1,22 +1,22 @@
-import { Time, roll } from 'e';
+import { MIN_LENGTH_FOR_PET } from '@/lib/bso/bsoConstants.js';
+import { clAdjustedDroprate } from '@/lib/bso/bsoUtil.js';
+import { globalDroprates } from '@/lib/bso/globalDroprates.js';
+
+import { roll } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { clAdjustedDroprate } from '@/lib/bso/bsoUtil';
-import { skillingPetDropRate } from '@/lib/util';
-import { MIN_LENGTH_FOR_PET } from '../../lib/bso/bsoConstants';
-import { globalDroprates } from '../../lib/data/globalDroprates';
-import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
-import Mining from '../../lib/skilling/skills/mining';
-import { SkillsEnum } from '../../lib/skilling/types';
-import type { MotherlodeMiningActivityTaskOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { FaladorDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import Mining from '@/lib/skilling/skills/mining.js';
+import type { MotherlodeMiningActivityTaskOptions } from '@/lib/types/minions.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 export const motherlodeMiningTask: MinionTask = {
 	type: 'MotherlodeMining',
-	async run(data: MotherlodeMiningActivityTaskOptions) {
-		const { userID, channelID, duration } = data;
+	async run(data: MotherlodeMiningActivityTaskOptions, { user, handleTripFinish }) {
+		const { channelID, duration } = data;
 		const { quantity } = data;
-		const user = await mUserFetch(userID);
+
 		const motherlode = Mining.MotherlodeMine;
 
 		let xpReceived = quantity * Mining.MotherlodeMine.xp;
@@ -44,7 +44,7 @@ export const motherlodeMiningTask: MinionTask = {
 			}
 		}
 
-		const currentLevel = user.skillLevel(SkillsEnum.Mining);
+		const currentLevel = user.skillsAsLevels.mining;
 
 		const loot = new Bank();
 
@@ -103,7 +103,7 @@ export const motherlodeMiningTask: MinionTask = {
 		xpReceived += cleaningXP;
 
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Mining,
+			skillName: 'mining',
 			amount: xpReceived,
 			duration,
 			source: 'MotherlodeMine'
@@ -111,7 +111,7 @@ export const motherlodeMiningTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished mining ${quantity} Pay-dirt. ${xpRes}`;
 
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, motherlode.petChance!);
+		const { petDropRate } = skillingPetDropRate(user, 'mining', motherlode.petChance!);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Rock golem');
 		}
@@ -143,8 +143,7 @@ export const motherlodeMiningTask: MinionTask = {
 			str += '\n2x nuggets for Mining master cape.';
 		}
 
-		await transactItems({
-			userID: user.id,
+		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

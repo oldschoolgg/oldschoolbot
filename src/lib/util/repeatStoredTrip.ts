@@ -1,25 +1,40 @@
-import { type Activity, type Prisma, activity_type_enum } from '@prisma/client';
+import type {
+	BathhouseTaskOptions,
+	DisassembleTaskOptions,
+	DOAOptions,
+	DungeoneeringOptions,
+	KibbleOptions,
+	MemoryHarvestOptions,
+	MoktangTaskOptions,
+	NewBossOptions,
+	ResearchTaskOptions,
+	TinkeringWorkshopOptions,
+	TuraelsTrialsOptions
+} from '@/lib/bso/bsoTypes.js';
+import { kibbles } from '@/lib/bso/kibble.js';
+import { divinationEnergies, memoryHarvestTypes } from '@/lib/bso/skills/divination.js';
+
+import { Time } from '@oldschoolgg/toolkit';
+import { type Activity, activity_type_enum, type Prisma } from '@prisma/client';
 import { ButtonBuilder, type ButtonInteraction, ButtonStyle } from 'discord.js';
-import { Time } from 'e';
 import { Items } from 'oldschooljs';
 
-import { divinationEnergies, memoryHarvestTypes } from '../bso/divination';
-import type { PvMMethod } from '../constants';
-import { kibbles } from '../data/kibble';
-import { SlayerActivityConstants } from '../minions/data/combatConstants';
-import { autocompleteMonsters } from '../minions/data/killableMonsters';
-import { runCommand } from '../settings/settings';
-import { courses } from '../skilling/skills/agility';
-import { Fishing } from '../skilling/skills/fishing/fishing';
-import Hunter from '../skilling/skills/hunter/hunter';
+import type { PvMMethod } from '@/lib/constants.js';
+import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
+import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
+import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
+import { runCommand } from '@/lib/settings/settings.js';
+import { courses } from '@/lib/skilling/skills/agility.js';
+import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
+import Hunter from '@/lib/skilling/skills/hunter/hunter.js';
 import type {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	AnimatedArmourActivityTaskOptions,
-	BathhouseTaskOptions,
 	BuryingActivityTaskOptions,
 	ButlerActivityTaskOptions,
+	BuyActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CollectingOptions,
@@ -29,10 +44,7 @@ import type {
 	CraftingActivityTaskOptions,
 	CreateForestersRationsActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
-	DOAOptions,
 	DarkAltarOptions,
-	DisassembleTaskOptions,
-	DungeoneeringOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
@@ -45,22 +57,18 @@ import type {
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
 	InfernoOptions,
-	KibbleOptions,
 	MahoganyHomesActivityTaskOptions,
-	MemoryHarvestOptions,
 	MiningActivityTaskOptions,
-	MoktangTaskOptions,
 	MonsterActivityTaskOptions,
 	MotherlodeMiningActivityTaskOptions,
-	NewBossOptions,
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
+	NightmareZoneActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	OuraniaAltarOptions,
 	PickpocketActivityTaskOptions,
 	PuroPuroActivityTaskOptions,
 	RaidsOptions,
-	ResearchTaskOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
@@ -68,19 +76,16 @@ import type {
 	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
-	TOAOptions,
 	TempleTrekkingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
-	TinkeringWorkshopOptions,
-	TuraelsTrialsOptions,
+	TOAOptions,
+	UnderwaterAgilityThievingTaskOptions,
 	UndoneChangesMonsterOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
-} from '../types/minions';
-import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
-import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
-import { interactionReply } from './interactionReply';
+} from '@/lib/types/minions.js';
+import { giantsFoundryAlloys } from '@/mahoji/lib/abstracted_commands/giantsFoundryCommand.js';
 
 export const taskCanBeRepeated = (activity: Activity) => {
 	return !(
@@ -157,6 +162,19 @@ export const tripHandlers = {
 	[activity_type_enum.TokkulShop]: {
 		commandName: 'm',
 		args: () => ({})
+	},
+	[activity_type_enum.Buy]: {
+		commandName: 'buy',
+		args: (data: BuyActivityTaskOptions) => {
+			const tripBuyable = findTripBuyable(data.itemID, data.quantity);
+			return {
+				name: tripBuyable?.displayName ?? Items.itemNameFromId(data.itemID),
+				quantity:
+					tripBuyable?.quantity && tripBuyable.quantity > 0
+						? data.quantity / tripBuyable.quantity
+						: data.quantity
+			};
+		}
 	},
 	[activity_type_enum.ShootingStars]: {
 		commandName: 'm',
@@ -647,7 +665,7 @@ export const tripHandlers = {
 	[activity_type_enum.Woodcutting]: {
 		commandName: 'chop',
 		args: (data: WoodcuttingActivityTaskOptions) => ({
-			name: data.logID === 323_424 ? 'Ivy' : Items.itemNameFromId(data.logID),
+			name: Items.itemNameFromId(data.logID),
 			quantity: data.iQty,
 			powerchop: data.powerchopping,
 			forestry_events: data.forestry,
@@ -946,15 +964,16 @@ export async function makeRepeatTripButtons(user: MUser) {
 }
 
 export async function repeatTrip(
+	user: MUser,
 	interaction: ButtonInteraction,
 	data: { data: Prisma.JsonValue; type: activity_type_enum }
 ) {
 	if (!data || !data.data || !data.type) {
-		return interactionReply(interaction, { content: "Couldn't find any trip to repeat.", ephemeral: true });
+		return interaction.reply({ content: "Couldn't find any trip to repeat.", ephemeral: true });
 	}
 	const handler = tripHandlers[data.type];
 
-	return runCommand({
+	const result = await runCommand({
 		commandName: handler.commandName,
 		isContinue: true,
 		args: handler.args(data.data as any),
@@ -962,7 +981,8 @@ export async function repeatTrip(
 		guildID: interaction.guildId,
 		member: interaction.member,
 		channelID: interaction.channelId,
-		user: interaction.user,
+		user,
 		continueDeltaMillis: interaction.createdAt.getTime() - interaction.message.createdTimestamp
 	});
+	return result;
 }

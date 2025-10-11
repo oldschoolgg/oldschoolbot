@@ -1,11 +1,11 @@
 import type { Prisma, User } from '@prisma/client';
-import { Bank, convertLVLtoXP } from 'oldschooljs';
+import { Bank, convertLVLtoXP, Items, LootTable } from 'oldschooljs';
+import { isFunction, isObjectType } from 'remeda';
 
-import { MUserClass } from '../../src/lib/MUser';
-import type { BitField } from '../../src/lib/constants';
-import type { GearSetup } from '../../src/lib/gear/types';
-import { Gear } from '../../src/lib/structures/Gear';
-import { type PartialGearSetup, constructGearSetup } from '../../src/lib/structures/Gear';
+import type { BitField } from '../../src/lib/constants.js';
+import type { GearSetup } from '../../src/lib/gear/types.js';
+import { MUserClass } from '../../src/lib/MUser.js';
+import { constructGearSetup, Gear, type PartialGearSetup } from '../../src/lib/structures/Gear.js';
 
 function filterGearSetup(gear: undefined | null | GearSetup | PartialGearSetup): GearSetup | undefined {
 	const filteredGear = !gear
@@ -73,6 +73,9 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		skills_defence: overrides?.skills_defence ?? 0,
 		skills_slayer: 0,
 		skills_hitpoints: overrides?.skills_hitpoints ?? convertLVLtoXP(10),
+		skills_invention: 0,
+		skills_dungeoneering: 0,
+		skills_divination: 0,
 		GP: overrides?.GP ?? 0,
 		bitfield: overrides?.bitfield ?? [],
 		username: 'Magnaboy',
@@ -80,11 +83,7 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		sacrificedValue: 0,
 		id: overrides?.id ?? '',
 		monsterScores: {},
-		badges: [],
-
-		skills_invention: 0,
-		skills_dungeoneering: 0,
-		skills_divination: 0
+		badges: []
 	} as unknown as User;
 
 	return r;
@@ -94,3 +93,51 @@ export const mockMUser = (overrides?: MockUserArgs) => {
 	const user = new MUserClass(mockUser(overrides));
 	return user;
 };
+
+export function serializeSnapshotItem(item: any) {
+	const result: any = item;
+	for (const [key, value] of Object.entries(result) as [string, any][]) {
+		// LootTable
+		if (value instanceof LootTable || (isObjectType(value) && 'cachedOptimizedTable' in value)) {
+			result[key] = ((value as any).allItems as any as number[])
+				.map(id => Items.itemNameFromId(id) ?? '???UNKNOWN???')
+				.sort((a, b) => a[0].localeCompare(b[0]));
+			result[key] = Array.from(new Set(result[key]));
+			continue;
+		}
+		// Bank
+		if (value instanceof Bank || (isObjectType(value) && 'frozen' in value)) {
+			result[key] = (value as Bank)
+				.items()
+				.sort((a, b) => a[0].name.localeCompare(b[0].name))
+				.map(i => [i[0].name, i[1]]);
+			continue;
+		}
+
+		// Monsters
+		if (
+			isObjectType(value) &&
+			'data' in value &&
+			'aliases' in value &&
+			'allItems' in value &&
+			'kill' in value &&
+			isFunction(value.kill)
+		) {
+			result[key] = (value.allItems as any as number[])
+				.map(id => Items.itemNameFromId(id) ?? '???UNKNOWN???')
+				.sort((a, b) => a.localeCompare(b));
+			continue;
+		}
+
+		// Items
+		if (
+			isObjectType(value) &&
+			'id' in value &&
+			'name' in value &&
+			('tradeable' in value || 'customItemData' in value)
+		) {
+			result[key] = value.name;
+		}
+	}
+	return result;
+}

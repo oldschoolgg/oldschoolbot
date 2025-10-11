@@ -1,9 +1,4 @@
-import type { CommandRunOptions } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
-
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
+import { dataPoints, statsCommand } from '@/mahoji/lib/abstracted_commands/statCommand.js';
 
 export const dataCommand: OSBMahojiCommand = {
 	name: 'data',
@@ -13,7 +8,7 @@ export const dataCommand: OSBMahojiCommand = {
 	},
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The data you want to see.',
 			autocomplete: async (value: string) => {
@@ -28,9 +23,8 @@ export const dataCommand: OSBMahojiCommand = {
 			required: true
 		}
 	],
-	run: async ({ interaction, options, userID }: CommandRunOptions<{ name: string }>) => {
-		const user = await mUserFetch(userID);
-		await deferInteraction(interaction);
+	run: async ({ interaction, options, user }: CommandRunOptions<{ name: string }>) => {
+		await interaction.defer();
 		return statsCommand(user, options.name);
 	}
 };

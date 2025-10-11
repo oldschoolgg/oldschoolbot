@@ -1,19 +1,19 @@
-import { Time } from 'e';
+import { NexMonster } from '@/lib/bso/monsters/nex.js';
+
+import { Time } from '@oldschoolgg/toolkit';
 import { EMonster, Monsters, resolveItems } from 'oldschooljs';
 
-import { spearWeapon } from '../constants';
-import { NexMonster } from '../nex';
-import { Requirements } from '../structures/Requirements';
+import { anyoneDiedInTOARaid, isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
 	GauntletOptions,
 	MonsterActivityTaskOptions,
 	NightmareActivityTaskOptions,
 	RaidsOptions,
-	TOAOptions,
-	TheatreOfBloodTaskOptions
-} from '../types/minions';
-import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils';
-import type { CombatAchievement } from './combatAchievements';
+	TheatreOfBloodTaskOptions,
+	TOAOptions
+} from '@/lib/types/minions.js';
 
 export const masterCombatAchievements: CombatAchievement[] = [
 	{
@@ -1494,11 +1494,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 15,
-			hasChance: (data, user, index) =>
-				user.hasEquippedOrInBank(spearWeapon, 'one') &&
-				data.type === 'Colosseum' &&
-				Array.isArray(data.diedAt) &&
-				!data.diedAt[index]
+			hasChance: (data, _user, index) =>
+				data.type === 'Colosseum' && Array.isArray(data.diedAt) && !data.diedAt[index]
 		}
 	},
 	{

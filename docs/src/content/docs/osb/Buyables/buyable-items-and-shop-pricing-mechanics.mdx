@@ -1,0 +1,55 @@
+---
+title: "Buyable Items and Shop Pricing Mechanics"
+---
+
+## Overview
+Most items bought with `/buy` are delivered instantly at their listed GP price.
+For some resources your minion must travel to in‑game shops. When this happens
+you'll see a confirmation showing the total cost and trip duration. Accepting
+the prompt sends your minion on a timed buying trip that mimics hopping between
+OSRS worlds.
+
+## Instant Buyables
+Items without `shopQuantity` or `changePer` simply cost their listed `gpCost`.
+The GP is removed from your bank and the items are delivered immediately, like a
+virtual Grand Exchange.
+
+## Shop Buyables
+Some items come from in game shops and follow Old School RuneScape pricing rules:
+
+- **gpCost** – base price (100%).
+- **changePer** – price increase per item bought (e.g. `1` for +1%).
+- **shopQuantity** – items available before world hopping.
+
+Price increases linearly within a world and resets after each hop.
+
+When a shop buyable is requested the bot shows a summary like
+"Buying **5000 Gold ore** will cost **1,125,000gp** and take about
+**27 minutes**. Continue?" Accepting sends your minion off to hop worlds and buy
+the items.
+
+Example: Arrow shafts start at 1 GP each and increase by 1% per shaft. After
+buying 1000 the average price is around 5.5 GP before hopping.
+
+```ts
+price = Math.floor(basePrice * (1 + changePer / 100 * itemsBoughtInWorld))
+```
+
+Every `shopQuantity` items the minion hops to a new world and pricing starts over.
+
+### Fields Used in Code
+- `gpCost: number`
+- `shopQuantity?: number`
+- `changePer?: number`
+- `quantityPerHour: number` – limits trip length
+
+### Current Shop-Based Buyables
+A few notable examples are:
+
+- **Arrow shafts** – bought in bulk with rising prices.
+- **Blood runes** (and other elemental runes).
+- **Gold ore** and other ores sold at shops.
+
+Most items remain simple flat-cost purchases but these shop buyables use the
+`calculateShopBuyCost` function to determine total and average price while
+world hopping.

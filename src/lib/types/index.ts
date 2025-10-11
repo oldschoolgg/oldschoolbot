@@ -1,14 +1,6 @@
 import type { BaseMessageOptions } from 'discord.js';
 
-import type { SkillsEnum } from '../skilling/types';
-
-export interface ItemBank {
-	[key: string]: number;
-}
-
-type ResolvableItem = number | string;
-export type ArrayItemsResolvable = (ResolvableItem | ResolvableItem[])[];
-export type ArrayItemsResolved = (number | number[])[];
+import type { SkillNameType } from '@/lib/skilling/types.js';
 
 export interface MakePartyOptions {
 	maxSize: number;
@@ -21,9 +13,8 @@ export interface MakePartyOptions {
 	massTimeout?: number;
 	allowedMentions?: BaseMessageOptions['allowedMentions'];
 }
-
 export type Skills = Partial<{
-	[key in SkillsEnum]: number;
+	[key in SkillNameType]: number;
 }>;
 
 export type SkillRequirements = Skills & { combat?: number };

@@ -68,14 +68,14 @@ Note: The spooky gear and Eek are currently not able to be equipped and as such 
 
 ### Boosts
 
-You need only 4 scary items equipped for the max boost of 10 rolls. Be sure to equip a [Zak ](../custom-items/pets.md#miscellaneous-pets)if you have one to trick or treat for the max time possible. The easiest spooky items to find if you are unable to buy any items or are an iron is the skeleton set, which can be earned from killing skeletons with `=k skeleton`
+You need only 4 scary items equipped for the max boost of 10 rolls. Be sure to equip a [Zak ](../custom-items/pets.md#miscellaneous-pets)if you have one to trick or treat for the max time possible. The easiest spooky items to find if you are unable to buy any items or are an iron is the skeleton set, which can be earned from killing skeletons with [[/k name\:skeleton]]
 
 - Malygos/Ignecarus mask - 10% extra rolls
 - Warlock/Witch outfit (cloak, legs, top) - 10% extra rolls
 
 ### Trick or Treating
 
-The event can be started by using the command `=trickortreat or =tot` This command can only be run from 6pm - 4am (UK time) or from 1pm - 11pm (EST). You are also limited in the number of trips you can send per day to two, this was recently changed (10/15/21), along with an increase of rolls to 2.5x greater to allow you to still get the same output while sending less trips.
+The event can be started by using [[/trickortreat]] or [[/tot]]. This command can only be run from 6pm - 4am (UK time) or from 1pm - 11pm (EST). You are also limited in the number of trips you can send per day to two, this was recently changed (10/15/21), along with an increase of rolls to 2.5x greater to allow you to still get the same output while sending less trips.
 
 It gives various Halloween themed candies and foods as a result, including: Choc'rock, Chocolified skull, Eyescream, Rotten Sweets, Toffeet, Candy Teeth, Hairyfloss, Goblinfinger Soup, Benny's Brain Brew, and Roasted Newt. (In order below)
 
@@ -138,9 +138,9 @@ Unlike the Crack the Clue that rewarded a clue hunter set, this clue only gives 
 ### Activities
 
 The activities for the Christmas event are the following commands:\
-`=Xmas` - Used to assign your minion to a specific team, although it has no impact on the event, and you can participate in either trip.\
-`=Xmas Steal` - Sends your minion on a trip to **steal** presents\
-`=Xmas Deliver` - Sends your minion on a trip to **deliver** presents
+[[/xmas]] - Used to assign your minion to a specific team, although it has no impact on the event, and you can participate in either trip.\
+[[/xmas steal]] - Sends your minion on a trip to **steal** presents\
+[[/xmas deliver]] - Sends your minion on a trip to **deliver** presents
 
 ### Unique Items
 

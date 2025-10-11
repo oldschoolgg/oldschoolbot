@@ -1,19 +1,16 @@
-import { increaseNumByPercent, reduceNumByPercent } from 'e';
+import { increaseNumByPercent, reduceNumByPercent } from '@oldschoolgg/toolkit';
 
-import { roll } from '@/lib/util/rng';
-import { userHasFlappy } from '../../../lib/invention/inventions';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
-function calcPoints() {
+function calcPoints(rng: RNGProvider) {
 	let base = 42.5;
-	if (roll(5)) {
+	if (rng.roll(5)) {
 		base = 30;
 	}
-	if (roll(15)) {
+	if (rng.roll(15)) {
 		base = 10;
 	}
-	if (roll(2)) {
+	if (rng.roll(2)) {
 		base = increaseNumByPercent(base, 20);
 	} else {
 		base = reduceNumByPercent(base, 20);
@@ -23,16 +20,15 @@ function calcPoints() {
 
 export const soulWarsTask: MinionTask = {
 	type: 'SoulWars',
-	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
-		const { channelID, quantity, userID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish, rng }) {
+		const { channelID, quantity, duration } = data;
 
 		let points = 0;
 		for (let i = 0; i < quantity; i++) {
-			points += calcPoints();
+			points += calcPoints(rng);
 		}
 
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 		if (flappyRes.shouldGiveBoost) {
 			points *= 2;
 		}

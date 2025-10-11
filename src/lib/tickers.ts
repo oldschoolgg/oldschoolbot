@@ -1,27 +1,30 @@
-import { awaitMessageComponentInteraction, cleanUsername } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
+import { MTame } from '@/lib/bso/structures/MTame.js';
+import { runTameTask } from '@/lib/bso/tames/tameTasks.js';
+
+import {
+	awaitMessageComponentInteraction,
+	cleanUsername,
+	noOp,
+	removeFromArr,
+	stringMatches,
+	Time
+} from '@oldschoolgg/toolkit';
 import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
-import { Time, noOp, removeFromArr } from 'e';
 
-import { runTameTask } from '../tasks/tames/tameTasks';
-import { mahojiUserSettingsUpdate } from './MUser';
-import { BitField, Channel, globalConfig } from './constants';
-import { GrandExchange } from './grandExchange';
-import { collectMetrics } from './metrics';
-import { populateRoboChimpCache } from './perkTier';
-import { fetchUsersWithoutUsernames } from './rawSql';
-import { runCommand } from './settings/settings';
-import { informationalButtons } from './sharedComponents';
-import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
-import Farming from './skilling/skills/farming';
-import { MTame } from './structures/MTame';
-import { getSupportGuild } from './util';
-import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers';
-import { handleGiveawayCompletion } from './util/giveaway';
-import { logError } from './util/logError';
-import { makeBadgeString } from './util/makeBadgeString';
+import { BitField, Channel, globalConfig } from '@/lib/constants.js';
+import { GrandExchange } from '@/lib/grandExchange.js';
+import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
+import { collectMetrics } from '@/lib/metrics.js';
+import { populateRoboChimpCache } from '@/lib/perkTier.js';
+import { fetchUsersWithoutUsernames } from '@/lib/rawSql.js';
+import { runCommand } from '@/lib/settings/settings.js';
+import { informationalButtons } from '@/lib/sharedComponents.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
+import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
+import { getSupportGuild } from '@/lib/util.js';
 
 let lastMessageID: string | null = null;
 const supportEmbed = new EmbedBuilder()
@@ -119,10 +122,11 @@ export const tickers: {
 					}
 				}
 			});
-			for (const user of users) {
-				if (user.bitfield.includes(BitField.DisabledFarmingReminders)) continue;
-				const { patches } = await getFarmingInfoFromUser(user);
-				for (const patchType of farmingPatchNames) {
+			for (const partialUser of users) {
+				if (partialUser.bitfield.includes(BitField.DisabledFarmingReminders)) continue;
+				const user = await mUserFetch(partialUser.id);
+				const { patches } = await Farming.getFarmingInfoFromUser(user);
+				for (const patchType of Farming.farmingPatchNames) {
 					const patch = patches[patchType];
 					if (!patch) continue;
 					if (patch.plantTime < basePlantTime) continue;
@@ -140,8 +144,8 @@ export const tickers: {
 					if (!planted) continue;
 					if (difference < planted.growthTime * Time.Minute) continue;
 					if (patch.wasReminded) continue;
-					await mahojiUserSettingsUpdate(user.id, {
-						[getFarmingKeyFromName(patchType)]: { ...patch, wasReminded: true }
+					await user.update({
+						[Farming.getFarmingKeyFromName(patchType)]: { ...patch, wasReminded: true }
 					});
 
 					// Build buttons (only show Harvest/replant if not busy):
@@ -304,7 +308,7 @@ export const tickers: {
 			for (const { id } of users) {
 				const djsUser = await globalClient.users.fetch(id).catch(() => null);
 				if (!djsUser) {
-					debugLog(`username_filling: Could not fetch user with ID ${id}, skipping...`);
+					Logging.logDebug(`username_filling: Could not fetch user with ID ${id}, skipping...`);
 					continue;
 				}
 				const user = await prisma.user.upsert({
@@ -333,7 +337,7 @@ export const tickers: {
 						username
 					}
 				});
-				debugLog(
+				Logging.logDebug(
 					`username_filling: Updated user[${id}] to username[${username}] withbadges[${usernameWithBadges}]`
 				);
 			}
@@ -349,11 +353,7 @@ export function initTickers() {
 				if (globalClient.isShuttingDown) return;
 				await ticker.cb();
 			} catch (err) {
-				logError(err);
-				debugLog(`${ticker.name} ticker errored`, {
-					type: 'TICKER',
-					error: err instanceof Error ? (err.message ?? err) : err
-				});
+				Logging.logError(err as Error);
 			} finally {
 				if (ticker.timer) TimerManager.clearTimeout(ticker.timer);
 				ticker.timer = TimerManager.setTimeout(fn, ticker.interval);

@@ -1,12 +1,8 @@
-import { Table, stringMatches } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { removeFromArr } from 'e';
+import { removeFromArr, stringMatches, Table } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '../../../lib/constants';
-import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { logError } from '../../../lib/util/logError';
+import { BitField } from '@/lib/constants.js';
+import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 
 const slayerPurchaseError =
 	'An error occurred trying to make this purchase. Please try again or contact #help-and-support if the issue persists.';
@@ -22,7 +18,7 @@ export async function slayerShopBuyCommand({
 	buyable: string;
 	quantity?: number;
 	disable?: boolean;
-	interaction?: ChatInputCommandInteraction;
+	interaction?: MInteraction;
 }) {
 	const user = await mUserFetch(userID);
 	const buyableObj = SlayerRewardsShop.find(
@@ -44,7 +40,7 @@ export async function slayerShopBuyCommand({
 				await user.addItemsToBank({ items: new Bank().add(buyableObj.item, qty), collectionLog: true });
 				return `You bought ${qty}x ${buyableObj.name}.`;
 			} catch (e) {
-				logError(e, {
+				Logging.logError(e as Error, {
 					user_id: user.id,
 					slayer_buyable: buyable,
 					slayer_buyable_id: String(buyableObj.id),
@@ -80,7 +76,7 @@ export async function slayerShopBuyCommand({
 				}
 				return `You successfully unlocked ${buyableObj.name}. Remaining slayer points: ${newUser.slayer_points}`;
 			} catch (e) {
-				logError(e, { user_id: user.id, slayer_unlock: buyable });
+				Logging.logError(e as Error, { user_id: user.id, slayer_unlock: buyable });
 				return slayerPurchaseError;
 			}
 		} else {
@@ -92,8 +88,7 @@ export async function slayerShopBuyCommand({
 			return `You don't have ${buyableObj.name} unlocked.`;
 		}
 		if (interaction) {
-			await handleMahojiConfirmation(
-				interaction,
+			await interaction.confirmation(
 				`Are you sure you want disable ${buyableObj.name}? You will have to pay ${buyableObj.slayerPointCost} to unlock it again.`
 			);
 		}

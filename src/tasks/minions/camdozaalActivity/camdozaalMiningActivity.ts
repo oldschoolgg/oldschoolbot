@@ -1,19 +1,17 @@
+import { roll } from '@oldschoolgg/rng';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { roll } from '@/lib/util/rng';
-import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
-import Mining from '../../../lib/skilling/skills/mining';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { skillingPetDropRate } from '../../../lib/util';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
+import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
+import Mining from '@/lib/skilling/skills/mining.js';
+import type { ActivityTaskOptionsWithQuantity } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { skillingPetDropRate } from '@/lib/util.js';
 
 export const camdozaalMiningTask: MinionTask = {
 	type: 'CamdozaalMining',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { quantity, userID, channelID, duration } = data;
-		const user = await mUserFetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity, { user, handleTripFinish }) {
+		const { quantity, channelID, duration } = data;
+
 		const camdozaalMine = Mining.CamdozaalMine;
 
 		// amulet of glory check for mining
@@ -81,7 +79,7 @@ export const camdozaalMiningTask: MinionTask = {
 
 		// Add xp to user
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Mining,
+			skillName: 'mining',
 			amount: miningXpReceived,
 			duration,
 			source: 'CamdozaalMining'
@@ -95,17 +93,16 @@ export const camdozaalMiningTask: MinionTask = {
 
 		// Add clue scrolls
 		const clueScrollChance = Mining.CamdozaalMine.clueScrollChance!;
-		addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, clueScrollChance, loot);
+		addSkillingClueToLoot(user, 'fishing', quantity, clueScrollChance, loot);
 
 		// Rock golem roll
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, camdozaalMine.petChance!);
+		const { petDropRate } = skillingPetDropRate(user, 'mining', camdozaalMine.petChance!);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Rock golem');
 		}
 
 		// Give the user the items from the trip
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
+		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
 		});

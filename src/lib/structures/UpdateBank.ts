@@ -1,19 +1,19 @@
-import { objHasAnyPropInCommon } from '@oldschoolgg/toolkit/util';
+import { transactMaterialsFromUser } from '@/lib/bso/skills/invention/inventions.js';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
+
+import { objectEntries, objHasAnyPropInCommon } from '@oldschoolgg/toolkit';
 import type { GearSetupType, Prisma, UserStats } from '@prisma/client';
-import { objectEntries } from 'e';
 import { Bank, type ItemBank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 
-import { type ClientBankKey, userStatsUpdate } from '../../mahoji/mahojiSettings';
-import type { MUserClass } from '../MUser';
-import { degradeChargeBank } from '../degradeableItems';
-import type { GearSetup } from '../gear/types';
-import { MaterialBank } from '../invention/MaterialBank';
-import { transactMaterialsFromUser } from '../invention/inventions';
-import type { JsonKeys } from '../util';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../util/clientSettings';
-import { ChargeBank, XPBank } from './Bank';
-import { KCBank } from './KCBank';
+import { degradeChargeBank } from '@/lib/degradeableItems.js';
+import type { GearSetup } from '@/lib/gear/types.js';
+import type { MUserClass } from '@/lib/MUser.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
+import { KCBank } from '@/lib/structures/KCBank.js';
+import { XPBank } from '@/lib/structures/XPBank.js';
+import type { ClientBankKey } from '@/lib/util/clientSettings.js';
+import type { JsonKeys } from '@/lib/util.js';
 
 export class UpdateBank {
 	// Things removed
@@ -123,7 +123,7 @@ export class UpdateBank {
 		let userStatsUpdates: Prisma.UserStatsUpdateInput = {};
 		// KC
 		if (this.kcBank.length() > 0) {
-			const currentScores = (await user.fetchStats({ monster_scores: true })).monster_scores as ItemBank;
+			const currentScores = (await user.fetchStats()).monster_scores as ItemBank;
 			for (const [monster, kc] of this.kcBank.entries()) {
 				currentScores[monster] = (currentScores[monster] ?? 0) + kc;
 			}
@@ -148,7 +148,7 @@ export class UpdateBank {
 			}
 		}
 
-		await userStatsUpdate(user.id, userStatsUpdates);
+		await user.statsUpdate(userStatsUpdates);
 
 		const userUpdates: Prisma.UserUpdateInput = this.userUpdates;
 
@@ -178,12 +178,12 @@ export class UpdateBank {
 				(acc, key) => ({ ...acc, [key]: true }),
 				{} as Record<string, boolean>
 			);
-			const currentStats = await mahojiClientSettingsFetch(keysToSelect);
+			const currentStats = await ClientSettings.fetch(keysToSelect);
 			for (const [key, value] of objectEntries(this.clientStatsBankUpdates)) {
 				const newValue = new Bank((currentStats[key] ?? {}) as ItemBank).add(value);
 				clientUpdates[key] = newValue.toJSON();
 			}
-			await mahojiClientSettingsUpdate(clientUpdates);
+			await ClientSettings.update(clientUpdates);
 		}
 
 		await user.sync();

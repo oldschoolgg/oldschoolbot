@@ -1,17 +1,14 @@
-import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
+import { randInt } from '@oldschoolgg/rng';
+import { calcPercentOfNum, calcWhatPercent } from '@oldschoolgg/toolkit';
 
-import { KandarinDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { userHasFlappy } from '../../../lib/invention/inventions';
-import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { KandarinDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export const barbAssaultTask: MinionTask = {
 	type: 'BarbarianAssault',
-	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
-		const { channelID, quantity, userID, duration } = data;
-		const user = await mUserFetch(userID);
-		const { honour_level: currentHonourLevel } = await user.fetchStats({ honour_level: true });
+	async run(data: MinigameActivityTaskOptionsWithNoChanges, { user, handleTripFinish }) {
+		const { channelID, quantity, duration } = data;
+		const { honour_level: currentHonourLevel } = await user.fetchStats();
 
 		let basePoints = 35;
 
@@ -30,22 +27,18 @@ export const barbAssaultTask: MinionTask = {
 		}
 		let totalPoints = Math.floor(pts * quantity);
 
-		const flappyRes = await userHasFlappy({ user, duration });
+		const flappyRes = await user.hasFlappy(duration);
 
 		if (flappyRes.shouldGiveBoost) {
 			totalPoints *= 2;
 		}
 
 		await user.incrementMinigameScore('barb_assault', quantity);
-		await userStatsUpdate(
-			user.id,
-			{
-				honour_points: {
-					increment: totalPoints
-				}
-			},
-			{}
-		);
+		await user.statsUpdate({
+			honour_points: {
+				increment: totalPoints
+			}
+		});
 
 		resultStr = `${user.mention}, ${user.minionName} finished doing ${quantity} waves of Barbarian Assault, you received ${totalPoints} Honour Points.
 ${resultStr}`;

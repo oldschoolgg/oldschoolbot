@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 
-import { Gear } from '../../../src/lib/structures/Gear';
+import { Gear } from '@/lib/structures/Gear.js';
 
 test('comp cape similar items', () => {
 	const gear = new Gear();

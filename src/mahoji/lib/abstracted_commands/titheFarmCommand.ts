@@ -1,14 +1,8 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { formatDuration, stringMatches } from '@oldschoolgg/toolkit/util';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { Time } from 'e';
+import { Emoji, formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import TitheFarmBuyables from '../../../lib/data/buyables/titheFarmBuyables';
-import type { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { userHasGracefulEquipped, userStatsUpdate } from '../../mahojiSettings';
+import TitheFarmBuyables from '@/lib/data/buyables/titheFarmBuyables.js';
+import type { TitheFarmActivityTaskOptions } from '@/lib/types/minions.js';
 
 async function determineDuration(user: MUser): Promise<[number, string[]]> {
 	let baseTime = Time.Second * 1500;
@@ -17,7 +11,7 @@ async function determineDuration(user: MUser): Promise<[number, string[]]> {
 	const boostStr = [];
 
 	// Reduce time based on tithe farm completions
-	const { tithe_farms_completed: titheFarmsCompleted } = await user.fetchStats({ tithe_farms_completed: true });
+	const { tithe_farms_completed: titheFarmsCompleted } = await user.fetchStats();
 	const percentIncreaseFromCompletions = Math.floor(Math.min(50, titheFarmsCompleted) / 2) / 100;
 	baseTime = Math.floor(baseTime * (1 - percentIncreaseFromCompletions));
 	Math.floor(percentIncreaseFromCompletions * 100) > 0
@@ -25,7 +19,7 @@ async function determineDuration(user: MUser): Promise<[number, string[]]> {
 		: boostStr.push('');
 
 	// Reduce time if user has graceful equipped
-	if (userHasGracefulEquipped(user)) {
+	if (user.hasGracefulEquipped()) {
 		nonGracefulTimeAddition = 0;
 		boostStr.push('10% from graceful outfit');
 	}
@@ -46,10 +40,10 @@ export async function titheFarmCommand(user: MUser, channelID: string) {
 
 	const [duration, boostStr] = await determineDuration(user);
 
-	await addSubTaskToActivityTask<TitheFarmActivityTaskOptions>({
+	await ActivityManager.startTrip<TitheFarmActivityTaskOptions>({
 		minigameID: 'tithe_farm',
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity: 1,
 		duration,
 		type: 'TitheFarm'
@@ -61,7 +55,7 @@ export async function titheFarmCommand(user: MUser, channelID: string) {
 }
 
 export async function titheFarmShopCommand(
-	interaction: ChatInputCommandInteraction,
+	interaction: MInteraction,
 	user: MUser,
 	buyableName: string,
 	_quantity?: number
@@ -81,7 +75,7 @@ export async function titheFarmShopCommand(
 	const loot = new Bank(buyable.outputItems).multiply(quantity);
 	const cost = buyable.titheFarmPoints * quantity;
 
-	const { tithe_farm_points: titheFarmPoints } = await user.fetchStats({ tithe_farm_points: true });
+	const { tithe_farm_points: titheFarmPoints } = await user.fetchStats();
 
 	if (titheFarmPoints < cost) {
 		return `You need ${cost} Tithe Farm points to make this purchase.`;
@@ -89,19 +83,14 @@ export async function titheFarmShopCommand(
 
 	const purchaseMsg = `${loot} for ${cost} Tithe Farm points`;
 
-	await handleMahojiConfirmation(interaction, `${user}, please confirm that you want to purchase ${purchaseMsg}.`);
-	await userStatsUpdate(
-		user.id,
-		{
-			tithe_farm_points: {
-				decrement: cost
-			}
-		},
-		{}
-	);
+	await interaction.confirmation(`${user}, please confirm that you want to purchase ${purchaseMsg}.`);
+	await user.statsUpdate({
+		tithe_farm_points: {
+			decrement: cost
+		}
+	});
 
-	await transactItems({
-		userID: user.id,
+	await user.transactItems({
 		collectionLog: true,
 		itemsToAdd: loot
 	});

@@ -1,18 +1,18 @@
-import { Time } from 'e';
+import { Time } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, Monsters } from 'oldschooljs';
 
-import { Requirements } from '../structures/Requirements';
+import { isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
 import type {
 	GauntletOptions,
 	MonsterActivityTaskOptions,
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	RaidsOptions,
-	TOAOptions,
-	TheatreOfBloodTaskOptions
-} from '../types/minions';
-import { isCertainMonsterTrip } from './caUtils';
-import type { CombatAchievement } from './combatAchievements';
+	TheatreOfBloodTaskOptions,
+	TOAOptions
+} from '@/lib/types/minions.js';
 
 export const grandmasterCombatAchievements: CombatAchievement[] = [
 	{

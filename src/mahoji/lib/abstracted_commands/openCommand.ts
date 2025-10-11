@@ -1,27 +1,24 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { type CommandResponse, makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { noOp, notEmpty, percentChance, randArrItem, shuffleArr, uniqueArr } from 'e';
+import { checkElderClueRequirements } from '@/lib/bso/elderClueRequirements.js';
+
+import { percentChance, randArrItem, shuffleArr } from '@oldschoolgg/rng';
+import { Emoji, makeComponents, noOp, notEmpty, stringMatches, uniqueArr } from '@oldschoolgg/toolkit';
+import type { ButtonBuilder } from 'discord.js';
 import { Bank, Items, itemID, resolveItems } from 'oldschooljs';
 
-import { BitField, PerkTier } from '@/lib/constants';
-import { roboChimpUserFetch } from '@/lib/roboChimp';
-import { checkElderClueRequirements } from '@/lib/util/elderClueRequirements';
-import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import type { UnifiedOpenable } from '../../../lib/openables';
-import { allOpenables, getOpenableLoot } from '../../../lib/openables';
-import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { assert } from '../../../lib/util/logError';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahojiSettings';
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { buildClueButtons } from '@/lib/clues/clueUtils.js';
+import { BitField, PerkTier } from '@/lib/constants.js';
+import type { UnifiedOpenable } from '@/lib/openables.js';
+import { allOpenables, getOpenableLoot } from '@/lib/openables.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { assert } from '@/lib/util/logError.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { addToOpenablesScores, patronMsg } from '@/mahoji/mahojiSettings.js';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
 export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2))
-	.map(getOSItem)
+	.map(id => Items.getOrThrow(id))
 	.sort((a, b) => {
 		if (b.name.includes('Clue')) return 1;
 		if (a.name.includes('Clue')) return -1;
@@ -42,7 +39,7 @@ export async function abstractedOpenUntilCommand(
 	if (!openableItem) return "That's not a valid item.";
 	const openable = allOpenables.find(i => i.openedItem === openableItem.openedItem);
 	if (!openable) return "That's not a valid item.";
-	const openUntil = getItem(openUntilItem);
+	const openUntil = Items.get(openUntilItem);
 	if (!openUntil) {
 		return `That's not a valid item to open until, you can only do it with items that you can get from ${openable.openedItem.name}.`;
 	}
@@ -155,8 +152,7 @@ async function finalizeOpening({
 			for (let i = 0; i < amountOfThisOpenable; i++) {
 				if (percentChance(bonusChancePercent)) smokeyBonus++;
 			}
-			await userStatsBankUpdate(
-				user.id,
+			await user.statsBankUpdate(
 				hasSmokey ? 'smokey_loot_bank' : 'octo_loot_bank',
 				new Bank().add(openable.openedItem.id, smokeyBonus)
 			);
@@ -182,7 +178,7 @@ async function finalizeOpening({
 	if (!user.owns(cost)) {
 		return `You don't own: ${cost}.`;
 	}
-	await transactItems({ userID: user.id, itemsToRemove: cost });
+	await user.transactItems({ itemsToRemove: cost });
 	const { previousCL } = await user.addItemsToBank({
 		items: loot,
 		collectionLog: true,
@@ -239,7 +235,7 @@ async function finalizeOpening({
 	});
 
 	if (loot.has('Coins')) {
-		await updateClientGPTrackSetting('gp_open', loot.amount('Coins'));
+		await ClientSettings.updateClientGPTrackSetting('gp_open', loot.amount('Coins'));
 	}
 
 	const openedStr = openables
@@ -266,7 +262,7 @@ ${messages.join(', ')}`.trim(),
 }
 
 export async function abstractedOpenCommand(
-	interaction: ChatInputCommandInteraction | null,
+	interaction: MInteraction | null,
 	userID: string,
 	_names: string[],
 	_quantity: number | 'auto',
@@ -288,7 +284,7 @@ export async function abstractedOpenCommand(
 	if (names.includes('all')) {
 		if (openables.length === 0) return 'You have no openable items.';
 		if (user.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
-		if (interaction) await handleMahojiConfirmation(interaction, 'Are you sure you want to open ALL your items?');
+		if (interaction) await interaction.confirmation('Are you sure you want to open ALL your items?');
 	}
 
 	if (openables.length === 0) return "That's not a valid item.";

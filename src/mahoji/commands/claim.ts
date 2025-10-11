@@ -1,22 +1,19 @@
 import { CollectionLog } from '@oldschoolgg/collectionlog';
-import type { OSBMahojiCommand } from '@oldschoolgg/toolkit/discord-util';
-import { type CommandRunOptions, dateFm, stringMatches } from '@oldschoolgg/toolkit/util';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { dateFm, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
-import { BSO_MAX_TOTAL_LEVEL } from '../../lib/bso/bsoConstants';
-import { BitField, Channel } from '../../lib/constants';
-import { calcCLDetails } from '../../lib/data/Collections';
-import { getReclaimableItemsOfUser } from '../../lib/reclaimableItems';
-import { roboChimpUserFetch } from '../../lib/roboChimp';
-import { sendToChannelID } from '../../lib/util/webhook';
+import { BitField, Channel, MAX_TOTAL_LEVEL } from '@/lib/constants.js';
+import { calcCLDetails } from '@/lib/data/Collections.js';
+import { getReclaimableItemsOfUser } from '@/lib/reclaimableItems.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { sendToChannelID } from '@/lib/util/webhook.js';
 
 const claimables = [
 	{
 		name: 'Free T1 Perks',
 		hasRequirement: async (user: MUser): Promise<true | string> => {
 			const roboChimpUser = await roboChimpUserFetch(user.id);
-			if (roboChimpUser.osb_total_level === 2277 && roboChimpUser.bso_total_level === BSO_MAX_TOTAL_LEVEL) {
+			if (roboChimpUser.osb_total_level === 2277 && roboChimpUser.bso_total_level === MAX_TOTAL_LEVEL) {
 				return true;
 			}
 			return 'You need to be maxed in both bots (OSB and BSO) to claim this.';
@@ -69,7 +66,7 @@ export const claimCommand: OSBMahojiCommand = {
 	description: 'Claim prizes, rewards and other things.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
+			type: 'String',
 			name: 'name',
 			description: 'The thing you want to claim.',
 			required: true,
@@ -88,8 +85,7 @@ export const claimCommand: OSBMahojiCommand = {
 			}
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{ name: string }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user }: CommandRunOptions<{ name: string }>) => {
 		const claimable = claimables.find(i => stringMatches(i.name, options.name));
 		if (!claimable) {
 			const reclaimableData = await getReclaimableItemsOfUser(user);

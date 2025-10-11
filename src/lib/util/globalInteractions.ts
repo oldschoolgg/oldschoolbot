@@ -1,34 +1,25 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { PerkTier, dateFm } from '@oldschoolgg/toolkit/util';
+import { ItemContracts } from '@/lib/bso/itemContracts.js';
+import { repeatTameTrip } from '@/lib/bso/tames/tameTasks.js';
+
+import { cleanUsername, formatDuration, removeFromArr, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import type { Giveaway } from '@prisma/client';
 import { RateLimitManager } from '@sapphire/ratelimits';
-import type { ButtonInteraction, Interaction } from 'discord.js';
-import { Time, removeFromArr, uniqueArr } from 'e';
+import type { ButtonInteraction } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
-import { getItemContractDetails, handInContract } from '../../mahoji/commands/ic';
-import { cancelGEListingCommand } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
-import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
-import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
-import { repeatTameTrip } from '../../tasks/tames/tameTasks';
-import { InteractionID } from '../InteractionID';
-import { itemContractResetTime } from '../MUser.js';
-import { modifyBusyCounter } from '../busyCounterCache';
-import { giveawayCache } from '../cache.js';
-import type { ClueTier } from '../clues/clueTiers';
-import { BitField } from '../constants';
-import { runCommand } from '../settings/settings';
-import { updateGiveawayMessage } from './giveaway';
-import { handleMahojiConfirmation } from './handleMahojiConfirmation';
-import { interactionReply } from './interactionReply';
-import { isValidGlobalInteraction } from './interactions';
-import { logErrorForInteraction } from './logError';
-import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
-import { tradePlayerItems } from './tradePlayerItems';
+import { giveawayCache } from '@/lib/cache.js';
+import type { ClueTier } from '@/lib/clues/clueTiers.js';
+import { BitField, PerkTier } from '@/lib/constants.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
+import { InteractionID } from '@/lib/InteractionID.js';
+import { runCommand } from '@/lib/settings/settings.js';
+import { MInteraction } from '@/lib/structures/MInteraction.js';
+import { updateGiveawayMessage } from '@/lib/util/giveaway.js';
+import { isValidGlobalInteraction } from '@/lib/util/interactions.js';
+import { fetchRepeatTrips, repeatTrip } from '@/lib/util/repeatStoredTrip.js';
+import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
+import { autoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
+import { shootingStarsCommand, starCache } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand.js';
 
 const buttonRatelimiter = new RateLimitManager(Time.Second * 2, 1);
 
@@ -59,11 +50,11 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 		if (giveaway) giveawayCache.set(giveawayID, giveaway);
 	}
 	if (!giveaway) {
-		return interactionReply(interaction, { content: 'Invalid giveaway.', ephemeral: true });
+		return interaction.reply({ content: 'Invalid giveaway.', ephemeral: true });
 	}
 	if (split[1] === 'REPEAT') {
 		if (user.id !== giveaway.user_id) {
-			return interactionReply(interaction, {
+			return interaction.reply({
 				content: "You cannot repeat other peoples' giveaways.",
 				ephemeral: true
 			});
@@ -90,25 +81,25 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 	}
 
 	if (giveaway.finish_date.getTime() < Date.now() || giveaway.completed) {
-		return interactionReply(interaction, { content: 'This giveaway has finished.', ephemeral: true });
+		return interaction.reply({ content: 'This giveaway has finished.', ephemeral: true });
 	}
 
 	const action = split[1] === 'ENTER' ? 'ENTER' : 'LEAVE';
 
 	if (user.isIronman) {
-		return interactionReply(interaction, {
+		return interaction.reply({
 			content: 'You are an ironman, you cannot enter giveaways.',
 			ephemeral: true
 		});
 	}
 
 	if (user.id === giveaway.user_id) {
-		return interactionReply(interaction, { content: 'You cannot join your own giveaway.', ephemeral: true });
+		return interaction.reply({ content: 'You cannot join your own giveaway.', ephemeral: true });
 	}
 
 	if (action === 'ENTER') {
 		if (giveaway.users_entered.includes(user.id)) {
-			return interactionReply(interaction, {
+			return interaction.reply({
 				content: 'You are already entered in this giveaway.',
 				ephemeral: true
 			});
@@ -124,10 +115,10 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 			}
 		});
 		updateGiveawayMessage(giveaway);
-		return interactionReply(interaction, { content: 'You are now entered in this giveaway.', ephemeral: true });
+		return interaction.reply({ content: 'You are now entered in this giveaway.', ephemeral: true });
 	}
 	if (!giveaway.users_entered.includes(user.id)) {
-		return interactionReply(interaction, {
+		return interaction.reply({
 			content: "You aren't entered in this giveaway, so you can't leave it.",
 			ephemeral: true
 		});
@@ -141,105 +132,24 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 		}
 	});
 	updateGiveawayMessage(giveaway);
-	return interactionReply(interaction, { content: 'You left the giveaway.', ephemeral: true });
+	return interaction.reply({ content: 'You left the giveaway.', ephemeral: true });
 }
 
 async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
 	if (user.minionIsBusy) {
-		return interactionReply(interaction, { content: 'Your minion is busy.', ephemeral: true });
+		return interaction.reply({ content: 'Your minion is busy.', ephemeral: true });
 	}
 	const trips = await fetchRepeatTrips(interaction.user.id);
 	if (trips.length === 0) {
-		return interactionReply(interaction, { content: "Couldn't find a trip to repeat.", ephemeral: true });
+		return interaction.reply({ content: "Couldn't find a trip to repeat.", ephemeral: true });
 	}
 	const id = interaction.customId;
 	const split = id.split('_');
 	const matchingActivity = trips.find(i => i.type === split[2]);
 	if (!matchingActivity) {
-		return repeatTrip(interaction, trips[0]);
+		return repeatTrip(user, interaction, trips[0]);
 	}
-	return repeatTrip(interaction, matchingActivity);
-}
-
-function icDonateValidation(user: MUser, donator: MUser) {
-	if (user.isIronman) {
-		return 'Ironmen stand alone!';
-	}
-	if (user.id === donator.id) {
-		return 'You cannot donate to yourself.';
-	}
-	if (user.bitfield.includes(BitField.NoItemContractDonations)) {
-		return "That user doesn't want donations.";
-	}
-	const details = getItemContractDetails(user);
-	if (!details.nextContractIsReady || !details.currentItem) {
-		return "That user's Item Contract isn't ready.";
-	}
-
-	if (user.isBusy || donator.isBusy) {
-		return 'One of you is busy, and cannot do this trade right now.';
-	}
-
-	const cost = new Bank().add(details.currentItem.id);
-	if (!donator.bank.has(cost)) {
-		return `You don't own ${cost}.`;
-	}
-
-	return {
-		cost,
-		details
-	};
-}
-
-async function donateICHandler(interaction: ButtonInteraction) {
-	const userID = interaction.customId.split('_')[2];
-	if (!userID) {
-		return interactionReply(interaction, { content: 'Invalid user.', ephemeral: true });
-	}
-
-	const user = await mUserFetch(userID);
-	const donator = await mUserFetch(interaction.user.id);
-
-	const errorStr = icDonateValidation(user, donator);
-	if (typeof errorStr === 'string') return interactionReply(interaction, { content: errorStr, ephemeral: true });
-
-	await handleMahojiConfirmation(
-		interaction,
-		`${donator}, are you sure you want to give ${errorStr.cost} to ${
-			user.badgedUsername
-		}? You own ${donator.bank.amount(errorStr.details.currentItem!.id)} of this item.`,
-		[donator.id]
-	);
-
-	await user.sync();
-	await donator.sync();
-
-	const secondaryErrorStr = icDonateValidation(user, donator);
-	if (typeof secondaryErrorStr === 'string') return interactionReply(interaction, { content: secondaryErrorStr });
-	const { cost } = secondaryErrorStr;
-
-	try {
-		modifyBusyCounter(donator.id, 1);
-		await tradePlayerItems(donator, user, cost);
-		await userStatsBankUpdate(donator.id, 'ic_donations_given_bank', cost);
-		await userStatsBankUpdate(user.id, 'ic_donations_received_bank', cost);
-		const handInResult = await handInContract(null, user);
-		const nextIcDetails = getItemContractDetails(user);
-		return interactionReply(interaction, {
-			content: `${donator} donated ${cost} for ${user}'s Item Contract!
-
-${user.mention} ${handInResult}
-
-${Emoji.ItemContract} Your next contract is: ${nextIcDetails.currentItem?.name} ${dateFm(new Date(Date.now() + itemContractResetTime))}.`,
-			allowedMentions: {
-				users: [user.id]
-			}
-		});
-	} catch (err) {
-		logErrorForInteraction(err, interaction);
-	} finally {
-		modifyBusyCounter(donator.id, -1);
-	}
+	return repeatTrip(user, interaction, matchingActivity);
 }
 
 async function handleGearPresetEquip(user: MUser, id: string, interaction: ButtonInteraction) {
@@ -248,7 +158,7 @@ async function handleGearPresetEquip(user: MUser, id: string, interaction: Butto
 	const presets = await prisma.gearPreset.findMany({ where: { user_id: user.id } });
 	const matchingPreset = presets.find(p => stringMatches(p.name, presetName));
 	if (!matchingPreset) {
-		return interactionReply(interaction, { content: "You don't have a preset with this name.", ephemeral: true });
+		return interaction.reply({ content: "You don't have a preset with this name.", ephemeral: true });
 	}
 	await runCommand({
 		commandName: 'gearpresets',
@@ -267,19 +177,19 @@ async function handlePinnedTripRepeat(user: MUser, id: string, interaction: Butt
 	if (!pinnedTripID) return;
 	const trip = await prisma.pinnedTrip.findFirst({ where: { user_id: user.id, id: pinnedTripID } });
 	if (!trip) {
-		return interactionReply(interaction, {
+		return interaction.reply({
 			content: "You don't have a pinned trip with this ID, and you cannot repeat trips of other users.",
 			ephemeral: true
 		});
 	}
-	await repeatTrip(interaction, { data: trip.data, type: trip.activity_type });
+	await repeatTrip(user, interaction, { data: trip.data, type: trip.activity_type });
 }
 
 async function handleGEButton(user: MUser, id: string, interaction: ButtonInteraction) {
 	if (id === 'ge_cancel_dms') {
-		const mention = mentionCommand(globalClient, 'config', 'user', 'toggle');
+		const mention = mentionCommand('config', 'user', 'toggle');
 		if (user.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
-			return interactionReply(interaction, {
+			return interaction.reply({
 				content: `You already disabled Grand Exchange DM's, you can re-enable them using ${mention}.`,
 				ephemeral: true
 			});
@@ -289,7 +199,7 @@ async function handleGEButton(user: MUser, id: string, interaction: ButtonIntera
 				push: BitField.DisableGrandExchangeDMs
 			}
 		});
-		return interactionReply(interaction, {
+		return interaction.reply({
 			content: `You have disabled Grand Exchange DM's, and won't receive anymore DM's, you can re-enable them using ${mention}.`,
 			ephemeral: true
 		});
@@ -308,30 +218,24 @@ async function handleGEButton(user: MUser, id: string, interaction: ButtonIntera
 			}
 		});
 		if (!listing) {
-			return interactionReply(interaction, {
+			return interaction.reply({
 				content: 'You cannot cancel this listing, it is either already cancelled, fulfilled or not yours.',
 				ephemeral: true
 			});
 		}
 		const response = await cancelGEListingCommand(user, listing.userfacing_id);
-		return interactionReply(interaction, { content: response, ephemeral: true });
+		return interaction.reply({ content: response, ephemeral: true });
 	}
 }
 
-export async function interactionHook(interaction: Interaction) {
-	if (!interaction.isButton()) return;
-	const ignoredInteractionIDs = [
-		'CONFIRM',
-		'CANCEL',
-		'PARTY_JOIN',
-		...Object.values(InteractionID.PaginatedMessage),
-		...Object.values(InteractionID.Slayer)
-	];
+export async function globalButtonInteractionHandler(interaction: ButtonInteraction) {
+	const mInteraction = new MInteraction({ interaction });
+	const ignoredInteractionIDs = ['CONFIRM', 'CANCEL', 'PARTY_JOIN', ...Object.values(InteractionID.PaginatedMessage)];
 	if (ignoredInteractionIDs.includes(interaction.customId)) return;
 	if (['DYN_', 'LP_'].some(s => interaction.customId.startsWith(s))) return;
 
 	if (globalClient.isShuttingDown) {
-		return interactionReply(interaction, {
+		return interaction.reply({
 			content: 'The bot is currently rebooting, please try again in a couple minutes.',
 			ephemeral: true
 		});
@@ -342,7 +246,7 @@ export async function interactionHook(interaction: Interaction) {
 
 	const ratelimit = buttonRatelimiter.acquire(userID);
 	if (ratelimit.limited) {
-		return interactionReply(interaction, {
+		return interaction.reply({
 			content: `You're on cooldown from clicking buttons, please wait: ${formatDuration(ratelimit.remainingTime, true)}.`,
 			ephemeral: true
 		});
@@ -353,7 +257,7 @@ export async function interactionHook(interaction: Interaction) {
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
 
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
-	if (id.includes('DONATE_IC')) return donateICHandler(interaction);
+	if (id.includes('DONATE_IC')) return ItemContracts.donateICHandler(interaction);
 	if (id.startsWith('GPE_')) return handleGearPresetEquip(user, id, interaction);
 	if (id.startsWith('PTR_')) return handlePinnedTripRepeat(user, id, interaction);
 
@@ -361,7 +265,7 @@ export async function interactionHook(interaction: Interaction) {
 
 	if (!isValidGlobalInteraction(id)) return;
 	if (user.isBusy) {
-		return interactionReply(interaction, { content: 'You cannot use a command right now.', ephemeral: true });
+		return interaction.reply({ content: 'You cannot use a command right now.', ephemeral: true });
 	}
 
 	const options = {
@@ -376,15 +280,15 @@ export async function interactionHook(interaction: Interaction) {
 	const timeSinceMessage = Date.now() - new Date(interaction.message.createdTimestamp).getTime();
 	const timeLimit = reactionTimeLimit(user.perkTier());
 	if (timeSinceMessage > Time.Day) {
-		debugLog(
+		Logging.logDebug(
 			`${user.id} clicked Diff[${formatDuration(timeSinceMessage)}] Button[${id}] Message[${
 				interaction.message.id
 			}]`
 		);
 	}
 	if (1 > 2 && timeSinceMessage > timeLimit) {
-		return interactionReply(interaction, {
-			content: `<@${userID}>, this button is too old, you can no longer use it. You can only only use buttons that are up to ${formatDuration(
+		return interaction.reply({
+			content: `<@${userID}>, this button is too old, you can no longer use it. You can only use buttons that are up to ${formatDuration(
 				timeLimit
 			)} old, up to 300 hours for patrons.`,
 			ephemeral: true
@@ -469,7 +373,7 @@ export async function interactionHook(interaction: Interaction) {
 
 	if (id === 'DO_FISHING_CONTEST') {
 		if (user.perkTier() < PerkTier.Four) {
-			return interactionReply(interaction, {
+			return interaction.reply({
 				content: 'You need to be a Tier 3 patron to use this button.',
 				ephemeral: true
 			});
@@ -513,7 +417,7 @@ export async function interactionHook(interaction: Interaction) {
 	}
 
 	if (user.minionIsBusy) {
-		return interactionReply(interaction, { content: `${user.minionName} is busy.`, ephemeral: true });
+		return interaction.reply({ content: `${user.minionName} is busy.`, ephemeral: true });
 	}
 
 	switch (id) {
@@ -549,6 +453,60 @@ export async function interactionHook(interaction: Interaction) {
 				...options
 			});
 		}
+		case InteractionID.Slayer.AutoSlaySaved: {
+			await runCommand({
+				commandName: 'slayer',
+				args: { autoslay: {} },
+				bypassInhibitors: true,
+				...options
+			});
+			return;
+		}
+		case InteractionID.Slayer.AutoSlayDefault: {
+			await runCommand({
+				commandName: 'slayer',
+				args: { autoslay: { mode: 'default' } },
+				bypassInhibitors: true,
+				...options
+			});
+			return;
+		}
+		case InteractionID.Slayer.AutoSlayEHP: {
+			await runCommand({
+				commandName: 'slayer',
+				args: { autoslay: { mode: 'ehp' } },
+				bypassInhibitors: true,
+				...options
+			});
+			return;
+		}
+		case InteractionID.Slayer.AutoSlayBoss: {
+			await runCommand({
+				commandName: 'slayer',
+				args: { autoslay: { mode: 'boss' } },
+				bypassInhibitors: true,
+				...options
+			});
+			return;
+		}
+		case InteractionID.Slayer.SkipTask: {
+			await runCommand({
+				commandName: 'slayer',
+				args: { manage: { command: 'skip', new: true } },
+				bypassInhibitors: true,
+				...options
+			});
+			return;
+		}
+		case InteractionID.Slayer.BlockTask: {
+			await runCommand({
+				commandName: 'slayer',
+				args: { manage: { command: 'block', new: true } },
+				bypassInhibitors: true,
+				...options
+			});
+			return;
+		}
 		case 'AUTO_FARM': {
 			return runCommand({
 				commandName: 'farming',
@@ -560,9 +518,9 @@ export async function interactionHook(interaction: Interaction) {
 			});
 		}
 		case 'AUTO_FARMING_CONTRACT': {
-			const response = await autoContract(await mUserFetch(user.id), options.channelID, user.id);
+			const response = await autoContract(user, options.channelID);
 			if (response) {
-				return interactionReply(interaction, response);
+				return mInteraction.reply(response);
 			}
 			return;
 		}
@@ -601,9 +559,9 @@ export async function interactionHook(interaction: Interaction) {
 			starCache.delete(user.id);
 			if (star && star.expiry > Date.now()) {
 				const str = await shootingStarsCommand(interaction.channelId, user, star);
-				return interactionReply(interaction, str);
+				return interaction.reply(str);
 			}
-			return interactionReply(interaction, {
+			return interaction.reply({
 				content: `${
 					star && star.expiry < Date.now()
 						? 'The Crashed Star has expired!'

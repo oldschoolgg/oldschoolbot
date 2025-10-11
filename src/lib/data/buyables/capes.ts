@@ -1,11 +1,10 @@
 import { Bank } from 'oldschooljs';
 
-import { expertCapesSource } from '../../bso/expertCapes';
-import { diaries, userhasDiaryTier } from '../../diaries';
-import { MAX_QP } from '../../minions/data/quests';
-import { musicCapeRequirements } from '../../musicCape';
-import { Requirements } from '../../structures/Requirements';
-import type { Buyable } from './buyables';
+import type { Buyable } from '@/lib/data/buyables/buyables.js';
+import { diaries, userhasDiaryTier } from '@/lib/diaries.js';
+import { MAX_QP } from '@/lib/minions/data/quests.js';
+import { musicCapeRequirements } from '@/lib/musicCape.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
 
 export const capeBuyables: Buyable[] = [
 	{
@@ -35,14 +34,6 @@ export const capeBuyables: Buyable[] = [
 			}
 			return [true];
 		}
-	},
-	{
-		name: 'Master quest cape',
-		outputItems: new Bank({
-			'Master quest cape': 1
-		}),
-		gpCost: 1_000_000_000,
-		qpRequired: 5000
 	},
 	{
 		name: 'Achievement diary cape',
@@ -80,7 +71,6 @@ export const capeBuyables: Buyable[] = [
 			return [true];
 		}
 	},
-
 	{
 		name: 'Music cape',
 		outputItems: new Bank({
@@ -103,10 +93,6 @@ export const capeBuyables: Buyable[] = [
 		}),
 		gpCost: 99_000,
 		customReq: async user => {
-			const meetsReqs = await musicCapeRequirements.check(await Requirements.fetchRequiredData(user));
-			if (!meetsReqs.hasAll) {
-				return [false, `You don't meet the requirements to buy this: \n${meetsReqs.rendered}`];
-			}
 			if (user.QP < MAX_QP) {
 				return [false, "You can't buy this because you haven't completed all the quests!"];
 			}
@@ -140,23 +126,3 @@ export const capeBuyables: Buyable[] = [
 		}
 	}
 ];
-
-for (const { cape, requiredItems, skills } of expertCapesSource) {
-	const itemCost = new Bank();
-	for (const i of requiredItems) itemCost.add(i);
-	const capeBank = new Bank().add(cape.id).freeze();
-
-	capeBuyables.push({
-		name: cape.name,
-		itemCost,
-		outputItems: capeBank,
-		customReq: async user => {
-			for (const skill of skills) {
-				if (user.skillsAsXP[skill] < 500_000_000) {
-					return [false, `You don't have 500m ${skill}.`];
-				}
-			}
-			return [true];
-		}
-	});
-}

@@ -1,33 +1,31 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit/discord-util';
-import { UserError } from '@oldschoolgg/toolkit/structures';
+import { boxSpawnHandler } from '@/lib/bso/boxSpawns.js';
+import { giveBoxResetTime, itemContractResetTime } from '@/lib/bso/bsoConstants.js';
+import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from '@/lib/bso/doubleLoot.js';
+import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from '@/lib/bso/minigames/guthixianCache.js';
+import { allIronmanMbTables, allMbTables } from '@/lib/bso/openables/mysteryBoxes.js';
+
+import { channelIsSendable, dateFm, Emoji, getNextUTCReset, isFunction, Time, UserError } from '@oldschoolgg/toolkit';
 import { command_name_enum } from '@prisma/client';
-import { type BaseMessageOptions, EmbedBuilder, type Message, bold, time } from 'discord.js';
-import { Time, isFunction } from 'e';
+import { type BaseMessageOptions, bold, EmbedBuilder, type Message, time } from 'discord.js';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
-import { dateFm, getNextUTCReset } from '@oldschoolgg/toolkit/util';
-import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
-import { Cooldowns } from '../mahoji/lib/Cooldowns';
-import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
-import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
-import { boxSpawnHandler } from './boxSpawns';
-import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from './bso/guthixianCache';
-import { allIronmanMbTables, allMbTables } from './bsoOpenables';
-import { lastRoboChimpSyncCache } from './cache.js';
-import { globalConfig } from './constants';
-import { customItems } from './customItems/util';
-import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
-import { roboChimpSyncData } from './roboChimp.js';
-import type { ActivityTaskData } from './types/minions.js';
-import { logError } from './util/logError';
-import { makeBankImage } from './util/makeBankImage';
-import { minionStatsEmbed } from './util/minionStatsEmbed';
+import { lastRoboChimpSyncCache } from '@/lib/cache.js';
+import { globalConfig } from '@/lib/constants.js';
+import { customItems } from '@/lib/customItems/util.js';
+import { mentionCommand } from '@/lib/discord/utils.js';
+import { spawnLampResetTime } from '@/lib/MUser.js';
+import { roboChimpSyncData } from '@/lib/roboChimp.js';
+import type { ActivityTaskData } from '@/lib/types/minions.js';
+import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
+import { PATRON_DOUBLE_LOOT_COOLDOWN } from '@/mahoji/commands/tools.js';
+import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
+import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 
 const mentionText = `<@${globalConfig.clientID}>`;
 const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
 
-export const tears_of_guthix_cd = Time.Day * 7;
+export const TEARS_OF_GUTHIX_CD = Time.Day * 7;
 
 const cooldownTimers: {
 	name: string;
@@ -39,7 +37,7 @@ const cooldownTimers: {
 	{
 		name: 'Tears of Guthix',
 		timeStamp: (_, stats) => Number(stats.last_tears_of_guthix_timestamp),
-		cd: tears_of_guthix_cd,
+		cd: TEARS_OF_GUTHIX_CD,
 		command: ['minigames', 'tears_of_guthix', 'start'],
 		utcReset: true
 	},
@@ -151,7 +149,7 @@ const mentionCommands: MentionCommand[] = [
 			if (items.length === 0) return msg.reply('No results for that item.');
 
 			const gettedItem = items[0];
-			const { sacrificed_bank: sacrificedBank } = await user.fetchStats({ sacrificed_bank: true });
+			const { sacrificed_bank: sacrificedBank } = await user.fetchStats();
 
 			let str = `Found ${items.length} items:\n${items
 				.slice(0, 5)
@@ -211,7 +209,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['cd'],
 		description: 'Shows your cooldowns.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			const stats = await user.fetchStats({ last_daily_timestamp: true, last_tears_of_guthix_timestamp: true });
+			const stats = await user.fetchStats();
 
 			let content = cooldownTimers
 				.map(cd => {
@@ -223,9 +221,7 @@ const mentionCommands: MentionCommand[] = [
 						const durationRemaining = dateFm(new Date(nextReset));
 						return `${cd.name}: ${durationRemaining}`;
 					}
-					return bold(
-						`${cd.name}: Ready ${mentionCommand(globalClient, cd.command[0], cd.command[1], cd.command[2])}`
-					);
+					return bold(`${cd.name}: Ready ${mentionCommand(cd.command[0], cd.command[1], cd.command[2])}`);
 				})
 				.join('\n');
 
@@ -234,9 +230,7 @@ const mentionCommands: MentionCommand[] = [
 			if (await userHasDoneCurrentGuthixianCache(user)) {
 				content += `Guthixian Cache: ${currentGuthixCacheInterval.nextResetStr}`;
 			} else {
-				content += bold(
-					`Guthixian Cache: Ready ${mentionCommand(globalClient, 'bsominigames', 'guthixian_cache', 'join')}`
-				);
+				content += bold(`Guthixian Cache: Ready ${mentionCommand('bsominigames', 'guthixian_cache', 'join')}`);
 			}
 
 			if (isDoubleLootActive()) {
@@ -294,7 +288,7 @@ export async function onMessage(msg: Message) {
 		} catch (err) {
 			if (typeof err === 'string') return msg.reply(err);
 			if (err instanceof UserError) return msg.reply(err.message);
-			logError(err);
+			Logging.logError(err as Error);
 		}
 		return;
 	}
@@ -316,6 +310,6 @@ export async function onMinionActivityFinish(activity: ActivityTaskData) {
 			await roboChimpSyncData(await mUserFetch(activity.userID));
 		}
 	} catch (err) {
-		logError(err, { activity: JSON.stringify(activity) });
+		Logging.logError(err as Error, { activity: JSON.stringify(activity) });
 	}
 }

@@ -1,28 +1,22 @@
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { stringMatches } from '@oldschoolgg/toolkit/string-util';
-import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
-import { Bank, SkillsEnum } from 'oldschooljs';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
-import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
-import { KourendKebosDiary, userhasDiaryTier } from '../../diaries';
-import { InventionID, inventionBoosts, inventionItemBoost } from '../../invention/inventions';
-import type { DarkAltarOptions } from '../../types/minions';
-import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../util/calcMaxTripLength';
-import getOSItem from '../../util/getOSItem';
-import { hasSkillReqs } from '../../util/smallUtils';
-import { updateBankSetting } from '../../util/updateBankSetting';
+import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, Items } from 'oldschooljs';
+
+import { KourendKebosDiary, userhasDiaryTier } from '@/lib/diaries.js';
+import type { DarkAltarOptions } from '@/lib/types/minions.js';
+import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 
 export const darkAltarRunes = {
 	soul: {
-		item: getOSItem('Soul rune'),
+		item: Items.getOrThrow('Soul rune'),
 		baseTime: Time.Second * 2.2,
 		xp: 19.6,
 		level: 90,
 		petChance: 782_999
 	},
 	blood: {
-		item: getOSItem('Blood rune'),
+		item: Items.getOrThrow('Blood rune'),
 		baseTime: Time.Second * 2.2,
 		xp: 17.2,
 		level: 77,
@@ -39,7 +33,12 @@ export async function darkAltarCommand({
 	channelID,
 	name,
 	extracts
-}: { user: MUser; channelID: string; name: string; extracts?: boolean }) {
+}: {
+	user: MUser;
+	channelID: string;
+	name: string;
+	extracts?: boolean;
+}) {
 	const stats = user.skillsAsLevels;
 	if (!['blood', 'soul'].includes(name.toLowerCase().split(' ')[0])) return 'Invalid rune.';
 	const [hasReqs, neededReqs] = hasSkillReqs(user, {
@@ -71,18 +70,17 @@ export async function darkAltarCommand({
 		timePerRune = reduceNumByPercent(timePerRune, mediumDiaryBoost);
 	}
 
-	if (!userHasGracefulEquipped(user)) {
+	if (!user.hasGracefulEquipped()) {
 		boosts.push(`${gracefulPenalty}% slower for no Graceful`);
 		timePerRune = increaseNumByPercent(timePerRune, gracefulPenalty);
 	}
 
-	if (user.skillLevel(SkillsEnum.Agility) < 73) {
+	if (user.skillsAsLevels.agility < 73) {
 		boosts.push(`${agilityPenalty}% slower for less than level 73 Agility`);
 		timePerRune = increaseNumByPercent(timePerRune, agilityPenalty);
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'DarkAltar');
-
+	const maxTripLength = user.calcMaxTripLength('DarkAltar');
 	// Calculate Abyssal amulet boost:
 	if (user.hasEquippedOrInBank(['Abyssal amulet'])) {
 		const abyssalAmuletBoost = inventionBoosts.abyssalAmulet.boosts.find(b =>
@@ -116,12 +114,12 @@ export async function darkAltarCommand({
 
 	if (totalCost.length > 0) {
 		await user.removeItemsFromBank(totalCost);
-		updateBankSetting('runecraft_cost', totalCost);
+		await ClientSettings.updateBankSetting('runecraft_cost', totalCost);
 	}
 
-	await addSubTaskToActivityTask<DarkAltarOptions>({
+	await ActivityManager.startTrip<DarkAltarOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
 		duration,
 		type: 'DarkAltar',

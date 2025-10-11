@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 
-import { Hiscores } from '../';
+import { Hiscores } from '../src/index.js';
 
 test.skip('Hiscores', async () => {
 	const koru = await Hiscores.fetch('Koru');

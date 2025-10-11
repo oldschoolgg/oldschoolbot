@@ -1,10 +1,11 @@
+import { dwarvenBlessing } from '@/lib/bso/dwarvenBlessing.js';
+
+import { Time } from '@oldschoolgg/toolkit';
+import { EItem } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { Time } from 'e';
-import { EItem } from 'oldschooljs';
-import { dwarvenBlessing } from '../../../src/lib/bso/dwarvenBlessing';
-import { BitField } from '../../../src/lib/constants';
-import { makeGearBank } from '../utils';
+import { BitField } from '@/lib/constants.js';
+import { makeGearBank } from '../utils.js';
 
 const EXPECTED_POTS_PER_HOUR = Math.ceil(Time.Hour / (Time.Minute * 5));
 

@@ -1,34 +1,21 @@
 import { readFile } from 'node:fs/promises';
-import {
-	CanvasRenderingContext2D as CanvasContext,
-	FontLibrary,
-	Image,
-	Canvas as RawCanvas,
-	loadImage
-} from 'skia-canvas';
+import { type CanvasRenderingContext2D as CanvasContext, Image, loadImage, Canvas as RawCanvas } from 'skia-canvas';
 
-import type { DetailedFarmingContract } from '../minions/farming/types';
-import { assert } from '../util/logError';
-import type { IconPackID } from './iconPacks';
+import type { IconPackID } from '@/lib/canvas/iconPacks.js';
+import type { DetailedFarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
+import { assert } from '@/lib/util/logError.js';
 
-export function registerFont(fontFamily: string, fontPath: string) {
-	FontLibrary.use(fontFamily, fontPath);
-}
 export function createCanvas(width: number, height: number) {
-	return new RawCanvas(width, height);
+	const canvas = new RawCanvas(width, height);
+	canvas.gpu = false;
+	return canvas;
 }
 
 export type Canvas = ReturnType<typeof createCanvas>;
-
 export const CanvasImage = Image;
 export type CanvasImage = Image;
 
-export { CanvasContext };
-
-export function fillTextXTimesInCtx(ctx: CanvasContext, text: string, x: number, y: number) {
-	const textPath = ctx.outlineText(text);
-	ctx.fill(textPath.offset(x, y));
-}
+export type { CanvasContext };
 
 export function drawImageWithOutline(
 	ctx: CanvasContext,
@@ -157,13 +144,6 @@ export function getClippedRegion(image: Image | Canvas, x: number, y: number, wi
 	const ctx = canvas.getContext('2d');
 	ctx.drawImage(image, x, y, width, height, 0, 0, width, height);
 	return canvas;
-}
-
-export function drawCircle(ctx: CanvasContext, x: number, y: number, radius: number, fill = 'rgba(255,0,0,0.5)') {
-	ctx.beginPath();
-	ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
-	ctx.fillStyle = fill;
-	ctx.fill();
 }
 
 export async function canvasToBuffer(canvas: Canvas): Promise<Buffer> {

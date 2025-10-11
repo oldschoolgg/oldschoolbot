@@ -1,15 +1,18 @@
-import { Time } from 'e';
+import { NexMonster } from '@/lib/bso/monsters/nex.js';
+
+import { Time } from '@oldschoolgg/toolkit';
 import { EMonster, ItemGroups, Monsters, resolveItems } from 'oldschooljs';
 
-import { clawWeapon } from '../constants';
-import { NexMonster } from '../nex';
-import { SkillsEnum } from '../skilling/types';
-import { Requirements } from '../structures/Requirements';
-import type { GauntletOptions, NightmareActivityTaskOptions, TOAOptions } from '../types/minions';
-import type { MonsterActivityTaskOptions } from '../types/minions';
-import { crossbows } from '../util/archery';
-import { anyoneDiedInTOARaid, isCertainMonsterTrip } from './caUtils';
-import type { CombatAchievement } from './combatAchievements';
+import { anyoneDiedInTOARaid, isCertainMonsterTrip } from '@/lib/combat_achievements/caUtils.js';
+import type { CombatAchievement } from '@/lib/combat_achievements/combatAchievements.js';
+import { Requirements } from '@/lib/structures/Requirements.js';
+import type {
+	GauntletOptions,
+	MonsterActivityTaskOptions,
+	NightmareActivityTaskOptions,
+	TOAOptions
+} from '@/lib/types/minions.js';
+import { crossbows } from '@/lib/util/archery.js';
 
 export const eliteCombatAchievements: CombatAchievement[] = [
 	{
@@ -307,7 +310,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 				const styles = user.getAttackStyles();
 				return (
 					isCertainMonsterTrip(Monsters.CommanderZilyana.id)(data) &&
-					([SkillsEnum.Ranged, SkillsEnum.Magic] as const).every(styl => !styles.includes(styl))
+					(['ranged', 'magic'] as const).every(styl => !styles.includes(styl))
 				);
 			}
 		}
@@ -1496,11 +1499,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 5,
-			hasChance: (data, user, index) =>
-				user.hasEquippedOrInBank(clawWeapon, 'one') &&
-				data.type === 'Colosseum' &&
-				Array.isArray(data.diedAt) &&
-				data.diedAt[index]! > 1
+			hasChance: 'Colosseum'
 		}
 	},
 	{

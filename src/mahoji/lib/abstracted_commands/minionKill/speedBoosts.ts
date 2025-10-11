@@ -1,16 +1,16 @@
-import { Time, calcWhatPercent, sumArr } from 'e';
-import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters, SkillsEnum } from 'oldschooljs';
+import { dwarvenBlessing } from '@/lib/bso/dwarvenBlessing.js';
+import { gearstatToSetup, gorajanBoosts } from '@/lib/bso/gorajanGearBoost.js';
+import { InventionID } from '@/lib/bso/skills/invention/inventions.js';
+
+import { calcWhatPercent, sumArr, Time } from '@oldschoolgg/toolkit';
+import { Bank, type Item, Items, type Monster, MonsterAttribute, Monsters } from 'oldschooljs';
 import type { OffenceGearStat } from 'oldschooljs/gear';
 import { omit } from 'remeda';
 
-import type { PvMMethod } from '@/lib/constants';
-import type { PrimaryGearSetupType } from '@/lib/gear';
-import { dwarvenBlessing } from '../../../../lib/bso/dwarvenBlessing';
-import { gearstatToSetup, gorajanBoosts } from '../../../../lib/bso/gorajanGearBoost';
-import { degradeableItems, degradeablePvmBoostItems } from '../../../../lib/degradeableItems';
-import { InventionID } from '../../../../lib/invention/inventions';
+import type { PvMMethod } from '@/lib/constants.js';
+import { degradeableItems, degradeablePvmBoostItems } from '@/lib/degradeableItems.js';
+import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
 import {
-	SlayerActivityConstants,
 	boostCannon,
 	boostCannonMulti,
 	boostIceBarrage,
@@ -19,34 +19,34 @@ import {
 	cannonSingleConsumables,
 	iceBarrageConsumables,
 	iceBurstConsumables,
+	SlayerActivityConstants,
 	superiorCannonMultiConsumables,
 	superiorCannonSingleConsumables
-} from '../../../../lib/minions/data/combatConstants';
-import { revenantMonsters } from '../../../../lib/minions/data/killableMonsters/revs';
-import type { AttackStyles } from '../../../../lib/minions/functions';
-import type { Consumable } from '../../../../lib/minions/types';
-import { calcPOHBoosts } from '../../../../lib/poh';
-import { ChargeBank } from '../../../../lib/structures/Bank';
-import { maxOffenceStats } from '../../../../lib/structures/Gear';
-import type { MonsterActivityTaskOptions } from '../../../../lib/types/minions';
-import getOSItem from '../../../../lib/util/getOSItem';
-import { resolveAvailableItemBoosts } from '../../../mahojiSettings';
-import { determineIfUsingCannon } from './determineIfUsingCannon';
-import { dragonHunterWeapons } from './minionKillData';
-import type { MinionKillOptions } from './newMinionKill';
-import type { PostBoostEffect } from './postBoostEffects';
-import { staticEquippedItemBoosts } from './staticEquippedItemBoosts';
+} from '@/lib/minions/data/combatConstants.js';
+import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
+import type { AttackStyles } from '@/lib/minions/functions/index.js';
+import type { Consumable } from '@/lib/minions/types.js';
+import { calcPOHBoosts } from '@/lib/poh/index.js';
+import { ChargeBank } from '@/lib/structures/Bank.js';
+import { maxOffenceStats } from '@/lib/structures/Gear.js';
+import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
+import { determineIfUsingCannon } from '@/mahoji/lib/abstracted_commands/minionKill/determineIfUsingCannon.js';
+import { dragonHunterWeapons } from '@/mahoji/lib/abstracted_commands/minionKill/minionKillData.js';
+import type { MinionKillOptions } from '@/mahoji/lib/abstracted_commands/minionKill/newMinionKill.js';
+import type { PostBoostEffect } from '@/mahoji/lib/abstracted_commands/minionKill/postBoostEffects.js';
+import { staticEquippedItemBoosts } from '@/mahoji/lib/abstracted_commands/minionKill/staticEquippedItemBoosts.js';
+import { resolveAvailableItemBoosts } from '@/mahoji/mahojiSettings.js';
 
 const revSpecialWeapons = {
-	melee: getOSItem("Viggora's chainmace"),
-	range: getOSItem("Craw's bow"),
-	mage: getOSItem("Thammaron's sceptre")
+	melee: Items.getOrThrow("Viggora's chainmace"),
+	range: Items.getOrThrow("Craw's bow"),
+	mage: Items.getOrThrow("Thammaron's sceptre")
 } as const;
 
 const revUpgradedWeapons = {
-	melee: getOSItem('Ursine chainmace'),
-	range: getOSItem('Webweaver bow'),
-	mage: getOSItem('Accursed sceptre')
+	melee: Items.getOrThrow('Ursine chainmace'),
+	range: Items.getOrThrow('Webweaver bow'),
+	mage: Items.getOrThrow('Accursed sceptre')
 } as const;
 
 export type CombatMethodOptions = Pick<
@@ -148,7 +148,7 @@ const chinningBoost: Boost = {
 		if (typeof cannonResult === 'string') return cannonResult;
 		if (cannonResult.usingCannon) return null;
 
-		if (combatMethods.includes('chinning') && attackStyles.includes(SkillsEnum.Ranged) && monster?.canChinning) {
+		if (combatMethods.includes('chinning') && attackStyles.includes('ranged') && monster?.canChinning) {
 			const chinchompas = ['Black chinchompa', 'Red chinchompa', 'Chinchompa'];
 			let chinchompa = chinchompas[0];
 			for (const chin of chinchompas) {
@@ -161,9 +161,9 @@ const chinningBoost: Boost = {
 			const chinBoostLongRanged = chinchompa === 'Chinchompa' ? 63 : chinchompa === 'Red chinchompa' ? 69 : 77;
 			const chinningConsumables: Consumable = {
 				itemCost: new Bank().add(chinchompa, 1),
-				qtyPerMinute: attackStyles.includes(SkillsEnum.Defence) ? 24 : 33
+				qtyPerMinute: attackStyles.includes('defence') ? 24 : 33
 			};
-			if (attackStyles.includes(SkillsEnum.Defence)) {
+			if (attackStyles.includes('defence')) {
 				return {
 					percentageReduction: chinBoostLongRanged,
 					consumables: [chinningConsumables],
@@ -271,7 +271,7 @@ const blackMaskBoost: Boost = {
 				percentageReduction: 22,
 				message: '17% for Infernal slayer helmet on task'
 			};
-		} else if (hasBlackMaskI && [SkillsEnum.Magic, SkillsEnum.Ranged].every(s => style.includes(s))) {
+		} else if (hasBlackMaskI && ['magic', 'ranged'].every(s => style.includes(s))) {
 			return {
 				percentageReduction: oneSixthBoost,
 				message: `${oneSixthBoost}% for Black mask (i) on task`
@@ -354,14 +354,14 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 			if (!canBarrageMonster || (!isBarraging && !isBursting)) return null;
 
 			let newAttackStyles = [...attackStyles];
-			if (!newAttackStyles.includes(SkillsEnum.Magic)) {
-				newAttackStyles = [SkillsEnum.Magic];
-				if (attackStyles.includes(SkillsEnum.Defence)) {
-					newAttackStyles.push(SkillsEnum.Defence);
+			if (!newAttackStyles.includes('magic')) {
+				newAttackStyles = ['magic'];
+				if (attackStyles.includes('defence')) {
+					newAttackStyles.push('defence');
 				}
 			}
 
-			if (isBarraging && attackStyles.includes(SkillsEnum.Magic) && monster.canBarrage) {
+			if (isBarraging && attackStyles.includes('magic') && monster.canBarrage) {
 				return {
 					percentageReduction: boostIceBarrage,
 					consumables: [iceBarrageConsumables],
@@ -373,7 +373,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 				};
 			}
 
-			if (isBursting && attackStyles.includes(SkillsEnum.Magic)) {
+			if (isBursting && attackStyles.includes('magic')) {
 				return {
 					percentageReduction: boostIceBurst,
 					consumables: [iceBurstConsumables],
@@ -397,7 +397,7 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 					);
 					if (equippedInThisSet) {
 						degItemBeingUsed.push({
-							item: getOSItem(equippedInThisSet.itemID),
+							item: Items.getOrThrow(equippedInThisSet.itemID),
 							boostPercent: equippedInThisSet.boostPercent
 						});
 					}
@@ -542,19 +542,19 @@ export const mainBoostEffects: (Boost | Boost[])[] = [
 			}
 
 			// Master capes
-			if (attackStyles.includes(SkillsEnum.Ranged) && gearBank.hasEquipped('Ranged master cape')) {
+			if (attackStyles.includes('ranged') && gearBank.hasEquipped('Ranged master cape')) {
 				results.push({
 					percentageReduction: 15,
 					message: '15% for Ranged master cape'
 				});
-			} else if (attackStyles.includes(SkillsEnum.Magic) && gearBank.hasEquipped('Magic master cape')) {
+			} else if (attackStyles.includes('magic') && gearBank.hasEquipped('Magic master cape')) {
 				results.push({
 					percentageReduction: 15,
 					message: '15% for Magic master cape'
 				});
 			} else if (
-				!attackStyles.includes(SkillsEnum.Magic) &&
-				!attackStyles.includes(SkillsEnum.Ranged) &&
+				!attackStyles.includes('magic') &&
+				!attackStyles.includes('ranged') &&
 				gearBank.hasEquipped('Attack master cape')
 			) {
 				results.push({

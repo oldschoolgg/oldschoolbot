@@ -1,23 +1,22 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { makeComponents } from '@oldschoolgg/toolkit/discord-util';
-import { toTitleCase } from '@oldschoolgg/toolkit/string-util';
-import { type BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
-import { roll, stripNonAlphanumeric } from 'e';
+import { spawnLampIsReady } from '@/lib/bso/commands/spawnBoxLampCommand.js';
+import { ItemContracts } from '@/lib/bso/itemContracts.js';
+import { getUsersFishingContestDetails } from '@/lib/bso/minigames/fishingContest.js';
+import { shortTameTripDesc, tameLastFinishedActivity } from '@/lib/bso/tames/tameUtil.js';
 
-import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses';
-import { makeAutoContractButton, makeAutoSlayButton, makeBirdHouseTripButton } from '@/lib/util/interactions';
-import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { BitField, PerkTier } from '../../../lib/constants';
-import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
-import { roboChimpUserFetch } from '../../../lib/roboChimp';
-import { minionBuyButton } from '../../../lib/sharedComponents';
-import { minionStatus } from '../../../lib/util/minionStatus';
-import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
-import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../../lib/util/tameUtil';
-import { getItemContractDetails } from '../../commands/ic';
-import { spawnLampIsReady } from '../../commands/tools';
-import { isUsersDailyReady } from './dailyCommand';
-import { canRunAutoContract } from './farmingContractCommand';
+import { roll } from '@oldschoolgg/rng';
+import { Emoji, makeComponents, stripNonAlphanumeric, toTitleCase } from '@oldschoolgg/toolkit';
+import { type BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+
+import { ClueTiers } from '@/lib/clues/clueTiers.js';
+import { BitField, PerkTier } from '@/lib/constants.js';
+import { roboChimpUserFetch } from '@/lib/roboChimp.js';
+import { minionBuyButton } from '@/lib/sharedComponents.js';
+import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
+import { makeAutoContractButton, makeAutoSlayButton, makeBirdHouseTripButton } from '@/lib/util/interactions.js';
+import { minionStatus } from '@/lib/util/minionStatus.js';
+import { makeRepeatTripButtons } from '@/lib/util/repeatStoredTrip.js';
+import { isUsersDailyReady } from '@/mahoji/lib/abstracted_commands/dailyCommand.js';
+import { canRunAutoContract } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 
 async function fetchFavoriteGearPresets(userID: string) {
 	const pinnedPresets = await prisma.gearPreset.findMany({
@@ -71,7 +70,7 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 		});
 	}
 
-	if (!user.user.minion_hasBought) {
+	if (!user.hasMinion) {
 		return {
 			content:
 				"You haven't bought a minion yet! Click the button below to buy a minion and start playing the bot.",
@@ -169,7 +168,7 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 
 	const perkTier = user.perkTier();
 	if (perkTier >= PerkTier.Two) {
-		const { tame, species, activity } = await getUsersTame(user);
+		const { tame, species, activity } = await user.getTame();
 		if (tame && !activity) {
 			const lastTameAct = await tameLastFinishedActivity(user);
 			if (lastTameAct) {
@@ -195,7 +194,7 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 		);
 	}
 
-	const icDetails = getItemContractDetails(user);
+	const icDetails = ItemContracts.getItemContractDetails(user);
 	if (perkTier >= PerkTier.Two && icDetails.currentItem && icDetails.owns) {
 		buttons.push(
 			new ButtonBuilder()

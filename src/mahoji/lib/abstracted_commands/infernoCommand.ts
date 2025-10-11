@@ -1,26 +1,22 @@
-import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit';
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { Time, calcPercentOfNum, increaseNumByPercent, percentChance, randInt, roll, sumArr } from 'e';
-import { Bank, type ItemBank, Items, Monsters, itemID, randomVariation, resolveItems } from 'oldschooljs';
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/bso/collection-log/main.js';
+import { determineProjectileTypeFromGear } from '@/lib/bso/gear/util.js';
 
-import { determineProjectileTypeFromGear } from '@/lib/bso/gear/util';
-import { newChatHeadImage } from '../../../lib/canvas/chatHeadImage';
-import { BitField, projectiles } from '../../../lib/constants';
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
-import { getSimilarItems } from '../../../lib/data/similarItems';
-import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
-import type { BlowpipeData } from '../../../lib/minions/types';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import type { Gear } from '../../../lib/structures/Gear';
-import { PercentCounter } from '../../../lib/structures/PercentCounter';
-import type { Skills } from '../../../lib/types';
-import type { InfernoOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { percentChance, randInt, randomVariation, roll } from '@oldschoolgg/rng';
+import { calcPercentOfNum, Emoji, formatDuration, increaseNumByPercent, sumArr, Time } from '@oldschoolgg/toolkit';
+import { Bank, type ItemBank, Items, itemID, Monsters, resolveItems } from 'oldschooljs';
 
-const minimumRangeItems = [
+import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
+import { BitField, projectiles } from '@/lib/constants.js';
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
+import type { BlowpipeData } from '@/lib/minions/types.js';
+import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import type { Gear } from '@/lib/structures/Gear.js';
+import { PercentCounter } from '@/lib/structures/PercentCounter.js';
+import type { Skills } from '@/lib/types/index.js';
+import type { InfernoOptions } from '@/lib/types/minions.js';
+
+const minimumRangeItems = Items.resolveFullItems([
 	'Amulet of fury',
 	"Karil's leathertop",
 	"Karil's leatherskirt",
@@ -28,12 +24,12 @@ const minimumRangeItems = [
 	'Twisted bow',
 	"Ava's assembler",
 	'Snakeskin boots'
-].map(getOSItem);
+]);
 
 const minimumRangeAttackStat = sumArr(minimumRangeItems.map(i => i.equipment!.attack_ranged));
 const minimumRangeMagicDefenceStat = sumArr(minimumRangeItems.map(i => i.equipment!.defence_magic)) - 10;
 
-const minimumMageItems = [
+const minimumMageItems = Items.resolveFullItems([
 	'Amulet of fury',
 	'Imbued guthix cape',
 	"Ahrim's robetop",
@@ -41,7 +37,7 @@ const minimumMageItems = [
 	'Barrows gloves',
 	'Splitbark boots',
 	'Ancient staff'
-].map(getOSItem);
+]);
 
 const minimumMageAttackStat = sumArr(minimumMageItems.map(i => i.equipment!.attack_magic));
 const minimumMageMagicDefenceStat = sumArr(minimumMageItems.map(i => i.equipment!.defence_magic)) - 10;
@@ -171,7 +167,7 @@ async function infernoRun({
 	const preZukDeathChance = new PercentCounter(basePreZukDeathChance(attempts), 'percent');
 	const emergedZukDeathChance = new PercentCounter(baseEmergedZukDeathChance(emergedAttempts), 'percent');
 
-	const { sacrificed_bank: sacrificedBank } = await user.fetchStats({ sacrificed_bank: true });
+	const { sacrificed_bank: sacrificedBank } = await user.fetchStats();
 
 	if (!(sacrificedBank as ItemBank)[itemID('Fire cape')]) {
 		return 'To do the Inferno, you must have sacrificed a fire cape.';
@@ -322,7 +318,7 @@ async function infernoRun({
 	}
 
 	const darts = blowpipeData.dartID;
-	const dartItem = getOSItem(darts);
+	const dartItem = Items.getOrThrow(darts);
 	const dartIndex = blowpipeDarts.indexOf(dartItem);
 	const percent = dartIndex >= 3 ? dartIndex * 0.9 : -(4 * (4 - dartIndex));
 	if (dartIndex < 5) {
@@ -391,7 +387,7 @@ async function infernoRun({
 		zukDeathChance.add(hasTzkalCape, -5, 'TzKal cape');
 		emergedZukDeathChance.add(hasTzkalCape, -10, 'TzKal cape');
 		duration.add(allItems.includes(itemID('Ignis ring(i)')), -5, 'Ignis ring(i)');
-		emergedZukDeathChance.add(user.skillLevel(SkillsEnum.Defence) === 120, -10, '120 Defence');
+		emergedZukDeathChance.add(user.skillLevel('defence') === 120, -10, '120 Defence');
 		const emergedKC = await user.fetchMinigameScore('emerged_inferno');
 		if (emergedKC > 0) {
 			const effectiveKC = Math.min(emergedKC, 3);
@@ -562,10 +558,7 @@ async function infernoRun({
 }
 
 export async function infernoStatsCommand(user: MUser): CommandResponse {
-	const [minigames, { inferno_attempts: attempts }] = await Promise.all([
-		user.fetchMinigames(),
-		user.fetchStats({ inferno_attempts: true })
-	]);
+	const [minigames, { inferno_attempts: attempts }] = await Promise.all([user.fetchMinigames(), user.fetchStats()]);
 
 	const zukKC = minigames.inferno;
 	const emergedAttempts = user.user.emerged_inferno_attempts;
@@ -612,7 +605,7 @@ export async function infernoStartCommand(user: MUser, channelID: string, emerge
 	const usersRangeStats = user.gear.range.stats;
 	const [zukKC, { inferno_attempts: attempts }] = await Promise.all([
 		await user.fetchMinigameScore('inferno'),
-		user.fetchStats({ inferno_attempts: true })
+		user.fetchStats()
 	]);
 
 	const res = await infernoRun({
@@ -667,9 +660,9 @@ export async function infernoStartCommand(user: MUser, channelID: string, emerge
 		};
 	}
 
-	await addSubTaskToActivityTask<InfernoOptions>({
+	await ActivityManager.startTrip<InfernoOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration: realDuration,
 		type: 'Inferno',
 		zukDeathChance: zukDeathChance.value,
@@ -684,7 +677,7 @@ export async function infernoStartCommand(user: MUser, channelID: string, emerge
 		diedEmergedZuk
 	});
 
-	updateBankSetting('inferno_cost', realCost);
+	await ClientSettings.updateBankSetting('inferno_cost', realCost);
 	const emergedZukDeathMsg = emerged
 		? `**Emerged Zuk Death Chance:** ${emergedZukDeathChance.value.toFixed(
 				1

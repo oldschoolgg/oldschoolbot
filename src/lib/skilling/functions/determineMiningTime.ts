@@ -1,5 +1,7 @@
-import { Time, percentChance } from 'e';
-import type { Ore } from '../types';
+import { percentChance } from '@oldschoolgg/rng';
+import { Time } from '@oldschoolgg/toolkit';
+
+import type { Ore } from '@/lib/skilling/types.js';
 
 interface MiningTimeOptions {
 	hasGlory: boolean;

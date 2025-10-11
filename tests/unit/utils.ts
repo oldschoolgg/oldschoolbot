@@ -1,20 +1,14 @@
-import { Bank } from 'oldschooljs';
+import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
-import { GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types';
-import { MaterialBank } from '../../src/lib/invention/MaterialBank';
-import { SkillsArray } from '../../src/lib/skilling/types';
-import { ChargeBank } from '../../src/lib/structures/Bank';
-import { Gear } from '../../src/lib/structures/Gear';
-import { GearBank } from '../../src/lib/structures/GearBank';
-import type { SkillsRequired } from '../../src/lib/types';
+import { Bank, convertLVLtoXP } from 'oldschooljs';
 
-function makeSkillsAsLevels(lvl = 99) {
-	const obj: any = {};
-	for (const skill of SkillsArray) {
-		obj[skill] = lvl;
-	}
-	return obj as SkillsRequired;
-}
+import { MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
+import type { Skills, SkillsRequired } from '@/lib/types/index.js';
+import { GearSetupTypes, type UserFullGearSetup } from '../../src/lib/gear/types.js';
+import { SkillsArray } from '../../src/lib/skilling/types.js';
+import { ChargeBank } from '../../src/lib/structures/Bank.js';
+import { Gear } from '../../src/lib/structures/Gear.js';
+import { GearBank } from '../../src/lib/structures/GearBank.js';
 
 function makeFullGear() {
 	const obj: any = {};
@@ -24,17 +18,32 @@ function makeFullGear() {
 	return obj as UserFullGearSetup;
 }
 
-export function makeGearBank({ bank }: { bank?: Bank } = {}) {
-	return new GearBank({
+export function makeGearBank({ bank, skillsAsLevels }: { bank?: Bank; skillsAsLevels?: Skills } = {}) {
+	const skillsAsXP: SkillsRequired = {} as SkillsRequired;
+	for (const skill of SkillsArray) {
+		if (skillsAsLevels) {
+			const lvl = skillsAsLevels[skill as keyof Skills] ?? 1;
+			if (lvl < 1 || lvl > MAX_LEVEL) {
+				throw new Error(`Invalid level ${lvl} for skill ${skill}`);
+			}
+			skillsAsXP[skill] = convertLVLtoXP(lvl);
+		} else {
+			skillsAsXP[skill] = MAX_XP;
+		}
+	}
+	const gb = new GearBank({
 		gear: makeFullGear(),
 		bank: bank ?? new Bank(),
-		skillsAsLevels: makeSkillsAsLevels(),
 		chargeBank: new ChargeBank(),
 		materials: new MaterialBank(),
 		pet: null,
-		skillsAsXP: makeSkillsAsLevels(13034431),
+		skillsAsXP,
 		minionName: 'Minion'
 	});
+	return gb;
 }
 
-export const mockUserMap = new Map<string, MUser>();
+export const defaultSkillsAsXPObj: SkillsRequired = {} as SkillsRequired;
+for (const skill of SkillsArray) {
+	defaultSkillsAsXPObj[skill] = convertLVLtoXP(skill === 'hitpoints' ? 10 : 1);
+}

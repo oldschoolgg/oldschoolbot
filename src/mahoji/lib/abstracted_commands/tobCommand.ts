@@ -1,41 +1,34 @@
-import { Emoji } from '@oldschoolgg/toolkit/constants';
-import { formatDuration } from '@oldschoolgg/toolkit/datetime';
-import { channelIsSendable } from '@oldschoolgg/toolkit/discord-util';
-import { calcWhatPercent } from 'e';
-import { Bank, TOBRooms, itemID, randomVariation } from 'oldschooljs';
-
-import { skillsMeetRequirements } from '@/lib/util';
-import { formatSkillRequirements } from '@/lib/util/smallUtils';
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
-import { getSimilarItems } from '../../../lib/data/similarItems';
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '@/lib/bso/collection-log/main.js';
 import {
-	TENTACLE_CHARGES_PER_RAID,
+	canAffordInventionBoost,
+	InventionID,
+	inventionBoosts,
+	inventionItemBoost
+} from '@/lib/bso/skills/invention/inventions.js';
+
+import { randomVariation } from '@oldschoolgg/rng';
+import { calcWhatPercent, Emoji, formatDuration } from '@oldschoolgg/toolkit';
+import { Bank, Items, itemID, TOBRooms } from 'oldschooljs';
+
+import { getSimilarItems } from '@/lib/data/similarItems.js';
+import {
 	baseTOBUniques,
 	calcTOBBaseDuration,
 	calculateTOBDeaths,
 	calculateTOBUserGearPercents,
 	createTOBRaid,
-	minimumTOBSuppliesNeeded
-} from '../../../lib/data/tob';
-import { checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems';
-import {
-	InventionID,
-	canAffordInventionBoost,
-	inventionBoosts,
-	inventionItemBoost
-} from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/lootTrack';
-import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
-import getUserFoodFromBank from '../../../lib/minions/functions/getUserFoodFromBank';
-import { setupParty } from '../../../lib/party';
-import type { MakePartyOptions } from '../../../lib/types';
-import type { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { determineRunes } from '../../../lib/util/determineRunes';
-import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { mahojiParseNumber, userStatsBankUpdate } from '../../mahojiSettings';
+	minimumTOBSuppliesNeeded,
+	TENTACLE_CHARGES_PER_RAID
+} from '@/lib/data/tob.js';
+import { checkUserCanUseDegradeableItem, degradeItem } from '@/lib/degradeableItems.js';
+import { trackLoot } from '@/lib/lootTrack.js';
+import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
+import getUserFoodFromBank from '@/lib/minions/functions/getUserFoodFromBank.js';
+import type { MakePartyOptions } from '@/lib/types/index.js';
+import type { TheatreOfBloodTaskOptions } from '@/lib/types/minions.js';
+import { determineRunes } from '@/lib/util/determineRunes.js';
+import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
+import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
 const minStats = {
 	attack: 90,
@@ -87,11 +80,11 @@ async function checkTOBUser(
 	teamSize?: number,
 	quantity = 1
 ): Promise<[false] | [true, string]> {
-	if (!user.user.minion_hasBought) {
+	if (!user.hasMinion) {
 		return [true, `${user.usernameOrMention} doesn't have a minion`];
 	}
 
-	if (!skillsMeetRequirements(user.skillsAsXP, minStats)) {
+	if (!user.hasSkillReqs(minStats)) {
 		return [
 			true,
 			`${
@@ -157,7 +150,7 @@ async function checkTOBUser(
 
 	if (meleeGear.hasEquipped('Abyssal tentacle')) {
 		const tentacleResult = checkUserCanUseDegradeableItem({
-			item: getOSItem('Abyssal tentacle'),
+			item: Items.getOrThrow('Abyssal tentacle'),
 			chargesToDegrade: TENTACLE_CHARGES_PER_RAID * quantity,
 			user
 		});
@@ -168,7 +161,7 @@ async function checkTOBUser(
 
 	if (meleeGear.hasEquipped('Scythe of Vitur')) {
 		const scytheResult = checkUserCanUseDegradeableItem({
-			item: getOSItem('Scythe of Vitur'),
+			item: Items.getOrThrow('Scythe of Vitur'),
 			chargesToDegrade: SCYTHE_CHARGES_PER_RAID * quantity,
 			user
 		});
@@ -193,7 +186,7 @@ async function checkTOBUser(
 	if (blowpipeData.scales < scalesNeeded) {
 		return [true, `${user.usernameOrMention}, you need at least ${scalesNeeded} scales in your blowpipe.`];
 	}
-	const dartIndex = blowpipeDarts.indexOf(getOSItem(blowpipeData.dartID));
+	const dartIndex = blowpipeDarts.indexOf(Items.getOrThrow(blowpipeData.dartID));
 	if (dartIndex < 5) {
 		return [true, `${user.usernameOrMention}'s darts are too weak`];
 	}
@@ -290,7 +283,7 @@ export async function checkTOBTeam(
 export async function tobStatsCommand(user: MUser) {
 	const [minigameScores, { tob_attempts: attempts, tob_hard_attempts: hardAttempts }] = await Promise.all([
 		user.fetchMinigames(),
-		user.fetchStats({ tob_attempts: true, tob_hard_attempts: true })
+		user.fetchStats()
 	]);
 	const hardKC = minigameScores.tob_hard;
 	const kc = minigameScores.tob;
@@ -321,6 +314,7 @@ export async function tobStatsCommand(user: MUser) {
 }
 
 export async function tobStartCommand(
+	interaction: MInteraction,
 	user: MUser,
 	channelID: string,
 	isHardMode: boolean,
@@ -365,8 +359,6 @@ export async function tobStartCommand(
 		}
 	};
 
-	const channel = globalClient.channels.cache.get(channelID);
-	if (!channelIsSendable(channel)) return 'No channel found.';
 	let usersWhoConfirmed = [];
 	try {
 		if (solo === 'trio') {
@@ -374,7 +366,7 @@ export async function tobStartCommand(
 		} else if (solo === 'solo') {
 			usersWhoConfirmed = [user];
 		} else {
-			usersWhoConfirmed = await setupParty(channel, user, partyOptions);
+			usersWhoConfirmed = await interaction.makeParty(partyOptions);
 		}
 	} catch (err: any) {
 		return {
@@ -388,7 +380,7 @@ export async function tobStartCommand(
 		users.map(async u => {
 			const [minigameScores, { tob_attempts, tob_hard_attempts }] = await Promise.all([
 				u.fetchMinigames(),
-				u.fetchStats({ tob_attempts: true, tob_hard_attempts: true })
+				u.fetchStats()
 			]);
 			return {
 				user: u,
@@ -402,7 +394,7 @@ export async function tobStartCommand(
 		})
 	);
 	const { baseDuration, reductions, maxUserReduction } = calcTOBBaseDuration({ team, hardMode: isHardMode });
-	const maxTripLength = calcMaxTripLength(user, 'TheatreOfBlood');
+	const maxTripLength = user.calcMaxTripLength('TheatreOfBlood');
 
 	const maxTripsCanFit = Math.max(1, Math.floor(maxTripLength / baseDuration));
 
@@ -477,7 +469,7 @@ export async function tobStartCommand(
 				preChincannonCost.add(u.gear.range.ammo!.item, 100);
 			}
 			const { realCost } = await u.specialRemoveItems(preChincannonCost.multiply(qty));
-			await userStatsBankUpdate(u, 'tob_cost', realCost);
+			await u.statsBankUpdate('tob_cost', realCost);
 			const effectiveCost = realCost.clone().remove('Coins', realCost.amount('Coins'));
 			totalCost.add(effectiveCost);
 			if (isChincannonUser) {
@@ -493,7 +485,7 @@ export async function tobStartCommand(
 			}
 			if (u.gear.melee.hasEquipped('Abyssal tentacle')) {
 				await degradeItem({
-					item: getOSItem('Abyssal tentacle'),
+					item: Items.getOrThrow('Abyssal tentacle'),
 					user: u,
 					chargesToDegrade: TENTACLE_CHARGES_PER_RAID * qty
 				});
@@ -503,7 +495,7 @@ export async function tobStartCommand(
 					usedCharges += randomVariation(0.8 * SCYTHE_CHARGES_PER_RAID, 20);
 				}
 				await degradeItem({
-					item: getOSItem('Scythe of Vitur'),
+					item: Items.getOrThrow('Scythe of Vitur'),
 					user: u,
 					chargesToDegrade: usedCharges
 				});
@@ -518,7 +510,7 @@ export async function tobStartCommand(
 		})
 	);
 
-	await updateBankSetting('tob_cost', totalCost);
+	await ClientSettings.updateBankSetting('tob_cost', totalCost);
 	await trackLoot({
 		totalCost,
 		id: isHardMode ? 'tob_hard' : 'tob',
@@ -531,9 +523,9 @@ export async function tobStartCommand(
 		}))
 	});
 
-	await addSubTaskToActivityTask<TheatreOfBloodTaskOptions>({
+	await ActivityManager.startTrip<TheatreOfBloodTaskOptions>({
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		duration: totalDuration,
 		type: 'TheatreOfBlood',
 		leader: user.id,

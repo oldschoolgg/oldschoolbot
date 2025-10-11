@@ -1,14 +1,16 @@
-import '../customItems/customItems';
-import '../data/itemAliases';
+import '../customItems/customItems.js';
+import '../data/itemAliases.js';
 
-import { stringMatches } from '@oldschoolgg/toolkit/util';
+import { ORI_DISABLED_MONSTERS } from '@/lib/bso/bsoConstants.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import { bsoKillableMonsters } from '@/lib/bso/monsters/bsoKillableMonsters.js';
+
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Monsters } from 'oldschooljs';
 
-import type { KillWorkerArgs, KillWorkerReturn } from '.';
-import { ORI_DISABLED_MONSTERS, YETI_ID } from '../bso/bsoConstants';
-import { customKillableMonsters } from '../minions/data/killableMonsters/custom/customMonsters.js';
-import killableMonsters from '../minions/data/killableMonsters/index';
-import { simulatedKillables } from '../simulation/simulatedKillables';
+import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
+import { simulatedKillables } from '@/lib/simulation/simulatedKillables.js';
+import type { KillWorkerArgs, KillWorkerReturn } from '@/lib/workers/index.js';
 
 if (global.prisma) {
 	throw new Error('Prisma is loaded in the kill worker!');
@@ -38,7 +40,7 @@ export default async ({
 
 	const osjsMonster = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, bossName)));
 	if (osjsMonster) {
-		if (osjsMonster.id === YETI_ID) {
+		if (osjsMonster.id === EBSOMonster.YETI) {
 			return { error: 'The bot is too scared to simulate fighting the yeti.' };
 		}
 		if (quantity > limit) {
@@ -67,7 +69,7 @@ export default async ({
 			})
 		};
 
-		const killableMonster = [...killableMonsters, ...customKillableMonsters].find(mon => mon.id === osjsMonster.id);
+		const killableMonster = [...killableMonsters, ...bsoKillableMonsters].find(mon => mon.id === osjsMonster.id);
 		if (killableMonster?.specialLoot) {
 			killableMonster.specialLoot({
 				ownedItems: result.bank,
