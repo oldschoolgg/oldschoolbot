@@ -1,9 +1,11 @@
 import { OSB_VIRTUS_IDS } from '@/lib/bso/bsoConstants.js';
 import { itemsToDelete } from '@/lib/bso/deletedItems.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { Ignecarus } from '@/lib/bso/monsters/bosses/Ignecarus.js';
 import { KalphiteKingMonster } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
 import { KingGoldemar } from '@/lib/bso/monsters/bosses/KingGoldemar.js';
 import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
+import { BSOMonstersMap } from '@/lib/bso/monsters/customMonsters.js';
 import { mysteryBoxBlacklist } from '@/lib/bso/openables/mysteryBoxBlacklist.js';
 import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/mysteryBoxes.js';
 import { calculateMaximumTameFeedingLevelGain } from '@/lib/bso/tames/tameUtil.js';
@@ -139,5 +141,9 @@ describe('Sanity', () => {
 			expect(Items.get(id)).toBeUndefined();
 		}
 		expect(Items.get('Virtus mask')!.id).toBe(788);
+	});
+
+	test('BSO Monsters Map', () => {
+		expect(BSOMonstersMap.get(EBSOMonster.AKUMU)!.name).toBe('Akumu');
 	});
 });

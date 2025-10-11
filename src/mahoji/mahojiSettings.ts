@@ -1,4 +1,4 @@
-import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
+import { BSOMonstersMap } from '@/lib/bso/monsters/customMonsters.js';
 
 import { evalMathExpression, notEmpty, objectEntries, Time } from '@oldschoolgg/toolkit';
 import type { GearSetupType } from '@prisma/client';
@@ -214,13 +214,17 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 	const monsterScores = await user.fetchMonsterScores();
 
 	if (monster.kcRequirements) {
-		for (const [key, val] of Object.entries(monster.kcRequirements)) {
-			const { id } = BSOMonsters[key as keyof typeof BSOMonsters];
-
+		for (const [stringId, val] of Object.entries(monster.kcRequirements)) {
+			const id = Number(stringId);
+			const requiredMonster = BSOMonstersMap.get(id);
+			if (!requiredMonster) {
+				Logging.logError(`Missing monster in kcRequirements: ${id} for ${monster.name}`);
+				continue;
+			}
 			const kc = monsterScores[id] ?? 0;
 
 			if (kc < val) {
-				return `You need at least ${val} ${key} KC to kill ${monster.name}, you have ${kc}.`;
+				return `You need at least ${val} ${requiredMonster.name} KC to kill ${monster.name}, you have ${kc}.`;
 			}
 		}
 	}

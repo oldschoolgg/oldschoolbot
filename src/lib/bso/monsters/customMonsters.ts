@@ -30,3 +30,8 @@ export const BSOMonsters = {
 	...resourceDungeonMonsters,
 	...SunMoonMonsters
 };
+
+export const BSOMonstersMap = new Map<number, (typeof BSOMonsters)[keyof typeof BSOMonsters]>();
+for (const monster of Object.values(BSOMonsters)) {
+	BSOMonstersMap.set(monster.id, monster);
+}
