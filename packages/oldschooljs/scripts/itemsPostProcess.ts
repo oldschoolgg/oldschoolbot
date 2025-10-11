@@ -16,6 +16,10 @@ for (const [_id, item] of Object.entries(items)) {
 			}
 		}
 	}
+
+	if (item.id === 27840 || item.id === 27841) {
+		item.equipment.attack_magic -= 25;
+	}
 }
 
 writeFileSync('./src/assets/item_data.json', JSON.stringify(items, null, 4));
