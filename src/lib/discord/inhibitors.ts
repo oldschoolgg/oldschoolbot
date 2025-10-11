@@ -8,8 +8,9 @@ import {
 } from 'discord.js';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
+import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
 import { DISABLED_COMMANDS, perkTierCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
-import { BadgesEnum, BitField, Channel, globalConfig } from '@/lib/constants.js';
+import { BadgesEnum, BitField, busyImmuneCommands, Channel, globalConfig } from '@/lib/constants.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
 import type { MMember } from '@/lib/structures/MInteraction.js';
 import { mahojiGuildSettingsFetch } from '@/mahoji/guildSettings.js';
@@ -23,12 +24,34 @@ interface Inhibitor {
 		guild: Guild | null;
 		channel: TextBasedChannel | null;
 		member: MMember | null;
+		bypassInhibitors: boolean;
 	}) => false | InteractionReplyOptions;
 	canBeDisabled: boolean;
 	silent?: true;
 }
 
 const inhibitors: Inhibitor[] = [
+	{
+		name: 'Restarting',
+		run: () => {
+			if (globalClient.isShuttingDown) {
+				return { content: 'The bot is currently restarting, please try again later.' };
+			}
+			return false;
+		},
+		canBeDisabled: false
+	},
+	{
+		name: 'User Busy',
+		run: ({ user, bypassInhibitors, command }) => {
+			if (user.isBusy && !bypassInhibitors && !busyImmuneCommands.includes(command.name)) {
+				return { content: 'You cannot use a command right now.' };
+			}
+			if (!busyImmuneCommands.includes(command.name)) modifyBusyCounter(user.id, 1);
+			return false;
+		},
+		canBeDisabled: false
+	},
 	{
 		name: 'settingSyncer',
 		run: ({ guild }) => {
@@ -191,7 +214,8 @@ export function runInhibitors({
 			channel,
 			member,
 			command,
-			guild
+			guild,
+			bypassInhibitors
 		});
 		if (result !== false) {
 			return { reason: result, silent: Boolean(silent) };
