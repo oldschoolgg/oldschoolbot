@@ -59,6 +59,15 @@ export class MInteraction {
 		return this.interaction.deferred;
 	}
 
+	public getChatInputCommandOptions() {
+		if (!this.interaction.isChatInputCommand()) return {};
+		const cmdOpts = convertAPIOptionsToCommandOptions(
+			this.interaction.options.data,
+			this.interaction.options.resolved
+		);
+		return compressMahojiArgs(cmdOpts) as Prisma.InputJsonObject;
+	}
+
 	public getDebugInfo() {
 		const context: Record<string, string | number | null | boolean> = {
 			user_id: this.user.id,
@@ -79,9 +88,7 @@ export class MInteraction {
 			is_paginated: this.isPaginated
 		};
 		if (this.interaction.isChatInputCommand()) {
-			context.options = JSON.stringify(
-				convertAPIOptionsToCommandOptions(this.interaction.options.data, this.interaction.options.resolved)
-			);
+			context.options = JSON.stringify(this.getChatInputCommandOptions());
 			context.command_name = this.interaction.commandName;
 		} else if (this.interaction.isButton()) {
 			context.button_id = this.interaction.customId;
