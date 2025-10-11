@@ -33,7 +33,7 @@
 		"build:packages": "pnpm -r --filter \"!.\" --filter \"!./docs\" --filter \"!test-dashboard\" build",
 		"============monorepo": "============",
 		"monorepo:build": "pnpm concurrent \"pnpm build:packages\" \"pnpm gen\" && tsx esbuild.mts",
-		"monorepo:test": "pnpm --stream -r test"
+		"monorepo:test": "pnpm --stream --workspace-concurrency=2 -r test"
 	},
 	"dependencies": {
 		"@electric-sql/pglite": "^0.3.10",
