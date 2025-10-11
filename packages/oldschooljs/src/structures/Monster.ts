@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+
 import { type MonsterData, MonsterSlayerMaster } from '@/meta/monsterData.js';
 import {
 	getAncientShardChanceFromHP,
@@ -7,12 +9,14 @@ import {
 	getTotemChanceFromHP,
 	roll
 } from '@/util/util.js';
-import _monsterData from '../assets/monsters_data.json' with { type: 'json' };
+
+const monsterData = JSON.parse(
+	fs.readFileSync(new URL('../assets/monsters_data.json', import.meta.url), 'utf8')
+) as Record<string, MonsterData>;
+
 import { Bank } from './Bank.js';
 import type LootTable from './LootTable.js';
 import type { LootTableRollOptions } from './LootTable.js';
-
-const monsterData = _monsterData as { [key: string]: MonsterData };
 
 export interface MonsterOptions {
 	id: number;
@@ -70,7 +74,7 @@ export abstract class Monster {
 	}
 }
 
-type CustomKillLogic = (options: MonsterKillOptions, currentLoot: Bank) => void;
+export type CustomKillLogic = (options: MonsterKillOptions, currentLoot: Bank) => void;
 
 interface SimpleMonsterOptions extends MonsterOptions {
 	table?: LootTable;

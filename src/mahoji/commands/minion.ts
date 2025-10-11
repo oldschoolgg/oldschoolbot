@@ -412,8 +412,7 @@ export const minionCommand: OSBMahojiCommand = {
 	run: async ({
 		userID,
 		options,
-		interaction,
-		channelID
+		interaction
 	}: CommandRunOptions<{
 		stats?: { stat?: string };
 		achievementdiary?: { diary?: string; claim?: boolean };
@@ -521,7 +520,7 @@ export const minionCommand: OSBMahojiCommand = {
 			return degradeableItemsCommand(interaction, user, options.charge.item, options.charge.amount);
 		}
 		if (options.daily) {
-			return dailyCommand(interaction, channelID, user);
+			return dailyCommand(interaction, user);
 		}
 		if (options.train) return trainCommand(user, options.train.style);
 		if (options.pat) return randomPatMessage(user.minionName);

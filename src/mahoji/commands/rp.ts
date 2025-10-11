@@ -14,12 +14,10 @@ import { GrandExchange } from '@/lib/grandExchange.js';
 import { marketPricemap } from '@/lib/marketPrices.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
-import { sql } from '@/lib/postgres.js';
 import { premiumPatronTime } from '@/lib/premiumPatronTime.js';
 import { runRolesTask } from '@/lib/rolesTask.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
-import { logError } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { migrateUser } from '@/lib/util/migrateUser.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
@@ -90,7 +88,7 @@ const actions = [
 				{
 					name: 'pgjs activity select',
 					run: async () => {
-						await sql`
+						await prisma.$queryRaw`
 							SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;
 						`;
 					}
@@ -120,7 +118,7 @@ const actions = [
 				{
 					name: 'pgjs user select',
 					run: async () => {
-						await sql`
+						await prisma.$queryRaw`
 							SELECT * FROM users WHERE id = '157797566833098752';
 						`;
 					}
@@ -611,7 +609,7 @@ Date: ${dateFm(date)}`;
 						const result = await action.run();
 						return result;
 					} catch (err) {
-						logError(err);
+						Logging.logError(err as Error);
 						return 'An error occurred.';
 					}
 				}

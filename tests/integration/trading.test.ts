@@ -46,7 +46,7 @@ test('Trade consistency', async () => {
 						user: other
 					}
 				},
-				interaction: mockInteraction({ userId: user.id })
+				interaction: mockInteraction({ user })
 			};
 
 			switch (method) {

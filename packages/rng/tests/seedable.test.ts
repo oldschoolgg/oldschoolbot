@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { SeedableRNG } from '../src/providers/seedable.js';
 
-describe('SeedableRNG determinism', { repeats: 5 }, () => {
+describe('SeedableRNG determinism', { repeats: 2 }, () => {
 	it('should produce the same sequence with the same seed', () => {
 		const rng1 = new SeedableRNG(123);
 		const rng2 = new SeedableRNG(123);

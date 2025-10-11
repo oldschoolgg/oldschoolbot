@@ -12,7 +12,11 @@ const external = [
 	'micromatch',
 	'node-cron',
 	'piscina',
-	'node:*'
+	'node:*',
+	'pglite-prisma-adapter',
+	'@electric-sql/pglite',
+	'pg',
+	'oldschooljs'
 ];
 
 const baseBuildOptions: BuildOptions = {
@@ -28,7 +32,7 @@ const baseBuildOptions: BuildOptions = {
 	target: 'node24.8.0',
 	external,
 	sourcemap: 'inline',
-	minify: true,
+	minify: false,
 	metafile: true
 };
 

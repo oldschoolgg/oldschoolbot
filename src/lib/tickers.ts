@@ -20,7 +20,6 @@ import { runCommand } from '@/lib/settings/settings.js';
 import { informationalButtons } from '@/lib/sharedComponents.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
-import { logError } from '@/lib/util/logError.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { getSupportGuild } from '@/lib/util.js';
 
@@ -311,7 +310,7 @@ export const tickers: {
 			for (const { id } of users) {
 				const djsUser = await globalClient.users.fetch(id).catch(() => null);
 				if (!djsUser) {
-					debugLog(`username_filling: Could not fetch user with ID ${id}, skipping...`);
+					Logging.logDebug(`username_filling: Could not fetch user with ID ${id}, skipping...`);
 					continue;
 				}
 				const user = await prisma.user.upsert({
@@ -340,7 +339,7 @@ export const tickers: {
 						username
 					}
 				});
-				debugLog(
+				Logging.logDebug(
 					`username_filling: Updated user[${id}] to username[${username}] withbadges[${usernameWithBadges}]`
 				);
 			}
@@ -356,11 +355,7 @@ export function initTickers() {
 				if (globalClient.isShuttingDown) return;
 				await ticker.cb();
 			} catch (err) {
-				logError(err);
-				debugLog(`${ticker.name} ticker errored`, {
-					type: 'TICKER',
-					error: err instanceof Error ? (err.message ?? err) : err
-				});
+				Logging.logError(err as Error);
 			} finally {
 				if (ticker.timer) TimerManager.clearTimeout(ticker.timer);
 				ticker.timer = TimerManager.setTimeout(fn, ticker.interval);

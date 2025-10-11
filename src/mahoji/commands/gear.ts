@@ -1,9 +1,13 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
+import { loadImage } from 'skia-canvas';
 
+import { canvasToBuffer, createCanvas } from '@/lib/canvas/canvasUtil.js';
+import { BOT_TYPE } from '@/lib/constants.js';
 import { allPetIDs } from '@/lib/data/CollectionsExport.js';
 import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '@/lib/discord/index.js';
+import { findBestGearSetups } from '@/lib/gear/functions/findBestGearSetups.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
 import { GearSetupTypes } from '@/lib/gear/types.js';
 import { equipPet } from '@/lib/minions/functions/equipPet.js';
@@ -167,6 +171,20 @@ export const gearCommand: OSBMahojiCommand = {
 					choices: GearSetupTypes.map(i => ({ name: toTitleCase(i), value: i }))
 				}
 			]
+		},
+		{
+			type: 'Subcommand',
+			name: 'best_in_slot',
+			description: 'View the best in slot items for a particular stat.',
+			options: [
+				{
+					type: 'String',
+					name: 'stat',
+					description: 'The stat to view the BiS items for.',
+					required: true,
+					choices: Object.values(GearStat).map(k => ({ name: k, value: k }))
+				}
+			]
 		}
 	],
 	run: async ({
@@ -187,7 +205,33 @@ export const gearCommand: OSBMahojiCommand = {
 		pet?: { equip?: string; unequip?: string };
 		view?: { setup: string; text_format?: boolean };
 		swap?: { setup_one: GearSetupType; setup_two: GearSetupType };
+		best_in_slot?: { stat: GearStat };
 	}>) => {
+		await interaction.defer();
+		if (options.best_in_slot?.stat) {
+			const res = findBestGearSetups({ stat: options.best_in_slot.stat, ignoreUnobtainable: BOT_TYPE === 'OSB' });
+			const totalCanvas = createCanvas(900, 480 * 5);
+			const ctx = totalCanvas.getContext('2d');
+			for (let i = 0; i < 5; i++) {
+				const gearImageBuffer = await user.generateGearImage({ gearSetup: res[i] });
+				const gearImage = await loadImage(gearImageBuffer);
+				ctx.drawImage(gearImage, 0, i * gearImage.height);
+			}
+			return {
+				content: `These are the best in slot items for ${options.best_in_slot.stat}.
+
+${res
+	.slice(0, 10)
+	.map(
+		(setup, idx) =>
+			`${idx + 1}. ${setup.toString()} has ${setup.getStats()[options.best_in_slot!.stat]} ${
+				options.best_in_slot!.stat
+			}`
+	)
+	.join('\n')}`,
+				files: [await canvasToBuffer(totalCanvas)]
+			};
+		}
 		if ((options.equip || options.unequip) && !gearValidationChecks.has(user.id)) {
 			const { itemsUnequippedAndRefunded } = await user.validateEquippedGear();
 			if (itemsUnequippedAndRefunded.length > 0) {

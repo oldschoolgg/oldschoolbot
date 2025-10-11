@@ -24,7 +24,7 @@ import { mentionCommand } from '@/lib/discord/utils.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { getUsername, getUsernameSync } from '@/lib/util.js';
-import { doMenu, getPos } from '@/mahoji/commands/leaderboard.js';
+import { doMenu } from '@/mahoji/commands/leaderboard.js';
 import { BingoManager, BingoTrophies } from '@/mahoji/lib/bingo/BingoManager.js';
 import type { StoredBingoTile } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { generateTileName, getAllTileItems, isGlobalTile } from '@/mahoji/lib/bingo/bingoUtil.js';
@@ -73,16 +73,17 @@ export async function fetchBingosThatUserIsInvolvedIn(userID: string) {
 	return bingos;
 }
 
+const PAGE_SIZE = 10;
 async function bingoTeamLeaderboard(interaction: MInteraction, bingo: BingoManager): CommandResponse {
 	const { teams } = await bingo.fetchAllParticipants();
 
 	doMenu(
 		interaction,
-		chunk(teams, 10).map((subList, i) =>
+		chunk(teams, PAGE_SIZE).map((subList, i) =>
 			subList
 				.map(
 					(team, j) =>
-						`${getPos(i, j)}** ${`${team.trophy?.emoji} `}${team.participants
+						`${i * PAGE_SIZE + 1 + j}. ${`${team.trophy?.emoji} `}${team.participants
 							.map(pt => getUsernameSync(pt.user_id))
 							.join(', ')}:** ${team.tilesCompletedCount.toLocaleString()}`
 				)
@@ -744,7 +745,7 @@ ${Emoji.Warning} **You will pay a ${toKMB(fee)} GP fee to create this bingo, you
 				data: createOptions
 			});
 
-			debugLog('Created bingo', createOptions);
+			Logging.logDebug('Created bingo', createOptions);
 
 			return 'Created your Bingo succesfully!';
 		}
@@ -912,7 +913,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 						}
 					}
 				});
-				debugLog('Added extra gp to bingo', { bingoID: bingo.id, amount });
+				Logging.logDebug('Added extra gp to bingo', { bingoID: bingo.id, amount });
 
 				return `Added ${cost} to the prize pool.`;
 			}

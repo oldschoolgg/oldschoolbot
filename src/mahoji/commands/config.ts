@@ -1,5 +1,4 @@
 import {
-	channelIsSendable,
 	formatDuration,
 	hasBanMemberPerms,
 	miniID,
@@ -15,7 +14,6 @@ import { clamp } from 'remeda';
 
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BitField, globalConfig, ParsedCustomEmojiWithGroups, PerkTier } from '@/lib/constants.js';
-import { DynamicButtons } from '@/lib/DynamicButtons.js';
 import { Eatables } from '@/lib/data/eatables.js';
 import { itemOption } from '@/lib/discord/index.js';
 import { CombatOptionsArray, CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
@@ -23,11 +21,11 @@ import { birdhouseSeeds } from '@/lib/skilling/skills/hunter/birdHouseTrapping.j
 import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '@/lib/slayer/slayerUtil.js';
 import { BankSortMethods } from '@/lib/sorts.js';
+import { DynamicButtons } from '@/lib/structures/DynamicButtons.js';
 import { emojiServers } from '@/lib/util/cachedUserIDs.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
-import { allCommands } from '@/mahoji/commands/allCommands.js';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '@/mahoji/guildSettings.js';
 import { patronMsg } from '@/mahoji/mahojiSettings.js';
 
@@ -96,13 +94,10 @@ const toggles: UserConfigToggle[] = [
 					{ display: '6 months', duration: Time.Month * 6 },
 					{ display: '1 year', duration: Time.Year }
 				];
-				const channel = globalClient.channels.cache.get(interaction.channelId);
-				if (!channelIsSendable(channel)) return { result: false, message: 'Could not find channel.' };
 				await interaction.defer();
 				const buttons = new DynamicButtons({
-					channel: channel,
-					usersWhoCanInteract: [user.id],
-					deleteAfterConfirm: true
+					interaction,
+					usersWhoCanInteract: [user.id]
 				});
 				for (const dur of durations) {
 					buttons.add({
@@ -158,6 +153,10 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Disable Minion Daily Button',
 		bit: BitField.DisableDailyButton
+	},
+	{
+		name: 'Allow Public API Data Retrieval',
+		bit: BitField.AllowPublicAPIDataRetrieval
 	}
 ];
 
@@ -520,7 +519,7 @@ async function handleCommandEnable(
 	if (!(await hasBanMemberPerms(user.id, guild)))
 		return "You need to be 'Ban Member' permissions to use this command.";
 	const settings = await mahojiGuildSettingsFetch(guild);
-	const command = allCommands.find(i => i.name.toLowerCase() === commandName.toLowerCase());
+	const command = globalClient.allCommands.find(i => i.name.toLowerCase() === commandName.toLowerCase());
 	if (!command) return "That's not a valid command.";
 
 	if (choice === 'enable') {
@@ -750,7 +749,7 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'The command you want to enable/disable.',
 							required: true,
 							autocomplete: async value => {
-								return allCommands
+								return globalClient.allCommands
 									.map(i => ({ name: i.name, value: i.name }))
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
 							}

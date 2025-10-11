@@ -4,7 +4,6 @@ import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
 import { busyImmuneCommands } from '@/lib/constants.js';
 import type { CommandOptions } from '@/lib/discord/commandOptions.js';
 import { makeCommandUsage } from '@/lib/util/commandUsage.js';
-import { logError } from '@/lib/util/logError.js';
 
 const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
 function shouldTrackCommand(command: OSBMahojiCommand, args: CommandOptions) {
@@ -73,7 +72,7 @@ export async function postCommand({
 				})
 			]);
 		} catch (err) {
-			logError(err);
+			Logging.logError(err as Error);
 		}
 	}
 	if (inhibited) return;
