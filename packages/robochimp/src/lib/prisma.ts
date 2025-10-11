@@ -1,7 +1,7 @@
 import { execSync } from 'node:child_process';
 import { existsSync, mkdirSync } from 'node:fs';
 import { PGlite } from '@electric-sql/pglite';
-import { rewriteSqlToIdempotent } from '@oldschoolgg/toolkit';
+import { rewriteSqlToIdempotent, Stopwatch } from '@oldschoolgg/toolkit';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient as BSOPrismaClient } from '@prisma/bso';
 import { PrismaClient as OSBPrismaClient } from '@prisma/osb';
@@ -17,13 +17,18 @@ declare global {
 }
 
 async function getAdapter(type: 'osb' | 'bso' | 'robochimp'): Promise<PrismaPg> {
+	const sw = new Stopwatch();
+	sw.check(`Getting adapter for ${type}`);
 	const shouldUseRealPostgres = globalConfig.isProduction || process.env.USE_REAL_PG === '1';
 	if (shouldUseRealPostgres) {
+		sw.check(`Using Postgres for ${type}`);
 		return new PrismaPg({ connectionString: process.env[`${type.toUpperCase()}_DATABASE_URL`] });
 	}
+	sw.check(`Using PGLite for ${type} DB`);
 
 	if (!existsSync('./.db')) {
 		mkdirSync('./.db');
+		sw.check(`Created dir`);
 	}
 	const dataDir = `./.db/${type.toLowerCase()}${process.env.TEST ? '-test' : ''}`;
 	const pgLiteClient = new PGlite({ dataDir });
@@ -34,10 +39,12 @@ async function getAdapter(type: 'osb' | 'bso' | 'robochimp'): Promise<PrismaPg> 
 		}
 	);
 	await pgLiteClient.exec(rewriteSqlToIdempotent(createDbSQL));
+	sw.check(`Ensured migrated`);
 	return new PrismaPGlite(pgLiteClient) as any as PrismaPg;
 }
 
 export async function initPrismaClients() {
+	console.log('Initializing Prisma clients');
 	global.roboChimpClient =
 		global.roboChimpClient ??
 		new RobochimpPrismaClient({
