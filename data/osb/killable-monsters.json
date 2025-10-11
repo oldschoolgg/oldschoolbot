@@ -3013,8 +3013,6 @@
 		"wildy": false,
 		"exists_in_catacombs": false,
 		"difficulty_rating": 3,
-		"notify_drops": ["Antler guard"],
-		"qp_required": 77,
 		"level_requirements": {
 			"slayer": 76
 		},
@@ -3951,7 +3949,6 @@
 		"wildy": false,
 		"exists_in_catacombs": false,
 		"difficulty_rating": 2,
-		"qp_required": 77,
 		"level_requirements": {
 			"slayer": 54
 		},
@@ -4502,8 +4499,6 @@
 		"wildy": false,
 		"exists_in_catacombs": false,
 		"difficulty_rating": 2,
-		"notify_drops": ["Antler guard"],
-		"qp_required": 77,
 		"level_requirements": {
 			"slayer": 67
 		},

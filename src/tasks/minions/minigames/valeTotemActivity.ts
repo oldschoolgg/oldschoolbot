@@ -51,6 +51,8 @@ export const valeTotemsTask: MinionTask = {
 			}
 		}
 
+		await ClientSettings.updateBankSetting('vt_loot', loot);
+
 		const { previousCL, itemsAdded } = await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot

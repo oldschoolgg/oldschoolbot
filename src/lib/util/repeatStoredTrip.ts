@@ -622,7 +622,7 @@ const tripHandlers = {
 	[activity_type_enum.ValeTotems]: {
 		commandName: 'minigames',
 		args: (data: ValeTotemsActivityTaskOptions) => {
-			return { vale_totems: { start: { item_to_fletch: data.itemID, stamina_pot: data.staminaPot } } };
+			return { vale_totems: { start: { item_to_fletch: data.itemName, stamina_pot: data.staminaPot } } };
 		}
 	},
 	[activity_type_enum.VolcanicMine]: {

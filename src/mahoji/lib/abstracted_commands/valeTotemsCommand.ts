@@ -1,5 +1,5 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { Bank, type Item, Items, itemID } from 'oldschooljs';
+import { Bank, EItem, type Item, Items, itemID } from 'oldschooljs';
 
 import { ValeTotemsBuyables, ValeTotemsSellables } from '@/lib/data/buyables/valeTotemsBuyables.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
@@ -53,7 +53,6 @@ export async function valeTotemsStartCommand(
 	const logCostLap = decoration.logAmount;
 	const logsOwned = userBank.amount(logType);
 
-	// Question: Allow already prepared decorations or no (for less xp)?
 	if (logsOwned < decoration.logAmount) {
 		return `${user.minionName} doesn't own: ${logCostLap}x ${logType.name}.`;
 	}
@@ -64,7 +63,7 @@ export async function valeTotemsStartCommand(
 
 	let staminaPotItem: Item | undefined;
 	if (staminaPot) {
-		staminaPotItem = Items.getOrThrow(12625);
+		staminaPotItem = Items.getOrThrow(EItem.STAMINA_POTION4);
 		if (userBank.amount(staminaPotItem) < 1) return `${user.minionName} doesn't own: ${staminaPotItem.name}.`;
 	}
 
@@ -94,7 +93,7 @@ export async function valeTotemsStartCommand(
 		stringItem = Items.getOrThrow('Bow string');
 
 		if (userBank.amount(stringItem.id) < STRINGS_PER_LAP)
-			return `${user.minionName} need at least 32 Bow strings to fletch ${decoration.item.name}!`;
+			return `${user.minionName} need at least ${STRINGS_PER_LAP} Bow strings to fletch ${decoration.item.name}!`;
 		if (!user.hasEquippedOrInBank(itemID('Bow string spool'))) {
 			timePerLap += STRING_NO_SPOOL_PENALTY;
 		} else {
@@ -127,7 +126,9 @@ export async function valeTotemsStartCommand(
 			// Bank shortcut
 			timePerLap += NO_BANK_SHORTCUT_PENALTY;
 		} else {
-			messages.push(`-${formatDuration(NO_BANK_SHORTCUT_PENALTY)} for bank shortcut`);
+			messages.push(
+				`-${formatDuration(NO_BANK_SHORTCUT_PENALTY)} for ${BANK_SHORTCUT_AGILITY_LVL} agility (bank shortcut)`
+			);
 		}
 	} else {
 		messages.push(`-${formatDuration(NO_BANK_SHORTCUT_PENALTY)} for Log basket`);
@@ -137,7 +138,9 @@ export async function valeTotemsStartCommand(
 		// Shortcuts
 		timePerLap += NO_SHORTCUT_PENALTY;
 	} else {
-		messages.push(`-${formatDuration(NO_BANK_SHORTCUT_PENALTY)} for other shortcuts`);
+		messages.push(
+			`-${formatDuration(NO_BANK_SHORTCUT_PENALTY)} for ${LOG_SHORTCUTS_AGILITY_LVL} agility (log balance shortcuts)`
+		);
 	}
 
 	if (agilityLevel < NO_STAMINA_POTION_AGILITY_LVL && !staminaPot) {
@@ -149,7 +152,7 @@ export async function valeTotemsStartCommand(
 
 	if (logCostLap > DEFAULT_LOG_COST_PER_LAP) {
 		timePerLap += SHIELD_FLETCH_PENALTY;
-		messages.push(`+${formatDuration(NO_BANK_SHORTCUT_PENALTY)} for shield fletching`);
+		messages.push(`+${formatDuration(SHIELD_FLETCH_PENALTY)} for shield fletching`);
 	}
 
 	const limits = [Math.floor(logsOwned / logCostLap), Math.floor(maxTripLength / timePerLap)];
@@ -183,7 +186,7 @@ export async function valeTotemsStartCommand(
 	}
 
 	await user.removeItemsFromBank(cost);
-	//await userStatsBankUpdate(user, 'vale_totems_cost_bank', cost); removed cause no idea if needed
+	await ClientSettings.updateBankSetting('vt_cost', cost);
 
 	await ActivityManager.startTrip<ValeTotemsActivityTaskOptions>({
 		type: 'ValeTotems',
@@ -194,13 +197,11 @@ export async function valeTotemsStartCommand(
 		channelID: channelID.toString(),
 		minigameID: 'vale_totems',
 		quantity: laps,
-		logID: logType.name,
-		itemID: fletchableItem.name,
+		logName: logType.name,
+		itemName: fletchableItem.name,
 		staminaPot: staminaPot
 	});
-	// TODO:
-	// Add Bow string spool bonus (to fletching bows) - additional time (9mins)
-	// But not possible with current fletch implementation (duplicate actions to perform)
+
 	let str = `${user.minionName} is off to do ${laps} laps of Vale Totems using ${cost} - the total trip will take ${formatDuration(
 		duration
 	)}, with each lap taking ${formatDuration(timePerLap)}.`;
@@ -212,7 +213,6 @@ export async function valeTotemsStartCommand(
 	return str;
 }
 
-// xpPerLap (carving + decorating + fletching) * 8
 const groups = [
 	{
 		log: 'Oak logs',
@@ -410,5 +410,5 @@ export async function valeTotemsSellCommand(
 		itemsToRemove: shopItem.output.multiply(quantity)
 	});
 
-	return `${user.minionName} successfully sold **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.valeResearchPoints * quantity).toLocaleString()} Vale Research points.\n${user.minionName} now has ${newPoints} Vale Research points.`;
+	return `${user.minionName} successfully sold **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.valeResearchPoints * quantity).toLocaleString()} Vale Research points.\n\n${user.minionName} now has ${newPoints} Vale Research points.`;
 }

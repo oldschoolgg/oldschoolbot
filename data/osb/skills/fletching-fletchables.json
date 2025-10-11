@@ -119,8 +119,7 @@
 			"1511": 1
 		},
 		"tick_rate": 2,
-		"output_multiple": 15,
-		"fletching_knife_boost": true
+		"output_multiple": 15
 	},
 	{
 		"name": "Atlatl dart",
@@ -143,8 +142,7 @@
 			"31032": 1
 		},
 		"tick_rate": 3,
-		"output_multiple": 100,
-		"fletching_knife_boost": true
+		"output_multiple": 100
 	},
 	{
 		"name": "Atlatl dart tips",
@@ -165,8 +163,7 @@
 		"input_items": {
 			"22935": 1
 		},
-		"tick_rate": 4,
-		"fletching_knife_boost": true
+		"tick_rate": 4
 	},
 	{
 		"name": "Blurite crossbow",
@@ -609,8 +606,7 @@
 			"1511": 1
 		},
 		"tick_rate": 2,
-		"output_multiple": 15,
-		"fletching_knife_boost": true
+		"output_multiple": 15
 	},
 	{
 		"name": "Light ballista",
@@ -642,8 +638,7 @@
 		"input_items": {
 			"1511": 1
 		},
-		"tick_rate": 3,
-		"fletching_knife_boost": true
+		"tick_rate": 3
 	},
 	{
 		"name": "Magic arrow shaft",
@@ -654,8 +649,7 @@
 			"1513": 1
 		},
 		"tick_rate": 2,
-		"output_multiple": 90,
-		"fletching_knife_boost": true
+		"output_multiple": 90
 	},
 	{
 		"name": "Magic longbow",
@@ -676,8 +670,7 @@
 		"input_items": {
 			"1513": 1
 		},
-		"tick_rate": 3,
-		"fletching_knife_boost": true
+		"tick_rate": 3
 	},
 	{
 		"name": "Magic shield",
@@ -687,8 +680,7 @@
 		"input_items": {
 			"1513": 2
 		},
-		"tick_rate": 7,
-		"fletching_knife_boost": true
+		"tick_rate": 7
 	},
 	{
 		"name": "Magic shortbow",
@@ -709,8 +701,7 @@
 		"input_items": {
 			"1513": 1
 		},
-		"tick_rate": 3,
-		"fletching_knife_boost": true
+		"tick_rate": 3
 	},
 	{
 		"name": "Magic stock",
@@ -720,8 +711,7 @@
 		"input_items": {
 			"1513": 1
 		},
-		"tick_rate": 3,
-		"fletching_knife_boost": true
+		"tick_rate": 3
 	},
 	{
 		"name": "Mahogany stock",
@@ -731,8 +721,7 @@
 		"input_items": {
 			"6332": 1
 		},
-		"tick_rate": 3,
-		"fletching_knife_boost": true
+		"tick_rate": 3
 	},
 	{
 		"name": "Maple arrow shaft",
@@ -743,8 +732,7 @@
 			"1517": 1
 		},
 		"tick_rate": 2,
-		"output_multiple": 60,
-		"fletching_knife_boost": true
+		"output_multiple": 60
 	},
 	{
 		"name": "Maple longbow",
@@ -765,8 +753,7 @@
 		"input_items": {
 			"1517": 1
 		},
-		"tick_rate": 3,
-		"fletching_knife_boost": true
+		"tick_rate": 3
 	},
 	{
 		"name": "Maple shield",
@@ -776,8 +763,7 @@
 		"input_items": {
 			"1517": 2
 		},
-		"tick_rate": 7,
-		"fletching_knife_boost": true
+		"tick_rate": 7
 	},
 	{
 		"name": "Maple shortbow",
@@ -798,8 +784,7 @@
 		"input_items": {
 			"1517": 1
 		},
-		"tick_rate": 3,
-		"fletching_knife_boost": true
+		"tick_rate": 3
 	},
 	{
 		"name": "Maple stock",
@@ -809,8 +794,7 @@
 		"input_items": {
 			"1517": 1
 		},
-		"tick_rate": 3,
-		"fletching_knife_boost": true
+		"tick_rate": 3
 	},
 	{
 		"name": "Mithril arrow",
@@ -887,8 +871,7 @@
 			"1521": 1
 		},
 		"tick_rate": 2,
-		"output_multiple": 30,
-		"fletching_knife_boost": true
+		"output_multiple": 30
 	},
 	{
 		"name": "Oak longbow",
@@ -909,8 +892,7 @@
 		"input_items": {
 			"1521": 1
 		},
-		"tick_rate": 3,
-		"fletching_knife_boost": true
+		"tick_rate": 3
 	},
 	{
 		"name": "Oak shield",
@@ -920,8 +902,7 @@
 		"input_items": {
 			"1521": 2
 		},
-		"tick_rate": 7,
-		"fletching_knife_boost": true
+		"tick_rate": 7
 	},
 	{
 		"name": "Oak shortbow",
@@ -942,8 +923,7 @@
 		"input_items": {
 			"1521": 1
 		},
-		"tick_rate": 3,
-		"fletching_knife_boost": true
+		"tick_rate": 3
 	},
 	{
 		"name": "Oak stock",
@@ -953,8 +933,7 @@
 		"input_items": {
 			"1521": 1
 		},
-		"tick_rate": 3,
-		"fletching_knife_boost": true
+		"tick_rate": 3
 	},
 	{
 		"name": "Ogre arrow",
@@ -976,8 +955,7 @@
 			"2862": 1
 		},
 		"tick_rate": 2,
-		"output_multiple": 15,
-		"fletching_knife_boost": true
+		"output_multiple": 15
 	},
 	{
 		"name": "Onyx bolt tips",
@@ -1087,8 +1065,17 @@
 			"19669": 1
 		},
 		"tick_rate": 2,
-		"output_multiple": 105,
-		"fletching_knife_boost": true
+		"output_multiple": 105
+	},
+	{
+		"name": "Redwood hiking staff",
+		"id": 31049,
+		"level": 90,
+		"xp": 10.5,
+		"input_items": {
+			"19669": 1
+		},
+		"tick_rate": 3
 	},
 	{
 		"name": "Redwood shield",
@@ -1098,8 +1085,7 @@
 		"input_items": {
 			"19669": 2
 		},
-		"tick_rate": 7,
-		"fletching_knife_boost": true
+		"tick_rate": 7
 	},
 	{
 		"name": "Ruby bolt tips",
@@ -1252,8 +1238,7 @@
 		"input_items": {
 			"1511": 1
 		},
-		"tick_rate": 3,
-		"fletching_knife_boost": true
+		"tick_rate": 3
 	},
 	{
 		"name": "Steel arrow",
@@ -1329,8 +1314,7 @@
 		"input_items": {
 			"6333": 1
 		},
-		"tick_rate": 3,
-		"fletching_knife_boost": true
+		"tick_rate": 3
 	},
 	{
 		"name": "Topaz bolt tips",
@@ -1406,8 +1390,7 @@
 			"1519": 1
 		},
 		"tick_rate": 2,
-		"output_multiple": 45,
-		"fletching_knife_boost": true
+		"output_multiple": 45
 	},
 	{
 		"name": "Willow longbow",
@@ -1428,8 +1411,7 @@
 		"input_items": {
 			"1519": 1
 		},
-		"tick_rate": 3,
-		"fletching_knife_boost": true
+		"tick_rate": 3
 	},
 	{
 		"name": "Willow shield",
@@ -1439,8 +1421,7 @@
 		"input_items": {
 			"1519": 2
 		},
-		"tick_rate": 7,
-		"fletching_knife_boost": true
+		"tick_rate": 7
 	},
 	{
 		"name": "Willow shortbow",
@@ -1461,8 +1442,7 @@
 		"input_items": {
 			"1519": 1
 		},
-		"tick_rate": 3,
-		"fletching_knife_boost": true
+		"tick_rate": 3
 	},
 	{
 		"name": "Willow stock",
@@ -1472,8 +1452,7 @@
 		"input_items": {
 			"1519": 1
 		},
-		"tick_rate": 3,
-		"fletching_knife_boost": true
+		"tick_rate": 3
 	},
 	{
 		"name": "Wolfbone arrowtips",
@@ -1495,8 +1474,7 @@
 		"input_items": {
 			"1511": 1
 		},
-		"tick_rate": 3,
-		"fletching_knife_boost": true
+		"tick_rate": 3
 	},
 	{
 		"name": "Yew arrow shaft",
@@ -1507,8 +1485,7 @@
 			"1515": 1
 		},
 		"tick_rate": 2,
-		"output_multiple": 75,
-		"fletching_knife_boost": true
+		"output_multiple": 75
 	},
 	{
 		"name": "Yew longbow",
@@ -1529,8 +1506,7 @@
 		"input_items": {
 			"1515": 1
 		},
-		"tick_rate": 3,
-		"fletching_knife_boost": true
+		"tick_rate": 3
 	},
 	{
 		"name": "Yew shield",
@@ -1540,8 +1516,7 @@
 		"input_items": {
 			"1515": 2
 		},
-		"tick_rate": 7,
-		"fletching_knife_boost": true
+		"tick_rate": 7
 	},
 	{
 		"name": "Yew shortbow",
@@ -1562,8 +1537,7 @@
 		"input_items": {
 			"1515": 1
 		},
-		"tick_rate": 3,
-		"fletching_knife_boost": true
+		"tick_rate": 3
 	},
 	{
 		"name": "Yew stock",
@@ -1573,7 +1547,6 @@
 		"input_items": {
 			"1515": 1
 		},
-		"tick_rate": 3,
-		"fletching_knife_boost": true
+		"tick_rate": 3
 	}
 ]

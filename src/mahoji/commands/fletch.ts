@@ -66,11 +66,18 @@ export const fletchCommand: OSBMahojiCommand = {
 		const userBank = user.bank;
 		const hasFletchingKnife = user.hasEquippedOrInBank(itemID('Fletching knife'));
 
+		const boostableSourceItems = ['celastrus bark', 'logs', 'ent branch'];
+		const fletchableCanBeBoosted = fletchable.inputItems
+			.items()
+			.some(([item]) => boostableSourceItems.some(boostable => item.name.toLowerCase().includes(boostable)));
+		let fletchKnifeBoost = false;
+
 		// Get the base time to fletch the item then add on quarter of a second per item to account for banking/etc.
 		let timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6 + Time.Second / 4;
 		if (fletchable.tickRate < 1) {
 			timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6;
-		} else if (fletchable.tickRate > 1 && fletchable.fletchingKnifeBoost && hasFletchingKnife) {
+		} else if (fletchable.tickRate > 1 && fletchableCanBeBoosted && hasFletchingKnife) {
+			fletchKnifeBoost = true;
 			timeToFletchSingleItem = (fletchable.tickRate - 1) * Time.Second * 0.6 + Time.Second / 4;
 		}
 
@@ -113,7 +120,7 @@ export const fletchCommand: OSBMahojiCommand = {
 		return `${user.minionName} is now Fletching ${quantity}${sets} ${
 			fletchable.name
 		}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.${
-			hasFletchingKnife ? '\n\n**Fletching knife bonus:** -1 tick per item' : ''
+			fletchKnifeBoost ? '\n\n**Fletching knife bonus:** -1 tick per item' : ''
 		}`;
 	}
 };

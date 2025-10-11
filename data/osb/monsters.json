@@ -1,6 +1,6 @@
 {
-	"hash": "c767bcccfc816394bea62ae8b223fcb8",
-	"date": "2025-09-29T20:47:20.657Z",
+	"hash": "809916c5109b7d2e624c6d568d32636f",
+	"date": "2025-10-09T22:05:48.152Z",
 	"data": [
 		{
 			"id": 2,
@@ -1842,7 +1842,7 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"items_required": [],
-			"qp_required": 77,
+			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": true,
 			"can_chin": false,
@@ -2867,7 +2867,7 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"items_required": [],
-			"qp_required": 77,
+			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": true,
 			"can_chin": false,
@@ -3415,7 +3415,7 @@
 			"can_be_pked": false,
 			"is_wildy_multi": false,
 			"items_required": [],
-			"qp_required": 77,
+			"qp_required": 0,
 			"item_in_bank_boosts": [],
 			"can_barrage": true,
 			"can_chin": false,

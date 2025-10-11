@@ -10,8 +10,7 @@ const Atlatl: Fletchable[] = [
 		xp: 30,
 		inputItems: new Bank({ 'Ent branch': 1 }),
 		tickRate: 3,
-		outputMultiple: 100,
-		fletchingKnifeBoost: true
+		outputMultiple: 100
 	},
 	{
 		name: 'Headless atlatl dart',

@@ -126,8 +126,6 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 		existsInCatacombs: false,
 		difficultyRating: 3,
-		notifyDrops: resolveItems(['Antler guard']),
-		qpRequired: 77,
 		levelRequirements: {
 			slayer: 76
 		},
@@ -293,7 +291,6 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 		existsInCatacombs: false,
 		difficultyRating: 2,
-		qpRequired: 77,
 		levelRequirements: {
 			slayer: 54
 		},
@@ -438,8 +435,6 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 		existsInCatacombs: false,
 		difficultyRating: 2,
-		notifyDrops: resolveItems(['Antler guard']),
-		qpRequired: 77,
 		levelRequirements: {
 			slayer: 67
 		},

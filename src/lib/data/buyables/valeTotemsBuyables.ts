@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-interface ValeTotemsBuyable {
+interface ValeTotemsUnique {
 	name: string;
 	output: Bank;
 	valeResearchPoints: number;
@@ -8,7 +8,7 @@ interface ValeTotemsBuyable {
 	ironman?: boolean;
 }
 
-export const ValeTotemsBuyables: ValeTotemsBuyable[] = [
+export const ValeTotemsBuyables: ValeTotemsUnique[] = [
 	{
 		name: 'Bow string spool',
 		aliases: ['string spool', 'spool'],
@@ -29,12 +29,13 @@ export const ValeTotemsBuyables: ValeTotemsBuyable[] = [
 	},
 	{
 		name: 'Ent branch',
+		aliases: ['ent branch'],
 		output: new Bank().add('Ent branch', 1),
 		valeResearchPoints: 20
 	}
 ];
 
-export const ValeTotemsSellables: ValeTotemsBuyable[] = [
+export const ValeTotemsSellables: ValeTotemsUnique[] = [
 	{
 		name: 'Bow string spool',
 		aliases: ['string spool', 'spool'],

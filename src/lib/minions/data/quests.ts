@@ -360,7 +360,6 @@ export const quests: Quest[] = [
 		qp: 2,
 		name: 'Shadows of Custodia',
 		prerequisitesQuests: [QuestID.ChildrenOfTheSun],
-		qpReq: 75,
 		combatLevelReq: 50,
 		skillReqs: {
 			slayer: 54,

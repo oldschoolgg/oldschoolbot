@@ -683,8 +683,8 @@ export function minionStatus(user: MUser) {
 		}
 		case 'ValeTotems': {
 			const data = currentTask as ValeTotemsActivityTaskOptions;
-			const logs = ValeTotemsDecorations.find(i => i.log.name === data.logID)!;
-			const item = ValeTotemsDecorations.find(i => i.item.name === data.itemID)!;
+			const logs = ValeTotemsDecorations.find(i => i.log.name === data.logName)!;
+			const item = ValeTotemsDecorations.find(i => i.item.name === data.itemName)!;
 			return `${name} is currently building ${logs} totems, carving them, and decorating them with ${item} around the valley for ${data.quantity} laps. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
