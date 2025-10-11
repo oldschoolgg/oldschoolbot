@@ -156,6 +156,7 @@ export enum BitField {
 
 	HasDeadeyeScroll = 45,
 	HasMysticVigourScroll = 46,
+	AllowPublicAPIDataRetrieval = 47,
 
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
@@ -415,6 +416,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisableDailyButton]: {
 		name: 'Disable Minion Daily Button',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.AllowPublicAPIDataRetrieval]: {
+		name: 'Allow Public API Data Retrieval',
 		protected: false,
 		userConfigurable: true
 	},
