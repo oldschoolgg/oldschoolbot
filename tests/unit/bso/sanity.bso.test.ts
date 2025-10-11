@@ -79,7 +79,8 @@ describe('Sanity', () => {
 			['Virtus boots (broken)', 51_009],
 			['Torva boots (broken)', 51_004],
 			['Bandosian components', 26_394],
-			["Osmumten's fang", 26_219]
+			["Osmumten's fang", 26_219],
+			['Dragon egg', 48_210]
 		];
 		for (const [name, id] of expectedIDs) {
 			const idForName = Items.get(name)!.id;
