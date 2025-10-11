@@ -1,5 +1,4 @@
 import { isObject } from '@oldschoolgg/toolkit';
-import type { command_name_enum, Prisma } from '@prisma/client';
 
 import type { CommandOptions, MahojiUserOption } from '@/lib/discord/index.js';
 
@@ -11,7 +10,7 @@ interface CompressedArg {
 	[key: string]: string | number | boolean | null | undefined | CompressedArg;
 }
 
-function compressMahojiArgs(options: CommandOptions) {
+export function compressMahojiArgs(options: CommandOptions) {
 	const newOptions: CompressedArg = {};
 	for (const [key, val] of Object.entries(options) as [
 		keyof CommandOptions,
@@ -46,42 +45,4 @@ function compressMahojiArgs(options: CommandOptions) {
 		newOptions[key] = null;
 	}
 	return newOptions;
-}
-
-function getCommandArgs(
-	commandName: string,
-	args: CommandOptions
-): Prisma.InputJsonObject | Prisma.InputJsonArray | undefined {
-	if (Object.keys(args).length === 0) return undefined;
-	if (['bank', 'bs'].includes(commandName)) return undefined;
-	return compressMahojiArgs(args) as Prisma.InputJsonObject;
-}
-
-export function makeCommandUsage({
-	userID,
-	commandName,
-	args,
-	isContinue,
-	inhibited,
-	continueDeltaMillis,
-	interaction
-}: {
-	userID: string | bigint;
-	commandName: string;
-	args: CommandOptions;
-	isContinue: null | boolean;
-	inhibited: boolean;
-	interaction: MInteraction;
-	continueDeltaMillis: number | null;
-}): Prisma.CommandUsageCreateInput {
-	return {
-		user_id: BigInt(userID),
-		command_name: commandName as command_name_enum,
-		args: getCommandArgs(commandName, args),
-		channel_id: BigInt(interaction.channelId),
-		guild_id: interaction.guildId ? BigInt(interaction.guildId) : null,
-		is_continue: isContinue ?? undefined,
-		inhibited,
-		continue_delta_millis: continueDeltaMillis
-	};
 }

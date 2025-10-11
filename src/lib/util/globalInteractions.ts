@@ -4,7 +4,7 @@ import { repeatTameTrip } from '@/lib/bso/tames/tameTasks.js';
 import { cleanUsername, formatDuration, removeFromArr, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import type { Giveaway } from '@prisma/client';
 import { RateLimitManager } from '@sapphire/ratelimits';
-import type { ButtonInteraction } from 'discord.js';
+import { type ButtonInteraction, MessageFlags } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { giveawayCache } from '@/lib/cache.js';
@@ -232,6 +232,9 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 	const mInteraction = new MInteraction({ interaction });
 	const ignoredInteractionIDs = ['CONFIRM', 'CANCEL', 'PARTY_JOIN', ...Object.values(InteractionID.PaginatedMessage)];
 	if (ignoredInteractionIDs.includes(interaction.customId)) return;
+	Logging.logDebug(`${interaction.user.username} clicked button: ${interaction.customId}`, {
+		...mInteraction.getDebugInfo()
+	});
 	if (['DYN_', 'LP_'].some(s => interaction.customId.startsWith(s))) return;
 
 	if (globalClient.isShuttingDown) {
@@ -417,7 +420,7 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 	}
 
 	if (user.minionIsBusy) {
-		return interaction.reply({ content: `${user.minionName} is busy.`, ephemeral: true });
+		return interaction.reply({ content: `${user.minionName} is busy.`, flags: MessageFlags.Ephemeral });
 	}
 
 	switch (id) {

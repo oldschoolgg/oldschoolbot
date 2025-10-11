@@ -1,4 +1,5 @@
 import { debounce, deepMerge, formatDuration, Time } from '@oldschoolgg/toolkit';
+import type { Prisma } from '@prisma/client';
 import { TimerManager } from '@sapphire/timer-manager';
 import {
 	ActionRowBuilder,
@@ -14,6 +15,7 @@ import {
 	PermissionsBitField,
 	Routes
 } from 'discord.js';
+import { omit } from 'remeda';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { CACHED_ACTIVE_USER_IDS, partyLockCache } from '@/lib/cache.js';
@@ -24,6 +26,7 @@ import {
 	PaginatedMessage,
 	type PaginatedMessageOptions
 } from '@/lib/structures/PaginatedMessage.js';
+import { compressMahojiArgs } from '@/lib/util/commandUsage.js';
 import { getUsername } from '@/lib/util.js';
 
 interface MakePartyOptions {
@@ -59,6 +62,15 @@ export class MInteraction {
 		return this.interaction.deferred;
 	}
 
+	public getChatInputCommandOptions() {
+		if (!this.interaction.isChatInputCommand()) return {};
+		const cmdOpts = convertAPIOptionsToCommandOptions(
+			this.interaction.options.data,
+			this.interaction.options.resolved
+		);
+		return compressMahojiArgs(cmdOpts) as Prisma.InputJsonObject;
+	}
+
 	public getDebugInfo() {
 		const context: Record<string, string | number | null | boolean> = {
 			user_id: this.user.id,
@@ -79,9 +91,7 @@ export class MInteraction {
 			is_paginated: this.isPaginated
 		};
 		if (this.interaction.isChatInputCommand()) {
-			context.options = JSON.stringify(
-				convertAPIOptionsToCommandOptions(this.interaction.options.data, this.interaction.options.resolved)
-			);
+			context.options = JSON.stringify(this.getChatInputCommandOptions());
 			context.command_name = this.interaction.commandName;
 		} else if (this.interaction.isButton()) {
 			context.button_id = this.interaction.customId;
@@ -172,9 +182,15 @@ export class MInteraction {
 			response.components = [];
 		}
 
+		if (response.ephemeral) {
+			this.ephemeral = true;
+			delete response.ephemeral;
+			response.flags = MessageFlags.Ephemeral;
+		}
+
 		try {
 			if (this.replied || this.deferred) {
-				this.interactionResponse = await this.interaction.editReply(response);
+				this.interactionResponse = await this.interaction.editReply(omit(response, ['flags', 'ephemeral']));
 			} else {
 				this.interactionResponse = await this.interaction.reply(response);
 			}

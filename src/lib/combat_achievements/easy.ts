@@ -36,6 +36,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'Barrows',
 		desc: 'Kill any Barrows Brother using only magical damage.',
+		details: 'Must be training Magic.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>

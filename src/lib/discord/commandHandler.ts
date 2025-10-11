@@ -25,7 +25,10 @@ export async function commandHandler(rawInteraction: ChatInputCommandInteraction
 		}
 	}
 
-	const user = await mUserFetch(interaction.user.id);
+	const user = await mUserFetch(interaction.user.id, {
+		last_command_date: new Date(),
+		username: globalClient.users.cache.get(interaction.user.id)?.username
+	});
 
 	let inhibited = false;
 	let runPostCommand = true;
