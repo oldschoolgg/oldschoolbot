@@ -1,7 +1,15 @@
 {
-    "bso/CustomItems/capes.md": [
+    "bso/Miscellaneous/Events.md": [
+        "TastyPumPum"
+    ],
+    "getting-started/BSO.mdx": [
         "TastyPumPum",
         "Magnaboy"
+    ],
+    "index.mdx": [
+        "TastyPumPum",
+        "Magnaboy",
+        "luna"
     ],
     "osb/Buyables/buyable-items-and-shop-pricing-mechanics.mdx": [
         "TastyPumPum"
@@ -11,34 +19,6 @@
     ],
     "osb/Buyables/trip-buyables.md": [
         "TastyPumPum"
-    ],
-    "osb/Miscellaneous/music-cape.md": [
-        "TastyPumPum"
-    ],
-    "osb/Skills/fishing.mdx": [
-        "TastyPumPum",
-        "Magnaboy"
-    ],
-    "osb/Skills/mining.mdx": [
-        "TastyPumPum",
-        "Magnaboy"
-    ],
-    "getting-started/BSO.mdx": [
-        "Magnaboy",
-        "TastyPumPum"
-    ],
-    "osb/clues.mdx": [
-        "TastyPumPum",
-        "DayV",
-        "Magnaboy"
-    ],
-    "bso/Miscellaneous/Events.md": [
-        "TastyPumPum"
-    ],
-    "index.mdx": [
-        "TastyPumPum",
-        "Magnaboy",
-        "luna"
     ],
     "osb/Skills/farming/README.md": [
         "TastyPumPum",
@@ -58,6 +38,10 @@
         "Magnaboy",
         "DayV",
         "Keres"
+    ],
+    "osb/Skills/mining.mdx": [
+        "Magnaboy",
+        "TastyPumPum"
     ],
     "osb/Miscellaneous/champions-challenge.md": [
         "DayV",
@@ -168,6 +152,10 @@
         "DayV",
         "Magnaboy"
     ],
+    "osb/clues.mdx": [
+        "DayV",
+        "Magnaboy"
+    ],
     "osb/combat-achievements.mdx": [
         "DayV",
         "Magnaboy",
@@ -187,6 +175,10 @@
         "TastyPumPum",
         "Magnaboy",
         "badgehunter"
+    ],
+    "bso/CustomItems/capes.md": [
+        "TastyPumPum",
+        "Magnaboy"
     ],
     "bso/CustomItems/index.md": [
         "TastyPumPum",
@@ -244,6 +236,9 @@
         "TastyPumPum"
     ],
     "osb/Miscellaneous/minion-icons.md": [
+        "TastyPumPum"
+    ],
+    "osb/Miscellaneous/music-cape.md": [
         "TastyPumPum"
     ],
     "osb/Miscellaneous/nightmare-zone.md": [
