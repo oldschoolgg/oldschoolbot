@@ -1,4 +1,3 @@
-import { Stopwatch } from '@oldschoolgg/toolkit';
 import { Collection, type User } from 'discord.js';
 import type { Hono } from 'hono';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
@@ -78,10 +77,7 @@ async function testRequest(
 }
 
 beforeAll(async () => {
-	const sw = new Stopwatch();
-	sw.check('Starting tests and initing clients');
 	await initPrismaClients();
-	sw.check('Finished initPrismaClients');
 
 	mockVerifyPatreonSecret.mockReset().mockImplementation((_raw, sig) => sig === 'ok');
 	mockParseStrToTier.mockReset().mockImplementation(name => (/tier\s*1/i.test(name) ? 'T1' : null));
@@ -90,11 +86,9 @@ beforeAll(async () => {
 	mockPatreonRemovePerks.mockReset();
 	mockVerifyGithubSecret.mockReset().mockImplementation((_raw, sig) => sig === 'ok');
 	mockWebhookSend.mockReset();
-	sw.check('Finished mocks');
 
 	app = await startServer();
-	sw.check('startServer');
-});
+}, 25_000);
 
 afterAll(async () => {
 	for (const c of [globalThis.osbClient, globalThis.bsoClient, globalThis.roboChimpClient]) {
