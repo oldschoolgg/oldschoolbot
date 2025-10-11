@@ -36,6 +36,7 @@ import {
 	cluesHardCL,
 	cluesMasterCL,
 	cluesMediumCL,
+	NexCL,
 	temporossCL,
 	theatreOfBloodCapes,
 	theatreOfBloodHardUniques,

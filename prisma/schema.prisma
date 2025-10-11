@@ -533,6 +533,8 @@ model User {
 
   CLUserItem CLUserItem[]
 
+  CLUserItem CLUserItem[]
+
   @@index([id, last_command_date])
   @@map("users")
 }

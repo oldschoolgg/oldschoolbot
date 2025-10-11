@@ -47,7 +47,7 @@ async function bulkGetUsernames(userIDs: string[]) {
 	await Promise.all(uniqueArr(userIDs).map(id => getUsername(id)));
 }
 
-export function getPos(page: number, record: number) {
+function getPos(page: number, record: number) {
 	return `${page * LB_PAGE_SIZE + 1 + record}. `;
 }
 
