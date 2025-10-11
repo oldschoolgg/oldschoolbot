@@ -1,3 +1,4 @@
+import { OSB_VIRTUS_IDS } from '@/lib/bso/bsoConstants.js';
 import { itemsToDelete } from '@/lib/bso/deletedItems.js';
 import { Ignecarus } from '@/lib/bso/monsters/bosses/Ignecarus.js';
 import { KalphiteKingMonster } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
@@ -131,5 +132,12 @@ describe('Sanity', () => {
 				);
 			}
 		}
+	});
+
+	test('Virtus', () => {
+		for (const id of OSB_VIRTUS_IDS) {
+			expect(Items.get(id)).toBeUndefined();
+		}
+		expect(Items.get('Virtus mask')!.id).toBe(788);
 	});
 });
