@@ -1,8 +1,11 @@
 import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
+import { veteranCapeSrc } from '@/lib/bso/buyables/veteranCapeBuyables.js';
+import { Inventions } from '@/lib/bso/skills/invention/inventions.js';
 
-import { Items, itemID } from 'oldschooljs';
+import { Items, itemID, resolveItems } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
+import { customItems } from '@/lib/customItems/util.js';
 import { masterCapesCL } from '@/lib/data/CollectionsExport.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 
@@ -19,19 +22,35 @@ test('santa hats should be tradeable', () => {
 	expect(itemIsTradeable(itemID('Infernal bulwark'))).toEqual(false);
 });
 
-test('isSuperUntradeable', () => {
-	expect(isSuperUntradeable(Items.getOrThrow('TzKal Cape'))).toEqual(true);
-	expect(isSuperUntradeable(Items.getOrThrow("TzKal-Zuk's skin"))).toEqual(true);
-	expect(isSuperUntradeable(Items.getOrThrow('Jal-MejJak'))).toEqual(true);
-	expect(isSuperUntradeable(Items.getOrThrow('Infernal slayer helmet'))).toEqual(true);
-	expect(isSuperUntradeable(Items.getOrThrow('Infernal slayer helmet(i)'))).toEqual(true);
-	expect(isSuperUntradeable(Items.getOrThrow('TzKal cape'))).toEqual(true);
-	expect(isSuperUntradeable(Items.getOrThrow('Head of TzKal Zuk'))).toEqual(true);
-	expect(isSuperUntradeable(Items.getOrThrow('Infernal bulwark'))).toEqual(true);
-	expect(isSuperUntradeable(Items.getOrThrow('Infernal core'))).toEqual(true);
-	expect(isSuperUntradeable(Items.getOrThrow('Seed pack'))).toEqual(true);
+const shouldBeSuperUntradeable = [
+	...masterCapesCL,
+	...Inventions.map(i => i.item.id),
+	...veteranCapeSrc.flatMap(i => i.items),
+	...resolveItems([
+		'TzKal Cape',
+		"TzKal-Zuk's skin",
+		'Jal-MejJak',
+		'Infernal slayer helmet',
+		'Infernal slayer helmet(i)',
+		'TzKal cape',
+		'Head of TzKal Zuk',
+		'Infernal bulwark',
+		'Infernal core',
+		'Seed pack'
+	])
+];
 
-	for (const cape of masterCapesCL) {
-		expect(isSuperUntradeable(cape)).toEqual(true);
+test('isSuperUntradeable', () => {
+	for (const item of shouldBeSuperUntradeable) {
+		expect(isSuperUntradeable(item)).toEqual(true);
+	}
+});
+
+test('CustomItemData should match result of isSuperUntradeable function', () => {
+	for (const itemID of customItems) {
+		const item = Items.getOrThrow(itemID);
+		expect(item.customItemData?.isSuperUntradeable ?? false, `${item.name} should be superUntradeable`).toEqual(
+			isSuperUntradeable(item)
+		);
 	}
 });

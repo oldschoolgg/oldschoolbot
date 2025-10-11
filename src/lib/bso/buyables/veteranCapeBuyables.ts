@@ -4,7 +4,7 @@ import { Bank, resolveItems } from 'oldschooljs';
 
 import type { Buyable } from '@/lib/data/buyables/buyables.js';
 
-const veteranCapeSrc = [
+export const veteranCapeSrc = [
 	{
 		items: resolveItems(['Veteran cape (1 year)', 'Veteran hood (1 year)']),
 		years: 1

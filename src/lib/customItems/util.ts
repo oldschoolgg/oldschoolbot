@@ -30,6 +30,14 @@ export function setCustomItem(id: number, name: string, baseItem: string, newIte
 	if (hasSet.some(i => i.name === name) && name !== 'Smokey') {
 		throw new Error(`Tried to add 2 custom items with same name, called ${name}`);
 	}
+	if (id >= 40_000 && id <= 45_000) {
+		newItemData = deepMerge<DeepPartial<Item>>(newItemData ?? {}, {
+			customItemData: {
+				isSuperUntradeable: true,
+				cantDropFromMysteryBoxes: true
+			}
+		});
+	}
 	if (newItemData?.customItemData?.superTradeableButTradeableOnGE && !newItemData.customItemData.isSuperUntradeable) {
 		throw new Error('Tried to add a custom item with superTradeableButTradeableOnGE, but not isSuperUntradeable');
 	}
