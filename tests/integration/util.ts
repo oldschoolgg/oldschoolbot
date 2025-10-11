@@ -90,8 +90,8 @@ class MockInteraction {
 		return Promise.resolve();
 	}
 
-	async makeParty() {
-		return Promise.resolve();
+	async makeParty(): Promise<MUser[]> {
+		return [this.mUser];
 	}
 
 	async defer() {
