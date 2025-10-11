@@ -4,9 +4,9 @@ title: "Buyables"
 
 There are various useful items you can buy from the bot, not all are purchased with just GP and some require quest points or other minigame requirements to purchase.
 
-Every item on this page can be purchase with the following command:
+Every item on this page can be purchased with the following command:
 
-[/buy name:name]
+[[/buy name\:<item name>]]
 
 For items bought via timed trips, see [Trip Buyables](./trip-buyables).
 
