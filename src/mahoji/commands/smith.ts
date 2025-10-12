@@ -1,5 +1,5 @@
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { Bank } from 'oldschooljs';
+import { calcPercentOfNum, formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, Items } from 'oldschooljs';
 
 import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Smithing from '@/lib/skilling/skills/smithing/index.js';
@@ -90,7 +90,12 @@ export const smithCommand: OSBMahojiCommand = {
 		}
 
 		// Time to smith an item, add on quarter of a second to account for banking/etc.
-		const timeToSmithSingleBar = timeToUse + Time.Second / 4 - (Time.Second * 0.6 * setBonus) / 100;
+		let timeToSmithSingleBar = timeToUse + Time.Second / 4 - (Time.Second * 0.6 * setBonus) / 100;
+		if (user.usingPet('Takon')) {
+			timeToSmithSingleBar /= 4;
+		} else if (user.hasEquippedOrInBank('Dwarven greathammer')) {
+			timeToSmithSingleBar /= 2;
+		}
 
 		let maxTripLength = user.calcMaxTripLength('Smithing');
 
@@ -99,8 +104,12 @@ export const smithCommand: OSBMahojiCommand = {
 		}
 
 		let { quantity } = options;
-		// If no quantity provided, set it to the max.
-		if (!quantity) quantity = Math.floor(maxTripLength / timeToSmithSingleBar);
+		if (!quantity) {
+			quantity = Math.floor(maxTripLength / timeToSmithSingleBar);
+			if (smithedItem.name.includes('Dwarven') || smithedItem.name.includes('Gorajan')) {
+				quantity = 1;
+			}
+		}
 
 		const baseCost = new Bank(smithedItem.inputBars);
 
@@ -114,6 +123,27 @@ export const smithCommand: OSBMahojiCommand = {
 
 		const cost = new Bank();
 		cost.add(baseCost.multiply(quantity));
+
+		const hasScroll = user.owns('Scroll of efficiency');
+		if (hasScroll) {
+			const itemsThatCanBeSaved = Items.resolveItems([
+				'Bronze bar',
+				'Iron bar',
+				'Steel bar',
+				'Gold bar',
+				'Silver bar',
+				'Mithril bar',
+				'Adamantite bar',
+				'Runite bar',
+				'Dwarven bar'
+			]);
+			for (const [item, qty] of baseCost.items()) {
+				if (itemsThatCanBeSaved.includes(item.id)) {
+					const saved = Math.floor(calcPercentOfNum(15, qty));
+					cost.remove(item.id, saved);
+				}
+			}
+		}
 
 		const duration = quantity * timeToSmithSingleBar;
 		if (duration > maxTripLength) {
@@ -133,10 +163,11 @@ export const smithCommand: OSBMahojiCommand = {
 			channelID,
 			quantity,
 			duration,
-			type: 'Smithing'
+			type: 'Smithing',
+			cantBeDoubled: smithedItem.cantBeDoubled
 		});
 
-		return `${user.minionName} is now smithing ${quantity * smithedItem.outputMultiple}x ${
+		let str = `${user.minionName} is now smithing ${quantity * smithedItem.outputMultiple}x ${
 			smithedItem.name
 		}, removed ${cost} from your bank, it'll take around ${formatDuration(duration)} to finish. ${
 			setBonus > 0
@@ -148,5 +179,16 @@ export const smithCommand: OSBMahojiCommand = {
 				? 'Faster Cannonball production using the Shilo village furnance due to completing the Elite Karamja Diary.'
 				: ''
 		}`;
+
+		if (user.usingPet('Takon')) {
+			str += ' Takon is Smithing for you, at incredible speeds and skill.';
+		} else if (user.hasEquippedOrInBank('Dwarven greathammer')) {
+			str += ' 2x faster for Dwarven greathammer.';
+		}
+
+		if (hasScroll) {
+			str += ' Your Scroll of efficiency enables you to save 15% of the bars used.';
+		}
+		return str;
 	}
 };
