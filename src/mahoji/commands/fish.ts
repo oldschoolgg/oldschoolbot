@@ -1,8 +1,7 @@
-import { bsoTackleBoxes } from '@/lib/bso/bsoConstants.js';
 import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
 
-import { formatDuration, stringSearch, Time } from '@oldschoolgg/toolkit';
-import { ItemGroups, Items, Monsters } from 'oldschooljs';
+import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { Bank, Items, itemID, Monsters } from 'oldschooljs';
 
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
@@ -49,15 +48,22 @@ export const fishCommand: OSBMahojiCommand = {
 		user,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; flakes?: boolean }>) => {
-		const fish = Fishing.Fishes.find(fish => stringSearch(fish.name, options.name));
+		const fish = Fishing.Fishes.find(
+			fish =>
+				stringMatches(fish.id, options.name) ||
+				stringMatches(fish.name, options.name) ||
+				fish.alias?.some(alias => stringMatches(alias, options.name))
+		);
 		if (!fish) return 'Thats not a valid fish to catch.';
 
 		if (user.skillsAsLevels.fishing < fish.level) {
 			return `${user.minionName} needs ${fish.level} Fishing to fish ${fish.name}.`;
 		}
 
-		if (fish.qpRequired && user.QP < fish.qpRequired) {
-			return `You need ${fish.qpRequired} qp to catch those!`;
+		if (fish.qpRequired) {
+			if (user.QP < fish.qpRequired) {
+				return `You need ${fish.qpRequired} qp to catch those!`;
+			}
 		}
 
 		if (
@@ -73,96 +79,158 @@ export const fishCommand: OSBMahojiCommand = {
 				return 'You are not worthy JalYt. Before you can fish Infernal Eels, you need to have defeated the mighty TzTok-Jad!';
 			}
 		}
-
-		if (fish.name === 'Minnow' && ItemGroups.anglerOutfit.some(_piece => !user.hasEquippedOrInBank(_piece))) {
+		const anglerOutfit = Object.keys(Fishing.anglerItems).map(i => Items.itemNameFromId(Number.parseInt(i)));
+		if (fish.name === 'Minnow' && anglerOutfit.some(test => !user.hasEquippedOrInBank(test!))) {
 			return 'You need to own the Angler Outfit to fish for Minnows.';
 		}
 
-		const boosts = [];
-
 		// If no quantity provided, set it to the max.
+		let scaledTimePerFish = Time.Second * fish.timePerFish * (1 + (100 - user.skillsAsLevels.fishing) / 100);
+
+		const boosts = [];
+		const hasShelldon = user.usingPet('Shelldon');
+		if (hasShelldon) {
+			scaledTimePerFish /= 2;
+			boosts.push('2x faster for Shelldon');
+		}
 		let maxTripLength = user.calcMaxTripLength('Fishing');
 
-		for (let i = 0; i < bsoTackleBoxes.length; i++) {
-			if (user.hasEquippedOrInBank([bsoTackleBoxes[i]])) {
-				const num = Time.Minute * (bsoTackleBoxes.length - i);
-				maxTripLength += num;
-				boosts.push(`${formatDuration(num)} for ${Items.itemNameFromId(bsoTackleBoxes[i])}`);
-				break;
-			}
+		const boostedTimePerFish = reduceNumByPercent(scaledTimePerFish, inventionBoosts.mechaRod.speedBoostPercent);
+		const res = await inventionItemBoost({
+			user,
+			inventionID: InventionID.MechaRod,
+			duration: Math.min(
+				maxTripLength,
+				(options.quantity ?? Math.floor(maxTripLength / boostedTimePerFish)) * boostedTimePerFish
+			)
+		});
+		if (res.success) {
+			scaledTimePerFish = boostedTimePerFish;
+			boosts.push(`${inventionBoosts.mechaRod.speedBoostPercent}% faster for Mecha rod (${res.messages})`);
 		}
 
-		const fishingTripArgs: Parameters<typeof Fishing.util.calcFishingTripStart>[0] = {
-			gearBank: user.gearBank,
-			fish,
-			maxTripLength,
-			quantityInput: options.quantity,
-			wantsToUseFlakes: Boolean(options.flakes),
-			isUsingMechaRod: false
-		};
+		switch (fish.bait) {
+			case itemID('Fishing bait'):
+				if (fish.name === 'Infernal eel') {
+					scaledTimePerFish *= 1;
+				} else if (user.hasEquippedOrInBank('Pearl fishing rod') && fish.name !== 'Infernal eel') {
+					scaledTimePerFish *= 0.95;
+					boosts.push('5% for Pearl fishing rod');
+				}
+				break;
+			case itemID('Feather'):
+				if (fish.name === 'Barbarian fishing' && user.hasEquippedOrInBank('Pearl barbarian rod')) {
+					scaledTimePerFish *= 0.95;
+					boosts.push('5% for Pearl barbarian rod');
+				} else if (user.hasEquippedOrInBank('Pearl fly fishing rod') && fish.name !== 'Barbarian fishing') {
+					scaledTimePerFish *= 0.95;
+					boosts.push('5% for Pearl fly fishing rod');
+				}
+				break;
+			default:
+				if (user.hasEquippedOrInBank('Crystal harpoon')) {
+					scaledTimePerFish *= 0.95;
+					boosts.push('5% for Crystal harpoon');
+				}
+				break;
+		}
 
-		const resultWithInvention = Fishing.util.calcFishingTripStart({ ...fishingTripArgs, isUsingMechaRod: true });
+		if (user.hasEquippedOrInBank('Shark tooth necklace')) {
+			scaledTimePerFish = reduceNumByPercent(scaledTimePerFish, 5);
+			boosts.push('5% for Shark tooth necklace');
+		}
 
-		const mechaRodResult =
-			typeof resultWithInvention === 'string'
-				? null
-				: await inventionItemBoost({
-						user,
-						inventionID: InventionID.MechaRod,
-						duration: resultWithInvention.duration
-					});
-		if (mechaRodResult?.success) {
-			boosts.push(
-				`${inventionBoosts.mechaRod.speedBoostPercent}% faster for Mecha rod (${mechaRodResult.messages})`
+		if (fish.id === itemID('Minnow')) {
+			scaledTimePerFish *= Math.max(
+				0.83,
+				-0.000_541_351 * user.skillsAsLevels.fishing ** 2 + 0.089_066_3 * user.skillsAsLevels.fishing - 2.681_53
 			);
 		}
 
-		const res = Fishing.util.calcFishingTripStart({
-			gearBank: user.gearBank,
-			fish,
-			maxTripLength,
-			quantityInput: options.quantity,
-			wantsToUseFlakes: Boolean(options.flakes),
-			isUsingMechaRod: mechaRodResult?.success ?? false
-		});
-		if (typeof res === 'string') {
-			return res;
-		}
-
-		if (res.cost.length > 0) {
-			if (!user.owns(res.cost)) {
-				return `You don't own the required items to fish ${fish.name}, you need: ${res.cost}.`;
+		const tackleBoxes = [
+			"Champion's tackle box",
+			'Professional tackle box',
+			'Standard tackle box',
+			'Basic tackle box'
+		];
+		for (let i = 0; i < tackleBoxes.length; i++) {
+			if (user.hasEquippedOrInBank([tackleBoxes[i]])) {
+				const num = Time.Minute * (tackleBoxes.length - i);
+				maxTripLength += num;
+				boosts.push(`${formatDuration(num)} for ${tackleBoxes[i]}`);
+				break;
 			}
-			await user.transactItems({
-				itemsToRemove: res.cost
-			});
 		}
-
 		if (user.allItemsOwned.has('Fish sack barrel') || user.allItemsOwned.has('Fish barrel')) {
-			res.boosts.push(
+			boosts.push(
 				`+9 trip minutes for having a ${
 					user.allItemsOwned.has('Fish sack barrel') ? 'Fish sack barrel' : 'Fish barrel'
 				}`
 			);
 		}
 
+		let { quantity, flakes } = options;
+		if (!quantity) quantity = Math.floor(maxTripLength / scaledTimePerFish);
+
+		let flakesQuantity: number | undefined;
+		const cost = new Bank();
+
+		if (flakes) {
+			if (!user.bank.has('Spirit flakes')) {
+				return 'You need to have at least one Spirit flake!';
+			}
+
+			flakesQuantity = Math.min(user.bank.amount('Spirit flakes'), quantity);
+			boosts.push(`More fish from using ${flakesQuantity}x Spirit flakes`);
+			cost.add('Spirit flakes', flakesQuantity);
+		}
+
+		if (fish.bait) {
+			const baseCost = new Bank().add(fish.bait);
+
+			const maxCanDo = user.bank.fits(baseCost);
+			if (maxCanDo === 0) {
+				return `You need ${Items.itemNameFromId(fish.bait)} to fish ${fish.name}!`;
+			}
+			if (maxCanDo < quantity) {
+				quantity = maxCanDo;
+			}
+
+			cost.add(fish.bait, quantity);
+		}
+
+		if (cost.length > 0) {
+			// Remove the bait and/or spirit flakes from their bank.
+			await user.removeItemsFromBank(cost);
+		}
+
+		const duration = quantity * scaledTimePerFish;
+
+		if (duration > maxTripLength) {
+			return `${user.minionName} can't go on trips longer than ${formatDuration(
+				maxTripLength
+			)}, try a lower quantity. The highest amount of ${fish.name} you can fish is ${Math.floor(
+				maxTripLength / scaledTimePerFish
+			)}.`;
+		}
+
 		await ActivityManager.startTrip<FishingActivityTaskOptions>({
 			fishID: fish.id,
 			userID: user.id,
 			channelID,
-			quantity: res.quantity,
+			quantity,
 			iQty: options.quantity ? options.quantity : undefined,
-			duration: res.duration,
+			duration,
 			type: 'Fishing',
-			flakesQuantity: res.flakesBeingUsed
+			flakesQuantity
 		});
 
-		let response = `${user.minionName} is now fishing ${res.quantity}x ${fish.name}, it'll take around ${formatDuration(
-			res.duration
+		let response = `${user.minionName} is now fishing ${quantity}x ${fish.name}, it'll take around ${formatDuration(
+			duration
 		)} to finish.`;
 
-		if (res.boosts.length > 0) {
-			response += `\n\n**Boosts:** ${res.boosts.join(', ')}.`;
+		if (boosts.length > 0) {
+			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
 		return response;

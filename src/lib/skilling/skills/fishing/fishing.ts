@@ -3,7 +3,6 @@ import { itemID } from 'oldschooljs';
 
 import { defineSkill, type Fish } from '@/lib/skilling/types.js';
 import { calcFishingTripResult } from './fishingTrip.js';
-import { calcFishingTripStart } from './fishingTripStart.js';
 import { anglerItems, calcAnglerBoostPercent, calcMinnowQuantityRange, calcRadasBlessingBoost } from './fishingUtil.js';
 
 const fishes: Fish[] = [
@@ -301,7 +300,6 @@ export const Fishing = defineSkill({
 		calcFishingTripResult,
 		calcRadasBlessingBoost,
 		calcMinnowQuantityRange,
-		calcAnglerBoostPercent,
-		calcFishingTripStart
+		calcAnglerBoostPercent
 	}
 });
