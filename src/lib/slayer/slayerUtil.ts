@@ -394,7 +394,7 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 
 	if (!assignedTask || !slayerMaster) {
 		Logging.logError(
-			`Could not find task or slayer master for user ${id} task ${currentTask.monster_id} master ${currentTask.slayer_master_id}`,
+			`Could not find task or slayer master for user ${id} task ${currentTask.monster_id} master ${currentTask.slayer_master_id}. SlayerMaster[${slayerMaster?.name}] AssignedTask[${assignedTask?.monster?.name}]`,
 			{ userID: id }
 		);
 		// 'Skip' broken task:
