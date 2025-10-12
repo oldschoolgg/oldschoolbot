@@ -1,4 +1,6 @@
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skills/invention/inventions.js';
+
+import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import Herblore from '@/lib/skilling/skills/herblore/herblore.js';
@@ -89,8 +91,9 @@ export const mixCommand: OSBMahojiCommand = {
 			} gp for each item so they don't have to go.`;
 		}
 
+		const boosts: string[] = [];
 		const maxTripLength = user.calcMaxTripLength('Herblore');
-		let quantity = optionQuantity;
+		let quantity = optionQuantity ?? mixableItem.defaultQuantity;
 		const maxCanDo = user.bankWithGP.fits(baseCost);
 		const maxCanMix = Math.floor(maxTripLength / timeToMixSingleItem);
 
@@ -101,6 +104,29 @@ export const mixCommand: OSBMahojiCommand = {
 		if (!quantity) {
 			quantity = maxCanMix;
 			if (maxCanDo < quantity && maxCanDo !== 0) quantity = maxCanDo;
+		}
+
+		if (!(wesley && mixableWesley) && !(zahur && mixableZahur)) {
+			const boostedTimeToMixSingleItem = reduceNumByPercent(
+				timeToMixSingleItem,
+				inventionBoosts.mechaMortar.herbloreSpeedBoostPercent
+			);
+			const boostResult = await inventionItemBoost({
+				user,
+				inventionID: InventionID.MechaMortar,
+				duration: Math.min(
+					maxTripLength,
+					Math.min(maxCanDo, options.quantity ?? Math.floor(maxTripLength / boostedTimeToMixSingleItem)) *
+						boostedTimeToMixSingleItem
+				)
+			});
+			if (boostResult.success) {
+				timeToMixSingleItem = boostedTimeToMixSingleItem;
+				boosts.push(
+					`${inventionBoosts.mechaMortar.herbloreSpeedBoostPercent}% boost for Mecha-Mortar (${boostResult.messages})`
+				);
+				if (!options.quantity) quantity = Math.min(maxCanDo, Math.floor(maxTripLength / timeToMixSingleItem));
+			}
 		}
 
 		quantity = Math.max(1, quantity);
@@ -131,8 +157,13 @@ export const mixCommand: OSBMahojiCommand = {
 			type: 'Herblore'
 		});
 
-		return `${user.minionName} ${cost} making ${quantity}x ${
+		let str = `${user.minionName} ${cost} making ${quantity}x ${
 			mixableItem.outputMultiple ? 'batches of' : ''
 		}${itemName}, it'll take around ${formatDuration(quantity * timeToMixSingleItem)} to finish.`;
+		if (boosts.length > 0) {
+			str += `\n**Boosts:** ${boosts.join(', ')}`;
+		}
+
+		return str;
 	}
 };
