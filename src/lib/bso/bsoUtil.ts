@@ -74,7 +74,7 @@ export function herbertDroprate(herbloreXP: number, itemLevel: number) {
 	return petChance;
 }
 
-export function birdhouseLimit(user: MUser) {
+export function calcBirdhouseLimit(user: MUser) {
 	let base = 4;
 	if (user.bitfield.includes(BitField.HasScrollOfTheHunt)) base += 4;
 	if (user.hasEquippedOrInBank('Hunter master cape')) base += 4;

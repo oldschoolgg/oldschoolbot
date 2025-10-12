@@ -1,4 +1,4 @@
-import { birdhouseLimit } from '@/lib/bso/bsoUtil.js';
+import { calcBirdhouseLimit } from '@/lib/bso/bsoUtil.js';
 
 import { randFloat, roll } from '@oldschoolgg/rng';
 import type { Prisma } from '@prisma/client';
@@ -20,7 +20,7 @@ export const birdHouseTask: MinionTask = {
 	type: 'Birdhouse',
 	async run(data: BirdhouseActivityTaskOptions, { user, handleTripFinish }) {
 		const { birdhouseName, birdhouseData, channelID, duration, placing, gotCraft, currentDate } = data;
-
+		const birdHouseLimit = calcBirdhouseLimit(user);
 		let hunterXP = 0;
 		let craftingXP = 0;
 		const strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
@@ -29,17 +29,15 @@ export const birdHouseTask: MinionTask = {
 		const birdhouse = birdhouses.find(_birdhouse => _birdhouse.name === birdhouseName);
 		if (!birdhouse) return;
 
-		const birdHouses = birdhouseLimit(user);
-
 		if (!placing || !gotCraft) {
-			loot.add('Clockwork', birdHouses);
+			loot.add('Clockwork', birdHouseLimit);
 		}
 
 		if (!birdhouseData.birdhousePlaced) {
-			let str = `${user}, ${user.minionName} finished placing ${birdHouses}x ${birdhouse.name}.`;
+			let str = `${user}, ${user.minionName} finished placing ${birdHouseLimit}x ${birdhouse.name}.`;
 
 			if (placing && gotCraft) {
-				craftingXP = birdhouse.craftXP * birdHouses;
+				craftingXP = birdhouse.craftXP * birdHouseLimit;
 				str += await user.addXP({
 					skillName: 'crafting',
 					amount: craftingXP,
@@ -65,12 +63,12 @@ export const birdHouseTask: MinionTask = {
 			const birdhouseToCollect = birdhouses.find(_birdhouse => _birdhouse.name === birdhouseData.lastPlaced);
 			if (!birdhouseToCollect) return;
 			if (placing) {
-				str = `${user}, ${user.minionName} finished placing ${birdHouses}x ${birdhouse.name} and collecting ${birdHouses}x full ${birdhouseToCollect.name}.`;
+				str = `${user}, ${user.minionName} finished placing ${birdHouseLimit}x ${birdhouse.name} and collecting ${birdHouseLimit}x full ${birdhouseToCollect.name}.`;
 			} else {
-				str = `${user}, ${user.minionName} finished collecting ${birdHouses}x full ${birdhouseToCollect.name}.`;
+				str = `${user}, ${user.minionName} finished collecting ${birdHouseLimit}x full ${birdhouseToCollect.name}.`;
 			}
 
-			for (let i = 0; i < birdHouses; i++) {
+			for (let i = 0; i < birdHouseLimit; i++) {
 				if (!roll(200)) continue;
 				let nextTier = false;
 				let gotClue = false;
@@ -90,8 +88,8 @@ export const birdHouseTask: MinionTask = {
 				}
 			}
 
-			hunterXP = birdhouseToCollect.huntXP * birdHouses;
-			for (let i = 0; i < birdHouses; i++) {
+			hunterXP = birdhouseToCollect.huntXP * birdHouseLimit;
+			for (let i = 0; i < birdHouseLimit; i++) {
 				loot.add(birdhouseToCollect.table.roll());
 				if (strungRabbitFoot) {
 					loot.add(birdhouseToCollect.strungRabbitFootTable.roll());
@@ -114,7 +112,7 @@ export const birdHouseTask: MinionTask = {
 			str += `\n\n${xpRes} from collecting the birdhouses.`;
 
 			if (placing && gotCraft) {
-				craftingXP = birdhouse.craftXP * birdHouses;
+				craftingXP = birdhouse.craftXP * birdHouseLimit;
 				const xpRes = await user.addXP({
 					skillName: 'crafting',
 					amount: craftingXP,
