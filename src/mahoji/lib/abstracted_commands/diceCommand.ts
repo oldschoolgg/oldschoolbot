@@ -44,6 +44,13 @@ export async function diceCommand(rng: RNGProvider, user: MUser, interaction: MI
 		await user.removeItemsFromBank(new Bank().add('Coins', amount));
 	}
 
-	return `${user.badgedUsername} rolled **${roll}** on the percentile dice, and you ${won ? 'won' : 'lost'
-		} ${toKMB(amountToAdd)} GP.`;
+	let resultStr = `${user.badgedUsername} rolled **${roll}** on the percentile dice, and you ${
+		won ? 'won' : 'lost'
+	} ${toKMB(amountToAdd)} GP.`;
+	if (amount >= 100_000_000 && won && rng.percentChance(3)) {
+		await user.addItemsToBank({ items: new Bank().add('Gamblers bag'), collectionLog: true });
+		resultStr += `\n\nYou received a **Gamblers Bag**.`;
+	}
+
+	return resultStr;
 }
