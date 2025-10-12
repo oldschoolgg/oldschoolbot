@@ -1,4 +1,4 @@
-import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 
 import { type Item, Items, type Monster, Monsters } from 'oldschooljs';
 
@@ -68,7 +68,7 @@ export const slayerMaskHelms: SlayerMaskHelm[] = [
 	{
 		mask: Items.getOrThrow('Ganodermic mask'),
 		helm: Items.getOrThrow('Ganodermic slayer helm'),
-		monsters: [BSOMonsters.GanodermicBeast.id, BSOMonsters.GanodermicRunt.id],
+		monsters: [EBSOMonster.GANODERMIC_BEAST, EBSOMonster.GANODERMIC_RUNT],
 		slayerLevel: 95,
 		...calculateDroprates(Monsters.BlackDemon)
 	},

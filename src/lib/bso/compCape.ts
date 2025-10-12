@@ -28,9 +28,9 @@ import {
 	tinkeringWorshopCL
 } from '@/lib/bso/collection-log/minigames.js';
 import { cookingCL, craftingCL, creatablesCL, herbloreCL, smithingCL } from '@/lib/bso/collection-log/special.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { kibbleCL } from '@/lib/bso/kibble.js';
 import { allLeagueTasks, leagueTasks } from '@/lib/bso/leagues/leagues.js';
-import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 import { cmbClothes } from '@/lib/bso/openables/cmb.js';
 import { divinationEnergies } from '@/lib/bso/skills/divination.js';
 import { dungBuyables } from '@/lib/bso/skills/dungoneering/dungData.js';
@@ -264,7 +264,7 @@ const pvmRequirements = new Requirements()
 	.add({
 		name: 'Kill a Frost dragon',
 		kcRequirement: {
-			[BSOMonsters.FrostDragon.id]: 1
+			[EBSOMonster.FROST_DRAGON]: 1
 		}
 	})
 	.add({

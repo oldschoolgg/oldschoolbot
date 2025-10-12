@@ -1,3 +1,4 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import type { CustomMonster } from '@/lib/bso/monsters/CustomMonster.js';
 import { GrimyHerbTable, lowRuneHighAdamantTable, runeWeaponTable } from '@/lib/bso/tables/sharedTables.js';
 
@@ -18,7 +19,7 @@ function neemCost(extraCost?: Bank) {
 
 const FrostDragon: CustomMonster = {
 	isCustom: true,
-	id: 345_232,
+	id: EBSOMonster.FROST_DRAGON,
 	baseMonster: Monsters.LavaDragon,
 	name: 'Frost Dragon',
 	aliases: ['frost dragon', 'fd'],
@@ -259,7 +260,7 @@ const Grifolapine: CustomMonster = {
 
 const GanodermicRunt: CustomMonster = {
 	isCustom: true,
-	id: 129_129,
+	id: EBSOMonster.GANODERMIC_RUNT,
 	baseMonster: Monsters.DarkBeast,
 	name: 'Ganodermic Runt',
 	aliases: ['ganodermic runt'],
@@ -295,7 +296,7 @@ const GanodermicRunt: CustomMonster = {
 
 const GanodermicBeast: CustomMonster = {
 	isCustom: true,
-	id: 194_825,
+	id: EBSOMonster.GANODERMIC_BEAST,
 	baseMonster: Monsters.DarkBeast,
 	name: 'Ganodermic Beast',
 	aliases: ['ganodermic beast'],

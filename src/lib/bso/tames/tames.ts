@@ -1,5 +1,5 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { handleSpecialCoxLoot } from '@/lib/bso/handleSpecialCoxLoot.js';
-import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
 import type { MTame } from '@/lib/bso/structures/MTame.js';
 import type { handleFinish } from '@/lib/bso/tames/tameTasks.js';
 
@@ -8,12 +8,12 @@ import type { Tame, TameActivity } from '@prisma/client';
 import {
 	Bank,
 	ChambersOfXeric,
+	EMonster,
 	type Item,
 	type ItemBank,
 	Items,
 	itemID,
 	Misc,
-	Monsters,
 	resolveItems,
 	TheatreOfBlood
 } from 'oldschooljs';
@@ -354,35 +354,35 @@ export const tameKillableMonsters: TameKillableMonster[] = [
 
 const overrides = [
 	{
-		id: BSOMonsters.Nihiliz.id,
+		id: EBSOMonster.NIHILIZ,
 		minArmorTier: Items.getOrThrow('Justiciar igne armor')
 	},
 	{
-		id: BSOMonsters.Treebeard.id,
+		id: EBSOMonster.TREEBEARD,
 		minArmorTier: Items.getOrThrow('Justiciar igne armor')
 	},
 	{
-		id: BSOMonsters.QueenBlackDragon.id,
+		id: EBSOMonster.QUEEN_BLACK_DRAGON,
 		minArmorTier: Items.getOrThrow('Justiciar igne armor')
 	},
 	{
-		id: BSOMonsters.SeaKraken.id,
+		id: EBSOMonster.SEA_KRAKEN,
 		minArmorTier: Items.getOrThrow('Justiciar igne armor')
 	},
 	{
-		id: BSOMonsters.Malygos.id,
+		id: EBSOMonster.MALYGOS,
 		minArmorTier: Items.getOrThrow('Justiciar igne armor')
 	},
 	{
-		id: Monsters.Callisto.id,
+		id: EMonster.CALLISTO,
 		minArmorTier: Items.getOrThrow('Justiciar igne armor')
 	},
 	{
-		id: Monsters.Vetion.id,
+		id: EMonster.VETION,
 		minArmorTier: Items.getOrThrow('Justiciar igne armor')
 	},
 	{
-		id: Monsters.Venenatis.id,
+		id: EMonster.VENENATIS,
 		minArmorTier: Items.getOrThrow('Justiciar igne armor')
 	}
 ] as const;
