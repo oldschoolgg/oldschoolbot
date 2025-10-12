@@ -14,7 +14,7 @@ import { LampTable } from '@/lib/bso/xpLamps.js';
 
 import { randArrItem, roll } from '@oldschoolgg/rng';
 import { dateFm, Emoji, formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
-import type { ButtonInteraction } from 'discord.js';
+import { type ButtonInteraction, MessageFlags } from 'discord.js';
 import { Bank, type ItemBank, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
 
 import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
@@ -181,14 +181,14 @@ function icDonateValidation(user: MUser, donator: MUser) {
 async function donateICHandler(interaction: ButtonInteraction) {
 	const userID = interaction.customId.split('_')[2];
 	if (!userID) {
-		return interaction.reply({ content: 'Invalid user.', ephemeral: true });
+		return interaction.reply({ content: 'Invalid user.', flags: MessageFlags.Ephemeral });
 	}
 
 	const user = await mUserFetch(userID);
 	const donator = await mUserFetch(interaction.user.id);
 
 	const errorStr = icDonateValidation(user, donator);
-	if (typeof errorStr === 'string') return interaction.reply({ content: errorStr, ephemeral: true });
+	if (typeof errorStr === 'string') return interaction.reply({ content: errorStr, flags: MessageFlags.Ephemeral });
 
 	const mConfirmation = new MInteraction({ interaction });
 	await mConfirmation.confirmation({

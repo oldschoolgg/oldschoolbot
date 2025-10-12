@@ -1,6 +1,6 @@
 import { shuffleArr } from '@oldschoolgg/rng';
 import { channelIsSendable, noOp, Time } from '@oldschoolgg/toolkit';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ComponentType } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ComponentType, MessageFlags } from 'discord.js';
 
 function simpleHash(str: string): number {
 	let h = 0;
@@ -52,7 +52,7 @@ export async function buttonUserPicker({
 			const isCreator = id === creator;
 			const notAllowed = !ironmenAllowed && mUser.isIronman;
 			if (notAllowed && !isCreator) {
-				i.reply({ ephemeral: true, content: "You aren't allowed to participate.." });
+				i.reply({ flags: MessageFlags.Ephemeral, content: "You aren't allowed to participate.." });
 				return;
 			}
 			if (guessed.includes(id)) {
@@ -62,16 +62,16 @@ export async function buttonUserPicker({
 					i.user.id !== creator.toString() ||
 					(amountTimesGuessed >= 2 && isCreator && creatorGetsTwoGuesses)
 				) {
-					i.reply({ ephemeral: true, content: 'You already guessed wrong.' });
+					i.reply({ flags: MessageFlags.Ephemeral, content: 'You already guessed wrong.' });
 					return;
 				}
 			}
 			if (i.customId === correctCustomID) {
 				resolve(id);
 				collector.stop();
-				i.reply({ ephemeral: true, content: 'You got it!' });
+				i.reply({ flags: MessageFlags.Ephemeral, content: 'You got it!' });
 			} else {
-				i.reply({ ephemeral: true, content: 'Wrong!' });
+				i.reply({ flags: MessageFlags.Ephemeral, content: 'Wrong!' });
 				guessed.push(id);
 			}
 		});
