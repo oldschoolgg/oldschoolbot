@@ -16,8 +16,8 @@ export async function diceCommand(rng: RNGProvider, user: MUser, interaction: MI
 	}
 	if (user.isIronman) return "You're an ironman and you cant play dice.";
 
-	if (amount > 500_000_000) {
-		return 'You can only dice up to 500m at a time!';
+	if (amount > 10_000_000_000) {
+		return 'You can only dice up to 10b at a time!';
 	}
 
 	if (amount < 1_000_000) {
@@ -44,7 +44,6 @@ export async function diceCommand(rng: RNGProvider, user: MUser, interaction: MI
 		await user.removeItemsFromBank(new Bank().add('Coins', amount));
 	}
 
-	return `${user.badgedUsername} rolled **${roll}** on the percentile dice, and you ${
-		won ? 'won' : 'lost'
-	} ${toKMB(amountToAdd)} GP.`;
+	return `${user.badgedUsername} rolled **${roll}** on the percentile dice, and you ${won ? 'won' : 'lost'
+		} ${toKMB(amountToAdd)} GP.`;
 }
