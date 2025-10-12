@@ -21,7 +21,7 @@
 				"type": "restriction",
 				"monster": "Barrows",
 				"desc": "Kill any Barrows Brother using only magical damage.",
-				"details": "Must be training Magic.",
+				"details": "You must be training Magic.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -56,6 +56,7 @@
 				"type": "restriction",
 				"monster": "Bryophyta",
 				"desc": "Kill Bryophyta on a free to play world.",
+				"details": "All equipped items in the gear style you are training must be free-to-play.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -118,6 +119,7 @@
 				"type": "restriction",
 				"monster": "Greater Demon",
 				"desc": "Finish off a Greater Demon with a demonbane weapon.",
+				"details": "You must have a demonbane weapon equipped.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -173,6 +175,7 @@
 				"type": "restriction",
 				"monster": "Obor",
 				"desc": "Kill Obor on a free to play world.",
+				"details": "All equipped items in the gear style you are training must be free-to-play.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -247,6 +250,7 @@
 				"type": "restriction",
 				"monster": "Wintertodt",
 				"desc": "Subdue the Wintertodt with four pieces of warm equipment equipped.",
+				"details": "At least 4 warm gear items must be equipped.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -282,6 +286,7 @@
 				"type": "restriction",
 				"monster": "Scurrius",
 				"desc": "Finish off Scurrius with a ratbane weapon.",
+				"details": "You must have a ratbane weapon equipped.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -421,6 +426,7 @@
 				"type": "mechanical",
 				"monster": "Crazy Archaeologist",
 				"desc": "Kill the Crazy Archaeologist with only magical attacks.",
+				"details": "You must be training Magic.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -472,6 +478,7 @@
 				"type": "mechanical",
 				"monster": "Deranged Archaeologist",
 				"desc": "Kill the Deranged Archaeologist with only magical attacks.",
+				"details": "You must be training Magic.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -534,6 +541,7 @@
 				"type": "restriction",
 				"monster": "King Black Dragon",
 				"desc": "Kill the King Black Dragon with a stab weapon.",
+				"details": "You must be training melee and have a weapon equipped in melee gear with a positive stab attack bonus.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -599,6 +607,7 @@
 				"type": "restriction",
 				"monster": "Skotizo",
 				"desc": "Kill Skotizo with a demonbane weapon equipped.",
+				"details": "You must have a demonbane weapon equipped.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -715,6 +724,7 @@
 				"desc": "Kill Amoxliatl using only glacial temotli as a weapon.",
 				"type": "restriction",
 				"monster": "Amoxliatl",
+				"details": "You must have a Glacial temotli equipped.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -1050,6 +1060,7 @@
 				"type": "restriction",
 				"monster": "K'ril Tsutsaroth",
 				"desc": "Finish off K'ril Tsutsaroth with a demonbane weapon.",
+				"details": "You must have a demonbane weapon equipped.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -1203,6 +1214,7 @@
 				"type": "restriction",
 				"monster": "Tempoross",
 				"desc": "Subdue Tempoross while wearing any variation of the angler outfit.",
+				"details": "You must have the angler outfit equipped.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -1306,6 +1318,7 @@
 				"desc": "Kill the Hueycoatl whilst wearing two pieces of Hueycoatl armour.",
 				"type": "restriction",
 				"monster": "TheHueycoatl",
+				"details": "You must have at least two pieces of Hueycoatl armour equipped.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -1655,6 +1668,7 @@
 				"desc": "Kill Commander Zilyana in a private instance with melee only.",
 				"type": "restriction",
 				"monster": "Commander Zilyana",
+				"details": "You must not be training Ranged or Magic.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -1692,6 +1706,7 @@
 				"desc": "Finish off the Corporeal Beast with a Crystal Halberd special attack.",
 				"type": "restriction",
 				"monster": "Corporeal Beast",
+				"details": "You must have a Crystal halberd equipped.",
 				"rng": {
 					"chancePerKill": 5
 				}
@@ -1833,6 +1848,7 @@
 				"desc": "Finish off a Demonic Gorilla with a demonbane weapon.",
 				"type": "restriction",
 				"monster": "Demonic Gorilla",
+				"details": "You must have a demonbane weapon equipped.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -1934,6 +1950,7 @@
 				"desc": "Defeat K'ril Tsutsaroth in a private instance using only demonbane spells.",
 				"type": "mechanical",
 				"monster": "K'ril Tsutsaroth",
+				"details": "You must be training Magic.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -1978,6 +1995,7 @@
 				"desc": "Kill the Kalphite Queen using only the Verac's Flail as a weapon.",
 				"type": "restriction",
 				"monster": "Kalphite Queen",
+				"details": "You must be training Melee and have Verac's flail equipped.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -2122,6 +2140,7 @@
 				"desc": "Defeat the Nightmare (Solo) in less than 23 minutes. (Party size required)",
 				"type": "speed",
 				"monster": "The Nightmare",
+				"details": "Solo trip required.",
 				"rng": {
 					"chancePerKill": 10
 				}
@@ -2132,6 +2151,7 @@
 				"desc": "Kill the Nightmare solo. (Party size required)",
 				"type": "restriction",
 				"monster": "The Nightmare",
+				"details": "Solo trip required.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -2149,6 +2169,7 @@
 				"desc": "Defeat the Pestilent Bloat in the Theatre of Blood: Entry Mode by using a crystal halberd special attack as your final attack.",
 				"type": "mechanical",
 				"monster": "Theatre of Blood: Entry Mode",
+				"details": "You must have a Crystal halberd equipped.",
 				"rng": {
 					"chancePerKill": 2
 				}
@@ -2181,6 +2202,7 @@
 				"desc": "Defeat the Pestilent Bloat in the Theatre of Blood: Entry Mode with everyone having a salve amulet equipped.",
 				"type": "mechanical",
 				"monster": "Theatre of Blood: Entry Mode",
+				"details": "You must have a Salve amulet equipped.",
 				"rng": {
 					"chancePerKill": 2
 				}
@@ -2357,6 +2379,7 @@
 				"desc": "Complete the Tombs of Amascut solo without dying. (Party size required)",
 				"type": "perfection",
 				"monster": "Tombs of Amascut",
+				"details": "Team size must be 1 and no one can die.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -2367,6 +2390,7 @@
 				"desc": "Complete the Tombs of Amascut in a group of two or more without anyone dying. (Party size required)",
 				"type": "perfection",
 				"monster": "Tombs of Amascut",
+				"details": "Team size must be at least 2 and no one can die.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -2438,6 +2462,7 @@
 				"desc": "Complete the Fight Caves with only melee.",
 				"type": "restriction",
 				"monster": "TzTok-Jad",
+				"details": "You must be training Melee.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -2469,6 +2494,7 @@
 				"desc": "Kill Vorkath using melee weapons only.",
 				"type": "restriction",
 				"monster": "Vorkath",
+				"details": "You must be training Melee.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -2604,6 +2630,7 @@
 				"desc": "Kill Araxxor 4 times in 10:00.",
 				"type": "speed",
 				"monster": "Araxxor",
+				"details": "You must kill at least 4 Araxxor and average 2.5 minutes or less per kill.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -2624,6 +2651,7 @@
 				"desc": "Hit three Tormented Demons within 3 seconds using a ballista or a crossbow.",
 				"type": "mechanical",
 				"monster": "Tormented Demon",
+				"details": "You must have a crossbow or a light/heavy ballista equipped.",
 				"rng": {
 					"chancePerKill": 5
 				}
@@ -2904,6 +2932,7 @@
 				"desc": "Kill the Great Olm in a solo raid without taking damage from any of the following: Teleport portals, Fire Walls, Healing pools, Crystal Bombs, Crystal Burst or Prayer Orbs. You also cannot let his claws regenerate or take damage from the same acid pool back to back. (Party size required)",
 				"type": "perfection",
 				"monster": "Chambers of Xeric",
+				"details": "Solo trip required.",
 				"rng": {
 					"chancePerKill": 44
 				}
@@ -2914,6 +2943,7 @@
 				"desc": "Complete a Chambers of Xeric (Solo) in less than 21 minutes. (Party size required)",
 				"type": "speed",
 				"monster": "Chambers of Xeric",
+				"details": "Solo trip required.",
 				"rng": {
 					"chancePerKill": 25
 				}
@@ -2934,6 +2964,7 @@
 				"desc": "Complete a Chambers of Xeric solo raid with more than 40,000 points. (Party size required)",
 				"type": "mechanical",
 				"monster": "Chambers of Xeric",
+				"details": "Solo trip required.",
 				"rng": {
 					"chancePerKill": 22
 				}
@@ -3006,6 +3037,7 @@
 				"desc": "Complete a Chambers of Xeric solo raid without dying. (Party size required)",
 				"type": "perfection",
 				"monster": "Chambers of Xeric",
+				"details": "Solo trip required.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -3027,6 +3059,7 @@
 				"desc": "Kill the Great Olm in a solo raid without letting him use any of the following special attacks in his second to last phase: Crystal Burst, Lightning Walls, Teleportation Portals or left-hand autohealing. (Party size required)",
 				"type": "mechanical",
 				"monster": "Chambers of Xeric",
+				"details": "Solo trip required.",
 				"rng": {
 					"chancePerKill": 33
 				}
@@ -3048,6 +3081,7 @@
 				"desc": "Complete a Chambers of Xeric Challenge mode (Solo) raid without dying. (Party size required)",
 				"type": "perfection",
 				"monster": "Chambers of Xeric: Challenge Mode",
+				"details": "Solo trip required and challenge mode must be active.",
 				"rng": {
 					"chancePerKill": 10
 				}
@@ -3068,6 +3102,7 @@
 				"desc": "Complete a Chambers of Xeric: Challenge Mode (Solo) in less than 45 minutes. (Party size required)",
 				"type": "speed",
 				"monster": "Chambers of Xeric: Challenge Mode",
+				"details": "Solo trip required and challenge mode must be active.",
 				"rng": {
 					"chancePerKill": 15
 				}
@@ -3345,6 +3380,7 @@
 				"desc": "Kill the Phantom Muspah by only dealing damage to it with a salamander.",
 				"type": "restriction",
 				"monster": "Phantom Muspah",
+				"details": "You must have a Black, Red, or Orange salamander equipped.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -3436,6 +3472,7 @@
 				"desc": "Kill Skotizo with the final source of damage being a Chinchompa explosion.",
 				"type": "restriction",
 				"monster": "Skotizo",
+				"details": "You must have a Red or Black chinchompa equipped.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -3538,6 +3575,7 @@
 				"desc": "Complete the Theatre of Blood without any member of the team equipping a Scythe of Vitur.",
 				"type": "restriction",
 				"monster": "Theatre of Blood",
+				"details": "You must not have a Scythe of vitur equipped.",
 				"rng": {
 					"chancePerKill": 22
 				}
@@ -3854,6 +3892,7 @@
 				"desc": "Complete the Tombs of Amascut raid at level 350 or above without anyone dying.",
 				"type": "mechanical",
 				"monster": "Tombs of Amascut: Expert Mode",
+				"details": "Raid level must be at least 350 and no one can die.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -4062,6 +4101,7 @@
 				"desc": "Complete the Colosseum with a total time of 28:00 or less.",
 				"type": "speed",
 				"monster": "Colosseum",
+				"details": "The duration must be under 28 minutes.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -4102,6 +4142,7 @@
 				"desc": "Kill Araxxor 10 times without leaving.",
 				"type": "stamina",
 				"monster": "Araxxor",
+				"details": "You must kill at least 10 Araxxor in one trip.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -4112,6 +4153,7 @@
 				"desc": "Kill Araxxor 5 times in 10:00.",
 				"type": "speed",
 				"monster": "Araxxor",
+				"details": "You must kill at least 5 Araxxor and average 2 minutes or less per kill.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -4277,6 +4319,7 @@
 				"desc": "Kill the Hueycoatl using only dragonbane weaponry.",
 				"type": "restriction",
 				"monster": "TheHueycoatl",
+				"details": "You must have a Dragon hunter lance equipped.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -4314,6 +4357,7 @@
 				"desc": "Kill the Alchemical Hydra using only Dharok's Greataxe as a weapon whilst having no more than 10 Hitpoints throughout the entire fight.",
 				"type": "restriction",
 				"monster": "Alchemical Hydra",
+				"details": "You must have Dharok's greataxe equipped in your melee gear.",
 				"rng": {
 					"chancePerKill": 33
 				}
@@ -4324,6 +4368,7 @@
 				"desc": "Complete a Chambers of Xeric (5-scale) in less than 12 minutes and 30 seconds.",
 				"type": "speed",
 				"monster": "Chambers of Xeric",
+				"details": "Team size must be at least 5 and the duration must be under 12 minutes 30 seconds.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -4341,6 +4386,7 @@
 				"desc": "Complete a Chambers of Xeric (Solo) in less than 17 minutes. (Party size required)",
 				"type": "speed",
 				"monster": "Chambers of Xeric",
+				"details": "Team size must be 1 and the duration must be under 17 minutes.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -4351,6 +4397,7 @@
 				"desc": "Complete a Chambers of Xeric (Trio) in less than 14 minutes and 30 seconds.",
 				"type": "speed",
 				"monster": "Chambers of Xeric",
+				"details": "Team size must be at least 3 and the duration must be under 14 minutes 30 seconds.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -4361,6 +4408,7 @@
 				"desc": "Complete a Chambers of Xeric: Challenge Mode (Solo) in less than 38 minutes and 30 seconds. (Party size required)",
 				"type": "speed",
 				"monster": "Chambers of Xeric: Challenge Mode",
+				"details": "Challenge mode must be active, team size must be 1 and the duration must be under 38 minutes 30 seconds.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -4378,6 +4426,7 @@
 				"desc": "Complete a Chambers of Xeric: Challenge Mode (Trio) in less than 27 minutes.",
 				"type": "speed",
 				"monster": "Chambers of Xeric: Challenge Mode",
+				"details": "Challenge mode must be active, team size must be at least 3 and the duration must be under 27 minutes.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -4388,6 +4437,7 @@
 				"desc": "Complete a Chambers of Xeric: Challenge Mode (5-scale) in less than 25 minutes.",
 				"type": "speed",
 				"monster": "Chambers of Xeric: Challenge Mode",
+				"details": "Challenge mode must be active, team size must be at least 5 and the duration must be under 25 minutes.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -4524,6 +4574,7 @@
 				"desc": "Kill Kree'arra by only dealing damage to him with a salamander.",
 				"type": "restriction",
 				"monster": "Kree'arra",
+				"details": "You must have a black, red, or orange salamander equipped.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -5003,6 +5054,7 @@
 				"desc": "Kill Tzkal-Zuk without equipping a Twisted Bow within the Inferno.",
 				"type": "restriction",
 				"monster": "TzKal-Zuk",
+				"details": "You must not have a Twisted bow equipped.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -5116,6 +5168,7 @@
 				"desc": "Kill Vorkath with only your fists.",
 				"type": "restriction",
 				"monster": "Vorkath",
+				"details": "You must not have a weapon equipped in your melee gear.",
 				"rng": {
 					"chancePerKill": 1
 				}
@@ -5203,6 +5256,7 @@
 				"desc": "Kill Araxxor 6 times in 10:00.",
 				"type": "speed",
 				"monster": "Araxxor",
+				"details": "You must kill at least 6 Araxxor and average 1.66 minutes or less per kill.",
 				"rng": {
 					"chancePerKill": 1
 				}
