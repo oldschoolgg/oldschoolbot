@@ -1,7 +1,9 @@
-import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { percentChance } from '@oldschoolgg/rng';
+import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
 import type { CropUpgradeType } from '@prisma/client';
-import { Bank } from 'oldschooljs';
+import { Bank, type Item } from 'oldschooljs';
 
+import { BitField } from '@/lib/constants.js';
 import { superCompostables } from '@/lib/data/filterables.js';
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
@@ -70,6 +72,11 @@ export async function harvestCommand({
 	if (user.hasEquippedOrInBank(['Ring of endurance'])) {
 		boostStr.push('10% time for Ring of Endurance');
 		duration *= 0.9;
+	}
+
+	if (user.bitfield.includes(BitField.HasMoondashCharm)) {
+		boostStr.push('25% faster for Moondash charm');
+		duration = reduceNumByPercent(duration, 25);
 	}
 
 	const maxTripLength = user.calcMaxTripLength('Farming');
@@ -230,6 +237,22 @@ export async function farmingPlantCommand({
 			}
 		}
 		cost.add(seed.id, qty * quantity);
+	}
+
+	const hasScroll = user.owns('Scroll of life');
+	const hasMasterFarmingCape = user.hasEquippedOrInBank('Farming master cape');
+	let seedSavingPercent = 0;
+	if (hasScroll && hasMasterFarmingCape) seedSavingPercent = 50;
+	else if (hasScroll || hasMasterFarmingCape) seedSavingPercent = 15;
+	if (seedSavingPercent > 0) {
+		boostStr.push(`${seedSavingPercent}% less seeds used`);
+		for (const [seed, amountCost] of plant.inputItems
+			.items()
+			.map((i): [Item, number] => [i[0], cost.amount(i[0].id)])) {
+			for (let i = 0; i < amountCost; i++) {
+				if (percentChance(seedSavingPercent)) cost.remove(seed.id, 1);
+			}
+		}
 	}
 
 	let didPay = false;
