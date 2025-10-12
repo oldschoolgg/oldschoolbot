@@ -379,7 +379,12 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 	if (text) {
 		return gear.toString();
 	}
-	const image = await generateGearImage({ gearSetup: gear, gearType: input, petID: user.user.minion_equippedPet });
+	const image = await generateGearImage({
+		gearSetup: gear,
+		gearType: input,
+		petID: user.user.minion_equippedPet,
+		user
+	});
 	return { files: [{ attachment: image, name: 'gear.png' }] };
 }
 

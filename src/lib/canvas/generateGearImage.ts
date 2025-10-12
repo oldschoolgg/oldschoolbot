@@ -232,12 +232,14 @@ export async function generateGearImage({
 	gearType,
 	bankBgHexColor,
 	farmingContract,
-	bankBackgroundId
+	bankBackgroundId,
+	user
 }: {
 	gearSetup: Gear;
 	gearType: GearSetupType | null | undefined;
 	petID?: number | null;
 	gearTemplate?: number;
+	user: MUser;
 } & BaseCanvasArgs) {
 	if (!bankImageTask.ready) {
 		await bankImageTask.init();
@@ -316,7 +318,8 @@ export async function generateGearImage({
 		await canvas.drawItemIDSprite({
 			itemID: petID,
 			x: 178,
-			y: 190
+			y: 190,
+			user
 		});
 	}
 
@@ -329,7 +332,8 @@ export async function generateGearImage({
 			itemID: item.item,
 			x: x,
 			y: y,
-			quantity: item.quantity === 1 ? undefined : item.quantity
+			quantity: item.quantity === 1 ? undefined : item.quantity,
+			user
 		});
 	}
 
@@ -337,6 +341,7 @@ export async function generateGearImage({
 }
 
 export async function generateAllGearImage({
+	user,
 	bankBackgroundId = 1,
 	gearTemplate = 0,
 	iconPackId,
@@ -345,6 +350,7 @@ export async function generateAllGearImage({
 	bankBgHexColor,
 	farmingContract
 }: BaseCanvasArgs & {
+	user: MUser;
 	gearTemplate?: number;
 	gear: { [key in GearSetupType]: GearSetup };
 	equippedPet?: number | null;
@@ -416,7 +422,8 @@ export async function generateAllGearImage({
 				itemID: item.item,
 				x,
 				y,
-				quantity: item.quantity === 1 ? undefined : item.quantity
+				quantity: item.quantity === 1 ? undefined : item.quantity,
+				user
 			});
 		}
 		i++;
@@ -431,7 +438,8 @@ export async function generateAllGearImage({
 		await canvas.drawItemIDSprite({
 			itemID: equippedPet,
 			x: petX,
-			y: petY
+			y: petY,
+			user
 		});
 	}
 

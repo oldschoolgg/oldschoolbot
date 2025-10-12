@@ -944,14 +944,16 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 				bankBgHexColor: this.user.bank_bg_hex,
 				iconPackId: this.iconPackId,
 				farmingContract: this.farmingContract(),
-				gear: this.gear
+				gear: this.gear,
+				user: this
 			});
 		}
 		return generateGearImage({
 			gearSetup: setupType ? this.gear[setupType] : gearSetup!,
 			gearType: setupType,
 			petID: this.user.minion_equippedPet,
-			farmingContract: this.farmingContract()
+			farmingContract: this.farmingContract(),
+			user: this
 		});
 	}
 

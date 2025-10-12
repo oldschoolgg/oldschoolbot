@@ -280,7 +280,8 @@ class CollectionLogTask {
 				itemID: item,
 				x: Math.floor(i * (itemSize + itemSpacer)) + 1,
 				y: Math.floor(y * (itemSize + itemSpacer)) + 1,
-				quantity: qtyText > 0 ? qtyText : undefined
+				quantity: qtyText > 0 ? qtyText : undefined,
+				user
 			});
 
 			ctx.globalAlpha = 1;

@@ -1,3 +1,5 @@
+import { applyCustomItemEffects } from '@/lib/bso/canvas/customItemEffects.js';
+
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
@@ -361,7 +363,8 @@ export class OSRSCanvas {
 		iconPackId = this.iconPackId ?? undefined,
 		quantity,
 		textColor,
-		glow
+		glow,
+		user
 	}: {
 		itemID: number;
 		x: number;
@@ -375,13 +378,16 @@ export class OSRSCanvas {
 			radius: number;
 			blur: number;
 		};
+		user?: MUser;
 	}) {
 		const itemIcon: Image | Canvas = await OSRSCanvas.getItemImage({ itemID, iconPackId });
 		const destX = Math.floor(x + (this.itemSize.width - itemIcon.width) / 2);
 		const destY = Math.floor(y + (this.itemSize.height - itemIcon.height) / 2);
 
+		const customImage = user ? await applyCustomItemEffects(user, itemID) : null;
+
 		const args = [
-			itemIcon,
+			customImage ?? itemIcon,
 			0,
 			0,
 			itemIcon.width,

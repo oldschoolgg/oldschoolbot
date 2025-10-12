@@ -7,6 +7,10 @@ import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { paintColors } from '@/lib/customItems/paintCans.js';
 
 export async function renderPaintGrid({ item }: { item: Item }): Promise<Buffer> {
+	if (!bankImageTask.ready) {
+		await bankImageTask.init();
+		bankImageTask.ready = true;
+	}
 	const canvases = await Promise.all(paintColors.map(color => getPaintedItemImage(color, item.id)));
 	const tiles = paintColors
 		.map((color, i) => ({ name: color.paintCanItem.name, img: canvases[i], paint: color }))

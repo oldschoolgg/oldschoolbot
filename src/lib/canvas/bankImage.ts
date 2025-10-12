@@ -295,7 +295,6 @@ class BankImageTask {
 
 	getBgAndSprite({ bankBackgroundId, farmingContract }: BaseCanvasArgs = {}) {
 		const background = this.backgroundImages.find(i => i.id === bankBackgroundId) ?? this.backgroundImages[0];
-
 		const isFarmingContractReadyToHarvest = Boolean(
 			farmingContract?.contract.hasContract &&
 				farmingContract.matchingPlantedCrop &&
@@ -333,7 +332,7 @@ class BankImageTask {
 		mahojiFlags: BankFlag[] | undefined,
 		weightings: Readonly<ItemBank> | undefined,
 		verticalSpacer = 0,
-		_user?: MUser
+		user?: MUser
 	) {
 		let xLoc = 0;
 		let yLoc = compact ? 5 : 0;
@@ -355,7 +354,8 @@ class BankImageTask {
 				y: yLoc,
 				outline: isNewCLItem ? { outlineColor: '#ac7fff', alpha: 1 } : undefined,
 				quantity,
-				textColor: isNewCLItem ? OSRSCanvas.COLORS.PURPLE : undefined
+				textColor: isNewCLItem ? OSRSCanvas.COLORS.PURPLE : undefined,
+				user
 			});
 
 			let bottomItemText: string | number | null = null;

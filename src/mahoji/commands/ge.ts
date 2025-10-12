@@ -358,7 +358,8 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 				maxSlots: slots.maxPossible,
 				slotsUsed: slots.slots,
 				page: options.my_listings.page ?? 1,
-				activeListings
+				activeListings,
+				user
 			});
 
 			const geResult = {

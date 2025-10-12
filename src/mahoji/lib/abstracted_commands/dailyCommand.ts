@@ -107,7 +107,8 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 		bank: itemsAdded,
 		title: `${user.rawUsername}'s Daily`,
 		previousCL,
-		showNewCL: true
+		showNewCL: true,
+		user
 	});
 	return { content: `${dmStr}\nYou received ${loot}`, files: [image.file] };
 }

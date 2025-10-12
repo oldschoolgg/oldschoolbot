@@ -28,6 +28,7 @@ class GeImageGeneratorSingleton {
 	}
 
 	async getSlotImage(
+		user: MUser,
 		canvas: OSRSCanvas,
 		slot: number,
 		locked: boolean,
@@ -66,7 +67,8 @@ class GeImageGeneratorSingleton {
 							radius: 10
 						}
 					: undefined,
-			quantity: listing.total_quantity
+			quantity: listing.total_quantity,
+			user
 		});
 
 		// Draw item name
@@ -116,6 +118,7 @@ class GeImageGeneratorSingleton {
 	}
 
 	async createInterface(opts: {
+		user: MUser;
 		slotsUsed: number;
 		maxSlots: number;
 		page: number;
@@ -155,7 +158,7 @@ class GeImageGeneratorSingleton {
 
 			canvas.ctx.save();
 			canvas.ctx.translate(startX + x * (this.geSlotOpen!.width + 2), startY + y);
-			await this.getSlotImage(canvas, i + 1, i >= slotsUsed, listing);
+			await this.getSlotImage(opts.user, canvas, i + 1, i >= slotsUsed, listing);
 			canvas.ctx.restore();
 
 			x++;
