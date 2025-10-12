@@ -239,7 +239,7 @@ export async function generateGearImage({
 	gearType: GearSetupType | null | undefined;
 	petID?: number | null;
 	gearTemplate?: number;
-	user: MUser;
+	user?: MUser;
 } & BaseCanvasArgs) {
 	if (!bankImageTask.ready) {
 		await bankImageTask.init();
@@ -350,7 +350,7 @@ export async function generateAllGearImage({
 	bankBgHexColor,
 	farmingContract
 }: BaseCanvasArgs & {
-	user: MUser;
+	user?: MUser;
 	gearTemplate?: number;
 	gear: { [key in GearSetupType]: GearSetup };
 	equippedPet?: number | null;

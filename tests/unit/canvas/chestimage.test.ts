@@ -4,7 +4,17 @@ import { Bank } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
 import { drawChestLootImage } from '@/lib/canvas/chestImage.js';
+import type { MUserClass } from '@/lib/MUser.js';
 import { baseSnapshotPath } from '../../testConstants.js';
+
+function mockChestImageUser(name: string) {
+	return {
+		rawUsername: name,
+		user: { bankBackground: 1 },
+		iconPackId: undefined,
+		paintedItems: new Map()
+	} as any as MUserClass;
+}
 
 describe('Chest Images', async () => {
 	test('TOA Chest Loot Image', async () => {
@@ -12,11 +22,7 @@ describe('Chest Images', async () => {
 
 		const previousCL = new Bank().add('Coins', 1000000);
 
-		const mockUser = {
-			rawUsername: 'TestUser',
-			user: { bankBackground: 1 },
-			iconPackId: undefined
-		} as any;
+		const mockUser = mockChestImageUser('TestUser');
 
 		const result = await drawChestLootImage({
 			entries: [
@@ -38,11 +44,7 @@ describe('Chest Images', async () => {
 
 		const previousCL = new Bank();
 
-		const mockUser = {
-			rawUsername: 'TestUser',
-			user: { bankBackground: 1 },
-			iconPackId: undefined
-		} as any;
+		const mockUser = mockChestImageUser('TestUser');
 
 		const result = await drawChestLootImage({
 			entries: [
@@ -64,11 +66,7 @@ describe('Chest Images', async () => {
 
 		const previousCL = new Bank();
 
-		const mockUser = {
-			rawUsername: 'TestUser',
-			user: { bankBackground: 1 },
-			iconPackId: undefined
-		} as any;
+		const mockUser = mockChestImageUser('TestUser');
 
 		const result = await drawChestLootImage({
 			entries: [
@@ -91,17 +89,9 @@ describe('Chest Images', async () => {
 
 		const previousCL = new Bank();
 
-		const mockUser1 = {
-			rawUsername: 'User1',
-			user: { bankBackground: 1 },
-			iconPackId: undefined
-		} as any;
+		const mockUser1 = mockChestImageUser('User1');
 
-		const mockUser2 = {
-			rawUsername: 'User2',
-			user: { bankBackground: 1 },
-			iconPackId: undefined
-		} as any;
+		const mockUser2 = mockChestImageUser('User2');
 
 		const result = await drawChestLootImage({
 			entries: [

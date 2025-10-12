@@ -23,7 +23,8 @@ describe('OSRSCanvas', async () => {
 				color: OSRSCanvas.COLORS.PURPLE,
 				blur: 50,
 				radius: 15
-			}
+			},
+			user: null
 		});
 
 		await writeFile(path.join(baseSnapshotPath, 'osrs-canvas-glow.png'), await c.toBuffer());

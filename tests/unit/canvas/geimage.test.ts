@@ -15,7 +15,8 @@ describe('GE Images', async () => {
 			slotsUsed: 2,
 			maxSlots: 8,
 			page: 1,
-			activeListings: []
+			activeListings: [],
+			user: undefined
 		});
 		await writeFile(path.join(baseSnapshotPath, 'ge-no-listings.png'), geImage);
 	});
