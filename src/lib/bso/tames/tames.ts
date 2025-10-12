@@ -629,6 +629,15 @@ export async function createTameTask({
 	fakeDuration?: number;
 	deaths?: number;
 }) {
+	const existingTask = await prisma.tameActivity.count({
+		where: {
+			user_id: user.id,
+			completed: false
+		}
+	});
+	if (existingTask > 0) {
+		return `Your tame is already on a trip.`;
+	}
 	const activity = prisma.tameActivity.create({
 		data: {
 			user_id: user.id,

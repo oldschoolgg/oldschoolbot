@@ -1069,9 +1069,9 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 		}
 	}
 
-	await createTameTask({
+	const task = await createTameTask({
 		user,
-		channelID: channelID.toString(),
+		channelID,
 		selectedTame: tame,
 		data: {
 			type: TameType.Combat,
@@ -1083,6 +1083,8 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 		fakeDuration: deaths > 0 ? fakeDuration : undefined,
 		deaths
 	});
+
+	if (typeof task === 'string') return task;
 
 	let reply = `${tameName(tame)} is now killing ${quantity}x ${monster.name}${
 		deathChance > 0 ? `, and has a ${deathChance.toFixed(2)}% chance of dying` : ''
@@ -1169,9 +1171,9 @@ async function collectCommand(user: MUser, channelID: string, str: string) {
 
 	const duration = Math.floor(quantity * speed);
 
-	await createTameTask({
+	const task = await createTameTask({
 		user,
-		channelID: channelID.toString(),
+		channelID,
 		selectedTame: tame,
 		data: {
 			type: TameType.Gatherer,
@@ -1182,6 +1184,8 @@ async function collectCommand(user: MUser, channelID: string, str: string) {
 		duration,
 		fakeDuration: undefined
 	});
+
+	if (typeof task === 'string') return task;
 
 	let reply = `${tameName(tame)} is now collecting ${quantity * collectable.quantity}x ${
 		collectable.item.name
@@ -1305,9 +1309,9 @@ async function monkeyMagicHandler(
 
 	const duration = Math.floor(quantity * speed);
 
-	await createTameTask({
+	const task = await createTameTask({
 		user,
-		channelID: channelID.toString(),
+		channelID,
 		selectedTame: tame,
 		data: {
 			type: 'SpellCasting',
@@ -1320,6 +1324,8 @@ async function monkeyMagicHandler(
 		duration,
 		fakeDuration: undefined
 	});
+
+	if (typeof task === 'string') return task;
 
 	let reply = `${tameName(tame)} is now casting the ${
 		spellOptions.spell.name
@@ -1742,6 +1748,8 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 		fakeDuration: undefined
 	});
 
+	if (typeof task === 'string') return task;
+
 	let reply = `${tame} is now completing ${quantity}x ${Items.itemNameFromId(
 		clueTier.scrollID
 	)}. Removed ${cost} from your bank. The trip will take ${formatDuration(task.duration)}.`;
@@ -2110,7 +2118,7 @@ export const tamesCommand: OSBMahojiCommand = {
 			maxTripLength += patronMaxTripBonus(user) * 2;
 			const task = await createTameTask({
 				user,
-				channelID: channelID.toString(),
+				channelID,
 				selectedTame: tame,
 				data: {
 					type: tameActivity.id
@@ -2119,6 +2127,7 @@ export const tamesCommand: OSBMahojiCommand = {
 				duration: maxTripLength,
 				fakeDuration: undefined
 			});
+			if (typeof task === 'string') return task;
 
 			let reply = `${tameName(tame)} is now doing ${tameActivity.name}. The trip will take ${formatDuration(
 				task.duration
