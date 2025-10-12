@@ -14,12 +14,12 @@ import { LampTable } from '@/lib/bso/xpLamps.js';
 
 import { randArrItem, roll } from '@oldschoolgg/rng';
 import { dateFm, Emoji, formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
-import { type ButtonInteraction, MessageFlags } from 'discord.js';
+import { MessageFlags } from 'discord.js';
 import { Bank, type ItemBank, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
 
 import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
 import { BitField } from '@/lib/constants.js';
-import { MInteraction } from '@/lib/structures/MInteraction.js';
+import type { MInteraction } from '@/lib/structures/MInteraction.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
 
 const contractTable = new LootTable()
@@ -178,7 +178,8 @@ function icDonateValidation(user: MUser, donator: MUser) {
 	};
 }
 
-async function donateICHandler(interaction: ButtonInteraction) {
+async function donateICHandler(interaction: MInteraction) {
+	if (!interaction.customId) return;
 	const userID = interaction.customId.split('_')[2];
 	if (!userID) {
 		return interaction.reply({ content: 'Invalid user.', flags: MessageFlags.Ephemeral });
@@ -186,12 +187,14 @@ async function donateICHandler(interaction: ButtonInteraction) {
 
 	const user = await mUserFetch(userID);
 	const donator = await mUserFetch(interaction.user.id);
+	Logging.logDebug(
+		`User ${donator.logName} is attempting to donate item contract to ${user.logName}, their current ic is: ${user.user.current_item_contract}`
+	);
 
 	const errorStr = icDonateValidation(user, donator);
 	if (typeof errorStr === 'string') return interaction.reply({ content: errorStr, flags: MessageFlags.Ephemeral });
 
-	const mConfirmation = new MInteraction({ interaction });
-	await mConfirmation.confirmation({
+	await interaction.confirmation({
 		content: `${donator}, are you sure you want to give ${errorStr.cost} to ${
 			user.badgedUsername
 		}? You own ${donator.bank.amount(errorStr.details.currentItem!.id)} of this item.`,
@@ -210,7 +213,7 @@ async function donateICHandler(interaction: ButtonInteraction) {
 		await tradePlayerItems(donator, user, cost);
 		await donator.statsBankUpdate('ic_donations_given_bank', cost);
 		await user.statsBankUpdate('ic_donations_received_bank', cost);
-		const handInResult = await handInContract(new MInteraction({ interaction }), user);
+		const handInResult = await handInContract(interaction, user);
 		const nextIcDetails = getItemContractDetails(user);
 		return interaction.reply({
 			content: `${donator} donated ${cost} for ${user}'s Item Contract!
@@ -223,7 +226,7 @@ ${Emoji.ItemContract} Your next contract is: ${nextIcDetails.currentItem?.name} 
 			}
 		});
 	} catch (err) {
-		Logging.logError({ err: err as Error, interaction: new MInteraction({ interaction }) });
+		Logging.logError({ err: err as Error, interaction });
 	} finally {
 		modifyBusyCounter(donator.id, -1);
 	}

@@ -260,7 +260,7 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
 
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
-	if (id.includes('DONATE_IC')) return ItemContracts.donateICHandler(interaction);
+	if (id.includes('DONATE_IC')) return ItemContracts.donateICHandler(mInteraction);
 	if (id.startsWith('GPE_')) return handleGearPresetEquip(user, id, interaction);
 	if (id.startsWith('PTR_')) return handlePinnedTripRepeat(user, id, interaction);
 
