@@ -1,6 +1,4 @@
-import { Ignecarus } from '@/lib/bso/monsters/bosses/Ignecarus.js';
-import { KalphiteKingMonster } from '@/lib/bso/monsters/bosses/KalphiteKing.js';
-import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 import { polyporeTasks } from '@/lib/bso/skills/slayer/polyporeTasks.js';
 
 import { Monsters } from 'oldschooljs';
@@ -30,7 +28,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		extendedAmount: [200, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.AugmentMyAbbies,
 		weight: 9,
-		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, BSOMonsters.Malygos.id],
+		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, EBSOMonster.MALYGOS],
 		combatLevel: 85,
 		slayerLevel: 85,
 		questPoints: 1,
@@ -94,8 +92,8 @@ export const nieveTasks: AssignableSlayerTask[] = [
 			Monsters.BabyBlackDragon.id,
 			Monsters.BrutalBlackDragon.id,
 			Monsters.KingBlackDragon.id,
-			Ignecarus.id,
-			BSOMonsters.QueenBlackDragon.id
+			EBSOMonster.QUEEN_BLACK_DRAGON,
+			EBSOMonster.IGNECARUS
 		],
 		extendedAmount: [40, 60],
 		extendedUnlockId: SlayerTaskUnlocksEnum.FireAndDarkness,
@@ -157,7 +155,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		extendedAmount: [150, 200],
 		extendedUnlockId: SlayerTaskUnlocksEnum.KrackOn,
 		weight: 6,
-		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id, BSOMonsters.SeaKraken.id],
+		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id, EBSOMonster.SEA_KRAKEN],
 		combatLevel: 80,
 		slayerLevel: 87,
 		unlocked: true
@@ -305,7 +303,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
 			Monsters.KalphiteQueen.id,
-			KalphiteKingMonster.id
+			EBSOMonster.KALPHITE_KING
 		],
 		combatLevel: 15,
 		unlocked: true
@@ -478,7 +476,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 			Monsters.VampyreJuvinate.id,
 			Monsters.Vyrewatch.id,
 			Monsters.VyrewatchSentinel.id,
-			BSOMonsters.VladimirDrakan.id
+			EBSOMonster.VLADIMIR_DRAKAN
 		],
 		questPoints: 1,
 		unlocked: false

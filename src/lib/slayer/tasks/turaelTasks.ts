@@ -1,3 +1,5 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+
 import { Monsters } from 'oldschooljs';
 
 import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
@@ -142,7 +144,8 @@ export const turaelTasks: AssignableSlayerTask[] = [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
-			Monsters.KalphiteQueen.id
+			Monsters.KalphiteQueen.id,
+			EBSOMonster.KALPHITE_KING
 		],
 		combatLevel: 15,
 		unlocked: true

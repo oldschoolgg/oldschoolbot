@@ -1,3 +1,5 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+
 import { Monsters } from 'oldschooljs';
 
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
@@ -258,7 +260,8 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
 			Monsters.Vyrewatch.id,
-			Monsters.VyrewatchSentinel.id
+			Monsters.VyrewatchSentinel.id,
+			EBSOMonster.VLADIMIR_DRAKAN
 		],
 		combatLevel: 35,
 		questPoints: 1,

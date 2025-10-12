@@ -1,3 +1,5 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+
 import { Monsters } from 'oldschooljs';
 
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
@@ -22,7 +24,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		extendedAmount: [200, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.AugmentMyAbbies,
 		weight: 5,
-		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
+		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, EBSOMonster.MALYGOS],
 		combatLevel: 85,
 		slayerLevel: 85,
 		unlocked: true
@@ -272,7 +274,8 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
-			Monsters.KalphiteQueen.id
+			Monsters.KalphiteQueen.id,
+			EBSOMonster.KALPHITE_KING
 		],
 		combatLevel: 15,
 		unlocked: true
@@ -443,7 +446,8 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
 			Monsters.Vyrewatch.id,
-			Monsters.VyrewatchSentinel.id
+			Monsters.VyrewatchSentinel.id,
+			EBSOMonster.VLADIMIR_DRAKAN
 		],
 		combatLevel: 35,
 		questPoints: 1,

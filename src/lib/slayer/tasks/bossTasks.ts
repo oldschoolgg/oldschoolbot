@@ -1,3 +1,6 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+import { BSOMonsters } from '@/lib/bso/monsters/customMonsters.js';
+
 import { Monsters } from 'oldschooljs';
 
 import type { AssignableSlayerTask } from '@/lib/slayer/types.js';
@@ -240,6 +243,19 @@ export const bossTasks: AssignableSlayerTask[] = [
 		monsters: [Monsters.Araxxor.id],
 		isBoss: true,
 		slayerLevel: 92
+	},
+	{
+		monster: BSOMonsters.QueenBlackDragon,
+		amount: [3, 15],
+		weight: 1,
+		levelRequirements: {
+			prayer: 70,
+			defence: 80,
+			ranged: 85
+		},
+		questPoints: 75,
+		monsters: [EBSOMonster.QUEEN_BLACK_DRAGON],
+		isBoss: true
 	}
 ];
 

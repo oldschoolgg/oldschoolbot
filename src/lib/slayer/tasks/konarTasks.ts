@@ -1,3 +1,5 @@
+import { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
+
 import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
@@ -22,7 +24,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.AbyssalDemon,
 		amount: [120, 170],
 		weight: 9,
-		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
+		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, EBSOMonster.MALYGOS],
 		extendedAmount: [200, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.AugmentMyAbbies,
 		combatLevel: 85,
@@ -83,7 +85,13 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BlackDragon,
 		amount: [10, 15],
 		weight: 6,
-		monsters: [Monsters.BlackDragon.id, Monsters.BabyBlackDragon.id, Monsters.BrutalBlackDragon.id],
+		monsters: [
+			Monsters.BlackDragon.id,
+			Monsters.BabyBlackDragon.id,
+			Monsters.BrutalBlackDragon.id,
+			EBSOMonster.IGNECARUS,
+			EBSOMonster.QUEEN_BLACK_DRAGON
+		],
 		extendedAmount: [40, 60],
 		extendedUnlockId: SlayerTaskUnlocksEnum.FireAndDarkness,
 		combatLevel: 80,
@@ -136,7 +144,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveKraken,
 		amount: [80, 100],
 		weight: 9,
-		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id],
+		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id, EBSOMonster.SEA_KRAKEN],
 		extendedAmount: [150, 200],
 		extendedUnlockId: SlayerTaskUnlocksEnum.KrackOn,
 		combatLevel: 80,
@@ -282,7 +290,8 @@ export const konarTasks: AssignableSlayerTask[] = [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
-			Monsters.KalphiteQueen.id
+			Monsters.KalphiteQueen.id,
+			EBSOMonster.KALPHITE_KING
 		],
 		combatLevel: 15,
 		unlocked: true
@@ -410,7 +419,8 @@ export const konarTasks: AssignableSlayerTask[] = [
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
 			Monsters.Vyrewatch.id,
-			Monsters.VyrewatchSentinel.id
+			Monsters.VyrewatchSentinel.id,
+			EBSOMonster.VLADIMIR_DRAKAN
 		],
 		extendedAmount: [200, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.MoreAtStake,
