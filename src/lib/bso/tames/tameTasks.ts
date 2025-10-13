@@ -13,16 +13,7 @@ import { tameLastFinishedActivity } from '@/lib/bso/tames/tameUtil.js';
 import { percentChance, randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { calcPerHour, formatDuration, increaseNumByPercent, isFunction, Time } from '@oldschoolgg/toolkit';
 import type { TameActivity } from '@prisma/client';
-import {
-	ActionRowBuilder,
-	type APIInteractionGuildMember,
-	AttachmentBuilder,
-	ButtonBuilder,
-	type ButtonInteraction,
-	ButtonStyle,
-	type GuildMember,
-	userMention
-} from 'discord.js';
+import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { isEmpty } from 'remeda';
 
@@ -414,18 +405,12 @@ export async function runTameTask(activity: TameActivity, tame: MTame) {
 }
 
 export async function repeatTameTrip({
-	channelID,
-	guildID,
-	user,
-	member,
 	interaction,
+	user,
 	continueDeltaMillis
 }: {
-	channelID: string;
-	guildID: string | null;
+	interaction: MInteraction;
 	user: MUser;
-	member: APIInteractionGuildMember | GuildMember | null;
-	interaction: ButtonInteraction;
 	continueDeltaMillis: number | null;
 }) {
 	const activity = await tameLastFinishedActivity(user);
@@ -443,11 +428,7 @@ export async function repeatTameTrip({
 						name: mon!.name
 					}
 				},
-				bypassInhibitors: true,
-				channelID,
-				guildID,
 				user,
-				member,
 				interaction,
 				continueDeltaMillis
 			});
@@ -460,11 +441,7 @@ export async function repeatTameTrip({
 						name: Items.getOrThrow(data.itemID).name
 					}
 				},
-				bypassInhibitors: true,
-				channelID,
-				guildID,
 				user,
-				member,
 				interaction,
 				continueDeltaMillis
 			});
@@ -508,11 +485,7 @@ export async function repeatTameTrip({
 				args: {
 					cast: args
 				},
-				bypassInhibitors: true,
-				channelID,
-				guildID,
 				user,
-				member,
 				interaction,
 				continueDeltaMillis
 			});
@@ -526,11 +499,7 @@ export async function repeatTameTrip({
 						name: data.type
 					}
 				},
-				bypassInhibitors: true,
-				channelID,
-				guildID,
 				user,
-				member,
 				interaction,
 				continueDeltaMillis
 			});
@@ -544,11 +513,7 @@ export async function repeatTameTrip({
 						clue: clueTier.name
 					}
 				},
-				bypassInhibitors: true,
-				channelID,
-				guildID,
 				user,
-				member,
 				interaction,
 				continueDeltaMillis
 			});

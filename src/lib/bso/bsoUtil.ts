@@ -1,7 +1,7 @@
 import { doaCL } from '@/lib/bso/collection-log/main.js';
 
 import { CollectionLog } from '@oldschoolgg/collectionlog';
-import { sumArr } from '@oldschoolgg/toolkit';
+import { PerkTier, sumArr, Time } from '@oldschoolgg/toolkit';
 import { Bank, type Item, Items, resolveItems } from 'oldschooljs';
 
 import { BitField, MAX_XP } from '@/lib/constants.js';
@@ -94,4 +94,15 @@ export function moidLink(items: number[]) {
 
 export function calcTotalLevel(skills: Skills) {
 	return sumArr(Object.values(skills));
+}
+
+export async function isElligibleForPresent(user: MUser) {
+	if (user.isIronman) return true;
+	if (user.perkTier() >= PerkTier.Four) return true;
+	if (user.totalLevel >= 2000) return true;
+	const totalActivityDuration: [{ sum: number }] = await prisma.$queryRawUnsafe(`SELECT SUM(duration)
+FROM activity
+WHERE user_id = ${BigInt(user.id)};`);
+	if (totalActivityDuration[0].sum >= Time.Hour * 80) return true;
+	return false;
 }

@@ -26,11 +26,5 @@ export function renderTripBuyables() {
 			tb.changePer ? tb.changePer.toString() : ''
 		);
 	}
-	handleMarkdownEmbed('tripbuyables', 'osb/Buyables/trip-buyables.md', table.toString());
+	handleMarkdownEmbed('tripbuyables', 'osb/Buyables/trip-buyables.mdx', table.toString());
 }
-
-function main() {
-	renderTripBuyables();
-}
-
-main();

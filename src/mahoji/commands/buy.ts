@@ -1,3 +1,5 @@
+import { isElligibleForPresent } from '@/lib/bso/bsoUtil.js';
+
 import { Events, formatOrdinal, stringMatches } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
 import { Bank, type ItemBank, Items, itemID } from 'oldschooljs';
@@ -7,7 +9,6 @@ import { tripBuyables } from '@/lib/data/buyables/tripBuyables.js';
 import { quests } from '@/lib/minions/data/quests.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
 import { Minigames } from '@/lib/settings/minigames.js';
-import { isElligibleForPresent } from '@/lib/settings/settings.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { buyFossilIslandNotes } from '@/mahoji/lib/abstracted_commands/buyFossilIslandNotes.js';
 import { buyingTripCommand } from '@/mahoji/lib/abstracted_commands/buyingTripCommand.js';

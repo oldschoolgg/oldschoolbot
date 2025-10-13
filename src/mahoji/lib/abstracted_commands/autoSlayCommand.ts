@@ -456,7 +456,6 @@ export async function autoSlayCommand({
 				name: Monsters.get(currentMonID)!.name,
 				wilderness: Boolean(usersTask.assignedTask.wilderness)
 			},
-			bypassInhibitors: true,
 			...cmdRunOptions
 		});
 		return;
@@ -485,7 +484,6 @@ export async function autoSlayCommand({
 					name: usersTask.assignedTask.monster.name,
 					wilderness: Boolean(usersTask.assignedTask.wilderness)
 				},
-				bypassInhibitors: true,
 				...cmdRunOptions
 			});
 			return;
@@ -501,7 +499,6 @@ export async function autoSlayCommand({
 			runCommand({
 				commandName: 'k',
 				args,
-				bypassInhibitors: true,
 				...cmdRunOptions
 			});
 			return;
@@ -512,7 +509,6 @@ export async function autoSlayCommand({
 				name: usersTask.assignedTask.monster.name,
 				wilderness: Boolean(usersTask.assignedTask.wilderness)
 			},
-			bypassInhibitors: true,
 			...cmdRunOptions
 		});
 		return;
@@ -525,7 +521,6 @@ export async function autoSlayCommand({
 			runCommand({
 				commandName: 'activities',
 				args: { fight_caves: {} },
-				bypassInhibitors: true,
 				...cmdRunOptions
 			});
 			return;
@@ -554,7 +549,6 @@ export async function autoSlayCommand({
 			runCommand({
 				commandName: 'k',
 				args: { name: maxMobName, wilderness: Boolean(usersTask.assignedTask.wilderness) },
-				bypassInhibitors: true,
 				...cmdRunOptions
 			});
 			return;
@@ -567,7 +561,6 @@ export async function autoSlayCommand({
 	await runCommand({
 		commandName: 'k',
 		args: { name: usersTask.assignedTask.monster.name, wilderness: Boolean(usersTask.assignedTask.wilderness) },
-		bypassInhibitors: true,
 		...cmdRunOptions
 	});
 }

@@ -617,5 +617,5 @@ export async function handleTripFinish(
 
 	handleTriggerShootingStar(user, data, components);
 
-	sendToChannelID(channelID, message);
+	await sendToChannelID(channelID, message);
 }

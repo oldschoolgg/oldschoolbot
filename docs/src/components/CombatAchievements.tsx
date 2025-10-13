@@ -1,6 +1,6 @@
-import combatAchievements from '@data/combat_achievements.json';
 import { useEffect, useState } from 'preact/hooks';
 
+import combatAchievements from '../../../data/osb/combat-achievements.json' with { type: 'json' };
 import { toTitleCase } from '../docs-util.js';
 
 function TextTooltip({ text, tooltip }: { text: string; tooltip: string }) {
@@ -51,8 +51,8 @@ function TextTooltip({ text, tooltip }: { text: string; tooltip: string }) {
 }
 
 const tiers = Object.keys(combatAchievements).map(t => t.toLowerCase());
-const allTasksFlat = Object.values(combatAchievements).flatMap((tier: any) =>
-	tier.tasks.map((t: any) => ({ ...t, tier: tier.name.toLowerCase() }))
+const allTasksFlat = Object.values(combatAchievements).flatMap(tier =>
+	tier.tasks.map(t => ({ ...t, tier: tier.name.toLowerCase() }))
 );
 
 export type APIUser = {
@@ -62,7 +62,7 @@ export type APIUser = {
 	leagues_completed_tasks_ids: number[];
 };
 
-export function Leagues() {
+export function CombatAchievements() {
 	const [tiersBeingShown, setTiersBeingShown] = useState(tiers);
 	const [tasksBeingShown, setTasksBeingShown] = useState(allTasksFlat);
 	const [hideCompleted, setHideCompleted] = useState(false);
@@ -183,9 +183,17 @@ export function Leagues() {
 						>
 							<td>{task.name}</td>
 							<td>
-								{task.details ? <TextTooltip text={task.desc} tooltip={task.details} /> : task.desc}
+								{'details' in task && task.details ? (
+									<TextTooltip text={task.desc} tooltip={task.details} />
+								) : (
+									task.desc
+								)}
 							</td>
-							<td>{task.rng?.chancePerKill > 1 ? `1 / ${task.rng?.chancePerKill}` : undefined}</td>
+							<td>
+								{task.rng?.chance_per_kill && task.rng.chance_per_kill > 1
+									? `1 / ${task.rng?.chance_per_kill}`
+									: undefined}
+							</td>
 							<td>{toTitleCase(task.tier)}</td>
 						</tr>
 					))}

@@ -1609,7 +1609,7 @@ ${toaRequirements
 **Ready:** ${await toaCheckCommand(user)}
 
 ${calculateBoostString(user)}
-`;
+`.slice(0, 1900);
 
 	return channelID === '1069176960523190292' ? { content: str, ephemeral: true } : str;
 }

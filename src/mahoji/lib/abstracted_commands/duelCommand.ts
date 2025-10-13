@@ -38,6 +38,10 @@ export async function duelCommand(
 		} with ${Math.floor(Math.random() * 30 + 1)} HP remaining.`;
 	}
 
+	const channel = globalClient.channels.cache.get(interaction.channelId);
+	if (!channelIsSendable(channel))
+		return 'Please give the bot permission to send messages in this channel before running this command.';
+
 	if (duelSourceUser.isIronman) return "You can't duel someone as an ironman.";
 	if (duelTargetUser.isIronman) return "You can't duel someone who is an ironman.";
 	if (duelSourceUser.id === duelTargetUser.id) return 'You cant duel yourself.';
@@ -53,8 +57,6 @@ export async function duelCommand(
 		return "That person doesn't have enough GP to duel that much.";
 	}
 
-	const channel = globalClient.channels.cache.get(interaction.channelId);
-	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	const duelMessage = await channel.send({
 		content: `${duelTargetUser}, do you accept the duel for ${toKMB(amount)} GP?`,
 		components: [

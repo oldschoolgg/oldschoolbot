@@ -202,7 +202,7 @@ export const farmingCommand: OSBMahojiCommand = {
 		const { patchesDetailed } = Farming.getFarmingInfoFromUser(user);
 
 		if (options.auto_farm) {
-			return autoFarm(user, patchesDetailed, channelID);
+			return autoFarm(interaction, user, patchesDetailed);
 		}
 		if (options.always_pay) {
 			const isEnabled = user.user.minion_defaultPay;
@@ -234,11 +234,10 @@ export const farmingCommand: OSBMahojiCommand = {
 		}
 		if (options.plant) {
 			return farmingPlantCommand({
-				userID: user.id,
+				interaction,
 				plantName: options.plant.plant_name,
 				quantity: options.plant.quantity ?? null,
 				autoFarmed: false,
-				channelID,
 				pay: Boolean(options.plant.pay)
 			});
 		}
@@ -246,7 +245,7 @@ export const farmingCommand: OSBMahojiCommand = {
 			return harvestCommand({
 				user: user,
 				seedType: options.harvest.patch_name,
-				channelID
+				interaction
 			});
 		}
 		if (options.tithe_farm) {

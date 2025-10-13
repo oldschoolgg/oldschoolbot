@@ -22,6 +22,7 @@ import { fetchUsersWithoutUsernames } from '@/lib/rawSql.js';
 import { runCommand } from '@/lib/settings/settings.js';
 import { informationalButtons } from '@/lib/sharedComponents.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import { MInteraction } from '@/lib/structures/MInteraction.js';
 import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { getSupportGuild } from '@/lib/util.js';
@@ -200,12 +201,8 @@ export const tickers: {
 							runCommand({
 								commandName: 'farming',
 								args: { harvest: { patch_name: patchType } },
-								bypassInhibitors: true,
-								channelID: message.channel.id,
-								guildID: undefined,
 								user: await mUserFetch(user.id),
-								member: message.member,
-								interaction: selection,
+								interaction: new MInteraction({ interaction: selection }),
 								continueDeltaMillis: selection.createdAt.getTime() - message.createdAt.getTime()
 							});
 						}
