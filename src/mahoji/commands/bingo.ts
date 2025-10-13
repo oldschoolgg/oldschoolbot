@@ -83,7 +83,7 @@ async function bingoTeamLeaderboard(interaction: MInteraction, bingo: BingoManag
 			subList
 				.map(
 					(team, j) =>
-						`${i * PAGE_SIZE + 1 + j}. ${`${team.trophy?.emoji} `}${team.participants
+						`${i * PAGE_SIZE + 1 + j}. ${team.trophy?.emoji ? `${team.trophy?.emoji} ` : ''}${team.participants
 							.map(pt => getUsernameSync(pt.user_id))
 							.join(', ')}:** ${team.tilesCompletedCount.toLocaleString()}`
 				)
