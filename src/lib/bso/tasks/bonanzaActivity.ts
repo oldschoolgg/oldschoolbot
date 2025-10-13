@@ -47,7 +47,8 @@ export const bonanzaTask: MinionTask = {
 		]);
 		const loot = new Bank();
 
-		const averageLevel = user.skillLevel('agility') + user.skillLevel('ranged') + user.skillLevel('thieving') / 3;
+		const averageLevel =
+			(user.skillsAsLevels.agility + user.skillsAsLevels.ranged + user.skillsAsLevels.thieving) / 3;
 
 		const tickets = rng.randInt(clamp(averageLevel / 2, { min: 1, max: 120 }), averageLevel);
 		loot.add('Circus ticket', tickets);
