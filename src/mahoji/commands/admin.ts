@@ -652,7 +652,6 @@ export const adminCommand: OSBMahojiCommand = {
 		if (options.cancel_task) {
 			const { user } = options.cancel_task.user;
 			await ActivityManager.cancelActivity(user.id);
-			globalClient.busyCounterCache.delete(user.id);
 			Cooldowns.delete(user.id);
 			return 'Done.';
 		}
@@ -826,7 +825,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 		if (options.shut_down) {
 			Logging.logDebug('SHUTTING DOWN');
 			globalClient.isShuttingDown = true;
-			const timer = globalConfig.isProduction ? Time.Second * 30 : Time.Second * 5;
+			const timer = Time.Second * 30;
 			await interaction.reply({
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});

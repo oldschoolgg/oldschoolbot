@@ -7,26 +7,19 @@ import { runInhibitors } from '@/lib/discord/inhibitors.js';
 interface PreCommandOptions {
 	command: OSBMahojiCommand;
 	user: MUser;
-	bypassInhibitors: boolean;
 	options: CommandOptions;
 	interaction: MInteraction;
 }
 
-type PrecommandReturn = Promise<
-	| undefined
-	| {
-			reason: InteractionReplyOptions;
-			dontRunPostCommand?: boolean;
-			silent?: boolean;
-	  }
->;
+export type InhibitorResult = {
+	reason: InteractionReplyOptions;
+	runPostCommand: boolean;
+	silent?: boolean;
+};
 
-export async function preCommand({
-	command,
-	interaction,
-	bypassInhibitors,
-	user
-}: PreCommandOptions): PrecommandReturn {
+type PrecommandReturn = Promise<undefined | InhibitorResult>;
+
+export async function preCommand({ command, interaction, user }: PreCommandOptions): PrecommandReturn {
 	Logging.logDebug(`${user.logName} ran command: ${command.name}`, {
 		...interaction.getDebugInfo()
 	});
@@ -47,8 +40,7 @@ export async function preCommand({
 		guild: interaction.guild ?? null,
 		member: interaction.member ?? null,
 		command,
-		channel: interaction.channel ?? null,
-		bypassInhibitors
+		channel: interaction.channel ?? null
 	});
 
 	if (inhibitResult !== undefined) {
