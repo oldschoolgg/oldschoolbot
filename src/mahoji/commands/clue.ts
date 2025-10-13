@@ -18,7 +18,8 @@ export async function calcClueScores(user: MUser) {
 	return openableBank
 		.items()
 		.map(entry => {
-			const tier = ClueTiers.find(i => i.id === entry[0].id)!;
+			const tier = ClueTiers.find(i => i.id === entry[0].id);
+			if (!tier) return null;
 			return {
 				tier,
 				casket: Items.getOrThrow(tier.id),
