@@ -184,13 +184,6 @@ writeRootJson('eatables.json', [...Eatables].sort((a, b) => a.name.localeCompare
 writeRootJson('potions.json', [...Potions].sort((a, b) => a.name.localeCompare(b.name)).map(serializeSnapshotItem));
 
 writeRootJson(
-	'combat-achievements.json',
-	Object.values(CombatAchievements)
-		.sort((a, b) => a.name.localeCompare(b.name))
-		.map(serializeSnapshotItem)
-);
-
-writeRootJson(
 	'minigames.json',
 	[...Minigames].sort((a, b) => a.name.localeCompare(b.name))
 );
@@ -277,5 +270,17 @@ writeRootJson(
 	'all-obtainable-items.json',
 	serializeSnapshotItem(Util.ItemArr(Array.from(ALL_OBTAINABLE_ITEMS)).map(serializeSnapshotItem))
 );
+
+function renderCombatAchievementsFile() {
+	const finalJSON: any = {};
+	for (const [tier, data] of Object.entries(CombatAchievements)) {
+		finalJSON[tier] = {
+			...omit(data, ['staticRewards', 'length']),
+			tasks: data.tasks.map(serializeSnapshotItem).sort((a, b) => a.id - b.id)
+		};
+	}
+	writeRootJson('combat-achievements.json', finalJSON);
+}
+renderCombatAchievementsFile();
 
 tearDownScript();
