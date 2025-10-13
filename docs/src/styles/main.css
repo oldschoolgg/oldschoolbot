@@ -71,6 +71,11 @@
 	scrollbar-color: var(--cream) #14131367;
 }
 
+:root[data-theme="light"] .sidebar,
+:root[data-theme="light"] #starlight__sidebar {
+	background: var(--cream, #dcc4b1) !important;
+}
+
 :root[data-theme="dark"] {
 	color-scheme: dark;
 	--sl-color-text: #cda988;
