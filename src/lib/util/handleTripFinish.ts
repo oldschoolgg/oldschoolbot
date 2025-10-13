@@ -160,7 +160,7 @@ export async function handleTripFinish(
 		message.content += `\n**Messages:** ${messages.join(', ')}`;
 	}
 
-	message.content += await displayCluesAndPets(user, loot);
+	message.content += displayCluesAndPets(user, loot);
 
 	const existingCollector = collectors.get(user.id);
 

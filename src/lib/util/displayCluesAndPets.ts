@@ -12,7 +12,7 @@ export function petMessage(loot: Bank | null | undefined) {
 	return `\n${emoji ? `${emoji} ` : ''}**You have a funny feeling like you're being followed...**`;
 }
 
-export async function displayCluesAndPets(user: MUser, loot: Bank | null | undefined) {
+export function displayCluesAndPets(user: MUser, loot: Bank | null | undefined) {
 	let ret = '';
 	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
 	if (clueReceived.length > 0) {
