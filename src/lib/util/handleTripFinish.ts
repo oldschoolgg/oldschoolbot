@@ -234,5 +234,5 @@ export async function handleTripFinish(
 		message.components = makeComponents(components);
 	}
 
-	sendToChannelID(channelID, message);
+	await sendToChannelID(channelID, message);
 }
