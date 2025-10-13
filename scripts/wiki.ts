@@ -1,13 +1,10 @@
-import { writeFileSync } from 'node:fs';
 import { Markdown, Tab, Tabs, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
-import { omit } from 'remeda';
 
 import '../src/lib/safeglobals.js';
 
 import { wikiMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { ClueTiers } from '../src/lib/clues/clueTiers.js';
-import { CombatAchievements } from '../src/lib/combat_achievements/combatAchievements.js';
 import { COXMaxMageGear, COXMaxMeleeGear, COXMaxRangeGear, itemBoosts } from '../src/lib/data/cox.js';
 import { quests } from '../src/lib/minions/data/quests.js';
 import { sorts } from '../src/lib/sorts.js';
@@ -360,24 +357,6 @@ function clueBoosts() {
 	handleMarkdownEmbed('clueboosts', 'osb/clues.mdx', markdown.toString());
 }
 
-function renderCombatAchievementsFile() {
-	const finalJSON: any = {};
-	for (const [tier, data] of Object.entries(CombatAchievements)) {
-		finalJSON[tier] = {
-			...omit(data, ['staticRewards', 'length']),
-			tasks: data.tasks
-				.map(t => {
-					return {
-						...t,
-						requirements: undefined
-					};
-				})
-				.sort((a, b) => a.id - b.id)
-		};
-	}
-	writeFileSync('data/combat_achievements.json', JSON.stringify(finalJSON, null, 4));
-}
-
 async function wiki() {
 	await Promise.all([
 		runTimedLoggedFn('Fishing Snapshots', () =>
@@ -387,7 +366,6 @@ async function wiki() {
 			execAsync('tsx --tsconfig scripts/tsconfig.json ./scripts/wiki/miningSnapshots.ts')
 		),
 		runTimedLoggedFn('Update Authors', updateAuthors),
-		runTimedLoggedFn('Render Combat Achievements', renderCombatAchievementsFile),
 		runTimedLoggedFn('Render Clue Boosts', clueBoosts),
 		runTimedLoggedFn('Render Quests Markdown', renderQuestsMarkdown),
 		runTimedLoggedFn('Render CoX Markdown', rendeCoxMarkdown),
