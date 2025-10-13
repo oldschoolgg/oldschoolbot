@@ -9,7 +9,7 @@ import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
 import { InteractionID } from '@/lib/InteractionID.js';
-import { runCommand } from '@/lib/settings/settings.js';
+import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';
 import { updateGiveawayMessage } from '@/lib/util/giveaway.js';
 import { isValidGlobalInteraction } from '@/lib/util/interactions.js';
@@ -33,7 +33,7 @@ const reactionTimeLimits = {
 
 const reactionTimeLimit = (perkTier: PerkTier | 0): number => reactionTimeLimits[perkTier] ?? Time.Hour * 12;
 
-async function giveawayButtonHandler(user: MUser, customID: string, interaction: ButtonInteraction) {
+async function giveawayButtonHandler(user: MUser, customID: string, interaction: MInteraction) {
 	const split = customID.split('_');
 	if (split[0] !== 'GIVEAWAY') return;
 	const giveawayID = Number(split[2]);
@@ -69,9 +69,6 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 				}
 			},
 			user,
-			member: interaction.member,
-			channelID: interaction.channelId,
-			guildID: interaction.guildId,
 			interaction,
 			continueDeltaMillis: null
 		});
@@ -132,7 +129,7 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 	return interaction.reply({ content: 'You left the giveaway.', ephemeral: true });
 }
 
-async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
+async function repeatTripHandler(user: MUser, interaction: MInteraction) {
 	if (user.minionIsBusy) {
 		return interaction.reply({ content: 'Your minion is busy.', ephemeral: true });
 	}
@@ -140,7 +137,7 @@ async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
 	if (trips.length === 0) {
 		return interaction.reply({ content: "Couldn't find a trip to repeat.", ephemeral: true });
 	}
-	const id = interaction.customId;
+	const id = interaction.customId!;
 	const split = id.split('_');
 	const matchingActivity = trips.find(i => i.type === split[2]);
 	if (!matchingActivity) {
@@ -149,7 +146,7 @@ async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
 	return repeatTrip(user, interaction, matchingActivity);
 }
 
-async function handleGearPresetEquip(user: MUser, id: string, interaction: ButtonInteraction) {
+async function handleGearPresetEquip(user: MUser, id: string, interaction: MInteraction) {
 	const [, setupName, presetName] = id.split('_');
 	if (!setupName || !presetName) return;
 	const presets = await prisma.gearPreset.findMany({ where: { user_id: user.id } });
@@ -161,15 +158,12 @@ async function handleGearPresetEquip(user: MUser, id: string, interaction: Butto
 		commandName: 'gearpresets',
 		args: { equip: { gear_setup: setupName, preset: presetName } },
 		user,
-		member: interaction.member,
-		channelID: interaction.channelId,
-		guildID: interaction.guildId,
 		interaction,
 		continueDeltaMillis: null
 	});
 }
 
-async function handlePinnedTripRepeat(user: MUser, id: string, interaction: ButtonInteraction) {
+async function handlePinnedTripRepeat(user: MUser, id: string, interaction: MInteraction) {
 	const [, pinnedTripID] = id.split('_');
 	if (!pinnedTripID) return;
 	const trip = await prisma.pinnedTrip.findFirst({ where: { user_id: user.id, id: pinnedTripID } });
@@ -182,7 +176,7 @@ async function handlePinnedTripRepeat(user: MUser, id: string, interaction: Butt
 	await repeatTrip(user, interaction, { data: trip.data, type: trip.activity_type });
 }
 
-async function handleGEButton(user: MUser, id: string, interaction: ButtonInteraction) {
+async function handleGEButton(user: MUser, id: string, interaction: MInteraction) {
 	if (id === 'ge_cancel_dms') {
 		const mention = mentionCommand('config', 'user', 'toggle');
 		if (user.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
@@ -225,14 +219,16 @@ async function handleGEButton(user: MUser, id: string, interaction: ButtonIntera
 	}
 }
 
-export async function globalButtonInteractionHandler(interaction: ButtonInteraction) {
-	const mInteraction = new MInteraction({ interaction });
+export async function globalButtonInteractionHandler(_interaction: ButtonInteraction) {
+	const interaction = new MInteraction({ interaction: _interaction });
+	const id = interaction.customId;
+	if (!id) return;
 	const ignoredInteractionIDs = ['CONFIRM', 'CANCEL', 'PARTY_JOIN', ...Object.values(InteractionID.PaginatedMessage)];
-	if (ignoredInteractionIDs.includes(interaction.customId)) return;
-	Logging.logDebug(`${interaction.user.username} clicked button: ${interaction.customId}`, {
-		...mInteraction.getDebugInfo()
+	if (ignoredInteractionIDs.includes(id)) return;
+	Logging.logDebug(`${interaction.user.username} clicked button: ${id}`, {
+		...interaction.getDebugInfo()
 	});
-	if (['DYN_', 'LP_'].some(s => interaction.customId.startsWith(s))) return;
+	if (['DYN_', 'LP_'].some(s => id.startsWith(s))) return;
 
 	if (globalClient.isShuttingDown) {
 		return interaction.reply({
@@ -241,7 +237,6 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 		});
 	}
 
-	const id = interaction.customId;
 	const userID = interaction.user.id;
 
 	const ratelimit = buttonRatelimiter.acquire(userID);
@@ -267,21 +262,18 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 		return interaction.reply({ content: 'You cannot use a command right now.', ephemeral: true });
 	}
 
-	const options = {
+	const options: Pick<RunCommandArgs, 'user' | 'interaction' | 'continueDeltaMillis'> = {
 		user,
-		member: interaction.member ?? null,
-		channelID: interaction.channelId,
-		guildID: interaction.guildId,
-		interaction,
+		interaction: interaction,
 		continueDeltaMillis: null
 	};
 
-	const timeSinceMessage = Date.now() - new Date(interaction.message.createdTimestamp).getTime();
+	const timeSinceMessage = Date.now() - new Date(_interaction.message.createdTimestamp).getTime();
 	const timeLimit = reactionTimeLimit(user.perkTier());
 	if (timeSinceMessage > Time.Day) {
 		Logging.logDebug(
 			`${user.id} clicked Diff[${formatDuration(timeSinceMessage)}] Button[${id}] Message[${
-				interaction.message.id
+				_interaction.message.id
 			}]`
 		);
 	}
@@ -298,7 +290,6 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 		return runCommand({
 			commandName: 'clue',
 			args: { tier },
-			bypassInhibitors: true,
 			...options
 		});
 	}
@@ -318,7 +309,6 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 		return runCommand({
 			commandName: 'minion',
 			args: { daily: {} },
-			bypassInhibitors: true,
 			...options
 		});
 	}
@@ -327,7 +317,6 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 		return runCommand({
 			commandName: 'farming',
 			args: { check_patches: {} },
-			bypassInhibitors: true,
 			...options
 		});
 	}
@@ -336,7 +325,6 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 		return runCommand({
 			commandName: 'minion',
 			args: { cancel: {} },
-			bypassInhibitors: true,
 			...options
 		});
 	}
@@ -345,7 +333,6 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 		return runCommand({
 			commandName: 'minion',
 			args: { buy: {} },
-			bypassInhibitors: true,
 			...options
 		});
 	}
@@ -396,14 +383,12 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 			return runCommand({
 				commandName: 'activities',
 				args: { birdhouses: { action: 'harvest' } },
-				bypassInhibitors: true,
 				...options
 			});
 		case 'AUTO_SLAY': {
 			return runCommand({
 				commandName: 'slayer',
 				args: { autoslay: {} },
-				bypassInhibitors: true,
 				...options
 			});
 		}
@@ -411,7 +396,6 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 			await runCommand({
 				commandName: 'slayer',
 				args: { autoslay: {} },
-				bypassInhibitors: true,
 				...options
 			});
 			return;
@@ -420,7 +404,6 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 			await runCommand({
 				commandName: 'slayer',
 				args: { autoslay: { mode: 'default' } },
-				bypassInhibitors: true,
 				...options
 			});
 			return;
@@ -429,7 +412,6 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 			await runCommand({
 				commandName: 'slayer',
 				args: { autoslay: { mode: 'ehp' } },
-				bypassInhibitors: true,
 				...options
 			});
 			return;
@@ -438,7 +420,6 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 			await runCommand({
 				commandName: 'slayer',
 				args: { autoslay: { mode: 'boss' } },
-				bypassInhibitors: true,
 				...options
 			});
 			return;
@@ -447,7 +428,6 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 			await runCommand({
 				commandName: 'slayer',
 				args: { manage: { command: 'skip', new: true } },
-				bypassInhibitors: true,
 				...options
 			});
 			return;
@@ -456,7 +436,6 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 			await runCommand({
 				commandName: 'slayer',
 				args: { manage: { command: 'block', new: true } },
-				bypassInhibitors: true,
 				...options
 			});
 			return;
@@ -467,14 +446,13 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 				args: {
 					auto_farm: {}
 				},
-				bypassInhibitors: true,
 				...options
 			});
 		}
 		case 'AUTO_FARMING_CONTRACT': {
-			const response = await autoContract(user, options.channelID);
+			const response = await autoContract(interaction, user);
 			if (response) {
-				return mInteraction.reply(response);
+				return interaction.reply(response);
 			}
 			return;
 		}
@@ -486,7 +464,6 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 						input: 'easier'
 					}
 				},
-				bypassInhibitors: true,
 				...options
 			});
 		}
@@ -504,7 +481,6 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 			return runCommand({
 				commandName: 'slayer',
 				args: { new_task: {} },
-				bypassInhibitors: true,
 				...options
 			});
 		}
@@ -528,7 +504,6 @@ export async function globalButtonInteractionHandler(interaction: ButtonInteract
 			return runCommand({
 				commandName: 'minigames',
 				args: { tears_of_guthix: { start: {} } },
-				bypassInhibitors: true,
 				...options
 			});
 		}

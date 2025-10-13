@@ -1,6 +1,6 @@
 import { Time } from '@oldschoolgg/toolkit';
 import { type Activity, activity_type_enum, type Prisma } from '@prisma/client';
-import { ButtonBuilder, type ButtonInteraction, ButtonStyle } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Items } from 'oldschooljs';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -762,7 +762,7 @@ export async function makeRepeatTripButtons(user: MUser) {
 
 export async function repeatTrip(
 	user: MUser,
-	interaction: ButtonInteraction,
+	interaction: MInteraction,
 	data: { data: Prisma.JsonValue; type: activity_type_enum }
 ) {
 	if (!data || !data.data || !data.type) {
@@ -774,11 +774,8 @@ export async function repeatTrip(
 		isContinue: true,
 		args: handler.args(data.data as any),
 		interaction,
-		guildID: interaction.guildId,
-		member: interaction.member,
-		channelID: interaction.channelId,
 		user,
-		continueDeltaMillis: interaction.createdAt.getTime() - interaction.message.createdTimestamp
+		continueDeltaMillis: interaction.createdAt.getTime() - (interaction.message?.createdTimestamp ?? 0)
 	});
 	return result;
 }

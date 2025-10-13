@@ -149,6 +149,15 @@ export class MInteraction {
 		return this.interaction.guild;
 	}
 
+	public get createdAt() {
+		return this.interaction.createdAt;
+	}
+
+	public get message() {
+		if (!this.interaction.isButton()) return null;
+		return this.interaction.message;
+	}
+
 	makePaginatedMessage(options: PaginatedMessageOptions) {
 		this.isPaginated = true;
 		return new PaginatedMessage({ interaction: this, ...options }).run([this.interaction.user.id]);

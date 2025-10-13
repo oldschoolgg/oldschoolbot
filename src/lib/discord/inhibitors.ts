@@ -11,6 +11,7 @@ import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
 import { DISABLED_COMMANDS, perkTierCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
 import { BadgesEnum, BitField, busyImmuneCommands, Channel, globalConfig } from '@/lib/constants.js';
+import type { InhibitorResult } from '@/lib/discord/preCommand.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
 import type { MMember } from '@/lib/structures/MInteraction.js';
 import { mahojiGuildSettingsFetch } from '@/mahoji/guildSettings.js';
@@ -24,9 +25,7 @@ interface Inhibitor {
 		guild: Guild | null;
 		channel: TextBasedChannel | null;
 		member: MMember | null;
-		bypassInhibitors: boolean;
 	}) => false | InteractionReplyOptions;
-	canBeDisabled: boolean;
 	silent?: true;
 }
 
@@ -38,19 +37,7 @@ const inhibitors: Inhibitor[] = [
 				return { content: 'The bot is currently restarting, please try again later.' };
 			}
 			return false;
-		},
-		canBeDisabled: false
-	},
-	{
-		name: 'User Busy',
-		run: ({ user, bypassInhibitors, command }) => {
-			if (user.isBusy && !bypassInhibitors && !busyImmuneCommands.includes(command.name)) {
-				return { content: 'You cannot use a command right now.' };
-			}
-			if (!busyImmuneCommands.includes(command.name)) modifyBusyCounter(user.id, 1);
-			return false;
-		},
-		canBeDisabled: false
+		}
 	},
 	{
 		name: 'settingSyncer',
@@ -59,8 +46,7 @@ const inhibitors: Inhibitor[] = [
 				mahojiGuildSettingsFetch(guild);
 			}
 			return false;
-		},
-		canBeDisabled: false
+		}
 	},
 	{
 		name: 'hasMinion',
@@ -81,8 +67,7 @@ const inhibitors: Inhibitor[] = [
 			}
 
 			return false;
-		},
-		canBeDisabled: false
+		}
 	},
 	{
 		name: 'minionNotBusy',
@@ -94,8 +79,7 @@ const inhibitors: Inhibitor[] = [
 			}
 
 			return false;
-		},
-		canBeDisabled: false
+		}
 	},
 	{
 		name: 'disabled',
@@ -112,8 +96,7 @@ const inhibitors: Inhibitor[] = [
 				return { content: 'This command is disabled in this server.' };
 			}
 			return false;
-		},
-		canBeDisabled: false
+		}
 	},
 	{
 		name: 'commandRoleLimit',
@@ -127,7 +110,6 @@ const inhibitors: Inhibitor[] = [
 
 			return { content: "You cannot use commands in the general channel unless you're a patron" };
 		},
-		canBeDisabled: false,
 		silent: true
 	},
 	{
@@ -157,7 +139,6 @@ const inhibitors: Inhibitor[] = [
 
 			return false;
 		},
-		canBeDisabled: false,
 		silent: true
 	},
 	{
@@ -173,8 +154,7 @@ const inhibitors: Inhibitor[] = [
 				};
 			}
 			return false;
-		},
-		canBeDisabled: true
+		}
 	},
 	{
 		name: 'blacklisted',
@@ -187,7 +167,6 @@ const inhibitors: Inhibitor[] = [
 			}
 			return false;
 		},
-		canBeDisabled: false,
 		silent: true
 	}
 ];
@@ -197,28 +176,31 @@ export function runInhibitors({
 	channel,
 	member,
 	command,
-	guild,
-	bypassInhibitors
+	guild
 }: {
 	user: MUser;
 	channel: TextBasedChannel | null;
 	member: MMember | null;
 	command: OSBMahojiCommand;
 	guild: Guild | null;
-	bypassInhibitors: boolean;
-}): undefined | { reason: InteractionReplyOptions; silent: boolean } {
-	for (const { run, canBeDisabled, silent } of inhibitors) {
-		if (bypassInhibitors && canBeDisabled) continue;
+}): undefined | InhibitorResult {
+	if (user.isBusy && !busyImmuneCommands.includes(command.name)) {
+		return { reason: { content: 'You cannot use a command right now.' }, runPostCommand: false };
+	}
+	if (!busyImmuneCommands.includes(command.name)) {
+		modifyBusyCounter(user.id, 1);
+	}
+
+	for (const { run, silent } of inhibitors) {
 		const result = run({
 			user,
 			channel,
 			member,
 			command,
-			guild,
-			bypassInhibitors
+			guild
 		});
 		if (result !== false) {
-			return { reason: result, silent: Boolean(silent) };
+			return { reason: result, silent: Boolean(silent), runPostCommand: false };
 		}
 	}
 }
