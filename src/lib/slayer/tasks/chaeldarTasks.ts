@@ -251,6 +251,21 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
+		monster: Monsters.JuvenileCustodianStalker,
+		amount: [70, 130],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.UnRestrainingOrder,
+		weight: 11,
+		monsters: [
+			Monsters.JuvenileCustodianStalker.id,
+			Monsters.MatureCustodianStalker.id,
+			Monsters.ElderCustodianStalker.id
+		],
+		slayerLevel: 54,
+		unlocked: false,
+		requiredQuests: [QuestID.ShadowsOfCustodia]
+	},
+	{
 		monster: Monsters.KalphiteWorker,
 		amount: [70, 130],
 		weight: 11,
