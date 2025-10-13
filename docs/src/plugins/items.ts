@@ -81,12 +81,16 @@ ${author?.avatar ? `<img class="contributor_avatar" src="${author.avatar}" />` :
 						throw new Error(`Could not find item with name: ${itemName}`);
 					}
 					const { item, imageUrl, isBso } = rawItem;
+					if (!imageUrl.startsWith('http')) {
+						throw new Error(`Item with name: ${itemName} has invalid imageUrl: ${imageUrl}`);
+					}
+
 					if (flag === 'raw') {
-						html = `<img class="osrs_item_image osrs_item_image_full" src="${item.name}" alt="${itemName}" />`;
+						html = `<img class="osrs_item_image osrs_item_image_full" data-id="item" src="${imageUrl}" alt="${item.name}" />`;
 					} else {
 						html = `<span class="osrs_item${isBso ? ' bso_item' : ''}">
 									<img class="osrs_item_image" src="${imageUrl}" alt="${item.name}" />
-									${flag !== 'raw' ? `<span class="osrs_item_name">${item.name}</span>` : ''}
+									<span class="osrs_item_name">${item.name}</span>
 								</span>`;
 					}
 				}
