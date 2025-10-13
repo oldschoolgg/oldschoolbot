@@ -7,6 +7,7 @@ import {
 } from 'discord.js';
 
 import type { ICommand } from '@/lib/discord/index.js';
+import { DebugStopwatch } from '@/lib/structures/DebugTimer.js';
 
 async function handleAutocomplete(
 	user: MUser,
@@ -58,14 +59,16 @@ async function handleAutocomplete(
 
 export async function autoCompleteHandler(interaction: AutocompleteInteraction) {
 	const member: GuildMember | undefined = interaction.inCachedGuild() ? interaction.member : undefined;
-	const command = globalClient.allCommands.find(c => c.name === interaction.commandName);
+	const command = globalClient.allCommands.find(c => c.name === interaction.commandName)!;
 	const user = await mUserFetch(interaction.user.id);
+	const sw = new DebugStopwatch(`AutoCompleteHandler[${command.name}]`);
 	const choices = await handleAutocomplete(
 		user,
 		command,
 		(interaction.options as any).data as CommandInteractionOption[],
 		member
 	);
+	sw.check(`Got choices`);
 	await interaction.respond(choices);
 	return;
 }
