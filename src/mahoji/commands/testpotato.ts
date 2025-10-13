@@ -1,5 +1,5 @@
 import { randArrItem, randInt } from '@oldschoolgg/rng';
-import { noOp, stringMatches, uniqueArr } from '@oldschoolgg/toolkit';
+import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { type Prisma, xp_gains_skill_enum } from '@prisma/client';
 import { EmbedBuilder, MessageFlags } from 'discord.js';
 import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
@@ -17,6 +17,13 @@ import { MAX_QP, quests } from '@/lib/minions/data/quests.js';
 import { allOpenables } from '@/lib/openables.js';
 import { Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import {
+	type FarmingPatchName,
+	farmingPatchNames,
+	getFarmingKeyFromName,
+	userGrowingProgressStr
+} from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
+import { getFarmingInfoFromUser } from '@/lib/skilling/skills/farming/utils/getFarmingInfo.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
@@ -469,6 +476,23 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 				},
 				{
 					type: 'Subcommand',
+					name: 'forcegrow',
+					description: 'Force a plant to grow.',
+					options: [
+						{
+							type: 'String',
+							name: 'patch_name',
+							description: 'The patches you want to harvest.',
+							required: true,
+							choices: [
+								{ name: 'All patches', value: 'all' },
+								...farmingPatchNames.map(i => ({ name: i, value: i }))
+							]
+						}
+					]
+				},
+				{
+					type: 'Subcommand',
 					name: 'set',
 					description: 'Set something',
 					options: [
@@ -576,6 +600,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = globalConfig.isProduct
 				spawn?: { preset?: string; collectionlog?: boolean; item?: string; items?: string };
 				setmonsterkc?: { monster: string; kc: string };
 				irontoggle?: {};
+				forcegrow?: { patch_name: FarmingPatchName | 'all' };
 				wipe?: { thing: (typeof thingsToWipe)[number] };
 				set?: { qp?: number; all_ca_tasks?: boolean };
 				get_code?: {};
@@ -1000,6 +1025,35 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 						}
 					});
 					return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;
+				}
+
+				if (options.forcegrow) {
+					const farmingDetails = await getFarmingInfoFromUser(user);
+					const { patch_name } = options.forcegrow;
+					const patchesToGrow =
+						patch_name === 'all'
+							? farmingDetails.patchesDetailed.filter(patch => patch.plant)
+							: farmingDetails.patchesDetailed.filter(
+									patch => patch.patchName === patch_name && patch.plant
+								);
+					if (patchesToGrow.length === 0) {
+						return patch_name === 'all'
+							? 'You have nothing planted in any patches.'
+							: 'You have nothing planted there.';
+					}
+					const now = Date.now();
+					const updates = Object.fromEntries(
+						patchesToGrow.map(patch => [
+							getFarmingKeyFromName(patch.patchName),
+							{
+								...farmingDetails.patches[patch.patchName],
+								plantTime: now - Time.Month
+							}
+						])
+					) as Prisma.UserUncheckedUpdateInput;
+
+					await user.update(updates);
+					return userGrowingProgressStr((await getFarmingInfoFromUser(user)).patchesDetailed);
 				}
 
 				if (options.setslayertask) {

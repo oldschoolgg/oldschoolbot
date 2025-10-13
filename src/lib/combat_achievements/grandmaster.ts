@@ -32,6 +32,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: "Kill the Alchemical Hydra using only Dharok's Greataxe as a weapon whilst having no more than 10 Hitpoints throughout the entire fight.",
 		type: 'restriction',
 		monster: 'Alchemical Hydra',
+		details: "You must have Dharok's greataxe equipped in your melee gear.",
 		rng: {
 			chancePerKill: 33,
 			hasChance: (data, user) =>
@@ -45,6 +46,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete a Chambers of Xeric (5-scale) in less than 12 minutes and 30 seconds.',
 		type: 'speed',
 		monster: 'Chambers of Xeric',
+		details: 'Team size must be at least 5 and the duration must be under 12 minutes 30 seconds.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
@@ -74,6 +76,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete a Chambers of Xeric (Solo) in less than 17 minutes. (Party size required)',
 		type: 'speed',
 		monster: 'Chambers of Xeric',
+		details: 'Team size must be 1 and the duration must be under 17 minutes.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
@@ -88,6 +91,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete a Chambers of Xeric (Trio) in less than 14 minutes and 30 seconds.',
 		type: 'speed',
 		monster: 'Chambers of Xeric',
+		details: 'Team size must be at least 3 and the duration must be under 14 minutes 30 seconds.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
@@ -105,6 +109,8 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete a Chambers of Xeric: Challenge Mode (Solo) in less than 38 minutes and 30 seconds. (Party size required)',
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
+		details:
+			'Challenge mode must be active, team size must be 1 and the duration must be under 38 minutes 30 seconds.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
@@ -132,6 +138,8 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete a Chambers of Xeric: Challenge Mode (Trio) in less than 27 minutes.',
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
+		details:
+			'Challenge mode must be active, team size must be at least 3 and the duration must be under 27 minutes.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
@@ -151,6 +159,8 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete a Chambers of Xeric: Challenge Mode (5-scale) in less than 25 minutes.',
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
+		details:
+			'Challenge mode must be active, team size must be at least 5 and the duration must be under 25 minutes.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
@@ -329,6 +339,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: "Kill Kree'arra by only dealing damage to him with a salamander.",
 		type: 'restriction',
 		monster: "Kree'arra",
+		details: 'You must have a black, red, or orange salamander equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
@@ -894,6 +905,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Tzkal-Zuk without equipping a Twisted Bow within the Inferno.',
 		type: 'restriction',
 		monster: 'TzKal-Zuk',
+		details: 'You must not have a Twisted bow equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) => data.type === 'Inferno' && !user.hasEquipped('Twisted bow')
@@ -1016,6 +1028,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Vorkath with only your fists.',
 		type: 'restriction',
 		monster: 'Vorkath',
+		details: 'You must not have a weapon equipped in your melee gear.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
@@ -1124,6 +1137,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Araxxor 6 times in 10:00.',
 		type: 'speed',
 		monster: 'Araxxor',
+		details: 'You must kill at least 6 Araxxor and average 1.66 minutes or less per kill.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data => {

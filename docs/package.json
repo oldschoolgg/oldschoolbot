@@ -14,7 +14,7 @@
 		"@astrojs/preact": "^4.1.1",
 		"@astrojs/starlight": "^0.36.0",
 		"@astrojs/tailwind": "^6.0.2",
-		"astro": "^5.13.9",
+		"astro": "^5.14.3",
 		"collapse-white-space": "^2.1.0",
 		"markdown-it": "^14.1.0",
 		"oldschooljs": "workspace:*",

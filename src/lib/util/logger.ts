@@ -71,6 +71,9 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 	if (interaction) {
 		metaInfo.interaction = interaction.getDebugInfo();
 	}
+	if (!globalConfig.isProduction) {
+		console.error(err);
+	}
 	console.error(
 		JSON.stringify({
 			type: 'ERROR',
