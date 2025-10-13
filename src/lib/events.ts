@@ -102,9 +102,11 @@ async function petMessages(msg: Message) {
 		});
 		if (!channelIsSendable(msg.channel)) return;
 		if (userPets[pet.id] > 1) {
-			msg.channel.send(`${msg.author} has a funny feeling like they would have been followed. ${pet.emoji}`);
+			await msg.channel.send(
+				`${msg.author} has a funny feeling like they would have been followed. ${pet.emoji}`
+			);
 		} else {
-			msg.channel.send(`You have a funny feeling like you’re being followed, ${msg.author} ${pet.emoji}
+			await msg.channel.send(`You have a funny feeling like you’re being followed, ${msg.author} ${pet.emoji}
 Type \`/tools user mypets\` to see your pets.`);
 		}
 	}
