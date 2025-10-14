@@ -77,7 +77,7 @@ const PAGE_SIZE = 10;
 async function bingoTeamLeaderboard(interaction: MInteraction, bingo: BingoManager): CommandResponse {
 	const { teams } = await bingo.fetchAllParticipants();
 
-	doMenu(
+	return doMenu(
 		interaction,
 		chunk(teams, PAGE_SIZE).map((subList, i) =>
 			subList
@@ -91,10 +91,6 @@ async function bingoTeamLeaderboard(interaction: MInteraction, bingo: BingoManag
 		),
 		'Bingo Team Leaderboard'
 	);
-	return {
-		ephemeral: true,
-		content: 'Loading Bingo Leaderboard...'
-	};
 }
 
 async function makeTeamCommand(
