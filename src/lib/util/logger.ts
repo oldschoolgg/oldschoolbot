@@ -84,6 +84,10 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 	}
 
 	if (err instanceof UserError && interaction && interaction.isRepliable()) {
+		Logging.logDebug('UserError encountered, sending message to user.', {
+			error: err.message,
+			user_id: interaction.user.id
+		});
 		interaction.reply({ content: err.message });
 		return;
 	}
@@ -105,7 +109,8 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 		JSON.stringify({
 			type: 'ERROR',
 			error: err.stack ?? err.message,
-			info: metaInfo
+			info: metaInfo,
+			time: new Date().toISOString()
 		})
 	);
 

@@ -82,28 +82,24 @@ export class MInteraction {
 			user_id: interaction.user.id,
 			channel_id: interaction.channelId,
 			guild_id: interaction.guildId,
-			interaction_id: interaction.id,
-			interaction_type: interaction.type,
-			interaction_created_at: interaction.createdTimestamp,
-			current_timestamp: Date.now(),
-			difference_s: ((Date.now() - interaction.createdTimestamp) / 1000).toFixed(1)
+			itx_id: interaction.id,
+			itx_type: interaction.type,
+			itx_created_at: interaction.createdTimestamp,
+			itx_diff_s: ((Date.now() - interaction.createdTimestamp) / 1000).toFixed(1)
 		};
 
 		if (interaction instanceof MInteraction) {
 			context.was_deferred = interaction.deferred;
-			context.command_name = interaction.commandName;
-			context.ephemera = interaction.ephemeral;
+			context.cmd_name = interaction.commandName;
+			context.ephemeral = interaction.ephemeral;
 			context.replied = interaction.replied;
 			context.is_party = interaction.isParty;
-			context.is_confirmation = interaction.isConfirmation;
+			context.is_confirm = interaction.isConfirmation;
 			context.is_paginated = interaction.isPaginated;
 			context.button_id = interaction.customId;
-			context.command_name = interaction.commandName;
 
 			if (interaction.interaction.isChatInputCommand()) {
-				context.command_options = JSON.stringify(
-					MInteraction.getChatInputCommandOptions(interaction.interaction)
-				);
+				context.cmd_options = JSON.stringify(MInteraction.getChatInputCommandOptions(interaction.interaction));
 			}
 		}
 
