@@ -15,7 +15,7 @@ import {
 } from 'oldschooljs';
 
 import { addXP } from '@/lib/addXP.js';
-import { userIsBusy } from '@/lib/busyCounterCache.js';
+import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
@@ -1102,6 +1102,10 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 
 	async updateCL() {
 		await updateUserCl(this.id);
+	}
+
+	modifyBusy(type: 'lock' | 'unlock', reason: string): void {
+		modifyUserBusy({ type, reason, userID: this.id });
 	}
 }
 declare global {

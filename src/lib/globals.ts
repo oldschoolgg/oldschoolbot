@@ -44,8 +44,24 @@ interface BotDB {
 async function makePrismaClient(): Promise<BotDB> {
 	const { adapter, pgLiteClient } = await getAdapter(BOT_TYPE);
 	const prismaClient = new PrismaClient({
-		log: ['warn', 'error'],
+		log: [{ emit: 'event', level: 'query' }, 'info', 'warn', 'error'],
 		adapter
+	});
+	prismaClient.$on('query', e => {
+		const info = {
+			text: `Prisma Query`,
+			duration: e.duration,
+			query: e.query,
+			params: e.params,
+			target: 'bot-db'
+		};
+		if (info.query.length > 1000) {
+			info.query = `${info.query.slice(0, 1000)}...`;
+		}
+		if (info.params.length > 1000) {
+			info.params = `${info.params.slice(0, 1000)}...`;
+		}
+		Logging.logPerf(info);
 	});
 	return { prismaClient, adapter, pgLiteClient };
 }

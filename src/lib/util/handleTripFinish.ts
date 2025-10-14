@@ -1,4 +1,4 @@
-import { channelIsSendable, makeComponents, Stopwatch, Time } from '@oldschoolgg/toolkit';
+import { channelIsSendable, makeComponents, Time } from '@oldschoolgg/toolkit';
 import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { Bank, EItem } from 'oldschooljs';
@@ -57,7 +57,6 @@ type TripEffectReturn = {
 
 export interface TripFinishEffect {
 	name: string;
-	// biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
 	fn: (options: TripFinishEffectOptions) => Promise<TripEffectReturn | undefined | void>;
 }
 
@@ -142,14 +141,16 @@ export async function handleTripFinish(
 	const itemsToAddWithCL = new Bank();
 	const itemsToRemove = new Bank();
 	for (const effect of tripFinishEffects) {
-		const stopwatch = new Stopwatch().start();
+		const start = performance.now();
 		const res = await effect.fn({ data, user, loot, messages });
 		if (res?.itemsToAddWithCL) itemsToAddWithCL.add(res.itemsToAddWithCL);
 		if (res?.itemsToRemove) itemsToRemove.add(res.itemsToRemove);
-		stopwatch.stop();
-		if (stopwatch.duration > 500) {
-			Logging.logDebug(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
-		}
+		const end = performance.now();
+		const duration = end - start;
+		Logging.logPerf({
+			text: `TripEffect.${effect.name}`,
+			duration
+		});
 	}
 	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
 		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });

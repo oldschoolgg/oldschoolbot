@@ -2,9 +2,10 @@ import { cryptoRng } from '@oldschoolgg/rng';
 import { SpecialResponse } from '@oldschoolgg/toolkit';
 import { type ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.js';
 
+import { busyImmuneCommands } from '@/lib/constants.js';
 import { type CommandOptions, convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';
-import { postCommand } from '@/lib/discord/postCommand.js';
 import { preCommand } from '@/lib/discord/preCommand.js';
+import { DebugStopwatch } from '@/lib/structures/DebugTimer.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';
 
 export async function rawCommandHandlerInner({
@@ -16,6 +17,8 @@ export async function rawCommandHandlerInner({
 	command: OSBMahojiCommand;
 	options: CommandOptions;
 }) {
+	const sw = new DebugStopwatch({ name: 'CommandHandler', interaction });
+
 	// Permissions
 	if (command.requiredPermissions) {
 		if (!interaction.member || !interaction.member.permissions) return null;
@@ -34,19 +37,27 @@ export async function rawCommandHandlerInner({
 		last_command_date: new Date(),
 		username: globalClient.users.cache.get(interaction.user.id)?.username
 	});
+	if (user.isBusy && !busyImmuneCommands.includes(command.name)) {
+		await interaction.reply({
+			content: 'You cannot use a command right now.',
+			ephemeral: true
+		});
+		return;
+	}
+	if (!busyImmuneCommands.includes(command.name)) {
+		user.modifyBusy('lock', `Running command: ${command.name}`);
+	}
 
-	let inhibited = false;
-	let runPostCommand = true;
 	try {
+		sw.check();
 		const inhibitedResponse = await preCommand({
 			command,
 			interaction,
 			options,
 			user
 		});
+		sw.check('PreCommand');
 		if (inhibitedResponse) {
-			runPostCommand = inhibitedResponse.runPostCommand;
-			inhibited = true;
 			await interaction.reply({
 				ephemeral: true,
 				...inhibitedResponse.reason
@@ -64,6 +75,7 @@ export async function rawCommandHandlerInner({
 			userID: interaction.user.id,
 			rng: cryptoRng
 		});
+
 		if (response === null) return;
 		if (response === SpecialResponse.PaginatedMessageResponse) {
 			return;
@@ -77,16 +89,7 @@ export async function rawCommandHandlerInner({
 			context: { command: command.name, options: JSON.stringify(options) }
 		});
 	} finally {
-		if (runPostCommand) {
-			await postCommand({
-				command,
-				inhibited,
-				interaction,
-				continueDeltaMillis: null,
-				isContinue: false,
-				args: options
-			});
-		}
+		user.modifyBusy('unlock', `Finished running command: ${command.name}`);
 	}
 }
 

@@ -61,7 +61,7 @@ export async function autoCompleteHandler(interaction: AutocompleteInteraction) 
 	const member: GuildMember | undefined = interaction.inCachedGuild() ? interaction.member : undefined;
 	const command = globalClient.allCommands.find(c => c.name === interaction.commandName)!;
 	const user = await mUserFetch(interaction.user.id);
-	const sw = new DebugStopwatch(`AutoCompleteHandler[${command.name}]`);
+	const sw = new DebugStopwatch({ name: 'AutoComplete', interaction });
 	const choices = await handleAutocomplete(
 		user,
 		command,

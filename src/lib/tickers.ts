@@ -350,7 +350,13 @@ export function initTickers() {
 		const fn = async () => {
 			try {
 				if (globalClient.isShuttingDown) return;
+				const start = performance.now();
 				await ticker.cb();
+				const end = performance.now();
+				Logging.logPerf({
+					duration: end - start,
+					text: `Ticker.${ticker.name}`
+				});
 			} catch (err) {
 				Logging.logError(err as Error);
 			} finally {
