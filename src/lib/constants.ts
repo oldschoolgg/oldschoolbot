@@ -382,7 +382,8 @@ const globalConfigSchema = z.object({
 	adminUserIDs: z.array(z.string()).default(['157797566833098752', '425134194436341760']),
 	maxingMessage: z.string().default('Congratulations on maxing!'),
 	moderatorLogsChannels: z.string().default(''),
-	supportServerID: z.string()
+	supportServerID: z.string(),
+	minimumLoggedPerfDuration: z.number().default(30)
 });
 
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });

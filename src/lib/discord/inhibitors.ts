@@ -8,9 +8,8 @@ import {
 } from 'discord.js';
 
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
-import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
 import { DISABLED_COMMANDS, perkTierCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
-import { BadgesEnum, BitField, busyImmuneCommands, Channel, globalConfig } from '@/lib/constants.js';
+import { BadgesEnum, BitField, Channel, globalConfig } from '@/lib/constants.js';
 import type { InhibitorResult } from '@/lib/discord/preCommand.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
 import type { MMember } from '@/lib/structures/MInteraction.js';
@@ -184,13 +183,6 @@ export function runInhibitors({
 	command: OSBMahojiCommand;
 	guild: Guild | null;
 }): undefined | InhibitorResult {
-	if (user.isBusy && !busyImmuneCommands.includes(command.name)) {
-		return { reason: { content: 'You cannot use a command right now.' }, runPostCommand: false };
-	}
-	if (!busyImmuneCommands.includes(command.name)) {
-		modifyBusyCounter(user.id, 1);
-	}
-
 	for (const { run, silent } of inhibitors) {
 		const result = run({
 			user,
@@ -200,7 +192,7 @@ export function runInhibitors({
 			guild
 		});
 		if (result !== false) {
-			return { reason: result, silent: Boolean(silent), runPostCommand: false };
+			return { reason: result, silent: Boolean(silent) };
 		}
 	}
 }
