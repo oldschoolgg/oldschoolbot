@@ -18,7 +18,7 @@ export function modifyUserBusy({
 	switch (type) {
 		case 'lock': {
 			if (isBusy) {
-				Logging.logError(`Tried to busy-lock an already busy user. UserID[${userID}] Reason[${reason}]`);
+				Logging.logDebug(`Tried to busy-lock an already busy user. UserID[${userID}] Reason[${reason}]`);
 				return;
 			} else {
 				busyUsers.add(userID);
@@ -27,7 +27,7 @@ export function modifyUserBusy({
 		}
 		case 'unlock': {
 			if (!isBusy) {
-				Logging.logError(`Tried to free an already free user. UserID[${userID}] Reason[${reason}]`);
+				Logging.logDebug(`Tried to unlock an already unlocked user. UserID[${userID}] Reason[${reason}]`);
 				return;
 			} else {
 				busyUsers.delete(userID);

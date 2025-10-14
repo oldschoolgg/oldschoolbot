@@ -6,7 +6,11 @@ export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsTo
 	if (recipient.isBusy) {
 		return { success: false, message: `${recipient.usernameOrMention} is busy.` };
 	}
-	sender.modifyBusy('lock', `Trading items with ${recipient.username}`);
+
+	// Sender likely already busy from using a command.
+	if (!sender.isBusy) {
+		sender.modifyBusy('lock', `Trading items with ${recipient.username}`);
+	}
 	recipient.modifyBusy('lock', `Trading items with ${sender.username}`);
 
 	const itemsToSend = _itemsToSend ? _itemsToSend.clone() : new Bank();
