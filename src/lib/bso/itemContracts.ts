@@ -17,7 +17,6 @@ import { dateFm, Emoji, formatDuration, formatOrdinal } from '@oldschoolgg/toolk
 import { MessageFlags } from 'discord.js';
 import { Bank, type ItemBank, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
 
-import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
 import { BitField } from '@/lib/constants.js';
 import type { MInteraction } from '@/lib/structures/MInteraction.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
@@ -209,7 +208,6 @@ async function donateICHandler(interaction: MInteraction) {
 	const { cost } = secondaryErrorStr;
 
 	try {
-		modifyBusyCounter(donator.id, 1);
 		await tradePlayerItems(donator, user, cost);
 		await donator.statsBankUpdate('ic_donations_given_bank', cost);
 		await user.statsBankUpdate('ic_donations_received_bank', cost);
@@ -227,8 +225,6 @@ ${Emoji.ItemContract} Your next contract is: ${nextIcDetails.currentItem?.name} 
 		});
 	} catch (err) {
 		Logging.logError({ err: err as Error, interaction });
-	} finally {
-		modifyBusyCounter(donator.id, -1);
 	}
 }
 

@@ -10,7 +10,7 @@ import { RuneTable, WilvusTable, WoodTable } from '@/lib/bso/tables/seedTable.js
 import { DougTable, PekyTable } from '@/lib/bso/tables/sharedTables.js';
 
 import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
-import { channelIsSendable, makeComponents, notEmpty, Stopwatch, Time } from '@oldschoolgg/toolkit';
+import { channelIsSendable, makeComponents, notEmpty, Time } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { bold } from 'discord.js';
@@ -503,14 +503,16 @@ export async function handleTripFinish(
 	const itemsToAddWithCL = new Bank();
 	const itemsToRemove = new Bank();
 	for (const effect of tripFinishEffects) {
-		const stopwatch = new Stopwatch().start();
+		const start = performance.now();
 		const res = await effect.fn({ data, user, loot, messages, portents });
 		if (res?.itemsToAddWithCL) itemsToAddWithCL.add(res.itemsToAddWithCL);
 		if (res?.itemsToRemove) itemsToRemove.add(res.itemsToRemove);
-		stopwatch.stop();
-		if (stopwatch.duration > 500) {
-			Logging.logDebug(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
-		}
+		const end = performance.now();
+		const duration = end - start;
+		Logging.logPerf({
+			text: `TripEffect.${effect.name}`,
+			duration
+		});
 	}
 
 	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {

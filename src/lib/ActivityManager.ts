@@ -1,7 +1,6 @@
 import { cryptoRng } from '@oldschoolgg/rng';
 import type { Activity, activity_type_enum, Prisma } from '@prisma/client';
 
-import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
 import { globalConfig } from '@/lib/constants.js';
 import { onMinionActivityFinish } from '@/lib/events.js';
 import { allTasks } from '@/lib/Task.js';
@@ -69,13 +68,11 @@ class SActivityManager {
 			return;
 		}
 
-		modifyBusyCounter(activity.userID, 1);
 		try {
 			await task.run(activity, { user: await mUserFetch(activity.userID), handleTripFinish, rng: cryptoRng });
 		} catch (err) {
 			Logging.logError(err as Error);
 		} finally {
-			modifyBusyCounter(activity.userID, -1);
 			this.minionActivityCacheDelete(activity.userID);
 			await onMinionActivityFinish(activity);
 		}

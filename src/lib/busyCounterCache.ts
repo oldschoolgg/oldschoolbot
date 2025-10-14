@@ -1,25 +1,42 @@
-const busyCounterCache = new Map<string, number>();
+const busyUsers = new Set<string>();
 
-function baseModifyBusyCounter(map: Map<string, number>, userID: string, amount: -1 | 1) {
-	const entry = map.get(userID);
-	if (!entry) {
-		map.set(userID, amount);
-		return amount;
+export function modifyUserBusy({
+	reason,
+	userID,
+	type
+}: {
+	type: 'lock' | 'unlock';
+	userID: string;
+	reason: string;
+}): void {
+	Logging.logDebug(`ModifyUserBusy UserID[${userID}] Type[${type}] Reason[${reason}]`, {
+		type: 'MODIFY_USER_BUSY',
+		user_id: userID
+	});
+	const isBusy = busyUsers.has(userID);
+
+	switch (type) {
+		case 'lock': {
+			if (isBusy) {
+				Logging.logError(`Tried to busy-lock an already busy user. UserID[${userID}] Reason[${reason}]`);
+				return;
+			} else {
+				busyUsers.add(userID);
+			}
+			break;
+		}
+		case 'unlock': {
+			if (!isBusy) {
+				Logging.logError(`Tried to free an already free user. UserID[${userID}] Reason[${reason}]`);
+				return;
+			} else {
+				busyUsers.delete(userID);
+			}
+			break;
+		}
 	}
-
-	const newCounter = entry + amount;
-	map.set(userID, newCounter);
-	return newCounter;
 }
 
-function getBusyCounter(userID: string) {
-	return busyCounterCache.get(userID) ?? 0;
-}
-
-export function modifyBusyCounter(userID: string, amount: -1 | 1) {
-	return baseModifyBusyCounter(busyCounterCache, userID, amount);
-}
-
-export function userIsBusy(userID: string) {
-	return getBusyCounter(userID) > 0;
+export function userIsBusy(userID: string): boolean {
+	return busyUsers.has(userID);
 }

@@ -34,15 +34,6 @@ import { getUsername, getUsernameSync } from '@/lib/util.js';
 
 export const LB_PAGE_SIZE = 10;
 
-function lbMsg(str: string, ironmanOnly?: boolean) {
-	return {
-		content: `Showing you the ${str} leaderboard, click the buttons to change pages.${
-			ironmanOnly ? ' Showing only ironmen.' : ''
-		}`,
-		ephemeral: true
-	};
-}
-
 async function bulkGetUsernames(userIDs: string[]) {
 	await Promise.all(uniqueArr(userIDs).map(id => getUsername(id)));
 }
@@ -100,7 +91,13 @@ export async function doMenuWrapper({
 					`${getPos(c, i)}**${user.full_name ?? (await getUsername(user.id))}:** ${formatter ? formatter(user.score) : user.score.toLocaleString()}`
 			);
 			const pageText = (await Promise.all(unwaited)).join('\n');
-			return { embeds: [new EmbedBuilder().setTitle(title).setDescription(pageText)] };
+			return {
+				embeds: [
+					new EmbedBuilder()
+						.setTitle(`${title}${ironmanOnly ? ' (Ironmen Only)' : ''}`)
+						.setDescription(pageText)
+				]
+			};
 		};
 		pages.push(makePage);
 	}
@@ -109,19 +106,7 @@ export async function doMenuWrapper({
 	}
 
 	return interaction.makePaginatedMessage({
-		pages: pages.map((p, i) => {
-			if (isFunction(p)) {
-				return p;
-			}
-
-			return {
-				embeds: [
-					new EmbedBuilder()
-						.setTitle(`${lbMsg(title, ironmanOnly).content} (Page ${i + 1}/${pages.length})`)
-						.setDescription(p)
-				]
-			};
-		})
+		pages
 	});
 }
 
@@ -333,7 +318,7 @@ async function clLb(interaction: MInteraction, inputType: string, ironmenOnly: b
 
 	if (tames) {
 		const tameLb = await fetchTameCLLeaderboard({ items, resultLimit: 200 });
-		doMenu(
+		return doMenu(
 			interaction,
 			chunk(tameLb, LB_PAGE_SIZE).map((subList, i) =>
 				subList
@@ -345,7 +330,6 @@ async function clLb(interaction: MInteraction, inputType: string, ironmenOnly: b
 			),
 			`${inputType} Tame Collection Log Leaderboard (${items.length} slots)`
 		);
-		return lbMsg(`${inputType} Tame Collection Log Leaderboard`);
 	}
 
 	const { users } = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200, clName: resolvedCl });

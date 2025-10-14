@@ -13,7 +13,6 @@ interface PreCommandOptions {
 
 export type InhibitorResult = {
 	reason: InteractionReplyOptions;
-	runPostCommand: boolean;
 	silent?: boolean;
 };
 
@@ -23,18 +22,21 @@ export async function preCommand({ command, interaction, user }: PreCommandOptio
 	Logging.logDebug(`${user.logName} ran command: ${command.name}`, {
 		...interaction.getDebugInfo()
 	});
-	const commandUsage = await prisma.commandUsage.create({
-		data: {
-			user_id: BigInt(user.id),
-			channel_id: BigInt(interaction.channelId),
-			guild_id: interaction.guildId ? BigInt(interaction.guildId) : undefined,
-			command_name: command.name as command_name_enum,
-			args: interaction.getChatInputCommandOptions(),
-			inhibited: false,
-			is_mention_command: false
-		}
-	});
+	prisma.commandUsage
+		.create({
+			data: {
+				user_id: BigInt(user.id),
+				channel_id: BigInt(interaction.channelId),
+				guild_id: interaction.guildId ? BigInt(interaction.guildId) : undefined,
+				command_name: command.name as command_name_enum,
+				args: interaction.getChatInputCommandOptions(),
+				inhibited: false,
+				is_mention_command: false
+			}
+		})
+		.catch(err => Logging.logError({ err, interaction }));
 
+	const start = performance.now();
 	const inhibitResult = runInhibitors({
 		user,
 		guild: interaction.guild ?? null,
@@ -42,16 +44,14 @@ export async function preCommand({ command, interaction, user }: PreCommandOptio
 		command,
 		channel: interaction.channel ?? null
 	});
+	const end = performance.now();
+	Logging.logPerf({
+		duration: end - start,
+		text: 'Inhibitors',
+		interaction
+	});
 
 	if (inhibitResult !== undefined) {
-		await prisma.commandUsage.update({
-			where: {
-				id: commandUsage.id
-			},
-			data: {
-				inhibited: true
-			}
-		});
 		return inhibitResult;
 	}
 }

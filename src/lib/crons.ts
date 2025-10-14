@@ -5,7 +5,6 @@ import { schedule } from 'node-cron';
 
 import { analyticsTick } from '@/lib/analytics.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
-import { cacheCleanup } from '@/lib/util/cachedUserIDs.js';
 
 export const crons = new Set<ReturnType<typeof schedule>>();
 
@@ -50,13 +49,13 @@ GROUP BY item_id;`);
 	);
 
 	/**
-	 * Delete all voice channels
+	 * Cleanup Cache (Temporarily Disabled)
 	 */
-	crons.add(
-		schedule('0 0 */1 * *', async () => {
-			cacheCleanup();
-		})
-	);
+	// crons.add(
+	// 	schedule('0 0 */1 * *', async () => {
+	// 		cacheCleanup();
+	// 	})
+	// );
 
 	crons.add(
 		schedule('35 */48 * * *', async () => {

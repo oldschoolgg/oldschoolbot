@@ -1,4 +1,4 @@
-import { cleanUsername, noOp, Stopwatch } from '@oldschoolgg/toolkit';
+import { cleanUsername, noOp } from '@oldschoolgg/toolkit';
 import type { Prisma, User } from '@prisma/client';
 import { type Guild, userMention } from 'discord.js';
 import { convertXPtoLVL } from 'oldschooljs';
@@ -99,14 +99,14 @@ export function getUsernameSync(_id: string | bigint) {
 	return usernameWithBadgesCache.get(_id.toString()) ?? 'Unknown';
 }
 
-export async function runTimedLoggedFn<T>(name: string, fn: () => Promise<T>, threshholdToLog = 100): Promise<T> {
-	const stopwatch = new Stopwatch();
-	stopwatch.start();
+export async function runTimedLoggedFn<T>(name: string, fn: () => Promise<T>): Promise<T> {
+	const start = performance.now();
 	const result = await fn();
-	stopwatch.stop();
-	if (!globalConfig.isProduction || stopwatch.duration > threshholdToLog) {
-		Logging.logDebug(`Took ${stopwatch} to do ${name}`);
-	}
+	const end = performance.now();
+	Logging.logPerf({
+		text: name,
+		duration: end - start
+	});
 	return result;
 }
 
