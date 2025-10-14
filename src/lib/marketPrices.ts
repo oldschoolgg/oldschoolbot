@@ -19,6 +19,7 @@ interface MarketPriceData {
 export const marketPricemap = new Map<number, MarketPriceData>();
 
 export const cacheGEPrices = async () => {
+	const start = performance.now();
 	const transactionAge = new Date();
 	transactionAge.setDate(transactionAge.getDate() - 60);
 
@@ -93,6 +94,11 @@ export const cacheGEPrices = async () => {
 			totalUniqueTraders
 		};
 		marketPricemap.set(data.itemID, data);
+	});
+	const end = performance.now();
+	Logging.logPerf({
+		duration: end - start,
+		text: 'cacheGEPrices'
 	});
 };
 
