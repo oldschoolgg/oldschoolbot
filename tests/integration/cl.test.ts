@@ -1,13 +1,10 @@
 import { Bank, EItem, Items } from 'oldschooljs';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, describe, expect, it } from 'vitest';
 
+import { TableBankManager } from '@/lib/tableBankManager.js';
 import { createTestUser } from './util.js';
 
 describe('updateCL()', () => {
-	beforeAll(async () => {
-		await prisma.cLUserItem.deleteMany();
-	});
-
 	afterAll(async () => {
 		await prisma.$disconnect();
 	});
@@ -16,12 +13,8 @@ describe('updateCL()', () => {
 		const user = await createTestUser();
 		await user.updateCL();
 
-		const items = await prisma.cLUserItem.findMany({
-			where: { user_id: user.id },
-			orderBy: { item_id: 'asc' }
-		});
-
-		expect(items).toEqual([]);
+		const cl = await TableBankManager.fetch({ userId: user.id, type: 'CollectionLog' });
+		expect(cl.length).toBe(0);
 	});
 
 	it('creates correct rows from collectionLogBank JSON', async () => {
@@ -31,16 +24,12 @@ describe('updateCL()', () => {
 		await user.update({ collectionLogBank: bank.toJSON() });
 		await user.updateCL();
 
-		const rows = await prisma.cLUserItem.findMany({
-			where: { user_id: user.id },
-			orderBy: { item_id: 'asc' }
-		});
-		expect(rows.length).toBe(2);
-
-		const ids = rows.map(r => r.item_id).sort((a, b) => a - b);
-		expect(ids).toEqual([EItem.ABYSSAL_WHIP, EItem.TWISTED_BOW]);
-
-		for (const r of rows) expect(r.quantity).toBe(1);
+		const cl = await TableBankManager.fetch({ userId: user.id, type: 'CollectionLog' });
+		expect(cl.length).toBe(2);
+		expect(cl.has(EItem.TWISTED_BOW)).toBe(true);
+		expect(cl.has(EItem.ABYSSAL_WHIP)).toBe(true);
+		expect(cl.amount(EItem.TWISTED_BOW)).toBe(1);
+		expect(cl.amount(EItem.ABYSSAL_WHIP)).toBe(1);
 	});
 
 	it('updates quantities if same items are reinserted', async () => {
@@ -49,22 +38,17 @@ describe('updateCL()', () => {
 		await user.update({ collectionLogBank: bank.toJSON() });
 		await user.updateCL();
 
-		let rows = await prisma.cLUserItem.findMany({
-			where: { user_id: user.id }
-		});
-		expect(rows.length).toBe(1);
-		expect(rows[0].quantity).toBe(3);
+		let cl = await TableBankManager.fetch({ userId: user.id, type: 'CollectionLog' });
+		expect(cl.length).toBe(1);
+		expect(cl.amount(EItem.TWISTED_BOW)).toBe(3);
 
-		// change to different quantity and re-run
 		const newBank = new Bank().add(EItem.TWISTED_BOW, 5);
 		await user.update({ collectionLogBank: newBank.toJSON() });
 		await user.updateCL();
 
-		rows = await prisma.cLUserItem.findMany({
-			where: { user_id: user.id }
-		});
-		expect(rows.length).toBe(1);
-		expect(rows[0].quantity).toBe(5);
+		cl = await TableBankManager.fetch({ userId: user.id, type: 'CollectionLog' });
+		expect(cl.length).toBe(1);
+		expect(cl.amount(EItem.TWISTED_BOW)).toBe(5);
 	});
 
 	it('removes deleted items correctly', async () => {
@@ -73,22 +57,19 @@ describe('updateCL()', () => {
 		await user.update({ collectionLogBank: bank.toJSON() });
 		await user.updateCL();
 
-		let rows = await prisma.cLUserItem.findMany({
-			where: { user_id: user.id }
-		});
-		expect(rows.length).toBe(2);
+		let cl = await TableBankManager.fetch({ userId: user.id, type: 'CollectionLog' });
+		expect(cl.length).toBe(2);
 
-		// remove abyssal whip
 		const newBank = new Bank().add(EItem.TWISTED_BOW, 1);
 		await user.update({ collectionLogBank: newBank.toJSON() });
 		expect(user.cl.length).toBe(1);
 		await user.updateCL();
 
-		rows = await prisma.cLUserItem.findMany({
-			where: { user_id: user.id }
-		});
-		expect(rows.length).toBe(1);
-		expect(rows[0].item_id).toBe(EItem.TWISTED_BOW);
+		cl = await TableBankManager.fetch({ userId: user.id, type: 'CollectionLog' });
+		expect(cl.length).toBe(1);
+		expect(cl.has(EItem.TWISTED_BOW)).toBe(true);
+		expect(cl.amount(EItem.TWISTED_BOW)).toBe(1);
+		expect(cl.amount(EItem.ABYSSAL_WHIP)).toBe(0);
 	});
 
 	it('handles large banks efficiently', async () => {
@@ -101,10 +82,8 @@ describe('updateCL()', () => {
 		await user.updateCL();
 		const t1 = performance.now();
 
-		const rows = await prisma.cLUserItem.count({
-			where: { user_id: user.id }
-		});
-		expect(rows).toBe(2000);
+		const cl = await TableBankManager.fetch({ userId: user.id, type: 'CollectionLog' });
+		expect(cl.length).toBe(2000);
 		expect(t1 - t0).toBeLessThan(500);
 	});
 
@@ -114,14 +93,14 @@ describe('updateCL()', () => {
 		await user.update({ collectionLogBank: bank.toJSON() });
 		await user.updateCL();
 
-		let count = await prisma.cLUserItem.count({ where: { user_id: user.id } });
-		expect(count).toBe(2);
+		let cl = await TableBankManager.fetch({ userId: user.id, type: 'CollectionLog' });
+		expect(cl.length).toBe(2);
 
 		await user.update({ collectionLogBank: {} });
 		await user.updateCL();
 
-		count = await prisma.cLUserItem.count({ where: { user_id: user.id } });
-		expect(count).toBe(0);
+		cl = await TableBankManager.fetch({ userId: user.id, type: 'CollectionLog' });
+		expect(cl.length).toBe(0);
 	});
 
 	it('deletes all rows when collectionLogBank is NULL', async () => {
@@ -130,19 +109,18 @@ describe('updateCL()', () => {
 		await user.update({ collectionLogBank: bank.toJSON() });
 		await user.updateCL();
 
-		let count = await prisma.cLUserItem.count({ where: { user_id: user.id } });
-		expect(count).toBe(1);
+		let cl = await TableBankManager.fetch({ userId: user.id, type: 'CollectionLog' });
+		expect(cl.length).toBe(1);
 
 		await prisma.user.update({ where: { id: user.id }, data: { collectionLogBank: {} } });
 		await user.updateCL();
 
-		count = await prisma.cLUserItem.count({ where: { user_id: user.id } });
-		expect(count).toBe(0);
+		cl = await TableBankManager.fetch({ userId: user.id, type: 'CollectionLog' });
+		expect(cl.length).toBe(0);
 	});
 
 	it('sanitizes non-positive quantities to 1', async () => {
 		const user = await createTestUser();
-		// Write raw JSON with 0 and negative values
 		await prisma.user.update({
 			where: { id: user.id },
 			data: {
@@ -154,13 +132,10 @@ describe('updateCL()', () => {
 		});
 		await user.updateCL();
 
-		const rows = await prisma.cLUserItem.findMany({
-			where: { user_id: user.id },
-			orderBy: { item_id: 'asc' }
-		});
-		expect(rows.length).toBe(2);
-		expect(rows.find(r => r.item_id === EItem.TWISTED_BOW)?.quantity).toBe(1);
-		expect(rows.find(r => r.item_id === EItem.ABYSSAL_WHIP)?.quantity).toBe(1);
+		const cl = await TableBankManager.fetch({ userId: user.id, type: 'CollectionLog' });
+		expect(cl.length).toBe(2);
+		expect(cl.amount(EItem.TWISTED_BOW)).toBe(1);
+		expect(cl.amount(EItem.ABYSSAL_WHIP)).toBe(1);
 	});
 
 	it('isolation: updating one user does not affect another', async () => {
@@ -172,13 +147,13 @@ describe('updateCL()', () => {
 		await a.updateCL();
 		await b.updateCL();
 
-		const [aRows, bRows] = await Promise.all([
-			prisma.cLUserItem.findMany({ where: { user_id: a.id } }),
-			prisma.cLUserItem.findMany({ where: { user_id: b.id } })
+		const [aCL, bCL] = await Promise.all([
+			TableBankManager.fetch({ userId: a.id, type: 'CollectionLog' }),
+			TableBankManager.fetch({ userId: b.id, type: 'CollectionLog' })
 		]);
 
-		expect(aRows.map(r => r.item_id)).toEqual([EItem.TWISTED_BOW]);
-		expect(bRows.map(r => r.item_id)).toEqual([EItem.ABYSSAL_WHIP]);
+		expect(aCL.itemIDs).toEqual([EItem.TWISTED_BOW]);
+		expect(bCL.itemIDs).toEqual([EItem.ABYSSAL_WHIP]);
 	});
 
 	it('replaces with a disjoint set exactly (no stale rows)', async () => {
@@ -188,23 +163,17 @@ describe('updateCL()', () => {
 		await user.update({ collectionLogBank: first.toJSON() });
 		await user.updateCL();
 
-		let rows = await prisma.cLUserItem.findMany({
-			where: { user_id: user.id },
-			orderBy: { item_id: 'asc' }
-		});
-		expect(rows.length).toBe(50);
+		let cl = await TableBankManager.fetch({ userId: user.id, type: 'CollectionLog' });
+		expect(cl.length).toBe(50);
 
 		const second = new Bank();
 		for (let i = 0; i < 30; i++) second.add(20_000 + i, 1);
 		await user.update({ collectionLogBank: second.toJSON() });
 		await user.updateCL();
 
-		rows = await prisma.cLUserItem.findMany({
-			where: { user_id: user.id },
-			orderBy: { item_id: 'asc' }
-		});
-		expect(rows.length).toBe(30);
-		expect(rows.every(r => r.item_id >= 20_000 && r.item_id < 20_030)).toBe(true);
+		cl = await TableBankManager.fetch({ userId: user.id, type: 'CollectionLog' });
+		expect(cl.length).toBe(30);
+		expect(cl.itemIDs.every(id => id >= 20_000 && id < 20_030)).toBe(true);
 	});
 
 	it('large delete is efficient', async () => {
@@ -219,8 +188,8 @@ describe('updateCL()', () => {
 		await user.updateCL();
 		const t1 = performance.now();
 
-		const count = await prisma.cLUserItem.count({ where: { user_id: user.id } });
-		expect(count).toBe(0);
+		const cl = await TableBankManager.fetch({ userId: user.id, type: 'CollectionLog' });
+		expect(cl.length).toBe(0);
 		expect(t1 - t0).toBeLessThan(200);
 	});
 
@@ -229,21 +198,13 @@ describe('updateCL()', () => {
 		const INT_MAX = 2_147_483_647;
 		await prisma.user.update({
 			where: { id: user.id },
-			data: {
-				collectionLogBank: {
-					[EItem.TWISTED_BOW]: INT_MAX + 246
-				} as any
-			}
+			data: { collectionLogBank: { [EItem.TWISTED_BOW]: INT_MAX + 246 } as any }
 		});
 
 		await expect(user.updateCL()).resolves.toBeUndefined();
 
-		const row = await prisma.cLUserItem.findUnique({
-			where: { user_id_item_id: { user_id: user.id, item_id: EItem.TWISTED_BOW } }
-		});
-
-		expect(row).toBeTruthy();
-		expect(row!.quantity).toBe(INT_MAX);
+		const cl = await TableBankManager.fetch({ userId: user.id, type: 'CollectionLog' });
+		expect(cl.amount(EItem.TWISTED_BOW)).toBe(INT_MAX);
 	});
 
 	it('exact test', async () => {
@@ -258,57 +219,38 @@ describe('updateCL()', () => {
 
 		expect(testCl.length).toBe(5000);
 
-		await user.update({
-			collectionLogBank: testCl.toJSON()
-		});
+		await user.update({ collectionLogBank: testCl.toJSON() });
 		await user.updateCL();
-		const rows = await prisma.cLUserItem.findMany({
-			where: { user_id: user.id },
-			orderBy: { item_id: 'asc' }
-		});
-		expect(rows.length).toBe(5000);
+		const cl3 = await TableBankManager.fetch({ userId: user.id, type: 'CollectionLog' });
+		expect(cl3.length).toBe(5000);
 
 		const nextTestCL = testCl.clone();
-		for (const row of rows) {
-			expect(row.quantity).toBe(1);
-			nextTestCL.add(row.item_id, 5);
+		for (const [item, qty] of cl3.items()) {
+			expect(qty).toBe(1);
+			nextTestCL.add(item.id, 5);
 		}
-		//
-		await user.update({
-			collectionLogBank: nextTestCL.toJSON()
-		});
+		await user.update({ collectionLogBank: nextTestCL.toJSON() });
 		await user.updateCL();
-		const rowsNext = await prisma.cLUserItem.findMany({
-			where: { user_id: user.id },
-			orderBy: { item_id: 'asc' }
-		});
-		expect(rowsNext.length).toBe(5000);
-		for (const row of rowsNext) {
-			expect(testCl.has(row.item_id)).toBe(true);
-			expect(row.quantity).toBe(6);
+		const cl2 = await TableBankManager.fetch({ userId: user.id, type: 'CollectionLog' });
+		expect(cl2.length).toBe(5000);
+		for (const [item, qty] of cl2.items()) {
+			expect(testCl.has(item.id)).toBe(true);
+			expect(qty).toBe(6);
 		}
-		//
+
 		const anotherCL = nextTestCL.clone();
 		const itemIdToRemove = Math.max(...anotherCL.itemIDs);
 		anotherCL.remove(itemIdToRemove, 3);
-		await user.update({
-			collectionLogBank: anotherCL.toJSON()
-		});
+		await user.update({ collectionLogBank: anotherCL.toJSON() });
 		await user.updateCL();
-		const specificRow = await prisma.cLUserItem.findUnique({
-			where: { user_id_item_id: { user_id: user.id, item_id: itemIdToRemove } }
-		});
-		expect(specificRow).toEqual({ user_id: user.id, item_id: itemIdToRemove, quantity: 3 });
+		const cl = await TableBankManager.fetch({ userId: user.id, type: 'CollectionLog' });
+		expect(cl.amount(itemIdToRemove)).toEqual(3);
 		anotherCL.remove(itemIdToRemove, 3);
-		//
-		await user.update({
-			collectionLogBank: anotherCL.toJSON()
-		});
+
+		await user.update({ collectionLogBank: anotherCL.toJSON() });
 		await user.updateCL();
-		const shouldBeGoneRow = await prisma.cLUserItem.findUnique({
-			where: { user_id_item_id: { user_id: user.id, item_id: itemIdToRemove } }
-		});
-		expect(shouldBeGoneRow).toBeNull();
-		expect(await prisma.cLUserItem.count({ where: { user_id: user.id } })).toEqual(4999);
+		const newCL = await TableBankManager.fetch({ userId: user.id, type: 'CollectionLog' });
+		expect(newCL.amount(itemIdToRemove)).toBe(0);
+		expect(newCL.length).toEqual(4999);
 	});
 });

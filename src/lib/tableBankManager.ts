@@ -71,10 +71,10 @@ export class TableBankManager {
 
 	static async fetch({
 		userId,
-		type = 'Bank'
+		type
 	}: {
 		userId: string;
-		type?: TableBankType | 'Bank' | 'CollectionLog';
+		type: TableBankType | 'Bank' | 'CollectionLog';
 	}): Promise<Bank> {
 		const bankId = await getOrCreateBankId(userId, type as TableBankType);
 		const rows = await prisma.$queryRaw<any[]>(
