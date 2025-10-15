@@ -133,7 +133,7 @@ async function repeatTripHandler(user: MUser, interaction: MInteraction) {
 	if (user.minionIsBusy) {
 		return interaction.reply({ content: 'Your minion is busy.', ephemeral: true });
 	}
-	const trips = await fetchRepeatTrips(interaction.user.id);
+	const trips = await fetchRepeatTrips(user);
 	if (trips.length === 0) {
 		return interaction.reply({ content: "Couldn't find a trip to repeat.", ephemeral: true });
 	}

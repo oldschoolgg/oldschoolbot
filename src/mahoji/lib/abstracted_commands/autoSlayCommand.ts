@@ -391,25 +391,24 @@ function determineAutoslayMethod(autoslayOptions: AutoslayOptionsEnum[]) {
 }
 
 export async function autoSlayCommand({
-	mahojiUser,
+	user,
 	channelID,
 	modeOverride,
 	saveMode,
 	interaction
 }: {
-	mahojiUser: MUser;
+	user: MUser;
 	channelID: string;
 	modeOverride?: string;
 	saveMode?: boolean;
 	interaction: MInteraction;
 }) {
-	const user = await mUserFetch(mahojiUser.id);
 	const autoslayOptions = user.user.slayer_autoslay_options;
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
 	const isOnTask = usersTask.assignedTask !== null && usersTask.currentTask !== null;
 
 	if (!isOnTask) {
-		return slayerNewTaskCommand({ userID: user.id, interaction, showButtons: true });
+		return slayerNewTaskCommand({ user, interaction, showButtons: true });
 	}
 	const savedMethod = determineAutoslayMethod(autoslayOptions as AutoslayOptionsEnum[]);
 	const method = modeOverride ?? savedMethod;

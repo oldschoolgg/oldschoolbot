@@ -59,6 +59,7 @@ export async function autoFarm(interaction: MInteraction, user: MUser, patchesDe
 	}
 
 	return farmingPlantCommand({
+		user,
 		interaction,
 		plantName: toPlant.name,
 		autoFarmed: true,

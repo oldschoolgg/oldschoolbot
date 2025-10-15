@@ -166,11 +166,10 @@ ${messages.join(', ')}`.trim(),
 
 export async function abstractedOpenCommand(
 	interaction: MInteraction | null,
-	userID: string,
+	user: MUser,
 	_names: string[],
 	_quantity: number | 'auto' = 1
 ) {
-	const user = await mUserFetch(userID);
 	const favorites = user.user.favoriteItems;
 
 	const names = _names.map(i => i.replace(regex, '$1'));
