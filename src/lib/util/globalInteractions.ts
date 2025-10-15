@@ -2,11 +2,11 @@ import { ItemContracts } from '@/lib/bso/itemContracts.js';
 import { repeatTameTrip } from '@/lib/bso/tames/tameTasks.js';
 
 import { cleanUsername, formatDuration, removeFromArr, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import type { Giveaway } from '@prisma/client';
 import { RateLimitManager } from '@sapphire/ratelimits';
 import { type ButtonInteraction, MessageFlags } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
+import type { Giveaway } from '@/prisma/main.js';
 import { giveawayCache } from '@/lib/cache.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { BitField, PerkTier } from '@/lib/constants.js';

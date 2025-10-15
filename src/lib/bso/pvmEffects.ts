@@ -6,9 +6,9 @@ import { slayerMaskHelms } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 
 import { roll } from '@oldschoolgg/rng';
 import { increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
-import type { UserStats } from '@prisma/client';
 import { Bank, type ItemBank, MonsterAttribute, Monsters } from 'oldschooljs';
 
+import type { UserStats } from '@/prisma/main.js';
 import type { BitField } from '@/lib/constants.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';

@@ -1,8 +1,8 @@
 import { roll } from '@oldschoolgg/rng';
 import { Events, formatOrdinal, roboChimpCLRankQuery, sumArr } from '@oldschoolgg/toolkit';
-import { type Prisma, UserEventType } from '@prisma/client';
 import type { Bank } from 'oldschooljs';
 
+import { type Prisma, UserEventType } from '@/prisma/main.js';
 import { allCLItems, allCollectionLogsFlat, calcCLDetails } from '@/lib/data/Collections.js';
 import { calculateMastery } from '@/lib/mastery.js';
 import { RawSQL } from '@/lib/rawSql.js';

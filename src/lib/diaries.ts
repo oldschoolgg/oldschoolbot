@@ -1,7 +1,7 @@
 import { objectEntries } from '@oldschoolgg/toolkit';
-import type { Minigame } from '@prisma/client';
 import { Items, Monsters, resolveItems } from 'oldschooljs';
 
+import type { Minigame } from '@/prisma/main.js';
 import { MAX_QP } from '@/lib/minions/data/quests.js';
 import type { DiaryTier, DiaryTierName } from '@/lib/minions/types.js';
 import { DiaryID } from '@/lib/minions/types.js';

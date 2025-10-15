@@ -15,10 +15,10 @@ import { kibbles } from '@/lib/bso/kibble.js';
 import { divinationEnergies, memoryHarvestTypes } from '@/lib/bso/skills/divination.js';
 
 import { Time } from '@oldschoolgg/toolkit';
-import { type Activity, activity_type_enum, type Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Items } from 'oldschooljs';
 
+import { type Activity, activity_type_enum, type Prisma } from '@/prisma/main.js';
 import type { PvMMethod } from '@/lib/constants.js';
 import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';
 import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';

@@ -11,11 +11,11 @@ import {
 	Table,
 	Time
 } from '@oldschoolgg/toolkit';
-import type { GearSetupType } from '@prisma/client';
 import { AttachmentBuilder, type BaseMessageOptions } from 'discord.js';
 import { Bank } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 
+import type { GearSetupType } from '@/prisma/main.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import type { Gear } from '@/lib/structures/Gear.js';

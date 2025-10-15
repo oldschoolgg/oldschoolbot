@@ -1,10 +1,10 @@
 import { moidLink } from '@/lib/bso/bsoUtil.js';
 
 import { deepEqual, deepObjectDiff, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
-import type { GearSetupType, Prisma } from '@prisma/client';
 import { type ItemBank, Items } from 'oldschooljs';
 import { clone } from 'remeda';
 
+import type { GearSetupType, Prisma } from '@/prisma/main.js';
 import { type GearSetup, GearSetupTypes } from '@/lib/gear/types.js';
 
 type GearX = Required<Record<`gear_${GearSetupType}`, GearSetup | null>>;

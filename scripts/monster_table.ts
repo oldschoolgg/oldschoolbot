@@ -1,7 +1,8 @@
 import { calcPerHour, Time, TSVWriter } from '@oldschoolgg/toolkit';
-import type { PlayerOwnedHouse } from '@prisma/client';
 import { Bank, convertBankToPerHourStats, Items, itemID, resolveItems, toKMB } from 'oldschooljs';
 import { omit } from 'remeda';
+
+import type { PlayerOwnedHouse } from '@/prisma/main.js';
 
 import '../src/lib/safeglobals.js';
 

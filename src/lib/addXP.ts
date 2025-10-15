@@ -8,10 +8,10 @@ import {
 import { inventorOutfit } from '@/lib/bso/collection-log/minigames.js';
 
 import { Events, formatOrdinal, increaseNumByPercent, noOp, notEmpty, Time, toTitleCase } from '@oldschoolgg/toolkit';
-import { type User, UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
 import { convertLVLtoXP, convertXPtoLVL, type Item, Items, resolveItems, toKMB } from 'oldschooljs';
 
+import { type User, UserEventType } from '@/prisma/main.js';
 import { Channel, globalConfig, MAX_LEVEL, MAX_LEVEL_XP, MAX_TOTAL_LEVEL, MAX_XP } from '@/lib/constants.js';
 import { skillEmoji } from '@/lib/data/emojis.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';

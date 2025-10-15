@@ -2,9 +2,9 @@ import { type Species, TameSpeciesID, tameFeedableItems, tameSpecies } from '@/l
 
 import { roll } from '@oldschoolgg/rng';
 import { round, Time } from '@oldschoolgg/toolkit';
-import { type Tame, tame_growth } from '@prisma/client';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
+import { type Tame, tame_growth } from '@/prisma/main.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 
 export class MTame {

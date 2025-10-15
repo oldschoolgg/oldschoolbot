@@ -38,12 +38,12 @@ import {
 	stringMatches,
 	Time
 } from '@oldschoolgg/toolkit';
-import { type Tame, tame_growth } from '@prisma/client';
 import { toTitleCase } from '@sapphire/utilities';
 import { bold, time } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items, itemID, resolveItems } from 'oldschooljs';
 import { type Canvas, loadImage } from 'skia-canvas';
 
+import { type Tame, tame_growth } from '@/prisma/main.js';
 import { bankImageTask } from '@/lib/canvas/bankImage.js';
 import {
 	type CanvasContext,

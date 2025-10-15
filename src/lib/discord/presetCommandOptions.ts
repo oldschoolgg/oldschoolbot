@@ -1,10 +1,10 @@
 import { materialTypes } from '@/lib/bso/skills/invention/index.js';
 
 import { stringSearch, toTitleCase, truncateString, uniqueArr } from '@oldschoolgg/toolkit';
-import type { GearPreset } from '@prisma/client';
 import type { APIApplicationCommandOptionChoice } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
+import type { GearPreset } from '@/prisma/main.js';
 import { baseFilters, filterableTypes } from '@/lib/data/filterables.js';
 import { GearSetupTypes } from '@/lib/gear/types.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';

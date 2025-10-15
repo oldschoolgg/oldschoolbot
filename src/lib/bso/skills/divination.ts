@@ -1,8 +1,8 @@
 import { hasUnlockedAtlantis } from '@/lib/bso/bsoUtil.js';
 
-import type { Portent } from '@prisma/client';
 import { Bank, type Item, Items, itemID, LootTable } from 'oldschooljs';
 
+import type { Portent } from '@/prisma/main.js';
 import { BitField } from '@/lib/constants.js';
 
 export function calcEnergyPerMemory(energy: DivinationEnergy) {

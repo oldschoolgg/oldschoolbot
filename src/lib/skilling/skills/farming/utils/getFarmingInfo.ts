@@ -1,6 +1,6 @@
 import { formatDuration, Time, toTitleCase } from '@oldschoolgg/toolkit';
-import type { User } from '@prisma/client';
 
+import type { User } from '@/prisma/main.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import { farmingPatchNames, findPlant } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';

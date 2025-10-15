@@ -3,10 +3,10 @@ import { existsSync, mkdirSync } from 'node:fs';
 import { PGlite } from '@electric-sql/pglite';
 import { rewriteSqlToIdempotent } from '@oldschoolgg/toolkit';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '@prisma/client';
 import { PrismaClient as RobochimpPrismaClient } from '@prisma/robochimp';
 import { PrismaPGlite } from 'pglite-prisma-adapter';
 
+import { PrismaClient } from '@/prisma/main.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 
 async function getAdapter(

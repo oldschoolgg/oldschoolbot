@@ -1,7 +1,7 @@
-import type { Prisma, User } from '@prisma/client';
 import { Bank, convertLVLtoXP, Items, LootTable } from 'oldschooljs';
 import { isFunction, isObjectType } from 'remeda';
 
+import type { Prisma, User } from '@/prisma/main.js';
 import type { BitField } from '../../src/lib/constants.js';
 import type { GearSetup } from '../../src/lib/gear/types.js';
 import { MUserClass } from '../../src/lib/MUser.js';

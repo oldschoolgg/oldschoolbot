@@ -1,6 +1,6 @@
-import type { Prisma } from '@prisma/client';
 import { Bank, type ItemBank } from 'oldschooljs';
 
+import type { Prisma } from '@/prisma/main.js';
 import { handleNewCLItems } from '@/lib/handleNewCLItems.js';
 import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
 import { filterLootReplace } from '@/lib/slayer/slayerUtil.js';

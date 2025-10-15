@@ -1,8 +1,8 @@
 import { miniID, Time } from '@oldschoolgg/toolkit';
-import type { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
+import type { Prisma } from '@/prisma/main.js';
 import { DELETED_USER_ID } from '../../../src/lib/constants.js';
 import { ironmanCommand } from '../../../src/mahoji/lib/abstracted_commands/ironmanCommand.js';
 import { mockedId } from '../util.js';

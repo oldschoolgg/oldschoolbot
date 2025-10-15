@@ -5,9 +5,9 @@ import { getAllUserTames, TameSpeciesID } from '@/lib/bso/tames/tames.js';
 
 import { randArrItem } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, reduceNumByPercent, stringMatches, Table, Time } from '@oldschoolgg/toolkit';
-import type { User } from '@prisma/client';
 import { Bank, type Item, Items, LootTable, resolveItems } from 'oldschooljs';
 
+import type { User } from '@/prisma/main.js';
 import Grimy from '@/lib/skilling/skills/herblore/mixables/grimy.js';
 import type { Skills } from '@/lib/types/index.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';

@@ -6,7 +6,6 @@ import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skil
 
 import { randInt, roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
-import type { Prisma } from '@prisma/client';
 import {
 	Bank,
 	ECreature,
@@ -17,6 +16,7 @@ import {
 	toKMB
 } from 'oldschooljs';
 
+import type { Prisma } from '@/prisma/main.js';
 import { MAX_LEVEL } from '@/lib/constants.js';
 import { hasWildyHuntGearEquipped } from '@/lib/gear/functions/hasWildyHuntGearEquipped.js';
 import type { UserFullGearSetup } from '@/lib/gear/types.js';

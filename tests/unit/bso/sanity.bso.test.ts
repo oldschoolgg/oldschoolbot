@@ -10,10 +10,10 @@ import { mysteryBoxBlacklist } from '@/lib/bso/openables/mysteryBoxBlacklist.js'
 import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/mysteryBoxes.js';
 import { calculateMaximumTameFeedingLevelGain } from '@/lib/bso/tames/tameUtil.js';
 
-import { type Tame, tame_growth } from '@prisma/client';
 import { EquipmentSlot, Items, itemID, Monsters, resolveItems } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
+import { type Tame, tame_growth } from '@/prisma/main.js';
 import { customItems } from '@/lib/customItems/util.js';
 import { allPetIDs } from '@/lib/data/CollectionsExport.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';

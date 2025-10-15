@@ -1,7 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit';
-import { activity_type_enum } from '@prisma/client';
 import { Bank, resolveItems } from 'oldschooljs';
 
+import { activity_type_enum } from '@/prisma/main.js';
 import Skillcapes from '@/lib/skilling/skillcapes.js';
 
 export const GLOBAL_BSO_XP_MULTIPLIER = 5;

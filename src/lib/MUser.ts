@@ -22,16 +22,6 @@ import {
 	UserError,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import type {
-	activity_type_enum,
-	GearSetupType,
-	Prisma,
-	Tame,
-	TameActivity,
-	User,
-	UserStats,
-	xp_gains_skill_enum
-} from '@prisma/client';
 import { escapeMarkdown, userMention } from 'discord.js';
 import {
 	addItemToBank,
@@ -46,6 +36,16 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
+import type {
+	activity_type_enum,
+	GearSetupType,
+	Prisma,
+	Tame,
+	TameActivity,
+	User,
+	UserStats,
+	xp_gains_skill_enum
+} from '@/prisma/main.js';
 import { addXP } from '@/lib/addXP.js';
 import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';

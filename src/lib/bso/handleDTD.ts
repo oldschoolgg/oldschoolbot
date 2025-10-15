@@ -1,6 +1,6 @@
-import type { Prisma } from '@prisma/client';
 import { itemID } from 'oldschooljs';
 
+import type { Prisma } from '@/prisma/main.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager.js';
 

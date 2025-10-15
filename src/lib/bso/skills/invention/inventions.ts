@@ -2,11 +2,11 @@ import type { IMaterialBank, MaterialType } from '@/lib/bso/skills/invention/ind
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
 import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
-import type { Prisma } from '@prisma/client';
 import { userMention } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items, resolveItems, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
+import type { Prisma } from '@/prisma/main.js';
 import { type ClueTier, ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 

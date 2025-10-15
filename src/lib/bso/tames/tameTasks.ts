@@ -12,11 +12,11 @@ import { tameLastFinishedActivity } from '@/lib/bso/tames/tameUtil.js';
 
 import { percentChance, randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { calcPerHour, formatDuration, increaseNumByPercent, isFunction, Time } from '@oldschoolgg/toolkit';
-import type { TameActivity } from '@prisma/client';
 import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { isEmpty } from 'remeda';
 
+import type { TameActivity } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BitField } from '@/lib/constants.js';
 import { handlePassiveImplings } from '@/lib/implings.js';

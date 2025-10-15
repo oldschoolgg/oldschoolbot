@@ -2,10 +2,10 @@ import { transactMaterialsFromUser } from '@/lib/bso/skills/invention/inventions
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
 import { objectEntries, objHasAnyPropInCommon } from '@oldschoolgg/toolkit';
-import type { GearSetupType, Prisma, UserStats } from '@prisma/client';
 import { Bank, type ItemBank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 
+import type { GearSetupType, Prisma, UserStats } from '@/prisma/main.js';
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
 import type { GearSetup } from '@/lib/gear/types.js';
 import type { MUserClass } from '@/lib/MUser.js';

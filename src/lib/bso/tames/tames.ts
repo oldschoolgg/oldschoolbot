@@ -4,7 +4,6 @@ import type { MTame } from '@/lib/bso/structures/MTame.js';
 import type { handleFinish } from '@/lib/bso/tames/tameTasks.js';
 
 import { objectEntries, Time } from '@oldschoolgg/toolkit';
-import type { Tame, TameActivity } from '@prisma/client';
 import {
 	Bank,
 	ChambersOfXeric,
@@ -18,6 +17,7 @@ import {
 	TheatreOfBlood
 } from 'oldschooljs';
 
+import type { Tame, TameActivity } from '@/prisma/main.js';
 import killableMonsters, { NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { Planks } from '@/lib/minions/data/planks.js';
 import type { KillableMonster } from '@/lib/minions/types.js';

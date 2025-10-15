@@ -5,11 +5,11 @@ import { MTame } from '@/lib/bso/structures/MTame.js';
 import { TameSpeciesID } from '@/lib/bso/tames/tames.js';
 import { runTameTask } from '@/lib/bso/tames/tameTasks.js';
 
-import { tame_growth } from '@prisma/client';
 import { type EMonster, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';
 import { expect } from 'vitest';
 
+import { tame_growth } from '@/prisma/main.js';
 import { type SkillNameType, SkillsArray } from '@/lib/skilling/types.js';
 import type { SkillsRequired } from '@/lib/types/index.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';

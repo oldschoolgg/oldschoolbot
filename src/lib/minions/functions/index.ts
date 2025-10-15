@@ -1,6 +1,6 @@
-import type { User } from '@prisma/client';
 import { GearStat, type OffenceGearStat } from 'oldschooljs/gear';
 
+import type { User } from '@/prisma/main.js';
 import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
 
 export const attackStylesArr = ['attack', 'strength', 'defence', 'magic', 'ranged'] as const;

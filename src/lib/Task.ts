@@ -23,8 +23,7 @@ import { twTask } from '@/lib/bso/tasks/tinkeringWorkshopActivity.js';
 import { turaelsTrialsTask } from '@/lib/bso/tasks/turaelsTrialsActivity.js';
 import { vasaTask } from '@/lib/bso/tasks/vasaMagusActivity.js';
 
-import { activity_type_enum } from '@prisma/client';
-
+import { activity_type_enum } from '@/prisma/main.js';
 import { DEPRECATED_ACTIVITY_TYPES } from '@/lib/constants.js';
 import type { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { agilityTask } from '@/tasks/minions/agilityActivity.js';

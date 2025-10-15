@@ -1,9 +1,9 @@
 import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
 
 import { containsBlacklistedWord, miniID, truncateString } from '@oldschoolgg/toolkit';
-import { GiftBoxStatus } from '@prisma/client';
 import { Bank, type ItemBank } from 'oldschooljs';
 
+import { GiftBoxStatus } from '@/prisma/main.js';
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { BOT_TYPE } from '@/lib/constants.js';
 import { mentionCommand } from '@/lib/discord/utils.js';

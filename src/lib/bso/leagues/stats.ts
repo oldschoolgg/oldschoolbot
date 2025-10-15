@@ -1,8 +1,8 @@
 import { sumArr } from '@oldschoolgg/toolkit';
-import type { UserStats, XpGainSource } from '@prisma/client';
 import type { User as RoboChimpUser } from '@prisma/robochimp';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
+import type { UserStats, XpGainSource } from '@/prisma/main.js';
 import Darts from '@/lib/skilling/skills/fletching/fletchables/darts.js';
 import { gloriesInventorySize } from '@/mahoji/lib/abstracted_commands/chargeGloriesCommand.js';
 import { wealthInventorySize } from '@/mahoji/lib/abstracted_commands/chargeWealthCommand.js';

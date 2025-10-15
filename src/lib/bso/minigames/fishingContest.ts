@@ -1,8 +1,8 @@
 import { randArrItem, SeedableRNG } from '@oldschoolgg/rng';
 import { averageArr, calcPercentOfNum, gaussianRandom, toTitleCase } from '@oldschoolgg/toolkit';
-import type { FishingContestCatch } from '@prisma/client';
 import { type Item, Items } from 'oldschooljs';
 
+import type { FishingContestCatch } from '@/prisma/main.js';
 import {
 	ArdougneDiary,
 	DesertDiary,

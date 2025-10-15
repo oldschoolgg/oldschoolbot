@@ -1,6 +1,6 @@
-import type { ClientStorage, Prisma } from '@prisma/client';
 import { Bank, type ItemBank } from 'oldschooljs';
 
+import type { ClientStorage, Prisma } from '@/prisma/main.js';
 import { globalConfig } from '@/lib/constants.js';
 
 async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSelect = { id: true }) {

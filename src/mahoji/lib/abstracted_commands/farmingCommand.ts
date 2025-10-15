@@ -1,8 +1,8 @@
 import { percentChance } from '@oldschoolgg/rng';
 import { formatDuration, reduceNumByPercent, stringMatches, Time } from '@oldschoolgg/toolkit';
-import type { CropUpgradeType } from '@prisma/client';
 import { Bank, type Item } from 'oldschooljs';
 
+import type { CropUpgradeType } from '@/prisma/main.js';
 import { BitField } from '@/lib/constants.js';
 import { superCompostables } from '@/lib/data/filterables.js';
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';

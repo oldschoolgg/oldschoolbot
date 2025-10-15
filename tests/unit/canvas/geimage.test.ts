@@ -1,9 +1,9 @@
 import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { GEListingType } from '@prisma/client';
 import { EItem } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
+import { GEListingType } from '@/prisma/main.js';
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { baseSnapshotPath } from '../../testConstants.js';
 

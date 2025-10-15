@@ -1,5 +1,4 @@
 import { debounce, deepMerge, formatDuration, Time } from '@oldschoolgg/toolkit';
-import type { Prisma } from '@prisma/client';
 import { TimerManager } from '@sapphire/timer-manager';
 import {
 	ActionRowBuilder,
@@ -17,6 +16,7 @@ import {
 } from 'discord.js';
 import { omit } from 'remeda';
 
+import type { Prisma } from '@/prisma/main.js';
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { CACHED_ACTIVE_USER_IDS, partyLockCache } from '@/lib/cache.js';
 import { SILENT_ERROR } from '@/lib/constants.js';

@@ -1,9 +1,9 @@
 import { isGEUntradeable } from '@/lib/bso/bsoUtil.js';
 
 import { evalMathExpression, formatDuration, makeComponents, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
-import type { GEListing, GETransaction } from '@prisma/client';
 import { Items, toKMB } from 'oldschooljs';
 
+import type { GEListing, GETransaction } from '@/prisma/main.js';
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { PerkTier } from '@/lib/constants.js';
 import { itemArr, itemOption } from '@/lib/discord/index.js';

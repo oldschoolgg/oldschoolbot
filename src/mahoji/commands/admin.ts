@@ -12,10 +12,10 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { type ClientStorage, economy_transaction_type } from '@prisma/client';
 import { AttachmentBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
+import { type ClientStorage, economy_transaction_type } from '@/prisma/main.js';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '@/lib/blacklists.js';
 import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
 import { DISABLED_COMMANDS } from '@/lib/cache.js';

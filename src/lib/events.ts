@@ -5,10 +5,10 @@ import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from '@/l
 import { allIronmanMbTables, allMbTables } from '@/lib/bso/openables/mysteryBoxes.js';
 
 import { channelIsSendable, dateFm, Emoji, getNextUTCReset, isFunction, Time, UserError } from '@oldschoolgg/toolkit';
-import { command_name_enum } from '@prisma/client';
 import { type BaseMessageOptions, bold, EmbedBuilder, type Message, time } from 'discord.js';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
+import { command_name_enum } from '@/prisma/main.js';
 import { lastRoboChimpSyncCache } from '@/lib/cache.js';
 import { globalConfig } from '@/lib/constants.js';
 import { customItems } from '@/lib/customItems/util.js';

@@ -2,7 +2,6 @@ import { isSuperUntradeable } from '@/lib/bso/bsoUtil.js';
 
 import { randInt } from '@oldschoolgg/rng';
 import { channelIsSendable, chunk, Emoji, makeComponents, Time } from '@oldschoolgg/toolkit';
-import type { Giveaway } from '@prisma/client';
 import { Duration } from '@sapphire/time-utilities';
 import {
 	ActionRowBuilder,
@@ -18,6 +17,7 @@ import {
 } from 'discord.js';
 import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 
+import type { Giveaway } from '@/prisma/main.js';
 import { giveawayCache } from '@/lib/cache.js';
 import { patronFeatures } from '@/lib/constants.js';
 import { filterOption } from '@/lib/discord/index.js';

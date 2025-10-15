@@ -1,5 +1,4 @@
-import type { activity_type_enum } from '@prisma/client';
-
+import type { activity_type_enum } from '@/prisma/main.js';
 import { ActivityGroup } from '@/lib/constants.js';
 
 export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {

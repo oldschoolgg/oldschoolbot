@@ -6,10 +6,10 @@ import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 import { repairBrokenItemsFromUser } from '@/lib/bso/util/repairBrokenItems.js';
 
 import { asyncGzip, formatDuration, PerkTier, stringMatches, Time } from '@oldschoolgg/toolkit';
-import type { Activity, User } from '@prisma/client';
 import { ChannelType, EmbedBuilder, userMention } from 'discord.js';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
+import type { Activity, User } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
 import { BitField } from '@/lib/constants.js';

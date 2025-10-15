@@ -7,9 +7,9 @@ import {
 } from '@/lib/bso/tames/tames.js';
 
 import { formatDuration, round } from '@oldschoolgg/toolkit';
-import { type Tame, type TameActivity, tame_growth } from '@prisma/client';
 import { type ItemBank, Items } from 'oldschooljs';
 
+import { type Tame, type TameActivity, tame_growth } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 

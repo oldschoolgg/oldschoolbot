@@ -11,11 +11,11 @@ import { DougTable, PekyTable } from '@/lib/bso/tables/sharedTables.js';
 
 import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { channelIsSendable, makeComponents, notEmpty, Time } from '@oldschoolgg/toolkit';
-import { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { bold } from 'discord.js';
 import { Bank, EItem, itemID, toKMB } from 'oldschooljs';
 
+import { activity_type_enum } from '@/prisma/main.js';
 import { mahojiChatHead } from '@/lib/canvas/chatHeadImage.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';

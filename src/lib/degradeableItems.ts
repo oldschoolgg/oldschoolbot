@@ -1,8 +1,8 @@
 import { percentChance } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
-import type { GearSetupType } from '@prisma/client';
 import { Bank, type Item, Items, itemID, type Monster } from 'oldschooljs';
 
+import type { GearSetupType } from '@/prisma/main.js';
 import type { PrimaryGearSetupType } from '@/lib/gear/types.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
 import type { ChargeBank } from '@/lib/structures/Bank.js';

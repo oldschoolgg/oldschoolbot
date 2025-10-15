@@ -13,10 +13,10 @@ import {
 	truncateString,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import type { Prisma } from '@prisma/client';
 import { bold, userMention } from 'discord.js';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
+import type { Prisma } from '@/prisma/main.js';
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { clImageGenerator } from '@/lib/collectionLogTask.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';

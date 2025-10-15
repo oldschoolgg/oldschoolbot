@@ -1,6 +1,6 @@
 import { cryptoRng } from '@oldschoolgg/rng';
-import type { Activity, activity_type_enum, Prisma } from '@prisma/client';
 
+import type { Activity, activity_type_enum, Prisma } from '@/prisma/main.js';
 import { globalConfig } from '@/lib/constants.js';
 import { onMinionActivityFinish } from '@/lib/events.js';
 import { allTasks } from '@/lib/Task.js';

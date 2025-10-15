@@ -1,9 +1,9 @@
 import type { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 
-import type { GearSetupType, XpGainSource } from '@prisma/client';
 import type { ArrayItemsResolved, Bank, Item, ItemBank, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
 import type { OffenceGearStat } from 'oldschooljs/gear';
 
+import type { GearSetupType, XpGainSource } from '@/prisma/main.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import type { BitField } from '@/lib/constants.js';
 import type { QuestID } from '@/lib/minions/data/quests.js';

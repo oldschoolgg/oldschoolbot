@@ -2,9 +2,9 @@ import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '@/lib/bs
 
 import { randArrItem, roll } from '@oldschoolgg/rng';
 import { Events, formatDuration, gaussianRandom, reduceNumByPercent } from '@oldschoolgg/toolkit';
-import { tame_growth } from '@prisma/client';
 import { Bank, Items } from 'oldschooljs';
 
+import { tame_growth } from '@/prisma/main.js';
 import { globalConfig } from '@/lib/constants.js';
 
 function makeTameNickname(species: Species) {

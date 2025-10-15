@@ -1,6 +1,6 @@
-import { activity_type_enum } from '@prisma/client';
 import { Monsters, resolveItems } from 'oldschooljs';
 
+import { activity_type_enum } from '@/prisma/main.js';
 import { soteSkillRequirements } from '@/lib/skilling/functions/questRequirements.js';
 import { courses } from '@/lib/skilling/skills/agility.js';
 import butterflyNettingCreatures from '@/lib/skilling/skills/hunter/creatures/butterflyNetting.js';

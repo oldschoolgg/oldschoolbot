@@ -1,6 +1,6 @@
-import type { UserStats } from '@prisma/client';
 import { chunk } from 'remeda';
 
+import type { UserStats } from '@/prisma/main.js';
 import { getUsernameSync } from '@/lib/util.js';
 import { doMenu } from '@/mahoji/commands/leaderboard.js';
 

@@ -2,9 +2,9 @@ import * as fs from 'node:fs';
 import path from 'node:path';
 import { randInt } from '@oldschoolgg/rng';
 import { objectEntries } from '@oldschoolgg/toolkit';
-import type { PlayerOwnedHouse } from '@prisma/client';
 import { loadImage } from 'skia-canvas';
 
+import type { PlayerOwnedHouse } from '@/prisma/main.js';
 import {
 	type Canvas,
 	type CanvasContext,
