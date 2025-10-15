@@ -56,6 +56,13 @@ class SActivityManager {
 	}
 
 	async completeActivity(_activity: Activity) {
+		Logging.logDebug(`Completing activity ${_activity.id} of type ${_activity.type}`, {
+			type: 'ACTIVITY',
+			activity_type: _activity.type,
+			data: _activity.data,
+			user_id: _activity.user_id
+		});
+		const start = performance.now();
 		const activity = this.convertStoredActivityToFlatActivity(_activity);
 
 		if (_activity.completed) {
@@ -77,6 +84,14 @@ class SActivityManager {
 			this.minionActivityCacheDelete(activity.userID);
 			await onMinionActivityFinish(activity);
 		}
+		const end = performance.now();
+		Logging.logDebug(`Completed activity ${_activity.id} of type ${_activity.type} in ${end - start}ms`, {
+			type: 'ACTIVITY',
+			activity_type: _activity.type,
+			data: _activity.data,
+			user_id: _activity.user_id,
+			duration: end - start
+		});
 	}
 
 	async processPendingActivities() {
