@@ -1,7 +1,6 @@
 import { SpecialResponse, Time, UserError } from '@oldschoolgg/toolkit';
 import {
 	ActionRowBuilder,
-	type BaseMessageOptions,
 	ButtonBuilder,
 	type ButtonInteraction,
 	ButtonStyle,
@@ -146,7 +145,7 @@ export class PaginatedMessage extends BasePaginatedMessage {
 	async run(targetUsers?: string[]) {
 		const flags = this.ephemeral ? MessageFlags.Ephemeral : undefined;
 		await this.interaction.defer({ ephemeral: this.ephemeral });
-		const interactionResponse = await this.interaction.reply((await this.render()) as BaseMessageOptions);
+		const interactionResponse = await this.interaction.reply({ ...(await this.render()), withResponse: true });
 		if (this.totalPages === 1) return SpecialResponse.PaginatedMessageResponse;
 
 		const collector = interactionResponse!.createMessageComponentCollector({
