@@ -47,3 +47,5 @@ test-bot-store-*.json
 
 .db
 diffs
+
+src/prisma/clients

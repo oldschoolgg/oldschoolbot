@@ -1,6 +1,6 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
 
-import { AutoFarmFilterEnum, type CropUpgradeType } from '@/prisma/main.js';
+import { AutoFarmFilterEnum, type CropUpgradeType } from '@/prisma/main/enums.js';
 import TitheFarmBuyables from '@/lib/data/buyables/titheFarmBuyables.js';
 import { superCompostables } from '@/lib/data/filterables.js';
 import { autoFarm } from '@/lib/minions/functions/autoFarm.js';

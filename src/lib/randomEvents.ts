@@ -3,7 +3,7 @@ import { Time } from '@oldschoolgg/toolkit';
 import { LRUCache } from 'lru-cache';
 import { Bank, ItemGroups, LootTable } from 'oldschooljs';
 
-import { activity_type_enum } from '@/prisma/main.js';
+import { activity_type_enum } from '@/prisma/main/enums.js';
 import { BitField } from '@/lib/constants.js';
 
 interface RandomEvent {

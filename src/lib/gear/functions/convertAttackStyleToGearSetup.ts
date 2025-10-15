@@ -1,6 +1,6 @@
 import { type DefenceGearStat, GearStat, type OffenceGearStat } from 'oldschooljs/gear';
 
-import type { GearSetupType } from '@/prisma/main.js';
+import type { GearSetupType } from '@/prisma/main/enums.js';
 
 export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGearStat) {
 	let setup: GearSetupType = 'melee';

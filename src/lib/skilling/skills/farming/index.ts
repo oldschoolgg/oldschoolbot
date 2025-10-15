@@ -4,7 +4,7 @@ import { zygomitePlants } from '@/lib/bso/skills/farming/zygomites.js';
 import { Emoji } from '@oldschoolgg/toolkit';
 import { Items, itemID, resolveItems } from 'oldschooljs';
 
-import { CropUpgradeType } from '@/prisma/main.js';
+import { CropUpgradeType } from '@/prisma/main/enums.js';
 import { openSeedPack } from '@/lib/skilling/skills/farming/utils/calcFarmingContracts.js';
 import { defineSkill, type Plant } from '@/lib/skilling/types.js';
 import allotmentPlants from './allotments.js';

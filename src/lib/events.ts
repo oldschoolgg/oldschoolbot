@@ -8,7 +8,7 @@ import { channelIsSendable, dateFm, Emoji, getNextUTCReset, isFunction, Time, Us
 import { type BaseMessageOptions, bold, EmbedBuilder, type Message, time } from 'discord.js';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
-import { command_name_enum } from '@/prisma/main.js';
+import type { command_name_enum } from '@/prisma/main.js';
 import { lastRoboChimpSyncCache } from '@/lib/cache.js';
 import { globalConfig } from '@/lib/constants.js';
 import { customItems } from '@/lib/customItems/util.js';
@@ -107,7 +107,7 @@ interface MentionCommand {
 
 const mentionCommands: MentionCommand[] = [
 	{
-		name: command_name_enum.bs,
+		name: 'bs',
 		aliases: ['bs'],
 		description: 'Searches your bank.',
 		run: async ({ msg, user, components, content }: MentionCommandOptions) => {
@@ -126,7 +126,7 @@ const mentionCommands: MentionCommand[] = [
 		}
 	},
 	{
-		name: command_name_enum.bal,
+		name: 'bal',
 		aliases: ['bal', 'gp'],
 		description: 'Shows how much GP you have.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
@@ -137,7 +137,7 @@ const mentionCommands: MentionCommand[] = [
 		}
 	},
 	{
-		name: command_name_enum.is,
+		name: 'is',
 		aliases: ['is'],
 		description: 'Searches for items.',
 		run: async ({ msg, components, user, content }: MentionCommandOptions) => {
@@ -183,7 +183,7 @@ const mentionCommands: MentionCommand[] = [
 		}
 	},
 	{
-		name: command_name_enum.bank,
+		name: 'bank',
 		aliases: ['b', 'bank'],
 		description: 'Shows your bank.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
@@ -205,7 +205,7 @@ const mentionCommands: MentionCommand[] = [
 		}
 	},
 	{
-		name: command_name_enum.cd,
+		name: 'cd',
 		aliases: ['cd'],
 		description: 'Shows your cooldowns.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
@@ -245,7 +245,7 @@ const mentionCommands: MentionCommand[] = [
 		}
 	},
 	{
-		name: command_name_enum.stats,
+		name: 'stats',
 		aliases: ['s', 'stats'],
 		description: 'Shows your stats.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
@@ -270,6 +270,7 @@ export async function onMessage(msg: Message) {
 		i.aliases.some(alias => msg.content.startsWith(`${mentionText} ${alias}`))
 	);
 	if (command) {
+		Logging.logDebug(`${msg.author.id} used the ${command.name} mention command`);
 		const msgContentWithoutCommand = msg.content.split(' ').slice(2).join(' ');
 		await prisma.commandUsage.create({
 			data: {
@@ -307,6 +308,7 @@ export async function onMinionActivityFinish(activity: ActivityTaskData) {
 		// Max once per 30 minutes
 		if (Date.now() - lastSyncTime > Time.Minute * 30) {
 			lastRoboChimpSyncCache.set(activity.userID, Date.now());
+			Logging.logDebug(`Syncing RoboChimp for user ${activity.userID}`);
 			await roboChimpSyncData(await mUserFetch(activity.userID));
 		}
 	} catch (err) {

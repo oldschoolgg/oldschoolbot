@@ -1,7 +1,7 @@
 import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, round, sumArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
-import z from 'zod';
+import * as z from 'zod';
 
 import { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
 import { type AttackStyles, getAttackStylesContext } from '@/lib/minions/functions/index.js';

@@ -16,7 +16,6 @@ import {
 } from 'discord.js';
 import { omit } from 'remeda';
 
-import type { Prisma } from '@/prisma/main.js';
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { CACHED_ACTIVE_USER_IDS, partyLockCache } from '@/lib/cache.js';
 import { SILENT_ERROR } from '@/lib/constants.js';
@@ -69,7 +68,7 @@ export class MInteraction {
 	static getChatInputCommandOptions(interaction: CommandInteraction | AutocompleteInteraction | ButtonInteraction) {
 		if (!interaction.isChatInputCommand()) return {};
 		const cmdOpts = convertAPIOptionsToCommandOptions(interaction.options.data, interaction.options.resolved);
-		return compressMahojiArgs(cmdOpts) as Prisma.InputJsonObject;
+		return compressMahojiArgs(cmdOpts);
 	}
 
 	public getChatInputCommandOptions() {

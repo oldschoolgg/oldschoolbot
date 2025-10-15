@@ -1,6 +1,6 @@
 import type { InteractionReplyOptions } from 'discord.js';
 
-import type { command_name_enum } from '@/prisma/main.js';
+import type { command_name_enum } from '@/prisma/main/enums.js';
 import type { CommandOptions } from '@/lib/discord/commandOptions.js';
 import { runInhibitors } from '@/lib/discord/inhibitors.js';
 

@@ -1,4 +1,4 @@
-import { activity_type_enum } from '@/prisma/main.js';
+import { activity_type_enum } from '@/prisma/main/enums.js';
 import { championsChallengeCommand } from '@/mahoji/lib/abstracted_commands/championsChallenge.js';
 import { combatRingCommand } from '@/mahoji/lib/abstracted_commands/combatRingCommand.js';
 import { strongHoldOfSecurityCommand } from '@/mahoji/lib/abstracted_commands/strongHoldOfSecurityCommand.js';

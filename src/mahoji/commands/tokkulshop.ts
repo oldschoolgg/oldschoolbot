@@ -1,7 +1,7 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { activity_type_enum } from '@/prisma/main.js';
+import { activity_type_enum } from '@/prisma/main/enums.js';
 import { TokkulShopItems } from '@/lib/data/buyables/tokkulBuyables.js';
 import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { TokkulShopOptions } from '@/lib/types/minions.js';

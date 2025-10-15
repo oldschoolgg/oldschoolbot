@@ -1,4 +1,4 @@
-import type { GearSetupType } from '@/prisma/main.js';
+import type { GearSetupType } from '@/prisma/main/enums.js';
 import { GearSetupTypes } from '@/lib/gear/types.js';
 
 export function isValidGearSetup(str: string): str is GearSetupType {

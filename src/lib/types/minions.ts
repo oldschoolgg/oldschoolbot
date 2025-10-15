@@ -2,7 +2,7 @@ import type { BSOActivityTaskData } from '@/lib/bso/bsoTypes.js';
 
 import type { ItemBank } from 'oldschooljs';
 
-import type { CropUpgradeType } from '@/prisma/main.js';
+import type { CropUpgradeType } from '@/prisma/main/enums.js';
 import type { NMZStrategy } from '@/lib/constants.js';
 import type { SlayerActivityConstants } from '@/lib/minions/data/combatConstants.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';

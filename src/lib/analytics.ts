@@ -34,6 +34,7 @@ async function calculateMinionTaskCounts() {
 }
 
 export async function analyticsTick() {
+	Logging.logDebug('Running analyticsTick');
 	const [{ has_bought_count, total_gp, ironman_count, total_sacrificed_value }]: {
 		has_bought_count: bigint;
 		total_sacrificed_value: bigint;

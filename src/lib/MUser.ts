@@ -78,7 +78,7 @@ import { defaultGear, Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { XPBank } from '@/lib/structures/XPBank.js';
-import type { SkillRequirements, Skills } from '@/lib/types/index.js';
+import type { PrismaCompatibleJsonObject, SkillRequirements, Skills } from '@/lib/types/index.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
@@ -690,7 +690,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			newRangeGear.ammo!.quantity -= ammoRemove?.[1];
 			if (newRangeGear.ammo!.quantity <= 0) newRangeGear.ammo = null;
 			const updateKey = options?.isInWilderness ? 'gear_wildy' : 'gear_range';
-			updates[updateKey] = newRangeGear as any as Prisma.InputJsonObject;
+			updates[updateKey] = newRangeGear as any as PrismaCompatibleJsonObject;
 		}
 
 		if (dart) {
@@ -1081,7 +1081,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		}
 
 		await this.update({
-			[`gear_${setup}`]: gear as any as Prisma.InputJsonObject
+			[`gear_${setup}`]: gear as any as PrismaCompatibleJsonObject
 		});
 		if (refundBank.length > 0) {
 			await this.addItemsToBank({
