@@ -125,6 +125,7 @@ export async function handleTripFinish(
 	_messages?: string[],
 	_components?: ButtonBuilder[]
 ) {
+	Logging.logDebug(`Handling trip finish for ${user.logName} (${data.type})`);
 	const message = typeof _message === 'string' ? { content: _message } : _message;
 	if (attachment) {
 		if (!message.files) {
