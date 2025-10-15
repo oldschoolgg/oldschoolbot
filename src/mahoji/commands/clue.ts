@@ -283,7 +283,7 @@ export const clueCommand: OSBMahojiCommand = {
 		const maxTripLength = user.calcMaxTripLength('ClueCompletion');
 
 		const clueImpling = options.implings
-			? Items.get(/^[0-9]+$/.test(options.implings) ? Number(options.implings) : options.implings)
+			? Items.getItem(/^[0-9]+$/.test(options.implings) ? Number(options.implings) : options.implings)
 			: null;
 
 		if (options.implings) {
