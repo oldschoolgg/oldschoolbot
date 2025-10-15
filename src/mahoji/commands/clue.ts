@@ -221,7 +221,7 @@ async function getStashBoost(user: MUser, tierName: string): Promise<number> {
 	return boost;
 }
 
-export const clueCommand: OSBMahojiCommand = {
+export const clueCommand = defineCommand({
 	name: 'clue',
 	description: 'Send your minion to complete clue scrolls.',
 	attributes: {
@@ -235,7 +235,7 @@ export const clueCommand: OSBMahojiCommand = {
 			name: 'tier',
 			description: 'The clue you want to do.',
 			required: true,
-			autocomplete: async (value, user) => {
+			autocomplete: async (value: string, user: MUser) => {
 				return ClueTiers.map(i => ({
 					name: `${i.name} (${user.bank.amount(i.scrollID)}x Owned)`,
 					value: i.name
@@ -254,7 +254,7 @@ export const clueCommand: OSBMahojiCommand = {
 			name: 'implings',
 			description: 'Implings to use for multiple clues per trip.',
 			required: false,
-			autocomplete: async (value, user) => {
+			autocomplete: async (value: string, user: MUser) => {
 				const allClueImps = ClueTiers.filter(t => t.name !== 'Beginner')
 					.map(i => i.implings)
 					.filter(notEmpty)
@@ -268,11 +268,7 @@ export const clueCommand: OSBMahojiCommand = {
 			}
 		}
 	],
-	run: async ({
-		options,
-		user,
-		channelID
-	}: CommandRunOptions<{ tier: string; quantity?: number; implings?: string }>) => {
+	run: async ({ options, user, channelID }) => {
 		let { quantity } = options;
 
 		const clueTier = ClueTiers.find(
@@ -445,4 +441,4 @@ export const clueCommand: OSBMahojiCommand = {
 		}${implingLootString}`;
 		return response;
 	}
-};
+});

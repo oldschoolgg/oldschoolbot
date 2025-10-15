@@ -8,7 +8,7 @@ import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
-import { gearSetupOption } from '@/lib/discord/index.js';
+import { choicesOf, gearSetupOption } from '@/lib/discord/index.js';
 import type { GearSetupType } from '@/lib/gear/types.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { marketPricemap } from '@/lib/marketPrices.js';
@@ -159,9 +159,9 @@ const actions = [
 			return res;
 		}
 	}
-];
+] as const;
 
-export const rpCommand: OSBMahojiCommand = {
+export const rpCommand = defineCommand({
 	name: 'rp',
 	description: 'Admin tools second set',
 	guildID: globalConfig.supportServerID,
@@ -409,7 +409,7 @@ export const rpCommand: OSBMahojiCommand = {
 							name: 'cl_name',
 							description: 'The cl the user completed',
 							required: true,
-							autocomplete: async val => {
+							autocomplete: async (val: string) => {
 								return allCollectionLogsFlat
 									.map(c => c.name)
 									.filter(c => (!val ? true : c.toLowerCase().includes(val.toLowerCase())))
@@ -469,17 +469,14 @@ export const rpCommand: OSBMahojiCommand = {
 							name: 'type',
 							description: 'Did they reach max level or max xp',
 							required: true,
-							choices: [
-								{ name: UserEventType.MaxXP, value: UserEventType.MaxXP },
-								{ name: UserEventType.MaxLevel, value: UserEventType.MaxLevel }
-							]
+							choices: choicesOf([UserEventType.MaxXP, UserEventType.MaxLevel])
 						},
 						{
 							type: 'String',
 							name: 'skill',
 							description: 'What skill?',
 							required: true,
-							autocomplete: async val => {
+							autocomplete: async (val: string) => {
 								return Object.values(xp_gains_skill_enum)
 									.filter(s => (!val ? true : s.includes(val.toLowerCase())))
 									.map(s => ({ name: s, value: s }));
@@ -496,52 +493,9 @@ export const rpCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		interaction,
-		guildID
-	}: CommandRunOptions<{
-		user_event?: {
-			cl_completion?: { user: MahojiUserOption; cl_name: string; message_id: string };
-			max_total?: { user: MahojiUserOption; type: UserEventType; message_id: string };
-			max?: { user: MahojiUserOption; type: UserEventType; skill: xp_gains_skill_enum; message_id: string };
-		};
-		action?: any;
-		player?: {
-			viewbank?: { user: MahojiUserOption; json?: boolean };
-			add_patron_time?: { user: MahojiUserOption; tier: number; time: string };
-			steal_items?: {
-				user: MahojiUserOption;
-				items?: string;
-				item_filter?: string;
-				reason?: string;
-				delete?: boolean;
-			};
-			unequip_all_items?: {
-				user: MahojiUserOption;
-				gear_setup?: string;
-				all?: boolean;
-				pet?: boolean;
-			};
-			set_buy_date?: {
-				user: MahojiUserOption;
-				message_id: string;
-			};
-			view_user?: { user: MahojiUserOption };
-			migrate_user?: { source: MahojiUserOption; dest: MahojiUserOption; reason?: string };
-			list_trades?: {
-				user: MahojiUserOption;
-				partner?: MahojiUserOption;
-				guild_id?: string;
-			};
-			ge_cancel?: { user: MahojiUserOption };
-		};
-	}>) => {
+	run: async ({ options, user: adminUser, interaction, guildID }) => {
 		await interaction.defer();
-
-		const adminUser = await mUserFetch(userID);
-		const isAdmin = globalConfig.adminUserIDs.includes(userID);
+		const isAdmin = globalConfig.adminUserIDs.includes(adminUser.id);
 		const isMod = isAdmin || adminUser.bitfield.includes(BitField.isModerator);
 		if (!guildID || (globalConfig.isProduction && guildID.toString() !== globalConfig.supportServerID)) {
 			return randArrItem(gifs);
@@ -553,7 +507,7 @@ export const rpCommand: OSBMahojiCommand = {
 				options.user_event.cl_completion?.message_id ??
 				options.user_event.max?.message_id ??
 				options.user_event.max_total?.message_id;
-			if (!messageId || !isValidDiscordSnowflake(messageId)) return null;
+			if (!messageId || !isValidDiscordSnowflake(messageId)) return 'Invalid';
 
 			const snowflake = DiscordSnowflake.timestampFrom(messageId);
 			const date = new Date(snowflake);
@@ -561,7 +515,7 @@ export const rpCommand: OSBMahojiCommand = {
 				options.user_event.cl_completion?.user.user.id ??
 				options.user_event.max?.user.user.id ??
 				options.user_event.max_total?.user.user.id;
-			if (!userId) return null;
+			if (!userId) return 'Invalid';
 			const targetUser = await mUserFetch(userId);
 			let type: UserEventType = UserEventType.CLCompletion;
 			let skill: xp_gains_skill_enum | undefined;
@@ -578,7 +532,7 @@ Date: ${dateFm(date)}`;
 			if (options.user_event.max) {
 				confirmationStr += `\nSkill: ${options.user_event.max.skill}`;
 				type = options.user_event.max.type;
-				skill = options.user_event.max.skill;
+				skill = options.user_event.max.skill as xp_gains_skill_enum;
 			}
 			if (options.user_event.max_total) {
 				type = options.user_event.max_total.type;
@@ -881,4 +835,4 @@ Date: ${dateFm(date)}`;
 
 		return 'Invalid command.';
 	}
-};
+});

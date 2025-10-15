@@ -19,7 +19,7 @@ function formatBankForDisplay(bank: Bank): string {
 	return fullStr;
 }
 
-export const tradeCommand: OSBMahojiCommand = {
+export const tradeCommand = defineCommand({
 	name: 'trade',
 	description: 'Allows you to trade items with other players.',
 	options: [
@@ -55,20 +55,7 @@ export const tradeCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		interaction,
-		userID,
-		guildID,
-		options,
-		user
-	}: CommandRunOptions<{
-		user: MahojiUserOption;
-		send?: string;
-		receive?: string;
-		price?: string;
-		filter?: string;
-		search?: string;
-	}>) => {
+	run: async ({ interaction, userID, guildID, options, user }) => {
 		await interaction.defer();
 
 		if (!guildID) return 'You can only run this in a server.';
@@ -176,4 +163,4 @@ Both parties must click confirm to make the trade.`,
 
 		return files.length > 0 ? { content, files } : content;
 	}
-};
+});

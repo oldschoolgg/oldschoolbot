@@ -9,7 +9,7 @@ import { BitField, PerkTier } from '@/lib/constants.js';
 import { allCLItemsFiltered, allDroppedItems } from '@/lib/data/Collections.js';
 import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
-import { itemOption, monsterOption, skillOption } from '@/lib/discord/index.js';
+import { choicesOf, itemOption, monsterOption, skillOption } from '@/lib/discord/index.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
 import type { MinigameName } from '@/lib/settings/minigames.js';
@@ -702,7 +702,7 @@ async function checkMassesCommand(guildID: string | undefined) {
 ${massStr}`.slice(0, 1999);
 }
 
-export const toolsCommand: OSBMahojiCommand = {
+export const toolsCommand = defineCommand({
 	name: 'tools',
 	description: 'Various tools and miscellaneous commands.',
 	options: [
@@ -721,14 +721,14 @@ export const toolsCommand: OSBMahojiCommand = {
 							name: 'time',
 							description: 'The time period.',
 							required: true,
-							choices: staticTimeIntervals.map(i => ({ name: i, value: i }))
+							choices: choicesOf(staticTimeIntervals)
 						},
 						{
 							type: 'String',
 							name: 'tier',
 							description: 'The tier of clue scroll.',
 							required: false,
-							autocomplete: async value => {
+							autocomplete: async (value: string) => {
 								return [...ClueTiers.map(i => ({ name: i.name, value: i }))]
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({ name: i.name, value: i.name }));
@@ -773,7 +773,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							name: 'time',
 							description: 'The time period.',
 							required: true,
-							choices: ['day', 'week', 'month'].map(i => ({ name: i, value: i }))
+							choices: choicesOf(['day', 'week', 'month'])
 						},
 						skillOption,
 						{
@@ -794,7 +794,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							name: 'source',
 							description: 'The source of the item – a monster, minigame, clue, etc.',
 							required: true,
-							autocomplete: async value => {
+							autocomplete: async (value: string) => {
 								return [
 									...dryStreakEntities.map(i => ({ name: i.name, value: i })),
 									...killableMonsters
@@ -947,9 +947,8 @@ export const toolsCommand: OSBMahojiCommand = {
 							name: 'unit',
 							description: 'The specific unit you want to unfill.',
 							required: true,
-							autocomplete: async (value, user) => {
-								const mUser = await mUserFetch(user.id);
-								return (await mUser.fetchStashUnits())
+							autocomplete: async (value: string, user: MUser) => {
+								return (await user.fetchStashUnits())
 									.filter(i => i.builtUnit !== undefined && i.builtUnit.items_contained.length > 0)
 									.filter(i =>
 										!value ? true : i.unit.desc.toLowerCase().includes(value.toLowerCase())
@@ -962,57 +961,12 @@ export const toolsCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		user,
-		interaction,
-		guildID
-	}: CommandRunOptions<{
-		patron?: {
-			clue_gains?: {
-				time: 'day' | 'week' | 'month';
-				tier?: string;
-				ironman?: boolean;
-			};
-			kc_gains?: {
-				time: 'day' | 'week' | 'month';
-				monster: string;
-				ironman?: boolean;
-			};
-			xp_gains?: {
-				time: 'day' | 'week' | 'month';
-				skill?: string;
-				ironman?: boolean;
-			};
-			drystreak?: {
-				source: string;
-				item: string;
-				ironman?: boolean;
-			};
-			mostdrops?: {
-				item: string;
-				filter?: string;
-			};
-			sacrificed_bank?: {};
-			cl_bank?: {
-				format?: 'bank' | 'json';
-			};
-			minion_stats?: {};
-			activity_export?: {};
-			stats?: { stat: string };
-		};
-		user?: { mypets?: {}; temp_cl: { reset?: boolean }; checkmasses?: {} };
-		stash_units?: {
-			view?: { unit?: string; not_filled?: boolean };
-			build_all?: {};
-			fill_all?: {};
-			unfill?: { unit: string };
-		};
-	}>) => {
+	run: async ({ options, user, interaction, guildID }) => {
 		await interaction.defer();
 
 		if (options.patron) {
 			const { patron } = options;
+
 			if (patron.clue_gains) {
 				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return clueGains(patron.clue_gains.time, patron.clue_gains.tier, Boolean(patron.clue_gains.ironman));
@@ -1134,4 +1088,4 @@ You last reset your temporary CL: ${
 		}
 		return 'Invalid command!';
 	}
-};
+});

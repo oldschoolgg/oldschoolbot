@@ -63,7 +63,7 @@ function alching(user: MUser, tripLength: number) {
 	};
 }
 
-export const lapsCommand: OSBMahojiCommand = {
+export const lapsCommand = defineCommand({
 	name: 'laps',
 	description: 'Do laps on Agility courses to train Agility.',
 	attributes: {
@@ -100,11 +100,7 @@ export const lapsCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		options,
-		user,
-		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; alch?: boolean }>) => {
+	run: async ({ options, user, channelID }) => {
 		const course = courses.find(
 			course =>
 				stringMatches(course.id.toString(), options.name) ||
@@ -184,4 +180,4 @@ export const lapsCommand: OSBMahojiCommand = {
 
 		return response;
 	}
-};
+});

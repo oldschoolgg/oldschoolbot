@@ -21,7 +21,7 @@ const runeTypes = [
 	{ item: Items.getOrThrow('Scarred extract'), runes: new Set(['blood', 'soul', 'wrath']) }
 ];
 
-export const runecraftCommand: OSBMahojiCommand = {
+export const runecraftCommand = defineCommand({
 	name: 'runecraft',
 	description: 'Sends your minion to craft runes with essence, or craft tiaras.',
 	attributes: {
@@ -36,7 +36,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			name: 'rune',
 			description: 'The Rune/Tiara you want to craft.',
 			required: true,
-			autocomplete: async value => {
+			autocomplete: async (value: string) => {
 				return [
 					...Runecraft.Runes.map(i => i.name),
 					'ourania altar',
@@ -78,17 +78,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		userID,
-		options,
-		channelID
-	}: CommandRunOptions<{
-		rune: string;
-		quantity?: number;
-		usestams?: boolean;
-		daeyalt_essence?: boolean;
-		extracts?: boolean;
-	}>) => {
+	run: async ({ userID, options, channelID }) => {
 		const user = await mUserFetch(userID);
 		let { rune, quantity, usestams, daeyalt_essence, extracts } = options;
 
@@ -366,4 +356,4 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		return response;
 	}
-};
+});

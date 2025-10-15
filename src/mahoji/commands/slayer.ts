@@ -1,5 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
+import { choicesOf } from '@/lib/discord/index.js';
 import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
@@ -16,7 +17,7 @@ import {
 	slayerUnblockCommand
 } from '@/mahoji/lib/abstracted_commands/slayerTaskCommand.js';
 
-export const slayerCommand: OSBMahojiCommand = {
+export const slayerCommand = defineCommand({
 	name: 'slayer',
 	description: 'Slayer skill commands',
 	options: [
@@ -70,9 +71,7 @@ export const slayerCommand: OSBMahojiCommand = {
 					name: 'command',
 					description: 'Skip your current task',
 					required: true,
-					choices: ['skip', 'block', 'list_blocks'].map(c => {
-						return { name: c, value: c };
-					})
+					choices: choicesOf(['skip', 'block', 'list_blocks'])
 				},
 				{
 					type: 'Boolean',
@@ -196,9 +195,7 @@ export const slayerCommand: OSBMahojiCommand = {
 							name: 'type',
 							description: 'What type of rewards to show?',
 							required: false,
-							choices: ['all', 'buyables', 'unlocks'].map(t => {
-								return { name: t, value: t };
-							})
+							choices: choicesOf(['all', 'buyables', 'unlocks'])
 						}
 					]
 				},
@@ -240,78 +237,51 @@ export const slayerCommand: OSBMahojiCommand = {
 			description: 'Shows status of current slayer task'
 		}
 	],
-	run: async ({
-		options,
-		channelID,
-		userID,
-		interaction
-	}: CommandRunOptions<{
-		autoslay?: { mode?: string; save?: boolean };
-		new_task?: { master?: string; save?: boolean };
-		manage?: {
-			command: 'block' | 'skip' | 'list_blocks';
-			new?: boolean;
-		};
-		rewards?: {
-			unlock?: { unlockable: string };
-			unblock?: { assignment: string };
-			buy?: { item: string; quantity?: number };
-			my_unlocks?: {};
-			show_all_rewards?: { type?: 'all' | 'buyables' | 'unlocks' };
-			disable?: { unlockable: string };
-		};
-		status?: {};
-	}>) => {
-		const mahojiUser = await mUserFetch(userID);
-
+	run: async ({ options, user, interaction }) => {
 		await interaction.defer();
 		if (options.autoslay) {
-			await autoSlayCommand({
-				mahojiUser,
-				channelID,
+			return autoSlayCommand({
+				user,
 				modeOverride: options.autoslay.mode,
 				saveMode: Boolean(options.autoslay.save),
 				interaction
 			});
-			return null;
 		}
 		if (options.new_task) {
-			await slayerNewTaskCommand({
-				userID: mahojiUser.id,
+			return slayerNewTaskCommand({
+				user,
 				interaction,
 				slayerMasterOverride: options.new_task.master,
 				saveDefaultSlayerMaster: Boolean(options.new_task.save),
 				showButtons: true
 			});
-			return null;
 		}
 		if (options.manage) {
 			if (options.manage.command === 'list_blocks') {
-				return slayerListBlocksCommand(mahojiUser);
+				return slayerListBlocksCommand(user);
 			}
 			if (options.manage.command === 'skip' || options.manage.command === 'block') {
-				await slayerSkipTaskCommand({
-					userID: mahojiUser.id,
+				return slayerSkipTaskCommand({
+					user,
 					block: options.manage.command === 'block',
 					newTask: Boolean(options.manage.new),
 					interaction
 				});
-				return null;
 			}
 		}
 		if (options.rewards) {
 			if (options.rewards.my_unlocks) {
-				return slayerShopListMyUnlocks(mahojiUser);
+				return slayerShopListMyUnlocks(user);
 			}
 			if (options.rewards.unblock) {
-				return slayerUnblockCommand(mahojiUser, options.rewards.unblock.assignment);
+				return slayerUnblockCommand(user, options.rewards.unblock.assignment);
 			}
 			if (options.rewards.show_all_rewards) {
 				return slayerShopListRewards(options.rewards.show_all_rewards.type ?? 'all');
 			}
 			if (options.rewards.disable) {
 				return slayerShopBuyCommand({
-					userID: mahojiUser.id,
+					userID: user.id,
 					disable: true,
 					buyable: options.rewards.disable.unlockable,
 					interaction
@@ -319,7 +289,7 @@ export const slayerCommand: OSBMahojiCommand = {
 			}
 			if (options.rewards.buy) {
 				return slayerShopBuyCommand({
-					userID: mahojiUser.id,
+					userID: user.id,
 					buyable: options.rewards.buy.item,
 					quantity: options.rewards.buy.quantity,
 					interaction
@@ -327,15 +297,15 @@ export const slayerCommand: OSBMahojiCommand = {
 			}
 			if (options.rewards.unlock) {
 				return slayerShopBuyCommand({
-					userID: mahojiUser.id,
+					userID: user.id,
 					buyable: options.rewards.unlock.unlockable,
 					interaction
 				});
 			}
 		}
 		if (options.status) {
-			return slayerStatusCommand(mahojiUser);
+			return slayerStatusCommand(user);
 		}
 		return 'This should not happen. Please contact support.';
 	}
-};
+});

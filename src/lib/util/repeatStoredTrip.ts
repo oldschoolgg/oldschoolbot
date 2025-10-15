@@ -764,12 +764,12 @@ export async function repeatTrip(
 	user: MUser,
 	interaction: MInteraction,
 	data: { data: Prisma.JsonValue; type: activity_type_enum }
-) {
+): CommandResponse {
 	if (!data || !data.data || !data.type) {
-		return interaction.reply({ content: "Couldn't find any trip to repeat.", ephemeral: true });
+		return { content: "Couldn't find any trip to repeat.", ephemeral: true };
 	}
 	const handler = tripHandlers[data.type];
-	const result = await runCommand({
+	return runCommand({
 		commandName: handler.commandName,
 		isContinue: true,
 		args: handler.args(data.data as any),
@@ -777,5 +777,4 @@ export async function repeatTrip(
 		user,
 		continueDeltaMillis: interaction.createdAt.getTime() - (interaction.message?.createdTimestamp ?? 0)
 	});
-	return result;
 }

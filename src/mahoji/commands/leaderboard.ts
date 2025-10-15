@@ -10,10 +10,10 @@ import {
 import { EmbedBuilder } from 'discord.js';
 import { convertXPtoLVL } from 'oldschooljs';
 
-import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { MAX_LEVEL, masteryKey } from '@/lib/constants.js';
 import { allClNames, getCollectionItems } from '@/lib/data/Collections.js';
+import { defineOption } from '@/lib/discord/index.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables } from '@/lib/openables.js';
 import { SQL } from '@/lib/rawSql.js';
@@ -808,14 +808,14 @@ async function masteryLb(interaction: MInteraction) {
 	});
 }
 
-const ironmanOnlyOption = {
+const ironmanOnlyOption = defineOption({
 	type: 'Boolean',
 	name: 'ironmen_only',
 	description: 'Only include ironmen.',
 	required: false
-} as const;
+});
 
-export const leaderboardCommand: OSBMahojiCommand = {
+export const leaderboardCommand = defineCommand({
 	name: 'lb',
 	description: 'Simulate killing monsters.',
 	options: [
@@ -829,7 +829,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					name: 'monster',
 					description: 'The monster you want to check the leaderboard of.',
 					required: true,
-					autocomplete: async value => {
+					autocomplete: async (value: string) => {
 						return effectiveMonsters
 							.filter(m => (!value ? true : m.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.name, value: i.name }));
@@ -841,7 +841,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		{
 			type: 'Subcommand',
 			name: 'farming_contracts',
-			description: 'Check the farming contracts leaderboard.'
+			description: 'Check the farming contracts leaderboard.',
+			options: [ironmanOnlyOption]
 		},
 		{
 			type: 'Subcommand',
@@ -991,7 +992,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					name: 'cl',
 					description: 'The cl you want to select.',
 					required: true,
-					autocomplete: async value => {
+					autocomplete: async (value: string) => {
 						return [
 							{ name: 'Overall (Main Leaderboard)', value: 'overall' },
 							...['overall+', ...allClNames.map(i => i)].map(i => ({
@@ -1060,29 +1061,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			options: []
 		}
 	],
-	run: async ({
-		options,
-		interaction
-	}: CommandRunOptions<{
-		kc?: { monster: string; ironmen_only?: boolean };
-		farming_contracts?: { ironmen_only?: boolean };
-		inferno?: {};
-		sacrifice?: { type: 'value' | 'unique'; ironmen_only?: boolean };
-		minigames?: { minigame: string; ironmen_only?: boolean };
-		hunter_catches?: { creature: string };
-		agility_laps?: { course: string };
-		gp?: { ironmen_only?: boolean };
-		skills?: { skill: string; ironmen_only?: boolean; xp?: boolean };
-		opens?: { openable: string; ironmen_only?: boolean };
-		cl?: { cl: string; ironmen_only?: boolean };
-		clues?: { clue: ClueTier['name']; ironmen_only?: boolean };
-		movers?: { type: GainersType };
-		global?: {
-			type: GlobalLbType;
-		};
-		combat_achievements?: {};
-		mastery?: {};
-	}>) => {
+	run: async ({ options, interaction }) => {
 		await interaction.defer();
 		const {
 			opens,
@@ -1130,4 +1109,4 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		if (mastery) return masteryLb(interaction);
 		return 'Invalid input.';
 	}
-};
+});

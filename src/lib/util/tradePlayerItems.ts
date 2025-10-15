@@ -2,7 +2,22 @@ import { Bank } from 'oldschooljs';
 
 import { userQueueFn } from '@/lib/util/userQueues.js';
 
-export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsToSend?: Bank, _itemsToReceive?: Bank) {
+type TradePlayerResult =
+	| {
+			success: true;
+			message: null;
+	  }
+	| {
+			success: false;
+			message: string;
+	  };
+
+export async function tradePlayerItems(
+	sender: MUser,
+	recipient: MUser,
+	_itemsToSend?: Bank,
+	_itemsToReceive?: Bank
+): Promise<TradePlayerResult> {
 	if (recipient.isBusy) {
 		return { success: false, message: `${recipient.usernameOrMention} is busy.` };
 	}

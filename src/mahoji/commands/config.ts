@@ -695,7 +695,7 @@ async function unpinTripCommand(user: MUser, tripId: string | undefined) {
 	return `You unpinned a ${trip.activity_type} trip.`;
 }
 
-export const configCommand: OSBMahojiCommand = {
+export const configCommand = defineCommand({
 	name: 'config',
 	description: 'Commands configuring settings and options.',
 	options: [
@@ -748,7 +748,7 @@ export const configCommand: OSBMahojiCommand = {
 							name: 'command',
 							description: 'The command you want to enable/disable.',
 							required: true,
-							autocomplete: async value => {
+							autocomplete: async (value: string) => {
 								return globalClient.allCommands
 									.map(i => ({ name: i.name, value: i.name }))
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
@@ -783,7 +783,7 @@ export const configCommand: OSBMahojiCommand = {
 							name: 'name',
 							description: 'The setting you want to toggle on/off.',
 							required: true,
-							autocomplete: async (value, user) => {
+							autocomplete: async (value: string, user: MUser) => {
 								const mUser = await prisma.user.findFirst({
 									where: {
 										id: user.id
@@ -828,7 +828,7 @@ export const configCommand: OSBMahojiCommand = {
 							name: 'input',
 							description: 'The option you want to add/remove.',
 							required: false,
-							autocomplete: async value => {
+							autocomplete: async (value: string) => {
 								return CombatOptionsArray.filter(i =>
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: i.name, value: i.name }));
@@ -1067,7 +1067,7 @@ export const configCommand: OSBMahojiCommand = {
 							name: 'trip',
 							description: 'The trip you want to pin.',
 							required: false,
-							autocomplete: async (_, user) => {
+							autocomplete: async (_: string, user: MUser) => {
 								const res = await prisma.$queryRawUnsafe<
 									{ type: activity_type_enum; data: object; id: number; finish_date: string }[]
 								>(`
@@ -1103,7 +1103,7 @@ LIMIT 20;
 							name: 'unpin_trip',
 							description: 'The trip you want to unpin.',
 							required: false,
-							autocomplete: async (_, user) => {
+							autocomplete: async (_: string, user: MUser) => {
 								const res = await prisma.pinnedTrip.findMany({ where: { user_id: user.id } });
 								return res.map(i => ({
 									name: `${i.activity_type}${i.custom_name ? `- ${i.custom_name}` : ''}`,
@@ -1133,38 +1133,7 @@ LIMIT 20;
 			]
 		}
 	],
-	run: async ({
-		options,
-		user,
-		guildID,
-		channelID,
-		interaction
-	}: CommandRunOptions<{
-		server?: {
-			channel?: { choice: 'enable' | 'disable' };
-			pet_messages?: { choice: 'enable' | 'disable' };
-			command?: { command: string; choice: 'enable' | 'disable' };
-		};
-		user?: {
-			toggle?: { name: string };
-			combat_options?: { action: 'add' | 'remove' | 'list' | 'help'; input: string };
-			set_rsn?: { username: string };
-			bg_color?: { color?: string };
-			bank_sort?: {
-				sort_method?: string;
-				add_weightings?: string;
-				remove_weightings?: string;
-				reset_weightings?: string;
-			};
-			favorite_alchs?: { add?: string; remove?: string; add_many?: string; reset?: boolean };
-			favorite_food?: { add?: string; remove?: string; reset?: boolean };
-			favorite_items?: { add?: string; remove?: string; reset?: boolean };
-			favorite_bh_seeds?: { add?: string; remove?: string; reset?: boolean };
-			slayer?: { master?: string; autoslay?: string };
-			pin_trip?: { trip?: string; unpin_trip?: string; emoji?: string; custom_name?: string };
-			icon_pack?: { name?: string };
-		};
-	}>) => {
+	run: async ({ options, user, guildID, channelID, interaction }) => {
 		const guild = guildID ? (globalClient.guilds.cache.get(guildID.toString()) ?? null) : null;
 		if (options.server) {
 			if (options.server.channel) {
@@ -1283,4 +1252,4 @@ LIMIT 20;
 		}
 		return 'Invalid command.';
 	}
-};
+});
