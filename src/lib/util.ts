@@ -2,6 +2,7 @@ import { cleanUsername, noOp } from '@oldschoolgg/toolkit';
 import { type Guild, userMention } from 'discord.js';
 import { convertXPtoLVL } from 'oldschooljs';
 
+import type { Prisma, User } from '@/prisma/main.js';
 import { usernameWithBadgesCache } from '@/lib/cache.js';
 import { BitField, globalConfig, MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
 import type { MUserClass } from '@/lib/MUser.js';
@@ -10,7 +11,6 @@ import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
-import type { Prisma, User } from '@/prisma/main.js';
 
 // @ts-expect-error ignore
 BigInt.prototype.toJSON = function () {

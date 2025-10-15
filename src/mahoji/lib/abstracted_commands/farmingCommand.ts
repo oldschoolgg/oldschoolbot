@@ -1,12 +1,12 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
+import type { CropUpgradeType } from '@/prisma/main/enums.js';
 import { superCompostables } from '@/lib/data/filterables.js';
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { Plant } from '@/lib/skilling/types.js';
 import type { FarmingActivityTaskOptions } from '@/lib/types/minions.js';
-import type { CropUpgradeType } from '@/prisma/main/enums.js';
 
 function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number): string | null {
 	if (plant.needsChopForHarvest && plant.treeWoodcuttingLevel && wcLevel < plant.treeWoodcuttingLevel) {

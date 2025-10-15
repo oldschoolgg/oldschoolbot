@@ -1,8 +1,8 @@
 import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit';
 import type { EMonster, ItemBank } from 'oldschooljs';
 
-import { allKillableMonsterIDs } from '@/lib/minions/data/killableMonsters/index.js';
 import type { Prisma } from '@/prisma/main.js';
+import { allKillableMonsterIDs } from '@/lib/minions/data/killableMonsters/index.js';
 
 export class KCBank extends GeneralBank<EMonster> {
 	constructor(initialBank?: GeneralBankType<EMonster>) {

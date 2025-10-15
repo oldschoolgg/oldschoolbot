@@ -3,6 +3,7 @@ import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, MessageFlags } from 'discord.js';
 import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
 
+import { type Prisma, xp_gains_skill_enum } from '@/prisma/main.js';
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitFieldData, globalConfig } from '@/lib/constants.js';
@@ -37,7 +38,6 @@ import { gearViewCommand } from '@/mahoji/lib/abstracted_commands/gearCommands.j
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { allUsableItems } from '@/mahoji/lib/abstracted_commands/useCommand.js';
 import { BingoManager } from '@/mahoji/lib/bingo/BingoManager.js';
-import { type Prisma, xp_gains_skill_enum } from '@/prisma/main.js';
 import { testBotKvStore } from '@/testing/TestBotStore.js';
 
 export function getMaxUserValues() {

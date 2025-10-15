@@ -20,6 +20,7 @@ import { Bank, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 import { clamp } from 'remeda';
 
+import { type Minigame, XpGainSource } from '@/prisma/main.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { degradeItem } from '@/lib/degradeableItems.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
@@ -33,7 +34,6 @@ import type { TOAOptions } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
 import { bankToStrShortNames, formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
-import { type Minigame, XpGainSource } from '@/prisma/main.js';
 
 const teamSizeScale: Record<number, number> = {
 	1: 1.0,

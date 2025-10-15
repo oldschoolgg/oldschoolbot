@@ -1,5 +1,6 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
 
+import { AutoFarmFilterEnum, type CropUpgradeType } from '@/prisma/main/enums.js';
 import TitheFarmBuyables from '@/lib/data/buyables/titheFarmBuyables.js';
 import { superCompostables } from '@/lib/data/filterables.js';
 import { autoFarm } from '@/lib/minions/functions/autoFarm.js';
@@ -13,7 +14,6 @@ import {
 } from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
 import { farmingContractCommand } from '@/mahoji/lib/abstracted_commands/farmingContractCommand.js';
 import { titheFarmCommand, titheFarmShopCommand } from '@/mahoji/lib/abstracted_commands/titheFarmCommand.js';
-import { AutoFarmFilterEnum, type CropUpgradeType } from '@/prisma/main/enums.js';
 
 const autoFarmFilterTexts: Record<AutoFarmFilterEnum, string> = {
 	AllFarm: 'All crops will be farmed with the highest available seed',

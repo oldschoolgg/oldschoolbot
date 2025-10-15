@@ -1,6 +1,7 @@
 import { objectEntries } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank } from 'oldschooljs';
 
+import type { GearSetupType, Prisma, UserStats } from '@/prisma/main.js';
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
 import type { GearSetup } from '@/lib/gear/types.js';
 import type { MUserClass } from '@/lib/MUser.js';
@@ -8,7 +9,6 @@ import { ChargeBank } from '@/lib/structures/Bank.js';
 import { KCBank } from '@/lib/structures/KCBank.js';
 import { XPBank } from '@/lib/structures/XPBank.js';
 import type { JsonKeys } from '@/lib/util.js';
-import type { GearSetupType, Prisma, UserStats } from '@/prisma/main.js';
 
 export class UpdateBank {
 	// Things removed

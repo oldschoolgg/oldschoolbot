@@ -4,6 +4,7 @@ import { type BaseMessageOptions, bold, EmbedBuilder, type Message, type TextCha
 import { LRUCache } from 'lru-cache';
 import { type ItemBank, Items, toKMB } from 'oldschooljs';
 
+import type { command_name_enum } from '@/prisma/main/enums.js';
 import { lastRoboChimpSyncCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
 import { Channel, globalConfig } from '@/lib/constants.js';
 import pets from '@/lib/data/pets.js';
@@ -13,7 +14,6 @@ import type { ActivityTaskData } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { minionStatsEmbed } from '@/lib/util/minionStatsEmbed.js';
 import { minionStatusCommand } from '@/mahoji/lib/abstracted_commands/minionStatusCommand.js';
-import type { command_name_enum } from '@/prisma/main/enums.js';
 
 const rareRolesSrc: [string, number, string][] = [
 	['670211706907000842', 250, 'Bronze'],

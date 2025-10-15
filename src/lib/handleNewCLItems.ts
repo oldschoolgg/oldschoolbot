@@ -2,6 +2,7 @@ import { roll } from '@oldschoolgg/rng';
 import { Events, formatOrdinal, roboChimpCLRankQuery, sumArr } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 
+import { type Prisma, UserEventType } from '@/prisma/main.js';
 import { allCLItems, allCollectionLogsFlat, calcCLDetails } from '@/lib/data/Collections.js';
 import { calculateMastery } from '@/lib/mastery.js';
 import { RawSQL } from '@/lib/rawSql.js';
@@ -9,7 +10,6 @@ import { calculateOwnCLRanking, roboChimpSyncData } from '@/lib/roboChimp.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import { fetchCLLeaderboard } from '@/lib/util/clLeaderboard.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
-import { type Prisma, UserEventType } from '@/prisma/main.js';
 
 async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataUncheckedCreateInput> {
 	const clStats = calcCLDetails(user);

@@ -2,12 +2,12 @@ import { calcWhatPercent, formatOrdinal, round, sumArr } from '@oldschoolgg/tool
 import deepEqual from 'fast-deep-equal';
 import type { Bank } from 'oldschooljs';
 
+import type { TriviaQuestion, User } from '@/prisma/clients/robochimp/client.js';
 import { BOT_TYPE, globalConfig, masteryKey } from '@/lib/constants.js';
 import { getTotalCl } from '@/lib/data/Collections.js';
 import { calculateMastery } from '@/lib/mastery.js';
 import { cacheRoboChimpUser } from '@/lib/perkTier.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
-import type { TriviaQuestion, User } from '@/prisma/clients/robochimp/client.js';
 
 export type RobochimpUser = User;
 

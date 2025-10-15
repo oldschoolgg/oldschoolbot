@@ -13,6 +13,7 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
+import type { activity_type_enum, GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@/prisma/main.js';
 import { addXP } from '@/lib/addXP.js';
 import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
@@ -55,7 +56,6 @@ import { type TransactItemsArgs, transactItemsFromBank } from '@/lib/util/transa
 import type { JsonKeys } from '@/lib/util.js';
 import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
-import type { activity_type_enum, GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@/prisma/main.js';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {

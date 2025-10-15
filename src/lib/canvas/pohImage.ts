@@ -4,6 +4,7 @@ import { randInt } from '@oldschoolgg/rng';
 import { objectEntries } from '@oldschoolgg/toolkit';
 import { loadImage } from 'skia-canvas';
 
+import type { PlayerOwnedHouse } from '@/prisma/main.js';
 import {
 	type Canvas,
 	type CanvasContext,
@@ -14,7 +15,6 @@ import {
 } from '@/lib/canvas/canvasUtil.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from '@/lib/poh/index.js';
-import type { PlayerOwnedHouse } from '@/prisma/main.js';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
 const FOLDERS = [

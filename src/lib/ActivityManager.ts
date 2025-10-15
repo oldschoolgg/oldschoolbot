@@ -1,5 +1,6 @@
 import { cryptoRng } from '@oldschoolgg/rng';
 
+import type { Activity, activity_type_enum, Prisma } from '@/prisma/main.js';
 import { globalConfig } from '@/lib/constants.js';
 import { onMinionActivityFinish } from '@/lib/events.js';
 import { allTasks } from '@/lib/Task.js';
@@ -8,7 +9,6 @@ import type { ActivityTaskData } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { isGroupActivity } from '@/lib/util.js';
-import type { Activity, activity_type_enum, Prisma } from '@/prisma/main.js';
 
 class SActivityManager {
 	private minionActivityCache: Map<string, ActivityTaskData> = new Map();

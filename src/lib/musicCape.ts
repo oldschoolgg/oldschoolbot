@@ -1,13 +1,13 @@
 import { objectEntries, partition } from '@oldschoolgg/toolkit';
 import { Bank, EMonster, ItemGroups, Items, Monsters, resolveItems } from 'oldschooljs';
 
+import { activity_type_enum } from '@/prisma/main/enums.js';
 import { DEPRECATED_ACTIVITY_TYPES } from '@/lib/constants.js';
 import { RandomEvents } from '@/lib/randomEvents.js';
 import { type MinigameName, Minigames } from '@/lib/settings/minigames.js';
 import type { RequirementFailure } from '@/lib/structures/Requirements.js';
 import { Requirements } from '@/lib/structures/Requirements.js';
 import { formatList } from '@/lib/util/smallUtils.js';
-import { activity_type_enum } from '@/prisma/main/enums.js';
 
 export const musicCapeRequirements = new Requirements()
 	.add({

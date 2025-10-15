@@ -11,6 +11,7 @@ import { bold, EmbedBuilder, type Guild, type HexColorString, inlineCode, resolv
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
+import type { activity_type_enum } from '@/prisma/main/enums.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BitField, globalConfig, ParsedCustomEmojiWithGroups, PerkTier } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';
@@ -27,7 +28,6 @@ import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '@/mahoji/guildSettings.js';
 import { patronMsg } from '@/mahoji/mahojiSettings.js';
-import type { activity_type_enum } from '@/prisma/main/enums.js';
 
 interface UserConfigToggle {
 	name: string;

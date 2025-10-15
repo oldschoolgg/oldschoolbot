@@ -3,6 +3,7 @@ import { EItem, Items, Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
 import * as z from 'zod';
 
+import type { PlayerOwnedHouse } from '@/prisma/main.js';
 import type { BitField, PvMMethod } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { checkRangeGearWeapon } from '@/lib/gear/functions/checkRangeGearWeapon.js';
@@ -30,7 +31,6 @@ import {
 	CombatMethodOptionsSchema,
 	speedCalculations
 } from '@/mahoji/lib/abstracted_commands/minionKill/timeAndSpeed.js';
-import type { PlayerOwnedHouse } from '@/prisma/main.js';
 
 const newMinionKillReturnSchema = z.object({
 	duration: z.number().int().positive(),

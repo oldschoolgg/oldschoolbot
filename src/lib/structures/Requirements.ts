@@ -1,6 +1,7 @@
 import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
 import { type Bank, Items } from 'oldschooljs';
 
+import type { activity_type_enum, Minigame, PlayerOwnedHouse } from '@/prisma/main.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import type { BitField } from '@/lib/constants.js';
 import { BitFieldData, BOT_TYPE } from '@/lib/constants.js';
@@ -14,7 +15,6 @@ import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { Skills } from '@/lib/types/index.js';
 import { formatList } from '@/lib/util/smallUtils.js';
 import type { ParsedUnit } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
-import type { activity_type_enum, Minigame, PlayerOwnedHouse } from '@/prisma/main.js';
 
 export interface RequirementFailure {
 	reason: string;

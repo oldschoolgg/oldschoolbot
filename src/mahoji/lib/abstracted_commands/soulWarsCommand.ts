@@ -2,8 +2,8 @@ import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 
-import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 import type { User } from '@/prisma/main.js';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '@/lib/types/minions.js';
 
 export const soulWarsBuyables = [
 	{

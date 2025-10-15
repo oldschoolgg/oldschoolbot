@@ -1,9 +1,9 @@
 import { ButtonInteraction } from 'discord.js';
 
+import type { NewUser } from '@/prisma/main.js';
 import { rawCommandHandlerInner } from '@/lib/discord/commandHandler.js';
 import type { CommandOptions } from '@/lib/discord/commandOptions.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';
-import type { NewUser } from '@/prisma/main.js';
 
 export async function getNewUser(id: string): Promise<NewUser> {
 	const value = await prisma.newUser.findUnique({ where: { id } });

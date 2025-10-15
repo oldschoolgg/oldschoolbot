@@ -1,6 +1,7 @@
 import type { ArrayItemsResolved, Bank, Item, ItemBank, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
 import type { OffenceGearStat } from 'oldschooljs/gear';
 
+import type { GearSetupType, XpGainSource } from '@/prisma/main.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import type { QuestID } from '@/lib/minions/data/quests.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
@@ -14,7 +15,6 @@ import type { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import type { XPBank } from '@/lib/structures/XPBank.js';
 import type { Skills } from '@/lib/types/index.js';
 import type { calculateSimpleMonsterDeathChance } from '@/lib/util/smallUtils.js';
-import type { GearSetupType, XpGainSource } from '@/prisma/main.js';
 
 export type KillableMonsterEffect = (opts: {
 	gearBank: GearBank;

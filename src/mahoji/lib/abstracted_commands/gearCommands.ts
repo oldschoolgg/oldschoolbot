@@ -2,6 +2,7 @@ import { PerkTier, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
+import type { GearPreset } from '@/prisma/main.js';
 import { generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import { PATRON_ONLY_GEAR_SETUP } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
@@ -14,7 +15,6 @@ import calculateGearLostOnDeathWilderness from '@/lib/util/calculateGearLostOnDe
 import { gearEquipMultiImpl } from '@/lib/util/equipMulti.js';
 import { assert } from '@/lib/util/logError.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
-import type { GearPreset } from '@/prisma/main.js';
 
 async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
 	if (user.minionIsBusy) {

@@ -11,6 +11,7 @@
 							":BLANK_LINE:",
 							[":URL:", ":BUN:", ":NODE:", ":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:"],
 							":BLANK_LINE:",
+							["@/prisma/**"],
 							[":ALIAS:", ":PATH:"]
 						]
 					}

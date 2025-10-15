@@ -6,8 +6,8 @@ import * as dotenv from 'dotenv';
 import { convertLVLtoXP, resolveItems } from 'oldschooljs';
 import * as z from 'zod';
 
-import { SkillsArray } from '@/lib/skilling/types.js';
 import { activity_type_enum } from '@/prisma/main/enums.js';
+import { SkillsArray } from '@/lib/skilling/types.js';
 
 export { PerkTier };
 

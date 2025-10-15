@@ -2,6 +2,7 @@ import { asyncGzip, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import { ChannelType, EmbedBuilder } from 'discord.js';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
+import type { Activity, User } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
@@ -25,7 +26,6 @@ import {
 	stashUnitViewCommand
 } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 import { patronMsg } from '@/mahoji/mahojiSettings.js';
-import type { Activity, User } from '@/prisma/main.js';
 
 function isRaidsActivity(data: any): data is RaidsOptions {
 	return 'challengeMode' in data;

@@ -4,6 +4,7 @@ import PQueue from 'p-queue';
 import { partition } from 'remeda';
 import * as z from 'zod';
 
+import { Prisma } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BadgesEnum, globalConfig, MAX_LEVEL, Roles } from '@/lib/constants.js';
 import { getCollectionItems } from '@/lib/data/Collections.js';
@@ -13,7 +14,6 @@ import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import { fetchMultipleCLLeaderboards } from '@/lib/util/clLeaderboard.js';
 import { getUsernameSync } from '@/lib/util.js';
-import { Prisma } from '@/prisma/main.js';
 
 const RoleResultSchema = z.object({
 	roleID: z.string().min(17).max(19),

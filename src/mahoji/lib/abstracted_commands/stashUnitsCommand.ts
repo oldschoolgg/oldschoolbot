@@ -1,11 +1,11 @@
 import { partition, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, ItemGroups, Items } from 'oldschooljs';
 
+import type { StashUnit } from '@/prisma/main.js';
 import type { IStashUnit, StashUnitTier } from '@/lib/clues/stashUnits.js';
 import { allStashUnitsFlat, allStashUnitTiers } from '@/lib/clues/stashUnits.js';
 import { assert } from '@/lib/util/logError.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
-import type { StashUnit } from '@/prisma/main.js';
 
 const NAILS_PER_STASH_UNIT = 10;
 

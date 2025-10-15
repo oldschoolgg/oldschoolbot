@@ -1,6 +1,6 @@
+import { activity_type_enum } from '@/prisma/main/enums.js';
 import { DEPRECATED_ACTIVITY_TYPES } from '@/lib/constants.js';
 import type { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { activity_type_enum } from '@/prisma/main/enums.js';
 import { agilityTask } from '@/tasks/minions/agilityActivity.js';
 import { alchingTask } from '@/tasks/minions/alchingActivity.js';
 import { butlerTask } from '@/tasks/minions/butlerActivity.js';

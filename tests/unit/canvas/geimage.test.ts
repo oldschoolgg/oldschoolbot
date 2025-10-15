@@ -3,8 +3,8 @@ import path from 'node:path';
 import { EItem } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
-import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { GEListingType } from '@/prisma/main.js';
+import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { baseSnapshotPath } from '../../testConstants.js';
 
 describe('GE Images', async () => {
