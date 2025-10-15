@@ -1,6 +1,5 @@
 import { randArrItem, randInt } from '@oldschoolgg/rng';
 import { noOp, stringMatches, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import { type Prisma, xp_gains_skill_enum } from '@prisma/client';
 import { EmbedBuilder, MessageFlags } from 'discord.js';
 import { Bank, convertLVLtoXP, Items, itemID, MAX_INT_JAVA } from 'oldschooljs';
 

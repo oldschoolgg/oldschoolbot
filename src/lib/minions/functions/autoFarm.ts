@@ -1,8 +1,8 @@
 import { formatDuration } from '@oldschoolgg/toolkit';
-import { type CropUpgradeType } from '@prisma/client';
+import type { CropUpgradeType } from '@prisma/client';
 import { Bank } from 'oldschooljs';
-import { AutoFarmFilterEnum } from '@/prisma/main/enums.js';
 
+import { AutoFarmFilterEnum } from '@/prisma/main/enums.js';
 import { allFarm, replant } from '@/lib/minions/functions/autoFarmFilters.js';
 import { plants } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
@@ -88,6 +88,7 @@ export async function autoFarm(
 	}
 
 	const farmingLevel = user.skillsAsLevels.farming;
+	const channelID = interaction.channelId ?? user.id;
 
 	let { autoFarmFilter } = user;
 	if (!autoFarmFilter) {
@@ -254,6 +255,7 @@ export async function autoFarm(
 		pid: firstStep.pid,
 		autoFarmPlan,
 		autoFarmCombined: true
+	});
 
 	const uniqueBoosts = [...new Set(plannedSteps.flatMap(step => step.boosts))];
 	const summaryLines: string[] = [];
