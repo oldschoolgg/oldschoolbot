@@ -21,6 +21,10 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 		return 'amount must be between 1000000 and 3000000000 exclusively.';
 	}
 
+	const channel = globalClient.channels.cache.get(interaction.channelId);
+	if (!channelIsSendable(channel))
+		return 'Please give the bot permission to send messages in this channel before running this command.';
+
 	await interaction.defer();
 
 	interface Button {
@@ -136,8 +140,6 @@ export async function luckyPickCommand(user: MUser, luckypickamount: string, int
 		);
 	}
 
-	const channel = globalClient.channels.cache.get(interaction.channelId);
-	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	const sentMessage = await channel.send({
 		content: `${user}, Pick *one* button!`,
 		components: getCurrentButtons({ showTrueNames: false })

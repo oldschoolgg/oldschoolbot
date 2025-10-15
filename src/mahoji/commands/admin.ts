@@ -12,11 +12,13 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { type ClientStorage, economy_transaction_type } from '@prisma/client';
 import { AttachmentBuilder, type InteractionReplyOptions } from 'discord.js';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
+import { economy_transaction_type } from '@/prisma/main/enums.js';
+import type { ClientStorage } from '@/prisma/main.js';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '@/lib/blacklists.js';
+import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
 import { DISABLED_COMMANDS } from '@/lib/cache.js';
 import { BadgesEnum, BitField, BitFieldData, badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { bulkUpdateCommands, itemOption } from '@/lib/discord/index.js';
@@ -444,6 +446,19 @@ export const adminCommand: OSBMahojiCommand = {
 		},
 		{
 			type: 'Subcommand',
+			name: 'clear_busy',
+			description: 'Make a user not busy',
+			options: [
+				{
+					type: 'User',
+					name: 'user',
+					description: 'The user',
+					required: true
+				}
+			]
+		},
+		{
+			type: 'Subcommand',
 			name: 'bypass_age',
 			description: 'Bypass age for a user',
 			options: [
@@ -633,6 +648,7 @@ export const adminCommand: OSBMahojiCommand = {
 		item_stats?: { item: string };
 		sync_blacklist?: {};
 		cancel_task?: { user: MahojiUserOption };
+		clear_busy?: { user: MahojiUserOption };
 		badges?: { user: MahojiUserOption; add?: string; remove?: string };
 		bypass_age?: { user: MahojiUserOption };
 		command?: { enable?: string; disable?: string };
@@ -659,9 +675,14 @@ export const adminCommand: OSBMahojiCommand = {
 		if (options.cancel_task) {
 			const { user } = options.cancel_task.user;
 			await ActivityManager.cancelActivity(user.id);
-			globalClient.busyCounterCache.delete(user.id);
 			Cooldowns.delete(user.id);
 			return 'Done.';
+		}
+		if (options.clear_busy) {
+			const { user } = options.clear_busy.user;
+			if (!userIsBusy(user.id)) return `${user.username} isn't busy.`;
+			modifyUserBusy({ type: 'unlock', userID: user.id, reason: `Admin ${adminUser.id}` });
+			return `Cleared busy for ${user.username}.`;
 		}
 
 		if (options.badges) {
@@ -833,7 +854,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 		if (options.shut_down) {
 			Logging.logDebug('SHUTTING DOWN');
 			globalClient.isShuttingDown = true;
-			const timer = globalConfig.isProduction ? Time.Second * 30 : Time.Second * 5;
+			const timer = Time.Second * 30;
 			await interaction.reply({
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});

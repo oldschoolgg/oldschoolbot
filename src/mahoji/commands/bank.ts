@@ -115,8 +115,7 @@ export const bankCommand: OSBMahojiCommand = {
 		flag_extra?: BankFlag;
 	}>) => {
 		if (interaction) await interaction.defer();
-		const mUser = await mUserFetch(user.id);
-		const baseBank = mUser.bankWithGP;
+		const baseBank = user.bankWithGP;
 
 		const mahojiFlags: BankFlag[] = [];
 
@@ -139,7 +138,7 @@ export const bankCommand: OSBMahojiCommand = {
 				filter: options.filter
 			},
 			inputStr: options.item ?? options.items,
-			user: mUser,
+			user,
 			filters: options.filter ? [options.filter] : []
 		});
 
@@ -169,7 +168,7 @@ export const bankCommand: OSBMahojiCommand = {
 			for (const page of chunk(textBank, bankItemsPerPage)) {
 				pages.push({
 					embeds: [
-						new EmbedBuilder().setTitle(`${mUser.usernameOrMention}'s Bank`).setDescription(page.join('\n'))
+						new EmbedBuilder().setTitle(`${user.usernameOrMention}'s Bank`).setDescription(page.join('\n'))
 					]
 				});
 			}
@@ -190,7 +189,7 @@ export const bankCommand: OSBMahojiCommand = {
 		if (options.sort) flags.sort = options.sort;
 
 		const params: Parameters<typeof getBankPage>['0'] = {
-			user: mUser,
+			user,
 			bank,
 			flags,
 			mahojiFlags,
@@ -204,7 +203,7 @@ export const bankCommand: OSBMahojiCommand = {
 		if (
 			mahojiFlags.includes('show_all') ||
 			mahojiFlags.includes('wide') ||
-			mUser.perkTier() < PerkTier.Two ||
+			user.perkTier() < PerkTier.Two ||
 			bankSize === 1
 		) {
 			return result;

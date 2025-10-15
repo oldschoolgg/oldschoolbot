@@ -243,7 +243,7 @@ export const slayerCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		channelID,
-		userID,
+		user,
 		interaction
 	}: CommandRunOptions<{
 		autoslay?: { mode?: string; save?: boolean };
@@ -262,12 +262,10 @@ export const slayerCommand: OSBMahojiCommand = {
 		};
 		status?: {};
 	}>) => {
-		const mahojiUser = await mUserFetch(userID);
-
 		await interaction.defer();
 		if (options.autoslay) {
 			await autoSlayCommand({
-				mahojiUser,
+				user,
 				channelID,
 				modeOverride: options.autoslay.mode,
 				saveMode: Boolean(options.autoslay.save),
@@ -277,7 +275,7 @@ export const slayerCommand: OSBMahojiCommand = {
 		}
 		if (options.new_task) {
 			await slayerNewTaskCommand({
-				userID: mahojiUser.id,
+				user,
 				interaction,
 				slayerMasterOverride: options.new_task.master,
 				saveDefaultSlayerMaster: Boolean(options.new_task.save),
@@ -287,11 +285,11 @@ export const slayerCommand: OSBMahojiCommand = {
 		}
 		if (options.manage) {
 			if (options.manage.command === 'list_blocks') {
-				return slayerListBlocksCommand(mahojiUser);
+				return slayerListBlocksCommand(user);
 			}
 			if (options.manage.command === 'skip' || options.manage.command === 'block') {
 				await slayerSkipTaskCommand({
-					userID: mahojiUser.id,
+					user,
 					block: options.manage.command === 'block',
 					newTask: Boolean(options.manage.new),
 					interaction
@@ -301,17 +299,17 @@ export const slayerCommand: OSBMahojiCommand = {
 		}
 		if (options.rewards) {
 			if (options.rewards.my_unlocks) {
-				return slayerShopListMyUnlocks(mahojiUser);
+				return slayerShopListMyUnlocks(user);
 			}
 			if (options.rewards.unblock) {
-				return slayerUnblockCommand(mahojiUser, options.rewards.unblock.assignment);
+				return slayerUnblockCommand(user, options.rewards.unblock.assignment);
 			}
 			if (options.rewards.show_all_rewards) {
 				return slayerShopListRewards(options.rewards.show_all_rewards.type ?? 'all');
 			}
 			if (options.rewards.disable) {
 				return slayerShopBuyCommand({
-					userID: mahojiUser.id,
+					user,
 					disable: true,
 					buyable: options.rewards.disable.unlockable,
 					interaction
@@ -319,7 +317,7 @@ export const slayerCommand: OSBMahojiCommand = {
 			}
 			if (options.rewards.buy) {
 				return slayerShopBuyCommand({
-					userID: mahojiUser.id,
+					user,
 					buyable: options.rewards.buy.item,
 					quantity: options.rewards.buy.quantity,
 					interaction
@@ -327,14 +325,14 @@ export const slayerCommand: OSBMahojiCommand = {
 			}
 			if (options.rewards.unlock) {
 				return slayerShopBuyCommand({
-					userID: mahojiUser.id,
+					user,
 					buyable: options.rewards.unlock.unlockable,
 					interaction
 				});
 			}
 		}
 		if (options.status) {
-			return slayerStatusCommand(mahojiUser);
+			return slayerStatusCommand(user);
 		}
 		return 'This should not happen. Please contact support.';
 	}

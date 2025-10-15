@@ -180,7 +180,7 @@ export async function barbAssaultGambleCommand(interaction: MInteraction, user: 
 	const loot = new Bank().add(table.roll(quantity));
 	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 	let str = `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`;
-	str += await displayCluesAndPets(user, loot);
+	str += displayCluesAndPets(user, loot);
 	if (loot.has('Pet Penance Queen')) {
 		const amount = await countUsersWithItemInCl(itemID('Pet penance queen'), false);
 

@@ -122,8 +122,8 @@ export async function bulkUpdateCommands(options: BulkUpdateCommandOptions = {})
 	}
 
 	// Sync commands globally
-	const globalCommands = mapToApiCommands(commandsToSync.filter(i => !i.guildID));
-	const guildCommands = mapToApiCommands(commandsToSync.filter(i => Boolean(i.guildID)));
+	const globalCommands = globalClient.allCommands.filter(i => !i.guildID).map(convertCommandToAPICommand);
+	const guildCommands = globalClient.allCommands.filter(i => Boolean(i.guildID)).map(convertCommandToAPICommand);
 
 	return Promise.all([
 		rest.put(Routes.applicationCommands(resolvedApplicationID), { body: globalCommands }),

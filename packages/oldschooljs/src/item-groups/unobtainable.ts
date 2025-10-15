@@ -128,7 +128,7 @@ const unobtainableEmirsArenaGear: number[] = [
 	26736 // Saika's shroud (l)
 ];
 
-const unobtainableLeaguesItems: number[] = Items.resolveItems([
+export const unobtainableLeaguesItems: number[] = Items.resolveItems([
 	'Amulet of the monarchs',
 	'The dogsword',
 	'Drygore blowpipe',
