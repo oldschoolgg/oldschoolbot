@@ -11,6 +11,7 @@ import { FloatBank } from '../../src/lib/structures/Bank.js';
 import { determineMiningTrip } from '../../src/mahoji/commands/mine.js';
 import { determineMiningResult } from '../../src/tasks/minions/miningActivity.js';
 import { makeGearBank } from '../../tests/unit/utils.js';
+import { tearDownScript } from '../scriptUtil.js';
 import { handleMarkdownEmbed } from './wikiScriptUtil.js';
 
 function bankToPerHour(bank: Bank, duration: number): FloatBank {
@@ -21,7 +22,7 @@ function bankToPerHour(bank: Bank, duration: number): FloatBank {
 	return perHourBank;
 }
 
-export function main() {
+function main() {
 	const gearBank = makeGearBank();
 
 	gearBank.gear.skilling.equip('Varrock armour 4');
@@ -123,6 +124,7 @@ export function main() {
 	}
 
 	handleMarkdownEmbed('miningxphr', 'osb/Skills/mining.mdx', table.toString());
+	tearDownScript();
 }
 
 main();

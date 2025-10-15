@@ -391,25 +391,24 @@ function determineAutoslayMethod(autoslayOptions: AutoslayOptionsEnum[]) {
 }
 
 export async function autoSlayCommand({
-	mahojiUser,
+	user,
 	channelID,
 	modeOverride,
 	saveMode,
 	interaction
 }: {
-	mahojiUser: MUser;
+	user: MUser;
 	channelID: string;
 	modeOverride?: string;
 	saveMode?: boolean;
 	interaction: MInteraction;
 }) {
-	const user = await mUserFetch(mahojiUser.id);
 	const autoslayOptions = user.user.slayer_autoslay_options;
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
 	const isOnTask = usersTask.assignedTask !== null && usersTask.currentTask !== null;
 
 	if (!isOnTask) {
-		return slayerNewTaskCommand({ userID: user.id, interaction, showButtons: true });
+		return slayerNewTaskCommand({ user, interaction, showButtons: true });
 	}
 	const savedMethod = determineAutoslayMethod(autoslayOptions as AutoslayOptionsEnum[]);
 	const method = modeOverride ?? savedMethod;
@@ -456,7 +455,6 @@ export async function autoSlayCommand({
 				name: Monsters.get(currentMonID)!.name,
 				wilderness: Boolean(usersTask.assignedTask.wilderness)
 			},
-			bypassInhibitors: true,
 			...cmdRunOptions
 		});
 		return;
@@ -485,7 +483,6 @@ export async function autoSlayCommand({
 					name: usersTask.assignedTask.monster.name,
 					wilderness: Boolean(usersTask.assignedTask.wilderness)
 				},
-				bypassInhibitors: true,
 				...cmdRunOptions
 			});
 			return;
@@ -501,7 +498,6 @@ export async function autoSlayCommand({
 			runCommand({
 				commandName: 'k',
 				args,
-				bypassInhibitors: true,
 				...cmdRunOptions
 			});
 			return;
@@ -512,7 +508,6 @@ export async function autoSlayCommand({
 				name: usersTask.assignedTask.monster.name,
 				wilderness: Boolean(usersTask.assignedTask.wilderness)
 			},
-			bypassInhibitors: true,
 			...cmdRunOptions
 		});
 		return;
@@ -525,7 +520,6 @@ export async function autoSlayCommand({
 			runCommand({
 				commandName: 'activities',
 				args: { fight_caves: {} },
-				bypassInhibitors: true,
 				...cmdRunOptions
 			});
 			return;
@@ -554,7 +548,6 @@ export async function autoSlayCommand({
 			runCommand({
 				commandName: 'k',
 				args: { name: maxMobName, wilderness: Boolean(usersTask.assignedTask.wilderness) },
-				bypassInhibitors: true,
 				...cmdRunOptions
 			});
 			return;
@@ -567,7 +560,6 @@ export async function autoSlayCommand({
 	await runCommand({
 		commandName: 'k',
 		args: { name: usersTask.assignedTask.monster.name, wilderness: Boolean(usersTask.assignedTask.wilderness) },
-		bypassInhibitors: true,
 		...cmdRunOptions
 	});
 }

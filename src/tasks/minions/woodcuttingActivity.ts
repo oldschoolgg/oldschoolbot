@@ -322,7 +322,7 @@ export const woodcuttingTask: MinionTask = {
 		// Roll for pet
 		if (log.petChance) {
 			const { petDropRate } = skillingPetDropRate(user, 'woodcutting', log.petChance);
-			if (rng.roll(petDropRate / quantity)) {
+			if (rng.roll(Math.floor(petDropRate / quantity))) {
 				loot.add('Beaver');
 				globalClient.emit(
 					Events.ServerNotification,

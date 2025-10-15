@@ -1,10 +1,10 @@
 import { cryptoRng } from '@oldschoolgg/rng';
-import type { Activity, activity_type_enum, Prisma } from '@prisma/client';
 
-import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
+import type { Activity, activity_type_enum, Prisma } from '@/prisma/main.js';
 import { globalConfig } from '@/lib/constants.js';
 import { onMinionActivityFinish } from '@/lib/events.js';
 import { allTasks } from '@/lib/Task.js';
+import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import addSubTaskToActivityTask from '@/lib/util/addSubTaskToActivityTask.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
@@ -27,7 +27,7 @@ class SActivityManager {
 			throw new Error(`Activity ${activity.id} has no channel_id`);
 		}
 		return {
-			...(activity.data as Prisma.JsonObject),
+			...(activity.data as PrismaCompatibleJsonObject),
 			type: activity.type as activity_type_enum,
 			userID: activity.user_id.toString(),
 			channelID: activity.channel_id.toString(),
@@ -56,6 +56,13 @@ class SActivityManager {
 	}
 
 	async completeActivity(_activity: Activity) {
+		Logging.logDebug(`Completing activity ${_activity.id} of type ${_activity.type}`, {
+			type: 'ACTIVITY',
+			activity_type: _activity.type,
+			data: _activity.data,
+			user_id: _activity.user_id
+		});
+		const start = performance.now();
 		const activity = this.convertStoredActivityToFlatActivity(_activity);
 
 		if (_activity.completed) {
@@ -69,16 +76,22 @@ class SActivityManager {
 			return;
 		}
 
-		modifyBusyCounter(activity.userID, 1);
 		try {
 			await task.run(activity, { user: await mUserFetch(activity.userID), handleTripFinish, rng: cryptoRng });
 		} catch (err) {
 			Logging.logError(err as Error);
 		} finally {
-			modifyBusyCounter(activity.userID, -1);
 			this.minionActivityCacheDelete(activity.userID);
 			await onMinionActivityFinish(activity);
 		}
+		const end = performance.now();
+		Logging.logDebug(`Completed activity ${_activity.id} of type ${_activity.type} in ${end - start}ms`, {
+			type: 'ACTIVITY',
+			activity_type: _activity.type,
+			data: _activity.data,
+			user_id: _activity.user_id,
+			duration: end - start
+		});
 	}
 
 	async processPendingActivities() {

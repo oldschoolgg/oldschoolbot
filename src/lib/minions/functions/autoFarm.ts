@@ -1,6 +1,7 @@
 import { formatDuration } from '@oldschoolgg/toolkit';
-import { AutoFarmFilterEnum, type CropUpgradeType } from '@prisma/client';
+import { type CropUpgradeType } from '@prisma/client';
 import { Bank } from 'oldschooljs';
+import { AutoFarmFilterEnum } from '@/prisma/main/enums.js';
 
 import { allFarm, replant } from '@/lib/minions/functions/autoFarmFilters.js';
 import { plants } from '@/lib/skilling/skills/farming/index.js';
@@ -80,7 +81,7 @@ export async function autoFarm(
 	user: MUser,
 	patchesDetailed: IPatchDataDetailed[],
 	patches: Record<FarmingPatchName, IPatchData>,
-	channelID: string
+	interaction: MInteraction
 ) {
 	if (user.minionIsBusy) {
 		return 'Your minion must not be busy to use this command.';
@@ -253,7 +254,6 @@ export async function autoFarm(
 		pid: firstStep.pid,
 		autoFarmPlan,
 		autoFarmCombined: true
-	});
 
 	const uniqueBoosts = [...new Set(plannedSteps.flatMap(step => step.boosts))];
 	const summaryLines: string[] = [];

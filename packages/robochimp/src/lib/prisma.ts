@@ -17,7 +17,8 @@ declare global {
 }
 
 async function getAdapter(type: 'osb' | 'bso' | 'robochimp'): Promise<PrismaPg> {
-	if (globalConfig.isProduction) {
+	const shouldUseRealPostgres = globalConfig.isProduction || process.env.USE_REAL_PG === '1';
+	if (shouldUseRealPostgres) {
 		return new PrismaPg({ connectionString: process.env[`${type.toUpperCase()}_DATABASE_URL`] });
 	}
 
@@ -37,7 +38,6 @@ async function getAdapter(type: 'osb' | 'bso' | 'robochimp'): Promise<PrismaPg> 
 }
 
 export async function initPrismaClients() {
-	console.log('Initializing database clients');
 	global.roboChimpClient =
 		global.roboChimpClient ??
 		new RobochimpPrismaClient({

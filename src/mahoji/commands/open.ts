@@ -17,8 +17,7 @@ export const openCommand: OSBMahojiCommand = {
 			description: 'The thing you want to open.',
 			required: false,
 			autocomplete: async (value, user) => {
-				const botUser = await mUserFetch(user.id);
-				return botUser.bank
+				return user.bank
 					.items()
 					.filter(i => allOpenablesIDs.has(i[0].id))
 					.filter(i => {
@@ -86,8 +85,8 @@ export const openCommand: OSBMahojiCommand = {
 			);
 		}
 		if (options.name.toLowerCase() === 'all') {
-			return abstractedOpenCommand(interaction, user.id, ['all'], 'auto');
+			return abstractedOpenCommand(interaction, user, ['all'], 'auto');
 		}
-		return abstractedOpenCommand(interaction, user.id, [options.name], options.quantity);
+		return abstractedOpenCommand(interaction, user, [options.name], options.quantity);
 	}
 };

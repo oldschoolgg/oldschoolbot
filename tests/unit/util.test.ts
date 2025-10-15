@@ -2,11 +2,10 @@ import { reduceNumByPercent, stripEmojis, truncateString } from '@oldschoolgg/to
 import { Bank, convertLVLtoXP, Items } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
+import getUserFoodFromBank from '@/lib/minions/functions/getUserFoodFromBank.js';
 import { pluraliseItemName } from '@/lib/util/smallUtils.js';
 import { skillingPetDropRate } from '@/lib/util.js';
-import { baseModifyBusyCounter } from '../../src/lib/busyCounterCache.js';
-import getUserFoodFromBank from '../../src/lib/minions/functions/getUserFoodFromBank.js';
-import { sellPriceOfItem, sellStorePriceOfItem } from '../../src/mahoji/commands/sell.js';
+import { sellPriceOfItem, sellStorePriceOfItem } from '@/mahoji/commands/sell.js';
 import { mockMUser } from './userutil.js';
 
 describe('util', () => {
@@ -101,21 +100,6 @@ describe('util', () => {
 		}) as any as MUser;
 		const dropRate200M = Math.floor((baseDropRate - 99 * 25) / 15);
 		expect(skillingPetDropRate(testUser, 'agility', baseDropRate).petDropRate).toEqual(dropRate200M);
-	});
-
-	test('userBusyCache', () => {
-		const id = '1';
-		const cache = new Map();
-		// expect(() => baseModifyBusyCounter(cache, id, -1)).toThrow();
-		expect(baseModifyBusyCounter(cache, id, 1)).toEqual(1);
-		expect(cache.get(id)).toEqual(1);
-		expect(baseModifyBusyCounter(cache, id, 1)).toEqual(2);
-		expect(cache.get(id)).toEqual(2);
-		expect(baseModifyBusyCounter(cache, id, -1)).toEqual(1);
-		expect(cache.get(id)).toEqual(1);
-		expect(baseModifyBusyCounter(cache, id, -1)).toEqual(0);
-		expect(cache.get(id)).toEqual(0);
-		// expect(() => baseModifyBusyCounter(cache, id, -1)).toThrow();
 	});
 
 	test('pluraliseItemName correctly pluralises items', async () => {

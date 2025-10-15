@@ -1,8 +1,8 @@
 import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, isWeekend, notEmpty, stringMatches, Time } from '@oldschoolgg/toolkit';
-import type { PlayerOwnedHouse } from '@prisma/client';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
+import type { PlayerOwnedHouse } from '@/prisma/main.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BitField, MAX_CLUES_DROPPED } from '@/lib/constants.js';
@@ -283,7 +283,7 @@ export const clueCommand: OSBMahojiCommand = {
 		const maxTripLength = user.calcMaxTripLength('ClueCompletion');
 
 		const clueImpling = options.implings
-			? Items.get(/^[0-9]+$/.test(options.implings) ? Number(options.implings) : options.implings)
+			? Items.getItem(/^[0-9]+$/.test(options.implings) ? Number(options.implings) : options.implings)
 			: null;
 
 		if (options.implings) {

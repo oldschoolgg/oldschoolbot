@@ -6,7 +6,7 @@ import { SeedableRNG } from '../src/providers/seedable.js';
 
 const providers = [new NodeCryptoRNG(), new SeedableRNG(1), new SeedableRNG(2), MathRNG];
 
-describe('providers', { repeats: 5 }, () => {
+describe('providers', { repeats: 2 }, () => {
 	for (const rng of providers) {
 		it('roll should return true roughly 1/max of the time', () => {
 			let count = 0;

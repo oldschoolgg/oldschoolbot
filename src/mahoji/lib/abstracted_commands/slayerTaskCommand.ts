@@ -69,21 +69,20 @@ export async function slayerStatusCommand(mahojiUser: MUser) {
 }
 
 export async function slayerNewTaskCommand({
-	userID,
+	user,
 	interaction,
 	extraContent,
 	slayerMasterOverride,
 	saveDefaultSlayerMaster,
 	showButtons
 }: {
-	userID: string;
+	user: MUser;
 	interaction: MInteraction;
 	extraContent?: string;
 	slayerMasterOverride?: string | undefined;
 	saveDefaultSlayerMaster?: boolean;
 	showButtons?: boolean;
 }): Promise<void> {
-	const user = await mUserFetch(userID);
 	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 	const { slayer_remember_master: rememberedSlayerMaster } = user.user;
 
@@ -252,17 +251,16 @@ export async function slayerNewTaskCommand({
 }
 
 export async function slayerSkipTaskCommand({
-	userID,
+	user,
 	block,
 	newTask,
 	interaction
 }: {
-	userID: string;
+	user: MUser;
 	block: boolean;
 	newTask: boolean;
 	interaction: MInteraction;
 }): Promise<void> {
-	const user = await mUserFetch(userID);
 	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 	const myBlockList = user.user.slayer_blocked_ids;
 	const maxBlocks = await calcMaxBlockedTasks(user);
@@ -273,7 +271,7 @@ export async function slayerSkipTaskCommand({
 	if (!currentTask) {
 		if (newTask) {
 			return slayerNewTaskCommand({
-				userID: user.id,
+				user,
 				interaction,
 				showButtons: true
 			});
@@ -319,7 +317,7 @@ export async function slayerSkipTaskCommand({
 
 		if (newTask) {
 			return slayerNewTaskCommand({
-				userID: user.id,
+				user,
 				interaction,
 				extraContent: resultMessage,
 				showButtons: true

@@ -37,9 +37,8 @@ export const casketCommand: OSBMahojiCommand = {
 			max_value: 300_000
 		}
 	],
-	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
+	run: async ({ options, user, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
 		await interaction.defer();
-		const user = await mUserFetch(userID);
 		const limit = determineLimit(user);
 		if (options.quantity > limit) {
 			return `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 100,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`;

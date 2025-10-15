@@ -135,8 +135,8 @@ for (const genericU of genericUsables) {
 export const allUsableItems = new Set(usables.map(i => i.items.map(i => i.id)).flat(2));
 
 export async function useCommand(user: MUser, _firstItem: string, _secondItem?: string) {
-	const firstItem = Items.get(_firstItem);
-	const secondItem = _secondItem === undefined ? null : Items.get(_secondItem);
+	const firstItem = Items.getItem(_firstItem);
+	const secondItem = _secondItem === undefined ? null : Items.getItem(_secondItem);
 	if (!firstItem || (_secondItem !== undefined && !secondItem)) return "That's not a valid item.";
 	const items = [firstItem, secondItem].filter(notEmpty);
 	assert(items.length === 1 || items.length === 2);

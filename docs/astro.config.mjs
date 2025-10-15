@@ -1,5 +1,6 @@
 import preact from '@astrojs/preact';
 import starlight from '@astrojs/starlight';
+import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 
 import { remarkItems } from './src/plugins/items';
@@ -13,13 +14,10 @@ export default defineConfig({
 				'@data': '../../../data'
 			}
 		},
-		plugins: []
+		plugins: [tailwindcss()]
 	},
 	devToolbar: {
 		enabled: false
-	},
-	experimental: {
-		clientPrerender: true
 	},
 	markdown: {
 		remarkPlugins: [remarkItems],

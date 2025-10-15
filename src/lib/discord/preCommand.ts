@@ -1,52 +1,54 @@
 import type { InteractionReplyOptions } from 'discord.js';
 
-import { modifyBusyCounter } from '@/lib/busyCounterCache.js';
-import { busyImmuneCommands } from '@/lib/constants.js';
+import type { command_name_enum } from '@/prisma/main/enums.js';
 import type { CommandOptions } from '@/lib/discord/commandOptions.js';
 import { runInhibitors } from '@/lib/discord/inhibitors.js';
 
 interface PreCommandOptions {
 	command: OSBMahojiCommand;
 	user: MUser;
-	bypassInhibitors: boolean;
 	options: CommandOptions;
 	interaction: MInteraction;
 }
 
-type PrecommandReturn = Promise<
-	| undefined
-	| {
-			reason: InteractionReplyOptions;
-			dontRunPostCommand?: boolean;
-			silent?: boolean;
-	  }
->;
+export type InhibitorResult = {
+	reason: InteractionReplyOptions;
+	silent?: boolean;
+};
 
-export async function preCommand({
-	command,
-	interaction,
-	bypassInhibitors,
-	user
-}: PreCommandOptions): PrecommandReturn {
-	if (globalClient.isShuttingDown) {
-		return {
-			reason: { content: 'The bot is currently restarting, please try again later.' },
-			dontRunPostCommand: true
-		};
-	}
+type PrecommandReturn = Promise<undefined | InhibitorResult>;
 
-	if (user.isBusy && !bypassInhibitors && !busyImmuneCommands.includes(command.name)) {
-		return { reason: { content: 'You cannot use a command right now.' }, dontRunPostCommand: true };
-	}
-	if (!busyImmuneCommands.includes(command.name)) modifyBusyCounter(user.id, 1);
+export async function preCommand({ command, interaction, user }: PreCommandOptions): PrecommandReturn {
+	Logging.logDebug(`${user.logName} ran command: ${command.name}`, {
+		...interaction.getDebugInfo()
+	});
+	prisma.commandUsage
+		.create({
+			data: {
+				user_id: BigInt(user.id),
+				channel_id: BigInt(interaction.channelId),
+				guild_id: interaction.guildId ? BigInt(interaction.guildId) : undefined,
+				command_name: command.name as command_name_enum,
+				args: interaction.getChatInputCommandOptions(),
+				inhibited: false,
+				is_mention_command: false
+			}
+		})
+		.catch(err => Logging.logError({ err, interaction }));
 
+	const start = performance.now();
 	const inhibitResult = runInhibitors({
 		user,
 		guild: interaction.guild ?? null,
 		member: interaction.member ?? null,
 		command,
-		channel: interaction.channel ?? null,
-		bypassInhibitors
+		channel: interaction.channel ?? null
+	});
+	const end = performance.now();
+	Logging.logPerf({
+		duration: end - start,
+		text: 'Inhibitors',
+		interaction
 	});
 
 	if (inhibitResult !== undefined) {

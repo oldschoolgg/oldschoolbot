@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 
-import { ChambersOfXeric } from '../src/index.js';
+import { ChambersOfXeric } from '@/simulation/misc/ChambersOfXeric.js';
 
 test('Chambers Of Xeric', async () => {
 	expect.assertions(3);

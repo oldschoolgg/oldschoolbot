@@ -1,5 +1,4 @@
 import { deepEqual, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
-import type { GearPreset } from '@prisma/client';
 import { Bank, EquipmentSlot, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 import type { EGear } from 'oldschooljs/EGear';
 import {
@@ -10,6 +9,7 @@ import {
 	type OtherGearStat
 } from 'oldschooljs/gear';
 
+import type { GearPreset } from '@/prisma/main.js';
 import { getSimilarItems, inverseSimilarItems } from '@/lib/data/similarItems.js';
 import type { GearSetup, GearSetupType, GearSlotItem } from '@/lib/gear/types.js';
 import { assert } from '@/lib/util/logError.js';

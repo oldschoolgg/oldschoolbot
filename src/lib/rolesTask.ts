@@ -1,10 +1,10 @@
 import { noOp, notEmpty, Stopwatch, uniqueArr } from '@oldschoolgg/toolkit';
-import { Prisma } from '@prisma/client';
 import { convertXPtoLVL, type ItemBank } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { partition } from 'remeda';
-import z from 'zod';
+import * as z from 'zod';
 
+import { Prisma } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BadgesEnum, globalConfig, MAX_LEVEL, Roles } from '@/lib/constants.js';
 import { getCollectionItems } from '@/lib/data/Collections.js';

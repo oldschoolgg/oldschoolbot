@@ -1,0 +1,6602 @@
+[
+	{
+		"name": "Ashes",
+		"parts": {
+			"pious": 70,
+			"organic": 30
+		},
+		"items": [
+			{
+				"item": "Fiendish ashes",
+				"lvl": 10
+			},
+			{
+				"item": "Vile ashes",
+				"lvl": 20
+			},
+			{
+				"item": "Malicious ashes",
+				"lvl": 50
+			},
+			{
+				"item": "Abyssal ashes",
+				"lvl": 60
+			},
+			{
+				"item": "Infernal ashes",
+				"lvl": 90
+			},
+			{
+				"item": "Nightmarish ashes",
+				"lvl": 95
+			}
+		]
+	},
+	{
+		"name": "Axes",
+		"description": "Pickaxes, axes, thrownaxes, battleaxes!",
+		"parts": {
+			"heavy": 30,
+			"base": 10,
+			"sharp": 30
+		},
+		"items": [
+			{
+				"item": ["Bronze pickaxe", "Bronze thrownaxe"],
+				"lvl": 1
+			},
+			{
+				"item": "Iron pickaxe",
+				"lvl": 10
+			},
+			{
+				"item": "Iron thrownaxe",
+				"lvl": 10
+			},
+			{
+				"item": "Steel pickaxe",
+				"lvl": 20
+			},
+			{
+				"item": "Steel thrownaxe",
+				"lvl": 20
+			},
+			{
+				"item": "Mithril pickaxe",
+				"lvl": 30
+			},
+			{
+				"item": "Mithril thrownaxe",
+				"lvl": 30
+			},
+			{
+				"item": "Adamant thrownaxe",
+				"lvl": 30
+			},
+			{
+				"item": "Adamant pickaxe",
+				"lvl": 50
+			},
+			{
+				"item": "Adamant battleaxe",
+				"lvl": 40
+			},
+			{
+				"item": "Rune pickaxe",
+				"lvl": 50
+			},
+			{
+				"item": "Rune thrownaxe",
+				"lvl": 30
+			},
+			{
+				"item": "Dragon pickaxe",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Crystal pickaxe",
+				"lvl": 71
+			},
+			{
+				"item": "Bronze axe",
+				"lvl": 1
+			},
+			{
+				"item": "Bronze battleaxe",
+				"lvl": 1
+			},
+			{
+				"item": "Iron battleaxe",
+				"lvl": 10
+			},
+			{
+				"item": "Iron axe",
+				"lvl": 1
+			},
+			{
+				"item": "Steel axe",
+				"lvl": 6
+			},
+			{
+				"item": "Black axe",
+				"lvl": 10
+			},
+			{
+				"item": "Black pickaxe",
+				"lvl": 10
+			},
+			{
+				"item": "Steel battleaxe",
+				"lvl": 20
+			},
+			{
+				"item": "Mithril axe",
+				"lvl": 21
+			},
+			{
+				"item": "Black battleaxe",
+				"lvl": 25
+			},
+			{
+				"item": "White battleaxe",
+				"lvl": 25
+			},
+			{
+				"item": "Mithril battleaxe",
+				"lvl": 30
+			},
+			{
+				"item": "Adamant axe",
+				"lvl": 31
+			},
+			{
+				"item": "Rune axe",
+				"lvl": 41
+			},
+			{
+				"item": "Rune battleaxe",
+				"lvl": 50
+			},
+			{
+				"item": "Dragon axe",
+				"lvl": 61,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Dragon thrownaxe",
+				"lvl": 61,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Crystal axe",
+				"lvl": 61
+			},
+			{
+				"item": "Dragon battleaxe",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			}
+		]
+	},
+	{
+		"name": "Barrows",
+		"description": "Barrows weaponry and armor.",
+		"parts": {
+			"barrows": 80,
+			"strong": 10,
+			"protective": 10
+		},
+		"items": [
+			{
+				"item": [
+					"Ahrim's hood",
+					"Ahrim's robeskirt",
+					"Ahrim's robetop",
+					"Ahrim's staff",
+					"Dharok's greataxe",
+					"Dharok's helm",
+					"Dharok's platebody",
+					"Dharok's platelegs",
+					"Guthan's chainskirt",
+					"Guthan's helm",
+					"Guthan's platebody",
+					"Guthan's warspear",
+					"Karil's coif",
+					"Karil's crossbow",
+					"Karil's leatherskirt",
+					"Karil's leathertop",
+					"Torag's hammers",
+					"Torag's helm",
+					"Torag's platebody",
+					"Torag's platelegs",
+					"Verac's brassard",
+					"Verac's flail",
+					"Verac's helm",
+					"Verac's plateskirt"
+				],
+				"lvl": 80
+			}
+		]
+	},
+	{
+		"name": "Blunt Weapons",
+		"parts": {
+			"strong": 10,
+			"heavy": 10,
+			"base": 15,
+			"smooth": 30
+		},
+		"items": [
+			{
+				"item": "Black warhammer",
+				"lvl": 25
+			},
+			{
+				"item": "White warhammer",
+				"lvl": 25
+			},
+			{
+				"item": "Granite maul",
+				"lvl": 55
+			},
+			{
+				"item": "Dragon warhammer",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Statius's warhammer",
+				"lvl": 78
+			},
+			{
+				"item": "Bronze warhammer",
+				"lvl": 1
+			},
+			{
+				"item": "Iron warhammer",
+				"lvl": 10
+			},
+			{
+				"item": "Steel warhammer",
+				"lvl": 20
+			},
+			{
+				"item": "Mithril warhammer",
+				"lvl": 30
+			},
+			{
+				"item": "Adamant warhammer",
+				"lvl": 40
+			},
+			{
+				"item": "Rune warhammer",
+				"lvl": 50
+			},
+			{
+				"item": "Tzhaar-ket-om",
+				"lvl": 60
+			},
+			{
+				"item": "Elder maul",
+				"lvl": 90
+			},
+			{
+				"item": "Abyssal bludgeon",
+				"lvl": 90
+			}
+		]
+	},
+	{
+		"name": "Bolt Tips",
+		"parts": {
+			"base": 10,
+			"sharp": 40,
+			"precious": 10
+		},
+		"items": [
+			{
+				"item": "Opal bolt tips",
+				"lvl": 11
+			},
+			{
+				"item": "Jade bolt tips",
+				"lvl": 26
+			},
+			{
+				"item": "Topaz bolt tips",
+				"lvl": 48
+			},
+			{
+				"item": "Sapphire bolt tips",
+				"lvl": 56
+			},
+			{
+				"item": "Emerald bolt tips",
+				"lvl": 58
+			},
+			{
+				"item": "Ruby bolt tips",
+				"lvl": 63
+			},
+			{
+				"item": "Diamond bolt tips",
+				"lvl": 65
+			},
+			{
+				"item": "Dragonstone bolt tips",
+				"lvl": 71
+			},
+			{
+				"item": "Onyx bolt tips",
+				"lvl": 73
+			},
+			{
+				"item": "Amethyst bolt tips",
+				"lvl": 83
+			}
+		]
+	},
+	{
+		"name": "Bones",
+		"parts": {
+			"pious": 80,
+			"organic": 20
+		},
+		"items": [
+			{
+				"item": "Bones",
+				"lvl": 1
+			},
+			{
+				"item": "Wolf bones",
+				"lvl": 1
+			},
+			{
+				"item": "Monkey bones",
+				"lvl": 1
+			},
+			{
+				"item": "Bat bones",
+				"lvl": 2
+			},
+			{
+				"item": "Big bones",
+				"lvl": 6
+			},
+			{
+				"item": "Curved bone",
+				"lvl": 6
+			},
+			{
+				"item": "Jogre bones",
+				"lvl": 6
+			},
+			{
+				"item": "Long bone",
+				"lvl": 6
+			},
+			{
+				"item": "Zogre bones",
+				"lvl": 9
+			},
+			{
+				"item": "Shaikahan bones",
+				"lvl": 10
+			},
+			{
+				"item": "Babydragon bones",
+				"lvl": 12
+			},
+			{
+				"item": "Wyrm bones",
+				"lvl": 12
+			},
+			{
+				"item": "Hydra bones",
+				"lvl": 18
+			},
+			{
+				"item": "Wyvern bones",
+				"lvl": 20
+			},
+			{
+				"item": "Dragon bones",
+				"lvl": 28
+			},
+			{
+				"item": "Fayrg bones",
+				"lvl": 33
+			},
+			{
+				"item": "Raurg bones",
+				"lvl": 38
+			},
+			{
+				"item": "Dagannoth bones",
+				"lvl": 50
+			},
+			{
+				"item": "Ourg bones",
+				"lvl": 56
+			},
+			{
+				"item": "Drake bones",
+				"lvl": 56
+			},
+			{
+				"item": "Lava dragon bones",
+				"lvl": 62
+			},
+			{
+				"item": "Superior dragon bones",
+				"lvl": 70
+			},
+			{
+				"item": "Frost dragon bones",
+				"lvl": 80
+			},
+			{
+				"item": "Royal dragon bones",
+				"lvl": 99
+			},
+			{
+				"item": "Abyssal dragon bones",
+				"lvl": 99
+			}
+		]
+	},
+	{
+		"name": "Bows",
+		"parts": {
+			"flexible": 30,
+			"dextrous": 20,
+			"swift": 20
+		},
+		"items": [
+			{
+				"item": "Shortbow",
+				"lvl": 1
+			},
+			{
+				"item": "Longbow",
+				"lvl": 5
+			},
+			{
+				"item": "Oak shortbow",
+				"lvl": 20
+			},
+			{
+				"item": "Oak longbow",
+				"lvl": 25
+			},
+			{
+				"item": "Willow shortbow",
+				"lvl": 35
+			},
+			{
+				"item": "Willow longbow",
+				"lvl": 40
+			},
+			{
+				"item": "Willow comp bow",
+				"lvl": 45
+			},
+			{
+				"item": "Comp ogre bow",
+				"lvl": 50
+			},
+			{
+				"item": "Maple shortbow",
+				"lvl": 55
+			},
+			{
+				"item": "Maple longbow",
+				"lvl": 60
+			},
+			{
+				"item": "Yew shortbow",
+				"lvl": 70
+			},
+			{
+				"item": "Yew longbow",
+				"lvl": 75
+			},
+			{
+				"item": "Yew comp bow",
+				"lvl": 75
+			},
+			{
+				"item": "Magic shortbow",
+				"lvl": 80
+			},
+			{
+				"item": "Magic longbow",
+				"lvl": 85
+			},
+			{
+				"item": "Elder bow",
+				"lvl": 99
+			},
+			{
+				"item": "Dark bow",
+				"lvl": 99
+			},
+			{
+				"item": "Crystal bow",
+				"lvl": 70
+			},
+			{
+				"item": "Twisted bow",
+				"lvl": 99
+			},
+			{
+				"item": [
+					"Twisted bow (3a)",
+					"Twisted bow (blood)",
+					"Twisted bow (ice)",
+					"Twisted bow (shadow)",
+					"Twisted bownana"
+				],
+				"lvl": 99,
+				"flags": ["dyed"]
+			},
+			{
+				"item": "Zaryte bow",
+				"lvl": 99
+			},
+			{
+				"item": [
+					"Zaryte bow (3a)",
+					"Zaryte bow (blood)",
+					"Zaryte bow (ice)",
+					"Zaryte bow (shadow)",
+					"Zaryte bownana"
+				],
+				"lvl": 99,
+				"flags": ["dyed"]
+			},
+			{
+				"item": "Hellfire bow",
+				"lvl": 99
+			},
+			{
+				"item": "Hellfire bownana",
+				"lvl": 99,
+				"flags": ["dyed"]
+			},
+			{
+				"item": "Bronze crossbow",
+				"lvl": 1
+			},
+			{
+				"item": "Crossbow",
+				"lvl": 1
+			},
+			{
+				"item": "Iron crossbow",
+				"lvl": 10
+			},
+			{
+				"item": "Steel crossbow",
+				"lvl": 20
+			},
+			{
+				"item": "Mithril crossbow",
+				"lvl": 30
+			},
+			{
+				"item": "Rune crossbow",
+				"lvl": 69
+			},
+			{
+				"item": "Dragon crossbow",
+				"lvl": 78
+			},
+			{
+				"item": "Royal crossbow",
+				"lvl": 87
+			},
+			{
+				"item": "Armadyl crossbow",
+				"lvl": 99
+			},
+			{
+				"item": "Craw's bow (u)",
+				"lvl": 99
+			}
+		]
+	},
+	{
+		"name": "Claws",
+		"parts": {
+			"sharp": 60,
+			"swift": 40
+		},
+		"items": [
+			{
+				"item": "Bronze claws",
+				"lvl": 1
+			},
+			{
+				"item": "Iron claws",
+				"lvl": 10
+			},
+			{
+				"item": "Steel claws",
+				"lvl": 20
+			},
+			{
+				"item": "Mithril claws",
+				"lvl": 30
+			},
+			{
+				"item": "Adamant claws",
+				"lvl": 40
+			},
+			{
+				"item": "Rune claws",
+				"lvl": 50
+			},
+			{
+				"item": "Dragon claws",
+				"lvl": 99,
+				"flags": ["orikalkum"]
+			}
+		]
+	},
+	{
+		"name": "Clothing",
+		"parts": {
+			"simple": 35,
+			"protective": 5
+		},
+		"items": [
+			{
+				"item": [
+					"Ankou gloves",
+					"Ankou mask",
+					"Ankou socks",
+					"Ankou top",
+					"Ankou's leggings",
+					"Bear feet",
+					"Black beret",
+					"Black boater",
+					"Black cavalier",
+					"Black desert robe",
+					"Black desert shirt",
+					"Black dragon mask",
+					"Black elegant legs",
+					"Black elegant shirt",
+					"Black headband",
+					"Black naval shirt",
+					"Black navy slacks",
+					"Black robe",
+					"Black satchel",
+					"Black tricorn hat",
+					"Black unicorn mask",
+					"Blue beret",
+					"Blue boater",
+					"Blue boots",
+					"Blue dragon mask",
+					"Blue elegant blouse",
+					"Blue elegant legs",
+					"Blue elegant shirt",
+					"Blue elegant skirt",
+					"Blue goblin mail",
+					"Blue hat",
+					"Blue naval shirt",
+					"Blue navy slacks",
+					"Blue robe bottoms",
+					"Blue robe top",
+					"Blue skirt (t)",
+					"Blue tricorn hat",
+					"Bonesack",
+					"Bow-sword",
+					"Bronze dragon mask",
+					"Brown apron",
+					"Brown naval shirt",
+					"Brown navy slacks",
+					"Brown tricorn hat",
+					"Builder's boots",
+					"Builder's shirt",
+					"Builder's trousers",
+					"Cake hat",
+					"Cap and goggles",
+					"Cape of skulls",
+					"Cat mask",
+					"Chef's hat",
+					"Crab claw",
+					"Crab hat",
+					"Crab helmet",
+					"Cream boots",
+					"Cream hat",
+					"Cream robe bottoms",
+					"Cream robe top",
+					"Crier bell",
+					"Crier coat",
+					"Crier hat",
+					"Dark cavalier",
+					"Dark trousers",
+					"Dark tuxedo cuffs",
+					"Dark tuxedo jacket",
+					"Dark tuxedo shoes",
+					"Demon feet",
+					"Desert boots",
+					"Devout boots",
+					"Elven legwear",
+					"Evil chicken feet",
+					"Evil chicken head",
+					"Evil chicken legs",
+					"Evil chicken wings",
+					"Festive jumper (2021)",
+					"Fishing waders",
+					"Flappy meal",
+					"Flared trousers",
+					"Fremennik beige shirt",
+					"Fremennik black cloak",
+					"Fremennik blue cloak",
+					"Fremennik blue shirt",
+					"Fremennik boots",
+					"Fremennik brown cloak",
+					"Fremennik brown shirt",
+					"Fremennik hat",
+					"Fremennik red shirt",
+					"Fremennik robe",
+					"Fremennik skirt",
+					"Gardening boots",
+					"Gnome goggles",
+					"Gnomeball",
+					"Goblin mail",
+					"Gold elegant blouse",
+					"Gold elegant legs",
+					"Gold elegant shirt",
+					"Gold elegant skirt",
+					"Green boater",
+					"Green boots",
+					"Green dragon mask",
+					"Green elegant blouse",
+					"Green elegant legs",
+					"Green elegant shirt",
+					"Green elegant skirt",
+					"Green hat",
+					"Green naval shirt",
+					"Green navy slacks",
+					"Green robe bottoms",
+					"Green robe top",
+					"Green satchel",
+					"Green tricorn hat",
+					"Grey naval shirt",
+					"Grey navy slacks",
+					"Grey robe top",
+					"Grey tricorn hat",
+					"Hairyfloss",
+					"Ham boots",
+					"Ham cloak",
+					"Ham gloves",
+					"Ham hood",
+					"Ham robe",
+					"Ham shirt",
+					"Hard hat",
+					"Highwayman mask",
+					"Iron dragon mask",
+					"Jester cape",
+					"Jungle camo legs",
+					"Jungle camo top",
+					"Jungle demon mask",
+					"Kyatt fur",
+					"Kyatt hat",
+					"Kyatt legs",
+					"Kyatt top",
+					"Leprechaun hat",
+					"Lesser demon mask",
+					"Light trousers",
+					"Light tuxedo cuffs",
+					"Light tuxedo jacket",
+					"Light tuxedo shoes",
+					"Mummy's feet",
+					"Mummy's hands",
+					"Musketeer hat",
+					"Musketeer pants",
+					"Musketeer tabard",
+					"Mycelium leggings web",
+					"Mycelium poncho web",
+					"Mycelium visor web",
+					"Pink boater",
+					"Pink boots",
+					"Pink cape",
+					"Pink elegant blouse",
+					"Pink elegant legs",
+					"Pink elegant shirt",
+					"Pink elegant skirt",
+					"Pink hat",
+					"Pink headband",
+					"Pink robe bottoms",
+					"Pink robe top",
+					"Pink skirt",
+					"Pirate boots",
+					"Piscarilius banner",
+					"Piscarilius hood",
+					"Piscarilius scarf",
+					"Priest gown",
+					"Priest gown",
+					"Purple boater",
+					"Purple boots",
+					"Purple cape",
+					"Purple gloves",
+					"Purple hat",
+					"Purple naval shirt",
+					"Purple navy slacks",
+					"Purple robe bottoms",
+					"Purple robe top",
+					"Purple tricorn hat",
+					"Red naval shirt",
+					"Red navy slacks",
+					"Red robe bottoms",
+					"Red robe top",
+					"Red satchel",
+					"Red tricorn hat",
+					"Rock hammer",
+					"Rock pick",
+					"Rogue boots",
+					"Rogue gloves",
+					"Rogue mask",
+					"Rogue top",
+					"Rogue trousers",
+					"Rose tinted glasses",
+					"Royal crown",
+					"Samurai gloves",
+					"Sandwich lady bottom",
+					"Sandwich lady hat",
+					"Sandwich lady top",
+					"Turquoise boots",
+					"Turquoise hat",
+					"Turquoise robe bottoms",
+					"Turquoise robe top",
+					"Uri's hat",
+					"Villager armband",
+					"Villager hat",
+					"Villager robe",
+					"Villager sandals",
+					"Villager sandals",
+					"Villager sandals",
+					"Vyrewatch legs",
+					"Vyrewatch shoes",
+					"Vyrewatch top",
+					"Web cloak",
+					"Wolf cloak",
+					"Woven top",
+					"Yellow hat"
+				],
+				"lvl": 1
+			},
+			{
+				"item": "Mithril dragon mask",
+				"lvl": 1
+			},
+			{
+				"item": "Orange boater",
+				"lvl": 1
+			},
+			{
+				"item": "Pantaloons",
+				"lvl": 1
+			},
+			{
+				"item": "Penguin mask",
+				"lvl": 1
+			},
+			{
+				"item": "Pirate's hat",
+				"lvl": 1
+			},
+			{
+				"item": "Pith helmet",
+				"lvl": 1
+			},
+			{
+				"item": "Purple elegant blouse",
+				"lvl": 1
+			},
+			{
+				"item": "Purple elegant legs",
+				"lvl": 1
+			},
+			{
+				"item": "Purple elegant shirt",
+				"lvl": 1
+			},
+			{
+				"item": "Purple elegant skirt",
+				"lvl": 1
+			},
+			{
+				"item": "Red boater",
+				"lvl": 1
+			},
+			{
+				"item": "Red dragon mask",
+				"lvl": 1
+			},
+			{
+				"item": "Red elegant blouse",
+				"lvl": 1
+			},
+			{
+				"item": "Red elegant legs",
+				"lvl": 1
+			},
+			{
+				"item": "Red elegant shirt",
+				"lvl": 1
+			},
+			{
+				"item": "Red elegant skirt",
+				"lvl": 1
+			},
+			{
+				"item": "Red headband",
+				"lvl": 1
+			},
+			{
+				"item": "Rune dragon mask",
+				"lvl": 1
+			},
+			{
+				"item": "Samurai kasa",
+				"lvl": 1
+			},
+			{
+				"item": "Steel dragon mask",
+				"lvl": 1
+			},
+			{
+				"item": "Tan cavalier",
+				"lvl": 1
+			},
+			{
+				"item": "Top hat",
+				"lvl": 1
+			},
+			{
+				"item": "White beret",
+				"lvl": 1
+			},
+			{
+				"item": "White elegant blouse",
+				"lvl": 1
+			},
+			{
+				"item": "White elegant skirt",
+				"lvl": 1
+			},
+			{
+				"item": "White unicorn mask",
+				"lvl": 1
+			},
+			{
+				"item": "Wolf mask",
+				"lvl": 1
+			},
+			{
+				"item": [
+					"Akateko orokami mask",
+					"Akkorokamui orokami mask",
+					"Colonist's bonnet (blue)",
+					"Colonist's boots (blue)",
+					"Colonist's coat (blue)",
+					"Colonist's dress top (blue)",
+					"Colonist's hat (blue)",
+					"Colonist's shoes (blue)",
+					"Colonist's skirt (blue)",
+					"Colonist's trousers (blue)",
+					"Darkmeyer boots",
+					"Darkmeyer hood",
+					"Darkmeyer torso",
+					"Darkmeyer trousers",
+					"Dervish head wrap (blue-gold)",
+					"Dervish hood (red)",
+					"Dervish robe (blue-gold)",
+					"Dervish robe (red)",
+					"Dervish shoes (blue-gold)",
+					"Dervish shoes (red)",
+					"Dervish skirt (red)",
+					"Dervish trousers (blue-gold)",
+					"Eastern bun",
+					"Eastern kimono (blue)",
+					"Eastern knot",
+					"Eastern robe (blue)",
+					"Eastern sandals (blue, female)",
+					"Eastern sandals (male)",
+					"Eastern skirt (blue)",
+					"Eastern trousers (blue)",
+					"Elf-style boots (black)",
+					"Elf-style coat (black)",
+					"Elf-style dress top (black)",
+					"Elf-style shoes (black)",
+					"Elf-style skirt (black)",
+					"Elf-style trousers (black)",
+					"Elf-style wig (black, female)",
+					"Elf-style wig (black, male)",
+					"Evening bolero",
+					"Evening boots",
+					"Evening dipped skirt",
+					"Evening gloves",
+					"Evening masquerade mask",
+					"Fang of Mohegan",
+					"Feathered serpent body (blue, female)",
+					"Feathered serpent body (blue, male)",
+					"Feathered serpent boots (blue, female)",
+					"Feathered serpent headdress (blue, female)",
+					"Feathered serpent headdress (blue, male)",
+					"Feathered serpent skirt (blue, female)",
+					"Feathered serpent skirt (blue, male)",
+					"Gorilla mask",
+					"Highland boots (blue, female)",
+					"Highland boots (blue, male)",
+					"Highland kilt (blue, female)",
+					"Highland kilt (blue, male)",
+					"Highland shirt (blue)",
+					"Highland top (blue)",
+					"Highland war paint (blue, female)",
+					"Highland war paint (blue, male)",
+					"Ikuchi orokami mask",
+					"Karasu orokami mask",
+					"Kodama orokami mask",
+					"Musketeer's boots (blue, female)",
+					"Musketeer's boots (blue, male)",
+					"Musketeer's hat (blue, female)",
+					"Musketeer's hat (blue, male)",
+					"Musketeer's tabard (blue)",
+					"Musketeer's top (blue)",
+					"Musketeer's trousers (blue, female)",
+					"Musketeer's trousers (blue, male)",
+					"Nue orokami mask",
+					"Oni orokami mask",
+					"Pharaoh's ankh (green)",
+					"Pharaoh's bun (green)",
+					"Pharaoh's nemes (green)",
+					"Pharaoh's sandals (green, female)",
+					"Pharaoh's sandals (green, male)",
+					"Pharaoh's shendyt (green, female)",
+					"Pharaoh's shendyt (green, male)",
+					"Pharaoh's top (green)",
+					"Prifddinian musician's boots",
+					"Prifddinian musician's gloves",
+					"Prifddinian musician's robe bottom",
+					"Prifddinian musician's robe top",
+					"Prifddinian worker's boots",
+					"Prifddinian worker's gloves",
+					"Prifddinian worker's robes",
+					"Prifddinian worker's trousers",
+					"Pyjama bottoms",
+					"Pyjama slippers",
+					"Pyjama top",
+					"Round glasses",
+					"Samba headdress (blue, female)",
+					"Samba headdress (blue, male)",
+					"Samba loincloth (blue, female)",
+					"Samba loincloth (blue, male)",
+					"Samba sandals (blue, male)",
+					"Samba top (blue, female)",
+					"Samba top (blue, male)",
+					"Shaman's hand wraps",
+					"Shaman's headdress",
+					"Shaman's leggings",
+					"Shaman's moccasins",
+					"Shaman's poncho",
+					"Shinigami orokami mask",
+					"Silken boots (blue, female)",
+					"Silken boots (blue, male)",
+					"Silken skirt (blue)",
+					"Silken top (blue, female)",
+					"Silken top (blue, male)",
+					"Silken trousers (blue)",
+					"Silken turban (blue, female)",
+					"Silken turban (blue, male)",
+					"Stylish glasses",
+					"Swanky boots",
+					"Theatrical earrings (blue)",
+					"Theatrical hat (blue)",
+					"Theatrical shoes (blue, female)",
+					"Theatrical shoes (blue, male)",
+					"Theatrical skirt (blue)",
+					"Theatrical trousers (blue)",
+					"Theatrical tunic (blue, female)",
+					"Theatrical tunic (blue, male)",
+					"Thinker boots",
+					"Thinker gloves",
+					"Thinker robes",
+					"Thinker trousers",
+					"Tribal ringlet (red, female)",
+					"Tribal ringlet (red, male)",
+					"Tribal shirt (red)",
+					"Tribal shoes (red, male)",
+					"Tribal skirt (red)",
+					"Tribal top (red)",
+					"Tribal trousers (red)",
+					"Tuxedo cravat",
+					"Tuxedo gloves",
+					"Tuxedo jacket",
+					"Tuxedo shoes",
+					"Tuxedo trousers",
+					"Werewolf claws (red, male)",
+					"Werewolf legs (red, male)",
+					"Werewolf mask (red, male)",
+					"Werewolf paws (red, male)",
+					"Werewolf torso (red, male)",
+					"Wushanko hat (blue)",
+					"Wushanko headdress (blue)",
+					"Wushanko jacket (blue)",
+					"Wushanko shoes (blue, female)",
+					"Wushanko shoes (blue, male)",
+					"Wushanko skirt (blue)",
+					"Wushanko top (blue)",
+					"Wushanko trousers (blue)"
+				],
+				"lvl": 40
+			},
+			{
+				"item": "Spotted cape",
+				"lvl": 40
+			},
+			{
+				"item": "Lumberjack boots",
+				"lvl": 44
+			},
+			{
+				"item": "Lumberjack hat",
+				"lvl": 44
+			},
+			{
+				"item": "Lumberjack legs",
+				"lvl": 44
+			},
+			{
+				"item": "Lumberjack top",
+				"lvl": 44
+			},
+			{
+				"item": "Spottier cape",
+				"lvl": 66
+			},
+			{
+				"item": [
+					"Agility master cape",
+					"Attack master cape",
+					"Construction master cape",
+					"Cooking master cape",
+					"Crafting master cape",
+					"Defence master cape",
+					"Dungeoneering master cape",
+					"Farming master cape",
+					"Firemaking master cape",
+					"Fishing master cape",
+					"Fletching master cape",
+					"Herblore master cape",
+					"Hitpoints master cape",
+					"Hunter master cape",
+					"Invention master cape",
+					"Magic master cape",
+					"Master farmer boots",
+					"Master farmer gloves",
+					"Master farmer hat",
+					"Master farmer jacket",
+					"Master farmer pants",
+					"Mining master cape",
+					"Prayer master cape",
+					"Ranged master cape",
+					"Runecraft master cape",
+					"Slayer master cape",
+					"Smithing master cape",
+					"Strength master cape",
+					"Thieving master cape",
+					"Woodcutting master cape"
+				],
+				"lvl": 99
+			}
+		]
+	},
+	{
+		"name": "Dagger",
+		"parts": {
+			"sharp": 30,
+			"base": 10
+		},
+		"items": [
+			{
+				"item": "Black dagger",
+				"lvl": 25
+			},
+			{
+				"item": "Bronze dagger",
+				"lvl": 1
+			},
+			{
+				"item": "Iron dagger",
+				"lvl": 10
+			},
+			{
+				"item": "Steel dagger",
+				"lvl": 20
+			},
+			{
+				"item": "Mithril dagger",
+				"lvl": 30
+			},
+			{
+				"item": "Adamant dagger",
+				"lvl": 40
+			},
+			{
+				"item": "Rune dagger",
+				"lvl": 50
+			},
+			{
+				"item": "Dragon dagger",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Toktz-xil-ek",
+				"lvl": 60
+			},
+			{
+				"item": "Abyssal dagger",
+				"lvl": 90,
+				"flags": ["abyssal"]
+			}
+		]
+	},
+	{
+		"name": "Defender",
+		"parts": {
+			"base": 10,
+			"protective": 40,
+			"sharp": 10
+		},
+		"items": [
+			{
+				"item": "Bronze defender",
+				"lvl": 1
+			},
+			{
+				"item": "Iron defender",
+				"lvl": 10
+			},
+			{
+				"item": "Steel defender",
+				"lvl": 20
+			},
+			{
+				"item": "Black defender",
+				"lvl": 25
+			},
+			{
+				"item": "Mithril defender",
+				"lvl": 30
+			},
+			{
+				"item": "Adamant defender",
+				"lvl": 40
+			},
+			{
+				"item": "Rune defender",
+				"lvl": 50
+			},
+			{
+				"item": "Dragon defender",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			}
+		]
+	},
+	{
+		"name": "Drygores",
+		"parts": {
+			"drygore": 100
+		},
+		"items": [
+			{
+				"item": [
+					"Drygore longsword",
+					"Drygore longsword (3a)",
+					"Drygore longsword (blood)",
+					"Drygore longsword (ice)",
+					"Drygore longsword (shadow)",
+					"Drygore mace",
+					"Drygore mace (3a)",
+					"Drygore mace (blood)",
+					"Drygore mace (ice)",
+					"Drygore mace (shadow)",
+					"Drygore rapier",
+					"Drygore rapier (3a)",
+					"Drygore rapier (blood)",
+					"Drygore rapier (ice)",
+					"Drygore rapier (shadow)"
+				],
+				"lvl": 99
+			},
+			{
+				"item": [
+					"Offhand drygore longsword",
+					"Offhand drygore longsword (3a)",
+					"Offhand drygore longsword (blood)",
+					"Offhand drygore longsword (ice)",
+					"Offhand drygore longsword (shadow)",
+					"Offhand drygore mace",
+					"Offhand drygore mace (3a)",
+					"Offhand drygore mace (blood)",
+					"Offhand drygore mace (ice)",
+					"Offhand drygore mace (shadow)",
+					"Offhand drygore rapier",
+					"Offhand drygore rapier (3a)",
+					"Offhand drygore rapier (blood)",
+					"Offhand drygore rapier (ice)",
+					"Offhand drygore rapier (shadow)"
+				],
+				"lvl": 99
+			}
+		]
+	},
+	{
+		"name": "Dwarven",
+		"parts": {
+			"dwarven": 100
+		},
+		"items": [
+			{
+				"item": "Dwarven ore",
+				"lvl": 50
+			},
+			{
+				"item": "Dwarven bar",
+				"lvl": 80
+			},
+			{
+				"item": "Broken dwarven warhammer",
+				"lvl": 90
+			},
+			{
+				"item": "Dwarven greathammer",
+				"lvl": 99
+			},
+			{
+				"item": "Dwarven knife",
+				"lvl": 99
+			},
+			{
+				"item": "Dwarven greataxe",
+				"lvl": 99
+			},
+			{
+				"item": "Dwarven pickaxe",
+				"lvl": 99
+			},
+			{
+				"item": "Dwarven gauntlets",
+				"lvl": 99
+			},
+			{
+				"item": "Dwarven blessing",
+				"lvl": 99,
+				"flags": ["treasure_trails"]
+			},
+			{
+				"item": "Dwarven full helm",
+				"lvl": 99
+			},
+			{
+				"item": "Dwarven platebody",
+				"lvl": 99
+			},
+			{
+				"item": "Dwarven platelegs",
+				"lvl": 99
+			},
+			{
+				"item": "Dwarven boots",
+				"lvl": 99
+			},
+			{
+				"item": "Dwarven gloves",
+				"lvl": 99
+			},
+			{
+				"item": "Dwarven warhammer",
+				"lvl": 99
+			},
+			{
+				"item": "Dwarven warhammer (ice)",
+				"lvl": 99
+			},
+			{
+				"item": "Dwarven warhammer (shadow)",
+				"lvl": 99
+			},
+			{
+				"item": "Dwarven warhammer (blood)",
+				"lvl": 99
+			},
+			{
+				"item": "Dwarven warhammer (3a)",
+				"lvl": 99
+			},
+			{
+				"item": "Dwarven warnana",
+				"lvl": 99
+			}
+		]
+	},
+	{
+		"name": "Ensouled Heads",
+		"parts": {
+			"pious": 40,
+			"magic": 10,
+			"organic": 20
+		},
+		"items": [
+			{
+				"item": "Ensouled abyssal head",
+				"lvl": 90
+			},
+			{
+				"item": "Ensouled aviansie head",
+				"lvl": 90
+			},
+			{
+				"item": "Ensouled bear head",
+				"lvl": 16
+			},
+			{
+				"item": "Ensouled bloodveld head",
+				"lvl": 72
+			},
+			{
+				"item": "Ensouled chaos druid head",
+				"lvl": 41
+			},
+			{
+				"item": "Ensouled dagannoth head",
+				"lvl": 72
+			},
+			{
+				"item": "Ensouled demon head",
+				"lvl": 72
+			},
+			{
+				"item": "Ensouled dog head",
+				"lvl": 41
+			},
+			{
+				"item": "Ensouled dragon head",
+				"lvl": 90
+			},
+			{
+				"item": "Ensouled elf head",
+				"lvl": 41
+			},
+			{
+				"item": "Ensouled giant head",
+				"lvl": 41
+			},
+			{
+				"item": "Ensouled goblin head",
+				"lvl": 16
+			},
+			{
+				"item": "Ensouled horror head",
+				"lvl": 41
+			},
+			{
+				"item": "Ensouled imp head",
+				"lvl": 16
+			},
+			{
+				"item": "Ensouled kalphite head",
+				"lvl": 72
+			},
+			{
+				"item": "Ensouled minotaur head",
+				"lvl": 16
+			},
+			{
+				"item": "Ensouled monkey head",
+				"lvl": 16
+			},
+			{
+				"item": "Ensouled ogre head",
+				"lvl": 41
+			},
+			{
+				"item": "Ensouled scorpion head",
+				"lvl": 16
+			},
+			{
+				"item": "Ensouled troll head",
+				"lvl": 41
+			},
+			{
+				"item": "Ensouled tzhaar head",
+				"lvl": 72
+			},
+			{
+				"item": "Ensouled unicorn head",
+				"lvl": 16
+			}
+		]
+	},
+	{
+		"name": "Explosive",
+		"parts": {
+			"explosive": 90,
+			"organic": 10
+		},
+		"items": [
+			{
+				"item": "Red chinchompa",
+				"lvl": 75
+			},
+			{
+				"item": "Black chinchompa",
+				"lvl": 90
+			}
+		]
+	},
+	{
+		"name": "Food",
+		"parts": {
+			"organic": 100
+		},
+		"items": [
+			{
+				"item": "Bread",
+				"lvl": 1
+			},
+			{
+				"item": "Cooked chicken",
+				"lvl": 1
+			},
+			{
+				"item": "Karambwanji",
+				"lvl": 1
+			},
+			{
+				"item": "Minnow",
+				"lvl": 1
+			},
+			{
+				"item": "Purple sweets",
+				"lvl": 1
+			},
+			{
+				"item": "Sardine",
+				"lvl": 1
+			},
+			{
+				"item": "Shrimps",
+				"lvl": 1
+			},
+			{
+				"item": "Herring",
+				"lvl": 5
+			},
+			{
+				"item": "Cabbage",
+				"lvl": 7
+			},
+			{
+				"item": "Mackerel",
+				"lvl": 10
+			},
+			{
+				"item": "Mushrooms",
+				"lvl": 10
+			},
+			{
+				"item": "Trout",
+				"lvl": 15
+			},
+			{
+				"item": "Cod",
+				"lvl": 18
+			},
+			{
+				"item": "Pike",
+				"lvl": 20
+			},
+			{
+				"item": "Wine of zamorak",
+				"lvl": 20
+			},
+			{
+				"item": "Salmon",
+				"lvl": 25
+			},
+			{
+				"item": "Cooked karambwan",
+				"lvl": 30
+			},
+			{
+				"item": "Tuna",
+				"lvl": 30
+			},
+			{
+				"item": "Strawberry",
+				"lvl": 31
+			},
+			{
+				"item": "Banana",
+				"lvl": 33
+			},
+			{
+				"item": "Jug of wine",
+				"lvl": 35
+			},
+			{
+				"item": "Plain pizza",
+				"lvl": 35
+			},
+			{
+				"item": "Big bass",
+				"lvl": 43
+			},
+			{
+				"item": "Big swordfish",
+				"lvl": 45
+			},
+			{
+				"item": "Meat pizza",
+				"lvl": 45
+			},
+			{
+				"item": "Fish pie",
+				"lvl": 47
+			},
+			{
+				"item": "Potato with cheese",
+				"lvl": 47
+			},
+			{
+				"item": "Watermelon",
+				"lvl": 47
+			},
+			{
+				"item": "Lobster",
+				"lvl": 48
+			},
+			{
+				"item": "Chocolate cake",
+				"lvl": 50
+			},
+			{
+				"item": "Pineapple",
+				"lvl": 51
+			},
+			{
+				"item": "Bass",
+				"lvl": 52
+			},
+			{
+				"item": "Lava eel",
+				"lvl": 53
+			},
+			{
+				"item": "Swordfish",
+				"lvl": 56
+			},
+			{
+				"item": "Papaya fruit",
+				"lvl": 57
+			},
+			{
+				"item": "White berries",
+				"lvl": 59
+			},
+			{
+				"item": "Curry",
+				"lvl": 60
+			},
+			{
+				"item": "Monkfish",
+				"lvl": 64
+			},
+			{
+				"item": "Coconut",
+				"lvl": 68
+			},
+			{
+				"item": "Poison ivy berries",
+				"lvl": 70
+			},
+			{
+				"item": "Mushroom potato",
+				"lvl": 80
+			},
+			{
+				"item": "Shark",
+				"lvl": 80
+			},
+			{
+				"item": "Sea turtle",
+				"lvl": 82
+			},
+			{
+				"item": "Anglerfish",
+				"lvl": 84
+			},
+			{
+				"item": "Tuna potato",
+				"lvl": 85
+			},
+			{
+				"item": "Wild pie",
+				"lvl": 85
+			},
+			{
+				"item": "Dark crab",
+				"lvl": 90
+			},
+			{
+				"item": "Manta ray",
+				"lvl": 91
+			},
+			{
+				"item": "Dragonfruit",
+				"lvl": 95
+			},
+			{
+				"item": "Summer pie",
+				"lvl": 95
+			},
+			{
+				"item": "Rocktail",
+				"lvl": 99
+			}
+		]
+	},
+	{
+		"name": "Gems",
+		"parts": {
+			"precious": 60,
+			"smooth": 30
+		},
+		"items": [
+			{
+				"item": "Opal",
+				"lvl": 1
+			},
+			{
+				"item": "Jade",
+				"lvl": 13
+			},
+			{
+				"item": "Red topaz",
+				"lvl": 16
+			},
+			{
+				"item": "Sapphire",
+				"lvl": 20
+			},
+			{
+				"item": "Emerald",
+				"lvl": 27
+			},
+			{
+				"item": "Ruby",
+				"lvl": 34
+			},
+			{
+				"item": "Diamond",
+				"lvl": 43
+			},
+			{
+				"item": "Dragonstone",
+				"lvl": 55
+			},
+			{
+				"item": "Onyx",
+				"lvl": 67
+			},
+			{
+				"item": "Zenyte",
+				"lvl": 75
+			}
+		]
+	},
+	{
+		"name": "Gilded",
+		"parts": {
+			"gilded": 100
+		},
+		"items": [
+			{
+				"item": [
+					"Gilded 2h sword",
+					"Gilded axe",
+					"Gilded boots",
+					"Gilded chainbody",
+					"Gilded coif",
+					"Gilded d'hide body",
+					"Gilded d'hide chaps",
+					"Gilded d'hide vambraces",
+					"Gilded full helm",
+					"Gilded hasta",
+					"Gilded kiteshield",
+					"Gilded med helm",
+					"Gilded pickaxe",
+					"Gilded platebody",
+					"Gilded platelegs",
+					"Gilded plateskirt",
+					"Gilded scimitar",
+					"Gilded spade",
+					"Gilded spear",
+					"Gilded sq shield"
+				],
+				"lvl": 99,
+				"flags": ["treasure_trails"]
+			}
+		]
+	},
+	{
+		"name": "Glass",
+		"parts": {
+			"precious": 20,
+			"smooth": 40
+		},
+		"items": [
+			{
+				"item": "Vial",
+				"lvl": 1
+			},
+			{
+				"item": "Vial of water",
+				"lvl": 1
+			},
+			{
+				"item": "Molten glass",
+				"lvl": 25
+			},
+			{
+				"item": "Beer glass",
+				"lvl": 1
+			},
+			{
+				"item": "Fishbowl",
+				"lvl": 42
+			},
+			{
+				"item": "Unpowered orb",
+				"lvl": 46
+			},
+			{
+				"item": "Lantern lens",
+				"lvl": 49
+			},
+			{
+				"item": "Water orb",
+				"lvl": 56
+			},
+			{
+				"item": "Earth orb",
+				"lvl": 60
+			},
+			{
+				"item": "Fire orb",
+				"lvl": 63
+			}
+		]
+	},
+	{
+		"name": "Halberd",
+		"parts": {
+			"sharp": 30,
+			"heavy": 30,
+			"base": 10
+		},
+		"items": [
+			{
+				"item": "Bronze halberd",
+				"lvl": 1
+			},
+			{
+				"item": "Iron halberd",
+				"lvl": 10
+			},
+			{
+				"item": "Steel halberd",
+				"lvl": 20
+			},
+			{
+				"item": "Black halberd",
+				"lvl": 25
+			},
+			{
+				"item": "White halberd",
+				"lvl": 25
+			},
+			{
+				"item": "Mithril halberd",
+				"lvl": 30
+			},
+			{
+				"item": "Adamant halberd",
+				"lvl": 40
+			},
+			{
+				"item": "Rune halberd",
+				"lvl": 50
+			},
+			{
+				"item": "Dragon halberd",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Crystal halberd",
+				"lvl": 70
+			},
+			{
+				"item": "Guthix mjolnir",
+				"lvl": 40
+			},
+			{
+				"item": "Saradomin mjolnir",
+				"lvl": 40
+			},
+			{
+				"item": "Zamorak mjolnir",
+				"lvl": 40
+			}
+		]
+	},
+	{
+		"name": "Hasta",
+		"parts": {
+			"sharp": 30,
+			"heavy": 10
+		},
+		"items": [
+			{
+				"item": "Bronze hasta",
+				"lvl": 1
+			},
+			{
+				"item": "Iron hasta",
+				"lvl": 10
+			},
+			{
+				"item": "Steel hasta",
+				"lvl": 20
+			},
+			{
+				"item": "Mithril hasta",
+				"lvl": 30
+			},
+			{
+				"item": "Rune hasta",
+				"lvl": 50
+			},
+			{
+				"item": "Dragon hasta",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Zamorakian hasta",
+				"lvl": 70
+			}
+		]
+	},
+	{
+		"name": "Herb",
+		"parts": {
+			"organic": 100
+		},
+		"items": [
+			{
+				"item": "Guam leaf",
+				"lvl": 3
+			},
+			{
+				"item": "Grimy guam leaf",
+				"lvl": 3
+			},
+			{
+				"item": "Marrentill",
+				"lvl": 5
+			},
+			{
+				"item": "Grimy marrentill",
+				"lvl": 5
+			},
+			{
+				"item": "Tarromin",
+				"lvl": 11
+			},
+			{
+				"item": "Grimy tarromin",
+				"lvl": 11
+			},
+			{
+				"item": "Harralander",
+				"lvl": 20
+			},
+			{
+				"item": "Grimy harralander",
+				"lvl": 20
+			},
+			{
+				"item": "Ranarr weed",
+				"lvl": 25
+			},
+			{
+				"item": "Grimy ranarr weed",
+				"lvl": 25
+			},
+			{
+				"item": "Toadflax",
+				"lvl": 30
+			},
+			{
+				"item": "Grimy toadflax",
+				"lvl": 30
+			},
+			{
+				"item": "Irit leaf",
+				"lvl": 40
+			},
+			{
+				"item": "Grimy irit leaf",
+				"lvl": 40
+			},
+			{
+				"item": "Avantoe",
+				"lvl": 48
+			},
+			{
+				"item": "Grimy avantoe",
+				"lvl": 48
+			},
+			{
+				"item": "Kwuarm",
+				"lvl": 54
+			},
+			{
+				"item": "Grimy kwuarm",
+				"lvl": 54
+			},
+			{
+				"item": "Snapdragon",
+				"lvl": 59
+			},
+			{
+				"item": "Grimy snapdragon",
+				"lvl": 59
+			},
+			{
+				"item": "Cadantine",
+				"lvl": 65
+			},
+			{
+				"item": "Grimy cadantine",
+				"lvl": 65
+			},
+			{
+				"item": "Lantadyme",
+				"lvl": 67
+			},
+			{
+				"item": "Grimy lantadyme",
+				"lvl": 67
+			},
+			{
+				"item": "Dwarf weed",
+				"lvl": 70
+			},
+			{
+				"item": "Grimy dwarf weed",
+				"lvl": 70
+			},
+			{
+				"item": "Torstol",
+				"lvl": 75
+			},
+			{
+				"item": "Grimy torstol",
+				"lvl": 75
+			},
+			{
+				"item": "Athelas",
+				"lvl": 99
+			}
+		]
+	},
+	{
+		"name": "HybridArmour",
+		"parts": {
+			"powerful": 3,
+			"protective": 3
+		},
+		"items": [
+			{
+				"item": "Cape of legends",
+				"lvl": 1
+			},
+			{
+				"item": "Void knight top",
+				"lvl": 42
+			},
+			{
+				"item": "Obsidian platebody",
+				"lvl": 60
+			},
+			{
+				"item": "Crystal body",
+				"lvl": 70
+			},
+			{
+				"item": "Dragonstone boots",
+				"lvl": 50
+			},
+			{
+				"item": "Obsidian cape",
+				"lvl": 35
+			},
+			{
+				"item": "Void knight gloves",
+				"lvl": 42
+			},
+			{
+				"item": "Dragonstone gauntlets",
+				"lvl": 50
+			},
+			{
+				"item": "Slayer helmet",
+				"lvl": 20
+			},
+			{
+				"item": "Void knight robe",
+				"lvl": 42
+			},
+			{
+				"item": "Berserker ring",
+				"lvl": 45
+			},
+			{
+				"item": "Crystal helm",
+				"lvl": 70
+			},
+			{
+				"item": "Obsidian platelegs",
+				"lvl": 60
+			},
+			{
+				"item": "Crystal legs",
+				"lvl": 70
+			}
+		]
+	},
+	{
+		"name": "Jewellery",
+		"parts": {
+			"precious": 20,
+			"smooth": 80
+		},
+		"items": [
+			{
+				"item": "Opal ring",
+				"lvl": 1
+			},
+			{
+				"item": "Gold ring",
+				"lvl": 5
+			},
+			{
+				"item": "Gold necklace",
+				"lvl": 6
+			},
+			{
+				"item": "Gold bracelet",
+				"lvl": 7
+			},
+			{
+				"item": "Pre-nature amulet",
+				"lvl": 8
+			},
+			{
+				"item": "Gold amulet",
+				"lvl": 8
+			},
+			{
+				"item": "Amulet of power",
+				"lvl": 8
+			},
+			{
+				"item": "Jade ring",
+				"lvl": 13
+			},
+			{
+				"item": "Holy symbol",
+				"lvl": 16
+			},
+			{
+				"item": "Opal necklace",
+				"lvl": 16
+			},
+			{
+				"item": "Topaz ring",
+				"lvl": 16
+			},
+			{
+				"item": "Ring of recoil",
+				"lvl": 20
+			},
+			{
+				"item": "Sapphire ring",
+				"lvl": 20
+			},
+			{
+				"item": "Opal bracelet",
+				"lvl": 22
+			},
+			{
+				"item": "Sapphire necklace",
+				"lvl": 22
+			},
+			{
+				"item": "Bracelet of clay",
+				"lvl": 23
+			},
+			{
+				"item": "Sapphire bracelet",
+				"lvl": 23
+			},
+			{
+				"item": "Sapphire amulet",
+				"lvl": 24
+			},
+			{
+				"item": "Jade necklace",
+				"lvl": 25
+			},
+			{
+				"item": "Emerald ring",
+				"lvl": 27
+			},
+			{
+				"item": "Opal amulet",
+				"lvl": 27
+			},
+			{
+				"item": "Binding necklace",
+				"lvl": 29
+			},
+			{
+				"item": "Emerald necklace",
+				"lvl": 29
+			},
+			{
+				"item": "Jade bracelet",
+				"lvl": 29
+			},
+			{
+				"item": "Emerald bracelet",
+				"lvl": 30
+			},
+			{
+				"item": "Emerald amulet",
+				"lvl": 31
+			},
+			{
+				"item": "Topaz necklace",
+				"lvl": 32
+			},
+			{
+				"item": "Jade amulet",
+				"lvl": 34
+			},
+			{
+				"item": "Ring of forging",
+				"lvl": 34
+			},
+			{
+				"item": "Ruby ring",
+				"lvl": 34
+			},
+			{
+				"item": "Salve amulet",
+				"lvl": 35
+			},
+			{
+				"item": "Salve amulet (e)",
+				"lvl": 35
+			},
+			{
+				"item": "Topaz bracelet",
+				"lvl": 38
+			},
+			{
+				"item": "Ruby necklace",
+				"lvl": 40
+			},
+			{
+				"item": "Ruby bracelet",
+				"lvl": 42
+			},
+			{
+				"item": "Diamond ring",
+				"lvl": 43
+			},
+			{
+				"item": "Ring of life",
+				"lvl": 43
+			},
+			{
+				"item": "Archers ring",
+				"lvl": 45
+			},
+			{
+				"item": "Seers ring",
+				"lvl": 45
+			},
+			{
+				"item": "Topaz amulet",
+				"lvl": 45
+			},
+			{
+				"item": "Warrior ring",
+				"lvl": 45
+			},
+			{
+				"item": "Ring of coins",
+				"lvl": 50
+			},
+			{
+				"item": "Ruby amulet",
+				"lvl": 50
+			},
+			{
+				"item": "Strength amulet (t)",
+				"lvl": 50
+			},
+			{
+				"item": "Dragonstone ring",
+				"lvl": 55
+			},
+			{
+				"item": "Ring of wealth",
+				"lvl": 55
+			},
+			{
+				"item": "Diamond necklace",
+				"lvl": 56
+			},
+			{
+				"item": "Phoenix necklace",
+				"lvl": 56
+			},
+			{
+				"item": "Diamond bracelet",
+				"lvl": 58
+			},
+			{
+				"item": "Onyx ring",
+				"lvl": 67
+			},
+			{
+				"item": "Ring of stone",
+				"lvl": 67
+			},
+			{
+				"item": "Diamond amulet",
+				"lvl": 70
+			},
+			{
+				"item": "Skills necklace",
+				"lvl": 72
+			},
+			{
+				"item": "Combat bracelet",
+				"lvl": 74
+			},
+			{
+				"item": "Dragonstone bracelet",
+				"lvl": 74
+			},
+			{
+				"item": [
+					"Amulet of glory",
+					"Amulet of glory (t)",
+					"Amulet of glory (t4)",
+					"Amulet of glory (t6)",
+					"Amulet of glory(4)",
+					"Amulet of glory(6)",
+					"Dragonstone amulet"
+				],
+				"lvl": 80
+			},
+			{
+				"item": "Berserker necklace",
+				"lvl": 82
+			},
+			{
+				"item": "Onyx necklace",
+				"lvl": 82
+			},
+			{
+				"item": "Onyx bracelet",
+				"lvl": 84
+			},
+			{
+				"item": "Regen bracelet",
+				"lvl": 84
+			},
+			{
+				"item": "Onyx amulet",
+				"lvl": 90
+			},
+			{
+				"item": "Zenyte ring",
+				"lvl": 89
+			},
+			{
+				"item": "Ring of suffering",
+				"lvl": 89
+			},
+			{
+				"item": "Zenyte necklace",
+				"lvl": 92
+			},
+			{
+				"item": "Necklace of anguish",
+				"lvl": 92
+			},
+			{
+				"item": "Zenyte bracelet",
+				"lvl": 95
+			},
+			{
+				"item": "Tormented bracelet",
+				"lvl": 95
+			},
+			{
+				"item": "Zenyte amulet",
+				"lvl": 98
+			},
+			{
+				"item": "Amulet of torture",
+				"lvl": 98
+			},
+			{
+				"item": "Amulet of fury",
+				"lvl": 90
+			}
+		]
+	},
+	{
+		"name": "Leather and Hides",
+		"parts": {
+			"protective": 20,
+			"strong": 20,
+			"organic": 40
+		},
+		"items": [
+			{
+				"item": "Cowhide",
+				"lvl": 1
+			},
+			{
+				"item": "Leather",
+				"lvl": 1
+			},
+			{
+				"item": "Hard leather",
+				"lvl": 25
+			},
+			{
+				"item": "Cured yak-hide",
+				"lvl": 43
+			},
+			{
+				"item": "Yak-hide",
+				"lvl": 43
+			},
+			{
+				"item": "Snakeskin",
+				"lvl": 45
+			},
+			{
+				"item": "Snake hide",
+				"lvl": 45
+			},
+			{
+				"item": "Dagannoth hide",
+				"lvl": 55
+			},
+			{
+				"item": "Blue dragonhide",
+				"lvl": 71
+			},
+			{
+				"item": "Blue dragon leather",
+				"lvl": 71
+			},
+			{
+				"item": "Green dragonhide",
+				"lvl": 62
+			},
+			{
+				"item": "Green dragon leather",
+				"lvl": 62
+			},
+			{
+				"item": "Red dragonhide",
+				"lvl": 78
+			},
+			{
+				"item": "Red dragon leather",
+				"lvl": 78
+			},
+			{
+				"item": "Black dragon leather",
+				"lvl": 84
+			},
+			{
+				"item": "Black dragonhide",
+				"lvl": 84
+			},
+			{
+				"item": "Royal dragon leather",
+				"lvl": 90
+			},
+			{
+				"item": "Royal dragonhide",
+				"lvl": 90
+			}
+		]
+	},
+	{
+		"name": "Logs",
+		"parts": {
+			"organic": 5,
+			"wooden": 95
+		},
+		"items": [
+			{
+				"item": "Arctic pyre logs",
+				"lvl": 1
+			},
+			{
+				"item": "Logs",
+				"lvl": 1
+			},
+			{
+				"item": "Magic pyre logs",
+				"lvl": 1
+			},
+			{
+				"item": "Mahogany pyre logs",
+				"lvl": 1
+			},
+			{
+				"item": "Maple pyre logs",
+				"lvl": 1
+			},
+			{
+				"item": "Oak pyre logs",
+				"lvl": 1
+			},
+			{
+				"item": "Pyre logs",
+				"lvl": 1
+			},
+			{
+				"item": "Teak pyre logs",
+				"lvl": 1
+			},
+			{
+				"item": "Willow pyre logs",
+				"lvl": 1
+			},
+			{
+				"item": "Yew pyre logs",
+				"lvl": 1
+			},
+			{
+				"item": "Oak logs",
+				"lvl": 15
+			},
+			{
+				"item": "Willow logs",
+				"lvl": 30
+			},
+			{
+				"item": "Teak logs",
+				"lvl": 35
+			},
+			{
+				"item": "Arctic pine logs",
+				"lvl": 42
+			},
+			{
+				"item": "Maple logs",
+				"lvl": 45
+			},
+			{
+				"item": "Mahogany logs",
+				"lvl": 50
+			},
+			{
+				"item": "Yew logs",
+				"lvl": 60
+			},
+			{
+				"item": "Magic logs",
+				"lvl": 75
+			},
+			{
+				"item": "Blisterwood logs",
+				"lvl": 76
+			},
+			{
+				"item": "Redwood logs",
+				"lvl": 90
+			},
+			{
+				"item": "Elder logs",
+				"lvl": 90
+			}
+		]
+	},
+	{
+		"name": "Longsword",
+		"parts": {
+			"sharp": 30,
+			"metallic": 30,
+			"base": 10,
+			"dextrous": 5
+		},
+		"items": [
+			{
+				"item": "Bronze longsword",
+				"lvl": 1
+			},
+			{
+				"item": "Iron longsword",
+				"lvl": 10
+			},
+			{
+				"item": "Steel longsword",
+				"lvl": 20
+			},
+			{
+				"item": "Black longsword",
+				"lvl": 25
+			},
+			{
+				"item": "Mithril longsword",
+				"lvl": 30
+			},
+			{
+				"item": "Adamant longsword",
+				"lvl": 40
+			},
+			{
+				"item": "Rune longsword",
+				"lvl": 50
+			},
+			{
+				"item": "Dragon longsword",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Vesta's longsword",
+				"lvl": 78
+			}
+		]
+	},
+	{
+		"name": "Mace",
+		"parts": {
+			"dextrous": 5,
+			"heavy": 15,
+			"strong": 35,
+			"powerful": 30,
+			"metallic": 5
+		},
+		"items": [
+			{
+				"item": "Royal sceptre",
+				"lvl": 1
+			},
+			{
+				"item": "Black cane",
+				"lvl": 23
+			},
+			{
+				"item": "Black mace",
+				"lvl": 25
+			},
+			{
+				"item": "White mace",
+				"lvl": 25
+			},
+			{
+				"item": "Void knight mace",
+				"lvl": 42
+			},
+			{
+				"item": "Rune cane",
+				"lvl": 48
+			},
+			{
+				"item": "Dragon cane",
+				"lvl": 58
+			},
+			{
+				"item": "Dragon mace",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Tzhaar-ket-em",
+				"lvl": 60
+			},
+			{
+				"item": "Bronze mace",
+				"lvl": 1
+			},
+			{
+				"item": "Iron mace",
+				"lvl": 10
+			},
+			{
+				"item": "Steel mace",
+				"lvl": 20
+			},
+			{
+				"item": "Mithril mace",
+				"lvl": 30
+			},
+			{
+				"item": "Adamant mace",
+				"lvl": 40
+			},
+			{
+				"item": "Rune mace",
+				"lvl": 50
+			},
+			{
+				"item": "Viggora's chainmace (u)",
+				"lvl": 80
+			}
+		]
+	},
+	{
+		"name": "Magic",
+		"parts": {
+			"magic": 30,
+			"powerful": 3,
+			"protective": 2
+		},
+		"items": [
+			{
+				"item": "Death tiara",
+				"lvl": 1
+			},
+			{
+				"item": "Fire tiara",
+				"lvl": 1
+			},
+			{
+				"item": "Beginner wand",
+				"lvl": 45
+			},
+			{
+				"item": "Apprentice wand",
+				"lvl": 50
+			},
+			{
+				"item": "Teacher wand",
+				"lvl": 55
+			},
+			{
+				"item": "Master wand",
+				"lvl": 60
+			},
+			{
+				"item": "Mind helmet",
+				"lvl": 1
+			},
+			{
+				"item": "Jar of magic",
+				"lvl": 80
+			},
+			{
+				"item": ["Arcane sigil", "Divine sigil", "Elysian sigil", "Spectral sigil"],
+				"lvl": 99,
+				"flags": ["corporeal"]
+			},
+			{
+				"item": [
+					"Eternal crystal",
+					"Magus scroll",
+					"Pegasian crystal",
+					"Primordial crystal",
+					"Virtus crystal",
+					"Virtus wand"
+				],
+				"lvl": 99
+			}
+		]
+	},
+	{
+		"name": "MagicArmour",
+		"parts": {
+			"magic": 30,
+			"powerful": 5,
+			"protective": 32
+		},
+		"items": [
+			{
+				"item": [
+					"Black wizard hat (g)",
+					"Black wizard hat (t)",
+					"Black wizard robe (g)",
+					"Black wizard robe (t)",
+					"Blue skirt",
+					"Blue skirt (g)",
+					"Blue wizard hat",
+					"Blue wizard hat (g)",
+					"Blue wizard hat (t)",
+					"Blue wizard robe",
+					"Blue wizard robe (g)",
+					"Blue wizard robe (t)"
+				],
+				"lvl": 5
+			},
+			{
+				"item": "Splitbark body",
+				"lvl": 40
+			},
+			{
+				"item": "Enchanted top",
+				"lvl": 45
+			},
+			{
+				"item": "Infinity top",
+				"lvl": 55
+			},
+			{
+				"item": "Zuriel's robe top",
+				"lvl": 78
+			},
+			{
+				"item": "Wizard boots",
+				"lvl": 1
+			},
+			{
+				"item": "Splitbark boots",
+				"lvl": 40
+			},
+			{
+				"item": [
+					"Mystic boots",
+					"Mystic boots (dark)",
+					"Mystic boots (dusk)",
+					"Mystic boots (light)",
+					"Mystic dust staff",
+					"Mystic gloves",
+					"Mystic gloves (dark)",
+					"Mystic gloves (dusk)",
+					"Mystic gloves (light)",
+					"Mystic hat",
+					"Mystic hat (dark)",
+					"Mystic hat (dusk)",
+					"Mystic hat (light)",
+					"Mystic mist staff",
+					"Mystic robe bottom",
+					"Mystic robe bottom (dark)",
+					"Mystic robe bottom (dusk)",
+					"Mystic robe bottom (light)",
+					"Mystic robe top",
+					"Mystic robe top (dark)",
+					"Mystic robe top (dusk)",
+					"Mystic robe top (light)"
+				],
+				"lvl": 40
+			},
+			{
+				"item": "Splitbark gauntlets",
+				"lvl": 40
+			},
+			{
+				"item": "Infinity boots",
+				"lvl": 55
+			},
+			{
+				"item": "Infinity gloves",
+				"lvl": 55
+			},
+			{
+				"item": "Body tiara",
+				"lvl": 1
+			},
+			{
+				"item": "Chaos tiara",
+				"lvl": 1
+			},
+			{
+				"item": "Cosmic tiara",
+				"lvl": 1
+			},
+			{
+				"item": "Earth tiara",
+				"lvl": 1
+			},
+			{
+				"item": "Law tiara",
+				"lvl": 1
+			},
+			{
+				"item": "Mind tiara",
+				"lvl": 1
+			},
+			{
+				"item": "Nature tiara",
+				"lvl": 1
+			},
+			{
+				"item": "Water tiara",
+				"lvl": 1
+			},
+			{
+				"item": "Dagon'hai hat",
+				"lvl": 40
+			},
+			{
+				"item": "Dagon'hai robe bottom",
+				"lvl": 40
+			},
+			{
+				"item": "Dagon'hai robe top",
+				"lvl": 40
+			},
+			{
+				"item": "Splitbark helm",
+				"lvl": 40
+			},
+			{
+				"item": "Enchanted hat",
+				"lvl": 45
+			},
+			{
+				"item": "Farseer helm",
+				"lvl": 45
+			},
+			{
+				"item": "Healer hat",
+				"lvl": 50
+			},
+			{
+				"item": "Infinity hat",
+				"lvl": 55
+			},
+			{
+				"item": "Zuriel's hood",
+				"lvl": 78
+			},
+			{
+				"item": "Splitbark legs",
+				"lvl": 40
+			},
+			{
+				"item": "Enchanted robe",
+				"lvl": 45
+			},
+			{
+				"item": "Infinity bottoms",
+				"lvl": 55
+			},
+			{
+				"item": "Zuriel's robe bottom",
+				"lvl": 78
+			},
+			{
+				"item": "Dragonfire ward",
+				"lvl": 70
+			},
+			{
+				"item": "Arcane spirit shield",
+				"lvl": 99,
+				"flags": ["corporeal"]
+			},
+			{
+				"item": "Spectral spirit shield",
+				"lvl": 99,
+				"flags": ["corporeal"]
+			},
+			{
+				"item": ["Ancestral hat", "Ancestral robe bottom", "Ancestral robe top"],
+				"lvl": 75
+			},
+			{
+				"item": [
+					"Virtus boots",
+					"Virtus boots (broken)",
+					"Virtus gloves",
+					"Virtus gloves (broken)",
+					"Virtus mask",
+					"Virtus mask (broken)",
+					"Virtus robe legs",
+					"Virtus robe legs (broken)",
+					"Virtus robe top",
+					"Virtus robe top (broken)"
+				],
+				"lvl": 99
+			}
+		]
+	},
+	{
+		"name": "Melee Armour",
+		"parts": {
+			"plated": 30,
+			"strong": 3,
+			"protective": 2
+		},
+		"items": [
+			{
+				"item": [
+					"Bronze chainbody",
+					"Bronze full helm (t)",
+					"Bronze platebody",
+					"Bronze platelegs",
+					"Bronze platelegs (g)",
+					"Bronze platelegs (t)",
+					"Bronze plateskirt",
+					"Bronze plateskirt (g)",
+					"Bronze plateskirt (t)"
+				],
+				"lvl": 1
+			},
+			{
+				"item": [
+					"Iron full helm (g)",
+					"Iron full helm (t)",
+					"Iron platebody (g)",
+					"Iron platebody (t)",
+					"Iron platelegs (g)",
+					"Iron platelegs (t)",
+					"Iron plateskirt (g)",
+					"Iron plateskirt (t)"
+				],
+				"lvl": 10
+			},
+			{
+				"item": [
+					"Black chainbody",
+					"Black med helm",
+					"Black platebody",
+					"Black platebody (g)",
+					"Black platebody (h1)",
+					"Black platebody (h2)",
+					"Black platebody (h3)",
+					"Black platebody (h4)",
+					"Black platebody (h5)",
+					"Black platebody (t)",
+					"Black skirt",
+					"Black skirt (g)",
+					"Black skirt (t)"
+				],
+				"lvl": 25
+			},
+			{
+				"item": "Initiate cuisse",
+				"lvl": 25
+			},
+			{
+				"item": "Initiate hauberk",
+				"lvl": 25
+			},
+			{
+				"item": "Proselyte hauberk",
+				"lvl": 30
+			},
+			{
+				"item": "Fighter torso",
+				"lvl": 50
+			},
+			{
+				"item": "Rock-shell plate",
+				"lvl": 50
+			},
+			{
+				"item": [
+					"Rune platebody (g)",
+					"Rune platebody (h1)",
+					"Rune platebody (h2)",
+					"Rune platebody (h3)",
+					"Rune platebody (h4)",
+					"Rune platebody (h5)",
+					"Rune platebody (t)"
+				],
+				"lvl": 50
+			},
+			{
+				"item": "Granite body",
+				"lvl": 55
+			},
+			{
+				"item": "Dragon chainbody",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Dragon platebody",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Bandos chestplate",
+				"lvl": 70
+			},
+			{
+				"item": "Statius's platebody",
+				"lvl": 78
+			},
+			{
+				"item": "Vesta's chainbody",
+				"lvl": 78
+			},
+			{
+				"item": "Iron chainbody",
+				"lvl": 10
+			},
+			{
+				"item": "Iron platebody",
+				"lvl": 10
+			},
+			{
+				"item": "Iron platelegs",
+				"lvl": 10
+			},
+			{
+				"item": [
+					"Steel chainbody",
+					"Steel full helm (g)",
+					"Steel platebody",
+					"Steel platebody (t)",
+					"Steel platelegs (t)"
+				],
+				"lvl": 20
+			},
+			{
+				"item": [
+					"Mithril chainbody",
+					"Mithril full helm (g)",
+					"Mithril full helm (t)",
+					"Mithril platebody",
+					"Mithril platebody (g)",
+					"Mithril platebody (t)",
+					"Mithril plateskirt (g)"
+				],
+				"lvl": 30
+			},
+			{
+				"item": "Rune chainbody",
+				"lvl": 50
+			},
+			{
+				"item": "Rune platebody",
+				"lvl": 50
+			},
+			{
+				"item": "Rune platelegs",
+				"lvl": 50
+			},
+			{
+				"item": "Penance gloves",
+				"lvl": 40
+			},
+			{
+				"item": "Rock-shell gloves",
+				"lvl": 50
+			},
+			{
+				"item": "Steel gauntlets",
+				"lvl": 20
+			},
+			{
+				"item": "Black mask",
+				"lvl": 20
+			},
+			{
+				"item": "Black full helm",
+				"lvl": 25
+			},
+			{
+				"item": "Black full helm (g)",
+				"lvl": 25
+			},
+			{
+				"item": "Black full helm (t)",
+				"lvl": 25
+			},
+			{
+				"item": "Black helm (h1)",
+				"lvl": 25
+			},
+			{
+				"item": "Black helm (h2)",
+				"lvl": 25
+			},
+			{
+				"item": "Black helm (h3)",
+				"lvl": 25
+			},
+			{
+				"item": "Black helm (h4)",
+				"lvl": 25
+			},
+			{
+				"item": "Black helm (h5)",
+				"lvl": 25
+			},
+			{
+				"item": "Initiate sallet",
+				"lvl": 25
+			},
+			{
+				"item": "White full helm",
+				"lvl": 25
+			},
+			{
+				"item": "Fremennik helm",
+				"lvl": 30
+			},
+			{
+				"item": "Proselyte sallet",
+				"lvl": 30
+			},
+			{
+				"item": "Berserker helm",
+				"lvl": 45
+			},
+			{
+				"item": "Warrior helm",
+				"lvl": 45
+			},
+			{
+				"item": "Dwarven helmet",
+				"lvl": 50
+			},
+			{
+				"item": "Fire cape",
+				"lvl": 50
+			},
+			{
+				"item": "Rock-shell helm",
+				"lvl": 50
+			},
+			{
+				"item": "Rune full helm (g)",
+				"lvl": 50
+			},
+			{
+				"item": "Rune full helm (t)",
+				"lvl": 50
+			},
+			{
+				"item": "Rune helm (h1)",
+				"lvl": 50
+			},
+			{
+				"item": "Rune helm (h2)",
+				"lvl": 50
+			},
+			{
+				"item": "Rune helm (h3)",
+				"lvl": 50
+			},
+			{
+				"item": "Rune helm (h4)",
+				"lvl": 50
+			},
+			{
+				"item": "Rune helm (h5)",
+				"lvl": 50
+			},
+			{
+				"item": "Granite helm",
+				"lvl": 55
+			},
+			{
+				"item": "Helm of neitiznot",
+				"lvl": 55
+			},
+			{
+				"item": "Dragon full helm",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Statius's full helm",
+				"lvl": 78
+			},
+			{
+				"item": ["Bronze full helm", "Bronze full helm (g)", "Bronze platebody (g)", "Bronze platebody (t)"],
+				"lvl": 1
+			},
+			{
+				"item": "Bronze med helm",
+				"lvl": 1
+			},
+			{
+				"item": "Iron full helm",
+				"lvl": 10
+			},
+			{
+				"item": "Iron med helm",
+				"lvl": 10
+			},
+			{
+				"item": "Steel full helm",
+				"lvl": 20
+			},
+			{
+				"item": "Steel med helm",
+				"lvl": 20
+			},
+			{
+				"item": "Mithril full helm",
+				"lvl": 30
+			},
+			{
+				"item": "Mithril med helm",
+				"lvl": 30
+			},
+			{
+				"item": "Rune full helm",
+				"lvl": 50
+			},
+			{
+				"item": "Rune med helm",
+				"lvl": 50
+			},
+			{
+				"item": "Black platelegs",
+				"lvl": 25
+			},
+			{
+				"item": "Black platelegs (g)",
+				"lvl": 25
+			},
+			{
+				"item": "Black platelegs (t)",
+				"lvl": 25
+			},
+			{
+				"item": "Black plateskirt",
+				"lvl": 25
+			},
+			{
+				"item": "Black plateskirt (g)",
+				"lvl": 25
+			},
+			{
+				"item": "Black plateskirt (t)",
+				"lvl": 25
+			},
+			{
+				"item": "White platelegs",
+				"lvl": 25
+			},
+			{
+				"item": "White plateskirt",
+				"lvl": 25
+			},
+			{
+				"item": "Proselyte cuisse",
+				"lvl": 30
+			},
+			{
+				"item": "Proselyte tasset",
+				"lvl": 30
+			},
+			{
+				"item": "Rock-shell legs",
+				"lvl": 50
+			},
+			{
+				"item": "Rune platelegs (g)",
+				"lvl": 50
+			},
+			{
+				"item": "Rune platelegs (t)",
+				"lvl": 50
+			},
+			{
+				"item": "Rune plateskirt (g)",
+				"lvl": 50
+			},
+			{
+				"item": "Rune plateskirt (t)",
+				"lvl": 50
+			},
+			{
+				"item": "Granite legs",
+				"lvl": 55
+			},
+			{
+				"item": "Dragon platelegs",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Dragon plateskirt",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Bandos tassets",
+				"lvl": 70
+			},
+			{
+				"item": "Statius's platelegs",
+				"lvl": 78
+			},
+			{
+				"item": "Vesta's plateskirt",
+				"lvl": 78
+			},
+			{
+				"item": "Iron plateskirt",
+				"lvl": 10
+			},
+			{
+				"item": [
+					"Steel full helm (t)",
+					"Steel kiteshield (g)",
+					"Steel platebody (g)",
+					"Steel platelegs",
+					"Steel platelegs (g)",
+					"Steel plateskirt",
+					"Steel plateskirt (g)",
+					"Steel plateskirt (t)"
+				],
+				"lvl": 20
+			},
+			{
+				"item": [
+					"Mithril platelegs",
+					"Mithril platelegs (g)",
+					"Mithril platelegs (t)",
+					"Mithril plateskirt (t)"
+				],
+				"lvl": 30
+			},
+			{
+				"item": "Mithril plateskirt",
+				"lvl": 30
+			},
+			{
+				"item": [
+					"Adamant chainbody",
+					"Adamant full helm",
+					"Adamant full helm (g)",
+					"Adamant full helm (t)",
+					"Adamant helm (h1)",
+					"Adamant helm (h2)",
+					"Adamant helm (h3)",
+					"Adamant helm (h4)",
+					"Adamant helm (h5)",
+					"Adamant med helm",
+					"Adamant platebody",
+					"Adamant platebody (g)",
+					"Adamant platebody (h1)",
+					"Adamant platebody (h2)",
+					"Adamant platebody (h3)",
+					"Adamant platebody (h4)",
+					"Adamant platebody (h5)",
+					"Adamant platebody (t)",
+					"Adamant platelegs",
+					"Adamant platelegs (g)",
+					"Adamant platelegs (t)",
+					"Adamant plateskirt",
+					"Adamant plateskirt (g)",
+					"Adamant plateskirt (t)"
+				],
+				"lvl": 40
+			},
+			{
+				"item": [
+					"Ancient full helm",
+					"Ancient platebody",
+					"Ancient platelegs",
+					"Ancient plateskirt",
+					"Armadyl full helm",
+					"Armadyl kiteshield",
+					"Armadyl platebody",
+					"Armadyl platelegs",
+					"Armadyl plateskirt",
+					"Bandos full helm",
+					"Bandos kiteshield",
+					"Bandos platebody",
+					"Bandos platelegs",
+					"Bandos plateskirt",
+					"Guthix full helm",
+					"Guthix kiteshield",
+					"Guthix platebody",
+					"Guthix platelegs",
+					"Guthix plateskirt",
+					"Rune plateskirt",
+					"Saradomin full helm",
+					"Saradomin kiteshield",
+					"Saradomin platebody",
+					"Saradomin platelegs",
+					"Saradomin plateskirt",
+					"Zamorak full helm",
+					"Zamorak full helm",
+					"Zamorak kiteshield",
+					"Zamorak kiteshield",
+					"Zamorak platebody",
+					"Zamorak platebody",
+					"Zamorak platelegs",
+					"Zamorak platelegs",
+					"Zamorak plateskirt",
+					"Zamorak plateskirt"
+				],
+				"lvl": 50
+			},
+			{
+				"item": "Bronze boots",
+				"lvl": 1
+			},
+			{
+				"item": "Steel boots",
+				"lvl": 10
+			},
+			{
+				"item": "Black boots",
+				"lvl": 25
+			},
+			{
+				"item": "Mithril boots",
+				"lvl": 30
+			},
+			{
+				"item": "Adamant boots",
+				"lvl": 40
+			},
+			{
+				"item": "Rune boots",
+				"lvl": 50
+			},
+			{
+				"item": "Dragon med helm",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "White boots",
+				"lvl": 25
+			},
+			{
+				"item": "Rock-shell boots",
+				"lvl": 50
+			},
+			{
+				"item": "Dragon boots",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Royal dragon platebody",
+				"lvl": 80,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": ["Eternal boots", "Pegasian boots", "Primordial boots"],
+				"lvl": 85
+			},
+			{
+				"item": "Bandos boots",
+				"lvl": 70
+			},
+			{
+				"item": ["Dragonstone full helm", "Dragonstone platebody", "Dragonstone platelegs"],
+				"lvl": 75
+			},
+			{
+				"item": [
+					"Torva boots",
+					"Torva boots (broken)",
+					"Torva full helm",
+					"Torva full helm (broken)",
+					"Torva gloves",
+					"Torva gloves (broken)",
+					"Torva platebody",
+					"Torva platebody (broken)",
+					"Torva platelegs",
+					"Torva platelegs (broken)"
+				],
+				"lvl": 99
+			},
+			{
+				"item": ["Abyssal cape", "Avernic defender hilt"],
+				"lvl": 99
+			},
+			{
+				"item": ["Justiciar chestguard", "Justiciar faceguard", "Justiciar legguards"],
+				"lvl": 99,
+				"flags": ["justiciar"]
+			}
+		]
+	},
+	{
+		"name": "Metals",
+		"description": "Metal bars, dart tips.",
+		"parts": {
+			"strong": 10,
+			"plated": 20,
+			"heavy": 10,
+			"metallic": 60
+		},
+		"items": [
+			{
+				"item": "Bronze bar",
+				"lvl": 20
+			},
+			{
+				"item": "Bronze dart tip",
+				"lvl": 2
+			},
+			{
+				"item": "Blurite bar",
+				"lvl": 8
+			},
+			{
+				"item": "Iron bar",
+				"lvl": 40
+			},
+			{
+				"item": "Iron dart tip",
+				"lvl": 3
+			},
+			{
+				"item": "Silver bar",
+				"lvl": 50
+			},
+			{
+				"item": "Steel bar",
+				"lvl": 60
+			},
+			{
+				"item": "Steel dart tip",
+				"lvl": 5
+			},
+			{
+				"item": "Mithril bar",
+				"lvl": 85
+			},
+			{
+				"item": "Mithril dart tip",
+				"lvl": 7
+			},
+			{
+				"item": "Gold bar",
+				"lvl": 50
+			},
+			{
+				"item": "Adamantite bar",
+				"lvl": 95
+			},
+			{
+				"item": "Adamant dart tip",
+				"lvl": 8
+			},
+			{
+				"item": "Runite bar",
+				"lvl": 99
+			},
+			{
+				"item": "Rune dart tip",
+				"lvl": 9
+			},
+			{
+				"item": "Dragon dart tip",
+				"lvl": 80,
+				"flags": ["orikalkum"]
+			}
+		]
+	},
+	{
+		"name": "Mystery Boxes",
+		"description": "Mystery boxes!",
+		"parts": {
+			"mysterious": 100
+		},
+		"items": [
+			{
+				"item": "Tradeable Mystery Box",
+				"lvl": 99
+			},
+			{
+				"item": "Untradeable Mystery Box",
+				"lvl": 99
+			},
+			{
+				"item": "Equippable mystery box",
+				"lvl": 99
+			},
+			{
+				"item": "Clothing Mystery Box",
+				"lvl": 99
+			},
+			{
+				"item": "Pet Mystery Box",
+				"lvl": 99
+			}
+		]
+	},
+	{
+		"name": "Ores",
+		"parts": {
+			"rocky": 70,
+			"heavy": 20,
+			"metallic": 10
+		},
+		"items": [
+			{
+				"item": "Copper ore",
+				"lvl": 1
+			},
+			{
+				"item": "Tin ore",
+				"lvl": 1
+			},
+			{
+				"item": "Iron ore",
+				"lvl": 15
+			},
+			{
+				"item": "Silver ore",
+				"lvl": 20
+			},
+			{
+				"item": "Coal",
+				"lvl": 30
+			},
+			{
+				"item": "Gold ore",
+				"lvl": 40
+			},
+			{
+				"item": "Mithril ore",
+				"lvl": 60
+			},
+			{
+				"item": "Adamantite ore",
+				"lvl": 80
+			},
+			{
+				"item": "Runite ore",
+				"lvl": 95
+			}
+		]
+	},
+	{
+		"name": "Organic",
+		"parts": {
+			"organic": 100
+		},
+		"items": [
+			{
+				"item": "Potato seed",
+				"lvl": 1
+			},
+			{
+				"item": "Marigold seed",
+				"lvl": 2
+			},
+			{
+				"item": "Barley seed",
+				"lvl": 3
+			},
+			{
+				"item": "Hammerstone seed",
+				"lvl": 4
+			},
+			{
+				"item": "Onion seed",
+				"lvl": 5
+			},
+			{
+				"item": "Cabbage seed",
+				"lvl": 7
+			},
+			{
+				"item": "Asgarnian seed",
+				"lvl": 8
+			},
+			{
+				"item": "Guam seed",
+				"lvl": 9
+			},
+			{
+				"item": "Delphinium seed",
+				"lvl": 10
+			},
+			{
+				"item": "Pink rose seed",
+				"lvl": 10
+			},
+			{
+				"item": "Red rose seed",
+				"lvl": 10
+			},
+			{
+				"item": "Redberry seed",
+				"lvl": 10
+			},
+			{
+				"item": "Snowdrop seed",
+				"lvl": 10
+			},
+			{
+				"item": "Vine seed",
+				"lvl": 10
+			},
+			{
+				"item": "White rose seed",
+				"lvl": 10
+			},
+			{
+				"item": "Rosemary seed",
+				"lvl": 11
+			},
+			{
+				"item": "Tomato seed",
+				"lvl": 12
+			},
+			{
+				"item": "Jute seed",
+				"lvl": 13
+			},
+			{
+				"item": "Marrentill seed",
+				"lvl": 14
+			},
+			{
+				"item": "Yanillian seed",
+				"lvl": 16
+			},
+			{
+				"item": "Kelda seed",
+				"lvl": 17
+			},
+			{
+				"item": "Tarromin seed",
+				"lvl": 19
+			},
+			{
+				"item": "Sweetcorn seed",
+				"lvl": 20
+			},
+			{
+				"item": "Krandorian seed",
+				"lvl": 21
+			},
+			{
+				"item": "Cadavaberry seed",
+				"lvl": 22
+			},
+			{
+				"item": "Nasturtium seed",
+				"lvl": 24
+			},
+			{
+				"item": "White tree shoot",
+				"lvl": 25
+			},
+			{
+				"item": "Woad seed",
+				"lvl": 25
+			},
+			{
+				"item": "Harralander seed",
+				"lvl": 26
+			},
+			{
+				"item": "Limpwurt seed",
+				"lvl": 26
+			},
+			{
+				"item": "Apple tree seed",
+				"lvl": 27
+			},
+			{
+				"item": "Wildblood seed",
+				"lvl": 28
+			},
+			{
+				"item": "Gout tuber",
+				"lvl": 29
+			},
+			{
+				"item": "Willow seed",
+				"lvl": 30
+			},
+			{
+				"item": "Strawberry seed",
+				"lvl": 31
+			},
+			{
+				"item": "Ranarr seed",
+				"lvl": 32
+			},
+			{
+				"item": "Banana tree seed",
+				"lvl": 33
+			},
+			{
+				"item": "Teak seed",
+				"lvl": 35
+			},
+			{
+				"item": "Dwellberry seed",
+				"lvl": 36
+			},
+			{
+				"item": "Toadflax seed",
+				"lvl": 38
+			},
+			{
+				"item": "Orange tree seed",
+				"lvl": 39
+			},
+			{
+				"item": "Blindweed seed",
+				"lvl": 40
+			},
+			{
+				"item": "Curry tree seed",
+				"lvl": 42
+			},
+			{
+				"item": "Irit seed",
+				"lvl": 44
+			},
+			{
+				"item": "Maple seed",
+				"lvl": 45
+			},
+			{
+				"item": "Watermelon seed",
+				"lvl": 47
+			},
+			{
+				"item": "Jangerberry seed",
+				"lvl": 48
+			},
+			{
+				"item": "Avantoe seed",
+				"lvl": 50
+			},
+			{
+				"item": "Pineapple seed",
+				"lvl": 51
+			},
+			{
+				"item": "White lily seed",
+				"lvl": 52
+			},
+			{
+				"item": "Mahogany seed",
+				"lvl": 55
+			},
+			{
+				"item": "Cactus seed",
+				"lvl": 55
+			},
+			{
+				"item": "Kwuarm seed",
+				"lvl": 56
+			},
+			{
+				"item": "Papaya tree seed",
+				"lvl": 57
+			},
+			{
+				"item": "Whiteberry seed",
+				"lvl": 59
+			},
+			{
+				"item": "Yew seed",
+				"lvl": 60
+			},
+			{
+				"item": "Snapdragon seed",
+				"lvl": 62
+			},
+			{
+				"item": "Belladonna seed",
+				"lvl": 63
+			},
+			{
+				"item": "Cadantine seed",
+				"lvl": 67
+			},
+			{
+				"item": "Palm tree seed",
+				"lvl": 68
+			},
+			{
+				"item": "Grape seed",
+				"lvl": 68
+			},
+			{
+				"item": "Poison ivy seed",
+				"lvl": 70
+			},
+			{
+				"item": "Calquat tree seed",
+				"lvl": 72
+			},
+			{
+				"item": "Lantadyme seed",
+				"lvl": 73
+			},
+			{
+				"item": "Magic seed",
+				"lvl": 75
+			},
+			{
+				"item": "Dwarf weed seed",
+				"lvl": 79
+			},
+			{
+				"item": "Snape grass seed",
+				"lvl": 80
+			},
+			{
+				"item": "Dragonfruit tree seed",
+				"lvl": 80
+			},
+			{
+				"item": "Spirit seed",
+				"lvl": 83
+			},
+			{
+				"item": "Torstol seed",
+				"lvl": 85
+			},
+			{
+				"item": "Potato cactus seed",
+				"lvl": 86
+			},
+			{
+				"item": "Avocado seed",
+				"lvl": 99
+			},
+			{
+				"item": "Athelas seed",
+				"lvl": 99
+			},
+			{
+				"item": "Mango seed",
+				"lvl": 90
+			},
+			{
+				"item": "Lychee seed",
+				"lvl": 90
+			},
+			{
+				"item": "Mysterious seed",
+				"lvl": 99
+			},
+			{
+				"item": [
+					"Anchovies",
+					"Anchovy pizza",
+					"Apple pie",
+					"Bacon",
+					"Burnt turkey",
+					"Cheese",
+					"Chilli con carne",
+					"Chilli potato",
+					"Choc saturday",
+					"Choc-ice",
+					"Choc'rock",
+					"Chocchip crunchies",
+					"Chocolate bar",
+					"Chocolate bomb",
+					"Chocolate dust",
+					"Chocolified skull",
+					"Chopped garlic",
+					"Chopped onion",
+					"Chopped tomato",
+					"Chopped tuna",
+					"Chopped ugthanki",
+					"Cooked chompy",
+					"Cooked crab meat",
+					"Cooked jubbly",
+					"Cooked meat",
+					"Cooked mystery meat",
+					"Cooked oomlie wrap",
+					"Cooked rabbit",
+					"Cooked slimy eel",
+					"Cooked sweetcorn",
+					"Cooking apple",
+					"Curry leaf",
+					"Desert goat horn",
+					"Dragon bitter",
+					"Dragon bitter",
+					"Dragon bitter(4)",
+					"Dragon bitter(m)",
+					"Dragon bitter(m4)",
+					"Dwellberries",
+					"Egg",
+					"Egg and tomato",
+					"Egg potato",
+					"Fat snail",
+					"Fish chunks",
+					"Fish food",
+					"Fish n chips",
+					"Fish offcuts",
+					"Garden pie",
+					"Pineapple chunks",
+					"Pineapple pizza",
+					"Pineapple punch",
+					"Pineapple ring",
+					"Pineapple sapling",
+					"Pot of cornflour",
+					"Pot of cream",
+					"Pot of flour",
+					"Potato",
+					"Potato with butter",
+					"Premade blurb' sp.",
+					"Premade c+t batta",
+					"Premade ch' crunch",
+					"Premade choc bomb",
+					"Premade choc s'dy",
+					"Premade dr' dragon",
+					"Premade fr' blast",
+					"Premade fr't batta",
+					"Premade p' punch",
+					"Premade s'y crunch",
+					"Premade sgg",
+					"Premade t'd batta",
+					"Premade t'd crunch",
+					"Premade ttl",
+					"Premade veg ball",
+					"Premade veg batta",
+					"Premade w'm batta",
+					"Premade w'm crun'",
+					"Premade wiz blz'd",
+					"Premade worm hole",
+					"Pretzel",
+					"Rainbow fish",
+					"Raw admiral pie",
+					"Raw bear meat",
+					"Raw beast meat",
+					"Raw boar meat",
+					"Raw cave eel",
+					"Raw chompy",
+					"Raw garden pie",
+					"Raw jubbly",
+					"Raw mud pie",
+					"Raw mystery meat",
+					"Raw oomlie",
+					"Raw rainbow fish",
+					"Raw slimy eel",
+					"Raw turkey",
+					"Raw ugthanki meat",
+					"Raw yak meat",
+					"Redberries",
+					"Scrambled egg",
+					"Sliced mushrooms",
+					"Spicy crunchies",
+					"Spicy minced meat",
+					"Spicy sauce",
+					"Spicy tomato",
+					"Spider carcass",
+					"Spider on shaft",
+					"Spider on stick",
+					"Spinach roll",
+					"Uncooked apple pie",
+					"Uncooked berry pie",
+					"Uncooked botanical pie",
+					"Uncooked dragonfruit pie",
+					"Uncooked egg",
+					"Uncooked meat pie",
+					"Uncooked mushroom pie",
+					"Vegetable batta",
+					"Weeds",
+					"Whisky",
+					"Woad leaf",
+					"Wool",
+					"Worm batta",
+					"Worm crunchies",
+					"Worm hole",
+					"Wrapped oomlie",
+					"Yanillian hops",
+					"Yellow flowers"
+				],
+				"lvl": 1
+			},
+			{
+				"item": "Yew roots",
+				"lvl": 35
+			},
+			{
+				"item": "Magic roots",
+				"lvl": 55
+			},
+			{
+				"item": "Limpwurt root",
+				"lvl": 35
+			},
+			{
+				"item": "Giant seaweed",
+				"lvl": 45
+			},
+			{
+				"item": "Red spiders' eggs",
+				"lvl": 45
+			},
+			{
+				"item": "Potato cactus",
+				"lvl": 55
+			},
+			{
+				"item": "Mort myre fungus",
+				"lvl": 55
+			},
+			{
+				"item": "Zulrah's scales",
+				"lvl": 55
+			},
+			{
+				"item": "Black salamander",
+				"lvl": 70
+			},
+			{
+				"item": "Chimpchompa",
+				"lvl": 70
+			},
+			{
+				"item": "Big banana",
+				"lvl": 70
+			},
+			{
+				"item": "Ignecarus scales",
+				"lvl": 85
+			},
+			{
+				"item": "Simple kibble",
+				"lvl": 90
+			},
+			{
+				"item": "Avocado",
+				"lvl": 90
+			},
+			{
+				"item": "Mango",
+				"lvl": 90
+			},
+			{
+				"item": "Lychee",
+				"lvl": 90
+			},
+			{
+				"item": "Delicious kibble",
+				"lvl": 95
+			},
+			{
+				"item": ["Dragon egg", "Extraordinary kibble", "Ignecarus dragonclaw"],
+				"lvl": 99
+			}
+		]
+	},
+	{
+		"name": "Pious",
+		"parts": {
+			"pious": 80,
+			"simple": 20
+		},
+		"items": [
+			{
+				"item": [
+					"Monk's robe",
+					"Monk's robe (g)",
+					"Monk's robe (t)",
+					"Monk's robe top",
+					"Monk's robe top (g)",
+					"Monk's robe top (t)"
+				],
+				"lvl": 10
+			},
+			{
+				"item": ["Ancient blessing", "Holy blessing", "Peaceful blessing", "Unholy blessing", "War blessing"],
+				"lvl": 70,
+				"flags": ["treasure_trails"]
+			},
+			{
+				"item": [
+					"Ancient cloak",
+					"Ancient crozier",
+					"Ancient mitre",
+					"Ancient page 1",
+					"Ancient page 2",
+					"Ancient page 3",
+					"Ancient page 4",
+					"Ancient robe legs",
+					"Ancient robe top",
+					"Armadyl cloak",
+					"Armadyl crozier",
+					"Armadyl mitre",
+					"Armadyl page 1",
+					"Armadyl page 2",
+					"Armadyl page 3",
+					"Armadyl page 4",
+					"Armadyl robe legs",
+					"Armadyl robe top",
+					"Armadyl stole",
+					"Bandos cloak",
+					"Bandos crozier",
+					"Bandos mitre",
+					"Bandos page 1",
+					"Bandos page 2",
+					"Bandos page 3",
+					"Bandos page 4",
+					"Bandos robe legs",
+					"Bandos robe top",
+					"Bandos stole",
+					"Guthix cloak",
+					"Guthix crozier",
+					"Guthix mitre",
+					"Guthix page 1",
+					"Guthix page 2",
+					"Guthix page 3",
+					"Guthix page 4",
+					"Guthix robe legs",
+					"Guthix robe top",
+					"Guthix stole",
+					"Saradomin cloak",
+					"Saradomin crozier",
+					"Saradomin mitre",
+					"Saradomin page 1",
+					"Saradomin page 2",
+					"Saradomin page 3",
+					"Saradomin page 4",
+					"Saradomin robe legs",
+					"Saradomin robe top",
+					"Saradomin stole",
+					"Zamorak cloak",
+					"Zamorak crozier",
+					"Zamorak mitre",
+					"Zamorak page 1",
+					"Zamorak page 2",
+					"Zamorak page 3",
+					"Zamorak page 4",
+					"Zamorak robe legs",
+					"Zamorak robe top",
+					"Zamorak stole"
+				],
+				"lvl": 70,
+				"flags": ["treasure_trails"]
+			},
+			{
+				"item": ["Holy sandals", "Holy wraps"],
+				"lvl": 80
+			},
+			{
+				"item": ["Godsword shard 1", "Godsword shard 2", "Godsword shard 3"],
+				"lvl": 80
+			},
+			{
+				"item": ["Ancient hilt", "Armadyl hilt", "Bandos hilt", "Saradomin hilt", "Zamorak hilt"],
+				"lvl": 90
+			},
+			{
+				"item": ["Ancestral components", "Armadylean components", "Bandosian components", "Holy elixir"],
+				"lvl": 90
+			}
+		]
+	},
+	{
+		"name": "Planks",
+		"parts": {
+			"wooden": 100
+		},
+		"items": [
+			{
+				"item": "Plank",
+				"lvl": 20
+			},
+			{
+				"item": "Oak plank",
+				"lvl": 40
+			},
+			{
+				"item": "Teak plank",
+				"lvl": 80
+			},
+			{
+				"item": "Mahogany plank",
+				"lvl": 90
+			},
+			{
+				"item": "Elder plank",
+				"lvl": 99
+			}
+		]
+	},
+	{
+		"name": "Potion",
+		"parts": {
+			"precious": 35,
+			"organic": 32,
+			"magic": 10
+		},
+		"items": [
+			{
+				"item": "Attack potion(1)",
+				"lvl": 1
+			},
+			{
+				"item": "Attack potion(2)",
+				"lvl": 2
+			},
+			{
+				"item": "Attack potion(3)",
+				"lvl": 3
+			},
+			{
+				"item": "Attack potion(4)",
+				"lvl": 3
+			},
+			{
+				"item": "Antipoison(1)",
+				"lvl": 2
+			},
+			{
+				"item": "Antipoison(2)",
+				"lvl": 3
+			},
+			{
+				"item": "Antipoison(3)",
+				"lvl": 4
+			},
+			{
+				"item": "Antipoison(4)",
+				"lvl": 5
+			},
+			{
+				"item": "Strength potion(1)",
+				"lvl": 3
+			},
+			{
+				"item": "Strength potion(2)",
+				"lvl": 6
+			},
+			{
+				"item": "Strength potion(3)",
+				"lvl": 9
+			},
+			{
+				"item": "Strength potion(4)",
+				"lvl": 12
+			},
+			{
+				"item": "Serum 207 (1)",
+				"lvl": 4
+			},
+			{
+				"item": "Serum 207 (2)",
+				"lvl": 8
+			},
+			{
+				"item": "Serum 207 (3)",
+				"lvl": 12
+			},
+			{
+				"item": "Serum 207 (4)",
+				"lvl": 15
+			},
+			{
+				"item": "Compost potion(1)",
+				"lvl": 6
+			},
+			{
+				"item": "Compost potion(2)",
+				"lvl": 11
+			},
+			{
+				"item": "Compost potion(3)",
+				"lvl": 17
+			},
+			{
+				"item": "Compost potion(4)",
+				"lvl": 22
+			},
+			{
+				"item": "Restore potion(1)",
+				"lvl": 6
+			},
+			{
+				"item": "Restore potion(2)",
+				"lvl": 11
+			},
+			{
+				"item": "Restore potion(3)",
+				"lvl": 17
+			},
+			{
+				"item": "Restore potion(4)",
+				"lvl": 22
+			},
+			{
+				"item": "Guthix balance(1)",
+				"lvl": 6
+			},
+			{
+				"item": "Guthix balance(2)",
+				"lvl": 11
+			},
+			{
+				"item": "Guthix balance(3)",
+				"lvl": 17
+			},
+			{
+				"item": "Guthix balance(4)",
+				"lvl": 22
+			},
+			{
+				"item": "Energy potion(1)",
+				"lvl": 7
+			},
+			{
+				"item": "Energy potion(2)",
+				"lvl": 13
+			},
+			{
+				"item": "Energy potion(3)",
+				"lvl": 20
+			},
+			{
+				"item": "Energy potion(4)",
+				"lvl": 26
+			},
+			{
+				"item": "Defence potion(1)",
+				"lvl": 8
+			},
+			{
+				"item": "Defence potion(2)",
+				"lvl": 15
+			},
+			{
+				"item": "Defence potion(3)",
+				"lvl": 23
+			},
+			{
+				"item": "Defence potion(4)",
+				"lvl": 30
+			},
+			{
+				"item": "Agility potion(1)",
+				"lvl": 9
+			},
+			{
+				"item": "Agility potion(2)",
+				"lvl": 17
+			},
+			{
+				"item": "Agility potion(3)",
+				"lvl": 26
+			},
+			{
+				"item": "Agility potion(4)",
+				"lvl": 34
+			},
+			{
+				"item": "Combat potion(1)",
+				"lvl": 9
+			},
+			{
+				"item": "Combat potion(2)",
+				"lvl": 18
+			},
+			{
+				"item": "Combat potion(3)",
+				"lvl": 27
+			},
+			{
+				"item": "Combat potion(4)",
+				"lvl": 36
+			},
+			{
+				"item": "Prayer potion(1)",
+				"lvl": 10
+			},
+			{
+				"item": "Prayer potion(2)",
+				"lvl": 19
+			},
+			{
+				"item": "Prayer potion(3)",
+				"lvl": 29
+			},
+			{
+				"item": "Prayer potion(4)",
+				"lvl": 38
+			},
+			{
+				"item": "Super attack(1)",
+				"lvl": 12
+			},
+			{
+				"item": "Super attack(2)",
+				"lvl": 23
+			},
+			{
+				"item": "Super attack(3)",
+				"lvl": 34
+			},
+			{
+				"item": "Super attack(4)",
+				"lvl": 45
+			},
+			{
+				"item": "Superantipoison(1)",
+				"lvl": 12
+			},
+			{
+				"item": "Superantipoison(2)",
+				"lvl": 24
+			},
+			{
+				"item": "Superantipoison(3)",
+				"lvl": 36
+			},
+			{
+				"item": "Superantipoison(4)",
+				"lvl": 48
+			},
+			{
+				"item": "Fishing potion(1)",
+				"lvl": 13
+			},
+			{
+				"item": "Fishing potion(2)",
+				"lvl": 25
+			},
+			{
+				"item": "Fishing potion(3)",
+				"lvl": 38
+			},
+			{
+				"item": "Fishing potion(4)",
+				"lvl": 50
+			},
+			{
+				"item": "Super energy(1)",
+				"lvl": 13
+			},
+			{
+				"item": "Super energy(2)",
+				"lvl": 26
+			},
+			{
+				"item": "Super energy(3)",
+				"lvl": 39
+			},
+			{
+				"item": "Super energy(4)",
+				"lvl": 52
+			},
+			{
+				"item": "Hunter potion(1)",
+				"lvl": 14
+			},
+			{
+				"item": "Hunter potion(2)",
+				"lvl": 27
+			},
+			{
+				"item": "Hunter potion(3)",
+				"lvl": 40
+			},
+			{
+				"item": "Hunter potion(4)",
+				"lvl": 53
+			},
+			{
+				"item": "Super strength(1)",
+				"lvl": 14
+			},
+			{
+				"item": "Super strength(2)",
+				"lvl": 28
+			},
+			{
+				"item": "Super strength(3)",
+				"lvl": 42
+			},
+			{
+				"item": "Super strength(4)",
+				"lvl": 55
+			},
+			{
+				"item": "Super restore(1)",
+				"lvl": 16
+			},
+			{
+				"item": "Super restore(2)",
+				"lvl": 32
+			},
+			{
+				"item": "Super restore(3)",
+				"lvl": 48
+			},
+			{
+				"item": "Super restore(4)",
+				"lvl": 63
+			},
+			{
+				"item": "Super defence(1)",
+				"lvl": 17
+			},
+			{
+				"item": "Super defence(2)",
+				"lvl": 33
+			},
+			{
+				"item": "Super defence(3)",
+				"lvl": 50
+			},
+			{
+				"item": "Super defence(4)",
+				"lvl": 66
+			},
+			{
+				"item": "Antidote+(1)",
+				"lvl": 17
+			},
+			{
+				"item": "Antidote+(2)",
+				"lvl": 34
+			},
+			{
+				"item": "Antidote+(3)",
+				"lvl": 51
+			},
+			{
+				"item": "Antidote+(4)",
+				"lvl": 68
+			},
+			{
+				"item": "Antifire potion(1)",
+				"lvl": 18
+			},
+			{
+				"item": "Antifire potion(2)",
+				"lvl": 35
+			},
+			{
+				"item": "Antifire potion(3)",
+				"lvl": 52
+			},
+			{
+				"item": "Antifire potion(4)",
+				"lvl": 69
+			},
+			{
+				"item": "Ranging potion(1)",
+				"lvl": 18
+			},
+			{
+				"item": "Ranging potion(2)",
+				"lvl": 36
+			},
+			{
+				"item": "Ranging potion(3)",
+				"lvl": 54
+			},
+			{
+				"item": "Ranging potion(4)",
+				"lvl": 72
+			},
+			{
+				"item": "Magic potion(1)",
+				"lvl": 19
+			},
+			{
+				"item": "Magic potion(2)",
+				"lvl": 38
+			},
+			{
+				"item": "Magic potion(3)",
+				"lvl": 57
+			},
+			{
+				"item": "Magic potion(4)",
+				"lvl": 76
+			},
+			{
+				"item": "Stamina potion(1)",
+				"lvl": 20
+			},
+			{
+				"item": "Stamina potion(2)",
+				"lvl": 39
+			},
+			{
+				"item": "Stamina potion(3)",
+				"lvl": 58
+			},
+			{
+				"item": "Stamina potion(4)",
+				"lvl": 77
+			},
+			{
+				"item": "Zamorak brew(1)",
+				"lvl": 20
+			},
+			{
+				"item": "Zamorak brew(2)",
+				"lvl": 39
+			},
+			{
+				"item": "Zamorak brew(3)",
+				"lvl": 59
+			},
+			{
+				"item": "Zamorak brew(4)",
+				"lvl": 78
+			},
+			{
+				"item": "Antidote++(1)",
+				"lvl": 20
+			},
+			{
+				"item": "Antidote++(2)",
+				"lvl": 40
+			},
+			{
+				"item": "Antidote++(3)",
+				"lvl": 60
+			},
+			{
+				"item": "Antidote++(4)",
+				"lvl": 79
+			},
+			{
+				"item": "Bastion potion(1)",
+				"lvl": 20
+			},
+			{
+				"item": "Bastion potion(2)",
+				"lvl": 40
+			},
+			{
+				"item": "Bastion potion(3)",
+				"lvl": 60
+			},
+			{
+				"item": "Bastion potion(4)",
+				"lvl": 80
+			},
+			{
+				"item": "Battlemage potion(1)",
+				"lvl": 20
+			},
+			{
+				"item": "Battlemage potion(2)",
+				"lvl": 40
+			},
+			{
+				"item": "Battlemage potion(3)",
+				"lvl": 60
+			},
+			{
+				"item": "Battlemage potion(4)",
+				"lvl": 80
+			},
+			{
+				"item": "Saradomin brew(1)",
+				"lvl": 21
+			},
+			{
+				"item": "Saradomin brew(2)",
+				"lvl": 41
+			},
+			{
+				"item": "Saradomin brew(3)",
+				"lvl": 61
+			},
+			{
+				"item": "Saradomin brew(4)",
+				"lvl": 81
+			},
+			{
+				"item": "Extended antifire(1)",
+				"lvl": 21
+			},
+			{
+				"item": "Extended antifire(2)",
+				"lvl": 42
+			},
+			{
+				"item": "Extended antifire(3)",
+				"lvl": 63
+			},
+			{
+				"item": "Extended antifire(4)",
+				"lvl": 84
+			},
+			{
+				"item": "Anti-venom(1)",
+				"lvl": 22
+			},
+			{
+				"item": "Anti-venom(2)",
+				"lvl": 44
+			},
+			{
+				"item": "Anti-venom(3)",
+				"lvl": 66
+			},
+			{
+				"item": "Anti-venom(4)",
+				"lvl": 87
+			},
+			{
+				"item": "Super combat potion(1)",
+				"lvl": 23
+			},
+			{
+				"item": "Super combat potion(2)",
+				"lvl": 45
+			},
+			{
+				"item": "Super combat potion(3)",
+				"lvl": 68
+			},
+			{
+				"item": "Super combat potion(4)",
+				"lvl": 90
+			},
+			{
+				"item": "Super antifire potion(1)",
+				"lvl": 23
+			},
+			{
+				"item": "Super antifire potion(2)",
+				"lvl": 46
+			},
+			{
+				"item": "Super antifire potion(3)",
+				"lvl": 69
+			},
+			{
+				"item": "Super antifire potion(4)",
+				"lvl": 92
+			},
+			{
+				"item": "Anti-venom+(1)",
+				"lvl": 24
+			},
+			{
+				"item": "Anti-venom+(2)",
+				"lvl": 47
+			},
+			{
+				"item": "Anti-venom+(3)",
+				"lvl": 71
+			},
+			{
+				"item": "Anti-venom+(4)",
+				"lvl": 94
+			},
+			{
+				"item": "Extended super antifire(1)",
+				"lvl": 25
+			},
+			{
+				"item": "Extended super antifire(2)",
+				"lvl": 49
+			},
+			{
+				"item": "Extended super antifire(3)",
+				"lvl": 74
+			},
+			{
+				"item": "Extended super antifire(4)",
+				"lvl": 98
+			},
+			{
+				"item": "Sanfew serum(1)",
+				"lvl": 17
+			},
+			{
+				"item": "Sanfew serum(2)",
+				"lvl": 33
+			},
+			{
+				"item": "Sanfew serum(3)",
+				"lvl": 49
+			},
+			{
+				"item": "Sanfew serum(4)",
+				"lvl": 65
+			},
+			{
+				"item": ["Heat res. brew", "Heat res. restore"],
+				"lvl": 99
+			}
+		]
+	},
+	{
+		"name": "Projectiles",
+		"parts": {
+			"simple": 10,
+			"swift": 30,
+			"sharp": 60
+		},
+		"items": [
+			{
+				"item": "Bronze dart",
+				"lvl": 1
+			},
+			{
+				"item": "Iron dart",
+				"lvl": 10
+			},
+			{
+				"item": "Steel dart",
+				"lvl": 20
+			},
+			{
+				"item": "Black dart",
+				"lvl": 25
+			},
+			{
+				"item": "Mithril dart",
+				"lvl": 30
+			},
+			{
+				"item": "Adamant dart",
+				"lvl": 30
+			},
+			{
+				"item": "Rune dart",
+				"lvl": 50
+			},
+			{
+				"item": "Amethyst dart",
+				"lvl": 50
+			},
+			{
+				"item": "Dragon dart",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Bronze javelin",
+				"lvl": 1
+			},
+			{
+				"item": "Iron javelin",
+				"lvl": 10
+			},
+			{
+				"item": "Steel javelin",
+				"lvl": 20
+			},
+			{
+				"item": "Mithril javelin",
+				"lvl": 30
+			},
+			{
+				"item": "Adamant javelin",
+				"lvl": 30
+			},
+			{
+				"item": "Rune javelin",
+				"lvl": 50
+			},
+			{
+				"item": "Dragon javelin",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Morrigan's javelin",
+				"lvl": 78
+			},
+			{
+				"item": "Bronze arrow",
+				"lvl": 1
+			},
+			{
+				"item": "Bronze brutal",
+				"lvl": 2
+			},
+			{
+				"item": "Iron arrow",
+				"lvl": 5
+			},
+			{
+				"item": "Iron brutal",
+				"lvl": 5
+			},
+			{
+				"item": "Steel brutal",
+				"lvl": 7
+			},
+			{
+				"item": "Steel arrow",
+				"lvl": 10
+			},
+			{
+				"item": "Mithril brutal",
+				"lvl": 11
+			},
+			{
+				"item": "Mithril arrow",
+				"lvl": 15
+			},
+			{
+				"item": "Ogre arrow",
+				"lvl": 15
+			},
+			{
+				"item": "Rune brutal",
+				"lvl": 21
+			},
+			{
+				"item": "Adamant arrow",
+				"lvl": 25
+			},
+			{
+				"item": "Rune arrow",
+				"lvl": 25
+			},
+			{
+				"item": "Dragon arrow",
+				"lvl": 30,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Bronze knife",
+				"lvl": 1
+			},
+			{
+				"item": "Iron knife",
+				"lvl": 10
+			},
+			{
+				"item": "Steel knife",
+				"lvl": 20
+			},
+			{
+				"item": "Black knife",
+				"lvl": 25
+			},
+			{
+				"item": "Mithril knife",
+				"lvl": 30
+			},
+			{
+				"item": "Adamant knife",
+				"lvl": 40
+			},
+			{
+				"item": "Rune knife",
+				"lvl": 50
+			},
+			{
+				"item": "Dragon knife",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Bronze bolts",
+				"lvl": 1
+			},
+			{
+				"item": "Iron bolts",
+				"lvl": 5
+			},
+			{
+				"item": "Opal bolts",
+				"lvl": 5
+			},
+			{
+				"item": "Opal bolts (e)",
+				"lvl": 10
+			},
+			{
+				"item": "Pearl bolts",
+				"lvl": 10
+			},
+			{
+				"item": "Steel bolts",
+				"lvl": 10
+			},
+			{
+				"item": "Jade bolts",
+				"lvl": 12
+			},
+			{
+				"item": "Silver bolts",
+				"lvl": 12
+			},
+			{
+				"item": "Bone bolts",
+				"lvl": 14
+			},
+			{
+				"item": "Pearl bolts (e)",
+				"lvl": 15
+			},
+			{
+				"item": "Topaz bolts",
+				"lvl": 15
+			},
+			{
+				"item": "Jade bolts (e)",
+				"lvl": 17
+			},
+			{
+				"item": "Sapphire bolts",
+				"lvl": 20
+			},
+			{
+				"item": "Topaz bolts (e)",
+				"lvl": 20
+			},
+			{
+				"item": "Emerald bolts",
+				"lvl": 25
+			},
+			{
+				"item": "Ruby bolts",
+				"lvl": 25
+			},
+			{
+				"item": "Sapphire bolts (e)",
+				"lvl": 25
+			},
+			{
+				"item": "Diamond bolts",
+				"lvl": 30
+			},
+			{
+				"item": "Emerald bolts (e)",
+				"lvl": 30
+			},
+			{
+				"item": "Ruby bolts (e)",
+				"lvl": 30
+			},
+			{
+				"item": "Bolt rack",
+				"lvl": 35
+			},
+			{
+				"item": "Broad bolts",
+				"lvl": 35
+			},
+			{
+				"item": "Diamond bolts (e)",
+				"lvl": 35
+			},
+			{
+				"item": "Onyx bolts",
+				"lvl": 35
+			},
+			{
+				"item": "Onyx bolts (e)",
+				"lvl": 40
+			},
+			{
+				"item": "Mithril bolts",
+				"lvl": 40
+			},
+			{
+				"item": "Adamant bolts",
+				"lvl": 50
+			},
+			{
+				"item": "Adamant bolts(unf)",
+				"lvl": 50
+			},
+			{
+				"item": "Runite bolts",
+				"lvl": 50
+			},
+			{
+				"item": "Runite bolts (unf)",
+				"lvl": 50
+			},
+			{
+				"item": "Amethyst broad bolts",
+				"lvl": 55
+			},
+			{
+				"item": "Dragon bolts",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Dragon bolts (unf)",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Dragonstone bolts (e)",
+				"lvl": 71
+			},
+			{
+				"item": "Onyx dragon bolts",
+				"lvl": 84
+			}
+		]
+	},
+	{
+		"name": "RangedArmour",
+		"parts": {
+			"protective": 20,
+			"dextrous": 80
+		},
+		"items": [
+			{
+				"item": "Ava's attractor",
+				"lvl": 1
+			},
+			{
+				"item": "Leather body",
+				"lvl": 1
+			},
+			{
+				"item": "Leather chaps",
+				"lvl": 1
+			},
+			{
+				"item": "Hardleather body",
+				"lvl": 10
+			},
+			{
+				"item": "Hard leather shield",
+				"lvl": 10
+			},
+			{
+				"item": "Studded body",
+				"lvl": 20
+			},
+			{
+				"item": "Studded body (g)",
+				"lvl": 20
+			},
+			{
+				"item": "Studded body (t)",
+				"lvl": 20
+			},
+			{
+				"item": "Studded chaps",
+				"lvl": 20
+			},
+			{
+				"item": "Frog-leather body",
+				"lvl": 25
+			},
+			{
+				"item": "Frog-leather chaps",
+				"lvl": 25
+			},
+			{
+				"item": "Snakeskin body",
+				"lvl": 30
+			},
+			{
+				"item": "Snakeskin chaps",
+				"lvl": 30
+			},
+			{
+				"item": "Spined body",
+				"lvl": 50
+			},
+			{
+				"item": ["Green d'hide vambraces"],
+				"lvl": 57
+			},
+			{
+				"item": ["Green d'hide chaps", "Green d'hide chaps (g)", "Green d'hide chaps (t)"],
+				"lvl": 60
+			},
+			{
+				"item": ["Green d'hide shield"],
+				"lvl": 62
+			},
+			{
+				"item": ["Green d'hide body", "Green d'hide body (g)", "Green d'hide body (t)"],
+				"lvl": 63
+			},
+			{
+				"item": ["Blue d'hide vambraces"],
+				"lvl": 66
+			},
+			{
+				"item": ["Blue d'hide chaps", "Blue d'hide chaps (g)", "Blue d'hide chaps (t)"],
+				"lvl": 68
+			},
+			{
+				"item": ["Blue d'hide shield"],
+				"lvl": 69
+			},
+			{
+				"item": ["Blue d'hide body", "Blue d'hide body (g)", "Blue d'hide body (t)"],
+				"lvl": 71
+			},
+			{
+				"item": ["Zamorak d'hide shield"],
+				"lvl": 76
+			},
+			{
+				"item": ["Red d'hide vambraces"],
+				"lvl": 73
+			},
+			{
+				"item": ["Red d'hide chaps", "Red d'hide chaps (g)", "Red d'hide chaps (t)"],
+				"lvl": 75
+			},
+			{
+				"item": ["Red d'hide shield"],
+				"lvl": 76
+			},
+			{
+				"item": ["Red d'hide body", "Red d'hide body (g)", "Red d'hide body (t)"],
+				"lvl": 77
+			},
+			{
+				"item": ["Black d'hide vambraces"],
+				"lvl": 79
+			},
+			{
+				"item": ["Black d'hide chaps", "Black d'hide chaps (g)", "Black d'hide chaps (t)"],
+				"lvl": 82
+			},
+			{
+				"item": ["Black d'hide shield"],
+				"lvl": 83
+			},
+			{
+				"item": ["Black d'hide body", "Black d'hide body (g)", "Black d'hide body (t)"],
+				"lvl": 84
+			},
+			{
+				"item": "Morrigan's leather body",
+				"lvl": 78
+			},
+			{
+				"item": "Spined boots",
+				"lvl": 50
+			},
+			{
+				"item": "Ava's accumulator",
+				"lvl": 1
+			},
+			{
+				"item": "Leather boots",
+				"lvl": 1
+			},
+			{
+				"item": "Leather gloves",
+				"lvl": 1
+			},
+			{
+				"item": "Leather vambraces",
+				"lvl": 1
+			},
+			{
+				"item": "Spiky vambraces",
+				"lvl": 5
+			},
+			{
+				"item": "Hardleather gloves",
+				"lvl": 10
+			},
+			{
+				"item": "Frog-leather boots",
+				"lvl": 25
+			},
+			{
+				"item": "Snakeskin boots",
+				"lvl": 30
+			},
+			{
+				"item": "Snakeskin vambraces",
+				"lvl": 30
+			},
+			{
+				"item": "Green spiky vambraces",
+				"lvl": 40
+			},
+			{
+				"item": "Blue spiky vambraces",
+				"lvl": 50
+			},
+			{
+				"item": "Spined gloves",
+				"lvl": 50
+			},
+			{
+				"item": "Red spiky vambraces",
+				"lvl": 55
+			},
+			{
+				"item": "Black spiky vambraces",
+				"lvl": 60
+			},
+			{
+				"item": "Leather cowl",
+				"lvl": 1
+			},
+			{
+				"item": "Snakeskin bandana",
+				"lvl": 30
+			},
+			{
+				"item": "Armadyl chestplate",
+				"lvl": 70
+			},
+			{
+				"item": [
+					"Ancient coif",
+					"Ancient d'hide body",
+					"Ancient d'hide boots",
+					"Ancient d'hide shield",
+					"Armadyl bracers",
+					"Armadyl chaps",
+					"Armadyl coif",
+					"Armadyl d'hide body",
+					"Armadyl d'hide boots",
+					"Armadyl d'hide shield",
+					"Armadyl helmet",
+					"Bandos bracers",
+					"Bandos chaps",
+					"Bandos coif",
+					"Bandos d'hide body",
+					"Bandos d'hide boots",
+					"Bandos d'hide shield",
+					"Guthix bracers",
+					"Guthix chaps",
+					"Guthix coif",
+					"Guthix d'hide body",
+					"Guthix d'hide boots",
+					"Guthix d'hide shield",
+					"Ranger gloves",
+					"Rangers' tunic",
+					"Royal dragonhide body",
+					"Royal dragonhide boots",
+					"Royal dragonhide chaps",
+					"Royal dragonhide coif",
+					"Royal dragonhide vambraces",
+					"Saradomin bracers",
+					"Saradomin chaps",
+					"Saradomin coif",
+					"Saradomin d'hide body",
+					"Saradomin d'hide boots",
+					"Saradomin d'hide shield",
+					"Zamorak bracers",
+					"Zamorak chaps",
+					"Zamorak coif",
+					"Zamorak d'hide body",
+					"Zamorak d'hide boots"
+				],
+				"lvl": 70
+			},
+			{
+				"item": "Morrigan's coif",
+				"lvl": 78
+			},
+			{
+				"item": "Studded chaps (g)",
+				"lvl": 20
+			},
+			{
+				"item": "Studded chaps (t)",
+				"lvl": 20
+			},
+			{
+				"item": "Armadyl chainskirt",
+				"lvl": 70
+			},
+			{
+				"item": "Morrigan's leather chaps",
+				"lvl": 78
+			},
+			{
+				"item": "Elysian spirit shield",
+				"lvl": 99,
+				"flags": ["corporeal"]
+			},
+			{
+				"item": ["Ranger boots", "Robin hood hat"],
+				"lvl": 99
+			},
+			{
+				"item": [
+					"Pernix body",
+					"Pernix body (broken)",
+					"Pernix boots",
+					"Pernix boots (broken)",
+					"Pernix chaps",
+					"Pernix chaps (broken)",
+					"Pernix cowl",
+					"Pernix cowl (broken)",
+					"Pernix gloves",
+					"Pernix gloves (broken)"
+				],
+				"lvl": 99
+			}
+		]
+	},
+	{
+		"name": "Raw Food",
+		"parts": {
+			"organic": 100
+		},
+		"items": [
+			{
+				"item": "Raw anchovies",
+				"lvl": 1
+			},
+			{
+				"item": "Raw beef",
+				"lvl": 1
+			},
+			{
+				"item": "Raw bird meat",
+				"lvl": 1
+			},
+			{
+				"item": "Raw chicken",
+				"lvl": 1
+			},
+			{
+				"item": "Raw karambwan",
+				"lvl": 1
+			},
+			{
+				"item": "Raw karambwanji",
+				"lvl": 1
+			},
+			{
+				"item": "Raw rabbit",
+				"lvl": 1
+			},
+			{
+				"item": "Raw rat meat",
+				"lvl": 1
+			},
+			{
+				"item": "Raw sardine",
+				"lvl": 1
+			},
+			{
+				"item": "Raw shrimps",
+				"lvl": 1
+			},
+			{
+				"item": "Raw herring",
+				"lvl": 5
+			},
+			{
+				"item": "Raw mackerel",
+				"lvl": 10
+			},
+			{
+				"item": "Raw trout",
+				"lvl": 15
+			},
+			{
+				"item": "Raw cod",
+				"lvl": 18
+			},
+			{
+				"item": "Raw pike",
+				"lvl": 20
+			},
+			{
+				"item": "Raw salmon",
+				"lvl": 25
+			},
+			{
+				"item": "Raw tuna",
+				"lvl": 30
+			},
+			{
+				"item": "Raw lobster",
+				"lvl": 40
+			},
+			{
+				"item": "Raw bass",
+				"lvl": 43
+			},
+			{
+				"item": "Raw swordfish",
+				"lvl": 45
+			},
+			{
+				"item": "Raw fish pie",
+				"lvl": 47
+			},
+			{
+				"item": "Raw lava eel",
+				"lvl": 53
+			},
+			{
+				"item": "Raw monkfish",
+				"lvl": 62
+			},
+			{
+				"item": "Raw shark",
+				"lvl": 80
+			},
+			{
+				"item": "Raw sea turtle",
+				"lvl": 82
+			},
+			{
+				"item": "Raw anglerfish",
+				"lvl": 84
+			},
+			{
+				"item": "Raw wild pie",
+				"lvl": 85
+			},
+			{
+				"item": "Raw cavefish",
+				"lvl": 88
+			},
+			{
+				"item": "Raw dark crab",
+				"lvl": 90
+			},
+			{
+				"item": "Raw manta ray",
+				"lvl": 91
+			},
+			{
+				"item": "Raw summer pie",
+				"lvl": 95
+			},
+			{
+				"item": "Raw rocktail",
+				"lvl": 99
+			}
+		]
+	},
+	{
+		"name": "Runes",
+		"parts": {
+			"powerful": 5,
+			"magic": 60,
+			"base": 5,
+			"junk": 30
+		},
+		"xpReductionDivisor": 1.5,
+		"items": [
+			{
+				"item": "Air rune",
+				"lvl": 1
+			},
+			{
+				"item": "Fire rune",
+				"lvl": 1
+			},
+			{
+				"item": "Body rune",
+				"lvl": 1
+			},
+			{
+				"item": "Earth rune",
+				"lvl": 1
+			},
+			{
+				"item": "Mind rune",
+				"lvl": 1
+			},
+			{
+				"item": "Water rune",
+				"lvl": 1
+			},
+			{
+				"item": "Mist rune",
+				"lvl": 3
+			},
+			{
+				"item": "Dust rune",
+				"lvl": 3
+			},
+			{
+				"item": "Mud rune",
+				"lvl": 3
+			},
+			{
+				"item": "Smoke rune",
+				"lvl": 3
+			},
+			{
+				"item": "Steam rune",
+				"lvl": 3
+			},
+			{
+				"item": "Lava rune",
+				"lvl": 3
+			},
+			{
+				"item": "Cosmic rune",
+				"lvl": 12
+			},
+			{
+				"item": "Chaos rune",
+				"lvl": 20
+			},
+			{
+				"item": "Astral rune",
+				"lvl": 25
+			},
+			{
+				"item": "Nature rune",
+				"lvl": 29
+			},
+			{
+				"item": "Law rune",
+				"lvl": 39
+			},
+			{
+				"item": "Death rune",
+				"lvl": 45
+			},
+			{
+				"item": "Blood rune",
+				"lvl": 55
+			},
+			{
+				"item": "Soul rune",
+				"lvl": 65
+			},
+			{
+				"item": "Wrath rune",
+				"lvl": 75
+			},
+			{
+				"item": "Elder rune",
+				"lvl": 99
+			}
+		]
+	},
+	{
+		"name": "Scimitar",
+		"parts": {
+			"sharp": 30,
+			"metallic": 30,
+			"base": 35
+		},
+		"items": [
+			{
+				"item": ["Black scimitar", "White scimitar"],
+				"lvl": 25
+			},
+			{
+				"item": "Brine sabre",
+				"lvl": 40
+			},
+			{
+				"item": "Bronze scimitar",
+				"lvl": 1
+			},
+			{
+				"item": "Iron scimitar",
+				"lvl": 10
+			},
+			{
+				"item": "Steel scimitar",
+				"lvl": 20
+			},
+			{
+				"item": "Mithril scimitar",
+				"lvl": 30
+			},
+			{
+				"item": "Adamant scimitar",
+				"lvl": 40
+			},
+			{
+				"item": "Rune scimitar",
+				"lvl": 50
+			},
+			{
+				"item": "Dragon scimitar",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			}
+		]
+	},
+	{
+		"name": "Shield",
+		"parts": {
+			"strong": 30,
+			"protective": 30
+		},
+		"items": [
+			{
+				"item": ["Bronze kiteshield (g)", "Bronze kiteshield (t)", "Fremennik shield"],
+				"lvl": 1
+			},
+			{
+				"item": "Black kiteshield",
+				"lvl": 25
+			},
+			{
+				"item": "Black kiteshield (g)",
+				"lvl": 25
+			},
+			{
+				"item": "Black kiteshield (t)",
+				"lvl": 25
+			},
+			{
+				"item": [
+					"Black shield (h1)",
+					"Black shield (h2)",
+					"Black shield (h3)",
+					"Black shield (h4)",
+					"Black shield (h5)"
+				],
+				"lvl": 25
+			},
+			{
+				"item": "Black sq shield",
+				"lvl": 25
+			},
+			{
+				"item": "White kiteshield",
+				"lvl": 25
+			},
+			{
+				"item": "White sq shield",
+				"lvl": 25
+			},
+			{
+				"item": [
+					"Ancient kiteshield",
+					"Rune kiteshield (g)",
+					"Rune kiteshield (t)",
+					"Rune shield (h1)",
+					"Rune shield (h2)",
+					"Rune shield (h3)",
+					"Rune shield (h4)",
+					"Rune shield (h5)",
+					"Rune sq shield"
+				],
+				"lvl": 50
+			},
+			{
+				"item": "Spirit shield",
+				"lvl": 55
+			},
+			{
+				"item": [
+					"Adamant kiteshield",
+					"Adamant kiteshield (g)",
+					"Adamant kiteshield (t)",
+					"Adamant shield (h1)",
+					"Adamant shield (h3)",
+					"Adamant shield (h4)",
+					"Adamant shield (h5)",
+					"Adamant sq shield"
+				],
+				"lvl": 30
+			},
+			{
+				"item": "Dragon sq shield",
+				"lvl": 60
+			},
+			{
+				"item": "Toktz-ket-xil",
+				"lvl": 60
+			},
+			{
+				"item": "Crystal shield",
+				"lvl": 70
+			},
+			{
+				"item": "Dragonfire shield",
+				"lvl": 70
+			},
+			{
+				"item": "Bronze kiteshield",
+				"lvl": 1
+			},
+			{
+				"item": "Iron kiteshield",
+				"lvl": 10
+			},
+			{
+				"item": ["Steel kiteshield", "Steel kiteshield (t)", "Steel sq shield"],
+				"lvl": 20
+			},
+			{
+				"item": ["Mithril kiteshield", "Mithril kiteshield (g)", "Mithril kiteshield (t)", "Mithril sq shield"],
+				"lvl": 30
+			},
+			{
+				"item": "Rune kiteshield",
+				"lvl": 50
+			},
+			{
+				"item": "Granite shield",
+				"lvl": 55
+			},
+			{
+				"item": "Dragon kiteshield",
+				"lvl": 70,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Divine spirit shield",
+				"lvl": 99,
+				"flags": ["corporeal"]
+			}
+		]
+	},
+	{
+		"name": "Spear",
+		"parts": {
+			"sharp": 30
+		},
+		"items": [
+			{
+				"item": "Bronze spear",
+				"lvl": 1
+			},
+			{
+				"item": "Iron spear",
+				"lvl": 10
+			},
+			{
+				"item": "Steel spear",
+				"lvl": 20
+			},
+			{
+				"item": "Black spear",
+				"lvl": 25
+			},
+			{
+				"item": "Mithril spear",
+				"lvl": 30
+			},
+			{
+				"item": "Adamant spear",
+				"lvl": 40
+			},
+			{
+				"item": "Rune spear",
+				"lvl": 50
+			},
+			{
+				"item": "Dragon spear",
+				"lvl": 60,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Zamorakian spear",
+				"lvl": 75
+			},
+			{
+				"item": "Vesta's spear",
+				"lvl": 78
+			}
+		]
+	},
+	{
+		"name": "Staff",
+		"parts": {
+			"powerful": 10,
+			"magic": 30
+		},
+		"items": [
+			{
+				"item": "Magic staff",
+				"lvl": 1
+			},
+			{
+				"item": "Staff",
+				"lvl": 1
+			},
+			{
+				"item": "Staff of air",
+				"lvl": 5
+			},
+			{
+				"item": "Staff of earth",
+				"lvl": 5
+			},
+			{
+				"item": "Staff of fire",
+				"lvl": 5
+			},
+			{
+				"item": "Staff of water",
+				"lvl": 5
+			},
+			{
+				"item": "Battlestaff",
+				"lvl": 70
+			},
+			{
+				"item": "Air battlestaff",
+				"lvl": 70
+			},
+			{
+				"item": "Earth battlestaff",
+				"lvl": 70
+			},
+			{
+				"item": "Fire battlestaff",
+				"lvl": 70
+			},
+			{
+				"item": "Lava battlestaff",
+				"lvl": 70
+			},
+			{
+				"item": "Mud battlestaff",
+				"lvl": 70
+			},
+			{
+				"item": "Steam battlestaff",
+				"lvl": 70
+			},
+			{
+				"item": "Water battlestaff",
+				"lvl": 70
+			},
+			{
+				"item": "Mystic air staff",
+				"lvl": 80
+			},
+			{
+				"item": "Mystic earth staff",
+				"lvl": 80
+			},
+			{
+				"item": "Mystic fire staff",
+				"lvl": 80
+			},
+			{
+				"item": "Mystic lava staff",
+				"lvl": 80
+			},
+			{
+				"item": "Mystic mud staff",
+				"lvl": 80
+			},
+			{
+				"item": "Mystic steam staff",
+				"lvl": 80
+			},
+			{
+				"item": "Mystic water staff",
+				"lvl": 80
+			},
+			{
+				"item": "Toktz-mej-tal",
+				"lvl": 70
+			},
+			{
+				"item": "Staff of light",
+				"lvl": 90
+			},
+			{
+				"item": "Zuriel's staff",
+				"lvl": 90
+			}
+		]
+	},
+	{
+		"name": "Sword",
+		"parts": {
+			"sharp": 30,
+			"metallic": 30,
+			"swift": 10,
+			"dextrous": 2,
+			"powerful": 10
+		},
+		"items": [
+			{
+				"item": "Bronze 2h sword",
+				"lvl": 1
+			},
+			{
+				"item": "Iron 2h sword",
+				"lvl": 10
+			},
+			{
+				"item": "Steel 2h sword",
+				"lvl": 20
+			},
+			{
+				"item": "Black sword",
+				"lvl": 25
+			},
+			{
+				"item": "White sword",
+				"lvl": 25
+			},
+			{
+				"item": "Toktz-xil-ak",
+				"lvl": 60
+			},
+			{
+				"item": "Bronze sword",
+				"lvl": 1
+			},
+			{
+				"item": "Iron sword",
+				"lvl": 10
+			},
+			{
+				"item": "Steel sword",
+				"lvl": 20
+			},
+			{
+				"item": "Mithril sword",
+				"lvl": 40
+			},
+			{
+				"item": "Mithril 2h sword",
+				"lvl": 45
+			},
+			{
+				"item": "Adamant sword",
+				"lvl": 50
+			},
+			{
+				"item": "Adamant 2h sword",
+				"lvl": 60
+			},
+			{
+				"item": "Rune sword",
+				"lvl": 60
+			},
+			{
+				"item": "Rune 2h sword",
+				"lvl": 70
+			},
+			{
+				"item": "Dragon 2h sword",
+				"lvl": 80,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": "Leaf-bladed sword",
+				"lvl": 60
+			},
+			{
+				"item": "Dragon sword",
+				"lvl": 80,
+				"flags": ["orikalkum"]
+			},
+			{
+				"item": [
+					"Ancient godsword",
+					"Armadyl godsword",
+					"Bandos godsword",
+					"Saradomin godsword",
+					"Saradomin sword",
+					"Zamorak godsword"
+				],
+				"lvl": 99
+			}
+		]
+	},
+	{
+		"name": "Talisman",
+		"parts": {
+			"magic": 85,
+			"powerful": 2
+		},
+		"items": [
+			{
+				"item": "Mind talisman",
+				"lvl": 1
+			},
+			{
+				"item": "Water talisman",
+				"lvl": 5
+			},
+			{
+				"item": "Earth talisman",
+				"lvl": 9
+			},
+			{
+				"item": "Fire talisman",
+				"lvl": 14
+			},
+			{
+				"item": "Body talisman",
+				"lvl": 20
+			},
+			{
+				"item": "Cosmic talisman",
+				"lvl": 27
+			},
+			{
+				"item": "Chaos talisman",
+				"lvl": 35
+			},
+			{
+				"item": "Nature talisman",
+				"lvl": 44
+			},
+			{
+				"item": "Law talisman",
+				"lvl": 54
+			},
+			{
+				"item": "Elemental talisman",
+				"lvl": 58
+			},
+			{
+				"item": "Death talisman",
+				"lvl": 65
+			}
+		]
+	},
+	{
+		"name": "Third Age",
+		"parts": {
+			"third-age": 100
+		},
+		"items": [
+			{
+				"item": [
+					"3rd age amulet",
+					"3rd age axe",
+					"3rd age bow",
+					"3rd age cloak",
+					"3rd age druidic cloak",
+					"3rd age druidic robe bottoms",
+					"3rd age druidic robe top",
+					"3rd age druidic staff",
+					"3rd age full helmet",
+					"3rd age kiteshield",
+					"3rd age longsword",
+					"3rd age mage hat",
+					"3rd age pickaxe",
+					"3rd age platebody",
+					"3rd age platelegs",
+					"3rd age plateskirt",
+					"3rd age range coif",
+					"3rd age range legs",
+					"3rd age range top",
+					"3rd age robe",
+					"3rd age robe top",
+					"3rd age vambraces",
+					"3rd age wand",
+					"Ring of 3rd age"
+				],
+				"lvl": 99,
+				"flags": ["third_age"]
+			}
+		]
+	},
+	{
+		"name": "Treasure Trails",
+		"parts": {
+			"treasured": 100
+		},
+		"items": [
+			{
+				"item": "Clue scroll (beginner)",
+				"lvl": 10
+			},
+			{
+				"item": "Reward casket (beginner)",
+				"lvl": 15,
+				"outputMultiplier": 4
+			},
+			{
+				"item": "Clue scroll (easy)",
+				"lvl": 30
+			},
+			{
+				"item": "Reward casket (easy)",
+				"lvl": 35,
+				"outputMultiplier": 4
+			},
+			{
+				"item": "Clue scroll (medium)",
+				"lvl": 50
+			},
+			{
+				"item": "Reward casket (medium)",
+				"lvl": 55,
+				"outputMultiplier": 4
+			},
+			{
+				"item": "Clue scroll (hard)",
+				"lvl": 80
+			},
+			{
+				"item": "Reward casket (hard)",
+				"lvl": 85,
+				"outputMultiplier": 4
+			},
+			{
+				"item": "Clue scroll (elite)",
+				"lvl": 90
+			},
+			{
+				"item": "Reward casket (elite)",
+				"lvl": 95,
+				"outputMultiplier": 4
+			},
+			{
+				"item": "Clue scroll (master)",
+				"lvl": 99
+			},
+			{
+				"item": "Reward casket (master)",
+				"lvl": 99,
+				"outputMultiplier": 4
+			},
+			{
+				"item": "Clue scroll (grandmaster)",
+				"lvl": 99
+			},
+			{
+				"item": "Reward casket (grandmaster)",
+				"lvl": 99,
+				"outputMultiplier": 4
+			},
+			{
+				"item": "Clue scroll (elder)",
+				"lvl": 99
+			},
+			{
+				"item": "Reward casket (elder)",
+				"lvl": 99,
+				"outputMultiplier": 4
+			}
+		]
+	},
+	{
+		"name": "UncutGems",
+		"parts": {
+			"precious": 60,
+			"smooth": 30
+		},
+		"items": [
+			{
+				"item": "Uncut opal",
+				"lvl": 1
+			},
+			{
+				"item": "Uncut jade",
+				"lvl": 13
+			},
+			{
+				"item": "Uncut red topaz",
+				"lvl": 16
+			},
+			{
+				"item": "Uncut sapphire",
+				"lvl": 20
+			},
+			{
+				"item": "Uncut emerald",
+				"lvl": 27
+			},
+			{
+				"item": "Uncut ruby",
+				"lvl": 34
+			},
+			{
+				"item": "Uncut diamond",
+				"lvl": 43
+			},
+			{
+				"item": "Uncut dragonstone",
+				"lvl": 55
+			},
+			{
+				"item": "Uncut onyx",
+				"lvl": 67
+			},
+			{
+				"item": "Uncut zenyte",
+				"lvl": 75
+			}
+		]
+	},
+	{
+		"name": "UnstrungBows",
+		"parts": {
+			"flexible": 20,
+			"dextrous": 5,
+			"simple": 20
+		},
+		"items": [
+			{
+				"item": "Oak shortbow (u)",
+				"lvl": 15
+			},
+			{
+				"item": "Oak longbow (u)",
+				"lvl": 20
+			},
+			{
+				"item": "Willow shortbow (u)",
+				"lvl": 35
+			},
+			{
+				"item": "Willow longbow (u)",
+				"lvl": 40
+			},
+			{
+				"item": "Maple shortbow (u)",
+				"lvl": 50
+			},
+			{
+				"item": "Maple longbow (u)",
+				"lvl": 55
+			},
+			{
+				"item": "Yew shortbow (u)",
+				"lvl": 65
+			},
+			{
+				"item": "Yew longbow (u)",
+				"lvl": 70
+			},
+			{
+				"item": "Magic shortbow (u)",
+				"lvl": 75
+			},
+			{
+				"item": "Magic longbow (u)",
+				"lvl": 80
+			},
+			{
+				"item": "Elder bow(u)",
+				"lvl": 95
+			}
+		]
+	},
+	{
+		"name": "Whips",
+		"parts": {
+			"abyssal": 50,
+			"sharp": 25,
+			"flexible": 25
+		},
+		"items": [
+			{
+				"item": "Abyssal whip",
+				"lvl": 90,
+				"flags": ["abyssal"]
+			}
+		]
+	}
+]
