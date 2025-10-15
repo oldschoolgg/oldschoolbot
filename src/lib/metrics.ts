@@ -1,7 +1,8 @@
 import type { CpuInfo } from 'node:os';
 import os from 'node:os';
 import { monitorEventLoopDelay } from 'node:perf_hooks';
-import type { Prisma } from '@prisma/client';
+
+import type { Prisma } from '@/prisma/main.js';
 
 const h = monitorEventLoopDelay();
 h.enable();

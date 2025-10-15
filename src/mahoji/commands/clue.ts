@@ -1,6 +1,5 @@
 import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, isWeekend, notEmpty, stringMatches, Time } from '@oldschoolgg/toolkit';
-import type { PlayerOwnedHouse } from '@prisma/client';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
@@ -12,6 +11,7 @@ import type { ClueActivityTaskOptions } from '@/lib/types/minions.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
 import { addToOpenablesScores } from '@/mahoji/mahojiSettings.js';
+import type { PlayerOwnedHouse } from '@/prisma/main.js';
 
 export const clueTierBoosts: Record<
 	ClueTier['name'],

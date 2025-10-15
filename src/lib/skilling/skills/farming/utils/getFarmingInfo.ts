@@ -1,11 +1,11 @@
 import { formatDuration, Time, toTitleCase } from '@oldschoolgg/toolkit';
-import type { User } from '@prisma/client';
 
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import { farmingPatchNames, findPlant } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { IPatchData, IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
 import { assert } from '@/lib/util/logError.js';
+import type { User } from '@/prisma/main.js';
 
 const farmingKeys: (keyof User)[] = farmingPatchNames.map(i => `farmingPatches_${i}` as const);
 

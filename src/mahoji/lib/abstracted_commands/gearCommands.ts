@@ -1,5 +1,4 @@
 import { PerkTier, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
-import type { GearPreset } from '@prisma/client';
 import { Bank, Items } from 'oldschooljs';
 import { GearStat } from 'oldschooljs/gear';
 
@@ -15,6 +14,7 @@ import calculateGearLostOnDeathWilderness from '@/lib/util/calculateGearLostOnDe
 import { gearEquipMultiImpl } from '@/lib/util/equipMulti.js';
 import { assert } from '@/lib/util/logError.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
+import type { GearPreset } from '@/prisma/main.js';
 
 async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
 	if (user.minionIsBusy) {

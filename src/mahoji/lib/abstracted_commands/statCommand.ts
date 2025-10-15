@@ -1,5 +1,4 @@
 import { Emoji, formatDuration, PerkTier, stringMatches, sumArr, Time } from '@oldschoolgg/toolkit';
-import type { activity_type_enum, UserStats } from '@prisma/client';
 import { Bank, type ItemBank, Items, Monsters, TOBRooms, toKMB } from 'oldschooljs';
 import type { SkillsScore } from 'oldschooljs/hiscores';
 
@@ -23,6 +22,7 @@ import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { getUsername } from '@/lib/util.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 import { collectables } from '@/mahoji/lib/collectables.js';
+import type { activity_type_enum, UserStats } from '@/prisma/main.js';
 
 interface DataPiece {
 	name: string;

@@ -1,7 +1,8 @@
 import { type PerkTier, Time } from '@oldschoolgg/toolkit';
-import type { Giveaway, Guild } from '@prisma/client';
 import { TimerManager } from '@sapphire/timer-manager';
 import { LRUCache } from 'lru-cache';
+
+import type { Giveaway, Guild } from '@/prisma/main.js';
 
 export const perkTierCache = new Map<string, 0 | PerkTier>();
 

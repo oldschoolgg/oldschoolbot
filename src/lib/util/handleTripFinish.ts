@@ -1,5 +1,4 @@
 import { channelIsSendable, makeComponents, Time } from '@oldschoolgg/toolkit';
-import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { Bank, EItem } from 'oldschooljs';
 
@@ -33,6 +32,7 @@ import {
 	tearsOfGuthixIronmanReqs,
 	tearsOfGuthixSkillReqs
 } from '@/mahoji/lib/abstracted_commands/tearsOfGuthixCommand.js';
+import type { activity_type_enum } from '@/prisma/main/enums.js';
 
 const collectors = new Map<string, MessageCollector>();
 

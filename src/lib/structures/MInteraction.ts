@@ -1,5 +1,4 @@
 import { debounce, deepMerge, formatDuration, Time } from '@oldschoolgg/toolkit';
-import type { Prisma } from '@prisma/client';
 import { TimerManager } from '@sapphire/timer-manager';
 import {
 	ActionRowBuilder,
@@ -69,7 +68,7 @@ export class MInteraction {
 	static getChatInputCommandOptions(interaction: CommandInteraction | AutocompleteInteraction | ButtonInteraction) {
 		if (!interaction.isChatInputCommand()) return {};
 		const cmdOpts = convertAPIOptionsToCommandOptions(interaction.options.data, interaction.options.resolved);
-		return compressMahojiArgs(cmdOpts) as Prisma.InputJsonObject;
+		return compressMahojiArgs(cmdOpts);
 	}
 
 	public getChatInputCommandOptions() {

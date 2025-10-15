@@ -1,7 +1,7 @@
 import { calcPercentOfNum, calcWhatPercent, Time } from '@oldschoolgg/toolkit';
-import type { activity_type_enum } from '@prisma/client';
 
 import { PerkTier } from '@/lib/constants.js';
+import type { activity_type_enum } from '@/prisma/main/enums.js';
 
 export function patronMaxTripBonus(user: MUser) {
 	const perkTier = user.perkTier();

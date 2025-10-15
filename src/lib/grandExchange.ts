@@ -8,7 +8,6 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { type GEListing, GEListingType, type GETransaction } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
 import { LRUCache } from 'lru-cache';
 import { Bank, type Item, type ItemBank, Items, toKMB } from 'oldschooljs';
@@ -22,6 +21,7 @@ import { type RobochimpUser, roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/tableBank.js';
 import { assert } from '@/lib/util/logError.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
+import { type GEListing, GEListingType, type GETransaction } from '@/prisma/main.js';
 
 export const generateGrandExchangeID = () => miniID(6).toLowerCase();
 

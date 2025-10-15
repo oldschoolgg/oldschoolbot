@@ -1,5 +1,4 @@
 import { asyncGzip, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
-import type { Activity, User } from '@prisma/client';
 import { ChannelType, EmbedBuilder } from 'discord.js';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
@@ -26,6 +25,7 @@ import {
 	stashUnitViewCommand
 } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
 import { patronMsg } from '@/mahoji/mahojiSettings.js';
+import type { Activity, User } from '@/prisma/main.js';
 
 function isRaidsActivity(data: any): data is RaidsOptions {
 	return 'challengeMode' in data;

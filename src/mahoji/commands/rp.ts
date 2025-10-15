@@ -1,6 +1,5 @@
 import { randArrItem } from '@oldschoolgg/rng';
 import { dateFm, isValidDiscordSnowflake, Stopwatch, sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
-import { UserEventType, xp_gains_skill_enum } from '@prisma/client';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Duration } from '@sapphire/time-utilities';
 import { codeBlock, SnowflakeUtil } from 'discord.js';
@@ -27,6 +26,7 @@ import { gifs } from '@/mahoji/commands/admin.js';
 import { getUserInfo } from '@/mahoji/commands/minion.js';
 import { sellPriceOfItem } from '@/mahoji/commands/sell.js';
 import { cancelUsersListings } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
+import { UserEventType, xp_gains_skill_enum } from '@/prisma/main/enums.js';
 
 const itemFilters = [
 	{

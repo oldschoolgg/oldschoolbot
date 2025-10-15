@@ -1,5 +1,4 @@
 import { chunk, Emoji, noOp, Time } from '@oldschoolgg/toolkit';
-import type { Bingo, Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
 import { addBanks, Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 import { groupBy } from 'remeda';
@@ -14,6 +13,7 @@ import {
 	type UniversalBingoTile
 } from '@/mahoji/lib/bingo/bingoUtil.js';
 import { globalBingoTiles } from '@/mahoji/lib/bingo/globalTiles.js';
+import type { Bingo, Prisma } from '@/prisma/main.js';
 
 export const BingoTrophies = [
 	{

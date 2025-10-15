@@ -1,10 +1,10 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import { activity_type_enum } from '@prisma/client';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { TokkulShopItems } from '@/lib/data/buyables/tokkulBuyables.js';
 import { KaramjaDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import type { TokkulShopOptions } from '@/lib/types/minions.js';
+import { activity_type_enum } from '@/prisma/main/enums.js';
 
 const { TzTokJad } = Monsters;
 

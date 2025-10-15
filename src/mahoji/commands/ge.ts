@@ -1,5 +1,4 @@
 import { evalMathExpression, formatDuration, makeComponents, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
-import type { GEListing, GETransaction } from '@prisma/client';
 import { Items, toKMB } from 'oldschooljs';
 
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
@@ -10,6 +9,7 @@ import { marketPricemap } from '@/lib/marketPrices.js';
 import { createChart } from '@/lib/util/chart.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { cancelGEListingCommand } from '@/mahoji/lib/abstracted_commands/cancelGEListingCommand.js';
+import type { GEListing, GETransaction } from '@/prisma/main.js';
 
 export type GEListingWithTransactions = GEListing & {
 	buyTransactions: GETransaction[];

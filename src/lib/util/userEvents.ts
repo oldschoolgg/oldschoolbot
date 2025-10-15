@@ -1,8 +1,9 @@
 import { dateFm } from '@oldschoolgg/toolkit';
-import { type Prisma, type UserEvent, UserEventType, type xp_gains_skill_enum } from '@prisma/client';
 
 import { MAX_LEVEL, MAX_TOTAL_LEVEL } from '@/lib/constants.js';
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
+import { UserEventType, type xp_gains_skill_enum } from '@/prisma/main/enums.js';
+import type { Prisma, UserEvent } from '@/prisma/main.js';
 
 export function userEventsToMap(_events: UserEvent[] | null) {
 	if (_events === null) return new Map<string, number>();

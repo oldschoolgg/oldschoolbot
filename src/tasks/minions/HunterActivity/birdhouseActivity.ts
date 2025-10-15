@@ -1,9 +1,9 @@
 import { randFloat, roll } from '@oldschoolgg/rng';
-import type { Prisma } from '@prisma/client';
 import { Bank, itemID } from 'oldschooljs';
 
 import birdhouses from '@/lib/skilling/skills/hunter/birdHouseTrapping.js';
 import type { BirdhouseData } from '@/lib/skilling/skills/hunter/defaultBirdHouseTrap.js';
+import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
 import type { BirdhouseActivityTaskOptions } from '@/lib/types/minions.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 import { calcBirdhouseLimit } from '@/mahoji/lib/abstracted_commands/birdhousesCommand.js';
@@ -51,7 +51,7 @@ export const birdHouseTask: MinionTask = {
 				birdhouseTime: currentDate + duration
 			};
 			await user.update({
-				minion_birdhouseTraps: updateBirdhouseData as any as Prisma.InputJsonObject
+				minion_birdhouseTraps: updateBirdhouseData as any as PrismaCompatibleJsonObject
 			});
 
 			str += `\n\n${user.minionName} tells you to come back after your birdhouses are full!`;
@@ -142,7 +142,7 @@ export const birdHouseTask: MinionTask = {
 			}
 
 			await user.update({
-				minion_birdhouseTraps: updateBirdhouseData as any as Prisma.InputJsonObject
+				minion_birdhouseTraps: updateBirdhouseData as any as PrismaCompatibleJsonObject
 			});
 
 			if (!placing) {

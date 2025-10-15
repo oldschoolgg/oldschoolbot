@@ -1,8 +1,7 @@
 import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent } from '@oldschoolgg/toolkit';
-import type { PlayerOwnedHouse } from '@prisma/client';
 import { EItem, Items, Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
-import z from 'zod';
+import * as z from 'zod';
 
 import type { BitField, PvMMethod } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
@@ -31,6 +30,7 @@ import {
 	CombatMethodOptionsSchema,
 	speedCalculations
 } from '@/mahoji/lib/abstracted_commands/minionKill/timeAndSpeed.js';
+import type { PlayerOwnedHouse } from '@/prisma/main.js';
 
 const newMinionKillReturnSchema = z.object({
 	duration: z.number().int().positive(),

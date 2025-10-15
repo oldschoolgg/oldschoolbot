@@ -1,4 +1,4 @@
-import type { Minigame } from '@prisma/client';
+import type { Minigame } from '@/prisma/main.js';
 
 export type MinigameName = keyof Omit<Minigame, 'id' | 'user_id'>;
 

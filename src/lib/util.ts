@@ -1,5 +1,4 @@
 import { cleanUsername, noOp } from '@oldschoolgg/toolkit';
-import type { Prisma, User } from '@prisma/client';
 import { type Guild, userMention } from 'discord.js';
 import { convertXPtoLVL } from 'oldschooljs';
 
@@ -11,6 +10,7 @@ import type { GearBank } from '@/lib/structures/GearBank.js';
 import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
+import type { Prisma, User } from '@/prisma/main.js';
 
 // @ts-expect-error ignore
 BigInt.prototype.toJSON = function () {

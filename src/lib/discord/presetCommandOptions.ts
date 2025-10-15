@@ -1,5 +1,4 @@
 import { stringSearch, toTitleCase, truncateString, uniqueArr } from '@oldschoolgg/toolkit';
-import type { GearPreset } from '@prisma/client';
 import type { APIApplicationCommandOptionChoice } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
@@ -8,6 +7,7 @@ import { GearSetupTypes } from '@/lib/gear/types.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import { Gear, type GlobalPreset, globalPresets } from '@/lib/structures/Gear.js';
+import type { GearPreset } from '@/prisma/main.js';
 
 export const filterOption: CommandOption = {
 	type: 'String',

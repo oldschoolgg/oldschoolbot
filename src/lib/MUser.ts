@@ -1,6 +1,5 @@
 import { percentChance } from '@oldschoolgg/rng';
 import { calcWhatPercent, cleanUsername, Emoji, isObject, sumArr, UserError, uniqueArr } from '@oldschoolgg/toolkit';
-import type { activity_type_enum, GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { escapeMarkdown, userMention } from 'discord.js';
 import {
 	addItemToBank,
@@ -46,7 +45,7 @@ import { defaultGear, Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { XPBank } from '@/lib/structures/XPBank.js';
-import type { SkillRequirements, Skills } from '@/lib/types/index.js';
+import type { PrismaCompatibleJsonObject, SkillRequirements, Skills } from '@/lib/types/index.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
@@ -56,6 +55,7 @@ import { type TransactItemsArgs, transactItemsFromBank } from '@/lib/util/transa
 import type { JsonKeys } from '@/lib/util.js';
 import { timePerAlch, timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand.js';
 import { getParsedStashUnits } from '@/mahoji/lib/abstracted_commands/stashUnitsCommand.js';
+import type { activity_type_enum, GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@/prisma/main.js';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {
@@ -651,7 +651,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			newRangeGear.ammo!.quantity -= ammoRemove?.[1];
 			if (newRangeGear.ammo!.quantity <= 0) newRangeGear.ammo = null;
 			const updateKey = options?.isInWilderness ? 'gear_wildy' : 'gear_range';
-			updates[updateKey] = newRangeGear as any as Prisma.InputJsonObject;
+			updates[updateKey] = newRangeGear as any as PrismaCompatibleJsonObject;
 		}
 
 		if (dart) {
@@ -937,7 +937,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		}
 
 		await this.update({
-			[`gear_${setup}`]: gear as any as Prisma.InputJsonObject
+			[`gear_${setup}`]: gear as any as PrismaCompatibleJsonObject
 		});
 		if (refundBank.length > 0) {
 			await this.addItemsToBank({

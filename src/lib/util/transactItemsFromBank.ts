@@ -1,4 +1,3 @@
-import type { Prisma } from '@prisma/client';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { deduplicateClueScrolls } from '@/lib/clues/clueUtils.js';
@@ -7,6 +6,7 @@ import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
 import { filterLootReplace } from '@/lib/slayer/slayerUtil.js';
 import { userQueueFn } from '@/lib/util/userQueues.js';
 import { findBingosWithUserParticipating } from '@/mahoji/lib/bingo/BingoManager.js';
+import type { Prisma } from '@/prisma/main.js';
 
 export interface TransactItemsArgs {
 	userID: string;

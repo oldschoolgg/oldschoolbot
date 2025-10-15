@@ -1,5 +1,4 @@
 import { calcPercentOfNum, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import type { GearSetupType } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
@@ -11,6 +10,7 @@ import { removeFoodFromUserRaw } from '@/lib/minions/functions/removeFoodFromUse
 import { calcWildyPKChance } from '@/lib/util/calcWildyPkChance.js';
 import { type Peak, PeakTier } from '@/lib/util/peaks.js';
 import type { BoostArgs, BoostResult } from '@/mahoji/lib/abstracted_commands/minionKill/speedBoosts.js';
+import type { GearSetupType } from '@/prisma/main/enums.js';
 
 const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)) + 1);
 

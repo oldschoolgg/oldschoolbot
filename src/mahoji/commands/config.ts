@@ -7,7 +7,6 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import type { activity_type_enum } from '@prisma/client';
 import { bold, EmbedBuilder, type Guild, type HexColorString, inlineCode, resolveColor } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
@@ -28,6 +27,7 @@ import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '@/mahoji/guildSettings.js';
 import { patronMsg } from '@/mahoji/mahojiSettings.js';
+import type { activity_type_enum } from '@/prisma/main/enums.js';
 
 interface UserConfigToggle {
 	name: string;

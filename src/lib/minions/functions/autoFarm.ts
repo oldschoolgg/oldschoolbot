@@ -1,10 +1,9 @@
-import { AutoFarmFilterEnum } from '@prisma/client';
-
 import { allFarm, replant } from '@/lib/minions/functions/autoFarmFilters.js';
 import { plants } from '@/lib/skilling/skills/farming/index.js';
 import type { IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { Plant } from '@/lib/skilling/types.js';
 import { farmingPlantCommand } from '@/mahoji/lib/abstracted_commands/farmingCommand.js';
+import { AutoFarmFilterEnum } from '@/prisma/main/enums.js';
 
 export async function autoFarm(interaction: MInteraction, user: MUser, patchesDetailed: IPatchDataDetailed[]) {
 	if (user.minionIsBusy) {

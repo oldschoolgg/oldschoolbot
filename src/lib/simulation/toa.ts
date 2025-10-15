@@ -15,7 +15,6 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { type Minigame, XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
 import { Bank, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
@@ -34,6 +33,7 @@ import type { TOAOptions } from '@/lib/types/minions.js';
 import { assert } from '@/lib/util/logError.js';
 import { bankToStrShortNames, formatList, formatSkillRequirements } from '@/lib/util/smallUtils.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
+import { type Minigame, XpGainSource } from '@/prisma/main.js';
 
 const teamSizeScale: Record<number, number> = {
 	1: 1.0,

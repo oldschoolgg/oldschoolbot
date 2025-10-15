@@ -1,6 +1,5 @@
 import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import { formatDuration, SimpleTable, Time } from '@oldschoolgg/toolkit';
-import type { activity_type_enum } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
@@ -11,6 +10,7 @@ import { pickaxes } from '@/lib/skilling/functions/miningBoosts.js';
 import type { Ore } from '@/lib/skilling/types.js';
 import type { ActivityTaskData, ShootingStarsOptions } from '@/lib/types/minions.js';
 import { patronMaxTripBonus } from '@/lib/util/calcMaxTripLength.js';
+import type { activity_type_enum } from '@/prisma/main/enums.js';
 
 interface Star extends Ore {
 	size: number;

@@ -1,5 +1,4 @@
 import { objectEntries } from '@oldschoolgg/toolkit';
-import type { Minigame } from '@prisma/client';
 import { Items, Monsters, resolveItems } from 'oldschooljs';
 
 import { MAX_QP } from '@/lib/minions/data/quests.js';
@@ -11,6 +10,7 @@ import Agility from '@/lib/skilling/skills/agility.js';
 import type { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { Skills } from '@/lib/types/index.js';
 import { formatList, formatSkillRequirements, hasSkillReqs } from '@/lib/util/smallUtils.js';
+import type { Minigame } from '@/prisma/main.js';
 
 interface Diary {
 	name: string;

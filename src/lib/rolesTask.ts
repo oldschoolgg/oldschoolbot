@@ -1,9 +1,8 @@
 import { noOp, notEmpty, Stopwatch, uniqueArr } from '@oldschoolgg/toolkit';
-import { Prisma } from '@prisma/client';
 import { convertXPtoLVL, type ItemBank } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { partition } from 'remeda';
-import z from 'zod';
+import * as z from 'zod';
 
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BadgesEnum, globalConfig, MAX_LEVEL, Roles } from '@/lib/constants.js';
@@ -14,6 +13,7 @@ import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import { fetchMultipleCLLeaderboards } from '@/lib/util/clLeaderboard.js';
 import { getUsernameSync } from '@/lib/util.js';
+import { Prisma } from '@/prisma/main.js';
 
 const RoleResultSchema = z.object({
 	roleID: z.string().min(17).max(19),

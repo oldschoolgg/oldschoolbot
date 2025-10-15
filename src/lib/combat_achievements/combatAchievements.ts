@@ -1,6 +1,5 @@
 import { roll } from '@oldschoolgg/rng';
 import { notEmpty, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
-import type { activity_type_enum } from '@prisma/client';
 import { type Item, Items } from 'oldschooljs';
 import { clone } from 'remeda';
 
@@ -15,6 +14,7 @@ import type { ActivityTaskData, TOAOptions } from '@/lib/types/minions.js';
 import type { TripFinishEffect } from '@/lib/util/handleTripFinish.js';
 import { assert } from '@/lib/util/logError.js';
 import { formatList } from '@/lib/util/smallUtils.js';
+import type { activity_type_enum } from '@/prisma/main/enums.js';
 
 const collectMonsterNames = (...achievements: CombatAchievement[][]) => {
 	const allMonsterNamesSet = new Set<string>();

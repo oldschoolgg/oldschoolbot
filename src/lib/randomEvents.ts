@@ -1,10 +1,10 @@
 import { randArrItem, roll } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
-import { activity_type_enum } from '@prisma/client';
 import { LRUCache } from 'lru-cache';
 import { Bank, ItemGroups, LootTable } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
+import { activity_type_enum } from '@/prisma/main/enums.js';
 
 interface RandomEvent {
 	id: number;

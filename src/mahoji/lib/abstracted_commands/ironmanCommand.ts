@@ -1,10 +1,10 @@
-import type { Prisma } from '@prisma/client';
 import type { ItemBank } from 'oldschooljs';
 
 import { BitField, DELETED_USER_ID } from '@/lib/constants.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { assert } from '@/lib/util/logError.js';
+import type { Prisma } from '@/prisma/main.js';
 
 export async function ironmanCommand(user: MUser, interaction: MInteraction | null, permanent?: boolean) {
 	if (user.minionIsBusy) return 'Your minion is busy.';

@@ -1,7 +1,7 @@
-import type { Prisma } from '@prisma/client';
 import type { ItemBank } from 'oldschooljs';
 
 import type { TOAOptions } from '@/lib/types/minions.js';
+import type { Prisma } from '@/prisma/main.js';
 
 export function normalizeTOAUsers(data: TOAOptions) {
 	const _detailedUsers = data.detailedUsers;

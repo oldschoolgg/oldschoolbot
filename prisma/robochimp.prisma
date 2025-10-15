@@ -2,7 +2,7 @@ generator client {
   provider        = "prisma-client"
   runtime         = "nodejs"
   previewFeatures = ["fullTextSearchPostgres"]
-  output          = "../src/prisma/robochimp"
+  output          = "../src/prisma/clients/robochimp"
 }
 
 datasource db {

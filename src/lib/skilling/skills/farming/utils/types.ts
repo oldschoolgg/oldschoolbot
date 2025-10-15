@@ -1,8 +1,7 @@
-import type { CropUpgradeType } from '@prisma/client';
-
 import type { FarmingPatchName } from '@/lib/skilling/skills/farming/utils/farmingHelpers.js';
 import type { getFarmingInfoFromUser } from '@/lib/skilling/skills/farming/utils/getFarmingInfo.js';
 import type { Plant } from '@/lib/skilling/types.js';
+import type { CropUpgradeType } from '@/prisma/main/enums.js';
 
 export interface IPatchData {
 	lastPlanted: string | null;

@@ -1,5 +1,4 @@
 import { containsBlacklistedWord, miniID, truncateString } from '@oldschoolgg/toolkit';
-import { GiftBoxStatus } from '@prisma/client';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
@@ -9,6 +8,7 @@ import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
+import { GiftBoxStatus } from '@/prisma/main.js';
 
 export const giftCommand: OSBMahojiCommand = {
 	name: 'gift',

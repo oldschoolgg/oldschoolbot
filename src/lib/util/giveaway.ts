@@ -1,9 +1,9 @@
 import { channelIsSendable, debounce, Events, noOp, Time } from '@oldschoolgg/toolkit';
-import type { Giveaway } from '@prisma/client';
 import { type MessageEditOptions, time, userMention } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { sendToChannelID } from '@/lib/util/webhook.js';
+import type { Giveaway } from '@/prisma/main.js';
 
 async function refundGiveaway(creator: MUser, loot: Bank) {
 	await creator.transactItems({

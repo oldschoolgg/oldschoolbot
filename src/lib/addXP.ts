@@ -1,5 +1,4 @@
 import { Events, formatOrdinal, noOp, Time, toTitleCase } from '@oldschoolgg/toolkit';
-import { type User, UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
 import { convertXPtoLVL, toKMB } from 'oldschooljs';
 
@@ -9,6 +8,8 @@ import type { AddXpParams } from '@/lib/minions/types.js';
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { insertUserEvent } from '@/lib/util/userEvents.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
+import { UserEventType } from '@/prisma/main/enums.js';
+import type { User } from '@/prisma/main.js';
 
 const skillsVals = Object.values(Skills);
 const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${MAX_LEVEL_XP}`).join(' AND ');

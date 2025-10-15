@@ -1,11 +1,11 @@
 import { calcPercentOfNum, calcWhatPercent, toTitleCase } from '@oldschoolgg/toolkit';
-import type { GEListing, GETransaction } from '@prisma/client';
 import { Items } from 'oldschooljs';
 import type { Canvas } from 'skia-canvas';
 
 import { CanvasSpritesheet } from '@/lib/canvas/CanvasSpritesheet.js';
 import { OSRSCanvas } from '@/lib/canvas/OSRSCanvas.js';
 import type { GEListingWithTransactions } from '@/mahoji/commands/ge.js';
+import type { GEListing, GETransaction } from '@/prisma/main.js';
 
 class GeImageGeneratorSingleton {
 	public geInterface: Canvas | null = null;

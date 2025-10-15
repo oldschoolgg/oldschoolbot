@@ -1,5 +1,4 @@
 import { objectEntries } from '@oldschoolgg/toolkit';
-import type { GearSetupType, Prisma, UserStats } from '@prisma/client';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { degradeChargeBank } from '@/lib/degradeableItems.js';
@@ -9,6 +8,7 @@ import { ChargeBank } from '@/lib/structures/Bank.js';
 import { KCBank } from '@/lib/structures/KCBank.js';
 import { XPBank } from '@/lib/structures/XPBank.js';
 import type { JsonKeys } from '@/lib/util.js';
+import type { GearSetupType, Prisma, UserStats } from '@/prisma/main.js';
 
 export class UpdateBank {
 	// Things removed

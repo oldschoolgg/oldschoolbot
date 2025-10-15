@@ -1,4 +1,3 @@
-import type { CropUpgradeType } from '@prisma/client';
 import type { ItemBank } from 'oldschooljs';
 
 import type { NMZStrategy } from '@/lib/constants.js';
@@ -10,6 +9,7 @@ import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
 import type { BirdhouseData } from '@/lib/skilling/skills/hunter/defaultBirdHouseTrap.js';
 import type { TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { Peak } from '@/lib/util/peaks.js';
+import type { CropUpgradeType } from '@/prisma/main/enums.js';
 
 export interface ActivityTaskOptions {
 	userID: string;

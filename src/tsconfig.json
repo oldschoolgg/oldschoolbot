@@ -4,8 +4,7 @@
 		"rootDir": "./",
 		"outDir": "../dist",
 		"paths": {
-			"@/*": ["./*"],
-			"@prisma/client": ["./prisma/client/client.ts"]
+			"@/*": ["./*"]
 		}
 	},
 	"include": ["."]

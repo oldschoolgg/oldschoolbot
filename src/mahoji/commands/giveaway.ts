@@ -1,6 +1,5 @@
 import { randInt } from '@oldschoolgg/rng';
 import { channelIsSendable, chunk, Emoji, makeComponents, Time } from '@oldschoolgg/toolkit';
-import type { Giveaway } from '@prisma/client';
 import { Duration } from '@sapphire/time-utilities';
 import {
 	ActionRowBuilder,
@@ -25,6 +24,7 @@ import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isModOrAdmin } from '@/lib/util.js';
+import type { Giveaway } from '@/prisma/main.js';
 
 function makeGiveawayButtons(giveawayID: number): BaseMessageOptions['components'] {
 	return [

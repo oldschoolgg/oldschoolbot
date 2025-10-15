@@ -1,8 +1,8 @@
 import { objectEntries } from '@oldschoolgg/toolkit';
-import type { PlayerOwnedHouse } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
 import type { LevelRequirements } from '@/lib/skilling/types.js';
+import type { PlayerOwnedHouse } from '@/prisma/main.js';
 import { Amulets } from './objects/amulets.js';
 import { DungeonDecorations } from './objects/dungeon_decorations.js';
 import { GardenDecorations } from './objects/garden_decorations.js';

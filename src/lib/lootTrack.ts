@@ -1,8 +1,8 @@
 import { cleanString, formatDuration, Time } from '@oldschoolgg/toolkit';
-import type { LootTrack, loot_track_type } from '@prisma/client';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
+import type { LootTrack, loot_track_type } from '@/prisma/main.js';
 
 type TrackLootOptions =
 	| {

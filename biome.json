@@ -40,7 +40,7 @@
 			"!**/.astro",
 			"!**/.yarn",
 			"!**/.pnpm-store",
-			"!src/prisma"
+			"!src/prisma/clients"
 		]
 	},
 	"vcs": {
