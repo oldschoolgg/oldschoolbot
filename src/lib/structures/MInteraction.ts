@@ -9,7 +9,6 @@ import {
 	ButtonStyle,
 	type CommandInteraction,
 	ComponentType,
-	type InteractionResponse,
 	InteractionResponseType,
 	type Message,
 	MessageFlags,
@@ -193,9 +192,7 @@ export class MInteraction {
 		return JSON.stringify(omit(response, ['files'])).slice(0, 600);
 	}
 
-	async reply(
-		_response: string | CompatibleResponse
-	): Promise<InteractionResponse<boolean> | Message<boolean> | null> {
+	async reply(_response: string | CompatibleResponse): Promise<Message<boolean> | null> {
 		const response: CompatibleResponse = typeof _response === 'string' ? { content: _response } : _response;
 
 		if (!('content' in response)) {
