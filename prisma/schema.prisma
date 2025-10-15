@@ -1454,3 +1454,31 @@ enum command_name_enum {
   xpto99
   zalcano
 }
+
+enum TableBankType {
+  Bank
+  CollectionLog
+}
+
+model TableBank {
+  id      Int           @id @default(autoincrement())
+  user_id String
+  type    TableBankType
+
+  items TableBankItem[]
+
+  @@unique([user_id, type])
+  @@map("table_bank")
+}
+
+model TableBankItem {
+  bank_id  Int
+  item_id  Int
+  quantity BigInt @db.BigInt
+
+  bank TableBank @relation(fields: [bank_id], references: [id], onDelete: Cascade)
+
+  @@id([bank_id, item_id])
+  @@index([bank_id])
+  @@map("table_bank_item")
+}
