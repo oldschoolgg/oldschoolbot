@@ -11,6 +11,7 @@ export function initCrons() {
 	 */
 	crons.add(
 		schedule('0 */6 * * *', async () => {
+			Logging.logDebug('Inserting economy item data');
 			await prisma.$queryRawUnsafe(`INSERT INTO economy_item
 SELECT item_id::integer, SUM(qty)::bigint FROM
 (

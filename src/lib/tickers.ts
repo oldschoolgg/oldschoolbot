@@ -359,12 +359,15 @@ export function initTickers() {
 		const fn = async () => {
 			try {
 				if (globalClient.isShuttingDown) return;
+				Logging.logDebug(`Starting ${ticker.name} ticker`, {
+					type: 'TICKER'
+				});
 				const start = performance.now();
 				await ticker.cb();
 				const end = performance.now();
-				Logging.logPerf({
+				Logging.logDebug(`Finished ${ticker.name} ticker`, {
 					duration: end - start,
-					text: `Ticker.${ticker.name}`
+					type: 'TICKER'
 				});
 			} catch (err) {
 				Logging.logError(err as Error);

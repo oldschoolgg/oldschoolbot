@@ -80,6 +80,14 @@ const interactionHandlers: InteractionHandler[] = [
 
 export async function interactionHandler(rawInteraction: Interaction) {
 	try {
+		Logging.logDebug(`Received interaction`, {
+			id: rawInteraction.id,
+			type: 'INTERACTION',
+			interaction_type: rawInteraction.type,
+			user: rawInteraction.user?.id,
+			guild: rawInteraction.guild?.id,
+			channel: rawInteraction.channel?.id
+		});
 		if (rawInteraction.isAutocomplete()) {
 			await autoCompleteHandler(rawInteraction);
 			return;

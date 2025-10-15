@@ -299,6 +299,7 @@ export async function onMessage(msg: Message) {
 		i.aliases.some(alias => msg.content.startsWith(`${mentionText} ${alias}`))
 	);
 	if (command) {
+		Logging.logDebug(`${msg.author.id} used the ${command.name} mention command`);
 		const msgContentWithoutCommand = msg.content.split(' ').slice(2).join(' ');
 		await prisma.commandUsage.create({
 			data: {
@@ -336,6 +337,7 @@ export async function onMinionActivityFinish(activity: ActivityTaskData) {
 		// Max once per 30 minutes
 		if (Date.now() - lastSyncTime > Time.Minute * 30) {
 			lastRoboChimpSyncCache.set(activity.userID, Date.now());
+			Logging.logDebug(`Syncing RoboChimp for user ${activity.userID}`);
 			await roboChimpSyncData(await mUserFetch(activity.userID));
 		}
 	} catch (err) {
