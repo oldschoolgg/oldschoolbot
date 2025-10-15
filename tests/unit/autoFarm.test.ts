@@ -1,5 +1,5 @@
 import { Bank, convertLVLtoXP } from 'oldschooljs';
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, type SpyInstance, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, type MockInstance, vi } from 'vitest';
 
 import './setup.js';
 
@@ -83,7 +83,7 @@ const treePatches: Partial<Record<FarmingPatchName, IPatchData>> = {
 	[treePlant.seedType]: treePatch
 };
 
-let calcMaxTripLengthSpy: SpyInstance;
+let calcMaxTripLengthSpy: MockInstance;
 const originalPrisma = (globalThis as { prisma?: unknown }).prisma;
 const originalMinionIsBusy = (global.ActivityManager as { minionIsBusy?: (userID: string) => boolean }).minionIsBusy;
 
