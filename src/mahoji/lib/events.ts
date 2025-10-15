@@ -1,6 +1,5 @@
 import type { ItemBank } from 'oldschooljs';
 
-import { startBlacklistSyncing } from '@/lib/blacklists.js';
 import { usernameWithBadgesCache } from '@/lib/cache.js';
 import { badges, Channel, globalConfig, META_CONSTANTS } from '@/lib/constants.js';
 import { initCrons } from '@/lib/crons.js';
@@ -67,7 +66,6 @@ export const onStartup = logWrapFn('onStartup', async () => {
 		guildId: globalConfig.isProduction ? undefined : globalConfig.supportServerID
 	});
 	updateBadgeTable();
-	startBlacklistSyncing();
 
 	populateUsernameCache();
 });
