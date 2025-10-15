@@ -88,7 +88,7 @@ beforeAll(async () => {
 	mockWebhookSend.mockReset();
 
 	app = await startServer();
-});
+}, 25_000);
 
 afterAll(async () => {
 	for (const c of [globalThis.osbClient, globalThis.bsoClient, globalThis.roboChimpClient]) {

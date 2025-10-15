@@ -176,11 +176,10 @@ export const minionCommand: OSBMahojiCommand = {
 					name: 'name',
 					description: 'The name of the bank background you want.',
 					autocomplete: async (value, user) => {
-						const mUser = await mUserFetch(user.id);
-						const isMod = mUser.bitfield.includes(BitField.isModerator);
+						const isMod = user.bitfield.includes(BitField.isModerator);
 						const bankImages = bankImageTask.backgroundImages;
 						const owned = bankImages
-							.filter(bg => bg.storeBitField && mUser.user.store_bitfield.includes(bg.storeBitField))
+							.filter(bg => bg.storeBitField && user.user.store_bitfield.includes(bg.storeBitField))
 							.map(bg => bg.id);
 						return bankImages
 							.filter(bg => isMod || bg.available || owned.includes(bg.id))
@@ -211,9 +210,7 @@ export const minionCommand: OSBMahojiCommand = {
 							.filter(notEmpty)
 							.map(i => ({ id: i.id, name: i.name }));
 
-						const botUser = await mUserFetch(user.id);
-
-						return botUser.bank
+						return user.bank
 							.items()
 							.filter(i => mappedLampables.map(l => l.id).includes(i[0].id))
 							.filter(i => {
@@ -410,7 +407,7 @@ export const minionCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
-		userID,
+		user,
 		options,
 		interaction
 	}: CommandRunOptions<{
@@ -436,7 +433,6 @@ export const minionCommand: OSBMahojiCommand = {
 		peak?: {};
 		mastery?: {};
 	}>) => {
-		const user = await mUserFetch(userID);
 		const perkTier = user.perkTier();
 
 		if (options.info) return (await getUserInfo(user)).everythingString;

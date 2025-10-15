@@ -2,18 +2,19 @@ import { debounce, deepMerge, formatDuration, Time } from '@oldschoolgg/toolkit'
 import { TimerManager } from '@sapphire/timer-manager';
 import {
 	ActionRowBuilder,
+	type AutocompleteInteraction,
 	ButtonBuilder,
 	type ButtonInteraction,
 	ButtonStyle,
 	type CommandInteraction,
 	ComponentType,
-	type InteractionResponse,
 	InteractionResponseType,
 	type Message,
 	MessageFlags,
 	PermissionsBitField,
 	Routes
 } from 'discord.js';
+import { omit } from 'remeda';
 
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { CACHED_ACTIVE_USER_IDS, partyLockCache } from '@/lib/cache.js';
@@ -24,6 +25,7 @@ import {
 	PaginatedMessage,
 	type PaginatedMessageOptions
 } from '@/lib/structures/PaginatedMessage.js';
+import { compressMahojiArgs } from '@/lib/util/commandUsage.js';
 import { getUsername } from '@/lib/util.js';
 
 interface MakePartyOptions {
@@ -40,7 +42,7 @@ export class MInteraction {
 	public interaction: CommandInteraction | ButtonInteraction;
 	public id: string;
 	public ephemeral: boolean;
-	public interactionResponse: InteractionResponse | Message | null = null;
+	public interactionResponse: Message | null = null;
 	public isPaginated = false;
 	public isParty = false;
 	public isConfirmation = false;
@@ -59,35 +61,51 @@ export class MInteraction {
 		return this.interaction.deferred;
 	}
 
-	public getDebugInfo() {
+	get type() {
+		return this.interaction.type;
+	}
+
+	static getChatInputCommandOptions(interaction: CommandInteraction | AutocompleteInteraction | ButtonInteraction) {
+		if (!interaction.isChatInputCommand()) return {};
+		const cmdOpts = convertAPIOptionsToCommandOptions(interaction.options.data, interaction.options.resolved);
+		return compressMahojiArgs(cmdOpts);
+	}
+
+	public getChatInputCommandOptions() {
+		return MInteraction.getChatInputCommandOptions(this.interaction);
+	}
+
+	static getInteractionDebugInfo(interaction: AutocompleteInteraction | MInteraction) {
 		const context: Record<string, string | number | null | boolean> = {
-			user_id: this.user.id,
-			channel_id: this.channelId,
-			guild_id: this.guildId,
-			interaction_id: this.id,
-			interaction_type: this.interaction.type,
-			interaction_created_at: this.createdTimestamp,
-			current_timestamp: Date.now(),
-			difference_ms: Date.now() - this.createdTimestamp,
-			was_deferred: this.deferred,
-			custom_id: this.customId,
-			command_name: this.commandName,
-			ephemeral: this.ephemeral,
-			replied: this.replied,
-			is_party: this.isParty,
-			is_confirmation: this.isConfirmation,
-			is_paginated: this.isPaginated
+			user_id: interaction.user.id,
+			channel_id: interaction.channelId,
+			guild_id: interaction.guildId,
+			itx_id: interaction.id,
+			itx_type: interaction.type,
+			itx_created_at: interaction.createdTimestamp,
+			itx_diff_s: ((Date.now() - interaction.createdTimestamp) / 1000).toFixed(1)
 		};
-		if (this.interaction.isChatInputCommand()) {
-			context.options = JSON.stringify(
-				convertAPIOptionsToCommandOptions(this.interaction.options.data, this.interaction.options.resolved)
-			);
-			context.command_name = this.interaction.commandName;
-		} else if (this.interaction.isButton()) {
-			context.button_id = this.interaction.customId;
+
+		if (interaction instanceof MInteraction) {
+			context.was_deferred = interaction.deferred;
+			context.cmd_name = interaction.commandName;
+			context.ephemeral = interaction.ephemeral;
+			context.replied = interaction.replied;
+			context.is_party = interaction.isParty;
+			context.is_confirm = interaction.isConfirmation;
+			context.is_paginated = interaction.isPaginated;
+			context.button_id = interaction.customId;
+
+			if (interaction.interaction.isChatInputCommand()) {
+				context.cmd_options = JSON.stringify(MInteraction.getChatInputCommandOptions(interaction.interaction));
+			}
 		}
 
 		return context;
+	}
+
+	public getDebugInfo() {
+		return MInteraction.getInteractionDebugInfo(this);
 	}
 
 	public isRepliable() {
@@ -139,6 +157,15 @@ export class MInteraction {
 		return this.interaction.guild;
 	}
 
+	public get createdAt() {
+		return this.interaction.createdAt;
+	}
+
+	public get message() {
+		if (!this.interaction.isButton()) return null;
+		return this.interaction.message;
+	}
+
 	makePaginatedMessage(options: PaginatedMessageOptions) {
 		this.isPaginated = true;
 		return new PaginatedMessage({ interaction: this, ...options }).run([this.interaction.user.id]);
@@ -160,9 +187,11 @@ export class MInteraction {
 		}
 	}
 
-	async reply(
-		_response: string | CompatibleResponse
-	): Promise<InteractionResponse<boolean> | Message<boolean> | null> {
+	private formatResponseForLogging(response: CompatibleResponse) {
+		return JSON.stringify(omit(response, ['files'])).slice(0, 600);
+	}
+
+	async reply(_response: string | CompatibleResponse): Promise<Message<boolean> | null> {
 		const response: CompatibleResponse = typeof _response === 'string' ? { content: _response } : _response;
 
 		if (!('content' in response)) {
@@ -172,22 +201,26 @@ export class MInteraction {
 			response.components = [];
 		}
 
+		if (response.ephemeral) {
+			this.ephemeral = true;
+			delete response.ephemeral;
+			response.flags = MessageFlags.Ephemeral;
+		}
+
 		try {
 			if (this.replied || this.deferred) {
-				this.interactionResponse = await this.interaction.editReply(response);
+				this.interactionResponse = await this.interaction.editReply(
+					omit({ ...response, withResponse: true }, ['flags', 'ephemeral'])
+				);
 			} else {
-				this.interactionResponse = await this.interaction.reply(response);
+				const interactionCallbackResponse = await this.interaction.reply({ ...response, withResponse: true });
+				this.interactionResponse = interactionCallbackResponse.resource?.message ?? null;
 			}
 		} catch (err) {
 			Logging.logError(err as Error, {
 				action: `REPLY (${this.deferred ? 'editReply' : 'reply'})`,
 				...this.getDebugInfo(),
-				command: this.commandName,
-				custom_id: this.customId,
-				response: JSON.stringify(response).slice(0, 1000),
-				replied: this.replied,
-				deferred: this.deferred,
-				ephemeral: this.ephemeral
+				response: this.formatResponseForLogging(response)
 			});
 		}
 		return this.interactionResponse;
@@ -338,7 +371,6 @@ export class MInteraction {
 		await this.defer({ ephemeral: false });
 		await this.reply(await getMessageContent());
 
-		const message = this.interactionResponse!;
 		const updateUsersIn = debounce(async () => {
 			await this.reply(await getMessageContent());
 		}, 500);
@@ -378,7 +410,7 @@ export class MInteraction {
 		}
 
 		return new Promise<MUser[]>((resolve, reject) => {
-			const collector = message.createMessageComponentCollector({
+			const collector = this.interactionResponse!.createMessageComponentCollector({
 				time: timeout,
 				componentType: ComponentType.Button
 			});

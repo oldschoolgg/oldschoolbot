@@ -1,9 +1,9 @@
 import { roll } from '@oldschoolgg/rng';
 import { notEmpty, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
-import type { activity_type_enum } from '@prisma/client';
 import { type Item, Items } from 'oldschooljs';
 import { clone } from 'remeda';
 
+import type { activity_type_enum } from '@/prisma/main/enums.js';
 import { easyCombatAchievements } from '@/lib/combat_achievements/easy.js';
 import { eliteCombatAchievements } from '@/lib/combat_achievements/elite.js';
 import { grandmasterCombatAchievements } from '@/lib/combat_achievements/grandmaster.js';
@@ -43,6 +43,7 @@ export type CombatAchievement = {
 	type: CAType;
 	monster: string;
 	desc: string;
+	details?: string;
 	activityType?: activity_type_enum;
 } & (
 	| { requirements: Requirements }

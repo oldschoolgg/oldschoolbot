@@ -1,7 +1,7 @@
 import { objectEntries, partition } from '@oldschoolgg/toolkit';
-import { activity_type_enum } from '@prisma/client';
 import { Bank, EMonster, ItemGroups, Items, Monsters, resolveItems } from 'oldschooljs';
 
+import { activity_type_enum } from '@/prisma/main/enums.js';
 import { DEPRECATED_ACTIVITY_TYPES } from '@/lib/constants.js';
 import { RandomEvents } from '@/lib/randomEvents.js';
 import { type MinigameName, Minigames } from '@/lib/settings/minigames.js';

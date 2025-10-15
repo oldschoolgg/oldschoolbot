@@ -26,7 +26,7 @@ class ArrayTracker {
 function approximateValue(bank: Bank) {
 	let value = 0;
 	for (const [id, qty] of Object.entries(bank)) {
-		const item = Items.get(id);
+		const item = Items.getItem(id);
 		if (item?.price) {
 			value += qty * item.price;
 		}

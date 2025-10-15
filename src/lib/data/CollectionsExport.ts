@@ -1,7 +1,7 @@
 import { objectEntries } from '@oldschoolgg/toolkit';
-import type { Minigame } from '@prisma/client';
 import { type Bank, type Item, ItemGroups, Items, resolveItems } from 'oldschooljs';
 
+import type { Minigame } from '@/prisma/main.js';
 import {
 	gracefulCapes,
 	gracefulFeet,

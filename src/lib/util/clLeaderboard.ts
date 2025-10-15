@@ -1,4 +1,4 @@
-import { Stopwatch, stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit';
 
 import { SQL } from '@/lib/rawSql.js';
 import { userEventsToMap } from '@/lib/util/userEvents.js';
@@ -95,9 +95,14 @@ export async function fetchCLLeaderboard({
 	method?: 'cl_array';
 	clName: string;
 }) {
-	const sw = new Stopwatch();
+	const start = performance.now();
 	const result = await fetchMultipleCLLeaderboards([{ ironmenOnly, items, resultLimit, clName }]);
-	sw.stop();
-	Logging.logDebug(`Took ${sw} to fetchCLLeaderboard for ${clName}`);
+	const end = performance.now();
+	Logging.logPerf({
+		duration: end - start,
+		text: `CLLeaderBoard.${clName}`,
+		collection_log: clName,
+		total_items: items.length
+	});
 	return result[0];
 }

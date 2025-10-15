@@ -2,11 +2,11 @@ import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
 import { dateFm, Emoji, PerkTier } from '@oldschoolgg/toolkit';
-import { activity_type_enum } from '@prisma/client';
 import * as dotenv from 'dotenv';
 import { convertLVLtoXP, resolveItems } from 'oldschooljs';
-import { z } from 'zod';
+import * as z from 'zod';
 
+import { activity_type_enum } from '@/prisma/main/enums.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 
 export { PerkTier };
@@ -382,7 +382,8 @@ const globalConfigSchema = z.object({
 	adminUserIDs: z.array(z.string()).default(['157797566833098752', '425134194436341760']),
 	maxingMessage: z.string().default('Congratulations on maxing!'),
 	moderatorLogsChannels: z.string().default(''),
-	supportServerID: z.string()
+	supportServerID: z.string(),
+	minimumLoggedPerfDuration: z.number().default(30)
 });
 
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
