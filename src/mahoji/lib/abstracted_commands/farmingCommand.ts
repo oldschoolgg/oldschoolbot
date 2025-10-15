@@ -1,7 +1,7 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import type { CropUpgradeType } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
+import type { CropUpgradeType } from '@/prisma/main/enums.js';
 import { superCompostables } from '@/lib/data/filterables.js';
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';

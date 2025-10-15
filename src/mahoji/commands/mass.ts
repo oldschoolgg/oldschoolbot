@@ -1,6 +1,6 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import type { GearSetupType } from '@prisma/client';
 
+import type { GearSetupType } from '@/prisma/main/enums.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import calculateMonsterFood from '@/lib/minions/functions/calculateMonsterFood.js';
 import hasEnoughFoodForMonster from '@/lib/minions/functions/hasEnoughFoodForMonster.js';

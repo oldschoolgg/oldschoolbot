@@ -1,8 +1,9 @@
 import { Time } from '@oldschoolgg/toolkit';
-import { type Activity, activity_type_enum, type Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Items } from 'oldschooljs';
 
+import { activity_type_enum } from '@/prisma/main/enums.js';
+import type { Activity, Prisma } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import type { PvMMethod } from '@/lib/constants.js';
 import { findTripBuyable } from '@/lib/data/buyables/tripBuyables.js';

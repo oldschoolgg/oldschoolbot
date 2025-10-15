@@ -1,8 +1,9 @@
 import { Events, formatOrdinal, noOp, Time, toTitleCase } from '@oldschoolgg/toolkit';
-import { type User, UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
 import { convertXPtoLVL, toKMB } from 'oldschooljs';
 
+import { UserEventType } from '@/prisma/main/enums.js';
+import type { User } from '@/prisma/main.js';
 import { globalConfig, MAX_LEVEL, MAX_LEVEL_XP, MAX_TOTAL_LEVEL, MAX_XP } from '@/lib/constants.js';
 import { skillEmoji } from '@/lib/data/emojis.js';
 import type { AddXpParams } from '@/lib/minions/types.js';

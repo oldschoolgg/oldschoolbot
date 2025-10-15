@@ -1,6 +1,6 @@
-import type { Prisma } from '@prisma/client';
 import type { ItemBank } from 'oldschooljs';
 
+import type { Prisma } from '@/prisma/main.js';
 import { BitField, DELETED_USER_ID } from '@/lib/constants.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
 import { roboChimpUserFetch } from '@/lib/roboChimp.js';

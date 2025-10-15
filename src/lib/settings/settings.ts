@@ -1,6 +1,6 @@
-import type { NewUser } from '@prisma/client';
 import { ButtonInteraction } from 'discord.js';
 
+import type { NewUser } from '@/prisma/main.js';
 import { rawCommandHandlerInner } from '@/lib/discord/commandHandler.js';
 import type { CommandOptions } from '@/lib/discord/commandOptions.js';
 import { MInteraction } from '@/lib/structures/MInteraction.js';

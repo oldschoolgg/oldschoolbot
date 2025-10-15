@@ -7,11 +7,11 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import type { activity_type_enum } from '@prisma/client';
 import { bold, EmbedBuilder, type Guild, type HexColorString, inlineCode, resolveColor } from 'discord.js';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 import { clamp } from 'remeda';
 
+import type { activity_type_enum } from '@/prisma/main/enums.js';
 import { ItemIconPacks } from '@/lib/canvas/iconPacks.js';
 import { BitField, globalConfig, ParsedCustomEmojiWithGroups, PerkTier } from '@/lib/constants.js';
 import { Eatables } from '@/lib/data/eatables.js';

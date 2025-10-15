@@ -1,8 +1,8 @@
 import { calcWhatPercent, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
-import type { Minigame } from '@prisma/client';
 import { strikethrough } from 'discord.js';
 import { Bank, Items, Monsters } from 'oldschooljs';
 
+import type { Minigame } from '@/prisma/main.js';
 import { diaries, userhasDiaryTier, userhasDiaryTierSync } from '@/lib/diaries.js';
 import type { DiaryTier } from '@/lib/minions/types.js';
 import { Minigames } from '@/lib/settings/minigames.js';

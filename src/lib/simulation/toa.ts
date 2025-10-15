@@ -15,12 +15,12 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import { type Minigame, XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
 import { Bank, Items, itemID, LootTable, resolveItems } from 'oldschooljs';
 import type { GearStats } from 'oldschooljs/gear';
 import { clamp } from 'remeda';
 
+import { type Minigame, XpGainSource } from '@/prisma/main.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { degradeItem } from '@/lib/degradeableItems.js';
 import { mentionCommand } from '@/lib/discord/utils.js';

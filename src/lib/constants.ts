@@ -2,11 +2,11 @@ import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
 import { dateFm, Emoji, PerkTier } from '@oldschoolgg/toolkit';
-import { activity_type_enum } from '@prisma/client';
 import * as dotenv from 'dotenv';
 import { convertLVLtoXP, resolveItems } from 'oldschooljs';
-import { z } from 'zod';
+import * as z from 'zod';
 
+import { activity_type_enum } from '@/prisma/main/enums.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 
 export { PerkTier };

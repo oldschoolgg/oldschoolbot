@@ -1,7 +1,7 @@
-import type { GearSetupType, XpGainSource } from '@prisma/client';
 import type { ArrayItemsResolved, Bank, Item, ItemBank, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
 import type { OffenceGearStat } from 'oldschooljs/gear';
 
+import type { GearSetupType, XpGainSource } from '@/prisma/main.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import type { QuestID } from '@/lib/minions/data/quests.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';

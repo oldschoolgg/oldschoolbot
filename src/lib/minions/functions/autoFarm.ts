@@ -1,5 +1,4 @@
-import { AutoFarmFilterEnum } from '@prisma/client';
-
+import { AutoFarmFilterEnum } from '@/prisma/main/enums.js';
 import { allFarm, replant } from '@/lib/minions/functions/autoFarmFilters.js';
 import { plants } from '@/lib/skilling/skills/farming/index.js';
 import type { IPatchDataDetailed } from '@/lib/skilling/skills/farming/utils/types.js';

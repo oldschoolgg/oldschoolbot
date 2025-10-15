@@ -1,8 +1,8 @@
 import { Emoji, formatDuration, PerkTier, stringMatches, sumArr, Time } from '@oldschoolgg/toolkit';
-import type { activity_type_enum, UserStats } from '@prisma/client';
 import { Bank, type ItemBank, Items, Monsters, TOBRooms, toKMB } from 'oldschooljs';
 import type { SkillsScore } from 'oldschooljs/hiscores';
 
+import type { activity_type_enum, UserStats } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { getClueScoresFromOpenables } from '@/lib/clues/clueUtils.js';
 import { calcCLDetails, isCLItem } from '@/lib/data/Collections.js';

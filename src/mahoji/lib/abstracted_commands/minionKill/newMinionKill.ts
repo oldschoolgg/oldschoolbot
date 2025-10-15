@@ -1,9 +1,9 @@
 import { formatDuration, increaseNumByPercent, isWeekend, reduceNumByPercent } from '@oldschoolgg/toolkit';
-import type { PlayerOwnedHouse } from '@prisma/client';
 import { EItem, Items, Monsters } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
-import z from 'zod';
+import * as z from 'zod';
 
+import type { PlayerOwnedHouse } from '@/prisma/main.js';
 import type { BitField, PvMMethod } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { checkRangeGearWeapon } from '@/lib/gear/functions/checkRangeGearWeapon.js';

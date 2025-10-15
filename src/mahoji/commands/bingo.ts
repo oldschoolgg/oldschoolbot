@@ -13,14 +13,15 @@ import {
 	truncateString,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import type { Prisma } from '@prisma/client';
 import { bold, userMention } from 'discord.js';
 import { Bank, type ItemBank, Items, toKMB } from 'oldschooljs';
 
+import type { Prisma } from '@/prisma/main.js';
 import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { clImageGenerator } from '@/lib/collectionLogTask.js';
 import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import { mentionCommand } from '@/lib/discord/utils.js';
+import type { PrismaCompatibleJsonObject } from '@/lib/types/index.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 import { isValidNickname } from '@/lib/util/smallUtils.js';
 import { getUsername, getUsernameSync } from '@/lib/util.js';
@@ -835,7 +836,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 					},
 					data: {
 						bingo_tiles: {
-							push: tileToAdd as any as Prisma.InputJsonObject
+							push: tileToAdd as any as PrismaCompatibleJsonObject
 						}
 					}
 				});
@@ -876,7 +877,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 						id: bingo.id
 					},
 					data: {
-						bingo_tiles: newTiles as any as Prisma.InputJsonObject[]
+						bingo_tiles: newTiles as any as PrismaCompatibleJsonObject[]
 					}
 				});
 
