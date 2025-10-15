@@ -114,10 +114,10 @@ describe('auto farm helpers', () => {
 		const user = mockMUser({
 			bank,
 			skills_farming: convertLVLtoXP(40),
-			skills_woodcutting: convertLVLtoXP(40)
+			skills_woodcutting: convertLVLtoXP(1)
 		});
 		const mutableUser = user.user as MutableUser;
-		mutableUser.minion_defaultPay = true;
+		mutableUser.minion_defaultPay = false;
 		mutableUser.minion_defaultCompostToUse = CropUpgradeType.supercompost;
 
 		const result = await prepareFarmingStep({
@@ -138,12 +138,12 @@ describe('auto farm helpers', () => {
 		const { cost, quantity, duration, didPay, upgradeType, treeChopFee } = result.data;
 		expect(quantity).toBe(treePatchDetailed.lastQuantity);
 		expect(duration).toBe(treePatchDetailed.lastQuantity * (20 + 5 + 10) * 1000);
-		expect(didPay).toBe(true);
+		expect(didPay).toBe(false);
 		expect(upgradeType).toBe(CropUpgradeType.supercompost);
 		expect(treeChopFee).toBe(200 * treePatchDetailed.lastQuantity);
 		expect(cost.amount('Acorn')).toBe(treePatchDetailed.lastQuantity);
 		expect(cost.amount('Supercompost')).toBe(treePatchDetailed.lastQuantity);
-		expect(cost.amount('Tomatoes(5)')).toBe(treePatchDetailed.lastQuantity);
+		expect(cost.amount('Tomatoes(5)')).toBe(0);
 	});
 
 	it('autoFarm generates plan for AllFarm filter', async () => {
@@ -210,11 +210,11 @@ describe('auto farm helpers', () => {
 		const user = mockMUser({
 			bank,
 			skills_farming: convertLVLtoXP(40),
-			skills_woodcutting: convertLVLtoXP(40)
+			skills_woodcutting: convertLVLtoXP(1)
 		});
 		const mutableUser = user.user as MutableUser;
 		mutableUser.auto_farm_filter = AutoFarmFilterEnum.Replant;
-		mutableUser.minion_defaultPay = true;
+		mutableUser.minion_defaultPay = false;
 		mutableUser.minion_defaultCompostToUse = CropUpgradeType.supercompost;
 
 		const transactResult = {
@@ -245,7 +245,6 @@ describe('auto farm helpers', () => {
 		expect(response).toContain('3x Oak tree');
 		expect(response).toContain('Up to 600 GP to remove previous trees');
 		expect(response).toContain('3x Supercompost');
-		expect(response).toContain('3x Tomatoes(5)');
 
 		expect(transactSpy).toHaveBeenCalledTimes(1);
 		const [transactArg] = transactSpy.mock.calls[0];
@@ -253,7 +252,7 @@ describe('auto farm helpers', () => {
 		const itemsToRemove = transactArg.itemsToRemove!;
 		expect(itemsToRemove.amount('Acorn')).toBe(3);
 		expect(itemsToRemove.amount('Supercompost')).toBe(3);
-		expect(itemsToRemove.amount('Tomatoes(5)')).toBe(3);
+		expect(itemsToRemove.amount('Tomatoes(5)')).toBe(0);
 
 		expect(statsSpy).toHaveBeenCalledWith('farming_plant_cost_bank', expect.any(Bank));
 		expect(updateBankSettingSpy).toHaveBeenCalledWith('farming_cost_bank', expect.any(Bank));
@@ -265,5 +264,7 @@ describe('auto farm helpers', () => {
 		expect(taskArgs.autoFarmPlan[0].duration).toBe(treePatchDetailed.lastQuantity * (20 + 5 + 10) * 1000);
 		expect(taskArgs.autoFarmPlan[0].treeChopFeePlanned).toBe(200 * treePatchDetailed.lastQuantity);
 		expect(taskArgs.autoFarmPlan[0].currentDate).toBe(new Date('2020-01-01T01:00:00Z').valueOf());
+		expect(taskArgs.autoFarmPlan[0].upgradeType).toBe(CropUpgradeType.supercompost);
+		expect(taskArgs.autoFarmPlan[0].payment).toBe(false);
 	});
 });
