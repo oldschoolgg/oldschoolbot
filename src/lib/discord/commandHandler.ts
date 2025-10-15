@@ -2,6 +2,7 @@ import { cryptoRng } from '@oldschoolgg/rng';
 import { SpecialResponse } from '@oldschoolgg/toolkit';
 import { type ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.js';
 
+import type { Prisma } from '@/prisma/main.js';
 import { busyImmuneCommands } from '@/lib/constants.js';
 import { type CommandOptions, convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';
 import { preCommand } from '@/lib/discord/preCommand.js';
@@ -11,11 +12,15 @@ import { MInteraction } from '@/lib/structures/MInteraction.js';
 export async function rawCommandHandlerInner({
 	interaction,
 	command,
-	options
+	options,
+	injectedUser,
+	skipBusyLock
 }: {
 	interaction: MInteraction;
 	command: OSBMahojiCommand;
 	options: CommandOptions;
+	injectedUser?: MUser;
+	skipBusyLock?: boolean;
 }) {
 	const sw = new DebugStopwatch({ name: 'CommandHandler', interaction });
 
@@ -33,18 +38,25 @@ export async function rawCommandHandlerInner({
 		}
 	}
 
-	const user = await mUserFetch(interaction.user.id, {
+	let user = injectedUser;
+	const userUpdates = {
 		last_command_date: new Date(),
 		username: globalClient.users.cache.get(interaction.user.id)?.username
-	});
-	if (user.isBusy && !busyImmuneCommands.includes(command.name)) {
+	} satisfies Prisma.UserUpdateInput;
+	if (user) {
+		await user.update(userUpdates);
+	} else {
+		user = await mUserFetch(interaction.user.id, userUpdates);
+	}
+	const shouldHandleBusy = !skipBusyLock && !busyImmuneCommands.includes(command.name);
+	if (shouldHandleBusy && user.isBusy) {
 		await interaction.reply({
 			content: 'You cannot use a command right now.',
 			ephemeral: true
 		});
 		return;
 	}
-	if (!busyImmuneCommands.includes(command.name)) {
+	if (shouldHandleBusy) {
 		user.modifyBusy('lock', `Running command: ${command.name}`);
 	}
 
@@ -89,7 +101,9 @@ export async function rawCommandHandlerInner({
 			context: { command: command.name, options: JSON.stringify(options) }
 		});
 	} finally {
-		user.modifyBusy('unlock', `Finished running command: ${command.name}`);
+		if (shouldHandleBusy) {
+			user.modifyBusy('unlock', `Finished running command: ${command.name}`);
+		}
 	}
 }
 

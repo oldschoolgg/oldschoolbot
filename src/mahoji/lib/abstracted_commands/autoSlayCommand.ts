@@ -429,7 +429,8 @@ export async function autoSlayCommand({
 		user,
 		member: null,
 		interaction,
-		continueDeltaMillis: null
+		continueDeltaMillis: null,
+		isContinue: true
 	};
 
 	if (method === 'low') {
@@ -449,7 +450,7 @@ export async function autoSlayCommand({
 
 		if (currentMonID === null) throw new Error('Could not get Monster data to find a task.');
 
-		runCommand({
+		await runCommand({
 			commandName: 'k',
 			args: {
 				name: Monsters.get(currentMonID)!.name,
@@ -477,7 +478,7 @@ export async function autoSlayCommand({
 
 		// If we don't have the requirements for the efficient monster, revert to default monster
 		if (ehpKillable?.levelRequirements !== undefined && !user.hasSkillReqs(ehpKillable.levelRequirements)) {
-			runCommand({
+			await runCommand({
 				commandName: 'k',
 				args: {
 					name: usersTask.assignedTask.monster.name,
@@ -495,14 +496,14 @@ export async function autoSlayCommand({
 			if (ehpMonster.efficientMethod) {
 				args.method = ehpMonster.efficientMethod as unknown as CommandOptions;
 			}
-			runCommand({
+			await runCommand({
 				commandName: 'k',
 				args,
 				...cmdRunOptions
 			});
 			return;
 		}
-		runCommand({
+		await runCommand({
 			commandName: 'k',
 			args: {
 				name: usersTask.assignedTask.monster.name,
@@ -517,7 +518,7 @@ export async function autoSlayCommand({
 		const myQPs = await user.QP;
 		const commonName = getCommonTaskName(usersTask.assignedTask!.monster);
 		if (commonName === 'TzHaar') {
-			runCommand({
+			await runCommand({
 				commandName: 'activities',
 				args: { fight_caves: {} },
 				...cmdRunOptions
@@ -545,7 +546,7 @@ export async function autoSlayCommand({
 		}
 
 		if (maxMobName) {
-			runCommand({
+			await runCommand({
 				commandName: 'k',
 				args: { name: maxMobName, wilderness: Boolean(usersTask.assignedTask.wilderness) },
 				...cmdRunOptions
