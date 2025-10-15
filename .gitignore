@@ -46,3 +46,5 @@ wiki.xml
 test-bot-store-*.json
 
 .db
+
+src/prisma

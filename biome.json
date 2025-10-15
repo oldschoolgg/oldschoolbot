@@ -39,7 +39,8 @@
 			"!**/icon_cache",
 			"!**/.astro",
 			"!**/.yarn",
-			"!**/.pnpm-store"
+			"!**/.pnpm-store",
+			"!src/prisma"
 		]
 	},
 	"vcs": {
