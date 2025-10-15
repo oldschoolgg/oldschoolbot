@@ -406,7 +406,7 @@ async function bankSortConfig(
 		bank_sort_weightings: newBank.toJSON()
 	});
 
-	return bankSortConfig(await mUserFetch(user.id), undefined, undefined, undefined, undefined);
+	return bankSortConfig(user, undefined, undefined, undefined, undefined);
 }
 
 async function bgColorConfig(user: MUser, hex?: string) {

@@ -79,7 +79,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
-		userID,
+		user,
 		options,
 		channelID
 	}: CommandRunOptions<{
@@ -89,7 +89,6 @@ export const runecraftCommand: OSBMahojiCommand = {
 		daeyalt_essence?: boolean;
 		extracts?: boolean;
 	}>) => {
-		const user = await mUserFetch(userID);
 		let { rune, quantity, usestams, daeyalt_essence, extracts } = options;
 
 		rune = rune.toLowerCase().replace('rune', '').trim();

@@ -715,10 +715,10 @@ for (const type of Object.values(activity_type_enum)) {
 	}
 }
 
-export async function fetchRepeatTrips(userID: string) {
+export async function fetchRepeatTrips(user: MUser) {
 	const res: Activity[] = await prisma.activity.findMany({
 		where: {
-			user_id: BigInt(userID),
+			user_id: BigInt(user.id),
 			finish_date: {
 				gt: new Date(Date.now() - Time.Day * 7)
 			}
@@ -732,7 +732,6 @@ export async function fetchRepeatTrips(userID: string) {
 		type: activity_type_enum;
 		data: Prisma.JsonValue;
 	}[] = [];
-	const user = await mUserFetch(userID);
 	for (const trip of res) {
 		if (!taskCanBeRepeated(trip, user)) continue;
 		if (trip.type === activity_type_enum.Farming && !(trip.data as any as FarmingActivityTaskOptions).autoFarmed) {
@@ -746,7 +745,7 @@ export async function fetchRepeatTrips(userID: string) {
 }
 
 export async function makeRepeatTripButtons(user: MUser) {
-	const trips = await fetchRepeatTrips(user.id);
+	const trips = await fetchRepeatTrips(user);
 	const buttons: ButtonBuilder[] = [];
 	const limit = Math.min(user.perkTier() + 1, 5);
 	for (const trip of trips.slice(0, limit)) {
