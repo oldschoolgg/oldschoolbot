@@ -54,8 +54,8 @@ export class GearBank {
 		this.skillsAsLevels = skillsAsLevels;
 	}
 
-	usingPet(pet: string) {
-		return this.pet === Items.get(pet)?.id;
+	usingPet(pet: string): boolean {
+		return this.pet === Items.getItem(pet)?.id;
 	}
 
 	wildyGearCheck(item: string | number, isWildy: boolean) {

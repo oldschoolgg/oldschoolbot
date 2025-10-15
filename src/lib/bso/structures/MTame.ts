@@ -101,13 +101,13 @@ export class MTame {
 	}
 
 	hasBeenFed(itemID: number | string) {
-		const { id } = Items.get(itemID)!;
+		const { id } = Items.getItem(itemID)!;
 		const items = getSimilarItems(id);
 		return items.some(i => this.fedItems.has(i));
 	}
 
 	hasEquipped(item: number | string) {
-		const { id } = Items.get(item)!;
+		const { id } = Items.getItem(item)!;
 		const items = getSimilarItems(id);
 		return items.some(i => this.equippedArmor?.id === i || this.equippedPrimary?.id === i);
 	}

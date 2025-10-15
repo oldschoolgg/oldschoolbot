@@ -11,8 +11,8 @@ import type { GroupMonsterActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const groupoMonsterTask: MinionTask = {
 	type: 'GroupMonsterKilling',
-	async run(data: GroupMonsterActivityTaskOptions, { handleTripFinish }) {
-		const { mi: monsterID, channelID, q: quantity, users, leader, duration } = data;
+	async run(data: GroupMonsterActivityTaskOptions, { handleTripFinish, user: leaderUser }) {
+		const { mi: monsterID, channelID, q: quantity, users, duration } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 
 		const teamsLoot: { [key: string]: Bank } = {};
@@ -29,8 +29,6 @@ export const groupoMonsterTask: MinionTask = {
 			teamsLoot[userWhoGetsLoot] = loot.add(currentLoot);
 			kcAmounts[userWhoGetsLoot] = kcAmounts[userWhoGetsLoot] ? ++kcAmounts[userWhoGetsLoot] : 1;
 		}
-
-		const leaderUser = await mUserFetch(leader);
 
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${monster.name}!\n\n`;
 		const totalLoot = new Bank();

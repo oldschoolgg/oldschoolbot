@@ -179,14 +179,13 @@ export const minionCommand: OSBMahojiCommand = {
 					name: 'name',
 					description: 'The name of the bank background you want.',
 					autocomplete: async (value, user) => {
-						const mUser = await mUserFetch(user.id);
-						const isMod = mUser.bitfield.includes(BitField.isModerator);
-						const allAccounts = await findGroupOfUser(mUser.id);
+						const isMod = user.bitfield.includes(BitField.isModerator);
+						const allAccounts = await findGroupOfUser(user.id);
 						const bankImages = bankImageTask.backgroundImages;
 						const owned = bankImages
 							.filter(
 								bg =>
-									(bg.storeBitField && mUser.user.store_bitfield.includes(bg.storeBitField)) ||
+									(bg.storeBitField && user.user.store_bitfield.includes(bg.storeBitField)) ||
 									bg.owners?.some(i => allAccounts.includes(i))
 							)
 							.map(bg => bg.id);
@@ -219,9 +218,7 @@ export const minionCommand: OSBMahojiCommand = {
 							.filter(notEmpty)
 							.map(i => ({ id: i.id, name: i.name }));
 
-						const botUser = await mUserFetch(user.id);
-
-						return botUser.bank
+						return user.bank
 							.items()
 							.filter(i => mappedLampables.map(l => l.id).includes(i[0].id))
 							.filter(i => {

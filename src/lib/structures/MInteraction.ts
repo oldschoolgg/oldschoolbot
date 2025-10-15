@@ -9,7 +9,6 @@ import {
 	ButtonStyle,
 	type CommandInteraction,
 	ComponentType,
-	type InteractionResponse,
 	InteractionResponseType,
 	type Message,
 	MessageFlags,
@@ -44,7 +43,7 @@ export class MInteraction {
 	public interaction: CommandInteraction | ButtonInteraction;
 	public id: string;
 	public ephemeral: boolean;
-	public interactionResponse: InteractionResponse | Message | null = null;
+	public interactionResponse: Message | null = null;
 	public isPaginated = false;
 	public isParty = false;
 	public isConfirmation = false;
@@ -193,9 +192,7 @@ export class MInteraction {
 		return JSON.stringify(omit(response, ['files'])).slice(0, 600);
 	}
 
-	async reply(
-		_response: string | CompatibleResponse
-	): Promise<InteractionResponse<boolean> | Message<boolean> | null> {
+	async reply(_response: string | CompatibleResponse): Promise<Message<boolean> | null> {
 		const response: CompatibleResponse = typeof _response === 'string' ? { content: _response } : _response;
 
 		if (!('content' in response)) {
@@ -213,9 +210,12 @@ export class MInteraction {
 
 		try {
 			if (this.replied || this.deferred) {
-				this.interactionResponse = await this.interaction.editReply(omit(response, ['flags', 'ephemeral']));
+				this.interactionResponse = await this.interaction.editReply(
+					omit({ ...response, withResponse: true }, ['flags', 'ephemeral'])
+				);
 			} else {
-				this.interactionResponse = await this.interaction.reply(response);
+				const interactionCallbackResponse = await this.interaction.reply({ ...response, withResponse: true });
+				this.interactionResponse = interactionCallbackResponse.resource?.message ?? null;
 			}
 		} catch (err) {
 			Logging.logError(err as Error, {
@@ -372,7 +372,6 @@ export class MInteraction {
 		await this.defer({ ephemeral: false });
 		await this.reply(await getMessageContent());
 
-		const message = this.interactionResponse!;
 		const updateUsersIn = debounce(async () => {
 			await this.reply(await getMessageContent());
 		}, 500);
@@ -412,7 +411,7 @@ export class MInteraction {
 		}
 
 		return new Promise<MUser[]>((resolve, reject) => {
-			const collector = message.createMessageComponentCollector({
+			const collector = this.interactionResponse!.createMessageComponentCollector({
 				time: timeout,
 				componentType: ComponentType.Button
 			});

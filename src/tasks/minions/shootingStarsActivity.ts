@@ -6,7 +6,7 @@ import { starSizes } from '@/mahoji/lib/abstracted_commands/shootingStarsCommand
 
 export const shootingStarTask: MinionTask = {
 	type: 'ShootingStars',
-	async run(data: ShootingStarsOptions, { user, handleTripFinish }) {
+	async run(data: ShootingStarsOptions, { handleTripFinish, user }) {
 		const star = starSizes.find(i => i.size === data.size)!;
 		const { usersWith } = data;
 		const loot = new Bank(data.lootItems);

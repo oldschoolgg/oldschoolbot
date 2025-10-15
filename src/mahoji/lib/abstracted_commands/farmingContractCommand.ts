@@ -196,7 +196,7 @@ export async function autoContract(interaction: MInteraction, user: MUser): Comm
 	const bestContractTierCanDo = bestFarmingContractUserCanDo(user);
 
 	if (user.owns('Seed pack')) {
-		const openResponse = await abstractedOpenCommand(null, user.id, ['seed pack'], 'auto', false);
+		const openResponse = await abstractedOpenCommand(null, user, ['seed pack'], 'auto', false);
 		await user.sync();
 		const contractResponse = await farmingContractCommand(user, bestContractTierCanDo);
 		return roughMergeMahojiResponse(openResponse, contractResponse);
@@ -209,6 +209,7 @@ export async function autoContract(interaction: MInteraction, user: MUser): Comm
 		const newContract = (user.user.minion_farmingContract ?? Farming.defaultFarmingContract) as FarmingContract;
 		if (!newContract.hasContract || !newContract.plantToGrow) return contractResult;
 		return farmingPlantCommand({
+			user,
 			interaction,
 			plantName: newContract.plantToGrow,
 			pay: false,
@@ -220,6 +221,7 @@ export async function autoContract(interaction: MInteraction, user: MUser): Comm
 	// If they have a contract, but nothing planted, plant it.
 	if (!patch) {
 		return farmingPlantCommand({
+			user,
 			interaction,
 			plantName: plant!.name,
 			quantity: null,

@@ -118,19 +118,20 @@ ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 }
 
 export async function farmingPlantCommand({
+	user,
 	interaction,
 	plantName,
 	quantity,
 	autoFarmed,
 	pay
 }: {
+	user: MUser;
 	interaction: MInteraction;
 	plantName: string;
 	quantity: number | null;
 	autoFarmed: boolean;
 	pay: boolean;
 }): Promise<string> {
-	const user = await mUserFetch(interaction.user.id);
 	if (user.minionIsBusy) {
 		return 'Your minion must not be busy to use this command.';
 	}

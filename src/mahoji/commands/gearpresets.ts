@@ -346,7 +346,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 		if (options.equip) {
 			return gearEquipCommand({
 				interaction,
-				userID: user.id,
+				user,
 				setup: options.equip.gear_setup,
 				item: undefined,
 				items: undefined,

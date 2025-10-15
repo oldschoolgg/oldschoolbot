@@ -39,7 +39,7 @@ export async function abstractedOpenUntilCommand(
 	if (!openableItem) return "That's not a valid item.";
 	const openable = allOpenables.find(i => i.openedItem === openableItem.openedItem);
 	if (!openable) return "That's not a valid item.";
-	const openUntil = Items.get(openUntilItem);
+	const openUntil = Items.getItem(openUntilItem);
 	if (!openUntil) {
 		return `That's not a valid item to open until, you can only do it with items that you can get from ${openable.openedItem.name}.`;
 	}
@@ -263,12 +263,11 @@ ${messages.join(', ')}`.trim(),
 
 export async function abstractedOpenCommand(
 	interaction: MInteraction | null,
-	userID: string,
+	user: MUser,
 	_names: string[],
 	_quantity: number | 'auto',
 	disable_pets: boolean | undefined
 ) {
-	const user = await mUserFetch(userID);
 	const favorites = user.user.favoriteItems;
 
 	const names = _names.map(i => i.replace(regex, '$1'));

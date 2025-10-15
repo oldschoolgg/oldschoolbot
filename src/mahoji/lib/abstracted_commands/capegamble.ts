@@ -95,7 +95,7 @@ export async function capeGambleCommand(user: MUser, type: string, interaction: 
 		globalClient.emit(
 			Events.ServerNotification,
 			`**${user.badgedUsername}'s** just received their ${formatOrdinal(
-				(await mUserFetch(user.id)).cl.amount(pet.id)
+				user.cl.amount(pet.id)
 			)} ${pet.name} pet by sacrificing a ${item.name} for the ${formatOrdinal(newSacrificedCount)} time!`
 		);
 		return {

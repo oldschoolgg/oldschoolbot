@@ -102,9 +102,9 @@ export const giveawayCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		start?: { duration: string; items?: string; filter?: string; search?: string };
 		list?: {};
-	}>) => {
+	}>): CommandResponse => {
 		if (user.isIronman) return 'You cannot do giveaways!';
-		const channel = globalClient.channels.cache.get(channelID.toString());
+		const channel = globalClient.channels.cache.get(channelID);
 		if (!channelIsSendable(channel)) return 'Invalid channel.';
 
 		if (options.start) {
@@ -182,11 +182,8 @@ export const giveawayCommand: OSBMahojiCommand = {
 				components: makeGiveawayButtons(giveawayID)
 			});
 
-			try {
-				await user.removeItemsFromBank(bank);
-			} catch (err: any) {
-				return err instanceof Error ? err.message : err;
-			}
+			await user.removeItemsFromBank(bank);
+
 			if (bank.has('Coins')) {
 				await ClientSettings.addToGPTaxBalance(user, bank.amount('Coins'));
 			}
@@ -227,7 +224,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 				return 'You cannot list giveaways outside a server.';
 			}
 			const guild = globalClient.guilds.cache.get(guildID);
-			if (!guild) return;
+			if (!guild) return `Could not find server`;
 
 			const textChannelsOfThisServer = guild.channels.cache
 				.filter(c => c.type === ChannelType.GuildText)
@@ -273,7 +270,8 @@ export const giveawayCommand: OSBMahojiCommand = {
 				embeds: [new EmbedBuilder().setDescription(chunkLines.join('\n'))]
 			}));
 
-			await interaction.makePaginatedMessage({ pages, ephemeral: true });
+			return interaction.makePaginatedMessage({ pages, ephemeral: true });
 		}
+		return 'Invalid subcommand.';
 	}
 };

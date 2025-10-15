@@ -36,7 +36,7 @@ export const paintCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ userID, options, interaction }: CommandRunOptions<{ paint?: string; item: string }>) => {
-		const item = Items.get(options.item);
+		const item = Items.getItem(options.item);
 		if (!item) {
 			return "That's not a valid item.";
 		}

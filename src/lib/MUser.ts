@@ -123,11 +123,7 @@ export type SelectedUserStats<T extends Prisma.UserStatsSelect> = {
 export class MUserClass {
 	user: Readonly<User>;
 	id: string;
-	bank!: Bank;
-	bankWithGP!: Bank;
-	cl!: Bank;
-	allItemsOwned!: Bank;
-	gear!: UserFullGearSetup;
+
 	skillsAsXP!: Required<Skills>;
 	skillsAsLevels!: Required<Skills>;
 	paintedItems!: Map<number, number>;
@@ -135,24 +131,33 @@ export class MUserClass {
 	bitfield!: readonly BitField[];
 	iconPackId!: IconPackID | null;
 
+	private _bankLazy: Bank | null = null;
+	private _clLazy: Bank | null = null;
+	private _gearLazy: UserFullGearSetup | null = null;
+
 	constructor(user: User) {
 		this.user = user;
 		this.id = user.id;
 		this.updateProperties();
 	}
 
-	public updateProperties() {
-		this.bank = new Bank(this.user.bank as ItemBank);
-		this.bank.freeze();
+	public get bank(): Bank {
+		if (this._bankLazy) return this._bankLazy;
+		this._bankLazy = new Bank(this.user.bank as ItemBank);
+		this._bankLazy.freeze();
+		return this._bankLazy;
+	}
 
-		this.bankWithGP = new Bank(this.user.bank as ItemBank);
-		this.bankWithGP.add('Coins', this.GP);
-		this.bankWithGP.freeze();
+	public get cl(): Bank {
+		if (this._clLazy) return this._clLazy;
+		this._clLazy = new Bank(this.user.collectionLogBank as ItemBank);
+		this._clLazy.freeze();
+		return this._clLazy;
+	}
 
-		this.cl = new Bank(this.user.collectionLogBank as ItemBank);
-		this.cl.freeze();
-
-		this.gear = {
+	public get gear(): UserFullGearSetup {
+		if (this._gearLazy) return this._gearLazy;
+		this._gearLazy = {
 			melee: new Gear((this.user.gear_melee as GearSetup | null) ?? { ...defaultGear }),
 			mage: new Gear((this.user.gear_mage as GearSetup | null) ?? { ...defaultGear }),
 			range: new Gear((this.user.gear_range as GearSetup | null) ?? { ...defaultGear }),
@@ -162,10 +167,17 @@ export class MUserClass {
 			fashion: new Gear((this.user.gear_fashion as GearSetup | null) ?? { ...defaultGear }),
 			other: new Gear((this.user.gear_other as GearSetup | null) ?? { ...defaultGear })
 		};
+		return this._gearLazy;
+	}
 
-		this.allItemsOwned = this.calculateAllItemsOwned();
-		this.allItemsOwned.freeze();
+	public get bankWithGP(): Bank {
+		return new Bank(this.user.bank as ItemBank).add('Coins', this.GP).freeze();
+	}
 
+	public updateProperties() {
+		this._bankLazy = null;
+		this._clLazy = null;
+		this._gearLazy = null;
 		this.skillsAsXP = this.getSkills(false);
 		this.skillsAsLevels = this.getSkills(true);
 
@@ -460,7 +472,7 @@ export class MUserClass {
 		return this.gearBank.hasEquippedOrInBank(...args);
 	}
 
-	private calculateAllItemsOwned(): Bank {
+	public get allItemsOwned(): Bank {
 		const bank = new Bank(this.bank);
 
 		bank.add('Coins', Number(this.user.GP));

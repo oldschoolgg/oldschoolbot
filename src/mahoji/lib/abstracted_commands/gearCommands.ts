@@ -171,7 +171,7 @@ async function gearEquipMultiCommand(user: MUser, setup: string, items: string) 
 
 export async function gearEquipCommand(args: {
 	interaction: MInteraction;
-	userID: string;
+	user: MUser;
 	setup: string;
 	item: string | undefined;
 	items: string | undefined;
@@ -180,9 +180,8 @@ export async function gearEquipCommand(args: {
 	unEquippedItem: Bank | undefined;
 	auto: string | undefined;
 }): CommandResponse {
-	const { userID, setup, item, items, preset, quantity, auto } = args;
+	const { user, setup, item, items, preset, quantity, auto } = args;
 	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
-	const user = await mUserFetch(userID);
 	if (user.minionIsBusy) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}

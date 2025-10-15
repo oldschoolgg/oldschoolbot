@@ -86,8 +86,8 @@ describe('Sanity', () => {
 			['Dragon egg', 48_210]
 		];
 		for (const [name, id] of expectedIDs) {
-			const idForName = Items.get(name)!.id;
-			const nameForId = Items.get(id)!.name;
+			const idForName = Items.getItem(name)!.id;
+			const nameForId = Items.getItem(id)!.name;
 			if (nameForId !== name || idForName !== id) {
 				throw new Error(`Expected ${name}[${id}] to match, instead received: ${nameForId} ${idForName}`);
 			}
@@ -95,7 +95,7 @@ describe('Sanity', () => {
 	});
 	test('deleted items', () => {
 		for (const [id, name] of itemsToDelete) {
-			if (Items.get(name)?.id === id || Items.get(id)) {
+			if (Items.getItem(name)?.id === id || Items.get(id)) {
 				throw new Error(`Item ${id} ${name} shouldve been deleted.`);
 			}
 			if (combinedTmbUmbEmbTables.includes(id)) throw new Error(`${name} is in box tables`);
@@ -140,7 +140,7 @@ describe('Sanity', () => {
 		for (const id of OSB_VIRTUS_IDS) {
 			expect(Items.get(id)).toBeUndefined();
 		}
-		expect(Items.get('Virtus mask')!.id).toBe(788);
+		expect(Items.getOrThrow('Virtus mask')!.id).toBe(788);
 	});
 
 	test('BSO Monsters Map', () => {

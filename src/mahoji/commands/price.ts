@@ -15,7 +15,7 @@ export const priceCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options }: CommandRunOptions<{ item: string }>) => {
-		const item = Items.get(options.item);
+		const item = Items.getItem(options.item);
 		if (!item || item.customItemData?.isSecret) return "Couldn't find that item.";
 
 		const { basePrice: priceOfItem } = sellPriceOfItem(item);

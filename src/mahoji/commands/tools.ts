@@ -1125,8 +1125,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							description: 'The specific unit you want to unfill.',
 							required: true,
 							autocomplete: async (value, user) => {
-								const mUser = await mUserFetch(user.id);
-								return (await mUser.fetchStashUnits())
+								return (await user.fetchStashUnits())
 									.filter(i => i.builtUnit !== undefined && i.builtUnit.items_contained.length > 0)
 									.filter(i =>
 										!value ? true : i.unit.desc.toLowerCase().includes(value.toLowerCase())

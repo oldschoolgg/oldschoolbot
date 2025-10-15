@@ -55,7 +55,7 @@ const expectedIDTuple = [
 // Check that items have the ID that we expect them to have, and not some random other version of that item.
 function checkItems(): void {
 	for (const [itemName, itemID] of expectedIDTuple) {
-		const item = Items.get(itemName);
+		const item = Items.getItem(itemName);
 		if (!item) {
 			throw new Error(`*ERROR*: ${itemName} doesnt exist?`);
 		}
@@ -82,8 +82,8 @@ describe('Items', () => {
 			const [tbow, superStr, dragonDagger, coins] = [
 				Items.get(20_997),
 				Items.get(2440),
-				Items.get('Dragon dagger(p++)'),
-				Items.get('Coins')
+				Items.getItem('Dragon dagger(p++)'),
+				Items.getItem('Coins')
 			];
 
 			if (!tbow) throw new Error('Missing item.');
@@ -102,9 +102,9 @@ describe('Items', () => {
 			if (!coins) throw new Error('Missing item.');
 			expect(coins.id).toBe(995);
 			expect(coins.price).toEqual(1);
-			expect(Items.get('Snowy knight')!.price).toEqual(0);
+			expect(Items.getItem('Snowy knight')!.price).toEqual(0);
 
-			expect(Items.get('Vial of blood')!.id).toEqual(22_446);
+			expect(Items.getItem('Vial of blood')!.id).toEqual(22_446);
 		},
 		60_000
 	);
@@ -112,14 +112,14 @@ describe('Items', () => {
 	test.concurrent(
 		'Equipment',
 		async () => {
-			const tbow = Items.get('Twisted bow')!;
+			const tbow = Items.getItem('Twisted bow')!;
 			expect(tbow.equipment!.attack_ranged).toEqual(70);
 			expect(tbow.equipment!.defence_crush).toEqual(0);
 			expect(tbow.equipment!.slot).toEqual(EquipmentSlot.TwoHanded);
 			expect(tbow.wiki_name).toEqual('Twisted bow');
 			expect(tbow.equipable_weapon).toEqual(true);
 
-			const anglerHat = Items.get('Angler hat')!;
+			const anglerHat = Items.getItem('Angler hat')!;
 			expect(anglerHat.equipment!.slot).toEqual(EquipmentSlot.Head);
 			expect(anglerHat.equipable).toEqual(true);
 			expect(anglerHat.equipable_by_player).toEqual(true);
@@ -129,7 +129,7 @@ describe('Items', () => {
 			const scep = Items.get(26_950);
 			expect(scep).toEqual(undefined);
 
-			const scep2 = Items.get("Pharaoh's sceptre")!;
+			const scep2 = Items.getItem("Pharaoh's sceptre")!;
 			expect(scep2.name).toEqual("Pharaoh's sceptre");
 			expect(scep2.id).toEqual(9044);
 			expect(scep2.equipable_by_player).toEqual(true);
@@ -142,7 +142,7 @@ describe('Items', () => {
 });
 
 test('modifyItem', () => {
-	const item = Items.get('Coal');
+	const item = Items.getItem('Coal');
 	if (!item) {
 		throw new Error('Item not found');
 	}
@@ -150,12 +150,12 @@ test('modifyItem', () => {
 		price: 100
 	});
 
-	for (const it of [Items.get('Coal')!, Items.get('Coal')!]) {
+	for (const it of [Items.getItem('Coal')!, Items.getItem('Coal')!]) {
 		expect(it.price).toEqual(100);
 	}
 });
 
 test('Dwarf toolkit', () => {
 	expect(Items.get(0)).toBeUndefined();
-	expect(Items.get('Dwarf toolkit')).toBeUndefined();
+	expect(Items.getItem('Dwarf toolkit')).toBeNull();
 });

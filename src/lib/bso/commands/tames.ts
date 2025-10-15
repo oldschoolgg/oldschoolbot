@@ -1543,7 +1543,7 @@ async function tameEquipCommand(user: MUser, itemName: string) {
 	if (activity) {
 		return "You can't equip something to your tame, because it is busy.";
 	}
-	const item = Items.get(itemName);
+	const item = Items.getItem(itemName);
 	if (!item) return "That's not a valid item.";
 	const equippable = tameEquippables.find(i => i.item === item);
 	if (!equippable) return "That's not an item you can equip to a tame.";
@@ -1582,7 +1582,7 @@ async function tameUnequipCommand(user: MUser, itemName: string) {
 	if (activity) {
 		return "You can't unequip something to your tame, because it is busy.";
 	}
-	const item = Items.get(itemName);
+	const item = Items.getItem(itemName);
 	if (!item) return "That's not a valid item.";
 	const equippable = tameEquippables.find(i => i.item === item);
 	if (!equippable) return "That's not an item you can equip to a tame.";

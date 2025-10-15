@@ -370,7 +370,7 @@ export async function disassembleCommand({
 	channelID: string;
 }): CommandResponse {
 	if (user.minionIsBusy) return 'Your minion is busy.';
-	const item = Items.get(itemToDisassembleName);
+	const item = Items.getItem(itemToDisassembleName);
 	if (!item) return "That's not a valid item.";
 	const group = findDisassemblyGroup(item);
 	if (!group) return 'This item cannot be disassembled.';

@@ -48,7 +48,7 @@ for (const item of Smithing.SmithableItems) ALL_OBTAINABLE_ITEMS.add(item.id);
 for (const item of Smithing.BlastableBars) ALL_OBTAINABLE_ITEMS.add(item.id);
 for (const item of Buyables) {
 	totalBankToAdd.add(isFunction(item.outputItems) ? undefined : item.outputItems);
-	const buyable = Items.get(item.name);
+	const buyable = Items.getItem(item.name);
 	if (buyable) totalBankToAdd.add(buyable);
 }
 for (const item of allFarmingItems) ALL_OBTAINABLE_ITEMS.add(item);

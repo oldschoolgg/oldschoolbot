@@ -24,7 +24,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	if (isDeletedItemName(str)) return [];
 	if (!Number.isNaN(Number(potentialQty)) && isDeletedItemName(potentialName.join(' '))) return [];
 
-	const lazyItemGet = Items.get(potentialName.join(' ')) ?? Items.get(Number(potentialName.join(' ')));
+	const lazyItemGet = Items.getItem(potentialName.join(' ')) ?? Items.get(Number(potentialName.join(' ')));
 	if (str.includes('#') && lazyItemGet && inputBank) {
 		potentialQty = potentialQty.replace('#', inputBank.amount(lazyItemGet.id).toString());
 	}

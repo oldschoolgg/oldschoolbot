@@ -2042,9 +2042,9 @@ type CLType = 'sacrifice' | 'bank' | 'collection' | 'temp' | 'tame' | 'disassemb
 export function getBank(user: MUser, type: CLType, userStats: MUserStats | null): Bank {
 	switch (type) {
 		case 'collection':
-			return new Bank(user.cl);
+			return user.cl;
 		case 'bank':
-			return new Bank(user.bankWithGP);
+			return user.bankWithGP;
 		case 'sacrifice':
 			if (!userStats) return new Bank();
 			return new Bank(userStats.sacrificedBank);

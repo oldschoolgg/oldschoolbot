@@ -40,7 +40,7 @@ const hammyDoubleMessages = [
 ];
 
 export async function feedHammyCommand(interaction: MInteraction, user: MUser, itemName: string) {
-	const firstItem = Items.get(itemName);
+	const firstItem = Items.getItem(itemName);
 	if (!firstItem) return "That's not a valid item.";
 
 	await interaction.confirmation(

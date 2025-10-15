@@ -76,7 +76,7 @@ export function tameToString(tame: Tame) {
 }
 
 export function tameHasBeenFed(tame: Tame, item: string | number) {
-	const { id } = Items.get(item)!;
+	const { id } = Items.getItem(item)!;
 	const items = getSimilarItems(id);
 	return items.some(i => Boolean((tame.fed_items as ItemBank)[i]));
 }

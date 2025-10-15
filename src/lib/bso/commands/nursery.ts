@@ -177,7 +177,7 @@ async function addCommand(interaction: MInteraction, user: MUser, itemName: stri
 	if (!nursery.hasFuel) {
 		return 'Your nursery has no fuel for a fire to keep the egg warm, add fuel for the egg using `/nursery fuel`.';
 	}
-	const item = Items.get(itemName);
+	const item = Items.getItem(itemName);
 	if (!item) return "That's not a valid item.";
 
 	const { bank } = user;
