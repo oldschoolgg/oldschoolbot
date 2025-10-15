@@ -1,4 +1,6 @@
+import type { RNGProvider } from '@oldschoolgg/rng';
 import { Time } from '@oldschoolgg/toolkit';
+import type { APIButtonComponentWithCustomId } from 'discord-api-types/v10';
 import { Bank } from 'oldschooljs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -129,6 +131,8 @@ describe('farming task auto farm aggregation', () => {
 			type: 'Farming',
 			userID: user.id,
 			channelID: TEST_CHANNEL_ID,
+			id: 123,
+			finishDate: Date.now(),
 			plantsName: plan[0].plantsName,
 			patchType: basePatch,
 			quantity: plan[0].quantity,
@@ -144,7 +148,25 @@ describe('farming task auto farm aggregation', () => {
 			autoFarmCombined: true
 		};
 
-		await farmingTask.run(taskData);
+		const runOptions: {
+			user: typeof user;
+			handleTripFinish: typeof handleTripFinishModule.handleTripFinish;
+			rng: RNGProvider;
+		} = {
+			user,
+			handleTripFinish: handleTripFinishModule.handleTripFinish,
+			rng: {
+				roll: () => false,
+				randInt: () => 0,
+				randFloat: () => 0,
+				rand: () => 0,
+				shuffle: <T>(array: T[]) => array,
+				pick: <T>(array: T[]) => array[0],
+				percentChance: () => false
+			}
+		};
+
+		await farmingTask.run(taskData, runOptions);
 
 		expect(executeSpy).toHaveBeenCalledTimes(2);
 		expect(handleTripFinishSpy).toHaveBeenCalledTimes(1);
@@ -173,6 +195,7 @@ describe('farming task auto farm aggregation', () => {
 
 		expect(extraComponents).toBeDefined();
 		expect(extraComponents).toHaveLength(1);
-		expect(extraComponents![0].toJSON().custom_id).toBe('AUTO_FARMING_CONTRACT');
+		const autoContractButton = extraComponents![0].toJSON() as APIButtonComponentWithCustomId;
+		expect(autoContractButton.custom_id).toBe('AUTO_FARMING_CONTRACT');
 	});
 });

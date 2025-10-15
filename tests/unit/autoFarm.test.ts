@@ -83,11 +83,14 @@ const treePatches: Partial<Record<FarmingPatchName, IPatchData>> = {
 	[treePlant.seedType]: treePatch
 };
 
-let calcMaxTripLengthSpy: ReturnType<typeof vi.spyOn>;
+type CalcMaxTripLengthSpy = ReturnType<typeof vi.spyOn<typeof calcMaxTripLengthModule, 'calcMaxTripLength'>>;
+
+let calcMaxTripLengthSpy: CalcMaxTripLengthSpy;
 const originalPrisma = (globalThis as { prisma?: unknown }).prisma;
+const originalMinionIsBusy = (global.ActivityManager as { minionIsBusy?: (userID: string) => boolean }).minionIsBusy;
 
 beforeAll(() => {
-	(global.ActivityManager as { minionIsBusy?: () => boolean }).minionIsBusy = () => false;
+	(global.ActivityManager as { minionIsBusy?: (userID: string) => boolean }).minionIsBusy = () => false;
 	calcMaxTripLengthSpy = vi.spyOn(calcMaxTripLengthModule, 'calcMaxTripLength');
 	(globalThis as { prisma?: unknown }).prisma = undefined;
 });
@@ -95,6 +98,7 @@ beforeAll(() => {
 afterAll(() => {
 	calcMaxTripLengthSpy.mockRestore();
 	(globalThis as { prisma?: unknown }).prisma = originalPrisma;
+	(global.ActivityManager as { minionIsBusy?: (userID: string) => boolean }).minionIsBusy = originalMinionIsBusy;
 });
 
 beforeEach(() => {
@@ -184,8 +188,10 @@ describe('auto farm helpers', () => {
 
 		expect(transactSpy).toHaveBeenCalledTimes(1);
 		const [transactArg] = transactSpy.mock.calls[0];
-		expect(transactArg.itemsToRemove.amount('Guam seed')).toBe(4);
-		expect(transactArg.itemsToRemove.amount('Compost')).toBe(4);
+		expect(transactArg.itemsToRemove).toBeDefined();
+		const itemsToRemove = transactArg.itemsToRemove!;
+		expect(itemsToRemove.amount('Guam seed')).toBe(4);
+		expect(itemsToRemove.amount('Compost')).toBe(4);
 
 		expect(statsSpy).toHaveBeenCalledWith('farming_plant_cost_bank', expect.any(Bank));
 		expect(updateBankSettingSpy).toHaveBeenCalledWith('farming_cost_bank', expect.any(Bank));
@@ -245,9 +251,11 @@ describe('auto farm helpers', () => {
 
 		expect(transactSpy).toHaveBeenCalledTimes(1);
 		const [transactArg] = transactSpy.mock.calls[0];
-		expect(transactArg.itemsToRemove.amount('Acorn')).toBe(3);
-		expect(transactArg.itemsToRemove.amount('Supercompost')).toBe(3);
-		expect(transactArg.itemsToRemove.amount('Tomatoes(5)')).toBe(3);
+		expect(transactArg.itemsToRemove).toBeDefined();
+		const itemsToRemove = transactArg.itemsToRemove!;
+		expect(itemsToRemove.amount('Acorn')).toBe(3);
+		expect(itemsToRemove.amount('Supercompost')).toBe(3);
+		expect(itemsToRemove.amount('Tomatoes(5)')).toBe(3);
 
 		expect(statsSpy).toHaveBeenCalledWith('farming_plant_cost_bank', expect.any(Bank));
 		expect(updateBankSettingSpy).toHaveBeenCalledWith('farming_cost_bank', expect.any(Bank));
