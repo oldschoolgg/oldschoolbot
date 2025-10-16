@@ -12,10 +12,10 @@ describe('Slayer Tasks', async () => {
 		const user = await createTestUser();
 		mockMathRandom(0.1);
 		expect(Math.random()).toEqual(0.1);
-		const res = await user.runCommand(slayerCommand, { new_task: {} });
+		const res: any = await user.runCommand(slayerCommand, { new_task: {} });
 		expect(res.content).toContain('has assigned you to kill');
 
-		const res2 = await user.runCommand(slayerCommand, { new_task: {} });
+		const res2: any = await user.runCommand(slayerCommand, { new_task: {} });
 		expect(res2.content).toContain('You already have a slayer task');
 		expect(res2.content).toContain('Your current task');
 		expect(Math.random()).toEqual(0.1);
@@ -26,7 +26,7 @@ describe('Slayer Tasks', async () => {
 		const res4 = await user.runCommand(slayerCommand, { manage: { command: 'skip' } });
 		expect(res4).toContain('Your task has been skipped. You now have 70 slayer points');
 
-		const res5 = await user.runCommand(slayerCommand, { new_task: {} });
+		const res5: any = await user.runCommand(slayerCommand, { new_task: {} });
 		expect(res5.content).toContain('has assigned you to kill');
 		expect(Math.random()).toEqual(0.1);
 		await user.update({ QP: 150 });
@@ -46,7 +46,9 @@ describe('Slayer Tasks', async () => {
 			'You have 50 slayer points, and have completed 0 tasks in a row and 0 wilderness tasks in a row.'
 		);
 
-		expect((await user.runCommand(slayerCommand, { new_task: {} })).content).toContain('has assigned you to kill');
+		expect(((await user.runCommand(slayerCommand, { new_task: {} })) as any).content).toContain(
+			'has assigned you to kill'
+		);
 
 		expect(await user.runCommand(slayerCommand, { status: {} })).toContain(
 			'Your current task from Turael is to kill **Birds** (**Alternate Monsters**: Chicken, Duck, Duckling, Mounted terrorbird gnome, Penguin, Rooster, Seagull, Terrorbird). You have 16 kills remaining.'

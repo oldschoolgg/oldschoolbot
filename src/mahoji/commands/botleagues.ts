@@ -37,7 +37,7 @@ const leaguesTrophiesBuyables = [
 	}
 ];
 
-export const botLeaguesCommand: OSBMahojiCommand = {
+export const botLeaguesCommand = defineCommand({
 	name: 'botleagues',
 	description: 'Compete in the OSB/BSO Leagues.',
 	options: [
@@ -75,16 +75,7 @@ export const botLeaguesCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		user,
-		interaction
-	}: CommandRunOptions<{
-		help?: {};
-		claim_trophy?: {};
-		leaderboard?: {};
-		buy_reward?: { item: string };
-	}>) => {
+	run: async ({ options, user, interaction }) => {
 		const roboChimpUser = await roboChimpUserFetch(user.id);
 
 		if (options.claim_trophy) {
@@ -176,4 +167,4 @@ ${leaguesTrophiesBuyables
 
 		return 'https://wiki.oldschool.gg/bso/leagues/';
 	}
-};
+});

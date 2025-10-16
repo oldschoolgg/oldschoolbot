@@ -5,7 +5,7 @@ import { userMention } from 'discord.js';
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 import { DynamicButtons } from '@/lib/structures/DynamicButtons.js';
 
-export const triviaCommand: OSBMahojiCommand = {
+export const triviaCommand = defineCommand({
 	name: 'trivia',
 	description: 'Try to answer a random trivia question!',
 	attributes: {
@@ -19,13 +19,7 @@ export const triviaCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		interaction,
-		userID,
-		options
-	}: CommandRunOptions<{
-		duel?: MahojiUserOption;
-	}>) => {
+	run: async ({ interaction, userID, options }) => {
 		await interaction.defer();
 		const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
 		const users = [userID.toString()];
@@ -63,4 +57,4 @@ export const triviaCommand: OSBMahojiCommand = {
 			content: `You answered ${correctUser !== null ? 'correctly' : 'incorrectly'}!`
 		};
 	}
-};
+});

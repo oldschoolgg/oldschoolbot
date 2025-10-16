@@ -4,7 +4,7 @@ import { canvasToBuffer, createCanvas, loadAndCacheLocalImage } from '@/lib/canv
 
 let bg: Image | null = null;
 
-export const fakepmCommand: OSBMahojiCommand = {
+export const fakepmCommand = defineCommand({
 	name: 'fakepm',
 	description: 'Generate fake images of PMs.',
 	options: [
@@ -21,7 +21,7 @@ export const fakepmCommand: OSBMahojiCommand = {
 			required: true
 		}
 	],
-	run: async ({ options }: CommandRunOptions<{ message: string; username: string }>) => {
+	run: async ({ options }) => {
 		const canvas = createCanvas(376, 174);
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFont';
@@ -40,4 +40,4 @@ export const fakepmCommand: OSBMahojiCommand = {
 			files: [{ attachment: await canvasToBuffer(canvas), name: `${Math.round(Math.random() * 10_000)}.jpg` }]
 		};
 	}
-};
+});

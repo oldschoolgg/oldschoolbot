@@ -392,7 +392,7 @@ ORDER BY slots_used DESC;
 	}
 ];
 
-export const adminCommand: OSBMahojiCommand = {
+export const adminCommand = defineCommand({
 	name: 'admin',
 	description: 'Allows you to trade items with other players.',
 	guildID: globalConfig.supportServerID,
@@ -558,7 +558,7 @@ export const adminCommand: OSBMahojiCommand = {
 					name: 'add',
 					description: 'The bitfield to add',
 					required: false,
-					autocomplete: async value => {
+					autocomplete: async (value: string) => {
 						return Object.entries(BitFieldData)
 							.filter(bf => (!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i[1].name, value: i[0] }));
@@ -569,7 +569,7 @@ export const adminCommand: OSBMahojiCommand = {
 					name: 'remove',
 					description: 'The bitfield to remove',
 					required: false,
-					autocomplete: async value => {
+					autocomplete: async (value: string) => {
 						return Object.entries(BitFieldData)
 							.filter(bf => (!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i[1].name, value: i[0] }));
@@ -629,28 +629,7 @@ export const adminCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		interaction,
-		guildID
-	}: CommandRunOptions<{
-		reboot?: {};
-		shut_down?: {};
-		sync_commands?: {};
-		item_stats?: { item: string };
-		sync_blacklist?: {};
-		cancel_task?: { user: MahojiUserOption };
-		clear_busy?: { user: MahojiUserOption };
-		badges?: { user: MahojiUserOption; add?: string; remove?: string };
-		bypass_age?: { user: MahojiUserOption };
-		command?: { enable?: string; disable?: string };
-		set_price?: { item: string; price: number };
-		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
-		ltc?: { item?: string };
-		view?: { thing: string };
-		give_items?: { user: MahojiUserOption; items: string; reason?: string };
-	}>) => {
+	run: async ({ options, userID, interaction, guildID }) => {
 		await interaction.defer();
 
 		const adminUser = await mUserFetch(userID);
@@ -979,4 +958,4 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 
 		return 'Invalid command.';
 	}
-};
+});

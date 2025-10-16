@@ -31,6 +31,7 @@ import {
 	type UserStats,
 	type XPGain
 } from '@/prisma/main.js';
+import type { AnyCommand } from '@/lib/discord/commandOptions.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { defaultGear, Gear } from '@/lib/structures/Gear.js';
 import { BitField } from '../../src/lib/constants.js';
@@ -60,7 +61,7 @@ import { createTestUser, mockClient, mockedId } from './util.js';
 
 interface TestCommand {
 	name: string;
-	cmd: [OSBMahojiCommand, object] | ((user: TestUser) => Promise<any>);
+	cmd: [AnyCommand, object] | ((user: TestUser) => Promise<any>);
 	activity?: boolean;
 	priority?: boolean;
 }
