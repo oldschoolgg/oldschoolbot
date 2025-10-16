@@ -78,7 +78,7 @@ async function topSkillers() {
 		.map((u: any) => {
 			let totalLevel = 0;
 			for (const skill of SkillsArray) {
-				totalLevel += convertXPtoLVL(Number(u[`skills.${skill}` as keyof any]) as any, MAX_LEVEL);
+				totalLevel += convertXPtoLVL(Number(u[`skills.${skill}`]), MAX_LEVEL);
 			}
 			return {
 				id: u.id,

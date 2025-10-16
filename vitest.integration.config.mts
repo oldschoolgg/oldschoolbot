@@ -14,8 +14,7 @@ export default defineConfig({
 		testTimeout: 60_000,
 		maxConcurrency: 1,
 		maxWorkers: 1,
-		minWorkers: 1,
-		bail: 1
+		minWorkers: 1
 	},
 	resolve: {
 		alias: {
