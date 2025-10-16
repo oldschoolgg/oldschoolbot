@@ -1326,9 +1326,9 @@ function getLeftList(userBank: Bank, checkCategory: string, allItems = false, re
 function getBank(user: MUser, type: 'sacrifice' | 'bank' | 'collection' | 'temp', userStats: MUserStats | null) {
 	switch (type) {
 		case 'collection':
-			return new Bank(user.cl);
+			return user.cl;
 		case 'bank':
-			return new Bank(user.bankWithGP);
+			return user.bankWithGP;
 		case 'sacrifice':
 			if (!userStats) return new Bank();
 			return new Bank(userStats.sacrificedBank);

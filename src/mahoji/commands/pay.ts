@@ -22,9 +22,8 @@ export const payCommand = defineCommand({
 			required: true
 		}
 	],
-	run: async ({ options, userID, interaction, guildID }) => {
+	run: async ({ options, user, interaction, guildID }) => {
 		await interaction.defer();
-		const user = await mUserFetch(userID);
 		const recipient = await mUserFetch(options.user.user.id);
 		const amount = mahojiParseNumber({ input: options.amount, min: 1, max: 500_000_000_000 });
 		// Ensure the recipient's users row exists:

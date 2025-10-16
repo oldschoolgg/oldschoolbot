@@ -1,11 +1,11 @@
 import { randArrItem } from '@oldschoolgg/rng';
-import { dateFm, isValidDiscordSnowflake, Stopwatch, sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
-import { UserEventType, xp_gains_skill_enum } from '@prisma/client';
+import { dateFm, isValidDiscordSnowflake, sumArr, Time, toTitleCase } from '@oldschoolgg/toolkit';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Duration } from '@sapphire/time-utilities';
 import { codeBlock, SnowflakeUtil } from 'discord.js';
 import { Bank, type Item, type ItemBank } from 'oldschooljs';
 
+import { UserEventType, xp_gains_skill_enum } from '@/prisma/main/enums.js';
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 import { choicesOf, gearSetupOption } from '@/lib/discord/index.js';
@@ -15,7 +15,6 @@ import { marketPricemap } from '@/lib/marketPrices.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
 import { unequipPet } from '@/lib/minions/functions/unequipPet.js';
 import { premiumPatronTime } from '@/lib/premiumPatronTime.js';
-import { runRolesTask } from '@/lib/rolesTask.js';
 import { TeamLoot } from '@/lib/simulation/TeamLoot.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
@@ -49,134 +48,134 @@ function isProtectedAccount(user: MUser) {
 	return false;
 }
 
-const actions = [
-	{
-		name: 'validate_ge',
-		allowed: (user: MUser) => globalConfig.adminUserIDs.includes(user.id),
-		run: async () => {
-			const isValid = await GrandExchange.extensiveVerification();
-			if (isValid) {
-				return 'No issues found.';
-			}
-			return 'Something was invalid. Check logs!';
-		}
-	},
-	{
-		name: 'sync_roles',
-		allowed: (user: MUser) =>
-			globalConfig.adminUserIDs.includes(user.id) || user.bitfield.includes(BitField.isModerator),
-		run: async () => {
-			return runRolesTask(!globalConfig.isProduction);
-		}
-	},
-	{
-		name: 'force_garbage_collection',
-		allowed: (user: MUser) => globalConfig.adminUserIDs.includes(user.id),
-		run: async () => {
-			const timer = new Stopwatch();
-			for (let i = 0; i < 3; i++) {
-				gc!();
-			}
-			return `Garbage collection took ${timer.stop()}`;
-		}
-	},
-	{
-		name: 'prismadebug',
-		allowed: (user: MUser) => globalConfig.adminUserIDs.includes(user.id),
-		run: async () => {
-			const debugs = [
-				{
-					name: 'pgjs activity select',
-					run: async () => {
-						await prisma.$queryRaw`
-							SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;
-						`;
-					}
-				},
-				{
-					name: 'Raw Activity Select',
-					run: async () => {
-						await prisma.$queryRawUnsafe(
-							'SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;'
-						);
-					}
-				},
-				{
-					name: 'Prisma Activity Select',
-					run: async () => {
-						await prisma.activity.findMany({
-							where: {
-								completed: false,
-								finish_date: {
-									lt: new Date()
-								}
-							},
-							take: 5
-						});
-					}
-				},
-				{
-					name: 'pgjs user select',
-					run: async () => {
-						await prisma.$queryRaw`
-							SELECT * FROM users WHERE id = '157797566833098752';
-						`;
-					}
-				},
-				{
-					name: 'muserfetch',
-					run: async () => {
-						await mUserFetch('157797566833098752');
-					}
-				},
-				{
-					name: 'raw user fetch',
-					run: async () => {
-						await prisma.$queryRawUnsafe("SELECT * FROM users WHERE id = '157797566833098752';");
-					}
-				}
-			];
+// const actions = [
+// 	{
+// 		name: 'validate_ge',
+// 		allowed: (user: MUser) => globalConfig.adminUserIDs.includes(user.id),
+// 		run: async () => {
+// 			const isValid = await GrandExchange.extensiveVerification();
+// 			if (isValid) {
+// 				return 'No issues found.';
+// 			}
+// 			return 'Something was invalid. Check logs!';
+// 		}
+// 	},
+// 	{
+// 		name: 'sync_roles',
+// 		allowed: (user: MUser) =>
+// 			globalConfig.adminUserIDs.includes(user.id) || user.bitfield.includes(BitField.isModerator),
+// 		run: async () => {
+// 			return runRolesTask(!globalConfig.isProduction);
+// 		}
+// 	},
+// 	{
+// 		name: 'force_garbage_collection',
+// 		allowed: (user: MUser) => globalConfig.adminUserIDs.includes(user.id),
+// 		run: async () => {
+// 			const timer = new Stopwatch();
+// 			for (let i = 0; i < 3; i++) {
+// 				gc!();
+// 			}
+// 			return `Garbage collection took ${timer.stop()}`;
+// 		}
+// 	},
+// 	{
+// 		name: 'prismadebug',
+// 		allowed: (user: MUser) => globalConfig.adminUserIDs.includes(user.id),
+// 		run: async () => {
+// 			const debugs = [
+// 				{
+// 					name: 'pgjs activity select',
+// 					run: async () => {
+// 						await prisma.$queryRaw`
+// 							SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;
+// 						`;
+// 					}
+// 				},
+// 				{
+// 					name: 'Raw Activity Select',
+// 					run: async () => {
+// 						await prisma.$queryRawUnsafe(
+// 							'SELECT * FROM activity WHERE completed = false AND finish_date < NOW() LIMIT 5;'
+// 						);
+// 					}
+// 				},
+// 				{
+// 					name: 'Prisma Activity Select',
+// 					run: async () => {
+// 						await prisma.activity.findMany({
+// 							where: {
+// 								completed: false,
+// 								finish_date: {
+// 									lt: new Date()
+// 								}
+// 							},
+// 							take: 5
+// 						});
+// 					}
+// 				},
+// 				{
+// 					name: 'pgjs user select',
+// 					run: async () => {
+// 						await prisma.$queryRaw`
+// 							SELECT * FROM users WHERE id = '157797566833098752';
+// 						`;
+// 					}
+// 				},
+// 				{
+// 					name: 'muserfetch',
+// 					run: async () => {
+// 						await mUserFetch('157797566833098752');
+// 					}
+// 				},
+// 				{
+// 					name: 'raw user fetch',
+// 					run: async () => {
+// 						await prisma.$queryRawUnsafe("SELECT * FROM users WHERE id = '157797566833098752';");
+// 					}
+// 				}
+// 			];
 
-			let res = '';
-			for (const debug of debugs) {
-				const results = [];
-				for (let i = 0; i < 500; i++) {
-					const start = performance.now();
-					await debug.run();
-					const end = performance.now();
-					results.push(end - start);
-				}
-				const avg = results.reduce((a, b) => a + b, 0) / results.length;
-				const max = Math.max(...results);
-				const min = Math.min(...results);
-				const median = results.sort((a, b) => a - b)[Math.floor(results.length / 2)];
-				const obj = { avg, max, min, median };
-				res += `${debug.name} took ${Object.entries(obj)
-					.map(t => `${t[0]}: ${t[1].toFixed(2)}ms`)
-					.join(' | ')}\n`;
-			}
+// 			let res = '';
+// 			for (const debug of debugs) {
+// 				const results = [];
+// 				for (let i = 0; i < 500; i++) {
+// 					const start = performance.now();
+// 					await debug.run();
+// 					const end = performance.now();
+// 					results.push(end - start);
+// 				}
+// 				const avg = results.reduce((a, b) => a + b, 0) / results.length;
+// 				const max = Math.max(...results);
+// 				const min = Math.min(...results);
+// 				const median = results.sort((a, b) => a - b)[Math.floor(results.length / 2)];
+// 				const obj = { avg, max, min, median };
+// 				res += `${debug.name} took ${Object.entries(obj)
+// 					.map(t => `${t[0]}: ${t[1].toFixed(2)}ms`)
+// 					.join(' | ')}\n`;
+// 			}
 
-			return res;
-		}
-	}
-] as const;
+// 			return res;
+// 		}
+// 	}
+// ] as const;
 
 export const rpCommand = defineCommand({
 	name: 'rp',
 	description: 'Admin tools second set',
 	guildID: globalConfig.supportServerID,
 	options: [
-		{
-			type: 'SubcommandGroup',
-			name: 'action',
-			description: 'Actions',
-			options: actions.map(a => ({
-				type: 'Subcommand',
-				name: a.name,
-				description: a.name,
-				options: []
-			}))
-		},
+		// {
+		// 	type: 'SubcommandGroup',
+		// 	name: 'action',
+		// 	description: 'Actions',
+		// 	options: actions.map(a => ({
+		// 		type: 'Subcommand',
+		// 		name: a.name,
+		// 		description: a.name,
+		// 		options: []
+		// 	}))
+		// },
 		{
 			type: 'SubcommandGroup',
 			name: 'player',
@@ -236,7 +235,7 @@ export const rpCommand = defineCommand({
 							name: 'tier',
 							description: 'The tier to give.',
 							required: true,
-							choices: [1, 2, 3, 4, 5, 6].map(i => ({ name: i.toString(), value: i }))
+							choices: choicesOf([1, 2, 3, 4, 5, 6])
 						},
 						{
 							type: 'String',
@@ -297,7 +296,7 @@ export const rpCommand = defineCommand({
 							name: 'item_filter',
 							description: 'A preconfigured item filter.',
 							required: false,
-							choices: itemFilters.map(i => ({ name: i.name, value: i.name }))
+							choices: choicesOf(itemFilters.map(i => i.name))
 						},
 						{
 							type: 'String',
@@ -440,10 +439,7 @@ export const rpCommand = defineCommand({
 							name: 'type',
 							description: 'Did they reach max total level or max total xp',
 							required: true,
-							choices: [
-								{ name: UserEventType.MaxTotalLevel, value: UserEventType.MaxTotalLevel },
-								{ name: UserEventType.MaxTotalXP, value: UserEventType.MaxTotalXP }
-							]
+							choices: choicesOf([UserEventType.MaxTotalLevel, UserEventType.MaxTotalXP])
 						},
 						{
 							type: 'String',
@@ -555,20 +551,20 @@ Date: ${dateFm(date)}`;
 
 		if (!isMod) return randArrItem(gifs);
 
-		if (options.action) {
-			for (const action of actions) {
-				if (options.action[action.name]) {
-					if (!action.allowed(adminUser)) return randArrItem(gifs);
-					try {
-						const result = await action.run();
-						return result;
-					} catch (err) {
-						Logging.logError(err as Error);
-						return 'An error occurred.';
-					}
-				}
-			}
-		}
+		// if (options.action) {
+		// 	for (const action of actions) {
+		// 		if (options.action[action.name]) {
+		// 			if (!action.allowed(adminUser)) return randArrItem(gifs);
+		// 			try {
+		// 				const result = await action.run();
+		// 				return result;
+		// 			} catch (err) {
+		// 				Logging.logError(err as Error);
+		// 				return 'An error occurred.';
+		// 			}
+		// 		}
+		// 	}
+		// }
 
 		if (options.player?.set_buy_date) {
 			const userToCheck = await mUserFetch(options.player.set_buy_date.user.user.id);

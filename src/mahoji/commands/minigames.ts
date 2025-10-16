@@ -147,7 +147,7 @@ export const minigamesCommand = defineCommand({
 							name: 'tier',
 							description: 'What tier of gamble to do.',
 							required: true,
-							choices: GambleTiers.map(i => ({ name: i.name, value: i.name }))
+							choices: choicesOf(GambleTiers.map(i => i.name))
 						},
 						{
 							type: 'Integer',
@@ -277,9 +277,15 @@ export const minigamesCommand = defineCommand({
 							name: 'skill',
 							required: true,
 							description: 'The skill to put XP in.',
-							choices: ['attack', 'strength', 'defence', 'hitpoints', 'ranged', 'magic', 'prayer'].map(
-								i => ({ name: i, value: i })
-							)
+							choices: choicesOf([
+								'attack',
+								'strength',
+								'defence',
+								'hitpoints',
+								'ranged',
+								'magic',
+								'prayer'
+							])
 						},
 						{
 							type: 'Integer',
@@ -598,7 +604,7 @@ export const minigamesCommand = defineCommand({
 							autocomplete: async (value: string) => {
 								return contractTiers
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-									.map(i => ({ name: i.name, value: i.tier }));
+									.map(i => ({ name: i.name, value: i.tier.toString() }));
 							}
 						}
 					]
@@ -859,7 +865,7 @@ export const minigamesCommand = defineCommand({
 							name: 'quantity',
 							description: 'Quantity.',
 							required: true,
-							choices: [1, 10, 25, 100, 1000].map(i => ({ name: i.toString(), value: i }))
+							choices: choicesOf([1, 10, 25, 100, 1000])
 						}
 					]
 				}

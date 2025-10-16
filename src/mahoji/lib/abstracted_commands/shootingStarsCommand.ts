@@ -1,9 +1,9 @@
 import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import { formatDuration, SimpleTable, Time } from '@oldschoolgg/toolkit';
-import type { activity_type_enum } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
+import type { activity_type_enum } from '@/prisma/main/enums.js';
 import type { MUserClass } from '@/lib/MUser.js';
 import addSkillingClueToLoot from '@/lib/minions/functions/addSkillingClueToLoot.js';
 import { determineMiningTime } from '@/lib/skilling/functions/determineMiningTime.js';

@@ -175,11 +175,10 @@ export const minionCommand = defineCommand({
 					name: 'name',
 					description: 'The name of the bank background you want.',
 					autocomplete: async (value: string, user: MUser) => {
-						const mUser = await mUserFetch(user.id);
-						const isMod = mUser.bitfield.includes(BitField.isModerator);
+						const isMod = user.bitfield.includes(BitField.isModerator);
 						const bankImages = bankImageTask.backgroundImages;
 						const owned = bankImages
-							.filter(bg => bg.storeBitField && mUser.user.store_bitfield.includes(bg.storeBitField))
+							.filter(bg => bg.storeBitField && user.user.store_bitfield.includes(bg.storeBitField))
 							.map(bg => bg.id);
 						return bankImages
 							.filter(bg => isMod || bg.available || owned.includes(bg.id))
@@ -210,9 +209,7 @@ export const minionCommand = defineCommand({
 							.filter(notEmpty)
 							.map(i => ({ id: i.id, name: i.name }));
 
-						const botUser = await mUserFetch(user.id);
-
-						return botUser.bank
+						return user.bank
 							.items()
 							.filter(i => mappedLampables.map(l => l.id).includes(i[0].id))
 							.filter(i => {
@@ -408,8 +405,7 @@ export const minionCommand = defineCommand({
 			description: 'View your minions mastery.'
 		}
 	],
-	run: async ({ userID, options, interaction }) => {
-		const user = await mUserFetch(userID);
+	run: async ({ user, options, interaction }) => {
 		const perkTier = user.perkTier();
 
 		if (options.info) return (await getUserInfo(user)).everythingString;

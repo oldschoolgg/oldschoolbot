@@ -98,6 +98,17 @@ client.on('guildCreate', guild => {
 		guild.leave();
 	}
 });
-
+client.on('shardDisconnect', (event, shardID) => Logging.logDebug(`Shard ${shardID} disconnected: ${event.code}}`));
+client.on('cacheSweep', e => {
+	Logging.logDebug(`Cache Sweep: ${e}`);
+});
+client.on('debug', e => Logging.logDebug(e));
+client.on('warn', e => Logging.logDebug(e));
 client.on('shardError', err => Logging.logDebug('Shard Error', { error: err.message }));
-client.once('ready', () => onStartup());
+client.once('ready', async e => {
+	const ownerId = e.application.owner?.id;
+	if (ownerId && !globalConfig.adminUserIDs.includes(ownerId)) {
+		globalConfig.adminUserIDs.push(ownerId);
+	}
+	await onStartup();
+});

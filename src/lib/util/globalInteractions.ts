@@ -7,11 +7,11 @@ import {
 	Time,
 	uniqueArr
 } from '@oldschoolgg/toolkit';
-import type { Giveaway } from '@prisma/client';
 import { RateLimitManager } from '@sapphire/ratelimits';
 import { type ButtonInteraction, MessageFlags } from 'discord.js';
 import { Bank, type ItemBank } from 'oldschooljs';
 
+import type { Giveaway } from '@/prisma/main.js';
 import { giveawayCache } from '@/lib/cache.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { BitField } from '@/lib/constants.js';
@@ -128,7 +128,7 @@ async function repeatTripHandler(user: MUser, interaction: MInteraction): Comman
 	if (user.minionIsBusy) {
 		return { content: 'Your minion is busy.', ephemeral: true };
 	}
-	const trips = await fetchRepeatTrips(interaction.user.id);
+	const trips = await fetchRepeatTrips(user);
 	if (trips.length === 0) {
 		return { content: "Couldn't find a trip to repeat.", ephemeral: true };
 	}

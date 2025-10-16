@@ -1,8 +1,8 @@
 import { channelIsSendable, makeComponents, Time } from '@oldschoolgg/toolkit';
-import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { Bank, EItem } from 'oldschooljs';
 
+import type { activity_type_enum } from '@/prisma/main/enums.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { buildClueButtons } from '@/lib/clues/clueUtils.js';
 import { combatAchievementTripEffect } from '@/lib/combat_achievements/combatAchievements.js';
@@ -125,6 +125,7 @@ export async function handleTripFinish(
 	_messages?: string[],
 	_components?: ButtonBuilder[]
 ) {
+	Logging.logDebug(`Handling trip finish for ${user.logName} (${data.type})`);
 	const message = typeof _message === 'string' ? { content: _message } : _message;
 	if (attachment) {
 		if (!message.files) {

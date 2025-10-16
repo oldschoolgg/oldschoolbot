@@ -1,6 +1,6 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { AutoFarmFilterEnum } from '@prisma/client';
 
+import { AutoFarmFilterEnum } from '@/prisma/main/enums.js';
 import TitheFarmBuyables from '@/lib/data/buyables/titheFarmBuyables.js';
 import { superCompostables } from '@/lib/data/filterables.js';
 import { choicesOf } from '@/lib/discord/index.js';
@@ -42,9 +42,7 @@ export const farmingCommand = defineCommand({
 					description: 'The plant you want to plant.',
 					required: true,
 					autocomplete: async (value: string, user: MUser) => {
-						const mUser = await mUserFetch(user.id);
-						const farmingLevel = mUser.skillLevel('farming');
-						return Farming.Plants.filter(i => farmingLevel >= i.level)
+						return Farming.Plants.filter(i => user.skillsAsLevels.farming >= i.level)
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.name, value: i.name }));
 					}
@@ -218,6 +216,7 @@ export const farmingCommand = defineCommand({
 		}
 		if (options.plant) {
 			return farmingPlantCommand({
+				user,
 				interaction,
 				plantName: options.plant.plant_name,
 				quantity: options.plant.quantity ?? null,

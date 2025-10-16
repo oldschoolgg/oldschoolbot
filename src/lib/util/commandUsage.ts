@@ -6,7 +6,7 @@ function isMahojiUserOption(data: any): data is MahojiUserOption {
 	return 'user' in data && 'id' in data.user;
 }
 
-interface CompressedArg {
+export interface CompressedArg {
 	[key: string]: string | number | boolean | null | undefined | CompressedArg;
 }
 

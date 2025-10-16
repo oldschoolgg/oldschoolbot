@@ -1,7 +1,7 @@
 import { evalMathExpression, formatDuration, makeComponents, sumArr, uniqueArr } from '@oldschoolgg/toolkit';
-import type { GEListing, GETransaction } from '@prisma/client';
 import { Items, toKMB } from 'oldschooljs';
 
+import type { GEListing, GETransaction } from '@/prisma/main.js';
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { PerkTier } from '@/lib/constants.js';
 import { defineOption, itemOption, tradeableItemArr } from '@/lib/discord/index.js';
@@ -200,7 +200,7 @@ export const geCommand = defineCommand({
 							)
 							.map(l => ({
 								name: `${Items.itemNameFromId(l.itemID)!}`,
-								value: l.itemID
+								value: l.itemID.toString()
 							}));
 					}
 				}

@@ -12,9 +12,10 @@ export default defineConfig({
 			include: ['src/mahoji/lib/abstracted_commands/minionKill/*.ts', 'src/lib/structures/*.ts']
 		},
 		testTimeout: 60_000,
-		maxConcurrency: 10,
-		maxWorkers: 4,
-		minWorkers: 4
+		maxConcurrency: 1,
+		maxWorkers: 1,
+		minWorkers: 1,
+		bail: 1
 	},
 	resolve: {
 		alias: {

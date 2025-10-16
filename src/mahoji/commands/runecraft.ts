@@ -78,8 +78,7 @@ export const runecraftCommand = defineCommand({
 			required: false
 		}
 	],
-	run: async ({ userID, options, channelID }) => {
-		const user = await mUserFetch(userID);
+	run: async ({ user, options, channelID }) => {
 		let { rune, quantity, usestams, daeyalt_essence, extracts } = options;
 
 		rune = rune.toLowerCase().replace('rune', '').trim();

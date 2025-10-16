@@ -1,9 +1,9 @@
 import { randArrItem, randInt } from '@oldschoolgg/rng';
 import { objectEntries, Time } from '@oldschoolgg/toolkit';
-import { activity_type_enum } from '@prisma/client';
 import { Bank, convertLVLtoXP } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
+import { activity_type_enum } from '@/prisma/main.js';
 import { ClueTiers } from '../../src/lib/clues/clueTiers.js';
 import { assert } from '../../src/lib/util/logError.js';
 import { createTestUser } from './util.js';

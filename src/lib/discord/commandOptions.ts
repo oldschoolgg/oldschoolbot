@@ -263,10 +263,7 @@ export type AnyCommand = Readonly<{
 export function defineOption<const O extends CommandOption>(o: O): O {
 	return o;
 }
-export function defineCommandSrc<
-	const T extends AnyArr<unknown>,
-	Run extends (options: CommandRunOptions<ExtractOptions<T>>) => Promise<unknown>
->(
+export function defineCommandSrc<const T extends AnyArr<unknown>>(
 	cmd: Readonly<{
 		name: string;
 		attributes?: Omit<AbstractCommandAttributes, 'description'>;
@@ -274,16 +271,14 @@ export function defineCommandSrc<
 		options: T;
 		requiredPermissions?: (keyof typeof PermissionFlagsBits)[];
 		guildID?: string;
-		run: Run;
+		run(options: CommandRunOptions<ExtractOptions<T>>): CommandResponse;
 	}> &
-		(IsAny<Awaited<ReturnType<Run>>> extends true ? { __error_run_returns_any: never } : unknown) &
-		(Awaited<ReturnType<Run>> extends CommandResponseValue ? unknown : { __error_bad_run_return: never })
+		(T[number] extends CommandOption ? unknown : { __error__: 'options must be CommandOption[]' })
 ): OSBMahojiCommand<AsOptArr<T>> {
 	return cmd as unknown as OSBMahojiCommand<AsOptArr<T>>;
 }
 
 type CommandResponseValue = string | CompatibleResponse | SpecialResponse;
-type IsAny<T> = 0 extends 1 & T ? true : false;
 declare global {
 	var defineCommand: typeof defineCommandSrc;
 }

@@ -1,8 +1,8 @@
 import { reduceNumByPercent } from '@oldschoolgg/toolkit';
-import type { Prisma } from '@prisma/client';
 import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
+import type { Prisma } from '@/prisma/main.js';
 import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import { filterOption } from '@/lib/discord/index.js';
 import { NestBoxesTable } from '@/lib/simulation/misc.js';

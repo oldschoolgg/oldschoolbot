@@ -1,8 +1,8 @@
-import { asyncGzip, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
-import type { Activity, User } from '@prisma/client';
+import { asyncGzip, formatDuration, stringMatches, stringSearch } from '@oldschoolgg/toolkit';
 import { ChannelType, EmbedBuilder } from 'discord.js';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
+import type { Activity, User } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { allStashUnitsFlat } from '@/lib/clues/stashUnits.js';
 import { BitField, PerkTier } from '@/lib/constants.js';
@@ -555,7 +555,7 @@ for (const openable of allOpenables) {
 }
 
 async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnly: boolean) {
-	const item = Items.get(itemName);
+	const item = Items.getItem(itemName);
 	if (!item) return 'Invalid item.';
 	const entity = dryStreakEntities.find(
 		e =>
@@ -619,7 +619,7 @@ async function dryStreakCommand(sourceName: string, itemName: string, ironmanOnl
 }
 
 async function mostDrops(user: MUser, itemName: string, filter: string) {
-	const item = Items.get(itemName);
+	const item = Items.getItem(itemName);
 	const ironmanPart =
 		filter === 'Irons Only'
 			? 'AND "minion.ironman" = true'
@@ -752,7 +752,7 @@ export const toolsCommand = defineCommand({
 							name: 'time',
 							description: 'The time period.',
 							required: true,
-							choices: ['day', 'week', 'month'].map(i => ({ name: i, value: i }))
+							choices: choicesOf(['day', 'week', 'month'])
 						},
 						monsterOption,
 						{
@@ -830,7 +830,7 @@ export const toolsCommand = defineCommand({
 							name: 'filter',
 							description: 'Filter by account type.',
 							required: false,
-							choices: ['Both', 'Irons Only', 'Mains Only'].map(i => ({ name: i, value: i }))
+							choices: choicesOf(['Both', 'Irons Only', 'Mains Only'])
 						}
 					]
 				},
@@ -849,7 +849,7 @@ export const toolsCommand = defineCommand({
 							name: 'format',
 							description: 'Bank Image or Json format?',
 							required: false,
-							choices: ['bank', 'json'].map(i => ({ name: i, value: i }))
+							choices: choicesOf(['bank', 'json'])
 						}
 					]
 				},
@@ -873,8 +873,7 @@ export const toolsCommand = defineCommand({
 				{
 					type: 'Subcommand',
 					name: 'mypets',
-					description: 'See the chat pets you have.',
-					options: []
+					description: 'See the chat pets you have.'
 				},
 				{
 					type: 'Subcommand',
@@ -913,8 +912,8 @@ export const toolsCommand = defineCommand({
 							required: false,
 							autocomplete: async (value: string) => {
 								return allStashUnitsFlat
-									.filter(i => (!value ? true : i.desc.toLowerCase().includes(value.toLowerCase())))
-									.map(i => ({ name: i.desc, value: i.id }));
+									.filter(i => stringSearch(value, i.desc))
+									.map(i => ({ name: i.desc, value: i.id.toString() }));
 							}
 						},
 						{
@@ -928,14 +927,12 @@ export const toolsCommand = defineCommand({
 				{
 					type: 'Subcommand',
 					name: 'build_all',
-					description: 'Automatically build all the STASH units that you can.',
-					options: []
+					description: 'Automatically build all the STASH units that you can.'
 				},
 				{
 					type: 'Subcommand',
 					name: 'fill_all',
-					description: 'Automatically fill all the STASH units that you can.',
-					options: []
+					description: 'Automatically fill all the STASH units that you can.'
 				},
 				{
 					type: 'Subcommand',
@@ -953,7 +950,7 @@ export const toolsCommand = defineCommand({
 									.filter(i =>
 										!value ? true : i.unit.desc.toLowerCase().includes(value.toLowerCase())
 									)
-									.map(i => ({ name: i.unit.desc, value: i.unit.id }));
+									.map(i => ({ name: i.unit.desc, value: i.unit.id.toString() }));
 							}
 						}
 					]
@@ -961,7 +958,7 @@ export const toolsCommand = defineCommand({
 			]
 		}
 	],
-	run: async ({ options, user, interaction, guildID }) => {
+	run: async ({ options, user, interaction, guildID }): CommandResponse => {
 		await interaction.defer();
 
 		if (options.patron) {

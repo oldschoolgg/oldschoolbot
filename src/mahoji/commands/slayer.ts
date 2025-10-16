@@ -281,7 +281,7 @@ export const slayerCommand = defineCommand({
 			}
 			if (options.rewards.disable) {
 				return slayerShopBuyCommand({
-					userID: user.id,
+					user,
 					disable: true,
 					buyable: options.rewards.disable.unlockable,
 					interaction
@@ -289,7 +289,7 @@ export const slayerCommand = defineCommand({
 			}
 			if (options.rewards.buy) {
 				return slayerShopBuyCommand({
-					userID: user.id,
+					user,
 					buyable: options.rewards.buy.item,
 					quantity: options.rewards.buy.quantity,
 					interaction
@@ -297,7 +297,7 @@ export const slayerCommand = defineCommand({
 			}
 			if (options.rewards.unlock) {
 				return slayerShopBuyCommand({
-					userID: user.id,
+					user,
 					buyable: options.rewards.unlock.unlockable,
 					interaction
 				});

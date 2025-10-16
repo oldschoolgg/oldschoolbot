@@ -227,7 +227,7 @@ ${res
 		if (options.equip) {
 			return gearEquipCommand({
 				interaction,
-				userID: user.id,
+				user,
 				setup: options.equip.gear_setup,
 				item: options.equip.item,
 				items: options.equip.items,

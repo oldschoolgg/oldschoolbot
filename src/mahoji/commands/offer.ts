@@ -56,9 +56,7 @@ export const offerCommand = defineCommand({
 			description: 'The thing you want to offer.',
 			required: true,
 			autocomplete: async (value: string, user: MUser) => {
-				const botUser = await mUserFetch(user.id);
-
-				return botUser.bank
+				return user.bank
 					.items()
 					.filter(i => offerables.has(i[0].id))
 					.filter(i => {

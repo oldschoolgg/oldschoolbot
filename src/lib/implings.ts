@@ -1,7 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit';
-import { activity_type_enum } from '@prisma/client';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 
+import { activity_type_enum } from '@/prisma/main/enums.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import activityInArea, { WorldLocations } from '@/lib/util/activityInArea.js';
 

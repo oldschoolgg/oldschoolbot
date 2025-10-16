@@ -4,7 +4,7 @@ export const mCommand = defineCommand({
 	name: 'm',
 	description: 'See your current minion status and helpful buttons.',
 	options: [],
-	run: async ({ userID }) => {
-		return minionStatusCommand(await mUserFetch(userID));
+	run: async ({ user }) => {
+		return minionStatusCommand(user);
 	}
 });

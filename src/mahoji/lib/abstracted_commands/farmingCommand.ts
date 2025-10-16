@@ -1,7 +1,7 @@
 import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
-import type { CropUpgradeType } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
+import type { CropUpgradeType } from '@/prisma/main/enums.js';
 import { superCompostables } from '@/lib/data/filterables.js';
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
@@ -111,19 +111,20 @@ ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 }
 
 export async function farmingPlantCommand({
+	user,
 	interaction,
 	plantName,
 	quantity,
 	autoFarmed,
 	pay
 }: {
+	user: MUser;
 	interaction: MInteraction;
 	plantName: string;
 	quantity: number | null;
 	autoFarmed: boolean;
 	pay: boolean;
 }): Promise<string> {
-	const user = await mUserFetch(interaction.user.id);
 	if (user.minionIsBusy) {
 		return 'Your minion must not be busy to use this command.';
 	}

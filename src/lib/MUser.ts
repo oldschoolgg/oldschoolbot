@@ -1,6 +1,5 @@
 import { percentChance } from '@oldschoolgg/rng';
 import { calcWhatPercent, cleanUsername, Emoji, isObject, sumArr, UserError, uniqueArr } from '@oldschoolgg/toolkit';
-import type { activity_type_enum, GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { escapeMarkdown, userMention } from 'discord.js';
 import {
 	addItemToBank,
@@ -14,6 +13,7 @@ import {
 	resolveItems
 } from 'oldschooljs';
 
+import type { activity_type_enum, GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@/prisma/main.js';
 import { addXP } from '@/lib/addXP.js';
 import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
@@ -46,7 +46,7 @@ import { defaultGear, Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { XPBank } from '@/lib/structures/XPBank.js';
-import type { SkillRequirements, Skills } from '@/lib/types/index.js';
+import type { PrismaCompatibleJsonObject, SkillRequirements, Skills } from '@/lib/types/index.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
 import { getKCByName } from '@/lib/util/getKCByName.js';
@@ -91,16 +91,16 @@ export type SelectedUserStats<T extends Prisma.UserStatsSelect> = {
 export class MUserClass {
 	user: Readonly<User>;
 	id: string;
-	bank!: Bank;
-	bankWithGP!: Bank;
-	cl!: Bank;
-	allItemsOwned!: Bank;
-	gear!: UserFullGearSetup;
+
 	skillsAsXP!: Required<Skills>;
 	skillsAsLevels!: Required<Skills>;
 	badgesString!: string;
 	bitfield!: readonly BitField[];
 	iconPackId!: IconPackID | null;
+
+	private _bankLazy: Bank | null = null;
+	private _clLazy: Bank | null = null;
+	private _gearLazy: UserFullGearSetup | null = null;
 
 	constructor(user: User) {
 		this.user = user;
@@ -108,18 +108,23 @@ export class MUserClass {
 		this.updateProperties();
 	}
 
-	public updateProperties() {
-		this.bank = new Bank(this.user.bank as ItemBank);
-		this.bank.freeze();
+	public get bank(): Bank {
+		if (this._bankLazy) return this._bankLazy;
+		this._bankLazy = new Bank(this.user.bank as ItemBank);
+		this._bankLazy.freeze();
+		return this._bankLazy;
+	}
 
-		this.bankWithGP = new Bank(this.user.bank as ItemBank);
-		this.bankWithGP.add('Coins', this.GP);
-		this.bankWithGP.freeze();
+	public get cl(): Bank {
+		if (this._clLazy) return this._clLazy;
+		this._clLazy = new Bank(this.user.collectionLogBank as ItemBank);
+		this._clLazy.freeze();
+		return this._clLazy;
+	}
 
-		this.cl = new Bank(this.user.collectionLogBank as ItemBank);
-		this.cl.freeze();
-
-		this.gear = {
+	public get gear(): UserFullGearSetup {
+		if (this._gearLazy) return this._gearLazy;
+		this._gearLazy = {
 			melee: new Gear((this.user.gear_melee as GearSetup | null) ?? { ...defaultGear }),
 			mage: new Gear((this.user.gear_mage as GearSetup | null) ?? { ...defaultGear }),
 			range: new Gear((this.user.gear_range as GearSetup | null) ?? { ...defaultGear }),
@@ -129,10 +134,17 @@ export class MUserClass {
 			fashion: new Gear((this.user.gear_fashion as GearSetup | null) ?? { ...defaultGear }),
 			other: new Gear((this.user.gear_other as GearSetup | null) ?? { ...defaultGear })
 		};
+		return this._gearLazy;
+	}
 
-		this.allItemsOwned = this.calculateAllItemsOwned();
-		this.allItemsOwned.freeze();
+	public get bankWithGP(): Bank {
+		return new Bank(this.user.bank as ItemBank).add('Coins', this.GP).freeze();
+	}
 
+	public updateProperties() {
+		this._bankLazy = null;
+		this._clLazy = null;
+		this._gearLazy = null;
 		this.skillsAsXP = this.getSkills(false);
 		this.skillsAsLevels = this.getSkills(true);
 
@@ -424,7 +436,7 @@ GROUP BY data->>'ci';`);
 		return this.gearBank.hasEquippedOrInBank(...args);
 	}
 
-	private calculateAllItemsOwned(): Bank {
+	public get allItemsOwned(): Bank {
 		const bank = new Bank(this.bank);
 
 		bank.add('Coins', Number(this.user.GP));
@@ -639,7 +651,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			newRangeGear.ammo!.quantity -= ammoRemove?.[1];
 			if (newRangeGear.ammo!.quantity <= 0) newRangeGear.ammo = null;
 			const updateKey = options?.isInWilderness ? 'gear_wildy' : 'gear_range';
-			updates[updateKey] = newRangeGear as any as Prisma.InputJsonObject;
+			updates[updateKey] = newRangeGear as any as PrismaCompatibleJsonObject;
 		}
 
 		if (dart) {
@@ -925,7 +937,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		}
 
 		await this.update({
-			[`gear_${setup}`]: gear as any as Prisma.InputJsonObject
+			[`gear_${setup}`]: gear as any as PrismaCompatibleJsonObject
 		});
 		if (refundBank.length > 0) {
 			await this.addItemsToBank({

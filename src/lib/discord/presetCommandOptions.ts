@@ -1,8 +1,8 @@
 import { stringSearch, toTitleCase, truncateString, uniqueArr } from '@oldschoolgg/toolkit';
-import type { GearPreset } from '@prisma/client';
 import type { APIApplicationCommandOptionChoice, GuildMember } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
+import type { GearPreset } from '@/prisma/main.js';
 import { baseFilters, filterableTypes } from '@/lib/data/filterables.js';
 import { choicesOf, defineOption } from '@/lib/discord/index.js';
 import { GearSetupTypes } from '@/lib/gear/types.js';

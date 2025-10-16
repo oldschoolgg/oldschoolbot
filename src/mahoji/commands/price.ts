@@ -15,7 +15,7 @@ export const priceCommand = defineCommand({
 		}
 	],
 	run: async ({ options }) => {
-		const item = Items.get(options.item);
+		const item = Items.getItem(options.item);
 		if (!item) return "Couldn't find that item.";
 
 		const { basePrice: priceOfItem } = sellPriceOfItem(item);

@@ -1,8 +1,8 @@
 import { cleanUsername, noOp } from '@oldschoolgg/toolkit';
-import type { Prisma, User } from '@prisma/client';
 import { type Guild, userMention } from 'discord.js';
 import { convertXPtoLVL } from 'oldschooljs';
 
+import type { Prisma, User } from '@/prisma/main.js';
 import { usernameWithBadgesCache } from '@/lib/cache.js';
 import { BitField, globalConfig, MAX_LEVEL, MAX_XP } from '@/lib/constants.js';
 import type { MUserClass } from '@/lib/MUser.js';

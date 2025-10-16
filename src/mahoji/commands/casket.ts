@@ -37,9 +37,8 @@ export const casketCommand = defineCommand({
 			max_value: 300_000
 		}
 	],
-	run: async ({ options, userID, interaction }) => {
+	run: async ({ options, user, interaction }): CommandResponse => {
 		await interaction.defer();
-		const user = await mUserFetch(userID);
 		const limit = determineLimit(user);
 		if (options.quantity > limit) {
 			return `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 100,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`;
