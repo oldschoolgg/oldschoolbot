@@ -253,10 +253,11 @@ export const farmingTask: MinionTask = {
 							Math.floor(
 								plantToHarvest.chance1 +
 									(plantToHarvest.chance99 - plantToHarvest.chance1) *
-										((user.skillsAsLevels.farming - 1) / 98)
+										((currentFarmingLevel - 1) / 98)
 							) * baseBonus
 						) + 1;
-					const chanceToSaveLife = (plantChanceFactor + 1) / 256;
+					const chanceToSaveLife = Math.min(0.95, (plantChanceFactor + 1) / 256);
+
 					if (plantToHarvest.seedType === 'bush') lives = 4;
 					cropYield = 0;
 					const livesHolder = lives;
