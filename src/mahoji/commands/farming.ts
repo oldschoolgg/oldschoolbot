@@ -185,11 +185,11 @@ export const farmingCommand: OSBMahojiCommand = {
 		interaction,
 		channelID
 	}: CommandRunOptions<{
-		check_patches?: {};
-		auto_farm?: {};
+		check_patches?: Record<string, never>;
+		auto_farm?: Record<string, never>;
 		auto_farm_filter?: { auto_farm_filter_data: string };
 		default_compost?: { compost: CropUpgradeType };
-		always_pay?: {};
+		always_pay?: Record<string, never>;
 		plant?: { plant_name: string; quantity?: number; pay?: boolean };
 		harvest?: { patch_name: string };
 		tithe_farm?: { buy_reward?: string };
@@ -197,10 +197,10 @@ export const farmingCommand: OSBMahojiCommand = {
 		contract?: { input?: ContractOption };
 	}>) => {
 		await interaction.defer();
-		const { patchesDetailed } = Farming.getFarmingInfoFromUser(user);
+		const { patchesDetailed, patches } = Farming.getFarmingInfoFromUser(user);
 
 		if (options.auto_farm) {
-			return autoFarm(interaction, user, patchesDetailed);
+			return autoFarm(user, patchesDetailed, patches, interaction);
 		}
 		if (options.always_pay) {
 			const isEnabled = user.user.minion_defaultPay;
