@@ -19,7 +19,6 @@ import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
-import { updateUserCl } from '@/lib/collection-log/databaseCl.js';
 import { type CATier, CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField, MAX_LEVEL, projectiles } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
@@ -46,6 +45,7 @@ import { defaultGear, Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { XPBank } from '@/lib/structures/XPBank.js';
+import { TableBankManager } from '@/lib/tableBankManager.js';
 import type { PrismaCompatibleJsonObject, SkillRequirements, Skills } from '@/lib/types/index.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
@@ -576,12 +576,15 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 
 	async addItemsToCollectionLog(itemsToAdd: Bank) {
 		const previousCL = this.cl.clone();
+
 		const updates = this.calculateAddItemsToCLUpdates({
 			items: itemsToAdd
 		});
 		await this.update(updates);
 		const newCL = this.cl;
+
 		await handleNewCLItems({ itemsAdded: itemsToAdd, user: this, newCL: this.cl, previousCL });
+
 		return {
 			previousCL,
 			newCL,
@@ -1112,14 +1115,51 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		return `**XP Gains:** ${result}`;
 	}
 
-	async updateCL() {
-		await updateUserCl(this.id);
-	}
-
 	modifyBusy(type: 'lock' | 'unlock', reason: string): void {
 		modifyUserBusy({ type, reason, userID: this.id });
 	}
+
+	async _fetchOrCreateCL(itemsToAdd?: Bank): Promise<Bank> {
+		const existingTableBank = await prisma.tableBank.count({
+			where: { user_id: this.id, type: 'CollectionLog' }
+		});
+
+		// If they dont have one yet, create the full thing.
+		if (existingTableBank === 0) {
+			console.log('Creating new CL for', this.id, itemsToAdd?.toString());
+			await prisma.tableBank.create({
+				data: {
+					user_id: this.id,
+					type: 'CollectionLog',
+					items: {
+						create: this.cl.items().map(i => ({ item_id: i[0].id, quantity: i[1] }))
+					}
+				},
+				select: {
+					id: true
+				}
+			});
+		} else if (itemsToAdd) {
+			console.log('Adding to CL for', this.id, itemsToAdd.toString());
+			await TableBankManager.update({
+				userId: this.id,
+				type: 'CollectionLog',
+				itemsToAdd
+			});
+		}
+
+		const cl = await TableBankManager.fetch({ userId: this.id, type: 'CollectionLog' });
+		cl.freeze();
+		return cl;
+	}
+
+	async fetchCL(): Promise<Bank> {
+		console.log('Fetching CL for', this.id);
+		const cl = await this._fetchOrCreateCL();
+		return cl;
+	}
 }
+
 declare global {
 	export type MUser = MUserClass;
 	var mUserFetch: typeof srcMUserFetch;

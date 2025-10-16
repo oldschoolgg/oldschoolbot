@@ -38,9 +38,13 @@ export async function handleNewCLItems({
 	newCL: Bank;
 	itemsAdded: Bank;
 }) {
-	const newCLItems = itemsAdded
-		?.clone()
-		.filter(i => !previousCL.has(i.id) && newCL.has(i.id) && allCLItems.includes(i.id));
+	const anyNewCLItems = itemsAdded.filter(i => !previousCL.has(i.id) && newCL.has(i.id));
+	const newCLItems = anyNewCLItems.filter(i => allCLItems.includes(i.id));
+
+	const rawDifference = newCL.difference(previousCL);
+	if (rawDifference.length > 0) {
+		await user._fetchOrCreateCL(rawDifference);
+	}
 
 	const didGetNewCLItem = newCLItems && newCLItems.length > 0;
 	if (didGetNewCLItem || roll(30)) {
@@ -56,7 +60,7 @@ export async function handleNewCLItems({
 	const previousCLDetails = calcCLDetails(previousCL);
 	const previousCLRank = previousCLDetails.percent >= 80 ? await calculateOwnCLRanking(user.id) : null;
 
-	await Promise.all([roboChimpSyncData(user, newCL), user.updateCL()]);
+	await roboChimpSyncData(user, newCL);
 	const newCLRank = previousCLDetails.percent >= 80 ? await calculateOwnCLRanking(user.id) : null;
 
 	const newCLDetails = calcCLDetails(newCL);
