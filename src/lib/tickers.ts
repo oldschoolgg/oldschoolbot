@@ -10,6 +10,7 @@ import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 
+import { syncBlacklists } from '@/lib/blacklists.js';
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
@@ -341,6 +342,14 @@ export const tickers: {
 				);
 			}
 		}
+	},
+	{
+		name: 'Sync Blacklists',
+		timer: null,
+		interval: Time.Minute * 10,
+		cb: async () => {
+			await syncBlacklists();
+		}
 	}
 ];
 
@@ -350,12 +359,15 @@ export function initTickers() {
 		const fn = async () => {
 			try {
 				if (globalClient.isShuttingDown) return;
+				Logging.logDebug(`Starting ${ticker.name} ticker`, {
+					type: 'TICKER'
+				});
 				const start = performance.now();
 				await ticker.cb();
 				const end = performance.now();
-				Logging.logPerf({
+				Logging.logDebug(`Finished ${ticker.name} ticker`, {
 					duration: end - start,
-					text: `Ticker.${ticker.name}`
+					type: 'TICKER'
 				});
 			} catch (err) {
 				Logging.logError(err as Error);

@@ -117,12 +117,9 @@ class GrandExchangeSingleton {
 	public locked = false;
 	public isTicking = false;
 	public ready = false;
-	public loggingEnabled = false;
 
 	log(message: string, context?: any) {
-		if (this.loggingEnabled) {
-			Logging.logDebug(message, context);
-		}
+		Logging.logDebug(message, context);
 	}
 
 	public config = {
@@ -924,6 +921,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 	private async _tick() {
 		if (!this.ready) return;
 		if (this.locked) return;
+		this.log(`Starting G.E tick`);
 		const { buyListings, sellListings } = await this.fetchActiveListings();
 
 		const minimumSellPricePerItem = new Map<number, number>();
