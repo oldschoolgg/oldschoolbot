@@ -563,7 +563,7 @@ export const bingoCommand = defineCommand({
 			const bingo = new BingoManager(bingoParticipant.bingo);
 			const teamProgress = (await bingo.determineProgressOfTeam(bingoParticipant.bingo_team_id))!;
 
-			const clItems = [];
+			const clItems: number[] = [];
 
 			for (const tile of teamProgress.tilesNotCompleted) {
 				const tileItems = getAllTileItems(tile);
@@ -591,7 +591,7 @@ export const bingoCommand = defineCommand({
 
 			const image = await clImageGenerator.makeArbitraryCLImage({
 				user,
-				clItems,
+				clItems: new Set(clItems),
 				userBank: teamProgress.cl,
 				title: 'Bingo'
 			});

@@ -41,7 +41,7 @@ const CLS_THAT_GET_ROLE = [
 
 for (const cl of CLS_THAT_GET_ROLE) {
 	const items = getCollectionItems(cl);
-	if (!items || items.length === 0) {
+	if (!items || items.size === 0) {
 		throw new Error(`${cl} isn't a valid CL.`);
 	}
 }

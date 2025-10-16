@@ -341,7 +341,7 @@ class BankImageTask {
 			const [item, quantity] = items[i];
 
 			const isNewCLItem =
-				flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.includes(item.id);
+				flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.has(item.id);
 
 			await c.drawItemIDSprite({
 				itemID: item.id,
@@ -511,7 +511,7 @@ class BankImageTask {
 		const isPurple: boolean =
 			flags.get('showNewCL') !== undefined &&
 			currentCL !== undefined &&
-			items.some(([item]) => !currentCL.has(item.id) && allCLItems.includes(item.id));
+			items.some(([item]) => !currentCL.has(item.id) && allCLItems.has(item.id));
 
 		const useSmallBank = user ? (hasBgSprite ? true : user.bitfield.includes(BitField.AlwaysSmallBank)) : true;
 

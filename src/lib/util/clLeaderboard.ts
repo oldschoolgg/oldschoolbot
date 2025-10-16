@@ -6,7 +6,7 @@ import { userEventsToMap } from '@/lib/util/userEvents.js';
 export async function fetchMultipleCLLeaderboards(
 	leaderboards: {
 		ironmenOnly: boolean;
-		items: number[];
+		items: Set<number>;
 		resultLimit: number;
 		clName: string;
 	}[]
@@ -31,7 +31,9 @@ export async function fetchMultipleCLLeaderboards(
 
 	const results = await prisma.$transaction([
 		...parsedLeaderboards.map(({ items, userEventMap, ironmenOnly, resultLimit }) => {
-			const SQL_ITEMS = `ARRAY[${items.map(i => `${i}`).join(', ')}]`;
+			const SQL_ITEMS = `ARRAY[${Array.from(items)
+				.map(i => `${i}`)
+				.join(', ')}]`;
 			const userIds = Array.from(userEventMap.keys());
 			const userIdsList = userIds.length > 0 ? userIds.map(i => `'${i}'`).join(', ') : 'NULL';
 
@@ -90,7 +92,7 @@ export async function fetchCLLeaderboard({
 	clName
 }: {
 	ironmenOnly: boolean;
-	items: number[];
+	items: Set<number>;
 	resultLimit: number;
 	method?: 'cl_array';
 	clName: string;
@@ -102,7 +104,7 @@ export async function fetchCLLeaderboard({
 		duration: end - start,
 		text: `CLLeaderBoard.${clName}`,
 		collection_log: clName,
-		total_items: items.length
+		total_items: items.size
 	});
 	return result[0];
 }

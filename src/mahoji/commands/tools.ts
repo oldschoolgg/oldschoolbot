@@ -804,7 +804,7 @@ export const toolsCommand = defineCommand({
 							}
 						},
 						{
-							...itemOption(item => allCLItemsFiltered.includes(item.id)),
+							...itemOption(item => allCLItemsFiltered.has(item.id)),
 							required: true
 						},
 						{

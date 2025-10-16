@@ -287,7 +287,7 @@ async function minigamesLb(interaction: MInteraction, name: string) {
 
 async function clLb(interaction: MInteraction, inputType: string, ironmenOnly: boolean) {
 	const { resolvedCl, items } = getCollectionItems(inputType, false, false, true);
-	if (!items || items.length === 0) {
+	if (!items || items.size === 0) {
 		return "That's not a valid collection log category. Check /cl for all possible logs.";
 	}
 
@@ -299,7 +299,7 @@ async function clLb(interaction: MInteraction, inputType: string, ironmenOnly: b
 		interaction,
 		users: users.map(u => ({ id: u.id, score: u.qty })),
 		title: `${inputType} Collection Log Leaderboard`,
-		formatter: val => `${val.toLocaleString()} (${calcWhatPercent(val, items.length).toFixed(1)}%)`
+		formatter: val => `${val.toLocaleString()} (${calcWhatPercent(val, items.size).toFixed(1)}%)`
 	});
 }
 
