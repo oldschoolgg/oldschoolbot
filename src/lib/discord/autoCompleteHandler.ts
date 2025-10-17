@@ -2,46 +2,63 @@ import {
 	type APIApplicationCommandOptionChoice,
 	ApplicationCommandOptionType,
 	type AutocompleteInteraction,
+	type CacheType,
 	type CommandInteractionOption,
 	type GuildMember
 } from 'discord.js';
 
-import type { AutocompleteContext, CommandOption, ICommand } from '@/lib/discord/index.js';
-import { allCommands } from '@/mahoji/commands/allCommands.js';
+import type { AnyCommand, AutocompleteContext, CommandOption } from '@/lib/discord/index.js';
+
+type InteractionOption = CommandInteractionOption<CacheType>;
+type ReadonlyInteractionOptions = readonly InteractionOption[];
+
+type SubcommandOption = Extract<CommandOption, { type: 'Subcommand' }>;
+type SubcommandGroupOption = Extract<CommandOption, { type: 'SubcommandGroup' }>;
 
 async function handleAutocomplete(
 	user: MUser,
 	command: AnyCommand | undefined,
-	autocompleteData: CommandInteractionOption[],
+	autocompleteData: ReadonlyInteractionOptions,
 	member: GuildMember | undefined,
 	option?: CommandOption,
-	contextOptions?: readonly CommandInteractionOption[]
-): Promise<APIApplicationCommandOptionChoice[]> {
+	contextOptions?: ReadonlyInteractionOptions
+): Promise<APIApplicationCommandOptionChoice<string>[]> {
 	if (!command || !autocompleteData) return [];
-	const data = autocompleteData.find(i => 'focused' in i && i.focused === true) ?? autocompleteData[0];
+	const data =
+		autocompleteData.find(
+			i =>
+				('focused' in i && i.focused === true) ||
+				(i.options?.some(opt => ('focused' in opt ? Boolean(opt.focused) : false)) ?? false)
+		) ?? autocompleteData[0];
+	if (!data) {
+		return [];
+	}
 	if (data.type === ApplicationCommandOptionType.SubcommandGroup) {
-		const group = command.options.find(c => c.name === data.name);
-		if (group?.type !== 'SubcommandGroup') return [];
-		const subCommand = group.options?.find(c => c.name === data.options?.[0].name && c.type === 'Subcommand');
+		const group = command.options.find(
+			(option): option is SubcommandGroupOption => option.name === data.name && option.type === 'SubcommandGroup'
+		);
+		if (!group) return [];
+		const nestedOptions = (data.options?.[0]?.options ?? []) as ReadonlyInteractionOptions;
+		const subCommand = group.options?.find(
+			(option): option is SubcommandOption =>
+				option.name === data.options?.[0].name && option.type === 'Subcommand'
+		);
 		if (!subCommand || !data.options || !data.options[0] || subCommand.type !== 'Subcommand') {
 			return [];
 		}
-		const optionBeingFocused = data.options[0].options?.find(t => (t as any).focused);
+		const optionBeingFocused = data.options[0].options?.find(opt =>
+			'focused' in opt ? Boolean(opt.focused) : false
+		);
 		if (!optionBeingFocused) return [];
 		const subSubCommand = subCommand.options?.find(o => o.name === optionBeingFocused.name);
-		return handleAutocomplete(
-			user,
-			command,
-			data.options[0].options ?? [],
-			member,
-			subSubCommand,
-			data.options[0].options ?? []
-		);
+		return handleAutocomplete(user, command, nestedOptions, member, subSubCommand, nestedOptions);
 	}
 	if (data.type === ApplicationCommandOptionType.Subcommand) {
 		if (!data.options || !data.options[0]) return [];
-		const subCommand = command.options.find(c => c.name === data.name);
-		if (subCommand?.type !== 'Subcommand') return [];
+		const subCommand = command.options.find(
+			(option): option is SubcommandOption => option.name === data.name && option.type === 'Subcommand'
+		);
+		if (!subCommand) return [];
 		const focusedOption = data.options.find(o => ('focused' in o ? Boolean(o.focused) : false)) ?? data.options[0];
 		const subOption = subCommand.options?.find(c => c.name === focusedOption.name);
 		if (!subOption) return [];
@@ -83,7 +100,7 @@ export async function autoCompleteHandler(interaction: AutocompleteInteraction) 
 	const choices = await handleAutocomplete(
 		user,
 		command,
-		(interaction.options as any).data as readonly CommandInteractionOption[],
+		(interaction.options as any).data as ReadonlyInteractionOptions,
 		member
 	);
 	const end = performance.now();
@@ -93,5 +110,4 @@ export async function autoCompleteHandler(interaction: AutocompleteInteraction) 
 		interaction
 	});
 	await interaction.respond(choices);
-	return;
 }

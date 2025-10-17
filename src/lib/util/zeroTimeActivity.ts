@@ -1,7 +1,7 @@
 import { Time } from '@oldschoolgg/toolkit';
-import type { zero_time_activity_type_enum } from '@prisma/client';
 import { Bank, type Item, Items } from 'oldschooljs';
 
+import type { zero_time_activity_type_enum } from '@/prisma/main/enums.js';
 import { timePerAlch, timePerAlchAgility } from '../../mahoji/lib/abstracted_commands/alchCommand.js';
 import Arrows from '../skilling/skills/fletching/fletchables/arrows.js';
 import Bolts from '../skilling/skills/fletching/fletchables/bolts.js';

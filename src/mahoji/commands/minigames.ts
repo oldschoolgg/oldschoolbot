@@ -1,6 +1,7 @@
 import { NMZ_STRATEGY } from '@/lib/constants.js';
 import TrekShopItems from '@/lib/data/buyables/trekBuyables.js';
 import { LMSBuyables } from '@/lib/data/CollectionsExport.js';
+import { choicesOf } from '@/lib/discord/index.js';
 import {
 	agilityArenaBuyables,
 	agilityArenaBuyCommand,
