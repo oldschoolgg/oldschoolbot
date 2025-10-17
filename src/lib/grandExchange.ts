@@ -117,8 +117,10 @@ class GrandExchangeSingleton {
 	public locked = false;
 	public isTicking = false;
 	public ready = false;
+	public loggingEnabled = false;
 
 	log(message: string, context?: any) {
+		if (!this.loggingEnabled) return;
 		Logging.logDebug(message, context);
 	}
 
