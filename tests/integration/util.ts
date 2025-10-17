@@ -158,6 +158,13 @@ export class TestUser extends MUserClass {
 		this.client = client!;
 	}
 
+	async assertTableBankMatches() {
+		const clFromDB = await this.fetchCL();
+		if (this.cl.toString() !== clFromDB.toString()) {
+			throw new Error(`CL mismatch for user ${this.id}: ${this.cl.difference(clFromDB).toString()}`);
+		}
+	}
+
 	async runActivity() {
 		const activity = await prisma.activity.findFirst({
 			where: {
@@ -181,6 +188,7 @@ export class TestUser extends MUserClass {
 		TestClient.activitiesProcessed++;
 		await ActivityManager.completeActivity(activity);
 		await this.sync();
+		await this.assertTableBankMatches();
 		return ActivityManager.convertStoredActivityToFlatActivity(activity);
 	}
 	async setLevel(skill: SkillNameType, level: number) {
@@ -281,6 +289,7 @@ export class TestUser extends MUserClass {
 		for (const skill of Object.keys(newXP) as SkillNameType[]) {
 			xpGained[skill as SkillNameType] = newXP[skill] - currentXP[skill];
 		}
+		await this.assertTableBankMatches();
 
 		return { commandResult, newKC, xpGained, previousBank, tripStartBank, activityResult };
 	}
@@ -301,6 +310,7 @@ export class TestUser extends MUserClass {
 		if (syncAfter) {
 			await this.sync();
 		}
+		await this.assertTableBankMatches();
 		return result ?? (mockedInt as any).__response__;
 	}
 

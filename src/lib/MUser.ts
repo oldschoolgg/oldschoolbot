@@ -1150,6 +1150,14 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		return cl;
 	}
 
+	async checkTableBankMatches() {
+		await this.sync();
+		const clFromDB = await this.fetchCL();
+		if (this.cl.toString() !== clFromDB.toString()) {
+			console.error(`CL mismatch for user ${this.id}: ${this.cl.difference(clFromDB).toString()}`);
+		}
+	}
+
 	async fetchCL(): Promise<Bank> {
 		const cl = await this._fetchOrCreateCL();
 		return cl;

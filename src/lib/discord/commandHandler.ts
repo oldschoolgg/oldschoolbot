@@ -70,6 +70,7 @@ export async function rawCommandHandlerInner({
 			userID: interaction.user.id,
 			rng: cryptoRng
 		});
+		await user.checkTableBankMatches();
 		return response;
 	} catch (err) {
 		Logging.logError({

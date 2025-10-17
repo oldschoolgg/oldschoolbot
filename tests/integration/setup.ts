@@ -52,4 +52,4 @@ vi.mock('../../src/lib/util/webhook', async () => {
 
 try {
 	await prisma.$queryRawUnsafe(`CREATE EXTENSION IF NOT EXISTS "intarray";`);
-} catch (_err) { }
+} catch (_err) {}
