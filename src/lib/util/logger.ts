@@ -4,7 +4,6 @@ const { SonicBoom } = SonicBoomDefault;
 
 import path from 'node:path';
 import { isObject, UserError } from '@oldschoolgg/toolkit';
-import { captureException } from '@sentry/node';
 import { type AutocompleteInteraction, DiscordAPIError } from 'discord.js';
 
 import { BOT_TYPE_LOWERCASE, globalConfig } from '@/lib/constants.js';
@@ -113,14 +112,6 @@ function logError(args: string | Error | RichErrorLogArgs, ctx?: LogContext): vo
 			time: new Date().toISOString()
 		})
 	);
-
-	if (globalConfig.isProduction) {
-		captureException(err, {
-			extra: {
-				metaInfo: JSON.stringify(metaInfo)
-			}
-		});
-	}
 
 	if (process.env.TEST) {
 		throw err;
