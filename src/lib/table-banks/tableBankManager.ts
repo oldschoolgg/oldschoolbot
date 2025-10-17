@@ -5,7 +5,7 @@ import { Prisma, type TableBankType } from '@/prisma/main.js';
 function toPairs(b?: Bank): Array<[number, bigint]> {
 	if (!b) return [];
 	const out: Array<[number, bigint]> = [];
-	for (const [item, qty] of b.items()) out.push([item.id, BigInt(qty)]);
+	for (const [item, qty] of b.items()) out.push([item.id, BigInt(Math.floor(qty))]);
 	return out;
 }
 
