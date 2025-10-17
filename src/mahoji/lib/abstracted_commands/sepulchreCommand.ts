@@ -10,6 +10,7 @@ import {
 	getZeroTimeActivityPreferences,
 	getZeroTimePreferenceLabel,
 	resolveConfiguredFletchItemsPerHour,
+	type ZeroTimeActivityPreference,
 	type ZeroTimeActivityResult,
 	type ZeroTimePreferenceRole
 } from '@/lib/util/zeroTimeActivity.js';
@@ -81,7 +82,14 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 
 		const formattedFailures = outcome.failures
 			.filter(failure => failure.message)
-			.map(failure => `${getZeroTimePreferenceLabel(failure.preference)}: ${failure.message}`);
+			.map(failure => {
+				const effectiveRole = getEffectivePreferenceRole(failure.preference.role, hasPrimaryPreference);
+				const preferenceForLabel: ZeroTimeActivityPreference = {
+					...failure.preference,
+					role: effectiveRole
+				};
+				return `${getZeroTimePreferenceLabel(preferenceForLabel)}: ${failure.message}`;
+			});
 
 		if (outcome.result) {
 			if (actualPreferenceRole === 'fallback') {

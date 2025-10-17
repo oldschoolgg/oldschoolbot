@@ -173,14 +173,34 @@ function fallbackTypeIsNone(context: AutocompleteContext | undefined): boolean {
 	return rawValue !== null && rawValue.toLowerCase() === 'none';
 }
 
-function getAutocompleteOptions(value: string, context?: AutocompleteContext) {
+function getStoredTypeFromUser(
+	user: MUser,
+	focusedOptionName: AutocompleteContext['focusedOption']['name'] | undefined
+): ZeroTimeActivityType | null {
+	if (!focusedOptionName) {
+		return null;
+	}
+
+	if (focusedOptionName === 'primary_item') {
+		return user.user.zero_time_activity_primary_type ?? null;
+	}
+
+	if (focusedOptionName === 'fallback_item') {
+		return user.user.zero_time_activity_fallback_type ?? null;
+	}
+
+	return null;
+}
+
+function getAutocompleteOptions(value: string, user: MUser, context?: AutocompleteContext) {
 	if (fallbackTypeIsNone(context)) {
 		return [];
 	}
 
 	const selectedType = getSelectedActivityTypeFromContext(context);
+	const storedType = selectedType ?? getStoredTypeFromUser(user, context?.focusedOption.name);
 
-	if (selectedType === 'alch') {
+	if (storedType === 'alch') {
 		return getAlchAutocompleteOptions(value);
 	}
 
@@ -325,10 +345,10 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 					required: false,
 					autocomplete: async (
 						value: string,
-						_user: MUser,
+						user: MUser,
 						_member: GuildMember | undefined,
 						context?: AutocompleteContext
-					) => getAutocompleteOptions(value, context)
+					) => getAutocompleteOptions(value, user, context)
 				},
 				{
 					type: 'String',
@@ -347,10 +367,10 @@ export const zeroTimeActivityCommand: OSBMahojiCommand = {
 					required: false,
 					autocomplete: async (
 						value: string,
-						_user: MUser,
+						user: MUser,
 						_member: GuildMember | undefined,
 						context?: AutocompleteContext
-					) => getAutocompleteOptions(value, context)
+					) => getAutocompleteOptions(value, user, context)
 				}
 			]
 		},

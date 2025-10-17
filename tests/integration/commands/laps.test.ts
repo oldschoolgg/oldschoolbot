@@ -7,6 +7,17 @@ import { lapsCommand } from '../../../src/mahoji/commands/laps.js';
 import { zeroTimeActivityCommand } from '../../../src/mahoji/commands/zeroTimeActivity.js';
 import { createTestUser } from '../util.js';
 
+function extractResponseText(response: unknown): string {
+	if (typeof response === 'string') {
+		return response;
+	}
+	if (response && typeof response === 'object' && 'content' in (response as { content?: unknown })) {
+		const content = (response as { content?: unknown }).content;
+		return typeof content === 'string' ? content : '';
+	}
+	return '';
+}
+
 describe('laps command', () => {
 	test('formats zero-time info messages on separate lines', async () => {
 		const fletchable = zeroTimeFletchables.find(item => item.name === 'Steel dart');
@@ -68,14 +79,7 @@ describe('laps command', () => {
 			quantity: 1
 		});
 
-		const responseText =
-			typeof response === 'string'
-				? response
-				: response && typeof response === 'object' && 'content' in response
-					? typeof (response as { content?: unknown }).content === 'string'
-						? (response as { content: string }).content
-						: ''
-					: '';
+		const responseText = extractResponseText(response);
 		expect(responseText.toLowerCase()).not.toContain('fallback');
 
 		let lastCall: Parameters<(typeof handleTripFinishModule)['handleTripFinish']> | undefined;
@@ -88,8 +92,32 @@ describe('laps command', () => {
 
 		expect(lastCall).toBeDefined();
 		const messageArg = lastCall?.[2];
-		const content = typeof messageArg === 'string' ? messageArg : (messageArg?.content ?? '');
+		const content = extractResponseText(messageArg);
 		expect(content.toLowerCase()).not.toContain('fallback preference');
 		expect(content.toLowerCase()).not.toContain('fallback');
+	});
+
+	test('labels fallback-only failures as primary', async () => {
+		const user = await createTestUser(new Bank(), {
+			skills_agility: convertLVLtoXP(50),
+			skills_magic: convertLVLtoXP(1)
+		});
+
+		await user.update({ minion_hasBought: true });
+
+		await user.runCommand(zeroTimeActivityCommand, {
+			set: {
+				fallback_type: 'alch'
+			}
+		});
+
+		const response = await user.runCommand(lapsCommand, {
+			name: 'Gnome Stronghold Agility Course',
+			quantity: 1
+		});
+
+		const responseText = extractResponseText(response);
+		expect(responseText).toContain('Primary alch: You need level 55 Magic to perform zero-time alching.');
+		expect(responseText).not.toContain('Fallback alch');
 	});
 });
