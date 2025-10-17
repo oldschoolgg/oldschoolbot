@@ -41,7 +41,7 @@ const CLS_THAT_GET_ROLE = [
 
 for (const cl of CLS_THAT_GET_ROLE) {
 	const items = getCollectionItems(cl);
-	if (!items || items.length === 0) {
+	if (!items || items.size === 0) {
 		throw new Error(`${cl} isn't a valid CL.`);
 	}
 }
@@ -78,7 +78,7 @@ async function topSkillers() {
 		.map((u: any) => {
 			let totalLevel = 0;
 			for (const skill of SkillsArray) {
-				totalLevel += convertXPtoLVL(Number(u[`skills.${skill}` as keyof any]) as any, MAX_LEVEL);
+				totalLevel += convertXPtoLVL(Number(u[`skills.${skill}`]), MAX_LEVEL);
 			}
 			return {
 				id: u.id,

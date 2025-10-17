@@ -5,7 +5,7 @@ import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { tradePlayerItems } from '@/lib/util/tradePlayerItems.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
-export const payCommand: OSBMahojiCommand = {
+export const payCommand = defineCommand({
 	name: 'pay',
 	description: 'Send GP to another user.',
 	options: [
@@ -22,15 +22,7 @@ export const payCommand: OSBMahojiCommand = {
 			required: true
 		}
 	],
-	run: async ({
-		options,
-		user,
-		interaction,
-		guildID
-	}: CommandRunOptions<{
-		user: MahojiUserOption;
-		amount: string;
-	}>) => {
+	run: async ({ options, user, interaction, guildID }) => {
 		await interaction.defer();
 		const recipient = await mUserFetch(options.user.user.id);
 		const amount = mahojiParseNumber({ input: options.amount, min: 1, max: 500_000_000_000 });
@@ -75,4 +67,4 @@ export const payCommand: OSBMahojiCommand = {
 
 		return `You sent ${amount.toLocaleString()} GP to ${recipient}.`;
 	}
-};
+});

@@ -1,7 +1,7 @@
 import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { type BossRecords, bossNameMap, Hiscores, mappedBossNames } from 'oldschooljs/hiscores';
 
-export const kcCommand: OSBMahojiCommand = {
+export const kcCommand = defineCommand({
 	name: 'kc',
 	description: 'See your OSRS kc for a monster/boss.',
 	attributes: {
@@ -26,7 +26,7 @@ export const kcCommand: OSBMahojiCommand = {
 			}
 		}
 	],
-	run: async ({ options }: CommandRunOptions<{ rsn: string; boss: string }>) => {
+	run: async ({ options }) => {
 		try {
 			const { bossRecords } = await Hiscores.fetch(options.rsn);
 
@@ -46,4 +46,4 @@ export const kcCommand: OSBMahojiCommand = {
 			return err.message;
 		}
 	}
-};
+});

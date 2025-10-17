@@ -1,4 +1,4 @@
-import { deepEqual, notEmpty, uniqueArr } from '@oldschoolgg/toolkit';
+import { deepEqual, notEmpty } from '@oldschoolgg/toolkit';
 import { Bank, EquipmentSlot, type Item, Items, itemID, resolveItems } from 'oldschooljs';
 import type { EGear } from 'oldschooljs/EGear';
 import {
@@ -441,22 +441,41 @@ export class Gear {
 	}
 
 	allItems(similar = false): number[] {
-		const gear = this.raw();
-		const values = Object.values(gear)
-			.filter(notEmpty)
-			.map(i => i.item);
+		const values = new Set<number>();
+		for (const x of [
+			this.ammo,
+			this.body,
+			this.cape,
+			this.feet,
+			this.hands,
+			this.head,
+			this.legs,
+			this.neck,
+			this.ring,
+			this.shield,
+			this.weapon,
+			this['2h']
+		]) {
+			if (x) {
+				values.add(x.item);
+			}
+		}
 
 		if (similar) {
 			for (const item of [...values]) {
 				const inverse = inverseSimilarItems.get(item);
 				if (inverse) {
-					values.push(...inverse.values());
+					for (const invSimilarItem of inverse.values()) {
+						values.add(invSimilarItem);
+					}
 				}
-				values.push(...getSimilarItems(item));
+				for (const similarItem of getSimilarItems(item)) {
+					values.add(similarItem);
+				}
 			}
 		}
 
-		return uniqueArr(values);
+		return Array.from(values);
 	}
 
 	allItemsBank() {

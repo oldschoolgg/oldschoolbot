@@ -1,5 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
+import { choicesOf } from '@/lib/discord/index.js';
 import { autoslayChoices, slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { SlayerRewardsShop } from '@/lib/slayer/slayerUnlocks.js';
 import { autoSlayCommand } from '@/mahoji/lib/abstracted_commands/autoSlayCommand.js';
@@ -16,7 +17,7 @@ import {
 	slayerUnblockCommand
 } from '@/mahoji/lib/abstracted_commands/slayerTaskCommand.js';
 
-export const slayerCommand: OSBMahojiCommand = {
+export const slayerCommand = defineCommand({
 	name: 'slayer',
 	description: 'Slayer skill commands',
 	options: [
@@ -70,9 +71,7 @@ export const slayerCommand: OSBMahojiCommand = {
 					name: 'command',
 					description: 'Skip your current task',
 					required: true,
-					choices: ['skip', 'block', 'list_blocks'].map(c => {
-						return { name: c, value: c };
-					})
+					choices: choicesOf(['skip', 'block', 'list_blocks'])
 				},
 				{
 					type: 'Boolean',
@@ -196,9 +195,7 @@ export const slayerCommand: OSBMahojiCommand = {
 							name: 'type',
 							description: 'What type of rewards to show?',
 							required: false,
-							choices: ['all', 'buyables', 'unlocks'].map(t => {
-								return { name: t, value: t };
-							})
+							choices: choicesOf(['all', 'buyables', 'unlocks'])
 						}
 					]
 				},
@@ -240,61 +237,36 @@ export const slayerCommand: OSBMahojiCommand = {
 			description: 'Shows status of current slayer task'
 		}
 	],
-	run: async ({
-		options,
-		channelID,
-		user,
-		interaction
-	}: CommandRunOptions<{
-		autoslay?: { mode?: string; save?: boolean };
-		new_task?: { master?: string; save?: boolean };
-		manage?: {
-			command: 'block' | 'skip' | 'list_blocks';
-			new?: boolean;
-		};
-		rewards?: {
-			unlock?: { unlockable: string };
-			unblock?: { assignment: string };
-			buy?: { item: string; quantity?: number };
-			my_unlocks?: {};
-			show_all_rewards?: { type?: 'all' | 'buyables' | 'unlocks' };
-			disable?: { unlockable: string };
-		};
-		status?: {};
-	}>) => {
+	run: async ({ options, user, interaction }) => {
 		await interaction.defer();
 		if (options.autoslay) {
-			await autoSlayCommand({
+			return autoSlayCommand({
 				user,
-				channelID,
 				modeOverride: options.autoslay.mode,
 				saveMode: Boolean(options.autoslay.save),
 				interaction
 			});
-			return null;
 		}
 		if (options.new_task) {
-			await slayerNewTaskCommand({
+			return slayerNewTaskCommand({
 				user,
 				interaction,
 				slayerMasterOverride: options.new_task.master,
 				saveDefaultSlayerMaster: Boolean(options.new_task.save),
 				showButtons: true
 			});
-			return null;
 		}
 		if (options.manage) {
 			if (options.manage.command === 'list_blocks') {
 				return slayerListBlocksCommand(user);
 			}
 			if (options.manage.command === 'skip' || options.manage.command === 'block') {
-				await slayerSkipTaskCommand({
+				return slayerSkipTaskCommand({
 					user,
 					block: options.manage.command === 'block',
 					newTask: Boolean(options.manage.new),
 					interaction
 				});
-				return null;
 			}
 		}
 		if (options.rewards) {
@@ -336,4 +308,4 @@ export const slayerCommand: OSBMahojiCommand = {
 		}
 		return 'This should not happen. Please contact support.';
 	}
-};
+});

@@ -18,7 +18,7 @@ import { Bank, type ItemBank, toKMB } from 'oldschooljs';
 import type { Giveaway } from '@/prisma/main.js';
 import { giveawayCache } from '@/lib/cache.js';
 import { patronFeatures } from '@/lib/constants.js';
-import { filterOption } from '@/lib/discord/index.js';
+import { baseFilters, filterableTypes } from '@/lib/data/filterables.js';
 import { marketPriceOfBank } from '@/lib/marketPrices.js';
 import { generateGiveawayContent } from '@/lib/util/giveaway.js';
 import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
@@ -49,7 +49,7 @@ function makeGiveawayRepeatButton(giveawayID: number) {
 		.setStyle(ButtonStyle.Danger);
 }
 
-export const giveawayCommand: OSBMahojiCommand = {
+export const giveawayCommand = defineCommand({
 	name: 'giveaway',
 	description: 'Giveaway items from your ban to other players.',
 	attributes: {
@@ -74,7 +74,22 @@ export const giveawayCommand: OSBMahojiCommand = {
 					description: 'The items you want to giveaway.',
 					required: false
 				},
-				filterOption,
+				{
+					type: 'String',
+					name: 'filter',
+					description: 'The filter you want to use.',
+					required: false,
+					autocomplete: async (value: string) => {
+						const res = !value
+							? filterableTypes
+							: [...filterableTypes].filter(filter =>
+									filter.name.toLowerCase().includes(value.toLowerCase())
+								);
+						return [...res]
+							.sort((a, b) => baseFilters.indexOf(b) - baseFilters.indexOf(a))
+							.map(val => ({ name: val.name, value: val.aliases[0] ?? val.name }));
+					}
+				},
 				{
 					type: 'String',
 					name: 'search',
@@ -90,17 +105,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 			options: []
 		}
 	],
-	run: async ({
-		options,
-		user,
-		guildID,
-		interaction,
-		channelID,
-		user: apiUser
-	}: CommandRunOptions<{
-		start?: { duration: string; items?: string; filter?: string; search?: string };
-		list?: {};
-	}>): CommandResponse => {
+	run: async ({ options, user, guildID, interaction, channelID, user: apiUser }): CommandResponse => {
 		if (user.isIronman) return 'You cannot do giveaways!';
 		const channel = globalClient.channels.cache.get(channelID);
 		if (!channelIsSendable(channel)) return 'Invalid channel.';
@@ -218,7 +223,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 				return 'You cannot list giveaways outside a server.';
 			}
 			const guild = globalClient.guilds.cache.get(guildID);
-			if (!guild) return `Could not find server`;
+			if (!guild) return 'You cannot list giveaways outside a server.';
 
 			const textChannelsOfThisServer = guild.channels.cache
 				.filter(c => c.type === ChannelType.GuildText)
@@ -268,4 +273,4 @@ export const giveawayCommand: OSBMahojiCommand = {
 		}
 		return 'Invalid subcommand.';
 	}
-};
+});

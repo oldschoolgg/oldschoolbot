@@ -1,11 +1,11 @@
 import type { InteractionReplyOptions } from 'discord.js';
 
 import type { command_name_enum } from '@/prisma/main/enums.js';
-import type { CommandOptions } from '@/lib/discord/commandOptions.js';
+import type { AnyCommand, CommandOptions } from '@/lib/discord/commandOptions.js';
 import { runInhibitors } from '@/lib/discord/inhibitors.js';
 
 interface PreCommandOptions {
-	command: OSBMahojiCommand;
+	command: AnyCommand;
 	user: MUser;
 	options: CommandOptions;
 	interaction: MInteraction;

@@ -1,6 +1,6 @@
 import { channelIsSendable } from '@oldschoolgg/toolkit';
 
-export const pollCommand: OSBMahojiCommand = {
+export const pollCommand = defineCommand({
 	name: 'poll',
 	description: 'Create a reaction poll.',
 	options: [
@@ -11,8 +11,8 @@ export const pollCommand: OSBMahojiCommand = {
 			required: true
 		}
 	],
-	run: async ({ interaction, options, user, channelID }: CommandRunOptions<{ question: string }>) => {
-		const channel = globalClient.channels.cache.get(channelID.toString());
+	run: async ({ interaction, options, user, channelID }) => {
+		const channel = globalClient.channels.cache.get(channelID);
 		if (!channelIsSendable(channel)) return { ephemeral: true, content: 'Invalid channel.' };
 		await interaction.defer({ ephemeral: false });
 		try {
@@ -29,4 +29,4 @@ export const pollCommand: OSBMahojiCommand = {
 			return 'There was an error making the poll.';
 		}
 	}
-};
+});

@@ -58,7 +58,7 @@ export function sellStorePriceOfItem(item: Item, qty: number): { price: number; 
 	return { price, basePrice };
 }
 
-export const sellCommand: OSBMahojiCommand = {
+export const sellCommand = defineCommand({
 	name: 'sell',
 	description: 'Sell items from your bank to the bot for GP.',
 	attributes: {
@@ -80,11 +80,7 @@ export const sellCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		user,
-		options,
-		interaction
-	}: CommandRunOptions<{ items: string; filter?: string; search?: string }>) => {
+	run: async ({ user, options, interaction }) => {
 		const bankToSell = parseBank({
 			inputBank: user.bank,
 			inputStr: options.items,
@@ -294,4 +290,4 @@ export const sellCommand: OSBMahojiCommand = {
 			}.`
 		);
 	}
-};
+});

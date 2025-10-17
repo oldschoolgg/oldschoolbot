@@ -18,7 +18,7 @@ import type { MUserStats } from '@/lib/structures/MUserStats.js';
 export interface IToReturnCollection {
 	category: string;
 	name: string;
-	collection: number[];
+	collection: Set<number>;
 	completions?: Record<string, number>;
 	isActivity?: boolean;
 	collectionObtained: number;

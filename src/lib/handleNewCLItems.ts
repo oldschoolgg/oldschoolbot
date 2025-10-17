@@ -39,7 +39,7 @@ export async function handleNewCLItems({
 	itemsAdded: Bank;
 }) {
 	const anyNewCLItems = itemsAdded.filter(i => !previousCL.has(i.id) && newCL.has(i.id));
-	const newCLItems = anyNewCLItems.filter(i => allCLItems.includes(i.id));
+	const newCLItems = anyNewCLItems.filter(i => allCLItems.has(i.id));
 
 	const rawDifference = newCL.difference(previousCL);
 	if (rawDifference.length > 0) {
@@ -84,12 +84,14 @@ export async function handleNewCLItems({
 	}
 
 	const clsWithTheseItems = allCollectionLogsFlat.filter(
-		cl => cl.counts !== false && newCLItems.items().some(([newItem]) => cl.items.includes(newItem.id))
+		cl => cl.counts !== false && newCLItems.items().some(([newItem]) => cl.items.has(newItem.id))
 	);
 
 	// Find CLs with the newly added items, that weren't completed in the previous CL, and now are completed.
 	const newlyCompletedCLs = clsWithTheseItems.filter(cl => {
-		return cl.items.some(item => !previousCL.has(item)) && cl.items.every(item => newCL.has(item));
+		return (
+			cl.items.values().some(item => !previousCL.has(item)) && cl.items.values().every(item => newCL.has(item))
+		);
 	});
 
 	for (const finishedCL of newlyCompletedCLs) {
@@ -100,11 +102,11 @@ export async function handleNewCLItems({
 		});
 		const kcString = finishedCL.fmtProg
 			? `They finished after... ${await finishedCL.fmtProg({
-					getKC: (id: number) => user.getKC(id),
-					user,
-					minigames: await user.fetchMinigames(),
-					stats: await user.fetchMStats()
-				})}!`
+				getKC: (id: number) => user.getKC(id),
+				user,
+				minigames: await user.fetchMinigames(),
+				stats: await user.fetchMStats()
+			})}!`
 			: '';
 
 		const leaderboardUsers = await fetchCLLeaderboard({
@@ -114,7 +116,7 @@ export async function handleNewCLItems({
 			clName: finishedCL.name
 		});
 
-		const nthUser = leaderboardUsers.users.filter(u => u.qty === finishedCL.items.length).length;
+		const nthUser = leaderboardUsers.users.filter(u => u.qty === finishedCL.items.size).length;
 
 		const placeStr = nthUser > 100 ? '' : ` They are the ${formatOrdinal(nthUser)} user to finish this CL.`;
 
