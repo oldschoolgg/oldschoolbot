@@ -8,7 +8,6 @@ import Agility from '@/lib/skilling/skills/agility.js';
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
 import { calculateBryophytaRuneSavings } from '@/lib/util/bryophytaRuneSavings.js';
-import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 function chanceOfFailingAgilityPyramid(user: MUser) {
@@ -22,9 +21,8 @@ function chanceOfFailingAgilityPyramid(user: MUser) {
 
 export const agilityTask: MinionTask = {
 	type: 'Agility',
-	async run(data: AgilityActivityTaskOptions) {
-		const { courseID, quantity, userID, channelID, duration, alch, fletch, zeroTimePreferenceRole } = data;
-		const user = await mUserFetch(userID);
+	async run(data: AgilityActivityTaskOptions, { user, handleTripFinish }) {
+		const { courseID, quantity, channelID, duration, alch, fletch, zeroTimePreferenceRole } = data;
 		const loot = new Bank();
 		const currentLevel = user.skillsAsLevels.agility;
 
