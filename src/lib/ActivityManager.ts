@@ -80,7 +80,6 @@ class SActivityManager {
 
 		try {
 			await task.run(activity, { user, handleTripFinish, rng: cryptoRng });
-			await user.checkTableBankMatches();
 		} catch (err) {
 			Logging.logError(err as Error);
 		} finally {
