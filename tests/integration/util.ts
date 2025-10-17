@@ -112,6 +112,7 @@ export function mockChannel({ userId }: { userId: string }) {
 		id: TEST_CHANNEL_ID,
 		isTextBased: () => true,
 		isDMBased: () => false,
+		isSendable: () => true,
 		permissionsFor: () => ({
 			has: () => true
 		}),

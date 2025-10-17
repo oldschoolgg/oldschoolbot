@@ -1,21 +1,9 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import { Bank, type Item, Items, resolveItems, toKMB } from 'oldschooljs';
+import { Bank, type Item, Items, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
 import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
-
-const unlimitedFireRuneProviders = resolveItems([
-	'Staff of fire',
-	'Fire battlestaff',
-	'Mystic fire staff',
-	'Lava battlestaff',
-	'Mystic lava staff',
-	'Steam battlestaff',
-	'Mystic steam staff',
-	'Smoke battlestaff',
-	'Mystic smoke staff',
-	'Tome of fire'
-]);
+import { unlimitedFireRuneProviders } from '@/lib/util/unlimitedFireRuneProviders.js';
 
 // 5 tick action
 export const timePerAlch = Time.Second * 3;

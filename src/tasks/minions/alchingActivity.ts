@@ -1,9 +1,7 @@
-import { roll } from '@oldschoolgg/rng';
-import { Bank, Items, itemID } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import type { AlchingActivityTaskOptions } from '@/lib/types/minions.js';
-
-const bryophytasStaffId = itemID("Bryophyta's staff");
+import { calculateBryophytaRuneSavings } from '@/lib/util/bryophytaRuneSavings.js';
 
 export const alchingTask: MinionTask = {
 	type: 'Alching',
@@ -15,19 +13,9 @@ export const alchingTask: MinionTask = {
 
 		// If bryophyta's staff is equipped when starting the alch activity
 		// calculate how many runes have been saved
-		let savedRunes = 0;
-		if (user.hasEquipped(bryophytasStaffId)) {
-			for (let i = 0; i < quantity; i++) {
-				if (roll(15)) savedRunes++;
-			}
-
-			if (savedRunes > 0) {
-				const returnedRunes = new Bank({
-					'Nature rune': savedRunes
-				});
-
-				loot.add(returnedRunes);
-			}
+		const { savedRunes, savedBank } = calculateBryophytaRuneSavings({ user, quantity });
+		if (savedBank) {
+			loot.add(savedBank);
 		}
 		await user.addItemsToBank({ items: loot });
 		await ClientSettings.updateClientGPTrackSetting('gp_alch', alchValue);

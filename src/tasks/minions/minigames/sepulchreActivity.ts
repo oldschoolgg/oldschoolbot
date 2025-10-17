@@ -1,17 +1,18 @@
 import { roll } from '@oldschoolgg/rng';
-import { Bank, GrandHallowedCoffin } from 'oldschooljs';
+import { Bank, GrandHallowedCoffin, type Item, Items } from 'oldschooljs';
 
+import { XpGainSource } from '@/prisma/main/enums.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { openCoffin, sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
+import { calculateBryophytaRuneSavings } from '@/lib/util/bryophytaRuneSavings.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export const sepulchreTask: MinionTask = {
 	type: 'Sepulchre',
 	async run(data: SepulchreActivityTaskOptions, { user, handleTripFinish }) {
-		const { channelID, quantity, floors, duration, fletch } = data;
-
+		const { channelID, quantity, floors, duration, fletch, alch, zeroTimePreferenceRole } = data;
 		await user.incrementMinigameScore('sepulchre', quantity);
 
 		const completedFloors = sepulchreFloors.filter(fl => floors.includes(fl.number));
@@ -43,8 +44,43 @@ export const sepulchreTask: MinionTask = {
 		let fletchXpRes = '';
 		let fletchQuantity = 0;
 		const fletchingLoot = new Bank();
+		let alchQuantity = 0;
+		let alchItem: Item | null = null;
+		let alchXpRes = '';
 
 		let fletchable: (typeof zeroTimeFletchables)[number] | undefined;
+
+		let savedRunesFromAlching = 0;
+		if (alch && alch.quantity > 0) {
+			alchQuantity = alch.quantity;
+			alchItem = Items.get(alch.itemID) ?? null;
+
+			if (!alchItem || !alchItem.highalch) {
+				throw new Error(`Alch item id ${alch.itemID} not valid for Sepulchre alching.`);
+			}
+
+			const alchGP = alchItem.highalch * alchQuantity;
+			if (alchGP > 0) {
+				loot.add('Coins', alchGP);
+				await ClientSettings.updateClientGPTrackSetting('gp_alch', alchGP);
+			}
+
+			const { savedRunes, savedBank } = calculateBryophytaRuneSavings({
+				user,
+				quantity: alchQuantity
+			});
+			savedRunesFromAlching = savedRunes;
+			if (savedBank) {
+				loot.add(savedBank);
+			}
+
+			alchXpRes = await user.addXP({
+				skillName: 'magic',
+				amount: alchQuantity * 65,
+				duration,
+				source: XpGainSource.ZeroTimeActivity
+			});
+		}
 
 		if (fletch) {
 			fletchable = zeroTimeFletchables.find(item => item.id === fletch.id);
@@ -64,7 +100,8 @@ export const sepulchreTask: MinionTask = {
 			fletchXpRes = await user.addXP({
 				skillName: 'fletching',
 				amount: fletchXpReceived,
-				duration
+				duration,
+				source: XpGainSource.ZeroTimeActivity
 			});
 			fletchingLoot.add(fletchable.id, quantityToGive);
 		}
@@ -102,9 +139,12 @@ export const sepulchreTask: MinionTask = {
 			]
 		});
 
+		const fallbackNote = zeroTimePreferenceRole === 'fallback' ? ' (fallback preference)' : '';
 		let str = `${user}, ${user.minionName} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${
 			floors[0]
-		}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpRes}\n${thievingXpRes}`;
+		}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpRes}\n${thievingXpRes}${
+			alchXpRes ? `\n${alchXpRes}` : ''
+		}`;
 
 		const image = await makeBankImage({
 			bank: itemsAdded,
@@ -122,12 +162,21 @@ export const sepulchreTask: MinionTask = {
 
 			if (fletchable.outputMultiple) {
 				const fletchableName = `${fletchable.name}s`;
-				str += `\nYou also fletched ${fletchQuantity} sets of ${fletchableName} and received ${fletchingLoot}. ${fletchXpRes}.`;
+				str += `\nYou also fletched ${fletchQuantity} sets of ${fletchableName}${fallbackNote} and received ${fletchingLoot}. ${fletchXpRes}.`;
 			} else {
-				str += `\nYou also fletched ${fletchQuantity} ${fletchable.name} and received ${fletchXpRes}.`;
+				str += `\nYou also fletched ${fletchQuantity} ${fletchable.name}${fallbackNote} and received ${fletchXpRes}.`;
 			}
 		}
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
+		if (alchItem && alchQuantity > 0) {
+			str += `\nYou also alched ${alchQuantity}x ${alchItem.name}${fallbackNote}.`;
+			if (savedRunesFromAlching > 0) {
+				str += ` Your Bryophyta's staff saved you ${savedRunesFromAlching} Nature runes.`;
+			}
+		} else if (savedRunesFromAlching > 0) {
+			str += `\nYour Bryophyta's staff saved you ${savedRunesFromAlching} Nature runes.`;
+		}
+
+		return handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
 	}
 };

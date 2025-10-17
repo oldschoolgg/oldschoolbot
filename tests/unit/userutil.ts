@@ -2,6 +2,8 @@ import { Bank, convertLVLtoXP, Items, LootTable } from 'oldschooljs';
 import { isFunction, isObjectType } from 'remeda';
 
 import type { Prisma, User } from '@/prisma/main.js';
+import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import type { ZeroTimeActivityType } from '@/lib/util/zeroTimeActivity.js';
 import type { BitField } from '../../src/lib/constants.js';
 import type { GearSetup } from '../../src/lib/gear/types.js';
 import { MUserClass } from '../../src/lib/MUser.js';
@@ -29,10 +31,17 @@ export interface MockUserArgs {
 	skills_defence?: number;
 	skills_hitpoints?: number;
 	skills_prayer?: number;
+	skills_fletching?: number;
 	skills_fishing?: number;
 	GP?: number;
 	bitfield?: BitField[];
 	id?: string;
+	favorite_alchables?: number[];
+	zero_time_activity_primary_type?: ZeroTimeActivityType | null;
+	zero_time_activity_primary_item?: number | null;
+	zero_time_activity_fallback_type?: ZeroTimeActivityType | null;
+	zero_time_activity_fallback_item?: number | null;
+	slayer_unlocks?: SlayerTaskUnlocksEnum[];
 }
 
 const mockUser = (overrides?: MockUserArgs): User => {
@@ -60,7 +69,7 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		skills_runecraft: 0,
 		skills_crafting: 0,
 		skills_prayer: overrides?.skills_prayer ?? 0,
-		skills_fletching: 0,
+		skills_fletching: overrides?.skills_fletching ?? 0,
 		skills_thieving: 0,
 		skills_farming: 0,
 		skills_herblore: 0,
@@ -80,7 +89,13 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		sacrificedValue: 0,
 		id: overrides?.id ?? '',
 		monsterScores: {},
-		badges: []
+		badges: [],
+		zero_time_activity_primary_type: overrides?.zero_time_activity_primary_type ?? null,
+		zero_time_activity_primary_item: overrides?.zero_time_activity_primary_item ?? null,
+		zero_time_activity_fallback_type: overrides?.zero_time_activity_fallback_type ?? null,
+		zero_time_activity_fallback_item: overrides?.zero_time_activity_fallback_item ?? null,
+		favorite_alchables: overrides?.favorite_alchables ?? [],
+		slayer_unlocks: overrides?.slayer_unlocks ?? []
 	} as unknown as User;
 
 	return r;
