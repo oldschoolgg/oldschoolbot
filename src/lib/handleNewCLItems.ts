@@ -45,7 +45,7 @@ export async function handleNewCLItems({
 		.filter(i => !previousCL.has(i.id) && newCL.has(i.id) && allCLItems.has(i.id));
 
 	const didGetNewCLItem = newCLItems && newCLItems.length > 0;
-	if (didGetNewCLItem || roll(30)) {
+	if (didGetNewCLItem) {
 		await prisma.historicalData.create({ data: await createHistoricalData(user) });
 	}
 
@@ -99,11 +99,11 @@ export async function handleNewCLItems({
 		});
 		const kcString = finishedCL.fmtProg
 			? `They finished after... ${await finishedCL.fmtProg({
-					getKC: (id: number) => user.getKC(id),
-					user,
-					minigames: await user.fetchMinigames(),
-					stats: await user.fetchMStats()
-				})}!`
+				getKC: (id: number) => user.getKC(id),
+				user,
+				minigames: await user.fetchMinigames(),
+				stats: await user.fetchMStats()
+			})}!`
 			: '';
 
 		const leaderboardUsers = await fetchCLLeaderboard({
