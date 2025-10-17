@@ -100,8 +100,6 @@ export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null
 	return [true, null];
 }
 
-export const zodEnum = <T>(arr: T[] | readonly T[]): [T, ...T[]] => arr as [T, ...T[]];
-
 export function isValidNickname(str?: string) {
 	return Boolean(
 		str &&

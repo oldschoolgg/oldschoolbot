@@ -3,8 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import Createables from '@/lib/data/createables.js';
 import type { SkillNameType } from '@/lib/skilling/types.js';
-import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
-import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 
 export const createCommand = defineCommand({
 	name: 'create',
@@ -72,12 +70,7 @@ export const createCommand = defineCommand({
 			}
 		}
 		if (createableItem.requiredSlayerUnlocks) {
-			const mySlayerUnlocks = user.user.slayer_unlocks;
-
-			const { success, errors } = hasSlayerUnlock(
-				mySlayerUnlocks as SlayerTaskUnlocksEnum[],
-				createableItem.requiredSlayerUnlocks
-			);
+			const { success, errors } = user.hasSlayerUnlock(createableItem.requiredSlayerUnlocks);
 			if (!success) {
 				return `You don't have the required Slayer Unlocks to ${action} this item.\n\nRequired: ${errors}`;
 			}

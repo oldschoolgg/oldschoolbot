@@ -39,6 +39,8 @@ import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { DetailedFarmingContract, FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
+import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { getUsersCurrentSlayerInfo, hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { defaultGear, Gear } from '@/lib/structures/Gear.js';
@@ -303,11 +305,6 @@ export class MUserClass {
 				return 0;
 			}
 		}) as Record<keyof typeof EMonster | number, number>;
-	}
-
-	async fetchMonsterScores() {
-		const stats = await this.fetchStats();
-		return stats.monster_scores as ItemBank;
 	}
 
 	attackClass(): 'range' | 'mage' | 'melee' {
@@ -648,8 +645,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			}
 			if (!ammo || ammo < ammoRemove[1])
 				throw new UserError(
-					`Not enough ${ammoRemove[0].name} equipped in ${gearKey} gear, you need ${
-						ammoRemove?.[1]
+					`Not enough ${ammoRemove[0].name} equipped in ${gearKey} gear, you need ${ammoRemove?.[1]
 					} but you have only ${ammo}.`
 				);
 			newRangeGear.ammo!.quantity -= ammoRemove?.[1];
@@ -1114,6 +1110,15 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		return `**XP Gains:** ${result}`;
 	}
 
+	async fetchSlayerInfo() {
+		const res = await getUsersCurrentSlayerInfo(this.id);
+		return res;
+	}
+
+	hasSlayerUnlock(unlock: SlayerTaskUnlocksEnum[]) {
+		return hasSlayerUnlock(this.user.slayer_unlocks, unlock);
+	}
+
 	modifyBusy(type: 'lock' | 'unlock', reason: string): void {
 		modifyUserBusy({ type, reason, userID: this.id });
 	}
@@ -1174,14 +1179,14 @@ async function srcMUserFetch(userID: string, updates?: Prisma.UserUpdateInput) {
 	const user =
 		updates !== undefined
 			? await prisma.user.upsert({
-					create: {
-						id: userID
-					},
-					update: updates,
-					where: {
-						id: userID
-					}
-				})
+				create: {
+					id: userID
+				},
+				update: updates,
+				where: {
+					id: userID
+				}
+			})
 			: await prisma.user.findUnique({ where: { id: userID } });
 
 	if (!user) {

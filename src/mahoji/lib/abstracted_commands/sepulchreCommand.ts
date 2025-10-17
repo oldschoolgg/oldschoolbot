@@ -11,8 +11,6 @@ import { AmethystBroadBolts, BroadArrows, BroadBolts } from '@/lib/skilling/skil
 import TippedBolts from '@/lib/skilling/skills/fletching/fletchables/tippedBolts.js';
 import TippedDragonBolts from '@/lib/skilling/skills/fletching/fletchables/tippedDragonBolts.js';
 import type { Fletchable } from '@/lib/skilling/types.js';
-import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
-import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import type { SepulchreActivityTaskOptions } from '@/lib/types/minions.js';
 
 export async function sepulchreCommand(user: MUser, channelID: string, fletching?: number) {
@@ -68,10 +66,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		}
 
 		if (fletchable.requiredSlayerUnlocks) {
-			const { success, errors } = hasSlayerUnlock(
-				user.user.slayer_unlocks as SlayerTaskUnlocksEnum[],
-				fletchable.requiredSlayerUnlocks
-			);
+			const { success, errors } = user.hasSlayerUnlock(fletchable.requiredSlayerUnlocks);
 			if (!success) {
 				return `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
 			}
