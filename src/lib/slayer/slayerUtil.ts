@@ -7,11 +7,29 @@ import type { PvMMethod } from '@/lib/constants.js';
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
-import { autoslayModes, wildySlayerOnlyMonsters } from '@/lib/slayer/constants.js';
+import { autoslayModes } from '@/lib/slayer/constants.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { bossTasks, wildernessBossTasks } from '@/lib/slayer/tasks/bossTasks.js';
 import type { AssignableSlayerTask, SlayerMaster } from '@/lib/slayer/types.js';
+
+export const wildySlayerOnlyMonsters = [
+	Monsters.DustDevil,
+	Monsters.GreaterNechryael,
+	Monsters.AbyssalDemon,
+	Monsters.Jelly
+];
+
+export enum SlayerMasterEnum {
+	Reserved = 0,
+	Turael = 1,
+	Mazchna = 2,
+	Vannaka = 3,
+	Chaeldar = 4,
+	Konar = 5,
+	Nieve = 6,
+	Duradel = 7
+}
 
 interface DetermineBoostParams {
 	cbOpts: readonly CombatOptionsEnum[];
@@ -20,7 +38,6 @@ interface DetermineBoostParams {
 	isOnTask?: boolean;
 	wildyBurst?: boolean;
 }
-
 export function determineCombatBoosts(params: DetermineBoostParams): PvMMethod[] {
 	// if EHP slayer (PvMMethod) the methods are initialized with boostMethods variable
 	const boostMethods = (params.methods ?? ['none']).flat().filter(method => method);
@@ -216,10 +233,12 @@ export async function assignNewSlayerTask(user: MUser, master: SlayerMaster) {
 	}
 
 	const quantity = randInt(assignedTask?.amount[0], maxQuantity);
+
+	// New user row must exist
 	await prisma.newUser.upsert({
+		where: { id: user.id },
 		create: { id: user.id },
-		update: {},
-		where: { id: user.id }
+		update: {}
 	});
 	const currentTask = await prisma.slayerTask.create({
 		data: {
@@ -364,7 +383,6 @@ function getSlayerReward(id: SlayerTaskUnlocksEnum): string {
 	})!;
 	return name;
 }
-
 export function hasSlayerUnlock(
 	myUnlocks: SlayerTaskUnlocksEnum[] | number[],
 	required: SlayerTaskUnlocksEnum[] | number[]

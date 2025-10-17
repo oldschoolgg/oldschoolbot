@@ -444,8 +444,6 @@ model User {
 
   gear_template Int? @db.SmallInt
 
-  CLUserItem CLUserItem[]
-
   @@index([id, last_command_date])
   @@map("users")
 }
@@ -1184,18 +1182,6 @@ model CLCategoryItem {
   @@map("category_items")
 }
 
-model CLUserItem {
-  user_id  String
-  item_id  Int
-  quantity Int    @default(1)
-
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@id([user_id, item_id])
-  @@index([item_id])
-  @@map("user_items")
-}
-
 enum command_name_enum {
   testpotato
   achievementdiary
@@ -1465,4 +1451,31 @@ enum command_name_enum {
   xpto99
   zerotimeactivity
   zalcano
+}
+
+enum TableBankType {
+  Bank
+  CollectionLog
+}
+
+model TableBank {
+  id      Int           @id @default(autoincrement())
+  user_id String
+  type    TableBankType
+
+  items TableBankItem[]
+
+  @@unique([user_id, type])
+  @@map("table_bank")
+}
+
+model TableBankItem {
+  bank_id  Int
+  item_id  Int
+  quantity BigInt @db.BigInt
+
+  bank TableBank @relation(fields: [bank_id], references: [id], onDelete: Cascade)
+
+  @@id([bank_id, item_id])
+  @@map("table_bank_item")
 }
