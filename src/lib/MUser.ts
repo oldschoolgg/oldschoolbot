@@ -1125,23 +1125,14 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	}
 
 	async _fetchOrCreateCL(itemsToAdd?: Bank): Promise<Bank> {
-		const existingTableBank = await prisma.tableBank.count({
-			where: { user_id: this.id, type: 'CollectionLog' }
-		});
+		const { inserted } = await TableBankManager.getOrCreateBankId(this.id, 'CollectionLog');
 
-		// If they dont have one yet, create the full thing.
-		if (existingTableBank === 0) {
-			await prisma.tableBank.create({
-				data: {
-					user_id: this.id,
-					type: 'CollectionLog',
-					items: {
-						create: this.cl.items().map(i => ({ item_id: i[0].id, quantity: i[1] }))
-					}
-				},
-				select: {
-					id: true
-				}
+		// If this was the first time creating, insert all current CL items.
+		if (inserted) {
+			await TableBankManager.update({
+				userId: this.id,
+				type: 'CollectionLog',
+				itemsToAdd: this.cl
 			});
 		} else if (itemsToAdd) {
 			await TableBankManager.update({

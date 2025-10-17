@@ -9,20 +9,23 @@ function toPairs(b?: Bank): Array<[number, bigint]> {
 	return out;
 }
 
-async function getOrCreateBankId(userId: string, type: TableBankType, tx = prisma): Promise<number> {
-	const rows = await tx.$queryRaw<{ id: number }[]>(
-		Prisma.sql`
+export class TableBankManager {
+	static async getOrCreateBankId(
+		userId: string,
+		type: TableBankType,
+		tx = prisma
+	): Promise<{ inserted: boolean; id: number }> {
+		const rows = await tx.$queryRaw<{ id: number }[]>(
+			Prisma.sql`
 			INSERT INTO table_bank (user_id, type)
 			VALUES (${userId}, ${type})
 			ON CONFLICT (user_id, type)
 			DO UPDATE SET user_id = EXCLUDED.user_id
-			RETURNING id;
+			RETURNING id, (xmax = 0) AS inserted;
 		`
-	);
-	return rows[0].id;
-}
-
-export class TableBankManager {
+		);
+		return rows[0] as { inserted: boolean; id: number };
+	}
 	static async update({
 		userId,
 		type = 'Bank',
@@ -34,7 +37,7 @@ export class TableBankManager {
 		itemsToAdd?: Bank;
 		itemsToRemove?: Bank;
 	}) {
-		const bankId = await getOrCreateBankId(userId, type);
+		const { id: bankId } = await TableBankManager.getOrCreateBankId(userId, type);
 		const adds = toPairs(itemsToAdd);
 		const rems = toPairs(itemsToRemove);
 
@@ -80,7 +83,7 @@ export class TableBankManager {
 		userId: string;
 		type: TableBankType | 'Bank' | 'CollectionLog';
 	}): Promise<Bank> {
-		const bankId = await getOrCreateBankId(userId, type as TableBankType);
+		const { id: bankId } = await TableBankManager.getOrCreateBankId(userId, type as TableBankType);
 		const rows = await prisma.$queryRaw<any[]>(
 			Prisma.sql`SELECT COALESCE(
   json_agg(json_build_array(item_id::int, quantity::bigint) ORDER BY item_id),
