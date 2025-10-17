@@ -108,42 +108,6 @@ export function convertAPIOptionsToCommandOptions(
 	return parsedOptions;
 }
 
-export type CommandOption = {
-	name: string;
-	description: string;
-	required?: boolean;
-} & (
-	| {
-			type: 'Subcommand' | 'SubcommandGroup';
-			options?: CommandOption[];
-	  }
-	| {
-			type: 'String';
-			choices?: { name: string; value: string }[];
-			autocomplete?: (
-				value: string,
-				user: MUser,
-				member?: GuildMember,
-				context?: AutocompleteContext
-			) => Promise<APIApplicationCommandOptionChoice[]>;
-	  }
-	| {
-			type: 'Integer' | 'Number';
-			choices?: { name: string; value: number }[];
-			autocomplete?: (
-				value: number,
-				user: MUser,
-				member?: GuildMember,
-				context?: AutocompleteContext
-			) => Promise<APIApplicationCommandOptionChoice[]>;
-			min_value?: number;
-			max_value?: number;
-	  }
-	| {
-			type: 'Boolean' | 'User' | 'Channel' | 'Role' | 'Mentionable';
-	  }
-);
-
 export interface MahojiUserOption {
 	user: User;
 	member?: GuildMember | APIInteractionDataResolvedGuildMember;
@@ -207,7 +171,8 @@ type NumberOption<C extends AnyArr<{ name: string; value: number }> = AnyArr<{ n
 	autocomplete?: (
 		value: number,
 		user: MUser,
-		member?: GuildMember
+		member?: GuildMember,
+		context?: AutocompleteContext
 	) => Promise<APIApplicationCommandOptionChoice<number>[]>;
 	min_value?: number;
 	max_value?: number;
@@ -218,7 +183,8 @@ type StringOption<C extends AnyArr<{ name: string; value: string }> = AnyArr<{ n
 	autocomplete?: (
 		value: string,
 		user: MUser,
-		member?: GuildMember
+		member?: GuildMember,
+		context?: AutocompleteContext
 	) => Promise<APIApplicationCommandOptionChoice<string>[]>;
 };
 

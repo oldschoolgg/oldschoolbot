@@ -68,7 +68,15 @@ describe('laps command', () => {
 			quantity: 1
 		});
 
-		expect(response.toLowerCase()).not.toContain('fallback');
+		const responseText =
+			typeof response === 'string'
+				? response
+				: response && typeof response === 'object' && 'content' in response
+					? typeof (response as { content?: unknown }).content === 'string'
+						? (response as { content: string }).content
+						: ''
+					: '';
+		expect(responseText.toLowerCase()).not.toContain('fallback');
 
 		let lastCall: Parameters<(typeof handleTripFinishModule)['handleTripFinish']> | undefined;
 		try {

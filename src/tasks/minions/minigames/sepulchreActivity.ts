@@ -1,7 +1,7 @@
 import { roll } from '@oldschoolgg/rng';
-import { XpGainSource } from '@prisma/client';
 import { Bank, GrandHallowedCoffin, type Item, Items } from 'oldschooljs';
 
+import { XpGainSource } from '@/prisma/main/enums.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { openCoffin, sepulchreFloors } from '@/lib/minions/data/sepulchre.js';
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';

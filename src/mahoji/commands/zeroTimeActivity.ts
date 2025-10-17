@@ -208,7 +208,7 @@ function parseAlchItemInput(
 	const numericID = Number(trimmedInput);
 	const lookupValue = Number.isInteger(numericID) && numericID.toString() === trimmedInput ? numericID : trimmedInput;
 
-	const osItem = Items.get(lookupValue);
+	const osItem = Items.getItem(lookupValue);
 	if (!osItem) {
 		return { itemID: null, error: 'That is not a valid item to alch.' };
 	}

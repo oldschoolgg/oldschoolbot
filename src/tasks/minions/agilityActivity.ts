@@ -1,15 +1,14 @@
 import { percentChance, randInt, roll } from '@oldschoolgg/rng';
 import { Emoji, Events, increaseNumByPercent, Time } from '@oldschoolgg/toolkit';
-import { XpGainSource } from '@prisma/client';
 import { addItemToBank, Bank, type ItemBank, Items } from 'oldschooljs';
 
+import { XpGainSource } from '@/prisma/main/enums.js';
 import { ArdougneDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import Agility from '@/lib/skilling/skills/agility.js';
 import { zeroTimeFletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import type { AgilityActivityTaskOptions } from '@/lib/types/minions.js';
 import { calculateBryophytaRuneSavings } from '@/lib/util/bryophytaRuneSavings.js';
 import { handleTripFinish } from '@/lib/util/handleTripFinish.js';
-import { logError } from '@/lib/util/logError.js';
 import { skillingPetDropRate } from '@/lib/util.js';
 
 function chanceOfFailingAgilityPyramid(user: MUser) {

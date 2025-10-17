@@ -6,7 +6,7 @@ declare global {
 	export type RNGProvider = import('@oldschoolgg/rng').RNGProvider;
 	export type OSBMahojiCommand = import('@/lib/discord/commandOptions.js').OSBMahojiCommand;
 	export type CommandResponse = import('@/lib/discord/commandOptions.js').CommandResponse;
-	export type CommandRunOptions = import('@/lib/discord/commandOptions.js').CommandRunOptions;
+	export type CommandRunOptions<T = {}> = import('@/lib/discord/commandOptions.js').CommandRunOptions<T>;
 }
 
 export {};
