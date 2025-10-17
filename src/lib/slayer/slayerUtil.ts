@@ -2,7 +2,7 @@ import { randFloat, randInt, roll } from '@oldschoolgg/rng';
 import { notEmpty, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, type Monster, Monsters, resolveItems } from 'oldschooljs';
 
-import { CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
+import { caTiers } from '@/lib/combat_achievements/combatAchievements.js';
 import type { PvMMethod } from '@/lib/constants.js';
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
@@ -189,7 +189,7 @@ export async function assignNewSlayerTask(user: MUser, master: SlayerMaster) {
 	let bossTask = false;
 	let wildyBossTask = false;
 	if (
-		user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss) &&
+		user.hasSlayerUnlock(SlayerTaskUnlocksEnum.LikeABoss) &&
 		(master.name.toLowerCase() === 'konar quo maten' ||
 			master.name.toLowerCase() === 'duradel' ||
 			master.name.toLowerCase() === 'nieve' ||
@@ -199,7 +199,7 @@ export async function assignNewSlayerTask(user: MUser, master: SlayerMaster) {
 		bossTask = true;
 	}
 
-	if (user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss) && master.id === 8 && roll(25)) {
+	if (user.hasSlayerUnlock(SlayerTaskUnlocksEnum.LikeABoss) && master.id === 8 && roll(25)) {
 		wildyBossTask = true;
 	}
 
@@ -224,8 +224,8 @@ export async function assignNewSlayerTask(user: MUser, master: SlayerMaster) {
 	}
 
 	let maxQuantity = assignedTask?.amount[1];
-	if (bossTask && user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss)) {
-		for (const tier of Object.keys(CombatAchievements) as (keyof typeof CombatAchievements)[]) {
+	if (bossTask && user.hasSlayerUnlock(SlayerTaskUnlocksEnum.LikeABoss)) {
+		for (const tier of caTiers) {
 			if (user.hasCompletedCATier(tier)) {
 				maxQuantity += 5;
 			}

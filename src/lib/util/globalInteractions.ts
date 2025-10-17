@@ -393,7 +393,7 @@ async function globalButtonInteractionHandler({
 		case InteractionID.Slayer.AutoSlayDefault:
 		case InteractionID.Slayer.AutoSlayEHP:
 		case InteractionID.Slayer.AutoSlayBoss: {
-			const modeOverride = id.split('_')[2];
+			const modeOverride = id.split('_')[3];
 			return autoSlayCommand({ user, interaction, modeOverride });
 		}
 
