@@ -14,6 +14,24 @@ import {
 import { timePerAlch } from '../../../src/mahoji/lib/abstracted_commands/alchCommand.js';
 import { createTestUser } from '../util.js';
 
+function getSetAutocompleteOption(name: 'primary_item' | 'fallback_item') {
+	const setSubcommand = zeroTimeActivityCommand.options.find(
+		option => option.type === 'Subcommand' && option.name === 'set'
+	) as
+		| ({
+				options?: { name: string; autocomplete?: (value: string, ...args: any[]) => any }[];
+		  } & (typeof zeroTimeActivityCommand.options)[number])
+		| undefined;
+
+	expect(setSubcommand).toBeDefined();
+	const option = setSubcommand?.options?.find(opt => opt.name === name) as
+		| { name: string; autocomplete?: (value: string, user: any, member: any, context?: any) => any }
+		| undefined;
+	expect(option).toBeDefined();
+	expect(typeof option?.autocomplete).toBe('function');
+	return option!;
+}
+
 describe('Zero Time Activity Command', () => {
 	const automaticSelectionText = 'Primary: Alch (automatic favourites)';
 
@@ -239,6 +257,50 @@ describe('Zero Time Activity Command', () => {
 		expect(user.user.zero_time_activity_primary_type).toBe('alch');
 		expect(user.user.zero_time_activity_fallback_type).toBe('fletch');
 		expect(user.user.zero_time_activity_fallback_item).toBe(fletchable.id);
+	});
+
+	test('autocomplete reuses stored types when none are provided', async () => {
+		const alchItem = Items.getOrThrow('Yew longbow');
+		const user = await createTestUser(
+			new Bank().add('Nature rune', 200).add('Fire rune', 500).add(alchItem.id, 200),
+			{
+				skills_magic: convertLVLtoXP(75)
+			}
+		);
+
+		await user.runCommand(zeroTimeActivityCommand, {
+			set: {
+				primary_type: 'alch',
+				primary_item: alchItem.name,
+				fallback_type: 'alch'
+			}
+		});
+		await user.sync();
+
+		const primaryAutocompleteOption = getSetAutocompleteOption('primary_item');
+		const fallbackAutocompleteOption = getSetAutocompleteOption('fallback_item');
+
+		const primaryResults = await primaryAutocompleteOption.autocomplete?.('', user, undefined, {
+			focusedOption: { name: 'primary_item' },
+			options: [{ name: 'primary_item' }]
+		} as any);
+		const fallbackResults = await fallbackAutocompleteOption.autocomplete?.('', user, undefined, {
+			focusedOption: { name: 'fallback_item' },
+			options: [{ name: 'fallback_item' }]
+		} as any);
+
+		expect(primaryResults?.[0]).toEqual(
+			expect.objectContaining({
+				name: 'Favourite Alchs',
+				value: favouriteAlchsAutocompleteValue
+			})
+		);
+		expect(fallbackResults?.[0]).toEqual(
+			expect.objectContaining({
+				name: 'Favourite Alchs',
+				value: favouriteAlchsAutocompleteValue
+			})
+		);
 	});
 
 	test('preserves fallback configuration when editing primary preference', async () => {
