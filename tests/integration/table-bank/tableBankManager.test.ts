@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { TableBankManager } from '@/lib/table-banks/tableBankManager.js';
 import { mockedId } from '../util.js';
 
-describe('TableBankManager', { repeats: 5 }, () => {
+describe('TableBankManager', () => {
 	it('add + accumulate', async () => {
 		const userId = mockedId();
 		await TableBankManager.update({

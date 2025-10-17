@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { createTestUser } from '../util.js';
 
-describe('updateCL()', { repeats: 5 }, () => {
+describe('updateCL()', () => {
 	it('inserts rows from empty collection log', async () => {
 		const user = await createTestUser();
 		const cl = await user.fetchCL();

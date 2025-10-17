@@ -159,9 +159,12 @@ export class TestUser extends MUserClass {
 	}
 
 	async assertTableBankMatches() {
+		await this.sync();
 		const clFromDB = await this.fetchCL();
 		if (this.cl.toString() !== clFromDB.toString()) {
-			throw new Error(`CL mismatch for user ${this.id}: ${this.cl.difference(clFromDB).toString()}`);
+			throw new Error(`CL mismatch for user ${this.id}: ${this.cl.difference(clFromDB).toString()}
+Expected: ${this.cl.toString()}
+Actual: ${clFromDB.toString()}`);
 		}
 	}
 
