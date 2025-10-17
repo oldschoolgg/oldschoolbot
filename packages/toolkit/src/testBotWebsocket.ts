@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 
 export const ZTestBotDataUpdate = z.object({
 	type: z.literal('data_update'),
