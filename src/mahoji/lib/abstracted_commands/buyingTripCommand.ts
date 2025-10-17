@@ -1,5 +1,5 @@
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
-import { Bank, Items } from 'oldschooljs';
+import { Bank, EItem, Items } from 'oldschooljs';
 
 import type { TripBuyable } from '@/lib/data/buyables/tripBuyables.js';
 import type { BuyActivityTaskOptions } from '@/lib/types/minions.js';
@@ -14,7 +14,7 @@ export async function buyingTripCommand(
 ) {
 	let quantityPerHour = buyable.quantityPerHour!;
 
-	if (buyable.item === Items.get('Coal')?.id && user.owns('Coal bag')) {
+	if (buyable.item === EItem.COAL && user.owns('Coal bag')) {
 		quantityPerHour *= 1.6;
 	}
 

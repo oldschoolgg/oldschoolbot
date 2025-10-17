@@ -7,11 +7,11 @@ function isMahojiUserOption(data: any): data is MahojiUserOption {
 	return 'user' in data && 'id' in data.user;
 }
 
-interface CompressedArg {
+export interface CompressedArg {
 	[key: string]: string | number | boolean | null | undefined | CompressedArg;
 }
 
-function compressMahojiArgs(options: CommandOptions) {
+export function compressMahojiArgs(options: CommandOptions) {
 	const newOptions: CompressedArg = {};
 	for (const [key, val] of Object.entries(options) as [
 		keyof CommandOptions,

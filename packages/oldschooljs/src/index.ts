@@ -19,6 +19,7 @@ import {
 	averageBank,
 	calcDropRatesFromBank,
 	convertBankToPerHourStats,
+	generateRandomBank,
 	increaseBankQuantitesByPercent
 } from './util/bank.js';
 import { fromKMB, toKMB } from './util/smallUtils.js';
@@ -51,7 +52,8 @@ export {
 	itemNameMap,
 	calcDropRatesFromBank,
 	convertBankToPerHourStats,
-	SimpleMonster
+	SimpleMonster,
+	generateRandomBank
 };
 
 export type { ItemBank, LootBank, OpenableOpenOptions, MonsterKillOptions, Monster, ArrayItemsResolved };

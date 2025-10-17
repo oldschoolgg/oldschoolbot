@@ -1,8 +1,8 @@
 import { randInt } from '@oldschoolgg/rng';
 import { formatDuration, isWeekend, notEmpty, stringMatches, Time } from '@oldschoolgg/toolkit';
-import type { PlayerOwnedHouse } from '@prisma/client';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
 
+import type { PlayerOwnedHouse } from '@/prisma/main.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { BitField, MAX_CLUES_DROPPED } from '@/lib/constants.js';
@@ -221,7 +221,7 @@ async function getStashBoost(user: MUser, tierName: string): Promise<number> {
 	return boost;
 }
 
-export const clueCommand: OSBMahojiCommand = {
+export const clueCommand = defineCommand({
 	name: 'clue',
 	description: 'Send your minion to complete clue scrolls.',
 	attributes: {
@@ -235,7 +235,7 @@ export const clueCommand: OSBMahojiCommand = {
 			name: 'tier',
 			description: 'The clue you want to do.',
 			required: true,
-			autocomplete: async (value, user) => {
+			autocomplete: async (value: string, user: MUser) => {
 				return ClueTiers.map(i => ({
 					name: `${i.name} (${user.bank.amount(i.scrollID)}x Owned)`,
 					value: i.name
@@ -254,7 +254,7 @@ export const clueCommand: OSBMahojiCommand = {
 			name: 'implings',
 			description: 'Implings to use for multiple clues per trip.',
 			required: false,
-			autocomplete: async (value, user) => {
+			autocomplete: async (value: string, user: MUser) => {
 				const allClueImps = ClueTiers.filter(t => t.name !== 'Beginner')
 					.map(i => i.implings)
 					.filter(notEmpty)
@@ -268,11 +268,7 @@ export const clueCommand: OSBMahojiCommand = {
 			}
 		}
 	],
-	run: async ({
-		options,
-		user,
-		channelID
-	}: CommandRunOptions<{ tier: string; quantity?: number; implings?: string }>) => {
+	run: async ({ options, user, channelID }) => {
 		let { quantity } = options;
 
 		const clueTier = ClueTiers.find(
@@ -283,7 +279,7 @@ export const clueCommand: OSBMahojiCommand = {
 		const maxTripLength = user.calcMaxTripLength('ClueCompletion');
 
 		const clueImpling = options.implings
-			? Items.get(/^[0-9]+$/.test(options.implings) ? Number(options.implings) : options.implings)
+			? Items.getItem(/^[0-9]+$/.test(options.implings) ? Number(options.implings) : options.implings)
 			: null;
 
 		if (options.implings) {
@@ -445,4 +441,4 @@ export const clueCommand: OSBMahojiCommand = {
 		}${implingLootString}`;
 		return response;
 	}
-};
+});

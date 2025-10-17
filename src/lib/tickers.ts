@@ -10,6 +10,7 @@ import { TimerManager } from '@sapphire/timer-manager';
 import type { TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 
+import { syncBlacklists } from '@/lib/blacklists.js';
 import { BitField, Channel, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { mahojiUserSettingsUpdate } from '@/lib/MUser.js';
@@ -19,8 +20,8 @@ import { fetchUsersWithoutUsernames } from '@/lib/rawSql.js';
 import { runCommand } from '@/lib/settings/settings.js';
 import { informationalButtons } from '@/lib/sharedComponents.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
+import { MInteraction } from '@/lib/structures/MInteraction.js';
 import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
-import { logError } from '@/lib/util/logError.js';
 import { makeBadgeString } from '@/lib/util/makeBadgeString.js';
 import { getSupportGuild } from '@/lib/util.js';
 
@@ -218,12 +219,8 @@ export const tickers: {
 							runCommand({
 								commandName: 'farming',
 								args: { harvest: { patch_name: patchType } },
-								bypassInhibitors: true,
-								channelID: message.channel.id,
-								guildID: undefined,
 								user: await mUserFetch(user.id),
-								member: message.member,
-								interaction: selection,
+								interaction: new MInteraction({ interaction: selection }),
 								continueDeltaMillis: selection.createdAt.getTime() - message.createdAt.getTime()
 							});
 						}
@@ -311,7 +308,7 @@ export const tickers: {
 			for (const { id } of users) {
 				const djsUser = await globalClient.users.fetch(id).catch(() => null);
 				if (!djsUser) {
-					debugLog(`username_filling: Could not fetch user with ID ${id}, skipping...`);
+					Logging.logDebug(`username_filling: Could not fetch user with ID ${id}, skipping...`);
 					continue;
 				}
 				const user = await prisma.user.upsert({
@@ -340,10 +337,18 @@ export const tickers: {
 						username
 					}
 				});
-				debugLog(
+				Logging.logDebug(
 					`username_filling: Updated user[${id}] to username[${username}] withbadges[${usernameWithBadges}]`
 				);
 			}
+		}
+	},
+	{
+		name: 'Sync Blacklists',
+		timer: null,
+		interval: Time.Minute * 10,
+		cb: async () => {
+			await syncBlacklists();
 		}
 	}
 ];
@@ -354,13 +359,18 @@ export function initTickers() {
 		const fn = async () => {
 			try {
 				if (globalClient.isShuttingDown) return;
-				await ticker.cb();
-			} catch (err) {
-				logError(err);
-				debugLog(`${ticker.name} ticker errored`, {
-					type: 'TICKER',
-					error: err instanceof Error ? (err.message ?? err) : err
+				Logging.logDebug(`Starting ${ticker.name} ticker`, {
+					type: 'TICKER'
 				});
+				const start = performance.now();
+				await ticker.cb();
+				const end = performance.now();
+				Logging.logDebug(`Finished ${ticker.name} ticker`, {
+					duration: end - start,
+					type: 'TICKER'
+				});
+			} catch (err) {
+				Logging.logError(err as Error);
 			} finally {
 				if (ticker.timer) TimerManager.clearTimeout(ticker.timer);
 				ticker.timer = TimerManager.setTimeout(fn, ticker.interval);

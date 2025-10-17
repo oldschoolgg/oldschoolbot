@@ -1,11 +1,11 @@
 import { Emoji, formatDuration, PerkTier, stringMatches, sumArr, Time } from '@oldschoolgg/toolkit';
-import type { activity_type_enum, UserStats } from '@prisma/client';
 import { Bank, type ItemBank, Items, Monsters, TOBRooms, toKMB } from 'oldschooljs';
 import type { SkillsScore } from 'oldschooljs/hiscores';
 
+import type { activity_type_enum, UserStats } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { getClueScoresFromOpenables } from '@/lib/clues/clueUtils.js';
-import { calcCLDetails, isCLItem } from '@/lib/data/Collections.js';
+import { allCLItemsFiltered, calcCLDetails } from '@/lib/data/Collections.js';
 import { skillEmoji } from '@/lib/data/emojis.js';
 import { getBankBgById } from '@/lib/minions/data/bankBackgrounds.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
@@ -1128,7 +1128,7 @@ FROM   (
 				content: `**Rarest CL Items**
 ${bank
 	.items()
-	.filter(isCLItem)
+	.filter(i => allCLItemsFiltered.has(i[0].id))
 	.sort(sorts.quantity)
 	.reverse()
 	.slice(0, 10)
@@ -1154,7 +1154,7 @@ FROM   (
 				content: `**Rarest CL Items (Ironmen)**
 ${bank
 	.items()
-	.filter(isCLItem)
+	.filter(i => allCLItemsFiltered.has(i[0].id))
 	.sort(sorts.quantity)
 	.reverse()
 	.slice(0, 10)

@@ -48,12 +48,18 @@ for (const item of Smithing.SmithableItems) ALL_OBTAINABLE_ITEMS.add(item.id);
 for (const item of Smithing.BlastableBars) ALL_OBTAINABLE_ITEMS.add(item.id);
 for (const item of Buyables) {
 	totalBankToAdd.add(isFunction(item.outputItems) ? undefined : item.outputItems);
-	const buyable = Items.get(item.name);
+	const buyable = Items.getItem(item.name);
 	if (buyable) totalBankToAdd.add(buyable);
 }
 for (const item of allFarmingItems) ALL_OBTAINABLE_ITEMS.add(item);
-for (const item of Createables) totalBankToAdd.add(item.outputItems);
-for (const item of armorAndItemPacks) totalBankToAdd.add(item.outputItems);
+for (const item of Createables) {
+	if (isFunction(item.outputItems)) continue;
+	totalBankToAdd.add(item.outputItems);
+}
+for (const item of armorAndItemPacks) {
+	if (isFunction(item.outputItems)) continue;
+	totalBankToAdd.add(item.outputItems);
+}
 for (const item of Hunter.Creatures) {
 	for (const i of item.table.allItems) ALL_OBTAINABLE_ITEMS.add(i);
 }

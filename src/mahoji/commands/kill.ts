@@ -45,7 +45,7 @@ const ALL_VALID_KILLABLE_MONSTERS = [
 	{ name: 'nightmare', aliases: ['nightmare'] }
 ];
 
-export const killCommand: OSBMahojiCommand = {
+export const killCommand = defineCommand({
 	name: 'kill',
 	description: 'Simulate killing monsters.',
 	options: [
@@ -84,11 +84,7 @@ export const killCommand: OSBMahojiCommand = {
 			choices: slayerMasterChoices
 		}
 	],
-	run: async ({
-		options,
-		user,
-		interaction
-	}: CommandRunOptions<{ name: string; quantity: number; catacombs: boolean; master: string }>) => {
+	run: async ({ options, user, interaction }) => {
 		await interaction.defer();
 		if (!ALL_VALID_KILLABLE_MONSTERS.some(i => i.name.toLowerCase() === options.name.toLowerCase())) {
 			return `That's not a valid monster to simulate killing.`;
@@ -121,4 +117,4 @@ export const killCommand: OSBMahojiCommand = {
 			content: result.content
 		};
 	}
-};
+});

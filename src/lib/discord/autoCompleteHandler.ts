@@ -11,8 +11,8 @@ import { allCommands } from '@/mahoji/commands/allCommands.js';
 
 async function handleAutocomplete(
 	user: MUser,
-	command: ICommand | undefined,
-	autocompleteData: readonly CommandInteractionOption[],
+	command: AnyCommand | undefined,
+	autocompleteData: CommandInteractionOption[],
 	member: GuildMember | undefined,
 	option?: CommandOption,
 	contextOptions?: readonly CommandInteractionOption[]
@@ -77,14 +77,21 @@ async function handleAutocomplete(
 
 export async function autoCompleteHandler(interaction: AutocompleteInteraction) {
 	const member: GuildMember | undefined = interaction.inCachedGuild() ? interaction.member : undefined;
-	const command = allCommands.find(c => c.name === interaction.commandName);
+	const command = globalClient.allCommands.find(c => c.name === interaction.commandName)!;
 	const user = await mUserFetch(interaction.user.id);
+	const start = performance.now();
 	const choices = await handleAutocomplete(
 		user,
 		command,
 		(interaction.options as any).data as readonly CommandInteractionOption[],
 		member
 	);
+	const end = performance.now();
+	Logging.logPerf({
+		duration: end - start,
+		text: `AutoComplete[${command.name}`,
+		interaction
+	});
 	await interaction.respond(choices);
 	return;
 }

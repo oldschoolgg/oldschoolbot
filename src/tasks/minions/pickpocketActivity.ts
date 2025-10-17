@@ -56,13 +56,16 @@ export const pickpocketTask: MinionTask = {
 		const loot = new Bank();
 		const { petDropRate } = skillingPetDropRate(user, 'thieving', obj.petChance);
 
+		const userTertChanges = user.buildTertiaryItemChanges();
+		const roguesChance = Thieving.rogueOutfitPercentBonus(user);
+
 		if (obj.type === 'pickpockable') {
 			for (let i = 0; i < successfulQuantity; i++) {
 				const lootItems = obj.table.roll(1, {
-					tertiaryItemPercentageChanges: user.buildTertiaryItemChanges()
+					tertiaryItemPercentageChanges: userTertChanges
 				});
 
-				//add clues to loot before rogue boost
+				// add clues to loot before rogue boost
 				for (const id of ClueTiers.map(c => c.scrollID).filter(sid => lootItems.has(sid))) {
 					loot.add(id, lootItems.amount(id));
 					lootItems.remove(id);
@@ -71,7 +74,7 @@ export const pickpocketTask: MinionTask = {
 				// TODO: Remove Rocky from loot tables in oldschoolJS
 				if (lootItems.has('Rocky')) lootItems.remove('Rocky');
 
-				if (randInt(1, 100) <= Thieving.rogueOutfitPercentBonus(user)) {
+				if (randInt(1, 100) <= roguesChance) {
 					rogueOutfitBoostActivated = true;
 					const doubledLoot = lootItems.multiply(2);
 					loot.add(doubledLoot);
@@ -79,7 +82,6 @@ export const pickpocketTask: MinionTask = {
 					loot.add(lootItems);
 				}
 
-				// Roll for pet
 				if (roll(petDropRate)) {
 					loot.add('Rocky');
 				}
@@ -87,10 +89,9 @@ export const pickpocketTask: MinionTask = {
 		} else if (obj.type === 'stall') {
 			for (let i = 0; i < successfulQuantity; i++) {
 				if (percentChance(obj.lootPercent!)) {
-					loot.add(obj.table.roll());
+					obj.table.roll(1, { targetBank: loot });
 				}
 
-				// Roll for pet
 				if (roll(petDropRate)) {
 					loot.add('Rocky');
 				}
@@ -98,7 +99,7 @@ export const pickpocketTask: MinionTask = {
 		}
 
 		if (loot.has('Coins')) {
-			ClientSettings.updateClientGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
+			await ClientSettings.updateClientGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
 		}
 
 		const { previousCL, itemsAdded } = await user.transactItems({

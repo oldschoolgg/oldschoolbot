@@ -18,7 +18,7 @@ import { timePerAlchAgility } from '@/mahoji/lib/abstracted_commands/alchCommand
 
 const AGILITY_ALCHES_PER_HOUR = Time.Hour / timePerAlchAgility;
 
-export const lapsCommand: OSBMahojiCommand = {
+export const lapsCommand = defineCommand({
 	name: 'laps',
 	description: 'Do laps on Agility courses to train Agility.',
 	attributes: {
@@ -198,4 +198,4 @@ ${infoMessages.join('\n')}`;
 
 		return response;
 	}
-};
+});

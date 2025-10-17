@@ -10,7 +10,7 @@ import type { HunterActivityTaskOptions } from '@/lib/types/minions.js';
 import { generateDailyPeakIntervals, type Peak } from '@/lib/util/peaks.js';
 import { hasSkillReqs } from '@/lib/util/smallUtils.js';
 
-export const huntCommand: OSBMahojiCommand = {
+export const huntCommand = defineCommand({
 	name: 'hunt',
 	description: 'Hunt creatures with the Hunter skill.',
 	attributes: {
@@ -53,11 +53,7 @@ export const huntCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		options,
-		user,
-		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; hunter_potion?: boolean; stamina_potions?: boolean }>) => {
+	run: async ({ options, user, channelID }) => {
 		const userBank = user.bank;
 		const userQP = user.QP;
 		const boosts = [];
@@ -283,4 +279,4 @@ export const huntCommand: OSBMahojiCommand = {
 
 		return response;
 	}
-};
+});

@@ -2,11 +2,11 @@ import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { isMainThread } from 'node:worker_threads';
 import { dateFm, Emoji, PerkTier } from '@oldschoolgg/toolkit';
-import { activity_type_enum } from '@prisma/client';
 import * as dotenv from 'dotenv';
 import { convertLVLtoXP, resolveItems } from 'oldschooljs';
-import { z } from 'zod';
+import * as z from 'zod';
 
+import { activity_type_enum } from '@/prisma/main/enums.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 
 export { PerkTier };
@@ -153,7 +153,8 @@ export enum BitField {
 	DisableDailyButton = 44,
 
 	HasDeadeyeScroll = 45,
-	HasMysticVigourScroll = 46
+	HasMysticVigourScroll = 46,
+	AllowPublicAPIDataRetrieval = 47
 }
 
 interface BitFieldData {
@@ -267,6 +268,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
+	[BitField.AllowPublicAPIDataRetrieval]: {
+		name: 'Allow Public API Data Retrieval',
+		protected: false,
+		userConfigurable: true
+	},
 
 	[BitField.HasDeadeyeScroll]: { name: 'Deadeye Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasMysticVigourScroll]: { name: 'Mystic Vigour Scroll Used', protected: false, userConfigurable: false }
@@ -376,7 +382,8 @@ const globalConfigSchema = z.object({
 	adminUserIDs: z.array(z.string()).default(['157797566833098752', '425134194436341760', '794368001856110594']),
 	maxingMessage: z.string().default('Congratulations on maxing!'),
 	moderatorLogsChannels: z.string().default(''),
-	supportServerID: z.string()
+	supportServerID: z.string(),
+	minimumLoggedPerfDuration: z.number().default(30)
 });
 
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });

@@ -1,11 +1,12 @@
 import { reduceNumByPercent } from '@oldschoolgg/toolkit';
-import type { Prisma } from '@prisma/client';
 import { Bank, type Item, itemID, MAX_INT_JAVA, toKMB } from 'oldschooljs';
 import { clamp } from 'remeda';
 
+import type { Prisma } from '@/prisma/main.js';
 import { userhasDiaryTier, WildernessDiary } from '@/lib/diaries.js';
 import { filterOption } from '@/lib/discord/index.js';
 import { NestBoxesTable } from '@/lib/simulation/misc.js';
+import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 
 /**
@@ -57,7 +58,7 @@ export function sellStorePriceOfItem(item: Item, qty: number): { price: number; 
 	return { price, basePrice };
 }
 
-export const sellCommand: OSBMahojiCommand = {
+export const sellCommand = defineCommand({
 	name: 'sell',
 	description: 'Sell items from your bank to the bot for GP.',
 	attributes: {
@@ -79,11 +80,7 @@ export const sellCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		user,
-		options,
-		interaction
-	}: CommandRunOptions<{ items: string; filter?: string; search?: string }>) => {
+	run: async ({ user, options, interaction }) => {
 		const bankToSell = parseBank({
 			inputBank: user.bank,
 			inputStr: options.items,
@@ -148,6 +145,30 @@ export const sellCommand: OSBMahojiCommand = {
 				itemsToRemove: abbyBank
 			});
 			return `You exchanged ${abbyBank} and received: ${loot}.`;
+		}
+
+		if (bankToSell.has('Spirit seed')) {
+			const quantity = bankToSell.amount('Spirit seed');
+			const seedsBank = new Bank().add('Spirit seed', quantity);
+
+			await interaction.confirmation(
+				`${user}, please confirm you want to trade ${seedsBank} for Tier 5 seed pack loot.`
+			);
+
+			const loot = new Bank();
+			for (let i = 0; i < quantity; i++) {
+				loot.add(Farming.openSeedPack(5));
+			}
+
+			await user.transactItems({
+				collectionLog: true,
+				itemsToAdd: loot,
+				itemsToRemove: seedsBank
+			});
+
+			await user.addItemsToCollectionLog(new Bank().add('Seed pack', quantity));
+
+			return `You exchanged ${seedsBank} and received: ${loot}.`;
 		}
 
 		if (
@@ -269,4 +290,4 @@ export const sellCommand: OSBMahojiCommand = {
 			}.`
 		);
 	}
-};
+});

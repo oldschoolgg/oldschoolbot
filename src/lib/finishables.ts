@@ -275,7 +275,7 @@ export const finishables: Finishable[] = [
 const monsterPairedCLs = Monsters.map(mon => {
 	const cl = allCollectionLogsFlat.find(c => stringMatches(c.name, mon.name));
 	if (!cl) return null;
-	if (!cl.items.every(id => mon.allItems.includes(id))) return null;
+	if (mon.allItems.some(id => !cl.items.has(id))) return null;
 	return {
 		name: mon.name,
 		aliases: mon.aliases,
@@ -289,7 +289,7 @@ for (const mon of monsterPairedCLs) {
 	finishables.push({
 		name: mon.name,
 		aliases: mon.aliases,
-		cl: mon.cl,
+		cl: Array.from(mon.cl),
 		kill: ({ accumulatedLoot }) => {
 			const cost = new Bank();
 			if (killableMonster?.healAmountNeeded) {

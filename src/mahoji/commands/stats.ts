@@ -1,5 +1,5 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { ACCOUNT_TYPES, type AccountType, Hiscores } from 'oldschooljs/hiscores';
+import { ACCOUNT_TYPES, Hiscores } from 'oldschooljs/hiscores';
 
 import { statsEmbed } from '@/lib/util/statsEmbed.js';
 
@@ -14,7 +14,7 @@ const accountTypeOptions = ACCOUNT_TYPES.map(val => {
 	};
 });
 
-export const statsCommand: OSBMahojiCommand = {
+export const statsCommand = defineCommand({
 	name: 'stats',
 	description: 'Check the stats of a OSRS account.',
 	options: [
@@ -38,7 +38,7 @@ export const statsCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({ options }: CommandRunOptions<{ username: string; type?: AccountType; virtual?: boolean }>) => {
+	run: async ({ options }) => {
 		try {
 			if (!options.type) {
 				options.type = 'normal';
@@ -63,4 +63,4 @@ export const statsCommand: OSBMahojiCommand = {
 			return err.message;
 		}
 	}
-};
+});

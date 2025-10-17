@@ -1,16 +1,19 @@
 import {
+	ApplicationCommandType,
 	type BaseMessageOptions,
 	type ButtonInteraction,
 	type InteractionReplyOptions,
 	InteractionResponseType,
+	type RESTPostAPIApplicationGuildCommandsJSONBody,
 	Routes
 } from 'discord.js';
 
-import { allCommands } from '@/mahoji/commands/allCommands.js';
+import { globalConfig } from '@/lib/constants.js';
+import { type AnyCommand, convertCommandOptionToAPIOption } from '@/lib/discord/commandOptions.js';
 
 export function mentionCommand(name: string, subCommand?: string, subSubCommand?: string) {
 	if (process.env.TEST) return '';
-	const command = allCommands.find(i => i.name === name);
+	const command = globalClient.allCommands.find(i => i.name === name);
 	if (!command) {
 		throw new Error(`Command ${name} not found`);
 	}
@@ -67,4 +70,37 @@ export async function silentButtonAck(interaction: ButtonInteraction) {
 			type: InteractionResponseType.DeferredMessageUpdate
 		}
 	});
+}
+
+function convertCommandToAPICommand(
+	cmd: AnyCommand
+): RESTPostAPIApplicationGuildCommandsJSONBody & { description: string } {
+	return {
+		type: ApplicationCommandType.ChatInput,
+		name: cmd.name,
+		description: cmd.description,
+		options: cmd.options.map(convertCommandOptionToAPIOption)
+	};
+}
+
+export async function bulkUpdateCommands() {
+	// Sync commands just to the testing server
+	if (!globalConfig.isProduction) {
+		const body = globalClient.allCommands.map(convertCommandToAPICommand);
+		const route = Routes.applicationGuildCommands(globalClient.user.id, globalConfig.supportServerID);
+		return globalClient.rest.put(route, {
+			body
+		});
+	}
+
+	// Sync commands globally
+	const globalCommands = globalClient.allCommands.filter(i => !i.guildID).map(convertCommandToAPICommand);
+	const guildCommands = globalClient.allCommands.filter(i => Boolean(i.guildID)).map(convertCommandToAPICommand);
+
+	return Promise.all([
+		globalClient.rest.put(Routes.applicationCommands(globalClient.user.id), { body: globalCommands }),
+		globalClient.rest.put(Routes.applicationGuildCommands(globalClient.user.id, globalConfig.supportServerID), {
+			body: guildCommands
+		})
+	]);
 }

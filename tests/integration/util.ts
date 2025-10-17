@@ -1,11 +1,12 @@
 import { cryptoRng, MathRNG } from '@oldschoolgg/rng';
 import { uniqueArr } from '@oldschoolgg/toolkit';
-import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@prisma/client';
 import type { User as DJSUser, GuildMember } from 'discord.js';
 import { Bank, convertLVLtoXP, type EMonster, type ItemBank, Items, Monsters } from 'oldschooljs';
 import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
 
+import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@/prisma/main.js';
+import type { AnyCommand } from '@/lib/discord/index.js';
 import { globalConfig, type PvMMethod } from '../../src/lib/constants.js';
 import { MUserClass } from '../../src/lib/MUser.js';
 import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types.js';
@@ -71,11 +72,14 @@ class MockInteraction {
 	async reply(res: any) {
 		this.__response__ = res;
 	}
+
+	mUser: MUser;
 	user = {
 		id: '123456789'
 	};
-	constructor(userId: string) {
-		this.user.id = userId;
+	constructor({ user }: { user: MUser }) {
+		this.mUser = user;
+		this.user.id = user.id;
 	}
 
 	async confirmation() {
@@ -86,8 +90,8 @@ class MockInteraction {
 		return Promise.resolve();
 	}
 
-	async makeParty(options: MakePartyOptions) {
-		return [options.leader];
+	async makeParty(): Promise<MUser[]> {
+		return [this.mUser];
 	}
 
 	async defer() {
@@ -99,8 +103,8 @@ class MockInteraction {
 	}
 }
 
-export function mockInteraction({ userId }: { userId: string }) {
-	return new MockInteraction(userId) as any;
+export function mockInteraction({ user }: { user: MUser }): MInteraction {
+	return new MockInteraction({ user }) as any as MInteraction;
 }
 
 export function mockChannel({ userId }: { userId: string }) {
@@ -282,9 +286,9 @@ export class TestUser extends MUserClass {
 		return { commandResult, newKC, xpGained, previousBank, tripStartBank, activityResult };
 	}
 
-	async runCommand(command: OSBMahojiCommand, options: object = {}, syncAfter = false) {
+	async runCommand(command: AnyCommand, options: object = {}, syncAfter = false) {
 		await this.sync();
-		const mockedInt = mockInteraction({ userId: this.user.id });
+		const mockedInt = mockInteraction({ user: this });
 		const result = await command.run({
 			userID: this.user.id,
 			guildID: '342983479501389826',

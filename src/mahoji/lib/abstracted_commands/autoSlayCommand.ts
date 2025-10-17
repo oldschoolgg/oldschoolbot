@@ -1,10 +1,10 @@
-import { isGuildChannel, stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
 
 import type { PvMMethod } from '@/lib/constants.js';
 import type { CommandOptions } from '@/lib/discord/commandOptions.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
-import { runCommand } from '@/lib/settings/settings.js';
+import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
 import { AutoslayOptionsEnum, autoslayModes } from '@/lib/slayer/constants.js';
 import { getCommonTaskName, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '@/lib/slayer/slayerUtil.js';
 import { slayerNewTaskCommand } from '@/mahoji/lib/abstracted_commands/slayerTaskCommand.js';
@@ -391,25 +391,22 @@ function determineAutoslayMethod(autoslayOptions: AutoslayOptionsEnum[]) {
 }
 
 export async function autoSlayCommand({
-	mahojiUser,
-	channelID,
+	user,
 	modeOverride,
 	saveMode,
 	interaction
 }: {
-	mahojiUser: MUser;
-	channelID: string;
+	user: MUser;
 	modeOverride?: string;
 	saveMode?: boolean;
 	interaction: MInteraction;
-}) {
-	const user = await mUserFetch(mahojiUser.id);
+}): CommandResponse {
 	const autoslayOptions = user.user.slayer_autoslay_options;
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
 	const isOnTask = usersTask.assignedTask !== null && usersTask.currentTask !== null;
 
 	if (!isOnTask) {
-		return slayerNewTaskCommand({ userID: user.id, interaction, showButtons: true });
+		return slayerNewTaskCommand({ user, interaction, showButtons: true });
 	}
 	const savedMethod = determineAutoslayMethod(autoslayOptions as AutoslayOptionsEnum[]);
 	const method = modeOverride ?? savedMethod;
@@ -423,14 +420,11 @@ export async function autoSlayCommand({
 			await user.update({ slayer_autoslay_options: [autoslayIdToSave.key] });
 		}
 	}
-	const channel = globalClient.channels.cache.get(channelID.toString());
-	const cmdRunOptions = {
-		channelID,
-		guildID: isGuildChannel(channel) ? channel.guild.id : undefined,
+	const cmdRunOptions: Omit<RunCommandArgs, 'commandName' | 'args'> = {
 		user,
-		member: null,
 		interaction,
-		continueDeltaMillis: null
+		continueDeltaMillis: null,
+		ignoreUserIsBusy: true
 	};
 
 	if (method === 'low') {
@@ -450,16 +444,15 @@ export async function autoSlayCommand({
 
 		if (currentMonID === null) throw new Error('Could not get Monster data to find a task.');
 
-		runCommand({
+		const response = await runCommand({
 			commandName: 'k',
 			args: {
 				name: Monsters.get(currentMonID)!.name,
 				wilderness: Boolean(usersTask.assignedTask.wilderness)
 			},
-			bypassInhibitors: true,
 			...cmdRunOptions
 		});
-		return;
+		return response;
 	}
 	if (method === 'ehp') {
 		let ehpMonster = AutoSlayMaxEfficiencyTable.find(e => {
@@ -479,16 +472,14 @@ export async function autoSlayCommand({
 
 		// If we don't have the requirements for the efficient monster, revert to default monster
 		if (ehpKillable?.levelRequirements !== undefined && !user.hasSkillReqs(ehpKillable.levelRequirements)) {
-			runCommand({
+			return runCommand({
 				commandName: 'k',
 				args: {
 					name: usersTask.assignedTask.monster.name,
 					wilderness: Boolean(usersTask.assignedTask.wilderness)
 				},
-				bypassInhibitors: true,
 				...cmdRunOptions
 			});
-			return;
 		}
 
 		if (ehpMonster?.efficientName) {
@@ -498,37 +489,33 @@ export async function autoSlayCommand({
 			if (ehpMonster.efficientMethod) {
 				args.method = ehpMonster.efficientMethod as unknown as CommandOptions;
 			}
-			runCommand({
+
+			return runCommand({
 				commandName: 'k',
 				args,
-				bypassInhibitors: true,
 				...cmdRunOptions
 			});
-			return;
 		}
-		runCommand({
+
+		return runCommand({
 			commandName: 'k',
 			args: {
 				name: usersTask.assignedTask.monster.name,
 				wilderness: Boolean(usersTask.assignedTask.wilderness)
 			},
-			bypassInhibitors: true,
 			...cmdRunOptions
 		});
-		return;
 	}
 	if (method === 'boss') {
 		// This code handles the 'highest/boss' setting of autoslay.
 		const myQPs = await user.QP;
 		const commonName = getCommonTaskName(usersTask.assignedTask!.monster);
 		if (commonName === 'TzHaar') {
-			runCommand({
+			return runCommand({
 				commandName: 'activities',
 				args: { fight_caves: {} },
-				bypassInhibitors: true,
 				...cmdRunOptions
 			});
-			return;
 		}
 
 		const allMonsters = killableMonsters.filter(m => {
@@ -551,23 +538,20 @@ export async function autoSlayCommand({
 		}
 
 		if (maxMobName) {
-			runCommand({
+			return runCommand({
 				commandName: 'k',
 				args: { name: maxMobName, wilderness: Boolean(usersTask.assignedTask.wilderness) },
-				bypassInhibitors: true,
 				...cmdRunOptions
 			});
-			return;
 		}
-		return interaction.reply({
+		return {
 			content: "Can't find any monsters you have the requirements to kill!",
 			ephemeral: true
-		});
+		};
 	}
-	await runCommand({
+	return runCommand({
 		commandName: 'k',
 		args: { name: usersTask.assignedTask.monster.name, wilderness: Boolean(usersTask.assignedTask.wilderness) },
-		bypassInhibitors: true,
 		...cmdRunOptions
 	});
 }

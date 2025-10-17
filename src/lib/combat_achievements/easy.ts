@@ -36,6 +36,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'Barrows',
 		desc: 'Kill any Barrows Brother using only magical damage.',
+		details: 'You must be training Magic.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
@@ -92,6 +93,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'Bryophyta',
 		desc: 'Kill Bryophyta on a free to play world.',
+		details: 'All equipped items in the gear style you are training must be free-to-play.',
 		rng: {
 			hasChance: (data, user) =>
 				isCertainMonsterTrip(Monsters.Bryophyta.id)(data) &&
@@ -188,6 +190,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'Greater Demon',
 		desc: 'Finish off a Greater Demon with a demonbane weapon.',
+		details: 'You must have a demonbane weapon equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
@@ -273,6 +276,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'Obor',
 		desc: 'Kill Obor on a free to play world.',
+		details: 'All equipped items in the gear style you are training must be free-to-play.',
 		rng: {
 			hasChance: (data, user) =>
 				isCertainMonsterTrip(Monsters.Obor.id)(data) &&
@@ -366,6 +370,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'Wintertodt',
 		desc: 'Subdue the Wintertodt with four pieces of warm equipment equipped.',
+		details: 'At least 4 warm gear items must be equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
@@ -417,6 +422,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'Scurrius',
 		desc: 'Finish off Scurrius with a ratbane weapon.',
+		details: 'You must have a ratbane weapon equipped.',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>

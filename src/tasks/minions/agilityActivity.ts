@@ -29,12 +29,7 @@ export const agilityTask: MinionTask = {
 		const loot = new Bank();
 		const currentLevel = user.skillsAsLevels.agility;
 
-		const course = Agility.Courses.find(course => course.id === courseID);
-
-		if (!course) {
-			logError(`Invalid course ID provided: ${courseID}`);
-			return;
-		}
+		const course = Agility.Courses.find(course => course.id === courseID)!;
 
 		// Calculate failed laps
 		let lapsFailed = 0;

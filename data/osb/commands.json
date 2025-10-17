@@ -210,7 +210,7 @@
 		{
 			"name": "gear",
 			"desc": "Manage, equip, unequip your gear.",
-			"subOptions": ["equip", "pet", "stats", "swap", "unequip", "view"]
+			"subOptions": ["best_in_slot", "equip", "pet", "stats", "swap", "unequip", "view"]
 		},
 		{
 			"name": "gearpresets",

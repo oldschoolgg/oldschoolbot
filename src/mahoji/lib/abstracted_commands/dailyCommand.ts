@@ -1,13 +1,12 @@
 import { roll, shuffleArr } from '@oldschoolgg/rng';
-import { channelIsSendable, Emoji, formatDuration, isWeekend, Time, uniqueArr } from '@oldschoolgg/toolkit';
-import type { TextChannel } from 'discord.js';
+import { Emoji, formatDuration, isWeekend, Time, uniqueArr } from '@oldschoolgg/toolkit';
 import type { ItemBank } from 'oldschooljs';
 
 import { globalConfig } from '@/lib/constants.js';
-import { DynamicButtons } from '@/lib/DynamicButtons.js';
 import pets from '@/lib/data/pets.js';
 import { getRandomTriviaQuestions } from '@/lib/roboChimp.js';
 import dailyRoll from '@/lib/simulation/dailyTable.js';
+import { DynamicButtons } from '@/lib/structures/DynamicButtons.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 
 export async function isUsersDailyReady(
@@ -113,10 +112,8 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	return { content: `${dmStr}\nYou received ${loot}`, files: [image.file] };
 }
 
-export async function dailyCommand(interaction: MInteraction | null, channelID: string, user: MUser): CommandResponse {
+export async function dailyCommand(interaction: MInteraction, user: MUser): CommandResponse {
 	if (interaction) await interaction.defer();
-	const channel = globalClient.channels.cache.get(channelID.toString());
-	if (!channelIsSendable(channel)) return 'Invalid channel.';
 	const check = await isUsersDailyReady(user);
 	if (!check.isReady) {
 		return `**${Emoji.Diango} Diango says...** You can claim your next daily in ${formatDuration(
@@ -132,9 +129,8 @@ export async function dailyCommand(interaction: MInteraction | null, channelID: 
 
 	let correctUser: string | null = null;
 	const buttons = new DynamicButtons({
-		channel: channel as TextChannel,
-		usersWhoCanInteract: [user.id],
-		deleteAfterConfirm: true
+		interaction,
+		usersWhoCanInteract: [user.id]
 	});
 	const allAnswers = uniqueArr(shuffleArr([question, ...fakeQuestions].map(q => q.answers[0])));
 	for (const answer of allAnswers) {

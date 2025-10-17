@@ -225,11 +225,7 @@ class BankImageTask {
 	public _bgSpriteData: CanvasImage = new CanvasImage();
 	public bgSpriteList: Record<string, IBgSprite> = {};
 	public treeImage!: CanvasImage;
-	public ready!: Promise<void>;
-
-	public constructor() {
-		this.ready = this.init();
-	}
+	public ready: boolean = false;
 
 	async init() {
 		const colors: Record<BGSpriteName, string> = {
@@ -345,7 +341,7 @@ class BankImageTask {
 			const [item, quantity] = items[i];
 
 			const isNewCLItem =
-				flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.includes(item.id);
+				flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.has(item.id);
 
 			await c.drawItemIDSprite({
 				itemID: item.id,
@@ -402,6 +398,10 @@ class BankImageTask {
 			mahojiFlags?: BankFlag[];
 		} & BaseCanvasArgs
 	): Promise<BankImageResult> {
+		if (!this.ready) {
+			await this.init();
+			this.ready = true;
+		}
 		let { user, collectionLog, title = '', showValue = true } = opts;
 		const bank = opts.bank.clone();
 		const flags = new Map(Object.entries(opts.flags ?? {}));
@@ -511,7 +511,7 @@ class BankImageTask {
 		const isPurple: boolean =
 			flags.get('showNewCL') !== undefined &&
 			currentCL !== undefined &&
-			items.some(([item]) => !currentCL.has(item.id) && allCLItems.includes(item.id));
+			items.some(([item]) => !currentCL.has(item.id) && allCLItems.has(item.id));
 
 		const useSmallBank = user ? (hasBgSprite ? true : user.bitfield.includes(BitField.AlwaysSmallBank)) : true;
 

@@ -1,7 +1,7 @@
 import { calcWhatPercent, objectEntries } from '@oldschoolgg/toolkit';
-import type { activity_type_enum, Minigame, PlayerOwnedHouse } from '@prisma/client';
 import { type Bank, Items } from 'oldschooljs';
 
+import type { activity_type_enum, Minigame, PlayerOwnedHouse } from '@/prisma/main.js';
 import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import type { BitField } from '@/lib/constants.js';
 import { BitFieldData, BOT_TYPE } from '@/lib/constants.js';

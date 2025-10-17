@@ -7,7 +7,7 @@ import smithables from '@/lib/skilling/skills/smithing/smithables/index.js';
 import type { SmithingActivityTaskOptions } from '@/lib/types/minions.js';
 import { pluraliseItemName } from '@/lib/util/smallUtils.js';
 
-export const smithCommand: OSBMahojiCommand = {
+export const smithCommand = defineCommand({
 	name: 'smith',
 	description: 'Smith things using the Smithing skill.',
 	attributes: {
@@ -38,7 +38,7 @@ export const smithCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
+	run: async ({ options, user, channelID }) => {
 		const smithedItem = Smithing.SmithableItems.find(_smithedItem =>
 			stringMatches(_smithedItem.name, options.name)
 		);
@@ -149,4 +149,4 @@ export const smithCommand: OSBMahojiCommand = {
 				: ''
 		}`;
 	}
-};
+});

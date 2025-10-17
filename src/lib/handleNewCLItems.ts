@@ -1,8 +1,8 @@
 import { roll } from '@oldschoolgg/rng';
 import { Events, formatOrdinal, roboChimpCLRankQuery, sumArr } from '@oldschoolgg/toolkit';
-import { type Prisma, UserEventType } from '@prisma/client';
 import type { Bank } from 'oldschooljs';
 
+import { type Prisma, UserEventType } from '@/prisma/main.js';
 import { allCLItems, allCollectionLogsFlat, calcCLDetails } from '@/lib/data/Collections.js';
 import { calculateMastery } from '@/lib/mastery.js';
 import { RawSQL } from '@/lib/rawSql.js';
@@ -40,7 +40,7 @@ export async function handleNewCLItems({
 }) {
 	const newCLItems = itemsAdded
 		?.clone()
-		.filter(i => !previousCL.has(i.id) && newCL.has(i.id) && allCLItems.includes(i.id));
+		.filter(i => !previousCL.has(i.id) && newCL.has(i.id) && allCLItems.has(i.id));
 
 	const didGetNewCLItem = newCLItems && newCLItems.length > 0;
 	if (didGetNewCLItem || roll(30)) {
@@ -56,7 +56,7 @@ export async function handleNewCLItems({
 	const previousCLDetails = calcCLDetails(previousCL);
 	const previousCLRank = previousCLDetails.percent >= 80 ? await calculateOwnCLRanking(user.id) : null;
 
-	await roboChimpSyncData(user, newCL);
+	await Promise.all([roboChimpSyncData(user, newCL), user.updateCL()]);
 	const newCLRank = previousCLDetails.percent >= 80 ? await calculateOwnCLRanking(user.id) : null;
 
 	const newCLDetails = calcCLDetails(newCL);
@@ -80,12 +80,14 @@ export async function handleNewCLItems({
 	}
 
 	const clsWithTheseItems = allCollectionLogsFlat.filter(
-		cl => cl.counts !== false && newCLItems.items().some(([newItem]) => cl.items.includes(newItem.id))
+		cl => cl.counts !== false && newCLItems.items().some(([newItem]) => cl.items.has(newItem.id))
 	);
 
 	// Find CLs with the newly added items, that weren't completed in the previous CL, and now are completed.
 	const newlyCompletedCLs = clsWithTheseItems.filter(cl => {
-		return cl.items.some(item => !previousCL.has(item)) && cl.items.every(item => newCL.has(item));
+		return (
+			cl.items.values().some(item => !previousCL.has(item)) && cl.items.values().every(item => newCL.has(item))
+		);
 	});
 
 	for (const finishedCL of newlyCompletedCLs) {
@@ -110,7 +112,7 @@ export async function handleNewCLItems({
 			clName: finishedCL.name
 		});
 
-		const nthUser = leaderboardUsers.users.filter(u => u.qty === finishedCL.items.length).length;
+		const nthUser = leaderboardUsers.users.filter(u => u.qty === finishedCL.items.size).length;
 
 		const placeStr = nthUser > 100 ? '' : ` They are the ${formatOrdinal(nthUser)} user to finish this CL.`;
 
