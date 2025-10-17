@@ -5,8 +5,8 @@ import type { PvMMethod } from '@/lib/constants.js';
 import type { CommandOptions } from '@/lib/discord/commandOptions.js';
 import killableMonsters from '@/lib/minions/data/killableMonsters/index.js';
 import { type RunCommandArgs, runCommand } from '@/lib/settings/settings.js';
-import { AutoslayOptionsEnum, autoslayModes } from '@/lib/slayer/constants.js';
-import { getCommonTaskName, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '@/lib/slayer/slayerUtil.js';
+import { AutoslayOptionsEnum, autoslayModes, SlayerMasterEnum } from '@/lib/slayer/constants.js';
+import { getCommonTaskName } from '@/lib/slayer/slayerUtil.js';
 import { slayerNewTaskCommand } from '@/mahoji/lib/abstracted_commands/slayerTaskCommand.js';
 
 interface AutoslayLink {
@@ -402,7 +402,7 @@ export async function autoSlayCommand({
 	interaction: MInteraction;
 }): CommandResponse {
 	const autoslayOptions = user.user.slayer_autoslay_options;
-	const usersTask = await getUsersCurrentSlayerInfo(user.id);
+	const usersTask = await user.fetchSlayerInfo();
 	const isOnTask = usersTask.assignedTask !== null && usersTask.currentTask !== null;
 
 	if (!isOnTask) {
