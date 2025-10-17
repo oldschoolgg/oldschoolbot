@@ -16,3 +16,4 @@ overrides:
   "discord-api-types": "0.38.12"
   "undici-types": "7.14.0"
   "@types/node": "24.5.2"
+  "esbuild": "0.25.11"

@@ -14,7 +14,10 @@ export default defineConfig({
 				'@data': '../../../data'
 			}
 		},
-		plugins: [tailwindcss()]
+		plugins: [tailwindcss()],
+		ssr: {
+			noExternal: ['zod']
+		}
 	},
 	devToolbar: {
 		enabled: false

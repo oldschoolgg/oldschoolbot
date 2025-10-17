@@ -2,24 +2,14 @@ import './lib/safeglobals.js';
 import './lib/MUser.js';
 import './lib/discord/client.js';
 
-import { init } from '@sentry/node';
 import exitHook from 'exit-hook';
 
-import { gitHash, globalConfig } from '@/lib/constants.js';
+import { globalConfig } from '@/lib/constants.js';
 import { createDb } from '@/lib/globals.js';
 import { preStartup } from '@/lib/preStartup.js';
 import { exitCleanup } from '@/mahoji/lib/exitHandler.js';
 
 exitHook(exitCleanup);
-
-if (globalConfig.sentryDSN) {
-	init({
-		dsn: globalConfig.sentryDSN,
-		defaultIntegrations: false,
-		integrations: [],
-		release: gitHash
-	});
-}
 
 async function main() {
 	await createDb();
