@@ -1,6 +1,6 @@
 import path from 'node:path';
 import * as dotenv from 'dotenv';
-import { z } from 'zod';
+import * as z from 'zod';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const REAL_SUPPORT_SERVER_ID = '342983479501389826';
