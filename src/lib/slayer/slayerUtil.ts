@@ -216,6 +216,11 @@ export async function assignNewSlayerTask(user: MUser, master: SlayerMaster) {
 	}
 
 	const quantity = randInt(assignedTask?.amount[0], maxQuantity);
+	await prisma.newUser.upsert({
+		create: { id: user.id },
+		update: {},
+		where: { id: user.id }
+	});
 	const currentTask = await prisma.slayerTask.create({
 		data: {
 			user_id: user.id,
