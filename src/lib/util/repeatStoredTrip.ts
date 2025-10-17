@@ -539,9 +539,9 @@ const tripHandlers = {
 					? null
 					: puroOptions.find(option => option.tier === data.implingTier)?.name;
 
-		if (data.implingTier !== null && implingName === undefined) {
-			throw new Error(`Invalid impling tier: ${data.implingTier}`);
-		}
+			if (data.implingTier !== null && implingName === undefined) {
+				throw new Error(`Invalid impling tier: ${data.implingTier}`);
+			}
 
 	return {
 		puro_puro: {
