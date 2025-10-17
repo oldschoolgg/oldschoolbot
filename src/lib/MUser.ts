@@ -40,6 +40,8 @@ import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { DetailedFarmingContract, FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
+import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { getUsersCurrentSlayerInfo, hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { defaultGear, Gear } from '@/lib/structures/Gear.js';
@@ -304,11 +306,6 @@ export class MUserClass {
 				return 0;
 			}
 		}) as Record<keyof typeof EMonster | number, number>;
-	}
-
-	async fetchMonsterScores() {
-		const stats = await this.fetchStats();
-		return stats.monster_scores as ItemBank;
 	}
 
 	attackClass(): 'range' | 'mage' | 'melee' {
@@ -1114,6 +1111,15 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 
 	async updateCL() {
 		await updateUserCl(this.id);
+	}
+
+	async fetchSlayerInfo() {
+		const res = await getUsersCurrentSlayerInfo(this.id);
+		return res;
+	}
+
+	hasSlayerUnlock(unlock: SlayerTaskUnlocksEnum[]) {
+		return hasSlayerUnlock(this.user.slayer_unlocks, unlock);
 	}
 
 	modifyBusy(type: 'lock' | 'unlock', reason: string): void {

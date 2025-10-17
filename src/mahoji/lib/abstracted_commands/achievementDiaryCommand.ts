@@ -1,4 +1,4 @@
-import { calcWhatPercent, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
+import { calcWhatPercent, objectEntries, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { strikethrough } from 'discord.js';
 import { Bank, Items, Monsters } from 'oldschooljs';
 
@@ -81,9 +81,8 @@ export async function achievementDiaryCommand(user: MUser, diaryName: string) {
 		}
 
 		if (tier.monsterScores) {
-			const entries = Object.entries(tier.monsterScores);
-			for (const [name, score] of entries) {
-				const mon = Monsters.find(mon => mon.name === name)!;
+			for (const [id, score] of objectEntries(tier.monsterScores)) {
+				const mon = Monsters.get(Number(id))!;
 				thisStr += `- Must Have **${score}** KC of ${mon.name}\n`;
 			}
 		}

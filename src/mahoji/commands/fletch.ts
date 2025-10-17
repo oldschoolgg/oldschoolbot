@@ -2,8 +2,6 @@ import { formatDuration, stringMatches, Time } from '@oldschoolgg/toolkit';
 
 import { Fletchables } from '@/lib/skilling/skills/fletching/fletchables/index.js';
 import Fletching from '@/lib/skilling/skills/fletching/index.js';
-import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
-import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import type { FletchingActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const fletchCommand = defineCommand({
@@ -51,12 +49,7 @@ export const fletchCommand = defineCommand({
 		}
 
 		if (fletchable.requiredSlayerUnlocks) {
-			const mySlayerUnlocks = user.user.slayer_unlocks;
-
-			const { success, errors } = hasSlayerUnlock(
-				mySlayerUnlocks as SlayerTaskUnlocksEnum[],
-				fletchable.requiredSlayerUnlocks
-			);
+			const { success, errors } = user.hasSlayerUnlock(fletchable.requiredSlayerUnlocks);
 			if (!success) {
 				return `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
 			}
