@@ -1,4 +1,4 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { stringSearch } from '@oldschoolgg/toolkit';
 import { Monsters } from 'oldschooljs';
 
 import type { PvMMethod } from '@/lib/constants.js';
@@ -412,10 +412,7 @@ export async function autoSlayCommand({
 	const method = modeOverride ?? savedMethod;
 
 	if (modeOverride && saveMode) {
-		const autoslayIdToSave = autoslayModes.find(
-			asm =>
-				stringMatches(modeOverride, asm.name) || asm.aliases.some(alias => stringMatches(modeOverride, alias))
-		);
+		const autoslayIdToSave = autoslayModes.find(asm => stringSearch(modeOverride, asm.name));
 		if (autoslayIdToSave) {
 			await user.update({ slayer_autoslay_options: [autoslayIdToSave.key] });
 		}
@@ -508,7 +505,6 @@ export async function autoSlayCommand({
 	}
 	if (method === 'boss') {
 		// This code handles the 'highest/boss' setting of autoslay.
-		const myQPs = await user.QP;
 		const commonName = getCommonTaskName(usersTask.assignedTask!.monster);
 		if (commonName === 'TzHaar') {
 			return runCommand({
@@ -530,7 +526,7 @@ export async function autoSlayCommand({
 				(m.difficultyRating ?? 0) > maxDiff &&
 				(m.levelRequirements === undefined || user.hasSkillReqs(m.levelRequirements))
 			) {
-				if (m.qpRequired === undefined || m.qpRequired <= myQPs) {
+				if (m.qpRequired === undefined || m.qpRequired <= user.QP) {
 					maxDiff = m.difficultyRating ?? 0;
 					maxMobName = m.name;
 				}

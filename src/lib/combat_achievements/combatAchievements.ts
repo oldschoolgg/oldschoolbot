@@ -66,7 +66,9 @@ interface CARootItem {
 	taskPoints: number;
 	rewardThreshold: number;
 }
-export type CATier = 'easy' | 'medium' | 'hard' | 'elite' | 'master' | 'grandmaster';
+
+export const caTiers = ['easy', 'medium', 'hard', 'elite', 'master', 'grandmaster'] as const;
+export type CATier = (typeof caTiers)[number];
 type CARoot = Record<CATier, CARootItem>;
 
 const easy: CARootItem = {
