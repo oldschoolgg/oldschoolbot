@@ -306,11 +306,6 @@ export class MUserClass {
 		}) as Record<keyof typeof EMonster | number, number>;
 	}
 
-	async fetchMonsterScores() {
-		const stats = await this.fetchStats();
-		return stats.monster_scores as ItemBank;
-	}
-
 	attackClass(): 'range' | 'mage' | 'melee' {
 		const styles = this.getAttackStyles();
 		if (styles.includes('ranged')) return 'range';
