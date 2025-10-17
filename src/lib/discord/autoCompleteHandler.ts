@@ -12,8 +12,17 @@ import type { AnyCommand, AutocompleteContext, CommandOption } from '@/lib/disco
 type InteractionOption = CommandInteractionOption<CacheType>;
 type ReadonlyInteractionOptions = readonly InteractionOption[];
 
-type SubcommandOption = Extract<CommandOption, { type: 'Subcommand' }>;
-type SubcommandGroupOption = Extract<CommandOption, { type: 'SubcommandGroup' }>;
+type CommandOptionWithChildren = CommandOption & { options?: readonly CommandOption[] | CommandOption[] };
+type SubcommandOption = CommandOptionWithChildren & { type: 'Subcommand' };
+type SubcommandGroupOption = CommandOptionWithChildren & { type: 'SubcommandGroup' };
+
+function isSubcommandOption(option: CommandOption): option is SubcommandOption {
+	return option.type === 'Subcommand';
+}
+
+function isSubcommandGroupOption(option: CommandOption): option is SubcommandGroupOption {
+	return option.type === 'SubcommandGroup';
+}
 
 async function handleAutocomplete(
 	user: MUser,
@@ -35,32 +44,37 @@ async function handleAutocomplete(
 	}
 	if (data.type === ApplicationCommandOptionType.SubcommandGroup) {
 		const group = command.options.find(
-			(option): option is SubcommandGroupOption => option.name === data.name && option.type === 'SubcommandGroup'
+			(option): option is SubcommandGroupOption => isSubcommandGroupOption(option) && option.name === data.name
 		);
 		if (!group) return [];
 		const nestedOptions = (data.options?.[0]?.options ?? []) as ReadonlyInteractionOptions;
 		const subCommand = group.options?.find(
-			(option): option is SubcommandOption =>
-				option.name === data.options?.[0].name && option.type === 'Subcommand'
+			(option): option is SubcommandOption => isSubcommandOption(option) && option.name === data.options?.[0].name
 		);
 		if (!subCommand || !data.options || !data.options[0] || subCommand.type !== 'Subcommand') {
 			return [];
 		}
-		const optionBeingFocused = data.options[0].options?.find(opt =>
+		const optionBeingFocused = data.options[0].options?.find((opt: InteractionOption) =>
 			'focused' in opt ? Boolean(opt.focused) : false
 		);
 		if (!optionBeingFocused) return [];
-		const subSubCommand = subCommand.options?.find(o => o.name === optionBeingFocused.name);
+		const subSubCommand = subCommand.options?.find(
+			(o): o is CommandOptionWithChildren => o.name === optionBeingFocused.name
+		);
 		return handleAutocomplete(user, command, nestedOptions, member, subSubCommand, nestedOptions);
 	}
 	if (data.type === ApplicationCommandOptionType.Subcommand) {
 		if (!data.options || !data.options[0]) return [];
 		const subCommand = command.options.find(
-			(option): option is SubcommandOption => option.name === data.name && option.type === 'Subcommand'
+			(option): option is SubcommandOption => isSubcommandOption(option) && option.name === data.name
 		);
 		if (!subCommand) return [];
-		const focusedOption = data.options.find(o => ('focused' in o ? Boolean(o.focused) : false)) ?? data.options[0];
-		const subOption = subCommand.options?.find(c => c.name === focusedOption.name);
+		const focusedOption =
+			data.options.find((o: InteractionOption) => ('focused' in o ? Boolean(o.focused) : false)) ??
+			data.options[0];
+		const subOption = subCommand.options?.find(
+			(c): c is CommandOptionWithChildren => c.name === focusedOption.name
+		);
 		if (!subOption) return [];
 
 		return handleAutocomplete(user, command, data.options, member, subOption, data.options);
