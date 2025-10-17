@@ -1,6 +1,7 @@
 import type { InteractionReplyOptions } from 'discord.js';
 
 import type { AnyCommand, CommandOptions } from '@/lib/discord/commandOptions.js';
+import { convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';
 import { runInhibitors } from '@/lib/discord/inhibitors.js';
 import { makeCommandUsage } from '@/lib/util/commandUsage.js';
 
@@ -22,12 +23,18 @@ export async function preCommand({ command, interaction, user }: PreCommandOptio
 	Logging.logDebug(`${user.logName} ran command: ${command.name}`, {
 		...interaction.getDebugInfo()
 	});
+	const args: CommandOptions = interaction.interaction.isChatInputCommand()
+		? convertAPIOptionsToCommandOptions(
+				interaction.interaction.options.data,
+				interaction.interaction.options.resolved
+			)
+		: {};
 	prisma.commandUsage
 		.create({
 			data: {
 				...makeCommandUsage({
 					commandName: command.name,
-					args: interaction.getChatInputCommandOptions(),
+					args,
 					isContinue: null,
 					inhibited: false,
 					continueDeltaMillis: null,
