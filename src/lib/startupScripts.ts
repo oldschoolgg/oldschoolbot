@@ -125,6 +125,12 @@ const checkConstraints: CheckConstraint[] = [
 		column: 'quantity',
 		name: 'ge_bank_quantity_min',
 		body: 'quantity >= 0'
+	},
+	{
+		table: 'table_bank_item',
+		column: 'quantity',
+		name: 'table_bank_quantity_min',
+		body: 'quantity >= 0'
 	}
 ];
 

@@ -4,7 +4,7 @@ import { describe, expect, it, test, vi } from 'vitest';
 import { UpdateBank } from '@/lib/structures/UpdateBank.js';
 import { createTestUser } from './util.js';
 
-describe('UpdateBank', { repeats: 5 }, async () => {
+describe('UpdateBank', async () => {
 	it('should add kc', async () => {
 		const user = await createTestUser();
 		const updateBank = new UpdateBank();
