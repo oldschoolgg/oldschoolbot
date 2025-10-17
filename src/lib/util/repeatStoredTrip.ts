@@ -535,21 +535,19 @@ const tripHandlers = {
 		commandName: 'activities',
 		args: (data: PuroPuroActivityTaskOptions) => {
 			const implingName =
-			data.implingTier === null
-					? null
-					: puroOptions.find(option => option.tier === data.implingTier)?.name;
+				data.implingTier === null ? null : puroOptions.find(option => option.tier === data.implingTier)?.name;
 
 			if (data.implingTier !== null && implingName === undefined) {
 				throw new Error(`Invalid impling tier: ${data.implingTier}`);
 			}
 
-	return {
-		puro_puro: {
-			impling: implingName,
-			dark_lure: data.darkLure
+			return {
+				puro_puro: {
+					impling: implingName,
+					dark_lure: data.darkLure
+				}
+			};
 		}
-	};
-}
 	},
 	[activity_type_enum.Questing]: {
 		commandName: 'activities',
