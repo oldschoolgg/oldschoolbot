@@ -3,7 +3,6 @@ import { calcWhatPercent, formatDuration, reduceNumByPercent, Time } from '@olds
 import { Bank, itemID, Monsters } from 'oldschooljs';
 
 import { newChatHeadImage } from '@/lib/canvas/chatHeadImage.js';
-import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { FightCavesActivityTaskOptions } from '@/lib/types/minions.js';
 
 export const fightCavesCost = new Bank({
@@ -130,7 +129,7 @@ export async function fightCavesCommand(user: MUser, channelID: string): Command
 	await user.removeItemsFromBank(fightCavesCost);
 
 	// Add slayer
-	const usersTask = await getUsersCurrentSlayerInfo(user.id);
+	const usersTask = await user.fetchSlayerInfo();
 	const isOnTask =
 		usersTask.currentTask !== null &&
 		usersTask.currentTask !== undefined &&

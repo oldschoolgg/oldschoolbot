@@ -1,3 +1,4 @@
+import './discord/commandOptions.js';
 import './customItems/customItems.js';
 import './data/itemAliases.js';
 import './util/logger.js';

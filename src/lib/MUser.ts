@@ -51,7 +51,6 @@ import { modifyUserBusy, userIsBusy } from '@/lib/busyCounterCache.js';
 import { generateAllGearImage, generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import type { IconPackID } from '@/lib/canvas/iconPacks.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
-import { updateUserCl } from '@/lib/collection-log/databaseCl.js';
 import { type CATier, CombatAchievements } from '@/lib/combat_achievements/combatAchievements.js';
 import { BitField, MAX_LEVEL, projectiles } from '@/lib/constants.js';
 import { bossCLItems } from '@/lib/data/Collections.js';
@@ -72,12 +71,15 @@ import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 import { type MinigameName, type MinigameScore, Minigames } from '@/lib/settings/minigames.js';
 import { Farming } from '@/lib/skilling/skills/farming/index.js';
 import type { DetailedFarmingContract, FarmingContract } from '@/lib/skilling/skills/farming/utils/types.js';
+import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
+import { getUsersCurrentSlayerInfo, hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import type { BankSortMethod } from '@/lib/sorts.js';
 import { ChargeBank } from '@/lib/structures/Bank.js';
 import { defaultGear, Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { XPBank } from '@/lib/structures/XPBank.js';
+import { TableBankManager } from '@/lib/table-banks/tableBankManager.js';
 import type { PrismaCompatibleJsonObject, SkillRequirements, Skills } from '@/lib/types/index.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
@@ -121,7 +123,7 @@ export type SelectedUserStats<T extends Prisma.UserStatsSelect> = {
 };
 
 export class MUserClass {
-	user: Readonly<User>;
+	user!: Readonly<User>;
 	id: string;
 
 	skillsAsXP!: Required<Skills>;
@@ -136,9 +138,8 @@ export class MUserClass {
 	private _gearLazy: UserFullGearSetup | null = null;
 
 	constructor(user: User) {
-		this.user = user;
 		this.id = user.id;
-		this.updateProperties();
+		this._updateRawUser(user);
 	}
 
 	public get bank(): Bank {
@@ -343,11 +344,6 @@ export class MUserClass {
 		}) as Record<keyof typeof EMonster | number, number>;
 	}
 
-	async fetchMonsterScores() {
-		const stats = await this.fetchStats();
-		return stats.monster_scores as ItemBank;
-	}
-
 	attackClass(): 'range' | 'mage' | 'melee' {
 		const styles = this.getAttackStyles();
 		if (styles.includes('ranged')) return 'range';
@@ -432,8 +428,7 @@ export class MUserClass {
 			dontAddToTempCL,
 			neverUpdateHistory
 		});
-		this.user = res.newUser;
-		this.updateProperties();
+		this._updateRawUser(res.newUser);
 		return res;
 	}
 
@@ -441,15 +436,18 @@ export class MUserClass {
 		const res = await this.transactItems({
 			itemsToRemove: bankToRemove
 		});
-		this.user = res.newUser;
-		this.updateProperties();
+		this._updateRawUser(res.newUser);
 		return res;
+	}
+
+	public _updateRawUser(rawUser: User) {
+		this.user = rawUser;
+		this.updateProperties();
 	}
 
 	async transactItems(options: Omit<TransactItemsArgs, 'userID'>) {
 		const res = await transactItemsFromBank({ userID: this.user.id, ...options });
-		this.user = res.newUser;
-		this.updateProperties();
+		this._updateRawUser(res.newUser);
 		return res;
 	}
 
@@ -615,12 +613,15 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 
 	async addItemsToCollectionLog(itemsToAdd: Bank) {
 		const previousCL = this.cl.clone();
+
 		const updates = this.calculateAddItemsToCLUpdates({
 			items: itemsToAdd
 		});
 		await this.update(updates);
 		const newCL = this.cl;
+
 		await handleNewCLItems({ itemsAdded: itemsToAdd, user: this, newCL: this.cl, previousCL });
+
 		return {
 			previousCL,
 			newCL,
@@ -737,8 +738,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			await this.transactItems({ itemsToRemove: bankRemove });
 		}
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
-		this.user = newUser;
-		this.updateProperties();
+		this._updateRawUser(newUser);
 		return {
 			realCost
 		};
@@ -805,8 +805,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	async sync() {
 		const newUser = await prisma.user.findUnique({ where: { id: this.id } });
 		if (!newUser) throw new Error(`Failed to sync user ${this.id}, no record was found`);
-		this.user = newUser;
-		this.updateProperties();
+		this._updateRawUser(newUser);
 	}
 
 	async fetchStats() {
@@ -1306,12 +1305,53 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		return `**XP Gains:** ${result}`;
 	}
 
-	async updateCL() {
-		await updateUserCl(this.id);
+	async fetchSlayerInfo() {
+		const res = await getUsersCurrentSlayerInfo(this.id);
+		return res;
+	}
+
+	hasSlayerUnlock(unlock: SlayerTaskUnlocksEnum[]) {
+		return hasSlayerUnlock(this.user.slayer_unlocks, unlock);
 	}
 
 	modifyBusy(type: 'lock' | 'unlock', reason: string): void {
 		modifyUserBusy({ type, reason, userID: this.id });
+	}
+
+	async _fetchOrCreateCL(itemsToAdd?: Bank): Promise<Bank> {
+		const { inserted } = await TableBankManager.getOrCreateBankId(this.id, 'CollectionLog');
+
+		// If this was the first time creating, insert all current CL items.
+		if (inserted) {
+			await TableBankManager.update({
+				userId: this.id,
+				type: 'CollectionLog',
+				itemsToAdd: this.cl
+			});
+		} else if (itemsToAdd) {
+			await TableBankManager.update({
+				userId: this.id,
+				type: 'CollectionLog',
+				itemsToAdd
+			});
+		}
+
+		const cl = await TableBankManager.fetch({ userId: this.id, type: 'CollectionLog' });
+		cl.freeze();
+		return cl;
+	}
+
+	async checkTableBankMatches() {
+		await this.sync();
+		const clFromDB = await this.fetchCL();
+		if (this.cl.toString() !== clFromDB.toString()) {
+			console.error(`CL mismatch for user ${this.id}: ${this.cl.difference(clFromDB).toString()}`);
+		}
+	}
+
+	async fetchCL(): Promise<Bank> {
+		const cl = await this._fetchOrCreateCL();
+		return cl;
 	}
 
 	/**
@@ -1353,6 +1393,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		return userHasFlappy({ user: this, duration });
 	}
 }
+
 declare global {
 	export type MUser = MUserClass;
 	var mUserFetch: typeof srcMUserFetch;

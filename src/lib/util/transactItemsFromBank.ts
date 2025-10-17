@@ -49,10 +49,12 @@ export async function transactItemsFromBank({
 		const previousCL = new Bank(settings.user.collectionLogBank as ItemBank);
 
 		let clUpdates: Prisma.UserUpdateArgs['data'] = {};
+		let clLootBank: Bank | null = null;
 		if (itemsToAdd) {
 			const { bankLoot, clLoot } = filterLoot
 				? filterLootReplace(settings.allItemsOwned, itemsToAdd)
 				: { bankLoot: itemsToAdd, clLoot: itemsToAdd };
+			clLootBank = clLoot;
 			itemsToAdd = bankLoot;
 
 			clUpdates = collectionLog ? settings.calculateAddItemsToCLUpdates({ items: clLoot, dontAddToTempCL }) : {};
@@ -129,7 +131,8 @@ export async function transactItemsFromBank({
 			}
 		}
 
-		if (!options.neverUpdateHistory && previousCL.length !== newCL.length) {
+		if (!options.neverUpdateHistory) {
+			settings._updateRawUser(newUser);
 			await handleNewCLItems({ itemsAdded, user: settings, previousCL, newCL });
 		}
 
@@ -139,7 +142,8 @@ export async function transactItemsFromBank({
 			itemsRemoved: itemsToRemove,
 			newBank: new Bank(newUser.bank as ItemBank),
 			newCL,
-			newUser
+			newUser,
+			clLootBank
 		};
 	});
 }

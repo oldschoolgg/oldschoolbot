@@ -22,7 +22,7 @@ import { BitField, globalConfig, PerkTier } from '@/lib/constants.js';
 import { isCustomItem } from '@/lib/customItems/util.js';
 import { marketPricemap } from '@/lib/marketPrices.js';
 import { type RobochimpUser, roboChimpUserFetch } from '@/lib/roboChimp.js';
-import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/tableBank.js';
+import { fetchTableBank, makeTransactFromTableBankQueries } from '@/lib/table-banks/tableBank.js';
 import { assert } from '@/lib/util/logError.js';
 import { sendToChannelID } from '@/lib/util/webhook.js';
 
@@ -120,8 +120,10 @@ class GrandExchangeSingleton {
 	public locked = false;
 	public isTicking = false;
 	public ready = false;
+	public loggingEnabled = false;
 
 	log(message: string, context?: any) {
+		if (!this.loggingEnabled) return;
 		Logging.logDebug(message, context);
 	}
 

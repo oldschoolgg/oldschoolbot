@@ -81,7 +81,7 @@ export async function slayerNewTaskCommand({
 	saveDefaultSlayerMaster?: boolean;
 	showButtons?: boolean;
 }): CommandResponse {
-	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
+	const { currentTask } = await user.fetchSlayerInfo();
 	const { slayer_remember_master: rememberedSlayerMaster } = user.user;
 
 	if (user.minionIsBusy) {
@@ -235,7 +235,7 @@ export async function slayerSkipTaskCommand({
 	newTask: boolean;
 	interaction: MInteraction;
 }): CommandResponse {
-	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
+	const { currentTask } = await user.fetchSlayerInfo();
 	const myBlockList = user.user.slayer_blocked_ids;
 	const maxBlocks = await calcMaxBlockedTasks(user);
 	if (user.minionIsBusy) {

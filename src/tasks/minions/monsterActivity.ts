@@ -17,7 +17,7 @@ import announceLoot from '@/lib/minions/functions/announceLoot.js';
 import type { AttackStyles } from '@/lib/minions/functions/index.js';
 import { DiaryID, type KillableMonster } from '@/lib/minions/types.js';
 import { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
-import { type CurrentSlayerInfo, calculateSlayerPoints, getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import { type CurrentSlayerInfo, calculateSlayerPoints } from '@/lib/slayer/slayerUtil.js';
 import type { SlayerMaster } from '@/lib/slayer/types.js';
 import type { GearBank } from '@/lib/structures/GearBank.js';
 import { type KCBank, safelyMakeKCBank } from '@/lib/structures/KCBank.js';
@@ -529,16 +529,15 @@ export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
 	async run(data: MonsterActivityTaskOptions, { user, handleTripFinish }) {
 		const { duration } = data;
-		const stats = await user.fetchMStats();
-		const minigameScores = await user.fetchMinigames();
-		const slayerInfo = await getUsersCurrentSlayerInfo(user.id);
-
 		if (data.mi === EBSOMonster.KOSCHEI) {
 			sendToChannelID(data.channelID, {
 				content: `${user}, ${user.minionName} failed to defeat Koschei the deathless.`
 			});
 			return;
 		}
+		const stats = await user.fetchMStats();
+		const minigameScores = await user.fetchMinigames();
+		const slayerInfo = await user.fetchSlayerInfo();
 		const monster = killableMonsters.find(mon => mon.id === data.mi)!;
 		const attackStyles = data.attackStyles ?? user.getAttackStyles();
 		const { slayerContext, quantity, newKC, messages, updateBank } = doMonsterTrip({

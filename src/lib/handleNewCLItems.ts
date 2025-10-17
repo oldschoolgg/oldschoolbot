@@ -40,12 +40,16 @@ export async function handleNewCLItems({
 	newCL: Bank;
 	itemsAdded: Bank;
 }) {
-	const newCLItems = itemsAdded
-		?.clone()
-		.filter(i => !previousCL.has(i.id) && newCL.has(i.id) && allCLItems.has(i.id));
+	const anyNewCLItems = itemsAdded.filter(i => !previousCL.has(i.id) && newCL.has(i.id));
+	const newCLItems = anyNewCLItems.filter(i => allCLItems.has(i.id));
 
-	const didGetNewCLItem = newCLItems && newCLItems.length > 0;
-	if (didGetNewCLItem) {
+	const rawDifference = newCL.difference(previousCL);
+	if (rawDifference.length > 0) {
+		await user._fetchOrCreateCL(rawDifference);
+	}
+
+	const didGetNewCLItem: boolean = newCLItems?.length > 0;
+	if (didGetNewCLItem || roll(30)) {
 		await prisma.historicalData.create({ data: await createHistoricalData(user) });
 	}
 
@@ -58,7 +62,7 @@ export async function handleNewCLItems({
 	const previousCLDetails = calcCLDetails(previousCL);
 	const previousCLRank = previousCLDetails.percent >= 80 ? await calculateOwnCLRanking(user.id) : null;
 
-	await Promise.all([roboChimpSyncData(user, newCL), user.updateCL()]);
+	await roboChimpSyncData(user, newCL);
 	const newCLRank = previousCLDetails.percent >= 80 ? await calculateOwnCLRanking(user.id) : null;
 
 	const newCLDetails = calcCLDetails(newCL);
@@ -99,11 +103,11 @@ export async function handleNewCLItems({
 		});
 		const kcString = finishedCL.fmtProg
 			? `They finished after... ${await finishedCL.fmtProg({
-				getKC: (id: number) => user.getKC(id),
-				user,
-				minigames: await user.fetchMinigames(),
-				stats: await user.fetchMStats()
-			})}!`
+					getKC: (id: number) => user.getKC(id),
+					user,
+					minigames: await user.fetchMinigames(),
+					stats: await user.fetchMStats()
+				})}!`
 			: '';
 
 		const leaderboardUsers = await fetchCLLeaderboard({

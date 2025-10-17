@@ -10,7 +10,6 @@ import { BitField, projectiles } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
 import { blowpipeDarts } from '@/lib/minions/functions/blowpipeCommand.js';
 import type { BlowpipeData } from '@/lib/minions/types.js';
-import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { Gear } from '@/lib/structures/Gear.js';
 import { PercentCounter } from '@/lib/structures/PercentCounter.js';
 import type { Skills } from '@/lib/types/index.js';
@@ -450,7 +449,7 @@ async function infernoRun({
 
 	// Slayer
 	const score = await user.fetchMinigameScore('inferno');
-	const usersTask = await getUsersCurrentSlayerInfo(user.id);
+	const usersTask = await user.fetchSlayerInfo();
 	const isOnTask =
 		usersTask.currentTask !== null &&
 		usersTask.currentTask !== undefined &&

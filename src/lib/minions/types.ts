@@ -1,6 +1,14 @@
 import type { EBSOMonster } from '@/lib/bso/EBSOMonster.js';
 
-import type { ArrayItemsResolved, Bank, Item, ItemBank, MonsterKillOptions, SimpleMonster } from 'oldschooljs';
+import type {
+	ArrayItemsResolved,
+	Bank,
+	EMonster,
+	Item,
+	ItemBank,
+	MonsterKillOptions,
+	SimpleMonster
+} from 'oldschooljs';
 import type { OffenceGearStat } from 'oldschooljs/gear';
 
 import type { GearSetupType, XpGainSource } from '@/prisma/main.js';
@@ -168,7 +176,7 @@ export interface DiaryTier {
 	minigameReqs?: Partial<Record<MinigameName, number>>;
 	lapsReqs?: Record<string, number>;
 	qp?: number;
-	monsterScores?: Record<string, number>;
+	monsterScores?: Partial<Record<EMonster, number>>;
 	customReq?: (user: MUser, summary: boolean, stats: MUserStats) => [true] | [false, string];
 }
 export enum DiaryID {

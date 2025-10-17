@@ -26,7 +26,6 @@ import { getFarmingInfoFromUser } from '@/lib/skilling/skills/farming/utils/getF
 import { Skills } from '@/lib/skilling/skills/index.js';
 import { slayerMasterChoices } from '@/lib/slayer/constants.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
-import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import { allSlayerMonsters } from '@/lib/slayer/tasks/index.js';
 import { Gear } from '@/lib/structures/Gear.js';
 import { parseStringBank } from '@/lib/util/parseStringBank.js';
@@ -1030,7 +1029,7 @@ Warning: Visiting a test dashboard may let developers see your IP address. Attem
 				}
 
 				if (options.setslayertask) {
-					const usersTask = await getUsersCurrentSlayerInfo(user.id);
+					const usersTask = await user.fetchSlayerInfo();
 
 					const { monster, master } = options.setslayertask;
 

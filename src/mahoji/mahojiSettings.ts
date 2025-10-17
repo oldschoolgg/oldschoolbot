@@ -211,7 +211,7 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 		}
 	}
 
-	const monsterScores = await user.fetchMonsterScores();
+	const stats = await user.fetchMStats();
 
 	if (monster.kcRequirements) {
 		for (const [stringId, val] of Object.entries(monster.kcRequirements)) {
@@ -221,7 +221,7 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 				Logging.logError(`Missing monster in kcRequirements: ${id} for ${monster.name}`);
 				continue;
 			}
-			const kc = monsterScores[id] ?? 0;
+			const kc = stats.monsterScores[id] ?? 0;
 
 			if (kc < val) {
 				return `You need at least ${val} ${requiredMonster.name} KC to kill ${monster.name}, you have ${kc}.`;
@@ -248,7 +248,7 @@ export async function hasMonsterRequirements(user: MUser, monster: KillableMonst
 		}
 	}
 
-	if (monster.customRequirement && monsterScores[monster.id] === 0) {
+	if (monster.customRequirement && stats.monsterScores[monster.id] === 0) {
 		const reasonDoesntHaveReq = await monster.customRequirement(user);
 		if (reasonDoesntHaveReq) {
 			return `You don't meet the requirements to kill this monster: ${reasonDoesntHaveReq}.`;

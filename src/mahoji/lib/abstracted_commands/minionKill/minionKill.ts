@@ -14,7 +14,6 @@ import { colosseumCommand } from '@/lib/colosseum.js';
 import type { PvMMethod } from '@/lib/constants.js';
 import { trackLoot } from '@/lib/lootTrack.js';
 import { revenantMonsters } from '@/lib/minions/data/killableMonsters/revs.js';
-import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { MonsterActivityTaskOptions } from '@/lib/types/minions.js';
 import findMonster from '@/lib/util/findMonster.js';
 import { generateDailyPeakIntervals } from '@/lib/util/peaks.js';
@@ -90,7 +89,7 @@ export async function minionKillCommand(
 		return typeof reason === 'string' ? reason : "You don't have the requirements to fight this monster";
 	}
 
-	const slayerInfo = await getUsersCurrentSlayerInfo(user.id);
+	const slayerInfo = await user.fetchSlayerInfo();
 
 	if (slayerInfo.assignedTask === null && onTask) return 'You are no longer on a slayer task for this monster!';
 

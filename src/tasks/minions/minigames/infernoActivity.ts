@@ -6,7 +6,7 @@ import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
 import { diariesObject, userhasDiaryTier } from '@/lib/diaries.js';
 import { DiaryID } from '@/lib/minions/types.js';
 import { countUsersWithItemInCl } from '@/lib/rawSql.js';
-import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import { calculateSlayerPoints } from '@/lib/slayer/slayerUtil.js';
 import type { InfernoOptions } from '@/lib/types/minions.js';
 
 export function calculateInfernoItemRefund(percentMadeItThrough: number, cost: Bank) {
@@ -28,7 +28,7 @@ export const infernoTask: MinionTask = {
 			data;
 		const score = await user.fetchMinigameScore('inferno');
 
-		const usersTask = await getUsersCurrentSlayerInfo(user.id);
+		const usersTask = await user.fetchSlayerInfo();
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&

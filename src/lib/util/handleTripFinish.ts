@@ -26,7 +26,6 @@ import { handleGrowablePetGrowth } from '@/lib/growablePets.js';
 import { handlePassiveImplings } from '@/lib/implings.js';
 import { triggerRandomEvent } from '@/lib/randomEvents.js';
 import { calculateBirdhouseDetails } from '@/lib/skilling/skills/hunter/birdhouses.js';
-import { getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
 import type { ActivityTaskData } from '@/lib/types/minions.js';
 import {
 	makeAutoContractButton,
@@ -573,7 +572,7 @@ export async function handleTripFinish(
 		if ((await canRunAutoContract(user)) && !user.bitfield.includes(BitField.DisableAutoFarmContractButton))
 			components.push(makeAutoContractButton());
 
-		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
+		const { currentTask } = await user.fetchSlayerInfo();
 		if ((currentTask === null || currentTask.quantity_remaining <= 0) && data.type === 'MonsterKilling') {
 			components.push(makeNewSlayerTaskButton());
 		} else if (!user.bitfield.includes(BitField.DisableAutoSlayButton)) {

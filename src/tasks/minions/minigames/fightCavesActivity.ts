@@ -5,7 +5,7 @@ import { Bank, itemID, Monsters } from 'oldschooljs';
 import chatHeadImage from '@/lib/canvas/chatHeadImage.js';
 import { userhasDiaryTier } from '@/lib/diaries.js';
 import { DiaryID } from '@/lib/minions/types.js';
-import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '@/lib/slayer/slayerUtil.js';
+import { calculateSlayerPoints } from '@/lib/slayer/slayerUtil.js';
 import type { FightCavesActivityTaskOptions } from '@/lib/types/minions.js';
 import { fightCavesCost } from '@/mahoji/lib/abstracted_commands/fightCavesCommand.js';
 
@@ -28,7 +28,7 @@ export const fightCavesTask: MinionTask = {
 		const attemptsStr = `You have tried Fight caves ${newFightCavesAttempts}x times`;
 
 		// Add slayer
-		const usersTask = await getUsersCurrentSlayerInfo(user.id);
+		const usersTask = await user.fetchSlayerInfo();
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&

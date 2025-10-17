@@ -143,7 +143,7 @@
 				"pollnivneach_rooftop_course": 1
 			},
 			"monster_scores": {
-				"dust_devil": 1
+				"423": 1
 			},
 			"collection_log_reqs": ["Mithril platebody"]
 		},
@@ -225,8 +225,8 @@
 			"qp": 32,
 			"collection_log_reqs": ["Mind rune", "Prospector helmet"],
 			"monster_scores": {
-				"skeletal_wyvern": 1,
-				"blue_dragon": 1
+				"265": 1,
+				"465": 1
 			},
 			"laps_reqs": {
 				"falador_rooftop_course": 1
@@ -314,14 +314,14 @@
 				"strength": 70
 			},
 			"monster_scores": {
-				"dagannoth_rex": 1,
-				"dagannoth_prime": 1,
-				"dagannoth_supreme": 1,
-				"general_graardor": 1,
-				"kree'arra": 1,
-				"commander_zilyana": 1,
-				"k'ril_tsutsaroth": 1,
-				"spiritual_mage": 1
+				"2205": 1,
+				"2212": 1,
+				"2215": 1,
+				"2265": 1,
+				"2266": 1,
+				"2267": 1,
+				"3129": 1,
+				"3162": 1
 			},
 			"collection_log_reqs": ["Astral rune", "Dragonstone amulet"],
 			"qp": 50
@@ -358,7 +358,7 @@
 			},
 			"collection_log_reqs": ["Bass", "Coal", "Limpwurt root", "Maple shortbow"],
 			"monster_scores": {
-				"fire_giant": 1
+				"2075": 1
 			},
 			"minigame_reqs": {
 				"barb_assault": 1
@@ -387,7 +387,7 @@
 				"seers'_village_rooftop_course": 1
 			},
 			"monster_scores": {
-				"mithril_dragon": 1
+				"2919": 1
 			}
 		},
 		"elite": {
@@ -419,7 +419,7 @@
 			},
 			"collection_log_reqs": ["Gold ore"],
 			"monster_scores": {
-				"jogre": 1
+				"2094": 1
 			}
 		},
 		"medium": {
@@ -454,7 +454,7 @@
 			},
 			"collection_log_reqs": ["Cooked karambwan", "Nature rune"],
 			"monster_scores": {
-				"steel_dragon": 1
+				"8086": 1
 			}
 		},
 		"elite": {
@@ -515,8 +515,8 @@
 			},
 			"collection_log_reqs": ["Adamantite bar"],
 			"monster_scores": {
-				"wyrm": 1,
-				"lizardman_shaman": 1
+				"6766": 1,
+				"8610": 1
 			}
 		},
 		"elite": {
@@ -536,7 +536,7 @@
 			},
 			"collection_log_reqs": ["Blood rune", "Dark totem", "Raw anglerfish", "Redwood logs"],
 			"monster_scores": {
-				"hydra": 1
+				"8609": 1
 			},
 			"minigame_reqs": {
 				"raids": 1
@@ -627,9 +627,9 @@
 				"slayer": 15
 			},
 			"monster_scores": {
-				"banshee": 1,
-				"ghoul": 1,
-				"werewolf": 1
+				"289": 1,
+				"414": 1,
+				"2593": 1
 			}
 		},
 		"medium": {
@@ -669,7 +669,7 @@
 			},
 			"collection_log_reqs": ["Mahogany logs", "Mithril ore", "Mushroom", "Watermelon"],
 			"monster_scores": {
-				"cave_horror": 1
+				"1047": 1
 			}
 		},
 		"elite": {
@@ -688,7 +688,7 @@
 			},
 			"collection_log_reqs": ["Black d'hide body", "Raw shark"],
 			"monster_scores": {
-				"abyssal_demon": 1
+				"415": 1
 			}
 		}
 	},
@@ -827,7 +827,7 @@
 			},
 			"qp": 92,
 			"monster_scores": {
-				"zulrah": 1
+				"2042": 1
 			}
 		},
 		"elite": {
@@ -849,7 +849,7 @@
 			},
 			"collection_log_reqs": ["Magic longbow", "Void knight gloves", "Void knight robe", "Void knight top"],
 			"monster_scores": {
-				"thermonuclear_smoke_devil": 1
+				"499": 1
 			},
 			"minigame_reqs": {
 				"big_chompy_bird_hunting": 1000
@@ -869,8 +869,8 @@
 			},
 			"collection_log_reqs": ["Iron ore", "Red spiders' eggs"],
 			"monster_scores": {
-				"mammoth": 1,
-				"earth_warrior": 1
+				"2840": 1,
+				"6604": 1
 			}
 		},
 		"medium": {
@@ -887,9 +887,9 @@
 			},
 			"collection_log_reqs": ["Mithril ore", "Yew logs"],
 			"monster_scores": {
-				"green_dragon": 1,
-				"ankou": 1,
-				"bloodveld": 1
+				"260": 1,
+				"484": 1,
+				"2514": 1
 			}
 		},
 		"hard": {
@@ -905,11 +905,11 @@
 			},
 			"collection_log_reqs": ["Adamant scimitar", "Black salamander"],
 			"monster_scores": {
-				"chaos_elemental": 1,
-				"crazy_archaeologist": 1,
-				"chaos_fanatic": 1,
-				"scorpia": 1,
-				"spiritual_warrior": 1
+				"2054": 1,
+				"2210": 1,
+				"6615": 1,
+				"6618": 1,
+				"6619": 1
 			}
 		},
 		"elite": {
@@ -930,9 +930,9 @@
 			},
 			"collection_log_reqs": ["Dark crab", "Magic logs", "Raw dark crab", "Rune scimitar"],
 			"monster_scores": {
-				"callisto": 1,
-				"venenatis": 1,
-				"vet'ion": 1
+				"6503": 1,
+				"6610": 1,
+				"6611": 1
 			}
 		}
 	}

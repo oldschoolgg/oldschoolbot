@@ -102,7 +102,6 @@ client.on('shardDisconnect', (event, shardID) => Logging.logDebug(`Shard ${shard
 client.on('cacheSweep', e => {
 	Logging.logDebug(`Cache Sweep: ${e}`);
 });
-client.on('debug', e => Logging.logDebug(e));
 client.on('warn', e => Logging.logDebug(e));
 client.on('shardError', err => Logging.logDebug('Shard Error', { error: err.message }));
 client.once('ready', async e => {

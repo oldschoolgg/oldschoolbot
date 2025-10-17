@@ -150,6 +150,11 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 	await prisma.fishingContestCatch.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.buyCommandTransaction.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.userCounter.deleteMany({ where: { user_id: BigInt(user.id) } });
+	const allTableBanks = await prisma.tableBank.findMany({ where: { user_id: user.id } });
+	for (const tableBank of allTableBanks) {
+		await prisma.tableBankItem.deleteMany({ where: { bank_id: tableBank.id } });
+		await prisma.tableBank.delete({ where: { id: tableBank.id } });
+	}
 
 	// Refund the leagues points they spent
 	const roboChimpUser = await roboChimpUserFetch(user.id);

@@ -10,7 +10,6 @@ import { BitField, type PvMMethod } from '@/lib/constants.js';
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '@/lib/diaries.js';
 import { CombatOptionsEnum } from '@/lib/minions/data/combatConstants.js';
 import type { KillableMonster } from '@/lib/minions/types.js';
-import { getNewUser } from '@/lib/settings/settings.js';
 import { autoslayModes } from '@/lib/slayer/constants.js';
 import { slayerMasters } from '@/lib/slayer/slayerMasters.js';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
@@ -201,14 +200,13 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 	return true;
 }
 
-export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
-	const unlocks = _user.user.slayer_unlocks;
+export async function assignNewSlayerTask(user: MUser, master: SlayerMaster) {
 	// assignedTask is the task object, currentTask is the database row.
-	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master, false));
+	const baseTasks = [...master.tasks].filter(t => userCanUseTask(user, t, master, false));
 	let bossTask = false;
 	let wildyBossTask = false;
 	if (
-		_user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss) &&
+		user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss) &&
 		(master.name.toLowerCase() === 'konar quo maten' ||
 			master.name.toLowerCase() === 'duradel' ||
 			master.name.toLowerCase() === 'nieve' ||
@@ -218,21 +216,21 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		bossTask = true;
 	}
 
-	if (_user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss) && master.id === 8 && roll(25)) {
+	if (user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss) && master.id === 8 && roll(25)) {
 		wildyBossTask = true;
 	}
 
 	let assignedTask: AssignableSlayerTask | null = null;
 
 	if (bossTask) {
-		const baseBossTasks = bossTasks.filter(t => userCanUseTask(_user, t, master, true));
+		const baseBossTasks = bossTasks.filter(t => userCanUseTask(user, t, master, true));
 		if (baseBossTasks.length > 0) {
 			assignedTask = weightedPick(baseBossTasks);
 		}
 	}
 
 	if (wildyBossTask) {
-		const baseWildyBossTasks = wildernessBossTasks.filter(t => userCanUseTask(_user, t, master, true));
+		const baseWildyBossTasks = wildernessBossTasks.filter(t => userCanUseTask(user, t, master, true));
 		if (baseWildyBossTasks.length > 0) {
 			assignedTask = weightedPick(baseWildyBossTasks);
 		}
@@ -242,12 +240,10 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		assignedTask = weightedPick(baseTasks);
 	}
 
-	const newUser = await getNewUser(_user.id);
-
 	let maxQuantity = assignedTask?.amount[1];
-	if (bossTask && _user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss)) {
+	if (bossTask && user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss)) {
 		for (const tier of Object.keys(CombatAchievements) as (keyof typeof CombatAchievements)[]) {
-			if (_user.hasCompletedCATier(tier)) {
+			if (user.hasCompletedCATier(tier)) {
 				maxQuantity += 5;
 			}
 		}
@@ -256,28 +252,36 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 	let quantity = randInt(assignedTask!.amount[0], maxQuantity);
 
 	const extendReward = SlayerRewardsShop.find(srs => srs.extendID?.includes(assignedTask!.monster.id));
-	if (extendReward && unlocks.includes(extendReward.id)) {
+	if (extendReward && user.hasSlayerUnlock([extendReward.id])) {
 		quantity = assignedTask.extendedAmount
 			? randInt(assignedTask.extendedAmount[0], assignedTask.extendedAmount[1])
 			: Math.ceil(quantity * extendReward.extendMult!);
 	}
 
 	const messages: string[] = [];
-	if (unlocks.includes(SlayerTaskUnlocksEnum.SizeMatters) && !_user.bitfield.includes(BitField.DisableSizeMatters)) {
+	if (
+		user.hasSlayerUnlock([SlayerTaskUnlocksEnum.SizeMatters]) &&
+		!user.bitfield.includes(BitField.DisableSizeMatters)
+	) {
 		quantity *= 2;
 		messages.push('2x qty for Size Matters unlock');
 	}
 	if (
-		_user.bitfield.includes(BitField.HasScrollOfLongevity) &&
-		!_user.bitfield.includes(BitField.ScrollOfLongevityDisabled)
+		user.bitfield.includes(BitField.HasScrollOfLongevity) &&
+		!user.bitfield.includes(BitField.ScrollOfLongevityDisabled)
 	) {
 		quantity *= 2;
 		messages.push('2x qty for Scroll of longevity');
 	}
 
+	await prisma.newUser.upsert({
+		where: { id: user.id },
+		create: { id: user.id },
+		update: {}
+	});
 	const currentTask = await prisma.slayerTask.create({
 		data: {
-			user_id: newUser.id,
+			user_id: user.id,
 			quantity,
 			quantity_remaining: quantity,
 			slayer_master_id: master.id,
@@ -285,7 +289,7 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 			skipped: false
 		}
 	});
-	await _user.update({
+	await user.update({
 		slayer_last_task: assignedTask.monster.id
 	});
 
