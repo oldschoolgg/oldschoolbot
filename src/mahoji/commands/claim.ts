@@ -61,7 +61,7 @@ const claimables = [
 	}))
 ];
 
-export const claimCommand: OSBMahojiCommand = {
+export const claimCommand = defineCommand({
 	name: 'claim',
 	description: 'Claim prizes, rewards and other things.',
 	options: [
@@ -70,7 +70,7 @@ export const claimCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The thing you want to claim.',
 			required: true,
-			autocomplete: async (value, user) => {
+			autocomplete: async (value: string, user: MUser) => {
 				const claimableItems = await prisma.reclaimableItem.findMany({
 					where: {
 						user_id: user.id
@@ -85,7 +85,7 @@ export const claimCommand: OSBMahojiCommand = {
 			}
 		}
 	],
-	run: async ({ options, user }: CommandRunOptions<{ name: string }>) => {
+	run: async ({ options, user }) => {
 		const claimable = claimables.find(i => stringMatches(i.name, options.name));
 		if (!claimable) {
 			const reclaimableData = await getReclaimableItemsOfUser(user);
@@ -113,4 +113,4 @@ ${dateFm(new Date(rawData.date))}`;
 		const result = await claimable.action(user);
 		return result;
 	}
-};
+});

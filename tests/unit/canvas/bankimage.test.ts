@@ -119,7 +119,9 @@ describe('Bank Images', async () => {
 
 	test('Paged Bank Image', async () => {
 		const bank = new Bank();
-		for (const item of allCLItems.sort((a, b) => a - b).slice(0, 200)) {
+		for (const item of Array.from(allCLItems)
+			.sort((a, b) => a - b)
+			.slice(0, 200)) {
 			bank.add(item);
 		}
 

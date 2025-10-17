@@ -49,7 +49,7 @@ export async function cancelTaskCommand(user: MUser, interaction?: MInteraction)
 		]);
 	}
 
-	if ((currentTask as any).users && (currentTask as any).users.length > 1) {
+	if ('users' in currentTask && currentTask.users.length > 1) {
 		return 'Your minion is on a group activity and cannot cancel!';
 	}
 

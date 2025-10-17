@@ -112,7 +112,7 @@ async function makeImage(location: MegaDuckLocation) {
 	};
 }
 
-export const megaDuckCommand: OSBMahojiCommand = {
+export const megaDuckCommand = defineCommand({
 	name: 'megaduck',
 	description: 'Mega duck!.',
 	attributes: {
@@ -134,12 +134,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		guildID,
-		interaction
-	}: CommandRunOptions<{ move?: MegaduckDirection; reset?: boolean }>) => {
+	run: async ({ options, userID, guildID, interaction }) => {
 		const user = await mUserFetch(userID);
 		const withoutCooldown = (message: string) => {
 			Cooldowns.delete(user.id, 'megaduck');
@@ -269,4 +264,4 @@ export const megaDuckCommand: OSBMahojiCommand = {
 			files: location.steps?.length % 2 === 0 ? [{ attachment: image, name: 'megaduck.png' }] : []
 		};
 	}
-};
+});

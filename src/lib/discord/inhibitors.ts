@@ -10,6 +10,7 @@ import {
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { DISABLED_COMMANDS, perkTierCache, untrustedGuildSettingsCache } from '@/lib/cache.js';
 import { BadgesEnum, BitField, Channel, globalConfig } from '@/lib/constants.js';
+import type { AnyCommand } from '@/lib/discord/index.js';
 import type { InhibitorResult } from '@/lib/discord/preCommand.js';
 import { minionBuyButton } from '@/lib/sharedComponents.js';
 import type { MMember } from '@/lib/structures/MInteraction.js';
@@ -20,7 +21,7 @@ interface Inhibitor {
 	name: string;
 	run: (options: {
 		user: MUser;
-		command: OSBMahojiCommand;
+		command: AnyCommand;
 		guild: Guild | null;
 		channel: TextBasedChannel | null;
 		member: MMember | null;
@@ -180,7 +181,7 @@ export function runInhibitors({
 	user: MUser;
 	channel: TextBasedChannel | null;
 	member: MMember | null;
-	command: OSBMahojiCommand;
+	command: AnyCommand;
 	guild: Guild | null;
 }): undefined | InhibitorResult {
 	for (const { run, silent } of inhibitors) {

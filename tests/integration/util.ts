@@ -6,6 +6,7 @@ import { clone } from 'remeda';
 import { expect, vi } from 'vitest';
 
 import type { ClientStorage, GearSetupType, Prisma, User, UserStats } from '@/prisma/main.js';
+import type { AnyCommand } from '@/lib/discord/index.js';
 import { globalConfig, type PvMMethod } from '../../src/lib/constants.js';
 import { MUserClass } from '../../src/lib/MUser.js';
 import { type SkillNameType, SkillsArray } from '../../src/lib/skilling/types.js';
@@ -285,7 +286,7 @@ export class TestUser extends MUserClass {
 		return { commandResult, newKC, xpGained, previousBank, tripStartBank, activityResult };
 	}
 
-	async runCommand(command: OSBMahojiCommand, options: object = {}, syncAfter = false) {
+	async runCommand(command: AnyCommand, options: object = {}, syncAfter = false) {
 		await this.sync();
 		const mockedInt = mockInteraction({ user: this });
 		const result = await command.run({

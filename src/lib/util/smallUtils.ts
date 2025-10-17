@@ -77,7 +77,7 @@ export function calculateSimpleMonsterDeathChance({
 export const staticTimeIntervals = ['day', 'week', 'month'] as const;
 type StaticTimeInterval = (typeof staticTimeIntervals)[number];
 export function parseStaticTimeInterval(input: string): input is StaticTimeInterval {
-	if (staticTimeIntervals.includes(input as any)) {
+	if (staticTimeIntervals.includes(input as StaticTimeInterval)) {
 		return true;
 	}
 	return false;

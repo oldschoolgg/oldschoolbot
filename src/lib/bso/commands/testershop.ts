@@ -2,7 +2,6 @@ import { Time } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { premiumPatronTime } from '@/lib/premiumPatronTime.js';
-import { roboChimpUserFetch } from '@/lib/roboChimp.js';
 
 const shop = [
 	{
@@ -19,7 +18,7 @@ const shop = [
 	}
 ] as const;
 
-export const testerShopCommand: OSBMahojiCommand = {
+export const testerShopCommand = defineCommand({
 	name: 'testershop',
 	description: 'Buy things using your testing points.',
 	options: [
@@ -41,9 +40,8 @@ export const testerShopCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
-		const robochimpUser = await roboChimpUserFetch(userID);
+	run: async ({ options, user }) => {
+		const robochimpUser = await user.fetchRobochimpUser();
 		const item = shop.find(i => i.name === options.name);
 		if (!item) return 'Invalid item.';
 		const quantity = options.quantity ?? 1;
@@ -58,7 +56,7 @@ export const testerShopCommand: OSBMahojiCommand = {
 				}
 			},
 			where: {
-				id: BigInt(userID)
+				id: BigInt(user.id)
 			}
 		});
 
@@ -80,4 +78,4 @@ export const testerShopCommand: OSBMahojiCommand = {
 			}
 		}
 	}
-};
+});

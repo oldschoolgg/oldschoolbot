@@ -5,7 +5,7 @@ import Smithing from '@/lib/skilling/skills/smithing/index.js';
 import type { SmeltingActivityTaskOptions } from '@/lib/types/minions.js';
 import { formatSkillRequirements } from '@/lib/util/smallUtils.js';
 
-export const smeltingCommand: OSBMahojiCommand = {
+export const smeltingCommand = defineCommand({
 	name: 'smelt',
 	description: 'Smelt ores/items.',
 	attributes: {
@@ -40,11 +40,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		user,
-		options,
-		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; blast_furnace?: boolean }>) => {
+	run: async ({ user, options, channelID }) => {
 		let { name, quantity, blast_furnace } = options;
 
 		if (blast_furnace === undefined) blast_furnace = false;
@@ -186,4 +182,4 @@ export const smeltingCommand: OSBMahojiCommand = {
 
 		return response;
 	}
-};
+});

@@ -7,7 +7,7 @@ import { Bank, Items } from 'oldschooljs';
 import { type Eatable, Eatables } from '@/lib/data/eatables.js';
 import { getRealHealAmount } from '@/lib/minions/functions/getUserFoodFromBank.js';
 
-export const kibbleCommand: OSBMahojiCommand = {
+export const kibbleCommand = defineCommand({
 	name: 'kibble',
 	description: 'Make kibble from herbs and crops.',
 	attributes: {
@@ -31,8 +31,7 @@ export const kibbleCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ kibble: string; quantity: number }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelID }) => {
 		const kibble = kibbles.find(e => [e.item.name, e.type].some(s => stringMatches(s, options.kibble)));
 		if (!kibble) {
 			return `No matching kibble found, they are: ${kibbles.map(k => k.item.name).join(', ')}.`;
@@ -120,4 +119,4 @@ export const kibbleCommand: OSBMahojiCommand = {
 		}
 		return message;
 	}
-};
+});

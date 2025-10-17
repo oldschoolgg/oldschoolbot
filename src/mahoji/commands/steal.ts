@@ -10,7 +10,7 @@ import { type Stealable, stealables } from '@/lib/skilling/skills/thieving/steal
 import type { PickpocketActivityTaskOptions } from '@/lib/types/minions.js';
 import { calcLootXPPickpocketing } from '@/tasks/minions/pickpocketActivity.js';
 
-export const stealCommand: OSBMahojiCommand = {
+export const stealCommand = defineCommand({
 	name: 'steal',
 	description: 'Sends your minion to steal to train Thieving.',
 	attributes: {
@@ -43,7 +43,7 @@ export const stealCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
+	run: async ({ options, user, channelID }) => {
 		const stealable: Stealable | undefined = stealables.find(
 			obj =>
 				stringMatches(obj.name, options.name) ||
@@ -202,4 +202,4 @@ export const stealCommand: OSBMahojiCommand = {
 
 		return str;
 	}
-};
+});

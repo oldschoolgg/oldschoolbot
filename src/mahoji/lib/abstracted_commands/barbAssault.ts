@@ -89,7 +89,7 @@ export const GambleTiers = [
 		cost: 500,
 		table: HighGambleTable
 	}
-];
+] as const;
 
 export async function barbAssaultLevelCommand(user: MUser) {
 	const stats = await user.fetchStats();

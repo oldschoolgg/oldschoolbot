@@ -212,7 +212,7 @@ export function calculateMiningInput({
 	};
 }
 
-export const mineCommand: OSBMahojiCommand = {
+export const mineCommand = defineCommand({
 	name: 'mine',
 	description: 'Send your minion to mine things.',
 	attributes: {
@@ -249,11 +249,7 @@ export const mineCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		options,
-		user,
-		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; powermine?: boolean }>) => {
+	run: async ({ options, user, channelID }) => {
 		const { quantity, powermine } = options;
 
 		const motherlodeMine =
@@ -315,4 +311,4 @@ export const mineCommand: OSBMahojiCommand = {
 
 		return response;
 	}
-};
+});

@@ -177,11 +177,11 @@ function icDonateValidation(user: MUser, donator: MUser) {
 	};
 }
 
-async function donateICHandler(interaction: MInteraction) {
-	if (!interaction.customId) return;
+async function donateICHandler(interaction: MInteraction): CommandResponse {
+	if (!interaction.customId) return { content: 'Invalid interaction.', flags: MessageFlags.Ephemeral };
 	const userID = interaction.customId.split('_')[2];
 	if (!userID) {
-		return interaction.reply({ content: 'Invalid user.', flags: MessageFlags.Ephemeral });
+		return { content: 'Invalid user.', flags: MessageFlags.Ephemeral };
 	}
 
 	const user = await mUserFetch(userID);
@@ -191,7 +191,7 @@ async function donateICHandler(interaction: MInteraction) {
 	);
 
 	const errorStr = icDonateValidation(user, donator);
-	if (typeof errorStr === 'string') return interaction.reply({ content: errorStr, flags: MessageFlags.Ephemeral });
+	if (typeof errorStr === 'string') return { content: errorStr, flags: MessageFlags.Ephemeral };
 
 	await interaction.confirmation({
 		content: `${donator}, are you sure you want to give ${errorStr.cost} to ${
@@ -204,7 +204,7 @@ async function donateICHandler(interaction: MInteraction) {
 	await donator.sync();
 
 	const secondaryErrorStr = icDonateValidation(user, donator);
-	if (typeof secondaryErrorStr === 'string') return interaction.reply({ content: secondaryErrorStr });
+	if (typeof secondaryErrorStr === 'string') return { content: secondaryErrorStr };
 	const { cost } = secondaryErrorStr;
 
 	try {
@@ -213,7 +213,7 @@ async function donateICHandler(interaction: MInteraction) {
 		await user.statsBankUpdate('ic_donations_received_bank', cost);
 		const handInResult = await handInContract(interaction, user);
 		const nextIcDetails = getItemContractDetails(user);
-		return interaction.reply({
+		return {
 			content: `${donator} donated ${cost} for ${user}'s Item Contract!
 
 ${user.mention} ${handInResult}
@@ -222,9 +222,10 @@ ${Emoji.ItemContract} Your next contract is: ${nextIcDetails.currentItem?.name} 
 			allowedMentions: {
 				users: [user.id]
 			}
-		});
+		};
 	} catch (err) {
 		Logging.logError({ err: err as Error, interaction });
+		return { content: 'There was an error processing the trade. Please try again later.' };
 	}
 }
 

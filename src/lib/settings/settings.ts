@@ -25,13 +25,24 @@ export interface RunCommandArgs {
 	isContinue?: boolean;
 	interaction: MInteraction;
 	continueDeltaMillis: number | null;
+	ignoreUserIsBusy?: true;
 }
 
-export async function runCommand({ commandName, args, interaction: _interaction }: RunCommandArgs): Promise<null> {
+export async function runCommand({
+	commandName,
+	args,
+	interaction: _interaction,
+	ignoreUserIsBusy
+}: RunCommandArgs): CommandResponse {
 	const interaction: MInteraction =
 		_interaction instanceof ButtonInteraction ? new MInteraction({ interaction: _interaction }) : _interaction;
 	const command = globalClient.allCommands.find(c => c.name === commandName)!;
 
-	await rawCommandHandlerInner({ interaction, command, options: args });
-	return null;
+	const response: Awaited<CommandResponse> = await rawCommandHandlerInner({
+		interaction,
+		command,
+		options: args,
+		ignoreUserIsBusy
+	});
+	return response;
 }

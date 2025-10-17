@@ -1,29 +1,13 @@
-import { doaMetamorphPets } from '@/lib/bso/collection-log/main.js';
-import {
-	calcDOAInput,
-	chanceOfDOAUnique,
-	createDOATeam,
-	DOARooms,
-	doaHelpCommand,
-	pickUniqueToGiveUser
-} from '@/lib/bso/depthsOfAtlantis.js';
-import { DOANonUniqueTable } from '@/lib/bso/doa/doaLootTable.js';
+import { doaHelpCommand } from '@/lib/bso/depthsOfAtlantis.js';
 import { doaStartCommand } from '@/lib/bso/doa/doaStartCommand.js';
-import { globalDroprates } from '@/lib/bso/globalDroprates.js';
 
-import { randArrItem, roll } from '@oldschoolgg/rng';
-import { formatDuration, reduceNumByPercent, sumArr } from '@oldschoolgg/toolkit';
-import { averageBank, Bank, resolveItems } from 'oldschooljs';
-
-import { globalConfig } from '@/lib/constants.js';
-import { degradeableItems } from '@/lib/degradeableItems.js';
+import { choicesOf } from '@/lib/discord/index.js';
 import { toaHelpCommand, toaStartCommand } from '@/lib/simulation/toa.js';
 import { mileStoneBaseDeathChances } from '@/lib/simulation/toaUtils.js';
-import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { coxCommand, coxStatsCommand } from '@/mahoji/lib/abstracted_commands/coxCommand.js';
 import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '@/mahoji/lib/abstracted_commands/tobCommand.js';
 
-export const raidCommand: OSBMahojiCommand = {
+export const raidCommand = defineCommand({
 	name: 'raid',
 	description: 'Send your minion to do raids - CoX or ToB.',
 	attributes: {
@@ -44,7 +28,7 @@ export const raidCommand: OSBMahojiCommand = {
 							type: 'String',
 							name: 'type',
 							description: 'Choose whether you want to solo, mass, or fake mass.',
-							choices: ['solo', 'mass'].map(i => ({ name: i, value: i })),
+							choices: choicesOf(['solo', 'mass']),
 							required: true
 						},
 						{
@@ -90,7 +74,7 @@ export const raidCommand: OSBMahojiCommand = {
 							type: 'String',
 							name: 'solo',
 							description: 'Attempt the Theatre by yourself.',
-							choices: ['solo', 'trio'].map(i => ({ name: i, value: i }))
+							choices: choicesOf(['solo', 'trio'])
 						},
 						{
 							type: 'Boolean',
@@ -229,73 +213,11 @@ export const raidCommand: OSBMahojiCommand = {
 					type: 'Subcommand',
 					name: 'help',
 					description: 'Shows helpful information and stats about DOA.'
-				},
-				...(globalConfig.isProduction
-					? []
-					: [
-							{
-								type: 'Subcommand',
-								name: 'simulate',
-								description: 'Shows helpful information and stats about DOA.',
-								options: [
-									{
-										type: 'Boolean',
-										name: 'challenge_mode',
-										description: 'Try if you dare.',
-										required: false
-									},
-									{
-										type: 'Integer',
-										name: 'team_size',
-										description: 'Team size (1-5).',
-										required: false,
-										min_value: 1,
-										max_value: 5
-									}
-								]
-							} as any
-						])
+				}
 			]
 		}
 	],
-	run: async ({
-		interaction,
-		options,
-		user,
-		channelID
-	}: CommandRunOptions<{
-		cox?: {
-			start?: {
-				type: 'solo' | 'mass';
-				challenge_mode?: boolean;
-				max_team_size?: number;
-				quantity?: number;
-			};
-			stats?: {};
-		};
-		tob?: {
-			start?: {
-				solo?: 'solo' | 'trio' | undefined;
-				hard_mode?: boolean;
-				max_team_size?: number;
-				quantity?: number;
-			};
-			stats?: {};
-			check?: { hard_mode?: boolean };
-		};
-		toa?: {
-			start?: { raid_level: number; max_team_size?: number; solo?: boolean; quantity?: number };
-			help?: {};
-		};
-		doa?: {
-			start?: { challenge_mode?: boolean; max_team_size?: number; solo?: boolean; quantity?: number };
-			help?: {};
-			simulate?: {
-				challenge_mode?: boolean;
-				team_size?: number;
-			};
-		};
-	}>) => {
+	run: async ({ interaction, options, user, channelID }) => {
 		if (interaction) await interaction.defer();
 
 		const { cox, tob } = options;
@@ -305,151 +227,6 @@ export const raidCommand: OSBMahojiCommand = {
 		if (options.toa?.help) return toaHelpCommand(user, channelID);
 		if (options.doa?.help) {
 			return doaHelpCommand(user);
-		}
-
-		if (options.doa?.simulate) {
-			const samples = 1000;
-			const results: {
-				loot: Bank;
-				time: number;
-				cost: Bank;
-				kcFinishedAt: number;
-			}[] = [];
-
-			const cm = Boolean(options.doa.simulate.challenge_mode);
-			const teamSize = options.doa.simulate.team_size ?? 1;
-
-			for (let t = 0; t < samples; t++) {
-				let i = 0;
-				const totalLoot = new Bank();
-				const items = resolveItems([
-					'Shark jaw',
-					'Shark tooth',
-					'Oceanic relic',
-					'Aquifer aegis',
-					'Oceanic dye',
-					'Crush'
-				]);
-
-				// if (cm) {
-				// 	items.push(...doaMetamorphPets);
-				// }
-
-				let time = 0;
-				const totalCost = new Bank();
-
-				const uniqueChance = chanceOfDOAUnique(teamSize, cm);
-				let petDroprate = globalDroprates.doaCrush.baseRate;
-				if (cm) petDroprate = reduceNumByPercent(petDroprate, globalDroprates.doaCrush.cmReduction);
-
-				while (items.some(item => !totalLoot.has(item))) {
-					i++;
-
-					const loot = new Bank();
-					if (roll(uniqueChance)) {
-						loot.add(pickUniqueToGiveUser(totalLoot));
-					} else {
-						loot.add(DOANonUniqueTable.roll());
-					}
-
-					if (cm && roll(globalDroprates.doaMetamorphPet.baseRate)) {
-						const unownedCMPets = randArrItem(doaMetamorphPets.filter(b => !user.cl.has(b)));
-						if (unownedCMPets) {
-							loot.add(unownedCMPets);
-						}
-					}
-
-					if (roll(petDroprate)) {
-						loot.add('Crush');
-					}
-
-					totalLoot.add(loot);
-
-					const kcBank = new Bank();
-					for (const room of DOARooms) {
-						kcBank.add(room.id, i);
-					}
-
-					const team = [];
-					for (let a = 0; a < teamSize; a++) {
-						team.push({ user, kc: a, attempts: a, roomKCs: kcBank.toJSON() as any });
-					}
-
-					const result = createDOATeam({
-						team,
-						challengeMode: cm,
-						quantity: 1
-					});
-
-					let cost: any = null;
-					try {
-						cost = await calcDOAInput({
-							user,
-							kcOverride: i,
-							challengeMode: cm,
-							quantity: 1,
-							duration: result.fakeDuration
-						});
-					} catch (err: any) {
-						return err.message;
-					}
-					totalCost.add(cost.cost);
-					totalCost.add('Blood rune', cost.sangCharges * 3);
-
-					const vStaff = degradeableItems.find(t => t.item.name === 'Void staff')!;
-					if (cost.voidStaffCharges) {
-						totalCost.add(vStaff.chargeInput.cost.clone().multiply(cost.voidStaffCharges));
-					}
-
-					const tShadow = degradeableItems.find(t => t.item.name === "Tumeken's shadow")!;
-					if (cost.tumShadowCharges) {
-						totalCost.add(tShadow.chargeInput.cost.clone().multiply(cost.tumShadowCharges));
-					}
-
-					time += result.fakeDuration;
-				}
-
-				results.push({ time, cost: totalCost, loot: totalLoot, kcFinishedAt: i });
-			}
-
-			const luckiest = results.sort((a, b) => a.kcFinishedAt - b.kcFinishedAt)[0];
-			const unluckiest = results.sort((a, b) => b.kcFinishedAt - a.kcFinishedAt)[0];
-			const fastest = results.sort((a, b) => a.time - b.time)[0];
-			const slowest = results.sort((a, b) => b.time - a.time)[0];
-			const totalLoot = new Bank();
-			const totalCost = new Bank();
-			let totalTime = 0;
-
-			for (const result of results) {
-				totalLoot.add(result.loot);
-				totalCost.add(result.cost);
-				totalTime += result.time;
-			}
-
-			const averageLoot = averageBank(totalLoot, samples);
-			const averageCost = averageBank(totalCost, samples);
-			const averageTime = totalTime / samples;
-			const averageKC = sumArr(results.map(r => r.kcFinishedAt)) / samples;
-
-			return {
-				content: `
-Average time to finish: ${formatDuration(averageTime)}
-Average KC finished at: ${averageKC}
-
-Team Size: ${teamSize}
-${cm ? 'Challenge Mode' : 'NOT Challenge Mode'}
-Total cost does not include charges (e.g. blood runes from sang staff)
-
-Luckiest finish: ${luckiest.kcFinishedAt} KC
-Unluckiest finish: ${unluckiest.kcFinishedAt} KC
-Fastest finish: ${formatDuration(fastest.time)}
-Slowest finish: ${formatDuration(slowest.time)}
-`,
-				files: [
-					(await makeBankImage({ bank: averageLoot, title: 'Average Loot' })).file,
-					(await makeBankImage({ bank: averageCost, title: 'Average Cost' })).file
-				]
-			};
 		}
 
 		if (user.minionIsBusy) return "Your minion is busy, you can't do this.";
@@ -503,4 +280,4 @@ Slowest finish: ${formatDuration(slowest.time)}
 
 		return 'Invalid command.';
 	}
-};
+});

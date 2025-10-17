@@ -1,5 +1,3 @@
-import { uniqueArr } from '@oldschoolgg/toolkit';
-
 import { allCollectionLogsFlat } from '@/lib/data/Collections.js';
 
 export async function syncCollectionLogSlotTable() {
@@ -7,7 +5,7 @@ export async function syncCollectionLogSlotTable() {
 	await prisma.$transaction(
 		allCollectionLogsFlat
 			.map(cl => {
-				const items = uniqueArr(cl.items).sort((a, b) => a - b);
+				const items = Array.from(cl.items).sort((a, b) => a - b);
 				return [
 					prisma.cLCategory.upsert({
 						where: { name: cl.name },

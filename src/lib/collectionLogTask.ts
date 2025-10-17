@@ -146,14 +146,13 @@ class CollectionLogTask {
 				files: [
 					{
 						attachment: Buffer.from(
-							collectionLog.collection
+							Array.from(collectionLog.collection.values())
 								.map(i => {
 									const _i = Items.getOrThrow(i);
 									const _q = (collectionLog as IToReturnCollection).userItems.amount(_i.id);
 									if (_q === 0 && !flags.missing) return undefined;
 									return `${flags.nq || flags.missing ? '' : `${_q}x `}${_i.name}`;
 								})
-								.filter(f => f)
 								.join(flags.comma ? ', ' : '\n')
 						),
 						name: 'yourLogItems.txt'
@@ -473,7 +472,7 @@ class CollectionLogTask {
 	}: {
 		user: MUser;
 		title: string;
-		clItems: number[];
+		clItems: Set<number>;
 		userBank: Bank;
 	}) {
 		return this.generateLogImage({
@@ -486,8 +485,8 @@ class CollectionLogTask {
 				name: title,
 				collection: clItems,
 				userItems: userBank,
-				collectionTotal: clItems.length,
-				collectionObtained: clItems.filter(i => userBank.has(i)).length,
+				collectionTotal: clItems.size,
+				collectionObtained: Array.from(clItems).filter(i => userBank.has(i)).length,
 				category: 'idk',
 				leftList: undefined,
 				counts: false

@@ -1,4 +1,5 @@
-import { PVM_METHODS, type PvMMethod } from '@/lib/constants.js';
+import { PVM_METHODS } from '@/lib/constants.js';
+import { choicesOf } from '@/lib/discord/index.js';
 import { autocompleteMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { minionKillCommand } from '@/mahoji/lib/abstracted_commands/minionKill/minionKill.js';
 
@@ -17,7 +18,7 @@ LIMIT 10;`,
 	return res.map(i => Number(i.mon_id));
 }
 
-export const minionKCommand: OSBMahojiCommand = {
+export const minionKCommand = defineCommand({
 	name: 'k',
 	description: 'Send your minion to kill things.',
 	attributes: {
@@ -30,7 +31,7 @@ export const minionKCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The thing you want to kill.',
 			required: true,
-			autocomplete: async (value, user) => {
+			autocomplete: async (value: string, user: MUser) => {
 				const recentlyKilled = await fetchUsersRecentlyKilledMonsters(user.id);
 				return autocompleteMonsters
 					.filter(m =>
@@ -66,7 +67,7 @@ export const minionKCommand: OSBMahojiCommand = {
 			name: 'method',
 			description: 'If you want to cannon/barrage/burst.',
 			required: false,
-			choices: PVM_METHODS.map(i => ({ name: i, value: i }))
+			choices: choicesOf(PVM_METHODS)
 		},
 		{
 			type: 'Boolean',
@@ -81,19 +82,7 @@ export const minionKCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		options,
-		user,
-		channelID,
-		interaction
-	}: CommandRunOptions<{
-		name: string;
-		quantity?: number;
-		method?: PvMMethod;
-		wilderness?: boolean;
-		solo?: boolean;
-		onTask?: boolean;
-	}>) => {
+	run: async ({ options, user, channelID, interaction }) => {
 		return minionKillCommand(
 			user,
 			interaction,
@@ -103,7 +92,7 @@ export const minionKCommand: OSBMahojiCommand = {
 			options.method,
 			options.wilderness,
 			options.solo,
-			options.onTask
+			undefined
 		);
 	}
-};
+});

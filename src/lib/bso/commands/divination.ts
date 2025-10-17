@@ -16,7 +16,7 @@ import { Bank } from 'oldschooljs';
 import { mentionCommand } from '@/lib/discord/index.js';
 import { assert } from '@/lib/util/logError.js';
 
-export const divinationCommand: OSBMahojiCommand = {
+export const divinationCommand = defineCommand({
 	name: 'divination',
 	description: 'The divination skill.',
 	options: [
@@ -112,19 +112,7 @@ export const divinationCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		channelID,
-		interaction
-	}: CommandRunOptions<{
-		harvest_memories?: { energy: string; type?: number; no_potion?: boolean };
-		portent?: { view: string };
-		charge_portent?: { portent: string; quantity: number };
-		toggle_portent?: { portent: string };
-	}>) => {
-		const user = await mUserFetch(userID);
-
+	run: async ({ options, user, channelID, interaction }) => {
 		if (options.toggle_portent) {
 			const portent = portents.find(p => p.item.name === options.toggle_portent!.portent);
 			if (!portent) {
@@ -349,4 +337,4 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 
 		return 'Invalid command.';
 	}
-};
+});

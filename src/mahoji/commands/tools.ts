@@ -1,11 +1,10 @@
 import { giveBox, spawnBoxCommand, spawnLampCommand } from '@/lib/bso/commands/spawnBoxLampCommand.js';
 import { addToDoubleLootTimer } from '@/lib/bso/doubleLoot.js';
 import { keyCrates } from '@/lib/bso/keyCrates.js';
-import { spookyTable } from '@/lib/bso/openables/tables.js';
 import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 import { repairBrokenItemsFromUser } from '@/lib/bso/util/repairBrokenItems.js';
 
-import { asyncGzip, formatDuration, PerkTier, stringMatches, Time } from '@oldschoolgg/toolkit';
+import { asyncGzip, formatDuration, PerkTier, stringMatches, stringSearch, Time } from '@oldschoolgg/toolkit';
 import { ChannelType, EmbedBuilder, userMention } from 'discord.js';
 import { Bank, type Item, type ItemBank, ItemGroups, Items, resolveItems, ToBUniqueTable } from 'oldschooljs';
 
@@ -16,6 +15,7 @@ import { BitField } from '@/lib/constants.js';
 import { allCLItemsFiltered, allDroppedItems } from '@/lib/data/Collections.js';
 import { gnomeRestaurantCL, guardiansOfTheRiftCL, shadesOfMorttonCL } from '@/lib/data/CollectionsExport.js';
 import pets from '@/lib/data/pets.js';
+import { choicesOf } from '@/lib/discord/index.js';
 import { itemOption, monsterOption, skillOption } from '@/lib/discord/presetCommandOptions.js';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables, type UnifiedOpenable } from '@/lib/openables.js';
@@ -824,7 +824,7 @@ async function patronTriggerDoubleLoot(user: MUser) {
 	return `Added ${formatDuration(time)} of double loot.`;
 }
 
-export const toolsCommand: OSBMahojiCommand = {
+export const toolsCommand = defineCommand({
 	name: 'tools',
 	description: 'Various tools and miscellaneous commands.',
 	options: [
@@ -843,14 +843,14 @@ export const toolsCommand: OSBMahojiCommand = {
 							name: 'time',
 							description: 'The time period.',
 							required: true,
-							choices: staticTimeIntervals.map(i => ({ name: i, value: i }))
+							choices: choicesOf(staticTimeIntervals)
 						},
 						{
 							type: 'String',
 							name: 'tier',
 							description: 'The tier of clue scroll.',
 							required: false,
-							autocomplete: async value => {
+							autocomplete: async (value: string) => {
 								return [...ClueTiers.map(i => ({ name: i.name, value: i }))]
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({ name: i.name, value: i.name }));
@@ -874,7 +874,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							name: 'time',
 							description: 'The time period.',
 							required: true,
-							choices: ['day', 'week', 'month'].map(i => ({ name: i, value: i }))
+							choices: choicesOf(['day', 'week', 'month'])
 						},
 						monsterOption,
 						{
@@ -895,7 +895,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							name: 'time',
 							description: 'The time period.',
 							required: true,
-							choices: ['day', 'week', 'month'].map(i => ({ name: i, value: i }))
+							choices: choicesOf(['day', 'week', 'month'])
 						},
 						skillOption,
 						{
@@ -916,7 +916,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							name: 'source',
 							description: 'The source of the item – a monster, minigame, clue, etc.',
 							required: true,
-							autocomplete: async value => {
+							autocomplete: async (value: string) => {
 								return [
 									...dryStreakEntities.map(i => ({ name: i.name, value: i })),
 									...effectiveMonsters
@@ -926,7 +926,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							...itemOption(item => [...allCLItemsFiltered, ...spookyTable.allItems].includes(item.id)),
+							...itemOption(item => allCLItemsFiltered.has(item.id)),
 							required: true
 						},
 						{
@@ -952,7 +952,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							name: 'filter',
 							description: 'Filter by account type.',
 							required: false,
-							choices: ['Both', 'Irons Only', 'Mains Only'].map(i => ({ name: i, value: i }))
+							choices: choicesOf(['Both', 'Irons Only', 'Mains Only'])
 						}
 					]
 				},
@@ -971,7 +971,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							name: 'format',
 							description: 'Bank Image or Json format?',
 							required: false,
-							choices: ['bank', 'json'].map(i => ({ name: i, value: i }))
+							choices: choicesOf(['bank', 'json'])
 						}
 					]
 				},
@@ -1045,8 +1045,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				{
 					type: 'Subcommand',
 					name: 'mypets',
-					description: 'See the chat pets you have.',
-					options: []
+					description: 'See the chat pets you have.'
 				},
 				{
 					type: 'Subcommand',
@@ -1090,8 +1089,8 @@ export const toolsCommand: OSBMahojiCommand = {
 							required: false,
 							autocomplete: async (value: string) => {
 								return allStashUnitsFlat
-									.filter(i => (!value ? true : i.desc.toLowerCase().includes(value.toLowerCase())))
-									.map(i => ({ name: i.desc, value: i.id }));
+									.filter(i => stringSearch(value, i.desc))
+									.map(i => ({ name: i.desc, value: i.id.toString() }));
 							}
 						},
 						{
@@ -1105,14 +1104,12 @@ export const toolsCommand: OSBMahojiCommand = {
 				{
 					type: 'Subcommand',
 					name: 'build_all',
-					description: 'Automatically build all the STASH units that you can.',
-					options: []
+					description: 'Automatically build all the STASH units that you can.'
 				},
 				{
 					type: 'Subcommand',
 					name: 'fill_all',
-					description: 'Automatically fill all the STASH units that you can.',
-					options: []
+					description: 'Automatically fill all the STASH units that you can.'
 				},
 				{
 					type: 'Subcommand',
@@ -1124,13 +1121,13 @@ export const toolsCommand: OSBMahojiCommand = {
 							name: 'unit',
 							description: 'The specific unit you want to unfill.',
 							required: true,
-							autocomplete: async (value, user) => {
+							autocomplete: async (value: string, user: MUser) => {
 								return (await user.fetchStashUnits())
 									.filter(i => i.builtUnit !== undefined && i.builtUnit.items_contained.length > 0)
 									.filter(i =>
 										!value ? true : i.unit.desc.toLowerCase().includes(value.toLowerCase())
 									)
-									.map(i => ({ name: i.unit.desc, value: i.unit.id }));
+									.map(i => ({ name: i.unit.desc, value: i.unit.id.toString() }));
 							}
 						}
 					]
@@ -1138,64 +1135,12 @@ export const toolsCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		user,
-		interaction,
-		channelID,
-		guildID
-	}: CommandRunOptions<{
-		patron?: {
-			clue_gains?: {
-				time: 'day' | 'week' | 'month';
-				tier?: string;
-				ironman?: boolean;
-			};
-			kc_gains?: {
-				time: 'day' | 'week' | 'month';
-				monster: string;
-				ironman?: boolean;
-			};
-			xp_gains?: {
-				time: 'day' | 'week' | 'month';
-				skill?: string;
-				ironman?: boolean;
-			};
-			drystreak?: {
-				source: string;
-				item: string;
-				ironman?: boolean;
-			};
-			mostdrops?: {
-				item: string;
-				filter?: string;
-			};
-			sacrificed_bank?: {};
-			cl_bank?: {
-				format?: 'bank' | 'json';
-			};
-			minion_stats?: {};
-			give_box?: {
-				user: MahojiUserOption;
-			};
-			activity_export?: {};
-			spawnlamp?: {};
-			spawnbox?: {};
-			stats?: { stat: string };
-			doubleloot?: {};
-		};
-		user?: { mypets?: {}; temp_cl: { reset?: boolean }; checkmasses?: {}; fixbank?: {} };
-		stash_units?: {
-			view?: { unit?: string; not_filled?: boolean };
-			build_all?: {};
-			fill_all?: {};
-			unfill?: { unit: string };
-		};
-	}>) => {
+	run: async ({ options, user, interaction, guildID, channelID }): CommandResponse => {
 		await interaction.defer();
 
 		if (options.patron) {
 			const { patron } = options;
+
 			if (patron.clue_gains) {
 				if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return clueGains(patron.clue_gains.time, patron.clue_gains.tier, Boolean(patron.clue_gains.ironman));
@@ -1336,4 +1281,4 @@ You last reset your temporary CL: ${
 		}
 		return 'Invalid command!';
 	}
-};
+});

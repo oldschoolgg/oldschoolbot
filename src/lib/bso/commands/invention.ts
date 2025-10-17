@@ -5,11 +5,7 @@ import {
 	findDisassemblyGroup
 } from '@/lib/bso/skills/invention/disassemble.js';
 import { DisassemblySourceGroups } from '@/lib/bso/skills/invention/groups/index.js';
-import {
-	allItemsThatCanBeDisassembledIDs,
-	type IMaterialBank,
-	type MaterialType
-} from '@/lib/bso/skills/invention/index.js';
+import { allItemsThatCanBeDisassembledIDs, type IMaterialBank } from '@/lib/bso/skills/invention/index.js';
 import { Inventions, inventCommand, inventingCost, inventionBoosts } from '@/lib/bso/skills/invention/inventions.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { researchCommand } from '@/lib/bso/skills/invention/research.js';
@@ -21,7 +17,7 @@ import { ownedMaterialOption } from '@/lib/discord/index.js';
 import { makeBankImage } from '@/lib/util/makeBankImage.js';
 import { mahojiParseNumber } from '@/mahoji/mahojiSettings.js';
 
-export const inventionCommand: OSBMahojiCommand = {
+export const inventionCommand = defineCommand({
 	name: 'invention',
 	description: 'The invention skill.',
 	options: [
@@ -35,8 +31,7 @@ export const inventionCommand: OSBMahojiCommand = {
 					type: 'String',
 					description: 'The item you want to disassemble.',
 					required: true,
-					autocomplete: async (value, { id }) => {
-						const user = await mUserFetch(id);
+					autocomplete: async (value: string, user: MUser) => {
 						const inventionLevel = user.skillLevel('invention');
 
 						return user.bank
@@ -92,7 +87,7 @@ export const inventionCommand: OSBMahojiCommand = {
 					type: 'String',
 					description: 'The item you want to invent.',
 					required: true,
-					autocomplete: async value => {
+					autocomplete: async (value: string) => {
 						return Inventions.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({
@@ -148,7 +143,7 @@ export const inventionCommand: OSBMahojiCommand = {
 					name: 'invention',
 					description: 'The invention you want to check.',
 					required: true,
-					autocomplete: async value => {
+					autocomplete: async (value: string) => {
 						return Inventions.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						)
@@ -173,7 +168,7 @@ export const inventionCommand: OSBMahojiCommand = {
 					name: 'group',
 					description: 'The group you want to check.',
 					required: true,
-					autocomplete: async value => {
+					autocomplete: async (value: string) => {
 						return DisassemblySourceGroups.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({ name: i.name, value: i.name }));
@@ -182,22 +177,7 @@ export const inventionCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		userID,
-		options,
-		channelID,
-		interaction
-	}: CommandRunOptions<{
-		disassemble?: { name: string; quantity?: string };
-		research?: { material: MaterialType; quantity?: number };
-		invent?: { name: string; quantity?: number };
-		group?: { group: string };
-		materials?: {};
-		tools?: {
-			command: 'groups' | 'items_disassembled' | 'materials_researched' | 'unlocked_blueprints' | 'xp';
-		};
-		details?: { invention: string };
-	}>) => {
+	run: async ({ userID, options, channelID, interaction }) => {
 		const user = await mUserFetch(userID);
 		if (options.details) {
 			const invention = Inventions.find(i => stringMatches(i.name, options.details!.invention!));
@@ -375,4 +355,4 @@ These Inventions are still not unlocked: ${locked
 
 		return 'Invalid command.';
 	}
-};
+});

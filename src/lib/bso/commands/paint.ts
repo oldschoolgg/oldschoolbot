@@ -8,7 +8,7 @@ import { canvasToBuffer } from '@/lib/canvas/canvasUtil.js';
 import { paintColors } from '@/lib/customItems/paintCans.js';
 import { ownedItemOption } from '@/lib/discord/presetCommandOptions.js';
 
-export const paintCommand: OSBMahojiCommand = {
+export const paintCommand = defineCommand({
 	name: 'paint',
 	description: 'Paint an item.',
 	options: [
@@ -21,21 +21,20 @@ export const paintCommand: OSBMahojiCommand = {
 			name: 'paint',
 			description: 'The paint you want to use. Leave blank to preview all paints.',
 			required: false,
-			autocomplete: async (value, user) => {
-				const { bank } = await mUserFetch(user.id);
+			autocomplete: async (value: string, user: MUser) => {
 				return paintColors
 					.filter(i => {
 						if (!value) return true;
 						return i.paintCanItem.name.toLowerCase().includes(value.toLowerCase());
 					})
 					.map(i => ({
-						name: `${i.paintCanItem.name} (${bank.amount(i.itemId)}x Owned)`,
+						name: `${i.paintCanItem.name} (${user.bank.amount(i.itemId)}x Owned)`,
 						value: i.itemId.toString()
 					}));
 			}
 		}
 	],
-	run: async ({ userID, options, interaction }: CommandRunOptions<{ paint?: string; item: string }>) => {
+	run: async ({ user, options, interaction }) => {
 		const item = Items.getItem(options.item);
 		if (!item) {
 			return "That's not a valid item.";
@@ -55,7 +54,6 @@ export const paintCommand: OSBMahojiCommand = {
 			return "That's not a valid paint.";
 		}
 
-		const user = await mUserFetch(userID);
 		const imageBuffer = await canvasToBuffer(await getPaintedItemImage(paint, item.id));
 
 		const cost = new Bank().add(paint.itemId);
@@ -89,4 +87,4 @@ export const paintCommand: OSBMahojiCommand = {
 			files: [{ attachment: imageBuffer, name: 'painted-item.png' }]
 		};
 	}
-};
+});

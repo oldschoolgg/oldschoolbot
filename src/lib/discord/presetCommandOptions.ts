@@ -1,17 +1,18 @@
-import { materialTypes } from '@/lib/bso/skills/invention/index.js';
+import { type MaterialType, materialTypes } from '@/lib/bso/skills/invention/index.js';
 
 import { stringSearch, toTitleCase, truncateString, uniqueArr } from '@oldschoolgg/toolkit';
-import type { APIApplicationCommandOptionChoice } from 'discord.js';
+import type { APIApplicationCommandOptionChoice, GuildMember } from 'discord.js';
 import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 import type { GearPreset } from '@/prisma/main.js';
 import { baseFilters, filterableTypes } from '@/lib/data/filterables.js';
+import { choicesOf, defineOption } from '@/lib/discord/index.js';
 import { GearSetupTypes } from '@/lib/gear/types.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { SkillsArray } from '@/lib/skilling/types.js';
 import { Gear, type GlobalPreset, globalPresets } from '@/lib/structures/Gear.js';
 
-export const filterOption: CommandOption = {
+export const filterOption = {
 	type: 'String',
 	name: 'filter',
 	description: 'The filter you want to use.',
@@ -24,27 +25,32 @@ export const filterOption: CommandOption = {
 			.sort((a, b) => baseFilters.indexOf(b) - baseFilters.indexOf(a))
 			.map(val => ({ name: val.name, value: val.aliases[0] ?? val.name }));
 	}
-};
+} as const;
 
-export const itemArr = Items.array().map(i => ({ ...i, key: `${i.name.toLowerCase()}${i.id}` }));
+export const itemArr = Items.array()
+	.filter(i => !i.customItemData?.isSecret)
+	.map(i => ({ ...i, key: `${i.name.toLowerCase()}${i.id}` }));
 
 export const tradeableItemArr = itemArr.filter(i => i.tradeable_on_ge);
 
 export const allEquippableItems = Items.array().filter(i => i.equipable && i.equipment?.slot);
 
-export const itemOption = (filter?: (item: Item) => boolean): CommandOption => ({
-	type: 'String',
-	name: 'item',
-	description: 'The item you want to pick.',
-	required: false,
-	autocomplete: async value => {
-		let res = itemArr.filter(i => i.key.includes(value.toLowerCase())).filter(i => !i.customItemData?.isSecret);
-		if (filter) res = res.filter(filter);
-		return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
-	}
-});
+export const itemOption = (filter?: (item: Item) => boolean) =>
+	defineOption({
+		type: 'String',
+		name: 'item',
+		description: 'The item you want to pick.',
+		required: false,
+		autocomplete: async (value: string, _user: MUser, _member?: GuildMember) => {
+			let res = itemArr.filter(i => i.key.includes(value.toLowerCase()));
+			if (filter) res = res.filter(filter);
+			return res
+				.slice(0, 25)
+				.map(i => ({ name: i.name, value: String(i.id) })) as APIApplicationCommandOptionChoice<string>[];
+		}
+	});
 
-export const monsterOption: CommandOption = {
+export const monsterOption = defineOption({
 	type: 'String',
 	name: 'monster',
 	description: 'The monster you want to pick.',
@@ -54,9 +60,9 @@ export const monsterOption: CommandOption = {
 			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 			.map(i => ({ name: i.name, value: i.name }));
 	}
-};
+});
 
-export const skillOption: CommandOption = {
+export const skillOption = defineOption({
 	type: 'String',
 	name: 'skill',
 	description: 'The skill you want to select.',
@@ -67,25 +73,25 @@ export const skillOption: CommandOption = {
 			value: i
 		}));
 	}
-};
+});
 
-export const gearSetupOption: CommandOption = {
+export const gearSetupOption = defineOption({
 	type: 'String',
 	name: 'gear_setup',
 	description: 'The gear setup want to select.',
 	required: false,
-	choices: GearSetupTypes.map(i => ({ name: toTitleCase(i), value: i }))
-};
+	choices: choicesOf(GearSetupTypes)
+});
 
-export const equippedItemOption = (): CommandOption => ({
+export const equippedItemOption = defineOption({
 	type: 'String',
 	name: 'item',
 	description: 'The item you want to pick.',
 	required: false,
-	autocomplete: async (value, user) => {
+	autocomplete: async (value: string, user: MUser) => {
 		const mUser = await mUserFetch(user.id);
 
-		const results: APIApplicationCommandOptionChoice[] = [];
+		const results = [];
 		const entries: [string, Item[]][] = Object.entries(mUser.gear).map(entry => [
 			entry[0],
 			entry[1].allItems(false).map(id => Items.getOrThrow(id))
@@ -103,17 +109,22 @@ export const equippedItemOption = (): CommandOption => ({
 	}
 });
 
-export const ownedItemOption = (filter?: (item: Item) => boolean): CommandOption => ({
-	type: 'String',
-	name: 'item',
-	description: 'The item you want to pick.',
-	required: false,
-	autocomplete: async (value, user) => {
-		let res = user.bank.items().filter(i => i[0].name.toLowerCase().includes(value.toLowerCase()));
-		if (filter) res = res.filter(i => filter(i[0]));
-		return res.map(i => ({ name: `${i[0].name}`, value: i[0].name.toString() }));
-	}
-});
+export const ownedItemOption = (filter?: (item: Item) => boolean) =>
+	defineOption({
+		type: 'String',
+		name: 'item',
+		description: 'The item you want to pick.',
+		required: false,
+		autocomplete: async (value: string, user: MUser): Promise<APIApplicationCommandOptionChoice<string>[]> => {
+			const q = value.toLowerCase();
+			let items = user.bank.items() as Array<[Item, number]>;
+			if (filter) items = items.filter(([it]) => filter(it));
+			return items
+				.filter(([it]) => it.name.toLowerCase().includes(q))
+				.slice(0, 25)
+				.map(([it]) => ({ name: it.name, value: it.name }));
+		}
+	});
 
 export const gearPresetOption: CommandOption = {
 	type: 'String',
@@ -158,7 +169,7 @@ export const gearPresetOption: CommandOption = {
 	}
 };
 
-export const ownedMaterialOption = {
+export const ownedMaterialOption = defineOption({
 	name: 'material',
 	type: 'String',
 	description: 'The type of materials you want to research with.',
@@ -174,7 +185,7 @@ export const ownedMaterialOption = {
 			})
 			.map(i => ({
 				name: `${toTitleCase(i)} ${bank.has(i) ? `(${bank.amount(i).toLocaleString()}x Owned)` : ''}`,
-				value: i
+				value: i as MaterialType
 			}));
 	}
-} as const;
+});

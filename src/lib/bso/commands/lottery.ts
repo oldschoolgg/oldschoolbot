@@ -242,7 +242,7 @@ export async function getLotteryBank() {
 	};
 }
 
-export const lotteryCommand: OSBMahojiCommand = {
+export const lotteryCommand = defineCommand({
 	name: 'lottery',
 	description: 'Win big!',
 	options: [
@@ -290,16 +290,7 @@ export const lotteryCommand: OSBMahojiCommand = {
 			description: 'View the custom prices.'
 		}
 	],
-	run: async ({
-		userID,
-		options,
-		interaction
-	}: CommandRunOptions<{
-		info?: {};
-		prices?: {};
-		buy_tickets?: { quantity: number };
-		deposit_items?: { items?: string; filter?: string; search?: string };
-	}>) => {
+	run: async ({ userID, options, interaction }) => {
 		const infoStr = `
 1. This is a regular Lottery (no special event or DC items)
 2. There'll be 4 spins, each winner winning 1/4th of the loot.
@@ -432,4 +423,4 @@ Top ticket holders: ${users
 			}
 		};
 	}
-};
+});

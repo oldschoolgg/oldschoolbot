@@ -2,7 +2,7 @@ import { generateAllCompCapeTasksList } from '@/lib/bso/compCape.js';
 
 import { AttachmentBuilder } from 'discord.js';
 
-export const completionCommand: OSBMahojiCommand = {
+export const completionCommand = defineCommand({
 	name: 'completion',
 	description: 'Completionist tasks.',
 	attributes: {
@@ -22,8 +22,7 @@ export const completionCommand: OSBMahojiCommand = {
 			options: []
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{ check?: {}; view_all_tasks?: {} }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user }) => {
 		if (options.check) {
 			const { resultStr } = await user.calculateCompCapeProgress();
 
@@ -39,4 +38,4 @@ export const completionCommand: OSBMahojiCommand = {
 		}
 		return 'Invalid command.';
 	}
-};
+});

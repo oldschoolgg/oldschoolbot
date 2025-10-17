@@ -412,10 +412,10 @@ export async function repeatTameTrip({
 	interaction: MInteraction;
 	user: MUser;
 	continueDeltaMillis: number | null;
-}) {
+}): CommandResponse {
 	const activity = await tameLastFinishedActivity(user);
 	if (!activity) {
-		return;
+		return 'You have no recently completed tame trips to repeat.';
 	}
 	const data = activity.data as unknown as TameTaskOptions;
 	switch (data.type) {
@@ -521,4 +521,5 @@ export async function repeatTameTrip({
 		default: {
 		}
 	}
+	return 'Unable to find a tame trip to repeat.';
 }

@@ -16,10 +16,10 @@ import {
 import { EmbedBuilder } from 'discord.js';
 import { convertXPtoLVL } from 'oldschooljs';
 
-import type { ClueTier } from '@/lib/clues/clueTiers.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { MAX_LEVEL, masteryKey } from '@/lib/constants.js';
 import { allClNames, getCollectionItems } from '@/lib/data/Collections.js';
+import { choicesOf, defineOption } from '@/lib/discord/index.js';
 import { effectiveMonsters } from '@/lib/minions/data/killableMonsters/index.js';
 import { allOpenables } from '@/lib/openables.js';
 import { SQL } from '@/lib/rawSql.js';
@@ -311,7 +311,7 @@ async function minigamesLb(interaction: MInteraction, name: string) {
 
 async function clLb(interaction: MInteraction, inputType: string, ironmenOnly: boolean, tames: boolean) {
 	const { resolvedCl, items } = getCollectionItems(inputType, false, false, true);
-	if (!items || items.length === 0) {
+	if (!items || items.size === 0) {
 		return "That's not a valid collection log category. Check /cl for all possible logs.";
 	}
 	inputType = toTitleCase(inputType.toLowerCase());
@@ -328,7 +328,7 @@ async function clLb(interaction: MInteraction, inputType: string, ironmenOnly: b
 					)
 					.join('\n')
 			),
-			`${inputType} Tame Collection Log Leaderboard (${items.length} slots)`
+			`${inputType} Tame Collection Log Leaderboard (${items.size} slots)`
 		);
 	}
 
@@ -340,7 +340,7 @@ async function clLb(interaction: MInteraction, inputType: string, ironmenOnly: b
 		interaction,
 		users: users.map(u => ({ id: u.id, score: u.qty })),
 		title: `${inputType} Collection Log Leaderboard`,
-		formatter: val => `${val.toLocaleString()} (${calcWhatPercent(val, items.length).toFixed(1)}%)`
+		formatter: val => `${val.toLocaleString()} (${calcWhatPercent(val, items.size).toFixed(1)}%)`
 	});
 }
 
@@ -849,14 +849,14 @@ async function masteryLb(interaction: MInteraction) {
 	});
 }
 
-const ironmanOnlyOption = {
+const ironmanOnlyOption = defineOption({
 	type: 'Boolean',
 	name: 'ironmen_only',
 	description: 'Only include ironmen.',
 	required: false
-} as const;
+});
 
-export const leaderboardCommand: OSBMahojiCommand = {
+export const leaderboardCommand = defineCommand({
 	name: 'lb',
 	description: 'Simulate killing monsters.',
 	options: [
@@ -870,7 +870,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					name: 'monster',
 					description: 'The monster you want to check the leaderboard of.',
 					required: true,
-					autocomplete: async value => {
+					autocomplete: async (value: string) => {
 						return effectiveMonsters
 							.filter(m => (!value ? true : m.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.name, value: i.name }));
@@ -888,7 +888,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		{
 			type: 'Subcommand',
 			name: 'farming_contracts',
-			description: 'Check the farming contracts leaderboard.'
+			description: 'Check the farming contracts leaderboard.',
+			options: [ironmanOnlyOption]
 		},
 		{
 			type: 'Subcommand',
@@ -1045,7 +1046,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					name: 'cl',
 					description: 'The cl you want to select.',
 					required: true,
-					autocomplete: async value => {
+					autocomplete: async (value: string) => {
 						return [
 							{ name: 'Overall (Main Leaderboard)', value: 'overall' },
 							...['overall+', ...allClNames.map(i => i)].map(i => ({
@@ -1096,7 +1097,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					name: 'type',
 					description: 'The leagues lb you want to select.',
 					required: true,
-					choices: ['points', 'tasks', 'hardest_tasks'].map(i => ({ name: i, value: i }))
+					choices: choicesOf(['points', 'tasks', 'hardest_tasks'])
 				}
 			]
 		},
@@ -1170,36 +1171,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			options: []
 		}
 	],
-	run: async ({
-		options,
-		interaction
-	}: CommandRunOptions<{
-		kc?: { monster: string; ironmen_only?: boolean; tame?: boolean };
-		farming_contracts?: { ironmen_only?: boolean };
-		inferno?: {};
-		challenges?: {};
-		sacrifice?: { type: 'value' | 'unique'; ironmen_only?: boolean };
-		minigames?: { minigame: string; ironmen_only?: boolean };
-		hunter_catches?: { creature: string };
-		agility_laps?: { course: string };
-		gp?: { ironmen_only?: boolean };
-		skills?: { skill: string; ironmen_only?: boolean; xp?: boolean };
-		opens?: { openable: string; ironmen_only?: boolean };
-		cl?: { cl: string; ironmen_only?: boolean; tames?: boolean };
-		item_contract_streak?: { ironmen_only?: boolean };
-		total_ic_donation_given?: {};
-		unique_ic_donation_given?: {};
-		tames_hatched?: { ironmen_only?: boolean };
-		leagues?: { type: 'points' | 'tasks' | 'hardest_tasks' };
-		clues?: { clue: ClueTier['name']; ironmen_only?: boolean };
-		movers?: { type: GainersType };
-		global?: {
-			type: GlobalLbType;
-		};
-		completion?: { untrimmed?: boolean; ironmen_only?: boolean };
-		combat_achievements?: {};
-		mastery?: {};
-	}>) => {
+	run: async ({ options, interaction }) => {
 		await interaction.defer();
 		const {
 			opens,
@@ -1260,4 +1232,4 @@ export const leaderboardCommand: OSBMahojiCommand = {
 
 		return 'Invalid input.';
 	}
-};
+});

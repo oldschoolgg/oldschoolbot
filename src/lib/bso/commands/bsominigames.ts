@@ -25,19 +25,14 @@ import {
 	odsStartCommand,
 	odsStatsCommand
 } from '@/lib/bso/minigames/ods/odsCommand.js';
-import {
-	type TuraelsTrialsMethod,
-	TuraelsTrialsMethods,
-	turaelsTrialsStartCommand
-} from '@/lib/bso/minigames/turaelsTrials.js';
-import type { MaterialType } from '@/lib/bso/skills/invention/index.js';
+import { TuraelsTrialsMethods, turaelsTrialsStartCommand } from '@/lib/bso/minigames/turaelsTrials.js';
 
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
 import { ownedMaterialOption } from '@/lib/discord/index.js';
 
-export const bsoMinigamesCommand: OSBMahojiCommand = {
+export const bsoMinigamesCommand = defineCommand({
 	name: 'bsominigames',
 	description: 'Send your minion to do various bso minigames.',
 	options: [
@@ -315,58 +310,7 @@ export const bsoMinigamesCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		channelID
-	}: CommandRunOptions<{
-		baxtorian_bathhouses?: {
-			help?: {};
-			start?: { tier: string; heating?: string; water_mixture?: string };
-		};
-		monkey_rumble?: {
-			stats?: {};
-			start?: {};
-		};
-		ourania_delivery_service?: {
-			stats?: {};
-			start?: {};
-			buy?: { name: string; quantity?: number };
-		};
-		fishing_contest?: {
-			stats_info?: {};
-			fish?: { location?: string };
-		};
-		fist_of_guthix?: {
-			start?: {};
-		};
-		stealing_creation?: {
-			start?: {};
-		};
-		tinkering_workshop?: {
-			start?: {
-				material: MaterialType;
-			};
-		};
-		balthazars_big_bonanza?: {
-			start?: {};
-		};
-		divine_dominion?: {
-			check?: {};
-			sacrifice_god_item?: {
-				item: string;
-				quantity?: number;
-			};
-		};
-		guthixian_cache?: {
-			join?: {};
-			stats?: {};
-		};
-		turaels_trials?: {
-			start?: { method: TuraelsTrialsMethod };
-		};
-	}>) => {
-		const klasaUser = await mUserFetch(userID);
+	run: async ({ options, user, channelID }) => {
 		const {
 			baxtorian_bathhouses,
 			monkey_rumble,
@@ -378,23 +322,23 @@ export const bsoMinigamesCommand: OSBMahojiCommand = {
 		} = options;
 
 		if (options.turaels_trials?.start) {
-			return turaelsTrialsStartCommand(klasaUser, channelID, options.turaels_trials.start.method);
+			return turaelsTrialsStartCommand(user, channelID, options.turaels_trials.start.method);
 		}
 		if (options.guthixian_cache?.join) {
-			return joinGuthixianCache(klasaUser, channelID);
+			return joinGuthixianCache(user, channelID);
 		}
 		if (options.guthixian_cache?.stats) {
-			const boost = klasaUser.user.guthixian_cache_boosts_available;
+			const boost = user.user.guthixian_cache_boosts_available;
 			return `You have ${boost} Guthixian cache boost${boost === 1 ? '' : 's'} available.`;
 		}
 
 		if (divine_dominion?.check) {
-			return divineDominionCheck(klasaUser);
+			return divineDominionCheck(user);
 		}
 
 		if (divine_dominion?.sacrifice_god_item) {
 			return divineDominionSacrificeCommand(
-				klasaUser,
+				user,
 				divine_dominion.sacrifice_god_item.item,
 				divine_dominion.sacrifice_god_item.quantity
 			);
@@ -411,45 +355,41 @@ export const bsoMinigamesCommand: OSBMahojiCommand = {
 		if (baxtorian_bathhouses?.start) {
 			return baxtorianBathhousesStartCommand({
 				channelID,
-				user: klasaUser,
+				user: user,
 				tier: baxtorian_bathhouses.start.tier,
 				ore: baxtorian_bathhouses.start.heating,
 				mixture: baxtorian_bathhouses.start.water_mixture
 			});
 		}
 
-		if (monkey_rumble?.start) return monkeyRumbleCommand(klasaUser, channelID);
-		if (monkey_rumble?.stats) return monkeyRumbleStatsCommand(klasaUser);
+		if (monkey_rumble?.start) return monkeyRumbleCommand(user, channelID);
+		if (monkey_rumble?.stats) return monkeyRumbleStatsCommand(user);
 
 		if (ourania_delivery_service?.buy) {
-			return odsBuyCommand(
-				klasaUser,
-				ourania_delivery_service.buy.name,
-				ourania_delivery_service.buy.quantity ?? 1
-			);
+			return odsBuyCommand(user, ourania_delivery_service.buy.name, ourania_delivery_service.buy.quantity ?? 1);
 		}
-		if (ourania_delivery_service?.stats) return odsStatsCommand(klasaUser);
-		if (ourania_delivery_service?.start) return odsStartCommand(klasaUser, channelID);
+		if (ourania_delivery_service?.stats) return odsStatsCommand(user);
+		if (ourania_delivery_service?.start) return odsStartCommand(user, channelID);
 
-		if (fishing_contest?.stats_info) return fishingContestStatsCommand(klasaUser);
+		if (fishing_contest?.stats_info) return fishingContestStatsCommand(user);
 		if (fishing_contest?.fish) {
-			return fishingContestStartCommand(klasaUser, channelID, fishing_contest.fish.location);
+			return fishingContestStartCommand(user, channelID, fishing_contest.fish.location);
 		}
 
 		if (fist_of_guthix?.start) {
-			return fistOfGuthixCommand(klasaUser, channelID);
+			return fistOfGuthixCommand(user, channelID);
 		}
 		if (stealing_creation?.start) {
-			return stealingCreationCommand(klasaUser, channelID);
+			return stealingCreationCommand(user, channelID);
 		}
 		if (options.tinkering_workshop?.start) {
-			return tinkeringWorkshopCommand(klasaUser, options.tinkering_workshop.start.material, channelID);
+			return tinkeringWorkshopCommand(user, options.tinkering_workshop.start.material, channelID);
 		}
 
 		if (options.balthazars_big_bonanza?.start) {
-			return bonanzaCommand(klasaUser, channelID);
+			return bonanzaCommand(user, channelID);
 		}
 
 		return 'Invalid command.';
 	}
-};
+});

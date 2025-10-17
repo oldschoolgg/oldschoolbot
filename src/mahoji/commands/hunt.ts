@@ -272,7 +272,7 @@ export function calculateHunterInput({
 	};
 }
 
-export const huntCommand: OSBMahojiCommand = {
+export const huntCommand = defineCommand({
 	name: 'hunt',
 	description: 'Hunt creatures with the Hunter skill.',
 	attributes: {
@@ -315,11 +315,7 @@ export const huntCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		options,
-		user,
-		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; hunter_potion?: boolean; stamina_potions?: boolean }>) => {
+	run: async ({ options, user, channelID }) => {
 		if (options.stamina_potions === undefined) {
 			options.stamina_potions = true;
 		}
@@ -439,4 +435,4 @@ export const huntCommand: OSBMahojiCommand = {
 
 		return response;
 	}
-};
+});

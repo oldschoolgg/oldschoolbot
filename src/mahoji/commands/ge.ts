@@ -6,7 +6,8 @@ import { Items, toKMB } from 'oldschooljs';
 import type { GEListing, GETransaction } from '@/prisma/main.js';
 import { GeImageGenerator } from '@/lib/canvas/geImage.js';
 import { PerkTier } from '@/lib/constants.js';
-import { itemArr, itemOption } from '@/lib/discord/index.js';
+import { defineOption } from '@/lib/discord/index.js';
+import { itemArr, itemOption } from '@/lib/discord/presetCommandOptions.js';
 import { createGECancelButton, GrandExchange } from '@/lib/grandExchange.js';
 import { marketPricemap } from '@/lib/marketPrices.js';
 import { createChart } from '@/lib/util/chart.js';
@@ -62,21 +63,21 @@ function geListingToString(
 	)} GP each. ${allTransactions.length}x transactions made.${buyLimitStr}`;
 }
 
-const quantityOption: CommandOption = {
+const quantityOption = defineOption({
 	name: 'quantity',
 	description: 'The quantity of the item to exchange (e.g. 7, 5k, 10m).',
 	type: 'String',
 	required: true
-};
+});
 
-const priceOption: CommandOption = {
+const priceOption = defineOption({
 	name: 'price',
 	description: 'The price to exchange each item at. (e.g. 7, 5k, 10m).',
 	type: 'String',
 	required: true
-};
+});
 
-export const geCommand: OSBMahojiCommand = {
+export const geCommand = defineCommand({
 	name: 'ge',
 	description: 'Exchange grandly with other players on the bot!',
 	options: [
@@ -90,7 +91,7 @@ export const geCommand: OSBMahojiCommand = {
 					name: 'item',
 					description: 'The item you want to pick.',
 					required: true,
-					autocomplete: async (value, user) => {
+					autocomplete: async (value: string, user: MUser) => {
 						if (!value) {
 							const tradesOfUser = (
 								await prisma.gEListing.findMany({
@@ -127,7 +128,7 @@ export const geCommand: OSBMahojiCommand = {
 					type: 'String',
 					description: 'The item you want to sell.',
 					required: true,
-					autocomplete: async (value, user) => {
+					autocomplete: async (value: string, user: MUser) => {
 						return user.bank
 							.items()
 							.filter(i => !isGEUntradeable(i[0].id))
@@ -164,7 +165,7 @@ export const geCommand: OSBMahojiCommand = {
 					name: 'listing',
 					description: 'The listing to cancel.',
 					required: true,
-					autocomplete: async (_, user) => {
+					autocomplete: async (_: string, user: MUser) => {
 						const listings = await prisma.gEListing.findMany({ where: { user_id: user.id } });
 						return listings
 							.filter(i => !i.cancelled_at && !i.fulfilled_at && i.quantity_remaining > 0)
@@ -192,17 +193,17 @@ export const geCommand: OSBMahojiCommand = {
 					name: 'item',
 					description: 'The item to lookup.',
 					required: true,
-					autocomplete: async input => {
+					autocomplete: async (value: string) => {
 						const listings = Array.from(marketPricemap.values());
 						return listings
 							.filter(i =>
-								!input
+								!value
 									? true
-									: Items.itemNameFromId(i.itemID)?.toLowerCase().includes(input.toLowerCase())
+									: Items.itemNameFromId(i.itemID)?.toLowerCase().includes(value.toLowerCase())
 							)
 							.map(l => ({
 								name: `${Items.itemNameFromId(l.itemID)!}`,
-								value: l.itemID
+								value: l.itemID.toString()
 							}));
 					}
 				}
@@ -221,31 +222,7 @@ export const geCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		user,
-		interaction
-	}: CommandRunOptions<{
-		buy?: {
-			item: string;
-			quantity: string;
-			price: string;
-		};
-		sell?: {
-			item: string;
-			quantity: string;
-			price: string;
-		};
-		cancel?: {
-			listing: string;
-		};
-		my_listings?: {
-			page: number;
-		};
-		stats?: {};
-		price?: { item: string };
-		view?: { item?: string };
-	}>) => {
+	run: async ({ options, user, interaction }) => {
 		await interaction.defer();
 
 		if (options.price) {
@@ -509,4 +486,4 @@ ORDER BY
 
 		return 'Invalid command.';
 	}
-};
+});

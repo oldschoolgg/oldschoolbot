@@ -8,7 +8,7 @@ import {
 	OpenUntilItems
 } from '@/mahoji/lib/abstracted_commands/openCommand.js';
 
-export const openCommand: OSBMahojiCommand = {
+export const openCommand = defineCommand({
 	name: 'open',
 	description: 'Open an item (caskets, keys, boxes, etc).',
 	options: [
@@ -17,7 +17,7 @@ export const openCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The thing you want to open.',
 			required: false,
-			autocomplete: async (value, user) => {
+			autocomplete: async (value: string, user: MUser) => {
 				return user.bank
 					.items()
 					.filter(i => allOpenablesIDs.has(i[0].id))
@@ -61,11 +61,7 @@ export const openCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		user,
-		options,
-		interaction
-	}: CommandRunOptions<{ name?: string; quantity?: number; open_until?: string; disable_pets?: boolean }>) => {
+	run: async ({ user, options, interaction }) => {
 		if (interaction) await interaction.defer();
 		if (!options.name) {
 			return `You have... ${truncateString(
@@ -82,4 +78,4 @@ export const openCommand: OSBMahojiCommand = {
 		}
 		return abstractedOpenCommand(interaction, user, [options.name], options.quantity, options.disable_pets);
 	}
-};
+});

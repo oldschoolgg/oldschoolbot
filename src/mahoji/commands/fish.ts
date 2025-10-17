@@ -6,7 +6,7 @@ import { Bank, Items, itemID, Monsters } from 'oldschooljs';
 import { Fishing } from '@/lib/skilling/skills/fishing/fishing.js';
 import type { FishingActivityTaskOptions } from '@/lib/types/minions.js';
 
-export const fishCommand: OSBMahojiCommand = {
+export const fishCommand = defineCommand({
 	name: 'fish',
 	description: 'Send your minion to fish fish.',
 	attributes: {
@@ -43,11 +43,7 @@ export const fishCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		options,
-		user,
-		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; flakes?: boolean }>) => {
+	run: async ({ options, user, channelID }) => {
 		const fish = Fishing.Fishes.find(
 			fish =>
 				stringMatches(fish.id, options.name) ||
@@ -235,4 +231,4 @@ export const fishCommand: OSBMahojiCommand = {
 
 		return response;
 	}
-};
+});

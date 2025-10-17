@@ -1,6 +1,7 @@
 import type { ResearchTaskOptions } from '@/lib/bso/bsoTypes.js';
-import { type MaterialType, materialTypes } from '@/lib/bso/skills/invention/index.js';
+import type { MaterialType } from '@/lib/bso/skills/invention/index.js';
 import { type Invention, Inventions, transactMaterialsFromUser } from '@/lib/bso/skills/invention/inventions.js';
+import { isValidMaterialType } from '@/lib/bso/skills/invention/inventionUtil.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
@@ -24,14 +25,14 @@ export async function researchCommand({
 	interaction
 }: {
 	user: MUser;
-	material: MaterialType;
+	material: string;
 	inputQuantity: number | undefined;
 	channelID: string;
 	interaction?: MInteraction;
 }): CommandResponse {
 	if (user.minionIsBusy) return 'Your minion is busy.';
 	material = material.toLowerCase() as MaterialType;
-	if (!materialTypes.includes(material)) {
+	if (!isValidMaterialType(material)) {
 		return "That's not a valid material.";
 	}
 	const maxTripLength = user.calcMaxTripLength('Research');

@@ -192,7 +192,7 @@ const collectionLogChallenge: Challenge = async (msg: Message): Promise<User | n
 			max: 1,
 			time: Time.Second * 30,
 			errors: ['time'],
-			filter: _msg => cl.items.some(c => stringMatches(_msg.content, Items.itemNameFromId(c)))
+			filter: _msg => cl.items.values().some(c => stringMatches(_msg.content, Items.itemNameFromId(c)))
 		});
 
 		const winner = collected.first()?.author;

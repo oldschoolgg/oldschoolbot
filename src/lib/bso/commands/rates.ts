@@ -47,7 +47,7 @@ import { calculateAgilityResult } from '@/tasks/minions/agilityActivity.js';
 import { calculateHunterResult } from '@/tasks/minions/HunterActivity/hunterActivity.js';
 import { calculateMiningResult } from '@/tasks/minions/miningActivity.js';
 
-export const ratesCommand: OSBMahojiCommand = {
+export const ratesCommand = defineCommand({
 	name: 'rates',
 	description: 'Check rates of various skills/activities.',
 	options: [
@@ -133,23 +133,7 @@ export const ratesCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		user,
-		interaction
-	}: CommandRunOptions<{
-		xphr?: {
-			divination_memory_harvesting?: {};
-			agility?: {};
-			dungeoneering?: {};
-			mining?: {};
-			hunter?: {};
-			turaels_trials?: {};
-		};
-		tames?: { eagle?: {} };
-		misc?: { zygomite_seeds?: {} };
-		minigames?: { baxtorian_bathhouses?: {} };
-	}>) => {
+	run: async ({ options, user, interaction }) => {
 		await interaction.defer();
 
 		if (options.minigames?.baxtorian_bathhouses) {
@@ -763,4 +747,4 @@ ${zygomiteFarmingSource
 		}
 		return 'No option selected.';
 	}
-};
+});

@@ -6,7 +6,7 @@ import { formatDuration, increaseNumByPercent, reduceNumByPercent, stringMatches
 import { Items, itemID, resolveItems } from 'oldschooljs';
 
 import { determineWoodcuttingTime } from '@/lib/skilling/functions/determineWoodcuttingTime.js';
-import Woodcutting, { type TwitcherGloves } from '@/lib/skilling/skills/woodcutting/woodcutting.js';
+import Woodcutting from '@/lib/skilling/skills/woodcutting/woodcutting.js';
 import type { WoodcuttingActivityTaskOptions } from '@/lib/types/minions.js';
 
 const axes = [
@@ -67,7 +67,7 @@ const axes = [
 	}
 ];
 
-export const chopCommand: OSBMahojiCommand = {
+export const chopCommand = defineCommand({
 	name: 'chop',
 	description: 'Chop logs using the Woodcutting skill.',
 	attributes: {
@@ -117,17 +117,7 @@ export const chopCommand: OSBMahojiCommand = {
 			choices: Woodcutting.twitchersGloves.map(i => ({ name: `${i} nest`, value: i }))
 		}
 	],
-	run: async ({
-		options,
-		user,
-		channelID
-	}: CommandRunOptions<{
-		name: string;
-		quantity?: number;
-		powerchop?: boolean;
-		forestry_events?: boolean;
-		twitchers_gloves?: TwitcherGloves;
-	}>) => {
+	run: async ({ options, user, channelID }) => {
 		const log = Woodcutting.Logs.find(
 			log =>
 				stringMatches(log.name, options.name) ||
@@ -309,4 +299,4 @@ export const chopCommand: OSBMahojiCommand = {
 
 		return response;
 	}
-};
+});

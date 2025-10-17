@@ -73,15 +73,18 @@ export const pickpocketTask: MinionTask = {
 		const updateBank = new UpdateBank();
 		const { petDropRate } = skillingPetDropRate(user, 'thieving', obj.petChance);
 
+		const userTertChanges = user.buildTertiaryItemChanges();
+		const roguesChance = Thieving.rogueOutfitPercentBonus(user);
+
 		if (obj.type === 'pickpockable') {
 			for (let i = 0; i < successfulQuantity; i++) {
 				const lootItems = obj.table.roll(1, {
-					tertiaryItemPercentageChanges: user.buildTertiaryItemChanges()
+					tertiaryItemPercentageChanges: userTertChanges
 				});
 				// TODO: Remove Rocky from loot tables in oldschoolJS
 				if (lootItems.has('Rocky')) lootItems.remove('Rocky');
 
-				if (randInt(1, 100) <= Thieving.rogueOutfitPercentBonus(user)) {
+				if (randInt(1, 100) <= roguesChance) {
 					rogueOutfitBoostActivated = true;
 					const doubledLoot = lootItems.multiply(2);
 					updateBank.itemLootBank.add(doubledLoot);
@@ -89,7 +92,6 @@ export const pickpocketTask: MinionTask = {
 					updateBank.itemLootBank.add(lootItems);
 				}
 
-				// Roll for pet
 				if (roll(petDropRate)) {
 					updateBank.itemLootBank.add('Rocky');
 				}
@@ -144,7 +146,7 @@ export const pickpocketTask: MinionTask = {
 		}
 
 		if (updateBank.itemLootBank.has('Coins')) {
-			ClientSettings.updateClientGPTrackSetting('gp_pickpocket', updateBank.itemLootBank.amount('Coins'));
+			await ClientSettings.updateClientGPTrackSetting('gp_pickpocket', updateBank.itemLootBank.amount('Coins'));
 		}
 
 		updateBank.userStatsBankUpdates.steal_loot_bank = updateBank.itemLootBank;

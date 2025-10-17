@@ -1,6 +1,6 @@
 import { dataPoints, statsCommand } from '@/mahoji/lib/abstracted_commands/statCommand.js';
 
-export const dataCommand: OSBMahojiCommand = {
+export const dataCommand = defineCommand({
 	name: 'data',
 	description: 'View various pieces of data.',
 	attributes: {
@@ -23,8 +23,8 @@ export const dataCommand: OSBMahojiCommand = {
 			required: true
 		}
 	],
-	run: async ({ interaction, options, user }: CommandRunOptions<{ name: string }>) => {
+	run: async ({ interaction, options, user }) => {
 		await interaction.defer();
 		return statsCommand(user, options.name);
 	}
-};
+});

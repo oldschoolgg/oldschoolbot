@@ -45,7 +45,7 @@ export function sacrificePriceOfItem(item: Item, qty: number) {
 	return Math.floor(price * qty);
 }
 
-export const sacrificeCommand: OSBMahojiCommand = {
+export const sacrificeCommand = defineCommand({
 	name: 'sacrifice',
 	description: 'Sacrifice items from your bank to the bot.',
 	attributes: {
@@ -67,11 +67,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		user,
-		options,
-		interaction
-	}: CommandRunOptions<{ items?: string; filter?: string; search?: string }>) => {
+	run: async ({ user, options, interaction }) => {
 		const currentIcon = user.user.minion_icon;
 		const sacVal = Number(user.user.sacrificedValue);
 		const { sacrificed_bank: sacrificedBank } = await user.fetchStats();
@@ -184,4 +180,4 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			totalPrice
 		)}). Your total amount sacrificed is now: ${newValue.toLocaleString()}. ${str}`;
 	}
-};
+});

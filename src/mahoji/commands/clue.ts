@@ -75,7 +75,7 @@ function applyClueBoosts(user: MUser, boostList: ClueBoost[], boosts: string[], 
 	return { duration, boosts };
 }
 
-export const clueCommand: OSBMahojiCommand = {
+export const clueCommand = defineCommand({
 	name: 'clue',
 	description: 'Send your minion to complete clue scrolls.',
 	attributes: {
@@ -88,11 +88,15 @@ export const clueCommand: OSBMahojiCommand = {
 			name: 'tier',
 			description: 'The clue you want to do.',
 			required: true,
-			autocomplete: async (_, user) => {
-				return ClueTiers.map(i => ({
-					name: `${i.name} (${user.bank.amount(i.scrollID)}x Owned)`,
-					value: i.name as string
-				})).concat([{ name: 'Elder (Info)', value: 'Elder (Info)' }]);
+			autocomplete: async (_: string, user: MUser) => {
+				const res: { name: string; value: string }[] = [
+					{ name: 'Elder (Info)', value: 'Elder (Info)' },
+					...ClueTiers.map(i => ({
+						name: `${i.name} (${user.bank.amount(i.scrollID)}x Owned)`,
+						value: i.name
+					}))
+				];
+				return res;
 			}
 		},
 		{
@@ -103,8 +107,7 @@ export const clueCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ tier: string; quantity?: number }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelID }) => {
 		if (options.tier === 'Elder (Info)') {
 			const reqs = await checkElderClueRequirements(user);
 			if (reqs.unmetRequirements.length > 0) {
@@ -409,4 +412,4 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 			boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
 		}`;
 	}
-};
+});

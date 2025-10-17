@@ -1,14 +1,14 @@
 import type { TinkeringWorkshopOptions } from '@/lib/bso/bsoTypes.js';
-import { type MaterialType, materialTypes } from '@/lib/bso/skills/invention/index.js';
 import { transactMaterialsFromUser } from '@/lib/bso/skills/invention/inventions.js';
+import { isValidMaterialType } from '@/lib/bso/skills/invention/inventionUtil.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 
 import { randomVariation } from '@oldschoolgg/rng';
 import { formatDuration, Time } from '@oldschoolgg/toolkit';
 import type { ItemBank } from 'oldschooljs';
 
-export async function tinkeringWorkshopCommand(user: MUser, material: MaterialType, channelID: string) {
-	if (!materialTypes.includes(material)) {
+export async function tinkeringWorkshopCommand(user: MUser, material: string, channelID: string) {
+	if (!isValidMaterialType(material)) {
 		return "That's not a valid material.";
 	}
 	if (user.minionIsBusy) return 'Your minion is busy.';

@@ -7,7 +7,7 @@ import { Craftables } from '@/lib/skilling/skills/crafting/craftables/index.js';
 import Tanning from '@/lib/skilling/skills/crafting/craftables/tanning.js';
 import type { CraftingActivityTaskOptions } from '@/lib/types/minions.js';
 
-export const craftCommand: OSBMahojiCommand = {
+export const craftCommand = defineCommand({
 	name: 'craft',
 	description: 'Craft items with the Crafting skill.',
 	attributes: {
@@ -38,7 +38,7 @@ export const craftCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
+	run: async ({ options, user, channelID }) => {
 		let { quantity } = options;
 
 		if (options.name.toLowerCase().includes('zenyte') && quantity === null) quantity = 1;
@@ -156,4 +156,4 @@ export const craftCommand: OSBMahojiCommand = {
 
 		return str;
 	}
-};
+});

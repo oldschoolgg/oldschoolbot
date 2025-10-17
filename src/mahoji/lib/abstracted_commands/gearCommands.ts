@@ -1,12 +1,12 @@
 import { PerkTier, stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
-import { GearStat } from 'oldschooljs/gear';
+import type { GearStat } from 'oldschooljs/gear';
 
 import type { GearPreset } from '@/prisma/main.js';
 import { generateGearImage } from '@/lib/canvas/generateGearImage.js';
 import { PATRON_ONLY_GEAR_SETUP } from '@/lib/constants.js';
 import { getSimilarItems } from '@/lib/data/similarItems.js';
-import { isValidGearSetup } from '@/lib/gear/functions/isValidGearSetup.js';
+import { isValidGearSetup, isValidGearStat } from '@/lib/gear/functions/isValidGearSetup.js';
 import type { GearSetup, GearSetupType } from '@/lib/gear/types.js';
 import getUserBestGearFromBank from '@/lib/minions/functions/getUserBestGearFromBank.js';
 import { unEquipAllCommand } from '@/lib/minions/functions/unequipAllCommand.js';
@@ -263,7 +263,7 @@ async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipment
 		return PATRON_ONLY_GEAR_SETUP;
 	}
 
-	if (!Object.values(GearStat).includes(equipmentType as any)) {
+	if (!isValidGearStat(equipmentType)) {
 		return 'Invalid gear stat.';
 	}
 

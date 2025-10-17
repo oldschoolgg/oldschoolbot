@@ -6,7 +6,7 @@ import type { SlayerTaskUnlocksEnum } from '@/lib/slayer/slayerUnlocks.js';
 import { hasSlayerUnlock } from '@/lib/slayer/slayerUtil.js';
 import type { FletchingActivityTaskOptions } from '@/lib/types/minions.js';
 
-export const fletchCommand: OSBMahojiCommand = {
+export const fletchCommand = defineCommand({
 	name: 'fletch',
 	description: 'Fletch items with the Fletching skill.',
 	attributes: {
@@ -37,7 +37,7 @@ export const fletchCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
+	run: async ({ options, user, channelID }) => {
 		const fletchable = Fletching.Fletchables.find(item => stringMatches(item.name, options.name));
 
 		if (!fletchable) return 'That is not a valid fletchable item.';
@@ -127,4 +127,4 @@ export const fletchCommand: OSBMahojiCommand = {
 			duration
 		)} to finish. Removed ${itemsNeeded} from your bank.\n${boostMsg.join(', ')}`;
 	}
-};
+});

@@ -5,7 +5,7 @@ import { ClueTiers } from '@/lib/clues/clueTiers.js';
 import { filterOption } from '@/lib/discord/index.js';
 import { parseBank } from '@/lib/util/parseStringBank.js';
 
-export const dropCommand: OSBMahojiCommand = {
+export const dropCommand = defineCommand({
 	name: 'drop',
 	description: 'Drop items from your bank.',
 	attributes: {
@@ -26,11 +26,7 @@ export const dropCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({
-		interaction,
-		options,
-		user
-	}: CommandRunOptions<{ items: string; filter?: string; search?: string }>) => {
+	run: async ({ interaction, options, user }) => {
 		if (!options.filter && !options.items && !options.search) {
 			return "You didn't provide any items, filter or search.";
 		}
@@ -86,4 +82,4 @@ export const dropCommand: OSBMahojiCommand = {
 
 		return interaction.returnStringOrFile(`Dropped ${bank}.`);
 	}
-};
+});

@@ -5,7 +5,7 @@ import { ButtonBuilder, ButtonStyle } from 'discord.js';
 
 import { BitField } from '@/lib/constants.js';
 
-export const icCommand: OSBMahojiCommand = {
+export const icCommand = defineCommand({
 	name: 'ic',
 	description: 'Hand in random items for rewards.',
 	attributes: {
@@ -28,7 +28,7 @@ export const icCommand: OSBMahojiCommand = {
 			description: 'Skip your current contract.'
 		}
 	],
-	run: async ({ options, user, interaction }: CommandRunOptions<{ info?: {}; send?: {}; skip?: {} }>) => {
+	run: async ({ options, user, interaction }) => {
 		const details = ItemContracts.getItemContractDetails(user);
 		const components =
 			details.nextContractIsReady &&
@@ -65,4 +65,4 @@ ${details.infoStr}`
 		const nextIcDetails = ItemContracts.getItemContractDetails(user);
 		return `${Emoji.ItemContract} ${res}\n\n${nextIcDetails.infoStr}`;
 	}
-};
+});

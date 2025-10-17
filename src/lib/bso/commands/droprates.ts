@@ -106,7 +106,7 @@ for (const droprate of Object.values(globalDroprates)) {
 	});
 }
 
-export const dropRatesCommand: OSBMahojiCommand = {
+export const dropRatesCommand = defineCommand({
 	name: 'droprate',
 	description: 'Check the droprate of something.',
 	options: [
@@ -122,7 +122,7 @@ export const dropRatesCommand: OSBMahojiCommand = {
 			}
 		}
 	],
-	run: async ({ options, user }: CommandRunOptions<{ thing: string }>) => {
+	run: async ({ options, user }) => {
 		const obj = droprates.find(drop => stringMatches(drop.name, options.thing));
 		if (!obj) return 'Invalid thing';
 		let output = obj.output({ user: await mUserFetch(user.id) });
@@ -134,4 +134,4 @@ export const dropRatesCommand: OSBMahojiCommand = {
 		}
 		return output;
 	}
-};
+});

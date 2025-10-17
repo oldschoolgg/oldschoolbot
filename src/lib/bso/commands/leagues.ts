@@ -11,7 +11,7 @@ import { calcWhatPercent, formatDuration, Time } from '@oldschoolgg/toolkit';
 import { PerkTier } from '@/lib/constants.js';
 import { Cooldowns } from '@/mahoji/lib/Cooldowns.js';
 
-export const bsoLeaguesCommand: OSBMahojiCommand = {
+export const bsoLeaguesCommand = defineCommand({
 	name: 'leagues',
 	description: 'Manage your Leagues progress.',
 	options: [
@@ -56,16 +56,7 @@ export const bsoLeaguesCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		interaction,
-		user
-	}: CommandRunOptions<{
-		check?: {};
-		view_task?: { task: string };
-		claim?: {};
-		view_all_tasks?: { exclude_finished?: boolean };
-	}>) => {
+	run: async ({ options, interaction, user }) => {
 		await interaction.defer();
 		const cooldown = Cooldowns.get(
 			user.id,
@@ -108,4 +99,4 @@ ${percentCompleted.toFixed(2)}% of users have finished this task, ${
 
 		return 'Invalid command.';
 	}
-};
+});

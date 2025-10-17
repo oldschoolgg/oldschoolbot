@@ -194,7 +194,7 @@ async function buyCommand(user: MUser, name?: string, quantity?: number) {
 	return `Successfully purchased ${quantity}x ${item.name} for ${overallCost} Dungeoneering tokens.`;
 }
 
-export const dgCommand: OSBMahojiCommand = {
+export const dgCommand = defineCommand({
 	name: 'dg',
 	description: 'The Dungeoneering skill.',
 	attributes: {
@@ -210,10 +210,9 @@ export const dgCommand: OSBMahojiCommand = {
 					type: 'String',
 					name: 'floor',
 					description: 'The floor you want to do. (Optional, defaults to max)',
-					autocomplete: async (_, user) => {
-						const kUser = await mUserFetch(user.id);
+					autocomplete: async (_: string, user: MUser) => {
 						return [7, 6, 5, 4, 3, 2, 1]
-							.filter(floor => hasRequiredLevels(kUser, floor))
+							.filter(floor => hasRequiredLevels(user, floor))
 							.map(i => ({ name: `Floor ${i}`, value: i.toString() }));
 					},
 					required: false
@@ -240,7 +239,7 @@ export const dgCommand: OSBMahojiCommand = {
 					type: 'String',
 					name: 'item',
 					description: 'The item you want to buy.',
-					autocomplete: async value => {
+					autocomplete: async (value: string) => {
 						return dungBuyables
 							.filter(i => (!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.item.name, value: i.item.name }));
@@ -257,16 +256,7 @@ export const dgCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({
-		options,
-		user,
-		channelID,
-		interaction
-	}: CommandRunOptions<{
-		start?: { floor?: string; solo?: boolean };
-		buy?: { item?: string; quantity?: number };
-		stats?: {};
-	}>) => {
+	run: async ({ options, user, channelID, interaction }) => {
 		if (interaction) await interaction.defer();
 		if (options.start) return startCommand(interaction, channelID, user, options.start.floor, options.start.solo);
 		if (options.buy) return buyCommand(user, options.buy.item, options.buy.quantity);
@@ -278,4 +268,4 @@ export const dgCommand: OSBMahojiCommand = {
 		}
 		return str;
 	}
-};
+});

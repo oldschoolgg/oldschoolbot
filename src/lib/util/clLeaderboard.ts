@@ -6,7 +6,7 @@ import { userEventsToMap } from '@/lib/util/userEvents.js';
 export async function fetchMultipleCLLeaderboards(
 	leaderboards: {
 		ironmenOnly: boolean;
-		items: number[];
+		items: Set<number>;
 		resultLimit: number;
 		clName: string;
 	}[]
@@ -31,7 +31,9 @@ export async function fetchMultipleCLLeaderboards(
 
 	const results = await prisma.$transaction([
 		...parsedLeaderboards.map(({ items, userEventMap, ironmenOnly, resultLimit }) => {
-			const SQL_ITEMS = `ARRAY[${items.map(i => `${i}`).join(', ')}]`;
+			const SQL_ITEMS = `ARRAY[${Array.from(items)
+				.map(i => `${i}`)
+				.join(', ')}]`;
 			const userIds = Array.from(userEventMap.keys());
 			const userIdsList = userIds.length > 0 ? userIds.map(i => `'${i}'`).join(', ') : 'NULL';
 
@@ -90,7 +92,7 @@ export async function fetchCLLeaderboard({
 	clName
 }: {
 	ironmenOnly: boolean;
-	items: number[];
+	items: Set<number>;
 	resultLimit: number;
 	method?: 'cl_array';
 	clName: string;
@@ -102,23 +104,24 @@ export async function fetchCLLeaderboard({
 		duration: end - start,
 		text: `CLLeaderBoard.${clName}`,
 		collection_log: clName,
-		total_items: items.length
+		total_items: items.size
 	});
 	return result[0];
 }
 
-export async function fetchTameCLLeaderboard({ items, resultLimit }: { items: number[]; resultLimit: number }) {
+export async function fetchTameCLLeaderboard({ items, resultLimit }: { items: Set<number>; resultLimit: number }) {
+	const itemIdsStr = Array.from(items)
+		.map(i => `${i}`)
+		.join(', ');
 	const users = (
 		await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(`
 SELECT user_id::text, (cardinality(u.cl_keys) - u.inverse_length) as qty
 				  FROM (
   SELECT array(SELECT * FROM jsonb_object_keys("tame_cl_bank")) "cl_keys",
 				user_id, "tame_cl_bank",
-			    cardinality(array(SELECT * FROM jsonb_object_keys("tame_cl_bank" - array[${items
-					.map(i => `'${i}'`)
-					.join(', ')}]))) "inverse_length"
+			    cardinality(array(SELECT * FROM jsonb_object_keys("tame_cl_bank" - array[${itemIdsStr}]))) "inverse_length"
   FROM user_stats
-  WHERE "tame_cl_bank" ?| array[${items.map(i => `'${i}'`).join(', ')}]
+  WHERE "tame_cl_bank" ?| array[${itemIdsStr}]
 ) u
 ORDER BY qty DESC
 LIMIT ${resultLimit};

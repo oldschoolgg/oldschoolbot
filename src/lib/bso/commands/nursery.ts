@@ -205,7 +205,7 @@ async function addCommand(interaction: MInteraction, user: MUser, itemName: stri
 	return `You put a ${specie.name} Egg in your nursery.`;
 }
 
-export const nurseryCommand: OSBMahojiCommand = {
+export const nurseryCommand = defineCommand({
 	name: 'nursery',
 	description: 'Manage your tame nursery.',
 	options: [
@@ -228,7 +228,8 @@ export const nurseryCommand: OSBMahojiCommand = {
 					type: 'String',
 					name: 'item',
 					description: 'The egg you want to add to your nursery.',
-					choices: tameSpecies.map(i => i.egg).map(i => ({ name: i.name, value: i.name }))
+					choices: tameSpecies.map(i => i.egg).map(i => ({ name: i.name, value: i.name })),
+					required: true
 				}
 			]
 		},
@@ -238,15 +239,10 @@ export const nurseryCommand: OSBMahojiCommand = {
 			description: 'Check your nursery, and to see if your egg has hatched.'
 		}
 	],
-	run: async ({
-		userID,
-		options,
-		interaction
-	}: CommandRunOptions<{ build?: {}; fuel?: {}; add_egg?: { item: string }; check?: {} }>) => {
-		const user = await mUserFetch(userID);
+	run: async ({ user, options, interaction }) => {
 		if (options.build) return buildCommand(user);
 		if (options.fuel) return fuelCommand(interaction, user);
 		if (options.add_egg) return addCommand(interaction, user, options.add_egg.item);
 		return view(user);
 	}
-};
+});

@@ -1760,37 +1760,8 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 
 	return reply;
 }
-export type TamesCommandOptions = CommandRunOptions<{
-	set_name?: { name: string };
-	cancel?: {};
-	list?: {};
-	merge?: { tame: string };
-	feed?: { items: string };
-	kill?: { name: string };
-	collect?: { name: string };
-	select?: { tame: string };
-	view?: { tame: string };
-	status?: {};
-	equip?: { item: string };
-	unequip?: { item: string };
-	cast?: {
-		tan?: string;
-		spin_flax?: string;
-		plank_make?: string;
-		superglass_make?: string;
-		superheat_item?: string;
-	};
-	activity?: {
-		name: string;
-	};
-	clue?: {
-		clue: string;
-	};
-	set_custom_image?: {
-		image: string;
-	};
-}>;
-export const tamesCommand: OSBMahojiCommand = {
+
+export const tamesCommand = defineCommand({
 	name: 'tames',
 	description: 'Manage your tames.',
 	attributes: {
@@ -1950,7 +1921,7 @@ export const tamesCommand: OSBMahojiCommand = {
 					name: 'item',
 					description: 'The item you want to unequip.',
 					required: true,
-					autocomplete: async (_, user) => {
+					autocomplete: async (_: string, user: MUser) => {
 						const { tame } = await user.getTame();
 						return tameEquipSlots
 							.map(i => tame?.[i])
@@ -1972,7 +1943,7 @@ export const tamesCommand: OSBMahojiCommand = {
 					name: 'tan',
 					description: 'The leather you want your monkey to tan.',
 					required: false,
-					autocomplete: async input => {
+					autocomplete: async (input: string) => {
 						return Tanning.filter(t =>
 							!input ? true : t.name.toLowerCase().includes(input.toLowerCase())
 						).map(t => ({ name: t.name, value: t.name }));
@@ -2018,7 +1989,7 @@ export const tamesCommand: OSBMahojiCommand = {
 					name: 'name',
 					description: 'The activity to do.',
 					required: true,
-					autocomplete: async input => {
+					autocomplete: async (input: string) => {
 						return arbitraryTameActivities
 							.filter(t => (!input ? true : t.name.toLowerCase().includes(input.toLowerCase())))
 							.map(t => ({ name: t.name, value: t.name }));
@@ -2036,8 +2007,7 @@ export const tamesCommand: OSBMahojiCommand = {
 					name: 'clue',
 					description: 'The clue tier to do.',
 					required: true,
-					autocomplete: async (input, rawUser) => {
-						const user = await mUserFetch(rawUser.id);
+					autocomplete: async (input: string, user: MUser) => {
 						return ClueTiers.filter(t =>
 							!input ? true : t.name.toLowerCase().includes(input.toLowerCase())
 						)
@@ -2069,8 +2039,7 @@ export const tamesCommand: OSBMahojiCommand = {
 			]
 		}
 	],
-	run: async ({ options, userID, channelID, interaction }: TamesCommandOptions) => {
-		const user = await mUserFetch(userID);
+	run: async ({ options, user, channelID, interaction }) => {
 		if (options.set_name) return setNameCommand(user, options.set_name.name);
 		if (options.cancel) return cancelCommand(user);
 		if (options.list) return tameImage(user);
@@ -2185,4 +2154,4 @@ export const tamesCommand: OSBMahojiCommand = {
 		}
 		return 'Invalid command.';
 	}
-};
+});

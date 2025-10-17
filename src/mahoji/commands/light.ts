@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import Firemaking from '@/lib/skilling/skills/firemaking.js';
 import type { FiremakingActivityTaskOptions } from '@/lib/types/minions.js';
 
-export const lightCommand: OSBMahojiCommand = {
+export const lightCommand = defineCommand({
 	name: 'light',
 	description: 'Light logs to train Firemaking.',
 	attributes: {
@@ -35,7 +35,7 @@ export const lightCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, user, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
+	run: async ({ options, user, channelID }) => {
 		const log = Firemaking.Burnables.find(
 			log => stringMatches(log.name, options.name) || stringMatches(log.name.split(' ')[0], options.name)
 		);
@@ -87,4 +87,4 @@ export const lightCommand: OSBMahojiCommand = {
 			duration
 		)} to finish.`;
 	}
-};
+});

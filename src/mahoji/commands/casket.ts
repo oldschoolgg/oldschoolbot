@@ -28,7 +28,7 @@ function determineLimit(user: MUser) {
 	return 50;
 }
 
-export const casketCommand: OSBMahojiCommand = {
+export const casketCommand = defineCommand({
 	name: 'casket',
 	description: 'Simulate opening lots of clues caskets.',
 	options: [
@@ -48,7 +48,7 @@ export const casketCommand: OSBMahojiCommand = {
 			max_value: 300_000
 		}
 	],
-	run: async ({ options, user, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
+	run: async ({ options, user, interaction }): CommandResponse => {
 		await interaction.defer();
 		const limit = determineLimit(user);
 		if (options.quantity > limit) {
@@ -83,4 +83,4 @@ export const casketCommand: OSBMahojiCommand = {
 			files: [image.file]
 		};
 	}
-};
+});
