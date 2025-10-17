@@ -252,7 +252,7 @@ export async function assignNewSlayerTask(user: MUser, master: SlayerMaster) {
 	let quantity = randInt(assignedTask!.amount[0], maxQuantity);
 
 	const extendReward = SlayerRewardsShop.find(srs => srs.extendID?.includes(assignedTask!.monster.id));
-	if (extendReward && user.hasSlayerUnlock([extendReward.id])) {
+	if (extendReward && user.hasSlayerUnlock(extendReward.id)) {
 		quantity = assignedTask.extendedAmount
 			? randInt(assignedTask.extendedAmount[0], assignedTask.extendedAmount[1])
 			: Math.ceil(quantity * extendReward.extendMult!);
@@ -260,7 +260,7 @@ export async function assignNewSlayerTask(user: MUser, master: SlayerMaster) {
 
 	const messages: string[] = [];
 	if (
-		user.hasSlayerUnlock([SlayerTaskUnlocksEnum.SizeMatters]) &&
+		user.hasSlayerUnlock(SlayerTaskUnlocksEnum.SizeMatters) &&
 		!user.bitfield.includes(BitField.DisableSizeMatters)
 	) {
 		quantity *= 2;

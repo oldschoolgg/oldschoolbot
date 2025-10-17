@@ -1310,8 +1310,12 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		return res;
 	}
 
-	hasSlayerUnlock(unlock: SlayerTaskUnlocksEnum[]) {
-		return hasSlayerUnlock(this.user.slayer_unlocks, unlock);
+	hasSlayerUnlock(unlock: SlayerTaskUnlocksEnum): boolean {
+		return this.user.slayer_unlocks.includes(unlock);
+	}
+
+	checkHasSlayerUnlocks(unlocks: SlayerTaskUnlocksEnum[]) {
+		return hasSlayerUnlock(this.user.slayer_unlocks, unlocks);
 	}
 
 	modifyBusy(type: 'lock' | 'unlock', reason: string): void {

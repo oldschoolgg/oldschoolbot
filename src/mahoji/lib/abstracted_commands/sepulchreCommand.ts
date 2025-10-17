@@ -73,7 +73,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		}
 
 		if (fletchable.requiredSlayerUnlocks) {
-			const { success, errors } = user.hasSlayerUnlock(fletchable.requiredSlayerUnlocks);
+			const { success, errors } = user.checkHasSlayerUnlocks(fletchable.requiredSlayerUnlocks);
 			if (!success) {
 				return `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
 			}

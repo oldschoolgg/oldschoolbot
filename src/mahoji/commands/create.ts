@@ -72,7 +72,7 @@ export const createCommand = defineCommand({
 			}
 		}
 		if (createableItem.requiredSlayerUnlocks) {
-			const { success, errors } = user.hasSlayerUnlock(createableItem.requiredSlayerUnlocks);
+			const { success, errors } = user.checkHasSlayerUnlocks(createableItem.requiredSlayerUnlocks);
 			if (!success) {
 				return `You don't have the required Slayer Unlocks to ${action} this item.\n\nRequired: ${errors}`;
 			}

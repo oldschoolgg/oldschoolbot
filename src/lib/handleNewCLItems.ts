@@ -1,4 +1,3 @@
-import { roll } from '@oldschoolgg/rng';
 import { Events, formatOrdinal, roboChimpCLRankQuery, sumArr } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 
@@ -49,7 +48,7 @@ export async function handleNewCLItems({
 	}
 
 	const didGetNewCLItem: boolean = newCLItems?.length > 0;
-	if (didGetNewCLItem || roll(30)) {
+	if (didGetNewCLItem) {
 		await prisma.historicalData.create({ data: await createHistoricalData(user) });
 	}
 
