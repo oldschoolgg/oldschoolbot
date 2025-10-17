@@ -121,6 +121,8 @@ describe('Ironman Command', () => {
 		expect(user.QP).toEqual(0);
 		expect(user.bank.equals(new Bank())).toEqual(true);
 		expect(user.cl.equals(new Bank())).toEqual(true);
+		const tableBankCl = await user.fetchCL();
+		expect(tableBankCl).toHaveLength(0);
 
 		expect(await global.prisma!.activity.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
 		expect(await global.prisma!.botItemSell.count({ where: { user_id: userId } })).toEqual(0);
@@ -132,10 +134,15 @@ describe('Ironman Command', () => {
 		expect(await global.prisma!.xPGain.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
 		expect(await global.prisma!.stashUnit.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
 		expect(await global.prisma!.historicalData.count({ where: { user_id: userId } })).toEqual(0);
-		expect(await global.prisma!.tableBank.count({ where: { user_id: userId } })).toEqual(0);
 		const userStats = await global.prisma!.userStats.findFirst({ where: { user_id: BigInt(userId) } });
 		expect(userStats?.cl_array).toEqual(undefined);
 		expect(userStats?.cl_array_length).toEqual(undefined);
+
+		const tableBanks = await global.prisma!.tableBank.findMany({ where: { user_id: userId } });
+		for (const tableBank of tableBanks) {
+			const items = await global.prisma!.tableBankItem.count({ where: { bank_id: tableBank.id } });
+			expect(items).toEqual(0);
+		}
 
 		// Bingo
 		expect(await prisma.bingo.count({ where: { creator_id: userId } })).toEqual(0);

@@ -45,7 +45,7 @@ import { defaultGear, Gear } from '@/lib/structures/Gear.js';
 import { GearBank } from '@/lib/structures/GearBank.js';
 import { MUserStats } from '@/lib/structures/MUserStats.js';
 import type { XPBank } from '@/lib/structures/XPBank.js';
-import { TableBankManager } from '@/lib/tableBankManager.js';
+import { TableBankManager } from '@/lib/table-banks/tableBankManager.js';
 import type { PrismaCompatibleJsonObject, SkillRequirements, Skills } from '@/lib/types/index.js';
 import { calcMaxTripLength } from '@/lib/util/calcMaxTripLength.js';
 import { determineRunes } from '@/lib/util/determineRunes.js';
@@ -89,7 +89,7 @@ export type SelectedUserStats<T extends Prisma.UserStatsSelect> = {
 };
 
 export class MUserClass {
-	user: Readonly<User>;
+	user!: Readonly<User>;
 	id: string;
 
 	skillsAsXP!: Required<Skills>;
@@ -103,9 +103,8 @@ export class MUserClass {
 	private _gearLazy: UserFullGearSetup | null = null;
 
 	constructor(user: User) {
-		this.user = user;
 		this.id = user.id;
-		this.updateProperties();
+		this._updateRawUser(user);
 	}
 
 	public get bank(): Bank {
@@ -396,8 +395,7 @@ GROUP BY data->>'ci';`);
 			dontAddToTempCL,
 			neverUpdateHistory
 		});
-		this.user = res.newUser;
-		this.updateProperties();
+		this._updateRawUser(res.newUser);
 		return res;
 	}
 
@@ -405,15 +403,18 @@ GROUP BY data->>'ci';`);
 		const res = await this.transactItems({
 			itemsToRemove: bankToRemove
 		});
-		this.user = res.newUser;
-		this.updateProperties();
+		this._updateRawUser(res.newUser);
 		return res;
+	}
+
+	public _updateRawUser(rawUser: User) {
+		this.user = rawUser;
+		this.updateProperties();
 	}
 
 	async transactItems(options: Omit<TransactItemsArgs, 'userID'>) {
 		const res = await transactItemsFromBank({ userID: this.user.id, ...options });
-		this.user = res.newUser;
-		this.updateProperties();
+		this._updateRawUser(res.newUser);
 		return res;
 	}
 
@@ -701,8 +702,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			await this.transactItems({ itemsToRemove: bankRemove });
 		}
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
-		this.user = newUser;
-		this.updateProperties();
+		this._updateRawUser(newUser);
 		return {
 			realCost
 		};
@@ -755,8 +755,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	async sync() {
 		const newUser = await prisma.user.findUnique({ where: { id: this.id } });
 		if (!newUser) throw new Error(`Failed to sync user ${this.id}, no record was found`);
-		this.user = newUser;
-		this.updateProperties();
+		this._updateRawUser(newUser);
 	}
 
 	async fetchStats() {
@@ -1126,7 +1125,6 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 
 		// If they dont have one yet, create the full thing.
 		if (existingTableBank === 0) {
-			console.log('Creating new CL for', this.id, itemsToAdd?.toString());
 			await prisma.tableBank.create({
 				data: {
 					user_id: this.id,
@@ -1140,7 +1138,6 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 				}
 			});
 		} else if (itemsToAdd) {
-			console.log('Adding to CL for', this.id, itemsToAdd.toString());
 			await TableBankManager.update({
 				userId: this.id,
 				type: 'CollectionLog',
@@ -1154,7 +1151,6 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 	}
 
 	async fetchCL(): Promise<Bank> {
-		console.log('Fetching CL for', this.id);
 		const cl = await this._fetchOrCreateCL();
 		return cl;
 	}

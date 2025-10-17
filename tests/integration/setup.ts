@@ -4,6 +4,7 @@ import { Collection } from 'discord.js';
 import { vi } from 'vitest';
 
 import { createDb } from '@/lib/globals.js';
+import { runStartupScripts } from '@/lib/startupScripts.js';
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
 import { mockChannel, TEST_CHANNEL_ID } from './util.js';
 
@@ -23,6 +24,7 @@ global.globalClient = {
 } as any;
 
 await createDb();
+await runStartupScripts();
 
 vi.mock('@oldschoolgg/toolkit', async () => {
 	const actualToolkit = await vi.importActual('@oldschoolgg/toolkit');
@@ -50,4 +52,4 @@ vi.mock('../../src/lib/util/webhook', async () => {
 
 try {
 	await prisma.$queryRawUnsafe(`CREATE EXTENSION IF NOT EXISTS "intarray";`);
-} catch (_err) {}
+} catch (_err) { }

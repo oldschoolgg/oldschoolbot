@@ -9,13 +9,17 @@ function toPairs(b?: Bank): Array<[number, bigint]> {
 	return out;
 }
 
-async function getOrCreateBankId(userId: string, type: TableBankType) {
-	const b = await prisma.tableBank.upsert({
-		where: { user_id_type: { user_id: userId, type } },
-		create: { user_id: userId, type },
-		update: {}
-	});
-	return b.id;
+async function getOrCreateBankId(userId: string, type: TableBankType, tx = prisma): Promise<number> {
+	const rows = await tx.$queryRaw<{ id: number }[]>(
+		Prisma.sql`
+			INSERT INTO table_bank (user_id, type)
+			VALUES (${userId}, ${type})
+			ON CONFLICT (user_id, type)
+			DO UPDATE SET user_id = EXCLUDED.user_id
+			RETURNING id;
+		`
+	);
+	return rows[0].id;
 }
 
 export class TableBankManager {
@@ -30,7 +34,7 @@ export class TableBankManager {
 		itemsToAdd?: Bank;
 		itemsToRemove?: Bank;
 	}) {
-		const bankId = await getOrCreateBankId(userId, type as TableBankType);
+		const bankId = await getOrCreateBankId(userId, type);
 		const adds = toPairs(itemsToAdd);
 		const rems = toPairs(itemsToRemove);
 

@@ -135,6 +135,7 @@ export async function transactItemsFromBank({
 		}
 
 		if (!options.neverUpdateHistory) {
+			settings._updateRawUser(newUser);
 			await handleNewCLItems({ itemsAdded, user: settings, previousCL, newCL });
 		}
 
