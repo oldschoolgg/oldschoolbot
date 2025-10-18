@@ -1,3 +1,5 @@
+import { itemsToDelete } from '@/lib/bso/deletedItems.js';
+
 import { isFunction, notEmpty } from '@oldschoolgg/toolkit';
 import { AncientCavernAncientPageTable, Bank, Implings, Items, Monsters, resolveItems } from 'oldschooljs';
 
@@ -166,3 +168,7 @@ for (const id of baseFilters.map(i => i.items(undefined)).flat(100)) {
 }
 
 for (const i of totalBankToAdd.items()) ALL_OBTAINABLE_ITEMS.add(i[0].id);
+
+for (const x of itemsToDelete) {
+	ALL_OBTAINABLE_ITEMS.delete(x[0]);
+}
