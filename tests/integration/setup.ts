@@ -4,9 +4,10 @@ import { Collection } from 'discord.js';
 import { vi } from 'vitest';
 
 import { createDb } from '@/lib/globals.js';
-import { runStartupScripts } from '@/lib/startupScripts.js';
 import { allCommandsDONTIMPORT } from '@/mahoji/commands/allCommands.js';
 import { mockChannel, TEST_CHANNEL_ID } from './util.js';
+
+await createDb();
 
 global.globalClient = {
 	isReady: () => true,
@@ -22,9 +23,6 @@ global.globalClient = {
 	busyCounterCache: new Map<string, number>(),
 	allCommands: allCommandsDONTIMPORT
 } as any;
-
-await createDb();
-await runStartupScripts();
 
 vi.mock('@oldschoolgg/toolkit', async () => {
 	const actualToolkit = await vi.importActual('@oldschoolgg/toolkit');
