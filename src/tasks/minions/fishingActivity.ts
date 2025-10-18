@@ -32,7 +32,7 @@ export const fishingTask: MinionTask = {
 		}
 		const { itemTransactionResult, rawResults } = resultOrError;
 
-		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name}. ${rawResults.join(', ')}`;
+		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name} and received ${resultOrError.itemTransactionResult?.itemsAdded ?? 'No items'}. ${rawResults.join(', ')}`;
 
 		if (result.boosts.length > 0) {
 			str += `\n\n**Boosts:** ${result.boosts.join(', ')}`;
