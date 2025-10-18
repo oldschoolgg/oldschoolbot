@@ -4,13 +4,11 @@ import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 import { type GenerateResult, SpriteSheetGenerator } from '@oldschoolgg/spritesheet';
 import { isFunction, Stopwatch, uniqueArr } from '@oldschoolgg/toolkit';
-import { GearStat, type ItemBank, Items, resolveItems } from 'oldschooljs';
+import { GearStat, Items, resolveItems } from 'oldschooljs';
 import sharp from 'sharp';
 
 import { ALL_OBTAINABLE_ITEMS } from '@/lib/allObtainableItems.js';
 import { findBestGearSetups } from '@/lib/gear/functions/findBestGearSetups.js';
-import bsoItemsJson from '../data/bso/bso_items.json' with { type: 'json' };
-import bsoMonstersJson from '../data/bso/monsters.json' with { type: 'json' };
 import { BOT_TYPE } from '../src/lib/constants.js';
 import Buyables from '../src/lib/data/buyables/buyables.js';
 import { allCLItems } from '../src/lib/data/Collections.js';
@@ -77,12 +75,7 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 		'Rune staff of collection',
 		'Dragon staff of collection',
 		'Gilded staff of collection'
-	]),
-	...uniqueArr(bsoMonstersJson.data.map(m => m.all_droppable_items).flat(100)).filter(id => {
-		if ((bsoItemsJson as any as ItemBank)[id]) return false;
-		if (!Items.has(id)) return false;
-		return true;
-	})
+	])
 ]);
 
 const bisGearItems = new Set<number>();
