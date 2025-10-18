@@ -50,7 +50,7 @@ export const bonanzaTask: MinionTask = {
 		const averageLevel =
 			(user.skillsAsLevels.agility + user.skillsAsLevels.ranged + user.skillsAsLevels.thieving) / 3;
 
-		const tickets = rng.randInt(clamp(averageLevel / 2, { min: 1, max: 120 }), averageLevel);
+		const tickets = rng.randInt(Math.floor(clamp(averageLevel / 2, { min: 1, max: 120 })), Math.floor(averageLevel));
 		loot.add('Circus ticket', tickets);
 
 		const freeIgneTames = tames.filter(i => i.tame_activity.length === 0 && i.species_id === TameSpeciesID.Igne);
