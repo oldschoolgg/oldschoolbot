@@ -1451,14 +1451,6 @@ model Portent {
   @@map("portent")
 }
 
-model ItemMetadata {
-  id Int @id
-
-  name String?
-
-  @@map("item_metadata")
-}
-
 enum UserEventType {
   MaxXP
   MaxTotalXP

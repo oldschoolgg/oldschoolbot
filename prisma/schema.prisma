@@ -1115,14 +1115,6 @@ model GiftBox {
   @@map("gift_box")
 }
 
-model ItemMetadata {
-  id Int @id
-
-  name String?
-
-  @@map("item_metadata")
-}
-
 enum UserEventType {
   MaxXP
   MaxTotalXP
