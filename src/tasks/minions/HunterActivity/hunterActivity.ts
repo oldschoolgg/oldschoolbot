@@ -218,8 +218,7 @@ export function calculateHunterResult({
 		}
 		totalHunterXP += bonusXP;
 		messages.push(
-			`${toKMB(bonusXP * GLOBAL_BSO_XP_MULTIPLIER)} bonus XP from your Pacifist Portent (${
-				portentResult.portent.charges_remaining
+			`${toKMB(bonusXP * GLOBAL_BSO_XP_MULTIPLIER)} bonus XP from your Pacifist Portent (${portentResult.portent.charges_remaining
 			} charges remaining)`
 		);
 	}
@@ -301,20 +300,17 @@ export const hunterTask: MinionTask = {
 
 		const crystalImpling = creature.name === 'Crystal impling';
 
-		let graceful = false;
-		if (user.hasGracefulEquipped()) {
-			graceful = true;
-		}
+		const graceful = user.hasGracefulEquipped();
 
 		const experienceScore = await user.getCreatureScore(creature.id);
 
 		const boostRes =
 			creature.id === ECreature.HERBIBOAR && user.allItemsOwned.has('Arcane harvester')
 				? await inventionItemBoost({
-						user,
-						inventionID: InventionID.ArcaneHarvester,
-						duration: quantity * Time.Minute * 4
-					})
+					user,
+					inventionID: InventionID.ArcaneHarvester,
+					duration: quantity * Time.Minute * 4
+				})
 				: null;
 
 		const minutes = Math.ceil(duration / Time.Minute);
@@ -371,7 +367,10 @@ export const hunterTask: MinionTask = {
 			]
 		});
 
-		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
+		const scoreToAdd = Math.floor(successfulQuantity);
+		if (scoreToAdd > 0) {
+			await user.incrementCreatureScore(creature.id);
+		}
 
 		let xpStr = '';
 		xpStr += await user.addXP({
@@ -388,11 +387,10 @@ export const hunterTask: MinionTask = {
 			});
 		}
 
-		let str = `${user}, ${user.minionName} finished hunting ${creature.name}${
-			crystalImpling
-				? '.'
-				: ` ${quantity}x times, due to clever creatures you missed out on ${quantity - successfulQuantity}x catches. `
-		}${xpStr}`;
+		let str = `${user}, ${user.minionName} finished hunting ${creature.name}${crystalImpling
+			? '.'
+			: ` ${quantity}x times, due to clever creatures you missed out on ${quantity - successfulQuantity}x catches. `
+			}${xpStr}`;
 
 		str += `\n\nYou received: ${loot}.`;
 

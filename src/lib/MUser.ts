@@ -24,7 +24,6 @@ import {
 } from '@oldschoolgg/toolkit';
 import { escapeMarkdown, userMention } from 'discord.js';
 import {
-	addItemToBank,
 	Bank,
 	convertXPtoLVL,
 	EMonster,
@@ -321,9 +320,14 @@ export class MUserClass {
 		return addXP(this, params);
 	}
 
-	async getKC(monsterID: number) {
-		const stats = await this.fetchStats();
-		return (stats.monster_scores as ItemBank)[monsterID] ?? 0;
+	async getKC(monsterID: number): Promise<number> {
+		if (!Number.isInteger(monsterID)) throw new Error('Invalid monsterID');
+		const query = `
+SELECT COALESCE((monster_scores->>'${monsterID}')::int, 0) AS monster_kc
+FROM user_stats
+WHERE user_id = ${this.id};`;
+		const stats = await prisma.$queryRawUnsafe<{ monster_kc: number }[]>(query);
+		return stats[0]?.monster_kc ?? 0;
 	}
 
 	async getAllKCs() {
@@ -399,13 +403,17 @@ export class MUserClass {
 		return { actualCluesBank: actualClues, clueCounts };
 	}
 
-	async incrementKC(monsterID: number, amountToAdd = 1) {
-		const stats = await this.fetchStats();
-		const newKCs = new Bank(stats.monster_scores as ItemBank).add(monsterID, amountToAdd);
-		await this.statsUpdate({
-			monster_scores: newKCs.toJSON()
-		});
-		return { newKC: newKCs.amount(monsterID) };
+	async incrementKC(monsterID: number, quantityToAdd = 1) {
+		if (!Number.isInteger(monsterID)) throw new Error('Invalid monsterID');
+		if (!Number.isInteger(quantityToAdd) || quantityToAdd < 1) throw new Error('Invalid quantityToAdd');
+		const query = `
+UPDATE user_stats
+SET monster_scores = add_item_to_bank(monster_scores, '${monsterID}', ${quantityToAdd})
+WHERE user_id = ${this.id}
+RETURNING (monster_scores->>'${monsterID}')::int AS new_kc;
+`;
+		const res = await prisma.$queryRawUnsafe<{ new_kc: number }[]>(query);
+		return { newKC: res[0]?.new_kc ?? 0 };
 	}
 
 	public async addItemsToBank({
@@ -564,11 +572,27 @@ export class MUserClass {
 		return ActivityManager.minionIsBusy(this.id);
 	}
 
-	async incrementCreatureScore(creatureID: number, amountToAdd = 1) {
-		const stats = await this.fetchStats();
-		await this.statsUpdate({
-			creature_scores: addItemToBank(stats.creature_scores as ItemBank, creatureID, amountToAdd)
-		});
+	async getCreatureScore(creatureID: number): Promise<number> {
+		if (!Number.isInteger(creatureID)) throw new Error('Invalid monsterID');
+		const query = `
+SELECT COALESCE((creature_scores->>'${creatureID}')::int, 0) AS creature_kc
+FROM user_stats
+WHERE user_id = ${this.id};`;
+		const stats = await prisma.$queryRawUnsafe<{ creature_kc: number }[]>(query);
+		return stats[0]?.creature_kc ?? 0;
+	}
+
+	async incrementCreatureScore(creatureID: number, quantityToAdd = 1): Promise<{ newKC: number }> {
+		if (!Number.isInteger(creatureID)) throw new Error('Invalid creatureID');
+		if (!Number.isInteger(quantityToAdd) || quantityToAdd < 1) throw new Error('Invalid quantityToAdd');
+		const query = `
+UPDATE user_stats
+SET creature_scores = add_item_to_bank(creature_scores, '${creatureID}', ${quantityToAdd})
+WHERE user_id = ${this.id}
+RETURNING (creature_scores->>'${creatureID}')::int AS new_kc;
+`;
+		const res = await prisma.$queryRawUnsafe<{ new_kc: number }[]>(query);
+		return { newKC: res[0]?.new_kc ?? 0 };
 	}
 
 	get blowpipe() {
@@ -742,11 +766,6 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		return {
 			realCost
 		};
-	}
-
-	async getCreatureScore(creatureID: number) {
-		const stats = await this.fetchStats();
-		return (stats.creature_scores as ItemBank)[creatureID] ?? 0;
 	}
 
 	calculateAddItemsToCLUpdates({
