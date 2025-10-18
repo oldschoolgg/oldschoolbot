@@ -473,12 +473,17 @@ async function globalButtonInteractionHandler({
 	return { content: 'Unknown button? Report this as a bug.', ephemeral: true };
 }
 
+const ignoredInteractionIDs = [
+	...Object.values(InteractionID.Confirmation),
+	...Object.values(InteractionID.PaginatedMessage),
+	...Object.values(InteractionID.Party)
+];
+
 export async function globalButtonInteractionHandlerWrapper(_interaction: ButtonInteraction) {
 	const interaction = new MInteraction({ interaction: _interaction });
 	const id = interaction.customId;
 	if (!id) return;
-	const ignoredInteractionIDs = ['CONFIRM', 'CANCEL', 'PARTY_JOIN', ...Object.values(InteractionID.PaginatedMessage)];
-	if (ignoredInteractionIDs.includes(id)) return;
+	if ((ignoredInteractionIDs as string[]).includes(id)) return;
 	if (['DYN_', 'LP_'].some(s => id.startsWith(s))) return;
 	const response: Awaited<CommandResponse> = await globalButtonInteractionHandler({ interaction, id });
 	if (response === SpecialResponse.PaginatedMessageResponse) return;
