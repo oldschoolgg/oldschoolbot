@@ -253,7 +253,8 @@ export function calculateHunterInput({
 			}
 		}
 		messages.push(
-			`You are hunting ${creature.name} in the Wilderness during ${wildyPeak!.peakTier
+			`You are hunting ${creature.name} in the Wilderness during ${
+				wildyPeak!.peakTier
 			} peak time and potentially risking your equipped body and legs in the wildy setup with a score ${wildyScore} and also risking Saradomin brews and Super restore potions.`
 		);
 	}
@@ -364,18 +365,18 @@ export const huntCommand = defineCommand({
 
 		const quickTrapResult = elligibleForQuickTrap
 			? await inventionItemBoost({
-				user,
-				inventionID: InventionID.QuickTrap,
-				duration: preResult.duration
-			})
+					user,
+					inventionID: InventionID.QuickTrap,
+					duration: preResult.duration
+				})
 			: null;
 
 		const webshooterResult = elligibleForWebshooter
 			? await inventionItemBoost({
-				user,
-				inventionID: InventionID.Webshooter,
-				duration: preResult.duration
-			})
+					user,
+					inventionID: InventionID.Webshooter,
+					duration: preResult.duration
+				})
 			: null;
 
 		const result = calculateHunterInput({
@@ -420,8 +421,9 @@ export const huntCommand = defineCommand({
 			type: 'Hunter'
 		});
 
-		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`}${crystalImpling ? ' ' : ` ${quantity}x `
-			}${creature.name}, it'll take around ${formatDuration(duration)} to finish.`;
+		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`}${
+			crystalImpling ? ' ' : ` ${quantity}x `
+		}${creature.name}, it'll take around ${formatDuration(duration)} to finish.`;
 
 		if (messages.length > 0) {
 			response += `\n\n${messages.join(', ')}.`;
