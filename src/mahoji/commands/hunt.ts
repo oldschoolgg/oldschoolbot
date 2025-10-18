@@ -150,7 +150,7 @@ export const huntCommand = defineCommand({
 			}
 		}
 
-		if (creature.id === ECreature.HERBIBOAR || creature.id === ECreature.RAZOR_KEBBIT) {
+		if (creature.id === ECreature.HERBIBOAR || creature.id === ECreature.RAZOR_BACKED_KEBBIT) {
 			if (usingStaminaPotion) catchTime *= 0.8;
 		}
 
@@ -197,7 +197,11 @@ export const huntCommand = defineCommand({
 
 		// If creatures Herbiboar or Razor-backed kebbit use Stamina potion(4)
 		if (usingStaminaPotion) {
-			if (creature.id === ECreature.HERBIBOAR || creature.id === ECreature.RAZOR_KEBBIT || crystalImpling) {
+			if (
+				creature.id === ECreature.HERBIBOAR ||
+				creature.id === ECreature.RAZOR_BACKED_KEBBIT ||
+				crystalImpling
+			) {
 				const staminaPotionQuantity =
 					creature.id === ECreature.HERBIBOAR || crystalImpling
 						? Math.round(duration / (9 * Time.Minute))

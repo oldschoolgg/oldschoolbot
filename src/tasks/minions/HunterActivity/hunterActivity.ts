@@ -49,10 +49,7 @@ export const hunterTask: MinionTask = {
 
 		const crystalImpling = creature.name === 'Crystal impling';
 
-		let graceful = false;
-		if (user.hasGracefulEquipped()) {
-			graceful = true;
-		}
+		const graceful = user.hasGracefulEquipped();
 
 		const experienceScore = await user.getCreatureScore(creature.id);
 
@@ -156,9 +153,11 @@ export const hunterTask: MinionTask = {
 			}
 		}
 
-		if (successfulQuantity > 0) {
-			await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
+		const scoreToAdd = Math.floor(successfulQuantity);
+		if (scoreToAdd > 0) {
+			await user.incrementCreatureScore(creature.id);
 		}
+
 		await user.transactItems({
 			collectionLog: true,
 			itemsToAdd: loot
