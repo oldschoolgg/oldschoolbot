@@ -110,7 +110,8 @@ export const minionKCommand = defineCommand({
 			options.method,
 			options.wilderness,
 			options.solo,
-			undefined
+			// @ts-expect-error: Passed by the bot only
+			options.onTask
 		);
 	}
 });
@@ -173,8 +174,7 @@ async function monsterInfo(user: MUser, name: string): Promise<string | Interact
 		const gearReductions = gearStats.replace(/: Reduced from (?:[0-9]+?), /, '\n').replace('), ', ')\n');
 		if (hpNeededPerKill > 0) {
 			itemRequirements.push(
-				`**Healing Required:** ${gearReductions}\nYou require ${
-					hpNeededPerKill * maxCanKill
+				`**Healing Required:** ${gearReductions}\nYou require ${hpNeededPerKill * maxCanKill
 				} hp for a full trip.\n`
 			);
 		} else {
@@ -214,9 +214,6 @@ async function monsterInfo(user: MUser, name: string): Promise<string | Interact
 			min * 0.9
 		)}) to (${formatDuration(max * 0.9)}) to finish.\n`
 	);
-	const response: InteractionReplyOptions = {
-		content: str.join('\n')
-	};
 
-	return response;
+	return str.join('\n');
 }
