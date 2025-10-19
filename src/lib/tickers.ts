@@ -1,3 +1,4 @@
+import { halloweenTicker } from '@/lib/bso/commands/halloween.js';
 import { MTame } from '@/lib/bso/structures/MTame.js';
 import { runTameTask } from '@/lib/bso/tames/tameTasks.js';
 
@@ -347,6 +348,14 @@ export const tickers: {
 		interval: Time.Minute * 10,
 		cb: async () => {
 			await syncBlacklists();
+		}
+	},
+	{
+		name: 'Halloween',
+		timer: null,
+		interval: Time.Minute * 10,
+		cb: async () => {
+			await halloweenTicker();
 		}
 	}
 ];

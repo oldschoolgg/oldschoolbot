@@ -11255,6 +11255,21 @@
 		}
 	},
 	{
+		"id": 73602,
+		"name": "Death card",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 1,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 73259,
 		"name": "Deathless victims",
 		"tradeable": true,
@@ -22514,6 +22529,21 @@
 		}
 	},
 	{
+		"id": 73605,
+		"name": "Ghost card",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 1,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 71603,
 		"name": "Ghostly chicken feet",
 		"members": true,
@@ -26963,6 +26993,21 @@
 		"highalch": 27,
 		"buy_limit": 13000,
 		"price": 10000
+	},
+	{
+		"id": 73600,
+		"name": "Halloween candy",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 1,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
 	},
 	{
 		"id": 73274,
@@ -34627,6 +34672,16 @@
 		}
 	},
 	{
+		"id": 73601,
+		"name": "Night-Mare",
+		"members": true,
+		"cost": 1,
+		"price": 1,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 73165,
 		"name": "Nightmarish ashes",
 		"tradeable": true,
@@ -39850,6 +39905,21 @@
 			}
 		},
 		"price": 10000
+	},
+	{
+		"id": 73603,
+		"name": "Pumpkinman card",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 1,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
 	},
 	{
 		"id": 70173,
@@ -51024,6 +51094,21 @@
 		"tradeable": true
 	},
 	{
+		"id": 73604,
+		"name": "Vampire card",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 1,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
+		}
+	},
+	{
 		"id": 71937,
 		"name": "Vampyre hunter boots",
 		"members": true,
@@ -54444,6 +54529,21 @@
 		"customItemData": {
 			"cantDropFromMysteryBoxes": true,
 			"isSuperUntradeable": true
+		}
+	},
+	{
+		"id": 73606,
+		"name": "Witch card",
+		"tradeable": true,
+		"tradeable_on_ge": true,
+		"noteable": true,
+		"cost": 45,
+		"lowalch": 18,
+		"highalch": 27,
+		"buy_limit": 13000,
+		"price": 1,
+		"customItemData": {
+			"cantDropFromMysteryBoxes": true
 		}
 	},
 	{

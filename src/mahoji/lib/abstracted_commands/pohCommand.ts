@@ -16,6 +16,11 @@ export const pohWallkits = [
 		bitfield: BitField.HasHosidiusWallkit,
 		name: 'Hosidius',
 		imageID: 2
+	},
+	{
+		bitfield: BitField.HasHalloweenWallkit,
+		name: 'Halloween',
+		imageID: 3
 	}
 ];
 
@@ -47,7 +52,7 @@ export async function pohWallkitCommand(user: MUser, input: string) {
 
 	const { bitfield } = user;
 	const userBank = user.bank;
-	if (selectedKit.bitfield && !bitfield.includes(BitField.HasHosidiusWallkit)) {
+	if (selectedKit.bitfield && !bitfield.includes(selectedKit.bitfield)) {
 		if (selectedKit.imageID === 2 && userBank.has('Hosidius blueprints')) {
 			await user.removeItemsFromBank(new Bank().add('Hosidius blueprints'));
 			await user.update({

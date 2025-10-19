@@ -532,6 +532,8 @@ model User {
 
   cl_array Int[] @default([])
 
+  equipped_card_item_id Int?
+
   @@index([id, last_command_date])
   @@map("users")
 }
@@ -1841,4 +1843,16 @@ model TableBankItem {
 
   @@id([bank_id, item_id])
   @@map("table_bank_item")
+}
+
+model HalloweenEvent {
+  user_id    String   @id @db.VarChar(19)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+
+  candy_in_bowl            Int       @default(0)
+  total_candy_deposited    Int       @default(0)
+  last_trick_or_treat      DateTime? @db.Timestamp(6)
+  items_waiting_for_pickup Json      @default("{}") @db.Json
+
+  @@map("halloween_event")
 }
