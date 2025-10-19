@@ -74,7 +74,17 @@ const itemsMustBeInSpritesheet: number[] = uniqueArr([
 		'Adamant staff of collection',
 		'Rune staff of collection',
 		'Dragon staff of collection',
-		'Gilded staff of collection'
+		'Gilded staff of collection',
+		'Bone shard',
+		'Lump of crystal',
+		'Dwarven rock cake',
+		'Jewellery',
+		'Fishing trophy',
+		'Crystal tangleroot',
+		'Dragonfruit tangleroot',
+		'Herb tangleroot',
+		'White lily tangleroot',
+		'Redwood tangleroot'
 	])
 ]);
 
@@ -94,9 +104,6 @@ for (const stat of Object.values(GearStat)) {
 
 const bisGearMissing = Array.from(bisGearItems).filter(i => !itemsMustBeInSpritesheet.includes(i));
 itemsMustBeInSpritesheet.push(...bisGearMissing);
-console.log(
-	`	Adding ${bisGearMissing.length} items to spritesheet for BiS gear: ${bisGearMissing.map(i => Items.itemNameFromId(i)).join(', ')}`
-);
 
 const getPngFiles = async (dir: string): Promise<string[]> => {
 	const files = await fs.readdir(dir);
