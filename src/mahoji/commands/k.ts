@@ -174,7 +174,8 @@ async function monsterInfo(user: MUser, name: string): Promise<string | Interact
 		const gearReductions = gearStats.replace(/: Reduced from (?:[0-9]+?), /, '\n').replace('), ', ')\n');
 		if (hpNeededPerKill > 0) {
 			itemRequirements.push(
-				`**Healing Required:** ${gearReductions}\nYou require ${hpNeededPerKill * maxCanKill
+				`**Healing Required:** ${gearReductions}\nYou require ${
+					hpNeededPerKill * maxCanKill
 				} hp for a full trip.\n`
 			);
 		} else {
