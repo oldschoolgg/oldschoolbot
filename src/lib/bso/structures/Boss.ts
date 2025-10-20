@@ -66,11 +66,15 @@ function teamSizeBoostPercent(size: number) {
 	}
 }
 
-export function calcFood(solo: boolean, kc: number) {
+function calcFood({ solo, kc, user }: { solo: boolean; kc: number; user: MUser }) {
 	const items = new Bank();
 
 	let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30)));
 	if (solo) brewsNeeded += 2;
+	if (user.hasCard('vampire')) {
+		brewsNeeded = Math.ceil(brewsNeeded * 0.75);
+	}
+
 	const restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
 
 	items.add('Saradomin brew(4)', brewsNeeded + 1);
@@ -354,7 +358,7 @@ export class BossInstance {
 
 	async calcFoodForUser(user: MUser, solo = false) {
 		const kc = await user.getKC(this.id);
-		const itemsToRemove = calcFood(solo, kc);
+		const itemsToRemove = calcFood({ solo, kc, user });
 		if (this.itemCost) {
 			return this.itemCost({ user, kills: this.quantity ?? 0, baseFood: itemsToRemove, solo });
 		}

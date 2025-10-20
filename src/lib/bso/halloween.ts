@@ -1,6 +1,8 @@
 import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 
-import { type Item, Items } from 'oldschooljs';
+import { MathRNG } from '@oldschoolgg/rng';
+import { DateTime } from 'luxon';
+import { Bank, type Item, type ItemBank, Items } from 'oldschooljs';
 
 const constants = {
 	MINUTES_PER_VISIT: 10,
@@ -35,50 +37,38 @@ const trickOrTreaters: {
 	id: HalloweenCardID;
 	card: Item;
 	emoji: string;
-	perk: {
-		description: string;
-	};
+	cardDescription: string;
 }[] = [
 	{
 		id: 'witch',
 		card: Items.getOrThrow('Witch card'),
 		emoji: BSOEmoji.WitchCard,
-		perk: {
-			description:
-				'An extra 1/5 chance at loot doubling, and custom pets give double their normal loot (peky/obis/brock/wilvus/smokey/doug/harry)'
-		}
+		cardDescription:
+			'An extra 1/5 chance at loot doubling, and custom pets give double their normal loot (peky/obis/brock/wilvus/smokey/doug/harry)'
 	},
 	{
 		id: 'death',
 		card: Items.getOrThrow('Death card'),
 		emoji: BSOEmoji.DeathCard,
-		perk: {
-			description: 'All PvM is 30% faster, and all slayer tasks have 50% more kills assigned.'
-		}
+		cardDescription: 'All PvM is 30% faster, and all slayer tasks have 50% more kills assigned.'
 	},
 	{
 		id: 'pumpkinman',
 		card: Items.getOrThrow('Pumpkinman card'),
 		emoji: BSOEmoji.PumpkinmanCard,
-		perk: {
-			description: 'Farming patches grow 50% faster, and give twice the yield.'
-		}
+		cardDescription: 'Farming patches grow 50% faster, and give twice the yield.'
 	},
 	{
 		id: 'vampire',
 		card: Items.getOrThrow('Vampire card'),
 		emoji: BSOEmoji.VampireCard,
-		perk: {
-			description: '+10 minutes longer max trip length all trips'
-		}
+		cardDescription: '+10 minutes longer max trip length all trips'
 	},
 	{
 		id: 'ghost',
 		card: Items.getOrThrow('Ghost card'),
 		emoji: BSOEmoji.GhostCard,
-		perk: {
-			description: 'Increased chance of trick-or-treating'
-		}
+		cardDescription: 'Increased chance of trick-or-treating'
 	}
 ] as const;
 
@@ -113,6 +103,71 @@ console.log(
 	)}h`
 );
 
+export async function halloweenTicker() {
+	const pohsWithCandyBowls = await prisma.playerOwnedHouse.findMany({
+		where: {
+			garden_decoration: 9315
+		},
+		select: {
+			user_id: true
+		}
+	});
+	const usersToUpdate = await prisma.halloweenEvent.findMany({
+		where: {
+			user_id: {
+				in: pohsWithCandyBowls.map(p => p.user_id)
+			},
+			last_trick_or_treat: {
+				lte: DateTime.now().minus({ minutes: HalloweenEvent2025.constants.MINUTES_PER_VISIT }).toJSDate()
+			},
+			candy_in_bowl: {
+				gt: 0
+			}
+		}
+	});
+	for (const userEvent of usersToUpdate) {
+		const user = await mUserFetch(userEvent.user_id);
+		const candyDesired = MathRNG.randInt(1, 3);
+
+		// Doesnt have enough candy
+		if (userEvent.candy_in_bowl < candyDesired) {
+			await prisma.halloweenEvent.update({
+				where: { user_id: userEvent.user_id },
+				data: {
+					last_trick_or_treat: new Date()
+				}
+			});
+			continue;
+		}
+
+		const itemsWaitingForPickup = new Bank(userEvent.items_waiting_for_pickup as ItemBank);
+
+		// No duplicates
+		let validTrickOrTreaters = HalloweenEvent2025.trickOrTreaters.filter(_t => !user.cl.has(_t.card.id));
+		if (validTrickOrTreaters.length === 0) validTrickOrTreaters = HalloweenEvent2025.trickOrTreaters;
+
+		const trickOrTreater = MathRNG.pick(validTrickOrTreaters) ?? HalloweenEvent2025.trickOrTreaters[0];
+		if (MathRNG.roll(HalloweenEvent2025.constants.CARD_CHANCE) && !user.cl.has(trickOrTreater.card.id)) {
+			itemsWaitingForPickup.add(trickOrTreater.card.id);
+		}
+
+		if (MathRNG.roll(HalloweenEvent2025.constants.PET_CHANCE)) {
+			itemsWaitingForPickup.add('Night-Mare');
+		}
+
+		await prisma.halloweenEvent.update({
+			where: { user_id: userEvent.user_id },
+			data: {
+				last_trick_or_treat: new Date(),
+				items_waiting_for_pickup: itemsWaitingForPickup.toJSON(),
+				candy_in_bowl: {
+					decrement: 1
+				}
+			}
+		});
+	}
+}
+
 export const HalloweenEvent2025 = {
 	constants: {
 		...constants,
@@ -121,5 +176,6 @@ export const HalloweenEvent2025 = {
 		PET_CHANCE
 	},
 	trickOrTreaters,
-	DEATH_SPEED_BOOST: 30
+	DEATH_SPEED_BOOST: 30,
+	GHOST_XP_BOOST: 5
 };

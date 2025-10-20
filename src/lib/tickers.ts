@@ -1,4 +1,4 @@
-import { halloweenTicker } from '@/lib/bso/commands/halloween.js';
+import { halloweenTicker } from '@/lib/bso/halloween.js';
 import { MTame } from '@/lib/bso/structures/MTame.js';
 import { runTameTask } from '@/lib/bso/tames/tameTasks.js';
 

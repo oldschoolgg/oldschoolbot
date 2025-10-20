@@ -1,4 +1,5 @@
 import { BSOItem } from '@/lib/bso/BSOItem.js';
+import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 import { MTame } from '@/lib/bso/structures/MTame.js';
 import {
 	createTameTask,
@@ -523,7 +524,7 @@ export async function tameImage(user: MUser): CommandResponse {
 	};
 }
 
-export async function removeRawFood({
+async function removeRawFood({
 	user,
 	totalHealingNeeded,
 	healPerAction,
@@ -552,6 +553,12 @@ export async function removeRawFood({
 		totalHealingNeeded = Math.floor(totalHealingNeeded * 0.8);
 		healPerAction = Math.floor(healPerAction * 0.8);
 		foodBoosts.push('20% less for Ab. cape');
+	}
+
+	if (user.hasCard('vampire')) {
+		totalHealingNeeded = Math.ceil(totalHealingNeeded * 0.75);
+		healPerAction = Math.ceil(healPerAction * 0.75);
+		foodBoosts.push(`${BSOEmoji.VampireCard} 25% less`);
 	}
 	const equippedArmor = tame.equippedArmor;
 	if (equippedArmor) {

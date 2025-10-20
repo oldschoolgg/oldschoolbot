@@ -1,3 +1,6 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
+import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
+
 import { Emoji, objectEntries, reduceNumByPercent, UserError } from '@oldschoolgg/toolkit';
 import { type Bank, itemID } from 'oldschooljs';
 
@@ -43,6 +46,11 @@ export function removeFoodFromUserRaw({
 	) {
 		totalHealingNeeded = reduceNumByPercent(totalHealingNeeded, 6.5);
 		reductions.push('-6.5% for Justiciar');
+	}
+
+	if (gearBank.bank.has(BSOItem.VAMPIRE_CARD)) {
+		totalHealingNeeded = reduceNumByPercent(totalHealingNeeded, 25);
+		reductions.push(`${BSOEmoji.VampireCard} -25%`);
 	}
 
 	if (learningPercentage && learningPercentage > 1) {

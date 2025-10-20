@@ -1,72 +1,10 @@
 import { HalloweenEvent2025 } from '@/lib/bso/halloween.js';
 
-import { MathRNG } from '@oldschoolgg/rng';
 import { Emoji, sleep } from '@oldschoolgg/toolkit';
-import { DateTime } from 'luxon';
 import { Bank, type ItemBank } from 'oldschooljs';
 
 import { BitField } from '@/lib/constants.js';
 import { getPOH } from '@/mahoji/lib/abstracted_commands/pohCommand.js';
-
-export async function halloweenTicker() {
-	const pohsWithCandyBowls = await prisma.playerOwnedHouse.findMany({
-		where: {
-			garden_decoration: 9315
-		},
-		select: {
-			user_id: true
-		}
-	});
-	const usersToUpdate = await prisma.halloweenEvent.findMany({
-		where: {
-			user_id: {
-				in: pohsWithCandyBowls.map(p => p.user_id)
-			},
-			last_trick_or_treat: {
-				lte: DateTime.now().minus({ minutes: HalloweenEvent2025.constants.MINUTES_PER_VISIT }).toJSDate()
-			},
-			candy_in_bowl: {
-				gt: 0
-			}
-		}
-	});
-	for (const userEvent of usersToUpdate) {
-		const user = await mUserFetch(userEvent.user_id);
-		const candyDesired = MathRNG.randInt(1, 3);
-
-		if (userEvent.candy_in_bowl < candyDesired) {
-			await prisma.halloweenEvent.update({
-				where: { user_id: userEvent.user_id },
-				data: {
-					last_trick_or_treat: new Date()
-				}
-			});
-			continue;
-		}
-
-		const itemsWaitingForPickup = new Bank(userEvent.items_waiting_for_pickup as ItemBank);
-
-		const trickOrTreater = MathRNG.pick(HalloweenEvent2025.trickOrTreaters);
-		if (MathRNG.roll(HalloweenEvent2025.constants.CARD_CHANCE) && !user.cl.has(trickOrTreater.card.id)) {
-			itemsWaitingForPickup.add(trickOrTreater.card.id);
-		}
-
-		if (MathRNG.roll(HalloweenEvent2025.constants.PET_CHANCE)) {
-			itemsWaitingForPickup.add('Night-Mare');
-		}
-
-		await prisma.halloweenEvent.update({
-			where: { user_id: userEvent.user_id },
-			data: {
-				last_trick_or_treat: new Date(),
-				items_waiting_for_pickup: itemsWaitingForPickup.toJSON(),
-				candy_in_bowl: {
-					decrement: 1
-				}
-			}
-		});
-	}
-}
 
 async function halloweenProgress(user: MUser) {
 	const hasHalloweenWallkit = user.bitfield.includes(BitField.HasHalloweenWallkit);

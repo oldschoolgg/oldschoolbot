@@ -1,3 +1,4 @@
+import { BSOItem } from '@/lib/bso/BSOItem.js';
 import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 import { HalloweenEvent2025 } from '@/lib/bso/halloween.js';
 
@@ -72,7 +73,7 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 	timeToFinish /= 2;
 	messages.push('2x BSO Boost');
 
-	if (args.gearBank.bank.has('Death card')) {
+	if (args.gearBank.bank.has(BSOItem.DEATH_CARD)) {
 		timeToFinish = reduceNumByPercent(timeToFinish, HalloweenEvent2025.DEATH_SPEED_BOOST);
 		messages.push(`${BSOEmoji.DeathCard} ${HalloweenEvent2025.DEATH_SPEED_BOOST}% boost`);
 	}
