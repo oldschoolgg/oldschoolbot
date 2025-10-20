@@ -1288,10 +1288,10 @@ async function transmuteCandyCommand(user: MUser, channelID: string) {
 
 	return monkeyMagicHandler(user, channelID, {
 		spell: seaMonkeySpells.find(i => i.id === 6)!,
-		itemID: Items.getId('Halloween candy'),
+		itemID: EItem.CHOCOLATE_BAR,
 		costPerItem: new Bank().add(EItem.CHOCOLATE_BAR),
 		lootPerItem: new Bank().add('Halloween candy'),
-		timePerSpell: Time.Second * 2,
+		timePerSpell: Time.Minute * 1.35,
 		runes: {
 			per: 1,
 			cost: new Bank().add('Nature rune', 1).add('Cosmic rune').add('Nature rune')

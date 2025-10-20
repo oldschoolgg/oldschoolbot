@@ -147,11 +147,16 @@ export const smithCommand = defineCommand({
 				'Runite bar',
 				'Dwarven bar'
 			]);
+			const savedItems = new Bank();
 			for (const [item, qty] of baseCost.items()) {
 				if (itemsThatCanBeSaved.includes(item.id)) {
 					const saved = Math.floor(calcPercentOfNum(15, qty));
 					cost.remove(item.id, saved);
+					savedItems.add(item.id, saved);
 				}
+			}
+			if (savedItems.length > 0) {
+				boosts.push(`Scroll of efficiency saved you: ${savedItems}`);
 			}
 		}
 
@@ -190,14 +195,8 @@ export const smithCommand = defineCommand({
 				: ''
 		}`;
 
-		if (user.usingPet('Takon')) {
-			str += ' Takon is Smithing for you, at incredible speeds and skill.';
-		} else if (user.hasEquippedOrInBank('Dwarven greathammer')) {
-			str += ' 2x faster for Dwarven greathammer.';
-		}
-
-		if (hasScroll) {
-			str += ' Your Scroll of efficiency enables you to save 15% of the bars used.';
+		if (boosts.length > 0) {
+			str += `\n**Boosts:** ${boosts.join(', ')}`;
 		}
 		return str;
 	}

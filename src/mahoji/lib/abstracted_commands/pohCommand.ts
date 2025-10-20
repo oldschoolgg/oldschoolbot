@@ -87,13 +87,6 @@ export async function pohWallkitCommand(user: MUser, input: string): CommandResp
 			return `You haven't unlocked the ${selectedKit.name} wallkit!`;
 		}
 	}
-
-	if (
-		selectedKit.bitfield === BitField.HasHalloweenWallkit &&
-		!user.bitfield.includes(BitField.HasHalloweenWallkit)
-	) {
-	}
-
 	await prisma.playerOwnedHouse.update({
 		where: {
 			user_id: user.id
