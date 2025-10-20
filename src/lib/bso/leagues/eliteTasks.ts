@@ -334,14 +334,14 @@ export const eliteTasks: Task[] = [
 		id: 3042,
 		name: 'Receive a dragon egg and hatch it',
 		has: async ({ tames, cl }) => {
-			return cl.has('Dragon egg') && tames.some(t => t.species_id === TameSpeciesID.Igne);
+			return cl.has('Dragon egg') && tames.some(t => t.isIgne());
 		}
 	},
 	{
 		id: 3043,
 		name: 'Receive a monkey egg and hatch it',
 		has: async ({ tames, cl }) => {
-			return cl.has('Monkey egg') && tames.some(t => t.species_id === TameSpeciesID.Monkey);
+			return cl.has('Monkey egg') && tames.some(t => t.isMonkey());
 		}
 	},
 	{
@@ -349,9 +349,9 @@ export const eliteTasks: Task[] = [
 		name: 'Feed a perk-item to your Igne tame',
 		has: async ({ tames }) => {
 			return tames
-				.filter(t => t.species_id === TameSpeciesID.Igne)
+				.filter(t => t.isIgne())
 				.some(t => {
-					const fedItems = new Bank(t.fed_items as ItemBank);
+					const fedItems = t.fedItems;
 					return tameFeedableItems.some(
 						i => i.tameSpeciesCanBeFedThis.includes(TameSpeciesID.Igne) && fedItems.has(i.item.id)
 					);
@@ -363,9 +363,9 @@ export const eliteTasks: Task[] = [
 		name: 'Feed a perk-item to your Monkey tame',
 		has: async ({ tames }) => {
 			return tames
-				.filter(t => t.species_id === TameSpeciesID.Monkey)
+				.filter(t => t.isMonkey())
 				.some(t => {
-					const fedItems = new Bank(t.fed_items as ItemBank);
+					const fedItems = t.fedItems;
 					return tameFeedableItems.some(
 						i => i.tameSpeciesCanBeFedThis.includes(TameSpeciesID.Monkey) && fedItems.has(i.item.id)
 					);
@@ -792,7 +792,7 @@ export const eliteTasks: Task[] = [
 		id: 3105,
 		name: 'Receive a eagle egg and hatch it',
 		has: async ({ tames, cl }) => {
-			return cl.has('Eagle egg') && tames.some(t => t.species_id === TameSpeciesID.Eagle);
+			return cl.has('Eagle egg') && tames.some(t => t.isEagle());
 		}
 	},
 	{
@@ -800,9 +800,9 @@ export const eliteTasks: Task[] = [
 		name: 'Feed a perk-item to your Eagle tame',
 		has: async ({ tames }) => {
 			return tames
-				.filter(t => t.species_id === TameSpeciesID.Eagle)
+				.filter(t => t.isEagle())
 				.some(t => {
-					const fedItems = new Bank(t.fed_items as ItemBank);
+					const fedItems = t.fedItems;
 					return tameFeedableItems.some(
 						i => i.tameSpeciesCanBeFedThis.includes(TameSpeciesID.Eagle) && fedItems.has(i.item.id)
 					);

@@ -13,7 +13,6 @@ import { dungBuyables } from '@/lib/bso/skills/dungoneering/dungData.js';
 import { Inventions } from '@/lib/bso/skills/invention/inventions.js';
 import { slayerMaskHelms } from '@/lib/bso/skills/slayer/slayerMaskHelms.js';
 import { bsoDwarvenSmithables } from '@/lib/bso/skills/smithing/dwarven.js';
-import { getTameSpecies } from '@/lib/bso/tames/tameUtil.js';
 
 import { sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, LuckyImpling, resolveItems } from 'oldschooljs';
@@ -885,10 +884,8 @@ export const masterTasks: Task[] = [
 		id: 4122,
 		name: 'Hatch a tame which is atleast level 90',
 		has: async ({ tames }) => {
-			return tames.some(i => {
-				const species = getTameSpecies(i);
-				const level = i[`max_${species.relevantLevelCategory}_level`];
-				return level >= 90;
+			return tames.some(tame => {
+				return tame.relevantLevel() >= 90;
 			});
 		}
 	},

@@ -1,7 +1,7 @@
 import { GLOBAL_BSO_XP_MULTIPLIER } from '@/lib/bso/bsoConstants.js';
 import type { BathhouseTaskOptions } from '@/lib/bso/bsoTypes.js';
 import { MysteryBoxes } from '@/lib/bso/openables/tables.js';
-import { getAllUserTames, TameSpeciesID } from '@/lib/bso/tames/tames.js';
+import type { MTame } from '@/lib/bso/structures/MTame.js';
 
 import { randArrItem } from '@oldschoolgg/rng';
 import { Emoji, formatDuration, reduceNumByPercent, stringMatches, Table, Time } from '@oldschoolgg/toolkit';
@@ -319,8 +319,8 @@ export async function baxtorianBathhousesStartCommand({
 
 	const boosts: string[] = [];
 
-	const tames = await getAllUserTames(user.id);
-	const tameToUse = tames.find(i => i.tame_activity.length === 0 && i.species_id === TameSpeciesID.Igne);
+	const tames = await user.fetchTames();
+	const tameToUse: MTame | undefined = tames.find(_t => _t.isIgne());
 
 	let oreNeeded = Math.floor(warmthNeeded / oreToUse.warmth);
 	let logsNeeded = Math.floor(warmthNeeded / oreToUse.warmth);
