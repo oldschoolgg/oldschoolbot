@@ -1,3 +1,4 @@
+import { type HalloweenCardID, HalloweenEvent2025 } from '@/lib/bso/halloween.js';
 import type { GodFavourBank, GodName } from '@/lib/bso/minigames/divineDominion.js';
 import { mysteriousStepData, mysteriousTrailTracks } from '@/lib/bso/mysteryTrail.js';
 import type { IMaterialBank } from '@/lib/bso/skills/invention/index.js';
