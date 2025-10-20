@@ -404,6 +404,11 @@ export const adminCommand = defineCommand({
 		},
 		{
 			type: 'Subcommand',
+			name: 'check_tablebanks',
+			description: 'Check tablebanks'
+		},
+		{
+			type: 'Subcommand',
 			name: 'reboot',
 			description: 'Reboot the bot.'
 		},
@@ -953,6 +958,30 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 
 			return {
 				files: [{ attachment: Buffer.from(str), name: 'output.txt' }]
+			};
+		}
+
+		if (options.check_tablebanks) {
+			const userIdsSample = await prisma.activity.findMany({
+				where: {
+					completed: false
+				},
+				take: 5,
+				select: {
+					user_id: true
+				}
+			});
+			const results = [];
+			for (const { user_id } of userIdsSample) {
+				const user = await mUserFetch(user_id.toString());
+				const theirTableCL = await user.fetchCL();
+				const success = user.cl.toString() === theirTableCL.toString();
+				results.push({ userId: user.id, success, lengths: [user.cl.length, theirTableCL.length] });
+			}
+			return {
+				content: results
+					.map(i => `${i.userId}: ${i.success ? 'Success' : 'Fail'} ${i.lengths.join('/')}`)
+					.join('\n')
 			};
 		}
 

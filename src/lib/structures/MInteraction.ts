@@ -20,6 +20,7 @@ import { BLACKLISTED_USERS } from '@/lib/blacklists.js';
 import { CACHED_ACTIVE_USER_IDS, partyLockCache } from '@/lib/cache.js';
 import { SILENT_ERROR } from '@/lib/constants.js';
 import { convertAPIOptionsToCommandOptions } from '@/lib/discord/index.js';
+import { InteractionID } from '@/lib/InteractionID.js';
 import {
 	type CompatibleResponse,
 	PaginatedMessage,
@@ -245,8 +246,14 @@ export class MInteraction {
 		const timeout: number = typeof message !== 'string' ? (message.timeout ?? 15_000) : 15_000;
 
 		const confirmRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
-			new ButtonBuilder().setCustomId('CONFIRM').setLabel('Confirm').setStyle(ButtonStyle.Primary),
-			new ButtonBuilder().setCustomId('CANCEL').setLabel('Cancel').setStyle(ButtonStyle.Secondary)
+			new ButtonBuilder()
+				.setCustomId(InteractionID.Confirmation.Confirm)
+				.setLabel('Confirm')
+				.setStyle(ButtonStyle.Primary),
+			new ButtonBuilder()
+				.setCustomId(InteractionID.Confirmation.Cancel)
+				.setLabel('Cancel')
+				.setStyle(ButtonStyle.Secondary)
 		);
 
 		await this.defer();
@@ -276,7 +283,7 @@ export class MInteraction {
 					return;
 				}
 
-				if (buttonInteraction.customId === 'CANCEL') {
+				if (buttonInteraction.customId === InteractionID.Confirmation.Cancel) {
 					// If they cancel, we remove the button component, which means we can't reply to the button interaction.
 					this.reply({ content: `The confirmation was cancelled.`, components: [] });
 					collector.stop();
@@ -291,7 +298,7 @@ export class MInteraction {
 
 				confirms.add(buttonInteraction.user.id);
 
-				if (buttonInteraction.customId === 'CONFIRM') {
+				if (buttonInteraction.customId === InteractionID.Confirmation.Confirm) {
 					silentAck();
 					// All users have confirmed
 					if (confirms.size === users.length) {
@@ -352,10 +359,13 @@ export class MInteraction {
 		let partyCancelled = false;
 
 		const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
-			new ButtonBuilder().setCustomId('PARTY_JOIN').setLabel('Join').setStyle(ButtonStyle.Primary),
-			new ButtonBuilder().setCustomId('PARTY_LEAVE').setLabel('Leave').setStyle(ButtonStyle.Secondary),
-			new ButtonBuilder().setCustomId('PARTY_CANCEL').setLabel('Cancel').setStyle(ButtonStyle.Danger),
-			new ButtonBuilder().setCustomId('PARTY_START').setLabel('Start').setStyle(ButtonStyle.Success)
+			new ButtonBuilder().setCustomId(InteractionID.Party.Join).setLabel('Join').setStyle(ButtonStyle.Primary),
+			new ButtonBuilder()
+				.setCustomId(InteractionID.Party.Leave)
+				.setLabel('Leave')
+				.setStyle(ButtonStyle.Secondary),
+			new ButtonBuilder().setCustomId(InteractionID.Party.Cancel).setLabel('Cancel').setStyle(ButtonStyle.Danger),
+			new ButtonBuilder().setCustomId(InteractionID.Party.Start).setLabel('Start').setStyle(ButtonStyle.Success)
 		);
 
 		const getMessageContent = async () => ({
@@ -441,9 +451,9 @@ export class MInteraction {
 					return;
 				}
 
-				const id = bi.customId as 'PARTY_JOIN' | 'PARTY_LEAVE' | 'PARTY_CANCEL' | 'PARTY_START';
+				const id = bi.customId as (typeof InteractionID.Party)[keyof typeof InteractionID.Party];
 
-				if (id === 'PARTY_JOIN') {
+				if (id === InteractionID.Party.Join) {
 					if (options.customDenier) {
 						const [denied, reason] = await options.customDenier(user);
 						if (denied) {
@@ -470,7 +480,7 @@ export class MInteraction {
 					return;
 				}
 
-				if (id === 'PARTY_LEAVE') {
+				if (id === InteractionID.Party.Leave) {
 					if (!usersWhoConfirmed.includes(bi.user.id) || bi.user.id === options.leader.id) {
 						await bi.reply({ content: 'You cannot leave this mass.', flags: MessageFlags.Ephemeral });
 						return;
@@ -481,7 +491,7 @@ export class MInteraction {
 					return;
 				}
 
-				if (id === 'PARTY_CANCEL') {
+				if (id === InteractionID.Party.Cancel) {
 					if (bi.user.id !== options.leader.id) {
 						await bi.reply({ content: 'You cannot cancel this mass.', flags: MessageFlags.Ephemeral });
 						return;
@@ -494,7 +504,7 @@ export class MInteraction {
 					return;
 				}
 
-				if (id === 'PARTY_START') {
+				if (id === InteractionID.Party.Start) {
 					if (bi.user.id !== options.leader.id) {
 						await bi.reply({ content: 'You cannot start this party.', flags: MessageFlags.Ephemeral });
 						return;

@@ -401,6 +401,7 @@ export async function autoSlayCommand({
 	saveMode?: boolean;
 	interaction: MInteraction;
 }): CommandResponse {
+	modeOverride = modeOverride?.toLowerCase();
 	const autoslayOptions = user.user.slayer_autoslay_options;
 	const usersTask = await user.fetchSlayerInfo();
 	const isOnTask = usersTask.assignedTask !== null && usersTask.currentTask !== null;
