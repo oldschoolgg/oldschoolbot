@@ -532,8 +532,6 @@ model User {
 
   cl_array Int[] @default([])
 
-  equipped_card_item_id Int?
-
   @@index([id, last_command_date])
   @@map("users")
 }

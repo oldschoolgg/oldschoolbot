@@ -1,3 +1,6 @@
+import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
+import { HalloweenEvent2025 } from '@/lib/bso/halloween.js';
+
 import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, round, sumArr } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { mergeDeep } from 'remeda';
@@ -68,6 +71,11 @@ export function speedCalculations(args: Omit<BoostArgs, 'currentTaskOptions'>) {
 
 	timeToFinish /= 2;
 	messages.push('2x BSO Boost');
+
+	if (args.gearBank.bank.has('Death card')) {
+		timeToFinish = reduceNumByPercent(timeToFinish, HalloweenEvent2025.DEATH_SPEED_BOOST);
+		messages.push(`${BSOEmoji.DeathCard} ${HalloweenEvent2025.DEATH_SPEED_BOOST}% boost`);
+	}
 
 	if (gearBank.gear.wildy.hasEquipped(['Hellfire bow']) && isInWilderness) {
 		timeToFinish /= 3;

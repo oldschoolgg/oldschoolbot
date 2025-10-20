@@ -1,4 +1,6 @@
+import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 import type { NewBossOptions } from '@/lib/bso/bsoTypes.js';
+import { HalloweenEvent2025 } from '@/lib/bso/halloween.js';
 
 import { randFloat } from '@oldschoolgg/rng';
 import {
@@ -439,6 +441,11 @@ export class BossInstance {
 		if (isWeekend()) {
 			this.boosts.push('5% Weekend boost');
 			duration = reduceNumByPercent(duration, 5);
+		}
+
+		if (this.users!.some(u => u.hasCard('death'))) {
+			this.boosts.push(`${BSOEmoji.DeathCard} ${HalloweenEvent2025.DEATH_SPEED_BOOST}% boost`);
+			duration = reduceNumByPercent(duration, HalloweenEvent2025.DEATH_SPEED_BOOST);
 		}
 
 		return {

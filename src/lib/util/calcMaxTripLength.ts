@@ -14,6 +14,9 @@ export function patronMaxTripBonus(user: MUser) {
 export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 	let max = Time.Minute * 30;
 	max += patronMaxTripBonus(user);
+	if (user.hasCard('vampire')) {
+		max += Time.Minute * 10;
+	}
 
 	const hasMasterHPCape = user.hasEquipped('Hitpoints master cape');
 	let masterHPCapeBoost = 0;

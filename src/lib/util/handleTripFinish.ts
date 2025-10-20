@@ -1,3 +1,4 @@
+import { BSOEmoji } from '@/lib/bso/bsoEmoji.js';
 import { tearsOfGuthixIronmanReqs, tearsOfGuthixSkillReqs } from '@/lib/bso/commands/tearsOfGuthixCommand.js';
 import { handleCrateSpawns } from '@/lib/bso/handleCrateSpawns.js';
 import { gods } from '@/lib/bso/minigames/divineDominion.js';
@@ -9,7 +10,7 @@ import { InventionID, inventionBoosts, inventionItemBoost } from '@/lib/bso/skil
 import { RuneTable, WilvusTable, WoodTable } from '@/lib/bso/tables/seedTable.js';
 import { DougTable, PekyTable } from '@/lib/bso/tables/sharedTables.js';
 
-import { randArrItem, randInt, roll } from '@oldschoolgg/rng';
+import { percentChance, randArrItem, randInt, roll } from '@oldschoolgg/rng';
 import { channelIsSendable, makeComponents, notEmpty, Time } from '@oldschoolgg/toolkit';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { bold } from 'discord.js';
@@ -114,16 +115,22 @@ const tripFinishEffects: TripFinishEffect[] = [
 		name: 'Loot Doubling',
 		fn: async ({ data, messages, user, loot }) => {
 			const cantBeDoubled = ['GroupMonsterKilling', 'KingGoldemar', 'Ignecarus', 'Inferno', 'Alching', 'Agility'];
-			if (
-				loot &&
-				!data.cantBeDoubled &&
-				!cantBeDoubled.includes(data.type) &&
-				data.duration > Time.Minute * 20 &&
-				roll(user.usingPet('Mr. E') ? 12 : 15)
-			) {
+			if (!loot || data.cantBeDoubled || cantBeDoubled.includes(data.type) || data.duration < Time.Minute * 20)
+				return;
+
+			const chanceOfDoubling = user.hasEquipped('Mr. E') ? 12 : 15;
+			const initialRollSuccess = roll(chanceOfDoubling);
+			const witchRollSuccess = percentChance(20);
+			if (initialRollSuccess || witchRollSuccess) {
 				const otherLoot = new Bank().add(MysteryBoxes.roll());
 				const bonusLoot = new Bank().add(loot).add(otherLoot);
-				messages.push(`<:mysterybox:680783258488799277> **You received 2x loot and ${otherLoot}.**`);
+				if (witchRollSuccess) {
+					messages.push(
+						`${BSOEmoji.WitchCard} **Thanks to your Witch Card, you received 2x loot and ${otherLoot}.**`
+					);
+				} else {
+					messages.push(`<:mysterybox:680783258488799277> **You received 2x loot and ${otherLoot}.**`);
+				}
 
 				await Promise.all([
 					await user.statsBankUpdate('doubled_loot_bank', bonusLoot),
@@ -139,8 +146,13 @@ const tripFinishEffects: TripFinishEffect[] = [
 		name: 'Custom Pet Perk',
 		fn: async ({ data, messages, user }) => {
 			const pet = user.user.minion_equippedPet;
-			const minutes = Math.floor(data.duration / Time.Minute);
+			let minutes = Math.floor(data.duration / Time.Minute);
 			if (minutes < 5) return;
+
+			if (user.hasCard('witch')) {
+				minutes *= 2;
+			}
+
 			const bonusLoot = new Bank();
 			switch (pet) {
 				case itemID('Peky'): {
@@ -220,6 +232,12 @@ const tripFinishEffects: TripFinishEffect[] = [
 				}
 				default: {
 				}
+			}
+
+			if (user.hasCard('witch') && bonusLoot.length > 0) {
+				messages.push(
+					`${BSOEmoji.WitchCard} **Thanks to your Witch Card, your pet gathered 2x the normal loot!**`
+				);
 			}
 
 			return {

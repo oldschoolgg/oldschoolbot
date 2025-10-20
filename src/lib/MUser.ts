@@ -807,6 +807,16 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 		return allItems.has(checkBank);
 	}
 
+	getFarmingGrowthSpeed(): number {
+		if (this.hasCard('pumpkinman')) return 0.7;
+		return 1;
+	}
+
+	hasCard(cardId: HalloweenCardID): boolean {
+		const tr = HalloweenEvent2025.trickOrTreaters.find(t => t.id === cardId)!;
+		return this.bank.has(tr.card.id);
+	}
+
 	usingPet(name: string | number) {
 		if (typeof name === 'number') return this.user.minion_equippedPet === name;
 		return this.user.minion_equippedPet === itemID(name);
