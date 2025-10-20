@@ -5,6 +5,7 @@ import { userHasFlappy } from '@/lib/bso/skills/invention/inventions.js';
 import { MaterialBank } from '@/lib/bso/skills/invention/MaterialBank.js';
 import { MTame } from '@/lib/bso/structures/MTame.js';
 import { type Species, tameSpecies } from '@/lib/bso/tames/tames.js';
+import { sortTames } from '@/lib/bso/tames/tameUtil.js';
 import { calculateCompCapeProgress } from '@/lib/bso/util/calculateCompCapeProgress.js';
 import { findGroupOfUser } from '@/lib/bso/util/findGroupOfUser.js';
 import { repairBrokenItemsFromUser } from '@/lib/bso/util/repairBrokenItems.js';
@@ -39,7 +40,6 @@ import type {
 	activity_type_enum,
 	GearSetupType,
 	Prisma,
-	Tame,
 	TameActivity,
 	User,
 	UserStats,
@@ -1190,6 +1190,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 				tame_cl_bank: totalBank.toJSON()
 			}
 		});
+		tames.sort(sortTames);
 
 		return tames;
 	}
@@ -1388,7 +1389,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 				species: null;
 		  }
 		| {
-				tame: Tame;
+				tame: MTame;
 				activity: TameActivity | null;
 				species: Species;
 		  }
@@ -1409,7 +1410,7 @@ Charge your items using ${mentionCommand('minion', 'charge')}.`
 			where: { user_id: this.id, tame_id: tame.id, completed: false }
 		});
 		const species = tameSpecies.find(i => i.id === tame.species_id)!;
-		return { tame, activity, species };
+		return { tame: new MTame(tame), activity, species };
 	}
 
 	async hasFlappy(duration: number) {

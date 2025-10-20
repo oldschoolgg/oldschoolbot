@@ -10,7 +10,6 @@ import {
 	calculateDartsFletchedFromScratch,
 	totalLampedXP
 } from '@/lib/bso/leagues/stats.js';
-import { getAllUserTames } from '@/lib/bso/tames/tames.js';
 
 import { calcWhatPercent, sumArr } from '@oldschoolgg/toolkit';
 import { Bank, type ItemBank, Items } from 'oldschooljs';
@@ -119,7 +118,6 @@ export async function leaguesCheckUser(userID: string) {
 	const [
 		conStats,
 		poh,
-		tames,
 		slayerStats,
 		activityCounts,
 		minigames,
@@ -140,7 +138,6 @@ export async function leaguesCheckUser(userID: string) {
 	] = await Promise.all([
 		personalConstructionStats(user),
 		getPOH(userID),
-		getAllUserTames(userID),
 		getSlayerTaskStats(userID),
 		getActivityCounts(user.user),
 		user.fetchMinigames(),
@@ -162,6 +159,7 @@ export async function leaguesCheckUser(userID: string) {
 	const clPercent = calcCLDetails(user).percent;
 	const herbloreStats = betterHerbloreStats(_herbloreStats);
 	const smithingSuppliesUsed = calcSuppliesUsedForSmithing(smithingStats);
+	const tames = await user.fetchTames();
 
 	const userStats = await prisma.userStats.upsert({
 		where: { user_id: BigInt(userID) },

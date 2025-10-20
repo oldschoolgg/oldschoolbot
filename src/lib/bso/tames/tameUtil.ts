@@ -1,17 +1,11 @@
-import {
-	seaMonkeySpells,
-	type TameTaskOptions,
-	TameType,
-	tameKillableMonsters,
-	tameSpecies
-} from '@/lib/bso/tames/tames.js';
+import type { MTame } from '@/lib/bso/structures/MTame.js';
+import { seaMonkeySpells, type TameTaskOptions, TameType, tameKillableMonsters } from '@/lib/bso/tames/tames.js';
 
-import { formatDuration, round } from '@oldschoolgg/toolkit';
-import { type ItemBank, Items } from 'oldschooljs';
+import { formatDuration } from '@oldschoolgg/toolkit';
+import { Items } from 'oldschooljs';
 
-import { type Tame, type TameActivity, tame_growth } from '@/prisma/main.js';
+import type { TameActivity } from '@/prisma/main.js';
 import { ClueTiers } from '@/lib/clues/clueTiers.js';
-import { getSimilarItems } from '@/lib/data/similarItems.js';
 
 export async function tameLastFinishedActivity(user: MUser) {
 	const tameID = user.user.selected_tame;
@@ -51,61 +45,11 @@ export function shortTameTripDesc(activity: TameActivity) {
 	}
 }
 
-export function calculateMaximumTameFeedingLevelGain(tame: Tame) {
-	const mainLevel = getMainTameLevel(tame);
+export function calculateMaximumTameFeedingLevelGain(tame: MTame) {
+	const mainLevel = tame.relevantLevel();
 	if (mainLevel >= 100) return 0;
 	const difference = 100 - mainLevel;
 	return Math.floor(difference / 2) - 1;
-}
-
-export function tameName(tame: Tame) {
-	return `${tame.nickname ?? getTameSpecies(tame).name}`;
-}
-
-export function tameToString(tame: Tame) {
-	let str = `${tameName(tame)} (`;
-	str += [
-		[tameGetLevel(tame, 'combat'), '<:combat:802136963956080650>'],
-		[tameGetLevel(tame, 'artisan'), '<:artisan:802136963611885569>'],
-		[tameGetLevel(tame, 'gatherer'), '<:gathering:802136963913613372>']
-	]
-		.map(([emoji, lvl]) => `${emoji}${lvl}`)
-		.join(' ');
-	str += ')';
-	return str;
-}
-
-export function tameHasBeenFed(tame: Tame, item: string | number) {
-	const { id } = Items.getItem(item)!;
-	const items = getSimilarItems(id);
-	return items.some(i => Boolean((tame.fed_items as ItemBank)[i]));
-}
-
-export function tameGrowthLevel(tame: Tame) {
-	const growth = 3 - [tame_growth.baby, tame_growth.juvenile, tame_growth.adult].indexOf(tame.growth_stage);
-	return growth;
-}
-
-export function getTameSpecies(tame: Tame) {
-	return tameSpecies.find(s => s.id === tame.species_id)!;
-}
-
-export function getMainTameLevel(tame: Tame) {
-	return tameGetLevel(tame, getTameSpecies(tame).relevantLevelCategory);
-}
-
-export function tameGetLevel(tame: Tame, type: 'combat' | 'gatherer' | 'support' | 'artisan') {
-	const growth = tameGrowthLevel(tame);
-	switch (type) {
-		case 'combat':
-			return round(tame.max_combat_level / growth, 2);
-		case 'gatherer':
-			return round(tame.max_gatherer_level / growth, 2);
-		case 'support':
-			return round(tame.max_support_level / growth, 2);
-		case 'artisan':
-			return round(tame.max_artisan_level / growth, 2);
-	}
 }
 
 export function getTameStatus(tameActivity: TameActivity | null) {
@@ -141,4 +85,16 @@ export function getTameStatus(tameActivity: TameActivity | null) {
 		}
 	}
 	return ['Idle'];
+}
+
+export function sortTames(tameA: MTame, tameB: MTame): number {
+	if (tameA.isShiny) return -1;
+	if (tameB.isShiny) return 1;
+	if (tameA.lastActivityDate && !tameB.lastActivityDate) return -1;
+	if (!tameA.lastActivityDate && tameB.lastActivityDate) return 1;
+	if (tameA.lastActivityDate && tameB.lastActivityDate) {
+		return tameB.lastActivityDate.valueOf() - tameA.lastActivityDate.valueOf();
+	}
+	// Fallback to sorting by max_combat_level if no last_activity_date for both
+	return tameB.relevantLevel() - tameA.relevantLevel();
 }

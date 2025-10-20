@@ -17,12 +17,11 @@ function tameCluesData() {
 	for (const tameLevel of [50, 60, 70, 75, 80, 85, 90, 95, 100]) {
 		for (const clueTier of ClueTiers) {
 			const res = determineTameClueResult({
-				tameGrowthLevel: 3,
 				clueTier,
-				extraTripLength: Time.Hour * 10,
 				supportLevel: tameLevel,
 				equippedArmor: itemID('Abyssal jibwings (e)'),
-				equippedPrimary: itemID('Divine ring')
+				equippedPrimary: itemID('Divine ring'),
+				maxTripLength: { maxTripLength: Time.Hour * 10 + Time.Minute * 30 + Time.Minute * 20 * 1, messages: [] }
 			});
 
 			rawResults.push({

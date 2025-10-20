@@ -8,6 +8,7 @@ import { VasaMagus } from '@/lib/bso/monsters/bosses/VasaMagus.js';
 import { BSOMonstersMap } from '@/lib/bso/monsters/customMonsters.js';
 import { mysteryBoxBlacklist } from '@/lib/bso/openables/mysteryBoxBlacklist.js';
 import { combinedTmbUmbEmbTables } from '@/lib/bso/openables/mysteryBoxes.js';
+import { MTame } from '@/lib/bso/structures/MTame.js';
 import { calculateMaximumTameFeedingLevelGain } from '@/lib/bso/tames/tameUtil.js';
 
 import { EquipmentSlot, Items, itemID, Monsters, resolveItems } from 'oldschooljs';
@@ -24,11 +25,16 @@ import itemIsTradeable from '@/lib/util/itemIsTradeable.js';
 describe('Sanity', () => {
 	test('calculateMaximumTameFeedingLevelGain', () => {
 		expect(
-			calculateMaximumTameFeedingLevelGain({
-				species_id: 1,
-				max_combat_level: 70,
-				growth_stage: tame_growth.adult
-			} as Tame)
+			calculateMaximumTameFeedingLevelGain(
+				new MTame({
+					equipped_armor: null,
+					equipped_primary: null,
+					growth_percent: 50,
+					species_id: 1,
+					max_combat_level: 70,
+					growth_stage: tame_growth.adult
+				} as Tame)
+			)
 		).toEqual(14);
 	});
 
